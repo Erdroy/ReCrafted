@@ -11,6 +11,9 @@ namespace ReCrafted.Graphics
     /// </summary>
     public class Shader : IDisposable
     {
+        // lock from creating
+        protected Shader() { }
+
         /// <summary>
         /// Initializes the shader.
         /// </summary>

@@ -5,7 +5,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
     /// <summary>
     /// D3D11Format class.
     /// </summary>
-    public static class D3D11Format
+    internal static class D3D11Format
     {
         /// <summary>
         /// Converts format name to Format.

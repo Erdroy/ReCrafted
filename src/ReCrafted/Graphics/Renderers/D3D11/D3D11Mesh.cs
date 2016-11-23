@@ -8,7 +8,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
     /// <summary>
     /// D3D11Mesh class.
     /// </summary>
-    public sealed class D3D11Mesh : Mesh
+    internal sealed class D3D11Mesh : Mesh
     {
         internal D3D11Mesh() { }
 

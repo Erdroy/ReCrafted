@@ -14,7 +14,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
     /// <summary>
     /// D3D11Shader class.
     /// </summary>
-    public sealed class D3D11Shader : Shader
+    internal sealed class D3D11Shader : Shader
     {
         // todos
         // TODO: Multi-pass support

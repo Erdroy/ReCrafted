@@ -11,7 +11,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
     /// <summary>
     /// D3D11Renderer class.
     /// </summary>
-    public sealed class D3D11Renderer : Renderer
+    internal sealed class D3D11Renderer : Renderer
     {
         /// <summary>
         /// The D3D11Renderer instance.
@@ -21,7 +21,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         private Device _device;
         private SwapChain _swapChain;
 
-        private Texture2D _depthBuffer;
+        private SharpDX.Direct3D11.Texture2D _depthBuffer;
 
         private RenderTargetView _finalRenderTarget;
         private DepthStencilView _depthStencilView;
@@ -108,13 +108,13 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             // resize buffers
             _swapChain.ResizeBuffers(1, width, height, Format.Unknown, 0);
 
-            using (var backBuffer = _swapChain.GetBackBuffer<Texture2D>(0))
+            using (var backBuffer = _swapChain.GetBackBuffer<SharpDX.Direct3D11.Texture2D>(0))
             {
                 _finalRenderTarget = new RenderTargetView(_device, backBuffer);
             }
 
             // create depth buffer
-            _depthBuffer = new Texture2D(_device, new Texture2DDescription()
+            _depthBuffer = new SharpDX.Direct3D11.Texture2D(_device, new Texture2DDescription()
             {
                 Format = Format.D32_Float_S8X24_UInt,
                 ArraySize = 1,

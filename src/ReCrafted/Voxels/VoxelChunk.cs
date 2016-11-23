@@ -6,13 +6,22 @@ using SharpDX;
 
 namespace ReCrafted.Voxels 
 {
+    /// <summary>
+    /// VoxelChunk class.
+    /// </summary>
     public class VoxelChunk : IDisposable, IRendererComponent
     {
+        /// <summary>
+        /// The block size.
+        /// </summary>
         public const float BlockSize = 1.0f;
 
         private Mesh _mesh;
         private byte[,,] _voxels;
-
+        
+        /// <summary>
+        /// Init the chunk.
+        /// </summary>
         public void Init()
         {
             _mesh = Mesh.Create();
@@ -45,10 +54,16 @@ namespace ReCrafted.Voxels
             UpdateMesh();
         }
 
+        /// <summary>
+        /// Tick the chunk.
+        /// </summary>
         public void Tick()
         {
         }
 
+        /// <summary>
+        /// Draw the chunk.
+        /// </summary>
         public void Draw()
         {
             if (_mesh.Vertices.Length == 0)
@@ -61,6 +76,9 @@ namespace ReCrafted.Voxels
             VoxelAssets.DefaultShader.Draw(_mesh);
         }
 
+        /// <summary>
+        /// Dispose the chunk.
+        /// </summary>
         public void Dispose()
         {
             _mesh.Dispose();
@@ -109,7 +127,9 @@ namespace ReCrafted.Voxels
             }
         }
         
-
+        /// <summary>
+        /// The Chunk position.
+        /// </summary>
         public Vector3 Position { get; set; }
     }
 }

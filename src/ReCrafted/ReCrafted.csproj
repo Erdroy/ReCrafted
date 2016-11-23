@@ -83,14 +83,17 @@
     <Compile Include="Core\Localization\LocaleStrings.cs" />
     <Compile Include="Core\Time.cs" />
     <Compile Include="Graphics\Camera.cs" />
+    <Compile Include="Graphics\IRenderJob.cs" />
     <Compile Include="Graphics\Renderers\D3D11\D3D11Format.cs" />
     <Compile Include="Graphics\Renderers\D3D11\D3D11Mesh.cs" />
     <Compile Include="Graphics\Renderers\D3D11\D3D11Shader.cs" />
     <Compile Include="Graphics\PrimitiveType.cs" />
     <Compile Include="Graphics\RasterizerStates.cs" />
+    <Compile Include="Graphics\Renderers\D3D11\D3D11Texture2D.cs" />
     <Compile Include="Graphics\Shader.cs" />
     <Compile Include="Graphics\Mesh.cs" />
     <Compile Include="Graphics\ShaderMeta.cs" />
+    <Compile Include="Graphics\Texture2D.cs" />
     <Compile Include="Graphics\Vertex.cs" />
     <Compile Include="Graphics\Vertex2.cs" />
     <Compile Include="Graphics\Vertex3.cs" />
