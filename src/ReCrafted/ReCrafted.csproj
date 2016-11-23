@@ -131,6 +131,9 @@
     <None Include="..\..\bin\assets\locales\polski.json">
       <Link>assets\locales\polski.json</Link>
     </None>
+    <None Include="..\..\bin\assets\shaders\color.json">
+      <Link>assets\shaders\color.json</Link>
+    </None>
     <None Include="..\..\bin\assets\shaders\default_block.json">
       <Link>assets\shaders\default_block.json</Link>
     </None>
@@ -150,6 +153,9 @@
     <Folder Include="Physics\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\bin\assets\shaders\color.hlsl">
+      <Link>assets\shaders\color.hlsl</Link>
+    </Content>
     <Content Include="..\..\bin\assets\shaders\default_block.hlsl">
       <Link>assets\shaders\default_block.hlsl</Link>
     </Content>

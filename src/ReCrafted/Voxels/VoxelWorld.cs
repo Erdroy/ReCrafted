@@ -1,44 +1,75 @@
 ﻿using System;
+using System.Collections.Generic;
 using ReCrafted.Core;
 
 namespace ReCrafted.Voxels
 {
+    /// <summary>
+    /// VoxelWorld class.
+    /// </summary>
     public sealed class VoxelWorld : IDisposable, IRendererComponent
     {
+        /// <summary>
+        /// The VoxelWorld instance.
+        /// </summary>
         public static VoxelWorld Instance;
+        
+        private readonly List<VoxelChunk> _chunks = new List<VoxelChunk>();
 
-        private VoxelChunk _chunk;
-
+        /// <summary>
+        /// VoxelWorld constructor.
+        /// </summary>
         public VoxelWorld()
         {
             Instance = this;
         }
 
+        /// <summary>
+        /// Initializes the VoxelWorld.
+        /// </summary>
         public void Init()
         {
             VoxelAssets.LoadAssets();
 
-            _chunk = new VoxelChunk();
-            _chunk.Init();
+            var chunk = new VoxelChunk();
+            chunk.Init();
+            chunk.UpdateMesh();
+
+            _chunks.Add(chunk);
         }
 
+        /// <summary>
+        /// Ticks the VoxelWorld.
+        /// </summary>
         public void Tick()
         {
-            _chunk.Tick();
+            foreach (var chunk in _chunks)
+                chunk.Tick();
         }
 
+        /// <summary>
+        /// Simulates the VoxelWorld.
+        /// </summary>
         public void Simulate()
         {
         }
 
+        /// <summary>
+        /// Draws the VoxelWorld.
+        /// </summary>
         public void Draw()
         {
-            _chunk.Draw();
+            foreach (var chunk in _chunks)
+                chunk.Draw();
         }
 
+        /// <summary>
+        /// Disposes the VoxelWorld.
+        /// </summary>
         public void Dispose()
         {
-            _chunk.Dispose();
+            foreach (var chunk in _chunks)
+                chunk.Dispose();
         }
     }
 }

@@ -5,7 +5,7 @@ using SharpDX;
 
 namespace ReCrafted.Graphics
 {
-    public class Mesh : IDisposable
+    public abstract class Mesh : IDisposable
     {
         // Constructor
         /// <summary>
@@ -21,28 +21,19 @@ namespace ReCrafted.Graphics
         /// Sets colors array.
         /// </summary>
         /// <param name="colors">The colors array.</param>
-        public virtual void SetColors(Color[] colors)
-        {
-            Colors = colors;
-        }
+        public abstract void SetColors(Color[] colors);
 
         /// <summary>
         /// Sets the vertices array.
         /// </summary>
         /// <param name="vertices">The vertices.</param>
-        public virtual void SetVertices(Vector3[] vertices)
-        {
-            Vertices = vertices;
-        }
+        public abstract void SetVertices(Vector3[] vertices);
 
         /// <summary>
         /// Set UVs array.
         /// </summary>
         /// <param name="uvs">The UVs array.</param>
-        public virtual void SetUVs(Vector2[] uvs)
-        {
-            UVs = uvs;
-        }
+        public abstract void SetUVs(Vector2[] uvs);
 
         /// <summary>
         /// Set index array.
@@ -57,26 +48,23 @@ namespace ReCrafted.Graphics
         /// Gets the vertex stride.
         /// </summary>
         /// <returns>The vertex stride.</returns>
-        public virtual int GetVertexStride()
-        {
-            return 0;
-        }
+        public abstract int GetVertexStride();
 
         /// <summary>
         /// Applies changes.
         /// </summary>
-        public virtual void ApplyChanges() { }
+        public abstract void ApplyChanges();
 
         /// <summary>
         /// Optimizes the mesh.
         /// Should be called before apply changes!
         /// </summary>
-        public virtual void Optimize() { }
+        public abstract void Optimize();
 
         /// <summary>
         /// Disposes the mesh.
         /// </summary>
-        public virtual void Dispose() { }
+        public abstract void Dispose();
 
         /// <summary>
         /// Creates new mesh.
@@ -104,22 +92,22 @@ namespace ReCrafted.Graphics
         /// <summary>
         /// The colors array.
         /// </summary>
-        public Color[] Colors { get; private set; }
+        public Color[] Colors { get; protected set; }
 
         /// <summary>
         /// The vertices array.
         /// </summary>
-        public Vector3[] Vertices { get; private set; }
+        public Vector3[] Vertices { get; protected set; }
 
         /// <summary>
         /// The UVs array.
         /// </summary>
-        public Vector2[] UVs { get; private set; }
+        public Vector2[] UVs { get; protected set; }
 
         /// <summary>
         /// The index array.
         /// </summary>
-        public uint[] Indices { get; private set; }
+        public uint[] Indices { get; protected set; }
 
         /// <summary>
         /// Do this mesh has colors?

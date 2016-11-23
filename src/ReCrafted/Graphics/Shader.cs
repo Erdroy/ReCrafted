@@ -9,7 +9,7 @@ namespace ReCrafted.Graphics
     /// <summary>
     /// Shader class.
     /// </summary>
-    public class Shader : IDisposable
+    public abstract class Shader : IDisposable
     {
         // lock from creating
         protected Shader() { }
@@ -19,7 +19,7 @@ namespace ReCrafted.Graphics
         /// </summary>
         /// <param name="shaderFile">Shader file name.</param>
         /// <param name="meta">The shader meta.</param>
-        protected virtual void Initialize(string shaderFile, ShaderMeta meta) { }
+        protected abstract void Initialize(string shaderFile, ShaderMeta meta);
 
         /// <summary>
         /// Sets value in default constant buffer.
@@ -27,7 +27,7 @@ namespace ReCrafted.Graphics
         /// <typeparam name="T">The value type.</typeparam>
         /// <param name="name">The name.</param>
         /// <param name="value">The value.</param>
-        public virtual void SetValue<T>(string name, T value) where T : struct { }
+        public abstract void SetValue<T>(string name, T value) where T : struct;
 
         /// <summary>
         /// Sets value in default constant buffer.
@@ -35,18 +35,18 @@ namespace ReCrafted.Graphics
         /// <typeparam name="T">The value type.</typeparam>
         /// <param name="slot">The field slot.</param>
         /// <param name="value">The value.</param>
-        public virtual void SetValue<T>(int slot, T value) where T : struct { }
+        public abstract void SetValue<T>(int slot, T value) where T : struct;
 
         /// <summary>
         /// Draws mesh using this shader.
         /// </summary>
         /// <param name="mesh">The mesh.</param>
-        public virtual void Draw(Mesh mesh) { }
-        
+        public abstract void Draw(Mesh mesh);
+
         /// <summary>
         /// Disposes the shader.
         /// </summary>
-        public virtual void Dispose() { }
+        public abstract void Dispose();
 
         /// <summary>
         /// Loads shader from file.

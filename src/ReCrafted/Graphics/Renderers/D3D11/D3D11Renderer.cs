@@ -68,7 +68,15 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             
             base.Init();
         }
-        
+
+        /// <summary>
+        /// Ticks the renderer.
+        /// </summary>
+        public override void Tick()
+        {
+
+        }
+
         /// <summary>
         /// Draws new frame.
         /// </summary>

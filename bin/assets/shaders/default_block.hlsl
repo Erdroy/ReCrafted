@@ -24,5 +24,5 @@ VSOutput VSMain(in VSInput input)
 
 float4 PSMain(in VSOutput input) : SV_TARGET
 {
-	return saturate(input.color);
+	return input.color;
 }

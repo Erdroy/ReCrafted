@@ -1,5 +1,6 @@
 ﻿using System;
 using ReCrafted.Utilities;
+using SharpDX;
 using SharpDX.Direct3D11;
 using Buffer = SharpDX.Direct3D11.Buffer;
 
@@ -90,6 +91,33 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             }
 
             VertexBufferBinding = new VertexBufferBinding(VertexBuffer, GetVertexStride(), 0);
+        }
+
+        /// <summary>
+        /// Sets colors array.
+        /// </summary>
+        /// <param name="colors">The colors array.</param>
+        public override void SetColors(Color[] colors)
+        {
+            Colors = colors;
+        }
+
+        /// <summary>
+        /// Sets the vertices array.
+        /// </summary>
+        /// <param name="vertices">The vertices.</param>
+        public override void SetVertices(Vector3[] vertices)
+        {
+            Vertices = vertices;
+        }
+
+        /// <summary>
+        /// Set UVs array.
+        /// </summary>
+        /// <param name="uvs">The UVs array.</param>
+        public override void SetUVs(Vector2[] uvs)
+        {
+            UVs = uvs;
         }
 
         /// <summary>

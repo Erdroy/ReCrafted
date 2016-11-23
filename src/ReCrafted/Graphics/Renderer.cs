@@ -9,7 +9,7 @@ namespace ReCrafted.Graphics
     /// <summary>
     /// Renderer class.
     /// </summary>
-    public class Renderer : IDisposable, ITickable
+    public abstract class Renderer : IDisposable, ITickable
     {
         /// <summary>
         /// The renderer instance.
@@ -42,30 +42,30 @@ namespace ReCrafted.Graphics
         /// <summary>
         /// Ticks the renderer.
         /// </summary>
-        public virtual void Tick() { }
-        
+        public abstract void Tick();
+
         /// <summary>
         /// Draws new frame.
         /// </summary>
-        public virtual void Draw() { }
+        public abstract void Draw();
 
         /// <summary>
         /// Reizes the targets.
         /// </summary>
         /// <param name="width">Width</param>
         /// <param name="height">Height</param>
-        public virtual void Resize(int width, int height) { }
+        public abstract void Resize(int width, int height);
 
         /// <summary>
         /// Sets rasterizer state.
         /// </summary>
         /// <param name="state">The state.</param>
-        public virtual void SetRasterizerState(RasterizerStates state) { }
+        public abstract void SetRasterizerState(RasterizerStates state);
 
         /// <summary>
         /// Dispose the renderer.
         /// </summary>
-        public virtual void Dispose() { }
+        public abstract void Dispose();
 
         /// <summary>
         /// Creates renderer.

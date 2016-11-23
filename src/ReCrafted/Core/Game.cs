@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Windows.Forms;
 using ReCrafted.Core.Localization;
 using ReCrafted.Graphics;
 using ReCrafted.Logic;
@@ -51,7 +52,7 @@ namespace ReCrafted.Core
 
             Form = new RenderForm
             {
-                Text = string.Format(Locale.Strings.GameTitle, GameInfo.Current.BuildName, GameInfo.Current.BuildNumber, "dev")
+                Text = string.Format(Locale.Strings.GameTitle, GameInfo.Current.BuildName, GameInfo.Current.BuildNumber)
             };
 
             Form.ResizeEnd += Form_ResizeEnd;
@@ -65,6 +66,8 @@ namespace ReCrafted.Core
             
             Time.StartupTime = DateTime.Now;
             Time.SimulationDeltaTime = 1.0f / 60.0f; // 60 sps
+
+            Form.WindowState = FormWindowState.Maximized;
 
             // run the game
             RenderLoop.Run(Form, Loop, true);

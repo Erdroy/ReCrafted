@@ -39,7 +39,7 @@ namespace ReCrafted.Logic
             _camera = new Camera
             {
                 BackgroundColor = Color.CornflowerBlue,
-                Position = new Vector3(1.0f, 4.0f, -5.0f),
+                Position = new Vector3(0.0f, 2.0f, -10.0f),
                 FreeLook = true
             };
 

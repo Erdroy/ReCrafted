@@ -1,21 +1,34 @@
 ﻿using System;
+using ReCrafted.Graphics.Renderers.D3D11;
+using ReCrafted.Utilities;
 
 namespace ReCrafted.Graphics
 {
-    public class Texture2D : IDisposable
+    public abstract class Texture2D : IDisposable
     {
         protected Texture2D() { }
 
-        public virtual void Dispose() { }
+        protected abstract void LoadFromFile(string file);
 
+        public abstract void Dispose();
+        
         public static Texture2D New(int width, int height)
         {
-            return null;
+            throw new ReCraftedException("Not implemented!"); // TODO: Implement Texture2D::New
         }
 
         public static Texture2D FromFile(string file)
         {
-            return null;
+            if (Renderer.RendererApi == RendererApi.D3D11)
+            {
+                var d3D11Texture = new D3D11Texture2D();
+                d3D11Texture.LoadFromFile(file);
+                return d3D11Texture;
+            }
+
+            // TODO: Implement renderers
+
+            throw new ReCraftedException("Invalid RendererApi!");
         }
 
         public string Name { get; set; }

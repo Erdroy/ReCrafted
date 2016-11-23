@@ -9,7 +9,7 @@ namespace ReCrafted.Voxels
     /// <summary>
     /// VoxelChunk class.
     /// </summary>
-    public class VoxelChunk : IDisposable, IRendererComponent
+    public sealed class VoxelChunk : IDisposable, IRendererComponent
     {
         /// <summary>
         /// The block size.
@@ -17,7 +17,7 @@ namespace ReCrafted.Voxels
         public const float BlockSize = 1.0f;
 
         private Mesh _mesh;
-        private byte[,,] _voxels;
+        private ushort[,,] _voxels;
         
         /// <summary>
         /// Init the chunk.
@@ -25,7 +25,7 @@ namespace ReCrafted.Voxels
         public void Init()
         {
             _mesh = Mesh.Create();
-            _voxels = new byte[16,256,16];
+            _voxels = new ushort[16,256,16];
 
             var random = new Random();
 
@@ -41,7 +41,7 @@ namespace ReCrafted.Voxels
                         }
                         else if (y < 4)
                         {
-                            _voxels[x, y, z] = random.Next(0, 3) == 1 ? (byte)1 : (byte)0;
+                            _voxels[x, y, z] = random.Next(0, 3) == 1 ? (ushort)1 : (ushort)0;
                         }
                         else
                         {
@@ -50,8 +50,6 @@ namespace ReCrafted.Voxels
                     }
                 }
             }
-            
-            UpdateMesh();
         }
 
         /// <summary>
@@ -69,13 +67,13 @@ namespace ReCrafted.Voxels
             if (_mesh.Vertices.Length == 0)
                 return;
 
-            var wvp = Matrix.Translation(Position) * Camera.Current.ViewProjectionMatrix;
+            var wvp = Matrix.Translation(new Vector3(Position.X, Position.Y, Position.Z)) * Camera.Current.ViewProjectionMatrix;
             wvp.Transpose();
 
             VoxelAssets.DefaultShader.SetValue("WVP", wvp);
             VoxelAssets.DefaultShader.Draw(_mesh);
         }
-
+        
         /// <summary>
         /// Dispose the chunk.
         /// </summary>
@@ -83,9 +81,11 @@ namespace ReCrafted.Voxels
         {
             _mesh.Dispose();
         }
-
-        // private
-        private void UpdateMesh()
+        
+        /// <summary>
+        /// Update the chunk's mesh.
+        /// </summary>
+        public void UpdateMesh()
         {
             var vertices = new List<Vector3>();
             var indices = new List<uint>();
@@ -103,17 +103,21 @@ namespace ReCrafted.Voxels
                             continue;
 
                         var origin = new Vector3(x, y, z);
+                        
+                        if(!BlockExists(x-1, y, z))
+                            VoxelMeshHelper.SetupFace(origin + new Vector3(0.0f, 0.0f, 0.0f), Vector3.Up * BlockSize, Vector3.ForwardLH * BlockSize, false, vertices, uvs, indices);
+                        if (!BlockExists(x+1, y, z))
+                            VoxelMeshHelper.SetupFace(origin + new Vector3(BlockSize, 0.0f, 0.0f), Vector3.Up * BlockSize, Vector3.ForwardLH * BlockSize, true, vertices, uvs, indices);
 
-                        // TODO: check block visibility
+                        if (!BlockExists(x, y-1, z))
+                            VoxelMeshHelper.SetupFace(origin + new Vector3(0.0f, 0.0f, 0.0f), Vector3.ForwardLH * BlockSize, Vector3.Right * BlockSize, false, vertices, uvs, indices);
+                        if (!BlockExists(x, y+1, z))
+                            VoxelMeshHelper.SetupFace(origin + new Vector3(0.0f, BlockSize, 0.0f), Vector3.ForwardLH * BlockSize, Vector3.Right * BlockSize, true, vertices, uvs, indices);
 
-                        VoxelMeshHelper.SetupFace(origin + new Vector3(0.0f, 0.0f, 0.0f), Vector3.Up * BlockSize, Vector3.ForwardLH * BlockSize, false, vertices, uvs, indices);
-                        VoxelMeshHelper.SetupFace(origin + new Vector3(BlockSize, 0.0f, 0.0f), Vector3.Up * BlockSize, Vector3.ForwardLH * BlockSize, true, vertices, uvs, indices);
-
-                        VoxelMeshHelper.SetupFace(origin + new Vector3(0.0f, 0.0f, 0.0f), Vector3.ForwardLH * BlockSize, Vector3.Right * BlockSize, false, vertices, uvs, indices);
-                        VoxelMeshHelper.SetupFace(origin + new Vector3(0.0f, BlockSize, 0.0f), Vector3.ForwardLH * BlockSize, Vector3.Right * BlockSize, true, vertices, uvs, indices);
-
-                        VoxelMeshHelper.SetupFace(origin + new Vector3(0.0f, 0.0f, 0.0f), Vector3.Up * BlockSize, Vector3.Right * BlockSize, true, vertices, uvs, indices);
-                        VoxelMeshHelper.SetupFace(origin + new Vector3(0.0f, 0.0f, BlockSize), Vector3.Up * BlockSize, Vector3.Right * BlockSize, false, vertices, uvs, indices);
+                        if (!BlockExists(x, y, z-1))
+                            VoxelMeshHelper.SetupFace(origin + new Vector3(0.0f, 0.0f, 0.0f), Vector3.Up * BlockSize, Vector3.Right * BlockSize, true, vertices, uvs, indices);
+                        if (!BlockExists(x, y, z+1))
+                            VoxelMeshHelper.SetupFace(origin + new Vector3(0.0f, 0.0f, BlockSize), Vector3.Up * BlockSize, Vector3.Right * BlockSize, false, vertices, uvs, indices);
                     }
                 }
             }
@@ -126,10 +130,32 @@ namespace ReCrafted.Voxels
                 _mesh.ApplyChanges();
             }
         }
+
+        // private
+        private bool BlockExists(int x, int y, int z)
+        {
+            if (y >= 256 || y < 0)
+                return false;
+
+            if (x < 0 || z < 0 || x >= 16 || z >= 16)
+                return false; // TODO: Check in the neigh chunk
+
+            return _voxels[x, y, z] != 0;
+        }
         
         /// <summary>
         /// The Chunk position.
         /// </summary>
-        public Vector3 Position { get; set; }
+        public Int3 Position { get; set; }
+
+        /// <summary>
+        /// Is this chunk loaded?
+        /// </summary>
+        public bool IsLoaded { get; set; }
+
+        /// <summary>
+        /// Is this chunk visible?
+        /// </summary>
+        public bool IsVisible { get; set; }
     }
 }
