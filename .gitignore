@@ -1,0 +1,7 @@
+*.exe
+bin/*.dll
+*.pdb
+*.xml
+src/ReCrafted/.vs/
+src/ReCrafted/obj/
+src/tools/ReCrafted.VersionBuilder/obj/
