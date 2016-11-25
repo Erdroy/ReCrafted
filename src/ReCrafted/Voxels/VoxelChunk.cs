@@ -70,6 +70,9 @@ namespace ReCrafted.Voxels
             var wvp = Matrix.Translation(new Vector3(Position.X, Position.Y, Position.Z)) * Camera.Current.ViewProjectionMatrix;
             wvp.Transpose();
 
+            VoxelAssets.DefaultSampler.Apply(0);
+            VoxelAssets.DefaultShader.SetTexture(0, VoxelAssets.DefaultAtlas);
+
             VoxelAssets.DefaultShader.SetValue("WVP", wvp);
             VoxelAssets.DefaultShader.Draw(_mesh);
         }
@@ -124,6 +127,7 @@ namespace ReCrafted.Voxels
 
             _mesh.SetVertices(vertices.ToArray());
             _mesh.SetIndices(indices.ToArray());
+            _mesh.SetUVs(uvs.ToArray());
 
             if (vertices.Count > 0)
             {

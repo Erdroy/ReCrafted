@@ -38,6 +38,20 @@ namespace ReCrafted.Graphics
         public abstract void SetValue<T>(int slot, T value) where T : struct;
 
         /// <summary>
+        /// Set texture at slot.
+        /// </summary>
+        /// <param name="slot">The slot.</param>
+        /// <param name="texture">The texture.</param>
+        public abstract void SetTexture(int slot, Texture2D texture);
+
+        /// <summary>
+        /// Set sampler at slot.
+        /// </summary>
+        /// <param name="slot">The slot.</param>
+        /// <param name="sampler">The sampler.</param>
+        public abstract void SetSampler(int slot, Sampler sampler);
+
+        /// <summary>
         /// Draws mesh using this shader.
         /// </summary>
         /// <param name="mesh">The mesh.</param>

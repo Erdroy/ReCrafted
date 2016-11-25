@@ -134,6 +134,28 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         }
 
         /// <summary>
+        /// Set texture at slot.
+        /// </summary>
+        /// <param name="slot">The slot.</param>
+        /// <param name="texture">The texture.</param>
+        public override void SetTexture(int slot, Texture2D texture)
+        {
+            var deviceContext = D3D11Renderer.GetDeviceContext();
+            deviceContext.PixelShader.SetShaderResource(slot, ((D3D11Texture2D)texture).ResourceView);
+        }
+
+        /// <summary>
+        /// Set sampler at slot.
+        /// </summary>
+        /// <param name="slot">The slot.</param>
+        /// <param name="sampler">The sampler.</param>
+        public override void SetSampler(int slot, Sampler sampler)
+        {
+            var deviceContext = D3D11Renderer.GetDeviceContext();
+            deviceContext.PixelShader.SetSampler(slot, ((D3D11Sampler)sampler).SamplerState);
+        }
+
+        /// <summary>
         /// Draws mesh using this shader.
         /// </summary>
         /// <param name="mesh">The mesh.</param>

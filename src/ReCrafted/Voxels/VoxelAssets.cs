@@ -17,6 +17,8 @@ namespace ReCrafted.Voxels
             ColorShader = Shader.FromFile("color");
 
             DefaultAtlas = Texture2D.FromFile("assets/textures/block_atlas.png");
+
+            DefaultSampler = Sampler.Create(Sampler.Type.AnisoClamped);
         }
 
         /// <summary>
@@ -43,5 +45,10 @@ namespace ReCrafted.Voxels
         /// Default blocks atlas.
         /// </summary>
         public static Texture2D DefaultAtlas { get; set; }
+
+        /// <summary>
+        /// Default sampler state.
+        /// </summary>
+        public static Sampler DefaultSampler { get; set; }
     }
 }

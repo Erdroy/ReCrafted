@@ -26,13 +26,18 @@
             "VertexShader": "VSMain",
             "PixelShader": "PSMain",
             "ComputeShader": "",
-            "Profile" :  "5_0", 
+            "Profile" :  "5_0",
 
             "VertexLayoutInputs": [
                 {
                     "InputName": "position",
                     "InputType": "float3",
                     "InputSignature": "POSITION"
+                },
+                {
+                    "InputName": "texcoord",
+                    "InputType": "float2",
+                    "InputSignature": "TEXCOORD"
                 }
             ]
         }
