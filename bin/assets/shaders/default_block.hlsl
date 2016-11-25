@@ -30,5 +30,5 @@ VSOutput VSMain(in VSInput input)
 
 float4 PSMain(in VSOutput input) : SV_TARGET
 {
-	return m_atlas.Sample(m_sampler, input.texcoord);
+	return m_atlas.Sample(m_sampler, input.texcoord) * input.color;
 }

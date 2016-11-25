@@ -20,7 +20,7 @@ namespace ReCrafted.Voxels
 
             DefaultAtlas = Texture2D.FromFile("assets/textures/block_atlas.png");
 
-            DefaultSampler = Sampler.Create(Sampler.Type.AnisoClamped);
+            DefaultSampler = Sampler.Create(Sampler.Type.PointClamped);
         }
 
         /// <summary>

@@ -17,10 +17,12 @@ namespace ReCrafted.Voxels
             vertices.Add(origin + up + right);
             vertices.Add(origin + right);
 
+            var size = 1/(512.0f/16.0f);
+
             uVs.Add(new Vector2(0, 0));
-            uVs.Add(new Vector2(0, 1));
-            uVs.Add(new Vector2(1, 1));
-            uVs.Add(new Vector2(1, 0));
+            uVs.Add(new Vector2(0, size));
+            uVs.Add(new Vector2(size, size));
+            uVs.Add(new Vector2(size, 0));
 
             if (isReversed)
             {
