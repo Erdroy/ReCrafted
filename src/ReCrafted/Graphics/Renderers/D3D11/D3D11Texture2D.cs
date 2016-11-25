@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
+using System.Drawing;
 using System.Drawing.Imaging;
 using SharpDX.Direct3D11;
 

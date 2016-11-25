@@ -1,4 +1,5 @@
-﻿
+﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
 using System;
 using SharpDX.Direct3D11;
 

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
+using System.Collections.Generic;
 using SharpDX;
 
 namespace ReCrafted.Voxels

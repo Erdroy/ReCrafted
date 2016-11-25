@@ -1,4 +1,6 @@
-﻿namespace ReCrafted.Core.Localization
+﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
+namespace ReCrafted.Core.Localization
 {
     /// <summary>
     /// LocaleStrings base class.

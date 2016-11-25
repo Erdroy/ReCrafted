@@ -1,4 +1,6 @@
-﻿using ReCrafted.Core;
+﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
+using ReCrafted.Core;
 
 namespace ReCrafted.Graphics
 {

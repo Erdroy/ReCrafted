@@ -1,4 +1,6 @@
-﻿namespace ReCrafted.Graphics
+﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
+namespace ReCrafted.Graphics
 {
     /// <summary>
     /// RendererApi enum.

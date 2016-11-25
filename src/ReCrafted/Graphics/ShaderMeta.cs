@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
+using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using ReCrafted.Utilities;

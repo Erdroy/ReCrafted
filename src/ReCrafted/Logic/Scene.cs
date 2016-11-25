@@ -1,4 +1,6 @@
-﻿using System;
+﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
+using System;
 using ReCrafted.Core;
 using ReCrafted.Graphics;
 using ReCrafted.Voxels;

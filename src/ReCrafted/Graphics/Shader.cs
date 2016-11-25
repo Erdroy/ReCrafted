@@ -1,4 +1,5 @@
-﻿
+﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
 using System;
 using ReCrafted.Graphics.Renderers.D3D11;
 using ReCrafted.Utilities;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
+using System;
 using System.Collections.Generic;
 using ReCrafted.Utilities;
 using SharpDX;

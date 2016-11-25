@@ -1,4 +1,6 @@
-﻿using SharpDX;
+﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
+using SharpDX;
 
 namespace ReCrafted.Logic
 {

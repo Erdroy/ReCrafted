@@ -1,4 +1,6 @@
-﻿using SharpDX.DXGI;
+﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
+using SharpDX.DXGI;
 
 namespace ReCrafted.Graphics.Renderers.D3D11
 {

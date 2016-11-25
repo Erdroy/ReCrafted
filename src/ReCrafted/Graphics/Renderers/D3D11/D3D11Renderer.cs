@@ -1,4 +1,6 @@
-﻿using ReCrafted.Core;
+﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
+using ReCrafted.Core;
 using ReCrafted.Logic;
 using ReCrafted.Utilities;
 using SharpDX.Direct3D;
