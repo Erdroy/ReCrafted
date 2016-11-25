@@ -6,11 +6,25 @@ using SharpDX.Direct3D11;
 
 namespace ReCrafted.Graphics.Renderers.D3D11
 {
+    /// <summary>
+    /// D3D11Texture2D class.
+    /// </summary>
     internal sealed class D3D11Texture2D : Texture2D
     {
+        /// <summary>
+        /// Texture2D
+        /// </summary>
         public SharpDX.Direct3D11.Texture2D Texture2D;
-        public ShaderResourceView ResourceView;
 
+        /// <summary>
+        /// ResourceView
+        /// </summary>
+        public ShaderResourceView ResourceView;
+        
+        /// <summary>
+        /// Load texture from bitmap.
+        /// </summary>
+        /// <param name="bitmap">The bitmap.</param>
         protected override void Load(Bitmap bitmap)
         {
             var stride = bitmap.Width * 4;
@@ -40,12 +54,19 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             }
         }
 
+        /// <summary>
+        /// Apply the texture int the current shader at given slot.
+        /// </summary>
+        /// <param name="slot">The slot.</param>
         public override void Apply(int slot)
         {
             var deviceContext = D3D11Renderer.GetDeviceContext();
             deviceContext.PixelShader.SetShaderResource(slot, ResourceView);
         }
 
+        /// <summary>
+        /// Dispose the texture.
+        /// </summary>
         public override void Dispose()
         {
             Texture2D?.Dispose();

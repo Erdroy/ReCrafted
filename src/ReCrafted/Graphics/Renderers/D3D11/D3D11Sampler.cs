@@ -5,12 +5,23 @@ using SharpDX.Direct3D11;
 
 namespace ReCrafted.Graphics.Renderers.D3D11
 {
+    /// <summary>
+    /// D3D11Sampler class.
+    /// </summary>
     internal sealed class D3D11Sampler : Sampler
     {
         private static SamplerState _lastSamplerState;
 
+        /// <summary>
+        /// Sampler state.
+        /// </summary>
         public SamplerState SamplerState;
 
+        /// <summary>
+        /// Initialize sampler.
+        /// </summary>
+        /// <param name="type">The sampler type.</param>
+        /// <param name="anisoLevel">The anisotropic level.</param>
         protected override void Init(Type type, int anisoLevel)
         {
             var device = D3D11Renderer.GetDevice();
@@ -127,6 +138,10 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             SamplerState = new SamplerState(device, desc);
         }
 
+        /// <summary>
+        /// Apply the sampler.
+        /// </summary>
+        /// <param name="slot">The slot.</param>
         public override void Apply(int slot)
         {
             if (_lastSamplerState == SamplerState)
@@ -138,6 +153,9 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             deviceContext.PixelShader.SetSampler(slot, SamplerState);
         }
 
+        /// <summary>
+        /// Dispose the sampler.
+        /// </summary>
         public override void Dispose()
         {
             
