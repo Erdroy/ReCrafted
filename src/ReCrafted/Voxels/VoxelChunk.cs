@@ -112,6 +112,13 @@ namespace ReCrafted.Voxels
         /// </summary>
         public void UpdateMesh()
         {
+            // clear
+            foreach (var mesh in _meshes)
+            {
+                mesh.Value.Dispose();
+            }
+            _meshes.Clear();
+
             var blocksVertices = new Dictionary<ushort, List<Vector3>>();
             var blocksIndices = new Dictionary<ushort, List<uint>>();
             var blocksUvs = new Dictionary<ushort, List<Vector2>>();
@@ -177,6 +184,38 @@ namespace ReCrafted.Voxels
 
                 _meshes.Add(vertices.Key, mesh);
             }
+        }
+
+        /// <summary>
+        /// Set block at given coordinates.
+        /// This will rebuild the mesh!
+        /// </summary>
+        /// <param name="block">The block to be set, 0 - none(air, remove the block).</param>
+        /// <param name="x">The x coordinate component.</param>
+        /// <param name="y">The y coordinate component.</param>
+        /// <param name="z">The z coordinate component.</param>
+        public void SetBlock(ushort block, int x, int y, int z)
+        {
+            if (y >= 256 || y < 0 || x < 0 || z < 0 || x >= 16 || z >= 16)
+                return;
+
+            _voxels[x, y, z] = block;
+            UpdateMesh();
+        }
+
+        /// <summary>
+        /// Get block from given coordinates.
+        /// </summary>
+        /// <param name="x">The x coordinate component.</param>
+        /// <param name="y">The y coordinate component.</param>
+        /// <param name="z">The z coordinate component.</param>
+        /// <returns>The block(0 when none - air).</returns>
+        public ushort GetBlock(int x, int y, int z)
+        {
+            if (y >= 256 || y < 0 || x < 0 || z < 0 || x >= 16 || z >= 16)
+                return 0;
+
+            return _voxels[x, y, z];
         }
 
         // private
