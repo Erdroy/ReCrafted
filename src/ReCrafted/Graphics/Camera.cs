@@ -17,7 +17,7 @@ namespace ReCrafted.Graphics
         /// </summary>
         public static Camera Current;
 
-        private readonly Vector3[] _filtering = new Vector3[3];
+        private readonly Vector3[] _filtering = new Vector3[2];
         private int _filteringStep;
 
         private float _aspectRatio;
@@ -146,11 +146,11 @@ namespace ReCrafted.Graphics
             _filtering[_filteringStep] = new Vector3(delta.X, delta.Y, 0.0f);
             _filteringStep++;
 
-            if (_filteringStep == 3)
+            if (_filteringStep == 2)
                 _filteringStep = 0;
 
             // Calculate avg. mouse delta
-            var mouseDelta = (_filtering[0] + _filtering[1] + _filtering[2]) / new Vector3(3.0f, 3.0f, 1.0f);
+            var mouseDelta = (_filtering[0] + _filtering[1]) / new Vector3(2.0f, 2.0f, 1.0f);
 
             // acceleration
             var accel = mouseDelta + _lastDelta;

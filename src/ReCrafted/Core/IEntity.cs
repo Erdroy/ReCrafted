@@ -2,7 +2,7 @@
 
 using System;
 
-namespace ReCrafted.Logic
+namespace ReCrafted.Core
 {
     public interface IEntity : IDisposable
     {

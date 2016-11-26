@@ -2,7 +2,9 @@
 
 using System.Drawing;
 using System.Drawing.Imaging;
+using SharpDX;
 using SharpDX.Direct3D11;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace ReCrafted.Graphics.Renderers.D3D11
 {
@@ -28,7 +30,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         protected override void Load(Bitmap bitmap)
         {
             var stride = bitmap.Width * 4;
-            using (var buffer = new SharpDX.DataStream(bitmap.Height*stride, true, true))
+            using (var buffer = new DataStream(bitmap.Height*stride, true, true))
             {
                 var lockedBits = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), 
                     ImageLockMode.ReadOnly,
@@ -41,16 +43,26 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                         Width = bitmap.Width,
                         Height = bitmap.Height,
                         ArraySize = 1,
-                        BindFlags = BindFlags.ShaderResource,
-                        Usage = ResourceUsage.Immutable,
+                        BindFlags = BindFlags.ShaderResource | BindFlags.RenderTarget,
+                        Usage = ResourceUsage.Default,
                         CpuAccessFlags = CpuAccessFlags.None,
-                        Format = SharpDX.DXGI.Format.R8G8B8A8_UNorm,
+                        Format = SharpDX.DXGI.Format.B8G8R8A8_UNorm,
                         MipLevels = 1,
-                        OptionFlags = ResourceOptionFlags.None,
+                        OptionFlags = ResourceOptionFlags.GenerateMipMaps,
                         SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0),
-                    }, new SharpDX.DataRectangle(buffer.DataPointer, stride));
+                    }, new DataRectangle(buffer.DataPointer, stride), new DataRectangle());
 
-                ResourceView = new ShaderResourceView(D3D11Renderer.GetDevice(), Texture2D);
+                ResourceView = new ShaderResourceView(D3D11Renderer.GetDevice(), Texture2D/*, new ShaderResourceViewDescription
+                {
+                    Dimension = ShaderResourceViewDimension.Texture2D,
+                    Texture2D = new ShaderResourceViewDescription.Texture2DResource
+                    {
+                        MipLevels = 1,
+                        MostDetailedMip = 0
+                    }
+                }*/);
+
+                //D3D11Renderer.GetDeviceContext().GenerateMips(ResourceView);
             }
         }
 

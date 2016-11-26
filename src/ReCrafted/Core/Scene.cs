@@ -1,12 +1,12 @@
 ﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
 
 using System;
-using ReCrafted.Core;
 using ReCrafted.Graphics;
+using ReCrafted.Utilities;
 using ReCrafted.Voxels;
 using SharpDX;
 
-namespace ReCrafted.Logic
+namespace ReCrafted.Core
 {
     /// <summary>
     /// Scene class.
@@ -40,9 +40,10 @@ namespace ReCrafted.Logic
             // initialize camera
             _camera = new Camera
             {
-                BackgroundColor = Color.CornflowerBlue,
+                BackgroundColor = new Color(25, 25, 25, 255),
                 Position = new Vector3(0.0f, 2.0f, -10.0f),
-                FreeLook = true
+                FreeLook = true,
+                FieldOfView = 0.85f
             };
 
             _camera.SetAsCurrent();

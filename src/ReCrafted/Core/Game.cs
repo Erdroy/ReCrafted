@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using ReCrafted.Core.Localization;
 using ReCrafted.Graphics;
-using ReCrafted.Logic;
 using SharpDX.Windows;
 
 namespace ReCrafted.Core

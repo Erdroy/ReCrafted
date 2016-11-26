@@ -99,10 +99,10 @@
     <Compile Include="Graphics\Vertex.cs" />
     <Compile Include="Graphics\Vertex2.cs" />
     <Compile Include="Graphics\Vertex3.cs" />
-    <Compile Include="Logic\Entity.cs" />
-    <Compile Include="Logic\EntityPool.cs" />
-    <Compile Include="Logic\IEntity.cs" />
-    <Compile Include="Logic\Scene.cs" />
+    <Compile Include="Core\Entity.cs" />
+    <Compile Include="Core\EntityPool.cs" />
+    <Compile Include="Core\IEntity.cs" />
+    <Compile Include="Core\Scene.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\IRunnable.cs" />
@@ -110,8 +110,10 @@
     <Compile Include="Graphics\Display.cs" />
     <Compile Include="Graphics\Renderer.cs" />
     <Compile Include="Graphics\RendererApi.cs" />
+    <Compile Include="Utilities\ReCraftedMath.cs" />
     <Compile Include="Utilities\ReCraftedException.cs" />
     <Compile Include="Voxels\VoxelAssets.cs" />
+    <Compile Include="Voxels\VoxelBlock.cs" />
     <Compile Include="Voxels\VoxelChunk.cs" />
     <Compile Include="Voxels\VoxelMeshHelper.cs" />
     <Compile Include="Voxels\VoxelWorld.cs" />
@@ -150,6 +152,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Game\" />
     <Folder Include="Graphics\Renderers\D3D12\" />
     <Folder Include="Graphics\Renderers\Vulcan\" />
     <Folder Include="Physics\" />

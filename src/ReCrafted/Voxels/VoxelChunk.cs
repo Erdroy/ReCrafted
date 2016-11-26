@@ -18,16 +18,16 @@ namespace ReCrafted.Voxels
         /// </summary>
         public const float BlockSize = 1.0f;
 
-        private Mesh _mesh;
-        private ushort[,,] _voxels;
+        private readonly Dictionary<ushort, Mesh> _meshes = new Dictionary<ushort, Mesh>();
         
+        private ushort[,,] _voxels;
+
         /// <summary>
         /// Init the chunk.
         /// </summary>
         public void Init()
         {
-            _mesh = Mesh.Create();
-            _voxels = new ushort[16,256,16];
+            _voxels = new ushort[16, 256, 16];
 
             var random = new Random();
 
@@ -39,11 +39,13 @@ namespace ReCrafted.Voxels
                     {
                         if (y == 0)
                         {
-                            _voxels[x, y, z] = 1;
+                            _voxels[x, y, z] = 5;
                         }
                         else if (y < 4)
                         {
-                            _voxels[x, y, z] = random.Next(0, 3) == 1 ? (ushort)1 : (ushort)0;
+                            var block = random.Next(0, 3) == 0 ? (ushort)1 : (ushort)2;
+
+                            _voxels[x, y, z] = random.Next(0, 3) == 1 ? block : (ushort)0;
                         }
                         else
                         {
@@ -66,17 +68,31 @@ namespace ReCrafted.Voxels
         /// </summary>
         public void Draw()
         {
-            if (_mesh.Vertices.Length == 0)
+            if (_meshes.Count == 0)
                 return;
 
             var wvp = Matrix.Translation(new Vector3(Position.X, Position.Y, Position.Z)) * Camera.Current.ViewProjectionMatrix;
             wvp.Transpose();
+            
+            foreach (var mesh in _meshes)
+            {
+                var block = VoxelAssets.Blocks[mesh.Key];
 
-            VoxelAssets.DefaultSampler.Apply(0);
-            VoxelAssets.DefaultShader.SetTexture(0, VoxelAssets.DefaultAtlas);
 
-            VoxelAssets.DefaultShader.SetValue("WVP", wvp);
-            VoxelAssets.DefaultShader.Draw(_mesh);
+                if (block.CustomShader == null)
+                {
+                    VoxelAssets.DefaultShader.SetValue("WVP", wvp);
+                }
+                else
+                {
+                    // TODO: Use of custom shader
+                }
+
+                block.Texture.Apply(0);
+                VoxelAssets.DefaultSampler.Apply(0);
+
+                VoxelAssets.DefaultShader.Draw(mesh.Value);
+            }
         }
         
         /// <summary>
@@ -84,7 +100,11 @@ namespace ReCrafted.Voxels
         /// </summary>
         public void Dispose()
         {
-            _mesh.Dispose();
+            foreach (var mesh in _meshes)
+            {
+                mesh.Value.Dispose();
+            }
+            _meshes.Clear();
         }
         
         /// <summary>
@@ -92,9 +112,9 @@ namespace ReCrafted.Voxels
         /// </summary>
         public void UpdateMesh()
         {
-            var vertices = new List<Vector3>();
-            var indices = new List<uint>();
-            var uvs = new List<Vector2>();
+            var blocksVertices = new Dictionary<ushort, List<Vector3>>();
+            var blocksIndices = new Dictionary<ushort, List<uint>>();
+            var blocksUvs = new Dictionary<ushort, List<Vector2>>();
 
             for (var z = 0; z < 16; z++)
             {
@@ -103,9 +123,20 @@ namespace ReCrafted.Voxels
                     for (var x = 0; x < 16; x++)
                     {
                         var block = _voxels[x, y, z];
-
+                        
                         if (block == 0)
                             continue;
+
+                        if (!blocksVertices.ContainsKey(block))
+                        {
+                            blocksVertices.Add(block, new List<Vector3>());
+                            blocksIndices.Add(block, new List<uint>());
+                            blocksUvs.Add(block, new List<Vector2>());
+                        }
+
+                        var vertices = blocksVertices[block];
+                        var indices = blocksIndices[block];
+                        var uvs = blocksUvs[block];
 
                         var origin = new Vector3(x, y, z);
                         
@@ -127,13 +158,24 @@ namespace ReCrafted.Voxels
                 }
             }
 
-            _mesh.SetVertices(vertices.ToArray());
-            _mesh.SetIndices(indices.ToArray());
-            _mesh.SetUVs(uvs.ToArray());
-
-            if (vertices.Count > 0)
+            foreach (var vertices in blocksVertices)
             {
-                _mesh.ApplyChanges();
+                var mesh = Mesh.Create();
+
+                var verts = vertices.Value.ToArray();
+                var indices = blocksIndices[vertices.Key].ToArray();
+                var uvs = blocksUvs[vertices.Key].ToArray();
+
+                mesh.SetVertices(verts);
+                mesh.SetIndices(indices);
+                mesh.SetUVs(uvs);
+
+                if (verts.Length > 0)
+                {
+                    mesh.ApplyChanges();
+                }
+
+                _meshes.Add(vertices.Key, mesh);
             }
         }
 

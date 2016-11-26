@@ -7,7 +7,6 @@ namespace ReCrafted.Voxels
 {
     public static class VoxelMeshHelper
     {
-
         public static void SetupFace(Vector3 origin, Vector3 up, Vector3 right, bool isReversed, ICollection<Vector3> vertices, ICollection<Vector2> uVs, ICollection<uint> triangles)
         {
             var index = (uint)vertices.Count;
@@ -16,13 +15,11 @@ namespace ReCrafted.Voxels
             vertices.Add(origin + up);
             vertices.Add(origin + up + right);
             vertices.Add(origin + right);
-
-            var size = 1/(512.0f/16.0f);
-
-            uVs.Add(new Vector2(0, 0));
-            uVs.Add(new Vector2(0, size));
-            uVs.Add(new Vector2(size, size));
-            uVs.Add(new Vector2(size, 0));
+            
+            uVs.Add(new Vector2(0.0f, 0.0f));
+            uVs.Add(new Vector2(0.0f, 1.0f));
+            uVs.Add(new Vector2(1.0f, 1.0f));
+            uVs.Add(new Vector2(1.0f, 0.0f));
 
             if (isReversed)
             {

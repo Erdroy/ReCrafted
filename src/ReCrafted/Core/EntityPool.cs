@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-namespace ReCrafted.Logic
+namespace ReCrafted.Core
 {
     /// <summary>
     /// EntityPool class.

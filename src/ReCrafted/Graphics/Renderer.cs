@@ -3,7 +3,6 @@
 using System;
 using ReCrafted.Core;
 using ReCrafted.Graphics.Renderers.D3D11;
-using ReCrafted.Logic;
 using ReCrafted.Utilities;
 
 namespace ReCrafted.Graphics

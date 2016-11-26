@@ -2,7 +2,7 @@
 
 using SharpDX;
 
-namespace ReCrafted.Logic
+namespace ReCrafted.Core
 {
     /// <summary>
     /// Entity class.
