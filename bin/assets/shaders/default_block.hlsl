@@ -24,7 +24,7 @@ VSOutput VSMain(in VSInput input)
 	VSOutput output = (VSOutput)0;
 	output.position = mul(float4(input.position, 1.0f), WVP);
 	output.texcoord = input.texcoord;
-	output.color = float4(input.position.y / 6, input.position.y / 6, input.position.y / 6, 1.0f);
+	output.color = float4(1.0f, 1.0f, 1.0f, 1.0f);
 	return output;
 }
 
