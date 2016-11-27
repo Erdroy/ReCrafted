@@ -2,7 +2,6 @@
 
 using System;
 using ReCrafted.Graphics;
-using ReCrafted.Utilities;
 using ReCrafted.Voxels;
 using SharpDX;
 

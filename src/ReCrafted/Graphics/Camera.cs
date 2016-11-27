@@ -102,6 +102,7 @@ namespace ReCrafted.Graphics
             return rotMatrix;
         }
 
+        // private
         private void UpdateMovement()
         {
             var rotMatrix = GetRotationMatrix();
@@ -130,15 +131,16 @@ namespace ReCrafted.Graphics
 
             // speed
             if (Input.IsKey(KeyCode.ShiftKey))
-                dir *= 6.0f;
+                dir *= 15.0f;
             else if (Input.IsKey(KeyCode.ControlKey))
                 dir *= 1.0f;
             else
-                dir *= 2.5f;
+                dir *= 6.0f;
 
             Position += dir * Time.DeltaTime;
         }
 
+        // private
         private void UpdateLook()
         {
             var cursorPos = Cursor.Position;
@@ -177,6 +179,7 @@ namespace ReCrafted.Graphics
             Cursor.Position = clientCenter;
         }
 
+        // private
         private static Quaternion CreateFromYawPitchRoll(float yaw, float pitch, float roll)
         {
             var rollOver2 = roll * 0.5f;

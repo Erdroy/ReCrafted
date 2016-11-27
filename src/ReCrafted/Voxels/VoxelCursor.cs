@@ -99,7 +99,7 @@ namespace ReCrafted.Voxels
 
             VoxelChunk = chunk;
             Normal = normal;
-
+            
             if (chunk == null) // null when not hit any block
                 return;
 

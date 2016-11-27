@@ -54,6 +54,12 @@ namespace ReCrafted.Voxels
                 Name = "bedrock",
                 Texture = Texture2D.FromFile("assets/textures/blocks/bedrock.png")
             });
+
+            AddBlock(6, new VoxelBlock
+            {
+                Name = "planks",
+                Texture = Texture2D.FromFile("assets/textures/blocks/planks.png")
+            });
         }
 
         /// <summary>
