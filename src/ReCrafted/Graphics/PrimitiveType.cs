@@ -8,6 +8,7 @@ namespace ReCrafted.Graphics
     public enum PrimitiveType
     {
         Unknown,
+        PointList,
         LineList,
         TriangleList,
         TriangleStrip

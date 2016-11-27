@@ -189,7 +189,11 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                 {
                     case PrimitiveType.Unknown:
                         throw new ReCraftedException("Cannot update the PrimitiveType because it is 'Unknown'.");
-                        
+
+                    case PrimitiveType.PointList:
+                        deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.PointList;
+                        break;
+
                     case PrimitiveType.LineList:
                         deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.LineList;
                         break;

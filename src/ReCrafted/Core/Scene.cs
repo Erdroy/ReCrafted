@@ -61,6 +61,9 @@ namespace ReCrafted.Core
             Camera.Current.Tick();
             Renderer.Instance.Tick();
 
+            // tick the voxel cursor
+            _voxelCursor.Tick();
+
             _voxelWorld.Tick();
             EntityPool.Tick();
         }

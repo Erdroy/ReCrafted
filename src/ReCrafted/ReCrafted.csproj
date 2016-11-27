@@ -140,6 +140,9 @@
     <None Include="..\..\bin\assets\shaders\color.json">
       <Link>assets\shaders\color.json</Link>
     </None>
+    <None Include="..\..\bin\assets\shaders\cursor.json">
+      <Link>assets\shaders\cursor.json</Link>
+    </None>
     <None Include="..\..\bin\assets\shaders\default_block.json">
       <Link>assets\shaders\default_block.json</Link>
     </None>
@@ -162,6 +165,9 @@
   <ItemGroup>
     <Content Include="..\..\bin\assets\shaders\color.hlsl">
       <Link>assets\shaders\color.hlsl</Link>
+    </Content>
+    <Content Include="..\..\bin\assets\shaders\cursor.hlsl">
+      <Link>assets\shaders\cursor.hlsl</Link>
     </Content>
     <Content Include="..\..\bin\assets\shaders\default_block.hlsl">
       <Link>assets\shaders\default_block.hlsl</Link>
