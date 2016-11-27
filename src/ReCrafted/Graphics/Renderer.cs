@@ -4,6 +4,7 @@ using System;
 using ReCrafted.Core;
 using ReCrafted.Graphics.Renderers.D3D11;
 using ReCrafted.Utilities;
+using SharpDX;
 
 namespace ReCrafted.Graphics
 {
@@ -68,6 +69,12 @@ namespace ReCrafted.Graphics
         /// </summary>
         /// <param name="enabled">Disable or enable the depth test?</param>
         public abstract void SetDepthTestState(bool enabled);
+
+        /// <summary>
+        /// Draw bounding box.
+        /// </summary>
+        /// <param name="bounds">The bouding box.</param>
+        public abstract void DrawBoundingBox(BoundingBox bounds);
 
         /// <summary>
         /// Dispose the renderer.

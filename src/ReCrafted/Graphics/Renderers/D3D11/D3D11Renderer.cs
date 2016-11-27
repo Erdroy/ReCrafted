@@ -2,6 +2,7 @@
 
 using ReCrafted.Core;
 using ReCrafted.Utilities;
+using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
@@ -29,6 +30,9 @@ namespace ReCrafted.Graphics.Renderers.D3D11
 
         private RasterizerState _wireframeRasterizerState;
         private RasterizerState _defaultRasterizerState;
+
+        private Shader _colorShader;
+        private Mesh _boundingBox;
 
         /// <summary>
         /// Initializes the renderer.
@@ -66,7 +70,92 @@ namespace ReCrafted.Graphics.Renderers.D3D11
 
             _wireframeRasterizerState = new RasterizerState(_device, rsd);
             _defaultRasterizerState = _device.ImmediateContext.Rasterizer.State;
-            
+
+            _colorShader = Shader.FromFile("color");
+
+            // create bounding box mesh
+            var bounds = new BoundingBox(Vector3.Zero, Vector3.One);
+            _boundingBox = Mesh.Create();
+            _boundingBox.SetVertices(new[]
+            {
+                bounds.Minimum,
+                bounds.Minimum + Vector3.ForwardLH,
+
+                bounds.Minimum,
+                bounds.Minimum + Vector3.Right,
+
+                bounds.Minimum,
+                bounds.Minimum + Vector3.Up,
+
+                bounds.Minimum + Vector3.Up,
+                bounds.Minimum + Vector3.Up + Vector3.ForwardLH,
+
+                bounds.Minimum + Vector3.Up,
+                bounds.Minimum + Vector3.Up + Vector3.Right,
+
+                bounds.Maximum,
+                bounds.Maximum - Vector3.Up,
+
+                bounds.Maximum,
+                bounds.Maximum - Vector3.ForwardLH,
+
+                bounds.Maximum,
+                bounds.Maximum - Vector3.Right,
+
+                bounds.Maximum - Vector3.ForwardLH,
+                bounds.Maximum - Vector3.Up - Vector3.ForwardLH,
+
+                bounds.Maximum - Vector3.Right,
+                bounds.Maximum - Vector3.Up - Vector3.Right,
+
+                bounds.Maximum - Vector3.Up,
+                bounds.Maximum - Vector3.Up - Vector3.ForwardLH,
+
+                bounds.Maximum - Vector3.Up,
+                bounds.Maximum - Vector3.Up - Vector3.Right,
+
+            });
+            _boundingBox.SetColors(new[]
+            {
+                Color.OrangeRed,
+                Color.OrangeRed,
+
+                Color.OrangeRed,
+                Color.OrangeRed,
+
+                Color.OrangeRed,
+                Color.OrangeRed,
+
+                Color.OrangeRed,
+                Color.OrangeRed,
+
+                Color.OrangeRed,
+                Color.OrangeRed,
+
+                Color.OrangeRed,
+                Color.OrangeRed,
+
+                Color.OrangeRed,
+                Color.OrangeRed,
+
+                Color.OrangeRed,
+                Color.OrangeRed,
+
+                Color.OrangeRed,
+                Color.OrangeRed,
+
+                Color.OrangeRed,
+                Color.OrangeRed,
+
+                Color.OrangeRed,
+                Color.OrangeRed,
+
+                Color.OrangeRed,
+                Color.OrangeRed,
+            });
+            _boundingBox.ApplyChanges();
+
+            _boundingBox.PrimitiveType = PrimitiveType.LineList;
             base.Init();
         }
 
@@ -178,6 +267,21 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         }
 
         /// <summary>
+        /// Draw bounding box.
+        /// </summary>
+        /// <param name="bounds">The bouding box.</param>
+        public override void DrawBoundingBox(BoundingBox bounds)
+        {
+            var scale = bounds.Maximum - bounds.Minimum;
+
+            var wvp = Matrix.Scaling(scale) * Camera.Current.ViewProjectionMatrix;
+            wvp.Transpose();
+            _colorShader.SetValue("WVP", wvp);
+            _colorShader.Draw(_boundingBox);
+
+        }
+
+        /// <summary>
         /// Dispose the renderer.
         /// </summary>
         public override void Dispose()
@@ -187,8 +291,9 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             _device?.Dispose();
             _finalRenderTarget?.Dispose();
             _swapChain?.Dispose();
+            _boundingBox?.Dispose();
         }
-        
+
         /// <summary>
         /// Gets device.
         /// </summary>
