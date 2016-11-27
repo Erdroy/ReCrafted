@@ -56,7 +56,7 @@ namespace ReCrafted.Voxels
                 _chunks[0].SetBlock(0, pos.X, pos.Y, pos.Z);
             }
 
-            if (Input.IsButtonDown(ButtonCode.Middle))
+            if (Input.IsButtonDown(ButtonCode.Right))
             {
                 var position = Camera.Current.Position + Camera.Current.Forward * 7;
                 var worldCoord = new Int3((int)position.X, (int)position.Y, (int)position.Z);
@@ -108,11 +108,12 @@ namespace ReCrafted.Voxels
         /// <param name="blockId">The Block id.</param>
         /// <param name="coord">Block coord id.</param>
         /// <param name="chunk">The hit VoxelChunk, null when no any blocks were hit.</param>
-        public void RaycastBlocks(Vector3 origin, Vector3 direction, int distance, out ushort blockId, out Int3 coord, out VoxelChunk chunk)
+        public void RaycastBlocks(Vector3 origin, Vector3 direction, int distance, out ushort blockId, out Int3 coord, out VoxelChunk chunk, out Vector3 normal)
         {
             blockId = 0;
             coord = Int3.Zero;
             chunk = null;
+            normal = Vector3.Zero;
 
             const float precision = 100.0f;
             
@@ -123,6 +124,8 @@ namespace ReCrafted.Voxels
                 var position = origin + direction * actualDistance;
 
                 var worldCoord = new Int3((int)position.X, (int)position.Y, (int)position.Z);
+
+                // TODO: World normal calculation
 
                 // TODO: Multi chunk
 

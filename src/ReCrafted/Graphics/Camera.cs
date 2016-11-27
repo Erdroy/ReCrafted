@@ -37,6 +37,7 @@ namespace ReCrafted.Graphics
 
             LookAcceleration = true;
             LookFiltering = true;
+            UseLook = true;
 
             Forward = Vector3.ForwardLH;
         }
@@ -57,25 +58,24 @@ namespace ReCrafted.Graphics
         {
             if (FreeLook)
             {
+                // update
                 UpdateMovement();
-                if (Input.IsButton(ButtonCode.Right))
+
+                if (UseLook)
                 {
-                    // update 
                     UpdateLook();
-                }
 
-                if (Input.IsButtonDown(ButtonCode.Right))
-                {
-                    _lastDelta = Vector3.Zero;
                     Cursor.Position = Game.Instance.Form.PointToScreen(
-                        new System.Drawing.Point(Game.Instance.Form.ClientSize.Width / 2, Game.Instance.Form.ClientSize.Height / 2));
-
+                        new System.Drawing.Point(Game.Instance.Form.ClientSize.Width/2,
+                            Game.Instance.Form.ClientSize.Height/2));
                     Cursor.Hide();
                 }
-                else if(Input.IsButtonUp(ButtonCode.Right))
+                else
+                {
                     Cursor.Show();
+                }
             }
-            
+
             UpdateMatrices();
         }
 
@@ -214,6 +214,12 @@ namespace ReCrafted.Graphics
         /// Make the look filtering enabled or disabled.
         /// </summary>
         public bool LookFiltering { get; set; }
+
+        /// <summary>
+        /// Can camera use look at the moment?
+        /// Default: true.
+        /// </summary>
+        public bool UseLook { get; set; }
 
         /// <summary>
         /// The far z plane.

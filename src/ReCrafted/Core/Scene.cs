@@ -47,7 +47,7 @@ namespace ReCrafted.Core
                 BackgroundColor = new Color(25, 25, 25, 255),
                 Position = new Vector3(0.0f, 2.0f, -10.0f),
                 FreeLook = true,
-                FieldOfView = 0.85f
+                FieldOfView = (float)Math.PI * 0.4f
             };
 
             _camera.SetAsCurrent();

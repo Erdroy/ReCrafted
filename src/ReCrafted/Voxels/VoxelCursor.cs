@@ -94,18 +94,19 @@ namespace ReCrafted.Voxels
             ushort blockId;
             Int3 blockCoords;
             VoxelChunk chunk;
-            VoxelWorld.Instance.RaycastBlocks(Camera.Current.Position, Camera.Current.Forward, MaximumDistance, out blockId, out blockCoords, out chunk);
+            Vector3 normal;
+            VoxelWorld.Instance.RaycastBlocks(Camera.Current.Position, Camera.Current.Forward, MaximumDistance, out blockId, out blockCoords, out chunk, out normal);
 
             VoxelChunk = chunk;
-            
-            if (chunk != null)
-            {
-                // we got hit!
+            Normal = normal;
 
-                var worldCoord = chunk.Position + blockCoords;
-                BlockCoords = blockCoords;
-                CursorPosition = (Vector3)worldCoord;
-            }
+            if (chunk == null) // null when not hit any block
+                return;
+
+            // we got hit!
+            var worldCoord = chunk.Position + blockCoords;
+            BlockCoords = blockCoords;
+            CursorPosition = (Vector3)worldCoord;
         }
         
         /// <summary>
@@ -138,6 +139,11 @@ namespace ReCrafted.Voxels
         /// The position of cursor.
         /// </summary>
         public Vector3 CursorPosition { get; set; }
+
+        /// <summary>
+        /// The normal of hit from raycast.
+        /// </summary>
+        public Vector3 Normal { get; set; }
 
         /// <summary>
         /// The hit block coords.

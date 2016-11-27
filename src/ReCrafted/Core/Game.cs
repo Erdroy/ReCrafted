@@ -119,6 +119,11 @@ namespace ReCrafted.Core
                 }
             }
 
+            if (Input.IsKeyDown(KeyCode.Escape))
+            {
+                Environment.Exit(0);
+            }
+
             _stopwatch.Start();
             
             Scene.Instance.Tick();
