@@ -19,6 +19,7 @@ namespace ReCrafted.Core
         public static Scene Instance;
 
         private VoxelWorld _voxelWorld;
+        private VoxelCursor _voxelCursor;
         private Camera _camera;
 
         /// <summary>
@@ -36,6 +37,9 @@ namespace ReCrafted.Core
         {
             _voxelWorld = new VoxelWorld();
             _voxelWorld.Init();
+
+            _voxelCursor = new VoxelCursor();
+            _voxelCursor.Init();
 
             // initialize camera
             _camera = new Camera
@@ -77,6 +81,8 @@ namespace ReCrafted.Core
         {
             _voxelWorld.Draw();
             EntityPool.Draw();
+
+            _voxelCursor.Draw();
         }
 
         /// <summary>

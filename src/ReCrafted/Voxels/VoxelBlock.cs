@@ -1,4 +1,5 @@
-﻿
+﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
 using ReCrafted.Graphics;
 
 namespace ReCrafted.Voxels

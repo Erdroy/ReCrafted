@@ -97,7 +97,8 @@
     <Compile Include="Graphics\ShaderMeta.cs" />
     <Compile Include="Graphics\Texture2D.cs" />
     <Compile Include="Graphics\Vertex.cs" />
-    <Compile Include="Graphics\Vertex2.cs" />
+    <Compile Include="Graphics\Vertex2Color.cs" />
+    <Compile Include="Graphics\Vertex2Uv.cs" />
     <Compile Include="Graphics\Vertex3.cs" />
     <Compile Include="Core\Entity.cs" />
     <Compile Include="Core\EntityPool.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Voxels\VoxelAssets.cs" />
     <Compile Include="Voxels\VoxelBlock.cs" />
     <Compile Include="Voxels\VoxelChunk.cs" />
+    <Compile Include="Voxels\VoxelCursor.cs" />
     <Compile Include="Voxels\VoxelMeshHelper.cs" />
     <Compile Include="Voxels\VoxelWorld.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

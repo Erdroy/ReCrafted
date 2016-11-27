@@ -64,6 +64,12 @@ namespace ReCrafted.Graphics
         public abstract void SetRasterizerState(RasterizerStates state);
 
         /// <summary>
+        /// Sets the depth test state.
+        /// </summary>
+        /// <param name="enabled">Disable or enable the depth test?</param>
+        public abstract void SetDepthTestState(bool enabled);
+
+        /// <summary>
         /// Dispose the renderer.
         /// </summary>
         public abstract void Dispose();

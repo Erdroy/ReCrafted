@@ -17,7 +17,7 @@ namespace ReCrafted.Graphics
         /// </summary>
         public static Camera Current;
 
-        private readonly Vector3[] _filtering = new Vector3[2];
+        private readonly Vector3[] _filtering = new Vector3[3];
         private int _filteringStep;
 
         private float _aspectRatio;
@@ -34,6 +34,9 @@ namespace ReCrafted.Graphics
             NearZPlane = 0.02f;
             FarZPlane = 1000.0f;
             FieldOfView = 0.75f;
+
+            LookAcceleration = true;
+            LookFiltering = true;
 
             Forward = Vector3.ForwardLH;
         }
@@ -141,19 +144,27 @@ namespace ReCrafted.Graphics
             var cursorPos = Cursor.Position;
             var clientCenter = Game.Instance.Form.PointToScreen(new System.Drawing.Point(Game.Instance.Form.ClientSize.Width / 2, Game.Instance.Form.ClientSize.Height / 2));
             var delta = new System.Drawing.Point(cursorPos.X - clientCenter.X, cursorPos.Y - clientCenter.Y);
-            
-            // Filtering
-            _filtering[_filteringStep] = new Vector3(delta.X, delta.Y, 0.0f);
-            _filteringStep++;
 
-            if (_filteringStep == 2)
-                _filteringStep = 0;
+            var mouseDelta = new Vector3(delta.X, delta.Y, 0.0f);
 
-            // Calculate avg. mouse delta
-            var mouseDelta = (_filtering[0] + _filtering[1]) / new Vector3(2.0f, 2.0f, 1.0f);
+            if (LookFiltering)
+            {
+                // Filtering
+                _filtering[_filteringStep] = new Vector3(delta.X, delta.Y, 0.0f);
+                _filteringStep++;
+
+                if (_filteringStep == 3)
+                    _filteringStep = 0;
+
+                // Calculate avg. mouse delta
+                mouseDelta = (_filtering[0] + _filtering[1] + _filtering[2]) / new Vector3(3.0f, 3.0f, 1.0f);
+            }
 
             // acceleration
-            var accel = mouseDelta + _lastDelta;
+            var accel = mouseDelta;
+
+            if (LookAcceleration)
+                accel += _lastDelta;
 
             _rotation += new Vector3(accel.X / 16.0f, accel.Y / 16.0f, 0.0f);
             _rotation.Y = MathUtil.Clamp(_rotation.Y, -89.0f, 89.0f);
@@ -193,6 +204,16 @@ namespace ReCrafted.Graphics
         /// as `clearing` color for render targets.
         /// </summary>
         public Color BackgroundColor { get; set; }
+
+        /// <summary>
+        /// Make the look acceleration enabled or disabled.
+        /// </summary>
+        public bool LookAcceleration { get; set; }
+
+        /// <summary>
+        /// Make the look filtering enabled or disabled.
+        /// </summary>
+        public bool LookFiltering { get; set; }
 
         /// <summary>
         /// The far z plane.

@@ -51,24 +51,40 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                 VertexBuffer = Buffer.Create(D3D11Renderer.GetDevice(), BindFlags.VertexBuffer, vertexes, vertexes.Length * Vertex3.SizeInBytes);
 
             }
+            else if (HasColors)
+            {
+                var vertexes = new Vertex2Color[Vertices.Length];
+
+                // build data
+                for (var i = 0; i < vertexes.Length; i++)
+                {
+                    vertexes[i] = new Vertex2Color
+                    {
+                        Vertice = Vertices[i],
+                        Color = Colors[i].ToVector4()
+                    };
+                }
+
+                VertexBuffer = Buffer.Create(D3D11Renderer.GetDevice(), BindFlags.VertexBuffer, vertexes, vertexes.Length * Vertex2Color.SizeInBytes);
+            }
             else if (HasUVs)
             {
                 if (UVs.Length != Vertices.Length)
                     throw new ReCraftedException($"There is invalid amount of UVs! UV count {UVs.Length} Vertice count {Vertices.Length}, they must match!");
 
-                var vertexes = new Vertex2[Vertices.Length];
+                var vertexes = new Vertex2Uv[Vertices.Length];
 
                 // build data
                 for (var i = 0; i < vertexes.Length; i++)
                 {
-                    vertexes[i] = new Vertex2
+                    vertexes[i] = new Vertex2Uv
                     {
                         Vertice = Vertices[i],
                         Uv = UVs[i]
                     };
                 }
 
-                VertexBuffer = Buffer.Create(D3D11Renderer.GetDevice(), BindFlags.VertexBuffer, vertexes, vertexes.Length * Vertex2.SizeInBytes);
+                VertexBuffer = Buffer.Create(D3D11Renderer.GetDevice(), BindFlags.VertexBuffer, vertexes, vertexes.Length * Vertex2Uv.SizeInBytes);
             }
             else
             {
@@ -133,7 +149,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                 return Vertex3.SizeInBytes;
             }
 
-            return HasUVs ? Vertex2.SizeInBytes : Vertex.SizeInBytes;
+            return HasUVs ? Vertex2Uv.SizeInBytes : HasColors ? Vertex2Color.SizeInBytes : Vertex.SizeInBytes;
         }
 
         /// <summary>

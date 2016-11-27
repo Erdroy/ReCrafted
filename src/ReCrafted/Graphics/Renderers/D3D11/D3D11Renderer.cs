@@ -91,7 +91,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
 
             _swapChain.Present(1, 0);
         }
-
+        
         /// <summary>
         /// Reizes the targets.
         /// </summary>
@@ -158,6 +158,22 @@ namespace ReCrafted.Graphics.Renderers.D3D11
 
                 default:
                     throw new ReCraftedException("Not implemented rasterizer state in current renderer.");
+            }
+        }
+
+        /// <summary>
+        /// Sets the depth test state.
+        /// </summary>
+        /// <param name="enabled">Disable or enable the depth test?</param>
+        public override void SetDepthTestState(bool enabled)
+        {
+            if (enabled)
+            {
+                _device.ImmediateContext.OutputMerger.SetTargets(_depthStencilView, _finalRenderTarget);
+            }
+            else
+            {
+                _device.ImmediateContext.OutputMerger.SetTargets(_finalRenderTarget);
             }
         }
 
