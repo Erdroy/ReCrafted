@@ -54,7 +54,6 @@ namespace ReCrafted.Voxels
                         }
 
                         // generate
-
                         if (y * 0.07f < Math.Sqrt(noise.GetValue(x + Position.X, 0, z + Position.Z)))
                             _voxels[x, y, z] = 2;
                     }
@@ -212,7 +211,7 @@ namespace ReCrafted.Voxels
             
             _voxels[x, y, z] = block;
         }
-
+        
         /// <summary>
         /// Get block from given coordinates.
         /// </summary>
@@ -491,7 +490,7 @@ namespace ReCrafted.Voxels
             {
                 return new[]
                 {
-                    NeighChunks[1]
+                    NeighChunks[3]
                 };
             }
 
@@ -502,7 +501,7 @@ namespace ReCrafted.Voxels
             {
                 return new[]
                 {
-                    NeighChunks[1]
+                    NeighChunks[5]
                 };
             }
 
@@ -513,7 +512,7 @@ namespace ReCrafted.Voxels
             {
                 return new[]
                 {
-                    NeighChunks[1]
+                    NeighChunks[7]
                 };
             }
 

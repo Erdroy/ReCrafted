@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ReCrafted.Core;
-using ReCrafted.Graphics;
 using SharpDX;
 
 namespace ReCrafted.Voxels
@@ -55,9 +54,9 @@ namespace ReCrafted.Voxels
             VoxelAssets.LoadAssets();
 
             // create chunks
-            for (var z = 0; z < 1; z++)
+            for (var z = 0; z < 10; z++)
             {
-                for (var x = 0; x < 1; x++)
+                for (var x = 0; x < 10; x++)
                 {
                     var chunk = new VoxelChunk
                     {
@@ -111,17 +110,35 @@ namespace ReCrafted.Voxels
             {
                 if (VoxelCursor.Instance.VoxelChunk != null)
                 {
-                    var pos = VoxelCursor.Instance.BlockCoords;
+                    var pos = VoxelCursor.Instance.CursorPosition;
                     var norm = VoxelCursor.Instance.Normal;
+                    pos += norm;
 
-                    pos += new Int3((int) (1*norm.X), (int) (1*norm.Y), (int) (1*norm.Z));
+                    var chunk = FindChunk(pos);
 
-                    if (VoxelCursor.Instance.VoxelChunk.GetBlock(pos.X, pos.Y, pos.Z) != 0)
+                    if (chunk == null)
                         return;
 
-                    VoxelCursor.Instance.VoxelChunk.SetBlock(6, pos.X, pos.Y, pos.Z);
+                    var blockCoord = new Int3((int)pos.X - chunk.Position.X, (int)pos.Y - chunk.Position.Y, (int)pos.Z - chunk.Position.Z);
+                    
+                    if (chunk.GetBlock(blockCoord.X, blockCoord.Y, blockCoord.Z) != 0)
+                        return;
+                    
+                    chunk.SetBlock(6, blockCoord.X, blockCoord.Y, blockCoord.Z);
+                    chunk.UpdateMesh();
 
-                    VoxelCursor.Instance.VoxelChunk.UpdateMesh();
+                    if (!VoxelChunk.IsOnEdge(blockCoord))
+                        return;
+
+                    // update neigh
+                    var chunks = VoxelCursor.Instance.VoxelChunk.GetEdgeNeighs(blockCoord);
+                    if (chunks != null)
+                    {
+                        foreach (var cchunk in chunks)
+                        {
+                            cchunk?.UpdateMesh();
+                        }
+                    }
                 }
             }
         }
@@ -140,15 +157,6 @@ namespace ReCrafted.Voxels
         {
             foreach (var chunk in _chunks)
                 chunk.Draw();
-
-            foreach (var chunk in _chunks)
-            {
-                var pos = (Vector3)chunk.Position;
-
-                Renderer.Instance.SetDepthTestState(false);
-                Renderer.Instance.DrawBoundingBox(new BoundingBox(pos, pos + new Vector3(ChunkSize, ChunkHeight, ChunkSize)));
-                Renderer.Instance.SetDepthTestState(true);
-            }
         }
 
         /// <summary>
@@ -205,18 +213,14 @@ namespace ReCrafted.Voxels
             {
                 var actualDistance = (i + 1) * (1 / precision);
                 var position = origin + direction * actualDistance;
-                
                 var worldCoord = new Int3((int)position.X, (int)position.Y, (int)position.Z);
-                
                 var currentChunk = FindChunk((Vector3)worldCoord);
 
                 if (currentChunk == null)
                     return;
 
                 var chunkPos = currentChunk.Position;
-
                 var blockCoord = new Int3(worldCoord.X - chunkPos.X, worldCoord.Y - chunkPos.Y, worldCoord.Z - chunkPos.Z);
-
                 var block = currentChunk.GetBlock(blockCoord.X, blockCoord.Y, blockCoord.Z);
                 
                 if (block != 0)
