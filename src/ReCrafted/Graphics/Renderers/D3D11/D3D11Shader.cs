@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Windows.Forms;
 using ReCrafted.Utilities;
 using SharpDX;
 using SharpDX.D3DCompiler;
@@ -66,10 +68,17 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             
             var device = D3D11Renderer.GetDevice();
 
+            // parse source code
+            var sourceCode = ParseShaderSource(File.ReadAllText(shaderFile), shaderFile);
+
             if (hasVs)
             {
                 // compile vertex shader
-                var bytecode = ShaderBytecode.CompileFromFile(shaderFile, pass.VertexShader, "vs_" + pass.Profile);
+                var bytecode = ShaderBytecode.Compile(sourceCode, pass.VertexShader, "vs_" + pass.Profile);
+
+                if (bytecode.Bytecode == null) // error
+                    MessageBox.Show(@"VShader load error: " + bytecode.Message);
+
                 _vertexShader = new VertexShader(device, bytecode);
 
                 // build inputLayout inputElements
@@ -87,14 +96,22 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             if (hasPs)
             {
                 // compile pixel shader
-                var bytecode = ShaderBytecode.CompileFromFile(shaderFile, pass.PixelShader, "ps_" + pass.Profile);
+                var bytecode = ShaderBytecode.Compile(sourceCode, pass.PixelShader, "ps_" + pass.Profile);
+
+                if (bytecode.Bytecode == null) // error
+                    MessageBox.Show(@"PShader load error: " + bytecode.Message);
+
                 _pixelShader = new PixelShader(device, bytecode);
             }
 
             if (hasCs)
             {
                 // compile compute shader
-                var bytecode = ShaderBytecode.CompileFromFile(shaderFile, pass.ComputeShader, "cs_" + pass.Profile);
+                var bytecode = ShaderBytecode.Compile(sourceCode, pass.ComputeShader, "cs_" + pass.Profile);
+
+                if (bytecode.Bytecode == null) // error
+                    MessageBox.Show(@"CShader load error: " + bytecode.Message);
+
                 _computeShader = new ComputeShader(device, bytecode);
             }
 
@@ -250,6 +267,54 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             _vertexShader?.Dispose();
             _computeShader?.Dispose();
             _pixelShader?.Dispose();
+        }
+
+        // private
+        private static string ParseShaderSource(string sourceCode, string file)
+        {
+            var tempSource = sourceCode;
+            var sourceFileInfo = new FileInfo(file);
+
+            while (true)
+            {
+                var includeStart = tempSource.IndexOf("#include", StringComparison.Ordinal);
+
+                if (includeStart != -1)
+                {
+                    // add includes
+                    var start = includeStart + 8;
+                    var end = 0;
+
+                    // seek for end
+                    var i = start;
+                    var open = false; 
+                    while (true)
+                    {
+                        if (tempSource[i] == '"')
+                        {
+                            if (open)
+                            {
+                                end = i;
+                                break;
+                            }
+
+                            start = i+1;
+                            open = true;
+                        }
+                        i++;
+                    }
+
+                    // ok
+                    var includeFile = sourceFileInfo.DirectoryName + "\\" + tempSource.Substring(start, end-start);
+
+                    tempSource = tempSource.Remove(includeStart, end+1 - includeStart);
+                    tempSource = tempSource.Insert(includeStart, File.ReadAllText(includeFile));
+                }
+                else
+                    break;
+            }
+
+            return tempSource;
         }
     }
 }

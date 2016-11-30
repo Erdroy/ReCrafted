@@ -1,3 +1,5 @@
+// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
 cbuffer Data : register(b0)
 {
 	matrix WVP;

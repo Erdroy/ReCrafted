@@ -12,6 +12,8 @@ namespace ReCrafted.Graphics
     {
         private List<RenderJob> _renderJobs = new List<RenderJob>();
 
+        private Shader _renderGBuffer;
+
         /// <summary>
         /// Default constructor of DeferredRendering class.
         /// </summary>
@@ -28,6 +30,10 @@ namespace ReCrafted.Graphics
         public override void Init()
         {
             // initialize all resources etc.
+
+            // load shaders
+            // the GBuffer render shader
+            _renderGBuffer = Shader.FromFile("Render_GBuffer");
         }
 
         /// <summary>
@@ -62,8 +68,10 @@ namespace ReCrafted.Graphics
         public override void Dispose()
         {
             // clear render jobs,
-            // release all resources
             _renderJobs.Clear();
+
+            // release all resources
+            _renderGBuffer?.Dispose();
         }
     }
 }

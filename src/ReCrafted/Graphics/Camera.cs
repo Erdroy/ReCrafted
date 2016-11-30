@@ -48,6 +48,13 @@ namespace ReCrafted.Graphics
         public void SetAsCurrent()
         {
             Current = this;
+
+            if (FreeLook)
+            {
+                // zeroe the cursor position
+                var clientCenter = Game.Instance.Form.PointToScreen(new System.Drawing.Point(Game.Instance.Form.ClientSize.Width / 2, Game.Instance.Form.ClientSize.Height / 2));
+                Cursor.Position = clientCenter;
+            }
         }
 
         /// <summary>
@@ -56,6 +63,10 @@ namespace ReCrafted.Graphics
         /// </summary>
         public void Tick()
         {
+            // check if this camera is active
+            if (IsActive)
+                return;
+
             if (FreeLook)
             {
                 // update
@@ -274,6 +285,12 @@ namespace ReCrafted.Graphics
         /// The right direction.
         /// </summary>
         public Vector3 Right => ViewMatrix.Right;
+
+        /// <summary>
+        /// True when this camera is the
+        /// current rendering target camera.
+        /// </summary>
+        public bool IsActive => Current != this;
 
         // matrices
         /// <summary>

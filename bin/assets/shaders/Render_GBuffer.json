@@ -2,8 +2,8 @@
 
 {
     // shader info
-    "ShaderName": "Block selection Shader",
-    "ShaderDesc": "Block selection shader for highligting the block which is aimed to.",
+    "ShaderName": "GBuffer shader",
+    "ShaderDesc": "GBuffer rendering shader",
 
     // constant buffers
     "ConstantBuffers": [

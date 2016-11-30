@@ -1,5 +1,7 @@
 // ReCrafted © 2016 Damian 'Erdroy' Korczowski
 
+#include "Common.hlsli"
+
 cbuffer Data : register(b0)
 {
 	matrix WVP;
@@ -8,21 +10,29 @@ cbuffer Data : register(b0)
 struct VSInput
 {
 	float3 position : POSITION;
+	float4 color : COLOR;
 };
 
 struct VSOutput
 {
 	float4 position : SV_POSITION;
+	float4 color : COLOR;
 };
 
 VSOutput VSMain(in VSInput input)
 {
 	VSOutput output = (VSOutput)0;
 	output.position = mul(float4(input.position, 1.0f), WVP);
+	output.color = input.color;
 	return output;
 }
 
-float4 PSMain(in VSOutput input) : SV_TARGET
+GBuffer PSMain(in VSOutput input)
 {
-	return float4(0.75f, 0.75f, 0.75f, 0.7f);
+	GBuffer gbuffer = (GBuffer)0;
+
+	gbuffer.Albedo = input.color;
+	gbuffer.Normal = float3(0.0f, 0.0f, 0.0f);
+
+	return gbuffer;
 }

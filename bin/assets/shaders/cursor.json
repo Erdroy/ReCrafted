@@ -1,3 +1,5 @@
+// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
 {
     // shader info
     "ShaderName": "Block selection Shader",
@@ -23,7 +25,7 @@
             "VertexShader": "VSMain",
             "PixelShader": "PSMain",
             "ComputeShader": "",
-            "Profile" :  "5_0",
+            "Profile": "5_0",
 
             "VertexLayoutInputs": [
                 {

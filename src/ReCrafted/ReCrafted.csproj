@@ -151,6 +151,12 @@
     <None Include="..\..\bin\assets\shaders\default_block.json">
       <Link>assets\shaders\default_block.json</Link>
     </None>
+    <None Include="..\..\bin\assets\shaders\Render_Final.json">
+      <Link>assets\shaders\Render_Final.json</Link>
+    </None>
+    <None Include="..\..\bin\assets\shaders\Render_GBuffer.json">
+      <Link>assets\shaders\Render_GBuffer.json</Link>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -171,11 +177,20 @@
     <Content Include="..\..\bin\assets\shaders\color.hlsl">
       <Link>assets\shaders\color.hlsl</Link>
     </Content>
+    <Content Include="..\..\bin\assets\shaders\Common.hlsli">
+      <Link>assets\shaders\Common.hlsli</Link>
+    </Content>
     <Content Include="..\..\bin\assets\shaders\cursor.hlsl">
       <Link>assets\shaders\cursor.hlsl</Link>
     </Content>
     <Content Include="..\..\bin\assets\shaders\default_block.hlsl">
       <Link>assets\shaders\default_block.hlsl</Link>
+    </Content>
+    <Content Include="..\..\bin\assets\shaders\Render_Final.hlsl">
+      <Link>assets\shaders\Render_Final.hlsl</Link>
+    </Content>
+    <Content Include="..\..\bin\assets\shaders\Render_GBuffer.hlsl">
+      <Link>assets\shaders\Render_GBuffer.hlsl</Link>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
