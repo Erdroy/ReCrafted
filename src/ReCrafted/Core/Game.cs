@@ -62,13 +62,16 @@ namespace ReCrafted.Core
             Input.Initialize();
 
             // create renderer
-            Renderer.CreateRenderer(RendererApi.D3D11);
+            Renderer.CreateRenderer(RendererApi.D3D11, new DeferredRendering());
             Renderer = Renderer.Instance;
             
             Time.StartupTime = DateTime.Now;
             Time.SimulationDeltaTime = 1.0f / 60.0f; // 60 sps
 
             Form.WindowState = FormWindowState.Maximized;
+            
+            // initialize scene
+            Scene.Instance.Init();
 
             // run the game
             RenderLoop.Run(Form, Loop, true);
@@ -126,10 +129,9 @@ namespace ReCrafted.Core
 
             _stopwatch.Start();
             
-            Scene.Instance.Tick();
-            Scene.Instance.Simulate(); // TODO: Fixed timestep for physics
-
-            Renderer.Draw();
+            Tick();
+            Simulate();
+            Draw();
             
             // update time
             Time.Frame++;
@@ -142,6 +144,24 @@ namespace ReCrafted.Core
         {
             // resized
             Renderer.Resize(Form.ClientSize.Width, Form.ClientSize.Height);
+            Renderer.Draw();
+        }
+
+        // private
+        private void Tick()
+        {
+            Scene.Instance.Tick();
+        }
+
+        // private
+        private void Simulate()
+        {
+            Scene.Instance.Simulate(); // TODO: Fixed timestep for physics
+        }
+
+        // private
+        private void Draw()
+        {
             Renderer.Draw();
         }
     }

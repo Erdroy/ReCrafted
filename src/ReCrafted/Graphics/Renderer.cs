@@ -13,33 +13,21 @@ namespace ReCrafted.Graphics
     /// </summary>
     public abstract class Renderer : IDisposable, ITickable
     {
-        /// <summary>
-        /// The renderer instance.
-        /// </summary>
-        public static Renderer Instance;
-
-        /// <summary>
-        /// The current renderer api.
-        /// </summary>
-        public static RendererApi RendererApi;
-
-        private readonly Scene _scene;
+        protected readonly Scene Scene;
+        protected Rendering Rendering;
 
         /// <summary>
         /// Renderer constructor.
         /// </summary>
         protected Renderer()
         {
-            _scene = new Scene();
+            Scene = new Scene();
         }
 
         /// <summary>
         /// Initializes the renderer.
         /// </summary>
-        protected virtual void Init()
-        {
-            _scene.Init();
-        }
+        protected abstract void Init();
 
         /// <summary>
         /// Ticks the renderer.
@@ -85,14 +73,18 @@ namespace ReCrafted.Graphics
         /// Creates renderer.
         /// </summary>
         /// <param name="rendererApi">The renderer api.</param>
-        public static void CreateRenderer(RendererApi rendererApi)
+        /// <param name="rendering">The rendering class instance.</param>
+        public static void CreateRenderer(RendererApi rendererApi, Rendering rendering)
         {
             RendererApi = rendererApi;
-
+            
             if (rendererApi == RendererApi.D3D11)
             {
                 Instance = new D3D11Renderer();
                 Instance.Init();
+
+                Instance.Rendering = rendering;
+                rendering.Init();
                 return;
             }
 
@@ -100,5 +92,15 @@ namespace ReCrafted.Graphics
 
             throw new ReCraftedException("Not implemented renderer!");
         }
+
+        /// <summary>
+        /// The renderer instance.
+        /// </summary>
+        public static Renderer Instance { get; protected set; }
+
+        /// <summary>
+        /// The current renderer api.
+        /// </summary>
+        public static RendererApi RendererApi { get; private set; }
     }
 }

@@ -10,7 +10,7 @@ namespace ReCrafted.Core
     /// <summary>
     /// Scene class.
     /// </summary>
-    public sealed class Scene : IDisposable, IRendererComponent
+    public sealed class Scene : IDisposable
     {
         /// <summary>
         /// Scene instance.
@@ -31,6 +31,7 @@ namespace ReCrafted.Core
 
         /// <summary>
         /// Initializes the scene.
+        /// Called by Rendering class.
         /// </summary>
         public void Init()
         {
@@ -50,10 +51,18 @@ namespace ReCrafted.Core
             };
 
             _camera.SetAsCurrent();
+
+            // Add render jobs
+            Rendering.Current.AddRenderJob(new RenderJob
+            {
+                JobMethod = RenderScene,
+                RenderPriority = 0
+            });
         }
 
         /// <summary>
         /// Ticks the scene, entity pool etc.
+        /// Called by Game class.
         /// </summary>
         public void Tick()
         {
@@ -66,25 +75,15 @@ namespace ReCrafted.Core
             _voxelWorld.Tick();
             EntityPool.Tick();
         }
-        
+
         /// <summary>
         /// Simulates the scene, entity pool etc.
+        /// Called by Game class.
         /// </summary>
         public void Simulate()
         {
             _voxelWorld.Simulate();
             EntityPool.Simulate();
-        }
-        
-        /// <summary>
-        /// Draws the scene, entity pool etc.
-        /// </summary>
-        public void Draw()
-        {
-            _voxelWorld.Draw();
-            EntityPool.Draw();
-
-            _voxelCursor.Draw();
         }
 
         /// <summary>
@@ -93,6 +92,15 @@ namespace ReCrafted.Core
         public void Dispose()
         {
             _voxelWorld.Dispose();
+        }
+
+        // private
+        private void RenderScene(Rendering rendering)
+        {
+            _voxelWorld.Draw();
+            EntityPool.Draw();
+
+            _voxelCursor.Draw();
         }
     }
 }

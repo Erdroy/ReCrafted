@@ -156,7 +156,6 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             _boundingBox.ApplyChanges();
 
             _boundingBox.PrimitiveType = PrimitiveType.LineList;
-            base.Init();
         }
 
         /// <summary>
@@ -176,7 +175,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             _device.ImmediateContext.ClearDepthStencilView(_depthStencilView, DepthStencilClearFlags.Depth, 1.0f, 0);
             _device.ImmediateContext.ClearRenderTargetView(_finalRenderTarget, Camera.Current.BackgroundColor);
             
-            Scene.Instance.Draw();
+            Rendering.Draw();
 
             _swapChain.Present(1, 0);
         }
