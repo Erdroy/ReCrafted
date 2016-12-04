@@ -59,6 +59,30 @@ namespace ReCrafted.Graphics
         public abstract void SetDepthTestState(bool enabled);
 
         /// <summary>
+        /// Set RenderTargets as the current frame output.
+        /// </summary>
+        /// <param name="renderTargets">The RenderTargets.</param>
+        public abstract void SetRenderTargets(params RenderTarget[] renderTargets);
+
+        /// <summary>
+        /// Set the final render target.
+        /// </summary>
+        /// <param name="useDepthTest">Use DepthTest?</param>
+        public abstract void SetFinalRenderTarget(bool useDepthTest);
+
+        /// <summary>
+        /// Render/Copy the given RenderTarget to the current set RenderTarget.
+        /// </summary>
+        /// <param name="renderTarget">The render target.</param>
+        public abstract void Blit(RenderTarget renderTarget);
+
+        /// <summary>
+        /// Gets all RenderTargets from the current frame output.
+        /// </summary>
+        /// <returns>The RenderTargets.</returns>
+        public abstract RenderTarget[] GetRenderTargets();
+
+        /// <summary>
         /// Draw bounding box.
         /// </summary>
         /// <param name="bounds">The bouding box.</param>

@@ -90,12 +90,14 @@
     <Compile Include="Graphics\IRenderJob.cs" />
     <Compile Include="Graphics\Renderers\D3D11\D3D11Format.cs" />
     <Compile Include="Graphics\Renderers\D3D11\D3D11Mesh.cs" />
+    <Compile Include="Graphics\Renderers\D3D11\D3D11RenderTarget.cs" />
     <Compile Include="Graphics\Renderers\D3D11\D3D11Sampler.cs" />
     <Compile Include="Graphics\Renderers\D3D11\D3D11Shader.cs" />
     <Compile Include="Graphics\PrimitiveType.cs" />
     <Compile Include="Graphics\RasterizerStates.cs" />
     <Compile Include="Graphics\Renderers\D3D11\D3D11Texture2D.cs" />
     <Compile Include="Graphics\Rendering.cs" />
+    <Compile Include="Graphics\RenderTarget.cs" />
     <Compile Include="Graphics\Sampler.cs" />
     <Compile Include="Graphics\Shader.cs" />
     <Compile Include="Graphics\Mesh.cs" />
@@ -142,14 +144,14 @@
     <None Include="..\..\bin\assets\locales\polski.json">
       <Link>assets\locales\polski.json</Link>
     </None>
+    <None Include="..\..\bin\assets\shaders\Blit.json">
+      <Link>assets\shaders\Blit.json</Link>
+    </None>
     <None Include="..\..\bin\assets\shaders\color.json">
       <Link>assets\shaders\color.json</Link>
     </None>
     <None Include="..\..\bin\assets\shaders\cursor.json">
       <Link>assets\shaders\cursor.json</Link>
-    </None>
-    <None Include="..\..\bin\assets\shaders\default_block.json">
-      <Link>assets\shaders\default_block.json</Link>
     </None>
     <None Include="..\..\bin\assets\shaders\Render_Final.json">
       <Link>assets\shaders\Render_Final.json</Link>
@@ -174,6 +176,9 @@
     <Folder Include="Physics\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\bin\assets\shaders\Blit.hlsl">
+      <Link>assets\shaders\Blit.hlsl</Link>
+    </Content>
     <Content Include="..\..\bin\assets\shaders\color.hlsl">
       <Link>assets\shaders\color.hlsl</Link>
     </Content>
@@ -182,9 +187,6 @@
     </Content>
     <Content Include="..\..\bin\assets\shaders\cursor.hlsl">
       <Link>assets\shaders\cursor.hlsl</Link>
-    </Content>
-    <Content Include="..\..\bin\assets\shaders\default_block.hlsl">
-      <Link>assets\shaders\default_block.hlsl</Link>
     </Content>
     <Content Include="..\..\bin\assets\shaders\Render_Final.hlsl">
       <Link>assets\shaders\Render_Final.hlsl</Link>

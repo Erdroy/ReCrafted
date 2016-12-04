@@ -10,10 +10,6 @@
         {
             "BufferName": "Data",
             "Fields": [
-                {
-                    "FieldName": "WVP",
-                    "FieldType": "matrix"
-                }
             ]
         }
     ],
@@ -22,23 +18,12 @@
     "Passes": [
         {
             "PassName": "Default", // Empty or Default when shader does not need any UsePass(passName) calls.
-            "VertexShader": "VSMain",
-            "PixelShader": "PSMain",
-            "ComputeShader": "",
+            "VertexShader": "",
+            "PixelShader": "",
+            "ComputeShader": "CSMain",
             "Profile": "5_0",
 
-            "VertexLayoutInputs": [
-                {
-                    "InputName": "position",
-                    "InputType": "float3",
-                    "InputSignature": "POSITION"
-                },
-                {
-                    "InputName": "color",
-                    "InputType": "float4",
-                    "InputSignature": "COLOR"
-                }
-            ]
+            "VertexLayoutInputs": [ ]
         }
     ]
 }

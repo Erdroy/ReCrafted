@@ -26,7 +26,9 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                     return Format.R32G32B32_Float;
                 case "float4":
                     return Format.R32G32B32A32_Float;
-
+                case "uint":
+                    return Format.R32_UInt;
+                    
                 default:
                     return Format.Unknown;
             }

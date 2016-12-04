@@ -23,16 +23,14 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         // todos
         // TODO: Multi-pass support
         // TODO: Multi-constant buffer support
-
-        private static PrimitiveType _lastPrimitiveType = PrimitiveType.Unknown;
-
+        
         private ShaderMeta _meta;
 
-        private VertexShader _vertexShader;
-        private PixelShader _pixelShader;
-        private ComputeShader _computeShader;
+        internal VertexShader VertexShader;
+        internal PixelShader PixelShader;
+        internal ComputeShader ComputeShader;
 
-        private InputLayout _inputLayout;
+        internal InputLayout InputLayout;
 
         private Buffer _constantBuffer;
         private DataBuffer _backingBuffer;
@@ -79,7 +77,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                 if (bytecode.Bytecode == null) // error
                     MessageBox.Show(@"VShader load error: " + bytecode.Message);
 
-                _vertexShader = new VertexShader(device, bytecode);
+                VertexShader = new VertexShader(device, bytecode);
 
                 // build inputLayout inputElements
                 var inputElements = new List<InputElement>();
@@ -90,7 +88,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                 }
 
                 // create inputLayout
-                _inputLayout = new InputLayout(device, bytecode, inputElements.ToArray());
+                InputLayout = new InputLayout(device, bytecode, inputElements.ToArray());
             }
 
             if (hasPs)
@@ -101,7 +99,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                 if (bytecode.Bytecode == null) // error
                     MessageBox.Show(@"PShader load error: " + bytecode.Message);
 
-                _pixelShader = new PixelShader(device, bytecode);
+                PixelShader = new PixelShader(device, bytecode);
             }
 
             if (hasCs)
@@ -112,7 +110,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                 if (bytecode.Bytecode == null) // error
                     MessageBox.Show(@"CShader load error: " + bytecode.Message);
 
-                _computeShader = new ComputeShader(device, bytecode);
+                ComputeShader = new ComputeShader(device, bytecode);
             }
 
             if (hasConstBuffer)
@@ -175,6 +173,26 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         }
 
         /// <summary>
+        /// Apply the shader.
+        /// </summary>
+        public override void Apply()
+        {
+            var deviceContext = D3D11Renderer.GetDeviceContext();
+
+            if (VertexShader != null)
+                deviceContext.VertexShader.Set(VertexShader);
+
+            if (PixelShader != null)
+                deviceContext.PixelShader.Set(PixelShader);
+
+            if (ComputeShader != null)
+                deviceContext.ComputeShader.Set(ComputeShader);
+
+            if (InputLayout != null)
+                deviceContext.InputAssembler.InputLayout = InputLayout;
+        }
+
+        /// <summary>
         /// Draws mesh using this shader.
         /// </summary>
         /// <param name="mesh">The mesh.</param>
@@ -187,44 +205,27 @@ namespace ReCrafted.Graphics.Renderers.D3D11
 
             var deviceContext = D3D11Renderer.GetDeviceContext();
 
-            if(_vertexShader != null)
-                deviceContext.VertexShader.Set(_vertexShader);
-
-            if (_pixelShader != null)
-                deviceContext.PixelShader.Set(_pixelShader);
-
-            if (_computeShader != null)
-                deviceContext.ComputeShader.Set(_computeShader);
-
-            if (_inputLayout != null)
-                deviceContext.InputAssembler.InputLayout = _inputLayout;
-
             // update primitive type
-            if (_lastPrimitiveType != mesh.PrimitiveType)
+            switch (mesh.PrimitiveType)
             {
-                switch (mesh.PrimitiveType)
-                {
-                    case PrimitiveType.Unknown:
-                        throw new ReCraftedException("Cannot update the PrimitiveType because it is 'Unknown'.");
+                case PrimitiveType.Unknown:
+                    throw new ReCraftedException("Cannot update the PrimitiveType because it is 'Unknown'.");
 
-                    case PrimitiveType.PointList:
-                        deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.PointList;
-                        break;
+                case PrimitiveType.PointList:
+                    deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.PointList;
+                    break;
 
-                    case PrimitiveType.LineList:
-                        deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.LineList;
-                        break;
-                    case PrimitiveType.TriangleList:
-                        deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
-                        break;
-                    case PrimitiveType.TriangleStrip:
-                        deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleStrip;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                _lastPrimitiveType = mesh.PrimitiveType;
+                case PrimitiveType.LineList:
+                    deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.LineList;
+                    break;
+                case PrimitiveType.TriangleList:
+                    deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
+                    break;
+                case PrimitiveType.TriangleStrip:
+                    deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleStrip;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             // update constant buffer if needed
@@ -263,10 +264,10 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         /// </summary>
         public override void Dispose()
         {
-            _inputLayout?.Dispose();
-            _vertexShader?.Dispose();
-            _computeShader?.Dispose();
-            _pixelShader?.Dispose();
+            InputLayout?.Dispose();
+            VertexShader?.Dispose();
+            ComputeShader?.Dispose();
+            PixelShader?.Dispose();
         }
 
         // private

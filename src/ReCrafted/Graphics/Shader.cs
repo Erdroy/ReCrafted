@@ -53,6 +53,11 @@ namespace ReCrafted.Graphics
         public abstract void SetSampler(int slot, Sampler sampler);
 
         /// <summary>
+        /// Apply the shader
+        /// </summary>
+        public abstract void Apply();
+
+        /// <summary>
         /// Draws mesh using this shader.
         /// </summary>
         /// <param name="mesh">The mesh.</param>

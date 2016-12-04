@@ -11,6 +11,9 @@ namespace ReCrafted.Voxels
     /// </summary>
     public static class VoxelAssets
     {
+        /// <summary>
+        /// Contains all blocks descriptors with id's.
+        /// </summary>
         public static Dictionary<ushort, VoxelBlock> Blocks = new Dictionary<ushort, VoxelBlock>();
 
         /// <summary>
@@ -18,7 +21,7 @@ namespace ReCrafted.Voxels
         /// </summary>
         internal static void LoadAssets()
         {
-            DefaultShader = Shader.FromFile("default_block");
+            DefaultShader = Shader.FromFile("Render_GBuffer");
             ColorShader = Shader.FromFile("color");
             
             DefaultSampler = Sampler.Create(Sampler.Type.PointClamped);

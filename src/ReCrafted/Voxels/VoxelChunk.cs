@@ -80,7 +80,9 @@ namespace ReCrafted.Voxels
 
             var wvp = Matrix.Translation(new Vector3(Position.X, Position.Y, Position.Z)) * Camera.Current.ViewProjectionMatrix;
             wvp.Transpose();
-            
+
+            VoxelAssets.DefaultShader.Apply();
+
             foreach (var mesh in _meshes)
             {
                 var block = VoxelAssets.Blocks[mesh.Key];

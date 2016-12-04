@@ -123,6 +123,8 @@ namespace ReCrafted.Voxels
             var wvp = Matrix.Translation(CursorPosition) * Camera.Current.ViewProjectionMatrix;
             wvp.Transpose();
 
+            _shader.Apply();
+
             _shader.SetValue("WVP", wvp);
             _shader.Draw(_mesh);
         }

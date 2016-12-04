@@ -2,6 +2,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using ReCrafted.Core;
+using SharpDX;
 
 namespace ReCrafted.Graphics
 {
@@ -11,8 +13,9 @@ namespace ReCrafted.Graphics
     public sealed class DeferredRendering : Rendering
     {
         private List<RenderJob> _renderJobs = new List<RenderJob>();
-
-        private Shader _renderGBuffer;
+        
+        private RenderTarget _rtAlbedo;
+        private RenderTarget _rtNormals;
 
         /// <summary>
         /// Default constructor of DeferredRendering class.
@@ -29,11 +32,11 @@ namespace ReCrafted.Graphics
         /// </summary>
         public override void Init()
         {
-            // initialize all resources etc.
+            Game.Instance.OnResize += OnResize;
 
-            // load shaders
-            // the GBuffer render shader
-            _renderGBuffer = Shader.FromFile("Render_GBuffer");
+            // initialize all resources etc.
+            _rtAlbedo = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight);
+            _rtNormals = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight);
         }
 
         /// <summary>
@@ -41,11 +44,18 @@ namespace ReCrafted.Graphics
         /// </summary>
         public override void Draw()
         {
+            _rtAlbedo.Clear(Camera.Current.BackgroundColor);
+            _rtNormals.Clear(Color.Black);
+            Renderer.Instance.SetRenderTargets(_rtAlbedo, _rtNormals);
+
             // do render jobs
             foreach (var job in _renderJobs)
             {
                 job.JobMethod(this);
             }
+
+            Renderer.Instance.SetFinalRenderTarget(false);
+            Renderer.Instance.Blit(_rtAlbedo);
         }
 
         /// <summary>
@@ -71,7 +81,16 @@ namespace ReCrafted.Graphics
             _renderJobs.Clear();
 
             // release all resources
-            _renderGBuffer?.Dispose();
+            _rtAlbedo?.Dispose();
+            _rtNormals?.Dispose();
+        }
+
+        // private
+        private void OnResize(int width, int height)
+        {
+            // resize render targets
+            _rtAlbedo.Resize(width, height);
+            _rtNormals.Resize(width, height);
         }
     }
 }

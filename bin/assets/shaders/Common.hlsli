@@ -2,6 +2,6 @@
 
 struct GBuffer
 {
-	float4 Albedo	: SV_Target0;
-	float3 Normal	: SV_Target1;
+	float4 Albedo : SV_Target0;
+	float3 Normal : SV_Target1;
 };

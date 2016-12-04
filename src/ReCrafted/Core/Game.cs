@@ -9,6 +9,13 @@ using SharpDX.Windows;
 
 namespace ReCrafted.Core
 {
+    /// <summary>
+    /// OnResize
+    /// </summary>
+    /// <param name="width">The width.</param>
+    /// <param name="height">The height.</param>
+    public delegate void OnResize(int width, int height);
+
     public sealed class Game : IDisposable, IRunnable
     {
         /// <summary>
@@ -25,6 +32,12 @@ namespace ReCrafted.Core
         /// The current renderer instance.
         /// </summary>
         public Renderer Renderer;
+
+        /// <summary>
+        /// OnResize event.
+        /// Called when the game window has been resized.
+        /// </summary>
+        public event OnResize OnResize;
 
         private readonly Stopwatch _stopwatch;
 
@@ -145,6 +158,9 @@ namespace ReCrafted.Core
             // resized
             Renderer.Resize(Form.ClientSize.Width, Form.ClientSize.Height);
             Renderer.Draw();
+
+            // call onresize event
+            OnResize?.Invoke(Form.ClientSize.Width, Form.ClientSize.Height);
         }
 
         // private

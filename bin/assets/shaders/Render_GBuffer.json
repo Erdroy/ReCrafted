@@ -33,10 +33,15 @@
                     "InputType": "float3",
                     "InputSignature": "POSITION"
                 },
+                /*{
+                    "InputName": "normal",
+                    "InputType": "float3",
+                    "InputSignature": "NORMAL"
+                },*/
                 {
-                    "InputName": "color",
-                    "InputType": "float4",
-                    "InputSignature": "COLOR"
+                    "InputName": "uv",
+                    "InputType": "float2",
+                    "InputSignature": "TEXCOORD"
                 }
             ]
         }

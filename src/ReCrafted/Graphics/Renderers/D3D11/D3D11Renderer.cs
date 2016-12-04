@@ -1,11 +1,15 @@
 ﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
 
+using System;
+using System.Linq;
+using System.Windows.Forms;
 using ReCrafted.Core;
 using ReCrafted.Utilities;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
+using SharpDX.Mathematics.Interop;
 using Device = SharpDX.Direct3D11.Device;
 
 namespace ReCrafted.Graphics.Renderers.D3D11
@@ -31,7 +35,11 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         private RasterizerState _wireframeRasterizerState;
         private RasterizerState _defaultRasterizerState;
 
+        private RenderTargetView[] _currentViews;
+
         private Shader _colorShader;
+        private Shader _blitShader;
+
         private Mesh _boundingBox;
 
         /// <summary>
@@ -40,18 +48,28 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         protected override void Init()
         {
             Instance = this;
-
-            Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.Debug, new []{FeatureLevel.Level_11_1}, new SwapChainDescription
+            try
             {
-                BufferCount = 1,
-                Flags = SwapChainFlags.None,
-                IsWindowed = true,
-                ModeDescription = new ModeDescription(Display.ClientWidth, Display.ClientHeight, new Rational(60, 1), Format.R8G8B8A8_UNorm),
-                OutputHandle = Game.Instance.Form.Handle,
-                SampleDescription = new SampleDescription(1, 0),
-                SwapEffect = SwapEffect.Discard,
-                Usage = Usage.RenderTargetOutput
-            }, out _device, out _swapChain);
+                Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.Debug,
+                    new[] {FeatureLevel.Level_11_1}, new SwapChainDescription
+                    {
+                        BufferCount = 1,
+                        Flags = SwapChainFlags.None,
+                        IsWindowed = true,
+                        ModeDescription =
+                            new ModeDescription(Display.ClientWidth, Display.ClientHeight, new Rational(60, 1),
+                                Format.R8G8B8A8_UNorm),
+                        OutputHandle = Game.Instance.Form.Handle,
+                        SampleDescription = new SampleDescription(1, 0),
+                        SwapEffect = SwapEffect.Discard,
+                        Usage = Usage.RenderTargetOutput
+                    }, out _device, out _swapChain);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("" + ex);
+                Environment.Exit(0);
+            }
 
             Resize(Display.ClientWidth, Display.ClientHeight);
 
@@ -72,10 +90,12 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             _defaultRasterizerState = _device.ImmediateContext.Rasterizer.State;
 
             _colorShader = Shader.FromFile("color");
+            _blitShader = Shader.FromFile("Blit");
 
             // create bounding box mesh
             var bounds = new BoundingBox(Vector3.Zero, Vector3.One);
             _boundingBox = Mesh.Create();
+            _boundingBox.PrimitiveType = PrimitiveType.LineList;
             _boundingBox.SetVertices(new[]
             {
                 bounds.Minimum,
@@ -154,8 +174,6 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                 Color.OrangeRed,
             });
             _boundingBox.ApplyChanges();
-
-            _boundingBox.PrimitiveType = PrimitiveType.LineList;
         }
 
         /// <summary>
@@ -171,7 +189,12 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         /// </summary>
         public override void Draw()
         {
-            _device.ImmediateContext.OutputMerger.SetTargets(_depthStencilView, _finalRenderTarget);
+            _currentViews = new []
+            {
+                _finalRenderTarget
+            };
+
+            _device.ImmediateContext.OutputMerger.SetTargets(_depthStencilView, _currentViews);
             _device.ImmediateContext.ClearDepthStencilView(_depthStencilView, DepthStencilClearFlags.Depth, 1.0f, 0);
             _device.ImmediateContext.ClearRenderTargetView(_finalRenderTarget, Camera.Current.BackgroundColor);
             
@@ -257,12 +280,67 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         {
             if (enabled)
             {
+                _device.ImmediateContext.OutputMerger.SetTargets(_depthStencilView, _currentViews);
+            }
+            else
+            {
+                _device.ImmediateContext.OutputMerger.SetTargets(_currentViews);
+            }
+        }
+
+        /// <summary>
+        /// Set RenderTargets as the current frame output.
+        /// </summary>
+        /// <param name="renderTargets">The RenderTargets.</param>
+        public override void SetRenderTargets(params RenderTarget[] renderTargets)
+        {
+            _currentViews = renderTargets.Select(renderTarget => ((D3D11RenderTarget) renderTarget).View).ToArray();
+            //_currentViews[0] = _finalRenderTarget;
+            _device.ImmediateContext.OutputMerger.SetTargets(_depthStencilView, _currentViews);
+        }
+
+        /// <summary>
+        /// Set the final render target.
+        /// </summary>
+        /// <param name="useDepthTest">Use DepthTest?</param>
+        public override void SetFinalRenderTarget(bool useDepthTest)
+        {
+            if (useDepthTest)
+            {
                 _device.ImmediateContext.OutputMerger.SetTargets(_depthStencilView, _finalRenderTarget);
             }
             else
             {
                 _device.ImmediateContext.OutputMerger.SetTargets(_finalRenderTarget);
             }
+        }
+
+        /// <summary>
+        /// Render/Copy the given RenderTarget to the current set RenderTarget.
+        /// </summary>
+        /// <param name="renderTarget">The render target.</param>
+        public override void Blit(RenderTarget renderTarget)
+        {
+            var deviceContext = _device.ImmediateContext;
+
+            var res = (D3D11RenderTarget)renderTarget;
+            var shd = (D3D11Shader) _blitShader;
+
+            shd.Apply();
+            
+            deviceContext.PixelShader.SetShaderResource(0, res.ResourceView);
+            deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleStrip;
+            
+            deviceContext.Draw(4, 0);
+        }
+
+        /// <summary>
+        /// Gets all RenderTargets from the current frame output.
+        /// </summary>
+        /// <returns>The RenderTargets.</returns>
+        public override RenderTarget[] GetRenderTargets()
+        {
+            throw new NotImplementedException("GetRenderTargets() is not implemented currently!");
         }
 
         /// <summary>
@@ -290,6 +368,10 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             _device?.Dispose();
             _finalRenderTarget?.Dispose();
             _swapChain?.Dispose();
+            _boundingBox?.Dispose();
+
+            _blitShader?.Dispose();
+            _colorShader?.Dispose();
             _boundingBox?.Dispose();
         }
 
