@@ -9,7 +9,6 @@ using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
-using SharpDX.Mathematics.Interop;
 using Device = SharpDX.Direct3D11.Device;
 
 namespace ReCrafted.Graphics.Renderers.D3D11
@@ -89,8 +88,8 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             _wireframeRasterizerState = new RasterizerState(_device, rsd);
             _defaultRasterizerState = _device.ImmediateContext.Rasterizer.State;
 
-            _colorShader = Shader.FromFile("color");
-            _blitShader = Shader.FromFile("Blit");
+            _colorShader = Shader.FromFile("internal/Color");
+            _blitShader = Shader.FromFile("internal/Blit");
 
             // create bounding box mesh
             var bounds = new BoundingBox(Vector3.Zero, Vector3.One);

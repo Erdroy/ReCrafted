@@ -22,7 +22,6 @@ namespace ReCrafted.Voxels
         internal static void LoadAssets()
         {
             DefaultShader = Shader.FromFile("Render_GBuffer");
-            ColorShader = Shader.FromFile("color");
             
             DefaultSampler = Sampler.Create(Sampler.Type.PointClamped);
 
@@ -71,7 +70,6 @@ namespace ReCrafted.Voxels
         internal static void UnloadAssets()
         {
             DefaultShader?.Dispose();
-            ColorShader?.Dispose();
         }
 
         /// <summary>
@@ -88,12 +86,7 @@ namespace ReCrafted.Voxels
         /// Default shader.
         /// </summary>
         public static Shader DefaultShader { get; set; }
-
-        /// <summary>
-        /// Color-only shader.
-        /// </summary>
-        public static Shader ColorShader { get; set; }
-
+        
         /// <summary>
         /// Default sampler state.
         /// </summary>
