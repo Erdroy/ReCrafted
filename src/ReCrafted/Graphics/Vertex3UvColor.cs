@@ -7,7 +7,7 @@ namespace ReCrafted.Graphics
     /// <summary>
     /// Vertex3 structure.
     /// </summary>
-    public struct Vertex3
+    public struct Vertex3UvColor
     {
         /// <summary>
         /// Vertice

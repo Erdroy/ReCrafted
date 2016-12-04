@@ -38,6 +38,12 @@ namespace ReCrafted.Graphics
         public abstract void SetUVs(Vector2[] uvs);
 
         /// <summary>
+        /// Set Normals array.
+        /// </summary>
+        /// <param name="normals">The Normals array.</param>
+        public abstract void SetNormals(Vector3[] normals);
+
+        /// <summary>
         /// Set index array.
         /// </summary>
         /// <param name="indices">The index array.</param>
@@ -107,6 +113,11 @@ namespace ReCrafted.Graphics
         public Vector2[] UVs { get; protected set; }
 
         /// <summary>
+        /// The Normals array.
+        /// </summary>
+        public Vector3[] Normals { get; protected set; }
+
+        /// <summary>
         /// The index array.
         /// </summary>
         public uint[] Indices { get; protected set; }
@@ -125,6 +136,11 @@ namespace ReCrafted.Graphics
         /// Do this mesh has uvs?
         /// </summary>
         public bool HasUVs => UVs != null && UVs.Length > 0;
+
+        /// <summary>
+        /// Do this mesh has normals?
+        /// </summary>
+        public bool HasNormals => Normals != null && Normals.Length > 0;
 
         /// <summary>
         /// Do this mesh has indices?

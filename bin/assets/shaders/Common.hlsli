@@ -6,20 +6,20 @@ struct GBuffer
 	float3 Normal : SV_Target1;
 };
 
-#ifdef VS_PT
+#ifdef VS_PTN
 struct VSInput
 {
 	float3 position : POSITION;
 	float2 uv : TEXCOORD;
-	//float3 normal : NORMAL;
+	float3 normal : NORMAL;
 };
 #endif
 
-#ifdef PS_PT
+#ifdef PS_PTN
 struct VSOutput
 {
 	float4 position : SV_POSITION;
 	float2 uv : TEXCOORD;
-	//float3 normal : NORMAL;
+	float3 normal : NORMAL;
 };
 #endif

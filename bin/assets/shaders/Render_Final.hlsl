@@ -1,5 +1,7 @@
 // ReCrafted © 2016 Damian 'Erdroy' Korczowski
 
+#define CS_GGT
+
 #include "Common.hlsli"
 
 static const uint TileSize = 16;
@@ -14,8 +16,16 @@ void CSMain(uint3 GroupID : SV_GroupID, uint3 GroupThreadID : SV_GroupThreadID)
 {
 	uint2 pixelCoord = GroupID.xy * uint2(TileSize, TileSize) + GroupThreadID.xy;
 
+	float4 albedo = Albedo[pixelCoord];
+	float4 normal = Normals[pixelCoord] * 2.0f - 1.0f;
+
 	// sync
 	GroupMemoryBarrierWithGroupSync();
 
-	OutputTexture[pixelCoord] = Albedo.Load(uint3(pixelCoord, 0));
+	float3 lightDir = normalize(float3(0.4f, 0.4f, 0.2f));
+	lightDir = -lightDir;
+
+	float3 dotL = dot(normal, lightDir);
+
+	OutputTexture[pixelCoord] = float4(albedo.rgb * dotL, 1.0f);
 }

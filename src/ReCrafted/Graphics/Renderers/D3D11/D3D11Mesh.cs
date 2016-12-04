@@ -27,7 +27,30 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             if (!HasVertices)
                 throw new ReCraftedException("Cannot apply changes - there is no any vertices!");
 
-            if (HasUVs && HasColors)
+            if (HasUVs && HasNormals)
+            {
+                if (UVs.Length != Vertices.Length)
+                    throw new ReCraftedException($"There is invalid amount of UVs! UV count {UVs.Length} Vertice count {Vertices.Length}, they must match!");
+
+                if (Normals.Length != Vertices.Length)
+                    throw new ReCraftedException($"There is invalid amount of Normals! Normals count {Normals.Length} Vertice count {Vertices.Length}, they must match!");
+
+                var vertexes = new Vertex3UvNormal[Vertices.Length];
+
+                // build data
+                for (var i = 0; i < vertexes.Length; i++)
+                {
+                    vertexes[i] = new Vertex3UvNormal
+                    {
+                        Vertice = Vertices[i],
+                        Uv = UVs[i],
+                        Normal = Normals[i]
+                    };
+                }
+
+                VertexBuffer = Buffer.Create(D3D11Renderer.GetDevice(), BindFlags.VertexBuffer, vertexes, vertexes.Length * Vertex3UvNormal.SizeInBytes);
+            }
+            else if (HasUVs && HasColors)
             {
                 if(UVs.Length != Vertices.Length)
                     throw new ReCraftedException($"There is invalid amount of UVs! UV count {UVs.Length} Vertice count {Vertices.Length}, they must match!");
@@ -35,12 +58,12 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                 if (Colors.Length != Vertices.Length)
                     throw new ReCraftedException($"There is invalid amount of Colors! Color count {Colors.Length} Vertice count {Vertices.Length}, they must match!");
 
-                var vertexes = new Vertex3[Vertices.Length];
+                var vertexes = new Vertex3UvColor[Vertices.Length];
 
                 // build data
                 for (var i = 0; i < vertexes.Length; i++)
                 {
-                    vertexes[i] = new Vertex3
+                    vertexes[i] = new Vertex3UvColor
                     {
                         Vertice = Vertices[i],
                         Uv = UVs[i],
@@ -48,7 +71,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                     };
                 }
                 
-                VertexBuffer = Buffer.Create(D3D11Renderer.GetDevice(), BindFlags.VertexBuffer, vertexes, vertexes.Length * Vertex3.SizeInBytes);
+                VertexBuffer = Buffer.Create(D3D11Renderer.GetDevice(), BindFlags.VertexBuffer, vertexes, vertexes.Length * Vertex3UvColor.SizeInBytes);
 
             }
             else if (HasColors)
@@ -139,17 +162,32 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         }
 
         /// <summary>
+        /// Set Normals array.
+        /// </summary>
+        /// <param name="normals">The Normals array.</param>
+        public override void SetNormals(Vector3[] normals)
+        {
+            Normals = normals;
+        }
+
+        /// <summary>
         /// Gets the vertex stride.
         /// </summary>
         /// <returns>The vertex stride.</returns>
         public override int GetVertexStride()
         {
-            if (HasUVs && HasColors)
-            {
-                return Vertex3.SizeInBytes;
-            }
+            var stride = Vector3.SizeInBytes;
 
-            return HasUVs ? Vertex2Uv.SizeInBytes : HasColors ? Vertex2Color.SizeInBytes : Vertex.SizeInBytes;
+            if (HasUVs)
+                stride += Vector2.SizeInBytes;
+
+            if (HasNormals)
+                stride += Vector3.SizeInBytes;
+
+            if (HasColors)
+                stride += 4;
+
+            return stride;
         }
 
         /// <summary>

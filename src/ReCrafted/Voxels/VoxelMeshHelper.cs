@@ -7,15 +7,38 @@ namespace ReCrafted.Voxels
 {
     public static class VoxelMeshHelper
     {
-        public static void SetupFace(Vector3 origin, Vector3 up, Vector3 right, bool isReversed, ICollection<Vector3> vertices, ICollection<Vector2> uVs, ICollection<uint> triangles)
+        public static void SetupFace(Vector3 origin, Vector3 up, Vector3 right, bool isReversed, 
+            ICollection<Vector3> vertices,
+            ICollection<Vector2> uVs, 
+            ICollection<uint> triangles, 
+            ICollection<Vector3> normals)
         {
             var index = (uint)vertices.Count;
 
-            vertices.Add(origin);
-            vertices.Add(origin + up);
-            vertices.Add(origin + up + right);
-            vertices.Add(origin + right);
-            
+
+            var a = origin;
+            var b = origin + up;
+            var c = origin + up + right;
+            var d = origin + right;
+
+            vertices.Add(a);
+            vertices.Add(b);
+            vertices.Add(c);
+            vertices.Add(d);
+
+            // calculate normals
+            var dir = new Plane(a, b, c).Normal;
+
+            if (isReversed)
+                dir = new Plane(c, b, a).Normal;
+
+            var norm = Vector3.Normalize(dir);
+
+            normals.Add(norm);
+            normals.Add(norm);
+            normals.Add(norm);
+            normals.Add(norm);
+
             uVs.Add(new Vector2(0.0f, 0.0f));
             uVs.Add(new Vector2(0.0f, 1.0f));
             uVs.Add(new Vector2(1.0f, 1.0f));

@@ -37,12 +37,12 @@
                     "InputName": "uv",
                     "InputType": "float2",
                     "InputSignature": "TEXCOORD"
-                }/*,
+                },
                 {
                     "InputName": "normal",
                     "InputType": "float3",
                     "InputSignature": "NORMAL"
-                }*/
+                }
             ]
         }
     ]

@@ -132,6 +132,7 @@ namespace ReCrafted.Voxels
             var blocksVertices = new Dictionary<ushort, List<Vector3>>();
             var blocksIndices = new Dictionary<ushort, List<uint>>();
             var blocksUvs = new Dictionary<ushort, List<Vector2>>();
+            var blocksNormals = new Dictionary<ushort, List<Vector3>>();
 
             for (var z = 0; z < VoxelWorld.ChunkSize; z++)
             {
@@ -149,28 +150,42 @@ namespace ReCrafted.Voxels
                             blocksVertices.Add(block, new List<Vector3>());
                             blocksIndices.Add(block, new List<uint>());
                             blocksUvs.Add(block, new List<Vector2>());
+                            blocksNormals.Add(block, new List<Vector3>());
                         }
 
                         var vertices = blocksVertices[block];
                         var indices = blocksIndices[block];
                         var uvs = blocksUvs[block];
+                        var normals = blocksNormals[block];
 
                         var origin = new Vector3(x, y, z);
                         
                         if(!BlockExists(x-1, y, z))
-                            VoxelMeshHelper.SetupFace(origin + new Vector3(0.0f, 0.0f, 0.0f), Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, false, vertices, uvs, indices);
+                            VoxelMeshHelper.SetupFace(
+                                origin + new Vector3(0.0f, 0.0f, 0.0f), 
+                                Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, false, vertices, uvs, indices, normals);
                         if (!BlockExists(x+1, y, z))
-                            VoxelMeshHelper.SetupFace(origin + new Vector3(VoxelWorld.BlockSize, 0.0f, 0.0f), Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, true, vertices, uvs, indices);
+                            VoxelMeshHelper.SetupFace(
+                                origin + new Vector3(VoxelWorld.BlockSize, 0.0f, 0.0f), 
+                                Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, true, vertices, uvs, indices, normals);
 
                         if (!BlockExists(x, y-1, z))
-                            VoxelMeshHelper.SetupFace(origin + new Vector3(0.0f, 0.0f, 0.0f), Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, vertices, uvs, indices);
+                            VoxelMeshHelper.SetupFace(
+                                origin + new Vector3(0.0f, 0.0f, 0.0f), 
+                                Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, vertices, uvs, indices, normals);
                         if (!BlockExists(x, y+1, z))
-                            VoxelMeshHelper.SetupFace(origin + new Vector3(0.0f, VoxelWorld.BlockSize, 0.0f), Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, true, vertices, uvs, indices);
+                            VoxelMeshHelper.SetupFace(
+                                origin + new Vector3(0.0f, VoxelWorld.BlockSize, 0.0f), 
+                                Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, true, vertices, uvs, indices, normals);
 
                         if (!BlockExists(x, y, z-1))
-                            VoxelMeshHelper.SetupFace(origin + new Vector3(0.0f, 0.0f, 0.0f), Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, true, vertices, uvs, indices);
+                            VoxelMeshHelper.SetupFace(
+                                origin + new Vector3(0.0f, 0.0f, 0.0f), 
+                                Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, true, vertices, uvs, indices, normals);
                         if (!BlockExists(x, y, z+1))
-                            VoxelMeshHelper.SetupFace(origin + new Vector3(0.0f, 0.0f, VoxelWorld.BlockSize), Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, vertices, uvs, indices);
+                            VoxelMeshHelper.SetupFace(
+                                origin + new Vector3(0.0f, 0.0f, VoxelWorld.BlockSize),
+                                Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, vertices, uvs, indices, normals);
                     }
                 }
             }
@@ -182,10 +197,12 @@ namespace ReCrafted.Voxels
                 var verts = vertices.Value.ToArray();
                 var indices = blocksIndices[vertices.Key].ToArray();
                 var uvs = blocksUvs[vertices.Key].ToArray();
+                var normals = blocksNormals[vertices.Key].ToArray();
 
                 mesh.SetVertices(verts);
                 mesh.SetIndices(indices);
                 mesh.SetUVs(uvs);
+                mesh.SetNormals(normals);
 
                 if (verts.Length > 0)
                 {
