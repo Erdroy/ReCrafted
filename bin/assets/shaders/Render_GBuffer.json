@@ -33,16 +33,16 @@
                     "InputType": "float3",
                     "InputSignature": "POSITION"
                 },
-                /*{
-                    "InputName": "normal",
-                    "InputType": "float3",
-                    "InputSignature": "NORMAL"
-                },*/
                 {
                     "InputName": "uv",
                     "InputType": "float2",
                     "InputSignature": "TEXCOORD"
-                }
+                }/*,
+                {
+                    "InputName": "normal",
+                    "InputType": "float3",
+                    "InputSignature": "NORMAL"
+                }*/
             ]
         }
     ]

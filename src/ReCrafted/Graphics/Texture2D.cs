@@ -20,13 +20,7 @@ namespace ReCrafted.Graphics
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         protected abstract void Load(Bitmap bitmap);
-
-        /// <summary>
-        /// Apply the texture int the current shader at given slot.
-        /// </summary>
-        /// <param name="slot">The slot.</param>
-        public abstract void Apply(int slot);
-
+        
         /// <summary>
         /// Dispose the texture.
         /// </summary>

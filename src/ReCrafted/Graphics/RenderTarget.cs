@@ -38,12 +38,13 @@ namespace ReCrafted.Graphics
         /// </summary>
         /// <param name="width">The width of the RenderTarget.</param>
         /// <param name="height">The height of the RenderTarget.</param>
+        /// <param name="uav">Create Unordered access view?</param>
         /// <returns>The created RenderTarget.</returns>
-        public static RenderTarget Create(int width, int height)
+        public static RenderTarget Create(int width, int height, bool uav = false)
         {
             if (Renderer.RendererApi == RendererApi.D3D11)
             {
-                return new D3D11RenderTarget(width, height);
+                return new D3D11RenderTarget(width, height, uav);
             }
 
             // TODO: Implement renderers

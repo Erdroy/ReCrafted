@@ -65,17 +65,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                 //D3D11Renderer.GetDeviceContext().GenerateMips(ResourceView);
             }
         }
-
-        /// <summary>
-        /// Apply the texture int the current shader at given slot.
-        /// </summary>
-        /// <param name="slot">The slot.</param>
-        public override void Apply(int slot)
-        {
-            var deviceContext = D3D11Renderer.GetDeviceContext();
-            deviceContext.PixelShader.SetShaderResource(slot, ResourceView);
-        }
-
+        
         /// <summary>
         /// Dispose the texture.
         /// </summary>

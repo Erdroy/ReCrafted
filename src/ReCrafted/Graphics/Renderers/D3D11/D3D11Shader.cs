@@ -162,6 +162,59 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         }
 
         /// <summary>
+        /// Set renderTarget at slot.
+        /// </summary>
+        /// <param name="slot">The slot.</param>
+        /// <param name="texture">The texture.</param>
+        public override void SetRenderTexture(int slot, RenderTarget texture)
+        {
+            var deviceContext = D3D11Renderer.GetDeviceContext();
+            var res = (D3D11RenderTarget)texture;
+            deviceContext.PixelShader.SetShaderResource(slot, res.ResourceView);
+        }
+
+        /// <summary>
+        /// Set UAV of renderTarget at slot.
+        /// </summary>
+        /// <param name="slot">The slot.</param>
+        /// <param name="texture">The texture.</param>
+        public override void SetUnorderedAccessView(int slot, RenderTarget texture)
+        {
+            var deviceContext = D3D11Renderer.GetDeviceContext();
+            var res = (D3D11RenderTarget)texture;
+            deviceContext.ComputeShader.SetUnorderedAccessView(slot, res.UnorderedAccessView);
+        }
+
+        /// <summary>
+        /// Unset UAV of renderTarget from slot.
+        /// </summary>
+        /// <param name="slot">The slot.</param>
+        public override void UnsetUnorderedAccessView(int slot)
+        {
+            var deviceContext = D3D11Renderer.GetDeviceContext();
+            deviceContext.ComputeShader.SetUnorderedAccessView(slot, null);
+        }
+
+        /// <summary>
+        /// Unset renderTarget from slot.
+        /// </summary>
+        /// <param name="slot">The slot.</param>
+        public override void UnsetRenderTexture(int slot)
+        {
+            UnsetTexture(slot);
+        }
+
+        /// <summary>
+        /// Unset texture from slot.
+        /// </summary>
+        /// <param name="slot">The slot.</param>
+        public override void UnsetTexture(int slot)
+        {
+            var deviceContext = D3D11Renderer.GetDeviceContext();
+            deviceContext.PixelShader.SetShaderResource(slot, null);
+        }
+
+        /// <summary>
         /// Set sampler at slot.
         /// </summary>
         /// <param name="slot">The slot.</param>

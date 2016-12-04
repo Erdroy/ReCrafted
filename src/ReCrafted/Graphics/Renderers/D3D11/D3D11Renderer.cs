@@ -92,6 +92,8 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             _blitShader = Shader.FromFile("internal/Blit");
 
             // create bounding box mesh
+
+            #region Bouding box mesh
             var bounds = new BoundingBox(Vector3.Zero, Vector3.One);
             _boundingBox = Mesh.Create();
             _boundingBox.PrimitiveType = PrimitiveType.LineList;
@@ -173,6 +175,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                 Color.OrangeRed,
             });
             _boundingBox.ApplyChanges();
+            #endregion
         }
 
         /// <summary>
@@ -192,7 +195,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             {
                 _finalRenderTarget
             };
-
+            
             _device.ImmediateContext.OutputMerger.SetTargets(_depthStencilView, _currentViews);
             _device.ImmediateContext.ClearDepthStencilView(_depthStencilView, DepthStencilClearFlags.Depth, 1.0f, 0);
             _device.ImmediateContext.ClearRenderTargetView(_finalRenderTarget, Camera.Current.BackgroundColor);
@@ -294,7 +297,6 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         public override void SetRenderTargets(params RenderTarget[] renderTargets)
         {
             _currentViews = renderTargets.Select(renderTarget => ((D3D11RenderTarget) renderTarget).View).ToArray();
-            //_currentViews[0] = _finalRenderTarget;
             _device.ImmediateContext.OutputMerger.SetTargets(_depthStencilView, _currentViews);
         }
 
@@ -321,16 +323,29 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         public override void Blit(RenderTarget renderTarget)
         {
             var deviceContext = _device.ImmediateContext;
-
-            var res = (D3D11RenderTarget)renderTarget;
             var shd = (D3D11Shader) _blitShader;
 
+            // apply shader and all values/resources
             shd.Apply();
-            
-            deviceContext.PixelShader.SetShaderResource(0, res.ResourceView);
+            shd.SetRenderTexture(0, renderTarget);
+
+            // draw
             deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleStrip;
-            
             deviceContext.Draw(4, 0);
+
+            shd.UnsetRenderTexture(0);
+        }
+
+        /// <summary>
+        /// Dispatch ComputeShader.
+        /// </summary>
+        /// <param name="x">The X amount of threads.</param>
+        /// <param name="y">The Y amount of threads.</param>
+        /// <param name="z">The Z amount of threads.</param>
+        public override void Dispatch(int x, int y, int z)
+        {
+            var deviceContext = _device.ImmediateContext;
+            deviceContext.Dispatch(x, y, z);
         }
 
         /// <summary>

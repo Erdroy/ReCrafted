@@ -17,6 +17,10 @@ namespace ReCrafted.Graphics
         private RenderTarget _rtAlbedo;
         private RenderTarget _rtNormals;
 
+        private RenderTarget _rtFinal;
+
+        private Shader _finalShader;
+
         /// <summary>
         /// Default constructor of DeferredRendering class.
         /// </summary>
@@ -37,6 +41,10 @@ namespace ReCrafted.Graphics
             // initialize all resources etc.
             _rtAlbedo = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight);
             _rtNormals = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight);
+
+            _rtFinal = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, true);
+
+            _finalShader = Shader.FromFile("Render_Final");
         }
 
         /// <summary>
@@ -46,6 +54,8 @@ namespace ReCrafted.Graphics
         {
             _rtAlbedo.Clear(Camera.Current.BackgroundColor);
             _rtNormals.Clear(Color.Black);
+            _rtFinal.Clear(Color.Gray);
+
             Renderer.Instance.SetRenderTargets(_rtAlbedo, _rtNormals);
 
             // do render jobs
@@ -54,8 +64,25 @@ namespace ReCrafted.Graphics
                 job.JobMethod(this);
             }
 
+            // do final pass
             Renderer.Instance.SetFinalRenderTarget(false);
-            Renderer.Instance.Blit(_rtAlbedo);
+            _finalShader.Apply();
+
+            _finalShader.SetUnorderedAccessView(0, _rtFinal);
+            _finalShader.SetRenderTexture(0, _rtAlbedo);
+            _finalShader.SetRenderTexture(1, _rtNormals);
+
+            var xThreads = DispatchSize(16, Display.ClientWidth);
+            var yThreads = DispatchSize(16, Display.ClientHeight);
+            Renderer.Instance.Dispatch(xThreads, yThreads, 1);
+
+            _finalShader.UnsetUnorderedAccessView(0);
+            _finalShader.UnsetRenderTexture(0);
+            _finalShader.UnsetRenderTexture(1);
+
+            // present to the swapchain's FinalRT
+            Renderer.Instance.SetFinalRenderTarget(false);
+            Renderer.Instance.Blit(_rtFinal);
         }
 
         /// <summary>
@@ -83,6 +110,7 @@ namespace ReCrafted.Graphics
             // release all resources
             _rtAlbedo?.Dispose();
             _rtNormals?.Dispose();
+            _rtFinal?.Dispose();
         }
 
         // private
@@ -91,6 +119,13 @@ namespace ReCrafted.Graphics
             // resize render targets
             _rtAlbedo.Resize(width, height);
             _rtNormals.Resize(width, height);
+            _rtFinal.Resize(width, height);
+        }
+
+        // private
+        private int DispatchSize(int tgSize, int numElements)
+        {
+            return numElements / tgSize + (numElements % tgSize > 0 ? 1 : 0);
         }
     }
 }

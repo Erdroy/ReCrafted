@@ -95,11 +95,11 @@ namespace ReCrafted.Voxels
                 {
                     // TODO: Use of custom shader
                 }
-
-                block.Texture.Apply(0);
+                VoxelAssets.DefaultShader.SetTexture(0, block.Texture);
                 VoxelAssets.DefaultSampler.Apply(0);
 
                 VoxelAssets.DefaultShader.Draw(mesh.Value);
+                VoxelAssets.DefaultShader.UnsetTexture(0);
             }
         }
         

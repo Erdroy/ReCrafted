@@ -46,6 +46,38 @@ namespace ReCrafted.Graphics
         public abstract void SetTexture(int slot, Texture2D texture);
 
         /// <summary>
+        /// Set renderTarget at slot.
+        /// </summary>
+        /// <param name="slot">The slot.</param>
+        /// <param name="texture">The texture.</param>
+        public abstract void SetRenderTexture(int slot, RenderTarget texture);
+
+        /// <summary>
+        /// Set UAV of renderTarget at slot.
+        /// </summary>
+        /// <param name="slot">The slot.</param>
+        /// <param name="texture">The texture.</param>
+        public abstract void SetUnorderedAccessView(int slot, RenderTarget texture);
+
+        /// <summary>
+        /// Unset UAV of renderTarget from slot.
+        /// </summary>
+        /// <param name="slot">The slot.</param>
+        public abstract void UnsetUnorderedAccessView(int slot);
+
+        /// <summary>
+        /// Unset renderTarget from slot.
+        /// </summary>
+        /// <param name="slot">The slot.</param>
+        public abstract void UnsetRenderTexture(int slot);
+
+        /// <summary>
+        /// Unset texture from slot.
+        /// </summary>
+        /// <param name="slot">The slot.</param>
+        public abstract void UnsetTexture(int slot);
+
+        /// <summary>
         /// Set sampler at slot.
         /// </summary>
         /// <param name="slot">The slot.</param>

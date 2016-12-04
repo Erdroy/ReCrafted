@@ -77,6 +77,14 @@ namespace ReCrafted.Graphics
         public abstract void Blit(RenderTarget renderTarget);
 
         /// <summary>
+        /// Dispatch ComputeShader.
+        /// </summary>
+        /// <param name="x">The X amount of threads.</param>
+        /// <param name="y">The Y amount of threads.</param>
+        /// <param name="z">The Z amount of threads.</param>
+        public abstract void Dispatch(int x, int y, int z);
+
+        /// <summary>
         /// Gets all RenderTargets from the current frame output.
         /// </summary>
         /// <returns>The RenderTargets.</returns>
