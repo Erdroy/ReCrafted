@@ -327,13 +327,13 @@ namespace ReCrafted.Graphics.Renderers.D3D11
 
             // apply shader and all values/resources
             shd.Apply();
-            shd.SetRenderTexture(0, renderTarget);
+            shd.SetRenderTexture(ShaderType.PS, 0, renderTarget);
 
             // draw
             deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleStrip;
             deviceContext.Draw(4, 0);
 
-            shd.UnsetRenderTexture(0);
+            shd.UnsetRenderTexture(ShaderType.PS, 0);
         }
 
         /// <summary>

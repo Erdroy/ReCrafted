@@ -102,6 +102,7 @@
     <Compile Include="Graphics\Shader.cs" />
     <Compile Include="Graphics\Mesh.cs" />
     <Compile Include="Graphics\ShaderMeta.cs" />
+    <Compile Include="Graphics\ShaderType.cs" />
     <Compile Include="Graphics\Texture2D.cs" />
     <Compile Include="Graphics\Vertex.cs" />
     <Compile Include="Graphics\Vertex2Color.cs" />

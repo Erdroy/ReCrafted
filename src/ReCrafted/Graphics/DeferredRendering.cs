@@ -65,20 +65,7 @@ namespace ReCrafted.Graphics
             }
 
             // do final pass
-            Renderer.Instance.SetFinalRenderTarget(false);
-            _finalShader.Apply();
-
-            _finalShader.SetUnorderedAccessView(0, _rtFinal);
-            _finalShader.SetRenderTexture(0, _rtAlbedo);
-            _finalShader.SetRenderTexture(1, _rtNormals);
-
-            var xThreads = DispatchSize(16, Display.ClientWidth);
-            var yThreads = DispatchSize(16, Display.ClientHeight);
-            Renderer.Instance.Dispatch(xThreads, yThreads, 1);
-
-            _finalShader.UnsetUnorderedAccessView(0);
-            _finalShader.UnsetRenderTexture(0);
-            _finalShader.UnsetRenderTexture(1);
+            ComputeOutput();
 
             // present to the swapchain's FinalRT
             Renderer.Instance.SetFinalRenderTarget(false);
@@ -123,7 +110,33 @@ namespace ReCrafted.Graphics
         }
 
         // private
-        private int DispatchSize(int tgSize, int numElements)
+        private void ComputeOutput()
+        {
+            // Temporary fix(the Albedo and Normals RT are bound to the output, 
+            // override the output - allof' should be null)
+            Renderer.Instance.SetFinalRenderTarget(false);
+
+            _finalShader.Apply();
+
+            // set resources
+            _finalShader.SetUnorderedAccessView(0, _rtFinal);
+            _finalShader.SetRenderTexture(ShaderType.CS, 0, _rtAlbedo);
+            _finalShader.SetRenderTexture(ShaderType.CS, 1, _rtNormals);
+
+            // dispatch
+            var xThreads = DispatchSize(16, Display.ClientWidth);
+            var yThreads = DispatchSize(16, Display.ClientHeight);
+            Renderer.Instance.Dispatch(xThreads, yThreads, 1);
+
+            // unset resources
+            _finalShader.UnsetUnorderedAccessView(0);
+            _finalShader.UnsetRenderTexture(ShaderType.CS, 0);
+            _finalShader.UnsetRenderTexture(ShaderType.CS, 1);
+
+        }
+
+        // private
+        private static int DispatchSize(int tgSize, int numElements)
         {
             return numElements / tgSize + (numElements % tgSize > 0 ? 1 : 0);
         }

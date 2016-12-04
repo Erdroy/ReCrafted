@@ -41,20 +41,23 @@ namespace ReCrafted.Graphics
         /// <summary>
         /// Set texture at slot.
         /// </summary>
+        /// <param name="type">The shader type.</param>
         /// <param name="slot">The slot.</param>
         /// <param name="texture">The texture.</param>
-        public abstract void SetTexture(int slot, Texture2D texture);
+        public abstract void SetTexture(ShaderType type, int slot, Texture2D texture);
 
         /// <summary>
         /// Set renderTarget at slot.
         /// </summary>
+        /// <param name="type">The shader type.</param>
         /// <param name="slot">The slot.</param>
         /// <param name="texture">The texture.</param>
-        public abstract void SetRenderTexture(int slot, RenderTarget texture);
+        public abstract void SetRenderTexture(ShaderType type, int slot, RenderTarget texture);
 
         /// <summary>
         /// Set UAV of renderTarget at slot.
         /// </summary>
+        /// <param name="type">The shader type.</param>
         /// <param name="slot">The slot.</param>
         /// <param name="texture">The texture.</param>
         public abstract void SetUnorderedAccessView(int slot, RenderTarget texture);
@@ -68,14 +71,16 @@ namespace ReCrafted.Graphics
         /// <summary>
         /// Unset renderTarget from slot.
         /// </summary>
+        /// <param name="type">The shader type.</param>
         /// <param name="slot">The slot.</param>
-        public abstract void UnsetRenderTexture(int slot);
+        public abstract void UnsetRenderTexture(ShaderType type, int slot);
 
         /// <summary>
         /// Unset texture from slot.
         /// </summary>
+        /// <param name="type">The shader type.</param>
         /// <param name="slot">The slot.</param>
-        public abstract void UnsetTexture(int slot);
+        public abstract void UnsetTexture(ShaderType type, int slot);
 
         /// <summary>
         /// Set sampler at slot.

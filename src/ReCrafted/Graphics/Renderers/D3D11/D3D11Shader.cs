@@ -153,24 +153,52 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         /// <summary>
         /// Set texture at slot.
         /// </summary>
+        /// <param name="type">The shader type.</param>
         /// <param name="slot">The slot.</param>
         /// <param name="texture">The texture.</param>
-        public override void SetTexture(int slot, Texture2D texture)
+        public override void SetTexture(ShaderType type, int slot, Texture2D texture)
         {
             var deviceContext = D3D11Renderer.GetDeviceContext();
-            deviceContext.PixelShader.SetShaderResource(slot, ((D3D11Texture2D)texture).ResourceView);
+            switch (type)
+            {
+                case ShaderType.PS:
+                    deviceContext.PixelShader.SetShaderResource(slot, ((D3D11Texture2D)texture).ResourceView);
+                    break;
+                case ShaderType.VS:
+                    deviceContext.VertexShader.SetShaderResource(slot, ((D3D11Texture2D)texture).ResourceView);
+                    break;
+                case ShaderType.CS:
+                    deviceContext.ComputeShader.SetShaderResource(slot, ((D3D11Texture2D)texture).ResourceView);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
         }
 
         /// <summary>
         /// Set renderTarget at slot.
         /// </summary>
+        /// <param name="type">The shader type.</param>
         /// <param name="slot">The slot.</param>
         /// <param name="texture">The texture.</param>
-        public override void SetRenderTexture(int slot, RenderTarget texture)
+        public override void SetRenderTexture(ShaderType type, int slot, RenderTarget texture)
         {
             var deviceContext = D3D11Renderer.GetDeviceContext();
             var res = (D3D11RenderTarget)texture;
-            deviceContext.PixelShader.SetShaderResource(slot, res.ResourceView);
+            switch (type)
+            {
+                case ShaderType.PS:
+                    deviceContext.PixelShader.SetShaderResource(slot, res.ResourceView);
+                    break;
+                case ShaderType.VS:
+                    deviceContext.VertexShader.SetShaderResource(slot, res.ResourceView);
+                    break;
+                case ShaderType.CS:
+                    deviceContext.ComputeShader.SetShaderResource(slot, res.ResourceView);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
         }
 
         /// <summary>
@@ -198,20 +226,35 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         /// <summary>
         /// Unset renderTarget from slot.
         /// </summary>
+        /// <param name="type">The shader type.</param>
         /// <param name="slot">The slot.</param>
-        public override void UnsetRenderTexture(int slot)
+        public override void UnsetRenderTexture(ShaderType type, int slot)
         {
-            UnsetTexture(slot);
+            UnsetTexture(type, slot);
         }
 
         /// <summary>
         /// Unset texture from slot.
         /// </summary>
+        /// <param name="type">The shader type.</param>
         /// <param name="slot">The slot.</param>
-        public override void UnsetTexture(int slot)
+        public override void UnsetTexture(ShaderType type, int slot)
         {
             var deviceContext = D3D11Renderer.GetDeviceContext();
-            deviceContext.PixelShader.SetShaderResource(slot, null);
+            switch (type)
+            {
+                case ShaderType.PS:
+                    deviceContext.PixelShader.SetShaderResource(slot, null);
+                    break;
+                case ShaderType.VS:
+                    deviceContext.VertexShader.SetShaderResource(slot, null);
+                    break;
+                case ShaderType.CS:
+                    deviceContext.ComputeShader.SetShaderResource(slot, null);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
         }
 
         /// <summary>
