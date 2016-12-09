@@ -71,8 +71,9 @@ namespace ReCrafted.Graphics
             // present to the swapchain's FinalRT
             Renderer.Instance.SetFinalRenderTarget(false);
             Renderer.Instance.Blit(_rtFinal);
-            
+
             // do render jobs
+            Renderer.Instance.SetFinalRenderTarget(true);
             foreach (var job in _postRenderJobs)
             {
                 job.JobMethod(this);

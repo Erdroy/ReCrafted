@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using ReCrafted.Core;
 using ReCrafted.Graphics;
 using SharpDX;
-
 using LibNoise;
 using Math = System.Math;
 
@@ -213,6 +212,14 @@ namespace ReCrafted.Voxels
             }
 
             IsVisible = true;
+        }
+
+        /// <summary>
+        /// Update the chunk's lighting.
+        /// </summary>
+        public void UpdateLighting()
+        {
+            
         }
 
         /// <summary>

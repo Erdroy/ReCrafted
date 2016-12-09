@@ -58,6 +58,13 @@ namespace ReCrafted.Core
                 JobMethod = RenderScene,
                 RenderPriority = 0
             });
+
+            // Add post render jobs
+            Rendering.Current.AddPostDeferredRenderJob(new RenderJob
+            {
+                JobMethod = RenderCursor,
+                RenderPriority = 0
+            });
         }
 
         /// <summary>
@@ -100,6 +107,10 @@ namespace ReCrafted.Core
             _voxelWorld.Draw();
             EntityPool.Draw();
 
+        }
+
+        private void RenderCursor(Rendering rendering)
+        {
             _voxelCursor.Draw();
         }
     }
