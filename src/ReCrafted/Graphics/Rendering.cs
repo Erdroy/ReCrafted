@@ -26,6 +26,12 @@ namespace ReCrafted.Graphics
         public abstract void AddRenderJob(RenderJob job);
 
         /// <summary>
+        /// Add post deferred render job.
+        /// </summary>
+        /// <param name="job">The render job.</param>
+        public abstract void AddPostDeferredRenderJob(RenderJob job);
+
+        /// <summary>
         /// Dispose the rendering
         /// </summary>
         public abstract void Dispose();

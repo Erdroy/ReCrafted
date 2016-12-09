@@ -25,7 +25,9 @@ void CSMain(uint3 GroupID : SV_GroupID, uint3 GroupThreadID : SV_GroupThreadID)
 	float3 lightDir = normalize(float3(0.4f, 0.4f, 0.2f));
 	lightDir = -lightDir;
 
-	float3 dotL = dot(normal, lightDir);
-
-	OutputTexture[pixelCoord] = float4(albedo.rgb * dotL, 1.0f);
+	float3 nDotL = dot(normal, lightDir);
+	
+	float3 lighting = albedo.rgb * nDotL;
+	
+	OutputTexture[pixelCoord] = float4(albedo.rgb + lighting, 1.0f);
 }

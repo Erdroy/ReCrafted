@@ -13,7 +13,8 @@ namespace ReCrafted.Graphics
     public sealed class DeferredRendering : Rendering
     {
         private List<RenderJob> _renderJobs = new List<RenderJob>();
-        
+        private List<RenderJob> _postRenderJobs = new List<RenderJob>();
+
         private RenderTarget _rtAlbedo;
         private RenderTarget _rtNormals;
 
@@ -70,6 +71,12 @@ namespace ReCrafted.Graphics
             // present to the swapchain's FinalRT
             Renderer.Instance.SetFinalRenderTarget(false);
             Renderer.Instance.Blit(_rtFinal);
+            
+            // do render jobs
+            foreach (var job in _postRenderJobs)
+            {
+                job.JobMethod(this);
+            }
         }
 
         /// <summary>
@@ -84,6 +91,21 @@ namespace ReCrafted.Graphics
             // sort all of the render jobs
             // using render priority
             _renderJobs = _renderJobs.OrderBy(renderJob => renderJob.RenderPriority).ToList();
+        }
+
+        /// <summary>
+        /// Add post deferred render job.
+        /// </summary>
+        /// <param name="job">The render job.</param>
+        public override void AddPostDeferredRenderJob(RenderJob job)
+        {
+            // add new render job
+
+            _postRenderJobs.Add(job);
+
+            // sort all of the render jobs
+            // using render priority
+            _postRenderJobs = _postRenderJobs.OrderBy(renderJob => renderJob.RenderPriority).ToList();
         }
         
         /// <summary>
