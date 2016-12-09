@@ -133,7 +133,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
 
             VertexBufferBinding = new VertexBufferBinding(VertexBuffer, GetVertexStride(), 0);
         }
-
+        
         /// <summary>
         /// Sets colors array.
         /// </summary>

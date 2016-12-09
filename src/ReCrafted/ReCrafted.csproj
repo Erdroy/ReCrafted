@@ -44,6 +44,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\lib\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTK">
+      <HintPath>..\..\..\#GIT\ConexEngine\bin\OpenTK.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX">
       <HintPath>..\..\lib\SharpDX\bin\Desktop\SharpDX.dll</HintPath>
     </Reference>
@@ -88,6 +91,7 @@
     <Compile Include="Graphics\Camera.cs" />
     <Compile Include="Graphics\DeferredRendering.cs" />
     <Compile Include="Graphics\IRenderJob.cs" />
+    <Compile Include="Graphics\MeshData.cs" />
     <Compile Include="Graphics\Renderers\D3D11\D3D11Format.cs" />
     <Compile Include="Graphics\Renderers\D3D11\D3D11Mesh.cs" />
     <Compile Include="Graphics\Renderers\D3D11\D3D11RenderTarget.cs" />
@@ -152,6 +156,9 @@
     <None Include="..\..\bin\assets\locales\polski.json">
       <Link>assets\locales\polski.json</Link>
     </None>
+    <None Include="..\..\bin\assets\models\skybox_sphere.json">
+      <Link>assets\models\skybox_sphere.json</Link>
+    </None>
     <None Include="..\..\bin\assets\shaders\cursor.json">
       <Link>assets\shaders\cursor.json</Link>
     </None>
@@ -166,6 +173,9 @@
     </None>
     <None Include="..\..\bin\assets\shaders\Render_GBuffer.json">
       <Link>assets\shaders\Render_GBuffer.json</Link>
+    </None>
+    <None Include="..\..\bin\assets\shaders\Skybox.json">
+      <Link>assets\shaders\Skybox.json</Link>
     </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -201,6 +211,9 @@
     </Content>
     <Content Include="..\..\bin\assets\shaders\Render_GBuffer.hlsl">
       <Link>assets\shaders\Render_GBuffer.hlsl</Link>
+    </Content>
+    <Content Include="..\..\bin\assets\shaders\Skybox.hlsl">
+      <Link>assets\shaders\Skybox.hlsl</Link>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

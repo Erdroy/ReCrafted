@@ -1,0 +1,39 @@
+// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
+{
+    // shader info
+    "ShaderName": "Skybox Shader",
+    "ShaderDesc": "Procedural skybox shader.",
+
+    // constant buffers
+    "ConstantBuffers": [
+        {
+            "BufferName": "Data",
+            "Fields": [
+                {
+                    "FieldName": "WVP",
+                    "FieldType": "matrix"
+                }
+            ]
+        }
+    ],
+
+    // passes
+    "Passes": [
+        {
+            "PassName": "Default", // Empty or Default when shader does not need any UsePass(passName) calls.
+            "VertexShader": "VSMain",
+            "PixelShader": "PSMain",
+            "ComputeShader": "",
+            "Profile": "5_0",
+
+            "VertexLayoutInputs": [
+                {
+                    "InputName": "position",
+                    "InputType": "float3",
+                    "InputSignature": "POSITION"
+                }
+            ]
+        }
+    ]
+}

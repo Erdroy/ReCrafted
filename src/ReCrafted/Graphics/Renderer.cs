@@ -3,6 +3,7 @@
 using System;
 using ReCrafted.Core;
 using ReCrafted.Graphics.Renderers.D3D11;
+using ReCrafted.Graphics.Renderers.OpenGL;
 using ReCrafted.Utilities;
 using SharpDX;
 
@@ -110,14 +111,22 @@ namespace ReCrafted.Graphics
         {
             RendererApi = rendererApi;
             
-            if (rendererApi == RendererApi.D3D11)
+            switch (rendererApi)
             {
-                Instance = new D3D11Renderer();
-                Instance.Init();
+                case RendererApi.D3D11:
+                    Instance = new D3D11Renderer();
+                    Instance.Init();
 
-                Instance.Rendering = rendering;
-                rendering.Init();
-                return;
+                    Instance.Rendering = rendering;
+                    rendering.Init();
+                    return;
+                case RendererApi.OpenGL:
+                    Instance = new OpenGLRenderer();
+                    Instance.Init();
+
+                    Instance.Rendering = rendering;
+                    rendering.Init();
+                    return;
             }
 
             // TODO: Implement renderers

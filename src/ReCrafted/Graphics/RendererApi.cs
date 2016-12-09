@@ -2,6 +2,8 @@
 
 namespace ReCrafted.Graphics
 {
+    // ReSharper disable InconsistentNaming
+
     /// <summary>
     /// RendererApi enum.
     /// </summary>
@@ -9,6 +11,7 @@ namespace ReCrafted.Graphics
     {
         D3D11,
         D3D12,
-        Vulcan
+        Vulcan,
+        OpenGL
     }
 }

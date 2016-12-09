@@ -3,6 +3,7 @@
 using System;
 using System.Drawing;
 using ReCrafted.Graphics.Renderers.D3D11;
+using ReCrafted.Graphics.Renderers.OpenGL;
 using ReCrafted.Utilities;
 
 namespace ReCrafted.Graphics
@@ -44,11 +45,20 @@ namespace ReCrafted.Graphics
         /// <returns>The loaded texture, null when failed(exception will be thrown).</returns>
         public static Texture2D FromFile(string file)
         {
-            if (Renderer.RendererApi == RendererApi.D3D11)
+            switch (Renderer.RendererApi)
             {
-                var d3D11Texture = new D3D11Texture2D();
-                d3D11Texture.Load(new Bitmap(file));
-                return d3D11Texture;
+                case RendererApi.D3D11:
+                {
+                    var texture = new D3D11Texture2D();
+                    texture.Load(new Bitmap(file));
+                    return texture;
+                }
+                case RendererApi.OpenGL:
+                {
+                    var texture = new OpenGLTexture2D();
+                    texture.Load(new Bitmap(file));
+                    return texture;
+                }
             }
 
             // TODO: Implement renderers

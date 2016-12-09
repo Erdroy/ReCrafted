@@ -22,6 +22,10 @@ namespace ReCrafted.Graphics
 
         private Shader _finalShader;
 
+        // skybox
+        private Shader _skyboxShader;
+        private Mesh _skyboxSphere;
+
         /// <summary>
         /// Default constructor of DeferredRendering class.
         /// </summary>
@@ -45,7 +49,10 @@ namespace ReCrafted.Graphics
 
             _rtFinal = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, true);
 
+            _skyboxSphere = Mesh.FromMeshData(MeshData.FromFile("skybox_sphere"));
+
             _finalShader = Shader.FromFile("Render_Final");
+            _skyboxShader = Shader.FromFile("Skybox");
         }
 
         /// <summary>
@@ -57,6 +64,8 @@ namespace ReCrafted.Graphics
             _rtNormals.Clear(Color.Black);
             _rtFinal.Clear(Color.Gray);
 
+            // render skybox into final RT
+            
             Renderer.Instance.SetRenderTargets(_rtAlbedo, _rtNormals);
 
             // do render jobs
@@ -71,6 +80,8 @@ namespace ReCrafted.Graphics
             // present to the swapchain's FinalRT
             Renderer.Instance.SetFinalRenderTarget(false);
             Renderer.Instance.Blit(_rtFinal);
+
+            Voxels.VoxelAssets.DefaultShader.Draw(_skyboxSphere);
 
             // do render jobs
             Renderer.Instance.SetFinalRenderTarget(true);

@@ -2,6 +2,7 @@
 
 using System;
 using ReCrafted.Graphics.Renderers.D3D11;
+using ReCrafted.Graphics.Renderers.OpenGL;
 using ReCrafted.Utilities;
 using SharpDX;
 
@@ -117,11 +118,20 @@ namespace ReCrafted.Graphics
 
             var shaderMeta = ShaderMeta.FromFile(shaderMetaFile);
 
-            if (Renderer.RendererApi == RendererApi.D3D11)
+            switch (Renderer.RendererApi)
             {
-                var d3D11Shader = new D3D11Shader();
-                d3D11Shader.Initialize(shaderSourceFile, shaderMeta);
-                return d3D11Shader;
+                case RendererApi.D3D11:
+                {
+                    var shader = new D3D11Shader();
+                    shader.Initialize(shaderSourceFile, shaderMeta);
+                    return shader;
+                }
+                case RendererApi.OpenGL:
+                {
+                    var shader = new OpenGLShader();
+                    shader.Initialize(shaderSourceFile, shaderMeta);
+                    return shader;
+                }
             }
 
             // TODO: Implement renderers

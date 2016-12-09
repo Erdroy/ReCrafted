@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReCrafted", "ReCrafted.cspr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReCrafted.VersionBuilder", "..\tools\ReCrafted.VersionBuilder\ReCrafted.VersionBuilder.csproj", "{07408177-47F2-40DD-A6C2-CC9391D2F41B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelConverter", "..\tools\ModelConverter\ModelConverter.csproj", "{5D279CF2-9FC5-4CAA-B47F-CAE4FA5A7B42}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{07408177-47F2-40DD-A6C2-CC9391D2F41B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07408177-47F2-40DD-A6C2-CC9391D2F41B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07408177-47F2-40DD-A6C2-CC9391D2F41B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D279CF2-9FC5-4CAA-B47F-CAE4FA5A7B42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D279CF2-9FC5-4CAA-B47F-CAE4FA5A7B42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D279CF2-9FC5-4CAA-B47F-CAE4FA5A7B42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D279CF2-9FC5-4CAA-B47F-CAE4FA5A7B42}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

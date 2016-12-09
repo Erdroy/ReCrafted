@@ -8,6 +8,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     internal class OpenGLMesh : Mesh
     {
+
         public override void SetColors(Color[] colors)
         {
             throw new System.NotImplementedException();

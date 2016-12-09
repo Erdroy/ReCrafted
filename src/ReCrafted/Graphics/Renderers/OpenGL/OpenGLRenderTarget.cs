@@ -8,6 +8,14 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     internal class OpenGLRenderTarget : RenderTarget
     {
+        /// <summary>
+        /// D3D11RenderTarget constructor.
+        /// </summary>
+        public OpenGLRenderTarget(int width, int height, bool uav)
+        {
+            //Internal_Create(width, height, uav);
+        }
+
         public override void Resize(int width, int height)
         {
             throw new System.NotImplementedException();

@@ -5,3 +5,7 @@ bin/*.dll
 src/ReCrafted/.vs/
 src/ReCrafted/obj/
 src/tools/ReCrafted.VersionBuilder/obj/
+src/tools/ModelConverter/obj/
+src/tools/ModelConverter/.vs/
+src/tools/ModelConverter/bin/
+tools/

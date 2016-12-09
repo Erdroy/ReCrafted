@@ -2,6 +2,7 @@
 
 using System;
 using ReCrafted.Graphics.Renderers.D3D11;
+using ReCrafted.Graphics.Renderers.OpenGL;
 using ReCrafted.Utilities;
 using SharpDX;
 
@@ -17,7 +18,7 @@ namespace ReCrafted.Graphics
         {
             PrimitiveType = PrimitiveType.TriangleList;
         }
-
+        
         // Methods
         /// <summary>
         /// Sets colors array.
@@ -73,6 +74,53 @@ namespace ReCrafted.Graphics
         /// Disposes the mesh.
         /// </summary>
         public abstract void Dispose();
+        
+        /// <summary>
+        /// Creates mesh from mesh data.
+        /// </summary>
+        /// <param name="meshData">The mesh data.</param>
+        /// <returns>The created mesh.</returns>
+        public static Mesh FromMeshData(MeshData meshData)
+        {
+            Mesh mesh;
+
+            switch (Renderer.RendererApi)
+            {
+                case RendererApi.D3D11:
+                    mesh = new D3D11Mesh();
+                    break;
+                case RendererApi.OpenGL:
+                    mesh = new OpenGLMesh();
+                    break;
+                default:
+                    return null;
+                
+                // TODO: Implement renderers
+            }
+
+            if (meshData.Positions == null || meshData.Positions.Length == 0)
+            {
+                throw new ReCraftedException("Cannot load mesh! Mesh does not have any positions defined!");
+            }
+
+            mesh.SetVertices(meshData.Positions);
+
+            if (meshData.UVs != null && meshData.UVs.Length > 0)
+                mesh.SetUVs(meshData.UVs);
+
+            if (meshData.Colors != null && meshData.Colors.Length > 0)
+                mesh.SetColors(meshData.Colors);
+
+            if (meshData.Normals != null && meshData.Normals.Length > 0)
+                mesh.SetNormals(meshData.Normals);
+
+            if (meshData.Indices != null && meshData.Indices.Length > 0)
+                mesh.SetIndices(meshData.Indices);
+
+            mesh.ApplyChanges();
+
+            return mesh;
+        }
 
         /// <summary>
         /// Creates new mesh.
@@ -80,9 +128,12 @@ namespace ReCrafted.Graphics
         /// <returns>The created mesh.</returns>
         public static Mesh Create()
         {
-            if (Renderer.RendererApi == RendererApi.D3D11)
+            switch (Renderer.RendererApi)
             {
-                return new D3D11Mesh();
+                case RendererApi.D3D11:
+                    return new D3D11Mesh();
+                case RendererApi.OpenGL:
+                    return new OpenGLMesh();
             }
 
             // TODO: Implement renderers
