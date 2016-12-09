@@ -8,4 +8,6 @@ src/tools/ReCrafted.VersionBuilder/obj/
 src/tools/ModelConverter/obj/
 src/tools/ModelConverter/.vs/
 src/tools/ModelConverter/bin/
-tools/
+tools/obj.obj
+tools/SharpDX.dll
+tools/SharpDX.Mathematics.dll

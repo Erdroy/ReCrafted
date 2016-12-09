@@ -20,13 +20,13 @@ VSOutput VSMain(in VSInput input)
 {
 	VSOutput output = (VSOutput)0;
 
-	output.position = mul(float4(input.position, 1.0f), WVP);
-	output.color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	output.position = mul(WVP, float4(input.position, 1.0f));
+	output.color = float4(0.0f, 1.0f, 1.0f, 1.0f);
 
 	return output;
 }
 
 float4 PSMain(in VSOutput input) : SV_TARGET
 {
-	return float4(0.75f, 0.75f, 0.75f, 0.7f);
+	return input.color;
 }

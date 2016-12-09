@@ -65,7 +65,13 @@ namespace ReCrafted.Graphics
             _rtFinal.Clear(Color.Gray);
 
             // render skybox into final RT
-            
+            Renderer.Instance.SetRenderTargets(_rtAlbedo);
+            Renderer.Instance.SetDepthTestState(false);
+            _skyboxShader.Apply();
+            _skyboxShader.SetValue("WVP", /*Matrix.Translation(Camera.Current.Position) * */Camera.Current.ViewProjectionMatrix);
+            _skyboxShader.Draw(_skyboxSphere);
+            Renderer.Instance.SetDepthTestState(true);
+
             Renderer.Instance.SetRenderTargets(_rtAlbedo, _rtNormals);
 
             // do render jobs
@@ -80,8 +86,6 @@ namespace ReCrafted.Graphics
             // present to the swapchain's FinalRT
             Renderer.Instance.SetFinalRenderTarget(false);
             Renderer.Instance.Blit(_rtFinal);
-
-            Voxels.VoxelAssets.DefaultShader.Draw(_skyboxSphere);
 
             // do render jobs
             Renderer.Instance.SetFinalRenderTarget(true);
