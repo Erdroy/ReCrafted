@@ -337,6 +337,14 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         }
 
         /// <summary>
+        /// Clears depth.
+        /// </summary>
+        public override void ClearDepth()
+        {
+            _device.ImmediateContext.ClearDepthStencilView(_depthStencilView, DepthStencilClearFlags.Depth, 1.0f, 0);
+        }
+
+        /// <summary>
         /// Dispatch ComputeShader.
         /// </summary>
         /// <param name="x">The X amount of threads.</param>

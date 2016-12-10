@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ReCrafted.Core;
 using ReCrafted.Graphics.Primitives;
+using ReCrafted.Voxels;
 using SharpDX;
 
 namespace ReCrafted.Graphics
@@ -18,7 +19,7 @@ namespace ReCrafted.Graphics
 
         private RenderTarget _rtAlbedo;
         private RenderTarget _rtNormals;
-
+        private RenderTarget _rtShadowMap;
         private RenderTarget _rtFinal;
 
         private Shader _finalShader;
@@ -26,6 +27,8 @@ namespace ReCrafted.Graphics
         // skybox
         private Shader _skyboxShader;
         private Mesh _skyboxSphere;
+
+        private Vector3 _ligthDirection;
 
         /// <summary>
         /// Default constructor of DeferredRendering class.
@@ -47,6 +50,7 @@ namespace ReCrafted.Graphics
             // initialize all resources etc.
             _rtAlbedo = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight);
             _rtNormals = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight);
+            _rtShadowMap = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight);
 
             _rtFinal = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, true);
 
@@ -54,6 +58,9 @@ namespace ReCrafted.Graphics
 
             _finalShader = Shader.FromFile("Render_Final");
             _skyboxShader = Shader.FromFile("Skybox");
+
+
+            _ligthDirection = -new Vector3(0.4f, 0.4f, 0.2f);
         }
 
         /// <summary>
@@ -64,6 +71,7 @@ namespace ReCrafted.Graphics
             _rtAlbedo.Clear(Camera.Current.BackgroundColor);
             _rtNormals.Clear(Color.Black);
             _rtFinal.Clear(Color.Black);
+            _rtShadowMap.Clear(Color.Black);
 
             // render skybox into final RT
             Renderer.Instance.SetRenderTargets(_rtAlbedo);
@@ -77,9 +85,11 @@ namespace ReCrafted.Graphics
             _skyboxShader.Draw(_skyboxSphere);
             Renderer.Instance.SetDepthTestState(true);
 
-
             // render shadow map
+            GenerateShadowMap();
 
+            // clear depth
+            Renderer.Instance.ClearDepth();
 
             Renderer.Instance.SetRenderTargets(_rtAlbedo, _rtNormals);
 
@@ -117,7 +127,7 @@ namespace ReCrafted.Graphics
             // using render priority
             _renderJobs = _renderJobs.OrderBy(renderJob => renderJob.RenderPriority).ToList();
         }
-
+        
         /// <summary>
         /// Add post deferred render job.
         /// </summary>
@@ -140,11 +150,18 @@ namespace ReCrafted.Graphics
         {
             // clear render jobs,
             _renderJobs.Clear();
+            _postRenderJobs.Clear();
 
             // release all resources
             _rtAlbedo?.Dispose();
             _rtNormals?.Dispose();
             _rtFinal?.Dispose();
+            _rtShadowMap?.Dispose();
+
+            _skyboxSphere?.Dispose();
+
+            _skyboxShader?.Dispose();
+            _finalShader?.Dispose();
         }
 
         // private
@@ -154,6 +171,18 @@ namespace ReCrafted.Graphics
             _rtAlbedo.Resize(width, height);
             _rtNormals.Resize(width, height);
             _rtFinal.Resize(width, height);
+            _rtShadowMap.Resize(width, height);
+        }
+
+        // private
+        private void GenerateShadowMap()
+        {
+            Renderer.Instance.SetRenderTargets(_rtShadowMap);
+
+            var lookAt = Matrix.LookAtLH(Camera.Current.Position, Camera.Current.Position - _ligthDirection, Vector3.Up);
+            var proj = Matrix.OrthoOffCenterLH(-25, 25, -25, 25, -100, 200);
+            
+            VoxelWorld.Instance.DrawShadowMap(lookAt * proj);
         }
 
         // private
@@ -164,12 +193,13 @@ namespace ReCrafted.Graphics
             _finalShader.Apply();
 
             _finalShader.SetValue("LightColor", new Color(1.0f, 1.0f, 1.0f, 1.0f).ToVector4());
-            _finalShader.SetValue("LightDir", -new Vector3(0.4f, 0.4f, 0.2f));
+            _finalShader.SetValue("LightDir", _ligthDirection);
 
             // set resources
             _finalShader.SetUnorderedAccessView(0, _rtFinal);
             _finalShader.SetRenderTexture(ShaderType.CS, 0, _rtAlbedo);
             _finalShader.SetRenderTexture(ShaderType.CS, 1, _rtNormals);
+            _finalShader.SetRenderTexture(ShaderType.CS, 2, _rtShadowMap);
 
             // dispatch
             var xThreads = DispatchSize(16, Display.ClientWidth);
@@ -182,6 +212,7 @@ namespace ReCrafted.Graphics
             _finalShader.UnsetUnorderedAccessView(0);
             _finalShader.UnsetRenderTexture(ShaderType.CS, 0);
             _finalShader.UnsetRenderTexture(ShaderType.CS, 1);
+            _finalShader.UnsetRenderTexture(ShaderType.CS, 2);
 
         }
 

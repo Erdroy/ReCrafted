@@ -1,0 +1,49 @@
+// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
+{
+    // shader info
+    "ShaderName": "Depth only Shader",
+    "ShaderDesc": "Depth only shader. Used for shadow mapping.",
+
+    // constant buffers
+    "ConstantBuffers": [
+        {
+            "BufferName": "Data",
+            "Fields": [
+                {
+                    "FieldName": "WorldViewProjection",
+                    "FieldType": "matrix"
+                }
+            ]
+        }
+    ],
+
+    // passes
+    "Passes": [
+        {
+            "PassName": "Default", // Empty or Default when shader does not need any UsePass(passName) calls.
+            "VertexShader": "VSMain",
+            "PixelShader": "PSMain",
+            "ComputeShader": "",
+            "Profile": "5_0",
+
+            "VertexLayoutInputs": [
+                {
+                    "InputName": "position",
+                    "InputType": "float3",
+                    "InputSignature": "POSITION"
+                },
+                {
+                    "InputName": "uv",
+                    "InputType": "float2",
+                    "InputSignature": "TEXCOORD"
+                },
+                {
+                    "InputName": "normal",
+                    "InputType": "float3",
+                    "InputSignature": "NORMAL"
+                }
+            ]
+        }
+    ]
+}

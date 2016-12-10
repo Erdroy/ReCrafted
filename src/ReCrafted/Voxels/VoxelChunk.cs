@@ -5,9 +5,7 @@ using System.Collections.Generic;
 using ReCrafted.Core;
 using ReCrafted.Graphics;
 using SharpDX;
-using LibNoise;
 using ReCrafted.Voxels.Generator;
-using Math = System.Math;
 
 namespace ReCrafted.Voxels 
 {
@@ -21,7 +19,7 @@ namespace ReCrafted.Voxels
         /// </summary>
         public VoxelChunk[] NeighChunks = new VoxelChunk[8];
 
-        private readonly Dictionary<ushort, Mesh> _meshes = new Dictionary<ushort, Mesh>();
+        internal readonly Dictionary<ushort, Mesh> Meshes = new Dictionary<ushort, Mesh>();
         private ushort[,,] _voxels;
 
         /// <summary>
@@ -71,7 +69,7 @@ namespace ReCrafted.Voxels
         /// </summary>
         public void Draw()
         {
-            if (_meshes.Count == 0)
+            if (Meshes.Count == 0)
                 return;
 
             var wvp = Matrix.Translation(new Vector3(Position.X, Position.Y, Position.Z)) * Camera.Current.ViewProjectionMatrix;
@@ -79,7 +77,7 @@ namespace ReCrafted.Voxels
 
             VoxelAssets.DefaultShader.Apply();
 
-            foreach (var mesh in _meshes)
+            foreach (var mesh in Meshes)
             {
                 var block = VoxelAssets.Blocks[mesh.Key];
                 
@@ -105,11 +103,11 @@ namespace ReCrafted.Voxels
         /// </summary>
         public void Dispose()
         {
-            foreach (var mesh in _meshes)
+            foreach (var mesh in Meshes)
             {
                 mesh.Value.Dispose();
             }
-            _meshes.Clear();
+            Meshes.Clear();
         }
         
         /// <summary>
@@ -120,11 +118,11 @@ namespace ReCrafted.Voxels
             UpdateNeighs();
             
             // clear
-            foreach (var mesh in _meshes)
+            foreach (var mesh in Meshes)
             {
                 mesh.Value.Dispose();
             }
-            _meshes.Clear();
+            Meshes.Clear();
 
             var blocksVertices = new Dictionary<ushort, List<Vector3>>();
             var blocksIndices = new Dictionary<ushort, List<uint>>();
@@ -206,7 +204,7 @@ namespace ReCrafted.Voxels
                     mesh.ApplyChanges();
                 }
 
-                _meshes.Add(vertices.Key, mesh);
+                Meshes.Add(vertices.Key, mesh);
             }
 
             IsVisible = true;

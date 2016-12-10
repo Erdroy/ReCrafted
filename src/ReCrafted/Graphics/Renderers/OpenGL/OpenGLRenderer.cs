@@ -53,6 +53,11 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             throw new System.NotImplementedException();
         }
 
+        public override void ClearDepth()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public override void Dispatch(int x, int y, int z)
         {
             throw new System.NotImplementedException();

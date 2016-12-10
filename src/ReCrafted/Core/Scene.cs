@@ -109,6 +109,7 @@ namespace ReCrafted.Core
 
         }
 
+        // private
         private void RenderCursor(Rendering rendering)
         {
             _voxelCursor.Draw();

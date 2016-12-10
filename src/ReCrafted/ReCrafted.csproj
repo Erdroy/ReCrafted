@@ -167,6 +167,9 @@
     <None Include="..\..\bin\assets\shaders\internal\Color.json">
       <Link>assets\shaders\internal\Color.json</Link>
     </None>
+    <None Include="..\..\bin\assets\shaders\internal\DepthOnly.json">
+      <Link>assets\shaders\internal\DepthOnly.json</Link>
+    </None>
     <None Include="..\..\bin\assets\shaders\Render_Final.json">
       <Link>assets\shaders\Render_Final.json</Link>
     </None>
@@ -206,6 +209,9 @@
     </Content>
     <Content Include="..\..\bin\assets\shaders\internal\Color.hlsl">
       <Link>assets\shaders\internal\Color.hlsl</Link>
+    </Content>
+    <Content Include="..\..\bin\assets\shaders\internal\DepthOnly.hlsl">
+      <Link>assets\shaders\internal\DepthOnly.hlsl</Link>
     </Content>
     <Content Include="..\..\bin\assets\shaders\Render_Final.hlsl">
       <Link>assets\shaders\Render_Final.hlsl</Link>

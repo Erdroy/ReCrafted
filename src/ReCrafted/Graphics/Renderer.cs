@@ -78,6 +78,11 @@ namespace ReCrafted.Graphics
         public abstract void Blit(RenderTarget renderTarget);
 
         /// <summary>
+        /// Clears depth.
+        /// </summary>
+        public abstract void ClearDepth();
+
+        /// <summary>
         /// Dispatch ComputeShader.
         /// </summary>
         /// <param name="x">The X amount of threads.</param>

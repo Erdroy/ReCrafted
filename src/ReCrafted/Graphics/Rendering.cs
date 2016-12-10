@@ -24,7 +24,7 @@ namespace ReCrafted.Graphics
         /// </summary>
         /// <param name="job">The render job.</param>
         public abstract void AddRenderJob(RenderJob job);
-
+        
         /// <summary>
         /// Add post deferred render job.
         /// </summary>

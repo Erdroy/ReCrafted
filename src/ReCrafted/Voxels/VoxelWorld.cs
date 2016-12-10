@@ -37,6 +37,7 @@ namespace ReCrafted.Voxels
         public static VoxelWorld Instance;
         
         private readonly List<VoxelChunk> _chunks = new List<VoxelChunk>();
+        private Shader _depthOnly;
 
         // methods
         /// <summary>
@@ -53,6 +54,8 @@ namespace ReCrafted.Voxels
         public void Init()
         {
             VoxelAssets.LoadAssets();
+
+            _depthOnly = Shader.FromFile("internal/DepthOnly");
 
             // create chunks
             for (var z = 0; z < 5; z++)
@@ -165,6 +168,28 @@ namespace ReCrafted.Voxels
         }
 
         /// <summary>
+        /// Draws shadow map.
+        /// </summary>
+        public void DrawShadowMap(Matrix lightViewProj)
+        {
+            foreach (var chunk in _chunks)
+            {
+                var wvp = Matrix.Translation(chunk.Position.X, chunk.Position.Y, chunk.Position.Z)*lightViewProj;
+
+                wvp.Transpose();
+
+                _depthOnly.Apply();
+                _depthOnly.SetValue("WorldViewProjection", wvp);
+                _depthOnly.ApplyChanges();
+
+                foreach (var mesh in chunk.Meshes)
+                {
+                    _depthOnly.Draw(mesh.Value);
+                }
+            }
+        }
+        
+        /// <summary>
         /// Finds chunk which has the right position.
         /// </summary>
         /// <param name="position">The position.</param>
@@ -276,6 +301,8 @@ namespace ReCrafted.Voxels
         {
             foreach (var chunk in _chunks)
                 chunk.Dispose();
+
+            _depthOnly?.Dispose();
         }
     }
 }
