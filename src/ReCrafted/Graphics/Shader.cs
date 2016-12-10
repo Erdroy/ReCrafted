@@ -96,6 +96,11 @@ namespace ReCrafted.Graphics
         public abstract void Apply();
 
         /// <summary>
+        /// Apply value changes.
+        /// </summary>
+        public abstract void ApplyChanges();
+
+        /// <summary>
         /// Draws mesh using this shader.
         /// </summary>
         /// <param name="mesh">The mesh.</param>

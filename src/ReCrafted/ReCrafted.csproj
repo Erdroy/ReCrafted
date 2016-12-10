@@ -92,6 +92,7 @@
     <Compile Include="Graphics\DeferredRendering.cs" />
     <Compile Include="Graphics\IRenderJob.cs" />
     <Compile Include="Graphics\MeshData.cs" />
+    <Compile Include="Graphics\Primitives\Primitive.cs" />
     <Compile Include="Graphics\Renderers\D3D11\D3D11Format.cs" />
     <Compile Include="Graphics\Renderers\D3D11\D3D11Mesh.cs" />
     <Compile Include="Graphics\Renderers\D3D11\D3D11RenderTarget.cs" />
@@ -156,9 +157,6 @@
     <None Include="..\..\bin\assets\locales\polski.json">
       <Link>assets\locales\polski.json</Link>
     </None>
-    <None Include="..\..\bin\assets\models\skybox_sphere.json">
-      <Link>assets\models\skybox_sphere.json</Link>
-    </None>
     <None Include="..\..\bin\assets\shaders\cursor.json">
       <Link>assets\shaders\cursor.json</Link>
     </None>
@@ -177,6 +175,7 @@
     <None Include="..\..\bin\assets\shaders\Skybox.json">
       <Link>assets\shaders\Skybox.json</Link>
     </None>
+    <Compile Include="Graphics\Primitives\IcoSphere.cs" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -188,6 +187,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="assets\models\" />
     <Folder Include="Game\" />
     <Folder Include="Graphics\Renderers\D3D12\" />
     <Folder Include="Graphics\Renderers\Vulcan\" />

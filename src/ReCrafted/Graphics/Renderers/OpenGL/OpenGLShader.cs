@@ -62,6 +62,11 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             throw new System.NotImplementedException();
         }
 
+        public override void ApplyChanges()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public override void Draw(Mesh mesh)
         {
             throw new System.NotImplementedException();

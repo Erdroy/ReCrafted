@@ -126,6 +126,8 @@ namespace ReCrafted.Voxels
             _shader.Apply();
 
             _shader.SetValue("WVP", wvp);
+
+            _shader.ApplyChanges();
             _shader.Draw(_mesh);
         }
 

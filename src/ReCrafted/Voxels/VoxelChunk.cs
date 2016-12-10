@@ -97,6 +97,7 @@ namespace ReCrafted.Voxels
                 VoxelAssets.DefaultShader.SetTexture(ShaderType.PS, 0, block.Texture);
                 VoxelAssets.DefaultSampler.Apply(0);
 
+                VoxelAssets.DefaultShader.ApplyChanges();
                 VoxelAssets.DefaultShader.Draw(mesh.Value);
                 VoxelAssets.DefaultShader.UnsetTexture(ShaderType.PS, 0);
             }

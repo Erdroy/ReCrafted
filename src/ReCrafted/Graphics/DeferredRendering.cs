@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ReCrafted.Core;
+using ReCrafted.Graphics.Primitives;
 using SharpDX;
 
 namespace ReCrafted.Graphics
@@ -49,7 +50,7 @@ namespace ReCrafted.Graphics
 
             _rtFinal = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, true);
 
-            _skyboxSphere = Mesh.FromMeshData(MeshData.FromFile("skybox_sphere"));
+            _skyboxSphere = Mesh.FromMeshData(new IcoSphere(3, 1.0f, true).GetMeshData());
 
             _finalShader = Shader.FromFile("Render_Final");
             _skyboxShader = Shader.FromFile("Skybox");
@@ -62,13 +63,14 @@ namespace ReCrafted.Graphics
         {
             _rtAlbedo.Clear(Camera.Current.BackgroundColor);
             _rtNormals.Clear(Color.Black);
-            _rtFinal.Clear(Color.Gray);
+            _rtFinal.Clear(Color.Black);
 
             // render skybox into final RT
             Renderer.Instance.SetRenderTargets(_rtAlbedo);
             Renderer.Instance.SetDepthTestState(false);
             _skyboxShader.Apply();
-            _skyboxShader.SetValue("WVP", /*Matrix.Translation(Camera.Current.Position) * */Camera.Current.ViewProjectionMatrix);
+            _skyboxShader.SetValue("WVP", Matrix.Translation(Camera.Current.Position) * Camera.Current.ViewProjectionMatrix);
+            _skyboxShader.ApplyChanges();
             _skyboxShader.Draw(_skyboxSphere);
             Renderer.Instance.SetDepthTestState(true);
 
@@ -150,11 +152,12 @@ namespace ReCrafted.Graphics
         // private
         private void ComputeOutput()
         {
-            // Temporary fix(the Albedo and Normals RT are bound to the output, 
-            // override the output - allof' should be null)
             Renderer.Instance.SetFinalRenderTarget(false);
 
             _finalShader.Apply();
+
+            _finalShader.SetValue("LightColor", new Color(1.0f, 1.0f, 1.0f, 1.0f).ToVector4());
+            _finalShader.SetValue("LightDir", -new Vector3(0.4f, 0.4f, 0.2f));
 
             // set resources
             _finalShader.SetUnorderedAccessView(0, _rtFinal);
@@ -164,6 +167,8 @@ namespace ReCrafted.Graphics
             // dispatch
             var xThreads = DispatchSize(16, Display.ClientWidth);
             var yThreads = DispatchSize(16, Display.ClientHeight);
+
+            _finalShader.ApplyChanges();
             Renderer.Instance.Dispatch(xThreads, yThreads, 1);
 
             // unset resources

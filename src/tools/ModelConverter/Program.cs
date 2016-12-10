@@ -31,9 +31,10 @@ namespace ModelConverter
                 {
                     foreach (var face in group.Faces)
                     {
-                        indices.Add((uint)face[0].VertexIndex);
-                        indices.Add((uint)face[1].VertexIndex);
-                        indices.Add((uint)face[2].VertexIndex);
+                        for (var i = 0; i < face.Count; i++)
+                        {
+                            indices.Add((uint)face[i].VertexIndex);
+                        }
                     }
                 }
 

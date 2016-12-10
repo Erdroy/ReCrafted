@@ -13,20 +13,21 @@ struct VSInput
 struct VSOutput
 {
 	float4 position : SV_POSITION;
-	float4 color : COLOR;
+	float3 worldPos : TEXCOORD;
 };
 
 VSOutput VSMain(in VSInput input)
 {
 	VSOutput output = (VSOutput)0;
-
 	output.position = mul(WVP, float4(input.position, 1.0f));
-	output.color = float4(0.0f, 1.0f, 1.0f, 1.0f);
-
+	output.worldPos = input.position;
 	return output;
 }
 
 float4 PSMain(in VSOutput input) : SV_TARGET
 {
-	return input.color;
+	if (input.worldPos.y > 0.01f)
+		return float4(0.0f, 1.0f, 1.0f, 1.0f);
+
+	return float4(0.0f, 0.3f, 0.3f, 1.0f);
 }

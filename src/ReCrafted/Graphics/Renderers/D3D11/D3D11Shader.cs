@@ -116,10 +116,11 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             if (hasConstBuffer)
             {
                 var cbuffer = meta.ConstantBuffers[0];
+                var size = (int) ReCraftedMath.NearestRound(cbuffer.Size, 16);
 
-                _backingBuffer = new DataBuffer(cbuffer.Size);
+                _backingBuffer = new DataBuffer(size);
                 _dataPointer = _backingBuffer.DataPointer;
-                _constantBuffer = Buffer.Create(device, BindFlags.ConstantBuffer, ref _dataPointer, cbuffer.Size, ResourceUsage.Dynamic, CpuAccessFlags.Write);
+                _constantBuffer = Buffer.Create(device, BindFlags.ConstantBuffer, ref _dataPointer, size, ResourceUsage.Dynamic, CpuAccessFlags.Write);
             }
 
             _meta = meta;
@@ -286,6 +287,35 @@ namespace ReCrafted.Graphics.Renderers.D3D11
 
             if (InputLayout != null)
                 deviceContext.InputAssembler.InputLayout = InputLayout;
+
+            // apply constant buffer
+            deviceContext.ComputeShader.SetConstantBuffer(0, _constantBuffer);
+            deviceContext.VertexShader.SetConstantBuffer(0, _constantBuffer);
+            deviceContext.PixelShader.SetConstantBuffer(0, _constantBuffer);
+        }
+
+        /// <summary>
+        /// Apply values changes.
+        /// </summary>
+        public override void ApplyChanges()
+        {
+            // update constant buffer if needed
+            if (!_isDirty)
+                return;
+
+            var deviceContext = D3D11Renderer.GetDeviceContext();
+
+            DataStream stream;
+            deviceContext.MapSubresource(_constantBuffer, MapMode.WriteDiscard, MapFlags.None, out stream);
+
+            // update
+            stream.Position = 0;
+            stream.Write(_backingBuffer.DataPointer, 0, _backingBuffer.Size);
+
+            stream.Dispose();
+            deviceContext.UnmapSubresource(_constantBuffer, 0);
+
+            _isDirty = false;
         }
 
         /// <summary>
@@ -310,7 +340,6 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                 case PrimitiveType.PointList:
                     deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.PointList;
                     break;
-
                 case PrimitiveType.LineList:
                     deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.LineList;
                     break;
@@ -323,24 +352,6 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            // update constant buffer if needed
-            if (_isDirty)
-            {
-                DataStream stream;
-                deviceContext.MapSubresource(_constantBuffer, MapMode.WriteDiscard, MapFlags.None, out stream);
-
-                // update
-                stream.Position = 0;
-                stream.Write(_backingBuffer.DataPointer, 0, _backingBuffer.Size);
-
-                stream.Dispose();
-                deviceContext.UnmapSubresource(_constantBuffer, 0);
-            }
-
-            // apply constant buffer
-            deviceContext.VertexShader.SetConstantBuffer(0, _constantBuffer);
-            deviceContext.PixelShader.SetConstantBuffer(0, _constantBuffer);
 
             deviceContext.InputAssembler.SetVertexBuffers(0, d3D11Mesh.VertexBufferBinding);
 

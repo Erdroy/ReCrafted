@@ -1,5 +1,7 @@
 ﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
 
+using System;
+
 namespace ReCrafted.Utilities
 {
     /// <summary>
@@ -25,6 +27,26 @@ namespace ReCrafted.Utilities
             v++;
 
             return v;
+        }
+
+        /// <summary>
+        /// Round up to nearest multiple of 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="multiple"></param>
+        /// <returns></returns>
+        public static float NearestRound(float value, float multiple)
+        {
+            if (!(multiple < 1))
+                return (float) Math.Round(value/multiple, MidpointRounding.AwayFromZero)*multiple;
+
+            var i = (float)Math.Floor(value);
+            var x2 = i;
+            while ((x2 += multiple) < value)
+            {
+            }
+            var x1 = x2 - multiple;
+            return (Math.Abs(value - x1) < Math.Abs(value - x2)) ? x1 : x2;
         }
     }
 }
