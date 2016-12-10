@@ -6,6 +6,7 @@ using ReCrafted.Core;
 using ReCrafted.Graphics;
 using SharpDX;
 using LibNoise;
+using ReCrafted.Voxels.Generator;
 using Math = System.Math;
 
 namespace ReCrafted.Voxels 
@@ -30,16 +31,6 @@ namespace ReCrafted.Voxels
         {
             _voxels = new ushort[VoxelWorld.ChunkSize, VoxelWorld.ChunkHeight, VoxelWorld.ChunkSize];
             
-            var noise = new Perlin
-            {
-                Frequency = 0.1,
-                Lacunarity = 1,
-                NoiseQuality = NoiseQuality.Standard,
-                OctaveCount = 10,
-                Persistence = 0.3,
-                Seed = 100
-            };
-
             for (var z = 0; z < VoxelWorld.ChunkSize; z++)
             {
                 for (var y = 0; y < VoxelWorld.ChunkHeight; y++)
@@ -52,12 +43,18 @@ namespace ReCrafted.Voxels
                             continue;
                         }
 
-                        // generate
-                        if (y * 0.07f < Math.Sqrt(noise.GetValue(x + Position.X, 0, z + Position.Z)))
-                            _voxels[x, y, z] = 2;
+                        // generate terrain
+                        _voxels[x, y, z] = VoxelWorldGenerator.GenerateTerrain(new Int3(x, y, z) + Position);
+
+                        // generate rivers, oceans, ponds etc.
+
+                        // generate caves
+
                     }
                 }
             }
+
+            // generate structures(buildings, trees)
 
             IsLoaded = true;
         }

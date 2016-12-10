@@ -40,10 +40,5 @@ void CSMain(uint3 GroupID : SV_GroupID, uint3 GroupThreadID : SV_GroupThreadID)
 	float3 light = LightColor.xyz * nDotL;
 	float3 lighting = light + float4(0.6f, 0.6f, 0.6f, 0.0f);
 
-
-	float4 color = float4(albedo.rgb * lighting, 1.0f);
-
-	// apply post processing?
-
-	OutputTexture[pixelCoord] = color;
+	OutputTexture[pixelCoord] = float4(albedo.rgb * lighting, 1.0f);
 }

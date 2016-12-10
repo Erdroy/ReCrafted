@@ -133,6 +133,7 @@
     <Compile Include="Graphics\RendererApi.cs" />
     <Compile Include="Utilities\ReCraftedMath.cs" />
     <Compile Include="Utilities\ReCraftedException.cs" />
+    <Compile Include="Voxels\Generator\VoxelWorldGenerator.cs" />
     <Compile Include="Voxels\VoxelAssets.cs" />
     <Compile Include="Voxels\VoxelBlock.cs" />
     <Compile Include="Voxels\VoxelChunk.cs" />
@@ -214,6 +215,36 @@
     </Content>
     <Content Include="..\..\bin\assets\shaders\Skybox.hlsl">
       <Link>assets\shaders\Skybox.hlsl</Link>
+    </Content>
+    <Content Include="..\..\bin\assets\textures\blocks\bedrock.png">
+      <Link>assets\textures\blocks\bedrock.png</Link>
+    </Content>
+    <Content Include="..\..\bin\assets\textures\blocks\dirt.png">
+      <Link>assets\textures\blocks\dirt.png</Link>
+    </Content>
+    <Content Include="..\..\bin\assets\textures\blocks\grass_side_overlay.png">
+      <Link>assets\textures\blocks\grass_side_overlay.png</Link>
+    </Content>
+    <Content Include="..\..\bin\assets\textures\blocks\grass_top.png">
+      <Link>assets\textures\blocks\grass_top.png</Link>
+    </Content>
+    <Content Include="..\..\bin\assets\textures\blocks\planks.png">
+      <Link>assets\textures\blocks\planks.png</Link>
+    </Content>
+    <Content Include="..\..\bin\assets\textures\blocks\sand.png">
+      <Link>assets\textures\blocks\sand.png</Link>
+    </Content>
+    <Content Include="..\..\bin\assets\textures\blocks\sandstone.png">
+      <Link>assets\textures\blocks\sandstone.png</Link>
+    </Content>
+    <Content Include="..\..\bin\assets\textures\blocks\sandstone_bottom.png">
+      <Link>assets\textures\blocks\sandstone_bottom.png</Link>
+    </Content>
+    <Content Include="..\..\bin\assets\textures\blocks\sandstone_top.png">
+      <Link>assets\textures\blocks\sandstone_top.png</Link>
+    </Content>
+    <Content Include="..\..\bin\assets\textures\blocks\stone.png">
+      <Link>assets\textures\blocks\stone.png</Link>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

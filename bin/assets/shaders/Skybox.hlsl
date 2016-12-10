@@ -26,7 +26,7 @@ VSOutput VSMain(in VSInput input)
 
 float4 PSMain(in VSOutput input) : SV_TARGET
 {
-	if (input.worldPos.y > 0.01f)
+	if (input.worldPos.y > -0.15f)
 		return float4(0.0f, 1.0f, 1.0f, 1.0f);
 
 	return float4(0.0f, 0.3f, 0.3f, 1.0f);

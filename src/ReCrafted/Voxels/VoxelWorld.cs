@@ -54,9 +54,9 @@ namespace ReCrafted.Voxels
             VoxelAssets.LoadAssets();
 
             // create chunks
-            for (var z = 0; z < 10; z++)
+            for (var z = 0; z < 5; z++)
             {
-                for (var x = 0; x < 10; x++)
+                for (var x = 0; x < 5; x++)
                 {
                     var chunk = new VoxelChunk
                     {

@@ -326,8 +326,8 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         {
             var d3D11Mesh = (D3D11Mesh)mesh;
 
-            if(d3D11Mesh.VertexBuffer == null)
-                throw new ReCraftedException("");
+            if (d3D11Mesh.VertexBuffer == null)
+                return;
 
             var deviceContext = D3D11Renderer.GetDeviceContext();
 

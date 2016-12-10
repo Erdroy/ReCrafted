@@ -45,7 +45,7 @@ namespace ReCrafted.Core
             _camera = new Camera
             {
                 BackgroundColor = new Color(25, 25, 25, 255),
-                Position = new Vector3(0.0f, 2.0f, -10.0f),
+                Position = new Vector3(0.0f, 60.0f, 10.0f),
                 FreeLook = true,
                 FieldOfView = (float)Math.PI * 0.4f
             };
