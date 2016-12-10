@@ -8,8 +8,8 @@ namespace ReCrafted.Voxels.Generator
     public static class VoxelWorldGenerator
     {
         private static Perlin _perlinNoise;
-        
-        public static ushort GenerateTerrain(Int3 pos)
+
+        public static ushort GenerateTerrains(Int3 pos)
         {
             if (_perlinNoise == null)
             {
@@ -55,6 +55,12 @@ namespace ReCrafted.Voxels.Generator
                 block = 4;
             }
             
+            return block;
+        }
+
+        public static ushort GenerateCaves(ushort block, Int3 pos)
+        {
+
             return block;
         }
     }

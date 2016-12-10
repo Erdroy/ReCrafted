@@ -13,6 +13,18 @@
                 {
                     "FieldName": "WVP",
                     "FieldType": "matrix"
+                },
+                {
+                    "FieldName": "ColorUpper",
+                    "FieldType": "float4"
+                },
+                {
+                    "FieldName": "ColorMiddle",
+                    "FieldType": "float4"
+                },
+                {
+                    "FieldName": "ColorLower",
+                    "FieldType": "float4"
                 }
             ]
         }

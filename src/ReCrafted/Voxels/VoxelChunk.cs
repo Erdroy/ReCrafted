@@ -44,12 +44,12 @@ namespace ReCrafted.Voxels
                         }
 
                         // generate terrain
-                        _voxels[x, y, z] = VoxelWorldGenerator.GenerateTerrain(new Int3(x, y, z) + Position);
+                        _voxels[x, y, z] = VoxelWorldGenerator.GenerateTerrains(new Int3(x, y, z) + Position);
 
                         // generate rivers, oceans, ponds etc.
 
                         // generate caves
-
+                        _voxels[x, y, z] = VoxelWorldGenerator.GenerateCaves(_voxels[x, y, z], new Int3(x, y, z) + Position);
                     }
                 }
             }
@@ -559,7 +559,7 @@ namespace ReCrafted.Voxels
         public bool IsVisible { get; set; }
         
         /// <summary>
-        /// The chunk bounds.
+        /// The chunk bounds(w/o 1 block edge).
         /// </summary>
         public BoundingBox Bounds
         {
@@ -567,6 +567,18 @@ namespace ReCrafted.Voxels
             {
                 var pos = new Vector3(Position.X, Position.Y, Position.Z);
                 return new BoundingBox(pos, pos + new Vector3(VoxelWorld.ChunkSize - 1, VoxelWorld.ChunkHeight - 1, VoxelWorld.ChunkSize - 1));
+            }
+        }
+
+        /// <summary>
+        /// The real chunk bounds.
+        /// </summary>
+        public BoundingBox RealBounds
+        {
+            get
+            {
+                var pos = new Vector3(Position.X, Position.Y, Position.Z);
+                return new BoundingBox(pos, pos + new Vector3(VoxelWorld.ChunkSize, VoxelWorld.ChunkHeight, VoxelWorld.ChunkSize));
             }
         }
     }

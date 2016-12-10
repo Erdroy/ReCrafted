@@ -3,7 +3,13 @@
 cbuffer Data : register(b0)
 {
 	matrix WVP;
+
+	float4 ColorUpper;
+	float4 ColorMiddle;
+	float4 ColorLower;
 }
+
+#define HORI_HEIGHT -0.15f
 
 struct VSInput
 {
@@ -26,8 +32,28 @@ VSOutput VSMain(in VSInput input)
 
 float4 PSMain(in VSOutput input) : SV_TARGET
 {
-	if (input.worldPos.y > -0.15f)
-		return float4(0.0f, 1.0f, 1.0f, 1.0f);
+	// the colors
+	float3 color = float3(0.0f, 0.0f, 0.0f);
 
-	return float4(0.0f, 0.3f, 0.3f, 1.0f);
+	// the height
+	float height = input.worldPos.y;
+
+	// calculate distance from the horizon
+	float dist = abs(HORI_HEIGHT - height);
+
+	// create interpolation factor
+	float interpolation = clamp(dist, 0.0f, 1.0f);
+
+	// interpolate colors
+	if (height < HORI_HEIGHT)
+	{
+		color = lerp(ColorMiddle, ColorLower, interpolation);
+	}
+	else 
+	{
+		color = lerp(ColorMiddle, ColorUpper, interpolation);
+	}
+
+	// return color
+	return float4(color, 1.0f);
 }

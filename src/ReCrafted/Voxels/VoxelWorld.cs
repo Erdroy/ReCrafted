@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ReCrafted.Core;
+using ReCrafted.Graphics;
 using SharpDX;
 
 namespace ReCrafted.Voxels
@@ -156,7 +157,11 @@ namespace ReCrafted.Voxels
         public void Draw()
         {
             foreach (var chunk in _chunks)
+            {
+                // simple frustum culling
+                //if (Camera.Current.CameraFrustum.Contains(chunk.RealBounds) != ContainmentType.Disjoint)
                 chunk.Draw();
+            }
         }
 
         /// <summary>

@@ -70,9 +70,16 @@ namespace ReCrafted.Graphics
             Renderer.Instance.SetDepthTestState(false);
             _skyboxShader.Apply();
             _skyboxShader.SetValue("WVP", Matrix.Translation(Camera.Current.Position) * Camera.Current.ViewProjectionMatrix);
+            _skyboxShader.SetValue("ColorUpper", new Vector4(0.0f, 0.3f, 0.4f, 1.0f));
+            _skyboxShader.SetValue("ColorMiddle", new Vector4(0.0f, 0.6f, 0.8f, 1.0f));
+            _skyboxShader.SetValue("ColorLower", new Vector4(0.0f, 0.1f, 0.1f, 1.0f));
             _skyboxShader.ApplyChanges();
             _skyboxShader.Draw(_skyboxSphere);
             Renderer.Instance.SetDepthTestState(true);
+
+
+            // render shadow map
+
 
             Renderer.Instance.SetRenderTargets(_rtAlbedo, _rtNormals);
 
