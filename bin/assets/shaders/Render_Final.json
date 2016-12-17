@@ -17,6 +17,10 @@
                 {
                     "FieldName": "LightDir",
                     "FieldType": "float4"
+                },
+                {
+                    "FieldName": "LightViewProj",
+                    "FieldType": "matrix"
                 }
             ]
         }

@@ -72,7 +72,7 @@ namespace ReCrafted.Graphics
             _rtNormals.Clear(Color.Black);
             _rtFinal.Clear(Color.Black);
             _rtShadowMap.Clear(Color.Black);
-
+            
             // render skybox into final RT
             Renderer.Instance.SetRenderTargets(_rtAlbedo);
             Renderer.Instance.SetDepthTestState(false);
@@ -84,7 +84,7 @@ namespace ReCrafted.Graphics
             _skyboxShader.ApplyChanges();
             _skyboxShader.Draw(_skyboxSphere);
             Renderer.Instance.SetDepthTestState(true);
-
+            
             // render shadow map
             GenerateShadowMap();
 
@@ -190,10 +190,17 @@ namespace ReCrafted.Graphics
         {
             Renderer.Instance.SetFinalRenderTarget(false);
 
+            var lookAt = Matrix.LookAtLH(Camera.Current.Position, Camera.Current.Position - _ligthDirection, Vector3.Up);
+            var proj = Matrix.OrthoOffCenterLH(-25, 25, -25, 25, -100, 200);
+
+            var lightVp = lookAt * proj;
+
+
             _finalShader.Apply();
 
             _finalShader.SetValue("LightColor", new Color(1.0f, 1.0f, 1.0f, 1.0f).ToVector4());
             _finalShader.SetValue("LightDir", _ligthDirection);
+            _finalShader.SetValue("LightViewProj", lightVp);
 
             // set resources
             _finalShader.SetUnorderedAccessView(0, _rtFinal);

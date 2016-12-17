@@ -62,6 +62,24 @@ namespace ReCrafted.Voxels
                 Name = "planks",
                 Texture = Texture2D.FromFile("assets/textures/blocks/planks.png", true)
             });
+
+            AddBlock(20, new VoxelBlock
+            {
+                Name = "coal ore",
+                Texture = Texture2D.FromFile("assets/textures/blocks/coal_ore.png", true)
+            });
+
+            AddBlock(21, new VoxelBlock
+            {
+                Name = "iron ore",
+                Texture = Texture2D.FromFile("assets/textures/blocks/iron_ore.png", true)
+            });
+
+            AddBlock(22, new VoxelBlock
+            {
+                Name = "gold ore",
+                Texture = Texture2D.FromFile("assets/textures/blocks/gold_ore.png", true)
+            });
         }
 
         /// <summary>

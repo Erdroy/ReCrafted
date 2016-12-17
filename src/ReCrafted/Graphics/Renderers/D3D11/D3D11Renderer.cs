@@ -25,14 +25,13 @@ namespace ReCrafted.Graphics.Renderers.D3D11
 
         private Device _device;
         private SwapChain _swapChain;
-
-        private SharpDX.Direct3D11.Texture2D _depthBuffer;
-
+        
         private RenderTargetView _finalRenderTarget;
-        private DepthStencilView _depthStencilView;
 
         private RasterizerState _wireframeRasterizerState;
         private RasterizerState _defaultRasterizerState;
+
+        private D3D11RenderTarget _depth;
 
         private RenderTargetView[] _currentViews;
 
@@ -196,8 +195,8 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                 _finalRenderTarget
             };
             
-            _device.ImmediateContext.OutputMerger.SetTargets(_depthStencilView, _currentViews);
-            _device.ImmediateContext.ClearDepthStencilView(_depthStencilView, DepthStencilClearFlags.Depth, 1.0f, 0);
+            _device.ImmediateContext.OutputMerger.SetTargets(_depth.DepthView, _currentViews);
+            _device.ImmediateContext.ClearDepthStencilView(_depth.DepthView, DepthStencilClearFlags.Depth, 1.0f, 0);
             _device.ImmediateContext.ClearRenderTargetView(_finalRenderTarget, Camera.Current.BackgroundColor);
             
             Rendering.Draw();
@@ -213,8 +212,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         public override void Resize(int width, int height)
         {
             _finalRenderTarget?.Dispose();
-            _depthBuffer?.Dispose();
-            _depthStencilView?.Dispose();
+            _depth?.Dispose();
 
             if (width < 32)
                 width = 32;
@@ -236,22 +234,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             }
 
             // create depth buffer
-            _depthBuffer = new SharpDX.Direct3D11.Texture2D(_device, new Texture2DDescription()
-            {
-                Format = Format.D32_Float_S8X24_UInt,
-                ArraySize = 1,
-                MipLevels = 1,
-                Width = width,
-                Height = height,
-                SampleDescription = new SampleDescription(1, 0),
-                Usage = ResourceUsage.Default,
-                BindFlags = BindFlags.DepthStencil,
-                CpuAccessFlags = CpuAccessFlags.None,
-                OptionFlags = ResourceOptionFlags.None
-            });
-
-            // create the depth buffer view
-            _depthStencilView = new DepthStencilView(_device, _depthBuffer);
+            _depth = new D3D11RenderTarget(width, height, RenderTarget.TextureFormat.Depth, false);
         }
 
         /// <summary>
@@ -282,7 +265,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         {
             if (enabled)
             {
-                _device.ImmediateContext.OutputMerger.SetTargets(_depthStencilView, _currentViews);
+                _device.ImmediateContext.OutputMerger.SetTargets(_depth.DepthView, _currentViews);
             }
             else
             {
@@ -296,8 +279,8 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         /// <param name="renderTargets">The RenderTargets.</param>
         public override void SetRenderTargets(params RenderTarget[] renderTargets)
         {
-            _currentViews = renderTargets.Select(renderTarget => ((D3D11RenderTarget) renderTarget).View).ToArray();
-            _device.ImmediateContext.OutputMerger.SetTargets(_depthStencilView, _currentViews);
+            _currentViews = renderTargets.Select(renderTarget => ((D3D11RenderTarget) renderTarget).TextureView).ToArray();
+            _device.ImmediateContext.OutputMerger.SetTargets(_depth.DepthView, _currentViews);
         }
 
         /// <summary>
@@ -308,7 +291,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         {
             if (useDepthTest)
             {
-                _device.ImmediateContext.OutputMerger.SetTargets(_depthStencilView, _finalRenderTarget);
+                _device.ImmediateContext.OutputMerger.SetTargets(_depth.DepthView, _finalRenderTarget);
             }
             else
             {
@@ -341,7 +324,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         /// </summary>
         public override void ClearDepth()
         {
-            _device.ImmediateContext.ClearDepthStencilView(_depthStencilView, DepthStencilClearFlags.Depth, 1.0f, 0);
+            _device.ImmediateContext.ClearDepthStencilView(_depth.DepthView, DepthStencilClearFlags.Depth, 1.0f, 0);
         }
 
         /// <summary>
@@ -385,8 +368,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         /// </summary>
         public override void Dispose()
         {
-            _depthBuffer?.Dispose();
-            _depthStencilView?.Dispose();
+            _depth?.Dispose();
             _device?.Dispose();
             _finalRenderTarget?.Dispose();
             _swapChain?.Dispose();

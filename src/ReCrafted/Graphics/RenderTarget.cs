@@ -23,7 +23,9 @@ namespace ReCrafted.Graphics
             RGB32_Float,
             RGBA32_Float,
 
-            RGBA8_UNorm
+            RGBA8_UNorm,
+
+            Depth
         }
         // ReSharper restore InconsistentNaming
 
