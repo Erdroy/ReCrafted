@@ -1,5 +1,6 @@
 ﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
 
+using System;
 using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
@@ -16,11 +17,15 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         internal ShaderResourceView ResourceView;
         internal UnorderedAccessView UnorderedAccessView;
 
+        public TextureFormat TexFormat;
+
         /// <summary>
         /// D3D11RenderTarget constructor.
         /// </summary>
-        public D3D11RenderTarget(int width, int height, bool uav)
+        public D3D11RenderTarget(int width, int height, TextureFormat format, bool uav)
         {
+            TexFormat = format;
+
             Internal_Create(width, height, uav);
         }
 
@@ -68,7 +73,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                     MipLevels = 1,
                     ArraySize = 1,
                     CpuAccessFlags = CpuAccessFlags.None,
-                    Format = Format.R8G8B8A8_UNorm,
+                    Format = GetFormat(),
                     OptionFlags = ResourceOptionFlags.None,
                     SampleDescription = new SampleDescription(1, 0),
                     Usage = ResourceUsage.Default
@@ -86,7 +91,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                     MipLevels = 1,
                     ArraySize = 1,
                     CpuAccessFlags = CpuAccessFlags.None,
-                    Format = Format.R8G8B8A8_UNorm,
+                    Format = GetFormat(),
                     OptionFlags = ResourceOptionFlags.None,
                     SampleDescription = new SampleDescription(1, 0),
                     Usage = ResourceUsage.Default
@@ -95,6 +100,26 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             
             View = new RenderTargetView(D3D11Renderer.GetDevice(), Texture2D);
             ResourceView = new ShaderResourceView(D3D11Renderer.GetDevice(), Texture2D);
+        }
+
+        private Format GetFormat()
+        {
+            switch (TexFormat)
+            {
+                case TextureFormat.R32_Float:
+                    return Format.R32_Float;
+                case TextureFormat.RG32_Float:
+                    return Format.R32G32_Float;
+                case TextureFormat.RGB32_Float:
+                    return Format.R32G32B32_Float;
+                case TextureFormat.RGBA32_Float:
+                    return Format.R32G32B32A32_Float;
+
+                case TextureFormat.RGBA8_UNorm:
+                    return Format.R8G8B8A8_UNorm;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }

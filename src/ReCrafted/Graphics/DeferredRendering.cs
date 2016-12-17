@@ -48,11 +48,11 @@ namespace ReCrafted.Graphics
             Game.Instance.OnResize += OnResize;
 
             // initialize all resources etc.
-            _rtAlbedo = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight);
-            _rtNormals = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight);
-            _rtShadowMap = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight);
+            _rtAlbedo = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm);
+            _rtNormals = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm);
+            _rtShadowMap = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.R32_Float);
 
-            _rtFinal = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, true);
+            _rtFinal = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm, true);
 
             _skyboxSphere = Mesh.FromMeshData(new IcoSphere(3, 1.0f, true).GetMeshData());
 

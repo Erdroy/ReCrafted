@@ -3,7 +3,6 @@
 using System;
 using System.Drawing;
 using ReCrafted.Graphics.Renderers.D3D11;
-using ReCrafted.Graphics.Renderers.OpenGL;
 using ReCrafted.Utilities;
 
 namespace ReCrafted.Graphics
@@ -20,7 +19,9 @@ namespace ReCrafted.Graphics
         /// Load texture from bitmap.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
-        protected abstract void Load(Bitmap bitmap);
+        /// <param name="genMips">Generate mipmaps for this texture?</param>
+        /// <param name="maxMips">The maximal count of mipmaps.</param>
+        protected abstract void Load(Bitmap bitmap, bool genMips, int maxMips);
         
         /// <summary>
         /// Dispose the texture.
@@ -42,21 +43,17 @@ namespace ReCrafted.Graphics
         /// Load 2d texture from file.
         /// </summary>
         /// <param name="file">The file path.</param>
+        /// <param name="generateMips">Generate mipmaps for this texture?</param>
+        /// <param name="maxMips">The maximal count of mipmaps.</param>
         /// <returns>The loaded texture, null when failed(exception will be thrown).</returns>
-        public static Texture2D FromFile(string file)
+        public static Texture2D FromFile(string file, bool generateMips = false, int maxMips = 8)
         {
             switch (Renderer.RendererApi)
             {
                 case RendererApi.D3D11:
                 {
                     var texture = new D3D11Texture2D();
-                    texture.Load(new Bitmap(file));
-                    return texture;
-                }
-                case RendererApi.OpenGL:
-                {
-                    var texture = new OpenGLTexture2D();
-                    texture.Load(new Bitmap(file));
+                    texture.Load(new Bitmap(file), generateMips, maxMips);
                     return texture;
                 }
             }

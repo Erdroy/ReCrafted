@@ -29,38 +29,38 @@ namespace ReCrafted.Voxels
             AddBlock(1, new VoxelBlock
             {
                 Name = "stone",
-                Texture = Texture2D.FromFile("assets/textures/blocks/stone.png")
+                Texture = Texture2D.FromFile("assets/textures/blocks/stone.png", true)
             });
 
             AddBlock(2, new VoxelBlock
             {
                 Name = "dirt",
-                Texture = Texture2D.FromFile("assets/textures/blocks/dirt.png")
+                Texture = Texture2D.FromFile("assets/textures/blocks/dirt.png", true)
             });
 
             AddBlock(3, new VoxelBlock
             {
                 Name = "grass",
-                Texture = Texture2D.FromFile("assets/textures/blocks/dirt.png")
+                Texture = Texture2D.FromFile("assets/textures/blocks/dirt.png", true)
                 // TODO: Side overlays, custom top/bottom texture etc.
             });
 
             AddBlock(4, new VoxelBlock
             {
                 Name = "sand",
-                Texture = Texture2D.FromFile("assets/textures/blocks/sand.png")
+                Texture = Texture2D.FromFile("assets/textures/blocks/sand.png", true)
             });
 
             AddBlock(5, new VoxelBlock
             {
                 Name = "bedrock",
-                Texture = Texture2D.FromFile("assets/textures/blocks/bedrock.png")
+                Texture = Texture2D.FromFile("assets/textures/blocks/bedrock.png", true)
             });
 
             AddBlock(6, new VoxelBlock
             {
                 Name = "planks",
-                Texture = Texture2D.FromFile("assets/textures/blocks/planks.png")
+                Texture = Texture2D.FromFile("assets/textures/blocks/planks.png", true)
             });
         }
 

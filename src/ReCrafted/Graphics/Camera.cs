@@ -100,16 +100,7 @@ namespace ReCrafted.Graphics
             ViewMatrix = Matrix.LookAtLH(Position, Position + Forward, Vector3.Up);
             ProjectionMatrix = Matrix.PerspectiveFovLH(FieldOfView, _aspectRatio, NearZPlane, FarZPlane);
             
-            CameraFrustum = BoundingFrustum.FromCamera(new FrustumCameraParams
-            {
-                Position = Position,
-                AspectRatio = _aspectRatio,
-                FOV = FieldOfView,
-                LookAtDir = Forward,
-                UpDir = Vector3.Up,
-                ZFar = FarZPlane,
-                ZNear = NearZPlane
-            });
+            CameraFrustum = new BoundingFrustum(ViewProjectionMatrix);
         }
 
         /// <summary>

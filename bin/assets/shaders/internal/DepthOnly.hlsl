@@ -26,7 +26,7 @@ VSOutput VSMain(in VSInput input)
 	return output;
 }
 
-float4 PSMain(in VSOutput input) : SV_TARGET
+float PSMain(in VSOutput input) : SV_TARGET
 {
-	return float4(input.depth, 0.0f, 0.0f, 1.0f);
+	return input.depth;
 }

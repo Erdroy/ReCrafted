@@ -101,12 +101,6 @@
     <Compile Include="Graphics\PrimitiveType.cs" />
     <Compile Include="Graphics\RasterizerStates.cs" />
     <Compile Include="Graphics\Renderers\D3D11\D3D11Texture2D.cs" />
-    <Compile Include="Graphics\Renderers\OpenGL\OpenGLMesh.cs" />
-    <Compile Include="Graphics\Renderers\OpenGL\OpenGLRenderer.cs" />
-    <Compile Include="Graphics\Renderers\OpenGL\OpenGLTexture2D.cs" />
-    <Compile Include="Graphics\Renderers\OpenGL\OpenGLShader.cs" />
-    <Compile Include="Graphics\Renderers\OpenGL\OpenGLSampler.cs" />
-    <Compile Include="Graphics\Renderers\OpenGL\OpenGLRenderTarget.cs" />
     <Compile Include="Graphics\Rendering.cs" />
     <Compile Include="Graphics\RenderTarget.cs" />
     <Compile Include="Graphics\Sampler.cs" />
@@ -118,6 +112,7 @@
     <Compile Include="Graphics\Vertex.cs" />
     <Compile Include="Graphics\Vertex2Color.cs" />
     <Compile Include="Graphics\Vertex2Uv.cs" />
+    <Compile Include="Graphics\Vertex4UvNormalColor.cs" />
     <Compile Include="Graphics\Vertex3UvNormal.cs" />
     <Compile Include="Graphics\Vertex3UvColor.cs" />
     <Compile Include="Core\Entity.cs" />
@@ -194,6 +189,7 @@
     <Folder Include="assets\models\" />
     <Folder Include="Game\" />
     <Folder Include="Graphics\Renderers\D3D12\" />
+    <Folder Include="Graphics\Renderers\OpenGL\" />
     <Folder Include="Graphics\Renderers\Vulcan\" />
     <Folder Include="Physics\" />
   </ItemGroup>

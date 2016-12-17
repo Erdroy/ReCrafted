@@ -162,7 +162,7 @@ namespace ReCrafted.Voxels
             foreach (var chunk in _chunks)
             {
                 // simple frustum culling
-                //if (Camera.Current.CameraFrustum.Contains(chunk.RealBounds) != ContainmentType.Disjoint)
+                if (Camera.Current.CameraFrustum.Contains(chunk.RealBounds) != ContainmentType.Disjoint)
                 chunk.Draw();
             }
         }

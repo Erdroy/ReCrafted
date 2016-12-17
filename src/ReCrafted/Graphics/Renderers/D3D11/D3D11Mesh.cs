@@ -13,6 +13,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
     /// </summary>
     internal sealed class D3D11Mesh : Mesh
     {
+
         internal D3D11Mesh() { }
 
         /// <summary>
@@ -208,7 +209,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             VertexBuffer?.Dispose();
             IndexBuffer?.Dispose();
         }
-
+        
         /// <summary>
         /// Vertex buffer binding.
         /// </summary>

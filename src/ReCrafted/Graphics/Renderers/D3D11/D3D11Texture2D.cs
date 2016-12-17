@@ -22,12 +22,14 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         /// ResourceView
         /// </summary>
         public ShaderResourceView ResourceView;
-        
+
         /// <summary>
         /// Load texture from bitmap.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
-        protected override void Load(Bitmap bitmap)
+        /// <param name="genMips">Generate mipmaps for this texture?</param>
+        /// <param name="maxMips">The maximal count of mipmaps.</param>
+        protected override void Load(Bitmap bitmap, bool genMips, int maxMips)
         {
             var stride = bitmap.Width * 4;
             using (var buffer = new DataStream(bitmap.Height*stride, true, true))

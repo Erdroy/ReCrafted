@@ -5,9 +5,9 @@ using SharpDX;
 namespace ReCrafted.Graphics
 {
     /// <summary>
-    /// Vertex3 structure.
+    /// Vertex4 structure.
     /// </summary>
-    public struct Vertex3UvNormal
+    public struct Vertex4UvNormalColor
     {
         /// <summary>
         /// Vertice
@@ -25,8 +25,13 @@ namespace ReCrafted.Graphics
         public Vector3 Normal;
 
         /// <summary>
+        /// Color
+        /// </summary>
+        public Color Color;
+
+        /// <summary>
         /// Size in bytes.
         /// </summary>
-        public static readonly int SizeInBytes = Vector3.SizeInBytes + Vector2.SizeInBytes + Vector3.SizeInBytes/*the color size in bytes*/;
+        public static readonly int SizeInBytes = Vector3.SizeInBytes + Vector2.SizeInBytes + Vector3.SizeInBytes + 4;
     }
 }

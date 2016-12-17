@@ -42,11 +42,11 @@ namespace ReCrafted.Voxels.Generator
 
             ushort block = 0;
             
-            if (noise - 3 >= pos.Y)
+            if (noise - 4 >= pos.Y)
             {
                 block = 1;
             }
-            else if (noise - 2 >= pos.Y)
+            else if (noise - 3 >= pos.Y)
             {
                 block = 2;
             }

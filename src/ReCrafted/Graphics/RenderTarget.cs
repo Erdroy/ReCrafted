@@ -2,7 +2,6 @@
 
 using System;
 using ReCrafted.Graphics.Renderers.D3D11;
-using ReCrafted.Graphics.Renderers.OpenGL;
 using ReCrafted.Utilities;
 using SharpDX;
 
@@ -13,6 +12,21 @@ namespace ReCrafted.Graphics
     /// </summary>
     public abstract class RenderTarget : IDisposable
     {
+        // ReSharper disable InconsistentNaming
+        /// <summary>
+        /// The RenderTarget format.
+        /// </summary>
+        public enum TextureFormat
+        {
+            R32_Float,
+            RG32_Float,
+            RGB32_Float,
+            RGBA32_Float,
+
+            RGBA8_UNorm
+        }
+        // ReSharper restore InconsistentNaming
+
         /// <summary>
         /// RenderTarget constructor.
         /// </summary>
@@ -39,16 +53,15 @@ namespace ReCrafted.Graphics
         /// </summary>
         /// <param name="width">The width of the RenderTarget.</param>
         /// <param name="height">The height of the RenderTarget.</param>
+        /// <param name="format">The format.</param>
         /// <param name="uav">Create Unordered access view?</param>
         /// <returns>The created RenderTarget.</returns>
-        public static RenderTarget Create(int width, int height, bool uav = false)
+        public static RenderTarget Create(int width, int height, TextureFormat format, bool uav = false)
         {
             switch (Renderer.RendererApi)
             {
                 case RendererApi.D3D11:
-                    return new D3D11RenderTarget(width, height, uav);
-                case RendererApi.OpenGL:
-                    return new OpenGLRenderTarget(width, height, uav);
+                    return new D3D11RenderTarget(width, height, format, uav);
             }
 
             // TODO: Implement renderers
