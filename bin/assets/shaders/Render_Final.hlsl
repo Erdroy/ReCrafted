@@ -16,8 +16,9 @@ cbuffer Data : register(b0)
 
 Texture2D<float4> Albedo : register(t0);
 Texture2D<float4> Normals : register(t1);
-Texture2D<float> Depth : register(t2);
-Texture2D<float> ShadowOcculusion : register(t3);
+Texture2D<float4> AmbientOcculusion : register(t2);
+Texture2D<float> Depth : register(t3);
+Texture2D<float> ShadowOcculusion : register(t4);
 
 RWTexture2D<float4> OutputTexture : register(u0);
 

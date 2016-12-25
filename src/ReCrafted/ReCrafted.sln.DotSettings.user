@@ -5,4 +5,5 @@
   &lt;Assembly Path="C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.Windows.Forms.dll" /&gt;&#xD;
   &lt;Assembly Path="D:\ReCrafted\lib\SharpDX\bin\Desktop\SharpDX.Direct3D11.dll" /&gt;&#xD;
   &lt;Assembly Path="D:\ReCrafted\lib\LibNoise\LibNoise.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\ReCrafted\lib\SharpDX\bin\Desktop\SharpDX.DXGI.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String></wpf:ResourceDictionary>

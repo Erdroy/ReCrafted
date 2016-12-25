@@ -127,5 +127,5 @@ float PSMain(in VSOutput input) : SV_TARGET
 	vShadowTexCoord += (0.5f / g_vShadowMapSize);
 
 	// Get the shadow occlusion factor and output it
-	return CalcShadowTermSoftPCF(fLightDepth, vShadowTexCoord, 3);
+	return CalcShadowTermPCF(fLightDepth, vShadowTexCoord);
 }

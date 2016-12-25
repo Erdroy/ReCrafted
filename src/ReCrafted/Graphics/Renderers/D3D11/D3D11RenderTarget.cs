@@ -167,6 +167,8 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         {
             switch (TexFormat)
             {
+                case TextureFormat.R16_Float:
+                    return Format.R16_Float;
                 case TextureFormat.R32_Float:
                     return Format.R32_Float;
                 case TextureFormat.RG32_Float:

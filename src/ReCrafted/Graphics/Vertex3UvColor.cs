@@ -22,11 +22,11 @@ namespace ReCrafted.Graphics
         /// <summary>
         /// Color
         /// </summary>
-        public Color Color;
+        public Vector4 Color;
 
         /// <summary>
         /// Size in bytes.
         /// </summary>
-        public static readonly int SizeInBytes = Vector3.SizeInBytes + Vector2.SizeInBytes + 4/*the color size in bytes*/;
+        public static readonly int SizeInBytes = Vector3.SizeInBytes + Vector2.SizeInBytes + Vector4.SizeInBytes;
     }
 }

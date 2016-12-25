@@ -4,6 +4,7 @@ struct GBuffer
 {
 	float4 Albedo : SV_Target0;
 	float3 Normal : SV_Target1;
+	float AO : SV_Target2;
 };
 
 #ifdef VS_PTN
@@ -21,6 +22,26 @@ struct VSOutput
 	float4 position : SV_POSITION;
 	float2 uv : TEXCOORD;
 	float3 normal : NORMAL;
+};
+#endif
+
+#ifdef VS_PTNC
+struct VSInput
+{
+	float3 position : POSITION;
+	float2 uv : TEXCOORD;
+	float3 normal : NORMAL;
+	float4 color : COLOR;
+};
+#endif
+
+#ifdef PS_PTNC
+struct VSOutput
+{
+	float4 position : SV_POSITION;
+	float2 uv : TEXCOORD;
+	float3 normal : NORMAL;
+	float4 color : COLOR;
 };
 #endif
 

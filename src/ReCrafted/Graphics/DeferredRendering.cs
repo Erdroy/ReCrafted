@@ -18,6 +18,7 @@ namespace ReCrafted.Graphics
 
         private RenderTarget _rtAlbedo;
         private RenderTarget _rtNormals;
+        private RenderTarget _rtAmbientOcculusion;
         private RenderTarget _rtFinal;
 
         private Shader _finalShader;
@@ -50,7 +51,7 @@ namespace ReCrafted.Graphics
             // initialize all resources etc.
             _rtAlbedo = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm);
             _rtNormals = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm);
-
+            _rtAmbientOcculusion = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.R16_Float);
             _rtFinal = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm, true);
 
             _skyboxSphere = Mesh.FromMeshData(new IcoSphere(3, 1.0f, true).GetMeshData());
@@ -70,6 +71,7 @@ namespace ReCrafted.Graphics
         {
             _rtAlbedo.Clear(Camera.Current.BackgroundColor);
             _rtNormals.Clear(Color.Black);
+            _rtAmbientOcculusion.Clear(Color.Black);
             _rtFinal.Clear(Color.Black);
             
             // render skybox into final RT
@@ -87,7 +89,7 @@ namespace ReCrafted.Graphics
             // clear depth
             Renderer.Instance.ClearDepth();
             
-            Renderer.Instance.SetRenderTargets(_rtAlbedo, _rtNormals);
+            Renderer.Instance.SetRenderTargets(_rtAlbedo, _rtNormals, _rtAmbientOcculusion);
 
             // do render jobs
             foreach (var job in _renderJobs)
@@ -104,7 +106,7 @@ namespace ReCrafted.Graphics
 
             // present to the swapchain's FinalRT
             Renderer.Instance.SetFinalRenderTarget(false);
-            Renderer.Instance.Blit(Input.IsKey(KeyCode.Space) ? _shadowRenderer.ShadowOcculusion : _rtFinal);
+            Renderer.Instance.Blit(Input.IsKey(KeyCode.Space) ? _shadowRenderer.ShadowMap : _rtFinal);
 
             // do render jobs
             Renderer.Instance.SetFinalRenderTarget(true);
@@ -155,6 +157,7 @@ namespace ReCrafted.Graphics
             // release all resources
             _rtAlbedo?.Dispose();
             _rtNormals?.Dispose();
+            _rtAmbientOcculusion?.Dispose();
             _rtFinal?.Dispose();
 
             _skyboxSphere?.Dispose();
@@ -170,6 +173,7 @@ namespace ReCrafted.Graphics
             // resize render targets
             _rtAlbedo.Resize(width, height);
             _rtNormals.Resize(width, height);
+            _rtAmbientOcculusion.Resize(width, height);
             _rtFinal.Resize(width, height);
 
             _shadowRenderer.Resize(width, height);
@@ -189,8 +193,9 @@ namespace ReCrafted.Graphics
             _finalShader.SetUnorderedAccessView(0, _rtFinal);
             _finalShader.SetRenderTexture(ShaderType.CS, 0, _rtAlbedo);
             _finalShader.SetRenderTexture(ShaderType.CS, 1, _rtNormals);
-            _finalShader.SetRenderTexture(ShaderType.CS, 2, Renderer.Instance.DepthRenderTarget);
-            _finalShader.SetRenderTexture(ShaderType.CS, 3, _shadowRenderer.ShadowOcculusion);
+            _finalShader.SetRenderTexture(ShaderType.CS, 2, _rtAmbientOcculusion);
+            _finalShader.SetRenderTexture(ShaderType.CS, 3, Renderer.Instance.DepthRenderTarget);
+            _finalShader.SetRenderTexture(ShaderType.CS, 4, _shadowRenderer.ShadowOcculusion);
 
             // dispatch
             var xThreads = DispatchSize(16, Display.ClientWidth);
@@ -205,6 +210,7 @@ namespace ReCrafted.Graphics
             _finalShader.UnsetRenderTexture(ShaderType.CS, 1);
             _finalShader.UnsetRenderTexture(ShaderType.CS, 2);
             _finalShader.UnsetRenderTexture(ShaderType.CS, 3);
+            _finalShader.UnsetRenderTexture(ShaderType.CS, 4);
 
         }
 

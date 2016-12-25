@@ -18,6 +18,7 @@ namespace ReCrafted.Graphics
         /// </summary>
         public enum TextureFormat
         {
+            R16_Float,
             R32_Float,
             RG32_Float,
             RGB32_Float,
