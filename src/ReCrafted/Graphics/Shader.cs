@@ -34,6 +34,14 @@ namespace ReCrafted.Graphics
         /// Sets value in default constant buffer.
         /// </summary>
         /// <typeparam name="T">The value type.</typeparam>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        public abstract void SetValue<T>(string name, T[] value) where T : struct;
+
+        /// <summary>
+        /// Sets value in default constant buffer.
+        /// </summary>
+        /// <typeparam name="T">The value type.</typeparam>
         /// <param name="slot">The field slot.</param>
         /// <param name="value">The value.</param>
         public abstract void SetValue<T>(int slot, T value) where T : struct;

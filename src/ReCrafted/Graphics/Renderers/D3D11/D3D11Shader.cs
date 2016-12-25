@@ -139,7 +139,22 @@ namespace ReCrafted.Graphics.Renderers.D3D11
 
             _isDirty = true;
         }
-        
+
+
+        /// <summary>
+        /// Sets value in default constant buffer.
+        /// </summary>
+        /// <typeparam name="T">The value type.</typeparam>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        public override void SetValue<T>(string name, T[] value)
+        {
+            var offset = _meta.ConstantBuffers[0].GetOffset(name);
+            _backingBuffer.Set(offset, value);
+
+            _isDirty = true;
+        }
+
         /// <summary>
         /// Sets value in default constant buffer.
         /// </summary>

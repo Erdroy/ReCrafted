@@ -52,7 +52,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                         MipLevels = 1,
                         OptionFlags = ResourceOptionFlags.GenerateMipMaps,
                         SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0),
-                    }, new DataRectangle(buffer.DataPointer, stride), new DataRectangle());
+                    }, new DataRectangle(buffer.DataPointer, stride));
 
                 ResourceView = new ShaderResourceView(D3D11Renderer.GetDevice(), Texture2D/*, new ShaderResourceViewDescription
                 {

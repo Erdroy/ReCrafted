@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ReCrafted.Core;
 using ReCrafted.Graphics.Primitives;
-using ReCrafted.Voxels;
 using SharpDX;
 
 namespace ReCrafted.Graphics
@@ -19,7 +18,6 @@ namespace ReCrafted.Graphics
 
         private RenderTarget _rtAlbedo;
         private RenderTarget _rtNormals;
-        private RenderTarget _rtShadowMap;
         private RenderTarget _rtFinal;
 
         private Shader _finalShader;
@@ -27,6 +25,8 @@ namespace ReCrafted.Graphics
         // skybox
         private Shader _skyboxShader;
         private Mesh _skyboxSphere;
+
+        private ShadowRenderer _shadowRenderer;
 
         private Vector3 _ligthDirection;
 
@@ -50,7 +50,6 @@ namespace ReCrafted.Graphics
             // initialize all resources etc.
             _rtAlbedo = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm);
             _rtNormals = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm);
-            _rtShadowMap = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.R32_Float);
 
             _rtFinal = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm, true);
 
@@ -58,8 +57,9 @@ namespace ReCrafted.Graphics
 
             _finalShader = Shader.FromFile("Render_Final");
             _skyboxShader = Shader.FromFile("Skybox");
-
-
+            
+            _shadowRenderer = new ShadowRenderer();
+            _shadowRenderer.Init();
             _ligthDirection = -new Vector3(0.4f, 0.4f, 0.2f);
         }
 
@@ -71,7 +71,6 @@ namespace ReCrafted.Graphics
             _rtAlbedo.Clear(Camera.Current.BackgroundColor);
             _rtNormals.Clear(Color.Black);
             _rtFinal.Clear(Color.Black);
-            _rtShadowMap.Clear(Color.Black);
             
             // render skybox into final RT
             Renderer.Instance.SetRenderTargets(_rtAlbedo);
@@ -85,12 +84,9 @@ namespace ReCrafted.Graphics
             _skyboxShader.Draw(_skyboxSphere);
             Renderer.Instance.SetDepthTestState(true);
             
-            // render shadow map
-            GenerateShadowMap();
-
             // clear depth
             Renderer.Instance.ClearDepth();
-
+            
             Renderer.Instance.SetRenderTargets(_rtAlbedo, _rtNormals);
 
             // do render jobs
@@ -99,12 +95,16 @@ namespace ReCrafted.Graphics
                 job.JobMethod(this);
             }
 
+            // render shadows
+            _shadowRenderer.LightDir = _ligthDirection;
+            _shadowRenderer.RenderShadowMap();
+
             // do final pass
             ComputeOutput();
 
             // present to the swapchain's FinalRT
             Renderer.Instance.SetFinalRenderTarget(false);
-            Renderer.Instance.Blit(_rtFinal);
+            Renderer.Instance.Blit(Input.IsKey(KeyCode.Space) ? _shadowRenderer.ShadowOcculusion : _rtFinal);
 
             // do render jobs
             Renderer.Instance.SetFinalRenderTarget(true);
@@ -156,12 +156,12 @@ namespace ReCrafted.Graphics
             _rtAlbedo?.Dispose();
             _rtNormals?.Dispose();
             _rtFinal?.Dispose();
-            _rtShadowMap?.Dispose();
 
             _skyboxSphere?.Dispose();
-
+            
             _skyboxShader?.Dispose();
             _finalShader?.Dispose();
+            _shadowRenderer?.Dispose();
         }
 
         // private
@@ -171,42 +171,26 @@ namespace ReCrafted.Graphics
             _rtAlbedo.Resize(width, height);
             _rtNormals.Resize(width, height);
             _rtFinal.Resize(width, height);
-            _rtShadowMap.Resize(width, height);
-        }
 
-        // private
-        private void GenerateShadowMap()
-        {
-            Renderer.Instance.SetRenderTargets(_rtShadowMap);
-
-            var lookAt = Matrix.LookAtLH(Camera.Current.Position, Camera.Current.Position - _ligthDirection, Vector3.Up);
-            var proj = Matrix.OrthoOffCenterLH(-25, 25, -25, 25, -100, 200);
-            
-            VoxelWorld.Instance.DrawShadowMap(lookAt * proj);
+            _shadowRenderer.Resize(width, height);
         }
 
         // private
         private void ComputeOutput()
         {
             Renderer.Instance.SetFinalRenderTarget(false);
-
-            var lookAt = Matrix.LookAtLH(Camera.Current.Position, Camera.Current.Position - _ligthDirection, Vector3.Up);
-            var proj = Matrix.OrthoOffCenterLH(-25, 25, -25, 25, -100, 200);
-
-            var lightVp = lookAt * proj;
-
-
+            
             _finalShader.Apply();
 
             _finalShader.SetValue("LightColor", new Color(1.0f, 1.0f, 1.0f, 1.0f).ToVector4());
             _finalShader.SetValue("LightDir", _ligthDirection);
-            _finalShader.SetValue("LightViewProj", lightVp);
 
             // set resources
             _finalShader.SetUnorderedAccessView(0, _rtFinal);
             _finalShader.SetRenderTexture(ShaderType.CS, 0, _rtAlbedo);
             _finalShader.SetRenderTexture(ShaderType.CS, 1, _rtNormals);
-            _finalShader.SetRenderTexture(ShaderType.CS, 2, _rtShadowMap);
+            _finalShader.SetRenderTexture(ShaderType.CS, 2, Renderer.Instance.DepthRenderTarget);
+            _finalShader.SetRenderTexture(ShaderType.CS, 3, _shadowRenderer.ShadowOcculusion);
 
             // dispatch
             var xThreads = DispatchSize(16, Display.ClientWidth);
@@ -220,6 +204,7 @@ namespace ReCrafted.Graphics
             _finalShader.UnsetRenderTexture(ShaderType.CS, 0);
             _finalShader.UnsetRenderTexture(ShaderType.CS, 1);
             _finalShader.UnsetRenderTexture(ShaderType.CS, 2);
+            _finalShader.UnsetRenderTexture(ShaderType.CS, 3);
 
         }
 

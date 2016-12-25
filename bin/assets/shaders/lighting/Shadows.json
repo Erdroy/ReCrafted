@@ -1,0 +1,60 @@
+// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
+{
+    // shader info
+    "ShaderName": "",
+    "ShaderDesc": "",
+
+    // constant buffers
+    "ConstantBuffers": [
+        {
+            "BufferName": "Data",
+            "Fields": [
+                {
+                    "FieldName": "g_matInvView",
+                    "FieldType": "matrix"
+                },
+                {
+                    "FieldName": "g_matInvProj",
+                    "FieldType": "matrix"
+                },
+                {
+                    "FieldName": "g_matLightViewProj",
+                    "FieldType": "matrix"
+                },
+                {
+                    "FieldName": "g_vShadowMapSize",
+                    "FieldType": "float2"
+                },
+                {
+                    "FieldName": "g_vOcclusionTextureSize",
+                    "FieldType": "float2"
+                }
+            ]
+        }
+    ],
+
+    // passes
+    "Passes": [
+        {
+            "PassName": "Default", // Empty or Default when shader does not need any UsePass(passName) calls.
+            "VertexShader": "VSMain",
+            "PixelShader": "PSMain",
+            "ComputeShader": "",
+            "Profile": "5_0",
+
+            "VertexLayoutInputs": [
+                {
+                    "InputName": "position",
+                    "InputType": "float3",
+                    "InputSignature": "POSITION"
+                },
+                {
+                    "InputName": "uv",
+                    "InputType": "float2",
+                    "InputSignature": "TEXCOORD"
+                }
+            ]
+        }
+    ]
+}

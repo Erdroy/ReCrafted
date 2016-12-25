@@ -48,7 +48,14 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         /// <param name="color">The color.</param>
         public override void Clear(Color color)
         {
-            D3D11Renderer.GetDevice().ImmediateContext.ClearRenderTargetView(TextureView, color);
+            if (DepthView != null)
+            {
+                D3D11Renderer.GetDevice().ImmediateContext.ClearDepthStencilView(DepthView, DepthStencilClearFlags.Depth, 1.0f, 0);
+            }
+            else
+            {
+                D3D11Renderer.GetDevice().ImmediateContext.ClearRenderTargetView(TextureView, color);
+            }
         }
 
         /// <summary>

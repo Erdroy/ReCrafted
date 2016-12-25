@@ -48,6 +48,9 @@ namespace ReCrafted.Voxels
 
                         // generate caves
                         _voxels[x, y, z] = VoxelWorldGenerator.GenerateCaves(_voxels[x, y, z], new Int3(x, y, z) + Position);
+
+                        //if (_voxels[x, y, z] == 1)
+                        //    _voxels[x, y, z] = 0;
                     }
                 }
             }

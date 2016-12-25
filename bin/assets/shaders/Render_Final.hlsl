@@ -6,17 +6,18 @@
 
 static const uint TileSize = 16;
 
+static const float BIAS = 0.001f;
+
 cbuffer Data : register(b0)
 {
 	float4 LightColor;
 	float4 LightDir;
-	matrix LightViewProj;
 };
 
 Texture2D<float4> Albedo : register(t0);
 Texture2D<float4> Normals : register(t1);
 Texture2D<float> Depth : register(t2);
-Texture2D<float> ShadowMap : register(t3);
+Texture2D<float> ShadowOcculusion : register(t3);
 
 RWTexture2D<float4> OutputTexture : register(u0);
 
@@ -28,7 +29,7 @@ void CSMain(uint3 GroupID : SV_GroupID, uint3 GroupThreadID : SV_GroupThreadID)
 	float4 albedo = Albedo[pixelCoord];
 	float4 normal = Normals[pixelCoord] * 2.0f - 1.0f;
 	float depth = Depth[pixelCoord];
-	float shadowMap = ShadowMap[pixelCoord];
+	float shadow = ShadowOcculusion[pixelCoord];
 
 	// sync
 	GroupMemoryBarrierWithGroupSync();
@@ -39,13 +40,10 @@ void CSMain(uint3 GroupID : SV_GroupID, uint3 GroupThreadID : SV_GroupThreadID)
 	nDotL = clamp(nDotL, 0.0f, 1.0f);
 
 	// calculate lighting
-	float3 lighting = (LightColor.xyz * nDotL) + float4(0.6f, 0.6f, 0.6f, 0.0f);
-
-	// apply shadows
+	float3 lighting = (LightColor.xyz * nDotL) * shadow + float4(0.6f, 0.6f, 0.6f, 0.0f);
 
 	// do the final color
 	float4 color = float4(albedo.rgb * lighting, 1.0f);
-
 
 	// apply some effects? Like color grading etc. cuz this is the best place atm
 

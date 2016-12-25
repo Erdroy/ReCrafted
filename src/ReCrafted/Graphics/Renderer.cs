@@ -53,6 +53,13 @@ namespace ReCrafted.Graphics
         public abstract void SetRasterizerState(RasterizerStates state);
 
         /// <summary>
+        /// Set the viewport size.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        public abstract void SetViewportSize(int width, int height);
+
+        /// <summary>
         /// Sets the depth test state.
         /// </summary>
         /// <param name="enabled">Disable or enable the depth test?</param>
@@ -65,6 +72,13 @@ namespace ReCrafted.Graphics
         public abstract void SetRenderTargets(params RenderTarget[] renderTargets);
 
         /// <summary>
+        /// Set RenderTargets as the current frame output.
+        /// </summary>
+        /// <param name="depthRenderTarget">The depth render target.</param>
+        /// <param name="renderTargets">The RenderTargets.</param>
+        public abstract void SetRenderTargetsDepth(RenderTarget depthRenderTarget, params RenderTarget[] renderTargets);
+
+        /// <summary>
         /// Set the final render target.
         /// </summary>
         /// <param name="useDepthTest">Use DepthTest?</param>
@@ -74,8 +88,9 @@ namespace ReCrafted.Graphics
         /// Render/Copy the given RenderTarget to the current set RenderTarget.
         /// </summary>
         /// <param name="renderTarget">The render target.</param>
-        public abstract void Blit(RenderTarget renderTarget);
-
+        /// <param name="customShader">The custom shader for blit. Must use that Vertex layout: { uint vert : SV_VERTEXID }</param>
+        public abstract void Blit(RenderTarget renderTarget, Shader customShader = null);
+        
         /// <summary>
         /// Clears depth.
         /// </summary>
@@ -130,6 +145,11 @@ namespace ReCrafted.Graphics
 
             throw new ReCraftedException("Not implemented renderer!");
         }
+
+        /// <summary>
+        /// The depth render target.
+        /// </summary>
+        public RenderTarget DepthRenderTarget { get; protected set; }
 
         /// <summary>
         /// The renderer instance.

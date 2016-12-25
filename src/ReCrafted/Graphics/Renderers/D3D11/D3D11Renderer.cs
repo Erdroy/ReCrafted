@@ -30,9 +30,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
 
         private RasterizerState _wireframeRasterizerState;
         private RasterizerState _defaultRasterizerState;
-
-        private D3D11RenderTarget _depth;
-
+        
         private RenderTargetView[] _currentViews;
 
         private Shader _colorShader;
@@ -194,9 +192,11 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             {
                 _finalRenderTarget
             };
-            
-            _device.ImmediateContext.OutputMerger.SetTargets(_depth.DepthView, _currentViews);
-            _device.ImmediateContext.ClearDepthStencilView(_depth.DepthView, DepthStencilClearFlags.Depth, 1.0f, 0);
+
+            var depthrt = (D3D11RenderTarget) DepthRenderTarget;
+
+            _device.ImmediateContext.OutputMerger.SetTargets(depthrt.DepthView, _currentViews);
+            _device.ImmediateContext.ClearDepthStencilView(depthrt.DepthView, DepthStencilClearFlags.Depth, 1.0f, 0);
             _device.ImmediateContext.ClearRenderTargetView(_finalRenderTarget, Camera.Current.BackgroundColor);
             
             Rendering.Draw();
@@ -212,7 +212,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         public override void Resize(int width, int height)
         {
             _finalRenderTarget?.Dispose();
-            _depth?.Dispose();
+            DepthRenderTarget?.Dispose();
 
             if (width < 32)
                 width = 32;
@@ -234,7 +234,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             }
 
             // create depth buffer
-            _depth = new D3D11RenderTarget(width, height, RenderTarget.TextureFormat.Depth, false);
+            DepthRenderTarget = new D3D11RenderTarget(width, height, RenderTarget.TextureFormat.Depth, false);
         }
 
         /// <summary>
@@ -258,6 +258,16 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         }
 
         /// <summary>
+        /// Set the viewport size.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        public override void SetViewportSize(int width, int height)
+        {
+            _device.ImmediateContext.Rasterizer.SetViewport(0.0f, 0.0f, width, height);
+        }
+
+        /// <summary>
         /// Sets the depth test state.
         /// </summary>
         /// <param name="enabled">Disable or enable the depth test?</param>
@@ -265,7 +275,8 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         {
             if (enabled)
             {
-                _device.ImmediateContext.OutputMerger.SetTargets(_depth.DepthView, _currentViews);
+                var depthrt = (D3D11RenderTarget)DepthRenderTarget;
+                _device.ImmediateContext.OutputMerger.SetTargets(depthrt.DepthView, _currentViews);
             }
             else
             {
@@ -279,8 +290,21 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         /// <param name="renderTargets">The RenderTargets.</param>
         public override void SetRenderTargets(params RenderTarget[] renderTargets)
         {
+            var depthrt = (D3D11RenderTarget)DepthRenderTarget;
             _currentViews = renderTargets.Select(renderTarget => ((D3D11RenderTarget) renderTarget).TextureView).ToArray();
-            _device.ImmediateContext.OutputMerger.SetTargets(_depth.DepthView, _currentViews);
+            _device.ImmediateContext.OutputMerger.SetTargets(depthrt.DepthView, _currentViews);
+        }
+
+        /// <summary>
+        /// Set RenderTargets as the current frame output.
+        /// </summary>
+        /// <param name="depthRenderTarget">The depth render target.</param>
+        /// <param name="renderTargets">The RenderTargets.</param>
+        public override void SetRenderTargetsDepth(RenderTarget depthRenderTarget, params RenderTarget[] renderTargets)
+        {
+            var depthrt = (D3D11RenderTarget)depthRenderTarget;
+            _currentViews = renderTargets.Select(renderTarget => ((D3D11RenderTarget)renderTarget).TextureView).ToArray();
+            _device.ImmediateContext.OutputMerger.SetTargets(depthrt.DepthView, _currentViews);
         }
 
         /// <summary>
@@ -291,7 +315,8 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         {
             if (useDepthTest)
             {
-                _device.ImmediateContext.OutputMerger.SetTargets(_depth.DepthView, _finalRenderTarget);
+                var depthrt = (D3D11RenderTarget)DepthRenderTarget;
+                _device.ImmediateContext.OutputMerger.SetTargets(depthrt.DepthView, _finalRenderTarget);
             }
             else
             {
@@ -303,20 +328,28 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         /// Render/Copy the given RenderTarget to the current set RenderTarget.
         /// </summary>
         /// <param name="renderTarget">The render target.</param>
-        public override void Blit(RenderTarget renderTarget)
+        /// <param name="customShader">The custom shader for blit.</param>
+        public override void Blit(RenderTarget renderTarget, Shader customShader = null)
         {
             var deviceContext = _device.ImmediateContext;
             var shd = (D3D11Shader) _blitShader;
 
+            if (customShader != null)
+                shd = (D3D11Shader)customShader;
+
             // apply shader and all values/resources
-            shd.Apply();
-            shd.SetRenderTexture(ShaderType.PS, 0, renderTarget);
+            if (customShader == null)
+                shd.Apply();
+
+            if(renderTarget != null)
+                shd.SetRenderTexture(ShaderType.PS, 0, renderTarget);
 
             // draw
             deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleStrip;
             deviceContext.Draw(4, 0);
 
-            shd.UnsetRenderTexture(ShaderType.PS, 0);
+            if (renderTarget != null)
+                shd.UnsetRenderTexture(ShaderType.PS, 0);
         }
 
         /// <summary>
@@ -324,7 +357,8 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         /// </summary>
         public override void ClearDepth()
         {
-            _device.ImmediateContext.ClearDepthStencilView(_depth.DepthView, DepthStencilClearFlags.Depth, 1.0f, 0);
+            var depthrt = (D3D11RenderTarget)DepthRenderTarget;
+            _device.ImmediateContext.ClearDepthStencilView(depthrt.DepthView, DepthStencilClearFlags.Depth, 1.0f, 0);
         }
 
         /// <summary>
@@ -368,7 +402,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         /// </summary>
         public override void Dispose()
         {
-            _depth?.Dispose();
+            DepthRenderTarget?.Dispose();
             _device?.Dispose();
             _finalRenderTarget?.Dispose();
             _swapChain?.Dispose();

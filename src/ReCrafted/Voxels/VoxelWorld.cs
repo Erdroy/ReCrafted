@@ -37,7 +37,7 @@ namespace ReCrafted.Voxels
         public static VoxelWorld Instance;
         
         private readonly List<VoxelChunk> _chunks = new List<VoxelChunk>();
-        private Shader _depthOnly;
+        private Shader _shadowMap;
 
         // methods
         /// <summary>
@@ -55,7 +55,7 @@ namespace ReCrafted.Voxels
         {
             VoxelAssets.LoadAssets();
 
-            _depthOnly = Shader.FromFile("internal/DepthOnly");
+            _shadowMap = Shader.FromFile("lighting/ShadowMap");
 
             // create chunks
             for (var z = 0; z < 5; z++)
@@ -178,13 +178,13 @@ namespace ReCrafted.Voxels
 
                 wvp.Transpose();
 
-                _depthOnly.Apply();
-                _depthOnly.SetValue("WorldViewProjection", wvp);
-                _depthOnly.ApplyChanges();
+                _shadowMap.Apply();
+                _shadowMap.SetValue("WorldViewProjection", wvp);
+                _shadowMap.ApplyChanges();
 
                 foreach (var mesh in chunk.Meshes)
                 {
-                    _depthOnly.Draw(mesh.Value);
+                    _shadowMap.Draw(mesh.Value);
                 }
             }
         }
@@ -302,7 +302,7 @@ namespace ReCrafted.Voxels
             foreach (var chunk in _chunks)
                 chunk.Dispose();
 
-            _depthOnly?.Dispose();
+            _shadowMap?.Dispose();
         }
     }
 }

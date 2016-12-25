@@ -108,6 +108,7 @@
     <Compile Include="Graphics\Mesh.cs" />
     <Compile Include="Graphics\ShaderMeta.cs" />
     <Compile Include="Graphics\ShaderType.cs" />
+    <Compile Include="Graphics\ShadowRenderer.cs" />
     <Compile Include="Graphics\Texture2D.cs" />
     <Compile Include="Graphics\Vertex.cs" />
     <Compile Include="Graphics\Vertex2Color.cs" />
@@ -165,6 +166,12 @@
     <None Include="..\..\bin\assets\shaders\internal\DepthOnly.json">
       <Link>assets\shaders\internal\DepthOnly.json</Link>
     </None>
+    <None Include="..\..\bin\assets\shaders\lighting\ShadowMap.json">
+      <Link>assets\shaders\lighting\ShadowMap.json</Link>
+    </None>
+    <None Include="..\..\bin\assets\shaders\lighting\Shadows.json">
+      <Link>assets\shaders\lighting\Shadows.json</Link>
+    </None>
     <None Include="..\..\bin\assets\shaders\Render_Final.json">
       <Link>assets\shaders\Render_Final.json</Link>
     </None>
@@ -208,6 +215,12 @@
     </Content>
     <Content Include="..\..\bin\assets\shaders\internal\DepthOnly.hlsl">
       <Link>assets\shaders\internal\DepthOnly.hlsl</Link>
+    </Content>
+    <Content Include="..\..\bin\assets\shaders\lighting\ShadowMap.hlsl">
+      <Link>assets\shaders\lighting\ShadowMap.hlsl</Link>
+    </Content>
+    <Content Include="..\..\bin\assets\shaders\lighting\Shadows.hlsl">
+      <Link>assets\shaders\lighting\Shadows.hlsl</Link>
     </Content>
     <Content Include="..\..\bin\assets\shaders\Render_Final.hlsl">
       <Link>assets\shaders\Render_Final.hlsl</Link>
