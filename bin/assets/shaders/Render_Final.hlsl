@@ -6,8 +6,6 @@
 
 static const uint TileSize = 16;
 
-static const float BIAS = 0.001f;
-
 cbuffer Data : register(b0)
 {
 	float4 LightColor;
@@ -45,7 +43,7 @@ void CSMain(uint3 GroupID : SV_GroupID, uint3 GroupThreadID : SV_GroupThreadID)
 
 	// do the final color
 	float4 color = float4(albedo.rgb * lighting, 1.0f);
-
+	
 	// apply some effects? Like color grading etc. cuz this is the best place atm
 
 	OutputTexture[pixelCoord] = color;

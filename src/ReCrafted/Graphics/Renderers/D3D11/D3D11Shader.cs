@@ -44,6 +44,9 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         /// <param name="meta">The shader meta.</param>
         protected override void Initialize(string shaderFile, ShaderMeta meta)
         {
+            // allow to hot-reload
+            Dispose();
+
             if(meta.Passes.Length == 0)
                 throw new ReCraftedException("Cannot load shader! There is no any pass in this shader.");
 

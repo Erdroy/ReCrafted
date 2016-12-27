@@ -25,7 +25,7 @@ Texture2D Depth : register(t1);
 
 SamplerState Sampler : register(s0);
 
-static const float BIAS = 0.006f;
+static const float BIAS = 0.00056f;
 
 float CalcShadowTermPCF(float fLightDepth, float2 vShadowTexCoord)
 {
@@ -113,6 +113,11 @@ float PSMain(in VSOutput input) : SV_TARGET
 	float depth = Depth.Sample(Sampler, input.uv).r;
 	float4 vPositionVS = float4(PositionFromDepth(depth, input.uv, g_matInvProj), 1.0f);
 
+	if (depth >= 0.99999f)
+		return 1.0f;
+
+	// TODO: max shadow distance
+
 	// Determine the depth of the pixel with respect to the light
 	float4x4 matViewToLightViewProj = mul(g_matInvView, g_matLightViewProj);
 	float4 vPositionLightCS = mul(vPositionVS, matViewToLightViewProj);
@@ -127,5 +132,5 @@ float PSMain(in VSOutput input) : SV_TARGET
 	vShadowTexCoord += (0.5f / g_vShadowMapSize);
 
 	// Get the shadow occlusion factor and output it
-	return CalcShadowTermPCF(fLightDepth, vShadowTexCoord);
+	return CalcShadowTermSoftPCF(fLightDepth, vShadowTexCoord, 3);
 }

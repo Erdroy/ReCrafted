@@ -1,6 +1,8 @@
 ﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
 
 using System;
+using System.Collections.Generic;
+using System.IO;
 using ReCrafted.Graphics.Renderers.D3D11;
 using ReCrafted.Utilities;
 using SharpDX;
@@ -12,6 +14,10 @@ namespace ReCrafted.Graphics
     /// </summary>
     public abstract class Shader : IDisposable
     {
+        private static readonly Dictionary<string, Shader> HotReload = new Dictionary<string, Shader>();
+        private static FileSystemWatcher _fileWatcher;
+        private static bool _hotReloadInitialized;
+
         // lock from creating
         protected Shader() { }
 
@@ -122,22 +128,36 @@ namespace ReCrafted.Graphics
         /// Loads shader from file.
         /// </summary>
         /// <param name="shaderName">The shader name.</param>
+        /// <param name="hotReload">Use filesystem watch to recompile the shader when changed.</param>
         /// <returns>The loaded shader.</returns>
-        public static Shader FromFile(string shaderName)
+        public static Shader FromFile(string shaderName, bool hotReload = true)
         {
             var shaderSourceFile = "assets/shaders/" + shaderName + ".hlsl";
             var shaderMetaFile = "assets/shaders/" + shaderName + ".json";
 
             var shaderMeta = ShaderMeta.FromFile(shaderMetaFile);
 
+            if (hotReload)
+            {
+                if (!_hotReloadInitialized)
+                {
+                    InitializeHotReload();
+                    _hotReloadInitialized = true;
+                }
+            }
+
             switch (Renderer.RendererApi)
             {
                 case RendererApi.D3D11:
-                {
-                    var shader = new D3D11Shader();
-                    shader.Initialize(shaderSourceFile, shaderMeta);
-                    return shader;
-                }
+                    {
+                        var shader = new D3D11Shader();
+
+                        if (hotReload)
+                            HotReload.Add(shaderName, shader);
+
+                        shader.Initialize(shaderSourceFile, shaderMeta);
+                        return shader;
+                    }
             }
 
             // TODO: Implement renderers
@@ -191,6 +211,32 @@ namespace ReCrafted.Graphics
             }
 
             return -1;
+        }
+
+        private static void InitializeHotReload()
+        {
+            _fileWatcher = new FileSystemWatcher
+            {
+                Path = "assets/shaders",
+                Filter = "*.*",
+                EnableRaisingEvents = true,
+                IncludeSubdirectories = true,
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime | NotifyFilters.FileName
+            };
+
+            _fileWatcher.Changed += ShaderFileChanged;
+        }
+
+        private static void ShaderFileChanged(object sender, FileSystemEventArgs e)
+        {
+            // reload shader
+            var name = e.Name.Replace(".json", "").Replace(".hlsl", "").Replace("\\", "/");
+
+            if (!HotReload.ContainsKey(name))
+                return;
+
+            var shader = HotReload[name];
+            shader.Initialize(e.FullPath, ShaderMeta.FromFile(e.FullPath.Replace("hlsl", "json")));
         }
     }
 }

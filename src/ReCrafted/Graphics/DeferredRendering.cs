@@ -106,7 +106,7 @@ namespace ReCrafted.Graphics
 
             // present to the swapchain's FinalRT
             Renderer.Instance.SetFinalRenderTarget(false);
-            Renderer.Instance.Blit(Input.IsKey(KeyCode.Space) ? _shadowRenderer.ShadowMap : _rtFinal);
+            Renderer.Instance.Blit(Input.IsKey(KeyCode.Space) ? _shadowRenderer.ShadowOcculusion : _rtFinal);
 
             // do render jobs
             Renderer.Instance.SetFinalRenderTarget(true);
