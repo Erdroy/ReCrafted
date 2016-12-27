@@ -58,9 +58,9 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             if(pass.Profile != "3_0" && pass.Profile != "4_0" && pass.Profile != "5_0")
                 throw new ReCraftedException($"Shader model {pass.Profile} is not supported.");
             
-            var hasVs = pass.VertexShader != string.Empty;
-            var hasPs = pass.PixelShader != string.Empty;
-            var hasCs = pass.ComputeShader != string.Empty;
+            var hasVs = !string.IsNullOrEmpty(pass.VertexShader);
+            var hasPs = !string.IsNullOrEmpty(pass.PixelShader);
+            var hasCs = !string.IsNullOrEmpty(pass.ComputeShader);
 
             var hasConstBuffer = meta.ConstantBuffers.Length == 1;
 

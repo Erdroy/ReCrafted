@@ -39,7 +39,8 @@ void CSMain(uint3 GroupID : SV_GroupID, uint3 GroupThreadID : SV_GroupThreadID)
 	nDotL = clamp(nDotL, 0.0f, 1.0f);
 
 	// calculate lighting
-	float3 lighting = (LightColor.xyz * nDotL) * shadow + float4(0.6f, 0.6f, 0.6f, 0.0f);
+	float3 lightColor = LightColor.xyz * LightColor.w;
+	float3 lighting = (lightColor * nDotL) * shadow + float4(0.6f, 0.6f, 0.6f, 0.0f);
 
 	// do the final color
 	float4 color = float4(albedo.rgb * lighting, 1.0f);

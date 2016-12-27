@@ -72,3 +72,26 @@ float3 PositionFromDepth(float2 depth, float2 vTexCoord, matrix invProj)
 	// Divide by w to get the view-space position
 	return vPositionVS.xyz / vPositionVS.w;
 }
+
+#ifdef POSTPROCESS_BASE
+
+struct PSInput
+{
+	float4 position : SV_POSITION;
+	float2 uv : TEXCOORD;
+};
+
+PSInput VSMain(uint vert : SV_VERTEXID)
+{
+	PSInput output = (PSInput)0;
+
+	float2 texcoord = float2(vert & 1, vert >> 1);
+	float4 position = float4((texcoord.x - 0.5f) * 2, -(texcoord.y - 0.5f) * 2, 0.0f, 1.0f);
+
+	output.position = position;
+	output.uv = texcoord;
+
+	return output;
+}
+
+#endif

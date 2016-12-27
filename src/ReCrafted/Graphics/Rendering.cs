@@ -32,6 +32,12 @@ namespace ReCrafted.Graphics
         public abstract void AddPostDeferredRenderJob(RenderJob job);
 
         /// <summary>
+        /// Add postprocess job.
+        /// </summary>
+        /// <param name="job">The postprocess job.</param>
+        public abstract void AddPostprocessJob(PostprocessJob job);
+
+        /// <summary>
         /// Dispose the rendering
         /// </summary>
         public abstract void Dispose();

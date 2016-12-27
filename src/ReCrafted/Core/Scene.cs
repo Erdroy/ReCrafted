@@ -21,6 +21,9 @@ namespace ReCrafted.Core
         private VoxelCursor _voxelCursor;
         private Camera _camera;
 
+        private Shader _simplePost;
+        private Sampler _pointSampler;
+
         /// <summary>
         /// Scene constructor.
         /// </summary>
@@ -40,6 +43,11 @@ namespace ReCrafted.Core
 
             _voxelCursor = new VoxelCursor();
             _voxelCursor.Init();
+
+            _simplePost = Shader.FromFile("postprocess/vingetting");
+            _pointSampler = Sampler.Create(Sampler.Type.PointClamped);
+
+            _simplePost.SetSampler(0, _pointSampler);
 
             // initialize camera
             _camera = new Camera
@@ -65,8 +73,14 @@ namespace ReCrafted.Core
                 JobMethod = RenderCursor,
                 RenderPriority = 0
             });
-        }
 
+            Rendering.Current.AddPostprocessJob(new PostprocessJob
+            {
+                RenderPriority = 0,
+                JobMethod = PostSimple
+            });
+        }
+        
         /// <summary>
         /// Ticks the scene, entity pool etc.
         /// Called by Game class.
@@ -99,6 +113,9 @@ namespace ReCrafted.Core
         public void Dispose()
         {
             _voxelWorld.Dispose();
+
+            _pointSampler?.Dispose();
+            _simplePost?.Dispose();
         }
 
         // private
@@ -113,6 +130,14 @@ namespace ReCrafted.Core
         private void RenderCursor(Rendering rendering)
         {
             _voxelCursor.Draw();
+        }
+
+        // private
+        private void PostSimple(Rendering rendering, RenderTarget input, RenderTarget output)
+        {
+            _simplePost.Apply();
+
+            Renderer.Instance.Blit(input, _simplePost);
         }
     }
 }
