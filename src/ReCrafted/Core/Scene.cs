@@ -22,7 +22,9 @@ namespace ReCrafted.Core
         private Camera _camera;
 
         private Shader _simplePost;
+        private Shader _fxaaPost;
         private Sampler _pointSampler;
+        private Sampler _linearSampler;
 
         /// <summary>
         /// Scene constructor.
@@ -44,10 +46,13 @@ namespace ReCrafted.Core
             _voxelCursor = new VoxelCursor();
             _voxelCursor.Init();
 
-            _simplePost = Shader.FromFile("postprocess/vingetting");
             _pointSampler = Sampler.Create(Sampler.Type.PointClamped);
+            _linearSampler = Sampler.Create(Sampler.Type.LinearClamped);
+            _simplePost = Shader.FromFile("postprocess/vingetting");
+            _fxaaPost = Shader.FromFile("postprocess/fxaa");
 
             _simplePost.SetSampler(0, _pointSampler);
+            _fxaaPost.SetSampler(0, _linearSampler);
 
             // initialize camera
             _camera = new Camera
@@ -79,6 +84,11 @@ namespace ReCrafted.Core
                 RenderPriority = 0,
                 JobMethod = PostSimple
             });
+            /*Rendering.Current.AddPostprocessJob(new PostprocessJob
+            {
+                RenderPriority = 0,
+                JobMethod = PostFxaa
+            });*/
         }
         
         /// <summary>
@@ -116,6 +126,7 @@ namespace ReCrafted.Core
 
             _pointSampler?.Dispose();
             _simplePost?.Dispose();
+            _fxaaPost?.Dispose();
         }
 
         // private
@@ -138,6 +149,16 @@ namespace ReCrafted.Core
             _simplePost.Apply();
 
             Renderer.Instance.Blit(input, _simplePost);
+        }
+
+        // private
+        private void PostFxaa(Rendering rendering, RenderTarget input, RenderTarget output)
+        {
+            /*_fxaaPost.Apply();
+            _fxaaPost.SetValue("Viewport", new Vector4(1.0f / Display.ClientWidth, 1.0f / Display.ClientHeight, 0.0f, 0.0f));
+            _fxaaPost.ApplyChanges();
+            
+            Renderer.Instance.Blit(input, _fxaaPost);*/
         }
     }
 }

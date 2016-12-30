@@ -1,0 +1,41 @@
+// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+
+{
+    // shader info
+    "ShaderName": "", // you can customize this value
+    "ShaderDesc": "", // you can customize this value
+
+    // constant buffers
+    "ConstantBuffers": [
+        {
+            "BufferName": "Data",
+            "Fields": [
+                {
+                    "FieldName": "Viewport",
+                    "FieldType": "float4"
+                }
+            ]
+
+        }
+    ], // you can customize this array
+
+    // passes
+    "Passes": [
+        {
+            "PassName": "Default", // Empty or Default when shader does not need any UsePass(passName) calls.
+            "Profile": "5_0", // you can customize this value
+
+
+            // DO NOT CHANGE THOSE VALUES
+            "VertexShader": "VSMain", // always PSMain for postprocess shaders
+            "PixelShader": "PSMain", // always PSMain for postprocess shaders
+            "VertexLayoutInputs": [ // always only SV_VERTEXID for postprocess shaders
+                {
+                    "InputName": "vert",
+                    "InputType": "uint",
+                    "InputSignature": "SV_VERTEXID"
+                }
+            ]
+        }
+    ]
+}

@@ -1,19 +1,13 @@
 // ReCrafted © 2016 Damian 'Erdroy' Korczowski
 
+#define VS_P
+#define PS_P
+#include "Common.hlsli"
+
 cbuffer Data : register(b0)
 {
 	matrix WVP;
 }
-
-struct VSInput
-{
-	float3 position : POSITION;
-};
-
-struct VSOutput
-{
-	float4 position : SV_POSITION;
-};
 
 VSOutput VSMain(in VSInput input)
 {

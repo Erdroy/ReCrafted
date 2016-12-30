@@ -29,6 +29,7 @@ void CSMain(uint3 GroupID : SV_GroupID, uint3 GroupThreadID : SV_GroupThreadID)
 	float4 normal = Normals[pixelCoord] * 2.0f - 1.0f;
 	float depth = Depth[pixelCoord];
 	float shadow = ShadowOcculusion[pixelCoord];
+	float ambient = AmbientOcculusion[pixelCoord];
 
 	// sync
 	GroupMemoryBarrierWithGroupSync();
@@ -38,14 +39,15 @@ void CSMain(uint3 GroupID : SV_GroupID, uint3 GroupThreadID : SV_GroupThreadID)
 	float3 nDotL = dot(normal, lightDir);
 	nDotL = clamp(nDotL, 0.0f, 1.0f);
 
+	// calculate ambient
+	ambient = 1.0f - ambient;
+
 	// calculate lighting
 	float3 lightColor = LightColor.xyz * LightColor.w;
 	float3 lighting = (lightColor * nDotL) * shadow + float4(0.6f, 0.6f, 0.6f, 0.0f);
 
 	// do the final color
-	float4 color = float4(albedo.rgb * lighting, 1.0f);
+	float4 color = float4(albedo.rgb * lighting * ambient, 1.0f);
 	
-	// apply some effects? Like color grading etc. cuz this is the best place atm
-
 	OutputTexture[pixelCoord] = color;
 }

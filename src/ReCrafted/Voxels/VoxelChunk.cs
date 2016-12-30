@@ -131,6 +131,7 @@ namespace ReCrafted.Voxels
             var blocksIndices = new Dictionary<ushort, List<uint>>();
             var blocksUvs = new Dictionary<ushort, List<Vector2>>();
             var blocksNormals = new Dictionary<ushort, List<Vector3>>();
+            var blocksColors = new Dictionary<ushort, List<Color>>();
 
             for (var z = 0; z < VoxelWorld.ChunkSize; z++)
             {
@@ -149,41 +150,80 @@ namespace ReCrafted.Voxels
                             blocksIndices.Add(block, new List<uint>());
                             blocksUvs.Add(block, new List<Vector2>());
                             blocksNormals.Add(block, new List<Vector3>());
+                            blocksColors.Add(block, new List<Color>());
                         }
 
                         var vertices = blocksVertices[block];
                         var indices = blocksIndices[block];
                         var uvs = blocksUvs[block];
                         var normals = blocksNormals[block];
+                        var colors = blocksColors[block];
 
                         var origin = new Vector3(x, y, z);
-                        
+
+                        var verts = 0;
                         if(!BlockExists(x-1, y, z))
+                        {
                             VoxelMeshHelper.SetupFace(
-                                origin + new Vector3(0.0f, 0.0f, 0.0f), 
-                                Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, false, vertices, uvs, indices, normals);
-                        if (!BlockExists(x+1, y, z))
+                                 origin + new Vector3(0.0f, 0.0f, 0.0f),
+                                 Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, false, vertices, uvs, indices, normals);
+                            verts += 4;
+                        }
+
+                        if (!BlockExists(x + 1, y, z))
+                        {
                             VoxelMeshHelper.SetupFace(
-                                origin + new Vector3(VoxelWorld.BlockSize, 0.0f, 0.0f), 
+                                origin + new Vector3(VoxelWorld.BlockSize, 0.0f, 0.0f),
                                 Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, true, vertices, uvs, indices, normals);
+                            verts += 4;
+                        }
 
-                        if (!BlockExists(x, y-1, z))
+                        if (!BlockExists(x, y - 1, z))
+                        {
                             VoxelMeshHelper.SetupFace(
-                                origin + new Vector3(0.0f, 0.0f, 0.0f), 
-                                Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, vertices, uvs, indices, normals);
-                        if (!BlockExists(x, y+1, z))
+                               origin + new Vector3(0.0f, 0.0f, 0.0f),
+                               Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, vertices, uvs, indices, normals);
+                            verts += 4;
+                        }
+
+                        if (!BlockExists(x, y + 1, z))
+                        {
                             VoxelMeshHelper.SetupFace(
-                                origin + new Vector3(0.0f, VoxelWorld.BlockSize, 0.0f), 
+                                origin + new Vector3(0.0f, VoxelWorld.BlockSize, 0.0f),
                                 Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, true, vertices, uvs, indices, normals);
+                            verts += 4;
+                        }
 
-                        if (!BlockExists(x, y, z-1))
+                        if (!BlockExists(x, y, z - 1))
+                        {
                             VoxelMeshHelper.SetupFace(
-                                origin + new Vector3(0.0f, 0.0f, 0.0f), 
+                                origin + new Vector3(0.0f, 0.0f, 0.0f),
                                 Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, true, vertices, uvs, indices, normals);
-                        if (!BlockExists(x, y, z+1))
+                            verts += 4;
+                        }
+
+                        if (!BlockExists(x, y, z + 1))
+                        {
                             VoxelMeshHelper.SetupFace(
                                 origin + new Vector3(0.0f, 0.0f, VoxelWorld.BlockSize),
                                 Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, vertices, uvs, indices, normals);
+                            verts += 4;
+                        }
+
+                        if (verts > 0)
+                        {
+                            // calculate ambient occulusion for last `verts` vertices
+                            for (var i = 0; i < verts; i ++)
+                            {
+                                var id = vertices.Count - verts + i;
+                                var vert = vertices[id];
+                                
+                                if(Math.Abs(vert.Y - y) < 0.01f)
+                                    colors.Add(new Color(0.4f, 0.0f, 0.0f, 0.0f));
+                                else
+                                    colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            }
+                        }
                     }
                 }
             }
@@ -196,11 +236,13 @@ namespace ReCrafted.Voxels
                 var indices = blocksIndices[vertices.Key].ToArray();
                 var uvs = blocksUvs[vertices.Key].ToArray();
                 var normals = blocksNormals[vertices.Key].ToArray();
+                var colors = blocksColors[vertices.Key].ToArray();
 
                 mesh.SetVertices(verts);
                 mesh.SetIndices(indices);
                 mesh.SetUVs(uvs);
                 mesh.SetNormals(normals);
+                mesh.SetColors(colors);
 
                 if (verts.Length > 0)
                 {
@@ -251,7 +293,7 @@ namespace ReCrafted.Voxels
             
             return _voxels[x, y, z];
         }
-
+        
         // private
         private bool BlockExists(int x, int y, int z)
         {

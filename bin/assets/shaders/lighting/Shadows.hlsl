@@ -103,8 +103,8 @@ float PSMain(in VSOutput input) : SV_TARGET
 {
 	float depth = Depth.Sample(Sampler, input.uv).r;
 	float4 vPositionVS = float4(PositionFromDepth(depth, input.uv, g_matInvProj), 1.0f);
-
-	[flatten]
+	
+	[branch]
 	if (depth >= 0.99999f) // limit depth(ignore faarrr skybox etc.)
 		return 1.0f;
 

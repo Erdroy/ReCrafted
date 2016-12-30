@@ -42,6 +42,11 @@
                     "InputName": "normal",
                     "InputType": "float3",
                     "InputSignature": "NORMAL"
+                },
+                {
+                    "InputName": "color",
+                    "InputType": "float4",
+                    "InputSignature": "COLOR"
                 }
             ]
         }
