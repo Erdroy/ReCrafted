@@ -1,4 +1,4 @@
-﻿// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+﻿// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski
 
 using System;
 using System.Collections.Generic;
@@ -161,68 +161,98 @@ namespace ReCrafted.Voxels
 
                         var origin = new Vector3(x, y, z);
 
-                        var verts = 0;
-                        if(!BlockExists(x-1, y, z))
+
+                        var tf = BlockExists(x, y + 1, z + 1);
+                        var tb = BlockExists(x, y + 1, z - 1);
+                        var tl = BlockExists(x - 1, y + 1, z);
+                        var tr = BlockExists(x + 1, y + 1, z);
+
+                        var mfl = BlockExists(x - 1, y, z + 1);
+                        var mfr = BlockExists(x + 1, y, z + 1);
+                        var mbl = BlockExists(x - 1, y, z - 1);
+                        var mbr = BlockExists(x + 1, y, z - 1);
+
+                        var bf = BlockExists(x, y - 1, z + 1);
+                        var bb = BlockExists(x, y - 1, z - 1);
+                        var bl = BlockExists(x - 1, y - 1, z);
+                        var br = BlockExists(x + 1, y - 1, z);
+
+                        // left face
+                        if (!BlockExists(x-1, y, z))
                         {
                             VoxelMeshHelper.SetupFace(
                                  origin + new Vector3(0.0f, 0.0f, 0.0f),
                                  Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, false, vertices, uvs, indices, normals);
-                            verts += 4;
+
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
                         }
 
+                        // right face
                         if (!BlockExists(x + 1, y, z))
                         {
                             VoxelMeshHelper.SetupFace(
                                 origin + new Vector3(VoxelWorld.BlockSize, 0.0f, 0.0f),
                                 Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, true, vertices, uvs, indices, normals);
-                            verts += 4;
+                            
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
                         }
 
+                        // bottom face
                         if (!BlockExists(x, y - 1, z))
                         {
                             VoxelMeshHelper.SetupFace(
                                origin + new Vector3(0.0f, 0.0f, 0.0f),
                                Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, vertices, uvs, indices, normals);
-                            verts += 4;
+
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
                         }
 
+                        // upper face
                         if (!BlockExists(x, y + 1, z))
                         {
                             VoxelMeshHelper.SetupFace(
                                 origin + new Vector3(0.0f, VoxelWorld.BlockSize, 0.0f),
                                 Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, true, vertices, uvs, indices, normals);
-                            verts += 4;
+
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
                         }
 
+                        // back face
                         if (!BlockExists(x, y, z - 1))
                         {
                             VoxelMeshHelper.SetupFace(
                                 origin + new Vector3(0.0f, 0.0f, 0.0f),
                                 Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, true, vertices, uvs, indices, normals);
-                            verts += 4;
+                            
+                            colors.Add(new Color(mbl || bb ? 0.44f : 0.0f, 0.0f, 0.0f, 0.0f)); // ll
+                            colors.Add(new Color(mbl || tb ? 0.44f : 0.0f, 0.0f, 0.0f, 0.0f)); // ul
+                            colors.Add(new Color(mbr || tb ? 0.44f : 0.0f, 0.0f, 0.0f, 0.0f)); // ur
+                            colors.Add(new Color(mbr || bb ? 0.44f : 0.0f, 0.0f, 0.0f, 0.0f)); // lr
                         }
 
+                        // front face
                         if (!BlockExists(x, y, z + 1))
                         {
                             VoxelMeshHelper.SetupFace(
                                 origin + new Vector3(0.0f, 0.0f, VoxelWorld.BlockSize),
                                 Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, vertices, uvs, indices, normals);
-                            verts += 4;
-                        }
 
-                        if (verts > 0)
-                        {
-                            // calculate ambient occulusion for last `verts` vertices
-                            for (var i = 0; i < verts; i ++)
-                            {
-                                var id = vertices.Count - verts + i;
-                                var vert = vertices[id];
-                                
-                                if(Math.Abs(vert.Y - y) < 0.01f)
-                                    colors.Add(new Color(0.4f, 0.0f, 0.0f, 0.0f));
-                                else
-                                    colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-                            }
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
                         }
                     }
                 }

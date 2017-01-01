@@ -1,4 +1,4 @@
-// ReCrafted © 2016 Damian 'Erdroy' Korczowski
+// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski
 
 #define VS_P
 #define PS_P

@@ -1,2 +1,4 @@
 # ReCrafted
-Minecraft clone for my Portfolio
+
+
+ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski
