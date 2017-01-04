@@ -210,7 +210,7 @@ namespace ReCrafted.Voxels
                             var ao00 = VoxelMeshHelper.CalculateAmbient(br, mbr, bbr);
                             var ao01 = VoxelMeshHelper.CalculateAmbient(tr, mbr, tbr);
                             var ao11 = VoxelMeshHelper.CalculateAmbient(tr, mfr, tfr);
-                            var ao10 = VoxelMeshHelper.CalculateAmbient(br, mbr, bfr);
+                            var ao10 = VoxelMeshHelper.CalculateAmbient(br, mfr, bfr);
 
                             colors.Add(new Color(ao00 * 0.44f, 0.0f, 0.0f, 0.0f));
                             colors.Add(new Color(ao01 * 0.44f, 0.0f, 0.0f, 0.0f));
