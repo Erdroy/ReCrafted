@@ -7,7 +7,15 @@ namespace ReCrafted.Voxels
 {
     public static class VoxelMeshHelper
     {
-        public static void SetupFace(Vector3 origin, Vector3 up, Vector3 right, bool isReversed, 
+        public static float CalculateAmbient(bool sideA, bool sideB, bool corner)
+        {
+            if (sideA && sideB)
+                return 1.0f;
+
+            return (sideA ? 0.5f : 0) + (sideB ? 0.5f : 0) + (corner ? 0.5f : 0);
+        }
+
+        public static void SetupFace(Vector3 origin, Vector3 up, Vector3 right, bool isReversed, bool invertedQuad, 
             ICollection<Vector3> vertices,
             ICollection<Vector2> uVs, 
             ICollection<uint> triangles, 
@@ -20,7 +28,7 @@ namespace ReCrafted.Voxels
             var b = origin + up;
             var c = origin + up + right;
             var d = origin + right;
-
+            
             vertices.Add(a);
             vertices.Add(b);
             vertices.Add(c);

@@ -167,6 +167,11 @@ namespace ReCrafted.Voxels
                         var tl = BlockExists(x - 1, y + 1, z);
                         var tr = BlockExists(x + 1, y + 1, z);
 
+                        var tfl = BlockExists(x - 1, y + 1, z + 1);
+                        var tfr = BlockExists(x + 1, y + 1, z + 1);
+                        var tbl = BlockExists(x - 1, y + 1, z - 1);
+                        var tbr = BlockExists(x + 1, y + 1, z - 1);
+
                         var mfl = BlockExists(x - 1, y, z + 1);
                         var mfr = BlockExists(x + 1, y, z + 1);
                         var mbl = BlockExists(x - 1, y, z - 1);
@@ -177,12 +182,17 @@ namespace ReCrafted.Voxels
                         var bl = BlockExists(x - 1, y - 1, z);
                         var br = BlockExists(x + 1, y - 1, z);
 
+                        var bfl = BlockExists(x - 1, y - 1, z + 1);
+                        var bfr = BlockExists(x + 1, y - 1, z + 1);
+                        var bbl = BlockExists(x - 1, y - 1, z - 1);
+                        var bbr = BlockExists(x + 1, y - 1, z - 1);
+
                         // left face
                         if (!BlockExists(x-1, y, z))
                         {
                             VoxelMeshHelper.SetupFace(
                                  origin + new Vector3(0.0f, 0.0f, 0.0f),
-                                 Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, false, vertices, uvs, indices, normals);
+                                 Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, false, false, vertices, uvs, indices, normals);
 
                             colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
                             colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
@@ -195,12 +205,17 @@ namespace ReCrafted.Voxels
                         {
                             VoxelMeshHelper.SetupFace(
                                 origin + new Vector3(VoxelWorld.BlockSize, 0.0f, 0.0f),
-                                Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, true, vertices, uvs, indices, normals);
-                            
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                                Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, true, false, vertices, uvs, indices, normals);
+
+                            var ao00 = VoxelMeshHelper.CalculateAmbient(br, mbr, bbr);
+                            var ao01 = VoxelMeshHelper.CalculateAmbient(tr, mbr, tbr);
+                            var ao11 = VoxelMeshHelper.CalculateAmbient(tr, mfr, tfr);
+                            var ao10 = VoxelMeshHelper.CalculateAmbient(br, mbr, bfr);
+
+                            colors.Add(new Color(ao00 * 0.44f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao01 * 0.44f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao11 * 0.44f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao10 * 0.44f, 0.0f, 0.0f, 0.0f));
                         }
 
                         // bottom face
@@ -208,7 +223,7 @@ namespace ReCrafted.Voxels
                         {
                             VoxelMeshHelper.SetupFace(
                                origin + new Vector3(0.0f, 0.0f, 0.0f),
-                               Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, vertices, uvs, indices, normals);
+                               Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, false, vertices, uvs, indices, normals);
 
                             colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
                             colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
@@ -221,12 +236,17 @@ namespace ReCrafted.Voxels
                         {
                             VoxelMeshHelper.SetupFace(
                                 origin + new Vector3(0.0f, VoxelWorld.BlockSize, 0.0f),
-                                Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, true, vertices, uvs, indices, normals);
+                                Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, true, false, vertices, uvs, indices, normals);
 
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            var ao00 = VoxelMeshHelper.CalculateAmbient(tl, tb, tbl);
+                            var ao01 = VoxelMeshHelper.CalculateAmbient(tl, tf, tfl);
+                            var ao11 = VoxelMeshHelper.CalculateAmbient(tr, tf, tfr);
+                            var ao10 = VoxelMeshHelper.CalculateAmbient(tb, tr, tbr);
+
+                            colors.Add(new Color(ao00 * 0.44f, 0.0f, 0.0f, 0.0f)); // bl
+                            colors.Add(new Color(ao01 * 0.44f, 0.0f, 0.0f, 0.0f)); // ul
+                            colors.Add(new Color(ao11 * 0.44f, 0.0f, 0.0f, 0.0f)); // ur
+                            colors.Add(new Color(ao10 * 0.44f, 0.0f, 0.0f, 0.0f)); // br
                         }
 
                         // back face
@@ -234,12 +254,17 @@ namespace ReCrafted.Voxels
                         {
                             VoxelMeshHelper.SetupFace(
                                 origin + new Vector3(0.0f, 0.0f, 0.0f),
-                                Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, true, vertices, uvs, indices, normals);
-                            
-                            colors.Add(new Color(mbl || bb ? 0.44f : 0.0f, 0.0f, 0.0f, 0.0f)); // ll
-                            colors.Add(new Color(mbl || tb ? 0.44f : 0.0f, 0.0f, 0.0f, 0.0f)); // ul
-                            colors.Add(new Color(mbr || tb ? 0.44f : 0.0f, 0.0f, 0.0f, 0.0f)); // ur
-                            colors.Add(new Color(mbr || bb ? 0.44f : 0.0f, 0.0f, 0.0f, 0.0f)); // lr
+                                Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, true, false, vertices, uvs, indices, normals);
+
+                            var ao00 = VoxelMeshHelper.CalculateAmbient(bb, mbl, bbl);
+                            var ao01 = VoxelMeshHelper.CalculateAmbient(mbl, tb, tbl);
+                            var ao11 = VoxelMeshHelper.CalculateAmbient(mbr, tb, tbr);
+                            var ao10 = VoxelMeshHelper.CalculateAmbient(mbr, bb, bbr);
+
+                            colors.Add(new Color(ao00 * 0.44f, 0.0f, 0.0f, 0.0f)); // ll
+                            colors.Add(new Color(ao01 * 0.44f, 0.0f, 0.0f, 0.0f)); // ul
+                            colors.Add(new Color(ao11 * 0.44f, 0.0f, 0.0f, 0.0f)); // ur
+                            colors.Add(new Color(ao10 * 0.44f, 0.0f, 0.0f, 0.0f)); // lr
                         }
 
                         // front face
@@ -247,7 +272,7 @@ namespace ReCrafted.Voxels
                         {
                             VoxelMeshHelper.SetupFace(
                                 origin + new Vector3(0.0f, 0.0f, VoxelWorld.BlockSize),
-                                Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, vertices, uvs, indices, normals);
+                                Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, false, vertices, uvs, indices, normals);
 
                             colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
                             colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
