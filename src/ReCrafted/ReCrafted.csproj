@@ -87,7 +87,7 @@
     <Compile Include="Core\Input.cs" />
     <Compile Include="Core\IGameComponent.cs" />
     <Compile Include="Core\ITickable.cs" />
-    <Compile Include="Core\IUiRenderer.cs" />
+    <Compile Include="Core\IUIRenderer.cs" />
     <Compile Include="Core\KeyCode.cs" />
     <Compile Include="Core\Localization\Locale.cs" />
     <Compile Include="Core\Localization\LocaleStrings.cs" />

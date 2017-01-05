@@ -230,15 +230,15 @@ namespace ReCrafted.Voxels
                                origin + new Vector3(0.0f, 0.0f, 0.0f),
                                Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, false, vertices, uvs, indices, normals);
 
-                            var ao00 = VoxelMeshHelper.CalculateAmbient(mfl, bl, bfl);
-                            var ao01 = VoxelMeshHelper.CalculateAmbient(mfl, tl, tfl);
-                            var ao11 = VoxelMeshHelper.CalculateAmbient(mbl, tl, tbl);
-                            var ao10 = VoxelMeshHelper.CalculateAmbient(mbl, bl, bbl);
+                            var ao00 = VoxelMeshHelper.CalculateAmbient(bb, bl, bbl);
+                            var ao01 = VoxelMeshHelper.CalculateAmbient(bf, bl, bfl);
+                            var ao11 = VoxelMeshHelper.CalculateAmbient(bf, br, bfr);
+                            var ao10 = VoxelMeshHelper.CalculateAmbient(bb, br, bbr);
 
-                            colors.Add(new Color(ao10 * 0.44f, 0.0f, 0.0f, 0.0f)); // ?
-                            colors.Add(new Color(ao11 * 0.44f, 0.0f, 0.0f, 0.0f)); // ?
-                            colors.Add(new Color(ao01 * 0.44f, 0.0f, 0.0f, 0.0f)); // ? 
                             colors.Add(new Color(ao00 * 0.44f, 0.0f, 0.0f, 0.0f)); // ?
+                            colors.Add(new Color(ao01 * 0.44f, 0.0f, 0.0f, 0.0f)); // ?
+                            colors.Add(new Color(ao11 * 0.44f, 0.0f, 0.0f, 0.0f)); // ? 
+                            colors.Add(new Color(ao10 * 0.44f, 0.0f, 0.0f, 0.0f)); // ?
                         }
 
                         // upper face
@@ -285,14 +285,14 @@ namespace ReCrafted.Voxels
                                 Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, false, vertices, uvs, indices, normals);
 
                             var ao00 = VoxelMeshHelper.CalculateAmbient(mfl, bf, bfl);
-                            var ao01 = VoxelMeshHelper.CalculateAmbient(mfl, tl, tfl); // ?
-                            var ao11 = VoxelMeshHelper.CalculateAmbient(mbl, tl, tbl); // ?
-                            var ao10 = VoxelMeshHelper.CalculateAmbient(mbl, bl, bbl); // ?
+                            var ao01 = VoxelMeshHelper.CalculateAmbient(mfl, tf, tfl);
+                            var ao11 = VoxelMeshHelper.CalculateAmbient(mfr, tf, tfr);
+                            var ao10 = VoxelMeshHelper.CalculateAmbient(mfr, bf, bfr);
 
-                            colors.Add(new Color(ao10 * 0.44f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao11 * 0.44f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao01 * 0.44f, 0.0f, 0.0f, 0.0f));
                             colors.Add(new Color(ao00 * 0.44f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao01 * 0.44f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao11 * 0.44f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao10 * 0.44f, 0.0f, 0.0f, 0.0f));
                         }
                     }
                 }
