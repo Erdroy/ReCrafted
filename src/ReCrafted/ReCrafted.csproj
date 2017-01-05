@@ -85,12 +85,14 @@
     <Compile Include="Core\Game.cs" />
     <Compile Include="Core\GameInfo.cs" />
     <Compile Include="Core\Input.cs" />
-    <Compile Include="Core\IRendererComponent.cs" />
+    <Compile Include="Core\IGameComponent.cs" />
     <Compile Include="Core\ITickable.cs" />
+    <Compile Include="Core\IUiRenderer.cs" />
     <Compile Include="Core\KeyCode.cs" />
     <Compile Include="Core\Localization\Locale.cs" />
     <Compile Include="Core\Localization\LocaleStrings.cs" />
     <Compile Include="Core\Time.cs" />
+    <Compile Include="Logic\GameManager.cs" />
     <Compile Include="Graphics\Camera.cs" />
     <Compile Include="Graphics\DeferredRendering.cs" />
     <Compile Include="Graphics\PostprocessJob.cs" />

@@ -12,7 +12,7 @@ namespace ReCrafted.Voxels
     /// <summary>
     /// VoxelWorld class.
     /// </summary>
-    public sealed class VoxelWorld : IDisposable, IRendererComponent
+    public sealed class VoxelWorld : IDisposable, IGameComponent
     {
         // const
         /// <summary>

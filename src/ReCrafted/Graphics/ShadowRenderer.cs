@@ -8,7 +8,7 @@ using Vector3 = SharpDX.Vector3;
 
 namespace ReCrafted.Graphics
 {
-    public class ShadowRenderer : IDisposable
+    public sealed class ShadowRenderer : IDisposable
     {
         public const int ShadowMapSize = 2048;
 

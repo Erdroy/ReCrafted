@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using ReCrafted.Core.Localization;
 using ReCrafted.Graphics;
+using ReCrafted.Logic;
 using SharpDX.Windows;
 
 namespace ReCrafted.Core
@@ -41,6 +42,7 @@ namespace ReCrafted.Core
 
         private readonly Stopwatch _stopwatch;
 
+        private GameManager _gameManager;
         private float _nextTimeUpdate;
         private int _frames;
         private float _framesTime;
@@ -85,6 +87,8 @@ namespace ReCrafted.Core
             
             // initialize scene
             Scene.Instance.Init();
+
+            _gameManager = new GameManager();
 
             // run the game
             RenderLoop.Run(Form, Loop, true);
@@ -167,6 +171,7 @@ namespace ReCrafted.Core
         private void Tick()
         {
             Scene.Instance.Tick();
+            _gameManager.Tick();
         }
 
         // private

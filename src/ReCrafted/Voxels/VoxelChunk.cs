@@ -12,7 +12,7 @@ namespace ReCrafted.Voxels
     /// <summary>
     /// VoxelChunk class.
     /// </summary>
-    public sealed class VoxelChunk : IDisposable, IRendererComponent
+    public sealed class VoxelChunk : IDisposable, IGameComponent
     {
         /// <summary>
         /// The neighbouring chunks.
@@ -194,10 +194,15 @@ namespace ReCrafted.Voxels
                                  origin + new Vector3(0.0f, 0.0f, 0.0f),
                                  Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, false, false, vertices, uvs, indices, normals);
 
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            var ao00 = VoxelMeshHelper.CalculateAmbient(mfl, bl, bfl);
+                            var ao01 = VoxelMeshHelper.CalculateAmbient(mfl, tl, tfl);
+                            var ao11 = VoxelMeshHelper.CalculateAmbient(mbl, tl, tbl);
+                            var ao10 = VoxelMeshHelper.CalculateAmbient(mbl, bl, bbl);
+
+                            colors.Add(new Color(ao10 * 0.44f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao11 * 0.44f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao01 * 0.44f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao00 * 0.44f, 0.0f, 0.0f, 0.0f));
                         }
 
                         // right face
@@ -225,10 +230,15 @@ namespace ReCrafted.Voxels
                                origin + new Vector3(0.0f, 0.0f, 0.0f),
                                Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, false, vertices, uvs, indices, normals);
 
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            var ao00 = VoxelMeshHelper.CalculateAmbient(mfl, bl, bfl);
+                            var ao01 = VoxelMeshHelper.CalculateAmbient(mfl, tl, tfl);
+                            var ao11 = VoxelMeshHelper.CalculateAmbient(mbl, tl, tbl);
+                            var ao10 = VoxelMeshHelper.CalculateAmbient(mbl, bl, bbl);
+
+                            colors.Add(new Color(ao10 * 0.44f, 0.0f, 0.0f, 0.0f)); // ?
+                            colors.Add(new Color(ao11 * 0.44f, 0.0f, 0.0f, 0.0f)); // ?
+                            colors.Add(new Color(ao01 * 0.44f, 0.0f, 0.0f, 0.0f)); // ? 
+                            colors.Add(new Color(ao00 * 0.44f, 0.0f, 0.0f, 0.0f)); // ?
                         }
 
                         // upper face
@@ -274,10 +284,15 @@ namespace ReCrafted.Voxels
                                 origin + new Vector3(0.0f, 0.0f, VoxelWorld.BlockSize),
                                 Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, false, vertices, uvs, indices, normals);
 
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+                            var ao00 = VoxelMeshHelper.CalculateAmbient(mfl, bf, bfl);
+                            var ao01 = VoxelMeshHelper.CalculateAmbient(mfl, tl, tfl); // ?
+                            var ao11 = VoxelMeshHelper.CalculateAmbient(mbl, tl, tbl); // ?
+                            var ao10 = VoxelMeshHelper.CalculateAmbient(mbl, bl, bbl); // ?
+
+                            colors.Add(new Color(ao10 * 0.44f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao11 * 0.44f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao01 * 0.44f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao00 * 0.44f, 0.0f, 0.0f, 0.0f));
                         }
                     }
                 }
@@ -308,14 +323,6 @@ namespace ReCrafted.Voxels
             }
 
             IsVisible = true;
-        }
-
-        /// <summary>
-        /// Update the chunk's lighting.
-        /// </summary>
-        public void UpdateLighting()
-        {
-            
         }
 
         /// <summary>

@@ -2,7 +2,7 @@
 
 namespace ReCrafted.Core
 {
-    public interface IRendererComponent
+    public interface IGameComponent
     {
         void Init();
         void Tick();

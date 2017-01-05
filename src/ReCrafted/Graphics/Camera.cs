@@ -23,6 +23,7 @@ namespace ReCrafted.Graphics
         private float _aspectRatio;
         private Vector3 _rotation;
         private Vector3 _lastDelta;
+        private System.Drawing.Point _lastPoint;
 
         /// <summary>
         /// Camera contstructor
@@ -75,10 +76,7 @@ namespace ReCrafted.Graphics
                 if (UseLook /*&& Input.IsButton(ButtonCode.Right)*/)
                 {
                     UpdateLook();
-
-                    Cursor.Position = Game.Instance.Form.PointToScreen(
-                        new System.Drawing.Point(Game.Instance.Form.ClientSize.Width/2,
-                            Game.Instance.Form.ClientSize.Height/2));
+                    //UpdateLook1();
                     Cursor.Hide();
                 }
                 else
@@ -190,6 +188,47 @@ namespace ReCrafted.Graphics
             _lastDelta = mouseDelta;
 
             Cursor.Position = clientCenter;
+
+            Cursor.Position = Game.Instance.Form.PointToScreen(
+                        new System.Drawing.Point(Game.Instance.Form.ClientSize.Width / 2,
+                            Game.Instance.Form.ClientSize.Height / 2));
+        }
+
+        // private
+        private void UpdateLook1()
+        {
+            var cursorPos = Cursor.Position;
+            var delta = new System.Drawing.Point(cursorPos.X - _lastPoint.X, cursorPos.Y - _lastPoint.Y);
+
+            var mouseDelta = new Vector3(delta.X, delta.Y, 0.0f);
+
+            if (LookFiltering)
+            {
+                // Filtering
+                _filtering[_filteringStep] = new Vector3(delta.X, delta.Y, 0.0f);
+                _filteringStep++;
+
+                if (_filteringStep == 3)
+                    _filteringStep = 0;
+
+                // Calculate avg. mouse delta
+                mouseDelta = (_filtering[0] + _filtering[1] + _filtering[2]) / new Vector3(3.0f, 3.0f, 1.0f);
+            }
+
+            // acceleration
+            var accel = mouseDelta;
+
+            if (LookAcceleration)
+                accel += _lastDelta;
+
+            _rotation += new Vector3(accel.X / 16.0f, accel.Y / 16.0f, 0.0f);
+            _rotation.Y = MathUtil.Clamp(_rotation.Y, -89.0f, 89.0f);
+
+            var rotMatrix = GetRotationMatrix();
+            Forward = rotMatrix.Forward;
+
+            _lastDelta = mouseDelta;
+            _lastPoint = cursorPos;
         }
 
         // private
