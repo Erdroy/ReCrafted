@@ -54,21 +54,45 @@ namespace ReCrafted.Voxels
 
             if (isReversed)
             {
-                triangles.Add(index + 0);
-                triangles.Add(index + 1);
-                triangles.Add(index + 2);
-                triangles.Add(index + 2);
-                triangles.Add(index + 3);
-                triangles.Add(index + 0);
+                if (invertedQuad)
+                {
+                    triangles.Add(index + 1);
+                    triangles.Add(index + 2);
+                    triangles.Add(index + 3);
+                    triangles.Add(index + 3);
+                    triangles.Add(index + 0);
+                    triangles.Add(index + 1);
+                }
+                else
+                {
+                    triangles.Add(index + 0);
+                    triangles.Add(index + 1);
+                    triangles.Add(index + 2);
+                    triangles.Add(index + 2);
+                    triangles.Add(index + 3);
+                    triangles.Add(index + 0);
+                }
             }
             else
             {
-                triangles.Add(index + 1);
-                triangles.Add(index + 0);
-                triangles.Add(index + 2);
-                triangles.Add(index + 3);
-                triangles.Add(index + 2);
-                triangles.Add(index + 0);
+                if (invertedQuad)
+                {
+                    triangles.Add(index + 2);
+                    triangles.Add(index + 1);
+                    triangles.Add(index + 3);
+                    triangles.Add(index + 0);
+                    triangles.Add(index + 3);
+                    triangles.Add(index + 1);
+                }
+                else
+                {
+                    triangles.Add(index + 1);
+                    triangles.Add(index + 0);
+                    triangles.Add(index + 2);
+                    triangles.Add(index + 3);
+                    triangles.Add(index + 2);
+                    triangles.Add(index + 0);
+                }
             }
         }
     }

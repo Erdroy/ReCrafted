@@ -187,20 +187,22 @@ namespace ReCrafted.Voxels
                         var bbl = BlockExists(x - 1, y - 1, z - 1);
                         var bbr = BlockExists(x + 1, y - 1, z - 1);
 
-                        const float ambientStr = 1.0f;
-
+                        const float ambientStr = 0.425f;
+                        
                         // left face
-                        if (!BlockExists(x-1, y, z))
+                        if (!BlockExists(x - 1, y, z))
                         {
-                            VoxelMeshHelper.SetupFace(
-                                 origin + new Vector3(0.0f, 0.0f, 0.0f),
-                                 Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, false, false, vertices, uvs, indices, normals);
-
                             var ao00 = VoxelMeshHelper.CalculateAmbient(mfl, bl, bfl);
                             var ao01 = VoxelMeshHelper.CalculateAmbient(mfl, tl, tfl);
                             var ao11 = VoxelMeshHelper.CalculateAmbient(mbl, tl, tbl);
                             var ao10 = VoxelMeshHelper.CalculateAmbient(mbl, bl, bbl);
 
+                            var flippedQuad = ao00 + ao11 > ao01 + ao10;
+
+                            VoxelMeshHelper.SetupFace(
+                                 origin + new Vector3(0.0f, 0.0f, 0.0f),
+                                 Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, false, flippedQuad, vertices, uvs, indices, normals);
+                            
                             colors.Add(new Color(ao10 * ambientStr, 0.0f, 0.0f, 0.0f));
                             colors.Add(new Color(ao11 * ambientStr, 0.0f, 0.0f, 0.0f));
                             colors.Add(new Color(ao01 * ambientStr, 0.0f, 0.0f, 0.0f));
@@ -210,15 +212,17 @@ namespace ReCrafted.Voxels
                         // right face
                         if (!BlockExists(x + 1, y, z))
                         {
-                            VoxelMeshHelper.SetupFace(
-                                origin + new Vector3(VoxelWorld.BlockSize, 0.0f, 0.0f),
-                                Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, true, false, vertices, uvs, indices, normals);
-
                             var ao00 = VoxelMeshHelper.CalculateAmbient(br, mbr, bbr);
                             var ao01 = VoxelMeshHelper.CalculateAmbient(tr, mbr, tbr);
                             var ao11 = VoxelMeshHelper.CalculateAmbient(tr, mfr, tfr);
                             var ao10 = VoxelMeshHelper.CalculateAmbient(br, mfr, bfr);
 
+                            var flippedQuad = ao00 + ao11 > ao01 + ao10;
+
+                            VoxelMeshHelper.SetupFace(
+                                origin + new Vector3(VoxelWorld.BlockSize, 0.0f, 0.0f),
+                                Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, true, flippedQuad, vertices, uvs, indices, normals);
+                            
                             colors.Add(new Color(ao00 * ambientStr, 0.0f, 0.0f, 0.0f));
                             colors.Add(new Color(ao01 * ambientStr, 0.0f, 0.0f, 0.0f));
                             colors.Add(new Color(ao11 * ambientStr, 0.0f, 0.0f, 0.0f));
@@ -228,15 +232,17 @@ namespace ReCrafted.Voxels
                         // bottom face
                         if (!BlockExists(x, y - 1, z))
                         {
-                            VoxelMeshHelper.SetupFace(
-                               origin + new Vector3(0.0f, 0.0f, 0.0f),
-                               Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, false, vertices, uvs, indices, normals);
-
                             var ao00 = VoxelMeshHelper.CalculateAmbient(bb, bl, bbl);
                             var ao01 = VoxelMeshHelper.CalculateAmbient(bf, bl, bfl);
                             var ao11 = VoxelMeshHelper.CalculateAmbient(bf, br, bfr);
                             var ao10 = VoxelMeshHelper.CalculateAmbient(bb, br, bbr);
 
+                            var flippedQuad = ao00 + ao11 > ao01 + ao10;
+
+                            VoxelMeshHelper.SetupFace(
+                               origin + new Vector3(0.0f, 0.0f, 0.0f),
+                               Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, flippedQuad, vertices, uvs, indices, normals);
+                            
                             colors.Add(new Color(ao00 * ambientStr, 0.0f, 0.0f, 0.0f)); // ?
                             colors.Add(new Color(ao01 * ambientStr, 0.0f, 0.0f, 0.0f)); // ?
                             colors.Add(new Color(ao11 * ambientStr, 0.0f, 0.0f, 0.0f)); // ? 
@@ -246,15 +252,17 @@ namespace ReCrafted.Voxels
                         // upper face
                         if (!BlockExists(x, y + 1, z))
                         {
-                            VoxelMeshHelper.SetupFace(
-                                origin + new Vector3(0.0f, VoxelWorld.BlockSize, 0.0f),
-                                Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, true, false, vertices, uvs, indices, normals);
-
                             var ao00 = VoxelMeshHelper.CalculateAmbient(tl, tb, tbl);
                             var ao01 = VoxelMeshHelper.CalculateAmbient(tl, tf, tfl);
                             var ao11 = VoxelMeshHelper.CalculateAmbient(tr, tf, tfr);
                             var ao10 = VoxelMeshHelper.CalculateAmbient(tb, tr, tbr);
 
+                            var flippedQuad = ao00 + ao11 > ao01 + ao10;
+                            
+                            VoxelMeshHelper.SetupFace(
+                                origin + new Vector3(0.0f, VoxelWorld.BlockSize, 0.0f),
+                                Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, true, flippedQuad, vertices, uvs, indices, normals);
+                            
                             colors.Add(new Color(ao00 * ambientStr, 0.0f, 0.0f, 0.0f)); // bl
                             colors.Add(new Color(ao01 * ambientStr, 0.0f, 0.0f, 0.0f)); // ul
                             colors.Add(new Color(ao11 * ambientStr, 0.0f, 0.0f, 0.0f)); // ur
@@ -264,15 +272,17 @@ namespace ReCrafted.Voxels
                         // back face
                         if (!BlockExists(x, y, z - 1))
                         {
-                            VoxelMeshHelper.SetupFace(
-                                origin + new Vector3(0.0f, 0.0f, 0.0f),
-                                Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, true, false, vertices, uvs, indices, normals);
-
                             var ao00 = VoxelMeshHelper.CalculateAmbient(bb, mbl, bbl);
                             var ao01 = VoxelMeshHelper.CalculateAmbient(mbl, tb, tbl);
                             var ao11 = VoxelMeshHelper.CalculateAmbient(mbr, tb, tbr);
                             var ao10 = VoxelMeshHelper.CalculateAmbient(mbr, bb, bbr);
 
+                            var flippedQuad = ao00 + ao11 > ao01 + ao10;
+
+                            VoxelMeshHelper.SetupFace(
+                                origin + new Vector3(0.0f, 0.0f, 0.0f),
+                                Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, true, flippedQuad, vertices, uvs, indices, normals);
+                            
                             colors.Add(new Color(ao00 * ambientStr, 0.0f, 0.0f, 0.0f)); // ll
                             colors.Add(new Color(ao01 * ambientStr, 0.0f, 0.0f, 0.0f)); // ul
                             colors.Add(new Color(ao11 * ambientStr, 0.0f, 0.0f, 0.0f)); // ur
@@ -282,15 +292,17 @@ namespace ReCrafted.Voxels
                         // front face
                         if (!BlockExists(x, y, z + 1))
                         {
-                            VoxelMeshHelper.SetupFace(
-                                origin + new Vector3(0.0f, 0.0f, VoxelWorld.BlockSize),
-                                Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, false, vertices, uvs, indices, normals);
-
                             var ao00 = VoxelMeshHelper.CalculateAmbient(mfl, bf, bfl);
                             var ao01 = VoxelMeshHelper.CalculateAmbient(mfl, tf, tfl);
                             var ao11 = VoxelMeshHelper.CalculateAmbient(mfr, tf, tfr);
                             var ao10 = VoxelMeshHelper.CalculateAmbient(mfr, bf, bfr);
 
+                            var flippedQuad = ao00 + ao11 > ao01 + ao10;
+
+                            VoxelMeshHelper.SetupFace(
+                                origin + new Vector3(0.0f, 0.0f, VoxelWorld.BlockSize),
+                                Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, flippedQuad, vertices, uvs, indices, normals);
+                            
                             colors.Add(new Color(ao00 * ambientStr, 0.0f, 0.0f, 0.0f));
                             colors.Add(new Color(ao01 * ambientStr, 0.0f, 0.0f, 0.0f));
                             colors.Add(new Color(ao11 * ambientStr, 0.0f, 0.0f, 0.0f));
@@ -376,6 +388,7 @@ namespace ReCrafted.Voxels
                     return false;
                 }
                 
+                // -- corners --
                 if (x < 0 && z >= VoxelWorld.ChunkSize)
                 {
                     // x--
@@ -387,42 +400,6 @@ namespace ReCrafted.Voxels
                         return false;
 
                     return chunk.GetBlock(x + VoxelWorld.ChunkSize, y, z - VoxelWorld.ChunkSize) != 0;
-                }
-                if (z >= VoxelWorld.ChunkSize)
-                {
-                    // -x-
-                    // |c|
-                    // ---
-                    var chunk = NeighChunks[1];
-
-                    if (chunk == null)
-                        return false;
-
-                    return chunk.GetBlock(x, y, z - VoxelWorld.ChunkSize) != 0;
-                }
-                if (z >= VoxelWorld.ChunkSize && x >= VoxelWorld.ChunkSize)
-                {
-                    // --x
-                    // |c|
-                    // ---
-                    var chunk = NeighChunks[2];
-
-                    if (chunk == null)
-                        return false;
-
-                    return chunk.GetBlock(x - VoxelWorld.ChunkSize, y, z - VoxelWorld.ChunkSize) != 0;
-                }
-                if (x >= VoxelWorld.ChunkSize)
-                {
-                    // ---
-                    // |cx
-                    // ---
-                    var chunk = NeighChunks[3];
-
-                    if (chunk == null)
-                        return false;
-
-                    return chunk.GetBlock(x - VoxelWorld.ChunkSize, y, z) != 0;
                 }
                 if (z < 0 && x >= VoxelWorld.ChunkSize)
                 {
@@ -436,18 +413,18 @@ namespace ReCrafted.Voxels
 
                     return chunk.GetBlock(x - VoxelWorld.ChunkSize, y, z + VoxelWorld.ChunkSize) != 0;
                 }
-                if (z < 0)
+                if (z >= VoxelWorld.ChunkSize && x >= VoxelWorld.ChunkSize)
                 {
-                    // ---
+                    // --x
                     // |c|
-                    // -x-
-                    var chunk = NeighChunks[5];
+                    // ---
+                    var chunk = NeighChunks[2];
 
                     if (chunk == null)
                         return false;
 
-                    return chunk.GetBlock(x, y, z + VoxelWorld.ChunkSize) != 0;
-                } 
+                    return chunk.GetBlock(x - VoxelWorld.ChunkSize, y, z - VoxelWorld.ChunkSize) != 0;
+                }
                 if (x < 0 && z < 0)
                 {
                     // ---
@@ -460,6 +437,44 @@ namespace ReCrafted.Voxels
 
                     return chunk.GetBlock(x + VoxelWorld.ChunkSize, y, z + VoxelWorld.ChunkSize) != 0;
                 }
+
+                // -- sides --
+                if (z >= VoxelWorld.ChunkSize)
+                {
+                    // -x-
+                    // |c|
+                    // ---
+                    var chunk = NeighChunks[1];
+
+                    if (chunk == null)
+                        return false;
+
+                    return chunk.GetBlock(x, y, z - VoxelWorld.ChunkSize) != 0;
+                }
+                if (x >= VoxelWorld.ChunkSize)
+                {
+                    // ---
+                    // |cx
+                    // ---
+                    var chunk = NeighChunks[3];
+
+                    if (chunk == null)
+                        return false;
+
+                    return chunk.GetBlock(x - VoxelWorld.ChunkSize, y, z) != 0;
+                }
+                if (z < 0)
+                {
+                    // ---
+                    // |c|
+                    // -x-
+                    var chunk = NeighChunks[5];
+
+                    if (chunk == null)
+                        return false;
+
+                    return chunk.GetBlock(x, y, z + VoxelWorld.ChunkSize) != 0;
+                } 
                 if (x < 0)
                 {
                     // ---
