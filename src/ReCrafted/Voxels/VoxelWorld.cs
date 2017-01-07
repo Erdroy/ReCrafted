@@ -128,15 +128,18 @@ namespace ReCrafted.Voxels
                     if (chunk.GetBlock(blockCoord.X, blockCoord.Y, blockCoord.Z) != 0)
                         return;
                     
-                    chunk.SetBlock(6, blockCoord.X, blockCoord.Y, blockCoord.Z);
+                    chunk.SetBlock(4, blockCoord.X, blockCoord.Y, blockCoord.Z);
                     chunk.UpdateMesh();
 
-                    var chunks = chunk.GetEdgeNeighs(blockCoord);
-                    if (chunks != null)
+                    if (VoxelChunk.IsOnEdge(blockCoord))
                     {
-                        foreach (var c in chunks)
+                        var chunks = chunk.GetEdgeNeighs(blockCoord);
+                        if (chunks != null)
                         {
-                            c?.UpdateMesh();
+                            foreach (var c in chunks)
+                            {
+                                c?.UpdateMesh();
+                            }
                         }
                     }
                 }

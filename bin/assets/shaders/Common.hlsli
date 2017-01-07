@@ -67,6 +67,61 @@ struct VSOutput
 };
 #endif
 
+#ifdef VS_PPTNC
+struct VSInput
+{
+	float3 position : POSITION;
+	float2 uv : TEXCOORD;
+	float3 normal : NORMAL;
+	float4 color : COLOR;
+};
+#endif
+
+#ifdef PS_PPTNC
+struct VSOutput
+{
+	float4 position : SV_POSITION;
+	float4 worldPosition : POSITION_WS;
+	float2 uv : TEXCOORD;
+	float3 normal : NORMAL;
+	float4 color : COLOR;
+};
+#endif
+
+struct VertexShader_Input
+{
+	float3 position : POSITION;
+#ifdef VS_uv
+	float2 uv : TEXCOORD;
+#endif
+#ifdef VS_normal
+	float3 normal : NORMAL;
+#endif
+#ifdef VS_color
+	float4 color : COLOR;
+#endif
+};
+
+struct PixelShader_Input 
+{
+	float4 position : SV_POSITION;
+#ifdef PS_worldPosition
+	float4 worldPosition : POSITION_WS;
+#endif
+#ifdef PS_uv
+	float2 uv : TEXCOORD;
+#endif
+#ifdef PS_normal
+	float3 normal : NORMAL;
+#endif
+#ifdef PS_color
+	float4 color : COLOR;
+#endif
+};
+
+// VS output is PS input
+#define VertexShader_Output PixelShader_Input
+
 float3 PositionFromDepth(in float zw, in uint2 pixelCoord, float2 screenSize, matrix invViewProj)
 {
 	float2 cpos = (pixelCoord + 0.5f) / screenSize;

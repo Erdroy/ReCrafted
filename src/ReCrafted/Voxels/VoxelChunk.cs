@@ -187,6 +187,8 @@ namespace ReCrafted.Voxels
                         var bbl = BlockExists(x - 1, y - 1, z - 1);
                         var bbr = BlockExists(x + 1, y - 1, z - 1);
 
+                        const float ambientStr = 1.0f;
+
                         // left face
                         if (!BlockExists(x-1, y, z))
                         {
@@ -199,10 +201,10 @@ namespace ReCrafted.Voxels
                             var ao11 = VoxelMeshHelper.CalculateAmbient(mbl, tl, tbl);
                             var ao10 = VoxelMeshHelper.CalculateAmbient(mbl, bl, bbl);
 
-                            colors.Add(new Color(ao10 * 0.44f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao11 * 0.44f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao01 * 0.44f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao00 * 0.44f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao10 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao11 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao01 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao00 * ambientStr, 0.0f, 0.0f, 0.0f));
                         }
 
                         // right face
@@ -217,10 +219,10 @@ namespace ReCrafted.Voxels
                             var ao11 = VoxelMeshHelper.CalculateAmbient(tr, mfr, tfr);
                             var ao10 = VoxelMeshHelper.CalculateAmbient(br, mfr, bfr);
 
-                            colors.Add(new Color(ao00 * 0.44f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao01 * 0.44f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao11 * 0.44f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao10 * 0.44f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao00 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao01 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao11 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao10 * ambientStr, 0.0f, 0.0f, 0.0f));
                         }
 
                         // bottom face
@@ -235,10 +237,10 @@ namespace ReCrafted.Voxels
                             var ao11 = VoxelMeshHelper.CalculateAmbient(bf, br, bfr);
                             var ao10 = VoxelMeshHelper.CalculateAmbient(bb, br, bbr);
 
-                            colors.Add(new Color(ao00 * 0.44f, 0.0f, 0.0f, 0.0f)); // ?
-                            colors.Add(new Color(ao01 * 0.44f, 0.0f, 0.0f, 0.0f)); // ?
-                            colors.Add(new Color(ao11 * 0.44f, 0.0f, 0.0f, 0.0f)); // ? 
-                            colors.Add(new Color(ao10 * 0.44f, 0.0f, 0.0f, 0.0f)); // ?
+                            colors.Add(new Color(ao00 * ambientStr, 0.0f, 0.0f, 0.0f)); // ?
+                            colors.Add(new Color(ao01 * ambientStr, 0.0f, 0.0f, 0.0f)); // ?
+                            colors.Add(new Color(ao11 * ambientStr, 0.0f, 0.0f, 0.0f)); // ? 
+                            colors.Add(new Color(ao10 * ambientStr, 0.0f, 0.0f, 0.0f)); // ?
                         }
 
                         // upper face
@@ -253,10 +255,10 @@ namespace ReCrafted.Voxels
                             var ao11 = VoxelMeshHelper.CalculateAmbient(tr, tf, tfr);
                             var ao10 = VoxelMeshHelper.CalculateAmbient(tb, tr, tbr);
 
-                            colors.Add(new Color(ao00 * 0.44f, 0.0f, 0.0f, 0.0f)); // bl
-                            colors.Add(new Color(ao01 * 0.44f, 0.0f, 0.0f, 0.0f)); // ul
-                            colors.Add(new Color(ao11 * 0.44f, 0.0f, 0.0f, 0.0f)); // ur
-                            colors.Add(new Color(ao10 * 0.44f, 0.0f, 0.0f, 0.0f)); // br
+                            colors.Add(new Color(ao00 * ambientStr, 0.0f, 0.0f, 0.0f)); // bl
+                            colors.Add(new Color(ao01 * ambientStr, 0.0f, 0.0f, 0.0f)); // ul
+                            colors.Add(new Color(ao11 * ambientStr, 0.0f, 0.0f, 0.0f)); // ur
+                            colors.Add(new Color(ao10 * ambientStr, 0.0f, 0.0f, 0.0f)); // br
                         }
 
                         // back face
@@ -271,10 +273,10 @@ namespace ReCrafted.Voxels
                             var ao11 = VoxelMeshHelper.CalculateAmbient(mbr, tb, tbr);
                             var ao10 = VoxelMeshHelper.CalculateAmbient(mbr, bb, bbr);
 
-                            colors.Add(new Color(ao00 * 0.44f, 0.0f, 0.0f, 0.0f)); // ll
-                            colors.Add(new Color(ao01 * 0.44f, 0.0f, 0.0f, 0.0f)); // ul
-                            colors.Add(new Color(ao11 * 0.44f, 0.0f, 0.0f, 0.0f)); // ur
-                            colors.Add(new Color(ao10 * 0.44f, 0.0f, 0.0f, 0.0f)); // lr
+                            colors.Add(new Color(ao00 * ambientStr, 0.0f, 0.0f, 0.0f)); // ll
+                            colors.Add(new Color(ao01 * ambientStr, 0.0f, 0.0f, 0.0f)); // ul
+                            colors.Add(new Color(ao11 * ambientStr, 0.0f, 0.0f, 0.0f)); // ur
+                            colors.Add(new Color(ao10 * ambientStr, 0.0f, 0.0f, 0.0f)); // lr
                         }
 
                         // front face
@@ -289,10 +291,10 @@ namespace ReCrafted.Voxels
                             var ao11 = VoxelMeshHelper.CalculateAmbient(mfr, tf, tfr);
                             var ao10 = VoxelMeshHelper.CalculateAmbient(mfr, bf, bfr);
 
-                            colors.Add(new Color(ao00 * 0.44f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao01 * 0.44f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao11 * 0.44f, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao10 * 0.44f, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao00 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao01 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao11 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Color(ao10 * ambientStr, 0.0f, 0.0f, 0.0f));
                         }
                     }
                 }
