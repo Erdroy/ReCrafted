@@ -8,10 +8,29 @@ namespace ReCrafted.Graphics
 {
     public class MeshData
     {
+        /// <summary>
+        /// Vertices
+        /// </summary>
         public Vector3[] Positions;
+
+        /// <summary>
+        /// Normals
+        /// </summary>
         public Vector3[] Normals;
+
+        /// <summary>
+        /// UVs
+        /// </summary>
         public Vector2[] UVs;
+
+        /// <summary>
+        /// Colors
+        /// </summary>
         public Color[] Colors;
+
+        /// <summary>
+        /// Indices
+        /// </summary>
         public uint[] Indices;
 
         /// <summary>

@@ -8,8 +8,14 @@ using Vector3 = SharpDX.Vector3;
 
 namespace ReCrafted.Graphics
 {
+    /// <summary>
+    /// ShadowRenderer class.
+    /// </summary>
     public sealed class ShadowRenderer : IDisposable
     {
+        /// <summary>
+        /// The ShadowMap resolution.
+        /// </summary>
         public const int ShadowMapSize = 2048;
 
         private RenderTarget _depth;
@@ -17,6 +23,9 @@ namespace ReCrafted.Graphics
         private Shader _shadowShader;
         private Sampler _sampler;
 
+        /// <summary>
+        /// Initialize shadow renderer
+        /// </summary>
         public void Init()
         {
             ShadowMap = RenderTarget.Create(ShadowMapSize, ShadowMapSize, RenderTarget.TextureFormat.R32_Float);
@@ -45,11 +54,19 @@ namespace ReCrafted.Graphics
             _quad.ApplyChanges();
         }
 
+        /// <summary>
+        /// Resize all render targets
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
         public void Resize(int width, int height)
         {
             ShadowOcculusion.Resize(width, height);
         }
 
+        /// <summary>
+        /// Render the depth into shadow map
+        /// </summary>
         public void RenderShadowMap()
         {
             ShadowMap.Clear(Color.Black);
@@ -91,6 +108,9 @@ namespace ReCrafted.Graphics
             Renderer.Instance.SetDepthTestState(true);
         }
 
+        /// <summary>
+        /// Dispose the shadow renderer.
+        /// </summary>
         public void Dispose()
         {
             ShadowMap?.Dispose();
@@ -101,10 +121,19 @@ namespace ReCrafted.Graphics
             _shadowShader?.Dispose();
         }
 
+        /// <summary>
+        /// ShadowMap render target.
+        /// </summary>
         public RenderTarget ShadowMap { get; private set; }
 
+        /// <summary>
+        /// Shadow occulusion.
+        /// </summary>
         public RenderTarget ShadowOcculusion { get; private set; }
 
+        /// <summary>
+        /// Directional light direction
+        /// </summary>
         public Vector3 LightDir { get; set; }
     }
 }

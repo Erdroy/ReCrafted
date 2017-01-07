@@ -7,6 +7,10 @@ namespace ReCrafted.Graphics.Primitives
     /// </summary>
     public abstract class Primitive
     {
+        /// <summary>
+        /// Create mesh data.
+        /// </summary>
+        /// <returns>The primitive mesh data.</returns>
         public abstract MeshData GetMeshData();
     }
 }

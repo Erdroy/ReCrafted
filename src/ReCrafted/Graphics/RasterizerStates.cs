@@ -2,6 +2,9 @@
 
 namespace ReCrafted.Graphics
 {
+    /// <summary>
+    /// RasterizerStates enum.
+    /// </summary>
     public enum RasterizerStates
     {
         Default = BackFaceCulled,

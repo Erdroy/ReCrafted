@@ -30,6 +30,12 @@ namespace ReCrafted.Graphics.Primitives
         private readonly float _radius;
         private readonly bool _invert;
 
+        /// <summary>
+        /// Initialize IcoSphere
+        /// </summary>
+        /// <param name="recursionLevel"></param>
+        /// <param name="radius"></param>
+        /// <param name="invert"></param>
         public IcoSphere(int recursionLevel, float radius, bool invert)
         {
             _recursionLevel = recursionLevel;
@@ -37,6 +43,10 @@ namespace ReCrafted.Graphics.Primitives
             _invert = invert;
         }
 
+        /// <summary>
+        /// Create mesh data.
+        /// </summary>
+        /// <returns>The primitive mesh data.</returns>
         public override MeshData GetMeshData()
         {
 			var meshData = new MeshData();
