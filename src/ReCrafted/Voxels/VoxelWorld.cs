@@ -95,8 +95,12 @@ namespace ReCrafted.Voxels
 
                     if (VoxelChunk.IsOnEdge(pos))
                     {
+                        var blockCoord = new Int3(pos.X - VoxelCursor.Instance.VoxelChunk.Position.X, 
+                            pos.Y - VoxelCursor.Instance.VoxelChunk.Position.Y, 
+                            pos.Z - VoxelCursor.Instance.VoxelChunk.Position.Z);
+
                         // update neigh
-                        var chunks = VoxelCursor.Instance.VoxelChunk.GetEdgeNeighs(pos);
+                        var chunks = VoxelCursor.Instance.VoxelChunk.GetEdgeNeighs(blockCoord);
                         if (chunks != null)
                         {
                             foreach (var chunk in chunks)
