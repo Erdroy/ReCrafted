@@ -93,14 +93,12 @@ namespace ReCrafted.Voxels
                     var pos = VoxelCursor.Instance.BlockCoords;
                     VoxelCursor.Instance.VoxelChunk.SetBlock(0, pos.X, pos.Y, pos.Z);
 
+                    VoxelCursor.Instance.VoxelChunk.UpdateMesh();
+
                     if (VoxelChunk.IsOnEdge(pos))
                     {
-                        var blockCoord = new Int3(pos.X - VoxelCursor.Instance.VoxelChunk.Position.X, 
-                            pos.Y - VoxelCursor.Instance.VoxelChunk.Position.Y, 
-                            pos.Z - VoxelCursor.Instance.VoxelChunk.Position.Z);
-
                         // update neigh
-                        var chunks = VoxelCursor.Instance.VoxelChunk.GetEdgeNeighs(blockCoord);
+                        var chunks = VoxelCursor.Instance.VoxelChunk.GetEdgeNeighs(pos);
                         if (chunks != null)
                         {
                             foreach (var chunk in chunks)
@@ -109,8 +107,6 @@ namespace ReCrafted.Voxels
                             }
                         }
                     }
-
-                    VoxelCursor.Instance.VoxelChunk.UpdateMesh();
                 }
             }
 
@@ -135,16 +131,12 @@ namespace ReCrafted.Voxels
                     chunk.SetBlock(6, blockCoord.X, blockCoord.Y, blockCoord.Z);
                     chunk.UpdateMesh();
 
-                    if (!VoxelChunk.IsOnEdge(blockCoord))
-                        return;
-
-                    // update neigh
-                    var chunks = VoxelCursor.Instance.VoxelChunk.GetEdgeNeighs(blockCoord);
+                    var chunks = chunk.GetEdgeNeighs(blockCoord);
                     if (chunks != null)
                     {
-                        foreach (var cchunk in chunks)
+                        foreach (var c in chunks)
                         {
-                            cchunk?.UpdateMesh();
+                            c?.UpdateMesh();
                         }
                     }
                 }
