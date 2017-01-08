@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReCrafted.VersionBuilder", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelConverter", "..\tools\ModelConverter\ModelConverter.csproj", "{5D279CF2-9FC5-4CAA-B47F-CAE4FA5A7B42}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShaderConverter", "..\tools\ShaderConverter\ShaderConverter.csproj", "{30ADA23A-C0BE-4F9C-AE54-D0BC541ADA45}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{5D279CF2-9FC5-4CAA-B47F-CAE4FA5A7B42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D279CF2-9FC5-4CAA-B47F-CAE4FA5A7B42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D279CF2-9FC5-4CAA-B47F-CAE4FA5A7B42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30ADA23A-C0BE-4F9C-AE54-D0BC541ADA45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30ADA23A-C0BE-4F9C-AE54-D0BC541ADA45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30ADA23A-C0BE-4F9C-AE54-D0BC541ADA45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30ADA23A-C0BE-4F9C-AE54-D0BC541ADA45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

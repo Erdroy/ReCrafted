@@ -11,3 +11,5 @@ src/tools/ModelConverter/bin/
 tools/obj.obj
 tools/SharpDX.dll
 tools/SharpDX.Mathematics.dll
+src/tools/ShaderConverter/obj/
+*.user

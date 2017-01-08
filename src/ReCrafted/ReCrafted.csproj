@@ -92,6 +92,14 @@
     <Compile Include="Core\Localization\Locale.cs" />
     <Compile Include="Core\Localization\LocaleStrings.cs" />
     <Compile Include="Core\Time.cs" />
+    <Compile Include="Graphics\Renderers\D3D11\D3D11ShaderCompiler.cs" />
+    <Compile Include="Graphics\Renderers\OpenGL\OpenGLFormat.cs" />
+    <Compile Include="Graphics\Renderers\OpenGL\OpenGLMesh.cs" />
+    <Compile Include="Graphics\Renderers\OpenGL\OpenGLRenderer.cs" />
+    <Compile Include="Graphics\Renderers\OpenGL\OpenGLRenderTarget.cs" />
+    <Compile Include="Graphics\Renderers\OpenGL\OpenGLSampler.cs" />
+    <Compile Include="Graphics\Renderers\OpenGL\OpenGLShader.cs" />
+    <Compile Include="Graphics\Renderers\OpenGL\OpenGLTexture2D.cs" />
     <Compile Include="Logic\GameManager.cs" />
     <Compile Include="Graphics\Camera.cs" />
     <Compile Include="Graphics\DeferredRendering.cs" />
@@ -190,6 +198,9 @@
     <None Include="..\..\bin\assets\shaders\Render_GBuffer.json">
       <Link>assets\shaders\Render_GBuffer.json</Link>
     </None>
+    <None Include="..\..\bin\assets\shaders\render_main.json">
+      <Link>assets\shaders\render_main.json</Link>
+    </None>
     <None Include="..\..\bin\assets\shaders\Skybox.json">
       <Link>assets\shaders\Skybox.json</Link>
     </None>
@@ -207,7 +218,6 @@
   <ItemGroup>
     <Folder Include="assets\models\" />
     <Folder Include="Graphics\Renderers\D3D12\" />
-    <Folder Include="Graphics\Renderers\OpenGL\" />
     <Folder Include="Graphics\Renderers\Vulcan\" />
     <Folder Include="Networking\" />
     <Folder Include="Physics\" />
@@ -245,6 +255,9 @@
     </Content>
     <Content Include="..\..\bin\assets\shaders\Render_GBuffer.hlsl">
       <Link>assets\shaders\Render_GBuffer.hlsl</Link>
+    </Content>
+    <Content Include="..\..\bin\assets\shaders\render_main.hlsl">
+      <Link>assets\shaders\render_main.hlsl</Link>
     </Content>
     <Content Include="..\..\bin\assets\shaders\Skybox.hlsl">
       <Link>assets\shaders\Skybox.hlsl</Link>

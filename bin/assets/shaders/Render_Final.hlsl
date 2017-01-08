@@ -27,12 +27,8 @@ void CSMain(uint3 GroupID : SV_GroupID, uint3 GroupThreadID : SV_GroupThreadID)
 
 	float4 albedo = Albedo[pixelCoord];
 	float4 normal = Normals[pixelCoord] * 2.0f - 1.0f;
-	float depth = Depth[pixelCoord];
 	float shadow = ShadowOcculusion[pixelCoord];
 	float ambient = AmbientOcculusion[pixelCoord];
-
-	// sync
-	GroupMemoryBarrierWithGroupSync();
 
 	// calculate dot(n, l)
 	float3 lightDir = normalize(LightDir.xyz);

@@ -23,7 +23,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         // todos
         // TODO: Multi-pass support
         // TODO: Multi-constant buffer support
-        
+
         private ShaderMeta _meta;
 
         internal VertexShader VertexShader;
@@ -47,7 +47,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             // allow to hot-reload
             Dispose();
 
-            if(meta.Passes.Length == 0)
+            if (meta.Passes.Length == 0)
                 throw new ReCraftedException("Cannot load shader! There is no any pass in this shader.");
 
             if (meta.Passes.Length > 1)
@@ -55,9 +55,9 @@ namespace ReCrafted.Graphics.Renderers.D3D11
 
             var pass = meta.Passes[0];
 
-            if(pass.Profile != "3_0" && pass.Profile != "4_0" && pass.Profile != "5_0")
+            if (pass.Profile != "3_0" && pass.Profile != "4_0" && pass.Profile != "5_0")
                 throw new ReCraftedException($"Shader model {pass.Profile} is not supported.");
-            
+
             var hasVs = !string.IsNullOrEmpty(pass.VertexShader);
             var hasPs = !string.IsNullOrEmpty(pass.PixelShader);
             var hasCs = !string.IsNullOrEmpty(pass.ComputeShader);
@@ -66,11 +66,11 @@ namespace ReCrafted.Graphics.Renderers.D3D11
 
             if (meta.ConstantBuffers.Length > 1)
                 throw new ReCraftedException("Multi-constant buffers are not supported, yet.");
-            
+
             var device = D3D11Renderer.GetDevice();
 
             // parse source code
-            var sourceCode = ParseShaderSource(File.ReadAllText(shaderFile), shaderFile);
+            var sourceCode = D3D11ShaderCompiler.ParseShaderSource(File.ReadAllText(shaderFile), shaderFile);
 
             if (hasVs)
             {
@@ -84,10 +84,11 @@ namespace ReCrafted.Graphics.Renderers.D3D11
 
                 // build inputLayout inputElements
                 var inputElements = new List<InputElement>();
-               
+
                 foreach (var inputElement in pass.VertexLayoutInputs)
                 {
-                    inputElements.Add(new InputElement(inputElement.InputSignature, 0, D3D11Format.FromString(inputElement.InputType), 0));
+                    inputElements.Add(new InputElement(inputElement.InputSignature, 0,
+                        D3D11Format.FromString(inputElement.InputType), 0));
                 }
 
                 // create inputLayout
@@ -123,7 +124,8 @@ namespace ReCrafted.Graphics.Renderers.D3D11
 
                 _backingBuffer = new DataBuffer(size);
                 _dataPointer = _backingBuffer.DataPointer;
-                _constantBuffer = Buffer.Create(device, BindFlags.ConstantBuffer, ref _dataPointer, size, ResourceUsage.Dynamic, CpuAccessFlags.Write);
+                _constantBuffer = Buffer.Create(device, BindFlags.ConstantBuffer, ref _dataPointer, size,
+                    ResourceUsage.Dynamic, CpuAccessFlags.Write);
             }
 
             _meta = meta;
@@ -135,7 +137,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         /// <typeparam name="T">The value type.</typeparam>
         /// <param name="name">The name.</param>
         /// <param name="value">The value.</param>
-        public override void SetValue<T>(string name, T value) 
+        public override void SetValue<T>(string name, T value)
         {
             var offset = _meta.ConstantBuffers[0].GetOffset(name);
             _backingBuffer.Set(offset, value);
@@ -181,13 +183,13 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             switch (type)
             {
                 case ShaderType.PS:
-                    deviceContext.PixelShader.SetShaderResource(slot, ((D3D11Texture2D)texture).ResourceView);
+                    deviceContext.PixelShader.SetShaderResource(slot, ((D3D11Texture2D) texture).ResourceView);
                     break;
                 case ShaderType.VS:
-                    deviceContext.VertexShader.SetShaderResource(slot, ((D3D11Texture2D)texture).ResourceView);
+                    deviceContext.VertexShader.SetShaderResource(slot, ((D3D11Texture2D) texture).ResourceView);
                     break;
                 case ShaderType.CS:
-                    deviceContext.ComputeShader.SetShaderResource(slot, ((D3D11Texture2D)texture).ResourceView);
+                    deviceContext.ComputeShader.SetShaderResource(slot, ((D3D11Texture2D) texture).ResourceView);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -203,7 +205,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         public override void SetRenderTexture(ShaderType type, int slot, RenderTarget texture)
         {
             var deviceContext = D3D11Renderer.GetDeviceContext();
-            var res = (D3D11RenderTarget)texture;
+            var res = (D3D11RenderTarget) texture;
             switch (type)
             {
                 case ShaderType.PS:
@@ -228,7 +230,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         public override void SetUnorderedAccessView(int slot, RenderTarget texture)
         {
             var deviceContext = D3D11Renderer.GetDeviceContext();
-            var res = (D3D11RenderTarget)texture;
+            var res = (D3D11RenderTarget) texture;
             deviceContext.ComputeShader.SetUnorderedAccessView(slot, res.UnorderedAccessView);
         }
 
@@ -284,7 +286,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         public override void SetSampler(int slot, Sampler sampler)
         {
             var deviceContext = D3D11Renderer.GetDeviceContext();
-            deviceContext.PixelShader.SetSampler(slot, ((D3D11Sampler)sampler).SamplerState);
+            deviceContext.PixelShader.SetSampler(slot, ((D3D11Sampler) sampler).SamplerState);
         }
 
         /// <summary>
@@ -342,7 +344,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         /// <param name="mesh">The mesh.</param>
         public override void Draw(Mesh mesh)
         {
-            var d3D11Mesh = (D3D11Mesh)mesh;
+            var d3D11Mesh = (D3D11Mesh) mesh;
 
             if (d3D11Mesh.VertexBuffer == null)
                 return;
@@ -393,54 +395,6 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             VertexShader?.Dispose();
             ComputeShader?.Dispose();
             PixelShader?.Dispose();
-        }
-
-        // private
-        private static string ParseShaderSource(string sourceCode, string file)
-        {
-            var tempSource = sourceCode;
-            var sourceFileInfo = new FileInfo(file);
-
-            while (true)
-            {
-                var includeStart = tempSource.IndexOf("#include", StringComparison.Ordinal);
-
-                if (includeStart != -1)
-                {
-                    // add includes
-                    var start = includeStart + 8;
-                    var end = 0;
-
-                    // seek for end
-                    var i = start;
-                    var open = false; 
-                    while (true)
-                    {
-                        if (tempSource[i] == '"')
-                        {
-                            if (open)
-                            {
-                                end = i;
-                                break;
-                            }
-
-                            start = i+1;
-                            open = true;
-                        }
-                        i++;
-                    }
-
-                    // ok
-                    var includeFile = sourceFileInfo.DirectoryName + "\\" + tempSource.Substring(start, end-start);
-
-                    tempSource = tempSource.Remove(includeStart, end+1 - includeStart);
-                    tempSource = tempSource.Insert(includeStart, File.ReadAllText(includeFile));
-                }
-                else
-                    break;
-            }
-
-            return tempSource;
         }
     }
 }
