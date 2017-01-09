@@ -58,7 +58,6 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             // TODO: Optimize color change
             var currentColor = Color.FromArgb(Camera.Current.BackgroundColor.A, Camera.Current.BackgroundColor.R, Camera.Current.BackgroundColor.G, Camera.Current.BackgroundColor.B);
             GL.ClearColor(currentColor);
-            GL.ClearDepth(0.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
 
