@@ -3,6 +3,7 @@
 using System;
 using System.Drawing;
 using ReCrafted.Graphics.Renderers.D3D11;
+using ReCrafted.Graphics.Renderers.OpenGLMesh;
 using ReCrafted.Utilities;
 
 namespace ReCrafted.Graphics
@@ -55,7 +56,13 @@ namespace ReCrafted.Graphics
                     var texture = new D3D11Texture2D();
                     texture.Load(new Bitmap(file), generateMips, maxMips);
                     return texture;
-                }
+                    }
+                case RendererApi.OpenGL:
+                    {
+                        var texture = new OpenGLTexture2D();
+                        texture.Load(new Bitmap(file), generateMips, maxMips);
+                        return texture;
+                    }
             }
 
             // TODO: Implement renderers

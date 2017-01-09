@@ -2,6 +2,7 @@
 
 using System;
 using ReCrafted.Graphics.Renderers.D3D11;
+using ReCrafted.Graphics.Renderers.OpenGL;
 using ReCrafted.Utilities;
 using SharpDX;
 
@@ -88,6 +89,9 @@ namespace ReCrafted.Graphics
                 case RendererApi.D3D11:
                     mesh = new D3D11Mesh();
                     break;
+                case RendererApi.OpenGL:
+                    mesh = new OpenGLMesh();
+                    break;
                 default:
                     return null;
                 
@@ -128,6 +132,8 @@ namespace ReCrafted.Graphics
             {
                 case RendererApi.D3D11:
                     return new D3D11Mesh();
+                case RendererApi.OpenGL:
+                    return new OpenGLMesh();
             }
 
             // TODO: Implement renderers

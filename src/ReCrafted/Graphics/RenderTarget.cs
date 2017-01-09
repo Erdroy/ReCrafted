@@ -2,6 +2,7 @@
 
 using System;
 using ReCrafted.Graphics.Renderers.D3D11;
+using ReCrafted.Graphics.Renderers.OpenGL;
 using ReCrafted.Utilities;
 using SharpDX;
 
@@ -65,6 +66,8 @@ namespace ReCrafted.Graphics
             {
                 case RendererApi.D3D11:
                     return new D3D11RenderTarget(width, height, format, uav);
+                case RendererApi.OpenGL:
+                    return new OpenGLRenderTarget(width, height, format, uav);
             }
 
             // TODO: Implement renderers

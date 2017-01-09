@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using ReCrafted.Graphics.Renderers.D3D11;
+using ReCrafted.Graphics.Renderers.OpenGL;
 using ReCrafted.Utilities;
 using SharpDX;
 
@@ -155,6 +156,12 @@ namespace ReCrafted.Graphics
                         if (hotReload)
                             HotReload.Add(shaderName, shader);
 
+                        shader.Initialize(shaderSourceFile, shaderMeta);
+                        return shader;
+                    }
+                case RendererApi.OpenGL:
+                    {
+                        var shader = new OpenGLShader();
                         shader.Initialize(shaderSourceFile, shaderMeta);
                         return shader;
                     }

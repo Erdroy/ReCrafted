@@ -2,6 +2,7 @@
 
 using System;
 using ReCrafted.Graphics.Renderers.D3D11;
+using ReCrafted.Graphics.Renderers.OpenGL;
 using ReCrafted.Utilities;
 
 namespace ReCrafted.Graphics
@@ -65,7 +66,13 @@ namespace ReCrafted.Graphics
                     var sampler = new D3D11Sampler();
                     sampler.Init(type, anisoLevel);
                     return sampler;
-                }
+                    }
+                case RendererApi.OpenGL:
+                    {
+                        var sampler = new OpenGLSampler();
+                        sampler.Init(type, anisoLevel);
+                        return sampler;
+                    }
             }
 
             // TODO: Implement renderers

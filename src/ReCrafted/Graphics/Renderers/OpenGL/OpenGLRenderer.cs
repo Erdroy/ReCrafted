@@ -1,6 +1,7 @@
 ﻿// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski
 
 using System;
+using OpenTK.Graphics.OpenGL;
 using SharpDX;
 
 namespace ReCrafted.Graphics.Renderers.OpenGL
@@ -23,6 +24,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         protected override void Init()
         {
             Instance = this;
+            
         }
 
         /// <summary>
