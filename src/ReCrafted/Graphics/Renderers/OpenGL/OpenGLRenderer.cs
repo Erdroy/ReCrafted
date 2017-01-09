@@ -1,8 +1,13 @@
 ﻿// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski
 
 using System;
+using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Platform;
+using ReCrafted.Core;
 using SharpDX;
+using Color = System.Drawing.Color;
 
 namespace ReCrafted.Graphics.Renderers.OpenGL
 {
@@ -16,15 +21,25 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// The OpenGLRenderer instance.
         /// </summary>
         public new static OpenGLRenderer Instance;
-
-
+        
         /// <summary>
         /// Initializes the renderer.
         /// </summary>
         protected override void Init()
         {
             Instance = this;
-            
+            WindowInfo = OpenTK.Platform.Utilities.CreateWindowsWindowInfo(Game.Instance.Form.Handle);
+            Context = new GraphicsContext(GraphicsMode.Default, WindowInfo, 3, 3, GraphicsContextFlags.Default);
+            Context.MakeCurrent(WindowInfo);
+            Context.LoadAll();
+
+            // enable depth
+            GL.Enable(EnableCap.CullFace);
+            GL.CullFace(CullFaceMode.Back);
+            GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.DepthClamp);
+            GL.DepthFunc(DepthFunction.Lequal);
+            GL.DepthMask(true);
         }
 
         /// <summary>
@@ -32,6 +47,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// </summary>
         public override void Tick()
         {
+            Context.Update(WindowInfo);
         }
 
         /// <summary>
@@ -39,6 +55,15 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// </summary>
         public override void Draw()
         {
+            // TODO: Optimize color change
+            var currentColor = Color.FromArgb(Camera.Current.BackgroundColor.A, Camera.Current.BackgroundColor.R, Camera.Current.BackgroundColor.G, Camera.Current.BackgroundColor.B);
+            GL.ClearColor(currentColor);
+            GL.ClearDepth(0.0f);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+
+
+            Context.SwapBuffers();
         }
         
         /// <summary>
@@ -148,6 +173,11 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// </summary>
         public override void Dispose()
         {
+            Context?.Dispose();
         }
+
+        public static GraphicsContext Context { get; private set; }
+
+        public static IWindowInfo WindowInfo { get; private set; }
     }
 }

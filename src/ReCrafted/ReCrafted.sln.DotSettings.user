@@ -6,4 +6,5 @@
   &lt;Assembly Path="D:\ReCrafted\lib\SharpDX\bin\Desktop\SharpDX.Direct3D11.dll" /&gt;&#xD;
   &lt;Assembly Path="D:\ReCrafted\lib\LibNoise\LibNoise.dll" /&gt;&#xD;
   &lt;Assembly Path="D:\ReCrafted\lib\SharpDX\bin\Desktop\SharpDX.DXGI.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\#GIT\ConexEngine\bin\OpenTK.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String></wpf:ResourceDictionary>
