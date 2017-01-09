@@ -60,7 +60,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             GL.ClearColor(currentColor);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-
+            Rendering.Draw();
 
             Context.SwapBuffers();
         }
@@ -97,6 +97,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// <param name="enabled">Disable or enable the depth test?</param>
         public override void SetDepthTestState(bool enabled)
         {
+            GL.DepthMask(enabled);
         }
 
         /// <summary>
@@ -138,6 +139,8 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// </summary>
         public override void ClearDepth()
         {
+            // just clear the depth
+            GL.Clear(ClearBufferMask.DepthBufferBit);
         }
 
         /// <summary>
@@ -148,6 +151,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// <param name="z">The Z amount of threads.</param>
         public override void Dispatch(int x, int y, int z)
         {
+            // ?
         }
 
         /// <summary>
@@ -165,6 +169,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// <param name="bounds">The bouding box.</param>
         public override void DrawBoundingBox(BoundingBox bounds)
         {
+            throw new NotImplementedException("DrawBoundingBox() is not implemented in OpenGL renderer, switch to D3D11.");
         }
 
         /// <summary>
