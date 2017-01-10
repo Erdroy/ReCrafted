@@ -89,6 +89,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// <param name="height">The height.</param>
         public override void SetViewportSize(int width, int height)
         {
+            GL.Viewport(0, 0, width, height);
         }
 
         /// <summary>
