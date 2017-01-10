@@ -79,8 +79,11 @@ namespace ReCrafted.Graphics
             _rtFinal.Clear(Color.Black);
             _rtOutput.Clear(Color.Black);
 
+            Renderer.Instance.SetFinalRenderTarget(false);
+            Renderer.Instance.Blit(_rtAmbientOcculusion);
+
             // render skybox into final RT
-            Renderer.Instance.SetRenderTargets(_rtAlbedo);
+            /*Renderer.Instance.SetRenderTargets(_rtAlbedo);
             Renderer.Instance.SetDepthTestState(false);
             _skyboxShader.Apply();
             _skyboxShader.SetValue("WVP", Matrix.Translation(Camera.Current.Position) * Camera.Current.ViewProjectionMatrix);
@@ -136,7 +139,7 @@ namespace ReCrafted.Graphics
             foreach (var job in _postRenderJobs)
             {
                 job.JobMethod(this);
-            }
+            }*/
         }
 
         /// <summary>
