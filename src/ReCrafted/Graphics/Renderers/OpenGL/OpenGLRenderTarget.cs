@@ -39,6 +39,11 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// <param name="color">The color.</param>
         public override void Clear(Color color)
         {
+            var vec = color.ToVector4();
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, Framebuffer);
+            GL.ClearColor(vec.X, vec.Y, vec.Z, vec.W);
+            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
         }
 
         /// <summary>
