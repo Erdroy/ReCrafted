@@ -12,6 +12,7 @@ namespace ReCrafted.Graphics
         D3D11,
         D3D12,
         Vulcan,
-        OpenGL
+        OpenGL,
+        Null
     }
 }

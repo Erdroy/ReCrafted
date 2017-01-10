@@ -218,6 +218,7 @@
   <ItemGroup>
     <Folder Include="assets\models\" />
     <Folder Include="Graphics\Renderers\D3D12\" />
+    <Folder Include="Graphics\Renderers\Null\" />
     <Folder Include="Graphics\Renderers\Vulcan\" />
     <Folder Include="Networking\" />
     <Folder Include="Physics\" />
