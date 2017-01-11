@@ -73,11 +73,11 @@ namespace ReCrafted.Graphics
         /// </summary>
         public override void Draw()
         {
-            _rtAlbedo.Clear(Camera.Current.BackgroundColor);
+           /* _rtAlbedo.Clear(Camera.Current.BackgroundColor);
             _rtNormals.Clear(Color.Black);
             _rtAmbientOcculusion.Clear(Color.Black);
             _rtFinal.Clear(Color.Black);
-            _rtOutput.Clear(Color.Black);
+            _rtOutput.Clear(Color.Black);*/
 
             Renderer.Instance.SetFinalRenderTarget(false);
             Renderer.Instance.Blit(_rtAmbientOcculusion);

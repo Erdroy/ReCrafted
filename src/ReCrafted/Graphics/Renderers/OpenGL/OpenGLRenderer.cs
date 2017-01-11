@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Platform;
@@ -25,6 +24,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         public new static OpenGLRenderer Instance;
 
         private readonly List<DrawBuffersEnum> _drawBuffers = new List<DrawBuffersEnum>();
+        private Shader _blitShader;
 
         /// <summary>
         /// Initializes the renderer.
@@ -44,6 +44,9 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             GL.Enable(EnableCap.DepthClamp);
             GL.DepthFunc(DepthFunction.Lequal);
             GL.DepthMask(true);
+            
+            // load blit shader
+            _blitShader = Shader.FromFile("internal/Blit", false);
         }
 
         /// <summary>
@@ -265,10 +268,8 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         public override void SetFinalRenderTarget(bool useDepthTest)
         {
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-            GL.DrawBuffer(DrawBufferMode.ColorAttachment0);
 
-            if(useDepthTest)
-                SetDepthTestState(true);
+            SetDepthTestState(useDepthTest);
         }
 
         /// <summary>
@@ -278,6 +279,12 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// <param name="customShader">The custom shader for blit.</param>
         public override void Blit(RenderTarget renderTarget, Shader customShader = null)
         {
+            var glShader = (OpenGLShader)_blitShader;
+
+            glShader.Apply();
+            //glShader.SetRenderTexture(ShaderType.PS, 0, renderTarget);
+
+            GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.TriangleStrip, 0, 4);
         }
 
         /// <summary>
@@ -324,6 +331,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         public override void Dispose()
         {
             Context?.Dispose();
+            _blitShader?.Dispose();
         }
 
         public static GraphicsContext Context { get; private set; }
