@@ -47,6 +47,8 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             // allow to hot-reload
             Dispose();
 
+            shaderFile += ".hlsl";
+
             if (meta.Passes.Length == 0)
                 throw new ReCraftedException("Cannot load shader! There is no any pass in this shader.");
 

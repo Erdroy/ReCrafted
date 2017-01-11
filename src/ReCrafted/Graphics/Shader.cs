@@ -133,7 +133,7 @@ namespace ReCrafted.Graphics
         /// <returns>The loaded shader.</returns>
         public static Shader FromFile(string shaderName, bool hotReload = true)
         {
-            var shaderSourceFile = "assets/shaders/" + shaderName + ".hlsl";
+            var shaderSourceFile = "assets/shaders/" + shaderName;
             var shaderMetaFile = "assets/shaders/" + shaderName + ".json";
 
             var shaderMeta = ShaderMeta.FromFile(shaderMetaFile);
