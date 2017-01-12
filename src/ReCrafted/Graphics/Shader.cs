@@ -28,30 +28,69 @@ namespace ReCrafted.Graphics
         /// <param name="shaderFile">Shader file name.</param>
         /// <param name="meta">The shader meta.</param>
         protected abstract void Initialize(string shaderFile, ShaderMeta meta);
-
+        
         /// <summary>
         /// Sets value in default constant buffer.
         /// </summary>
-        /// <typeparam name="T">The value type.</typeparam>
         /// <param name="name">The name.</param>
         /// <param name="value">The value.</param>
-        public abstract void SetValue<T>(string name, T value) where T : struct;
+        public abstract void SetValue(string name, Matrix value);
 
         /// <summary>
         /// Sets value in default constant buffer.
         /// </summary>
-        /// <typeparam name="T">The value type.</typeparam>
         /// <param name="name">The name.</param>
         /// <param name="value">The value.</param>
-        public abstract void SetValue<T>(string name, T[] value) where T : struct;
+        public abstract void SetValue(string name, Vector2 value);
 
         /// <summary>
         /// Sets value in default constant buffer.
         /// </summary>
-        /// <typeparam name="T">The value type.</typeparam>
-        /// <param name="slot">The field slot.</param>
+        /// <param name="name">The name.</param>
         /// <param name="value">The value.</param>
-        public abstract void SetValue<T>(int slot, T value) where T : struct;
+        public abstract void SetValue(string name, Vector3 value);
+
+        /// <summary>
+        /// Sets value in default constant buffer.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        public abstract void SetValue(string name, Vector4 value);
+
+        /// <summary>
+        /// Sets value in default constant buffer.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        public abstract void SetValue(string name, short value);
+
+        /// <summary>
+        /// Sets value in default constant buffer.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        public abstract void SetValue(string name, int value);
+
+        /// <summary>
+        /// Sets value in default constant buffer.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        public abstract void SetValue(string name, ushort value);
+
+        /// <summary>
+        /// Sets value in default constant buffer.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        public abstract void SetValue(string name, uint value);
+
+        /// <summary>
+        /// Sets value in default constant buffer.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        public abstract void SetValue(string name, bool value);
 
         /// <summary>
         /// Set texture at slot.

@@ -133,13 +133,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             _meta = meta;
         }
 
-        /// <summary>
-        /// Sets value in default constant buffer.
-        /// </summary>
-        /// <typeparam name="T">The value type.</typeparam>
-        /// <param name="name">The name.</param>
-        /// <param name="value">The value.</param>
-        public override void SetValue<T>(string name, T value)
+        public override void SetValue(string name, Matrix value)
         {
             var offset = _meta.ConstantBuffers[0].GetOffset(name);
             _backingBuffer.Set(offset, value);
@@ -147,14 +141,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             _isDirty = true;
         }
 
-
-        /// <summary>
-        /// Sets value in default constant buffer.
-        /// </summary>
-        /// <typeparam name="T">The value type.</typeparam>
-        /// <param name="name">The name.</param>
-        /// <param name="value">The value.</param>
-        public override void SetValue<T>(string name, T[] value)
+        public override void SetValue(string name, Vector2 value)
         {
             var offset = _meta.ConstantBuffers[0].GetOffset(name);
             _backingBuffer.Set(offset, value);
@@ -162,17 +149,62 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             _isDirty = true;
         }
 
-        /// <summary>
-        /// Sets value in default constant buffer.
-        /// </summary>
-        /// <typeparam name="T">The value type.</typeparam>
-        /// <param name="slot">The field slot.</param>
-        /// <param name="value">The value.</param>
-        public override void SetValue<T>(int slot, T value)
+        public override void SetValue(string name, Vector3 value)
         {
-            throw new NotImplementedException();
+            var offset = _meta.ConstantBuffers[0].GetOffset(name);
+            _backingBuffer.Set(offset, value);
+
+            _isDirty = true;
         }
 
+        public override void SetValue(string name, Vector4 value)
+        {
+            var offset = _meta.ConstantBuffers[0].GetOffset(name);
+            _backingBuffer.Set(offset, value);
+
+            _isDirty = true;
+        }
+
+        public override void SetValue(string name, short value)
+        {
+            var offset = _meta.ConstantBuffers[0].GetOffset(name);
+            _backingBuffer.Set(offset, value);
+
+            _isDirty = true;
+        }
+
+        public override void SetValue(string name, int value)
+        {
+            var offset = _meta.ConstantBuffers[0].GetOffset(name);
+            _backingBuffer.Set(offset, value);
+
+            _isDirty = true;
+        }
+
+        public override void SetValue(string name, ushort value)
+        {
+            var offset = _meta.ConstantBuffers[0].GetOffset(name);
+            _backingBuffer.Set(offset, value);
+
+            _isDirty = true;
+        }
+
+        public override void SetValue(string name, uint value)
+        {
+            var offset = _meta.ConstantBuffers[0].GetOffset(name);
+            _backingBuffer.Set(offset, value);
+
+            _isDirty = true;
+        }
+
+        public override void SetValue(string name, bool value)
+        {
+            var offset = _meta.ConstantBuffers[0].GetOffset(name);
+            _backingBuffer.Set(offset, value);
+
+            _isDirty = true;
+        }
+        
         /// <summary>
         /// Set texture at slot.
         /// </summary>

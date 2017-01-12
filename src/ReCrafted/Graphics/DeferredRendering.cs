@@ -73,18 +73,13 @@ namespace ReCrafted.Graphics
         /// </summary>
         public override void Draw()
         {
-            _rtAlbedo.Clear(Color.OrangeRed);
+            _rtAlbedo.Clear(Camera.Current.BackgroundColor);
             _rtNormals.Clear(Color.Black);
             _rtAmbientOcculusion.Clear(Color.Black);
             _rtFinal.Clear(Color.Black);
             _rtOutput.Clear(Color.Black);
 
-            Renderer.Instance.SetFinalRenderTarget(false);
-            Renderer.Instance.Blit(_rtAlbedo);
-
             // render skybox into final RT
-            /*Renderer.Instance.SetRenderTargets(_rtAlbedo);
-            Renderer.Instance.SetDepthTestState(false);
             _skyboxShader.Apply();
             _skyboxShader.SetValue("WVP", Matrix.Translation(Camera.Current.Position) * Camera.Current.ViewProjectionMatrix);
             _skyboxShader.SetValue("ColorUpper", new Vector4(0.0f, 0.3f, 0.4f, 1.0f));
@@ -92,54 +87,56 @@ namespace ReCrafted.Graphics
             _skyboxShader.SetValue("ColorLower", new Vector4(0.0f, 0.1f, 0.1f, 1.0f));
             _skyboxShader.ApplyChanges();
             _skyboxShader.Draw(_skyboxSphere);
-            Renderer.Instance.SetDepthTestState(true);
-            
-            // clear depth
-            Renderer.Instance.ClearDepth();
 
-            // set gbuffer render targets
-            Renderer.Instance.SetRenderTargets(_rtAlbedo, _rtNormals, _rtAmbientOcculusion);
-
-            // do render jobs
-            foreach (var job in _renderJobs)
-            {
-                job.JobMethod(this);
-            }
-
-            // render shadows
-            _shadowRenderer.LightDir = _ligthDirection;
-            _shadowRenderer.RenderShadowMap();
-
-            // do final pass
-            ComputeOutput();
-
-            // do post process
-
-            var input = _rtFinal;
-            var output = _rtOutput;
-
-            foreach (var job in _postprocessJobs)
-            {
-                Renderer.Instance.SetRenderTargets(output);
-                Renderer.Instance.SetDepthTestState(false);
-
-                job.JobMethod(this, input, output);
-
-                var tmp = output;
-                output = input;
-                input = tmp;
-            }
-
-            // present to the swapchain's FinalRT
             Renderer.Instance.SetFinalRenderTarget(false);
-            Renderer.Instance.Blit(input);
+            Renderer.Instance.Blit(_rtAlbedo);
 
-            // do render jobs
-            Renderer.Instance.SetFinalRenderTarget(true);
-            foreach (var job in _postRenderJobs)
-            {
-                job.JobMethod(this);
-            }*/
+            // clear depth
+            /* Renderer.Instance.ClearDepth();
+
+             // set gbuffer render targets
+             Renderer.Instance.SetRenderTargets(_rtAlbedo, _rtNormals, _rtAmbientOcculusion);
+
+             // do render jobs
+             foreach (var job in _renderJobs)
+             {
+                 job.JobMethod(this);
+             }
+
+             // render shadows
+             _shadowRenderer.LightDir = _ligthDirection;
+             _shadowRenderer.RenderShadowMap();
+
+             // do final pass
+             ComputeOutput();
+
+             // do post process
+
+             var input = _rtFinal;
+             var output = _rtOutput;
+
+             foreach (var job in _postprocessJobs)
+             {
+                 Renderer.Instance.SetRenderTargets(output);
+                 Renderer.Instance.SetDepthTestState(false);
+
+                 job.JobMethod(this, input, output);
+
+                 var tmp = output;
+                 output = input;
+                 input = tmp;
+             }
+
+             // present to the swapchain's FinalRT
+             Renderer.Instance.SetFinalRenderTarget(false);
+             Renderer.Instance.Blit(input);
+
+             // do render jobs
+             Renderer.Instance.SetFinalRenderTarget(true);
+             foreach (var job in _postRenderJobs)
+             {
+                 job.JobMethod(this);
+             }*/
         }
 
         /// <summary>

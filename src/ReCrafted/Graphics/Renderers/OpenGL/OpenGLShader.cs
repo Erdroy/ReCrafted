@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using OpenTK.Graphics.OpenGL;
 using ReCrafted.Utilities;
+using SharpDX;
 
 namespace ReCrafted.Graphics.Renderers.OpenGL
 {
@@ -66,38 +67,69 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             OpenGLRenderer.CheckError();
         }
 
-        /// <summary>
-        /// Sets value in default constant buffer.
-        /// </summary>
-        /// <typeparam name="T">The value type.</typeparam>
-        /// <param name="name">The name.</param>
-        /// <param name="value">The value.</param>
-        public override void SetValue<T>(string name, T value) 
+        public override void SetValue(string name, Matrix value)
         {
+            var loc = GL.GetUniformLocation(ShaderProgram, name);
+            var data = value.ToOpenTk();
+            GL.UniformMatrix4(loc, false, ref data);
         }
 
-
-        /// <summary>
-        /// Sets value in default constant buffer.
-        /// </summary>
-        /// <typeparam name="T">The value type.</typeparam>
-        /// <param name="name">The name.</param>
-        /// <param name="value">The value.</param>
-        public override void SetValue<T>(string name, T[] value)
+        public override void SetValue(string name, Vector2 value)
         {
+            var loc = GL.GetUniformLocation(ShaderProgram, name);
+            var data = value.ToOpenTk();
+            GL.Uniform2(loc, ref data);
         }
 
-        /// <summary>
-        /// Sets value in default constant buffer.
-        /// </summary>
-        /// <typeparam name="T">The value type.</typeparam>
-        /// <param name="slot">The field slot.</param>
-        /// <param name="value">The value.</param>
-        public override void SetValue<T>(int slot, T value)
+        public override void SetValue(string name, Vector3 value)
         {
-            throw new NotImplementedException();
+            var loc = GL.GetUniformLocation(ShaderProgram, name);
+            var data = value.ToOpenTk();
+            GL.Uniform3(loc, ref data);
         }
 
+        public override void SetValue(string name, Vector4 value)
+        {
+            var loc = GL.GetUniformLocation(ShaderProgram, name);
+            var data = value.ToOpenTk();
+            GL.Uniform4(loc, ref data);
+        }
+
+        public override void SetValue(string name, short value)
+        {
+            var loc = GL.GetUniformLocation(ShaderProgram, name);
+            var data = value;
+            GL.Uniform1(loc, data);
+        }
+
+        public override void SetValue(string name, int value)
+        {
+            var loc = GL.GetUniformLocation(ShaderProgram, name);
+            var data = value;
+            GL.Uniform1(loc, data);
+        }
+
+        public override void SetValue(string name, ushort value)
+        {
+            var loc = GL.GetUniformLocation(ShaderProgram, name);
+            var data = value;
+            GL.Uniform1(loc, data);
+        }
+
+        public override void SetValue(string name, uint value)
+        {
+            var loc = GL.GetUniformLocation(ShaderProgram, name);
+            var data = value;
+            GL.Uniform1(loc, data);
+        }
+
+        public override void SetValue(string name, bool value)
+        {
+            var loc = GL.GetUniformLocation(ShaderProgram, name);
+            var data = value ? (byte)1 : (byte)0;
+            GL.Uniform1(loc, data);
+        }
+        
         /// <summary>
         /// Set texture at slot.
         /// </summary>

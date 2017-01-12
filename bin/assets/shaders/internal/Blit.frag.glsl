@@ -5,10 +5,12 @@
 #version 330 core
 
 in vec2 xsc_vary_TEXCOORD;
+out vec4 SV_Target0;
+
 uniform sampler2D m_texture;
 
 void main()
 {
-    gl_FragColor = texture(m_texture, xsc_vary_TEXCOORD);
+	SV_Target0 = texture(m_texture, xsc_vary_TEXCOORD);
 }
 

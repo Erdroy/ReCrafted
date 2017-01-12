@@ -143,6 +143,7 @@
     <Compile Include="Graphics\RendererApi.cs" />
     <Compile Include="Utilities\ReCraftedMath.cs" />
     <Compile Include="Utilities\ReCraftedException.cs" />
+    <Compile Include="Utilities\SharpDXEx.cs" />
     <Compile Include="Voxels\Generator\VoxelWorldGenerator.cs" />
     <Compile Include="Voxels\VoxelAssets.cs" />
     <Compile Include="Voxels\VoxelBlock.cs" />
@@ -207,10 +208,16 @@
     <None Include="..\..\bin\assets\shaders\render_main.json">
       <Link>assets\shaders\render_main.json</Link>
     </None>
+    <None Include="..\..\bin\assets\shaders\Skybox.frag.glsl">
+      <Link>assets\shaders\Skybox.frag.glsl</Link>
+    </None>
     <None Include="..\..\bin\assets\shaders\Skybox.json">
       <Link>assets\shaders\Skybox.json</Link>
     </None>
     <Compile Include="Graphics\Primitives\IcoSphere.cs" />
+    <None Include="..\..\bin\assets\shaders\Skybox.vert.glsl">
+      <Link>assets\shaders\Skybox.vert.glsl</Link>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
