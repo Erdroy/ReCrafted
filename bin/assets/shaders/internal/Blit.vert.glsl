@@ -4,8 +4,10 @@
 
 #version 330 core
 
+out vec2 xsc_vary_TEXCOORD;
+
 void main()
 {
-	vec2 uv = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2);
-	gl_Position = vec4(uv * 2.0 - 1.0, 0.0, 1.0);
+	xsc_vary_TEXCOORD = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2);
+	gl_Position = vec4(xsc_vary_TEXCOORD * 2.0 - 1.0, 0.0, 1.0);
 }

@@ -119,12 +119,13 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             // http://stackoverflow.com/questions/7357626/framebuffer-and-using-shaders-in-opengl
 
             var glRt = (OpenGLRenderTarget)texture;
-            
-            GL.BindTexture(TextureTarget.Texture2D, glRt.Texture);
-            GL.ActiveTexture(TextureUnit.Texture0);
 
             var loc = GL.GetUniformLocation(ShaderProgram, "m_texture");
-            GL.Uniform1(loc, 1);
+            GL.Uniform1(loc, 0);
+
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.Texture2D, glRt.Texture);
+
             OpenGLRenderer.CheckError();
         }
 

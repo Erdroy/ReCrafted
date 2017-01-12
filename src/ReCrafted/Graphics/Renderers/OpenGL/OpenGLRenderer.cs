@@ -317,9 +317,9 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
 
             var glShader = (OpenGLShader)_blitShader;
             glShader.Apply();
+            glShader.SetRenderTexture(ShaderType.PS, 0, renderTarget);
             CheckError();
-            //glShader.SetRenderTexture(ShaderType.PS, 0, renderTarget);
-            
+
             GL.BindVertexArray(_blitVao);
             GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.TriangleStrip, 0, 4);
             CheckError();

@@ -41,8 +41,10 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         {
             var vec = color.ToVector4();
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, Framebuffer);
+            GL.DrawBuffer(DrawBufferMode.ColorAttachment0);
             GL.ClearColor(vec.X, vec.Y, vec.Z, vec.W);
             GL.Clear(ClearBufferMask.ColorBufferBit);
+
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
             OpenGLRenderer.CheckError();
         }

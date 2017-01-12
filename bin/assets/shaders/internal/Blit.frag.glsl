@@ -4,10 +4,11 @@
 
 #version 330 core
 
-//uniform sampler2D m_texture;
+in vec2 xsc_vary_TEXCOORD;
+uniform sampler2D m_texture;
 
 void main()
 {
-    gl_FragColor = vec4(1, 0.5, 0, 1);//texture(m_texture, xsc_vary_TEXCOORD);
+    gl_FragColor = texture(m_texture, xsc_vary_TEXCOORD);
 }
 
