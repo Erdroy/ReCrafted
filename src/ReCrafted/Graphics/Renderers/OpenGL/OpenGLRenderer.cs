@@ -66,6 +66,8 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// </summary>
         public override void Draw()
         {
+            // reset
+            GL.DepthMask(true);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
             CheckError();
 
@@ -93,6 +95,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             Context.Update(WindowInfo);
             Context.MakeCurrent(WindowInfo);
             SetViewportSize(width, height);
+            
             CheckError();
         }
 
@@ -296,6 +299,8 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         public override void SetFinalRenderTarget(bool useDepthTest)
         {
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+            GL.DrawBuffer(DrawBufferMode.Back);
 
             SetDepthTestState(useDepthTest);
             CheckError();

@@ -52,11 +52,11 @@ namespace ReCrafted.Graphics
             Game.Instance.OnResize += OnResize;
 
             // initialize all resources etc.
-            /*_rtAlbedo = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm);
+            _rtAlbedo = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm);
             _rtNormals = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm);
             _rtAmbientOcculusion = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.R16_Float);
             _rtFinal = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm, true);
-            _rtOutput = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm, true);*/
+            _rtOutput = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm, true);
 
             _skyboxSphere = Mesh.FromMeshData(new IcoSphere(3, 1.0f, true).GetMeshData());
 
@@ -73,11 +73,11 @@ namespace ReCrafted.Graphics
         /// </summary>
         public override void Draw()
         {
-           /* _rtAlbedo.Clear(Camera.Current.BackgroundColor);
+            _rtAlbedo.Clear(Camera.Current.BackgroundColor);
             _rtNormals.Clear(Color.Black);
-            _rtAmbientOcculusion.Clear(Color.Black);
+            _rtAmbientOcculusion.Clear(Color.Green);
             _rtFinal.Clear(Color.Black);
-            _rtOutput.Clear(Color.Black);*/
+            _rtOutput.Clear(Color.Black);
 
             Renderer.Instance.SetFinalRenderTarget(false);
             Renderer.Instance.Blit(_rtAmbientOcculusion);
@@ -211,13 +211,13 @@ namespace ReCrafted.Graphics
         private void OnResize(int width, int height)
         {
             // resize render targets
-           /* _rtAlbedo.Resize(width, height);
+            _rtAlbedo.Resize(width, height);
             _rtNormals.Resize(width, height);
             _rtAmbientOcculusion.Resize(width, height);
             _rtFinal.Resize(width, height);
             _rtOutput.Resize(width, height);
 
-            _shadowRenderer.Resize(width, height);*/
+            _shadowRenderer.Resize(width, height);
         }
 
         // private
