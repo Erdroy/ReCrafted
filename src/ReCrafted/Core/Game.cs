@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 using ReCrafted.Core.Localization;
 using ReCrafted.Graphics;
@@ -82,13 +83,14 @@ namespace ReCrafted.Core
             
             Time.StartupTime = DateTime.Now;
             Time.SimulationDeltaTime = 1.0f / 60.0f; // 60 sps
-
-            Form.WindowState = FormWindowState.Maximized;
+            
             
             // initialize scene
             Scene.Instance.Init();
 
             _gameManager = new GameManager();
+
+            Renderer.SetViewportSize(Form.ClientSize.Width, Form.ClientSize.Height);
 
             // run the game
             RenderLoop.Run(Form, Loop, true);
@@ -161,7 +163,7 @@ namespace ReCrafted.Core
         {
             // resized
             Renderer.Resize(Form.ClientSize.Width, Form.ClientSize.Height);
-            Renderer.Draw();
+            //Renderer.Draw();
 
             // call onresize event
             OnResize?.Invoke(Form.ClientSize.Width, Form.ClientSize.Height);

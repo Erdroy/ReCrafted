@@ -171,8 +171,14 @@
     <None Include="..\..\bin\assets\shaders\cursor.json">
       <Link>assets\shaders\cursor.json</Link>
     </None>
+    <None Include="..\..\bin\assets\shaders\internal\Blit.frag.glsl">
+      <Link>assets\shaders\internal\Blit.frag.glsl</Link>
+    </None>
     <None Include="..\..\bin\assets\shaders\internal\Blit.json">
       <Link>assets\shaders\internal\Blit.json</Link>
+    </None>
+    <None Include="..\..\bin\assets\shaders\internal\Blit.vert.glsl">
+      <Link>assets\shaders\internal\Blit.vert.glsl</Link>
     </None>
     <None Include="..\..\bin\assets\shaders\internal\Color.json">
       <Link>assets\shaders\internal\Color.json</Link>

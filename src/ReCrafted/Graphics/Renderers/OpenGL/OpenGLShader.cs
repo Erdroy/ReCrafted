@@ -62,6 +62,8 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             GL.AttachShader(ShaderProgram, VertexShader);
             GL.AttachShader(ShaderProgram, FragmentShader);
             GL.LinkProgram(ShaderProgram);
+
+            OpenGLRenderer.CheckError();
         }
 
         /// <summary>
@@ -123,6 +125,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
 
             var loc = GL.GetUniformLocation(ShaderProgram, "m_texture");
             GL.Uniform1(loc, 1);
+            OpenGLRenderer.CheckError();
         }
 
         /// <summary>
@@ -176,6 +179,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         public override void Apply()
         {
             GL.UseProgram(ShaderProgram);
+            OpenGLRenderer.CheckError();
         }
 
         /// <summary>
@@ -207,6 +211,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
 
             if (FragmentShader >= 0)
                 GL.DeleteShader(FragmentShader);
+            OpenGLRenderer.CheckError();
         }
 
         public ShaderMeta Meta { get; private set; }

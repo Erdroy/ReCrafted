@@ -44,6 +44,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             GL.ClearColor(vec.X, vec.Y, vec.Z, vec.W);
             GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            OpenGLRenderer.CheckError();
         }
 
         /// <summary>
@@ -56,12 +57,18 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
 
             if (Texture >= 0)
                 GL.DeleteTexture(Texture);
+
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            OpenGLRenderer.CheckError();
         }
 
         // private
         private void Internal_Create(int width, int height, bool uav)
         {
-            Dispose();
+            if (Framebuffer >= 0)
+            {
+                Dispose();
+            }
 
             Framebuffer = GL.GenFramebuffer();
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, Framebuffer);
@@ -111,12 +118,15 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             GL.BindTexture(TextureTarget.Texture2D, Texture);
 
             if (format == PixelInternalFormat.DepthStencil)
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.DepthComponent, width, height, 0, PixelFormat.DepthComponent, PixelType.UnsignedInt, IntPtr.Zero);
+                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.DepthComponent, width, height, 0,
+                    PixelFormat.DepthComponent, PixelType.UnsignedInt, IntPtr.Zero);
             else
                 GL.TexImage2D(TextureTarget.Texture2D, 0, format, width, height, 0, format1, type, IntPtr.Zero);
 
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMinFilter.Nearest);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
+                (int)TextureMinFilter.Nearest);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter,
+                (int)TextureMinFilter.Nearest);
 
             GL.FramebufferTexture(FramebufferTarget.Framebuffer,
                 format == PixelInternalFormat.DepthStencil
@@ -127,6 +137,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             GL.BindTexture(TextureTarget.Texture2D, 0);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
+            OpenGLRenderer.CheckError();
             /*
              * https://www.opengl.org/discussion_boards/showthread.php/198528-OpenTK-Depth-Buffer-as-texture-problems
              * http://stackoverflow.com/questions/24109208/opengl-framebuffer-depth-buffer-not-working
@@ -153,3 +164,4 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         public int Texture { get; private set; } = -1;
     }
 }
+

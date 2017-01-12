@@ -26,6 +26,8 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         private readonly List<DrawBuffersEnum> _drawBuffers = new List<DrawBuffersEnum>();
         private Shader _blitShader;
 
+        private int _blitVao;
+
         /// <summary>
         /// Initializes the renderer.
         /// </summary>
@@ -37,6 +39,8 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             Context.MakeCurrent(WindowInfo);
             Context.LoadAll();
 
+            GL.Viewport(0, 0, Display.ClientWidth, Display.ClientHeight);
+
             // enable depth
             GL.Enable(EnableCap.CullFace);
             GL.CullFace(CullFaceMode.Back);
@@ -47,6 +51,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             
             // load blit shader
             _blitShader = Shader.FromFile("internal/Blit", false);
+            _blitVao = GL.GenVertexArray();
         }
 
         /// <summary>
@@ -54,7 +59,6 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// </summary>
         public override void Tick()
         {
-            Context.Update(WindowInfo);
         }
 
         /// <summary>
@@ -62,14 +66,20 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// </summary>
         public override void Draw()
         {
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            CheckError();
+
             // TODO: Optimize color change
             var currentColor = Color.FromArgb(Camera.Current.BackgroundColor.A, Camera.Current.BackgroundColor.R, Camera.Current.BackgroundColor.G, Camera.Current.BackgroundColor.B);
             GL.ClearColor(currentColor);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            CheckError();
 
             Rendering.Draw();
+            CheckError();
 
             Context.SwapBuffers();
+            CheckError();
         }
         
         /// <summary>
@@ -79,6 +89,11 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// <param name="height">Height</param>
         public override void Resize(int width, int height)
         {
+            WindowInfo = OpenTK.Platform.Utilities.CreateWindowsWindowInfo(Game.Instance.Form.Handle);
+            Context.Update(WindowInfo);
+            Context.MakeCurrent(WindowInfo);
+            SetViewportSize(width, height);
+            CheckError();
         }
 
         /// <summary>
@@ -97,6 +112,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         public override void SetViewportSize(int width, int height)
         {
             GL.Viewport(0, 0, width, height);
+            CheckError();
         }
 
         /// <summary>
@@ -106,6 +122,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         public override void SetDepthTestState(bool enabled)
         {
             GL.DepthMask(enabled);
+            CheckError();
         }
 
         /// <summary>
@@ -117,12 +134,17 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             _drawBuffers.Clear();
             switch (renderTargets.Length)
             {
-                case 1:
+                case 1:// TODO BIND FRAMEBUFFER <-------------------------------------------------------------
+                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer);
+
                     GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer, 0);
 
                     _drawBuffers.Add(DrawBuffersEnum.ColorAttachment0);
                     break;
                 case 2:
+                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer);
+                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, ((OpenGLRenderTarget)renderTargets[1]).Framebuffer);
+
                     GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer, 0);
                     GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment1, ((OpenGLRenderTarget)renderTargets[1]).Framebuffer, 0);
 
@@ -130,6 +152,10 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
                     _drawBuffers.Add(DrawBuffersEnum.ColorAttachment1);
                     break;
                 case 3:
+                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer);
+                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, ((OpenGLRenderTarget)renderTargets[1]).Framebuffer);
+                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, ((OpenGLRenderTarget)renderTargets[2]).Framebuffer);
+
                     GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer, 0);
                     GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment1, ((OpenGLRenderTarget)renderTargets[1]).Framebuffer, 0);
                     GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment2, ((OpenGLRenderTarget)renderTargets[2]).Framebuffer, 0);
@@ -182,6 +208,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             }
             
             GL.DrawBuffers(_drawBuffers.Count, _drawBuffers.ToArray());
+            CheckError();
         }
 
         /// <summary>
@@ -259,6 +286,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             }
 
             GL.DrawBuffers(_drawBuffers.Count, _drawBuffers.ToArray());
+            CheckError();
         }
 
         /// <summary>
@@ -270,6 +298,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
             SetDepthTestState(useDepthTest);
+            CheckError();
         }
 
         /// <summary>
@@ -279,12 +308,16 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// <param name="customShader">The custom shader for blit.</param>
         public override void Blit(RenderTarget renderTarget, Shader customShader = null)
         {
+            GL.DepthMask(false);
+
             var glShader = (OpenGLShader)_blitShader;
-
             glShader.Apply();
+            CheckError();
             //glShader.SetRenderTexture(ShaderType.PS, 0, renderTarget);
-
+            
+            GL.BindVertexArray(_blitVao);
             GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.TriangleStrip, 0, 4);
+            CheckError();
         }
 
         /// <summary>
@@ -294,6 +327,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         {
             // just clear the depth
             GL.Clear(ClearBufferMask.DepthBufferBit);
+            CheckError();
         }
 
         /// <summary>
@@ -332,6 +366,17 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         {
             Context?.Dispose();
             _blitShader?.Dispose();
+        }
+
+        /// <summary>
+        /// Check errors
+        /// </summary>
+        public static void CheckError()
+        {
+            var error = GL.GetError();
+
+            if (error != ErrorCode.NoError)
+                throw new ReCraftedException("OpenGL Error");
         }
 
         public static GraphicsContext Context { get; private set; }
