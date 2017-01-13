@@ -199,14 +199,23 @@
     <None Include="..\..\bin\assets\shaders\postprocess\vingetting.json">
       <Link>assets\shaders\postprocess\vingetting.json</Link>
     </None>
-    <None Include="..\..\bin\assets\shaders\Render_Final.json">
-      <Link>assets\shaders\Render_Final.json</Link>
+    <None Include="..\..\bin\assets\shaders\render_gbuffer.frag.glsl">
+      <Link>assets\shaders\render_gbuffer.frag.glsl</Link>
     </None>
-    <None Include="..\..\bin\assets\shaders\Render_GBuffer.json">
-      <Link>assets\shaders\Render_GBuffer.json</Link>
+    <None Include="..\..\bin\assets\shaders\render_gbuffer.json">
+      <Link>assets\shaders\render_gbuffer.json</Link>
+    </None>
+    <None Include="..\..\bin\assets\shaders\render_gbuffer.vert.glsl">
+      <Link>assets\shaders\render_gbuffer.vert.glsl</Link>
+    </None>
+    <None Include="..\..\bin\assets\shaders\render_main.frag.glsl">
+      <Link>assets\shaders\render_main.frag.glsl</Link>
     </None>
     <None Include="..\..\bin\assets\shaders\render_main.json">
       <Link>assets\shaders\render_main.json</Link>
+    </None>
+    <None Include="..\..\bin\assets\shaders\render_main.vert.glsl">
+      <Link>assets\shaders\render_main.vert.glsl</Link>
     </None>
     <None Include="..\..\bin\assets\shaders\Skybox.frag.glsl">
       <Link>assets\shaders\Skybox.frag.glsl</Link>
@@ -264,11 +273,8 @@
     <Content Include="..\..\bin\assets\shaders\postprocess\vingetting.hlsl">
       <Link>assets\shaders\postprocess\vingetting.hlsl</Link>
     </Content>
-    <Content Include="..\..\bin\assets\shaders\Render_Final.hlsl">
-      <Link>assets\shaders\Render_Final.hlsl</Link>
-    </Content>
-    <Content Include="..\..\bin\assets\shaders\Render_GBuffer.hlsl">
-      <Link>assets\shaders\Render_GBuffer.hlsl</Link>
+    <Content Include="..\..\bin\assets\shaders\render_gbuffer.hlsl">
+      <Link>assets\shaders\render_gbuffer.hlsl</Link>
     </Content>
     <Content Include="..\..\bin\assets\shaders\render_main.hlsl">
       <Link>assets\shaders\render_main.hlsl</Link>

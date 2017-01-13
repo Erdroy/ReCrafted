@@ -50,5 +50,12 @@
                 }
             ]
         }
-    ]
+    ],
+
+    "Variables": [
+        {
+            "Name": "m_texture",
+            "VariableType" : "Texture2D" 
+        }
+    ] 
 }

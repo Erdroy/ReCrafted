@@ -21,7 +21,7 @@ namespace ReCrafted.Voxels
         /// </summary>
         internal static void LoadAssets()
         {
-            DefaultShader = Shader.FromFile("Render_GBuffer");
+            DefaultShader = Shader.FromFile("render_gbuffer");
             
             DefaultSampler = Sampler.Create(Sampler.Type.PointClamped);
 

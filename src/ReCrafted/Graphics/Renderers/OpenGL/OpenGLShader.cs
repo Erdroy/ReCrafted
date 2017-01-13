@@ -218,17 +218,24 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         {
             // http://stackoverflow.com/questions/7357626/framebuffer-and-using-shaders-in-opengl
 
-            var variable = Meta.Variables[slot];
+            if (texture == null)
+            {
+                GL.BindTexture(TextureTarget.Texture2D, 0);
+            }
+            else
+            {
+                var variable = Meta.Variables[slot];
 
-            var glRt = (OpenGLRenderTarget)texture;
+                var glRt = (OpenGLRenderTarget) texture;
 
-            var loc = GL.GetUniformLocation(ShaderProgram, variable.Name);
-            GL.Uniform1(loc, 0);
+                var loc = GL.GetUniformLocation(ShaderProgram, variable.Name);
+                GL.Uniform1(loc, 0);
 
-            GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.Texture2D, glRt.Texture);
+                GL.ActiveTexture(TextureUnit.Texture0);
+                GL.BindTexture(TextureTarget.Texture2D, glRt.Texture);
 
-            OpenGLRenderer.CheckError();
+                OpenGLRenderer.CheckError();
+            }
         }
 
         /// <summary>
@@ -360,7 +367,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// </summary>
         public override void Dispose()
         {
-            if(ShaderProgram >= -1)
+            if(ShaderProgram >= 0)
                 GL.DeleteProgram(ShaderProgram);
 
             if(VertexShader >= 0)

@@ -39,5 +39,28 @@
                 }
             ]
         }
-    ]
+    ],
+	
+	"Variables" : [
+        {
+            "Name": "Albedo",
+            "VariableType" : "Texture2D" 
+        },
+        {
+            "Name": "Normals",
+            "VariableType" : "Texture2D" 
+        },
+        {
+            "Name": "AmbientOcculusion",
+            "VariableType" : "Texture2D" 
+        },
+        {
+            "Name": "Depth",
+            "VariableType" : "Texture2D" 
+        },
+        {
+            "Name": "ShadowOcculusion",
+            "VariableType" : "Texture2D" 
+        }
+	]
 }

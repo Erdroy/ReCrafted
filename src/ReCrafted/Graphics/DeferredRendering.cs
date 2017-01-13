@@ -109,14 +109,14 @@ namespace ReCrafted.Graphics
             }
 
             // render shadows
-            _shadowRenderer.LightDir = _ligthDirection;
-            _shadowRenderer.RenderShadowMap();
+            //_shadowRenderer.LightDir = _ligthDirection;
+            //_shadowRenderer.RenderShadowMap();
 
             // do final pass
-            RenderFinal();
+            //RenderFinal();
 
             Renderer.Instance.SetFinalRenderTarget(false);
-            Renderer.Instance.Blit(_rtFinal);
+            Renderer.Instance.Blit(_rtAlbedo);
 
             // do post process
 

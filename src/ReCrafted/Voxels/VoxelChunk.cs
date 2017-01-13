@@ -77,21 +77,19 @@ namespace ReCrafted.Voxels
             
             var wvp = Matrix.Translation(new Vector3(Position.X, Position.Y, Position.Z)) * Camera.Current.ViewProjectionMatrix;
             wvp.Transpose();
-
-            VoxelAssets.DefaultShader.Apply();
             
+            VoxelAssets.DefaultShader.Apply();
             foreach (var mesh in Meshes)
             {
+                if(mesh.Value.Vertices.Length == 0)
+                    continue;
+
                 var block = VoxelAssets.Blocks[mesh.Key];
-                
-                if (block.CustomShader == null)
-                {
-                    VoxelAssets.DefaultShader.SetValue("WVP", wvp);
-                }
-                else
-                {
-                    // TODO: Use of custom shader
-                }
+
+                VoxelAssets.DefaultShader.SetValue("WVP", wvp);
+
+                // TODO: Use of custom shader
+
                 VoxelAssets.DefaultShader.SetTexture(ShaderType.PS, 0, block.Texture);
                 VoxelAssets.DefaultSampler.Apply(0);
 
