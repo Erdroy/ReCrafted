@@ -83,8 +83,9 @@ namespace ReCrafted.Core
             
             Time.StartupTime = DateTime.Now;
             Time.SimulationDeltaTime = 1.0f / 60.0f; // 60 sps
-            
-            
+
+            Form.WindowState = FormWindowState.Maximized;
+
             // initialize scene
             Scene.Instance.Init();
 

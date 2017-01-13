@@ -78,9 +78,10 @@ namespace ReCrafted.Graphics
             _rtAmbientOcculusion.Clear(Color.Black);
             _rtFinal.Clear(Color.Black);
             _rtOutput.Clear(Color.Black);
-
+            
             // render skybox into final RT
-            Renderer.Instance.SetFinalRenderTarget(true);
+            
+            Renderer.Instance.SetFinalRenderTarget(false);
             _skyboxShader.Apply();
             _skyboxShader.SetValue("WVP", Matrix.Translation(Camera.Current.Position) * Camera.Current.ViewProjectionMatrix);
             _skyboxShader.SetValue("ColorUpper", new Vector4(0.0f, 0.3f, 0.4f, 1.0f));

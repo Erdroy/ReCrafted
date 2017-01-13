@@ -5,7 +5,6 @@
 #version 330 core
 
 in vec3 position;
-
 out vec3 xsc_vary_TEXCOORD;
 
 layout(std140) uniform Data

@@ -309,38 +309,42 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         {
             var openglMesh = (OpenGLMesh)mesh;
             
-            var beginMode = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
+            OpenTK.Graphics.OpenGL.PrimitiveType primitivesType;
             switch (mesh.PrimitiveType)
             {
                 case PrimitiveType.Unknown:
                     throw new ReCraftedException("Cannot update the PrimitiveType because it is 'Unknown'.");
 
                 case PrimitiveType.PointList:
-                    beginMode = OpenTK.Graphics.OpenGL.PrimitiveType.Points;
+                    primitivesType = OpenTK.Graphics.OpenGL.PrimitiveType.Points;
                     break;
                 case PrimitiveType.LineList:
-                    beginMode = OpenTK.Graphics.OpenGL.PrimitiveType.Lines;
+                    primitivesType = OpenTK.Graphics.OpenGL.PrimitiveType.Lines;
                     break;
                 case PrimitiveType.TriangleList:
-                    beginMode = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
+                    primitivesType = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
                     break;
                 case PrimitiveType.TriangleStrip:
-                    beginMode = OpenTK.Graphics.OpenGL.PrimitiveType.TriangleStrip;
+                    primitivesType = OpenTK.Graphics.OpenGL.PrimitiveType.TriangleStrip;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
+            GL.BindBuffer(BufferTarget.ArrayBuffer, openglMesh.VertexBufferObject);
             GL.BindVertexArray(openglMesh.VertexArrayObject);
+            
             if (mesh.HasIndices)
             {
                 GL.BindBuffer(BufferTarget.ElementArrayBuffer, openglMesh.ElementBufferObject);
-                GL.DrawElements(beginMode, mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
+                GL.DrawElements(primitivesType, mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
             }
             else
-                GL.DrawArrays(beginMode, 0, mesh.Vertices.Length);
-
-            GL.BindVertexArray(0);
+            {
+                GL.DrawArrays(primitivesType, 0, mesh.Vertices.Length);
+            }
+            
+            OpenGLRenderer.CheckError();
         }
 
         /// <summary>

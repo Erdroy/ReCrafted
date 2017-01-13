@@ -71,10 +71,14 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
                 // create buffer
                 GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexes.Length * Vertex4UvNormalColor.SizeInBytes), vertexes, BufferUsageHint.StaticDraw);
 
-                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 0, 0); // vert
-                GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 0, Vector3.SizeInBytes); // uv
-                GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, 0, Vector3.SizeInBytes + Vector2.SizeInBytes); // norm
-                GL.VertexAttribPointer(3, 4, VertexAttribPointerType.Float, false, 0, Vector3.SizeInBytes + Vector2.SizeInBytes + Vector3.SizeInBytes); // col
+                GL.EnableVertexAttribArray(0);
+                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Vector3.SizeInBytes, 0); // vert
+                GL.EnableVertexAttribArray(1);
+                GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Vector2.SizeInBytes, Vector3.SizeInBytes); // uv
+                GL.EnableVertexAttribArray(2);
+                GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, Vector3.SizeInBytes, Vector3.SizeInBytes + Vector2.SizeInBytes); // norm
+                GL.EnableVertexAttribArray(3);
+                GL.VertexAttribPointer(3, 4, VertexAttribPointerType.Float, false, Vector4.SizeInBytes, Vector3.SizeInBytes + Vector2.SizeInBytes + Vector3.SizeInBytes); // col
 
             }
             else if (HasUVs && HasNormals)
@@ -99,9 +103,15 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
                 }
 
                 // create buffer
-                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 0, 0); // vert
-                GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 0, Vector3.SizeInBytes); // uv
-                GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, 0, Vector3.SizeInBytes + Vector2.SizeInBytes); // norm
+                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexes.Length * Vertex3UvNormal.SizeInBytes), vertexes, BufferUsageHint.StaticDraw);
+
+                // create buffer
+                GL.EnableVertexAttribArray(0);
+                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Vector3.SizeInBytes, 0); // vert
+                GL.EnableVertexAttribArray(1);
+                GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Vector2.SizeInBytes, Vector3.SizeInBytes); // uv
+                GL.EnableVertexAttribArray(2);
+                GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, Vector3.SizeInBytes, Vector3.SizeInBytes + Vector2.SizeInBytes); // norm
             }
             else if (HasUVs && HasColors)
             {
@@ -125,9 +135,15 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
                 }
 
                 // create buffer
-                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 0, 0); // vert
-                GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 0, Vector3.SizeInBytes); // uv
-                GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, 0, Vector3.SizeInBytes + Vector2.SizeInBytes); // col
+                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexes.Length * Vertex3UvColor.SizeInBytes), vertexes, BufferUsageHint.StaticDraw);
+
+                // create buffer
+                GL.EnableVertexAttribArray(0);
+                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Vector3.SizeInBytes, 0); // vert
+                GL.EnableVertexAttribArray(1);
+                GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Vector2.SizeInBytes, Vector3.SizeInBytes); // uv
+                GL.EnableVertexAttribArray(2);
+                GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, Vector4.SizeInBytes, Vector3.SizeInBytes + Vector2.SizeInBytes); // col
             }
             else if (HasColors)
             {
@@ -144,8 +160,13 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
                 }
 
                 // create buffer
-                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 0, 0); // vert
-                GL.VertexAttribPointer(1, 4, VertexAttribPointerType.Float, false, 0, Vector3.SizeInBytes); // col
+                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexes.Length * Vertex2Color.SizeInBytes), vertexes, BufferUsageHint.StaticDraw);
+
+                // create buffer
+                GL.EnableVertexAttribArray(0);
+                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Vector3.SizeInBytes, 0); // vert
+                GL.EnableVertexAttribArray(1);
+                GL.VertexAttribPointer(1, 4, VertexAttribPointerType.Float, false, Vector4.SizeInBytes, Vector3.SizeInBytes); // col
             }
             else if (HasUVs)
             {
@@ -165,8 +186,13 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
                 }
 
                 // create buffer
-                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 0, 0); // vert
-                GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 0, Vector3.SizeInBytes); // uv
+                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexes.Length * Vertex2Uv.SizeInBytes), vertexes, BufferUsageHint.StaticDraw);
+
+                // create buffer
+                GL.EnableVertexAttribArray(0);
+                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Vector3.SizeInBytes, 0); // vert
+                GL.EnableVertexAttribArray(1);
+                GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Vector2.SizeInBytes, Vector3.SizeInBytes); // uv
             }
             else
             {
@@ -182,21 +208,24 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
                 }
 
                 // create buffer
-                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 0, 0); // vert
-            }
+                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexes.Length * Vertex.SizeInBytes), vertexes, BufferUsageHint.StaticDraw);
 
+                // create buffer
+                GL.EnableVertexAttribArray(0);
+                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, true, Vector3.SizeInBytes, 0); // vert
+            }
+            
             if (HasIndices)
             {
                 // build indices buffer
                 ElementBufferObject = GL.GenBuffer();
                 GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
-
                 GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(Indices.Length * sizeof(uint)), Indices, BufferUsageHint.StaticDraw);
             }
 
-            GL.BindVertexArray(0);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+            GL.BindVertexArray(0);
         }
 
         /// <summary>
