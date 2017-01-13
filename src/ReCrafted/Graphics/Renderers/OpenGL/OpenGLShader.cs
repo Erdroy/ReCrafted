@@ -90,6 +90,11 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             OpenGLRenderer.CheckError();
         }
 
+        /// <summary>
+        /// Sets value in default constant buffer.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
         public override void SetValue(string name, Matrix value)
         {
             var offset = Meta.ConstantBuffers[0].GetOffset(name);
@@ -97,6 +102,11 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             OpenGLRenderer.CheckError();
         }
 
+        /// <summary>
+        /// Sets value in default constant buffer.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
         public override void SetValue(string name, Vector2 value)
         {
             var offset = Meta.ConstantBuffers[0].GetOffset(name);
@@ -104,6 +114,11 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             OpenGLRenderer.CheckError();
         }
 
+        /// <summary>
+        /// Sets value in default constant buffer.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
         public override void SetValue(string name, Vector3 value)
         {
             var offset = Meta.ConstantBuffers[0].GetOffset(name);
@@ -111,6 +126,11 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             OpenGLRenderer.CheckError();
         }
 
+        /// <summary>
+        /// Sets value in default constant buffer.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
         public override void SetValue(string name, Vector4 value)
         {
             var offset = Meta.ConstantBuffers[0].GetOffset(name);
@@ -118,6 +138,11 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             OpenGLRenderer.CheckError();
         }
 
+        /// <summary>
+        /// Sets value in default constant buffer.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
         public override void SetValue(string name, short value)
         {
             var offset = Meta.ConstantBuffers[0].GetOffset(name);
@@ -125,6 +150,11 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             OpenGLRenderer.CheckError();
         }
 
+        /// <summary>
+        /// Sets value in default constant buffer.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
         public override void SetValue(string name, int value)
         {
             var offset = Meta.ConstantBuffers[0].GetOffset(name);
@@ -132,6 +162,11 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             OpenGLRenderer.CheckError();
         }
 
+        /// <summary>
+        /// Sets value in default constant buffer.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
         public override void SetValue(string name, ushort value)
         {
             var offset = Meta.ConstantBuffers[0].GetOffset(name);
@@ -139,6 +174,11 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             OpenGLRenderer.CheckError();
         }
 
+        /// <summary>
+        /// Sets value in default constant buffer.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
         public override void SetValue(string name, uint value)
         {
             var offset = Meta.ConstantBuffers[0].GetOffset(name);
@@ -146,6 +186,11 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             OpenGLRenderer.CheckError();
         }
 
+        /// <summary>
+        /// Sets value in default constant buffer.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
         public override void SetValue(string name, bool value)
         {
             var offset = Meta.ConstantBuffers[0].GetOffset(name);
