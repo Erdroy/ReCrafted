@@ -362,6 +362,14 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         }
 
         /// <summary>
+        /// Changes face culling
+        /// </summary>
+        public override void FaceCulling(bool front, bool back)
+        {
+            // TODO: d3d11 face culling change
+        }
+
+        /// <summary>
         /// Dispatch ComputeShader.
         /// </summary>
         /// <param name="x">The X amount of threads.</param>

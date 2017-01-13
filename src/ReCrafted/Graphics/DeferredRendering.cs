@@ -26,6 +26,8 @@ namespace ReCrafted.Graphics
 
         private Shader _finalShader;
 
+        private Sampler _pointSampler;
+
         // skybox
         private Shader _skyboxShader;
         private Mesh _skyboxSphere;
@@ -55,12 +57,14 @@ namespace ReCrafted.Graphics
             _rtAlbedo = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm);
             _rtNormals = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm);
             _rtAmbientOcculusion = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.R16_Float);
-            _rtFinal = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm, true);
-            _rtOutput = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm, true);
+            _rtFinal = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm);
+            _rtOutput = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.RGBA8_UNorm);
 
             _skyboxSphere = Mesh.FromMeshData(new IcoSphere(3, 1.0f, true).GetMeshData());
 
-            _finalShader = Shader.FromFile("Render_Final");
+            _pointSampler = Sampler.Create(Sampler.Type.PointClamped);
+
+            _finalShader = Shader.FromFile("render_main");
             _skyboxShader = Shader.FromFile("Skybox");
             
             _shadowRenderer = new ShadowRenderer();
@@ -78,10 +82,11 @@ namespace ReCrafted.Graphics
             _rtAmbientOcculusion.Clear(Color.Black);
             _rtFinal.Clear(Color.Black);
             _rtOutput.Clear(Color.Black);
-            
+
             // render skybox into final RT
-            
-            Renderer.Instance.SetFinalRenderTarget(false);
+
+            Renderer.Instance.FaceCulling(true, false);
+            Renderer.Instance.SetRenderTargets(_rtAlbedo);
             _skyboxShader.Apply();
             _skyboxShader.SetValue("WVP", Matrix.Translation(Camera.Current.Position) * Camera.Current.ViewProjectionMatrix);
             _skyboxShader.SetValue("ColorUpper", new Vector4(0.0f, 0.3f, 0.4f, 1.0f));
@@ -89,32 +94,33 @@ namespace ReCrafted.Graphics
             _skyboxShader.SetValue("ColorLower", new Vector4(0.0f, 0.1f, 0.1f, 1.0f));
             _skyboxShader.ApplyChanges();
             _skyboxShader.Draw(_skyboxSphere);
-
-            //Renderer.Instance.SetFinalRenderTarget(false);
-            //Renderer.Instance.Blit(_rtAlbedo);
+            Renderer.Instance.FaceCulling(false, true);
 
             // clear depth
-            /* Renderer.Instance.ClearDepth();
+            Renderer.Instance.ClearDepth();
 
-             // set gbuffer render targets
-             Renderer.Instance.SetRenderTargets(_rtAlbedo, _rtNormals, _rtAmbientOcculusion);
+            // set gbuffer render targets
+            Renderer.Instance.SetRenderTargets(_rtAlbedo, _rtNormals, _rtAmbientOcculusion);
 
-             // do render jobs
-             foreach (var job in _renderJobs)
-             {
-                 job.JobMethod(this);
-             }
+            // do render jobs
+            foreach (var job in _renderJobs)
+            {
+                job.JobMethod(this);
+            }
 
-             // render shadows
-             _shadowRenderer.LightDir = _ligthDirection;
-             _shadowRenderer.RenderShadowMap();
+            // render shadows
+            _shadowRenderer.LightDir = _ligthDirection;
+            _shadowRenderer.RenderShadowMap();
 
-             // do final pass
-             ComputeOutput();
+            // do final pass
+            RenderFinal();
 
-             // do post process
+            Renderer.Instance.SetFinalRenderTarget(false);
+            Renderer.Instance.Blit(_rtFinal);
 
-             var input = _rtFinal;
+            // do post process
+
+            /* var input = _rtFinal;
              var output = _rtOutput;
 
              foreach (var job in _postprocessJobs)
@@ -220,44 +226,33 @@ namespace ReCrafted.Graphics
         }
 
         // private
-        private void ComputeOutput()
+        private void RenderFinal()
         {
-            Renderer.Instance.SetFinalRenderTarget(false);
-            
+            Renderer.Instance.SetRenderTargets(_rtFinal);
+            Renderer.Instance.SetDepthTestState(false);
+
             _finalShader.Apply();
 
             _finalShader.SetValue("LightColor", new Vector4(1.0f, 1.0f, 1.0f, 1.6f));
             _finalShader.SetValue("LightDir", _ligthDirection);
+            
+            _finalShader.SetRenderTexture(ShaderType.PS, 0, _rtAlbedo);
+            _finalShader.SetRenderTexture(ShaderType.PS, 1, _rtNormals);
+            _finalShader.SetRenderTexture(ShaderType.PS, 2, _rtAmbientOcculusion);
+            _finalShader.SetRenderTexture(ShaderType.PS, 3, Renderer.Instance.DepthRenderTarget);
+            _finalShader.SetRenderTexture(ShaderType.PS, 4, _shadowRenderer.ShadowOcculusion);
 
-            // set resources
-            _finalShader.SetUnorderedAccessView(0, _rtFinal);
-            _finalShader.SetRenderTexture(ShaderType.CS, 0, _rtAlbedo);
-            _finalShader.SetRenderTexture(ShaderType.CS, 1, _rtNormals);
-            _finalShader.SetRenderTexture(ShaderType.CS, 2, _rtAmbientOcculusion);
-            _finalShader.SetRenderTexture(ShaderType.CS, 3, Renderer.Instance.DepthRenderTarget);
-            _finalShader.SetRenderTexture(ShaderType.CS, 4, _shadowRenderer.ShadowOcculusion);
-
-            // dispatch
-            var xThreads = DispatchSize(16, Display.ClientWidth);
-            var yThreads = DispatchSize(16, Display.ClientHeight);
+            _finalShader.SetSampler(0, _pointSampler);
 
             _finalShader.ApplyChanges();
-            Renderer.Instance.Dispatch(xThreads, yThreads, 1);
 
-            // unset resources
-            _finalShader.UnsetUnorderedAccessView(0);
-            _finalShader.UnsetRenderTexture(ShaderType.CS, 0);
-            _finalShader.UnsetRenderTexture(ShaderType.CS, 1);
-            _finalShader.UnsetRenderTexture(ShaderType.CS, 2);
-            _finalShader.UnsetRenderTexture(ShaderType.CS, 3);
-            _finalShader.UnsetRenderTexture(ShaderType.CS, 4);
+            _finalShader.DrawFullscreen();
 
-        }
-
-        // private
-        private static int DispatchSize(int tgSize, int numElements)
-        {
-            return numElements / tgSize + (numElements % tgSize > 0 ? 1 : 0);
+            _finalShader.UnsetRenderTexture(ShaderType.PS, 0);
+            _finalShader.UnsetRenderTexture(ShaderType.PS, 1);
+            _finalShader.UnsetRenderTexture(ShaderType.PS, 2);
+            _finalShader.UnsetRenderTexture(ShaderType.PS, 3);
+            _finalShader.UnsetRenderTexture(ShaderType.PS, 4);
         }
     }
 }

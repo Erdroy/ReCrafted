@@ -335,8 +335,22 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         public override void ClearDepth()
         {
             // just clear the depth
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
             GL.Clear(ClearBufferMask.DepthBufferBit);
             CheckError();
+        }
+
+        /// <summary>
+        /// Changes face culling
+        /// </summary>
+        public override void FaceCulling(bool front, bool back)
+        {
+            if(back && !front)
+                GL.CullFace(CullFaceMode.Back);
+            else if(front && !back)
+                GL.CullFace(CullFaceMode.Front);
+            else
+                GL.CullFace(CullFaceMode.FrontAndBack);
         }
 
         /// <summary>

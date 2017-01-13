@@ -22,11 +22,11 @@ void main()
     float interpolation = clamp(dist, 0.0f, 1.0f);
     if (height < -0.15f)
     {
-        color = mix(vec4(0, 1, 0, 1), vec4(1, 1, 0, 1), interpolation);
+        color = mix(ColorMiddle, ColorLower, interpolation);
     }
     else
     {
-        color = mix(vec4(0, 1, 0, 1), vec4(0, 1, 1, 1), interpolation);
+        color = mix(ColorMiddle, ColorUpper, interpolation);
     }
 	SV_Target0 = vec4(color.rgb, 1.0f);
 }

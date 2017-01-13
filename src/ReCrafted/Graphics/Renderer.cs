@@ -98,6 +98,11 @@ namespace ReCrafted.Graphics
         public abstract void ClearDepth();
 
         /// <summary>
+        /// Changes face culling
+        /// </summary>
+        public abstract void FaceCulling(bool front, bool back);
+
+        /// <summary>
         /// Dispatch ComputeShader.
         /// </summary>
         /// <param name="x">The X amount of threads.</param>
