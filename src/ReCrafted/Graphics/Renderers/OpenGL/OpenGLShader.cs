@@ -14,6 +14,9 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
     // ReSharper disable once InconsistentNaming
     internal sealed class OpenGLShader : Shader
     {
+        private int _bufferLocation = -1;
+        private int _buffer = -1;
+
         /// <summary>
         /// Initializes the shader.
         /// </summary>
@@ -64,70 +67,90 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             GL.AttachShader(ShaderProgram, FragmentShader);
             GL.LinkProgram(ShaderProgram);
 
+            // load uniform block buffer if needed
+            if (Meta.ConstantBuffers.Length == 1)
+            {
+                // find block location
+                _bufferLocation = GL.GetUniformBlockIndex(ShaderProgram, Meta.ConstantBuffers[0].BufferName);
+
+                // get buffer info
+                var bufferSize = Meta.ConstantBuffers[0].Size; // get the size of the buffer
+                var size = (IntPtr) bufferSize;
+
+                // create temporary 0-filled data buffer
+                var data = new byte[bufferSize];
+                _buffer = GL.GenBuffer();
+                GL.BindBuffer(BufferTarget.UniformBuffer, _buffer);
+                GL.BufferData(BufferTarget.UniformBuffer, size, data, BufferUsageHint.DynamicDraw);
+
+                // clear
+                GL.BindBuffer(BufferTarget.UniformBuffer, 0);
+            }
+            
             OpenGLRenderer.CheckError();
         }
 
         public override void SetValue(string name, Matrix value)
         {
-            var loc = GL.GetUniformLocation(ShaderProgram, name);
-            var data = value.ToOpenTk();
-            GL.UniformMatrix4(loc, false, ref data);
+            var offset = Meta.ConstantBuffers[0].GetOffset(name);
+            GL.BufferSubData(BufferTarget.UniformBuffer, (IntPtr)offset, (IntPtr)Matrix.SizeInBytes, ref value);
+            OpenGLRenderer.CheckError();
         }
 
         public override void SetValue(string name, Vector2 value)
         {
-            var loc = GL.GetUniformLocation(ShaderProgram, name);
-            var data = value.ToOpenTk();
-            GL.Uniform2(loc, ref data);
+            var offset = Meta.ConstantBuffers[0].GetOffset(name);
+            GL.BufferSubData(BufferTarget.UniformBuffer, (IntPtr)offset, (IntPtr)Vector2.SizeInBytes, ref value);
+            OpenGLRenderer.CheckError();
         }
 
         public override void SetValue(string name, Vector3 value)
         {
-            var loc = GL.GetUniformLocation(ShaderProgram, name);
-            var data = value.ToOpenTk();
-            GL.Uniform3(loc, ref data);
+            var offset = Meta.ConstantBuffers[0].GetOffset(name);
+            GL.BufferSubData(BufferTarget.UniformBuffer, (IntPtr)offset, (IntPtr)Vector3.SizeInBytes, ref value);
+            OpenGLRenderer.CheckError();
         }
 
         public override void SetValue(string name, Vector4 value)
         {
-            var loc = GL.GetUniformLocation(ShaderProgram, name);
-            var data = value.ToOpenTk();
-            GL.Uniform4(loc, ref data);
+            var offset = Meta.ConstantBuffers[0].GetOffset(name);
+            GL.BufferSubData(BufferTarget.UniformBuffer, (IntPtr)offset, (IntPtr)Vector4.SizeInBytes, ref value);
+            OpenGLRenderer.CheckError();
         }
 
         public override void SetValue(string name, short value)
         {
-            var loc = GL.GetUniformLocation(ShaderProgram, name);
-            var data = value;
-            GL.Uniform1(loc, data);
+            var offset = Meta.ConstantBuffers[0].GetOffset(name);
+            GL.BufferSubData(BufferTarget.UniformBuffer, (IntPtr)offset, (IntPtr)sizeof(short), ref value);
+            OpenGLRenderer.CheckError();
         }
 
         public override void SetValue(string name, int value)
         {
-            var loc = GL.GetUniformLocation(ShaderProgram, name);
-            var data = value;
-            GL.Uniform1(loc, data);
+            var offset = Meta.ConstantBuffers[0].GetOffset(name);
+            GL.BufferSubData(BufferTarget.UniformBuffer, (IntPtr)offset, (IntPtr)sizeof(int), ref value);
+            OpenGLRenderer.CheckError();
         }
 
         public override void SetValue(string name, ushort value)
         {
-            var loc = GL.GetUniformLocation(ShaderProgram, name);
-            var data = value;
-            GL.Uniform1(loc, data);
+            var offset = Meta.ConstantBuffers[0].GetOffset(name);
+            GL.BufferSubData(BufferTarget.UniformBuffer, (IntPtr)offset, (IntPtr)sizeof(ushort), ref value);
+            OpenGLRenderer.CheckError();
         }
 
         public override void SetValue(string name, uint value)
         {
-            var loc = GL.GetUniformLocation(ShaderProgram, name);
-            var data = value;
-            GL.Uniform1(loc, data);
+            var offset = Meta.ConstantBuffers[0].GetOffset(name);
+            GL.BufferSubData(BufferTarget.UniformBuffer, (IntPtr)offset, (IntPtr)sizeof(uint), ref value);
+            OpenGLRenderer.CheckError();
         }
 
         public override void SetValue(string name, bool value)
         {
-            var loc = GL.GetUniformLocation(ShaderProgram, name);
-            var data = value ? (byte)1 : (byte)0;
-            GL.Uniform1(loc, data);
+            var offset = Meta.ConstantBuffers[0].GetOffset(name);
+            GL.BufferSubData(BufferTarget.UniformBuffer, (IntPtr)offset, (IntPtr)sizeof(bool), ref value);
+            OpenGLRenderer.CheckError();
         }
         
         /// <summary>
@@ -150,9 +173,11 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         {
             // http://stackoverflow.com/questions/7357626/framebuffer-and-using-shaders-in-opengl
 
+            var variable = Meta.Variables[slot];
+
             var glRt = (OpenGLRenderTarget)texture;
 
-            var loc = GL.GetUniformLocation(ShaderProgram, "m_texture");
+            var loc = GL.GetUniformLocation(ShaderProgram, variable.Name);
             GL.Uniform1(loc, 0);
 
             GL.ActiveTexture(TextureUnit.Texture0);
@@ -212,6 +237,14 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         public override void Apply()
         {
             GL.UseProgram(ShaderProgram);
+
+            // bind uniform block buffer is needed
+            if (_bufferLocation >= 0)
+            {
+                GL.UniformBlockBinding(ShaderProgram, _bufferLocation, 0);
+                GL.BindBufferBase(BufferRangeTarget.UniformBuffer, 0, _buffer);
+            }
+
             OpenGLRenderer.CheckError();
         }
 
@@ -244,6 +277,10 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
 
             if (FragmentShader >= 0)
                 GL.DeleteShader(FragmentShader);
+
+            if(_buffer >= 0)
+                GL.DeleteBuffer(_buffer);
+
             OpenGLRenderer.CheckError();
         }
 

@@ -381,7 +381,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             var error = GL.GetError();
 
             if (error != ErrorCode.NoError)
-                throw new ReCraftedException("OpenGL Error");
+                throw new ReCraftedException("OpenGL Error, errorcode: " + error);
         }
 
         public static GraphicsContext Context { get; private set; }

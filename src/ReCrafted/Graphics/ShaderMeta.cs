@@ -8,6 +8,16 @@ using ReCrafted.Utilities;
 namespace ReCrafted.Graphics
 {
     /// <summary>
+    /// Shader variable type.
+    /// </summary>
+    public enum VariableType
+    {
+        Texture2D,
+        Texture3D,
+        Sampler
+    }
+
+    /// <summary>
     /// ShaderMeta class
     /// </summary>
     public struct ShaderMeta
@@ -70,6 +80,15 @@ namespace ReCrafted.Graphics
         }
 
         /// <summary>
+        /// Variable structure
+        /// </summary>
+        public struct Variable
+        {
+            public string Name;
+            public VariableType Type;
+        }
+
+        /// <summary>
         /// The shader name.
         /// </summary>
         public string ShaderName;
@@ -88,7 +107,12 @@ namespace ReCrafted.Graphics
         /// Passes.
         /// </summary>
         public Pass[] Passes;
-        
+
+        /// <summary>
+        /// Variables.
+        /// </summary>
+        public Variable[] Variables;
+
         /// <summary>
         /// Loads shader meta from json file.
         /// </summary>

@@ -7,10 +7,12 @@
 in vec3 xsc_vary_TEXCOORD;
 out vec4 SV_Target0;
 
-uniform mat4 WVP;
-uniform vec4 ColorUpper;
-uniform vec4 ColorMiddle;
-uniform vec4 ColorLower;
+layout(std140) uniform Data {
+	mat4 WVP;
+	vec4 ColorUpper;
+	vec4 ColorMiddle;
+	vec4 ColorLower;
+};
 
 void main()
 {
@@ -20,11 +22,11 @@ void main()
     float interpolation = clamp(dist, 0.0f, 1.0f);
     if (height < -0.15f)
     {
-        color = mix(ColorMiddle, ColorLower, interpolation);
+        color = mix(vec4(0, 1, 0, 1), vec4(1, 1, 0, 1), interpolation);
     }
     else
     {
-        color = mix(ColorMiddle, ColorUpper, interpolation);
+        color = mix(vec4(0, 1, 0, 1), vec4(0, 1, 1, 1), interpolation);
     }
 	SV_Target0 = vec4(color.rgb, 1.0f);
 }
