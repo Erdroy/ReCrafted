@@ -307,6 +307,40 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// <param name="mesh">The mesh.</param>
         public override void Draw(Mesh mesh)
         {
+            var openglMesh = (OpenGLMesh)mesh;
+            
+            var beginMode = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
+            switch (mesh.PrimitiveType)
+            {
+                case PrimitiveType.Unknown:
+                    throw new ReCraftedException("Cannot update the PrimitiveType because it is 'Unknown'.");
+
+                case PrimitiveType.PointList:
+                    beginMode = OpenTK.Graphics.OpenGL.PrimitiveType.Points;
+                    break;
+                case PrimitiveType.LineList:
+                    beginMode = OpenTK.Graphics.OpenGL.PrimitiveType.Lines;
+                    break;
+                case PrimitiveType.TriangleList:
+                    beginMode = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
+                    break;
+                case PrimitiveType.TriangleStrip:
+                    beginMode = OpenTK.Graphics.OpenGL.PrimitiveType.TriangleStrip;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            GL.BindVertexArray(openglMesh.VertexArrayObject);
+            if (mesh.HasIndices)
+            {
+                GL.BindBuffer(BufferTarget.ElementArrayBuffer, openglMesh.ElementBufferObject);
+                GL.DrawElements(beginMode, mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
+            }
+            else
+                GL.DrawArrays(beginMode, 0, mesh.Vertices.Length);
+
+            GL.BindVertexArray(0);
         }
 
         /// <summary>

@@ -80,16 +80,17 @@ namespace ReCrafted.Graphics
             _rtOutput.Clear(Color.Black);
 
             // render skybox into final RT
+            Renderer.Instance.SetFinalRenderTarget(true);
             _skyboxShader.Apply();
             _skyboxShader.SetValue("WVP", Matrix.Translation(Camera.Current.Position) * Camera.Current.ViewProjectionMatrix);
-            /*_skyboxShader.SetValue("ColorUpper", new Vector4(0.0f, 0.3f, 0.4f, 1.0f));
+            _skyboxShader.SetValue("ColorUpper", new Vector4(0.0f, 0.3f, 0.4f, 1.0f));
             _skyboxShader.SetValue("ColorMiddle", new Vector4(0.0f, 0.6f, 0.8f, 1.0f));
-            _skyboxShader.SetValue("ColorLower", new Vector4(0.0f, 0.1f, 0.1f, 1.0f));*/
+            _skyboxShader.SetValue("ColorLower", new Vector4(0.0f, 0.1f, 0.1f, 1.0f));
             _skyboxShader.ApplyChanges();
-            //_skyboxShader.Draw(_skyboxSphere);
+            _skyboxShader.Draw(_skyboxSphere);
 
-            Renderer.Instance.SetFinalRenderTarget(false);
-            Renderer.Instance.Blit(_rtAlbedo);
+            //Renderer.Instance.SetFinalRenderTarget(false);
+            //Renderer.Instance.Blit(_rtAlbedo);
 
             // clear depth
             /* Renderer.Instance.ClearDepth();

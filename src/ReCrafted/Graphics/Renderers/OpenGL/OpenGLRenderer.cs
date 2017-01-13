@@ -41,14 +41,18 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
 
             GL.Viewport(0, 0, Display.ClientWidth, Display.ClientHeight);
 
-            // enable depth
+            // enable
             GL.Enable(EnableCap.CullFace);
-            GL.CullFace(CullFaceMode.Back);
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.DepthClamp);
+            CheckError();
+            
+            // setup depth
+            GL.CullFace(CullFaceMode.Back);
             GL.DepthFunc(DepthFunction.Lequal);
             GL.DepthMask(true);
-            
+
+            CheckError();
             // load blit shader
             _blitShader = Shader.FromFile("internal/Blit", false);
             _blitVao = GL.GenVertexArray();
