@@ -101,6 +101,7 @@ namespace ReCrafted.Graphics
 
             // set gbuffer render targets
             Renderer.Instance.SetRenderTargets(_rtAlbedo, _rtNormals, _rtAmbientOcculusion);
+            Renderer.Instance.SetDepthTestState(true);
 
             // do render jobs
             foreach (var job in _renderJobs)
@@ -108,43 +109,47 @@ namespace ReCrafted.Graphics
                 job.JobMethod(this);
             }
 
-            // render shadows
-            //_shadowRenderer.LightDir = _ligthDirection;
-            //_shadowRenderer.RenderShadowMap();
 
-            // do final pass
-            //RenderFinal();
-
+#if OPENGL
             Renderer.Instance.SetFinalRenderTarget(false);
             Renderer.Instance.Blit(_rtAlbedo);
+#endif
+
+#if D3D11
+            // render shadows
+            _shadowRenderer.LightDir = _ligthDirection;
+            _shadowRenderer.RenderShadowMap();
+
+            // do final pass
+            RenderFinal();
 
             // do post process
+            var input = _rtFinal;
+            var output = _rtOutput;
 
-            /* var input = _rtFinal;
-             var output = _rtOutput;
+            foreach (var job in _postprocessJobs)
+            {
+                Renderer.Instance.SetRenderTargets(output);
+                Renderer.Instance.SetDepthTestState(false);
 
-             foreach (var job in _postprocessJobs)
-             {
-                 Renderer.Instance.SetRenderTargets(output);
-                 Renderer.Instance.SetDepthTestState(false);
+                job.JobMethod(this, input, output);
 
-                 job.JobMethod(this, input, output);
+                var tmp = output;
+                output = input;
+                input = tmp;
+            }
 
-                 var tmp = output;
-                 output = input;
-                 input = tmp;
-             }
+            // present to the swapchain's FinalRT
+            Renderer.Instance.SetFinalRenderTarget(false);
+            Renderer.Instance.Blit(input);
 
-             // present to the swapchain's FinalRT
-             Renderer.Instance.SetFinalRenderTarget(false);
-             Renderer.Instance.Blit(input);
-
-             // do render jobs
-             Renderer.Instance.SetFinalRenderTarget(true);
-             foreach (var job in _postRenderJobs)
-             {
-                 job.JobMethod(this);
-             }*/
+            // do render jobs
+            Renderer.Instance.SetFinalRenderTarget(true);
+            foreach (var job in _postRenderJobs)
+            {
+                job.JobMethod(this);
+            }
+#endif
         }
 
         /// <summary>

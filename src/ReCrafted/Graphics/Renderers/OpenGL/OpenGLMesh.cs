@@ -35,14 +35,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
 
             GL.BindVertexArray(VertexArrayObject);
             GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
-
-            /* 
-             * GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(triangles.Length * 96), data, BufferUsageHint.StaticDraw);
-             * GL.VertexAttribPointer(0, 3,  VertexAttribPointerType.Float, 0, 0);
-             * GL.VertexAttribPointer(1, 3,  VertexAttribPointerType.Float, 0, triangles.Length * 9*4);
-             * GL.VertexAttribPointer(2, 3,  VertexAttribPointerType.Float, 0, triangles.Length * 18*4);
-             */
-
+            
             if (HasUVs && HasColors && HasNormals)
             {
                 if (UVs.Length != Vertices.Length)
@@ -73,12 +66,16 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
 
                 GL.EnableVertexAttribArray(0);
                 GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Vector3.SizeInBytes, 0); // vert
+
                 GL.EnableVertexAttribArray(1);
                 GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Vector2.SizeInBytes, Vector3.SizeInBytes); // uv
+
                 GL.EnableVertexAttribArray(2);
                 GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, Vector3.SizeInBytes, Vector3.SizeInBytes + Vector2.SizeInBytes); // norm
+
                 GL.EnableVertexAttribArray(3);
                 GL.VertexAttribPointer(3, 4, VertexAttribPointerType.Float, false, Vector4.SizeInBytes, Vector3.SizeInBytes + Vector2.SizeInBytes + Vector3.SizeInBytes); // col
+
 
             }
             else if (HasUVs && HasNormals)

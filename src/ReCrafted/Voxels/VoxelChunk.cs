@@ -79,6 +79,10 @@ namespace ReCrafted.Voxels
             wvp.Transpose();
             
             VoxelAssets.DefaultShader.Apply();
+            VoxelAssets.DefaultShader.SetValue("WVP", wvp);
+            VoxelAssets.DefaultShader.ApplyChanges();
+            VoxelAssets.DefaultSampler.Apply(0);
+
             foreach (var mesh in Meshes)
             {
                 if(mesh.Value.Vertices.Length == 0)
@@ -86,17 +90,12 @@ namespace ReCrafted.Voxels
 
                 var block = VoxelAssets.Blocks[mesh.Key];
 
-                VoxelAssets.DefaultShader.SetValue("WVP", wvp);
-
                 // TODO: Use of custom shader
-
                 VoxelAssets.DefaultShader.SetTexture(ShaderType.PS, 0, block.Texture);
-                VoxelAssets.DefaultSampler.Apply(0);
 
-                VoxelAssets.DefaultShader.ApplyChanges();
                 VoxelAssets.DefaultShader.Draw(mesh.Value);
-                VoxelAssets.DefaultShader.UnsetTexture(ShaderType.PS, 0);
             }
+            VoxelAssets.DefaultShader.UnsetTexture(ShaderType.PS, 0);
         }
         
         /// <summary>
@@ -315,16 +314,18 @@ namespace ReCrafted.Voxels
                 var mesh = Mesh.Create();
 
                 var verts = vertices.Value.ToArray();
-                var indices = blocksIndices[vertices.Key].ToArray();
                 var uvs = blocksUvs[vertices.Key].ToArray();
                 var normals = blocksNormals[vertices.Key].ToArray();
                 var colors = blocksColors[vertices.Key].ToArray();
 
+                var indices = blocksIndices[vertices.Key].ToArray();
+
                 mesh.SetVertices(verts);
-                mesh.SetIndices(indices);
                 mesh.SetUVs(uvs);
                 mesh.SetNormals(normals);
                 mesh.SetColors(colors);
+
+                mesh.SetIndices(indices);
 
                 if (verts.Length > 0)
                 {
@@ -367,130 +368,6 @@ namespace ReCrafted.Voxels
             
             return _voxels[x, y, z];
         }
-        
-        // private
-        private bool BlockExists(int x, int y, int z)
-        {
-            if (y >= VoxelWorld.ChunkHeight || y < 0)
-                return false;
-
-            if (x < 0 || z < 0 || x >= VoxelWorld.ChunkSize || z >= VoxelWorld.ChunkSize)
-            {
-                if (y < 0)
-                {
-                    return false;
-                }
-
-                if (y >= VoxelWorld.ChunkHeight)
-                {
-                    return false;
-                }
-                
-                // -- corners --
-                if (x < 0 && z >= VoxelWorld.ChunkSize)
-                {
-                    // x--
-                    // |c|
-                    // ---
-                    var chunk = NeighChunks[0];
-
-                    if (chunk == null)
-                        return false;
-
-                    return chunk.GetBlock(x + VoxelWorld.ChunkSize, y, z - VoxelWorld.ChunkSize) != 0;
-                }
-                if (z < 0 && x >= VoxelWorld.ChunkSize)
-                {
-                    // ---
-                    // |c|
-                    // --x
-                    var chunk = NeighChunks[4];
-
-                    if (chunk == null)
-                        return false;
-
-                    return chunk.GetBlock(x - VoxelWorld.ChunkSize, y, z + VoxelWorld.ChunkSize) != 0;
-                }
-                if (z >= VoxelWorld.ChunkSize && x >= VoxelWorld.ChunkSize)
-                {
-                    // --x
-                    // |c|
-                    // ---
-                    var chunk = NeighChunks[2];
-
-                    if (chunk == null)
-                        return false;
-
-                    return chunk.GetBlock(x - VoxelWorld.ChunkSize, y, z - VoxelWorld.ChunkSize) != 0;
-                }
-                if (x < 0 && z < 0)
-                {
-                    // ---
-                    // |c|
-                    // x--
-                    var chunk = NeighChunks[6];
-
-                    if (chunk == null)
-                        return false;
-
-                    return chunk.GetBlock(x + VoxelWorld.ChunkSize, y, z + VoxelWorld.ChunkSize) != 0;
-                }
-
-                // -- sides --
-                if (z >= VoxelWorld.ChunkSize)
-                {
-                    // -x-
-                    // |c|
-                    // ---
-                    var chunk = NeighChunks[1];
-
-                    if (chunk == null)
-                        return false;
-
-                    return chunk.GetBlock(x, y, z - VoxelWorld.ChunkSize) != 0;
-                }
-                if (x >= VoxelWorld.ChunkSize)
-                {
-                    // ---
-                    // |cx
-                    // ---
-                    var chunk = NeighChunks[3];
-
-                    if (chunk == null)
-                        return false;
-
-                    return chunk.GetBlock(x - VoxelWorld.ChunkSize, y, z) != 0;
-                }
-                if (z < 0)
-                {
-                    // ---
-                    // |c|
-                    // -x-
-                    var chunk = NeighChunks[5];
-
-                    if (chunk == null)
-                        return false;
-
-                    return chunk.GetBlock(x, y, z + VoxelWorld.ChunkSize) != 0;
-                } 
-                if (x < 0)
-                {
-                    // ---
-                    // xc|
-                    // ---
-                    var chunk = NeighChunks[7];
-
-                    if (chunk == null)
-                        return false;
-
-                    return chunk.GetBlock(x + VoxelWorld.ChunkSize, y, z) != 0;
-                }
-                
-                return false; // TODO: Check in the neigh chunk
-            }
-
-            return _voxels[x, y, z] != 0;
-        }
 
         /// <summary>
         /// Gets the neigh chunks, not including corners.
@@ -502,7 +379,7 @@ namespace ReCrafted.Voxels
             // x--
             // |c|
             // ---
-            if (localCoord.X == 0 && localCoord.Z == VoxelWorld.ChunkSize-1)
+            if (localCoord.X == 0 && localCoord.Z == VoxelWorld.ChunkSize - 1)
             {
                 return new[]
                 {
@@ -572,7 +449,7 @@ namespace ReCrafted.Voxels
             // ---
             // |c|
             // -x-
-            if (localCoord.X != VoxelWorld.ChunkSize - 1 && localCoord.Z ==  0)
+            if (localCoord.X != VoxelWorld.ChunkSize - 1 && localCoord.Z == 0)
             {
                 return new[]
                 {
@@ -698,6 +575,130 @@ namespace ReCrafted.Voxels
             }
 
             return null;
+        }
+
+        // private
+        private bool BlockExists(int x, int y, int z)
+        {
+            if (y >= VoxelWorld.ChunkHeight || y < 0)
+                return false;
+
+            if (x < 0 || z < 0 || x >= VoxelWorld.ChunkSize || z >= VoxelWorld.ChunkSize)
+            {
+                if (y < 0)
+                {
+                    return false;
+                }
+
+                if (y >= VoxelWorld.ChunkHeight)
+                {
+                    return false;
+                }
+                
+                // -- corners --
+                if (x < 0 && z >= VoxelWorld.ChunkSize)
+                {
+                    // x--
+                    // |c|
+                    // ---
+                    var chunk = NeighChunks[0];
+
+                    if (chunk == null)
+                        return false;
+
+                    return chunk.GetBlock(x + VoxelWorld.ChunkSize, y, z - VoxelWorld.ChunkSize) != 0;
+                }
+                if (z < 0 && x >= VoxelWorld.ChunkSize)
+                {
+                    // ---
+                    // |c|
+                    // --x
+                    var chunk = NeighChunks[4];
+
+                    if (chunk == null)
+                        return false;
+
+                    return chunk.GetBlock(x - VoxelWorld.ChunkSize, y, z + VoxelWorld.ChunkSize) != 0;
+                }
+                if (z >= VoxelWorld.ChunkSize && x >= VoxelWorld.ChunkSize)
+                {
+                    // --x
+                    // |c|
+                    // ---
+                    var chunk = NeighChunks[2];
+
+                    if (chunk == null)
+                        return false;
+
+                    return chunk.GetBlock(x - VoxelWorld.ChunkSize, y, z - VoxelWorld.ChunkSize) != 0;
+                }
+                if (x < 0 && z < 0)
+                {
+                    // ---
+                    // |c|
+                    // x--
+                    var chunk = NeighChunks[6];
+
+                    if (chunk == null)
+                        return false;
+
+                    return chunk.GetBlock(x + VoxelWorld.ChunkSize, y, z + VoxelWorld.ChunkSize) != 0;
+                }
+
+                // -- sides --
+                if (z >= VoxelWorld.ChunkSize)
+                {
+                    // -x-
+                    // |c|
+                    // ---
+                    var chunk = NeighChunks[1];
+
+                    if (chunk == null)
+                        return false;
+
+                    return chunk.GetBlock(x, y, z - VoxelWorld.ChunkSize) != 0;
+                }
+                if (x >= VoxelWorld.ChunkSize)
+                {
+                    // ---
+                    // |cx
+                    // ---
+                    var chunk = NeighChunks[3];
+
+                    if (chunk == null)
+                        return false;
+
+                    return chunk.GetBlock(x - VoxelWorld.ChunkSize, y, z) != 0;
+                }
+                if (z < 0)
+                {
+                    // ---
+                    // |c|
+                    // -x-
+                    var chunk = NeighChunks[5];
+
+                    if (chunk == null)
+                        return false;
+
+                    return chunk.GetBlock(x, y, z + VoxelWorld.ChunkSize) != 0;
+                } 
+                if (x < 0)
+                {
+                    // ---
+                    // xc|
+                    // ---
+                    var chunk = NeighChunks[7];
+
+                    if (chunk == null)
+                        return false;
+
+                    return chunk.GetBlock(x + VoxelWorld.ChunkSize, y, z) != 0;
+                }
+                
+                return false; // TODO: Check in the neigh chunk
+            }
+
+            return _voxels[x, y, z] != 0;
         }
 
         // private

@@ -78,7 +78,11 @@ namespace ReCrafted.Core
             Input.Initialize();
 
             // create renderer
+#if D3D11
+            Renderer.CreateRenderer(RendererApi.D3D11, new DeferredRendering());
+#else
             Renderer.CreateRenderer(RendererApi.OpenGL, new DeferredRendering());
+#endif
             Renderer = Renderer.Instance;
             
             Time.StartupTime = DateTime.Now;

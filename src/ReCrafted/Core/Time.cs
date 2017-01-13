@@ -42,12 +42,12 @@ namespace ReCrafted.Core
         /// <summary>
         /// The frames per second count.
         /// </summary>
-        public static float FramesPerSecond { get; internal set; } // TODO
+        public static float FramesPerSecond { get; internal set; }
 
         /// <summary>
         /// The smooth frames per second count.
         /// </summary>
-        public static float SmoothFramesPerSecond { get; internal set; } // TODO
+        public static float SmoothFramesPerSecond { get; internal set; }
 
         /// <summary>
         /// Time since the startup time.
