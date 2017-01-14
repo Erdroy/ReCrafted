@@ -193,7 +193,7 @@ namespace ReCrafted.Voxels
                             var ao11 = VoxelMeshHelper.CalculateAmbient(mbl, tl, tbl);
                             var ao10 = VoxelMeshHelper.CalculateAmbient(mbl, bl, bbl);
 
-                            var flippedQuad = ao01 + ao10 < ao00 + ao11;
+                            var flippedQuad = ao01 + ao10 > ao00 + ao11;
 
                             VoxelMeshHelper.SetupFace(
                                  origin + new Vector3(0.0f, 0.0f, 0.0f),
@@ -213,7 +213,7 @@ namespace ReCrafted.Voxels
                             var ao11 = VoxelMeshHelper.CalculateAmbient(tr, mfr, tfr);
                             var ao10 = VoxelMeshHelper.CalculateAmbient(br, mfr, bfr);
 
-                            var flippedQuad = ao00 + ao11 < ao01 + ao10;
+                            var flippedQuad = ao00 + ao11 > ao01 + ao10;
 
                             VoxelMeshHelper.SetupFace(
                                 origin + new Vector3(VoxelWorld.BlockSize, 0.0f, 0.0f),
@@ -233,7 +233,7 @@ namespace ReCrafted.Voxels
                             var ao11 = VoxelMeshHelper.CalculateAmbient(bf, br, bfr);
                             var ao10 = VoxelMeshHelper.CalculateAmbient(bb, br, bbr);
 
-                            var flippedQuad = ao00 + ao11 < ao01 + ao10;
+                            var flippedQuad = ao00 + ao11 > ao01 + ao10;
 
                             VoxelMeshHelper.SetupFace(
                                origin + new Vector3(0.0f, 0.0f, 0.0f),
@@ -253,7 +253,7 @@ namespace ReCrafted.Voxels
                             var ao11 = VoxelMeshHelper.CalculateAmbient(tr, tf, tfr);
                             var ao10 = VoxelMeshHelper.CalculateAmbient(tb, tr, tbr);
 
-                            var flippedQuad = ao00 + ao11 < ao01 + ao10;
+                            var flippedQuad = ao00 + ao11 > ao01 + ao10;
                             
                             VoxelMeshHelper.SetupFace(
                                 origin + new Vector3(0.0f, VoxelWorld.BlockSize, 0.0f),
@@ -273,7 +273,7 @@ namespace ReCrafted.Voxels
                             var ao11 = VoxelMeshHelper.CalculateAmbient(mbr, tb, tbr);
                             var ao10 = VoxelMeshHelper.CalculateAmbient(mbr, bb, bbr);
 
-                            var flippedQuad = ao00 + ao11 < ao01 + ao10;
+                            var flippedQuad = ao00 + ao11 > ao01 + ao10;
 
                             VoxelMeshHelper.SetupFace(
                                 origin + new Vector3(0.0f, 0.0f, 0.0f),
@@ -293,7 +293,7 @@ namespace ReCrafted.Voxels
                             var ao11 = VoxelMeshHelper.CalculateAmbient(mfr, tf, tfr);
                             var ao10 = VoxelMeshHelper.CalculateAmbient(mfr, bf, bfr);
 
-                            var flippedQuad = ao00 + ao11 < ao01 + ao10;
+                            var flippedQuad = ao00 + ao11 > ao01 + ao10;
 
                             VoxelMeshHelper.SetupFace(
                                 origin + new Vector3(0.0f, 0.0f, VoxelWorld.BlockSize),

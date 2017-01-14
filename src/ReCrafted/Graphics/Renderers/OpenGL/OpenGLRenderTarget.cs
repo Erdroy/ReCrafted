@@ -39,14 +39,14 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// <param name="color">The color.</param>
         public override void Clear(Color color)
         {
-            var vec = color.ToVector4();
+            /*var vec = color.ToVector4();
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, Framebuffer);
             GL.DrawBuffer(DrawBufferMode.ColorAttachment0);
             GL.ClearColor(vec.X, vec.Y, vec.Z, vec.W);
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-            OpenGLRenderer.CheckError();
+            OpenGLRenderer.CheckError();*/
         }
 
         /// <summary>
@@ -54,8 +54,8 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// </summary>
         public override void Dispose()
         {
-            if (Framebuffer >= 0)
-                GL.DeleteFramebuffer(Framebuffer);
+            if (Renderbuffer >= 0)
+                GL.DeleteRenderbuffer(Renderbuffer);
 
             if (Texture >= 0)
                 GL.DeleteTexture(Texture);
@@ -67,17 +67,16 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         // private
         private void Internal_Create(int width, int height, bool uav)
         {
-            if (Framebuffer >= 0)
+            if (Renderbuffer >= 0)
             {
                 Dispose();
             }
 
-            Framebuffer = GL.GenFramebuffer();
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, Framebuffer);
-
             var format = PixelInternalFormat.Rgba;
-            var format1 = PixelFormat.Rgba;
-            var type = PixelType.UnsignedByte;
+            var pixelformat = PixelFormat.Rgba;
+            var pixeltype = PixelType.Float;
+
+            var bufferFormat = RenderbufferStorage.Rgb8ui;
 
             switch (_format)
             {
@@ -86,79 +85,72 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
                     break;
                 case TextureFormat.R16_Float:
                     format = PixelInternalFormat.R16f;
-                    format1 = PixelFormat.Red;
-                    type = PixelType.Float;
+                    bufferFormat = RenderbufferStorage.R16f;
+                    pixelformat = PixelFormat.Red;
+                    pixeltype = PixelType.Float;
                     break;
                 case TextureFormat.R32_Float:
                     format = PixelInternalFormat.R32f;
-                    format1 = PixelFormat.Red;
-                    type = PixelType.Float;
+                    bufferFormat = RenderbufferStorage.R32f;
+                    pixelformat = PixelFormat.Red;
+                    pixeltype = PixelType.Float;
                     break;
                 case TextureFormat.RG32_Float:
                     format = PixelInternalFormat.Rg32f;
-                    format1 = PixelFormat.Rg;
-                    type = PixelType.Float;
+                    bufferFormat = RenderbufferStorage.Rg32f;
+                    pixelformat = PixelFormat.Rg;
+                    pixeltype = PixelType.Float;
                     break;
                 case TextureFormat.RGB32_Float:
                     format = PixelInternalFormat.Rgb32f;
-                    format1 = PixelFormat.Rgb;
-                    type = PixelType.Float;
+                    bufferFormat = RenderbufferStorage.Rgb32f;
+                    pixelformat = PixelFormat.Rgb;
+                    pixeltype = PixelType.Float;
                     break;
                 case TextureFormat.RGBA32_Float:
                     format = PixelInternalFormat.Rgba32f;
-                    format1 = PixelFormat.Rgba;
-                    type = PixelType.Float;
+                    bufferFormat = RenderbufferStorage.Rgba32f;
+                    pixelformat = PixelFormat.Rgba;
+                    pixeltype = PixelType.Float;
                     break;
                 case TextureFormat.RGBA8_UNorm:
                     format = PixelInternalFormat.Rgba8;
-                    format1 = PixelFormat.Rgba;
-                    type = PixelType.UnsignedInt;
+                    bufferFormat = RenderbufferStorage.Rgba8ui;
+                    pixelformat = PixelFormat.Rgba;
+                    pixeltype = PixelType.UnsignedInt;
                     break;
             }
 
+            // generate resources
+            Renderbuffer = GL.GenRenderbuffer();
             Texture = GL.GenTexture();
+
+            // bind resources
+            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, Renderbuffer);
             GL.BindTexture(TextureTarget.Texture2D, Texture);
 
             if (format == PixelInternalFormat.DepthStencil)
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.DepthComponent, width, height, 0,
-                    PixelFormat.DepthComponent, PixelType.UnsignedInt, IntPtr.Zero);
+            {
+                // TODO: depth renderbuffer
+                GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.DepthComponent24, width, height);
+            }
             else
-                GL.TexImage2D(TextureTarget.Texture2D, 0, format, width, height, 0, format1, type, IntPtr.Zero);
-
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
-                (int)TextureMinFilter.Nearest);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter,
-                (int)TextureMinFilter.Nearest);
-
-            GL.FramebufferTexture(FramebufferTarget.Framebuffer,
-                format == PixelInternalFormat.DepthStencil
-                    ? FramebufferAttachment.DepthAttachment
-                    : FramebufferAttachment.ColorAttachment0, Texture, 0);
+            {
+                GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, bufferFormat, width, height);
+                GL.TexImage2D(TextureTarget.Texture2D, 0, format, width, height, 0, pixelformat, pixeltype, IntPtr.Zero);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            }
 
             // clear
+            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
             GL.BindTexture(TextureTarget.Texture2D, 0);
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-
-            OpenGLRenderer.CheckError();
-            /*
-             * https://www.opengl.org/discussion_boards/showthread.php/198528-OpenTK-Depth-Buffer-as-texture-problems
-             * http://stackoverflow.com/questions/24109208/opengl-framebuffer-depth-buffer-not-working
-             ////Create color attachment texture
-            GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, textureColorBuffer, 0);
-            GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment1, normalBuffer, 0);
-            GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, depthBuffer, 0);
-
-            DrawBuffersEnum[] bufs = new DrawBuffersEnum[2] { (DrawBuffersEnum)FramebufferAttachment.ColorAttachment0, (DrawBuffersEnum)FramebufferAttachment.ColorAttachment1 };
-            GL.DrawBuffers(bufs.Length, bufs);
-
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-             */
         }
 
         /// <summary>
         /// The framebuffer pointer
         /// </summary>
-        public int Framebuffer { get; private set; } = -1;
+        public int Renderbuffer { get; private set; } = -1;
 
         /// <summary>
         /// The framebuffer's texture pointer

@@ -22,11 +22,11 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// The OpenGLRenderer instance.
         /// </summary>
         public new static OpenGLRenderer Instance;
-
-        private readonly List<DrawBuffersEnum> _drawBuffers = new List<DrawBuffersEnum>();
+        
         private Shader _blitShader;
 
         private int _blitVao;
+        private int _framebuffer = -1;
 
         /// <summary>
         /// Initializes the renderer.
@@ -39,12 +39,15 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             Context.MakeCurrent(WindowInfo);
             Context.LoadAll();
 
+            DepthRenderTarget = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.Depth);
+
             GL.Viewport(0, 0, Display.ClientWidth, Display.ClientHeight);
 
             // enable
             GL.Enable(EnableCap.CullFace);
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.DepthClamp);
+            GL.Enable(EnableCap.StencilTest);
             CheckError();
             
             // setup depth
@@ -52,6 +55,10 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             GL.DepthFunc(DepthFunction.Lequal);
             GL.DepthMask(true);
             CheckError();
+
+            // setup framebuffer
+            _framebuffer = GL.GenFramebuffer();
+
             // load blit shader
             _blitShader = Shader.FromFile("internal/Blit", false);
             _blitVao = GL.GenVertexArray();
@@ -99,6 +106,8 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             Context.MakeCurrent(WindowInfo);
             SetViewportSize(width, height);
             
+            DepthRenderTarget.Resize(width, height);
+
             CheckError();
         }
 
@@ -137,83 +146,21 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// <param name="renderTargets">The RenderTargets.</param>
         public override void SetRenderTargets(params RenderTarget[] renderTargets)
         {
-            _drawBuffers.Clear();
-            switch (renderTargets.Length)
+            var index = 0;
+
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebuffer);
+
+            GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, 0);
+            foreach (var renderTarget in renderTargets)
             {
-                case 1:// TODO BIND FRAMEBUFFER <-------------------------------------------------------------
-                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer);
+                var openglrt = (OpenGLRenderTarget)renderTarget;
 
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer, 0);
+                GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0 + index, RenderbufferTarget.Renderbuffer, openglrt.Renderbuffer);
+                GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0 + index, TextureTarget.Texture2D, openglrt.Texture, 0);
 
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment0);
-                    break;
-                case 2:
-                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer);
-                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, ((OpenGLRenderTarget)renderTargets[1]).Framebuffer);
-
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment1, ((OpenGLRenderTarget)renderTargets[1]).Framebuffer, 0);
-
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment0);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment1);
-                    break;
-                case 3:
-                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer);
-                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, ((OpenGLRenderTarget)renderTargets[1]).Framebuffer);
-                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, ((OpenGLRenderTarget)renderTargets[2]).Framebuffer);
-
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment1, ((OpenGLRenderTarget)renderTargets[1]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment2, ((OpenGLRenderTarget)renderTargets[2]).Framebuffer, 0);
-
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment0);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment1);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment2);
-                    break;
-                case 4:
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment1, ((OpenGLRenderTarget)renderTargets[1]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment2, ((OpenGLRenderTarget)renderTargets[2]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment3, ((OpenGLRenderTarget)renderTargets[3]).Framebuffer, 0);
-
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment0);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment1);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment2);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment3);
-                    break;
-                case 5:
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment1, ((OpenGLRenderTarget)renderTargets[1]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment2, ((OpenGLRenderTarget)renderTargets[2]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment3, ((OpenGLRenderTarget)renderTargets[3]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment4, ((OpenGLRenderTarget)renderTargets[4]).Framebuffer, 0);
-
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment0);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment1);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment2);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment3);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment4);
-                    break;
-                case 6:
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment1, ((OpenGLRenderTarget)renderTargets[1]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment2, ((OpenGLRenderTarget)renderTargets[2]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment3, ((OpenGLRenderTarget)renderTargets[3]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment4, ((OpenGLRenderTarget)renderTargets[4]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment5, ((OpenGLRenderTarget)renderTargets[5]).Framebuffer, 0);
-
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment0);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment1);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment2);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment3);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment4);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment5);
-                    break;
-                default:
-                    throw new ReCraftedException("OpenGL renderer supports only max. 6 render targets.");
+                index++;
             }
             
-            GL.DrawBuffers(_drawBuffers.Count, _drawBuffers.ToArray());
             CheckError();
         }
 
@@ -224,74 +171,23 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// <param name="renderTargets">The RenderTargets.</param>
         public override void SetRenderTargetsDepth(RenderTarget depthRenderTarget, params RenderTarget[] renderTargets)
         {
-            _drawBuffers.Clear();
-            switch (renderTargets.Length)
+            var index = 0;
+            
+            var depthrt = ((OpenGLRenderTarget)depthRenderTarget);
+            GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, depthrt.Renderbuffer);
+
+            foreach (var renderTarget in renderTargets)
             {
-                case 1:
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer, 0);
+                var openglrt = (OpenGLRenderTarget) renderTarget;
 
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment0);
-                    break;
-                case 2:
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment1, ((OpenGLRenderTarget)renderTargets[1]).Framebuffer, 0);
+                GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0 + index,
+                    RenderbufferTarget.Renderbuffer, openglrt.Renderbuffer);
+                GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0 + index,
+                    TextureTarget.Texture2D, openglrt.Texture, 0);
 
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment0);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment1);
-                    break;
-                case 3:
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment1, ((OpenGLRenderTarget)renderTargets[1]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment2, ((OpenGLRenderTarget)renderTargets[2]).Framebuffer, 0);
-
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment0);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment1);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment2);
-                    break;
-                case 4:
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment1, ((OpenGLRenderTarget)renderTargets[1]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment2, ((OpenGLRenderTarget)renderTargets[2]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment3, ((OpenGLRenderTarget)renderTargets[3]).Framebuffer, 0);
-
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment0);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment1);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment2);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment3);
-                    break;
-                case 5:
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment1, ((OpenGLRenderTarget)renderTargets[1]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment2, ((OpenGLRenderTarget)renderTargets[2]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment3, ((OpenGLRenderTarget)renderTargets[3]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment4, ((OpenGLRenderTarget)renderTargets[4]).Framebuffer, 0);
-
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment0);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment1);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment2);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment3);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment4);
-                    break;
-                case 6:
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, ((OpenGLRenderTarget)renderTargets[0]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment1, ((OpenGLRenderTarget)renderTargets[1]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment2, ((OpenGLRenderTarget)renderTargets[2]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment3, ((OpenGLRenderTarget)renderTargets[3]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment4, ((OpenGLRenderTarget)renderTargets[4]).Framebuffer, 0);
-                    GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment5, ((OpenGLRenderTarget)renderTargets[5]).Framebuffer, 0);
-
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment0);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment1);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment2);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment3);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment4);
-                    _drawBuffers.Add(DrawBuffersEnum.ColorAttachment5);
-                    break;
-                default:
-                    throw new ReCraftedException("OpenGL renderer supports only max. 6 render targets.");
+                index++;
             }
-
-            GL.DrawBuffers(_drawBuffers.Count, _drawBuffers.ToArray());
+            
             CheckError();
         }
 
@@ -334,7 +230,6 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         public override void ClearDepth()
         {
             // just clear the depth
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
             GL.Clear(ClearBufferMask.DepthBufferBit);
             CheckError();
         }
@@ -388,6 +283,9 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         {
             Context?.Dispose();
             _blitShader?.Dispose();
+
+            if (_framebuffer >= 0)
+                GL.DeleteFramebuffer(_framebuffer);
         }
 
         /// <summary>
