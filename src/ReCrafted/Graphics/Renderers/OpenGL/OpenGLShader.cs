@@ -206,7 +206,10 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// <param name="texture">The texture.</param>
         public override void SetTexture(ShaderType type, int slot, Texture2D texture)
         {
-            GL.BindTexture(TextureTarget.Texture2D, 0);
+            var opengltex = (OpenGLTexture2D)texture;
+
+            GL.BindTexture(TextureTarget.Texture2D, opengltex.Texture);
+            GL.ActiveTexture(TextureUnit.Texture0 + slot);
         }
 
         /// <summary>

@@ -3,7 +3,7 @@
 using System;
 using System.Drawing;
 using ReCrafted.Graphics.Renderers.D3D11;
-using ReCrafted.Graphics.Renderers.OpenGLMesh;
+using ReCrafted.Graphics.Renderers.OpenGL;
 using ReCrafted.Utilities;
 
 namespace ReCrafted.Graphics

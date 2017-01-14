@@ -3,9 +3,8 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using OpenTK.Graphics.OpenGL;
-using ReCrafted.Graphics.Renderers.OpenGL;
 
-namespace ReCrafted.Graphics.Renderers.OpenGLMesh
+namespace ReCrafted.Graphics.Renderers.OpenGL
 {
     /// <summary>
     /// OpenGLTexture2D class.
