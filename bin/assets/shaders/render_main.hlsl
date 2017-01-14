@@ -12,8 +12,7 @@ cbuffer Data : register(b0)
 Texture2D<float4> Albedo : register(t0);
 Texture2D<float4> Normals : register(t1);
 Texture2D<float4> AmbientOcculusion : register(t2);
-Texture2D<float> Depth : register(t3);
-Texture2D<float> ShadowOcculusion : register(t4);
+Texture2D<float> ShadowOcculusion : register(t3);
 
 SamplerState PointSampler : register(s0);
 
@@ -35,7 +34,6 @@ float4 PSMain(PixelShader_Input input) : SV_Target
 	// sample all
 	float4 albedo = Albedo.Sample(PointSampler, input.uv);
 	float4 normal = Normals.Sample(PointSampler, input.uv) * 2.0f - 1.0f;
-	float depth = Depth.Sample(PointSampler, input.uv);
 	float shadow = ShadowOcculusion.Sample(PointSampler, input.uv);
 	float ambient = AmbientOcculusion.Sample(PointSampler, input.uv);
 

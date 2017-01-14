@@ -104,7 +104,6 @@
     <Compile Include="Core\Localization\LocaleStrings.cs" />
     <Compile Include="Core\Time.cs" />
     <Compile Include="Graphics\Renderers\D3D11\D3D11ShaderCompiler.cs" />
-    <Compile Include="Graphics\Renderers\OpenGL\OpenGLFormat.cs" />
     <Compile Include="Graphics\Renderers\OpenGL\OpenGLMesh.cs" />
     <Compile Include="Graphics\Renderers\OpenGL\OpenGLRenderer.cs" />
     <Compile Include="Graphics\Renderers\OpenGL\OpenGLRenderTarget.cs" />

@@ -62,10 +62,10 @@ namespace ReCrafted.Graphics
             switch (Renderer.RendererApi)
             {
                 case RendererApi.D3D11:
-                {
-                    var sampler = new D3D11Sampler();
-                    sampler.Init(type, anisoLevel);
-                    return sampler;
+                    {
+                        var sampler = new D3D11Sampler();
+                        sampler.Init(type, anisoLevel);
+                        return sampler;
                     }
                 case RendererApi.OpenGL:
                     {
@@ -79,5 +79,10 @@ namespace ReCrafted.Graphics
 
             throw new ReCraftedException("Invalid RendererApi!");
         }
+
+        /// <summary>
+        /// The type of the sampler.
+        /// </summary>
+        public Type SamplerType { get; protected set; }
     }
 }

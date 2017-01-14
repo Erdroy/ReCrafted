@@ -107,20 +107,20 @@ namespace ReCrafted.Graphics
                 job.JobMethod(this);
             }
             
-#if OPENGL
-            Renderer.Instance.FaceCulling(false, true);
-            Renderer.Instance.SetFinalRenderTarget(false);
-            Renderer.Instance.Blit(_rtAlbedo);
-#endif
-
-#if D3D11
             // render shadows
-            _shadowRenderer.LightDir = _ligthDirection;
-            _shadowRenderer.RenderShadowMap();
+            //_shadowRenderer.LightDir = _ligthDirection;
+            //_shadowRenderer.RenderShadowMap();
 
             // do final pass
             RenderFinal();
 
+#if OPENGL
+            // present to the swapchain's FinalRT
+            Renderer.Instance.FaceCulling(false, true);
+            Renderer.Instance.SetFinalRenderTarget(false);
+            Renderer.Instance.Blit(_rtFinal);
+#endif
+#if D3D11
             // do post process
             var input = _rtFinal;
             var output = _rtOutput;
@@ -232,7 +232,6 @@ namespace ReCrafted.Graphics
         private void RenderFinal()
         {
             Renderer.Instance.SetRenderTargets(_rtFinal);
-            Renderer.Instance.SetDepthTestState(false);
 
             _finalShader.Apply();
 
@@ -242,8 +241,7 @@ namespace ReCrafted.Graphics
             _finalShader.SetRenderTexture(ShaderType.PS, 0, _rtAlbedo);
             _finalShader.SetRenderTexture(ShaderType.PS, 1, _rtNormals);
             _finalShader.SetRenderTexture(ShaderType.PS, 2, _rtAmbientOcculusion);
-            _finalShader.SetRenderTexture(ShaderType.PS, 3, Renderer.Instance.DepthRenderTarget);
-            _finalShader.SetRenderTexture(ShaderType.PS, 4, _shadowRenderer.ShadowOcculusion);
+            _finalShader.SetRenderTexture(ShaderType.PS, 3, _shadowRenderer.ShadowOcculusion);
 
             _finalShader.SetSampler(0, _pointSampler);
 
@@ -255,7 +253,6 @@ namespace ReCrafted.Graphics
             _finalShader.UnsetRenderTexture(ShaderType.PS, 1);
             _finalShader.UnsetRenderTexture(ShaderType.PS, 2);
             _finalShader.UnsetRenderTexture(ShaderType.PS, 3);
-            _finalShader.UnsetRenderTexture(ShaderType.PS, 4);
         }
     }
 }

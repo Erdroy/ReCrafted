@@ -29,7 +29,8 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="genMips">Generate mipmaps for this texture?</param>
         /// <param name="maxMips">The maximal count of mipmaps.</param>
-        protected override void Load(Bitmap bitmap, bool genMips, int maxMips)
+        /// <param name="samplerType">The sampler type of the texture.</param>
+        protected override void Load(Bitmap bitmap, bool genMips, int maxMips, Sampler.Type samplerType)
         {
             var stride = bitmap.Width * 4;
             using (var buffer = new DataStream(bitmap.Height*stride, true, true))

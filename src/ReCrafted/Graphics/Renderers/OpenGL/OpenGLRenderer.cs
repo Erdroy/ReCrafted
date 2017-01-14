@@ -147,8 +147,9 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             var index = 0;
 
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, Framebuffer);
-
             GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, 0);
+
+            var drawbuffers = new DrawBuffersEnum[renderTargets.Length];
             foreach (var renderTarget in renderTargets)
             {
                 var openglrt = (OpenGLRenderTarget)renderTarget;
@@ -156,9 +157,12 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
                 GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0 + index, RenderbufferTarget.Renderbuffer, openglrt.Renderbuffer);
                 GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0 + index, TextureTarget.Texture2D, openglrt.Texture, 0);
 
+                drawbuffers[index] = DrawBuffersEnum.ColorAttachment0 + index;
+
                 index++;
             }
-            
+            GL.DrawBuffers(drawbuffers.Length, drawbuffers);
+
             CheckError();
         }
 
@@ -174,6 +178,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             var depthrt = ((OpenGLRenderTarget)depthRenderTarget);
             GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, depthrt.Renderbuffer);
 
+            var drawbuffers = new DrawBuffersEnum[renderTargets.Length];
             foreach (var renderTarget in renderTargets)
             {
                 var openglrt = (OpenGLRenderTarget) renderTarget;
@@ -183,8 +188,12 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
                 GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0 + index,
                     TextureTarget.Texture2D, openglrt.Texture, 0);
 
+                drawbuffers[index] = DrawBuffersEnum.ColorAttachment0 + index;
+
                 index++;
             }
+
+            GL.DrawBuffers(drawbuffers.Length, drawbuffers);
             
             CheckError();
         }

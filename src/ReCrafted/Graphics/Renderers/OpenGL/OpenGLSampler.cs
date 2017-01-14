@@ -15,6 +15,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// <param name="anisoLevel">The anisotropic level.</param>
         protected override void Init(Type type, int anisoLevel)
         {
+            SamplerType = type;
         }
 
         /// <summary>

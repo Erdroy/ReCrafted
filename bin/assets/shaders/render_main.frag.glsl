@@ -17,17 +17,17 @@ layout(std140) uniform Data
 uniform sampler2D Albedo;
 uniform sampler2D Normals;
 uniform sampler2D AmbientOcculusion;
-uniform sampler2D Depth;
 uniform sampler2D ShadowOcculusion;
 
 void main()
 {
-    vec4 albedo = texture(Albedo, xsc_vary_TEXCOORD);
-    vec4 normal = texture(Normals, xsc_vary_TEXCOORD) * 2.0f - 1.0f;
-	
-    float depth = texture(Depth, xsc_vary_TEXCOORD).r;
-    float shadow = texture(ShadowOcculusion, xsc_vary_TEXCOORD).r;
-    float ambient = texture(AmbientOcculusion, xsc_vary_TEXCOORD).r;
+	vec2 uv = xsc_vary_TEXCOORD;
+	uv.y = -uv.y;
+
+    vec4 albedo = texture(Albedo, uv);
+    vec4 normal = texture(Normals, uv) * 2.0f - 1.0f;
+    float shadow = texture(ShadowOcculusion, uv).r;
+    float ambient = texture(AmbientOcculusion, uv).r;
 	
     vec3 lightDir = normalize(LightDir.xyz);
     float nDotL = dot(normal.xyz, lightDir.xyz);
@@ -35,6 +35,6 @@ void main()
     ambient = 1.0f - ambient;
     vec3 lightColor = LightColor.xyz * LightColor.w;
     vec3 lighting = (lightColor * nDotL) * shadow + vec3(0.6f, 0.6f, 0.6f);
-    SV_Target0 = vec4(albedo.rgb * lighting * ambient, 1.0f);
+	SV_Target0 = vec4(albedo.rgb * lighting * ambient, 1.0f);
 }
 

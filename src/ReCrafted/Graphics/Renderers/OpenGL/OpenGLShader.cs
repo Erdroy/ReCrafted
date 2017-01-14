@@ -230,13 +230,13 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             {
                 var variable = Meta.Variables[slot];
 
-                var glRt = (OpenGLRenderTarget) texture;
+                var opengltex = (OpenGLRenderTarget) texture;
 
                 var loc = GL.GetUniformLocation(ShaderProgram, variable.Name);
-                GL.Uniform1(loc, 0);
+                GL.Uniform1(loc, slot);
 
-                GL.ActiveTexture(TextureUnit.Texture0);
-                GL.BindTexture(TextureTarget.Texture2D, glRt.Texture);
+                GL.ActiveTexture(TextureUnit.Texture0 + slot);
+                GL.BindTexture(TextureTarget.Texture2D, opengltex.Texture);
 
                 OpenGLRenderer.CheckError();
             }
@@ -266,6 +266,8 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// <param name="slot">The slot.</param>
         public override void UnsetRenderTexture(ShaderType type, int slot)
         {
+            //GL.ActiveTexture(TextureUnit.Texture0 + slot);
+            //GL.Disable(EnableCap.Texture2D);
         }
 
         /// <summary>

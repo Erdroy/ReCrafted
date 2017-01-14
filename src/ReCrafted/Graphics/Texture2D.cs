@@ -22,20 +22,22 @@ namespace ReCrafted.Graphics
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="genMips">Generate mipmaps for this texture?</param>
         /// <param name="maxMips">The maximal count of mipmaps.</param>
-        protected abstract void Load(Bitmap bitmap, bool genMips, int maxMips);
+        /// <param name="samplerType">The sampler type of the texture.</param>
+        protected abstract void Load(Bitmap bitmap, bool genMips, int maxMips, Sampler.Type samplerType);
         
         /// <summary>
         /// Dispose the texture.
         /// </summary>
         public abstract void Dispose();
-        
+
         /// <summary>
         /// Create new texture using given width and height.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
+        /// <param name="samplerType">The sampler type of the texture.</param>
         /// <returns>Created texture, null when failed(exception will be thrown).</returns>
-        public static Texture2D New(int width, int height)
+        public static Texture2D New(int width, int height, Sampler.Type samplerType)
         {
             throw new ReCraftedException("Not implemented!"); // TODO: Implement Texture2D::New
         }
@@ -44,23 +46,24 @@ namespace ReCrafted.Graphics
         /// Load 2d texture from file.
         /// </summary>
         /// <param name="file">The file path.</param>
+        /// <param name="samplerType">The sampler type of the texture. Used only by OpenGL renderer!</param>
         /// <param name="generateMips">Generate mipmaps for this texture?</param>
         /// <param name="maxMips">The maximal count of mipmaps.</param>
         /// <returns>The loaded texture, null when failed(exception will be thrown).</returns>
-        public static Texture2D FromFile(string file, bool generateMips = false, int maxMips = 8)
+        public static Texture2D FromFile(string file, Sampler.Type samplerType, bool generateMips = false, int maxMips = 8)
         {
             switch (Renderer.RendererApi)
             {
                 case RendererApi.D3D11:
-                {
-                    var texture = new D3D11Texture2D();
-                    texture.Load(new Bitmap(file), generateMips, maxMips);
-                    return texture;
+                    {
+                        var texture = new D3D11Texture2D();
+                        texture.Load(new Bitmap(file), generateMips, maxMips, samplerType);
+                        return texture;
                     }
                 case RendererApi.OpenGL:
                     {
                         var texture = new OpenGLTexture2D();
-                        texture.Load(new Bitmap(file), generateMips, maxMips);
+                        texture.Load(new Bitmap(file), generateMips, maxMips, samplerType);
                         return texture;
                     }
             }

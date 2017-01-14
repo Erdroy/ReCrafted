@@ -55,10 +55,6 @@
             "VariableType" : "Texture2D" 
         },
         {
-            "Name": "Depth",
-            "VariableType" : "Texture2D" 
-        },
-        {
             "Name": "ShadowOcculusion",
             "VariableType" : "Texture2D" 
         }

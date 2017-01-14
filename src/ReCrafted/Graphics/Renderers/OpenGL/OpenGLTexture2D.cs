@@ -18,7 +18,8 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="genMips">Generate mipmaps for this texture?</param>
         /// <param name="maxMips">The maximal count of mipmaps.</param>
-        protected override void Load(Bitmap bitmap, bool genMips, int maxMips)
+        /// <param name="samplerType">The sampler type of the texture.</param>
+        protected override void Load(Bitmap bitmap, bool genMips, int maxMips, Sampler.Type samplerType)
         {
             int texture;
             GL.GenTextures(1, out texture);
@@ -27,11 +28,60 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             var data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0,  OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
             bitmap.UnlockBits(data);
-            
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+
+            // POINT
+            if (samplerType == Sampler.Type.PointClamped 
+                || samplerType == Sampler.Type.PointMirror 
+                || samplerType == Sampler.Type.PointWrap)
+            {
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+            }
+
+            // LINEAR
+            if (samplerType == Sampler.Type.LinearClamped 
+                || samplerType == Sampler.Type.LinearMirror 
+                || samplerType == Sampler.Type.LinearWrap)
+            {
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+            }
+
+            // ANIZO
+            if (samplerType == Sampler.Type.AnisoClamped
+                || samplerType == Sampler.Type.AnisoMirror 
+                || samplerType == Sampler.Type.AnisoWrap)
+            {
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+            }
+
+            // CLAMPED
+            if (samplerType == Sampler.Type.PointClamped
+                || samplerType == Sampler.Type.LinearClamped
+                || samplerType == Sampler.Type.AnisoClamped)
+            {
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Clamp);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Clamp);
+            }
+
+            // MIRROR
+            if (samplerType == Sampler.Type.LinearMirror
+                || samplerType == Sampler.Type.AnisoMirror
+                || samplerType == Sampler.Type.PointMirror)
+            {
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.MirroredRepeat);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.MirroredRepeat);
+            }
+
+            // WRAP
+            if (samplerType == Sampler.Type.AnisoWrap
+                || samplerType == Sampler.Type.LinearWrap
+                || samplerType == Sampler.Type.PointWrap)
+            {
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+            }
 
             Texture = texture;
             GL.BindTexture(TextureTarget.Texture2D, 0);

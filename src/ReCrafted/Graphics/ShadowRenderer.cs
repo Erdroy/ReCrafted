@@ -32,7 +32,7 @@ namespace ReCrafted.Graphics
             _depth = RenderTarget.Create(ShadowMapSize, ShadowMapSize, RenderTarget.TextureFormat.Depth);
             _sampler = Sampler.Create(Sampler.Type.PointClamped);
             ShadowOcculusion = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.R32_Float);
-            _shadowShader = Shader.FromFile("lighting/Shadows");
+            _shadowShader = Shader.FromFile("lighting/shadows");
 
             _quad = Mesh.Create();
             _quad.SetVertices(new []
