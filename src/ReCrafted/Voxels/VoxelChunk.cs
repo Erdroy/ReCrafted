@@ -328,7 +328,6 @@ namespace ReCrafted.Voxels
                     mesh.SetColors(colors);
 
                     mesh.SetIndices(indices);
-                    mesh.PrimitiveType = PrimitiveType.TriangleList;
 
                     mesh.ApplyChanges();
 

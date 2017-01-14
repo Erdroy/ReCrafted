@@ -24,5 +24,5 @@ void main()
 
 	xsc_vary_TEXCOORD = uv;
     xsc_vary_NORMAL = (normalize(vec4(normal, 1.0f)) * 0.5f + 0.5f).xyz;
-    xsc_vary_COLOR = vec4(uv, 0, 0);
+    xsc_vary_COLOR = color;
 }

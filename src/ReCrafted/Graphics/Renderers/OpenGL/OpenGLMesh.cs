@@ -35,7 +35,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
 
             GL.BindVertexArray(VertexArrayObject);
             
-            if (HasUVs && HasColors && HasNormals)
+            if (HasUVs && HasNormals && HasColors)
             {
                 if (UVs.Length != Vertices.Length)
                     throw new ReCraftedException($"There is invalid amount of UVs! UV count {UVs.Length} Vertice count {Vertices.Length}, they must match!");
@@ -46,32 +46,44 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
                 if (Normals.Length != Vertices.Length)
                     throw new ReCraftedException($"There is invalid amount of Normals! Normals count {Normals.Length} Vertice count {Vertices.Length}, they must match!");
 
+                if (Colors.Length != Vertices.Length)
+                    throw new ReCraftedException($"There is invalid amount of Colors! Color count {Colors.Length} Vertice count {Vertices.Length}, they must match!");
+
+                var colors = new Vector4[Colors.Length];
+
+                var i = 0;
+                foreach (var color in Colors)
+                {
+                    colors[i] = color.ToVector4();
+                    i++;
+                }
+
                 _buffers = new int[4];
                 GL.GenBuffers(4, _buffers);
 
                 // VERTICE
-                GL.EnableVertexAttribArray(0);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, _buffers[0]);
+                GL.EnableVertexAttribArray(0);
                 GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Vertices.Length * Vector3.SizeInBytes), Vertices, BufferUsageHint.StaticDraw);
-                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Vector3.SizeInBytes, 0);
+                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 0, 0);
 
                 // UV
-                GL.EnableVertexAttribArray(1);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, _buffers[1]);
+                GL.EnableVertexAttribArray(1);
                 GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(UVs.Length * Vector2.SizeInBytes), UVs, BufferUsageHint.StaticDraw);
-                GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Vector2.SizeInBytes, 0);
+                GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 0, 0);
 
                 // NORMAL
-                GL.EnableVertexAttribArray(2);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, _buffers[2]);
+                GL.EnableVertexAttribArray(2);
                 GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Normals.Length * Vector3.SizeInBytes), Normals, BufferUsageHint.StaticDraw);
-                GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, Vector3.SizeInBytes, 0);
+                GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, 0, 0);
 
                 // COLOR
-                GL.EnableVertexAttribArray(3);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, _buffers[3]);
-                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Colors.Length * Vector4.SizeInBytes), Colors, BufferUsageHint.StaticDraw);
-                GL.VertexAttribPointer(3, 4, VertexAttribPointerType.Float, false, Vector4.SizeInBytes, 0);
+                GL.EnableVertexAttribArray(3);
+                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Colors.Length * Vector4.SizeInBytes), colors, BufferUsageHint.StaticDraw);
+                GL.VertexAttribPointer(3, 4, VertexAttribPointerType.Float, false, 0, 0);
 
 
             }
@@ -112,6 +124,15 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
                 if (Colors.Length != Vertices.Length)
                     throw new ReCraftedException($"There is invalid amount of Colors! Color count {Colors.Length} Vertice count {Vertices.Length}, they must match!");
 
+                var colors = new Vector4[Colors.Length];
+
+                var i = 0;
+                foreach (var color in Colors)
+                {
+                    colors[i] = color.ToVector4();
+                    i++;
+                }
+
                 _buffers = new int[3];
                 GL.GenBuffers(3, _buffers);
 
@@ -130,13 +151,22 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
                 // COLOR
                 GL.EnableVertexAttribArray(2);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, _buffers[2]);
-                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Colors.Length * Vector4.SizeInBytes), Colors, BufferUsageHint.StaticDraw);
+                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Colors.Length * Vector4.SizeInBytes), colors, BufferUsageHint.StaticDraw);
                 GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, Vector4.SizeInBytes, 0);
             }
             else if (HasColors)
             {
                 if (Colors.Length != Vertices.Length)
                     throw new ReCraftedException($"There is invalid amount of Colors! Colors count {Colors.Length} Vertice count {Vertices.Length}, they must match!");
+
+                var colors = new Vector4[Colors.Length];
+
+                var i = 0;
+                foreach (var color in Colors)
+                {
+                    colors[i] = color.ToVector4();
+                    i++;
+                }
 
                 _buffers = new int[2];
                 GL.GenBuffers(2, _buffers);
@@ -150,7 +180,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
                 // COLOR
                 GL.EnableVertexAttribArray(1);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, _buffers[1]);
-                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Colors.Length * Vector4.SizeInBytes), Colors, BufferUsageHint.StaticDraw);
+                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Colors.Length * Vector4.SizeInBytes), colors, BufferUsageHint.StaticDraw);
                 GL.VertexAttribPointer(1, 4, VertexAttribPointerType.Float, false, Vector4.SizeInBytes, 0);
             }
             else if (HasUVs)
@@ -268,14 +298,16 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// </summary>
         public override void Dispose()
         {
-            if(VertexArrayObject >= 0)
-                GL.DeleteVertexArray(VertexArrayObject);
-            
-            if(ElementBufferObject >= 0)
+            if (VertexArrayObject >= 0)
+            {
                 GL.DeleteBuffer(ElementBufferObject);
+                GL.DeleteVertexArray(VertexArrayObject);
 
-            VertexArrayObject = -1;
-            ElementBufferObject = -1;
+                foreach (var buffer in _buffers)
+                {
+                    GL.DeleteBuffer(buffer);
+                }
+            }
         }
 
         public int VertexArrayObject { get; private set; } = -1;
