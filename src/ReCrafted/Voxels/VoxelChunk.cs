@@ -127,7 +127,7 @@ namespace ReCrafted.Voxels
             var blocksIndices = new Dictionary<ushort, List<uint>>();
             var blocksUvs = new Dictionary<ushort, List<Vector2>>();
             var blocksNormals = new Dictionary<ushort, List<Vector3>>();
-            var blocksColors = new Dictionary<ushort, List<Color>>();
+            var blocksColors = new Dictionary<ushort, List<Vector4>>();
 
             for (var z = 0; z < VoxelWorld.ChunkSize; z++)
             {
@@ -146,7 +146,7 @@ namespace ReCrafted.Voxels
                             blocksIndices.Add(block, new List<uint>());
                             blocksUvs.Add(block, new List<Vector2>());
                             blocksNormals.Add(block, new List<Vector3>());
-                            blocksColors.Add(block, new List<Color>());
+                            blocksColors.Add(block, new List<Vector4>());
                         }
 
                         var vertices = blocksVertices[block];
@@ -199,10 +199,10 @@ namespace ReCrafted.Voxels
                                  origin + new Vector3(0.0f, 0.0f, 0.0f),
                                  Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, false, flippedQuad, vertices, uvs, indices, normals);
                             
-                            colors.Add(new Color(ao10 * ambientStr, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao11 * ambientStr, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao01 * ambientStr, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao00 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Vector4(ao10 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Vector4(ao11 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Vector4(ao01 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Vector4(ao00 * ambientStr, 0.0f, 0.0f, 0.0f));
                         }
 
                         // right face
@@ -219,10 +219,10 @@ namespace ReCrafted.Voxels
                                 origin + new Vector3(VoxelWorld.BlockSize, 0.0f, 0.0f),
                                 Vector3.Up * VoxelWorld.BlockSize, Vector3.ForwardLH * VoxelWorld.BlockSize, true, flippedQuad, vertices, uvs, indices, normals);
                             
-                            colors.Add(new Color(ao00 * ambientStr, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao01 * ambientStr, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao11 * ambientStr, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao10 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Vector4(ao00 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Vector4(ao01 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Vector4(ao11 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Vector4(ao10 * ambientStr, 0.0f, 0.0f, 0.0f));
                         }
 
                         // bottom face
@@ -239,10 +239,10 @@ namespace ReCrafted.Voxels
                                origin + new Vector3(0.0f, 0.0f, 0.0f),
                                Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, flippedQuad, vertices, uvs, indices, normals);
                             
-                            colors.Add(new Color(ao00 * ambientStr, 0.0f, 0.0f, 0.0f)); // ?
-                            colors.Add(new Color(ao01 * ambientStr, 0.0f, 0.0f, 0.0f)); // ?
-                            colors.Add(new Color(ao11 * ambientStr, 0.0f, 0.0f, 0.0f)); // ? 
-                            colors.Add(new Color(ao10 * ambientStr, 0.0f, 0.0f, 0.0f)); // ?
+                            colors.Add(new Vector4(ao00 * ambientStr, 0.0f, 0.0f, 0.0f)); // ?
+                            colors.Add(new Vector4(ao01 * ambientStr, 0.0f, 0.0f, 0.0f)); // ?
+                            colors.Add(new Vector4(ao11 * ambientStr, 0.0f, 0.0f, 0.0f)); // ? 
+                            colors.Add(new Vector4(ao10 * ambientStr, 0.0f, 0.0f, 0.0f)); // ?
                         }
 
                         // upper face
@@ -259,10 +259,10 @@ namespace ReCrafted.Voxels
                                 origin + new Vector3(0.0f, VoxelWorld.BlockSize, 0.0f),
                                 Vector3.ForwardLH * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, true, flippedQuad, vertices, uvs, indices, normals);
                             
-                            colors.Add(new Color(ao00 * ambientStr, 0.0f, 0.0f, 0.0f)); // bl
-                            colors.Add(new Color(ao01 * ambientStr, 0.0f, 0.0f, 0.0f)); // ul
-                            colors.Add(new Color(ao11 * ambientStr, 0.0f, 0.0f, 0.0f)); // ur
-                            colors.Add(new Color(ao10 * ambientStr, 0.0f, 0.0f, 0.0f)); // br
+                            colors.Add(new Vector4(ao00 * ambientStr, 0.0f, 0.0f, 0.0f)); // bl
+                            colors.Add(new Vector4(ao01 * ambientStr, 0.0f, 0.0f, 0.0f)); // ul
+                            colors.Add(new Vector4(ao11 * ambientStr, 0.0f, 0.0f, 0.0f)); // ur
+                            colors.Add(new Vector4(ao10 * ambientStr, 0.0f, 0.0f, 0.0f)); // br
                         }
 
                         // back face
@@ -279,10 +279,10 @@ namespace ReCrafted.Voxels
                                 origin + new Vector3(0.0f, 0.0f, 0.0f),
                                 Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, true, flippedQuad, vertices, uvs, indices, normals);
                             
-                            colors.Add(new Color(ao00 * ambientStr, 0.0f, 0.0f, 0.0f)); // ll
-                            colors.Add(new Color(ao01 * ambientStr, 0.0f, 0.0f, 0.0f)); // ul
-                            colors.Add(new Color(ao11 * ambientStr, 0.0f, 0.0f, 0.0f)); // ur
-                            colors.Add(new Color(ao10 * ambientStr, 0.0f, 0.0f, 0.0f)); // lr
+                            colors.Add(new Vector4(ao00 * ambientStr, 0.0f, 0.0f, 0.0f)); // ll
+                            colors.Add(new Vector4(ao01 * ambientStr, 0.0f, 0.0f, 0.0f)); // ul
+                            colors.Add(new Vector4(ao11 * ambientStr, 0.0f, 0.0f, 0.0f)); // ur
+                            colors.Add(new Vector4(ao10 * ambientStr, 0.0f, 0.0f, 0.0f)); // lr
                         }
 
                         // front face
@@ -299,10 +299,10 @@ namespace ReCrafted.Voxels
                                 origin + new Vector3(0.0f, 0.0f, VoxelWorld.BlockSize),
                                 Vector3.Up * VoxelWorld.BlockSize, Vector3.Right * VoxelWorld.BlockSize, false, flippedQuad, vertices, uvs, indices, normals);
                             
-                            colors.Add(new Color(ao00 * ambientStr, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao01 * ambientStr, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao11 * ambientStr, 0.0f, 0.0f, 0.0f));
-                            colors.Add(new Color(ao10 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Vector4(ao00 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Vector4(ao01 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Vector4(ao11 * ambientStr, 0.0f, 0.0f, 0.0f));
+                            colors.Add(new Vector4(ao10 * ambientStr, 0.0f, 0.0f, 0.0f));
                         }
                     }
                 }

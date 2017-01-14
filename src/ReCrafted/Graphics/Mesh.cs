@@ -24,7 +24,7 @@ namespace ReCrafted.Graphics
         /// Sets colors array.
         /// </summary>
         /// <param name="colors">The colors array.</param>
-        public abstract void SetColors(Color[] colors);
+        public abstract void SetColors(Vector4[] colors);
 
         /// <summary>
         /// Sets the vertices array.
@@ -151,7 +151,7 @@ namespace ReCrafted.Graphics
         /// <summary>
         /// The colors array.
         /// </summary>
-        public Color[] Colors { get; protected set; }
+        public Vector4[] Colors { get; protected set; }
 
         /// <summary>
         /// The vertices array.

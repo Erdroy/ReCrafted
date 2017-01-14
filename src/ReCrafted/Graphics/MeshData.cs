@@ -26,7 +26,7 @@ namespace ReCrafted.Graphics
         /// <summary>
         /// Colors
         /// </summary>
-        public Color[] Colors;
+        public Vector4[] Colors;
 
         /// <summary>
         /// Indices

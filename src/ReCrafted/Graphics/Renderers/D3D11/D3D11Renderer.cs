@@ -133,43 +133,45 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                 bounds.Maximum - Vector3.Up - Vector3.Right,
 
             });
+
+            var color = Color.OrangeRed.ToVector4();
             _boundingBox.SetColors(new[]
             {
-                Color.OrangeRed,
-                Color.OrangeRed,
+                color,
+                color,
 
-                Color.OrangeRed,
-                Color.OrangeRed,
+                color,
+                color,
 
-                Color.OrangeRed,
-                Color.OrangeRed,
+                color,
+                color,
 
-                Color.OrangeRed,
-                Color.OrangeRed,
+                color,
+                color,
 
-                Color.OrangeRed,
-                Color.OrangeRed,
+                color,
+                color,
 
-                Color.OrangeRed,
-                Color.OrangeRed,
+                color,
+                color,
 
-                Color.OrangeRed,
-                Color.OrangeRed,
+                color,
+                color,
 
-                Color.OrangeRed,
-                Color.OrangeRed,
+                color,
+                color,
 
-                Color.OrangeRed,
-                Color.OrangeRed,
+                color,
+                color,
 
-                Color.OrangeRed,
-                Color.OrangeRed,
+                color,
+                color,
 
-                Color.OrangeRed,
-                Color.OrangeRed,
+                color,
+                color,
 
-                Color.OrangeRed,
-                Color.OrangeRed,
+                color,
+                color,
             });
             _boundingBox.ApplyChanges();
             #endregion

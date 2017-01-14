@@ -48,7 +48,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                     {
                         Vertice = Vertices[i],
                         Uv = UVs[i],
-                        Color = Colors[i].ToVector4(),
+                        Color = Colors[i],
                         Normal = Normals[i]
                     };
                 }
@@ -96,7 +96,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                     {
                         Vertice = Vertices[i],
                         Uv = UVs[i],
-                        Color = Colors[i].ToVector4()
+                        Color = Colors[i]
                     };
                 }
                 
@@ -113,7 +113,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
                     vertexes[i] = new Vertex2Color
                     {
                         Vertice = Vertices[i],
-                        Color = Colors[i].ToVector4()
+                        Color = Colors[i]
                     };
                 }
 
@@ -167,7 +167,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
         /// Sets colors array.
         /// </summary>
         /// <param name="colors">The colors array.</param>
-        public override void SetColors(Color[] colors)
+        public override void SetColors(Vector4[] colors)
         {
             Colors = colors;
         }
