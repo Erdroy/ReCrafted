@@ -94,7 +94,6 @@ namespace ReCrafted.Graphics
             _skyboxShader.SetValue("ColorLower", new Vector4(0.0f, 0.1f, 0.1f, 1.0f));
             _skyboxShader.ApplyChanges();
             _skyboxShader.Draw(_skyboxSphere);
-            Renderer.Instance.FaceCulling(false, true);
 
             // clear depth
             Renderer.Instance.ClearDepth();
@@ -102,7 +101,7 @@ namespace ReCrafted.Graphics
             // set gbuffer render targets
             Renderer.Instance.SetRenderTargets(_rtAlbedo, _rtNormals, _rtAmbientOcculusion);
             Renderer.Instance.SetDepthTestState(true);
-
+            
             // do render jobs
             foreach (var job in _renderJobs)
             {
@@ -111,6 +110,7 @@ namespace ReCrafted.Graphics
 
 
 #if OPENGL
+            Renderer.Instance.FaceCulling(false, true);
             Renderer.Instance.SetFinalRenderTarget(false);
             Renderer.Instance.Blit(_rtAlbedo);
 #endif

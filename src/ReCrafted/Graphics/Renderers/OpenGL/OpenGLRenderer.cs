@@ -51,7 +51,6 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             GL.CullFace(CullFaceMode.Back);
             GL.DepthFunc(DepthFunction.Lequal);
             GL.DepthMask(true);
-
             CheckError();
             // load blit shader
             _blitShader = Shader.FromFile("internal/Blit", false);

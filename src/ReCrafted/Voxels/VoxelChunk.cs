@@ -76,8 +76,7 @@ namespace ReCrafted.Voxels
                 return;
             
             var wvp = Matrix.Translation(new Vector3(Position.X, Position.Y, Position.Z)) * Camera.Current.ViewProjectionMatrix;
-            wvp.Transpose();
-            
+
             VoxelAssets.DefaultShader.Apply();
             VoxelAssets.DefaultShader.SetValue("WVP", wvp);
             VoxelAssets.DefaultShader.ApplyChanges();
@@ -85,7 +84,7 @@ namespace ReCrafted.Voxels
 
             foreach (var mesh in Meshes)
             {
-                if(mesh.Value.Vertices.Length == 0)
+                if (mesh.Value.Vertices.Length == 0)
                     continue;
 
                 var block = VoxelAssets.Blocks[mesh.Key];
@@ -311,28 +310,31 @@ namespace ReCrafted.Voxels
 
             foreach (var vertices in blocksVertices)
             {
-                var mesh = Mesh.Create();
-
                 var verts = vertices.Value.ToArray();
-                var uvs = blocksUvs[vertices.Key].ToArray();
-                var normals = blocksNormals[vertices.Key].ToArray();
-                var colors = blocksColors[vertices.Key].ToArray();
-
-                var indices = blocksIndices[vertices.Key].ToArray();
-
-                mesh.SetVertices(verts);
-                mesh.SetUVs(uvs);
-                mesh.SetNormals(normals);
-                mesh.SetColors(colors);
-
-                mesh.SetIndices(indices);
 
                 if (verts.Length > 0)
                 {
+                    var mesh = Mesh.Create();
+
+                    var uvs = blocksUvs[vertices.Key].ToArray();
+                    var normals = blocksNormals[vertices.Key].ToArray();
+                    var colors = blocksColors[vertices.Key].ToArray();
+
+                    var indices = blocksIndices[vertices.Key].ToArray();
+
+                    mesh.SetVertices(verts);
+                    mesh.SetUVs(uvs);
+                    mesh.SetNormals(normals);
+                    mesh.SetColors(colors);
+
+                    mesh.SetIndices(indices);
+                    mesh.PrimitiveType = PrimitiveType.TriangleList;
+
                     mesh.ApplyChanges();
+
+                    Meshes.Add(vertices.Key, mesh);
                 }
 
-                Meshes.Add(vertices.Key, mesh);
             }
 
             IsVisible = true;

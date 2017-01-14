@@ -18,7 +18,7 @@ VertexShader_Output VSMain(in GBuffer_VSInput input)
 {
 	VertexShader_Output output = (VertexShader_Output)0;
 
-	output.position = mul(float4(input.position, 1.0f), WVP);
+	output.position = mul(WVP, float4(input.position, 1.0f));
 	output.normal = normalize(float4(input.normal, 1.0f)) * 0.5f + 0.5f;
 	output.uv = input.uv;
 	output.color = input.color;

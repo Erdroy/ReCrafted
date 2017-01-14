@@ -13,3 +13,5 @@ tools/SharpDX.dll
 tools/SharpDX.Mathematics.dll
 src/tools/ShaderConverter/obj/
 *.user
+src/tools/ShaderConverter/bin/
+src/tools/ReCrafted.VersionBuilder/bin/

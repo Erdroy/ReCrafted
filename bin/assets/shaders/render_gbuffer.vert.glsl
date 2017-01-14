@@ -16,16 +16,13 @@ out vec4 xsc_vary_COLOR;
 layout(std140) uniform Data
 {
     mat4 WVP;
-    mat4 invWVP;
 };
 
 void main()
 {
-    vec4 xsc_position;
-    xsc_position = (vec4(position, 1.0f) * WVP);
-    xsc_vary_NORMAL = (normalize(vec4(normal, 1.0f)) * 0.5f + 0.5f).xyz;
-    xsc_vary_TEXCOORD = uv;
-    xsc_vary_COLOR = color;
-    gl_Position = xsc_position;
-}
+	gl_Position = (WVP * vec4(position, 1.0f));
 
+	xsc_vary_TEXCOORD = uv;
+    xsc_vary_NORMAL = (normalize(vec4(normal, 1.0f)) * 0.5f + 0.5f).xyz;
+    xsc_vary_COLOR = vec4(uv, 0, 0);
+}

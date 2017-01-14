@@ -206,6 +206,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// <param name="texture">The texture.</param>
         public override void SetTexture(ShaderType type, int slot, Texture2D texture)
         {
+            GL.BindTexture(TextureTarget.Texture2D, 0);
         }
 
         /// <summary>
@@ -337,8 +338,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, openglMesh.VertexBufferObject);
+            
             GL.BindVertexArray(openglMesh.VertexArrayObject);
             
             if (mesh.HasIndices)

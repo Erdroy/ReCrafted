@@ -20,7 +20,7 @@ void main()
     vec3 Normal = xsc_vary_NORMAL;
     float Ambient = xsc_vary_COLOR.r;
 	
-    SV_Target0 = Albedo;
+    SV_Target0 = vec4(1, 1, 1, 1) * Ambient;
     SV_Target1 = Normal;
     SV_Target2 = Ambient;
 }
