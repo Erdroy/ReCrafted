@@ -1,7 +1,6 @@
 ﻿// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski
 
 using System;
-using System.Collections.Generic;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Platform;
@@ -26,7 +25,6 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         private Shader _blitShader;
 
         private int _blitVao;
-        private int _framebuffer = -1;
 
         /// <summary>
         /// Initializes the renderer.
@@ -57,7 +55,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             CheckError();
 
             // setup framebuffer
-            _framebuffer = GL.GenFramebuffer();
+            Framebuffer = GL.GenFramebuffer();
 
             // load blit shader
             _blitShader = Shader.FromFile("internal/Blit", false);
@@ -148,7 +146,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         {
             var index = 0;
 
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebuffer);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, Framebuffer);
 
             GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, 0);
             foreach (var renderTarget in renderTargets)
@@ -284,8 +282,8 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             Context?.Dispose();
             _blitShader?.Dispose();
 
-            if (_framebuffer >= 0)
-                GL.DeleteFramebuffer(_framebuffer);
+            if (Framebuffer >= 0)
+                GL.DeleteFramebuffer(Framebuffer);
         }
 
         /// <summary>
@@ -302,5 +300,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         public static GraphicsContext Context { get; private set; }
 
         public static IWindowInfo WindowInfo { get; private set; }
+
+        public int Framebuffer { get; private set; } = -1;
     }
 }
