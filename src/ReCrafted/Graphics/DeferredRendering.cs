@@ -94,7 +94,7 @@ namespace ReCrafted.Graphics
             _skyboxShader.SetValue("ColorLower", new Vector4(0.0f, 0.1f, 0.1f, 1.0f));
             _skyboxShader.ApplyChanges();
             _skyboxShader.Draw(_skyboxSphere);
-            
+
             // set gbuffer render targets
             Renderer.Instance.SetRenderTargetsDepth(Renderer.Instance.DepthRenderTarget, _rtAlbedo, _rtNormals, _rtAmbientOcculusion);
 
@@ -106,21 +106,21 @@ namespace ReCrafted.Graphics
             {
                 job.JobMethod(this);
             }
-            
-            // render shadows
-            //_shadowRenderer.LightDir = _ligthDirection;
-            //_shadowRenderer.RenderShadowMap();
 
+            // render shadows
+            _shadowRenderer.LightDir = _ligthDirection;
+            _shadowRenderer.RenderShadowMap();
+            
             // do final pass
             RenderFinal();
 
-#if OPENGL
             // present to the swapchain's FinalRT
             Renderer.Instance.FaceCulling(false, true);
             Renderer.Instance.SetFinalRenderTarget(false);
-            Renderer.Instance.Blit(_rtFinal);
-#endif
-#if D3D11
+
+            Renderer.Instance.Blit(Input.IsKey(KeyCode.Space) ? _shadowRenderer.ShadowOcculusion : _rtFinal);
+#if ddddD3D11
+
             // do post process
             var input = _rtFinal;
             var output = _rtOutput;
@@ -232,6 +232,7 @@ namespace ReCrafted.Graphics
         private void RenderFinal()
         {
             Renderer.Instance.SetRenderTargets(_rtFinal);
+            Renderer.Instance.SetDepthTestState(false);
 
             _finalShader.Apply();
 

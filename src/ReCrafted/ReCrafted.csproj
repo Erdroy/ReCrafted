@@ -197,11 +197,23 @@
     <None Include="..\..\bin\assets\shaders\internal\DepthOnly.json">
       <Link>assets\shaders\internal\DepthOnly.json</Link>
     </None>
-    <None Include="..\..\bin\assets\shaders\lighting\ShadowMap.json">
-      <Link>assets\shaders\lighting\ShadowMap.json</Link>
+    <None Include="..\..\bin\assets\shaders\lighting\shadowmap.frag.glsl">
+      <Link>assets\shaders\lighting\shadowmap.frag.glsl</Link>
     </None>
-    <None Include="..\..\bin\assets\shaders\lighting\Shadows.json">
-      <Link>assets\shaders\lighting\Shadows.json</Link>
+    <None Include="..\..\bin\assets\shaders\lighting\shadowmap.json">
+      <Link>assets\shaders\lighting\shadowmap.json</Link>
+    </None>
+    <None Include="..\..\bin\assets\shaders\lighting\shadowmap.vert.glsl">
+      <Link>assets\shaders\lighting\shadowmap.vert.glsl</Link>
+    </None>
+    <None Include="..\..\bin\assets\shaders\lighting\shadows.frag.glsl">
+      <Link>assets\shaders\lighting\shadows.frag.glsl</Link>
+    </None>
+    <None Include="..\..\bin\assets\shaders\lighting\shadows.json">
+      <Link>assets\shaders\lighting\shadows.json</Link>
+    </None>
+    <None Include="..\..\bin\assets\shaders\lighting\shadows.vert.glsl">
+      <Link>assets\shaders\lighting\shadows.vert.glsl</Link>
     </None>
     <None Include="..\..\bin\assets\shaders\postprocess\fxaa.json">
       <Link>assets\shaders\postprocess\fxaa.json</Link>
@@ -271,11 +283,11 @@
     <Content Include="..\..\bin\assets\shaders\internal\DepthOnly.hlsl">
       <Link>assets\shaders\internal\DepthOnly.hlsl</Link>
     </Content>
-    <Content Include="..\..\bin\assets\shaders\lighting\ShadowMap.hlsl">
-      <Link>assets\shaders\lighting\ShadowMap.hlsl</Link>
+    <Content Include="..\..\bin\assets\shaders\lighting\shadowmap.hlsl">
+      <Link>assets\shaders\lighting\shadowmap.hlsl</Link>
     </Content>
-    <Content Include="..\..\bin\assets\shaders\lighting\Shadows.hlsl">
-      <Link>assets\shaders\lighting\Shadows.hlsl</Link>
+    <Content Include="..\..\bin\assets\shaders\lighting\shadows.hlsl">
+      <Link>assets\shaders\lighting\shadows.hlsl</Link>
     </Content>
     <Content Include="..\..\bin\assets\shaders\postprocess\fxaa.hlsl">
       <Link>assets\shaders\postprocess\fxaa.hlsl</Link>

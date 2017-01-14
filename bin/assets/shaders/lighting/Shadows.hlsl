@@ -23,7 +23,7 @@ Texture2D Depth : register(t1);
 
 SamplerState Sampler : register(s0);
 
-static const float BIAS = 0.00056f;
+static const float BIAS = 0.00054f;
 
 float CalcShadowPCF(float fLightDepth, float2 vShadowTexCoord)
 {

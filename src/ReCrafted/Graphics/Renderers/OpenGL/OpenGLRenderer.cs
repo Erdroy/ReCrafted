@@ -52,6 +52,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             GL.CullFace(CullFaceMode.Back);
             GL.DepthFunc(DepthFunction.Lequal);
             GL.DepthMask(true);
+            
             CheckError();
 
             // setup framebuffer
@@ -176,7 +177,9 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             var index = 0;
             
             var depthrt = ((OpenGLRenderTarget)depthRenderTarget);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, Framebuffer);
             GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, depthrt.Renderbuffer);
+            GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2D, depthrt.Texture, 0);
 
             var drawbuffers = new DrawBuffersEnum[renderTargets.Length];
             foreach (var renderTarget in renderTargets)

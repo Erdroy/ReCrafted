@@ -56,5 +56,15 @@
                 }
             ]
         }
+    ],
+    "Variables": [
+        {
+            "Name": "ShadowOcculusion",
+            "VariableType": "Texture2D"
+        },
+        {
+            "Name": "ShadowOcculusion",
+            "VariableType": "Depth"
+        }
     ]
 }

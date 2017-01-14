@@ -55,7 +55,7 @@ namespace ReCrafted.Voxels
         {
             VoxelAssets.LoadAssets();
 
-            _shadowMap = Shader.FromFile("lighting/ShadowMap");
+            _shadowMap = Shader.FromFile("lighting/shadowmap");
 
             // create chunks
             for (var z = 0; z < 5; z++)

@@ -37,5 +37,24 @@ namespace ReCrafted.Utilities
         {
             return new OpenTK.Matrix3(mat.Column1.ToOpenTk(), mat.Column2.ToOpenTk(), mat.Column3.ToOpenTk());
         }
+
+
+
+
+        public static SharpDX.Vector4 ToSharpDx(this OpenTK.Vector4 vec)
+        {
+            return new SharpDX.Vector4(vec.X, vec.Y, vec.Z, vec.W);
+        }
+
+        public static SharpDX.Matrix ToSharpDx(this OpenTK.Matrix4 mat)
+        {
+            return new SharpDX.Matrix
+            {
+                Column1 = mat.Column0.ToSharpDx(),
+                Column2 = mat.Column1.ToSharpDx(),
+                Column3 = mat.Column2.ToSharpDx(),
+                Column4 = mat.Column3.ToSharpDx()
+            };
+        }
     }
 }

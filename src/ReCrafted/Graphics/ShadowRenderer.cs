@@ -1,6 +1,7 @@
 ﻿// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski
 
 using System;
+using ReCrafted.Utilities;
 using ReCrafted.Voxels;
 using SharpDX;
 using Vector2 = SharpDX.Vector2;
@@ -30,6 +31,7 @@ namespace ReCrafted.Graphics
         {
             ShadowMap = RenderTarget.Create(ShadowMapSize, ShadowMapSize, RenderTarget.TextureFormat.R32_Float);
             _depth = RenderTarget.Create(ShadowMapSize, ShadowMapSize, RenderTarget.TextureFormat.Depth);
+
             _sampler = Sampler.Create(Sampler.Type.PointClamped);
             ShadowOcculusion = RenderTarget.Create(Display.ClientWidth, Display.ClientHeight, RenderTarget.TextureFormat.R32_Float);
             _shadowShader = Shader.FromFile("lighting/shadows");
@@ -73,20 +75,25 @@ namespace ReCrafted.Graphics
             ShadowOcculusion.Clear(Color.Black);
             _depth.Clear(Color.Transparent);
 
-            Renderer.Instance.SetViewportSize(ShadowMapSize, ShadowMapSize);
             Renderer.Instance.SetRenderTargetsDepth(_depth, ShadowMap);
+            Renderer.Instance.SetDepthTestState(true);
+
+            Renderer.Instance.SetViewportSize(ShadowMapSize, ShadowMapSize);
 
             var lightPos = new Vector3(50, 50, 50);
             var view = Matrix.LookAtLH(lightPos, lightPos + LightDir, Vector3.Up);
             var proj = Matrix.OrthoLH(100, 100, -100, 100);
-
-            VoxelWorld.Instance.DrawShadowMap(view*proj);
             
-            Renderer.Instance.SetRenderTargets(ShadowOcculusion);
-            Renderer.Instance.SetDepthTestState(false);
+            var vp = view*proj;
+
+            VoxelWorld.Instance.DrawShadowMap(vp);
+            
             Renderer.Instance.SetViewportSize(Display.ClientWidth, Display.ClientHeight);
 
             // draw
+            Renderer.Instance.SetRenderTargets(ShadowOcculusion);
+            Renderer.Instance.SetDepthTestState(false);
+
             _shadowShader.Apply();
 
             _shadowShader.SetRenderTexture(ShaderType.PS, 0, ShadowMap);
@@ -95,13 +102,14 @@ namespace ReCrafted.Graphics
 
             _shadowShader.SetValue("g_matInvView", Matrix.Transpose(Matrix.Invert(Camera.Current.ViewMatrix)));
             _shadowShader.SetValue("g_matInvProj", Matrix.Transpose(Matrix.Invert(Camera.Current.ProjectionMatrix)));
-            _shadowShader.SetValue("g_matLightViewProj", Matrix.Transpose(view*proj));
+            _shadowShader.SetValue("g_matLightViewProj", Matrix.Transpose(vp));
             _shadowShader.SetValue("g_vShadowMapSize", new Vector2(ShadowMapSize, ShadowMapSize));
             _shadowShader.SetValue("g_vOcclusionTextureSize", new Vector2(Display.ClientWidth, Display.ClientHeight));
 
             _shadowShader.ApplyChanges();
-
+            
             _shadowShader.Draw(_quad);
+
             _shadowShader.UnsetRenderTexture(ShaderType.PS, 0);
             _shadowShader.UnsetRenderTexture(ShaderType.PS, 1);
 
