@@ -26,7 +26,7 @@ void main()
 
     vec4 albedo = texture(Albedo, uv);
     vec4 normal = texture(Normals, uv) * 2.0f - 1.0f;
-    float shadow = texture(ShadowOcculusion, uv).r;
+	float shadow = 0.75f;// texture(ShadowOcculusion, uv).r;
     float ambient = texture(AmbientOcculusion, uv).r;
 	
     vec3 lightDir = normalize(LightDir.xyz);

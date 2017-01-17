@@ -108,8 +108,11 @@ namespace ReCrafted.Graphics
             }
 
             // render shadows
-            _shadowRenderer.LightDir = _ligthDirection;
-            _shadowRenderer.RenderShadowMap();
+            if (Renderer.RendererApi == RendererApi.D3D11)
+            {
+                _shadowRenderer.LightDir = _ligthDirection;
+                _shadowRenderer.RenderShadowMap();
+            }
             
             // do final pass
             RenderFinal();
@@ -118,7 +121,7 @@ namespace ReCrafted.Graphics
             Renderer.Instance.FaceCulling(false, true);
             Renderer.Instance.SetFinalRenderTarget(false);
 
-            Renderer.Instance.Blit(Input.IsKey(KeyCode.Space) ? _shadowRenderer.ShadowOcculusion : _rtFinal);
+            Renderer.Instance.Blit(Input.IsKey(KeyCode.Space) ? _shadowRenderer.ShadowMap : _rtFinal);
 #if ddddD3D11
 
             // do post process

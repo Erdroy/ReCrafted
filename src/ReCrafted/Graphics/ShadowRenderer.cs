@@ -71,8 +71,8 @@ namespace ReCrafted.Graphics
         /// </summary>
         public void RenderShadowMap()
         {
-            ShadowMap.Clear(Color.Black);
-            ShadowOcculusion.Clear(Color.Black);
+            //ShadowMap.Clear(Color.Black);
+            //ShadowOcculusion.Clear(Color.Black);
             _depth.Clear(Color.Transparent);
 
             Renderer.Instance.SetRenderTargetsDepth(_depth, ShadowMap);

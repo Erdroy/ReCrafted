@@ -30,6 +30,26 @@ uniform sampler2D ShadowMap;
 uniform sampler2D Depth;
 
 const float BIAS = 0.00056f;
+
+float CalcShadowPCF(float fLightDepth, vec2 vShadowTexCoord)
+{
+	float fShadowTerm = 0.0f;
+
+	vec2 vShadowMapCoord = g_vShadowMapSize * vShadowTexCoord;
+         
+	vec2 vLerps = fract(vShadowMapCoord);
+
+	float fSamples[4];
+	fSamples[0] = (texture(ShadowMap, vShadowTexCoord).x + BIAS < fLightDepth) ? 0.0f : 1.0f;
+	fSamples[1] = (texture(ShadowMap, vShadowTexCoord + vec2(1.0 / g_vShadowMapSize.x, 0)).x + BIAS < fLightDepth) ? 0.0f : 1.0f;
+	fSamples[2] = (texture(ShadowMap, vShadowTexCoord + vec2(0, 1.0 / g_vShadowMapSize.y)).x + BIAS < fLightDepth) ? 0.0f : 1.0f;
+	fSamples[3] = (texture(ShadowMap, vShadowTexCoord + vec2(1.0 / g_vShadowMapSize.x, 1.0 / g_vShadowMapSize.y)).x + BIAS < fLightDepth) ? 0.0f : 1.0f;
+
+	fShadowTerm = mix(mix(fSamples[0], fSamples[1], vLerps.x), mix(fSamples[2], fSamples[3], vLerps.x), vLerps.y);
+
+	return fShadowTerm;
+}
+
 float CalcShadowSoftPCF(float fLightDepth, vec2 vShadowTexCoord, int iSqrtSamples)
 {
     float fShadowTerm = 0.0f;
@@ -82,6 +102,6 @@ void main()
     vec2 vShadowTexCoord = 0.5 * vPositionLightCS.xy / vPositionLightCS.w + vec2(0.5f, 0.5f);
     vShadowTexCoord.y = 1.0f - vShadowTexCoord.y;
     vShadowTexCoord += (0.5f / g_vShadowMapSize);
-	SV_Target0 = depth;//CalcShadowSoftPCF(fLightDepth, vShadowTexCoord, 3);
+	SV_Target0 = vPositionLightCS.x;//CalcShadowSoftPCF(fLightDepth, vShadowTexCoord, 3);
 }
 

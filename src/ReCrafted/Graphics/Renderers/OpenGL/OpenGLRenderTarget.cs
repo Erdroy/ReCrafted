@@ -39,19 +39,17 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
         /// <param name="color">The color.</param>
         public override void Clear(Color color)
         {
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, ((OpenGLRenderer)Renderer.Instance).Framebuffer);
             if (_format == TextureFormat.Depth)
             {
-                GL.BindFramebuffer(FramebufferTarget.Framebuffer, ((OpenGLRenderer)Renderer.Instance).Framebuffer);
                 GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, Renderbuffer);
                 GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2D, Texture, 0);
 
-                OpenGLRenderer.Instance.ClearDepth();
-                GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+                GL.Clear(ClearBufferMask.DepthBufferBit);
                 return;
             }
 
             var vec = color.ToVector4();
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, ((OpenGLRenderer)Renderer.Instance).Framebuffer);
             GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, RenderbufferTarget.Renderbuffer, Renderbuffer);
             GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, Texture, 0);
             GL.ClearColor(vec.X, vec.Y, vec.Z, vec.W);

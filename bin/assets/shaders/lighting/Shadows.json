@@ -59,12 +59,12 @@
     ],
     "Variables": [
         {
-            "Name": "ShadowOcculusion",
+            "Name": "ShadowMap",
             "VariableType": "Texture2D"
         },
         {
-            "Name": "ShadowOcculusion",
-            "VariableType": "Depth"
+            "Name": "Depth",
+            "VariableType": "Texture2D"
         }
     ]
 }
