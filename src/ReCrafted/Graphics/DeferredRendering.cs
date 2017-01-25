@@ -134,13 +134,10 @@ namespace ReCrafted.Graphics
                     output = input;
                     input = tmp;
                 }
-
-                // present to the swapchain's FinalRT
-                Renderer.Instance.SetFinalRenderTarget(false);
-                Renderer.Instance.Blit(input);
-
+                
                 // do render jobs
-                Renderer.Instance.SetFinalRenderTarget(true);
+                Renderer.Instance.SetRenderTargets(input);
+                Renderer.Instance.SetDepthTestState(true);
                 foreach (var job in _postRenderJobs)
                 {
                     job.JobMethod(this);

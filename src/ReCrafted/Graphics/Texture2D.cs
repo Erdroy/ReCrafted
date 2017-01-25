@@ -50,7 +50,7 @@ namespace ReCrafted.Graphics
         /// <param name="generateMips">Generate mipmaps for this texture?</param>
         /// <param name="maxMips">The maximal count of mipmaps.</param>
         /// <returns>The loaded texture, null when failed(exception will be thrown).</returns>
-        public static Texture2D FromFile(string file, Sampler.Type samplerType, bool generateMips = false, int maxMips = 8)
+        public static Texture2D FromFile(string file, Sampler.Type samplerType, bool generateMips = false, int maxMips = 4)
         {
             switch (Renderer.RendererApi)
             {
