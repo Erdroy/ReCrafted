@@ -117,40 +117,49 @@ namespace ReCrafted.Graphics
             // do final pass
             RenderFinal();
 
-            // present to the swapchain's FinalRT
-            Renderer.Instance.FaceCulling(false, true);
-            Renderer.Instance.SetFinalRenderTarget(false);
-
-            Renderer.Instance.Blit(Input.IsKey(KeyCode.Space) ? _shadowRenderer.ShadowMap : _rtFinal);
-#if ddddD3D11
-
-            // do post process
-            var input = _rtFinal;
-            var output = _rtOutput;
-
-            foreach (var job in _postprocessJobs)
+            if (Renderer.RendererApi == RendererApi.D3D11)
             {
-                Renderer.Instance.SetRenderTargets(output);
-                Renderer.Instance.SetDepthTestState(false);
+                // do post process
+                var input = _rtFinal;
+                var output = _rtOutput;
 
-                job.JobMethod(this, input, output);
+                foreach (var job in _postprocessJobs)
+                {
+                    Renderer.Instance.SetRenderTargets(output);
+                    Renderer.Instance.SetDepthTestState(false);
 
-                var tmp = output;
-                output = input;
-                input = tmp;
+                    job.JobMethod(this, input, output);
+
+                    var tmp = output;
+                    output = input;
+                    input = tmp;
+                }
+
+                // present to the swapchain's FinalRT
+                Renderer.Instance.SetFinalRenderTarget(false);
+                Renderer.Instance.Blit(input);
+
+                // do render jobs
+                Renderer.Instance.SetFinalRenderTarget(true);
+                foreach (var job in _postRenderJobs)
+                {
+                    job.JobMethod(this);
+                }
+               
+                // present to the swapchain's FinalRT
+                Renderer.Instance.FaceCulling(false, true);
+                Renderer.Instance.SetFinalRenderTarget(false);
+
+                Renderer.Instance.Blit(input);
             }
-
-            // present to the swapchain's FinalRT
-            Renderer.Instance.SetFinalRenderTarget(false);
-            Renderer.Instance.Blit(input);
-
-            // do render jobs
-            Renderer.Instance.SetFinalRenderTarget(true);
-            foreach (var job in _postRenderJobs)
+            else
             {
-                job.JobMethod(this);
+                // present to the swapchain's FinalRT
+                Renderer.Instance.FaceCulling(false, true);
+                Renderer.Instance.SetFinalRenderTarget(false);
+
+                Renderer.Instance.Blit(Input.IsKey(KeyCode.Space) ? _shadowRenderer.ShadowMap : _rtFinal);
             }
-#endif
         }
 
         /// <summary>
