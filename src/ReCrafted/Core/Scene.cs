@@ -78,19 +78,28 @@ namespace ReCrafted.Core
                 JobMethod = RenderCursor,
                 RenderPriority = 0
             });
+            Rendering.Current.AddPostDeferredRenderJob(new RenderJob
+            {
+                JobMethod = UpdateChunks,
+                RenderPriority = 999 // this should be called at the end of rendering
+            });
 
             Rendering.Current.AddPostprocessJob(new PostprocessJob
             {
                 RenderPriority = 0,
                 JobMethod = PostSimple
             });
-            /*Rendering.Current.AddPostprocessJob(new PostprocessJob
+
+            if (Renderer.RendererApi == RendererApi.D3D11)
             {
-                RenderPriority = 0,
-                JobMethod = PostFxaa
-            });*/
+                Rendering.Current.AddPostprocessJob(new PostprocessJob
+                {
+                    RenderPriority = 0,
+                    JobMethod = PostFxaa
+                });
+            }
         }
-        
+
         /// <summary>
         /// Ticks the scene, entity pool etc.
         /// Called by Game class.
@@ -141,6 +150,12 @@ namespace ReCrafted.Core
         private void RenderCursor(Rendering rendering)
         {
             _voxelCursor.Draw();
+        }
+
+        // private
+        private void UpdateChunks(Rendering rendering)
+        {
+            VoxelChunk.TickMeshUpdater();
         }
 
         // private

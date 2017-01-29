@@ -2,8 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using ReCrafted.Core;
 using ReCrafted.Graphics;
 using SharpDX;
@@ -16,19 +14,13 @@ namespace ReCrafted.Voxels
     /// </summary>
     public sealed class VoxelChunk : IDisposable, IGameComponent
     {
-        private static readonly Dictionary<uint, VoxelChunk> ChunkMeshUpdateQueue = new Dictionary<uint, VoxelChunk>();
-        private static readonly List<uint> QueuedChunks = new List<uint>();
-        private static uint _chunksUpdatesLastId;
-
         /// <summary>
         /// The neighbouring chunks.
         /// </summary>
         public VoxelChunk[] NeighChunks = new VoxelChunk[8];
 
-        internal Dictionary<ushort, Mesh> _meshes = new Dictionary<ushort, Mesh>();
-        internal readonly Dictionary<ushort, Mesh> MeshesWorker = new Dictionary<ushort, Mesh>();
+        internal readonly Dictionary<ushort, Mesh> Meshes = new Dictionary<ushort, Mesh>();
         private ushort[,,] _voxels;
-        private bool _isDone;
 
         /// <summary>
         /// Init the chunk.
@@ -36,8 +28,36 @@ namespace ReCrafted.Voxels
         public void Init()
         {
             _voxels = new ushort[VoxelWorld.ChunkSize, VoxelWorld.ChunkHeight, VoxelWorld.ChunkSize];
+            
+            for (var z = 0; z < VoxelWorld.ChunkSize; z++)
+            {
+                for (var y = 0; y < VoxelWorld.ChunkHeight; y++)
+                {
+                    for (var x = 0; x < VoxelWorld.ChunkSize; x++)
+                    {
+                        if (y == 0)
+                        {
+                            _voxels[x, y, z] = 5;
+                            continue;
+                        }
 
-            ThreadPool.QueueUserWorkItem(GenerateVoxels);
+                        // generate terrain
+                        _voxels[x, y, z] = VoxelWorldGenerator.GenerateTerrains(new Int3(x, y, z) + Position);
+
+                        // generate rivers, oceans, ponds etc.
+
+                        // generate caves
+                        _voxels[x, y, z] = VoxelWorldGenerator.GenerateCaves(_voxels[x, y, z], new Int3(x, y, z) + Position);
+
+                        //if (_voxels[x, y, z] == 1)
+                        //    _voxels[x, y, z] = 0;
+                    }
+                }
+            }
+
+            // generate structures(buildings, trees)
+
+            IsLoaded = true;
         }
 
         /// <summary>
@@ -52,7 +72,7 @@ namespace ReCrafted.Voxels
         /// </summary>
         public void Draw()
         {
-            if (_meshes.Count == 0)
+            if (Meshes.Count == 0)
                 return;
             
             var wvp = Matrix.Translation(new Vector3(Position.X, Position.Y, Position.Z)) * Camera.Current.ViewProjectionMatrix;
@@ -62,9 +82,9 @@ namespace ReCrafted.Voxels
             VoxelAssets.DefaultShader.ApplyChanges();
             VoxelAssets.DefaultSampler.Apply(0);
 
-            foreach (var mesh in _meshes)
+            foreach (var mesh in Meshes)
             {
-                if (mesh.Value.VerticeCount == 0)
+                if (mesh.Value.Vertices.Length == 0)
                     continue;
 
                 var block = VoxelAssets.Blocks[mesh.Key];
@@ -82,7 +102,11 @@ namespace ReCrafted.Voxels
         /// </summary>
         public void Dispose()
         {
-            // TODO: valid chunk dispose
+            foreach (var mesh in Meshes)
+            {
+                mesh.Value.Dispose();
+            }
+            Meshes.Clear();
         }
         
         /// <summary>
@@ -90,7 +114,6 @@ namespace ReCrafted.Voxels
         /// </summary>
         public void UpdateMesh()
         {
-            ChunkMeshUpdateQueue.Add(_chunksUpdatesLastId++, this);
         }
 
         /// <summary>
@@ -511,9 +534,16 @@ namespace ReCrafted.Voxels
         }
 
         // private
-        private void UpdateMeshWorker(object obj)
+        private void UpdateMeshWorker()
         {
             UpdateNeighs();
+
+            // clear
+            foreach (var mesh in Meshes)
+            {
+                mesh.Value.Dispose();
+            }
+            Meshes.Clear();
 
             var blocksVertices = new Dictionary<ushort, List<Vector3>>();
             var blocksIndices = new Dictionary<ushort, List<uint>>();
@@ -699,9 +729,6 @@ namespace ReCrafted.Voxels
                     }
                 }
             }
-            
-            // clear
-            MeshesWorker.Clear();
 
             foreach (var vertices in blocksVertices)
             {
@@ -724,46 +751,14 @@ namespace ReCrafted.Voxels
 
                     mesh.SetIndices(indices);
 
-                    MeshesWorker.Add(vertices.Key, mesh);
+                    mesh.ApplyChanges();
+
+                    Meshes.Add(vertices.Key, mesh);
                 }
+
             }
 
-            _isDone = true;
             IsVisible = true;
-        }
-
-        // private
-        private void GenerateVoxels(object obj)
-        {
-            for (var z = 0; z < VoxelWorld.ChunkSize; z++)
-            {
-                for (var y = 0; y < VoxelWorld.ChunkHeight; y++)
-                {
-                    for (var x = 0; x < VoxelWorld.ChunkSize; x++)
-                    {
-                        if (y == 0)
-                        {
-                            _voxels[x, y, z] = 5;
-                            continue;
-                        }
-
-                        // generate terrain
-                        _voxels[x, y, z] = VoxelWorldGenerator.GenerateTerrains(new Int3(x, y, z) + Position);
-
-                        // generate rivers, oceans, ponds etc.
-
-                        // generate caves
-                        _voxels[x, y, z] = VoxelWorldGenerator.GenerateCaves(_voxels[x, y, z], new Int3(x, y, z) + Position);
-
-                        //if (_voxels[x, y, z] == 1)
-                        //    _voxels[x, y, z] = 0;
-                    }
-                }
-            }
-
-            // generate structures(buildings, trees)
-
-            IsLoaded = true;
         }
 
         /// <summary>
@@ -793,64 +788,6 @@ namespace ReCrafted.Voxels
                    || (localCoord.X == VoxelWorld.ChunkSize - 1 && localCoord.Z == VoxelWorld.ChunkSize - 1)
                    || (localCoord.X == VoxelWorld.ChunkSize - 1 && localCoord.Z == 0)
                    || (localCoord.X == 0 && localCoord.Z == 0);
-        }
-
-        public static void TickMeshUpdater()
-        {
-            var doneChunks = 0;
-            foreach (var chunkid in QueuedChunks)
-            {
-                if (ChunkMeshUpdateQueue[chunkid]._isDone)
-                    doneChunks++;
-            }
-
-            if (doneChunks == QueuedChunks.Count)
-            {
-                foreach (var chunkid in QueuedChunks)
-                {
-                    var chunk = ChunkMeshUpdateQueue[chunkid];
-
-                    foreach (var mesh in chunk._meshes)
-                    {
-                        mesh.Value?.Dispose();
-                    }
-                    chunk._meshes.Clear();
-
-                    foreach (var mesh in chunk.MeshesWorker)
-                    {
-                        chunk._meshes.Add(mesh.Key, mesh.Value);
-                    }
-
-                    foreach (var mesh in chunk._meshes)
-                    {
-                        if (mesh.Value != null && mesh.Value.HasVertices)
-                            mesh.Value.ApplyChanges();
-                    }
-
-                    ChunkMeshUpdateQueue.Remove(chunkid);
-                }
-
-                QueuedChunks.Clear();
-            }
-            else
-                return;
-
-            if (ChunkMeshUpdateQueue.Count == 0)
-                return;
-            
-            foreach (var item in ChunkMeshUpdateQueue)
-            {
-                if (!item.Value.IsLoaded)
-                    continue;
-
-                QueuedChunks.Add(item.Key);
-
-                // run
-                ThreadPool.QueueUserWorkItem(item.Value.UpdateMeshWorker);
-
-                if (QueuedChunks.Count == 4)
-                    return;
-            }
         }
 
         /// <summary>

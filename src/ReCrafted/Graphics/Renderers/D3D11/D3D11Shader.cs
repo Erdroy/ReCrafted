@@ -461,7 +461,7 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             }
             else
             {
-                deviceContext.Draw(mesh.Vertices.Length, 0);
+                deviceContext.Draw(mesh.VerticeCount, 0);
             }
         }
 

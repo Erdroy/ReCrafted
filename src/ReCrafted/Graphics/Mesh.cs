@@ -149,6 +149,11 @@ namespace ReCrafted.Graphics
         public PrimitiveType PrimitiveType { get; set; }
 
         /// <summary>
+        /// Vertices amount.
+        /// </summary>
+        public int VerticeCount { get; protected set; }
+
+        /// <summary>
         /// The colors array.
         /// </summary>
         public Vector4[] Colors { get; protected set; }

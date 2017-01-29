@@ -17,7 +17,7 @@ namespace ReCrafted.Voxels.Generator
                 {
                     Frequency = 0.1f,
                     Persistence = 0.3f, 
-                    OctaveCount = 2,
+                    OctaveCount = 1,
                     Lacunarity = 0.3f,
                     NoiseQuality = NoiseQuality.Standard,
 

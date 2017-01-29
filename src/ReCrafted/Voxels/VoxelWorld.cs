@@ -58,9 +58,9 @@ namespace ReCrafted.Voxels
             _shadowMap = Shader.FromFile("lighting/shadowmap");
 
             // create chunks
-            for (var z = 0; z < 5; z++)
+            for (var z = 0; z < 25; z++)
             {
-                for (var x = 0; x < 5; x++)
+                for (var x = 0; x < 25; x++)
                 {
                     var chunk = new VoxelChunk
                     {
@@ -188,7 +188,7 @@ namespace ReCrafted.Voxels
                 _shadowMap.SetValue("WorldViewProjection", wvp);
                 _shadowMap.ApplyChanges();
 
-                foreach (var mesh in chunk.Meshes)
+                foreach (var mesh in chunk._meshes)
                 {
                     _shadowMap.Draw(mesh.Value);
                 }

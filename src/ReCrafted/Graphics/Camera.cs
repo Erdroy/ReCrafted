@@ -73,7 +73,7 @@ namespace ReCrafted.Graphics
                 // update
                 UpdateMovement();
 
-                if (UseLook /*&& Input.IsButton(ButtonCode.Right)*/)
+                if (UseLook/* && Input.IsButton(ButtonCode.Right)*/)
                 {
                     UpdateLook();
                     //UpdateLook1();

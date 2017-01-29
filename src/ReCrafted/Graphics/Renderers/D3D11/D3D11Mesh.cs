@@ -28,6 +28,8 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             if (!HasVertices)
                 throw new ReCraftedException("Cannot apply changes - there is no any vertices!");
 
+            VerticeCount = Vertices.Length;
+
             if (HasUVs && HasColors && HasNormals)
             {
                 if (UVs.Length != Vertices.Length)
@@ -161,6 +163,11 @@ namespace ReCrafted.Graphics.Renderers.D3D11
             }
 
             VertexBufferBinding = new VertexBufferBinding(VertexBuffer, GetVertexStride(), 0);
+
+            Colors = null;
+            Vertices = null;
+            UVs = null;
+            Normals = null;
         }
         
         /// <summary>

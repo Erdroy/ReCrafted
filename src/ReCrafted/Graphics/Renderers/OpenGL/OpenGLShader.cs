@@ -353,7 +353,7 @@ namespace ReCrafted.Graphics.Renderers.OpenGL
             }
             else
             {
-                GL.DrawArrays(primitivesType, 0, mesh.Vertices.Length);
+                GL.DrawArrays(primitivesType, 0, mesh.VerticeCount);
             }
             
             OpenGLRenderer.CheckError();
