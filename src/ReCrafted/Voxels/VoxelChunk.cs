@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using ReCrafted.Core;
 using ReCrafted.Graphics;
@@ -56,6 +55,15 @@ namespace ReCrafted.Voxels
                 return;
             
             var wvp = Matrix.Translation(new Vector3(Position.X, Position.Y, Position.Z)) * Camera.Current.ViewProjectionMatrix;
+            
+            if (Camera.Current.Position.X > Position.X 
+                && Camera.Current.Position.Z > Position.Z 
+                && Camera.Current.Position.X < Position.X + 16.0f
+                && Camera.Current.Position.Z < Position.Z + 16.0f)
+            {
+                // camera is over this chunk.
+                Current = this;
+            }
 
             VoxelAssets.DefaultShader.Apply();
             VoxelAssets.DefaultShader.SetValue("WVP", wvp);
@@ -795,7 +803,7 @@ namespace ReCrafted.Voxels
                    || (localCoord.X == 0 && localCoord.Z == 0);
         }
 
-        public static void TickMeshUpdater()
+        public static void TickChunkLoader()
         {
             var doneChunks = 0;
             foreach (var chunkid in QueuedChunks)
@@ -867,7 +875,15 @@ namespace ReCrafted.Voxels
         /// Is this chunk visible?
         /// </summary>
         public bool IsVisible { get; set; }
+
+        public VoxelChunk Front => NeighChunks[1];
+
+        public VoxelChunk Back => NeighChunks[5];
+
+        public VoxelChunk Left => NeighChunks[7];
         
+        public VoxelChunk Right => NeighChunks[3];
+
         /// <summary>
         /// The chunk bounds(w/o 1 block edge).
         /// </summary>
@@ -891,5 +907,7 @@ namespace ReCrafted.Voxels
                 return new BoundingBox(pos, pos + new Vector3(VoxelWorld.ChunkSize, VoxelWorld.ChunkHeight, VoxelWorld.ChunkSize));
             }
         }
+
+        public static VoxelChunk Current { get; private set; }
     }
 }

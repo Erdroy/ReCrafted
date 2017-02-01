@@ -90,14 +90,14 @@ namespace ReCrafted.Core
                 JobMethod = PostSimple
             });
 
-            if (Renderer.RendererApi == RendererApi.D3D11)
+           /* if (Renderer.RendererApi == RendererApi.D3D11)
             {
                 Rendering.Current.AddPostprocessJob(new PostprocessJob
                 {
                     RenderPriority = 0,
                     JobMethod = PostFxaa
                 });
-            }
+            }*/
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace ReCrafted.Core
             Renderer.Instance.Tick();
 
             // tick the voxel cursor
-            _voxelCursor.Tick();
+            //_voxelCursor.Tick();
 
             _voxelWorld.Tick();
             EntityPool.Tick();
@@ -155,7 +155,7 @@ namespace ReCrafted.Core
         // private
         private void UpdateChunks(Rendering rendering)
         {
-            VoxelChunk.TickMeshUpdater();
+            VoxelChunk.TickChunkLoader();
         }
 
         // private
@@ -169,11 +169,11 @@ namespace ReCrafted.Core
         // private
         private void PostFxaa(Rendering rendering, RenderTarget input, RenderTarget output)
         {
-            /*_fxaaPost.Apply();
+            _fxaaPost.Apply();
             _fxaaPost.SetValue("Viewport", new Vector4(1.0f / Display.ClientWidth, 1.0f / Display.ClientHeight, 0.0f, 0.0f));
             _fxaaPost.ApplyChanges();
             
-            Renderer.Instance.Blit(input, _fxaaPost);*/
+            Renderer.Instance.Blit(input, _fxaaPost);
         }
     }
 }

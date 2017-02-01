@@ -58,9 +58,9 @@ namespace ReCrafted.Voxels
             _shadowMap = Shader.FromFile("lighting/shadowmap");
 
             // create chunks
-            for (var z = 0; z < 25; z++)
+            for (var z = -5; z < 5; z++)
             {
-                for (var x = 0; x < 25; x++)
+                for (var x = -5; x < 5; x++)
                 {
                     var chunk = new VoxelChunk
                     {
@@ -180,17 +180,20 @@ namespace ReCrafted.Voxels
         {
             foreach (var chunk in _chunks)
             {
-                var wvp = Matrix.Translation(chunk.Position.X, chunk.Position.Y, chunk.Position.Z)*lightViewProj;
-
-                wvp.Transpose();
-
-                _shadowMap.Apply();
-                _shadowMap.SetValue("WorldViewProjection", wvp);
-                _shadowMap.ApplyChanges();
-
-                foreach (var mesh in chunk._meshes)
+                if (Camera.Current.CameraFrustum.Contains(chunk.RealBounds) != ContainmentType.Disjoint)
                 {
-                    _shadowMap.Draw(mesh.Value);
+                    var wvp = Matrix.Translation(chunk.Position.X, chunk.Position.Y, chunk.Position.Z)*lightViewProj;
+
+                    wvp.Transpose();
+
+                    _shadowMap.Apply();
+                    _shadowMap.SetValue("WorldViewProjection", wvp);
+                    _shadowMap.ApplyChanges();
+
+                    foreach (var mesh in chunk._meshes)
+                    {
+                        _shadowMap.Draw(mesh.Value);
+                    }
                 }
             }
         }
