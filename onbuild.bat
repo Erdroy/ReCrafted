@@ -1,6 +1,6 @@
 cd D:\ReCrafted
 
-call clean.bat
+REM call clean.bat
 
 set /P VAR= < buildNum.txt
 set /A VAR += 1
