@@ -8,7 +8,7 @@ echo %VAR% > buildNum.txt
 
 set /P VER= < version.txt
 
-tools\\ReCrafted.VersionBuilder.exe %VER% buildNum.txt bin\\assets\\gameinfo.json
+tools\\ReCrafted.VersionBuilder.exe %VER% buildNum.txt assets\\gameinfo.json
 
 SET ERRORLEVEL = 0
 EXIT 0
