@@ -1,0 +1,18 @@
+// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+
+#pragma once
+
+#ifndef DEFINES_H
+#define DEFINES_H
+
+#if _WIN32
+#define getHInstance() static_cast<HINSTANCE>(GetModuleHandle(nullptr))
+#endif
+
+#ifndef FORCEINLINE
+#define FORCEINLINE __inline
+#endif
+
+#define SafeDispose(ptr) if(ptr) { ptr->dispose(); ptr = nullptr;}
+
+#endif // DEFINES_H
