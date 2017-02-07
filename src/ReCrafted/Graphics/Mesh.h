@@ -7,27 +7,87 @@
 
 // includes
 #include "../Utils/Types.h"
+#include "../Core/Math.h"
+#include <bgfx/bgfx.h>
 
 class Mesh
 {
+	friend class Rendering;
+
 private:
-	uint m_vertexCount = 0u;
-	uint m_indexCount = 0u;
+	bgfx::VertexDecl m_vertexdecl = {};
+	bgfx::VertexBufferHandle m_vertexBuffer = {};
+	bgfx::IndexBufferHandle m_indexBuffer = {};
+
+	vector3f* m_vertices = nullptr;
+	vector2f* m_uvs = nullptr;
+	vector3f* m_normals = nullptr;
+	vector4f* m_colors = nullptr;
+	uint* m_indices = nullptr;
+
+	uint m_vertices_count = 0u;
+	uint m_uvs_count = 0u;
+	uint m_normals_count = 0u;
+	uint m_colors_count = 0u;
+	uint m_indices_count = 0u;
 
 private:
 	void init();
 
-	void setVertices();
+public:
+	/// <summary>
+	/// Set vertices for this mesh.
+	/// To apply changes, you must call ->applyChanges();
+	/// after setting all data you need.
+	/// </summary>
+	/// <param name="vertices">Vertices pointer.</param>
+	/// <param name="count">The count of vertices.</param>
+	void setVertices(vector3f* vertices, uint count);
 
-	void setColors();
+	/// <summary>
+	/// Set uvs for this mesh.
+	/// To apply changes, you must call ->applyChanges();
+	/// after setting all data you need.
+	/// </summary>
+	/// <param name="uvs">Uvs pointer.</param>
+	/// <param name="count">The count of uvs.</param>
+	void setUVs(vector2f* uvs, uint count);
 
-	void setNormals();
+	/// <summary>
+	/// Set normals for this mesh.
+	/// To apply changes, you must call ->applyChanges();
+	/// after setting all data you need.
+	/// </summary>
+	/// <param name="normals">Normals pointer.</param>
+	/// <param name="count">The count of normals.</param>
+	void setNormals(vector3f* normals, uint count);
 
-	void setIndices();
+	/// <summary>
+	/// Set colors for this mesh.
+	/// To apply changes, you must call ->applyChanges();
+	/// after setting all data you need.
+	/// </summary>
+	/// <param name="colors">Colors pointer.</param>
+	/// <param name="count">The count of colors.</param>
+	void setColors(vector4f* colors, uint count);
 
+	/// <summary>
+	/// Set indices for this mesh.
+	/// To apply changes, you must call ->applyChanges();
+	/// after setting all data you need.
+	/// </summary>
+	/// <param name="indices">Indices pointer.</param>
+	/// <param name="count">The count of indices.</param>
+	void setIndices(uint* indices, uint count);
+
+	/// <summary>
+	/// Apply changes.
+	/// </summary>
 	void applyChanges();
 
-public:
+	/// <summary>
+	/// Dispose
+	/// </summary>
 	void dispose();
 
 public:

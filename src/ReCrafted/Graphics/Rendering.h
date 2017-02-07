@@ -7,6 +7,9 @@
 
 // includes
 #include "../Utils/Defines.h"
+#include "../Utils/Types.h"
+#include "../Core/Math.h"
+#include "Mesh.h"
 
 /// <summary>
 /// Rendering class.
@@ -17,6 +20,7 @@ private:
 	static Rendering* m_instance;
 
 private:
+	Ptr<Mesh> m_testMesh = nullptr;
 
 public:
 	Rendering() { m_instance = this; }
@@ -50,6 +54,12 @@ public:
 	/// Render all dynamic entities.
 	/// </summary>
 	void renderEntities();
+
+	/// <summary>
+	/// Draw mesh.
+	/// </summary>
+	/// <param name="mesh">Mesh to draw.</param>
+	void draw(Ptr<Mesh> mesh);
 
 	/// <summary>
 	/// Dispose everything.

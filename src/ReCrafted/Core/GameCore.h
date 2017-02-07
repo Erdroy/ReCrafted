@@ -20,7 +20,7 @@ private:
 private:
 	uint m_width = 1280;
 	uint m_height = 720;
-	
+
 	bool m_initialized = false;
 
 	Rendering* m_rendering = nullptr;

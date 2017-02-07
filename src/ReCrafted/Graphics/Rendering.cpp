@@ -9,6 +9,21 @@ void Rendering::init()
 {
 	// load all shaders
 
+	m_testMesh = Mesh::createMesh();
+
+	vector3f vertices[] = {
+		vector3f(0.0f, 0.0f, 0.0f),
+		vector3f(0.0f, 1.0f, 0.0f),
+		vector3f(1.0f, 0.0f, 0.0f),
+	};
+	m_testMesh->setVertices(vertices, 3);
+
+	uint indices[] = {
+		0, 1, 2
+	};
+	m_testMesh->setIndices(indices, 3);
+
+	m_testMesh->applyChanges();
 }
 
 void Rendering::beginRender()
@@ -30,6 +45,11 @@ void Rendering::renderStatic()
 
 void Rendering::renderEntities()
 {
+}
+
+void Rendering::draw(Ptr<Mesh> mesh)
+{
+
 }
 
 void Rendering::dispose()
