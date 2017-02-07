@@ -200,6 +200,7 @@
     <ClInclude Include="Core\GameBase.h" />
     <ClInclude Include="Core\GameCore.h" />
     <ClInclude Include="Core\Input.h" />
+    <ClInclude Include="Core\Math.h" />
     <ClInclude Include="Core\Time.h" />
     <ClInclude Include="Graphics\Mesh.h" />
     <ClInclude Include="Graphics\Rendering.h" />

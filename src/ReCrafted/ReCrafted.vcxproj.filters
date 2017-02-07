@@ -86,5 +86,8 @@
     <ClInclude Include="Common\EntityPool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
