@@ -3,3 +3,5 @@ bin64/
 src/ReCrafted/.vs/
 *.db
 *.opendb
+src/ShaderCompiler/obj/
+assets/shaders/

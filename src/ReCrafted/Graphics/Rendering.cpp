@@ -24,6 +24,8 @@ void Rendering::init()
 	m_testMesh->setIndices(indices, 3);
 
 	m_testMesh->applyChanges();
+
+	m_testShader = Shader::loadShader("testShader");
 }
 
 void Rendering::beginRender()

@@ -137,7 +137,7 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>call ..\..\onbuild.bat</Command>
+      <Command>call ..\..\onbuild.bat $(ProjectDir)..\..\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -191,6 +191,7 @@
     <ClCompile Include="Core\Time.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
     <ClCompile Include="Graphics\Rendering.cpp" />
+    <ClCompile Include="Graphics\Shader.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -202,14 +203,25 @@
     <ClInclude Include="Core\Input.h" />
     <ClInclude Include="Core\Math.h" />
     <ClInclude Include="Core\Time.h" />
+    <ClInclude Include="Game\Addons\Addon.h" />
+    <ClInclude Include="Game\Addons\AddonLoader.h" />
+    <ClInclude Include="Game\World.h" />
     <ClInclude Include="Graphics\Mesh.h" />
     <ClInclude Include="Graphics\Rendering.h" />
+    <ClInclude Include="Graphics\Shader.h" />
     <ClInclude Include="Logic\Addons\Addon.h" />
     <ClInclude Include="Logic\Addons\AddonLoader.h" />
     <ClInclude Include="Logic\World.h" />
+    <ClInclude Include="Platform\Platform.h" />
+    <ClInclude Include="Platform\Platform.Windows.h" />
     <ClInclude Include="Utils\Defines.h" />
     <ClInclude Include="Utils\Types.h" />
     <ClInclude Include="Voxels\VoxelChunk.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\testShader\fs_testShader.sc" />
+    <None Include="Shaders\testShader\varying.def.sc" />
+    <None Include="Shaders\testShader\vs_testShader.sc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
