@@ -10,6 +10,7 @@
 #include "../Utils/Types.h"
 #include "../Core/Math.h"
 #include "Mesh.h"
+#include "Shader.h"
 
 /// <summary>
 /// Rendering class.
@@ -21,6 +22,7 @@ private:
 
 private:
 	Ptr<Mesh> m_testMesh = nullptr;
+	Ptr<Shader> m_testShader = nullptr;
 
 public:
 	Rendering() { m_instance = this; }
