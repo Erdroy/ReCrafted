@@ -7,42 +7,48 @@ namespace ShaderCompiler
 {
     internal class Program
     {
+        private static void BuildShader(string path, string shader, string outDir, string shaderName, string profile, string type, string prefix)
+        {
+            Console.WriteLine("Compiling: " + prefix + "_" + shaderName);
+            var proc = new Process
+            {
+                StartInfo = new ProcessStartInfo(path + "tools\\shaderc.exe",
+                    " -f " + shader + "/" + prefix + "_" + shaderName + ".sc " +
+                    " -o " + outDir + "/" + prefix + "_" + shaderName + ".bin " +
+                    " --platform " + profile +
+                    " --type " + type)
+                {
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                }
+            };
+            proc.Start();
+            proc.WaitForExit();
+
+            var error = proc.StandardError.ReadToEnd();
+            if(error.Length > 1)
+                Console.WriteLine(error);
+        }
+
         private static void Main(string[] args)
         {
             Console.WriteLine("Starting compiling shaders...");
-
-            // tools\\shaderc.exe -f src/ReCrafted/Shaders/testShader/vs_X.sc -o ???/vs_X.bin --platform windows --type v
-            // tools\\shaderc.exe -f src/ReCrafted/Shaders/testShader/fs_X.sc -o ???/fs_X.bin --platform windows --type f
+            
             foreach (var shader in Directory.GetDirectories(args[0] + "src\\ReCrafted\\Shaders"))
             {
                 var fileName = new FileInfo(shader);
 
-                Console.WriteLine("Compiling: " + fileName.Name);
-
                 var outDir = args[0] + "assets\\shaders\\dx11\\" + fileName.Name + "\\";
                 if (!Directory.Exists(outDir))
-                {
                     Directory.CreateDirectory(outDir);
-                    Console.WriteLine("Created shader directory: " + outDir);
-                }
-                var prc = Process.Start(args[0] + "tools\\shaderc.exe", 
-                    "-f " + shader + "/vs_" + fileName.Name + ".sc " +
-                    "-o " + outDir + "/vs_" + fileName.Name + ".bin " +
-                    "--platform windows " +
-                    "--verbose " +
-                    "--type v");
 
-                prc.WaitForExit();
-
-                prc = Process.Start(args[0] + "tools\\shaderc.exe",
-                    "-f " + shader + "/fs_" + fileName.Name + ".sc " +
-                    "-o " + outDir + "/fs_" + fileName.Name + ".bin " +
-                    "--platform windows " +
-                    "--verbose " +
-                    "--type f");
-
-                prc.WaitForExit();
+                BuildShader(args[0], shader, outDir, fileName.Name, "windows -p vs_4_0 -O 3", "vertex", "vs");
+                BuildShader(args[0], shader, outDir, fileName.Name, "windows -p ps_4_0 -O 3", "fragment", "fs");
             }
+
+            Console.WriteLine("All shaders compiled!");
         }
     }
 }

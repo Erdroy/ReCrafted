@@ -54,7 +54,7 @@ void Mesh::applyChanges()
 	}
 
 	m_vertexdecl = {};
-	m_vertexdecl.begin(bgfx::getRendererType());
+	m_vertexdecl.begin();
 	m_vertexdecl.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float);
 
 	if (m_uvs) 
@@ -79,31 +79,32 @@ void Mesh::applyChanges()
 		auto dataOffset = 0u;
 
 		auto vertice = m_vertices[i];
-		memcpy(memoryPtr + offset + dataOffset, &vertice, vertice.size());
+
+		memcpy(memoryPtr + offset + dataOffset, &vertice, sizeof(float) * vertice.size());
 		dataOffset += 3 * sizeof(float);
 
 		if(m_uvs)
 		{
 			auto uv = m_uvs[i];
-			memcpy(memoryPtr + offset + dataOffset, &uv, uv.size());
+			memcpy(memoryPtr + offset + dataOffset, &uv, sizeof(float) * uv.size());
 			dataOffset += 2 * sizeof(float);
 		}
 		if (m_normals)
 		{
 			auto normal = m_normals[i];
-			memcpy(memoryPtr + offset + dataOffset, &normal, normal.size());
+			memcpy(memoryPtr + offset + dataOffset, &normal, sizeof(float) * normal.size());
 			dataOffset += 3 * sizeof(float);
 		}
 		if (m_colors)
 		{
 			auto color = m_colors[i];
-			memcpy(memoryPtr + offset + dataOffset, &color, color.size());
+			memcpy(memoryPtr + offset + dataOffset, &color, sizeof(float) * color.size());
 		}
 	}
 
 	// allocate memory for index buffer
-	auto indexMemory = bgfx::alloc(m_indices_count);
-	memoryPtr = vertexMemory->data;
+	auto indexMemory = bgfx::alloc(m_indices_count * sizeof(uint));
+	memoryPtr = indexMemory->data;
 
 	for(auto i = 0u; i < m_indices_count; i ++)
 	{
@@ -113,7 +114,7 @@ void Mesh::applyChanges()
 	}
 
 	m_vertexBuffer = bgfx::createVertexBuffer(vertexMemory, m_vertexdecl);
-	m_indexBuffer = bgfx::createIndexBuffer(indexMemory);
+	m_indexBuffer = bgfx::createIndexBuffer(indexMemory, BGFX_BUFFER_INDEX32);
 
 	m_vertices = nullptr;
 	m_uvs = nullptr;

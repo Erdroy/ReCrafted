@@ -11,11 +11,13 @@ void GameCore::onLoad()
 	bgfx::init(bgfx::RendererType::Direct3D11);
 	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC);
 
-	//bgfx::setDebug(BGFX_DEBUG_STATS);
+	bgfx::setDebug(BGFX_DEBUG_STATS);
 
 	// Set view 0 clear state.
 	bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030FF, 1.0f, 0);
 	bgfx::setViewRect(0, 0, 0, m_width, m_height);
+
+	bgfx::setState(0 | BGFX_STATE_DEFAULT);
 
 	// initialize rendering
 	m_rendering = new Rendering;
@@ -68,7 +70,7 @@ void GameCore::onSimulate()
 void GameCore::onDraw()
 {
 	// draw event, called every frame, must be ended with gpu backbuffer `present` or `swapbuffer` - bgfx::frame()
-
+	bgfx::setViewRect(0, 0, 0, m_width, m_height);
 	bgfx::touch(0);
 
 	m_rendering->beginRender(); // begin rendering the scene
@@ -76,6 +78,8 @@ void GameCore::onDraw()
 		// render shadows
 		m_rendering->renderShadows();
 		// TODO: draw all shadow casters
+		// TODO: call World->DrawShadowCasters
+		// TODO: call EntityPool->DrawShadowCasters
 
 		// render static objects, eg.: static entities, voxels.
 		m_rendering->renderStatic();

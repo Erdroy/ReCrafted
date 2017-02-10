@@ -219,6 +219,7 @@
     <ClInclude Include="Voxels\VoxelChunk.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\common.sh" />
     <None Include="Shaders\testShader\fs_testShader.sc" />
     <None Include="Shaders\testShader\varying.def.sc" />
     <None Include="Shaders\testShader\vs_testShader.sc" />

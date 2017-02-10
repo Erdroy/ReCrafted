@@ -11,6 +11,7 @@
 #include <cstdio>
 #include <string.h>
 #include <crtdbg.h>
+#include <Windows.h>
 
 #define PATHLENGTH 512
 
@@ -112,7 +113,7 @@ public:
 		// close the file now if exist to avoid some leaks or somethin
 		if(error == 0)
 			fclose(file);
-
+		
 		// return the value
 		return error == 0;
 	}
@@ -159,6 +160,26 @@ public:
 		fseek(file->m_file, 0, SEEK_END);
 		file->FileSize = ftell(file->m_file);
 		fseek(file->m_file, 0, SEEK_SET);
+	}
+
+	/// <summary>
+	/// Get the current working directory.
+	/// </summary>
+	/// <param name="buffer">Output buffer.</param>
+	FORCEINLINE static void GetWorkingDirectory(char* buffer)
+	{
+		char i_buffer[MAX_PATH];
+		GetModuleFileNameA(nullptr, i_buffer, MAX_PATH);
+
+		// remove 'ReCrafted.exe', and copy
+		auto length = strlen(i_buffer);
+		for(auto i = length - 13u; i < length; i ++)
+		{
+			i_buffer[i] = '\0';
+		}
+
+		// copy
+		strcpy_s(buffer, length, i_buffer);
 	}
 };
 

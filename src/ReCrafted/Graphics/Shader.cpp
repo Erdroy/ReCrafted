@@ -17,11 +17,16 @@ void Shader::init(const char* vs, const char* fs)
 	Platform::OpenFile(&vs_file, vs, OpenMode::OpenRead);
 	Platform::OpenFile(&fs_file, fs, OpenMode::OpenRead);
 
+	auto vs_memory = bgfx::alloc(static_cast<uint>(vs_file.FileSize));
+	auto fs_memory = bgfx::alloc(static_cast<uint>(fs_file.FileSize));
 
+	vs_file.Read(vs_memory->data);
+	fs_file.Read(fs_memory->data);
 
-	// read files
-	// bgfx::createShader(
-	// bgfx::createProgram(vsh, fsh, true /* destroy shaders when program is destroyed */);
+	m_vertexshader = createShader(vs_memory);
+	m_fragmentshader = createShader(fs_memory);
+
+	m_program = createProgram(m_vertexshader, m_fragmentshader, true);
 }
 
 Ptr<Shader> Shader::loadShader(const char* shaderName)
@@ -29,7 +34,7 @@ Ptr<Shader> Shader::loadShader(const char* shaderName)
 	Ptr<Shader> shader(new Shader);
 
 	// select file base path
-	const char* shaderPath = "???";
+	/*const char* shaderPath = "???";
 	switch (bgfx::getRendererType())
 	{
 	case bgfx::RendererType::Direct3D9:
@@ -65,20 +70,23 @@ Ptr<Shader> Shader::loadShader(const char* shaderName)
 	char fsPath[512] = {};
 
 	// build file name string
-	strcpy_s(vsPath, shaderPath);
-	strcpy_s(fsPath, shaderPath);
+	strcat_s(vsPath, shaderPath);
+	strcat_s(fsPath, shaderPath);
 
-	strcat_s(vsPath, "vs_");
-	strcat_s(fsPath, "fs_");
+	strcat_s(vsPath, shaderName);
+	strcat_s(fsPath, shaderName);
+
+	strcat_s(vsPath, "/vs_");
+	strcat_s(fsPath, "/fs_");
 
 	strcat_s(vsPath, shaderName);
 	strcat_s(fsPath, shaderName);
 
 	strcat_s(vsPath, ".bin");
-	strcat_s(fsPath, ".bin");
+	strcat_s(fsPath, ".bin");*/
 
 	// initialize shader class, and load shaders
-	//shader->init(vsPath, fsPath);
+	shader->init("C:\\vs_cubes.bin", "C:\\fs_cubes.bin");
 
 	return shader;
 }

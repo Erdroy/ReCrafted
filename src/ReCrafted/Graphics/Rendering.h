@@ -61,7 +61,8 @@ public:
 	/// Draw mesh.
 	/// </summary>
 	/// <param name="mesh">Mesh to draw.</param>
-	void draw(Ptr<Mesh> mesh);
+	/// <param name="shader">Shader that will be used to shade the mesh.</param>
+	void draw(Ptr<Mesh> mesh, Ptr<Shader> shader);
 
 	/// <summary>
 	/// Dispose everything.
