@@ -112,9 +112,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\testShader\fs_testShader.sc" />
-    <None Include="Shaders\testShader\varying.def.sc" />
-    <None Include="Shaders\testShader\vs_testShader.sc" />
     <None Include="Shaders\common.sh" />
+    <None Include="Shaders\testShader\fs_testShader.glsl" />
+    <None Include="Shaders\testShader\vs_testShader.glsl" />
+    <None Include="Shaders\testShader\varying.def.sc" />
+    <None Include="..\..\bgfx_shader.sh" />
+    <None Include="Shaders\ShaderAPI.glsl">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

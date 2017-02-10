@@ -13,7 +13,7 @@ namespace ShaderCompiler
             var proc = new Process
             {
                 StartInfo = new ProcessStartInfo(path + "tools\\shaderc.exe",
-                    " -f " + shader + "/" + prefix + "_" + shaderName + ".sc " +
+                    " -f " + shader + "/" + prefix + "_" + shaderName + ".glsl " +
                     " -o " + outDir + "/" + prefix + "_" + shaderName + ".bin " +
                     " --platform " + profile +
                     " --type " + type)
