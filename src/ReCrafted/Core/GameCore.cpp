@@ -2,6 +2,7 @@
 
 #include "GameCore.h"
 #include "../Utils/Defines.h"
+#include <bx/timer.h>
 
 GameCore* GameCore::m_instance;
 
@@ -25,8 +26,11 @@ void GameCore::onLoad()
 
 	// initialize main camera for scene
 	m_camera = Camera::createCamera(true, true);
+	m_camera->setPosition(vector3f(0.0f, 0.0f, -10.0f));
 
 	m_initialized = true;
+
+	m_timeOffset = bx::getHPCounter();
 }
 
 void GameCore::onUnload()
@@ -52,11 +56,23 @@ void GameCore::onResize(uint width, uint height)
 	// reset bgfx state, this should force renderer to resize all the viewports etc.
 	bgfx::setViewRect(0, 0, 0, m_width, m_height);
 	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC);
+
+	m_rendering->resize(width, height);
 }
 
 void GameCore::onUpdate()
 {
 	// update event, called every frame
+	Time::m_instance->m_time = static_cast<float>((bx::getHPCounter() - m_timeOffset) / double(bx::getHPFrequency()));
+
+	auto now = bx::getHPCounter();
+	auto frameTime = now - m_lastTimeOffset;
+	m_lastTimeOffset = now;
+
+	auto freq = double(bx::getHPFrequency());
+	auto toMs = 1000.0 / freq;
+
+	Time::m_instance->m_deltaTime = double(frameTime)*toMs;
 
 	// exit the game when `escape` key is pressed
 	if (Input::isKeyDown(Key_Escape))

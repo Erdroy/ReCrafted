@@ -22,10 +22,10 @@ private:
 	uint m_width = 1280;
 	uint m_height = 720;
 
+	int64_t m_timeOffset = 0;
+	int64_t m_lastTimeOffset = 0;
 	bool m_initialized = false;
-
 	Rendering* m_rendering = nullptr;
-
 	Ptr<Camera> m_camera = nullptr;
 
 public:

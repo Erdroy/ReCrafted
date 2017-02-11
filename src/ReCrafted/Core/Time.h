@@ -10,19 +10,17 @@
 
 class Time
 {
+	friend class GameCore;
+
 private:
 	static Time* m_instance;
 
 private:
-	float m_deltaTime = 0.0f;
+	double m_deltaTime = 0.0;
+	float m_time = 0.0;
 
 public:
 	Time() { m_instance = this; }
-
-	FORCEINLINE void setDeltaTime(float deltaTime)
-	{
-		m_deltaTime = deltaTime;
-	}
 
 	FORCEINLINE void dispose()
 	{
@@ -33,9 +31,14 @@ public:
 	}
 
 public:
-	FORCEINLINE static float deltaTime()
+	FORCEINLINE static double deltaTime()
 	{
-		return m_instance->m_deltaTime;
+		return 1.0 / m_instance->m_deltaTime;
+	}
+
+	FORCEINLINE static float time()
+	{
+		return m_instance->m_time;
 	}
 };
 

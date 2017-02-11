@@ -25,7 +25,8 @@ namespace ShaderCompiler
                 }
             };
 
-            //proc.StartInfo.Arguments += " --disasm";
+            // for debug
+            // proc.StartInfo.Arguments += " --disasm";
 
             proc.Start();
             proc.WaitForExit();

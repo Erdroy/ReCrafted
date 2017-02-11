@@ -23,8 +23,9 @@ private:
 	bool m_freeMovement = false;
 	float m_nearPlane = 0.02f;
 	float m_farPlane = 500.0f;
-	float m_xfov = 0.75f;
+	float m_xfov = 75.0f;
 	vector3f m_position = vector3f(0.0f, 0.0f, -5.0f);
+	vector3f m_forward = vector3f(0.0f, 0.0f, 1.0f);
 	vector3f m_lookAt = vector3f(0.0f, 0.0f, 0.0f);
 	vector3f m_up = vector3f(0.0f, 1.0f, 0.0f);
 

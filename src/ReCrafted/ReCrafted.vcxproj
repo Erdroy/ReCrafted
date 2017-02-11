@@ -194,6 +194,7 @@
     <ClCompile Include="Graphics\Rendering.cpp" />
     <ClCompile Include="Graphics\Shader.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="recraftedPrerequisites.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bgfxPrerequisites.h" />
@@ -216,6 +217,7 @@
     <ClInclude Include="Logic\World.h" />
     <ClInclude Include="Platform\Platform.h" />
     <ClInclude Include="Platform\Platform.Windows.h" />
+    <ClInclude Include="recraftedPrerequisites.h" />
     <ClInclude Include="Utils\Defines.h" />
     <ClInclude Include="Utils\Types.h" />
     <ClInclude Include="Voxels\VoxelChunk.h" />
