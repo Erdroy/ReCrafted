@@ -22,9 +22,12 @@ void Rendering::init()
 
 	uint indices[] = {
 		2, 1, 0,
-		0, 3, 2
+		0, 3, 2,
+
+		0, 1, 2,
+		2, 3, 0
 	};
-	m_testMesh->setIndices(indices, 6);
+	m_testMesh->setIndices(indices, 12);
 
 	m_testMesh->applyChanges();
 
@@ -44,20 +47,30 @@ void Rendering::beginRender()
 		VS_LOG("WARNING: Trying to render scene without any camera set as main!");
 		return;
 	}
-	
+
+	Camera::m_mainCamera->setPosition(vector3f(0.1f, 0.44f, -10.0f));
+
 	// update main camera
 	Camera::m_mainCamera->update();
 
+	auto view = Camera::m_mainCamera->m_view;
+	auto proj = Camera::m_mainCamera->m_projection;
+
+	view = view.transpose();
+	proj = proj.transpose();
+
 	// update shaders uniforms
-	bgfx::setViewTransform(0, 
-		Camera::m_mainCamera->m_view.data(), 
-		Camera::m_mainCamera->m_projection.data()
-	);
+	bgfx::setViewTransform(0, view.data(), proj.data());
 }
 
 void Rendering::endRender()
 {
-	draw(m_testMesh, m_testShader);
+	matrix44f model = {};
+	matrix_translation(model, vector3f(0.0f, 0.0f, 0.0f));
+
+	model = model.transpose();
+
+	draw(m_testMesh, m_testShader, model);
 }
 
 void Rendering::renderShadows()
