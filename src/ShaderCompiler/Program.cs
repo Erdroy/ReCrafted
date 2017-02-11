@@ -24,12 +24,19 @@ namespace ShaderCompiler
                     RedirectStandardError = true
                 }
             };
+
+            //proc.StartInfo.Arguments += " --disasm";
+
             proc.Start();
             proc.WaitForExit();
 
             var error = proc.StandardError.ReadToEnd();
-            if(error.Length > 1)
+            if (error.Length > 1)
+            {
                 Console.WriteLine(error);
+                Console.WriteLine("ERROR: Shader compilation failed!!!");
+                Environment.Exit(-1);
+            }
         }
 
         private static void Main(string[] args)
@@ -44,8 +51,8 @@ namespace ShaderCompiler
                 if (!Directory.Exists(outDir))
                     Directory.CreateDirectory(outDir);
 
-                BuildShader(args[0], shader, outDir, fileName.Name, "windows -p vs_4_0 -O 3", "vertex", "vs");
-                BuildShader(args[0], shader, outDir, fileName.Name, "windows -p ps_4_0 -O 3", "fragment", "fs");
+                BuildShader(args[0], shader, outDir, fileName.Name, "windows -p vs_5_0 -O 3", "vertex", "vs");
+                BuildShader(args[0], shader, outDir, fileName.Name, "windows -p ps_5_0 -O 3", "fragment", "fs");
             }
 
             Console.WriteLine("All shaders compiled!");

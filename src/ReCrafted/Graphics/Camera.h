@@ -24,8 +24,8 @@ private:
 	float m_nearPlane = 0.02f;
 	float m_farPlane = 500.0f;
 	float m_xfov = 0.75f;
-	vector3f m_position = {};
-	vector3f m_lookAt = {};
+	vector3f m_position = vector3f(0.0f, 0.0f, -5.0f);
+	vector3f m_lookAt = vector3f(0.0f, 0.0f, 0.0f);
 	vector3f m_up = vector3f(0.0f, 1.0f, 0.0f);
 
 	matrix44f m_view = {};
@@ -80,6 +80,10 @@ public:
 
 		// set free movement state
 		camera->m_freeMovement = freeMovement;
+
+		// initialize
+		camera->update();
+		camera->updatePerspective();
 
 		// set as main camera if there is no any other, 
 		// or set if there is `setAsCurrent` set to true

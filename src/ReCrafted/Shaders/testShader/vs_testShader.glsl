@@ -2,12 +2,11 @@
 
 // inputs, outputs
 $input position
-$output color
 
 #include "../ShaderAPI.glsl"
 
 VertexShader()
 {
-	gl_Position = /*mul(u_modelViewProj, */vec4(position, 1.0)/*)*/;
-	color = vec4(1, 1, 1, 1);
+	gl_Position = mul(vec4(position, 1.0), u_modelViewProj);
+	//gl_Position = vec4(position, 1.0);
 }

@@ -44,9 +44,15 @@ void Rendering::beginRender()
 		VS_LOG("WARNING: Trying to render scene without any camera set as main!");
 		return;
 	}
-
+	
 	// update main camera
 	Camera::m_mainCamera->update();
+
+	// update shaders uniforms
+	bgfx::setViewTransform(0, 
+		Camera::m_mainCamera->m_view.data(), 
+		Camera::m_mainCamera->m_projection.data()
+	);
 }
 
 void Rendering::endRender()
