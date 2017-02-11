@@ -33,6 +33,13 @@ public:
 	void init();
 
 	/// <summary>
+	/// Resize
+	/// </summary>
+	/// <param name="width">Width</param>
+	/// <param name="height">Height</param>
+	void resize(uint width, uint height);
+
+	/// <summary>
 	/// Begin scene render
 	/// </summary>
 	void beginRender();
@@ -62,7 +69,8 @@ public:
 	/// </summary>
 	/// <param name="mesh">Mesh to draw.</param>
 	/// <param name="shader">Shader that will be used to shade the mesh.</param>
-	void draw(Ptr<Mesh> mesh, Ptr<Shader> shader);
+	/// <param name="modelMatrix">Matrix which includes translation, rotation and scale of this mesh for rendering.</param>
+	void draw(Ptr<Mesh> mesh, Ptr<Shader> shader, matrix44f modelMatrix = {});
 
 	/// <summary>
 	/// Dispose everything.

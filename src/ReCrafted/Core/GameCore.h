@@ -8,6 +8,7 @@
 // includes
 #include "GameBase.h"
 #include "../Graphics/Rendering.h"
+#include "../Graphics/Camera.h"
 
 /// <summary>
 /// GameCoreClass
@@ -24,6 +25,8 @@ private:
 	bool m_initialized = false;
 
 	Rendering* m_rendering = nullptr;
+
+	Ptr<Camera> m_camera = nullptr;
 
 public:
 	GameCore() { m_instance = this; }
@@ -49,6 +52,11 @@ public:
 	FORCEINLINE static uint getWindowHeight()
 	{
 		return m_instance->m_height;
+	}
+
+	FORCEINLINE static float getAspectRatio()
+	{
+		return float(m_instance->m_width) / float(m_instance->m_height);
 	}
 };
 

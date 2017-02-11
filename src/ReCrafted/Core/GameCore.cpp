@@ -23,6 +23,9 @@ void GameCore::onLoad()
 	m_rendering = new Rendering;
 	m_rendering->init();
 
+	// initialize main camera for scene
+	m_camera = Camera::createCamera(true, true);
+
 	m_initialized = true;
 }
 

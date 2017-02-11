@@ -1,6 +1,7 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "Rendering.h"
+#include "Camera.h"
 
 Rendering* Rendering::m_instance;
 
@@ -30,8 +31,22 @@ void Rendering::init()
 	m_testShader = Shader::loadShader("testShader");
 }
 
+void Rendering::resize(uint width, uint height)
+{
+	// update main camera perspective
+	Camera::m_mainCamera->updatePerspective();
+}
+
 void Rendering::beginRender()
 {
+	if(Camera::m_mainCamera == nullptr)
+	{
+		VS_LOG("WARNING: Trying to render scene without any camera set as main!");
+		return;
+	}
+
+	// update main camera
+	Camera::m_mainCamera->update();
 }
 
 void Rendering::endRender()
@@ -51,10 +66,13 @@ void Rendering::renderEntities()
 {
 }
 
-void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader)
+void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, matrix44f modelMatrix)
 {
 	setVertexBuffer(mesh->m_vertexBuffer);
 	setIndexBuffer(mesh->m_indexBuffer);
+
+	bgfx::setTransform(modelMatrix.data());
+
 	submit(0, shader->m_program);
 }
 

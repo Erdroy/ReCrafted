@@ -189,6 +189,7 @@
     <ClCompile Include="Core\GameCore.cpp" />
     <ClCompile Include="Core\Input.cpp" />
     <ClCompile Include="Core\Time.cpp" />
+    <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
     <ClCompile Include="Graphics\Rendering.cpp" />
     <ClCompile Include="Graphics\Shader.cpp" />
@@ -206,6 +207,7 @@
     <ClInclude Include="Game\Addons\Addon.h" />
     <ClInclude Include="Game\Addons\AddonLoader.h" />
     <ClInclude Include="Game\World.h" />
+    <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\Mesh.h" />
     <ClInclude Include="Graphics\Rendering.h" />
     <ClInclude Include="Graphics\Shader.h" />
@@ -219,7 +221,7 @@
     <ClInclude Include="Voxels\VoxelChunk.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\bgfx_shader.sh" />
+    <None Include="..\..\bgfx_shader.glsl" />
     <None Include="Shaders\common.sh" />
     <None Include="Shaders\ShaderAPI.glsl" />
     <None Include="Shaders\testShader\fs_testShader.glsl" />
