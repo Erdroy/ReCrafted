@@ -203,7 +203,6 @@
     <ClInclude Include="Core\GameBase.h" />
     <ClInclude Include="Core\GameCore.h" />
     <ClInclude Include="Core\Input.h" />
-    <ClInclude Include="Core\Math.h" />
     <ClInclude Include="Core\Math\Math.h" />
     <ClInclude Include="Core\Math\Matrix.h" />
     <ClInclude Include="Core\Math\Vector2.h" />

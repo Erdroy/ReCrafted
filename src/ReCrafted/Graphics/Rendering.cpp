@@ -12,11 +12,11 @@ void Rendering::init()
 
 	m_testMesh = Mesh::createMesh();
 
-	vector3f vertices[] = {
-		vector3f(-0.5f, -0.5f, 0.0f),
-		vector3f(-0.5f,  0.5f, 0.0f),
-		vector3f( 0.5f,  0.5f, 0.0f),
-		vector3f( 0.5f, -0.5f, 0.0f),
+	Vector3 vertices[] = {
+		Vector3(-0.5f, -0.5f, 0.0f),
+		Vector3(-0.5f,  0.5f, 0.0f),
+		Vector3( 0.5f,  0.5f, 0.0f),
+		Vector3( 0.5f, -0.5f, 0.0f),
 	};
 	m_testMesh->setVertices(vertices, 4);
 
@@ -52,15 +52,14 @@ void Rendering::beginRender()
 	auto proj = Camera::m_mainCamera->m_projection;
 
 	// update shaders uniforms
-	bgfx::setViewTransform(0, view.data(), proj.data());
+	bgfx::setViewTransform(0, &view, &proj);
 }
 
 void Rendering::endRender()
 {
-	matrix44f model = {};
-	matrix_translation(model, vector3f(0.0f, 0.0f, 0.0f));
+	auto model = Matrix::identity();
 
-	draw(m_testMesh, m_testShader, model);
+	draw(m_testMesh, m_testShader, &model);
 }
 
 void Rendering::renderShadows()
@@ -75,12 +74,12 @@ void Rendering::renderEntities()
 {
 }
 
-void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, matrix44f modelMatrix)
+void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix)
 {
 	setVertexBuffer(mesh->m_vertexBuffer);
 	setIndexBuffer(mesh->m_indexBuffer);
 
-	bgfx::setTransform(modelMatrix.data());
+	bgfx::setTransform(modelMatrix);
 
 	submit(0, shader->m_program);
 }

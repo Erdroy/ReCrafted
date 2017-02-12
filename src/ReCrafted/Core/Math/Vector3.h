@@ -31,6 +31,7 @@ public:
 		// v = v*i
 
 		auto i = 1 / sqrt(X*X + Y*Y + Z*Z);
+
 		X = X * i;
 		Y = Y * i;
 		Z = Z * i;
@@ -77,12 +78,26 @@ public:
 		Z -= r.Z;
 	}
 
+	void operator += (Vector3 r) {
+		X += r.X;
+		Y += r.Y;
+		Z += r.Z;
+	}
+
 	/// <summary>
 	/// Result = Vector - Vector[r] operator
 	/// </summary>
 	Vector3 operator - (Vector3 r)
 	{
 		return Vector3(X - r.X, Y - r.Y, Z - r.Z);
+	}
+
+	/// <summary>
+	/// Result = Vector + Vector[r] operator
+	/// </summary>
+	Vector3 operator + (Vector3 r)
+	{
+		return Vector3(X + r.X, Y + r.Y, Z + r.Z);
 	}
 
 public:

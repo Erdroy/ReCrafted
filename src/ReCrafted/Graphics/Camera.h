@@ -8,7 +8,7 @@
 // includes
 #include "../Utils/Types.h"
 #include "../Utils/Defines.h"
-#include "../Core/Math.h"
+#include "../Core/Math/Math.h"
 
 class Entity;
 
@@ -24,13 +24,13 @@ private:
 	float m_nearPlane = 0.02f;
 	float m_farPlane = 500.0f;
 	float m_xfov = 75.0f;
-	vector3f m_position = vector3f(0.0f, 0.0f, -5.0f);
-	vector3f m_forward = vector3f(0.0f, 0.0f, 1.0f);
-	vector3f m_lookAt = vector3f(0.0f, 0.0f, 0.0f);
-	vector3f m_up = vector3f(0.0f, 1.0f, 0.0f);
+	Vector3 m_position = Vector3(0.0f, 0.0f, -5.0f);
+	Vector3 m_forward = Vector3(0.0f, 0.0f, 1.0f);
+	Vector3 m_lookAt = Vector3(0.0f, 0.0f, 0.0f);
+	Vector3 m_up = Vector3(0.0f, 1.0f, 0.0f);
 
-	matrix44f m_view = {};
-	matrix44f m_projection = {};
+	Matrix m_view = {};
+	Matrix m_projection = {};
 
 private:
 	void updateControls();
@@ -43,12 +43,12 @@ public:
 		m_mainCamera = this;
 	}
 
-	FORCEINLINE void setPosition(vector3f position)
+	FORCEINLINE void setPosition(Vector3 position)
 	{
 		m_position = position;
 	}
 
-	FORCEINLINE void setLookAt(vector3f lookAt)
+	FORCEINLINE void setLookAt(Vector3 lookAt)
 	{
 		m_lookAt = lookAt;
 	}
@@ -64,7 +64,7 @@ public:
 		m_xfov = fov;
 	}
 
-	void fix(Ptr<Entity> entity, vector3f offset);
+	void fix(Ptr<Entity> entity, Vector3 offset);
 
 public:
 	/// <summary>

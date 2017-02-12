@@ -7,7 +7,7 @@
 
 // includes
 #include "../Utils/Types.h"
-#include "../Core/Math.h"
+#include "../Core/Math/Math.h"
 #include <bgfx/bgfx.h>
 
 class Mesh
@@ -19,10 +19,10 @@ private:
 	bgfx::VertexBufferHandle m_vertexBuffer = {};
 	bgfx::IndexBufferHandle m_indexBuffer = {};
 
-	vector3f* m_vertices = nullptr;
-	vector2f* m_uvs = nullptr;
-	vector3f* m_normals = nullptr;
-	vector4f* m_colors = nullptr;
+	Vector3* m_vertices = nullptr;
+	Vector2* m_uvs = nullptr;
+	Vector3* m_normals = nullptr;
+	//vector4f* m_colors = nullptr;
 	uint* m_indices = nullptr;
 
 	uint m_vertices_count = 0u;
@@ -42,7 +42,7 @@ public:
 	/// </summary>
 	/// <param name="vertices">Vertices pointer.</param>
 	/// <param name="count">The count of vertices.</param>
-	void setVertices(vector3f* vertices, uint count);
+	void setVertices(Vector3* vertices, uint count);
 
 	/// <summary>
 	/// Set uvs for this mesh.
@@ -51,7 +51,7 @@ public:
 	/// </summary>
 	/// <param name="uvs">Uvs pointer.</param>
 	/// <param name="count">The count of uvs.</param>
-	void setUVs(vector2f* uvs, uint count);
+	void setUVs(Vector2* uvs, uint count);
 
 	/// <summary>
 	/// Set normals for this mesh.
@@ -60,7 +60,7 @@ public:
 	/// </summary>
 	/// <param name="normals">Normals pointer.</param>
 	/// <param name="count">The count of normals.</param>
-	void setNormals(vector3f* normals, uint count);
+	void setNormals(Vector3* normals, uint count);
 
 	/// <summary>
 	/// Set colors for this mesh.
@@ -69,7 +69,7 @@ public:
 	/// </summary>
 	/// <param name="colors">Colors pointer.</param>
 	/// <param name="count">The count of colors.</param>
-	void setColors(vector4f* colors, uint count);
+	//void setColors(vector4f* colors, uint count);
 
 	/// <summary>
 	/// Set indices for this mesh.

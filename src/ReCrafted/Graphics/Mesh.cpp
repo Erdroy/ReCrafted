@@ -8,29 +8,29 @@ void Mesh::init()
 
 }
 
-void Mesh::setVertices(vector3f* vertices, uint count)
+void Mesh::setVertices(Vector3* vertices, uint count)
 {
 	m_vertices = vertices;
 	m_vertices_count = count;
 }
 
-void Mesh::setUVs(vector2f* uvs, uint count)
+void Mesh::setUVs(Vector2* uvs, uint count)
 {
 	m_uvs = uvs;
 	m_uvs_count = count;
 }
 
-void Mesh::setNormals(vector3f* normals, uint count)
+void Mesh::setNormals(Vector3* normals, uint count)
 {
 	m_normals = normals;
 	m_normals_count = count;
 }
 
-void Mesh::setColors(vector4f* colors, uint count)
+/*void Mesh::setColors(vector4f* colors, uint count)
 {
 	m_colors = colors;
 	m_colors_count = count;
-}
+}*/
 
 void Mesh::setIndices(uint* indices, uint count)
 {
@@ -63,8 +63,8 @@ void Mesh::applyChanges()
 	if (m_normals) 
 		m_vertexdecl.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float);
 
-	if (m_colors) 
-		m_vertexdecl.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float);
+	//if (m_colors) 
+	//	m_vertexdecl.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float);
 
 	m_vertexdecl.end();
 
@@ -80,26 +80,26 @@ void Mesh::applyChanges()
 
 		auto vertice = m_vertices[i];
 
-		memcpy(memoryPtr + offset + dataOffset, &vertice, sizeof(float) * vertice.size());
+		memcpy(memoryPtr + offset + dataOffset, &vertice, sizeof(float) * 3);
 		dataOffset += 3 * sizeof(float);
 
 		if(m_uvs)
 		{
 			auto uv = m_uvs[i];
-			memcpy(memoryPtr + offset + dataOffset, &uv, sizeof(float) * uv.size());
+			memcpy(memoryPtr + offset + dataOffset, &uv, sizeof(float) * 2);
 			dataOffset += 2 * sizeof(float);
 		}
 		if (m_normals)
 		{
 			auto normal = m_normals[i];
-			memcpy(memoryPtr + offset + dataOffset, &normal, sizeof(float) * normal.size());
+			memcpy(memoryPtr + offset + dataOffset, &normal, sizeof(float) * 3);
 			dataOffset += 3 * sizeof(float);
 		}
-		if (m_colors)
+		/*if (m_colors)
 		{
 			auto color = m_colors[i];
 			memcpy(memoryPtr + offset + dataOffset, &color, sizeof(float) * color.size());
-		}
+		}*/
 	}
 
 	// allocate memory for index buffer
@@ -119,7 +119,7 @@ void Mesh::applyChanges()
 	m_vertices = nullptr;
 	m_uvs = nullptr;
 	m_normals = nullptr;
-	m_colors = nullptr;
+	//m_colors = nullptr;
 	m_indices = nullptr;
 }
 
@@ -129,7 +129,7 @@ void Mesh::dispose()
 	m_vertices = nullptr;
 	m_uvs = nullptr;
 	m_normals = nullptr;
-	m_colors = nullptr;
+	//m_colors = nullptr;
 	m_indices = nullptr;
 
 	m_vertices_count = 0u;

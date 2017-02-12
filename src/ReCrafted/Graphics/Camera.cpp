@@ -10,39 +10,38 @@ Camera* Camera::m_mainCamera;
 
 void Camera::updateControls()
 {
-	vector3f direction = {};
+	Vector3 direction = {};
 
 	if (Input::isKey(Key_W))
-		direction += vector3f(0.0f, 0.0f, 1.0f);
+		direction += Vector3(0.0f, 0.0f, 1.0f);
 
 	if (Input::isKey(Key_S))
-		direction += vector3f(0.0f, 0.0f, -1.0f);
+		direction += Vector3(0.0f, 0.0f, -1.0f);
 
 	if (Input::isKey(Key_A))
-		direction += vector3f(-1.0f, 0.0f, 0.0f);
+		direction += Vector3(-1.0f, 0.0f, 0.0f);
 
 	if (Input::isKey(Key_D))
-		direction += vector3f(1.0f, 0.0f, 0.0f);
+		direction += Vector3(1.0f, 0.0f, 0.0f);
 
 	if (Input::isKey(Key_Q))
-		direction += vector3f(0.0f, -1.0f, 0.0f);
+		direction += Vector3(0.0f, -1.0f, 0.0f);
 
 	if (Input::isKey(Key_E))
-		direction += vector3f(0.0f, 1.0f, 0.0f);
+		direction += Vector3(0.0f, 1.0f, 0.0f);
 
-	direction = direction.normalize();
+	direction.normalize();
 
-	direction *= Time::deltaTime();
+	//direction *= Time::deltaTime();
 
-	if(direction.length() > 0.0001f)
-		m_position = m_position + direction;
+	if(abs(direction.X + direction.Y + direction.Z) > 0.0001f)
+		m_position += direction;
 }
 
 void Camera::updatePerspective()
 {
 	// create projection matrix
-	matrix_perspective_xfov_LH(m_projection, m_xfov, GameCore::getAspectRatio(), m_nearPlane, m_farPlane, z_clip_zero);
-	m_projection = m_projection.transpose();
+	Matrix::createPerspectiveFovLH(m_xfov, GameCore::getAspectRatio(), m_nearPlane, m_farPlane, &m_projection);
 }
 
 void Camera::update()
@@ -55,8 +54,7 @@ void Camera::update()
 	m_lookAt = m_position + m_forward;
 
 	// create view matrix
-	matrix_look_at_LH(m_view, m_position, m_lookAt, m_up);
-	m_view = m_view.transpose();
+	Matrix::createViewLH(m_position, m_lookAt, m_up, &m_view);
 
 	// update frustum
 	// TODO: camera frustum for culling

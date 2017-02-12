@@ -7,7 +7,7 @@
 
 // includes
 #include "../../recraftedPrerequisites.h"
-#include "Math.h"
+#include "Vector3.h"
 
 struct Matrix
 {
@@ -120,6 +120,11 @@ public:
 		return m;
 	}
 
+	FORCEINLINE static void createPerspectiveFovLH(float xfov, float aspect, float znear, float zfar, Matrix* result)
+	{
+		*result = createPerspectiveFovLH(xfov, aspect, znear, zfar);
+	}
+
 
 	FORCEINLINE static Matrix createViewLH(Vector3 position, Vector3 forward, Vector3 up)
 	{
@@ -148,6 +153,11 @@ public:
 		m.M32 = -Vector3::dot(zAxis, position);
 
 		return m;
+	}
+
+	FORCEINLINE static void createViewLH(Vector3 position, Vector3 forward, Vector3 up, Matrix* result)
+	{
+		*result = createViewLH(position, forward, up);
 	}
 
 public:

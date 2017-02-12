@@ -8,9 +8,9 @@
 // includes
 #include "../Utils/Defines.h"
 #include "../Utils/Types.h"
-#include "../Core/Math.h"
 #include "Mesh.h"
 #include "Shader.h"
+#include "../Core/Math/Math.h"
 
 /// <summary>
 /// Rendering class.
@@ -70,7 +70,7 @@ public:
 	/// <param name="mesh">Mesh to draw.</param>
 	/// <param name="shader">Shader that will be used to shade the mesh.</param>
 	/// <param name="modelMatrix">Matrix which includes translation, rotation and scale of this mesh for rendering.</param>
-	void draw(Ptr<Mesh> mesh, Ptr<Shader> shader, matrix44f modelMatrix = {});
+	void draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix = nullptr);
 
 	/// <summary>
 	/// Dispose everything.
