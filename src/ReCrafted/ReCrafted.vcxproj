@@ -204,6 +204,10 @@
     <ClInclude Include="Core\GameCore.h" />
     <ClInclude Include="Core\Input.h" />
     <ClInclude Include="Core\Math.h" />
+    <ClInclude Include="Core\Math\Math.h" />
+    <ClInclude Include="Core\Math\Matrix.h" />
+    <ClInclude Include="Core\Math\Vector2.h" />
+    <ClInclude Include="Core\Math\Vector3.h" />
     <ClInclude Include="Core\Time.h" />
     <ClInclude Include="Game\Addons\Addon.h" />
     <ClInclude Include="Game\Addons\AddonLoader.h" />

@@ -8,5 +8,6 @@ $input position
 VertexShader()
 {
 	gl_Position = mul(vec4(position, 1.0), u_modelViewProj);
+	//gl_Position = mul(u_modelViewProj, vec4(position, 1.0));
 	//gl_Position = vec4(position, 1.0);
 }
