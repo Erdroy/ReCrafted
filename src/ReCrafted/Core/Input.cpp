@@ -15,11 +15,14 @@ void Input::emit(bool up, uint key)
 	m_keys[key] = up ? 0 : 1;
 }
 
-void Input::update(uint cursorX, uint cursorY)
+void Input::update(int cursorX, int cursorY)
 {
 	// copy all keys
 	for (auto i = 0; i < INPUT_TABLE_SIZE; i++)
 		m_lastkeys[i] = m_keys[i];
+
+	// update cursor pos
+	m_cursorPos = vec2(float(cursorX), float(cursorY));
 }
 
 void Input::releaseAll()

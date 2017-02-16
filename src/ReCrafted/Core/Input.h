@@ -8,6 +8,7 @@
 // includes
 #include "../Utils/Defines.h"
 #include "../Utils/Types.h"
+#include "../Core/Math/math.h"
 
 #define INPUT_KEYCOUNT 256
 #define INPUT_TABLE_SIZE INPUT_KEYCOUNT + 3
@@ -32,6 +33,8 @@ private:
 	byte m_lastkeys[INPUT_TABLE_SIZE] = {};
 	byte m_keys[INPUT_TABLE_SIZE] = {};
 
+	vec2 m_cursorPos = {};
+
 public:
 	/// <summary>
 	/// Default Input class constructor.
@@ -45,7 +48,7 @@ public:
 	void emit(bool up, uint key);
 
 	// INTERNAL
-	void update(uint cursorX, uint cursorY);
+	void update(int cursorX, int cursorY);
 
 	// INTERNAL
 	// releases all keys
@@ -86,6 +89,15 @@ public:
 	{
 		auto keyId = INPUT_KEY_TO_KEYID(key);
 		return m_instance->m_keys[keyId] == 1 && m_instance->m_lastkeys[keyId] == 1;
+	}
+
+	/// <summary>
+	/// Returns current cursor's position in client-space.
+	/// </summary>
+	/// <returns>The position.</returns>
+	FORCEINLINE Vector2 getCursorPos()
+	{
+		return m_instance->m_cursorPos;
 	}
 
 	/// <summary>

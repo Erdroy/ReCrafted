@@ -39,7 +39,7 @@ void Camera::updateControls()
 		m_position += direction;
 
 	// update look
-
+	
 }
 
 void Camera::updatePerspective()

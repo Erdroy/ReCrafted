@@ -10,6 +10,9 @@ GameBase* gameBase_instance;
 
 HWND m_window = nullptr;
 
+int m_cursorX = 0u;
+int m_cursorY = 0u;
+
 #define GAMEBASE_CHECK_SHUTDOWN if (!m_running) break;
 
 LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -73,6 +76,13 @@ LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		return 0;
 	}
 
+	// cursor
+	case WM_MOUSEMOVE:
+	{
+		m_cursorX = LOWORD(lparam);
+		m_cursorY = HIWORD(lparam);
+		return 0;
+	}
 
 	// default
 	default: 
@@ -92,6 +102,8 @@ void GameBase::run()
 
 	auto instance = getHInstance();
 
+	// TODO: load game config
+
 	// create gamewindow
 	WNDCLASSEX wnd;
 	memset(&wnd, 0, sizeof(wnd));
@@ -107,6 +119,8 @@ void GameBase::run()
 
 	m_window = CreateWindowW(L"recrafted", L"ReCrafted", WS_OVERLAPPEDWINDOW | WS_VISIBLE, 0, 0, 1280, 720, NULL, NULL, instance, nullptr);
 
+
+	// initialize bgfx platform data
 	bgfx::PlatformData pd;
 	memset(&pd, 0, sizeof(pd));
 	pd.nwh = m_window;
@@ -121,9 +135,8 @@ void GameBase::run()
 
 	while (m_running) // main loop
 	{
-
 		// update input
-		m_input->update(0u, 0u);
+		m_input->update(m_cursorX, m_cursorY);
 
 		// process input
 		MSG msg;
