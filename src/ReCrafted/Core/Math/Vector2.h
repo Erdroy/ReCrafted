@@ -21,12 +21,35 @@ public:
 		Y = 0.0f;
 	}
 
-	Vector2(float x, float y)
+	Vector2(float x, float y) : X(x), Y(y)
 	{
 		
 	}
 
 public:
+
+
+public:
+	void Vector2::operator -= (Vector2 r) {
+		X -= r.X;
+		Y -= r.Y;
+	}
+
+	void Vector2::operator += (Vector2 r) {
+		X += r.X;
+		Y += r.Y;
+	}
+
+
+	Vector2 Vector2::operator - (Vector2 r) const
+	{
+		return Vector2(X - r.X, Y - r.Y);
+	}
+
+	Vector2 Vector2::operator + (Vector2 r) const
+	{
+		return Vector2(X + r.X, Y + r.Y);
+	}
 
 public:
 	/// <summary>

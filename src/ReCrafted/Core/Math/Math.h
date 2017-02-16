@@ -5,10 +5,13 @@
 #define MATH_H
 
 // includes
-#include "Matrix.h"
+#include <cmath>
 
+#include "Matrix.h"
 #include "Vector2.h"
 #include "Vector3.h"
+
+#define PI 3.14159265358979323846
 
 typedef Vector2 vec2;
 typedef Vector3 vec3;
@@ -24,5 +27,47 @@ typedef Vector2 float2;
 typedef Vector3 float3;
 //typedef Vector4 float4;
 typedef Matrix float4x4;
+
+namespace internal{
+	const float degtorad = float(PI / 180.0f);
+	const float radtodeg = float(180.0f / PI);
+}
+
+class Math
+{
+
+public:
+	template<class T>
+	FORCEINLINE static T clmap(T v, T min, T max)
+	{
+		if (v < min)
+			return min;
+
+		if (v > max)
+			return max;
+
+		return v;
+	}
+
+	FORCEINLINE static float cosx(float x)
+	{
+		return cos(x);
+	}
+
+	FORCEINLINE static float sinx(float x)
+	{
+		return sin(x);
+	}
+
+	FORCEINLINE static float degreeToRadian(float degree)
+	{
+		return degree * internal::degtorad;
+	}
+
+	FORCEINLINE static float radianToDegree(float radiand)
+	{
+		return radiand * internal::radtodeg;
+	}
+};
 
 #endif // MATH_H

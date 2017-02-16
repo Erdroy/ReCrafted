@@ -34,7 +34,7 @@ public:
 	{
 		// out of scope, close the file
 		if (m_file) 
-			Close();
+			close();
 	}
 
 	/// <summary>
@@ -43,7 +43,7 @@ public:
 	/// <param name="buffer">The buffer pointer.</param>
 	/// <param name="length">How much bytes read?</param>
 	/// <param name="offset">The offset in bytes where should start.</param>
-	void Read(void* buffer, size_t length, size_t offset = 0) const
+	void read(void* buffer, size_t length, size_t offset = 0) const
 	{
 		// set offset
 		fseek(m_file, long(offset), SEEK_SET);
@@ -59,15 +59,15 @@ public:
 	/// Read whole file to the buffer.
 	/// </summary>
 	/// <param name="buffer">The buffer pointer.</param>
-	void Read(void* buffer) const
+	void read(void* buffer) const
 	{
-		Read(buffer, FileSize);
+		read(buffer, FileSize);
 	}
 
 	/// <summary>
 	/// Close the file. This will be called automatically when File strcture is out of scope.
 	/// </summary>
-	FORCEINLINE void Close()
+	FORCEINLINE void close()
 	{
 		fclose(m_file);
 		m_file = nullptr;
@@ -94,14 +94,34 @@ struct OpenMode
 /// </summary>
 class Platform
 {
+	friend class GameBase;
+
+private:
+	static HWND m_gameWindow;
+
+private:
+	static void setGameWindow(HWND gameWindow)
+	{
+		m_gameWindow = gameWindow;
+	}
+
 public:
+
+	/// <summary>
+	/// Gets the main game window handle.
+	/// </summary>
+	/// <returns>The game window handle.</returns>
+	FORCEINLINE static HWND getGameWindow()
+	{
+		return m_gameWindow;
+	}
 
 	/// <summary>
 	/// Check does file exists,
 	/// </summary>
 	/// <param name="fileName">The file path and name. Using working directory.</param>
 	/// <returns>True when file exists.</returns>
-	FORCEINLINE static bool FileExists(const char* fileName)
+	FORCEINLINE static bool fileExists(const char* fileName)
 	{
 		FILE* file;
 
@@ -125,7 +145,7 @@ public:
 	/// <param name="fileName">The file path and name. Using working directory.</param>
 	/// <param name="fileOpenMode">The open mode.</param>
 	/// <returns>File.</returns>
-	FORCEINLINE static void OpenFile(File* file, const char* fileName, OpenMode::Enum fileOpenMode = OpenMode::OpenReadWrite)
+	FORCEINLINE static void openFile(File* file, const char* fileName, OpenMode::Enum fileOpenMode = OpenMode::OpenReadWrite)
 	{
 		strcpy_s(file->FileName, fileName);
 
@@ -166,7 +186,7 @@ public:
 	/// Get the current working directory.
 	/// </summary>
 	/// <param name="buffer">Output buffer.</param>
-	FORCEINLINE static void GetWorkingDirectory(char* buffer)
+	FORCEINLINE static void getWorkingDirectory(char* buffer)
 	{
 		char i_buffer[MAX_PATH];
 		GetModuleFileNameA(nullptr, i_buffer, MAX_PATH);

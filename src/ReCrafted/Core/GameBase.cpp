@@ -4,11 +4,11 @@
 #include "../Utils/Defines.h"
 
 #include <Windows.h>
+#include "../Platform/Platform.Windows.h"
 
 GameBase* GameBase::m_instance;
-GameBase* gameBase_instance;
 
-HWND m_window = nullptr;
+GameBase* gameBase_instance;
 
 int m_cursorX = 0u;
 int m_cursorY = 0u;
@@ -117,13 +117,13 @@ void GameBase::run()
 	wnd.hIconSm = LoadIcon(nullptr, IDI_APPLICATION);
 	RegisterClassEx(&wnd);
 
-	m_window = CreateWindowW(L"recrafted", L"ReCrafted", WS_OVERLAPPEDWINDOW | WS_VISIBLE, 0, 0, 1280, 720, NULL, NULL, instance, nullptr);
+	Platform::setGameWindow(CreateWindowW(L"recrafted", L"ReCrafted", WS_OVERLAPPEDWINDOW | WS_VISIBLE, 0, 0, 1280, 720, NULL, NULL, instance, nullptr));
 
 
 	// initialize bgfx platform data
 	bgfx::PlatformData pd;
 	memset(&pd, 0, sizeof(pd));
-	pd.nwh = m_window;
+	pd.nwh = Platform::getGameWindow();
 	bgfx::setPlatformData(pd);
 
 
@@ -147,9 +147,6 @@ void GameBase::run()
 			DispatchMessage(&msg);
 		}
 
-		// TODO: delta time
-		//m_time->SetDeltaTime(???);
-
 		// frame
 		{
 			onUpdate(); GAMEBASE_CHECK_SHUTDOWN
@@ -162,7 +159,7 @@ void GameBase::run()
 	onUnload();
 
 	// destroy gamewindow
-	DestroyWindow(m_window);
+	DestroyWindow(Platform::getGameWindow());
 }
 
 void GameBase::shutdown()

@@ -72,7 +72,7 @@ void GameCore::onUpdate()
 	auto freq = double(bx::getHPFrequency());
 	auto toMs = 1000.0 / freq;
 
-	Time::m_instance->m_deltaTime = double(frameTime)*toMs;
+	Time::m_instance->m_deltaTime = double(frameTime)*toMs; // TODO: better deltatime calculation
 
 	// exit the game when `escape` key is pressed
 	if (Input::isKeyDown(Key_Escape))

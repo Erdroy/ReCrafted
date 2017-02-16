@@ -5,7 +5,7 @@
 
 void Shader::init(const char* vs, const char* fs)
 {
-	if(!Platform::FileExists(vs) || !Platform::FileExists(fs))
+	if(!Platform::fileExists(vs) || !Platform::fileExists(fs))
 	{
 		_ASSERT(false); // throw error
 	}
@@ -14,19 +14,22 @@ void Shader::init(const char* vs, const char* fs)
 	File fs_file = {};
 
 	// open files
-	Platform::OpenFile(&vs_file, vs, OpenMode::OpenRead);
-	Platform::OpenFile(&fs_file, fs, OpenMode::OpenRead);
+	Platform::openFile(&vs_file, vs, OpenMode::OpenRead);
+	Platform::openFile(&fs_file, fs, OpenMode::OpenRead);
 
 	auto vs_memory = bgfx::alloc(static_cast<uint>(vs_file.FileSize));
 	auto fs_memory = bgfx::alloc(static_cast<uint>(fs_file.FileSize));
 
-	vs_file.Read(vs_memory->data);
-	fs_file.Read(fs_memory->data);
+	vs_file.read(vs_memory->data);
+	fs_file.read(fs_memory->data);
 
 	m_vertexshader = createShader(vs_memory);
 	m_fragmentshader = createShader(fs_memory);
 
 	m_program = createProgram(m_vertexshader, m_fragmentshader, true);
+
+	vs_file.close();
+	fs_file.close();
 }
 
 Ptr<Shader> Shader::loadShader(const char* shaderName)
