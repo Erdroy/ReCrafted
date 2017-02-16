@@ -10,7 +10,6 @@ bgfx::UniformHandle _wvp;
 void Rendering::init()
 {
 	// load all shaders
-
 	m_testMesh = Mesh::createMesh();
 
 	Vector3 vertices[] = {
@@ -22,9 +21,10 @@ void Rendering::init()
 	m_testMesh->setVertices(vertices, 4);
 
 	uint indices[] = {
-		2, 1, 0
+		2, 1, 0,
+		0, 3, 2
 	};
-	m_testMesh->setIndices(indices, 3);
+	m_testMesh->setIndices(indices, 6);
 
 	m_testMesh->applyChanges();
 
@@ -49,10 +49,6 @@ void Rendering::beginRender()
 
 	// update main camera
 	Camera::m_mainCamera->update();
-
-
-	// update shaders uniforms
-	//bgfx::setViewTransform(0, &view, &proj);
 }
 
 void Rendering::endRender()
@@ -78,8 +74,6 @@ void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix)
 {
 	setVertexBuffer(mesh->m_vertexBuffer);
 	setIndexBuffer(mesh->m_indexBuffer);
-
-	//bgfx::setTransform(modelMatrix);
 
 	auto view = Camera::m_mainCamera->m_view;
 	auto proj = Camera::m_mainCamera->m_projection;

@@ -10,6 +10,7 @@ Camera* Camera::m_mainCamera;
 
 void Camera::updateControls()
 {
+	// update movement
 	Vector3 direction = {};
 
 	if (Input::isKey(Key_W))
@@ -36,6 +37,9 @@ void Camera::updateControls()
 
 	if(direction.length() > 0.0f)
 		m_position += direction;
+
+	// update look
+
 }
 
 void Camera::updatePerspective()

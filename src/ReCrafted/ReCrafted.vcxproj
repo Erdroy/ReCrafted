@@ -71,7 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\bin\</OutDir>
+    <OutDir>..\..\build\bin32\</OutDir>
     <IntDir>..\.vs\rc_x64_r\</IntDir>
     <TargetName>ReCrafted</TargetName>
     <IncludePath>..\..\inc;$(IncludePath)</IncludePath>
@@ -79,7 +79,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\bin64\</OutDir>
+    <OutDir>..\..\build\bin64\</OutDir>
     <IntDir>..\.vs\rc_x86_64_d\</IntDir>
     <TargetName>ReCrafted</TargetName>
     <IncludePath>..\..\inc;$(IncludePath)</IncludePath>
@@ -87,7 +87,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\bin\</OutDir>
+    <OutDir>..\..\build\bin32\</OutDir>
     <IntDir>..\.vs\rc_x86_r\</IntDir>
     <TargetName>ReCrafted</TargetName>
     <IncludePath>..\..\inc;$(IncludePath)</IncludePath>
@@ -95,7 +95,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\bin64\</OutDir>
+    <OutDir>..\..\build\bin64\</OutDir>
     <IntDir>..\.vs\rc_x86_64_r\</IntDir>
     <TargetName>ReCrafted</TargetName>
     <IncludePath>..\..\inc;$(IncludePath)</IncludePath>

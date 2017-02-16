@@ -10,7 +10,7 @@ echo Build number: %VAR%
 set /P VER= < version.txt
 
 echo Creating gameinfo file...
-tools\\ReCrafted.VersionBuilder.exe %VER% buildNum.txt assets\\gameinfo.json
+tools\\ReCrafted.VersionBuilder.exe %VER% buildNum.txt build\\assets\\gameinfo.json
 
 tools\\ReCrafted.ShaderCompiler2.exe %1%
 
