@@ -25,7 +25,10 @@ public:
 
 public:
 
-	void normalize()
+	/// <summary>
+	/// Normalize this vector.
+	/// </summary>
+	FORCEINLINE void normalize()
 	{
 		// i = 1 / sqrt(v.x*v.x + v.y*v.y)
 		// v = v*i
@@ -35,6 +38,15 @@ public:
 		X = X * i;
 		Y = Y * i;
 		Z = Z * i;
+	}
+
+	/// <summary>
+	/// Calculate length of this vector.
+	/// </summary>
+	/// <returns>The length of this vector.</returns>
+	FORCEINLINE float length() const
+	{
+		return sqrt(X*X + Y*Y + Z*Z);
 	}
 
 public:
@@ -49,6 +61,16 @@ public:
 	FORCEINLINE static void normalize(Vector3 vector, Vector3* result)
 	{
 		*result = normalize(vector);
+	}
+
+	FORCEINLINE static float length(Vector3 vector)
+	{
+		return vector.length();
+	}
+
+	FORCEINLINE static void length(Vector3 vector, float* result)
+	{
+		*result = length(vector);
 	}
 
 	FORCEINLINE static float dot(Vector3 a, Vector3 b)
