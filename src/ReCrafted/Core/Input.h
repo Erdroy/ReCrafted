@@ -9,6 +9,7 @@
 #include "../Utils/Defines.h"
 #include "../Utils/Types.h"
 #include "../Core/Math/math.h"
+#include "../Platform/Platform.Windows.h"
 
 #define INPUT_KEYCOUNT 256
 #define INPUT_TABLE_SIZE INPUT_KEYCOUNT + 3
@@ -95,9 +96,21 @@ public:
 	/// Returns current cursor's position in client-space.
 	/// </summary>
 	/// <returns>The position.</returns>
-	FORCEINLINE Vector2 getCursorPos()
+	FORCEINLINE static Vector2 getCursorPos()
 	{
 		return m_instance->m_cursorPos;
+	}
+
+	FORCEINLINE static void setCursorPos(int x, int y)
+	{
+#if _WIN32
+		POINT point = {};
+		point.x = long(x);
+		point.y = long(y);
+
+		ClientToScreen(Platform::getGameWindow(), &point);
+		SetCursorPos(point.x, point.y);
+#endif
 	}
 
 	/// <summary>

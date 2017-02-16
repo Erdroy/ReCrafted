@@ -13,18 +13,24 @@ void Rendering::init()
 	m_testMesh = Mesh::createMesh();
 
 	Vector3 vertices[] = {
-		Vector3(-0.5f, -0.5f, 0.0f),
-		Vector3(-0.5f,  0.5f, 0.0f),
-		Vector3( 0.5f,  0.5f, 0.0f),
-		Vector3( 0.5f, -0.5f, 0.0f),
+		Vector3(-1.0f, -1.0f, 0.0f),
+		Vector3( 1.0f,  1.0f, 0.0f),
+		Vector3( 1.0f, -1.0f, 0.0f),
+
+		Vector3(-5.0f, -2.0f, -5.0f),
+		Vector3(-5.0f, -2.0f,  5.0f),
+		Vector3( 5.0f, -2.0f,  5.0f),
+		Vector3( 5.0f, -2.0f, -5.0f),
 	};
-	m_testMesh->setVertices(vertices, 4);
+	m_testMesh->setVertices(vertices, 7);
 
 	uint indices[] = {
 		2, 1, 0,
-		0, 3, 2
+
+		5, 4, 3,
+		3, 6, 5
 	};
-	m_testMesh->setIndices(indices, 6);
+	m_testMesh->setIndices(indices, 9);
 
 	m_testMesh->applyChanges();
 
@@ -35,6 +41,12 @@ void Rendering::init()
 
 void Rendering::resize(uint width, uint height)
 {
+	if (Camera::m_mainCamera == nullptr)
+	{
+		VS_LOG("WARNING: Main camera is not set to.");
+		return;
+	}
+
 	// update main camera perspective
 	Camera::m_mainCamera->updatePerspective();
 }

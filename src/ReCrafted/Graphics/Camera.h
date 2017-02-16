@@ -10,6 +10,8 @@
 #include "../Utils/Defines.h"
 #include "../Core/Math/Math.h"
 
+#define FILTERING_BUFFER_SIZE 3
+
 class Entity;
 
 class Camera
@@ -23,21 +25,38 @@ private:
 	bool m_freeMovement = false;
 	float m_nearPlane = 0.02f;
 	float m_farPlane = 500.0f;
-	float m_xfov = 0.75f;
+	float m_xfov = 75.0f;
 	Vector3 m_position = Vector3(0.0f, 0.0f, -5.0f);
 	Vector3 m_forward = Vector3(0.0f, 0.0f, 1.0f);
-	Vector3 m_lookAt = Vector3(0.0f, 0.0f, 0.0f);
 	Vector3 m_up = Vector3(0.0f, 1.0f, 0.0f);
+	Vector3 m_lookAt = {};
+	Vector3 m_rotation = {};
 
 	Matrix m_view = {};
 	Matrix m_projection = {};
 
+	Vector2 m_lastDelta = {};
+	Vector2 m_cursorDeltaBuffer[FILTERING_BUFFER_SIZE] = {};
+	uint m_cursorDeltaBufferPosition = 0u;
+
+	bool m_first = true;
+
 private:
+	void updateRotation();
 	void updateControls();
 	void updatePerspective();
 	void update();
 
 public:
+	Camera()
+	{
+		// clear filtering buffer
+		for(auto i = 0u; i < FILTERING_BUFFER_SIZE; i ++)
+		{
+			m_cursorDeltaBuffer[i] = {};
+		}
+	}
+
 	FORCEINLINE void setAsCurrent()
 	{
 		m_mainCamera = this;
