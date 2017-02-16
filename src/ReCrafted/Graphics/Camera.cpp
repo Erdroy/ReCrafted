@@ -32,9 +32,9 @@ void Camera::updateControls()
 
 	direction.normalize();
 
-	//direction *= Time::deltaTime();
+	direction *= float(Time::deltaTime());
 
-	if(abs(direction.X + direction.Y + direction.Z) > 0.0001f)
+	if(direction.length() > 0.0f)
 		m_position += direction;
 }
 

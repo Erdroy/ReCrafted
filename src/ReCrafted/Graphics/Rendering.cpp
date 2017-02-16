@@ -5,6 +5,7 @@
 
 Rendering* Rendering::m_instance;
 
+bgfx::UniformHandle _wvp;
 
 void Rendering::init()
 {
@@ -21,12 +22,13 @@ void Rendering::init()
 	m_testMesh->setVertices(vertices, 4);
 
 	uint indices[] = {
-		2, 1, 0,
-		0, 3, 2
+		2, 1, 0
 	};
-	m_testMesh->setIndices(indices, 6);
+	m_testMesh->setIndices(indices, 3);
 
 	m_testMesh->applyChanges();
+
+	_wvp = bgfx::createUniform("WVP", bgfx::UniformType::Mat4);
 
 	m_testShader = Shader::loadShader("testShader");
 }
@@ -48,11 +50,9 @@ void Rendering::beginRender()
 	// update main camera
 	Camera::m_mainCamera->update();
 
-	auto view = Camera::m_mainCamera->m_view;
-	auto proj = Camera::m_mainCamera->m_projection;
 
 	// update shaders uniforms
-	bgfx::setViewTransform(0, &view, &proj);
+	//bgfx::setViewTransform(0, &view, &proj);
 }
 
 void Rendering::endRender()
@@ -79,14 +79,22 @@ void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix)
 	setVertexBuffer(mesh->m_vertexBuffer);
 	setIndexBuffer(mesh->m_indexBuffer);
 
-	bgfx::setTransform(modelMatrix);
+	//bgfx::setTransform(modelMatrix);
+
+	auto view = Camera::m_mainCamera->m_view;
+	auto proj = Camera::m_mainCamera->m_projection;
+
+	auto mat = *modelMatrix * view * proj;
+	mat.transpose();
+
+	bgfx::setUniform(_wvp, &mat);
 
 	submit(0, shader->m_program);
 }
 
 void Rendering::dispose()
 {
-
+	bgfx::destroyUniform(_wvp);
 
 	// suicide
 	delete this;
