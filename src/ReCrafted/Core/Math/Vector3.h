@@ -72,7 +72,7 @@ public:
 	}
 
 public:
-	void operator -= (Vector3 r){
+	void Vector3::operator -= (Vector3 r){
 		X -= r.X;
 		Y -= r.Y;
 		Z -= r.Z;
@@ -84,10 +84,16 @@ public:
 		Z += r.Z;
 	}
 
+	void Vector3::operator *= (float value) {
+		X *= value;
+		Y *= value;
+		Z *= value;
+	}
+
 	/// <summary>
 	/// Result = Vector - Vector[r] operator
 	/// </summary>
-	Vector3 operator - (Vector3 r)
+	Vector3 Vector3::operator - (Vector3 r) const
 	{
 		return Vector3(X - r.X, Y - r.Y, Z - r.Z);
 	}
@@ -95,7 +101,7 @@ public:
 	/// <summary>
 	/// Result = Vector + Vector[r] operator
 	/// </summary>
-	Vector3 operator + (Vector3 r)
+	Vector3 Vector3::operator + (Vector3 r) const
 	{
 		return Vector3(X + r.X, Y + r.Y, Z + r.Z);
 	}

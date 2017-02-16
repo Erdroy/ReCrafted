@@ -161,6 +161,95 @@ public:
 	}
 
 public:
+	void Matrix::operator *= (Matrix r)
+	{
+		auto resultM11 = M00 * r.M00 + M01 * r.M10 + M02 * r.M20 + M03 * r.M30;
+		auto resultM12 = M00 * r.M01 + M01 * r.M11 + M02 * r.M21 + M03 * r.M31;
+		auto resultM13 = M00 * r.M02 + M01 * r.M12 + M02 * r.M22 + M03 * r.M32;
+		auto resultM14 = M00 * r.M03 + M01 * r.M13 + M02 * r.M23 + M03 * r.M33;
+
+		auto resultM21 = M10 * r.M00 + M11 * r.M10 + M12 * r.M20 + M13 * r.M30;
+		auto resultM22 = M10 * r.M01 + M11 * r.M11 + M12 * r.M21 + M13 * r.M31;
+		auto resultM23 = M10 * r.M02 + M11 * r.M12 + M12 * r.M22 + M13 * r.M32;
+		auto resultM24 = M10 * r.M03 + M11 * r.M13 + M12 * r.M23 + M13 * r.M33;
+
+		auto resultM31 = M20 * r.M00 + M21 * r.M10 + M22 * r.M20 + M23 * r.M30;
+		auto resultM32 = M20 * r.M01 + M21 * r.M11 + M22 * r.M21 + M23 * r.M31;
+		auto resultM33 = M20 * r.M02 + M21 * r.M12 + M22 * r.M22 + M23 * r.M32;
+		auto resultM34 = M20 * r.M03 + M21 * r.M13 + M22 * r.M23 + M23 * r.M33;
+
+		auto resultM41 = M30 * r.M00 + M31 * r.M10 + M32 * r.M20 + M33 * r.M30;
+		auto resultM42 = M30 * r.M01 + M31 * r.M11 + M32 * r.M21 + M33 * r.M31;
+		auto resultM43 = M30 * r.M02 + M31 * r.M12 + M32 * r.M22 + M33 * r.M32;
+		auto resultM44 = M30 * r.M03 + M31 * r.M13 + M32 * r.M23 + M33 * r.M33;
+
+		M00 = resultM11;
+		M01 = resultM12;
+		M02 = resultM13;
+		M03 = resultM14;
+
+		M10 = resultM21;
+		M11 = resultM22;
+		M12 = resultM23;
+		M13 = resultM24;
+
+		M20 = resultM31;
+		M21 = resultM32;
+		M22 = resultM33;
+		M23 = resultM34;
+
+		M30 = resultM41;
+		M31 = resultM42;
+		M32 = resultM43;
+		M33 = resultM44;
+	}
+
+	Matrix Matrix::operator*(Matrix r) const
+	{
+		auto resultM11 = M00 * r.M00 + M01 * r.M10 + M02 * r.M20 + M03 * r.M30;
+		auto resultM12 = M00 * r.M01 + M01 * r.M11 + M02 * r.M21 + M03 * r.M31;
+		auto resultM13 = M00 * r.M02 + M01 * r.M12 + M02 * r.M22 + M03 * r.M32;
+		auto resultM14 = M00 * r.M03 + M01 * r.M13 + M02 * r.M23 + M03 * r.M33;
+
+		auto resultM21 = M10 * r.M00 + M11 * r.M10 + M12 * r.M20 + M13 * r.M30;
+		auto resultM22 = M10 * r.M01 + M11 * r.M11 + M12 * r.M21 + M13 * r.M31;
+		auto resultM23 = M10 * r.M02 + M11 * r.M12 + M12 * r.M22 + M13 * r.M32;
+		auto resultM24 = M10 * r.M03 + M11 * r.M13 + M12 * r.M23 + M13 * r.M33;
+
+		auto resultM31 = M20 * r.M00 + M21 * r.M10 + M22 * r.M20 + M23 * r.M30;
+		auto resultM32 = M20 * r.M01 + M21 * r.M11 + M22 * r.M21 + M23 * r.M31;
+		auto resultM33 = M20 * r.M02 + M21 * r.M12 + M22 * r.M22 + M23 * r.M32;
+		auto resultM34 = M20 * r.M03 + M21 * r.M13 + M22 * r.M23 + M23 * r.M33;
+
+		auto resultM41 = M30 * r.M00 + M31 * r.M10 + M32 * r.M20 + M33 * r.M30;
+		auto resultM42 = M30 * r.M01 + M31 * r.M11 + M32 * r.M21 + M33 * r.M31;
+		auto resultM43 = M30 * r.M02 + M31 * r.M12 + M32 * r.M22 + M33 * r.M32;
+		auto resultM44 = M30 * r.M03 + M31 * r.M13 + M32 * r.M23 + M33 * r.M33;
+
+		auto matrix = Matrix();
+		matrix.M00 = resultM11;
+		matrix.M01 = resultM12;
+		matrix.M02 = resultM13;
+		matrix.M03 = resultM14;
+
+		matrix.M10 = resultM21;
+		matrix.M11 = resultM22;
+		matrix.M12 = resultM23;
+		matrix.M13 = resultM24;
+
+		matrix.M20 = resultM31;
+		matrix.M21 = resultM32;
+		matrix.M22 = resultM33;
+		matrix.M23 = resultM34;
+
+		matrix.M30 = resultM41;
+		matrix.M31 = resultM42;
+		matrix.M32 = resultM43;
+		matrix.M33 = resultM44;
+
+		return matrix;
+	}
+public:
 	/// <summary>
 	/// Matrix component, row 0 col 0
 	/// </summary>
