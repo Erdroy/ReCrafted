@@ -5,3 +5,4 @@ src/ReCrafted/.vs/
 *.opendb
 src/ShaderCompiler/obj/
 assets/shaders/
+src/ReCrafted.VersionBuilder/obj/

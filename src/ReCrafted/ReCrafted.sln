@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReCrafted", "ReCrafted.vcxp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReCrafted.ShaderCompiler", "..\ShaderCompiler\ReCrafted.ShaderCompiler.csproj", "{F59413D5-1BD2-45F9-A95F-5B5D802C7E8D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReCrafted.VersionBuilder", "..\ReCrafted.VersionBuilder\ReCrafted.VersionBuilder.csproj", "{AEC7181D-9896-4C25-AD00-10A46DEC0D04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,18 @@ Global
 		{F59413D5-1BD2-45F9-A95F-5B5D802C7E8D}.Release|x64.Build.0 = Release|Any CPU
 		{F59413D5-1BD2-45F9-A95F-5B5D802C7E8D}.Release|x86.ActiveCfg = Release|Any CPU
 		{F59413D5-1BD2-45F9-A95F-5B5D802C7E8D}.Release|x86.Build.0 = Release|Any CPU
+		{AEC7181D-9896-4C25-AD00-10A46DEC0D04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEC7181D-9896-4C25-AD00-10A46DEC0D04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEC7181D-9896-4C25-AD00-10A46DEC0D04}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AEC7181D-9896-4C25-AD00-10A46DEC0D04}.Debug|x64.Build.0 = Debug|Any CPU
+		{AEC7181D-9896-4C25-AD00-10A46DEC0D04}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AEC7181D-9896-4C25-AD00-10A46DEC0D04}.Debug|x86.Build.0 = Debug|Any CPU
+		{AEC7181D-9896-4C25-AD00-10A46DEC0D04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEC7181D-9896-4C25-AD00-10A46DEC0D04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEC7181D-9896-4C25-AD00-10A46DEC0D04}.Release|x64.ActiveCfg = Release|Any CPU
+		{AEC7181D-9896-4C25-AD00-10A46DEC0D04}.Release|x64.Build.0 = Release|Any CPU
+		{AEC7181D-9896-4C25-AD00-10A46DEC0D04}.Release|x86.ActiveCfg = Release|Any CPU
+		{AEC7181D-9896-4C25-AD00-10A46DEC0D04}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
