@@ -24,7 +24,6 @@ public:
 	Vector3(float x, float y, float z) : X(x), Y(y), Z(z) { }
 
 public:
-
 	/// <summary>
 	/// Normalize this vector.
 	/// </summary>
@@ -50,8 +49,6 @@ public:
 	}
 
 public:
-	
-
 	FORCEINLINE static Vector3 normalize(Vector3 vector)
 	{
 		vector.normalize();

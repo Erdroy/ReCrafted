@@ -15,8 +15,8 @@ void Camera::updateRotation()
 
 	// http://stackoverflow.com/questions/1568568/how-to-convert-euler-angles-to-directional-vector
 	m_forward.X = Math::sinx(yaw);
-	m_forward.Y = Math::sinx(pitch) * Math::cosx(yaw);
-	m_forward.Z = Math::cosx(pitch) * Math::cosx(yaw);
+	m_forward.Y = -(Math::sinx(pitch) * Math::cosx(yaw));
+	m_forward.Z = -(Math::cosx(pitch) * Math::cosx(yaw));
 }
 
 void Camera::updateControls()
@@ -77,7 +77,7 @@ void Camera::updateControls()
 	auto accelDelta = delta + m_lastDelta;
 
 	// apply camera rotation
-	m_rotation += Vector3(-accelDelta.X / 16.0f, -accelDelta.Y / 16.0f, 0.0f);
+	m_rotation += Vector3(accelDelta.X / 16.0f, -accelDelta.Y / 16.0f, 0.0f);
 	m_rotation.Y = Math::clmap(m_rotation.Y, -89.9f, 89.9f);
 
 	// update camera rotation
@@ -98,20 +98,14 @@ void Camera::update()
 	// update movement if this camera is 'free'.
 	if (m_freeMovement) 
 	{
-		if (m_first)
-		{
-			m_first = false;
-			Input::setCursorPos(GameCore::getWindowWidth() / 2, GameCore::getWindowHeight() / 2);
-			return;
-		}
 		updateControls(); // just do it!
-
+		
 		// lock position
 		Input::setCursorPos(GameCore::getWindowWidth() / 2, GameCore::getWindowHeight() / 2);
 	}
 
 	// update matrices
-	m_lookAt = m_position + m_forward;
+	m_lookAt = m_position - m_forward;
 
 	// create view matrix
 	Matrix::createViewLH(m_position, m_lookAt, m_up, &m_view);

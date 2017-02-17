@@ -48,7 +48,7 @@ namespace ShaderCompiler
             {
                 var fileName = new FileInfo(shader);
 
-                var outDir = args[0] + "assets\\shaders\\dx11\\" + fileName.Name + "\\";
+                var outDir = args[0] + "build\\assets\\shaders\\dx11\\" + fileName.Name + "\\";
                 if (!Directory.Exists(outDir))
                     Directory.CreateDirectory(outDir);
 

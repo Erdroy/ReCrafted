@@ -25,7 +25,7 @@ private:
 	bool m_freeMovement = false;
 	float m_nearPlane = 0.02f;
 	float m_farPlane = 500.0f;
-	float m_xfov = 75.0f;
+	float m_xfov = 0.75f;
 	Vector3 m_position = Vector3(0.0f, 0.0f, -5.0f);
 	Vector3 m_forward = Vector3(0.0f, 0.0f, 1.0f);
 	Vector3 m_up = Vector3(0.0f, 1.0f, 0.0f);
@@ -38,8 +38,6 @@ private:
 	Vector2 m_lastDelta = {};
 	Vector2 m_cursorDeltaBuffer[FILTERING_BUFFER_SIZE] = {};
 	uint m_cursorDeltaBufferPosition = 0u;
-
-	bool m_first = true;
 
 private:
 	void updateRotation();
