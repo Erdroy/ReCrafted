@@ -104,6 +104,10 @@ void GameBase::run()
 
 	// TODO: load game config
 
+	// initialize platform
+	Platform::initialize();
+
+#ifdef _WIN32
 	// create gamewindow
 	WNDCLASSEX wnd;
 	memset(&wnd, 0, sizeof(wnd));
@@ -117,8 +121,8 @@ void GameBase::run()
 	wnd.hIconSm = LoadIcon(nullptr, IDI_APPLICATION);
 	RegisterClassEx(&wnd);
 
-	Platform::setGameWindow(CreateWindowW(L"recrafted", L"ReCrafted", WS_OVERLAPPEDWINDOW | WS_VISIBLE, 0, 0, 1280, 720, NULL, NULL, instance, nullptr));
-
+	Platform::setGameWindow(CreateWindowW(L"recrafted", L"ReCrafted", WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 0, 0, NULL, NULL, instance, nullptr));
+#endif
 
 	// initialize bgfx platform data
 	bgfx::PlatformData pd;
@@ -126,15 +130,23 @@ void GameBase::run()
 	pd.nwh = Platform::getGameWindow();
 	bgfx::setPlatformData(pd);
 
-
 	// run
 	m_running = true;
 
 	// load game assets, initialize everything
 	onLoad();
 
+	// save start time
+	auto lastTime = Platform::getMiliseconds();
+
 	while (m_running) // main loop
 	{
+		// update time
+		auto currentTime = Platform::getMiliseconds();
+		Time::m_instance->m_deltaTime = 1 / ((currentTime - lastTime) / 1000.0);
+		Time::m_instance->m_time = float(currentTime / 1000.0);
+		lastTime = currentTime;
+
 		// update input
 		m_input->update(m_cursorX, m_cursorY);
 

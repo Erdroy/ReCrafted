@@ -6,5 +6,7 @@
 #include <Windows.h>
 #endif
 
+#include <ctime>
+
 #include "Utils/Defines.h"
 #include "Utils/Types.h"

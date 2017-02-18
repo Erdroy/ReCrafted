@@ -6,3 +6,4 @@ src/ReCrafted/.vs/
 src/ShaderCompiler/obj/
 assets/shaders/
 src/ReCrafted.VersionBuilder/obj/
+src/ReCrafted.VersionBuilder/bin/

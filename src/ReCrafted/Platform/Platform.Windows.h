@@ -120,6 +120,8 @@ public:
 		// initialize timer
 		QueryPerformanceFrequency(&m_frequency);
 		m_freqCoeff = double(m_frequency.QuadPart) / 1000.0;
+
+		m_start = getMiliseconds();
 	}
 
 	/// <summary>
@@ -130,7 +132,7 @@ public:
 	{
 		LARGE_INTEGER current;
 		QueryPerformanceCounter(&current);
-		return double(current.QuadPart) / m_freqCoeff;
+		return double(current.QuadPart) / m_freqCoeff - m_start;
 	}
 
 	/// <summary>
@@ -140,6 +142,20 @@ public:
 	FORCEINLINE static HWND getGameWindow()
 	{
 		return m_gameWindow;
+	}
+
+	/// <summary>
+	/// Get size of game window.
+	/// </summary>
+	/// <param name="width">(out)The width.</param>
+	/// <param name="height">(out)The height.</param>
+	FORCEINLINE static void getGameWindowSize(unsigned int* width, unsigned int* height)
+	{
+		RECT windowRect;
+		GetClientRect(m_gameWindow, &windowRect);
+
+		*width = windowRect.right - windowRect.left;
+		*height = windowRect.bottom - windowRect.top;
 	}
 
 	/// <summary>

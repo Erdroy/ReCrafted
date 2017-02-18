@@ -93,11 +93,16 @@ void Camera::updateControls()
 
 	direction *= float(Time::deltaTime());
 
+	direction *= 5.0f;
+
 	if(direction.length() > 0.0f)
 		m_position += direction;
 
 	// update look
-	auto center = Vector2(GameCore::getWindowWidth() / 2.0f, GameCore::getWindowHeight() / 2.0f);
+	auto center = Vector2(
+		round(GameCore::getWindowWidth() / 2.0f), 
+		round(GameCore::getWindowHeight() / 2.0f)
+	);
 
 	auto cursorPos = Input::getCursorPos();
 	auto rawDelta = center - cursorPos;
@@ -148,7 +153,10 @@ void Camera::update()
 		updateControls(); // just do it!
 		
 		// lock position
-		Input::setCursorPos(GameCore::getWindowWidth() / 2, GameCore::getWindowHeight() / 2);
+		Input::setCursorPos(
+			static_cast<int>(round(GameCore::getWindowWidth() / 2.0f)), 
+			static_cast<int>(round(GameCore::getWindowHeight() / 2.0f))
+		);
 	}
 
 	// update matrices

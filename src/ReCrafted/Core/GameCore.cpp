@@ -2,17 +2,19 @@
 
 #include "GameCore.h"
 #include "../Utils/Defines.h"
-#include <bx/timer.h>
 
 GameCore* GameCore::m_instance;
 
 void GameCore::onLoad()
 {
+	// get game window size
+	Platform::getGameWindowSize(&m_width, &m_height);
+
 	// initialize bgfx
 	bgfx::init(bgfx::RendererType::Direct3D11);
 	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC);
 
-	bgfx::setDebug(BGFX_DEBUG_STATS);
+	bgfx::setDebug(BGFX_DEBUG_NONE);
 
 	// Set view 0 clear state.
 	bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030FF, 1.0f, 0);
@@ -30,7 +32,7 @@ void GameCore::onLoad()
 
 	m_initialized = true;
 
-	m_timeOffset = bx::getHPCounter();
+	
 }
 
 void GameCore::onUnload()
@@ -63,16 +65,6 @@ void GameCore::onResize(uint width, uint height)
 void GameCore::onUpdate()
 {
 	// update event, called every frame
-	Time::m_instance->m_time = static_cast<float>((bx::getHPCounter() - m_timeOffset) / double(bx::getHPFrequency()));
-
-	auto now = bx::getHPCounter();
-	auto frameTime = now - m_lastTimeOffset;
-	m_lastTimeOffset = now;
-
-	auto freq = double(bx::getHPFrequency());
-	auto toMs = 1000.0 / freq;
-
-	Time::m_instance->m_deltaTime = double(frameTime)*toMs; // TODO: better deltatime calculation
 
 	// exit the game when `escape` key is pressed
 	if (Input::isKeyDown(Key_Escape))

@@ -10,6 +10,7 @@
 
 class Time
 {
+	friend class GameBase;
 	friend class GameCore;
 
 private:
