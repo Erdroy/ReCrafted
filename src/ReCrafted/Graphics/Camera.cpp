@@ -11,12 +11,48 @@ Camera* Camera::m_mainCamera;
 void Camera::updateRotation()
 {
 	auto yaw = Math::degreeToRadian(-m_rotation.Y);
-	auto pitch = Math::degreeToRadian(m_rotation.X);
+	auto pitch = Math::degreeToRadian(-m_rotation.X);
+	auto roll = 0.0f;
 
-	// http://stackoverflow.com/questions/1568568/how-to-convert-euler-angles-to-directional-vector
-	m_forward.X = Math::sinx(yaw);
-	m_forward.Y = -(Math::sinx(pitch) * Math::cosx(yaw));
-	m_forward.Z = -(Math::cosx(pitch) * Math::cosx(yaw));
+	auto yawOver2 = yaw * 0.5;
+	auto cosYawOver2 = float(cos(yawOver2));
+	auto sinYawOver2 = float(sin(yawOver2));
+
+	auto pitchOver2 = pitch * 0.5;
+	auto cosPitchOver2 = float(cos(pitchOver2));
+	auto sinPitchOver2 = float(sin(pitchOver2));
+
+	auto rollOver2 = roll * 0.5;
+	auto cosRollOver2 = float(cos(rollOver2));
+	auto sinRollOver2 = float(sin(rollOver2));
+	
+	// quaternion - from euler
+	auto W = cosYawOver2 * cosPitchOver2 * cosRollOver2 + sinYawOver2 * sinPitchOver2 * sinRollOver2;
+	auto X = sinYawOver2 * cosPitchOver2 * cosRollOver2 + cosYawOver2 * sinPitchOver2 * sinRollOver2;
+	auto Y = cosYawOver2 * sinPitchOver2 * cosRollOver2 - sinYawOver2 * cosPitchOver2 * sinRollOver2;
+	auto Z = cosYawOver2 * cosPitchOver2 * sinRollOver2 - sinYawOver2 * sinPitchOver2 * cosRollOver2;
+
+	// quaternion * axis
+	auto single = X * 2.0f;
+	auto single1 = Y * 2.0f;
+	auto single2 = Z * 2.0f;
+	auto single3 = X * single;
+	auto single4 = Y * single1;
+	auto single5 = Z * single2;
+	auto single6 = X * single1;
+	auto single7 = X * single2;
+	auto single8 = Y * single2;
+	auto single9 = W * single;
+	auto single10 = W * single1;
+	auto single11 = W * single2;
+
+	auto axis = Vector3(0.0f, 0.0f, 1.0f);
+
+	m_forward = Vector3(
+		(1.0f - (single4 + single5)) * axis.X + (single6 - single11) * axis.Y + (single7 + single10) * axis.Z,
+		(single6 + single11) * axis.X + (1.0f - (single3 + single5)) * axis.Y + (single8 - single9) * axis.Z,
+		(single7 - single10) * axis.X + (single8 + single9) * axis.Y + (1.0f - (single3 + single4)) * axis.Z
+	);
 }
 
 void Camera::updateControls()
@@ -77,8 +113,8 @@ void Camera::updateControls()
 	auto accelDelta = delta + m_lastDelta;
 
 	// apply camera rotation
-	m_rotation += Vector3(accelDelta.Y / 16.0f, -accelDelta.X / 16.0f, 0.0f);
-	m_rotation.X = Math::clmap(m_rotation.X, -89.9f, 89.9f);
+	m_rotation += Vector3(accelDelta.X / 16.0f, -accelDelta.Y / 16.0f, 0.0f);
+	m_rotation.Y = Math::clmap(m_rotation.Y, -89.9f, 89.9f);
 
 	// update camera rotation
 	updateRotation();

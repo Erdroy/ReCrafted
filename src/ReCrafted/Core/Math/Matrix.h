@@ -137,6 +137,7 @@ public:
 
 		auto xAxis = Vector3::cross(up, zAxis);
 		xAxis.normalize();
+
 		auto yAxis = Vector3::cross(zAxis, xAxis);
 
 		m.M00 = xAxis.X;
