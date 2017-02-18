@@ -12,7 +12,7 @@ void GameCore::onLoad()
 
 	// initialize bgfx
 	bgfx::init(bgfx::RendererType::Direct3D11);
-	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC);
+	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X2);
 
 	bgfx::setDebug(BGFX_DEBUG_NONE);
 
@@ -20,7 +20,7 @@ void GameCore::onLoad()
 	bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030FF, 1.0f, 0);
 	bgfx::setViewRect(0, 0, 0, m_width, m_height);
 
-	bgfx::setState(0 | BGFX_STATE_DEFAULT);
+	bgfx::setState(0 | BGFX_STATE_DEFAULT | BGFX_STATE_MSAA);
 
 	// initialize rendering
 	m_rendering = new Rendering;
@@ -57,7 +57,7 @@ void GameCore::onResize(uint width, uint height)
 
 	// reset bgfx state, this should force renderer to resize all the viewports etc.
 	bgfx::setViewRect(0, 0, 0, m_width, m_height);
-	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC);
+	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X2);
 
 	m_rendering->resize(width, height);
 }
