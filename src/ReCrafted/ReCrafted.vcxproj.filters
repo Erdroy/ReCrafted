@@ -51,6 +51,9 @@
     <ClCompile Include="Platform\Platform.Windows.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\RenderBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\GameBase.h">
@@ -134,6 +137,12 @@
     <ClInclude Include="Core\Math\Math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\RenderBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\TextureFormat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\common.sh" />
@@ -144,5 +153,8 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="..\..\bgfx_shader.glsl" />
+    <None Include="Shaders\gbuffer_standard\varying.def.sc" />
+    <None Include="Shaders\gbuffer_standard\vs_gbuffer_standard.glsl" />
+    <None Include="Shaders\gbuffer_standard\fs_gbuffer_standard.glsl" />
   </ItemGroup>
 </Project>

@@ -1,10 +1,14 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
-// inputs
+// inputs, outputs
+$input position
 
 #include "../ShaderAPI.glsl"
 
-PixelShader()
+uniform mat4 WVP;
+
+VertexShader()
 {
-	FS_OUTPUT(0, vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	gl_Position = mul(vec4(position, 1.0), WVP);
+
 }

@@ -192,6 +192,7 @@
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
     <ClCompile Include="Graphics\Rendering.cpp" />
+    <ClCompile Include="Graphics\RenderBuffer.cpp" />
     <ClCompile Include="Graphics\Shader.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Platform\Platform.Windows.cpp" />
@@ -215,7 +216,9 @@
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\Mesh.h" />
     <ClInclude Include="Graphics\Rendering.h" />
+    <ClInclude Include="Graphics\RenderBuffer.h" />
     <ClInclude Include="Graphics\Shader.h" />
+    <ClInclude Include="Graphics\TextureFormat.h" />
     <ClInclude Include="Logic\Addons\Addon.h" />
     <ClInclude Include="Logic\Addons\AddonLoader.h" />
     <ClInclude Include="Logic\World.h" />
@@ -229,6 +232,9 @@
   <ItemGroup>
     <None Include="..\..\bgfx_shader.glsl" />
     <None Include="Shaders\common.sh" />
+    <None Include="Shaders\gbuffer_standard\fs_gbuffer_standard.glsl" />
+    <None Include="Shaders\gbuffer_standard\varying.def.sc" />
+    <None Include="Shaders\gbuffer_standard\vs_gbuffer_standard.glsl" />
     <None Include="Shaders\ShaderAPI.glsl" />
     <None Include="Shaders\testShader\fs_testShader.glsl" />
     <None Include="Shaders\testShader\varying.def.sc" />

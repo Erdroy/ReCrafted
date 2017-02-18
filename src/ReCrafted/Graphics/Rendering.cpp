@@ -2,6 +2,7 @@
 
 #include "Rendering.h"
 #include "Camera.h"
+#include "../Core/GameCore.h"
 
 Rendering* Rendering::m_instance;
 
@@ -37,6 +38,14 @@ void Rendering::init()
 	_wvp = bgfx::createUniform("WVP", bgfx::UniformType::Mat4);
 
 	m_testShader = Shader::loadShader("testShader");
+
+	// create render buffer for geometry pass
+	m_gbuffer = RenderBuffer::createRenderTarget();
+	m_gbuffer->begin();
+	m_gbuffer->addTarget("ALBEDO", TextureFormat::RGBA8);
+	m_gbuffer->addTarget("DEPTh", TextureFormat::D24);
+	m_gbuffer->end();
+
 }
 
 void Rendering::resize(uint width, uint height)
@@ -49,6 +58,8 @@ void Rendering::resize(uint width, uint height)
 
 	// update main camera perspective
 	Camera::m_mainCamera->updatePerspective();
+
+	m_gbuffer->resize(width, height);
 }
 
 void Rendering::beginRender()
@@ -61,6 +72,7 @@ void Rendering::beginRender()
 
 	// update main camera
 	Camera::m_mainCamera->update();
+
 }
 
 void Rendering::endRender()

@@ -11,6 +11,7 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include "../Core/Math/Math.h"
+#include "RenderBuffer.h"
 
 /// <summary>
 /// Rendering class.
@@ -23,6 +24,8 @@ private:
 private:
 	Ptr<Mesh> m_testMesh = nullptr;
 	Ptr<Shader> m_testShader = nullptr;
+
+	Ptr<RenderBuffer> m_gbuffer = nullptr;
 
 public:
 	Rendering() { m_instance = this; }

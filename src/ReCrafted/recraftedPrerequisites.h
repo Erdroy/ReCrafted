@@ -8,5 +8,7 @@
 
 #include <ctime>
 
+#include <bgfx/bgfx.h>
+
 #include "Utils/Defines.h"
 #include "Utils/Types.h"

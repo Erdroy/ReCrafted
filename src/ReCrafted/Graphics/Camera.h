@@ -51,7 +51,7 @@ private:
 	void updatePerspective();
 	void update();
 
-public:
+private:
 	Camera()
 	{
 		// clear filtering buffer
@@ -61,6 +61,7 @@ public:
 		}
 	}
 
+public:
 	FORCEINLINE void setAsCurrent()
 	{
 		m_mainCamera = this;

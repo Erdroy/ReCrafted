@@ -6,4 +6,4 @@
 #define PixelShader void main
 #define VertexShader void main
 
-#define FS_OUTPUT(color) gl_FragColor = color
+#define FS_OUTPUT(pos, data) gl_FragData[pos] = data

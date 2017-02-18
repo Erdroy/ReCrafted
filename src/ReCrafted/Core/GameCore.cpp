@@ -19,7 +19,7 @@ void GameCore::onLoad()
 	// Set view 0 clear state.
 	bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030FF, 1.0f, 0);
 	bgfx::setViewRect(0, 0, 0, m_width, m_height);
-
+	
 	bgfx::setState(0 | BGFX_STATE_DEFAULT | BGFX_STATE_MSAA);
 
 	// initialize rendering
