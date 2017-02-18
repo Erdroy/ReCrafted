@@ -99,6 +99,11 @@ class Platform
 private:
 	static HWND m_gameWindow;
 
+	// timer
+	static LARGE_INTEGER m_frequency;
+	static double m_start;
+	static double m_freqCoeff;
+
 private:
 	static void setGameWindow(HWND gameWindow)
 	{
@@ -106,6 +111,27 @@ private:
 	}
 
 public:
+	
+	/// <summary>
+	/// Initialize platform
+	/// </summary>
+	FORCEINLINE static void initialize()
+	{
+		// initialize timer
+		QueryPerformanceFrequency(&m_frequency);
+		m_freqCoeff = double(m_frequency.QuadPart) / 1000.0;
+	}
+
+	/// <summary>
+	/// Get time in miliseconds.
+	/// </summary>
+	/// <returns>The time in miliseconds.</returns>
+	FORCEINLINE static double getMiliseconds()
+	{
+		LARGE_INTEGER current;
+		QueryPerformanceCounter(&current);
+		return double(current.QuadPart) / m_freqCoeff;
+	}
 
 	/// <summary>
 	/// Gets the main game window handle.
