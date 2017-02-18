@@ -46,13 +46,24 @@ void Camera::updateRotation()
 	auto single10 = W * single1;
 	auto single11 = W * single2;
 
+	// calculate forward
 	auto axis = Vector3(0.0f, 0.0f, 1.0f);
-
 	m_forward = Vector3(
 		(1.0f - (single4 + single5)) * axis.X + (single6 - single11) * axis.Y + (single7 + single10) * axis.Z,
 		(single6 + single11) * axis.X + (1.0f - (single3 + single5)) * axis.Y + (single8 - single9) * axis.Z,
 		(single7 - single10) * axis.X + (single8 + single9) * axis.Y + (1.0f - (single3 + single4)) * axis.Z
 	);
+
+	// calculate right
+	axis = Vector3(1.0f, 0.0f, 0.0f);
+	m_right = Vector3(
+		(1.0f - (single4 + single5)) * axis.X + (single6 - single11) * axis.Y + (single7 + single10) * axis.Z,
+		(single6 + single11) * axis.X + (1.0f - (single3 + single5)) * axis.Y + (single8 - single9) * axis.Z,
+		(single7 - single10) * axis.X + (single8 + single9) * axis.Y + (1.0f - (single3 + single4)) * axis.Z
+	);
+
+	// calculate up
+	m_up = Vector3::cross(m_forward, m_right);
 }
 
 void Camera::updateControls()
@@ -61,22 +72,22 @@ void Camera::updateControls()
 	Vector3 direction = {};
 
 	if (Input::isKey(Key_W))
-		direction += Vector3(0.0f, 0.0f, 1.0f);
+		direction += m_forward;
 
 	if (Input::isKey(Key_S))
-		direction += Vector3(0.0f, 0.0f, -1.0f);
+		direction -= m_forward;
 
 	if (Input::isKey(Key_A))
-		direction += Vector3(-1.0f, 0.0f, 0.0f);
+		direction -= m_right;
 
 	if (Input::isKey(Key_D))
-		direction += Vector3(1.0f, 0.0f, 0.0f);
+		direction += m_right;
 
 	if (Input::isKey(Key_Q))
-		direction += Vector3(0.0f, -1.0f, 0.0f);
+		direction -= m_up;
 
 	if (Input::isKey(Key_E))
-		direction += Vector3(0.0f, 1.0f, 0.0f);
+		direction += m_up;
 
 	direction.normalize();
 
@@ -113,7 +124,7 @@ void Camera::updateControls()
 	auto accelDelta = delta + m_lastDelta;
 
 	// apply camera rotation
-	m_rotation += Vector3(accelDelta.X / 16.0f, -accelDelta.Y / 16.0f, 0.0f);
+	m_rotation += Vector3(accelDelta.X / 16.0f, accelDelta.Y / 16.0f, 0.0f);
 	m_rotation.Y = Math::clmap(m_rotation.Y, -89.9f, 89.9f);
 
 	// update camera rotation
@@ -141,10 +152,10 @@ void Camera::update()
 	}
 
 	// update matrices
-	m_lookAt = m_position - m_forward;
+	m_lookAt = m_position + m_forward;
 
 	// create view matrix
-	Matrix::createViewLH(m_position, m_lookAt, m_up, &m_view);
+	Matrix::createViewLH(m_position, m_lookAt, m_upLock, &m_view);
 
 	// update frustum
 	// TODO: camera frustum for culling

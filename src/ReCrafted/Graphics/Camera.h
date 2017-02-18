@@ -26,12 +26,18 @@ private:
 	float m_nearPlane = 0.02f;
 	float m_farPlane = 500.0f;
 	float m_xfov = 0.75f;
+
+	// camera transform
 	Vector3 m_position = Vector3(0.0f, 0.0f, -5.0f);
 	Vector3 m_forward = Vector3(0.0f, 0.0f, 1.0f);
+	Vector3 m_right = Vector3(1.0f, 0.0f, 0.0f);
 	Vector3 m_up = Vector3(0.0f, 1.0f, 0.0f);
+
+	Vector3 m_upLock = Vector3(0.0f, 1.0f, 0.0f);
 	Vector3 m_lookAt = {};
 	Vector3 m_rotation = {};
 
+	// camera matrices
 	Matrix m_view = {};
 	Matrix m_projection = {};
 
@@ -81,7 +87,7 @@ public:
 		m_xfov = fov;
 	}
 
-	void fix(Ptr<Entity> entity, Vector3 offset);
+	void fixToEntity(Ptr<Entity> entity, Vector3 offset);
 
 public:
 	/// <summary>
