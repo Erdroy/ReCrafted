@@ -29,10 +29,7 @@ public:
 	/// </summary>
 	FORCEINLINE void normalize()
 	{
-		// i = 1 / sqrt(v.x*v.x + v.y*v.y)
-		// v = v*i
-
-		auto i = 1 / sqrt(X*X + Y*Y + Z*Z);
+		auto i = 1.0f / sqrt(X*X + Y*Y + Z*Z);
 
 		X = X * i;
 		Y = Y * i;

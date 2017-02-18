@@ -128,14 +128,15 @@ public:
 	}
 
 
-	FORCEINLINE static Matrix createViewLH(Vector3 position, Vector3 forward, Vector3 up)
+	FORCEINLINE static Matrix createViewLH(Vector3 position, Vector3 target, Vector3 up)
 	{
 		auto m = identity();
 		
-		auto zAxis = forward - position;
+		auto zAxis = target - position;
 		zAxis.normalize();
 
 		auto xAxis = Vector3::cross(up, zAxis);
+		xAxis.normalize();
 		auto yAxis = Vector3::cross(zAxis, xAxis);
 
 		m.M00 = xAxis.X;
@@ -157,9 +158,9 @@ public:
 		return m;
 	}
 
-	FORCEINLINE static void createViewLH(Vector3 position, Vector3 forward, Vector3 up, Matrix* result)
+	FORCEINLINE static void createViewLH(Vector3 position, Vector3 target, Vector3 up, Matrix* result)
 	{
-		*result = createViewLH(position, forward, up);
+		*result = createViewLH(position, target, up);
 	}
 
 public:
