@@ -8,44 +8,72 @@ Rendering* Rendering::m_instance;
 
 bgfx::UniformHandle _wvp;
 
-void Rendering::init()
+void Rendering::loadInternalShaders()
 {
-	// load all shaders
-	m_testMesh = Mesh::createMesh();
+}
 
-	Vector3 vertices[] = {
-		Vector3(-1.0f, -1.0f, 0.0f),
-		Vector3( 0.0f,  1.0f, 0.0f),
-		Vector3( 1.0f, -1.0f, 0.0f),
+void Rendering::createUniforms()
+{
+	// create uniforms
+	_wvp = bgfx::createUniform("m_modelViewProjection", bgfx::UniformType::Mat4);
+}
 
-		Vector3(-5.0f, -2.0f, -5.0f),
-		Vector3(-5.0f, -2.0f,  5.0f),
-		Vector3( 5.0f, -2.0f,  5.0f),
-		Vector3( 5.0f, -2.0f, -5.0f),
-	};
-	m_testMesh->setVertices(vertices, 7);
-
-	uint indices[] = {
-		2, 1, 0,
-
-		5, 4, 3,
-		3, 6, 5
-	};
-	m_testMesh->setIndices(indices, 9);
-
-	m_testMesh->applyChanges();
-
-	_wvp = bgfx::createUniform("WVP", bgfx::UniformType::Mat4);
-
-	m_testShader = Shader::loadShader("testShader");
-
+void Rendering::createRenderBuffers()
+{
 	// create render buffer for geometry pass
 	m_gbuffer = RenderBuffer::createRenderTarget();
 	m_gbuffer->begin();
 	m_gbuffer->addTarget("ALBEDO", TextureFormat::RGBA8);
 	m_gbuffer->addTarget("DEPTh", TextureFormat::D24);
 	m_gbuffer->end();
+}
 
+void Rendering::createBlitQuad()
+{
+	// full screen quad vertex buffer decl
+	bgfx::VertexDecl decl = {};
+	decl.begin();
+	decl.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float);
+	decl.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float);
+	decl.end();
+
+	// the structure for the quad
+	struct fsqVdata
+	{
+		Vector3 position;
+		Vector2 uv;
+	};
+
+	// quad vertex data
+	static fsqVdata data[4] = {
+		{ Vector3(1.0f, 1.0f, 0.0f), Vector2(0.0f, 0.0f) },
+		{ Vector3(-1.0f, 1.0f, 0.0f), Vector2(0.0f, 0.0f) },
+		{ Vector3(1.0f,-1.0f, 0.0f), Vector2(0.0f, 0.0f) },
+		{ Vector3(-1.0f,-1.0f, 0.0f), Vector2(0.0f, 0.0f) }
+	};
+
+	// create vertex buffer for fullscreen quad
+	auto memory = bgfx::alloc(decl.getStride() * 4);
+
+	// copy data
+	memcpy(memory->data, data, decl.getStride() * 4);
+
+	m_quadvb = bgfx::createVertexBuffer(memory, decl);
+}
+
+void Rendering::init()
+{
+	// create uniforms
+	createUniforms();
+
+	// create render buffers
+	createRenderBuffers();
+
+	// create quad
+	createBlitQuad();
+
+	// load all shaders
+	loadInternalShaders();
 }
 
 void Rendering::resize(uint width, uint height)
@@ -58,7 +86,7 @@ void Rendering::resize(uint width, uint height)
 
 	// update main camera perspective
 	Camera::m_mainCamera->updatePerspective();
-
+	
 	m_gbuffer->resize(width, height);
 }
 
@@ -77,9 +105,7 @@ void Rendering::beginRender()
 
 void Rendering::endRender()
 {
-	auto model = Matrix::identity();
-
-	draw(m_testMesh, m_testShader, &model);
+	// final pass
 }
 
 void Rendering::renderShadows()
@@ -88,17 +114,16 @@ void Rendering::renderShadows()
 
 void Rendering::renderStatic()
 {
+	m_gbuffer->bind();
 }
 
 void Rendering::renderEntities()
 {
+	m_gbuffer->bind();
 }
 
 void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix)
 {
-	setVertexBuffer(mesh->m_vertexBuffer);
-	setIndexBuffer(mesh->m_indexBuffer);
-
 	auto view = Camera::m_mainCamera->m_view;
 	auto proj = Camera::m_mainCamera->m_projection;
 
@@ -107,11 +132,26 @@ void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix)
 
 	bgfx::setUniform(_wvp, &mat);
 
-	submit(0, shader->m_program);
+	bgfx::setVertexBuffer(mesh->m_vertexBuffer);
+	bgfx::setIndexBuffer(mesh->m_indexBuffer);
+
+	bgfx::submit(RENDERVIEW_BACKBUFFER, shader->m_program);
+}
+
+void Rendering::draw(Ptr<Mesh> mesh, Matrix* modelMatrix)
+{
+
+}
+
+void Rendering::blit(uint view, bgfx::TextureHandle texture)
+{
+
 }
 
 void Rendering::dispose()
 {
+	m_gbuffer->dispose();
+
 	bgfx::destroyUniform(_wvp);
 
 	// suicide

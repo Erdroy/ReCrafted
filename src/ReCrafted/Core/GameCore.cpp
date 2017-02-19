@@ -12,13 +12,16 @@ void GameCore::onLoad()
 
 	// initialize bgfx
 	bgfx::init(bgfx::RendererType::Direct3D11);
-	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X2);
+	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X8);
 
 	bgfx::setDebug(BGFX_DEBUG_NONE);
 
 	// Set view 0 clear state.
-	bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030FF, 1.0f, 0);
-	bgfx::setViewRect(0, 0, 0, m_width, m_height);
+	bgfx::setViewClear(RENDERVIEW_BACKBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030FF, 1.0f, 0);
+	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, m_width, m_height);
+
+	bgfx::setViewClear(RENDERVIEW_CUSTOM, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
+	bgfx::setViewRect(RENDERVIEW_CUSTOM, 0, 0, m_width, m_height);
 	
 	bgfx::setState(0 | BGFX_STATE_DEFAULT | BGFX_STATE_MSAA);
 
@@ -56,8 +59,10 @@ void GameCore::onResize(uint width, uint height)
 	m_height = height;
 
 	// reset bgfx state, this should force renderer to resize all the viewports etc.
-	bgfx::setViewRect(0, 0, 0, m_width, m_height);
-	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X2);
+	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, m_width, m_height);
+	bgfx::setViewRect(RENDERVIEW_CUSTOM, 0, 0, m_width, m_height);
+
+	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X8);
 
 	m_rendering->resize(width, height);
 }
@@ -81,8 +86,10 @@ void GameCore::onSimulate()
 void GameCore::onDraw()
 {
 	// draw event, called every frame, must be ended with gpu backbuffer `present` or `swapbuffer` - bgfx::frame()
-	bgfx::setViewRect(0, 0, 0, m_width, m_height);
-	bgfx::touch(0);
+	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, m_width, m_height);
+	bgfx::setViewRect(RENDERVIEW_CUSTOM, 0, 0, m_width, m_height);
+	bgfx::touch(RENDERVIEW_BACKBUFFER);
+	bgfx::touch(RENDERVIEW_CUSTOM);
 
 	m_rendering->beginRender(); // begin rendering the scene
 	{

@@ -236,9 +236,6 @@
     <None Include="Shaders\gbuffer_standard\varying.def.sc" />
     <None Include="Shaders\gbuffer_standard\vs_gbuffer_standard.glsl" />
     <None Include="Shaders\ShaderAPI.glsl" />
-    <None Include="Shaders\testShader\fs_testShader.glsl" />
-    <None Include="Shaders\testShader\varying.def.sc" />
-    <None Include="Shaders\testShader\vs_testShader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

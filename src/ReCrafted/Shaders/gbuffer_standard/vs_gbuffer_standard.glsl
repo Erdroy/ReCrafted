@@ -5,10 +5,8 @@ $input position
 
 #include "../ShaderAPI.glsl"
 
-uniform mat4 WVP;
-
 VertexShader()
 {
-	gl_Position = mul(vec4(position, 1.0), WVP);
+	gl_Position = mul(vec4(position, 1.0), m_modelViewProjection);
 
 }

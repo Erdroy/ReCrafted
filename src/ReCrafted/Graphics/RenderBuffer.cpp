@@ -5,8 +5,6 @@
 
 void RenderBuffer::createBuffer(uint width, uint height)
 {
-	static bgfx::TextureHandle textures[RENDERBUFFER_MAXTARGETS];
-
 	// sampler flags
 	const auto samplerFlags = 0
 		| BGFX_TEXTURE_RT
@@ -18,10 +16,10 @@ void RenderBuffer::createBuffer(uint width, uint height)
 
 	// create textures
 	for (auto i = 0u; i < m_textureCount; i++)
-		textures[i] = bgfx::createTexture2D(uint16(width), uint16(height), false, 1, static_cast<bgfx::TextureFormat::Enum>(m_textures[i]), samplerFlags);
+		m_textureHandles[i] = bgfx::createTexture2D(uint16(width), uint16(height), false, 1, static_cast<bgfx::TextureFormat::Enum>(m_textures[i]), samplerFlags);
 
 	// build render buffer
-	m_framebufferHandle = bgfx::createFrameBuffer(m_textureCount, textures, true);
+	m_framebufferHandle = bgfx::createFrameBuffer(m_textureCount, m_textureHandles, true);
 }
 
 void RenderBuffer::begin()
@@ -58,6 +56,14 @@ void RenderBuffer::addTarget(const char* name, TextureFormat::Enum format)
 	m_textureCount++;
 }
 
+bgfx::TextureHandle RenderBuffer::getTarget(uint slot)
+{
+	_ASSERT(slot < RENDERBUFFER_MAXTARGETS);
+	_ASSERT(m_textureHandles[slot].idx > 0);
+
+	return m_textureHandles[slot];
+}
+
 void RenderBuffer::resize(uint width, uint height)
 {
 	_ASSERT(m_created != false);
@@ -74,7 +80,7 @@ void RenderBuffer::bind()
 	_ASSERT(m_created != false);
 
 	// TODO: bind framebuffer
-	bgfx::setViewFrameBuffer(0, m_framebufferHandle);
+	bgfx::setViewFrameBuffer(RENDERVIEW_CUSTOM, m_framebufferHandle);
 }
 
 void RenderBuffer::dispose()

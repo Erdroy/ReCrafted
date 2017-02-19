@@ -6,11 +6,12 @@
 #define RENDERING_H
 
 // includes
+#include "../Common/Entity.h"
+#include "../Core/Math/Math.h"
 #include "../Utils/Defines.h"
 #include "../Utils/Types.h"
 #include "Mesh.h"
 #include "Shader.h"
-#include "../Core/Math/Math.h"
 #include "RenderBuffer.h"
 
 /// <summary>
@@ -22,10 +23,15 @@ private:
 	static Rendering* m_instance;
 
 private:
-	Ptr<Mesh> m_testMesh = nullptr;
-	Ptr<Shader> m_testShader = nullptr;
-
+	bgfx::VertexBufferHandle m_quadvb = {};
+	
 	Ptr<RenderBuffer> m_gbuffer = nullptr;
+
+private:
+	void loadInternalShaders();
+	void createUniforms();
+	void createRenderBuffers();
+	void createBlitQuad();
 
 public:
 	Rendering() { m_instance = this; }
@@ -68,12 +74,28 @@ public:
 	void renderEntities();
 
 	/// <summary>
-	/// Draw mesh.
+	/// Draw mesh using custom shader.
 	/// </summary>
 	/// <param name="mesh">Mesh to draw.</param>
 	/// <param name="shader">Shader that will be used to shade the mesh.</param>
 	/// <param name="modelMatrix">Matrix which includes translation, rotation and scale of this mesh for rendering.</param>
 	void draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix = nullptr);
+
+	/// <summary>
+	/// Draw mesh using gbuffer shader.
+	/// </summary>
+	/// <param name="mesh">Mesh to draw.</param>
+	/// <param name="modelMatrix">Matrix which includes translation, rotation and scale of this mesh for rendering.</param>
+	void draw(Ptr<Mesh> mesh, Matrix* modelMatrix = nullptr);
+
+	//void draw(Ptr<Entity> entity);
+
+	/// <summary>
+	/// Draw texture on fullscreen quad.
+	/// </summary>
+	/// <param name="view">The target view.</param>
+	/// <param name="texture">The texture you want to render.</param>
+	void blit(uint view, bgfx::TextureHandle texture);
 
 	/// <summary>
 	/// Dispose everything.
