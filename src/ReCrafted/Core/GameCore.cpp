@@ -12,7 +12,7 @@ void GameCore::onLoad()
 
 	// initialize bgfx
 	bgfx::init(bgfx::RendererType::Direct3D11);
-	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X2);
+	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC);
 
 	bgfx::setDebug(BGFX_DEBUG_NONE);
 
@@ -20,12 +20,16 @@ void GameCore::onLoad()
 	bgfx::setViewClear(RENDERVIEW_BACKBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030FF, 1.0f, 0);
 	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, m_width, m_height);
 
-	bgfx::setViewClear(RENDERVIEW_CUSTOM, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
-	bgfx::setViewRect(RENDERVIEW_CUSTOM, 0, 0, m_width, m_height);
+	bgfx::setViewClear(RENDERVIEW_GBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
+	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, m_width, m_height);
 	
 	// initialize rendering
 	m_rendering = new Rendering;
 	m_rendering->init();
+
+	// create universe
+	m_universe = new Universe();
+	m_universe->init();
 
 	// initialize main camera for scene
 	m_camera = Camera::createCamera(true, true);
@@ -34,7 +38,7 @@ void GameCore::onLoad()
 	m_initialized = true;
 
 	// update state
-	m_rendering->setState();
+	m_rendering->setState(false, false);
 }
 
 void GameCore::onUnload()
@@ -59,9 +63,9 @@ void GameCore::onResize(uint width, uint height)
 
 	// reset bgfx state, this should force renderer to resize all the viewports etc.
 	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, m_width, m_height);
-	bgfx::setViewRect(RENDERVIEW_CUSTOM, 0, 0, m_width, m_height);
+	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, m_width, m_height);
 
-	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X2);
+	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC);
 
 	m_rendering->resize(width, height);
 }
@@ -74,33 +78,35 @@ void GameCore::onUpdate()
 	if (Input::isKeyDown(Key_Escape))
 		shutdown();
 
+	m_universe->update();
 }
 
 void GameCore::onSimulate()
 {
 	// simulation event, called every simulation tick(fixed time)
 	
+	m_universe->simulate();
 }
 
 void GameCore::onDraw()
 {
 	// draw event, called every frame, must be ended with gpu backbuffer `present` or `swapbuffer` - bgfx::frame()
 	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, m_width, m_height);
-	bgfx::setViewRect(RENDERVIEW_CUSTOM, 0, 0, m_width, m_height);
+	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, m_width, m_height);
 	bgfx::touch(RENDERVIEW_BACKBUFFER);
-	bgfx::touch(RENDERVIEW_CUSTOM);
+	bgfx::touch(RENDERVIEW_GBUFFER);
 
 	m_rendering->beginRender(); // begin rendering the scene
 	{
 		// render shadows
 		m_rendering->renderShadows();
-		// TODO: draw all shadow casters
-		// TODO: call World->DrawShadowCasters
+		// draw all shadow casters
+		m_universe->drawShadowCasters();
 		// TODO: call EntityPool->DrawShadowCasters
 
 		// render static objects, eg.: static entities, voxels.
 		m_rendering->renderStatic();
-		// TODO: call World->Draw
+		m_universe->draw();
 
 		// render all entities
 		m_rendering->renderEntities();

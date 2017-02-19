@@ -9,6 +9,7 @@ Rendering* Rendering::m_instance;
 void Rendering::loadInternalShaders()
 {
 	m_blitShader = Shader::loadShader("blit");
+	m_gbufferShader = Shader::loadShader("gbuffer_standard");
 }
 
 void Rendering::createUniforms()
@@ -24,7 +25,7 @@ void Rendering::createRenderBuffers()
 	m_gbuffer = RenderBuffer::createRenderTarget();
 	m_gbuffer->begin();
 	m_gbuffer->addTarget("ALBEDO", TextureFormat::RGBA8);
-	m_gbuffer->addTarget("DEPTh", TextureFormat::D24);
+	m_gbuffer->addTarget("NORMALS", TextureFormat::RGB8);
 	m_gbuffer->end();
 }
 
@@ -37,10 +38,10 @@ void Rendering::createBlitQuad()
 		Vector3(-1.0f,-1.0f, 0.0f)
 	};
 	static Vector2 uvs[4] = {
-		Vector2(0.0f, 0.0f),
-		Vector2(0.0f, 1.0f),
-		Vector2(1.0f, 1.0f),
-		Vector2(1.0f, 0.0f)
+		Vector2(0.0f,-1.0f),
+		Vector2(1.0f,-1.0f),
+		Vector2(1.0f, 0.0f),
+		Vector2(0.0f, 0.0f)
 	};
 
 	static uint indices[6] = {
@@ -50,7 +51,7 @@ void Rendering::createBlitQuad()
 
 	m_blitMesh = Mesh::createMesh();
 	m_blitMesh->setVertices(vertices, 4);
-	m_blitMesh->setUVs(uvs, 4);
+	m_blitMesh->setUVs(uvs);
 	m_blitMesh->setIndices(indices, 6);
 	m_blitMesh->applyChanges();
 }
@@ -119,7 +120,7 @@ void Rendering::renderEntities()
 
 }
 
-void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix)
+void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix, int viewId)
 {
 	auto view = Camera::m_mainCamera->m_view;
 	auto proj = Camera::m_mainCamera->m_projection;
@@ -132,17 +133,17 @@ void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix)
 	bgfx::setVertexBuffer(mesh->m_vertexBuffer);
 	bgfx::setIndexBuffer(mesh->m_indexBuffer);
 
-	bgfx::submit(RENDERVIEW_BACKBUFFER, shader->m_program);
+	bgfx::submit(viewId, shader->m_program);
 }
 
 void Rendering::draw(Ptr<Mesh> mesh, Matrix* modelMatrix)
 {
-
+	draw(mesh, m_gbufferShader, modelMatrix, RENDERVIEW_GBUFFER);
 }
 
 void Rendering::blit(uint view, bgfx::TextureHandle texture)
 {
-	setState();
+	setState(false, false);
 
 	auto textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
 
@@ -170,6 +171,9 @@ void Rendering::setState(bool tristrip, bool msaa)
 void Rendering::dispose()
 {
 	m_gbuffer->dispose();
+	m_blitMesh->dispose();
+	m_blitShader->dispose();
+	m_gbufferShader->dispose();
 
 	bgfx::destroyUniform(m_modelViewProjection);
 	bgfx::destroyUniform(m_texture0);

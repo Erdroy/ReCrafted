@@ -80,7 +80,7 @@ void RenderBuffer::bind()
 	_ASSERT(m_created != false);
 
 	// TODO: bind framebuffer
-	bgfx::setViewFrameBuffer(RENDERVIEW_CUSTOM, m_framebufferHandle);
+	bgfx::setViewFrameBuffer(RENDERVIEW_GBUFFER, m_framebufferHandle);
 }
 
 void RenderBuffer::dispose()

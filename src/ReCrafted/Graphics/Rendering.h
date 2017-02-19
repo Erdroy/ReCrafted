@@ -29,6 +29,7 @@ private:
 
 	Ptr<Mesh> m_blitMesh = nullptr;
  	Ptr<Shader> m_blitShader = nullptr;
+	Ptr<Shader> m_gbufferShader = nullptr;
 	Ptr<RenderBuffer> m_gbuffer = nullptr;
 
 private:
@@ -40,6 +41,7 @@ private:
 public:
 	Rendering() { m_instance = this; }
 
+public:
 	/// <summary>
 	/// Initialize rendering
 	/// </summary>
@@ -83,7 +85,7 @@ public:
 	/// <param name="mesh">Mesh to draw.</param>
 	/// <param name="shader">Shader that will be used to shade the mesh.</param>
 	/// <param name="modelMatrix">Matrix which includes translation, rotation and scale of this mesh for rendering.</param>
-	void draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix = nullptr);
+	void draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix = nullptr, int view = RENDERVIEW_BACKBUFFER);
 
 	/// <summary>
 	/// Draw mesh using gbuffer shader.
@@ -101,6 +103,11 @@ public:
 	/// <param name="texture">The texture you want to render.</param>
 	void blit(uint view, bgfx::TextureHandle texture);
 
+	/// <summary>
+	/// Set rendering state.
+	/// </summary>
+	/// <param name="tristrip">Enable triangle strip primitives?</param>
+	/// <param name="msaa">Allow MSAA?</param>
 	void setState(bool tristrip = false, bool msaa = true);
 
 	/// <summary>

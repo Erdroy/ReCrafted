@@ -12,7 +12,7 @@
 #define RENDERBUFFER_MAXTARGETS 8
 
 #define RENDERVIEW_BACKBUFFER 0
-#define RENDERVIEW_CUSTOM 1
+#define RENDERVIEW_GBUFFER 1
 
 /// <summary>
 /// RenderBuffer class.
