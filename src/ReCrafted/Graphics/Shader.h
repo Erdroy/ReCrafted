@@ -25,6 +25,11 @@ private:
 
 public:
 
+	/// <summary>
+	/// Disposes this shader.
+	/// </summary>
+	void dispose();
+
 public:
 	/// <summary>
 	/// Load shader by name.

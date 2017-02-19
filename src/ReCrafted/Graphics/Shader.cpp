@@ -23,13 +23,18 @@ void Shader::init(const char* vs, const char* fs)
 	vs_file.read(vs_memory->data);
 	fs_file.read(fs_memory->data);
 
-	m_vertexshader = createShader(vs_memory);
-	m_fragmentshader = createShader(fs_memory);
+	m_vertexshader = bgfx::createShader(vs_memory);
+	m_fragmentshader = bgfx::createShader(fs_memory);
 
-	m_program = createProgram(m_vertexshader, m_fragmentshader, true);
+	m_program = bgfx::createProgram(m_vertexshader, m_fragmentshader, true);
 
 	vs_file.close();
 	fs_file.close();
+}
+
+void Shader::dispose()
+{
+	bgfx::destroyProgram(m_program);
 }
 
 Ptr<Shader> Shader::loadShader(const char* shaderName)
