@@ -23,8 +23,12 @@ private:
 	static Rendering* m_instance;
 
 private:
-	bgfx::VertexBufferHandle m_quadvb = {};
-	
+
+	bgfx::UniformHandle m_modelViewProjection = {};
+	bgfx::UniformHandle m_texture0 = {};
+
+	Ptr<Mesh> m_blitMesh = nullptr;
+ 	Ptr<Shader> m_blitShader = nullptr;
 	Ptr<RenderBuffer> m_gbuffer = nullptr;
 
 private:
@@ -96,6 +100,8 @@ public:
 	/// <param name="view">The target view.</param>
 	/// <param name="texture">The texture you want to render.</param>
 	void blit(uint view, bgfx::TextureHandle texture);
+
+	void setState(bool tristrip = false, bool msaa = true);
 
 	/// <summary>
 	/// Dispose everything.

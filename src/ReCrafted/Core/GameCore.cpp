@@ -12,7 +12,7 @@ void GameCore::onLoad()
 
 	// initialize bgfx
 	bgfx::init(bgfx::RendererType::Direct3D11);
-	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X8);
+	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X2);
 
 	bgfx::setDebug(BGFX_DEBUG_NONE);
 
@@ -23,8 +23,6 @@ void GameCore::onLoad()
 	bgfx::setViewClear(RENDERVIEW_CUSTOM, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
 	bgfx::setViewRect(RENDERVIEW_CUSTOM, 0, 0, m_width, m_height);
 	
-	bgfx::setState(0 | BGFX_STATE_DEFAULT | BGFX_STATE_MSAA);
-
 	// initialize rendering
 	m_rendering = new Rendering;
 	m_rendering->init();
@@ -35,7 +33,8 @@ void GameCore::onLoad()
 
 	m_initialized = true;
 
-	
+	// update state
+	m_rendering->setState();
 }
 
 void GameCore::onUnload()
@@ -62,7 +61,7 @@ void GameCore::onResize(uint width, uint height)
 	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, m_width, m_height);
 	bgfx::setViewRect(RENDERVIEW_CUSTOM, 0, 0, m_width, m_height);
 
-	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X8);
+	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X2);
 
 	m_rendering->resize(width, height);
 }

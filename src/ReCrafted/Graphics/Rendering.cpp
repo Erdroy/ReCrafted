@@ -6,16 +6,16 @@
 
 Rendering* Rendering::m_instance;
 
-bgfx::UniformHandle _wvp;
-
 void Rendering::loadInternalShaders()
 {
+	m_blitShader = Shader::loadShader("blit");
 }
 
 void Rendering::createUniforms()
 {
 	// create uniforms
-	_wvp = bgfx::createUniform("m_modelViewProjection", bgfx::UniformType::Mat4);
+	m_modelViewProjection = bgfx::createUniform("m_modelViewProjection", bgfx::UniformType::Mat4);
+	m_texture0 = bgfx::createUniform("m_texture0", bgfx::UniformType::Int1);
 }
 
 void Rendering::createRenderBuffers()
@@ -30,35 +30,29 @@ void Rendering::createRenderBuffers()
 
 void Rendering::createBlitQuad()
 {
-	// full screen quad vertex buffer decl
-	bgfx::VertexDecl decl = {};
-	decl.begin();
-	decl.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float);
-	decl.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float);
-	decl.end();
-
-	// the structure for the quad
-	struct fsqVdata
-	{
-		Vector3 position;
-		Vector2 uv;
+	static Vector3 vertices[4] = {
+		Vector3(-1.0f, 1.0f, 0.0f),
+		Vector3( 1.0f, 1.0f, 0.0f),
+		Vector3( 1.0f,-1.0f, 0.0f),
+		Vector3(-1.0f,-1.0f, 0.0f)
+	};
+	static Vector2 uvs[4] = {
+		Vector2(0.0f, 0.0f),
+		Vector2(0.0f, 1.0f),
+		Vector2(1.0f, 1.0f),
+		Vector2(1.0f, 0.0f)
 	};
 
-	// quad vertex data
-	static fsqVdata data[4] = {
-		{ Vector3(1.0f, 1.0f, 0.0f), Vector2(0.0f, 0.0f) },
-		{ Vector3(-1.0f, 1.0f, 0.0f), Vector2(0.0f, 0.0f) },
-		{ Vector3(1.0f,-1.0f, 0.0f), Vector2(0.0f, 0.0f) },
-		{ Vector3(-1.0f,-1.0f, 0.0f), Vector2(0.0f, 0.0f) }
+	static uint indices[6] = {
+		2, 1, 0,
+		3, 0, 2
 	};
 
-	// create vertex buffer for fullscreen quad
-	auto memory = bgfx::alloc(decl.getStride() * 4);
-
-	// copy data
-	memcpy(memory->data, data, decl.getStride() * 4);
-
-	m_quadvb = bgfx::createVertexBuffer(memory, decl);
+	m_blitMesh = Mesh::createMesh();
+	m_blitMesh->setVertices(vertices, 4);
+	m_blitMesh->setUVs(uvs, 4);
+	m_blitMesh->setIndices(indices, 6);
+	m_blitMesh->applyChanges();
 }
 
 void Rendering::init()
@@ -106,6 +100,8 @@ void Rendering::beginRender()
 void Rendering::endRender()
 {
 	// final pass
+
+	blit(RENDERVIEW_BACKBUFFER, m_gbuffer->getTarget(0));
 }
 
 void Rendering::renderShadows()
@@ -120,6 +116,7 @@ void Rendering::renderStatic()
 void Rendering::renderEntities()
 {
 	m_gbuffer->bind();
+
 }
 
 void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix)
@@ -130,7 +127,7 @@ void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix)
 	auto mat = *modelMatrix * view * proj;
 	mat.transpose();
 
-	bgfx::setUniform(_wvp, &mat);
+	bgfx::setUniform(m_modelViewProjection, &mat);
 
 	bgfx::setVertexBuffer(mesh->m_vertexBuffer);
 	bgfx::setIndexBuffer(mesh->m_indexBuffer);
@@ -145,14 +142,37 @@ void Rendering::draw(Ptr<Mesh> mesh, Matrix* modelMatrix)
 
 void Rendering::blit(uint view, bgfx::TextureHandle texture)
 {
+	setState();
 
+	auto textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
+
+	bgfx::setVertexBuffer(m_blitMesh->m_vertexBuffer);
+	bgfx::setIndexBuffer(m_blitMesh->m_indexBuffer);
+	bgfx::setTexture(0, m_texture0, texture, textureFlags);
+	bgfx::submit(view, m_blitShader->m_program);
+}
+
+void Rendering::setState(bool tristrip, bool msaa)
+{
+	auto state = 0;
+
+	if (tristrip) 
+		state |= BGFX_STATE_DEFAULT | BGFX_STATE_PT_TRISTRIP;
+	else
+		state |= BGFX_STATE_DEFAULT;
+
+	if (msaa)
+		state |= BGFX_STATE_MSAA;
+
+	bgfx::setState(state);
 }
 
 void Rendering::dispose()
 {
 	m_gbuffer->dispose();
 
-	bgfx::destroyUniform(_wvp);
+	bgfx::destroyUniform(m_modelViewProjection);
+	bgfx::destroyUniform(m_texture0);
 
 	// suicide
 	delete this;

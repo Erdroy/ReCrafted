@@ -231,6 +231,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\bgfx_shader.glsl" />
+    <None Include="Shaders\blit\fs_blit.glsl" />
+    <None Include="Shaders\blit\varying.def.sc" />
+    <None Include="Shaders\blit\vs_blit.glsl" />
     <None Include="Shaders\common.sh" />
     <None Include="Shaders\gbuffer_standard\fs_gbuffer_standard.glsl" />
     <None Include="Shaders\gbuffer_standard\varying.def.sc" />

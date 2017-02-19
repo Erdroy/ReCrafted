@@ -1,0 +1,16 @@
+// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+
+// inputs
+$input m_uv
+
+#include "../ShaderAPI.glsl"
+
+SAMPLER2D(m_texture0, 0);
+
+PixelShader()
+{
+	vec4 color = texture2D(m_texture0, m_uv);
+
+	// TODO: sample texture
+	FS_OUTPUT(0, color);
+}
