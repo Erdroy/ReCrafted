@@ -14,16 +14,16 @@ void Mesh::setVertices(Vector3* vertices, uint count)
 	m_vertices_count = count;
 }
 
-void Mesh::setUVs(Vector2* uvs, uint count)
+void Mesh::setUVs(Vector2* uvs)
 {
 	m_uvs = uvs;
-	m_uvs_count = count;
+	m_uvs_count = m_vertices_count;
 }
 
-void Mesh::setNormals(Vector3* normals, uint count)
+void Mesh::setNormals(Vector3* normals)
 {
 	m_normals = normals;
-	m_normals_count = count;
+	m_normals_count = m_vertices_count;
 }
 
 /*void Mesh::setColors(vector4f* colors, uint count)

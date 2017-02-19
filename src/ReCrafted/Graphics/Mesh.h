@@ -50,8 +50,7 @@ public:
 	/// after setting all data you need.
 	/// </summary>
 	/// <param name="uvs">Uvs pointer.</param>
-	/// <param name="count">The count of uvs.</param>
-	void setUVs(Vector2* uvs, uint count);
+	void setUVs(Vector2* uvs);
 
 	/// <summary>
 	/// Set normals for this mesh.
@@ -59,8 +58,7 @@ public:
 	/// after setting all data you need.
 	/// </summary>
 	/// <param name="normals">Normals pointer.</param>
-	/// <param name="count">The count of normals.</param>
-	void setNormals(Vector3* normals, uint count);
+	void setNormals(Vector3* normals);
 
 	/// <summary>
 	/// Set colors for this mesh.
@@ -68,8 +66,7 @@ public:
 	/// after setting all data you need.
 	/// </summary>
 	/// <param name="colors">Colors pointer.</param>
-	/// <param name="count">The count of colors.</param>
-	//void setColors(vector4f* colors, uint count);
+	//void setColors(Vector3* colors);
 
 	/// <summary>
 	/// Set indices for this mesh.
@@ -91,6 +88,10 @@ public:
 	void dispose();
 
 public:
+	/// <summary>
+	/// Create new mesh.
+	/// </summary>
+	/// <returns></returns>
 	static Ptr<Mesh> createMesh();
 
 };
