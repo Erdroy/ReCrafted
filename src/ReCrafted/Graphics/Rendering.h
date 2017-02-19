@@ -23,14 +23,17 @@ private:
 	static Rendering* m_instance;
 
 private:
-
 	bgfx::UniformHandle m_modelViewProjection = {};
 	bgfx::UniformHandle m_texture0 = {};
+	bgfx::UniformHandle m_texture1 = {};
+	bgfx::UniformHandle m_texture2 = {};
+	bgfx::UniformHandle m_texture3 = {};
 
+	Ptr<RenderBuffer> m_gbuffer = nullptr;
 	Ptr<Mesh> m_blitMesh = nullptr;
  	Ptr<Shader> m_blitShader = nullptr;
 	Ptr<Shader> m_gbufferShader = nullptr;
-	Ptr<RenderBuffer> m_gbuffer = nullptr;
+	Ptr<Shader> m_deferredFinal = nullptr;
 
 private:
 	void loadInternalShaders();

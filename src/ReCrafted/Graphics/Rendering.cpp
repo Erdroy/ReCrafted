@@ -10,6 +10,7 @@ void Rendering::loadInternalShaders()
 {
 	m_blitShader = Shader::loadShader("blit");
 	m_gbufferShader = Shader::loadShader("gbuffer_standard");
+	m_deferredFinal = Shader::loadShader("deferred_final");
 }
 
 void Rendering::createUniforms()
@@ -17,6 +18,9 @@ void Rendering::createUniforms()
 	// create uniforms
 	m_modelViewProjection = bgfx::createUniform("m_modelViewProjection", bgfx::UniformType::Mat4);
 	m_texture0 = bgfx::createUniform("m_texture0", bgfx::UniformType::Int1);
+	m_texture1 = bgfx::createUniform("m_texture1", bgfx::UniformType::Int1);
+	m_texture2 = bgfx::createUniform("m_texture2", bgfx::UniformType::Int1);
+	m_texture3 = bgfx::createUniform("m_texture3", bgfx::UniformType::Int1);
 }
 
 void Rendering::createRenderBuffers()
@@ -25,7 +29,7 @@ void Rendering::createRenderBuffers()
 	m_gbuffer = RenderBuffer::createRenderTarget();
 	m_gbuffer->begin();
 	m_gbuffer->addTarget("ALBEDO", TextureFormat::RGBA8);
-	m_gbuffer->addTarget("NORMALS", TextureFormat::RGB8);
+	m_gbuffer->addTarget("[RGB]NORMALS, [A]AmbientOcculusion", TextureFormat::RGBA8);
 	m_gbuffer->end();
 }
 
@@ -73,11 +77,7 @@ void Rendering::init()
 
 void Rendering::resize(uint width, uint height)
 {
-	if (Camera::m_mainCamera == nullptr)
-	{
-		VS_LOG("WARNING: Main camera is not set to.");
-		return;
-	}
+	_ASSERT(Camera::m_mainCamera != nullptr);
 
 	// update main camera perspective
 	Camera::m_mainCamera->updatePerspective();
@@ -87,11 +87,7 @@ void Rendering::resize(uint width, uint height)
 
 void Rendering::beginRender()
 {
-	if(Camera::m_mainCamera == nullptr)
-	{
-		VS_LOG("WARNING: Trying to render scene without any camera set as main!");
-		return;
-	}
+	_ASSERT(Camera::m_mainCamera != nullptr);
 
 	// update main camera
 	Camera::m_mainCamera->update();
@@ -100,9 +96,18 @@ void Rendering::beginRender()
 
 void Rendering::endRender()
 {
-	// final pass
+	setState(false, false);
 
-	blit(RENDERVIEW_BACKBUFFER, m_gbuffer->getTarget(0));
+	// final pass
+	auto textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
+
+	bgfx::setTexture(0, m_texture0, m_gbuffer->getTarget(0), textureFlags);
+	bgfx::setTexture(1, m_texture1, m_gbuffer->getTarget(1), textureFlags);
+
+	// draw into backbuffer
+	bgfx::setVertexBuffer(m_blitMesh->m_vertexBuffer);
+	bgfx::setIndexBuffer(m_blitMesh->m_indexBuffer);
+	bgfx::submit(RENDERVIEW_BACKBUFFER, m_deferredFinal->m_program);
 }
 
 void Rendering::renderShadows()
@@ -117,7 +122,6 @@ void Rendering::renderStatic()
 void Rendering::renderEntities()
 {
 	m_gbuffer->bind();
-
 }
 
 void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix, int viewId)
@@ -132,7 +136,6 @@ void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix, in
 
 	bgfx::setVertexBuffer(mesh->m_vertexBuffer);
 	bgfx::setIndexBuffer(mesh->m_indexBuffer);
-
 	bgfx::submit(viewId, shader->m_program);
 }
 
@@ -147,9 +150,10 @@ void Rendering::blit(uint view, bgfx::TextureHandle texture)
 
 	auto textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
 
+	bgfx::setTexture(0, m_texture0, texture, textureFlags);
+
 	bgfx::setVertexBuffer(m_blitMesh->m_vertexBuffer);
 	bgfx::setIndexBuffer(m_blitMesh->m_indexBuffer);
-	bgfx::setTexture(0, m_texture0, texture, textureFlags);
 	bgfx::submit(view, m_blitShader->m_program);
 }
 
@@ -171,12 +175,18 @@ void Rendering::setState(bool tristrip, bool msaa)
 void Rendering::dispose()
 {
 	m_gbuffer->dispose();
+	
 	m_blitMesh->dispose();
+
 	m_blitShader->dispose();
 	m_gbufferShader->dispose();
+	m_deferredFinal->dispose();
 
 	bgfx::destroyUniform(m_modelViewProjection);
 	bgfx::destroyUniform(m_texture0);
+	bgfx::destroyUniform(m_texture1);
+	bgfx::destroyUniform(m_texture2);
+	bgfx::destroyUniform(m_texture3);
 
 	// suicide
 	delete this;
