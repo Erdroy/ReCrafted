@@ -21,7 +21,7 @@ private:
 	bgfx::ProgramHandle m_program = {};
 
 private:
-	void init(const char* vs, const char* fs);
+	void init(const char* vs, const char* fs, const char* def);
 
 public:
 

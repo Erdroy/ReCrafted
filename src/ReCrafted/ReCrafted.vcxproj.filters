@@ -162,5 +162,6 @@
     <None Include="Shaders\deferred_final\fs_deferred_final.glsl" />
     <None Include="Shaders\deferred_final\varying.def.sc" />
     <None Include="Shaders\deferred_final\vs_deferred_final.glsl" />
+    <None Include="Shaders\deferred_final\desc.json" />
   </ItemGroup>
 </Project>

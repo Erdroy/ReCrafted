@@ -1,0 +1,9 @@
+{
+	"name":"standard shader for geometry buffering",
+	"uniforms":[
+		{
+			"name":"m_lightdir",
+			"type":"vec3"
+		}
+	]
+}

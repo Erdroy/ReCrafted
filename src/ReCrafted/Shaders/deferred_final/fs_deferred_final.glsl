@@ -9,6 +9,8 @@ SAMPLER2D(m_texture0, 0); // albedo
 SAMPLER2D(m_texture1, 1); // normals, ambient occulusion
 //SAMPLER2D(m_texture2, 2); // shadow occulusion
 
+vec3 m_lightdir;
+
 PixelShader()
 {
 	vec4 albedo = texture2D(m_texture0, m_uv);

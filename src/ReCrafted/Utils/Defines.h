@@ -21,13 +21,19 @@
 #if defined(_WIN32)
 #include <Windows.h>
 
-inline void VS_LOG(const char* text)
+inline void LOG(const char* text)
 {
 #if defined(_DEBUG)
 	OutputDebugStringA(text);
 	OutputDebugStringA("\n");
 #endif
 }
+#endif
+
+#ifdef _DEBUG
+#define VS_LOG(text) LOG(text)
+#else
+#define VS_LOG(text)
 #endif
 
 #endif // VS_LOG_H

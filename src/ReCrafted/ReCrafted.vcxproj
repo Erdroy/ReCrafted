@@ -236,6 +236,7 @@
     <None Include="Shaders\blit\varying.def.sc" />
     <None Include="Shaders\blit\vs_blit.glsl" />
     <None Include="Shaders\common.sh" />
+    <None Include="Shaders\deferred_final\desc.json" />
     <None Include="Shaders\deferred_final\fs_deferred_final.glsl" />
     <None Include="Shaders\deferred_final\varying.def.sc" />
     <None Include="Shaders\deferred_final\vs_deferred_final.glsl" />

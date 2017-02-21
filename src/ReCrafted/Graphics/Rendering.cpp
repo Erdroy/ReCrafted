@@ -30,6 +30,7 @@ void Rendering::createRenderBuffers()
 	m_gbuffer->begin();
 	m_gbuffer->addTarget("ALBEDO", TextureFormat::RGBA8);
 	m_gbuffer->addTarget("[RGB]NORMALS, [A]AmbientOcculusion", TextureFormat::RGBA8);
+	m_gbuffer->addTarget("DEPTH", TextureFormat::D24);
 	m_gbuffer->end();
 }
 

@@ -3,7 +3,9 @@
 #include "Shader.h"
 #include "../Platform/Platform.h"
 
-void Shader::init(const char* vs, const char* fs)
+#include <json.hpp>
+
+void Shader::init(const char* vs, const char* fs, const char* def)
 {
 	if(!Platform::fileExists(vs) || !Platform::fileExists(fs))
 	{
@@ -30,6 +32,43 @@ void Shader::init(const char* vs, const char* fs)
 
 	vs_file.close();
 	fs_file.close();
+
+	if(Platform::fileExists(def))
+	{
+		// load shader definition
+		File def_file = {};
+		Platform::openFile(&def_file, def, OpenMode::OpenRead);
+		
+		// read data
+		auto data = new char[def_file.FileSize];
+		def_file.read(data, def_file.FileSize);
+
+		// trim end
+		for(auto i = def_file.FileSize-1; i >= 0; i --)
+		{
+			if (data[i] == '}')
+				break;
+
+			data[i] = '\0';
+		}
+
+		// read desc data
+		auto deffilejson = nlohmann::json::parse(data);
+		auto shadername = deffilejson["name"].get<std::string>();
+
+		for(auto i = 0; i < deffilejson["uniforms"].size(); i ++)
+		{
+			
+		}
+
+		// close and release all resources
+		delete[] data;
+		def_file.close();
+	}
+	else
+	{
+		VS_LOG("WARNING: Loaded shader without description file!");
+	}
 }
 
 void Shader::dispose()
@@ -76,16 +115,20 @@ Ptr<Shader> Shader::loadShader(const char* shaderName)
 
 	char vsPath[512] = {};
 	char fsPath[512] = {};
+	char defPath[512] = {};
 
 	// build file name string
 	strcat_s(vsPath, shaderPath);
 	strcat_s(fsPath, shaderPath);
+	strcat_s(defPath, shaderPath);
 
 	strcat_s(vsPath, shaderName);
 	strcat_s(fsPath, shaderName);
+	strcat_s(defPath, shaderName);
 
 	strcat_s(vsPath, "/vs_");
 	strcat_s(fsPath, "/fs_");
+	strcat_s(defPath, "/desc.json");
 
 	strcat_s(vsPath, shaderName);
 	strcat_s(fsPath, shaderName);
@@ -94,7 +137,7 @@ Ptr<Shader> Shader::loadShader(const char* shaderName)
 	strcat_s(fsPath, ".bin");
 
 	// initialize shader class, and load shaders
-	shader->init(vsPath, fsPath);
+	shader->init(vsPath, fsPath, defPath);
 
 	return shader;
 }
