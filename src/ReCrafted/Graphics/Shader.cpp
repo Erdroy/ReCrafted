@@ -4,6 +4,9 @@
 #include "../Platform/Platform.h"
 
 #include <json.hpp>
+#include "../Core/Math/Vector2.h"
+#include "../Core/Math/Vector3.h"
+#include "../Core/Math/Matrix.h"
 
 void Shader::init(const char* vs, const char* fs, const char* def)
 {
@@ -76,12 +79,10 @@ void Shader::init(const char* vs, const char* fs, const char* def)
 			auto uniformName = uniformData["name"].get<std::string>();
 			auto uniformType = uniformData["type"].get<std::string>();
 
-			bgfx::UniformType::Enum type = bgfx::UniformType::Vec4;
-			
+			auto type = bgfx::UniformType::Vec4;
+
 			if(uniformType == "mat4")
-			{
 				type = bgfx::UniformType::Mat4;
-			}
 
 			m_uniforms[m_uniformCount] = bgfx::createUniform(uniformName.c_str(), type);
 			m_uniformCount++;

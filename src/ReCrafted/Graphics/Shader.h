@@ -10,6 +10,11 @@
 #include "../Utils/Defines.h"
 #include <bgfx/bgfx.h>
 
+struct Vector2;
+struct Vector3;
+struct Vector4;
+struct Matrix;
+
 class Shader
 {
 	friend class Rendering;
@@ -26,6 +31,17 @@ private:
 	void init(const char* vs, const char* fs, const char* def);
 
 public:
+
+	/// <summary>
+	/// Set value.
+	/// </summary>
+	/// <param name="slot">Slot, starts at 0.</param>
+	/// <param name="value">The value.</param>
+	template<class T>
+	void setValue(uint slot, T* value)
+	{
+		bgfx::setUniform(m_uniforms[slot], value);
+	}
 
 	/// <summary>
 	/// Disposes this shader.
