@@ -56,9 +56,35 @@ void Shader::init(const char* vs, const char* fs, const char* def)
 		auto deffilejson = nlohmann::json::parse(data);
 		auto shadername = deffilejson["name"].get<std::string>();
 
-		for(auto i = 0; i < deffilejson["uniforms"].size(); i ++)
+		auto uniformsCount = deffilejson["uniforms"].size();
+
+		if(uniformsCount == 0)
 		{
+			_ASSERT(false); // throw error
+			return;
+		}
+
+		if (uniformsCount >= 16)
+		{
+			_ASSERT(false); // throw error
+			return;
+		}
+
+		for(auto i = 0; i < uniformsCount; i ++)
+		{
+			auto uniformData = deffilejson["uniforms"][i];
+			auto uniformName = uniformData["name"].get<std::string>();
+			auto uniformType = uniformData["type"].get<std::string>();
+
+			bgfx::UniformType::Enum type = bgfx::UniformType::Vec4;
 			
+			if(uniformType == "mat4")
+			{
+				type = bgfx::UniformType::Mat4;
+			}
+
+			m_uniforms[m_uniformCount] = bgfx::createUniform(uniformName.c_str(), type);
+			m_uniformCount++;
 		}
 
 		// close and release all resources

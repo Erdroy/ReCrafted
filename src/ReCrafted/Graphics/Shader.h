@@ -17,8 +17,10 @@ class Shader
 private:
 	bgfx::ShaderHandle m_vertexshader = {};
 	bgfx::ShaderHandle m_fragmentshader = {};
-
 	bgfx::ProgramHandle m_program = {};
+	bgfx::UniformHandle m_uniforms[16] = {};
+
+	uint m_uniformCount = 0u;
 
 private:
 	void init(const char* vs, const char* fs, const char* def);
