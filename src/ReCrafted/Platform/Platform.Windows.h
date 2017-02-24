@@ -1,6 +1,8 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #pragma once
+#include <vector>
+#include <deque>
 
 #ifdef WIN32 // windows
 #ifndef PLATFORMWINDOWS_H
@@ -89,6 +91,12 @@ struct OpenMode
 	};
 };
 
+typedef unsigned long(*QueueFunction)(void* parameter);
+
+#define MAX_THREADS 16
+
+DWORD WINAPI ThreadWorker(LPVOID lpParam);
+
 /// <summary>
 /// Platform class.
 /// </summary>
@@ -97,12 +105,24 @@ class Platform
 	friend class GameBase;
 
 private:
+	struct QueueEntry
+	{
+	public:
+		bool isStarted = false;
+		bool isEnded = false;
+		QueueFunction functio = nullptr;
+	};
+
+private:
 	static HWND m_gameWindow;
 
 	// timer
 	static LARGE_INTEGER m_frequency;
 	static double m_start;
 	static double m_freqCoeff;
+	static HANDLE m_threadPool[MAX_THREADS];
+	static unsigned char m_theadCount;
+	static std::vector<QueueEntry> m_queue;
 
 private:
 	static void setGameWindow(HWND gameWindow)
@@ -111,7 +131,6 @@ private:
 	}
 
 public:
-	
 	/// <summary>
 	/// Initialize platform
 	/// </summary>
@@ -122,6 +141,37 @@ public:
 		m_freqCoeff = double(m_frequency.QuadPart) / 1000.0;
 
 		m_start = getMiliseconds();
+
+		// create thread pool
+		SYSTEM_INFO sysinfo;
+		GetSystemInfo(&sysinfo);
+		int cpus = sysinfo.dwNumberOfProcessors;
+
+		for(auto i =  0; i < cpus; i ++)
+		{
+			typedef unsigned int(*Func)(void* parameter);
+			DWORD threadId = 0u;
+			m_threadPool[i] = CreateThread(
+				nullptr, 
+				0,
+				ThreadWorker,
+				nullptr, 
+				0, 
+				&threadId
+			);
+
+			m_theadCount++;
+		}
+	}
+
+	/// <summary>
+	/// Queue job for automatic execution in threaded enviroment.
+	/// </summary>
+	FORCEINLINE static void queueJob(QueueFunction function)
+	{
+		auto entry = QueueEntry();
+		entry.functio = function;
+		m_queue.push_back(entry);
 	}
 
 	/// <summary>
@@ -243,7 +293,7 @@ public:
 		// copy
 		strcpy_s(buffer, length, i_buffer);
 	}
-};
+}; 
 
 #endif // PLATFORMWINDOWS_H
 #endif

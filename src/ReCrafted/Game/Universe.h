@@ -8,6 +8,7 @@
 // includes
 #include "../recraftedPrerequisites.h"
 #include "../Graphics/Mesh.h"
+#include "Voxels/VoxelWorld.h"
 
 /// <summary>
 /// Universe class - main class for whole game world.
@@ -21,7 +22,7 @@ private:
 	static Universe* m_instance;
 
 private:
-	Ptr<Mesh> m_testMesh = nullptr;
+	Ptr<VoxelWorld> m_currentWorld = nullptr;
 
 private:
 	void init();
@@ -37,6 +38,11 @@ public:
 	void drawShadowCasters();
 
 	void draw();
+
+	FORCEINLINE void dispose()
+	{
+		m_currentWorld->dispose();
+	}
 };
 
 #endif // UNIVERSE_H

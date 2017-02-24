@@ -57,6 +57,15 @@
     <ClCompile Include="Game\Universe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Voxels\VoxelWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Voxels\VoxelChunk.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Profiler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\GameBase.h">
@@ -75,9 +84,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Logic\World.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Voxels\VoxelChunk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Logic\Addons\AddonLoader.h">
@@ -144,6 +150,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Game\Universe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Voxels\VoxelChunk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Voxels\VoxelWorld.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Profiler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

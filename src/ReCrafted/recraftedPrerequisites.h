@@ -7,6 +7,7 @@
 #endif
 
 #include <ctime>
+#include <vector>
 
 #include <bgfx/bgfx.h>
 
