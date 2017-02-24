@@ -5,6 +5,8 @@
 void VoxelWorld::init(bool generateworld)
 {
 	auto chunk = new VoxelChunk;
+	chunk->world = this;
+
 	chunk->dataGenerate();
 	chunk->meshGenerate();
 

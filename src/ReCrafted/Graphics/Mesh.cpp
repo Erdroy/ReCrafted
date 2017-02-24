@@ -42,6 +42,7 @@ void Mesh::applyChanges()
 {
 	_ASSERT(m_vertices);
 	_ASSERT(m_vertices_count != 0);
+	_ASSERT(m_indices_count != 0);
 
 	if(m_vertexBuffer.idx != 0)
 	{
@@ -140,12 +141,12 @@ void Mesh::dispose()
 
 	if (m_vertexBuffer.idx != 0)
 	{
-		// TODO: free
+		bgfx::destroyVertexBuffer(m_vertexBuffer);
 	}
 
 	if (m_indexBuffer.idx != 0)
 	{
-		// TODO: free
+		bgfx::destroyIndexBuffer(m_indexBuffer);
 	}
 	// do not commit suicide, this type of object is handled in soft pointers usually(and SHOULD BE!)
 }

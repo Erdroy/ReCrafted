@@ -35,7 +35,7 @@ void GameCore::onLoad()
 
 	// initialize main camera for scene
 	m_camera = Camera::createCamera(true, true);
-	m_camera->setPosition(Vector3(0.0f, 0.0f, -10.0f));
+	m_camera->setPosition(Vector3(0.0f, 4.0f, -10.0f));
 
 	m_initialized = true;
 

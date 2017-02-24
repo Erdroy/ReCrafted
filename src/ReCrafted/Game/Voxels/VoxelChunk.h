@@ -12,6 +12,8 @@
 
 typedef unsigned short voxelid;
 
+const voxelid voxel_air = voxelid(0u);
+
 /// <summary>
 /// VoxelChunk class.
 /// </summary>
@@ -22,6 +24,8 @@ class VoxelChunk
 private:
 	static const int ChunkWidth = 16;
 	static const int ChunkHeight = 256;
+
+	VoxelWorld* world = nullptr;
 
 	int m_x = 0;
 	int m_y = 0;
