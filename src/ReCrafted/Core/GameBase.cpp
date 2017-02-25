@@ -121,7 +121,9 @@ void GameBase::run()
 	wnd.hIconSm = LoadIcon(nullptr, IDI_APPLICATION);
 	RegisterClassEx(&wnd);
 
-	Platform::setGameWindow(CreateWindowW(L"recrafted", L"ReCrafted", WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 0, 0, NULL, NULL, instance, nullptr));
+	Platform::setGameWindow(CreateWindowW(L"recrafted", L"ReCrafted", WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 1280, 720, NULL, NULL, instance, nullptr));
+
+	ShowWindow(Platform::getGameWindow(), SW_MAXIMIZE);
 #endif
 
 	// initialize bgfx platform data
