@@ -25,6 +25,9 @@ FORCEINLINE void build_face(
 
 	auto normal = Vector3::normalize(Vector3::cross(b - a, c - a));
 
+	if (reversed)
+		normal = Vector3() - normal;
+
 	vertices->push_back(a);
 	vertices->push_back(b);
 	vertices->push_back(c);
@@ -96,7 +99,7 @@ void VoxelChunk::worker_dataGenerate()
 				if(y == 0)
 					m_voxels[x][y][z] = 1u;
 				else
-					m_voxels[x][y][z] = voxel_air;
+					m_voxels[x][y][z] = air;
 			}
 		}
 	}
@@ -132,28 +135,34 @@ void VoxelChunk::worker_meshGenerate()
 			{
 				for (auto z = 0; z < ChunkWidth; z++)
 				{
-					if (m_voxels[x][y][z] == voxel_air)
+					if (m_voxels[x][y][z] == air)
 						continue;
 
 					auto origin = Vector3(float(x), float(y), float(z));
 
 					// left face
-					build_face(origin, vec3_up, vec3_forward, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+					if(!getVoxel(x - 1, y, z))
+						build_face(origin, vec3_up, vec3_forward, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
 					// right face
-					build_face(origin + vec3_right, vec3_up, vec3_forward, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+					if (!getVoxel(x + 1, y, z))
+						build_face(origin + vec3_right, vec3_up, vec3_forward, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
 					// upper face
-					build_face(origin + vec3_up, vec3_forward, vec3_right, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+					if (!getVoxel(x, y + 1, z))
+						build_face(origin + vec3_up, vec3_forward, vec3_right, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 					
 					// bottom face
-					build_face(origin, vec3_forward, vec3_right, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+					if (!getVoxel(x, y - 1, z))
+						build_face(origin, vec3_forward, vec3_right, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
 					// front face
-					build_face(origin + vec3_forward, vec3_up, vec3_right, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+					if (!getVoxel(x, y, z + 1))
+						build_face(origin + vec3_forward, vec3_up, vec3_right, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
 					// back face
-					build_face(origin, vec3_up, vec3_right, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+					if (!getVoxel(x, y, z - 1))
+						build_face(origin, vec3_up, vec3_right, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 				}
 			}
 		}

@@ -12,7 +12,7 @@
 
 typedef unsigned short voxelid;
 
-const voxelid voxel_air = voxelid(0u);
+const voxelid air = voxelid(0u);
 
 /// <summary>
 /// VoxelChunk class.
@@ -85,38 +85,66 @@ public:
 			m_mesh->dispose();
 	}
 
-	// recursive tree methods
-	FORCEINLINE VoxelChunk* neighN()
+	FORCEINLINE voxelid getVoxel(int x, int y, int z)
 	{
+		if (y >= ChunkWidth || y < 0)
+			return air; // out of space!
 		
-	}
-	FORCEINLINE VoxelChunk* neighNE()
-	{
+		if (x >= 0 && x < ChunkWidth && z >= 0 && z < ChunkWidth)
+			return m_voxels[x][y][z]; // this chunk
 
+		return air; // nope
 	}
-	FORCEINLINE VoxelChunk* neighE()
-	{
 
+	FORCEINLINE voxelid getVoxelCC(int x, int y, int z) // CC - cross chunk
+	{
+		if (y >= ChunkWidth || y < 0)
+			return air; // out of space!
+
+		if (x >= 0 && x < ChunkWidth && z >= 0 && z < ChunkWidth)
+			return m_voxels[x][y][z]; // this chunk
+
+		// north neigh chunk
+		if (x < 0 && z >= 0 && z < ChunkWidth)
+			return m_neighN->getVoxel(x + ChunkWidth, y, z);
+
+		// TODO: rest of chunks
+
+		return air; // nope
 	}
-	FORCEINLINE VoxelChunk* neighSE()
-	{
 
+	// recursive tree methods
+	FORCEINLINE VoxelChunk* neighN() const
+	{
+		return m_neighN;
 	}
-	FORCEINLINE VoxelChunk* neighS()
+	FORCEINLINE VoxelChunk* neighNE() const
 	{
-
+		return m_neighNE;
 	}
-	FORCEINLINE VoxelChunk* neighSW()
+	FORCEINLINE VoxelChunk* neighE() const
 	{
-
+		return m_neighE;
 	}
-	FORCEINLINE VoxelChunk* neighW()
+	FORCEINLINE VoxelChunk* neighSE() const
 	{
-
+		return m_neighSE;
 	}
-	FORCEINLINE VoxelChunk* neighNW()
+	FORCEINLINE VoxelChunk* neighS() const
 	{
-
+		return m_neighS;
+	}
+	FORCEINLINE VoxelChunk* neighSW() const
+	{
+		return m_neighSW;
+	}
+	FORCEINLINE VoxelChunk* neighW() const
+	{
+		return m_neighW;
+	}
+	FORCEINLINE VoxelChunk* neighNW() const
+	{
+		return m_neighNW;
 	}
 };
 

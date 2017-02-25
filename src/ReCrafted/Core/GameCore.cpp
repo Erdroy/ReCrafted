@@ -16,7 +16,7 @@ void GameCore::onLoad()
 	bgfx::init(bgfx::RendererType::Direct3D11);
 	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC);
 
-	bgfx::setDebug(BGFX_DEBUG_STATS);
+	bgfx::setDebug(BGFX_DEBUG_NONE);
 
 	// Set view 0 clear state.
 	bgfx::setViewClear(RENDERVIEW_BACKBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030FF, 1.0f, 0);
@@ -80,6 +80,12 @@ void GameCore::onUpdate()
 	// exit the game when `escape` key is pressed
 	if (Input::isKeyDown(Key_Escape))
 		shutdown();
+
+	if (Input::isKeyDown(Key_F3))
+		bgfx::setDebug(BGFX_DEBUG_NONE);
+
+	if (Input::isKeyDown(Key_F4))
+		bgfx::setDebug(BGFX_DEBUG_STATS);
 
 	m_universe->update();
 }

@@ -94,7 +94,7 @@ void Rendering::beginRender()
 	Camera::m_mainCamera->update();
 
 	// update shaders uniforms
-	auto lightdir = Vector3(0.0f, 1.0f, 0.0f);
+	auto lightdir = Vector3(0.1f, -0.5f, 0.3f);
 	m_deferredFinal->setValue(0, &lightdir);
 
 }
