@@ -4,7 +4,7 @@
 #include "../../Core/Profiler.h"
 #include <vector>
 
-void build_face(
+FORCEINLINE void build_face(
 	Vector3 origin,
 	Vector3 up,
 	Vector3 right,
@@ -23,15 +23,17 @@ void build_face(
 	auto c = origin + up + right;
 	auto d = origin + right;
 
+	auto normal = Vector3::normalize(Vector3::cross(b - a, c - a));
+
 	vertices->push_back(a);
 	vertices->push_back(b);
 	vertices->push_back(c);
 	vertices->push_back(d);
 
-	normals->push_back(Vector3(0.0f, 0.0f, 0.0f));
-	normals->push_back(Vector3(0.0f, 0.0f, 0.0f));
-	normals->push_back(Vector3(0.0f, 0.0f, 0.0f));
-	normals->push_back(Vector3(0.0f, 0.0f, 0.0f));
+	normals->push_back(normal);
+	normals->push_back(normal);
+	normals->push_back(normal);
+	normals->push_back(normal);
 
 	uvs->push_back(Vector2(0.0f, 0.0f));
 	uvs->push_back(Vector2(0.0f, 1.0f));
@@ -123,6 +125,7 @@ void VoxelChunk::worker_meshGenerate()
 		const auto vec3_up = Vector3(0.0f, 1.0f, 0.0f);
 		const auto vec3_forward = Vector3(0.0f, 0.0f, 1.0f);
 
+		Profiler::beginProfile();
 		for (auto y = 0; y < ChunkHeight; y++)
 		{
 			for (auto x = 0; x < ChunkWidth; x++)
@@ -132,17 +135,29 @@ void VoxelChunk::worker_meshGenerate()
 					if (m_voxels[x][y][z] == voxel_air)
 						continue;
 
-
 					auto origin = Vector3(float(x), float(y), float(z));
 
 					// left face
-					//build_face(origin, vec3_up, vec3_forward, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
-					
-					// top face
+					build_face(origin, vec3_up, vec3_forward, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+
+					// right face
+					build_face(origin + vec3_right, vec3_up, vec3_forward, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+
+					// upper face
 					build_face(origin + vec3_up, vec3_forward, vec3_right, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+					
+					// bottom face
+					build_face(origin, vec3_forward, vec3_right, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+
+					// front face
+					build_face(origin + vec3_forward, vec3_up, vec3_right, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+
+					// back face
+					build_face(origin, vec3_up, vec3_right, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 				}
 			}
 		}
+		Profiler::endProfile("Mesh build took %0.7f ms.");
 
 		m_mesh->setVertices(vertices.data(), uint(vertices.size()));
 		m_mesh->setUVs(uvs.data());

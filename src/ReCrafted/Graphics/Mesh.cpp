@@ -86,14 +86,12 @@ void Mesh::applyChanges()
 
 		if(m_uvs)
 		{
-			auto uv = m_uvs[i];
-			memcpy(memoryPtr + offset + dataOffset, &uv, sizeof(float) * 2);
+			memcpy(memoryPtr + offset + dataOffset, &m_uvs[i], sizeof(float) * 2);
 			dataOffset += 2 * sizeof(float);
 		}
 		if (m_normals)
 		{
-			auto normal = m_normals[i];
-			memcpy(memoryPtr + offset + dataOffset, &normal, sizeof(float) * 3);
+			memcpy(memoryPtr + offset + dataOffset, &m_normals[i], sizeof(float) * 3);
 			dataOffset += 3 * sizeof(float);
 		}
 		/*if (m_colors)

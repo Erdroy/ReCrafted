@@ -16,7 +16,7 @@ void GameCore::onLoad()
 	bgfx::init(bgfx::RendererType::Direct3D11);
 	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC);
 
-	bgfx::setDebug(BGFX_DEBUG_NONE);
+	bgfx::setDebug(BGFX_DEBUG_STATS);
 
 	// Set view 0 clear state.
 	bgfx::setViewClear(RENDERVIEW_BACKBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030FF, 1.0f, 0);
