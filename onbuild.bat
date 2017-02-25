@@ -12,6 +12,7 @@ set /P VER= < version.txt
 echo Creating gameinfo file...
 tools\\ReCrafted.VersionBuilder.exe %VER% build\\assets\\gameinfo.json
 
+RD /S /Q build\assets\shaders
 tools\\ReCrafted.ShaderCompiler2.exe %1%
 
 echo Done!
