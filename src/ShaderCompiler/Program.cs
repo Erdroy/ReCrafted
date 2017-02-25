@@ -47,10 +47,16 @@ namespace ShaderCompiler
             foreach (var shader in Directory.GetDirectories(args[0] + "src\\ReCrafted\\Shaders"))
             {
                 var fileName = new FileInfo(shader);
-
+                var sourceDir = fileName.FullName.Remove(fileName.FullName.Length - fileName.Name.Length, fileName.Name.Length);
+                
                 var outDir = args[0] + "build\\assets\\shaders\\dx11\\" + fileName.Name + "\\";
                 if (!Directory.Exists(outDir))
                     Directory.CreateDirectory(outDir);
+                
+                if (File.Exists(sourceDir + fileName.Name + "\\desc.json"))
+                {
+                    File.Copy(sourceDir + fileName.Name + "\\desc.json", outDir + "desc.json", true);
+                }
 
                 BuildShader(args[0], shader, outDir, fileName.Name, "windows -p vs_4_0 -O 3", "vertex", "vs");
                 BuildShader(args[0], shader, outDir, fileName.Name, "windows -p ps_4_0 -O 3", "fragment", "fs");
