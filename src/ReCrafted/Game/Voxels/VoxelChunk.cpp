@@ -3,6 +3,8 @@
 #include "VoxelChunk.h"
 #include "../../Core/Profiler.h"
 #include <vector>
+#include "Generator/VoxelGenerator.h"
+#include "VoxelWorld.h"
 
 FORCEINLINE void build_face(
 	Vector3 origin,
@@ -90,6 +92,8 @@ FORCEINLINE void build_face(
 void VoxelChunk::worker_dataGenerate()
 {
 	Profiler::beginProfile();
+
+	VoxelGenerator::beginChunk(m_x * ChunkWidth, m_z * ChunkWidth);
 	for(auto y = 0; y < ChunkHeight; y ++)
 	{
 		for(auto x = 0; x < ChunkWidth; x ++)
@@ -99,7 +103,7 @@ void VoxelChunk::worker_dataGenerate()
 				if(y == 0)
 					m_voxels[x][y][z] = 1u;
 				else
-					m_voxels[x][y][z] = air;
+					m_voxels[x][y][z] = VoxelGenerator::generate(x, y, z);
 			}
 		}
 	}
@@ -108,16 +112,17 @@ void VoxelChunk::worker_dataGenerate()
 
 void VoxelChunk::worker_meshGenerate()
 {
-	// TODO: generate neigh chunks
+	std::vector<Vector3> vertices = {};
+	std::vector<Vector3> normals = {};
+	std::vector<Vector2> uvs = {};
+	std::vector<uint> indices = {};
 
 	Profiler::beginProfile();
 	{
-		m_mesh = Mesh::createMesh();
+		// generate neigh chunks if not generated already
+		world->initializeNeighs(this);
 
-		std::vector<Vector3> vertices = {};
-		std::vector<Vector3> normals = {};
-		std::vector<Vector2> uvs = {};
-		std::vector<uint> indices = {};
+		m_mesh = Mesh::createMesh();
 
 		auto vertices_ptr = &vertices;
 		auto normals_ptr = &normals;
@@ -137,33 +142,33 @@ void VoxelChunk::worker_meshGenerate()
 			{
 				for (auto z = 0; z < ChunkWidth; z++)
 				{
-					if (m_voxels[x][y][z] == air)
+					if (m_voxels[x][y][z] == voxel_air)
 						continue;
 
 					auto origin = Vector3(float(x), float(y), float(z));
 
 					// left face
-					if(!getVoxel(x - 1, y, z))
+					if(!getVoxelCC(x - 1, y, z))
 						build_face(origin, vec3_up, vec3_forward, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
 					// right face
-					if (!getVoxel(x + 1, y, z))
+					if (!getVoxelCC(x + 1, y, z))
 						build_face(origin + vec3_right, vec3_up, vec3_forward, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
 					// upper face
-					if (!getVoxel(x, y + 1, z))
+					if (!getVoxelCC(x, y + 1, z))
 						build_face(origin + vec3_up, vec3_forward, vec3_right, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 					
 					// bottom face
-					if (!getVoxel(x, y - 1, z))
+					if (!getVoxelCC(x, y - 1, z) && y - 1 >= 9)
 						build_face(origin, vec3_forward, vec3_right, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
 					// front face
-					if (!getVoxel(x, y, z + 1))
+					if (!getVoxelCC(x, y, z + 1))
 						build_face(origin + vec3_forward, vec3_up, vec3_right, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
 					// back face
-					if (!getVoxel(x, y, z - 1))
+					if (!getVoxelCC(x, y, z - 1))
 						build_face(origin, vec3_up, vec3_right, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 				}
 			}

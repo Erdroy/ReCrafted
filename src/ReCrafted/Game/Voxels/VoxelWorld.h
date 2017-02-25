@@ -8,6 +8,7 @@
 // includes
 #include "../../recraftedPrerequisites.h"
 #include "VoxelChunk.h"
+#include "../../Core/Logger.h"
 
 /*
 WORLD SPACE:
@@ -22,6 +23,7 @@ private:
 	std::vector<VoxelChunk*> m_chunks = {};
 
 private:
+
 public:
 	void init(bool generateworld);
 
@@ -30,6 +32,8 @@ public:
 	void simulate();
 	
 	void draw();
+
+	void initializeNeighs(VoxelChunk* chunk);
 
 	FORCEINLINE void dispose()
 	{
@@ -42,6 +46,7 @@ public:
 			delete chunk;
 		}
 		m_chunks.clear();
+		Logger::write("World unloaded", LogLevel::Info);
 	}
 };
 

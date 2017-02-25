@@ -9,6 +9,7 @@
 #include "../recraftedPrerequisites.h"
 #include "../Graphics/Mesh.h"
 #include "Voxels/VoxelWorld.h"
+#include "../Core/Logger.h"
 
 /// <summary>
 /// Universe class - main class for whole game world.
@@ -39,9 +40,10 @@ public:
 
 	void draw();
 
-	FORCEINLINE void dispose()
+	FORCEINLINE void dispose() const
 	{
 		m_currentWorld->dispose();
+		Logger::write("Universe unloaded", LogLevel::Info);
 		delete this;
 	}
 };

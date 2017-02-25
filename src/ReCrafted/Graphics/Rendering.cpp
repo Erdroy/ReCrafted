@@ -8,6 +8,8 @@ Rendering* Rendering::m_instance;
 
 void Rendering::loadInternalShaders()
 {
+	Logger::write("Loading internal shaders", LogLevel::Info);
+
 	m_blitShader = Shader::loadShader("blit");
 	m_gbufferShader = Shader::loadShader("gbuffer_standard");
 	m_deferredFinal = Shader::loadShader("deferred_final");
@@ -15,6 +17,8 @@ void Rendering::loadInternalShaders()
 
 void Rendering::createUniforms()
 {
+	Logger::write("Creating default uniforms", LogLevel::Info);
+
 	// create uniforms
 	m_modelViewProjection = bgfx::createUniform("m_modelViewProjection", bgfx::UniformType::Mat4);
 	m_texture0 = bgfx::createUniform("m_texture0", bgfx::UniformType::Int1);
@@ -25,6 +29,8 @@ void Rendering::createUniforms()
 
 void Rendering::createRenderBuffers()
 {
+	Logger::write("Creating render buffers", LogLevel::Info);
+
 	// create render buffer for geometry pass
 	m_gbuffer = RenderBuffer::createRenderTarget();
 	m_gbuffer->begin();
@@ -191,19 +197,24 @@ void Rendering::setState(bool tristrip, bool msaa)
 
 void Rendering::dispose()
 {
+	Logger::write("Unloading rendering pipeline", LogLevel::Info);
+
 	m_gbuffer->dispose();
+	Logger::write("Unloaded render buffers", LogLevel::Info);
 	
 	m_blitMesh->dispose();
 
 	m_blitShader->dispose();
 	m_gbufferShader->dispose();
 	m_deferredFinal->dispose();
+	Logger::write("Unloaded shaders", LogLevel::Info);
 
 	bgfx::destroyUniform(m_modelViewProjection);
 	bgfx::destroyUniform(m_texture0);
 	bgfx::destroyUniform(m_texture1);
 	bgfx::destroyUniform(m_texture2);
 	bgfx::destroyUniform(m_texture3);
+	Logger::write("Unloaded uniforms", LogLevel::Info);
 
 	// suicide
 	delete this;

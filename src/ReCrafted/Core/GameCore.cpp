@@ -7,8 +7,16 @@ GameCore* GameCore::m_instance;
 
 void GameCore::onLoad()
 {
+	// initialize logger
+	m_logger = new Logger();
+	m_logger->init();
+
+	Logger::write("ReCrafted - startup", LogLevel::Info);
+
 	// get game window size
 	Platform::getGameWindowSize(&m_width, &m_height);
+
+	Logger::write("Creating game renderer using Direct3D11 API", LogLevel::Info);
 
 	// initialize bgfx
 	bgfx::init(bgfx::RendererType::Direct3D11);
@@ -23,15 +31,13 @@ void GameCore::onLoad()
 	bgfx::setViewClear(RENDERVIEW_GBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
 	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, m_width, m_height);
 
-	// initialize logger
-	m_logger = new Logger();
-	m_logger->init();
-
-	Logger::write("ReCrafted - startup", LogLevel::Info);
+	Logger::write("Renderer initialized", LogLevel::Info);
 
 	// initialize rendering
 	m_rendering = new Rendering;
 	m_rendering->init();
+
+	Logger::write("Rendering pipeline initialized", LogLevel::Info);
 
 	// initialize universe
 	m_universe = new Universe();
@@ -46,13 +52,15 @@ void GameCore::onLoad()
 	// update state
 	m_rendering->setState(false, false);
 
-	Logger::write("initialized all components", LogLevel::Info);
+	Logger::write("Game initialized", LogLevel::Info);
 }
 
 void GameCore::onUnload()
 {
 	if (!m_initialized)
 		return;
+
+	Logger::write("Shutting down...", LogLevel::Info);
 
 	// release all resources etc.
 	SafeDispose(m_rendering);
@@ -89,10 +97,16 @@ void GameCore::onUpdate()
 		shutdown();
 
 	if (Input::isKeyDown(Key_F3))
+	{
 		bgfx::setDebug(BGFX_DEBUG_NONE);
+		Logger::write("Switching to default render mode", LogLevel::Info);
+	}
 
 	if (Input::isKeyDown(Key_F4))
+	{
 		bgfx::setDebug(BGFX_DEBUG_STATS);
+		Logger::write("Switching to debug stats render mode", LogLevel::Info);
+	}
 
 	m_universe->update();
 }

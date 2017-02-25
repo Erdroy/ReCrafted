@@ -41,7 +41,27 @@ private:
 	void dispose();
 
 public:
-	FORCEINLINE static void write(char* message, LogLevel::Enum logLevel = LogLevel::Debug)
+	FORCEINLINE static void write(const char* messageA, const char* messageB, const char* messageC, LogLevel::Enum logLevel = LogLevel::Debug)
+	{
+#ifndef _DEBUG
+		if (logLevel == LogLevel::Debug)
+			return;
+#endif
+		static char buffer[8192] = {};
+
+		strcpy_s(buffer, messageA);
+		strcat_s(buffer, messageB);
+		strcat_s(buffer, messageC);
+
+		write(buffer, logLevel);
+	}
+
+	FORCEINLINE static void write(const char* messageA, const char* messageB, LogLevel::Enum logLevel = LogLevel::Debug)
+	{
+		write(messageA, messageB, "", logLevel);
+	}
+
+	FORCEINLINE static void write(const char* message, LogLevel::Enum logLevel = LogLevel::Debug)
 	{
 #ifndef _DEBUG
 		if (logLevel == LogLevel::Debug)
@@ -56,8 +76,9 @@ public:
 		// create date
 		time_t rawtime;
 		time(&rawtime);
-		auto timeinfo = localtime(&rawtime);
-		strftime(reinterpret_cast<char*>(timeBuffer), 64, "%T ", timeinfo);
+		struct tm timeinfo;
+		localtime_s(&timeinfo, &rawtime);
+		strftime(reinterpret_cast<char*>(timeBuffer), 64, "%T ", &timeinfo);
 
 		// write date
 		strcat_s(buffer, timeBuffer);

@@ -7,6 +7,7 @@
 #include "../Core/Math/Vector2.h"
 #include "../Core/Math/Vector3.h"
 #include "../Core/Math/Matrix.h"
+#include "../Core/Logger.h"
 
 void Shader::init(const char* vs, const char* fs, const char* def)
 {
@@ -94,18 +95,23 @@ void Shader::init(const char* vs, const char* fs, const char* def)
 	}
 	else
 	{
-		VS_LOG("WARNING: Loaded shader without description file!");
+		Logger::write("Loaded shader which doesn't have description file!", LogLevel::Warning);
 	}
 }
 
 void Shader::dispose()
 {
+	Logger::write("Unloading shader '", m_shaderName, "'", LogLevel::Info);
 	bgfx::destroyProgram(m_program);
 }
 
 Ptr<Shader> Shader::loadShader(const char* shaderName)
 {
 	Ptr<Shader> shader(new Shader);
+
+	Logger::write("Loading shader '", shaderName, "'.", LogLevel::Info);
+
+	strcpy_s(shader->m_shaderName, shaderName);
 
 	// select file base path
 	const char* shaderPath = "???";
@@ -137,7 +143,8 @@ Ptr<Shader> Shader::loadShader(const char* shaderName)
 	case bgfx::RendererType::Gnm:
 	case bgfx::RendererType::OpenGLES:
 	case bgfx::RendererType::Count:
-		_ASSERT(false);
+		Logger::write("Couldn't load shader, invalid renderer.", LogLevel::Error);
+		return nullptr;
 	}
 
 	char vsPath[512] = {};

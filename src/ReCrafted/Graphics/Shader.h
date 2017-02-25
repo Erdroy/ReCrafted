@@ -20,6 +20,8 @@ class Shader
 	friend class Rendering;
 
 private:
+	char m_shaderName[128] = {};
+
 	bgfx::ShaderHandle m_vertexshader = {};
 	bgfx::ShaderHandle m_fragmentshader = {};
 	bgfx::ProgramHandle m_program = {};

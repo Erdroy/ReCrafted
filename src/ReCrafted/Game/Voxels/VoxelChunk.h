@@ -12,7 +12,10 @@
 
 typedef unsigned short voxelid;
 
-const voxelid air = voxelid(0u);
+const voxelid voxel_air = voxelid(0u);
+
+static const int ChunkWidth = 16;
+static const int ChunkHeight = 256;
 
 /// <summary>
 /// VoxelChunk class.
@@ -22,13 +25,11 @@ class VoxelChunk
 	friend class VoxelWorld;
 
 private:
-	static const int ChunkWidth = 16;
-	static const int ChunkHeight = 256;
 
 	VoxelWorld* world = nullptr;
 
 	int m_x = 0;
-	int m_y = 0;
+	int m_z = 0;
 
 	voxelid m_voxels[ChunkWidth][ChunkHeight][ChunkWidth];
 
@@ -65,7 +66,6 @@ private:
 	}
 
 public:
-
 	void update();
 
 	void simulate();
@@ -76,6 +76,10 @@ public:
 			return;
 
 		auto modelMatrix = Matrix::identity();
+		modelMatrix.M30 = float(m_x) * ChunkWidth;
+		modelMatrix.M31 = 0.0f;
+		modelMatrix.M32 = float(m_z) * ChunkWidth;
+
 		Rendering::getInstance()->draw(m_mesh, &modelMatrix);
 	}
 
@@ -87,13 +91,13 @@ public:
 
 	FORCEINLINE voxelid getVoxel(int x, int y, int z)
 	{
-		if (y >= ChunkWidth || y < 0)
-			return air; // out of space!
+		if (y >= ChunkHeight || y < 0)
+			return voxel_air; // out of space!
 		
 		if (x >= 0 && x < ChunkWidth && z >= 0 && z < ChunkWidth)
 			return m_voxels[x][y][z]; // this chunk
 
-		return air; // nope
+		return voxel_air; // nope
 	}
 
 	FORCEINLINE voxelid getVoxelCC(int x, int y, int z) // CC - cross chunk
@@ -106,7 +110,7 @@ public:
 		#define is_left(A) (A < 0)
 
 		if (y >= ChunkHeight || y < 0)
-			return air; // out of space!
+			return voxel_air; // out of space!
 
 		if (x >= 0 && x < ChunkWidth && z >= 0 && z < ChunkWidth)
 			return m_voxels[x][y][z]; // this chunk
@@ -117,38 +121,38 @@ public:
 
 		// north east chunk
 		if (is_right(x) && is_up(z))
-			return m_neighN->getVoxel(x - ChunkWidth, y, z - ChunkWidth);
+			return m_neighNE->getVoxel(x - ChunkWidth, y, z - ChunkWidth);
 
 		// east chunk
 		if (is_right(x) && !is_out(z))
-			return m_neighN->getVoxel(x - ChunkWidth, y, z);
+			return m_neighE->getVoxel(x - ChunkWidth, y, z);
 
 		// south east chunk
 		if (is_right(x) && is_down(z))
-			return m_neighN->getVoxel(x - ChunkWidth, y, z + ChunkWidth);
+			return m_neighSE->getVoxel(x - ChunkWidth, y, z + ChunkWidth);
 
 		// south chunk
 		if (!is_out(x) && is_down(z))
-			return m_neighN->getVoxel(x, y, z + ChunkWidth);
+			return m_neighS->getVoxel(x, y, z + ChunkWidth);
 
 		// south west chunk
 		if (is_left(x) && is_down(z))
-			return m_neighN->getVoxel(x + ChunkWidth, y, z + ChunkWidth);
+			return m_neighSW->getVoxel(x + ChunkWidth, y, z + ChunkWidth);
 
 		// west chunk
 		if (is_left(x) && !is_out(z))
-			return m_neighN->getVoxel(x + ChunkWidth, y, z);
+			return m_neighW->getVoxel(x + ChunkWidth, y, z);
 
 		// north west chunk
 		if (is_left(x) && is_up(z))
-			return m_neighN->getVoxel(x + ChunkWidth, y, z - ChunkWidth);
+			return m_neighNW->getVoxel(x + ChunkWidth, y, z - ChunkWidth);
 
 		#undef is_out
 		#undef is_up
 		#undef is_down
 		#undef is_right
 		#undef is_left
-		return air; // nope
+		return voxel_air; // nope
 	}
 
 	// recursive tree methods

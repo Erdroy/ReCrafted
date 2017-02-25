@@ -2,6 +2,7 @@
 
 #include "RenderBuffer.h"
 #include "../Platform/Platform.Windows.h"
+#include "../Core/Logger.h"
 
 void RenderBuffer::createBuffer(uint width, uint height)
 {
@@ -45,6 +46,8 @@ void RenderBuffer::end()
 	createBuffer(width, height);
 
 	m_created = true;
+
+	Logger::write("Created render buffer", LogLevel::Info);
 }
 
 void RenderBuffer::addTarget(const char* name, TextureFormat::Enum format)
@@ -87,4 +90,5 @@ void RenderBuffer::dispose()
 {
 	// destroy framebuffer
 	bgfx::destroyFrameBuffer(m_framebufferHandle);
+	Logger::write("Unloaded render buffer", LogLevel::Info);
 }
