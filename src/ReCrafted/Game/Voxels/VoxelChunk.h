@@ -98,18 +98,56 @@ public:
 
 	FORCEINLINE voxelid getVoxelCC(int x, int y, int z) // CC - cross chunk
 	{
-		if (y >= ChunkWidth || y < 0)
+		#define is_out(A) (A < 0 || A >= ChunkWidth)
+
+		#define is_up(A) (A >= ChunkWidth)
+		#define is_down(A) (A < 0)
+		#define is_right(A) (A >= ChunkWidth)
+		#define is_left(A) (A < 0)
+
+		if (y >= ChunkHeight || y < 0)
 			return air; // out of space!
 
 		if (x >= 0 && x < ChunkWidth && z >= 0 && z < ChunkWidth)
 			return m_voxels[x][y][z]; // this chunk
 
 		// north neigh chunk
-		if (x < 0 && z >= 0 && z < ChunkWidth)
+		if (!is_out(x) && is_up(z))
+			return m_neighN->getVoxel(x, y, z - ChunkWidth);
+
+		// north east chunk
+		if (is_right(x) && is_up(z))
+			return m_neighN->getVoxel(x - ChunkWidth, y, z - ChunkWidth);
+
+		// east chunk
+		if (is_right(x) && !is_out(z))
+			return m_neighN->getVoxel(x - ChunkWidth, y, z);
+
+		// south east chunk
+		if (is_right(x) && is_down(z))
+			return m_neighN->getVoxel(x - ChunkWidth, y, z + ChunkWidth);
+
+		// south chunk
+		if (!is_out(x) && is_down(z))
+			return m_neighN->getVoxel(x, y, z + ChunkWidth);
+
+		// south west chunk
+		if (is_left(x) && is_down(z))
+			return m_neighN->getVoxel(x + ChunkWidth, y, z + ChunkWidth);
+
+		// west chunk
+		if (is_left(x) && !is_out(z))
 			return m_neighN->getVoxel(x + ChunkWidth, y, z);
 
-		// TODO: rest of chunks
+		// north west chunk
+		if (is_left(x) && is_up(z))
+			return m_neighN->getVoxel(x + ChunkWidth, y, z - ChunkWidth);
 
+		#undef is_out
+		#undef is_up
+		#undef is_down
+		#undef is_right
+		#undef is_left
 		return air; // nope
 	}
 

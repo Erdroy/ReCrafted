@@ -108,6 +108,8 @@ void VoxelChunk::worker_dataGenerate()
 
 void VoxelChunk::worker_meshGenerate()
 {
+	// TODO: generate neigh chunks
+
 	Profiler::beginProfile();
 	{
 		m_mesh = Mesh::createMesh();
