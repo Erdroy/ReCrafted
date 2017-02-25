@@ -14,6 +14,7 @@
 #endif
 
 #define SafeDispose(ptr) if(ptr) { ptr->dispose(); ptr = nullptr;}
+#define SafeDisposeNN(ptr) if(ptr) { ptr->dispose(); }
 
 #ifndef VS_LOG_H
 #define VS_LOG_H

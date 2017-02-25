@@ -2,8 +2,6 @@
 
 #include "GameCore.h"
 #include "../Utils/Defines.h"
-#include <vector>
-#include <string>
 
 GameCore* GameCore::m_instance;
 
@@ -25,11 +23,17 @@ void GameCore::onLoad()
 	bgfx::setViewClear(RENDERVIEW_GBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
 	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, m_width, m_height);
 
+	// initialize logger
+	m_logger = new Logger();
+	m_logger->init();
+
+	Logger::write("ReCrafted - startup", LogLevel::Info);
+
 	// initialize rendering
 	m_rendering = new Rendering;
 	m_rendering->init();
 
-	// create universe
+	// initialize universe
 	m_universe = new Universe();
 	m_universe->init();
 
@@ -41,6 +45,8 @@ void GameCore::onLoad()
 
 	// update state
 	m_rendering->setState(false, false);
+
+	Logger::write("initialized all components", LogLevel::Info);
 }
 
 void GameCore::onUnload()
@@ -51,6 +57,7 @@ void GameCore::onUnload()
 	// release all resources etc.
 	SafeDispose(m_rendering);
 	SafeDispose(m_universe);
+	SafeDispose(m_logger);
 
 	bgfx::shutdown();
 }

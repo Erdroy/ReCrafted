@@ -66,6 +66,11 @@ public:
 		read(buffer, FileSize);
 	}
 
+	void write(void* data, size_t data_lenght) const
+	{
+		fwrite(data, data_lenght, 1, m_file);
+	}
+
 	/// <summary>
 	/// Close the file. This will be called automatically when File strcture is out of scope.
 	/// </summary>

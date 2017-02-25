@@ -191,6 +191,7 @@
     <ClCompile Include="Core\GameBase.cpp" />
     <ClCompile Include="Core\GameCore.cpp" />
     <ClCompile Include="Core\Input.cpp" />
+    <ClCompile Include="Core\Logger.cpp" />
     <ClCompile Include="Core\Profiler.cpp" />
     <ClCompile Include="Core\Time.cpp" />
     <ClCompile Include="Game\Universe.cpp" />
@@ -212,6 +213,7 @@
     <ClInclude Include="Core\GameBase.h" />
     <ClInclude Include="Core\GameCore.h" />
     <ClInclude Include="Core\Input.h" />
+    <ClInclude Include="Core\Logger.h" />
     <ClInclude Include="Core\Math\Math.h" />
     <ClInclude Include="Core\Math\Matrix.h" />
     <ClInclude Include="Core\Math\Vector2.h" />

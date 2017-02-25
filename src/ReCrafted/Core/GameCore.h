@@ -11,6 +11,7 @@
 #include "../Graphics/Rendering.h"
 #include "../Graphics/Camera.h"
 #include "../Game/Universe.h"
+#include "Logger.h"
 
 /// <summary>
 /// GameCoreClass
@@ -27,6 +28,7 @@ private:
 	bool m_initialized = false;
 	Rendering* m_rendering = nullptr;
 	Universe* m_universe = nullptr;
+	Logger* m_logger = nullptr;
 	Ptr<Camera> m_camera = nullptr;
 
 public:

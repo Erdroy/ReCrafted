@@ -42,6 +42,7 @@ public:
 	FORCEINLINE void dispose()
 	{
 		m_currentWorld->dispose();
+		delete this;
 	}
 };
 
