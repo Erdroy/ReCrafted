@@ -9,6 +9,7 @@
 #include "../../recraftedPrerequisites.h"
 #include "VoxelChunk.h"
 #include "../../Core/Logger.h"
+#include "VoxelChunkTree.h"
 
 /*
 WORLD SPACE:
@@ -21,6 +22,8 @@ class VoxelWorld
 {
 private:
 	std::vector<VoxelChunk*> m_chunks = {};
+
+	VoxelChunkTree* m_chunkTree = nullptr;
 
 private:
 

@@ -234,6 +234,7 @@
     <ClInclude Include="Game\Universe.h" />
     <ClInclude Include="Game\Voxels\Generator\VoxelGenerator.h" />
     <ClInclude Include="Game\Voxels\VoxelChunk.h" />
+    <ClInclude Include="Game\Voxels\VoxelChunkTree.h" />
     <ClInclude Include="Game\Voxels\VoxelWorld.h" />
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\Mesh.h" />

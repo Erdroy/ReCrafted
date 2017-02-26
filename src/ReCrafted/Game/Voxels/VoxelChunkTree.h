@@ -10,31 +10,33 @@
 #include "VoxelChunk.h"
 #include "../../Graphics/Camera.h"
 
+const int DepthTable[6] = { 512, 256, 128, 64, 32, 16 };
+
 class VoxelChunkTree
 {
-	const int m_depthTable[6] = { 16384, 4096, 1024, 256, 64, 16 };
-
 private:
 	struct vctEntry
 	{
-		int StartX;
-		int StartZ;
+	public:
+		int depth = 0;
 
-		// x-
-		// --
-		vctEntry* M00;
+		int left = 0;
+		int bottom = 0;
+		int right = 0;
+		int top = 0;
 
-		// -x
-		// --
-		vctEntry* M01;
+		vctEntry* entries[4] = { nullptr, nullptr, nullptr, nullptr };
+		VoxelChunk* chunk = nullptr;
 
-		// --
-		// -x
-		vctEntry* M11;
+		bool intersects(int x, int z, int size) const
+		{
+			return left <= x && bottom <= z && right >= x + size && top >= z + size;
+		}
 
-		// --
-		// x-
-		vctEntry* M10;
+		void dispose() const
+		{
+			
+		}
 	};
 
 private:
@@ -42,18 +44,90 @@ private:
 	std::vector<vctEntry*> m_roots = {};
 
 public:
-	void add(VoxelChunk chunk)
+	void add(VoxelChunk* chunk)
 	{
-		vctEntry* root;
+		auto targetX = chunk->m_x * 16;
+		auto targetZ = chunk->m_z * 16;
+
+		vctEntry* root = nullptr;
 		if(m_roots.size() == 0)
 		{
-			// initialize root
 			root = new vctEntry;
 
-			root->StartX = 0;
-			root->StartZ = 0;
+			// set coords
+			root->left = -DepthTable[0] / 2;
+			root->bottom = -DepthTable[0] / 2;
+			root->right = DepthTable[0] / 2;
+			root->top = DepthTable[0] / 2;
 
 			m_roots.push_back(root);
+		}
+		else if(m_roots.size() == 1)
+		{
+			root = m_roots[0];
+		}
+		else
+		{
+			// TODO: find vct root
+			_ASSERT(false);
+		}
+
+		// iterate
+		for(auto depth = 1; depth < 6; depth ++)
+		{
+			// check if root has entries
+			for(auto i = 0; i < 4; i ++)
+			{
+				// generate entries when root does not have any
+				if (root->entries[i] == nullptr)
+				{
+					auto node = root->entries[i] = new vctEntry;
+					node->depth = depth;
+
+					auto depthSzOffset = DepthTable[depth];
+
+					if(i == 0)
+					{
+						node->top = root->top;
+						node->bottom = root->bottom + depthSzOffset;
+						node->left = root->left;
+						node->right = root->right - depthSzOffset;
+					}
+					if (i == 1)
+					{
+						node->top = root->top;
+						node->bottom = root->bottom + depthSzOffset;
+						node->left = root->left + depthSzOffset;
+						node->right = root->right;
+					}
+					if (i == 2)
+					{
+						node->top = root->top - depthSzOffset;
+						node->bottom = root->bottom;
+						node->left = root->left + depthSzOffset;
+						node->right = root->right;
+					}
+					if (i == 3)
+					{
+						node->top = root->top - depthSzOffset;
+						node->bottom = root->bottom;
+						node->left = root->left;
+						node->right = root->right - depthSzOffset;
+					}
+				}
+
+				if(root->entries[i]->intersects(targetX, targetZ, 16))
+				{
+					if(depth == 5)
+					{
+						root->entries[i]->chunk = chunk;
+						return;
+					}
+
+					root = root->entries[i];
+					break;
+				}
+			}
 		}
 	}
 
@@ -65,6 +139,11 @@ public:
 	void getNearChunksCulled(Vector3 point, float distance, Camera* camera)
 	{
 
+	}
+
+	void dispose()
+	{
+		
 	}
 };
 

@@ -197,6 +197,9 @@
     <ClInclude Include="Core\Math\FastNoiseSIMD\FastNoiseSIMD_internal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Voxels\VoxelChunkTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\common.sh" />

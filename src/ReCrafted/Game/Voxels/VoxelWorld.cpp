@@ -9,10 +9,12 @@ void VoxelWorld::init(bool generateworld)
 	// initialize generator
 	VoxelGenerator::initialize();
 
+	m_chunkTree = new VoxelChunkTree;
+
 	Profiler::beginProfile();
 	if (generateworld)
 	{
-		for(auto x = -10; x < 10; x ++)
+		/*for(auto x = -10; x < 10; x ++)
 		{
 			for (auto z = -10; z < 10; z++)
 			{
@@ -21,17 +23,22 @@ void VoxelWorld::init(bool generateworld)
 				chunk->m_x = x;
 				chunk->m_z = z;
 				
-				chunk->dataGenerate();
-
-				m_chunks.push_back(chunk);
+				m_chunkTree->add(chunk);
 			}
-		}
+		}*/
 
-		for (auto && chunk : m_chunks)
+		auto chunk = new VoxelChunk;
+		chunk->world = this;
+		chunk->m_x = 0;
+		chunk->m_z = 0;
+
+		m_chunkTree->add(chunk);
+
+		/*for (auto && chunk : m_chunks)
 		{
 			if ((chunk->m_x > -9 && chunk->m_x < 9) && (chunk->m_z > -9 && chunk->m_z < 9))
 				chunk->meshGenerate();
-		}
+		}*/
 	}
 	Profiler::endProfile("Starting world generated in %0.7f ms.");
 }
