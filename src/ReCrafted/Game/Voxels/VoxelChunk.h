@@ -25,13 +25,10 @@ class VoxelChunk
 	friend class VoxelWorld;
 
 private:
-
-	VoxelWorld* world = nullptr;
-
 	int m_x = 0;
 	int m_z = 0;
 
-	voxelid m_voxels[ChunkWidth][ChunkHeight][ChunkWidth];
+	VoxelWorld* world = nullptr;
 
 	Ptr<Mesh> m_mesh = nullptr;
 
@@ -45,12 +42,15 @@ private:
 	VoxelChunk* m_neighW = nullptr;
 	VoxelChunk* m_neighNW = nullptr;
 
+	/* voxels */
+	voxelid m_voxels[ChunkWidth * ChunkHeight * ChunkWidth] = {};
+
 private:
 	void worker_dataGenerate();
 
 	void worker_meshGenerate();
 
-	FORCEINLINE void dataGenerate()
+	void dataGenerate()
 	{
 		worker_dataGenerate();
 	}
@@ -95,7 +95,7 @@ public:
 			return voxel_air; // out of space!
 		
 		if (x >= 0 && x < ChunkWidth && z >= 0 && z < ChunkWidth)
-			return m_voxels[x][y][z]; // this chunk
+			return m_voxels[y * (ChunkWidth * ChunkWidth) + z * ChunkWidth + x]; // this chunk
 
 		return voxel_air; // nope
 	}
@@ -113,7 +113,7 @@ public:
 			return voxel_air; // out of space!
 
 		if (x >= 0 && x < ChunkWidth && z >= 0 && z < ChunkWidth)
-			return m_voxels[x][y][z]; // this chunk
+			return getVoxel(x, y, z); // this chunk
 
 		// north neigh chunk
 		if (!is_out(x) && is_up(z))

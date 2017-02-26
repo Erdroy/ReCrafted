@@ -33,6 +33,8 @@ public:
 	
 	void draw();
 
+	void findNeighs(VoxelChunk* chunk);
+
 	void initializeNeighs(VoxelChunk* chunk);
 
 	FORCEINLINE void dispose()

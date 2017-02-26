@@ -96,13 +96,13 @@ void GameCore::onUpdate()
 	if (Input::isKeyDown(Key_Escape))
 		shutdown();
 
-	if (Input::isKeyDown(Key_F3))
+	if (Input::isKeyDown(Key_F4))
 	{
 		bgfx::setDebug(BGFX_DEBUG_NONE);
 		Logger::write("Switching to default render mode", LogLevel::Info);
 	}
 
-	if (Input::isKeyDown(Key_F4))
+	if (Input::isKeyDown(Key_F5))
 	{
 		bgfx::setDebug(BGFX_DEBUG_STATS);
 		Logger::write("Switching to debug stats render mode", LogLevel::Info);

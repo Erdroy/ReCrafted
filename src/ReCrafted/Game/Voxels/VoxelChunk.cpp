@@ -2,9 +2,9 @@
 
 #include "VoxelChunk.h"
 #include "../../Core/Profiler.h"
-#include <vector>
 #include "Generator/VoxelGenerator.h"
 #include "VoxelWorld.h"
+#include <vector>
 
 FORCEINLINE void build_face(
 	Vector3 origin,
@@ -91,8 +91,6 @@ FORCEINLINE void build_face(
 
 void VoxelChunk::worker_dataGenerate()
 {
-	Profiler::beginProfile();
-
 	VoxelGenerator::beginChunk(m_x * ChunkWidth, m_z * ChunkWidth);
 	for(auto y = 0; y < ChunkHeight; y ++)
 	{
@@ -100,11 +98,10 @@ void VoxelChunk::worker_dataGenerate()
 		{
 			for (auto z = 0; z < ChunkWidth; z++)
 			{
-				m_voxels[x][y][z] = VoxelGenerator::generate(x, y, z);
+				m_voxels[y * (ChunkWidth * ChunkWidth) + z * ChunkWidth + x] = VoxelGenerator::generate(x, y, z);
 			}
 		}
 	}
-	Profiler::endProfile("Chunk voxel data generated in %0.7f ms.");
 }
 
 void VoxelChunk::worker_meshGenerate()
@@ -114,8 +111,10 @@ void VoxelChunk::worker_meshGenerate()
 	std::vector<Vector2> uvs = {};
 	std::vector<uint> indices = {};
 
-	Profiler::beginProfile();
 	{
+		// find neighs
+		world->findNeighs(this);
+
 		// generate neigh chunks if not generated already
 		world->initializeNeighs(this);
 
@@ -132,14 +131,13 @@ void VoxelChunk::worker_meshGenerate()
 		const auto vec3_up = Vector3(0.0f, 1.0f, 0.0f);
 		const auto vec3_forward = Vector3(0.0f, 0.0f, 1.0f);
 
-		Profiler::beginProfile();
 		for (auto y = 0; y < ChunkHeight; y++)
 		{
 			for (auto x = 0; x < ChunkWidth; x++)
 			{
 				for (auto z = 0; z < ChunkWidth; z++)
 				{
-					if (m_voxels[x][y][z] == voxel_air)
+					if (m_voxels[y * (ChunkWidth * ChunkWidth) + z * ChunkWidth + x] == voxel_air)
 						continue;
 
 					auto origin = Vector3(float(x), float(y), float(z));
@@ -170,7 +168,6 @@ void VoxelChunk::worker_meshGenerate()
 				}
 			}
 		}
-		Profiler::endProfile("Mesh build took %0.7f ms.");
 
 		m_mesh->setVertices(vertices.data(), uint(vertices.size()));
 		m_mesh->setUVs(uvs.data());
@@ -180,7 +177,6 @@ void VoxelChunk::worker_meshGenerate()
 		// upload now for a test
 		meshUpload();
 	}
-	Profiler::endProfile("Chunk mesh generated in %0.7f ms.");
 }
 
 void VoxelChunk::update()

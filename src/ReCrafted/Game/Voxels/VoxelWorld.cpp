@@ -2,32 +2,38 @@
 
 #include "VoxelWorld.h"
 #include "Generator/VoxelGenerator.h"
+#include "../../Core/Profiler.h"
 
 void VoxelWorld::init(bool generateworld)
 {
 	// initialize generator
 	VoxelGenerator::initialize();
 
+	Profiler::beginProfile();
 	if (generateworld)
 	{
-		auto chunk = new VoxelChunk;
-		chunk->world = this;
-		chunk->m_x = 0;
-		chunk->m_z = 0;
+		for(auto x = -10; x < 10; x ++)
+		{
+			for (auto z = -10; z < 10; z++)
+			{
+				auto chunk = new VoxelChunk;
+				chunk->world = this;
+				chunk->m_x = x;
+				chunk->m_z = z;
+				
+				chunk->dataGenerate();
 
-		chunk->dataGenerate();
-		chunk->meshGenerate();
+				m_chunks.push_back(chunk);
+			}
+		}
 
-		m_chunks.push_back(chunk);
-
-		chunk->neighN()->meshGenerate();
-		chunk->neighE()->meshGenerate();
-		chunk->neighS()->meshGenerate();
-		chunk->neighW()->meshGenerate();
-
-		chunk->neighE()->neighS()->meshGenerate();
-		chunk->neighN()->neighW()->meshGenerate();
+		for (auto && chunk : m_chunks)
+		{
+			if ((chunk->m_x > -9 && chunk->m_x < 9) && (chunk->m_z > -9 && chunk->m_z < 9))
+				chunk->meshGenerate();
+		}
 	}
+	Profiler::endProfile("Starting world generated in %0.7f ms.");
 }
 
 void VoxelWorld::update()
@@ -53,6 +59,85 @@ void VoxelWorld::draw()
 	{
 		// TODO: check if chunk is visible
 		chunk->draw();
+	}
+}
+
+void VoxelWorld::findNeighs(VoxelChunk* chunk)
+{
+	for (auto i = 0u; i < m_chunks.size(); i++)
+	{
+		if (!chunk->m_neighN)
+		{
+			auto current = m_chunks[i];
+			if (current->m_x == chunk->m_x && 
+				current->m_z == chunk->m_z + 1)
+			{
+				chunk->m_neighN = current;
+			}
+		}
+		if (!chunk->m_neighNE)
+		{
+			auto current = m_chunks[i];
+			if (current->m_x == chunk->m_x + 1 &&
+				current->m_z == chunk->m_z + 1)
+			{
+				chunk->m_neighNE = current;
+			}
+		}
+		if (!chunk->m_neighE)
+		{
+			auto current = m_chunks[i];
+			if (current->m_x == chunk->m_x + 1 &&
+				current->m_z == chunk->m_z)
+			{
+				chunk->m_neighE = current;
+			}
+		} 
+		if (!chunk->m_neighSE)
+		{
+			auto current = m_chunks[i];
+			if (current->m_x == chunk->m_x + 1 &&
+				current->m_z == chunk->m_z - 1)
+			{
+				chunk->m_neighSE = current;
+			}
+		}
+		if (!chunk->m_neighS)
+		{
+			auto current = m_chunks[i];
+			if (current->m_x == chunk->m_x &&
+				current->m_z == chunk->m_z - 1)
+			{
+				chunk->m_neighS = current;
+			}
+		}
+		if (!chunk->m_neighSW)
+		{
+			auto current = m_chunks[i];
+			if (current->m_x == chunk->m_x - 1 &&
+				current->m_z == chunk->m_z - 1)
+			{
+				chunk->m_neighSW = current;
+			}
+		}
+		if (!chunk->m_neighW)
+		{
+			auto current = m_chunks[i];
+			if (current->m_x == chunk->m_x - 1 &&
+				current->m_z == chunk->m_z)
+			{
+				chunk->m_neighW = current;
+			}
+		}
+		if (!chunk->m_neighNW)
+		{
+			auto current = m_chunks[i];
+			if (current->m_x == chunk->m_x - 1 &&
+				current->m_z == chunk->m_z + 1)
+			{
+				chunk->m_neighNW = current;
+			}
+		}
 	}
 }
 

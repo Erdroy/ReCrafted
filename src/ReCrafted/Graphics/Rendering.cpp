@@ -121,6 +121,12 @@ void Rendering::endRender()
 		return;
 	}
 
+	if (Input::isKey(Key_F3))
+	{
+		blit(0, m_gbuffer->getTarget(2));
+		return;
+	}
+
 	// final pass
 	auto textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
 
