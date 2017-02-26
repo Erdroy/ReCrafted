@@ -17,6 +17,8 @@ public:
 	static void initialize();
 
 	static void beginChunk(int x, int z);
+
+	static void endChunk();
 	
 	static voxelid generate(int index, int y);
 

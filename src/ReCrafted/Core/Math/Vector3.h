@@ -6,6 +6,40 @@
 // includes
 #include "../../recraftedPrerequisites.h"
 
+struct Vector3i
+{
+public:
+	/// <summary>
+	/// Default constructor,
+	/// sets 0 to all components of this vector.
+	/// </summary>
+	Vector3i() : X(0), Y(0), Z(0) { }
+
+	/// <summary>
+	/// Sets given values to all components of this vector.
+	/// </summary>
+	/// <param name="x"></param>
+	/// <param name="y"></param>
+	/// <param name="z"></param>
+	Vector3i(int x, int y, int z) : X(x), Y(y), Z(z) { }
+
+public:
+	/// <summary>
+	/// X compoennt
+	/// </summary>
+	int X;
+
+	/// <summary>
+	/// Y component
+	/// </summary>
+	int Y;
+
+	/// <summary>
+	/// Z component
+	/// </summary>
+	int Z;
+};
+
 struct Vector3
 {
 public:

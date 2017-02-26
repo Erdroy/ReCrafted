@@ -37,6 +37,15 @@ public:
 
 	void initializeNeighs(VoxelChunk* chunk);
 
+	VoxelChunk* getVoxelChunk(Vector3 containedPoint);
+
+	FORCEINLINE VoxelChunk* getVoxelChunk(Vector3i position)
+	{
+		
+	}
+
+	FORCEINLINE bool raycast(Vector3 origin, Vector3 direction, voxelid* voxelid, Vector3* point, Vector3* normal);
+
 	FORCEINLINE void dispose()
 	{
 		for(auto && chunk : m_chunks)

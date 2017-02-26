@@ -22,10 +22,13 @@ void VoxelGenerator::initialize()
 
 void VoxelGenerator::beginChunk(int x, int z)
 {
-	if(noise_terrain)
-		noise_terrain->FreeNoiseSet(noise_terrain_set);
-
 	noise_terrain_set = noise_terrain->GetSimplexFractalSet(x, 0, z, 16, 1, 16);
+}
+
+void VoxelGenerator::endChunk()
+{
+	if (noise_terrain)
+		noise_terrain->FreeNoiseSet(noise_terrain_set);
 }
 
 voxelid VoxelGenerator::generate(int index, int y)
@@ -35,8 +38,8 @@ voxelid VoxelGenerator::generate(int index, int y)
 	auto hillLevel = (1.0f - noise) * 10.0;
 	auto baseLevel = 10.0f + hillLevel;
 
-	if(float(y) > baseLevel)
-		return voxel_air; // already too high
+	if(float(y) < baseLevel)
+		return 1u;
 
-	return 1u; // block! TODO: select which block should be here
+	return voxel_air;
 }

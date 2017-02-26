@@ -102,6 +102,7 @@ void VoxelChunk::worker_dataGenerate()
 			}
 		}
 	}
+	VoxelGenerator::endChunk();
 }
 
 void VoxelChunk::worker_meshGenerate()

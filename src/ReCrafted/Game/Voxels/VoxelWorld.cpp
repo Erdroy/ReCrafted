@@ -240,3 +240,13 @@ void VoxelWorld::initializeNeighs(VoxelChunk* chunk)
 		m_chunks.push_back(neighchunk);
 	}
 }
+
+VoxelChunk* VoxelWorld::getVoxelChunk(Vector3 containedPoint)
+{
+	return nullptr;
+}
+
+bool VoxelWorld::raycast(Vector3 origin, Vector3 direction, voxelid* voxelid, Vector3* point, Vector3* normal)
+{
+	// http://www.cse.chalmers.se/edu/year/2010/course/TDA361/grid.pdf
+}
