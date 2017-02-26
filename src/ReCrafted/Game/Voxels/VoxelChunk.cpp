@@ -96,14 +96,11 @@ void VoxelChunk::worker_dataGenerate()
 	VoxelGenerator::beginChunk(m_x * ChunkWidth, m_z * ChunkWidth);
 	for(auto y = 0; y < ChunkHeight; y ++)
 	{
-		for(auto x = 0; x < ChunkWidth; x ++)
+		for (auto x = 0; x < ChunkWidth; x++)
 		{
 			for (auto z = 0; z < ChunkWidth; z++)
 			{
-				if(y == 0)
-					m_voxels[x][y][z] = 1u;
-				else
-					m_voxels[x][y][z] = VoxelGenerator::generate(x, y, z);
+				m_voxels[x][y][z] = VoxelGenerator::generate(x, y, z);
 			}
 		}
 	}

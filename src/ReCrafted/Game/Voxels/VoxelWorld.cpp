@@ -21,7 +21,12 @@ void VoxelWorld::init(bool generateworld)
 		m_chunks.push_back(chunk);
 
 		chunk->neighN()->meshGenerate();
+		chunk->neighE()->meshGenerate();
 		chunk->neighS()->meshGenerate();
+		chunk->neighW()->meshGenerate();
+
+		chunk->neighE()->neighS()->meshGenerate();
+		chunk->neighN()->neighW()->meshGenerate();
 	}
 }
 

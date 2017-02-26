@@ -17,8 +17,13 @@ public:
 	static void initialize();
 
 	static void beginChunk(int x, int z);
+	
+	static voxelid generate(int index, int y);
 
-	static voxelid generate(int x, int y, int z);
+	FORCEINLINE static voxelid generate(int x, int y, int z)
+	{
+		return generate(x * ChunkWidth + z, y);
+	}
 };
 
 #endif // VOXELGENERATOR_H
