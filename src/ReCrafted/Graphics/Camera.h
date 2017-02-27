@@ -17,6 +17,7 @@ class Entity;
 class Camera
 {
 	friend class Rendering;
+	friend class VoxelWorld;
 
 private:
 	static Camera* m_mainCamera;

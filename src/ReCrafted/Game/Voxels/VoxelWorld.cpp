@@ -14,37 +14,48 @@ void VoxelWorld::init(bool generateworld)
 	Profiler::beginProfile();
 	if (generateworld)
 	{
-		/*for(auto x = -10; x < 10; x ++)
+		Profiler::beginProfile();
+		for(auto x = -32; x < 32; x ++)
 		{
-			for (auto z = -10; z < 10; z++)
+			for (auto z = -32; z < 32; z++)
 			{
 				auto chunk = new VoxelChunk;
 				chunk->world = this;
 				chunk->m_x = x;
 				chunk->m_z = z;
-				
+				chunk->dataGenerate();
+
 				m_chunkTree->add(chunk);
 			}
-		}*/
+		}
+		Profiler::endProfile("Starting chunks voxel data generated in %0.7f ms.");
 
-		auto chunk = new VoxelChunk;
-		chunk->world = this;
-		chunk->m_x = 0;
-		chunk->m_z = 0;
+		m_visibleChunks.clear();
+		m_chunkTree->getNearChunks(Vector2(0.0f, 0.0f), 100.0f, &m_visibleChunks);
 
-		m_chunkTree->add(chunk);
-
-		/*for (auto && chunk : m_chunks)
+		Profiler::beginProfile();
+		for (auto && chunk : m_visibleChunks)
 		{
-			if ((chunk->m_x > -9 && chunk->m_x < 9) && (chunk->m_z > -9 && chunk->m_z < 9))
-				chunk->meshGenerate();
-		}*/
+			chunk->meshGenerate();
+		}
+		Profiler::endProfile("Starting chunks meshes generated in %0.7f ms.");
 	}
 	Profiler::endProfile("Starting world generated in %0.7f ms.");
 }
 
 void VoxelWorld::update()
 {
+	auto camera = Camera::getMainCamera();
+
+	m_visibleChunks.clear();
+	m_chunkTree->getNearChunks(Vector2(camera->m_position.X, camera->m_position.Z), 500.0f, &m_visibleChunks);
+	
+	for (auto && chunk : m_visibleChunks)
+	{
+		if(!chunk->m_mesh)
+			chunk->meshGenerate();
+	}
+
 	for(auto && chunk : m_chunks)
 	{
 		chunk->update();
@@ -62,7 +73,7 @@ void VoxelWorld::simulate()
 
 void VoxelWorld::draw()
 {
-	for (auto && chunk : m_chunks)
+	for (auto && chunk : m_visibleChunks)
 	{
 		// TODO: check if chunk is visible
 		chunk->draw();

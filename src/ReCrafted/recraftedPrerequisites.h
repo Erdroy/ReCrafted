@@ -11,7 +11,7 @@
 #include <ctime>
 #include <vector>
 
-#include <bgfx/bgfx.h>
+#include "bgfxPrerequisites.h"
 
 #include "Utils/Defines.h"
 #include "Utils/Types.h"

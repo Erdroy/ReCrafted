@@ -35,4 +35,13 @@ inline void LOG(const char* text)
 
 #define MISSING_CODE() throw "Code fragment is missing"
 
+#define Property(type, name)	\
+	type m_##name;				\
+	__inline type get##name##() {		\
+		return m_##name ;		\
+	}							\
+	__inline void set##name##(type v) {	\
+		m_##name = v;			\
+	}							\
+
 #endif // DEFINES_H

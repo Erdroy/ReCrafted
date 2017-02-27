@@ -6,9 +6,9 @@
 #define SHADER_H
 
 // includes
+#include "../bgfxPrerequisites.h"
 #include "../Utils/Types.h"
 #include "../Utils/Defines.h"
-#include <bgfx/bgfx.h>
 
 struct Vector2;
 struct Vector3;

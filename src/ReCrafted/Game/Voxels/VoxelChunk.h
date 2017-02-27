@@ -15,7 +15,7 @@ typedef unsigned short voxelid;
 const voxelid voxel_air = voxelid(0u);
 
 static const int ChunkWidth = 16;
-static const int ChunkHeight = 256;
+static const int ChunkHeight = 128;
 
 /// <summary>
 /// VoxelChunk class.
@@ -45,6 +45,8 @@ private:
 
 	/* voxels */
 	voxelid m_voxels[ChunkWidth * ChunkHeight * ChunkWidth] = {};
+
+	// TODO: build level voxels
 
 private:
 	void worker_dataGenerate();

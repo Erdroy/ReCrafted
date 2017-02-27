@@ -24,6 +24,7 @@ private:
 	std::vector<VoxelChunk*> m_chunks = {};
 
 	VoxelChunkTree* m_chunkTree = nullptr;
+	std::vector<VoxelChunk*> m_visibleChunks = {};
 
 private:
 
