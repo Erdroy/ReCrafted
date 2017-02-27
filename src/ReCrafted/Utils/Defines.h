@@ -33,4 +33,6 @@ inline void LOG(const char* text)
 
 #endif // VS_LOG_H
 
+#define MISSING_CODE() throw "Code fragment is missing"
+
 #endif // DEFINES_H
