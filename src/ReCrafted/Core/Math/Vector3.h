@@ -121,6 +121,15 @@ public:
 		*result = cross(a, b);
 	}
 
+	FORCEINLINE static Vector3 Lerp(Vector3 a, Vector3 b, float t) 
+	{
+		return Vector3(a.X * (1 - t) + t * b.X, a.Y * (1 - t) + t * b.Y, a.Z * (1 - t) + t * b.Z);
+	}
+
+	FORCEINLINE static void Lerp(Vector3 a, Vector3 b, float t, Vector3* result)
+	{
+		*result = Lerp(a, b, t);
+	}
 public:
 	void Vector3::operator -= (Vector3 r){
 		X -= r.X;
