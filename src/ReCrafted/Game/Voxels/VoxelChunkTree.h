@@ -159,10 +159,23 @@ public:
 
 	}
 
+	void findNeighs(VoxelChunk* chunk)
+	{
+		
+	}
+
 	void dispose()
 	{
 		for (auto && root : m_roots)
 		{
+			for(auto i = 0; i < tableWidth * tableWidth; i ++)
+			{
+				auto chunk = root->chunkTable[i];
+
+				if(chunk)
+					chunk->dispose();
+			}
+
 			root->dispose();
 		}
 	}

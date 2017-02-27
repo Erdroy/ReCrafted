@@ -52,15 +52,7 @@ public:
 
 	FORCEINLINE void dispose()
 	{
-		for(auto && chunk : m_chunks)
-		{
-			if (chunk == nullptr)
-				continue;
-
-			chunk->dispose();
-			delete chunk;
-		}
-		m_chunks.clear();
+		m_chunkTree->dispose();
 		Logger::write("World unloaded", LogLevel::Info);
 	}
 };
