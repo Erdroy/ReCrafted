@@ -6,59 +6,67 @@
 #define VOXELCHUNKTREE_H
 
 // includes
-#include <vector>
-#include "VoxelChunk.h"
 #include "../../Graphics/Camera.h"
-
-const int DepthTable[6] = { 512, 256, 128, 64, 32, 16 };
+#include "VoxelChunk.h"
+#include <vector>
 
 class VoxelChunkTree
 {
+private:
+	static const int tableWidth = 64;
+
 private:
 	struct vctEntry
 	{
 	public:
 		int depth = 0;
 
-		int left = 0;
-		int bottom = 0;
-		int right = 0;
-		int top = 0;
+		int x = 0;
+		int z = 0;
+		
+		int startX = 0;
+		int startZ = 0;
+		int endX = 0;
+		int endZ = 0;
 
-		vctEntry* entries[4] = { nullptr, nullptr, nullptr, nullptr };
-		VoxelChunk* chunk = nullptr;
-
-		bool intersects(int x, int z, int size) const
-		{
-			return left <= x && bottom <= z && right >= x + size && top >= z + size;
-		}
+		VoxelChunk* chunkTable[tableWidth * tableWidth] = {};
 
 		void dispose() const
 		{
 			
+			// suicide
+			delete this;
+		}
+
+		bool contains(VoxelChunk* chunk) const
+		{
+			auto targetX = chunk->m_x * ChunkWidth;
+			auto targetZ = chunk->m_z * ChunkWidth;
+
+			return startX <= targetX && startZ <= targetZ && endX > targetX + ChunkWidth && endZ > targetZ + ChunkWidth;
 		}
 	};
-
 private:
-	/* 0 - 16384, 1 - 4096, 2 - 1024, 3 - 256, 4 - 64, 5 - 16*/
 	std::vector<vctEntry*> m_roots = {};
 
 public:
 	void add(VoxelChunk* chunk)
 	{
-		auto targetX = chunk->m_x * 16;
-		auto targetZ = chunk->m_z * 16;
-
 		vctEntry* root = nullptr;
 		if(m_roots.size() == 0)
 		{
 			root = new vctEntry;
 
 			// set coords
-			root->left = -DepthTable[0] / 2;
-			root->bottom = -DepthTable[0] / 2;
-			root->right = DepthTable[0] / 2;
-			root->top = DepthTable[0] / 2;
+			root->x = 0;
+			root->z = 0;
+
+			auto worldSize = tableWidth * ChunkWidth;
+
+			root->startX = root->x * worldSize - worldSize / 2;
+			root->startZ = root->z * worldSize - worldSize / 2;
+			root->endX = root->x * worldSize + worldSize / 2;
+			root->endZ = root->z * worldSize + worldSize / 2;
 
 			m_roots.push_back(root);
 		}
@@ -68,67 +76,38 @@ public:
 		}
 		else
 		{
-			// TODO: find vct root
-			_ASSERT(false);
-		}
-
-		// iterate
-		for(auto depth = 1; depth < 6; depth ++)
-		{
-			// check if root has entries
-			for(auto i = 0; i < 4; i ++)
+			// find vct root
+			for (auto && current : m_roots)
 			{
-				// generate entries when root does not have any
-				if (root->entries[i] == nullptr)
+				// test simple rect intersection
+				if (current->contains(chunk))
 				{
-					auto node = root->entries[i] = new vctEntry;
-					node->depth = depth;
-
-					auto depthSzOffset = DepthTable[depth];
-
-					if(i == 0)
-					{
-						node->top = root->top;
-						node->bottom = root->bottom + depthSzOffset;
-						node->left = root->left;
-						node->right = root->right - depthSzOffset;
-					}
-					if (i == 1)
-					{
-						node->top = root->top;
-						node->bottom = root->bottom + depthSzOffset;
-						node->left = root->left + depthSzOffset;
-						node->right = root->right;
-					}
-					if (i == 2)
-					{
-						node->top = root->top - depthSzOffset;
-						node->bottom = root->bottom;
-						node->left = root->left + depthSzOffset;
-						node->right = root->right;
-					}
-					if (i == 3)
-					{
-						node->top = root->top - depthSzOffset;
-						node->bottom = root->bottom;
-						node->left = root->left;
-						node->right = root->right - depthSzOffset;
-					}
-				}
-
-				if(root->entries[i]->intersects(targetX, targetZ, 16))
-				{
-					if(depth == 5)
-					{
-						root->entries[i]->chunk = chunk;
-						return;
-					}
-
-					root = root->entries[i];
+					// this is the root of this chunk.
+					root = current;
 					break;
 				}
 			}
+
+			// when root not found
+			// create new one that will hold current chunk
+			if(root == nullptr)
+			{
+				MISSING_CODE(); // TODO: create new root for current chunk
+			}
 		}
+
+		// calculate root-space coords then index
+		auto sz = tableWidth / 2;
+
+		auto targetX = chunk->m_x + root->x + sz;
+		auto targetZ = chunk->m_z + root->z + sz;
+
+		auto index = targetZ * tableWidth + targetX;
+
+		// insert into root
+		root->chunkTable[index] = chunk;
+
+		// done!
 	}
 
 	void getNearChunks(Vector3 point, float distance)
