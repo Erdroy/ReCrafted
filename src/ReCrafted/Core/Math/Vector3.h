@@ -80,6 +80,70 @@ public:
 	}
 
 public:
+	/// <summary>
+	/// Shorthand for [0, 0, 0]
+	/// </summary>
+	FORCEINLINE static Vector3 zero()
+	{
+		return Vector3(0.0f, 0.0f, 0.0f);
+	}
+
+	/// <summary>
+	/// Shorthand for [1, 1, 1]
+	/// </summary>
+	FORCEINLINE static Vector3 one()
+	{
+		return Vector3(1.0f, 1.0f, 1.0f);
+	}
+
+	/// <summary>
+	/// Shorthand for [0, 0, 1]
+	/// </summary>
+	FORCEINLINE static Vector3 forward() 
+	{
+		return Vector3(0.0f, 0.0f, 1.0f);
+	}
+
+	/// <summary>
+	/// Shorthand for [0, 0, -1]
+	/// </summary>
+	FORCEINLINE static Vector3 back()
+	{
+		return Vector3(0.0f, 0.0f, -1.0f);
+	}
+
+	/// <summary>
+	/// Shorthand for [1, 0, 0]
+	/// </summary>
+	FORCEINLINE static Vector3 right()
+	{
+		return Vector3(1.0f, 0.0f, 0.0f);
+	}
+
+	/// <summary>
+	/// Shorthand for [-1, 0, 0]
+	/// </summary>
+	FORCEINLINE static Vector3 left()
+	{
+		return Vector3(-1.0f, 0.0f, 0.0f);
+	}
+
+	/// <summary>
+	/// Shorthand for [0, 1, 0]
+	/// </summary>
+	FORCEINLINE static Vector3 up()
+	{
+		return Vector3(0.0f, 1.0f, 0.0f);
+	}
+
+	/// <summary>
+	/// Shorthand for [0, -1, 0]
+	/// </summary>
+	FORCEINLINE static Vector3 down()
+	{
+		return Vector3(0.0f, -1.0f, 0.0f);
+	}
+
 	FORCEINLINE static Vector3 normalize(Vector3 vector)
 	{
 		vector.normalize();
@@ -121,14 +185,14 @@ public:
 		*result = cross(a, b);
 	}
 
-	FORCEINLINE static Vector3 Lerp(Vector3 a, Vector3 b, float t) 
+	FORCEINLINE static Vector3 lerp(Vector3 a, Vector3 b, float t) 
 	{
 		return Vector3(a.X * (1 - t) + t * b.X, a.Y * (1 - t) + t * b.Y, a.Z * (1 - t) + t * b.Z);
 	}
 
-	FORCEINLINE static void Lerp(Vector3 a, Vector3 b, float t, Vector3* result)
+	FORCEINLINE static void lerp(Vector3 a, Vector3 b, float t, Vector3* result)
 	{
-		*result = Lerp(a, b, t);
+		*result = lerp(a, b, t);
 	}
 public:
 	void Vector3::operator -= (Vector3 r){
