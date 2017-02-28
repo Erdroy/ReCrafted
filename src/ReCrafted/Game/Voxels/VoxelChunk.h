@@ -49,17 +49,21 @@ private:
 	// TODO: build level voxels
 
 private:
+	// WARNING: this should be run in job queue!
 	void worker_dataGenerate();
-
+	
+	// WARNING: this should be run in job queue!
 	void worker_meshGenerate();
 
 	void dataGenerate()
 	{
+		// TODO: run in job queue
 		worker_dataGenerate();
 	}
 
 	FORCEINLINE void meshGenerate()
 	{
+		// TODO: run in job queue
 		worker_meshGenerate();
 	}
 

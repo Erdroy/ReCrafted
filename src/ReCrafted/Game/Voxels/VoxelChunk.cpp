@@ -89,7 +89,7 @@ FORCEINLINE void build_face(
 	}
 }
 
-void VoxelChunk::worker_dataGenerate()
+void VoxelChunk::worker_dataGenerate() // WARNING: this should be run in job queue!
 {
 	VoxelGenerator::beginChunk(m_x * ChunkWidth, m_z * ChunkWidth);
 	for(auto y = 0; y < ChunkHeight; y ++)
@@ -105,7 +105,7 @@ void VoxelChunk::worker_dataGenerate()
 	VoxelGenerator::endChunk();
 }
 
-void VoxelChunk::worker_meshGenerate()
+void VoxelChunk::worker_meshGenerate() // WARNING: this should be run in job queue!
 {
 	std::vector<Vector3> vertices = {};
 	std::vector<Vector3> normals = {};
