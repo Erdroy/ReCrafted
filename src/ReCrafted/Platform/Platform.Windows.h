@@ -71,6 +71,11 @@ public:
 		fwrite(data, data_lenght, 1, m_file);
 	}
 
+	void flush() const
+	{
+		fflush(m_file);
+	}
+
 	/// <summary>
 	/// Close the file. This will be called automatically when File strcture is out of scope.
 	/// </summary>

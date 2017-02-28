@@ -8,6 +8,7 @@
 // includes
 #include "../recraftedPrerequisites.h"
 #include "../Platform/Platform.Windows.h"
+#include "Logger.h"
 
 class Profiler
 {
@@ -42,7 +43,10 @@ public:
 		char buffer[512] = {};
 		sprintf_s(buffer, fmtd_message, time);
 		
+#ifdef _DEBUG
 		VS_LOG(buffer);
+#endif
+		Logger::write(buffer, LogLevel::Debug);
 
 		// clear
 		m_stack.pop_back();

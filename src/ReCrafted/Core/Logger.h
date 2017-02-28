@@ -9,6 +9,10 @@
 #include "../recraftedPrerequisites.h"
 #include "../Platform/Platform.h"
 
+#ifndef LOGGER_MAXSIZE
+	#define LOGGER_MAXSIZE 8192
+#endif
+
 struct LogLevel
 {
 	enum Enum
@@ -47,7 +51,7 @@ public:
 		if (logLevel == LogLevel::Debug)
 			return;
 #endif
-		static char buffer[8192] = {};
+		static char buffer[LOGGER_MAXSIZE] = {};
 
 		strcpy_s(buffer, messageA);
 		strcat_s(buffer, messageB);
@@ -68,7 +72,7 @@ public:
 			return;
 #endif
 
-		static char buffer[8192] = {};
+		static char buffer[LOGGER_MAXSIZE] = {};
 		static char timeBuffer[64] = {};
 		buffer[0] = '\0';
 		timeBuffer[0] = '\0';
@@ -98,6 +102,7 @@ public:
 		strcat_s(buffer, "\n");
 
 		m_instance->m_logFile.write(static_cast<void*>(buffer), size_t(strlen(buffer)));
+		m_instance->m_logFile.flush();
 	}
 };
 
