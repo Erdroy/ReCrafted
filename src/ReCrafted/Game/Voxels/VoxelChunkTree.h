@@ -28,14 +28,22 @@ private:
 
 		int getChunkIndex(int x, int z) const
 		{
+			auto rsx = (x - this->x * tableWidth);
+			auto rsz = (z - this->z * tableWidth);
+
+			return rsz * tableWidth + rsx;
 		}
 
 		VoxelChunk* getChunk(int x, int z)
 		{
+			auto index = getChunkIndex(x, z);
+			return chunkTable[index];
 		}
 
-		bool contains(VoxelChunk* chunk) const
+		void add(VoxelChunk* chunk)
 		{
+			auto index = getChunkIndex(chunk->m_x, chunk->m_z);
+			chunkTable[index] = chunk;
 		}
 
 		void dispose() const
@@ -65,14 +73,30 @@ public:
 	{
 		m_chunks.push_back(chunk);
 
-		auto rootX = (chunk->m_x - tableWidth) / tableWidth;
-		auto rootZ = (chunk->m_z - tableWidth) / tableWidth;
+		auto rootX = (chunk->m_x + 1 - tableWidth) / tableWidth;
+		auto rootZ = (chunk->m_z + 1 - tableWidth) / tableWidth;
 
 		vctEntry* root = nullptr;
 		for(auto current : m_roots)
 		{
-			
+			if(current->x == rootX && current->z == rootZ)
+			{
+				root = current;
+				break;
+			}
 		}
+
+		if(!root)
+		{
+			root = new vctEntry();
+
+			root->x = rootX;
+			root->z = rootZ;
+
+			m_roots.push_back(root);
+		}
+
+		root->add(chunk);
 	}
 
 	void getNearChunks(Vector2 point, float distance, std::vector<VoxelChunk*>* chunks)

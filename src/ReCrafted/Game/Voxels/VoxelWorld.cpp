@@ -23,7 +23,7 @@ void VoxelWorld::init(bool generateworld)
 				chunk->world = this;
 				chunk->m_x = x;
 				chunk->m_z = z;
-
+				chunk->dataGenerate();
 				m_chunkTree->add(chunk);
 			}
 		}
