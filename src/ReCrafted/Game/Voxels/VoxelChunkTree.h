@@ -37,6 +37,16 @@ private:
 		int z = 0;
 
 		/// <summary>
+		/// Gets chunk at given index.
+		/// </summary>
+		/// <param name="x">The index</param>
+		/// <returns>The chunk.</returns>
+		VoxelChunk* getChunk(int index)
+		{
+			return chunkTable[index];
+		}
+
+		/// <summary>
 		/// Gets chunk at given location - chunk-space.
 		/// </summary>
 		/// <param name="x">X coord in chunk-space.</param>
@@ -82,7 +92,6 @@ private:
 	std::vector<vctEntry*> m_roots = {};
 	std::vector<VoxelChunk*> m_chunks = {};
 
-
 public:
 	/// <summary>
 	/// Add new chunk to the tree.
@@ -126,6 +135,40 @@ public:
 	/// <param name="chunks">The list to-which all found chunks will be added.</param>
 	void getNearChunks(Vector2 point, float distance, std::vector<VoxelChunk*>* chunks)
 	{
+		const auto wsSize = float(tableWidth * ChunkWidth);
+		auto sqrDistance = distance * distance;
+
+		for(auto root : m_roots)
+		{
+			auto wsX = float(root->x * wsSize);
+			auto wsZ = float(root->z * wsSize);
+
+			auto deltaX = point.X - Math::maxf(wsX, Math::minf(point.X, wsX + wsSize));
+			auto deltaY = point.Y - Math::maxf(wsZ, Math::minf(point.X, wsZ + wsSize));
+
+			auto isinside = deltaX * deltaX + deltaY * deltaY < sqrDistance;
+
+			if(isinside)
+			{
+				// check chunks
+				for(auto i = 0; i < tableWidth * tableWidth; i ++) // TODO: optimize this loop, skip x axes that are out of range
+				{
+					auto chunk = root->getChunk(i);
+					
+					if (!chunk)
+						continue;
+
+					wsX = float(chunk->m_x * ChunkWidth);
+					wsZ = float(chunk->m_z * ChunkWidth);
+
+					deltaX = point.X - Math::maxf(wsX, Math::minf(point.X, wsX + ChunkWidth));
+					deltaY = point.Y - Math::maxf(wsZ, Math::minf(point.X, wsZ + ChunkWidth));
+
+					if (deltaX * deltaX + deltaY * deltaY < sqrDistance)
+						chunks->push_back(chunk);
+				}
+			}
+		}
 	}
 	
 	/// <summary>
