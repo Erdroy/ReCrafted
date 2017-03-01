@@ -94,7 +94,7 @@ void Camera::updateControls()
 	direction *= float(Time::deltaTime());
 
 	// shift to speed up
-	auto mul = Input::isKey(Key_Shift) ? 20.0f : 5.0f;
+	auto mul = Input::isKey(Key_Shift) ? 50.0f : 5.0f;
 
 	// ctrl to slow down
 	mul = Input::isKey(Key_Control) ? 1.0f : mul;

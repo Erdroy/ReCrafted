@@ -37,6 +37,24 @@ public:
 
 	void findNeighs(VoxelChunk* chunk);
 
+	void generateNeigs(VoxelChunk* chunk);
+
+	FORCEINLINE VoxelChunk* generateChunk(int x, int z)
+	{
+		auto chunk = new VoxelChunk;
+		chunk->world = this;
+		chunk->m_x = x;
+		chunk->m_z = z;
+
+		// generate data
+		chunk->dataGenerate();
+
+		// add to chunk tree
+		m_chunkTree->add(chunk);
+
+		return chunk;
+	}
+
 	VoxelChunk* getVoxelChunk(Vector3 containedPoint);
 
 	VoxelChunk* getVoxelChunk(Vector3i position);

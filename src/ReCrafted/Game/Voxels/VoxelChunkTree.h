@@ -146,9 +146,10 @@ public:
 			auto deltaX = point.X - Math::maxf(wsX, Math::minf(point.X, wsX + wsSize));
 			auto deltaY = point.Y - Math::maxf(wsZ, Math::minf(point.X, wsZ + wsSize));
 
-			auto isinside = deltaX * deltaX + deltaY * deltaY < sqrDistance;
+			auto isinrange = deltaX * deltaX + deltaY * deltaY < sqrDistance;
+			auto isinside = point.X > wsX && point.X < wsX + wsSize && point.Y > wsZ && point.Y < wsZ + wsSize;
 
-			if(isinside)
+			if(isinrange || isinside)
 			{
 				// check chunks
 				for(auto i = 0; i < tableWidth * tableWidth; i ++) // TODO: optimize this loop, skip x axes that are out of range
@@ -217,63 +218,6 @@ public:
 			return nullptr;
 
 		return root->getChunk(x, z);
-	}
-
-	/// <summary>
-	/// Finds all neighs for chunk.
-	/// </summary>
-	/// <param name="chunk">The chunk which will get updated neighs.</param>
-	void findNeighs(VoxelChunk* chunk)
-	{
-		// u/l/d/r
-		if(!chunk->m_neighN)
-		{
-			// find chunk
-			chunk->m_neighN = findChunk(chunk->m_x, chunk->m_z + 1);
-		}
-
-		if (!chunk->m_neighE)
-		{
-			// find chunk
-			chunk->m_neighE = findChunk(chunk->m_x + 1, chunk->m_z);
-		}
-
-		if (!chunk->m_neighS)
-		{
-			// find chunk
-			chunk->m_neighS = findChunk(chunk->m_x, chunk->m_z - 1);
-		}
-
-		if (!chunk->m_neighW)
-		{
-			// find chunk
-			chunk->m_neighW = findChunk(chunk->m_x - 1, chunk->m_z);
-		}
-
-		// corners
-		if (!chunk->m_neighNE)
-		{
-			// find chunk
-			chunk->m_neighNE = findChunk(chunk->m_x + 1, chunk->m_z + 1);
-		}
-
-		if (!chunk->m_neighSE)
-		{
-			// find chunk
-			chunk->m_neighSE = findChunk(chunk->m_x + 1, chunk->m_z - 1);
-		}
-
-		if (!chunk->m_neighSW)
-		{
-			// find chunk
-			chunk->m_neighSW = findChunk(chunk->m_x - 1, chunk->m_z - 1);
-		}
-
-		if (!chunk->m_neighNW)
-		{
-			// find chunk
-			chunk->m_neighNW = findChunk(chunk->m_x - 1, chunk->m_z + 1);
-		}
 	}
 
 	/// <summary>

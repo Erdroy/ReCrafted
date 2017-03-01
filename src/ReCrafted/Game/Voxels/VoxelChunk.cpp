@@ -111,7 +111,7 @@ void VoxelChunk::worker_meshGenerate() // WARNING: this should be run in job que
 	world->findNeighs(this);
 
 	// generate missing neighbours
-
+	world->generateNeigs(this);
 
 	std::vector<Vector3> vertices = {};
 	std::vector<Vector3> normals = {};
