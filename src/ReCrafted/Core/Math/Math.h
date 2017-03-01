@@ -59,14 +59,24 @@ public:
 		return x < 0.0f ? -1.0f : 1.0f;
 	}
 
+	FORCEINLINE static float minf(float a, float b)
+	{
+		return a < b ? a : b;
+	}
+
+	FORCEINLINE static float maxf(float a, float b)
+	{
+		return a > b ? a : b;
+	}
+
 	FORCEINLINE static float cosx(float x)
 	{
-		return cos(x);
+		return cos(x); // TODO: optimize cos
 	}
 
 	FORCEINLINE static float sinx(float x)
 	{
-		return sin(x);
+		return sin(x); // TODO: optimize sin
 	}
 
 	FORCEINLINE static float degreeToRadian(float degree)
