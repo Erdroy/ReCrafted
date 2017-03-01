@@ -107,18 +107,18 @@ void VoxelChunk::worker_dataGenerate() // WARNING: this should be run in job que
 
 void VoxelChunk::worker_meshGenerate() // WARNING: this should be run in job queue!
 {
+	// find neighs
+	world->findNeighs(this);
+
+	// generate missing neighbours
+
+
 	std::vector<Vector3> vertices = {};
 	std::vector<Vector3> normals = {};
 	std::vector<Vector2> uvs = {};
 	std::vector<uint> indices = {};
 
 	{
-		// find neighs
-		world->findNeighs(this);
-
-		// generate neigh chunks if not generated already
-		world->initializeNeighs(this);
-
 		m_mesh = Mesh::createMesh();
 
 		auto vertices_ptr = &vertices;

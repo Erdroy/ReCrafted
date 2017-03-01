@@ -23,10 +23,15 @@ void VoxelWorld::init(bool generateworld)
 				chunk->world = this;
 				chunk->m_x = x;
 				chunk->m_z = z;
-				chunk->dataGenerate();
 
 				m_chunkTree->add(chunk);
 			}
+		}
+
+		auto chunks = m_chunkTree->getChunks();
+		for (auto i = 0; i < 64 * 64; i++)
+		{
+			(*chunks)[i]->dataGenerate();
 		}
 		Profiler::endProfile("Starting chunks voxel data generated in %0.7f ms.");
 
@@ -34,7 +39,7 @@ void VoxelWorld::init(bool generateworld)
 		m_chunkTree->getNearChunks(Vector2(0.0f, 0.0f), 100.0f, &m_visibleChunks);
 
 		Profiler::beginProfile();
-		for (auto && chunk : m_visibleChunks)
+		for (auto chunk : m_visibleChunks)
 		{
 			chunk->meshGenerate();
 		}
@@ -50,30 +55,27 @@ void VoxelWorld::update()
 	m_visibleChunks.clear();
 	m_chunkTree->getNearChunks(Vector2(camera->m_position.X, camera->m_position.Z), 500.0f, &m_visibleChunks);
 	
-	for (auto && chunk : m_visibleChunks)
+	for (auto chunk : m_visibleChunks)
 	{
 		if(!chunk->m_mesh)
 			chunk->meshGenerate();
-	}
 
-	for(auto && chunk : m_chunks)
-	{
 		chunk->update();
 	}
 }
 
 void VoxelWorld::simulate()
 {
-	for (auto && chunk : m_chunks)
+	/*for (auto && chunk : m_chunks)
 	{
 		// TODO: check if chunk should be simulated
-		//chunk->simulate();
-	}
+		chunk->simulate();
+	}*/
 }
 
 void VoxelWorld::draw()
 {
-	for (auto && chunk : m_visibleChunks)
+	for (auto chunk : m_visibleChunks)
 	{
 		// TODO: check if chunk is visible
 		chunk->draw();
@@ -82,181 +84,7 @@ void VoxelWorld::draw()
 
 void VoxelWorld::findNeighs(VoxelChunk* chunk)
 {
-	for (auto i = 0u; i < m_chunks.size(); i++)
-	{
-		if (!chunk->m_neighN)
-		{
-			auto current = m_chunks[i];
-			if (current->m_x == chunk->m_x && 
-				current->m_z == chunk->m_z + 1)
-			{
-				chunk->m_neighN = current;
-			}
-		}
-		if (!chunk->m_neighNE)
-		{
-			auto current = m_chunks[i];
-			if (current->m_x == chunk->m_x + 1 &&
-				current->m_z == chunk->m_z + 1)
-			{
-				chunk->m_neighNE = current;
-			}
-		}
-		if (!chunk->m_neighE)
-		{
-			auto current = m_chunks[i];
-			if (current->m_x == chunk->m_x + 1 &&
-				current->m_z == chunk->m_z)
-			{
-				chunk->m_neighE = current;
-			}
-		} 
-		if (!chunk->m_neighSE)
-		{
-			auto current = m_chunks[i];
-			if (current->m_x == chunk->m_x + 1 &&
-				current->m_z == chunk->m_z - 1)
-			{
-				chunk->m_neighSE = current;
-			}
-		}
-		if (!chunk->m_neighS)
-		{
-			auto current = m_chunks[i];
-			if (current->m_x == chunk->m_x &&
-				current->m_z == chunk->m_z - 1)
-			{
-				chunk->m_neighS = current;
-			}
-		}
-		if (!chunk->m_neighSW)
-		{
-			auto current = m_chunks[i];
-			if (current->m_x == chunk->m_x - 1 &&
-				current->m_z == chunk->m_z - 1)
-			{
-				chunk->m_neighSW = current;
-			}
-		}
-		if (!chunk->m_neighW)
-		{
-			auto current = m_chunks[i];
-			if (current->m_x == chunk->m_x - 1 &&
-				current->m_z == chunk->m_z)
-			{
-				chunk->m_neighW = current;
-			}
-		}
-		if (!chunk->m_neighNW)
-		{
-			auto current = m_chunks[i];
-			if (current->m_x == chunk->m_x - 1 &&
-				current->m_z == chunk->m_z + 1)
-			{
-				chunk->m_neighNW = current;
-			}
-		}
-	}
-}
-
-void VoxelWorld::initializeNeighs(VoxelChunk* chunk)
-{
-	if(!chunk->m_neighN)
-	{
-		auto neighchunk = new VoxelChunk;
-		neighchunk->world = this;
-		neighchunk->m_x = chunk->m_x;
-		neighchunk->m_z = chunk->m_z + 1;
-
-		neighchunk->dataGenerate();
-		// TODO: update neighs
-		chunk->m_neighN = neighchunk;
-		m_chunks.push_back(neighchunk);
-	}
-	if (!chunk->m_neighNE)
-	{
-		auto neighchunk = new VoxelChunk;
-		neighchunk->world = this;
-		neighchunk->m_x = chunk->m_x + 1;
-		neighchunk->m_z = chunk->m_z + 1;
-
-		neighchunk->dataGenerate();
-
-		chunk->m_neighNE = neighchunk;
-		m_chunks.push_back(neighchunk);
-	}
-	if (!chunk->m_neighE)
-	{
-		auto neighchunk = new VoxelChunk;
-		neighchunk->world = this;
-		neighchunk->m_x = chunk->m_x + 1;
-		neighchunk->m_z = chunk->m_z;
-
-		neighchunk->dataGenerate();
-
-		chunk->m_neighE = neighchunk;
-		m_chunks.push_back(neighchunk);
-	}
-	if (!chunk->m_neighSE)
-	{
-		auto neighchunk = new VoxelChunk;
-		neighchunk->world = this;
-		neighchunk->m_x = chunk->m_x + 1;
-		neighchunk->m_z = chunk->m_z - 1;
-
-		neighchunk->dataGenerate();
-
-		chunk->m_neighSE = neighchunk;
-		m_chunks.push_back(neighchunk);
-	}
-	if (!chunk->m_neighS)
-	{
-		auto neighchunk = new VoxelChunk;
-		neighchunk->world = this;
-		neighchunk->m_x = chunk->m_x;
-		neighchunk->m_z = chunk->m_z - 1;
-
-		neighchunk->dataGenerate();
-
-		chunk->m_neighS = neighchunk;
-		m_chunks.push_back(neighchunk);
-	}
-	if (!chunk->m_neighSW)
-	{
-		auto neighchunk = new VoxelChunk;
-		neighchunk->world = this;
-		neighchunk->m_x = chunk->m_x - 1;
-		neighchunk->m_z = chunk->m_z - 1;
-
-		neighchunk->dataGenerate();
-
-		chunk->m_neighSW = neighchunk;
-		m_chunks.push_back(neighchunk);
-	}
-	if (!chunk->m_neighW)
-	{
-		auto neighchunk = new VoxelChunk;
-		neighchunk->world = this;
-		neighchunk->m_x = chunk->m_x - 1;
-		neighchunk->m_z = chunk->m_z;
-
-		neighchunk->dataGenerate();
-
-		chunk->m_neighW = neighchunk;
-		m_chunks.push_back(neighchunk);
-	}
-	if (!chunk->m_neighNW)
-	{
-		auto neighchunk = new VoxelChunk;
-		neighchunk->world = this;
-		neighchunk->m_x = chunk->m_x - 1;
-		neighchunk->m_z = chunk->m_z + 1;
-
-		neighchunk->dataGenerate();
-
-		chunk->m_neighNW = neighchunk;
-		m_chunks.push_back(neighchunk);
-	}
+	m_chunkTree->findNeighs(chunk);
 }
 
 VoxelChunk* VoxelWorld::getVoxelChunk(Vector3 containedPoint)
@@ -264,7 +92,13 @@ VoxelChunk* VoxelWorld::getVoxelChunk(Vector3 containedPoint)
 	return nullptr;
 }
 
+VoxelChunk* VoxelWorld::getVoxelChunk(Vector3i position)
+{
+	return nullptr;
+}
+
 bool VoxelWorld::raycast(Vector3 origin, Vector3 direction, voxelid* voxelid, Vector3* point, Vector3* normal)
 {
 	// http://www.cse.chalmers.se/edu/year/2010/course/TDA361/grid.pdf
+	return false;
 }

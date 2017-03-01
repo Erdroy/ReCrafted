@@ -94,6 +94,8 @@ public:
 	{
 		if(m_mesh)
 			m_mesh->dispose();
+
+		delete this;
 	}
 
 	FORCEINLINE voxelid getVoxel(int x, int y, int z)

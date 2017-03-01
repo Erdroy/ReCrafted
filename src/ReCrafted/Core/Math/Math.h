@@ -49,6 +49,16 @@ public:
 		return v;
 	}
 
+	FORCEINLINE static int sign(int x)
+	{
+		return x < 0 ? -1 : 1;
+	}
+
+	FORCEINLINE static float signf(float x)
+	{
+		return x < 0.0f ? -1.0f : 1.0f;
+	}
+
 	FORCEINLINE static float cosx(float x)
 	{
 		return cos(x);
