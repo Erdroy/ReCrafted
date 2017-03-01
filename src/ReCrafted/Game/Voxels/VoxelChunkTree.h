@@ -19,33 +19,48 @@ private:
 private:
 	struct vctEntry
 	{
-	public:
-		// root/vct space
-		int x = 0;
-		int z = 0;
-		
+	private:
 		VoxelChunk* chunkTable[tableWidth * tableWidth] = {};
 
+	private:
 		int getChunkIndex(int x, int z) const
 		{
-			auto rsx = (x - this->x * tableWidth);
-			auto rsz = (z - this->z * tableWidth);
+			auto rsx = x - this->x * tableWidth;
+			auto rsz = z - this->z * tableWidth;
 
 			return rsz * tableWidth + rsx;
 		}
 
+	public:
+		// root/vct space
+		int x = 0;
+		int z = 0;
+
+		/// <summary>
+		/// Gets chunk at given location - chunk-space.
+		/// </summary>
+		/// <param name="x">X coord in chunk-space.</param>
+		/// <param name="z">Z coord in chunk-space.</param>
+		/// <returns>The chunk.</returns>
 		VoxelChunk* getChunk(int x, int z)
 		{
 			auto index = getChunkIndex(x, z);
 			return chunkTable[index];
 		}
 
+		/// <summary>
+		/// Add new chunk to this entry.
+		/// </summary>
+		/// <param name="chunk">The new chunk.</param>
 		void add(VoxelChunk* chunk)
 		{
 			auto index = getChunkIndex(chunk->m_x, chunk->m_z);
 			chunkTable[index] = chunk;
 		}
 
+		/// <summary>
+		/// Dispose the entry and all chunks.
+		/// </summary>
 		void dispose() const
 		{
 			// dispose all chunks
@@ -69,6 +84,10 @@ private:
 
 
 public:
+	/// <summary>
+	/// Add new chunk to the tree.
+	/// </summary>
+	/// <param name="chunk">The new chunk.</param>
 	void add(VoxelChunk* chunk)
 	{
 		m_chunks.push_back(chunk);
@@ -99,25 +118,68 @@ public:
 		root->add(chunk);
 	}
 
+	/// <summary>
+	/// Gets chunks that are near the point within given distance.
+	/// </summary>
+	/// <param name="point">The point.</param>
+	/// <param name="distance">Distance.</param>
+	/// <param name="chunks">The list to-which all found chunks will be added.</param>
 	void getNearChunks(Vector2 point, float distance, std::vector<VoxelChunk*>* chunks)
 	{
 	}
-
-	void getNearChunksCulled(Vector3 point, float distance, Camera* camera)
+	
+	/// <summary>
+	/// Gets chunks that are near the point within given distance using camera frustum to cull.
+	/// </summary>
+	/// <param name="point">The point.</param>
+	/// <param name="distance">Distance.</param>
+	/// <param name="camera">The camera that will be used to cull chunks using it's frustum.</param>
+	/// <param name="chunks">The list to-which all found chunks will be added.</param>
+	void getNearChunksCulled(Vector3 point, float distance, Camera* camera, std::vector<VoxelChunk*>* chunks)
 	{
 
 	}
 
+	/// <summary>
+	/// Gets all chunk list pointer.
+	/// </summary>
+	/// <returns>The chunk list pointer.</returns>
 	std::vector<VoxelChunk*>* getChunks()
 	{
 		return &m_chunks;
 	}
 
+	/// <summary>
+	/// Finds chunk at given coords.
+	/// </summary>
+	/// <param name="x">X coord in chunk-space.</param>
+	/// <param name="z">Z coord in chunk-space.</param>
+	/// <returns>The chunk.</returns>
 	VoxelChunk* findChunk(int x, int z)
 	{
-		return nullptr;
+		auto rootX = (x + 1 - tableWidth) / tableWidth;
+		auto rootZ = (z + 1 - tableWidth) / tableWidth;
+
+		vctEntry* root = nullptr;
+		for (auto current : m_roots) // TODO: second and thirt upper levels that store roots - quad tree
+		{
+			if (current->x == rootX && current->z == rootZ)
+			{
+				root = current;
+				break;
+			}
+		}
+
+		if(!root)
+			return nullptr;
+
+		return root->getChunk(x, z);
 	}
 
+	/// <summary>
+	/// Finds all neighs for chunk.
+	/// </summary>
+	/// <param name="chunk">The chunk which will get updated neighs.</param>
 	void findNeighs(VoxelChunk* chunk)
 	{
 		// u/l/d/r
@@ -171,6 +233,9 @@ public:
 		}
 	}
 
+	/// <summary>
+	/// Dispose the whole tree, dispose all entries and chunks.
+	/// </summary>
 	void dispose()
 	{
 		for (auto && root : m_roots)
