@@ -97,45 +97,101 @@ public:
 		return Vector2(0.0f, -1.0f);
 	}
 
+	/// <summary>
+	/// Returns normalized vector
+	/// </summary>
 	FORCEINLINE static Vector2 normalize(Vector2 vector)
 	{
 		vector.normalize();
 		return vector;
 	}
 
+	/// <summary>
+	/// Returns normalized vector
+	/// </summary>
 	FORCEINLINE static void normalize(Vector2 vector, Vector2* result)
 	{
 		*result = normalize(vector);
 	}
 
+	/// <summary>
+	/// Calculate length of vector
+	/// </summary>
 	FORCEINLINE static float length(Vector2 vector)
 	{
 		return vector.length();
 	}
 
+	/// <summary>
+	/// Calculate length of vector
+	/// </summary>
 	FORCEINLINE static void length(Vector2 vector, float* result)
 	{
 		*result = length(vector);
 	}
 
+	/// <summary>
+	/// Dot product of two vectors
+	/// </summary>
 	FORCEINLINE static float dot(Vector2 a, Vector2 b)
 	{
 		return a.X * b.X + a.Y * b.Y;
 	}
 
+	/// <summary>
+	/// Dot product of two vectors
+	/// </summary>
 	FORCEINLINE static void dot(Vector2 a, Vector2 b, float* result)
 	{
 		*result = dot(a, b);
 	}
 
+	/// <summary>
+	/// Linerally interpolates between two vectors
+	/// </summary>
 	FORCEINLINE static Vector2 lerp(Vector2 a, Vector2 b, float t)
 	{
 		return Vector2(a.X * (1 - t) + t * b.X, a.Y * (1 - t) + t * b.Y);
 	}
 
+	/// <summary>
+	/// Linerally interpolates between two vectors
+	/// </summary>
 	FORCEINLINE static void lerp(Vector2 a, Vector2 b, float t, Vector2* result)
 	{
 		*result = lerp(a, b, t);
+	}
+
+	/// <summary>
+	/// Negation of the vector
+	/// </summary>
+	FORCEINLINE static Vector2 negate(Vector2 a)
+	{
+		return Vector2(a.X * -1.0f, a.Y * -1.0f);
+	}
+
+	/// <summary>
+	/// Negation of the vector
+	/// </summary>
+	FORCEINLINE static void negate(Vector2 a, Vector2* result)
+	{
+		*result = negate(a);
+	}
+
+	/// <summary>
+	/// Absolute value of the vector
+	/// </summary>
+	FORCEINLINE static Vector2 abs(Vector2 a)
+	{
+		return Vector2(fabs(a.X), fabs(a.Y));
+	}
+
+	/// <summary>
+	/// Absolute value of the vector
+	/// </summary>
+	FORCEINLINE static void abs(Vector2 a, Vector2* result)
+	{
+		*result = abs(a);
 	}
 
 public:
@@ -148,7 +204,6 @@ public:
 		X += r.X;
 		Y += r.Y;
 	}
-
 
 	Vector2 Vector2::operator - (Vector2 r) const
 	{
