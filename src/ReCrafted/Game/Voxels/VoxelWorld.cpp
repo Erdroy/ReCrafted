@@ -49,7 +49,10 @@ void VoxelWorld::update()
 	{
 		if(!chunk->m_mesh)
 			chunk->meshGenerate();
+	}
 
+	for(auto chunk : *m_chunkTree->getChunks())
+	{
 		chunk->update();
 	}
 }

@@ -177,11 +177,21 @@ void VoxelChunk::worker_meshGenerate() // WARNING: this should be run in job que
 
 		// upload now for a test
 		meshUpload();
+
+		m_lastTimeVisible = Time::time();
 	}
 }
 
 void VoxelChunk::update()
 {
+	if (m_mesh) {
+		if (Time::time() - m_lastTimeVisible > 0.5f) // unload chunk data when out of view for half a sec or grater
+		{
+			// unload mesh
+			m_mesh->dispose();
+			m_mesh = nullptr;
+		}
+	}
 }
 
 void VoxelChunk::simulate()

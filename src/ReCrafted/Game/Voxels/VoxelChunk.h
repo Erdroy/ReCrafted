@@ -9,6 +9,7 @@
 #include "../../recraftedPrerequisites.h"
 #include "../../Graphics/Mesh.h"
 #include "../../Graphics/Rendering.h"
+#include "../../Core/Time.h"
 
 typedef unsigned short voxelid;
 
@@ -28,6 +29,8 @@ class VoxelChunk
 private:
 	int m_x = 0;
 	int m_z = 0;
+
+	float m_lastTimeVisible = 0.0f;
 
 	VoxelWorld* world = nullptr;
 
@@ -77,10 +80,12 @@ public:
 
 	void simulate();
 
-	FORCEINLINE void draw() const
+	FORCEINLINE void draw()
 	{
 		if (m_mesh == nullptr)
 			return;
+
+		m_lastTimeVisible = Time::time();
 
 		auto modelMatrix = Matrix::identity();
 		modelMatrix.M30 = float(m_x) * ChunkWidth;
