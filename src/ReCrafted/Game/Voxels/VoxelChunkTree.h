@@ -144,7 +144,7 @@ public:
 			auto wsZ = float(root->z * wsSize);
 
 			auto deltaX = point.X - Math::maxf(wsX, Math::minf(point.X, wsX + wsSize));
-			auto deltaY = point.Y - Math::maxf(wsZ, Math::minf(point.X, wsZ + wsSize));
+			auto deltaY = point.Y - Math::maxf(wsZ, Math::minf(point.Y, wsZ + wsSize));
 
 			auto isinrange = deltaX * deltaX + deltaY * deltaY < sqrDistance;
 			auto isinside = point.X > wsX && point.X < wsX + wsSize && point.Y > wsZ && point.Y < wsZ + wsSize;
