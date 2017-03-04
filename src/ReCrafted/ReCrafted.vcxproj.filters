@@ -200,6 +200,15 @@
     <ClInclude Include="Game\Voxels\VoxelChunkTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Math\Vector4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Math\BoundingFrustum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Math\Plane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\common.sh" />

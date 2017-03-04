@@ -31,6 +31,7 @@ private:
 	int m_z = 0;
 
 	float m_lastTimeVisible = 0.0f;
+	bool m_voxelsCompressed = false;
 
 	VoxelWorld* world = nullptr;
 
@@ -47,7 +48,7 @@ private:
 	VoxelChunk* m_neighNW = nullptr;
 
 	/* voxels */
-	voxelid m_voxels[ChunkWidth * ChunkHeight * ChunkWidth] = {};
+	voxelid* m_voxels = nullptr;
 
 	// TODO: build level voxels
 
@@ -100,6 +101,7 @@ public:
 		if(m_mesh)
 			m_mesh->dispose();
 
+		delete[] m_voxels;
 		delete this;
 	}
 

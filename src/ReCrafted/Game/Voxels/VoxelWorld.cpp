@@ -59,11 +59,11 @@ void VoxelWorld::update()
 
 void VoxelWorld::simulate()
 {
-	/*for (auto && chunk : m_chunks)
+	for (auto chunk : *m_chunkTree->getChunks())
 	{
 		// TODO: check if chunk should be simulated
 		chunk->simulate();
-	}*/
+	}
 }
 
 void VoxelWorld::draw()

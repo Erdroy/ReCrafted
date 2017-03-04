@@ -91,6 +91,9 @@ FORCEINLINE void build_face(
 
 void VoxelChunk::worker_dataGenerate() // WARNING: this should be run in job queue!
 {
+	// create voxels
+	m_voxels = new voxelid[ChunkWidth * ChunkHeight * ChunkWidth];
+
 	VoxelGenerator::beginChunk(m_x * ChunkWidth, m_z * ChunkWidth);
 	for(auto y = 0; y < ChunkHeight; y ++)
 	{
@@ -184,13 +187,43 @@ void VoxelChunk::worker_meshGenerate() // WARNING: this should be run in job que
 
 void VoxelChunk::update()
 {
-	if (m_mesh) {
-		if (Time::time() - m_lastTimeVisible > 0.5f) // unload chunk data when out of view for half a sec or grater
+	auto timeNotUsed = Time::time() - m_lastTimeVisible;
+
+	if (m_mesh) 
+	{
+		if (timeNotUsed > 0.5f) // unload chunk data when out of view for half a sec or grater
 		{
 			// unload mesh
 			m_mesh->dispose();
 			m_mesh = nullptr;
 		}
+		return;
+	}
+
+	if (timeNotUsed > 1.0f)
+	{
+		// check if any neigh needs this chunk(has a mesh)
+		if (m_neighN->m_mesh
+			|| m_neighNE->m_mesh
+			|| m_neighE->m_mesh
+			|| m_neighSE->m_mesh
+			|| m_neighS->m_mesh
+			|| m_neighSW->m_mesh
+			|| m_neighW->m_mesh
+			|| m_neighNW->m_mesh)
+		{
+			return;
+		}
+	}
+
+	if(!m_voxelsCompressed && timeNotUsed > 10.0f)
+	{
+		// TODO: queue to compress
+	}
+
+	if(m_voxelsCompressed && timeNotUsed > 120.0f)
+	{
+		// TODO: queue to unload
 	}
 }
 

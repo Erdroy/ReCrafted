@@ -221,12 +221,15 @@
     <ClInclude Include="Core\GameCore.h" />
     <ClInclude Include="Core\Input.h" />
     <ClInclude Include="Core\Logger.h" />
+    <ClInclude Include="Core\Math\BoundingFrustum.h" />
     <ClInclude Include="Core\Math\FastNoiseSIMD\FastNoiseSIMD.h" />
     <ClInclude Include="Core\Math\FastNoiseSIMD\FastNoiseSIMD_internal.h" />
     <ClInclude Include="Core\Math\Math.h" />
     <ClInclude Include="Core\Math\Matrix.h" />
+    <ClInclude Include="Core\Math\Plane.h" />
     <ClInclude Include="Core\Math\Vector2.h" />
     <ClInclude Include="Core\Math\Vector3.h" />
+    <ClInclude Include="Core\Math\Vector4.h" />
     <ClInclude Include="Core\Profiler.h" />
     <ClInclude Include="Core\Time.h" />
     <ClInclude Include="Game\Addons\Addon.h" />
