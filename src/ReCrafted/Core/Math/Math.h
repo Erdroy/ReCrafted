@@ -69,6 +69,16 @@ public:
 		return a > b ? a : b;
 	}
 
+	FORCEINLINE static float sqrtf(float x)
+	{
+		return sqrt(x);
+	}
+
+	FORCEINLINE static float tanf(float x)
+	{
+		return tan(x);
+	}
+
 	FORCEINLINE static float cosx(float x)
 	{
 		return cos(x); // TODO: optimize cos

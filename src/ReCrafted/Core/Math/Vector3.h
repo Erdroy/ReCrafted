@@ -1,3 +1,5 @@
+// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+
 #pragma once
 
 #ifndef Vector3_H
@@ -290,6 +292,22 @@ public:
 	Vector3 Vector3::operator + (Vector3 r) const
 	{
 		return Vector3(X + r.X, Y + r.Y, Z + r.Z);
+	}
+
+	/// <summary>
+	/// Result = Vector * Vector[r] operator
+	/// </summary>
+	Vector3 Vector3::operator * (Vector3 r) const
+	{
+		return Vector3(X * r.X, Y * r.Y, Z * r.Z);
+	}
+
+	/// <summary>
+	/// Result = Vector * float operator
+	/// </summary>
+	Vector3 Vector3::operator * (float r) const
+	{
+		return Vector3(X * r, Y * r, Z * r);
 	}
 
 public:
