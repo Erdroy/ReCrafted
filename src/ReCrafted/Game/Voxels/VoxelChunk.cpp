@@ -159,7 +159,7 @@ void VoxelChunk::worker_meshGenerate() // WARNING: this should be run in job que
 						build_face(origin + vec3_up, vec3_forward, vec3_right, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 					
 					// bottom face
-					if (!getVoxelCC(x, y - 1, z) && y - 1 >= 9)
+					if (!getVoxelCC(x, y - 1, z) && y - 1 >= 0)
 						build_face(origin, vec3_forward, vec3_right, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
 					// front face
