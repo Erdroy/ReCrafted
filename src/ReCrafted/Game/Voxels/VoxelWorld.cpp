@@ -43,7 +43,7 @@ void VoxelWorld::update()
 	auto camera = Camera::getMainCamera();
 
 	m_visibleChunks.clear();
-	m_chunkTree->getNearChunks(Vector2(camera->m_position.X, camera->m_position.Z), 250.0f, &m_visibleChunks);
+	m_chunkTree->getNearChunks(Vector2(camera->m_position.X, camera->m_position.Z), 1000.0f, &m_visibleChunks);
 	
 	for (auto chunk : m_visibleChunks)
 	{

@@ -25,7 +25,7 @@ private:
 private:
 	bool m_freeMovement = false;
 	float m_nearPlane = 0.02f;
-	float m_farPlane = 500.0f;
+	float m_farPlane = 1000.0f;
 	float m_xfov = 0.75f;
 
 	// camera transform
