@@ -3,37 +3,25 @@
 #include "VoxelWorld.h"
 #include "Generator/VoxelGenerator.h"
 #include "../../Core/Profiler.h"
+#include "../../Graphics/Camera.h"
 
 void VoxelWorld::init(bool generateworld)
 {
 	// initialize generator
 	VoxelGenerator::initialize();
 
-	m_chunkTree = new VoxelChunkTree;
+	m_chunkMap = new VoxelChunkMap;
 
 	Profiler::beginProfile();
 	if (generateworld)
 	{
-		Profiler::beginProfile();
-		for(auto x = -32; x < 32; x ++)
+		for (auto x = -8; x < 8; x++)
 		{
-			for (auto z = -32; z < 32; z++)
+			for (auto z = -8; z < 8; z++)
 			{
 				generateChunk(x, z);
 			}
 		}
-
-		Profiler::endProfile("Starting chunks voxel data generated in %0.7f ms.");
-
-		m_visibleChunks.clear();
-		m_chunkTree->getNearChunks(Vector2(0.0f, 0.0f), 250.0f, &m_visibleChunks);
-
-		Profiler::beginProfile();
-		for (auto chunk : m_visibleChunks)
-		{
-			chunk->meshGenerate();
-		}
-		Profiler::endProfile("Starting chunks meshes generated in %0.7f ms.");
 	}
 	Profiler::endProfile("Starting world generated in %0.7f ms.");
 }
@@ -43,7 +31,12 @@ void VoxelWorld::update()
 	auto camera = Camera::getMainCamera();
 
 	m_visibleChunks.clear();
-	m_chunkTree->getNearChunks(Vector2(camera->m_position.X, camera->m_position.Z), 1000.0f, &m_visibleChunks);
+#ifdef _DEBUG
+	m_chunkMap->getVisibleChunks(Vector2(camera->m_position.X, camera->m_position.Z), 250.0f, &m_visibleChunks);
+#else
+	m_chunkMap->getVisibleChunks(Vector2(camera->m_position.X, camera->m_position.Z), 1000.0f, &m_visibleChunks);
+#endif
+	// TODO: better getNearChunks method
 	
 	for (auto chunk : m_visibleChunks)
 	{
@@ -51,7 +44,7 @@ void VoxelWorld::update()
 			chunk->meshGenerate();
 	}
 
-	for(auto chunk : *m_chunkTree->getChunks())
+	for(auto chunk : *m_chunkMap->getChunks())
 	{
 		chunk->update();
 	}
@@ -59,7 +52,7 @@ void VoxelWorld::update()
 
 void VoxelWorld::simulate()
 {
-	for (auto chunk : *m_chunkTree->getChunks())
+	for (auto chunk : *m_chunkMap->getChunks())
 	{
 		// TODO: check if chunk should be simulated
 		chunk->simulate();
@@ -80,50 +73,50 @@ void VoxelWorld::findNeighs(VoxelChunk* chunk)
 	if (!chunk->m_neighN)
 	{
 		// find chunk
-		chunk->m_neighN = m_chunkTree->findChunk(chunk->m_x, chunk->m_z + 1);
+		chunk->m_neighN = m_chunkMap->findChunk(chunk->m_x, chunk->m_z + 1);
 	}
 
 	if (!chunk->m_neighE)
 	{
 		// find chunk
-		chunk->m_neighE = m_chunkTree->findChunk(chunk->m_x + 1, chunk->m_z);
+		chunk->m_neighE = m_chunkMap->findChunk(chunk->m_x + 1, chunk->m_z);
 	}
 
 	if (!chunk->m_neighS)
 	{
 		// find chunk
-		chunk->m_neighS = m_chunkTree->findChunk(chunk->m_x, chunk->m_z - 1);
+		chunk->m_neighS = m_chunkMap->findChunk(chunk->m_x, chunk->m_z - 1);
 	}
 
 	if (!chunk->m_neighW)
 	{
 		// find chunk
-		chunk->m_neighW = m_chunkTree->findChunk(chunk->m_x - 1, chunk->m_z);
+		chunk->m_neighW = m_chunkMap->findChunk(chunk->m_x - 1, chunk->m_z);
 	}
 
 	// corners
 	if (!chunk->m_neighNE)
 	{
 		// find chunk
-		chunk->m_neighNE = m_chunkTree->findChunk(chunk->m_x + 1, chunk->m_z + 1);
+		chunk->m_neighNE = m_chunkMap->findChunk(chunk->m_x + 1, chunk->m_z + 1);
 	}
 
 	if (!chunk->m_neighSE)
 	{
 		// find chunk
-		chunk->m_neighSE = m_chunkTree->findChunk(chunk->m_x + 1, chunk->m_z - 1);
+		chunk->m_neighSE = m_chunkMap->findChunk(chunk->m_x + 1, chunk->m_z - 1);
 	}
 
 	if (!chunk->m_neighSW)
 	{
 		// find chunk
-		chunk->m_neighSW = m_chunkTree->findChunk(chunk->m_x - 1, chunk->m_z - 1);
+		chunk->m_neighSW = m_chunkMap->findChunk(chunk->m_x - 1, chunk->m_z - 1);
 	}
 
 	if (!chunk->m_neighNW)
 	{
 		// find chunk
-		chunk->m_neighNW = m_chunkTree->findChunk(chunk->m_x - 1, chunk->m_z + 1);
+		chunk->m_neighNW = m_chunkMap->findChunk(chunk->m_x - 1, chunk->m_z + 1);
 	}
 }
 
@@ -170,6 +163,22 @@ void VoxelWorld::generateNeigs(VoxelChunk* chunk)
 	{
 		chunk->m_neighNW = generateChunk(x - 1, z + 1);
 	}
+}
+
+VoxelChunk* VoxelWorld::generateChunk(int x, int z)
+{
+	auto chunk = new VoxelChunk;
+	chunk->world = this;
+	chunk->m_x = x;
+	chunk->m_z = z;
+
+	// add to chunk map
+	m_chunkMap->addChunk(chunk);
+
+	// generate data
+	chunk->dataGenerate();
+
+	return chunk;
 }
 
 VoxelChunk* VoxelWorld::getVoxelChunk(Vector3 containedPoint)

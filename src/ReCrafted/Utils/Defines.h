@@ -13,6 +13,10 @@
 #define FORCEINLINE __inline
 #endif
 
+#ifndef FORCE_NO_INLINE
+#define FORCE_NO_INLINE __declspec(noinline)
+#endif
+
 #define SafeDispose(ptr) if(ptr) { ptr->dispose(); ptr = nullptr;}
 #define SafeDisposeNN(ptr) if(ptr) { ptr->dispose(); }
 

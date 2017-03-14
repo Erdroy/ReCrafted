@@ -203,6 +203,7 @@
     <ClCompile Include="Game\Universe.cpp" />
     <ClCompile Include="Game\Voxels\Generator\VoxelGenerator.cpp" />
     <ClCompile Include="Game\Voxels\VoxelChunk.cpp" />
+    <ClCompile Include="Game\Voxels\VoxelChunkMap.cpp" />
     <ClCompile Include="Game\Voxels\VoxelWorld.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
@@ -237,7 +238,7 @@
     <ClInclude Include="Game\Universe.h" />
     <ClInclude Include="Game\Voxels\Generator\VoxelGenerator.h" />
     <ClInclude Include="Game\Voxels\VoxelChunk.h" />
-    <ClInclude Include="Game\Voxels\VoxelChunkTree.h" />
+    <ClInclude Include="Game\Voxels\VoxelChunkMap.h" />
     <ClInclude Include="Game\Voxels\VoxelWorld.h" />
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\Mesh.h" />

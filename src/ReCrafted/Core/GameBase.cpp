@@ -163,8 +163,8 @@ void GameBase::run()
 
 		// frame
 		{
-			onUpdate(); GAMEBASE_CHECK_SHUTDOWN
-			onSimulate(); GAMEBASE_CHECK_SHUTDOWN // TODO: fixed-time step `onSimulate` call
+			onUpdate();
+			onSimulate(); // TODO: fixed-time step `onSimulate` call
 			onDraw(); GAMEBASE_CHECK_SHUTDOWN
 		}
 	}

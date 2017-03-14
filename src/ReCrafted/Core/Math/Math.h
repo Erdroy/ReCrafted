@@ -98,6 +98,27 @@ public:
 	{
 		return radiand * internal::radtodeg;
 	}
+
+	FORCEINLINE static int roundDown(int numToRound, int multiple)
+	{
+		return numToRound - ((numToRound < 0 ? multiple : 0) + numToRound) % multiple;
+	}
+
+	FORCEINLINE static int roundUp(int numToRound, int multiple)
+	{
+		// source: http://stackoverflow.com/questions/3407012/c-rounding-up-to-the-nearest-multiple-of-a-number
+
+		// allow round up to 0
+		if (numToRound < 0 && -numToRound < multiple)
+			return 0;
+
+		auto remainder = numToRound % multiple;
+
+		if (remainder == 0)
+			return numToRound;
+
+		return numToRound + multiple - remainder;
+	}
 };
 
 #endif // MATH_H

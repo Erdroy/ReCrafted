@@ -90,6 +90,9 @@
     <ClCompile Include="Core\Math\FastNoiseSIMD\FastNoiseSIMD_sse41.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Voxels\VoxelChunkMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\GameBase.h">
@@ -197,9 +200,6 @@
     <ClInclude Include="Core\Math\FastNoiseSIMD\FastNoiseSIMD_internal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Voxels\VoxelChunkTree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Math\Vector4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -207,6 +207,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Math\Plane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Voxels\VoxelChunkMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

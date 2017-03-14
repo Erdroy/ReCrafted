@@ -18,8 +18,9 @@ FORCEINLINE void build_face(
 	std::vector<uint>* indices
 	)
 {
-	auto index = uint(vertices->size());
+	// TODO: this code should be higly optimized.
 
+	auto index = uint(vertices->size());
 	auto a = origin;
 	auto b = origin + up;
 	auto c = origin + up + right;
@@ -106,6 +107,8 @@ void VoxelChunk::worker_dataGenerate() // WARNING: this should be run in job que
 		}
 	}
 	VoxelGenerator::endChunk();
+
+	m_lastTimeVisible = Time::time();
 }
 
 void VoxelChunk::worker_meshGenerate() // WARNING: this should be run in job queue!
@@ -119,6 +122,7 @@ void VoxelChunk::worker_meshGenerate() // WARNING: this should be run in job que
 	std::vector<Vector3> vertices = {};
 	std::vector<Vector3> normals = {};
 	std::vector<Vector2> uvs = {};
+	//std::vector<Vector4> colors = {};
 	std::vector<uint> indices = {};
 
 	{
@@ -128,8 +132,6 @@ void VoxelChunk::worker_meshGenerate() // WARNING: this should be run in job que
 		auto normals_ptr = &normals;
 		auto uvs_ptr = &uvs;
 		auto indices_ptr = &indices;
-
-		//std::vector<Vector4> colors = {};
 
 		const auto vec3_right = Vector3(1.0f, 0.0f, 0.0f);
 		const auto vec3_up = Vector3(0.0f, 1.0f, 0.0f);
@@ -189,9 +191,11 @@ void VoxelChunk::update()
 {
 	auto timeNotUsed = Time::time() - m_lastTimeVisible;
 
+	// TODO: check if chunk is in visible range
+
 	if (m_mesh) 
 	{
-		if (timeNotUsed > 0.5f) // unload chunk data when out of view for half a sec or grater
+		if (timeNotUsed > 5.0f) // unload chunk data when out of view for half a sec or grater and is out of view range about 100 units/meters
 		{
 			// unload mesh
 			m_mesh->dispose();
@@ -203,7 +207,7 @@ void VoxelChunk::update()
 	if (timeNotUsed > 1.0f)
 	{
 		// check if any neigh needs this chunk(has a mesh)
-		if (m_neighN->m_mesh
+		/*if (m_neighN->m_mesh
 			|| m_neighNE->m_mesh
 			|| m_neighE->m_mesh
 			|| m_neighSE->m_mesh
@@ -213,7 +217,7 @@ void VoxelChunk::update()
 			|| m_neighNW->m_mesh)
 		{
 			return;
-		}
+		}*/
 	}
 
 	if(!m_voxelsCompressed && timeNotUsed > 10.0f)

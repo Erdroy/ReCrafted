@@ -7,9 +7,9 @@
 
 // includes
 #include "../../recraftedPrerequisites.h"
-#include "VoxelChunk.h"
 #include "../../Core/Logger.h"
-#include "VoxelChunkTree.h"
+#include "VoxelChunk.h"
+#include "VoxelChunkMap.h"
 
 /*
 WORLD SPACE:
@@ -21,7 +21,8 @@ WORLD SPACE:
 class VoxelWorld
 {
 private:
-	VoxelChunkTree* m_chunkTree = nullptr;
+
+	VoxelChunkMap* m_chunkMap = nullptr;
 	std::vector<VoxelChunk*> m_visibleChunks = {};
 
 private:
@@ -39,21 +40,7 @@ public:
 
 	void generateNeigs(VoxelChunk* chunk);
 
-	FORCEINLINE VoxelChunk* generateChunk(int x, int z)
-	{
-		auto chunk = new VoxelChunk;
-		chunk->world = this;
-		chunk->m_x = x;
-		chunk->m_z = z;
-
-		// generate data
-		chunk->dataGenerate();
-
-		// add to chunk tree
-		m_chunkTree->add(chunk);
-
-		return chunk;
-	}
+	VoxelChunk* generateChunk(int x, int z);
 
 	VoxelChunk* getVoxelChunk(Vector3 containedPoint);
 
@@ -61,10 +48,10 @@ public:
 
 	bool raycast(Vector3 origin, Vector3 direction, voxelid* voxelid, Vector3* point, Vector3* normal);
 
-	FORCEINLINE void dispose()
+	FORCEINLINE void dispose() const
 	{
-		// dispose chunk tree
-		m_chunkTree->dispose();
+		// dispose chunk map
+		m_chunkMap->dispose();
 		Logger::write("World unloaded", LogLevel::Info);
 	}
 };
