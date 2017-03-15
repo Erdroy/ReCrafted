@@ -26,6 +26,11 @@ VoxelChunk* VoxelChunkMap::MapRoot::getChunk(int x, int z)
 	return m_table[rsX * TableWidth + rsZ];
 }
 
+VoxelChunk* VoxelChunkMap::MapRoot::getChunk(int index)
+{
+	return m_table[index];
+}
+
 VoxelChunkMap::MapRoot* VoxelChunkMap::findRoot(int x, int z)
 {
 	MapRoot* root = nullptr;
@@ -93,9 +98,45 @@ std::vector<VoxelChunk*>* VoxelChunkMap::getChunks()
 	return &m_chunks;
 }
 
-void VoxelChunkMap::getVisibleChunks(Vector2 pointXZ, float range, std::vector<VoxelChunk*>* chunks)
+void VoxelChunkMap::getVisibleChunks(Vector2 point, float range, std::vector<VoxelChunk*>* chunks)
 {
+	auto sqrDistance = range * range;
 
+	MapRoot* root = nullptr;
+	VoxelChunk* chunk = nullptr;
+	for (auto i = 0u; i < m_roots.size(); i++) 
+	{
+		root = m_roots[i];
+
+		auto wsX = float(root->worldX);
+		auto wsZ = float(root->worldZ);
+
+		auto deltaX = point.X - Math::maxf(wsX, Math::minf(point.X, wsX + MapRoot::TableWidthWS));
+		auto deltaY = point.Y - Math::maxf(wsZ, Math::minf(point.Y, wsZ + MapRoot::TableWidthWS));
+
+		auto isinrange = deltaX * deltaX + deltaY * deltaY < sqrDistance;
+		auto isinside = point.X > wsX && point.X < wsX + MapRoot::TableWidthWS && point.Y > wsZ && point.Y < wsZ + MapRoot::TableWidthWS;
+
+		if (isinrange || isinside)
+		{
+			for (auto j = 0; j < MapRoot::TableWidth * MapRoot::TableWidth; j++) // TODO: optimize this loop, skip x axes that are out of range
+			{
+				chunk = root->getChunk(j);
+
+				if (!chunk)
+					continue;
+
+				wsX = float(chunk->m_x * ChunkWidth);
+				wsZ = float(chunk->m_z * ChunkWidth);
+
+				deltaX = point.X - Math::maxf(wsX, Math::minf(point.X, wsX + ChunkWidth));
+				deltaY = point.Y - Math::maxf(wsZ, Math::minf(point.X, wsZ + ChunkWidth));
+
+				if (deltaX * deltaX + deltaY * deltaY < sqrDistance)
+					chunks->push_back(chunk);
+			}
+		}
+	}
 }
 
 void VoxelChunkMap::dispose()

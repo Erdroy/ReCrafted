@@ -34,7 +34,7 @@ void VoxelWorld::update()
 #ifdef _DEBUG
 	m_chunkMap->getVisibleChunks(Vector2(camera->m_position.X, camera->m_position.Z), 250.0f, &m_visibleChunks);
 #else
-	m_chunkMap->getVisibleChunks(Vector2(camera->m_position.X, camera->m_position.Z), 1000.0f, &m_visibleChunks);
+	m_chunkMap->getVisibleChunks(Vector2(camera->m_position.X, camera->m_position.Z), 300.0f, &m_visibleChunks);
 #endif
 	// TODO: better getNearChunks method
 	

@@ -23,6 +23,7 @@ class VoxelChunkMap
 		void addChunk(VoxelChunk* chunk, int x, int z);
 		void removeChunk(int x, int z);
 		VoxelChunk* getChunk(int x, int z);
+		VoxelChunk* getChunk(int index);
 
 	private:
 		VoxelChunk* m_table[TableWidth * TableWidth] = {};
@@ -39,7 +40,7 @@ public:
 	void addChunk(VoxelChunk* chunk);
 	VoxelChunk* findChunk(int x, int z);
 	std::vector<VoxelChunk*>* getChunks();
-	void getVisibleChunks(Vector2 pointXZ, float range, std::vector<VoxelChunk*>* chunks);
+	void getVisibleChunks(Vector2 point, float range, std::vector<VoxelChunk*>* chunks);
 
 	void dispose();
 };

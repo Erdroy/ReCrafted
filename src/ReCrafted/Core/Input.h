@@ -126,8 +126,8 @@ public:
 enum Keys
 {
 	Key_Mouse0 = 0x0,
-	Key_Mouse1 = 0x1,
-	Key_Mouse2 = 0x2,
+	Key_Mouse1 = 0x2,
+	Key_Mouse2 = 0x1,
 
 	Key_Backspace = 0x08,
 	Key_Tab = 0x09,
