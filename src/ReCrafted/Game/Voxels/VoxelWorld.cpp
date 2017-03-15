@@ -15,14 +15,15 @@ void VoxelWorld::init(bool generateworld)
 	Profiler::beginProfile();
 	if (generateworld)
 	{
-		for (auto x = -8; x < 8; x++)
+		for (auto x = -16; x < 16; x++)
 		{
-			for (auto z = -8; z < 8; z++)
+			for (auto z = -16; z < 16; z++)
 			{
 				generateChunk(x, z);
 			}
 		}
 	}
+	m_chunkMap->getVisibleChunks(Vector2::zero(), 250.0f, &m_visibleChunks);
 	Profiler::endProfile("Starting world generated in %0.7f ms.");
 }
 
@@ -30,11 +31,11 @@ void VoxelWorld::update()
 {
 	auto camera = Camera::getMainCamera();
 
-	m_visibleChunks.clear();
+	//m_visibleChunks.clear();
 #ifdef _DEBUG
-	m_chunkMap->getVisibleChunks(Vector2(camera->m_position.X, camera->m_position.Z), 250.0f, &m_visibleChunks);
+	//m_chunkMap->getVisibleChunks(Vector2(camera->m_position.X, camera->m_position.Z), 250.0f, &m_visibleChunks);
 #else
-	m_chunkMap->getVisibleChunks(Vector2(camera->m_position.X, camera->m_position.Z), 300.0f, &m_visibleChunks);
+	//m_chunkMap->getVisibleChunks(Vector2(camera->m_position.X, camera->m_position.Z), 250.0f, &m_visibleChunks);
 #endif
 	// TODO: better getNearChunks method
 	
@@ -127,41 +128,49 @@ void VoxelWorld::generateNeigs(VoxelChunk* chunk)
 
 	if (!chunk->m_neighN)
 	{
-		chunk->m_neighN = generateChunk(x, z + 1);
+		auto newChunk = chunk->m_neighN = generateChunk(x, z + 1);
+		findNeighs(newChunk);
 	}
 	if (!chunk->m_neighE)
 	{
-		chunk->m_neighE = generateChunk(x + 1, z);
+		auto newChunk = chunk->m_neighE = generateChunk(x + 1, z);
+		findNeighs(newChunk);
 	}
 
 	if (!chunk->m_neighS)
 	{
-		chunk->m_neighS = generateChunk(x, z - 1);
+		auto newChunk = chunk->m_neighS = generateChunk(x, z - 1);
+		findNeighs(newChunk);
 	}
 
 	if (!chunk->m_neighW)
 	{
-		chunk->m_neighW = generateChunk(x - 1, z);
+		auto newChunk = chunk->m_neighW = generateChunk(x - 1, z);
+		findNeighs(newChunk);
 	}
 
 	if (!chunk->m_neighNE)
 	{
-		chunk->m_neighNE = generateChunk(x + 1, z + 1);
+		auto newChunk = chunk->m_neighNE = generateChunk(x + 1, z + 1);
+		findNeighs(newChunk);
 	}
 
 	if (!chunk->m_neighSE)
 	{
-		chunk->m_neighSE = generateChunk(x + 1, z - 1);
+		auto newChunk = chunk->m_neighSE = generateChunk(x + 1, z - 1);
+		findNeighs(newChunk);
 	}
 
 	if (!chunk->m_neighSW)
 	{
-		chunk->m_neighSW = generateChunk(x - 1, z - 1);
+		auto newChunk = chunk->m_neighSW = generateChunk(x - 1, z - 1);
+		findNeighs(newChunk);
 	}
 
 	if (!chunk->m_neighNW)
 	{
-		chunk->m_neighNW = generateChunk(x - 1, z + 1);
+		auto newChunk = chunk->m_neighNW = generateChunk(x - 1, z + 1);
+		findNeighs(newChunk);
 	}
 }
 

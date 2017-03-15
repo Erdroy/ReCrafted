@@ -130,7 +130,7 @@ void VoxelChunkMap::getVisibleChunks(Vector2 point, float range, std::vector<Vox
 				wsZ = float(chunk->m_z * ChunkWidth);
 
 				deltaX = point.X - Math::maxf(wsX, Math::minf(point.X, wsX + ChunkWidth));
-				deltaY = point.Y - Math::maxf(wsZ, Math::minf(point.X, wsZ + ChunkWidth));
+				deltaY = point.Y - Math::maxf(wsZ, Math::minf(point.Y, wsZ + ChunkWidth));
 
 				if (deltaX * deltaX + deltaY * deltaY < sqrDistance)
 					chunks->push_back(chunk);
