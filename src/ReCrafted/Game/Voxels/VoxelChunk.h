@@ -25,10 +25,18 @@ class VoxelChunk
 {
 	friend class VoxelWorld;
 	friend class VoxelChunkMap;
+	friend class VoxelChunkProcessor;
 
 private:
 	int m_x = 0;
 	int m_z = 0;
+
+	int m_rootX = 0; // TODO: use those values
+	int m_rootZ = 0;
+	int m_rootIndex = 0;
+	bool m_hasRootInfo = false;
+
+	volatile bool m_processing = false;
 
 	float m_lastTimeVisible = 0.0f;
 	bool m_voxelsCompressed = false;
@@ -49,32 +57,9 @@ private:
 
 	/* voxels */
 	voxelid* m_voxels = nullptr;
+	bool m_hasVoxels = false;
 
 	// TODO: build level voxels
-
-private:
-	// WARNING: this should be run in job queue!
-	void worker_dataGenerate();
-	
-	// WARNING: this should be run in job queue!
-	void worker_meshGenerate();
-
-	void dataGenerate()
-	{
-		// TODO: run in job queue
-		worker_dataGenerate();
-	}
-
-	FORCEINLINE void meshGenerate()
-	{
-		// TODO: run in job queue
-		worker_meshGenerate();
-	}
-
-	FORCEINLINE void meshUpload() const
-	{
-		m_mesh->applyChanges();
-	}
 
 public:
 	void update();
@@ -83,7 +68,7 @@ public:
 
 	FORCEINLINE void draw()
 	{
-		if (m_mesh == nullptr)
+		if (m_processing || m_mesh == nullptr)
 			return;
 
 		m_lastTimeVisible = Time::time();
@@ -98,12 +83,24 @@ public:
 
 	FORCEINLINE void dispose() const
 	{
+		if (m_processing)
+		{
+			// TODO: force stop processing
+			throw;
+		}
+
 		if(m_mesh)
 			m_mesh->dispose();
 
 		delete[] m_voxels;
 		delete this;
 	}
+
+	void worker_dataGenerate();
+
+	void worker_meshGenerate();
+
+	void meshUpload() const;
 
 	FORCEINLINE voxelid getVoxel(int x, int y, int z)
 	{

@@ -93,6 +93,9 @@
     <ClCompile Include="Game\Voxels\VoxelChunkMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Voxels\VoxelChunkProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\GameBase.h">
@@ -210,6 +213,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Game\Voxels\VoxelChunkMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Voxels\VoxelChunkProcessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

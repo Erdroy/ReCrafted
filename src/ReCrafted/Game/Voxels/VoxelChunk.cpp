@@ -92,6 +92,9 @@ FORCEINLINE void build_face(
 
 void VoxelChunk::worker_dataGenerate() // WARNING: this should be run in job queue!
 {
+	if (m_processing)
+		return;
+
 	// create voxels
 	m_voxels = new voxelid[ChunkWidth * ChunkHeight * ChunkWidth];
 
@@ -113,11 +116,8 @@ void VoxelChunk::worker_dataGenerate() // WARNING: this should be run in job que
 
 void VoxelChunk::worker_meshGenerate() // WARNING: this should be run in job queue!
 {
-	// find neighs
-	world->findNeighs(this);
-
-	// generate missing neighbours
-	world->generateNeigs(this);
+	if (m_processing)
+		return;
 
 	std::vector<Vector3> vertices = {};
 	std::vector<Vector3> normals = {};
@@ -187,8 +187,19 @@ void VoxelChunk::worker_meshGenerate() // WARNING: this should be run in job que
 	}
 }
 
+void VoxelChunk::meshUpload() const
+{
+	if (m_processing)
+		return;
+
+	m_mesh->applyChanges();
+}
+
 void VoxelChunk::update()
 {
+	if (m_processing)
+		return;
+
 	auto timeNotUsed = Time::time() - m_lastTimeVisible;
 
 	// TODO: check if chunk is in visible range
@@ -204,22 +215,6 @@ void VoxelChunk::update()
 		return;
 	}
 
-	if (timeNotUsed > 1.0f)
-	{
-		// check if any neigh needs this chunk(has a mesh)
-		/*if (m_neighN->m_mesh
-			|| m_neighNE->m_mesh
-			|| m_neighE->m_mesh
-			|| m_neighSE->m_mesh
-			|| m_neighS->m_mesh
-			|| m_neighSW->m_mesh
-			|| m_neighW->m_mesh
-			|| m_neighNW->m_mesh)
-		{
-			return;
-		}*/
-	}
-
 	if(!m_voxelsCompressed && timeNotUsed > 10.0f)
 	{
 		// TODO: queue to compress
@@ -233,4 +228,7 @@ void VoxelChunk::update()
 
 void VoxelChunk::simulate()
 {
+	if (m_processing)
+		return;
+
 }

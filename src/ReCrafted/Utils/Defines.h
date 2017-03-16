@@ -48,4 +48,10 @@ inline void LOG(const char* text)
 		m_##name = v;			\
 	}							\
 
+#define Def_Instance(className) \
+private: static className##* m_instance; \
+public: FORCEINLINE static className##* instance() { return m_instance; }
+
+#define Decl_Instance(className) className##* className##::m_instance;
+
 #endif // DEFINES_H

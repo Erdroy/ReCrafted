@@ -64,6 +64,15 @@ public:
 	{
 		m_instance->m_tickrate = ticksPerSecond;
 	}
+
+	/// <summary>
+	/// Check if the engine is running.
+	/// </summary>
+	/// <returns>Returns true when is running.</returns>
+	FORCEINLINE static bool isRunning()
+	{
+		return m_instance->m_running;
+	}
 };
 
 #endif // GAMEBASE_H

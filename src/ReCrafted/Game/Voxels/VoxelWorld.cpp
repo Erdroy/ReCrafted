@@ -4,6 +4,7 @@
 #include "Generator/VoxelGenerator.h"
 #include "../../Core/Profiler.h"
 #include "../../Graphics/Camera.h"
+#include "VoxelChunkProcessor.h"
 
 void VoxelWorld::init(bool generateworld)
 {
@@ -39,12 +40,6 @@ void VoxelWorld::update()
 #endif
 	// TODO: better getNearChunks method
 	
-	for (auto chunk : m_visibleChunks)
-	{
-		if(!chunk->m_mesh)
-			chunk->meshGenerate();
-	}
-
 	for(auto chunk : *m_chunkMap->getChunks())
 	{
 		chunk->update();
@@ -69,6 +64,7 @@ void VoxelWorld::draw()
 	}
 }
 
+/*
 void VoxelWorld::findNeighs(VoxelChunk* chunk)
 {
 	if (!chunk->m_neighN)
@@ -173,6 +169,7 @@ void VoxelWorld::generateNeigs(VoxelChunk* chunk)
 		findNeighs(newChunk);
 	}
 }
+*/
 
 VoxelChunk* VoxelWorld::generateChunk(int x, int z)
 {
@@ -184,8 +181,8 @@ VoxelChunk* VoxelWorld::generateChunk(int x, int z)
 	// add to chunk map
 	m_chunkMap->addChunk(chunk);
 
-	// generate data
-	chunk->dataGenerate();
+	// queue chunk for generation
+	VoxelChunkProcessor::queue(chunk, VoxelChunkProcessor::QueueType::VoxelDataAndMesh);
 
 	return chunk;
 }

@@ -36,10 +36,6 @@ public:
 	
 	void draw();
 
-	void findNeighs(VoxelChunk* chunk);
-
-	void generateNeigs(VoxelChunk* chunk);
-
 	VoxelChunk* generateChunk(int x, int z);
 
 	VoxelChunk* getVoxelChunk(Vector3 containedPoint);

@@ -101,6 +101,17 @@ struct OpenMode
 	};
 };
 
+/// <summary>
+/// Thread structure.
+/// Contains some needed informations for threads.
+/// </summary>
+struct Thread
+{
+	uint64_t ThreadId;
+	void* ThreadHandle;
+};
+
+typedef uint64_t(*ThreadFunction)(void* parameter);
 typedef unsigned long(*QueueFunction)(void* parameter);
 
 #define MAX_THREADS 16
@@ -179,9 +190,35 @@ public:
 	/// </summary>
 	FORCEINLINE static void queueJob(QueueFunction function)
 	{
+		// TODO: queueJob
 		auto entry = QueueEntry();
 		entry.functio = function;
 		m_queue.push_back(entry);
+	}
+
+	/// <summary>
+	/// Creates new thread.
+	/// </summary>
+	/// <returns>The new thread.</returns>
+	FORCEINLINE static Thread createThread(ThreadFunction function, void* parameters)
+	{
+		DWORD threadId = 0;
+		auto handle = CreateThread(nullptr, 0, LPTHREAD_START_ROUTINE(function), parameters, 0, &threadId);
+
+		Thread thread = {};
+		thread.ThreadId = threadId;
+		thread.ThreadHandle = handle;
+
+		return thread;
+	}
+
+	/// <summary>
+	/// Kills specified thread.
+	/// </summary>
+	/// <param name="thread"></param>
+	FORCEINLINE static void killThread(Thread* thread)
+	{
+		TerminateThread(thread->ThreadHandle, 0);
 	}
 
 	/// <summary>

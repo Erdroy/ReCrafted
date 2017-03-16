@@ -7,9 +7,11 @@ Universe* Universe::m_instance;
 
 void Universe::init()
 {
+	m_chunkProcessor.reset(new VoxelChunkProcessor);
+	m_chunkProcessor->init();
+
 	m_currentWorld.reset(new VoxelWorld);
 	m_currentWorld->init(true);
-
 }
 
 void Universe::update()

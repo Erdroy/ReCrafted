@@ -10,6 +10,7 @@
 #include "../Graphics/Mesh.h"
 #include "Voxels/VoxelWorld.h"
 #include "../Core/Logger.h"
+#include "Voxels/VoxelChunkProcessor.h"
 
 /// <summary>
 /// Universe class - main class for whole game world.
@@ -24,6 +25,7 @@ private:
 
 private:
 	Ptr<VoxelWorld> m_currentWorld = nullptr;
+	Ptr<VoxelChunkProcessor> m_chunkProcessor = nullptr;
 
 private:
 	void init();
@@ -43,6 +45,7 @@ public:
 	FORCEINLINE void dispose() const
 	{
 		m_currentWorld->dispose();
+		m_chunkProcessor->dispose();
 		Logger::write("Universe unloaded", LogLevel::Info);
 		delete this;
 	}
