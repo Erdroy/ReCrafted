@@ -42,6 +42,8 @@ public:
 
 	VoxelChunk* getVoxelChunk(Vector3i position);
 
+	void findNeighs(VoxelChunk* chunk);
+
 	bool raycast(Vector3 origin, Vector3 direction, voxelid* voxelid, Vector3* point, Vector3* normal);
 
 	FORCEINLINE void dispose() const

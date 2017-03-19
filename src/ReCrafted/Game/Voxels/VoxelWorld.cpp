@@ -32,11 +32,11 @@ void VoxelWorld::update()
 {
 	auto camera = Camera::getMainCamera();
 
-	//m_visibleChunks.clear();
+	m_visibleChunks.clear();
 #ifdef _DEBUG
-	//m_chunkMap->getVisibleChunks(Vector2(camera->m_position.X, camera->m_position.Z), 250.0f, &m_visibleChunks);
+	m_chunkMap->getVisibleChunks(Vector2(camera->m_position.X, camera->m_position.Z), 250.0f, &m_visibleChunks);
 #else
-	//m_chunkMap->getVisibleChunks(Vector2(camera->m_position.X, camera->m_position.Z), 250.0f, &m_visibleChunks);
+	m_chunkMap->getVisibleChunks(Vector2(camera->m_position.X, camera->m_position.Z), 250.0f, &m_visibleChunks);
 #endif
 	// TODO: better getNearChunks method
 	
@@ -64,31 +64,43 @@ void VoxelWorld::draw()
 	}
 }
 
-/*
+
 void VoxelWorld::findNeighs(VoxelChunk* chunk)
 {
 	if (!chunk->m_neighN)
 	{
 		// find chunk
 		chunk->m_neighN = m_chunkMap->findChunk(chunk->m_x, chunk->m_z + 1);
+
+		if (chunk->m_neighN)
+			chunk->m_neighN->m_neighS = chunk;
 	}
 
 	if (!chunk->m_neighE)
 	{
 		// find chunk
 		chunk->m_neighE = m_chunkMap->findChunk(chunk->m_x + 1, chunk->m_z);
+
+		if (chunk->m_neighE)
+			chunk->m_neighE->m_neighW = chunk;
 	}
 
 	if (!chunk->m_neighS)
 	{
 		// find chunk
 		chunk->m_neighS = m_chunkMap->findChunk(chunk->m_x, chunk->m_z - 1);
+
+		if (chunk->m_neighS)
+			chunk->m_neighS->m_neighN = chunk;
 	}
 
 	if (!chunk->m_neighW)
 	{
 		// find chunk
 		chunk->m_neighW = m_chunkMap->findChunk(chunk->m_x - 1, chunk->m_z);
+
+		if (chunk->m_neighW)
+			chunk->m_neighW->m_neighE = chunk;
 	}
 
 	// corners
@@ -96,80 +108,38 @@ void VoxelWorld::findNeighs(VoxelChunk* chunk)
 	{
 		// find chunk
 		chunk->m_neighNE = m_chunkMap->findChunk(chunk->m_x + 1, chunk->m_z + 1);
+
+		if (chunk->m_neighNE)
+			chunk->m_neighNE->m_neighSW = chunk;
 	}
 
 	if (!chunk->m_neighSE)
 	{
 		// find chunk
 		chunk->m_neighSE = m_chunkMap->findChunk(chunk->m_x + 1, chunk->m_z - 1);
+
+		if (chunk->m_neighSE)
+			chunk->m_neighSE->m_neighNW = chunk;
 	}
 
 	if (!chunk->m_neighSW)
 	{
 		// find chunk
 		chunk->m_neighSW = m_chunkMap->findChunk(chunk->m_x - 1, chunk->m_z - 1);
+
+		if (chunk->m_neighSW)
+			chunk->m_neighSW->m_neighNE = chunk;
 	}
 
 	if (!chunk->m_neighNW)
 	{
 		// find chunk
 		chunk->m_neighNW = m_chunkMap->findChunk(chunk->m_x - 1, chunk->m_z + 1);
+
+		if (chunk->m_neighNW)
+			chunk->m_neighNW->m_neighSE = chunk;
 	}
 }
-
-void VoxelWorld::generateNeigs(VoxelChunk* chunk)
-{
-	auto x = chunk->m_x;
-	auto z = chunk->m_z;
-
-	if (!chunk->m_neighN)
-	{
-		auto newChunk = chunk->m_neighN = generateChunk(x, z + 1);
-		findNeighs(newChunk);
-	}
-	if (!chunk->m_neighE)
-	{
-		auto newChunk = chunk->m_neighE = generateChunk(x + 1, z);
-		findNeighs(newChunk);
-	}
-
-	if (!chunk->m_neighS)
-	{
-		auto newChunk = chunk->m_neighS = generateChunk(x, z - 1);
-		findNeighs(newChunk);
-	}
-
-	if (!chunk->m_neighW)
-	{
-		auto newChunk = chunk->m_neighW = generateChunk(x - 1, z);
-		findNeighs(newChunk);
-	}
-
-	if (!chunk->m_neighNE)
-	{
-		auto newChunk = chunk->m_neighNE = generateChunk(x + 1, z + 1);
-		findNeighs(newChunk);
-	}
-
-	if (!chunk->m_neighSE)
-	{
-		auto newChunk = chunk->m_neighSE = generateChunk(x + 1, z - 1);
-		findNeighs(newChunk);
-	}
-
-	if (!chunk->m_neighSW)
-	{
-		auto newChunk = chunk->m_neighSW = generateChunk(x - 1, z - 1);
-		findNeighs(newChunk);
-	}
-
-	if (!chunk->m_neighNW)
-	{
-		auto newChunk = chunk->m_neighNW = generateChunk(x - 1, z + 1);
-		findNeighs(newChunk);
-	}
-}
-*/
 
 VoxelChunk* VoxelWorld::generateChunk(int x, int z)
 {
