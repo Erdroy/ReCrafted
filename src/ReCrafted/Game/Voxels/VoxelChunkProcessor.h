@@ -42,8 +42,7 @@ private:
 	std::mutex m_dataQueueMutex = {};
 	std::mutex m_meshingQueueMutex = {};
 
-	Thread m_dataThread = {};
-	Thread m_meshingThread = {};
+	std::vector<Thread> m_workers = {};
 
 private:
 	VoxelChunkProcessor()

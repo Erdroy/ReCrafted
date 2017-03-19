@@ -31,15 +31,15 @@ void worker_data(std::vector<VoxelChunk*>* queue)
 		VoxelChunkProcessorInstance->finishChunkData(chunk);
 
 		// try to set neightbours
-
-
-		chunk = nullptr;
+		chunk->updateNeighs();
 
 		// sleep 5ms if there is no any chunks left
 		if(queue->size() == 0u)
 		{
 			Sleep(5);
 		}
+
+		chunk = nullptr;
 	}
 }
 
@@ -63,15 +63,18 @@ void worker_meshing(std::vector<VoxelChunk*>* queue)
 		}
 
 		// process
+		if (!chunk->hasNeighs())
+			throw;
+
 		chunk->worker_meshGenerate();
 		VoxelChunkProcessorInstance->finishChunkMesh(chunk);
-		chunk = nullptr;
 
 		// sleep 5ms if there is no any chunks left
 		if (queue->size() == 0u)
 		{
 			Sleep(5);
 		}
+		chunk = nullptr;
 	}
 }
 
@@ -80,8 +83,8 @@ void VoxelChunkProcessor::init()
 	VoxelChunkProcessorInstance = this;
 
 	// create threads
-	m_dataThread = Platform::createThread(ThreadFunction(worker_data), &m_dataQueue);
-	m_meshingThread = Platform::createThread(ThreadFunction(worker_meshing), &m_meshingQueue);
+	m_workers.push_back(Platform::createThread(ThreadFunction(worker_data), &m_dataQueue));
+	m_workers.push_back(Platform::createThread(ThreadFunction(worker_meshing), &m_meshingQueue));
 
 	Logger::write("Created threads for VoxelChunkProcessor", LogLevel::Info);
 
@@ -90,8 +93,9 @@ void VoxelChunkProcessor::init()
 
 void VoxelChunkProcessor::dispose()
 {
-	Platform::killThread(&m_dataThread);
-	Platform::killThread(&m_meshingThread);
+	for(auto thread : m_workers)
+		Platform::killThread(&thread);
+
 	Logger::write("Killed VoxelChunkProcessor threads", LogLevel::Info);
 }
 
@@ -110,7 +114,6 @@ VoxelChunk* VoxelChunkProcessor::dequeueDataLessChunk()
 			break;
 		}
 	}
-
 	m_dataQueueMutex.unlock();
 
 	return chunk;
@@ -119,8 +122,30 @@ VoxelChunk* VoxelChunkProcessor::dequeueDataLessChunk()
 VoxelChunk* VoxelChunkProcessor::dequeueMeshLessChunk()
 {
 	// find chunk which has all neighbours
+	VoxelChunk* chunk = nullptr;
 
-	return nullptr;
+	m_meshingQueueMutex.lock();
+	for (auto i = 0u; i < m_meshingQueue.size(); i++)
+	{
+		if (!m_meshingQueue[i]->m_processing)
+		{
+			if(m_meshingQueue[i]->hasNeighs())
+			{
+				chunk = m_meshingQueue[i];
+
+				// remove chunk
+				m_meshingQueue.erase(m_meshingQueue.begin() + i);
+				break;
+			}
+
+			// remove chunk
+			m_meshingQueue.erase(m_meshingQueue.begin() + i);
+			break;
+		}
+	}
+	m_meshingQueueMutex.unlock();
+
+	return chunk;
 }
 
 void VoxelChunkProcessor::finishChunkData(VoxelChunk* chunk)
