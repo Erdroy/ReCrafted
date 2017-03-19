@@ -21,7 +21,7 @@ void worker_data(std::vector<VoxelChunk*>* queue)
 			// sleep 5ms and continue
 			if(chunk == nullptr)
 			{
-				Sleep(5);
+				Sleep(1);
 				continue;
 			}
 		}
@@ -32,12 +32,6 @@ void worker_data(std::vector<VoxelChunk*>* queue)
 
 		// try to set neightbours
 		chunk->updateNeighs();
-
-		// sleep 5ms if there is no any chunks left
-		if(queue->size() == 0u)
-		{
-			Sleep(5);
-		}
 
 		chunk = nullptr;
 	}
@@ -57,7 +51,7 @@ void worker_meshing(std::vector<VoxelChunk*>* queue)
 			// sleep 5ms and continue
 			if (chunk == nullptr)
 			{
-				Sleep(5);
+				Sleep(1);
 				continue;
 			}
 		}
@@ -69,11 +63,6 @@ void worker_meshing(std::vector<VoxelChunk*>* queue)
 		chunk->worker_meshGenerate();
 		VoxelChunkProcessorInstance->finishChunkMesh(chunk);
 
-		// sleep 5ms if there is no any chunks left
-		if (queue->size() == 0u)
-		{
-			Sleep(5);
-		}
 		chunk = nullptr;
 	}
 }
