@@ -65,6 +65,7 @@ void Rendering::createBlitQuad()
 	m_blitMesh->setUVs(uvs);
 	m_blitMesh->setIndices(indices, 6);
 	m_blitMesh->applyChanges();
+	m_blitMesh->upload();
 }
 
 void Rendering::init()

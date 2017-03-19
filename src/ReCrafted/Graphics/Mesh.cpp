@@ -38,6 +38,16 @@ void Mesh::setIndices(uint* indices, uint count)
 	m_indices_count = count;
 }
 
+bool Mesh::isUploaded() const
+{
+	return m_uploaded;
+}
+
+bool Mesh::canUpload()
+{
+	return m_hasChanges;
+}
+
 void Mesh::applyChanges()
 {
 	_ASSERT(m_vertices);
@@ -70,8 +80,8 @@ void Mesh::applyChanges()
 	m_vertexdecl.end();
 
 	// allocate memory for vertex buffer
-	auto vertexMemory = bgfx::alloc(m_vertices_count * m_vertexdecl.getStride());
-	auto memoryPtr = vertexMemory->data;
+	m_vertexBufferData = bgfx::alloc(m_vertices_count * m_vertexdecl.getStride());
+	auto memoryPtr = m_vertexBufferData->data;
 
 	// build mesh data
 	for(auto i = 0u; i < m_vertices_count; i ++)
@@ -102,8 +112,8 @@ void Mesh::applyChanges()
 	}
 
 	// allocate memory for index buffer
-	auto indexMemory = bgfx::alloc(m_indices_count * sizeof(uint));
-	memoryPtr = indexMemory->data;
+	m_indexBufferData = bgfx::alloc(m_indices_count * sizeof(uint));
+	memoryPtr = m_indexBufferData->data;
 
 	for(auto i = 0u; i < m_indices_count; i ++)
 	{
@@ -112,14 +122,23 @@ void Mesh::applyChanges()
 		memcpy(memoryPtr + offset, &indice, sizeof(uint));
 	}
 
-	m_vertexBuffer = bgfx::createVertexBuffer(vertexMemory, m_vertexdecl);
-	m_indexBuffer = bgfx::createIndexBuffer(indexMemory, BGFX_BUFFER_INDEX32);
+	m_uploaded = false;
+	m_hasChanges = true;
 
 	m_vertices = nullptr;
 	m_uvs = nullptr;
 	m_normals = nullptr;
 	//m_colors = nullptr;
 	m_indices = nullptr;
+}
+
+void Mesh::upload()
+{
+	m_uploaded = true;
+	m_hasChanges = false;
+
+	m_vertexBuffer = bgfx::createVertexBuffer(m_vertexBufferData, m_vertexdecl);
+	m_indexBuffer = bgfx::createIndexBuffer(m_indexBufferData, BGFX_BUFFER_INDEX32);
 }
 
 void Mesh::dispose()

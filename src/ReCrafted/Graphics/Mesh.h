@@ -19,11 +19,17 @@ private:
 	bgfx::VertexBufferHandle m_vertexBuffer = {};
 	bgfx::IndexBufferHandle m_indexBuffer = {};
 
+	const bgfx::Memory* m_vertexBufferData = nullptr;
+	const bgfx::Memory* m_indexBufferData = nullptr;
+
 	Vector3* m_vertices = nullptr;
 	Vector2* m_uvs = nullptr;
 	Vector3* m_normals = nullptr;
 	//vector4f* m_colors = nullptr;
 	uint* m_indices = nullptr;
+
+	bool m_uploaded = false;
+	bool m_hasChanges = false;
 
 	uint m_vertices_count = 0u;
 	uint m_uvs_count = 0u;
@@ -78,9 +84,26 @@ public:
 	void setIndices(uint* indices, uint count);
 
 	/// <summary>
+	/// Indicates the upload state of this mesh.
+	/// </summary>
+	/// <returns>True when all changes are uploaded to the GPU.</returns>
+	bool isUploaded() const;
+
+	/// <summary>
+	/// Can the mesh be uploaded?
+	/// </summary>
+	/// <returns>True when it can be.</returns>
+	bool canUpload();
+
+	/// <summary>
 	/// Apply changes.
 	/// </summary>
 	void applyChanges();
+
+	/// <summary>
+	/// Upload buffers to the GPU.
+	/// </summary>
+	void upload();
 
 	/// <summary>
 	/// Dispose

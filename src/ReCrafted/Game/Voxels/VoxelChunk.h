@@ -71,6 +71,10 @@ public:
 		if (m_processing || m_mesh == nullptr)
 			return;
 
+		// check if the mesh is uploaded already
+		if (!m_mesh->isUploaded() && m_mesh->canUpload())
+			m_mesh->upload(); // upload all changes
+
 		m_lastTimeVisible = Time::time();
 
 		auto modelMatrix = Matrix::identity();
@@ -100,7 +104,19 @@ public:
 
 	void worker_meshGenerate();
 
-	void meshUpload() const;
+	void updateNeighs();
+
+	FORCEINLINE bool hasNeighs()
+	{
+		return m_neighN 
+		&& m_neighNE 
+		&& m_neighE
+		&& m_neighSE
+		&& m_neighS 
+		&& m_neighSW 
+		&& m_neighW 
+		&& m_neighNW;
+	}
 
 	FORCEINLINE voxelid getVoxel(int x, int y, int z)
 	{

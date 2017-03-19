@@ -126,8 +126,6 @@ void VoxelChunk::worker_meshGenerate() // WARNING: this should be run in job que
 	std::vector<uint> indices = {};
 
 	{
-		m_mesh = Mesh::createMesh();
-
 		auto vertices_ptr = &vertices;
 		auto normals_ptr = &normals;
 		auto uvs_ptr = &uvs;
@@ -175,24 +173,21 @@ void VoxelChunk::worker_meshGenerate() // WARNING: this should be run in job que
 			}
 		}
 
+		m_mesh = Mesh::createMesh();
 		m_mesh->setVertices(vertices.data(), uint(vertices.size()));
 		m_mesh->setUVs(uvs.data());
 		m_mesh->setNormals(normals.data());
 		m_mesh->setIndices(indices.data(), uint(indices.size()));
 
-		// upload now for a test
-		meshUpload();
+		m_mesh->applyChanges();
 
 		m_lastTimeVisible = Time::time();
 	}
 }
 
-void VoxelChunk::meshUpload() const
+void VoxelChunk::updateNeighs()
 {
-	if (m_processing)
-		return;
-
-	m_mesh->applyChanges();
+	world->findNeighs(this);
 }
 
 void VoxelChunk::update()
