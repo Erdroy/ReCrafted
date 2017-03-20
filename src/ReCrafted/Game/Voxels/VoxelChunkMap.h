@@ -19,7 +19,7 @@ class VoxelChunkMap
 
 	public:
 		static const int TableWidth = 64; // 64(chunk count)
-		static const int TableWidthWS = 64 * ChunkWidth; // world: 64(chunk count) * 16(chunk size)
+		static const int TableWidthWS = TableWidth * ChunkWidth; // world: 64(chunk count) * 16(chunk size)
 
 	public:
 		/// <summary>
@@ -63,6 +63,11 @@ class VoxelChunkMap
 		VoxelChunk* getChunk(int index);
 
 	private:
+		MapRoot* m_neighTop = nullptr;
+		MapRoot* m_neighBottom = nullptr;
+		MapRoot* m_neighLeft = nullptr;
+		MapRoot* m_neighRight = nullptr;
+
 		VoxelChunk* m_table[TableWidth * TableWidth] = {};
 	};
 
@@ -72,6 +77,7 @@ private:
 
 private:
 	MapRoot* findRoot(int x, int z);
+	void addRoot(MapRoot* root);
 
 public:
 	/// <summary>

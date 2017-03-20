@@ -61,6 +61,39 @@ VoxelChunkMap::MapRoot* VoxelChunkMap::findRoot(int x, int z)
 	return found ? root : nullptr;
 }
 
+void VoxelChunkMap::addRoot(MapRoot* root)
+{
+	m_roots.push_back(root);
+
+	auto x = root->worldX / ChunkWidth;
+	auto z = root->worldZ / ChunkWidth;
+
+	auto farTop = (root->worldZ + MapRoot::TableWidthWS) / ChunkWidth;
+	auto farBottom = root->worldZ / ChunkWidth;
+	auto farLeft = root->worldX / ChunkWidth;
+	auto farRight = (root->worldX + MapRoot::TableWidthWS) / ChunkWidth;
+
+	// update neighs
+	// find all neighs and update given root
+	root->m_neighTop = findRoot(x, farTop + 1);
+	root->m_neighBottom = findRoot(x, farBottom - 1);
+	root->m_neighLeft = findRoot(farLeft - 1, z);
+	root->m_neighRight = findRoot(farRight + 1, z);
+
+	// update all neighs setting given root as correct neigh
+	if (root->m_neighTop)
+		root->m_neighTop->m_neighBottom = root;
+
+	if (root->m_neighBottom)
+		root->m_neighBottom->m_neighTop = root;
+
+	if (root->m_neighLeft)
+		root->m_neighLeft->m_neighRight = root;
+
+	if (root->m_neighRight)
+		root->m_neighRight->m_neighLeft = root;
+}
+
 void VoxelChunkMap::addChunk(VoxelChunk* chunk)
 {
 	auto root = findRoot(chunk->m_x, chunk->m_z);
@@ -77,7 +110,7 @@ void VoxelChunkMap::addChunk(VoxelChunk* chunk)
 		root->worldX = Math::roundDown(worldX, 1024);
 		root->worldZ = Math::roundDown(worldZ, 1024);
 
-		m_roots.push_back(root);
+		addRoot(root);
 	}
 
 	m_chunks.push_back(chunk);
@@ -102,23 +135,26 @@ std::vector<VoxelChunk*>* VoxelChunkMap::getChunks()
 void VoxelChunkMap::draw()
 {
 	auto range = 250.0f;
+	auto chunkSpaceRange = range / ChunkWidth;
+	auto sqrCDistance = chunkSpaceRange * chunkSpaceRange;
 	auto point = Camera::getMainCamera()->getPosition();
-	auto sqrDistance = (range / ChunkWidth) * (range / ChunkWidth);
-
-	auto farChunkFront = int(point.Z + range + 8) / ChunkWidth;
-	auto farChunkBack = int(point.Z - range - 8) / ChunkWidth;
+	auto farChunkTop = int(point.Z + range + 8) / ChunkWidth;
+	auto farChunkBottom = int(point.Z - range - 8) / ChunkWidth;
 	auto farChunkLeft = int(point.X - range - 8) / ChunkWidth;
 	auto farChunkRight = int(point.X + range + 8) / ChunkWidth;
 
+	// find far left-bottom root
+	auto baseRoot = findRoot(farChunkLeft, farChunkBottom);
+
 	for (auto x = farChunkLeft; x < farChunkRight; x++)
 	{
-		for (auto z = farChunkBack; z < farChunkFront; z++)
+		for (auto z = farChunkBottom; z < farChunkTop; z++)
 		{
 			// fast check if the chunk is in range
-			if (x * x + z * z > sqrDistance)
+			if (x * x + z * z > sqrCDistance)
 				continue;
 
-			// TODO: fast find root - neigh recursive tree?
+			// TODO: fast find root - traverse the neigh recursive tree?
 			// if root is not found, build new one
 			//	then create new chunk and queue it to VCP
 			//  EXIT
