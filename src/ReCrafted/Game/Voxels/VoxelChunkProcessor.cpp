@@ -116,7 +116,7 @@ VoxelChunk* VoxelChunkProcessor::dequeueMeshLessChunk()
 	m_meshingQueueMutex.lock();
 	for (auto i = 0u; i < m_meshingQueue.size(); i++)
 	{
-		if (!m_meshingQueue[i]->m_processing)
+		if (!m_meshingQueue[i]->m_processing && m_meshingQueue[i]->m_hasVoxels)
 		{
 			if(m_meshingQueue[i]->hasNeighs())
 			{

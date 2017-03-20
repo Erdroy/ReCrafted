@@ -1,6 +1,7 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "VoxelChunkMap.h"
+#include "../../Graphics/Camera.h"
 
 void VoxelChunkMap::MapRoot::addChunk(VoxelChunk* chunk, int x, int z)
 {
@@ -98,13 +99,49 @@ std::vector<VoxelChunk*>* VoxelChunkMap::getChunks()
 	return &m_chunks;
 }
 
-void VoxelChunkMap::getVisibleChunks(Vector2 point, float range, std::vector<VoxelChunk*>* chunks)
+void VoxelChunkMap::draw()
 {
-	auto sqrDistance = range * range;
+	auto range = 250.0f;
+	auto point = Camera::getMainCamera()->getPosition();
+	auto sqrDistance = (range / ChunkWidth) * (range / ChunkWidth);
 
-	MapRoot* root = nullptr;
-	VoxelChunk* chunk = nullptr;
-	for (auto i = 0u; i < m_roots.size(); i++) 
+	auto farChunkFront = int(point.Z + range + 8) / ChunkWidth;
+	auto farChunkBack = int(point.Z - range - 8) / ChunkWidth;
+	auto farChunkLeft = int(point.X - range - 8) / ChunkWidth;
+	auto farChunkRight = int(point.X + range + 8) / ChunkWidth;
+
+	for (auto x = farChunkLeft; x < farChunkRight; x++)
+	{
+		for (auto z = farChunkBack; z < farChunkFront; z++)
+		{
+			// fast check if the chunk is in range
+			if (x * x + z * z > sqrDistance)
+				continue;
+
+			// TODO: fast find root - neigh recursive tree?
+			// if root is not found, build new one
+			//	then create new chunk and queue it to VCP
+			//  EXIT
+			// if the root is found
+			//  if chunk exisits
+			//   draw
+			//   EXIT
+			//  else
+			//   create new chunk and queue it to VCP
+			//   EXIT
+			
+			// TEMPORARY: for debugging
+			auto chunk = findChunk(x, z);
+
+			if (chunk)
+				chunk->draw();
+		}
+	}
+
+	// old method:
+	/*MapRoot* root;
+	VoxelChunk* chunk;
+	for (auto i = 0u; i < m_roots.size(); i++)
 	{
 		root = m_roots[i];
 
@@ -112,14 +149,14 @@ void VoxelChunkMap::getVisibleChunks(Vector2 point, float range, std::vector<Vox
 		auto wsZ = float(root->worldZ);
 
 		auto deltaX = point.X - Math::maxf(wsX, Math::minf(point.X, wsX + MapRoot::TableWidthWS));
-		auto deltaY = point.Y - Math::maxf(wsZ, Math::minf(point.Y, wsZ + MapRoot::TableWidthWS));
+		auto deltaY = point.Z - Math::maxf(wsZ, Math::minf(point.Z, wsZ + MapRoot::TableWidthWS));
 
 		auto isinrange = deltaX * deltaX + deltaY * deltaY < sqrDistance;
-		auto isinside = point.X > wsX && point.X < wsX + MapRoot::TableWidthWS && point.Y > wsZ && point.Y < wsZ + MapRoot::TableWidthWS;
+		auto isinside = point.X > wsX && point.X < wsX + MapRoot::TableWidthWS && point.Z > wsZ && point.Z < wsZ + MapRoot::TableWidthWS;
 
 		if (isinrange || isinside)
 		{
-			for (auto j = 0; j < MapRoot::TableWidth * MapRoot::TableWidth; j++) // TODO: optimize this loop, skip x axes that are out of range
+			for (auto j = 0; j < MapRoot::TableWidth * MapRoot::TableWidth; j++) // TODO: optimize this loop, skip x and z axes that are out of range
 			{
 				chunk = root->getChunk(j);
 
@@ -130,13 +167,15 @@ void VoxelChunkMap::getVisibleChunks(Vector2 point, float range, std::vector<Vox
 				wsZ = float(chunk->m_z * ChunkWidth);
 
 				deltaX = point.X - Math::maxf(wsX, Math::minf(point.X, wsX + ChunkWidth));
-				deltaY = point.Y - Math::maxf(wsZ, Math::minf(point.Y, wsZ + ChunkWidth));
+				deltaY = point.Z - Math::maxf(wsZ, Math::minf(point.Z, wsZ + ChunkWidth));
 
 				if (deltaX * deltaX + deltaY * deltaY < sqrDistance)
-					chunks->push_back(chunk);
+				{
+					chunk->draw();
+				}
 			}
 		}
-	}
+	}*/
 }
 
 void VoxelChunkMap::dispose()

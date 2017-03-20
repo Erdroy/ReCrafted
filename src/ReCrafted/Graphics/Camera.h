@@ -17,7 +17,6 @@ class Entity;
 class Camera
 {
 	friend class Rendering;
-	friend class VoxelWorld;
 
 private:
 	static Camera* m_mainCamera;
@@ -87,6 +86,11 @@ public:
 	FORCEINLINE void setHorizontalFov(float fov)
 	{
 		m_xfov = fov;
+	}
+
+	FORCEINLINE Vector3 getPosition() const
+	{
+		return m_position;
 	}
 
 	void fixToEntity(Ptr<Entity> entity, Vector3 offset);

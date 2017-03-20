@@ -23,7 +23,6 @@ class VoxelWorld
 private:
 
 	VoxelChunkMap* m_chunkMap = nullptr;
-	std::vector<VoxelChunk*> m_visibleChunks = {};
 
 private:
 

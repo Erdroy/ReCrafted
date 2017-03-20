@@ -24,22 +24,11 @@ void VoxelWorld::init(bool generateworld)
 			}
 		}
 	}
-	m_chunkMap->getVisibleChunks(Vector2::zero(), 250.0f, &m_visibleChunks);
 	Profiler::endProfile("Starting world generated in %0.7f ms.");
 }
 
 void VoxelWorld::update()
 {
-	auto camera = Camera::getMainCamera();
-
-	m_visibleChunks.clear();
-#ifdef _DEBUG
-	m_chunkMap->getVisibleChunks(Vector2(camera->m_position.X, camera->m_position.Z), 250.0f, &m_visibleChunks);
-#else
-	m_chunkMap->getVisibleChunks(Vector2(camera->m_position.X, camera->m_position.Z), 250.0f, &m_visibleChunks);
-#endif
-	// TODO: better getNearChunks method
-	
 	for(auto chunk : *m_chunkMap->getChunks())
 	{
 		chunk->update();
@@ -57,11 +46,7 @@ void VoxelWorld::simulate()
 
 void VoxelWorld::draw()
 {
-	for (auto chunk : m_visibleChunks)
-	{
-		// TODO: check if chunk is visible
-		chunk->draw();
-	}
+	m_chunkMap->draw();
 }
 
 void VoxelWorld::findNeighs(VoxelChunk* chunk)

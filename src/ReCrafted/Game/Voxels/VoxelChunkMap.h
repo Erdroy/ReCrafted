@@ -15,6 +15,8 @@ class VoxelChunkMap
 {
 	class MapRoot
 	{
+		friend class VoxelChunkMap;
+
 	public:
 		static const int TableWidth = 64; // 64(chunk count)
 		static const int TableWidthWS = 64 * ChunkWidth; // world: 64(chunk count) * 16(chunk size)
@@ -93,12 +95,9 @@ public:
 	std::vector<VoxelChunk*>* getChunks();
 
 	/// <summary>
-	/// Get visible chunks in range from point.
+	/// Draw all visible chunks
 	/// </summary>
-	/// <param name="point">The point.</param>
-	/// <param name="range">The range.</param>
-	/// <param name="chunks">The output chunks array.</param>
-	void getVisibleChunks(Vector2 point, float range, std::vector<VoxelChunk*>* chunks);
+	void draw();
 
 	/// <summary>
 	/// Dispose the chunk map.
