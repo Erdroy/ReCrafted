@@ -137,13 +137,13 @@ VoxelChunk* VoxelChunkProcessor::dequeueMeshLessChunk()
 	return chunk;
 }
 
-void VoxelChunkProcessor::finishChunkData(VoxelChunk* chunk)
+void VoxelChunkProcessor::finishChunkData(VoxelChunk* chunk) const
 {
 	chunk->m_processing = false;
 	chunk->m_hasVoxels = true;
 }
 
-void VoxelChunkProcessor::finishChunkMesh(VoxelChunk* chunk)
+void VoxelChunkProcessor::finishChunkMesh(VoxelChunk* chunk) const
 {
 	chunk->m_processing = false;
 }

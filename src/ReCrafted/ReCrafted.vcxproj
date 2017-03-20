@@ -234,8 +234,6 @@
     <ClInclude Include="Core\Math\Vector4.h" />
     <ClInclude Include="Core\Profiler.h" />
     <ClInclude Include="Core\Time.h" />
-    <ClInclude Include="Game\Addons\Addon.h" />
-    <ClInclude Include="Game\Addons\AddonLoader.h" />
     <ClInclude Include="Game\Universe.h" />
     <ClInclude Include="Game\Voxels\Generator\VoxelGenerator.h" />
     <ClInclude Include="Game\Voxels\VoxelChunk.h" />

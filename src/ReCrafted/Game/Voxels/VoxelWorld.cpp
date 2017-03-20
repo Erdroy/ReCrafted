@@ -16,9 +16,9 @@ void VoxelWorld::init(bool generateworld)
 	Profiler::beginProfile();
 	if (generateworld)
 	{
-		for (auto x = -16; x < 16; x++)
+		for (auto x = -32; x < 32; x++)
 		{
-			for (auto z = -16; z < 16; z++)
+			for (auto z = -32; z < 32; z++)
 			{
 				generateChunk(x, z);
 			}
@@ -63,7 +63,6 @@ void VoxelWorld::draw()
 		chunk->draw();
 	}
 }
-
 
 void VoxelWorld::findNeighs(VoxelChunk* chunk)
 {

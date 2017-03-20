@@ -1,5 +1,5 @@
 {
-	"name":"standard shader for geometry buffering",
+	"name":"standard shader for deferred lighting",
 	"uniforms":[
 		{
 			"name":"m_lightdir",

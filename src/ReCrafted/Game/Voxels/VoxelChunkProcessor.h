@@ -62,8 +62,8 @@ public:
 	VoxelChunk* dequeueDataLessChunk();
 	VoxelChunk* dequeueMeshLessChunk();
 
-	void finishChunkData(VoxelChunk* chunk);
-	void finishChunkMesh(VoxelChunk* chunk);
+	void finishChunkData(VoxelChunk* chunk) const;
+	void finishChunkMesh(VoxelChunk* chunk) const;
 
 public:
 	/// <summary>
