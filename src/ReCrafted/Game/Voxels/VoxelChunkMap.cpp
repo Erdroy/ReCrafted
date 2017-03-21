@@ -166,6 +166,7 @@ void VoxelChunkMap::draw()
 		}*/
 	}
 
+	VoxelChunk* chunk;
 	auto root = baseRoot;
 	for (auto x = farChunkLeft; x < farChunkRight; x++)
 	{
@@ -176,14 +177,12 @@ void VoxelChunkMap::draw()
 			//  fast find root - traverse the neigh recursive tree
 			// if root is not found, build new one
 			//	then create new chunk and queue it to VCP
-			//  EXIT
+			//  CONTINUE - because the chunk doesn't have any mesh to render now.
 			// if the root is found
 			//  if chunk exisits
 			//   draw
-			//   EXIT
 			//  else
 			//   create new chunk and queue it to VCP
-			//   EXIT
 
 			// fast check if the chunk is in range
 			if (x * x + z * z > sqrCDistance)
@@ -201,31 +200,30 @@ void VoxelChunkMap::draw()
 				root = baseRoot;
 
 				// iterate from left up to right
-				while (!root->containsX(x))
-				{
+				while (root && !root->containsX(x))
 					root = root->m_neighRight;
 
-					if (!root)
-						break;
-				}
-
 				// iterate from bottom up to top
-				while (!root->containsZ(z))
-				{
+				while (root && !root->containsZ(z))
 					root = root->m_neighTop;
-
-					if (!root)
-						break;
-				}
 			}
 
+			// if root is not found, build new one
+			if(!root)
+			{
+				// TODO: make new root
+				// TODO: generate new chunk, add to the new root
+				continue;
+			}
 
+			chunk = root->getChunk(x, z);
 
-			// TEMPORARY: for debugging
-			auto chunk = findChunk(x, z);
-
-			if (chunk)
+			if(chunk)
 				chunk->draw();
+			else
+			{
+				// TODO: generate new chunk, add to the root
+			}
 		}
 	}
 
