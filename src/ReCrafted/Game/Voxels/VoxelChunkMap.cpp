@@ -37,8 +37,6 @@ VoxelChunkMap::MapRoot* VoxelChunkMap::findRoot(int x, int z)
 	MapRoot* root = nullptr;
 	auto found = false;
 
-	auto worldSize = MapRoot::TableWidth * ChunkWidth;
-
 	auto worldX = x * ChunkWidth;
 	auto worldZ = z * ChunkWidth;
 
@@ -50,8 +48,8 @@ VoxelChunkMap::MapRoot* VoxelChunkMap::findRoot(int x, int z)
 
 		if( root->worldX <= worldX && 
 			root->worldZ <= worldZ && 
-			root->worldX + worldSize >= worldX + ChunkWidth &&
-			root->worldZ + worldSize >= worldZ + ChunkWidth)
+			root->worldX + MapRoot::TableWidthWS >= worldX + ChunkWidth &&
+			root->worldZ + MapRoot::TableWidthWS >= worldZ + ChunkWidth)
 		{
 			found = true;
 			break;
@@ -146,15 +144,36 @@ void VoxelChunkMap::draw()
 	// find far left-bottom root
 	auto baseRoot = findRoot(farChunkLeft, farChunkBottom);
 
+	if (baseRoot == nullptr)
+	{
+		// player just spawned or something,
+		// TODO: create base world
+		/*for (auto x = -16; x < 16; x++)
+		{
+			for (auto z = -16; z < 16; z++)
+			{
+				auto chunk = new VoxelChunk;
+				chunk->world = this;
+				chunk->m_x = x;
+				chunk->m_z = z;
+
+				// add to chunk map
+				m_chunkMap->addChunk(chunk);
+
+				// queue chunk for generation
+				VoxelChunkProcessor::queue(chunk, VoxelChunkProcessor::QueueType::VoxelDataAndMesh);
+			}
+		}*/
+	}
+
+	auto root = baseRoot;
 	for (auto x = farChunkLeft; x < farChunkRight; x++)
 	{
 		for (auto z = farChunkBottom; z < farChunkTop; z++)
 		{
 			// fast check if the chunk is in range
-			if (x * x + z * z > sqrCDistance)
-				continue;
-
-			// TODO: fast find root - traverse the neigh recursive tree?
+			// check if currently selected root is the right root
+			//  fast find root - traverse the neigh recursive tree
 			// if root is not found, build new one
 			//	then create new chunk and queue it to VCP
 			//  EXIT
@@ -165,7 +184,43 @@ void VoxelChunkMap::draw()
 			//  else
 			//   create new chunk and queue it to VCP
 			//   EXIT
-			
+
+			// fast check if the chunk is in range
+			if (x * x + z * z > sqrCDistance)
+				continue;
+
+			if (!root)
+				return;
+
+			// check if currently selected root is the right root
+			if(!root->contains(x, z))
+			{
+				// fast find root - traverse the neigh recursive tree
+
+				// set base root as start
+				root = baseRoot;
+
+				// iterate from left up to right
+				while (!root->containsX(x))
+				{
+					root = root->m_neighRight;
+
+					if (!root)
+						break;
+				}
+
+				// iterate from bottom up to top
+				while (!root->containsZ(z))
+				{
+					root = root->m_neighTop;
+
+					if (!root)
+						break;
+				}
+			}
+
+
+
 			// TEMPORARY: for debugging
 			auto chunk = findChunk(x, z);
 

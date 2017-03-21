@@ -21,6 +21,20 @@ class VoxelChunkMap
 		static const int TableWidth = 64; // 64(chunk count)
 		static const int TableWidthWS = TableWidth * ChunkWidth; // world: 64(chunk count) * 16(chunk size)
 
+	private:
+		FORCEINLINE bool containsX(int value) const
+		{
+			return worldX <= value * ChunkWidth && worldX + TableWidthWS >= value * ChunkWidth + ChunkWidth;
+		}
+		FORCEINLINE bool containsZ(int value) const
+		{
+			return worldZ <= value * ChunkWidth && worldZ + TableWidthWS >= value * ChunkWidth + ChunkWidth;
+		}
+		FORCEINLINE bool contains(int x, int z) const
+		{
+			return containsX(x) && containsZ(z);
+		}
+
 	public:
 		/// <summary>
 		/// The root world-space X coord.
