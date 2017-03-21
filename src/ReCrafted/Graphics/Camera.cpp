@@ -148,7 +148,7 @@ void Camera::updateControls()
 void Camera::updatePerspective()
 {
 	// create projection matrix
-	Matrix::createPerspectiveFovLH(Math::degreeToRadian(m_xfov), GameCore::getAspectRatio(), m_nearPlane, m_farPlane, &m_projection);
+	Matrix::createPerspectiveFovLH(Math::degreeToRadian(m_fov), GameCore::getAspectRatio(), m_nearPlane, m_farPlane, &m_projection);
 }
 
 void Camera::update()

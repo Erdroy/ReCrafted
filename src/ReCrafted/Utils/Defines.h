@@ -39,19 +39,13 @@ inline void LOG(const char* text)
 
 #define MISSING_CODE() throw "Code fragment is missing"
 
-#define Property(type, name)	\
-	type m_##name;				\
-	__inline type get##name##() {		\
+#define PROPERTY(type, name)	\
+	public: __inline type get_##name##() {		\
 		return m_##name ;		\
 	}							\
-	__inline void set##name##(type v) {	\
+	public: __inline void set_##name##(type v) {	\
 		m_##name = v;			\
 	}							\
-
-#define Def_Instance(className) \
-private: static className##* m_instance; \
-public: FORCEINLINE static className##* instance() { return m_instance; }
-
-#define Decl_Instance(className) className##* className##::m_instance;
+	private: type m_##name
 
 #endif // DEFINES_H

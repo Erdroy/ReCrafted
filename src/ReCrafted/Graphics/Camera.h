@@ -23,15 +23,6 @@ private:
 
 private:
 	bool m_freeMovement = false;
-	float m_nearPlane = 0.02f;
-	float m_farPlane = 1000.0f;
-	float m_xfov = 75.0f;
-
-	// camera transform
-	Vector3 m_position = Vector3(0.0f, 0.0f, -5.0f);
-	Vector3 m_forward = Vector3(0.0f, 0.0f, 1.0f);
-	Vector3 m_right = Vector3(1.0f, 0.0f, 0.0f);
-	Vector3 m_up = Vector3(0.0f, 1.0f, 0.0f);
 
 	Vector3 m_upLock = Vector3(0.0f, 1.0f, 0.0f);
 	Vector3 m_lookAt = {};
@@ -67,33 +58,21 @@ public:
 		m_mainCamera = this;
 	}
 
-	FORCEINLINE void setPosition(Vector3 position)
-	{
-		m_position = position;
-	}
-
 	FORCEINLINE void setLookAt(Vector3 lookAt)
 	{
 		m_lookAt = lookAt;
 	}
 
-	FORCEINLINE void setClipPlanes(float nearPlane, float farPlane)
-	{
-		m_nearPlane = nearPlane;
-		m_farPlane = farPlane;
-	}
-
-	FORCEINLINE void setHorizontalFov(float fov)
-	{
-		m_xfov = fov;
-	}
-
-	FORCEINLINE Vector3 getPosition() const
-	{
-		return m_position;
-	}
-
 	void fixToEntity(Ptr<Entity> entity, Vector3 offset);
+
+public:
+	PROPERTY(float, fov) = 75.0f;
+	PROPERTY(float, farPlane) = 1000.0f;
+	PROPERTY(float, nearPlane) = 0.02f;
+	PROPERTY(Vector3, position) = {};
+	PROPERTY(Vector3, forward) = {};
+	PROPERTY(Vector3, up) = {};
+	PROPERTY(Vector3, right) = {};
 
 public:
 	/// <summary>

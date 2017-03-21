@@ -137,7 +137,7 @@ void VoxelChunkMap::draw()
 	auto range = 250.0f;
 	auto chunkSpaceRange = range / ChunkWidth;
 	auto sqrCDistance = chunkSpaceRange * chunkSpaceRange;
-	auto point = Camera::getMainCamera()->getPosition();
+	auto point = Camera::getMainCamera()->get_position();
 	auto farChunkTop = int(point.Z + range + 8) / ChunkWidth;
 	auto farChunkBottom = int(point.Z - range - 8) / ChunkWidth;
 	auto farChunkLeft = int(point.X - range - 8) / ChunkWidth;
