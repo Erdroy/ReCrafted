@@ -111,16 +111,18 @@ VoxelChunk* VoxelChunkProcessor::dequeueDataLessChunk()
 VoxelChunk* VoxelChunkProcessor::dequeueMeshLessChunk()
 {
 	// find chunk which has all neighbours
+	VoxelChunk* tempchunk;
 	VoxelChunk* chunk = nullptr;
 
 	m_meshingQueueMutex.lock();
 	for (auto i = 0u; i < m_meshingQueue.size(); i++)
 	{
-		if (!m_meshingQueue[i]->m_processing && m_meshingQueue[i]->m_hasVoxels)
+		tempchunk = m_meshingQueue[i];
+		if (!tempchunk->m_processing && tempchunk->m_hasVoxels)
 		{
-			if(m_meshingQueue[i]->hasNeighs())
+			if(tempchunk->hasNeighs() && tempchunk->hasLoadedNeighs())
 			{
-				chunk = m_meshingQueue[i];
+				chunk = tempchunk;
 
 				// remove chunk
 				m_meshingQueue.erase(m_meshingQueue.begin() + i);

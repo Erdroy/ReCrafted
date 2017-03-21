@@ -118,6 +118,18 @@ public:
 		&& m_neighNW;
 	}
 
+	FORCEINLINE bool hasLoadedNeighs()
+	{
+		return m_neighN->m_voxels
+			&& m_neighNE->m_voxels
+			&& m_neighE->m_voxels
+			&& m_neighSE->m_voxels
+			&& m_neighS->m_voxels
+			&& m_neighSW->m_voxels
+			&& m_neighW->m_voxels
+			&& m_neighNW->m_voxels;
+	}
+
 	FORCEINLINE voxelid getVoxel(int x, int y, int z)
 	{
 		if (y >= ChunkHeight || y < 0)
