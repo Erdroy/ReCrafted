@@ -62,12 +62,6 @@ void Shader::init(const char* vs, const char* fs, const char* def)
 
 		auto uniformsCount = deffilejson["uniforms"].size();
 
-		if(uniformsCount == 0)
-		{
-			_ASSERT(false); // throw error
-			return;
-		}
-
 		if (uniformsCount >= 16)
 		{
 			_ASSERT(false); // throw error
