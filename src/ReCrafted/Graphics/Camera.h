@@ -25,7 +25,7 @@ private:
 	bool m_freeMovement = false;
 	float m_nearPlane = 0.02f;
 	float m_farPlane = 1000.0f;
-	float m_xfov = 0.75f;
+	float m_xfov = 75.0f;
 
 	// camera transform
 	Vector3 m_position = Vector3(0.0f, 0.0f, -5.0f);
