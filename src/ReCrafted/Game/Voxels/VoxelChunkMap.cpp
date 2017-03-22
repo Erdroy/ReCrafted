@@ -133,35 +133,23 @@ std::vector<VoxelChunk*>* VoxelChunkMap::getChunks()
 
 void VoxelChunkMap::draw()
 {
-	auto range = 250.0f;
-	auto chunkSpaceRange = range / ChunkWidth;
-	auto sqrCDistance = chunkSpaceRange * chunkSpaceRange;
+	auto range = 500.0f;
 	auto point = Camera::getMainCamera()->get_position();
 	auto farChunkTop = int(point.z + range + 8) / ChunkWidth;
 	auto farChunkBottom = int(point.z - range - 8) / ChunkWidth;
 	auto farChunkLeft = int(point.x - range - 8) / ChunkWidth;
 	auto farChunkRight = int(point.x + range + 8) / ChunkWidth;
 
-	auto centerX = farChunkBottom - farChunkTop;
-	auto centerZ = farChunkRight - farChunkLeft;
-
 	auto world = Universe::getCurrentWorld();
 
 	// find far left-bottom root
 	auto baseRoot = findRoot(farChunkLeft, farChunkBottom);
 
-	/*if (baseRoot == nullptr)
+	if (baseRoot == nullptr)
 	{
-		// player just spawned or something,
-		// create base world
-		for (auto x = -16; x < 16; x++)
-		{
-			for (auto z = -16; z < 16; z++)
-			{
-				world->generateChunk(x, z);
-			}
-		}
-	}*/
+		//world->generateChunk(farChunkLeft, farChunkBottom);
+		//baseRoot = findRoot(farChunkLeft, farChunkBottom);
+	}
 
 	auto drawnchunks = 0;
 
@@ -189,7 +177,7 @@ void VoxelChunkMap::draw()
 			// fast check if the chunk is in range
 			auto rX = x*ChunkWidth - point.x;
 			auto rZ = z*ChunkWidth - point.z;
-			if (sqrt(rX * rX + rZ * rZ) > 250.0f)
+			if (sqrt(rX * rX + rZ * rZ) > range)
 				continue;
 
 			if (!root)
