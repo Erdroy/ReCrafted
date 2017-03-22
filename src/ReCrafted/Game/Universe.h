@@ -49,6 +49,16 @@ public:
 		Logger::write("Universe unloaded", LogLevel::Info);
 		delete this;
 	}
+
+public:
+	/// <summary>
+	/// Gets the current voxel world.
+	/// </summary>
+	/// <returns>The current world pointer.</returns>
+	FORCEINLINE static VoxelWorld* getCurrentWorld()
+	{
+		return m_instance->m_currentWorld.get();
+	}
 };
 
 #endif // UNIVERSE_H

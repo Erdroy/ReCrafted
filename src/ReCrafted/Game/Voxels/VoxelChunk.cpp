@@ -210,8 +210,8 @@ void VoxelChunk::update()
 		if (timeNotUsed > 5.0f) // unload chunk data when out of view for half a sec or grater and is out of view range about 100 units/meters
 		{
 			// unload mesh
-			m_mesh->dispose();
-			m_mesh = nullptr;
+			//m_mesh->dispose();
+			//m_mesh = nullptr;
 		}
 		return;
 	}

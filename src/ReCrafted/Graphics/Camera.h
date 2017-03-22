@@ -66,15 +66,6 @@ public:
 	void fixToEntity(Ptr<Entity> entity, Vector3 offset);
 
 public:
-	PROPERTY(float, fov) = 75.0f;
-	PROPERTY(float, farPlane) = 1000.0f;
-	PROPERTY(float, nearPlane) = 0.02f;
-	PROPERTY(Vector3, position) = {};
-	PROPERTY(Vector3, forward) = {};
-	PROPERTY(Vector3, up) = {};
-	PROPERTY(Vector3, right) = {};
-
-public:
 	/// <summary>
 	/// Create new camera.
 	/// </summary>
@@ -106,6 +97,15 @@ public:
 	{
 		return m_mainCamera;
 	}
+
+public:
+	PROPERTY(float, fov) = 75.0f;
+	PROPERTY(float, farPlane) = 1000.0f;
+	PROPERTY(float, nearPlane) = 0.02f;
+	PROPERTY(Vector3, position) = {};
+	PROPERTY(Vector3, forward) = {};
+	PROPERTY(Vector3, up) = {};
+	PROPERTY(Vector3, right) = {};
 };
 
 #endif // CAMERA_H

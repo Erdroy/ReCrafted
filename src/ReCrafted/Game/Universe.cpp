@@ -31,5 +31,10 @@ void Universe::drawShadowCasters()
 
 void Universe::draw()
 {
+	bgfx::dbgTextClear();
+	bgfx::dbgTextPrintf(1, 1, 0x4, "Chunk voxeldata queue size: %d", m_chunkProcessor->m_dataQueue.size());
+	bgfx::dbgTextPrintf(1, 2, 0x4, "Chunk meshing queue size: %d", m_chunkProcessor->m_meshingQueue.size());
+	bgfx::dbgTextPrintf(1, 3, 0x4, "Chunk meshing queue size: %d", m_chunkProcessor->m_total);
+
 	m_currentWorld->draw();
 }

@@ -37,6 +37,7 @@ private:
 	bool m_hasRootInfo = false;
 
 	volatile bool m_processing = false;
+	volatile bool m_queued = false;
 
 	float m_lastTimeVisible = 0.0f;
 	bool m_voxelsCompressed = false;
@@ -68,7 +69,7 @@ public:
 
 	FORCEINLINE void draw()
 	{
-		if (m_processing || m_mesh == nullptr)
+		if (m_processing || m_queued || m_mesh == nullptr)
 			return;
 
 		// check if the mesh is uploaded already

@@ -12,19 +12,6 @@ void VoxelWorld::init(bool generateworld)
 	VoxelGenerator::initialize();
 
 	m_chunkMap = new VoxelChunkMap;
-
-	Profiler::beginProfile();
-	if (generateworld)
-	{
-		for (auto x = -32; x < 32; x++)
-		{
-			for (auto z = -32; z < 32; z++)
-			{
-				generateChunk(x, z);
-			}
-		}
-	}
-	Profiler::endProfile("Starting world generated in %0.7f ms.");
 }
 
 void VoxelWorld::update()

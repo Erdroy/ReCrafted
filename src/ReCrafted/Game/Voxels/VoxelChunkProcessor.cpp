@@ -98,6 +98,8 @@ VoxelChunk* VoxelChunkProcessor::dequeueDataLessChunk()
 		if(!m_dataQueue[i]->m_processing)
 		{
 			chunk = m_dataQueue[i];
+			chunk->m_queued = false;
+
 			// remove chunk for dataQueue
 			m_dataQueue.erase(m_dataQueue.begin() + i);
 			break;
@@ -123,6 +125,7 @@ VoxelChunk* VoxelChunkProcessor::dequeueMeshLessChunk()
 			if(tempchunk->hasNeighs() && tempchunk->hasLoadedNeighs())
 			{
 				chunk = tempchunk;
+				chunk->m_queued = false;
 
 				// remove chunk
 				m_meshingQueue.erase(m_meshingQueue.begin() + i);

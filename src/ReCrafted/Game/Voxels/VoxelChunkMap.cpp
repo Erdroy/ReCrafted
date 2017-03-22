@@ -2,6 +2,7 @@
 
 #include "VoxelChunkMap.h"
 #include "../../Graphics/Camera.h"
+#include "../Universe.h"
 
 void VoxelChunkMap::MapRoot::addChunk(VoxelChunk* chunk, int x, int z)
 {
@@ -141,29 +142,25 @@ void VoxelChunkMap::draw()
 	auto farChunkLeft = int(point.X - range - 8) / ChunkWidth;
 	auto farChunkRight = int(point.X + range + 8) / ChunkWidth;
 
+	auto centerX = farChunkBottom - farChunkTop;
+	auto centerZ = farChunkRight - farChunkLeft;
+
+	auto world = Universe::getCurrentWorld();
+
 	// find far left-bottom root
 	auto baseRoot = findRoot(farChunkLeft, farChunkBottom);
 
 	if (baseRoot == nullptr)
 	{
 		// player just spawned or something,
-		// TODO: create base world
-		/*for (auto x = -16; x < 16; x++)
+		// create base world
+		for (auto x = -16; x < 16; x++)
 		{
 			for (auto z = -16; z < 16; z++)
 			{
-				auto chunk = new VoxelChunk;
-				chunk->world = this;
-				chunk->m_x = x;
-				chunk->m_z = z;
-
-				// add to chunk map
-				m_chunkMap->addChunk(chunk);
-
-				// queue chunk for generation
-				VoxelChunkProcessor::queue(chunk, VoxelChunkProcessor::QueueType::VoxelDataAndMesh);
+				world->generateChunk(x, z);
 			}
-		}*/
+		}
 	}
 
 	VoxelChunk* chunk;
@@ -185,7 +182,9 @@ void VoxelChunkMap::draw()
 			//   create new chunk and queue it to VCP
 
 			// fast check if the chunk is in range
-			if (x * x + z * z > sqrCDistance)
+			auto rX = x*ChunkWidth - point.X;
+			auto rZ = z*ChunkWidth - point.Z;
+			if (sqrt(rX * rX + rZ * rZ) > 250.0f)
 				continue;
 
 			if (!root)
@@ -211,18 +210,31 @@ void VoxelChunkMap::draw()
 			// if root is not found, build new one
 			if(!root)
 			{
-				// TODO: make new root
-				// TODO: generate new chunk, add to the new root
+				// generate chunk on the new root which will be build
+				world->generateChunk(x, z);
 				continue;
 			}
 
 			chunk = root->getChunk(x, z);
 
 			if(chunk)
+			{
+				if (chunk->m_processing || chunk->m_queued)
+					continue;
+
+				if(!chunk->m_mesh)
+				{
+					// queue chunk for meshing(voxel data will be ignored, because the chunk already has this)
+					VoxelChunkProcessor::queue(chunk, VoxelChunkProcessor::QueueType::VoxelDataAndMesh);
+					continue;
+				}
+
 				chunk->draw();
+			}
 			else
 			{
-				// TODO: generate new chunk, add to the root
+				// generate chunk
+				world->generateChunk(x, z);
 			}
 		}
 	}
