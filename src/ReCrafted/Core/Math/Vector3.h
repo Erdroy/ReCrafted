@@ -264,7 +264,7 @@ public:
 	/// </summary>
 	FORCEINLINE static float distance(Vector3 a, Vector3 b)
 	{
-		return sqrtf(pow((b.x - a.x), 2) + pow((b.y - a.y), 2) + pow((b.z - a.z), 2));
+		return sqrtf((b.x - a.x)*(b.x - a.x) + (b.y - a.y)*(b.y - a.y) + (b.z - a.z)*(b.z - a.z));
 	}
 
 	/// <summary>
