@@ -229,6 +229,8 @@
     <ClInclude Include="Core\Math\Math.h" />
     <ClInclude Include="Core\Math\Matrix.h" />
     <ClInclude Include="Core\Math\Plane.h" />
+    <ClInclude Include="Core\Math\Rect.h" />
+    <ClInclude Include="Core\Math\Rectf.h" />
     <ClInclude Include="Core\Math\Vector2.h" />
     <ClInclude Include="Core\Math\Vector3.h" />
     <ClInclude Include="Core\Math\Vector4.h" />

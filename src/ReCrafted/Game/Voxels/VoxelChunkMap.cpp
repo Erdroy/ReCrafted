@@ -206,7 +206,6 @@ void VoxelChunkMap::draw()
 			}
 
 			// if the root is found
-
 			chunk = root->getChunk(x, z);
 
 			// if chunk exisits

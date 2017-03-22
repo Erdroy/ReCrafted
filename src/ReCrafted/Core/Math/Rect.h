@@ -58,7 +58,7 @@ public:
 	/// <summary>
 	/// Center of this Rectangle
 	/// </summary>
-	FORCEINLINE Vector2 center(const Vector2& center)
+	FORCEINLINE void center(const Vector2& center)
 	{
 		x = static_cast<int>(center.x);
 		y = static_cast<int>(center.y);
@@ -96,10 +96,11 @@ public:
 		return y + (height / 2);
 	}
 
+public:
 	/// <summary>
 	/// Check if two Rectangles overlap each other
 	/// </summary>
-	FORCEINLINE bool overlaps(Rect& a, Rect& b) 
+	FORCEINLINE static bool overlaps(Rect& a, Rect& b)
 	{
 		return (a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top);
 	}
@@ -107,7 +108,7 @@ public:
 	/// <summary>
 	/// Check if two Rectangles overlap each other
 	/// </summary>
-	FORCEINLINE void overlaps(Rect& a, Rect& b, bool* result) 
+	FORCEINLINE static void overlaps(Rect& a, Rect& b, bool* result)
 	{
 		*result = overlaps(a, b);
 	}
