@@ -140,17 +140,17 @@ public:
 
 		auto yAxis = Vector3::cross(zAxis, xAxis);
 
-		m.M00 = xAxis.X;
-		m.M01 = yAxis.X;
-		m.M02 = zAxis.X;
+		m.M00 = xAxis.x;
+		m.M01 = yAxis.x;
+		m.M02 = zAxis.x;
 
-		m.M10 = xAxis.Y;
-		m.M11 = yAxis.Y;
-		m.M12 = zAxis.Y;
+		m.M10 = xAxis.y;
+		m.M11 = yAxis.y;
+		m.M12 = zAxis.y;
 
-		m.M20 = xAxis.Z;
-		m.M21 = yAxis.Z;
-		m.M22 = zAxis.Z;
+		m.M20 = xAxis.z;
+		m.M21 = yAxis.z;
+		m.M22 = zAxis.z;
 
 		m.M30 = -Vector3::dot(xAxis, position);
 		m.M31 = -Vector3::dot(yAxis, position);

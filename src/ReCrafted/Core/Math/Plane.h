@@ -25,7 +25,7 @@ public:
 	/// <param name="value">The value that will be assigned to all components.</param>
 	explicit Plane(float value)
 	{
-		normal.X = normal.Y = normal.Z = distance = value;
+		normal.x = normal.y = normal.z = distance = value;
 	}
 
 	/// <summary>
@@ -37,9 +37,9 @@ public:
 	/// <param name="d">The distance of the plane along its normal from the origin.</param>
 	explicit Plane(float a, float b, float c, float d)
 	{
-		normal.X = a;
-		normal.Y = b;
-		normal.Z = c;
+		normal.x = a;
+		normal.y = b;
+		normal.z = c;
 		distance = d;
 	}
 
@@ -62,21 +62,21 @@ public:
 	/// <param name="point3">Third point of a triangle defining the plane.</param>
 	explicit Plane(Vector3 point1, Vector3 point2, Vector3 point3)
 	{
-		auto x1 = point2.X - point1.X;
-		auto y1 = point2.Y - point1.Y;
-		auto z1 = point2.Z - point1.Z;
-		auto x2 = point3.X - point1.X;
-		auto y2 = point3.Y - point1.Y;
-		auto z2 = point3.Z - point1.Z;
+		auto x1 = point2.x - point1.x;
+		auto y1 = point2.y - point1.y;
+		auto z1 = point2.z - point1.z;
+		auto x2 = point3.x - point1.x;
+		auto y2 = point3.y - point1.y;
+		auto z2 = point3.z - point1.z;
 		auto yz = (y1 * z2) - (z1 * y2);
 		auto xz = (z1 * x2) - (x1 * z2);
 		auto xy = (x1 * y2) - (y1 * x2);
 		auto invPyth = 1.0f / static_cast<float>(Math::sqrtf((yz * yz) + (xz * xz) + (xy * xy)));
 
-		normal.X = yz * invPyth;
-		normal.Y = xz * invPyth;
-		normal.Z = xy * invPyth;
-		distance = -((normal.X * point1.X) + (normal.Y * point1.Y) + (normal.Z * point1.Z));
+		normal.x = yz * invPyth;
+		normal.y = xz * invPyth;
+		normal.z = xy * invPyth;
+		distance = -((normal.x * point1.x) + (normal.y * point1.y) + (normal.z * point1.z));
 	}
 
 public:
@@ -85,11 +85,11 @@ public:
 	/// </summary>
 	FORCEINLINE void Normalize()
 	{
-		auto magnitude = 1.0f / static_cast<float>(Math::sqrtf((normal.X * normal.X) + (normal.Y * normal.Y) + (normal.Z * normal.Z)));
+		auto magnitude = 1.0f / static_cast<float>(Math::sqrtf((normal.x * normal.x) + (normal.y * normal.y) + (normal.z * normal.z)));
 
-		normal.X *= magnitude;
-		normal.Y *= magnitude;
-		normal.Z *= magnitude;
+		normal.x *= magnitude;
+		normal.y *= magnitude;
+		normal.z *= magnitude;
 		distance *= magnitude;
 	}
 

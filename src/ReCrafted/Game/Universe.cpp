@@ -43,7 +43,7 @@ void Universe::draw()
 	bgfx::dbgTextPrintf(1, 5, 0x4, "Total meshing queue size: %d", m_chunkProcessor->m_totalMesh);
 	bgfx::dbgTextPrintf(1, 6, 0x4, "Chunk count: %d", m_currentWorld->m_chunkMap->getChunks()->size());
 	// 7 - 'Drawn chunks'
-	bgfx::dbgTextPrintf(1, 8, 0x4, "Camera position: { X: %.1f, Y: %.1f, Z: %.1f }", cameraPosition.X, cameraPosition.Y, cameraPosition.Z);
+	bgfx::dbgTextPrintf(1, 8, 0x4, "Camera position: { X: %.1f, Y: %.1f, Z: %.1f }", cameraPosition.x, cameraPosition.y, cameraPosition.z);
 
 
 	m_currentWorld->draw();

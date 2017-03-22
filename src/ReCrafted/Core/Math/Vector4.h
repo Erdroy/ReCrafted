@@ -15,7 +15,7 @@ public:
 	/// Default constructor,
 	/// sets 0 to all components of this vector.
 	/// </summary>
-	Vector4i() : X(0), Y(0), Z(0), W(0) { }
+	Vector4i() : x(0), y(0), z(0), w(0) { }
 
 	/// <summary>
 	/// Sets given values to all components of this vector.
@@ -24,28 +24,28 @@ public:
 	/// <param name="y"></param>
 	/// <param name="z"></param>
 	/// <param name="w"></param>
-	Vector4i(int x, int y, int z, int w) : X(x), Y(y), Z(z), W(w) { }
+	Vector4i(int x, int y, int z, int w) : x(x), y(y), z(z), w(w) { }
 
 public:
 	/// <summary>
-	/// X compoennt
+	/// X component
 	/// </summary>
-	int X;
+	int x;
 
 	/// <summary>
 	/// Y component
 	/// </summary>
-	int Y;
+	int y;
 
 	/// <summary>
 	/// Z component
 	/// </summary>
-	int Z;
+	int z;
 
 	/// <summary>
 	/// W component
 	/// </summary>
-	int W;
+	int w;
 };
 
 struct Vector4
@@ -55,7 +55,7 @@ public:
 	/// Default constructor,
 	/// sets 0 to all components of this vector.
 	/// </summary>
-	Vector4() : X(0.0f), Y(0.0f), Z(0.0f), W(0.0f) { }
+	Vector4() : x(0.0f), y(0.0f), z(0.0f), w(0.0f) { }
 
 	/// <summary>
 	/// Sets given values to all components of this vector.
@@ -64,7 +64,7 @@ public:
 	/// <param name="y"></param>
 	/// <param name="z"></param>
 	/// <param name="w"></param>
-	Vector4(float x, float y, float z, float w) : X(x), Y(y), Z(z), W(w) { }
+	Vector4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) { }
 
 public:
 	/// <summary>
@@ -72,12 +72,12 @@ public:
 	/// </summary>
 	FORCEINLINE void normalize()
 	{
-		auto i = 1.0f / sqrt(X*X + Y*Y + Z*Z + W*W);
+		auto i = 1.0f / sqrt(x*x + y*y + z*z + w*w);
 
-		X = X * i;
-		Y = Y * i;
-		Z = Z * i;
-		W = W * i;
+		x = x * i;
+		y = y * i;
+		z = z * i;
+		w = w * i;
 	}
 
 	/// <summary>
@@ -86,7 +86,7 @@ public:
 	/// <returns>The length of this vector.</returns>
 	FORCEINLINE float length() const
 	{
-		return sqrt(X*X + Y*Y + Z*Z + W*W);
+		return sqrt(x*x + y*y + z*z + w*w);
 	}
 
 public:
@@ -208,7 +208,7 @@ public:
 	/// </summary>
 	FORCEINLINE static float dot(Vector4 a, Vector4 b)
 	{
-		return a.X * b.X + a.Y * b.Y + a.Z * b.Z + a.W * b.W;
+		return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 	}
 
 	/// <summary>
@@ -224,7 +224,7 @@ public:
 	/// </summary>
 	FORCEINLINE static Vector4 lerp(Vector4 a, Vector4 b, float t)
 	{
-		return Vector4(a.X * (1 - t) + t * b.X, a.Y * (1 - t) + t * b.Y, a.Z * (1 - t) + t * b.Z, a.W * (1 - t) + t * b.W);
+		return Vector4(a.x * (1 - t) + t * b.x, a.y * (1 - t) + t * b.y, a.z * (1 - t) + t * b.z, a.w * (1 - t) + t * b.w);
 	}
 
 	/// <summary>
@@ -240,7 +240,7 @@ public:
 	/// </summary>
 	FORCEINLINE static Vector4 negate(Vector4 a)
 	{
-		return Vector4(a.X * -1.0f, a.Y * -1.0f, a.Z * -1.0f, a.W * -1.0f);
+		return Vector4(a.x * -1.0f, a.y * -1.0f, a.z * -1.0f, a.w * -1.0f);
 	}
 
 	/// <summary>
@@ -256,7 +256,7 @@ public:
 	/// </summary>
 	FORCEINLINE static Vector4 abs(Vector4 a)
 	{
-		return Vector4(fabs(a.X), fabs(a.Y), fabs(a.Z), fabs(a.W));
+		return Vector4(fabs(a.x), fabs(a.y), fabs(a.z), fabs(a.w));
 	}
 
 	/// <summary>
@@ -269,24 +269,24 @@ public:
 
 public:
 	void Vector4::operator -= (Vector4 r) {
-		X -= r.X;
-		Y -= r.Y;
-		Z -= r.Z;
-		W -= r.W;
+		x -= r.x;
+		y -= r.y;
+		z -= r.z;
+		w -= r.w;
 	}
 
 	void operator += (Vector4 r) {
-		X += r.X;
-		Y += r.Y;
-		Z += r.Z;
-		W += r.W;
+		x += r.x;
+		y += r.y;
+		z += r.z;
+		w += r.w;
 	}
 
 	void Vector4::operator *= (float value) {
-		X *= value;
-		Y *= value;
-		Z *= value;
-		W *= value;
+		x *= value;
+		y *= value;
+		z *= value;
+		w *= value;
 	}
 
 	/// <summary>
@@ -294,7 +294,7 @@ public:
 	/// </summary>
 	Vector4 Vector4::operator - (Vector4 r) const
 	{
-		return Vector4(X - r.X, Y - r.Y, Z - r.Z, W - r.W);
+		return Vector4(x - r.x, y - r.y, z - r.z, w - r.w);
 	}
 
 	/// <summary>
@@ -302,29 +302,29 @@ public:
 	/// </summary>
 	Vector4 Vector4::operator + (Vector4 r) const
 	{
-		return Vector4(X + r.X, Y + r.Y, Z + r.Z, W + r.W);
+		return Vector4(x + r.x, y + r.y, z + r.z, w + r.w);
 	}
 
 public:
 	/// <summary>
 	/// X compoennt
 	/// </summary>
-	float X;
+	float x;
 
 	/// <summary>
 	/// Y component
 	/// </summary>
-	float Y;
+	float y;
 
 	/// <summary>
 	/// Z component
 	/// </summary>
-	float Z;
+	float z;
 
 	/// <summary>
 	/// W component
 	/// </summary>
-	float W;
+	float w;
 };
 
 #endif // Vector4_H

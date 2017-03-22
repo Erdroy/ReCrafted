@@ -137,10 +137,10 @@ void VoxelChunkMap::draw()
 	auto chunkSpaceRange = range / ChunkWidth;
 	auto sqrCDistance = chunkSpaceRange * chunkSpaceRange;
 	auto point = Camera::getMainCamera()->get_position();
-	auto farChunkTop = int(point.Z + range + 8) / ChunkWidth;
-	auto farChunkBottom = int(point.Z - range - 8) / ChunkWidth;
-	auto farChunkLeft = int(point.X - range - 8) / ChunkWidth;
-	auto farChunkRight = int(point.X + range + 8) / ChunkWidth;
+	auto farChunkTop = int(point.z + range + 8) / ChunkWidth;
+	auto farChunkBottom = int(point.z - range - 8) / ChunkWidth;
+	auto farChunkLeft = int(point.x - range - 8) / ChunkWidth;
+	auto farChunkRight = int(point.x + range + 8) / ChunkWidth;
 
 	auto centerX = farChunkBottom - farChunkTop;
 	auto centerZ = farChunkRight - farChunkLeft;
@@ -187,8 +187,8 @@ void VoxelChunkMap::draw()
 			//   create new chunk and queue it to VCP
 
 			// fast check if the chunk is in range
-			auto rX = x*ChunkWidth - point.X;
-			auto rZ = z*ChunkWidth - point.Z;
+			auto rX = x*ChunkWidth - point.x;
+			auto rZ = z*ChunkWidth - point.z;
 			if (sqrt(rX * rX + rZ * rZ) > 250.0f)
 				continue;
 

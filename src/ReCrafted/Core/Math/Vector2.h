@@ -17,11 +17,11 @@ public:
 	/// </summary>
 	Vector2()
 	{
-		X = 0.0f;
-		Y = 0.0f;
+		x = 0.0f;
+		y = 0.0f;
 	}
 
-	Vector2(float x, float y) : X(x), Y(y)
+	Vector2(float x, float y) : x(x), y(y)
 	{
 		
 	}
@@ -32,10 +32,10 @@ public:
 	/// </summary>
 	FORCEINLINE void normalize()
 	{
-		auto i = 1.0f / sqrt(X*X + Y*Y);
+		auto i = 1.0f / sqrt(x*x + y*y);
 
-		X = X * i;
-		Y = Y * i;
+		x = x * i;
+		y = y * i;
 	}
 
 	/// <summary>
@@ -44,7 +44,7 @@ public:
 	/// <returns>The length of this vector.</returns>
 	FORCEINLINE float length() const
 	{
-		return sqrt(X*X + Y*Y);
+		return sqrt(x*x + y*y);
 	}
 
 public:
@@ -135,7 +135,7 @@ public:
 	/// </summary>
 	FORCEINLINE static float dot(Vector2 a, Vector2 b)
 	{
-		return a.X * b.X + a.Y * b.Y;
+		return a.x * b.x + a.y * b.y;
 	}
 
 	/// <summary>
@@ -151,7 +151,7 @@ public:
 	/// </summary>
 	FORCEINLINE static Vector2 lerp(Vector2 a, Vector2 b, float t)
 	{
-		return Vector2(a.X * (1 - t) + t * b.X, a.Y * (1 - t) + t * b.Y);
+		return Vector2(a.x * (1 - t) + t * b.x, a.y * (1 - t) + t * b.y);
 	}
 
 	/// <summary>
@@ -167,7 +167,7 @@ public:
 	/// </summary>
 	FORCEINLINE static Vector2 negate(Vector2 a)
 	{
-		return Vector2(a.X * -1.0f, a.Y * -1.0f);
+		return Vector2(a.x * -1.0f, a.y * -1.0f);
 	}
 
 	/// <summary>
@@ -183,7 +183,7 @@ public:
 	/// </summary>
 	FORCEINLINE static Vector2 abs(Vector2 a)
 	{
-		return Vector2(fabs(a.X), fabs(a.Y));
+		return Vector2(fabs(a.x), fabs(a.y));
 	}
 
 	/// <summary>
@@ -196,35 +196,35 @@ public:
 
 public:
 	void Vector2::operator -= (Vector2 r) {
-		X -= r.X;
-		Y -= r.Y;
+		x -= r.x;
+		y -= r.y;
 	}
 
 	void Vector2::operator += (Vector2 r) {
-		X += r.X;
-		Y += r.Y;
+		x += r.x;
+		y += r.y;
 	}
 
 	Vector2 Vector2::operator - (Vector2 r) const
 	{
-		return Vector2(X - r.X, Y - r.Y);
+		return Vector2(x - r.x, y - r.y);
 	}
 
 	Vector2 Vector2::operator + (Vector2 r) const
 	{
-		return Vector2(X + r.X, Y + r.Y);
+		return Vector2(x + r.x, y + r.y);
 	}
 
 public:
 	/// <summary>
-	/// X compoennt
+	/// X component
 	/// </summary>
-	float X;
+	float x;
 
 	/// <summary>
 	/// Y component
 	/// </summary>
-	float Y;
+	float y;
 };
 
 #endif // Vector2_H

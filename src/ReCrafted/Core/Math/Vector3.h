@@ -15,7 +15,7 @@ public:
 	/// Default constructor,
 	/// sets 0 to all components of this vector.
 	/// </summary>
-	Vector3i() : X(0), Y(0), Z(0) { }
+	Vector3i() : x(0), y(0), z(0) { }
 
 	/// <summary>
 	/// Sets given values to all components of this vector.
@@ -23,23 +23,23 @@ public:
 	/// <param name="x"></param>
 	/// <param name="y"></param>
 	/// <param name="z"></param>
-	Vector3i(int x, int y, int z) : X(x), Y(y), Z(z) { }
+	Vector3i(int x, int y, int z) : x(x), y(y), z(z) { }
 
 public:
 	/// <summary>
 	/// X compoennt
 	/// </summary>
-	int X;
+	int x;
 
 	/// <summary>
 	/// Y component
 	/// </summary>
-	int Y;
+	int y;
 
 	/// <summary>
 	/// Z component
 	/// </summary>
-	int Z;
+	int z;
 };
 
 struct Vector3
@@ -49,7 +49,7 @@ public:
 	/// Default constructor,
 	/// sets 0 to all components of this vector.
 	/// </summary>
-	Vector3() : X(0.0f), Y(0.0f), Z(0.0f) { }
+	Vector3() : x(0.0f), y(0.0f), z(0.0f) { }
 
 	/// <summary>
 	/// Sets given values to all components of this vector.
@@ -57,7 +57,7 @@ public:
 	/// <param name="x"></param>
 	/// <param name="y"></param>
 	/// <param name="z"></param>
-	Vector3(float x, float y, float z) : X(x), Y(y), Z(z) { }
+	Vector3(float x, float y, float z) : x(x), y(y), z(z) { }
 
 public:
 	/// <summary>
@@ -65,11 +65,11 @@ public:
 	/// </summary>
 	FORCEINLINE void normalize()
 	{
-		auto i = 1.0f / sqrt(X*X + Y*Y + Z*Z);
+		auto i = 1.0f / sqrt(x*x + y*y + z*z);
 
-		X = X * i;
-		Y = Y * i;
-		Z = Z * i;
+		x = x * i;
+		y = y * i;
+		z = z * i;
 	}
 
 	/// <summary>
@@ -78,7 +78,7 @@ public:
 	/// <returns>The length of this vector.</returns>
 	FORCEINLINE float length() const
 	{
-		return sqrt(X*X + Y*Y + Z*Z);
+		return sqrt(x*x + y*y + z*z);
 	}
 
 public:
@@ -184,7 +184,7 @@ public:
 	/// </summary>
 	FORCEINLINE static float dot(Vector3 a, Vector3 b)
 	{
-		return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
+		return a.x * b.x + a.y * b.y + a.z * b.z;
 	}
 
 	/// <summary>
@@ -200,7 +200,7 @@ public:
 	/// </summary>
 	FORCEINLINE static Vector3 cross(Vector3 a, Vector3 b)
 	{
-		return Vector3(a.Y * b.Z - a.Z * b.Y, a.Z * b.X - a.X * b.Z, a.X * b.Y - a.Y * b.X);
+		return Vector3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
 	}
 
 	/// <summary>
@@ -216,7 +216,7 @@ public:
 	/// </summary>
 	FORCEINLINE static Vector3 lerp(Vector3 a, Vector3 b, float t) 
 	{
-		return Vector3(a.X * (1 - t) + t * b.X, a.Y * (1 - t) + t * b.Y, a.Z * (1 - t) + t * b.Z);
+		return Vector3(a.x * (1 - t) + t * b.x, a.y * (1 - t) + t * b.y, a.z * (1 - t) + t * b.z);
 	}
 
 	/// <summary>
@@ -232,7 +232,7 @@ public:
 	/// </summary>
 	FORCEINLINE static Vector3 negate(Vector3 a)
 	{
-		return Vector3(a.X * -1.0f, a.Y * -1.0f, a.Z * -1.0f);
+		return Vector3(a.x * -1.0f, a.y * -1.0f, a.z * -1.0f);
 	}
 
 	/// <summary>
@@ -248,7 +248,7 @@ public:
 	/// </summary>
 	FORCEINLINE static Vector3 abs(Vector3 a)
 	{
-		return Vector3(fabs(a.X), fabs(a.Y), fabs(a.Z));
+		return Vector3(fabs(a.x), fabs(a.y), fabs(a.z));
 	}
 
 	/// <summary>
@@ -261,21 +261,21 @@ public:
 
 public:
 	void Vector3::operator -= (Vector3 r){
-		X -= r.X;
-		Y -= r.Y;
-		Z -= r.Z;
+		x -= r.x;
+		y -= r.y;
+		z -= r.z;
 	}
 
 	void operator += (Vector3 r) {
-		X += r.X;
-		Y += r.Y;
-		Z += r.Z;
+		x += r.x;
+		y += r.y;
+		z += r.z;
 	}
 
 	void Vector3::operator *= (float value) {
-		X *= value;
-		Y *= value;
-		Z *= value;
+		x *= value;
+		y *= value;
+		z *= value;
 	}
 
 	/// <summary>
@@ -283,7 +283,7 @@ public:
 	/// </summary>
 	Vector3 Vector3::operator - (Vector3 r) const
 	{
-		return Vector3(X - r.X, Y - r.Y, Z - r.Z);
+		return Vector3(x - r.x, y - r.y, z - r.z);
 	}
 
 	/// <summary>
@@ -291,7 +291,7 @@ public:
 	/// </summary>
 	Vector3 Vector3::operator + (Vector3 r) const
 	{
-		return Vector3(X + r.X, Y + r.Y, Z + r.Z);
+		return Vector3(x + r.x, y + r.y, z + r.z);
 	}
 
 	/// <summary>
@@ -299,7 +299,7 @@ public:
 	/// </summary>
 	Vector3 Vector3::operator * (Vector3 r) const
 	{
-		return Vector3(X * r.X, Y * r.Y, Z * r.Z);
+		return Vector3(x * r.x, y * r.y, z * r.z);
 	}
 
 	/// <summary>
@@ -307,24 +307,24 @@ public:
 	/// </summary>
 	Vector3 Vector3::operator * (float r) const
 	{
-		return Vector3(X * r, Y * r, Z * r);
+		return Vector3(x * r, y * r, z * r);
 	}
 
 public:
 	/// <summary>
 	/// X compoennt
 	/// </summary>
-	float X;
+	float x;
 
 	/// <summary>
 	/// Y component
 	/// </summary>
-	float Y;
+	float y;
 
 	/// <summary>
 	/// Z component
 	/// </summary>
-	float Z;
+	float z;
 };
 
 #endif // Vector3_H
