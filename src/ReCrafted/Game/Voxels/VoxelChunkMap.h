@@ -125,6 +125,16 @@ public:
 	/// Dispose the chunk map.
 	/// </summary>
 	void dispose();
+
+	/// <summary>
+	/// Convert chunk position(in chunk space) to root space position.
+	/// </summary>
+	/// <param name="a">The coord.</param>
+	/// <returns>The root space position.</returns>
+	FORCEINLINE static int chunkToRoot(int a)
+	{
+		return a >= 0 ? a / MapRoot::TableWidth : (a + 1) / MapRoot::TableWidth - 1;
+	}
 };
 
 #endif // VOXELCHUNKMAP_H

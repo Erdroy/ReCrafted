@@ -103,11 +103,8 @@ void VoxelChunkMap::addChunk(VoxelChunk* chunk)
 		root = new MapRoot;
 
 		// the chunk world pos
-		auto worldX = chunk->m_x * ChunkWidth;
-		auto worldZ = chunk->m_z * ChunkWidth;
-
-		root->worldX = Math::roundDown(worldX, 1024);
-		root->worldZ = Math::roundDown(worldZ, 1024);
+		root->worldX = chunkToRoot(chunk->m_x) * MapRoot::TableWidthWS;
+		root->worldZ = chunkToRoot(chunk->m_z) * MapRoot::TableWidthWS;
 
 		addRoot(root);
 	}
@@ -147,8 +144,8 @@ void VoxelChunkMap::draw()
 
 	if (baseRoot == nullptr)
 	{
-		//world->generateChunk(farChunkLeft, farChunkBottom);
-		//baseRoot = findRoot(farChunkLeft, farChunkBottom);
+		world->generateChunk(farChunkLeft, farChunkBottom);
+		baseRoot = findRoot(farChunkLeft, farChunkBottom);
 	}
 
 	auto drawnchunks = 0;
