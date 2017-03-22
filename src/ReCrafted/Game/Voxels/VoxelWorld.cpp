@@ -12,6 +12,14 @@ void VoxelWorld::init(bool generateworld)
 	VoxelGenerator::initialize();
 
 	m_chunkMap = new VoxelChunkMap;
+
+	for (auto x = -16; x < 16; x++)
+	{
+		for (auto z = -16; z < 16; z++)
+		{
+			generateChunk(x, z);
+		}
+	}
 }
 
 void VoxelWorld::update()

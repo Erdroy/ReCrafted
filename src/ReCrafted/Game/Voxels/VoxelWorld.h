@@ -20,6 +20,8 @@ WORLD SPACE:
 
 class VoxelWorld
 {
+	friend class Universe;
+
 private:
 
 	VoxelChunkMap* m_chunkMap = nullptr;

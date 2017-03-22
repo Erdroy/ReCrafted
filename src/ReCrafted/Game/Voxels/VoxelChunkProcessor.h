@@ -44,7 +44,8 @@ private:
 
 	std::vector<Thread> m_workers = {};
 
-	int m_total = 0;
+	int m_totalData = 0;
+	int m_totalMesh = 0;
 
 private:
 	VoxelChunkProcessor()
@@ -79,7 +80,6 @@ public:
 			if (chunk->m_hasVoxels)
 				return;
 
-			m_instance->m_total++;
 			chunk->m_queued = true;
 			m_instance->m_dataQueueMutex.lock();
 			m_instance->m_dataQueue.push_back(chunk);
@@ -89,7 +89,6 @@ public:
 		{
 			if (!chunk->m_hasVoxels) // try to add to voxel data queue
 			{
-				m_instance->m_total++;
 				chunk->m_queued = true;
 				m_instance->m_dataQueueMutex.lock();
 				m_instance->m_dataQueue.push_back(chunk);
@@ -98,7 +97,6 @@ public:
 
 			if(!chunk->m_mesh) // try to add to voxel meshing queue
 			{
-				m_instance->m_total++;
 				chunk->m_queued = true;
 				m_instance->m_meshingQueueMutex.lock();
 				m_instance->m_meshingQueue.push_back(chunk);

@@ -98,6 +98,7 @@ VoxelChunk* VoxelChunkProcessor::dequeueDataLessChunk()
 		if(!m_dataQueue[i]->m_processing)
 		{
 			chunk = m_dataQueue[i];
+			chunk->m_processing = true;
 			chunk->m_queued = false;
 
 			// remove chunk for dataQueue
@@ -125,16 +126,13 @@ VoxelChunk* VoxelChunkProcessor::dequeueMeshLessChunk()
 			if(tempchunk->hasNeighs() && tempchunk->hasLoadedNeighs())
 			{
 				chunk = tempchunk;
+				chunk->m_processing = true;
 				chunk->m_queued = false;
 
 				// remove chunk
 				m_meshingQueue.erase(m_meshingQueue.begin() + i);
 				break;
 			}
-
-			// remove chunk
-			m_meshingQueue.erase(m_meshingQueue.begin() + i);
-			break;
 		}
 	}
 	m_meshingQueueMutex.unlock();
@@ -144,11 +142,15 @@ VoxelChunk* VoxelChunkProcessor::dequeueMeshLessChunk()
 
 void VoxelChunkProcessor::finishChunkData(VoxelChunk* chunk) const
 {
+	m_instance->m_totalData++;
 	chunk->m_processing = false;
 	chunk->m_hasVoxels = true;
+	chunk->m_queued = false;
 }
 
 void VoxelChunkProcessor::finishChunkMesh(VoxelChunk* chunk) const
 {
+	m_instance->m_totalMesh++;
 	chunk->m_processing = false;
+	chunk->m_queued = false;
 }

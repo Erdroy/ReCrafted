@@ -13,6 +13,8 @@
 /// </summary>
 class VoxelChunkMap
 {
+	friend class Universe;
+
 	class MapRoot
 	{
 		friend class VoxelChunkMap;

@@ -92,11 +92,6 @@ FORCEINLINE void build_face(
 
 void VoxelChunk::worker_dataGenerate() // WARNING: this should be run in job queue!
 {
-	if (m_processing)
-		return;
-
-	m_processing = true;
-
 	// create voxels
 	m_voxels = new voxelid[ChunkWidth * ChunkHeight * ChunkWidth];
 
@@ -114,16 +109,10 @@ void VoxelChunk::worker_dataGenerate() // WARNING: this should be run in job que
 	VoxelGenerator::endChunk();
 
 	m_lastTimeVisible = Time::time();
-	m_processing = false;
 }
 
 void VoxelChunk::worker_meshGenerate() // WARNING: this should be run in job queue!
 {
-	if (m_processing)
-		return;
-
-	m_processing = true;
-
 	std::vector<Vector3> vertices = {};
 	std::vector<Vector3> normals = {};
 	std::vector<Vector2> uvs = {};
@@ -187,7 +176,6 @@ void VoxelChunk::worker_meshGenerate() // WARNING: this should be run in job que
 		m_mesh->applyChanges();
 
 		m_lastTimeVisible = Time::time();
-		m_processing = false;
 	}
 }
 
@@ -210,8 +198,8 @@ void VoxelChunk::update()
 		if (timeNotUsed > 5.0f) // unload chunk data when out of view for half a sec or grater and is out of view range about 100 units/meters
 		{
 			// unload mesh
-			//m_mesh->dispose();
-			//m_mesh = nullptr;
+			m_mesh->dispose();
+			m_mesh = nullptr;
 		}
 		return;
 	}

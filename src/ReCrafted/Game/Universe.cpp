@@ -2,6 +2,7 @@
 
 #include "Universe.h"
 #include "../Graphics/Rendering.h"
+#include "../Graphics/Camera.h"
 
 Universe* Universe::m_instance;
 
@@ -31,10 +32,19 @@ void Universe::drawShadowCasters()
 
 void Universe::draw()
 {
+	auto cameraPosition = Camera::getMainCamera()->get_position();
+
 	bgfx::dbgTextClear();
-	bgfx::dbgTextPrintf(1, 1, 0x4, "Chunk voxeldata queue size: %d", m_chunkProcessor->m_dataQueue.size());
-	bgfx::dbgTextPrintf(1, 2, 0x4, "Chunk meshing queue size: %d", m_chunkProcessor->m_meshingQueue.size());
-	bgfx::dbgTextPrintf(1, 3, 0x4, "Chunk meshing queue size: %d", m_chunkProcessor->m_total);
+	bgfx::dbgTextPrintf(1, 0, 0x4, "FPS: %.1f", 1.0f / Time::deltaTime());
+	bgfx::dbgTextPrintf(1, 1, 0x4, "Delta time: %.5f", Time::deltaTime());
+	bgfx::dbgTextPrintf(1, 2, 0x4, "Chunk voxel queue size: %d", m_chunkProcessor->m_dataQueue.size());
+	bgfx::dbgTextPrintf(1, 3, 0x4, "Chunk meshing queue size: %d", m_chunkProcessor->m_meshingQueue.size());
+	bgfx::dbgTextPrintf(1, 4, 0x4, "Total voxel queue size: %d", m_chunkProcessor->m_totalData);
+	bgfx::dbgTextPrintf(1, 5, 0x4, "Total meshing queue size: %d", m_chunkProcessor->m_totalMesh);
+	bgfx::dbgTextPrintf(1, 6, 0x4, "Chunk count: %d", m_currentWorld->m_chunkMap->getChunks()->size());
+	// 7 - 'Drawn chunks'
+	bgfx::dbgTextPrintf(1, 8, 0x4, "Camera position: { X: %.1f, Y: %.1f, Z: %.1f }", cameraPosition.X, cameraPosition.Y, cameraPosition.Z);
+
 
 	m_currentWorld->draw();
 }

@@ -150,7 +150,7 @@ void VoxelChunkMap::draw()
 	// find far left-bottom root
 	auto baseRoot = findRoot(farChunkLeft, farChunkBottom);
 
-	if (baseRoot == nullptr)
+	/*if (baseRoot == nullptr)
 	{
 		// player just spawned or something,
 		// create base world
@@ -161,7 +161,9 @@ void VoxelChunkMap::draw()
 				world->generateChunk(x, z);
 			}
 		}
-	}
+	}*/
+
+	auto drawnchunks = 0;
 
 	VoxelChunk* chunk;
 	auto root = baseRoot;
@@ -177,6 +179,9 @@ void VoxelChunkMap::draw()
 			//  CONTINUE - because the chunk doesn't have any mesh to render now.
 			// if the root is found
 			//  if chunk exisits
+			//   if does not have mesh
+			//    queue to meshing
+			//    CONTINUE
 			//   draw
 			//  else
 			//   create new chunk and queue it to VCP
@@ -215,8 +220,11 @@ void VoxelChunkMap::draw()
 				continue;
 			}
 
+			// if the root is found
+
 			chunk = root->getChunk(x, z);
 
+			// if chunk exisits
 			if(chunk)
 			{
 				if (chunk->m_processing || chunk->m_queued)
@@ -229,54 +237,19 @@ void VoxelChunkMap::draw()
 					continue;
 				}
 
-				chunk->draw();
+				// draw
+				chunk->draw(); 
+				drawnchunks++;
 			}
 			else
 			{
-				// generate chunk
+				// create new chunk and queue it to VCP
 				world->generateChunk(x, z);
 			}
 		}
 	}
 
-	// old method:
-	/*MapRoot* root;
-	VoxelChunk* chunk;
-	for (auto i = 0u; i < m_roots.size(); i++)
-	{
-		root = m_roots[i];
-
-		auto wsX = float(root->worldX);
-		auto wsZ = float(root->worldZ);
-
-		auto deltaX = point.X - Math::maxf(wsX, Math::minf(point.X, wsX + MapRoot::TableWidthWS));
-		auto deltaY = point.Z - Math::maxf(wsZ, Math::minf(point.Z, wsZ + MapRoot::TableWidthWS));
-
-		auto isinrange = deltaX * deltaX + deltaY * deltaY < sqrDistance;
-		auto isinside = point.X > wsX && point.X < wsX + MapRoot::TableWidthWS && point.Z > wsZ && point.Z < wsZ + MapRoot::TableWidthWS;
-
-		if (isinrange || isinside)
-		{
-			for (auto j = 0; j < MapRoot::TableWidth * MapRoot::TableWidth; j++) // TODO: optimize this loop, skip x and z axes that are out of range
-			{
-				chunk = root->getChunk(j);
-
-				if (!chunk)
-					continue;
-
-				wsX = float(chunk->m_x * ChunkWidth);
-				wsZ = float(chunk->m_z * ChunkWidth);
-
-				deltaX = point.X - Math::maxf(wsX, Math::minf(point.X, wsX + ChunkWidth));
-				deltaY = point.Z - Math::maxf(wsZ, Math::minf(point.Z, wsZ + ChunkWidth));
-
-				if (deltaX * deltaX + deltaY * deltaY < sqrDistance)
-				{
-					chunk->draw();
-				}
-			}
-		}
-	}*/
+	bgfx::dbgTextPrintf(1, 7, 0x4, "Drawn chunks: %d", drawnchunks);
 }
 
 void VoxelChunkMap::dispose()

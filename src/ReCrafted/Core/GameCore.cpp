@@ -108,6 +108,12 @@ void GameCore::onUpdate()
 		Logger::write("Switching to debug stats render mode", LogLevel::Info);
 	}
 
+	if (Input::isKeyDown(Key_F6))
+	{
+		bgfx::setDebug(BGFX_DEBUG_TEXT);
+		Logger::write("Switching to debug text render mode", LogLevel::Info);
+	}
+
 	m_universe->update();
 }
 
