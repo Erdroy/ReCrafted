@@ -259,6 +259,22 @@ public:
 		*result = abs(a);
 	}
 
+	/// <summary>
+	/// Distance between two vectors
+	/// </summary>
+	FORCEINLINE static float distance(Vector3 a, Vector3 b)
+	{
+		return sqrtf(pow((b.x - a.x), 2) + pow((b.y - a.y), 2) + pow((b.z - a.z), 2));
+	}
+
+	/// <summary>
+	/// Distance between two vectors
+	/// </summary>
+	FORCEINLINE static void distance(Vector3 a, Vector3 b, float* result)
+	{
+		*result = distance(a, b);
+	}
+
 public:
 	void Vector3::operator -= (Vector3 r){
 		x -= r.x;
