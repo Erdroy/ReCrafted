@@ -2,7 +2,11 @@
 
 #ifndef R3D_RENDERER_H
 #define R3D_RENDERER_H
+
+// includes
 #include "r3d.h"
+
+class r3d_commandlist;
 
 class r3d_renderer
 {

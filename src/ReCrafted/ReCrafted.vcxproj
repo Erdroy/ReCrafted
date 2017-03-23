@@ -256,8 +256,11 @@
     <ClInclude Include="Platform\Platform.h" />
     <ClInclude Include="Platform\Platform.Windows.h" />
     <ClInclude Include="r3d\r3d.h" />
+    <ClInclude Include="r3d\r3d_commandlist.h" />
     <ClInclude Include="r3d\r3d_d3d11.h" />
+    <ClInclude Include="r3d\r3d_headers.h" />
     <ClInclude Include="r3d\r3d_renderer.h" />
+    <ClInclude Include="r3d\r3d_types.h" />
     <ClInclude Include="recraftedPrerequisites.h" />
     <ClInclude Include="Utils\Defines.h" />
     <ClInclude Include="Utils\Types.h" />

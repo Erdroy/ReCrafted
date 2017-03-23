@@ -233,6 +233,15 @@
     <ClInclude Include="r3d\r3d_d3d11.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="r3d\r3d_headers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="r3d\r3d_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="r3d\r3d_commandlist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\common.sh" />
