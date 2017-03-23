@@ -117,7 +117,7 @@ public:
 	/// <summary>
 	/// Calculate length of vector
 	/// </summary>
-	FORCEINLINE static float length(Vector2 vector)
+	FORCEINLINE static float length(Vector2& vector)
 	{
 		return vector.length();
 	}
@@ -125,7 +125,7 @@ public:
 	/// <summary>
 	/// Calculate length of vector
 	/// </summary>
-	FORCEINLINE static void length(Vector2 vector, float* result)
+	FORCEINLINE static void length(Vector2& vector, float* result)
 	{
 		*result = length(vector);
 	}
@@ -133,7 +133,7 @@ public:
 	/// <summary>
 	/// Dot product of two vectors
 	/// </summary>
-	FORCEINLINE static float dot(Vector2 a, Vector2 b)
+	FORCEINLINE static float dot(Vector2& a, Vector2& b)
 	{
 		return a.x * b.x + a.y * b.y;
 	}
@@ -141,7 +141,7 @@ public:
 	/// <summary>
 	/// Dot product of two vectors
 	/// </summary>
-	FORCEINLINE static void dot(Vector2 a, Vector2 b, float* result)
+	FORCEINLINE static void dot(Vector2& a, Vector2& b, float* result)
 	{
 		*result = dot(a, b);
 	}
@@ -149,7 +149,7 @@ public:
 	/// <summary>
 	/// Linerally interpolates between two vectors
 	/// </summary>
-	FORCEINLINE static Vector2 lerp(Vector2 a, Vector2 b, float t)
+	FORCEINLINE static Vector2 lerp(Vector2& a, Vector2& b, float t)
 	{
 		return Vector2(a.x * (1 - t) + t * b.x, a.y * (1 - t) + t * b.y);
 	}
@@ -157,7 +157,7 @@ public:
 	/// <summary>
 	/// Linerally interpolates between two vectors
 	/// </summary>
-	FORCEINLINE static void lerp(Vector2 a, Vector2 b, float t, Vector2* result)
+	FORCEINLINE static void lerp(Vector2& a, Vector2& b, float t, Vector2* result)
 	{
 		*result = lerp(a, b, t);
 	}
@@ -165,7 +165,7 @@ public:
 	/// <summary>
 	/// Negation of the vector
 	/// </summary>
-	FORCEINLINE static Vector2 negate(Vector2 a)
+	FORCEINLINE static Vector2 negate(Vector2& a)
 	{
 		return Vector2(a.x * -1.0f, a.y * -1.0f);
 	}
@@ -173,7 +173,7 @@ public:
 	/// <summary>
 	/// Negation of the vector
 	/// </summary>
-	FORCEINLINE static void negate(Vector2 a, Vector2* result)
+	FORCEINLINE static void negate(Vector2& a, Vector2* result)
 	{
 		*result = negate(a);
 	}
@@ -181,7 +181,7 @@ public:
 	/// <summary>
 	/// Absolute value of the vector
 	/// </summary>
-	FORCEINLINE static Vector2 abs(Vector2 a)
+	FORCEINLINE static Vector2 abs(Vector2& a)
 	{
 		return Vector2(fabs(a.x), fabs(a.y));
 	}
@@ -189,7 +189,7 @@ public:
 	/// <summary>
 	/// Absolute value of the vector
 	/// </summary>
-	FORCEINLINE static void abs(Vector2 a, Vector2* result)
+	FORCEINLINE static void abs(Vector2& a, Vector2* result)
 	{
 		*result = abs(a);
 	}
@@ -197,7 +197,7 @@ public:
 	/// <summary>
 	/// Distance between two vectors
 	/// </summary>
-	FORCEINLINE static float distance(Vector2 a, Vector2 b) 
+	FORCEINLINE static float distance(Vector2& a, Vector2& b) 
 	{
 		return sqrtf((b.x - a.x)*(b.x - a.x) + (b.y - a.y)*(b.y - a.y));
 	}
@@ -205,7 +205,7 @@ public:
 	/// <summary>
 	/// Distance between two vectors
 	/// </summary>
-	FORCEINLINE static void distance(Vector2 a, Vector2 b, float* result) 
+	FORCEINLINE static void distance(Vector2& a, Vector2& b, float* result) 
 	{
 		*result = distance(a, b);
 	}

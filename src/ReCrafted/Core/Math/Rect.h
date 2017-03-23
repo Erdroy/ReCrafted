@@ -98,19 +98,35 @@ public:
 
 public:
 	/// <summary>
-	/// Check if two Rectangles overlap each other
+	/// Check if two Rectangles intersect each other
 	/// </summary>
-	FORCEINLINE static bool overlaps(Rect& a, Rect& b)
+	FORCEINLINE static bool intersects(Rect& a, Rect& b)
 	{
 		return (a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top);
 	}
 
 	/// <summary>
-	/// Check if two Rectangles overlap each other
+	/// Check if two Rectangles intersect each other
 	/// </summary>
-	FORCEINLINE static void overlaps(Rect& a, Rect& b, bool* result)
+	FORCEINLINE static void intersects(Rect& a, Rect& b, bool* result)
 	{
-		*result = overlaps(a, b);
+		*result = intersects(a, b);
+	}
+
+	/// <summary>
+	/// Check if point is within a Rectangle
+	/// </summary>
+	FORCEINLINE static bool contains(Rect& rect, Vector2& point) 
+	{
+		return point.x > rect.left && point.x < rect.right && point.y > rect.bottom && point.y < rect.top;
+	}
+
+	/// <summary>
+	/// Check if point is within a Rectangle
+	/// </summary>
+	FORCEINLINE static void contains(Rect& rect, Vector2& point, bool* result)
+	{
+		*result = contains(rect, point);
 	}
 
 public:

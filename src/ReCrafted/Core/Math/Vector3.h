@@ -182,7 +182,7 @@ public:
 	/// <summary>
 	/// Dot product of two vectors
 	/// </summary>
-	FORCEINLINE static float dot(Vector3 a, Vector3 b)
+	FORCEINLINE static float dot(Vector3& a, Vector3& b)
 	{
 		return a.x * b.x + a.y * b.y + a.z * b.z;
 	}
@@ -190,7 +190,7 @@ public:
 	/// <summary>
 	/// Dot product of two vectors
 	/// </summary>
-	FORCEINLINE static void dot(Vector3 a, Vector3 b, float* result)
+	FORCEINLINE static void dot(Vector3& a, Vector3& b, float* result)
 	{
 		*result = dot(a, b);
 	}
@@ -198,7 +198,7 @@ public:
 	/// <summary>
 	/// Cross product of two vectors
 	/// </summary>
-	FORCEINLINE static Vector3 cross(Vector3 a, Vector3 b)
+	FORCEINLINE static Vector3 cross(Vector3& a, Vector3& b)
 	{
 		return Vector3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
 	}
@@ -206,7 +206,7 @@ public:
 	/// <summary>
 	/// Cross product of two vectors
 	/// </summary>
-	FORCEINLINE static void cross(Vector3 a, Vector3 b, Vector3* result)
+	FORCEINLINE static void cross(Vector3& a, Vector3& b, Vector3* result)
 	{
 		*result = cross(a, b);
 	}
@@ -214,7 +214,7 @@ public:
 	/// <summary>
 	/// Linerally interpolates between two vectors
 	/// </summary>
-	FORCEINLINE static Vector3 lerp(Vector3 a, Vector3 b, float t) 
+	FORCEINLINE static Vector3 lerp(Vector3& a, Vector3& b, float t) 
 	{
 		return Vector3(a.x * (1 - t) + t * b.x, a.y * (1 - t) + t * b.y, a.z * (1 - t) + t * b.z);
 	}
@@ -222,7 +222,7 @@ public:
 	/// <summary>
 	/// Linerally interpolates between two vectors
 	/// </summary>
-	FORCEINLINE static void lerp(Vector3 a, Vector3 b, float t, Vector3* result)
+	FORCEINLINE static void lerp(Vector3& a, Vector3& b, float t, Vector3* result)
 	{
 		*result = lerp(a, b, t);
 	}
@@ -230,7 +230,7 @@ public:
 	/// <summary>
 	/// Negation of the vector
 	/// </summary>
-	FORCEINLINE static Vector3 negate(Vector3 a)
+	FORCEINLINE static Vector3 negate(Vector3& a)
 	{
 		return Vector3(a.x * -1.0f, a.y * -1.0f, a.z * -1.0f);
 	}
@@ -238,7 +238,7 @@ public:
 	/// <summary>
 	/// Negation of the vector
 	/// </summary>
-	FORCEINLINE static void negate(Vector3 a, Vector3* result)
+	FORCEINLINE static void negate(Vector3& a, Vector3* result)
 	{
 		*result = negate(a);
 	}
@@ -246,7 +246,7 @@ public:
 	/// <summary>
 	/// Absolute value of the vector
 	/// </summary>
-	FORCEINLINE static Vector3 abs(Vector3 a)
+	FORCEINLINE static Vector3 abs(Vector3& a)
 	{
 		return Vector3(fabs(a.x), fabs(a.y), fabs(a.z));
 	}
@@ -254,7 +254,7 @@ public:
 	/// <summary>
 	/// Absolute value of the vector
 	/// </summary>
-	FORCEINLINE static void abs(Vector3 a, Vector3* result)
+	FORCEINLINE static void abs(Vector3& a, Vector3* result)
 	{
 		*result = abs(a);
 	}
@@ -262,7 +262,7 @@ public:
 	/// <summary>
 	/// Distance between two vectors
 	/// </summary>
-	FORCEINLINE static float distance(Vector3 a, Vector3 b)
+	FORCEINLINE static float distance(Vector3& a, Vector3& b)
 	{
 		return sqrtf((b.x - a.x)*(b.x - a.x) + (b.y - a.y)*(b.y - a.y) + (b.z - a.z)*(b.z - a.z));
 	}
@@ -270,7 +270,7 @@ public:
 	/// <summary>
 	/// Distance between two vectors
 	/// </summary>
-	FORCEINLINE static void distance(Vector3 a, Vector3 b, float* result)
+	FORCEINLINE static void distance(Vector3& a, Vector3& b, float* result)
 	{
 		*result = distance(a, b);
 	}
