@@ -5,6 +5,7 @@
 #include "Generator/VoxelGenerator.h"
 #include "VoxelWorld.h"
 #include <vector>
+#include "../../Graphics/Camera.h"
 
 FORCEINLINE void build_face(
 	Vector3 origin,
@@ -191,7 +192,12 @@ void VoxelChunk::update()
 
 	auto timeNotUsed = Time::time() - m_lastTimeVisible;
 
-	// TODO: check if chunk is in visible range
+	auto chunkPos = Vector2(m_x * ChunkWidth + ChunkWidth / 2, m_z * ChunkWidth + ChunkWidth / 2);
+	auto camPos = Camera::getMainCamera()->get_position();
+	auto distance = Vector2::distance(chunkPos, Vector2(camPos.x, camPos.z));
+
+	if (distance <= 520.0f) // TODO: gameoptions range
+		return;
 
 	if (m_mesh) 
 	{
@@ -204,14 +210,22 @@ void VoxelChunk::update()
 		return;
 	}
 
-	if(!m_voxelsCompressed && timeNotUsed > 10.0f)
+	// do not compress when this chunk is in less than 100 meters behind visiblity range
+	if (distance <= 520.0f + 100.0f) // TODO: gameoptions range
+		return;
+	
+	if(!m_voxelsCompressed && timeNotUsed > 25.0f)
 	{
 		// TODO: queue to compress
 	}
 
-	if(m_voxelsCompressed && timeNotUsed > 120.0f)
+	// unload if chunk is more than visibility range(+100) meters away
+	if (distance <= 520.0f + 100.0f) // TODO: gameoptions range
 	{
-		// TODO: queue to unload
+		if (m_voxelsCompressed && timeNotUsed > 120.0f)
+		{
+			// TODO: queue to unload
+		}
 	}
 }
 

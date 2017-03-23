@@ -213,6 +213,8 @@
     <ClCompile Include="Graphics\Shader.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Platform\Platform.Windows.cpp" />
+    <ClCompile Include="r3d\r3d.cpp" />
+    <ClCompile Include="r3d\r3d_d3d11.cpp" />
     <ClCompile Include="recraftedPrerequisites.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -253,6 +255,9 @@
     <ClInclude Include="Logic\World.h" />
     <ClInclude Include="Platform\Platform.h" />
     <ClInclude Include="Platform\Platform.Windows.h" />
+    <ClInclude Include="r3d\r3d.h" />
+    <ClInclude Include="r3d\r3d_d3d11.h" />
+    <ClInclude Include="r3d\r3d_renderer.h" />
     <ClInclude Include="recraftedPrerequisites.h" />
     <ClInclude Include="Utils\Defines.h" />
     <ClInclude Include="Utils\Types.h" />
