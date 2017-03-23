@@ -17,6 +17,8 @@ struct r3d_cmdlist_header
 		clearcolor,
 		cleardepth,
 
+		present,
+
 		count
 	};
 };

@@ -22,22 +22,23 @@ namespace r3d
 		// allocate command list
 		g_cmdlist = alloc_commandlist(64 << 10);
 
-		// write target window handle
-		set_output(window_handle);
-
 		switch (api_type)
 		{
 		case r3d_apitype::d3d11: 
 			renderer = new r3d_d3d11;
+			renderer->init(window_handle);
 			break;
 		case r3d_apitype::opengl4:
 			//renderer = new r3d_opengl4;
+			//renderer->init();
 			break;
 		case r3d_apitype::d3d12:
 			//renderer = new r3d_d3d12;
+			//renderer->init();
 			break;
 		case r3d_apitype::vulkan:
 			//renderer = new r3d_vk;
+			//renderer->init();
 			break;
 		default: throw;
 		}
@@ -86,6 +87,8 @@ namespace r3d
 
 	void frame()
 	{
+		g_cmdlist.write(r3d_cmdlist_header::present);
+
 		// execute command list
 		renderer->execute_commandlist(&g_cmdlist);
 

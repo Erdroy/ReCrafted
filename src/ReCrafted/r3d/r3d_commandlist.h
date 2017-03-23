@@ -11,14 +11,15 @@
 
 class r3d_commandlist
 {
-#define DEF_WRITTER(type) void write( type header) { write(&header, sizeof( type )); }
+#define DEF_WRITER(type) R3D_FORCEINLINE void write( type header) { write(&header, sizeof( type )); }
+#define DEF_READER(type, name) R3D_FORCEINLINE type read_##name() { type tmp; read(&tmp, sizeof( type )); return tmp; }
 
 public:
 	r3d_commandlist() {}
 	r3d_commandlist(r3d_memory memory, uint32_t size) : size(size), cmdlist(memory) {}
 
 public:
-	void read(void* data, uint32_t size)
+	R3D_FORCEINLINE void read(void* data, uint32_t size)
 	{
 		_ASSERT(rposition < size);
 		_ASSERT(data != nullptr);
@@ -28,7 +29,7 @@ public:
 		rposition += size;
 	}
 
-	void write(void* data, uint32_t size)
+	R3D_FORCEINLINE void write(void* data, uint32_t size)
 	{
 		if (wposition + size >= this->size)
 			resize(this->size + (8 << 10)); // resize up by adding 8k bytes
@@ -38,18 +39,31 @@ public:
 		rposition += size;
 	}
 
-	DEF_WRITTER(void*) // pointer
-	DEF_WRITTER(float)
-	DEF_WRITTER(bool)
-	DEF_WRITTER(r3d_byte)
-	DEF_WRITTER(uint16_t)
-	DEF_WRITTER(uint32_t)
-	DEF_WRITTER(uint64_t)
-	DEF_WRITTER(int16_t)
-	DEF_WRITTER(int32_t)
-	DEF_WRITTER(int64_t)
+	// readers
+	DEF_READER(void*, ptr) // pointer
+	DEF_READER(float, float)
+	DEF_READER(bool, bool)	  
+	DEF_READER(r3d_byte, byte)
+	DEF_READER(uint16_t, uint16)
+	DEF_READER(uint32_t, uint32)
+	DEF_READER(uint64_t, uint64)
+	DEF_READER(int16_t, int16)
+	DEF_READER(int32_t, int32)
+	DEF_READER(int64_t, int64)
 
-	bool is_read_end() const
+	// writers
+	DEF_WRITER(void*) // pointer
+	DEF_WRITER(float)
+	DEF_WRITER(bool)
+	DEF_WRITER(r3d_byte)
+	DEF_WRITER(uint16_t)
+	DEF_WRITER(uint32_t)
+	DEF_WRITER(uint64_t)
+	DEF_WRITER(int16_t)
+	DEF_WRITER(int32_t)
+	DEF_WRITER(int64_t)
+
+	R3D_FORCEINLINE bool is_read_end() const
 	{
 		return rposition >= size;
 	}
@@ -67,7 +81,7 @@ public:
 		cmdlist = new_cmdlist;
 	}
 
-	R3D_FORCEINLINE void clear()
+	void clear()
 	{
 		_ASSERT(new_cmdlist != nullptr);
 		_ASSERT(size > 0);
@@ -78,7 +92,7 @@ public:
 		wposition = 0u;
 	}
 
-	R3D_FORCEINLINE void destroy()
+	void destroy()
 	{
 		_ASSERT(new_cmdlist != nullptr);
 

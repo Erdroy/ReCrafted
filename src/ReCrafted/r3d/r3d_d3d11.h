@@ -11,8 +11,9 @@ class r3d_d3d11 : public r3d_renderer
 private:
 
 public:
-	void execute_commandlist(r3d_commandlist* cmdListPtr) override;
+	void init(void* window_handle) override;
 	void destroy() override;
+	void execute_commandlist(r3d_commandlist* cmdListPtr) override;
 };
 
 #endif // R3D_D3D11_H
