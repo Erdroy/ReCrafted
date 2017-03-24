@@ -19,6 +19,9 @@ struct r3d_cmdlist_header
 
 		present,
 
+		endframe = present,
+		beginframe,
+
 		count
 	};
 };

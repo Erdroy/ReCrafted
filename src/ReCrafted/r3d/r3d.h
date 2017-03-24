@@ -18,6 +18,76 @@ struct r3d_apitype
 	};
 };
 
+struct r3d_texture_format
+{
+	enum Enum
+	{
+		unknown,
+
+		// color formats
+		r1,
+		a8,
+		r8,
+		r8i,
+		r8u,
+		r8s,
+		r16,
+		r16i,
+		r16u,
+		r16f,
+		r16s,
+		r32i,
+		r32u,
+		r32f,
+		rg8,
+		rg8i,
+		rg8u,
+		rg8s,
+		rg16,
+		rg16i,
+		rg16u,
+		rg16f,
+		rg16s,
+		rg32i,
+		rg32u,
+		rg32f,
+		rgb8,
+		rgb8i,
+		rgb8u,
+		rgb8s,
+		rgb9e5f,
+		bgra8,
+		rgba8,
+		rgba8i,
+		rgba8u,
+		rgba8s,
+		rgba16,
+		rgba16i,
+		rgba16u,
+		rgba16f,
+		rgba16s,
+		rgba32i,
+		rgba32u,
+		rgba32f,
+		r5g6b5,
+		rgba4,
+		rgb5a1,
+		rgb10a2,
+		r11g11b10f,
+
+		// depth formats
+		d16,
+		d16f,
+		d24,
+		d24f,
+		d24s8,
+		d32,
+		d32f,
+
+		count,
+	};
+};
+
 struct r3d_object_handle
 {
 public:
@@ -37,6 +107,8 @@ public:
 #define R3D_RENDERMODE_WIREFRAME		UINT16_C(0x02)
 
 
+
+R3D_DEFINE_HANDLE(vertexlayout)
 R3D_DEFINE_HANDLE(vertexbuffer)
 R3D_DEFINE_HANDLE(indexbuffer)
 R3D_DEFINE_HANDLE(texture2d)
@@ -50,38 +122,39 @@ namespace r3d
 
 	// core functions
 
-	void init(void* window_handle, r3d_apitype::Enum api_type = r3d_apitype::d3d11);
-	void frame();
+	void init(void* window_handle, uint16_t width, uint16_t height, r3d_apitype::Enum api_type = r3d_apitype::d3d11);
+	void beginframe();
+	void endframe();
 	void shutdown();
 
-	R3D_FORCEINLINE r3d_memory alloc_memory(uint32_t size);
-	R3D_FORCEINLINE void destroy_memory(r3d_memory* memory);
+	r3d_memory alloc_memory(uint32_t size);
+	void destroy_memory(r3d_memory* memory);
 
 
 	// rendering options
 
-	R3D_FORCEINLINE void vsync(bool enabled);
-	R3D_FORCEINLINE void set_output(void* window_handle);
-	R3D_FORCEINLINE void set_rendermode(int16_t mode);
+	void vsync(bool enabled);
+	void set_output(void* window_handle);
+	void set_rendermode(int16_t mode);
 
 	// rendering methods
 
 	void load_shader(const char* shader_bytecode, r3d_shader_handle* shader_handle);
 
-	R3D_FORCEINLINE void clear_color(float color[4]);
-	R3D_FORCEINLINE void clear_depth();
+	void clear_color(float color[4]);
+	void clear_depth();
 
-	R3D_FORCEINLINE r3d_vertexbuffer_handle* create_vertexbuffer();
-	R3D_FORCEINLINE r3d_indexbuffer_handle* create_indexbuffer(uint32_t size, bool use32bit);
-	R3D_FORCEINLINE r3d_texture2d_handle* create_texture2d(uint16_t width, uint16_t height, uint16_t format);
-	R3D_FORCEINLINE r3d_texture3d_handle* create_renderbuffer(r3d_texture2d_handle* texture_handles, uint8_t texture_count);
-	R3D_FORCEINLINE r3d_shader_handle* create_shader();
+	r3d_vertexbuffer_handle* create_vertexbuffer();
+	r3d_indexbuffer_handle* create_indexbuffer(uint32_t indiceCount, bool use32bit);
+	r3d_texture2d_handle* create_texture2d(uint16_t width, uint16_t height, r3d_texture_format format);
+	r3d_texture3d_handle* create_renderbuffer(r3d_texture2d_handle* texture_handles, uint8_t texture_count);
+	r3d_shader_handle* create_shader();
 
-	R3D_FORCEINLINE void destroy_vertexbuffer(r3d_vertexbuffer_handle* handle);
-	R3D_FORCEINLINE void destroy_indexbuffer(r3d_indexbuffer_handle* handle);
-	R3D_FORCEINLINE void destroy_texture2d(r3d_texture2d_handle* handle);
-	R3D_FORCEINLINE void destroy_texture3d(r3d_texture3d_handle* handle);
-	R3D_FORCEINLINE void destroy_shader(r3d_shader_handle* handle);
+	void destroy_vertexbuffer(r3d_vertexbuffer_handle* handle);
+	void destroy_indexbuffer(r3d_indexbuffer_handle* handle);
+	void destroy_texture2d(r3d_texture2d_handle* handle);
+	void destroy_texture3d(r3d_texture3d_handle* handle);
+	void destroy_shader(r3d_shader_handle* handle);
 }
 
 #endif // R3D_H

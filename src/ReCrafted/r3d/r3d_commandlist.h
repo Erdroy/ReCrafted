@@ -21,11 +21,11 @@ public:
 public:
 	R3D_FORCEINLINE void read(void* data, uint32_t size)
 	{
-		_ASSERT(rposition < size);
+		_ASSERT(rposition < this->size);
 		_ASSERT(data != nullptr);
 
 		auto ptr = this->cmdlist + rposition;
-		memcpy_s(data, size, ptr, this->size);
+		memcpy_s(data, size, ptr, size);
 		rposition += size;
 	}
 
@@ -36,7 +36,7 @@ public:
 
 		auto ptr = this->cmdlist + wposition;
 		memcpy_s(ptr, this->size, data, size);
-		rposition += size;
+		wposition += size;
 	}
 
 	// readers
@@ -65,7 +65,7 @@ public:
 
 	R3D_FORCEINLINE bool is_read_end() const
 	{
-		return rposition >= size;
+		return rposition >= size || rposition >= wposition;
 	}
 
 public:
@@ -83,7 +83,6 @@ public:
 
 	void clear()
 	{
-		_ASSERT(new_cmdlist != nullptr);
 		_ASSERT(size > 0);
 
 		memset(cmdlist, 0, size);
@@ -94,8 +93,6 @@ public:
 
 	void destroy()
 	{
-		_ASSERT(new_cmdlist != nullptr);
-
 		// free the memory
 		free(static_cast<void*>(cmdlist));
 		cmdlist = nullptr;

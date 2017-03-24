@@ -5,6 +5,10 @@
 
 #include <Windows.h>
 #include "../Platform/Platform.Windows.h"
+#include "../r3d/r3d_commandlist.h"
+
+
+#define R3DTEST
 
 GameBase* GameBase::m_instance;
 
@@ -126,17 +130,23 @@ void GameBase::run()
 	ShowWindow(Platform::getGameWindow(), SW_MAXIMIZE);
 #endif
 
+#ifndef R3DTEST
 	// initialize bgfx platform data
 	bgfx::PlatformData pd;
 	memset(&pd, 0, sizeof(pd));
 	pd.nwh = Platform::getGameWindow();
 	bgfx::setPlatformData(pd);
+#else
+	r3d::init(Platform::getGameWindow(), 1280, 720);
+#endif
 
 	// run
 	m_running = true;
 
+#ifndef R3DTEST
 	// load game assets, initialize everything
 	onLoad();
+#endif
 
 	// save start time
 	auto lastTime = Platform::getMiliseconds();
@@ -161,16 +171,31 @@ void GameBase::run()
 			DispatchMessage(&msg);
 		}
 
+#ifndef R3DTEST
 		// frame
 		{
 			onUpdate();
 			onSimulate(); // TODO: fixed-time step `onSimulate` call
 			onDraw(); GAMEBASE_CHECK_SHUTDOWN
 		}
+#else
+		float ccolor[4] = { 0.3f, 0.3f, 0.3f, 1.0f };
+
+		r3d::beginframe();
+
+		r3d::clear_color(ccolor);
+		r3d::clear_depth();
+
+
+
+		r3d::endframe();
+#endif
 	}
 
+#ifndef R3DTEST
 	// unload game assets
 	onUnload();
+#endif
 
 	// destroy gamewindow
 	DestroyWindow(Platform::getGameWindow());

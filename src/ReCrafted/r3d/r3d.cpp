@@ -17,7 +17,7 @@ namespace r3d
 		return r3d_commandlist(memory, size);
 	}
 
-	void init(void* window_handle, r3d_apitype::Enum api_type)
+	void init(void* window_handle, uint16_t width, uint16_t height, r3d_apitype::Enum api_type)
 	{
 		// allocate command list
 		g_cmdlist = alloc_commandlist(64 << 10);
@@ -26,7 +26,7 @@ namespace r3d
 		{
 		case r3d_apitype::d3d11: 
 			renderer = new r3d_d3d11;
-			renderer->init(window_handle);
+			renderer->init(window_handle, width, height);
 			break;
 		case r3d_apitype::opengl4:
 			//renderer = new r3d_opengl4;
@@ -85,7 +85,12 @@ namespace r3d
 		g_cmdlist.write(height);
 	}
 
-	void frame()
+	void beginframe()
+	{
+		g_cmdlist.write(r3d_cmdlist_header::beginframe);
+	}
+
+	void endframe()
 	{
 		g_cmdlist.write(r3d_cmdlist_header::present);
 
