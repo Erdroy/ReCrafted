@@ -11,7 +11,7 @@
 #include "../../Graphics/Rendering.h"
 #include "../../Core/Time.h"
 
-typedef unsigned short voxelid;
+typedef unsigned char voxelid;
 
 const voxelid voxel_air = voxelid(0u);
 
@@ -31,15 +31,14 @@ private:
 	int m_x = 0;
 	int m_z = 0;
 
-	void* m_root = nullptr;
-
 	volatile bool m_processing = false;
 	volatile bool m_queued = false;
 
 	float m_lastTimeVisible = 0.0f;
 
-	VoxelWorld* world = nullptr;
 
+	void* root = nullptr;
+	VoxelWorld* world = nullptr;
 	Ptr<Mesh> m_mesh = nullptr;
 
 	/* neighbours */
@@ -55,8 +54,6 @@ private:
 	/* voxels */
 	voxelid* m_voxels = nullptr;
 	bool m_hasVoxels = false;
-
-	// TODO: build level voxels
 
 public:
 	void update();

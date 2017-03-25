@@ -187,7 +187,7 @@ void VoxelChunk::updateNeighs()
 
 void VoxelChunk::update()
 {
-	if (m_processing)
+	if (m_processing || m_queued)
 		return;
 
 	auto timeNotUsed = Time::time() - m_lastTimeVisible;
@@ -196,12 +196,12 @@ void VoxelChunk::update()
 	auto camPos = Camera::getMainCamera()->get_position();
 	auto distance = Vector2::distance(chunkPos, Vector2(camPos.x, camPos.z));
 
-	if (distance <= 520.0f) // TODO: gameoptions range
+	if (distance <= 564.0f) // TODO: gameoptions range
 		return;
 
 	if (m_mesh) 
 	{
-		if (timeNotUsed > 5.0f) // unload chunk data when out of view for half a sec or grater and is out of view range about 100 units/meters
+		if (timeNotUsed > 5.0f) // unload chunk data when out of view for half a sec or grater and is out of view range about 64(4 chunks) units/meters
 		{
 			// unload mesh
 			m_mesh->dispose();
@@ -210,16 +210,16 @@ void VoxelChunk::update()
 		return;
 	}
 
-	// unload if chunk is more than visibility range(+100) meters away
-	if (distance <= 520.0f + 100.0f) // TODO: gameoptions range
+	// unload if chunk is more than visibility range(+128 units, 8 chunks) meters away
+	if (distance <= 564.0f + 64.0f) // TODO: gameoptions range
 	{
 		if (timeNotUsed > 10.0f)
 		{
 			// TODO: queue to unload
-			auto root = static_cast<VoxelChunkMap::MapRoot*>(m_root);
+			auto rootc = static_cast<VoxelChunkMap::MapRoot*>(root);
 			
-			if(root)
-				root->removeChunk(m_x, m_z);
+			if(rootc)
+				rootc->removeChunk(m_x, m_z);
 			else
 				dispose();
 		}

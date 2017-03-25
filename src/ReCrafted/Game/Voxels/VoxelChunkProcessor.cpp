@@ -135,6 +135,7 @@ VoxelChunk* VoxelChunkProcessor::dequeueMeshLessChunk()
 			}
 		}
 	}
+
 	m_meshingQueueMutex.unlock();
 
 	return chunk;

@@ -120,7 +120,7 @@ void VoxelChunkMap::addChunk(VoxelChunk* chunk)
 	}
 
 	// set root ptr
-	chunk->m_root = root;
+	chunk->root = root;
 
 	m_chunks.push_back(chunk);
 	root->addChunk(chunk, chunk->m_x, chunk->m_z);
