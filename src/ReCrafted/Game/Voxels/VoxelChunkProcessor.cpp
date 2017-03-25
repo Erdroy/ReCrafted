@@ -58,9 +58,6 @@ void worker_meshing(std::vector<VoxelChunk*>* queue)
 		}
 
 		// process
-		if (!chunk->hasNeighs())
-			throw;
-
 		chunk->worker_meshGenerate();
 		VoxelChunkProcessorInstance->finishChunkMesh(chunk);
 
@@ -128,7 +125,7 @@ VoxelChunk* VoxelChunkProcessor::dequeueMeshLessChunk()
 		// search
 		if (!tempchunk->m_processing && tempchunk->m_hasVoxels)
 		{
-			// dequeue chunk if it is out of view range(+32)
+			// dequeue chunk if it is out of view range
 			auto rX = tempchunk->m_x * ChunkWidth - cameraPos.x;
 			auto rZ = tempchunk->m_z * ChunkWidth - cameraPos.z;
 			auto dist = sqrt(rX * rX + rZ * rZ);

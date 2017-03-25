@@ -37,10 +37,8 @@ private:
 
 	float m_lastTimeVisible = 0.0f;
 
-
 	void* root = nullptr;
 	VoxelWorld* world = nullptr;
-	Ptr<Mesh> m_mesh = nullptr;
 
 	/* neighbours */
 	VoxelChunk* m_neighN = nullptr;
@@ -53,8 +51,9 @@ private:
 	VoxelChunk* m_neighNW = nullptr;
 
 	/* voxels */
-	voxelid* m_voxels = nullptr;
 	bool m_hasVoxels = false;
+	voxelid* m_voxels = nullptr;
+	Ptr<Mesh> m_mesh = nullptr;
 
 public:
 	void update();
@@ -90,6 +89,34 @@ public:
 
 		m_disposed = true;
 
+		// unset all neighs
+		if (m_neighN)
+			m_neighN->m_neighS = nullptr;
+
+		if (m_neighNE)
+			m_neighNE->m_neighSW = nullptr;
+
+		if (m_neighE)
+			m_neighE->m_neighW = nullptr;
+
+		if (m_neighSE)
+			m_neighSE->m_neighNW = nullptr;
+
+		if (m_neighSE)
+			m_neighSE->m_neighNW = nullptr;
+
+		if (m_neighS)
+			m_neighS->m_neighN = nullptr;
+
+		if (m_neighSW)
+			m_neighSW->m_neighNE = nullptr;
+
+		if (m_neighW)
+			m_neighW->m_neighE = nullptr;
+
+		if (m_neighNW)
+			m_neighNW->m_neighSE = nullptr;
+
 		if(m_mesh)
 			m_mesh->dispose();
 
@@ -105,7 +132,7 @@ public:
 
 	void updateNeighs();
 
-	FORCEINLINE bool hasAnyNeigh()
+	FORCEINLINE bool hasAnyNeigh() const
 	{
 
 		return m_neighN
@@ -118,7 +145,7 @@ public:
 			|| m_neighNW;
 	}
 
-	FORCEINLINE bool hasNeighs()
+	FORCEINLINE bool hasNeighs() const
 	{
 		return m_neighN 
 		&& m_neighNE 
@@ -130,7 +157,7 @@ public:
 		&& m_neighNW;
 	}
 
-	FORCEINLINE bool hasLoadedNeighs()
+	FORCEINLINE bool hasLoadedNeighs() const
 	{
 		return m_neighN->m_voxels
 			&& m_neighNE->m_voxels
@@ -142,7 +169,7 @@ public:
 			&& m_neighNW->m_voxels;
 	}
 
-	FORCEINLINE voxelid getVoxel(int x, int y, int z)
+	FORCEINLINE voxelid getVoxel(int x, int y, int z) const
 	{
 		if (y >= ChunkHeight || y < 0)
 			return voxel_air; // out of space!
@@ -153,7 +180,7 @@ public:
 		return voxel_air; // nope
 	}
 
-	FORCEINLINE voxelid getVoxelCC(int x, int y, int z) // CC - cross chunk
+	FORCEINLINE voxelid getVoxelCC(int x, int y, int z) const
 	{
 		#define is_out(A) (A < 0 || A >= ChunkWidth)
 
