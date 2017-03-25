@@ -39,10 +39,6 @@ void GameCore::onLoad()
 
 	Logger::write("Rendering pipeline initialized", LogLevel::Info);
 
-	// initialize universe
-	m_universe = new Universe();
-	m_universe->init();
-
 	// initialize main camera for scene
 	m_camera = Camera::createCamera(true, true);
 	m_camera->set_position(Vector3(0.0f, 20.0f, -10.0f));
@@ -51,6 +47,10 @@ void GameCore::onLoad()
 
 	// update state
 	m_rendering->setState(false, false);
+
+	// initialize universe
+	m_universe = new Universe();
+	m_universe->init();
 
 	Logger::write("Game initialized", LogLevel::Info);
 }
