@@ -211,7 +211,7 @@ void VoxelChunk::update()
 	}
 
 	// unload if chunk is more than visibility range(+128 units, 8 chunks) meters away
-	if (distance <= 564.0f + 64.0f) // TODO: gameoptions range
+	if (distance >= 564.0f + 64.0f) // TODO: gameoptions range
 	{
 		if (timeNotUsed > 10.0f)
 		{
