@@ -95,7 +95,7 @@ public:
 				m_instance->m_dataQueueMutex.unlock();
 			}
 
-			if(!chunk->m_mesh) // try to add to voxel meshing queue
+			if(!chunk->m_mesh && chunk->hasNeighs()) // try to add to voxel meshing queue
 			{
 				chunk->m_queued = true;
 				m_instance->m_meshingQueueMutex.lock();

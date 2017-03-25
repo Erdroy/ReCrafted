@@ -33,6 +33,7 @@ private:
 
 	volatile bool m_processing = false;
 	volatile bool m_queued = false;
+	volatile bool m_disposed = false;
 
 	float m_lastTimeVisible = 0.0f;
 
@@ -79,13 +80,15 @@ public:
 		Rendering::getInstance()->draw(m_mesh, &modelMatrix);
 	}
 
-	FORCEINLINE void dispose() const
+	FORCEINLINE void dispose()
 	{
 		if (m_processing)
 		{
 			// TODO: force stop processing
-			throw;
+			return;
 		}
+
+		m_disposed = true;
 
 		if(m_mesh)
 			m_mesh->dispose();

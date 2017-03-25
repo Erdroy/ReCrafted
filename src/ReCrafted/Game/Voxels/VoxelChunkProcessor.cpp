@@ -3,6 +3,7 @@
 #include "VoxelChunkProcessor.h"
 #include "../../Core/GameBase.h"
 #include "../../Core/Logger.h"
+#include "../../Graphics/Camera.h"
 
 VoxelChunkProcessor* VoxelChunkProcessor::m_instance;
 VoxelChunkProcessor* VoxelChunkProcessorInstance;
@@ -21,7 +22,7 @@ void worker_data(std::vector<VoxelChunk*>* queue)
 			// sleep 5ms and continue
 			if(chunk == nullptr)
 			{
-				Sleep(1);
+				Sleep(5);
 				continue;
 			}
 		}
@@ -51,7 +52,7 @@ void worker_meshing(std::vector<VoxelChunk*>* queue)
 			// sleep 5ms and continue
 			if (chunk == nullptr)
 			{
-				Sleep(1);
+				Sleep(5);
 				continue;
 			}
 		}
@@ -117,12 +118,27 @@ VoxelChunk* VoxelChunkProcessor::dequeueMeshLessChunk()
 	VoxelChunk* tempchunk;
 	VoxelChunk* chunk = nullptr;
 
+	auto cameraPos = Camera::getMainCamera()->get_position();
+
 	m_meshingQueueMutex.lock();
 	for (auto i = 0u; i < m_meshingQueue.size(); i++)
 	{
 		tempchunk = m_meshingQueue[i];
+
+		// search
 		if (!tempchunk->m_processing && tempchunk->m_hasVoxels)
 		{
+			// dequeue chunk if it is out of view range(+32)
+			auto rX = tempchunk->m_x * ChunkWidth - cameraPos.x;
+			auto rZ = tempchunk->m_z * ChunkWidth - cameraPos.z;
+			auto dist = sqrt(rX * rX + rZ * rZ);
+			if (dist > 500.0f)
+			{
+				tempchunk->m_queued = false;
+				m_meshingQueue.erase(m_meshingQueue.begin() + i);
+				continue;
+			}
+
 			if(tempchunk->hasNeighs() && tempchunk->hasLoadedNeighs())
 			{
 				chunk = tempchunk;

@@ -114,6 +114,9 @@ void VoxelChunk::worker_dataGenerate() // WARNING: this should be run in job que
 
 void VoxelChunk::worker_meshGenerate() // WARNING: this should be run in job queue!
 {
+	if (m_disposed)
+		return;
+
 	std::vector<Vector3> vertices = {};
 	std::vector<Vector3> normals = {};
 	std::vector<Vector2> uvs = {};

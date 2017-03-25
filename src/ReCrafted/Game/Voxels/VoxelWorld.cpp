@@ -122,7 +122,7 @@ VoxelChunk* VoxelWorld::generateChunk(int x, int z)
 	m_chunkMap->addChunk(chunk);
 
 	// queue chunk for generation
-	VoxelChunkProcessor::queue(chunk, VoxelChunkProcessor::QueueType::VoxelDataAndMesh);
+	VoxelChunkProcessor::queue(chunk, VoxelChunkProcessor::QueueType::VoxelData);
 
 	return chunk;
 }
