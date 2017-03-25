@@ -12,8 +12,8 @@ struct r3d_apitype
 	enum Enum
 	{
 		d3d11,
-		opengl4,
 		d3d12,
+		opengl4,
 		vulkan
 	};
 };

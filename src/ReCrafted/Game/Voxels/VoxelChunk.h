@@ -31,16 +31,12 @@ private:
 	int m_x = 0;
 	int m_z = 0;
 
-	int m_rootX = 0; // TODO: use those values
-	int m_rootZ = 0;
-	int m_rootIndex = 0;
-	bool m_hasRootInfo = false;
+	void* m_root = nullptr;
 
 	volatile bool m_processing = false;
 	volatile bool m_queued = false;
 
 	float m_lastTimeVisible = 0.0f;
-	bool m_voxelsCompressed = false;
 
 	VoxelWorld* world = nullptr;
 
@@ -97,7 +93,9 @@ public:
 		if(m_mesh)
 			m_mesh->dispose();
 
-		delete[] m_voxels;
+		if(m_voxels != nullptr)
+			delete[] m_voxels;
+
 		delete this;
 	}
 
@@ -106,6 +104,19 @@ public:
 	void worker_meshGenerate();
 
 	void updateNeighs();
+
+	FORCEINLINE bool hasAnyNeigh()
+	{
+
+		return m_neighN
+			|| m_neighNE
+			|| m_neighE
+			|| m_neighSE
+			|| m_neighS
+			|| m_neighSW
+			|| m_neighW
+			|| m_neighNW;
+	}
 
 	FORCEINLINE bool hasNeighs()
 	{

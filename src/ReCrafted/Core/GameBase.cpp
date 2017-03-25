@@ -8,7 +8,7 @@
 #include "../r3d/r3d_commandlist.h"
 
 
-#define R3DTEST
+//#define R3DTEST
 
 GameBase* GameBase::m_instance;
 

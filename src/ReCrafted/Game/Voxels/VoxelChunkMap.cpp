@@ -17,6 +17,14 @@ void VoxelChunkMap::MapRoot::removeChunk(int x, int z)
 	auto rsX = -(this->worldX - x * ChunkWidth) / ChunkWidth;
 	auto rsZ = -(this->worldZ - z * ChunkWidth) / ChunkWidth;
 
+	auto chunk = m_table[rsX * TableWidth + rsZ];
+
+	if(chunk)
+	{
+		chunk->dispose();
+		m_vcm->m_chunks.erase(std::find(m_vcm->m_chunks.begin(), m_vcm->m_chunks.end(), chunk));
+	}
+
 	m_table[rsX * TableWidth + rsZ] = nullptr;
 }
 
@@ -64,6 +72,8 @@ void VoxelChunkMap::addRoot(MapRoot* root)
 {
 	m_roots.push_back(root);
 
+	root->m_vcm = this;
+
 	auto x = root->worldX / ChunkWidth;
 	auto z = root->worldZ / ChunkWidth;
 
@@ -108,6 +118,9 @@ void VoxelChunkMap::addChunk(VoxelChunk* chunk)
 
 		addRoot(root);
 	}
+
+	// set root ptr
+	chunk->m_root = root;
 
 	m_chunks.push_back(chunk);
 	root->addChunk(chunk, chunk->m_x, chunk->m_z);

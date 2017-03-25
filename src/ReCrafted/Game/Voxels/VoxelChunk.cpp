@@ -192,7 +192,7 @@ void VoxelChunk::update()
 
 	auto timeNotUsed = Time::time() - m_lastTimeVisible;
 
-	auto chunkPos = Vector2(m_x * ChunkWidth + ChunkWidth / 2, m_z * ChunkWidth + ChunkWidth / 2);
+	auto chunkPos = Vector2(float(m_x) * ChunkWidth + ChunkWidth / 2, float(m_z) * ChunkWidth + ChunkWidth / 2);
 	auto camPos = Camera::getMainCamera()->get_position();
 	auto distance = Vector2::distance(chunkPos, Vector2(camPos.x, camPos.z));
 
@@ -210,21 +210,18 @@ void VoxelChunk::update()
 		return;
 	}
 
-	// do not compress when this chunk is in less than 100 meters behind visiblity range
-	if (distance <= 520.0f + 100.0f) // TODO: gameoptions range
-		return;
-	
-	if(!m_voxelsCompressed && timeNotUsed > 25.0f)
-	{
-		// TODO: queue to compress
-	}
-
 	// unload if chunk is more than visibility range(+100) meters away
 	if (distance <= 520.0f + 100.0f) // TODO: gameoptions range
 	{
-		if (m_voxelsCompressed && timeNotUsed > 120.0f)
+		if (timeNotUsed > 10.0f)
 		{
 			// TODO: queue to unload
+			auto root = static_cast<VoxelChunkMap::MapRoot*>(m_root);
+			
+			if(root)
+				root->removeChunk(m_x, m_z);
+			else
+				dispose();
 		}
 	}
 }
