@@ -157,7 +157,7 @@ void VoxelChunkMap::draw()
 
 	if (baseRoot == nullptr)
 	{
-		world->generateChunk(farChunkLeft, farChunkBottom);
+		world->generateChunk(farChunkLeft+1, farChunkBottom+1);
 		baseRoot = findRoot(farChunkLeft, farChunkBottom);
 	}
 
@@ -191,7 +191,12 @@ void VoxelChunkMap::draw()
 				continue;
 
 			if (!root)
-				return;
+			{
+				root = findRoot(x, z);
+				
+				if(!root)
+					return;
+			}
 
 			// check if currently selected root is the right root
 			if(!root->contains(x, z))
