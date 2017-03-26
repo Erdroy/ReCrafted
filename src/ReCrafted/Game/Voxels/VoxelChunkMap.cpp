@@ -157,7 +157,7 @@ void VoxelChunkMap::draw()
 
 	if (baseRoot == nullptr)
 	{
-		world->generateChunk(farChunkLeft+1, farChunkBottom+1);
+		world->generateChunk(farChunkLeft, farChunkBottom);
 		baseRoot = findRoot(farChunkLeft, farChunkBottom);
 	}
 
@@ -170,31 +170,18 @@ void VoxelChunkMap::draw()
 		for (auto z = farChunkBottom; z < farChunkTop; z++)
 		{
 			// fast check if the chunk is in range
-			// check if currently selected root is the right root
-			//  fast find root - traverse the neigh recursive tree
-			// if root is not found, build new one
-			//	then create new chunk and queue it to VCP
-			//  CONTINUE - because the chunk doesn't have any mesh to render now.
-			// if the root is found
-			//  if chunk exisits
-			//   if does not have mesh
-			//    queue to meshing
-			//    CONTINUE
-			//   draw
-			//  else
-			//   create new chunk and queue it to VCP
-
-			// fast check if the chunk is in range
 			auto rX = x*ChunkWidth - point.x;
 			auto rZ = z*ChunkWidth - point.z;
 			if (sqrt(rX * rX + rZ * rZ) > range)
 				continue;
 
+			// check if there is root
 			if (!root)
 			{
+				// root not found, try to find
 				root = findRoot(x, z);
 				
-				if(!root)
+				if(!root) // still there is no any root, return.
 					return;
 			}
 
