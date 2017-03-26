@@ -215,6 +215,7 @@
     <ClCompile Include="Platform\Platform.Windows.cpp" />
     <ClCompile Include="r3d\r3d.cpp" />
     <ClCompile Include="r3d\r3d_d3d11.cpp" />
+    <ClCompile Include="r3d\r3d_shader.cpp" />
     <ClCompile Include="recraftedPrerequisites.cpp" />
   </ItemGroup>
   <ItemGroup>

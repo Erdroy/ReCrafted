@@ -127,6 +127,8 @@ namespace r3d
 	void endframe();
 	void shutdown();
 
+	r3d_apitype::Enum get_apitype();
+
 	r3d_memory alloc_memory(uint32_t size);
 	void destroy_memory(r3d_memory* memory);
 
@@ -137,9 +139,14 @@ namespace r3d
 	void set_output(void* window_handle);
 	void set_rendermode(int16_t mode);
 
-	// rendering methods
 
-	void load_shader(const char* shader_bytecode, r3d_shader_handle* shader_handle);
+	// shader methods
+
+	void compile_shader(const char* shader_file, const char* output_file);
+	void load_shader(const char* shader_file, r3d_shader_handle* shader_handle);
+
+
+	// rendering methods
 
 	void clear_color(float color[4]);
 	void clear_depth();

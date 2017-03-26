@@ -14,6 +14,7 @@ public:
 	virtual ~r3d_renderer() { }
 
 	virtual void init(void* window_handle, uint16_t width, uint16_t height) = 0;
+	virtual void resize(uint16_t width, uint16_t height) = 0;
 	virtual void destroy() = 0;
 	virtual void execute_commandlist(r3d_commandlist* cmdListPtr) = 0;
 };

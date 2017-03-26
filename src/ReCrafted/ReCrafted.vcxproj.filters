@@ -102,6 +102,9 @@
     <ClCompile Include="Game\Voxels\VoxelMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="r3d\r3d_shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\GameBase.h">

@@ -9,7 +9,9 @@
 namespace r3d
 {
 	r3d_commandlist g_cmdlist = {};
-	r3d_renderer* renderer = nullptr;
+	r3d_apitype::Enum g_apitype = r3d_apitype::d3d11;
+	r3d_renderer* g_renderer = nullptr;
+
 
 	r3d_commandlist alloc_commandlist(uint32_t size)
 	{
@@ -19,14 +21,16 @@ namespace r3d
 
 	void init(void* window_handle, uint16_t width, uint16_t height, r3d_apitype::Enum api_type)
 	{
+		g_apitype = api_type;
+
 		// allocate command list
 		g_cmdlist = alloc_commandlist(64 << 10);
 
 		switch (api_type)
 		{
 		case r3d_apitype::d3d11: 
-			renderer = new r3d_d3d11;
-			renderer->init(window_handle, width, height);
+			g_renderer = new r3d_d3d11;
+			g_renderer->init(window_handle, width, height);
 			break;
 		case r3d_apitype::opengl4:
 			//renderer = new r3d_opengl4;
@@ -95,7 +99,7 @@ namespace r3d
 		g_cmdlist.write(r3d_cmdlist_header::present);
 
 		// execute command list
-		renderer->execute_commandlist(&g_cmdlist);
+		g_renderer->execute_commandlist(&g_cmdlist);
 
 		// clear command list
 		g_cmdlist.clear();
@@ -107,7 +111,12 @@ namespace r3d
 		g_cmdlist.destroy();
 
 		// destroy renderer
-		renderer->destroy();
+		g_renderer->destroy();
+	}
+
+	r3d_apitype::Enum get_apitype()
+	{
+		return g_apitype;
 	}
 
 	r3d_memory alloc_memory(uint32_t size)

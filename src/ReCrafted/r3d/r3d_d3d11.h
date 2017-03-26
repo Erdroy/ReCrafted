@@ -12,6 +12,7 @@ private:
 
 public:
 	void init(void* window_handle, uint16_t width, uint16_t height) override;
+	void resize(uint16_t width, uint16_t height) override;
 	void destroy() override;
 	void execute_commandlist(r3d_commandlist* cmdListPtr) override;
 };
