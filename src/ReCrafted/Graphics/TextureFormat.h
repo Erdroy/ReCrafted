@@ -8,6 +8,9 @@
 // includes
 #include "../recraftedPrerequisites.h"
 
+/// <summary>
+/// Texture format enum.
+/// </summary>
 struct TextureFormat
 {
 	enum Enum

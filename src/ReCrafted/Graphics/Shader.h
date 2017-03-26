@@ -15,6 +15,9 @@ struct Vector3;
 struct Vector4;
 struct Matrix;
 
+/// <summary>
+/// Shader class.
+/// </summary>
 class Shader
 {
 	friend class Rendering;

@@ -10,6 +10,9 @@
 #include "../Utils/Types.h"
 #include "../Core/Math/Math.h"
 
+/// <summary>
+/// Mesh class.
+/// </summary>
 class Mesh
 {
 	friend class Rendering;

@@ -14,6 +14,9 @@
 
 class Entity;
 
+/// <summary>
+/// Camera class.
+/// </summary>
 class Camera
 {
 	friend class Rendering;
@@ -53,17 +56,22 @@ private:
 	}
 
 public:
+	/// <summary>
+	/// Sets this camera as current.
+	/// </summary>
 	FORCEINLINE void setAsCurrent()
 	{
 		m_mainCamera = this;
 	}
 
+	/// <summary>
+	/// Sets the camera 'look-at'.
+	/// </summary>
+	/// <param name="lookAt"></param>
 	FORCEINLINE void setLookAt(Vector3 lookAt)
 	{
 		m_lookAt = lookAt;
 	}
-
-	void fixToEntity(Ptr<Entity> entity, Vector3 offset);
 
 public:
 	/// <summary>
@@ -93,6 +101,10 @@ public:
 		return camera;
 	}
 
+	/// <summary>
+	/// Gets the main camera.
+	/// </summary>
+	/// <returns></returns>
 	FORCEINLINE static Camera* getMainCamera()
 	{
 		return m_mainCamera;
