@@ -42,27 +42,27 @@ private:
 
 public:
 	/// <summary>
-	/// Initialize voxel world
+	/// Initializes voxel world
 	/// </summary>
 	void init();
 
 	/// <summary>
-	/// Update th whole world
+	/// Updates th whole world
 	/// </summary>
 	void update();
 
 	/// <summary>
-	/// Simulate the whole world
+	/// Simulates the whole world
 	/// </summary>
 	void simulate();
 	
 	/// <summary>
-	/// Draw visible objects in the whole world
+	/// Draws visible objects in the whole world
 	/// </summary>
 	void draw();
 
 	/// <summary>
-	/// Generate chunk
+	/// Generates chunk
 	/// </summary>
 	/// <param name="x">The chunk x coord in chunk-space.</param>
 	/// <param name="z">The chunk z coord in chunk-space.</param>
@@ -70,14 +70,14 @@ public:
 	VoxelChunk* generateChunk(int x, int z);
 
 	/// <summary>
-	/// Find chunk which contains the point.
+	/// Finds chunk which contains the point.
 	/// </summary>
 	/// <param name="containedPoint">The point.</param>
 	/// <returns>Found chunk or null when chunk is does not exist.</returns>
 	VoxelChunk* getVoxelChunk(Vector3 containedPoint);
 
 	/// <summary>
-	/// Raycast trough voxels.
+	/// Raycasts trough voxels.
 	/// </summary>
 	/// <param name="origin">The ray origin.</param>
 	/// <param name="direction">The ray direction.</param>
@@ -86,7 +86,7 @@ public:
 	bool raycast(Vector3 origin, Vector3 direction, RaycastHit* hit);
 
 	/// <summary>
-	/// Dispose the world
+	/// Disposes the world
 	/// </summary>
 	FORCEINLINE void dispose() const
 	{

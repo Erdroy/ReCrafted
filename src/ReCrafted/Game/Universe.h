@@ -35,27 +35,27 @@ private:
 
 public:
 	/// <summary>
-	/// Update the whole universe.
+	/// Updates the whole universe.
 	/// </summary>
 	void update();
 
 	/// <summary>
-	/// Simulate the whole universe.
+	/// Simulates the whole universe.
 	/// </summary>
 	void simulate();
 
 	/// <summary>
-	/// Draw all shadow casters.
+	/// Draws all shadow casters.
 	/// </summary>
 	void drawShadowCasters();
 
 	/// <summary>
-	/// Draw the whole universe.
+	/// Draws the whole universe.
 	/// </summary>
 	void draw();
 
 	/// <summary>
-	/// Dispose the universe.
+	/// Disposes the universe.
 	/// </summary>
 	FORCEINLINE void dispose() const
 	{

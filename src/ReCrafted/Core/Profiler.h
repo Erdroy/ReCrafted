@@ -10,6 +10,9 @@
 #include "../Platform/Platform.Windows.h"
 #include "Logger.h"
 
+/// <summary>
+/// Profiler class.
+/// </summary>
 class Profiler
 {
 private:
@@ -17,7 +20,6 @@ private:
 	static std::vector<double> m_stack;
 
 public:
-
 	/// <summary>
 	/// Begin profile.
 	/// </summary>

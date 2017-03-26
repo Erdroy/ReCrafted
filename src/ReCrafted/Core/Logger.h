@@ -13,6 +13,9 @@
 	#define LOGGER_MAXSIZE 8192
 #endif
 
+/// <summary>
+/// Log level enum, specifies the log level.
+/// </summary>
 struct LogLevel
 {
 	enum Enum
@@ -27,6 +30,9 @@ struct LogLevel
 	};
 };
 
+/// <summary>
+/// Logger class.
+/// </summary>
 class Logger
 {
 	friend class GameCore;
@@ -45,6 +51,14 @@ private:
 	void dispose();
 
 public:
+	/// <summary>
+	/// Write into the log.
+	/// Joins all message parts.
+	/// </summary>
+	/// <param name="messageA">The first message part.</param>
+	/// <param name="messageB">The second message part.</param>
+	/// <param name="messageC">The third message part.</param>
+	/// <param name="logLevel">The log level.</param>
 	FORCEINLINE static void write(const char* messageA, const char* messageB, const char* messageC, LogLevel::Enum logLevel = LogLevel::Debug)
 	{
 #ifndef _DEBUG
@@ -60,11 +74,22 @@ public:
 		write(buffer, logLevel);
 	}
 
+	/// <summary>
+	/// Write into the log.
+	/// Joins all message parts.
+	/// </summary>
+	/// <param name="messageA">The first message part.</param>
+	/// <param name="messageB">The second message part.</param>
+	/// <param name="logLevel">The log level.</param>
 	FORCEINLINE static void write(const char* messageA, const char* messageB, LogLevel::Enum logLevel = LogLevel::Debug)
 	{
 		write(messageA, messageB, "", logLevel);
 	}
 
+	/// <summary>
+	/// Write into the log.
+	/// </summary>
+	/// <param name="logLevel">The log level.</param>
 	FORCEINLINE static void write(const char* message, LogLevel::Enum logLevel = LogLevel::Debug)
 	{
 #ifndef _DEBUG

@@ -28,7 +28,7 @@ void worker_data(std::vector<VoxelChunk*>* queue)
 		}
 
 		// process
-		chunk->worker_dataGenerate();
+		chunk->generateVoxelData();
 		VoxelChunkProcessorInstance->finishChunkData(chunk);
 
 		// try to set neightbours
@@ -58,7 +58,7 @@ void worker_meshing(std::vector<VoxelChunk*>* queue)
 		}
 
 		// process
-		chunk->worker_meshGenerate();
+		chunk->generateMesh();
 		VoxelChunkProcessorInstance->finishChunkMesh(chunk);
 
 		chunk = nullptr;

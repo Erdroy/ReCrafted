@@ -8,6 +8,9 @@
 // includes
 #include "../Utils/Defines.h"
 
+/// <summary>
+/// Time class.
+/// </summary>
 class Time
 {
 	friend class GameBase;
@@ -21,8 +24,15 @@ private:
 	float m_time = 0.0;
 
 public:
+	/// <summary>
+	/// Default constuctor for Time class.
+	/// </summary>
 	Time() { m_instance = this; }
 
+public:
+	/// <summary>
+	/// Dispose the time.
+	/// </summary>
 	FORCEINLINE void dispose()
 	{
 		m_deltaTime = 0.0f;
@@ -32,11 +42,20 @@ public:
 	}
 
 public:
+	/// <summary>
+	/// The current frame delta time.
+	/// Use for 'Update' calls.
+	/// </summary>
+	/// <returns>The frame delta time.</returns>
 	FORCEINLINE static double deltaTime()
 	{
 		return 1.0 / m_instance->m_deltaTime;
 	}
 
+	/// <summary>
+	/// The current game time.
+	/// </summary>
+	/// <returns>The time.</returns>
 	FORCEINLINE static float time()
 	{
 		return m_instance->m_time;

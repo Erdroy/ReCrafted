@@ -91,7 +91,7 @@ FORCEINLINE void build_face(
 	}
 }
 
-void VoxelChunk::worker_dataGenerate() // WARNING: this should be run in job queue!
+void VoxelChunk::generateVoxelData() // WARNING: this should be run in job queue!
 {
 	// create voxels
 	m_voxels = new voxelid[ChunkWidth * ChunkHeight * ChunkWidth];
@@ -112,7 +112,7 @@ void VoxelChunk::worker_dataGenerate() // WARNING: this should be run in job que
 	m_lastTimeVisible = Time::time();
 }
 
-void VoxelChunk::worker_meshGenerate() // WARNING: this should be run in job queue!
+void VoxelChunk::generateMesh() // WARNING: this should be run in job queue!
 {
 	if (m_disposed)
 		return;

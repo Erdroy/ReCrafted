@@ -121,17 +121,17 @@ public:
 	std::vector<VoxelChunk*>* getChunks();
 
 	/// <summary>
-	/// Draw all visible chunks
+	/// Draws all visible chunks
 	/// </summary>
 	void draw();
 
 	/// <summary>
-	/// Dispose the chunk map.
+	/// Disposes the chunk map.
 	/// </summary>
 	void dispose();
 
 	/// <summary>
-	/// Convert chunk position(in chunk space) to root space position.
+	/// Converts chunk position(in chunk space) to root space position.
 	/// </summary>
 	/// <param name="a">The coord.</param>
 	/// <returns>The root space position.</returns>

@@ -62,10 +62,28 @@ public:
 	/// </summary>
 	void dispose();
 
+	/// <summary>
+	/// Find and dequeue chunk for voxel data generation.
+	/// </summary>
+	/// <returns>The found chunk or null when no any chunk needs voxel data generation.</returns>
 	VoxelChunk* dequeueDataLessChunk();
+
+	/// <summary>
+	/// Find and dequeue chunk for meshing.
+	/// </summary>
+	/// <returns>The found chunk or null when no any chunk needs meshing.</returns>
 	VoxelChunk* dequeueMeshLessChunk();
 
+	/// <summary>
+	/// Finish voxel data generation for specified chunk.
+	/// </summary>
+	/// <param name="chunk">The chunk.</param>
 	void finishChunkData(VoxelChunk* chunk) const;
+
+	/// <summary>
+	/// Finish meshing for specified chunk.
+	/// </summary>
+	/// <param name="chunk">The chunk.</param>
 	void finishChunkMesh(VoxelChunk* chunk) const;
 
 public:

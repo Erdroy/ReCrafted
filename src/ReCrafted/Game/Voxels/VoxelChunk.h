@@ -56,10 +56,19 @@ private:
 	Ptr<Mesh> m_mesh = nullptr;
 
 public:
+	/// <summary>
+	/// Updates the chunk.
+	/// </summary>
 	void update();
 
+	/// <summary>
+	/// Simulates the chunk.
+	/// </summary>
 	void simulate();
 
+	/// <summary>
+	/// Draws the chunk.
+	/// </summary>
 	FORCEINLINE void draw()
 	{
 		if (m_processing || m_queued || m_mesh == nullptr)
@@ -79,6 +88,9 @@ public:
 		Rendering::getInstance()->draw(m_mesh, &modelMatrix);
 	}
 
+	/// <summary>
+	/// Disposes the chunk.
+	/// </summary>
 	FORCEINLINE void dispose()
 	{
 		if (m_processing)
@@ -126,49 +138,23 @@ public:
 		delete this;
 	}
 
-	void worker_dataGenerate();
+	/// <summary>
+	/// Generates voxel data for this chunk.
+	/// </summary>
+	void generateVoxelData();
 
-	void worker_meshGenerate();
+	/// <summary>
+	/// Generates mesh for this chunk.
+	/// </summary>
+	void generateMesh();
 
-	void updateNeighs();
-
-	FORCEINLINE bool hasAnyNeigh() const
-	{
-
-		return m_neighN
-			|| m_neighNE
-			|| m_neighE
-			|| m_neighSE
-			|| m_neighS
-			|| m_neighSW
-			|| m_neighW
-			|| m_neighNW;
-	}
-
-	FORCEINLINE bool hasNeighs() const
-	{
-		return m_neighN 
-		&& m_neighNE 
-		&& m_neighE
-		&& m_neighSE
-		&& m_neighS 
-		&& m_neighSW 
-		&& m_neighW 
-		&& m_neighNW;
-	}
-
-	FORCEINLINE bool hasLoadedNeighs() const
-	{
-		return m_neighN->m_voxels
-			&& m_neighNE->m_voxels
-			&& m_neighE->m_voxels
-			&& m_neighSE->m_voxels
-			&& m_neighS->m_voxels
-			&& m_neighSW->m_voxels
-			&& m_neighW->m_voxels
-			&& m_neighNW->m_voxels;
-	}
-
+	/// <summary>
+	/// Gets voxel from THIS chunk, not using neighs.
+	/// </summary>
+	/// <param name="x"></param>
+	/// <param name="y"></param>
+	/// <param name="z"></param>
+	/// <returns></returns>
 	FORCEINLINE voxelid getVoxel(int x, int y, int z) const
 	{
 		if (y >= ChunkHeight || y < 0)
@@ -180,6 +166,14 @@ public:
 		return voxel_air; // nope
 	}
 
+	/// <summary>
+	/// Gets voxel from THIS chunk or neigh.
+	/// This needs all neighs to be loaded!
+	/// </summary>
+	/// <param name="x">The x coord of voxel.</param>
+	/// <param name="y">The y coord of voxel.</param>
+	/// <param name="z">The z coord of voxel.</param>
+	/// <returns>The voxel.</returns>
 	FORCEINLINE voxelid getVoxelCC(int x, int y, int z) const
 	{
 		#define is_out(A) (A < 0 || A >= ChunkWidth)
@@ -235,35 +229,122 @@ public:
 		return voxel_air; // nope
 	}
 
+
 	// recursive tree methods
+
+	/// <summary>
+	/// Finds and set all not set neighs.
+	/// </summary>
+	void updateNeighs();
+
+	/// <summary>
+	/// Does this chunk have any neigh?
+	/// </summary>
+	/// <returns>True when any neigh exists.</returns>
+	FORCEINLINE bool hasAnyNeigh() const
+	{
+
+		return m_neighN
+			|| m_neighNE
+			|| m_neighE
+			|| m_neighSE
+			|| m_neighS
+			|| m_neighSW
+			|| m_neighW
+			|| m_neighNW;
+	}
+
+	/// <summary>
+	/// Does this chunk have all neighs?
+	/// </summary>
+	/// <returns>True when all neighs exists.</returns>
+	FORCEINLINE bool hasNeighs() const
+	{
+		return m_neighN
+			&& m_neighNE
+			&& m_neighE
+			&& m_neighSE
+			&& m_neighS
+			&& m_neighSW
+			&& m_neighW
+			&& m_neighNW;
+	}
+
+	/// <summary>
+	/// Does this chunk have all neighs loaded?
+	/// </summary>
+	/// <returns>True when all neighs loaded.</returns>
+	FORCEINLINE bool hasLoadedNeighs() const
+	{
+		return m_neighN->m_voxels
+			&& m_neighNE->m_voxels
+			&& m_neighE->m_voxels
+			&& m_neighSE->m_voxels
+			&& m_neighS->m_voxels
+			&& m_neighSW->m_voxels
+			&& m_neighW->m_voxels
+			&& m_neighNW->m_voxels;
+	}
+
+	/// <summary>
+	/// The north neigh.
+	/// </summary>
 	FORCEINLINE VoxelChunk* neighN() const
 	{
 		return m_neighN;
 	}
+	
+	/// <summary>
+	/// The north-east neigh.
+	/// </summary>
 	FORCEINLINE VoxelChunk* neighNE() const
 	{
 		return m_neighNE;
 	}
+
+	/// <summary>
+	/// The east neigh.
+	/// </summary>
 	FORCEINLINE VoxelChunk* neighE() const
 	{
 		return m_neighE;
 	}
+
+	/// <summary>
+	/// The south-east neigh.
+	/// </summary>
 	FORCEINLINE VoxelChunk* neighSE() const
 	{
 		return m_neighSE;
 	}
+
+	/// <summary>
+	/// The south neigh.
+	/// </summary>
 	FORCEINLINE VoxelChunk* neighS() const
 	{
 		return m_neighS;
 	}
+
+	/// <summary>
+	/// The south-west neigh.
+	/// </summary>
 	FORCEINLINE VoxelChunk* neighSW() const
 	{
 		return m_neighSW;
 	}
+
+	/// <summary>
+	/// The west neigh.
+	/// </summary>
 	FORCEINLINE VoxelChunk* neighW() const
 	{
 		return m_neighW;
 	}
+
+	/// <summary>
+	/// The north-west neigh.
+	/// </summary>
 	FORCEINLINE VoxelChunk* neighNW() const
 	{
 		return m_neighNW;

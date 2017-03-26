@@ -11,8 +11,6 @@
 
 class VoxelGenerator
 {
-private:
-
 public:
 	static void initialize();
 
