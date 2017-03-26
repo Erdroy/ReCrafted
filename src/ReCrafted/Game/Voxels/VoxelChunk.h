@@ -24,7 +24,7 @@ static const int ChunkHeight = 128;
 class VoxelChunk
 {
 	friend class VoxelWorld;
-	friend class VoxelChunkMap;
+	friend class VoxelMap;
 	friend class VoxelChunkProcessor;
 
 private:

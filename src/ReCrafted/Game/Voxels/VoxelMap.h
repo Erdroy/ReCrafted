@@ -9,23 +9,23 @@
 #include "VoxelChunk.h"
 
 /// <summary>
-/// VoxelChunkMap class.
+/// VoxelMap class, holds all chunks.
 /// </summary>
-class VoxelChunkMap
+class VoxelMap
 {
 	friend class Universe;
 	friend class VoxelChunk;
 
 	class MapRoot
 	{
-		friend class VoxelChunkMap;
+		friend class VoxelMap;
 
 	public:
 		static const int TableWidth = 64; // 64(chunk count)
 		static const int TableWidthWS = TableWidth * ChunkWidth; // world: 64(chunk count) * 16(chunk size)
 
 	private:
-		VoxelChunkMap* m_vcm = nullptr;
+		VoxelMap* m_vcm = nullptr;
 
 	private:
 		FORCEINLINE bool containsX(int value) const

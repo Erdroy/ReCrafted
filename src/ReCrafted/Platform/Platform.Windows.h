@@ -256,6 +256,21 @@ public:
 	}
 
 	/// <summary>
+	/// Set the cursor position.
+	/// </summary>
+	/// <param name="x">The x coord of target cursor position in pixels.</param>
+	/// <param name="y">The y coord of target cursor position in pixels.</param>
+	FORCEINLINE static void setCursorPosition(uint16_t x, uint16_t y)
+	{
+		POINT point = {};
+		point.x = long(x);
+		point.y = long(y);
+
+		ClientToScreen(Platform::getGameWindow(), &point);
+		SetCursorPos(point.x, point.y);
+	}
+
+	/// <summary>
 	/// Check does file exists,
 	/// </summary>
 	/// <param name="fileName">The file path and name. Using working directory.</param>

@@ -9,7 +9,7 @@
 #include "../../recraftedPrerequisites.h"
 #include "../../Core/Logger.h"
 #include "VoxelChunk.h"
-#include "VoxelChunkMap.h"
+#include "VoxelMap.h"
 
 /*
 WORLD SPACE:
@@ -18,35 +18,76 @@ WORLD SPACE:
 	SW	S  SE
 */
 
+/// <summary>
+/// Raycast hit result data structure.
+/// </summary>
+struct RaycastHit
+{
+public:
+	voxelid voxel = voxel_air;
+	Vector3 point = {};
+	Vector3 normal = {};
+};
+
+/// <summary>
+/// VoxelWorld class - handles whole current world, voxel chunks etc.
+/// </summary>
 class VoxelWorld
 {
 	friend class Universe;
+	friend class VoxelChunk;
 
 private:
-
-	VoxelChunkMap* m_chunkMap = nullptr;
-
-private:
+	VoxelMap* m_chunkMap = nullptr;
 
 public:
-	void init(bool generateworld);
+	/// <summary>
+	/// Initialize voxel world
+	/// </summary>
+	void init();
 
+	/// <summary>
+	/// Update th whole world
+	/// </summary>
 	void update();
 
+	/// <summary>
+	/// Simulate the whole world
+	/// </summary>
 	void simulate();
 	
+	/// <summary>
+	/// Draw visible objects in the whole world
+	/// </summary>
 	void draw();
 
+	/// <summary>
+	/// Generate chunk
+	/// </summary>
+	/// <param name="x">The chunk x coord in chunk-space.</param>
+	/// <param name="z">The chunk z coord in chunk-space.</param>
+	/// <returns>The created and queued for generation chunk.</returns>
 	VoxelChunk* generateChunk(int x, int z);
 
+	/// <summary>
+	/// Find chunk which contains the point.
+	/// </summary>
+	/// <param name="containedPoint">The point.</param>
+	/// <returns>Found chunk or null when chunk is does not exist.</returns>
 	VoxelChunk* getVoxelChunk(Vector3 containedPoint);
 
-	VoxelChunk* getVoxelChunk(Vector3i position);
+	/// <summary>
+	/// Raycast trough voxels.
+	/// </summary>
+	/// <param name="origin">The ray origin.</param>
+	/// <param name="direction">The ray direction.</param>
+	/// <param name="hit">The ray result data.</param>
+	/// <returns>True when ray hits something.</returns>
+	bool raycast(Vector3 origin, Vector3 direction, RaycastHit* hit);
 
-	void findNeighs(VoxelChunk* chunk);
-
-	bool raycast(Vector3 origin, Vector3 direction, voxelid* voxelid, Vector3* point, Vector3* normal);
-
+	/// <summary>
+	/// Dispose the world
+	/// </summary>
 	FORCEINLINE void dispose() const
 	{
 		// dispose chunk map

@@ -34,14 +34,29 @@ private:
 	Universe() { m_instance = this; }
 
 public:
+	/// <summary>
+	/// Update the whole universe.
+	/// </summary>
 	void update();
 
+	/// <summary>
+	/// Simulate the whole universe.
+	/// </summary>
 	void simulate();
 
+	/// <summary>
+	/// Draw all shadow casters.
+	/// </summary>
 	void drawShadowCasters();
 
+	/// <summary>
+	/// Draw the whole universe.
+	/// </summary>
 	void draw();
 
+	/// <summary>
+	/// Dispose the universe.
+	/// </summary>
 	FORCEINLINE void dispose() const
 	{
 		m_currentWorld->dispose();

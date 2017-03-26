@@ -12,7 +12,7 @@ void Universe::init()
 	m_chunkProcessor->init();
 
 	m_currentWorld.reset(new VoxelWorld);
-	m_currentWorld->init(true);
+	m_currentWorld->init();
 }
 
 void Universe::update()

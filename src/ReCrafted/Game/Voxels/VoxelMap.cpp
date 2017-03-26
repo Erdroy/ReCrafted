@@ -1,10 +1,10 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
-#include "VoxelChunkMap.h"
+#include "VoxelMap.h"
 #include "../../Graphics/Camera.h"
 #include "../Universe.h"
 
-void VoxelChunkMap::MapRoot::addChunk(VoxelChunk* chunk, int x, int z)
+void VoxelMap::MapRoot::addChunk(VoxelChunk* chunk, int x, int z)
 {
 	auto rsX = -(this->worldX - x * ChunkWidth) / ChunkWidth;
 	auto rsZ = -(this->worldZ - z * ChunkWidth) / ChunkWidth; // TODO: cache this values in chunk class
@@ -12,7 +12,7 @@ void VoxelChunkMap::MapRoot::addChunk(VoxelChunk* chunk, int x, int z)
 	m_table[rsX * TableWidth + rsZ] = chunk;
 }
 
-void VoxelChunkMap::MapRoot::removeChunk(int x, int z)
+void VoxelMap::MapRoot::removeChunk(int x, int z)
 {
 	auto rsX = -(this->worldX - x * ChunkWidth) / ChunkWidth;
 	auto rsZ = -(this->worldZ - z * ChunkWidth) / ChunkWidth;
@@ -28,7 +28,7 @@ void VoxelChunkMap::MapRoot::removeChunk(int x, int z)
 	m_table[rsX * TableWidth + rsZ] = nullptr;
 }
 
-VoxelChunk* VoxelChunkMap::MapRoot::getChunk(int x, int z)
+VoxelChunk* VoxelMap::MapRoot::getChunk(int x, int z)
 {
 	auto rsX = -(this->worldX - x * ChunkWidth) / ChunkWidth;
 	auto rsZ = -(this->worldZ - z * ChunkWidth) / ChunkWidth;
@@ -36,12 +36,12 @@ VoxelChunk* VoxelChunkMap::MapRoot::getChunk(int x, int z)
 	return m_table[rsX * TableWidth + rsZ];
 }
 
-VoxelChunk* VoxelChunkMap::MapRoot::getChunk(int index)
+VoxelChunk* VoxelMap::MapRoot::getChunk(int index)
 {
 	return m_table[index];
 }
 
-VoxelChunkMap::MapRoot* VoxelChunkMap::findRoot(int x, int z)
+VoxelMap::MapRoot* VoxelMap::findRoot(int x, int z)
 {
 	MapRoot* root = nullptr;
 	auto found = false;
@@ -68,7 +68,7 @@ VoxelChunkMap::MapRoot* VoxelChunkMap::findRoot(int x, int z)
 	return found ? root : nullptr;
 }
 
-void VoxelChunkMap::addRoot(MapRoot* root)
+void VoxelMap::addRoot(MapRoot* root)
 {
 	m_roots.push_back(root);
 
@@ -103,7 +103,7 @@ void VoxelChunkMap::addRoot(MapRoot* root)
 		root->m_neighRight->m_neighLeft = root;
 }
 
-void VoxelChunkMap::addChunk(VoxelChunk* chunk)
+void VoxelMap::addChunk(VoxelChunk* chunk)
 {
 	auto root = findRoot(chunk->m_x, chunk->m_z);
 
@@ -126,7 +126,7 @@ void VoxelChunkMap::addChunk(VoxelChunk* chunk)
 	root->addChunk(chunk, chunk->m_x, chunk->m_z);
 }
 
-VoxelChunk* VoxelChunkMap::findChunk(int x, int z)
+VoxelChunk* VoxelMap::findChunk(int x, int z)
 {
 	auto root = findRoot(x, z);
 
@@ -136,12 +136,12 @@ VoxelChunk* VoxelChunkMap::findChunk(int x, int z)
 	return root->getChunk(x, z);
 }
 
-std::vector<VoxelChunk*>* VoxelChunkMap::getChunks()
+std::vector<VoxelChunk*>* VoxelMap::getChunks()
 {
 	return &m_chunks;
 }
 
-void VoxelChunkMap::draw()
+void VoxelMap::draw()
 {
 	auto range = 500.0f;
 	auto point = Camera::getMainCamera()->get_position();
@@ -241,7 +241,7 @@ void VoxelChunkMap::draw()
 	bgfx::dbgTextPrintf(1, 7, 0x4, "Drawn chunks: %d", drawnchunks);
 }
 
-void VoxelChunkMap::dispose()
+void VoxelMap::dispose()
 {
 	// TODO: delete all map roots
 }

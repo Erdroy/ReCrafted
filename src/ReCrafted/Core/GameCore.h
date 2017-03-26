@@ -14,7 +14,7 @@
 #include "Logger.h"
 
 /// <summary>
-/// GameCoreClass
+/// GameCore class
 /// </summary>
 class GameCore : public GameBase
 {
@@ -32,8 +32,12 @@ private:
 	Ptr<Camera> m_camera = nullptr;
 
 public:
+	/// <summary>
+	/// Default constructor of GameCore class.
+	/// </summary>
 	GameCore() { m_instance = this; }
 
+public:
 	void onLoad() override;
 
 	void onUnload() override;
@@ -47,16 +51,28 @@ public:
 	void onDraw() override;
 	
 public:
+	/// <summary>
+	/// The game window width.
+	/// </summary>
+	/// <returns>The width.</returns>
 	FORCEINLINE static uint getWindowWidth()
 	{
 		return m_instance->m_width;
 	}
 
+	/// <summary>
+	/// The game window height.
+	/// </summary>
+	/// <returns>The height.</returns>
 	FORCEINLINE static uint getWindowHeight()
 	{
 		return m_instance->m_height;
 	}
 
+	/// <summary>
+	/// The game window aspect ratio.
+	/// </summary>
+	/// <returns>The aspect ratio.</returns>
 	FORCEINLINE static float getAspectRatio()
 	{
 		return float(m_instance->m_width) / float(m_instance->m_height);

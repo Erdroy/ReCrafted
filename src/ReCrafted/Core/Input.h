@@ -101,16 +101,14 @@ public:
 		return m_instance->m_cursorPos;
 	}
 
+	/// <summary>
+	/// Set the cursor position.
+	/// </summary>
+	/// <param name="x">The x coord of target cursor position in pixels.</param>
+	/// <param name="y">The y coord of target cursor position in pixels.</param>
 	FORCEINLINE static void setCursorPos(int x, int y)
 	{
-#if _WIN32
-		POINT point = {};
-		point.x = long(x);
-		point.y = long(y);
-
-		ClientToScreen(Platform::getGameWindow(), &point);
-		SetCursorPos(point.x, point.y);
-#endif
+		Platform::setCursorPosition(uint16_t(x), uint16_t(y));
 	}
 
 	/// <summary>

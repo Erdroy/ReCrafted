@@ -185,7 +185,78 @@ void VoxelChunk::worker_meshGenerate() // WARNING: this should be run in job que
 
 void VoxelChunk::updateNeighs()
 {
-	world->findNeighs(this);
+	if (!this->m_neighN)
+	{
+		// find chunk
+		m_neighN = world->m_chunkMap->findChunk(m_x, m_z + 1);
+
+		if (m_neighN)
+			m_neighN->m_neighS = this;
+	}
+
+	if (!m_neighE)
+	{
+		// find chunk
+		m_neighE = world->m_chunkMap->findChunk(m_x + 1, m_z);
+
+		if (m_neighE)
+			m_neighE->m_neighW = this;
+	}
+
+	if (!m_neighS)
+	{
+		// find chunk
+		m_neighS = world->m_chunkMap->findChunk(m_x, m_z - 1);
+
+		if (m_neighS)
+			m_neighS->m_neighN = this;
+	}
+
+	if (!m_neighW)
+	{
+		// find chunk
+		m_neighW = world->m_chunkMap->findChunk(m_x - 1, m_z);
+
+		if (m_neighW)
+			m_neighW->m_neighE = this;
+	}
+
+	// corners
+	if (!m_neighNE)
+	{
+		// find chunk
+		m_neighNE = world->m_chunkMap->findChunk(m_x + 1, m_z + 1);
+
+		if (m_neighNE)
+			m_neighNE->m_neighSW = this;
+	}
+
+	if (!m_neighSE)
+	{
+		// find chunk
+		m_neighSE = world->m_chunkMap->findChunk(m_x + 1, m_z - 1);
+
+		if (m_neighSE)
+			m_neighSE->m_neighNW = this;
+	}
+
+	if (!m_neighSW)
+	{
+		// find chunk
+		m_neighSW = world->m_chunkMap->findChunk(m_x - 1, m_z - 1);
+
+		if (m_neighSW)
+			m_neighSW->m_neighNE = this;
+	}
+
+	if (!m_neighNW)
+	{
+		// find chunk
+		m_neighNW = world->m_chunkMap->findChunk(m_x - 1, m_z + 1);
+
+		if (m_neighNW)
+			m_neighNW->m_neighSE = this;
+	}
 }
 
 void VoxelChunk::update()
@@ -219,7 +290,7 @@ void VoxelChunk::update()
 		if (timeNotUsed > 10.0f)
 		{
 			// TODO: queue to unload
-			auto rootc = static_cast<VoxelChunkMap::MapRoot*>(root);
+			auto rootc = static_cast<VoxelMap::MapRoot*>(root);
 			
 			if(rootc)
 				rootc->removeChunk(m_x, m_z);
