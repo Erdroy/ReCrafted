@@ -108,6 +108,7 @@ public:
 
 
 
+R3D_DEFINE_HANDLE(window)
 R3D_DEFINE_HANDLE(vertexlayout)
 R3D_DEFINE_HANDLE(vertexbuffer)
 R3D_DEFINE_HANDLE(indexbuffer)
@@ -122,15 +123,28 @@ namespace r3d
 
 	// core functions
 
-	void init(void* window_handle, uint16_t width, uint16_t height, r3d_apitype::Enum api_type = r3d_apitype::d3d11);
+	void init(r3d_apitype::Enum api_type = r3d_apitype::d3d11);
 	void beginframe();
 	void endframe();
 	void shutdown();
-
 	r3d_apitype::Enum get_apitype();
+
+
+	// memory management functions
 
 	r3d_memory alloc_memory(uint32_t size);
 	void destroy_memory(r3d_memory* memory);
+
+
+	// window(context) functions
+
+	r3d_window_handle create_window(const char* title);
+	r3d_window_handle create_window(void* window_handle, const char* title);
+
+	void window_makecurrent(r3d_window_handle* window);
+	void* window_getnativeptr(r3d_window_handle* window);
+
+	void destroy_window(r3d_window_handle* window);
 
 
 	// rendering options

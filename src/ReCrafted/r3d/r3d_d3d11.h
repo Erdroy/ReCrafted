@@ -11,7 +11,9 @@ class r3d_d3d11 : public r3d_renderer
 private:
 
 public:
-	void init(void* window_handle, uint16_t width, uint16_t height) override;
+	void init() override;
+	void create_context(r3d_window_handle* window) override;
+	void make_current(r3d_window_handle* window) override;
 	void resize(uint16_t width, uint16_t height) override;
 	void destroy() override;
 	void execute_commandlist(r3d_commandlist* cmdListPtr) override;
