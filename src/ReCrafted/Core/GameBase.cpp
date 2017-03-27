@@ -137,7 +137,11 @@ void GameBase::run()
 	pd.nwh = Platform::getGameWindow();
 	bgfx::setPlatformData(pd);
 #else
-	r3d::init(Platform::getGameWindow(), 1280, 720);
+	r3d::init();
+	auto windowHandle = r3d::create_window(Platform::getGameWindow(), "r3d example");
+
+	//r3d_shader_handle shader_handle;
+	//r3d::compile_shader("test.shader", "output");
 #endif
 
 	// run
@@ -181,13 +185,17 @@ void GameBase::run()
 #else
 		float ccolor[4] = { 0.3f, 0.3f, 0.3f, 1.0f };
 
+		// say that we are going to push some information about current frame(for all contexts)
 		r3d::beginframe();
+		
+		// prepare for frame render
+		r3d::window_makecurrent(&windowHandle); // set windowHandle as current context(already it is set, bu this is only for example here)
+		r3d::use_renderbuffer(nullptr); // set default render buffer for the current context
 
 		r3d::clear_color(ccolor);
 		r3d::clear_depth();
 
-
-
+		// end the frame, process and present the whole frame
 		r3d::endframe();
 #endif
 	}

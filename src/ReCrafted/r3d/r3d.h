@@ -92,6 +92,7 @@ struct r3d_object_handle
 {
 public:
 	unsigned int idx = 0u;
+	unsigned int ctx = 0u;
 };
 
 #pragma warning(push)
@@ -109,6 +110,7 @@ public:
 
 
 R3D_DEFINE_HANDLE(window)
+R3D_DEFINE_HANDLE(renderbuffer)
 R3D_DEFINE_HANDLE(vertexlayout)
 R3D_DEFINE_HANDLE(vertexbuffer)
 R3D_DEFINE_HANDLE(indexbuffer)
@@ -162,15 +164,19 @@ namespace r3d
 
 	// rendering methods
 
+	void use_renderbuffer(r3d_renderbuffer_handle* renderbuffer);
+
 	void clear_color(float color[4]);
 	void clear_depth();
 
-	r3d_vertexbuffer_handle* create_vertexbuffer();
-	r3d_indexbuffer_handle* create_indexbuffer(uint32_t indiceCount, bool use32bit);
-	r3d_texture2d_handle* create_texture2d(uint16_t width, uint16_t height, r3d_texture_format format);
-	r3d_texture3d_handle* create_renderbuffer(r3d_texture2d_handle* texture_handles, uint8_t texture_count);
-	r3d_shader_handle* create_shader();
+	r3d_renderbuffer_handle create_renderbuffer(uint16_t texture_count, r3d_texture2d_handle* textures[]);
+	r3d_vertexbuffer_handle create_vertexbuffer();
+	r3d_indexbuffer_handle create_indexbuffer(uint32_t indiceCount, bool use32bit);
+	r3d_texture2d_handle create_texture2d(uint16_t width, uint16_t height, r3d_texture_format format);
+	r3d_texture3d_handle create_renderbuffer(r3d_texture2d_handle* texture_handles, uint8_t texture_count);
+	r3d_shader_handle create_shader();
 
+	void destroy_renderbuffer(r3d_renderbuffer_handle* handle);
 	void destroy_vertexbuffer(r3d_vertexbuffer_handle* handle);
 	void destroy_indexbuffer(r3d_indexbuffer_handle* handle);
 	void destroy_texture2d(r3d_texture2d_handle* handle);

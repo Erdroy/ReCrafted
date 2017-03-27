@@ -23,6 +23,7 @@ namespace r3d
 	r3d_commandlist g_cmdlist = {};
 	r3d_apitype::Enum g_apitype = r3d_apitype::d3d11;
 	r3d_renderer* g_renderer = nullptr;
+	int g_currentCtx = 0;
 
 
 	r3d_commandlist alloc_commandlist(uint32_t size)
@@ -81,6 +82,11 @@ namespace r3d
 		g_cmdlist.write(mode);
 	}
 
+	void use_renderbuffer(r3d_renderbuffer_handle* renderbuffer)
+	{
+
+	}
+
 	void clear_color(float color[4])
 	{
 		g_cmdlist.write(r3d_cmdlist_header::clearcolor);
@@ -90,6 +96,20 @@ namespace r3d
 	void clear_depth()
 	{
 		g_cmdlist.write(r3d_cmdlist_header::cleardepth);
+	}
+
+	r3d_renderbuffer_handle create_renderbuffer(uint16_t texture_count, r3d_texture2d_handle* textures[])
+	{
+		auto handle = r3d_renderbuffer_handle();
+
+
+
+		return handle;
+	}
+
+	void destroy_renderbuffer(r3d_renderbuffer_handle* handle)
+	{
+
 	}
 
 	void viewport(int x, int y, int width, int height)
@@ -145,6 +165,7 @@ namespace r3d
 
 	void window_makecurrent(r3d_window_handle* window)
 	{
+		g_currentCtx = window->idx;
 		g_renderer->make_current(window);
 	}
 
