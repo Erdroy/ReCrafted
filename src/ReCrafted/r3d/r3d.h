@@ -140,13 +140,13 @@ namespace r3d
 
 	// window(context) functions
 
-	r3d_window_handle create_window(const char* title);
+	r3d_window_handle create_window(const char* title); // TODO: create_window
 	r3d_window_handle create_window(void* window_handle, const char* title);
 
 	void window_makecurrent(r3d_window_handle* window);
 	void* window_getnativeptr(r3d_window_handle* window);
 
-	void destroy_window(r3d_window_handle* window);
+	void destroy_window(r3d_window_handle* window); // TODO: destroy_window
 
 
 	// rendering options
@@ -158,8 +158,8 @@ namespace r3d
 
 	// shader methods
 
-	void compile_shader(const char* shader_file, const char* output_file); // TODO: compile_shader
-	void load_shader(const char* shader_file, r3d_shader_handle* shader_handle); // TODO: load_shader
+	void compile_shader(const char* shader_file, const char* output_file, bool all_platforms = true);
+	void load_shader(const char* shader_file, r3d_shader_handle* shader_handle);
 
 
 	// rendering methods

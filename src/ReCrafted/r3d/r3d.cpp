@@ -22,6 +22,9 @@ namespace r3d
 	}  \
 	void free_##name##( type value ) { _ASSERT( value.idx != 0u ); name##_table[ value.idx ].idx = 0u; }
 
+#define R3D_CTX_OK(handle) _ASSERT(##handle##.ctx == g_currentCtx)
+#define R3D_CTX_OK_PTR(handle) _ASSERT(##handle##->ctx == g_currentCtx)
+
 	class window
 	{
 	public:
@@ -125,6 +128,21 @@ namespace r3d
 		free(*memory);
 	}
 
+	r3d_window_handle create_window(void* window_handle, const char* title)
+	{
+		auto handle = alloc_window_handle();
+
+		g_windows[handle.idx] = new window;
+
+		auto window = g_windows[handle.idx];
+		window->nativeptr = window_handle;
+
+		// use title for something?
+
+		g_renderer->create_context(&handle);
+		return handle;
+	}
+
 	void window_makecurrent(r3d_window_handle* window)
 	{
 		g_currentCtx = window->idx;
@@ -136,78 +154,14 @@ namespace r3d
 		return g_windows[window->idx]->nativeptr;
 	}
 
-	r3d_window_handle create_window(const char* title)
-	{
-		auto handle = r3d_window_handle();
-		handle.idx = -1;
-
-		for (auto i = 0; i < R3D_MAX_WINDOWS; i++)
-		{
-			if (g_windows[i] == nullptr)
-			{
-				handle.idx = i;
-				break;
-			}
-		}
-
-		if (handle.idx == -1)
-			throw;
-
-		g_windows[handle.idx] = new window;
-		auto window = g_windows[handle.idx];
-
-		// TODO: create window etc.
-		// TODO: window events
-
-		g_renderer->create_context(&handle);
-		return handle;
-	}
-
-	r3d_window_handle create_window(void* window_handle, const char* title)
-	{
-		auto handle = r3d_window_handle();
-		handle.idx = -1;
-
-		for (auto i = 0; i < R3D_MAX_WINDOWS; i++)
-		{
-			if (g_windows[i] == nullptr)
-			{
-				handle.idx = i;
-				break;
-			}
-		}
-
-		if (handle.idx == -1)
-			throw;
-
-		g_windows[handle.idx] = new window;
-
-		auto window = g_windows[handle.idx];
-		window->nativeptr = window_handle;
-
-		// use title for something?
-
-
-		g_renderer->create_context(&handle);
-		return handle;
-	}
-
-	void destroy_window(r3d_window_handle* window)
-	{
-		// TODO: destroy window and context(this must happen on the end of rendering, do not release context when there is some instructions for the same context).
-	}
-
 	void vsync(bool enabled)
 	{
-		// write init
 		g_cmdlist.write(r3d_cmdlist_header::vsync);
 		g_cmdlist.write(enabled);
-
 	}
 
 	void set_output(void* window_handle)
 	{
-		// write target window handle
 		g_cmdlist.write(r3d_cmdlist_header::target_window);
 		g_cmdlist.write(window_handle);
 	}
@@ -220,6 +174,7 @@ namespace r3d
 
 	void use_renderbuffer(r3d_renderbuffer_handle* renderbuffer)
 	{
+
 	}
 
 	void clear_color(float color[4])

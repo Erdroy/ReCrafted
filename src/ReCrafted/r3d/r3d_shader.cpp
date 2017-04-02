@@ -3,6 +3,7 @@
 #include "r3d.h"
 
 #include <fstream>
+#include <vector>
 
 namespace r3d
 {
@@ -106,6 +107,54 @@ namespace r3d
 
 			return true;
 		}
+		
+		static void removeFromTo(std::string& str, std::string fromStr, std::string toStr)
+		{
+			while (true)
+			{
+				auto from = -1;
+				auto to = 0;
+
+				for (auto i = 0; i < str.length(); i++)
+				{
+					auto startFound = true;
+					for (auto j = i; j < i + fromStr.length(); j++)
+					{
+						if (str[j] != fromStr[j - i])
+						{
+							startFound = false;
+							break;
+						}
+					}
+
+					if (startFound)
+					{
+						from = i;
+					}
+
+					auto endFound = true;
+					for (auto j = i; j < i + toStr.length(); j++)
+					{
+						if (str[j] != toStr[j - i])
+						{
+							endFound = false;
+							break;
+						}
+					}
+
+					if (endFound && from > -1)
+					{
+						to = i;
+						break;
+					}
+				}
+
+				str.erase(str.begin() + from, str.begin() + to+1);
+
+				// All passes has been replaced.
+				break;
+			}
+		}
 
 		static std::string extractSection(std::string& source, int i)
 		{
@@ -153,14 +202,67 @@ namespace r3d
 			return section;
 		}
 	};
-
-
-	void compile_shader_d3d11(const char* shader_source)
+	
+	void parse_shader(int source_length, std::string section)
 	{
-		// ???
+		auto has_input = false;
+		auto has_output = false;
+		std::string input = {};
+		std::string output = {};
+		std::vector<std::string> buffers = {};
+
+		std::string section_parsed = section;
+
+		for (auto j = 0; j < source_length; j++)
+		{
+			auto block_line = compiler_utils::getLine(section, j);
+
+			// input block
+			if (compiler_utils::startsWith(block_line, "Input"))
+			{
+				if (has_input)
+					throw;
+
+				input = compiler_utils::extractSection(section, j);
+				has_input = true;
+				j += static_cast<int>(input.length());
+				continue;
+			}
+
+			// output block
+			if (compiler_utils::startsWith(block_line, "Output"))
+			{
+				if (has_output)
+					throw;
+
+				output = compiler_utils::extractSection(section, j);
+				has_output = true;
+				j += static_cast<int>(output.length());
+				continue;
+			}
+
+			// buffer block
+			if (compiler_utils::startsWith(block_line, "Buffer"))
+			{
+				auto block = compiler_utils::extractSection(section, j);
+				buffers.push_back(block);
+				j += static_cast<int>(block.length());
+				continue;
+			}
+
+			j += static_cast<int>(block_line.length());
+		}
+
+		// remove all non-source blocks
+		compiler_utils::removeFromTo(section_parsed, "Input", "}");
+		compiler_utils::removeFromTo(section_parsed, "Output", "}");
+		compiler_utils::removeFromTo(section_parsed, "Buffer", "}");
+
+		// generate code, inject r3d API and optimize
+
 	}
 
-	void compile_shader(const char* shader_file, const char* output_file)
+	void compile_shader(const char* shader_file, const char* output_file, bool all_platforms)
 	{
 		// load file
 		std::ifstream shaderfile(shader_file);
@@ -186,7 +288,7 @@ namespace r3d
 			{
 				auto section = compiler_utils::extractSection(source, i);
 
-				// TODO: read Input, Output and Buffer [?], construct needed things and remove from source
+				parse_shader(int(section.length()), section);
 
 				i += static_cast<int>(section.length());
 				continue;
@@ -195,7 +297,7 @@ namespace r3d
 			{
 				auto section = compiler_utils::extractSection(source, i);
 
-				// TODO: read Input, Output and Buffer [?], construct needed things and remove from source
+				parse_shader(int(section.length()), section);
 
 				i += static_cast<int>(section.length());
 				continue;
@@ -208,25 +310,9 @@ namespace r3d
 			i += static_cast<int>(line.length());
 		}
 
-		// TODO: parse and preprocess shader sections
-
-		// compile shaders
-		auto apitype = r3d::get_apitype();
-
-		switch (apitype)
-		{
-		case r3d_apitype::d3d11:
-			compile_shader_d3d11(shader_file);
-			return;
-		case r3d_apitype::d3d12: throw;
-		case r3d_apitype::opengl4: throw;
-		case r3d_apitype::vulkan: throw;
-		default: break;
-		}
-
-		// create shaders
-
-		// done!
+		// TODO: compile shaders for all platforms(if(all_platforms), else only for the current one)
+		
+		// TODO: save - and done!
 		
 	}
 
