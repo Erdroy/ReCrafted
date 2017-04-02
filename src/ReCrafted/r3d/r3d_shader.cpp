@@ -230,7 +230,6 @@ namespace r3d
 		
 	}
 
-
 	void load_shader(const char* shader_file, r3d_shader_handle* shader_handle)
 	{
 		

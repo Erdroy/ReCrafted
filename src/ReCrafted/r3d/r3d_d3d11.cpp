@@ -3,6 +3,7 @@
 #include "r3d_d3d11.h"
 #include "r3d_commandlist.h"
 #include "r3d_headers.h"
+#include "r3d_config.h"
 
 #include <windows.h>
 #include <d3d11_1.h>
@@ -30,7 +31,7 @@ public:
 	}
 };
 
-context* m_contexts[32 /* same as MAX_WINDOWS */] = {};
+context* m_contexts[R3D_MAX_WINDOWS] = {};
 context* m_currentContext = nullptr;
 
 ID3D11Device* m_device = nullptr;

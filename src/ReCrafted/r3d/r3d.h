@@ -158,30 +158,29 @@ namespace r3d
 
 	// shader methods
 
-	void compile_shader(const char* shader_file, const char* output_file);
-	void load_shader(const char* shader_file, r3d_shader_handle* shader_handle);
+	void compile_shader(const char* shader_file, const char* output_file); // TODO: compile_shader
+	void load_shader(const char* shader_file, r3d_shader_handle* shader_handle); // TODO: load_shader
 
 
 	// rendering methods
 
-	void use_renderbuffer(r3d_renderbuffer_handle* renderbuffer);
+	void use_renderbuffer(r3d_renderbuffer_handle* renderbuffer); // TODO: use_renderbuffer
 
 	void clear_color(float color[4]);
 	void clear_depth();
 
-	r3d_renderbuffer_handle create_renderbuffer(uint16_t texture_count, r3d_texture2d_handle* textures[]);
-	r3d_vertexbuffer_handle create_vertexbuffer();
-	r3d_indexbuffer_handle create_indexbuffer(uint32_t indiceCount, bool use32bit);
-	r3d_texture2d_handle create_texture2d(uint16_t width, uint16_t height, r3d_texture_format format);
-	r3d_texture3d_handle create_renderbuffer(r3d_texture2d_handle* texture_handles, uint8_t texture_count);
+	r3d_renderbuffer_handle create_renderbuffer(uint16_t texture_count, r3d_texture2d_handle* textures[]); // TODO: create_renderbuffer
+	r3d_vertexbuffer_handle create_vertexbuffer(r3d_vertexlayout_handle* vertexlayout, uint32_t verticeCount, r3d_memory* data);
+	r3d_indexbuffer_handle create_indexbuffer(uint32_t indiceCount, r3d_memory* data, bool use32bit = false);
+	r3d_texture2d_handle create_texture2d(uint16_t width, uint16_t height, r3d_texture_format format); // TODO: create_renderbuffer
 	r3d_shader_handle create_shader();
 
-	void destroy_renderbuffer(r3d_renderbuffer_handle* handle);
-	void destroy_vertexbuffer(r3d_vertexbuffer_handle* handle);
-	void destroy_indexbuffer(r3d_indexbuffer_handle* handle);
-	void destroy_texture2d(r3d_texture2d_handle* handle);
-	void destroy_texture3d(r3d_texture3d_handle* handle);
-	void destroy_shader(r3d_shader_handle* handle);
+	void destroy_renderbuffer(r3d_renderbuffer_handle* handle); // TODO: destroy_renderbuffer
+	void destroy_vertexbuffer(r3d_vertexbuffer_handle* handle); // TODO: destroy_vertexbuffer
+	void destroy_indexbuffer(r3d_indexbuffer_handle* handle); // TODO: destroy_indexbuffer
+	void destroy_texture2d(r3d_texture2d_handle* handle); // TODO: destroy_texture2d
+	void destroy_texture3d(r3d_texture3d_handle* handle); // TODO: destroy_texture3d
+	void destroy_shader(r3d_shader_handle* handle); // TODO: destroy_shader
 }
 
 #endif // R3D_H

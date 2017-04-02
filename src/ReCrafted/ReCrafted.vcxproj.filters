@@ -245,6 +245,9 @@
     <ClInclude Include="Game\Voxels\VoxelMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="r3d\r3d_config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\common.sh" />

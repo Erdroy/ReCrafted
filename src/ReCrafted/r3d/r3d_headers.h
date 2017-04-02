@@ -17,6 +17,9 @@ struct r3d_cmdlist_header
 		clearcolor,
 		cleardepth,
 
+		create_vertexbuffer,
+		create_indexbuffer,
+
 		present,
 
 		endframe = present,
