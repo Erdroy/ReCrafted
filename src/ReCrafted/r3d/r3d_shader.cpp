@@ -156,6 +156,32 @@ namespace r3d
 			}
 		}
 
+		static std::vector<std::string> splitString(std::string str, char delimeter)
+		{
+			std::vector<std::string> array = {};
+
+			std::string word;
+			for (auto i = 0; i < str.length(); i++)
+			{
+				auto ch = str[i];
+
+				if (ch == delimeter)
+				{
+					array.push_back(word);
+					word.clear();
+				}
+				else
+				{
+					word += ch;
+				}
+			}
+
+			if (word.length() > 0)
+				array.push_back(word);
+
+			return array;
+		}
+
 		static std::string extractSection(std::string& source, int i)
 		{
 			// start reading into section when found '{' and end on last '}'
@@ -203,7 +229,7 @@ namespace r3d
 		}
 	};
 	
-	void parse_shader(int source_length, std::string section)
+	void parse_shader(int source_length, std::string section, bool all_platforms, std::vector<std::string>* sources)
 	{
 		auto has_input = false;
 		auto has_output = false;
@@ -211,7 +237,7 @@ namespace r3d
 		std::string output = {};
 		std::vector<std::string> buffers = {};
 
-		std::string section_parsed = section;
+		auto section_parsed = section;
 
 		for (auto j = 0; j < source_length; j++)
 		{
@@ -244,7 +270,7 @@ namespace r3d
 			// buffer block
 			if (compiler_utils::startsWith(block_line, "Buffer"))
 			{
-				auto block = compiler_utils::extractSection(section, j);
+				auto block = compiler_utils::extractSection(section, j); 
 				buffers.push_back(block);
 				j += static_cast<int>(block.length());
 				continue;
@@ -259,7 +285,65 @@ namespace r3d
 		compiler_utils::removeFromTo(section_parsed, "Buffer", "}");
 
 		// generate code, inject r3d API and optimize
+		
+		{
+			auto dx11_source = section_parsed;
 
+			// inject input and output (replace 'void main()')
+
+			auto input_fields = compiler_utils::splitString(input, '\n');
+			auto output_fields = compiler_utils::splitString(output, '\n');
+
+			std::string method_head = "void main( ";
+			
+			for(auto i = 0u; i < input_fields.size(); i ++)
+			{
+				auto field = input_fields[i];
+
+				if(field.length() > 4) // ignore new line or some other invalid cases
+				{
+					compiler_utils::replace(field, ";", "");
+
+					method_head += "in " + field + ", ";
+				}
+			}
+
+			// TODO: if vertex shader
+			method_head += "out float4 out_position : SV_POSITION, ";
+
+			for (auto i = 0u; i < output_fields.size(); i++)
+			{
+				auto field = output_fields[i];
+
+				if (field.length() > 4) // ignore new line or some other invalid cases
+				{
+					compiler_utils::replace(field, ";", "");
+
+					method_head += "out " + field; // if not last
+					if (i + 1 < output_fields.size())
+						method_head += ", ";
+				}
+			}
+
+			method_head += " )";
+			compiler_utils::replace(dx11_source, "void main()", method_head);
+
+			// inject buffers
+			for(auto i = 0u; i < buffers.size(); i ++)
+			{
+				auto buffer = buffers[i];
+				auto fields = compiler_utils::splitString(buffer, '\n');
+
+				for (auto j = 0u; j < fields.size(); j++)
+				{
+					auto field = fields[i];
+
+				}
+			}
+
+			// inject r3d api
+			// optimize
+		}
 	}
 
 	void compile_shader(const char* shader_file, const char* output_file, bool all_platforms)
@@ -278,6 +362,9 @@ namespace r3d
 		compiler_utils::replaceAll(source, "\t", "");
 		compiler_utils::replaceAll(source, "\r", "");
 
+		std::vector<std::string> vertexshader_sources = {};
+		std::vector<std::string> pixelshader_sources = {};
+
 		// read shader sections
 		for (auto i = 0; i < source.length(); i++)
 		{
@@ -288,7 +375,7 @@ namespace r3d
 			{
 				auto section = compiler_utils::extractSection(source, i);
 
-				parse_shader(int(section.length()), section);
+				parse_shader(int(section.length()), section, all_platforms, &vertexshader_sources);
 
 				i += static_cast<int>(section.length());
 				continue;
@@ -297,7 +384,7 @@ namespace r3d
 			{
 				auto section = compiler_utils::extractSection(source, i);
 
-				parse_shader(int(section.length()), section);
+				parse_shader(int(section.length()), section, all_platforms, &pixelshader_sources);
 
 				i += static_cast<int>(section.length());
 				continue;
