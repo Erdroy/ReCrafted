@@ -105,6 +105,9 @@
     <ClCompile Include="r3d\r3d_shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="r3d\generators\r3d_shader.d3d11.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\GameBase.h">
@@ -248,6 +251,9 @@
     <ClInclude Include="r3d\r3d_config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="r3d\generators\r3d_shader.d3d11.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\common.sh" />
@@ -265,5 +271,6 @@
     <None Include="Shaders\deferred_final\varying.def.sc" />
     <None Include="Shaders\deferred_final\vs_deferred_final.glsl" />
     <None Include="Shaders\deferred_final\desc.json" />
+    <None Include="r3d\r3d_shader.utils.h" />
   </ItemGroup>
 </Project>

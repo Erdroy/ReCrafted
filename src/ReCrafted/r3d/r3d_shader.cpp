@@ -4,231 +4,13 @@
 
 #include <fstream>
 #include <vector>
+#include <string>
+
+#include "r3d_shader.utils.h"
+#include "generators/r3d_shader.d3d11.h"
 
 namespace r3d
 {
-	class compiler_utils 
-	{
-	public:
-		static bool replace(std::string& str, const std::string& from, const std::string& to) {
-			size_t start_pos = str.find(from);
-			if (start_pos == std::string::npos)
-				return false;
-			str.replace(start_pos, from.length(), to);
-			return true;
-		}
-
-		static void replaceAll(std::string& str, const std::string& from, const std::string& to) {
-			if (from.empty())
-				return;
-			size_t start_pos = 0;
-			while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
-				str.replace(start_pos, from.length(), to);
-				start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
-			}
-		}
-
-		static std::string removeComments(std::string code)
-		{
-			std::string preprocessedCode;
-
-			auto comment = false;
-			auto multiComment = false;
-
-			for (auto i = 0; i < code.length(); i++)
-			{
-				if (comment == true && code[i] == '\n')
-				{
-					comment = false;
-				}
-				else if (multiComment == true && code[i] == '*' && code[i + 1] == '/')
-				{
-					multiComment = false, i++;
-				}
-				else if (comment || multiComment)
-				{
-					// Ignore this character.
-					//continue;
-				}
-				else if (code[i] == '/' && code[i + 1] == '/')
-				{
-					comment = true;
-					i++;
-				}
-				else if (code[i] == '/' && code[i + 1] == '*')
-				{
-					multiComment = true;
-					i++;
-				}
-				else
-				{
-					preprocessedCode += code[i];
-				}
-			}
-			return preprocessedCode;
-		}
-
-		static std::string getLine(std::string source, int i)
-		{
-			std::string ret;
-			auto ignorespace = true;
-
-			for (auto j = i; j < source.length(); j++)
-			{
-				auto ch = source[j];
-
-				if (ignorespace && ch == ' ')
-					continue;
-
-				// stop ignoring spaces
-				ignorespace = false;
-
-				if (ch == '\n')
-				{
-					break;
-				}
-
-				ret += ch;
-			}
-
-			return ret;
-		}
-
-		static bool startsWith(std::string& str, const char* text)
-		{
-			auto textlen = strlen(text) - 1;
-			auto strtext = str.c_str();
-
-			for (auto i = 0; i < textlen; i++)
-			{
-				if (strtext[i] != text[i])
-					return false;
-			}
-
-			return true;
-		}
-		
-		static void removeFromTo(std::string& str, std::string fromStr, std::string toStr)
-		{
-			while (true)
-			{
-				auto from = -1;
-				auto to = 0;
-
-				for (auto i = 0; i < str.length(); i++)
-				{
-					auto startFound = true;
-					for (auto j = i; j < i + fromStr.length(); j++)
-					{
-						if (str[j] != fromStr[j - i])
-						{
-							startFound = false;
-							break;
-						}
-					}
-
-					if (startFound)
-					{
-						from = i;
-					}
-
-					auto endFound = true;
-					for (auto j = i; j < i + toStr.length(); j++)
-					{
-						if (str[j] != toStr[j - i])
-						{
-							endFound = false;
-							break;
-						}
-					}
-
-					if (endFound && from > -1)
-					{
-						to = i;
-						break;
-					}
-				}
-
-				str.erase(str.begin() + from, str.begin() + to+1);
-
-				// All passes has been replaced.
-				break;
-			}
-		}
-
-		static std::vector<std::string> splitString(std::string str, char delimeter)
-		{
-			std::vector<std::string> array = {};
-
-			std::string word;
-			for (auto i = 0; i < str.length(); i++)
-			{
-				auto ch = str[i];
-
-				if (ch == delimeter)
-				{
-					array.push_back(word);
-					word.clear();
-				}
-				else
-				{
-					word += ch;
-				}
-			}
-
-			if (word.length() > 0)
-				array.push_back(word);
-
-			return array;
-		}
-
-		static std::string extractSection(std::string& source, int i)
-		{
-			// start reading into section when found '{' and end on last '}'
-
-			std::string section = {};
-			auto bracketCount = 0;
-			auto read = false;
-			for (auto j = i; j < source.length(); j++)
-			{
-				if (source[j] == '{')
-				{
-					if (bracketCount == 0)
-					{
-						// start
-						read = true;
-						bracketCount++;
-						continue;
-					}
-
-					// count up
-					bracketCount++;
-				}
-				else if (source[j] == '}')
-				{
-					// count down
-					bracketCount--;
-
-					if (bracketCount == 0)
-					{
-						// end
-						break;
-					}
-				}
-
-				if (read)
-				{
-					section += source[j];
-				}
-			}
-
-			if (bracketCount != 0)
-				throw; // TODO: handle errors
-
-			return section;
-		}
-	};
-	
 	void parse_shader(int source_length, std::string section, bool all_platforms, std::vector<std::string>* sources)
 	{
 		auto has_input = false;
@@ -236,6 +18,7 @@ namespace r3d
 		std::string input = {};
 		std::string output = {};
 		std::vector<std::string> buffers = {};
+		std::vector<std::string> buffer_names = {};
 
 		auto section_parsed = section;
 
@@ -270,6 +53,9 @@ namespace r3d
 			// buffer block
 			if (compiler_utils::startsWith(block_line, "Buffer"))
 			{
+				auto name = compiler_utils::readFromTo(block_line, '(', ')', true);
+				buffer_names.push_back(name);
+
 				auto block = compiler_utils::extractSection(section, j); 
 				buffers.push_back(block);
 				j += static_cast<int>(block.length());
@@ -287,62 +73,7 @@ namespace r3d
 		// generate code, inject r3d API and optimize
 		
 		{
-			auto dx11_source = section_parsed;
-
-			// inject input and output (replace 'void main()')
-
-			auto input_fields = compiler_utils::splitString(input, '\n');
-			auto output_fields = compiler_utils::splitString(output, '\n');
-
-			std::string method_head = "void main( ";
-			
-			for(auto i = 0u; i < input_fields.size(); i ++)
-			{
-				auto field = input_fields[i];
-
-				if(field.length() > 4) // ignore new line or some other invalid cases
-				{
-					compiler_utils::replace(field, ";", "");
-
-					method_head += "in " + field + ", ";
-				}
-			}
-
-			// TODO: if vertex shader
-			method_head += "out float4 out_position : SV_POSITION, ";
-
-			for (auto i = 0u; i < output_fields.size(); i++)
-			{
-				auto field = output_fields[i];
-
-				if (field.length() > 4) // ignore new line or some other invalid cases
-				{
-					compiler_utils::replace(field, ";", "");
-
-					method_head += "out " + field; // if not last
-					if (i + 1 < output_fields.size())
-						method_head += ", ";
-				}
-			}
-
-			method_head += " )";
-			compiler_utils::replace(dx11_source, "void main()", method_head);
-
-			// inject buffers
-			for(auto i = 0u; i < buffers.size(); i ++)
-			{
-				auto buffer = buffers[i];
-				auto fields = compiler_utils::splitString(buffer, '\n');
-
-				for (auto j = 0u; j < fields.size(); j++)
-				{
-					auto field = fields[i];
-
-				}
-			}
-
-			// inject r3d api
-			// optimize
+			generate_d3d11(section_parsed, input, output, buffers, buffer_names);
 		}
 	}
 

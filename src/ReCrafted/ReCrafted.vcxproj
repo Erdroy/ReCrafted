@@ -216,6 +216,7 @@
     <ClCompile Include="r3d\r3d.cpp" />
     <ClCompile Include="r3d\r3d_d3d11.cpp" />
     <ClCompile Include="r3d\r3d_shader.cpp" />
+    <ClCompile Include="r3d\generators\r3d_shader.d3d11.cpp" />
     <ClCompile Include="recraftedPrerequisites.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -262,6 +263,7 @@
     <ClInclude Include="r3d\r3d_d3d11.h" />
     <ClInclude Include="r3d\r3d_headers.h" />
     <ClInclude Include="r3d\r3d_renderer.h" />
+    <ClInclude Include="r3d\generators\r3d_shader.d3d11.h" />
     <ClInclude Include="r3d\r3d_types.h" />
     <ClInclude Include="recraftedPrerequisites.h" />
     <ClInclude Include="Utils\Defines.h" />
@@ -269,6 +271,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\bgfx_shader.glsl" />
+    <None Include="r3d\r3d_shader.utils.h" />
     <None Include="Shaders\blit\fs_blit.glsl" />
     <None Include="Shaders\blit\varying.def.sc" />
     <None Include="Shaders\blit\vs_blit.glsl" />
