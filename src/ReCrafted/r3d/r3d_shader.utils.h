@@ -68,6 +68,29 @@ public:
 		return preprocessedCode;
 	}
 
+	static std::string getRelativePath(const char* fileName)
+	{
+		std::string mShortName;
+		for (auto i = strlen(fileName); i > 0; i--)
+		{
+			auto ch = fileName[i];
+
+			if (ch != '\\' && ch != '\0')
+			{
+				mShortName += ch;
+			}
+			else if (ch == '\\')
+				break;
+		}
+
+		mShortName = std::string(mShortName.rbegin(), mShortName.rend());
+
+		std::string relativePath = fileName;
+		replace(relativePath, mShortName, "");
+
+		return relativePath;
+	}
+
 	static std::string getLine(std::string source, int i)
 	{
 		std::string ret;

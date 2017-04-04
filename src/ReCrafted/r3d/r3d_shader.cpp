@@ -11,20 +11,64 @@
 
 namespace r3d
 {
-	void parse_shader(int source_length, std::string section, bool all_platforms, std::vector<std::string>* sources)
+	void parse_shader(const char* shader_file, std::string section, bool all_platforms, std::vector<std::string>* sources)
 	{
 		auto has_input = false;
 		auto has_output = false;
+		std::string includes = {};
 		std::string input = {};
 		std::string output = {};
 		std::vector<std::string> buffers = {};
 		std::vector<std::string> buffer_names = {};
 
-		auto section_parsed = section;
+		auto sourcecode = section;
 
-		for (auto j = 0; j < source_length; j++)
+		// first pass
+		while(true)
 		{
-			auto block_line = compiler_utils::getLine(section, j);
+			bool found_includes = false;
+			for (auto j = 0; j < int(sourcecode.size()); j++)
+			{
+				auto block_line = compiler_utils::getLine(sourcecode, j);
+
+				// handle #include
+				if (compiler_utils::startsWith(block_line, "#include"))
+				{
+					found_includes = true;
+
+					auto file = compiler_utils::readFromTo(block_line, '"', '"', true);
+
+					// read the file
+					auto path = compiler_utils::getRelativePath(shader_file);
+					std::ifstream headerStream(path + file);
+					std::string header{
+						std::istreambuf_iterator<char>(headerStream),
+						std::istreambuf_iterator<char>()
+					};
+
+					includes += header + "\n";
+				}
+
+				j += static_cast<int>(block_line.length());
+			}
+
+			// temporary solution: comment-out all includes
+			compiler_utils::replaceAll(sourcecode, "#include", "//include");
+
+			if (!found_includes)
+				break;
+		}
+
+		// add includes at the start
+		{
+			auto tmp = sourcecode;
+			sourcecode = includes + tmp;
+		}
+
+		// second pass
+		for (auto j = 0; j < int(sourcecode.size()); j++)
+		{
+			auto block_line = compiler_utils::getLine(sourcecode, j);
 
 			// input block
 			if (compiler_utils::startsWith(block_line, "Input"))
@@ -32,7 +76,7 @@ namespace r3d
 				if (has_input)
 					throw;
 
-				input = compiler_utils::extractSection(section, j);
+				input = compiler_utils::extractSection(sourcecode, j);
 				has_input = true;
 				j += static_cast<int>(input.length());
 				continue;
@@ -44,7 +88,7 @@ namespace r3d
 				if (has_output)
 					throw;
 
-				output = compiler_utils::extractSection(section, j);
+				output = compiler_utils::extractSection(sourcecode, j);
 				has_output = true;
 				j += static_cast<int>(output.length());
 				continue;
@@ -56,25 +100,30 @@ namespace r3d
 				auto name = compiler_utils::readFromTo(block_line, '(', ')', true);
 				buffer_names.push_back(name);
 
-				auto block = compiler_utils::extractSection(section, j); 
+				auto block = compiler_utils::extractSection(sourcecode, j);
 				buffers.push_back(block);
 				j += static_cast<int>(block.length());
 				continue;
+			}
+
+			// handle #include
+			if (compiler_utils::startsWith(block_line, "#include"))
+			{
+				auto file = compiler_utils::readFromTo(block_line, '"', '"', true);
+
 			}
 
 			j += static_cast<int>(block_line.length());
 		}
 
 		// remove all non-source blocks
+		auto section_parsed = sourcecode;
 		compiler_utils::removeFromTo(section_parsed, "Input", "}");
 		compiler_utils::removeFromTo(section_parsed, "Output", "}");
 		compiler_utils::removeFromTo(section_parsed, "Buffer", "}");
 
 		// generate code, inject r3d API and optimize
-		
-		{
-			generate_d3d11(section_parsed, input, output, buffers, buffer_names);
-		}
+		generate_d3d11(section_parsed, input, output, buffers, buffer_names);
 	}
 
 	void compile_shader(const char* shader_file, const char* output_file, bool all_platforms)
@@ -106,7 +155,7 @@ namespace r3d
 			{
 				auto section = compiler_utils::extractSection(source, i);
 
-				parse_shader(int(section.length()), section, all_platforms, &vertexshader_sources);
+				parse_shader(shader_file, section, all_platforms, &vertexshader_sources);
 
 				i += static_cast<int>(section.length());
 				continue;
@@ -115,7 +164,7 @@ namespace r3d
 			{
 				auto section = compiler_utils::extractSection(source, i);
 
-				parse_shader(int(section.length()), section, all_platforms, &pixelshader_sources);
+				parse_shader(shader_file, section, all_platforms, &pixelshader_sources);
 
 				i += static_cast<int>(section.length());
 				continue;

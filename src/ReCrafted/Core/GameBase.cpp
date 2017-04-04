@@ -141,7 +141,7 @@ void GameBase::run()
 	auto windowHandle = r3d::create_window(Platform::getGameWindow(), "r3d example");
 
 	auto shader_handle = r3d::create_shader();
-	r3d::compile_shader("test.shader", "test.bin");
+	r3d::compile_shader("D:\\ReCrafted\\build\\bin64\\test.shader", "test.bin");
 	r3d::load_shader("test.bin", &shader_handle);
 
 #endif

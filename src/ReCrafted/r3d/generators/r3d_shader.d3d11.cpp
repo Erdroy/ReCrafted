@@ -2,6 +2,15 @@
 
 #include "../r3d_shader.utils.h"
 
+auto r3d_hlsl_api = "\
+#define HLSL 1				\n\
+#define vec4 float4			\n\
+#define vec3 float3			\n\
+#define vec2 float2			\n\
+#define mat4 matrix			\n\
+#define mat3 float3x4		\n\
+";
+
 void generate_d3d11(
 	std::string& source,
 	std::string& input,
@@ -56,7 +65,7 @@ void generate_d3d11(
 		auto bufferName = buffer_names[i];
 		auto fields = compiler_utils::splitString(buffer, '\n');
 
-		buffers_source += "cbuffer " + bufferName + " : register(b" + std::to_string(i) + ") { \n";
+		buffers_source += "cbuffer " + bufferName + " : register(b" + std::to_string(i) + ")\n{\n";
 
 		for (auto j = 0u; j < fields.size(); j++)
 		{
@@ -70,6 +79,10 @@ void generate_d3d11(
 		buffers_source += "}";
 	}
 
-	// inject r3d api
-	// optimize
+	// inject buffers and r3d api
+	std::string api = r3d_hlsl_api;
+	auto tmp = source;
+	source = api + "\n" + buffers_source + "\n" + tmp;
+
+	// TODO: optimize
 }
