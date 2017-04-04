@@ -7,6 +7,7 @@
 #include <vector>
 
 void generate_d3d11(
+	r3d_shadertype::Enum type,
 	std::string& source,
 	std::string& input,
 	std::string& output,

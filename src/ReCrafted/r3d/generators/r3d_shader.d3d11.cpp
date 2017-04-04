@@ -1,6 +1,7 @@
 // r3d © 2016-2017 Damian 'Erdroy' Korczowski
 
 #include "../r3d_shader.utils.h"
+#include "../r3d.h"
 
 auto r3d_hlsl_api = "\
 #define HLSL 1				\n\
@@ -12,6 +13,7 @@ auto r3d_hlsl_api = "\
 ";
 
 void generate_d3d11(
+	r3d_shadertype::Enum type,
 	std::string& source,
 	std::string& input,
 	std::string& output,
@@ -37,8 +39,11 @@ void generate_d3d11(
 		}
 	}
 
-	// TODO: if vertex shader
-	method_head += "out float4 out_position : SV_POSITION, ";
+	if(type == r3d_shadertype::vertexshader)
+		method_head += "out float4 out_position : SV_POSITION";
+
+	if (type == r3d_shadertype::pixelshader)
+		method_head += "out float4 out_color : COLOR0";
 
 	for (auto i = 0u; i < output_fields.size(); i++)
 	{
@@ -47,10 +52,7 @@ void generate_d3d11(
 		if (field.length() > 4) // ignore new line or some other invalid cases
 		{
 			compiler_utils::replace(field, ";", "");
-
-			method_head += "out " + field; // if not last
-			if (i + 1 < output_fields.size())
-				method_head += ", ";
+			method_head += ", out " + field;
 		}
 	}
 

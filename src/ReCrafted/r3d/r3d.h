@@ -18,6 +18,19 @@ struct r3d_apitype
 	};
 };
 
+struct r3d_shadertype
+{
+	enum Enum
+	{
+		unknown,
+		vertexshader,
+		pixelshader,
+		computeshader,
+
+		count
+	};
+};
+
 struct r3d_texture_format
 {
 	enum Enum

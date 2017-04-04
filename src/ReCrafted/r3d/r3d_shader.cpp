@@ -11,7 +11,7 @@
 
 namespace r3d
 {
-	void parse_shader(const char* shader_file, std::string section, bool all_platforms, std::vector<std::string>* sources)
+	std::string process_shader(r3d_shadertype::Enum type, const char* shader_file, std::string section, bool all_platforms, std::vector<std::string>* sources)
 	{
 		auto has_input = false;
 		auto has_output = false;
@@ -26,7 +26,7 @@ namespace r3d
 		// first pass
 		while(true)
 		{
-			bool found_includes = false;
+			auto found_includes = false;
 			for (auto j = 0; j < int(sourcecode.size()); j++)
 			{
 				auto block_line = compiler_utils::getLine(sourcecode, j);
@@ -120,10 +120,14 @@ namespace r3d
 		auto section_parsed = sourcecode;
 		compiler_utils::removeFromTo(section_parsed, "Input", "}");
 		compiler_utils::removeFromTo(section_parsed, "Output", "}");
-		compiler_utils::removeFromTo(section_parsed, "Buffer", "}");
+
+		if(buffers.size() > 0u)
+			compiler_utils::removeFromTo(section_parsed, "Buffer", "}");
 
 		// generate code, inject r3d API and optimize
-		generate_d3d11(section_parsed, input, output, buffers, buffer_names);
+		generate_d3d11(type, section_parsed, input, output, buffers, buffer_names);
+
+		return section_parsed;
 	}
 
 	void compile_shader(const char* shader_file, const char* output_file, bool all_platforms)
@@ -145,6 +149,9 @@ namespace r3d
 		std::vector<std::string> vertexshader_sources = {};
 		std::vector<std::string> pixelshader_sources = {};
 
+		std::string vs_source = {};
+		std::string ps_source = {};
+
 		// read shader sections
 		for (auto i = 0; i < source.length(); i++)
 		{
@@ -155,7 +162,7 @@ namespace r3d
 			{
 				auto section = compiler_utils::extractSection(source, i);
 
-				parse_shader(shader_file, section, all_platforms, &vertexshader_sources);
+				vs_source = process_shader(r3d_shadertype::vertexshader, shader_file, section, all_platforms, &vertexshader_sources);
 
 				i += static_cast<int>(section.length());
 				continue;
@@ -164,7 +171,7 @@ namespace r3d
 			{
 				auto section = compiler_utils::extractSection(source, i);
 
-				parse_shader(shader_file, section, all_platforms, &pixelshader_sources);
+				ps_source = process_shader(r3d_shadertype::pixelshader, shader_file, section, all_platforms, &pixelshader_sources);
 
 				i += static_cast<int>(section.length());
 				continue;
