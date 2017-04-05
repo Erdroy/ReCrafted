@@ -215,7 +215,7 @@
     <ClCompile Include="Platform\Platform.Windows.cpp" />
     <ClCompile Include="r3d\r3d.cpp" />
     <ClCompile Include="r3d\r3d_d3d11.cpp" />
-    <ClCompile Include="r3d\r3d_shader.cpp" />
+    <ClCompile Include="r3d\r3d_shadercompiler.cpp" />
     <ClCompile Include="r3d\generators\r3d_shader.d3d11.cpp" />
     <ClCompile Include="recraftedPrerequisites.cpp" />
   </ItemGroup>
@@ -261,6 +261,7 @@
     <ClInclude Include="r3d\r3d_commandlist.h" />
     <ClInclude Include="r3d\r3d_config.h" />
     <ClInclude Include="r3d\r3d_d3d11.h" />
+    <ClInclude Include="r3d\r3d_filesystem.h" />
     <ClInclude Include="r3d\r3d_headers.h" />
     <ClInclude Include="r3d\r3d_renderer.h" />
     <ClInclude Include="r3d\generators\r3d_shader.d3d11.h" />

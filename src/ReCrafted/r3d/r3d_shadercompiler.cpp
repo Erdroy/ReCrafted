@@ -8,6 +8,7 @@
 
 #include "r3d_shader.utils.h"
 #include "generators/r3d_shader.d3d11.h"
+#include "r3d_filesystem.h"
 
 namespace r3d
 {
@@ -184,18 +185,30 @@ namespace r3d
 
 			i += static_cast<int>(line.length());
 		}
-		
-		auto vs_compiled = compile_shader_d3d11(r3d_shadertype::vertexshader, vs_source);
-		auto ps_compiled = compile_shader_d3d11(r3d_shadertype::pixelshader, ps_source);
 
-		// TODO: compile shaders for all platforms(if(all_platforms), else only for the current one)
-		
-		// TODO: save - and done!
-		
-	}
+		// compile shaders for all platforms(if `all_platforms`, else only for the current one)
 
-	void load_shader(const char* shader_file, r3d_shader_handle* shader_handle)
-	{
-		
+		FILE* file_stream = nullptr;
+		if (r3d_filesystem::openFile(output_file, &file_stream))
+		{
+			// TODO: switch platforms
+			// compile and write d3d11
+			auto vs_head = "d3d11_vs\0"; // must be 8 bytes!
+			auto ps_head = "d3d11_ps\0"; // must be 8 bytes!
+
+			auto vs_size = 0u;
+			auto ps_size = 0u;
+			auto vs_data = compile_shader_d3d11(r3d_shadertype::vertexshader, vs_source, &vs_size);
+			auto ps_data = compile_shader_d3d11(r3d_shadertype::pixelshader, ps_source, &ps_size);
+
+			r3d_filesystem::write(&file_stream, (void*)vs_head, 8u);
+			r3d_filesystem::write(&file_stream, &vs_size, 4u);
+			r3d_filesystem::write(&file_stream, vs_data, vs_size);
+
+			r3d_filesystem::write(&file_stream, (void*)ps_head, 8u);
+			r3d_filesystem::write(&file_stream, &ps_size, 4u);
+			r3d_filesystem::write(&file_stream, ps_data, ps_size);
+		}
+		r3d_filesystem::closeFile(&file_stream);
 	}
 }

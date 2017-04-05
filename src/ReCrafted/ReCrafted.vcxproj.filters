@@ -102,10 +102,10 @@
     <ClCompile Include="Game\Voxels\VoxelMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="r3d\r3d_shader.cpp">
+    <ClCompile Include="r3d\generators\r3d_shader.d3d11.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="r3d\generators\r3d_shader.d3d11.cpp">
+    <ClCompile Include="r3d\r3d_shadercompiler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -252,6 +252,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="r3d\generators\r3d_shader.d3d11.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="r3d\r3d_filesystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

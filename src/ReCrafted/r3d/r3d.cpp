@@ -6,6 +6,7 @@
 #include "r3d_headers.h"
 #include "r3d_commandlist.h"
 #include "r3d_config.h"
+#include "r3d_filesystem.h"
 
 namespace r3d
 {
@@ -170,6 +171,44 @@ namespace r3d
 	{
 		g_cmdlist.write(r3d_cmdlist_header::rendermode);
 		g_cmdlist.write(mode);
+	}
+	
+	void load_shader(const char* shader_file, r3d_shader_handle* shader_handle)
+	{
+		FILE* file_stream = nullptr;
+		if (r3d_filesystem::openFile(shader_file, &file_stream, true))
+		{
+			// TODO: for all platforms
+
+			// temporary: read vertex shader
+			char vs_head[8] = {};
+			auto vs_size = 0u;
+			r3d_filesystem::read(&file_stream, vs_head, 8u);
+			r3d_filesystem::read(&file_stream, &vs_size, 4u);
+
+			auto vs_data = new unsigned char[vs_size];
+			r3d_filesystem::read(&file_stream, vs_data, vs_size);
+
+			g_cmdlist.write(r3d_cmdlist_header::load_vshader);
+			g_cmdlist.write(shader_handle->idx);
+			g_cmdlist.write(vs_size);
+			g_cmdlist.write(vs_data);
+
+			// temporary: read pixel shader
+			char ps_head[8] = {};
+			auto ps_size = 0u;
+			r3d_filesystem::read(&file_stream, ps_head, 8u);
+			r3d_filesystem::read(&file_stream, &ps_size, 4u);
+
+			auto ps_data = new unsigned char[ps_size];
+			r3d_filesystem::read(&file_stream, ps_data, ps_size);
+
+			g_cmdlist.write(r3d_cmdlist_header::load_pshader);
+			g_cmdlist.write(shader_handle->idx);
+			g_cmdlist.write(ps_size);
+			g_cmdlist.write(ps_data);
+		}
+		r3d_filesystem::closeFile(&file_stream);
 	}
 
 	void use_renderbuffer(r3d_renderbuffer_handle* renderbuffer)

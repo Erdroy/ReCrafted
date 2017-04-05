@@ -31,11 +31,22 @@ public:
 	}
 };
 
+struct vblob
+{
+public:
+	void* ptr = nullptr;
+	size_t size = 0u;
+};
+
 context* m_contexts[R3D_MAX_WINDOWS] = {};
 context* m_currentContext = nullptr;
 
 ID3D11Device* m_device = nullptr;
 ID3D11DeviceContext* m_deviceContext = nullptr;
+
+vblob m_vblobs[R3D_MAX_SHADERS] = {};
+ID3D11VertexShader* m_vshaders[R3D_MAX_SHADERS] = {};
+ID3D11PixelShader* m_pshaders[R3D_MAX_SHADERS] = {};
 
 void r3d_d3d11::init()
 {
@@ -196,12 +207,57 @@ void r3d_d3d11::execute_commandlist(r3d_commandlist* cmdListPtr)
 		switch(header)
 		{
 		case r3d_cmdlist_header::beginframe:
+		{
 			m_deviceContext->OMSetRenderTargets(1, views, m_currentContext->depthstencil);
-			continue;
+			continue; 
+		}
 		case r3d_cmdlist_header::endframe:
+		{
+
 			m_currentContext->swapchain->Present(m_vsync ? 1 : 0, 0);
 			continue;
+		}
+		case r3d_cmdlist_header::load_vshader:
+		{
+			auto handle = cmdlist->read_uint32();
+			auto size = cmdlist->read_uint32();
+			auto ptr = cmdlist->read_ptr();
 
+			ID3D11VertexShader* shader = nullptr;
+			if(FAILED(m_device->CreateVertexShader(ptr, size, nullptr, &shader)))
+			{
+				throw; // TODO: error handling
+			}
+
+			// set the shader
+			m_vshaders[handle] = shader;
+
+			vblob blob = {};
+			blob.size = size;
+			blob.ptr = ptr;
+			m_vblobs[handle] = blob;
+			continue;
+		}
+		case r3d_cmdlist_header::load_pshader:
+		{
+			auto handle = cmdlist->read_uint32();
+			auto size = cmdlist->read_uint32();
+			auto ptr = cmdlist->read_ptr();
+
+			ID3D11PixelShader* shader = nullptr;
+			auto result = m_device->CreatePixelShader(ptr, size, nullptr, &shader);
+			if (FAILED(result))
+			{
+				throw; // TODO: error handling
+			}
+
+			// delete the blob
+			delete[] ptr;
+
+			// set the shader
+			m_pshaders[handle] = shader;
+			continue;
+		}
 
 		case r3d_cmdlist_header::vsync:
 			m_vsync = cmdlist->read_bool();
@@ -214,6 +270,7 @@ void r3d_d3d11::execute_commandlist(r3d_commandlist* cmdListPtr)
 			continue;
 		}
 		case r3d_cmdlist_header::cleardepth:
+			m_deviceContext->ClearDepthStencilView(m_currentContext->depthstencil, D3D11_CLEAR_DEPTH, 1.0f, 0);
 			continue;
 
 		case r3d_cmdlist_header::count:

@@ -15,7 +15,7 @@ auto r3d_hlsl_api = "\
 #define vec2 float2			\n\
 #define mat4 matrix			\n\
 #define mat3 float3x4		\n\
-";
+"; // TODO: api methods etc. eg. 'frag(x)'
 
 void generate_shader_d3d11(
 	r3d_shadertype::Enum type,
@@ -95,12 +95,12 @@ void generate_shader_d3d11(
 }
 
 
-void* compile_shader_d3d11(r3d_shadertype::Enum type, std::string& source)
+void* compile_shader_d3d11(r3d_shadertype::Enum type, std::string& source, uint32_t* size)
 {
 	UINT flags = 0;
-#ifdef _DEBUG
-	flags |= D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION;
-#endif
+//#ifdef _DEBUG
+	//flags |= D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION;
+//#endif
 
 	ID3D10Blob* compiled = nullptr;
 	ID3D10Blob* error = nullptr;
@@ -109,13 +109,13 @@ void* compile_shader_d3d11(r3d_shadertype::Enum type, std::string& source)
 	switch (type)
 	{
 	case r3d_shadertype::vertexshader: 
-		strcpy_s(profile, 8u, "vs_5_0\0");
+		strcpy_s(profile, 8u, "vs_4_0\0");
 		break;
 	case r3d_shadertype::pixelshader:
-		strcpy_s(profile, 8u, "ps_5_0\0"); 
+		strcpy_s(profile, 8u, "ps_4_0\0"); 
 		break;
 	case r3d_shadertype::computeshader:
-		strcpy_s(profile, 8u, "cs_5_0\0");
+		strcpy_s(profile, 8u, "cs_4_0\0");
 		break;
 
 	case r3d_shadertype::unknown: 
@@ -131,5 +131,7 @@ void* compile_shader_d3d11(r3d_shadertype::Enum type, std::string& source)
 		throw;
 	}
 
-	return compiled;
+
+	*size = uint32_t(compiled->GetBufferSize());
+	return compiled->GetBufferPointer();
 }
