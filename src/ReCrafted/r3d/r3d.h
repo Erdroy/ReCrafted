@@ -171,8 +171,19 @@ namespace r3d
 
 	// shader methods
 
-	void compile_shader(const char* shader_file, const char* output_file, bool all_platforms = true);
-	void load_shader(const char* shader_file, r3d_shader_handle* shader_handle);
+	void shader_compile(const char* shader_file, const char* output_file, bool all_platforms = true);
+	void shader_load(const char* shader_file, r3d_shader_handle* shader_handle);
+	void shader_apply(r3d_shader_handle* shader_handle);
+	void shader_set_value(const char* name, int value);
+	void shader_set_value(const char* name, bool value);
+	void shader_set_value(const char* name, float value);
+	void shader_set_value(const char* name, float value[2]);
+	void shader_set_value(const char* name, float value[3]);
+	void shader_set_value(const char* name, float value[4]);
+	void shader_set_value(const char* name, float value[3*4]);
+	void shader_set_value(const char* name, float value[4*4]);
+
+	void shader_set_texture(r3d_texture2d_handle* texture_handle); // TODO: shader_set_texture
 
 
 	// rendering methods
@@ -194,6 +205,7 @@ namespace r3d
 	void destroy_texture2d(r3d_texture2d_handle* handle); // TODO: destroy_texture2d
 	void destroy_texture3d(r3d_texture3d_handle* handle); // TODO: destroy_texture3d
 	void destroy_shader(r3d_shader_handle* handle); // TODO: destroy_shader
+
 }
 
 #endif // R3D_H

@@ -132,7 +132,7 @@ namespace r3d
 		return section_parsed;
 	}
 
-	void compile_shader(const char* shader_file, const char* output_file, bool all_platforms)
+	void shader_compile(const char* shader_file, const char* output_file, bool all_platforms)
 	{
 		// load file
 		std::ifstream shaderfile(shader_file);

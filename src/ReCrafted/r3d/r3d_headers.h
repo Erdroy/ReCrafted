@@ -17,6 +17,9 @@ struct r3d_cmdlist_header
 		clearcolor,
 		cleardepth,
 
+		shader_apply,
+		shader_setval,
+
 		load_vshader,
 		load_pshader,
 		load_cshader,

@@ -173,7 +173,7 @@ namespace r3d
 		g_cmdlist.write(mode);
 	}
 	
-	void load_shader(const char* shader_file, r3d_shader_handle* shader_handle)
+	void shader_load(const char* shader_file, r3d_shader_handle* shader_handle)
 	{
 		FILE* file_stream = nullptr;
 		if (r3d_filesystem::openFile(shader_file, &file_stream, true))
@@ -210,6 +210,13 @@ namespace r3d
 		}
 		r3d_filesystem::closeFile(&file_stream);
 	}
+
+	void shader_apply(r3d_shader_handle* shader_handle)
+	{
+		g_cmdlist.write(r3d_cmdlist_header::shader_apply);
+		g_cmdlist.write(shader_handle->idx);
+	}
+
 
 	void use_renderbuffer(r3d_renderbuffer_handle* renderbuffer)
 	{

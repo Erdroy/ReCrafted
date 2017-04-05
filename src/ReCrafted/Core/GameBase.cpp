@@ -141,11 +141,11 @@ void GameBase::run()
 	auto windowHandle = r3d::create_window(Platform::getGameWindow(), "r3d example");
 
 	// compile shader
-	r3d::compile_shader("test.shader", "test.bin");
+	r3d::shader_compile("test.shader", "test.bin");
 
 	// load shader from file
 	auto shader_handle = r3d::create_shader();
-	r3d::load_shader("test.bin", &shader_handle);
+	r3d::shader_load("test.bin", &shader_handle);
 
 #endif
 
