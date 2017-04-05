@@ -125,7 +125,8 @@ namespace r3d
 			compiler_utils::removeFromTo(section_parsed, "Buffer", "}");
 
 		// generate code, inject r3d API and optimize
-		generate_d3d11(type, section_parsed, input, output, buffers, buffer_names);
+		// TODO: switch platforms!
+		generate_shader_d3d11(type, section_parsed, input, output, buffers, buffer_names);
 
 		return section_parsed;
 	}
@@ -183,6 +184,9 @@ namespace r3d
 
 			i += static_cast<int>(line.length());
 		}
+		
+		auto vs_compiled = compile_shader_d3d11(r3d_shadertype::vertexshader, vs_source);
+		auto ps_compiled = compile_shader_d3d11(r3d_shadertype::pixelshader, ps_source);
 
 		// TODO: compile shaders for all platforms(if(all_platforms), else only for the current one)
 		

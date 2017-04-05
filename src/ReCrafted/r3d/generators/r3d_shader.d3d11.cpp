@@ -3,6 +3,11 @@
 #include "../r3d_shader.utils.h"
 #include "../r3d.h"
 
+#include <D3Dcompiler.h>
+#pragma comment(lib, "d3dcompiler.lib")
+
+#include <d3d11.h>
+
 auto r3d_hlsl_api = "\
 #define HLSL 1				\n\
 #define vec4 float4			\n\
@@ -12,7 +17,7 @@ auto r3d_hlsl_api = "\
 #define mat3 float3x4		\n\
 ";
 
-void generate_d3d11(
+void generate_shader_d3d11(
 	r3d_shadertype::Enum type,
 	std::string& source,
 	std::string& input,
@@ -43,7 +48,7 @@ void generate_d3d11(
 		method_head += "out float4 out_position : SV_POSITION";
 
 	if (type == r3d_shadertype::pixelshader)
-		method_head += "out float4 out_color : COLOR0";
+		method_head += "out float4 out_color : SV_TARGET0";
 
 	for (auto i = 0u; i < output_fields.size(); i++)
 	{
@@ -87,4 +92,44 @@ void generate_d3d11(
 	source = api + "\n" + buffers_source + "\n" + tmp;
 
 	// TODO: optimize
+}
+
+
+void* compile_shader_d3d11(r3d_shadertype::Enum type, std::string& source)
+{
+	UINT flags = 0;
+#ifdef _DEBUG
+	flags |= D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION;
+#endif
+
+	ID3D10Blob* compiled = nullptr;
+	ID3D10Blob* error = nullptr;
+
+	char profile[16];
+	switch (type)
+	{
+	case r3d_shadertype::vertexshader: 
+		strcpy_s(profile, 8u, "vs_5_0\0");
+		break;
+	case r3d_shadertype::pixelshader:
+		strcpy_s(profile, 8u, "ps_5_0\0"); 
+		break;
+	case r3d_shadertype::computeshader:
+		strcpy_s(profile, 8u, "cs_5_0\0");
+		break;
+
+	case r3d_shadertype::unknown: 
+	case r3d_shadertype::count: 
+	default: throw;
+	}
+
+	auto hr = D3DCompile(source.c_str(), source.size(), "", nullptr, nullptr, "main", profile, flags, 0u, &compiled, &error);
+	
+	if (error)
+	{
+		auto errorData = reinterpret_cast<char*>(error->GetBufferPointer());
+		throw;
+	}
+
+	return compiled;
 }

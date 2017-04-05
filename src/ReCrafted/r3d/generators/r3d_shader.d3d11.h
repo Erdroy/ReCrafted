@@ -6,7 +6,9 @@
 // includes
 #include <vector>
 
-void generate_d3d11(
+void* compile_shader_d3d11(r3d_shadertype::Enum type, std::string& source);
+
+void generate_shader_d3d11(
 	r3d_shadertype::Enum type,
 	std::string& source,
 	std::string& input,
