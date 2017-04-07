@@ -123,7 +123,7 @@ DWORD WINAPI ThreadWorker(LPVOID lpParam);
 /// </summary>
 class Platform
 {
-	friend class GameBase;
+	friend class GameMain;
 
 private:
 	struct QueueEntry

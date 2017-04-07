@@ -2,55 +2,76 @@
 
 #pragma once
 
-#ifndef GAMECORE_H
-#define GAMECORE_H
+#ifndef GAMEMAIN_H
+#define GAMEMAIN_H
 
 // includes
-#include "../recraftedPrerequisites.h"
-#include "GameBase.h"
+#include "Input.h"
+#include "Time.h"
 #include "../Graphics/Rendering.h"
 #include "../Graphics/Camera.h"
 #include "../Game/Universe.h"
-#include "Logger.h"
 
-/// <summary>
-/// GameCore class
-/// </summary>
-class GameCore : public GameBase
+class GameMain
 {
 private:
-	static GameCore* m_instance;
+	static GameMain* m_instance;
 
 private:
+	bool m_running = false;
+	bool m_initialized = false;
+
 	uint m_width = 1280;
 	uint m_height = 720;
 
-	bool m_initialized = false;
 	Rendering* m_rendering = nullptr;
 	Universe* m_universe = nullptr;
 	Logger* m_logger = nullptr;
+	Input* m_input = nullptr;
+	Time* m_time = nullptr;
+
 	Ptr<Camera> m_camera = nullptr;
+
+	uint m_tickrate = 60u;
 
 public:
 	/// <summary>
-	/// Default constructor of GameCore class.
+	/// Run game
 	/// </summary>
-	GameCore() { m_instance = this; }
+	void run();
+
+	/// <summary>
+	/// Shutdown the game
+	/// </summary>
+	void shutdown();
 
 public:
-	void onLoad() override;
+	void onLoad();
+	void onUnload();
+	void onResize(uint width, uint height);
+	void onUpdate();
+	void onSimulate();
+	void onDraw();
 
-	void onUnload() override;
-
-	void onResize(uint width, uint height) override;
-
-	void onUpdate() override;
-
-	void onSimulate() override;
-
-	void onDraw() override;
-	
 public:
+	/// <summary>
+	/// Set the tick rate of simulation.
+	/// </summary>
+	/// <param name="ticksPerSecond">The amount of ticks per second. Default: 60</param>
+	FORCEINLINE static void setSimulationTickrate(uint ticksPerSecond)
+	{
+		m_instance->m_tickrate = ticksPerSecond;
+	}
+
+	/// <summary>
+	/// Check if the engine is running.
+	/// </summary>
+	/// <returns>Returns true when is running.</returns>
+	FORCEINLINE static bool isRunning()
+	{
+		return m_instance->m_running;
+	}
+
 	/// <summary>
 	/// The game window width.
 	/// </summary>
@@ -79,4 +100,4 @@ public:
 	}
 };
 
-#endif // GAMECORE_H
+#endif // GAMEMAIN_H

@@ -35,7 +35,7 @@ struct LogLevel
 /// </summary>
 class Logger
 {
-	friend class GameCore;
+	friend class GameMain;
 
 private:
 	static Logger* m_instance;

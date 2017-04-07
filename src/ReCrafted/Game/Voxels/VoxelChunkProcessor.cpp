@@ -1,7 +1,7 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "VoxelChunkProcessor.h"
-#include "../../Core/GameBase.h"
+#include "../../Core/GameMain.h"
 #include "../../Core/Logger.h"
 #include "../../Graphics/Camera.h"
 
@@ -11,7 +11,7 @@ VoxelChunkProcessor* VoxelChunkProcessorInstance;
 void worker_data(std::vector<VoxelChunk*>* queue)
 {
 	VoxelChunk* chunk = nullptr;
-	while(GameBase::isRunning())
+	while(GameMain::isRunning())
 	{
 		if(!chunk)
 		{
@@ -22,7 +22,7 @@ void worker_data(std::vector<VoxelChunk*>* queue)
 			// sleep 5ms and continue
 			if(chunk == nullptr)
 			{
-				Sleep(5);
+				Sleep(5); // TODO: this should be configurable
 				continue;
 			}
 		}
@@ -55,7 +55,7 @@ void worker_meshing(std::vector<VoxelChunk*>* queue)
 	auto colors_ptr = &colorsArray;
 	auto indices_ptr = &indicesArray;
 
-	while (GameBase::isRunning())
+	while (GameMain::isRunning())
 	{
 		if (!chunk)
 		{

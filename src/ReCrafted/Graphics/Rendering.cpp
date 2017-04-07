@@ -2,7 +2,8 @@
 
 #include "Rendering.h"
 #include "Camera.h"
-#include "../Core/GameCore.h"
+#include "../Core/Logger.h"
+#include "../Core/Input.h"
 
 Rendering* Rendering::m_instance;
 

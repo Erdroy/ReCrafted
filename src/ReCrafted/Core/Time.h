@@ -13,8 +13,7 @@
 /// </summary>
 class Time
 {
-	friend class GameBase;
-	friend class GameCore;
+	friend class GameMain;
 
 private:
 	static Time* m_instance;

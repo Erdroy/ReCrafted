@@ -18,7 +18,7 @@
 /// </summary>
 class Universe
 {
-	friend class GameCore;
+	friend class GameMain;
 
 private:
 	static Universe* m_instance;

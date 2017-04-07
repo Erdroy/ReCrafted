@@ -188,8 +188,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="bgfxPrerequisites.cpp" />
-    <ClCompile Include="Core\GameBase.cpp" />
-    <ClCompile Include="Core\GameCore.cpp" />
+    <ClCompile Include="Core\GameMain.cpp" />
     <ClCompile Include="Core\Input.cpp" />
     <ClCompile Include="Core\Logger.cpp" />
     <ClCompile Include="Core\Math\FastNoiseSIMD\FastNoiseSIMD.cpp" />
@@ -219,8 +218,7 @@
     <ClInclude Include="bgfxPrerequisites.h" />
     <ClInclude Include="Common\Entity.h" />
     <ClInclude Include="Common\EntityPool.h" />
-    <ClInclude Include="Core\GameBase.h" />
-    <ClInclude Include="Core\GameCore.h" />
+    <ClInclude Include="Core\GameMain.h" />
     <ClInclude Include="Core\Input.h" />
     <ClInclude Include="Core\Logger.h" />
     <ClInclude Include="Core\Math\BoundingFrustum.h" />

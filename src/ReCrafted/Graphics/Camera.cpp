@@ -1,7 +1,7 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "Camera.h"
-#include "../Core/GameCore.h"
+#include "../Core/GameMain.h"
 
 // declare m_mainCamera static variable
 Camera* Camera::m_mainCamera;
@@ -106,8 +106,8 @@ void Camera::updateControls()
 
 	// update look
 	auto center = Vector2(
-		round(GameCore::getWindowWidth() / 2.0f), 
-		round(GameCore::getWindowHeight() / 2.0f)
+		round(GameMain::getWindowWidth() / 2.0f),
+		round(GameMain::getWindowHeight() / 2.0f)
 	);
 
 	auto cursorPos = Input::getCursorPos();
@@ -148,7 +148,7 @@ void Camera::updateControls()
 void Camera::updatePerspective()
 {
 	// create projection matrix
-	Matrix::createPerspectiveFovLH(Math::degreeToRadian(m_fov), GameCore::getAspectRatio(), m_nearPlane, m_farPlane, &m_projection);
+	Matrix::createPerspectiveFovLH(Math::degreeToRadian(m_fov), GameMain::getAspectRatio(), m_nearPlane, m_farPlane, &m_projection);
 }
 
 void Camera::update()
@@ -160,8 +160,8 @@ void Camera::update()
 		
 		// lock position
 		Input::setCursorPos(
-			static_cast<int>(round(GameCore::getWindowWidth() / 2.0f)), 
-			static_cast<int>(round(GameCore::getWindowHeight() / 2.0f))
+			static_cast<int>(round(GameMain::getWindowWidth() / 2.0f)),
+			static_cast<int>(round(GameMain::getWindowHeight() / 2.0f))
 		);
 	}
 

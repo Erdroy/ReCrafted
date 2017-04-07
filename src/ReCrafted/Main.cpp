@@ -9,7 +9,7 @@
 
 // includes
 #include <Windows.h>
-#include "Core/GameCore.h"
+#include "Core/GameMain.h"
 
 /// <summary>
 /// WinMain - Main entry for Windows platform
@@ -22,7 +22,7 @@ int CALLBACK WinMain(
 {
 
 	// run the game
-	GameCore core = {};
+	GameMain core = {};
 	core.run();
 
 	return ERROR_SUCCESS;
