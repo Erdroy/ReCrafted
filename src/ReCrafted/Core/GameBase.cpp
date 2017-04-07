@@ -5,10 +5,6 @@
 
 #include <Windows.h>
 #include "../Platform/Platform.Windows.h"
-#include "../r3d/r3d_commandlist.h"
-
-
-//#define R3DTEST
 
 GameBase* GameBase::m_instance;
 
@@ -130,32 +126,17 @@ void GameBase::run()
 	ShowWindow(Platform::getGameWindow(), SW_MAXIMIZE);
 #endif
 
-#ifndef R3DTEST
 	// initialize bgfx platform data
 	bgfx::PlatformData pd;
 	memset(&pd, 0, sizeof(pd));
 	pd.nwh = Platform::getGameWindow();
 	bgfx::setPlatformData(pd);
-#else
-	r3d::init();
-	auto windowHandle = r3d::create_window(Platform::getGameWindow(), "r3d example");
-
-	// compile shader
-	r3d::shader_compile("test.shader", "test.bin");
-
-	// load shader from file
-	auto shader_handle = r3d::create_shader();
-	r3d::shader_load("test.bin", &shader_handle);
-
-#endif
 
 	// run
 	m_running = true;
 
-#ifndef R3DTEST
 	// load game assets, initialize everything
 	onLoad();
-#endif
 
 	// save start time
 	auto lastTime = Platform::getMiliseconds();
@@ -180,35 +161,16 @@ void GameBase::run()
 			DispatchMessage(&msg);
 		}
 
-#ifndef R3DTEST
 		// frame
 		{
 			onUpdate();
 			onSimulate(); // TODO: fixed-time step `onSimulate` call
 			onDraw(); GAMEBASE_CHECK_SHUTDOWN
 		}
-#else
-		float ccolor[4] = { 0.3f, 0.3f, 0.3f, 1.0f };
-
-		// say that we are going to push some information about current frame(for all contexts)
-		r3d::beginframe();
-		
-		// prepare for frame render
-		r3d::window_makecurrent(&windowHandle); // set windowHandle as current context(already it is set, bu this is only for example here)
-		r3d::use_renderbuffer(nullptr); // set default render buffer for the current context
-
-		r3d::clear_color(ccolor);
-		r3d::clear_depth();
-
-		// end the frame, process and present the whole frame
-		r3d::endframe();
-#endif
 	}
 
-#ifndef R3DTEST
 	// unload game assets
 	onUnload();
-#endif
 
 	// destroy gamewindow
 	DestroyWindow(Platform::getGameWindow());
