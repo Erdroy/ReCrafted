@@ -158,8 +158,8 @@ void GameMain::run()
 
 		// frame
 		{
-			onUpdate();
-			onSimulate(); // TODO: fixed-time step `onSimulate` call
+			onUpdate(); GAMEBASE_CHECK_SHUTDOWN
+			onSimulate(); GAMEBASE_CHECK_SHUTDOWN // TODO: fixed-time step `onSimulate` call
 			onDraw(); GAMEBASE_CHECK_SHUTDOWN
 		}
 	}
@@ -176,9 +176,6 @@ void GameMain::shutdown()
 	// release all resources etc.
 	SafeDispose(m_input);
 	SafeDispose(m_time);
-	SafeDispose(m_rendering);
-	SafeDispose(m_universe);
-	SafeDispose(m_logger);
 
 	m_running = false;
 }
@@ -241,6 +238,11 @@ void GameMain::onUnload()
 
 	Logger::write("Shutting down...", LogLevel::Info);
 
+	// release all resources etc.
+	SafeDispose(m_rendering);
+	SafeDispose(m_universe);
+	SafeDispose(m_logger);
+
 	bgfx::shutdown();
 }
 
@@ -268,7 +270,9 @@ void GameMain::onUpdate()
 
 	// exit the game when `escape` key is pressed
 	if (Input::isKeyDown(Key_Escape))
+	{
 		shutdown();
+	}
 
 	if (Input::isKeyDown(Key_F4))
 	{
