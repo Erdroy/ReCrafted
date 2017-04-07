@@ -146,7 +146,12 @@ public:
 	/// <summary>
 	/// Generates mesh for this chunk.
 	/// </summary>
-	void generateMesh();
+	void generateMesh(
+		std::vector<Vector3>* verticesArray,
+		std::vector<Vector3>* normalsArray,
+		std::vector<Vector2>* uvsArray,
+		std::vector<Vector4>* colorsArray,
+		std::vector<uint>* indicesArray);
 
 	/// <summary>
 	/// Gets voxel from THIS chunk, not using neighs.

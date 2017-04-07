@@ -112,75 +112,73 @@ void VoxelChunk::generateVoxelData() // WARNING: this should be run in job queue
 	m_lastTimeVisible = Time::time();
 }
 
-void VoxelChunk::generateMesh() // WARNING: this should be run in job queue!
+void VoxelChunk::generateMesh(
+	std::vector<Vector3>* verticesArray,
+	std::vector<Vector3>* normalsArray,
+	std::vector<Vector2>* uvsArray,
+	std::vector<Vector4>* colorsArray,
+	std::vector<uint>* indicesArray) // WARNING: this should be run in job queue!
 {
 	if (m_disposed)
 		return;
 
-	std::vector<Vector3> vertices = {};
-	std::vector<Vector3> normals = {};
-	std::vector<Vector2> uvs = {};
-	//std::vector<Vector4> colors = {};
-	std::vector<uint> indices = {};
+	auto vertices_ptr = verticesArray;
+	auto normals_ptr = normalsArray;
+	auto uvs_ptr = uvsArray;
+	auto colors_ptr = colorsArray;
+	auto indices_ptr = indicesArray;
 
+	const auto vec3_right = Vector3(1.0f, 0.0f, 0.0f);
+	const auto vec3_up = Vector3(0.0f, 1.0f, 0.0f);
+	const auto vec3_forward = Vector3(0.0f, 0.0f, 1.0f);
+
+	for (auto y = 0; y < ChunkHeight; y++)
 	{
-		auto vertices_ptr = &vertices;
-		auto normals_ptr = &normals;
-		auto uvs_ptr = &uvs;
-		auto indices_ptr = &indices;
-
-		const auto vec3_right = Vector3(1.0f, 0.0f, 0.0f);
-		const auto vec3_up = Vector3(0.0f, 1.0f, 0.0f);
-		const auto vec3_forward = Vector3(0.0f, 0.0f, 1.0f);
-
-		for (auto y = 0; y < ChunkHeight; y++)
+		for (auto x = 0; x < ChunkWidth; x++)
 		{
-			for (auto x = 0; x < ChunkWidth; x++)
+			for (auto z = 0; z < ChunkWidth; z++)
 			{
-				for (auto z = 0; z < ChunkWidth; z++)
-				{
-					if (m_voxels[y * (ChunkWidth * ChunkWidth) + z * ChunkWidth + x] == voxel_air)
-						continue;
+				if (m_voxels[y * (ChunkWidth * ChunkWidth) + z * ChunkWidth + x] == voxel_air)
+					continue;
 
-					auto origin = Vector3(float(x), float(y), float(z));
+				auto origin = Vector3(float(x), float(y), float(z));
 
-					// left face
-					if(!getVoxelCC(x - 1, y, z))
-						build_face(origin, vec3_up, vec3_forward, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+				// left face
+				if (!getVoxelCC(x - 1, y, z))
+					build_face(origin, vec3_up, vec3_forward, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
-					// right face
-					if (!getVoxelCC(x + 1, y, z))
-						build_face(origin + vec3_right, vec3_up, vec3_forward, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+				// right face
+				if (!getVoxelCC(x + 1, y, z))
+					build_face(origin + vec3_right, vec3_up, vec3_forward, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
-					// upper face
-					if (!getVoxelCC(x, y + 1, z))
-						build_face(origin + vec3_up, vec3_forward, vec3_right, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
-					
-					// bottom face
-					if (!getVoxelCC(x, y - 1, z) && y - 1 >= 0)
-						build_face(origin, vec3_forward, vec3_right, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+				// upper face
+				if (!getVoxelCC(x, y + 1, z))
+					build_face(origin + vec3_up, vec3_forward, vec3_right, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
-					// front face
-					if (!getVoxelCC(x, y, z + 1))
-						build_face(origin + vec3_forward, vec3_up, vec3_right, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+				// bottom face
+				if (!getVoxelCC(x, y - 1, z) && y - 1 >= 0)
+					build_face(origin, vec3_forward, vec3_right, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
-					// back face
-					if (!getVoxelCC(x, y, z - 1))
-						build_face(origin, vec3_up, vec3_right, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
-				}
+				// front face
+				if (!getVoxelCC(x, y, z + 1))
+					build_face(origin + vec3_forward, vec3_up, vec3_right, false, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+
+				// back face
+				if (!getVoxelCC(x, y, z - 1))
+					build_face(origin, vec3_up, vec3_right, true, false, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 			}
 		}
-
-		m_mesh = Mesh::createMesh();
-		m_mesh->setVertices(vertices.data(), uint(vertices.size()));
-		m_mesh->setUVs(uvs.data());
-		m_mesh->setNormals(normals.data());
-		m_mesh->setIndices(indices.data(), uint(indices.size()));
-
-		m_mesh->applyChanges();
-
-		m_lastTimeVisible = Time::time();
 	}
+
+	m_mesh = Mesh::createMesh();
+	m_mesh->setVertices(vertices_ptr->data(), uint(vertices_ptr->size()));
+	m_mesh->setUVs(uvs_ptr->data());
+	m_mesh->setNormals(normals_ptr ->data());
+	m_mesh->setIndices(indices_ptr->data(), uint(indices_ptr->size()));
+
+	m_mesh->applyChanges();
+
+	m_lastTimeVisible = Time::time();
 }
 
 void VoxelChunk::updateNeighs()

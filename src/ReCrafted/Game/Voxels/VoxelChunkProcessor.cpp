@@ -41,6 +41,20 @@ void worker_data(std::vector<VoxelChunk*>* queue)
 void worker_meshing(std::vector<VoxelChunk*>* queue)
 {
 	VoxelChunk* chunk = nullptr;
+
+	// arrays for mesher
+	std::vector<Vector3> verticesArray(65535);
+	std::vector<Vector3> normalsArray(65535);
+	std::vector<Vector2> uvsArray(65535);
+	std::vector<Vector4> colorsArray(65535);
+	std::vector<uint> indicesArray(65535);
+
+	auto vertices_ptr = &verticesArray;
+	auto normals_ptr = &normalsArray;
+	auto uvs_ptr = &uvsArray;
+	auto colors_ptr = &colorsArray;
+	auto indices_ptr = &indicesArray;
+
 	while (GameBase::isRunning())
 	{
 		if (!chunk)
@@ -58,11 +72,21 @@ void worker_meshing(std::vector<VoxelChunk*>* queue)
 		}
 
 		// process
-		chunk->generateMesh();
+		chunk->generateMesh(vertices_ptr, normals_ptr, uvs_ptr, colors_ptr, indices_ptr);
 		VoxelChunkProcessorInstance->finishChunkMesh(chunk);
 
+		// clear arrays
+		verticesArray.clear();
+		normalsArray.clear();
+		uvsArray.clear();
+		colorsArray.clear();
+		indicesArray.clear();
+
+		// zeroe chunk pointer
 		chunk = nullptr;
 	}
+
+	// all vectors will release the memory
 }
 
 void VoxelChunkProcessor::init()
