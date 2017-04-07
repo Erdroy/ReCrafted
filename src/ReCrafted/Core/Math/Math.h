@@ -10,23 +10,9 @@
 #include "Matrix.h"
 #include "Vector2.h"
 #include "Vector3.h"
+#include "Vector4.h"
 
 #define PI 3.14159265358979323846
-
-typedef Vector2 vec2;
-typedef Vector3 vec3;
-//typedef Vector4 vec4;
-typedef Matrix mat4;
-
-typedef Vector2 vector2;
-typedef Vector3 vector3;
-//typedef Vector4 vector4;
-typedef Matrix matrix4;
-
-typedef Vector2 float2;
-typedef Vector3 float3;
-//typedef Vector4 float4;
-typedef Matrix float4x4;
 
 namespace internal{
 	const float degtorad = float(PI / 180.0f);
@@ -38,7 +24,7 @@ class Math
 
 public:
 	template<class T>
-	FORCEINLINE static T clmap(T v, T min, T max)
+	FORCEINLINE static T clamp(T v, T min, T max)
 	{
 		if (v < min)
 			return min;

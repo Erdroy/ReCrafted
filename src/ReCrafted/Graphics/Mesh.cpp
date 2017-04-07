@@ -26,11 +26,11 @@ void Mesh::setNormals(Vector3* normals)
 	m_normals_count = m_vertices_count;
 }
 
-/*void Mesh::setColors(vector4f* colors, uint count)
+void Mesh::setColors(Vector4* colors)
 {
 	m_colors = colors;
-	m_colors_count = count;
-}*/
+	m_colors_count = m_vertices_count;
+}
 
 void Mesh::setIndices(uint* indices, uint count)
 {
@@ -74,8 +74,8 @@ void Mesh::applyChanges()
 	if (m_normals) 
 		m_vertexdecl.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float);
 
-	//if (m_colors) 
-	//	m_vertexdecl.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float);
+	if (m_colors) 
+		m_vertexdecl.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float);
 
 	m_vertexdecl.end();
 
@@ -104,11 +104,11 @@ void Mesh::applyChanges()
 			memcpy(memoryPtr + offset + dataOffset, &m_normals[i], sizeof(float) * 3);
 			dataOffset += 3 * sizeof(float);
 		}
-		/*if (m_colors)
+		if (m_colors)
 		{
-			auto color = m_colors[i];
-			memcpy(memoryPtr + offset + dataOffset, &color, sizeof(float) * color.size());
-		}*/
+			memcpy(memoryPtr + offset + dataOffset, &m_colors[i], sizeof(float) * 4);
+			dataOffset += 4 * sizeof(float);
+		}
 	}
 
 	// allocate memory for index buffer
@@ -128,7 +128,7 @@ void Mesh::applyChanges()
 	m_vertices = nullptr;
 	m_uvs = nullptr;
 	m_normals = nullptr;
-	//m_colors = nullptr;
+	m_colors = nullptr;
 	m_indices = nullptr;
 }
 
@@ -147,7 +147,7 @@ void Mesh::dispose()
 	m_vertices = nullptr;
 	m_uvs = nullptr;
 	m_normals = nullptr;
-	//m_colors = nullptr;
+	m_colors = nullptr;
 	m_indices = nullptr;
 
 	m_vertices_count = 0u;

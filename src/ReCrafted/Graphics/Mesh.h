@@ -10,6 +10,8 @@
 #include "../Utils/Types.h"
 #include "../Core/Math/Math.h"
 
+struct Vector4;
+
 /// <summary>
 /// Mesh class.
 /// </summary>
@@ -28,7 +30,7 @@ private:
 	Vector3* m_vertices = nullptr;
 	Vector2* m_uvs = nullptr;
 	Vector3* m_normals = nullptr;
-	//vector4f* m_colors = nullptr;
+	Vector4* m_colors = nullptr;
 	uint* m_indices = nullptr;
 
 	bool m_uploaded = false;
@@ -75,7 +77,7 @@ public:
 	/// after setting all data you need.
 	/// </summary>
 	/// <param name="colors">Colors pointer.</param>
-	//void setColors(Vector3* colors);
+	void setColors(Vector4* colors);
 
 	/// <summary>
 	/// Set indices for this mesh.

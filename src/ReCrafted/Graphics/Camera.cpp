@@ -136,7 +136,7 @@ void Camera::updateControls()
 
 	// apply camera rotation
 	m_rotation += Vector3(accelDelta.x / 16.0f, accelDelta.y / 16.0f, 0.0f);
-	m_rotation.y = Math::clmap(m_rotation.y, -89.9f, 89.9f);
+	m_rotation.y = Math::clamp(m_rotation.y, -89.9f, 89.9f);
 
 	// update camera rotation
 	updateRotation();

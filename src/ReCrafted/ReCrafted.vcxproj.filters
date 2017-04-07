@@ -93,19 +93,7 @@
     <ClCompile Include="Game\Voxels\VoxelChunkProcessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="r3d\r3d.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="r3d\r3d_d3d11.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Voxels\VoxelMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="r3d\generators\r3d_shader.d3d11.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="r3d\r3d_shadercompiler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -227,34 +215,7 @@
     <ClInclude Include="Core\Math\Rectf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="r3d\r3d.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="r3d\r3d_renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="r3d\r3d_headers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="r3d\r3d_types.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="r3d\r3d_commandlist.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="r3d\r3d_d3d11.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Voxels\VoxelMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="r3d\r3d_config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="r3d\generators\r3d_shader.d3d11.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="r3d\r3d_filesystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -274,6 +235,5 @@
     <None Include="Shaders\deferred_final\varying.def.sc" />
     <None Include="Shaders\deferred_final\vs_deferred_final.glsl" />
     <None Include="Shaders\deferred_final\desc.json" />
-    <None Include="r3d\r3d_shader.utils.h" />
   </ItemGroup>
 </Project>

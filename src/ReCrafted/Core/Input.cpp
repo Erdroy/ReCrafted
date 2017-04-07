@@ -22,7 +22,7 @@ void Input::update(int cursorX, int cursorY)
 		m_lastkeys[i] = m_keys[i];
 
 	// update cursor pos
-	m_cursorPos = vec2(float(cursorX), float(cursorY));
+	m_cursorPos = Vector2(float(cursorX), float(cursorY));
 }
 
 void Input::releaseAll()

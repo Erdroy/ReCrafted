@@ -34,7 +34,7 @@ private:
 	byte m_lastkeys[INPUT_TABLE_SIZE] = {};
 	byte m_keys[INPUT_TABLE_SIZE] = {};
 
-	vec2 m_cursorPos = {};
+	Vector2 m_cursorPos = {};
 
 public:
 	/// <summary>
