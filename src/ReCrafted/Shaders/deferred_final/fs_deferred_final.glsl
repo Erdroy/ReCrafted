@@ -22,7 +22,7 @@ PixelShader()
 	vec3 normal = norm_ao.rgb * 2.0f - 1.0f;
 
 	// decode ao
-	float ao = norm_ao.a;
+	float ao = 1.0f - norm_ao.a;
 
 	vec3 lightDir = normalize(m_lightdir);
 	vec3 nDotL = dot(normal, lightDir);
@@ -31,5 +31,5 @@ PixelShader()
 	vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
 	vec3 lighting = (lightColor * nDotL)/* * shadow */+ vec3(0.6f, 0.6f, 0.6f);
 
-	FS_OUTPUT(0, vec4(albedo.rgb * lighting, 1.0f));
+	FS_OUTPUT(0, vec4(albedo.rgb * lighting * ao, 1.0f));
 }
