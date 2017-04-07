@@ -18,6 +18,8 @@ const voxelid voxel_air = voxelid(0u);
 static const int ChunkWidth = 16;
 static const int ChunkHeight = 128;
 
+struct RaycastHit;
+
 /// <summary>
 /// VoxelChunk class.
 /// </summary>
@@ -234,6 +236,16 @@ public:
 		return voxel_air; // nope
 	}
 
+	/// <summary>
+	/// Raycasts trough voxels.
+	/// </summary>
+	/// <param name="origin">The ray origin.</param>
+	/// <param name="direction">The ray direction.</param>
+	/// <param name="length">The ray length.</param>
+	/// <param name="hit">The ray result data.</param>
+	/// <param name="thisChunkOnly">Limit the ray to only this chunk?.</param>
+	/// <returns>True when ray hits something.</returns>
+	bool raycast(Vector3 origin, Vector3 direction, float length, RaycastHit* hit, bool thisChunkOnly = false) const;
 
 	// recursive tree methods
 

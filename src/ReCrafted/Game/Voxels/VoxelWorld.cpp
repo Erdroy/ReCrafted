@@ -4,6 +4,8 @@
 #include "Generator/VoxelGenerator.h"
 #include "../../Graphics/Camera.h"
 #include "VoxelChunkProcessor.h"
+#include "../../Core/Input.h"
+#include <string>
 
 void VoxelWorld::init()
 {
@@ -52,13 +54,20 @@ VoxelChunk* VoxelWorld::generateChunk(int x, int z)
 	return chunk;
 }
 
-VoxelChunk* VoxelWorld::getVoxelChunk(Vector3 containedPoint)
+VoxelChunk* VoxelWorld::getVoxelChunk(Vector3 containedPoint) const
 {
-	return nullptr;
+	return m_chunkMap->findChunk(static_cast<int>(containedPoint.x) / 16, static_cast<int>(containedPoint.z) / 16);
 }
 
-bool VoxelWorld::raycast(Vector3 origin, Vector3 direction, RaycastHit* hit)
+bool VoxelWorld::raycast(Vector3 origin, Vector3 direction, float length, RaycastHit* hit)
 {
-	// http://www.cse.chalmers.se/edu/year/2010/course/TDA361/grid.pdf
+	auto baseChunk = getVoxelChunk(origin);
+
+	if (baseChunk == nullptr)
+		return false;
+
+	if (baseChunk->raycast(origin, direction, length, hit))
+		return true;
+
 	return false;
 }

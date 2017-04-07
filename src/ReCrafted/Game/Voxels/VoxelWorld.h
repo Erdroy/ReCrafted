@@ -25,7 +25,7 @@ struct RaycastHit
 {
 public:
 	voxelid voxel = voxel_air;
-	Vector3 point = {};
+	Vector3 position = {};
 	Vector3 normal = {};
 };
 
@@ -74,16 +74,17 @@ public:
 	/// </summary>
 	/// <param name="containedPoint">The point.</param>
 	/// <returns>Found chunk or null when chunk is does not exist.</returns>
-	VoxelChunk* getVoxelChunk(Vector3 containedPoint);
+	VoxelChunk* getVoxelChunk(Vector3 containedPoint) const;
 
 	/// <summary>
 	/// Raycasts trough voxels.
 	/// </summary>
 	/// <param name="origin">The ray origin.</param>
 	/// <param name="direction">The ray direction.</param>
+	/// <param name="length">The ray length.</param>
 	/// <param name="hit">The ray result data.</param>
 	/// <returns>True when ray hits something.</returns>
-	bool raycast(Vector3 origin, Vector3 direction, RaycastHit* hit);
+	bool raycast(Vector3 origin, Vector3 direction, float length, RaycastHit* hit);
 
 	/// <summary>
 	/// Disposes the world

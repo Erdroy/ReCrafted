@@ -45,6 +45,11 @@ public:
 		return x < 0.0f ? -1.0f : 1.0f;
 	}
 
+	FORCEINLINE static int signfz(float x)
+	{
+		return x > 0 ? 1 : x < 0 ? -1 : 0;
+	}
+
 	FORCEINLINE static float minf(float a, float b)
 	{
 		return a < b ? a : b;

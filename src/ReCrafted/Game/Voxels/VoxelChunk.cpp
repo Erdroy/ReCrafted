@@ -7,7 +7,7 @@
 #include <vector>
 #include "../../Graphics/Camera.h"
 
-FORCEINLINE void build_face(
+FORCEINLINE static void build_face(
 	Vector3 origin,
 	Vector3 up,
 	Vector3 right,
@@ -91,12 +91,21 @@ FORCEINLINE void build_face(
 	}
 }
 
-FORCEINLINE float calcAO(bool sideA, bool sideB, bool corner)
+FORCEINLINE static float calcAO(bool sideA, bool sideB, bool corner)
 {
 	if (sideA && sideB)
 		return 1.0f;
 
 	return (sideA ? 0.5f : 0) + (sideB ? 0.5f : 0) + (corner ? 0.5f : 0);
+}
+
+FORCEINLINE static float intbounds(float s, float ds)
+{
+	auto sIsInteger = round(s) == s;
+	if (ds < 0 && sIsInteger)
+		return 0;
+
+	return (ds > 0 ? ceil(s) - s : s - floor(s)) / abs(ds);
 }
 
 void VoxelChunk::generateVoxelData() // WARNING: this should be run in job queue!
@@ -317,6 +326,106 @@ void VoxelChunk::generateMesh(
 	m_mesh->applyChanges();
 
 	m_lastTimeVisible = Time::time();
+}
+
+bool VoxelChunk::raycast(Vector3 origin, Vector3 direction, float length, RaycastHit* hit, bool thisChunkOnly) const
+{
+	// sources:
+	// http://www.cse.chalmers.se/edu/year/2010/course/TDA361/grid.pdf
+	// http://gamedev.stackexchange.com/questions/47362/cast-ray-to-select-block-in-voxel-game?rq=1
+	// https://github.com/kpreid/cubes/blob/c5e61fa22cb7f9ba03cd9f22e5327d738ec93969/world.js#L317
+	// https://gist.github.com/dogfuntom/cc881c8fc86ad43d55d8
+
+	direction.normalize();
+
+	if (direction.length() < 0.1f)
+		return false;
+
+	*hit = {};
+
+	origin.x -= m_x * ChunkWidth;
+	origin.z -= m_z * ChunkWidth;
+
+	auto x = static_cast<int>(floor(origin.x));
+	auto y = static_cast<int>(floor(origin.y));
+	auto z = static_cast<int>(floor(origin.z));
+
+	auto dx = direction.x;
+	auto dy = direction.y;
+	auto dz = direction.z;
+
+	auto stepX = Math::signfz(direction.x);
+	auto stepY = Math::signfz(direction.y);
+	auto stepZ = Math::signfz(direction.z);
+
+	auto tMaxX = intbounds(origin.x, dx);
+	auto tMaxY = intbounds(origin.y, dy);
+	auto tMaxZ = intbounds(origin.z, dz);
+
+	auto tDeltaX = stepX / dx;
+	auto tDeltaY = stepY / dy;
+	auto tDeltaZ = stepZ / dz;
+
+	length /= sqrt(dx * dx + dy * dy + dz * dz);
+
+	while (!thisChunkOnly || (stepX > 0 ? x < ChunkWidth : x >= 0) && (stepY > 0 ? y < ChunkHeight : y >= 0) && (stepZ > 0 ? z < ChunkWidth : z >= 0))
+	{
+		if (!thisChunkOnly || !(x < 0 || y < 0 || z < 0 || x >= ChunkWidth || y >= ChunkHeight || z >= ChunkWidth))
+		{
+			auto voxel = getVoxelCC(x, y, z);
+			if (voxel != voxel_air)
+			{
+				// build hit info
+				hit->position = Vector3(float(x + m_x * ChunkWidth), float(y), float(z + m_z * ChunkWidth));
+				hit->voxel = voxel;
+				return true;
+			}
+		}
+
+		if (tMaxX < tMaxY)
+		{
+			if (tMaxX < tMaxZ)
+			{
+				if (tMaxX > length)
+					return false;
+				x += stepX;
+				tMaxX += tDeltaX;
+
+				hit->normal = Vector3(float(-stepX), 0.0f, 0.0f);
+			}
+			else
+			{
+				if (tMaxZ > length)
+					return false;
+				z += stepZ;
+				tMaxZ += tDeltaZ;
+
+				hit->normal = Vector3(0.0f, 0.0f, float(-stepZ));
+			}
+		}
+		else
+		{
+			if (tMaxY < tMaxZ)
+			{
+				if (tMaxY > length)
+					return false;
+				y += stepY;
+				tMaxY += tDeltaY;
+				hit->normal = Vector3(0.0f, float(-stepY), 0.0f);
+			}
+			else
+			{
+				if (tMaxZ > length)
+					return false;
+				z += stepZ;
+				tMaxZ += tDeltaZ;
+
+				hit->normal = Vector3(0.0f, 0.0f, float(-stepZ));
+			}
+		}
+	}
+
+	return false;
 }
 
 void VoxelChunk::updateNeighs()
