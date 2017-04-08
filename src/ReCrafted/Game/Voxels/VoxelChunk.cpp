@@ -212,7 +212,7 @@ void VoxelChunk::generateMesh(
 					ao00 = calcAO(block_mfl, block_bl, block_bfl);
 					ao01 = calcAO(block_mfl, block_tl, block_tfl);
 					ao11 = calcAO(block_mbl, block_tl, block_tbl);
-					ao10 = calcAO(block_mbl, block_br, block_bbl);
+					ao10 = calcAO(block_mbl, block_bl, block_bbl);
 
 					auto flippedQuad = ao01 + ao10 > ao00 + ao11;
 
