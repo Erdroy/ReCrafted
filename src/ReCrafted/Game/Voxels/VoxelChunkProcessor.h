@@ -91,7 +91,7 @@ public:
 	/// Queue chunk for processing.
 	/// </summary>
 	/// <param name="chunk">The chunk.</param>
-	FORCEINLINE static void queue(VoxelChunk* chunk, QueueType::Enum queueType)
+	FORCEINLINE static void queue(VoxelChunk* chunk, QueueType::Enum queueType, bool force = false)
 	{
 		if(queueType == QueueType::VoxelData) // try to add to voxel data queue
 		{
@@ -113,12 +113,24 @@ public:
 				m_instance->m_dataQueueMutex.unlock();
 			}
 
-			if(!chunk->m_mesh && chunk->hasNeighs()) // try to add to voxel meshing queue
+			if (!force) {
+				if (!chunk->m_mesh && chunk->hasNeighs()) // try to add to voxel meshing queue
+				{
+					chunk->m_queued = true;
+					m_instance->m_meshingQueueMutex.lock();
+					m_instance->m_meshingQueue.push_back(chunk);
+					m_instance->m_meshingQueueMutex.unlock();
+				}
+			}
+			else
 			{
-				chunk->m_queued = true;
-				m_instance->m_meshingQueueMutex.lock();
-				m_instance->m_meshingQueue.push_back(chunk);
-				m_instance->m_meshingQueueMutex.unlock();
+				if (chunk->hasNeighs()) // try to add to voxel meshing queue
+				{
+					chunk->m_queued = true;
+					m_instance->m_meshingQueueMutex.lock();
+					m_instance->m_meshingQueue.push_back(chunk);
+					m_instance->m_meshingQueueMutex.unlock();
+				}
 			}
 		}
 	}

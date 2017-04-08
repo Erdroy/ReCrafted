@@ -40,6 +40,9 @@ class VoxelWorld
 private:
 	VoxelMap* m_chunkMap = nullptr;
 
+private:
+	void update_digplace();
+
 public:
 	/// <summary>
 	/// Initializes voxel world

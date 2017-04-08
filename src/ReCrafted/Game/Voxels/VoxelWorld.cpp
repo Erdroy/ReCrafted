@@ -2,10 +2,33 @@
 
 #include "VoxelWorld.h"
 #include "Generator/VoxelGenerator.h"
-#include "../../Graphics/Camera.h"
 #include "VoxelChunkProcessor.h"
+#include "../../Graphics/Camera.h"
 #include "../../Core/Input.h"
 #include <string>
+
+void VoxelWorld::update_digplace()
+{
+	auto dig = Input::isKeyDown(Key_Mouse0);
+	//auto place = Input::isKeyDown(Key_Mouse1);
+
+	if(dig)
+	{
+		// cast ray
+		RaycastHit hit;
+		if(raycast(Camera::getMainCamera()->get_position(), Camera::getMainCamera()->get_forward(), 7.0f, &hit))
+		{
+			// hit!
+			auto chunk = getVoxelChunk(hit.position);
+			chunk->setVoxel(0, hit.position);
+
+			// rebuild chunk
+			chunk->updateMesh();
+
+			// check if the block was on the edge, if so, also rebuild the needed neighs
+		}
+	}
+}
 
 void VoxelWorld::init()
 {
@@ -22,6 +45,9 @@ void VoxelWorld::update()
 	{
 		chunk->update();
 	}
+
+	// update block-place/dig
+	update_digplace();
 }
 
 void VoxelWorld::simulate()

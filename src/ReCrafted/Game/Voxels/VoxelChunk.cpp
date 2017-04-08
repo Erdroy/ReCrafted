@@ -6,6 +6,7 @@
 #include "VoxelWorld.h"
 #include <vector>
 #include "../../Graphics/Camera.h"
+#include "VoxelChunkProcessor.h"
 
 FORCEINLINE static void build_face(
 	Vector3 origin,
@@ -316,16 +317,26 @@ void VoxelChunk::generateMesh(
 		}
 	}
 
-	m_mesh = Mesh::createMesh();
-	m_mesh->setVertices(vertices_ptr->data(), uint(vertices_ptr->size()));
-	m_mesh->setUVs(uvs_ptr->data());
-	m_mesh->setNormals(normals_ptr->data());
-	m_mesh->setColors(colors_ptr->data());
-	m_mesh->setIndices(indices_ptr->data(), uint(indices_ptr->size()));
+	auto mesh = Mesh::createMesh();
+	mesh->setVertices(vertices_ptr->data(), uint(vertices_ptr->size()));
+	mesh->setUVs(uvs_ptr->data());
+	mesh->setNormals(normals_ptr->data());
+	mesh->setColors(colors_ptr->data());
+	mesh->setIndices(indices_ptr->data(), uint(indices_ptr->size()));
 
-	m_mesh->applyChanges();
+	mesh->applyChanges();
+
+	if (m_mesh)
+		m_mesh->dispose();
+
+	m_mesh = mesh;
 
 	m_lastTimeVisible = Time::time();
+}
+
+void VoxelChunk::updateMesh()
+{
+	VoxelChunkProcessor::queue(this, VoxelChunkProcessor::QueueType::VoxelDataAndMesh, true);
 }
 
 bool VoxelChunk::raycast(Vector3 origin, Vector3 direction, float length, RaycastHit* hit, bool thisChunkOnly) const

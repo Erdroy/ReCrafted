@@ -155,13 +155,16 @@ public:
 		std::vector<Vector4>* colorsArray,
 		std::vector<uint>* indicesArray);
 
+	void updateMesh();
+
 	/// <summary>
 	/// Gets voxel from THIS chunk, not using neighs.
+	/// USING VOXEL-SPACE COORDS.
 	/// </summary>
-	/// <param name="x"></param>
-	/// <param name="y"></param>
-	/// <param name="z"></param>
-	/// <returns></returns>
+	/// <param name="x">The x coord of voxel.</param>
+	/// <param name="y">The y coord of voxel.</param>
+	/// <param name="z">The z coord of voxel.</param>
+	/// <returns>The voxel.</returns>
 	FORCEINLINE voxelid getVoxel(int x, int y, int z) const
 	{
 		if (y >= ChunkHeight || y < 0)
@@ -176,6 +179,7 @@ public:
 	/// <summary>
 	/// Gets voxel from THIS chunk or neigh.
 	/// This needs all neighs to be loaded!
+	/// USING VOXEL-SPACE COORDS(may be higer than 16x16, neigh chunk will be used).
 	/// </summary>
 	/// <param name="x">The x coord of voxel.</param>
 	/// <param name="y">The y coord of voxel.</param>
@@ -198,35 +202,35 @@ public:
 
 		// north neigh chunk
 		if (!is_out(x) && is_up(z))
-			return m_neighN->getVoxel(x, y, z - ChunkWidth);
+			return m_neighN->getVoxelCC(x, y, z - ChunkWidth);
 
 		// north east chunk
 		if (is_right(x) && is_up(z))
-			return m_neighNE->getVoxel(x - ChunkWidth, y, z - ChunkWidth);
+			return m_neighNE->getVoxelCC(x - ChunkWidth, y, z - ChunkWidth);
 
 		// east chunk
 		if (is_right(x) && !is_out(z))
-			return m_neighE->getVoxel(x - ChunkWidth, y, z);
+			return m_neighE->getVoxelCC(x - ChunkWidth, y, z);
 
 		// south east chunk
 		if (is_right(x) && is_down(z))
-			return m_neighSE->getVoxel(x - ChunkWidth, y, z + ChunkWidth);
+			return m_neighSE->getVoxelCC(x - ChunkWidth, y, z + ChunkWidth);
 
 		// south chunk
 		if (!is_out(x) && is_down(z))
-			return m_neighS->getVoxel(x, y, z + ChunkWidth);
+			return m_neighS->getVoxelCC(x, y, z + ChunkWidth);
 
 		// south west chunk
 		if (is_left(x) && is_down(z))
-			return m_neighSW->getVoxel(x + ChunkWidth, y, z + ChunkWidth);
+			return m_neighSW->getVoxelCC(x + ChunkWidth, y, z + ChunkWidth);
 
 		// west chunk
 		if (is_left(x) && !is_out(z))
-			return m_neighW->getVoxel(x + ChunkWidth, y, z);
+			return m_neighW->getVoxelCC(x + ChunkWidth, y, z);
 
 		// north west chunk
 		if (is_left(x) && is_up(z))
-			return m_neighNW->getVoxel(x + ChunkWidth, y, z - ChunkWidth);
+			return m_neighNW->getVoxelCC(x + ChunkWidth, y, z - ChunkWidth);
 
 		#undef is_out
 		#undef is_up
@@ -234,6 +238,86 @@ public:
 		#undef is_right
 		#undef is_left
 		return voxel_air; // nope
+	}
+
+	/// <summary>
+	/// Set voxel at given coords.
+	/// USING VOXEL-SPACE COORDS.
+	/// </summary>
+	/// <param name="voxel">The voxel.</param>
+	/// <param name="x">The x coord of voxel.</param>
+	/// <param name="y">The y coord of voxel.</param>
+	/// <param name="z">The z coord of voxel.</param>
+	FORCEINLINE void setVoxelUnsafe(voxelid voxel, int x, int y, int z) const
+	{
+		m_voxels[y * (ChunkWidth * ChunkWidth) + z * ChunkWidth + x] = voxel; // this chunk
+	}
+
+	/// <summary>
+	/// Set voxel at given coords.
+	/// USING VOXEL-SPACE COORDS.
+	/// </summary>
+	/// <param name="voxel">The voxel.</param>
+	/// <param name="x">The x coord of voxel.</param>
+	/// <param name="y">The y coord of voxel.</param>
+	/// <param name="z">The z coord of voxel.</param>
+	FORCEINLINE void setVoxel(voxelid voxel, int x, int y, int z) const
+	{
+		if (y >= ChunkHeight || y < 0)
+			return; // out of space!
+
+		if (x >= 0 && x < ChunkWidth && z >= 0 && z < ChunkWidth)
+			setVoxelUnsafe(voxel, x, y, z); // this chunk
+	}
+
+	/// <summary>
+	/// Set voxel at given coords.
+	/// USING WORLD-SPACE COORDS.
+	/// </summary>
+	/// <param name="voxel">The voxel.</param>
+	/// <param name="x">The x coord of voxel.</param>
+	/// <param name="y">The y coord of voxel.</param>
+	/// <param name="z">The z coord of voxel.</param>
+	FORCEINLINE void setVoxel(voxelid voxel, Vector3 position) const
+	{
+		auto x = toVoxelSpaceX(int(position.x));
+		auto y = int(position.y);
+		auto z = toVoxelSpaceZ(int(position.z));
+		
+		if(validVoxelSpaceHCoord(x) && validVoxelSpaceHCoord(z))
+		{
+			setVoxelUnsafe(voxel, x, y, z);
+		}
+	}
+
+	/// <summary>
+	/// Checks if coord is valid horizontal(x or z) for voxel space.
+	/// </summary>
+	/// <param name="coord">The coord.</param>
+	/// <returns>The result, true when coord is valid voxel space coord.</returns>
+	FORCEINLINE bool validVoxelSpaceHCoord(int coord) const
+	{
+		return coord >= 0 && coord < ChunkWidth;
+	}
+
+	/// <summary>
+	/// Convert `x` from world space to voxel space.
+	/// </summary>
+	/// <param name="x">The `x` coord to be converted.</param>
+	/// <returns>The converted `x` coord, in voxel space.</returns>
+	FORCEINLINE int toVoxelSpaceX(int x) const
+	{
+		return x - m_x * ChunkWidth;
+	}
+	
+	/// <summary>
+	/// Convert `z` from world space to voxel space.
+	/// </summary>
+	/// <param name="z">The `z` coord to be converted.</param>
+	/// <returns>The converted `z` coord, in voxel space.</returns>
+	FORCEINLINE int toVoxelSpaceZ(int z) const
+	{
+		return z - m_z * ChunkWidth;
 	}
 
 	/// <summary>
@@ -246,6 +330,7 @@ public:
 	/// <param name="thisChunkOnly">Limit the ray to only this chunk?.</param>
 	/// <returns>True when ray hits something.</returns>
 	bool raycast(Vector3 origin, Vector3 direction, float length, RaycastHit* hit, bool thisChunkOnly = false) const;
+
 
 	// recursive tree methods
 
