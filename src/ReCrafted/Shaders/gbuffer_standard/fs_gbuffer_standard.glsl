@@ -7,7 +7,7 @@ $input m_uv, m_normal, m_color
 
 PixelShader()
 {
-	FS_OUTPUT(0, vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	FS_OUTPUT(0, vec4(1.0f, 0.4f, 0.2f, 1.0f));
 	//           ALBEDO
 
 	FS_OUTPUT(1, vec4(m_normal, m_color.r));

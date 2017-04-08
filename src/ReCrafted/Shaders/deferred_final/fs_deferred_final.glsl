@@ -21,7 +21,7 @@ PixelShader()
 	// decode normal
 	vec3 normal = norm_ao.rgb * 2.0f - 1.0f;
 
-	// decode ao
+	// calculate ao
 	float ao = 1.0f - norm_ao.a;
 
 	vec3 lightDir = normalize(m_lightdir);
