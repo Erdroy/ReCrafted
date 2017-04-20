@@ -20,12 +20,34 @@ void VoxelWorld::update_digplace()
 		{
 			// hit!
 			auto chunk = getVoxelChunk(hit.position);
-			chunk->setVoxel(0, hit.position);
+
+			auto x = chunk->toVoxelSpaceX(hit.position.x);
+			auto y = int(floor(hit.position.y));
+			auto z = chunk->toVoxelSpaceZ(hit.position.z);
+
+			chunk->setVoxel(0, x ,y, z);
 
 			// rebuild chunk
 			chunk->updateMesh();
 
 			// check if the block was on the edge, if so, also rebuild the needed neighs
+			if(VoxelChunk::isOnEdge(x) || VoxelChunk::isOnEdge(z))
+			{
+				VoxelChunk* neigh_a = nullptr;
+				VoxelChunk* neigh_b = nullptr;
+				VoxelChunk* neigh_c = nullptr;
+
+				chunk->getEdgeNeighs(x, z, &neigh_a, &neigh_b, &neigh_c);
+				
+				if(neigh_a)
+					neigh_a->updateMesh();
+
+				if (neigh_b)
+					neigh_b->updateMesh();
+
+				if (neigh_c)
+					neigh_c->updateMesh();
+			}
 		}
 	}
 }
@@ -82,7 +104,7 @@ VoxelChunk* VoxelWorld::generateChunk(int x, int z)
 
 VoxelChunk* VoxelWorld::getVoxelChunk(Vector3 containedPoint) const
 {
-	return m_chunkMap->findChunk(static_cast<int>(containedPoint.x) / 16, static_cast<int>(containedPoint.z) / 16);
+	return m_chunkMap->findChunk(VoxelChunk::toChunkSpaceX(containedPoint.x), VoxelChunk::toChunkSpaceZ(containedPoint.z));
 }
 
 bool VoxelWorld::raycast(Vector3 origin, Vector3 direction, float length, RaycastHit* hit)

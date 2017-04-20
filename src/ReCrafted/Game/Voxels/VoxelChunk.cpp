@@ -317,19 +317,19 @@ void VoxelChunk::generateMesh(
 		}
 	}
 
-	auto mesh = Mesh::createMesh();
-	mesh->setVertices(vertices_ptr->data(), uint(vertices_ptr->size()));
-	mesh->setUVs(uvs_ptr->data());
-	mesh->setNormals(normals_ptr->data());
-	mesh->setColors(colors_ptr->data());
-	mesh->setIndices(indices_ptr->data(), uint(indices_ptr->size()));
-
-	mesh->applyChanges();
-
-	if (m_mesh)
+	if (m_mesh) {
 		m_mesh->dispose();
+		m_mesh = nullptr;
+	}
 
-	m_mesh = mesh;
+	m_mesh = Mesh::createMesh();
+	m_mesh->setVertices(vertices_ptr->data(), uint(vertices_ptr->size()));
+	m_mesh->setUVs(uvs_ptr->data());
+	m_mesh->setNormals(normals_ptr->data());
+	m_mesh->setColors(colors_ptr->data());
+	m_mesh->setIndices(indices_ptr->data(), uint(indices_ptr->size()));
+
+	m_mesh->applyChanges();
 
 	m_lastTimeVisible = Time::time();
 }
@@ -560,5 +560,25 @@ void VoxelChunk::simulate()
 {
 	if (m_processing)
 		return;
+
+}
+
+void VoxelChunk::draw()
+{
+	if (m_processing || m_queued || m_mesh == nullptr)
+		return;
+
+	// check if the mesh is uploaded already
+	if (!m_mesh->isUploaded() && m_mesh->canUpload())
+		m_mesh->upload(); // upload all changes
+
+	m_lastTimeVisible = Time::time();
+
+	auto modelMatrix = Matrix::identity();
+	modelMatrix.M30 = float(m_x) * ChunkWidth;
+	modelMatrix.M31 = 0.0f;
+	modelMatrix.M32 = float(m_z) * ChunkWidth;
+
+	Rendering::getInstance()->draw(m_mesh, &modelMatrix);
 
 }

@@ -56,6 +56,8 @@ private:
 	bool m_hasVoxels = false;
 	voxelid* m_voxels = nullptr;
 	Ptr<Mesh> m_mesh = nullptr;
+	Ptr<Mesh> m_oldMesh = nullptr;
+	Ptr<Mesh> m_oldMeshTD = nullptr;
 
 public:
 	/// <summary>
@@ -71,24 +73,7 @@ public:
 	/// <summary>
 	/// Draws the chunk.
 	/// </summary>
-	FORCEINLINE void draw()
-	{
-		if (m_processing || m_queued || m_mesh == nullptr)
-			return;
-
-		// check if the mesh is uploaded already
-		if (!m_mesh->isUploaded() && m_mesh->canUpload())
-			m_mesh->upload(); // upload all changes
-
-		m_lastTimeVisible = Time::time();
-
-		auto modelMatrix = Matrix::identity();
-		modelMatrix.M30 = float(m_x) * ChunkWidth;
-		modelMatrix.M31 = 0.0f;
-		modelMatrix.M32 = float(m_z) * ChunkWidth;
-
-		Rendering::getInstance()->draw(m_mesh, &modelMatrix);
-	}
+	void draw();
 
 	/// <summary>
 	/// Disposes the chunk.
@@ -155,6 +140,9 @@ public:
 		std::vector<Vector4>* colorsArray,
 		std::vector<uint>* indicesArray);
 
+	/// <summary>
+	/// Updates(queues) the chunk mesh.
+	/// </summary>
 	void updateMesh();
 
 	/// <summary>
@@ -291,16 +279,6 @@ public:
 	}
 
 	/// <summary>
-	/// Checks if coord is valid horizontal(x or z) for voxel space.
-	/// </summary>
-	/// <param name="coord">The coord.</param>
-	/// <returns>The result, true when coord is valid voxel space coord.</returns>
-	FORCEINLINE bool validVoxelSpaceHCoord(int coord) const
-	{
-		return coord >= 0 && coord < ChunkWidth;
-	}
-
-	/// <summary>
 	/// Convert `x` from world space to voxel space.
 	/// </summary>
 	/// <param name="x">The `x` coord to be converted.</param>
@@ -321,6 +299,26 @@ public:
 	}
 
 	/// <summary>
+	/// Convert `x` from world space to voxel space.
+	/// </summary>
+	/// <param name="x">The `x` coord to be converted.</param>
+	/// <returns>The converted `x` coord, in voxel space.</returns>
+	FORCEINLINE int toVoxelSpaceX(float x) const
+	{
+		return int(floor(x)) - m_x * ChunkWidth;
+	}
+
+	/// <summary>
+	/// Convert `z` from world space to voxel space.
+	/// </summary>
+	/// <param name="z">The `z` coord to be converted.</param>
+	/// <returns>The converted `z` coord, in voxel space.</returns>
+	FORCEINLINE int toVoxelSpaceZ(float z) const
+	{
+		return int(floor(z)) - m_z * ChunkWidth;
+	}
+
+	/// <summary>
 	/// Raycasts trough voxels.
 	/// </summary>
 	/// <param name="origin">The ray origin.</param>
@@ -332,6 +330,7 @@ public:
 	bool raycast(Vector3 origin, Vector3 direction, float length, RaycastHit* hit, bool thisChunkOnly = false) const;
 
 
+public:
 	// recursive tree methods
 
 	/// <summary>
@@ -386,6 +385,68 @@ public:
 			&& m_neighSW->m_voxels
 			&& m_neighW->m_voxels
 			&& m_neighNW->m_voxels;
+	}
+
+	/// <summary>
+	/// Gets edge chunks.
+	/// </summary>
+	/// <param name="x">The x coord in voxel space.</param>
+	/// <param name="z">The z coord in voxel space.</param>
+	/// <param name="a">The output neigh #1.</param>
+	/// <param name="b">The output neigh #2 - can be null.</param>
+	/// <param name="c">The output neigh #3 - can be null.</param>
+	FORCEINLINE void getEdgeNeighs(int x, int z, VoxelChunk** a, VoxelChunk** b, VoxelChunk** c) const
+	{
+		if (!isOnEdge(x) && !isOnEdge(z))
+			return;
+		
+		if(x == 0 && z == 0)
+		{
+			*a = neighW();
+			*b = neighSW();
+			*c = neighS();
+			return;
+		}
+		if (x == 0 && z == ChunkWidth - 1)
+		{
+			*a = neighW();
+			*b = neighNW();
+			*c = neighN();
+			return;
+		}
+		if (x == ChunkWidth - 1 && z == 0)
+		{
+			*a = neighE();
+			*b = neighSE();
+			*c = neighS();
+			return;
+		}
+		if (x == ChunkWidth - 1 && z == ChunkWidth - 1)
+		{
+			*a = neighN();
+			*b = neighNE();
+			*c = neighE();
+			return;
+		}
+		if (x == 0)
+		{
+			*a = neighW();
+			return;
+		}
+		if (x == ChunkWidth - 1)
+		{
+			*a = neighE();
+			return;
+		}
+		if (z == 0)
+		{
+			*a = neighS();
+			return;
+		}
+		if (z == ChunkWidth - 1)
+		{
+			*a = neighN();
+		}
 	}
 
 	/// <summary>
@@ -450,6 +511,57 @@ public:
 	FORCEINLINE VoxelChunk* neighNW() const
 	{
 		return m_neighNW;
+	}
+	
+
+public:
+	/// <summary>
+	/// Checks if value(voxel space coord) is on the edge.
+	/// </summary>
+	/// <param name="value">The coord in voxel space.</param>
+	/// <returns>True when the value is lying on edge of chunk.</returns>
+	FORCEINLINE static bool isOnEdge(int value)
+	{
+		if (!validVoxelSpaceHCoord(value))
+			return false;
+
+		return value == 0 || value == ChunkWidth - 1;
+	}
+
+	/// <summary>
+	/// Checks if coord is valid horizontal(x or z) for voxel space.
+	/// </summary>
+	/// <param name="coord">The coord.</param>
+	/// <returns>The result, true when coord is valid voxel space coord.</returns>
+	FORCEINLINE static bool validVoxelSpaceHCoord(int coord)
+	{
+		return coord >= 0 && coord < ChunkWidth;
+	}
+
+	/// <summary>
+	/// Convert `x` from world space to chunk space.
+	/// </summary>
+	/// <param name="x">The `x` coord to be converted.</param>
+	/// <returns>The converted `x` coord, in chunk space.</returns>
+	FORCEINLINE static int toChunkSpaceX(float x)
+	{
+		if (x < 0) // negative coords
+			x -= ChunkWidth - 1;
+
+		return static_cast<int>(x) / ChunkWidth;
+	}
+
+	/// <summary>
+	/// Convert `z` from world space to chunk space.
+	/// </summary>
+	/// <param name="z">The `z` coord to be converted.</param>
+	/// <returns>The converted `z` coord, in chunk space.</returns>
+	FORCEINLINE static int toChunkSpaceZ(float z)
+	{
+		if (z < 0) // negative coords
+			z -= ChunkWidth - 1;
+
+		return static_cast<int>(z) / ChunkWidth;
 	}
 };
 

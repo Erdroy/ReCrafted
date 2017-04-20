@@ -21,6 +21,7 @@ private:
 private:
 	double m_deltaTime = 0.0;
 	float m_time = 0.0;
+	int m_frames = 0;
 
 public:
 	/// <summary>
@@ -58,6 +59,15 @@ public:
 	FORCEINLINE static float time()
 	{
 		return m_instance->m_time;
+	}
+
+	/// <summary>
+	/// The current game frame count.
+	/// </summary>
+	/// <returns>The frame count.</returns>
+	FORCEINLINE static int frames()
+	{
+		return m_instance->m_frames;
 	}
 };
 

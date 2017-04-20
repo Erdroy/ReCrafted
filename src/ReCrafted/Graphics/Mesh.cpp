@@ -133,11 +133,11 @@ void Mesh::applyChanges()
 
 void Mesh::upload()
 {
-	m_uploaded = true;
-	m_hasChanges = false;
-
 	m_vertexBuffer = bgfx::createVertexBuffer(m_vertexBufferData, m_vertexdecl);
 	m_indexBuffer = bgfx::createIndexBuffer(m_indexBufferData, BGFX_BUFFER_INDEX32);
+
+	m_uploaded = true;
+	m_hasChanges = false;
 }
 
 void Mesh::dispose()
