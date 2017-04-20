@@ -154,7 +154,7 @@ void Camera::updatePerspective()
 void Camera::update()
 {
 	// update movement if this camera is 'free'.
-	if (m_freeMovement && Input::isKey(Key_Mouse1)) 
+	if (m_freeMovement/* && Input::isKey(Key_Mouse1)*/) 
 	{
 		updateControls(); // just do it!
 		

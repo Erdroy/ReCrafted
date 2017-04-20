@@ -329,10 +329,6 @@ public:
 	/// <returns>True when ray hits something.</returns>
 	bool raycast(Vector3 origin, Vector3 direction, float length, RaycastHit* hit, bool thisChunkOnly = false) const;
 
-
-public:
-	// recursive tree methods
-
 	/// <summary>
 	/// Finds and set all not set neighs.
 	/// </summary>

@@ -10,7 +10,48 @@
 void VoxelWorld::update_digplace()
 {
 	auto dig = Input::isKeyDown(Key_Mouse0);
-	//auto place = Input::isKeyDown(Key_Mouse1);
+	auto place = Input::isKeyDown(Key_Mouse1);
+
+	if(place)
+	{
+		// cast ray
+		RaycastHit hit;
+		if (raycast(Camera::getMainCamera()->get_position(), Camera::getMainCamera()->get_forward(), 7.0f, &hit))
+		{
+			// hit!
+			auto chunk = getVoxelChunk(hit.position + hit.normal);
+
+			auto blockpos = hit.position + hit.normal;
+
+			auto x = chunk->toVoxelSpaceX(blockpos.x);
+			auto y = int(floor(blockpos.y));
+			auto z = chunk->toVoxelSpaceZ(blockpos.z);
+
+			chunk->setVoxel(1, x, y, z);
+
+			// rebuild chunk
+			chunk->updateMesh();
+
+			// check if the block was on the edge, if so, also rebuild the needed neighs
+			if (VoxelChunk::isOnEdge(x) || VoxelChunk::isOnEdge(z))
+			{
+				VoxelChunk* neigh_a = nullptr;
+				VoxelChunk* neigh_b = nullptr;
+				VoxelChunk* neigh_c = nullptr;
+
+				chunk->getEdgeNeighs(x, z, &neigh_a, &neigh_b, &neigh_c);
+
+				if (neigh_a)
+					neigh_a->updateMesh();
+
+				if (neigh_b)
+					neigh_b->updateMesh();
+
+				if (neigh_c)
+					neigh_c->updateMesh();
+			}
+		}
+	}
 
 	if(dig)
 	{
@@ -25,7 +66,7 @@ void VoxelWorld::update_digplace()
 			auto y = int(floor(hit.position.y));
 			auto z = chunk->toVoxelSpaceZ(hit.position.z);
 
-			chunk->setVoxel(0, x ,y, z);
+			chunk->setVoxel(0, x, y, z);
 
 			// rebuild chunk
 			chunk->updateMesh();
