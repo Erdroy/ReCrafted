@@ -56,8 +56,7 @@ private:
 	bool m_hasVoxels = false;
 	voxelid* m_voxels = nullptr;
 	Ptr<Mesh> m_mesh = nullptr;
-	Ptr<Mesh> m_oldMesh = nullptr;
-	Ptr<Mesh> m_oldMeshTD = nullptr;
+	Ptr<Mesh> m_newMesh = nullptr;
 
 public:
 	/// <summary>

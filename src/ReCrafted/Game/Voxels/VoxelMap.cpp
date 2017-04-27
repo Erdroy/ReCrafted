@@ -216,19 +216,23 @@ void VoxelMap::draw()
 			// if chunk exisits
 			if(chunk)
 			{
-				if (chunk->m_processing || chunk->m_queued)
-					continue;
-
-				if(!chunk->m_mesh)
+				if(chunk->m_mesh)
 				{
-					// queue chunk for meshing(voxel data will be ignored, because the chunk already has this)
-					VoxelChunkProcessor::queue(chunk, VoxelChunkProcessor::QueueType::VoxelDataAndMesh);
-					continue;
+					// draw
+					chunk->draw();
+					drawnchunks++;
 				}
+				else
+				{
+					if (chunk->m_processing || chunk->m_queued)
+						continue;
 
-				// draw
-				chunk->draw(); 
-				drawnchunks++;
+					if (!chunk->m_mesh)
+					{
+						// queue chunk for meshing(voxel data will be ignored, because the chunk already has this)
+						VoxelChunkProcessor::queue(chunk, VoxelChunkProcessor::QueueType::VoxelDataAndMesh);
+					}
+				}
 			}
 			else
 			{

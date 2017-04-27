@@ -317,19 +317,22 @@ void VoxelChunk::generateMesh(
 		}
 	}
 
-	if (m_mesh) {
-		m_mesh->dispose();
-		m_mesh = nullptr;
+	m_newMesh = Mesh::createMesh();
+	m_newMesh->setVertices(vertices_ptr->data(), uint(vertices_ptr->size()));
+	m_newMesh->setUVs(uvs_ptr->data());
+	m_newMesh->setNormals(normals_ptr->data());
+	m_newMesh->setColors(colors_ptr->data());
+	m_newMesh->setIndices(indices_ptr->data(), uint(indices_ptr->size()));
+
+	m_newMesh->applyChanges();
+
+	// this is the first mesh version of this chunk
+	// set directly as main mesh.
+	if (m_mesh == nullptr)
+	{
+		m_mesh = m_newMesh;
+		m_newMesh = nullptr;
 	}
-
-	m_mesh = Mesh::createMesh();
-	m_mesh->setVertices(vertices_ptr->data(), uint(vertices_ptr->size()));
-	m_mesh->setUVs(uvs_ptr->data());
-	m_mesh->setNormals(normals_ptr->data());
-	m_mesh->setColors(colors_ptr->data());
-	m_mesh->setIndices(indices_ptr->data(), uint(indices_ptr->size()));
-
-	m_mesh->applyChanges();
 
 	m_lastTimeVisible = Time::time();
 }
@@ -565,12 +568,32 @@ void VoxelChunk::simulate()
 
 void VoxelChunk::draw()
 {
-	if (m_processing || m_queued || m_mesh == nullptr)
+	if (!m_hasVoxels)
 		return;
 
-	// check if the mesh is uploaded already
-	if (!m_mesh->isUploaded() && m_mesh->canUpload())
-		m_mesh->upload(); // upload all changes
+	if (m_newMesh && m_newMesh->canUpload())
+	{
+		// TODO: check if can upload
+
+		m_newMesh->upload();
+		
+		if(m_mesh)
+			m_mesh->dispose();
+
+		m_mesh = m_newMesh;
+		m_newMesh = nullptr;
+	}
+
+	if (m_mesh == nullptr)
+		return;
+
+	if (!m_mesh->isUploaded())
+	{
+		// do not check if we can upload
+		// becasue this is the first chunk mesh, 
+		// se we want to have the visible mesh asap.
+		m_mesh->upload();
+	}
 
 	m_lastTimeVisible = Time::time();
 
@@ -580,5 +603,4 @@ void VoxelChunk::draw()
 	modelMatrix.M32 = float(m_z) * ChunkWidth;
 
 	Rendering::getInstance()->draw(m_mesh, &modelMatrix);
-
 }

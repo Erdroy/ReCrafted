@@ -328,7 +328,7 @@ void GameMain::onDraw()
 	}
 	m_rendering->endRender(); // end rendering the scene
 
-							  // next frame, wait vsync
+	// next frame, wait vsync
 	bgfx::frame();
 }
 
