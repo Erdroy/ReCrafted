@@ -219,8 +219,15 @@ void VoxelMap::draw()
 				if(chunk->m_mesh)
 				{
 					// draw
-					chunk->draw();
-					drawnchunks++;
+					auto bb = BoundingBox(
+						Vector3(chunk->m_x * ChunkWidth + ChunkWidth/2, ChunkHeight/2, chunk->m_z* ChunkWidth + ChunkWidth / 2), 
+						Vector3(ChunkWidth, ChunkHeight, ChunkWidth));
+
+					if (Camera::getMainCamera()->getBoundingFrustum().contains(bb))
+					{
+						chunk->draw();
+						drawnchunks++;
+					}
 				}
 				else
 				{

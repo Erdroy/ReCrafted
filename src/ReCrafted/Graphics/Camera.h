@@ -9,6 +9,7 @@
 #include "../Utils/Types.h"
 #include "../Utils/Defines.h"
 #include "../Core/Math/Math.h"
+#include "../Core/Math/BoundingFrustum.h"
 
 #define FILTERING_BUFFER_SIZE 3
 
@@ -38,6 +39,8 @@ private:
 	Vector2 m_lastDelta = {};
 	Vector2 m_cursorDeltaBuffer[FILTERING_BUFFER_SIZE] = {};
 	uint m_cursorDeltaBufferPosition = 0u;
+
+	BoundingFrustum m_frustum = {};
 
 private:
 	void updateRotation();
@@ -71,6 +74,15 @@ public:
 	FORCEINLINE void setLookAt(Vector3 lookAt)
 	{
 		m_lookAt = lookAt;
+	}
+
+	/// <summary>
+	/// Gets the camera bounding frustum.
+	/// </summary>
+	/// <returns>The bounding frustum.</returns>
+	FORCEINLINE BoundingFrustum& getBoundingFrustum()
+	{
+		return m_frustum;
 	}
 
 public:

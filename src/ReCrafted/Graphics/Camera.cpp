@@ -171,6 +171,6 @@ void Camera::update()
 	// create view matrix
 	Matrix::createViewLH(m_position, m_lookAt, m_upLock, &m_view);
 
-	// update frustum
-	// TODO: camera frustum for culling
+	// update camera frustum for culling
+	m_frustum = BoundingFrustum::FromCamera(m_position, m_forward, m_up, Math::degreeToRadian(m_fov), m_nearPlane, m_farPlane, GameMain::getAspectRatio());
 }

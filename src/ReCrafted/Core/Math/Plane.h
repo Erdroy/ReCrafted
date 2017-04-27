@@ -9,10 +9,16 @@
 #include "Vector3.h"
 #include "Math.h"
 
+enum PlaneIntersection
+{
+	None,
+	Intersecting,
+	Back,
+	Front
+};
+
 struct Plane
 {
-private:
-
 public:
 	/// <summary>
 	/// Initializes a new instance of the Plane struct.
@@ -83,7 +89,7 @@ public:
 	/// <summary>
 	/// Changes the coefficients of the normal vector of the plane to make it of unit length.
 	/// </summary>
-	FORCEINLINE void Normalize()
+	FORCEINLINE void normalize()
 	{
 		auto magnitude = 1.0f / static_cast<float>(Math::sqrtf((normal.x * normal.x) + (normal.y * normal.y) + (normal.z * normal.z)));
 
@@ -91,6 +97,27 @@ public:
 		normal.y *= magnitude;
 		normal.z *= magnitude;
 		distance *= magnitude;
+	}
+public:
+	/// <summary>
+	/// Determines whether there is an intersection between a <see cref="Plane"/> and a point.
+	/// </summary>
+	/// <param name="plane">The plane to test.</param>
+	/// <param name="point">The point to test.</param>
+	/// <returns>Whether the two objects intersected.</returns>
+	FORCEINLINE static PlaneIntersection planeIntersectsPoint(Plane& plane, Vector3& point)
+	{
+		float distance;
+		Vector3::dot(plane.normal, point, &distance);
+		distance += plane.distance;
+
+		if (distance > 0.0f)
+			return PlaneIntersection::Front;
+
+		if (distance < 0.0f)
+			return PlaneIntersection::Back;
+
+		return PlaneIntersection::Intersecting;
 	}
 
 public:

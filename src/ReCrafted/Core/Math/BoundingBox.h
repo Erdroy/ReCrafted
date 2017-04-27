@@ -22,6 +22,17 @@ public:
 		size = Vector3::zero();
 	}
 
+	/// <summary>
+	/// Constructs BoundingBox with given center and size.
+	/// </summary>
+	/// <param name="center">The center of the BoundingBox.</param>
+	/// <param name="size">The size of the BoundingBox.</param>
+	explicit BoundingBox(Vector3& center, Vector3& size)
+	{
+		this->center = center;
+		this->size = size;
+	}
+
 public:
 	/// <summary>
 	/// Minimum X coordinate of this BoundingBox
@@ -72,11 +83,27 @@ public:
 	}
 
 	/// <summary>
+	/// The maximum of the bounding box.
+	/// </summary>
+	FORCEINLINE Vector3 maximum() const
+	{
+		return center + size * 0.5f;
+	}
+
+	/// <summary>
+	/// The minimum of the bounding box.
+	/// </summary>
+	FORCEINLINE Vector3 minimum() const
+	{
+		return center - size * 0.5f;
+	}
+
+	/// <summary>
 	/// Check if two BoundingBoxes intersect each other
 	/// </summary>
 	FORCEINLINE static bool intersects(BoundingBox& a, BoundingBox& b) 
 	{
-		return (a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top && a.back < b.front && a.front > b.back);
+		return (a.left() < b.right() && a.right() > b.left() && a.top() < b.bottom() && a.bottom() > b.top() && a.back() < b.front() && a.front() > b.back());
 	}
 
 	/// <summary>
@@ -92,7 +119,7 @@ public:
 	/// </summary>
 	FORCEINLINE static bool contains(BoundingBox& box, Vector3& point)
 	{
-		return point.x > box.left && point.x < box.right && point.y > box.bottom && point.y < box.top && point.z > box.back && point.z < box.front;
+		return point.x > box.left() && point.x < box.right() && point.y > box.bottom() && point.y < box.top() && point.z > box.back() && point.z < box.front();
 	}
 
 	/// <summary>

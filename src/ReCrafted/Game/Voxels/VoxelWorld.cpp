@@ -38,7 +38,9 @@ void VoxelWorld::update_digplace()
 				{
 					for (auto z = zbase + -radius; z < zbase + radius; z++)
 					{
-						if (Vector3::distance(Vector3(x, y, z), Vector3(xbase, ybase, zbase)) > sqrt(radius))
+						if (Vector3::distance(
+							Vector3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)),
+							Vector3(static_cast<float>(xbase), static_cast<float>(ybase), static_cast<float>(zbase))) > sqrt(float(radius)))
 							continue;
 
 						VoxelChunk* nchunk;
