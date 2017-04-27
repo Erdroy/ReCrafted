@@ -150,6 +150,8 @@ void VoxelMap::draw()
 	auto farChunkLeft = int(point.x - range - 8) / ChunkWidth;
 	auto farChunkRight = int(point.x + range + 8) / ChunkWidth;
 
+	auto frustum = Camera::getMainCamera()->getBoundingFrustum();
+
 	auto world = Universe::getCurrentWorld();
 
 	// find far left-bottom root
@@ -218,13 +220,10 @@ void VoxelMap::draw()
 			{
 				if(chunk->m_mesh)
 				{
-					// draw
-					auto bb = BoundingBox(
-						Vector3(chunk->m_x * ChunkWidth + ChunkWidth/2, ChunkHeight/2, chunk->m_z* ChunkWidth + ChunkWidth / 2), 
-						Vector3(ChunkWidth, ChunkHeight, ChunkWidth));
-
-					if (Camera::getMainCamera()->getBoundingFrustum().contains(bb))
+					// frustum culling
+					if (frustum.contains(chunk->getBoundingBox()))
 					{
+						// draw
 						chunk->draw();
 						drawnchunks++;
 					}

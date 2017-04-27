@@ -200,6 +200,10 @@ VoxelChunk* VoxelWorld::generateChunk(int x, int z)
 	chunk->m_x = x;
 	chunk->m_z = z;
 
+	chunk->m_bounds = BoundingBox(
+		Vector3(float(chunk->m_x * ChunkWidth + ChunkWidth / 2), float(ChunkHeight / 2), float(chunk->m_z* ChunkWidth + ChunkWidth / 2)),
+		Vector3(float(ChunkWidth), float(ChunkHeight), float(ChunkWidth)));
+
 	// add to chunk map
 	m_chunkMap->addChunk(chunk);
 

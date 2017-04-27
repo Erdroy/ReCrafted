@@ -10,6 +10,7 @@
 #include "../../Graphics/Mesh.h"
 #include "../../Graphics/Rendering.h"
 #include "../../Core/Time.h"
+#include "../../Core/Math/BoundingBox.h"
 
 typedef unsigned char voxelid;
 
@@ -57,6 +58,8 @@ private:
 	voxelid* m_voxels = nullptr;
 	Ptr<Mesh> m_mesh = nullptr;
 	Ptr<Mesh> m_newMesh = nullptr;
+
+	BoundingBox m_bounds = {};
 
 public:
 	/// <summary>
@@ -382,6 +385,15 @@ public:
 	FORCEINLINE int toVoxelSpaceZ(float z) const
 	{
 		return int(floor(z)) - m_z * ChunkWidth;
+	}
+	
+	/// <summary>
+	/// Gets the chunk boudning box.
+	/// </summary>
+	/// <returns>The bounding box of this chunk.</returns>
+	FORCEINLINE BoundingBox& getBoundingBox()
+	{
+		return m_bounds;
 	}
 
 	/// <summary>
