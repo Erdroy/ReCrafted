@@ -38,6 +38,9 @@ class VoxelWorld
 	friend class VoxelChunk;
 
 private:
+	static int m_availableUploads;
+
+private:
 	VoxelMap* m_chunkMap = nullptr;
 
 private:

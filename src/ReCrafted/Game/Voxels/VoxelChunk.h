@@ -278,6 +278,73 @@ public:
 	}
 
 	/// <summary>
+	/// Set voxel at given coords.
+	/// USING VOXEL-SPACE COORDS.
+	/// </summary>
+	/// <param name="voxel">The voxel.</param>
+	/// <param name="x">The x coord of voxel.</param>
+	/// <param name="y">The y coord of voxel.</param>
+	/// <param name="z">The z coord of voxel.</param>
+	FORCEINLINE VoxelChunk* setVoxelCC(voxelid voxel, int x, int y, int z)
+	{
+#define is_out(A) (A < 0 || A >= ChunkWidth)
+
+#define is_up(A) (A >= ChunkWidth)
+#define is_down(A) (A < 0)
+#define is_right(A) (A >= ChunkWidth)
+#define is_left(A) (A < 0)
+
+		if (y >= ChunkHeight || y < 0)
+			return nullptr; // out of space!
+
+		if (x >= 0 && x < ChunkWidth && z >= 0 && z < ChunkWidth)
+		{
+			setVoxel(voxel, x, y, z); // this chunk
+			return this;
+		}							  
+		
+		// north neigh chunk
+		if (!is_out(x) && is_up(z))
+			return m_neighN->setVoxelCC(voxel, x, y, z - ChunkWidth);
+
+		// north east chunk
+		if (is_right(x) && is_up(z))
+			return m_neighNE->setVoxelCC(voxel, x - ChunkWidth, y, z - ChunkWidth);
+
+		// east chunk
+		if (is_right(x) && !is_out(z))
+			return m_neighE->setVoxelCC(voxel, x - ChunkWidth, y, z);
+
+		// south east chunk
+		if (is_right(x) && is_down(z))
+			return m_neighSE->setVoxelCC(voxel, x - ChunkWidth, y, z + ChunkWidth);
+
+		// south chunk
+		if (!is_out(x) && is_down(z))
+			return m_neighS->setVoxelCC(voxel, x, y, z + ChunkWidth);
+
+		// south west chunk
+		if (is_left(x) && is_down(z))
+			return m_neighSW->setVoxelCC(voxel, x + ChunkWidth, y, z + ChunkWidth);
+
+		// west chunk
+		if (is_left(x) && !is_out(z))
+			return m_neighW->setVoxelCC(voxel, x + ChunkWidth, y, z);
+
+		// north west chunk
+		if (is_left(x) && is_up(z))
+			return m_neighNW->setVoxelCC(voxel, x + ChunkWidth, y, z - ChunkWidth);
+
+#undef is_out
+#undef is_up
+#undef is_down
+#undef is_right
+#undef is_left
+		// nope
+		return nullptr;
+	}
+
+	/// <summary>
 	/// Convert `x` from world space to voxel space.
 	/// </summary>
 	/// <param name="x">The `x` coord to be converted.</param>

@@ -339,6 +339,9 @@ void VoxelChunk::generateMesh(
 
 void VoxelChunk::updateMesh()
 {
+	if (m_queued)
+		return;
+
 	VoxelChunkProcessor::queue(this, VoxelChunkProcessor::QueueType::VoxelDataAndMesh, true);
 }
 
@@ -573,15 +576,21 @@ void VoxelChunk::draw()
 
 	if (m_newMesh && m_newMesh->canUpload())
 	{
-		// TODO: check if can upload
+		// check if can upload mesh
+		if (VoxelWorld::m_availableUploads > 0)
+		{
+			// decrement the available uploads count
+			VoxelWorld::m_availableUploads--;
 
-		m_newMesh->upload();
-		
-		if(m_mesh)
-			m_mesh->dispose();
+			// upload!
+			m_newMesh->upload();
 
-		m_mesh = m_newMesh;
-		m_newMesh = nullptr;
+			if (m_mesh)
+				m_mesh->dispose();
+
+			m_mesh = m_newMesh;
+			m_newMesh = nullptr;
+		}
 	}
 
 	if (m_mesh == nullptr)

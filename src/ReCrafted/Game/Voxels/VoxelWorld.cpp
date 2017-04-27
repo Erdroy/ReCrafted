@@ -7,10 +7,65 @@
 #include "../../Core/Input.h"
 #include <string>
 
+int VoxelWorld::m_availableUploads;
+
 void VoxelWorld::update_digplace()
 {
 	auto dig = Input::isKeyDown(Key_Mouse0);
 	auto place = Input::isKeyDown(Key_Mouse1);
+	auto nuke = Input::isKey(Key_Mouse2);
+
+	if(nuke)
+	{
+		RaycastHit hit;
+		if (raycast(Camera::getMainCamera()->get_position(), Camera::getMainCamera()->get_forward(), 64.0f, &hit))
+		{
+			auto const radius = 32;
+
+			auto chunk = getVoxelChunk(hit.position + hit.normal);
+			auto blockpos = hit.position + hit.normal;
+
+			auto xbase = chunk->toVoxelSpaceX(blockpos.x);
+			auto ybase = int(floor(blockpos.y));
+			auto zbase = chunk->toVoxelSpaceZ(blockpos.z);
+
+			for (auto y = ybase + -radius; y < ybase + radius; y++)
+			{
+				for (auto x = xbase + -radius; x < xbase + radius; x++)
+				{
+					for (auto z = zbase + -radius; z < zbase + radius; z++)
+					{
+						if (Vector3::distance(Vector3(x, y, z), Vector3(xbase, ybase, zbase)) > sqrt(radius))
+							continue;
+
+						auto nchunk = chunk->setVoxelCC(0, x, y, z);
+
+						// check if the block was on the edge, if so, also rebuild the needed neighs
+						if (VoxelChunk::isOnEdge(x) || VoxelChunk::isOnEdge(z))
+						{
+							VoxelChunk* neigh_a = nullptr;
+							VoxelChunk* neigh_b = nullptr;
+							VoxelChunk* neigh_c = nullptr;
+
+							chunk->getEdgeNeighs(x, z, &neigh_a, &neigh_b, &neigh_c);
+
+							if (neigh_a)
+								neigh_a->updateMesh();
+
+							if (neigh_b)
+								neigh_b->updateMesh();
+
+							if (neigh_c)
+								neigh_c->updateMesh();
+						}
+
+						if(nchunk)
+							nchunk->updateMesh();
+					}
+				}
+			}
+		}
+	}
 
 	if(place)
 	{
@@ -124,6 +179,8 @@ void VoxelWorld::simulate()
 
 void VoxelWorld::draw()
 {
+	m_availableUploads = 16; // 16 mesh uploads per frame
+
 	m_chunkMap->draw();
 }
 

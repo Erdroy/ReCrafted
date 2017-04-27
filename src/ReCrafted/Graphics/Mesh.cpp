@@ -133,6 +133,9 @@ void Mesh::applyChanges()
 
 void Mesh::upload()
 {
+	if (m_vertexBufferData == nullptr || m_indexBufferData == nullptr)
+		return;
+
 	m_vertexBuffer = bgfx::createVertexBuffer(m_vertexBufferData, m_vertexdecl);
 	m_indexBuffer = bgfx::createIndexBuffer(m_indexBufferData, BGFX_BUFFER_INDEX32);
 
@@ -171,6 +174,9 @@ Ptr<Mesh> Mesh::createMesh()
 {
 	Ptr<Mesh> mesh(new Mesh);
 	mesh->init();
+
+	if (mesh == nullptr)
+		throw;
 
 	return mesh;
 }
