@@ -13,7 +13,10 @@ void VoxelWorld::update_digplace()
 {
 	auto dig = Input::isKeyDown(Key_Mouse0);
 	auto place = Input::isKeyDown(Key_Mouse1);
-	auto nuke = Input::isKey(Key_Mouse2);
+	auto nuke = Input::isKeyDown(Key_Mouse2);
+
+	if(Input::isKey(Key_Space))
+		nuke = Input::isKey(Key_Mouse2);
 
 	if(nuke)
 	{
@@ -38,7 +41,11 @@ void VoxelWorld::update_digplace()
 						if (Vector3::distance(Vector3(x, y, z), Vector3(xbase, ybase, zbase)) > sqrt(radius))
 							continue;
 
-						auto nchunk = chunk->setVoxelCC(0, x, y, z);
+						VoxelChunk* nchunk;
+						if(Input::isKey(Key_Mouse1))
+							nchunk = chunk->setVoxelCC(1, x, y, z);
+						else
+							nchunk = chunk->setVoxelCC(0, x, y, z);
 
 						// check if the block was on the edge, if so, also rebuild the needed neighs
 						if (VoxelChunk::isOnEdge(x) || VoxelChunk::isOnEdge(z))
