@@ -1,12 +1,13 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "VoxelChunk.h"
-#include "../../Core/Profiler.h"
-#include "Generator/VoxelGenerator.h"
 #include "VoxelWorld.h"
-#include <vector>
-#include "../../Graphics/Camera.h"
 #include "VoxelChunkProcessor.h"
+#include "Generator/VoxelGenerator.h"
+#include "../../Core/Time.h"
+#include "../../Graphics/Camera.h"
+#include "../../Graphics/Rendering.h"
+#include <vector>
 
 FORCEINLINE static void build_face(
 	Vector3 origin,

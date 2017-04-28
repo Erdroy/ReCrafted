@@ -115,6 +115,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalOptions>/NODEFAULTLIB:LIBCMTD %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>FreeImageLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>call ..\..\onbuild.bat</Command>
@@ -134,7 +135,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FreeImageLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>call ..\..\onbuild.bat $(ProjectDir)..\..\</Command>
@@ -159,6 +160,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <AdditionalOptions>/NODEFAULTLIB:LIBCMTD %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>FreeImageLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -179,7 +181,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FreeImageLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:LIBCMTD %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
@@ -210,6 +212,7 @@
     <ClCompile Include="Graphics\Rendering.cpp" />
     <ClCompile Include="Graphics\RenderBuffer.cpp" />
     <ClCompile Include="Graphics\Shader.cpp" />
+    <ClCompile Include="Graphics\Texture2D.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Platform\Platform.Windows.cpp" />
     <ClCompile Include="recraftedPrerequisites.cpp" />
@@ -247,6 +250,7 @@
     <ClInclude Include="Graphics\Rendering.h" />
     <ClInclude Include="Graphics\RenderBuffer.h" />
     <ClInclude Include="Graphics\Shader.h" />
+    <ClInclude Include="Graphics\Texture2D.h" />
     <ClInclude Include="Graphics\TextureFormat.h" />
     <ClInclude Include="Logic\Addons\Addon.h" />
     <ClInclude Include="Logic\Addons\AddonLoader.h" />
@@ -259,6 +263,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\bgfx_shader.glsl" />
+    <None Include="Shaders\blit\desc.json" />
     <None Include="Shaders\blit\fs_blit.glsl" />
     <None Include="Shaders\blit\varying.def.sc" />
     <None Include="Shaders\blit\vs_blit.glsl" />
@@ -267,6 +272,7 @@
     <None Include="Shaders\deferred_final\fs_deferred_final.glsl" />
     <None Include="Shaders\deferred_final\varying.def.sc" />
     <None Include="Shaders\deferred_final\vs_deferred_final.glsl" />
+    <None Include="Shaders\gbuffer_standard\desc.json" />
     <None Include="Shaders\gbuffer_standard\fs_gbuffer_standard.glsl" />
     <None Include="Shaders\gbuffer_standard\varying.def.sc" />
     <None Include="Shaders\gbuffer_standard\vs_gbuffer_standard.glsl" />

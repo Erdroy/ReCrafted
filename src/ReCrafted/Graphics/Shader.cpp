@@ -68,7 +68,7 @@ void Shader::init(const char* vs, const char* fs, const char* def)
 			return;
 		}
 
-		for(auto i = 0; i < uniformsCount; i ++)
+		for(auto i = 0u; i < uniformsCount; i ++)
 		{
 			auto uniformData = deffilejson["uniforms"][i];
 			auto uniformName = uniformData["name"].get<std::string>();

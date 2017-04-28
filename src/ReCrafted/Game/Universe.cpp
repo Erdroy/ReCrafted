@@ -3,6 +3,7 @@
 #include "Universe.h"
 #include "../Graphics/Rendering.h"
 #include "../Graphics/Camera.h"
+#include "../Core/Time.h"
 
 Universe* Universe::m_instance;
 

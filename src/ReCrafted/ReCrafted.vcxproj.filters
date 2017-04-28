@@ -93,6 +93,9 @@
     <ClCompile Include="Core\GameMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Texture2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utils\Types.h">
@@ -218,6 +221,9 @@
     <ClInclude Include="Core\Math\BoundingBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Texture2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\common.sh" />
@@ -235,5 +241,7 @@
     <None Include="Shaders\deferred_final\varying.def.sc" />
     <None Include="Shaders\deferred_final\vs_deferred_final.glsl" />
     <None Include="Shaders\deferred_final\desc.json" />
+    <None Include="Shaders\blit\desc.json" />
+    <None Include="Shaders\gbuffer_standard\desc.json" />
   </ItemGroup>
 </Project>
