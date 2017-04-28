@@ -5,9 +5,11 @@ $input m_uv, m_normal, m_color
 
 #include "../ShaderAPI.glsl"
 
+SAMPLER2D(m_texture, 0);
+
 PixelShader()
 {
-	FS_OUTPUT(0, vec4(0.49f, 0.3f, 0.08f, 1.0f));
+	FS_OUTPUT(0, texture2D(m_texture, m_uv));
 	//           ALBEDO
 
 	FS_OUTPUT(1, vec4(m_normal, m_color.r));

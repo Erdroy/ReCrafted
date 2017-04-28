@@ -28,8 +28,8 @@
 
 inline void LOG(const char* text)
 {
-	OutputDebugStringA(text);
-	OutputDebugStringA("\n");
+	//OutputDebugStringA(text);
+	//OutputDebugStringA("\n");
 }
 #endif
 
