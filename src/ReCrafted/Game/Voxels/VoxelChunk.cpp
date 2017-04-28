@@ -318,20 +318,29 @@ void VoxelChunk::generateMesh(
 		}
 	}
 
-	m_newMesh = Mesh::createMesh();
-	m_newMesh->setVertices(vertices_ptr->data(), uint(vertices_ptr->size()));
-	m_newMesh->setUVs(uvs_ptr->data());
-	m_newMesh->setNormals(normals_ptr->data());
-	m_newMesh->setColors(colors_ptr->data());
-	m_newMesh->setIndices(indices_ptr->data(), uint(indices_ptr->size()));
-
-	m_newMesh->applyChanges();
-
-	// this is the first mesh version of this chunk
-	// set directly as main mesh.
-	if (m_mesh == nullptr)
+	if (vertices_ptr->size() > 0u)
 	{
-		m_mesh = m_newMesh;
+		m_newMesh = Mesh::createMesh();
+		m_newMesh->setVertices(vertices_ptr->data(), uint(vertices_ptr->size()));
+		m_newMesh->setUVs(uvs_ptr->data());
+		m_newMesh->setNormals(normals_ptr->data());
+		m_newMesh->setColors(colors_ptr->data());
+		m_newMesh->setIndices(indices_ptr->data(), uint(indices_ptr->size()));
+
+		m_newMesh->applyChanges();
+
+		// this is the first mesh version of this chunk
+		// set directly as main mesh.
+		if (m_mesh == nullptr)
+		{
+			m_mesh = m_newMesh;
+			m_newMesh = nullptr;
+		}
+	}
+	else
+	{
+		m_mesh->dispose();
+		m_mesh = nullptr;
 		m_newMesh = nullptr;
 	}
 
