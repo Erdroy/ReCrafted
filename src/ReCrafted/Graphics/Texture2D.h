@@ -7,20 +7,33 @@
 
 // includes
 #include "../Utils/Types.h"
+#include <bgfx/bgfx.h>
 
 class Texture2D
 {
+	friend class Shader;
+
 private:
-	void load(const char* filename);
+	bgfx::TextureHandle m_textureHandle = {};
 
 public:
+	void loadFile(const char* filename);
 
+	void loadMemory(void* data, int size);
+
+	uint getPixel(int x, int y);
+
+	void setPixel(int x, int y, uint pixel);
+
+	void apply();
+
+	void dispose();
 
 public:
 	/// <summary>
 	/// Loads texture.
 	/// </summary>
-	static Ptr<Texture2D> loadTexture(const char* filename);
+	static Ptr<Texture2D> createTexture();
 };
 
 #endif // TEXTURE2D_H
