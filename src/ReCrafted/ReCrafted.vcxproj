@@ -201,6 +201,7 @@
     <ClCompile Include="Core\Math\FastNoiseSIMD\FastNoiseSIMD_sse41.cpp" />
     <ClCompile Include="Core\Profiler.cpp" />
     <ClCompile Include="Core\Time.cpp" />
+    <ClCompile Include="Graphics\Resources.cpp" />
     <ClCompile Include="Game\Universe.cpp" />
     <ClCompile Include="Game\Voxels\Generator\VoxelGenerator.cpp" />
     <ClCompile Include="Game\Voxels\VoxelChunk.cpp" />
@@ -239,6 +240,7 @@
     <ClInclude Include="Core\Math\Vector4.h" />
     <ClInclude Include="Core\Profiler.h" />
     <ClInclude Include="Core\Time.h" />
+    <ClInclude Include="Graphics\Resources.h" />
     <ClInclude Include="Game\Universe.h" />
     <ClInclude Include="Game\Voxels\Generator\VoxelGenerator.h" />
     <ClInclude Include="Game\Voxels\VoxelChunk.h" />
