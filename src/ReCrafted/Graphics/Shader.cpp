@@ -61,8 +61,9 @@ void Shader::init(const char* vs, const char* fs, const char* def)
 		auto shadername = deffilejson["name"].get<std::string>();
 
 		auto uniformsCount = deffilejson["uniforms"].size();
+		auto texturesCount = deffilejson["textures"].size();
 
-		if (uniformsCount >= 16)
+		if (uniformsCount > 16 || texturesCount > 16)
 		{
 			_ASSERT(false); // throw error
 			return;
@@ -79,6 +80,9 @@ void Shader::init(const char* vs, const char* fs, const char* def)
 			if(uniformType == "mat4")
 				type = bgfx::UniformType::Mat4;
 
+			if (uniformType == "int1")
+				type = bgfx::UniformType::Int1;
+
 			m_uniforms[m_uniformCount] = bgfx::createUniform(uniformName.c_str(), type);
 			m_uniformCount++;
 		}
@@ -91,6 +95,11 @@ void Shader::init(const char* vs, const char* fs, const char* def)
 	{
 		Logger::write("Loaded shader which doesn't have description file!", LogLevel::Warning);
 	}
+}
+
+void Shader::setTexture(int slot, Ptr<Texture2D> texture)
+{
+	bgfx::setTexture(slot, m_textures[slot], texture->m_textureHandle);
 }
 
 void Shader::dispose()

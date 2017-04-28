@@ -9,6 +9,7 @@
 #include "../bgfxPrerequisites.h"
 #include "../Utils/Types.h"
 #include "../Utils/Defines.h"
+#include "Texture2D.h"
 
 struct Vector2;
 struct Vector3;
@@ -29,6 +30,7 @@ private:
 	bgfx::ShaderHandle m_fragmentshader = {};
 	bgfx::ProgramHandle m_program = {};
 	bgfx::UniformHandle m_uniforms[16] = {};
+	bgfx::UniformHandle m_textures[16] = {};
 
 	uint m_uniformCount = 0u;
 
@@ -47,6 +49,8 @@ public:
 	{
 		bgfx::setUniform(m_uniforms[slot], value);
 	}
+
+	void setTexture(int slot, Ptr<Texture2D> texture);
 
 	/// <summary>
 	/// Disposes this shader.
