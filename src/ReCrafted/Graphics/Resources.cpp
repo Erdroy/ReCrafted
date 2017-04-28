@@ -44,7 +44,7 @@ Ptr<Shader> Resources::getShader(const char* name)
 	return nullptr;
 }
 
-void Resources::loadTexture(const char* fileName, const char* name)
+void Resources::loadTexture(const char* fileName, const char* name, uint flags)
 {
 	auto idx = -1;
 	ASSET_GET_FREE(m_textures, MAX_ASSET_TEXTURE2D);
@@ -53,7 +53,7 @@ void Resources::loadTexture(const char* fileName, const char* name)
 		return;
 
 	m_textures[idx] = Texture2D::createTexture();
-	m_textures[idx]->loadFile(fileName);
+	m_textures[idx]->loadFile(fileName, flags);
 	strcpy_s(m_textures_names[idx], name);
 }
 

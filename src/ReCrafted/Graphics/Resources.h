@@ -19,7 +19,7 @@ public:
 	static Ptr<Texture2D> getTexture(const char* name);
 	static Ptr<Shader> getShader(const char* name);
 
-	static void loadTexture(const char* fileName, const char* name);
+	static void loadTexture(const char* fileName, const char* name, uint flags = 0);
 	static void loadShader(const char* fileName, const char* name);
 
 	static void release();

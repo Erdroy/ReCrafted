@@ -16,7 +16,7 @@ static void releaseBits(void* _ptr, void* _userData)
 	FreeImage_Unload(static_cast<FIBITMAP*>(_userData));
 }
 
-void Texture2D::loadFile(const char* filename)
+void Texture2D::loadFile(const char* filename, uint flags)
 {
 	auto ver = FreeImage_GetVersion();
 	if (!g_freeImage_initialized)
@@ -41,14 +41,14 @@ void Texture2D::loadFile(const char* filename)
 	auto mem = bgfx::makeRef(bits, size, releaseBits, static_cast<void*>(bitmap));
 	memcpy_s(mem->data, mem->size, bits, size);
 
-	m_textureHandle = bgfx::createTexture2D(uint16_t(width), uint16_t(height), false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_NONE, mem);
+	m_textureHandle = bgfx::createTexture2D(uint16_t(width), uint16_t(height), false, 1, bgfx::TextureFormat::RGBA8, flags, mem);
 
 	// done!
 
 	// FreeImage bitmap will be unloaded with in `releaseBits`
 }
 
-void Texture2D::loadMemory(void* data, int size)
+void Texture2D::loadMemory(void* data, int size, uint flags)
 {
 
 }

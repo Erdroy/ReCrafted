@@ -4,11 +4,28 @@
 #include "../Graphics/Rendering.h"
 #include "../Graphics/Camera.h"
 #include "../Core/Time.h"
+#include "../Graphics/Texture2D.h"
+#include "../Graphics/Resources.h"
 
 Universe* Universe::m_instance;
 
+void loadAssets()
+{
+	const auto samplerFlags = 0
+		| BGFX_TEXTURE_RT
+		| BGFX_TEXTURE_MIN_POINT
+		| BGFX_TEXTURE_MAG_POINT
+		| BGFX_TEXTURE_MIP_POINT
+		| BGFX_TEXTURE_U_CLAMP
+		| BGFX_TEXTURE_V_CLAMP;
+
+	Resources::loadTexture("../assets/textures/stone.png", "block_stone", samplerFlags);
+}
+
 void Universe::init()
 {
+	loadAssets();
+
 	m_chunkProcessor.reset(new VoxelChunkProcessor);
 	m_chunkProcessor->init();
 

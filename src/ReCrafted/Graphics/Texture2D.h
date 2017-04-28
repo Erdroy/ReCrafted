@@ -17,9 +17,9 @@ private:
 	bgfx::TextureHandle m_textureHandle = {};
 
 public:
-	void loadFile(const char* filename);
+	void loadFile(const char* filename, uint flags = 0u);
 
-	void loadMemory(void* data, int size);
+	void loadMemory(void* data, int size, uint flags = 0u);
 
 	uint getPixel(int x, int y);
 
