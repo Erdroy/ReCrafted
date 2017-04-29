@@ -25,7 +25,7 @@ PixelShader()
 	float ao = 1.0f - norm_ao.a;
 
 	vec3 lightDir = normalize(m_lightdir);
-	vec3 nDotL = dot(normal, lightDir);
+	float nDotL = dot(normal, lightDir);
 	nDotL = clamp(nDotL, 0.0f, 1.0f);
 
 	vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);

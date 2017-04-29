@@ -61,10 +61,10 @@ public:
 	/// <param name="logLevel">The log level.</param>
 	FORCEINLINE static void write(const char* messageA, const char* messageB, const char* messageC, LogLevel::Enum logLevel = LogLevel::Debug)
 	{
-#ifndef _DEBUG
+/*#ifndef _DEBUG
 		if (logLevel == LogLevel::Debug)
 			return;
-#endif
+#endif*/
 		static char buffer[LOGGER_MAXSIZE] = {};
 
 		strcpy_s(buffer, messageA);
@@ -92,10 +92,10 @@ public:
 	/// <param name="logLevel">The log level.</param>
 	FORCEINLINE static void write(const char* message, LogLevel::Enum logLevel = LogLevel::Debug)
 	{
-#ifndef _DEBUG
+/*#ifndef _DEBUG
 		if (logLevel == LogLevel::Debug)
 			return;
-#endif
+#endif*/
 
 		static char buffer[LOGGER_MAXSIZE] = {};
 		static char timeBuffer[64] = {};

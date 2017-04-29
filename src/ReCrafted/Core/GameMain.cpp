@@ -140,7 +140,7 @@ void GameMain::run()
 	{
 		// update time
 		auto currentTime = Platform::getMiliseconds();
-		Time::m_instance->m_deltaTime = 1 / ((currentTime - lastTime) / 1000.0);
+		Time::m_instance->m_deltaTime = ((currentTime - lastTime) / 1000.0);
 		Time::m_instance->m_time = float(currentTime / 1000.0);
 		lastTime = currentTime;
 
@@ -196,7 +196,7 @@ void GameMain::onLoad()
 
 	// initialize bgfx
 	bgfx::init(bgfx::RendererType::Direct3D11);
-	bgfx::reset(m_width, m_height, BGFX_RESET_NONE);
+	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC);
 
 	bgfx::setDebug(BGFX_DEBUG_TEXT);
 
@@ -259,7 +259,7 @@ void GameMain::onResize(uint width, uint height)
 	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, m_width, m_height);
 	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, m_width, m_height);
 
-	bgfx::reset(m_width, m_height, BGFX_RESET_NONE);
+	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC);
 
 	m_rendering->resize(width, height);
 }

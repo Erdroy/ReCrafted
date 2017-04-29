@@ -339,7 +339,9 @@ void VoxelChunk::generateMesh(
 	}
 	else
 	{
-		m_mesh->dispose();
+		if(m_mesh)
+			m_mesh->dispose();
+
 		m_mesh = nullptr;
 		m_newMesh = nullptr;
 	}

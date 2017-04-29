@@ -49,7 +49,7 @@ public:
 	/// <returns>The frame delta time.</returns>
 	FORCEINLINE static double deltaTime()
 	{
-		return 1.0 / m_instance->m_deltaTime;
+		return m_instance->m_deltaTime;
 	}
 
 	/// <summary>

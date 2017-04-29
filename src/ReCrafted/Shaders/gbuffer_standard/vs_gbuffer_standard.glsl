@@ -9,7 +9,7 @@ $output m_uv, m_normal, m_color
 VertexShader()
 {
 	gl_Position = mul(vec4(position, 1.0), m_modelViewProjection);
-	m_normal = normalize(vec4(normal, 1.0f)) * 0.5f + 0.5f;
+	m_normal = normalize(normal) * 0.5f + 0.5f;
 	m_uv = uv;
 	m_color = color;
 }
