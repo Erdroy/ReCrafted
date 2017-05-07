@@ -1,0 +1,85 @@
+// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+
+#pragma once
+
+#ifndef ITEMDB_H
+#define ITEMDB_H
+
+// includes
+#include "../../Utils/Defines.h"
+#include "../../recraftedConfig.h"
+#include "Item.h"
+
+/// <summary>
+/// Item database class.
+/// Handles all in-game items.
+/// </summary>
+class ItemDB
+{
+private:
+	static ItemDB* m_instance;
+
+private:
+	Item m_items[RECRAFTED_MAX_ITEMS] = {};
+	int m_itemCount = 0;
+
+private:
+	ItemDB() { m_instance = this; }
+
+public:
+	/// <summary>
+	/// Initializes the item database.
+	/// </summary>
+	static void init();
+
+	/// <summary>
+	/// Registers item on given id.
+	/// </summary>
+	/// <param name="id">The item id.</param>
+	/// <param name="item">The item data.</param>
+	FORCEINLINE static void registerItem(uint id, Item item)
+	{
+		if (getItem(id) != nullptr)
+			return;
+
+		m_instance->m_items[id] = item;
+		m_instance->m_itemCount++;
+	}
+
+	/// <summary>
+	/// Gets item with given id.
+	/// </summary>
+	/// <returns>The selected item, or null when not found(not defined).</returns>
+	FORCEINLINE static Item* getItem(uint id)
+	{
+		if (m_instance->m_items[id].itemType == ItemType::unknown)
+			return nullptr;
+
+		return getItemUnsafe(id);
+	}
+
+	/// <summary>
+	/// UNSAFE. Gets item with given id.
+	/// </summary>
+	/// <returns>The selected item.</returns>
+	FORCEINLINE static Item* getItemUnsafe(uint id)
+	{
+		return &m_instance->m_items[id];
+	}
+
+	/// <summary>
+	/// Gets current instance of item database.
+	/// </summary>
+	/// <returns>The current instance of item database.</returns>
+	FORCEINLINE static ItemDB* getInstance()
+	{
+		return m_instance;
+	}
+
+	/// <summary>
+	/// Shutdowns the item database.
+	/// </summary>
+	static void shutdown();
+};
+
+#endif // ITEMDB_H

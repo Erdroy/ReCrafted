@@ -8,8 +8,8 @@
 // includes
 #include "../recraftedPrerequisites.h"
 #include "../Graphics/Mesh.h"
-#include "Voxels/VoxelWorld.h"
 #include "../Core/Logger.h"
+#include "Voxels/VoxelWorld.h"
 #include "Voxels/VoxelChunkProcessor.h"
 
 /// <summary>
@@ -57,13 +57,7 @@ public:
 	/// <summary>
 	/// Disposes the universe.
 	/// </summary>
-	FORCEINLINE void dispose() const
-	{
-		m_currentWorld->dispose();
-		m_chunkProcessor->dispose();
-		Logger::write("Universe unloaded", LogLevel::Info);
-		delete this;
-	}
+	void dispose();
 
 public:
 	/// <summary>

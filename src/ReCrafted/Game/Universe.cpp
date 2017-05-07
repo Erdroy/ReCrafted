@@ -6,11 +6,26 @@
 #include "../Core/Time.h"
 #include "../Graphics/Texture2D.h"
 #include "../Graphics/Resources.h"
+#include "Items/ItemDB.h"
 
 Universe* Universe::m_instance;
 
 void loadAssets()
 {
+	Item stone = {};
+	stone.itemType = ItemType::block;
+	stone.name = TEXT("Stone");
+	stone.description = TEXT("Stone");
+
+	ItemDB::registerItem(1, stone);
+
+	Item dirt = {};
+	dirt.itemType = ItemType::block;
+	dirt.name = TEXT("Dirt");
+	dirt.description = TEXT("Dirt");
+
+	ItemDB::registerItem(2, dirt);
+
 	const auto samplerFlags = 0
 		| BGFX_TEXTURE_RT
 		| BGFX_TEXTURE_MIN_POINT
@@ -24,6 +39,8 @@ void loadAssets()
 
 void Universe::init()
 {
+	ItemDB::init();
+
 	loadAssets();
 
 	m_chunkProcessor.reset(new VoxelChunkProcessor);
@@ -65,4 +82,14 @@ void Universe::draw()
 
 
 	m_currentWorld->draw();
+}
+
+void Universe::dispose()
+{
+	ItemDB::shutdown();
+
+	m_currentWorld->dispose();
+	m_chunkProcessor->dispose();
+	Logger::write("Universe unloaded", LogLevel::Info);
+	delete this;
 }
