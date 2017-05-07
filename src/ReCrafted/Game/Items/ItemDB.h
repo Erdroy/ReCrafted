@@ -23,6 +23,8 @@ private:
 	Item m_items[RECRAFTED_MAX_ITEMS] = {};
 	int m_itemCount = 0;
 
+	const bgfx::Memory* m_atlasMem = {};
+
 private:
 	ItemDB() { m_instance = this; }
 
@@ -33,18 +35,33 @@ public:
 	static void init();
 
 	/// <summary>
+	/// Generate all block texture atlases.
+	/// </summary>
+	static void generateAtlases();
+
+	/// <summary>
 	/// Registers item on given id.
 	/// </summary>
 	/// <param name="id">The item id.</param>
 	/// <param name="item">The item data.</param>
-	FORCEINLINE static void registerItem(uint id, Item item)
-	{
-		if (getItem(id) != nullptr)
-			return;
+	static void registerItem(uint id, Item item);
 
-		m_instance->m_items[id] = item;
-		m_instance->m_itemCount++;
-	}
+	/// <summary>
+	/// Registers block texture, and creates new item block data.
+	/// </summary>
+	/// <param name="flags"></param>
+	/// <param name="id"></param>
+	/// <param name="texture"></param>
+	/// <param name="top_texture"></param>
+	/// <param name="bottom_texture"></param>
+	/// <param name="sideoverlay_texture"></param>
+	/// <returns></returns>
+	static Item_BlockData* registerBlock(
+		int id,
+		const char* texture, 
+		const char* top_texture = nullptr,
+		const char* bottom_texture = nullptr,
+		const char* sideoverlay_texture = nullptr);
 
 	/// <summary>
 	/// Gets item with given id.

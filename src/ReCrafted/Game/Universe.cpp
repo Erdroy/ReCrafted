@@ -4,37 +4,27 @@
 #include "../Graphics/Rendering.h"
 #include "../Graphics/Camera.h"
 #include "../Core/Time.h"
-#include "../Graphics/Texture2D.h"
-#include "../Graphics/Resources.h"
 #include "Items/ItemDB.h"
 
 Universe* Universe::m_instance;
 
+const auto samplerFlags = 0
+| BGFX_TEXTURE_RT
+| BGFX_TEXTURE_MIN_POINT
+| BGFX_TEXTURE_MAG_POINT
+| BGFX_TEXTURE_MIP_POINT
+| BGFX_TEXTURE_U_CLAMP
+| BGFX_TEXTURE_V_CLAMP;
+
 void loadAssets()
 {
-	Item stone = {};
-	stone.itemType = ItemType::block;
-	stone.name = TEXT("Stone");
-	stone.description = TEXT("Stone");
+	Item granite = {};
+	granite.itemType = ItemType::block;
+	granite.name = TEXT("Granite");
+	granite.description = TEXT("Granite, huh - a stone stolen from minecraft.");
+	granite.data = ItemDB::registerBlock(1, "../assets/textures/granite.png");
 
-	ItemDB::registerItem(1, stone);
-
-	Item dirt = {};
-	dirt.itemType = ItemType::block;
-	dirt.name = TEXT("Dirt");
-	dirt.description = TEXT("Dirt");
-
-	ItemDB::registerItem(2, dirt);
-
-	const auto samplerFlags = 0
-		| BGFX_TEXTURE_RT
-		| BGFX_TEXTURE_MIN_POINT
-		| BGFX_TEXTURE_MAG_POINT
-		| BGFX_TEXTURE_MIP_POINT
-		| BGFX_TEXTURE_U_CLAMP
-		| BGFX_TEXTURE_V_CLAMP;
-
-	Resources::loadTexture("../assets/textures/stone.png", "block_stone", samplerFlags);
+	ItemDB::registerItem(1, granite);
 }
 
 void Universe::init()
@@ -42,6 +32,8 @@ void Universe::init()
 	ItemDB::init();
 
 	loadAssets();
+
+	ItemDB::generateAtlases();
 
 	m_chunkProcessor.reset(new VoxelChunkProcessor);
 	m_chunkProcessor->init();
