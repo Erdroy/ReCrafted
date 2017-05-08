@@ -7,11 +7,12 @@ ItemDB* ItemDB::m_instance;
 void ItemDB::init()
 {
 	m_instance = new ItemDB;
+	m_instance->m_atlas = Texture2D::createTexture();
+	m_instance->m_atlas->createMemory(RECRAFTED_BLOCK_ATLAS_SIZE, RECRAFTED_BLOCK_ATLAS_SIZE );
 }
 
 void ItemDB::generateAtlases()
 {
-	m_instance->m_atlasMem = bgfx::alloc(RECRAFTED_BLOCK_ATLAS_SIZE * RECRAFTED_BLOCK_ATLAS_SIZE * 4);
 }
 
 void ItemDB::registerItem(uint id, Item item)
@@ -50,10 +51,27 @@ Item_BlockData* ItemDB::registerBlock(int id, const char* texture, const char* t
 	if (sideoverlay_texture)
 		throw;
 		//data->flags = data->flags | ITEM_BLOCKFLAG_HAS_SIDEOVERLAY;
-	
-	// calculate texture origin position in pixels
 
-	// copy the texture
+	// load texture
+	uint* pixels;
+	int width;
+	int height;
+	Texture2D::loadTextureData(texture, &pixels, &width, &height);
+	{
+		if (pixels == nullptr)
+			throw;
+
+		if (width != RECRAFTED_BLOCK_ATLAS_ITEM_SIZE || height != RECRAFTED_BLOCK_ATLAS_ITEM_SIZE)
+			throw;
+
+		// calculate texture origin position in pixels
+		auto y = id / (RECRAFTED_BLOCK_ATLAS_SIZE / RECRAFTED_BLOCK_ATLAS_ITEM_SIZE) * RECRAFTED_BLOCK_ATLAS_ITEM_SIZE;
+		auto x = id * RECRAFTED_BLOCK_ATLAS_ITEM_SIZE % RECRAFTED_BLOCK_ATLAS_SIZE;
+
+		// copy the texture
+		m_instance->m_atlas->setPixels(x, y, RECRAFTED_BLOCK_ATLAS_ITEM_SIZE, RECRAFTED_BLOCK_ATLAS_ITEM_SIZE, pixels);
+	}
+	Texture2D::releaseTextureData(pixels);
 
 	return data;
 }

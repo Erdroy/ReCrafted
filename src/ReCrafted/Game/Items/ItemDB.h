@@ -23,7 +23,7 @@ private:
 	Item m_items[RECRAFTED_MAX_ITEMS] = {};
 	int m_itemCount = 0;
 
-	const bgfx::Memory* m_atlasMem = {};
+	Ptr<Texture2D> m_atlas = nullptr;
 
 private:
 	ItemDB() { m_instance = this; }

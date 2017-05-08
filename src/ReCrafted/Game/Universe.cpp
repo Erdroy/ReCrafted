@@ -22,9 +22,9 @@ void loadAssets()
 	granite.itemType = ItemType::block;
 	granite.name = TEXT("Granite");
 	granite.description = TEXT("Granite, huh - a stone stolen from minecraft.");
-	granite.data = ItemDB::registerBlock(1, "../assets/textures/granite.png");
+	granite.data = ItemDB::registerBlock(66, "../assets/textures/granite.png");
 
-	ItemDB::registerItem(1, granite);
+	ItemDB::registerItem(65, granite);
 }
 
 void Universe::init()
