@@ -50,8 +50,11 @@ void Texture2D::loadMemory(void* data, int width, int height, uint flags)
 {
 	m_width = width;
 	m_height = height;
+	m_flags = flags;
 
 	m_bits = new byte[width * height * 4];
+
+	memset(m_bits, 0, width * height * 4);
 
 	if(data)
 		memcpy(m_bits, data, width * height * 4);
@@ -81,27 +84,14 @@ uint Texture2D::getPixel(int x, int y)
 	return a | b << 8 | g << 16 | r << 24;
 }
 
-void Texture2D::setPixels(int x, int y, int width, int height, uint* pixels)
-{
-	MISSING_CODE();
-}
-
 void Texture2D::setPixel(int x, int y, uint pixel)
 {
 	if (m_bits == nullptr)
 		return;
 
-	auto r = (pixel & 0xFF000000) >> 24;
-	auto g = (pixel & 0x00FF0000) >> 16;
-	auto b = (pixel & 0x0000FF00) >> 8;
-	auto a = (pixel & 0x000000FF);
-
 	auto idx = y * m_width + x;
-
-	m_bits[idx + 0] = r;
-	m_bits[idx + 1] = g;
-	m_bits[idx + 2] = b;
-	m_bits[idx + 3] = a;
+	auto pixels = reinterpret_cast<uint*>(m_bits);
+	pixels[idx] = pixel;
 }
 
 void Texture2D::setPixel(int x, int y, byte r, byte g, byte b, byte a)
@@ -110,11 +100,20 @@ void Texture2D::setPixel(int x, int y, byte r, byte g, byte b, byte a)
 		return;
 
 	auto idx = y * m_width + x;
+	auto pixels = reinterpret_cast<uint*>(m_bits);
+	pixels[idx] = a | b << 8 | g << 16 | r << 24;
+}
 
-	m_bits[idx + 0] = r;
-	m_bits[idx + 1] = g;
-	m_bits[idx + 2] = b;
-	m_bits[idx + 3] = a;
+void Texture2D::setPixels(int x, int y, int width, int height, uint* pixels)
+{
+	auto mpixels = reinterpret_cast<uint*>(m_bits);
+	for(auto my = y; my < y + height; my++)
+	{
+		for (auto mx = x; mx < x + width; mx++)
+		{
+			mpixels[my * m_width + mx] = *pixels++;
+		}
+	}
 }
 
 void Texture2D::apply(bool readable)
@@ -122,7 +121,6 @@ void Texture2D::apply(bool readable)
 	auto size = m_width * m_height * 4;
 
 	const bgfx::Memory* mem;
-
 	if (m_bitmap)
 		mem = bgfx::makeRef(m_bits, size, releaseBits, static_cast<void*>(m_bitmap));
 	else
@@ -130,7 +128,7 @@ void Texture2D::apply(bool readable)
 
 	memcpy_s(mem->data, mem->size, m_bits, size);
 
-	m_textureHandle = bgfx::createTexture2D(uint16_t(m_width), uint16_t(m_height), false, 1, bgfx::TextureFormat::RGBA8, m_flags, mem);
+	m_textureHandle = bgfx::createTexture2D(uint16_t(m_width), uint16_t(m_height), false, 1, bgfx::TextureFormat::BGRA8, m_flags, mem);
 }
 
 void Texture2D::dispose()
@@ -153,6 +151,7 @@ void Texture2D::loadTextureData(const char* filename, uint** pixels, int* width,
 		throw;
 
 	auto bitmap = FreeImage_Load(fif, filename);
+
 	auto bits = FreeImage_GetBits(bitmap);
 	*width = FreeImage_GetWidth(bitmap);
 	*height = FreeImage_GetHeight(bitmap);

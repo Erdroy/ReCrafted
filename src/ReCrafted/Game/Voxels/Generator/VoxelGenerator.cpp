@@ -41,5 +41,8 @@ voxelid VoxelGenerator::generate(int index, int y)
 	if(float(y) < baseLevel)
 		return 1u;
 
+	if (float(y) - 2 < baseLevel)
+		return 2u;
+
 	return voxel_air;
 }

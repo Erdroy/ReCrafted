@@ -8,8 +8,10 @@
 #include "../../Graphics/Camera.h"
 #include "../../Graphics/Rendering.h"
 #include <vector>
+#include "../Items/ItemDB.h"
 
 FORCEINLINE static void build_face(
+	uint id,
 	Vector3 origin,
 	Vector3 up,
 	Vector3 right,
@@ -44,10 +46,12 @@ FORCEINLINE static void build_face(
 	normals->push_back(normal);
 	normals->push_back(normal);
 
-	uvs->push_back(Vector2(0.0f, 0.0f));
-	uvs->push_back(Vector2(0.0f, 1.0f));
-	uvs->push_back(Vector2(1.0f, 1.0f));
-	uvs->push_back(Vector2(1.0f, 0.0f));
+	auto data = static_cast<Item_BlockData*>(ItemDB::getItemUnsafe(id)->data);
+
+	uvs->push_back(Vector2(data->texture_u, data->texture_v));
+	uvs->push_back(Vector2(data->texture_u, data->texture_v + data->texture_h));
+	uvs->push_back(Vector2(data->texture_u + data->texture_w, data->texture_v + data->texture_h));
+	uvs->push_back(Vector2(data->texture_u + data->texture_w, data->texture_v));
 
 	if (!reversed)
 	{
@@ -167,7 +171,8 @@ void VoxelChunk::generateMesh(
 		{
 			for (auto z = 0; z < ChunkWidth; z++)
 			{
-				if (m_voxels[y * (ChunkWidth * ChunkWidth) + z * ChunkWidth + x] == voxel_air)
+				auto voxel = m_voxels[y * (ChunkWidth * ChunkWidth) + z * ChunkWidth + x];
+				if (voxel == voxel_air)
 					continue;
 
 				auto origin = Vector3(float(x), float(y), float(z));
@@ -217,7 +222,7 @@ void VoxelChunk::generateMesh(
 
 					auto flippedQuad = ao01 + ao10 > ao00 + ao11;
 
-					build_face(origin, vec3_up, vec3_forward, false, flippedQuad, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+					build_face(voxel, origin, vec3_up, vec3_forward, false, flippedQuad, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
 					colors_ptr->push_back({ ao10 * ambientStr, 0.0f, 0.0f, 0.0f });
 					colors_ptr->push_back({ ao11 * ambientStr, 0.0f, 0.0f, 0.0f });
@@ -235,7 +240,7 @@ void VoxelChunk::generateMesh(
 
 					auto flippedQuad = ao00 + ao11 > ao01 + ao10;
 
-					build_face(origin + vec3_right, vec3_up, vec3_forward, true, flippedQuad, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+					build_face(voxel, origin + vec3_right, vec3_up, vec3_forward, true, flippedQuad, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
 					colors_ptr->push_back({ ao00 * ambientStr, 0.0f, 0.0f, 0.0f });
 					colors_ptr->push_back({ ao01 * ambientStr, 0.0f, 0.0f, 0.0f });
@@ -253,7 +258,7 @@ void VoxelChunk::generateMesh(
 
 					auto flippedQuad = ao00 + ao11 > ao01 + ao10;
 
-					build_face(origin + vec3_up, vec3_forward, vec3_right, true, flippedQuad, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+					build_face(voxel, origin + vec3_up, vec3_forward, vec3_right, true, flippedQuad, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
 					colors_ptr->push_back({ ao00 * ambientStr, 0.0f, 0.0f, 0.0f });
 					colors_ptr->push_back({ ao01 * ambientStr, 0.0f, 0.0f, 0.0f });
@@ -271,7 +276,7 @@ void VoxelChunk::generateMesh(
 
 					auto flippedQuad = ao00 + ao11 > ao01 + ao10;
 
-					build_face(origin, vec3_forward, vec3_right, false, flippedQuad, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+					build_face(voxel, origin, vec3_forward, vec3_right, false, flippedQuad, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
 					colors_ptr->push_back({ ao00 * ambientStr, 0.0f, 0.0f, 0.0f });
 					colors_ptr->push_back({ ao01 * ambientStr, 0.0f, 0.0f, 0.0f });
@@ -289,7 +294,7 @@ void VoxelChunk::generateMesh(
 
 					auto flippedQuad = ao00 + ao11 > ao01 + ao10;
 
-					build_face(origin + vec3_forward, vec3_up, vec3_right, false, flippedQuad, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+					build_face(voxel, origin + vec3_forward, vec3_up, vec3_right, false, flippedQuad, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
 					colors_ptr->push_back({ ao00 * ambientStr, 0.0f, 0.0f, 0.0f });
 					colors_ptr->push_back({ ao01 * ambientStr, 0.0f, 0.0f, 0.0f });
@@ -307,7 +312,7 @@ void VoxelChunk::generateMesh(
 
 					auto flippedQuad = ao00 + ao11 > ao01 + ao10;
 
-					build_face(origin, vec3_up, vec3_right, true, flippedQuad, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
+					build_face(voxel, origin, vec3_up, vec3_right, true, flippedQuad, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
 					colors_ptr->push_back({ ao00 * ambientStr, 0.0f, 0.0f, 0.0f });
 					colors_ptr->push_back({ ao01 * ambientStr, 0.0f, 0.0f, 0.0f });

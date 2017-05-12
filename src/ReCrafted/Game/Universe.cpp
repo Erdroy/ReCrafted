@@ -8,23 +8,23 @@
 
 Universe* Universe::m_instance;
 
-const auto samplerFlags = 0
-| BGFX_TEXTURE_RT
-| BGFX_TEXTURE_MIN_POINT
-| BGFX_TEXTURE_MAG_POINT
-| BGFX_TEXTURE_MIP_POINT
-| BGFX_TEXTURE_U_CLAMP
-| BGFX_TEXTURE_V_CLAMP;
-
 void loadAssets()
 {
 	Item granite = {};
 	granite.itemType = ItemType::block;
 	granite.name = TEXT("Granite");
-	granite.description = TEXT("Granite, huh - a stone stolen from minecraft.");
-	granite.data = ItemDB::registerBlock(66, "../assets/textures/granite.png");
+	granite.description = TEXT("Granite, huh - stone stolen from minecraft.");
+	granite.data = ItemDB::registerBlock(1, "../assets/textures/granite.png");
 
-	ItemDB::registerItem(65, granite);
+	ItemDB::registerItem(1, granite);
+
+	Item dirt = {};
+	dirt.itemType = ItemType::block;
+	dirt.name = TEXT("Dirt");
+	dirt.description = TEXT("Dirt, huh - dirt stolen from minecraft.");
+	dirt.data = ItemDB::registerBlock(2, "../assets/textures/dirt.png");
+
+	ItemDB::registerItem(2, dirt);
 }
 
 void Universe::init()

@@ -16,6 +16,8 @@
 /// </summary>
 class ItemDB
 {
+	friend class Rendering;
+
 private:
 	static ItemDB* m_instance;
 
