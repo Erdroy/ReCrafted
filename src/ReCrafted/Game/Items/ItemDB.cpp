@@ -14,10 +14,13 @@ void ItemDB::init()
 
 void ItemDB::generateAtlases()
 {
-	m_instance->m_atlas->apply(false);
-
 	// TODO: generate mipmaps
 
+	// add all mips
+
+	// upload texture
+
+	m_instance->m_atlas->apply();
 	Logger::write("Generated blocks atlas - 1024x1024/32bpp", LogLevel::Info);
 }
 

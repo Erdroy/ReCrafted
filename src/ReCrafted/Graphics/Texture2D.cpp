@@ -17,7 +17,7 @@ static void releaseBits(void* _ptr, void* _userData)
 
 static void releaseBitsRaw(void* _ptr, void* _userData)
 {
-	delete [] _userData;
+	free(_userData);
 }
 
 void Texture2D::loadFile(const char* filename, uint flags)
@@ -52,7 +52,7 @@ void Texture2D::loadMemory(void* data, int width, int height, uint flags)
 	m_height = height;
 	m_flags = flags;
 
-	m_bits = new byte[width * height * 4];
+	m_bits = static_cast<byte*>(malloc(width * height * 4));
 
 	memset(m_bits, 0, width * height * 4);
 
@@ -69,6 +69,41 @@ void Texture2D::createMemory(int width, int height, uint flags)
 	loadMemory(nullptr, width, height, flags);
 }
 
+void Texture2D::addPixels(int width, int height, uint* pixels)
+{
+	if (m_bitmap)
+		throw;
+
+	auto size = width * height * 4;
+
+	// alloc more memory
+	auto bits = realloc(m_bits, size);
+
+	if (bits)
+	{
+		m_bits = static_cast<byte*>(bits);
+
+		auto baseSize = m_width * m_height * 4;
+
+		if (m_mips > 0)
+		{
+			auto lwidth = m_width;
+			for (auto i = 0u; i < m_mips; i++)
+			{
+				auto w = lwidth / 2;
+				baseSize += w;
+				lwidth = w;
+			}
+		}
+
+		auto mpixels = reinterpret_cast<uint*>(m_bits);
+
+		// copy
+
+		m_mips++;
+	}
+}
+
 uint Texture2D::getPixel(int x, int y)
 {
 	if (m_bits == nullptr)
@@ -82,6 +117,11 @@ uint Texture2D::getPixel(int x, int y)
 	auto a = m_bits[idx + 3];
 
 	return a | b << 8 | g << 16 | r << 24;
+}
+
+uint* Texture2D::getPixels() const
+{
+	return reinterpret_cast<uint*>(m_bits);
 }
 
 void Texture2D::setPixel(int x, int y, uint pixel)
@@ -116,7 +156,7 @@ void Texture2D::setPixels(int x, int y, int width, int height, uint* pixels)
 	}
 }
 
-void Texture2D::apply(bool readable)
+void Texture2D::apply()
 {
 	auto size = m_width * m_height * 4;
 
@@ -129,11 +169,28 @@ void Texture2D::apply(bool readable)
 	memcpy_s(mem->data, mem->size, m_bits, size);
 
 	m_textureHandle = bgfx::createTexture2D(uint16_t(m_width), uint16_t(m_height), false, 1, bgfx::TextureFormat::BGRA8, m_flags, mem);
+
+	m_bits = nullptr;
 }
 
 void Texture2D::dispose()
 {
 	bgfx::destroyTexture(m_textureHandle);
+
+	if(m_bits)
+	{
+		if(m_bitmap)
+		{
+			FreeImage_Unload(m_bitmap);
+			m_bits = nullptr;
+			m_bitmap = nullptr;
+		}
+		else
+		{
+			free(m_bits);
+			m_bits = nullptr;
+		}
+	}
 }
 
 void Texture2D::loadTextureData(const char* filename, uint** pixels, int* width, int* height)
