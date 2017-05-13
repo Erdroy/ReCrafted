@@ -8,7 +8,9 @@
 // includes
 #include "../../Utils/Defines.h"
 #include "../../recraftedConfig.h"
+#include "../Voxels/VoxelChunk.h"
 #include "Item.h"
+#include "ItemID.h"
 
 /// <summary>
 /// Item database class.
@@ -46,7 +48,7 @@ public:
 	/// </summary>
 	/// <param name="id">The item id.</param>
 	/// <param name="item">The item data.</param>
-	static void registerItem(uint id, Item item);
+	static void registerItem(itemid id, Item item);
 
 	/// <summary>
 	/// Registers block texture, and creates new item block data.
@@ -59,7 +61,7 @@ public:
 	/// <param name="sideoverlay_texture"></param>
 	/// <returns></returns>
 	static Item_BlockData* registerBlock(
-		int id,
+		itemid id,
 		const char* texture, 
 		const char* top_texture = nullptr,
 		const char* bottom_texture = nullptr,

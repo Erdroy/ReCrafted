@@ -233,16 +233,19 @@
     <ClInclude Include="Graphics\Resources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Items\ItemDB.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Items\Item.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Common\Text.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="recraftedConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Items\ItemID.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Items\ItemDB.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Items\Item.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

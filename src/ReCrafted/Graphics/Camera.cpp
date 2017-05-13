@@ -94,7 +94,7 @@ void Camera::updateControls()
 	direction *= float(Time::deltaTime());
 
 	// shift to speed up
-	auto mul = Input::isKey(Key_Shift) ? 50.0f : 15.0f;
+	auto mul = Input::isKey(Key_Shift) ? 10.0f : 4.0f;
 
 	// ctrl to slow down
 	mul = Input::isKey(Key_Control) ? 1.0f : mul;
@@ -135,7 +135,7 @@ void Camera::updateControls()
 	auto accelDelta = delta + m_lastDelta;
 
 	// apply camera rotation
-	m_rotation += Vector3(accelDelta.x / 16.0f, accelDelta.y / 16.0f, 0.0f);
+	m_rotation += Vector3(accelDelta.x / 10.0f, accelDelta.y / 10.0f, 0.0f);
 	m_rotation.y = Math::clamp(m_rotation.y, -89.9f, 89.9f);
 
 	// update camera rotation

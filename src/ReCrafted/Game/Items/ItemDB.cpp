@@ -24,7 +24,7 @@ void ItemDB::generateAtlases()
 	Logger::write("Generated blocks atlas - 1024x1024/32bpp", LogLevel::Info);
 }
 
-void ItemDB::registerItem(uint id, Item item)
+void ItemDB::registerItem(itemid id, Item item)
 {
 	if (getItem(id) != nullptr)
 		return;
@@ -33,7 +33,7 @@ void ItemDB::registerItem(uint id, Item item)
 	m_instance->m_itemCount++;
 }
 
-Item_BlockData* ItemDB::registerBlock(int id, const char* texture, const char* top_texture, const char* bottom_texture, const char* sideoverlay_texture)
+Item_BlockData* ItemDB::registerBlock(itemid id, const char* texture, const char* top_texture, const char* bottom_texture, const char* sideoverlay_texture)
 {
 	if (texture == nullptr)
 		throw;

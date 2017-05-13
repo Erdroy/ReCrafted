@@ -25,6 +25,14 @@ void loadAssets()
 	dirt.data = ItemDB::registerBlock(2, "../assets/textures/dirt.png");
 
 	ItemDB::registerItem(2, dirt);
+
+	Item planks = {};
+	planks.itemType = ItemType::block;
+	planks.name = TEXT("Planks");
+	planks.description = TEXT("Planks, huh - oak planks stolen from minecraft.");
+	planks.data = ItemDB::registerBlock(3, "../assets/textures/planks.png");
+
+	ItemDB::registerItem(3, planks);
 }
 
 void Universe::init()

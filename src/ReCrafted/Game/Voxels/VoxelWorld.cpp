@@ -91,7 +91,7 @@ void VoxelWorld::update_digplace()
 			auto y = int(floor(blockpos.y));
 			auto z = chunk->toVoxelSpaceZ(blockpos.z);
 
-			chunk->setVoxel(1, x, y, z);
+			chunk->setVoxel(3, x, y, z);
 
 			// rebuild chunk
 			chunk->updateMesh();
