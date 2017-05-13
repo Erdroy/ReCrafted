@@ -19,70 +19,94 @@ public:
 		byte pixel##_b = (pixel & 0x0000FF00) >> 8; \
 		byte pixel##_a = (pixel & 0x000000FF); \
 
-		auto src_elem_size = src_width / elems;
 
 		auto dest_width = src_width / 2;
-		auto dest_elem_size = dest_width / elems;
 		auto dest_bits = static_cast<byte*>(malloc(dest_width * dest_width * 4));
+
+		auto src_elem_size = src_width / elems;
+		auto dest_elem_size = dest_width / elems;
 
 		auto src_pixels = reinterpret_cast<uint*>(src_bits);
 		auto dest_pixels = reinterpret_cast<uint*>(dest_bits);
 
-		for(auto elemY = 0; elemY < elems; elemY ++)
+		for(auto elemY = 0u; elemY < elems; elemY ++)
 		{
-			for (auto elemX = 0; elemX < elems; elemX++)
+			for (auto elemX = 0u; elemX < elems; elemX ++)
 			{
-				for(auto my = 0; my < src_elem_size; my ++)
+				auto ox = elemX * src_elem_size;
+				auto oy = elemY * src_elem_size;
+				
+				for(auto my = 0u; my < src_elem_size; my += 2)
 				{
-					for (auto mx = 0; mx < src_elem_size; mx++)
+					for (auto mx = 0u; mx < src_elem_size; mx += 2)
 					{
-						auto x = elemX * src_elem_size + mx;
-						auto y = elemY * src_elem_size + my;
+						auto x = ox + mx;
+						auto y = oy + my;
 
-						auto idx = int(y * src_width + x);
-						auto pixel_c = src_pixels[idx];
-						
-						uint pixel_l = 0x0;
+						// sample neigh pixels
+						uint pixel_c = 0x0;
 						uint pixel_r = 0x0;
-						uint pixel_u = 0x0;
-						uint pixel_b = 0x0;
-						
-						auto has_pixel_l = false;
-						auto has_pixel_r = false;
-						auto has_pixel_u = false;
-						auto has_pixel_d = false;
+						uint pixel_d1 = 0x0;
+						uint pixel_d2 = 0x0;
 
-						/*if(idx - 1 > 0)
+						pixel_c = src_pixels[y * src_width + x];
+						pixel_r = src_pixels[y * src_width + (x + 1)];
+						pixel_d1 = src_pixels[(y + 1) * src_width + x];
+						pixel_d2 = src_pixels[(y + 1) * src_width + (x + 1)];
+
+						auto dpx_r = 0x0u;
+						auto dpx_g = 0x0u;
+						auto dpx_b = 0x0u;
+						auto dpx_a = 0x0u;
+
+						CHANNELS(pixel_c)
 						{
-							pixel_l = src_pixels[idx - 1];
-							has_pixel_l = true;
+							dpx_r += pixel_c_r;
+							dpx_g += pixel_c_g;
+							dpx_b += pixel_c_b;
+							dpx_a += pixel_c_a;
 						}
 
-						if(idx + 1 < src_width * src_width)
+						CHANNELS(pixel_r)
 						{
-							pixel_r = src_pixels[idx + 1];
-							has_pixel_r = true;
+							dpx_r += pixel_r_r;
+							dpx_g += pixel_r_g;
+							dpx_b += pixel_r_b;
+							dpx_a += pixel_r_a;
 						}
 
-						if (idx - 1 > 0)
+						CHANNELS(pixel_d1)
 						{
-							pixel_u = src_pixels[idx - src_width];
-							has_pixel_u = true;
+							dpx_r += pixel_d1_r;
+							dpx_g += pixel_d1_g;
+							dpx_b += pixel_d1_b;
+							dpx_a += pixel_d1_a;
 						}
 
-						if (idx + 1 < src_width * src_width)
+						CHANNELS(pixel_d2)
 						{
-							pixel_b = src_pixels[idx + src_width];
-							has_pixel_d = true;
+							dpx_r += pixel_d2_r;
+							dpx_g += pixel_d2_g;
+							dpx_b += pixel_d2_b;
+							dpx_a += pixel_d2_a;
 						}
 
-						CHANNELS(pixel_c);
-						CHANNELS(pixel_l);
-						CHANNELS(pixel_r);
-						CHANNELS(pixel_u);
-						CHANNELS(pixel_b);*/
+						dpx_r /= 4;
+						dpx_g /= 4;
+						dpx_b /= 4;
+						dpx_a /= 4;
 
-						dest_pixels[(y / 2) * dest_width + x] = pixel_c;
+						auto dox = elemX * dest_elem_size;
+						auto doy = elemY * dest_elem_size;
+
+						auto dx = dox + mx / 2;
+						auto dy = doy + my / 2;
+
+						dest_pixels[dy * dest_width + dx] = 0u
+						| byte(dpx_a)
+						| byte(dpx_b) << 8 
+						| byte(dpx_g) << 16 
+						| byte(dpx_r) << 24;
 					}
 				}
 			}

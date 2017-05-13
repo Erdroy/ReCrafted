@@ -99,6 +99,7 @@ public:
 public:
 	static void loadTextureData(const char* filename, uint** pixels, int* width, int* height);
 	static void releaseTextureData(uint* pixels);
+	static void saveBitmap(const char* filename, uint width, uint height, byte* bits);
 };
 
 #endif // TEXTURE2D_H

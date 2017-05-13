@@ -74,13 +74,10 @@ void Texture2D::addPixels(int width, int height, uint* pixels)
 	if (m_bitmap)
 		throw;
 
-	if (m_mips != 0)
-		throw; // TODO: proper size calc
-
 	auto size = width * height * 4;
 	auto baseSize = m_width * m_height * 4;
 
-	/*if (m_mips > 0)
+	if (m_mips > 0)
 	{
 		auto lwidth = m_width;
 		for (auto i = 0u; i < m_mips; i++)
@@ -89,7 +86,7 @@ void Texture2D::addPixels(int width, int height, uint* pixels)
 			baseSize += w * w * 4;
 			lwidth = w;
 		}
-	}*/
+	}
 
 	// alloc more memory
 	auto newSize = baseSize + size;
@@ -226,6 +223,12 @@ void Texture2D::loadTextureData(const char* filename, uint** pixels, int* width,
 void Texture2D::releaseTextureData(uint* pixels)
 {
 	delete pixels;
+}
+
+void Texture2D::saveBitmap(const char* filename, uint width, uint height, byte* bitsRaw)
+{
+	auto bits = FreeImage_ConvertFromRawBits(bitsRaw, width, height, width * 4, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, true);
+	FreeImage_Save(FIF_BMP, bits, filename);
 }
 
 Ptr<Texture2D> Texture2D::createTexture()

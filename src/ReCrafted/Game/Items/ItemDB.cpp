@@ -3,6 +3,7 @@
 #include "ItemDB.h"
 #include "../../Core/Logger.h"
 #include "../../Graphics/AtlasScaler.h"
+#include <FreeImage.h>
 
 ItemDB* ItemDB::m_instance;
 
@@ -21,20 +22,20 @@ void ItemDB::generateAtlases()
 
 	auto mip_count = bgfx::calcNumMips(true, RECRAFTED_BLOCK_ATLAS_SIZE, RECRAFTED_BLOCK_ATLAS_SIZE);
 
-	/*auto mip1size = RECRAFTED_BLOCK_ATLAS_SIZE / 2;
-	auto mip2size = mip1size / 2;
-	auto mip3size = mip2size / 2;
-
 	auto elemcount = RECRAFTED_BLOCK_ATLAS_SIZE / RECRAFTED_BLOCK_ATLAS_ITEM_SIZE;
 
-	auto mip_1 = AtlasScaler::downscale(main_bits, RECRAFTED_BLOCK_ATLAS_SIZE, elemcount);
-	//auto mip_2 = AtlasScaler::downscale(mip_1, mip1size, elemcount);
-	//auto mip_3 = AtlasScaler::downscale(mip_2, mip2size, elemcount);
+	auto lastSize = RECRAFTED_BLOCK_ATLAS_SIZE;
+	auto last_mip = main_bits;
+	
+	for(auto i = 0; i < mip_count; i ++)
+	{
+		auto mip = AtlasScaler::downscale(last_mip, lastSize, elemcount);
+		
+		last_mip = mip;
+		lastSize = lastSize / 2;
 
-	// add all mips
-	m_instance->m_atlas->addPixels(mip1size, mip1size, reinterpret_cast<uint*>(mip_1));
-	//m_instance->m_atlas->addPixels(mip2size, mip2size, reinterpret_cast<uint*>(mip_2));
-	//m_instance->m_atlas->addPixels(mip3size, mip3size, reinterpret_cast<uint*>(mip_3));*/
+		m_instance->m_atlas->addPixels(lastSize, lastSize, reinterpret_cast<uint*>(mip));
+	}
 
 	// upload texture
 	m_instance->m_atlas->apply();
