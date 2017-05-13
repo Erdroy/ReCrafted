@@ -245,6 +245,7 @@
     <ClInclude Include="Game\Items\Item.h" />
     <ClInclude Include="Game\Items\ItemDB.h" />
     <ClInclude Include="Game\Items\ItemID.h" />
+    <ClInclude Include="Graphics\AtlasScaler.h" />
     <ClInclude Include="recraftedConfig.h" />
     <ClInclude Include="Graphics\Resources.h" />
     <ClInclude Include="Game\Universe.h" />

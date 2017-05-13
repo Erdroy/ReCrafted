@@ -14,7 +14,7 @@ void loadAssets()
 	granite.itemType = ItemType::block;
 	granite.name = TEXT("Granite");
 	granite.description = TEXT("Granite, huh - stone stolen from minecraft.");
-	granite.data = ItemDB::registerBlock(1, "../assets/textures/granite.png");
+	granite.data = ItemDB::createBlockData(1, "../assets/textures/granite.png");
 
 	ItemDB::registerItem(1, granite);
 
@@ -22,7 +22,7 @@ void loadAssets()
 	dirt.itemType = ItemType::block;
 	dirt.name = TEXT("Dirt");
 	dirt.description = TEXT("Dirt, huh - dirt stolen from minecraft.");
-	dirt.data = ItemDB::registerBlock(2, "../assets/textures/dirt.png");
+	dirt.data = ItemDB::createBlockData(2, "../assets/textures/dirt.png");
 
 	ItemDB::registerItem(2, dirt);
 
@@ -30,7 +30,7 @@ void loadAssets()
 	planks.itemType = ItemType::block;
 	planks.name = TEXT("Planks");
 	planks.description = TEXT("Planks, huh - oak planks stolen from minecraft.");
-	planks.data = ItemDB::registerBlock(3, "../assets/textures/planks.png");
+	planks.data = ItemDB::createBlockData(3, "../assets/textures/planks.png");
 
 	ItemDB::registerItem(3, planks);
 }

@@ -60,7 +60,7 @@ public:
 	/// <param name="bottom_texture"></param>
 	/// <param name="sideoverlay_texture"></param>
 	/// <returns></returns>
-	static Item_BlockData* registerBlock(
+	static Item_BlockData* createBlockData(
 		itemid id,
 		const char* texture, 
 		const char* top_texture = nullptr,
