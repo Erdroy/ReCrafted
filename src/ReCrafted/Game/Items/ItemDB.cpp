@@ -16,12 +16,10 @@ void ItemDB::init()
 
 void ItemDB::generateAtlases()
 {
-	// TODO: generate mipmaps
-
+	// generate mipmaps
 	auto main_bits = reinterpret_cast<byte*>(m_instance->m_atlas->getPixels());
 
 	auto mip_count = bgfx::calcNumMips(true, RECRAFTED_BLOCK_ATLAS_SIZE, RECRAFTED_BLOCK_ATLAS_SIZE);
-
 	auto elemcount = RECRAFTED_BLOCK_ATLAS_SIZE / RECRAFTED_BLOCK_ATLAS_ITEM_SIZE;
 
 	auto lastSize = RECRAFTED_BLOCK_ATLAS_SIZE;
@@ -29,10 +27,26 @@ void ItemDB::generateAtlases()
 	
 	for(auto i = 0; i < mip_count; i ++)
 	{
-		auto mip = AtlasScaler::downscale(last_mip, lastSize, elemcount);
-		
-		last_mip = mip;
+		byte* mip;
+
+		if(i > 4)
+		{
+			auto width = lastSize / 2;
+			mip = static_cast<byte*>(malloc(width * width * 4));
+			memset(mip, 0, width * width * 4);
+			last_mip = mip;
+		}
+		else 
+		{
+			mip = AtlasScaler::downscale(last_mip, lastSize, elemcount);
+			last_mip = mip;
+		}
+
+		// TODO: fix mip memory leaks
+
 		lastSize = lastSize / 2;
+
+		//Texture2D::saveBitmap(("mip_" + std::to_string(i) + ".bmp").c_str(), lastSize, lastSize, mip);
 
 		m_instance->m_atlas->addPixels(lastSize, lastSize, reinterpret_cast<uint*>(mip));
 	}

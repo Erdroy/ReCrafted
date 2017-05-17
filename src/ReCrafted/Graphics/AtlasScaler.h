@@ -11,14 +11,16 @@
 class AtlasScaler
 {
 public:
+	/// <summary>
+	/// Downscale src_bits bitmap to size of `src_width / 2`.
+	/// </summary>
 	static byte* downscale(byte* src_bits, uint src_width, uint elems)
 	{
-#define CHANNELS(pixel) \
-		byte pixel##_r = (pixel & 0xFF000000) >> 24; \
-		byte pixel##_g = (pixel & 0x00FF0000) >> 16; \
-		byte pixel##_b = (pixel & 0x0000FF00) >> 8; \
-		byte pixel##_a = (pixel & 0x000000FF); \
-
+#define ADD_CHANNELS(pixel) \
+		dpx_r += (pixel & 0xFF000000) >> 24; \
+		dpx_g += (pixel & 0x00FF0000) >> 16; \
+		dpx_b += (pixel & 0x0000FF00) >> 8; \
+		dpx_a += (pixel & 0x000000FF); \
 
 		auto dest_width = src_width / 2;
 		auto dest_bits = static_cast<byte*>(malloc(dest_width * dest_width * 4));
@@ -44,52 +46,20 @@ public:
 						auto y = oy + my;
 
 						// sample neigh pixels
-						uint pixel_c = 0x0;
-						uint pixel_r = 0x0;
-						uint pixel_d1 = 0x0;
-						uint pixel_d2 = 0x0;
-
-						pixel_c = src_pixels[y * src_width + x];
-						pixel_r = src_pixels[y * src_width + (x + 1)];
-						pixel_d1 = src_pixels[(y + 1) * src_width + x];
-						pixel_d2 = src_pixels[(y + 1) * src_width + (x + 1)];
+						auto pixel_c = src_pixels[y * src_width + x];
+						auto pixel_r = src_pixels[y * src_width + (x + 1)];
+						auto pixel_d1 = src_pixels[(y + 1) * src_width + x];
+						auto pixel_d2 = src_pixels[(y + 1) * src_width + (x + 1)];
 
 						auto dpx_r = 0x0u;
 						auto dpx_g = 0x0u;
 						auto dpx_b = 0x0u;
 						auto dpx_a = 0x0u;
 
-						CHANNELS(pixel_c)
-						{
-							dpx_r += pixel_c_r;
-							dpx_g += pixel_c_g;
-							dpx_b += pixel_c_b;
-							dpx_a += pixel_c_a;
-						}
-
-						CHANNELS(pixel_r)
-						{
-							dpx_r += pixel_r_r;
-							dpx_g += pixel_r_g;
-							dpx_b += pixel_r_b;
-							dpx_a += pixel_r_a;
-						}
-
-						CHANNELS(pixel_d1)
-						{
-							dpx_r += pixel_d1_r;
-							dpx_g += pixel_d1_g;
-							dpx_b += pixel_d1_b;
-							dpx_a += pixel_d1_a;
-						}
-
-						CHANNELS(pixel_d2)
-						{
-							dpx_r += pixel_d2_r;
-							dpx_g += pixel_d2_g;
-							dpx_b += pixel_d2_b;
-							dpx_a += pixel_d2_a;
-						}
+						ADD_CHANNELS(pixel_c)
+						ADD_CHANNELS(pixel_r);
+						ADD_CHANNELS(pixel_d1);
+						ADD_CHANNELS(pixel_d2);
 
 						dpx_r /= 4;
 						dpx_g /= 4;

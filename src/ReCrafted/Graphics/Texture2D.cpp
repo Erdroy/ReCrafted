@@ -96,11 +96,9 @@ void Texture2D::addPixels(int width, int height, uint* pixels)
 	{
 		m_bits = static_cast<byte*>(bits);
 
-		auto mpixels = reinterpret_cast<uint*>(m_bits);
-
 		// copy
 		auto dest = m_bits + baseSize;
-		memcpy(dest, mpixels, size);
+		memcpy(dest, pixels, size);
 
 		m_mips++;
 	}
@@ -162,6 +160,17 @@ void Texture2D::apply()
 {
 	auto size = m_width * m_height * 4;
 
+	if (m_mips > 0)
+	{
+		auto lwidth = m_width;
+		for (auto i = 0u; i < m_mips; i++)
+		{
+			auto w = lwidth / 2;
+			size += w * w * 4;
+			lwidth = w;
+		}
+	}
+
 	const bgfx::Memory* mem;
 	if (m_bitmap)
 		mem = bgfx::makeRef(m_bits, size, releaseBits, static_cast<void*>(m_bitmap));
@@ -170,7 +179,7 @@ void Texture2D::apply()
 
 	memcpy_s(mem->data, mem->size, m_bits, size);
 	
-	m_textureHandle = bgfx::createTexture2D(uint16_t(m_width), uint16_t(m_height), false, 1, bgfx::TextureFormat::BGRA8, m_flags, mem);
+	m_textureHandle = bgfx::createTexture2D(uint16_t(m_width), uint16_t(m_height), m_mips > 0, 1, bgfx::TextureFormat::BGRA8, m_flags, mem);
 
 	m_bits = nullptr;
 }
