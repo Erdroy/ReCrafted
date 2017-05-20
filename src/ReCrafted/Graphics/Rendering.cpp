@@ -138,7 +138,7 @@ void Rendering::endRender()
 	bgfx::setTexture(1, m_texture1, m_gbuffer->getTarget(1), textureFlags);
 
 	// draw into backbuffer
-	bgfx::setVertexBuffer(m_blitMesh->m_vertexBuffer);
+	bgfx::setVertexBuffer(0, m_blitMesh->m_vertexBuffer);
 	bgfx::setIndexBuffer(m_blitMesh->m_indexBuffer);
 	bgfx::submit(RENDERVIEW_BACKBUFFER, m_deferredFinal->m_program);
 }
@@ -167,7 +167,7 @@ void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix, in
 
 	bgfx::setUniform(m_modelViewProjection, &mat);
 
-	bgfx::setVertexBuffer(mesh->m_vertexBuffer);
+	bgfx::setVertexBuffer(0, mesh->m_vertexBuffer);
 	bgfx::setIndexBuffer(mesh->m_indexBuffer);
 	bgfx::submit(viewId, shader->m_program);
 }
@@ -186,7 +186,7 @@ void Rendering::blit(uint view, bgfx::TextureHandle texture)
 
 	bgfx::setTexture(0, m_texture0, texture, textureFlags);
 
-	bgfx::setVertexBuffer(m_blitMesh->m_vertexBuffer);
+	bgfx::setVertexBuffer(0, m_blitMesh->m_vertexBuffer);
 	bgfx::setIndexBuffer(m_blitMesh->m_indexBuffer);
 	bgfx::submit(view, m_blitShader->m_program);
 }

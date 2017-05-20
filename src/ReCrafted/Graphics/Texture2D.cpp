@@ -179,7 +179,8 @@ void Texture2D::apply()
 
 	memcpy_s(mem->data, mem->size, m_bits, size);
 	
-	m_textureHandle = bgfx::createTexture2D(uint16_t(m_width), uint16_t(m_height), m_mips > 0, 1, bgfx::TextureFormat::BGRA8, m_flags, mem);
+	auto mipCount = uint8_t(m_mips + 1);
+	m_textureHandle = bgfx::createTexture2D(uint16_t(m_width), uint16_t(m_height), mipCount, 1, bgfx::TextureFormat::BGRA8, m_flags, mem);
 
 	m_bits = nullptr;
 }

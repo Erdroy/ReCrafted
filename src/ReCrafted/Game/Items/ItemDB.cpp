@@ -25,7 +25,7 @@ void ItemDB::generateAtlases()
 	auto lastSize = RECRAFTED_BLOCK_ATLAS_SIZE;
 	auto last_mip = main_bits;
 	
-	for(auto i = 0; i < mip_count; i ++)
+	for(auto i = 0; i < 4; i ++)
 	{
 		byte* mip;
 

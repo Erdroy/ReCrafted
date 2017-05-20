@@ -1603,6 +1603,37 @@ namespace bgfx
 	///
 	/// @param[in] _width Width.
 	/// @param[in] _height Height.
+	/// @param[in] _mipCount The mip-map chain length (including default mip/0).
+	/// @param[in] _numLayers Number of layers in texture array. Must be 1 if caps
+	///   `BGFX_CAPS_TEXTURE_2D_ARRAY` flag is not set.
+	/// @param[in] _format Texture format. See: `TextureFormat::Enum`.
+	/// @param[in] _flags Default texture sampling mode is linear, and wrap mode
+	///   is repeat.
+	///   - `BGFX_TEXTURE_[U/V/W]_[MIRROR/CLAMP]` - Mirror or clamp to edge wrap
+	///     mode.
+	///   - `BGFX_TEXTURE_[MIN/MAG/MIP]_[POINT/ANISOTROPIC]` - Point or anisotropic
+	///     sampling.
+	///
+	/// @param[in] _mem Texture data. If `_mem` is non-NULL, created texture will be immutable. If
+	///   `_mem` is NULL content of the texture is uninitialized. When `_numLayers` is more than
+	///   1, expected memory layout is texture and all mips together for each array element.
+	///
+	/// @attention C99 equivalent is `bgfx_create_texture_2d`.
+	///
+	TextureHandle createTexture2D(
+		uint16_t _width
+		, uint16_t _height
+		, uint8_t _mipCount
+		, uint16_t _numLayers
+		, TextureFormat::Enum _format
+		, uint32_t _flags = BGFX_TEXTURE_NONE
+		, const Memory* _mem = NULL
+	);
+
+	/// Create 2D texture.
+	///
+	/// @param[in] _width Width.
+	/// @param[in] _height Height.
 	/// @param[in] _hasMips Indicates that texture contains full mip-map chain.
 	/// @param[in] _numLayers Number of layers in texture array. Must be 1 if caps
 	///   `BGFX_CAPS_TEXTURE_2D_ARRAY` flag is not set.
@@ -2415,54 +2446,75 @@ namespace bgfx
 
 	/// Set vertex buffer for draw primitive.
 	///
+	/// @param[in] _stream Vertex stream.
 	/// @param[in] _handle Vertex buffer.
 	///
 	/// @attention C99 equivalent is `bgfx_set_vertex_buffer`.
-	///
-	void setVertexBuffer(VertexBufferHandle _handle);
-
-	/// Set vertex buffer for draw primitive.
-	///
-	/// @param[in] _handle Vertex buffer.
-	/// @param[in] _startVertex First vertex to render.
-	/// @param[in] _numVertices Number of vertices to render.
-	///
-	/// @attention C99 equivalent is `bgfx_set_vertex_buffer`.
-	///
-	void setVertexBuffer(VertexBufferHandle _handle, uint32_t _startVertex, uint32_t _numVertices);
-
-	/// Set vertex buffer for draw primitive.
-	///
-	/// @param[in] _handle Dynamic vertex buffer.
-	///
-	/// @attention C99 equivalent is `bgfx_set_dynamic_vertex_buffer`.
-	///
-	void setVertexBuffer(DynamicVertexBufferHandle _handle);
-
-	/// Set vertex buffer for draw primitive.
-	///
-	/// @param[in] _handle Dynamic vertex buffer.
-	/// @param[in] _startVertex First vertex to render.
-	/// @param[in] _numVertices Number of vertices to render.
-	///
-	/// @attention C99 equivalent is `bgfx_set_dynamic_vertex_buffer`.
 	///
 	void setVertexBuffer(
-		  DynamicVertexBufferHandle _handle
+		  uint8_t _stream
+		, VertexBufferHandle _handle
+		);
+
+	/// Set vertex buffer for draw primitive.
+	///
+	/// @param[in] _stream Vertex stream.
+	/// @param[in] _handle Vertex buffer.
+	/// @param[in] _startVertex First vertex to render.
+	/// @param[in] _numVertices Number of vertices to render.
+	///
+	/// @attention C99 equivalent is `bgfx_set_vertex_buffer`.
+	///
+	void setVertexBuffer(
+		  uint8_t _stream
+		, VertexBufferHandle _handle
 		, uint32_t _startVertex
 		, uint32_t _numVertices
 		);
 
 	/// Set vertex buffer for draw primitive.
 	///
+	/// @param[in] _stream Vertex stream.
+	/// @param[in] _handle Dynamic vertex buffer.
+	///
+	/// @attention C99 equivalent is `bgfx_set_dynamic_vertex_buffer`.
+	///
+	void setVertexBuffer(
+		  uint8_t _stream
+		, DynamicVertexBufferHandle _handle
+		);
+
+	/// Set vertex buffer for draw primitive.
+	///
+	/// @param[in] _stream Vertex stream.
+	/// @param[in] _handle Dynamic vertex buffer.
+	/// @param[in] _startVertex First vertex to render.
+	/// @param[in] _numVertices Number of vertices to render.
+	///
+	/// @attention C99 equivalent is `bgfx_set_dynamic_vertex_buffer`.
+	///
+	void setVertexBuffer(
+		  uint8_t _stream
+		, DynamicVertexBufferHandle _handle
+		, uint32_t _startVertex
+		, uint32_t _numVertices
+		);
+
+	/// Set vertex buffer for draw primitive.
+	///
+	/// @param[in] _stream Vertex stream.
 	/// @param[in] _tvb Transient vertex buffer.
 	///
 	/// @attention C99 equivalent is `bgfx_set_transient_vertex_buffer`.
 	///
-	void setVertexBuffer(const TransientVertexBuffer* _tvb);
+	void setVertexBuffer(
+		  uint8_t _stream
+		, const TransientVertexBuffer* _tvb
+		);
 
 	/// Set vertex buffer for draw primitive.
 	///
+	/// @param[in] _stream Vertex stream.
 	/// @param[in] _tvb Transient vertex buffer.
 	/// @param[in] _startVertex First vertex to render.
 	/// @param[in] _numVertices Number of vertices to render.
@@ -2470,7 +2522,8 @@ namespace bgfx
 	/// @attention C99 equivalent is `bgfx_set_transient_vertex_buffer`.
 	///
 	void setVertexBuffer(
-		  const TransientVertexBuffer* _tvb
+		  uint8_t _stream
+		, const TransientVertexBuffer* _tvb
 		, uint32_t _startVertex
 		, uint32_t _numVertices
 		);
