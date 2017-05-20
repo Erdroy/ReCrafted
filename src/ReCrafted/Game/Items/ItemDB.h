@@ -8,7 +8,7 @@
 // includes
 #include "../../Utils/Defines.h"
 #include "../../recraftedConfig.h"
-#include "../Voxels/VoxelChunk.h"
+#include "../../Voxels/VoxelChunk.h"
 #include "Item.h"
 #include "ItemID.h"
 
