@@ -35,7 +35,7 @@ void ItemDB::generateAtlases()
 
 		m_mips.push_back(mip);
 
-		m_instance->m_atlas->addPixels(lastSize, lastSize, reinterpret_cast<uint*>(mip));
+		m_instance->m_atlas->addMip(lastSize, lastSize, reinterpret_cast<uint*>(mip));
 	}
 
 	for(auto mip : m_mips)

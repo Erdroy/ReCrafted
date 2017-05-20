@@ -52,12 +52,12 @@ public:
 	void createMemory(int width, int height, uint flags = 0u);
 
 	/// <summary>
-	/// Add pixels. This will reallocate the memory.
+	/// Add mipmap. This will reallocate the memory.
 	/// </summary>
 	/// <param name="width">The width.</param>
 	/// <param name="height">The height.</param>
 	/// <param name="pixels">The pixels pointer.</param>
-	void addPixels(int width, int height, uint* pixels);
+	void addMip(int width, int height, uint* pixels);
 
 	/// <summary>
 	/// Get pixel at given position.

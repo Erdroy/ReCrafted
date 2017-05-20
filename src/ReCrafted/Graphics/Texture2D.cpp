@@ -69,7 +69,7 @@ void Texture2D::createMemory(int width, int height, uint flags)
 	loadMemory(nullptr, width, height, flags);
 }
 
-void Texture2D::addPixels(int width, int height, uint* pixels)
+void Texture2D::addMip(int width, int height, uint* pixels)
 {
 	if (m_bitmap)
 		throw;
