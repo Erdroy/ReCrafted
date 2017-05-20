@@ -1,9 +1,9 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "VoxelChunkProcessor.h"
-#include "../../Core/GameMain.h"
-#include "../../Core/Logger.h"
-#include "../../Graphics/Camera.h"
+#include "../Core/GameMain.h"
+#include "../Core/Logger.h"
+#include "../Graphics/Camera.h"
 
 VoxelChunkProcessor* VoxelChunkProcessor::m_instance;
 VoxelChunkProcessor* VoxelChunkProcessorInstance;

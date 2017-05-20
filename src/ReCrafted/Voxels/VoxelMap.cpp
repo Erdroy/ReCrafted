@@ -1,8 +1,8 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "VoxelMap.h"
-#include "../../Graphics/Camera.h"
-#include "../Universe.h"
+#include "../Graphics/Camera.h"
+#include "../Game/Universe.h"
 
 void VoxelMap::MapRoot::addChunk(VoxelChunk* chunk, int x, int z)
 {

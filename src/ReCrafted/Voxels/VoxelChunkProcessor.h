@@ -7,7 +7,7 @@
 
 // includes
 #include "VoxelChunk.h"
-#include "../../Platform/Platform.Windows.h"
+#include "../Platform/Platform.Windows.h"
 #include <mutex>
 
 

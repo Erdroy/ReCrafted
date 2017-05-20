@@ -51,19 +51,10 @@
     <ClCompile Include="Game\Universe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Voxels\VoxelWorld.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Voxels\VoxelChunk.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Core\Profiler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\Logger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Voxels\Generator\VoxelGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\Math\FastNoiseSIMD\FastNoiseSIMD.cpp">
@@ -84,12 +75,6 @@
     <ClCompile Include="Core\Math\FastNoiseSIMD\FastNoiseSIMD_sse41.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Voxels\VoxelChunkProcessor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Voxels\VoxelMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Core\GameMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -100,6 +85,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Game\Items\ItemDB.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Voxels\Generator\VoxelGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Voxels\VoxelChunk.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Voxels\VoxelChunkProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Voxels\VoxelMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Voxels\VoxelWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -176,19 +176,10 @@
     <ClInclude Include="Game\Universe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Voxels\VoxelChunk.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Voxels\VoxelWorld.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Profiler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Logger.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Voxels\Generator\VoxelGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Math\FastNoiseSIMD\FastNoiseSIMD.h">
@@ -206,16 +197,10 @@
     <ClInclude Include="Core\Math\Plane.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Voxels\VoxelChunkProcessor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Math\Rect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Math\Rectf.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Voxels\VoxelMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\GameMain.h">
@@ -249,6 +234,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\AtlasScaler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Voxels\Generator\VoxelGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Voxels\VoxelChunk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Voxels\VoxelChunkProcessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Voxels\VoxelMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Voxels\VoxelWorld.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

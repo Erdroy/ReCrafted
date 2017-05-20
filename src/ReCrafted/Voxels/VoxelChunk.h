@@ -6,9 +6,9 @@
 #define VOXELCHUNK_H
 
 // includes
-#include "../../recraftedPrerequisites.h"
-#include "../../Graphics/Mesh.h"
-#include "../../Core/Math/BoundingBox.h"
+#include "../recraftedPrerequisites.h"
+#include "../Graphics/Mesh.h"
+#include "../Core/Math/BoundingBox.h"
 
 typedef unsigned char voxelid;
 

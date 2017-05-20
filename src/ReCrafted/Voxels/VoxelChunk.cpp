@@ -4,11 +4,11 @@
 #include "VoxelWorld.h"
 #include "VoxelChunkProcessor.h"
 #include "Generator/VoxelGenerator.h"
-#include "../../Core/Time.h"
-#include "../../Graphics/Camera.h"
-#include "../../Graphics/Rendering.h"
+#include "../Core/Time.h"
+#include "../Graphics/Camera.h"
+#include "../Graphics/Rendering.h"
 #include <vector>
-#include "../Items/ItemDB.h"
+#include "../Game/Items/ItemDB.h"
 
 FORCEINLINE static void build_face(
 	uint id,

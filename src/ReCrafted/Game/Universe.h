@@ -9,8 +9,8 @@
 #include "../recraftedPrerequisites.h"
 #include "../Graphics/Mesh.h"
 #include "../Core/Logger.h"
-#include "Voxels/VoxelWorld.h"
-#include "Voxels/VoxelChunkProcessor.h"
+#include "../Voxels/VoxelWorld.h"
+#include "../Voxels/VoxelChunkProcessor.h"
 
 /// <summary>
 /// Universe class - main class for whole game world.
