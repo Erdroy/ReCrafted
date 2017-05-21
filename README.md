@@ -9,6 +9,8 @@ Clone ReCrafted repo into suitable directory, eg.: `D:/ReCrafted/`
 
 ### 2. Then build those libraries for needed platforms.
 ### 3. Run generate_X.(sh/bat) file in the root directory to build needed projects.
+### 4. Create `username.txt` file in the root directory with your nickname.
+### 5. Now you can the project you have created and compile any time.
 
 ## Links
 - [Trello](https://trello.com/b/xGap0YZQ/recrafted)
