@@ -28,9 +28,11 @@ project "ReCrafted"
 	}
 	
 	-- add onbuild script
-	postbuildcommands {
-		"call " .. ROOT_DIR .. "/onbuild.bat",
-	}
+	
+	configuration { "vs*"}
+		postbuildcommands {
+			"call " .. ROOT_DIR .. "/onbuild.bat " .. ROOT_DIR .. "/",
+		}
 	
 	configuration { "Debug" }
 		defines { "DEBUG", "_ITERATOR_DEBUG_LEVEL=0" }
