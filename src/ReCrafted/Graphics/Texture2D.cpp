@@ -1,18 +1,12 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "Texture2D.h"
-
-#define FREEIMAGE_LIB
-#include "FreeImage.h"
 #include "TextureFormat.h"
-
-#pragma comment(lib, "FreeImageLib.lib")
-
-bool g_freeImage_initialized = false;
+#include "upng/upng.h"
 
 static void releaseBits(void* _ptr, void* _userData)
 {
-	FreeImage_Unload(static_cast<FIBITMAP*>(_userData));
+	upng::upng_free(static_cast<upng_t*>(_userData));
 }
 
 static void releaseBitsRaw(void* _ptr, void* _userData)
@@ -22,23 +16,16 @@ static void releaseBitsRaw(void* _ptr, void* _userData)
 
 void Texture2D::loadFile(const char* filename, uint flags)
 {
-	auto ver = FreeImage_GetVersion();
-	if (!g_freeImage_initialized)
-	{
+	m_bitmap = upng::upng_new_from_file(filename);
 
-		FreeImage_Initialise();
-		g_freeImage_initialized = true;
-	}
-
-	auto fif = FreeImage_GetFileType(filename, 0);
-
-	if (fif != FIF_PNG && fif != FIF_JPEG && fif != FIF_DDS && fif != FIF_BMP)
+	if (m_bitmap == nullptr)
 		throw;
 
-	m_bitmap = FreeImage_Load(fif, filename);
-	m_bits = FreeImage_GetBits(m_bitmap);
-	m_width = FreeImage_GetWidth(m_bitmap);
-	m_height = FreeImage_GetHeight(m_bitmap);
+	upng::upng_decode(m_bitmap);
+
+	m_bits = const_cast<byte*>(upng::upng_get_buffer(m_bitmap));
+	m_width = upng::upng_get_width(m_bitmap);
+	m_height = upng::upng_get_height(m_bitmap);
 	m_flags = flags;
 	
 	// done!
@@ -180,7 +167,7 @@ void Texture2D::apply()
 	memcpy_s(mem->data, mem->size, m_bits, size);
 	
 	auto mipCount = uint8_t(m_mips + 1);
-	m_textureHandle = bgfx::createTexture2D(uint16_t(m_width), uint16_t(m_height), mipCount, 1, bgfx::TextureFormat::BGRA8, m_flags, mem);
+	m_textureHandle = bgfx::createTexture2D(uint16_t(m_width), uint16_t(m_height), mipCount, 1, bgfx::TextureFormat::RGBA8, m_flags, mem);
 
 	m_bits = nullptr;
 }
@@ -193,7 +180,7 @@ void Texture2D::dispose()
 	{
 		if(m_bitmap)
 		{
-			FreeImage_Unload(m_bitmap);
+			upng::upng_free(m_bitmap);
 			m_bits = nullptr;
 			m_bitmap = nullptr;
 		}
@@ -207,23 +194,12 @@ void Texture2D::dispose()
 
 void Texture2D::loadTextureData(const char* filename, uint** pixels, int* width, int* height)
 {
-	auto ver = FreeImage_GetVersion();
-	if (!g_freeImage_initialized)
-	{
-		FreeImage_Initialise();
-		g_freeImage_initialized = true;
-	}
+	auto bitmap = upng::upng_new_from_file(filename);
+	upng::upng_decode(bitmap);
 
-	auto fif = FreeImage_GetFileType(filename, 0);
-
-	if (fif != FIF_PNG && fif != FIF_JPEG && fif != FIF_DDS && fif != FIF_BMP)
-		throw;
-
-	auto bitmap = FreeImage_Load(fif, filename);
-
-	auto bits = FreeImage_GetBits(bitmap);
-	*width = FreeImage_GetWidth(bitmap);
-	*height = FreeImage_GetHeight(bitmap);
+	auto bits = const_cast<byte*>(upng::upng_get_buffer(bitmap));
+	*width = upng::upng_get_width(bitmap);
+	*height = upng::upng_get_height(bitmap);
 
 	*pixels = new uint[*width * *height];
 
@@ -237,8 +213,8 @@ void Texture2D::releaseTextureData(uint* pixels)
 
 void Texture2D::saveBitmap(const char* filename, uint width, uint height, byte* bitsRaw)
 {
-	auto bits = FreeImage_ConvertFromRawBits(bitsRaw, width, height, width * 4, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, true);
-	FreeImage_Save(FIF_BMP, bits, filename);
+	//auto bits = FreeImage_ConvertFromRawBits(bitsRaw, width, height, width * 4, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, true);
+	//FreeImage_Save(FIF_BMP, bits, filename);
 }
 
 Ptr<Texture2D> Texture2D::createTexture()

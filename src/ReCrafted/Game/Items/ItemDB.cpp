@@ -3,7 +3,6 @@
 #include "ItemDB.h"
 #include "../../Core/Logger.h"
 #include "../../Graphics/AtlasScaler.h"
-#include <FreeImage.h>
 
 ItemDB* ItemDB::m_instance;
 

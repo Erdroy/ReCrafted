@@ -4,7 +4,7 @@
 #include <vector>
 #include <deque>
 
-#ifdef WIN32 // windows
+#ifdef _WIN32 // windows
 #ifndef PLATFORMWINDOWS_H
 #define PLATFORMWINDOWS_H
 

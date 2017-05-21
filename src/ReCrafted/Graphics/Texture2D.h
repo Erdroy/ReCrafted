@@ -9,7 +9,7 @@
 #include "../Utils/Types.h"
 #include <bgfx/bgfx.h>
 
-struct FIBITMAP;
+typedef struct upng_t upng_t;
 
 class Texture2D
 {
@@ -18,7 +18,7 @@ class Texture2D
 private:
 	bgfx::TextureHandle m_textureHandle = {};
 
-	FIBITMAP* m_bitmap = nullptr;
+	upng_t* m_bitmap = nullptr;
 	byte* m_bits = nullptr;
 
 	uint m_flags = 0u;

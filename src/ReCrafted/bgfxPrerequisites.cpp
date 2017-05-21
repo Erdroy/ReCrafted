@@ -2,7 +2,7 @@
 
 #include "bgfxPrerequisites.h"
 
-#ifndef NDEBUG
+#ifdef DEBUG
 #pragma comment (lib, "bgfxDebug.lib")
 #pragma comment (lib, "bxDebug.lib")
 

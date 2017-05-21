@@ -1,12 +1,1 @@
-src/.vs/
-bin64/
-src/ReCrafted/.vs/
-*.db
-*.opendb
-src/ShaderCompiler/obj/
-assets/shaders/
-src/ReCrafted.VersionBuilder/obj/
-src/ReCrafted.VersionBuilder/bin/
-assets/
-lib/
-lib64/
+.projects/
