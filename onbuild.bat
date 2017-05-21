@@ -1,9 +1,13 @@
+@echo off
+
 cd %1%
 
+set /P NAME= < username.txt
+
 echo Calculating build number...
-set /P VAR= < buildNum_%USERNAME%.txt
+set /P VAR= < buildNum_%NAME%.txt
 set /A VAR += 1
-echo %VAR% > buildNum_%USERNAME%.txt
+echo %VAR% > buildNum_%NAME%.txt
 
 echo Build number: %VAR%
 
