@@ -2,12 +2,13 @@
 
 ## Building
 Clone ReCrafted repo into suitable directory, eg.: `D:/ReCrafted/`
-Clone all of those:
+### 1. Clone all of those into `libs` in the root directory.
 - https://github.com/Erdroy/bx
 - https://github.com/Erdroy/bimg
 - https://github.com/Erdroy/bgfx
 
-into `libs` in the root directory.
+### 2. Then build those libraries for needed platforms.
+### 3. Run generate_X.(sh/bat) file in the root directory to build needed projects.
 
 ## Links
 - [Trello](https://trello.com/b/xGap0YZQ/recrafted)
