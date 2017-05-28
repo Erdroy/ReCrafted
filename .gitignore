@@ -1,2 +1,6 @@
 .projects/
 username.txt
+libs/bx/
+libs/bgfx/
+build/
+libs/bimg/
