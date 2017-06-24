@@ -7,15 +7,6 @@
 
 #define API_BIND(name, method) mono_add_internal_call(name, method)
 
-// API
-
-#define API_BEGIN(file_name)
-#define API_END()
-
-// common
-#define API_COMMENT(comment)
-#define API_PUSH()
-
 // flags
 #define ABSTRACT
 #define VIRTUAL
@@ -23,6 +14,14 @@
 #define SEALED
 #define STATIC
 #define INHERIT(class_name)
+
+// API
+#define API_BEGIN(file_name)
+#define API_END()
+
+// common
+#define API_COMMENT(comment)
+#define API_PUSH()
 
 // class
 #define API_CLASS(namespace, class_name, ...)
@@ -36,3 +35,5 @@
 #define API_METHOD(method_name, ...)
 
 // property
+// TODO: properties
+// TODO: enums

@@ -1,4 +1,4 @@
 @echo off
 
 echo Generating .NET API...
-tools\ReCraftedAPIGen.exe
+tools\ReCrafted.APIGen.exe

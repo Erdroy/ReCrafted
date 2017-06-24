@@ -31,4 +31,3 @@ solution "ReCrafted"
 	startproject "ReCrafted"
 
 dofile "scripts/recrafted.lua"
-dofile "scripts/recraftedcore.lua"

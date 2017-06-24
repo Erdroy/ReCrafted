@@ -7,3 +7,10 @@ libs/mono/
 libs_temp/
 build/
 libs_prebuilt.zip
+.vs/
+src/ReCrafted.API/obj/
+src/ReCrafted.APIGen/obj/
+src/ReCraftedCore/obj/
+src/ReCrafted.API/bin/
+src/ReCrafted.APIGen/bin/
+src/ReCraftedCore/bin/
