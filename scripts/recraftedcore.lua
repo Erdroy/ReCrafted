@@ -13,3 +13,13 @@ project "ReCraftedCore"
 	
 	configuration { "Release*" }
 		defines { "RELEASE" }
+		
+	configuration { "x64" }
+		-- set target dir
+		targetdir (path.join(TARGET_DIR, "bin64/"))
+		debugdir (path.join(TARGET_DIR, "bin64/"))
+		
+	configuration { "x32" }
+		-- set target dir
+		targetdir (path.join(TARGET_DIR, "bin32/"))
+		debugdir (path.join(TARGET_DIR, "bin32/"))

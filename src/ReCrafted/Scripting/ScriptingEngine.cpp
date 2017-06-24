@@ -3,12 +3,12 @@
 #include "ScriptingEngine.h"
 #include "../Core/Logger.h"
 
-#include <mono/jit/jit.h>
-#include <mono/metadata/assembly.h>
-
 #pragma comment(lib, "mono.lib")
 
 MonoDomain* m_domain;
+
+MonoAssembly* m_api_assembly;
+MonoAssembly* m_core_assembly;
 
 void ScriptingEngine::run()
 {
@@ -23,6 +23,23 @@ void ScriptingEngine::run()
 	mono_set_dirs("../mono/lib", "../mono/etc");
 
 	m_domain = mono_jit_init_version("ReCrafted", "v4.0.30319");
+
+	//m_api_assembly = mono_domain_assembly_open(m_domain, "ReCraftedAPI.dll");
+
+	//Logger::write("Loaded ReCraftedAPI.dll", LogLevel::Info);
+
+	m_core_assembly = mono_domain_assembly_open(m_domain, "ReCraftedCore.dll");
+
+	Logger::write("Loaded ReCraftedCore.dll", LogLevel::Info);
+
+	// bind API
+	bind_all();
+}
+
+void ScriptingEngine::load_assembly(const char* assemblyName)
+{
+
+	Logger::write("Loade assembly '", assemblyName, "'", LogLevel::Info);
 }
 
 void ScriptingEngine::shutdown()

@@ -8,6 +8,7 @@
 // includes
 #include "../recraftedPrerequisites.h"
 #include "../Platform/Platform.h"
+#include "../Common/ReCraftedAPI.h"
 
 #ifndef LOGGER_MAXSIZE
 	#define LOGGER_MAXSIZE 8192
@@ -35,6 +36,8 @@ struct LogLevel
 /// </summary>
 class Logger
 {
+	API_OBJECT
+
 	friend class GameMain;
 
 private:
