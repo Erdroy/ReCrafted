@@ -27,6 +27,7 @@ private:
 
 private:
 	bool m_freeMovement = false;
+	bool m_cursorLocked = true;
 
 	Vector3 m_upLock = Vector3(0.0f, 1.0f, 0.0f);
 	Vector3 m_lookAt = {};

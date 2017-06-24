@@ -268,12 +268,6 @@ void GameMain::onUpdate()
 {
 	// update event, called every frame
 
-	// exit the game when `escape` key is pressed
-	if (Input::isKeyDown(Key_Escape))
-	{
-		shutdown();
-	}
-
 	if (Input::isKeyDown(Key_F4))
 	{
 		bgfx::setDebug(BGFX_DEBUG_NONE);

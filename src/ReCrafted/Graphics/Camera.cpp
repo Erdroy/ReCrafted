@@ -153,8 +153,26 @@ void Camera::updatePerspective()
 
 void Camera::update()
 {
+	if(!m_cursorLocked)
+	{
+		// try lock
+		if (Input::isKeyDown(Key_Mouse1))
+		{
+			m_cursorLocked = true;
+		}
+	}
+
+	if(m_cursorLocked)
+	{
+		// try unlock
+		if(Input::isKeyDown(Key_Escape))
+		{
+			m_cursorLocked = false;
+		}
+	}
+
 	// update movement if this camera is 'free'.
-	if (m_freeMovement/* && Input::isKey(Key_Mouse1)*/) 
+	if (m_freeMovement && m_cursorLocked)
 	{
 		updateControls(); // just do it!
 		
