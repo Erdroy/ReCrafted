@@ -20,6 +20,7 @@ project "ReCrafted"
 		path.join(LIBS_DIR, "bimg/include"),
 		path.join(LIBS_DIR, "bgfx/include"),
 		path.join(LIBS_DIR, "json"),
+		path.join(LIBS_DIR, "mono/inc"),
 	}
 	
 	-- add source/header/shader files
@@ -52,11 +53,17 @@ project "ReCrafted"
 	
 	configuration { "x64", "vs*"}
 		-- add bgfx lib path - bgfx always contains all needed libs after being compiled
-		libdirs { (path.join(LIBS_DIR, "bgfx/.build/win64_" .. _ACTION .. "/bin/")) }
+		libdirs { 
+			path.join(LIBS_DIR, "bgfx/.build/win64_" .. _ACTION .. "/bin/"),
+			path.join(LIBS_DIR, "mono/lib"),
+		}
 	
 	configuration { "x32", "vs*"}
 		-- add bgfx lib path - bgfx always contains all needed libs after being compiled
-		libdirs { (path.join(LIBS_DIR, "bgfx/.build/win32_" .. _ACTION .. "/bin/")) }
+		libdirs { 
+			path.join(LIBS_DIR, "bgfx/.build/win32_" .. _ACTION .. "/bin/"),
+			path.join(LIBS_DIR, "mono/lib"),
+		}
 	
 	-- TODO: add linux and macosx
 	

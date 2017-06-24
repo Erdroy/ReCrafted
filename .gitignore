@@ -2,5 +2,8 @@
 username.txt
 libs/bx/
 libs/bgfx/
-build/
 libs/bimg/
+libs/mono/
+libs_temp/
+build/
+libs_prebuilt.zip

@@ -1,6 +1,7 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "GameMain.h"
+#include "../Scripting/ScriptingEngine.h"
 
 #define GAMEBASE_CHECK_SHUTDOWN if (!m_running) break;
 
@@ -194,6 +195,9 @@ void GameMain::onLoad()
 
 	Logger::write("Creating game renderer using Direct3D11 API", LogLevel::Info);
 
+	// initialize scripting engine
+	ScriptingEngine::run();
+
 	// initialize bgfx
 	bgfx::init(bgfx::RendererType::Direct3D11);
 	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC);
@@ -238,12 +242,17 @@ void GameMain::onUnload()
 
 	Logger::write("Shutting down...", LogLevel::Info);
 
+	// shutdown scripting engine
+	ScriptingEngine::shutdown();
+
 	// release all resources etc.
 	SafeDispose(m_rendering);
 	SafeDispose(m_universe);
-	SafeDispose(m_logger);
 
+	// shutdown rendering
 	bgfx::shutdown();
+
+	SafeDispose(m_logger);
 }
 
 void GameMain::onResize(uint width, uint height)

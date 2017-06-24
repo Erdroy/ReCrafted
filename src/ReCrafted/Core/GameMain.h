@@ -18,7 +18,7 @@ private:
 	static GameMain* m_instance;
 
 private:
-	bool m_running = false;
+	volatile bool m_running = false;
 	bool m_initialized = false;
 
 	uint m_width = 1280;

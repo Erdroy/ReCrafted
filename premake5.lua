@@ -1,4 +1,4 @@
-ROOT_DIR = path.getabsolute("../")
+ROOT_DIR = path.getabsolute(".")
 OUTPUT_DIR = path.join(ROOT_DIR, ".projects/", _ACTION)
 TARGET_DIR = path.join(ROOT_DIR, "build/")
 LIBS_DIR = path.join(ROOT_DIR, "libs/")
@@ -30,4 +30,5 @@ solution "ReCrafted"
 	
 	startproject "ReCrafted"
 
-dofile "recrafted.lua"
+dofile "scripts/recrafted.lua"
+dofile "scripts/recraftedcore.lua"
