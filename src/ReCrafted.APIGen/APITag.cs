@@ -2,7 +2,10 @@
 
 namespace ReCrafted.APIGen
 {
-    public class APITag { }
+    public abstract class APITag
+    {
+        public abstract void Process(string token, string[] parameters);
+    }
 }
 /*
  #define API_BUILD

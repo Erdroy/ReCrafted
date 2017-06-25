@@ -47,6 +47,7 @@
     <Compile Include="APIBuilder.cs" />
     <Compile Include="APIParameters.cs" />
     <Compile Include="APITag.cs" />
+    <Compile Include="APIBuilderUtils.cs" />
     <Compile Include="CodeGenerator.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -60,6 +61,7 @@
     <Compile Include="Tags\APITagFile.cs" />
     <Compile Include="Tags\APITagComment.cs" />
     <Compile Include="Tags\APITagMethodEnd.cs" />
+    <Compile Include="Tags\APITagMethodCode.cs" />
     <Compile Include="Tags\APITagReturn.cs" />
     <Compile Include="Tags\APITagParam.cs" />
     <Compile Include="Tags\APITagMethod.cs" />

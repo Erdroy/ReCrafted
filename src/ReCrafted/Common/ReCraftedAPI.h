@@ -27,12 +27,18 @@
 #define SEALED
 #define ABSTRACT
 
+// flags
+#define PARTIAL
+#define EXTERN
+
+#define REF
+#define OUT
+
 // usings
 #define API_USING(using_name)
 
 // class
-#define API_CLASS(access, type, namespace, class_name)
-#define API_CLASS_INHERIT(access, type, namespace, class_name, inherit_class_name)
+#define API_CLASS(access, type, namespace, class_name, ...) //, base_name, PARTIAL
 #define API_CLASS_END()
 
 // struct
@@ -42,12 +48,11 @@
 // TODO: enums
 
 // method
-#define API_METHOD(access, type, method_name)
+#define API_METHOD(access, type, method_name, ...) //, EXTERN
 #define API_METHOD_END()
-#define API_PARAM(type, name)
-#define API_PARAM_REF(type, name)
-#define API_PARAM_OUT(type, name)
+#define API_PARAM(type, name, ...) //, REF/OUT 
 #define API_RETURN(type)
+#define API_CODE(code)
 
 // property
 // TODO: properties

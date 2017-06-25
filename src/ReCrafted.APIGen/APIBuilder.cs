@@ -9,24 +9,22 @@ namespace ReCrafted.APIGen
 {
     internal class APIBuilder
     {
-        private Dictionary<string, APITag> _apiTags = new Dictionary<string, APITag>
+        private readonly Dictionary<string, Type> _apiTags = new Dictionary<string, Type>
         {
-            { "API_FILE", new APITagFile() },
-            { "API_FILE_END", new APITagFileEnd() },
-            { "API_USING", new APITagUsing() },
+            { "API_FILE", typeof(APITagFile) },
+            { "API_FILE_END", typeof(APITagFileEnd) },
+            { "API_USING", typeof(APITagUsing) },
 
-            { "API_COMMENT", new APITagComment() },
+            { "API_COMMENT", typeof(APITagComment) },
 
-            { "API_CLASS", new APITagClass() },
-            { "API_CLASS_INHERIT", new APITagClass() },
-            { "API_CLASS_END", new APITagClassEnd() },
+            { "API_CLASS", typeof(APITagClass) },
+            { "API_CLASS_END", typeof(APITagClassEnd) },
 
-            { "API_METHOD", new APITagMethod() },
-            { "API_METHOD_END", new APITagMethodEnd() },
-            { "API_PARAM", new APITagParam() },
-            { "API_PARAM_REF", new APITagParam() },
-            { "API_PARAM_OUT", new APITagParam() },
-            { "API_RETURN", new APITagReturn() },
+            { "API_METHOD", typeof(APITagMethod) },
+            { "API_METHOD_END", typeof(APITagMethodEnd) },
+            { "API_CODE", typeof(APITagMethodCode) },
+            { "API_PARAM", typeof(APITagParam) },
+            { "API_RETURN", typeof(APITagReturn) },
         };
         
         public string GenerateCode(string fileName, out string targetName)
@@ -57,13 +55,14 @@ namespace ReCrafted.APIGen
             var sourceCode = File.ReadAllText(fileName);
             var lines = sourceCode.Split('\n');
 
-            var lineNumber = 0;
+            LineNumber = 0;
             foreach (var lineSource in lines)
             {
-                lineNumber++;
+                LineNumber++;
 
                 var line = lineSource.Trim();
-
+                LineText = line;
+                
                 if (!line.StartsWith("API_") || line.StartsWith("API_BIND"))
                     continue;
 
@@ -74,20 +73,34 @@ namespace ReCrafted.APIGen
 
                     if (!_apiTags.ContainsKey(token))
                     {
-                        Console.WriteLine($"Unknown token '{token}' at line {lineNumber}");
+                        Console.WriteLine($"Unknown token '{token}' at line {LineNumber}");
                         continue;
                     }
 
                     var tag = _apiTags[token];
+                    var parameters = APIBuilderUtils.GetParameters(line);
 
+                    if (tag == typeof(APITagFile))
+                    {
+                        fileTag.Process(token, parameters);
+                    }
+                    else
+                    {
+                        var inst = (APITag)Activator.CreateInstance(tag);
+                        inst.Process(token, parameters);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Line {lineNumber} caused an exception {ex}");
+                    Console.WriteLine($"Line {LineNumber} caused an exception {ex}");
                 }
             }
 
             return fileTag;
         }
+
+        public static int LineNumber { get; private set; }
+
+        public static string LineText { get; private set; }
     }
 }

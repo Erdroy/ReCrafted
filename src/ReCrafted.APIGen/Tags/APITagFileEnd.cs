@@ -4,5 +4,10 @@ namespace ReCrafted.APIGen.Tags
 {
     public class APITagFileEnd : APITag
     {
+        public override void Process(string token, string[] parameters)
+        {
+            APITagFile.Current = null;
+            // we're done.
+        }
     }
 }

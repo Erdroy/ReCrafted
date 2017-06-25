@@ -3,13 +3,13 @@
 <#@ parameter type="ReCrafted.APIGen.Tags.APITagFile" name="Desc" #>
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: <#=DateTime.Now#> Source: <#=Desc.SourceFileName#>
+// Generated: <#=DateTime.Now#> Source: '<#=Desc.SourceFileName#>' Target: '<#=Desc.TargetFileName#>'
 
 <#
 foreach (var usingDesc in Desc.Usings)
 {
 #>
-using <#=usingDesc.Namespace#>
+using <#=usingDesc.Namespace#>;
 <#
 } 
 #>
@@ -20,12 +20,90 @@ foreach (var classDesc in Desc.Classes)
 #>
 namespace <#=classDesc.Namespace#> 
 {
+<#
+// ------------- CLASS -------------
+var classComment = classDesc.Comment;
+var classAccess = classDesc.GetAccess();
+var classModifier = classDesc.GetModifier();
+var className = classDesc.Name;
+var classInherit = string.IsNullOrEmpty(classDesc.BaseName) ? "" : ": " + classDesc.BaseName;
+var classPartial = classDesc.IsPartial ? "partial " : "";
+#>
+<#
+if(!string.IsNullOrEmpty(classComment))
+{
+#>
 	/// <summary>
-	///	TODO: comments
+	///	<#=classComment#>
 	/// </summary>
-	<#=classDesc.GetAccess()#> <#=classDesc.GetModifier()#> class <#=classDesc.Name#> 
+<#
+}
+#>
+	<#=classAccess#> <#=classModifier#><#=classPartial#>class <#=className#> <#=classInherit#>
 	{
-		
+<#
+// ------------- METHOD -------------
+foreach (var methodDesc in classDesc.Methods)
+{
+var methodAccess = methodDesc.GetAccess();
+var methodModifier = methodDesc.GetModifier();
+var methodName = methodDesc.Name;
+var methodExtern = methodDesc.IsExtern ? "extern " : "";
+var methodReturn = string.IsNullOrEmpty(methodDesc.ReturnType) ? "void" : methodDesc.ReturnType;
+var methodParams = "";
+foreach(var param in methodDesc.Parameters)
+{
+	if(methodParams.Length > 1)
+		methodParams += ", ";
+
+	if(param.IsRef)
+		methodParams += "ref ";
+	else if(param.IsOut)
+		methodParams += "out ";
+
+	methodParams += param.Type + " " + param.Name;
+}
+#>
+<#
+if(!string.IsNullOrEmpty(methodDesc.Comment))
+{
+#>
+		/// <summary>
+		///	<#=methodDesc.Comment#>
+		/// </summary>
+<#
+}
+if(methodDesc.IsExtern)
+{
+#>
+		[MethodImpl(MethodImplOptions.InternalCall)]
+<#
+}
+#>
+		<#=methodAccess#> <#=methodModifier#><#=methodExtern#><#=methodReturn#> <#=methodName#>(<#=methodParams#>)<#if(methodDesc.IsExtern || methodDesc.Modifier == APIParameters.Abstract){#>;
+<#}#>
+<#
+if(!methodDesc.IsExtern && methodDesc.Modifier != APIParameters.Abstract)
+{
+#>
+
+		{
+<#
+foreach(var codeLine in methodDesc.CodeLines)
+{
+#>
+			<#=codeLine#>
+<#
+}
+#>
+		}
+<#
+}
+#>
+
+<#
+}
+#>
 	}
 }
 <#
