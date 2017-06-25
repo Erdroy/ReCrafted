@@ -8,7 +8,7 @@ namespace ReCraftedCore
     {
         public void Initialize()
         {
-            Logger.Write("Hello, World! From C#!");
+            Logger.Write("Hello, World! From C#!", LogLevel.Error);
         }
 
         public void Update()

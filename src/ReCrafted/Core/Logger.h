@@ -21,7 +21,7 @@ struct LogLevel
 {
 	enum Enum
 	{
-		Info,
+		Info = 0,
 		Debug,
 		Warning,
 		Error,

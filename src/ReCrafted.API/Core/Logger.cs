@@ -10,9 +10,9 @@ namespace ReCrafted.API.Core
         /// <summary>
         ///	Writes message to the output file.
         /// </summary>
-        public static void Write(string message, params object[] parameters)
+        public static void Write(string message, LogLevel level = LogLevel.Info)
         {
-            Write(string.Format(message, parameters));
+            Internal_Write(message, level);
         }
     }
 }

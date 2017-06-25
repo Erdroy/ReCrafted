@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 06/25/2017 17:04:07 Source: 'Logger.API.cpp' Target: 'Core/Logger.Gen.cs'
+// Generated: 06/25/2017 17:20:26 Source: 'Logger.API.cpp' Target: 'Core/Logger.Gen.cs'
 
 using System.Runtime.CompilerServices;
 
@@ -15,7 +15,7 @@ namespace ReCrafted.API.Core
 		///	Writes message to the output file.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		public static extern void Write(string message);
+		internal static extern void Internal_Write(string message, LogLevel level);
 
 	}
 }

@@ -3,12 +3,16 @@
 #include "Logger.h"
 #include "../Scripting/ScriptingEngine.h"
 #include "../Common/ReCraftedAPI.h"
+#include "../Common/Text.h"
 
 namespace Internal
 {
-	void Write(MonoString* string)
+	void Write(MonoString* string, int level)
 	{
-		Logger::write("Test!");
+		auto text = MONO_TEXT(string);
+		auto logLevel = static_cast<LogLevel::Enum>(level);
+
+		Logger::write(text.c_str().c_str(), logLevel);
 	}
 }
 
@@ -20,11 +24,12 @@ void Logger::initRuntime()
 		API_CLASS(PUBLIC, STATIC, "ReCrafted.API.Core", "Logger", PARTIAL);
 		{
 			API_COMMENT("Writes message to the output file.");
-			API_METHOD(PUBLIC, STATIC, "Write", EXTERN);
+			API_METHOD(INTERNAL, STATIC, "Internal_Write", EXTERN);
 			{
-				API_BIND("ReCrafted.API.Core.Logger::Write", &Internal::Write);
+				API_BIND("ReCrafted.API.Core.Logger::Internal_Write", &Internal::Write);
 				API_COMMENT("The message");
 				API_PARAM("string", "message");
+				API_PARAM("LogLevel", "level");
 			}
 			API_METHOD_END();
 		}
