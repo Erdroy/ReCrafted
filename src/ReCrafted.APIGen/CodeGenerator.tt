@@ -13,6 +13,7 @@ using <#=usingDesc.Namespace#>;
 <#
 } 
 #>
+using System.Runtime.CompilerServices;
 
 <#
 foreach (var classDesc in Desc.Classes)

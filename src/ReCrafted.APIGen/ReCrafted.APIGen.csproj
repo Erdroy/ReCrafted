@@ -61,7 +61,7 @@
     <Compile Include="Tags\APITagFile.cs" />
     <Compile Include="Tags\APITagComment.cs" />
     <Compile Include="Tags\APITagMethodEnd.cs" />
-    <Compile Include="Tags\APITagMethodCode.cs" />
+    <Compile Include="Tags\APITagCode.cs" />
     <Compile Include="Tags\APITagReturn.cs" />
     <Compile Include="Tags\APITagParam.cs" />
     <Compile Include="Tags\APITagMethod.cs" />

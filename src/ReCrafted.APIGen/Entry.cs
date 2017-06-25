@@ -21,14 +21,10 @@ namespace ReCrafted.APIGen
             {
                 Console.WriteLine("Processing: " + Path.GetFileName(sourceFile));
 
-                string targetFile;
-                var code = apibuilder.GenerateCode(sourceFile, out targetFile);
-
-                File.WriteAllText("Test.cs", code);
+                apibuilder.Build(sourceFile, currentDir);
             }
 
             Console.WriteLine("Generated");
-            Console.ReadLine();
         }
     }
 }

@@ -22,35 +22,45 @@ namespace ReCrafted.APIGen
 
             { "API_METHOD", typeof(APITagMethod) },
             { "API_METHOD_END", typeof(APITagMethodEnd) },
-            { "API_CODE", typeof(APITagMethodCode) },
+            { "API_CODE", typeof(APITagCode) },
             { "API_PARAM", typeof(APITagParam) },
             { "API_RETURN", typeof(APITagReturn) },
         };
         
-        public string GenerateCode(string fileName, out string targetName)
+        public static List<APITagFile> Files = new List<APITagFile>();
+        public static string CurrentFileName;
+
+        public void Build(string sourceFile, string currentDir)
         {
-            var filedesc = Parse(fileName);
+            var filedescs = Parse(sourceFile);
 
-            targetName = filedesc.TargetFileName;
-
-            var generator = new CodeGenerator
+            foreach (var filedesc in filedescs)
             {
-                Session = new Dictionary<string, object>
+                var targetFileName = filedesc.TargetFileName;
+                filedesc.SourceFileName = sourceFile;
+
+                var generator = new CodeGenerator
                 {
-                    { "Desc", filedesc }
-                }
-            };
-            generator.Initialize();
-            
-            return generator.TransformText();
+                    Session = new Dictionary<string, object>
+                    {
+                        { "Desc", filedesc }
+                    }
+                };
+                generator.Initialize();
+
+                var code = generator.TransformText();
+
+                var targetFile = currentDir + "\\src\\ReCrafted.API\\" + targetFileName;
+
+                Directory.CreateDirectory(Path.GetDirectoryName(targetFile));
+
+                File.WriteAllText(targetFile, code);
+            }
         }
 
-        private APITagFile Parse(string fileName)
+        private APITagFile[] Parse(string fileName)
         {
-            var fileTag = new APITagFile
-            {
-                SourceFileName = Path.GetFileName(fileName)
-            };
+            CurrentFileName = fileName;
 
             var sourceCode = File.ReadAllText(fileName);
             var lines = sourceCode.Split('\n');
@@ -80,15 +90,8 @@ namespace ReCrafted.APIGen
                     var tag = _apiTags[token];
                     var parameters = APIBuilderUtils.GetParameters(line);
 
-                    if (tag == typeof(APITagFile))
-                    {
-                        fileTag.Process(token, parameters);
-                    }
-                    else
-                    {
-                        var inst = (APITag)Activator.CreateInstance(tag);
-                        inst.Process(token, parameters);
-                    }
+                    var inst = (APITag)Activator.CreateInstance(tag);
+                    inst.Process(token, parameters);
                 }
                 catch (Exception ex)
                 {
@@ -96,7 +99,7 @@ namespace ReCrafted.APIGen
                 }
             }
 
-            return fileTag;
+            return Files.ToArray();
         }
 
         public static int LineNumber { get; private set; }

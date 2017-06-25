@@ -24,6 +24,7 @@ namespace ReCrafted.APIGen.Tags
         public APITagFile()
         {
             Current = this;
+            APIBuilder.Files.Add(this);
         }
 
         public override void Process(string token, string[] parameters)

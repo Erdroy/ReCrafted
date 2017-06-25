@@ -4,7 +4,7 @@ using System;
 
 namespace ReCrafted.APIGen.Tags
 {
-    public class APITagMethodCode : APITag
+    public class APITagCode : APITag
     {
         public override void Process(string token, string[] parameters)
         {

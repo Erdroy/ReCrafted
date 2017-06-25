@@ -74,9 +74,9 @@ foreach (var usingDesc in Desc.Usings)
             
             #line default
             #line hidden
-            this.Write("\r\n");
+            this.Write("using System.Runtime.CompilerServices;\r\n\r\n");
             
-            #line 17 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 18 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
 
 foreach (var classDesc in Desc.Classes)
 {
@@ -86,14 +86,14 @@ foreach (var classDesc in Desc.Classes)
             #line hidden
             this.Write("namespace ");
             
-            #line 21 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 22 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(classDesc.Namespace));
             
             #line default
             #line hidden
             this.Write(" \r\n{\r\n");
             
-            #line 23 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 24 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
 
 // ------------- CLASS -------------
 var classComment = classDesc.Comment;
@@ -107,7 +107,7 @@ var classPartial = classDesc.IsPartial ? "partial " : "";
             #line default
             #line hidden
             
-            #line 32 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 33 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
 
 if(!string.IsNullOrEmpty(classComment))
 {
@@ -117,14 +117,14 @@ if(!string.IsNullOrEmpty(classComment))
             #line hidden
             this.Write("\t/// <summary>\r\n\t///\t");
             
-            #line 37 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 38 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(classComment));
             
             #line default
             #line hidden
             this.Write("\r\n\t/// </summary>\r\n");
             
-            #line 39 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 40 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
 
 }
 
@@ -133,41 +133,41 @@ if(!string.IsNullOrEmpty(classComment))
             #line hidden
             this.Write("\t");
             
-            #line 42 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 43 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(classAccess));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 42 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 43 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(classModifier));
             
             #line default
             #line hidden
             
-            #line 42 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 43 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(classPartial));
             
             #line default
             #line hidden
             this.Write("class ");
             
-            #line 42 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 43 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(className));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 42 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 43 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(classInherit));
             
             #line default
             #line hidden
             this.Write("\r\n\t{\r\n");
             
-            #line 44 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 45 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
 
 // ------------- METHOD -------------
 foreach (var methodDesc in classDesc.Methods)
@@ -195,7 +195,7 @@ foreach(var param in methodDesc.Parameters)
             #line default
             #line hidden
             
-            #line 67 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 68 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
 
 if(!string.IsNullOrEmpty(methodDesc.Comment))
 {
@@ -205,14 +205,14 @@ if(!string.IsNullOrEmpty(methodDesc.Comment))
             #line hidden
             this.Write("\t\t/// <summary>\r\n\t\t///\t");
             
-            #line 72 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 73 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodDesc.Comment));
             
             #line default
             #line hidden
             this.Write("\r\n\t\t/// </summary>\r\n");
             
-            #line 74 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 75 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
 
 }
 if(methodDesc.IsExtern)
@@ -223,7 +223,7 @@ if(methodDesc.IsExtern)
             #line hidden
             this.Write("\t\t[MethodImpl(MethodImplOptions.InternalCall)]\r\n");
             
-            #line 80 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 81 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
 
 }
 
@@ -232,60 +232,60 @@ if(methodDesc.IsExtern)
             #line hidden
             this.Write("\t\t");
             
-            #line 83 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 84 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodAccess));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 83 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 84 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodModifier));
             
             #line default
             #line hidden
             
-            #line 83 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 84 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodExtern));
             
             #line default
             #line hidden
             
-            #line 83 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 84 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodReturn));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 83 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 84 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodName));
             
             #line default
             #line hidden
             this.Write("(");
             
-            #line 83 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 84 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodParams));
             
             #line default
             #line hidden
             this.Write(")");
             
-            #line 83 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 84 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
 if(methodDesc.IsExtern || methodDesc.Modifier == APIParameters.Abstract){
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 84 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 85 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
 }
             
             #line default
             #line hidden
             
-            #line 85 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 86 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
 
 if(!methodDesc.IsExtern && methodDesc.Modifier != APIParameters.Abstract)
 {
@@ -295,7 +295,7 @@ if(!methodDesc.IsExtern && methodDesc.Modifier != APIParameters.Abstract)
             #line hidden
             this.Write("\r\n\t\t{\r\n");
             
-            #line 91 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 92 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
 
 foreach(var codeLine in methodDesc.CodeLines)
 {
@@ -305,14 +305,14 @@ foreach(var codeLine in methodDesc.CodeLines)
             #line hidden
             this.Write("\t\t\t");
             
-            #line 95 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 96 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(codeLine));
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 96 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 97 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
 
 }
 
@@ -321,7 +321,7 @@ foreach(var codeLine in methodDesc.CodeLines)
             #line hidden
             this.Write("\t\t}\r\n");
             
-            #line 100 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 101 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
 
 }
 
@@ -330,7 +330,7 @@ foreach(var codeLine in methodDesc.CodeLines)
             #line hidden
             this.Write("\r\n");
             
-            #line 104 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 105 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
 
 }
 
@@ -339,7 +339,7 @@ foreach(var codeLine in methodDesc.CodeLines)
             #line hidden
             this.Write("\t}\r\n}\r\n");
             
-            #line 109 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 110 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
 
 } 
 
