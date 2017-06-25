@@ -138,6 +138,9 @@ namespace ReCrafted.APIGen.Tags
 
             if (parameters.Length >= 5)
             {
+                if (IsPartial && parameters.Length == 5)
+                    return;
+
                 var basename = APIBuilderUtils.GetStringValue(parameters[4]);
 
                 if (string.IsNullOrEmpty(basename))

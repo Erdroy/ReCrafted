@@ -1,25 +1,27 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
+using ReCrafted.API.Core;
+
 namespace ReCraftedCore
 {
-    internal class GameMain
+    internal class GameMain : IGameMain
     {
-        internal void Initialize()
+        public void Initialize()
         {
-            
+            Logger.Write("Hello, World! From C#!");
         }
 
-        internal void Update()
-        {
-
-        }
-
-        internal void Simulate()
+        public void Update()
         {
 
         }
 
-        internal void Shutdown()
+        public void Simulate()
+        {
+
+        }
+
+        public void Shutdown()
         {
 
         }

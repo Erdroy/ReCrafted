@@ -296,6 +296,8 @@ void GameMain::onUpdate()
 	}
 
 	m_universe->update();
+
+	ScriptingEngine::update();
 }
 
 void GameMain::onSimulate()
@@ -303,6 +305,8 @@ void GameMain::onSimulate()
 	// simulation event, called every simulation tick(fixed time)
 
 	m_universe->simulate();
+
+	ScriptingEngine::simulate();
 }
 
 void GameMain::onDraw()

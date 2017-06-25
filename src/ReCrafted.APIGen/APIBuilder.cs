@@ -37,7 +37,7 @@ namespace ReCrafted.APIGen
             foreach (var filedesc in filedescs)
             {
                 var targetFileName = filedesc.TargetFileName;
-                filedesc.SourceFileName = sourceFile;
+                filedesc.SourceFileName = Path.GetFileName(sourceFile);
 
                 var generator = new CodeGenerator
                 {

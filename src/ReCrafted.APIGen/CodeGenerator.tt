@@ -106,7 +106,8 @@ foreach(var codeLine in methodDesc.CodeLines)
 }
 #>
 	}
+<# // ---------- CLASS END ---------- #>
 }
 <#
-} 
+}
 #>

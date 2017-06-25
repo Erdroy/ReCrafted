@@ -337,11 +337,18 @@ foreach(var codeLine in methodDesc.CodeLines)
             
             #line default
             #line hidden
-            this.Write("\t}\r\n}\r\n");
+            this.Write("\t}\r\n");
             
-            #line 110 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+            #line 109 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
+ // ---------- CLASS END ---------- 
+            
+            #line default
+            #line hidden
+            this.Write("}\r\n");
+            
+            #line 111 "D:\ReCrafted\src\ReCrafted.APIGen\CodeGenerator.tt"
 
-} 
+}
 
             
             #line default

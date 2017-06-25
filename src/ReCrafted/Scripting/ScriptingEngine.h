@@ -21,6 +21,12 @@ public:
 
 	static void load_assembly(const char* assemblyName);
 
+	static void initialize();
+
+	static void update();
+
+	static void simulate();
+
 	static void shutdown();
 };
 

@@ -2,3 +2,4 @@
 
 echo Generating .NET API...
 tools\ReCrafted.APIGen.exe
+pause

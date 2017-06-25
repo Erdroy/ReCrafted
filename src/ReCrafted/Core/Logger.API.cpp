@@ -8,72 +8,23 @@ namespace Internal
 {
 	void Write(MonoString* string)
 	{
+		Logger::write("Test!");
 	}
 }
 
 void Logger::initRuntime()
 {
-	API_FILE("Core/ILogger.Gen.cs");
-	{
-		API_USING("System");
-		API_USING("System.Linq");
-		API_USING("System.Collections.Generic");
-
-		API_COMMENT("Logger base class");
-		API_CLASS(PUBLIC, ABSTRACT, "ReCrafted.API.Core", "ILogger");
-		{
-			API_COMMENT("Test method.");
-			API_METHOD(PUBLIC, ABSTRACT, "Test");
-			{
-				API_COMMENT("The message");
-				API_PARAM("string", "message");
-				API_PARAM("int", "test", REF);
-			}
-			API_METHOD_END();
-		}
-		API_CLASS_END();
-	}
-	API_FILE_END();
-
 	API_FILE("Core/Logger.Gen.cs");
 	{
-		API_USING("System");
-		API_USING("System.Linq");
-		API_USING("System.Collections.Generic");
-
-		API_COMMENT("Logger class");
-		API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Core", "Logger", "ILogger", PARTIAL);
+		API_COMMENT("Logger class. Writes debug messages to output file.");
+		API_CLASS(PUBLIC, STATIC, "ReCrafted.API.Core", "Logger", PARTIAL);
 		{
-			API_COMMENT("Writes message to the output.");
+			API_COMMENT("Writes message to the output file.");
 			API_METHOD(PUBLIC, STATIC, "Write", EXTERN);
 			{
 				API_BIND("ReCrafted.API.Core.Logger::Write", &Internal::Write);
-
 				API_COMMENT("The message");
 				API_PARAM("string", "message");
-			}
-			API_METHOD_END();
-
-			API_COMMENT("Test method.");
-			API_METHOD(PUBLIC, OVERRIDE, "Test");
-			{
-				API_COMMENT("The message");
-				API_PARAM("string", "message");
-				API_PARAM("int", "test", REF);
-			}
-			API_METHOD_END();
-
-			API_METHOD(PRIVATE, REGULAR, "Test2");
-			{
-				API_COMMENT("The message");
-				API_PARAM("string", "message");
-				API_PARAM("int", "test", REF);
-				API_PARAM("string", "outstr", OUT);
-
-				API_CODE("outstr = message + test.ToString();");
-				API_CODE("return outstr;");
-
-				API_RETURN("string");
 			}
 			API_METHOD_END();
 		}
