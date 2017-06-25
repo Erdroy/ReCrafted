@@ -1,8 +1,11 @@
-// ReCrafted � 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+﻿// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
-#pragma once
-
-#define API_BUILD
+namespace ReCrafted.APIGen
+{
+    public class APITag { }
+}
+/*
+ #define API_BUILD
 
 // mono extensions
 #define API_DEF friend class ScriptingEngine; protected: static void initRuntime(); private:
@@ -35,12 +38,6 @@
 #define API_CLASS_INHERIT(access, type, namespace, class_name, inherit_class_name)
 #define API_CLASS_END()
 
-// struct
-// TODO: struct
-
-// enum
-// TODO: enums
-
 // method
 #define API_METHOD(access, type, method_name)
 #define API_METHOD_END()
@@ -49,5 +46,5 @@
 #define API_PARAM_OUT(type, name)
 #define API_RETURN(type)
 
-// property
-// TODO: properties
+
+*/

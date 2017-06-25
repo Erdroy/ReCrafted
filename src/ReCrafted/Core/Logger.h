@@ -36,7 +36,7 @@ struct LogLevel
 /// </summary>
 class Logger
 {
-	API_OBJECT
+	API_DEF
 
 	friend class GameMain;
 

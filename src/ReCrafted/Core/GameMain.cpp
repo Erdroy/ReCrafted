@@ -200,7 +200,7 @@ void GameMain::onLoad()
 
 	// initialize bgfx
 	bgfx::init(bgfx::RendererType::Direct3D11);
-	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC);
+	bgfx::reset(m_width, m_height, BGFX_RESET_NONE);
 
 	bgfx::setDebug(BGFX_DEBUG_TEXT);
 
@@ -268,7 +268,7 @@ void GameMain::onResize(uint width, uint height)
 	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, m_width, m_height);
 	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, m_width, m_height);
 
-	bgfx::reset(m_width, m_height, BGFX_RESET_VSYNC);
+	bgfx::reset(m_width, m_height, BGFX_RESET_NONE);
 
 	m_rendering->resize(width, height);
 }

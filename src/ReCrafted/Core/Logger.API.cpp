@@ -12,39 +12,36 @@ namespace Internal
 
 void Logger::initRuntime()
 {
-	API_BEGIN("Core/ILogger.cs");
+	API_FILE("Core/Logger.cs");
 	{
-		API_COMMENT("ILogger class");
-		API_CLASS("ReCrafted.Core", "ILogger", ABSTRACT);
-		{
-			API_COMMENT("Writes message to the output.");
-			API_METHOD("Write", STATIC, ABSTRACT);
-			{
-				API_COMMENT("The message");
-				API_PARAM("string", "message");
-			}
-			API_PUSH();
-		}
-		API_PUSH();
-	}
-	API_END();
+		API_USING("System");
+		API_USING("System.Linq");
+		API_USING("System.Collections.Generic");
 
-	API_BEGIN("Core/Logger.cs");
-	{
 		API_COMMENT("Logger class");
-		API_CLASS("ReCrafted.Core", "Logger", SEALED, INHERIT("ILogger"));
+		API_CLASS(PUBLIC, REGULAR, "ReCrafted.API", "Logger");
 		{
 			API_COMMENT("Writes message to the output.");
-			API_METHOD("Write", STATIC, OVERRIDE);
+			API_METHOD(PUBLIC, STATIC, "Write");
 			{
 				API_BIND("ReCrafted.Core.Logger::Write", &Internal::Write);
 
 				API_COMMENT("The message");
 				API_PARAM("string", "message");
 			}
-			API_PUSH();
+			API_METHOD_END();
+
+			API_COMMENT("Test method.");
+			API_METHOD(PUBLIC, REGULAR, "Test");
+			{
+				API_COMMENT("The message");
+				API_PARAM("string", "message");
+				API_PARAM_REF("int", "Test");
+				API_PARAM_OUT("string", "outstr");
+			}
+			API_METHOD_END();
 		}
-		API_PUSH();
+		API_CLASS_END();
 	}
-	API_END();
+	API_FILE_END();
 }

@@ -7,4 +7,6 @@ void ScriptingEngine::bind_all()
 {
 	Logger::initRuntime();
 
+	// save metadata
+	//ScriptingMetadata::save();
 }

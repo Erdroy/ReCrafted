@@ -44,12 +44,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="APIBuilder.cs" />
+    <Compile Include="APIParameters.cs" />
+    <Compile Include="APITag.cs" />
+    <Compile Include="CodeGenerator.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CodeGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entry.cs" />
-    <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tags\APITagClassEnd.cs" />
+    <Compile Include="Tags\APITagClass.cs" />
+    <Compile Include="Tags\APITagFileEnd.cs" />
+    <Compile Include="Tags\APITagFile.cs" />
+    <Compile Include="Tags\APITagComment.cs" />
+    <Compile Include="Tags\APITagMethodEnd.cs" />
+    <Compile Include="Tags\APITagReturn.cs" />
+    <Compile Include="Tags\APITagParam.cs" />
+    <Compile Include="Tags\APITagMethod.cs" />
+    <Compile Include="Tags\APITagUsing.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CodeGenerator.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>CodeGenerator.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

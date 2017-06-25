@@ -9,21 +9,26 @@ namespace ReCrafted.APIGen
     {
         public static void Main()
         {
-            var apiSourceFiles = Directory.GetFiles(Environment.CurrentDirectory + "/src/ReCrafted/", "*.API.cpp", SearchOption.AllDirectories);
+            var currentDir = Environment.CurrentDirectory;
+            if (currentDir.Contains("tools"))
+                currentDir += "\\..";
 
-            foreach (var file in apiSourceFiles)
+            var apiSourceFiles = Directory.GetFiles(currentDir + "\\src\\ReCrafted\\", "*.API.cpp", SearchOption.AllDirectories);
+
+            var apibuilder = new APIBuilder();
+
+            foreach (var sourceFile in apiSourceFiles)
             {
-                var fileName = file.Replace("/", "\\");
+                Console.WriteLine("Processing: " + Path.GetFileName(sourceFile));
 
-                var objects = Parser.ParseFile(fileName);
+                string targetFile;
+                var code = apibuilder.GenerateCode(sourceFile, out targetFile);
 
-                foreach (var src in objects)
-                {
-                    
-                }
-
-                // TODO: generate API for every object
+                File.WriteAllText("Test.cs", code);
             }
+
+            Console.WriteLine("Generated");
+            Console.ReadLine();
         }
     }
 }
