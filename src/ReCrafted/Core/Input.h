@@ -10,6 +10,7 @@
 #include "../Utils/Types.h"
 #include "../Core/Math/math.h"
 #include "../Platform/Platform.Windows.h"
+#include "../Common/ReCraftedAPI.h"
 
 #define INPUT_KEYCOUNT 256
 #define INPUT_TABLE_SIZE INPUT_KEYCOUNT + 3
@@ -27,6 +28,8 @@ enum Keys;
 /// </summary>
 class Input
 {
+	API_DEF
+
 private:
 	static Input* m_instance;
 

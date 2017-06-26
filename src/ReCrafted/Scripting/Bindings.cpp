@@ -2,11 +2,10 @@
 
 #include "ScriptingEngine.h"
 #include "../Core/Logger.h"
+#include "../Core/Input.h"
 
 void ScriptingEngine::bind_all()
 {
 	Logger::initRuntime();
-
-	// save metadata
-	//ScriptingMetadata::save();
+	Input::initRuntime();
 }
