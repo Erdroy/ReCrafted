@@ -10,6 +10,16 @@ namespace Internal
 	{
 		return Input::isKeyDown(static_cast<Keys>(key));
 	}
+
+	bool IsKeyUp(int key)
+	{
+		return Input::isKeyUp(static_cast<Keys>(key));
+	}
+
+	bool IsKey(int key)
+	{
+		return Input::isKey(static_cast<Keys>(key));
+	}
 }
 
 void Input::initRuntime()
@@ -25,6 +35,28 @@ void Input::initRuntime()
 			API_METHOD(PUBLIC, STATIC, "IsKeyDown", EXTERN);
 			{
 				API_BIND("ReCrafted.API.Common.Input::IsKeyDown", &Internal::IsKeyDown);
+				API_COMMENT("The key");
+				API_PARAM("Keys", "key");
+
+				API_RETURN("bool");
+			}
+			API_METHOD_END();
+
+			API_COMMENT("Checks if the key is not pressed.");
+			API_METHOD(PUBLIC, STATIC, "IsKeyUp", EXTERN);
+			{
+				API_BIND("ReCrafted.API.Common.Input::IsKeyUp", &Internal::IsKeyUp);
+				API_COMMENT("The key");
+				API_PARAM("Keys", "key");
+
+				API_RETURN("bool");
+			}
+			API_METHOD_END();
+
+			API_COMMENT("Checks if the key held.");
+			API_METHOD(PUBLIC, STATIC, "IsKey", EXTERN);
+			{
+				API_BIND("ReCrafted.API.Common.Input::IsKey", &Internal::IsKey);
 				API_COMMENT("The key");
 				API_PARAM("Keys", "key");
 
