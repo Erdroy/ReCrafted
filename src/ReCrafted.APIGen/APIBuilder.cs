@@ -54,7 +54,10 @@ namespace ReCrafted.APIGen
 
                 Directory.CreateDirectory(Path.GetDirectoryName(targetFile));
 
-                File.WriteAllText(targetFile, code);
+                if (new FileInfo(targetFile).LastWriteTime < new FileInfo(sourceFile).LastWriteTime)
+                {
+                    File.WriteAllText(targetFile, code);
+                }
             }
         }
 
