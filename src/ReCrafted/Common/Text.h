@@ -265,6 +265,14 @@ public:
 	}
 
 	/// <summary>
+	/// Returns the text data / characters.
+	/// </summary>
+	Char* data() const
+	{
+		return m_data;
+	}
+
+	/// <summary>
 	/// Returns const wide string.
 	/// This is slow, and it isn't recommended to use.
 	/// </summary>

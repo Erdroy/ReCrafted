@@ -12,7 +12,7 @@ namespace Internal
 		auto text = MONO_TEXT(string);
 		auto logLevel = static_cast<LogLevel::Enum>(level);
 
-		Logger::write(text.c_str().c_str(), logLevel);
+		Logger::write(text, logLevel);
 	}
 }
 
