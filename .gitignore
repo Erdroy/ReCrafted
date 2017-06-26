@@ -1,10 +1,6 @@
 .projects/
 username.txt
-libs/bx/
-libs/bgfx/
-libs/bimg/
-libs/mono/
-libs_temp/
+libs/
 build/
 libs_prebuilt.zip
 .vs/
