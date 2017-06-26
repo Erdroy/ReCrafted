@@ -1,21 +1,22 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 06/26/2017 18:46:55 Source: 'Logger.API.cpp' Target: 'Core/Logger.Gen.cs'
+// Generated: 06/26/2017 18:46:55 Source: 'Logger.API.cpp' Target: 'Common/Input.Gen.cs'
 
+using ReCrafted.API.Core;
 using System.Runtime.CompilerServices;
 
-namespace ReCrafted.API.Core 
+namespace ReCrafted.API.Common 
 {
 	/// <summary>
-	///	Logger class. Writes debug messages to output file.
+	///	Input class.
 	/// </summary>
-	public static partial class Logger 
+	public static partial class Input 
 	{
 		/// <summary>
-		///	Writes message to the output file.
+		///	Checks if the key is pressed down.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern void Internal_Write(string message, LogLevel level);
+		public static extern bool IsKeyDown(Keys key);
 
 	}
 }
