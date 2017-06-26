@@ -19,7 +19,11 @@ public:
 
 	static void bind_all();
 
-	static void load_assembly(const char* assemblyName);
+	static MonoClass* load_class(const char* classNamespace, const char* className);
+
+	static MonoMethod* load_method(const char* methodName, MonoClass* monoClass);
+
+	static MonoObject* create_class_instance(MonoClass* monoClass);
 
 	static void initialize();
 

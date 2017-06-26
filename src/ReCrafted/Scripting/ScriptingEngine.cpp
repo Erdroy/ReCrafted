@@ -45,30 +45,35 @@ void ScriptingEngine::run()
 	bind_all();
 
 	// create and run GameMain
-	auto image = mono_assembly_get_image(m_core_assembly);
-	auto m_game_main_obj = mono_class_from_name(image, "ReCraftedCore", "GameMain");
-	m_game_main = mono_object_new(m_domain, m_game_main_obj);
-	mono_runtime_object_init(m_game_main);
-
-	auto initmethoddesc = mono_method_desc_new("ReCraftedCore.GameMain::Initialize", true);
-	m_method_initialize = mono_method_desc_search_in_class(initmethoddesc, m_game_main_obj);
+	auto gamemain_class = load_class("ReCraftedCore", "GameMain");
+	m_game_main = create_class_instance(gamemain_class);
 	
-	initmethoddesc = mono_method_desc_new("ReCraftedCore.GameMain::Update", true);
-	m_method_update = mono_method_desc_search_in_class(initmethoddesc, m_game_main_obj);
-
-	initmethoddesc = mono_method_desc_new("ReCraftedCore.GameMain::Simulate", true);
-	m_method_simulate = mono_method_desc_search_in_class(initmethoddesc, m_game_main_obj);
-
-	initmethoddesc = mono_method_desc_new("ReCraftedCore.GameMain::Shutdown", true);
-	m_method_shutdown = mono_method_desc_search_in_class(initmethoddesc, m_game_main_obj);
+	m_method_initialize = load_method("ReCraftedCore.GameMain::Initialize", gamemain_class);
+	m_method_update = load_method("ReCraftedCore.GameMain::Update", gamemain_class);
+	m_method_simulate = load_method("ReCraftedCore.GameMain::Simulate", gamemain_class);
+	m_method_shutdown = load_method("ReCraftedCore.GameMain::Shutdown", gamemain_class);
 
 	initialize();
 }
 
-void ScriptingEngine::load_assembly(const char* assemblyName)
+MonoClass* ScriptingEngine::load_class(const char* classNamespace, const char* className)
 {
+	auto image = mono_assembly_get_image(m_core_assembly);
+	return  mono_class_from_name(image, classNamespace, className);
+}
 
-	Logger::write("Loade assembly '", assemblyName, "'", LogLevel::Info);
+MonoMethod* ScriptingEngine::load_method(const char* methodName, MonoClass* monoClass)
+{
+	auto initmethoddesc = mono_method_desc_new(methodName, true);
+	return mono_method_desc_search_in_class(initmethoddesc, monoClass);
+}
+
+MonoObject* ScriptingEngine::create_class_instance(MonoClass* monoClass)
+{
+	auto instance = mono_object_new(m_domain, monoClass);
+	mono_runtime_object_init(instance);
+
+	return instance;
 }
 
 void ScriptingEngine::initialize()
