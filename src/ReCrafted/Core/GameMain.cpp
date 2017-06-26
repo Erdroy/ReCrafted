@@ -9,6 +9,8 @@ GameMain* GameMain::m_instance;
 
 int m_cursorX = 0u;
 int m_cursorY = 0u;
+int m_cursorDeltaX = 0u;
+int m_cursorDeltaY = 0u;
 GameMain* gameMain_instance;
 
 LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -40,44 +42,76 @@ LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		Input::getInstance()->emit(true, uint(wparam));
 		return 0;
 	}
-	case WM_LBUTTONDOWN:
+	case WM_CREATE:
 	{
-		// mouse keys are held the shitty way, so all of tho are on the end of table 'm_keys', INPUT_MAXKEYS is the count of elements.
-		Input::getInstance()->emit(false, INPUT_LBUTTON);
-		return 0;
-	}
-	case WM_LBUTTONUP:
-	{
-		Input::getInstance()->emit(true, INPUT_LBUTTON);
-		return 0;
-	}
-	case WM_MBUTTONDOWN:
-	{
-		Input::getInstance()->emit(false, INPUT_MBUTTON);
-		return 0;
-	}
-	case WM_MBUTTONUP:
-	{
-		Input::getInstance()->emit(true, INPUT_MBUTTON);
-		return 0;
-	}
-	case WM_RBUTTONDOWN:
-	{
-		Input::getInstance()->emit(false, INPUT_RBUTTON);
-		return 0;
-	}
-	case WM_RBUTTONUP:
-	{
-		Input::getInstance()->emit(true, INPUT_RBUTTON);
-		return 0;
-	}
+		// register for raw input
+		// source: https://msdn.microsoft.com/pl-pl/library/windows/desktop/ms645546(v=vs.85).aspx#example_1
+		RAWINPUTDEVICE Rid[1];
 
-	// cursor
-	case WM_MOUSEMOVE:
-	{
-		m_cursorX = LOWORD(lparam);
-		m_cursorY = HIWORD(lparam);
+		Rid[0].usUsagePage = 0x01;
+		Rid[0].usUsage = 0x02;
+		Rid[0].dwFlags = 0;
+		Rid[0].hwndTarget = Platform::getGameWindow();
+
+		if (RegisterRawInputDevices(Rid, 1, sizeof Rid[0]) == FALSE) {
+			// error, failed to register
+			Logger::write("Failed to register mouse for RAW Input", LogLevel::Error);
+			return 0;
+		}
 		return 0;
+	}
+	case WM_INPUT:
+	{
+		UINT dwSize;
+		GetRawInputData(reinterpret_cast<HRAWINPUT>(lparam), RID_INPUT, nullptr, &dwSize, sizeof(RAWINPUTHEADER));
+
+		static LPBYTE lpb[40] = {};
+		if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lparam), RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER)) != dwSize)
+			return DefWindowProc(hWnd, msg, wparam, lparam);
+
+		auto raw = reinterpret_cast<RAWINPUT*>(lpb);
+
+		if (raw->header.dwType == RIM_TYPEMOUSE)
+		{
+			if (raw->data.mouse.usFlags == MOUSE_MOVE_RELATIVE)
+			{
+				m_cursorDeltaX += raw->data.mouse.lLastX;
+				m_cursorDeltaY += raw->data.mouse.lLastY;
+
+				// update cursor pos
+				auto winHwnd = Platform::getGameWindow();
+
+				if (winHwnd) {
+					POINT cursorPos;
+					GetCursorPos(&cursorPos);
+
+					ScreenToClient(winHwnd, &cursorPos);
+
+					m_cursorX = cursorPos.x;
+					m_cursorY = cursorPos.y;
+				}
+			}
+
+			if(raw->data.mouse.ulButtons & RI_MOUSE_LEFT_BUTTON_DOWN)
+				Input::getInstance()->emit(false, INPUT_LBUTTON);
+			
+			if (raw->data.mouse.ulButtons & RI_MOUSE_LEFT_BUTTON_UP)
+				Input::getInstance()->emit(true, INPUT_LBUTTON);
+
+			if (raw->data.mouse.ulButtons & RI_MOUSE_MIDDLE_BUTTON_DOWN)
+				Input::getInstance()->emit(false, INPUT_MBUTTON);
+
+			if (raw->data.mouse.ulButtons & RI_MOUSE_MIDDLE_BUTTON_UP)
+				Input::getInstance()->emit(true, INPUT_MBUTTON);
+
+			if (raw->data.mouse.ulButtons & RI_MOUSE_RIGHT_BUTTON_DOWN)
+				Input::getInstance()->emit(false, INPUT_RBUTTON);
+
+			if (raw->data.mouse.ulButtons & RI_MOUSE_RIGHT_BUTTON_UP)
+				Input::getInstance()->emit(true, INPUT_RBUTTON);
+		}
+
+		return DefWindowProc(hWnd, msg, wparam, lparam);
 	}
 
 	// default
@@ -146,7 +180,9 @@ void GameMain::run()
 		lastTime = currentTime;
 
 		// update input
-		m_input->update(m_cursorX, m_cursorY);
+		m_input->update(m_cursorX, m_cursorY, m_cursorDeltaX, m_cursorDeltaY);
+		m_cursorDeltaX = 0;
+		m_cursorDeltaY = 0;
 
 		// process input
 		MSG msg;

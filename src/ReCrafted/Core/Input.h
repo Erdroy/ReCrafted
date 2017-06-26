@@ -38,6 +38,7 @@ private:
 	byte m_keys[INPUT_TABLE_SIZE] = {};
 
 	Vector2 m_cursorPos = {};
+	Vector2 m_cursorDelta = {};
 
 public:
 	/// <summary>
@@ -52,7 +53,7 @@ public:
 	void emit(bool up, uint key);
 
 	// INTERNAL
-	void update(int cursorX, int cursorY);
+	void update(int cursorX, int cursorY, int deltaX, int deltaY);
 
 	// INTERNAL
 	// releases all keys
@@ -102,6 +103,15 @@ public:
 	FORCEINLINE static Vector2 getCursorPos()
 	{
 		return m_instance->m_cursorPos;
+	}
+
+	/// <summary>
+	/// Returns current cursor's delta.
+	/// </summary>
+	/// <returns>The position.</returns>
+	FORCEINLINE static Vector2 getCursorDelta()
+	{
+		return m_instance->m_cursorDelta;
 	}
 
 	/// <summary>

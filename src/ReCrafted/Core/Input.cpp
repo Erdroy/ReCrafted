@@ -15,7 +15,7 @@ void Input::emit(bool up, uint key)
 	m_keys[key] = up ? 0 : 1;
 }
 
-void Input::update(int cursorX, int cursorY)
+void Input::update(int cursorX, int cursorY, int deltaX, int deltaY)
 {
 	// copy all keys
 	for (auto i = 0; i < INPUT_TABLE_SIZE; i++)
@@ -23,6 +23,7 @@ void Input::update(int cursorX, int cursorY)
 
 	// update cursor pos
 	m_cursorPos = Vector2(float(cursorX), float(cursorY));
+	m_cursorDelta = Vector2(float(deltaX), float(deltaY));
 }
 
 void Input::releaseAll()

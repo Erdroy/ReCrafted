@@ -21,9 +21,11 @@ class Entity;
 class Camera
 {
 	friend class Rendering;
+	friend class GameMain;
 
 private:
 	static Camera* m_mainCamera;
+
 
 private:
 	bool m_freeMovement = false;

@@ -105,13 +105,8 @@ void Camera::updateControls()
 		m_position += direction;
 
 	// update look
-	auto center = Vector2(
-		round(GameMain::getWindowWidth() / 2.0f),
-		round(GameMain::getWindowHeight() / 2.0f)
-	);
-
-	auto cursorPos = Input::getCursorPos();
-	auto rawDelta = center - cursorPos;
+	auto rawDelta = Input::getCursorDelta();
+	rawDelta = Vector2::negate(rawDelta);
 
 	// update filtering buffer
 	m_cursorDeltaBuffer[m_cursorDeltaBufferPosition] = rawDelta;
@@ -133,16 +128,14 @@ void Camera::updateControls()
 
 	// accelerate
 	auto accelDelta = delta + m_lastDelta;
+	m_lastDelta = delta;
 
 	// apply camera rotation
-	m_rotation += Vector3(accelDelta.x / 10.0f, accelDelta.y / 10.0f, 0.0f);
+	m_rotation += Vector3(accelDelta.x / 16.0f, accelDelta.y / 16.0f, 0.0f);
 	m_rotation.y = Math::clamp(m_rotation.y, -89.9f, 89.9f);
 
 	// update camera rotation
 	updateRotation();
-
-	// save needed data
-	m_lastDelta = delta;
 }
 
 void Camera::updatePerspective()
