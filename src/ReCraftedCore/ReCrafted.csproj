@@ -7,8 +7,8 @@
     <ProjectGuid>{673BEC15-F118-413D-9A7F-889B6174CF0A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ReCraftedCore</RootNamespace>
-    <AssemblyName>ReCraftedCore</AssemblyName>
+    <RootNamespace>ReCrafted</RootNamespace>
+    <AssemblyName>ReCrafted</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

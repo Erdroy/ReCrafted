@@ -37,21 +37,21 @@ void ScriptingEngine::run()
 
 	Logger::write("Loaded ReCraftedAPI.dll", LogLevel::Info);
 
-	m_core_assembly = mono_domain_assembly_open(m_domain, "ReCraftedCore.dll");
+	m_core_assembly = mono_domain_assembly_open(m_domain, "ReCrafted.dll");
 
-	Logger::write("Loaded ReCraftedCore.dll", LogLevel::Info);
+	Logger::write("Loaded ReCrafted.dll", LogLevel::Info);
 
 	// bind API
 	bind_all();
 
 	// create and run GameMain
-	auto gamemain_class = load_class("ReCraftedCore", "GameMain");
+	auto gamemain_class = load_class("ReCrafted", "GameMain");
 	m_game_main = create_class_instance(gamemain_class);
 	
-	m_method_initialize = load_method("ReCraftedCore.GameMain::Initialize", gamemain_class);
-	m_method_update = load_method("ReCraftedCore.GameMain::Update", gamemain_class);
-	m_method_simulate = load_method("ReCraftedCore.GameMain::Simulate", gamemain_class);
-	m_method_shutdown = load_method("ReCraftedCore.GameMain::Shutdown", gamemain_class);
+	m_method_initialize = load_method("ReCrafted.GameMain::Initialize", gamemain_class);
+	m_method_update = load_method("ReCrafted.GameMain::Update", gamemain_class);
+	m_method_simulate = load_method("ReCrafted.GameMain::Simulate", gamemain_class);
+	m_method_shutdown = load_method("ReCrafted.GameMain::Shutdown", gamemain_class);
 
 	initialize();
 }
