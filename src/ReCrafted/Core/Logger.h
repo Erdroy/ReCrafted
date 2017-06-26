@@ -9,6 +9,7 @@
 #include "../recraftedPrerequisites.h"
 #include "../Platform/Platform.h"
 #include "../Common/ReCraftedAPI.h"
+#include "../Common/Text.h"
 
 #ifndef LOGGER_MAXSIZE
 	#define LOGGER_MAXSIZE 8192
@@ -55,6 +56,18 @@ private:
 
 public:
 	/// <summary>
+	/// Write MonoString into the log.
+	/// </summary>
+	/// <param name="messageA">The message.</param>
+	/// <param name="logLevel">The log level.</param>
+	FORCEINLINE static void write(Char* uni_chars, LogLevel::Enum logLevel = LogLevel::Debug)
+	{
+		std::wstring_convert<std::codecvt_utf8_utf16<__int16>, __int16> conversion;
+		auto data = conversion.to_bytes(reinterpret_cast<__int16*>(uni_chars));
+		write(data.data(), logLevel);
+	}
+
+	/// <summary>
 	/// Write into the log.
 	/// Joins all message parts.
 	/// </summary>
@@ -92,6 +105,7 @@ public:
 	/// <summary>
 	/// Write into the log.
 	/// </summary>
+	/// <param name="messageA">The message.</param>
 	/// <param name="logLevel">The log level.</param>
 	FORCEINLINE static void write(const char* message, LogLevel::Enum logLevel = LogLevel::Debug)
 	{

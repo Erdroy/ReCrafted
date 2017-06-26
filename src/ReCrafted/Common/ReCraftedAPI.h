@@ -7,7 +7,7 @@
 // mono extensions
 #define API_DEF friend class ScriptingEngine; protected: static void initRuntime(); private:
 
-#define MONO_TEXT(x) Text(mono_string_chars(string))
+#define MONO_TEXT(x) mono_string_chars(string)
 
 #define API_BIND(name, method) mono_add_internal_call(name, method)
 
