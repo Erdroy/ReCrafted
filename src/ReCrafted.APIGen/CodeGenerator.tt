@@ -105,13 +105,42 @@ foreach(var codeLine in methodDesc.CodeLines)
 }
 // ---------- METHOD END ----------
 #>
-
 <#
 //  ---------- PROPERTY ----------
 foreach (var propertyDesc in classDesc.Properties)
 {
 #>
+		/// <summary>
+		///	<#=propertyDesc.Comment#>
+		/// </summary>
+		<#=propertyDesc.GetAccess()#> <#=propertyDesc.GetModifier()#><#=propertyDesc.Type#> <#=propertyDesc.Name#> 
+		{
+<#
+if(propertyDesc.GetOnly)
+{
+#>
+			get { return Internal_<#=propertyDesc.Name#>_Get(); }
+<#
+}
+else
+{
+#>
+			get { return Internal_<#=propertyDesc.Name#>_Get(); }
+			set { Internal_<#=propertyDesc.Name#>_Set(value); }
+<#
+}
+#>
+		}
 
+<#
+}
+foreach (var propertyDesc in classDesc.Properties)
+{
+#>
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal <#=propertyDesc.GetModifier()#>extern void Internal_<#=propertyDesc.Name#>_Set(<#=propertyDesc.Type#> value);
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal <#=propertyDesc.GetModifier()#>extern <#=propertyDesc.Type#> Internal_<#=propertyDesc.Name#>_Get();
 <#
 }
 //  ---------- PROPERTY END ----------

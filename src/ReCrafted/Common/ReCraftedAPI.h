@@ -37,6 +37,9 @@
 #define REF
 #define OUT
 
+#define GET
+#define GETSET
+
 // usings
 #define API_USING(using_name)
 
@@ -52,5 +55,5 @@
 #define API_CODE(code)
 
 // property
-#define API_PROPERTY(access, modifier, type, name)
+#define API_PROPERTY(access, modifier, type, name, ...)
 #define API_PROPERTY_END()

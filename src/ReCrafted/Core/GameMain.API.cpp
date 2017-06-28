@@ -49,7 +49,7 @@ void GameMain::initRuntime()
 			API_METHOD_END();
 
 			API_COMMENT("The simulation tickrate. Default is 60");
-			API_PROPERTY(PUBLIC, STATIC, "int", "Tickrate");
+			API_PROPERTY(PUBLIC, STATIC, "int", "Tickrate", GETSET);
 			{
 				// this will create two methods: 
 				// internal void Internal_TickrateSet(int value)

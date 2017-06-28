@@ -1,6 +1,7 @@
 ﻿// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 using System;
+using System.Linq;
 
 namespace ReCrafted.APIGen.Tags
 {
@@ -17,6 +18,8 @@ namespace ReCrafted.APIGen.Tags
         public APIParameters Access { get; set; }
 
         public APIParameters Modifier { get; set; }
+
+        public bool GetOnly { get; set; }
 
         public APITagProperty()
         {
@@ -63,6 +66,8 @@ namespace ReCrafted.APIGen.Tags
 
         public override void Process(string token, string[] parameters)
         {
+            GetOnly = parameters.Contains("GET") && !parameters.Contains("GETSET");
+
             if (parameters[0] == "PUBLIC")
                 Access = APIParameters.Public;
             else if (parameters[0] == "INTERNAL")

@@ -48,11 +48,6 @@
     <Compile Include="APIParameters.cs" />
     <Compile Include="APITag.cs" />
     <Compile Include="APIBuilderUtils.cs" />
-    <Compile Include="CodeGenerator.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CodeGenerator.tt</DependentUpon>
-    </Compile>
     <Compile Include="CodeGenerator1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
