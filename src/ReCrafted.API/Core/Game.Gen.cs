@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 06/28/2017 17:32:16 Source: 'Time.API.cpp' Target: 'Core/Game.Gen.cs'
+// Generated: 06/28/2017 17:36:07 Source: 'Time.API.cpp' Target: 'Core/Game.Gen.cs'
 
 using System.Runtime.CompilerServices;
 
@@ -38,9 +38,16 @@ namespace ReCrafted.API.Core
 			set { Internal_Tickrate_Set(value); }
 		}
 
+		/// <summary>
+		///	Is game running state.
+		/// </summary>
+		public static bool IsRunning => Internal_IsRunning_Get();
+
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_Tickrate_Set(int value);
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern int Internal_Tickrate_Get();
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern bool Internal_IsRunning_Get();
 	}
 }

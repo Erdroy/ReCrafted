@@ -42,6 +42,13 @@ void GameMain::initRuntime()
 				API_BIND("ReCrafted.API.Core.Game::Internal_Tickrate_Set", &GameMain::setSimulationTickrate);
 			}
 			API_PROPERTY_END();
+			
+			API_COMMENT("Is game running state.");
+			API_PROPERTY(PUBLIC, STATIC, "bool", "IsRunning", GET);
+			{
+				API_BIND("ReCrafted.API.Core.Game::Internal_IsRunning_Get", &GameMain::isRunning);
+			}
+			API_PROPERTY_END();
 		}
 		API_CLASS_END();
 	}
