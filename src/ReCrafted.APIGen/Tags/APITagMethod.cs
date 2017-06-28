@@ -46,6 +46,8 @@ namespace ReCrafted.APIGen.Tags
                     return "internal";
                 case APIParameters.Private:
                     return "private";
+                case APIParameters.Protected:
+                    return "protected";
                 default:
                     return "public";
             }
@@ -95,6 +97,8 @@ namespace ReCrafted.APIGen.Tags
                 Access = APIParameters.Internal;
             else if (parameters[0] == "PRIVATE")
                 Access = APIParameters.Private;
+            else if (parameters[0] == "PROTECTED")
+                Access = APIParameters.Protected;
             else
             {
                 Console.WriteLine($"Invalid API_METHOD access modifier at line {APIBuilder.LineNumber}");

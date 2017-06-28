@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Input.Gen.cs" />
+    <Compile Include="Core\Game.Gen.cs" />
     <Compile Include="Core\Keys.cs" />
     <Compile Include="Core\Logger.cs" />
     <Compile Include="Core\Logger.Gen.cs" />

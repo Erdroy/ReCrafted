@@ -19,6 +19,7 @@
 #define API_COMMENT(comment)
 
 #define PUBLIC
+#define PROTECTED
 #define INTERNAL
 #define PRIVATE
 

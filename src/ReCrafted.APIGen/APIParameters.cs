@@ -13,6 +13,7 @@ namespace ReCrafted.APIGen
         Virtual,
         Override,
         Sealed,
+        Protected,
         Static,
     }
 }
