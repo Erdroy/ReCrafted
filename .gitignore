@@ -10,3 +10,5 @@ src/ReCraftedCore/obj/
 src/ReCrafted.API/bin/
 src/ReCrafted.APIGen/bin/
 src/ReCraftedCore/bin/
+ReCrafted.NET.VC.db
+ReCrafted.NET.VC.VC.opendb

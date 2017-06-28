@@ -10,4 +10,5 @@ void ScriptingEngine::bind_all()
 	Logger::initRuntime();
 	Input::initRuntime();
 	GameMain::initRuntime();
+	Time::initRuntime();
 }
