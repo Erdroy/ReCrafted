@@ -14,6 +14,8 @@
 
 class GameMain
 {
+	API_DEF
+
 private:
 	static GameMain* m_instance;
 
