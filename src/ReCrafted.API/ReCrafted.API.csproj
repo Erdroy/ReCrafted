@@ -22,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,6 +32,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -50,6 +52,33 @@
     <Compile Include="Core\Logger.cs" />
     <Compile Include="Core\Logger.Gen.cs" />
     <Compile Include="Core\LogLevel.cs" />
+    <Compile Include="Core\Math\AngleSingle.cs" />
+    <Compile Include="Core\Math\BoundingBox.cs" />
+    <Compile Include="Core\Math\BoundingFrustum.cs" />
+    <Compile Include="Core\Math\BoundingSphere.cs" />
+    <Compile Include="Core\Math\Collision.cs" />
+    <Compile Include="Core\Math\Color.cs" />
+    <Compile Include="Core\Math\Color.Palette.cs" />
+    <Compile Include="Core\Math\Color4.cs" />
+    <Compile Include="Core\Math\ColorBGRA.cs" />
+    <Compile Include="Core\Math\Enums.cs" />
+    <Compile Include="Core\Math\FrustumCameraParams.cs" />
+    <Compile Include="Core\Math\MathUtil.cs" />
+    <Compile Include="Core\Math\Matrix.cs" />
+    <Compile Include="Core\Math\Matrix3x2.cs" />
+    <Compile Include="Core\Math\Matrix3x3.cs" />
+    <Compile Include="Core\Math\OrientedBoundingBox.cs" />
+    <Compile Include="Core\Math\Plane.cs" />
+    <Compile Include="Core\Math\Quaternion.cs" />
+    <Compile Include="Core\Math\RandomUtil.cs" />
+    <Compile Include="Core\Math\Ray.cs" />
+    <Compile Include="Core\Math\Rectangle.cs" />
+    <Compile Include="Core\Math\RectangleF.cs" />
+    <Compile Include="Core\Math\Vector2.cs" />
+    <Compile Include="Core\Math\Vector3.cs" />
+    <Compile Include="Core\Math\Vector4.cs" />
+    <Compile Include="Core\Math\Viewport.cs" />
+    <Compile Include="Core\Math\ViewportF.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
