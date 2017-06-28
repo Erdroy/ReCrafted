@@ -20,6 +20,9 @@ namespace ReCrafted.APIGen
             { "API_CLASS", typeof(APITagClass) },
             { "API_CLASS_END", typeof(APITagClassEnd) },
 
+            { "API_PROPERTY", typeof(APITagProperty) },
+            { "API_PROPERTY_END", typeof(APITagPropertyEnd) },
+
             { "API_METHOD", typeof(APITagMethod) },
             { "API_METHOD_END", typeof(APITagMethodEnd) },
             { "API_CODE", typeof(APITagCode) },

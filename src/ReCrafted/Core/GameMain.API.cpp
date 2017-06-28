@@ -1,13 +1,22 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "GameMain.h"
+#include "../Scripting/ScriptingEngine.h"
 
 namespace Internal
 {
-	
+	int TickrateGet()
+	{
+		return GameMain::getSimulationTickrate();
+	}
+
+	void TickrateSet(int value)
+	{
+		GameMain::setSimulationTickrate(value);
+	}
 }
 
-void Logger::initRuntime()
+void GameMain::initRuntime()
 {
 	API_FILE("Core/Game.Gen.cs");
 	{
@@ -31,6 +40,24 @@ void Logger::initRuntime()
 
 			API_METHOD(PROTECTED, ABSTRACT, "Shutdown");
 			API_METHOD_END();
+
+			API_COMMENT("Quits the game.");
+			API_METHOD(PUBLIC, STATIC, "Quit", EXTERN);
+			{
+				API_BIND("ReCrafted.API.Core.Game::Quit", &GameMain::quit);
+			}
+			API_METHOD_END();
+
+			API_COMMENT("The simulation tickrate. Default is 60");
+			API_PROPERTY(PUBLIC, STATIC, "int", "Tickrate");
+			{
+				// this will create two methods: 
+				// internal void Internal_TickrateSet(int value)
+				// internal int Internal_TickrateGet()
+				API_BIND("ReCrafted.API.Core.Game::Internal_TickrateGet", &Internal::TickrateGet);
+				API_BIND("ReCrafted.API.Core.Game::Internal_TickrateSet", &Internal::TickrateSet);
+			}
+			API_PROPERTY_END();
 		}
 		API_CLASS_END();
 	}

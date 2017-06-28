@@ -1,37 +1,41 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
+using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 
 namespace ReCrafted
 {
-    internal class GameMain : IGameMain
+    internal class GameMain : Game
     {
-        public void Initialize()
+        protected override void Initialize()
         {
             Logger.Write("Hello, World from C#!", LogLevel.Debug);
         }
 
-        public void Update()
+        protected override void Update()
+        {
+            if (Input.IsKeyDown(Keys.F1))
+            {
+                Quit();
+            }
+        }
+
+        protected override void Simulate()
+        {
+
+        }
+
+        protected override void Draw()
         {
             
         }
 
-        public void Simulate()
-        {
-
-        }
-
-        public void Draw()
+        protected override void DrawUI()
         {
             
         }
 
-        public void DrawUI()
-        {
-            
-        }
-
-        public void Shutdown()
+        protected override void Shutdown()
         {
 
         }

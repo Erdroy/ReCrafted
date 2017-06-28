@@ -1,5 +1,4 @@
 ﻿<#@ template language="C#" #>
-<#@ assembly name="ReCrafted.API" #>
 <#@ parameter type="ReCrafted.APIGen.Tags.APITagFile" name="Desc" #>
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
@@ -104,6 +103,18 @@ foreach(var codeLine in methodDesc.CodeLines)
 
 <#
 }
+// ---------- METHOD END ----------
+#>
+
+<#
+//  ---------- PROPERTY ----------
+foreach (var propertyDesc in classDesc.Properties)
+{
+#>
+
+<#
+}
+//  ---------- PROPERTY END ----------
 #>
 	}
 <# // ---------- CLASS END ---------- #>

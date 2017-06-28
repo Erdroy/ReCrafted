@@ -26,6 +26,8 @@ namespace ReCrafted.APIGen.Tags
 
         public List<APITagMethod> Methods = new List<APITagMethod>();
 
+        public List<APITagProperty> Properties = new List<APITagProperty>();
+
         public APITagClass()
         {
             Current = this;

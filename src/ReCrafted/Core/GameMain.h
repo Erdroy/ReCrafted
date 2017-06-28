@@ -57,12 +57,28 @@ public:
 
 public:
 	/// <summary>
+	/// Shutdowns the game.
+	/// </summary>
+	FORCEINLINE static void quit()
+	{
+		m_instance->m_running = false;
+	}
+
+	/// <summary>
 	/// Set the tick rate of simulation.
 	/// </summary>
 	/// <param name="ticksPerSecond">The amount of ticks per second. Default: 60</param>
 	FORCEINLINE static void setSimulationTickrate(uint ticksPerSecond)
 	{
 		m_instance->m_tickrate = ticksPerSecond;
+	}
+
+	/// <summary>
+	/// Gets the tick rate of simulation.
+	/// </summary>
+	FORCEINLINE static uint getSimulationTickrate()
+	{
+		return m_instance->m_tickrate;
 	}
 
 	/// <summary>
