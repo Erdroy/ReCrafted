@@ -4,7 +4,7 @@
 #include "Generator/VoxelGenerator.h"
 #include "VoxelChunkProcessor.h"
 #include "../Graphics/Camera.h"
-#include "../Core/Input.h"
+#include "../Common/Input.h"
 #include <string>
 
 int VoxelWorld::m_availableUploads;

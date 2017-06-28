@@ -2,7 +2,7 @@
 
 #include "ScriptingEngine.h"
 #include "../Core/Logger.h"
-#include "../Core/Input.h"
+#include "../Common/Input.h"
 #include "../Core/GameMain.h"
 
 void ScriptingEngine::bind_all()

@@ -4,7 +4,7 @@
 #include "VoxelWorld.h"
 #include "VoxelChunkProcessor.h"
 #include "Generator/VoxelGenerator.h"
-#include "../Core/Time.h"
+#include "../Common/Time.h"
 #include "../Graphics/Camera.h"
 #include "../Graphics/Rendering.h"
 #include <vector>

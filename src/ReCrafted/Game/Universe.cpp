@@ -3,7 +3,7 @@
 #include "Universe.h"
 #include "../Graphics/Rendering.h"
 #include "../Graphics/Camera.h"
-#include "../Core/Time.h"
+#include "../Common/Time.h"
 #include "Items/ItemDB.h"
 
 Universe* Universe::m_instance;
