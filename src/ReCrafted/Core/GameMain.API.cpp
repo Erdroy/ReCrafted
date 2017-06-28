@@ -3,25 +3,12 @@
 #include "GameMain.h"
 #include "../Scripting/ScriptingEngine.h"
 
-namespace Internal
-{
-	int TickrateGet()
-	{
-		return GameMain::getSimulationTickrate();
-	}
-
-	void TickrateSet(int value)
-	{
-		GameMain::setSimulationTickrate(value);
-	}
-}
-
 void GameMain::initRuntime()
 {
 	API_FILE("Core/Game.Gen.cs");
 	{
 		API_COMMENT("Game class.");
-		API_CLASS(PUBLIC, ABSTRACT, "ReCrafted.API.Core", "Game", PARTIAL);
+		API_CLASS(PUBLIC, ABSTRACT, "ReCrafted.API.Core", "Game");
 		{
 			API_METHOD(PROTECTED, ABSTRACT, "Initialize");
 			API_METHOD_END();
@@ -51,11 +38,8 @@ void GameMain::initRuntime()
 			API_COMMENT("The simulation tickrate. Default is 60");
 			API_PROPERTY(PUBLIC, STATIC, "int", "Tickrate", GETSET);
 			{
-				// this will create two methods: 
-				// internal void Internal_TickrateSet(int value)
-				// internal int Internal_TickrateGet()
-				API_BIND("ReCrafted.API.Core.Game::Internal_TickrateGet", &Internal::TickrateGet);
-				API_BIND("ReCrafted.API.Core.Game::Internal_TickrateSet", &Internal::TickrateSet);
+				API_BIND("ReCrafted.API.Core.Game::Internal_Tickrate_Get", &GameMain::getSimulationTickrate);
+				API_BIND("ReCrafted.API.Core.Game::Internal_Tickrate_Set", &GameMain::setSimulationTickrate);
 			}
 			API_PROPERTY_END();
 		}

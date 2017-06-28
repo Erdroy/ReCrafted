@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 06/28/2017 17:15:13 Source: 'Logger.API.cpp' Target: 'Core/Game.Gen.cs'
+// Generated: 06/28/2017 17:32:16 Source: 'Time.API.cpp' Target: 'Core/Game.Gen.cs'
 
 using System.Runtime.CompilerServices;
 
@@ -9,7 +9,7 @@ namespace ReCrafted.API.Core
 	/// <summary>
 	///	Game class.
 	/// </summary>
-	public abstract partial class Game 
+	public abstract class Game 
 	{
 		protected abstract void Initialize();
 
