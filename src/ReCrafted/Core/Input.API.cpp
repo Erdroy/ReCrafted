@@ -20,6 +20,11 @@ namespace Internal
 	{
 		return Input::isKey(static_cast<Keys>(key));
 	}
+
+	void SetCursorPosition(int x, int y)
+	{
+		Input::setCursorPos(x, y);
+	}
 }
 
 void Input::initRuntime()
@@ -29,7 +34,7 @@ void Input::initRuntime()
 		API_USING("ReCrafted.API.Core");
 
 		API_COMMENT("Input class.");
-		API_CLASS(PUBLIC, STATIC, "ReCrafted.API.Common", "Input", PARTIAL);
+		API_CLASS(PUBLIC, STATIC, "ReCrafted.API.Common", "Input");
 		{
 			API_COMMENT("Checks if the key is pressed down.");
 			API_METHOD(PUBLIC, STATIC, "IsKeyDown", EXTERN);
@@ -61,6 +66,17 @@ void Input::initRuntime()
 				API_PARAM("Keys", "key");
 
 				API_RETURN("bool");
+			}
+			API_METHOD_END();
+
+			API_COMMENT("Changes cursor's current positon.");
+			API_METHOD(PUBLIC, STATIC, "SetCursorPosition", EXTERN);
+			{
+				API_BIND("ReCrafted.API.Common.Input::setCursorPos", &Internal::SetCursorPosition);
+				API_COMMENT("X coordinate");
+				API_PARAM("int", "x");
+				API_COMMENT("Y coordinate");
+				API_PARAM("int", "y");
 			}
 			API_METHOD_END();
 		}

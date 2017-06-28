@@ -7,12 +7,15 @@
 
 // includes
 #include "../Utils/Defines.h"
+#include "../Common/ReCraftedAPI.h"
 
 /// <summary>
 /// Time class.
 /// </summary>
 class Time
 {
+	API_DEF
+
 	friend class GameMain;
 
 private:
