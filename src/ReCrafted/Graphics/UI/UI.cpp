@@ -34,7 +34,7 @@ void UI::drawnow()
 	// TODO: set texture
 
 	// draw
-	bgfx::submit(RENDERVIEW_BACKBUFFER, m_shader->m_program);
+	bgfx::submit(0, m_shader->m_program);
 
 	// reset buffer IO positions
 	m_vertexBufferDataPos = 0u;

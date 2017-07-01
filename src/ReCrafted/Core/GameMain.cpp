@@ -382,6 +382,8 @@ void GameMain::onDraw()
 	}
 	m_rendering->endRender(); // end rendering the scene
 
+	m_rendering->setState(false, false, true);
+
 	// draw UI
 	m_ui->beginDraw(); // begin draw UI
 	{

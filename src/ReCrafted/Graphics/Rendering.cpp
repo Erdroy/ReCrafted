@@ -145,6 +145,7 @@ void Rendering::endRender()
 
 void Rendering::renderShadows()
 {
+
 }
 
 void Rendering::renderStatic()
@@ -202,7 +203,9 @@ void Rendering::setState(bool tristrip, bool msaa, bool uiRendering)
 		state |= BGFX_STATE_MSAA;
 
 	if (uiRendering)
-		state |= BGFX_STATE_BLEND_ADD;
+	{
+		state |= BGFX_STATE_BLEND_ADD | BGFX_STATE_RGB_WRITE;
+	}
 
 	bgfx::setState(state);
 }
