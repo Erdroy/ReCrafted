@@ -20,6 +20,15 @@
 #define SafeDispose(ptr) if(ptr) { ptr->dispose(); ptr = nullptr;}
 #define SafeDisposeNN(ptr) if(ptr) { ptr->dispose(); }
 
+#define SafeFree(ptr) if(ptr) { free(ptr); ptr = nullptr; }
+#define SafeFreeNN(ptr) if(ptr) { free(ptr); }
+
+#define SafeDelete(ptr) if(ptr) { delete ptr; ptr = nullptr; }
+#define SafeDeleteNN(ptr) if(ptr) { delete ptr; }
+
+#define SafeDeleteArray(ptr) if(ptr) { delete [] ptr; ptr = nullptr; }
+#define SafeDeleteArrayNN(ptr) if(ptr) { delete [] ptr; }
+
 #ifndef VS_LOG_H
 #define VS_LOG_H
 
@@ -47,5 +56,7 @@ inline void LOG(const char* text)
 		m_##name = v;			\
 	}							\
 	private: type m_##name
+
+#define ALIGN(x) __declspec(align(x)) 
 
 #endif // DEFINES_H
