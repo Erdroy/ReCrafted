@@ -265,9 +265,6 @@ void GameMain::onLoad()
 
 	m_initialized = true;
 
-	// update state
-	m_rendering->setState(false, false);
-
 	// initialize universe
 	m_universe = new Universe();
 	m_universe->init();
@@ -317,6 +314,12 @@ void GameMain::onUpdate()
 {
 	// update event, called every frame
 
+	if (Input::isKeyDown(Key_F3))
+	{
+		bgfx::setDebug(BGFX_DEBUG_WIREFRAME);
+		Logger::write("Switching to wireframe render mode", LogLevel::Info);
+	}
+
 	if (Input::isKeyDown(Key_F4))
 	{
 		bgfx::setDebug(BGFX_DEBUG_NONE);
@@ -357,6 +360,9 @@ void GameMain::onDraw()
 	bgfx::touch(RENDERVIEW_BACKBUFFER);
 	bgfx::touch(RENDERVIEW_GBUFFER);
 
+	// update state
+	m_rendering->setState(false, false);
+
 	m_rendering->beginRender(); // begin rendering the scene
 	{
 		// render shadows
@@ -374,6 +380,9 @@ void GameMain::onDraw()
 		// TODO: call EntityPool->Draw
 	}
 	m_rendering->endRender(); // end rendering the scene
+
+	// update state
+	m_rendering->setState(false, false, true);
 
 	// draw UI
 	m_ui->beginDraw(); // begin draw UI

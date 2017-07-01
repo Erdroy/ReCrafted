@@ -22,6 +22,7 @@ struct Matrix;
 class Shader
 {
 	friend class Rendering;
+	friend class UI;
 
 private:
 	char m_shaderName[128] = {};

@@ -111,7 +111,7 @@ public:
 	/// </summary>
 	/// <param name="tristrip">Enable triangle strip primitives?</param>
 	/// <param name="msaa">Allow MSAA?</param>
-	void setState(bool tristrip = false, bool msaa = true);
+	void setState(bool tristrip = false, bool msaa = true, bool uiRendering = false);
 
 	/// <summary>
 	/// Dispose everything.

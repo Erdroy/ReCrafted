@@ -6,6 +6,7 @@
 // includes
 #include "../../Core/Math/Color.h"
 #include "../../Core/Math/Rectf.h"
+#include "../Shader.h"
 
 class UI
 {
@@ -54,6 +55,11 @@ private:
 	const byte* m_vertexBufferData = nullptr;
 	const byte* m_indexBufferData = nullptr;
 
+	uint m_vertexBufferDataPos = 0u;
+	uint m_indexBufferDataPos = 0u;
+
+	Ptr<Shader> m_shader = nullptr;
+
 private:
 	void clear();
 
@@ -70,6 +76,7 @@ public:
 	void dispose();
 	
 	void beginDraw();
+
 	void endDraw();
 
 	void testDraw();
