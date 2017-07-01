@@ -2,6 +2,7 @@
 
 #include "UI.h"
 #include "../../Platform/Platform.h"
+#include "../Rendering.h"
 
 UI* UI::m_instance;
 
@@ -27,13 +28,13 @@ void UI::drawnow()
 	auto indexCount = m_indexBufferDataPos / sizeof uint;
 
 	// set buffers
-	bgfx::setVertexBuffer(0u, m_vertexBuffer, 0u, uint(vertexCount));
+	bgfx::setVertexBuffer(0, m_vertexBuffer, 0u, uint(vertexCount));
 	bgfx::setIndexBuffer(m_indexBuffer, 0u, uint(indexCount));
 
 	// TODO: set texture
 
 	// draw
-	bgfx::submit(1, m_shader->m_program);
+	bgfx::submit(RENDERVIEW_BACKBUFFER, m_shader->m_program);
 
 	// reset buffer IO positions
 	m_vertexBufferDataPos = 0u;
@@ -137,5 +138,5 @@ void UI::endDraw()
 
 void UI::testDraw()
 {
-	drawBox(Rectf(0.0f, 0.0f, 10.0f, 10.0f));
+	drawBox(Rectf(0.0f, 0.0f, 100.0f, 100.0f));
 }

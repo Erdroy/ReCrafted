@@ -238,7 +238,7 @@ void GameMain::onLoad()
 	bgfx::init(bgfx::RendererType::Direct3D11);
 	bgfx::reset(m_width, m_height, BGFX_RESET_NONE);
 
-	bgfx::setDebug(BGFX_DEBUG_TEXT);
+	bgfx::setDebug(BGFX_DEBUG_NONE);
 
 	// Set view 0 clear state.
 	bgfx::setViewClear(RENDERVIEW_BACKBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030FF, 1.0f, 0);
@@ -357,8 +357,8 @@ void GameMain::onDraw()
 	// draw event, called every frame, must be ended with gpu backbuffer `present` or `swapbuffer` - bgfx::frame()
 	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, m_width, m_height);
 	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, m_width, m_height);
+
 	bgfx::touch(RENDERVIEW_BACKBUFFER);
-	bgfx::touch(RENDERVIEW_GBUFFER);
 
 	// update state
 	m_rendering->setState(false, false);
@@ -367,6 +367,7 @@ void GameMain::onDraw()
 	{
 		// render shadows
 		m_rendering->renderShadows();
+
 		// draw all shadow casters
 		m_universe->drawShadowCasters();
 		// TODO: call EntityPool->DrawShadowCasters
@@ -381,16 +382,13 @@ void GameMain::onDraw()
 	}
 	m_rendering->endRender(); // end rendering the scene
 
-	// update state
-	m_rendering->setState(false, false, true);
-
 	// draw UI
 	m_ui->beginDraw(); // begin draw UI
 	{
 		m_ui->testDraw();
 	}
 	m_ui->endDraw(); // end draw UI
-
+	
 	// next frame, wait vsync
 	bgfx::frame();
 }

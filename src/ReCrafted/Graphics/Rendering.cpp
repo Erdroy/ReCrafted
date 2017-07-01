@@ -141,9 +141,6 @@ void Rendering::endRender()
 	bgfx::setVertexBuffer(0, m_blitMesh->m_vertexBuffer);
 	bgfx::setIndexBuffer(m_blitMesh->m_indexBuffer);
 	bgfx::submit(RENDERVIEW_BACKBUFFER, m_deferredFinal->m_program);
-
-	// clean
-	bgfx::setViewFrameBuffer(RENDERVIEW_BACKBUFFER, BGFX_INVALID_HANDLE);
 }
 
 void Rendering::renderShadows()
@@ -185,9 +182,7 @@ void Rendering::blit(uint view, bgfx::TextureHandle texture)
 {
 	setState(false, false);
 
-	auto textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
-
-	bgfx::setTexture(0, m_texture0, texture, textureFlags);
+	bgfx::setTexture(0, m_texture0, texture);
 
 	bgfx::setVertexBuffer(0, m_blitMesh->m_vertexBuffer);
 	bgfx::setIndexBuffer(m_blitMesh->m_indexBuffer);
@@ -207,7 +202,7 @@ void Rendering::setState(bool tristrip, bool msaa, bool uiRendering)
 		state |= BGFX_STATE_MSAA;
 
 	if (uiRendering)
-		state |= BGFX_STATE_BLEND_SRC_ALPHA | BGFX_STATE_BLEND_INV_SRC_ALPHA | BGFX_STATE_BLEND_ZERO | BGFX_STATE_BLEND_ONE | BGFX_STATE_BLEND_EQUATION_ADD;
+		state |= BGFX_STATE_BLEND_ADD;
 
 	bgfx::setState(state);
 }
