@@ -5,12 +5,6 @@
 
 UI* UI::m_instance;
 
-const unsigned int m_maxVertexCount = 4 * (8 << 10);
-const unsigned int m_maxIndexCount = 6 * (8 << 10);
-
-const int m_vertexBufferSize = m_maxVertexCount * sizeof ui_vertex;
-const int m_indexBufferSize = m_maxIndexCount * sizeof uint;
-
 void UI::clear()
 {
 	// clear draw command array
@@ -24,24 +18,17 @@ void UI::drawnow()
 	// reference buffers
 	auto vbdPtr = bgfx::makeRef(m_vertexBufferData, m_vertexBufferSize);
 	auto ibdPtr = bgfx::makeRef(m_indexBufferData, m_indexBufferSize);
-	
+
 	// TODO: update buffers
 
 	// TODO: draw
 
-	// TODO: clear buffer IO positions
-
-}
-
-void UI::push_drawcmd(ui_drawcmd* cmd)
-{
-	// push draw cmd data
+	// TODO: reset buffer IO positions
 
 }
 
 void UI::init()
 {
-
 	// allocate vertex buffer data
 	m_vertexBufferData = new byte[m_vertexBufferSize];
 
@@ -65,7 +52,7 @@ void UI::init()
 	m_indexBuffer = bgfx::createDynamicIndexBuffer(m_maxIndexCount, BGFX_BUFFER_NONE);
 
 	// allocate draw command for first upload (it's 1/4 of max vertex count as there is 4 vertexes per command)
-	m_drawCmds = std::vector<ui_drawcmd>(8 << 10);
+	m_drawCmds = std::vector<drawcmd>(8 << 10);
 }
 
 void UI::dispose()
@@ -75,13 +62,13 @@ void UI::dispose()
 	SafeDelete(m_indexBufferData);
 }
 
-void UI::begin_draw()
+void UI::beginDraw()
 {
 	// clear before drawing
 	clear();
 }
 
-void UI::end_draw()
+void UI::endDraw()
 {
 	// TODO: sorting
 
@@ -108,9 +95,9 @@ void UI::end_draw()
 	clear();
 }
 
-void UI::test_draw()
+void UI::testDraw()
 {
-	ui_drawcmd cmd = {};
+	drawcmd cmd = {};
 
 	// add draw command
 	m_drawCmds.push_back(cmd);

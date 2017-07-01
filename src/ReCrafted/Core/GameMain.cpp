@@ -376,11 +376,11 @@ void GameMain::onDraw()
 	m_rendering->endRender(); // end rendering the scene
 
 	// draw UI
-	m_ui->begin_draw(); // begin draw UI
+	m_ui->beginDraw(); // begin draw UI
 	{
-		m_ui->test_draw();
+		m_ui->testDraw();
 	}
-	m_ui->end_draw(); // end draw UI
+	m_ui->endDraw(); // end draw UI
 
 	// next frame, wait vsync
 	bgfx::frame();
