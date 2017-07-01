@@ -222,6 +222,14 @@ public:
 	}
 
 	/// <summary>
+	/// Clears memory
+	/// </summary>
+	FORCEINLINE static void zeroMemory(unsigned char* data, size_t size)
+	{
+		ZeroMemory(data, size);
+	}
+
+	/// <summary>
 	/// Get time in miliseconds.
 	/// </summary>
 	/// <returns>The time in miliseconds.</returns>

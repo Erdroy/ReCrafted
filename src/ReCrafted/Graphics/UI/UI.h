@@ -7,45 +7,51 @@
 #include "../../Core/Math/Color.h"
 #include "../../Core/Math/Rectf.h"
 
+ALIGN(4) struct ui_vertex
+{
+	float x = 0.0f;
+	float y = 0.0f;
+	float z = 0.0f;
+
+	float u = 0.0f;
+	float v = 0.0f;
+
+	Color color = Color(0xFFFFFFFF); // hex 255, 255, 255, 255
+};
+
+struct ui_drawcmd
+{
+	ui_vertex vertices[4];
+	uint indices[6];
+	Rectf clipRect = {};
+	uint texture = 0;
+	float zOrder = 0.0f;
+	bool hasClipRect = false;
+	bool hasTexture = false;
+	bool hasRenderTexture = false;
+};
+
 class UI
 {
-private:
-	struct vertex
-	{
-		float x = 0.0f;
-		float y = 0.0f;
-		float z = 0.0f;
-
-		float u = 0.0f;
-		float v = 0.0f;
-
-		Color color = { 255, 255, 255, 255 };
-	};
-
-	struct drawcmd
-	{
-		vertex VertexArray[4];
-		uint IndexArray[6];
-		uint Texture = 0;
-		Rectf ClipRect = {};
-		float ZOrder = 0.0f;
-		bool HasClipRect = false;
-		bool HasTexture = false;
-		bool HasRenderTexture = false;
-	};
-
 private:
 	static UI* m_instance;
 
 private:
-	std::vector<drawcmd> m_drawCmds = {};
+	std::vector<ui_drawcmd> m_drawCmds = {};
 
 	bgfx::VertexDecl m_vertexdecl = {};
-	bgfx::VertexBufferHandle m_vertexBuffer = {};
-	bgfx::IndexBufferHandle m_indexBuffer = {};
+	bgfx::DynamicVertexBufferHandle m_vertexBuffer = {};
+	bgfx::DynamicIndexBufferHandle m_indexBuffer = {};
 
-	const bgfx::Memory* m_vertexBufferData = nullptr;
-	const bgfx::Memory* m_indexBufferData = nullptr;
+	const byte* m_vertexBufferData = nullptr;
+	const byte* m_indexBufferData = nullptr;
+
+private:
+	void clear();
+
+	void drawnow();
+
+	FORCEINLINE void push_drawcmd(ui_drawcmd* cmd);
 
 public:
 	UI() { m_instance = this; }
@@ -53,10 +59,13 @@ public:
 public:
 	void init();
 
+	void dispose();
+	
 	void begin_draw();
 	void end_draw();
 
 	void test_draw();
+
 };
 
 #endif // UI_H
