@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 06/28/2017 16:24:01 Source: 'Input.API.cpp' Target: 'Common/Input.Gen.cs'
+// Generated: 07/01/2017 19:13:51 Source: 'Logger.API.cpp' Target: 'Common/Input.Gen.cs'
 
 using ReCrafted.API.Core;
 using System.Runtime.CompilerServices;
@@ -36,5 +36,19 @@ namespace ReCrafted.API.Common
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		public static extern void SetCursorPosition(int x, int y);
 
+		/// <summary>
+		///	Returns cursor's current position.
+		/// </summary>
+		public static Vector2 GetCursorPosition => Internal_GetCursorPosition_Get();
+
+		/// <summary>
+		///	Returns cursor's position change since last frame.
+		/// </summary>
+		public static Vector2 GetCursorDelta => Internal_GetCursorDelta_Get();
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern Vector2 Internal_GetCursorPosition_Get();
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern Vector2 Internal_GetCursorDelta_Get();
 	}
 }

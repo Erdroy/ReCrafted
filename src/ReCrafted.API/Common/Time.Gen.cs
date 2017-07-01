@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 06/28/2017 17:32:16 Source: 'Time.API.cpp' Target: 'Common/Time.Gen.cs'
+// Generated: 07/01/2017 19:13:51 Source: 'Logger.API.cpp' Target: 'Common/Time.Gen.cs'
 
 using System.Runtime.CompilerServices;
 

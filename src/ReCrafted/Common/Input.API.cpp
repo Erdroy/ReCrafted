@@ -25,6 +25,16 @@ namespace Internal
 	{
 		Input::setCursorPos(x, y);
 	}
+
+	Vector2 GetCursorPosition()
+	{
+		return Input::getCursorPos();
+	}
+
+	Vector2 GetCursorDelta()
+	{
+		return Input::getCursorDelta();
+	}
 }
 
 void Input::initRuntime()
@@ -79,6 +89,20 @@ void Input::initRuntime()
 				API_PARAM("int", "y");
 			}
 			API_METHOD_END();
+
+			API_COMMENT("Returns cursor's current position.");
+			API_PROPERTY(PUBLIC, STATIC, "Vector2", "GetCursorPosition", GET);
+			{
+				API_BIND("ReCrafted.API.Common.Input::getCursorPos", &Internal::GetCursorPosition);
+			}
+			API_PROPERTY_END();
+
+			API_COMMENT("Returns cursor's position change since last frame.");
+			API_PROPERTY(PUBLIC, STATIC, "Vector2", "GetCursorDelta", GET);
+			{
+				API_BIND("ReCrafted.API.Common.Input::getCursorDelta", &Internal::GetCursorDelta);
+			}
+			API_PROPERTY_END();
 		}
 		API_CLASS_END();
 	}
