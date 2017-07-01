@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 07/01/2017 19:13:51 Source: 'Logger.API.cpp' Target: 'Common/Input.Gen.cs'
+// Generated: 07/01/2017 19:21:00 Source: 'Logger.API.cpp' Target: 'Common/Input.Gen.cs'
 
 using ReCrafted.API.Core;
 using System.Runtime.CompilerServices;
@@ -34,7 +34,7 @@ namespace ReCrafted.API.Common
 		///	Changes cursor's current positon.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		public static extern void SetCursorPosition(int x, int y);
+		public static extern void SetCursorPosition(Vector2 position);
 
 		/// <summary>
 		///	Returns cursor's current position.
