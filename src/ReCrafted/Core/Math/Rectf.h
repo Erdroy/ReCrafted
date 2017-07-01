@@ -96,7 +96,7 @@ public:
 	/// </summary>
 	FORCEINLINE static bool intersects(Rectf& a, Rectf& b)
 	{
-		return (a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top);
+		return (a.left() < b.right() && a.right() > b.left() && a.top() < b.bottom() && a.bottom() > b.top());
 	}
 
 	/// <summary>
@@ -112,7 +112,7 @@ public:
 	/// </summary>
 	FORCEINLINE static bool contains(Rectf& rect, Vector2& point)
 	{
-		return point.x > rect.left && point.x < rect.right && point.y > rect.bottom && point.y < rect.top;
+		return point.x > rect.left() && point.x < rect.right() && point.y > rect.bottom() && point.y < rect.top();
 	}
 
 	/// <summary>

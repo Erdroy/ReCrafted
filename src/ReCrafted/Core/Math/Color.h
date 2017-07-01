@@ -39,9 +39,20 @@ public:
 	}
 
 	/// <summary>
+	/// RGB (float) constructor.
+	/// </summary>
+	Color(float r, float g, float b, float a)
+	{
+		this->r = static_cast<byte>(255 * r);
+		this->g = static_cast<byte>(255 * g);
+		this->b = static_cast<byte>(255 * b);
+		this->a = static_cast<byte>(255 * a);
+	}
+
+	/// <summary>
 	/// Hex constructor
 	/// </summary>
-	Color(int& hex) : r((hex >> 24) & 0xFF), g((hex >> 16) & 0xFF), b((hex >> 8) & 0xFF), a(hex & 0xFF)
+	Color(unsigned int hex) : r((hex >> 24) & 0xFF), g((hex >> 16) & 0xFF), b((hex >> 8) & 0xFF), a(hex & 0xFF)
 	{
 	}
 
@@ -65,7 +76,7 @@ public:
 	/// <summary>
 	/// Returns color's hex
 	/// </summary>
-	FORCEINLINE static int toHex(Color& color, int* result)
+	FORCEINLINE static void toHex(Color& color, int* result)
 	{
 		*result = color.toHex();
 	}
@@ -81,7 +92,7 @@ public:
 	/// <summary>
 	/// Returns color's hex
 	/// </summary>
-	FORCEINLINE static int toHex(byte& r, byte& g, byte& b, byte& a, int* result)
+	FORCEINLINE static void toHex(byte& r, byte& g, byte& b, byte& a, int* result)
 	{
 		*result = toHex(r, g, b, a);
 	}
@@ -97,7 +108,7 @@ public:
 	/// <summary>
 	/// Linerally interpolates between two colors
 	/// </summary>
-	FORCEINLINE static Color lerp(Color& a, Color& b, float t, Color* result)
+	FORCEINLINE static void lerp(Color& a, Color& b, float t, Color* result)
 	{
 		*result = lerp(a, b, t);
 	}
