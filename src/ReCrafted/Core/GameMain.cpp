@@ -253,6 +253,10 @@ void GameMain::onLoad()
 	m_rendering = new Rendering;
 	m_rendering->init();
 
+	// initialize ui
+	m_ui = new UI;
+	m_ui->init();
+
 	Logger::write("Rendering pipeline initialized", LogLevel::Info);
 
 	// initialize main camera for scene
@@ -370,6 +374,13 @@ void GameMain::onDraw()
 		// TODO: call EntityPool->Draw
 	}
 	m_rendering->endRender(); // end rendering the scene
+
+	// draw UI
+	m_ui->begin_draw(); // begin draw UI
+	{
+		m_ui->test_draw();
+	}
+	m_ui->end_draw(); // end draw UI
 
 	// next frame, wait vsync
 	bgfx::frame();

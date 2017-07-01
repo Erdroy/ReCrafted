@@ -11,6 +11,7 @@
 #include "../Game/Universe.h"
 #include "../Common/Input.h"
 #include "../Common/Time.h"
+#include "../Graphics/UI/UI.h"
 
 class GameMain
 {
@@ -27,6 +28,8 @@ private:
 	uint m_height = 720;
 
 	Rendering* m_rendering = nullptr;
+	UI* m_ui = nullptr;
+
 	Universe* m_universe = nullptr;
 	Logger* m_logger = nullptr;
 	Input* m_input = nullptr;
