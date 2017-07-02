@@ -27,14 +27,14 @@ void Display::initRuntime()
 			API_COMMENT("Returns display's width");
 			API_PROPERTY(PUBLIC, STATIC, "int", "Width", GET);
 			{
-				API_BIND("ReCrafted.API.Common.Display::Width", &Internal::Width);
+				API_BIND("ReCrafted.API.Common.Display::Width", &Display::get_Width);
 			}
 			API_PROPERTY_END();
 
 			API_COMMENT("Returns display's height");
 			API_PROPERTY(PUBLIC, STATIC, "int", "Height", GET);
 			{
-				API_BIND("ReCrafted.API.Common.Display::Height", &Internal::Height);
+				API_BIND("ReCrafted.API.Common.Display::Height", &Display::get_Height);
 			}
 			API_PROPERTY_END();
 

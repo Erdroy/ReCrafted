@@ -20,7 +20,7 @@ class Display
 	public:
 		FORCEINLINE static float getAspectRatio()
 		{
-			return static_cast<float>(get_Width()) / static_cast<float>(get_Height());
+			return static_cast<float>(m_Width) / static_cast<float>(m_Height);
 		}
 };
 
