@@ -41,7 +41,7 @@ void Display::initRuntime()
 			API_COMMENT("Returns display's aspect ratio");
 			API_PROPERTY(PUBLIC, STATIC, "float", "AspectRatio", GET);
 			{
-				API_BIND("ReCrafted.API.Common.Display::getAspectRatio", &Display::getAspectRatio);
+				API_BIND("ReCrafted.API.Common.Display::Internal_AspectRatio_Get", &Display::getAspectRatio);
 			}
 			API_PROPERTY_END();
 		}
