@@ -227,11 +227,14 @@ void GameMain::onLoad()
 
 	Logger::write("ReCrafted - startup", LogLevel::Info);
 
-	auto width = Display::get_Width();
-	auto height = Display::get_Height();
+	uint width;
+	uint height;
 
 	// get game window size
 	Platform::getGameWindowSize(&width, &height);
+
+	Display::set_Width(width);
+	Display::set_Height(height);
 
 	Logger::write("Creating game renderer using Direct3D11 API", LogLevel::Info);
 
