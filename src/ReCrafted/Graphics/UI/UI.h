@@ -11,7 +11,7 @@
 class UI
 {
 private:
-	ALIGN(4) struct vertex
+	struct vertex
 	{
 		float x = 0.0f;
 		float y = 0.0f;
@@ -75,7 +75,7 @@ private:
 
 	void drawnow();
 
-	FORCEINLINE void push_drawcmd(drawcmd* cmd);
+	void push_drawcmd(drawcmd* cmd, int index);
 
 public:
 	UI() { m_instance = this; }

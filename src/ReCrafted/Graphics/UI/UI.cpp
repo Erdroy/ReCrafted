@@ -41,17 +41,28 @@ void UI::drawnow()
 	m_indexBufferDataPos = 0u;
 }
 
-void UI::push_drawcmd(drawcmd* cmd) // protip: we can use forceinline on this method because we are using it only in this source file.
+void UI::push_drawcmd(drawcmd* cmd, int index) // protip: we can use forceinline on this method because we are using it only in this source file.
 {
 	// push draw cmd data
 	
+	cmd->indices[0] += index;
+	cmd->indices[1] += index;
+	cmd->indices[2] += index;
+	cmd->indices[3] += index;
+	cmd->indices[4] += index;
+	cmd->indices[5] += index;
+
 	// copy vertex data
 	auto vPtr = const_cast<byte*>(m_vertexBufferData);
-	memcpy(vPtr + m_vertexBufferDataPos, cmd->vertices, sizeof(vertex) * 4);
+	vPtr += m_vertexBufferDataPos;
+
+	memcpy(vPtr, cmd->vertices, sizeof(vertex) * 4);
 
 	// copy index data
 	auto iPtr = const_cast<byte*>(m_indexBufferData);
-	memcpy(iPtr + m_indexBufferDataPos, cmd->indices, sizeof(uint) * 6);
+	iPtr += m_indexBufferDataPos;
+
+	memcpy(iPtr, cmd->indices, sizeof(uint) * 6);
 
 	// increase data pos
 	m_vertexBufferDataPos += sizeof(vertex) * 4;
@@ -106,7 +117,9 @@ void UI::endDraw()
 {
 	// TODO: sorting
 
+	auto drawCmdCount = m_drawCmds.size();
 	auto vertexCount = 0;
+
 	for (auto i = 0u; i < m_drawCmds.size(); i++)
 	{
 		if(vertexCount + 4u > m_maxVertexCount) // or texture changes
@@ -119,13 +132,13 @@ void UI::endDraw()
 		auto drawcmd = &m_drawCmds[i];
 
 		// push draw command
-		push_drawcmd(drawcmd);
+		push_drawcmd(drawcmd, vertexCount);
 
 		// increase the vertex count used for batching
 		vertexCount += 4;
 
 		// draw if this is the last command
-		if(i + 1 == m_drawCmds.size())
+		if(i + 1 >= drawCmdCount)
 		{
 			drawnow();
 			break;
@@ -140,4 +153,10 @@ void UI::testDraw()
 {
 	setColor(Color(255, 0, 255));
 	drawBox(Rectf(0.0f, 0.0f, 100.0f, 100.0f));
+
+	setColor(Color(1.0f, 0.5f, 0.0f, 0.4f));
+	drawBox(Rectf(100.0f, 0.0f, 100.0f, 100.0f));
+
+	setColor(Color(255, 0, 0));
+	drawBox(Rectf(250.0f, 10.0f, 150.0f, 25.0f));
 }
