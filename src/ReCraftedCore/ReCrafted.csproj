@@ -22,6 +22,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+	<StartAction>Program</StartAction>
+    <StartProgram>D:\ReCrafted\build\bin64\ReCrafted.exe</StartProgram>
+    <StartWorkingDirectory>..\..\build\bin64\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+	<StartAction>Program</StartAction>
+    <StartProgram>D:\ReCrafted\build\bin64\ReCrafted.exe</StartProgram>
+    <StartWorkingDirectory>..\..\build\bin64\</StartWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
