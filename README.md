@@ -1,21 +1,22 @@
 # ReCrafted
 
+## External tools
+- [VisualStudio 2015/2017](https://www.visualstudio.com/) (IDE, Windows)
+- [VisualStudio Code](https://code.visualstudio.com/) with C++ extensions (IDE, Linux)
+- XCode (IDE, OSX)
+- [TexturePacker](https://www.codeandweb.com/texturepacker) for creating atlases
+
 ## Building
-Clone ReCrafted repo into suitable directory, eg.: `D:/ReCrafted/`
-1a. Clone all of those into `libs` in the root directory.
-- https://github.com/Erdroy/bx
-- https://github.com/Erdroy/bimg
-- https://github.com/Erdroy/bgfx
+1. Clone ReCrafted repo into suitable directory: `X:/ReCrafted/` (should contain: licenses, src, tools etc.)
+2. Clone ReCraftedBinaries repo into suitable directory: `X:/ReCrafted/build/` (should contain: assets, bin64, mono etc.)
+3. Download precompiled libs:
+https://mega.nz/#!Xh4nFD4T!8ZLfnz27OBBz0sEcSWZqLITuhnyQtEbancWE08TBuHg
+4. Unzip all files from downloaded archive - `libs_prebuilt.zip/libs_temp/` into `X:/ReCrafted/libs/`.
+5. Create `X:/ReCrafted/username.txt` file with your nickname.
+6. Run generate_project_X.(sh/bat) file in the root directory to build needed projects.
+7. Done! For example: open .projects/vs2015/ReCrafted.sln for C++ project.
 
-2a. Then build those libraries for needed platforms.
-3a. Run generate_X.(sh/bat) file in the root directory to build needed projects.
-4a. Create `username.txt` file in the root directory with your nickname.
-5a. Now you can the project you have created and compile any time.
-
-1b. Mono, clone mono repository same way as above
- -  https://github.com/mono/mono
- 
-2b. ???
+Warning: If you pull newly created files for C++ project, you must run generate_project_X.(sh/bat) again and then reload project.
 
 ## Links
 - [Trello](https://trello.com/b/xGap0YZQ/recrafted)
