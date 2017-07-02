@@ -4,11 +4,12 @@ libs/
 build/
 libs_prebuilt.zip
 .vs/
-src/ReCrafted.API/obj/
-src/ReCrafted.APIGen/obj/
-src/ReCraftedCore/obj/
 src/ReCrafted.API/bin/
+src/ReCrafted.API/obj/
+src/ReCrafted.API/docfx_project/
 src/ReCrafted.APIGen/bin/
+src/ReCrafted.APIGen/obj/
 src/ReCraftedCore/bin/
+src/ReCraftedCore/obj/
 ReCrafted.NET.VC.db
 ReCrafted.NET.VC.VC.opendb

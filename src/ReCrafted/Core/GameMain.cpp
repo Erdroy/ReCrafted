@@ -240,7 +240,7 @@ void GameMain::onLoad()
 
 	// initialize bgfx
 	bgfx::init(bgfx::RendererType::Direct3D11);
-	bgfx::reset(Display::get_Width(), Display::get_Height(), BGFX_RESET_MSAA_X4);
+	bgfx::reset(Display::get_Width(), Display::get_Height(), BGFX_RESET_NONE);
 
 	bgfx::setDebug(BGFX_DEBUG_NONE);
 
@@ -274,6 +274,7 @@ void GameMain::onLoad()
 	m_universe->init();
 
 	Logger::write("Game initialized", LogLevel::Info);
+	ScriptingEngine::initialize();
 }
 
 void GameMain::onUnload()
@@ -309,7 +310,7 @@ void GameMain::onResize(uint width, uint height)
 	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
 	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
 
-	bgfx::reset(Display::get_Width(), Display::get_Height(), BGFX_RESET_MSAA_X4);
+	bgfx::reset(Display::get_Width(), Display::get_Height(), BGFX_RESET_NONE);
 
 	m_rendering->resize(width, height);
 }

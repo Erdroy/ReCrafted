@@ -54,8 +54,6 @@ void ScriptingEngine::run()
 	m_method_simulate = load_method("ReCrafted.GameMain::Simulate", gamemain_class);
 	m_method_drawui = load_method("ReCrafted.GameMain::DrawUI", gamemain_class);
 	m_method_shutdown = load_method("ReCrafted.GameMain::Shutdown", gamemain_class);
-
-	initialize();
 }
 
 MonoClass* ScriptingEngine::load_class(const char* classNamespace, const char* className)
