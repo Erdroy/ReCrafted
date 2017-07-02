@@ -6,9 +6,9 @@ project "ReCrafted"
 		"Unicode", 
 		"NoImportLib",
 		"NativeWChar",
-		"StaticRuntime",
 		"NoEditAndContinue", 
 		"NoPCH",
+		"StaticRuntime",
 		"NoRTTI",
 	}
 	defines { "_CRT_SECURE_NO_WARNINGS" }
@@ -37,9 +37,12 @@ project "ReCrafted"
 	
 	configuration { "Debug" }
 		defines { "DEBUG", "_ITERATOR_DEBUG_LEVEL=0" }
+		runtime "Debug"
+		symbols "On"
 
 	configuration { "Release" }
 		flags { "OptimizeSpeed", "No64BitChecks", "NoBufferSecurityCheck" }
+		runtime "Release"
 
 	configuration { "x64" }
 		-- set target dir
