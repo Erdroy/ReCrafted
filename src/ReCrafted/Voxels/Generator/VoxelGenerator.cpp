@@ -10,7 +10,7 @@ void VoxelGenerator::initialize()
 {
 	// https://github.com/Auburns/FastNoiseSIMD/wiki
 
-	FastNoiseSIMD::SetSIMDLevel(2);
+	FastNoiseSIMD::SetSIMDLevel(-1);
 	noise_terrain = FastNoiseSIMD::NewFastNoiseSIMD(100);
 	noise_terrain->SetNoiseType(FastNoiseSIMD::SimplexFractal);
 	noise_terrain->SetFrequency(0.008f);
