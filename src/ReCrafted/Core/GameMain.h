@@ -24,9 +24,6 @@ private:
 	volatile bool m_running = false;
 	bool m_initialized = false;
 
-	uint m_width = 1280;
-	uint m_height = 720;
-
 	Rendering* m_rendering = nullptr;
 	UI* m_ui = nullptr;
 
@@ -91,33 +88,6 @@ public:
 	FORCEINLINE static bool isRunning()
 	{
 		return m_instance->m_running;
-	}
-
-	/// <summary>
-	/// The game window width.
-	/// </summary>
-	/// <returns>The width.</returns>
-	FORCEINLINE static uint getWindowWidth()
-	{
-		return m_instance->m_width;
-	}
-
-	/// <summary>
-	/// The game window height.
-	/// </summary>
-	/// <returns>The height.</returns>
-	FORCEINLINE static uint getWindowHeight()
-	{
-		return m_instance->m_height;
-	}
-
-	/// <summary>
-	/// The game window aspect ratio.
-	/// </summary>
-	/// <returns>The aspect ratio.</returns>
-	FORCEINLINE static float getAspectRatio()
-	{
-		return float(m_instance->m_width) / float(m_instance->m_height);
 	}
 };
 

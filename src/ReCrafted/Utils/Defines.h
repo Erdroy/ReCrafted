@@ -56,6 +56,14 @@ inline void LOG(const char* text)
 		m_##name = v;			\
 	}							\
 	private: type m_##name
+#define STATIC_PROPERTY(type, name)    \
+    public: __inline static type get_##name##() {        \
+        return m_##name ;        \
+    }                            \
+    public: __inline static void set_##name##(type v) {    \
+        m_##name = v;            \
+    }                            \
+    private: static type m_##name
 
 #define ALIGN(x) __declspec(align(x)) 
 

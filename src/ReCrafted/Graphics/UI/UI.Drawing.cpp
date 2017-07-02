@@ -2,6 +2,7 @@
 
 #include "UI.h"
 #include "../../Core/GameMain.h"
+#include "../../Common/Display.h"
 
 void UI::internal_drawBox(Rectf rect)
 {
@@ -17,8 +18,8 @@ void UI::internal_drawBox(Rectf rect)
 	// fourth vertex
 	vertex v3 = {};
 
-	auto screen_width = GameMain::getWindowWidth();
-	auto screen_height = GameMain::getWindowHeight();
+	auto screen_width = Display::get_Width();
+	auto screen_height = Display::get_Height();
 
 	// Width
 	auto width = rect.width / (screen_width * 0.5f);

@@ -4,6 +4,7 @@
 #include "../Core/Logger.h"
 #include "../Common/Input.h"
 #include "../Core/GameMain.h"
+#include "../Common/Display.h"
 
 void ScriptingEngine::bind_all()
 {
@@ -11,4 +12,5 @@ void ScriptingEngine::bind_all()
 	Input::initRuntime();
 	GameMain::initRuntime();
 	Time::initRuntime();
+	Display::initRuntime();
 }

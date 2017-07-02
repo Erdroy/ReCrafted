@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Display.Gen.cs" />
     <Compile Include="Common\Input.Gen.cs" />
     <Compile Include="Common\Time.Gen.cs" />
     <Compile Include="Core\Game.Gen.cs" />

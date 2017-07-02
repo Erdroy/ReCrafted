@@ -2,6 +2,7 @@
 
 #include "GameMain.h"
 #include "../Scripting/ScriptingEngine.h"
+#include "../Common/Display.h"
 
 #define CHECK_SHUTDOWN if (!m_running) break;
 
@@ -226,8 +227,11 @@ void GameMain::onLoad()
 
 	Logger::write("ReCrafted - startup", LogLevel::Info);
 
+	auto width = Display::get_Width();
+	auto height = Display::get_Height();
+
 	// get game window size
-	Platform::getGameWindowSize(&m_width, &m_height);
+	Platform::getGameWindowSize(&width, &height);
 
 	Logger::write("Creating game renderer using Direct3D11 API", LogLevel::Info);
 
@@ -236,16 +240,16 @@ void GameMain::onLoad()
 
 	// initialize bgfx
 	bgfx::init(bgfx::RendererType::Direct3D11);
-	bgfx::reset(m_width, m_height, BGFX_RESET_MSAA_X4);
+	bgfx::reset(Display::get_Width(), Display::get_Height(), BGFX_RESET_MSAA_X4);
 
 	bgfx::setDebug(BGFX_DEBUG_NONE);
 
 	// Set view 0 clear state.
 	bgfx::setViewClear(RENDERVIEW_BACKBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030FF, 1.0f, 0);
-	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, m_width, m_height);
+	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
 
 	bgfx::setViewClear(RENDERVIEW_GBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
-	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, m_width, m_height);
+	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
 
 	Logger::write("Renderer initialized", LogLevel::Info);
 
@@ -298,14 +302,14 @@ void GameMain::onResize(uint width, uint height)
 	if (!m_initialized)
 		return; // do not allow to enter this method when game is not initialized yet.
 
-	m_width = width;
-	m_height = height;
+	Display::set_Width(width);
+	Display::set_Height(height);
 
 	// reset bgfx state, this should force renderer to resize all the viewports etc.
-	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, m_width, m_height);
-	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, m_width, m_height);
+	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
+	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
 
-	bgfx::reset(m_width, m_height, BGFX_RESET_MSAA_X4);
+	bgfx::reset(Display::get_Width(), Display::get_Height(), BGFX_RESET_MSAA_X4);
 
 	m_rendering->resize(width, height);
 }
@@ -355,8 +359,8 @@ void GameMain::onSimulate()
 void GameMain::onDraw()
 {
 	// draw event, called every frame, must be ended with gpu backbuffer `present` or `swapbuffer` - bgfx::frame()
-	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, m_width, m_height);
-	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, m_width, m_height);
+	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
+	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
 
 	bgfx::touch(RENDERVIEW_BACKBUFFER);
 

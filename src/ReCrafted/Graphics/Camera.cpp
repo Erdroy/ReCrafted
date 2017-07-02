@@ -2,6 +2,7 @@
 
 #include "Camera.h"
 #include "../Core/GameMain.h"
+#include "../Common/Display.h"
 
 // declare m_mainCamera static variable
 Camera* Camera::m_mainCamera;
@@ -141,7 +142,7 @@ void Camera::updateControls()
 void Camera::updatePerspective()
 {
 	// create projection matrix
-	Matrix::createPerspectiveFovLH(Math::degreeToRadian(m_fov), GameMain::getAspectRatio(), m_nearPlane, m_farPlane, &m_projection);
+	Matrix::createPerspectiveFovLH(Math::degreeToRadian(m_fov), Display::getAspectRatio(), m_nearPlane, m_farPlane, &m_projection);
 }
 
 void Camera::update()
@@ -171,8 +172,8 @@ void Camera::update()
 		
 		// lock position
 		Input::setCursorPos(
-			static_cast<int>(round(GameMain::getWindowWidth() / 2.0f)),
-			static_cast<int>(round(GameMain::getWindowHeight() / 2.0f))
+			static_cast<int>(round(Display::get_Width() / 2.0f)),
+			static_cast<int>(round(Display::get_Height() / 2.0f))
 		);
 	}
 
@@ -183,5 +184,5 @@ void Camera::update()
 	Matrix::createViewLH(m_position, m_lookAt, m_upLock, &m_view);
 
 	// update camera frustum for culling
-	m_frustum = BoundingFrustum::FromCamera(m_position, m_forward, m_up, Math::degreeToRadian(m_fov), m_nearPlane, m_farPlane, GameMain::getAspectRatio());
+	m_frustum = BoundingFrustum::FromCamera(m_position, m_forward, m_up, Math::degreeToRadian(m_fov), m_nearPlane, m_farPlane, Display::getAspectRatio());
 }
