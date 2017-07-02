@@ -31,6 +31,8 @@ public:
 
 	static void simulate();
 
+	static void drawui();
+
 	static void shutdown();
 };
 

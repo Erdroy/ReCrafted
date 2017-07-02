@@ -17,6 +17,7 @@ MonoObject* m_game_main;
 MonoMethod* m_method_initialize;
 MonoMethod* m_method_update;
 MonoMethod* m_method_simulate;
+MonoMethod* m_method_drawui;
 MonoMethod* m_method_shutdown;
 
 void ScriptingEngine::run()
@@ -51,6 +52,7 @@ void ScriptingEngine::run()
 	m_method_initialize = load_method("ReCrafted.GameMain::Initialize", gamemain_class);
 	m_method_update = load_method("ReCrafted.GameMain::Update", gamemain_class);
 	m_method_simulate = load_method("ReCrafted.GameMain::Simulate", gamemain_class);
+	m_method_drawui = load_method("ReCrafted.GameMain::DrawUI", gamemain_class);
 	m_method_shutdown = load_method("ReCrafted.GameMain::Shutdown", gamemain_class);
 
 	initialize();
@@ -89,6 +91,11 @@ void ScriptingEngine::update()
 void ScriptingEngine::simulate()
 {
 	mono_runtime_invoke(m_method_simulate, m_game_main, nullptr, nullptr);
+}
+
+void ScriptingEngine::drawui()
+{
+	mono_runtime_invoke(m_method_drawui, m_game_main, nullptr, nullptr);
 }
 
 void ScriptingEngine::shutdown()
