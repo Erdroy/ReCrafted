@@ -20,7 +20,10 @@ private:
 		float u = 0.0f;
 		float v = 0.0f;
 
-		Color color = Color(0xFFFFFFFF); // hex 255, 255, 255, 255
+		float r = 1.0f;
+		float g = 1.0f;
+		float b = 1.0f;
+		float a = 1.0f;
 	};
 
 	struct drawcmd
@@ -58,6 +61,13 @@ private:
 	uint m_vertexBufferDataPos = 0u;
 	uint m_indexBufferDataPos = 0u;
 
+	Color m_color = {};
+
+	float m_color_r = 1.0f;
+	float m_color_g = 1.0f;
+	float m_color_b = 1.0f;
+	float m_color_a = 1.0f;
+
 	Ptr<Shader> m_shader = nullptr;
 
 private:
@@ -83,6 +93,10 @@ public:
 
 	void drawBox(Rectf rect);
 
+public:
+	static void setColor(Color color);
+
+	static Color getColor();
 };
 
 #endif // UI_H

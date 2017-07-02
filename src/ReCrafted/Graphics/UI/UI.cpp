@@ -138,5 +138,6 @@ void UI::endDraw()
 
 void UI::testDraw()
 {
+	setColor(Color(255, 0, 255));
 	drawBox(Rectf(0.0f, 0.0f, 100.0f, 100.0f));
 }

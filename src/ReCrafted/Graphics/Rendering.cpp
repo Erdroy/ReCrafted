@@ -204,7 +204,11 @@ void Rendering::setState(bool tristrip, bool msaa, bool uiRendering)
 
 	if (uiRendering)
 	{
-		state |= BGFX_STATE_BLEND_ADD | BGFX_STATE_RGB_WRITE;
+		state &= ~(BGFX_STATE_DEPTH_TEST_LESS);
+
+		state |= 
+			BGFX_STATE_BLEND_FUNC_SEPARATE(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA, BGFX_STATE_BLEND_ZERO, BGFX_STATE_BLEND_ONE)
+			| BGFX_STATE_BLEND_EQUATION(BGFX_STATE_BLEND_EQUATION_ADD);
 	}
 
 	bgfx::setState(state);

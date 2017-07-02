@@ -3,7 +3,7 @@
 #include "GameMain.h"
 #include "../Scripting/ScriptingEngine.h"
 
-#define GAMEBASE_CHECK_SHUTDOWN if (!m_running) break;
+#define CHECK_SHUTDOWN if (!m_running) break;
 
 GameMain* GameMain::m_instance;
 
@@ -195,9 +195,9 @@ void GameMain::run()
 
 		// frame
 		{
-			onUpdate(); GAMEBASE_CHECK_SHUTDOWN
-			onSimulate(); GAMEBASE_CHECK_SHUTDOWN // TODO: fixed-time step `onSimulate` call
-			onDraw(); GAMEBASE_CHECK_SHUTDOWN
+			onUpdate(); CHECK_SHUTDOWN
+			onSimulate(); CHECK_SHUTDOWN // TODO: fixed-time step `onSimulate` call
+			onDraw(); CHECK_SHUTDOWN
 		}
 	}
 
@@ -236,7 +236,7 @@ void GameMain::onLoad()
 
 	// initialize bgfx
 	bgfx::init(bgfx::RendererType::Direct3D11);
-	bgfx::reset(m_width, m_height, BGFX_RESET_NONE);
+	bgfx::reset(m_width, m_height, BGFX_RESET_MSAA_X4);
 
 	bgfx::setDebug(BGFX_DEBUG_NONE);
 
@@ -305,7 +305,7 @@ void GameMain::onResize(uint width, uint height)
 	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, m_width, m_height);
 	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, m_width, m_height);
 
-	bgfx::reset(m_width, m_height, BGFX_RESET_NONE);
+	bgfx::reset(m_width, m_height, BGFX_RESET_MSAA_X4);
 
 	m_rendering->resize(width, height);
 }
@@ -370,7 +370,6 @@ void GameMain::onDraw()
 
 		// draw all shadow casters
 		m_universe->drawShadowCasters();
-		// TODO: call EntityPool->DrawShadowCasters
 
 		// render static objects, eg.: static entities, voxels.
 		m_rendering->renderStatic();
@@ -378,11 +377,10 @@ void GameMain::onDraw()
 
 		// render all entities
 		m_rendering->renderEntities();
-		// TODO: call EntityPool->Draw
 	}
 	m_rendering->endRender(); // end rendering the scene
 
-	m_rendering->setState(false, false, true);
+	m_rendering->setState(false, true, true);
 
 	// draw UI
 	m_ui->beginDraw(); // begin draw UI
@@ -390,9 +388,10 @@ void GameMain::onDraw()
 		m_ui->testDraw();
 	}
 	m_ui->endDraw(); // end draw UI
+	bgfx::setViewFrameBuffer(0, BGFX_INVALID_HANDLE);
 	
 	// next frame, wait vsync
 	bgfx::frame();
 }
 
-#undef GAMEBASE_CHECK_SHUTDOWN
+#undef CHECK_SHUTDOWN
