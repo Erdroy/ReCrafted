@@ -75,7 +75,9 @@ private:
 
 	void drawnow();
 
-	void push_drawcmd(drawcmd* cmd, int index);
+	FORCEINLINE void push_drawcmd(drawcmd* cmd, int index);
+
+	FORCEINLINE void internal_drawBox(Rectf rect);
 
 public:
 	UI() { m_instance = this; }
@@ -89,14 +91,26 @@ public:
 
 	void endDraw();
 
-	void testDraw();
-
-	void drawBox(Rectf rect);
-
 public:
+	// common
+	/// <summary>
+	/// Sets UI rendering color (boxes)
+	/// </summary>
+	/// <param name="color">The color.</param>
 	static void setColor(Color color);
 
+	/// <summary>
+	/// Gets current UI rendering color.
+	/// </summary>
+	/// <returns>Current color.</returns>
 	static Color getColor();
+
+	// drawing
+	/// <summary>
+	/// Draws colored box on the screen.
+	/// </summary>
+	/// <param name="rect">The box rectangle in pixels.</param>
+	static void drawBox(Rectf rect);
 };
 
 #endif // UI_H

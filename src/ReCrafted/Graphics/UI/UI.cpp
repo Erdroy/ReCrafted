@@ -148,15 +148,3 @@ void UI::endDraw()
 	// clear after drawing
 	clear();
 }
-
-void UI::testDraw()
-{
-	setColor(Color(255, 0, 255));
-	drawBox(Rectf(0.0f, 0.0f, 100.0f, 100.0f));
-
-	setColor(Color(1.0f, 0.5f, 0.0f, 0.4f));
-	drawBox(Rectf(100.0f, 0.0f, 100.0f, 100.0f));
-
-	setColor(Color(255, 0, 0));
-	drawBox(Rectf(250.0f, 10.0f, 150.0f, 25.0f));
-}

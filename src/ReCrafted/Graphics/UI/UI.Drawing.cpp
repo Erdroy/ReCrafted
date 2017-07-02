@@ -3,7 +3,7 @@
 #include "UI.h"
 #include "../../Core/GameMain.h"
 
-void UI::drawBox(Rectf rect)
+void UI::internal_drawBox(Rectf rect)
 {
 	// first vertex
 	vertex v0 = {};
@@ -106,4 +106,9 @@ void UI::setColor(Color color)
 Color UI::getColor()
 {
 	return m_instance->m_color;
+}
+
+void UI::drawBox(Rectf rect)
+{
+	m_instance->internal_drawBox(rect);
 }

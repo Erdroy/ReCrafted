@@ -385,7 +385,7 @@ void GameMain::onDraw()
 	// draw UI
 	m_ui->beginDraw(); // begin draw UI
 	{
-		m_ui->testDraw();
+		ScriptingEngine::drawui();
 	}
 	m_ui->endDraw(); // end draw UI
 	bgfx::setViewFrameBuffer(0, BGFX_INVALID_HANDLE);
