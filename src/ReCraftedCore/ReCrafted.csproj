@@ -22,7 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-	<StartAction>Program</StartAction>
+    <StartAction>Program</StartAction>
     <StartProgram>D:\ReCrafted\build\bin64\ReCrafted.exe</StartProgram>
     <StartWorkingDirectory>..\..\build\bin64\</StartWorkingDirectory>
   </PropertyGroup>
@@ -34,7 +34,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-	<StartAction>Program</StartAction>
+    <StartAction>Program</StartAction>
     <StartProgram>D:\ReCrafted\build\bin64\ReCrafted.exe</StartProgram>
     <StartWorkingDirectory>..\..\build\bin64\</StartWorkingDirectory>
   </PropertyGroup>

@@ -1,0 +1,10 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
+  &lt;Assembly Path="C:\WINDOWS\assembly\GAC\Microsoft.VisualStudio.Shell.Interop.8.0\8.0.0.0__b03f5f7f11d50a3a\Microsoft.VisualStudio.Shell.Interop.8.0.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\WINDOWS\assembly\GAC\Microsoft.VisualStudio.Shell.Interop\7.1.40304.0__b03f5f7f11d50a3a\Microsoft.VisualStudio.Shell.Interop.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\ReCrafted\packages\Mono.Debugging.VisualStudio.1.0.41-pre\lib\net45\Mono.Debugging.VisualStudio.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\WINDOWS\assembly\GAC_MSIL\Microsoft.VisualStudio.Shell.Interop.11.0\11.0.0.0__b03f5f7f11d50a3a\Microsoft.VisualStudio.Shell.Interop.11.0.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\ReCrafted\packages\Mono.Debugging.VisualStudio.1.0.41-pre\lib\net45\Mono.Debugging.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\ReCrafted\packages\Mono.Debugging.Soft.1.0.20170212.42\lib\net40\Mono.Debugging.Soft.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\ReCrafted\packages\Mono.Debugging.1.0.20170212.42\lib\net40\Mono.Debugging.dll" /&gt;&#xD;
+&lt;/AssemblyExplorer&gt;</s:String></wpf:ResourceDictionary>
