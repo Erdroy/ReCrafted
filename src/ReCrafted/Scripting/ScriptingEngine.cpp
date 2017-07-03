@@ -33,13 +33,13 @@ void ScriptingEngine::run()
 
 	mono_set_dirs("../mono/lib", "../mono/etc");
 
-	const char* jit_options[] = {
+	/*const char* jit_options[] = {
 		"--soft-breakpoints",
 		"--debugger-agent=transport=dt_socket,address=127.0.0.1:55000"
 	};
 
 	mono_jit_parse_options(2, const_cast<char**>(jit_options));
-	mono_debug_init(MONO_DEBUG_FORMAT_MONO);
+	mono_debug_init(MONO_DEBUG_FORMAT_MONO);*/
 
 	m_domain = mono_jit_init_version("ReCrafted", "v4.0.30319");
 

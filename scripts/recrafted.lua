@@ -21,6 +21,7 @@ project "ReCrafted"
 		path.join(LIBS_DIR, "bgfx/include"),
 		path.join(LIBS_DIR, "json"),
 		path.join(LIBS_DIR, "mono/inc"),
+		path.join(LIBS_DIR, "freetype/include"),
 	}
 	
 	-- add source/header/shader files

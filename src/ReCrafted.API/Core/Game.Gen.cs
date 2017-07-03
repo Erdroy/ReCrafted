@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 07/01/2017 19:13:51 Source: 'Logger.API.cpp' Target: 'Core/Game.Gen.cs'
+// Generated: 07/03/2017 18:19:05 Source: 'UI.API.cpp' Target: 'Core/Game.Gen.cs'
 
 using System.Runtime.CompilerServices;
 

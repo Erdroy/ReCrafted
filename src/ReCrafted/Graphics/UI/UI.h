@@ -6,10 +6,13 @@
 // includes
 #include "../../Core/Math/Color.h"
 #include "../../Core/Math/Rectf.h"
+#include "../../Common/ReCraftedAPI.h"
 #include "../Shader.h"
 
 class UI
 {
+	API_DEF
+
 private:
 	struct vertex
 	{

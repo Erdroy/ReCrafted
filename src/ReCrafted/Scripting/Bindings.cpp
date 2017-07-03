@@ -1,10 +1,11 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "ScriptingEngine.h"
-#include "../Core/Logger.h"
 #include "../Common/Input.h"
-#include "../Core/GameMain.h"
 #include "../Common/Display.h"
+#include "../Core/GameMain.h"
+#include "../Core/Logger.h"
+#include "../Graphics/UI/UI.h"
 
 void ScriptingEngine::bind_all()
 {
@@ -13,4 +14,5 @@ void ScriptingEngine::bind_all()
 	GameMain::initRuntime();
 	Time::initRuntime();
 	Display::initRuntime();
+	UI::initRuntime();
 }

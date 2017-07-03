@@ -54,17 +54,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Mono.Debugging.VisualStudio\CecilHelper.cs" />
-    <Compile Include="Mono.Debugging.VisualStudio\DebuggerSession.cs" />
-    <Compile Include="Mono.Debugging.VisualStudio\DebuggingOptions.cs" />
-    <Compile Include="Mono.Debugging.VisualStudio\DebugLauncher.cs" />
-    <Compile Include="Mono.Debugging.VisualStudio\Guids.cs" />
-    <Compile Include="Mono.Debugging.VisualStudio\IDebugLauncher.cs" />
-    <Compile Include="Mono.Debugging.VisualStudio\IStartInfo.cs" />
-    <Compile Include="Mono.Debugging.VisualStudio\MonoDebuggerLauncher.cs" />
-    <Compile Include="Mono.Debugging.VisualStudio\ProjectInterfaceConverters.cs" />
-    <Compile Include="Mono.Debugging.VisualStudio\SessionMarshalling.cs" />
-    <Compile Include="Mono.Debugging.VisualStudio\StartInfo.cs" />
     <Compile Include="ReCraftedPackage.cs" />
     <Compile Include="ReCraftedDebuggableConfig.cs" />
     <Compile Include="ReCraftedFlavoredProject.cs" />
@@ -220,6 +209,9 @@
     <Reference Include="Mono.Debugging.Soft, Version=0.0.0.0, Culture=neutral, PublicKeyToken=5e9ce85b0923c84f, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Mono.Debugging.Soft.1.0.20170212.42\lib\net40\Mono.Debugging.Soft.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Debugging.VisualStudio">
+      <HintPath>..\..\packages\Mono.Debugging.VisualStudio.1.0.41-pre\lib\net45\Mono.Debugging.VisualStudio.dll</HintPath>
     </Reference>
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>

@@ -9,7 +9,7 @@
 #include "../../recraftedPrerequisites.h"
 #include "../../Core/Math/Vector2.h"
 
-struct Rectf
+ALIGN(4) struct Rectf
 {
 public:
 	/// <summary>

@@ -111,5 +111,8 @@ Color UI::getColor()
 
 void UI::drawBox(Rectf rect)
 {
+	rect.width -= rect.x;
+	rect.height -= rect.y;
+
 	m_instance->internal_drawBox(rect);
 }
