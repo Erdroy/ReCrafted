@@ -7,6 +7,7 @@
 #include "../../Core/Math/Color.h"
 #include "../../Core/Math/Rectf.h"
 #include "../../Common/ReCraftedAPI.h"
+#include "../../Common/Text.h"
 #include "../Shader.h"
 
 class UI
@@ -114,6 +115,8 @@ public:
 	/// </summary>
 	/// <param name="rect">The box rectangle in pixels.</param>
 	static void drawBox(Rectf rect);
+
+	static void loadFont(Text fontFile, int size);
 };
 
 #endif // UI_H

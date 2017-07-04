@@ -69,6 +69,16 @@ project "ReCrafted"
 			path.join(LIBS_DIR, "mono/lib"),
 		}
 	
+	configuration { "vs*", "Debug"}
+		libdirs { 
+			path.join(LIBS_DIR, "freetype/debug"),
+		}
+		
+	configuration { "vs*", "Release"}
+		libdirs { 
+			path.join(LIBS_DIR, "freetype/release"),
+		}
+	
 	-- TODO: add linux and macosx
 	
 	configuration {}
