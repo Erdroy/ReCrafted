@@ -46,6 +46,7 @@ private:
 
 private:
 	File m_logFile = {};
+	bool m_canWrite = false;
 	
 private:
 	Logger() { m_instance = this; }
@@ -62,6 +63,9 @@ public:
 	/// <param name="logLevel">The log level.</param>
 	FORCEINLINE static void write(Char* uni_chars, LogLevel::Enum logLevel = LogLevel::Debug)
 	{
+		if (!m_instance->m_canWrite)
+			return;
+
 		std::wstring_convert<std::codecvt_utf8_utf16<__int16>, __int16> conversion;
 		auto data = conversion.to_bytes(reinterpret_cast<__int16*>(uni_chars));
 		write(data.data(), logLevel);
@@ -77,10 +81,9 @@ public:
 	/// <param name="logLevel">The log level.</param>
 	FORCEINLINE static void write(const char* messageA, const char* messageB, const char* messageC, LogLevel::Enum logLevel = LogLevel::Debug)
 	{
-/*#ifndef _DEBUG
-		if (logLevel == LogLevel::Debug)
+		if (!m_instance->m_canWrite)
 			return;
-#endif*/
+
 		static char buffer[LOGGER_MAXSIZE] = {};
 
 		strcpy_s(buffer, messageA);
@@ -99,6 +102,9 @@ public:
 	/// <param name="logLevel">The log level.</param>
 	FORCEINLINE static void write(const char* messageA, const char* messageB, LogLevel::Enum logLevel = LogLevel::Debug)
 	{
+		if (!m_instance->m_canWrite)
+			return;
+
 		write(messageA, messageB, "", logLevel);
 	}
 
@@ -109,10 +115,8 @@ public:
 	/// <param name="logLevel">The log level.</param>
 	FORCEINLINE static void write(const char* message, LogLevel::Enum logLevel = LogLevel::Debug)
 	{
-/*#ifndef _DEBUG
-		if (logLevel == LogLevel::Debug)
+		if (!m_instance->m_canWrite)
 			return;
-#endif*/
 
 		static char buffer[LOGGER_MAXSIZE] = {};
 		static char timeBuffer[64] = {};

@@ -5,6 +5,7 @@
 
 #include <mono/metadata/debug-helpers.h>
 #include <mono/metadata/mono-debug.h>
+#include "../Core/GameInfo.h"
 
 #pragma comment(lib, "mono.lib")
 
@@ -38,12 +39,18 @@ void ScriptingEngine::run()
 
 	mono_set_dirs("../mono/lib", "../mono/etc");
 
-	mono_jit_parse_options(2, const_cast<char**>(jit_options));
+	if (GameInfo::containsArgument(TEXT("-debug")))
+	{
+		mono_jit_parse_options(2, const_cast<char**>(jit_options));
+	}
 
 	m_domain = mono_jit_init_version("ReCrafted", "v4.0.30319");
 
-	mono_debug_init(MONO_DEBUG_FORMAT_MONO);
-	mono_debug_domain_create(m_domain);
+	if (GameInfo::containsArgument(TEXT("-debug")))
+	{
+		mono_debug_init(MONO_DEBUG_FORMAT_MONO);
+		mono_debug_domain_create(m_domain);
+	}
 
 	m_api_assembly = mono_domain_assembly_open(m_domain, "ReCrafted.API.dll");
 
