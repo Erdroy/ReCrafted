@@ -294,6 +294,14 @@ public:
 	}
 
 	/// <summary>
+	/// Clones this string.
+	/// </summary>
+	Text clone() const
+	{
+		return Text(m_data);
+	}
+
+	/// <summary>
 	/// Returns const wide string.
 	/// This is slow, and it isn't recommended to use.
 	/// </summary>
@@ -333,17 +341,20 @@ public:
 		return *this;
 	}
 
-	Char& operator[](size_t index)
+	Text Text::operator+(Text& text) const
 	{
-		return m_data[index];
+		auto thisStr = clone();
+
+		thisStr.append(text);
+
+		return thisStr;
 	}
 
-	const Char& operator[](size_t index) const
-	{
-		return m_data[index];
+	void Text::operator+=(const Text& text){
+		append(const_cast<Text&>(text));
 	}
 
-	bool Text::operator == (const Text &text) const {
+	bool Text::operator == (const Text& text) const {
 		if (length() != text.length())
 			return false;
 
@@ -355,6 +366,17 @@ public:
 
 		return true;
 	}
+
+	Char& operator[](size_t index)
+	{
+		return m_data[index];
+	}
+
+	const Char& operator[](size_t index) const
+	{
+		return m_data[index];
+	}
+
 public:
 	/// <summary>
 	/// Returns empty text.
