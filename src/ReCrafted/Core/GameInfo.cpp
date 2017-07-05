@@ -9,7 +9,8 @@ bool GameInfo::containsArgument(Text text)
 {
 	for(auto i = 0u; i < cliArguments.size(); i ++)
 	{
-		return cliArguments[i] == text;
+		if(cliArguments[i] == text)
+			return true;
 	}
 
 	return false;
