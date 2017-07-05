@@ -1,5 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
+#include "Core/GameInfo.h"
 #ifdef _WIN32
 
 // includes
@@ -15,6 +16,7 @@ int CALLBACK WinMain(
 	LPSTR lpCmdLine,
 	int nCmdShow)
 {
+	GameInfo::parseArguments(Text(GetCommandLineA()));
 
 	// run the game
 	GameMain core = {};
