@@ -123,6 +123,27 @@ public:
 	}
 
 	/// <summary>
+	/// Constructor of text thats using const wide cstring.
+	/// </summary>
+	/// <param name="text">The cstring.</param>
+	explicit Text(const char* string)
+	{
+		auto length = 0;
+		while (string[length] != 0)
+		{
+			length++;
+		}
+
+		alloc_chars(length);
+
+		for(auto i = 0; i < length; i ++)
+		{
+			m_data[i] = static_cast<Char>(string[i]);
+		}
+		m_data[length] = 0;
+	}
+
+	/// <summary>
 	/// Default destructor.
 	/// </summary>
 	~Text()
@@ -312,6 +333,28 @@ public:
 		return *this;
 	}
 
+	Char& operator[](size_t index)
+	{
+		return m_data[index];
+	}
+
+	const Char& operator[](size_t index) const
+	{
+		return m_data[index];
+	}
+
+	bool Text::operator == (const Text &text) const {
+		if (length() != text.length())
+			return false;
+
+		for (auto i = 0; i < length(); i++)
+		{
+			if (m_data[i] != text[i])
+				return false;
+		}
+
+		return true;
+	}
 public:
 	/// <summary>
 	/// Returns empty text.
