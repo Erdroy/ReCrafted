@@ -1,5 +1,0 @@
-D:\ReCrafted\build\bin64\ReCrafted.dll
-D:\ReCrafted\build\bin64\ReCrafted.pdb
-D:\ReCrafted\src\ReCrafted\obj\Release\ReCrafted.csprojResolveAssemblyReference.cache
-D:\ReCrafted\src\ReCrafted\obj\Release\ReCrafted.dll
-D:\ReCrafted\src\ReCrafted\obj\Release\ReCrafted.pdb
