@@ -1,4 +1,6 @@
-﻿using ReCrafted.API.Core;
+﻿// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+
+using ReCrafted.API.Core;
 
 namespace ReCrafted.API.UI
 {

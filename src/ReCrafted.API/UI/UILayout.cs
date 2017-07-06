@@ -1,4 +1,6 @@
-﻿using System;
+﻿// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+
+using System;
 using ReCrafted.API.Core;
 
 namespace ReCrafted.API.UI
@@ -17,7 +19,7 @@ namespace ReCrafted.API.UI
         public Vector2 PreferedSize { get; set; }
 
         /// <summary>
-        /// Rekalkulacja layout’u.
+        /// Recalculate Layout, duh
         /// </summary>
         public void Recalculate()
         {

@@ -1,4 +1,6 @@
-﻿using System;
+﻿// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+
+using System;
 using System.Collections.Generic;
 
 namespace ReCrafted.API.UI
@@ -6,7 +8,7 @@ namespace ReCrafted.API.UI
     public class UIPanel : UIControl
     {
         /// <summary>
-        /// Zawiera wszystkie kontrolki.
+        /// Contains all the controls
         /// </summary>
         public UILayout Layout { get; }
 
@@ -15,7 +17,8 @@ namespace ReCrafted.API.UI
         /// </summary>
         public bool Visible { get; set; }
 
-        static List<UIPanel> _panels;
+        private static List<UIPanel> _panels;
+
         public static UIPanel Create()
         {
             throw new NotImplementedException();

@@ -1,15 +1,19 @@
-﻿using System;
+﻿// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+
+using System;
 using System.Collections.Generic;
 
 namespace ReCrafted.API.UI
 {
     public class UIContainer : UIControl
     {
-        List<UIControl> _controls;
+        private List<UIControl> _controls;
+
         /// <summary>
-        /// Zawiera wszystkie kontrolki.
+        /// Contains all the controls
         /// </summary>
-        UIControl[] Controls { get { return _controls.ToArray(); } }
+        public UIControl[] Controls => _controls.ToArray();
+
         public T Add<T>() where T : UIControl
         {
             throw new NotImplementedException();
