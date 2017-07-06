@@ -54,11 +54,11 @@ void ScriptingEngine::run()
 
 	m_api_assembly = mono_domain_assembly_open(m_domain, "ReCrafted.API.dll");
 
-	Logger::write("Loaded ReCraftedAPI.dll", LogLevel::Info);
+	Logger::write("Loaded ReCrafted.API.dll", LogLevel::Info);
 
-	m_core_assembly = mono_domain_assembly_open(m_domain, "ReCrafted.dll");
+	m_core_assembly = mono_domain_assembly_open(m_domain, "ReCrafted.Game.dll");
 
-	Logger::write("Loaded ReCrafted.dll", LogLevel::Info);
+	Logger::write("Loaded ReCrafted.Game.dll", LogLevel::Info);
 
 	// bind API
 	bind_all();
