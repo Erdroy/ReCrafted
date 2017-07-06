@@ -10,10 +10,10 @@ void UI::initRuntime()
 		API_USING("ReCrafted.API.Core");
 
 		API_COMMENT("UI internal class.");
-		API_CLASS(PUBLIC, STATIC, "ReCrafted.API.UI", "UIInternal");
+		API_CLASS(INTERNAL, STATIC, "ReCrafted.API.UI", "UIInternal");
 		{
 			API_COMMENT("Draws box.");
-			API_METHOD(PUBLIC, STATIC, "DrawBox", EXTERN);
+			API_METHOD(INTERNAL, STATIC, "DrawBox", EXTERN);
 			{
 				API_BIND("ReCrafted.API.UI.UIInternal::DrawBox", &UI::drawBox);
 				
@@ -23,7 +23,7 @@ void UI::initRuntime()
 			API_METHOD_END();
 
 			API_COMMENT("The current drawing color");
-			API_PROPERTY(PUBLIC, STATIC, "Color", "Color", GETSET);
+			API_PROPERTY(INTERNAL, STATIC, "Color", "Color", GETSET);
 			{
 				API_BIND("ReCrafted.API.UI.UIInternal::Internal_Color_Get", &UI::getColor);
 				API_BIND("ReCrafted.API.UI.UIInternal::Internal_Color_Set", &UI::setColor);

@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 07/06/2017 16:38:19 Source: 'UI.API.cpp' Target: 'UI/UI.Gen.cs'
+// Generated: 07/06/2017 23:14:51 Source: 'UI.API.cpp' Target: 'UI/UI.Gen.cs'
 
 using ReCrafted.API.Core;
 using System.Runtime.CompilerServices;
@@ -10,18 +10,18 @@ namespace ReCrafted.API.UI
 	/// <summary>
 	///	UI internal class.
 	/// </summary>
-	public static class UIInternal 
+	internal static class UIInternal 
 	{
 		/// <summary>
 		///	Draws box.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		public static extern void DrawBox(RectangleF rect);
+		internal static extern void DrawBox(RectangleF rect);
 
 		/// <summary>
 		///	The current drawing color
 		/// </summary>
-		public static Color Color 
+		internal static Color Color 
 		{
 			get { return Internal_Color_Get(); }
 			set { Internal_Color_Set(value); }

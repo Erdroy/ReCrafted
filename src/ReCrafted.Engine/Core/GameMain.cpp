@@ -277,9 +277,6 @@ void GameMain::onLoad()
 	m_universe = new Universe();
 	m_universe->init();
 
-	// load test font
-	auto font = Font::loadFont(TEXT("Lato-Regular.ttf"), 18);
-
 	Logger::write("Game initialized", LogLevel::Info);
 	ScriptingEngine::initialize();
 }
