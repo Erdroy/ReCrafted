@@ -1,16 +1,23 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
-#if 0
-#include "UI.h"
-#include "../../Core/Logger.h"
-#include "../../Core/Math/Math.h"
-#include "../../Core/Math/FastRectanglePack.h"
-#include "../../Core/Font.h"
+
+#include "Font.h"
+
+// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+
+#include "Graphics/UI/UI.h"
+#include "Graphics/Texture2D.h"
+#include "Core/Logger.h"
+#include "Core/Math/Math.h"
+#include "Core/Math/FastRectanglePack.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
-#include <ftglyph.h>
-#pragma comment(lib, "freetype26.lib")
-
+#include <freetype/ftglyph.h>
+#if _DEBUG
+#pragma comment(lib, "freetype28MTd.lib")
+#else
+#pragma comment(lib, "freetype28MT.lib")
+#endif
 
 struct PreFontGlyph
 {
@@ -97,20 +104,19 @@ byte* GenerateCharmap(FT_Face face, int charmap, uint charmapWidth, uint charmap
 
 		auto rect = bin.Insert(bitmap.width, bitmap.rows);
 
-		Font::Glyph fontGlyph = {};
+		outputGlyphs.push_back({});
 		if (bitmap.width != 0 && bitmap.rows != 0)
 		{
+			Font::Glyph* fontGlyph = &outputGlyphs[outputGlyphs.size() - 1];
 			// Store glyph data.
-			fontGlyph.character = glyphData.Character;
-			fontGlyph.texture = charmap;
-			fontGlyph.rectangle = rect;
+			fontGlyph->character = glyphData.Character;
+			fontGlyph->texture = charmap;
+			fontGlyph->rectangle = rect;
 
-			fontGlyph.horizontalBearingX = glyphData.HorizontalBearingX;
-			fontGlyph.horizontalBearingY = glyphData.HorizontalBearingY;
-			fontGlyph.advanceX = glyphData.AdvanceX;
-			fontGlyph.advanceY = glyphData.AdvanceY;
-
-			outputGlyphs.push_back(fontGlyph);
+			fontGlyph->horizontalBearingX = glyphData.HorizontalBearingX;
+			fontGlyph->horizontalBearingY = glyphData.HorizontalBearingY;
+			fontGlyph->advanceX = glyphData.AdvanceX;
+			fontGlyph->advanceY = glyphData.AdvanceY;
 		}
 
 		if (rect.height > 0)
@@ -150,43 +156,44 @@ byte* GenerateCharmap(FT_Face face, int charmap, uint charmapWidth, uint charmap
 	return texturePtr;
 }
 
-void UI::loadFont(Text fontFile, int size)
+Ptr<Font> Font::loadFont(Text fontFile, int size)
 {
 	FT_Library library = nullptr;
 
 	auto hr = FT_Init_FreeType(&library);
-	
-	if(FAILED(hr))
+
+	if (hr)
 	{
 		Logger::write("Failed to init freetype library", LogLevel::Error);
-		return;
+		return nullptr;
 	}
 
-	auto path = fontFile.c_str().c_str();
+	auto pcst = fontFile.c_str();
+	auto path = pcst.c_str();
 
 	FT_Face face;
 	hr = FT_New_Face(library, path, 0, &face);
 
-	if (FAILED(hr))
+	if (hr)
 	{
 		Logger::write("Failed to load freetype font '", path, "'", LogLevel::Error);
-		throw;
+		return nullptr;
 	}
 
 	hr = FT_Select_Charmap(face, FT_ENCODING_UNICODE);
 
-	if (FAILED(hr))
+	if (hr)
 	{
 		Logger::write("Failed to select freetype font unicode charmap '", path, "'", LogLevel::Error);
-		throw;
+		return nullptr;
 	}
 
 	hr = FT_Set_Pixel_Sizes(face, 0, size);
 
-	if (FAILED(hr))
+	if (hr)
 	{
 		Logger::write("Failed to set freetype font size '", path, "'", LogLevel::Error);
-		throw;
+		return nullptr;
 	}
 
 	auto glyphsLeft = GetGlyphs(face);
@@ -199,20 +206,22 @@ void UI::loadFont(Text fontFile, int size)
 
 	auto charmapId = 0;
 
+	auto textures = std::vector<Ptr<Texture2D>>();
+
 	while (glyphsLeft.size() > 0u)
 	{
 		auto bits = GenerateCharmap(face, charmapId, charmapWidth, charmapHeight, glyphsLeft, glyphsFailed, glyphs);
-		
+
 		glyphsLeft.clear();
 		glyphsLeft = glyphsFailed;
 		glyphsFailed.clear();
 
-		// Create alpha
+		// create alpha
 		auto newbits = CreateBitmap(charmapWidth, charmapHeight, 32);
 		auto newbitsPtr = newbits;
 
-		byte *src = bits;
-		byte *dst = newbits;
+		auto src = bits;
+		auto dst = newbits;
 
 		for (uint j = 0; j < static_cast<uint>(charmapWidth * charmapHeight); j++)
 		{
@@ -234,23 +243,29 @@ void UI::loadFont(Text fontFile, int size)
 			}
 		}
 
+		// close
 		ReleaseBitmap(bits);
-		
-		/*var bitmap = FreeImage_ConvertFromRawBits(newbitsPtr, charmapWidth, charmapHeight, charmapWidth * 4, 32, 0xFF0000, 0x00FF00, 0x0000FF, 0);
 
-		// Create texture.
-		r3d_obj r3dTexture;
-		R3D::Do(R3D_MakeTexture, R3D_TD_Texture2D, R3D_TF_B8G8R8A8_UNORM, 1, charmapWidth, charmapHeight, static_cast<void*>(FreeImage_GetBits(bitmap)), &r3dTexture);
-		font->m_textures.Add(r3dTexture);
-		*/
+		// create texture
+		auto texture = Texture2D::createTexture();
+		texture->loadMemory(newbitsPtr, charmapWidth, charmapHeight);
+		texture->apply();
+		textures.push_back(texture);
+
+		// close
 		ReleaseBitmap(newbitsPtr);
 
 		charmapId++;
 	}
 
-	Ptr<Font> font(new Font(glyphs.size()));
+	Ptr<Font> font(new Font(static_cast<uint>(glyphs.size())));
 	font->m_size = size;
+	font->m_textures = textures;
+	font->m_charmapWidth = charmapWidth;
+	font->m_charmapHeight = charmapHeight;
+	font->m_nullGlyph = font->getCharacter(Char('?'));
 
-	// TODO: copy glyphs and textures
+	memcpy(font->m_glyphs, glyphs.data(), glyphs.size() * sizeof Font::Glyph);
+
+	return font;
 }
-#endif

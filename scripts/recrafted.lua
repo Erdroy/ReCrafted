@@ -23,6 +23,7 @@ project "ReCrafted.Engine"
 		path.join(LIBS_DIR, "json"),
 		path.join(LIBS_DIR, "mono/inc"),
 		path.join(LIBS_DIR, "freetype/include"),
+		path.join(ROOT_DIR, "src/ReCrafted.Engine"),
 	}
 	
 	-- add source/header/shader files
@@ -61,6 +62,7 @@ project "ReCrafted.Engine"
 		libdirs { 
 			path.join(LIBS_DIR, "bgfx/.build/win64_" .. _ACTION .. "/bin/"),
 			path.join(LIBS_DIR, "mono/lib"),
+			path.join(LIBS_DIR, "freetype/x64"),
 		}
 	
 	configuration { "x32", "vs*"}
@@ -68,16 +70,12 @@ project "ReCrafted.Engine"
 		libdirs { 
 			path.join(LIBS_DIR, "bgfx/.build/win32_" .. _ACTION .. "/bin/"),
 			path.join(LIBS_DIR, "mono/lib"),
+			path.join(LIBS_DIR, "freetype/win32"),
 		}
 	
 	configuration { "vs*", "Debug"}
 		libdirs { 
 			path.join(LIBS_DIR, "freetype/debug"),
-		}
-		
-	configuration { "vs*", "Release"}
-		libdirs { 
-			path.join(LIBS_DIR, "freetype/release"),
 		}
 	
 	-- TODO: add linux and macosx

@@ -3,6 +3,7 @@
 #include "GameMain.h"
 #include "../Scripting/ScriptingEngine.h"
 #include "../Common/Display.h"
+#include "Common/Font.h"
 
 #define CHECK_SHUTDOWN if (!m_running) break;
 
@@ -275,6 +276,9 @@ void GameMain::onLoad()
 	// initialize universe
 	m_universe = new Universe();
 	m_universe->init();
+
+	// load test font
+	auto font = Font::loadFont(TEXT("Lato-Regular.ttf"), 18);
 
 	Logger::write("Game initialized", LogLevel::Info);
 	ScriptingEngine::initialize();

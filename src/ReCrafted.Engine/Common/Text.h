@@ -392,6 +392,8 @@ public:
 #undef TEXT
 #endif
 
+#undef TEXT
+
 #ifdef USE_UTF16
 #define TEXT(text) Text((Char*)u##text)
 #else

@@ -6,10 +6,12 @@
 #define FONT_H
 
 // includes
-#include "../Common/Text.h"
-#include "../Utils/Types.h"
-#include "Math/Rect.h"
+#include "Utils/Types.h"
+#include "Core/Math/Rect.h"
+#include "Common/Text.h"
 #include <vector>
+
+class Texture2D;
 
 class Font
 {
@@ -34,25 +36,47 @@ private:
 	uint m_charmapWidth = 512;
 	uint m_charmapHeight = 512;
 
-	std::vector<uint> m_textures = {};
+	std::vector<Ptr<Texture2D>> m_textures = {};
 
 	Glyph* m_glyphs = nullptr;
-	uint m_glyphCount = 0;
 	Glyph m_nullGlyph = {};
+	uint m_glyphCount = 0;
 
 public:
+	/// <summary>
+	/// Default constructor
+	/// </summary>
 	explicit Font(uint glyphCount)
 	{
 		m_glyphCount = glyphCount;
 		m_glyphs = new Glyph[glyphCount];
+		memset(m_glyphs, 0, glyphCount * sizeof Glyph);
 	}
 
+	/// <summary>
+	/// Default destructor
+	/// </summary>
 	~Font()
 	{
 		delete [] m_glyphs;
 	}
 
 public:
+	/// <summary>
+	/// Gets character glyph info struct.
+	/// </summary>
+	FORCEINLINE Glyph getCharacter(Char character) const
+	{
+		return m_glyphs[character];
+	}
+
+	/// <summary>
+	/// Loads new font
+	/// </summary>
+	/// <param name="fontFile"></param>
+	/// <param name="size"></param>
+	/// <returns></returns>
+	static Ptr<Font> loadFont(Text fontFile, int size);
 };
 
 #endif // FONT_H

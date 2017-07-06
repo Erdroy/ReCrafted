@@ -213,8 +213,51 @@ void Texture2D::releaseTextureData(uint* pixels)
 
 void Texture2D::saveBitmap(const char* filename, uint width, uint height, byte* bitsRaw)
 {
-	//auto bits = FreeImage_ConvertFromRawBits(bitsRaw, width, height, width * 4, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, true);
-	//FreeImage_Save(FIF_BMP, bits, filename);
+	FILE *f;
+	unsigned char *img = NULL;
+	int filesize = 54 + 3 * width*height;  //w is your image width, h is image height, both int
+	if (img)
+		free(img);
+	img = (unsigned char *)malloc(3 * width*height);
+	memset(img, 0, sizeof(img));
+
+	auto idx = 0;
+	for(auto i = 0u; i < width * height * 4; i += 4)
+	{
+		img[idx + 0] = bitsRaw[i + 0];
+		img[idx + 1] = bitsRaw[i + 1];
+		img[idx + 2] = bitsRaw[i + 2];
+
+		idx += 3;
+	}
+
+	unsigned char bmpfileheader[14] = { 'B','M', 0,0,0,0, 0,0, 0,0, 54,0,0,0 };
+	unsigned char bmpinfoheader[40] = { 40,0,0,0, 0,0,0,0, 0,0,0,0, 1,0, 24,0 };
+	unsigned char bmppad[3] = { 0,0,0 };
+
+	bmpfileheader[2] = static_cast<unsigned char>(filesize);
+	bmpfileheader[3] = static_cast<unsigned char>(filesize >> 8);
+	bmpfileheader[4] = static_cast<unsigned char>(filesize >> 16);
+	bmpfileheader[5] = static_cast<unsigned char>(filesize >> 24);
+
+	bmpinfoheader[4] = static_cast<unsigned char>(width);
+	bmpinfoheader[5] = static_cast<unsigned char>(width >> 8);
+	bmpinfoheader[6] = static_cast<unsigned char>(width >> 16);
+	bmpinfoheader[7] = static_cast<unsigned char>(width >> 24);
+	bmpinfoheader[8] = static_cast<unsigned char>(height);
+	bmpinfoheader[9] = static_cast<unsigned char>(height >> 8);
+	bmpinfoheader[10] = static_cast<unsigned char>(height >> 16);
+	bmpinfoheader[11] = static_cast<unsigned char>(height >> 24);
+
+	f = fopen(filename, "wb");
+	fwrite(bmpfileheader, 1, 14, f);
+	fwrite(bmpinfoheader, 1, 40, f);
+	for (auto i = 0u; i<height; i++)
+	{
+		fwrite(img + (width*(height - i - 1) * 3), 3, width, f);
+		fwrite(bmppad, 1, (4 - (width * 3) % 4) % 4, f);
+	}
+	fclose(f);
 }
 
 Ptr<Texture2D> Texture2D::createTexture()

@@ -35,7 +35,7 @@ public:
 	/// </summary>
 	FORCEINLINE Vector2 size() const
 	{
-		return Vector2(width, height);
+		return Vector2(float(width), float(height));
 	}
 
 	/// <summary>
@@ -52,7 +52,7 @@ public:
 	/// </summary>
 	FORCEINLINE Vector2 center() const 
 	{
-		return Vector2(x, y);
+		return Vector2(float(x), float(y));
 	}
 
 	/// <summary>
