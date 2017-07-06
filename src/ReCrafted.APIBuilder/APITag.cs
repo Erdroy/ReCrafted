@@ -1,6 +1,6 @@
 ﻿// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
-namespace ReCrafted.APIGen
+namespace ReCrafted.APIBuilder
 {
     public abstract class APITag
     {

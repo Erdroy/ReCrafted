@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ReCrafted.APIGen
+namespace ReCrafted.APIBuilder
 {
     public static class APIBuilderUtils
     {

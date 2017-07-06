@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ReCrafted.APIGen.Tags
+namespace ReCrafted.APIBuilder.Tags
 {
     public class APITagMethod : APITag
     {

@@ -2,7 +2,7 @@
 
 using System;
 
-namespace ReCrafted.APIGen.Tags
+namespace ReCrafted.APIBuilder.Tags
 {
     public class APITagUsing : APITag
     {

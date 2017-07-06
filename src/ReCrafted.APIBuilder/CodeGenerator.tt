@@ -1,5 +1,5 @@
 ﻿<#@ template language="C#" #>
-<#@ parameter type="ReCrafted.APIGen.Tags.APITagFile" name="Desc" #>
+<#@ parameter type="ReCrafted.APIBuilder.Tags.APITagFile" name="Desc" #>
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
 // Generated: <#=DateTime.Now#> Source: '<#=Desc.SourceFileName#>' Target: '<#=Desc.TargetFileName#>'

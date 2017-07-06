@@ -3,9 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using ReCrafted.APIGen.Tags;
+using ReCrafted.APIBuilder.Tags;
 
-namespace ReCrafted.APIGen
+namespace ReCrafted.APIBuilder
 {
     internal class APIBuilder
     {

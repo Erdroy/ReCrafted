@@ -1,6 +1,6 @@
 ﻿// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
-namespace ReCrafted.APIGen.Tags
+namespace ReCrafted.APIBuilder.Tags
 {
     public class APITagClassEnd : APITag
     {

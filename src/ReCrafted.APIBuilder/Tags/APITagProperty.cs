@@ -3,7 +3,7 @@
 using System;
 using System.Linq;
 
-namespace ReCrafted.APIGen.Tags
+namespace ReCrafted.APIBuilder.Tags
 {
     public class APITagProperty : APITag
     {

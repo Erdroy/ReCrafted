@@ -3,7 +3,7 @@
 using System;
 using System.IO;
 
-namespace ReCrafted.APIGen
+namespace ReCrafted.APIBuilder
 {
     internal static class Entry
     {
@@ -13,7 +13,7 @@ namespace ReCrafted.APIGen
             if (currentDir.Contains("tools"))
                 currentDir += "\\..";
 
-            var apiSourceFiles = Directory.GetFiles(currentDir + "\\src\\ReCrafted\\", "*.API.cpp", SearchOption.AllDirectories);
+            var apiSourceFiles = Directory.GetFiles(currentDir + "\\src\\ReCrafted.Engine\\", "*.API.cpp", SearchOption.AllDirectories);
 
             var apibuilder = new APIBuilder();
 

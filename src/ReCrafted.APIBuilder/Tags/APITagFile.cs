@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ReCrafted.APIGen.Tags
+namespace ReCrafted.APIBuilder.Tags
 {
     public class APITagFile : APITag
     {

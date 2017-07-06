@@ -7,8 +7,8 @@
     <ProjectGuid>{B5D814D8-240E-41CD-B88E-E05916A67636}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ReCrafted.APIGen</RootNamespace>
-    <AssemblyName>ReCrafted.APIGen</AssemblyName>
+    <RootNamespace>ReCrafted.APIBuilder</RootNamespace>
+    <AssemblyName>ReCrafted.APIBuilder</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
