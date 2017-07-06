@@ -1,5 +1,5 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
-
+#if 0
 #include "UI.h"
 #include "../../Core/Logger.h"
 #include "../../Core/Math/Math.h"
@@ -253,3 +253,4 @@ void UI::loadFont(Text fontFile, int size)
 
 	// TODO: copy glyphs and textures
 }
+#endif

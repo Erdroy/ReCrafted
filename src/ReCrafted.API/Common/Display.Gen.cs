@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 07/03/2017 18:19:05 Source: 'UI.API.cpp' Target: 'Common/Display.Gen.cs'
+// Generated: 07/06/2017 16:38:19 Source: 'UI.API.cpp' Target: 'Common/Display.Gen.cs'
 
 using System.Runtime.CompilerServices;
 
