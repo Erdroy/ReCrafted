@@ -4,8 +4,10 @@ using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.UI;
 
-namespace ReCrafted
+namespace ReCrafted.Game
 {
+    using Game = API.Core.Game;
+
     internal class GameMain : Game
     {
         protected override void Initialize()

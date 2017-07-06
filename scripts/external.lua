@@ -1,12 +1,12 @@
-externalproject "ReCrafted.API"
-   location (path.join(ROOT_DIR, "src/ReCrafted.API"))
-   uuid "9D637328-3340-4344-B0AD-710749C1AD08"
-   kind "SharedLib"
-   language "C#"
-   
 externalproject "ReCrafted"
    location (path.join(ROOT_DIR, "src/ReCrafted"))
    uuid "673BEC15-F118-413D-9A7F-889B6174CF0A"
+   kind "SharedLib"
+   language "C#"
+
+externalproject "ReCrafted.API"
+   location (path.join(ROOT_DIR, "src/ReCrafted.API"))
+   uuid "9D637328-3340-4344-B0AD-710749C1AD08"
    kind "SharedLib"
    language "C#"
    
