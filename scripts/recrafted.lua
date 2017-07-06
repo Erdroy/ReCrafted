@@ -13,6 +13,7 @@ project "ReCrafted.Engine"
 	}
 	defines { "_CRT_SECURE_NO_WARNINGS" }
 	location (OUTPUT_DIR)
+	targetname "ReCrafted"
 
 	-- add include directories
 	includedirs {
