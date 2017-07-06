@@ -64,14 +64,14 @@ void ScriptingEngine::run()
 	bind_all();
 
 	// create and run GameMain
-	auto gamemain_class = load_class("ReCrafted", "GameMain");
+	auto gamemain_class = load_class("ReCrafted.Game", "GameMain");
 	m_game_main = create_class_instance(gamemain_class);
 	
-	m_method_initialize = load_method("ReCrafted.GameMain::Initialize", gamemain_class);
-	m_method_update = load_method("ReCrafted.GameMain::Update", gamemain_class);
-	m_method_simulate = load_method("ReCrafted.GameMain::Simulate", gamemain_class);
-	m_method_drawui = load_method("ReCrafted.GameMain::DrawUI", gamemain_class);
-	m_method_shutdown = load_method("ReCrafted.GameMain::Shutdown", gamemain_class);
+	m_method_initialize = load_method("ReCrafted.Game.GameMain::Initialize", gamemain_class);
+	m_method_update = load_method("ReCrafted.Game.GameMain::Update", gamemain_class);
+	m_method_simulate = load_method("ReCrafted.Game.GameMain::Simulate", gamemain_class);
+	m_method_drawui = load_method("ReCrafted.Game.GameMain::DrawUI", gamemain_class);
+	m_method_shutdown = load_method("ReCrafted.Game.GameMain::Shutdown", gamemain_class);
 }
 
 MonoClass* ScriptingEngine::load_class(const char* classNamespace, const char* className)
