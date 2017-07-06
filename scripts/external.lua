@@ -9,7 +9,8 @@ externalproject "ReCrafted.API"
    uuid "9D637328-3340-4344-B0AD-710749C1AD08"
    kind "SharedLib"
    language "C#"
-   
+
+--[[
 externalproject "ReCrafted.APIBuilder"
    location (path.join(ROOT_DIR, "src/ReCrafted.APIBuilder"))
    uuid "B5D814D8-240E-41CD-B88E-E05916A67636"
@@ -27,3 +28,4 @@ externalproject "ReCrafted.VersionBuilder"
    uuid "E27EB8A3-DCF1-44C5-AFA0-2055B243D7A5"
    kind "ConsoleApp"
    language "C#"
+]]
