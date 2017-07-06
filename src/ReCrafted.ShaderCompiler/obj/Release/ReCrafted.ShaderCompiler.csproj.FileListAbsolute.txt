@@ -1,0 +1,4 @@
+D:\ReCrafted\tools\ReCrafted.ShaderCompiler.exe
+D:\ReCrafted\tools\ReCrafted.ShaderCompiler.pdb
+D:\ReCrafted\src\ReCrafted.ShaderCompiler\obj\Release\ReCrafted.ShaderCompiler.exe
+D:\ReCrafted\src\ReCrafted.ShaderCompiler\obj\Release\ReCrafted.ShaderCompiler.pdb

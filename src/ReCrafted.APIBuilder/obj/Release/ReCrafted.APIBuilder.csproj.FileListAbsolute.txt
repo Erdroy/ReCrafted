@@ -1,0 +1,4 @@
+D:\ReCrafted\tools\ReCrafted.APIGen.exe
+D:\ReCrafted\tools\ReCrafted.APIGen.pdb
+D:\ReCrafted\src\ReCrafted.APIGen\obj\Release\ReCrafted.APIGen.exe
+D:\ReCrafted\src\ReCrafted.APIGen\obj\Release\ReCrafted.APIGen.pdb

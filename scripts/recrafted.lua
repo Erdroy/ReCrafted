@@ -1,4 +1,4 @@
-project "ReCrafted"
+project "ReCrafted.Engine"
 	kind "WindowedApp"
 	language "C++"
 	flags {
@@ -26,7 +26,7 @@ project "ReCrafted"
 	
 	-- add source/header/shader files
 	files {
-		path.join(ROOT_DIR, "src/ReCrafted/**"),
+		path.join(ROOT_DIR, "src/ReCrafted.Engine/**"),
 	}
 	
 	-- add onbuild script

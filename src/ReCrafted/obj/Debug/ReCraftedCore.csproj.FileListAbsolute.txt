@@ -1,0 +1,5 @@
+D:\ReCrafted\build\bin64\ReCraftedCore.dll
+D:\ReCrafted\build\bin64\ReCraftedCore.pdb
+D:\ReCrafted\src\ReCraftedCore\obj\Debug\ReCraftedCore.csprojResolveAssemblyReference.cache
+D:\ReCrafted\src\ReCraftedCore\obj\Debug\ReCraftedCore.dll
+D:\ReCrafted\src\ReCraftedCore\obj\Debug\ReCraftedCore.pdb
