@@ -142,6 +142,11 @@ void Texture2D::setPixels(int x, int y, int width, int height, uint* pixels)
 	}
 }
 
+uint Texture2D::getHandle()
+{
+	return m_textureHandle.idx;
+}
+
 void Texture2D::apply()
 {
 	auto size = m_width * m_height * 4;

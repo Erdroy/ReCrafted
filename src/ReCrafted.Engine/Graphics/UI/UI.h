@@ -9,6 +9,8 @@
 #include "Common/ReCraftedAPI.h"
 #include "Graphics/Shader.h"
 
+class Font;
+
 class UI
 {
 	API_DEF
@@ -71,16 +73,30 @@ private:
 	float m_color_b = 1.0f;
 	float m_color_a = 1.0f;
 
+	float m_depth = 0.0f;
+
 	Ptr<Shader> m_shader = nullptr;
 
 private:
+	static bool drawcmd_comparison(drawcmd& cmd1, drawcmd& cmd2);
+
 	void clear();
 
 	void drawnow();
 
-	FORCEINLINE void push_drawcmd(drawcmd* cmd, int index);
+	// drawing
+	
+	FORCEINLINE void setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex& v3) const;
+
+	FORCEINLINE void finalizeVertexData(vertex& v0, vertex& v1, vertex& v2, vertex& v3, uint texture);
 
 	FORCEINLINE void internal_drawBox(Rectf rect);
+
+	FORCEINLINE void internal_drawBoxTextured(Rectf rect, uint texture, Rectf& uvs);
+
+	// internal
+
+	FORCEINLINE void push_drawcmd(drawcmd* cmd, int index);
 
 public:
 	UI() { m_instance = this; }
@@ -114,6 +130,8 @@ public:
 	/// </summary>
 	/// <param name="rect">The box rectangle in pixels.</param>
 	static void drawBox(Rectf rect);
+
+	static void drawTest(Ptr<Font> font);
 };
 
 #endif // UI_H

@@ -3,8 +3,19 @@
 #include "UI.h"
 #include "Platform/Platform.h"
 #include "Graphics/Rendering.h"
+#include "Common/Font.h"
+
+#include <algorithm>
+#include <tuple>
 
 UI* UI::m_instance;
+
+Ptr<Font> m_test = nullptr;
+
+bool UI::drawcmd_comparison(drawcmd& cmd1, drawcmd& cmd2)
+{
+	return std::tie(cmd1.texture, cmd1.zOrder) < std::tie(cmd2.texture, cmd2.zOrder);
+}
 
 void UI::clear()
 {
@@ -98,6 +109,8 @@ void UI::init()
 
 	// allocate draw command for first upload (it's 1/4 of max vertex count as there is 4 vertexes per command)
 	m_drawCmds = std::vector<drawcmd>(8 << 10);
+
+	m_test = Font::loadFont(TEXT("Lato-Regular.ttf"), 18);
 }
 
 void UI::dispose()
@@ -111,11 +124,14 @@ void UI::beginDraw()
 {
 	// clear before drawing
 	clear();
+
+	drawTest(m_test);
 }
 
 void UI::endDraw()
 {
-	// TODO: sorting
+	// sort using zOrder (slave key) and texture (master key)
+	sort(m_drawCmds.begin(), m_drawCmds.end(), drawcmd_comparison);
 
 	auto drawCmdCount = m_drawCmds.size();
 	auto vertexCount = 0;
@@ -130,6 +146,9 @@ void UI::endDraw()
 		}
 
 		auto drawcmd = &m_drawCmds[i];
+
+		// if has no texture and texture was present
+		// if has new texture
 
 		// push draw command
 		push_drawcmd(drawcmd, vertexCount);

@@ -3,21 +3,25 @@
 #include "UI.h"
 #include "Core/GameMain.h"
 #include "Common/Display.h"
+#include "Common/Font.h"
 
-void UI::internal_drawBox(Rectf rect)
+#define BOX_VERTICES_DEFINE() vertex v0 = {}; vertex v1 = {}; vertex v2 = {}; vertex v3 = {};
+
+#define BOX_VERTICES_SETUP() setupVertexData(rect, v0, v1, v2, v3);
+
+#define BOX_VERTICES_FINALIZE(texture) finalizeVertexData(v0, v1, v2, v3, texture);
+
+#define BOX_VERTICES_SETUP_UVS() v0.u = uvs.x;\
+v0.v = uvs.y + uvs.height;\
+v1.u = uvs.x + uvs.width;\
+v1.v = uvs.y + uvs.height;\
+v2.u = uvs.x + uvs.width;\
+v2.v = uvs.y;\
+v3.u = uvs.x;\
+v3.v = uvs.y;
+
+void UI::setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex& v3) const
 {
-	// first vertex
-	vertex v0 = {};
-
-	// second vertex
-	vertex v1 = {};
-
-	// third vertex
-	vertex v2 = {};
-
-	// fourth vertex
-	vertex v3 = {};
-
 	auto screen_width = Display::get_Width();
 	auto screen_height = Display::get_Height();
 
@@ -73,10 +77,25 @@ void UI::internal_drawBox(Rectf rect)
 	v3.g = m_color_g;
 	v3.b = m_color_b;
 	v3.a = m_color_a;
+}
 
+void UI::finalizeVertexData(vertex& v0, vertex& v1, vertex& v2, vertex& v3, uint texture)
+{
 	// build draw command
 	auto cmd = drawcmd();
 
+	if(texture > 0)
+	{
+		cmd.texture = texture;
+		cmd.hasTexture = true;
+	}
+	else
+		cmd.hasTexture = false;
+
+	// set depth
+	cmd.zOrder = m_depth;
+
+	// copy vertices
 	cmd.vertices[0] = v0;
 	cmd.vertices[1] = v1;
 	cmd.vertices[2] = v2;
@@ -93,6 +112,24 @@ void UI::internal_drawBox(Rectf rect)
 	cmd.indices[5] = 2;
 
 	m_drawCmds.push_back(cmd);
+}
+
+void UI::internal_drawBox(Rectf rect)
+{
+	BOX_VERTICES_DEFINE();
+	BOX_VERTICES_SETUP();
+
+	BOX_VERTICES_FINALIZE(0);
+}
+
+void UI::internal_drawBoxTextured(Rectf rect, uint texture, Rectf& uvs)
+{
+	BOX_VERTICES_DEFINE();
+	BOX_VERTICES_SETUP();
+
+	BOX_VERTICES_SETUP_UVS();
+
+	BOX_VERTICES_FINALIZE(texture);
 }
 
 void UI::setColor(Color color)
@@ -115,4 +152,11 @@ void UI::drawBox(Rectf rect)
 	rect.height -= rect.y;
 
 	m_instance->internal_drawBox(rect);
+}
+
+
+void UI::drawTest(Ptr<Font> font)
+{
+	auto glyph = font->getCharacter(Char('X'));
+	m_instance->internal_drawBoxTextured(Rectf(200.0f, 200.0f, 512.0f, 512.0f), glyph.texture, Rectf(0.0f, 0.0f, 1.0f, 1.0f));
 }

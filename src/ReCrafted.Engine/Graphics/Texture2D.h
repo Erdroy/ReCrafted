@@ -80,6 +80,8 @@ public:
 
 	void setPixels(int x, int y, int width, int height, uint* pixels);
 
+	uint getHandle();
+
 	/// <summary>
 	/// Apply, all pixel operations will be unavailable after calling this method.
 	/// </summary>
