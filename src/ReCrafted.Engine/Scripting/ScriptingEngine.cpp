@@ -98,13 +98,7 @@ void ScriptingEngine::initialize()
 
 void ScriptingEngine::update()
 {
-	MonoObject* exc = nullptr;
-	mono_runtime_invoke(m_method_update, m_game_main, nullptr, &exc);
-
-	if(exc)
-	{
-		throw;
-	}
+	mono_runtime_invoke(m_method_update, m_game_main, nullptr, nullptr);
 }
 
 void ScriptingEngine::simulate()
