@@ -6,11 +6,11 @@
 #define INPUT_H
 
 // includes
-#include "../Utils/Defines.h"
-#include "../Utils/Types.h"
-#include "../Core/Math/math.h"
-#include "../Platform/Platform.Windows.h"
-#include "../Common/ReCraftedAPI.h"
+#include "Utils/Defines.h"
+#include "Utils/Types.h"
+#include "Core/Math/math.h"
+#include "Platform/Platform.Windows.h"
+#include "Common/ReCraftedAPI.h"
 
 #define INPUT_KEYCOUNT 256
 #define INPUT_TABLE_SIZE INPUT_KEYCOUNT + 3

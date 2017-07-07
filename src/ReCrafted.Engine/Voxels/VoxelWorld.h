@@ -6,8 +6,8 @@
 #define VOXELWORLD_H
 
 // includes
-#include "../recraftedPrerequisites.h"
-#include "../Core/Logger.h"
+#include "ReCrafted.h"
+#include "Core/Logger.h"
 #include "VoxelChunk.h"
 #include "VoxelMap.h"
 

@@ -2,10 +2,9 @@
 
 #include "Rendering.h"
 #include "Camera.h"
-#include "../Core/Logger.h"
-#include "../Common/Input.h"
-#include "../Game/Items/ItemDB.h"
-#include "Resources.h"
+#include "Core/Logger.h"
+#include "Common/Input.h"
+#include "Game/Items/ItemDB.h"
 
 Rendering* Rendering::m_instance;
 

@@ -6,6 +6,7 @@
 #define ENTITY_H
 
 // includes
+#include "ReCrafted.h"
 
 class Entity
 {

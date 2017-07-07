@@ -1,8 +1,8 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "UI.h"
-#include "../../Platform/Platform.h"
-#include "../Rendering.h"
+#include "Platform/Platform.h"
+#include "Graphics/Rendering.h"
 
 UI* UI::m_instance;
 

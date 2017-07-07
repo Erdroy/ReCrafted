@@ -5,9 +5,8 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
-#include "ReCraftedAPI.h"
-#include "../Utils/Types.h"
-#include "../Utils/Defines.h"
+// includes
+#include "ReCrafted.h"
 
 class Display
 {

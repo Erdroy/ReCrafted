@@ -1,8 +1,8 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "ItemDB.h"
-#include "../../Core/Logger.h"
-#include "../../Graphics/AtlasScaler.h"
+#include "Core/Logger.h"
+#include "Graphics/AtlasScaler.h"
 
 ItemDB* ItemDB::m_instance;
 

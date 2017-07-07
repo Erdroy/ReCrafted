@@ -6,9 +6,7 @@
 #define SHADER_H
 
 // includes
-#include "../bgfxPrerequisites.h"
-#include "../Utils/Types.h"
-#include "../Utils/Defines.h"
+#include "Utils/Types.h"
 #include "Texture2D.h"
 
 struct Vector2;

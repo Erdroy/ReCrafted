@@ -6,10 +6,9 @@
 #define LOGGER_H
 
 // includes
-#include "../recraftedPrerequisites.h"
-#include "../Platform/Platform.h"
-#include "../Common/ReCraftedAPI.h"
-#include "../Common/Text.h"
+#include "Platform/Platform.h"
+#include "Common/ReCraftedAPI.h"
+#include "Common/Text.h"
 
 #ifndef LOGGER_MAXSIZE
 	#define LOGGER_MAXSIZE 8192

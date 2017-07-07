@@ -6,9 +6,8 @@
 #define ITEM_H
 
 // includes
-#include "../../recraftedPrerequisites.h"
-#include "../../Common/Text.h"
-#include "../../Graphics/Texture2D.h"
+#include "Common/Text.h"
+#include "Graphics/Texture2D.h"
 
 struct ItemType
 {

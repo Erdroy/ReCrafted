@@ -6,7 +6,7 @@
 #define RENDERBUFFER_H
 
 // includes
-#include "../recraftedPrerequisites.h"
+#include "ReCrafted.h"
 #include "TextureFormat.h"
 
 #define RENDERBUFFER_MAXTARGETS 8

@@ -1,7 +1,7 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "GameInfo.h"
-#include "../Common/Text.h"
+#include "Common/Text.h"
 
 std::vector<Text> GameInfo::cliArguments;
 

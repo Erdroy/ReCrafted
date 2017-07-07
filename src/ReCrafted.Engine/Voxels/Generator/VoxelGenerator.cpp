@@ -1,7 +1,7 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "VoxelGenerator.h"
-#include "../../Core/Math/FastNoiseSIMD/FastNoiseSIMD.h"
+#include "Core/Math/FastNoiseSIMD/FastNoiseSIMD.h"
 
 FastNoiseSIMD* noise_terrain = nullptr;
 float* noise_terrain_set = nullptr;

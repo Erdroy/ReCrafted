@@ -6,8 +6,7 @@
 #define PROFILER_H
 
 // includes
-#include "../recraftedPrerequisites.h"
-#include "../Platform/Platform.Windows.h"
+#include "Platform/Platform.Windows.h"
 #include "Logger.h"
 
 /// <summary>

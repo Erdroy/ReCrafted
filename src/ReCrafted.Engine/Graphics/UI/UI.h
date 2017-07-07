@@ -4,10 +4,10 @@
 #define UI_H
 
 // includes
-#include "../../Core/Math/Color.h"
-#include "../../Core/Math/Rectf.h"
-#include "../../Common/ReCraftedAPI.h"
-#include "../Shader.h"
+#include "Core/Math/Color.h"
+#include "Core/Math/Rectf.h"
+#include "Common/ReCraftedAPI.h"
+#include "Graphics/Shader.h"
 
 class UI
 {

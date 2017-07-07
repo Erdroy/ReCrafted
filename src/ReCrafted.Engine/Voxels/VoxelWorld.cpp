@@ -3,8 +3,8 @@
 #include "VoxelWorld.h"
 #include "Generator/VoxelGenerator.h"
 #include "VoxelChunkProcessor.h"
-#include "../Graphics/Camera.h"
-#include "../Common/Input.h"
+#include "Graphics/Camera.h"
+#include "Common/Input.h"
 #include <string>
 
 int VoxelWorld::m_availableUploads;

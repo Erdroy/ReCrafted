@@ -6,9 +6,9 @@
 #define MESH_H
 
 // includes
-#include "../bgfxPrerequisites.h"
-#include "../Utils/Types.h"
-#include "../Core/Math/Math.h"
+#include "bgfxPrerequisites.h"
+#include "Utils/Types.h"
+#include "Core/Math/Math.h"
 
 struct Vector4;
 

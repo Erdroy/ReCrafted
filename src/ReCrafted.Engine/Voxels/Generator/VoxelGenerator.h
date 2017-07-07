@@ -6,8 +6,8 @@
 #define VOXELGENERATOR_H
 
 // includes
-#include "../../recraftedPrerequisites.h"
-#include "../VoxelChunk.h"
+#include "ReCrafted.h"
+#include "Voxels/VoxelChunk.h"
 
 class VoxelGenerator
 {

@@ -6,7 +6,7 @@
 #define Vector4_H
 
 // includes
-#include "../../recraftedPrerequisites.h"
+#include "ReCrafted.h"
 
 struct Vector4i
 {

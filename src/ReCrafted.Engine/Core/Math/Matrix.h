@@ -6,7 +6,7 @@
 #define MATRIX_H
 
 // includes
-#include "../../recraftedPrerequisites.h"
+#include "ReCrafted.h"
 #include "Vector3.h"
 
 struct Matrix

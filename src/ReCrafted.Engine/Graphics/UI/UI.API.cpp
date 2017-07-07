@@ -1,7 +1,7 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "UI.h"
-#include "../../Scripting/ScriptingEngine.h"
+#include "Scripting/ScriptingEngine.h"
 
 void UI::initRuntime()
 {

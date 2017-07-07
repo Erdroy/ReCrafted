@@ -1,9 +1,9 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "Universe.h"
-#include "../Graphics/Rendering.h"
-#include "../Graphics/Camera.h"
-#include "../Common/Time.h"
+#include "Graphics/Rendering.h"
+#include "Graphics/Camera.h"
+#include "Common/Time.h"
 #include "Items/ItemDB.h"
 
 Universe* Universe::m_instance;

@@ -1,8 +1,8 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "Camera.h"
-#include "../Core/GameMain.h"
-#include "../Common/Display.h"
+#include "Core/GameMain.h"
+#include "Common/Display.h"
 
 // declare m_mainCamera static variable
 Camera* Camera::m_mainCamera;

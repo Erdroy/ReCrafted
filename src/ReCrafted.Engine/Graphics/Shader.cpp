@@ -4,10 +4,7 @@
 #include "../Platform/Platform.h"
 
 #include <json.hpp>
-#include "../Core/Math/Vector2.h"
-#include "../Core/Math/Vector3.h"
-#include "../Core/Math/Matrix.h"
-#include "../Core/Logger.h"
+#include "Core/Logger.h"
 
 void Shader::init(const char* vs, const char* fs, const char* def)
 {

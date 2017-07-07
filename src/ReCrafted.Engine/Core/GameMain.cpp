@@ -1,8 +1,8 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "GameMain.h"
-#include "../Scripting/ScriptingEngine.h"
-#include "../Common/Display.h"
+#include "Scripting/ScriptingEngine.h"
+#include "Common/Display.h"
 #include "Common/Font.h"
 
 #define CHECK_SHUTDOWN if (!m_running) break;

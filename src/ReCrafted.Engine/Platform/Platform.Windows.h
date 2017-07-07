@@ -9,7 +9,6 @@
 #define PLATFORMWINDOWS_H
 
 // includes
-#include "../Utils/Defines.h"
 #include <cstdio>
 #include <string.h>
 #include <crtdbg.h>

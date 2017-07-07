@@ -5,9 +5,6 @@
 #ifndef TEXTUREFORMAT_H
 #define TEXTUREFORMAT_H
 
-// includes
-#include "../recraftedPrerequisites.h"
-
 /// <summary>
 /// Texture format enum.
 /// </summary>

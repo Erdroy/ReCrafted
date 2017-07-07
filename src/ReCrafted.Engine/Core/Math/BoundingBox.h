@@ -6,8 +6,8 @@
 #define BoundingBox_H
 
 // includes
-#include "../../recraftedPrerequisites.h"
-#include "../../Core/Math/Vector3.h"
+#include "ReCrafted.h"
+#include "Vector3.h"
 
 struct BoundingBox
 {

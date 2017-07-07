@@ -6,7 +6,7 @@
 #define TEXTURE2D_H
 
 // includes
-#include "../Utils/Types.h"
+#include "Utils/Types.h"
 #include <bgfx/bgfx.h>
 
 typedef struct upng_t upng_t;

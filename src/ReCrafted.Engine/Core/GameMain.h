@@ -6,12 +6,12 @@
 #define GAMEMAIN_H
 
 // includes
-#include "../Graphics/Rendering.h"
-#include "../Graphics/Camera.h"
-#include "../Game/Universe.h"
-#include "../Common/Input.h"
-#include "../Common/Time.h"
-#include "../Graphics/UI/UI.h"
+#include "Graphics/Rendering.h"
+#include "Graphics/Camera.h"
+#include "Game/Universe.h"
+#include "Common/Input.h"
+#include "Common/Time.h"
+#include "Graphics/UI/UI.h"
 
 class GameMain
 {

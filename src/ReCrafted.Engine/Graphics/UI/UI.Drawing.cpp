@@ -1,8 +1,8 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "UI.h"
-#include "../../Core/GameMain.h"
-#include "../../Common/Display.h"
+#include "Core/GameMain.h"
+#include "Common/Display.h"
 
 void UI::internal_drawBox(Rectf rect)
 {

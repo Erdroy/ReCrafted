@@ -6,10 +6,9 @@
 #define RENDERING_H
 
 // includes
-#include "../Common/Entity.h"
-#include "../Core/Math/Math.h"
-#include "../Utils/Defines.h"
-#include "../Utils/Types.h"
+#include "Core/Math/Math.h"
+#include "Utils/Defines.h"
+#include "Utils/Types.h"
 #include "Mesh.h"
 #include "Shader.h"
 #include "RenderBuffer.h"

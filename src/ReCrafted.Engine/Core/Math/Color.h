@@ -6,7 +6,7 @@
 #define Color_H
 
 // includes
-#include "../../recraftedPrerequisites.h"
+#include "ReCrafted.h"
 
 struct Color 
 {

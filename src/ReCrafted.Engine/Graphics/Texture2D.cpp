@@ -1,7 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "Texture2D.h"
-#include "TextureFormat.h"
 #include "upng/upng.h"
 
 static void releaseBits(void* _ptr, void* _userData)

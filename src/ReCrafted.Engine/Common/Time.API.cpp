@@ -1,8 +1,8 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "Time.h"
-#include "../Common/ReCraftedAPI.h"
-#include "../Scripting/ScriptingEngine.h"
+#include "Common/ReCraftedAPI.h"
+#include "Scripting/ScriptingEngine.h"
 
 void Time::initRuntime()
 {

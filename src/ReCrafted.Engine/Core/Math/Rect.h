@@ -6,8 +6,8 @@
 #define Rect_H
 
 // includes
-#include "../../recraftedPrerequisites.h"
-#include "../../Core/Math/Vector2.h"
+#include "ReCrafted.h"
+#include "Vector2.h"
 
 struct Rect 
 {

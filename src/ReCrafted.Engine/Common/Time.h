@@ -6,8 +6,8 @@
 #define TIME_H
 
 // includes
-#include "../Utils/Defines.h"
-#include "../Common/ReCraftedAPI.h"
+#include "Utils/Defines.h"
+#include "Common/ReCraftedAPI.h"
 
 /// <summary>
 /// Time class.
