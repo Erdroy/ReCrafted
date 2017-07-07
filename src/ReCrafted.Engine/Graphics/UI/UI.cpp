@@ -141,6 +141,7 @@ void UI::endDraw()
 	auto drawCmdCount = m_drawCmds.size();
 	auto vertexCount = 0;
 
+	bgfx::TextureHandle handle = {};
 	for (auto i = 0u; i < m_drawCmds.size(); i++)
 	{
 		if(vertexCount + 4u > m_maxVertexCount) // or texture changes
@@ -152,8 +153,12 @@ void UI::endDraw()
 
 		auto drawcmd = &m_drawCmds[i];
 
-		// if has no texture and texture was present
-		// if has new texture
+		// set new texture
+		if(drawcmd->texture > 0 && handle.idx != drawcmd->texture)
+		{
+			handle.idx = drawcmd->texture;
+			bgfx::setTexture(0, m_textureUnif, handle);
+		}
 
 		// push draw command
 		push_drawcmd(drawcmd, vertexCount);
