@@ -1,9 +1,9 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
-using System;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.UI;
+using ReCrafted.Game.Core;
 
 namespace ReCrafted.Game
 {
@@ -13,16 +13,9 @@ namespace ReCrafted.Game
     {
         protected override void Initialize()
         {
-            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
-            {
-                var exception = args.ExceptionObject as Exception;
-
-                if(exception != null)
-                    Logger.Write($"Unhandled Exception: {exception}", LogLevel.Error);
-            };
-
-            Logger.Write("Hello, World from C#!", LogLevel.Debug);
-
+            // register unhandled exception handler
+            Exceptions.RegisterUEHandler();
+            
             var main = UIPanel.Create(new RectangleF(100.0f, 200.0f, 150.0f, 200.0f), UILayoutType.Vertical);
             
         }
