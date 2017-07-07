@@ -129,8 +129,6 @@ void UI::beginDraw()
 {
 	// clear before drawing
 	clear();
-
-	drawText(m_testFont, TEXT("φυσική (ἐπιστήμη) phusikḗ (epistḗmē)"), Vector2(600.0f, 100.0f));
 }
 
 void UI::endDraw()
