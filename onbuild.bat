@@ -17,13 +17,13 @@ REM update game info file
 echo Creating gameinfo file...
 tools\\ReCrafted.VersionBuilder.exe %VER% build\\assets\\gameinfo.json
 
-IF %2% == "Engine" (
+IF "%2%" == "Engine" (
 REM run shader compiler
 RD /S /Q build\assets\shaders
 tools\\ReCrafted.ShaderCompiler.exe %1%
 )
 
-IF %2% == "Game" (
+IF "%2%" == "Game" (
 REM convert pdbs into mdbs
 goto pdb32
 
