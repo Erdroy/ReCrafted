@@ -16,6 +16,11 @@ externalproject "ReCrafted.APIBuilder"
    uuid "B5D814D8-240E-41CD-B88E-E05916A67636"
    kind "ConsoleApp"
    language "C#"
+externalproject "ReCrafted.Pdb2MdbConverter"
+   location (path.join(ROOT_DIR, "src/ReCrafted.APIBuilder"))
+   uuid "045864EB-723B-4C3D-BB84-182C9FF862BA"
+   kind "ConsoleApp"
+   language "C#"
    
 externalproject "ReCrafted.ShaderCompiler"
    location (path.join(ROOT_DIR, "src/ReCrafted.ShaderCompiler"))

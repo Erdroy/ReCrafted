@@ -19,6 +19,8 @@ src/ReCrafted.ShaderCompiler/bin/
 src/ReCrafted.ShaderCompiler/obj/
 src/ReCrafted.VersionBuilder/bin/
 src/ReCrafted.VersionBuilder/obj/
+src/ReCrafted.Pdb2MdbConverter/bin/
+src/ReCrafted.Pdb2MdbConverter/obj/
 src/ReCrafted.GameTest/
 ReCrafted.NET.VC.db
 ReCrafted.NET.VC.VC.opendb

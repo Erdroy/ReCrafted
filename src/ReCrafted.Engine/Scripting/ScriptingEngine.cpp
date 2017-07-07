@@ -46,14 +46,11 @@ void ScriptingEngine::run()
 
 	m_domain = mono_jit_init_version("ReCrafted", "v4.0.30319");
 
-	if (GameInfo::containsArgument(TEXT("-debug")))
-	{
-		mono_debug_init(MONO_DEBUG_FORMAT_MONO);
-		mono_debug_domain_create(m_domain);
-	}
+	mono_debug_init(MONO_DEBUG_FORMAT_MONO);
+	mono_debug_domain_create(m_domain);
 
 	m_api_assembly = mono_domain_assembly_open(m_domain, "ReCrafted.API.dll");
-
+	
 	Logger::write("Loaded ReCrafted.API.dll", LogLevel::Info);
 
 	m_core_assembly = mono_domain_assembly_open(m_domain, "ReCrafted.Game.dll");
@@ -101,7 +98,13 @@ void ScriptingEngine::initialize()
 
 void ScriptingEngine::update()
 {
-	mono_runtime_invoke(m_method_update, m_game_main, nullptr, nullptr);
+	MonoObject* exc = nullptr;
+	mono_runtime_invoke(m_method_update, m_game_main, nullptr, &exc);
+
+	if(exc)
+	{
+		throw;
+	}
 }
 
 void ScriptingEngine::simulate()

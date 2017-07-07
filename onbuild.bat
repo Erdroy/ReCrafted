@@ -28,10 +28,10 @@ goto pdb32
 IF EXIST build/bin32 (
 echo Converting 32bit PDB's into MDB's
 echo Converting bin32/ReCrafted.Game.pdb into bin32/ReCrafted.Game.mdb
-tools\\pdb2mdb.exe build/bin32/ReCrafted.Game.dll
+tools\\ReCrafted.Pdb2MdbConverter.exe build/bin32/ReCrafted.Game.dll
 
 echo Converting bin32/ReCrafted.API.pdb into bin32/ReCrafted.API.mdb
-tools\\pdb2mdb.exe build/bin32/ReCrafted.API.dll
+tools\\ReCrafted.Pdb2MdbConverter.exe build/bin32/ReCrafted.API.dll
 goto pdb64
 ) ELSE (
 goto pdb64
@@ -41,10 +41,10 @@ goto pdb64
 IF EXIST build/bin64 (
 echo Converting 64bit PDB's into MDB's
 echo Converting bin64/ReCrafted.Game.pdb into bin64/ReCrafted.Game.mdb
-tools\\pdb2mdb.exe build/bin64/ReCrafted.Game.dll
+tools\\ReCrafted.Pdb2MdbConverter.exe build/bin64/ReCrafted.Game.dll
 
 echo Converting bin64/ReCrafted.API.pdb into bin64/ReCrafted.API.mdb
-tools\\pdb2mdb.exe build/bin64/ReCrafted.API.dll
+tools\\ReCrafted.Pdb2MdbConverter.exe build/bin64/ReCrafted.API.dll
 goto pdbexit
 ) ELSE (
 goto pdbexit
