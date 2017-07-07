@@ -246,6 +246,17 @@ Ptr<Font> Font::loadFont(Text fontFile, int size)
 		// close
 		ReleaseBitmap(bits);
 
+		// swap-Y
+		for (auto i = 0; i < charmapWidth; i++)
+		{
+			for (auto j = 0; j < charmapHeight; j++)
+			{
+				auto tmp = newbitsPtr[j + (charmapWidth - 1 - i) * charmapHeight];
+				newbitsPtr[j + (charmapWidth - 1 - i) * charmapHeight] = newbitsPtr[j + i * charmapWidth];
+				newbitsPtr[j + i * charmapWidth] = tmp;
+			}
+		}
+
 		// create texture
 		auto texture = Texture2D::createTexture();
 		texture->loadMemory(newbitsPtr, charmapWidth, charmapHeight);
@@ -264,6 +275,9 @@ Ptr<Font> Font::loadFont(Text fontFile, int size)
 	font->m_charmapWidth = charmapWidth;
 	font->m_charmapHeight = charmapHeight;
 	font->m_nullGlyph = font->getCharacter(Char('?'));
+
+	for(auto && gl : glyphs)
+		gl.font = font.get();
 
 	memcpy(font->m_glyphs, glyphs.data(), glyphs.size() * sizeof Font::Glyph);
 

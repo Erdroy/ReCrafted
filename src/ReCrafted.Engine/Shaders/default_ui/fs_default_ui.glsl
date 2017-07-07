@@ -11,9 +11,6 @@ PixelShader()
 {
 	if (m_uv.x >= 0)
 	{
-		// invert Y
-		m_uv.y = -m_uv.y;
-
 		// sample texture
 		vec4 color = texture2D(m_texture0, m_uv);
 

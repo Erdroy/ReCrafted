@@ -9,6 +9,7 @@
 #include "Common/ReCraftedAPI.h"
 #include "Graphics/Shader.h"
 
+struct Text;
 class Font;
 
 class UI
@@ -131,7 +132,13 @@ public:
 	/// <param name="rect">The box rectangle in pixels.</param>
 	static void drawBox(Rectf rect);
 
-	static void drawTest(Ptr<Font> font);
+	/// <summary>
+	/// Draws text on the screen.
+	/// </summary>
+	/// <param name="font">The font which will be used for drawing.</param>
+	/// <param name="text">The text to be drawn.</param>
+	/// <param name="position">The point in pixels where the text will be drawn on the screen.</param>
+	static void drawText(Ptr<Font> font, Text text, Vector2 position);
 };
 
 #endif // UI_H

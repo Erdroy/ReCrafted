@@ -1,4 +1,4 @@
-// ReCrafted � 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+﻿// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "UI.h"
 #include "Platform/Platform.h"
@@ -10,7 +10,7 @@
 
 UI* UI::m_instance;
 
-Ptr<Font> m_test = nullptr;
+Ptr<Font> m_testFont = nullptr;
 
 bgfx::UniformHandle m_textureUnif = {};
 
@@ -115,7 +115,7 @@ void UI::init()
 	// crate uniform
 	m_textureUnif = bgfx::createUniform("m_texture0", bgfx::UniformType::Int1);
 
-	m_test = Font::loadFont(TEXT("Lato-Regular.ttf"), 18);
+	m_testFont = Font::loadFont(TEXT("Lato-Regular.ttf"), 18);
 }
 
 void UI::dispose()
@@ -130,7 +130,7 @@ void UI::beginDraw()
 	// clear before drawing
 	clear();
 
-	drawTest(m_test);
+	drawText(m_testFont, TEXT("φυσική (ἐπιστήμη) phusikḗ (epistḗmē)"), Vector2(600.0f, 100.0f));
 }
 
 void UI::endDraw()

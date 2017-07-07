@@ -154,7 +154,60 @@ void UI::drawBox(Rectf rect)
 	m_instance->internal_drawBox(rect);
 }
 
+void UI::drawText(Ptr<Font> font, Text text, Vector2 position)
+{
+	auto currentPosition = position;
+	for (auto i = 0; i < text.length(); i++)
+	{
+		auto character = text[i];
+		auto glyph = font->m_glyphs[character];
 
+		if(glyph.font != font.get())
+		{
+			// invalid character!
+			glyph = font->m_glyphs['?'];
+		}
+
+		auto glyphRect = glyph.rectangle;
+		auto texture = font->m_textures[glyph.texture];
+
+		auto height = float(font->m_size);
+
+		if (character == ' ') // Space
+		{
+			auto glyphData = font->m_glyphs[Char('i')];
+			currentPosition += Vector2(float(glyphData.advanceX), 0.0f);
+		}
+		else if (character == 9) // Tab
+		{
+			auto glyphData = font->m_glyphs[Char('i')];
+			currentPosition += Vector2(float(glyphData.advanceX) * 3, 0.0f);
+		}
+		else if (character == '\n' || character == 10 || character == 13) // New line character.
+		{
+			currentPosition.x = position.x;
+			currentPosition.y += height;
+		}
+		else // A 'normal' character.
+		{
+			auto currentX = currentPosition.x;
+			auto currentY = currentPosition.y;
+
+			currentX += glyph.horizontalBearingX;
+			currentY += height;
+			currentY -= glyph.horizontalBearingY;
+
+			m_instance->internal_drawBoxTextured(
+				Rectf(currentX, currentY, float(glyphRect.width), float(glyphRect.height)),
+				texture->getHandle(),
+				Rectf(glyphRect.x / 512.0f, (glyphRect.y + glyphRect.height) / 512.0f, glyphRect.width / 512.0f, -glyphRect.height / 512.0f));
+
+			currentPosition += Vector2(float(glyph.advanceX), 0.0f);
+		}
+	}
+}
+
+/*
 void UI::drawTest(Ptr<Font> font)
 {
 	setColor(Color(255, 255, 255));
@@ -162,4 +215,4 @@ void UI::drawTest(Ptr<Font> font)
 	auto tex = font->m_textures[glyph.texture];
 
 	m_instance->internal_drawBoxTextured(Rectf(200.0f, 200.0f, 512.0f, 512.0f), tex->getHandle(), Rectf(0.0f, 0.0f, 1.0f, 1.0f));
-}
+}*/
