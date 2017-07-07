@@ -22,8 +22,8 @@ private:
 		float y = 0.0f;
 		float z = 0.0f;
 
-		float u = 0.0f;
-		float v = 0.0f;
+		float u = -1.0f;
+		float v = -1.0f;
 
 		float r = 1.0f;
 		float g = 1.0f;

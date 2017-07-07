@@ -157,6 +157,9 @@ void UI::drawBox(Rectf rect)
 
 void UI::drawTest(Ptr<Font> font)
 {
+	setColor(Color(255, 255, 255));
 	auto glyph = font->getCharacter(Char('X'));
-	m_instance->internal_drawBoxTextured(Rectf(200.0f, 200.0f, 512.0f, 512.0f), glyph.texture, Rectf(0.0f, 0.0f, 1.0f, 1.0f));
+	auto tex = font->m_textures[glyph.texture];
+
+	m_instance->internal_drawBoxTextured(Rectf(200.0f, 200.0f, 512.0f, 512.0f), tex->getHandle(), Rectf(0.0f, 0.0f, 1.0f, 1.0f));
 }

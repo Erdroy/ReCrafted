@@ -9,13 +9,19 @@ SAMPLER2D(m_texture0, 0);
 
 PixelShader()
 {
-	if (m_uv[1] > 0)
+	if (m_uv.x >= 0)
 	{
+		// invert Y
+		m_uv.y = -m_uv.y;
+
+		// sample texture
 		vec4 color = texture2D(m_texture0, m_uv);
 
-		FS_OUTPUT(0, color * m_color);
+		// output
+		FS_OUTPUT(0, color);
 		return;
 	}
 
+	// output
 	FS_OUTPUT(0, m_color);
 }

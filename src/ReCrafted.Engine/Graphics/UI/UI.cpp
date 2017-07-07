@@ -12,6 +12,8 @@ UI* UI::m_instance;
 
 Ptr<Font> m_test = nullptr;
 
+bgfx::UniformHandle m_textureUnif = {};
+
 bool UI::drawcmd_comparison(drawcmd& cmd1, drawcmd& cmd2)
 {
 	return std::tie(cmd1.texture, cmd1.zOrder) < std::tie(cmd2.texture, cmd2.zOrder);
@@ -109,6 +111,9 @@ void UI::init()
 
 	// allocate draw command for first upload (it's 1/4 of max vertex count as there is 4 vertexes per command)
 	m_drawCmds = std::vector<drawcmd>(8 << 10);
+
+	// crate uniform
+	m_textureUnif = bgfx::createUniform("m_texture0", bgfx::UniformType::Int1);
 
 	m_test = Font::loadFont(TEXT("Lato-Regular.ttf"), 18);
 }

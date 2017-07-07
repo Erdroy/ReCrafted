@@ -44,9 +44,6 @@ public:
 		char buffer[512] = {};
 		sprintf_s(buffer, fmtd_message, time);
 		
-#ifdef _DEBUG
-		VS_LOG(buffer);
-#endif
 		Logger::write(buffer, LogLevel::Debug);
 
 		// clear
