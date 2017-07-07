@@ -18,7 +18,7 @@ namespace ReCrafted.VersionBuilder
         static void Main(string[] args)
         {
             // decompiled old tool
-            string[] files = Directory.GetFiles(string.Concat(Environment.CurrentDirectory, "..\\"));
+            string[] files = Directory.GetFiles(string.Concat(Environment.CurrentDirectory, "..\\project_meta"));
             List<string> list = (
                 from file in files
                 let fileInfo = new FileInfo(file)

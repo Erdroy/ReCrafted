@@ -35,7 +35,7 @@ project "ReCrafted.Engine"
 	
 	configuration { "vs*"}
 		postbuildcommands {
-			"call " .. ROOT_DIR .. "/onbuild.bat " .. ROOT_DIR .. "/",
+			"call " .. ROOT_DIR .. "/onbuild.bat " .. ROOT_DIR .. "/ Engine",
 		}
 	
 	configuration { "Debug" }

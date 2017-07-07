@@ -5,11 +5,11 @@ cd %1%
 set /P NAME= < username.txt
 
 echo Calculating build number...
-set /P VAR= < buildNum_%NAME%.txt
+set /P VAR= < project_meta/buildNum_%2-%NAME%.txt
 set /A VAR += 1
-echo %VAR% > buildNum_%NAME%.txt
+echo %VAR% > project_meta/buildNum_%2-%NAME%.txt
 
-echo Build number: %VAR%
+echo %2% Build number: %VAR%
 
 set /P VER= < version.txt
 
@@ -17,10 +17,13 @@ REM update game info file
 echo Creating gameinfo file...
 tools\\ReCrafted.VersionBuilder.exe %VER% build\\assets\\gameinfo.json
 
+IF %2% == "Engine" (
 REM run shader compiler
 RD /S /Q build\assets\shaders
 tools\\ReCrafted.ShaderCompiler.exe %1%
+)
 
+IF %2% == "Game" (
 REM convert pdbs into mdbs
 goto pdb32
 
@@ -53,6 +56,7 @@ goto pdbexit
 :pdbexit
 echo Converted all PDB's
 goto exit
+)
 
 :exit
 REM done!
