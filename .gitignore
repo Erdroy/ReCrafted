@@ -3,6 +3,7 @@ username.txt
 libs/
 build/
 packages/
+tools/*.pdb
 .vs/
 src/ReCrafted/bin/
 src/ReCrafted/obj/
@@ -21,6 +22,8 @@ src/ReCrafted.VersionBuilder/bin/
 src/ReCrafted.VersionBuilder/obj/
 src/ReCrafted.Pdb2MdbConverter/bin/
 src/ReCrafted.Pdb2MdbConverter/obj/
+src/ReCrafted.AtlasPacker/bin/
+src/ReCrafted.AtlasPacker/obj/
 src/ReCrafted.GameTest/
 ReCrafted.NET.VC.db
 ReCrafted.NET.VC.VC.opendb
