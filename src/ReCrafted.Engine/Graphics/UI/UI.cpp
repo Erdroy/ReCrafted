@@ -10,8 +10,6 @@
 
 UI* UI::m_instance;
 
-Ptr<Font> m_testFont = nullptr;
-
 bgfx::UniformHandle m_textureUnif = {};
 
 bool UI::drawcmd_comparison(drawcmd& cmd1, drawcmd& cmd2)
@@ -114,8 +112,6 @@ void UI::init()
 
 	// crate uniform
 	m_textureUnif = bgfx::createUniform("m_texture0", bgfx::UniformType::Int1);
-
-	m_testFont = Font::loadFont(TEXT("Lato-Regular.ttf"), 18);
 }
 
 void UI::dispose()
