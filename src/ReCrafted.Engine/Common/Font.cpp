@@ -156,6 +156,46 @@ byte* GenerateCharmap(FT_Face face, int charmap, uint charmapWidth, uint charmap
 	return texturePtr;
 }
 
+Vector2 Font::measureText(Text text)
+{
+	Vector2 pos = {};
+	auto lineheight = m_size * m_lineHeigh;
+
+	for (auto i = 0; i < text.length(); i++)
+	{
+		auto character = text[i];
+		auto glyph = m_glyphs[character];
+
+		if (glyph.font != this)
+		{
+			// invalid character!
+			glyph = m_glyphs['?'];
+		}
+
+		if (character == ' ') // Space
+		{
+			auto glyphData = m_glyphs[Char('i')];
+			pos += Vector2(float(glyphData.advanceX), 0.0f);
+		}
+		else if (character == 9) // Tab
+		{
+			auto glyphData = m_glyphs[Char('i')];
+			pos += Vector2(float(glyphData.advanceX) * 3, 0.0f);
+		}
+		else if (character == '\n' || character == 10 || character == 13) // New line character.
+		{
+			pos.x = 0.0f;
+			pos.y += lineheight;
+		}
+		else // A 'normal' character.
+		{
+			pos += Vector2(float(glyph.advanceX), 0.0f);
+		}
+	}
+	pos += Vector2(0.0f, lineheight);
+	return pos;
+}
+
 Ptr<Font> Font::loadFont(Text fontFile, int size)
 {
 	FT_Library library = nullptr;

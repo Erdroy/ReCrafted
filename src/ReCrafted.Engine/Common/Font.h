@@ -8,7 +8,9 @@
 // includes
 #include "Utils/Types.h"
 #include "Core/Math/Rect.h"
+#include "Core/Math/Rectf.h"
 #include "Common/Text.h"
+
 #include <vector>
 
 class Texture2D;
@@ -71,6 +73,13 @@ public:
 	{
 		return m_glyphs[character];
 	}
+
+	/// <summary>
+	/// Measures text size.
+	/// </summary>
+	/// <param name="text">The text to be measured.</param>
+	/// <returns>The size.</returns>
+	Vector2 measureText(Text text);
 
 	/// <summary>
 	/// Loads new font
