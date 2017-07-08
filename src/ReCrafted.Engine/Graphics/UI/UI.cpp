@@ -3,7 +3,6 @@
 #include "UI.h"
 #include "Platform/Platform.h"
 #include "Graphics/Rendering.h"
-#include "Common/Font.h"
 
 #include <algorithm>
 #include <tuple>

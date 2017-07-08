@@ -3,7 +3,7 @@
 #include "UI.h"
 #include "Core/GameMain.h"
 #include "Common/Display.h"
-#include "Common/Font.h"
+#include "Graphics/Font.h"
 
 #define BOX_VERTICES_DEFINE() vertex v0 = {}; vertex v1 = {}; vertex v2 = {}; vertex v3 = {};
 
