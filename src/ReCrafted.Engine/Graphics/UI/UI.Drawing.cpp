@@ -132,20 +132,6 @@ void UI::internal_drawBoxTextured(Rectf rect, uint texture, Rectf& uvs)
 	BOX_VERTICES_FINALIZE(texture);
 }
 
-void UI::setColor(Color color)
-{
-	m_instance->m_color = color;
-	m_instance->m_color_r = color.r / 255.0f;
-	m_instance->m_color_g = color.g / 255.0f;
-	m_instance->m_color_b = color.b / 255.0f;
-	m_instance->m_color_a = color.a / 255.0f;
-}
-
-Color UI::getColor()
-{
-	return m_instance->m_color;
-}
-
 void UI::drawBox(Rectf rect)
 {
 	rect.width -= rect.x;

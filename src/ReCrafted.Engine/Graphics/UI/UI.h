@@ -124,6 +124,11 @@ public:
 	/// </summary>
 	/// <returns>Current color.</returns>
 	static Color getColor();
+	
+	/// <summary>
+	/// Sets current depth.
+	/// </summary>
+	static void setDepth(float depth);
 
 	// drawing
 	/// <summary>
