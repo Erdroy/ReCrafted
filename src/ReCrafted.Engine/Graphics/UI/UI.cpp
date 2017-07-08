@@ -125,6 +125,7 @@ void UI::beginDraw()
 {
 	// clear before drawing
 	clear();
+	setDepth(0.0f);
 }
 
 void UI::endDraw()
