@@ -42,6 +42,8 @@ private:
 	Glyph m_nullGlyph = {};
 	uint m_glyphCount = 0;
 
+	float m_lineHeigh = 1.0f; // actually multiplier
+
 public:
 	/// <summary>
 	/// Default constructor

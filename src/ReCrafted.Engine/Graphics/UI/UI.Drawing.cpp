@@ -157,6 +157,8 @@ void UI::drawBox(Rectf rect)
 void UI::drawText(Ptr<Font> font, Text text, Vector2 position)
 {
 	auto currentPosition = position;
+	auto lineheight = float(font->m_size) * font->m_lineHeigh;
+
 	for (auto i = 0; i < text.length(); i++)
 	{
 		auto character = text[i];
@@ -171,8 +173,6 @@ void UI::drawText(Ptr<Font> font, Text text, Vector2 position)
 		auto glyphRect = glyph.rectangle;
 		auto texture = font->m_textures[glyph.texture];
 
-		auto height = float(font->m_size);
-
 		if (character == ' ') // Space
 		{
 			auto glyphData = font->m_glyphs[Char('i')];
@@ -186,7 +186,7 @@ void UI::drawText(Ptr<Font> font, Text text, Vector2 position)
 		else if (character == '\n' || character == 10 || character == 13) // New line character.
 		{
 			currentPosition.x = position.x;
-			currentPosition.y += height;
+			currentPosition.y += lineheight;
 		}
 		else // A 'normal' character.
 		{
@@ -194,7 +194,7 @@ void UI::drawText(Ptr<Font> font, Text text, Vector2 position)
 			auto currentY = currentPosition.y;
 
 			currentX += glyph.horizontalBearingX;
-			currentY += height;
+			currentY += lineheight;
 			currentY -= glyph.horizontalBearingY;
 
 			m_instance->internal_drawBoxTextured(
