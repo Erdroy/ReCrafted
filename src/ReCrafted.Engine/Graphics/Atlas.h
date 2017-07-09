@@ -6,8 +6,9 @@
 #define ATLAS_H
 
 // includes
-#include "Common/Text.h"
 #include "Texture2D.h"
+
+struct Text;
 
 class Atlas
 {
@@ -30,7 +31,7 @@ public:
 	/// Loads atlas from JSON file.
 	/// </summary>
 	/// <param name="path">The JSON file name.</param>
-	static void load(Text fileName);
+	static Ptr<Atlas> load(Text fileName);
 };
 
 #endif // ATLAS_H

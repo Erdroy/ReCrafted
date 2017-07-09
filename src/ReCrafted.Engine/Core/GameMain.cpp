@@ -3,6 +3,7 @@
 #include "GameMain.h"
 #include "Scripting/ScriptingEngine.h"
 #include "Common/Display.h"
+#include "Graphics/Atlas.h"
 
 #define CHECK_SHUTDOWN if (!m_running) break;
 
@@ -275,6 +276,8 @@ void GameMain::onLoad()
 	// initialize universe
 	m_universe = new Universe();
 	m_universe->init();
+
+	auto atlas = Atlas::load(TEXT("testAtlas.json"));
 
 	Logger::write("Game initialized", LogLevel::Info);
 	ScriptingEngine::initialize();

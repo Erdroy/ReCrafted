@@ -208,7 +208,7 @@ Ptr<Font> Font::loadFont(Text fontFile, int size)
 		return nullptr;
 	}
 
-	auto pcst = fontFile.c_str();
+	auto pcst = fontFile.std_str();
 	auto path = pcst.c_str();
 
 	FT_Face face;
