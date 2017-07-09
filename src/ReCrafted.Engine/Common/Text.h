@@ -8,6 +8,7 @@
 // includes
 #include <locale>
 #include <codecvt>
+#include "Utils/Defines.h"
 
 #define USE_UTF16
 
@@ -24,6 +25,7 @@ struct Text
 {
 private:
 	Char* m_data = nullptr;
+	char* m_cstrData = nullptr;
 
 private:
 	void alloc_chars(int count)
@@ -148,11 +150,8 @@ public:
 	/// </summary>
 	~Text()
 	{
-		if(m_data)
-		{
-			free(m_data);
-			m_data = nullptr;
-		}
+		SafeFree(m_data);
+		SafeFree(m_cstrData);
 	}
 
 public:
@@ -302,11 +301,22 @@ public:
 	}
 
 	/// <summary>
+	/// Builds const string.
+	/// </summary>
+	void c_str(char* buffer, int buffer_size) const
+	{
+		for(auto i = 0; i < buffer_size && i < length(); i ++)
+		{
+			buffer[i] = static_cast<char>(m_data[i]);
+		}
+	}
+
+	/// <summary>
 	/// Returns const wide string.
 	/// This is slow, and it isn't recommended to use.
 	/// </summary>
 	/// <returns>Const C string.</returns>
-	std::string c_str() const
+	std::string std_str() const
 	{
 #ifdef USE_UTF16
 		std::wstring_convert<std::codecvt_utf8_utf16<__int16>, __int16> conversion;
@@ -322,9 +332,9 @@ public:
 	/// This is slow, and it isn't recommended to use.
 	/// </summary>
 	/// <returns>Const Wide C string.</returns>
-	std::wstring c_wstr() const
+	std::wstring wstr() const
 	{
-		auto str = c_str();
+		auto str = std_str();
 		std::wstring temp(str.length(), L' ');
 		copy(str.begin(), str.end(), temp.begin());
 
@@ -391,8 +401,6 @@ public:
 #ifdef TEXT
 #undef TEXT
 #endif
-
-#undef TEXT
 
 #ifdef USE_UTF16
 #define TEXT(text) Text((Char*)u##text)
