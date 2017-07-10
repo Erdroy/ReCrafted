@@ -22,6 +22,7 @@ private:
 
 private:
 	Atlas() {}
+
 public:
 	void init();
 	void dispose();
