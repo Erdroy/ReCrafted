@@ -220,3 +220,9 @@ void UI::drawElement(Ptr<Texture2D> texture, Atlas::Element& element, Vector2 po
 		float(element.rect.height)
 	});
 }
+
+void UI::drawTexture(Ptr<Texture2D> texture, Rectf rect)
+{
+	auto handle = texture->getHandle();
+	m_instance->internal_drawBoxTextured(rect, handle, Rectf(0.0f, 0.0f, 1.0f, 1.0f));
+}

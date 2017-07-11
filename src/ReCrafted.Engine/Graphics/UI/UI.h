@@ -162,6 +162,13 @@ public:
 	/// <param name="element">The atlas element which will be drawn.</param>
 	/// <param name="pos">The screen position (in pixels) where the element will be drawn.</param>
 	static void drawElement(Ptr<Texture2D> texture, Atlas::Element& element, Vector2 pos);
+
+	/// <summary>
+	/// Draws texture.
+	/// </summary>
+	/// <param name="texture">The texture which will drawn.</param>
+	/// <param name="pos">The screen position (in pixels) where the texture will be drawn.</param>
+	static void drawTexture(Ptr<Texture2D> texture, Rectf rect);
 };
 
 #endif // UI_H
