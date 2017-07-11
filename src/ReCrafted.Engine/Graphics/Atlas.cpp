@@ -6,14 +6,28 @@
 
 #include <json.hpp>
 
-void Atlas::init()
-{
-
-}
-
 void Atlas::dispose()
 {
+	// dispose texture
+	SafeDispose(m_texture);
+}
 
+Atlas::Element Atlas::getElement(const char* name)
+{
+	for(auto i = 0u; i < m_elements.size(); i ++)
+	{
+		if(strcmp(m_elements[i].name, name) == 0)
+		{
+			return m_elements[i];
+		}
+	}
+
+	throw "Not found";
+}
+
+Ptr<Texture2D> Atlas::getTexture() const
+{
+	return m_texture;
 }
 
 Ptr<Atlas> Atlas::load(Text fileName)
@@ -40,15 +54,39 @@ Ptr<Atlas> Atlas::load(Text fileName)
 		jsonFile.read(data, jsonFile.FileSize);
 
 		auto json = nlohmann::json::parse(data);
-		
-		// TODO: create instance
-		// TODO: build element list
-		// TODO: load texture
+
+		// create instance
+		Ptr<Atlas> atlas(new Atlas);
+
+		// build element list
+		for(auto i = 0u; i < json.size(); i ++)
+		{
+			atlas->m_elements.push_back({});
+			auto elem = &atlas->m_elements[atlas->m_elements.size() - 1];
+
+			auto name = json[i]["Name"].get<std::string>();
+			strcpy(elem->name, name.c_str());
+
+			auto x = json[i]["X"].get<int>();
+			auto y = json[i]["Y"].get<int>();
+			auto w = json[i]["Width"].get<int>();
+			auto h = json[i]["Height"].get<int>();
+
+			elem->rect = Rect(x, y, w, h);
+		}
+
+		// load texture
+		auto texture = Texture2D::createTexture();
+		texture->loadFile(pngName);
+		texture->apply();
+
+		// set loaded texture
+		atlas->m_texture = texture;
 
 		// free data
 		delete[] data;
 
-		// TODO: return!
+		return atlas;
 	}
 
 	return nullptr;
