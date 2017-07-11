@@ -226,3 +226,8 @@ void UI::drawTexture(Ptr<Texture2D> texture, Rectf rect)
 	auto handle = texture->getHandle();
 	m_instance->internal_drawBoxTextured(rect, handle, Rectf(0.0f, 0.0f, 1.0f, 1.0f));
 }
+
+void UI::drawBorderedTexture(Ptr<Texture2D> texture, Rectf rect, float borderSize)
+{
+
+}

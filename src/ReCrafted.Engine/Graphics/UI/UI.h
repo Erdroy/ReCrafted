@@ -169,6 +169,14 @@ public:
 	/// <param name="texture">The texture which will drawn.</param>
 	/// <param name="pos">The screen position (in pixels) where the texture will be drawn.</param>
 	static void drawTexture(Ptr<Texture2D> texture, Rectf rect);
+
+	/// <summary>
+	/// Draws bordered texture.
+	/// </summary>
+	/// <param name="texture">The texture which will drawn.</param>
+	/// <param name="pos">The screen position (in pixels) where the texture will be drawn.</param>
+	/// <param name="borderSize">The border size (in pixels).</param>
+	static void drawBorderedTexture(Ptr<Texture2D> texture, Rectf rect, float borderSize);
 };
 
 #endif // UI_H
