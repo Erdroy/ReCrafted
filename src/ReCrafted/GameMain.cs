@@ -16,7 +16,7 @@ namespace ReCrafted.Game
             // register unhandled exception handler
             Exceptions.RegisterUEHandler();
             
-            var main = UIPanel.Create(new RectangleF(100.0f, 200.0f, 150.0f, 200.0f), UILayoutType.Vertical);
+            //var main = UIPanel.Create(new RectangleF(100.0f, 200.0f, 150.0f, 200.0f), UILayoutType.Vertical);
             
         }
 

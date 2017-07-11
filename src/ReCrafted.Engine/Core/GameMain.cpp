@@ -277,8 +277,6 @@ void GameMain::onLoad()
 	m_universe = new Universe();
 	m_universe->init();
 
-	auto atlas = Atlas::load(TEXT("testAtlas.json"));
-
 	Logger::write("Game initialized", LogLevel::Info);
 	ScriptingEngine::initialize();
 }

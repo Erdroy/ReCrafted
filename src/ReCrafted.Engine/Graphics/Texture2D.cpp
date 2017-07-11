@@ -147,6 +147,16 @@ uint Texture2D::getHandle()
 	return m_textureHandle.idx;
 }
 
+uint Texture2D::getWidth() const
+{
+	return m_width;
+}
+
+uint Texture2D::getHeight() const
+{
+	return m_height;
+}
+
 void Texture2D::apply()
 {
 	auto size = m_width * m_height * 4;

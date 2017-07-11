@@ -193,12 +193,30 @@ void UI::drawText(Ptr<Font> font, Text text, Vector2 position)
 	}
 }
 
-/*
-void UI::drawTest(Ptr<Font> font)
+void UI::drawElement(Ptr<Texture2D> texture, Atlas::Element& element, Rectf rect)
 {
-	setColor(Color(255, 255, 255));
-	auto glyph = font->getCharacter(Char('X'));
-	auto tex = font->m_textures[glyph.texture];
+	auto handle = texture->getHandle();
 
-	m_instance->internal_drawBoxTextured(Rectf(200.0f, 200.0f, 512.0f, 512.0f), tex->getHandle(), Rectf(0.0f, 0.0f, 1.0f, 1.0f));
-}*/
+	auto w = texture->getWidth();
+	auto h = texture->getHeight();
+
+	auto fixOffset = element.rect.y % 2 == 0 ? 0.0f : 0.5f;
+
+	Rectf uvs;
+	uvs.x = float(element.rect.x) / w;
+	uvs.y = float(element.rect.y + element.rect.height + fixOffset) / h;
+	uvs.width = float(uvs.x + element.rect.width) / w;
+	uvs.height = -float(uvs.y + element.rect.height) / h;
+
+	m_instance->internal_drawBoxTextured(rect, handle, uvs);
+}
+
+void UI::drawElement(Ptr<Texture2D> texture, Atlas::Element& element, Vector2 pos)
+{
+	drawElement(texture, element, Rectf {
+		pos.x, 
+		pos.y, 
+		float(element.rect.width), 
+		float(element.rect.height)
+	});
+}

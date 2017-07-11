@@ -7,7 +7,9 @@
 #include "Core/Math/Color.h"
 #include "Core/Math/Rectf.h"
 #include "Common/ReCraftedAPI.h"
+#include "Common/Text.h"
 #include "Graphics/Shader.h"
+#include "Graphics/Atlas.h"
 
 struct Text;
 class Font;
@@ -144,6 +146,22 @@ public:
 	/// <param name="text">The text to be drawn.</param>
 	/// <param name="position">The point in pixels where the text will be drawn on the screen.</param>
 	static void drawText(Ptr<Font> font, Text text, Vector2 position);
+
+	/// <summary>
+	/// Draws atlas element.
+	/// </summary>
+	/// <param name="texture">The atlas texture which will be used for drawing.</param>
+	/// <param name="element">The atlas element which will be drawn.</param>
+	/// <param name="rect">The screen rect (in pixels) where the element will be drawn.</param>
+	static void drawElement(Ptr<Texture2D> texture, Atlas::Element& element, Rectf rect);
+
+	/// <summary>
+	/// Draws atlas element.
+	/// </summary>
+	/// <param name="texture">The atlas texture which will be used for drawing.</param>
+	/// <param name="element">The atlas element which will be drawn.</param>
+	/// <param name="pos">The screen position (in pixels) where the element will be drawn.</param>
+	static void drawElement(Ptr<Texture2D> texture, Atlas::Element& element, Vector2 pos);
 };
 
 #endif // UI_H

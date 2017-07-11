@@ -16,6 +16,7 @@ struct Text;
 /// </summary>
 class Atlas
 {
+public:
 	struct Element
 	{
 		char name[32] = {};

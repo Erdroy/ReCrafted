@@ -82,6 +82,10 @@ public:
 
 	uint getHandle();
 
+	uint getWidth() const;
+
+	uint getHeight() const;
+
 	/// <summary>
 	/// Apply, all pixel operations will be unavailable after calling this method.
 	/// </summary>
