@@ -132,6 +132,11 @@ void UI::internal_drawBoxTextured(Rectf rect, uint texture, Rectf& uvs)
 	BOX_VERTICES_FINALIZE(texture);
 }
 
+void UI::draw_bordered(uint texture, Rectf rect, Rectf uvs, float borderSize)
+{
+	// TODO: draw bordered
+}
+
 void UI::drawBox(Rectf rect)
 {
 	rect.width -= rect.x;
@@ -229,5 +234,23 @@ void UI::drawTexture(Ptr<Texture2D> texture, Rectf rect)
 
 void UI::drawBorderedTexture(Ptr<Texture2D> texture, Rectf rect, float borderSize)
 {
+	m_instance->draw_bordered(texture->getHandle(), rect, Rectf(0.0f, 0.0f, 1.0f, 1.0f), borderSize);
+}
 
+void UI::drawBorderedElement(Ptr<Texture2D> texture, Atlas::Element& element, Rectf rect, float borderSize)
+{
+	auto handle = texture->getHandle();
+
+	auto w = texture->getWidth();
+	auto h = texture->getHeight();
+
+	auto fixOffset = element.rect.y % 2 == 0 ? 0.0f : 0.5f;
+
+	Rectf uvs;
+	uvs.x = float(element.rect.x) / w;
+	uvs.y = float(element.rect.y + element.rect.height + fixOffset) / h;
+	uvs.width = float(uvs.x + element.rect.width) / w;
+	uvs.height = -float(uvs.y + element.rect.height) / h;
+
+	m_instance->draw_bordered(texture->getHandle(), rect, uvs, borderSize);
 }

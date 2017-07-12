@@ -101,6 +101,8 @@ private:
 
 	FORCEINLINE void push_drawcmd(drawcmd* cmd, int index);
 
+	FORCEINLINE void draw_bordered(uint texture, Rectf rect, Rectf uvs, float borderSize);
+
 public:
 	UI() { m_instance = this; }
 
@@ -177,6 +179,15 @@ public:
 	/// <param name="pos">The screen position (in pixels) where the texture will be drawn.</param>
 	/// <param name="borderSize">The border size (in pixels).</param>
 	static void drawBorderedTexture(Ptr<Texture2D> texture, Rectf rect, float borderSize);
+
+	/// <summary>
+	/// Draws bordered atlas element.
+	/// </summary>
+	/// <param name="texture">The atlas texture which will be used for drawing.</param>
+	/// <param name="element">The atlas element which will be drawn.</param>
+	/// <param name="rect">The screen rect (in pixels) where the element will be drawn.</param>
+	/// <param name="borderSize">The border size (in pixels).</param>
+	static void drawBorderedElement(Ptr<Texture2D> texture, Atlas::Element& element, Rectf rect, float borderSize);
 };
 
 #endif // UI_H
