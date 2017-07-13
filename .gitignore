@@ -1,6 +1,7 @@
 .projects/
 username.txt
 libs/
+libs_temp/
 build/
 packages/
 tools/*.pdb
