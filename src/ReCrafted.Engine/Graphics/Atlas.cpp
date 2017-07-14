@@ -51,6 +51,7 @@ Ptr<Atlas> Atlas::load(Text fileName)
 
 		// read data
 		auto data = new char[jsonFile.FileSize];
+		memset(data, 0, jsonFile.FileSize);
 		jsonFile.read(data, jsonFile.FileSize);
 
 		auto json = nlohmann::json::parse(data);
