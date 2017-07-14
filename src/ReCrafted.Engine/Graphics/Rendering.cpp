@@ -112,24 +112,6 @@ void Rendering::endRender()
 {
 	setState(false, false);
 
-	if(Input::isKey(Key_F1))
-	{
-		blit(0, m_gbuffer->getTarget(0));
-		return;
-	}
-
-	if (Input::isKey(Key_F2))
-	{
-		blit(0, m_gbuffer->getTarget(1));
-		return;
-	}
-
-	if (Input::isKey(Key_F3))
-	{
-		blit(0, m_gbuffer->getTarget(2));
-		return;
-	}
-
 	// final pass
 	auto textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
 

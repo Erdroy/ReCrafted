@@ -95,13 +95,11 @@ private:
 
 	FORCEINLINE void internal_drawBox(Rectf rect);
 
-	FORCEINLINE void internal_drawBoxTextured(Rectf rect, uint texture, Rectf& uvs);
+	FORCEINLINE void internal_drawBoxTextured(Rectf rect, uint texture, Rectf uvs);
 
 	// internal
 
 	FORCEINLINE void push_drawcmd(drawcmd* cmd, int index);
-
-	FORCEINLINE void draw_bordered(uint texture, Rectf rect, Rectf uvs, float borderSize);
 
 public:
 	UI() { m_instance = this; }
@@ -137,6 +135,7 @@ public:
 	// drawing
 	/// <summary>
 	/// Draws colored box on the screen.
+	/// Rect X/Y is start coord and W/H is end coord.
 	/// </summary>
 	/// <param name="rect">The box rectangle in pixels.</param>
 	static void drawBox(Rectf rect);
@@ -150,44 +149,13 @@ public:
 	static void drawText(Ptr<Font> font, Text text, Vector2 position);
 
 	/// <summary>
-	/// Draws atlas element.
-	/// </summary>
-	/// <param name="texture">The atlas texture which will be used for drawing.</param>
-	/// <param name="element">The atlas element which will be drawn.</param>
-	/// <param name="rect">The screen rect (in pixels) where the element will be drawn.</param>
-	static void drawElement(Ptr<Texture2D> texture, Atlas::Element& element, Rectf rect);
-
-	/// <summary>
-	/// Draws atlas element.
-	/// </summary>
-	/// <param name="texture">The atlas texture which will be used for drawing.</param>
-	/// <param name="element">The atlas element which will be drawn.</param>
-	/// <param name="pos">The screen position (in pixels) where the element will be drawn.</param>
-	static void drawElement(Ptr<Texture2D> texture, Atlas::Element& element, Vector2 pos);
-
-	/// <summary>
 	/// Draws texture.
+	/// Rect X/Y is start coord and W/H is end coord.
 	/// </summary>
 	/// <param name="texture">The texture which will drawn.</param>
 	/// <param name="pos">The screen position (in pixels) where the texture will be drawn.</param>
-	static void drawTexture(Ptr<Texture2D> texture, Rectf rect);
-
-	/// <summary>
-	/// Draws bordered texture.
-	/// </summary>
-	/// <param name="texture">The texture which will drawn.</param>
-	/// <param name="pos">The screen position (in pixels) where the texture will be drawn.</param>
-	/// <param name="borderSize">The border size (in pixels).</param>
-	static void drawBorderedTexture(Ptr<Texture2D> texture, Rectf rect, float borderSize);
-
-	/// <summary>
-	/// Draws bordered atlas element.
-	/// </summary>
-	/// <param name="texture">The atlas texture which will be used for drawing.</param>
-	/// <param name="element">The atlas element which will be drawn.</param>
-	/// <param name="rect">The screen rect (in pixels) where the element will be drawn.</param>
-	/// <param name="borderSize">The border size (in pixels).</param>
-	static void drawBorderedElement(Ptr<Texture2D> texture, Atlas::Element& element, Rectf rect, float borderSize);
+	/// <param name="pos">The texture uvs.</param>
+	static void drawTexture(Ptr<Texture2D> texture, Rectf rect, Rectf uvs);
 };
 
 #endif // UI_H
