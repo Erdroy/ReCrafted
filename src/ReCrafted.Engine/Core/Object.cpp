@@ -2,6 +2,13 @@
 
 #include "Object.h"
 
+void Object::onFinalize()
+{
+	// cleanup
+	m_ptr = nullptr;
+	delete this;
+}
+
 Object::Object(void* ptr) : m_ptr(ptr)
 {
 }

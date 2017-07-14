@@ -18,6 +18,9 @@ private:
 private:
 	Object() {}
 
+private:
+	void onFinalize();
+
 public:
 	explicit Object(void* ptr);
 

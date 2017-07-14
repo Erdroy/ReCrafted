@@ -11,22 +11,17 @@
 
 class ScriptingEngine
 {
+	friend class GameMain;
+
 private:
 	static ScriptingEngine* m_instance;
 
 private:
-
-public:
-	static void run();
-
-	static void bind_all();
-
-	static MonoClass* load_class(const char* classNamespace, const char* className);
-
 	static MonoMethod* load_method(const char* methodName, MonoClass* monoClass);
 
 	static MonoObject* create_class_instance(MonoClass* monoClass);
 
+private:
 	static void initialize();
 
 	static void update();
@@ -37,7 +32,14 @@ public:
 
 	static void shutdown();
 
-	static void create();
+public:
+	static void run();
+
+	static void bind_all();
+
+	static MonoClass* getClass(const char* classNamespace, const char* className);
+
+	static Object* create(MonoClass* monoClass);
 
 	static void destroy(Object* object);
 

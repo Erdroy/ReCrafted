@@ -61,7 +61,7 @@ void ScriptingEngine::run()
 	bind_all();
 
 	// create and run GameMain
-	auto gamemain_class = load_class("ReCrafted.Game", "GameMain");
+	auto gamemain_class = getClass("ReCrafted.Game", "GameMain");
 	m_game_main = create_class_instance(gamemain_class);
 	
 	m_method_initialize = load_method("ReCrafted.Game.GameMain::Initialize", gamemain_class);
@@ -71,7 +71,7 @@ void ScriptingEngine::run()
 	m_method_shutdown = load_method("ReCrafted.Game.GameMain::Shutdown", gamemain_class);
 }
 
-MonoClass* ScriptingEngine::load_class(const char* classNamespace, const char* className)
+MonoClass* ScriptingEngine::getClass(const char* classNamespace, const char* className)
 {
 	auto image = mono_assembly_get_image(m_core_assembly);
 	return  mono_class_from_name(image, classNamespace, className);
@@ -118,4 +118,19 @@ void ScriptingEngine::shutdown()
 	Logger::write("Shutting down ScriptingEngine...", LogLevel::Info);
 
 	mono_jit_cleanup(m_domain);
+}
+
+Object* ScriptingEngine::create(MonoClass* monoClass)
+{
+	return nullptr;
+}
+
+void ScriptingEngine::destroy(Object* object)
+{
+
+}
+
+void ScriptingEngine::onFinalized(Object* object)
+{
+	object->onFinalize();
 }
