@@ -26,6 +26,8 @@ src/ReCrafted.Pdb2MdbConverter/obj/
 src/ReCrafted.AtlasPacker/bin/
 src/ReCrafted.AtlasPacker/obj/
 src/ReCrafted.GameTest/
+src/ReCrafted.LocaleConverter/bin/
+src/ReCrafted.LocaleConverter/obj/
 ReCrafted.NET.VC.db
 ReCrafted.NET.VC.VC.opendb
 libs_prebuilt.zip
