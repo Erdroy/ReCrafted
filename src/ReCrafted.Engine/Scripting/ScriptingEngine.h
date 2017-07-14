@@ -7,6 +7,8 @@
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 
+#include "Core/Object.h"
+
 class ScriptingEngine
 {
 private:
@@ -34,6 +36,12 @@ public:
 	static void drawui();
 
 	static void shutdown();
+
+	static void create();
+
+	static void destroy(Object* object);
+
+	static void onFinalized(Object* object);
 };
 
 #endif // SCRIPTINGENGINE_H
