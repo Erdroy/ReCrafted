@@ -7,8 +7,9 @@
 
 // includes
 #include "Common/ReCraftedAPI.h"
-#include "Class.h"
 #include "Method.h"
+#include "Mono.h"
+#include "Utils/Types.h"
 
 class Object
 {

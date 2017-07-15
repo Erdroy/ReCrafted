@@ -1,9 +1,10 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "GameMain.h"
-#include "Scripting/ScriptingEngine.h"
 #include "Common/Display.h"
 #include "Graphics/Atlas.h"
+#include "Scripting/Bindings.h"
+#include "Scripting/Object.h"
 
 #define CHECK_SHUTDOWN if (!m_running) break;
 
@@ -124,6 +125,30 @@ LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	return DefWindowProc(hWnd, msg, wparam, lparam);
 }
 
+void GameMain::initScripting()
+{
+	m_domain = Domain::createRoot();
+
+	// load base assemblies
+	m_assemblyGame = m_domain->loadAssembly("ReCrafted.Game.dll");
+	m_assemblyAPI = m_domain->loadAssembly("ReCrafted.API.dll");
+
+	// apply bindings
+	Bindings::bind();
+
+	// create gamemain instance
+	auto gamemainDef = m_assemblyGame->findClass("ReCrafted.Game", "GameMain");
+	m_gamemain = gamemainDef->createInstance();
+
+	// find methods
+
+	m_init_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Initialize");
+	m_update_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Update");
+	m_simulate_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Simulate");
+	m_drawui_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::DrawUI");
+	m_shutdown_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Shutdown");
+}
+
 void GameMain::run()
 {
 	// set all needed instance handlers
@@ -219,7 +244,6 @@ void GameMain::shutdown()
 	m_running = false;
 }
 
-
 void GameMain::onLoad()
 {
 	// initialize logger
@@ -240,7 +264,7 @@ void GameMain::onLoad()
 	Logger::write("Creating game renderer using Direct3D11 API", LogLevel::Info);
 
 	// initialize scripting engine
-	ScriptingEngine::run();
+	initScripting();
 
 	// initialize bgfx
 	bgfx::init(bgfx::RendererType::Direct3D11);
@@ -278,7 +302,8 @@ void GameMain::onLoad()
 	m_universe->init();
 
 	Logger::write("Game initialized", LogLevel::Info);
-	ScriptingEngine::initialize();
+
+	m_init_method->invoke();
 }
 
 void GameMain::onUnload()
@@ -289,7 +314,8 @@ void GameMain::onUnload()
 	Logger::write("Shutting down...", LogLevel::Info);
 
 	// shutdown scripting engine
-	ScriptingEngine::shutdown();
+	m_shutdown_method->invoke();
+	m_domain->cleanup();
 
 	// release all resources etc.
 	SafeDispose(m_rendering);
@@ -347,18 +373,16 @@ void GameMain::onUpdate()
 		Logger::write("Switching to debug text render mode", LogLevel::Info);
 	}
 
-	//m_universe->update();
-
-	ScriptingEngine::update();
+	m_universe->update();
+	m_update_method->invoke();
 }
 
 void GameMain::onSimulate()
 {
 	// simulation event, called every simulation tick(fixed time)
 
-	//m_universe->simulate();
-
-	ScriptingEngine::simulate();
+	m_universe->simulate();
+	m_simulate_method->invoke();
 }
 
 void GameMain::onDraw()
@@ -378,11 +402,11 @@ void GameMain::onDraw()
 		m_rendering->renderShadows();
 
 		// draw all shadow casters
-		//m_universe->drawShadowCasters();
+		m_universe->drawShadowCasters();
 
 		// render static objects, eg.: static entities, voxels.
 		m_rendering->renderStatic();
-		//m_universe->draw();
+		m_universe->draw();
 
 		// render all entities
 		m_rendering->renderEntities();
@@ -394,7 +418,7 @@ void GameMain::onDraw()
 	// draw UI
 	m_ui->beginDraw(); // begin draw UI
 	{
-		ScriptingEngine::drawui();
+		m_drawui_method->invoke();
 	}
 	m_ui->endDraw(); // end draw UI
 	bgfx::setViewFrameBuffer(0, BGFX_INVALID_HANDLE);

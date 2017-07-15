@@ -6,12 +6,14 @@
 #define GAMEMAIN_H
 
 // includes
-#include "Graphics/Rendering.h"
-#include "Graphics/Camera.h"
-#include "Game/Universe.h"
 #include "Common/Input.h"
 #include "Common/Time.h"
+#include "Game/Universe.h"
+#include "Graphics/Rendering.h"
+#include "Graphics/Camera.h"
 #include "Graphics/UI/UI.h"
+#include "Scripting/Domain.h"
+#include "Scripting/Method.h"
 
 class GameMain
 {
@@ -25,16 +27,32 @@ private:
 	bool m_initialized = false;
 
 	Rendering* m_rendering = nullptr;
-	UI* m_ui = nullptr;
-
 	Universe* m_universe = nullptr;
 	Logger* m_logger = nullptr;
 	Input* m_input = nullptr;
 	Time* m_time = nullptr;
+	UI* m_ui = nullptr;
+	uint m_tickrate = 60u;
 
 	Ptr<Camera> m_camera = nullptr;
 
-	uint m_tickrate = 60u;
+	// scripting
+
+	Ptr<Domain> m_domain = nullptr;
+	Ptr<Assembly> m_assemblyGame = nullptr;
+	Ptr<Assembly> m_assemblyAPI = nullptr;
+	Ptr<Object> m_gamemain = nullptr;
+
+	// methods
+
+	Ptr<Method> m_init_method = nullptr;
+	Ptr<Method> m_update_method = nullptr;
+	Ptr<Method> m_simulate_method = nullptr;
+	Ptr<Method> m_drawui_method = nullptr;
+	Ptr<Method> m_shutdown_method = nullptr;
+
+private:
+	void initScripting();
 
 public:
 	/// <summary>

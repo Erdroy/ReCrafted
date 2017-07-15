@@ -1,7 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "Object.h"
-#include <mono/metadata/debug-helpers.h>
 
 void Object::onFinalize()
 {

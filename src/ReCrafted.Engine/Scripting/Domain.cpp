@@ -5,9 +5,6 @@
 #include "Core/GameInfo.h"
 #include "Core/GameMain.h"
 
-#include <mono/metadata/debug-helpers.h>
-#include <mono/metadata/mono-debug.h>
-
 Ptr<Domain> m_rootDomain = nullptr;
 
 const char* jit_options[] = {

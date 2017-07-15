@@ -5,7 +5,7 @@
 #define API_BUILD
 
 // mono extensions
-#define API_DEF friend class ScriptingEngine; protected: static void initRuntime(); private:
+#define API_DEF friend class Bindings; protected: static void initRuntime(); private:
 
 #define MONO_TEXT(x) mono_string_chars(string)
 

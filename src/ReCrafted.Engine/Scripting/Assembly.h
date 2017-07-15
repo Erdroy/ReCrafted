@@ -9,6 +9,7 @@
 #include "Utils/Types.h"
 #include "Class.h"
 #include "Domain.h"
+#include "Mono.h"
 
 class Assembly
 {

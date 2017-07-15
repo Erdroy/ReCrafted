@@ -7,7 +7,8 @@
 
 // includes
 #include "Utils/Types.h"
-#include "ScriptingEngine.h"
+#include "Object.h"
+#include "Mono.h"
 
 class Class
 {
@@ -22,7 +23,7 @@ public:
 	/// <summary>
 	/// Creates instance of this class.
 	/// </summary>
-	Ptr<Object> createInstance() const;
+	Ptr<Object> createInstance(bool isObject = true) const;
 };
 
 #endif // CLASS_H

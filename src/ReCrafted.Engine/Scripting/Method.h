@@ -6,7 +6,7 @@
 #define METHOD_H
 
 // includes
-#include "Object.h"
+#include "Mono.h"
 
 class Method
 {

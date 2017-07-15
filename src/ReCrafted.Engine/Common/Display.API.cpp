@@ -1,7 +1,7 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 #include "Display.h"
-#include "Scripting/ScriptingEngine.h"
+#include "Scripting/Mono.h"
 #include "Common/ReCraftedAPI.h"
 
 namespace Internal
