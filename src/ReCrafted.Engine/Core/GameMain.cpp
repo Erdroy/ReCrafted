@@ -347,7 +347,7 @@ void GameMain::onUpdate()
 		Logger::write("Switching to debug text render mode", LogLevel::Info);
 	}
 
-	m_universe->update();
+	//m_universe->update();
 
 	ScriptingEngine::update();
 }
@@ -356,7 +356,7 @@ void GameMain::onSimulate()
 {
 	// simulation event, called every simulation tick(fixed time)
 
-	m_universe->simulate();
+	//m_universe->simulate();
 
 	ScriptingEngine::simulate();
 }
@@ -378,11 +378,11 @@ void GameMain::onDraw()
 		m_rendering->renderShadows();
 
 		// draw all shadow casters
-		m_universe->drawShadowCasters();
+		//m_universe->drawShadowCasters();
 
 		// render static objects, eg.: static entities, voxels.
 		m_rendering->renderStatic();
-		m_universe->draw();
+		//m_universe->draw();
 
 		// render all entities
 		m_rendering->renderEntities();

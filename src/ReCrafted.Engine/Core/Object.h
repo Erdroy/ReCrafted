@@ -13,7 +13,7 @@ class Object
 	API_DEF
 
 private:
-	void* m_ptr = nullptr;
+	void* m_ptr = nullptr; // mono object pointer
 
 private:
 	Object() {}

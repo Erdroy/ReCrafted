@@ -26,7 +26,6 @@ class Camera
 private:
 	static Camera* m_mainCamera;
 
-
 private:
 	bool m_freeMovement = false;
 	bool m_cursorLocked = true;

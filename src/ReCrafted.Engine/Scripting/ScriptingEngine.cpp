@@ -3,13 +3,14 @@
 #include "ScriptingEngine.h"
 #include "Core/Logger.h"
 #include "Core/GameInfo.h"
+#include "Domain.h"
 
 #include <mono/metadata/debug-helpers.h>
 #include <mono/metadata/mono-debug.h>
 
 #pragma comment(lib, "mono.lib")
 
-MonoDomain* m_domain;
+Ptr<Domain> m_domain;
 
 MonoAssembly* m_api_assembly;
 MonoAssembly* m_core_assembly;
@@ -44,18 +45,19 @@ void ScriptingEngine::run()
 		mono_jit_parse_options(2, const_cast<char**>(jit_options));
 	}
 
-	m_domain = mono_jit_init_version("ReCrafted", "v4.0.30319");
+	auto domain = mono_jit_init_version("ReCrafted", "v4.0.30319");
 
 	mono_debug_init(MONO_DEBUG_FORMAT_MONO);
-	mono_debug_domain_create(m_domain);
+	mono_debug_domain_create(domain);
 
-	m_api_assembly = mono_domain_assembly_open(m_domain, "ReCrafted.API.dll");
-	
-	Logger::write("Loaded ReCrafted.API.dll", LogLevel::Info);
+	// create mono domain proxy
+	m_domain = Domain::create(domain);
 
-	m_core_assembly = mono_domain_assembly_open(m_domain, "ReCrafted.Game.dll");
+	auto apiAssembly = m_domain->loadAssembly("ReCrafted.API.dll");
+	auto gameAssembly = m_domain->loadAssembly("ReCrafted.Game.dll");
 
-	Logger::write("Loaded ReCrafted.Game.dll", LogLevel::Info);
+	m_api_assembly = mono_domain_assembly_open(domain, "ReCrafted.API.dll");
+	m_core_assembly = mono_domain_assembly_open(domain, "ReCrafted.Game.dll");
 
 	// bind API
 	bind_all();
@@ -117,12 +119,8 @@ void ScriptingEngine::shutdown()
 
 	Logger::write("Shutting down ScriptingEngine...", LogLevel::Info);
 
-	mono_jit_cleanup(m_domain);
-}
-
-Object* ScriptingEngine::create(MonoClass* monoClass)
-{
-	return nullptr;
+	// cleanup
+	m_domain->cleanup();
 }
 
 void ScriptingEngine::destroy(Object* object)

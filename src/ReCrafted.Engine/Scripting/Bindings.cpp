@@ -15,4 +15,5 @@ void ScriptingEngine::bind_all()
 	Time::initRuntime();
 	Display::initRuntime();
 	UI::initRuntime();
+	Object::initRuntime();
 }
