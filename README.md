@@ -2,8 +2,8 @@
 
 ## External tools
 - [VisualStudio 2015/2017](https://www.visualstudio.com/) (IDE, Windows)
-- [VisualStudio Code](https://code.visualstudio.com/) with C++ extensions (IDE, Linux)
-- XCode (IDE, OSX)
+- [VisualStudio Code](https://code.visualstudio.com/) with C++ extensions (IDE, Linux) | Currently not supported
+- XCode (IDE, OSX) | Currently not supported
 
 ## Building
 1. Clone ReCrafted repo into suitable directory: `X:/ReCrafted/` (should contain: licenses, src, tools etc.)
