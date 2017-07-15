@@ -16,8 +16,11 @@ Ptr<Object> Class::createInstance(bool isObject) const
 
 	if (isObject)
 	{
-		// TODO: set native pointer
+		// set native pointer
+		auto testField = object->findField("NativePtr");
 
+		auto ptr = object.get();
+		testField->setValue(&ptr);
 	}
 
 	return object;
