@@ -118,6 +118,9 @@ void UI::dispose()
 	// delete the buffers data
 	SafeDelete(m_vertexBufferData);
 	SafeDelete(m_indexBufferData);
+
+	// dispose shader
+	SafeDispose(m_shader);
 }
 
 void UI::beginDraw()
