@@ -1,0 +1,5 @@
+D:\ReCrafted\tools\ReCrafted.APIBuilder.exe
+D:\ReCrafted\tools\ReCrafted.APIBuilder.pdb
+D:\ReCrafted\src\ReCrafted.APIBuilder\obj\Release\ReCrafted.APIBuilder.csprojResolveAssemblyReference.cache
+D:\ReCrafted\src\ReCrafted.APIBuilder\obj\Release\ReCrafted.APIBuilder.exe
+D:\ReCrafted\src\ReCrafted.APIBuilder\obj\Release\ReCrafted.APIBuilder.pdb

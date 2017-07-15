@@ -1,0 +1,11 @@
+D:\ReCrafted\src\ReCrafted.LocaleConverter\LocaleConverter\bin\Release\LocaleConverter.exe.config
+D:\ReCrafted\src\ReCrafted.LocaleConverter\LocaleConverter\bin\Release\LocaleConverter.exe
+D:\ReCrafted\src\ReCrafted.LocaleConverter\LocaleConverter\bin\Release\LocaleConverter.pdb
+D:\ReCrafted\src\ReCrafted.LocaleConverter\LocaleConverter\obj\Release\LocaleConverter.exe
+D:\ReCrafted\src\ReCrafted.LocaleConverter\LocaleConverter\obj\Release\LocaleConverter.pdb
+D:\ReCrafted\tools\LocaleConverter.exe.config
+D:\ReCrafted\src\ReCrafted.LocaleConverter\obj\Release\LocaleConverter.exe
+D:\ReCrafted\src\ReCrafted.LocaleConverter\obj\Release\LocaleConverter.pdb
+D:\ReCrafted\tools\LocaleConverter.exe
+D:\ReCrafted\tools\LocaleConverter.pdb
+D:\ReCrafted\src\ReCrafted.LocaleConverter\obj\Release\ReCrafted.LocaleConverter.csprojResolveAssemblyReference.cache

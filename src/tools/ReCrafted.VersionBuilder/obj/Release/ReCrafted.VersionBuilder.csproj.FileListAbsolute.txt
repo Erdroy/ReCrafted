@@ -1,0 +1,5 @@
+D:\ReCrafted\tools\ReCrafted.VersionBuilder.exe
+D:\ReCrafted\tools\ReCrafted.VersionBuilder.pdb
+D:\ReCrafted\src\ReCrafted.VersionBuilder\obj\Release\ReCrafted.VersionBuilder.csprojResolveAssemblyReference.cache
+D:\ReCrafted\src\ReCrafted.VersionBuilder\obj\Release\ReCrafted.VersionBuilder.exe
+D:\ReCrafted\src\ReCrafted.VersionBuilder\obj\Release\ReCrafted.VersionBuilder.pdb
