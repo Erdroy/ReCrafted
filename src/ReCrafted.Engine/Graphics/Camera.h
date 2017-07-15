@@ -10,6 +10,7 @@
 #include "Utils/Defines.h"
 #include "Core/Math/Math.h"
 #include "Core/Math/BoundingFrustum.h"
+#include "Scripting/Object.h"
 
 #define FILTERING_BUFFER_SIZE 3
 
@@ -18,16 +19,16 @@ class Entity;
 /// <summary>
 /// Camera class.
 /// </summary>
-class Camera
+class Camera : public Object
 {
 	friend class Rendering;
 	friend class GameMain;
+	API_DEF
 
 private:
 	static Camera* m_mainCamera;
 
 private:
-	bool m_freeMovement = false;
 	bool m_cursorLocked = true;
 
 	Vector3 m_upLock = Vector3(0.0f, 1.0f, 0.0f);
@@ -50,9 +51,20 @@ private:
 	void updatePerspective();
 	void update();
 
-private:
+public:
+	/// <summary>
+	/// Default Camera constructor.
+	/// </summary>
 	Camera()
 	{
+		// initialize
+		update();
+		updatePerspective();
+
+		// set as main camera if there is no any other
+		if (m_mainCamera == nullptr)
+			m_mainCamera = this;
+
 		// clear filtering buffer
 		for(auto i = 0u; i < FILTERING_BUFFER_SIZE; i ++)
 		{
@@ -89,33 +101,6 @@ public:
 
 public:
 	/// <summary>
-	/// Create new camera.
-	/// </summary>
-	/// <param name="freeMovement">Is the camera free?(used for spectating, editor etc.)</param>
-	/// <param name="setAsCurrent">Set this camera as current after initialization?
-	/// This camera will be used to render the scene.</param>
-	/// <returns></returns>
-	FORCEINLINE static Ptr<Camera> createCamera(bool freeMovement = false, bool setAsCurrent = false)
-	{
-		// create new camera instance
-		Ptr<Camera> camera(new Camera);
-
-		// set free movement state
-		camera->m_freeMovement = freeMovement;
-
-		// initialize
-		camera->update();
-		camera->updatePerspective();
-
-		// set as main camera if there is no any other, 
-		// or set if there is `setAsCurrent` set to true
-		if (m_mainCamera == nullptr || setAsCurrent)
-			m_mainCamera = camera.get();
-
-		return camera;
-	}
-
-	/// <summary>
 	/// Gets the main camera.
 	/// </summary>
 	/// <returns></returns>
@@ -125,6 +110,7 @@ public:
 	}
 
 public:
+	PROPERTY(bool, freeMovement) = false;
 	PROPERTY(float, fov) = 75.0f;
 	PROPERTY(float, farPlane) = 1000.0f;
 	PROPERTY(float, nearPlane) = 0.02f;

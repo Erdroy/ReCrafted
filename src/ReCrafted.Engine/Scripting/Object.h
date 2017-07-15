@@ -37,6 +37,11 @@ public:
 	/// Finds field using given name.
 	/// </summary>
 	Ptr<Field> findField(const char* fieldName) const;
+
+	/// <summary>
+	/// Gets managed object pointer.
+	/// </summary>
+	MonoObject* getManagedPtr() const;
 };
 
 #endif // OBJECT_H

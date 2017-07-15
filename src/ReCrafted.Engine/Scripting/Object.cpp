@@ -44,3 +44,8 @@ Ptr<Field> Object::findField(const char* fieldName) const
 
 	return field;
 }
+
+MonoObject* Object::getManagedPtr() const
+{
+	return m_object;
+}

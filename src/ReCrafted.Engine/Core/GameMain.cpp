@@ -294,10 +294,10 @@ void GameMain::onLoad()
 	Logger::write("Rendering pipeline initialized", LogLevel::Info);
 
 	// initialize main camera for scene
-
-	auto cameraDesc = m_assemblyGame->findClass("ReCrafted.API.Graphics", "Camera");
+	auto cameraDesc = m_assemblyAPI->findClass("ReCrafted.API.Graphics", "Camera");
 	m_camera = cameraDesc->createInstance<Camera>(true);
 	m_camera->set_position(Vector3(0.0f, 20.0f, -10.0f));
+	m_camera->set_freeMovement(true);
 
 	m_initialized = true;
 

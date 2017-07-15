@@ -19,7 +19,7 @@ namespace ReCrafted.API
         /// <summary>
         /// Default object constructor.
         /// </summary>
-        private Object() { }
+        protected Object() { }
         
         /// <summary>
         /// Called when the object is finalized.
