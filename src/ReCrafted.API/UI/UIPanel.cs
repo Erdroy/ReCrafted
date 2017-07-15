@@ -18,7 +18,7 @@ namespace ReCrafted.API.UI
         /// </summary>
         public override void Draw()
         {
-            // Layout.Draw();
+             Layout.Draw();
         }
 
         // internal

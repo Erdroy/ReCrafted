@@ -10,6 +10,13 @@ void Object::onFinalize()
 	delete this;
 }
 
+void Object::destroy()
+{
+	// free garbage collector handle
+	mono_gchandle_free(m_gchandle);
+	m_gchandle = 0u;
+}
+
 Ptr<Method> Object::findMethod(const char* methodName) const
 {
 	auto methodDesc = mono_method_desc_new(methodName, true);

@@ -20,9 +20,12 @@ class Object
 private:
 	MonoObject* m_object = nullptr;
 	MonoClass* m_class = nullptr;
+	uint32_t m_gchandle = 0u;
 
 private:
 	void onFinalize();
+
+	void destroy();
 
 public:
 	/// <summary>

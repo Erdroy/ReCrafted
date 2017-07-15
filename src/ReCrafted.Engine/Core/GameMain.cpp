@@ -5,6 +5,7 @@
 #include "Graphics/Atlas.h"
 #include "Scripting/Bindings.h"
 #include "Scripting/Object.h"
+#include "Scripting/Assembly.h"
 
 #define CHECK_SHUTDOWN if (!m_running) break;
 
@@ -136,10 +137,10 @@ void GameMain::initScripting()
 
 	// apply bindings
 	Bindings::bind();
-
+	
 	// create gamemain instance
 	auto gamemainDef = m_assemblyGame->findClass("ReCrafted.Game", "GameMain");
-	m_gamemain = gamemainDef->createInstance();
+	m_gamemain = gamemainDef->createInstance<Object>(false);
 
 	// find methods
 
@@ -293,7 +294,9 @@ void GameMain::onLoad()
 	Logger::write("Rendering pipeline initialized", LogLevel::Info);
 
 	// initialize main camera for scene
-	m_camera = Camera::createCamera(true, true);
+
+	auto cameraDesc = m_assemblyGame->findClass("ReCrafted.API.Graphics", "Camera");
+	m_camera = cameraDesc->createInstance<Camera>(true);
 	m_camera->set_position(Vector3(0.0f, 20.0f, -10.0f));
 
 	m_initialized = true;
