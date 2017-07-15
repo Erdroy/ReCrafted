@@ -1,3 +1,0 @@
-D:\ReCrafted\tools\ReCrafted.APIBuilder.exe
-D:\ReCrafted\src\tools\ReCrafted.APIBuilder\obj\Debug\ReCrafted.APIBuilder.csprojResolveAssemblyReference.cache
-D:\ReCrafted\src\tools\ReCrafted.APIBuilder\obj\Debug\ReCrafted.APIBuilder.exe

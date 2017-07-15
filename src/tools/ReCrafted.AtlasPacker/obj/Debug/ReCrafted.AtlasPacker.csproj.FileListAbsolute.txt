@@ -1,6 +1,0 @@
-D:\ReCrafted\tools\ReCrafted.AtlasPacker.exe
-D:\ReCrafted\src\tools\ReCrafted.AtlasPacker\obj\Debug\ReCrafted.AtlasPacker.csprojResolveAssemblyReference.cache
-D:\ReCrafted\src\tools\ReCrafted.AtlasPacker\obj\Debug\ReCrafted.AtlasPacker.MainForm.resources
-D:\ReCrafted\src\tools\ReCrafted.AtlasPacker\obj\Debug\ReCrafted.AtlasPacker.Properties.Resources.resources
-D:\ReCrafted\src\tools\ReCrafted.AtlasPacker\obj\Debug\ReCrafted.AtlasPacker.csproj.GenerateResource.Cache
-D:\ReCrafted\src\tools\ReCrafted.AtlasPacker\obj\Debug\ReCrafted.AtlasPacker.exe
