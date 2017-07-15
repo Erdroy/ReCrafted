@@ -43,9 +43,8 @@ Ptr<Assembly> Domain::loadAssembly(const char* fileName)
 
 void Domain::cleanup()
 {
-	m_domain = nullptr;
-
 	mono_jit_cleanup(m_domain);
+	m_domain = nullptr;
 }
 
 Ptr<Domain> Domain::create(MonoDomain* monoDomain)

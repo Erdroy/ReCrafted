@@ -421,7 +421,6 @@ void GameMain::onDraw()
 		m_drawui_method->invoke();
 	}
 	m_ui->endDraw(); // end draw UI
-	bgfx::setViewFrameBuffer(0, BGFX_INVALID_HANDLE);
 	
 	// next frame, wait vsync
 	bgfx::frame();
