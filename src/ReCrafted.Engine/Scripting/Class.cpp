@@ -11,17 +11,14 @@ Ptr<Object> Class::createInstance(bool isObject) const
 	auto instance = mono_object_new(m_assembly->m_domain, m_class);
 	mono_runtime_object_init(instance);
 
-	if (isObject)
-	{
-		// TODO: call constructor
-
-		/*void *args[1];
-		args[0] = object.get();
-		mono_runtime_invoke(ctor_method, instance, args, nullptr);*/
-	}
-
 	object->m_object = instance;
 	object->m_class = m_class;
+
+	if (isObject)
+	{
+		// TODO: set native pointer
+
+	}
 
 	return object;
 }

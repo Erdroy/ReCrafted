@@ -127,6 +127,7 @@ LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 void GameMain::initScripting()
 {
+	// create root domain
 	m_domain = Domain::createRoot();
 
 	// load base assemblies

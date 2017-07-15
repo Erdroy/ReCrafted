@@ -11,22 +11,16 @@ namespace ReCrafted.API
     {
         /// <summary>
         /// The native pointer for mono object instance.
+        /// This is being set by Object instantiation on the C++ side.
         /// </summary>
         [NonSerialized]
-        protected readonly IntPtr NativePtr;
-        
-        // never called, cannot use
-        private Object() { }
+        protected IntPtr NativePtr;
 
         /// <summary>
         /// Default object constructor.
         /// </summary>
-        /// <param name="nativePtr">The native pointer for mono object instance.</param>
-        protected Object(IntPtr nativePtr)
-        {
-            NativePtr = nativePtr;
-        }
-
+        private Object() { }
+        
         /// <summary>
         /// Called when the object is finalized.
         /// </summary>

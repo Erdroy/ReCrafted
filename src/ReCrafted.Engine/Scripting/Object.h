@@ -8,6 +8,7 @@
 // includes
 #include "Common/ReCraftedAPI.h"
 #include "Method.h"
+#include "Field.h"
 #include "Mono.h"
 #include "Utils/Types.h"
 
@@ -28,6 +29,11 @@ public:
 	/// Finds method using given name.
 	/// </summary>
 	Ptr<Method> findMethod(const char* methodName) const;
+
+	/// <summary>
+	/// Finds field using given name.
+	/// </summary>
+	Ptr<Field> findField(const char* fieldName) const;
 };
 
 #endif // OBJECT_H
