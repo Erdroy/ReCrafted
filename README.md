@@ -4,7 +4,6 @@
 - [VisualStudio 2015/2017](https://www.visualstudio.com/) (IDE, Windows)
 - [VisualStudio Code](https://code.visualstudio.com/) with C++ extensions (IDE, Linux)
 - XCode (IDE, OSX)
-- [TexturePacker](https://www.codeandweb.com/texturepacker) for creating atlases
 
 ## Building
 1. Clone ReCrafted repo into suitable directory: `X:/ReCrafted/` (should contain: licenses, src, tools etc.)
