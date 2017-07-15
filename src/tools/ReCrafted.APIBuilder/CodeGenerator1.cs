@@ -287,7 +287,8 @@ if(methodDesc.Parameters.Count > 0){
             
             #line default
             #line hidden
-            this.Write(");\r\n\t\t}\r\n\t\t\r\n\t\t[MethodImpl(MethodImplOptions.InternalCall)]\r\n\t\tinternal extern ");
+            this.Write(");\r\n\t\t}\r\n\t\t\r\n\t\t[MethodImpl(MethodImplOptions.InternalCall)]\r\n\t\tinternal static ex" +
+                    "tern ");
             
             #line 91 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodReturn));

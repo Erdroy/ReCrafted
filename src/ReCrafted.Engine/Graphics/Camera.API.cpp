@@ -7,7 +7,7 @@ namespace Internal
 {
 	void setAsCurrent(Camera* camera)
 	{
-		throw;
+		camera->setAsCurrent();
 	}
 
 	MonoObject* getCurrent()
