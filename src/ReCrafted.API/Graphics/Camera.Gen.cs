@@ -1,7 +1,8 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 07/15/2017 19:27:36 Source: 'Object.API.cpp' Target: 'Graphics/Camera.Gen.cs'
+// Generated: 07/15/2017 20:05:19 Source: 'Object.API.cpp' Target: 'Graphics/Camera.Gen.cs'
 
+using System;
 using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Graphics 
@@ -14,9 +15,14 @@ namespace ReCrafted.API.Graphics
 		/// <summary>
 		///	Sets the camera as current.
 		/// </summary>
+		public void SetAsCurrent()
+		{
+			Internal_SetAsCurrent(NativePtr);
+		}
+		
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		public extern void SetAsCurrent();
-
+		internal extern void Internal_SetAsCurrent(IntPtr nativePtr);
+		
 		/// <summary>
 		///	Is game running state.
 		/// </summary>

@@ -22,8 +22,6 @@ void Object::initRuntime()
 {
 	API_FILE("Object.Gen.cs");
 	{
-		API_USING("System");
-
 		API_COMMENT("Base class for all mono object instances.");
 		API_CLASS(PUBLIC, ABSTRACT, "ReCrafted.API", "Object", PARTIAL);
 		{

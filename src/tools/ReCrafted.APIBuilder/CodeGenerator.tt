@@ -12,6 +12,7 @@ using <#=usingDesc.Namespace#>;
 <#
 } 
 #>
+using System;
 using System.Runtime.CompilerServices;
 
 <#
@@ -45,60 +46,80 @@ if(!string.IsNullOrEmpty(classComment))
 // ------------- METHOD -------------
 foreach (var methodDesc in classDesc.Methods)
 {
-var methodAccess = methodDesc.GetAccess();
-var methodModifier = methodDesc.GetModifier();
-var methodName = methodDesc.Name;
-var methodExtern = methodDesc.IsExtern ? "extern " : "";
-var methodReturn = string.IsNullOrEmpty(methodDesc.ReturnType) ? "void" : methodDesc.ReturnType;
-var methodParams = "";
-foreach(var param in methodDesc.Parameters)
-{
-	if(methodParams.Length > 1)
-		methodParams += ", ";
+	var methodAccess = methodDesc.GetAccess();
+	var methodModifier = methodDesc.GetModifier();
+	var methodName = methodDesc.Name;
+	var methodExtern = methodDesc.IsExtern ? "extern " : "";
+	var methodReturn = string.IsNullOrEmpty(methodDesc.ReturnType) ? "void" : methodDesc.ReturnType;
+	var methodParams = "";
+    var methodParamsCall = "";
+	foreach(var param in methodDesc.Parameters)
+	{
+	    if (methodParams.Length > 1)
+	    {
+	        methodParams += ", ";
+	        methodParamsCall += ", ";
+	    }
 
-	if(param.IsRef)
-		methodParams += "ref ";
-	else if(param.IsOut)
-		methodParams += "out ";
+		if(param.IsRef)
+			methodParams += "ref ";
+		else if(param.IsOut)
+			methodParams += "out ";
 
-	methodParams += param.Type + " " + param.Name;
-}
+	    methodParamsCall += param.Name;
+		methodParams += param.Type + " " + param.Name;
+	}
 #>
 <#
-if(!string.IsNullOrEmpty(methodDesc.Comment))
-{
+	if(!string.IsNullOrEmpty(methodDesc.Comment))
+	{
 #>
 		/// <summary>
 		///	<#=methodDesc.Comment#>
 		/// </summary>
 <#
-}
-if(methodDesc.IsExtern)
-{
+	}
+    if (methodDesc.IsExtern && methodDesc.Modifier != APIParameters.Static)
+    {
+	#>
+		<#=methodAccess#> <#=methodModifier#><#=methodReturn#> <#=methodName#>(<#=methodParams#>)
+		{
+			Internal_<#=methodName#>(NativePtr<#if(methodDesc.Parameters.Count > 0){#>, <#=methodParamsCall#><#}#>);
+		}
+		
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal extern <#=methodReturn#> Internal_<#=methodName#>(IntPtr nativePtr<#if(methodDesc.Parameters.Count > 0){#>, <#=methodParams#><#}#>);
+		<#
+    }
+    else
+    {
+		if(methodDesc.IsExtern)
+		{
 #>
 		[MethodImpl(MethodImplOptions.InternalCall)]
 <#
-}
+		}
 #>
 		<#=methodAccess#> <#=methodModifier#><#=methodExtern#><#=methodReturn#> <#=methodName#>(<#=methodParams#>)<#if(methodDesc.IsExtern || methodDesc.Modifier == APIParameters.Abstract){#>;
 <#}#>
 <#
-if(!methodDesc.IsExtern && methodDesc.Modifier != APIParameters.Abstract)
-{
+		if(!methodDesc.IsExtern && methodDesc.Modifier != APIParameters.Abstract)
+		{
 #>
 
 		{
 <#
-foreach(var codeLine in methodDesc.CodeLines)
-{
+		foreach(var codeLine in methodDesc.CodeLines)
+		{
 #>
 			<#=codeLine#>
 <#
-}
+		}
 #>
 		}
 <#
-}
+		} 
+    }
 #>
 
 <#
@@ -111,8 +132,8 @@ foreach (var propertyDesc in classDesc.Properties)
 {
 #>
 <#
-if(propertyDesc.GetOnly)
-{
+	if(propertyDesc.GetOnly)
+	{
 #>
 		/// <summary>
 		///	<#=propertyDesc.Comment#>
@@ -120,9 +141,9 @@ if(propertyDesc.GetOnly)
 		<#=propertyDesc.GetAccess()#> <#=propertyDesc.GetModifier()#><#=propertyDesc.Type#> <#=propertyDesc.Name#> => Internal_<#=propertyDesc.Name#>_Get();
 
 <#
-}
-else
-{
+	}
+	else
+	{
 #>
 		/// <summary>
 		///	<#=propertyDesc.Comment#>
@@ -134,28 +155,28 @@ else
 		}
 
 <#
-}
+	}
 }
 foreach (var propertyDesc in classDesc.Properties)
 {
 #>
 <#
-if(propertyDesc.GetOnly)
-{
+	if(propertyDesc.GetOnly)
+	{
 #>
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal <#=propertyDesc.GetModifier()#>extern <#=propertyDesc.Type#> Internal_<#=propertyDesc.Name#>_Get();
 <#
-}
-else
-{
+	}
+	else
+	{
 #>
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal <#=propertyDesc.GetModifier()#>extern void Internal_<#=propertyDesc.Name#>_Set(<#=propertyDesc.Type#> value);
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal <#=propertyDesc.GetModifier()#>extern <#=propertyDesc.Type#> Internal_<#=propertyDesc.Name#>_Get();
 <#
-}
+	}
 #>
 <#
 }

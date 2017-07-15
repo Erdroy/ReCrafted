@@ -31,7 +31,7 @@ void Camera::initRuntime()
 			API_COMMENT("Sets the camera as current.");
 			API_METHOD(PUBLIC, REGULAR, "SetAsCurrent", EXTERN);
 			{
-				API_BIND("ReCrafted.API.Graphics.Camera::SetAsCurrent", &Internal::setAsCurrent);
+				API_BIND("ReCrafted.API.Graphics.Camera::Internal_SetAsCurrent", &Internal::setAsCurrent);
 			}
 			API_METHOD_END();
 
