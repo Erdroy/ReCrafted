@@ -7,27 +7,26 @@
 
 // includes
 #include "Common/ReCraftedAPI.h"
+#include "Class.h"
+#include "Method.h"
 
 class Object
 {
+	friend class Class;
 	API_DEF
 
 private:
-	void* m_ptr = nullptr; // mono object pointer
-
-private:
-	Object() {}
+	MonoObject* m_object = nullptr;
+	MonoClass* m_class = nullptr;
 
 private:
 	void onFinalize();
 
 public:
-	explicit Object(void* ptr);
-
-public:
-
-public:
-
+	/// <summary>
+	/// Finds method using given name.
+	/// </summary>
+	Ptr<Method> findMethod(const char* methodName) const;
 };
 
 #endif // OBJECT_H

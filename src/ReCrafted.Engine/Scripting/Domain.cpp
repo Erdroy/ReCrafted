@@ -2,16 +2,42 @@
 
 #include "Domain.h"
 #include "Core/Logger.h"
+#include "Core/GameInfo.h"
+#include "Core/GameMain.h"
+
+#include <mono/metadata/debug-helpers.h>
+#include <mono/metadata/mono-debug.h>
+
+Ptr<Domain> m_rootDomain = nullptr;
+
+const char* jit_options[] = {
+	"--soft-breakpoints",
+	"--debugger-agent=transport=dt_socket,address=127.0.0.1:55000"
+};
+
+const char* rootDomainName = "ReCrafted";
+const char* runtimeVersion = "v4.0.30319";
 
 Ptr<Assembly> Domain::loadAssembly(const char* fileName)
 {
+	// do mono related stuff
 	auto masm = mono_domain_assembly_open(m_domain, fileName);
+	auto mimg = mono_assembly_get_image(masm);
 
-	if (!masm)
+	if (!masm || !mimg)
+	{
+		Logger::write("Failed to load assembly '", fileName, "'", LogLevel::Error);
 		return nullptr;
+	}
 
+	// create assembly instance
 	Ptr<Assembly> assembly(new Assembly);
 	assembly->m_assembly = masm;
+	assembly->m_image = mimg;
+	assembly->m_domain = m_domain;
+
+	// add to the loaded assembly list
+	m_loadedAssemblies.push_back(assembly);
 
 	Logger::write("Loaded assembly '", fileName, "'", LogLevel::Info);
 
@@ -20,6 +46,8 @@ Ptr<Assembly> Domain::loadAssembly(const char* fileName)
 
 void Domain::cleanup()
 {
+	m_domain = nullptr;
+
 	mono_jit_cleanup(m_domain);
 }
 
@@ -34,7 +62,42 @@ Ptr<Domain> Domain::create(const char* name, Ptr<Domain> parent)
 {
 	Ptr<Domain> domain(new Domain);
 
-	domain->m_domain = nullptr; // TODO: create domain
+	domain->m_domain = mono_domain_create();
 
 	return domain;
+}
+
+Ptr<Domain> Domain::createRoot()
+{
+	if(m_rootDomain)
+	{
+		Logger::write("Cannot create second root domain!", LogLevel::Warning);
+		return nullptr;
+	}
+
+	mono_set_dirs("../mono/lib", "../mono/etc");
+
+	if (GameInfo::containsArgument(TEXT("-debug")))
+	{
+		mono_jit_parse_options(2, const_cast<char**>(jit_options));
+	}
+
+	auto domain = mono_jit_init_version(rootDomainName, runtimeVersion);
+
+	if(!domain)
+	{
+		Logger::write("Failed to create root domain! Parameters: ", rootDomainName, runtimeVersion, LogLevel::Fatal);
+		GameMain::quit(); // quit
+		return nullptr;
+	}
+
+	if (GameInfo::containsArgument(TEXT("-debug")))
+	{
+		mono_debug_init(MONO_DEBUG_FORMAT_MONO);
+		mono_debug_domain_create(domain);
+	}
+
+	// create instance
+	m_rootDomain = create(domain);
+	return m_rootDomain;
 }

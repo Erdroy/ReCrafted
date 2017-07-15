@@ -6,6 +6,7 @@
 #include "Core/GameMain.h"
 #include "Core/Logger.h"
 #include "Graphics/UI/UI.h"
+#include "Object.h"
 
 void ScriptingEngine::bind_all()
 {

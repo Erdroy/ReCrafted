@@ -10,12 +10,17 @@
 #include "ScriptingEngine.h"
 #include "Assembly.h"
 
+#include <vector>
+
 class Domain
 {
 	friend class ScriptingEngine;
+	friend class Class;
 
 private:
 	MonoDomain* m_domain = nullptr;
+
+	std::vector<Ptr<Assembly>> m_loadedAssemblies = {};
 
 public:
 	/// <summary>
@@ -38,6 +43,11 @@ public:
 	/// Creates domain of given name.
 	/// </summary>
 	static Ptr<Domain> create(const char* name, Ptr<Domain> parent);
+
+	/// <summary>
+	/// Creates root domain.
+	/// </summary>
+	static Ptr<Domain> createRoot();
 };
 
 #endif // DOMAIN_H

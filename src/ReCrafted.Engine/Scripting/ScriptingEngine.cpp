@@ -53,9 +53,6 @@ void ScriptingEngine::run()
 	// create mono domain proxy
 	m_domain = Domain::create(domain);
 
-	auto apiAssembly = m_domain->loadAssembly("ReCrafted.API.dll");
-	auto gameAssembly = m_domain->loadAssembly("ReCrafted.Game.dll");
-
 	m_api_assembly = mono_domain_assembly_open(domain, "ReCrafted.API.dll");
 	m_core_assembly = mono_domain_assembly_open(domain, "ReCrafted.Game.dll");
 
@@ -71,26 +68,6 @@ void ScriptingEngine::run()
 	m_method_simulate = load_method("ReCrafted.Game.GameMain::Simulate", gamemain_class);
 	m_method_drawui = load_method("ReCrafted.Game.GameMain::DrawUI", gamemain_class);
 	m_method_shutdown = load_method("ReCrafted.Game.GameMain::Shutdown", gamemain_class);
-}
-
-MonoClass* ScriptingEngine::getClass(const char* classNamespace, const char* className)
-{
-	auto image = mono_assembly_get_image(m_core_assembly);
-	return  mono_class_from_name(image, classNamespace, className);
-}
-
-MonoMethod* ScriptingEngine::load_method(const char* methodName, MonoClass* monoClass)
-{
-	auto initmethoddesc = mono_method_desc_new(methodName, true);
-	return mono_method_desc_search_in_class(initmethoddesc, monoClass);
-}
-
-MonoObject* ScriptingEngine::create_class_instance(MonoClass* monoClass)
-{
-	auto instance = mono_object_new(m_domain, monoClass);
-	mono_runtime_object_init(instance);
-
-	return instance;
 }
 
 void ScriptingEngine::initialize()
