@@ -2,9 +2,7 @@
 
 #include "Object.h"
 #include "Scripting/Mono.h"
-#include "Core/Logger.h"
 #include "Domain.h"
-#include "Graphics/Camera.h"
 #include "Bindings.h"
 
 namespace Internal

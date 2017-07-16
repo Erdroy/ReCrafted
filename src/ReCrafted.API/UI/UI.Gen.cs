@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 07/16/2017 15:04:07 Source: 'Object.API.cpp' Target: 'UI/UI.Gen.cs'
+// Generated: 07/16/2017 18:14:05 Source: 'Object.API.cpp' Target: 'UI/UI.Gen.cs'
 
 using ReCrafted.API.Core;
 using System;
@@ -24,8 +24,14 @@ namespace ReCrafted.API.UI
 		/// </summary>
 		internal static Color Color 
 		{
-			get { return Internal_Color_Get(); }
-			set { Internal_Color_Set(value); }
+			get
+			{
+				return Internal_Color_Get();
+			}
+			set
+			{
+				Internal_Color_Set(value);
+			}
 		}
 
 		[MethodImpl(MethodImplOptions.InternalCall)]

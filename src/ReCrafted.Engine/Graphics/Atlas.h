@@ -32,10 +32,10 @@ private:
 
 public:
 	/// <summary>
-	/// Gets element by name.
+	/// Gets element's rect by name.
 	/// Throws error when not found.
 	/// </summary>
-	Atlas::Element getElement(const char* name);
+	Rect getRect(const char* name);
 
 	/// <summary>
 	/// Gets atlas texture.

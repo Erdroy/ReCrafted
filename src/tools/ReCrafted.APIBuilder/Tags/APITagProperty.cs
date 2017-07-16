@@ -21,6 +21,8 @@ namespace ReCrafted.APIBuilder.Tags
 
         public bool GetOnly { get; set; }
 
+        public bool ByRef { get; set; }
+
         public APITagProperty()
         {
             APITagClass.Current.Properties.Add(this);
@@ -67,6 +69,7 @@ namespace ReCrafted.APIBuilder.Tags
         public override void Process(string token, string[] parameters)
         {
             GetOnly = parameters.Contains("GET") && !parameters.Contains("GETSET");
+            ByRef = parameters.Contains("BY_REF");
 
             if (parameters[0] == "PUBLIC")
                 Access = APIParameters.Public;

@@ -12,13 +12,13 @@ void Atlas::dispose()
 	SafeDispose(m_texture);
 }
 
-Atlas::Element Atlas::getElement(const char* name)
+Rect Atlas::getRect(const char* name)
 {
 	for(auto i = 0u; i < m_elements.size(); i ++)
 	{
 		if(strcmp(m_elements[i].name, name) == 0)
 		{
-			return m_elements[i];
+			return m_elements[i].rect;
 		}
 	}
 

@@ -43,6 +43,7 @@
 
 #define GET
 #define GETSET
+#define BY_REF
 
 // usings
 #define API_USING(using_name)

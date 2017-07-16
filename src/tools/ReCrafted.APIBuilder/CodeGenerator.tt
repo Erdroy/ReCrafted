@@ -128,106 +128,109 @@ foreach (var methodDesc in classDesc.Methods)
 #>
 <#
 //  ---------- PROPERTY ----------
-foreach (var propertyDesc in classDesc.Properties)
-{
-#>
-<#
-	if (propertyDesc.Modifier == APIParameters.Static)
-    {
-        if (propertyDesc.GetOnly)
-        {
-#>
-		/// <summary>
-		///	<#=propertyDesc.Comment #>
-		/// </summary>
-		<#=propertyDesc.GetAccess() #> <#=propertyDesc.GetModifier() #><#=propertyDesc.Type #> <#=propertyDesc.Name #> => Internal_<#=propertyDesc.Name #>_Get();
 
-<#
-        }
-        else
+	// define properties
+    foreach (var propertyDesc in classDesc.Properties)
+    {
+        if (!string.IsNullOrEmpty(propertyDesc.Comment))
         {
 #>
 		/// <summary>
 		///	<#=propertyDesc.Comment #>
 		/// </summary>
-		<#=propertyDesc.GetAccess() #> <#=propertyDesc.GetModifier() #><#=propertyDesc.Type #> <#=propertyDesc.Name #> 
+		<#=propertyDesc.GetAccess()#> <#=propertyDesc.GetModifier()#><#=propertyDesc.Type#> <#=propertyDesc.Name#> 
 		{
-			get { return Internal_<#=propertyDesc.Name #>_Get(); }
-			set { Internal_<#=propertyDesc.Name #>_Set(value); }
+			get
+			{
+<#
+            if (propertyDesc.ByRef)
+            {
+#>
+				<#=propertyDesc.Type#> result;
+				Internal_<#=propertyDesc.Name#>_Get(<#if (propertyDesc.Modifier != APIParameters.Static) { #>NativePtr, <#}#>out result);
+				return result;
+<#
+            }
+            else
+            {
+#>
+				return Internal_<#=propertyDesc.Name#>_Get(<#if (propertyDesc.Modifier != APIParameters.Static) { #>NativePtr<#}#>);
+<#
+            }
+#>
+			}
+<#
+			if(!propertyDesc.GetOnly)
+			{
+#>
+			set
+			{
+<#
+				if (propertyDesc.ByRef)
+				{
+#>
+				Internal_<#=propertyDesc.Name#>_Set(<#if (propertyDesc.Modifier != APIParameters.Static) { #>NativePtr, <#}#>ref value);
+<#
+				}
+				else
+				{
+#>
+				Internal_<#=propertyDesc.Name#>_Set(<#if (propertyDesc.Modifier != APIParameters.Static) { #>NativePtr, <#}#>value);
+<#
+				}
+#>
+			}
+<#
+			}
+#>
 		}
 
 <#
         }
     }
-    else
-	{
-	    if (propertyDesc.GetOnly)
-        {
-#>
-		/// <summary>
-		///	<#=propertyDesc.Comment #>
-		/// </summary>
-		<#=propertyDesc.GetAccess() #> <#=propertyDesc.GetModifier() #><#=propertyDesc.Type #> <#=propertyDesc.Name #> => Internal_<#=propertyDesc.Name #>_Get(NativePtr);
 
-<#
-        }
-        else
-        {
-#>
-		/// <summary>
-		///	<#=propertyDesc.Comment #>
-		/// </summary>
-		<#=propertyDesc.GetAccess() #> <#=propertyDesc.GetModifier() #><#=propertyDesc.Type #> <#=propertyDesc.Name #> 
-		{
-			get { return Internal_<#=propertyDesc.Name #>_Get(NativePtr); }
-			set { Internal_<#=propertyDesc.Name #>_Set(NativePtr, value); }
-		}
-
-<#
-        }
-	}
-}
-foreach (var propertyDesc in classDesc.Properties)
-{
-	if (propertyDesc.Modifier == APIParameters.Static)
+    // define get/set methods
+    foreach (var propertyDesc in classDesc.Properties)
     {
+        var getReturn = propertyDesc.ByRef ? "void" : propertyDesc.Type;
+        var getParams = "";
+        var setParams = "";
+
+        if (propertyDesc.Modifier != APIParameters.Static)
+        {
+            getParams = "IntPtr nativePtr";
+
+            if (propertyDesc.ByRef)
+                getParams += ", ";
+
+            setParams = "IntPtr nativePtr, ";
+        }
+
+        if (propertyDesc.ByRef)
+        {
+            setParams += "ref ";
+            getParams += "out " + propertyDesc.Type + " result";
+        }
+
+        setParams += propertyDesc.Type + " value";
+
         if (propertyDesc.GetOnly)
         {
 #>
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal <#=propertyDesc.GetModifier() #>extern <#=propertyDesc.Type #> Internal_<#=propertyDesc.Name #>_Get();
+		internal static extern <#=getReturn#> Internal_<#=propertyDesc.Name #>_Get(<#=getParams#>);
 <#
         }
         else
         {
 #>
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal <#=propertyDesc.GetModifier() #>extern void Internal_<#=propertyDesc.Name #>_Set(<#=propertyDesc.Type #> value);
+		internal static extern void Internal_<#=propertyDesc.Name #>_Set(<#=setParams#>);
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal <#=propertyDesc.GetModifier() #>extern <#=propertyDesc.Type #> Internal_<#=propertyDesc.Name #>_Get();
+		internal static extern <#=getReturn#> Internal_<#=propertyDesc.Name #>_Get(<#=getParams#>);
 <#
         }
     }
-    else
-	{
-	    if (propertyDesc.GetOnly)
-        {
-#>
-		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern <#=propertyDesc.Type #> Internal_<#=propertyDesc.Name #>_Get(IntPtr ptr);
-<#
-        }
-        else
-        {
-#>
-		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern void Internal_<#=propertyDesc.Name #>_Set(IntPtr ptr, <#=propertyDesc.Type #> value);
-		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern <#=propertyDesc.Type #> Internal_<#=propertyDesc.Name #>_Get(IntPtr ptr);
-<#
-        }
-    }
-}
 //  ---------- PROPERTY END ----------
 #>
 	}

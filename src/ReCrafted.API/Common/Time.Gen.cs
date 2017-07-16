@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 07/16/2017 15:04:07 Source: 'Object.API.cpp' Target: 'Common/Time.Gen.cs'
+// Generated: 07/16/2017 18:14:05 Source: 'Object.API.cpp' Target: 'Common/Time.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -15,17 +15,35 @@ namespace ReCrafted.API.Common
 		/// <summary>
 		///	Time between current and last frame.
 		/// </summary>
-		public static double DeltaTime => Internal_DeltaTime_Get();
+		public static double DeltaTime 
+		{
+			get
+			{
+				return Internal_DeltaTime_Get();
+			}
+		}
 
 		/// <summary>
 		///	Current time.
 		/// </summary>
-		public static double CurrentTime => Internal_CurrentTime_Get();
+		public static double CurrentTime 
+		{
+			get
+			{
+				return Internal_CurrentTime_Get();
+			}
+		}
 
 		/// <summary>
 		///	Current frame count
 		/// </summary>
-		public static int Frames => Internal_Frames_Get();
+		public static int Frames 
+		{
+			get
+			{
+				return Internal_Frames_Get();
+			}
+		}
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern double Internal_DeltaTime_Get();

@@ -41,6 +41,22 @@ namespace Internal
 		return camera->get_fov();
 	}
 
+	void setPos(Camera* camera, Vector3* pos)
+	{
+		if (!camera)
+			return;
+
+		camera->set_position(*pos);
+	}
+
+	void getPos(Camera* camera, Vector3* pos)
+	{
+		if (!camera)
+			return;
+
+		*pos = camera->get_position();
+	}
+
 	Ptr<Camera> createNewCamera()
 	{
 		Ptr<Camera> camera(new Camera());
@@ -55,6 +71,8 @@ void Camera::initRuntime()
 
 	API_FILE("Graphics/Camera.Gen.cs");
 	{
+		API_USING("ReCrafted.API.Core");
+
 		API_COMMENT("Camera class.");
 		API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Camera", "Object");
 		{
@@ -70,6 +88,14 @@ void Camera::initRuntime()
 			{
 				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Fov_Get", &Internal::getFov);
 				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Fov_Set", &Internal::setFov);
+			}
+			API_PROPERTY_END();
+
+			API_COMMENT("Camera's position.");
+			API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Position", GETSET, BY_REF);
+			{
+				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Position_Get", &Internal::getPos);
+				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Position_Set", &Internal::setPos);
 			}
 			API_PROPERTY_END();
 

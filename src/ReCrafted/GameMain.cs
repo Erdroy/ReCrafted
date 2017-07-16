@@ -14,7 +14,6 @@ namespace ReCrafted.Game
     internal class GameMain : Game
     {
         private Camera _mainCamera;
-        private Camera _camera1;
 
         protected override void Initialize()
         {
@@ -22,18 +21,13 @@ namespace ReCrafted.Game
             Exceptions.RegisterUEHandler();
 
             _mainCamera = Camera.Current;
-            _camera1 = Object.Create<Camera>();
         }
 
         protected override void Update()
         {
-            if (Input.IsKey(Keys.Space))
+            if (Input.IsKeyDown(Keys.Space))
             {
-                _camera1.SetAsCurrent();
-            }
-            else
-            {
-                _mainCamera.SetAsCurrent();
+                _mainCamera.Position = Vector3.Zero;
             }
         }
 

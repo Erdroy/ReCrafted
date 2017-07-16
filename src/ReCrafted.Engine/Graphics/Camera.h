@@ -94,7 +94,7 @@ public:
 	/// Gets the camera bounding frustum.
 	/// </summary>
 	/// <returns>The bounding frustum.</returns>
-	FORCEINLINE BoundingFrustum& getBoundingFrustum()
+	FORCEINLINE BoundingFrustum getBoundingFrustum() const
 	{
 		return m_frustum;
 	}
