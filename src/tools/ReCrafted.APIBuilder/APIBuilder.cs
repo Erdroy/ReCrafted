@@ -57,7 +57,7 @@ namespace ReCrafted.APIBuilder
 
                 Directory.CreateDirectory(Path.GetDirectoryName(targetFile));
 
-                //if (new FileInfo(targetFile).LastWriteTime < new FileInfo(sourceFile).LastWriteTime)
+                if (new FileInfo(targetFile).LastWriteTime < new FileInfo(sourceFile).LastWriteTime)
                 {
                     File.WriteAllText(targetFile, code);
                 }
