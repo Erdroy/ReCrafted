@@ -4,6 +4,8 @@
 #include "Scripting/Mono.h"
 #include "Core/Logger.h"
 #include "Domain.h"
+#include "Graphics/Camera.h"
+#include "Bindings.h"
 
 namespace Internal
 {
@@ -11,7 +13,8 @@ namespace Internal
 	{
 		auto type = mono_reflection_type_get_type(typeRef);
 
-		Ptr<Object> object(new Object);
+		// create new using bindings
+		auto object = Bindings::instantiate(mono_type_get_type(type));
 
 		// create object
 		Object::create(object, Domain::Root->getMono(), mono_type_get_class(type), true);

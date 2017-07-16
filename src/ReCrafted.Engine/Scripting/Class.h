@@ -31,6 +31,14 @@ public:
 		Object::create(static_cast<Ptr<Object>>(object), Domain::Root->getMono(), m_class, isObject);
 		return object;
 	}
+
+	/// <summary>
+	/// Gets mono type.
+	/// </summary>
+	int getType() const
+	{
+		return mono_type_get_type(mono_class_get_type(m_class));
+	}
 };
 
 #endif // CLASS_H

@@ -2,6 +2,8 @@
 
 #include "Camera.h"
 #include "Scripting/Mono.h"
+#include "Scripting/Assembly.h"
+#include "Scripting/Bindings.h"
 
 namespace Internal
 {
@@ -38,6 +40,12 @@ namespace Internal
 
 		return camera->get_fov();
 	}
+
+	Ptr<Camera> createNew()
+	{
+		Ptr<Camera> camera(new Camera());
+		return camera;
+	}
 }
 
 void Camera::initRuntime()
@@ -72,4 +80,8 @@ void Camera::initRuntime()
 		API_CLASS_END();
 	}
 	API_FILE_END();
+
+	// create type binding
+	auto typeId = Assembly::API->findClass("ReCrafted.API.Graphics", "Camera")->getType();
+	Bindings::bindObject(typeId, reinterpret_cast<objectinstancer>(&Internal::createNew));
 }

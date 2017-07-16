@@ -320,9 +320,12 @@ void GameMain::onUnload()
 
 	// destroy all objects
 	Object::destroyall();
-
+	
 	// shutdown scripting engine
 	m_domain->cleanup();
+
+	// shutdown bindings
+	Bindings::shutdown();
 
 	// release all resources etc.
 	SafeDispose(m_rendering);
