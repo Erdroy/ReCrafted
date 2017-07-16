@@ -41,7 +41,7 @@ namespace Internal
 		return camera->get_fov();
 	}
 
-	Ptr<Camera> createNew()
+	Ptr<Camera> createNewCamera()
 	{
 		Ptr<Camera> camera(new Camera());
 		return camera;
@@ -50,6 +50,9 @@ namespace Internal
 
 void Camera::initRuntime()
 {
+	// create type binding
+	BIND_OBJECT("ReCrafted.API.Graphics", "Camera", &Internal::createNewCamera);
+
 	API_FILE("Graphics/Camera.Gen.cs");
 	{
 		API_COMMENT("Camera class.");
@@ -80,8 +83,4 @@ void Camera::initRuntime()
 		API_CLASS_END();
 	}
 	API_FILE_END();
-
-	// create type binding
-	auto typeId = Assembly::API->findClass("ReCrafted.API.Graphics", "Camera")->getType();
-	Bindings::bindObject(typeId, reinterpret_cast<objectinstancer>(&Internal::createNew));
 }
