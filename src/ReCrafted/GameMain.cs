@@ -13,20 +13,27 @@ namespace ReCrafted.Game
 
     internal class GameMain : Game
     {
+        private Camera _mainCamera;
+        private Camera _camera1;
+
         protected override void Initialize()
         {
             // register unhandled exception handler
             Exceptions.RegisterUEHandler();
-            
-            var main = UIPanel.Create(new RectangleF(100.0f, 200.0f, 150.0f, 200.0f), UILayoutType.Vertical);
+
+            _mainCamera = Camera.Current;
+            _camera1 = Object.Create<Camera>();
         }
 
         protected override void Update()
         {
-            if (Input.IsKeyDown(Keys.Space))
+            if (Input.IsKey(Keys.Space))
             {
-                var testCamera = Object.Create<Camera>();
-                Object.Destroy(testCamera);
+                _camera1.SetAsCurrent();
+            }
+            else
+            {
+                _mainCamera.SetAsCurrent();
             }
         }
 

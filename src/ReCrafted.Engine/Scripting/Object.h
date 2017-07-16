@@ -44,11 +44,24 @@ public:
 	MonoObject* getManagedPtr() const;
 
 public:
+	/// <summary>
+	/// Creates instance of API class.
+	/// WARNING: Only for API objects!
+	/// </summary>
+	template <class T>
+	static Ptr<T> createInstance(const char* ns, const char* className)
+	{
+		auto cls = Assembly::API->findClass(ns, className);
+		return cls->createInstance<T>(true);
+	}
+
+public:
 	static void create(Ptr<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject);
 	static void registerObject(Ptr<Object> object);
 	static void destroy(Object* object);
 	static void destroyall();
 	static void finalize(Object* object);
+
 };
 
 #endif // OBJECT_H

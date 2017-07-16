@@ -39,8 +39,6 @@ private:
 	// scripting
 
 	Ptr<Domain> m_domain = nullptr;
-	Ptr<Assembly> m_assemblyGame = nullptr;
-	Ptr<Assembly> m_assemblyAPI = nullptr;
 	Ptr<Object> m_gamemain = nullptr;
 
 	// methods

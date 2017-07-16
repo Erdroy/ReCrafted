@@ -132,14 +132,14 @@ void GameMain::initScripting()
 	m_domain = Domain::createRoot();
 
 	// load base assemblies
-	m_assemblyGame = m_domain->loadAssembly("ReCrafted.Game.dll");
-	m_assemblyAPI = m_domain->loadAssembly("ReCrafted.API.dll");
+	Assembly::Game = m_domain->loadAssembly("ReCrafted.Game.dll");
+	Assembly::API = m_domain->loadAssembly("ReCrafted.API.dll");
 
 	// apply bindings
 	Bindings::bind();
 	
 	// create gamemain instance
-	auto gamemainDef = m_assemblyGame->findClass("ReCrafted.Game", "GameMain");
+	auto gamemainDef = Assembly::Game->findClass("ReCrafted.Game", "GameMain");
 	m_gamemain = gamemainDef->createInstance<Object>(false);
 
 	// find methods
@@ -293,8 +293,7 @@ void GameMain::onLoad()
 	Logger::write("Rendering pipeline initialized", LogLevel::Info);
 
 	// initialize main camera for scene
-	auto cameraDesc = m_assemblyAPI->findClass("ReCrafted.API.Graphics", "Camera");
-	m_camera = cameraDesc->createInstance<Camera>(true);
+	m_camera = Object::createInstance<Camera>("ReCrafted.API.Graphics", "Camera");
 	m_camera->set_position(Vector3(0.0f, 20.0f, -10.0f));
 	m_camera->set_freeMovement(true);
 
