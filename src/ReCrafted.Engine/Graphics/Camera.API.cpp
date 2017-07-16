@@ -7,6 +7,9 @@ namespace Internal
 {
 	void setAsCurrent(Camera* camera)
 	{
+		if (!camera)
+			return;
+
 		camera->setAsCurrent();
 	}
 
@@ -18,6 +21,22 @@ namespace Internal
 			return nullptr;
 
 		return camera->getManagedPtr();
+	}
+
+	void setFov(Camera* camera, float value)
+	{
+		if (!camera)
+			return;
+
+		camera->set_fov(value);
+	}
+
+	float getFov(Camera* camera)
+	{
+		if (!camera)
+			return 0.0f;
+
+		return camera->get_fov();
 	}
 }
 
@@ -35,7 +54,15 @@ void Camera::initRuntime()
 			}
 			API_METHOD_END();
 
-			API_COMMENT("Is game running state.");
+			API_COMMENT("Camera's Field of view.");
+			API_PROPERTY(PUBLIC, REGULAR, "float", "Fov", GETSET);
+			{
+				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Fov_Get", &Internal::getFov);
+				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Fov_Set", &Internal::setFov);
+			}
+			API_PROPERTY_END();
+
+			API_COMMENT("The current camera.");
 			API_PROPERTY(PUBLIC, STATIC, "Camera", "Current", GET);
 			{
 				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Current_Get", &Internal::getCurrent);

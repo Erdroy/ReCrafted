@@ -214,16 +214,16 @@ foreach (var propertyDesc in classDesc.Properties)
         {
 #>
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal <#=propertyDesc.GetModifier() #>extern <#=propertyDesc.Type #> Internal_<#=propertyDesc.Name #>_Get(IntPtr ptr);
+		internal static extern <#=propertyDesc.Type #> Internal_<#=propertyDesc.Name #>_Get(IntPtr ptr);
 <#
         }
         else
         {
 #>
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal <#=propertyDesc.GetModifier() #>extern void Internal_<#=propertyDesc.Name #>_Set(IntPtr ptr, <#=propertyDesc.Type #> value);
+		internal static extern void Internal_<#=propertyDesc.Name #>_Set(IntPtr ptr, <#=propertyDesc.Type #> value);
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal <#=propertyDesc.GetModifier() #>extern <#=propertyDesc.Type #> Internal_<#=propertyDesc.Name #>_Get(IntPtr ptr);
+		internal static extern <#=propertyDesc.Type #> Internal_<#=propertyDesc.Name #>_Get(IntPtr ptr);
 <#
         }
     }

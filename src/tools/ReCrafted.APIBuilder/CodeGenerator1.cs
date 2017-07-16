@@ -793,14 +793,7 @@ foreach (var propertyDesc in classDesc.Properties)
             
             #line default
             #line hidden
-            this.Write("\t\t[MethodImpl(MethodImplOptions.InternalCall)]\r\n\t\tinternal ");
-            
-            #line 217 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.GetModifier()));
-            
-            #line default
-            #line hidden
-            this.Write("extern ");
+            this.Write("\t\t[MethodImpl(MethodImplOptions.InternalCall)]\r\n\t\tinternal static extern ");
             
             #line 217 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.Type));
@@ -825,14 +818,8 @@ foreach (var propertyDesc in classDesc.Properties)
             
             #line default
             #line hidden
-            this.Write("\t\t[MethodImpl(MethodImplOptions.InternalCall)]\r\n\t\tinternal ");
-            
-            #line 224 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.GetModifier()));
-            
-            #line default
-            #line hidden
-            this.Write("extern void Internal_");
+            this.Write("\t\t[MethodImpl(MethodImplOptions.InternalCall)]\r\n\t\tinternal static extern void Int" +
+                    "ernal_");
             
             #line 224 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.Name));
@@ -846,14 +833,8 @@ foreach (var propertyDesc in classDesc.Properties)
             
             #line default
             #line hidden
-            this.Write(" value);\r\n\t\t[MethodImpl(MethodImplOptions.InternalCall)]\r\n\t\tinternal ");
-            
-            #line 226 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.GetModifier()));
-            
-            #line default
-            #line hidden
-            this.Write("extern ");
+            this.Write(" value);\r\n\t\t[MethodImpl(MethodImplOptions.InternalCall)]\r\n\t\tinternal static exter" +
+                    "n ");
             
             #line 226 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.Type));
