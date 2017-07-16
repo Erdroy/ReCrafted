@@ -45,6 +45,16 @@ namespace ReCrafted.API
             }
         }
 
+        /// <summary>
+        /// Creates new object of type 'T'.
+        /// </summary>
+        /// <typeparam name="T">The type.</typeparam>
+        /// <returns>The newly created object.</returns>
+        public static T Create<T>() where T : Object
+        {
+            return (T) InternalCreate(typeof(T));
+        }
+
         // operators
 
         /// <summary>

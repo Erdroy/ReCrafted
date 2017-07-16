@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 07/16/2017 13:38:30 Source: 'Object.API.cpp' Target: 'Graphics/Camera.Gen.cs'
+// Generated: 07/16/2017 15:04:07 Source: 'Object.API.cpp' Target: 'Graphics/Camera.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -24,11 +24,6 @@ namespace ReCrafted.API.Graphics
 		internal static extern void Internal_SetAsCurrent(IntPtr nativePtr);
 		
 		/// <summary>
-		///	Is game running state.
-		/// </summary>
-		public static Camera Current => Internal_Current_Get();
-
-		/// <summary>
 		///	Camera's Field of view.
 		/// </summary>
 		public float Fov 
@@ -37,11 +32,16 @@ namespace ReCrafted.API.Graphics
 			set { Internal_Fov_Set(NativePtr, value); }
 		}
 
-		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern Camera Internal_Current_Get();
+		/// <summary>
+		///	The current camera.
+		/// </summary>
+		public static Camera Current => Internal_Current_Get();
+
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_Fov_Set(IntPtr ptr, float value);
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern float Internal_Fov_Get(IntPtr ptr);
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern Camera Internal_Current_Get();
 	}
 }

@@ -12,20 +12,20 @@
 #include "Mono.h"
 #include "Utils/Types.h"
 
+#include <vector>
+
 class Object
 {
 	friend class Class;
 	API_DEF
 
 private:
+	static std::vector<Ptr<Object>> m_objects;
+
+private:
 	MonoObject* m_object = nullptr;
 	MonoClass* m_class = nullptr;
 	uint32_t m_gchandle = 0u;
-
-private:
-	void onFinalize();
-
-	void destroy();
 
 public:
 	/// <summary>
@@ -42,6 +42,13 @@ public:
 	/// Gets managed object pointer.
 	/// </summary>
 	MonoObject* getManagedPtr() const;
+
+public:
+	static void create(Ptr<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject);
+	static void registerObject(Ptr<Object> object);
+	static void destroy(Object* object);
+	static void destroyall();
+	static void finalize(Object* object);
 };
 
 #endif // OBJECT_H

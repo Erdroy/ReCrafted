@@ -2,20 +2,12 @@
 
 #include "Object.h"
 
-void Object::onFinalize()
-{
-	// cleanup
-	m_object = nullptr;
+#include "Core/Logger.h"
+#include "Graphics/Camera.h"
 
-	delete this;
-}
+#include <algorithm>
 
-void Object::destroy()
-{
-	// free garbage collector handle
-	mono_gchandle_free(m_gchandle);
-	m_gchandle = 0u;
-}
+std::vector<Ptr<Object>> Object::m_objects;
 
 Ptr<Method> Object::findMethod(const char* methodName) const
 {
@@ -48,4 +40,79 @@ Ptr<Field> Object::findField(const char* fieldName) const
 MonoObject* Object::getManagedPtr() const
 {
 	return m_object;
+}
+
+void Object::create(Ptr<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject)
+{
+	auto instance = mono_object_new(domain, monoClass);
+	mono_runtime_object_init(instance);
+
+	// get garbage collector handle, and mark it pinned
+	auto gch = mono_gchandle_new(instance, true);
+
+	object->m_gchandle = gch;
+	object->m_object = instance;
+	object->m_class = monoClass;
+
+	if (isObject)
+	{
+		// set native pointer
+		auto testField = object->findField("NativePtr");
+		testField->setValue(&object);
+
+		// register object
+		registerObject(object);
+	}
+}
+
+void Object::registerObject(Ptr<Object> object)
+{
+	m_objects.push_back(object);
+}
+
+void Object::destroy(Object* object)
+{
+	// free garbage collector handle
+	mono_gchandle_free(object->m_gchandle);
+	object->m_gchandle = 0u;
+
+	// unregister
+	for (std::vector<Ptr<Object>>::iterator iter = m_objects.begin(); iter != m_objects.end(); ++iter)
+	{
+		if (iter->get() == object)
+		{
+			m_objects.erase(iter);
+			break;
+		}
+	}
+}
+
+void Object::destroyall()
+{
+	for(auto i = 0u; i < m_objects.size(); i ++)
+	{
+		auto object = m_objects[i];
+
+		// free garbage collector handle
+		mono_gchandle_free(object->m_gchandle);
+	}
+
+	m_objects.clear();
+}
+
+void Object::finalize(Object* object)
+{
+	// unregister
+	for (std::vector<Ptr<Object>>::iterator iter = m_objects.begin(); iter != m_objects.end(); ++iter)
+	{
+		if (iter->get() == object)
+		{
+			Logger::write("Object was finalized, but not destroyed at first!", LogLevel::Warning);
+			m_objects.erase(iter);
+			break;
+		}
+	}
+
+	// cleanup
+	object->m_object = nullptr;
 }

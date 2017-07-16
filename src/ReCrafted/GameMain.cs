@@ -1,5 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
+using ReCrafted.API;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
@@ -18,17 +19,15 @@ namespace ReCrafted.Game
             Exceptions.RegisterUEHandler();
             
             var main = UIPanel.Create(new RectangleF(100.0f, 200.0f, 150.0f, 200.0f), UILayoutType.Vertical);
-
-            if (Camera.Current)
-            {
-                Logger.Write("Camera instance is present");
-                Camera.Current.SetAsCurrent();
-            }
         }
 
         protected override void Update()
         {
-
+            if (Input.IsKeyDown(Keys.Space))
+            {
+                var testCamera = Object.Create<Camera>();
+                Object.Destroy(testCamera);
+            }
         }
 
         protected override void Simulate()

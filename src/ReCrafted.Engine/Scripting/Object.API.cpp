@@ -2,19 +2,21 @@
 
 #include "Object.h"
 #include "Scripting/Mono.h"
+#include "Core/Logger.h"
+#include "Domain.h"
 
 namespace Internal
 {
-	void destroy(void* ptr)
+	MonoObject* createObject(MonoReflectionType* typeRef)
 	{
-		// TODO: queue to destroy
-	}
+		auto type = mono_reflection_type_get_type(typeRef);
 
-	void onFinalized(void* ptr)
-	{
-		// call onFinalize
-		//auto obj = static_cast<Object*>(ptr);
-		//obj->onFinalize();
+		Ptr<Object> object(new Object);
+
+		// create object
+		Object::create(object, Domain::Root->getMono(), mono_type_get_class(type), true);
+
+		return object->getManagedPtr();
 	}
 }
 
@@ -23,17 +25,25 @@ void Object::initRuntime()
 	API_FILE("Object.Gen.cs");
 	{
 		API_COMMENT("Base class for all mono object instances.");
-		API_CLASS(PUBLIC, ABSTRACT, "ReCrafted.API", "Object", PARTIAL);
+		API_CLASS(PUBLIC, REGULAR, "ReCrafted.API", "Object", PARTIAL);
 		{
 			API_METHOD(INTERNAL, STATIC, "InternalDestroy", EXTERN);
 			{
-				API_BIND("ReCrafted.API.Object::InternalDestroy", &Internal::destroy);
+				API_BIND("ReCrafted.API.Object::InternalDestroy", &Object::destroy);
 
 				API_PARAM("IntPtr", "nativePtr");
 			}
+			API_METHOD(INTERNAL, STATIC, "InternalCreate", EXTERN);
+			{
+				API_BIND("ReCrafted.API.Object::InternalCreate", &Internal::createObject);
+
+				API_PARAM("Type", "type");
+
+				API_RETURN("Object");
+			}
 			API_METHOD(INTERNAL, STATIC, "InternalObjectFinalized", EXTERN);
 			{
-				API_BIND("ReCrafted.API.Object::InternalObjectFinalized", &Internal::onFinalized);
+				API_BIND("ReCrafted.API.Object::InternalObjectFinalized", &Object::finalize);
 
 				API_PARAM("IntPtr", "nativePtr");
 			}

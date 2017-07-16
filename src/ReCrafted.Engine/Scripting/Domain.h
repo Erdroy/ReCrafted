@@ -33,6 +33,8 @@ public:
 	/// </summary>
 	void cleanup();
 
+	MonoDomain* getMono() const;
+
 public:
 	/// <summary>
 	/// Creates Domain from MonoDomain.
@@ -48,6 +50,9 @@ public:
 	/// Creates root domain.
 	/// </summary>
 	static Ptr<Domain> createRoot();
+
+public:
+	static Ptr<Domain> Root;
 };
 
 #endif // DOMAIN_H

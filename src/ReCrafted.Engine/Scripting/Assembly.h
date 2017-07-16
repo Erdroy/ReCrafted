@@ -8,7 +8,6 @@
 // includes
 #include "Utils/Types.h"
 #include "Class.h"
-#include "Domain.h"
 #include "Mono.h"
 
 class Assembly
@@ -28,6 +27,10 @@ public:
 	/// Finds class using namespace and class name.
 	/// </summary>
 	Ptr<Class> findClass(const char* class_namespace, const char* class_name);
+
+public:
+	static Ptr<Assembly> API;
+	static Ptr<Assembly> Game;
 };
 
 #endif // ASSEMBLY_H

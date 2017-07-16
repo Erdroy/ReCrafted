@@ -2,6 +2,9 @@
 
 #include "Assembly.h"
 
+Ptr<Assembly> Assembly::API;
+Ptr<Assembly> Assembly::Game;
+
 Ptr<Class> Assembly::findClass(const char* class_namespace, const char* class_name)
 {
 	Ptr<Class> newClass(new Class);

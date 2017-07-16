@@ -5,7 +5,7 @@
 #include "Core/GameInfo.h"
 #include "Core/GameMain.h"
 
-Ptr<Domain> m_rootDomain = nullptr;
+Ptr<Domain> Domain::Root;
 
 const char* jit_options[] = {
 	"--soft-breakpoints",
@@ -47,6 +47,11 @@ void Domain::cleanup()
 	m_domain = nullptr;
 }
 
+MonoDomain* Domain::getMono() const
+{
+	return m_domain;
+}
+
 Ptr<Domain> Domain::create(MonoDomain* monoDomain)
 {
 	Ptr<Domain> domain(new Domain);
@@ -65,7 +70,7 @@ Ptr<Domain> Domain::create(const char* name, Ptr<Domain> parent)
 
 Ptr<Domain> Domain::createRoot()
 {
-	if(m_rootDomain)
+	if(Root)
 	{
 		Logger::write("Cannot create second root domain!", LogLevel::Warning);
 		return nullptr;
@@ -94,6 +99,6 @@ Ptr<Domain> Domain::createRoot()
 	}
 
 	// create instance
-	m_rootDomain = create(domain);
-	return m_rootDomain;
+	Root = create(domain);
+	return Root;
 }

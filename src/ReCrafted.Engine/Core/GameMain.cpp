@@ -143,7 +143,6 @@ void GameMain::initScripting()
 	m_gamemain = gamemainDef->createInstance<Object>(false);
 
 	// find methods
-
 	m_init_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Initialize");
 	m_update_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Update");
 	m_simulate_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Simulate");
@@ -317,8 +316,13 @@ void GameMain::onUnload()
 
 	Logger::write("Shutting down...", LogLevel::Info);
 
-	// shutdown scripting engine
+	// invoke shutdown method
 	m_shutdown_method->invoke();
+
+	// destroy all objects
+	Object::destroyall();
+
+	// shutdown scripting engine
 	m_domain->cleanup();
 
 	// release all resources etc.
