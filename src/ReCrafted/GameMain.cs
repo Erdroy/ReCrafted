@@ -15,12 +15,16 @@ namespace ReCrafted.Game
     {
         private Camera _mainCamera;
 
+        private Camera _camera;
+
         protected override void Initialize()
         {
             // register unhandled exception handler
             Exceptions.RegisterUEHandler();
 
             _mainCamera = Camera.Current;
+
+            _camera = Object.Create<Camera>();
         }
 
         protected override void Update()
@@ -29,6 +33,19 @@ namespace ReCrafted.Game
             {
                 _mainCamera.Position = Vector3.Zero;
             }
+
+            if (Input.IsKeyDown(Keys.F))
+            {
+                _camera.SetAsCurrent();
+            }
+
+            if (Input.IsKeyUp(Keys.F))
+            {
+                _mainCamera.SetAsCurrent();
+            }
+
+            _camera.Forward = -_mainCamera.Forward;
+            _camera.Position = _mainCamera.Position;
         }
 
         protected override void Simulate()
