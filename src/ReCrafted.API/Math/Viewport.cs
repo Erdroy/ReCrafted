@@ -25,7 +25,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace ReCrafted.API.Core
+namespace ReCrafted.API.Mathematics
 {
     /// <summary>
     /// Defines the viewport dimensions.

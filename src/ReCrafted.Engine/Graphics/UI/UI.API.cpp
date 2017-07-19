@@ -7,7 +7,7 @@ void UI::initRuntime()
 {
 	API_FILE("UI/UI.Gen.cs");
 	{
-		API_USING("ReCrafted.API.Core");
+		API_USING("ReCrafted.API.Mathematics");
 
 		API_COMMENT("UI internal class.");
 		API_CLASS(INTERNAL, STATIC, "ReCrafted.API.UI", "UIInternal");

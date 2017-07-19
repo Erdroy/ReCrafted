@@ -4,6 +4,7 @@ using ReCrafted.API;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
+using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
 using ReCrafted.Game.Core;
 

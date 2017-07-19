@@ -162,7 +162,7 @@ void Camera::initRuntime()
 
 	API_FILE("Graphics/Camera.Gen.cs");
 	{
-		API_USING("ReCrafted.API.Core");
+		API_USING("ReCrafted.API.Mathematics");
 
 		API_COMMENT("Camera class.");
 		API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Camera", "Object");

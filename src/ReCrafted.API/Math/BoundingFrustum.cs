@@ -24,7 +24,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace ReCrafted.API.Core
+namespace ReCrafted.API.Mathematics
 {
     /// <summary>
     /// Defines a frustum which can be used in frustum culling, zoom to Extents (zoom to fit) operations, 

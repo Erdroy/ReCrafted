@@ -22,7 +22,7 @@
 
 using System;
 
-namespace ReCrafted.API.Core
+namespace ReCrafted.API.Mathematics
 {
     /// <summary>
     /// Random functions on commun types.

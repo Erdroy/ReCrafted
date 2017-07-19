@@ -50,7 +50,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace ReCrafted.API.Core
+namespace ReCrafted.API.Mathematics
 {
     /// <summary>
     /// Represents a plane in three dimensional space.
@@ -93,7 +93,7 @@ namespace ReCrafted.API.Core
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:ReCrafted.API.Core.Plane" /> class.
+        /// Initializes a new instance of the <see cref="T:ReCrafted.API.Mathematics.Plane" /> class.
         /// </summary>
         /// <param name="point">Any point that lies along the plane.</param>
         /// <param name="normal">The normal vector to the plane.</param>

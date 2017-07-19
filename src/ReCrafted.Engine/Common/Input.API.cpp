@@ -32,6 +32,7 @@ void Input::initRuntime()
 	API_FILE("Common/Input.Gen.cs");
 	{
 		API_USING("ReCrafted.API.Core");
+		API_USING("ReCrafted.API.Mathematics");
 
 		API_COMMENT("Input class.");
 		API_CLASS(PUBLIC, STATIC, "ReCrafted.API.Common", "Input");

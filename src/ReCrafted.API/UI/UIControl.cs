@@ -1,6 +1,6 @@
 ﻿// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
-using ReCrafted.API.Core;
+using ReCrafted.API.Mathematics;
 
 namespace ReCrafted.API.UI
 {

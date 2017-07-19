@@ -47,7 +47,7 @@
 
 using System;
 
-namespace ReCrafted.API.Core
+namespace ReCrafted.API.Mathematics
 {
     /*
      * This class is organized so that the least complex objects come first so that the least
@@ -1068,7 +1068,7 @@ namespace ReCrafted.API.Core
 
         /* This implementation is wrong
         /// <summary>
-        /// Determines whether there is an intersection between a <see cref="ReCrafted.API.Core.BoundingBox"/> and a triangle.
+        /// Determines whether there is an intersection between a <see cref="ReCrafted.API.Mathematics.BoundingBox"/> and a triangle.
         /// </summary>
         /// <param name="box">The box to test.</param>
         /// <param name="vertex1">The first vertex of the triangle to test.</param>
@@ -1183,7 +1183,7 @@ namespace ReCrafted.API.Core
 
         /* This implementation is wrong
         /// <summary>
-        /// Determines whether a <see cref="ReCrafted.API.Core.BoundingBox"/> contains a triangle.
+        /// Determines whether a <see cref="ReCrafted.API.Mathematics.BoundingBox"/> contains a triangle.
         /// </summary>
         /// <param name="box">The box to test.</param>
         /// <param name="vertex1">The first vertex of the triangle to test.</param>

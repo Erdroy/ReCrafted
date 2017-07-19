@@ -50,60 +50,33 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace ReCrafted.API.Core
+namespace ReCrafted.API.Mathematics
 {
     /// <summary>
-    /// Represents an axis-aligned bounding box in three dimensional space.
+    /// Represents a bounding sphere in three dimensional space.
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
-    public struct BoundingBox : IEquatable<BoundingBox>, IFormattable
+    public struct BoundingSphere : IEquatable<BoundingSphere>, IFormattable
     {
         /// <summary>
-        /// The minimum point of the box.
+        /// The center of the sphere in three dimensional space.
         /// </summary>
-        public Vector3 Minimum;
+        public Vector3 Center;
 
         /// <summary>
-        /// The maximum point of the box.
+        /// The radius of the sphere.
         /// </summary>
-        public Vector3 Maximum;
+        public float Radius;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BoundingBox"/> struct.
+        /// Initializes a new instance of the <see cref="BoundingSphere"/> struct.
         /// </summary>
-        /// <param name="minimum">The minimum vertex of the bounding box.</param>
-        /// <param name="maximum">The maximum vertex of the bounding box.</param>
-        public BoundingBox(Vector3 minimum, Vector3 maximum)
+        /// <param name="center">The center of the sphere in three dimensional space.</param>
+        /// <param name="radius">The radius of the sphere.</param>
+        public BoundingSphere(Vector3 center, float radius)
         {
-            this.Minimum = minimum;
-            this.Maximum = maximum;
-        }
-
-        /// <summary>
-        /// Retrieves the eight corners of the bounding box.
-        /// </summary>
-        /// <returns>An array of points representing the eight corners of the bounding box.</returns>
-        public Vector3[] GetCorners()
-        {
-            Vector3[] results = new Vector3[8];
-            GetCorners(results);
-            return results;
-        }
-
-        /// <summary>
-        /// Retrieves the eight corners of the bounding box.
-        /// </summary>
-        /// <returns>An array of points representing the eight corners of the bounding box.</returns>
-        public void GetCorners(Vector3[] corners)
-        {
-            corners[0] = new Vector3(Minimum.X, Maximum.Y, Maximum.Z);
-            corners[1] = new Vector3(Maximum.X, Maximum.Y, Maximum.Z);
-            corners[2] = new Vector3(Maximum.X, Minimum.Y, Maximum.Z);
-            corners[3] = new Vector3(Minimum.X, Minimum.Y, Maximum.Z);
-            corners[4] = new Vector3(Minimum.X, Maximum.Y, Minimum.Z);
-            corners[5] = new Vector3(Maximum.X, Maximum.Y, Minimum.Z);
-            corners[6] = new Vector3(Maximum.X, Minimum.Y, Minimum.Z);
-            corners[7] = new Vector3(Minimum.X, Minimum.Y, Minimum.Z);
+            this.Center = center;
+            this.Radius = radius;
         }
 
         /// <summary>
@@ -114,7 +87,7 @@ namespace ReCrafted.API.Core
         public bool Intersects(ref Ray ray)
         {
             float distance;
-            return Collision.RayIntersectsBox(ref ray, ref this, out distance);
+            return Collision.RayIntersectsSphere(ref ray, ref this, out distance);
         }
 
         /// <summary>
@@ -126,7 +99,7 @@ namespace ReCrafted.API.Core
         /// <returns>Whether the two objects intersected.</returns>
         public bool Intersects(ref Ray ray, out float distance)
         {
-            return Collision.RayIntersectsBox(ref ray, ref this, out distance);
+            return Collision.RayIntersectsSphere(ref ray, ref this, out distance);
         }
 
         /// <summary>
@@ -138,7 +111,7 @@ namespace ReCrafted.API.Core
         /// <returns>Whether the two objects intersected.</returns>
         public bool Intersects(ref Ray ray, out Vector3 point)
         {
-            return Collision.RayIntersectsBox(ref ray, ref this, out point);
+            return Collision.RayIntersectsSphere(ref ray, ref this, out point);
         }
 
         /// <summary>
@@ -148,10 +121,9 @@ namespace ReCrafted.API.Core
         /// <returns>Whether the two objects intersected.</returns>
         public PlaneIntersectionType Intersects(ref Plane plane)
         {
-            return Collision.PlaneIntersectsBox(ref plane, ref this);
+            return Collision.PlaneIntersectsSphere(ref plane, ref this);
         }
 
-        /* This implementation is wrong
         /// <summary>
         /// Determines if there is an intersection between the current object and a triangle.
         /// </summary>
@@ -161,9 +133,8 @@ namespace ReCrafted.API.Core
         /// <returns>Whether the two objects intersected.</returns>
         public bool Intersects(ref Vector3 vertex1, ref Vector3 vertex2, ref Vector3 vertex3)
         {
-            return Collision.BoxIntersectsTriangle(ref this, ref vertex1, ref vertex2, ref vertex3);
+            return Collision.SphereIntersectsTriangle(ref this, ref vertex1, ref vertex2, ref vertex3);
         }
-        */
 
         /// <summary>
         /// Determines if there is an intersection between the current object and a <see cref="BoundingBox"/>.
@@ -172,7 +143,7 @@ namespace ReCrafted.API.Core
         /// <returns>Whether the two objects intersected.</returns>
         public bool Intersects(ref BoundingBox box)
         {
-            return Collision.BoxIntersectsBox(ref this, ref box);
+            return Collision.BoxIntersectsSphere(ref box, ref this);
         }
 
         /// <summary>
@@ -192,7 +163,7 @@ namespace ReCrafted.API.Core
         /// <returns>Whether the two objects intersected.</returns>
         public bool Intersects(ref BoundingSphere sphere)
         {
-            return Collision.BoxIntersectsSphere(ref this, ref sphere);
+            return Collision.SphereIntersectsSphere(ref this, ref sphere);
         }
 
         /// <summary>
@@ -212,20 +183,9 @@ namespace ReCrafted.API.Core
         /// <returns>The type of containment the two objects have.</returns>
         public ContainmentType Contains(ref Vector3 point)
         {
-            return Collision.BoxContainsPoint(ref this, ref point);
+            return Collision.SphereContainsPoint(ref this, ref point);
         }
 
-        /// <summary>
-        /// Determines whether the current objects contains a point.
-        /// </summary>
-        /// <param name="point">The point to test.</param>
-        /// <returns>The type of containment the two objects have.</returns>
-        public ContainmentType Contains(Vector3 point)
-        {
-            return Contains(ref point);
-        }
-
-        /* This implementation is wrong
         /// <summary>
         /// Determines whether the current objects contains a triangle.
         /// </summary>
@@ -235,9 +195,8 @@ namespace ReCrafted.API.Core
         /// <returns>The type of containment the two objects have.</returns>
         public ContainmentType Contains(ref Vector3 vertex1, ref Vector3 vertex2, ref Vector3 vertex3)
         {
-            return Collision.BoxContainsTriangle(ref this, ref vertex1, ref vertex2, ref vertex3);
+            return Collision.SphereContainsTriangle(ref this, ref vertex1, ref vertex2, ref vertex3);
         }
-        */
 
         /// <summary>
         /// Determines whether the current objects contains a <see cref="BoundingBox"/>.
@@ -246,17 +205,7 @@ namespace ReCrafted.API.Core
         /// <returns>The type of containment the two objects have.</returns>
         public ContainmentType Contains(ref BoundingBox box)
         {
-            return Collision.BoxContainsBox(ref this, ref box);
-        }
-
-        /// <summary>
-        /// Determines whether the current objects contains a <see cref="BoundingBox"/>.
-        /// </summary>
-        /// <param name="box">The box to test.</param>
-        /// <returns>The type of containment the two objects have.</returns>
-        public ContainmentType Contains(BoundingBox box)
-        {
-            return Contains(ref box);
+            return Collision.SphereContainsBox(ref this, ref box);
         }
 
         /// <summary>
@@ -266,113 +215,178 @@ namespace ReCrafted.API.Core
         /// <returns>The type of containment the two objects have.</returns>
         public ContainmentType Contains(ref BoundingSphere sphere)
         {
-            return Collision.BoxContainsSphere(ref this, ref sphere);
+            return Collision.SphereContainsSphere(ref this, ref sphere);
         }
 
         /// <summary>
-        /// Determines whether the current objects contains a <see cref="BoundingSphere"/>.
+        /// Constructs a <see cref="BoundingSphere" /> that fully contains the given points.
         /// </summary>
-        /// <param name="sphere">The sphere to test.</param>
-        /// <returns>The type of containment the two objects have.</returns>
-        public ContainmentType Contains(BoundingSphere sphere)
-        {
-            return Contains(ref sphere);
-        }
-
-        /// <summary>
-        /// Constructs a <see cref="BoundingBox"/> that fully contains the given points.
-        /// </summary>
-        /// <param name="points">The points that will be contained by the box.</param>
-        /// <param name="result">When the method completes, contains the newly constructed bounding box.</param>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="points"/> is <c>null</c>.</exception>
-        public static void FromPoints(Vector3[] points, out BoundingBox result)
+        /// <param name="points">The points that will be contained by the sphere.</param>
+        /// <param name="start">The start index from points array to start compute the bounding sphere.</param>
+        /// <param name="count">The count of points to process to compute the bounding sphere.</param>
+        /// <param name="result">When the method completes, contains the newly constructed bounding sphere.</param>
+        /// <exception cref="System.ArgumentNullException">points</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        /// start
+        /// or
+        /// count
+        /// </exception>
+        public static void FromPoints(Vector3[] points, int start, int count, out BoundingSphere result)
         {
             if (points == null)
-                throw new ArgumentNullException("points");
-
-            Vector3 min = new Vector3(float.MaxValue);
-            Vector3 max = new Vector3(float.MinValue);
-
-            for (int i = 0; i < points.Length; ++i)
             {
-                Vector3.Min(ref min, ref points[i], out min);
-                Vector3.Max(ref max, ref points[i], out max);
+                throw new ArgumentNullException("points");
             }
 
-            result = new BoundingBox(min, max);
+            // Check that start is in the correct range
+            if (start < 0 || start >= points.Length)
+            {
+                throw new ArgumentOutOfRangeException("start", start, string.Format("Must be in the range [0, {0}]", points.Length - 1));
+            }
+
+            // Check that count is in the correct range
+            if (count < 0 || (start + count) > points.Length)
+            {
+                throw new ArgumentOutOfRangeException("count", count, string.Format("Must be in the range <= {0}", points.Length));
+            }
+
+            var upperEnd = start + count;
+
+            //Find the center of all points.
+            Vector3 center = Vector3.Zero;
+            for (int i = start; i < upperEnd; ++i)
+            {
+                Vector3.Add(ref points[i], ref center, out center);
+            }
+
+            //This is the center of our sphere.
+            center /= (float)count;
+
+            //Find the radius of the sphere
+            float radius = 0f;
+            for (int i = start; i < upperEnd; ++i)
+            {
+                //We are doing a relative distance comparison to find the maximum distance
+                //from the center of our sphere.
+                float distance;
+                Vector3.DistanceSquared(ref center, ref points[i], out distance);
+
+                if (distance > radius)
+                    radius = distance;
+            }
+
+            //Find the real distance from the DistanceSquared.
+            radius = (float)Math.Sqrt(radius);
+
+            //Construct the sphere.
+            result.Center = center;
+            result.Radius = radius;
         }
 
         /// <summary>
-        /// Constructs a <see cref="BoundingBox"/> that fully contains the given points.
+        /// Constructs a <see cref="BoundingSphere"/> that fully contains the given points.
         /// </summary>
-        /// <param name="points">The points that will be contained by the box.</param>
-        /// <returns>The newly constructed bounding box.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="points"/> is <c>null</c>.</exception>
-        public static BoundingBox FromPoints(Vector3[] points)
+        /// <param name="points">The points that will be contained by the sphere.</param>
+        /// <param name="result">When the method completes, contains the newly constructed bounding sphere.</param>
+        public static void FromPoints(Vector3[] points, out BoundingSphere result)
         {
             if (points == null)
-                throw new ArgumentNullException("points");
-
-            Vector3 min = new Vector3(float.MaxValue);
-            Vector3 max = new Vector3(float.MinValue);
-
-            for (int i = 0; i < points.Length; ++i)
             {
-                Vector3.Min(ref min, ref points[i], out min);
-                Vector3.Max(ref max, ref points[i], out max);
+                throw new ArgumentNullException("points");
             }
 
-            return new BoundingBox(min, max);
+            FromPoints(points, 0, points.Length, out result);
         }
 
         /// <summary>
-        /// Constructs a <see cref="BoundingBox"/> from a given sphere.
+        /// Constructs a <see cref="BoundingSphere"/> that fully contains the given points.
         /// </summary>
-        /// <param name="sphere">The sphere that will designate the extents of the box.</param>
-        /// <param name="result">When the method completes, contains the newly constructed bounding box.</param>
-        public static void FromSphere(ref BoundingSphere sphere, out BoundingBox result)
+        /// <param name="points">The points that will be contained by the sphere.</param>
+        /// <returns>The newly constructed bounding sphere.</returns>
+        public static BoundingSphere FromPoints(Vector3[] points)
         {
-            result.Minimum = new Vector3(sphere.Center.X - sphere.Radius, sphere.Center.Y - sphere.Radius, sphere.Center.Z - sphere.Radius);
-            result.Maximum = new Vector3(sphere.Center.X + sphere.Radius, sphere.Center.Y + sphere.Radius, sphere.Center.Z + sphere.Radius);
+            BoundingSphere result;
+            FromPoints(points, out result);
+            return result;
         }
 
         /// <summary>
-        /// Constructs a <see cref="BoundingBox"/> from a given sphere.
+        /// Constructs a <see cref="BoundingSphere"/> from a given box.
         /// </summary>
-        /// <param name="sphere">The sphere that will designate the extents of the box.</param>
-        /// <returns>The newly constructed bounding box.</returns>
-        public static BoundingBox FromSphere(BoundingSphere sphere)
+        /// <param name="box">The box that will designate the extents of the sphere.</param>
+        /// <param name="result">When the method completes, the newly constructed bounding sphere.</param>
+        public static void FromBox(ref BoundingBox box, out BoundingSphere result)
         {
-            BoundingBox box;
-            box.Minimum = new Vector3(sphere.Center.X - sphere.Radius, sphere.Center.Y - sphere.Radius, sphere.Center.Z - sphere.Radius);
-            box.Maximum = new Vector3(sphere.Center.X + sphere.Radius, sphere.Center.Y + sphere.Radius, sphere.Center.Z + sphere.Radius);
-            return box;
+            Vector3.Lerp(ref box.Minimum, ref box.Maximum, 0.5f, out result.Center);
+
+            float x = box.Minimum.X - box.Maximum.X;
+            float y = box.Minimum.Y - box.Maximum.Y;
+            float z = box.Minimum.Z - box.Maximum.Z;
+
+            float distance = (float)(Math.Sqrt((x * x) + (y * y) + (z * z)));
+            result.Radius = distance * 0.5f;
         }
 
         /// <summary>
-        /// Constructs a <see cref="BoundingBox"/> that is as large as the total combined area of the two specified boxes.
+        /// Constructs a <see cref="BoundingSphere"/> from a given box.
         /// </summary>
-        /// <param name="value1">The first box to merge.</param>
-        /// <param name="value2">The second box to merge.</param>
-        /// <param name="result">When the method completes, contains the newly constructed bounding box.</param>
-        public static void Merge(ref BoundingBox value1, ref BoundingBox value2, out BoundingBox result)
+        /// <param name="box">The box that will designate the extents of the sphere.</param>
+        /// <returns>The newly constructed bounding sphere.</returns>
+        public static BoundingSphere FromBox(BoundingBox box)
         {
-            Vector3.Min(ref value1.Minimum, ref value2.Minimum, out result.Minimum);
-            Vector3.Max(ref value1.Maximum, ref value2.Maximum, out result.Maximum);
+            BoundingSphere result;
+            FromBox(ref box, out result);
+            return result;
         }
 
         /// <summary>
-        /// Constructs a <see cref="BoundingBox"/> that is as large as the total combined area of the two specified boxes.
+        /// Constructs a <see cref="BoundingSphere"/> that is the as large as the total combined area of the two specified spheres.
         /// </summary>
-        /// <param name="value1">The first box to merge.</param>
-        /// <param name="value2">The second box to merge.</param>
-        /// <returns>The newly constructed bounding box.</returns>
-        public static BoundingBox Merge(BoundingBox value1, BoundingBox value2)
+        /// <param name="value1">The first sphere to merge.</param>
+        /// <param name="value2">The second sphere to merge.</param>
+        /// <param name="result">When the method completes, contains the newly constructed bounding sphere.</param>
+        public static void Merge(ref BoundingSphere value1, ref BoundingSphere value2, out BoundingSphere result)
         {
-            BoundingBox box;
-            Vector3.Min(ref value1.Minimum, ref value2.Minimum, out box.Minimum);
-            Vector3.Max(ref value1.Maximum, ref value2.Maximum, out box.Maximum);
-            return box;
+            Vector3 difference = value2.Center - value1.Center;
+
+            float length = difference.Length();
+            float radius = value1.Radius;
+            float radius2 = value2.Radius;
+
+            if (radius + radius2 >= length)
+            {
+                if (radius - radius2 >= length)
+                {
+                    result = value1;
+                    return;
+                }
+
+                if (radius2 - radius >= length)
+                {
+                    result = value2;
+                    return;
+                }
+            }
+
+            Vector3 vector = difference * (1.0f / length);
+            float min = Math.Min(-radius, length - radius2);
+            float max = (Math.Max(radius, length + radius2) - min) * 0.5f;
+
+            result.Center = value1.Center + vector * (max + min);
+            result.Radius = max;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="BoundingSphere"/> that is the as large as the total combined area of the two specified spheres.
+        /// </summary>
+        /// <param name="value1">The first sphere to merge.</param>
+        /// <param name="value2">The second sphere to merge.</param>
+        /// <returns>The newly constructed bounding sphere.</returns>
+        public static BoundingSphere Merge(BoundingSphere value1, BoundingSphere value2)
+        {
+            BoundingSphere result;
+            Merge(ref value1, ref value2, out result);
+            return result;
         }
 
         /// <summary>
@@ -382,7 +396,7 @@ namespace ReCrafted.API.Core
         /// <param name="right">The second value to compare.</param>
         /// <returns><c>true</c> if <paramref name="left"/> has the same value as <paramref name="right"/>; otherwise, <c>false</c>.</returns>
         [MethodImpl((MethodImplOptions)0x100)] // MethodImplOptions.AggressiveInlining
-        public static bool operator ==(BoundingBox left, BoundingBox right)
+        public static bool operator ==(BoundingSphere left, BoundingSphere right)
         {
             return left.Equals(ref right);
         }
@@ -394,7 +408,7 @@ namespace ReCrafted.API.Core
         /// <param name="right">The second value to compare.</param>
         /// <returns><c>true</c> if <paramref name="left"/> has a different value than <paramref name="right"/>; otherwise, <c>false</c>.</returns>
         [MethodImpl((MethodImplOptions)0x100)] // MethodImplOptions.AggressiveInlining
-        public static bool operator !=(BoundingBox left, BoundingBox right)
+        public static bool operator !=(BoundingSphere left, BoundingSphere right)
         {
             return !left.Equals(ref right);
         }
@@ -407,7 +421,7 @@ namespace ReCrafted.API.Core
         /// </returns>
         public override string ToString()
         {
-            return string.Format(CultureInfo.CurrentCulture, "Minimum:{0} Maximum:{1}", Minimum.ToString(), Maximum.ToString());
+            return string.Format(CultureInfo.CurrentCulture, "Center:{0} Radius:{1}", Center.ToString(), Radius.ToString());
         }
 
         /// <summary>
@@ -422,8 +436,8 @@ namespace ReCrafted.API.Core
             if (format == null)
                 return ToString();
 
-            return string.Format(CultureInfo.CurrentCulture, "Minimum:{0} Maximum:{1}", Minimum.ToString(format, CultureInfo.CurrentCulture),
-                Maximum.ToString(format, CultureInfo.CurrentCulture));
+            return string.Format(CultureInfo.CurrentCulture, "Center:{0} Radius:{1}", Center.ToString(format, CultureInfo.CurrentCulture),
+                Radius.ToString(format, CultureInfo.CurrentCulture));
         }
 
         /// <summary>
@@ -435,7 +449,7 @@ namespace ReCrafted.API.Core
         /// </returns>
         public string ToString(IFormatProvider formatProvider)
         {
-            return string.Format(formatProvider, "Minimum:{0} Maximum:{1}", Minimum.ToString(), Maximum.ToString());
+            return string.Format(formatProvider, "Center:{0} Radius:{1}", Center.ToString(), Radius.ToString());
         }
 
         /// <summary>
@@ -451,8 +465,8 @@ namespace ReCrafted.API.Core
             if (format == null)
                 return ToString(formatProvider);
 
-            return string.Format(formatProvider, "Minimum:{0} Maximum:{1}", Minimum.ToString(format, formatProvider),
-                Maximum.ToString(format, formatProvider));
+            return string.Format(formatProvider, "Center:{0} Radius:{1}", Center.ToString(format, formatProvider),
+                Radius.ToString(format, formatProvider));
         }
 
         /// <summary>
@@ -465,7 +479,7 @@ namespace ReCrafted.API.Core
         {
             unchecked
             {
-                return (Minimum.GetHashCode() * 397) ^ Maximum.GetHashCode();
+                return (Center.GetHashCode() * 397) ^ Radius.GetHashCode();
             }
         }
 
@@ -477,9 +491,9 @@ namespace ReCrafted.API.Core
         /// <c>true</c> if the specified <see cref="Vector4"/> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         [MethodImpl((MethodImplOptions)0x100)] // MethodImplOptions.AggressiveInlining
-        public bool Equals(ref BoundingBox value)
+        public bool Equals(ref BoundingSphere value)
         {
-            return Minimum == value.Minimum && Maximum == value.Maximum;
+            return Center == value.Center && Radius == value.Radius;
         }
 
         /// <summary>
@@ -490,7 +504,7 @@ namespace ReCrafted.API.Core
         /// <c>true</c> if the specified <see cref="Vector4"/> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         [MethodImpl((MethodImplOptions)0x100)] // MethodImplOptions.AggressiveInlining
-        public bool Equals(BoundingBox value)
+        public bool Equals(BoundingSphere value)
         {
             return Equals(ref value);
         }
@@ -504,10 +518,10 @@ namespace ReCrafted.API.Core
         /// </returns>
         public override bool Equals(object value)
         {
-            if (!(value is BoundingBox))
+            if (!(value is BoundingSphere))
                 return false;
 
-            var strongValue = (BoundingBox)value;
+            var strongValue = (BoundingSphere)value;
             return Equals(ref strongValue);
         }
     }

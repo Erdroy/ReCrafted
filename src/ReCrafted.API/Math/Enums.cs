@@ -45,7 +45,7 @@
 * THE SOFTWARE.
 */
 
-namespace ReCrafted.API.Core
+namespace ReCrafted.API.Mathematics
 {
     /*
      * The enumerations defined in this file are in alphabetical order. When

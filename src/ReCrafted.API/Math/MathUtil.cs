@@ -47,7 +47,7 @@
 
 using System;
 
-namespace ReCrafted.API.Core
+namespace ReCrafted.API.Mathematics
 {
     public static class MathUtil
     {
@@ -59,22 +59,22 @@ namespace ReCrafted.API.Core
         /// <summary>
         /// A value specifying the approximation of π which is 180 degrees.
         /// </summary>
-        public const float Pi = (float)Math.PI;
+        public const float Pi = (float)System.Math.PI;
 
         /// <summary>
         /// A value specifying the approximation of 2π which is 360 degrees.
         /// </summary>
-        public const float TwoPi = (float)(2 * Math.PI);
+        public const float TwoPi = (float)(2 * System.Math.PI);
 
         /// <summary>
         /// A value specifying the approximation of π/2 which is 90 degrees.
         /// </summary>
-        public const float PiOverTwo = (float)(Math.PI / 2);
+        public const float PiOverTwo = (float)(System.Math.PI / 2);
 
         /// <summary>
         /// A value specifying the approximation of π/4 which is 45 degrees.
         /// </summary>
-        public const float PiOverFour = (float)(Math.PI / 4);
+        public const float PiOverFour = (float)(System.Math.PI / 4);
 
         /// <summary>
         /// Checks if a and b are almost equals, taking into account the magnitude of floating point numbers (unlike <see cref="WithinEpsilon"/> method). See Remarks.
@@ -103,7 +103,7 @@ namespace ReCrafted.API.Core
                 return false;
 
             // Find the difference in ULPs.
-            int ulp = Math.Abs(aInt - bInt);
+            int ulp = System.Math.Abs(aInt - bInt);
 
             // Choose of maxUlp = 4
             // according to http://code.google.com/p/googletest/source/browse/trunk/include/gtest/internal/gtest-internal.h
@@ -118,7 +118,7 @@ namespace ReCrafted.API.Core
         /// <returns><c>true</c> if the specified value is close to zero (0.0f); otherwise, <c>false</c>.</returns>
         public static bool IsZero(float a)
         {
-            return Math.Abs(a) < ZeroTolerance;
+            return System.Math.Abs(a) < ZeroTolerance;
         }
 
         /// <summary>
