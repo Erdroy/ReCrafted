@@ -190,13 +190,6 @@ void Camera::initRuntime()
 			}
 			API_PROPERTY_END();
 
-			API_COMMENT("The current camera.");
-			API_PROPERTY(PUBLIC, STATIC, "Camera", "Current", GET);
-			{
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Current_Get", &Internal::getCurrent);
-			}
-			API_PROPERTY_END();
-
 			API_COMMENT("Camera's bounding frustum");
 			API_PROPERTY(PUBLIC, REGULAR, "BoundingFrustum", "GetBoundingFrustum", GET, BY_REF);
 			{
@@ -249,6 +242,13 @@ void Camera::initRuntime()
 			{
 				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Right_Get", &Internal::getRight);
 				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Right_Set", &Internal::setRight);
+			}
+			API_PROPERTY_END();
+
+			API_COMMENT("The current camera.");
+			API_PROPERTY(PUBLIC, STATIC, "Camera", "Current", GET);
+			{
+				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Current_Get", &Internal::getCurrent);
 			}
 			API_PROPERTY_END();
 		}

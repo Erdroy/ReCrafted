@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 07/19/2017 17:51:08 Source: 'Camera.API.cpp' Target: 'Graphics/Camera.Gen.cs'
+// Generated: 07/19/2017 18:03:52 Source: 'Camera.API.cpp' Target: 'Graphics/Camera.Gen.cs'
 
 using ReCrafted.API.Core;
 using System;
@@ -53,17 +53,6 @@ namespace ReCrafted.API.Graphics
 			set
 			{
 				Internal_Position_Set(NativePtr, ref value);
-			}
-		}
-
-		/// <summary>
-		///	The current camera.
-		/// </summary>
-		public static Camera Current 
-		{
-			get
-			{
-				return Internal_Current_Get();
 			}
 		}
 
@@ -176,6 +165,17 @@ namespace ReCrafted.API.Graphics
 			}
 		}
 
+		/// <summary>
+		///	The current camera.
+		/// </summary>
+		public static Camera Current 
+		{
+			get
+			{
+				return Internal_Current_Get();
+			}
+		}
+
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_Fov_Set(IntPtr nativePtr, float value);
 		[MethodImpl(MethodImplOptions.InternalCall)]
@@ -184,8 +184,6 @@ namespace ReCrafted.API.Graphics
 		internal static extern void Internal_Position_Set(IntPtr nativePtr, ref Vector3 value);
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_Position_Get(IntPtr nativePtr, out Vector3 result);
-		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern Camera Internal_Current_Get();
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_GetBoundingFrustum_Get(IntPtr nativePtr, out BoundingFrustum result);
 		[MethodImpl(MethodImplOptions.InternalCall)]
@@ -212,5 +210,7 @@ namespace ReCrafted.API.Graphics
 		internal static extern void Internal_Right_Set(IntPtr nativePtr, ref Vector3 value);
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_Right_Get(IntPtr nativePtr, out Vector3 result);
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern Camera Internal_Current_Get();
 	}
 }
