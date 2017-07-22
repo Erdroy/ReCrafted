@@ -8,12 +8,15 @@
 // includes
 #include "Utils/Types.h"
 #include <bgfx/bgfx.h>
+#include <Common/ReCraftedAPI.h>
+#include <Scripting/Object.h>
 
 typedef struct upng_t upng_t;
 
-class Texture2D
+class Texture2D : public Object
 {
 	friend class Shader;
+	API_DEF
 
 private:
 	bgfx::TextureHandle m_textureHandle = {};
@@ -101,6 +104,8 @@ public:
 	/// Loads texture.
 	/// </summary>
 	static Ptr<Texture2D> createTexture();
+
+	static Ptr<Texture2D> createTextureManaged();
 
 public:
 	static void loadTextureData(const char* filename, uint** pixels, int* width, int* height);

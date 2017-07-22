@@ -12,12 +12,14 @@
 #include "Common/Text.h"
 
 #include <vector>
+#include <Scripting/Object.h>
 
 class Texture2D;
 
-class Font
+class Font : public Object
 {
 	friend class UI;
+	API_DEF;
 
 public:
 	struct Glyph
