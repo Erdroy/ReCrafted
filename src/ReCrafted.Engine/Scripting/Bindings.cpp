@@ -9,6 +9,7 @@
 #include "Core/Logger.h"
 #include "Graphics/UI/UI.h"
 #include "Graphics/Camera.h"
+#include <Graphics/Font.h>
 
 #define INSTANCES_COUNT 65535
 
@@ -30,6 +31,8 @@ void Bindings::bind()
 	Display::initRuntime();
 	UI::initRuntime();
 	Camera::initRuntime();
+	Texture2D::initRuntime();
+	Font::initRuntime();
 }
 
 void Bindings::bindObject(int type, objectinstancer method)
