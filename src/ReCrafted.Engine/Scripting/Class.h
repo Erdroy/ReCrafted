@@ -6,14 +6,14 @@
 #define CLASS_H
 
 // includes
-#include "Utils/Types.h"
-#include "Object.h"
 #include "Mono.h"
 
 class Class
 {
 	friend class ScriptingEngine;
 	friend class Assembly;
+	friend class Object;
+	friend class Method;
 
 private:
 	Assembly* m_assembly = nullptr;
@@ -21,24 +21,9 @@ private:
 
 public:
 	/// <summary>
-	/// Creates instance of this class.
-	/// </summary>
-	template <class T>
-	Ptr<T> createInstance(bool isObject = true)
-	{
-		// create object
-		Ptr<T> object(new T);
-		Object::create(static_cast<Ptr<Object>>(object), Domain::Root->getMono(), m_class, isObject);
-		return object;
-	}
-
-	/// <summary>
 	/// Gets mono type.
 	/// </summary>
-	int getType() const
-	{
-		return mono_type_get_type(mono_class_get_type(m_class));
-	}
+	char* getType() const;
 };
 
 #endif // CLASS_H
