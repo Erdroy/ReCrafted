@@ -9,19 +9,14 @@
 #include "Core/Logger.h"
 #include "Graphics/UI/UI.h"
 #include "Graphics/Camera.h"
-#include <Graphics/Font.h>
+#include "Graphics/Font.h"
 
-#define INSTANCES_COUNT 65535
+#include <map>
 
-objectinstancer* m_instancers = nullptr;
+std::map<std::string, objectinstancer> m_typeMap = {};
 
 void Bindings::bind()
 {
-	m_instancers = new objectinstancer[INSTANCES_COUNT];
-
-	for (auto i = 0; i < INSTANCES_COUNT; i++)
-		m_instancers[i] = nullptr;
-
 	Object::initRuntime();
 
 	Logger::initRuntime();
@@ -35,24 +30,24 @@ void Bindings::bind()
 	Font::initRuntime();
 }
 
-void Bindings::bindObject(int type, objectinstancer method)
+void Bindings::bindObject(char* typePtr, objectinstancer method)
 {
-	if(m_instancers[type] != nullptr)
+	/*if(m_typeMap[typePtr] != nullptr)
 	{
 		Logger::write("Binding Object type already exists.", LogLevel::Warning);
 		return;
-	}
+	}*/
 
-	m_instancers[type] = method;
+	m_typeMap[std::string(typePtr)] = method;
 }
 
-Ptr<Object> Bindings::instantiate(int type)
+Ptr<Object> Bindings::instantiate(char* typePtr)
 {
-	auto instancer = m_instancers[type];
+	auto instancer = m_typeMap[std::string(typePtr)];
 	return instancer();
 }
 
 void Bindings::shutdown()
 {
-	delete[] m_instancers;
+
 }

@@ -15,9 +15,9 @@ class Bindings
 public:
 	static void bind();
 
-	static void bindObject(int type, objectinstancer method);
+	static void bindObject(char* typePtr, objectinstancer method);
 
-	static Ptr<Object> instantiate(int type);
+	static Ptr<Object> instantiate(char* typePtr);
 
 	static void shutdown();
 };

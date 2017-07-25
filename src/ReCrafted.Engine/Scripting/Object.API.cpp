@@ -12,7 +12,7 @@ namespace Internal
 		auto type = mono_reflection_type_get_type(typeRef);
 
 		// create new using bindings
-		auto object = Bindings::instantiate(mono_type_get_type(type));
+		auto object = Bindings::instantiate(mono_type_get_name(type));
 
 		// create object
 		Object::create(object, Domain::Root->getMono(), mono_type_get_class(type), true);
