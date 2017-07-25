@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 07/22/2017 19:14:07 Source: 'Texture2D.API.cpp' Target: 'Graphics/Texture2D.Gen.cs'
+// Generated: 07/23/2017 23:29:26 Source: 'Texture2D.API.cpp' Target: 'Graphics/Texture2D.Gen.cs'
 
 using ReCrafted.API.Mathematics;
 using System;
@@ -13,6 +13,12 @@ namespace ReCrafted.API.Graphics
 	/// </summary>
 	public class Texture2D : Object
 	{
+		/// <summary>
+		///	Creates new Texture2D
+		/// </summary>
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern Texture2D Create();
+
 		/// <summary>
 		///	Returns texture's width
 		/// </summary>

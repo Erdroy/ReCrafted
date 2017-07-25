@@ -30,6 +30,11 @@ namespace Internal
 
 		return height;
 	}
+
+	MonoObject* createTexture2D()
+	{
+		return Texture2D::createTextureManaged()->getManagedPtr();
+	}
 }
 
 void Texture2D::initRuntime()
@@ -44,17 +49,26 @@ void Texture2D::initRuntime()
 		API_COMMENT("Texture2D class.");
 		API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Texture2D", "Object");
 		{
-			API_COMMENT("Returns texture's width");
-			API_PROPERTY(PUBLIC, REGULAR, "int", "Width", GET)
+			API_COMMENT("Creates new Texture2D");
+			API_METHOD(PUBLIC, STATIC, "Create", EXTERN);
 			{
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Width_Get", &Internal::getWidth);
+				API_BIND("ReCrafted.API.Graphics.Texture2D::Create", &Internal::createTexture2D);
+
+				API_RETURN("Texture2D");
+			}
+			API_METHOD_END();
+
+			API_COMMENT("Returns texture's width");
+			API_PROPERTY(PUBLIC, REGULAR, "int", "Width", GET);
+			{
+				API_BIND("ReCrafted.API.Graphics.Texture2D::Internal_Width_Get", &Internal::getWidth);
 			}
 			API_PROPERTY_END();
 
 			API_COMMENT("Returns texture's height");
-			API_PROPERTY(PUBLIC, REGULAR, "int", "Height", GET)
+			API_PROPERTY(PUBLIC, REGULAR, "int", "Height", GET);
 			{
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Height_Get", &Internal::getHeight);
+				API_BIND("ReCrafted.API.Graphics.Texture2D::Internal_Height_Get", &Internal::getHeight);
 			}
 			API_PROPERTY_END();
 		}
