@@ -4,10 +4,12 @@
 #include "Common/Display.h"
 #include "Graphics/Atlas.h"
 #include "Scripting/Bindings.h"
-#include "Scripting/Object.h"
 #include "Scripting/Assembly.h"
+#include "Scripting/Object.h"
 
 #define CHECK_SHUTDOWN if (!m_running) break;
+
+#define RESET_FLAGS (BGFX_RESET_NONE | BGFX_RESET_VSYNC)
 
 GameMain* GameMain::m_instance;
 
@@ -131,6 +133,13 @@ void GameMain::initScripting()
 	// create root domain
 	m_domain = Domain::createRoot();
 
+	if(!Platform::fileExists("ReCrafted.Game.dll") || !Platform::fileExists("ReCrafted.API.dll"))
+	{
+		Logger::write("Could not find some of game assemblies.", LogLevel::Fatal);
+		exit(-1);
+		return;
+	}
+
 	// load base assemblies
 	Assembly::Game = m_domain->loadAssembly("ReCrafted.Game.dll");
 	Assembly::API = m_domain->loadAssembly("ReCrafted.API.dll");
@@ -139,8 +148,7 @@ void GameMain::initScripting()
 	Bindings::bind();
 	
 	// create gamemain instance
-	auto gamemainDef = Assembly::Game->findClass("ReCrafted.Game", "GameMain");
-	m_gamemain = gamemainDef->createInstance<Object>(false);
+	m_gamemain = Object::createInstance<Object>("ReCrafted.Game", "GameMain", Assembly::Game, false);
 
 	// find methods
 	m_init_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Initialize");
@@ -148,6 +156,8 @@ void GameMain::initScripting()
 	m_simulate_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Simulate");
 	m_drawui_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::DrawUI");
 	m_shutdown_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Shutdown");
+
+	Logger::write("Scripting initialized");
 }
 
 void GameMain::run()
@@ -269,7 +279,7 @@ void GameMain::onLoad()
 
 	// initialize bgfx
 	bgfx::init(bgfx::RendererType::Direct3D11);
-	bgfx::reset(Display::get_Width(), Display::get_Height(), BGFX_RESET_NONE);
+	bgfx::reset(Display::get_Width(), Display::get_Height(), RESET_FLAGS);
 
 	bgfx::setDebug(BGFX_DEBUG_NONE);
 
@@ -350,7 +360,7 @@ void GameMain::onResize(uint width, uint height)
 	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
 	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
 
-	bgfx::reset(Display::get_Width(), Display::get_Height(), BGFX_RESET_NONE);
+	bgfx::reset(Display::get_Width(), Display::get_Height(), RESET_FLAGS);
 
 	m_rendering->resize(width, height);
 }
