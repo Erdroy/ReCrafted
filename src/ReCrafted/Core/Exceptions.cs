@@ -23,6 +23,15 @@ namespace ReCrafted.Game.Core
             };
         }
 
+        /// <summary>
+        /// Throws exception, used by engine to throw unhandled exceptions.
+        /// </summary>
+        /// <param name="ex">The exception which will be thrown.</param>
+        public static void ThrowException(Exception ex)
+        {
+            throw ex;
+        }
+
         // private
         private static void WriteException(Exception exception)
         {
