@@ -7,10 +7,14 @@
 
 // includes
 #include "Common/ReCraftedAPI.h"
-#include "Method.h"
-#include "Field.h"
 #include "Mono.h"
+#include "Assembly.h"
+#include "Class.h"
+#include "Domain.h"
 #include "Utils/Types.h"
+
+class Method;
+class Field;
 
 #include <vector>
 
@@ -47,12 +51,19 @@ public:
 	/// <summary>
 	/// Creates instance of API class.
 	/// WARNING: Only for API objects!
+	/// Setting `initializeNativePtr` to false, can instantiate every non-static class.
 	/// </summary>
 	template <class T>
-	static Ptr<T> createInstance(const char* ns, const char* className)
+	static Ptr<T> createInstance(const char* ns, const char* className, Ptr<Assembly> assembly = nullptr, bool initializeNativePtr = true)
 	{
-		auto cls = Assembly::API->findClass(ns, className);
-		return cls->createInstance<T>(true);
+		Ptr<T> object(new T);
+
+		if (assembly == nullptr)
+			assembly = Assembly::API;
+
+		auto cls = assembly->findClass(ns, className);
+		create(static_cast<Ptr<Object>>(object), Domain::Root->getMono(), cls->m_class, initializeNativePtr);
+		return object;
 	}
 
 public:
