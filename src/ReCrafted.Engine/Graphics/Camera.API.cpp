@@ -2,7 +2,6 @@
 
 #include "Camera.h"
 #include "Scripting/Mono.h"
-#include "Scripting/Assembly.h"
 #include "Scripting/Bindings.h"
 
 namespace Internal
