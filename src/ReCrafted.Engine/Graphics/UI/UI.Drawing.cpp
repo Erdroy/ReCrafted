@@ -25,6 +25,9 @@ void UI::setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex
 	auto screen_width = Display::get_Width();
 	auto screen_height = Display::get_Height();
 
+	if (screen_height % 2 != 0)
+		screen_height += 1;
+
 	// Width
 	auto width = rect.width / (screen_width * 0.5f);
 
@@ -197,6 +200,9 @@ void UI::drawTexture(Texture2D* texture, Rectf rect, Rectf uvs)
 {
 	rect.width -= rect.x;
 	rect.height -= rect.y;
+
+	uvs.y += uvs.height;
+	uvs.height = -uvs.height;
 
 	auto handle = texture->getHandle();
 	m_instance->internal_drawBoxTextured(rect, handle, uvs);
