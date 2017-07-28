@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 07/16/2017 18:14:05 Source: 'Object.API.cpp' Target: 'Core/Logger.Gen.cs'
+// Generated: 07/28/2017 21:30:44 Source: 'Camera.API.cpp' Target: 'Core/Logger.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;

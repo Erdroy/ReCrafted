@@ -32,7 +32,7 @@ namespace ReCrafted.API
                 InternalObjectFinalized(NativePtr);
             }
         }
-        
+
         /// <summary>
         /// Destroy the given object.
         /// </summary>
@@ -44,19 +44,7 @@ namespace ReCrafted.API
                 InternalDestroy(obj.NativePtr);
             }
         }
-
-        /// <summary>
-        /// Creates new object of type 'T'.
-        /// </summary>
-        /// <typeparam name="T">The type.</typeparam>
-        /// <returns>The newly created object.</returns>
-        public static T Create<T>() where T : Object
-        {
-            return (T) InternalCreate(typeof(T));
-        }
-
-        // operators
-
+        
         /// <summary>
         /// Checks if object exists.
         /// </summary>

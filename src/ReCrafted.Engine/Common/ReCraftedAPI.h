@@ -7,10 +7,6 @@
 // mono extensions
 #define API_DEF friend class Bindings; protected: static void initRuntime(); private:
 
-#define BIND_OBJECT(namespace, name, method) \
-	auto typeId = Assembly::API->findClass(namespace, name)->getType(); \
-	Bindings::bindObject(typeId, reinterpret_cast<objectinstancer>(##method##));
-
 #define MONO_TEXT(x) mono_string_chars(string)
 
 #define API_BIND(name, method) mono_add_internal_call(name, method)

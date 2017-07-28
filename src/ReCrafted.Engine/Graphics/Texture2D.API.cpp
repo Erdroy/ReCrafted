@@ -2,17 +2,10 @@
 
 #include "Texture2D.h"
 #include "Scripting/Mono.h"
-#include "Scripting/Assembly.h"
 #include "Scripting/Bindings.h"
 
 namespace Internal
 {
-	Ptr<Texture2D> createNewTexture2D()
-	{
-		Ptr<Texture2D> texture(new Texture2D());
-		return texture;
-	}
-
 	int getWidth(Texture2D* texture)
 	{
 		if (!texture) return 0;
@@ -33,14 +26,13 @@ namespace Internal
 
 	MonoObject* createTexture2D()
 	{
-		return Texture2D::createTextureManaged()->getManagedPtr();
+		return Object::createInstance<Texture2D>("ReCrafted.API.Graphics", "Texture2D")->getManagedPtr();
 	}
 }
 
 void Texture2D::initRuntime()
 {
 	// create type binding
-	BIND_OBJECT("ReCrafted.API.Graphics", "Texture2D", &Internal::createNewTexture2D);
 
 	API_FILE("Graphics/Texture2D.Gen.cs");
 	{

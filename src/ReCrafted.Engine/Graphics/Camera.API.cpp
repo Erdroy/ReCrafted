@@ -56,12 +56,6 @@ namespace Internal
 		*pos = camera->get_position();
 	}
 
-	Ptr<Camera> createNewCamera()
-	{
-		Ptr<Camera> camera(new Camera());
-		return camera;
-	}
-
 	void getBoundingFrustum(Camera* camera, BoundingFrustum* frustum)
 	{
 		if (!camera) return;
@@ -152,12 +146,16 @@ namespace Internal
 
 		camera->set_right(*right);
 	}
+
+	MonoObject* createCamera()
+	{
+		return Object::createInstance<Camera>("ReCrafted.API.Graphics", "Camera")->getManagedPtr();
+	}
 }
 
 void Camera::initRuntime()
 {
 	// create type binding
-	BIND_OBJECT("ReCrafted.API.Graphics", "Camera", &Internal::createNewCamera);
 
 	API_FILE("Graphics/Camera.Gen.cs");
 	{
@@ -166,6 +164,15 @@ void Camera::initRuntime()
 		API_COMMENT("Camera class.");
 		API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Camera", "Object");
 		{
+			API_COMMENT("Creates new Camera");
+			API_METHOD(PUBLIC, STATIC, "Create", EXTERN);
+			{
+				API_BIND("ReCrafted.API.Graphics.Camera::Create", &Internal::createCamera);
+
+				API_RETURN("Camera");
+			}
+			API_METHOD_END();
+
 			API_COMMENT("Sets the camera as current.");
 			API_METHOD(PUBLIC, REGULAR, "SetAsCurrent", EXTERN);
 			{

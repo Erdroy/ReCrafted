@@ -105,8 +105,6 @@ public:
 	/// </summary>
 	static Ptr<Texture2D> createTexture();
 
-	static Ptr<Texture2D> createTextureManaged();
-
 public:
 	static void loadTextureData(const char* filename, uint** pixels, int* width, int* height);
 	static void releaseTextureData(uint* pixels);

@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 07/19/2017 18:23:45 Source: 'Camera.API.cpp' Target: 'Graphics/Camera.Gen.cs'
+// Generated: 07/28/2017 21:30:44 Source: 'Camera.API.cpp' Target: 'Graphics/Camera.Gen.cs'
 
 using ReCrafted.API.Mathematics;
 using System;
@@ -13,6 +13,12 @@ namespace ReCrafted.API.Graphics
 	/// </summary>
 	public class Camera : Object
 	{
+		/// <summary>
+		///	Creates new Camera
+		/// </summary>
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern Camera Create();
+
 		/// <summary>
 		///	Sets the camera as current.
 		/// </summary>

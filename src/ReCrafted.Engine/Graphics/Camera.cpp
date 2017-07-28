@@ -118,7 +118,7 @@ void Camera::updateControls()
 		m_cursorDeltaBufferPosition = 0u;
 
 	// calculate delta
-	Vector2 delta = {};
+	/*Vector2 delta = {};
 	for (auto i = 0u; i < FILTERING_BUFFER_SIZE; i++)
 	{
 		delta += m_cursorDeltaBuffer[i];
@@ -129,10 +129,10 @@ void Camera::updateControls()
 
 	// accelerate
 	auto accelDelta = delta + m_lastDelta;
-	m_lastDelta = delta;
+	m_lastDelta = delta;*/
 
 	// apply camera rotation
-	m_rotation += Vector3(accelDelta.x / 16.0f, accelDelta.y / 16.0f, 0.0f);
+	m_rotation += Vector3(rawDelta.x / 10.0f, rawDelta.y / 10.0f, 0.0f);
 	m_rotation.y = Math::clamp(m_rotation.y, -89.9f, 89.9f);
 
 	// update camera rotation

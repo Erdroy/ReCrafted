@@ -279,8 +279,3 @@ Ptr<Texture2D> Texture2D::createTexture()
 	Ptr<Texture2D> texture(new Texture2D);
 	return texture;
 }
-
-Ptr<Texture2D> Texture2D::createTextureManaged()
-{
-	return createInstance<Texture2D>("ReCrafted.API.Graphics", "Texture2D");
-}
