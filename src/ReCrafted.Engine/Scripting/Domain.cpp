@@ -78,7 +78,7 @@ Ptr<Domain> Domain::createRoot()
 
 	mono_set_dirs("../mono/lib", "../mono/etc");
 
-	if (GameInfo::containsArgument(TEXT("-debug")))
+	if (GameInfo::containsArgument(TEXT("-debug")) && !GameInfo::containsArgument(TEXT("-nodebug")))
 	{
 		mono_jit_parse_options(2, const_cast<char**>(jit_options));
 	}
@@ -92,7 +92,7 @@ Ptr<Domain> Domain::createRoot()
 		return nullptr;
 	}
 
-	if (GameInfo::containsArgument(TEXT("-debug")))
+	if (!GameInfo::containsArgument(TEXT("-nodebug")))
 	{
 		mono_debug_init(MONO_DEBUG_FORMAT_MONO);
 		mono_debug_domain_create(domain);

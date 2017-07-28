@@ -146,7 +146,7 @@ public:
 	/// <param name="font">The font which will be used for drawing.</param>
 	/// <param name="text">The text to be drawn.</param>
 	/// <param name="position">The point in pixels where the text will be drawn on the screen.</param>
-	static void drawText(Ptr<Font> font, Text text, Vector2 position);
+	static void drawText(Font* font, Text text, Vector2 position);
 
 	/// <summary>
 	/// Draws texture.
@@ -155,7 +155,7 @@ public:
 	/// <param name="texture">The texture which will drawn.</param>
 	/// <param name="pos">The screen position (in pixels) where the texture will be drawn.</param>
 	/// <param name="pos">The texture uvs.</param>
-	static void drawTexture(Ptr<Texture2D> texture, Rectf rect, Rectf uvs);
+	static void drawTexture(Texture2D* texture, Rectf rect, Rectf uvs);
 };
 
 #endif // UI_H

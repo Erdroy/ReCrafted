@@ -157,7 +157,7 @@ void GameMain::initScripting()
 	m_drawui_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::DrawUI");
 	m_shutdown_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Shutdown");
 
-	Logger::write("Scripting initialized");
+	Logger::write("Scripting initialized", LogLevel::Info);
 }
 
 void GameMain::run()

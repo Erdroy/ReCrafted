@@ -1,6 +1,8 @@
 ﻿// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
+using System;
 using System.Collections.Generic;
+using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
 
 namespace ReCrafted.API.UI
@@ -33,7 +35,14 @@ namespace ReCrafted.API.UI
                 UIInternal.Color = Color.DarkViolet;
                 UIInternal.DrawBox(panel.Region);
 
-                panel.Draw();
+                try
+                {
+                    panel.Draw();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Write(ex.ToString(), LogLevel.Error);
+                }
             }
         }
 

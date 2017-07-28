@@ -140,7 +140,7 @@ void UI::drawBox(Rectf rect)
 	m_instance->internal_drawBox(rect);
 }
 
-void UI::drawText(Ptr<Font> font, Text text, Vector2 position)
+void UI::drawText(Font* font, Text text, Vector2 position)
 {
 	auto currentPosition = position;
 	auto lineheight = float(font->m_size) * font->m_lineHeigh;
@@ -150,7 +150,7 @@ void UI::drawText(Ptr<Font> font, Text text, Vector2 position)
 		auto character = text[i];
 		auto glyph = font->m_glyphs[character];
 
-		if(glyph.font != font.get())
+		if(glyph.font != font)
 		{
 			// invalid character!
 			glyph = font->m_glyphs['?'];
@@ -193,7 +193,7 @@ void UI::drawText(Ptr<Font> font, Text text, Vector2 position)
 	}
 }
 
-void UI::drawTexture(Ptr<Texture2D> texture, Rectf rect, Rectf uvs)
+void UI::drawTexture(Texture2D* texture, Rectf rect, Rectf uvs)
 {
 	rect.width -= rect.x;
 	rect.height -= rect.y;

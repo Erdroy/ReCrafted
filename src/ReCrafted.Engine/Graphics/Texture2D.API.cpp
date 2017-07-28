@@ -24,14 +24,23 @@ namespace Internal
 		return height;
 	}
 
-	void loadFile(Texture2D* texture2d, MonoString* string)
+	void apply(Texture2D* texture)
 	{
+		if (!texture) return;
+
+		texture->apply();
+	}
+
+	void loadFile(Texture2D* texture, MonoString* string)
+	{
+		if (!texture) return;
+
 		// convert monostring to ansi string
 		MONO_ANSI_ERR();
 		auto str = MONO_ANSI(string);
 
 		// load from file
-		texture2d->loadFile(str);
+		texture->loadFile(str);
 
 		// free ansi string
 		MONO_ANSI_FREE(str);
@@ -58,6 +67,14 @@ void Texture2D::initRuntime()
 
 				API_PARAM("IntPtr", "nativePtr");
 				API_PARAM("string", "fileName");
+			}
+			API_METHOD_END();
+
+			API_METHOD(INTERNAL, STATIC, "InternalApply", EXTERN);
+			{
+				API_BIND("ReCrafted.API.Graphics.Texture2D::InternalApply", &Internal::apply);
+
+				API_PARAM("IntPtr", "nativePtr");
 			}
 			API_METHOD_END();
 

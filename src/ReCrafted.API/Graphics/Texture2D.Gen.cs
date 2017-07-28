@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 07/28/2017 21:45:36 Source: 'Texture2D.API.cpp' Target: 'Graphics/Texture2D.Gen.cs'
+// Generated: 07/28/2017 22:26:41 Source: 'Texture2D.API.cpp' Target: 'Graphics/Texture2D.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -14,6 +14,9 @@ namespace ReCrafted.API.Graphics
 	{
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void InternalLoadFile(IntPtr nativePtr, string fileName);
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void InternalApply(IntPtr nativePtr);
 
 		/// <summary>
 		///	Creates new Texture2D

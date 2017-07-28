@@ -1,8 +1,9 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 07/28/2017 21:29:13 Source: 'Object.API.cpp' Target: 'UI/UI.Gen.cs'
+// Generated: 07/28/2017 22:13:43 Source: 'UI.API.cpp' Target: 'UI/UI.Gen.cs'
 
 using ReCrafted.API.Mathematics;
+using ReCrafted.API.Graphics;
 using System;
 using System.Runtime.CompilerServices;
 
@@ -18,6 +19,12 @@ namespace ReCrafted.API.UI
 		/// </summary>
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void DrawBox(RectangleF rect);
+
+		/// <summary>
+		///	Draws Texture2D.
+		/// </summary>
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void DrawTexture2D(IntPtr texturePtr, ref RectangleF rect, ref RectangleF uvs);
 
 		/// <summary>
 		///	The current drawing color

@@ -14,7 +14,7 @@ namespace ReCrafted.API
         /// This is being set by Object instantiation on the C++ side.
         /// </summary>
         [NonSerialized]
-        protected IntPtr NativePtr;
+        internal IntPtr NativePtr;
 
         /// <summary>
         /// Default object constructor.

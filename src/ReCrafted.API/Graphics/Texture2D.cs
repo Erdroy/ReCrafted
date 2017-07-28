@@ -17,12 +17,17 @@ namespace ReCrafted.API.Graphics
         public void LoadFromFile(string fileName)
         {
             if (!File.Exists(fileName))
-            {
-                Logger.Write($"Failed to load Texture2D from file '{fileName}'", LogLevel.Error);
-                return;
-            }
+                throw new ReCraftedException($"Failed to load Texture2D from file '{fileName}'");
 
             InternalLoadFile(NativePtr, fileName);
+        }
+
+        /// <summary>
+        ///	Uploads all texture changes to GPU
+        /// </summary>
+        public void Apply()
+        {
+            InternalApply(NativePtr);
         }
     }
 }

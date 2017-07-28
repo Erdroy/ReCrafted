@@ -21,6 +21,7 @@ namespace ReCrafted.Game
 
             _testTexture2D = Texture2D.Create();
             _testTexture2D.LoadFromFile("Cursor.png");
+            _testTexture2D.Apply();
         }
 
         protected override void Update()
@@ -41,7 +42,12 @@ namespace ReCrafted.Game
         protected override void DrawUI()
         {
             UIInternal.Color = Color.DarkViolet;
-            UIInternal.DrawBox(new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f));
+            UIInternal.DrawBox(new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 13.0f, 16.0f));
+
+            var rect = new RectangleF(10.0f, 10.0f, 100.0f, 100.0f);
+            var uvs = new RectangleF(0.0f, 0.0f, 1.0f, 1.0f);
+
+            UIInternal.DrawTexture2D(_testTexture2D.NativePtr, ref rect, ref uvs);
 
             UIPanel.DrawAll();
         }
