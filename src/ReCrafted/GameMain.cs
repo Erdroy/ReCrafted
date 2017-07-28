@@ -12,16 +12,16 @@ namespace ReCrafted.Game
 
     internal class GameMain : Game
     {
-        private Texture2D _testTexture2D;
+        private Texture2D _crosshairTexture;
 
         protected override void Initialize()
         {
             // register unhandled exception handler
             Exceptions.RegisterUEHandler();
 
-            _testTexture2D = Texture2D.Create();
-            _testTexture2D.LoadFromFile("Cursor.png");
-            _testTexture2D.Apply();
+            _crosshairTexture = Texture2D.Create();
+            _crosshairTexture.LoadFromFile("../Assets/textures/crosshair.png");
+            _crosshairTexture.Apply();
         }
 
         protected override void Update()
@@ -41,13 +41,10 @@ namespace ReCrafted.Game
 
         protected override void DrawUI()
         {
-            UIInternal.Color = Color.DarkViolet;
-            UIInternal.DrawBox(new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 13.0f, 16.0f));
-
-            var rect = new RectangleF(10.0f, 10.0f, 100.0f, 100.0f);
+            var rect = new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
             var uvs = new RectangleF(0.0f, 0.0f, 1.0f, 1.0f);
 
-            UIInternal.DrawTexture2D(_testTexture2D.NativePtr, ref rect, ref uvs);
+            UIInternal.DrawTexture2D(_crosshairTexture.NativePtr, ref rect, ref uvs);
 
             UIPanel.DrawAll();
         }
