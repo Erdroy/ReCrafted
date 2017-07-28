@@ -24,6 +24,18 @@ namespace Internal
 		return height;
 	}
 
+	void loadFile(Texture2D* texture2d, MonoString* string)
+	{
+		// convert monostring to ansi string
+		auto str = MONO_ANSI(string);
+
+		// load from file
+		texture2d->loadFile(str);
+
+		// free ansi string
+		MONO_ANSI_FREE(str);
+	}
+
 	MonoObject* createTexture2D()
 	{
 		return Object::createInstance<Texture2D>("ReCrafted.API.Graphics", "Texture2D")->getManagedPtr();
@@ -36,11 +48,18 @@ void Texture2D::initRuntime()
 
 	API_FILE("Graphics/Texture2D.Gen.cs");
 	{
-		API_USING("ReCrafted.API.Mathematics");
-
 		API_COMMENT("Texture2D class.");
-		API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Texture2D", "Object");
+		API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Texture2D", "Object", PARTIAL);
 		{
+			API_METHOD(INTERNAL, STATIC, "InternalLoadFile", EXTERN);
+			{
+				API_BIND("ReCrafted.API.Graphics.Texture2D::InternalLoadFile", &Internal::loadFile);
+
+				API_PARAM("IntPtr", "nativePtr");
+				API_PARAM("string", "fileName");
+			}
+			API_METHOD_END();
+
 			API_COMMENT("Creates new Texture2D");
 			API_METHOD(PUBLIC, STATIC, "Create", EXTERN);
 			{

@@ -54,6 +54,7 @@
     <Compile Include="Core\Logger.Gen.cs" />
     <Compile Include="Core\LogLevel.cs" />
     <Compile Include="Graphics\Font.Gen.cs" />
+    <Compile Include="Graphics\Texture2D.cs" />
     <Compile Include="Graphics\Texture2D.Gen.cs" />
     <Compile Include="Mathematics\AngleSingle.cs" />
     <Compile Include="Mathematics\BoundingBox.cs" />
