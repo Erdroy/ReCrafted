@@ -1,6 +1,7 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
 using ReCrafted.API.Common;
+using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
 using ReCrafted.Game.Core;
@@ -11,10 +12,15 @@ namespace ReCrafted.Game
 
     internal class GameMain : Game
     {
+        private Texture2D _testTexture2D;
+
         protected override void Initialize()
         {
             // register unhandled exception handler
             Exceptions.RegisterUEHandler();
+
+            _testTexture2D = Texture2D.Create();
+            _testTexture2D.LoadFromFile("Cursor.png");
         }
 
         protected override void Update()
