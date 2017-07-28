@@ -27,6 +27,7 @@ namespace Internal
 	void loadFile(Texture2D* texture2d, MonoString* string)
 	{
 		// convert monostring to ansi string
+		MONO_ANSI_ERR();
 		auto str = MONO_ANSI(string);
 
 		// load from file

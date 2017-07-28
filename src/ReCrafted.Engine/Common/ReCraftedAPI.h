@@ -8,7 +8,8 @@
 #define API_DEF friend class Bindings; protected: static void initRuntime(); private:
 
 #define MONO_TEXT(x) mono_string_chars(x)
-#define MONO_ANSI(x) mono_string_to_utf8(x)
+#define MONO_ANSI_ERR() MonoError error;
+#define MONO_ANSI(x) mono_string_to_utf8_checked(x, &error)
 #define MONO_ANSI_FREE(x) mono_free(x)
 
 #define API_BIND(name, method) mono_add_internal_call(name, method)
