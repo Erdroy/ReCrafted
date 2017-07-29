@@ -34,6 +34,9 @@ private:
 	UI* m_ui = nullptr;
 	uint m_tickrate = 60u;
 
+	bool m_showCursor = true;
+	bool m_lockCursor = true;
+
 	Ptr<Camera> m_camera = nullptr;
 
 	// scripting
@@ -71,6 +74,9 @@ public:
 	void onSimulate();
 	void onDraw();
 
+public:	   
+	void onCursorRequest();
+
 public:
 	/// <summary>
 	/// Shutdowns the game.
@@ -95,6 +101,38 @@ public:
 	FORCEINLINE static uint getSimulationTickrate()
 	{
 		return m_instance->m_tickrate;
+	}
+
+	/// <summary>
+	/// Sets the cursor state.
+	/// </summary>
+	FORCEINLINE static void setShowCursor(bool state)
+	{
+		m_instance->m_showCursor = state;
+	}
+
+	/// <summary>
+	/// Gets the cursor state.
+	/// </summary>
+	FORCEINLINE static bool getShowCursor()
+	{
+		return m_instance->m_showCursor;
+	}
+
+	/// <summary>
+	/// Sets the cursor lock mode.
+	/// </summary>
+	FORCEINLINE static void setLockCursor(bool state)
+	{
+		m_instance->m_lockCursor = state;
+	}
+
+	/// <summary>
+	/// Gets the cursor lock mode.
+	/// </summary>
+	FORCEINLINE static bool getLockCursor()
+	{
+		return m_instance->m_lockCursor;
 	}
 
 	/// <summary>

@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 07/28/2017 22:26:41 Source: 'Texture2D.API.cpp' Target: 'Core/Game.Gen.cs'
+// Generated: 07/28/2017 23:08:32 Source: 'GameMain.API.cpp' Target: 'Core/Game.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -46,6 +46,36 @@ namespace ReCrafted.API.Core
 		}
 
 		/// <summary>
+		///	Gets or sets the cursor state
+		/// </summary>
+		public static bool ShowCursor 
+		{
+			get
+			{
+				return Internal_ShowCursor_Get();
+			}
+			set
+			{
+				Internal_ShowCursor_Set(value);
+			}
+		}
+
+		/// <summary>
+		///	Gets or sets the cursor lock mode
+		/// </summary>
+		public static bool LockCursor 
+		{
+			get
+			{
+				return Internal_LockCursor_Get();
+			}
+			set
+			{
+				Internal_LockCursor_Set(value);
+			}
+		}
+
+		/// <summary>
 		///	Is game running state.
 		/// </summary>
 		public static bool IsRunning 
@@ -60,6 +90,14 @@ namespace ReCrafted.API.Core
 		internal static extern void Internal_Tickrate_Set(int value);
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern int Internal_Tickrate_Get();
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_ShowCursor_Set(bool value);
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern bool Internal_ShowCursor_Get();
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_LockCursor_Set(bool value);
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern bool Internal_LockCursor_Get();
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern bool Internal_IsRunning_Get();
 	}

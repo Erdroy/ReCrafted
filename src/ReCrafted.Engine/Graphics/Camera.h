@@ -29,8 +29,6 @@ private:
 	static Camera* m_mainCamera;
 
 private:
-	bool m_cursorLocked = true;
-
 	Vector3 m_upLock = Vector3(0.0f, 1.0f, 0.0f);
 	Vector3 m_lookAt = {};
 	Vector3 m_rotation = {};

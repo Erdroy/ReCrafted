@@ -42,6 +42,22 @@ void GameMain::initRuntime()
 				API_BIND("ReCrafted.API.Core.Game::Internal_Tickrate_Set", &GameMain::setSimulationTickrate);
 			}
 			API_PROPERTY_END();
+
+			API_COMMENT("Gets or sets the cursor state");
+			API_PROPERTY(PUBLIC, STATIC, "bool", "ShowCursor", GETSET);
+			{
+				API_BIND("ReCrafted.API.Core.Game::Internal_ShowCursor_Get", &GameMain::getShowCursor);
+				API_BIND("ReCrafted.API.Core.Game::Internal_ShowCursor_Set", &GameMain::setShowCursor);
+			}
+			API_PROPERTY_END();
+
+			API_COMMENT("Gets or sets the cursor lock mode");
+			API_PROPERTY(PUBLIC, STATIC, "bool", "LockCursor", GETSET);
+			{
+				API_BIND("ReCrafted.API.Core.Game::Internal_LockCursor_Get", &GameMain::getLockCursor);
+				API_BIND("ReCrafted.API.Core.Game::Internal_LockCursor_Set", &GameMain::setLockCursor);
+			}
+			API_PROPERTY_END();
 			
 			API_COMMENT("Is game running state.");
 			API_PROPERTY(PUBLIC, STATIC, "bool", "IsRunning", GET);

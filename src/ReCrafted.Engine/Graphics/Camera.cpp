@@ -147,34 +147,10 @@ void Camera::updatePerspective()
 
 void Camera::update()
 {
-	if(!m_cursorLocked)
-	{
-		// try lock
-		if (Input::isKeyDown(Key_Mouse1))
-		{
-			m_cursorLocked = true;
-		}
-	}
-
-	if(m_cursorLocked)
-	{
-		// try unlock
-		if(Input::isKeyDown(Key_Escape))
-		{
-			m_cursorLocked = false;
-		}
-	}
-
 	// update movement if this camera is 'free'.
-	if (m_freeMovement && m_cursorLocked)
+	if (m_freeMovement && GameMain::getLockCursor())
 	{
 		updateControls(); // just do it!
-		
-		// lock position
-		Input::setCursorPos(
-			static_cast<int>(round(Display::get_Width() / 2.0f)),
-			static_cast<int>(round(Display::get_Height() / 2.0f))
-		);
 	}
 
 	// update matrices

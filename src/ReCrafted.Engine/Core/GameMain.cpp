@@ -19,10 +19,23 @@ int m_cursorDeltaX = 0u;
 int m_cursorDeltaY = 0u;
 GameMain* gameMain_instance;
 
+#if _WIN32
+HCURSOR m_defaultCursor;
+#endif
+
 LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	switch (msg)
 	{
+	case WM_SETCURSOR:
+	{
+		if(LOWORD(lparam) == HTCLIENT)
+		{
+			gameMain_instance->onCursorRequest();
+		}
+		break;
+	}
+
 	case WM_SIZE: // handle window resizing
 	{
 		auto width = LOWORD(lparam);
@@ -184,10 +197,12 @@ void GameMain::run()
 	wnd.lpfnWndProc = wndProc;
 	wnd.hInstance = instance;
 	wnd.hIcon = LoadIcon(nullptr, IDI_APPLICATION);
-	wnd.hCursor = LoadCursor(nullptr, IDC_ARROW);
+	wnd.hCursor = nullptr;
 	wnd.lpszClassName = L"recrafted";
 	wnd.hIconSm = LoadIcon(nullptr, IDI_APPLICATION);
 	RegisterClassEx(&wnd);
+	
+	m_defaultCursor = LoadCursor(nullptr, IDC_ARROW);
 
 	Platform::setGameWindow(CreateWindowW(L"recrafted", L"ReCrafted", WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 1280, 720, NULL, NULL, instance, nullptr));
 
@@ -395,6 +410,15 @@ void GameMain::onUpdate()
 
 	m_universe->update();
 	m_update_method->invoke();
+
+	if(m_lockCursor)
+	{
+		// lock position
+		Input::setCursorPos(
+			static_cast<int>(round(Display::get_Width() / 2.0f)),
+			static_cast<int>(round(Display::get_Height() / 2.0f))
+		);
+	}
 }
 
 void GameMain::onSimulate()
@@ -444,6 +468,20 @@ void GameMain::onDraw()
 	
 	// next frame, wait vsync
 	bgfx::frame();
+}
+
+void GameMain::onCursorRequest()
+{
+#if _WIN32
+	if(m_showCursor)
+	{
+		SetCursor(m_defaultCursor);
+	}
+	else
+	{
+		SetCursor(nullptr);
+	}
+#endif
 }
 
 #undef CHECK_SHUTDOWN
