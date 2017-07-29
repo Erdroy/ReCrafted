@@ -1,6 +1,8 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 
+using ReCrafted.API;
 using ReCrafted.API.Common;
+using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
@@ -8,9 +10,7 @@ using ReCrafted.Game.Core;
 
 namespace ReCrafted.Game
 {
-    using Game = API.Core.Game;
-
-    internal class GameMain : Game
+    internal class GameMain : API.Core.Game
     {
         private Texture2D _crosshairTexture;
 
@@ -22,11 +22,24 @@ namespace ReCrafted.Game
             _crosshairTexture = Texture2D.Create();
             _crosshairTexture.LoadFromFile("../Assets/textures/crosshair.png");
             _crosshairTexture.Apply();
+
+            Cursor.Show = false;
+            Cursor.Lock = true;
         }
 
         protected override void Update()
         {
+            if (Input.IsKeyDown(Keys.Escape))
+            {
+                Cursor.Show = true;
+                Cursor.Lock = false;
+            }
 
+            if (Input.IsKeyDown(Keys.Mouse0) || Input.IsKeyDown(Keys.Mouse1))
+            {
+                Cursor.Show = false;
+                Cursor.Lock = true;
+            }
         }
 
         protected override void Simulate()
@@ -51,7 +64,7 @@ namespace ReCrafted.Game
 
         protected override void Shutdown()
         {
-
+            Object.Destroy(_crosshairTexture);
         }
     }
 }
