@@ -9,7 +9,7 @@
 void Atlas::dispose()
 {
 	// dispose texture
-	SafeDispose(m_texture);
+	m_texture = nullptr;
 }
 
 Rect Atlas::getRect(const char* name)

@@ -30,6 +30,9 @@ private:
 	uint m_mips = 0u;
 
 public:
+	~Texture2D();
+
+public:
 	/// <summary>
 	/// Load texture from file.
 	/// </summary>
@@ -93,11 +96,6 @@ public:
 	/// Apply, all pixel operations will be unavailable after calling this method.
 	/// </summary>
 	void apply();
-
-	/// <summary>
-	/// Dispose the texture.
-	/// </summary>
-	void dispose();
 
 public:
 	/// <summary>
