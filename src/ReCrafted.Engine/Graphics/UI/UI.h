@@ -149,6 +149,15 @@ public:
 	static void drawText(Font* font, Text text, Vector2 position);
 
 	/// <summary>
+	/// Draws text on the screen.
+	/// </summary>
+	/// <param name="font">The font which will be used for drawing.</param>
+	/// <param name="characters">The characters to be drawn.</param>
+	/// <param name="characterCount">The character count.</param>
+	/// <param name="position">The point in pixels where the text will be drawn on the screen.</param>
+	static void drawText(Font* font, Char* characters, uint characterCount, Vector2 position);
+
+	/// <summary>
 	/// Draws texture.
 	/// Rect X/Y is start coord and W/H is end coord.
 	/// </summary>

@@ -145,15 +145,20 @@ void UI::drawBox(Rectf rect)
 
 void UI::drawText(Font* font, Text text, Vector2 position)
 {
+	drawText(font, text.data(), text.length(), position);
+}
+
+void UI::drawText(Font* font, Char* characters, uint characterCount, Vector2 position)
+{
 	auto currentPosition = position;
 	auto lineheight = float(font->m_size) * font->m_lineHeigh;
 
-	for (auto i = 0; i < text.length(); i++)
+	for (auto i = 0; i < characterCount; i++)
 	{
-		auto character = text[i];
+		auto character = characters[i];
 		auto glyph = font->m_glyphs[character];
 
-		if(glyph.font != font)
+		if (glyph.font != font)
 		{
 			// invalid character!
 			glyph = font->m_glyphs['?'];
