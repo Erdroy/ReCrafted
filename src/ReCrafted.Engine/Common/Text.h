@@ -26,6 +26,7 @@ struct Text
 private:
 	Char* m_data = nullptr;
 	char* m_cstrData = nullptr;
+	bool m_const = false;
 
 private:
 	void alloc_chars(int count)
@@ -150,8 +151,11 @@ public:
 	/// </summary>
 	~Text()
 	{
-		SafeFree(m_data);
-		SafeFree(m_cstrData);
+		if (!m_const)
+		{
+			SafeFree(m_data);
+			SafeFree(m_cstrData);
+		}
 	}
 
 public:
@@ -395,6 +399,18 @@ public:
 	static Text empty()
 	{
 		return Text();
+	}
+
+	/// <summary>
+	/// Creates const text which cannot be modified,
+	/// but works best for recursive calling (loading a file eg.: "Font.API::Internal::loadFont").
+	/// </summary>
+	static Text constant(uint16_t* chars)
+	{
+		Text text = {};
+		text.m_data = chars;
+		text.m_const = true;
+		return text;
 	}
 };
 

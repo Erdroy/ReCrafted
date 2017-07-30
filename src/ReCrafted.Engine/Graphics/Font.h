@@ -52,22 +52,29 @@ public:
 	/// <summary>
 	/// Default constructor
 	/// </summary>
-	explicit Font(uint glyphCount)
-	{
-		m_glyphCount = glyphCount;
-		m_glyphs = new Glyph[glyphCount];
-		memset(m_glyphs, 0, glyphCount * sizeof Glyph);
-	}
+	Font() {}
 
 	/// <summary>
 	/// Default destructor
 	/// </summary>
 	~Font()
 	{
-		delete [] m_glyphs;
+		if(m_glyphs)
+			delete [] m_glyphs;
 	}
 
 public:
+	/// <summary>
+	/// Font initializer.
+	/// </summary>
+	/// <param name="glyphCount">The font glyph count.</param>
+	void init(uint glyphCount)
+	{
+		m_glyphCount = glyphCount;
+		m_glyphs = new Glyph[glyphCount];
+		memset(m_glyphs, 0, glyphCount * sizeof Glyph);
+	}
+
 	/// <summary>
 	/// Gets character glyph info struct.
 	/// </summary>
@@ -89,7 +96,7 @@ public:
 	/// <param name="fontFile"></param>
 	/// <param name="size"></param>
 	/// <returns></returns>
-	static Ptr<Font> loadFont(Text fontFile, int size);
+	void loadFont(Text fontFile, int size, bool managed = false);
 };
 
 #endif // FONT_H

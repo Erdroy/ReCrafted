@@ -13,6 +13,7 @@ namespace ReCrafted.Game
     internal class GameMain : API.Core.Game
     {
         private Texture2D _crosshairTexture;
+        private Font _testFont;
 
         protected override void Initialize()
         {
@@ -20,9 +21,11 @@ namespace ReCrafted.Game
             Exceptions.RegisterUEHandler();
 
             _crosshairTexture = Texture2D.Create();
-            _crosshairTexture.LoadFromFile("../Assets/textures/crosshair.png");
+            _crosshairTexture.LoadFromFile("../assets/textures/crosshair.png");
             _crosshairTexture.Apply();
 
+            _testFont = Font.Load("../assets/fonts/Lato-Regular.ttf", 18);
+            
             Cursor.Show = false;
             Cursor.Lock = true;
         }
@@ -58,7 +61,13 @@ namespace ReCrafted.Game
             var uvs = new RectangleF(0.0f, 0.0f, 1.0f, 1.0f);
 
             UIInternal.DrawTexture2D(_crosshairTexture.NativePtr, ref rect, ref uvs);
-            
+
+            var pos = new Vector2(10.0f, 10.0f);
+            UIInternal.DrawString(_testFont.NativePtr, "Test!", ref pos);
+
+            pos = new Vector2(10.0f, 25.0f);
+            UIInternal.DrawString(_testFont.NativePtr, "Hello, World!", ref pos);
+
             UIPanel.DrawAll();
         }
 

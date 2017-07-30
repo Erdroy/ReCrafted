@@ -196,7 +196,7 @@ Vector2 Font::measureText(Text text)
 	return pos;
 }
 
-Ptr<Font> Font::loadFont(Text fontFile, int size)
+void Font::loadFont(Text fontFile, int size, bool managed)
 {
 	FT_Library library = nullptr;
 
@@ -205,7 +205,7 @@ Ptr<Font> Font::loadFont(Text fontFile, int size)
 	if (hr)
 	{
 		Logger::write("Failed to init freetype library", LogLevel::Error);
-		return nullptr;
+		return;
 	}
 
 	auto pcst = fontFile.std_str();
@@ -217,7 +217,7 @@ Ptr<Font> Font::loadFont(Text fontFile, int size)
 	if (hr)
 	{
 		Logger::write("Failed to load freetype font '", path, "'", LogLevel::Error);
-		return nullptr;
+		return;
 	}
 
 	hr = FT_Select_Charmap(face, FT_ENCODING_UNICODE);
@@ -225,7 +225,7 @@ Ptr<Font> Font::loadFont(Text fontFile, int size)
 	if (hr)
 	{
 		Logger::write("Failed to select freetype font unicode charmap '", path, "'", LogLevel::Error);
-		return nullptr;
+		return;
 	}
 
 	hr = FT_Set_Pixel_Sizes(face, 0, size);
@@ -233,7 +233,7 @@ Ptr<Font> Font::loadFont(Text fontFile, int size)
 	if (hr)
 	{
 		Logger::write("Failed to set freetype font size '", path, "'", LogLevel::Error);
-		return nullptr;
+		return;
 	}
 
 	auto glyphsLeft = GetGlyphs(face);
@@ -309,17 +309,17 @@ Ptr<Font> Font::loadFont(Text fontFile, int size)
 		charmapId++;
 	}
 
-	Ptr<Font> font(new Font(static_cast<uint>(glyphs.size())));
-	font->m_size = size;
-	font->m_textures = textures;
-	font->m_charmapWidth = charmapWidth;
-	font->m_charmapHeight = charmapHeight;
-	font->m_nullGlyph = font->getCharacter(Char('?'));
+	init(static_cast<uint>(glyphs.size()));
+	
+	m_size = size;
+	m_textures = textures;
+	m_charmapWidth = charmapWidth;
+	m_charmapHeight = charmapHeight;
+	m_nullGlyph = getCharacter(Char('?'));
 
-	for(auto && gl : glyphs)
-		gl.font = font.get();
+	for (auto && gl : glyphs)
+		gl.font = this;
 
-	memcpy(font->m_glyphs, glyphs.data(), glyphs.size() * sizeof Font::Glyph);
+	memcpy(m_glyphs, glyphs.data(), glyphs.size() * sizeof Glyph);
 
-	return font;
 }
