@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 07/28/2017 22:13:43 Source: 'UI.API.cpp' Target: 'UI/UI.Gen.cs'
+// Generated: 07/30/2017 17:11:01 Source: 'UI.API.cpp' Target: 'UI/UI.Gen.cs'
 
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.Graphics;
@@ -19,6 +19,12 @@ namespace ReCrafted.API.UI
 		/// </summary>
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void DrawBox(RectangleF rect);
+
+		/// <summary>
+		///	Draws string.
+		/// </summary>
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void DrawString(IntPtr font, string text, ref Vector2 position);
 
 		/// <summary>
 		///	Draws Texture2D.

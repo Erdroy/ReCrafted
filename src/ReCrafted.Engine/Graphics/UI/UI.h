@@ -155,7 +155,7 @@ public:
 	/// <param name="characters">The characters to be drawn.</param>
 	/// <param name="characterCount">The character count.</param>
 	/// <param name="position">The point in pixels where the text will be drawn on the screen.</param>
-	static void drawText(Font* font, Char* characters, uint characterCount, Vector2 position);
+	static void drawText(Font* font, Char* characters, int characterCount, Vector2 position);
 
 	/// <summary>
 	/// Draws texture.

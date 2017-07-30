@@ -7,7 +7,21 @@ namespace Internal
 {
 	void drawTex2d(Texture2D* texture, Rectf* rect, Rectf* uvs)
 	{
+		if (texture == nullptr)
+			return;
+
 		UI::drawTexture(texture, *rect, *uvs);
+	}
+
+	void drawString(Font* font, MonoString* string, Vector2* position)
+	{
+		if (font == nullptr)
+			return;
+
+		auto str = MONO_TEXT(string);
+		auto strlen = mono_string_length(string);
+
+		UI::drawText(font, static_cast<Char*>(str), strlen, *position);
 	}
 }
 
@@ -28,6 +42,17 @@ void UI::initRuntime()
 				
 				API_COMMENT("The rectangle which will be used to draw box");
 				API_PARAM("RectangleF", "rect");
+			}
+			API_METHOD_END();
+
+			API_COMMENT("Draws string.");
+			API_METHOD(INTERNAL, STATIC, "DrawString", EXTERN);
+			{
+				API_BIND("ReCrafted.API.UI.UIInternal::DrawString", &Internal::drawString);
+
+				API_PARAM("IntPtr", "font");
+				API_PARAM("string", "text");
+				API_PARAM("ref Vector2", "position");
 			}
 			API_METHOD_END();
 

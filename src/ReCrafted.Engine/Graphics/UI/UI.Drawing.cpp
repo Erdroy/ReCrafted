@@ -148,7 +148,7 @@ void UI::drawText(Font* font, Text text, Vector2 position)
 	drawText(font, text.data(), text.length(), position);
 }
 
-void UI::drawText(Font* font, Char* characters, uint characterCount, Vector2 position)
+void UI::drawText(Font* font, Char* characters, int characterCount, Vector2 position)
 {
 	auto currentPosition = position;
 	auto lineheight = float(font->m_size) * font->m_lineHeigh;

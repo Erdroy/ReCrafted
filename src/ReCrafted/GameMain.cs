@@ -58,7 +58,7 @@ namespace ReCrafted.Game
             var uvs = new RectangleF(0.0f, 0.0f, 1.0f, 1.0f);
 
             UIInternal.DrawTexture2D(_crosshairTexture.NativePtr, ref rect, ref uvs);
-
+            
             UIPanel.DrawAll();
         }
 
