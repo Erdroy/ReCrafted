@@ -31,9 +31,9 @@ project "ReCrafted.Engine"
 		path.join(ROOT_DIR, "src/ReCrafted.Engine/**"),
 	}
 	
-	-- add onbuild script
-	
+	-- add onbuild script and multi processor compilation
 	configuration { "vs*"}
+		buildoptions { "/MP" }
 		postbuildcommands {
 			"call " .. ROOT_DIR .. "/onbuild.bat " .. ROOT_DIR .. "/ Engine",
 		}
