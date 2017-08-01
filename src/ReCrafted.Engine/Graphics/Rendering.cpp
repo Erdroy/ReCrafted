@@ -6,6 +6,8 @@
 #include "Common/Input.h"
 #include "Game/Items/ItemDB.h"
 
+#include "Rendering/Renderer.h"
+
 Rendering* Rendering::m_instance;
 
 void Rendering::loadInternalShaders()
@@ -72,6 +74,7 @@ void Rendering::createBlitQuad()
 
 void Rendering::init()
 {
+
 	// create uniforms
 	createUniforms();
 

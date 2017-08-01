@@ -41,8 +41,6 @@ void UI::drawnow()
 	bgfx::setVertexBuffer(0, m_vertexBuffer, 0u, uint(vertexCount));
 	bgfx::setIndexBuffer(m_indexBuffer, 0u, uint(indexCount));
 
-	// TODO: set texture
-
 	// draw
 	bgfx::submit(0, m_shader->m_program);
 
@@ -138,20 +136,23 @@ void UI::endDraw()
 	auto drawCmdCount = m_drawCmds.size();
 	auto vertexCount = 0;
 
-	bgfx::TextureHandle handle = {};
+	bgfx::TextureHandle handle;
+	handle.idx = 0xFFFF;
+
 	for (auto i = 0u; i < m_drawCmds.size(); i++)
 	{
-		if(vertexCount + 4u > m_maxVertexCount) // or texture changes
+		auto drawcmd = &m_drawCmds[i];
+		auto textureChanged = drawcmd->texture > 0 && handle.idx != drawcmd->texture;
+
+		if(vertexCount + 4u > m_maxVertexCount || textureChanged)
 		{
 			// draw now, reset, and draw more!
 			drawnow();
 			vertexCount = 0;
 		}
 
-		auto drawcmd = &m_drawCmds[i];
-
 		// set new texture
-		if(drawcmd->texture > 0 && handle.idx != drawcmd->texture)
+		if(textureChanged)
 		{
 			handle.idx = drawcmd->texture;
 			bgfx::setTexture(0, m_textureUnif, handle);
