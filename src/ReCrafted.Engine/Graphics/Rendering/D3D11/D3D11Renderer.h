@@ -7,6 +7,7 @@
 
 // incldues
 #include "../Renderer.h"
+#include <dxgiformat.h>
 
 /*
  * Warning: Do not expose any of D3D11.h objects!
@@ -37,11 +38,10 @@ public:
 	* \brief Creates new vertex buffer.
 	* \param vertexCount The vertex count.
 	* \param vertexSize The vertex size (eg.: 'sizeof (Vertex)').
-	* \param vertexDesc The vertex layout description.
 	* \param data The data pointer (first vertex).
 	* \return The created vertex buffer handle.
 	*/
-	vertexBufferHandle createVertexBuffer(int vertexCount, int vertexSize, VertexDesc& vertexDesc, void* data) override;
+	vertexBufferHandle createVertexBuffer(int vertexCount, int vertexSize, void* data) override;
 	/**
 	* \brief Binds given vertex buffer.
 	* \param handle The vertex buffer handle.
@@ -80,8 +80,20 @@ public:
 	void useRenderBuffer(renderBufferHandle renderBuffer) override;
 	void destroyRenderBuffer(renderBufferHandle renderBuffer) override;
 
+	/**
+	* \brief Resizes internal render buffers.
+	* \param width The width of render output.
+	* \param height The height of render output
+	*/
 	void resize(uint width, uint height) override;
+	/**
+	* \brief Begins new frame, resets everything (eg.: sets default renderBuffers).
+	*/
 	void beginFrame() override;
+	/**
+	* \brief Presents the current frame
+	* \param vSync Should use v-blank synchronization?
+	*/
 	void frame(bool vSync) override;
 };
 

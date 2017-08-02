@@ -119,11 +119,10 @@ public:
 	* \brief Creates new vertex buffer.
 	* \param vertexCount The vertex count.
 	* \param vertexSize The vertex size (eg.: 'sizeof (Vertex)').
-	* \param vertexDesc The vertex layout description.
 	* \param data The data pointer (first vertex).
 	* \return The created vertex buffer handle.
 	*/
-	virtual vertexBufferHandle createVertexBuffer(int vertexCount, int vertexSize, VertexDesc& vertexDesc, void* data) = 0;
+	virtual vertexBufferHandle createVertexBuffer(int vertexCount, int vertexSize, void* data) = 0;
 	/**
 	 * \brief Binds given vertex buffer.
 	 * \param handle The vertex buffer handle.
@@ -162,19 +161,45 @@ public:
 	virtual void useRenderBuffer(renderBufferHandle renderBuffer) = 0;
 	virtual void destroyRenderBuffer(renderBufferHandle renderBuffer) = 0;
 
+	/**
+	 * \brief Resizes internal render buffers.
+	 * \param width The width of render output.
+	 * \param height The height of render output 
+	 */
 	virtual void resize(uint width, uint height) = 0;
+	/**
+	 * \brief Begins new frame, resets everything (eg.: sets default renderBuffers).
+	 */
 	virtual void beginFrame() = 0;
+	/**
+	 * \brief Presents the current frame
+	 * \param vSync Should use v-blank synchronization?
+	 */
 	virtual void frame(bool vSync) = 0;
-
+	/**
+	 * \brief Shutdowns the renderer.
+	 */
 	void shutdown() const
 	{
+		// TODO: release all objects
 		delete this;
 	}
 
 public:
+	/**
+	 * \brief Initializes new renderer type.
+	 * This can be called only once!
+	 * \param rendererType The target renderer type.
+	 * \param windowHandle The output window handle (HWND).
+	 * \param multithreaded Should run as multithreaded?
+	 * \return The current renderer instance pointer (same as Renderer::current).
+	 */
 	static Renderer* initialize(RendererType::_enum rendererType, void* windowHandle, bool multithreaded);
 
 public:
+	/**
+	 * \brief The current renderer.
+	 */
 	static Renderer* current;
 
 };

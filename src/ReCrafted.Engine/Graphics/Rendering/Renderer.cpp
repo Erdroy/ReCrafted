@@ -29,6 +29,12 @@ Renderer* Renderer::initialize(RendererType::_enum rendererType, void* windowHan
 	}
 	renderer->initialize(windowHandle, multithreaded);
 
+	VertexDesc desc = {};
+	desc.add(VertexAttrib::Position, 3, VertexAttribType::Float);
+	desc.add(VertexAttrib::TexCoord0, 4, VertexAttribType::Float);
+
+	renderer->createVertexBuffer(1, 4 * 4, desc, nullptr);
+
 	current = renderer;
 	return renderer;
 }

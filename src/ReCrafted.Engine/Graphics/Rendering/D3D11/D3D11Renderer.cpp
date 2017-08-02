@@ -34,6 +34,109 @@ ID3D11RenderTargetView* m_renderTarget = nullptr;
 
 bool m_multithreaded = false;
 
+const char* AttribToSemantic(VertexAttrib::_enum attrib)
+{
+	switch (attrib) {
+	case VertexAttrib::Position:
+		return "POSITION";
+	case VertexAttrib::Normal:
+		return "NORMAL";
+	case VertexAttrib::Tangent:
+		return "TANGENT";
+	case VertexAttrib::BiTangent:
+		return "BITANGENT";
+	case VertexAttrib::Color0:
+		return "COLOR0";
+	case VertexAttrib::Color1:
+		return "COLOR1";
+	case VertexAttrib::Color2:
+		return "COLOR2";
+	case VertexAttrib::Color3:
+		return "COLOR3";
+	case VertexAttrib::TexCoord0:
+		return "TEXCOORD0";
+	case VertexAttrib::TexCoord1:
+		return "TEXCOORD1";
+	case VertexAttrib::TexCoord2:
+		return "TEXCOORD2";
+	case VertexAttrib::TexCoord3:
+		return "TEXCOORD3";
+	case VertexAttrib::TexCoord4:
+		return "TEXCOORD4";
+	case VertexAttrib::TexCoord5:
+		return "TEXCOORD5";
+	case VertexAttrib::TexCoord6:
+		return "TEXCOORD6";
+	case VertexAttrib::TexCoord7:
+		return "TEXCOORD7";
+	case VertexAttrib::Count:
+	default:
+		return "UNKNOWN";
+	}
+}
+
+DXGI_FORMAT AttribTypeToFormat(VertexAttribType::_enum attribType, int count)
+{
+	switch (attribType)
+	{
+	case VertexAttribType::UInt8:
+		switch (count)
+		{
+		case 1:
+			return DXGI_FORMAT_R8_UINT;
+		case 2:
+			return DXGI_FORMAT_R8G8_UINT;
+		case 4:
+			return DXGI_FORMAT_R8G8B8A8_UINT;
+
+		default:
+			return DXGI_FORMAT_R8G8B8A8_UINT;
+		}
+	case VertexAttribType::Int16: 
+		switch (count)
+		{
+		case 1:
+			return DXGI_FORMAT_R16_UINT;
+		case 2:
+			return DXGI_FORMAT_R16G16_UINT;
+		case 4:
+			return DXGI_FORMAT_R16G16B16A16_UINT;
+
+		default:
+			return DXGI_FORMAT_R16G16B16A16_UINT;
+		}
+	case VertexAttribType::Half:
+		switch (count)
+		{
+		case 1:
+			return DXGI_FORMAT_R16_FLOAT;
+		case 2:
+			return DXGI_FORMAT_R16G16_FLOAT;
+		case 4:
+			return DXGI_FORMAT_R16G16B16A16_FLOAT;
+
+		default:
+			return DXGI_FORMAT_R16G16B16A16_FLOAT;
+		}
+	case VertexAttribType::Float: 
+		switch (count)
+		{
+		case 1:
+			return DXGI_FORMAT_R32_FLOAT;
+		case 2:
+			return DXGI_FORMAT_R32G32_FLOAT;
+		case 4:
+			return DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+		default:
+			return DXGI_FORMAT_R32G32B32A32_FLOAT;
+		}
+	case VertexAttribType::Count:
+	default:
+		return DXGI_FORMAT_UNKNOWN;
+	}
+}
+
 void D3D11Renderer::initializeDevice(void* windowHandle)
 {
 	D3D_FEATURE_LEVEL level;
@@ -102,6 +205,9 @@ void D3D11Renderer::initializeDevice(void* windowHandle)
 		return;
 	}
 
+	// set primitive topology
+	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 	backBufferPtr.Release();
 }
 
@@ -124,7 +230,7 @@ void D3D11Renderer::initialize(void* windowHandle, bool multithreaded)
 	//	initializeThreads();
 }
 
-vertexBufferHandle D3D11Renderer::createVertexBuffer(int vertexCount, int vertexSize, VertexDesc& vertexDesc, void* data)
+vertexBufferHandle D3D11Renderer::createVertexBuffer(int vertexCount, int vertexSize, void* data)
 {
 	auto buffer = vertexBuffer_alloc();
 
@@ -153,13 +259,37 @@ vertexBufferHandle D3D11Renderer::createVertexBuffer(int vertexCount, int vertex
 	// set pointer
 	vertexBuffer_set(buffer, bufferPtr);
 
-	// TODO: create input layout or use cache using vertexDesc
+	/*D3D11_INPUT_ELEMENT_DESC inputElements[16] = {};
+
+	for(auto i = 0u; i < vertexDesc.m_count; i ++)
+	{
+		D3D11_INPUT_ELEMENT_DESC inputElement = {};
+
+		auto element = vertexDesc.m_elemets[i];
+
+		inputElement.SemanticName = AttribToSemantic(element.attrib);
+		inputElement.Format = AttribTypeToFormat(element.attribType, element.count);
+		inputElement.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+		inputElement.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+
+		inputElements[i] = inputElement;
+	}*/
 
 	return buffer;
 }
 
 void D3D11Renderer::useVertexBuffer(vertexBufferHandle handle)
 {
+	if(IS_INVALID(handle))
+		return;
+
+	auto buffer = vertexBuffer_get(handle);
+
+	uint stride = 0;
+	uint offset = 0;
+
+	ID3D11Buffer* buffers[] = { buffer };
+	m_deviceContext->IASetVertexBuffers(0, 1, buffers, &stride, &offset);
 }
 
 void D3D11Renderer::destroyVertexBuffer(vertexBufferHandle handle)
