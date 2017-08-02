@@ -124,12 +124,14 @@ void D3D11Renderer::initialize(void* windowHandle, bool multithreaded)
 	//	initializeThreads();
 }
 
-vertexBufferHandle D3D11Renderer::createVertexBuffer(int size, void* data)
+vertexBufferHandle D3D11Renderer::createVertexBuffer(int vertexCount, int vertexSize, VertexDesc& vertexDesc, void* data)
 {
 	auto buffer = vertexBuffer_alloc();
 
 	if(IS_INVALID(buffer))
 		return{};
+
+	auto size = vertexSize * vertexCount;
 
 	D3D11_BUFFER_DESC desc = {};
 	desc.Usage = D3D11_USAGE_DEFAULT;
@@ -151,7 +153,13 @@ vertexBufferHandle D3D11Renderer::createVertexBuffer(int size, void* data)
 	// set pointer
 	vertexBuffer_set(buffer, bufferPtr);
 
+	// TODO: create input layout or use cache using vertexDesc
+
 	return buffer;
+}
+
+void D3D11Renderer::useVertexBuffer(vertexBufferHandle handle)
+{
 }
 
 void D3D11Renderer::destroyVertexBuffer(vertexBufferHandle handle)
@@ -190,6 +198,10 @@ indexBufferHandle D3D11Renderer::createIndexBuffer(int indexCount, bool is32bit,
 	indexBuffer_set(buffer, bufferPtr);
 
 	return buffer;
+}
+
+void D3D11Renderer::useIndexBuffer(indexBufferHandle handle)
+{
 }
 
 void D3D11Renderer::destroyIndexBuffer(indexBufferHandle handle)

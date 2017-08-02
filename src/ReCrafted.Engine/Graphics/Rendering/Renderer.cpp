@@ -6,6 +6,13 @@
 
 Renderer* Renderer::current;
 
+VertexElem::VertexElem(VertexAttrib::_enum attrib, int count, VertexAttribType::_enum attribType):
+	attrib(attrib),
+	count(count),
+	attribType(attribType)
+{
+}
+
 Renderer* Renderer::initialize(RendererType::_enum rendererType, void* windowHandle, bool multithreaded)
 {
 	Renderer* renderer;

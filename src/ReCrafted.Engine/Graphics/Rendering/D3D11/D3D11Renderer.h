@@ -35,11 +35,18 @@ protected:
 public:
 	/**
 	* \brief Creates new vertex buffer.
-	* \param size The data size (vertex size * count).
-	* \param data The data pointer.
+	* \param vertexCount The vertex count.
+	* \param vertexSize The vertex size (eg.: 'sizeof (Vertex)').
+	* \param vertexDesc The vertex layout description.
+	* \param data The data pointer (first vertex).
 	* \return The created vertex buffer handle.
 	*/
-	vertexBufferHandle createVertexBuffer(int size, void* data) override;
+	vertexBufferHandle createVertexBuffer(int vertexCount, int vertexSize, VertexDesc& vertexDesc, void* data) override;
+	/**
+	* \brief Binds given vertex buffer.
+	* \param handle The vertex buffer handle.
+	*/
+	void useVertexBuffer(vertexBufferHandle handle) override;
 	/**
 	* \brief Releases vertex buffer.
 	* \param handle The vertex buffer handle.
@@ -54,6 +61,11 @@ public:
 	* \return The created index buffer handle.
 	*/
 	indexBufferHandle createIndexBuffer(int indexCount, bool is32bit, void* data) override;
+	/**
+	* \brief Binds given index buffer.
+	* \param handle The index buffer handle.
+	*/
+	void useIndexBuffer(indexBufferHandle handle) override;
 	/**
 	* \brief Releases index buffer.
 	* \param handle The index buffer handle.

@@ -17,6 +17,77 @@ struct RendererType
 	};
 };
 
+struct VertexAttrib
+{
+	enum _enum
+	{
+		Position,
+		Normal,
+		Tangent,
+		BiTangent,
+		Color0,
+		Color1,
+		Color2,
+		Color3,
+		TexCoord0,
+		TexCoord1,
+		TexCoord2,
+		TexCoord3,
+		TexCoord4,
+		TexCoord5,
+		TexCoord6,
+		TexCoord7,
+
+		Count
+	};
+};
+struct VertexAttribType
+{
+	enum _enum
+	{
+		UInt8,
+		Int16,
+		Half,
+		Float,
+
+		Count
+	};
+};
+
+struct VertexElem
+{
+public:
+	VertexAttrib::_enum attrib = VertexAttrib::Position;
+	int count = 0;
+	VertexAttribType::_enum attribType = VertexAttribType::Float;
+
+public:
+	VertexElem() {}
+	VertexElem(VertexAttrib::_enum attrib, int count, VertexAttribType::_enum attribType);
+};
+
+struct VertexDesc
+{
+	friend class D3D11Renderer;
+	friend class VulkanRenderer;
+
+private:
+	VertexElem m_elemets[VertexAttrib::Count] = {};
+	uint16_t m_count = 0u;
+
+public:
+	VertexDesc() {}
+
+public:
+	void add(VertexAttrib::_enum attrib, int count, VertexAttribType::_enum attribType)
+	{
+		_ASSERT(m_count < VertexAttrib::Count);
+
+		m_elemets[m_count] = VertexElem(attrib, count, attribType);
+		m_count++;
+	}
+};
+
 #define CREATE_HANDLE(name) \
 	struct name##Handle\
 	{\
@@ -46,11 +117,18 @@ protected:
 public:
 	/**
 	* \brief Creates new vertex buffer.
-	* \param size The data size (vertex size * count).
-	* \param data The data pointer.
+	* \param vertexCount The vertex count.
+	* \param vertexSize The vertex size (eg.: 'sizeof (Vertex)').
+	* \param vertexDesc The vertex layout description.
+	* \param data The data pointer (first vertex).
 	* \return The created vertex buffer handle.
 	*/
-	virtual vertexBufferHandle createVertexBuffer(int size, void* data) = 0;
+	virtual vertexBufferHandle createVertexBuffer(int vertexCount, int vertexSize, VertexDesc& vertexDesc, void* data) = 0;
+	/**
+	 * \brief Binds given vertex buffer.
+	 * \param handle The vertex buffer handle.
+	 */
+	virtual void useVertexBuffer(vertexBufferHandle handle) = 0;
 	/**
 	* \brief Releases vertex buffer.
 	* \param handle The vertex buffer handle.
@@ -64,8 +142,12 @@ public:
 	* \param data The data pointer,
 	* \return The created index buffer handle.
 	*/
-
 	virtual indexBufferHandle createIndexBuffer(int indexCount, bool is32bit, void* data) = 0;
+	/**
+	* \brief Binds given index buffer.
+	* \param handle The index buffer handle.
+	*/
+	virtual void useIndexBuffer(indexBufferHandle handle) = 0;
 	/**
 	* \brief Releases index buffer.
 	* \param handle The index buffer handle.
