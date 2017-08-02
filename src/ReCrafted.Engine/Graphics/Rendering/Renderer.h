@@ -44,7 +44,7 @@ protected:
 	virtual void initialize(void* windowHandle, bool multithreaded) = 0;
 
 public:
-	virtual vertexBufferHandle createVertexBuffer(int vertexCount, int strip, int length, void* data) = 0;
+	virtual vertexBufferHandle createVertexBuffer(int size, void* data) = 0;
 	virtual void destroyVertexBuffer(vertexBufferHandle handle) = 0;
 
 	virtual indexBufferHandle createIndexBuffer(int indexCount, bool is32bit, void* data) = 0;

@@ -33,7 +33,7 @@ protected:
 	void initialize(void* windowHandle, bool multithreaded) override;
 
 public:
-	vertexBufferHandle createVertexBuffer(int vertexCount, int strip, int length, void* data) override;
+	vertexBufferHandle createVertexBuffer(int size, void* data) override;
 	void destroyVertexBuffer(vertexBufferHandle handle) override;
 
 	indexBufferHandle createIndexBuffer(int indexCount, bool is32bit, void* data) override;

@@ -14,8 +14,10 @@
 
 #define DXCALL(x) if(FAILED(##x##))
 
-#define OBJECT_RELEASE_DEF(name, handleType) \
-	inline void release_##name##(handleType handle) { \
+#define OBJECT_RELEASE_DEF(name, handleType, maxV) \
+	inline void name##_release(handleType handle) { \
+		if(handle.m_idx >= maxV)\
+			return;\
 		auto val = m_##name##Array[handle.m_idx]; \
 		if(val) val->Release(); \
 		name##_free(handle);\
@@ -40,15 +42,6 @@ void D3D11Renderer::initializeDevice(void* windowHandle)
 		D3D_FEATURE_LEVEL_11_1,
 		D3D_FEATURE_LEVEL_11_0
 	};
-
-	auto buffer = vertexBuffer_alloc();
-
-	if(IS_INVALID(buffer))
-	{
-		throw;
-	}
-
-	release_vertexBuffer(buffer);
 
 #ifdef _DEBUG
 	auto flags = D3D11_CREATE_DEVICE_DEBUG;
@@ -131,22 +124,80 @@ void D3D11Renderer::initialize(void* windowHandle, bool multithreaded)
 	//	initializeThreads();
 }
 
-vertexBufferHandle D3D11Renderer::createVertexBuffer(int vertexCount, int strip, int length, void* data)
+vertexBufferHandle D3D11Renderer::createVertexBuffer(int size, void* data)
 {
-	return{};
+	auto buffer = vertexBuffer_alloc();
+
+	if(IS_INVALID(buffer))
+		return{};
+
+	D3D11_BUFFER_DESC desc = {};
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.ByteWidth = size;
+	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	desc.CPUAccessFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA subresource_data;
+	subresource_data.pSysMem = data;
+	subresource_data.SysMemPitch = 0;
+	subresource_data.SysMemSlicePitch = 0;
+
+	ID3D11Buffer* bufferPtr = nullptr;
+	DXCALL(m_device->CreateBuffer(&desc, data ? &subresource_data : nullptr, &bufferPtr))
+	{
+		return{};
+	}
+
+	// set pointer
+	vertexBuffer_set(buffer, bufferPtr);
+
+	return buffer;
 }
 
 void D3D11Renderer::destroyVertexBuffer(vertexBufferHandle handle)
 {
+	if (IS_INVALID(handle))
+		return;
+
+	vertexBuffer_release(handle);
 }
 
 indexBufferHandle D3D11Renderer::createIndexBuffer(int indexCount, bool is32bit, void* data)
 {
-	return{};
+	auto buffer = indexBuffer_alloc();
+
+	if (IS_INVALID(buffer))
+		return{};
+
+	D3D11_BUFFER_DESC desc = {};
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.ByteWidth = indexCount * is32bit ? 4 : 2;
+	desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	desc.CPUAccessFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA subresource_data;
+	subresource_data.pSysMem = data;
+	subresource_data.SysMemPitch = 0;
+	subresource_data.SysMemSlicePitch = 0;
+
+	ID3D11Buffer* bufferPtr = nullptr;
+	DXCALL(m_device->CreateBuffer(&desc, data ? &subresource_data : nullptr, &bufferPtr))
+	{
+		return{};
+	}
+
+	// set pointer
+	indexBuffer_set(buffer, bufferPtr);
+
+	return buffer;
 }
 
 void D3D11Renderer::destroyIndexBuffer(indexBufferHandle handle)
 {
+	if (IS_INVALID(handle))
+		return;
+
+	indexBuffer_release(handle);
 }
 
 texture2DHandle D3D11Renderer::createTexture2D(uint width, uint height, int mips, int format, void* data)
