@@ -85,6 +85,19 @@ public:
 	void destroyRenderBuffer(renderBufferHandle renderBuffer) override;
 
 	/**
+	* \brief Loads shader file using given file name (relative to app exe file).
+	* \param fileName The file name (relative to app exe file).
+	* \return The loaded shader, or INVALID if failed (some weird errors).
+	*/
+	shaderHandle loadShader(const char* fileName) override;
+
+	/**
+	* \brief Destroys shader.
+	* \param handle The shader handle which will be destroyed.
+	*/
+	void destroyShader(shaderHandle handle) override;
+
+	/**
 	* \brief Draws vertex triangle list.
 	* \param vertexCount The vertex count.
 	*/

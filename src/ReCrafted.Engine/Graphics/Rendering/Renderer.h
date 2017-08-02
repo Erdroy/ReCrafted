@@ -166,7 +166,17 @@ public:
 	virtual void resizeRenderBuffer(renderBufferHandle renderBuffer, uint width, uint height) = 0;
 	virtual void destroyRenderBuffer(renderBufferHandle renderBuffer) = 0;
 
+	/**
+	 * \brief Loads shader file using given file name (relative to app exe file).
+	 * \param fileName The file name (relative to app exe file).
+	 * \return The loaded shader, or INVALID if failed (some weird errors).
+	 */
 	virtual shaderHandle loadShader(const char* fileName) = 0;
+
+	/**
+	 * \brief Destroys shader.
+	 * \param handle The shader handle which will be destroyed.
+	 */
 	virtual void destroyShader(shaderHandle handle) = 0;
 
 	/**

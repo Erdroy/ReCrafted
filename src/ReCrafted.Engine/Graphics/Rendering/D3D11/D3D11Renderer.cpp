@@ -411,6 +411,15 @@ void D3D11Renderer::destroyRenderBuffer(renderBufferHandle renderBuffer)
 {
 }
 
+shaderHandle D3D11Renderer::loadShader(const char* fileName)
+{
+	return{};
+}
+
+void D3D11Renderer::destroyShader(shaderHandle handle)
+{
+}
+
 void D3D11Renderer::draw(int vertexCount)
 {
 	m_deviceContext->Draw(vertexCount, 0);
