@@ -7,7 +7,6 @@
 
 // incldues
 #include "../Renderer.h"
-#include <dxgiformat.h>
 
 /*
  * Warning: Do not expose any of D3D11.h objects!
@@ -42,11 +41,13 @@ public:
 	* \return The created vertex buffer handle.
 	*/
 	vertexBufferHandle createVertexBuffer(int vertexCount, int vertexSize, void* data) override;
+
 	/**
 	* \brief Binds given vertex buffer.
 	* \param handle The vertex buffer handle.
 	*/
 	void useVertexBuffer(vertexBufferHandle handle) override;
+
 	/**
 	* \brief Releases vertex buffer.
 	* \param handle The vertex buffer handle.
@@ -61,11 +62,13 @@ public:
 	* \return The created index buffer handle.
 	*/
 	indexBufferHandle createIndexBuffer(int indexCount, bool is32bit, void* data) override;
+
 	/**
 	* \brief Binds given index buffer.
 	* \param handle The index buffer handle.
 	*/
 	void useIndexBuffer(indexBufferHandle handle) override;
+
 	/**
 	* \brief Releases index buffer.
 	* \param handle The index buffer handle.
@@ -78,7 +81,20 @@ public:
 	renderBufferHandle createRenderBuffer(int textureCount, texture2DHandle* textures) override;
 	void cleanRenderBuffer(renderBufferHandle renderBuffer, float* color) override;
 	void useRenderBuffer(renderBufferHandle renderBuffer) override;
+	void resizeRenderBuffer(renderBufferHandle renderBuffer, uint width, uint height) override;
 	void destroyRenderBuffer(renderBufferHandle renderBuffer) override;
+
+	/**
+	* \brief Draws vertex triangle list.
+	* \param vertexCount The vertex count.
+	*/
+	void draw(int vertexCount) override;
+
+	/**
+	* \brief Draws indexed triangle list.
+	* \param indexCount The index count.
+	*/
+	void drawIndexed(int indexCount) override;
 
 	/**
 	* \brief Resizes internal render buffers.
@@ -86,10 +102,12 @@ public:
 	* \param height The height of render output
 	*/
 	void resize(uint width, uint height) override;
+
 	/**
 	* \brief Begins new frame, resets everything (eg.: sets default renderBuffers).
 	*/
 	void beginFrame() override;
+
 	/**
 	* \brief Presents the current frame
 	* \param vSync Should use v-blank synchronization?

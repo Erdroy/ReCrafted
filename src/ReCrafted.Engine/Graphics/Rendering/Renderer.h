@@ -123,11 +123,13 @@ public:
 	* \return The created vertex buffer handle.
 	*/
 	virtual vertexBufferHandle createVertexBuffer(int vertexCount, int vertexSize, void* data) = 0;
+
 	/**
 	 * \brief Binds given vertex buffer.
 	 * \param handle The vertex buffer handle.
 	 */
 	virtual void useVertexBuffer(vertexBufferHandle handle) = 0;
+
 	/**
 	* \brief Releases vertex buffer.
 	* \param handle The vertex buffer handle.
@@ -142,11 +144,13 @@ public:
 	* \return The created index buffer handle.
 	*/
 	virtual indexBufferHandle createIndexBuffer(int indexCount, bool is32bit, void* data) = 0;
+
 	/**
 	* \brief Binds given index buffer.
 	* \param handle The index buffer handle.
 	*/
 	virtual void useIndexBuffer(indexBufferHandle handle) = 0;
+
 	/**
 	* \brief Releases index buffer.
 	* \param handle The index buffer handle.
@@ -159,7 +163,23 @@ public:
 	virtual renderBufferHandle createRenderBuffer(int textureCount, texture2DHandle* textures) = 0;
 	virtual void cleanRenderBuffer(renderBufferHandle renderBuffer, float* color) = 0;
 	virtual void useRenderBuffer(renderBufferHandle renderBuffer) = 0;
+	virtual void resizeRenderBuffer(renderBufferHandle renderBuffer, uint width, uint height) = 0;
 	virtual void destroyRenderBuffer(renderBufferHandle renderBuffer) = 0;
+
+	virtual shaderHandle loadShader(const char* fileName) = 0;
+	virtual void destroyShader(shaderHandle handle) = 0;
+
+	/**
+	 * \brief Draws vertex triangle list.
+	 * \param vertexCount The vertex count.
+	 */
+	virtual void draw(int vertexCount) = 0;
+
+	/**
+	 * \brief Draws indexed triangle list.
+	 * \param indexCount The index count.
+	 */
+	virtual void drawIndexed(int indexCount) = 0;
 
 	/**
 	 * \brief Resizes internal render buffers.
@@ -167,15 +187,18 @@ public:
 	 * \param height The height of render output 
 	 */
 	virtual void resize(uint width, uint height) = 0;
+
 	/**
 	 * \brief Begins new frame, resets everything (eg.: sets default renderBuffers).
 	 */
 	virtual void beginFrame() = 0;
+
 	/**
 	 * \brief Presents the current frame
 	 * \param vSync Should use v-blank synchronization?
 	 */
 	virtual void frame(bool vSync) = 0;
+
 	/**
 	 * \brief Shutdowns the renderer.
 	 */

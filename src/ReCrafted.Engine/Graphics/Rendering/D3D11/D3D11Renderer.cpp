@@ -403,13 +403,27 @@ void D3D11Renderer::useRenderBuffer(renderBufferHandle renderBuffer)
 {
 }
 
+void D3D11Renderer::resizeRenderBuffer(renderBufferHandle renderBuffer, uint width, uint height)
+{
+}
+
 void D3D11Renderer::destroyRenderBuffer(renderBufferHandle renderBuffer)
 {
 }
 
+void D3D11Renderer::draw(int vertexCount)
+{
+	m_deviceContext->Draw(vertexCount, 0);
+}
+
+void D3D11Renderer::drawIndexed(int indexCount)
+{
+	m_deviceContext->DrawIndexed(indexCount, 0u, 0u);
+}
+
 void D3D11Renderer::resize(uint width, uint height)
 {
-	// TODO: resize all
+	// TODO: resize all internal RTs
 }
 
 void D3D11Renderer::beginFrame()
