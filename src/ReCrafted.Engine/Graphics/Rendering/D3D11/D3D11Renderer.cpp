@@ -5,11 +5,24 @@
 #include "D3D11.h"
 #include "Core/Logger.h"
 
+#include "../Config.h"
+#include "../Utils.h"
+
 #pragma comment (lib, "DXGI.lib")
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
 #define DXCALL(x) if(FAILED(##x##))
+
+#define OBJECT_RELEASE_DEF(name, handleType) \
+	inline void release_##name##(handleType handle) { \
+		auto val = m_##name##Array[handle.m_idx]; \
+		if(val) val->Release(); \
+		name##_free(handle);\
+	}
+
+OBJECT_ARRAY(ID3D11Buffer*, vertexBuffer, vertexBufferHandle, RENDERER_MAX_VERTEX_BUFFERS)
+OBJECT_ARRAY(ID3D11Buffer*, indexBuffer, indexBufferHandle, RENDERER_MAX_INDEX_BUFFERS)
 
 ID3D11Device* m_device = nullptr;
 ID3D11DeviceContext* m_deviceContext = nullptr;
@@ -28,6 +41,15 @@ void D3D11Renderer::initializeDevice(void* windowHandle)
 		D3D_FEATURE_LEVEL_11_0
 	};
 
+	auto buffer = vertexBuffer_alloc();
+
+	if(IS_INVALID(buffer))
+	{
+		throw;
+	}
+
+	release_vertexBuffer(buffer);
+
 #ifdef _DEBUG
 	auto flags = D3D11_CREATE_DEVICE_DEBUG;
 #else
@@ -41,7 +63,7 @@ void D3D11Renderer::initializeDevice(void* windowHandle)
 
 	auto width = clRect.right - clRect.left;
 	auto height = clRect.bottom - clRect.top;
-
+	
 	DXGI_SWAP_CHAIN_DESC swapchainDesc = {};
 	swapchainDesc.BufferCount = 1;
 	swapchainDesc.BufferDesc.Width = static_cast<UINT>(width);

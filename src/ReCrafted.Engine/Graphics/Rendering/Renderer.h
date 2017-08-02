@@ -22,6 +22,8 @@ struct RendererType
 	{\
 	public:\
 		uint m_idx = 0;\
+		name##Handle () {} \
+		name##Handle (uint idx) {m_idx = idx;} \
 	};\
 
 CREATE_HANDLE(renderBuffer)
