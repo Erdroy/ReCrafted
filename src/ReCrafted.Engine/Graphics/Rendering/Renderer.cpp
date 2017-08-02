@@ -33,7 +33,7 @@ Renderer* Renderer::initialize(RendererType::_enum rendererType, void* windowHan
 	desc.add(VertexAttrib::Position, 3, VertexAttribType::Float);
 	desc.add(VertexAttrib::TexCoord0, 4, VertexAttribType::Float);
 
-	renderer->createVertexBuffer(1, 4 * 4, desc, nullptr);
+	renderer->createVertexBuffer(1, 4 * 4, nullptr);
 
 	current = renderer;
 	return renderer;

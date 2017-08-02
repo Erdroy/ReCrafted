@@ -23,8 +23,25 @@
 		name##_free(handle);\
 	}
 
+struct VertexBufferInfo
+{
+public:
+	uint stride;
+	uint length;
+};
+
+struct IndexBufferInfo
+{
+public:
+	bool is32bit;
+
+};
+
 OBJECT_ARRAY(ID3D11Buffer*, vertexBuffer, vertexBufferHandle, RENDERER_MAX_VERTEX_BUFFERS)
+OBJECT_INFO_ARRAY(VertexBufferInfo, vertexBufferInfo, vertexBufferHandle, RENDERER_MAX_INDEX_BUFFERS)
+
 OBJECT_ARRAY(ID3D11Buffer*, indexBuffer, indexBufferHandle, RENDERER_MAX_INDEX_BUFFERS)
+OBJECT_INFO_ARRAY(IndexBufferInfo, indexBufferInfo, indexBufferHandle, RENDERER_MAX_INDEX_BUFFERS)
 
 ID3D11Device* m_device = nullptr;
 ID3D11DeviceContext* m_deviceContext = nullptr;
@@ -256,6 +273,11 @@ vertexBufferHandle D3D11Renderer::createVertexBuffer(int vertexCount, int vertex
 		return{};
 	}
 
+	VertexBufferInfo info;
+	info.length = vertexCount;
+	info.stride = vertexSize;
+	vertexBufferInfo_set(buffer, info);
+
 	// set pointer
 	vertexBuffer_set(buffer, bufferPtr);
 
@@ -285,11 +307,15 @@ void D3D11Renderer::useVertexBuffer(vertexBufferHandle handle)
 
 	auto buffer = vertexBuffer_get(handle);
 
-	uint stride = 0;
+	// get info (we need stride)
+	auto info = vertexBufferInfo_get(handle);
+
+	// offset should be always zero, 
+	// we don't need this actually
 	uint offset = 0;
 
 	ID3D11Buffer* buffers[] = { buffer };
-	m_deviceContext->IASetVertexBuffers(0, 1, buffers, &stride, &offset);
+	m_deviceContext->IASetVertexBuffers(0, 1, buffers, &info->stride, &offset);
 }
 
 void D3D11Renderer::destroyVertexBuffer(vertexBufferHandle handle)
@@ -327,11 +353,24 @@ indexBufferHandle D3D11Renderer::createIndexBuffer(int indexCount, bool is32bit,
 	// set pointer
 	indexBuffer_set(buffer, bufferPtr);
 
+	// set info
+	IndexBufferInfo info;
+	info.is32bit = is32bit;
+	indexBufferInfo_set(buffer, info);
+
 	return buffer;
 }
 
 void D3D11Renderer::useIndexBuffer(indexBufferHandle handle)
 {
+	if (IS_INVALID(handle))
+		return;
+
+	// get info
+	auto info = indexBufferInfo_get(handle);
+
+	// set index buffer
+	m_deviceContext->IASetIndexBuffer(indexBuffer_get(handle), info->is32bit ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT, 0);
 }
 
 void D3D11Renderer::destroyIndexBuffer(indexBufferHandle handle)

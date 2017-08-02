@@ -47,4 +47,9 @@
 	OBJECT_DEALLOCATOR(name, handleType, amount)\
 	OBJECT_RELEASE_DEF(name, handleType, amount)
 	
+#define OBJECT_INFO_ARRAY(type, name, handleType, amount)\
+	type m_##name##Array [ amount ]; \
+	void name##_set(handleType handle, type value) { m_##name##Array[handle.m_idx] = value; } \
+	type* name##_get(handleType handle) { return &m_##name##Array[handle.m_idx]; } \
+
 #endif // UTILS_H
