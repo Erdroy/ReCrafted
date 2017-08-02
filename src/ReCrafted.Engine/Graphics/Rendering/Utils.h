@@ -22,17 +22,29 @@
 	}\
 	inline type name##_get(handleType handle) \
 	{\
+		if(handle.m_idx >= amount)\
+			return nullptr;\
 		return m_##name##Array[handle.m_idx]; \
+	}\
+	inline void name##_set(handleType handle, type value) \
+	{\
+		if(handle.m_idx >= amount)\
+			return;\
+		m_##name##Array[handle.m_idx] = value; \
 	}
 
-#define OBJECT_DEALLOCATOR(name, handleType)\
-	inline void name##_free( handleType value ) \
-	{ m_##name##Array[value.m_idx] = nullptr; }
+#define OBJECT_DEALLOCATOR(name, handleType, amount)\
+	inline void name##_free( handleType handle ) \
+	{\
+		if(handle.m_idx >= amount)\
+			return;\
+		m_##name##Array[handle.m_idx] = nullptr; \
+	}
 
 #define OBJECT_ARRAY(type, name, handleType, amount) \
 	type m_##name##Array [ amount ]; \
 	OBJECT_ALLOCATOR(type, name, handleType, amount)\
-	OBJECT_DEALLOCATOR(name, handleType)\
-	OBJECT_RELEASE_DEF(name, handleType)
+	OBJECT_DEALLOCATOR(name, handleType, amount)\
+	OBJECT_RELEASE_DEF(name, handleType, amount)
 	
 #endif // UTILS_H
