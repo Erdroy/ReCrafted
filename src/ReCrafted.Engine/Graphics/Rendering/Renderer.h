@@ -23,7 +23,7 @@ struct RendererType
 	public:\
 		uint m_idx = 0;\
 		name##Handle () {} \
-		name##Handle (uint idx) {m_idx = idx;} \
+		name##Handle (uint idx) : m_idx(idx) {} \
 	};\
 
 CREATE_HANDLE(renderBuffer)
@@ -44,10 +44,32 @@ protected:
 	virtual void initialize(void* windowHandle, bool multithreaded) = 0;
 
 public:
+	/**
+	* \brief Creates new vertex buffer.
+	* \param size The data size (vertex size * count).
+	* \param data The data pointer.
+	* \return The created vertex buffer handle.
+	*/
 	virtual vertexBufferHandle createVertexBuffer(int size, void* data) = 0;
+	/**
+	* \brief Releases vertex buffer.
+	* \param handle The vertex buffer handle.
+	*/
 	virtual void destroyVertexBuffer(vertexBufferHandle handle) = 0;
 
+	/**
+	* \brief Creates new index buffer.
+	* \param indexCount The index count.
+	* \param is32bit Are indices 32 bit? (uint/int as data structure)
+	* \param data The data pointer,
+	* \return The created index buffer handle.
+	*/
+
 	virtual indexBufferHandle createIndexBuffer(int indexCount, bool is32bit, void* data) = 0;
+	/**
+	* \brief Releases index buffer.
+	* \param handle The index buffer handle.
+	*/
 	virtual void destroyIndexBuffer(indexBufferHandle handle) = 0;
 
 	virtual texture2DHandle createTexture2D(uint width, uint height, int mips, int format, void* data) = 0;

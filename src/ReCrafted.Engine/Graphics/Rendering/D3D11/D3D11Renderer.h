@@ -33,10 +33,31 @@ protected:
 	void initialize(void* windowHandle, bool multithreaded) override;
 
 public:
+	/**
+	* \brief Creates new vertex buffer.
+	* \param size The data size (vertex size * count).
+	* \param data The data pointer.
+	* \return The created vertex buffer handle.
+	*/
 	vertexBufferHandle createVertexBuffer(int size, void* data) override;
+	/**
+	* \brief Releases vertex buffer.
+	* \param handle The vertex buffer handle.
+	*/
 	void destroyVertexBuffer(vertexBufferHandle handle) override;
 
+	/**
+	* \brief Creates new index buffer.
+	* \param indexCount The index count.
+	* \param is32bit Are indices 32 bit? (uint/int as data structure)
+	* \param data The data pointer,
+	* \return The created index buffer handle.
+	*/
 	indexBufferHandle createIndexBuffer(int indexCount, bool is32bit, void* data) override;
+	/**
+	* \brief Releases index buffer.
+	* \param handle The index buffer handle.
+	*/
 	void destroyIndexBuffer(indexBufferHandle handle) override;
 
 	texture2DHandle createTexture2D(uint width, uint height, int mips, int format, void* data) override;
