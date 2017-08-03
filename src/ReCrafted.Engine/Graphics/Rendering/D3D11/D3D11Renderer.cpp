@@ -3,6 +3,7 @@
 #include "D3D11Renderer.h"
 
 #include "D3D11.h"
+#include "D3D11RenderBuffer.h"
 #include "Core/Logger.h"
 
 #include "../Config.h"
@@ -37,11 +38,14 @@ public:
 
 };
 
+
 OBJECT_ARRAY(ID3D11Buffer*, vertexBuffer, vertexBufferHandle, RENDERER_MAX_VERTEX_BUFFERS)
 OBJECT_INFO_ARRAY(VertexBufferInfo, vertexBufferInfo, vertexBufferHandle, RENDERER_MAX_INDEX_BUFFERS)
 
 OBJECT_ARRAY(ID3D11Buffer*, indexBuffer, indexBufferHandle, RENDERER_MAX_INDEX_BUFFERS)
 OBJECT_INFO_ARRAY(IndexBufferInfo, indexBufferInfo, indexBufferHandle, RENDERER_MAX_INDEX_BUFFERS)
+
+OBJECT_ARRAY(ID3D11RenderBuffer*, renderBuffer, renderBufferHandle, RENDERER_MAX_RENDER_BUFFERS)
 
 ID3D11Device* m_device = nullptr;
 ID3D11DeviceContext* m_deviceContext = nullptr;
@@ -245,6 +249,8 @@ void D3D11Renderer::initialize(void* windowHandle, bool multithreaded)
 	// create threads if this is multithreaded
 	//if (m_multithreaded)
 	//	initializeThreads();
+
+	// TODO: create default render buffer
 }
 
 vertexBufferHandle D3D11Renderer::createVertexBuffer(int vertexCount, int vertexSize, void* data)

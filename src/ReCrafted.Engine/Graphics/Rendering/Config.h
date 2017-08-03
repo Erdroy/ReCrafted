@@ -14,4 +14,10 @@
 // Maximum amount of textures (Texture2D and other). Default: 1024
 #define RENDERER_MAX_TEXTURES uint(1 << 10) 
 
+// Maximum amount of render buffers. Default: 16
+#define RENDERER_MAX_RENDER_BUFFERS uint(8 << 1) 
+
+// Maximum amount of render buffer targets (textures incl. depth). Default: 16
+#define RENDERER_MAX_RENDER_BUFFER_TARGETS uint(8 << 1)
+
 #endif // CONFIG_H

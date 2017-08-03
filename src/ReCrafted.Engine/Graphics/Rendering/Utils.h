@@ -5,9 +5,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#define INVALID_HANDLE uint(0)
-
-#define IS_INVALID(handleValue) (handleValue.m_idx == INVALID_HANDLE)
+#define IS_INVALID(handleValue) (handleValue.m_idx == 0u)
 
 #define OBJECT_ALLOCATOR(type, name, handleType, amount) \
 	inline handleType name##_alloc() \

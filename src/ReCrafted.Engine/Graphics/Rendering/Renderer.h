@@ -88,13 +88,24 @@ public:
 	}
 };
 
+struct handleBase
+{
+public:
+	uint m_idx = 0;
+
+public:
+	handleBase() {}
+	explicit handleBase(uint idx) : m_idx(idx) {}
+};
+
+#define INVALID_HANDLE handleBase(0u)
+
 #define CREATE_HANDLE(name) \
-	struct name##Handle\
+	struct name##Handle : public handleBase\
 	{\
 	public:\
-		uint m_idx = 0;\
 		name##Handle () {} \
-		name##Handle (uint idx) : m_idx(idx) {} \
+		name##Handle (uint idx) { m_idx = idx; } \
 	};\
 
 CREATE_HANDLE(renderBuffer)
