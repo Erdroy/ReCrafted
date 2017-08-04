@@ -8,7 +8,7 @@
 // includes
 #include <locale>
 #include <codecvt>
-#include "Utils/Defines.h"
+#include "Core/Defines.h"
 
 #define USE_UTF16
 

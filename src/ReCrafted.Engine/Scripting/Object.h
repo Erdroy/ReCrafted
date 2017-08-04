@@ -11,7 +11,7 @@
 #include "Assembly.h"
 #include "Class.h"
 #include "Domain.h"
-#include "Utils/Types.h"
+#include "Core/Types.h"
 
 class Method;
 class Field;

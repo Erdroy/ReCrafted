@@ -6,7 +6,7 @@
 #define RENDERER_H
 
 // includes
-#include "Utils/Types.h"
+#include "Core/Types.h"
 
 struct RendererType
 {

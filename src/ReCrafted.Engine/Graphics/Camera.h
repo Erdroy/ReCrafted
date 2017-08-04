@@ -6,8 +6,8 @@
 #define CAMERA_H
 
 // includes
-#include "Utils/Types.h"
-#include "Utils/Defines.h"
+#include "Core/Types.h"
+#include "Core/Defines.h"
 #include "Core/Math/Math.h"
 #include "Core/Math/BoundingFrustum.h"
 #include "Scripting/Object.h"

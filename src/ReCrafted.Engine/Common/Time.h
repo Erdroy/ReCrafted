@@ -6,7 +6,7 @@
 #define TIME_H
 
 // includes
-#include "Utils/Defines.h"
+#include "Core/Defines.h"
 #include "Common/ReCraftedAPI.h"
 
 /// <summary>

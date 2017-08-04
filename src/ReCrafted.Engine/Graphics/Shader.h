@@ -6,7 +6,7 @@
 #define SHADER_H
 
 // includes
-#include "Utils/Types.h"
+#include "Core/Types.h"
 #include "Texture2D.h"
 
 struct Vector2;

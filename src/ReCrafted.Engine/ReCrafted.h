@@ -16,8 +16,8 @@
 
 #include "bgfxPrerequisites.h"
 
-#include "Utils/Defines.h"
-#include "Utils/Types.h"
+#include "Core/Defines.h"
+#include "Core/Types.h"
 #include "Common/ReCraftedAPI.h"
 
 #endif // RECRAFTED_H

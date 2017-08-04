@@ -6,7 +6,7 @@
 #define TEXTURE2D_H
 
 // includes
-#include "Utils/Types.h"
+#include "Core/Types.h"
 #include <bgfx/bgfx.h>
 #include <Common/ReCraftedAPI.h>
 #include <Scripting/Object.h>

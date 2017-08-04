@@ -7,8 +7,8 @@
 
 // includes
 #include "Core/Math/Math.h"
-#include "Utils/Defines.h"
-#include "Utils/Types.h"
+#include "Core/Defines.h"
+#include "Core/Types.h"
 #include "Mesh.h"
 #include "Shader.h"
 #include "RenderBuffer.h"

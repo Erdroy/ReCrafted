@@ -7,7 +7,7 @@
 
 // includes
 #include "bgfxPrerequisites.h"
-#include "Utils/Types.h"
+#include "Core/Types.h"
 #include "Core/Math/Math.h"
 
 struct Vector4;

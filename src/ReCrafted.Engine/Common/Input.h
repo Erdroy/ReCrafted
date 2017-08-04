@@ -6,8 +6,8 @@
 #define INPUT_H
 
 // includes
-#include "Utils/Defines.h"
-#include "Utils/Types.h"
+#include "Core/Defines.h"
+#include "Core/Types.h"
 #include "Core/Math/math.h"
 #include "Platform/Platform.Windows.h"
 #include "Common/ReCraftedAPI.h"

@@ -6,7 +6,7 @@
 #define ATLASSCALER_H
 
 // includes
-#include "Utils/Types.h"
+#include "Core/Types.h"
 
 class AtlasScaler
 {

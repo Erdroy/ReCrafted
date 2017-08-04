@@ -6,7 +6,7 @@
 #define DOMAIN_H
 
 // includes
-#include "Utils/Types.h"
+#include "Core/Types.h"
 #include "Assembly.h"
 #include "Mono.h"
 

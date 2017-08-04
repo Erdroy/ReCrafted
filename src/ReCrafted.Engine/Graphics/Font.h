@@ -6,7 +6,7 @@
 #define FONT_H
 
 // includes
-#include "Utils/Types.h"
+#include "Core/Types.h"
 #include "Core/Math/Rect.h"
 #include "Core/Math/Rectf.h"
 #include "Common/Text.h"
