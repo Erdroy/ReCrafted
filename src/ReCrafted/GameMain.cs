@@ -6,6 +6,7 @@ using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
+using ReCrafted.Core.Locales;
 using ReCrafted.Game.Core;
 
 namespace ReCrafted.Game
@@ -24,10 +25,12 @@ namespace ReCrafted.Game
             _crosshairTexture.LoadFromFile("../assets/textures/crosshair.png");
             _crosshairTexture.Apply();
 
-            _testFont = Font.Load("../assets/fonts/VeraMono.ttf", 12);
+            _testFont = Font.Load("../assets/fonts/VeraMono.ttf", 20);
 
             Cursor.Show = false;
             Cursor.Lock = true;
+
+            Locale.SetLocale("Polski");
         }
 
         protected override void Update()
@@ -60,9 +63,9 @@ namespace ReCrafted.Game
             //var rect = new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
             //var uvs = new RectangleF(0.0f, 0.0f, 1.0f, 1.0f);
             //UIInternal.DrawTexture2D(_crosshairTexture.NativePtr, ref rect, ref uvs);
-            
-            var pos = new Vector2(10.0f, 10.0f);
-            UIInternal.DrawString(_testFont.NativePtr, "TestFont", ref pos);
+           
+            var pos = new Vector2(20.0f, 20.0f);
+            UIInternal.DrawString(_testFont.NativePtr, Locale.Resolve("Test4"), ref pos);
 
             //UIPanel.DrawAll();
         }

@@ -2,38 +2,49 @@
 
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ReCrafted.API.Core;
 
 namespace ReCrafted.Core.Locales
 {
     public delegate void OnSetLocale();
 
-    public class Locale
+    public static class Locale
     {
-        public static OnSetLocale OnSetLocale;
+        public static event OnSetLocale OnSetLocale;
 
-        private static object _currentLocale;
+        private static Dictionary<string, string> _currentLocale;
 
+        /// <summary>
+        /// Load locale of given language (if exists)
+        /// </summary>
+        /// <param name="language"></param>
         public static void SetLocale(string language)
         {
             if (!GetLanguages().Contains(language))
             {
-                throw new Exception(language + " language is not avaiable!");
+                throw new Exception(language + " language is not avaliable!");
             }
 
-            var json = File.ReadAllText($"locale/{language}.json");
-            _currentLocale = JsonConvert.DeserializeObject(json, new JsonSerializerSettings
-            {
-                Formatting = Formatting.Indented
-            });
+            Logger.Write("Loading locale...");
+
+            var json = File.ReadAllText($"../locales/{language}.json");
+            var obj = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+
+            _currentLocale = obj;
 
             OnSetLocale?.Invoke();
         }
 
+        /// <summary>
+        /// Returns all avaiable languages
+        /// </summary>
+        /// <returns></returns>
         public static string[] GetLanguages()
         {
-            var files = Directory.GetFiles("Locale", "*.json");
+            var files = Directory.GetFiles("../locales", "*.json");
 
             return
                 files.Select(file => new FileInfo(file))
@@ -41,22 +52,17 @@ namespace ReCrafted.Core.Locales
                     .ToArray();
         }
 
+        /// <summary>
+        /// Returns given locale's value from current language
+        /// </summary>
+        /// <param name="fieldName"></param>
+        /// <returns></returns>
         public static string Resolve(string fieldName)
         {
             if (_currentLocale == null)
-                return $"<missing-{fieldName}-locale>";
+                return "<locales-not-loaded>";
 
-            var fields = _currentLocale.GetType().GetFields();
-
-            foreach (var field in fields)
-            {
-                if (string.Equals(field.Name, fieldName, StringComparison.CurrentCultureIgnoreCase))
-                {
-                    return (string) field.GetValue(_currentLocale);
-                }
-            }
-
-            return $"<missing-{fieldName}-locale>";
+            return _currentLocale.ContainsKey(fieldName) ? _currentLocale[fieldName] : $"<missing-{fieldName}-locale>";
         }
     }
 }

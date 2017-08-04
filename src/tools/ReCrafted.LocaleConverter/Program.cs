@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace ReCrafted.LocaleConverter
 {
@@ -35,23 +36,21 @@ namespace ReCrafted.LocaleConverter
                     data.Add(key, str);
                 }
 
-                // Convert data to json
-                var json = new MinJson();
-
-                foreach (var record in data)
-                {
-                    json.Add(record.Key, record.Value);
-                }
-
                 // Create json file
                 var name = Path.GetFileNameWithoutExtension(path);
                 var jsonpath = Path.GetDirectoryName(path) + "/" + name + ".json";
 
-                // Write data to json file
-                File.WriteAllText(jsonpath, json.Text);
+                var json = JsonConvert.SerializeObject(data);
 
+                json = json.Replace(@"\r", "");
+
+                // Write data to file
+                File.WriteAllText(jsonpath, json);
+                
                 Console.WriteLine("Generated file: " + jsonpath);
             }
+
+            Console.WriteLine("Done.");
         }
     }
 }
