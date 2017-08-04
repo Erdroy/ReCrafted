@@ -147,7 +147,7 @@ bool Compiler::compile(const char* input, const char* output, const char* profil
 {
 	printf("\n"); // new line for a good start :>
 
-				  // get base file path
+	// get base file path
 	char basepath[260] = {};
 	get_filenamepath(input, basepath, 260);
 
@@ -163,7 +163,7 @@ bool Compiler::compile(const char* input, const char* output, const char* profil
 	if (!Parser::parse(code, codelength, &meta))
 		return false;
 
-	if (meta.passes.size() == 0u)
+	if (meta.passes_count == 0u)
 	{
 		printf("Error: Shader has no any pass!");
 		return false;
@@ -178,7 +178,20 @@ bool Compiler::compile(const char* input, const char* output, const char* profil
 		return false;
 	}
 
+	fseek(file, 0, SEEK_SET);
 
+	fwrite(&meta, sizeof shadermeta, 1u, file);
+
+	// TODO: compile all passes
+	// TODO: write all compiled bytecode
+
+	fflush(file);
+
+	// done!
+	fclose(file);
+
+	// free the code
+	free(code);
 
 	return false;
 }

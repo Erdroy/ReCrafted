@@ -192,7 +192,7 @@ bool parse_pass(char* line, int linenum, shadermeta* meta)
 	}
 
 	// push new with name
-	meta->passes.push_back(pass);
+	meta->add_pass(pass);
 
 	return true;
 }
@@ -211,7 +211,7 @@ bool parse_cbuffer(char* line, int linenum, shadermeta* meta)
 	}
 
 	// push new with name
-	meta->buffers.push_back(buffer);
+	meta->add_buffer(buffer);
 
 	return true;
 }
@@ -220,7 +220,7 @@ bool parse_passline(char* line, int linenum, shadermeta* meta)
 {
 	if (starts_with("VertexShader", line))
 	{
-		auto pass = &meta->passes[meta->passes.size() - 1];
+		auto pass = &meta->passes[meta->passes_count - 1];
 
 		auto result = readfromto(line, pass->vs_method, '(', ',', true);
 
@@ -242,7 +242,7 @@ bool parse_passline(char* line, int linenum, shadermeta* meta)
 	}
 	if (starts_with("PixelShader", line))
 	{
-		auto pass = &meta->passes[meta->passes.size() - 1];
+		auto pass = &meta->passes[meta->passes_count - 1];
 
 		auto result = readfromto(line, pass->ps_method, '(', ',', true);
 
@@ -264,7 +264,7 @@ bool parse_passline(char* line, int linenum, shadermeta* meta)
 	}
 	if (starts_with("ComputeShader", line))
 	{
-		auto pass = &meta->passes[meta->passes.size() - 1];
+		auto pass = &meta->passes[meta->passes_count - 1];
 
 		auto result = readfromto(line, pass->cs_method, '(', ',', true);
 
@@ -321,7 +321,7 @@ bool parse_passline(char* line, int linenum, shadermeta* meta)
 			return false;
 		}
 
-		meta->passes[meta->passes.size() - 1].samplers.push_back(sampler);
+		meta->passes[meta->passes_count - 1].add_sampler(sampler);
 
 		return true;
 	}
@@ -339,7 +339,7 @@ bool parse_passline(char* line, int linenum, shadermeta* meta)
 		}
 
 		// push new define
-		meta->passes[meta->passes.size() - 1].defines.push_back(define);
+		meta->passes[meta->passes_count - 1].add_define(define);
 
 		return true;
 	}
@@ -363,7 +363,7 @@ bool parse_cbufferline(char* line, int linenum, shadermeta* meta)
 		return false;
 	}
 
-	meta->buffers[meta->buffers.size() - 1].fields.push_back(field);
+	meta->buffers[meta->buffers_count - 1].add_field(field);
 	return true;
 }
 
