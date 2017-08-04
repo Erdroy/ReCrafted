@@ -144,7 +144,7 @@ void UI::endDraw()
 		auto drawcmd = &m_drawCmds[i];
 		auto textureChanged = drawcmd->texture > 0 && handle.idx != drawcmd->texture;
 
-		if(vertexCount + 4u > m_maxVertexCount || textureChanged)
+		if(vertexCount + 4u > m_maxVertexCount || (textureChanged && vertexCount > 0u))
 		{
 			// draw now, reset, and draw more!
 			drawnow();
