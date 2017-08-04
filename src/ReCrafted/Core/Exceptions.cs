@@ -35,7 +35,7 @@ namespace ReCrafted.Game.Core
         // private
         private static void WriteException(Exception exception)
         {
-            Logger.Write($"Unhandled Exception: {exception}", LogLevel.Error);
+            Logger.Write($"Unhandled Exception: {GetExceptionString(exception)}", LogLevel.Error);
 
             // check for inner exception
             if (exception.InnerException == null)
@@ -46,13 +46,21 @@ namespace ReCrafted.Game.Core
             // handle all inner exceptions
             while (exception != null)
             {
-                Logger.Write($"Inner Exception: {exception}", LogLevel.Error);
+                Logger.Write($"Inner Exception: {GetExceptionString(exception)}", LogLevel.Error);
 
                 if (exception.InnerException == null)
                     return;
 
                 exception = exception.InnerException;
             }
+        }
+
+        // private
+        private static string GetExceptionString(Exception ex)
+        {
+            var str = ex.ToString();
+            str = str.Replace("\r", "");
+            return str;
         }
     }
 }
