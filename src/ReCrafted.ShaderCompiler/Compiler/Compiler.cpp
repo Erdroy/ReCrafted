@@ -130,6 +130,8 @@ bool compile_shadermethod(char* code, int codelength, const char* input, char* m
 
 	TranslateHLSLFromMem(static_cast<char*>(shaderBlob->GetBufferPointer()), 0, LANG_400, &ext, &deps, prec, reflection, &shader);
 
+	// TODO: write shaders to the file
+
 	return false;
 }
 
@@ -183,7 +185,29 @@ bool Compiler::compile(const char* input, const char* output, const char* profil
 	fwrite(&meta, sizeof shadermeta, 1u, file);
 
 	// TODO: compile all passes
-	// TODO: write all compiled bytecode
+	for (auto i = 0u; i < meta.passes_count; i++)
+	{
+		// TODO: use defines
+		auto pass = meta.passes[i];
+
+		if (pass.vs_method[0] != '\0')
+		{
+			if (!compile_shadermethod(code, codelength, input, pass.vs_method, pass.vs_profile, VERTEX_SHADER, &pass, file))
+				return false;
+		}
+
+		if (pass.ps_method[0] != '\0')
+		{
+			if (!compile_shadermethod(code, codelength, input, pass.ps_method, pass.ps_profile, PIXEL_SHADER, &pass, file))
+				return false;
+		}
+
+		if (pass.cs_method[0] != '\0')
+		{
+			if (!compile_shadermethod(code, codelength, input, pass.cs_method, pass.cs_profile, COMPUTE_SHADER, &pass, file))
+				return false;
+		}
+	}
 
 	fflush(file);
 
