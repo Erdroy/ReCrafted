@@ -5,112 +5,62 @@
 #ifndef SHADERMETA_H
 #define SHADERMETA_H
 
-#define SHADER_META_MAX_PASS_DEFINES 32
-#define SHADER_META_MAX_PASSES 8
-#define SHADER_META_MAX_SAMPLERS 16
-#define SHADER_META_MAX_BUFFERS 8
-#define SHADER_META_MAX_BUFFER_FIELDS 32
+// includes
+#include <vector>
+#include <string>
 
 struct shadermeta_pass_define
 {
-	char name[32] = {};
+	std::string name = {};
 };
 
 struct shadermeta_pass_sampler
 {
-	char name[32] = {};
-	char type[32] = {};
+	std::string name = {};
+	std::string type = {};
 };
 
 struct shadermeta_pass
 {
-	char name[32] = {};
+	std::string name = {};
 
-	char vs_method[16] = {};
-	char ps_method[16] = {};
-	char cs_method[16] = {};
+	std::string vs_method = {};
+	std::string ps_method = {};
+	std::string cs_method = {};
 
-	char vs_profile[5] = {};
-	char ps_profile[5] = {};
-	char cs_profile[5] = {};
+	std::string vs_profile = {};
+	std::string ps_profile = {};
+	std::string cs_profile = {};
 
-	unsigned int defines_count = 0u;
-	shadermeta_pass_define defines[SHADER_META_MAX_PASS_DEFINES];
-
-	unsigned int samplers_count = 0u;
-	shadermeta_pass_sampler samplers[SHADER_META_MAX_SAMPLERS];
-
-public:
-	void add_define(shadermeta_pass_define define)
-	{
-		defines[defines_count] = define;
-		defines_count++;
-	}
-
-	void add_sampler(shadermeta_pass_sampler define)
-	{
-		samplers[samplers_count] = define;
-		samplers_count++;
-	}
+	std::vector<shadermeta_pass_define> defines;
+	std::vector<shadermeta_pass_sampler> samplers;
 };
 
 struct shadermeta_cbuffer_field
 {
-	char name[32] = {};
-	char type[32] = {};
+	std::string name = {};
+	std::string type = {};
 };
 
 struct shadermeta_cbuffer
 {
-	char name[32] = {};
+	std::string name = {};
 
-	unsigned int fields_count = 0u;
-	shadermeta_cbuffer_field fields[SHADER_META_MAX_BUFFER_FIELDS];
-
-public:
-	void add_field(shadermeta_cbuffer_field field)
-	{
-		fields[fields_count] = field;
-		fields_count++;
-	}
+	std::vector<shadermeta_cbuffer_field> fields;
 };
 
 struct shadermeta
 {
 public:
-	char name[64] = {};
-	char desc[512] = {};
+	std::string name = {};
+	std::string desc = {};
 
-	unsigned int passes_count = 0u;
-	shadermeta_pass passes[SHADER_META_MAX_PASSES];
-
-	unsigned int buffers_count = 0u;
-	shadermeta_cbuffer buffers[SHADER_META_MAX_BUFFERS];
+	std::vector<shadermeta_pass> passes;
+	std::vector<shadermeta_cbuffer> buffers;
 
 	// TODO: textures
 
 	// TODO: permutation
-
-public:
-	void add_pass(shadermeta_pass pass)
-	{
-		passes[passes_count] = pass;
-		passes_count++;
-	}
-
-	void add_buffer(shadermeta_cbuffer buffer)
-	{
-		buffers[buffers_count] = buffer;
-		buffers_count++;
-	}
-
-public:
-	static shadermeta fromMemory(unsigned char* memory_ptr)
-	{
-
-		// read from memory
-
-	}
 };
 
 #endif // SHADERMETA_H

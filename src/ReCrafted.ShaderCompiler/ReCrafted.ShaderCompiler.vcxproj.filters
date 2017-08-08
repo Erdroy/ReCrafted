@@ -35,5 +35,8 @@
     <ClInclude Include="Compiler\ShaderMeta.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Compiler\ShaderDesc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

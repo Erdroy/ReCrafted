@@ -47,11 +47,10 @@ namespace helpers
 		return false;
 	}
 
-	int readfromto(char* str, char* buffer, char start, char end, bool ignore_spaces = false)
+	int readfromto(char* str, std::string& buffer, char start, char end, bool ignore_spaces = false)
 	{
 		auto len = strlen(str);
 		auto read = false;
-		auto charid = 0;
 
 		for (auto i = 0u; i < len; i++)
 		{
@@ -66,8 +65,7 @@ namespace helpers
 				if (ignore_spaces && isspace(str[i]))
 					continue;
 
-				buffer[charid] = str[i];
-				charid++;
+				buffer.push_back(str[i]);
 			}
 
 			if (str[i] == start)
@@ -103,10 +101,9 @@ namespace helpers
 		return false;
 	}
 
-	bool readtospace(char* str, char* buffer)
+	bool readtospace(char* str, std::string& buffer)
 	{
 		auto len = strlen(str);
-		auto charid = 0;
 
 		for (auto i = 0u; i < len; i++)
 		{
@@ -116,8 +113,7 @@ namespace helpers
 				return true;
 			}
 
-			buffer[charid] = str[i];
-			charid++;
+			buffer.push_back(str[i]);
 		}
 
 		return false;
@@ -192,7 +188,7 @@ bool parse_pass(char* line, int linenum, shadermeta* meta)
 	}
 
 	// push new with name
-	meta->add_pass(pass);
+	meta->passes.push_back(pass);
 
 	return true;
 }
@@ -211,7 +207,7 @@ bool parse_cbuffer(char* line, int linenum, shadermeta* meta)
 	}
 
 	// push new with name
-	meta->add_buffer(buffer);
+	meta->buffers.push_back(buffer);
 
 	return true;
 }
@@ -220,7 +216,7 @@ bool parse_passline(char* line, int linenum, shadermeta* meta)
 {
 	if (starts_with("VertexShader", line))
 	{
-		auto pass = &meta->passes[meta->passes_count - 1];
+		auto pass = &meta->passes[meta->passes.size() - 1];
 
 		auto result = readfromto(line, pass->vs_method, '(', ',', true);
 
@@ -242,7 +238,7 @@ bool parse_passline(char* line, int linenum, shadermeta* meta)
 	}
 	if (starts_with("PixelShader", line))
 	{
-		auto pass = &meta->passes[meta->passes_count - 1];
+		auto pass = &meta->passes[meta->passes.size() - 1];
 
 		auto result = readfromto(line, pass->ps_method, '(', ',', true);
 
@@ -264,7 +260,7 @@ bool parse_passline(char* line, int linenum, shadermeta* meta)
 	}
 	if (starts_with("ComputeShader", line))
 	{
-		auto pass = &meta->passes[meta->passes_count - 1];
+		auto pass = &meta->passes[meta->passes.size() - 1];
 
 		auto result = readfromto(line, pass->cs_method, '(', ',', true);
 
@@ -305,23 +301,23 @@ bool parse_passline(char* line, int linenum, shadermeta* meta)
 		}
 
 		// check pass
-		if (strcmp(sampler.type, "PointClamped") != 0 &&
-			strcmp(sampler.type, "PointMirror") != 0 &&
-			strcmp(sampler.type, "PointWarp") != 0 &&
+		if (strcmp(sampler.type.c_str(), "PointClamped") != 0 &&
+			strcmp(sampler.type.c_str(), "PointMirror") != 0 &&
+			strcmp(sampler.type.c_str(), "PointWarp") != 0 &&
 
-			strcmp(sampler.type, "LinearClamped") != 0 &&
-			strcmp(sampler.type, "LinearMirror") != 0 &&
-			strcmp(sampler.type, "LinearWarp") != 0 &&
+			strcmp(sampler.type.c_str(), "LinearClamped") != 0 &&
+			strcmp(sampler.type.c_str(), "LinearMirror") != 0 &&
+			strcmp(sampler.type.c_str(), "LinearWarp") != 0 &&
 
-			strcmp(sampler.type, "AnisoClamped") != 0 &&
-			strcmp(sampler.type, "AnisoMirror") != 0 &&
-			strcmp(sampler.type, "AnisoWarp") != 0)
+			strcmp(sampler.type.c_str(), "AnisoClamped") != 0 &&
+			strcmp(sampler.type.c_str(), "AnisoMirror") != 0 &&
+			strcmp(sampler.type.c_str(), "AnisoWarp") != 0)
 		{
 			printf("Error: Invalid sampler type at line %d.\n", linenum);
 			return false;
 		}
 
-		meta->passes[meta->passes_count - 1].add_sampler(sampler);
+		meta->passes[meta->passes.size() - 1].samplers.push_back(sampler);
 
 		return true;
 	}
@@ -339,7 +335,7 @@ bool parse_passline(char* line, int linenum, shadermeta* meta)
 		}
 
 		// push new define
-		meta->passes[meta->passes_count - 1].add_define(define);
+		meta->passes[meta->passes.size() - 1].defines.push_back(define);
 
 		return true;
 	}
@@ -363,7 +359,7 @@ bool parse_cbufferline(char* line, int linenum, shadermeta* meta)
 		return false;
 	}
 
-	meta->buffers[meta->buffers_count - 1].add_field(field);
+	meta->buffers[meta->buffers.size() - 1].fields.push_back(field);
 	return true;
 }
 

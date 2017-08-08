@@ -12,6 +12,7 @@
 #include <cstring>
 
 #include "Compiler/Compiler.h"
+#include <string>
 
 /*
 * checks if string starts with other string, used for checking params.

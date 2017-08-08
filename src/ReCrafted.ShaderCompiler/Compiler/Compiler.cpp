@@ -165,7 +165,7 @@ bool Compiler::compile(const char* input, const char* output, const char* profil
 	if (!Parser::parse(code, codelength, &meta))
 		return false;
 
-	if (meta.passes_count == 0u)
+	if (meta.passes.size() == 0u)
 	{
 		printf("Error: Shader has no any pass!");
 		return false;
@@ -182,7 +182,7 @@ bool Compiler::compile(const char* input, const char* output, const char* profil
 
 	fseek(file, 0, SEEK_SET);
 
-	fwrite(&meta, sizeof shadermeta, 1u, file);
+	/*fwrite(&meta, sizeof shadermeta, 1u, file);
 
 	// TODO: compile all passes
 	for (auto i = 0u; i < meta.passes_count; i++)
@@ -207,7 +207,7 @@ bool Compiler::compile(const char* input, const char* output, const char* profil
 			if (!compile_shadermethod(code, codelength, input, pass.cs_method, pass.cs_profile, COMPUTE_SHADER, &pass, file))
 				return false;
 		}
-	}
+	}*/
 
 	fflush(file);
 
