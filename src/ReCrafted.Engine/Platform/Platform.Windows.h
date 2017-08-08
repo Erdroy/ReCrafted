@@ -38,6 +38,11 @@ public:
 			close();
 	}
 
+	void seek(long position) const
+	{
+		fseek(m_file, position, SEEK_SET);
+	}
+
 	/// <summary>
 	/// Read file to the buffer.
 	/// </summary>
@@ -46,14 +51,14 @@ public:
 	/// <param name="offset">The offset in bytes where should start.</param>
 	void read(void* buffer, size_t length, size_t offset = 0) const
 	{
-		// set offset
-		fseek(m_file, long(offset), SEEK_SET);
+		if (offset > 0)
+		{
+			// set offset
+			fseek(m_file, long(offset), SEEK_SET);
+		}
 
 		// read
 		fread(buffer, length, 1, m_file);
-
-		// reset position to zero
-		fseek(m_file, 0, SEEK_SET);
 	}
 
 	/// <summary>
