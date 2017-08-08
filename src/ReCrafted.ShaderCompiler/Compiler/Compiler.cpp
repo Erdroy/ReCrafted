@@ -89,7 +89,7 @@ void get_filenamepath(const char* filename, char* buffer, int buffersize, bool r
 
 bool compile_shadermethod(char* code, int codelength, const char* input, const char* method, const char* profile, int shadertype, shadermeta_pass* pass, File& file)
 {
-	char full_profile[6] = {};
+	static char full_profile[6] = {};
 	memset(full_profile, 0, 6);
 
 	switch (shadertype)
@@ -110,6 +110,10 @@ bool compile_shadermethod(char* code, int codelength, const char* input, const c
 	}
 	strcat(full_profile, profile);
 
+	// shader type
+	file.write(shadertype);
+
+	// TODO: write only selected targets
 	// TODO: use defines
 
 	ID3D10Blob* shaderBlob;
@@ -122,7 +126,10 @@ bool compile_shadermethod(char* code, int codelength, const char* input, const c
 		return false;
 	}
 
-	// TODO: translate to only selected targets
+
+	// write d3d
+	file.write(static_cast<int>(shaderBlob->GetBufferSize()));
+	file.write(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize());
 
 	// translate to GLSL
 	GLSLShader shader = {};
@@ -133,10 +140,9 @@ bool compile_shadermethod(char* code, int codelength, const char* input, const c
 
 	TranslateHLSLFromMem(static_cast<char*>(shaderBlob->GetBufferPointer()), 0, LANG_400, &ext, &deps, prec, reflection, &shader);
 
-	// shader type
-	file.write(shadertype);
-
-	// TODO: write shaders to the file
+	// write glsl
+	file.write(static_cast<int>(shader.sourceCode.size()));
+	file.write((void*)shader.sourceCode.c_str(), shader.sourceCode.size());
 
 	return false;
 }
@@ -170,10 +176,7 @@ bool Compiler::compile(const char* input, const char* output, const char* profil
 	//      byte* d3d,
 	//
 	//      int glslLength,
-	//      byte* glsl,
-	//
-	//      int spirvLength,
-	//      byte* spirv,
+	//      byte* glsl
 	//    }
 	//
 	//  }
