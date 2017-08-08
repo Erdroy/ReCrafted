@@ -9,6 +9,7 @@
 #include <dxgiformat.h>
 #include "ShaderMeta.h"
 #include "Parser.h"
+#include "File.h"
 
 #pragma comment(lib, "d3dcompiler.lib")
 
@@ -171,16 +172,12 @@ bool Compiler::compile(const char* input, const char* output, const char* profil
 		return false;
 	}
 
-	FILE* file = nullptr;
-	fopen_s(&file, output, "w+");
-
-	if (file == nullptr)
-	{
-		printf("Error: Failed to create output file '%s'.", output);
-		return false;
-	}
-
-	fseek(file, 0, SEEK_SET);
+	File file = {};
+	File::openFile(&file, output, OpenMode::OpenWrite);
+	file.seek(0);
+	
+	// write the meta into the file
+	meta.write(file);
 
 	/*fwrite(&meta, sizeof shadermeta, 1u, file);
 
@@ -209,10 +206,8 @@ bool Compiler::compile(const char* input, const char* output, const char* profil
 		}
 	}*/
 
-	fflush(file);
-
-	// done!
-	fclose(file);
+	file.flush();
+	file.close();
 
 	// free the code
 	free(code);
