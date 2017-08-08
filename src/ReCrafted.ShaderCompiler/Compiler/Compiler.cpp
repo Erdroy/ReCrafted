@@ -208,12 +208,9 @@ bool Compiler::compile(const char* input, const char* output, const char* profil
 		}
 	}*/
 
+	// done
 	file.flush();
 	file.close();
-
-	File::openFile(&file, output, OpenMode::OpenRead);
-	shadermeta meta1 = {};
-	meta1.read(file);
 
 	// free the code
 	free(code);
