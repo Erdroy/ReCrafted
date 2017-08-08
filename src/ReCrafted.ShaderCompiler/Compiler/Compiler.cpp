@@ -87,7 +87,7 @@ void get_filenamepath(const char* filename, char* buffer, int buffersize, bool r
 	}
 }
 
-bool compile_shadermethod(char* code, int codelength, const char* input, char* method, char* profile, int shadertype, shadermeta_pass* pass, FILE* file)
+bool compile_shadermethod(char* code, int codelength, const char* input, const char* method, const char* profile, int shadertype, shadermeta_pass* pass, File& file)
 {
 	char full_profile[6] = {};
 	memset(full_profile, 0, 6);
@@ -110,6 +110,8 @@ bool compile_shadermethod(char* code, int codelength, const char* input, char* m
 	}
 	strcat(full_profile, profile);
 
+	// TODO: use defines
+
 	ID3D10Blob* shaderBlob;
 	ID3D10Blob* errorBlob;
 	auto hr = D3DCompile(code, codelength, input, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, method, full_profile, 0, 0, &shaderBlob, &errorBlob);
@@ -131,6 +133,9 @@ bool compile_shadermethod(char* code, int codelength, const char* input, char* m
 
 	TranslateHLSLFromMem(static_cast<char*>(shaderBlob->GetBufferPointer()), 0, LANG_400, &ext, &deps, prec, reflection, &shader);
 
+	// shader type
+	file.write(shadertype);
+
 	// TODO: write shaders to the file
 
 	return false;
@@ -148,6 +153,33 @@ bool compile_shadermethod(char* code, int codelength, const char* input, char* m
 */
 bool Compiler::compile(const char* input, const char* output, const char* profile, bool dx, bool gl, bool vlk)
 {
+	// File structure 
+	// ShaderFile [
+	//
+	//  ShaderMeta,
+	//
+	//  int PassCount,
+	//  {
+	//
+	//    int ShaderCount,
+	//    {
+	//
+	//      int ShaderType,
+	//
+	//      int d3dLength,
+	//      byte* d3d,
+	//
+	//      int glslLength,
+	//      byte* glsl,
+	//
+	//      int spirvLength,
+	//      byte* spirv,
+	//    }
+	//
+	//  }
+	//
+	// ]
+
 	printf("\n"); // new line for a good start :>
 
 	// get base file path
@@ -178,35 +210,42 @@ bool Compiler::compile(const char* input, const char* output, const char* profil
 	
 	// write the meta into the file
 	meta.write(file);
-	file.flush();
+	
+	file.write(static_cast<int>(meta.passes.size()));
 
-	file.seek(0);
-
-	/*
-	// TODO: compile all passes
-	for (auto i = 0u; i < meta.passes_count; i++)
+	for (auto i = 0u; i < meta.passes.size(); i++)
 	{
-		// TODO: use defines
 		auto pass = meta.passes[i];
+
+		auto shadercount = 0;
+
+		if (pass.vs_method[0] != '\0')
+			shadercount++;
+		if (pass.ps_method[0] != '\0')
+			shadercount++;
+		if (pass.cs_method[0] != '\0')
+			shadercount++;
+
+		file.write(shadercount);
 
 		if (pass.vs_method[0] != '\0')
 		{
-			if (!compile_shadermethod(code, codelength, input, pass.vs_method, pass.vs_profile, VERTEX_SHADER, &pass, file))
+			if (!compile_shadermethod(code, codelength, input, pass.vs_method.c_str(), pass.vs_profile.c_str(), VERTEX_SHADER, &pass, file))
 				return false;
 		}
 
 		if (pass.ps_method[0] != '\0')
 		{
-			if (!compile_shadermethod(code, codelength, input, pass.ps_method, pass.ps_profile, PIXEL_SHADER, &pass, file))
+			if (!compile_shadermethod(code, codelength, input, pass.ps_method.c_str(), pass.ps_profile.c_str(), PIXEL_SHADER, &pass, file))
 				return false;
 		}
 
 		if (pass.cs_method[0] != '\0')
 		{
-			if (!compile_shadermethod(code, codelength, input, pass.cs_method, pass.cs_profile, COMPUTE_SHADER, &pass, file))
+			if (!compile_shadermethod(code, codelength, input, pass.cs_method.c_str(), pass.cs_profile.c_str(), COMPUTE_SHADER, &pass, file))
 				return false;
 		}
-	}*/
+	}
 
 	// done
 	file.flush();
