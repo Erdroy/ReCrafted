@@ -89,7 +89,7 @@ public:
 
 		std::string str(length, '\0');
 
-		read(&str, length);
+		read(&str[0], length);
 
 		return str;
 	}

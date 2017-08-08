@@ -178,9 +178,11 @@ bool Compiler::compile(const char* input, const char* output, const char* profil
 	
 	// write the meta into the file
 	meta.write(file);
+	file.flush();
 
-	/*fwrite(&meta, sizeof shadermeta, 1u, file);
+	file.seek(0);
 
+	/*
 	// TODO: compile all passes
 	for (auto i = 0u; i < meta.passes_count; i++)
 	{
@@ -208,6 +210,10 @@ bool Compiler::compile(const char* input, const char* output, const char* profil
 
 	file.flush();
 	file.close();
+
+	File::openFile(&file, output, OpenMode::OpenRead);
+	shadermeta meta1 = {};
+	meta1.read(file);
 
 	// free the code
 	free(code);
