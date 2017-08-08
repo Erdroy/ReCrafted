@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Compiler\Compiler.h" />
+    <ClInclude Include="Compiler\File.h" />
     <ClInclude Include="Compiler\Parser.h" />
     <ClInclude Include="Compiler\ShaderDesc.h" />
     <ClInclude Include="Compiler\ShaderMeta.h" />
