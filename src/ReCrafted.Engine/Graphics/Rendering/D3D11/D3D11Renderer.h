@@ -16,7 +16,7 @@
 class D3D11Renderer : public Renderer
 {
 private:
-	void initializeDevice(void* windowHandle);
+	void initializeDevice(void* windowHandle) const;
 
 	void clean() const;
 

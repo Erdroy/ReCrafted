@@ -4,6 +4,7 @@
 
 #include "D3D11.h"
 #include "D3D11RenderBuffer.h"
+#include "D3D11ShaderProgram.h"
 #include "Core/Logger.h"
 
 #include "../Config.h"
@@ -38,6 +39,11 @@ public:
 
 };
 
+struct ShaderInfo
+{
+	
+};
+
 
 OBJECT_ARRAY(ID3D11Buffer*, vertexBuffer, vertexBufferHandle, RENDERER_MAX_VERTEX_BUFFERS)
 OBJECT_INFO_ARRAY(VertexBufferInfo, vertexBufferInfo, vertexBufferHandle, RENDERER_MAX_INDEX_BUFFERS)
@@ -46,6 +52,8 @@ OBJECT_ARRAY(ID3D11Buffer*, indexBuffer, indexBufferHandle, RENDERER_MAX_INDEX_B
 OBJECT_INFO_ARRAY(IndexBufferInfo, indexBufferInfo, indexBufferHandle, RENDERER_MAX_INDEX_BUFFERS)
 
 OBJECT_ARRAY(ID3D11RenderBuffer*, renderBuffer, renderBufferHandle, RENDERER_MAX_RENDER_BUFFERS)
+
+OBJECT_ARRAY(D3D11ShaderProgram*, shaderProgram, shaderHandle, RENDERER_MAX_SHADERS)
 
 ID3D11Device* m_device = nullptr;
 ID3D11DeviceContext* m_deviceContext = nullptr;
@@ -158,7 +166,7 @@ DXGI_FORMAT AttribTypeToFormat(VertexAttribType::_enum attribType, int count)
 	}
 }
 
-void D3D11Renderer::initializeDevice(void* windowHandle)
+void D3D11Renderer::initializeDevice(void* windowHandle) const
 {
 	D3D_FEATURE_LEVEL level;
 	D3D_FEATURE_LEVEL featureLevels[] =
@@ -419,6 +427,16 @@ void D3D11Renderer::destroyRenderBuffer(renderBufferHandle renderBuffer)
 
 shaderHandle D3D11Renderer::loadShader(const char* fileName)
 {
+	if (!Platform::fileExists(fileName))
+		return;
+
+	auto shaderHandle = shaderProgram_alloc();
+
+	auto shaderProgram = LoadShader(fileName);
+
+	shaderProgram_set(shaderHandle, shaderProgram);
+
+	
 	return{};
 }
 

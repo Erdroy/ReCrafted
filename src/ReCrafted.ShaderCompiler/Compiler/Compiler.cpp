@@ -4,12 +4,12 @@
 
 #include "Compiler.h"
 
-#include <hlslcc.h>
-#include <d3dcompiler.h>
-#include <dxgiformat.h>
 #include "ShaderMeta.h"
 #include "Parser.h"
 #include "File.h"
+
+#include <hlslcc.h>
+#include <d3dcompiler.h>
 
 #pragma comment(lib, "d3dcompiler.lib")
 
@@ -87,7 +87,7 @@ void get_filenamepath(const char* filename, char* buffer, int buffersize, bool r
 	}
 }
 
-bool compile_shadermethod(char* code, int codelength, const char* input, const char* method, const char* profile, int shadertype, shadermeta_pass* pass, File& file)
+bool compile_shadermethod(char* code, int codelength, const char* input, const char* method, const char* profile, int shadertype, File& file)
 {
 	static char full_profile[6] = {};
 	memset(full_profile, 0, 6);
@@ -125,7 +125,6 @@ bool compile_shadermethod(char* code, int codelength, const char* input, const c
 		printf(static_cast<char*>(errorBlob->GetBufferPointer()));
 		return false;
 	}
-
 
 	// write d3d
 	file.write(static_cast<int>(shaderBlob->GetBufferSize()));
@@ -233,19 +232,19 @@ bool Compiler::compile(const char* input, const char* output, const char* profil
 
 		if (pass.vs_method[0] != '\0')
 		{
-			if (!compile_shadermethod(code, codelength, input, pass.vs_method.c_str(), pass.vs_profile.c_str(), VERTEX_SHADER, &pass, file))
+			if (!compile_shadermethod(code, codelength, input, pass.vs_method.c_str(), pass.vs_profile.c_str(), VERTEX_SHADER, file))
 				return false;
 		}
 
 		if (pass.ps_method[0] != '\0')
 		{
-			if (!compile_shadermethod(code, codelength, input, pass.ps_method.c_str(), pass.ps_profile.c_str(), PIXEL_SHADER, &pass, file))
+			if (!compile_shadermethod(code, codelength, input, pass.ps_method.c_str(), pass.ps_profile.c_str(), PIXEL_SHADER, file))
 				return false;
 		}
 
 		if (pass.cs_method[0] != '\0')
 		{
-			if (!compile_shadermethod(code, codelength, input, pass.cs_method.c_str(), pass.cs_profile.c_str(), COMPUTE_SHADER, &pass, file))
+			if (!compile_shadermethod(code, codelength, input, pass.cs_method.c_str(), pass.cs_profile.c_str(), COMPUTE_SHADER, file))
 				return false;
 		}
 	}

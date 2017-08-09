@@ -11,6 +11,9 @@
 // Maximum amount of index buffers. Default: 65536
 #define RENDERER_MAX_INDEX_BUFFERS uint(64 << 10)
 
+// Maximum amount of shaders. Default: 1024
+#define RENDERER_MAX_SHADERS uint(1 << 10) 
+
 // Maximum amount of textures (Texture2D and other). Default: 1024
 #define RENDERER_MAX_TEXTURES uint(1 << 10) 
 
