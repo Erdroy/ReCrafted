@@ -5,9 +5,6 @@
 #ifndef D3D11SHADERPROGRAM_H
 #define D3D11SHADERPROGRAM_H
 
-// includes
-#include "../../../../ReCrafted.ShaderCompiler/Compiler/Compiler.h"
-
 struct D3D11ShaderProgram
 {
 public:
@@ -20,17 +17,6 @@ public:
 	}
 };
 
-inline D3D11ShaderProgram* LoadShader(const char* fileName)
-{
-	auto sp = new D3D11ShaderProgram;
-
-	File shaderFile = {};
-	File::openFile(&shaderFile, fileName, OpenMode::OpenRead);
-
-	shadermeta meta = {};
-	meta.read(shaderFile);
-
-	return sp;
-}
+D3D11ShaderProgram* LoadShader(const char* fileName);
 
 #endif // D3D11SHADERPROGRAM_H

@@ -428,7 +428,7 @@ void D3D11Renderer::destroyRenderBuffer(renderBufferHandle renderBuffer)
 shaderHandle D3D11Renderer::loadShader(const char* fileName)
 {
 	if (!Platform::fileExists(fileName))
-		return;
+		return {};
 
 	auto shaderHandle = shaderProgram_alloc();
 
