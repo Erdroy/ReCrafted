@@ -427,17 +427,24 @@ void D3D11Renderer::destroyRenderBuffer(renderBufferHandle renderBuffer)
 
 shaderHandle D3D11Renderer::loadShader(const char* fileName)
 {
+	// check if given file exists
 	if (!Platform::fileExists(fileName))
 		return {};
 
+	// allocate handle for shader
 	auto shaderHandle = shaderProgram_alloc();
 
+	// load shader
 	auto shaderProgram = LoadShader(fileName);
 
+	// handle errors
+	if (shaderProgram == nullptr)
+		return {};
+
+	// set shader pointer
 	shaderProgram_set(shaderHandle, shaderProgram);
 
-	
-	return{};
+	return shaderHandle;
 }
 
 void D3D11Renderer::destroyShader(shaderHandle handle)
@@ -476,4 +483,12 @@ void D3D11Renderer::beginFrame()
 void D3D11Renderer::frame(bool vSync)
 {
 	m_swapchain->Present(vSync ? 1 : 0, 0);
+}
+
+void D3D11Renderer::shutdown()
+{
+	// TODO: release all objects
+
+	// call base method
+	Renderer::shutdown();
 }

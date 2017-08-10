@@ -126,6 +126,11 @@ public:
 	* \param vSync Should use v-blank synchronization?
 	*/
 	void frame(bool vSync) override;
+
+	/**
+	* \brief Shutdowns the renderer.
+	*/
+	void shutdown() override;
 };
 
 #endif // D3D11RENDERER_H

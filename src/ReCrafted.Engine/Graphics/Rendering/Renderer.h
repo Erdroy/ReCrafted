@@ -223,9 +223,8 @@ public:
 	/**
 	 * \brief Shutdowns the renderer.
 	 */
-	void shutdown() const
+	virtual void shutdown()
 	{
-		// TODO: release all objects
 		delete this;
 	}
 
