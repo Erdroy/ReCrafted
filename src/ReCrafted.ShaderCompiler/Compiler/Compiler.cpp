@@ -127,8 +127,9 @@ bool compile_shadermethod(char* code, int codelength, const char* input, const c
 	}
 
 	// write d3d
-	file.write(static_cast<int>(shaderBlob->GetBufferSize()));
-	file.write(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize());
+	auto d3dlen = static_cast<int>(shaderBlob->GetBufferSize());
+	file.write(d3dlen);
+	file.write(shaderBlob->GetBufferPointer(), d3dlen);
 
 	// translate to GLSL
 	GLSLShader shader = {};
@@ -142,7 +143,7 @@ bool compile_shadermethod(char* code, int codelength, const char* input, const c
 	// write glsl
 	auto length = static_cast<int>(shader.sourceCode.length());
 	file.write(length);
-	file.write((void*)shader.sourceCode.c_str(), shader.sourceCode.length());
+	file.write((void*)shader.sourceCode.data(), length);
 
 	return true;
 }

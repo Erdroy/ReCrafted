@@ -15,6 +15,8 @@
 
 class D3D11Renderer : public Renderer
 {
+	friend struct D3D11ShaderProgram;
+
 private:
 	void initializeDevice(void* windowHandle) const;
 
@@ -131,6 +133,10 @@ public:
 	* \brief Shutdowns the renderer.
 	*/
 	void shutdown() override;
+
+private:
+	static void* getDevice();
+	static void* getDeviceContext();
 };
 
 #endif // D3D11RENDERER_H

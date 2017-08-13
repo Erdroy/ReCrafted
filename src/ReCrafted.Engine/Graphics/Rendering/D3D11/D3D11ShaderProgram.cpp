@@ -4,6 +4,7 @@
 
 #include "../../../../ReCrafted.ShaderCompiler/Compiler/ShaderMeta.h"
 #include "../../../../ReCrafted.ShaderCompiler/Compiler/File.h"
+#include "D3D11Renderer.h"
 
 typedef enum // from `hlslcc.h`
 {
@@ -18,7 +19,11 @@ typedef enum // from `hlslcc.h`
 
 D3D11ShaderProgram* LoadShader(const char* fileName)
 {
-	auto sp = new D3D11ShaderProgram;
+	auto m_device = static_cast<ID3D11Device*>(D3D11Renderer::getDevice());
+
+	ID3D11VertexShader* vertexShader = nullptr;
+	ID3D11PixelShader* pixelShader = nullptr;
+	ID3D11ComputeShader* computeShader = nullptr;
 
 	File shaderFile = {};
 	File::openFile(&shaderFile, fileName, OpenMode::OpenRead);
@@ -34,24 +39,54 @@ D3D11ShaderProgram* LoadShader(const char* fileName)
 
 		auto shaderCount = shaderFile.read<int>();
 
+		// create shaders
 		for (auto shaderId = 0; shaderId < shaderCount; shaderId++)
 		{
 			auto shaderType = static_cast<SHADER_TYPE>(shaderFile.read<int>());
 			
-			auto d3d_len = shaderFile.read<int>();
-			if (d3d_len > 1024 * 64) throw;
+			// read HLSL
+			auto hlsl_len = shaderFile.read<int>();
+			if (hlsl_len > 1024 * 64) throw;
 
-			auto d3d_data = new char[d3d_len];
+			auto hlsl_data = new char[hlsl_len];
+			shaderFile.read(hlsl_data, hlsl_len);
 
-			shaderFile.read(d3d_data, d3d_len);
+			// we now have the shader bytecode
+			// create shader
+			switch(shaderType)
+			{
+			case PIXEL_SHADER: 
+				m_device->CreatePixelShader(hlsl_data, hlsl_len, nullptr, &pixelShader);
+				break;
+			case VERTEX_SHADER:
+				m_device->CreateVertexShader(hlsl_data, hlsl_len, nullptr, &vertexShader);
+				// TODO: try to build input layout
+				break;
+			case COMPUTE_SHADER:
+				m_device->CreateComputeShader(hlsl_data, hlsl_len, nullptr, &computeShader);
+				break;
+			default: break;
+			}
 
-			// skip glsl
+			delete[] hlsl_data;
+
+			// read GLSL
 			auto glsl_len = shaderFile.read<int>();
-			shaderFile.read(d3d_data, glsl_len);
+			if (glsl_len > 1024 * 64) throw;
 
-			delete [] d3d_data;
+			auto glsl_data = new char[glsl_len];
+			shaderFile.read(glsl_data, glsl_len);
+
+			// we don't need GLSL, but we need to push the stream
+
+			delete[] glsl_data;
 		}
 	}
+
+	auto sp = new D3D11ShaderProgram(vertexShader, pixelShader, computeShader);
+
+	// create buffers
+	// TODO: create buffers
 
 	return sp;
 }

@@ -50,11 +50,15 @@ public:
 		fseek(m_file, position, SEEK_SET);
 	}
 
+	long get_pos()
+	{
+		return ftell(m_file);
+	}
+
 	void skip(int bytes)
 	{
-		auto pos = ftell(m_file);
-
-		fseek(m_file, pos + bytes, SEEK_SET);
+		fseek(m_file, ReadPosition + bytes, SEEK_SET);
+		ReadPosition += bytes;
 	}
 
 	void read(void* buffer, size_t length, size_t offset = 0)
@@ -68,7 +72,7 @@ public:
 		ReadPosition += length;
 
 		// read
-		fread(buffer, length, 1, m_file);
+		fread(buffer, 1, length, m_file);
 	}
 
 	void read(void* buffer)
@@ -78,7 +82,7 @@ public:
 
 	void write(void* data, size_t data_lenght) const
 	{
-		fwrite(data, data_lenght, 1, m_file);
+		fwrite(data, 1, data_lenght, m_file);
 	}
 	
 	void write_string(std::string string)

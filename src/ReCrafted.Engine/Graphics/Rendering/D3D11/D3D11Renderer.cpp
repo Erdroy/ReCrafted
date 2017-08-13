@@ -492,3 +492,13 @@ void D3D11Renderer::shutdown()
 	// call base method
 	Renderer::shutdown();
 }
+
+void* D3D11Renderer::getDevice()
+{
+	return m_device;
+}
+
+void* D3D11Renderer::getDeviceContext()
+{
+	return m_deviceContext;
+}
