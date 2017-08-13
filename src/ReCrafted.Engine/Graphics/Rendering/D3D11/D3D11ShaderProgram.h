@@ -8,9 +8,8 @@
 // includes
 #include "D3D11.h"
 
-#include <string>
 #include <vector>
-#include <algorithm>
+#include <string>
 
 struct D3D11ShaderPass
 {
