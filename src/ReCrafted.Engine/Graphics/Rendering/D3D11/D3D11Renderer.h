@@ -94,6 +94,13 @@ public:
 	shaderHandle loadShader(const char* fileName) override;
 
 	/**
+	* \brief Applies the shader to the current state.
+	* \param handle The shader handle.
+	* \param passName The shader pass name.
+	*/
+	void applyShader(shaderHandle handle, const char* passName) override;
+
+	/**
 	* \brief Destroys shader.
 	* \param handle The shader handle which will be destroyed.
 	*/

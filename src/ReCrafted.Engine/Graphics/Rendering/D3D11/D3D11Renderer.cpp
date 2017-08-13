@@ -41,12 +41,6 @@ public:
 
 };
 
-struct ShaderInfo
-{
-	
-};
-
-
 OBJECT_ARRAY(ID3D11Buffer*, vertexBuffer, vertexBufferHandle, RENDERER_MAX_VERTEX_BUFFERS)
 OBJECT_INFO_ARRAY(VertexBufferInfo, vertexBufferInfo, vertexBufferHandle, RENDERER_MAX_INDEX_BUFFERS)
 
@@ -433,8 +427,17 @@ shaderHandle D3D11Renderer::loadShader(const char* fileName)
 	return shaderHandle;
 }
 
+void D3D11Renderer::applyShader(shaderHandle handle, const char* passName)
+{
+	auto program = shaderProgram_get(handle);
+
+	if (program)
+		program->Apply(passName);
+}
+
 void D3D11Renderer::destroyShader(shaderHandle handle)
 {
+	shaderProgram_release(handle);
 }
 
 void D3D11Renderer::draw(int vertexCount)

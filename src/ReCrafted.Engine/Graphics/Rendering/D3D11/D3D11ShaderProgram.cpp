@@ -123,25 +123,6 @@ HRESULT CreateInputLayoutDescFromVertexShaderSignature(void* shaderData, size_t 
 	return hr;
 }
 
-void D3D11ShaderProgram::Apply(const char* pass_name)
-{
-	for (auto & pass : m_passes) {
-		if (pass.name == pass_name) {
-			auto deviceContext = static_cast<ID3D11DeviceContext*>(D3D11Renderer::getDeviceContext());
-
-			if(pass.m_computeShader)
-				deviceContext->CSSetShader(pass.m_computeShader, nullptr, 0);
-			if (pass.m_pixelShader)
-				deviceContext->PSSetShader(pass.m_pixelShader, nullptr, 0);
-			if (pass.m_vertexShader)
-				deviceContext->VSSetShader(pass.m_vertexShader, nullptr, 0);
-
-			deviceContext->IASetInputLayout(pass.m_inputLayout);
-			return;
-		}
-	}
-}
-
 D3D11ShaderProgram* LoadShader(const char* fileName)
 {
 	auto device = static_cast<ID3D11Device*>(D3D11Renderer::getDevice());
@@ -218,4 +199,23 @@ D3D11ShaderProgram* LoadShader(const char* fileName)
 	// TODO: create buffers
 
 	return new D3D11ShaderProgram(shader_passes);
+}
+
+void D3D11ShaderProgram::Apply(const char* pass_name)
+{
+	for (auto & pass : m_passes) {
+		if (pass.name == pass_name) {
+			auto deviceContext = static_cast<ID3D11DeviceContext*>(D3D11Renderer::getDeviceContext());
+
+			if (pass.m_computeShader)
+				deviceContext->CSSetShader(pass.m_computeShader, nullptr, 0);
+			if (pass.m_pixelShader)
+				deviceContext->PSSetShader(pass.m_pixelShader, nullptr, 0);
+			if (pass.m_vertexShader)
+				deviceContext->VSSetShader(pass.m_vertexShader, nullptr, 0);
+
+			deviceContext->IASetInputLayout(pass.m_inputLayout);
+			return;
+		}
+	}
 }

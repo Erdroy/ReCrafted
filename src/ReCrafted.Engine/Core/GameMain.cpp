@@ -455,6 +455,8 @@ void GameMain::onDraw()
 
 #if NEW_RENDERING
 	m_renderer->beginFrame();
+
+	m_renderer->applyShader(m_testShader, "Default");
 #endif
 
 	// update state
