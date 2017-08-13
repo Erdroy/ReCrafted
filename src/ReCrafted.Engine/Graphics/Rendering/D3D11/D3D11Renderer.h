@@ -134,7 +134,7 @@ public:
 	*/
 	void shutdown() override;
 
-private:
+public:
 	static void* getDevice();
 	static void* getDeviceContext();
 };

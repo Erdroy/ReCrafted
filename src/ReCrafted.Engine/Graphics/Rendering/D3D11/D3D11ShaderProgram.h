@@ -15,11 +15,14 @@ private:
 	ID3D11PixelShader* m_pixelShader = nullptr;
 	ID3D11ComputeShader* m_computeShader = nullptr;
 
+	ID3D11InputLayout* m_inputLayout = nullptr;
+
 public:
-	D3D11ShaderProgram(ID3D11VertexShader* vs, ID3D11PixelShader* ps, ID3D11ComputeShader* cs) : 
+	D3D11ShaderProgram(ID3D11VertexShader* vs, ID3D11PixelShader* ps, ID3D11ComputeShader* cs, ID3D11InputLayout* il) :
 	m_vertexShader(vs), 
 	m_pixelShader(ps), 
-	m_computeShader(cs)
+	m_computeShader(cs),
+	m_inputLayout(il)
 	{
 		
 	}

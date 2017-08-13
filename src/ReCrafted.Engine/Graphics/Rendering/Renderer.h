@@ -54,7 +54,7 @@ struct VertexAttribType
 	};
 };
 
-struct VertexElem
+/*struct VertexElem
 {
 public:
 	VertexAttrib::_enum attrib = VertexAttrib::Position;
@@ -86,7 +86,7 @@ public:
 		m_elemets[m_count] = VertexElem(attrib, count, attribType);
 		m_count++;
 	}
-};
+};*/
 
 struct handleBase
 {

@@ -13,6 +13,8 @@
 #pragma comment (lib, "DXGI.lib")
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
+#pragma comment(lib, "dxguid.lib")
+
 
 #define DXCALL(x) if(FAILED(##x##))
 
@@ -294,22 +296,6 @@ vertexBufferHandle D3D11Renderer::createVertexBuffer(int vertexCount, int vertex
 
 	// set pointer
 	vertexBuffer_set(buffer, bufferPtr);
-
-	/*D3D11_INPUT_ELEMENT_DESC inputElements[16] = {};
-
-	for(auto i = 0u; i < vertexDesc.m_count; i ++)
-	{
-		D3D11_INPUT_ELEMENT_DESC inputElement = {};
-
-		auto element = vertexDesc.m_elemets[i];
-
-		inputElement.SemanticName = AttribToSemantic(element.attrib);
-		inputElement.Format = AttribTypeToFormat(element.attribType, element.count);
-		inputElement.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
-		inputElement.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-
-		inputElements[i] = inputElement;
-	}*/
 
 	return buffer;
 }

@@ -4,7 +4,16 @@
 
 #include "../../../../ReCrafted.ShaderCompiler/Compiler/ShaderMeta.h"
 #include "../../../../ReCrafted.ShaderCompiler/Compiler/File.h"
+
 #include "D3D11Renderer.h"
+
+struct InputLayout
+{
+	std::vector<D3D11_INPUT_ELEMENT_DESC> elements;
+	ID3D11InputLayout* inputLayout;
+};
+
+std::vector<InputLayout> input_layouts = {};
 
 typedef enum // from `hlslcc.h`
 {
@@ -17,6 +26,103 @@ typedef enum // from `hlslcc.h`
 	COMPUTE_SHADER,
 } SHADER_TYPE;
 
+// source: https://takinginitiative.wordpress.com/2011/12/11/directx-1011-basic-shader-reflection-automatic-input-layout-creation/
+HRESULT CreateInputLayoutDescFromVertexShaderSignature(void* shaderData, size_t shaderDataSize, ID3D11Device* pD3DDevice, ID3D11InputLayout** pInputLayout)
+{
+	// Reflect shader info
+	ID3D11ShaderReflection* pVertexShaderReflection = NULL;
+	if (FAILED(D3DReflect(shaderData, shaderDataSize, IID_ID3D11ShaderReflection, (void**)&pVertexShaderReflection)))
+	{
+		return S_FALSE;
+	}
+
+	// Get shader info
+	D3D11_SHADER_DESC shaderDesc;
+	pVertexShaderReflection->GetDesc(&shaderDesc);
+
+	// Read input layout description from shader info
+	std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayoutDesc;
+	for (uint32 i = 0; i< shaderDesc.InputParameters; i++)
+	{
+		D3D11_SIGNATURE_PARAMETER_DESC paramDesc;
+		pVertexShaderReflection->GetInputParameterDesc(i, &paramDesc);
+
+		// fill out input element desc
+		D3D11_INPUT_ELEMENT_DESC elementDesc;
+		elementDesc.SemanticName = paramDesc.SemanticName;
+		elementDesc.SemanticIndex = paramDesc.SemanticIndex;
+		elementDesc.InputSlot = 0;
+		elementDesc.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+		elementDesc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+		elementDesc.InstanceDataStepRate = 0;
+
+		// determine DXGI format
+		if (paramDesc.Mask == 1)
+		{
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) elementDesc.Format = DXGI_FORMAT_R32_UINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) elementDesc.Format = DXGI_FORMAT_R32_SINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) elementDesc.Format = DXGI_FORMAT_R32_FLOAT;
+		}
+		else if (paramDesc.Mask <= 3)
+		{
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) elementDesc.Format = DXGI_FORMAT_R32G32_UINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) elementDesc.Format = DXGI_FORMAT_R32G32_SINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) elementDesc.Format = DXGI_FORMAT_R32G32_FLOAT;
+		}
+		else if (paramDesc.Mask <= 7)
+		{
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) elementDesc.Format = DXGI_FORMAT_R32G32B32_UINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) elementDesc.Format = DXGI_FORMAT_R32G32B32_SINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) elementDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+		}
+		else if (paramDesc.Mask <= 15)
+		{
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) elementDesc.Format = DXGI_FORMAT_R32G32B32A32_UINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) elementDesc.Format = DXGI_FORMAT_R32G32B32A32_SINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) elementDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		}
+
+		//save element desc
+		inputLayoutDesc.push_back(elementDesc);
+	}
+
+	// try to find cached input layout
+	for(auto & il : input_layouts)
+	{
+		if(il.elements.size() == inputLayoutDesc.size())
+		{
+			for(auto i = 0u; i < inputLayoutDesc.size(); i ++)
+			{
+				if(inputLayoutDesc[i].Format == il.elements[i].Format && 
+					inputLayoutDesc[i].SemanticIndex == il.elements[i].SemanticIndex &&
+					strcmp(inputLayoutDesc[i].SemanticName, il.elements[i].SemanticName) == 0)
+				{
+					// we have found the same vertex input layout!
+					// set the input layout and return
+					*pInputLayout = il.inputLayout;
+					return S_OK;
+				}
+			}
+		}
+	}
+
+	// TODO: try to find the same input layout, and return it's pointer when found, in any other case, continue.
+
+	// Try to create Input Layout
+	auto hr = pD3DDevice->CreateInputLayout(&inputLayoutDesc[0], static_cast<uint>(inputLayoutDesc.size()), shaderData, shaderDataSize, pInputLayout);
+
+	//Free allocation shader reflection memory
+	pVertexShaderReflection->Release();
+
+	// cache the input layout
+	auto newIl = InputLayout();
+	newIl.elements = inputLayoutDesc;
+	newIl.inputLayout = *pInputLayout;
+	input_layouts.push_back(newIl);
+
+	return hr;
+}
+
 D3D11ShaderProgram* LoadShader(const char* fileName)
 {
 	auto m_device = static_cast<ID3D11Device*>(D3D11Renderer::getDevice());
@@ -24,6 +130,7 @@ D3D11ShaderProgram* LoadShader(const char* fileName)
 	ID3D11VertexShader* vertexShader = nullptr;
 	ID3D11PixelShader* pixelShader = nullptr;
 	ID3D11ComputeShader* computeShader = nullptr;
+	ID3D11InputLayout* inputLayout = nullptr;
 
 	File shaderFile = {};
 	File::openFile(&shaderFile, fileName, OpenMode::OpenRead);
@@ -59,9 +166,13 @@ D3D11ShaderProgram* LoadShader(const char* fileName)
 				m_device->CreatePixelShader(hlsl_data, hlsl_len, nullptr, &pixelShader);
 				break;
 			case VERTEX_SHADER:
+			{
 				m_device->CreateVertexShader(hlsl_data, hlsl_len, nullptr, &vertexShader);
-				// TODO: try to build input layout
+
+				CreateInputLayoutDescFromVertexShaderSignature(hlsl_data, static_cast<size_t>(hlsl_len), m_device, &inputLayout);
 				break;
+			}
+
 			case COMPUTE_SHADER:
 				m_device->CreateComputeShader(hlsl_data, hlsl_len, nullptr, &computeShader);
 				break;
@@ -83,7 +194,7 @@ D3D11ShaderProgram* LoadShader(const char* fileName)
 		}
 	}
 
-	auto sp = new D3D11ShaderProgram(vertexShader, pixelShader, computeShader);
+	auto sp = new D3D11ShaderProgram(vertexShader, pixelShader, computeShader, inputLayout);
 
 	// create buffers
 	// TODO: create buffers

@@ -50,17 +50,6 @@ public:
 		fseek(m_file, position, SEEK_SET);
 	}
 
-	long get_pos()
-	{
-		return ftell(m_file);
-	}
-
-	void skip(int bytes)
-	{
-		fseek(m_file, ReadPosition + bytes, SEEK_SET);
-		ReadPosition += bytes;
-	}
-
 	void read(void* buffer, size_t length, size_t offset = 0)
 	{
 		if(offset > 0)

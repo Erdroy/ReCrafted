@@ -6,13 +6,6 @@
 
 Renderer* Renderer::current;
 
-VertexElem::VertexElem(VertexAttrib::_enum attrib, int count, VertexAttribType::_enum attribType):
-	attrib(attrib),
-	count(count),
-	attribType(attribType)
-{
-}
-
 Renderer* Renderer::initialize(RendererType::_enum rendererType, void* windowHandle, bool multithreaded)
 {
 	Renderer* renderer;
@@ -28,10 +21,6 @@ Renderer* Renderer::initialize(RendererType::_enum rendererType, void* windowHan
 		return nullptr;
 	}
 	renderer->initialize(windowHandle, multithreaded);
-
-	VertexDesc desc = {};
-	desc.add(VertexAttrib::Position, 3, VertexAttribType::Float);
-	desc.add(VertexAttrib::TexCoord0, 4, VertexAttribType::Float);
 
 	renderer->createVertexBuffer(1, 4 * 4, nullptr);
 
