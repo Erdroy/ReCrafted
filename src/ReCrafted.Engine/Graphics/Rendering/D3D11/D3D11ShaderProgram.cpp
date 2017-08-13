@@ -153,10 +153,11 @@ D3D11ShaderProgram* LoadShader(const char* fileName)
 	for(auto passId = 0; passId < passCount; passId ++)
 	{
 		auto shaderPass = D3D11ShaderPass();
-
 		auto pass = meta.passes[passId];
-
 		auto shaderCount = shaderFile.read<int>();
+
+		// copy pass name
+		shaderPass.name = pass.name;
 
 		// create shaders
 		for (auto shaderId = 0; shaderId < shaderCount; shaderId++)
