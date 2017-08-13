@@ -140,10 +140,11 @@ bool compile_shadermethod(char* code, int codelength, const char* input, const c
 	TranslateHLSLFromMem(static_cast<char*>(shaderBlob->GetBufferPointer()), 0, LANG_400, &ext, &deps, prec, reflection, &shader);
 
 	// write glsl
-	file.write(static_cast<int>(shader.sourceCode.size()));
-	file.write((void*)shader.sourceCode.c_str(), shader.sourceCode.size());
+	auto length = static_cast<int>(shader.sourceCode.length());
+	file.write(length);
+	file.write((void*)shader.sourceCode.c_str(), shader.sourceCode.length());
 
-	return false;
+	return true;
 }
 
 /**

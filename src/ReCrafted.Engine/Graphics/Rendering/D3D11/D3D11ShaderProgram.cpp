@@ -5,7 +5,7 @@
 #include "../../../../ReCrafted.ShaderCompiler/Compiler/ShaderMeta.h"
 #include "../../../../ReCrafted.ShaderCompiler/Compiler/File.h"
 
-typedef enum
+typedef enum // from `hlslcc.h`
 {
 	INVALID_SHADER = -1,
 	PIXEL_SHADER,
@@ -38,9 +38,18 @@ D3D11ShaderProgram* LoadShader(const char* fileName)
 		{
 			auto shaderType = static_cast<SHADER_TYPE>(shaderFile.read<int>());
 			
-			auto d3dsize = shaderFile.read<int>();
+			auto d3d_len = shaderFile.read<int>();
+			if (d3d_len > 1024 * 64) throw;
 
-			auto glslsize = shaderFile.read<int>();
+			auto d3d_data = new char[d3d_len];
+
+			shaderFile.read(d3d_data, d3d_len);
+
+			// skip glsl
+			auto glsl_len = shaderFile.read<int>();
+			shaderFile.read(d3d_data, glsl_len);
+
+			delete [] d3d_data;
 		}
 	}
 

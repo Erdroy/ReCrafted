@@ -36,6 +36,7 @@ private:
 public:
 	char FileName[512];
 	size_t FileSize = 0u;
+	size_t ReadPosition = 0u;
 
 	~File()
 	{
@@ -49,7 +50,14 @@ public:
 		fseek(m_file, position, SEEK_SET);
 	}
 
-	void read(void* buffer, size_t length, size_t offset = 0) const
+	void skip(int bytes)
+	{
+		auto pos = ftell(m_file);
+
+		fseek(m_file, pos + bytes, SEEK_SET);
+	}
+
+	void read(void* buffer, size_t length, size_t offset = 0)
 	{
 		if(offset > 0)
 		{
@@ -57,11 +65,13 @@ public:
 			fseek(m_file, long(offset), SEEK_SET);
 		}
 
+		ReadPosition += length;
+
 		// read
 		fread(buffer, length, 1, m_file);
 	}
 
-	void read(void* buffer) const
+	void read(void* buffer)
 	{
 		read(buffer, FileSize);
 	}
@@ -73,7 +83,7 @@ public:
 	
 	void write_string(std::string string)
 	{
-		write_string(string.c_str(), string.length());
+		write_string(string.c_str(), (int)string.length());
 	}
 
 	void write_string(const char* string, int len)
@@ -82,7 +92,7 @@ public:
 		write((void*)string, len);
 	}
 
-	std::string read_string() const
+	std::string read_string()
 	{
 		int length = 0;
 		read(&length, sizeof(int));
