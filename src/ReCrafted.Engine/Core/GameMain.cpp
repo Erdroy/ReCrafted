@@ -213,6 +213,8 @@ void GameMain::run()
 	auto newRenderingWnd = CreateWindowW(L"recrafted", L"ReCrafted (New Renderer)", WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 1280, 720, NULL, NULL, instance, nullptr);
 
 	m_renderer = Renderer::initialize(RendererType::DirectX11, newRenderingWnd, false);
+
+	m_renderer->loadShader("test.shader");
 #endif
 
 	// initialize bgfx platform data
