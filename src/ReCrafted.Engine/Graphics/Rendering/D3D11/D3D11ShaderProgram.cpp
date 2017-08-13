@@ -123,14 +123,22 @@ HRESULT CreateInputLayoutDescFromVertexShaderSignature(void* shaderData, size_t 
 	return hr;
 }
 
+void D3D11ShaderProgram::Apply(const char* pass_name)
+{
+	for (auto & pass : m_passes) {
+		if (pass.name == pass_name) {
+			auto device = static_cast<ID3D11Device*>(D3D11Renderer::getDevice());
+
+			// TODO: apply this pass if needed
+
+			return;
+		}
+	}
+}
+
 D3D11ShaderProgram* LoadShader(const char* fileName)
 {
-	auto m_device = static_cast<ID3D11Device*>(D3D11Renderer::getDevice());
-
-	ID3D11VertexShader* vertexShader = nullptr;
-	ID3D11PixelShader* pixelShader = nullptr;
-	ID3D11ComputeShader* computeShader = nullptr;
-	ID3D11InputLayout* inputLayout = nullptr;
+	auto device = static_cast<ID3D11Device*>(D3D11Renderer::getDevice());
 
 	File shaderFile = {};
 	File::openFile(&shaderFile, fileName, OpenMode::OpenRead);
@@ -140,8 +148,12 @@ D3D11ShaderProgram* LoadShader(const char* fileName)
 
 	auto passCount = shaderFile.read<int>();
 
+	std::vector<D3D11ShaderPass> shader_passes = {};
+
 	for(auto passId = 0; passId < passCount; passId ++)
 	{
+		auto shaderPass = D3D11ShaderPass();
+
 		auto pass = meta.passes[passId];
 
 		auto shaderCount = shaderFile.read<int>();
@@ -163,18 +175,17 @@ D3D11ShaderProgram* LoadShader(const char* fileName)
 			switch(shaderType)
 			{
 			case PIXEL_SHADER: 
-				m_device->CreatePixelShader(hlsl_data, hlsl_len, nullptr, &pixelShader);
+				device->CreatePixelShader(hlsl_data, hlsl_len, nullptr, &shaderPass.m_pixelShader);
 				break;
 			case VERTEX_SHADER:
 			{
-				m_device->CreateVertexShader(hlsl_data, hlsl_len, nullptr, &vertexShader);
-
-				CreateInputLayoutDescFromVertexShaderSignature(hlsl_data, static_cast<size_t>(hlsl_len), m_device, &inputLayout);
+				device->CreateVertexShader(hlsl_data, hlsl_len, nullptr, &shaderPass.m_vertexShader);
+				CreateInputLayoutDescFromVertexShaderSignature(hlsl_data, static_cast<size_t>(hlsl_len), device, &shaderPass.m_inputLayout);
 				break;
 			}
 
 			case COMPUTE_SHADER:
-				m_device->CreateComputeShader(hlsl_data, hlsl_len, nullptr, &computeShader);
+				device->CreateComputeShader(hlsl_data, hlsl_len, nullptr, &shaderPass.m_computeShader);
 				break;
 			default: break;
 			}
@@ -192,12 +203,12 @@ D3D11ShaderProgram* LoadShader(const char* fileName)
 
 			delete[] glsl_data;
 		}
-	}
 
-	auto sp = new D3D11ShaderProgram(vertexShader, pixelShader, computeShader, inputLayout);
+		shader_passes.push_back(shaderPass);
+	}
 
 	// create buffers
 	// TODO: create buffers
 
-	return sp;
+	return new D3D11ShaderProgram(shader_passes);
 }

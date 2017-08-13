@@ -41,6 +41,8 @@ private:
 
 #if NEW_RENDERING
 	Renderer* m_renderer = nullptr;
+
+	shaderHandle m_testShader = {};
 #endif
 
 	bool m_showCursor = true;

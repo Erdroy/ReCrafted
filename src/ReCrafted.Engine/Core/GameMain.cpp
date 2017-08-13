@@ -214,7 +214,7 @@ void GameMain::run()
 
 	m_renderer = Renderer::initialize(RendererType::DirectX11, newRenderingWnd, false);
 
-	m_renderer->loadShader("test.shader");
+	m_testShader = m_renderer->loadShader("test.shader");
 #endif
 
 	// initialize bgfx platform data

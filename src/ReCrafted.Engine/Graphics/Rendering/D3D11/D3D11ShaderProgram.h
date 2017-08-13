@@ -8,26 +8,20 @@
 // includes
 #include "D3D11.h"
 
-struct D3D11ShaderProgram
+#include <string>
+#include <vector>
+#include <algorithm>
+
+struct D3D11ShaderPass
 {
-private:
+public:
+	std::string name = {};
+
 	ID3D11VertexShader* m_vertexShader = nullptr;
 	ID3D11PixelShader* m_pixelShader = nullptr;
 	ID3D11ComputeShader* m_computeShader = nullptr;
-
 	ID3D11InputLayout* m_inputLayout = nullptr;
 
-public:
-	D3D11ShaderProgram(ID3D11VertexShader* vs, ID3D11PixelShader* ps, ID3D11ComputeShader* cs, ID3D11InputLayout* il) :
-	m_vertexShader(vs), 
-	m_pixelShader(ps), 
-	m_computeShader(cs),
-	m_inputLayout(il)
-	{
-		
-	}
-
-public:
 	void Release()
 	{
 		if (m_vertexShader)
@@ -37,6 +31,31 @@ public:
 		if (m_computeShader)
 			m_computeShader->Release();
 
+		// TODO: proper input layout release
+	}
+};
+
+struct D3D11ShaderProgram
+{
+private:
+	std::vector<D3D11ShaderPass> m_passes = {};
+
+public:
+	D3D11ShaderProgram(std::vector<D3D11ShaderPass> shaderPasses)
+	{
+		m_passes = shaderPasses;
+	}
+
+public:
+	void Apply(const char* pass_name);
+
+	void Release()
+	{
+		// release all passes
+		for(auto & pass : m_passes)
+			pass.Release();
+
+		// suicide
 		delete this;
 	}
 };
