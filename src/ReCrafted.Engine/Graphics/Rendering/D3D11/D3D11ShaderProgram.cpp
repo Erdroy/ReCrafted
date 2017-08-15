@@ -424,6 +424,9 @@ void D3D11ShaderProgram::Apply(int pass_index)
 			// this buffer has some changed data,
 			// we need to update it now.
 			updateBuffers(idx);
+
+			// uncheck dirty flag
+			buffer.m_dirty = false;
 		}
 
 		idx++;
