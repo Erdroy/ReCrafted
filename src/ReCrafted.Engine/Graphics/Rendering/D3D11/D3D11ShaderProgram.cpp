@@ -26,6 +26,113 @@ typedef enum // from `hlslcc.h`
 	COMPUTE_SHADER,
 } SHADER_TYPE;
 
+uint8_t TypeSizeFromString(const char* typeName)
+{
+	// int
+	if (strcmp(typeName, "int") == 0)
+	{
+		return 4u;
+	}
+
+	// uint
+	if (strcmp(typeName, "uint") == 0)
+	{
+		return 4u;
+	}
+
+	// dword
+	if (strcmp(typeName, "dword") == 0)
+	{
+		return 4u;
+	}
+
+	// float
+	if (strcmp(typeName, "float") == 0)
+	{
+		return 4u;
+	}
+
+	// float2
+	if (strcmp(typeName, "float2") == 0)
+	{
+		return 4u * 2;
+	}
+
+	// float3
+	if (strcmp(typeName, "float3") == 0)
+	{
+		return 4u * 3;
+	}
+
+	// float4
+	if (strcmp(typeName, "float4") == 0)
+	{
+		return 4u * 4;
+	}
+
+	// float2x2
+	if (strcmp(typeName, "float2") == 0)
+	{
+		return 4u * 2 * 2;
+	}
+
+	// float3x2
+	if (strcmp(typeName, "float3") == 0)
+	{
+		return 4u * 3 * 2;
+	}
+
+	// float4x2
+	if (strcmp(typeName, "float4") == 0)
+	{
+		return 4u * 4 * 2;
+	}
+
+	// float2x3
+	if (strcmp(typeName, "float2") == 0)
+	{
+		return 4u * 2 * 3;
+	}
+
+	// float3x3
+	if (strcmp(typeName, "float3") == 0)
+	{
+		return 4u * 3 * 3;
+	}
+
+	// float4x3
+	if (strcmp(typeName, "float4") == 0)
+	{
+		return 4u * 4 * 3;
+	}
+
+	// float2x4
+	if (strcmp(typeName, "float2") == 0)
+	{
+		return 4u * 2 * 4;
+	}
+
+	// float3x4
+	if (strcmp(typeName, "float3") == 0)
+	{
+		return 4u * 3 * 4;
+	}
+
+	// float4x4
+	if (strcmp(typeName, "float4") == 0)
+	{
+		return 4u * 4 * 4;
+	}
+
+	// matrix
+	if (strcmp(typeName, "matrix") == 0)
+	{
+		return 4u * 4 * 4;
+	}
+		
+	throw;
+}
+
 // source: https://takinginitiative.wordpress.com/2011/12/11/directx-1011-basic-shader-reflection-automatic-input-layout-creation/
 HRESULT CreateInputLayoutDescFromVertexShaderSignature(void* shaderData, size_t shaderDataSize, ID3D11Device* pD3DDevice, ID3D11InputLayout** pInputLayout)
 {
@@ -192,13 +299,52 @@ D3D11ShaderProgram* LoadShader(const char* fileName)
 			delete[] glsl_data;
 		}
 
+		// add shader pass
 		shader_passes.push_back(shaderPass);
 	}
 
 	// create buffers
-	// TODO: create buffers
+	std::vector<D3D11ShaderBuffer> shader_buffers = {};
+	for (auto bufferId = 0u; bufferId < meta.buffers.size(); bufferId++)
+	{
+		auto buffer = meta.buffers[bufferId];
 
-	return new D3D11ShaderProgram(shader_passes);
+		D3D11ShaderBuffer shaderBuffer = {};
+
+		// copy buffer name
+		shaderBuffer.name = buffer.name;
+
+		// copy fields, calculate size and offsets
+		uint16_t offset = 0;
+		for(auto fieldId = 0u; fieldId < buffer.fields.size(); fieldId++)
+		{
+			auto field = buffer.fields[fieldId];
+			auto fieldSize = TypeSizeFromString(field.name.c_str());
+
+			D3D11ShaderBufferField shaderField = {};
+
+			// copy name
+			shaderField.name = field.name;
+
+			// set size
+			shaderField.size = fieldSize;
+
+			// set offset
+			shaderField.offset = offset;
+
+			// add shader buffer field
+			shaderBuffer.m_fields.push_back(shaderField);
+
+			offset += fieldSize;
+		}
+
+		// TODO: create dynamic ID3D11Buffer
+
+		// add shader buffer
+		shader_buffers.push_back(shaderBuffer);
+	}
+
+	return new D3D11ShaderProgram(shader_passes, shader_buffers);
 }
 
 void D3D11ShaderProgram::Apply(const char* pass_name)
@@ -228,4 +374,12 @@ void D3D11ShaderProgram::Apply(int pass_index)
 		deviceContext->VSSetShader(pass.m_vertexShader, nullptr, 0);
 
 	deviceContext->IASetInputLayout(pass.m_inputLayout);
+}
+
+void D3D11ShaderProgram::SetValue(const char* buffer_name, const char* field_name, void* value)
+{
+}
+
+void D3D11ShaderProgram::SetValue(int buffer_index, int field_index, void* value)
+{
 }

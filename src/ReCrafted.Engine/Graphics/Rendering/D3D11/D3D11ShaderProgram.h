@@ -13,7 +13,6 @@
 
 struct D3D11ShaderPass
 {
-public:
 	std::string name = {};
 
 	ID3D11VertexShader* m_vertexShader = nullptr;
@@ -34,21 +33,50 @@ public:
 	}
 };
 
+struct D3D11ShaderBufferField
+{
+	std::string name = {};
+
+	uint8_t size = 0;
+	uint16_t offset = 0;
+};
+
+struct D3D11ShaderBuffer
+{
+	std::string name = {};
+
+	std::vector<D3D11ShaderBufferField> m_fields = {};
+
+	ID3D11Buffer* m_buffer = nullptr;
+	byte* m_data = nullptr;
+
+	void Release()
+	{
+		if(m_data)
+			delete[] m_data;
+	}
+};
+
 struct D3D11ShaderProgram
 {
 private:
 	std::vector<D3D11ShaderPass> m_passes = {};
+	std::vector<D3D11ShaderBuffer> m_buffers = {};
 
 public:
-	D3D11ShaderProgram(std::vector<D3D11ShaderPass> shaderPasses)
+	D3D11ShaderProgram(const std::vector<D3D11ShaderPass>& shader_passes, const std::vector<D3D11ShaderBuffer>& shader_buffers)
+		: m_passes(shader_passes),
+		  m_buffers(shader_buffers)
 	{
-		m_passes = shaderPasses;
 	}
 
-public:
 	void Apply(const char* pass_name);
 
 	void Apply(int pass_index);
+
+	void SetValue(const char* buffer_name, const char* field_name, void* value);
+
+	void SetValue(int buffer_index, int field_index, void* value);
 
 	void Release()
 	{
