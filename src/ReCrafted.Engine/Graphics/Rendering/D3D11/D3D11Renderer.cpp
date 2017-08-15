@@ -435,6 +435,14 @@ void D3D11Renderer::applyShader(shaderHandle handle, const char* passName)
 		program->Apply(passName);
 }
 
+void D3D11Renderer::applyShader(shaderHandle handle, int passIndex)
+{
+	auto program = shaderProgram_get(handle);
+
+	if (program)
+		program->Apply(passIndex);
+}
+
 void D3D11Renderer::destroyShader(shaderHandle handle)
 {
 	shaderProgram_release(handle);

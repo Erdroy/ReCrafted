@@ -48,6 +48,8 @@ public:
 public:
 	void Apply(const char* pass_name);
 
+	void Apply(int pass_index);
+
 	void Release()
 	{
 		// release all passes

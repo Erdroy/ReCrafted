@@ -219,3 +219,19 @@ void D3D11ShaderProgram::Apply(const char* pass_name)
 		}
 	}
 }
+
+void D3D11ShaderProgram::Apply(int pass_index)
+{
+	auto pass = m_passes[pass_index];
+
+	auto deviceContext = static_cast<ID3D11DeviceContext*>(D3D11Renderer::getDeviceContext());
+
+	if (pass.m_computeShader)
+		deviceContext->CSSetShader(pass.m_computeShader, nullptr, 0);
+	if (pass.m_pixelShader)
+		deviceContext->PSSetShader(pass.m_pixelShader, nullptr, 0);
+	if (pass.m_vertexShader)
+		deviceContext->VSSetShader(pass.m_vertexShader, nullptr, 0);
+
+	deviceContext->IASetInputLayout(pass.m_inputLayout);
+}

@@ -101,6 +101,13 @@ public:
 	void applyShader(shaderHandle handle, const char* passName) override;
 
 	/**
+	* \brief Applies the shader to the current state.
+	* \param handle The shader handle.
+	* \param passIndex The shader pass imdex.
+	*/
+	void applyShader(shaderHandle handle, int passIndex) override;
+
+	/**
 	* \brief Destroys shader.
 	* \param handle The shader handle which will be destroyed.
 	*/
