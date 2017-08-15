@@ -437,11 +437,11 @@ void D3D11ShaderProgram::Apply(int pass_index)
 
 	// set buffers
 	if (pass.m_vertexShader) // for vertex shader
-		deviceContext->VSSetConstantBuffers(0u, m_buffers.size(), buffers);
+		deviceContext->VSSetConstantBuffers(0u, static_cast<UINT>(m_buffers.size()), buffers);
 	if (pass.m_pixelShader) // for pixel shader
-		deviceContext->PSSetConstantBuffers(0u, m_buffers.size(), buffers);
+		deviceContext->PSSetConstantBuffers(0u, static_cast<UINT>(m_buffers.size()), buffers);
 	if (pass.m_computeShader) // for compute shader
-		deviceContext->CSSetConstantBuffers(0u, m_buffers.size(), buffers);
+		deviceContext->CSSetConstantBuffers(0u, static_cast<UINT>(m_buffers.size()), buffers);
 
 	// set shaders
 	if (pass.m_vertexShader) // for vertex shader
@@ -466,12 +466,19 @@ void D3D11ShaderProgram::Apply(int pass_index)
 
 void D3D11ShaderProgram::SetValue(const char* buffer_name, const char* field_name, void* value)
 {
+	// TODO: ser value by name
+
 }
 
 void D3D11ShaderProgram::SetValue(int buffer_index, int field_index, void* value)
 {
 	// update data
+	auto buffer = m_buffers[buffer_index];
+	auto field = buffer.fields[field_index];
+	
+	// copy data
+	memcpy(buffer.m_data + field.offset, value, field.size);
 
 	// set dirty flags
-	// TODO: buffer dirty flag
+	m_buffers[buffer_index].m_dirty = true;
 }
