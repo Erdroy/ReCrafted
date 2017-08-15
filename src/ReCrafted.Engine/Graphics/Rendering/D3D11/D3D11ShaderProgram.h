@@ -43,15 +43,21 @@ struct D3D11ShaderBufferField
 
 struct D3D11ShaderBuffer
 {
-	std::string name = {};
-
-	std::vector<D3D11ShaderBufferField> m_fields = {};
-
+public:
 	ID3D11Buffer* m_buffer = nullptr;
 	byte* m_data = nullptr;
+	bool m_dirty = false;
+	uint16_t m_size = 0u;
+
+public:
+	std::string name = {};
+	std::vector<D3D11ShaderBufferField> fields = {};
 
 	void Release()
 	{
+		if (m_buffer)
+			m_buffer->Release();
+
 		if(m_data)
 			delete[] m_data;
 	}
@@ -63,11 +69,20 @@ private:
 	std::vector<D3D11ShaderPass> m_passes = {};
 	std::vector<D3D11ShaderBuffer> m_buffers = {};
 
+	std::vector<ID3D11Buffer*> m_buffersCache = {}; // for fast buffer bind
+
+private:
+	void updateBuffers(int buffer_index);
+
 public:
 	D3D11ShaderProgram(const std::vector<D3D11ShaderPass>& shader_passes, const std::vector<D3D11ShaderBuffer>& shader_buffers)
 		: m_passes(shader_passes),
 		  m_buffers(shader_buffers)
 	{
+		for(auto & buffer : shader_buffers)
+		{
+			m_buffersCache.push_back(buffer.m_buffer);
+		}
 	}
 
 	void Apply(const char* pass_name);

@@ -7,6 +7,10 @@
 
 #include "D3D11Renderer.h"
 
+#define DXCALL(x) if(FAILED(##x##))
+
+void* m_lastInputLayout = nullptr;
+
 struct InputLayout
 {
 	std::vector<D3D11_INPUT_ELEMENT_DESC> elements;
@@ -71,55 +75,55 @@ uint8_t TypeSizeFromString(const char* typeName)
 	}
 
 	// float2x2
-	if (strcmp(typeName, "float2") == 0)
+	if (strcmp(typeName, "float2x2") == 0)
 	{
 		return 4u * 2 * 2;
 	}
 
 	// float3x2
-	if (strcmp(typeName, "float3") == 0)
+	if (strcmp(typeName, "float3x2") == 0)
 	{
 		return 4u * 3 * 2;
 	}
 
 	// float4x2
-	if (strcmp(typeName, "float4") == 0)
+	if (strcmp(typeName, "float4x2") == 0)
 	{
 		return 4u * 4 * 2;
 	}
 
 	// float2x3
-	if (strcmp(typeName, "float2") == 0)
+	if (strcmp(typeName, "float2x3") == 0)
 	{
 		return 4u * 2 * 3;
 	}
 
 	// float3x3
-	if (strcmp(typeName, "float3") == 0)
+	if (strcmp(typeName, "float3x3") == 0)
 	{
 		return 4u * 3 * 3;
 	}
 
 	// float4x3
-	if (strcmp(typeName, "float4") == 0)
+	if (strcmp(typeName, "float4x3") == 0)
 	{
 		return 4u * 4 * 3;
 	}
 
 	// float2x4
-	if (strcmp(typeName, "float2") == 0)
+	if (strcmp(typeName, "float2x4") == 0)
 	{
 		return 4u * 2 * 4;
 	}
 
 	// float3x4
-	if (strcmp(typeName, "float3") == 0)
+	if (strcmp(typeName, "float3x4") == 0)
 	{
 		return 4u * 3 * 4;
 	}
 
 	// float4x4
-	if (strcmp(typeName, "float4") == 0)
+	if (strcmp(typeName, "float4x4") == 0)
 	{
 		return 4u * 4 * 4;
 	}
@@ -212,8 +216,6 @@ HRESULT CreateInputLayoutDescFromVertexShaderSignature(void* shaderData, size_t 
 			}
 		}
 	}
-
-	// TODO: try to find the same input layout, and return it's pointer when found, in any other case, continue.
 
 	// Try to create Input Layout
 	auto hr = pD3DDevice->CreateInputLayout(&inputLayoutDesc[0], static_cast<uint>(inputLayoutDesc.size()), shaderData, shaderDataSize, pInputLayout);
@@ -319,7 +321,7 @@ D3D11ShaderProgram* LoadShader(const char* fileName)
 		for(auto fieldId = 0u; fieldId < buffer.fields.size(); fieldId++)
 		{
 			auto field = buffer.fields[fieldId];
-			auto fieldSize = TypeSizeFromString(field.name.c_str());
+			auto fieldSize = TypeSizeFromString(field.type.c_str());
 
 			D3D11ShaderBufferField shaderField = {};
 
@@ -333,18 +335,63 @@ D3D11ShaderProgram* LoadShader(const char* fileName)
 			shaderField.offset = offset;
 
 			// add shader buffer field
-			shaderBuffer.m_fields.push_back(shaderField);
+			shaderBuffer.fields.push_back(shaderField);
 
 			offset += fieldSize;
 		}
 
-		// TODO: create dynamic ID3D11Buffer
+		// create dynamic ID3D11Buffer
+		// offset is the total size of buffer now
+		shaderBuffer.m_size = offset;
+
+		// allocate data for the buffer
+		shaderBuffer.m_data = new byte[offset];
+		memset(shaderBuffer.m_data, 0, offset);
+
+		// construct buffer description
+		D3D11_BUFFER_DESC desc = {};
+		desc.Usage = D3D11_USAGE_DYNAMIC;
+		desc.ByteWidth = offset;
+		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+		D3D11_SUBRESOURCE_DATA subresource_data = {};
+		subresource_data.pSysMem = shaderBuffer.m_data;
+		subresource_data.SysMemPitch = 0;
+		subresource_data.SysMemSlicePitch = 0;
+
+		// create buffer
+		ID3D11Buffer* d3dbuffer = nullptr;
+		DXCALL(device->CreateBuffer(&desc, &subresource_data, &d3dbuffer)) throw;
+
+		// set buffer
+		shaderBuffer.m_buffer = d3dbuffer;
 
 		// add shader buffer
 		shader_buffers.push_back(shaderBuffer);
 	}
 
 	return new D3D11ShaderProgram(shader_passes, shader_buffers);
+}
+
+void D3D11ShaderProgram::updateBuffers(int buffer_index)
+{
+	D3D11_MAPPED_SUBRESOURCE m_mappedSubres = {};
+	auto deviceContext = static_cast<ID3D11DeviceContext*>(D3D11Renderer::getDeviceContext());
+
+	auto buffer = &m_buffers[buffer_index];
+
+	// map buffer
+	DXCALL(deviceContext->Map(buffer->m_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &m_mappedSubres))
+	{
+		// Logger::write("Failed to map buffer", LogLevel::Error);
+	}
+
+	// upload data
+	memcpy(m_mappedSubres.pData, buffer->m_data, buffer->m_size);
+
+	// unmap the buffer
+	deviceContext->Unmap(buffer->m_buffer, 0);
 }
 
 void D3D11ShaderProgram::Apply(const char* pass_name)
@@ -355,25 +402,63 @@ void D3D11ShaderProgram::Apply(const char* pass_name)
 			Apply(idx);
 			return;
 		}
-
 		idx++;
 	}
 }
 
 void D3D11ShaderProgram::Apply(int pass_index)
 {
+	// select pass
 	auto pass = m_passes[pass_index];
 
+	// get deviceContext instance
 	auto deviceContext = static_cast<ID3D11DeviceContext*>(D3D11Renderer::getDeviceContext());
 
-	if (pass.m_computeShader)
-		deviceContext->CSSetShader(pass.m_computeShader, nullptr, 0);
-	if (pass.m_pixelShader)
-		deviceContext->PSSetShader(pass.m_pixelShader, nullptr, 0);
-	if (pass.m_vertexShader)
-		deviceContext->VSSetShader(pass.m_vertexShader, nullptr, 0);
+	// set buffers
+	auto idx = 0;
+	for(auto & buffer : m_buffers)
+	{
+		// check if some value was changed
+		if (buffer.m_dirty)
+		{
+			// this buffer has some changed data,
+			// we need to update it now.
+			updateBuffers(idx);
+		}
 
-	deviceContext->IASetInputLayout(pass.m_inputLayout);
+		idx++;
+	}
+
+	// get buffers cache pointer
+	auto buffers = m_buffersCache.data();
+
+	// set buffers
+	if (pass.m_vertexShader) // for vertex shader
+		deviceContext->VSSetConstantBuffers(0u, m_buffers.size(), buffers);
+	if (pass.m_pixelShader) // for pixel shader
+		deviceContext->PSSetConstantBuffers(0u, m_buffers.size(), buffers);
+	if (pass.m_computeShader) // for compute shader
+		deviceContext->CSSetConstantBuffers(0u, m_buffers.size(), buffers);
+
+	// set shaders
+	if (pass.m_vertexShader) // for vertex shader
+		deviceContext->VSSetShader(pass.m_vertexShader, nullptr, 0);
+	if (pass.m_pixelShader) // for pixel shader
+		deviceContext->PSSetShader(pass.m_pixelShader, nullptr, 0);
+	if (pass.m_computeShader) // for compute shader
+		deviceContext->CSSetShader(pass.m_computeShader, nullptr, 0);
+
+	// we have only one pointer for every certain input layout
+	// for example if we use 10 shaders with the same Input structure
+	// there is only one m_inputLayout pointer due to caching.
+	if (m_lastInputLayout != pass.m_inputLayout)
+	{
+		// set input layout
+		deviceContext->IASetInputLayout(pass.m_inputLayout);
+
+		// update the layout
+		m_lastInputLayout = pass.m_inputLayout;
+	}
 }
 
 void D3D11ShaderProgram::SetValue(const char* buffer_name, const char* field_name, void* value)
@@ -382,4 +467,8 @@ void D3D11ShaderProgram::SetValue(const char* buffer_name, const char* field_nam
 
 void D3D11ShaderProgram::SetValue(int buffer_index, int field_index, void* value)
 {
+	// update data
+
+	// set dirty flags
+	// TODO: buffer dirty flag
 }
