@@ -203,20 +203,14 @@ D3D11ShaderProgram* LoadShader(const char* fileName)
 
 void D3D11ShaderProgram::Apply(const char* pass_name)
 {
+	auto idx = 0;
 	for (auto & pass : m_passes) {
 		if (pass.name == pass_name) {
-			auto deviceContext = static_cast<ID3D11DeviceContext*>(D3D11Renderer::getDeviceContext());
-
-			if (pass.m_computeShader)
-				deviceContext->CSSetShader(pass.m_computeShader, nullptr, 0);
-			if (pass.m_pixelShader)
-				deviceContext->PSSetShader(pass.m_pixelShader, nullptr, 0);
-			if (pass.m_vertexShader)
-				deviceContext->VSSetShader(pass.m_vertexShader, nullptr, 0);
-
-			deviceContext->IASetInputLayout(pass.m_inputLayout);
+			Apply(idx);
 			return;
 		}
+
+		idx++;
 	}
 }
 
