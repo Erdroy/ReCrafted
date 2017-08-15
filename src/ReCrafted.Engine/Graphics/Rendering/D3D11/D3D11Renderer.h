@@ -125,7 +125,7 @@ public:
 	* \param fieldName Shader buffer field name.
 	* \param value The new value pointer.
 	*/
-	void updateShaderValue(shaderHandle handle, const char* bufferName, const char* fieldName, void* value);
+	void updateShaderValue(shaderHandle handle, const char* bufferName, const char* fieldName, void* value) override;
 
 	/**
 	* \brief Destroys shader.
