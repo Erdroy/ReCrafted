@@ -397,8 +397,10 @@ void D3D11ShaderProgram::updateBuffers(int buffer_index)
 void D3D11ShaderProgram::Apply(const char* pass_name)
 {
 	auto idx = 0;
-	for (auto & pass : m_passes) {
-		if (pass.name == pass_name) {
+	for (auto & pass : m_passes) 
+	{
+		if (pass.name == pass_name) 
+		{
 			Apply(idx);
 			return;
 		}
@@ -466,8 +468,26 @@ void D3D11ShaderProgram::Apply(int pass_index)
 
 void D3D11ShaderProgram::SetValue(const char* buffer_name, const char* field_name, void* value)
 {
-	// TODO: ser value by name
+	auto idx1 = 0;
+	for (auto & buffer : m_buffers) 
+	{
+		if (buffer.name == buffer_name) 
+		{
+			auto idx2 = 0;
 
+			for (auto & field : buffer.fields) 
+			{
+				if (field.name == field_name) 
+				{
+					SetValue(idx1, idx2, value);
+					return;
+				}
+				idx2++;
+			}
+			return;
+		}
+		idx1++;
+	}
 }
 
 void D3D11ShaderProgram::SetValue(int buffer_index, int field_index, void* value)
