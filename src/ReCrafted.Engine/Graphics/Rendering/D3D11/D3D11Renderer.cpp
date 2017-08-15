@@ -443,6 +443,22 @@ void D3D11Renderer::applyShader(shaderHandle handle, int passIndex)
 		program->Apply(passIndex);
 }
 
+void D3D11Renderer::updateShaderValue(shaderHandle handle, int bufferIndex, int fieldIndex, void* value)
+{
+	auto program = shaderProgram_get(handle);
+
+	if (program)
+		program->SetValue(bufferIndex, bufferIndex, value);
+}
+
+void D3D11Renderer::updateShaderValue(shaderHandle handle, const char* bufferName, const char* fieldName, void* value)
+{
+	auto program = shaderProgram_get(handle);
+
+	if (program)
+		program->SetValue(bufferName, fieldName, value);
+}
+
 void D3D11Renderer::destroyShader(shaderHandle handle)
 {
 	shaderProgram_release(handle);

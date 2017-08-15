@@ -108,6 +108,26 @@ public:
 	void applyShader(shaderHandle handle, int passIndex) override;
 
 	/**
+	* \brief Updates the shader buffer field value.
+	* All changes are applied when shader is applied using (applyShader).
+	* \param handle The shader handle.
+	* \param bufferIndex Shader buffer index (starting at 0, we are not LUA).
+	* \param fieldIndex Shader buffer field index.
+	* \param value The new value pointer.
+	*/
+	void updateShaderValue(shaderHandle handle, int bufferIndex, int fieldIndex, void* value) override;
+
+	/**
+	* \brief Updates the shader buffer field value.
+	* All changes are applied when shader is applied using (applyShader).
+	* \param handle The shader handle.
+	* \param bufferName Shader buffer name.
+	* \param fieldName Shader buffer field name.
+	* \param value The new value pointer.
+	*/
+	void updateShaderValue(shaderHandle handle, const char* bufferName, const char* fieldName, void* value);
+
+	/**
 	* \brief Destroys shader.
 	* \param handle The shader handle which will be destroyed.
 	*/
