@@ -8,6 +8,7 @@
 // includes
 #include "Core/Types.h"
 
+// ReSharper disable IdentifierTypo
 struct RendererType
 {
 	enum _enum
@@ -87,6 +88,62 @@ public:
 		m_count++;
 	}
 };*/
+
+struct TextureFormat
+{
+public:
+	enum _enum
+	{
+		Unknown = 0,
+		
+		// R32 G32 B32 A32
+		RGBA32_Float,
+		RGBA32_UInt,
+		RGBA32_SInt,
+
+		// R32 G32 B32
+		RGB32_Float,
+		RGB32_UInt,
+		RGB32_SInt,
+
+		// R32 G32
+		RG32_Float,
+		RG32_UInt,
+		RG32_SInt,
+
+		// R32
+		R32_Float,
+		R32_UInt,
+		R32_SInt,
+
+		// B8 G8 R8 A8
+		BGRA8_UNorm,
+		BGRA8_UNormSRGB,
+
+		// R8 G8 B8 A8
+		RGBA8_UNorm,
+		RGBA8_UNormSRGB,
+		RGBA8_SNorm,
+		RGBA8_UInt,
+		RGBA8_SInt,
+
+		// R8 G8
+		RG8_UNorm,
+		RG8_SNorm,
+		RG8_UInt,
+		RG8_SInt,
+
+		// R8
+		R8_UNorm,
+		R8_SNorm,
+		R8_UInt,
+		R8_SInt,
+
+		// Depth Formats
+		D24_S8_UInt
+	};
+};
+// ReSharper restore IdentifierTypo
 
 struct handleBase
 {
@@ -169,6 +226,7 @@ public:
 	virtual void destroyIndexBuffer(indexBufferHandle handle) = 0;
 
 	virtual texture2DHandle createTexture2D(uint width, uint height, int mips, int format, void* data) = 0;
+	virtual void applyTexture2D(texture2DHandle texture2d) = 0;
 	virtual void destroyTexture2D(texture2DHandle texture2d) = 0;
 	
 	virtual renderBufferHandle createRenderBuffer(int textureCount, texture2DHandle* textures) = 0;
