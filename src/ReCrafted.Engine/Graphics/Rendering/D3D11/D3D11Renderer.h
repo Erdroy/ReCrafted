@@ -77,7 +77,29 @@ public:
 	*/
 	void destroyIndexBuffer(indexBufferHandle handle) override;
 
+	/**
+	* \brief Creates new texture2d.
+	* \param width The new texture width.
+	* \param height The new texture height.
+	* \param mips The new texture mip map level count.
+	* \param format The new texture format.
+	* \param data The new texture initial data.
+	* \return The created 2d texture.
+	*/
 	texture2DHandle createTexture2D(uint width, uint height, int mips, int format, void* data) override;
+
+	/**
+	* \brief Applies texture to the current state.
+	* \param texture2d The texture handle.
+	* \param slot The texture target slot.
+	* \param shaderType The texture target shader type.
+	*/
+	void applyTexture2D(texture2DHandle texture2d, int slot, ShaderType::_enum shaderType) override;
+
+	/**
+	* \brief Destroys given texture.
+	* \param texture2d The 2d texture which will be destroyed.
+	*/
 	void destroyTexture2D(texture2DHandle texture2d) override;
 
 	renderBufferHandle createRenderBuffer(int textureCount, texture2DHandle* textures) override;

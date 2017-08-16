@@ -18,6 +18,16 @@ struct RendererType
 	};
 };
 
+struct ShaderType
+{
+	enum _enum
+	{
+		PixelShader,
+		VertexShader,
+		ComputeShader
+	};
+};
+
 struct VertexAttrib
 {
 	enum _enum
@@ -225,8 +235,31 @@ public:
 	*/
 	virtual void destroyIndexBuffer(indexBufferHandle handle) = 0;
 
+	/**
+	 * \brief Creates new texture2d.
+	 * \param width The new texture width.
+	 * \param height The new texture height.
+	 * \param mips The new texture mip map level count.
+	 * \param format The new texture format.
+	 * \param data The new texture initial data.
+	 * \return The created 2d texture.
+	 */
 	virtual texture2DHandle createTexture2D(uint width, uint height, int mips, int format, void* data) = 0;
-	virtual void applyTexture2D(texture2DHandle texture2d) = 0;
+
+	/**
+	 * \brief Applies texture to the current state.
+	 * \param texture2d The texture handle.
+	 * \param slot The texture target slot.
+	 * \param shaderType The texture target shader type.
+	 */
+	virtual void applyTexture2D(texture2DHandle texture2d, int slot, ShaderType::_enum shaderType) = 0;
+	
+	// TODO: apply texture by name instead of slot and shaderType
+
+	/**
+	 * \brief Destroys given texture.
+	 * \param texture2d The 2d texture which will be destroyed.
+	 */
 	virtual void destroyTexture2D(texture2DHandle texture2d) = 0;
 	
 	virtual renderBufferHandle createRenderBuffer(int textureCount, texture2DHandle* textures) = 0;

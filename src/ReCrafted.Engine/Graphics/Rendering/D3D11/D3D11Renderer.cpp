@@ -41,15 +41,34 @@ public:
 
 };
 
+struct Texture2DInfo
+{
+public:
+	int format;
+	uint width;
+	uint height;
+
+	ID3D11ShaderResourceView* srv = nullptr;
+	ID3D11DepthStencilView* dsv = nullptr;
+};
+
+// VertexBuffer objects
 OBJECT_ARRAY(ID3D11Buffer*, vertexBuffer, vertexBufferHandle, RENDERER_MAX_VERTEX_BUFFERS)
 OBJECT_INFO_ARRAY(VertexBufferInfo, vertexBufferInfo, vertexBufferHandle, RENDERER_MAX_INDEX_BUFFERS)
 
+// IndexBuffer objects
 OBJECT_ARRAY(ID3D11Buffer*, indexBuffer, indexBufferHandle, RENDERER_MAX_INDEX_BUFFERS)
 OBJECT_INFO_ARRAY(IndexBufferInfo, indexBufferInfo, indexBufferHandle, RENDERER_MAX_INDEX_BUFFERS)
 
+// RenderBuffer objects
 OBJECT_ARRAY(ID3D11RenderBuffer*, renderBuffer, renderBufferHandle, RENDERER_MAX_RENDER_BUFFERS)
 
+// ShaderProgram objects
 OBJECT_ARRAY(D3D11ShaderProgram*, shaderProgram, shaderHandle, RENDERER_MAX_SHADERS)
+
+// Texture2D objects
+OBJECT_ARRAY(ID3D11Texture2D*, texture, texture2DHandle, RENDERER_MAX_TEXTURES)
+OBJECT_INFO_ARRAY(Texture2DInfo, textureInfo, texture2DHandle, RENDERER_MAX_TEXTURES)
 
 ID3D11Device* m_device = nullptr;
 ID3D11DeviceContext* m_deviceContext = nullptr;
@@ -165,6 +184,100 @@ DXGI_FORMAT AttribTypeToFormat(VertexAttribType::_enum attribType, int count)
 			return DXGI_FORMAT_R32G32B32A32_FLOAT;
 		}
 	case VertexAttribType::Count:
+	default:
+		return DXGI_FORMAT_UNKNOWN;
+	}
+}
+
+DXGI_FORMAT FormatToDXGI(TextureFormat::_enum format)
+{
+	switch(format)
+	{
+	case TextureFormat::RGBA32_Float:
+		return DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+	case TextureFormat::RGBA32_UInt:
+		return DXGI_FORMAT_R32G32B32A32_UINT;
+
+	case TextureFormat::RGBA32_SInt:
+		return DXGI_FORMAT_R32G32B32A32_SINT;
+
+	case TextureFormat::RGB32_Float:
+		return DXGI_FORMAT_R32G32B32_FLOAT;
+
+	case TextureFormat::RGB32_UInt:
+		return DXGI_FORMAT_R32G32B32_UINT;
+
+	case TextureFormat::RGB32_SInt:
+		return DXGI_FORMAT_R32G32B32_SINT;
+
+	case TextureFormat::RG32_Float:
+		return DXGI_FORMAT_R32G32_FLOAT;
+
+	case TextureFormat::RG32_UInt:
+		return DXGI_FORMAT_R32G32_UINT;
+
+	case TextureFormat::RG32_SInt:
+		return DXGI_FORMAT_R32G32_SINT;
+
+	case TextureFormat::R32_Float:
+		return DXGI_FORMAT_R32_FLOAT;
+
+	case TextureFormat::R32_UInt:
+		return DXGI_FORMAT_R32_UINT;
+
+	case TextureFormat::R32_SInt:
+		return DXGI_FORMAT_R32_SINT;
+
+	case TextureFormat::BGRA8_UNorm:
+		return DXGI_FORMAT_B8G8R8A8_UNORM;
+
+	case TextureFormat::BGRA8_UNormSRGB:
+		return DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
+
+	case TextureFormat::RGBA8_UNorm:
+		return DXGI_FORMAT_R8G8B8A8_UNORM;
+
+	case TextureFormat::RGBA8_UNormSRGB:
+		return DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+
+	case TextureFormat::RGBA8_SNorm:
+		return DXGI_FORMAT_R8G8B8A8_SNORM;
+
+	case TextureFormat::RGBA8_UInt:
+		return DXGI_FORMAT_R8G8B8A8_UINT;
+
+	case TextureFormat::RGBA8_SInt:
+		return DXGI_FORMAT_R8G8B8A8_SINT;
+
+	case TextureFormat::RG8_UNorm:
+		return DXGI_FORMAT_R8G8_UNORM;
+
+	case TextureFormat::RG8_SNorm:
+		return DXGI_FORMAT_R8G8_SNORM;
+
+	case TextureFormat::RG8_UInt:
+		return DXGI_FORMAT_R8G8_UINT;
+
+	case TextureFormat::RG8_SInt:
+		return DXGI_FORMAT_R8G8_SINT;
+
+	case TextureFormat::R8_UNorm:
+		return DXGI_FORMAT_R8_UNORM;
+
+	case TextureFormat::R8_SNorm:
+		return DXGI_FORMAT_R8_SNORM;
+
+	case TextureFormat::R8_UInt:
+		return DXGI_FORMAT_R8_UINT;
+
+	case TextureFormat::R8_SInt:
+		return DXGI_FORMAT_R8_SINT;
+
+	case TextureFormat::D24_S8_UInt:
+		return DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+	case TextureFormat::Unknown:
 	default:
 		return DXGI_FORMAT_UNKNOWN;
 	}
@@ -291,7 +404,7 @@ vertexBufferHandle D3D11Renderer::createVertexBuffer(int vertexCount, int vertex
 	ID3D11Buffer* bufferPtr = nullptr;
 	DXCALL(m_device->CreateBuffer(&desc, data ? &subresource_data : nullptr, &bufferPtr))
 	{
-		return{};
+		throw;
 	}
 
 	VertexBufferInfo info;
@@ -352,7 +465,7 @@ indexBufferHandle D3D11Renderer::createIndexBuffer(int indexCount, bool is32bit,
 	ID3D11Buffer* bufferPtr = nullptr;
 	DXCALL(m_device->CreateBuffer(&desc, data ? &subresource_data : nullptr, &bufferPtr))
 	{
-		return{};
+		throw;
 	}
 
 	// set pointer
@@ -388,11 +501,126 @@ void D3D11Renderer::destroyIndexBuffer(indexBufferHandle handle)
 
 texture2DHandle D3D11Renderer::createTexture2D(uint width, uint height, int mips, int format, void* data)
 {
-	return{};
+	auto texture = texture_alloc();
+
+	if (IS_INVALID(texture))
+		return {};
+
+	// TODO: Check values of parameters
+
+	auto dxgi_format = FormatToDXGI(static_cast<TextureFormat::_enum>(format));
+
+	ID3D11Texture2D* texture2d = nullptr;
+
+	// initialize texture2d description
+	D3D11_TEXTURE2D_DESC desc;
+	desc.Width = width;
+	desc.Height = height;
+
+	desc.SampleDesc.Quality = 0;
+	desc.SampleDesc.Count = 1;
+
+	desc.CPUAccessFlags = 0;
+	desc.ArraySize = 1;
+	desc.MipLevels = mips;
+	desc.MiscFlags = 0;
+
+	desc.Format = dxgi_format;
+	desc.Usage = D3D11_USAGE_DEFAULT;
+
+	if(format == TextureFormat::D24_S8_UInt)
+		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	else
+		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+	// initialize texture2d data
+	D3D11_SUBRESOURCE_DATA subresData;
+	subresData.pSysMem = data;
+	subresData.SysMemPitch = width * 4;
+	subresData.SysMemSlicePitch = 0;
+
+	// create texture2D
+	DXCALL(m_device->CreateTexture2D(&desc, &subresData, &texture2d))
+	{
+		throw;
+	}
+
+	Texture2DInfo info = {};
+	info.format = format;
+	info.width = width;
+	info.height = height;
+
+	if (format != TextureFormat::D24_S8_UInt)
+	{
+		// create SRV
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC resView_desc;
+		resView_desc.Format = dxgi_format;
+		resView_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		resView_desc.Texture2D.MipLevels = mips;
+		resView_desc.Texture2D.MostDetailedMip = 0;
+
+		DXCALL(m_device->CreateShaderResourceView(texture2d, &resView_desc, &info.srv))
+		{
+			throw;
+		}
+	}
+	else
+	{
+		// create DSV
+
+		D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
+
+		depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+		depthStencilViewDesc.Texture2D.MipSlice = 0;
+
+		DXCALL(m_device->CreateDepthStencilView(texture2d, &depthStencilViewDesc, &info.dsv))
+		{
+			throw;
+		}
+	}
+
+	texture_set(texture, texture2d);
+	textureInfo_set(texture, info);
+
+	return texture;
+}
+
+void D3D11Renderer::applyTexture2D(texture2DHandle texture2d, int slot, ShaderType::_enum shaderType)
+{
+	if (IS_INVALID(texture2d))
+		return;
+
+	auto textureInfo = textureInfo_get(texture2d);
+
+	if (textureInfo->srv == nullptr)
+		throw;
+
+	ID3D11ShaderResourceView* views[] = { textureInfo->srv };
+
+	switch (shaderType)
+	{
+	case ShaderType::PixelShader: 
+		m_deviceContext->VSSetShaderResources(slot, 1, views); 
+		break;
+
+	case ShaderType::VertexShader:
+		m_deviceContext->VSSetShaderResources(slot, 1, views);
+		break;
+
+	case ShaderType::ComputeShader: 
+		m_deviceContext->VSSetShaderResources(slot, 1, views); 
+		break;
+	}
 }
 
 void D3D11Renderer::destroyTexture2D(texture2DHandle texture2d)
 {
+	auto texture = texture_get(texture2d);
+
+	if (texture)
+		texture->Release();
 }
 
 renderBufferHandle D3D11Renderer::createRenderBuffer(int textureCount, texture2DHandle* textures)
