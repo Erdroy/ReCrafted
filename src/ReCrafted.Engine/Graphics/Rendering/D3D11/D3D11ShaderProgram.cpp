@@ -14,7 +14,7 @@ void* m_lastInputLayout = nullptr;
 struct InputLayout
 {
 	std::vector<D3D11_INPUT_ELEMENT_DESC> elements;
-	ID3D11InputLayout* inputLayout;
+	CComPtr<ID3D11InputLayout> inputLayout;
 };
 
 std::vector<InputLayout> input_layouts = {};
@@ -29,6 +29,75 @@ typedef enum // from `hlslcc.h`
 	DOMAIN_SHADER,
 	COMPUTE_SHADER,
 } SHADER_TYPE;
+
+CComPtr<ID3D11SamplerState> m_samplerState_pc;
+CComPtr<ID3D11SamplerState> m_samplerState_pw;
+CComPtr<ID3D11SamplerState> m_samplerState_pm;
+
+CComPtr<ID3D11SamplerState> m_samplerState_lc;
+CComPtr<ID3D11SamplerState> m_samplerState_lw;
+CComPtr<ID3D11SamplerState> m_samplerState_lm;
+
+void InitializeSamplerStates()
+{
+	auto device = static_cast<ID3D11Device*>(D3D11Renderer::getDevice());
+
+	CD3D11_SAMPLER_DESC samplerDesc = {};
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 16;
+	samplerDesc.BorderColor[0] = 0;
+	samplerDesc.BorderColor[1] = 0;
+	samplerDesc.BorderColor[2] = 0;
+	samplerDesc.BorderColor[3] = 0;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	DXCALL(device->CreateSamplerState(&samplerDesc, &m_samplerState_pc)) throw;
+
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	DXCALL(device->CreateSamplerState(&samplerDesc, &m_samplerState_pw)) throw;
+
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	DXCALL(device->CreateSamplerState(&samplerDesc, &m_samplerState_pm)) throw;
+
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	DXCALL(device->CreateSamplerState(&samplerDesc, &m_samplerState_lc)) throw;
+
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	DXCALL(device->CreateSamplerState(&samplerDesc, &m_samplerState_lw)) throw;
+
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	DXCALL(device->CreateSamplerState(&samplerDesc, &m_samplerState_lm)) throw;
+}
+
+void InitializeAnisoSamplerStates(int level)
+{
+}
 
 uint8_t TypeSizeFromString(const char* typeName)
 {
@@ -234,6 +303,13 @@ HRESULT CreateInputLayoutDescFromVertexShaderSignature(void* shaderData, size_t 
 
 D3D11ShaderProgram* LoadShader(const char* fileName)
 {
+	// initialize samplers
+	if(m_samplerState_pc == nullptr)
+	{
+		InitializeSamplerStates();
+		// TODO: Anisotropic sampler states
+	}
+
 	auto device = static_cast<ID3D11Device*>(D3D11Renderer::getDevice());
 
 	File shaderFile = {};
