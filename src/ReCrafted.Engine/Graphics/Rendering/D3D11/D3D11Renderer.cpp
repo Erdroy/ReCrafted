@@ -59,6 +59,14 @@ ID3D11RenderTargetView* m_renderTarget = nullptr;
 
 bool m_multithreaded = false;
 
+void SetViewport(uint width, uint height)
+{
+	D3D11_VIEWPORT viewport = {};
+	viewport.Width = static_cast<float>(width);
+	viewport.Height = static_cast<float>(height);
+	m_deviceContext->RSSetViewports(1u, &viewport);
+}
+
 const char* AttribToSemantic(VertexAttrib::_enum attrib)
 {
 	switch (attrib) {
@@ -234,6 +242,9 @@ void D3D11Renderer::initializeDevice(void* windowHandle) const
 	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	backBufferPtr.Release();
+
+	// set viewport
+	SetViewport(width, height);
 }
 
 void D3D11Renderer::clean() const
@@ -476,6 +487,9 @@ void D3D11Renderer::drawIndexed(int indexCount)
 
 void D3D11Renderer::resize(uint width, uint height)
 {
+	// set viewport size
+	SetViewport(width, height);
+
 	// TODO: resize all internal RTs
 }
 
