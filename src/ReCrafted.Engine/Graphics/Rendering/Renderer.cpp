@@ -21,9 +21,6 @@ Renderer* Renderer::initialize(RendererType::_enum rendererType, void* windowHan
 		return nullptr;
 	}
 	renderer->initialize(windowHandle, multithreaded);
-
-	renderer->createVertexBuffer(1, 4 * 4, nullptr);
-
 	current = renderer;
 	return renderer;
 }
