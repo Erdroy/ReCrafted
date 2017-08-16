@@ -80,9 +80,13 @@ bool m_multithreaded = false;
 
 void SetViewport(uint width, uint height)
 {
-	D3D11_VIEWPORT viewport = {};
+	D3D11_VIEWPORT viewport;
 	viewport.Width = static_cast<float>(width);
-	viewport.Height = static_cast<float>(height);
+	viewport.Height = static_cast<float>(height);		
+	viewport.MaxDepth = 1.0f;
+	viewport.MinDepth = 0.0f;
+	viewport.TopLeftX = 0.0f;
+	viewport.TopLeftY = 0.0f;
 	m_deviceContext->RSSetViewports(1u, &viewport);
 }
 
@@ -189,95 +193,95 @@ DXGI_FORMAT AttribTypeToFormat(VertexAttribType::_enum attribType, int count)
 	}
 }
 
-DXGI_FORMAT FormatToDXGI(TextureFormat::_enum format)
+DXGI_FORMAT FormatToDXGI(Format::_enum format)
 {
 	switch(format)
 	{
-	case TextureFormat::RGBA32_Float:
+	case Format::RGBA32_Float:
 		return DXGI_FORMAT_R32G32B32A32_FLOAT;
 
-	case TextureFormat::RGBA32_UInt:
+	case Format::RGBA32_UInt:
 		return DXGI_FORMAT_R32G32B32A32_UINT;
 
-	case TextureFormat::RGBA32_SInt:
+	case Format::RGBA32_SInt:
 		return DXGI_FORMAT_R32G32B32A32_SINT;
 
-	case TextureFormat::RGB32_Float:
+	case Format::RGB32_Float:
 		return DXGI_FORMAT_R32G32B32_FLOAT;
 
-	case TextureFormat::RGB32_UInt:
+	case Format::RGB32_UInt:
 		return DXGI_FORMAT_R32G32B32_UINT;
 
-	case TextureFormat::RGB32_SInt:
+	case Format::RGB32_SInt:
 		return DXGI_FORMAT_R32G32B32_SINT;
 
-	case TextureFormat::RG32_Float:
+	case Format::RG32_Float:
 		return DXGI_FORMAT_R32G32_FLOAT;
 
-	case TextureFormat::RG32_UInt:
+	case Format::RG32_UInt:
 		return DXGI_FORMAT_R32G32_UINT;
 
-	case TextureFormat::RG32_SInt:
+	case Format::RG32_SInt:
 		return DXGI_FORMAT_R32G32_SINT;
 
-	case TextureFormat::R32_Float:
+	case Format::R32_Float:
 		return DXGI_FORMAT_R32_FLOAT;
 
-	case TextureFormat::R32_UInt:
+	case Format::R32_UInt:
 		return DXGI_FORMAT_R32_UINT;
 
-	case TextureFormat::R32_SInt:
+	case Format::R32_SInt:
 		return DXGI_FORMAT_R32_SINT;
 
-	case TextureFormat::BGRA8_UNorm:
+	case Format::BGRA8_UNorm:
 		return DXGI_FORMAT_B8G8R8A8_UNORM;
 
-	case TextureFormat::BGRA8_UNormSRGB:
+	case Format::BGRA8_UNormSRGB:
 		return DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
 
-	case TextureFormat::RGBA8_UNorm:
+	case Format::RGBA8_UNorm:
 		return DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	case TextureFormat::RGBA8_UNormSRGB:
+	case Format::RGBA8_UNormSRGB:
 		return DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 
-	case TextureFormat::RGBA8_SNorm:
+	case Format::RGBA8_SNorm:
 		return DXGI_FORMAT_R8G8B8A8_SNORM;
 
-	case TextureFormat::RGBA8_UInt:
+	case Format::RGBA8_UInt:
 		return DXGI_FORMAT_R8G8B8A8_UINT;
 
-	case TextureFormat::RGBA8_SInt:
+	case Format::RGBA8_SInt:
 		return DXGI_FORMAT_R8G8B8A8_SINT;
 
-	case TextureFormat::RG8_UNorm:
+	case Format::RG8_UNorm:
 		return DXGI_FORMAT_R8G8_UNORM;
 
-	case TextureFormat::RG8_SNorm:
+	case Format::RG8_SNorm:
 		return DXGI_FORMAT_R8G8_SNORM;
 
-	case TextureFormat::RG8_UInt:
+	case Format::RG8_UInt:
 		return DXGI_FORMAT_R8G8_UINT;
 
-	case TextureFormat::RG8_SInt:
+	case Format::RG8_SInt:
 		return DXGI_FORMAT_R8G8_SINT;
 
-	case TextureFormat::R8_UNorm:
+	case Format::R8_UNorm:
 		return DXGI_FORMAT_R8_UNORM;
 
-	case TextureFormat::R8_SNorm:
+	case Format::R8_SNorm:
 		return DXGI_FORMAT_R8_SNORM;
 
-	case TextureFormat::R8_UInt:
+	case Format::R8_UInt:
 		return DXGI_FORMAT_R8_UINT;
 
-	case TextureFormat::R8_SInt:
+	case Format::R8_SInt:
 		return DXGI_FORMAT_R8_SINT;
 
-	case TextureFormat::D24_S8_UInt:
+	case Format::D24_S8_UInt:
 		return DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	case TextureFormat::Unknown:
+	case Format::Unknown:
 	default:
 		return DXGI_FORMAT_UNKNOWN;
 	}
@@ -499,7 +503,7 @@ void D3D11Renderer::destroyIndexBuffer(indexBufferHandle handle)
 	indexBuffer_release(handle);
 }
 
-texture2DHandle D3D11Renderer::createTexture2D(uint width, uint height, int mips, int format, void* data)
+texture2DHandle D3D11Renderer::createTexture2D(uint width, uint height, int mips, Format::_enum format, void* data)
 {
 	auto texture = texture_alloc();
 
@@ -508,7 +512,7 @@ texture2DHandle D3D11Renderer::createTexture2D(uint width, uint height, int mips
 
 	// TODO: Check values of parameters
 
-	auto dxgi_format = FormatToDXGI(static_cast<TextureFormat::_enum>(format));
+	auto dxgi_format = FormatToDXGI(format);
 
 	ID3D11Texture2D* texture2d = nullptr;
 
@@ -528,7 +532,7 @@ texture2DHandle D3D11Renderer::createTexture2D(uint width, uint height, int mips
 	desc.Format = dxgi_format;
 	desc.Usage = D3D11_USAGE_DEFAULT;
 
-	if(format == TextureFormat::D24_S8_UInt)
+	if(format == Format::D24_S8_UInt)
 		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	else
 		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
@@ -550,7 +554,7 @@ texture2DHandle D3D11Renderer::createTexture2D(uint width, uint height, int mips
 	info.width = width;
 	info.height = height;
 
-	if (format != TextureFormat::D24_S8_UInt)
+	if (format != Format::D24_S8_UInt)
 	{
 		// create SRV
 

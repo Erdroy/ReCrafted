@@ -99,7 +99,7 @@ public:
 	}
 };*/
 
-struct TextureFormat
+struct Format
 {
 public:
 	enum _enum
@@ -244,7 +244,7 @@ public:
 	 * \param data The new texture initial data.
 	 * \return The created 2d texture.
 	 */
-	virtual texture2DHandle createTexture2D(uint width, uint height, int mips, int format, void* data) = 0;
+	virtual texture2DHandle createTexture2D(uint width, uint height, int mips, Format::_enum format, void* data) = 0;
 
 	/**
 	 * \brief Applies texture to the current state.

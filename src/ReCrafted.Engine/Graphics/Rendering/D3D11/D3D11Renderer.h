@@ -86,7 +86,7 @@ public:
 	* \param data The new texture initial data.
 	* \return The created 2d texture.
 	*/
-	texture2DHandle createTexture2D(uint width, uint height, int mips, int format, void* data) override;
+	texture2DHandle createTexture2D(uint width, uint height, int mips, Format::_enum format, void* data) override;
 
 	/**
 	* \brief Applies texture to the current state.
