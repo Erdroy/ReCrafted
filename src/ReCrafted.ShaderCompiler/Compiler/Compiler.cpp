@@ -258,5 +258,5 @@ bool Compiler::compile(const char* input, const char* output, const char* profil
 	// free the code
 	free(code);
 
-	return false;
+	return true;
 }

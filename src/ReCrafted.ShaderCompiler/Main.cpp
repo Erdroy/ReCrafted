@@ -126,10 +126,10 @@ int main(int argc, char** argv)
 
 	if (Compiler::compile(inputFile, outputFile, profile, dx, gl, vlk))
 	{
-		printf("\n\nAll shaders compiled.");
+		printf("\n\nAll shaders compiled.\n\n");
 		return 0;
 	}
 
-	printf("\n\nShader compilation failed!");
+	printf("\n\nERROR: Shader compilation failed!\n\n");
 	return 1;
 }
