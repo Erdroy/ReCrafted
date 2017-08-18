@@ -6,6 +6,8 @@
 #define D3D11RENDERBUFFER_H
 
 #include "../Config.h"
+#include "Scripting/Assembly.h"
+#include "D3D11.h"
 
 struct ID3D11RenderBuffer
 {
@@ -19,16 +21,7 @@ public:
 	}
 };
 
-inline ID3D11RenderBuffer* CreateRenderBuffer(
-	uint textureCount, 
-	ID3D11Texture2D* textures[RENDERER_MAX_RENDER_BUFFER_TARGETS])
-{
-	auto rb = new ID3D11RenderBuffer;
-
-	// TODO: process textures
-
-	return rb;
-}
+inline ID3D11RenderBuffer* CreateRenderBuffer(uint textureCount, ID3D11Texture2D* textures[RENDERER_MAX_RENDER_BUFFER_TARGETS]);
 
 
 #endif // D3D11RENDERBUFFER_H

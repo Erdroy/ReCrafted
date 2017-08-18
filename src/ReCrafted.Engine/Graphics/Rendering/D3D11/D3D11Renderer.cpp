@@ -728,6 +728,31 @@ void D3D11Renderer::destroyTexture2D(texture2DHandle texture2d)
 
 renderBufferHandle D3D11Renderer::createRenderBuffer(int textureCount, texture2DHandle* textures)
 {
+	auto renderBufferHandle = renderBuffer_alloc();
+
+	if (IS_INVALID(renderBufferHandle))
+		return {};
+
+	ID3D11Texture2D* d3dtextures[RENDERER_MAX_RENDER_BUFFER_TARGETS] = {};
+
+	// get all textures
+	for(auto i = 0; i < textureCount; i ++)
+	{
+		auto texture = texture_get(textures[i]);
+
+		if (!texture)
+			throw;
+
+		d3dtextures[i] = texture;
+	}
+
+	auto renderBuffer = CreateRenderBuffer(static_cast<uint>(textureCount), d3dtextures);
+
+	if (!renderBuffer)
+		throw;
+
+	renderBuffer_set(renderBufferHandle, renderBuffer);
+
 	return{};
 }
 
