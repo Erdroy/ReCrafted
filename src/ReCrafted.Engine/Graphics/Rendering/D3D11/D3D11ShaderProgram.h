@@ -63,7 +63,7 @@ public:
 	}
 };
 
-struct D3D11ShaderProgram
+struct ID3D11ShaderProgram
 {
 private:
 	std::vector<D3D11ShaderPass> m_passes = {};
@@ -75,7 +75,7 @@ private:
 	void updateBuffers(int buffer_index);
 
 public:
-	D3D11ShaderProgram(const std::vector<D3D11ShaderPass>& shader_passes, const std::vector<D3D11ShaderBuffer>& shader_buffers)
+	ID3D11ShaderProgram(const std::vector<D3D11ShaderPass>& shader_passes, const std::vector<D3D11ShaderBuffer>& shader_buffers)
 		: m_passes(shader_passes),
 		  m_buffers(shader_buffers)
 	{
@@ -104,6 +104,6 @@ public:
 	}
 };
 
-D3D11ShaderProgram* LoadShader(const char* fileName);
+ID3D11ShaderProgram* LoadShader(const char* fileName);
 
 #endif // D3D11SHADERPROGRAM_H

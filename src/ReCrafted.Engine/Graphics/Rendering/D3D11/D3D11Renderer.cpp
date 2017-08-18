@@ -9,6 +9,7 @@
 
 #include "../Config.h"
 #include "../Utils.h"
+#include "Graphics/RenderBuffer.h"
 
 #pragma comment (lib, "DXGI.lib")
 #pragma comment(lib, "d3d11.lib")
@@ -47,6 +48,7 @@ public:
 	int format;
 	uint width;
 	uint height;
+	Filtering::_enum filtering;
 
 	ID3D11ShaderResourceView* srv = nullptr;
 	ID3D11DepthStencilView* dsv = nullptr;
@@ -64,7 +66,7 @@ OBJECT_INFO_ARRAY(IndexBufferInfo, indexBufferInfo, indexBufferHandle, RENDERER_
 OBJECT_ARRAY(ID3D11RenderBuffer*, renderBuffer, renderBufferHandle, RENDERER_MAX_RENDER_BUFFERS)
 
 // ShaderProgram objects
-OBJECT_ARRAY(D3D11ShaderProgram*, shaderProgram, shaderHandle, RENDERER_MAX_SHADERS)
+OBJECT_ARRAY(ID3D11ShaderProgram*, shaderProgram, shaderHandle, RENDERER_MAX_SHADERS)
 
 // Texture2D objects
 OBJECT_ARRAY(ID3D11Texture2D*, texture, texture2DHandle, RENDERER_MAX_TEXTURES)
@@ -75,6 +77,14 @@ ID3D11DeviceContext* m_deviceContext = nullptr;
 IDXGISwapChain* m_swapchain = nullptr;
 
 ID3D11RenderTargetView* m_renderTarget = nullptr;
+
+CComPtr<ID3D11SamplerState> m_samplerState_pc;
+CComPtr<ID3D11SamplerState> m_samplerState_pw;
+CComPtr<ID3D11SamplerState> m_samplerState_pm;
+
+CComPtr<ID3D11SamplerState> m_samplerState_lc;
+CComPtr<ID3D11SamplerState> m_samplerState_lw;
+CComPtr<ID3D11SamplerState> m_samplerState_lm;
 
 bool m_multithreaded = false;
 
@@ -88,6 +98,65 @@ void SetViewport(uint width, uint height)
 	viewport.TopLeftX = 0.0f;
 	viewport.TopLeftY = 0.0f;
 	m_deviceContext->RSSetViewports(1u, &viewport);
+}
+
+void InitializeSamplerStates()
+{
+	CD3D11_SAMPLER_DESC samplerDesc = {};
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 16;
+	samplerDesc.BorderColor[0] = 0;
+	samplerDesc.BorderColor[1] = 0;
+	samplerDesc.BorderColor[2] = 0;
+	samplerDesc.BorderColor[3] = 0;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	DXCALL(m_device->CreateSamplerState(&samplerDesc, &m_samplerState_pc)) throw;
+
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	DXCALL(m_device->CreateSamplerState(&samplerDesc, &m_samplerState_pw)) throw;
+
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	DXCALL(m_device->CreateSamplerState(&samplerDesc, &m_samplerState_pm)) throw;
+
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	DXCALL(m_device->CreateSamplerState(&samplerDesc, &m_samplerState_lc)) throw;
+
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	DXCALL(m_device->CreateSamplerState(&samplerDesc, &m_samplerState_lw)) throw;
+
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	DXCALL(m_device->CreateSamplerState(&samplerDesc, &m_samplerState_lm)) throw;
+}
+
+void InitializeAnisoSamplerStates(int level)
+{
 }
 
 const char* AttribToSemantic(VertexAttrib::_enum attrib)
@@ -360,6 +429,9 @@ void D3D11Renderer::initializeDevice(void* windowHandle) const
 
 	backBufferPtr.Release();
 
+	// initialize samplers
+	InitializeSamplerStates();
+
 	// set viewport
 	SetViewport(width, height);
 }
@@ -503,7 +575,7 @@ void D3D11Renderer::destroyIndexBuffer(indexBufferHandle handle)
 	indexBuffer_release(handle);
 }
 
-texture2DHandle D3D11Renderer::createTexture2D(uint width, uint height, int mips, Format::_enum format, void* data)
+texture2DHandle D3D11Renderer::createTexture2D(uint width, uint height, int mips, Format::_enum format, Filtering::_enum filtering, void* data)
 {
 	auto texture = texture_alloc();
 
@@ -551,6 +623,7 @@ texture2DHandle D3D11Renderer::createTexture2D(uint width, uint height, int mips
 
 	Texture2DInfo info = {};
 	info.format = format;
+	info.filtering = filtering;
 	info.width = width;
 	info.height = height;
 
@@ -607,6 +680,32 @@ void D3D11Renderer::applyTexture2D(texture2DHandle texture2d, int slot, ShaderTy
 	{
 	case ShaderType::PixelShader: 
 		m_deviceContext->VSSetShaderResources(slot, 1, views); 
+
+		// apply sampler state
+		switch (textureInfo->filtering)
+		{
+		case Filtering::Point:
+		{
+			ID3D11SamplerState* samplers[] = { m_samplerState_pm };
+			m_deviceContext->VSSetSamplers(slot, 1, samplers);
+			break;
+		}
+		case Filtering::Linear:
+		{
+			ID3D11SamplerState* samplers[] = { m_samplerState_lm };
+			m_deviceContext->VSSetSamplers(slot, 1, samplers);
+			break;
+		}
+		case Filtering::Anisotropic:
+		{
+			throw "Not supported ATM";
+			//ID3D11SamplerState* samplers[] = { m_samplerState_pc };
+			//m_deviceContext->VSSetSamplers(slot, 1, samplers);
+			break;
+		}
+		default:
+			break;
+		}
 		break;
 
 	case ShaderType::VertexShader:

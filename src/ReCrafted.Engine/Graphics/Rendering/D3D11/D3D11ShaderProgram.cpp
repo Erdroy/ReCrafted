@@ -30,75 +30,6 @@ typedef enum // from `hlslcc.h`
 	COMPUTE_SHADER,
 } SHADER_TYPE;
 
-CComPtr<ID3D11SamplerState> m_samplerState_pc;
-CComPtr<ID3D11SamplerState> m_samplerState_pw;
-CComPtr<ID3D11SamplerState> m_samplerState_pm;
-
-CComPtr<ID3D11SamplerState> m_samplerState_lc;
-CComPtr<ID3D11SamplerState> m_samplerState_lw;
-CComPtr<ID3D11SamplerState> m_samplerState_lm;
-
-void InitializeSamplerStates()
-{
-	auto device = static_cast<ID3D11Device*>(D3D11Renderer::getDevice());
-
-	CD3D11_SAMPLER_DESC samplerDesc = {};
-	samplerDesc.MipLODBias = 0.0f;
-	samplerDesc.MaxAnisotropy = 16;
-	samplerDesc.BorderColor[0] = 0;
-	samplerDesc.BorderColor[1] = 0;
-	samplerDesc.BorderColor[2] = 0;
-	samplerDesc.BorderColor[3] = 0;
-	samplerDesc.MinLOD = 0;
-	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	DXCALL(device->CreateSamplerState(&samplerDesc, &m_samplerState_pc)) throw;
-
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	DXCALL(device->CreateSamplerState(&samplerDesc, &m_samplerState_pw)) throw;
-
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	DXCALL(device->CreateSamplerState(&samplerDesc, &m_samplerState_pm)) throw;
-
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	DXCALL(device->CreateSamplerState(&samplerDesc, &m_samplerState_lc)) throw;
-
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	DXCALL(device->CreateSamplerState(&samplerDesc, &m_samplerState_lw)) throw;
-
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	DXCALL(device->CreateSamplerState(&samplerDesc, &m_samplerState_lm)) throw;
-}
-
-void InitializeAnisoSamplerStates(int level)
-{
-}
-
 uint8_t TypeSizeFromString(const char* typeName)
 {
 	// int
@@ -301,15 +232,8 @@ HRESULT CreateInputLayoutDescFromVertexShaderSignature(void* shaderData, size_t 
 	return hr;
 }
 
-D3D11ShaderProgram* LoadShader(const char* fileName)
+ID3D11ShaderProgram* LoadShader(const char* fileName)
 {
-	// initialize samplers
-	if(m_samplerState_pc == nullptr)
-	{
-		InitializeSamplerStates();
-		// TODO: Anisotropic sampler states
-	}
-
 	auto device = static_cast<ID3D11Device*>(D3D11Renderer::getDevice());
 
 	File shaderFile = {};
@@ -447,10 +371,10 @@ D3D11ShaderProgram* LoadShader(const char* fileName)
 		shader_buffers.push_back(shaderBuffer);
 	}
 
-	return new D3D11ShaderProgram(shader_passes, shader_buffers);
+	return new ID3D11ShaderProgram(shader_passes, shader_buffers);
 }
 
-void D3D11ShaderProgram::updateBuffers(int buffer_index)
+void ID3D11ShaderProgram::updateBuffers(int buffer_index)
 {
 	D3D11_MAPPED_SUBRESOURCE m_mappedSubres = {};
 	auto deviceContext = static_cast<ID3D11DeviceContext*>(D3D11Renderer::getDeviceContext());
@@ -470,7 +394,7 @@ void D3D11ShaderProgram::updateBuffers(int buffer_index)
 	deviceContext->Unmap(buffer->m_buffer, 0);
 }
 
-void D3D11ShaderProgram::Apply(const char* pass_name)
+void ID3D11ShaderProgram::Apply(const char* pass_name)
 {
 	auto idx = 0;
 	for (auto & pass : m_passes) 
@@ -484,7 +408,7 @@ void D3D11ShaderProgram::Apply(const char* pass_name)
 	}
 }
 
-void D3D11ShaderProgram::Apply(int pass_index)
+void ID3D11ShaderProgram::Apply(int pass_index)
 {
 	// select pass
 	auto pass = m_passes[pass_index];
@@ -509,6 +433,8 @@ void D3D11ShaderProgram::Apply(int pass_index)
 
 		idx++;
 	}
+
+	// TODO: set samplers
 
 	// get buffers cache pointer
 	auto buffers = m_buffersCache.data();
@@ -542,7 +468,7 @@ void D3D11ShaderProgram::Apply(int pass_index)
 	}
 }
 
-void D3D11ShaderProgram::SetValue(const char* buffer_name, const char* field_name, void* value)
+void ID3D11ShaderProgram::SetValue(const char* buffer_name, const char* field_name, void* value)
 {
 	auto idx1 = 0;
 	for (auto & buffer : m_buffers) 
@@ -566,7 +492,7 @@ void D3D11ShaderProgram::SetValue(const char* buffer_name, const char* field_nam
 	}
 }
 
-void D3D11ShaderProgram::SetValue(int buffer_index, int field_index, void* value)
+void ID3D11ShaderProgram::SetValue(int buffer_index, int field_index, void* value)
 {
 	// update data
 	auto buffer = m_buffers[buffer_index];

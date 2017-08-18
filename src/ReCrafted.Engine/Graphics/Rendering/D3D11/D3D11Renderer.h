@@ -83,10 +83,11 @@ public:
 	* \param height The new texture height.
 	* \param mips The new texture mip map level count.
 	* \param format The new texture format.
+	 * \param filtering The texture filtering type.
 	* \param data The new texture initial data.
 	* \return The created 2d texture.
 	*/
-	texture2DHandle createTexture2D(uint width, uint height, int mips, Format::_enum format, void* data) override;
+	texture2DHandle createTexture2D(uint width, uint height, int mips, Format::_enum format, Filtering::_enum filtering, void* data) override;
 
 	/**
 	* \brief Applies texture to the current state.
