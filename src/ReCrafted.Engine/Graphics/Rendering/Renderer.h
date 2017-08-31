@@ -253,10 +253,10 @@ public:
 	 * \param mips The new texture mip map level count.
 	 * \param format The new texture format.
 	 * \param filtering The texture filtering type.
-	 * \param data The new texture initial data.
+	 * \param data The new texture initial data. When `data = null` this texture will be RenderTarget.
 	 * \return The created 2d texture.
 	 */
-	virtual texture2DHandle createTexture2D(uint width, uint height, int mips, Format::_enum format, Filtering::_enum filtering, void* data) = 0;
+	virtual texture2DHandle createTexture2D(uint width, uint height, int mips, Format::_enum format, Filtering::_enum filtering, void* data, bool renderTarget = false) = 0;
 
 	/**
 	 * \brief Applies texture to the current state.

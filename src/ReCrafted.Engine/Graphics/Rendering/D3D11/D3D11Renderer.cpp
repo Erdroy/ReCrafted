@@ -50,6 +50,7 @@ public:
 	uint height;
 	Filtering::_enum filtering;
 
+	ID3D11RenderTargetView* rtv = nullptr;
 	ID3D11ShaderResourceView* srv = nullptr;
 	ID3D11DepthStencilView* dsv = nullptr;
 };
@@ -575,7 +576,7 @@ void D3D11Renderer::destroyIndexBuffer(indexBufferHandle handle)
 	indexBuffer_release(handle);
 }
 
-texture2DHandle D3D11Renderer::createTexture2D(uint width, uint height, int mips, Format::_enum format, Filtering::_enum filtering, void* data)
+texture2DHandle D3D11Renderer::createTexture2D(uint width, uint height, int mips, Format::_enum format, Filtering::_enum filtering, void* data, bool renderTarget)
 {
 	auto texture = texture_alloc();
 
@@ -606,19 +607,35 @@ texture2DHandle D3D11Renderer::createTexture2D(uint width, uint height, int mips
 
 	if(format == Format::D24_S8_UInt)
 		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	else
+	else if(data)
 		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
-	// initialize texture2d data
-	D3D11_SUBRESOURCE_DATA subresData;
-	subresData.pSysMem = data;
-	subresData.SysMemPitch = width * 4;
-	subresData.SysMemSlicePitch = 0;
-
-	// create texture2D
-	DXCALL(m_device->CreateTexture2D(&desc, &subresData, &texture2d))
+	if(renderTarget)
 	{
-		throw;
+		desc.BindFlags = D3D11_BIND_RENDER_TARGET;
+	}
+
+	if(data)
+	{
+		// initialize texture2d data
+		D3D11_SUBRESOURCE_DATA subresData;
+		subresData.pSysMem = data;
+		subresData.SysMemPitch = width * 4;
+		subresData.SysMemSlicePitch = 0;
+
+		// create texture2D
+		DXCALL(m_device->CreateTexture2D(&desc, &subresData, &texture2d))
+		{
+			throw;
+		}
+	}
+	else
+	{
+		// create texture2D
+		DXCALL(m_device->CreateTexture2D(&desc, nullptr, &texture2d))
+		{
+			throw;
+		}
 	}
 
 	Texture2DInfo info = {};
@@ -629,24 +646,26 @@ texture2DHandle D3D11Renderer::createTexture2D(uint width, uint height, int mips
 
 	if (format != Format::D24_S8_UInt)
 	{
-		// create SRV
-
-		D3D11_SHADER_RESOURCE_VIEW_DESC resView_desc;
-		resView_desc.Format = dxgi_format;
-		resView_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-		resView_desc.Texture2D.MipLevels = mips;
-		resView_desc.Texture2D.MostDetailedMip = 0;
-
-		DXCALL(m_device->CreateShaderResourceView(texture2d, &resView_desc, &info.srv))
+		if (!renderTarget)
 		{
-			throw;
+			// create SRV
+			D3D11_SHADER_RESOURCE_VIEW_DESC resView_desc;
+			resView_desc.Format = dxgi_format;
+			resView_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+			resView_desc.Texture2D.MipLevels = mips;
+			resView_desc.Texture2D.MostDetailedMip = 0;
+
+			DXCALL(m_device->CreateShaderResourceView(texture2d, &resView_desc, &info.srv))
+			{
+				throw;
+			}
 		}
 	}
 	else
 	{
 		// create DSV
 
-		D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
+		D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc = {};
 
 		depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
@@ -734,19 +753,30 @@ renderBufferHandle D3D11Renderer::createRenderBuffer(int textureCount, texture2D
 		return {};
 
 	ID3D11Texture2D* d3dtextures[RENDERER_MAX_RENDER_BUFFER_TARGETS] = {};
+	ID3D11DepthStencilView* d3ddsv = nullptr;
+	auto srvCount = 0u;
 
 	// get all textures
 	for(auto i = 0; i < textureCount; i ++)
 	{
 		auto texture = texture_get(textures[i]);
+		auto info = textureInfo_get(textures[i]);
 
 		if (!texture)
 			throw;
 
+		// depth stencil view
+		if(!d3ddsv && info->dsv)
+		{
+			d3ddsv = info->dsv;
+			continue;
+		}
+
 		d3dtextures[i] = texture;
+		srvCount++;
 	}
 
-	auto renderBuffer = CreateRenderBuffer(static_cast<uint>(textureCount), d3dtextures);
+	auto renderBuffer = CreateRenderBuffer(srvCount, d3dtextures, d3ddsv);
 
 	if (!renderBuffer)
 		throw;

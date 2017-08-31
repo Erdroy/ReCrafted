@@ -11,17 +11,34 @@
 
 struct ID3D11RenderBuffer
 {
+private:
+	ID3D11RenderTargetView* m_renderTargetViews[RENDERER_MAX_RENDER_BUFFER_TARGETS] = {};
+	ID3D11DepthStencilView* m_depthStencilView = nullptr;
+
+	uint m_srvCount = 0u;
+
 public:
-	// TODO: impl
+	ID3D11RenderBuffer(uint textureCount, ID3D11Texture2D* textures[RENDERER_MAX_RENDER_BUFFER_TARGETS], ID3D11DepthStencilView* dsv);
+
+public:
+	void Bind();
+
+	void Clear(float color[4], unsigned int depthMask = 0x0);
 
 public:
 	void Release()
 	{
+		for(auto i = 0u; i < m_srvCount; i ++)
+		{
+			m_renderTargetViews[i]->Release();
+		}
+
+		m_depthStencilView->Release();
+
 		delete this;
 	}
 };
 
-inline ID3D11RenderBuffer* CreateRenderBuffer(uint textureCount, ID3D11Texture2D* textures[RENDERER_MAX_RENDER_BUFFER_TARGETS]);
-
+ID3D11RenderBuffer* CreateRenderBuffer(uint textureCount, ID3D11Texture2D* textures[RENDERER_MAX_RENDER_BUFFER_TARGETS], ID3D11DepthStencilView* dsv);
 
 #endif // D3D11RENDERBUFFER_H
