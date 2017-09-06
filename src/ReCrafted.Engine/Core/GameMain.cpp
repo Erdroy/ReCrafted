@@ -215,6 +215,15 @@ void GameMain::run()
 	m_renderer = Renderer::initialize(RendererType::DirectX11, newRenderingWnd, false);
 
 	m_testShader = m_renderer->loadShader("test.shader");
+
+	auto t1 = m_renderer->createTexture2D(1280, 720, 1, Format::RGBA8_UNorm, Filtering::Point, nullptr, true);
+	auto depth = m_renderer->createTexture2D(1280, 720, 1, Format::D24_S8_UInt, Filtering::Point, nullptr);
+
+	texture2DHandle textures[] = { t1, depth };
+
+	auto rb = m_renderer->createRenderBuffer(2, textures);
+
+	// TODO: remember to release t1 and depth after releasing rb
 #endif
 
 	// initialize bgfx platform data
