@@ -209,23 +209,6 @@ void GameMain::run()
 	ShowWindow(Platform::getGameWindow(), SW_MAXIMIZE);
 #endif
 
-#if NEW_RENDERING
-	auto newRenderingWnd = CreateWindowW(L"recrafted", L"ReCrafted (New Renderer)", WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 1280, 720, NULL, NULL, instance, nullptr);
-
-	m_renderer = Renderer::initialize(RendererType::DirectX11, newRenderingWnd, false);
-
-	m_testShader = m_renderer->loadShader("test.shader");
-
-	auto t1 = m_renderer->createTexture2D(1280, 720, 1, Format::RGBA8_UNorm, Filtering::Point, nullptr, true);
-	auto depth = m_renderer->createTexture2D(1280, 720, 1, Format::D24_S8_UInt, Filtering::Point, nullptr);
-
-	texture2DHandle textures[] = { t1, depth };
-
-	auto rb = m_renderer->createRenderBuffer(2, textures);
-
-	// TODO: remember to release t1 and depth after releasing rb
-#endif
-
 	// initialize bgfx platform data
 	bgfx::PlatformData pd;
 	memset(&pd, 0, sizeof(pd));
@@ -280,10 +263,6 @@ void GameMain::run()
 
 void GameMain::shutdown()
 {
-#if NEW_RENDERING
-	m_renderer->shutdown();
-#endif
-
 	// release all resources etc.
 	SafeDispose(m_input);
 	SafeDispose(m_time);
@@ -399,10 +378,6 @@ void GameMain::onResize(uint width, uint height)
 	bgfx::reset(Display::get_Width(), Display::get_Height(), RESET_FLAGS);
 
 	m_rendering->resize(width, height);
-
-#if NEW_RENDERING
-	m_renderer->resize(width, height);
-#endif
 }
 
 void GameMain::onUpdate()
@@ -462,12 +437,6 @@ void GameMain::onDraw()
 
 	bgfx::touch(RENDERVIEW_BACKBUFFER);
 
-#if NEW_RENDERING
-	m_renderer->beginFrame();
-
-	m_renderer->applyShader(m_testShader, "Default");
-#endif
-
 	// update state
 	m_rendering->setState(false, false);
 
@@ -499,10 +468,6 @@ void GameMain::onDraw()
 	
 	// next frame, wait vsync
 	bgfx::frame();
-
-#if NEW_RENDERING
-	m_renderer->frame(true);
-#endif
 }
 
 void GameMain::onCursorRequest()
