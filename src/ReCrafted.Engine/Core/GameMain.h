@@ -16,10 +16,6 @@
 #include "Scripting/Method.h"
 #include "recraftedConfig.h"
 
-#if NEW_RENDERING
-#include "Graphics/Rendering/Renderer.h"
-#endif
-
 class GameMain
 {
 	API_DEF
@@ -38,12 +34,6 @@ private:
 	Time* m_time = nullptr;
 	UI* m_ui = nullptr;
 	uint m_tickrate = 60u;
-
-#if NEW_RENDERING
-	Renderer* m_renderer = nullptr;
-
-	shaderHandle m_testShader = {};
-#endif
 
 	bool m_showCursor = true;
 	bool m_lockCursor = true;
