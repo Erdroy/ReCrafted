@@ -10,7 +10,7 @@
 #endif
 
 #ifndef FORCEINLINE
-#define FORCEINLINE __inline
+#define FORCEINLINE __forceinline
 #endif
 
 #ifndef FORCE_NO_INLINE
