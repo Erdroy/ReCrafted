@@ -6,6 +6,7 @@
 #define GAMEMAIN_H
 
 // includes
+#include "recraftedConfig.h"
 #include "Common/Input.h"
 #include "Common/Time.h"
 #include "Game/Universe.h"
@@ -14,7 +15,7 @@
 #include "Graphics/UI/UI.h"
 #include "Scripting/Domain.h"
 #include "Scripting/Method.h"
-#include "recraftedConfig.h"
+#include "Common/EntityPool.h"
 
 class GameMain
 {
@@ -27,6 +28,7 @@ private:
 	volatile bool m_running = false;
 	bool m_initialized = false;
 
+	EntityPool* m_entityPool = nullptr;
 	Rendering* m_rendering = nullptr;
 	Universe* m_universe = nullptr;
 	Logger* m_logger = nullptr;

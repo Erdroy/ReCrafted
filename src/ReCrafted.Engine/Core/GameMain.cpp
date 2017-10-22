@@ -328,6 +328,10 @@ void GameMain::onLoad()
 	m_universe = new Universe();
 	m_universe->init();
 
+	// initialize entity pool
+	m_entityPool = new EntityPool;
+	m_entityPool->initialize();
+
 	Logger::write("Game initialized", LogLevel::Info);
 
 	m_init_method->invoke();
@@ -355,6 +359,7 @@ void GameMain::onUnload()
 	// release all resources etc.
 	SafeDispose(m_rendering);
 	SafeDispose(m_universe);
+	SafeDispose(m_entityPool);
 
 	// shutdown rendering
 	bgfx::shutdown();
