@@ -1,5 +1,5 @@
 @echo off
 
 echo Generating project for GNU Make...
-tools\genie.exe gmake
+tools\premake5.exe gmake
 echo GNU Make project created.

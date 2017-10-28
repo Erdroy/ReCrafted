@@ -240,7 +240,7 @@ void GameMain::run()
 		// process input
 		MSG msg;
 		msg.message = WM_NULL;
-		while (PeekMessage(&msg, nullptr, 0u, 0u, PM_REMOVE) != 0)
+		while (PeekMessage(&msg, nullptr, 0u, 0u, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
