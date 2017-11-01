@@ -73,6 +73,16 @@ namespace Internal
         auto newName = Text(MONO_TEXT(name));
         entity->name = newName;
     }
+
+    void addScript(Entity* entity, Script* script)
+    {
+
+    }
+
+    void removeScript(Entity* entity, Script* script)
+    {
+
+    }
 }
 
 void Entity::initRuntime()
@@ -82,7 +92,7 @@ void Entity::initRuntime()
         API_USING("ReCrafted.API.Mathematics");
 
         API_COMMENT("Entity class.");
-        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Common", "Entity", "Object");
+        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Common", "Entity", "Object", PARTIAL);
         {
             API_COMMENT("Creates new Entity");
             API_METHOD(PUBLIC, STATIC, "Create", EXTERN);
@@ -125,6 +135,20 @@ void Entity::initRuntime()
                 API_BIND("ReCrafted.API.Common.Entity::Internal_Name_Set", &Internal::setName);
             }
             API_PROPERTY_END();
+
+            API_METHOD(PRIVATE, REGULAR, "AddScript", EXTERN, NOPROXY);
+            {
+                API_BIND("ReCrafted.API.Common.Entity::Internal_AddScript", &Internal::addScript);
+                API_PARAM("Script", "instance");
+            }
+            API_METHOD_END();
+
+            API_METHOD(PRIVATE, REGULAR, "RemoveScript", EXTERN, NOPROXY);
+            {
+                API_BIND("ReCrafted.API.Common.Entity::Internal_RemoveScript", &Internal::removeScript);
+                API_PARAM("Script", "instance");
+            }
+            API_METHOD_END();
         }
         API_CLASS_END();
     }

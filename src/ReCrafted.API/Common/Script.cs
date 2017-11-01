@@ -4,9 +4,14 @@ namespace ReCrafted.API.Common
 {
     public partial class Script
     {
-        public static T New<T>() where T : Script
-        {
-            return null;
-        }
+        protected internal virtual void OnCreate() { }
+
+        protected internal virtual void OnUpdate() { }
+
+        protected internal virtual void OnPhysics() { }
+
+        protected internal virtual void OnDestroy() { }
+        
+        public Entity Entity { get; internal set; }
     }
 }

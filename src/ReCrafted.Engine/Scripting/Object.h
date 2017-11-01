@@ -13,10 +13,10 @@
 #include "Domain.h"
 #include "Core/Types.h"
 
+#include <vector>
+
 class Method;
 class Field;
-
-#include <vector>
 
 class Object
 {
@@ -92,8 +92,21 @@ public:
         create(objectPtr, Domain::Root->getMono(), cls->m_class, initializeNativePtr);
     }
 
+    /**
+     * \brief Initializes an instance of given object.
+     * \param object The object to be initialized.
+     * \param instance The instance to be initialized. 
+     */
+    template <class T>
+    static void initializeInstance(Ptr<T> object, MonoObject* instance)
+	{
+        auto objectPtr = static_cast<Ptr<Object>>(object);
+        initializeInstance(objectPtr, instance);
+	}
+
 public:
 	static void create(Ptr<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject);
+    static void initializeInstance(Ptr<Object>& object, MonoObject* instance);
 	static void registerObject(Ptr<Object> object);
 	static void destroy(Object* object);
 	static void destroyall();

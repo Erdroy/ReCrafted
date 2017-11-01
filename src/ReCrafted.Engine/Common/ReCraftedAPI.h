@@ -40,6 +40,8 @@
 #define PARTIAL
 #define EXTERN
 
+#define NOPROXY
+
 #define REF
 #define OUT
 

@@ -4,9 +4,10 @@
 
 namespace Internal
 {
-    MonoObject* createScript()
+    void createScript(MonoObject* instance)
     {
-        return Object::createInstance<Script>("ReCrafted.API.Common", "Script")->getManagedPtr();
+        Ptr<Script> script(new Script);
+        Object::initializeInstance(script, instance);
     }
 }
 
@@ -14,16 +15,15 @@ void Script::initRuntime()
 {
     API_FILE("Common/Script.Gen.cs")
     {
-
         API_COMMENT("Script base class.");
         API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Common", "Script", "Object", PARTIAL);
         {
-            API_COMMENT("Creates new Script");
-            API_METHOD(PUBLIC, STATIC, "Create", EXTERN);
+            API_COMMENT("Registers given script to new native script object.");
+            API_METHOD(INTERNAL, STATIC, "Register", EXTERN);
             {
-                API_BIND("ReCrafted.API.Common.Script::Create", &Internal::createScript);
+                API_BIND("ReCrafted.API.Common.Script::Register", &Internal::createScript);
 
-                API_RETURN("Script");
+                API_PARAM("Script", "instance");
             }
             API_METHOD_END();
 

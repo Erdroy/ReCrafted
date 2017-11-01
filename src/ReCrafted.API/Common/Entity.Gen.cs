@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/01/2017 20:17:30 Source: 'Entity.API.cpp' Target: 'Common/Entity.Gen.cs'
+// Generated: 11/01/2017 21:22:43 Source: 'Entity.API.cpp' Target: 'Common/Entity.Gen.cs'
 
 using ReCrafted.API.Mathematics;
 using System;
@@ -11,7 +11,7 @@ namespace ReCrafted.API.Common
 	/// <summary>
 	///	Entity class.
 	/// </summary>
-	public class Entity : Object
+	public partial class Entity : Object
 	{
 		/// <summary>
 		///	Creates new Entity
@@ -19,6 +19,12 @@ namespace ReCrafted.API.Common
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		public static extern Entity Create(string entityName);
 
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_AddScript(IntPtr nativePtr, Script instance);
+		
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_RemoveScript(IntPtr nativePtr, Script instance);
+		
 		/// <summary>
 		///	The position of this entity.
 		/// </summary>

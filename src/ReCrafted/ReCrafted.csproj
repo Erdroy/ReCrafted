@@ -57,6 +57,7 @@
     <Compile Include="Core\Locales\Locale.cs" />
     <Compile Include="GameMain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ReCrafted.API\ReCrafted.API.csproj">

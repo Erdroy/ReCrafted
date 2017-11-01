@@ -31,6 +31,7 @@ namespace ReCrafted.Game
             Cursor.Lock = true;
 
             var entity = Entity.Create("New entity");
+            entity.AddScript<TestScript>();
 
             Locale.SetLocale("Polski");
         }

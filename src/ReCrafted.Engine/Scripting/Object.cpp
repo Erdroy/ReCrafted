@@ -67,6 +67,27 @@ void Object::create(Ptr<Object>& object, MonoDomain* domain, MonoClass* monoClas
 	}
 }
 
+void Object::initializeInstance(Ptr<Object>& object, MonoObject* instance)
+{
+    mono_runtime_object_init(instance);
+
+    // get garbage collector handle, and mark it pinned
+    auto gch = mono_gchandle_new(instance, true);
+
+    object->m_gchandle = gch;
+    object->m_object = instance;
+    object->m_class = mono_object_get_class(instance);
+
+    // set native pointer
+    auto testField = object->findField("NativePtr");
+    testField->setValue(&object);
+
+    // register object
+    registerObject(object);
+
+    m_objects.push_back(object);
+}
+
 void Object::registerObject(Ptr<Object> object)
 {
 	m_objects.push_back(object);
