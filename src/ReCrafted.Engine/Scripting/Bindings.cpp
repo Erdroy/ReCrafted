@@ -1,4 +1,4 @@
-// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+// ReCrafted © 2016-2017 Always Too Late
 
 #include "Bindings.h"
 #include "Object.h"
@@ -25,6 +25,7 @@ void Bindings::bind()
 	Texture2D::initRuntime();
 	Font::initRuntime();
     Entity::initRuntime();
+    Script::initRuntime();
 }
 
 void Bindings::shutdown()

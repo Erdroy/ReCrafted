@@ -1,9 +1,8 @@
-// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+// ReCrafted © 2016-2017 Always Too Late
 
 #include "Entity.h"
 #include "Common/ReCraftedAPI.h"
 #include "Scripting/Mono.h"
-#include "Scripting/Bindings.h"
 #include "EntityPool.h"
 
 

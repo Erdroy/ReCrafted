@@ -1,4 +1,4 @@
-// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+// ReCrafted © 2016-2017 Always Too Late
 
 #pragma once
 
@@ -6,10 +6,12 @@
 #define SCRIPT_H
 
 // includes
-#include "ReCrafted.h"
+#include "Object.h"
 
-class Script
+class Script : public Object
 {
+    API_DEF
+
 public:
 	void dispose();
 

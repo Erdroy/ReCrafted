@@ -1,4 +1,4 @@
-// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+// ReCrafted © 2016-2017 Always Too Late
 
 #include "VoxelChunk.h"
 #include "VoxelWorld.h"

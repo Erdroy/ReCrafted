@@ -1,6 +1,6 @@
-// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+// ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 07/30/2017 17:11:01 Source: 'UI.API.cpp' Target: 'UI/UI.Gen.cs'
+// Generated: 11/01/2017 20:17:30 Source: 'UI.API.cpp' Target: 'UI/UI.Gen.cs'
 
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.Graphics;

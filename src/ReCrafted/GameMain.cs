@@ -1,4 +1,4 @@
-// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+// ReCrafted © 2016-2017 Always Too Late
 
 using ReCrafted.API;
 using ReCrafted.API.Common;
@@ -29,6 +29,8 @@ namespace ReCrafted.Game
 
             Cursor.Show = false;
             Cursor.Lock = true;
+
+            var entity = Entity.Create("New entity");
 
             Locale.SetLocale("Polski");
         }
