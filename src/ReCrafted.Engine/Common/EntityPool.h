@@ -16,18 +16,21 @@ private:
 	static EntityPool* m_instance;
 
 private:
-	std::vector<Entity> m_entities;
+	std::vector<Ptr<Entity>> m_entities;
 
 public:
 	void initialize();
 	void dispose();
 
 public:
-	static Ptr<Entity> createEntity(const char* entityName)
+	static Ptr<Entity> createEntity(Text entityName)
 	{
 		Ptr<Entity> entity(new Entity);
-        entity->m_guid = Platform::newGuid();
-		entity->m_name = entityName;
+        entity->guid = Platform::newGuid();
+		entity->name = entityName;
+
+        m_instance->m_entities.push_back(entity);
+
 		return entity;
 	}
 

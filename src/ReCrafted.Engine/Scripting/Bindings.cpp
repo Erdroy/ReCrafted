@@ -24,6 +24,7 @@ void Bindings::bind()
 	Camera::initRuntime();
 	Texture2D::initRuntime();
 	Font::initRuntime();
+    Entity::initRuntime();
 }
 
 void Bindings::shutdown()

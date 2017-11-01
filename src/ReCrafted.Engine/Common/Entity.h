@@ -6,13 +6,13 @@
 #define ENTITY_H
 
 // includes
-#include "ReCrafted.h"
 #include "Text.h"
 #include "Transform.h"
 #include "Core/Guid.h"
 #include "Scripting/Script.h"
+#include "Scripting/Object.h"
 
-class Entity
+class Entity : public Object
 {
     API_DEF
 
@@ -20,12 +20,13 @@ class Entity
     friend class GameMain;
 
 private:
-	Transform m_transform = {};
-    Guid m_guid = {};
-	const char* m_name = "";
-
 	std::vector<Ptr<Script>> m_scripts = {};
 	std::vector<Ptr<Entity>> m_children = {};
+
+public:
+    Transform transform = {};
+    Guid guid = {};
+    Text name = {};
 
 public:
 	void addScript(Ptr<Script> script);
