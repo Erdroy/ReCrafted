@@ -66,6 +66,21 @@ public:
 		return object;
 	}
 
+    /// <summary>
+    /// Creates instance of API class.
+    /// WARNING: Only for API objects!
+    /// Setting `initializeNativePtr` to false, can instantiate every non-static class.
+    /// </summary>
+    template <class T>
+    static void createInstance(Ptr<T> object, const char* ns, const char* className, Ptr<Assembly> assembly = nullptr, bool initializeNativePtr = true)
+    {
+        if (assembly == nullptr)
+            assembly = Assembly::API;
+
+        auto cls = assembly->findClass(ns, className);
+        create(static_cast<Ptr<Object>>(object), Domain::Root->getMono(), cls->m_class, initializeNativePtr);
+    }
+
 public:
 	static void create(Ptr<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject);
 	static void registerObject(Ptr<Object> object);
