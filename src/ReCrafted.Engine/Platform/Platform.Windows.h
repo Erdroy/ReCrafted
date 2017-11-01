@@ -3,6 +3,7 @@
 #pragma once
 #include <vector>
 #include <deque>
+#include "Core/Guid.h"
 
 #ifdef _WIN32 // windows
 #ifndef PLATFORMWINDOWS_H
@@ -232,6 +233,20 @@ public:
 	{
 		ZeroMemory(data, size);
 	}
+
+    FORCEINLINE static Guid newGuid()
+	{
+        Guid guid = {};
+        UUID uuid = {};
+
+        // Create UUID
+        UuidCreate(&uuid);
+
+        // Copy data to our Guid structure
+        memcpy_s(&guid, sizeof Guid, &uuid, sizeof UUID);
+
+        return guid;
+    }
 
 	/// <summary>
 	/// Get time in miliseconds.
