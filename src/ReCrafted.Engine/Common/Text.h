@@ -107,6 +107,8 @@ public:
 
 		alloc_chars(length);
 		copy_chars(text.m_data, length);
+        m_cstrData = text.m_cstrData;
+        m_const = text.m_const;
 	}
 
 	/// <summary>
@@ -165,6 +167,9 @@ public:
 	/// <param name="text">The text to append.</param>
 	void append(Text& text)
 	{
+        if (m_const)
+            return;
+
 		auto textlen = length();
 		auto sectextlen = text.length();
 		auto newlen = textlen + sectextlen;
@@ -203,6 +208,9 @@ public:
 	/// <returns>The new text.</returns>
 	Text remove(int start, int count) const
 	{
+        if (m_const)
+            return empty();
+
 		auto textLength = length();
 		auto s = start + count;
 
