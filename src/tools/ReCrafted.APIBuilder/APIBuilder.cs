@@ -35,31 +35,33 @@ namespace ReCrafted.APIBuilder
 
         public void Build(string sourceFile, string currentDir)
         {
-            var filedescs = Parse(sourceFile);
-
-            foreach (var filedesc in filedescs)
+            foreach (var desc in Parse(sourceFile))
             {
-                var targetFileName = filedesc.TargetFileName;
-                filedesc.SourceFileName = Path.GetFileName(sourceFile);
-
-                var generator = new CodeGenerator
-                {
-                    Session = new Dictionary<string, object>
-                    {
-                        { "Desc", filedesc }
-                    }
-                };
-                generator.Initialize();
-
-                var code = generator.TransformText();
-
+                var targetFileName = desc.TargetFileName;
+                desc.SourceFileName = Path.GetFileName(sourceFile);
+                
                 var targetFile = currentDir + "\\src\\ReCrafted.API\\" + targetFileName;
 
                 Directory.CreateDirectory(Path.GetDirectoryName(targetFile));
 
-                if (new FileInfo(targetFile).LastWriteTime < new FileInfo(sourceFile).LastWriteTime)
+                var targetFileInfo = new FileInfo(targetFile);
+                var sourceFileInfo = new FileInfo(sourceFile);
+
+                if (targetFileInfo.LastWriteTime < sourceFileInfo.LastWriteTime)
                 {
+                    var generator = new CodeGenerator
+                    {
+                        Session = new Dictionary<string, object>
+                        {
+                            { "Desc", desc }
+                        }
+                    };
+                    generator.Initialize();
+
+                    var code = generator.TransformText();
+
                     File.WriteAllText(targetFile, code);
+                    targetFileInfo.LastWriteTime = sourceFileInfo.LastWriteTime;
                 }
             }
         }

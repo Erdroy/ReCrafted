@@ -20,8 +20,9 @@ class Field;
 
 class Object
 {
-	friend class Class;
 	API_DEF
+
+    friend class Class;
 
 private:
 	static std::vector<Ptr<Object>> m_objects;

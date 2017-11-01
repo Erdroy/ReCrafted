@@ -4,6 +4,9 @@ namespace ReCrafted.API.Common
 {
     public partial class Script
     {
-
+        public static T New<T>() where T : Script
+        {
+            return null;
+        }
     }
 }
