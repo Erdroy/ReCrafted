@@ -34,7 +34,7 @@ public:
 		return entity;
 	}
 
-	static void destroyEntity(Ptr<Entity> entity)
+	static void destroyEntity(Entity* entity)
 	{
 		
 	}

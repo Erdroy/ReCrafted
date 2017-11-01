@@ -36,6 +36,9 @@ public:
 
 	void addChildren(Ptr<Entity> entity);
 	void removeChildren(Ptr<Entity> entity);
+
+public:
+    void onDestroy() override;
 };
 
 #endif // ENTITY_H

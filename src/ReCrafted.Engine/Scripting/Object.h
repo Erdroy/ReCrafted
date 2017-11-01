@@ -32,20 +32,28 @@ private:
 	uint32_t m_gchandle = 0u;
 
 public:
-	/// <summary>
-	/// Finds method using given name.
-	/// </summary>
+    virtual ~Object() = default;
+
+public:
+    /**
+    * \brief Finds method using given name.
+    */
 	Ptr<Method> findMethod(const char* methodName) const;
 
-	/// <summary>
-	/// Finds field using given name.
-	/// </summary>
+    /**
+    * \brief Finds field using given name.
+    */
 	Ptr<Field> findField(const char* fieldName) const;
 
-	/// <summary>
-	/// Gets managed object pointer.
-	/// </summary>
+    /**
+    * \brief Gets managed object pointer.
+    */
 	MonoObject* getManagedPtr() const;
+
+    /**
+     * \brief Called when object is being destroyed.
+     */
+    virtual void onDestroy() {}
 
 public:
 	/// <summary>

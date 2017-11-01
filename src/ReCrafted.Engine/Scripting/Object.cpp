@@ -74,6 +74,8 @@ void Object::registerObject(Ptr<Object> object)
 
 void Object::destroy(Object* object)
 {
+    object->onDestroy();
+
 	// free garbage collector handle
 	mono_gchandle_free(object->m_gchandle);
 	object->m_gchandle = 0u;
@@ -95,6 +97,8 @@ void Object::destroyall()
 	{
 		auto object = m_objects[i];
 
+        object->onDestroy();
+
 		// free garbage collector handle
 		mono_gchandle_free(object->m_gchandle);
 	}
@@ -109,6 +113,8 @@ void Object::finalize(Object* object)
 	{
 		if (iter->get() == object)
 		{
+            object->onDestroy();
+
 			Logger::write("Object was finalized, but not destroyed at first!", LogLevel::Warning);
 			m_objects.erase(iter);
 			break;
