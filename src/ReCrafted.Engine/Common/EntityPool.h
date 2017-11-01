@@ -16,7 +16,7 @@ private:
 	static EntityPool* m_instance;
 
 private:
-	std::vector<Ptr<Entity>> m_entities;
+	std::vector<Ptr<Entity>> m_entities = {};
 
 public:
 	void initialize();

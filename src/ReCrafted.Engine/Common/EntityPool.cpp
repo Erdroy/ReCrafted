@@ -6,6 +6,7 @@ EntityPool* EntityPool::m_instance;
 
 void EntityPool::initialize()
 {
+    m_instance = this;
 }
 
 void EntityPool::dispose()

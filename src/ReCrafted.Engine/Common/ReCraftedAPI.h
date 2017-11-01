@@ -12,6 +12,9 @@
 #define MONO_ANSI(x) mono_string_to_utf8_checked(x, &error)
 #define MONO_ANSI_FREE(x) mono_free(x)
 
+#define MONO_STRING_FROM_TEXT(x) mono_string_new(mono_domain_get(), x.std_str().c_str())
+#define TEXT_FROM_MONO_STRING(x) Text(MONO_TEXT(x))
+
 #define API_BIND(name, method) mono_add_internal_call(name, method)
 
 // API
