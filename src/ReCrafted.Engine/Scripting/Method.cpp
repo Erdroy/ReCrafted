@@ -5,5 +5,5 @@
 
 void Method::invoke() const
 {
-	mono_runtime_invoke(m_method, m_object, nullptr, nullptr);
+    mono_runtime_invoke(m_method, m_object, nullptr, nullptr);
 }

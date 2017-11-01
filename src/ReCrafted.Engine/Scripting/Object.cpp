@@ -18,9 +18,11 @@ Ptr<Method> Object::findMethod(const char* methodName) const
 	if (!methodDesc)
 		return nullptr;
 
+    auto methodHandle = mono_method_desc_search_in_class(methodDesc, m_class);
+
 	Ptr<Method> method(new Method);
 	method->m_object = m_object;
-	method->m_method = mono_method_desc_search_in_class(methodDesc, m_class);
+	method->m_method = methodHandle;
 	return method;
 }
 
@@ -84,8 +86,6 @@ void Object::initializeInstance(Ptr<Object>& object, MonoObject* instance)
 
     // register object
     registerObject(object);
-
-    m_objects.push_back(object);
 }
 
 void Object::registerObject(Ptr<Object> object)

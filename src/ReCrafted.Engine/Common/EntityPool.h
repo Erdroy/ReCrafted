@@ -23,6 +23,10 @@ public:
 	void dispose();
 
 public:
+    void update();
+    void simulate();
+
+public:
 	static Ptr<Entity> createEntity(Text entityName)
 	{
 		Ptr<Entity> entity(new Entity);

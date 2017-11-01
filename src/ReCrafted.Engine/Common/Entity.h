@@ -19,16 +19,17 @@ class Entity : public Object
 	friend class EntityPool;
     friend class GameMain;
 
-private:
-	std::vector<Ptr<Script>> m_scripts = {};
-	std::vector<Ptr<Entity>> m_children = {};
-
 public:
+    std::vector<Ptr<Script>> scripts = {};
+    std::vector<Ptr<Entity>> children = {};
+
     Vector3 position = {};
     Vector3 rotation = {};
 
     Guid guid = {};
     Text name = {};
+
+    Entity* parent = nullptr;
 
 public:
 	void addScript(Ptr<Script> script);
@@ -36,6 +37,10 @@ public:
 
 	void addChildren(Ptr<Entity> entity);
 	void removeChildren(Ptr<Entity> entity);
+
+public:
+    void update();
+    void simulate();
 
 public:
     void onDestroy() override;

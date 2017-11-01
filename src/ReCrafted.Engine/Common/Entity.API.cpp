@@ -74,14 +74,19 @@ namespace Internal
         entity->name = newName;
     }
 
-    void addScript(Entity* entity, Script* script)
+    void addScript(Entity* entity, MonoObject* scriptInstance)
     {
+        Ptr<Script> script(new Script);
 
+        Object::initializeInstance(script, scriptInstance);
+        entity->addScript(script);
+
+        script->init(entity);
     }
 
     void removeScript(Entity* entity, Script* script)
     {
-
+        // TODO: remove scripts
     }
 }
 

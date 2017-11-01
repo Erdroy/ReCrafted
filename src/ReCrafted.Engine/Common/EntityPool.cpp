@@ -12,3 +12,25 @@ void EntityPool::initialize()
 void EntityPool::dispose()
 {
 }
+
+void EntityPool::update()
+{
+    for (auto && entity : m_entities)
+    {
+        if (entity->parent)
+            continue;
+
+        entity->update();
+    }
+}
+
+void EntityPool::simulate()
+{
+    for (auto && entity : m_entities)
+    {
+        if (entity->parent)
+            continue;
+
+        entity->simulate();
+    }
+}

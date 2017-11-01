@@ -2,7 +2,11 @@
 
 #include "Script.h"
 
+#include "Common/Entity.h"
+
 void Script::dispose()
 {
-
+    m_onUpdate = nullptr;
+    m_onSimulate = nullptr;
+    m_onDestroy = nullptr;
 }

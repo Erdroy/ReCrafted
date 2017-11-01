@@ -13,17 +13,12 @@ namespace ReCrafted.API.Common
         /// <returns>The added script instance of given type.</returns>
         public T AddScript<T>() where T : Script, new()
         {
-            var script = new T();
-
-            // Register the script
-            Script.Register(script);
-
-            if (script == null)
-                throw new ReCraftedException("Could not create script!");
-
-            // Set entity reference.
-            script.Entity = this;
-
+            var script = new T
+            {
+                // entity reference.
+                Entity = this
+            };
+            
             // Add script to this entity
             Internal_AddScript(NativePtr, script);
 

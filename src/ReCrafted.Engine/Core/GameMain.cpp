@@ -415,6 +415,7 @@ void GameMain::onUpdate()
 
 	m_universe->update();
 	m_update_method->invoke();
+    m_entityPool->update();
 
 	if(m_lockCursor)
 	{
@@ -432,6 +433,7 @@ void GameMain::onSimulate()
 
 	m_universe->simulate();
 	m_simulate_method->invoke();
+    m_entityPool->simulate();
 }
 
 void GameMain::onDraw()

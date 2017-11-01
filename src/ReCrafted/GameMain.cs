@@ -15,6 +15,7 @@ namespace ReCrafted.Game
     {
         private Texture2D _crosshairTexture;
         private Font _testFont;
+        private Entity _entity;
 
         protected override void Initialize()
         {
@@ -30,8 +31,8 @@ namespace ReCrafted.Game
             Cursor.Show = false;
             Cursor.Lock = true;
 
-            var entity = Entity.Create("New entity");
-            entity.AddScript<TestScript>();
+            _entity = Entity.Create("New entity");
+            _entity.AddScript<TestScript>();
             
             Locale.SetLocale("Polski");
         }

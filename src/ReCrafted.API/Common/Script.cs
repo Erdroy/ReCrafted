@@ -12,17 +12,17 @@ namespace ReCrafted.API.Common
         /// <summary>
         /// Called every game frame.
         /// </summary>
-        protected internal virtual void OnUpdate() { }
+        protected virtual void OnUpdate() { }
 
         /// <summary>
         /// Called every physics frame.
         /// </summary>
-        protected internal virtual void OnSimulate() { }
+        protected virtual void OnSimulate() { }
 
         /// <summary>
         /// Called at the end of life of this script.
         /// </summary>
-        protected internal virtual void OnDestroy() { }
+        protected virtual void OnDestroy() { }
         
         /// <summary>
         /// The instance of the entity that owns this script.

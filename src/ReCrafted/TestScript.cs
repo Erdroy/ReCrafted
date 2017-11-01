@@ -11,5 +11,20 @@ namespace ReCrafted.Game
         {
             Logger.Write(this + " - Hello, World! Entity: " + Entity.Name);
         }
+
+        protected override void OnUpdate()
+        {
+            //Logger.Write("OnUpdate");
+        }
+
+        protected override void OnSimulate()
+        {
+            //Logger.Write("OnSimulate");
+        }
+
+        protected override void OnDestroy()
+        {
+            Logger.Write("OnDestroy");
+        }
     }
 }
