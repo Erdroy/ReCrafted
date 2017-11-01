@@ -62,7 +62,8 @@ public:
 			assembly = Assembly::API;
 
 		auto cls = assembly->findClass(ns, className);
-		create(static_cast<Ptr<Object>>(object), Domain::Root->getMono(), cls->m_class, initializeNativePtr);
+        auto objectPtr = static_cast<Ptr<Object>>(object);
+	    create(objectPtr, Domain::Root->getMono(), cls->m_class, initializeNativePtr);
 		return object;
 	}
 
@@ -78,7 +79,8 @@ public:
             assembly = Assembly::API;
 
         auto cls = assembly->findClass(ns, className);
-        create(static_cast<Ptr<Object>>(object), Domain::Root->getMono(), cls->m_class, initializeNativePtr);
+        auto objectPtr = static_cast<Ptr<Object>>(object);
+        create(objectPtr, Domain::Root->getMono(), cls->m_class, initializeNativePtr);
     }
 
 public:

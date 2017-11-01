@@ -38,7 +38,7 @@ void Entity::initRuntime()
                 API_RETURN("Entity");
             }
             API_METHOD_END();
-           
+
         }
         API_CLASS_END();
     }
