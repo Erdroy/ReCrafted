@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/01/2017 21:19:34 Source: 'Script.API.cpp' Target: 'Common/Script.Gen.cs'
+// Generated: 11/01/2017 21:54:32 Source: 'Script.API.cpp' Target: 'Common/Script.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -12,6 +12,8 @@ namespace ReCrafted.API.Common
 	/// </summary>
 	public partial class Script : Object
 	{
+        internal Script() {}
+
 		/// <summary>
 		///	Registers given script to new native script object.
 		/// </summary>

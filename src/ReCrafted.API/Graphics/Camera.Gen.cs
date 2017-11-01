@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/01/2017 20:17:30 Source: 'Camera.API.cpp' Target: 'Graphics/Camera.Gen.cs'
+// Generated: 11/01/2017 21:54:32 Source: 'Camera.API.cpp' Target: 'Graphics/Camera.Gen.cs'
 
 using ReCrafted.API.Mathematics;
 using System;
@@ -13,6 +13,8 @@ namespace ReCrafted.API.Graphics
 	/// </summary>
 	public class Camera : Object
 	{
+        internal Camera() {}
+
 		/// <summary>
 		///	Creates new Camera
 		/// </summary>
@@ -26,8 +28,8 @@ namespace ReCrafted.API.Graphics
 		{
 			Internal_SetAsCurrent(NativePtr);
 		}
-		
-		[MethodImpl(MethodImplOptions.InternalCall)]
+        
+        		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_SetAsCurrent(IntPtr nativePtr);
 		
 		/// <summary>

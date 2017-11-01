@@ -16,7 +16,7 @@ void Script::initRuntime()
     API_FILE("Common/Script.Gen.cs")
     {
         API_COMMENT("Script base class.");
-        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Common", "Script", "Object", PARTIAL);
+        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Common", "Script", "Object", PARTIAL, NOCONSTRUCTOR);
         {
             API_COMMENT("Registers given script to new native script object.");
             API_METHOD(INTERNAL, STATIC, "Register", EXTERN);

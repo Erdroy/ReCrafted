@@ -59,7 +59,7 @@ void Texture2D::initRuntime()
 	API_FILE("Graphics/Texture2D.Gen.cs");
 	{
 		API_COMMENT("Texture2D class.");
-		API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Texture2D", "Object", PARTIAL);
+		API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Texture2D", "Object", PARTIAL, NOCONSTRUCTOR);
 		{
 			API_METHOD(INTERNAL, STATIC, "InternalLoadFile", EXTERN);
 			{

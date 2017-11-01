@@ -43,6 +43,12 @@ if(!string.IsNullOrEmpty(classComment))
 	<#=classAccess#> <#=classModifier#><#=classPartial#>class <#=className#> <#=classInherit#>
 	{
 <#
+    if (classDesc.NoConstructor)
+    {#>
+        internal <#=className#>() {}
+
+<#  }
+
 // ------------- METHOD -------------
 foreach (var methodDesc in classDesc.Methods)
 {

@@ -92,7 +92,7 @@ void Entity::initRuntime()
         API_USING("ReCrafted.API.Mathematics");
 
         API_COMMENT("Entity class.");
-        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Common", "Entity", "Object", PARTIAL);
+        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Common", "Entity", "Object", PARTIAL, NOCONSTRUCTOR);
         {
             API_COMMENT("Creates new Entity");
             API_METHOD(PUBLIC, STATIC, "Create", EXTERN);

@@ -32,7 +32,7 @@ namespace ReCrafted.Game
 
             var entity = Entity.Create("New entity");
             entity.AddScript<TestScript>();
-
+            
             Locale.SetLocale("Polski");
         }
 

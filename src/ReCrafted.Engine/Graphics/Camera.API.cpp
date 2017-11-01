@@ -162,7 +162,7 @@ void Camera::initRuntime()
 		API_USING("ReCrafted.API.Mathematics");
 
 		API_COMMENT("Camera class.");
-		API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Camera", "Object");
+		API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Camera", "Object", NOCONSTRUCTOR);
 		{
 			API_COMMENT("Creates new Camera");
 			API_METHOD(PUBLIC, STATIC, "Create", EXTERN);

@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/01/2017 20:17:30 Source: 'Texture2D.API.cpp' Target: 'Graphics/Texture2D.Gen.cs'
+// Generated: 11/01/2017 21:54:32 Source: 'Texture2D.API.cpp' Target: 'Graphics/Texture2D.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -12,6 +12,8 @@ namespace ReCrafted.API.Graphics
 	/// </summary>
 	public partial class Texture2D : Object
 	{
+        internal Texture2D() {}
+
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void InternalLoadFile(IntPtr nativePtr, string fileName);
 

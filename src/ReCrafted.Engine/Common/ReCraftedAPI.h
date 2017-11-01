@@ -40,6 +40,7 @@
 #define PARTIAL
 #define EXTERN
 
+#define NOCONSTRUCTOR
 #define NOPROXY
 
 #define REF

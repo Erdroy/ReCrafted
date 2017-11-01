@@ -39,7 +39,7 @@ namespace ReCrafted.APIBuilder
             {
                 var targetFileName = desc.TargetFileName;
                 desc.SourceFileName = Path.GetFileName(sourceFile);
-                
+
                 var targetFile = currentDir + "\\src\\ReCrafted.API\\" + targetFileName;
 
                 Directory.CreateDirectory(Path.GetDirectoryName(targetFile));
@@ -62,8 +62,12 @@ namespace ReCrafted.APIBuilder
 
                     File.WriteAllText(targetFile, code);
                     targetFileInfo.LastWriteTime = sourceFileInfo.LastWriteTime;
+
+                    generator.ClearIndent();
                 }
             }
+
+            Files.Clear();
         }
 
         private APITagFile[] Parse(string fileName)

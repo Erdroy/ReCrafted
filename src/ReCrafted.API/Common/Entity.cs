@@ -43,6 +43,7 @@ namespace ReCrafted.API.Common
             if(script == null)
                 throw new ReCraftedException("Script is not owned by this entity!");
 
+            // Remove given script from this entity
             Internal_RemoveScript(NativePtr, script);
         }
     }

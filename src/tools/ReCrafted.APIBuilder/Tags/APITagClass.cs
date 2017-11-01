@@ -24,6 +24,8 @@ namespace ReCrafted.APIBuilder.Tags
 
         public bool IsPartial { get; set; }
 
+        public bool NoConstructor { get; set; }
+        
         public List<APITagMethod> Methods = new List<APITagMethod>();
 
         public List<APITagProperty> Properties = new List<APITagProperty>();
@@ -75,8 +77,9 @@ namespace ReCrafted.APIBuilder.Tags
             // API_CLASS_INHERIT(PUBLIC, REGULAR, "ReCrafted.API", "Logger", "ILogger");
 
             IsPartial = parameters.Contains("PARTIAL");
+            NoConstructor = parameters.Contains("NOCONSTRUCTOR");
 
-            if (parameters.Length < 4 || parameters.Length > 6)
+            if (parameters.Length < 4 || parameters.Length > 7)
             {
                 Console.WriteLine($"Invalid API_CLASS token definition at line {APIBuilder.LineNumber}");
                 return;
