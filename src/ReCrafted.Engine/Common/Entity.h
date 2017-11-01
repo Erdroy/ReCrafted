@@ -17,7 +17,8 @@ class Entity
 
 private:
 	Transform m_transform = {};
-	Text m_name = Text::empty();
+    Guid m_guid = {};
+	const char* m_name = "";
 
 	std::vector<Ptr<Script>> m_scripts = {};
 	std::vector<Ptr<Entity>> m_children = {};

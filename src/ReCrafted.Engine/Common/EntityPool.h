@@ -8,6 +8,7 @@
 // includes
 #include "ReCrafted.h"
 #include "Entity.h"
+#include "Platform/Platform.h"
 
 class EntityPool
 {
@@ -22,9 +23,10 @@ public:
 	void dispose();
 
 public:
-	static Ptr<Entity> createEntity(Text entityName)
+	static Ptr<Entity> createEntity(const char* entityName)
 	{
 		Ptr<Entity> entity(new Entity);
+        entity->m_guid = Platform::newGuid();
 		entity->m_name = entityName;
 		return entity;
 	}
