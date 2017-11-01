@@ -9,11 +9,15 @@
 #include "ReCrafted.h"
 #include "Text.h"
 #include "Transform.h"
+#include "Core/Guid.h"
 #include "Scripting/Script.h"
 
 class Entity
 {
+    API_DEF
+
 	friend class EntityPool;
+    friend class GameMain;
 
 private:
 	Transform m_transform = {};
