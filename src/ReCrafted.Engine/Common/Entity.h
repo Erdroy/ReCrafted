@@ -7,10 +7,10 @@
 
 // includes
 #include "Text.h"
-#include "Transform.h"
 #include "Core/Guid.h"
 #include "Scripting/Script.h"
 #include "Scripting/Object.h"
+#include "Core/Math/Math.h"
 
 class Entity : public Object
 {
@@ -24,7 +24,9 @@ private:
 	std::vector<Ptr<Entity>> m_children = {};
 
 public:
-    Transform transform = {};
+    Vector3 position = {};
+    Vector3 rotation = {};
+
     Guid guid = {};
     Text name = {};
 
