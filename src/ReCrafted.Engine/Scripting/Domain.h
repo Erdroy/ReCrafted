@@ -9,6 +9,7 @@
 #include "Core/Types.h"
 #include "Assembly.h"
 #include "Mono.h"
+#include "Core/Containers/Array.h"
 
 #include <vector>
 
@@ -20,7 +21,7 @@ class Domain
 private:
 	MonoDomain* m_domain = nullptr;
 
-	std::vector<Ptr<Assembly>> m_loadedAssemblies = {};
+	Array<Ptr<Assembly>> m_loadedAssemblies = {};
 
 public:
 	/// <summary>

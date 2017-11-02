@@ -37,12 +37,12 @@ private:
 	static VoxelChunkProcessor* m_instance;
 
 private:
-	std::vector<VoxelChunk*> m_dataQueue = {};
-	std::vector<VoxelChunk*> m_meshingQueue = {};
+    Array<VoxelChunk*> m_dataQueue = {};
+    Array<VoxelChunk*> m_meshingQueue = {};
 	std::mutex m_dataQueueMutex = {};
 	std::mutex m_meshingQueueMutex = {};
 
-	std::vector<Thread> m_workers = {};
+    Array<Thread> m_workers = {};
 
 	int m_totalData = 0;
 	int m_totalMesh = 0;
@@ -100,7 +100,7 @@ public:
 
 			chunk->m_queued = true;
 			m_instance->m_dataQueueMutex.lock();
-			m_instance->m_dataQueue.push_back(chunk);
+			m_instance->m_dataQueue.add(chunk);
 			m_instance->m_dataQueueMutex.unlock();
 		}
 		else
@@ -109,7 +109,7 @@ public:
 			{
 				chunk->m_queued = true;
 				m_instance->m_dataQueueMutex.lock();
-				m_instance->m_dataQueue.push_back(chunk);
+				m_instance->m_dataQueue.add(chunk);
 				m_instance->m_dataQueueMutex.unlock();
 			}
 
@@ -118,7 +118,7 @@ public:
 				{
 					chunk->m_queued = true;
 					m_instance->m_meshingQueueMutex.lock();
-					m_instance->m_meshingQueue.push_back(chunk);
+					m_instance->m_meshingQueue.add(chunk);
 					m_instance->m_meshingQueueMutex.unlock();
 				}
 			}
@@ -128,7 +128,7 @@ public:
 				{
 					chunk->m_queued = true;
 					m_instance->m_meshingQueueMutex.lock();
-					m_instance->m_meshingQueue.push_back(chunk);
+					m_instance->m_meshingQueue.add(chunk);
 					m_instance->m_meshingQueueMutex.unlock();
 				}
 			}

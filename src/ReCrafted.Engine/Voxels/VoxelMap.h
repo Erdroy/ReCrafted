@@ -92,8 +92,8 @@ class VoxelMap
 	};
 
 private:
-	std::vector<MapRoot*> m_roots = {};
-	std::vector<VoxelChunk*> m_chunks = {};
+    Array<MapRoot*> m_roots = {};
+    Array<VoxelChunk*> m_chunks = {};
 
 private:
 	MapRoot* findRoot(int x, int z);
@@ -118,7 +118,7 @@ public:
 	/// Gets chunks array.
 	/// </summary>
 	/// <returns>The chunks array.</returns>
-	std::vector<VoxelChunk*>* getChunks();
+    Array<VoxelChunk*>* getChunks();
 
 	/// <summary>
 	/// Draws all visible chunks

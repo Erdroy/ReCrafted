@@ -5,7 +5,7 @@
 
 void Entity::addScript(Ptr<Script> script)
 {
-    scripts.push_back(script);
+    scripts.add(script);
 }
 
 void Entity::removeScript(Ptr<Script> script)
@@ -14,10 +14,12 @@ void Entity::removeScript(Ptr<Script> script)
 
 void Entity::addChildren(Ptr<Entity> entity)
 {
+    children.add(entity);
 }
 
 void Entity::removeChildren(Ptr<Entity> entity)
 {
+
 }
 
 void Entity::update()
@@ -41,14 +43,14 @@ void Entity::onDestroy()
     // Dispose scripts
     for (auto && script : scripts)
     {
-        destroy(script.get());
+        destroy(script);
         script->dispose();
     }
 
     // Destroy children
     for (auto && child : children)
     {
-        destroy(child.get());
+        destroy(child);
     }
 
     scripts.clear();

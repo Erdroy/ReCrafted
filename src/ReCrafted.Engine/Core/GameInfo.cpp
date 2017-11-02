@@ -3,7 +3,7 @@
 #include "GameInfo.h"
 #include "Common/Text.h"
 
-std::vector<Text> GameInfo::cliArguments;
+Array<Text> GameInfo::cliArguments;
 
 bool GameInfo::containsArgument(Text text)
 {
@@ -31,7 +31,7 @@ void GameInfo::parseArguments(Text text)
 			if(isString)
 			{
 				// substr
-				cliArguments.push_back(text.subtext(argStart, i - argStart));
+				cliArguments.add(text.subtext(argStart, i - argStart));
 				argStart = i + 2; // " and space
 				i++;
 				isString = false;
@@ -47,7 +47,7 @@ void GameInfo::parseArguments(Text text)
 			if (ch == static_cast<Char>(' '))
 			{
 				// substr
-				cliArguments.push_back(text.subtext(argStart, i - argStart));
+				cliArguments.add(text.subtext(argStart, i - argStart));
 				argStart = i + 1;
 			}
 		}
@@ -59,5 +59,5 @@ void GameInfo::parseArguments(Text text)
 	if(length == argStart)
 		return;
 
-	cliArguments.push_back(text.subtext(argStart, length - argStart));
+	cliArguments.add(text.subtext(argStart, length - argStart));
 }

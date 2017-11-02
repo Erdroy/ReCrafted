@@ -62,7 +62,7 @@ Ptr<Atlas> Atlas::load(Text fileName)
 		// build element list
 		for(auto i = 0u; i < json.size(); i ++)
 		{
-			atlas->m_elements.push_back({});
+			atlas->m_elements.add({});
 			auto elem = &atlas->m_elements[atlas->m_elements.size() - 1];
 
 			auto name = json[i]["Name"].get<std::string>();

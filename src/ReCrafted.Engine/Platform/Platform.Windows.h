@@ -148,7 +148,6 @@ private:
 	static double m_freqCoeff;
 	static HANDLE m_threadPool[MAX_THREADS];
 	static unsigned char m_theadCount;
-	static std::vector<QueueEntry> m_queue;
 
 private:
 	static void setGameWindow(HWND gameWindow)
@@ -188,17 +187,6 @@ public:
 
 			m_theadCount++;
 		}
-	}
-
-	/// <summary>
-	/// Queue job for automatic execution in threaded enviroment.
-	/// </summary>
-	FORCEINLINE static void queueJob(QueueFunction function)
-	{
-		// TODO: queueJob
-		auto entry = QueueEntry();
-		entry.functio = function;
-		m_queue.push_back(entry);
 	}
 
 	/// <summary>

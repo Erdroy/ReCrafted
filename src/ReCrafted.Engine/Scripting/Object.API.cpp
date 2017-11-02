@@ -3,6 +3,14 @@
 #include "Object.h"
 #include "Scripting/Mono.h"
 
+namespace Internal
+{
+    void objectDestroy(Object* object)
+    {
+        Object::destroy(object);
+    }
+}
+
 void Object::initRuntime()
 {
 	API_FILE("Object.Gen.cs");
@@ -12,7 +20,7 @@ void Object::initRuntime()
 		{
 			API_METHOD(INTERNAL, STATIC, "InternalDestroy", EXTERN);
 			{
-				API_BIND("ReCrafted.API.Object::InternalDestroy", &Object::destroy);
+				API_BIND("ReCrafted.API.Object::InternalDestroy", &Internal::objectDestroy);
 
 				API_PARAM("IntPtr", "nativePtr");
 			}

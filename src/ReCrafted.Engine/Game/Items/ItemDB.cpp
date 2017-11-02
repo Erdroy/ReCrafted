@@ -23,7 +23,7 @@ void ItemDB::generateAtlases()
 	auto lastSize = RECRAFTED_BLOCK_ATLAS_SIZE;
 	auto last_mip = main_bits;
 
-	std::vector<byte*> m_mips = {};
+    auto m_mips = Array<byte*>(4);
 
 	// generate 4 mips TODO: calculate how much mips we can generate for given atlas/element size
 	for(auto i = 0; i < 4; i ++)
@@ -32,7 +32,7 @@ void ItemDB::generateAtlases()
 		last_mip = mip;
 		lastSize = lastSize / 2;
 
-		m_mips.push_back(mip);
+		m_mips.add(mip);
 
 		m_instance->m_atlas->addMip(lastSize, lastSize, reinterpret_cast<uint*>(mip));
 	}

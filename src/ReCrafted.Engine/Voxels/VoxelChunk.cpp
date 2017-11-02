@@ -17,10 +17,10 @@ FORCEINLINE static void build_face(
 	Vector3 right,
 	bool reversed,
 	bool inverted,
-	std::vector<Vector3>* vertices,
-	std::vector<Vector3>* normals,
-	std::vector<Vector2>* uvs,
-	std::vector<uint>* indices
+	Array<Vector3>* vertices,
+    Array<Vector3>* normals,
+    Array<Vector2>* uvs,
+    Array<uint>* indices
 	)
 {
 	// TODO: this code should be higly optimized.
@@ -36,63 +36,63 @@ FORCEINLINE static void build_face(
 	if (reversed)
 		normal = Vector3() - normal;
 
-	vertices->push_back(a);
-	vertices->push_back(b);
-	vertices->push_back(c);
-	vertices->push_back(d);
+	vertices->add(a);
+	vertices->add(b);
+	vertices->add(c);
+	vertices->add(d);
 
-	normals->push_back(normal);
-	normals->push_back(normal);
-	normals->push_back(normal);
-	normals->push_back(normal);
+	normals->add(normal);
+	normals->add(normal);
+	normals->add(normal);
+	normals->add(normal);
 
 	auto data = static_cast<Item_BlockData*>(ItemDB::getItemUnsafe(id)->data);
 
-	uvs->push_back(Vector2(data->texture_u, data->texture_v));
-	uvs->push_back(Vector2(data->texture_u, data->texture_v + data->texture_h));
-	uvs->push_back(Vector2(data->texture_u + data->texture_w, data->texture_v + data->texture_h));
-	uvs->push_back(Vector2(data->texture_u + data->texture_w, data->texture_v));
+	uvs->add(Vector2(data->texture_u, data->texture_v));
+	uvs->add(Vector2(data->texture_u, data->texture_v + data->texture_h));
+	uvs->add(Vector2(data->texture_u + data->texture_w, data->texture_v + data->texture_h));
+	uvs->add(Vector2(data->texture_u + data->texture_w, data->texture_v));
 
 	if (!reversed)
 	{
 		if (inverted)
 		{
-			indices->push_back(index + 1u);
-			indices->push_back(index + 2u);
-			indices->push_back(index + 3u);
-			indices->push_back(index + 3u);
-			indices->push_back(index + 0u);
-			indices->push_back(index + 1u);
+			indices->add(index + 1u);
+			indices->add(index + 2u);
+			indices->add(index + 3u);
+			indices->add(index + 3u);
+			indices->add(index + 0u);
+			indices->add(index + 1u);
 		}
 		else
 		{
-			indices->push_back(index + 0u);
-			indices->push_back(index + 1u);
-			indices->push_back(index + 2u);
-			indices->push_back(index + 2u);
-			indices->push_back(index + 3u);
-			indices->push_back(index + 0u);
+			indices->add(index + 0u);
+			indices->add(index + 1u);
+			indices->add(index + 2u);
+			indices->add(index + 2u);
+			indices->add(index + 3u);
+			indices->add(index + 0u);
 		}
 	}
 	else
 	{
 		if (inverted)
 		{
-			indices->push_back(index + 2u);
-			indices->push_back(index + 1u);
-			indices->push_back(index + 3u);
-			indices->push_back(index + 0u);
-			indices->push_back(index + 3u);
-			indices->push_back(index + 1u);
+			indices->add(index + 2u);
+			indices->add(index + 1u);
+			indices->add(index + 3u);
+			indices->add(index + 0u);
+			indices->add(index + 3u);
+			indices->add(index + 1u);
 		}
 		else
 		{
-			indices->push_back(index + 1u);
-			indices->push_back(index + 0u);
-			indices->push_back(index + 2u);
-			indices->push_back(index + 3u);
-			indices->push_back(index + 2u);
-			indices->push_back(index + 0u);
+			indices->add(index + 1u);
+			indices->add(index + 0u);
+			indices->add(index + 2u);
+			indices->add(index + 3u);
+			indices->add(index + 2u);
+			indices->add(index + 0u);
 		}
 	}
 }
@@ -136,11 +136,11 @@ void VoxelChunk::generateVoxelData() // WARNING: this should be run in job queue
 }
 
 void VoxelChunk::generateMesh(
-	std::vector<Vector3>* verticesArray,
-	std::vector<Vector3>* normalsArray,
-	std::vector<Vector2>* uvsArray,
-	std::vector<Vector4>* colorsArray,
-	std::vector<uint>* indicesArray) // WARNING: this should be run in job queue!
+	Array<Vector3>* verticesArray,
+    Array<Vector3>* normalsArray,
+    Array<Vector2>* uvsArray,
+    Array<Vector4>* colorsArray,
+    Array<uint>* indicesArray) // WARNING: this should be run in job queue!
 {
 	if (m_disposed)
 		return;
@@ -224,10 +224,10 @@ void VoxelChunk::generateMesh(
 
 					build_face(voxel, origin, vec3_up, vec3_forward, false, flippedQuad, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
-					colors_ptr->push_back({ ao10 * ambientStr, 0.0f, 0.0f, 0.0f });
-					colors_ptr->push_back({ ao11 * ambientStr, 0.0f, 0.0f, 0.0f });
-					colors_ptr->push_back({ ao01 * ambientStr, 0.0f, 0.0f, 0.0f });
-					colors_ptr->push_back({ ao00 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao10 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao11 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao01 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao00 * ambientStr, 0.0f, 0.0f, 0.0f });
 				}
 
 				// right face
@@ -242,10 +242,10 @@ void VoxelChunk::generateMesh(
 
 					build_face(voxel, origin + vec3_right, vec3_up, vec3_forward, true, flippedQuad, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
-					colors_ptr->push_back({ ao00 * ambientStr, 0.0f, 0.0f, 0.0f });
-					colors_ptr->push_back({ ao01 * ambientStr, 0.0f, 0.0f, 0.0f });
-					colors_ptr->push_back({ ao11 * ambientStr, 0.0f, 0.0f, 0.0f });
-					colors_ptr->push_back({ ao10 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao00 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao01 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao11 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao10 * ambientStr, 0.0f, 0.0f, 0.0f });
 				}
 
 				// upper face
@@ -260,10 +260,10 @@ void VoxelChunk::generateMesh(
 
 					build_face(voxel, origin + vec3_up, vec3_forward, vec3_right, true, flippedQuad, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
-					colors_ptr->push_back({ ao00 * ambientStr, 0.0f, 0.0f, 0.0f });
-					colors_ptr->push_back({ ao01 * ambientStr, 0.0f, 0.0f, 0.0f });
-					colors_ptr->push_back({ ao11 * ambientStr, 0.0f, 0.0f, 0.0f });
-					colors_ptr->push_back({ ao10 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao00 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao01 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao11 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao10 * ambientStr, 0.0f, 0.0f, 0.0f });
 				}
 
 				// bottom face
@@ -278,10 +278,10 @@ void VoxelChunk::generateMesh(
 
 					build_face(voxel, origin, vec3_forward, vec3_right, false, flippedQuad, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
-					colors_ptr->push_back({ ao00 * ambientStr, 0.0f, 0.0f, 0.0f });
-					colors_ptr->push_back({ ao01 * ambientStr, 0.0f, 0.0f, 0.0f });
-					colors_ptr->push_back({ ao11 * ambientStr, 0.0f, 0.0f, 0.0f });
-					colors_ptr->push_back({ ao10 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao00 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao01 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao11 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao10 * ambientStr, 0.0f, 0.0f, 0.0f });
 				}
 
 				// front face
@@ -296,10 +296,10 @@ void VoxelChunk::generateMesh(
 
 					build_face(voxel, origin + vec3_forward, vec3_up, vec3_right, false, flippedQuad, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
-					colors_ptr->push_back({ ao00 * ambientStr, 0.0f, 0.0f, 0.0f });
-					colors_ptr->push_back({ ao01 * ambientStr, 0.0f, 0.0f, 0.0f });
-					colors_ptr->push_back({ ao11 * ambientStr, 0.0f, 0.0f, 0.0f });
-					colors_ptr->push_back({ ao10 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao00 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao01 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao11 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao10 * ambientStr, 0.0f, 0.0f, 0.0f });
 				}
 
 				// back face
@@ -314,10 +314,10 @@ void VoxelChunk::generateMesh(
 
 					build_face(voxel, origin, vec3_up, vec3_right, true, flippedQuad, vertices_ptr, normals_ptr, uvs_ptr, indices_ptr);
 
-					colors_ptr->push_back({ ao00 * ambientStr, 0.0f, 0.0f, 0.0f });
-					colors_ptr->push_back({ ao01 * ambientStr, 0.0f, 0.0f, 0.0f });
-					colors_ptr->push_back({ ao11 * ambientStr, 0.0f, 0.0f, 0.0f });
-					colors_ptr->push_back({ ao10 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao00 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao01 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao11 * ambientStr, 0.0f, 0.0f, 0.0f });
+					colors_ptr->add({ ao10 * ambientStr, 0.0f, 0.0f, 0.0f });
 				}
 			}
 		}

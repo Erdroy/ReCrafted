@@ -40,7 +40,7 @@ private:
 	uint m_charmapWidth = 512;
 	uint m_charmapHeight = 512;
 
-	std::vector<Ptr<Texture2D>> m_textures = {};
+	Array<Ptr<Texture2D>> m_textures = {};
 
 	Glyph* m_glyphs = nullptr;
 	Glyph m_nullGlyph = {};

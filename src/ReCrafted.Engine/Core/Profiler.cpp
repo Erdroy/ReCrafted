@@ -2,4 +2,4 @@
 
 #include "Profiler.h"
 
-std::vector<double> Profiler::m_stack;
+Array<double> Profiler::m_stack;

@@ -8,6 +8,7 @@
 // includes
 #include "Platform/Platform.Windows.h"
 #include "Logger.h"
+#include "Containers/Array.h"
 
 /// <summary>
 /// Profiler class.
@@ -16,7 +17,7 @@ class Profiler
 {
 private:
 private:
-	static std::vector<double> m_stack;
+	static Array<double> m_stack;
 
 public:
 	/// <summary>
@@ -25,7 +26,7 @@ public:
 	FORCEINLINE static void beginProfile()
 	{
 		auto start = Platform::getMiliseconds();
-		m_stack.push_back(start);
+		m_stack.add(start);
 	}
 
 	/// <summary>
@@ -37,7 +38,7 @@ public:
 		if (m_stack.size() == 0u)
 			return;
 
-		auto start = m_stack.back();
+		auto start = m_stack.last();
 		auto end = Platform::getMiliseconds();
 		auto time = end - start;
 
@@ -47,7 +48,7 @@ public:
 		Logger::write(buffer, LogLevel::Debug);
 
 		// clear
-		m_stack.pop_back();
+		m_stack.removeAt(m_stack.count() - 1);
 	}
 };
 

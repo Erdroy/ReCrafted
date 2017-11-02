@@ -6,7 +6,7 @@
 #define GAMEINFO_H
 
 // includes
-#include <vector>
+#include "Core/Containers/Array.h"
 
 struct Text;
 
@@ -27,7 +27,7 @@ public:
 	/// <summary>
 	/// The command line arguments passed when the application was launched.
 	/// </summary>
-	static std::vector<Text> cliArguments;
+	static Array<Text> cliArguments;
 };
 
 #endif // GAMEINFO_H

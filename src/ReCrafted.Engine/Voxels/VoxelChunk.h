@@ -9,6 +9,7 @@
 #include "ReCrafted.h"
 #include "Graphics/Mesh.h"
 #include "Core/Math/BoundingBox.h"
+#include "Core/Containers/Array.h"
 
 typedef unsigned char voxelid;
 
@@ -134,11 +135,11 @@ public:
 	/// Generates mesh for this chunk.
 	/// </summary>
 	void generateMesh(
-		std::vector<Vector3>* verticesArray,
-		std::vector<Vector3>* normalsArray,
-		std::vector<Vector2>* uvsArray,
-		std::vector<Vector4>* colorsArray,
-		std::vector<uint>* indicesArray);
+		Array<Vector3>* verticesArray,
+        Array<Vector3>* normalsArray,
+        Array<Vector2>* uvsArray,
+        Array<Vector4>* colorsArray,
+        Array<uint>* indicesArray);
 
 	/// <summary>
 	/// Updates(queues) the chunk mesh.

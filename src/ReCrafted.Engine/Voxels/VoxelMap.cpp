@@ -22,7 +22,7 @@ void VoxelMap::MapRoot::removeChunk(int x, int z)
 	if(chunk)
 	{
 		chunk->dispose();
-		m_vcm->m_chunks.erase(std::find(m_vcm->m_chunks.begin(), m_vcm->m_chunks.end(), chunk));
+        m_vcm->m_chunks.remove(chunk);
 	}
 
 	m_table[rsX * TableWidth + rsZ] = nullptr;
@@ -70,7 +70,7 @@ VoxelMap::MapRoot* VoxelMap::findRoot(int x, int z)
 
 void VoxelMap::addRoot(MapRoot* root)
 {
-	m_roots.push_back(root);
+	m_roots.add(root);
 
 	root->m_vcm = this;
 
@@ -122,7 +122,7 @@ void VoxelMap::addChunk(VoxelChunk* chunk)
 	// set root ptr
 	chunk->root = root;
 
-	m_chunks.push_back(chunk);
+	m_chunks.add(chunk);
 	root->addChunk(chunk, chunk->m_x, chunk->m_z);
 }
 
@@ -136,7 +136,7 @@ VoxelChunk* VoxelMap::findChunk(int x, int z)
 	return root->getChunk(x, z);
 }
 
-std::vector<VoxelChunk*>* VoxelMap::getChunks()
+Array<VoxelChunk*>* VoxelMap::getChunks()
 {
 	return &m_chunks;
 }

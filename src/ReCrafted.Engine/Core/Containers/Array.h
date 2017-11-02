@@ -49,6 +49,8 @@ public:
 
     FORCEINLINE bool remove(T item)
     {
+		_ASSERT(m_count > 0u);
+
         auto index = std::find(m_vector.begin(), m_vector.end(), item);
         
         if (index != m_vector.end()) {
@@ -62,6 +64,8 @@ public:
 
     FORCEINLINE bool remove(void* itemPointer)
     {
+		_ASSERT(m_count > 0u);
+
         for(auto i = 0u; i < m_count; i ++)
         {
             if(m_vector[i].get() == itemPointer)
@@ -76,6 +80,8 @@ public:
 
     FORCEINLINE void removeAt(int index)
     {
+		_ASSERT(index >= 0 && index < static_cast<int>(m_count));
+
         m_vector.erase(m_vector.begin() + index);
         m_count--;
     }
@@ -132,31 +138,31 @@ public:
 
     FORCEINLINE T& last()
     {
-        _ASSERT(m_vector.size > 0u);
-        return m_vector[m_vector.size - 1];
+        _ASSERT(m_count > 0u);
+        return m_vector[m_count - 1];
     }
 
     FORCEINLINE const T& last() const
     {
-        _ASSERT(m_vector.size > 0u);
-        return m_vector[m_vector.size - 1];
+        _ASSERT(m_count > 0u);
+        return m_vector[m_count - 1];
     }
 
     FORCEINLINE T& first()
     {
-        _ASSERT(m_vector.size > 0u);
+        _ASSERT(m_count > 0u);
         return m_vector[0];
     }
 
     FORCEINLINE const T& first() const
     {
-        _ASSERT(m_vector.size > 0u);
+        _ASSERT(m_count > 0u);
         return m_vector[0];
     }
 
     FORCEINLINE T& at(int index)
     {
-        _ASSERT(index >= 0 && index < static_cast<int>(m_vector.size()));
+        _ASSERT(index >= 0 && index < static_cast<int>(m_count));
 
         return m_vector[index];
     }
@@ -181,13 +187,13 @@ public:
 
     FORCEINLINE T& operator[](int index)
     {
-        _ASSERT(index >= 0 && index < static_cast<int>(m_vector.size()));
+        _ASSERT(index >= 0 && index < static_cast<int>(m_count));
         return m_vector[index];
     }
 
     FORCEINLINE const T& operator[](int index) const
     {
-        _ASSERT(index >= 0 && index < static_cast<int>(m_vector.size()));
+        _ASSERT(index >= 0 && index < static_cast<int>(m_count));
         return m_vector[index];
     }
 };

@@ -29,13 +29,10 @@ struct PreFontGlyph
 	uint HorizontalBearingY = 0;
 };
 
-std::vector<PreFontGlyph> GetGlyphs(FT_Face face)
+Array<PreFontGlyph> GetGlyphs(FT_Face face)
 {
-	auto start = 0U;
-	auto end = face->num_glyphs;
-
-	std::vector<PreFontGlyph> glyphs = {};
-	for (long index = start; index < end; index++)
+    auto glyphs = Array<PreFontGlyph>(face->num_glyphs);
+	for (long index = 0u; index < face->num_glyphs; index++)
 	{
 		auto ch = index;
 		FT_Load_Char(face, ch, FT_RENDER_MODE_NORMAL);
@@ -52,7 +49,7 @@ std::vector<PreFontGlyph> GetGlyphs(FT_Face face)
 		pfg.AdvanceX = static_cast<uint>(glyph->advance.x) >> 16;
 		pfg.AdvanceY = static_cast<uint>(face->glyph->linearVertAdvance) >> 16;
 
-		glyphs.push_back(pfg);
+		glyphs.add(pfg);
 	}
 
 	return glyphs;
@@ -79,7 +76,7 @@ void ReleaseBitmap(byte* charmapTexure)
 	delete[] charmapTexure;
 }
 
-byte* GenerateCharmap(FT_Face face, int charmap, uint charmapWidth, uint charmapHeight, std::vector<PreFontGlyph> glyphs, std::vector<PreFontGlyph>& failed, std::vector<Font::Glyph>& outputGlyphs)
+byte* GenerateCharmap(FT_Face face, int charmap, uint charmapWidth, uint charmapHeight, Array<PreFontGlyph> glyphs, Array<PreFontGlyph>& failed, Array<Font::Glyph>& outputGlyphs)
 {
 	byte* texture = CreateBitmap(charmapWidth, charmapHeight);
 	byte* texturePtr = texture;
@@ -104,7 +101,7 @@ byte* GenerateCharmap(FT_Face face, int charmap, uint charmapWidth, uint charmap
 
 		auto rect = bin.Insert(bitmap.width, bitmap.rows);
 
-		outputGlyphs.push_back({});
+		outputGlyphs.add({});
 		if (bitmap.width != 0 && bitmap.rows != 0)
 		{
 			Font::Glyph* fontGlyph = &outputGlyphs[outputGlyphs.size() - 1];
@@ -134,7 +131,7 @@ byte* GenerateCharmap(FT_Face face, int charmap, uint charmapWidth, uint charmap
 				else
 				{
 					// No more space
-					failed.push_back(glyphData);
+					failed.add(glyphData);
 				}
 			}
 		}
@@ -148,7 +145,7 @@ byte* GenerateCharmap(FT_Face face, int charmap, uint charmapWidth, uint charmap
 			else
 			{
 				// No more space
-				failed.push_back(glyphData);
+				failed.add(glyphData);
 			}
 		}
 	}
@@ -241,12 +238,12 @@ void Font::loadFont(Text fontFile, int size, bool managed)
 	const auto charmapWidth = 512;
 	const auto charmapHeight = 512;
 
-	std::vector<PreFontGlyph> glyphsFailed = {};
-	std::vector<Font::Glyph> glyphs = {};
+    Array<PreFontGlyph> glyphsFailed = {};
+    Array<Font::Glyph> glyphs = {};
 
 	auto charmapId = 0;
 
-	auto textures = std::vector<Ptr<Texture2D>>();
+	auto textures = Array<Ptr<Texture2D>>();
 
 	while (glyphsLeft.size() > 0u)
 	{
@@ -301,7 +298,7 @@ void Font::loadFont(Text fontFile, int size, bool managed)
 		auto texture = Texture2D::createTexture();
 		texture->loadMemory(newbitsPtr, charmapWidth, charmapHeight);
 		texture->apply();
-		textures.push_back(texture);
+		textures.add(texture);
 
 		// close
 		ReleaseBitmap(newbitsPtr);

@@ -12,6 +12,7 @@
 #include "Class.h"
 #include "Domain.h"
 #include "Core/Types.h"
+#include "Core/Containers/Array.h"
 
 #include <vector>
 
@@ -25,7 +26,7 @@ class Object
     friend class Class;
 
 private:
-	static std::vector<Ptr<Object>> m_objects;
+	static Array<Ptr<Object>> m_objects;
 
 private:
 	MonoObject* m_object = nullptr;
@@ -111,6 +112,11 @@ public:
 	static void destroy(Object* object);
 	static void destroyall();
 	static void finalize(Object* object);
+
+    FORCEINLINE static void destroy(Ptr<Object> object)
+    {
+        destroy(object.get());
+    }
 
 };
 

@@ -7,9 +7,7 @@
 #include "Method.h"
 #include "Field.h"
 
-#include <algorithm>
-
-std::vector<Ptr<Object>> Object::m_objects;
+Array<Ptr<Object>> Object::m_objects;
 
 Ptr<Method> Object::findMethod(const char* methodName) const
 {
@@ -90,7 +88,7 @@ void Object::initializeInstance(Ptr<Object>& object, MonoObject* instance)
 
 void Object::registerObject(Ptr<Object> object)
 {
-	m_objects.push_back(object);
+	m_objects.add(object);
 }
 
 void Object::destroy(Object* object)
@@ -102,14 +100,7 @@ void Object::destroy(Object* object)
 	object->m_gchandle = 0u;
 
 	// unregister
-	for (std::vector<Ptr<Object>>::iterator iter = m_objects.begin(); iter != m_objects.end(); ++iter)
-	{
-		if (iter->get() == object)
-		{
-			m_objects.erase(iter);
-			break;
-		}
-	}
+    m_objects.remove(object);
 }
 
 void Object::destroyall()
@@ -129,18 +120,11 @@ void Object::destroyall()
 
 void Object::finalize(Object* object)
 {
-	// unregister
-	for (std::vector<Ptr<Object>>::iterator iter = m_objects.begin(); iter != m_objects.end(); ++iter)
-	{
-		if (iter->get() == object)
-		{
-            object->onDestroy();
-
-			Logger::write("Object was finalized, but not destroyed at first!", LogLevel::Warning);
-			m_objects.erase(iter);
-			break;
-		}
-	}
+    if(m_objects.remove(object))
+    {
+        object->onDestroy();
+        Logger::write("Object was finalized, but not destroyed at first!", LogLevel::Warning);
+    }
 
 	// cleanup
 	object->m_object = nullptr;

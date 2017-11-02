@@ -10,6 +10,7 @@
 #include "Common/Text.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Atlas.h"
+#include "Core/Containers/Array.h"
 
 struct Text;
 class Font;
@@ -57,7 +58,7 @@ private:
 	static UI* m_instance;
 
 private:
-	std::vector<drawcmd> m_drawCmds = {};
+	Array<drawcmd> m_drawCmds = {};
 
 	bgfx::VertexDecl m_vertexdecl = {};
 	bgfx::DynamicVertexBufferHandle m_vertexBuffer = {};

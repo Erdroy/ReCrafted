@@ -8,7 +8,7 @@
 VoxelChunkProcessor* VoxelChunkProcessor::m_instance;
 VoxelChunkProcessor* VoxelChunkProcessorInstance;
 
-void worker_data(std::vector<VoxelChunk*>* queue)
+void worker_data(Array<VoxelChunk*>* queue)
 {
 	VoxelChunk* chunk = nullptr;
 	while(GameMain::isRunning())
@@ -38,16 +38,16 @@ void worker_data(std::vector<VoxelChunk*>* queue)
 	}
 }
 
-void worker_meshing(std::vector<VoxelChunk*>* queue)
+void worker_meshing(Array<VoxelChunk*>* queue)
 {
 	VoxelChunk* chunk = nullptr;
 
 	// arrays for mesher
-	std::vector<Vector3> verticesArray(65535);
-	std::vector<Vector3> normalsArray(65535);
-	std::vector<Vector2> uvsArray(65535);
-	std::vector<Vector4> colorsArray(65535);
-	std::vector<uint> indicesArray(65535);
+    Array<Vector3> verticesArray(65535);
+    Array<Vector3> normalsArray(65535);
+    Array<Vector2> uvsArray(65535);
+    Array<Vector4> colorsArray(65535);
+    Array<uint> indicesArray(65535);
 
 	auto vertices_ptr = &verticesArray;
 	auto normals_ptr = &normalsArray;
@@ -94,8 +94,8 @@ void VoxelChunkProcessor::init()
 	VoxelChunkProcessorInstance = this;
 
 	// create threads
-	m_workers.push_back(Platform::createThread(ThreadFunction(worker_data), &m_dataQueue));
-	m_workers.push_back(Platform::createThread(ThreadFunction(worker_meshing), &m_meshingQueue));
+	m_workers.add(Platform::createThread(ThreadFunction(worker_data), &m_dataQueue));
+	m_workers.add(Platform::createThread(ThreadFunction(worker_meshing), &m_meshingQueue));
 
 	Logger::write("Created threads for VoxelChunkProcessor", LogLevel::Info);
 
@@ -124,7 +124,7 @@ VoxelChunk* VoxelChunkProcessor::dequeueDataLessChunk()
 			chunk->m_queued = false;
 
 			// remove chunk for dataQueue
-			m_dataQueue.erase(m_dataQueue.begin() + i);
+			m_dataQueue.removeAt(i);
 			break;
 		}
 	}
@@ -156,7 +156,7 @@ VoxelChunk* VoxelChunkProcessor::dequeueMeshLessChunk()
 			if (dist > 500.0f)
 			{
 				tempchunk->m_queued = false;
-				m_meshingQueue.erase(m_meshingQueue.begin() + i);
+				m_meshingQueue.removeAt(i);
 				continue;
 			}
 
@@ -167,7 +167,7 @@ VoxelChunk* VoxelChunkProcessor::dequeueMeshLessChunk()
 				chunk->m_queued = false;
 
 				// remove chunk
-				m_meshingQueue.erase(m_meshingQueue.begin() + i);
+				m_meshingQueue.removeAt(i);
 				break;
 			}
 		}

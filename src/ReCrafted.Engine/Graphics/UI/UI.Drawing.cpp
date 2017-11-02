@@ -114,7 +114,7 @@ void UI::finalizeVertexData(vertex& v0, vertex& v1, vertex& v2, vertex& v3, uint
 	cmd.indices[4] = 3;
 	cmd.indices[5] = 2;
 
-	m_drawCmds.push_back(cmd);
+	m_drawCmds.add(cmd);
 }
 
 void UI::internal_drawBox(Rectf rect)

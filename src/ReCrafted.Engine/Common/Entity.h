@@ -11,6 +11,7 @@
 #include "Scripting/Script.h"
 #include "Scripting/Object.h"
 #include "Core/Math/Math.h"
+#include "Core/Containers/Array.h"
 
 class Entity : public Object
 {
@@ -20,8 +21,8 @@ class Entity : public Object
     friend class GameMain;
 
 public:
-    std::vector<Ptr<Script>> scripts = {};
-    std::vector<Ptr<Entity>> children = {};
+    Array<Ptr<Script>> scripts = {};
+    Array<Ptr<Entity>> children = {};
 
     Vector3 position = {};
     Vector3 rotation = {};

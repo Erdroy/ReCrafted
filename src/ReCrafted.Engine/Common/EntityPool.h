@@ -9,6 +9,7 @@
 #include "ReCrafted.h"
 #include "Entity.h"
 #include "Platform/Platform.h"
+#include "Core/Containers/Array.h"
 
 class EntityPool
 {
@@ -16,7 +17,7 @@ private:
 	static EntityPool* m_instance;
 
 private:
-	std::vector<Ptr<Entity>> m_entities = {};
+	Array<Ptr<Entity>> m_entities = {};
 
 public:
 	void initialize();
@@ -33,7 +34,7 @@ public:
         entity->guid = Platform::newGuid();
 		entity->name = entityName;
 
-        m_instance->m_entities.push_back(entity);
+        m_instance->m_entities.add(entity);
 
 		return entity;
 	}

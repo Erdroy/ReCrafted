@@ -34,7 +34,7 @@ Ptr<Assembly> Domain::loadAssembly(const char* fileName)
 	assembly->m_domain = m_domain;
 
 	// add to the loaded assembly list
-	m_loadedAssemblies.push_back(assembly);
+	m_loadedAssemblies.add(assembly);
 
 	Logger::write("Loaded assembly '", fileName, "'", LogLevel::Info);
 

@@ -105,7 +105,7 @@ void UI::init()
 	m_shader = Shader::loadShader("default_ui");
 
 	// allocate draw command for first upload (it's 1/4 of max vertex count as there is 4 vertexes per command)
-	m_drawCmds = std::vector<drawcmd>(8 << 10);
+	m_drawCmds = Array<drawcmd>(8 << 10);
 
 	// crate uniform
 	m_textureUnif = bgfx::createUniform("m_texture0", bgfx::UniformType::Int1);

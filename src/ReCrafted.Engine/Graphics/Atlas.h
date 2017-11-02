@@ -8,6 +8,7 @@
 // includes
 #include "Texture2D.h"
 #include "Core/Math/Rect.h"
+#include "Core/Containers/Array.h"
 
 struct Text;
 
@@ -25,7 +26,7 @@ public:
 
 private:
 	Ptr<Texture2D> m_texture = nullptr;
-	std::vector<Element> m_elements = {};
+	Array<Element> m_elements = {};
 
 private:
 	Atlas() {}
