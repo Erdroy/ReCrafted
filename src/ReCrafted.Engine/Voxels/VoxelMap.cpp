@@ -152,7 +152,7 @@ void VoxelMap::draw()
 
 	auto frustum = Camera::getMainCamera()->getBoundingFrustum();
 
-	auto world = Universe::getCurrentWorld();
+	auto world = VoxelWorld::instance();
 
 	// find far left-bottom root
 	auto baseRoot = findRoot(farChunkLeft, farChunkBottom);

@@ -9,7 +9,7 @@
 
 #define CHECK_SHUTDOWN if (!m_running) break;
 
-#define RESET_FLAGS (BGFX_RESET_NONE | BGFX_RESET_VSYNC)
+#define RESET_FLAGS (BGFX_RESET_NONE /*| BGFX_RESET_VSYNC*/)
 
 GameMain* GameMain::m_instance;
 

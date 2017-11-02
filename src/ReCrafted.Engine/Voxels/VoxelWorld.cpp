@@ -8,6 +8,7 @@
 #include <string>
 
 int VoxelWorld::m_availableUploads;
+VoxelWorld* VoxelWorld::m_instance;
 
 void VoxelWorld::update_digplace()
 {

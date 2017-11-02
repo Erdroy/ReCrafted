@@ -27,6 +27,8 @@ void worker_data(Array<VoxelChunk*>* queue)
 			}
 		}
 
+		auto start = Platform::getMiliseconds();
+
 		// process
 		chunk->generateVoxelData();
 		VoxelChunkProcessorInstance->finishChunkData(chunk);
@@ -35,6 +37,10 @@ void worker_data(Array<VoxelChunk*>* queue)
 		chunk->updateNeighs();
 
 		chunk = nullptr;
+
+		auto end = Platform::getMiliseconds();
+		auto diff = end - start;
+		VoxelChunkProcessorInstance->m_dataTime += float(diff);
 	}
 }
 
@@ -71,6 +77,8 @@ void worker_meshing(Array<VoxelChunk*>* queue)
 			}
 		}
 
+		auto start = Platform::getMiliseconds();
+
 		// process
 		chunk->generateMesh(vertices_ptr, normals_ptr, uvs_ptr, colors_ptr, indices_ptr);
 		VoxelChunkProcessorInstance->finishChunkMesh(chunk);
@@ -84,6 +92,10 @@ void worker_meshing(Array<VoxelChunk*>* queue)
 
 		// zeroe chunk pointer
 		chunk = nullptr;
+
+		auto end = Platform::getMiliseconds();
+		auto diff = end - start;
+		VoxelChunkProcessorInstance->m_meshTime += float(diff);
 	}
 
 	// all vectors will release the memory

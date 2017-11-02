@@ -47,6 +47,10 @@ private:
 	int m_totalData = 0;
 	int m_totalMesh = 0;
 
+public:
+	float m_dataTime = 0;
+	float m_meshTime = 0;
+
 private:
 	VoxelChunkProcessor()
 	{

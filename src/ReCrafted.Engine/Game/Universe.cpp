@@ -79,6 +79,8 @@ void Universe::draw()
 	bgfx::dbgTextPrintf(1, 6, 0x4, "Chunk count: %d", m_currentWorld->m_chunkMap->getChunks()->size());
 	// 7 - 'Drawn chunks'
 	bgfx::dbgTextPrintf(1, 8, 0x4, "Camera position: { X: %.1f, Y: %.1f, Z: %.1f }", cameraPosition.x, cameraPosition.y, cameraPosition.z);
+	bgfx::dbgTextPrintf(1, 9, 0x4, "Average chunk data generation time: %.2f ms", m_chunkProcessor->m_dataTime / static_cast<float>(m_chunkProcessor->m_totalData));
+	bgfx::dbgTextPrintf(1, 10, 0x4, "Average chunk mesh generation time: %.2f ms", m_chunkProcessor->m_meshTime / static_cast<float>(m_chunkProcessor->m_totalMesh));
 
 
 	m_currentWorld->draw();

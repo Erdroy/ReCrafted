@@ -39,12 +39,19 @@ class VoxelWorld
 
 private:
 	static int m_availableUploads;
+	static VoxelWorld* m_instance;
 
 private:
 	VoxelMap* m_chunkMap = nullptr;
 
 private:
 	void update_digplace();
+
+public:
+	VoxelWorld()
+	{
+		m_instance = this;
+	}
 
 public:
 	/// <summary>
@@ -100,6 +107,12 @@ public:
 		// dispose chunk map
 		m_chunkMap->dispose();
 		Logger::write("World unloaded", LogLevel::Info);
+	}
+
+public:
+	static VoxelWorld* instance()
+	{	
+		return m_instance;
 	}
 };
 
