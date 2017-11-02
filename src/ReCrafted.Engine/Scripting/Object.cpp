@@ -120,7 +120,7 @@ void Object::destroyall()
 
 void Object::finalize(Object* object)
 {
-    if(m_objects.remove(object))
+    if(m_objects.count() > 0u && m_objects.remove(object))
     {
         object->onDestroy();
         Logger::write("Object was finalized, but not destroyed at first!", LogLevel::Warning);
