@@ -5,6 +5,7 @@
 #include "Core/Logger.h"
 #include "Graphics/Camera.h"
 
+
 VoxelChunkProcessor* VoxelChunkProcessor::m_instance;
 VoxelChunkProcessor* VoxelChunkProcessorInstance;
 
@@ -106,8 +107,8 @@ void VoxelChunkProcessor::init()
 	VoxelChunkProcessorInstance = this;
 
 	// create threads
-	m_workers.add(Platform::createThread(ThreadFunction(worker_data), &m_dataQueue));
-	m_workers.add(Platform::createThread(ThreadFunction(worker_meshing), &m_meshingQueue));
+	m_workers.add(new std::thread([=] { worker_data(&m_dataQueue); }));
+	m_workers.add(new std::thread([=] { worker_meshing(&m_meshingQueue); }));
 
 	Logger::write("Created threads for VoxelChunkProcessor", LogLevel::Info);
 
@@ -117,7 +118,12 @@ void VoxelChunkProcessor::init()
 void VoxelChunkProcessor::dispose()
 {
 	for(auto thread : m_workers)
-		Platform::killThread(&thread);
+	{
+		if (thread->joinable())
+			thread->join();
+
+		SafeDelete(thread);
+	}
 
 	Logger::write("Killed VoxelChunkProcessor threads", LogLevel::Info);
 }

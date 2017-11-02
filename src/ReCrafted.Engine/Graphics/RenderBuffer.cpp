@@ -1,7 +1,7 @@
 // ReCrafted © 2016-2017 Always Too Late
 
 #include "RenderBuffer.h"
-#include "Platform/Platform.Windows.h"
+#include "Platform/Platform.h"
 #include "Core/Logger.h"
 
 void RenderBuffer::createBuffer(uint width, uint height)

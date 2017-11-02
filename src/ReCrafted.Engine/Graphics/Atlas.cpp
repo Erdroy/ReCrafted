@@ -1,7 +1,7 @@
 // ReCrafted © 2016-2017 Always Too Late
 
 #include "Atlas.h"
-#include "Platform/Platform.Windows.h"
+#include "Platform/Platform.h"
 #include "Common/Text.h"
 
 #include <json.hpp>

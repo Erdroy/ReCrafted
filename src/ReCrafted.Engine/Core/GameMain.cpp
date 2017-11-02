@@ -70,7 +70,7 @@ LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		Rid[0].usUsagePage = 0x01;
 		Rid[0].usUsage = 0x02;
 		Rid[0].dwFlags = 0;
-		Rid[0].hwndTarget = Platform::getGameWindow();
+		Rid[0].hwndTarget = static_cast<HWND>(Platform::getGameWindow());
 
 		if (RegisterRawInputDevices(Rid, 1, sizeof Rid[0]) == FALSE) {
 			// error, failed to register
@@ -104,7 +104,7 @@ LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 					POINT cursorPos;
 					GetCursorPos(&cursorPos);
 
-					ScreenToClient(winHwnd, &cursorPos);
+					ScreenToClient(static_cast<HWND>(winHwnd), &cursorPos);
 
 					m_cursorX = cursorPos.x;
 					m_cursorY = cursorPos.y;
@@ -204,9 +204,10 @@ void GameMain::run()
 	
 	m_defaultCursor = LoadCursor(nullptr, IDC_ARROW);
 
-	Platform::setGameWindow(CreateWindowW(L"recrafted", L"ReCrafted", WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 1280, 720, NULL, NULL, instance, nullptr));
+	auto window = CreateWindowW(L"recrafted", L"ReCrafted", WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 1280, 720, NULL, NULL, instance, nullptr);
+	Platform::setGameWindow(static_cast<void*>(window));
 
-	ShowWindow(Platform::getGameWindow(), SW_MAXIMIZE);
+	ShowWindow(static_cast<HWND>(Platform::getGameWindow()), SW_MAXIMIZE);
 #endif
 
 	// initialize bgfx platform data
@@ -258,7 +259,7 @@ void GameMain::run()
 	onUnload();
 
 	// destroy gamewindow
-	DestroyWindow(Platform::getGameWindow());
+	DestroyWindow(static_cast<HWND>(Platform::getGameWindow()));
 }
 
 void GameMain::shutdown()

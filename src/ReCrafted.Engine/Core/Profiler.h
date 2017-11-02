@@ -6,7 +6,7 @@
 #define PROFILER_H
 
 // includes
-#include "Platform/Platform.Windows.h"
+#include "Platform/Platform.h"
 #include "Logger.h"
 #include "Containers/Array.h"
 

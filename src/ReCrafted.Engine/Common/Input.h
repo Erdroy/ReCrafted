@@ -9,7 +9,7 @@
 #include "Core/Defines.h"
 #include "Core/Types.h"
 #include "Core/Math/math.h"
-#include "Platform/Platform.Windows.h"
+#include "Platform/Platform.h"
 #include "Common/ReCraftedAPI.h"
 
 #define INPUT_KEYCOUNT 256

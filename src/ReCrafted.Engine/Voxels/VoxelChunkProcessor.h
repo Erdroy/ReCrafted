@@ -7,9 +7,9 @@
 
 // includes
 #include "VoxelChunk.h"
-#include "Platform/Platform.Windows.h"
-#include <mutex>
 
+#include <mutex>
+#include <thread>
 
 /// <summary>
 /// VoxelChunkProcessor class.
@@ -42,7 +42,7 @@ private:
 	std::mutex m_dataQueueMutex = {};
 	std::mutex m_meshingQueueMutex = {};
 
-    Array<Thread> m_workers = {};
+    Array<std::thread*> m_workers = {};
 
 	int m_totalData = 0;
 	int m_totalMesh = 0;

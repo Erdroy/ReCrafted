@@ -85,10 +85,6 @@ void UI::init()
 	// allocate index buffer data
 	m_indexBufferData = new byte[m_indexBufferSize];
 
-	// clear data
-	Platform::zeroMemory(const_cast<byte*>(m_vertexBufferData), m_vertexBufferSize);
-	Platform::zeroMemory(const_cast<byte*>(m_indexBufferData), m_indexBufferSize);
-
 	// create vertex description
 	m_vertexdecl = {};
 	m_vertexdecl.begin();
