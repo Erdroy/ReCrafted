@@ -16,6 +16,7 @@
 #include "Scripting/Domain.h"
 #include "Scripting/Method.h"
 #include "Common/EntityPool.h"
+#include "Logger.h"
 
 class GameMain
 {

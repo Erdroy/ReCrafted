@@ -5,11 +5,6 @@
 #ifndef UNIVERSE_H
 #define UNIVERSE_H
 
-// includes
-#include "Graphics/Mesh.h"
-#include "Voxels/VoxelWorld.h"
-#include "Voxels/VoxelChunkProcessor.h"
-
 /// <summary>
 /// Universe class - main class for whole game world.
 /// Manages voxel engine, AI, players, handles multiplayer etc.
@@ -20,10 +15,6 @@ class Universe
 
 private:
 	static Universe* m_instance;
-
-private:
-	Ptr<VoxelWorld> m_currentWorld = nullptr;
-	Ptr<VoxelChunkProcessor> m_chunkProcessor = nullptr;
 
 private:
 	void init();
