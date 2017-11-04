@@ -457,7 +457,7 @@ void GameMain::onDraw()
 	bgfx::touch(RENDERVIEW_BACKBUFFER);
 
 	// update state
-	/*m_rendering->setState(false, false);
+	m_rendering->setState(false, false);
 
 	m_rendering->beginRender(); // begin rendering the scene
 	{
@@ -475,8 +475,7 @@ void GameMain::onDraw()
 		m_rendering->renderEntities();
 	}
 	m_rendering->endRender(); // end rendering the scene
-	*/
-
+	
 	// set UI state
 	m_rendering->setState(false, false, true);
 
@@ -486,19 +485,9 @@ void GameMain::onDraw()
 		m_drawui_method->invoke();
 	}
 	m_ui->endDraw(); // end draw UI
-
+	
 	// set DebugDraw state
 	m_rendering->setState(false, false, false, true);
-
-	auto color = Color(1.0f, 1.0f, 1.0f, 1.0f);
-	DebugDraw::drawLine(Vector3::one(), Vector3::up() * 3.0f, color);
-	DebugDraw::drawLine(Vector3::up() * 3.0f, Vector3::left() * 3.0f, color);
-	DebugDraw::drawLine(Vector3::one(), Vector3::up() * 3.0f, color);
-	DebugDraw::drawLine(Vector3::up() * 3.0f, Vector3::left() * 3.0f, color);
-	DebugDraw::drawLine(Vector3::one(), Vector3::up() * 3.0f, color);
-	DebugDraw::drawLine(Vector3::up() * 3.0f, Vector3::left() * 3.0f, color);
-	DebugDraw::drawLine(Vector3::one(), Vector3::up() * 3.0f, color);
-	DebugDraw::drawLine(Vector3::up() * 3.0f, Vector3::left() * 3.0f, color);
 
 	// debug draw
 	DebugDraw::drawAll();

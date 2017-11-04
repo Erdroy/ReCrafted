@@ -21,8 +21,7 @@ private:
 
 	static Array<Vector3> m_vertices;
 	static Array<Vector4> m_colors;
-
-	static uint m_vertexCount;
+	static Array<uint16_t> m_indices;
 
 
 public:

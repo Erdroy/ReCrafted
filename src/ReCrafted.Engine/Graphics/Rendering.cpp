@@ -72,7 +72,6 @@ void Rendering::createBlitQuad()
 
 void Rendering::init()
 {
-
 	// create uniforms
 	createUniforms();
 
@@ -183,7 +182,10 @@ void Rendering::setState(bool tristrip, bool msaa, bool uiRendering, bool lines)
 
 	if (lines)
 	{
-		bgfx::setState(BGFX_STATE_DEFAULT | BGFX_STATE_PT_LINES);
+		bgfx::setState(0 | BGFX_STATE_RGB_WRITE
+			| BGFX_STATE_PT_LINES
+			| BGFX_STATE_LINEAA
+			| BGFX_STATE_BLEND_ALPHA);
 		return;
 	}
 	
