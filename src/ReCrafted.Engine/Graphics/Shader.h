@@ -51,6 +51,8 @@ public:
 
 	void setTexture(int slot, Ptr<Texture2D> texture);
 
+	bgfx::ProgramHandle getProgram();
+
 	/// <summary>
 	/// Disposes this shader.
 	/// </summary>

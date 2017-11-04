@@ -160,12 +160,12 @@ void Mesh::dispose()
 
 	if (m_vertexBuffer.idx != 0)
 	{
-		bgfx::destroyVertexBuffer(m_vertexBuffer);
+		bgfx::destroy(m_vertexBuffer);
 	}
 
 	if (m_indexBuffer.idx != 0)
 	{
-		bgfx::destroyIndexBuffer(m_indexBuffer);
+		bgfx::destroy(m_indexBuffer);
 	}
 	// do not commit suicide, this type of object is handled in soft pointers usually(and SHOULD BE!)
 }

@@ -105,12 +105,14 @@ public:
 	/// <param name="texture">The texture you want to render.</param>
 	void blit(uint view, bgfx::TextureHandle texture);
 
+	void setWorldMatrice(Matrix& modelMatrix);
+
 	/// <summary>
 	/// Set rendering state.
 	/// </summary>
 	/// <param name="tristrip">Enable triangle strip primitives?</param>
 	/// <param name="msaa">Allow MSAA?</param>
-	void setState(bool tristrip = false, bool msaa = true, bool uiRendering = false);
+	void setState(bool tristrip = false, bool msaa = true, bool uiRendering = false, bool lines = false);
 
 	/// <summary>
 	/// Dispose everything.

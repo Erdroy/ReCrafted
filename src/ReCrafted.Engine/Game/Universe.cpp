@@ -1,12 +1,17 @@
 // ReCrafted © 2016-2017 Always Too Late
 
 #include "Universe.h"
+#include "Common/Time.h"
+#include "Core/Logger.h"
 #include "Graphics/Rendering.h"
 #include "Graphics/Camera.h"
-#include "Common/Time.h"
 #include "Items/ItemDB.h"
+#include "World/DualMarchingCubes.h"
+#include "Graphics/DebugDraw.h"
+#include "Core/Math/Color.h"
 
 Universe* Universe::m_instance;
+DMC dmc;
 
 void loadAssets()
 {
@@ -43,6 +48,8 @@ void Universe::init()
 
 	ItemDB::generateAtlases();
 
+	//dmc = {};
+	//dmc.generate();
 }
 
 void Universe::update()
@@ -65,6 +72,9 @@ void Universe::draw()
 	bgfx::dbgTextClear();
 	bgfx::dbgTextPrintf(1, 0, 0x4, "FPS: %.1f", 1.0f / Time::deltaTime());
 	bgfx::dbgTextPrintf(1, 1, 0x4, "Delta time: %.5f", Time::deltaTime());
+	bgfx::dbgTextPrintf(1, 2, 0x4, "Camera position: { X: %.1f, Y: %.1f, Z: %.1f }", cameraPosition.x, cameraPosition.y, cameraPosition.z);
+
+	//dmc.draw();
 }
 
 void Universe::dispose()

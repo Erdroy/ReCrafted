@@ -72,7 +72,7 @@ void RenderBuffer::resize(uint width, uint height)
 	_ASSERT(m_created != false);
 
 	// destroy current framebuffer
-	bgfx::destroyFrameBuffer(m_framebufferHandle);
+	bgfx::destroy(m_framebufferHandle);
 	
 	// create new framebuffer
 	createBuffer(width, height);
@@ -89,6 +89,6 @@ void RenderBuffer::bind()
 void RenderBuffer::dispose()
 {
 	// destroy framebuffer
-	bgfx::destroyFrameBuffer(m_framebufferHandle);
+	bgfx::destroy(m_framebufferHandle);
 	Logger::write("Unloaded render buffer", LogLevel::Info);
 }

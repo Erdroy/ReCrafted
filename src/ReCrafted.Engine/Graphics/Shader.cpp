@@ -99,10 +99,15 @@ void Shader::setTexture(int slot, Ptr<Texture2D> texture)
 	bgfx::setTexture(slot, m_textures[slot], texture->m_textureHandle);
 }
 
+bgfx::ProgramHandle Shader::getProgram()
+{
+	return m_program;
+}
+
 void Shader::dispose()
 {
 	Logger::write("Unloading shader '", m_shaderName, "'", LogLevel::Info);
-	bgfx::destroyProgram(m_program);
+	bgfx::destroy(m_program);
 }
 
 Ptr<Shader> Shader::loadShader(const char* shaderName)

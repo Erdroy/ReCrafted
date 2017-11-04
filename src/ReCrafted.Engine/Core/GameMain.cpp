@@ -6,10 +6,11 @@
 #include "Scripting/Bindings.h"
 #include "Scripting/Assembly.h"
 #include "Scripting/Object.h"
+#include "Graphics/DebugDraw.h"
 
 #define CHECK_SHUTDOWN if (!m_running) break;
 
-#define RESET_FLAGS (BGFX_RESET_NONE /*| BGFX_RESET_VSYNC*/)
+#define RESET_FLAGS (BGFX_RESET_NONE | BGFX_RESET_VSYNC)
 
 GameMain* GameMain::m_instance;
 
@@ -316,11 +317,14 @@ void GameMain::onLoad()
 	m_ui = new UI;
 	m_ui->init();
 
+	// initialize DebugDraw
+	DebugDraw::init();
+
 	Logger::write("Rendering pipeline initialized", LogLevel::Info);
 
 	// initialize main camera for scene
 	m_camera = Object::createInstance<Camera>("ReCrafted.API.Graphics", "Camera");
-	m_camera->set_position(Vector3(0.0f, 20.0f, -10.0f));
+	m_camera->set_position(Vector3(0.0f, 2.0f, -2.0f));
 	m_camera->set_freeMovement(true);
 
 	m_initialized = true;
@@ -353,6 +357,13 @@ void GameMain::onUnload()
 	
 	// shutdown scripting engine
 	m_domain->cleanup();
+
+	// shutdown UI
+	m_ui->dispose();
+	SafeDispose(m_ui);
+
+	// shutdown debug draw
+	DebugDraw::shutdown();
 
 	// shutdown bindings
 	Bindings::shutdown();
@@ -446,7 +457,7 @@ void GameMain::onDraw()
 	bgfx::touch(RENDERVIEW_BACKBUFFER);
 
 	// update state
-	m_rendering->setState(false, false);
+	/*m_rendering->setState(false, false);
 
 	m_rendering->beginRender(); // begin rendering the scene
 	{
@@ -464,8 +475,10 @@ void GameMain::onDraw()
 		m_rendering->renderEntities();
 	}
 	m_rendering->endRender(); // end rendering the scene
+	*/
 
-	m_rendering->setState(false, true, true);
+	// set UI state
+	m_rendering->setState(false, false, true);
 
 	// draw UI
 	m_ui->beginDraw(); // begin draw UI
@@ -473,6 +486,22 @@ void GameMain::onDraw()
 		m_drawui_method->invoke();
 	}
 	m_ui->endDraw(); // end draw UI
+
+	// set DebugDraw state
+	m_rendering->setState(false, false, false, true);
+
+	auto color = Color(1.0f, 1.0f, 1.0f, 1.0f);
+	DebugDraw::drawLine(Vector3::one(), Vector3::up() * 3.0f, color);
+	DebugDraw::drawLine(Vector3::up() * 3.0f, Vector3::left() * 3.0f, color);
+	DebugDraw::drawLine(Vector3::one(), Vector3::up() * 3.0f, color);
+	DebugDraw::drawLine(Vector3::up() * 3.0f, Vector3::left() * 3.0f, color);
+	DebugDraw::drawLine(Vector3::one(), Vector3::up() * 3.0f, color);
+	DebugDraw::drawLine(Vector3::up() * 3.0f, Vector3::left() * 3.0f, color);
+	DebugDraw::drawLine(Vector3::one(), Vector3::up() * 3.0f, color);
+	DebugDraw::drawLine(Vector3::up() * 3.0f, Vector3::left() * 3.0f, color);
+
+	// debug draw
+	DebugDraw::drawAll();
 	
 	// next frame, wait vsync
 	bgfx::frame();

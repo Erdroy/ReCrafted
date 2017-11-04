@@ -3,8 +3,8 @@
 #include "Rendering.h"
 #include "Camera.h"
 #include "Core/Logger.h"
-#include "Common/Input.h"
 #include "Game/Items/ItemDB.h"
+#include "DebugDraw.h"
 
 Rendering* Rendering::m_instance;
 
@@ -142,13 +142,7 @@ void Rendering::renderEntities()
 
 void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix, int viewId)
 {
-	auto view = Camera::m_mainCamera->m_view;
-	auto proj = Camera::m_mainCamera->m_projection;
-
-	auto mat = *modelMatrix * view * proj;
-	mat.transpose();
-
-	bgfx::setUniform(m_modelViewProjection, &mat);
+	setWorldMatrice(*modelMatrix);
 
 	bgfx::setVertexBuffer(0, mesh->m_vertexBuffer);
 	bgfx::setIndexBuffer(mesh->m_indexBuffer);
@@ -172,11 +166,28 @@ void Rendering::blit(uint view, bgfx::TextureHandle texture)
 	bgfx::submit(view, m_blitShader->m_program);
 }
 
-void Rendering::setState(bool tristrip, bool msaa, bool uiRendering)
+void Rendering::setWorldMatrice(Matrix& modelMatrix)
+{
+	auto view = Camera::m_mainCamera->m_view;
+	auto proj = Camera::m_mainCamera->m_projection;
+
+	auto mat = modelMatrix * view * proj;
+	mat.transpose();
+
+	bgfx::setUniform(m_modelViewProjection, &mat);
+}
+
+void Rendering::setState(bool tristrip, bool msaa, bool uiRendering, bool lines)
 {
 	auto state = 0;
 
-	if (tristrip) 
+	if (lines)
+	{
+		bgfx::setState(BGFX_STATE_DEFAULT | BGFX_STATE_PT_LINES);
+		return;
+	}
+	
+	if (tristrip)
 		state |= BGFX_STATE_DEFAULT | BGFX_STATE_PT_TRISTRIP;
 	else
 		state |= BGFX_STATE_DEFAULT;
@@ -210,11 +221,11 @@ void Rendering::dispose()
 	m_deferredFinal->dispose();
 	Logger::write("Unloaded shaders", LogLevel::Info);
 
-	bgfx::destroyUniform(m_modelViewProjection);
-	bgfx::destroyUniform(m_texture0);
-	bgfx::destroyUniform(m_texture1);
-	bgfx::destroyUniform(m_texture2);
-	bgfx::destroyUniform(m_texture3);
+	bgfx::destroy(m_modelViewProjection);
+	bgfx::destroy(m_texture0);
+	bgfx::destroy(m_texture1);
+	bgfx::destroy(m_texture2);
+	bgfx::destroy(m_texture3);
 	Logger::write("Unloaded uniforms", LogLevel::Info);
 
 	// suicide

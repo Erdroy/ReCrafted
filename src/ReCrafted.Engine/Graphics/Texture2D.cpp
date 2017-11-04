@@ -15,7 +15,7 @@ static void releaseBitsRaw(void* _ptr, void* _userData)
 
 Texture2D::~Texture2D()
 {
-	bgfx::destroyTexture(m_textureHandle);
+	bgfx::destroy(m_textureHandle);
 
 	if (m_bits)
 	{
