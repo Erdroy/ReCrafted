@@ -23,9 +23,14 @@ private:
 	static Array<Vector4> m_colors;
 	static Array<uint16_t> m_indices;
 
+	static Color m_color;
 
 public:
-	static void drawLine(Vector3 pointA, Vector3 pointB, Color color);
+	static void setColor(Color color);
+
+	static void drawLine(Vector3 pointA, Vector3 pointB);
+	static void drawWireCube(Vector3 center, Vector3 size);
+	static void drawCube(Vector3 center, Vector3 size);
 
 private:
 	static void init();

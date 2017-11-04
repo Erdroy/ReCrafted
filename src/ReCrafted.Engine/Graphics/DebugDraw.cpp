@@ -13,7 +13,62 @@ Array<Vector3> DebugDraw::m_vertices;
 Array<Vector4> DebugDraw::m_colors;
 Array<uint16_t> DebugDraw::m_indices;
 
-void DebugDraw::drawLine(Vector3 pointA, Vector3 pointB, Color color)
+Color DebugDraw::m_color;
+
+Vector3 m_wireCubeEdges[12][2] = {
+	{
+		Vector3(-1.0f, -1.0f, 1.0f),
+		Vector3(-1.0f, -1.0f, -1.0f),
+	},
+	{
+		Vector3(1.0f, -1.0f, 1.0f),
+		Vector3(1.0f, -1.0f, -1.0f),
+	},
+	{
+		Vector3(1.0f, -1.0f, 1.0f),
+		Vector3(-1.0f, -1.0f, 1.0f),
+	},
+	{
+		Vector3(1.0f, -1.0f, -1.0f),
+		Vector3(-1.0f, -1.0f, -1.0f),
+	},
+
+	{
+		Vector3(-1.0f, 1.0f, 1.0f),
+		Vector3(-1.0f, 1.0f, -1.0f),
+	},
+	{
+		Vector3(1.0f, 1.0f, 1.0f),
+		Vector3(1.0f, 1.0f, -1.0f),
+	},
+	{
+		Vector3(1.0f, 1.0f, 1.0f),
+		Vector3(-1.0f, 1.0f, 1.0f),
+	},
+	{
+		Vector3(1.0f, 1.0f, -1.0f),
+		Vector3(-1.0f, 1.0f, -1.0f),
+	},
+
+	{
+		Vector3(-1.0f, -1.0f, 1.0f),
+		Vector3(-1.0f, 1.0f, 1.0f),
+	},
+	{
+		Vector3(1.0f, -1.0f, 1.0f),
+		Vector3(1.0f, 1.0f, 1.0f),
+	},
+	{
+		Vector3(1.0f, -1.0f, -1.0f),
+		Vector3(1.0f, 1.0f, -1.0f),
+	},
+	{
+		Vector3(-1.0f, -1.0f, -1.0f),
+		Vector3(-1.0f, 1.0f, -1.0f),
+	}
+};
+
+void DebugDraw::drawLine(Vector3 pointA, Vector3 pointB)
 {
 	if (m_indices.count() + 2 >= 65535)
 		return; // we cannot draw more!
@@ -23,11 +78,28 @@ void DebugDraw::drawLine(Vector3 pointA, Vector3 pointB, Color color)
 	m_vertices.add(pointA);
 	m_vertices.add(pointB);
 
-	m_colors.add(Vector4(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.0f));
-	m_colors.add(Vector4(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.0f));
+	m_colors.add(Vector4(m_color.r / 255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a / 255.0f));
+	m_colors.add(Vector4(m_color.r / 255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a / 255.0f));
 
 	m_indices.add(index + 0);
 	m_indices.add(index + 1);
+}
+
+void DebugDraw::setColor(Color color)
+{
+	m_color = color;
+}
+
+void DebugDraw::drawWireCube(Vector3 center, Vector3 size)
+{
+	auto halfSize = size * 0.5f;
+
+	for(auto i = 0; i < 12; i ++)
+		drawLine(m_wireCubeEdges[i][0] * halfSize, m_wireCubeEdges[i][1] * halfSize);
+}
+
+void DebugDraw::drawCube(Vector3 center, Vector3 size)
+{
 }
 
 void DebugDraw::init()
@@ -56,6 +128,9 @@ void DebugDraw::shutdown()
 
 void DebugDraw::drawAll()
 {
+	setColor(Color(255, 105, 0));
+	drawWireCube(Vector3::zero(), Vector3::one());
+
 	if (m_vertices.count() == 0u)
 	{
 		// clean
