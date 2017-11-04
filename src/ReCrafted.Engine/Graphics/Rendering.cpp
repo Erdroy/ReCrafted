@@ -176,19 +176,28 @@ void Rendering::setWorldMatrice(Matrix& modelMatrix)
 	bgfx::setUniform(m_modelViewProjection, &mat);
 }
 
-void Rendering::setState(bool tristrip, bool msaa, bool uiRendering, bool lines)
+void Rendering::setState(bool tristrip, bool msaa, bool uiRendering, bool debugLines, bool debugTriangles)
 {
 	auto state = 0;
 
-	if (lines)
+	if (debugLines)
 	{
 		bgfx::setState(0 | BGFX_STATE_RGB_WRITE
 			| BGFX_STATE_PT_LINES
 			| BGFX_STATE_LINEAA
+			| BGFX_STATE_CULL_CW
 			| BGFX_STATE_BLEND_ALPHA);
 		return;
 	}
-	
+
+	if (debugTriangles)
+	{
+		bgfx::setState(0 | BGFX_STATE_RGB_WRITE
+			| BGFX_STATE_CULL_CW
+			| BGFX_STATE_BLEND_ALPHA);
+		return;
+	}
+
 	if (tristrip)
 		state |= BGFX_STATE_DEFAULT | BGFX_STATE_PT_TRISTRIP;
 	else

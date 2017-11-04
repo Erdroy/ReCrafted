@@ -486,9 +486,6 @@ void GameMain::onDraw()
 	}
 	m_ui->endDraw(); // end draw UI
 	
-	// set DebugDraw state
-	m_rendering->setState(false, false, false, true);
-
 	// debug draw
 	DebugDraw::drawAll();
 	

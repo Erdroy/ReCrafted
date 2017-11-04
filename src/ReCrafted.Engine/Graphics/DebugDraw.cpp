@@ -9,9 +9,9 @@
 bgfx::VertexDecl DebugDraw::m_vertexDecl;
 Ptr<Shader> DebugDraw::m_shader;
 
-Array<Vector3> DebugDraw::m_vertices;
-Array<Vector4> DebugDraw::m_colors;
-Array<uint16_t> DebugDraw::m_indices;
+Array<DebugDraw::drawlist> DebugDraw::m_drawLists;
+DebugDraw::drawlist DebugDraw::m_currentLines;
+DebugDraw::drawlist DebugDraw::m_currentTriangles;
 
 Color DebugDraw::m_color;
 
@@ -70,19 +70,55 @@ Vector3 m_wireCubeEdges[12][2] = {
 
 void DebugDraw::drawLine(Vector3 pointA, Vector3 pointB)
 {
-	if (m_indices.count() + 2 >= 65535)
-		return; // we cannot draw more!
+	if (m_currentLines.isFull())
+	{
+		// push this list
+		m_drawLists.add(m_currentLines);
 
-	auto index = m_vertices.count();
+		// and make another
+		m_currentLines = {};
+		m_currentLines.lines = true;
+		return;
+	}
 
-	m_vertices.add(pointA);
-	m_vertices.add(pointB);
+	auto index = m_currentLines.m_vertices.count();
 
-	m_colors.add(Vector4(m_color.r / 255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a / 255.0f));
-	m_colors.add(Vector4(m_color.r / 255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a / 255.0f));
+	m_currentLines.m_vertices.add(pointA);
+	m_currentLines.m_vertices.add(pointB);
 
-	m_indices.add(index + 0);
-	m_indices.add(index + 1);
+	m_currentLines.m_colors.add(Vector4(m_color.r / 255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a / 255.0f));
+	m_currentLines.m_colors.add(Vector4(m_color.r / 255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a / 255.0f));
+
+	m_currentLines.m_indices.add(index + 0);
+	m_currentLines.m_indices.add(index + 1);
+}
+
+void DebugDraw::drawTriangles(Vector3* vertices, uint16_t* indices, uint16_t vertexCount, uint16_t indexCount)
+{
+	if (m_currentTriangles.isFull())
+	{
+		// push this list
+		m_drawLists.add(m_currentTriangles);
+
+		// and make another
+		m_currentTriangles = {};
+		m_currentTriangles.lines = false;
+		return;
+	}
+
+	auto index = m_currentTriangles.m_vertices.count();
+
+	auto color = Vector4(m_color.r / 255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a / 255.0f);
+
+	for (auto i = 0; i < vertexCount; i++) 
+	{
+		m_currentTriangles.m_vertices.add(vertices[i]);
+		m_currentTriangles.m_colors.add(color);
+	}
+
+	for (auto i = 0; i < indexCount; i++)
+		m_currentTriangles.m_indices.add(index + indices[i]);
+
 }
 
 void DebugDraw::setColor(Color color)
@@ -95,7 +131,7 @@ void DebugDraw::drawWireCube(Vector3 center, Vector3 size)
 	auto halfSize = size * 0.5f;
 
 	for(auto i = 0; i < 12; i ++)
-		drawLine(m_wireCubeEdges[i][0] * halfSize, m_wireCubeEdges[i][1] * halfSize);
+		drawLine(center + m_wireCubeEdges[i][0] * halfSize, center + m_wireCubeEdges[i][1] * halfSize);
 }
 
 void DebugDraw::drawCube(Vector3 center, Vector3 size)
@@ -104,9 +140,7 @@ void DebugDraw::drawCube(Vector3 center, Vector3 size)
 
 void DebugDraw::init()
 {
-	// initialize arrays
-	m_vertices = Array<Vector3>(8192);
-	m_colors = Array<Vector4>(8192);
+	clean();
 
 	// load shader
 	m_shader = Shader::loadShader("default_debug");
@@ -128,36 +162,58 @@ void DebugDraw::shutdown()
 
 void DebugDraw::drawAll()
 {
-	setColor(Color(255, 105, 0));
-	drawWireCube(Vector3::zero(), Vector3::one());
+	if(m_currentLines.m_indices.count() > 0)
+		m_drawLists.add(m_currentLines);
 
-	if (m_vertices.count() == 0u)
+	if (m_currentTriangles.m_indices.count() > 0)
+		m_drawLists.add(m_currentTriangles);
+
+	if(m_drawLists.count() == 0)
 	{
-		// clean
 		clean();
 		return;
 	}
 
+	for(auto && list : m_drawLists)
+	{
+		drawDrawlist(list);
+	}
+
+	// clean
+	clean();
+}
+
+void DebugDraw::drawDrawlist(drawlist& drawlist)
+{
+	if(drawlist.lines)
+	{
+		Rendering::getInstance()->setState(false, false, false, true, false);
+	}
+	else
+	{
+		Rendering::getInstance()->setState(false, false, false, false, true);
+	}
+
 	// alloc transient buffers
 	bgfx::TransientVertexBuffer vertexBuffer;
-	bgfx::allocTransientVertexBuffer(&vertexBuffer, m_vertices.count(), m_vertexDecl);
+	bgfx::allocTransientVertexBuffer(&vertexBuffer, drawlist.m_vertices.count(), m_vertexDecl);
 	bgfx::TransientIndexBuffer indexBuffer;
-	bgfx::allocTransientIndexBuffer(&indexBuffer, m_indices.count());
-	
+	bgfx::allocTransientIndexBuffer(&indexBuffer, drawlist.m_indices.count());
+
 	// upload data
 	auto memoryPtr = vertexBuffer.data;
 
-	for(auto i = 0u; i < m_vertices.count(); i ++)
+	for (auto i = 0u; i < drawlist.m_vertices.count(); i++)
 	{
 		auto offset = i * m_vertexDecl.getStride();
-		auto vert = m_vertices[i];
-		auto col = m_colors[i];
+		auto vert = drawlist.m_vertices[i];
+		auto col = drawlist.m_colors[i];
 
 		memcpy(memoryPtr + offset, &vert, sizeof(float) * 3);
 		memcpy(memoryPtr + offset + 3 * sizeof(float), &col, sizeof(float) * 4);
 	}
 
-	memcpy(indexBuffer.data, m_indices.data(), sizeof(uint16_t) * m_indices.count());
+	memcpy(indexBuffer.data, drawlist.m_indices.data(), sizeof(uint16_t) * drawlist.m_indices.count());
 
 	// draw buffer
 	bgfx::setVertexBuffer(0, &vertexBuffer);
@@ -167,15 +223,15 @@ void DebugDraw::drawAll()
 	Rendering::getInstance()->setWorldMatrice(modelMatrix);
 
 	bgfx::submit(0, m_shader->getProgram());
-
-	// clean
-	clean();
 }
 
 void DebugDraw::clean()
 {
-	// clean
-	m_vertices.clear();
-	m_colors.clear();
-	m_indices.clear();
+	m_currentLines = {};
+	m_currentLines.lines = true;
+
+	m_currentTriangles = {};
+	m_currentTriangles.lines = false;
+
+	m_drawLists.clear();
 }
