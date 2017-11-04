@@ -68,6 +68,29 @@ Vector3 m_wireCubeEdges[12][2] = {
 	}
 };
 
+Vector3 m_cubeVertices[8] = {
+	Vector3(-1.0f, 1.0f, -1.0f), // 0  b---
+	Vector3(-1.0f, 1.0f,  1.0f), // 1  f---
+	Vector3( 1.0f, 1.0f,  1.0f), // 2  ---f
+	Vector3( 1.0f, 1.0f, -1.0f), // 3  ---b
+
+	Vector3(-1.0f, -1.0f, -1.0f), // 4  f---
+	Vector3(-1.0f, -1.0f,  1.0f), // 5  b---
+	Vector3( 1.0f, -1.0f,  1.0f), // 6  ---f
+	Vector3( 1.0f, -1.0f, -1.0f), // 7  ---b
+};
+
+uint16_t m_cubeIndices[36] = {
+	0, 1, 2, 2, 3, 0, // top
+	6, 5, 4, 4, 7, 6, // bottom
+
+	7, 4, 0, 0, 3, 7, // front
+	1, 5, 6, 6, 2, 1, // back
+
+	1, 0, 5, 0, 4, 5, // left
+	6, 7, 2, 7, 3, 2  // right
+};
+
 void DebugDraw::drawLine(Vector3 pointA, Vector3 pointB)
 {
 	if (m_currentLines.isFull())
@@ -136,6 +159,21 @@ void DebugDraw::drawWireCube(Vector3 center, Vector3 size)
 
 void DebugDraw::drawCube(Vector3 center, Vector3 size)
 {
+	auto halfSize = size * 0.5f;
+
+	Vector3 vertices[36];
+
+	for(auto i = 0; i < 36; i ++)
+	{
+		vertices[i] = center + m_cubeVertices[i] * halfSize;
+	}
+
+	drawTriangles(vertices, m_cubeIndices, 8, 36);
+}
+
+void DebugDraw::drawSphere(Vector3 center, float radius)
+{
+	// TODO: mesh
 }
 
 void DebugDraw::init()

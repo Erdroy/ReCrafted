@@ -56,6 +56,7 @@ public:
 	static void drawWireCube(Vector3 center, Vector3 size);
 
 	static void drawCube(Vector3 center, Vector3 size);
+	static void drawSphere(Vector3 center, float radius);
 
 private:
 	static void init();
