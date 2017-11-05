@@ -151,6 +151,11 @@ void DebugDraw::setColor(Color color)
 	m_color = color;
 }
 
+Color* DebugDraw::getColor()
+{
+	return &m_color;
+}
+
 void DebugDraw::drawWireCube(Vector3 center, Vector3 size)
 {
 	auto halfSize = size * 0.5f;

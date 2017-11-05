@@ -7,12 +7,17 @@
 
 #include "Shader.h"
 #include "Core/Containers/Array.h"
+#include "Core/Math/Color.h"
+#include "Core/Math/Vector3.h"
+#include "Core/Math/Vector4.h"
 
 struct Vector3;
 struct Color;
 
 class DebugDraw
 {
+	API_DEF
+
 	friend class GameMain;
 
 private:
@@ -49,6 +54,7 @@ private:
 
 public:
 	static void setColor(Color color);
+	static Color* getColor();
 
 	static void drawLine(Vector3 pointA, Vector3 pointB);
 	static void drawTriangles(Vector3* vertices, uint16_t* indices, uint16_t vertexCount, uint16_t indexCount);

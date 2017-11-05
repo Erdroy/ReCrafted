@@ -10,6 +10,7 @@
 #include "Graphics/UI/UI.h"
 #include "Graphics/Camera.h"
 #include "Graphics/Font.h"
+#include "Graphics/DebugDraw.h"
 
 void Bindings::bind()
 {
@@ -26,6 +27,7 @@ void Bindings::bind()
 	Font::initRuntime();
     Entity::initRuntime();
     Script::initRuntime();
+	DebugDraw::initRuntime();
 }
 
 void Bindings::shutdown()
