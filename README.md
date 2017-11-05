@@ -20,4 +20,4 @@ Warning: If you pull newly created files for C++ project, you must run generate_
 ## Links
 - [Trello](https://trello.com/b/xGap0YZQ/recrafted)
 
-*ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski*
+*ReCrafted (c) 2016-2017 Always Too Late*
