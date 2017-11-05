@@ -15,7 +15,6 @@ DebugDraw::drawlist DebugDraw::m_currentTriangles;
 
 Color DebugDraw::m_color;
 
-Vector3 m_wireCubeEdges[12][2] = {
 namespace DebugMesh
 {
 	Vector3 m_wireCubeEdges[12][2] = {
