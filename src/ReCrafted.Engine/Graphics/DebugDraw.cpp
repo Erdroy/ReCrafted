@@ -16,80 +16,83 @@ DebugDraw::drawlist DebugDraw::m_currentTriangles;
 Color DebugDraw::m_color;
 
 Vector3 m_wireCubeEdges[12][2] = {
-	{
-		Vector3(-1.0f, -1.0f, 1.0f),
-		Vector3(-1.0f, -1.0f, -1.0f),
-	},
-	{
-		Vector3(1.0f, -1.0f, 1.0f),
-		Vector3(1.0f, -1.0f, -1.0f),
-	},
-	{
-		Vector3(1.0f, -1.0f, 1.0f),
-		Vector3(-1.0f, -1.0f, 1.0f),
-	},
-	{
-		Vector3(1.0f, -1.0f, -1.0f),
-		Vector3(-1.0f, -1.0f, -1.0f),
-	},
+namespace DebugMesh
+{
+	Vector3 m_wireCubeEdges[12][2] = {
+		{
+			Vector3(-1.0f, -1.0f, 1.0f),
+			Vector3(-1.0f, -1.0f, -1.0f),
+		},
+		{
+			Vector3(1.0f, -1.0f, 1.0f),
+			Vector3(1.0f, -1.0f, -1.0f),
+		},
+		{
+			Vector3(1.0f, -1.0f, 1.0f),
+			Vector3(-1.0f, -1.0f, 1.0f),
+		},
+		{
+			Vector3(1.0f, -1.0f, -1.0f),
+			Vector3(-1.0f, -1.0f, -1.0f),
+		},
 
-	{
-		Vector3(-1.0f, 1.0f, 1.0f),
-		Vector3(-1.0f, 1.0f, -1.0f),
-	},
-	{
-		Vector3(1.0f, 1.0f, 1.0f),
-		Vector3(1.0f, 1.0f, -1.0f),
-	},
-	{
-		Vector3(1.0f, 1.0f, 1.0f),
-		Vector3(-1.0f, 1.0f, 1.0f),
-	},
-	{
-		Vector3(1.0f, 1.0f, -1.0f),
-		Vector3(-1.0f, 1.0f, -1.0f),
-	},
+		{
+			Vector3(-1.0f, 1.0f, 1.0f),
+			Vector3(-1.0f, 1.0f, -1.0f),
+		},
+		{
+			Vector3(1.0f, 1.0f, 1.0f),
+			Vector3(1.0f, 1.0f, -1.0f),
+		},
+		{
+			Vector3(1.0f, 1.0f, 1.0f),
+			Vector3(-1.0f, 1.0f, 1.0f),
+		},
+		{
+			Vector3(1.0f, 1.0f, -1.0f),
+			Vector3(-1.0f, 1.0f, -1.0f),
+		},
 
-	{
-		Vector3(-1.0f, -1.0f, 1.0f),
-		Vector3(-1.0f, 1.0f, 1.0f),
-	},
-	{
-		Vector3(1.0f, -1.0f, 1.0f),
-		Vector3(1.0f, 1.0f, 1.0f),
-	},
-	{
-		Vector3(1.0f, -1.0f, -1.0f),
-		Vector3(1.0f, 1.0f, -1.0f),
-	},
-	{
-		Vector3(-1.0f, -1.0f, -1.0f),
-		Vector3(-1.0f, 1.0f, -1.0f),
-	}
-};
+		{
+			Vector3(-1.0f, -1.0f, 1.0f),
+			Vector3(-1.0f, 1.0f, 1.0f),
+		},
+		{
+			Vector3(1.0f, -1.0f, 1.0f),
+			Vector3(1.0f, 1.0f, 1.0f),
+		},
+		{
+			Vector3(1.0f, -1.0f, -1.0f),
+			Vector3(1.0f, 1.0f, -1.0f),
+		},
+		{
+			Vector3(-1.0f, -1.0f, -1.0f),
+			Vector3(-1.0f, 1.0f, -1.0f),
+		}
+	};
 
-Vector3 m_cubeVertices[8] = {
-	Vector3(-1.0f, 1.0f, -1.0f), // 0  b---
-	Vector3(-1.0f, 1.0f,  1.0f), // 1  f---
-	Vector3( 1.0f, 1.0f,  1.0f), // 2  ---f
-	Vector3( 1.0f, 1.0f, -1.0f), // 3  ---b
+	Vector3 m_cubeVertices[8] = {
+		Vector3(-1.0f, 1.0f, -1.0f), // 0  b---
+		Vector3(-1.0f, 1.0f,  1.0f), // 1  f---
+		Vector3(1.0f, 1.0f,  1.0f), // 2  ---f
+		Vector3(1.0f, 1.0f, -1.0f), // 3  ---b
 
-	Vector3(-1.0f, -1.0f, -1.0f), // 4  f---
-	Vector3(-1.0f, -1.0f,  1.0f), // 5  b---
-	Vector3( 1.0f, -1.0f,  1.0f), // 6  ---f
-	Vector3( 1.0f, -1.0f, -1.0f), // 7  ---b
-};
+		Vector3(-1.0f, -1.0f, -1.0f), // 4  f---
+		Vector3(-1.0f, -1.0f,  1.0f), // 5  b---
+		Vector3(1.0f, -1.0f,  1.0f), // 6  ---f
+		Vector3(1.0f, -1.0f, -1.0f), // 7  ---b
+	};
+	uint16_t m_cubeIndices[36] = {
+		0, 1, 2, 2, 3, 0, // top
+		6, 5, 4, 4, 7, 6, // bottom
 
-uint16_t m_cubeIndices[36] = {
-	0, 1, 2, 2, 3, 0, // top
-	6, 5, 4, 4, 7, 6, // bottom
+		7, 4, 0, 0, 3, 7, // front
+		1, 5, 6, 6, 2, 1, // back
 
-	7, 4, 0, 0, 3, 7, // front
-	1, 5, 6, 6, 2, 1, // back
-
-	1, 0, 5, 0, 4, 5, // left
-	6, 7, 2, 7, 3, 2  // right
-};
+		1, 0, 5, 0, 4, 5, // left
+		6, 7, 2, 7, 3, 2  // right
+	};
+}
 
 void DebugDraw::drawLine(Vector3 pointA, Vector3 pointB)
 {
@@ -154,7 +157,7 @@ void DebugDraw::drawWireCube(Vector3 center, Vector3 size)
 	auto halfSize = size * 0.5f;
 
 	for(auto i = 0; i < 12; i ++)
-		drawLine(center + m_wireCubeEdges[i][0] * halfSize, center + m_wireCubeEdges[i][1] * halfSize);
+		drawLine(center + DebugMesh::m_wireCubeEdges[i][0] * halfSize, center + DebugMesh::m_wireCubeEdges[i][1] * halfSize);
 }
 
 void DebugDraw::drawCube(Vector3 center, Vector3 size)
@@ -164,16 +167,9 @@ void DebugDraw::drawCube(Vector3 center, Vector3 size)
 	Vector3 vertices[36];
 
 	for(auto i = 0; i < 36; i ++)
-	{
-		vertices[i] = center + m_cubeVertices[i] * halfSize;
-	}
+		vertices[i] = center + DebugMesh::m_cubeVertices[i] * halfSize;
 
-	drawTriangles(vertices, m_cubeIndices, 8, 36);
-}
-
-void DebugDraw::drawSphere(Vector3 center, float radius)
-{
-	// TODO: mesh
+	drawTriangles(vertices, DebugMesh::m_cubeIndices, 8, 36);
 }
 
 void DebugDraw::init()
