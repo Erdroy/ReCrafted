@@ -476,6 +476,9 @@ void GameMain::onDraw()
 	}
 	m_rendering->endRender(); // end rendering the scene
 	
+	// debug draw
+	DebugDraw::drawAll();
+	
 	// set UI state
 	m_rendering->setState(false, false, true);
 
@@ -485,9 +488,6 @@ void GameMain::onDraw()
 		m_drawui_method->invoke();
 	}
 	m_ui->endDraw(); // end draw UI
-	
-	// debug draw
-	DebugDraw::drawAll();
 	
 	// next frame, wait vsync
 	bgfx::frame();
