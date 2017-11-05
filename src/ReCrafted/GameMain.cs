@@ -50,6 +50,11 @@ namespace ReCrafted.Game
                 Cursor.Show = false;
                 Cursor.Lock = true;
             }
+
+            DebugDraw.Color = new Color(0, 105, 0, 64);
+            DebugDraw.DrawCube(Vector3.Zero, Vector3.One);
+            DebugDraw.Color = new Color(0, 105, 0, 255);
+            DebugDraw.DrawWireCube(Vector3.Zero, Vector3.One);
         }
 
         protected override void Simulate()
@@ -67,11 +72,11 @@ namespace ReCrafted.Game
             var rect = new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
             var uvs = new RectangleF(0.0f, 0.0f, 1.0f, 1.0f);
             UIInternal.DrawTexture2D(_crosshairTexture.NativePtr, ref rect, ref uvs);
-           
-            //var pos = new Vector2(20.0f, 20.0f);
-            //UIInternal.DrawString(_testFont.NativePtr, Locale.Resolve("Test4"), ref pos);
 
-            //UIPanel.DrawAll();
+            var pos = new Vector2(20.0f, 20.0f);
+            UIInternal.DrawString(_testFont.NativePtr, "Hello, World!", ref pos);
+
+            UIPanel.DrawAll();
         }
 
         protected override void Shutdown()

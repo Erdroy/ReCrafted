@@ -26,20 +26,23 @@ void UI::clear()
 
 void UI::drawnow()
 {
-	// reference buffers
-	auto vbdPtr = bgfx::makeRef(m_vertexBufferData, m_vertexBufferSize);
-	auto ibdPtr = bgfx::makeRef(m_indexBufferData, m_indexBufferSize);
+	// allocate transient buffers
+	bgfx::TransientVertexBuffer tvb;
+	bgfx::TransientIndexBuffer tib;
 
-	// update buffers
-	bgfx::updateDynamicVertexBuffer(m_vertexBuffer, 0u, vbdPtr);
-	bgfx::updateDynamicIndexBuffer(m_indexBuffer, 0u, ibdPtr);
+	if(!bgfx::allocTransientBuffers(&tvb, m_vertexdecl, m_vertexCount, &tib, m_indexCount))
+		return;
 
-	auto vertexCount = m_vertexBufferDataPos / sizeof vertex;
-	auto indexCount = m_indexBufferDataPos / sizeof uint;
+	// upload data
+	memcpy(tvb.data, m_vertexBufferData, m_vertexCount * sizeof(vertex));
+	memcpy(tib.data, m_indexBufferData, m_indexCount * sizeof(uint16_t));
+
+	// set state
+	Rendering::getInstance()->setState(false, false, true);
 
 	// set buffers
-	bgfx::setVertexBuffer(0, m_vertexBuffer, 0u, uint(vertexCount));
-	bgfx::setIndexBuffer(m_indexBuffer, 0u, uint(indexCount));
+	bgfx::setVertexBuffer(0, &tvb, 0, m_vertexCount);
+	bgfx::setIndexBuffer(&tib, 0, m_indexCount);
 
 	// draw
 	bgfx::submit(0, m_shader->m_program);
@@ -47,6 +50,8 @@ void UI::drawnow()
 	// reset buffer IO positions
 	m_vertexBufferDataPos = 0u;
 	m_indexBufferDataPos = 0u;
+	m_vertexCount = 0u;
+	m_indexCount = 0;
 }
 
 void UI::push_drawcmd(drawcmd* cmd, int index) // protip: we can use forceinline on this method because we are using it only in this source file.
@@ -70,11 +75,14 @@ void UI::push_drawcmd(drawcmd* cmd, int index) // protip: we can use forceinline
 	auto iPtr = const_cast<byte*>(m_indexBufferData);
 	iPtr += m_indexBufferDataPos;
 
-	memcpy(iPtr, cmd->indices, sizeof(uint) * 6);
+	memcpy(iPtr, cmd->indices, sizeof(uint16_t) * 6);
 
 	// increase data pos
 	m_vertexBufferDataPos += sizeof(vertex) * 4;
-	m_indexBufferDataPos += sizeof(uint) * 6;
+	m_indexBufferDataPos += sizeof(uint16_t) * 6;
+
+	m_vertexCount += 4;
+	m_indexCount += 6;
 }
 
 void UI::init()
@@ -92,10 +100,6 @@ void UI::init()
 	m_vertexdecl.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float);
 	m_vertexdecl.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float);
 	m_vertexdecl.end();
-
-	// create dynamic buffers
-	m_vertexBuffer = bgfx::createDynamicVertexBuffer(m_maxVertexCount, m_vertexdecl);
-	m_indexBuffer = bgfx::createDynamicIndexBuffer(m_maxIndexCount, BGFX_BUFFER_INDEX32);
 
 	// load shader
 	m_shader = Shader::loadShader("default_ui");
@@ -132,13 +136,13 @@ void UI::endDraw()
 	auto drawCmdCount = m_drawCmds.size();
 	auto vertexCount = 0;
 
-	bgfx::TextureHandle handle;
-	handle.idx = 0xFFFF;
+	bgfx::TextureHandle textureHandle;
+	textureHandle.idx = 0xFFFF;
 
 	for (auto i = 0u; i < m_drawCmds.size(); i++)
 	{
 		auto drawcmd = &m_drawCmds[i];
-		auto textureChanged = drawcmd->texture > 0 && handle.idx != drawcmd->texture;
+		auto textureChanged = drawcmd->texture > 0 && textureHandle.idx != drawcmd->texture;
 
 		if(vertexCount + 4u > m_maxVertexCount || (textureChanged && vertexCount > 0u))
 		{
@@ -150,8 +154,8 @@ void UI::endDraw()
 		// set new texture
 		if(textureChanged)
 		{
-			handle.idx = drawcmd->texture;
-			bgfx::setTexture(0, m_textureUnif, handle);
+			textureHandle.idx = drawcmd->texture;
+			bgfx::setTexture(0, m_textureUnif, textureHandle);
 		}
 
 		// push draw command

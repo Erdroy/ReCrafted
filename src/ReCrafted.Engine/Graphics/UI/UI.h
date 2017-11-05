@@ -38,7 +38,7 @@ private:
 	struct drawcmd
 	{
 		vertex vertices[4];
-		uint indices[6];
+		uint16_t indices[6];
 		Rectf clipRect = {};
 		uint texture = 0;
 		float zOrder = 0.0f;
@@ -48,11 +48,11 @@ private:
 	};
 
 private:
-	const unsigned int m_maxVertexCount = 4 * (8 << 10);
-	const unsigned int m_maxIndexCount = 6 * (8 << 10);
+	const unsigned int m_maxVertexCount = 65535 * 3;
+	const unsigned int m_maxIndexCount = 65535;
 
 	const int m_vertexBufferSize = m_maxVertexCount * sizeof vertex;
-	const int m_indexBufferSize = m_maxIndexCount * sizeof uint;
+	const int m_indexBufferSize = m_maxIndexCount * sizeof uint16_t;
 
 private:
 	static UI* m_instance;
@@ -61,14 +61,15 @@ private:
 	Array<drawcmd> m_drawCmds = {};
 
 	bgfx::VertexDecl m_vertexdecl = {};
-	bgfx::DynamicVertexBufferHandle m_vertexBuffer = {};
-	bgfx::DynamicIndexBufferHandle m_indexBuffer = {};
 
 	const byte* m_vertexBufferData = nullptr;
 	const byte* m_indexBufferData = nullptr;
 
 	uint m_vertexBufferDataPos = 0u;
 	uint m_indexBufferDataPos = 0u;
+
+	uint m_vertexCount = 0u;
+	uint m_indexCount = 0u;
 
 	Color m_color = {};
 
