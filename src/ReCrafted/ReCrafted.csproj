@@ -7,7 +7,7 @@
     <ProjectGuid>{673BEC15-F118-413D-9A7F-889B6174CF0A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ReCrafted.Game</RootNamespace>
+    <RootNamespace>ReCrafted</RootNamespace>
     <AssemblyName>ReCrafted.Game</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -55,9 +55,9 @@
   <ItemGroup>
     <Compile Include="Core\Exceptions.cs" />
     <Compile Include="Core\Locales\Locale.cs" />
-    <Compile Include="GameMain.cs" />
+    <Compile Include="Game\GameMain.cs" />
+    <Compile Include="Game\MainCamera.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ReCrafted.API\ReCrafted.API.csproj">
@@ -68,6 +68,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>call $(ProjectDir)..\..\onbuild.bat $(ProjectDir)..\..\ Game</PostBuildEvent>

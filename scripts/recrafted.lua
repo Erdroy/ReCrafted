@@ -23,6 +23,8 @@ project "ReCrafted.Engine"
 		path.join(LIBS_DIR, "json"),
 		path.join(LIBS_DIR, "mono/inc"),
 		path.join(LIBS_DIR, "freetype/include"),
+		path.join(LIBS_DIR, "cef/include"),
+		path.join(LIBS_DIR, "cef"), -- stupid cef
 		path.join(ROOT_DIR, "src/ReCrafted.Engine"),
 	}
 	
@@ -63,6 +65,7 @@ project "ReCrafted.Engine"
 			path.join(LIBS_DIR, "bgfx/.build/win64_" .. _ACTION .. "/bin/"),
 			path.join(LIBS_DIR, "mono/lib"),
 			path.join(LIBS_DIR, "freetype/x64"),
+			path.join(LIBS_DIR, "cef/x64"),
 		}
 	
 	configuration { "x32", "vs*"}
@@ -71,6 +74,7 @@ project "ReCrafted.Engine"
 			path.join(LIBS_DIR, "bgfx/.build/win32_" .. _ACTION .. "/bin/"),
 			path.join(LIBS_DIR, "mono/lib"),
 			path.join(LIBS_DIR, "freetype/win32"),
+			path.join(LIBS_DIR, "cef/win32"),
 		}
 	
 	configuration { "vs*", "Debug"}

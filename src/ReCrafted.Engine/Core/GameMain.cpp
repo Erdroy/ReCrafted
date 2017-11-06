@@ -7,6 +7,7 @@
 #include "Scripting/Assembly.h"
 #include "Scripting/Object.h"
 #include "Graphics/DebugDraw.h"
+#include "Graphics/HTML5_UI/HTML5_UI.h"
 
 #define CHECK_SHUTDOWN if (!m_running) break;
 
@@ -320,6 +321,9 @@ void GameMain::onLoad()
 	// initialize DebugDraw
 	DebugDraw::init();
 
+	// initialize HTML5 UI
+	HTML5UI::init();
+
 	Logger::write("Rendering pipeline initialized", LogLevel::Info);
 
 	// initialize main camera for scene
@@ -364,6 +368,9 @@ void GameMain::onUnload()
 
 	// shutdown debug draw
 	DebugDraw::shutdown();
+
+	// shutdown HTML5 UI
+	HTML5UI::shutdown();
 
 	// shutdown bindings
 	Bindings::shutdown();
@@ -481,6 +488,9 @@ void GameMain::onDraw()
 	
 	// set UI state
 	m_rendering->setState(false, false, true);
+
+	// draw HTML5 UI
+	HTML5UI::draw();
 
 	// draw UI
 	m_ui->beginDraw(); // begin draw UI
