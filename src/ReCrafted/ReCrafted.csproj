@@ -56,7 +56,7 @@
     <Compile Include="Core\Exceptions.cs" />
     <Compile Include="Core\Locales\Locale.cs" />
     <Compile Include="Game\GameMain.cs" />
-    <Compile Include="Game\MainCamera.cs" />
+    <Compile Include="Game\CameraController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

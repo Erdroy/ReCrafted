@@ -15,7 +15,6 @@ namespace ReCrafted.Game
     {
         private Texture2D _crosshairTexture;
         private Font _testFont;
-        private Entity _entity;
 
         protected override void Initialize()
         {
@@ -34,7 +33,8 @@ namespace ReCrafted.Game
             Cursor.Lock = true;
 
             var camera = Entity.Create("MainCamera");
-            MainCamera.Current = camera.AddScript<MainCamera>();
+            camera.Position = new Vector3(0.0f, 1.0f, -4.0f);
+            CameraController.Current = camera.AddScript<CameraController>();
             
             Locale.SetLocale("Polski");
         }
