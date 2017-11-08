@@ -6,12 +6,12 @@
 #include "Graphics/Rendering.h"
 #include "Graphics/Camera.h"
 #include "Items/ItemDB.h"
-#include "World/DualMarchingCubes.h"
+#include "World/MarchingCubes.h"
 #include "Graphics/DebugDraw.h"
 #include "Core/Math/Color.h"
 
 Universe* Universe::m_instance;
-DMC dmc;
+MarchingCubes mc;
 
 void loadAssets()
 {
@@ -48,8 +48,8 @@ void Universe::init()
 
 	ItemDB::generateAtlases();
 
-	//dmc = {};
-	//dmc.generate();
+	mc = {};
+	mc.generate();
 }
 
 void Universe::update()
@@ -74,7 +74,7 @@ void Universe::draw()
 	bgfx::dbgTextPrintf(1, 1, 0x4, "Delta time: %.5f", Time::deltaTime());
 	bgfx::dbgTextPrintf(1, 2, 0x4, "Camera position: { X: %.1f, Y: %.1f, Z: %.1f }", cameraPosition.x, cameraPosition.y, cameraPosition.z);
 
-	//dmc.draw();
+	mc.draw();
 }
 
 void Universe::dispose()

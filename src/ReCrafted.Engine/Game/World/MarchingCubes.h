@@ -9,11 +9,10 @@
 #include "Graphics/Shader.h"
 #include "Graphics/Mesh.h"
 
-class DMC
+class MarchingCubes
 {
 private:
 	Ptr<Mesh> m_mesh = nullptr;
-	Ptr<Shader> m_shader = nullptr;
 
 public:
 	void generate();
