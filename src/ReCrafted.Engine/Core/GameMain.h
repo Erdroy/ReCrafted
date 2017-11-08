@@ -41,8 +41,6 @@ private:
 	bool m_showCursor = true;
 	bool m_lockCursor = true;
 
-	Ptr<Camera> m_camera = nullptr;
-
 	// scripting
 
 	Ptr<Domain> m_domain = nullptr;

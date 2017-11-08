@@ -6,13 +6,10 @@
 #define CAMERA_H
 
 // includes
-#include "Core/Types.h"
 #include "Core/Defines.h"
 #include "Core/Math/Math.h"
 #include "Core/Math/BoundingFrustum.h"
 #include "Scripting/Object.h"
-
-#define FILTERING_BUFFER_SIZE 3
 
 class Entity;
 
@@ -31,21 +28,15 @@ private:
 private:
 	Vector3 m_upLock = Vector3(0.0f, 1.0f, 0.0f);
 	Vector3 m_lookAt = {};
-	Vector3 m_rotation = {};
 
 	// camera matrices
 	Matrix m_view = {};
 	Matrix m_projection = {};
 
-	Vector2 m_lastDelta = {};
-	Vector2 m_cursorDeltaBuffer[FILTERING_BUFFER_SIZE] = {};
-	uint m_cursorDeltaBufferPosition = 0u;
-
 	BoundingFrustum m_frustum = {};
 
 private:
 	void updateRotation();
-	void updateControls();
 	void updatePerspective();
 	void update();
 
@@ -55,6 +46,10 @@ public:
 	/// </summary>
 	Camera()
 	{
+		m_forward = Vector3::forward();
+		m_right = Vector3::right();
+		m_up = Vector3::up();
+
 		// initialize
 		update();
 		updatePerspective();
@@ -62,12 +57,6 @@ public:
 		// set as main camera if there is no any other
 		if (m_mainCamera == nullptr)
 			m_mainCamera = this;
-
-		// clear filtering buffer
-		for(auto i = 0u; i < FILTERING_BUFFER_SIZE; i ++)
-		{
-			m_cursorDeltaBuffer[i] = {};
-		}
 	}
 
 public:
@@ -113,6 +102,7 @@ public:
 	PROPERTY(float, farPlane) = 1000.0f;
 	PROPERTY(float, nearPlane) = 0.02f;
 	PROPERTY(Vector3, position) = {};
+	PROPERTY(Vector3, rotation) = {};
 	PROPERTY(Vector3, forward) = {};
 	PROPERTY(Vector3, up) = {};
 	PROPERTY(Vector3, right) = {};

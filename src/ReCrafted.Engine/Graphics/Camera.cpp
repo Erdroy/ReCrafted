@@ -67,78 +67,6 @@ void Camera::updateRotation()
 	m_up = Vector3::cross(m_forward, m_right);
 }
 
-void Camera::updateControls()
-{
-	// update movement
-	Vector3 direction = {};
-
-	if (Input::isKey(Key_W))
-		direction += m_forward;
-
-	if (Input::isKey(Key_S))
-		direction -= m_forward;
-
-	if (Input::isKey(Key_A))
-		direction -= m_right;
-
-	if (Input::isKey(Key_D))
-		direction += m_right;
-
-	if (Input::isKey(Key_Q))
-		direction -= m_up;
-
-	if (Input::isKey(Key_E))
-		direction += m_up;
-
-	direction.normalize();
-
-	direction *= float(Time::deltaTime());
-
-	// shift to speed up
-	auto mul = Input::isKey(Key_Shift) ? 10.0f : 4.0f;
-
-	// ctrl to slow down
-	mul = Input::isKey(Key_Control) ? 1.0f : mul;
-
-	direction *= mul;
-
-	if(direction.length() > 0.0f)
-		m_position += direction;
-
-	// update look
-	auto rawDelta = Input::getCursorDelta();
-	rawDelta = Vector2::negate(rawDelta);
-
-	// update filtering buffer
-	m_cursorDeltaBuffer[m_cursorDeltaBufferPosition] = rawDelta;
-	m_cursorDeltaBufferPosition++;
-
-	// reset if needed(out of bounds)
-	if (m_cursorDeltaBufferPosition >= FILTERING_BUFFER_SIZE)
-		m_cursorDeltaBufferPosition = 0u;
-
-	// calculate delta
-	/*Vector2 delta = {};
-	for (auto i = 0u; i < FILTERING_BUFFER_SIZE; i++)
-	{
-		delta += m_cursorDeltaBuffer[i];
-	}
-
-	delta.x = delta.x / FILTERING_BUFFER_SIZE;
-	delta.y = delta.y / FILTERING_BUFFER_SIZE;
-
-	// accelerate
-	auto accelDelta = delta + m_lastDelta;
-	m_lastDelta = delta;*/
-
-	// apply camera rotation
-	m_rotation += Vector3(rawDelta.x / 10.0f, rawDelta.y / 10.0f, 0.0f);
-	m_rotation.y = Math::clamp(m_rotation.y, -89.9f, 89.9f);
-
-	// update camera rotation
-	updateRotation();
-}
-
 void Camera::updatePerspective()
 {
 	// create projection matrix
@@ -147,11 +75,8 @@ void Camera::updatePerspective()
 
 void Camera::update()
 {
-	// update movement if this camera is 'free'.
-	if (m_freeMovement && GameMain::getLockCursor())
-	{
-		updateControls(); // just do it!
-	}
+	// update rotation
+	updateRotation();
 
 	// update matrices
 	m_lookAt = m_position + m_forward;

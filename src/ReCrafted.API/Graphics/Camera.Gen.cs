@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/01/2017 21:54:32 Source: 'Camera.API.cpp' Target: 'Graphics/Camera.Gen.cs'
+// Generated: 11/08/2017 16:47:06 Source: 'Camera.API.cpp' Target: 'Graphics/Camera.Gen.cs'
 
 using ReCrafted.API.Mathematics;
 using System;
@@ -61,6 +61,23 @@ namespace ReCrafted.API.Graphics
 			set
 			{
 				Internal_Position_Set(NativePtr, ref value);
+			}
+		}
+
+		/// <summary>
+		///	Camera's rotation.
+		/// </summary>
+		public Vector3 Rotation 
+		{
+			get
+			{
+				Vector3 result;
+				Internal_Rotation_Get(NativePtr, out result);
+				return result;
+			}
+			set
+			{
+				Internal_Rotation_Set(NativePtr, ref value);
 			}
 		}
 
@@ -133,10 +150,6 @@ namespace ReCrafted.API.Graphics
 				Internal_Forward_Get(NativePtr, out result);
 				return result;
 			}
-			set
-			{
-				Internal_Forward_Set(NativePtr, ref value);
-			}
 		}
 
 		/// <summary>
@@ -150,10 +163,6 @@ namespace ReCrafted.API.Graphics
 				Internal_Up_Get(NativePtr, out result);
 				return result;
 			}
-			set
-			{
-				Internal_Up_Set(NativePtr, ref value);
-			}
 		}
 
 		/// <summary>
@@ -166,10 +175,6 @@ namespace ReCrafted.API.Graphics
 				Vector3 result;
 				Internal_Right_Get(NativePtr, out result);
 				return result;
-			}
-			set
-			{
-				Internal_Right_Set(NativePtr, ref value);
 			}
 		}
 
@@ -193,6 +198,10 @@ namespace ReCrafted.API.Graphics
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_Position_Get(IntPtr nativePtr, out Vector3 result);
 		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_Rotation_Set(IntPtr nativePtr, ref Vector3 value);
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_Rotation_Get(IntPtr nativePtr, out Vector3 result);
+		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_GetBoundingFrustum_Get(IntPtr nativePtr, out BoundingFrustum result);
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_FreeMovement_Set(IntPtr nativePtr, bool value);
@@ -207,15 +216,9 @@ namespace ReCrafted.API.Graphics
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern float Internal_NearPlane_Get(IntPtr nativePtr);
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern void Internal_Forward_Set(IntPtr nativePtr, ref Vector3 value);
-		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_Forward_Get(IntPtr nativePtr, out Vector3 result);
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern void Internal_Up_Set(IntPtr nativePtr, ref Vector3 value);
-		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_Up_Get(IntPtr nativePtr, out Vector3 result);
-		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern void Internal_Right_Set(IntPtr nativePtr, ref Vector3 value);
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_Right_Get(IntPtr nativePtr, out Vector3 result);
 		[MethodImpl(MethodImplOptions.InternalCall)]

@@ -56,6 +56,22 @@ namespace Internal
 		*pos = camera->get_position();
 	}
 
+	void setRot(Camera* camera, Vector3* rot)
+	{
+		if (!camera)
+			return;
+
+		camera->set_rotation(*rot);
+	}
+
+	void getRot(Camera* camera, Vector3* rot)
+	{
+		if (!camera)
+			return;
+
+		*rot = camera->get_rotation();
+	}
+
 	void getBoundingFrustum(Camera* camera, BoundingFrustum* frustum)
 	{
 		if (!camera) return;
@@ -196,6 +212,14 @@ void Camera::initRuntime()
 			}
 			API_PROPERTY_END();
 
+			API_COMMENT("Camera's rotation.");
+			API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Rotation", GETSET, BY_REF);
+			{
+				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Rotation_Get", &Internal::getRot);
+				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Rotation_Set", &Internal::setRot);
+			}
+			API_PROPERTY_END();
+
 			API_COMMENT("Camera's bounding frustum");
 			API_PROPERTY(PUBLIC, REGULAR, "BoundingFrustum", "GetBoundingFrustum", GET, BY_REF);
 			{
@@ -228,26 +252,23 @@ void Camera::initRuntime()
 			API_PROPERTY_END();
 
 			API_COMMENT("Camera's Z positive axis");
-			API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Forward", GETSET, BY_REF);
+			API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Forward", GET, BY_REF);
 			{
 				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Forward_Get", &Internal::getForward);
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Forward_Set", &Internal::setForward);
 			}
 			API_PROPERTY_END();
 
 			API_COMMENT("Camera's Y positive axis");
-			API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Up", GETSET, BY_REF);
+			API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Up", GET, BY_REF);
 			{
 				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Up_Get", &Internal::getUp);
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Up_Set", &Internal::setUp);
 			}
 			API_PROPERTY_END();
 
 			API_COMMENT("Camera's X positive axis");
-			API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Right", GETSET, BY_REF);
+			API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Right", GET, BY_REF);
 			{
 				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Right_Get", &Internal::getRight);
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Right_Set", &Internal::setRight);
 			}
 			API_PROPERTY_END();
 

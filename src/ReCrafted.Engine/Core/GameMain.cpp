@@ -326,11 +326,6 @@ void GameMain::onLoad()
 
 	Logger::write("Rendering pipeline initialized", LogLevel::Info);
 
-	// initialize main camera for scene
-	m_camera = Object::createInstance<Camera>("ReCrafted.API.Graphics", "Camera");
-	m_camera->set_position(Vector3(0.0f, 2.0f, -2.0f));
-	m_camera->set_freeMovement(true);
-
 	m_initialized = true;
 
 	// initialize universe
