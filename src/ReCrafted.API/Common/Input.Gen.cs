@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/01/2017 21:54:32 Source: 'Input.API.cpp' Target: 'Common/Input.Gen.cs'
+// Generated: 11/08/2017 17:06:57 Source: 'Input.API.cpp' Target: 'Common/Input.Gen.cs'
 
 using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
@@ -41,28 +41,30 @@ namespace ReCrafted.API.Common
 		/// <summary>
 		///	Returns cursor's current position.
 		/// </summary>
-		public static Vector2 GetCursorPosition 
+		public static Vector2 CursorPosition 
 		{
 			get
 			{
-				return Internal_GetCursorPosition_Get();
+				return Internal_CursorPosition_Get();
 			}
 		}
 
 		/// <summary>
 		///	Returns cursor's position change since last frame.
 		/// </summary>
-		public static Vector2 GetCursorDelta 
+		public static Vector2 CursorDelta 
 		{
 			get
 			{
-				return Internal_GetCursorDelta_Get();
+				Vector2 result;
+				Internal_CursorDelta_Get(out result);
+				return result;
 			}
 		}
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern Vector2 Internal_GetCursorPosition_Get();
+		internal static extern Vector2 Internal_CursorPosition_Get();
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern Vector2 Internal_GetCursorDelta_Get();
+		internal static extern void Internal_CursorDelta_Get(out Vector2 result);
 	}
 }

@@ -21,6 +21,11 @@ namespace Internal
 		return Input::isKey(static_cast<Keys>(key));
 	}
 
+	void getCursorDelta(Vector2* delta)
+	{
+		*delta = Input::getCursorDelta();
+	}
+
 	void SetCursorPosition(Vector2 position)
 	{
 		Input::setCursorPos(static_cast<int>(position.x), static_cast<int>(position.y));
@@ -73,23 +78,23 @@ void Input::initRuntime()
 			API_COMMENT("Changes cursor's current positon.");
 			API_METHOD(PUBLIC, STATIC, "SetCursorPosition", EXTERN);
 			{
-				API_BIND("ReCrafted.API.Common.Input::setCursorPos", &Internal::SetCursorPosition);
+				API_BIND("ReCrafted.API.Common.Input::SetCursorPosition", &Internal::SetCursorPosition);
 				API_COMMENT("Cursor's position");
 				API_PARAM("Vector2", "position");
 			}
 			API_METHOD_END();
 
 			API_COMMENT("Returns cursor's current position.");
-			API_PROPERTY(PUBLIC, STATIC, "Vector2", "GetCursorPosition", GET);
+			API_PROPERTY(PUBLIC, STATIC, "Vector2", "CursorPosition", GET);
 			{
-				API_BIND("ReCrafted.API.Common.Input::getCursorPos", &Input::getCursorPos);
+				API_BIND("ReCrafted.API.Common.Input::Internal_CursorPosition_Get", &Input::getCursorPos);
 			}
 			API_PROPERTY_END();
 
 			API_COMMENT("Returns cursor's position change since last frame.");
-			API_PROPERTY(PUBLIC, STATIC, "Vector2", "GetCursorDelta", GET);
+			API_PROPERTY(PUBLIC, STATIC, "Vector2", "CursorDelta", GET, BY_REF);
 			{
-				API_BIND("ReCrafted.API.Common.Input::getCursorDelta", &Input::getCursorDelta);
+				API_BIND("ReCrafted.API.Common.Input::Internal_CursorDelta_Get", &Internal::getCursorDelta);
 			}
 			API_PROPERTY_END();
 		}

@@ -34,7 +34,7 @@ namespace ReCrafted.Game
 
             var camera = Entity.Create("MainCamera");
             camera.Position = new Vector3(0.0f, 1.0f, -4.0f);
-            CameraController.Current = camera.AddScript<CameraController>();
+            FreeCameraController.Current = camera.AddScript<FreeCameraController>();
             
             Locale.SetLocale("Polski");
         }
