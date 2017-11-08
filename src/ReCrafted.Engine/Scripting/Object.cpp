@@ -18,6 +18,9 @@ Ptr<Method> Object::findMethod(const char* methodName) const
 
     auto methodHandle = mono_method_desc_search_in_class(methodDesc, m_class);
 
+	if (!methodHandle)
+		return nullptr;
+
 	Ptr<Method> method(new Method);
 	method->m_object = m_object;
 	method->m_method = methodHandle;
