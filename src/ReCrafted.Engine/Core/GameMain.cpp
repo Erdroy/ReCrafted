@@ -459,7 +459,7 @@ void GameMain::onDraw()
 	bgfx::touch(RENDERVIEW_BACKBUFFER);
 
 	// update state
-	m_rendering->setState(false, false);
+	m_rendering->setState();
 
 	m_rendering->beginRender(); // begin rendering the scene
 	{

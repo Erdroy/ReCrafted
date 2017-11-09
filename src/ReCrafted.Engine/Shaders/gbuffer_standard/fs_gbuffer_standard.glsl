@@ -12,6 +12,6 @@ PixelShader()
 	//FS_OUTPUT(0, texture2D(m_texture, m_uv));
 	//           ALBEDO
     FS_OUTPUT(0, m_color);
-	FS_OUTPUT(1, vec4(m_normal, m_color.r));
+	FS_OUTPUT(1, vec4(m_normal, 0.0f));
 	//                 NORMAL    AO
 }

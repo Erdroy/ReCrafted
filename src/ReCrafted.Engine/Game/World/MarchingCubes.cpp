@@ -22,9 +22,9 @@ float Sample(int x, int y, int z)
 	if (y <= 4.0f)
 		return -1;
 
-	return 1;
+	//return 1;
 
-	//return Sphere(Vector3(x, y, z), 5.0f);
+	return Sphere(Vector3(x, y, z), 2.0f);
 }
 
 Vector3 operator*(const float& lhs, const Vector3& rhs)
@@ -40,6 +40,25 @@ Vector3 operator/(const Vector3& lhs, const float& rhs)
 Vector3 GetIntersection(Vector3& p1, Vector3& p2, float d1, float d2)
 {
 	return p1 + -d1 * (p2 - p1) / (d2 - d1);
+}
+
+Vector3 GetNormal(Vector3 position)
+{
+	auto x = int(position.x);
+	auto y = int(position.y);
+	auto z = int(position.z);
+
+	auto h = 1;
+	auto dxp = m_data[x + h][y][z];
+	auto dxm = m_data[x - h][y][z];
+	auto dyp = m_data[x][y + h][z];
+	auto dym = m_data[x][y - h][z];
+	auto dzp = m_data[x][y][z + h];
+	auto dzm = m_data[x][y][z - h];
+
+	auto gradient = Vector3(dxp - dxm, dyp - dym, dzp - dzm);
+	gradient.normalize();
+	return gradient;
 }
 
 void MarchingCubes::generate()
@@ -98,8 +117,10 @@ void MarchingCubes::generate()
 					auto sampleB = m_data[int(offsetB.x)][int(offsetB.y)][int(offsetB.z)];
 
 					auto vertexPosition = GetIntersection(offsetA, offsetB, sampleA, sampleB);
+					auto vertexNormal = GetNormal(position);
+
 					vertices.add(vertexPosition);
-					normals.add(Vector3::up());
+					normals.add(vertexNormal);
 					uvs.add(Vector2::zero());
 					colors.add(Vector4(1.0f, 0.0f, 1.0f, 1.0f));
 					indices.add(vertexIndex);
@@ -117,8 +138,8 @@ void MarchingCubes::generate()
 	m_mesh = Mesh::createMesh();
 
 	m_mesh->setVertices(vertices.data(), vertices.count());
-	m_mesh->setNormals(normals.data());
 	m_mesh->setUVs(uvs.data());
+	m_mesh->setNormals(normals.data());
 	m_mesh->setColors(colors.data());
 	m_mesh->setIndices(indices.data(), indices.count());
 
