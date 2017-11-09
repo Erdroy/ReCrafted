@@ -27,7 +27,7 @@ namespace ReCrafted.Game
             _crosshairTexture.LoadFromFile("../assets/textures/crosshair.png");
             _crosshairTexture.Apply();
 
-            _testFont = Font.Load("../assets/fonts/VeraMono.ttf", 20);
+            _testFont = Font.Load("../assets/fonts/VeraMono.ttf", 12);
 
             Cursor.Show = false;
             Cursor.Lock = true;
@@ -75,8 +75,8 @@ namespace ReCrafted.Game
             var uvs = new RectangleF(0.0f, 0.0f, 1.0f, 1.0f);
             UIInternal.DrawTexture2D(_crosshairTexture.NativePtr, ref rect, ref uvs);
 
-            var pos = new Vector2(20.0f, 20.0f);
-            UIInternal.DrawString(_testFont.NativePtr, "Hello, World!", ref pos);
+            var pos = new Vector2(20.0f, Display.Height - 20.0f);
+            UIInternal.DrawString(_testFont.NativePtr, "ReCrafted 09-11-2017 pre-alpha build 12110", ref pos);
 
             UIPanel.DrawAll();
         }

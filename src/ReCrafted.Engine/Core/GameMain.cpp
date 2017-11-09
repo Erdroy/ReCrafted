@@ -405,24 +405,28 @@ void GameMain::onUpdate()
 
 	if (Input::isKeyDown(Key_F3))
 	{
+		m_wireframe = true;
 		bgfx::setDebug(BGFX_DEBUG_WIREFRAME);
 		Logger::write("Switching to wireframe render mode", LogLevel::Info);
 	}
 
 	if (Input::isKeyDown(Key_F4))
 	{
+		m_wireframe = false;
 		bgfx::setDebug(BGFX_DEBUG_NONE);
 		Logger::write("Switching to default render mode", LogLevel::Info);
 	}
 
 	if (Input::isKeyDown(Key_F5))
 	{
+		m_wireframe = false;
 		bgfx::setDebug(BGFX_DEBUG_STATS);
 		Logger::write("Switching to debug stats render mode", LogLevel::Info);
 	}
 
 	if (Input::isKeyDown(Key_F6))
 	{
+		m_wireframe = false;
 		bgfx::setDebug(BGFX_DEBUG_TEXT);
 		Logger::write("Switching to debug text render mode", LogLevel::Info);
 	}

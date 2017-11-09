@@ -4,27 +4,49 @@
 #include "MCTables.h"
 #include "Platform/Platform.h"
 #include "Graphics/Rendering.h"
+#include "Core/Math/Plane.h"
+#include "Core/Math/FastNoiseSIMD/FastNoiseSIMD.h"
+#include "Core/Math/MeshSimplification/ng_mesh_simplify.h"
 
 #define INDEX_3D(x, y, z, size) ((x) * (size) * (size) + (y) * (size) + (z))
 
-float m_data[17][17][17];
+#define DATA_SIZE 129
+
+float m_data[DATA_SIZE][DATA_SIZE][DATA_SIZE];
+FastNoiseSIMD* noise_terrain = nullptr;
+float* noise_terrain_set = nullptr;
 
 float Sphere(Vector3 pos, float radius)
 {
-	const auto x = (16 - 2.0f) * 0.5f;
+	const auto x = 16 * 0.5f;
 
 	auto origin = Vector3(x, x, x);
 	return (pos - origin).length() - radius * radius;
+} 
+
+float SimplexNoise(float _x, float _y, float _z)
+{
+	auto x = static_cast<int>(_x);
+	auto y = static_cast<int>(_y);
+	auto z = static_cast<int>(_z);
+	
+	return noise_terrain_set[INDEX_3D(x, y, z, DATA_SIZE)];
+}
+
+float Noise(Vector3 pos)
+{
+	return SimplexNoise(pos.x, pos.y, pos.z);
+}
+
+float Terrain(const Vector3& position)
+{
+	return (position.y - 8.0f) - Noise(position) * 4.0f + SimplexNoise(position.x, 8.0f, position.y);
 }
 
 float Sample(int x, int y, int z)
 {
-	if (y <= 4.0f)
-		return -1;
-
-	//return 1;
-
-	return Sphere(Vector3(x, y, z), 2.0f);
+	auto pos = Vector3(float(x), float(y), float(z));
+	return Terrain(pos);
 }
 
 Vector3 operator*(const float& lhs, const Vector3& rhs)
@@ -65,17 +87,26 @@ void MarchingCubes::generate()
 {
 	auto start = Platform::getMiliseconds();
 
+	FastNoiseSIMD::SetSIMDLevel(-1);
+
+	noise_terrain = FastNoiseSIMD::NewFastNoiseSIMD(100);
+	noise_terrain->SetNoiseType(FastNoiseSIMD::Simplex);
+	noise_terrain->SetFrequency(0.03f);
+	noise_terrain->SetFractalType(FastNoiseSIMD::FBM);
+	noise_terrain->SetFractalOctaves(4);
+	noise_terrain->SetFractalLacunarity(2.0f);
+	noise_terrain->SetFractalGain(0.5f);
+
+	noise_terrain_set = noise_terrain->GetSimplexFractalSet(0, 0, 0, DATA_SIZE, DATA_SIZE, DATA_SIZE);
+
 	Array<Vector3> vertices = {};
-	Array<Vector3> normals = {};
-	Array<Vector4> colors = {};
-	Array<Vector2> uvs = {};
 	Array<uint> indices = {};
 
-	for(auto y = 0; y < 17; y ++)
+	for (auto y = 0; y < DATA_SIZE; y++)
 	{
-		for (auto x = 0; x < 17; x++)
+		for (auto x = 0; x < DATA_SIZE; x++)
 		{
-			for (auto z = 0; z < 17; z++)
+			for (auto z = 0; z < DATA_SIZE; z++)
 			{
 				m_data[x][y][z] = Sample(x, y, z);
 			}
@@ -83,11 +114,11 @@ void MarchingCubes::generate()
 	}
 
 	auto vertexIndex = 0u;
-	for (auto y = 0; y < 16; y++)
+	for (auto y = 0; y < DATA_SIZE - 1; y++)
 	{
-		for (auto x = 0; x < 16; x++)
+		for (auto x = 0; x < DATA_SIZE - 1; x++)
 		{
-			for (auto z = 0; z < 16; z++)
+			for (auto z = 0; z < DATA_SIZE - 1; z++)
 			{
 				auto position = Vector3(float(x), float(y), float(z));
 
@@ -103,7 +134,7 @@ void MarchingCubes::generate()
 
 				auto edgeCase = 0;
 
-				for(auto i = 0; i < 15; i ++)
+				for (auto i = 0; i < 15; i++)
 				{
 					auto edge = EdgesTable[corners][edgeCase];
 
@@ -117,12 +148,8 @@ void MarchingCubes::generate()
 					auto sampleB = m_data[int(offsetB.x)][int(offsetB.y)][int(offsetB.z)];
 
 					auto vertexPosition = GetIntersection(offsetA, offsetB, sampleA, sampleB);
-					auto vertexNormal = GetNormal(position);
 
 					vertices.add(vertexPosition);
-					normals.add(vertexNormal);
-					uvs.add(Vector2::zero());
-					colors.add(Vector4(1.0f, 0.0f, 1.0f, 1.0f));
 					indices.add(vertexIndex);
 
 					vertexIndex++;
@@ -132,8 +159,41 @@ void MarchingCubes::generate()
 		}
 	}
 
+	auto normals = Array<Vector3>(vertices.count());
+	auto colors = Array<Vector4>(vertices.count());
+	auto uvs = Array<Vector2>(vertices.count());
+
+	// Calculate normals
+	for (auto i = 0u; i < vertices.count(); i += 3)
+	{
+		auto p0 = vertices[i + 0];
+		auto p1 = vertices[i + 1];
+		auto p2 = vertices[i + 2];
+
+		auto plane = Plane(p0, p1, p2);
+		plane.normalize();
+
+		normals.add(plane.normal);
+		normals.add(plane.normal);
+		normals.add(plane.normal);
+
+		uvs.add(Vector2::zero());
+		uvs.add(Vector2::zero());
+		uvs.add(Vector2::zero());
+		colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
+		colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
+		colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
+
+	}
+
 	auto end = Platform::getMiliseconds();
 	auto diff = end - start;
+
+	if (vertices.count() == 0)
+		return;
+
+	if (diff < 0) // hack, do not remove diff in release build
+		throw;
 
 	m_mesh = Mesh::createMesh();
 
@@ -145,7 +205,6 @@ void MarchingCubes::generate()
 
 	m_mesh->applyChanges();
 	m_mesh->upload();
-
 }
 
 void MarchingCubes::draw()

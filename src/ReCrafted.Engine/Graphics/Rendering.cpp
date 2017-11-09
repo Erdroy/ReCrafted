@@ -5,6 +5,7 @@
 #include "Core/Logger.h"
 #include "Game/Items/ItemDB.h"
 #include "DebugDraw.h"
+#include "Core/GameMain.h"
 
 Rendering* Rendering::m_instance;
 

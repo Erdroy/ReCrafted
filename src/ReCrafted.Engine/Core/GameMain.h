@@ -22,12 +22,15 @@ class GameMain
 {
 	API_DEF
 
+	friend class Rendering;
+
 private:
 	static GameMain* m_instance;
 
 private:
 	volatile bool m_running = false;
 	bool m_initialized = false;
+	bool m_wireframe = false;
 
 	EntityPool* m_entityPool = nullptr;
 	Rendering* m_rendering = nullptr;
