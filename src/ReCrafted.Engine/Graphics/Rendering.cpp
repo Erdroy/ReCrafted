@@ -59,7 +59,7 @@ void Rendering::createBlitQuad()
 
 	static uint indices[6] = {
 		2, 1, 0,
-		3, 0, 2
+		2, 0, 3
 	};
 
 	m_blitMesh = Mesh::createMesh();
@@ -178,8 +178,6 @@ void Rendering::setWorldMatrice(Matrix& modelMatrix)
 
 void Rendering::setState(bool tristrip, bool msaa, bool uiRendering, bool debugLines, bool debugTriangles)
 {
-	auto state = 0;
-
 	if (debugLines)
 	{
 		bgfx::setState(0 
@@ -217,14 +215,9 @@ void Rendering::setState(bool tristrip, bool msaa, bool uiRendering, bool debugL
 	}
 
 	if (tristrip)
-		state |= BGFX_STATE_DEFAULT | BGFX_STATE_PT_TRISTRIP;
+		bgfx::setState(0 | BGFX_STATE_DEFAULT | BGFX_STATE_PT_TRISTRIP);
 	else
-		state |= BGFX_STATE_DEFAULT;
-
-	if (msaa)
-		state |= BGFX_STATE_MSAA;
-
-	bgfx::setState(state);
+		bgfx::setState(0 | BGFX_STATE_DEFAULT);
 }
 
 void Rendering::dispose()
