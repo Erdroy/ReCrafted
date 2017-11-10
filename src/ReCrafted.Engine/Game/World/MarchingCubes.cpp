@@ -6,7 +6,6 @@
 #include "Graphics/Rendering.h"
 #include "Core/Math/Plane.h"
 #include "Core/Math/FastNoiseSIMD/FastNoiseSIMD.h"
-#include "Core/Math/MeshSimplification/ng_mesh_simplify.h"
 
 #define INDEX_3D(x, y, z, size) ((x) * (size) * (size) + (y) * (size) + (z))
 
@@ -91,7 +90,7 @@ void MarchingCubes::generate()
 
 	noise_terrain = FastNoiseSIMD::NewFastNoiseSIMD(100);
 	noise_terrain->SetNoiseType(FastNoiseSIMD::Simplex);
-	noise_terrain->SetFrequency(0.03f);
+	noise_terrain->SetFrequency(0.06f);
 	noise_terrain->SetFractalType(FastNoiseSIMD::FBM);
 	noise_terrain->SetFractalOctaves(4);
 	noise_terrain->SetFractalLacunarity(2.0f);
@@ -180,6 +179,7 @@ void MarchingCubes::generate()
 		uvs.add(Vector2::zero());
 		uvs.add(Vector2::zero());
 		uvs.add(Vector2::zero());
+
 		colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
 		colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
 		colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
