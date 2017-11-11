@@ -129,7 +129,7 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 	// P - outer bounds, actually no value for this, 
 	// this is only for simplified version of the algorithm.
 	// 
-	// dist(X, A) = radius + node_size * 0.25
+	// dist(X, A) = node_size + node_size * 0.25
 	// dist(X, B) = dist(X, A) + node_size * 0.25
 	// 
 	// X ---C--|----|------- P
@@ -141,8 +141,8 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 	// IF (all C's are in B-P) AND populated: depopulate - otherwise: go further
 	// IF (there is no C's) AND populated: depopulate - otherwise: ignore.
 
-	// dist(X, A) = radius + node_size * 0.25
-	auto distXA = owner->spaceObject->get_radius() + m_size * 0.25f;
+	// dist(X, A) = node_size + node_size * 0.25
+	auto distXA = m_size + m_size * 0.25f;
 
 	// dist(X, B) = dist(X, A) + node_size * 0.25
 	auto distXB = distXA + m_size * 0.25f;
@@ -162,10 +162,7 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 		}
 
 		if (distanceXC <= distXB)
-		{
 			hasXB = true;
-			break;
-		}
 	}
 
 	// IF (any C is in X-A) AND NOT populated: populate - otherwise: go further
