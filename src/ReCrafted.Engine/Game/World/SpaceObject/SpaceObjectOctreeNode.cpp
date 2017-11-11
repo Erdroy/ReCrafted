@@ -3,7 +3,7 @@
 #include "SpaceObjectOctree.h"
 #include "Core/Math/Color.h"
 #include "Graphics/DebugDraw.h"
-#include "SpaceObject.h"
+#include "SpaceObjectChunk.h"
 
 Vector3 childrenNodeOffsets[8] = {
 	Vector3(-0.5f,  0.5f,  0.5f),
@@ -93,6 +93,7 @@ void SpaceObjectOctreeNode::depopulate()
 
 void SpaceObjectOctreeNode::update()
 {
+	// update children when there is any
 	if(m_populated)
 	{
 		for (auto i = 0; i < 8; i++)
@@ -106,6 +107,11 @@ void SpaceObjectOctreeNode::update()
 		return;
 	}
 
+	// update chunk if there is one
+	if (m_chunk)
+		m_chunk->update();
+
+	// draw if this is the last node
 	auto size = Vector3::one() * static_cast<float>(m_size);
 
 	DebugDraw::setColor(Color(255, 105, 0));
@@ -211,10 +217,32 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 		depopulate();
 }
 
-void SpaceObjectOctreeNode::dispose()
+void SpaceObjectOctreeNode::draw()
 {
 	if (!m_populated)
 		return;
+
+	for (auto i = 0; i < 8; i++)
+	{
+		auto node = m_childrenNodes[i];
+
+		if (node)
+		{
+			node->draw();
+		}
+	}
+}
+
+void SpaceObjectOctreeNode::dispose()
+{
+	if (!m_populated)
+	{
+		// draw chunk if exists
+		if(m_chunk)
+			m_chunk->draw();
+
+		return;
+	}
 
 	for (auto i = 0; i < 8; i++)
 	{
@@ -236,10 +264,16 @@ void SpaceObjectOctreeNode::dispose()
 
 void SpaceObjectOctreeNode::onCreate()
 {
+	// create chunk
+	m_chunk = std::make_shared<SpaceObjectChunk>();
+	m_chunk->init(this, owner->spaceObject);
+	m_chunk->generate();
 }
 
 void SpaceObjectOctreeNode::onDestroy()
 {
+	// destroy chunk
+	m_chunk->dispose();
 }
 
 void SpaceObjectOctreeNode::onPopulate()

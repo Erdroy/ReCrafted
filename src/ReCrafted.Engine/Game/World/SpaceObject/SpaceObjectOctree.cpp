@@ -39,6 +39,11 @@ void SpaceObjectOctree::updateViews(Array<Vector3>& views)
 	m_rootNode->updateViews(views);
 }
 
+void SpaceObjectOctree::draw()
+{
+	m_rootNode->draw();
+}
+
 void SpaceObjectOctree::dispose()
 {
 	SafeDispose(m_rootNode);

@@ -24,12 +24,12 @@ void SpaceObject::update()
 
 void SpaceObject::draw()
 {
-
+	m_octree->draw();
 }
 
 void SpaceObject::dispose()
 {
-
+	m_octree->dispose();
 }
 
 void SpaceObject::updateViewPoint(Vector3& view)

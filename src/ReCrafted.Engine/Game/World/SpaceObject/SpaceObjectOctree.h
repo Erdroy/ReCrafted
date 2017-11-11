@@ -1,3 +1,5 @@
+// ReCrafted © 2016-2017 Always Too Late
+
 #pragma once
 
 #ifndef SPACEOBJECTOCTREE_H
@@ -9,6 +11,7 @@
 #include "Core/Containers/Array.h"
 
 class SpaceObjectOctree;
+class SpaceObjectChunk;
 class SpaceObject;
 
 class SpaceObjectOctreeNode
@@ -23,6 +26,8 @@ private:
 	SpaceObjectOctreeNode* m_childrenNodes[8] = {};
 	bool m_populated = false;
 	bool m_root = false;
+
+	Ptr<SpaceObjectChunk> m_chunk = nullptr;
 
 private:
 	bool hasPopulatedChildren();
@@ -39,6 +44,7 @@ public:
 	void depopulate();
 	void update();
 	void updateViews(Array<Vector3>& views);
+	void draw();
 	void dispose();
 
 public:
@@ -68,6 +74,7 @@ public:
 	void init(float objectRadius);
 	void update();
 	void updateViews(Array<Vector3>& views);
+	void draw();
 	void dispose();
 
 public:
