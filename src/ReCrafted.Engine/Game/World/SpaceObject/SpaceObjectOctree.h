@@ -22,6 +22,7 @@ private:
 	SpaceObjectOctree* owner = nullptr;
 	SpaceObjectOctreeNode* m_childrenNodes[8] = {};
 	bool m_populated = false;
+	bool m_root = false;
 
 private:
 	bool hasPopulatedChildren();

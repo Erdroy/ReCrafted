@@ -133,6 +133,10 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 	if (m_populated && hasPopulatedChildren())
 		return;
 
+	// do not populate/depopulate root
+	if (m_root)
+		return;
+
 	// X - node position
 	// C - view position
 	// A - populate range

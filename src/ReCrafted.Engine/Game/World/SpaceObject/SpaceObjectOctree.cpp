@@ -20,6 +20,7 @@ void SpaceObjectOctree::init(float objectRadius)
 	
 	// set owner
 	m_rootNode->owner = this;
+	m_rootNode->m_root = true;
 
 	// populate root node
 	m_rootNode->populate();
