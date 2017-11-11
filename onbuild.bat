@@ -15,7 +15,7 @@ set /P VER= < version.txt
 
 REM update game info file
 echo Creating gameinfo file...
-tools\\ReCrafted.VersionBuilder.exe %VER% build\\assets\\gameinfo.json
+tools\\ReCrafted.VersionBuilder.exe "%VER%" build\\assets\\gameinfo.json
 
 IF "%2%" == "Engine" (
 REM run shader compiler

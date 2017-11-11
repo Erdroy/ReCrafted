@@ -6,6 +6,7 @@ using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
+using ReCrafted.Core;
 using ReCrafted.Core.Locales;
 using ReCrafted.Game.Core;
 
@@ -36,6 +37,9 @@ namespace ReCrafted.Game
             camera.Position = new Vector3(0.0f, 1.0f, -4.0f);
             FreeCameraController.Current = camera.AddScript<FreeCameraController>();
             
+            // Load game info
+            GameInfo.FromFile("../assets/gameinfo.json");
+
             Locale.SetLocale("Polski");
         }
 
@@ -76,7 +80,7 @@ namespace ReCrafted.Game
             UIInternal.DrawTexture2D(_crosshairTexture.NativePtr, ref rect, ref uvs);
 
             var pos = new Vector2(20.0f, Display.Height - 20.0f);
-            UIInternal.DrawString(_testFont.NativePtr, "ReCrafted 09-11-2017 pre-alpha build 12110", ref pos);
+            UIInternal.DrawString(_testFont.NativePtr, "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber, ref pos);
 
             UIPanel.DrawAll();
         }

@@ -54,6 +54,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Exceptions.cs" />
+    <Compile Include="Core\GameInfo.cs" />
+    <Compile Include="Core\JsonTemplate.cs" />
     <Compile Include="Core\Locales\Locale.cs" />
     <Compile Include="Game\GameMain.cs" />
     <Compile Include="Game\FreeCameraController.cs" />
