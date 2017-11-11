@@ -41,6 +41,13 @@ public:
 	void dispose();
 
 public:
+	void onCreate();
+	void onDestroy();
+
+	void onPopulate();
+	void onDepopulate();
+
+public:
 	PROPERTY(Vector3, position) = {}; // NOTE: center position
 	PROPERTY(int, size) = {};
 };

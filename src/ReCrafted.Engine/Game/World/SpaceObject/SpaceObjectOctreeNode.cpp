@@ -35,8 +35,6 @@ void SpaceObjectOctreeNode::populate()
 	if (m_size <= MinimumNodeSize)
 		return;
 
-	m_populated = true;
-
 	// construct children nodes
 	auto childrenSize = m_size / 2;
 	for (auto i = 0; i < 8; i++)
@@ -51,9 +49,15 @@ void SpaceObjectOctreeNode::populate()
 
 		// set owner
 		m_childrenNodes[i]->owner = owner;
+
+		// call event
+		m_childrenNodes[i]->onCreate();
 	}
 
-	// this node is successfully populated
+	m_populated = true;
+
+	// call event
+	onPopulate();
 }
 
 void SpaceObjectOctreeNode::depopulate()
@@ -61,15 +65,17 @@ void SpaceObjectOctreeNode::depopulate()
 	if (!m_populated)
 		return;
 
+	if (hasPopulatedChildren())
+		throw;
+
 	for(auto i = 0; i < 8; i ++)
 	{
 		auto node = m_childrenNodes[i];
 
 		if(node)
 		{
-			// depopulate all children-children nodes
-			// it will depopulate children-children-children nodes etc. xD
-			node->depopulate();
+			// call event
+			node->onDestroy();
 
 			// delete node
 			delete node;
@@ -80,6 +86,9 @@ void SpaceObjectOctreeNode::depopulate()
 	}
 
 	m_populated = false;
+
+	// call event
+	onDepopulate();
 }
 
 void SpaceObjectOctreeNode::update()
@@ -109,6 +118,7 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 {
 	if(m_populated)
 	{
+		// update children node views, because we are populated
 		for (auto i = 0; i < 8; i++)
 		{
 			auto node = m_childrenNodes[i];
@@ -118,7 +128,8 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 		}
 	}
 
-	// we cannot 
+	// we cannot depopulate/populate etc. because this node has populated children
+	// which should be depoplated first, but this doesn't happen this time
 	if (m_populated && hasPopulatedChildren())
 		return;
 
@@ -147,6 +158,7 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 	// dist(X, B) = dist(X, A) + node_size * 0.25
 	auto distXB = distXA + m_size * 0.25f;
 
+	// flags
 	auto hasXA = false;
 	auto hasXB = false;
 
@@ -207,4 +219,20 @@ void SpaceObjectOctreeNode::dispose()
 			m_childrenNodes[i] = nullptr;
 		}
 	}
+}
+
+void SpaceObjectOctreeNode::onCreate()
+{
+}
+
+void SpaceObjectOctreeNode::onDestroy()
+{
+}
+
+void SpaceObjectOctreeNode::onPopulate()
+{
+}
+
+void SpaceObjectOctreeNode::onDepopulate()
+{
 }
