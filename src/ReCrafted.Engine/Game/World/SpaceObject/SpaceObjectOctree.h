@@ -6,15 +6,25 @@
 // includes
 #include "Core/Math/Vector3.h"
 #include "Core/Math/BoundingBox.h"
+#include "Core/Containers/Array.h"
+
+class SpaceObjectOctree;
+class SpaceObject;
 
 class SpaceObjectOctreeNode
 {
+	friend class SpaceObjectOctree;
+
 public:
 	static const int MinimumNodeSize = 16;
 
 private:
+	SpaceObjectOctree* owner = nullptr;
 	SpaceObjectOctreeNode* m_childrenNodes[8] = {};
 	bool m_populated = false;
+
+private:
+	bool hasPopulatedChildren();
 
 public:
 	SpaceObjectOctreeNode(Vector3 position, int size)
@@ -27,6 +37,7 @@ public:
 	void populate();
 	void depopulate();
 	void update();
+	void updateViews(Array<Vector3>& views);
 	void dispose();
 
 public:
@@ -36,12 +47,19 @@ public:
 
 class SpaceObjectOctree
 {
+	friend class SpaceObjectOctreeNode;
+	friend class SpaceObject;
+
+private:
+	SpaceObject* spaceObject = nullptr;
+
 public:
 	SpaceObjectOctreeNode* m_rootNode = nullptr;
 
 public:
 	void init(float objectRadius);
 	void update();
+	void updateViews(Array<Vector3>& views);
 	void dispose();
 
 public:

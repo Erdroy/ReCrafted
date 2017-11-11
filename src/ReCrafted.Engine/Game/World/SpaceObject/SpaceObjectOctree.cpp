@@ -18,6 +18,9 @@ void SpaceObjectOctree::init(float objectRadius)
 	// create root node
 	m_rootNode = new SpaceObjectOctreeNode(m_position, size);
 	
+	// set owner
+	m_rootNode->owner = this;
+
 	// populate root node
 	m_rootNode->populate();
 }
@@ -28,6 +31,11 @@ void SpaceObjectOctree::update()
 
 	// update root node
 	m_rootNode->update();
+}
+
+void SpaceObjectOctree::updateViews(Array<Vector3>& views)
+{
+	m_rootNode->updateViews(views);
 }
 
 void SpaceObjectOctree::dispose()

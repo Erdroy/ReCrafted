@@ -3,6 +3,7 @@
 #include "SpaceObjectOctree.h"
 #include "Core/Math/Color.h"
 #include "Graphics/DebugDraw.h"
+#include "SpaceObject.h"
 
 Vector3 childrenNodeOffsets[8] = {
 	Vector3(-0.5f,  0.5f,  0.5f),
@@ -15,6 +16,19 @@ Vector3 childrenNodeOffsets[8] = {
 	Vector3( 0.5f, -0.5f, -0.5f),
 	Vector3(-0.5f, -0.5f, -0.5f)
 };
+
+bool SpaceObjectOctreeNode::hasPopulatedChildren()
+{
+	for (auto i = 0; i < 8; i++)
+	{
+		auto node = m_childrenNodes[i];
+
+		if (node && node->m_populated)
+			return true;
+	}
+
+	return false;
+}
 
 void SpaceObjectOctreeNode::populate()
 {
@@ -34,6 +48,9 @@ void SpaceObjectOctreeNode::populate()
 
 		// construct node
 		m_childrenNodes[i] = new SpaceObjectOctreeNode(position, childrenSize);
+
+		// set owner
+		m_childrenNodes[i]->owner = owner;
 	}
 
 	// this node is successfully populated
@@ -84,10 +101,113 @@ void SpaceObjectOctreeNode::update()
 
 	DebugDraw::setColor(Color(255, 105, 0));
 	DebugDraw::drawWireCube(m_position, size);
-	DebugDraw::setColor(Color(1.0f, 0.55f, 0.0f, 0.5f));
+	DebugDraw::setColor(Color(0.6f, 0.35f, 0.0f, 0.2f));
 	DebugDraw::drawCube(m_position, size);
+}
+
+void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
+{
+	if(m_populated)
+	{
+		for (auto i = 0; i < 8; i++)
+		{
+			auto node = m_childrenNodes[i];
+
+			if (node)
+				node->updateViews(views);
+		}
+	}
+
+	// we cannot 
+	if (m_populated && hasPopulatedChildren())
+		return;
+
+	// X - node position
+	// C - view position
+	// A - populate range
+	// B - depopulate range
+	// P - outer bounds, actually no value for this, 
+	// this is only for simplified version of the algorithm.
+	// 
+	// dist(X, A) = radius + node_size * 0.25
+	// dist(X, B) = dist(X, A) + node_size * 0.25
+	// 
+	// X ---C--|----|------- P
+	//         A    B
+	// X --- dist(A, C) ---> P
+	// 
+	// Algorithm:
+	// IF (any C is in X-A) AND NOT populated: populate - otherwise: go further
+	// IF (all C's are in B-P) AND populated: depopulate - otherwise: go further
+	// IF (there is no C's) AND populated: depopulate - otherwise: ignore.
+
+	// dist(X, A) = radius + node_size * 0.25
+	auto distXA = owner->spaceObject->get_radius() + m_size * 0.25f;
+
+	// dist(X, B) = dist(X, A) + node_size * 0.25
+	auto distXB = distXA + m_size * 0.25f;
+
+	auto hasXA = false;
+	auto hasXB = false;
+
+	// check view flags
+	for (auto && view : views)
+	{
+		auto distanceXC = Vector3::distance(m_position, view);
+
+		if (distanceXC <= distXA)
+		{
+			hasXA = true;
+			break;
+		}
+
+		if (distanceXC <= distXB)
+		{
+			hasXB = true;
+			break;
+		}
+	}
+
+	// IF (any C is in X-A) AND NOT populated: populate - otherwise: go further
+	if (hasXA)
+	{
+		if (!m_populated)
+			populate();
+		return;
+	}
+
+	// IF (all C's are in B-P) AND populated: depopulate - otherwise: go further
+	if (!hasXA && !hasXB)
+	{
+		if (!m_populated)
+			depopulate();
+		return;
+	}
+
+	// IF (there is no C's) AND populated: depopulate - otherwise: ignore.
+	if (m_populated)
+		depopulate();
 }
 
 void SpaceObjectOctreeNode::dispose()
 {
+	if (!m_populated)
+		return;
+
+	for (auto i = 0; i < 8; i++)
+	{
+		auto node = m_childrenNodes[i];
+
+		if (node)
+		{
+			// dispose
+			node->dispose();
+
+			// delete node
+			delete node;
+
+			// cleanup
+			m_childrenNodes[i] = nullptr;
+		}
+	}
 }

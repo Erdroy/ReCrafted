@@ -12,6 +12,7 @@ class SpaceObject
 {
 private:
 	Ptr<SpaceObjectOctree> m_octree = nullptr;
+	Array<Vector3> m_views = {};
 	
 public:
 	void init();
@@ -20,11 +21,9 @@ public:
 	void dispose();
 
 public:
-	// TODO: void updateViewPoints(Vector3* views, uint16_t viewCounts);
-	
 	/**
-	 * \brief Updates the SpaceObject LoD view points using only one view point.
-	 * Can be used on client-side.
+	 * \brief Updates the SpaceObject LoD view points using this view point for the next frame.
+	 * Can be used on client-side. To use this, call this in early update, before the octree updates.
 	 * \param view The view position.
 	 */
 	void updateViewPoint(Vector3& view);

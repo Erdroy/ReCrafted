@@ -23,6 +23,7 @@ void Universe::init()
 void Universe::update()
 {
 	auto cameraPosition = Camera::getMainCamera()->get_position();
+
 	m_testObject->updateViewPoint(cameraPosition);
 	m_testObject->update();
 }
