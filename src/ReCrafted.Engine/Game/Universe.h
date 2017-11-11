@@ -5,6 +5,9 @@
 #ifndef UNIVERSE_H
 #define UNIVERSE_H
 
+// includes
+#include "World/SpaceObject/SpaceObject.h"
+
 /// <summary>
 /// Universe class - main class for whole game world.
 /// Manages voxel engine, AI, players, handles multiplayer etc.
@@ -15,6 +18,9 @@ class Universe
 
 private:
 	static Universe* m_instance;
+
+private:
+	Ptr<SpaceObject> m_testObject = nullptr;
 
 private:
 	void init();

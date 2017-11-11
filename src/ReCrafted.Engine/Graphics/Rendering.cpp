@@ -3,7 +3,6 @@
 #include "Rendering.h"
 #include "Camera.h"
 #include "Core/Logger.h"
-#include "Game/Items/ItemDB.h"
 #include "DebugDraw.h"
 #include "Core/GameMain.h"
 
@@ -151,7 +150,7 @@ void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix, in
 
 void Rendering::draw(Ptr<Mesh> mesh, Matrix* modelMatrix)
 {
-	m_gbufferShader->setTexture(0, ItemDB::m_instance->m_atlas);
+	//m_gbufferShader->setTexture(0, ???);
 	draw(mesh, m_gbufferShader, modelMatrix, RENDERVIEW_GBUFFER);
 }
 
