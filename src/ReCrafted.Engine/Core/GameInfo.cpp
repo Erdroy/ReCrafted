@@ -2,6 +2,7 @@
 
 #include "GameInfo.h"
 #include "Common/Text.h"
+#include "Platform/Platform.h"
 
 Array<Text> GameInfo::cliArguments;
 

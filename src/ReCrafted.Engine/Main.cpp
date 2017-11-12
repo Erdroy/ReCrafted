@@ -1,6 +1,7 @@
 // ReCrafted © 2016-2017 Always Too Late
 
 #include "Core/GameInfo.h"
+#include "Graphics/HTML5_UI/HTML5_UI.h"
 #ifdef _WIN32
 
 // includes
@@ -17,6 +18,8 @@ int CALLBACK WinMain(
 	int nCmdShow)
 {
 	GameInfo::parseArguments(Text(GetCommandLineA()));
+
+	HTML5UI::initChildren();
 
 	// run the game
 	GameMain core = {};

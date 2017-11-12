@@ -7,10 +7,13 @@ class HTML5UI
 {
 	friend class GameMain;
 
-private:
+public:
 	static void init();
+	static void initChildren();
 	static void shutdown();
 	static void draw();
+	static void update();
+	static void resized();
 };
 
 #endif // HTML5_UI_H

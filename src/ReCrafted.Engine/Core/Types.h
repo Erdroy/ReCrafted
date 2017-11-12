@@ -12,13 +12,7 @@ typedef unsigned char byte;
 
 typedef signed char sbyte;
 
-typedef unsigned short uint16;
-
-typedef unsigned int uint32;
-
-typedef uint32 uint;
-
-typedef unsigned long uint64;
+typedef unsigned int uint;
 
 template <class T>
 using Ptr = std::shared_ptr<T>;

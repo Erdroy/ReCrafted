@@ -17,7 +17,7 @@ void RenderBuffer::createBuffer(uint width, uint height)
 
 	// create textures
 	for (auto i = 0u; i < m_textureCount; i++)
-		m_textureHandles[i] = bgfx::createTexture2D(uint16(width), uint16(height), false, 1, static_cast<bgfx::TextureFormat::Enum>(m_textures[i]), samplerFlags);
+		m_textureHandles[i] = bgfx::createTexture2D(uint16_t(width), uint16_t(height), false, 1, static_cast<bgfx::TextureFormat::Enum>(m_textures[i]), samplerFlags);
 
 	// build render buffer
 	m_framebufferHandle = bgfx::createFrameBuffer(m_textureCount, m_textureHandles, true);

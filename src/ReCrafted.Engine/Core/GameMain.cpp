@@ -11,7 +11,7 @@
 
 #define CHECK_SHUTDOWN if (!m_running) break;
 
-#define RESET_FLAGS (BGFX_RESET_NONE | BGFX_RESET_VSYNC)
+#define RESET_FLAGS (BGFX_RESET_NONE/* | BGFX_RESET_VSYNC*/)
 
 GameMain* GameMain::m_instance;
 
@@ -177,6 +177,8 @@ void GameMain::initScripting()
 
 void GameMain::run()
 {
+	// TODO: Ignore most initialization when this is CEF sub process
+
 	// set all needed instance handlers
 	gameMain_instance = m_instance = this;
 
@@ -251,6 +253,8 @@ void GameMain::run()
 
 		// frame
 		{
+			HTML5UI::update();
+
 			onUpdate(); CHECK_SHUTDOWN
 			onSimulate(); CHECK_SHUTDOWN // TODO: fixed-time step `onSimulate` call
 			onDraw(); CHECK_SHUTDOWN
@@ -275,12 +279,6 @@ void GameMain::shutdown()
 
 void GameMain::onLoad()
 {
-	// initialize logger
-	m_logger = new Logger();
-	m_logger->init();
-
-	Logger::write("ReCrafted - startup", LogLevel::Info);
-
 	uint width;
 	uint height;
 
@@ -289,6 +287,12 @@ void GameMain::onLoad()
 
 	Display::set_Width(width);
 	Display::set_Height(height);
+
+	// initialize logger
+	m_logger = new Logger();
+	m_logger->init();
+
+	Logger::write("ReCrafted - startup", LogLevel::Info);
 
 	Logger::write("Creating game renderer using Direct3D11 API", LogLevel::Info);
 
@@ -310,6 +314,9 @@ void GameMain::onLoad()
 
 	Logger::write("Renderer initialized", LogLevel::Info);
 
+	// initialize HTML5 UI
+	HTML5UI::init();
+
 	// initialize rendering
 	m_rendering = new Rendering;
 	m_rendering->init();
@@ -320,9 +327,6 @@ void GameMain::onLoad()
 
 	// initialize DebugDraw
 	DebugDraw::init();
-
-	// initialize HTML5 UI
-	HTML5UI::init();
 
 	Logger::write("Rendering pipeline initialized", LogLevel::Info);
 
@@ -353,27 +357,27 @@ void GameMain::onUnload()
 
 	// destroy all objects
 	Object::destroyall();
-	
-	// shutdown scripting engine
-	m_domain->cleanup();
-
-	// shutdown UI
-	m_ui->dispose();
-	SafeDispose(m_ui);
-
-	// shutdown debug draw
-	DebugDraw::shutdown();
-
-	// shutdown HTML5 UI
-	HTML5UI::shutdown();
-
-	// shutdown bindings
-	Bindings::shutdown();
 
 	// release all resources etc.
 	SafeDispose(m_rendering);
 	SafeDispose(m_universe);
 	SafeDispose(m_entityPool);
+
+	// shutdown UI
+	m_ui->dispose();
+	SafeDispose(m_ui);
+
+	// shutdown scripting engine
+	m_domain->cleanup();
+
+	// shutdown debug draw
+	DebugDraw::shutdown();
+
+	// shutdown bindings
+	Bindings::shutdown();
+
+	// shutdown HTML5 UI
+	HTML5UI::shutdown();
 
 	// shutdown rendering
 	bgfx::shutdown();
@@ -389,6 +393,9 @@ void GameMain::onResize(uint width, uint height)
 
 	Display::set_Width(width);
 	Display::set_Height(height);
+
+	// resize HTML5 UI
+	HTML5UI::resized();
 
 	// reset bgfx state, this should force renderer to resize all the viewports etc.
 	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
@@ -484,12 +491,9 @@ void GameMain::onDraw()
 	
 	// debug draw
 	DebugDraw::drawAll();
-	
+
 	// set UI state
 	m_rendering->setState(false, false, true);
-
-	// draw HTML5 UI
-	HTML5UI::draw();
 
 	// draw UI
 	m_ui->beginDraw(); // begin draw UI
@@ -497,6 +501,9 @@ void GameMain::onDraw()
 		m_drawui_method->invoke();
 	}
 	m_ui->endDraw(); // end draw UI
+	
+	// draw HTML5 UI
+	HTML5UI::draw();
 	
 	// next frame, wait vsync
 	bgfx::frame();

@@ -156,9 +156,9 @@ void Rendering::draw(Ptr<Mesh> mesh, Matrix* modelMatrix)
 
 void Rendering::blit(uint view, bgfx::TextureHandle texture)
 {
-	setState(false, false);
+	auto textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
 
-	bgfx::setTexture(0, m_texture0, texture);
+	bgfx::setTexture(0, m_texture0, texture, textureFlags);
 
 	bgfx::setVertexBuffer(0, m_blitMesh->m_vertexBuffer);
 	bgfx::setIndexBuffer(m_blitMesh->m_indexBuffer);
@@ -182,7 +182,6 @@ void Rendering::setState(bool tristrip, bool msaa, bool uiRendering, bool debugL
 	{
 		bgfx::setState(0 
 			| BGFX_STATE_RGB_WRITE
-			| BGFX_STATE_ALPHA_WRITE
 			| BGFX_STATE_PT_LINES
 			| BGFX_STATE_LINEAA
 			| BGFX_STATE_CULL_CW
@@ -194,7 +193,6 @@ void Rendering::setState(bool tristrip, bool msaa, bool uiRendering, bool debugL
 	{
 		bgfx::setState(0 
 			| BGFX_STATE_RGB_WRITE
-			| BGFX_STATE_ALPHA_WRITE
 			| BGFX_STATE_CULL_CCW
 			| BGFX_STATE_BLEND_ALPHA);
 		return;
@@ -205,7 +203,6 @@ void Rendering::setState(bool tristrip, bool msaa, bool uiRendering, bool debugL
 		bgfx::setState(0
 			| BGFX_STATE_RGB_WRITE
 			| BGFX_STATE_ALPHA_WRITE
-			| BGFX_STATE_MSAA
 			| BGFX_STATE_BLEND_FUNC_SEPARATE(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA, BGFX_STATE_BLEND_ZERO, BGFX_STATE_BLEND_ONE)
 			| BGFX_STATE_BLEND_EQUATION(BGFX_STATE_BLEND_EQUATION_ADD)
 			& ~BGFX_STATE_DEPTH_TEST_LESS

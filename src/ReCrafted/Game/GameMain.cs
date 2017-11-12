@@ -56,7 +56,7 @@ namespace ReCrafted.Game
                 Cursor.Show = false;
                 Cursor.Lock = true;
             }
-
+            
             DebugDraw.Color = new Color(0, 105, 0, 64);
             DebugDraw.DrawCube(Vector3.Zero, Vector3.One);
             DebugDraw.Color = new Color(0, 105, 0, 255);

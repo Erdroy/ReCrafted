@@ -17,7 +17,7 @@ void SpaceObjectChunk::init(SpaceObjectOctreeNode* node, SpaceObject* spaceObjec
 void SpaceObjectChunk::generate()
 {
 	// TODO: generate voxel data
-	// TODO: generate 
+	// TODO: generate mesh
 }
 
 void SpaceObjectChunk::update()
