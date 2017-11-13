@@ -187,7 +187,7 @@ void HTML5UI::init()
 	host->WasResized();
 	
 	auto frame = browser->GetMainFrame();
-	frame->LoadURL("https://www.youtube.com/watch?v=-gaCJs51fuk&feature=youtu.be&t=1223");
+	frame->LoadURL("file:///D:/CoherentGT/Samples/UI/C++/Minimal_HelloGT/uiresources/minRes/MainUI.html");
 	
 }
 
