@@ -139,7 +139,7 @@ void Rendering::renderEntities()
 	m_gbuffer->bind();
 }
 
-void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix, int viewId)
+void Rendering::draw(Ptr<Mesh>& mesh, Ptr<Shader>& shader, Matrix* modelMatrix, int viewId)
 {
 	setWorldMatrice(*modelMatrix);
 
@@ -148,7 +148,7 @@ void Rendering::draw(Ptr<Mesh> mesh, Ptr<Shader> shader, Matrix* modelMatrix, in
 	bgfx::submit(viewId, shader->m_program);
 }
 
-void Rendering::draw(Ptr<Mesh> mesh, Matrix* modelMatrix)
+void Rendering::draw(Ptr<Mesh>& mesh, Matrix* modelMatrix)
 {
 	//m_gbufferShader->setTexture(0, ???);
 	draw(mesh, m_gbufferShader, modelMatrix, RENDERVIEW_GBUFFER);
