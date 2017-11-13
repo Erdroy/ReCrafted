@@ -239,7 +239,7 @@ void SpaceObjectOctreeNode::dispose()
 	{
 		// draw chunk if exists
 		if(m_chunk)
-			m_chunk->draw();
+			m_chunk->dispose();
 
 		return;
 	}
