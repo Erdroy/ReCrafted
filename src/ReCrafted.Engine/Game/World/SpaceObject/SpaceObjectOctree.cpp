@@ -5,7 +5,7 @@
 
 void SpaceObjectOctree::init(float objectRadius)
 {
-	auto size = static_cast<int>(objectRadius);
+	auto size = static_cast<int>(objectRadius) * 2;
 
 	// TODO: check if it is power of two
 

@@ -67,4 +67,14 @@ inline void LOG(const char* text)
 
 #define ALIGN(x) __declspec(align(x)) 
 
+#ifdef interface
+#	undef interface
+#endif
+
+#ifdef _WIN32
+#	define interface __interface
+#else
+#	define interface struct
+#endif
+
 #endif // DEFINES_H

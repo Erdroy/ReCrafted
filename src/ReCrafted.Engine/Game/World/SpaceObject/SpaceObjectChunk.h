@@ -13,11 +13,23 @@ class SpaceObjectOctreeNode;
 
 class SpaceObjectChunk
 {
+public:
+	static const int ChunkSize = 16; // 16 'cubes' on signle axis
+	static const int ChunkDataSize = ChunkSize + 1; // 17 corners on signle axis (cubes_count + 1)
+
 private:
 	SpaceObject* spaceObject = nullptr;
 	SpaceObjectOctreeNode* node = nullptr;
 
-	Vector3 m_objectNormal = {};
+	/**
+	 * \brief The normal from the SpaceObject center.
+	 */
+	Vector3 m_chunkNormal = {};
+
+	/**
+	 * \brief Stores voxel hermite data in -127 to 128 range. TODO: VoxelStorage, Cache
+	 */
+	sbyte* m_voxelData = nullptr;
 
 public:
 	void init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject);
