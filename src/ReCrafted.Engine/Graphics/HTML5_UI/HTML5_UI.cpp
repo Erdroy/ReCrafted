@@ -1,6 +1,10 @@
 // ReCrafted © 2016-2017 Always Too Late
 
 #include "HTML5_UI.h"
+
+#define HTML5_UI_ENABLED 0
+
+#if HTML5_UI_ENABLED
 #include "Core/Lock.h"
 #include "Common/Display.h"
 #include "Platform/Platform.h"
@@ -232,3 +236,4 @@ void HTML5UI::resized()
 	auto host = browser->GetHost();
 	host->WasResized();
 }
+#endif

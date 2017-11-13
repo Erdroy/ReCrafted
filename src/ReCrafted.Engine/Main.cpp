@@ -19,7 +19,7 @@ int CALLBACK WinMain(
 {
 	GameInfo::parseArguments(Text(GetCommandLineA()));
 
-	HTML5UI::initChildren();
+	//HTML5UI::initChildren();
 
 	// run the game
 	GameMain core = {};

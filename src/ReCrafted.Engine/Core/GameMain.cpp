@@ -253,7 +253,7 @@ void GameMain::run()
 
 		// frame
 		{
-			HTML5UI::update();
+			//HTML5UI::update();
 
 			onUpdate(); CHECK_SHUTDOWN
 			onSimulate(); CHECK_SHUTDOWN // TODO: fixed-time step `onSimulate` call
@@ -315,7 +315,7 @@ void GameMain::onLoad()
 	Logger::write("Renderer initialized", LogLevel::Info);
 
 	// initialize HTML5 UI
-	HTML5UI::init();
+	//HTML5UI::init();
 
 	// initialize rendering
 	m_rendering = new Rendering;
@@ -377,7 +377,7 @@ void GameMain::onUnload()
 	Bindings::shutdown();
 
 	// shutdown HTML5 UI
-	HTML5UI::shutdown();
+	//HTML5UI::shutdown();
 
 	// shutdown rendering
 	bgfx::shutdown();
@@ -395,7 +395,7 @@ void GameMain::onResize(uint width, uint height)
 	Display::set_Height(height);
 
 	// resize HTML5 UI
-	HTML5UI::resized();
+	//HTML5UI::resized();
 
 	// reset bgfx state, this should force renderer to resize all the viewports etc.
 	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
@@ -503,7 +503,7 @@ void GameMain::onDraw()
 	m_ui->endDraw(); // end draw UI
 	
 	// draw HTML5 UI
-	HTML5UI::draw();
+	//HTML5UI::draw();
 	
 	// next frame, wait vsync
 	bgfx::frame();
