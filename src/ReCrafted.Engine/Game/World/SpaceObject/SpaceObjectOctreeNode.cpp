@@ -222,6 +222,12 @@ void SpaceObjectOctreeNode::draw()
 	if (!m_populated)
 		return;
 
+	if(m_chunk)
+	{
+		m_chunk->draw();
+		return;
+	}
+
 	for (auto i = 0; i < 8; i++)
 	{
 		auto node = m_childrenNodes[i];
@@ -273,7 +279,7 @@ void SpaceObjectOctreeNode::onCreate()
 void SpaceObjectOctreeNode::onDestroy()
 {
 	// destroy chunk
-	m_chunk->dispose();
+	SafeDispose(m_chunk);
 }
 
 void SpaceObjectOctreeNode::onPopulate()

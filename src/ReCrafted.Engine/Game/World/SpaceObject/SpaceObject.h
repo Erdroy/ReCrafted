@@ -32,7 +32,6 @@ public:
 	static Ptr<SpaceObject> createSpaceObject();
 
 public:
-	PROPERTY(float, radius) = 128.0f;
 	PROPERTY(Vector3, position) = {};
 };
 

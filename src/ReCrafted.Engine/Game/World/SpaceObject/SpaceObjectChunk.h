@@ -8,6 +8,7 @@
 // includes
 #include "Core/Math/Vector3.h"
 
+class Mesh;
 class SpaceObject;
 class SpaceObjectOctreeNode;
 
@@ -30,6 +31,8 @@ private:
 	 * \brief Stores voxel hermite data in -127 to 128 range. TODO: VoxelStorage, Cache
 	 */
 	sbyte* m_voxelData = nullptr;
+
+	Ptr<Mesh> m_mesh = nullptr;
 
 public:
 	void init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject);

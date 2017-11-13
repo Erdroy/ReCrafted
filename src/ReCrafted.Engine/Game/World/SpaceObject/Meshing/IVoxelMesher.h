@@ -24,7 +24,8 @@ public:
 	 * \param data The hermite voxel data (in -127 to 128 range).
 	 * \param count The count of elements in single axis (default: 'ChunkDataSize').
 	 */
-	virtual void generate(Ptr<Mesh>& mesh, sbyte* data, uint16_t count = SpaceObjectChunk::ChunkDataSize) = 0;
+	virtual void generate(Vector3 position, Ptr<Mesh>& mesh, sbyte* data, uint16_t count = SpaceObjectChunk::ChunkDataSize) = 0;
+	// TODO: we will need some neighbor (data) info... Maybe use rows instead of whole data from VoxelStorage?
 };
 
 #endif // IMESHER_H

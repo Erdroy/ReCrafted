@@ -1,0 +1,10 @@
+// ReCrafted © 2016-2017 Always Too Late
+
+#pragma once
+
+#ifndef VOXELUTILS_H
+#define VOXELUTILS_H
+
+#define INDEX_3D(x, y, z, size) ((x) * (size) * (size) + (y) * (size) + (z))
+
+#endif // VOXELUTILS_H

@@ -9,7 +9,7 @@ void SpaceObject::init()
 	m_octree->spaceObject = this;
 
 	// build base node(s)
-	m_octree->init(m_radius);
+	m_octree->init(32.0f);
 
 }
 
