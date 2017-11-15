@@ -6,11 +6,15 @@
 #include "Graphics/Rendering.h"
 #include "Graphics/Camera.h"
 #include "Graphics/DebugDraw.h"
+#include "World/SpaceObject/SpaceObjectManager.h"
 
 Universe* Universe::m_instance;
 
 void Universe::init()
 {
+	// initialize space object manager
+	SpaceObjectManager::getInstance()->init();
+
 	m_testObject1 = SpaceObject::createSpaceObject();
 	m_testObject1->init(Vector3::zero(), 256.0f);
 
@@ -20,6 +24,8 @@ void Universe::init()
 
 void Universe::update()
 {
+	SpaceObjectManager::getInstance()->update();
+
 	auto cameraPosition = Camera::getMainCamera()->get_position();
 
 	m_testObject1->updateViewPoint(cameraPosition);
@@ -55,6 +61,9 @@ void Universe::dispose()
 {
 	m_testObject1->dispose();
 	//m_testObject2->dispose();
+
+	// shutdown
+	SafeDisposeNN(SpaceObjectManager::getInstance());
 
 	Logger::write("Universe unloaded", LogLevel::Info);
 	delete this;

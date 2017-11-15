@@ -14,6 +14,8 @@ class SpaceObjectOctreeNode;
 
 class SpaceObjectChunk
 {
+	friend class SpaceObjectManager;
+
 public:
 	static const int ChunkSize = 16; // 16 'cubes' on signle axis
 	static const int ChunkDataSize = ChunkSize + 1; // 17 corners on signle axis (cubes_count + 1)
