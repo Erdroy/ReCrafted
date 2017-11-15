@@ -2,15 +2,17 @@
 
 #include "SpaceObject.h"
 
-void SpaceObject::init()
+void SpaceObject::init(Vector3 position, float radius)
 {
 	// create octree instance
 	m_octree = std::make_shared<SpaceObjectOctree>();
 	m_octree->spaceObject = this;
+	m_octree->set_position(position);
+	
+	set_position(position);
 
 	// build base node(s)
-	m_octree->init(32.0f);
-
+	m_octree->init(radius);
 }
 
 void SpaceObject::update()

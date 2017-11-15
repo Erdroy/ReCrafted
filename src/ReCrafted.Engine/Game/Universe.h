@@ -20,7 +20,8 @@ private:
 	static Universe* m_instance;
 
 private:
-	Ptr<SpaceObject> m_testObject = nullptr;
+	Ptr<SpaceObject> m_testObject1 = nullptr;
+	Ptr<SpaceObject> m_testObject2 = nullptr;
 
 private:
 	void init();

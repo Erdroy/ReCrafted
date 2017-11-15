@@ -70,7 +70,7 @@ namespace ReCrafted.Game
         {
             var direction = Vector3.Zero;
 
-            var currentSpeed = 4.0f;
+            var currentSpeed = 20.0f;
 
             if (Input.IsKey(Keys.Shift))
                 currentSpeed *= 2.5f;

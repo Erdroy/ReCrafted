@@ -4,6 +4,7 @@
 #include "Core/Math/Color.h"
 #include "Graphics/DebugDraw.h"
 #include "SpaceObjectChunk.h"
+#include "Common/Input.h"
 
 Vector3 childrenNodeOffsets[8] = {
 	Vector3(-0.5f,  0.5f,  0.5f),
@@ -58,6 +59,8 @@ void SpaceObjectOctreeNode::populate()
 
 	// call event
 	onPopulate();
+
+	onDestroy();
 }
 
 void SpaceObjectOctreeNode::depopulate()
@@ -89,6 +92,8 @@ void SpaceObjectOctreeNode::depopulate()
 
 	// call event
 	onDepopulate();
+
+	onCreate();
 }
 
 void SpaceObjectOctreeNode::update()
@@ -112,12 +117,14 @@ void SpaceObjectOctreeNode::update()
 		m_chunk->update();
 
 	// draw if this is the last node
-	auto size = Vector3::one() * static_cast<float>(m_size);
-
-	DebugDraw::setColor(Color(255, 105, 0));
-	DebugDraw::drawWireCube(m_position, size);
-	DebugDraw::setColor(Color(0.6f, 0.35f, 0.0f, 0.2f));
-	DebugDraw::drawCube(m_position, size);
+	if (Input::isKey(Key_F1))
+	{
+		auto size = Vector3::one() * static_cast<float>(m_size);
+		DebugDraw::setColor(Color(255, 105, 0));
+		DebugDraw::drawWireCube(m_position, size);
+		DebugDraw::setColor(Color(0.6f, 0.35f, 0.0f, 0.2f));
+		DebugDraw::drawCube(m_position, size);
+	}
 }
 
 void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
@@ -219,14 +226,14 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 
 void SpaceObjectOctreeNode::draw()
 {
-	if (!m_populated)
-		return;
-
 	if(m_chunk)
 	{
 		m_chunk->draw();
 		return;
 	}
+
+	if (!m_populated)
+		return;
 
 	for (auto i = 0; i < 8; i++)
 	{

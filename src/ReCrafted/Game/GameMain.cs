@@ -34,7 +34,7 @@ namespace ReCrafted.Game
             Cursor.Lock = true;
 
             var camera = Entity.Create("MainCamera");
-            camera.Position = new Vector3(0.0f, 1.0f, -70.0f);
+            camera.Position = new Vector3(0.0f, 1.0f, -600.0f);
             FreeCameraController.Current = camera.AddScript<FreeCameraController>();
             
             // Load game info

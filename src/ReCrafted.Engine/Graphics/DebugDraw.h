@@ -38,7 +38,7 @@ private:
 
 		bool isFull() const
 		{
-			return m_indices.count() + 1 > 65535;
+			return m_indices.count() + 1 > 65530;
 		}
 	};
 

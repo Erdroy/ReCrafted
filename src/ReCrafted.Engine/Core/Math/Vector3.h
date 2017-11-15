@@ -47,6 +47,15 @@ public:
 		return sqrt(x*x + y*y + z*z);
 	}
 
+	/// <summary>
+	/// Calculate squared length of this vector.
+	/// </summary>
+	/// <returns>The length of this vector.</returns>
+	FORCEINLINE float lengthSqr() const
+	{
+		return x*x + y*y + z*z;
+	}
+
 public:
 	/// <summary>
 	/// Shorthand for [0, 0, 0]

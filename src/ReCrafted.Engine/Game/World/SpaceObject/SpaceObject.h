@@ -15,7 +15,7 @@ private:
 	Array<Vector3> m_views = {};
 	
 public:
-	void init();
+	void init(Vector3 position, float radius);
 	void update();
 	void draw();
 	void dispose();

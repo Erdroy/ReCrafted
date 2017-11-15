@@ -33,7 +33,7 @@ public:
 	* \param data The hermite voxel data (in -127 to 128 range).
 	* \param count The count of elements in single axis (default: 'ChunkDataSize').
 	*/
-	void generate(Vector3 position, Ptr<Mesh>& mesh, sbyte* data, uint16_t count = SpaceObjectChunk::ChunkDataSize) override;
+	void generate(Vector3 position, float sizeMod, Ptr<Mesh>& mesh, sbyte* data, uint16_t count = SpaceObjectChunk::ChunkDataSize) override;
 
 public:
 	static MCMesher* getInstance()

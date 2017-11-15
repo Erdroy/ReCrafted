@@ -23,7 +23,7 @@ Vector3 GetIntersection(Vector3& p1, Vector3& p2, float d1, float d2)
 	return p1 + -d1 * (p2 - p1) / (d2 - d1);
 }
 
-void MCMesher::generate(Vector3 position, Ptr<Mesh>& mesh, sbyte* data, uint16_t count)
+void MCMesher::generate(Vector3 position, float sizeMod, Ptr<Mesh>& mesh, sbyte* data, uint16_t count)
 {
 	auto vertexIndex = 0u;
 	for (auto y = 0; y < count - 1; y++)
@@ -59,7 +59,7 @@ void MCMesher::generate(Vector3 position, Ptr<Mesh>& mesh, sbyte* data, uint16_t
 					auto sampleA = data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), count)] / 127.0f;
 					auto sampleB = data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), count)] / 127.0f;
 
-					auto vertexPosition = position + GetIntersection(offsetA, offsetB, sampleA, sampleB);
+					auto vertexPosition = position + GetIntersection(offsetA, offsetB, sampleA, sampleB) * sizeMod;
 
 					m_vertices.add(vertexPosition);
 					m_indices.add(vertexIndex);

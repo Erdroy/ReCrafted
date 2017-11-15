@@ -20,4 +20,9 @@
 #include "Core/Types.h"
 #include "Common/ReCraftedAPI.h"
 
+#ifdef var
+#	undef var
+#endif
+#define var auto
+
 #endif // RECRAFTED_H
