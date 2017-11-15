@@ -59,8 +59,8 @@ void Universe::draw()
 
 void Universe::dispose()
 {
-	m_testObject1->dispose();
-	//m_testObject2->dispose();
+	SafeDispose(m_testObject1);
+	SafeDispose(m_testObject2);
 
 	// shutdown
 	SafeDisposeNN(SpaceObjectManager::getInstance());

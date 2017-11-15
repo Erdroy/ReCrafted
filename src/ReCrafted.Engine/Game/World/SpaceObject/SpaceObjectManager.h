@@ -4,17 +4,27 @@
 
 #ifndef SPACEOBJECTMANAGER_H
 #define SPACEOBJECTMANAGER_H
+
+// includes
 #include "Core/Singleton.h"
+#include "Core/Containers/Array.h"
+#include <thread>
 
 class SpaceObjectChunk;
 
 class SpaceObjectManager : public Singleton<SpaceObjectManager>
 {
+private:
+	Array<std::thread*> m_workerThreads = {};
+	volatile bool m_running = false;
+
 public:
 	virtual ~SpaceObjectManager() { }
 
 private:
 	void onDispose() override;
+
+	void worker_function();
 
 public:
 	/**

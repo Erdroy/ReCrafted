@@ -20,8 +20,9 @@ private:
 	virtual void onDispose() = 0;
 
 public:
-	void dispose() const
+	void dispose()
 	{
+		onDispose();
 		SafeDelete(m_instance);
 	}
 
