@@ -54,9 +54,6 @@ private:
 	static void* m_gameWindow;
 
 	// timer
-	static LARGE_INTEGER m_frequency;
-	static double m_start;
-	static double m_freqCoeff;
 	static unsigned char m_theadCount;
 	static int m_cpuCount;
 

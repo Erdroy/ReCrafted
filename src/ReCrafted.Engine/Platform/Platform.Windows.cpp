@@ -9,10 +9,11 @@
 
 #pragma comment(lib, "Rpcrt4.lib")
 
+static LARGE_INTEGER m_frequency;
+static double m_start;
+static double m_freqCoeff;
+
 void* Platform::m_gameWindow;
-LARGE_INTEGER Platform::m_frequency;
-double Platform::m_start;
-double Platform::m_freqCoeff;
 unsigned char Platform::m_theadCount;
 int Platform::m_cpuCount;
 
