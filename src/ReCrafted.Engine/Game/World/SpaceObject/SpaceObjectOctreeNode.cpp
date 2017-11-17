@@ -220,7 +220,7 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 	}
 
 	// IF (there is no C's) AND populated: depopulate - otherwise: ignore.
-	if (m_populated)
+	if (m_populated && views.count() > 0)
 		depopulate();
 }
 
