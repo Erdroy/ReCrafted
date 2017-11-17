@@ -3,6 +3,7 @@
 #include "MCMesher.h"
 #include "Graphics/Mesh.h"
 #include "MCTables.h"
+#include "Transvoxel.h"
 #include "Game/World/Voxels/VoxelUtils.h"
 #include "Core/Math/Plane.h"
 
@@ -25,8 +26,10 @@ Vector3 GetIntersection(Vector3& p1, Vector3& p2, float d1, float d2)
 
 void MCMesher::generate(Vector3 position, float sizeMod, Ptr<Mesh>& mesh, sbyte* data, uint16_t count)
 {
+	sbyte corner[8];
+
 	auto vertexIndex = 0u;
-	for (auto y = 0; y < count - 1; y++)
+	for (auto y = 0; y < count - 1; y++) // NOTE: xy|z for vertex sharing
 	{
 		for (auto x = 0; x < count - 1; x++)
 		{
@@ -34,26 +37,40 @@ void MCMesher::generate(Vector3 position, float sizeMod, Ptr<Mesh>& mesh, sbyte*
 			{
 				auto pos = Vector3(float(x), float(y), float(z));
 
-				byte corners = 0;
-				for (auto i = 0; i < 8; i++)
+				for (auto i = 0; i < 8; i++) // OPTIMIZATION: Unroll
 				{
-					if (data[INDEX_3D(x + CornerDeltasInt[i][0], y + CornerDeltasInt[i][1], z + CornerDeltasInt[i][2], count)] < 0)
-						corners |= (1 << i);
+					corner[i] = data[INDEX_3D(x + CornerDeltasInt[i][0], y + CornerDeltasInt[i][1], z + CornerDeltasInt[i][2], count)];
 				}
+				
+				unsigned long caseCode = ((corner[0] >> 7) & 0x01)
+					| ((corner[1] >> 6) & 0x02)
+					| ((corner[2] >> 5) & 0x04)
+					| ((corner[3] >> 4) & 0x08)
+					| ((corner[4] >> 3) & 0x10)
+					| ((corner[5] >> 2) & 0x20)
+					| ((corner[6] >> 1) & 0x40)
+					| (corner[7] & 0x80);
 
-				if (corners == 0 || corners == 255)
+				if ((caseCode ^ ((corner[7] >> 7) & 0xFF)) == 0)
 					continue;
+
+				auto vertexData = regularVertexData[caseCode];
+
 
 				auto edgeCase = 0;
 
 				for (auto i = 0; i < 15; i++)
 				{
-					auto edge = EdgesTable[corners][edgeCase];
+					auto edge = &regularCellData[edgeCase];
 
-					if (edge == -1)
+					if (edge->GetVertexCount() == 0)
 						break;
+					
+					auto edgeInfo = vertexData[];
 
-					auto offsetA = pos + EdgeVertexOffsets[edge][0];
+					// TODO: get low byte and the vertex offset index
+
+					/*auto offsetA = pos + EdgeVertexOffsets[edge][0];
 					auto offsetB = pos + EdgeVertexOffsets[edge][1];
 
 					auto sampleA = data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), count)] / 127.0f;
@@ -64,7 +81,7 @@ void MCMesher::generate(Vector3 position, float sizeMod, Ptr<Mesh>& mesh, sbyte*
 					m_vertices.add(vertexPosition);
 					m_indices.add(vertexIndex);
 
-					vertexIndex++;
+					vertexIndex++;*/
 					edgeCase++;
 				}
 			}
