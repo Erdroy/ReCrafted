@@ -31,9 +31,8 @@ public:
 	* \brief Virtual method for generating a mesh from hermite voxel data.
 	* \param mesh The mesh that will get the new mesh data.
 	* \param data The hermite voxel data (in -127 to 128 range).
-	* \param count The count of elements in single axis (default: 'ChunkDataSize').
 	*/
-	void generate(Vector3 position, float sizeMod, Ptr<Mesh>& mesh, sbyte* data, uint16_t count = SpaceObjectChunk::ChunkSize) override;
+	void generate(Vector3 position, int lod, Ptr<Mesh>& mesh, sbyte* data) override;
 
 public:
 	static MCMesher* getInstance()

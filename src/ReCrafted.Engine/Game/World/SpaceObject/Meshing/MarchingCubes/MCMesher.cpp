@@ -2,7 +2,7 @@
 
 #include "MCMesher.h"
 #include "Graphics/Mesh.h"
-#include "Transvoxel.h"
+#include "Transvoxel.hpp"
 #include "Game/World/Voxels/VoxelUtils.h"
 #include "Core/Math/Plane.h"
 
@@ -65,19 +65,17 @@ byte getCaseCode(sbyte* density, int densityLength)
 	return code;
 }
 
-void MCMesher::generate(Vector3 position, float sizeMod, Ptr<Mesh>& mesh, sbyte* data, uint16_t count)
+void MCMesher::generate(Vector3 position, int lod, Ptr<Mesh>& mesh, sbyte* data)
 {
-	var lod = static_cast<int>(sizeMod);
-
 	sbyte corner[8];
 	uint indices[15];
 	Vector3 cornerNormals[8];
 
-	for (auto x = 0; x < count; x++)
+	for (auto x = 0; x < SpaceObjectChunk::ChunkSize; x++)
 	{
-		for (auto y = 0; y < count; y++)
+		for (auto y = 0; y < SpaceObjectChunk::ChunkSize; y++)
 		{
-			for (auto z = 0; z < count; z++)
+			for (auto z = 0; z < SpaceObjectChunk::ChunkSize; z++)
 			{
 				var pos = Vector3(float(x), float(y), float(z));
 
@@ -94,14 +92,13 @@ void MCMesher::generate(Vector3 position, float sizeMod, Ptr<Mesh>& mesh, sbyte*
 				for (var i = 0; i < 8; i++)
 				{
 					var p = pos + CornerIndex[i];
-					var nx = (GetVoxel(data, p + Vector3(1.0f, 0.0f, 0.0f)) - GetVoxel(data, p - Vector3(1.0f, 0.0f, 0.0f))) * 0.5f;
-					var ny = (GetVoxel(data, p + Vector3(0.0f, 1.0f, 0.0f)) - GetVoxel(data, p - Vector3(0.0f, 1.0f, 0.0f))) * 0.5f;
-					var nz = (GetVoxel(data, p + Vector3(0.0f, 0.0f, 1.0f)) - GetVoxel(data, p - Vector3(0.0f, 0.0f, 1.0f))) * 0.5f;
 
-					cornerNormals[i].x = nx;
-					cornerNormals[i].y = ny;
-					cornerNormals[i].z = nz;
+					cornerNormals[i].x = (GetVoxel(data, p + Vector3(1.0f, 0.0f, 0.0f)) - GetVoxel(data, p - Vector3(1.0f, 0.0f, 0.0f))) * 0.5f;
+					cornerNormals[i].y = (GetVoxel(data, p + Vector3(0.0f, 1.0f, 0.0f)) - GetVoxel(data, p - Vector3(0.0f, 1.0f, 0.0f))) * 0.5f;
+					cornerNormals[i].z = (GetVoxel(data, p + Vector3(0.0f, 0.0f, 1.0f)) - GetVoxel(data, p - Vector3(0.0f, 0.0f, 1.0f))) * 0.5f;
 					cornerNormals[i].normalize();
+
+					cornerNormals[i] *= -1.0f;
 				}
 
 				var vertexData = regularVertexData[caseCode];

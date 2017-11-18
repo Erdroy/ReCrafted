@@ -16,7 +16,7 @@ void Universe::init()
 	SpaceObjectManager::getInstance()->init();
 
 	m_testObject1 = SpaceObject::createSpaceObject();
-	m_testObject1->init(Vector3::zero(), 256.0f);
+	m_testObject1->init(Vector3::zero(), 1024.0f);
 
 	//m_testObject2 = SpaceObject::createSpaceObject();
 	//m_testObject2->init(Vector3::one() * 300.0f, 128.0f);
