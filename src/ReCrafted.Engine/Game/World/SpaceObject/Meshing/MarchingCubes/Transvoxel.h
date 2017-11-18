@@ -41,6 +41,30 @@
 // used for a single equivalence class in the modified Marching Cubes algorithm,
 // described in Section 3.2.
 
+int CornerIndexInt[8][3] =
+{
+	{0, 0, 0},
+	{1, 0, 0},
+	{0, 0, 1},
+	{1, 0, 1},
+	{0, 1, 0},
+	{1, 1, 0},
+	{0, 1, 1},
+	{1, 1, 1}
+};
+
+Vector3 CornerIndex[8] =
+{
+	Vector3(0, 0, 0),
+	Vector3(1, 0, 0),
+	Vector3(0, 0, 1),
+	Vector3(1, 0, 1),
+	Vector3(0, 1, 0),
+	Vector3(1, 1, 0),
+	Vector3(0, 1, 1),
+	Vector3(1, 1, 1)
+};
+
 struct RegularCellData
 {
 	unsigned char	geometryCounts;		// High nibble is vertex count, low nibble is triangle count.
