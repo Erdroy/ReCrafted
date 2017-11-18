@@ -122,7 +122,7 @@ void SpaceObjectOctreeNode::update()
 		auto size = Vector3::one() * static_cast<float>(m_size);
 		DebugDraw::setColor(Color(255, 105, 0));
 		DebugDraw::drawWireCube(m_position, size);
-		DebugDraw::setColor(Color(0.6f, 0.35f, 0.0f, 0.2f));
+		DebugDraw::setColor(Color(0.6f, 0.35f, 0.0f, 0.05f));
 		DebugDraw::drawCube(m_position, size);
 	}
 }

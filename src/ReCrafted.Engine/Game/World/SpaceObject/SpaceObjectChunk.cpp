@@ -59,7 +59,7 @@ void SpaceObjectChunk::generate()
 			for (auto z = 0; z < ChunkDataSize; z++)
 			{
 				var index = INDEX_3D(x, y, z, ChunkDataSize);
-				var position = nodePosition + Vector3(x, y, z) * sizeMod;
+				var position = nodePosition + (Vector3(x, y, z) - Vector3::one()) * sizeMod;
 
 				var value = Planet(objectPosition, position, objectRadius);
 				var byteValue = static_cast<sbyte>(Math::clamp(value * 127.0f, -127.0f, 127.0f));

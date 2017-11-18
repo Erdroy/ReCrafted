@@ -117,7 +117,7 @@ void Rendering::endRender()
 
 	bgfx::setTexture(0, m_texture0, m_gbuffer->getTarget(0), textureFlags);
 	bgfx::setTexture(1, m_texture1, m_gbuffer->getTarget(1), textureFlags);
-
+	
 	// draw into backbuffer
 	bgfx::setVertexBuffer(0, m_blitMesh->m_vertexBuffer);
 	bgfx::setIndexBuffer(m_blitMesh->m_indexBuffer);

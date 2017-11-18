@@ -86,6 +86,12 @@ public:
         m_count--;
     }
 
+	FORCEINLINE void reserve(uint32_t size)
+    {
+		m_vector.reserve(size);
+		m_count = size;
+    }
+
     FORCEINLINE bool contains(T item)
     {
         if (std::find(m_vector.begin(), m_vector.end(), item) != m_vector.end()) {
@@ -187,13 +193,13 @@ public:
 
     FORCEINLINE T& operator[](int index)
     {
-        _ASSERT(index >= 0 && index < static_cast<int>(m_count));
+        //_ASSERT(index >= 0 && index < static_cast<int>(m_count));
         return m_vector[index];
     }
 
     FORCEINLINE const T& operator[](int index) const
     {
-        _ASSERT(index >= 0 && index < static_cast<int>(m_count));
+        //_ASSERT(index >= 0 && index < static_cast<int>(m_count));
         return m_vector[index];
     }
 };

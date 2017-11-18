@@ -25,28 +25,31 @@ Vector3 GetIntersection(Vector3& p1, Vector3& p2, float d1, float d2)
 
 Vector3 InterpolateVoxelVector(long t, Vector3 P0, Vector3 P1)
 {
-	long u = 0x0100 - t; //256 - t
-	float s = 1.0f / 256.0f;
-	Vector3 Q = P0 * t + P1 * u; //Density Interpolation
-	Q *= s; // shift to shader ! 
+	const var s = 1.0f / 256.0f;
+
+	var u = 0x0100 - t;
+	var Q = P0 * t + P1 * u;
+	Q *= s;
 	return Q;
 }
 
 Vector3 GenerateVertex(Vector3 offsetPos, Vector3 pos, int lod, long t, byte& v0, byte& v1, sbyte& d0, sbyte& d1)
 {
-	var iP0 = (offsetPos + CornerIndex[v0]) * lod;
-	Vector3 P0;
-	P0.x = iP0.x;
-	P0.y = iP0.y;
-	P0.z = iP0.z;
+	return pos + InterpolateVoxelVector(t, (offsetPos + CornerIndex[v0]) * lod, (offsetPos + CornerIndex[v1]) * lod);
+}
 
-	var iP1 = (offsetPos + CornerIndex[v1]) * lod;
-	Vector3 P1;
-	P1.x = iP1.x;
-	P1.y = iP1.y;
-	P1.z = iP1.z;
+sbyte GetVoxel(sbyte* data, int x, int y, int z)
+{
+	return data[INDEX_3D(1 + x, 1 + y, 1 + z, SpaceObjectChunk::ChunkDataSize)];
+}
 
-	return pos + InterpolateVoxelVector(t, P0, P1);
+sbyte GetVoxel(sbyte* data, Vector3 pos)
+{
+	var x = static_cast<int>(pos.x);
+	var y = static_cast<int>(pos.y);
+	var z = static_cast<int>(pos.z);
+
+	return GetVoxel(data, x, y, z);
 }
 
 byte getCaseCode(sbyte* density, int densityLength)
@@ -67,20 +70,20 @@ void MCMesher::generate(Vector3 position, float sizeMod, Ptr<Mesh>& mesh, sbyte*
 	var lod = static_cast<int>(sizeMod);
 
 	sbyte corner[8];
-	Vector3 cornerNormals[8];
 	uint indices[15];
+	Vector3 cornerNormals[8];
 
-	for (auto y = 0; y < count - 1; y++) // NOTE: xy|z for vertex sharing
+	for (auto x = 0; x < count; x++)
 	{
-		for (auto x = 0; x < count - 1; x++)
+		for (auto y = 0; y < count; y++)
 		{
-			for (auto z = 0; z < count - 1; z++)
+			for (auto z = 0; z < count; z++)
 			{
 				var pos = Vector3(float(x), float(y), float(z));
 
 				for (auto i = 0; i < 8; i++) // OPTIMIZATION: Unroll
 				{
-					corner[i] = data[INDEX_3D(x + CornerIndexInt[i][0], y + CornerIndexInt[i][1], z + CornerIndexInt[i][2], count)];
+					corner[i] = GetVoxel(data, x + CornerIndexInt[i][0], y + CornerIndexInt[i][1], z + CornerIndexInt[i][2]);
 				}
 				
 				unsigned long caseCode = getCaseCode(corner, 8);
@@ -90,9 +93,10 @@ void MCMesher::generate(Vector3 position, float sizeMod, Ptr<Mesh>& mesh, sbyte*
 
 				for (var i = 0; i < 8; i++)
 				{
-					var nx = (data[INDEX_3D(x + 1, y, z, count)] - data[INDEX_3D(x + 1, y, z, count)]) * 0.5f;
-					var ny = (data[INDEX_3D(x, y + 1, z, count)] - data[INDEX_3D(x, y - 1, z, count)]) * 0.5f;
-					var nz = (data[INDEX_3D(x, y, z + 1, count)] - data[INDEX_3D(x, y, z - 1, count)]) * 0.5f;
+					var p = pos + CornerIndex[i];
+					var nx = (GetVoxel(data, p + Vector3(1.0f, 0.0f, 0.0f)) - GetVoxel(data, p - Vector3(1.0f, 0.0f, 0.0f))) * 0.5f;
+					var ny = (GetVoxel(data, p + Vector3(0.0f, 1.0f, 0.0f)) - GetVoxel(data, p - Vector3(0.0f, 1.0f, 0.0f))) * 0.5f;
+					var nz = (GetVoxel(data, p + Vector3(0.0f, 0.0f, 1.0f)) - GetVoxel(data, p - Vector3(0.0f, 0.0f, 1.0f))) * 0.5f;
 
 					cornerNormals[i].x = nx;
 					cornerNormals[i].y = ny;
@@ -110,7 +114,7 @@ void MCMesher::generate(Vector3 position, float sizeMod, Ptr<Mesh>& mesh, sbyte*
 
 				for(var i = 0; i < vertexCount; i ++)
 				{
-					var edge = static_cast<byte>(vertexData[i] >> 8);
+					//var edge = static_cast<byte>(vertexData[i] >> 8);
 					//var reuseIndex = static_cast<byte>(edge & 0xF);
 					//var rDir = static_cast<byte>(edge >> 4);
 
@@ -131,16 +135,14 @@ void MCMesher::generate(Vector3 position, float sizeMod, Ptr<Mesh>& mesh, sbyte*
 
 					if (index == -1)
 					{
-						var normal = cornerNormals[v0] * t0 + cornerNormals[v1] * t1;
 						var vertexPosition = GenerateVertex(pos, position, lod, t, v0, v1, d0, d1);
 
 						m_vertices.add(vertexPosition);
-						m_normals.add(normal);
+						m_normals.add(cornerNormals[v0] * t0 + cornerNormals[v1] * t1);
 						m_uvs.add(Vector2::zero());
 						m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
 
-						index = m_vertices.count()-1;
-
+						index = m_vertices.count() - 1;
 					}
 
 					indices[i] = static_cast<uint>(index);
@@ -148,10 +150,9 @@ void MCMesher::generate(Vector3 position, float sizeMod, Ptr<Mesh>& mesh, sbyte*
 
 				for (var t = 0; t < triangleCount; t++)
 				{
-					for (var i = 0; i < 3; i++)
-					{
-						m_indices.add(indices[cell->vertexIndex[t * 3 + i]]);
-					}
+					m_indices.add(indices[cell->vertexIndex[t * 3 + 0]]);
+					m_indices.add(indices[cell->vertexIndex[t * 3 + 1]]);
+					m_indices.add(indices[cell->vertexIndex[t * 3 + 2]]);
 				}
 			}
 		}
