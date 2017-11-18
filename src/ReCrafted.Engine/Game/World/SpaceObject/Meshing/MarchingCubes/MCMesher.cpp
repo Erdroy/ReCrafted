@@ -1,10 +1,10 @@
 // ReCrafted © 2016-2017 Always Too Late
 
 #include "MCMesher.h"
+#include "Core/Math/Plane.h"
+#include "Game/World/Voxels/VoxelUtils.h"
 #include "Graphics/Mesh.h"
 #include "Transvoxel.hpp"
-#include "Game/World/Voxels/VoxelUtils.h"
-#include "Core/Math/Plane.h"
 
 MCMesher* MCMesher::m_instance;
 
@@ -23,7 +23,7 @@ Vector3 GetIntersection(Vector3& p1, Vector3& p2, float d1, float d2)
 	return p1 + -d1 * (p2 - p1) / (d2 - d1);
 }
 
-Vector3 InterpolateVoxelVector(long t, Vector3 P0, Vector3 P1)
+Vector3 InterpolateVoxelVector(float t, Vector3 P0, Vector3 P1)
 {
 	const var s = 1.0f / 256.0f;
 
@@ -33,7 +33,7 @@ Vector3 InterpolateVoxelVector(long t, Vector3 P0, Vector3 P1)
 	return Q;
 }
 
-Vector3 GenerateVertex(Vector3 offsetPos, Vector3 pos, int lod, long t, byte& v0, byte& v1, sbyte& d0, sbyte& d1)
+Vector3 GenerateVertex(Vector3 offsetPos, Vector3 pos, float lod, float t, byte& v0, byte& v1, sbyte& d0, sbyte& d1)
 {
 	return pos + InterpolateVoxelVector(t, (offsetPos + CornerIndex[v0]) * lod, (offsetPos + CornerIndex[v1]) * lod);
 }
@@ -121,7 +121,7 @@ void MCMesher::generate(Vector3 position, int lod, Ptr<Mesh>& mesh, sbyte* data)
 					var d0 = corner[v0];
 					var d1 = corner[v1];
 
-					var t = (d1 << 8) / (d1 - d0);
+					var t = static_cast<float>((d1 << 8) / (d1 - d0));
 					var u = 0x0100 - t;
 					var t0 = t / 256.0f;
 					var t1 = u / 256.0f;
@@ -132,7 +132,7 @@ void MCMesher::generate(Vector3 position, int lod, Ptr<Mesh>& mesh, sbyte* data)
 
 					if (index == -1)
 					{
-						var vertexPosition = GenerateVertex(pos, position, lod, t, v0, v1, d0, d1);
+						var vertexPosition = GenerateVertex(pos, position, static_cast<float>(lod), t, v0, v1, d0, d1);
 
 						m_vertices.add(vertexPosition);
 						m_normals.add(cornerNormals[v0] * t0 + cornerNormals[v1] * t1);
