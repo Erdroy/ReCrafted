@@ -123,43 +123,15 @@ void MCMesher::polygonizeRegularCell(Vector3 worldPosition, Vector3 offsetPositi
 		var t0 = t / 256.0f;
 		var t1 = u / 256.0f;
 
-		var index = -1;
+		// no cached vertex found, generate new one
+		var vertexPosition = GenerateVertex(offsetPosition, worldPosition, static_cast<float>(lod), t, v0, v1, d0, d1);
 
-		// TODO: Vertex cache (vertex re-use) - some day...
-		/*var edge = static_cast<byte>(vertexData[i] >> 8);
-		var reuseIndex = static_cast<byte>(edge & 0xF);
-		var dir = static_cast<byte>(edge >> 4);
-		var present = (dir & directionMask) == dir;
+		m_vertices.add(vertexPosition);
+		m_normals.add(cornerNormals[v0] * t0 + cornerNormals[v1] * t1);
+		m_uvs.add(Vector2::zero());
+		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
 
-		if(v1 != 7 && present)
-		{
-			_ASSERT(reuseIndex != 0);
-
-			// reuse already generated vertex
-			var cell1 = cache->get(offsetPosition - prevOffset(dir));
-			index = cell1.verts[reuseIndex];
-		}*/
-		
-		if (index == -1)
-		{
-			// no cached vertex found, generate new one
-			var vertexPosition = GenerateVertex(offsetPosition, worldPosition, static_cast<float>(lod), t, v0, v1, d0, d1);
-
-			m_vertices.add(vertexPosition);
-			m_normals.add(cornerNormals[v0] * t0 + cornerNormals[v1] * t1);
-			m_uvs.add(Vector2::zero());
-			m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
-
-			index = m_vertices.count() - 1;
-		}
-		
-		/*if ((dir & 8) != 0)
-		{
-			// set vertex index in cache
-			cache->get(offsetPosition).verts[reuseIndex] = index;
-		}*/
-
-		indices[i] = static_cast<uint>(index);
+		indices[i] = static_cast<uint>(m_vertices.count() - 1);
 	}
 
 	for (var t = 0; t < triangleCount; t++)
@@ -168,6 +140,11 @@ void MCMesher::polygonizeRegularCell(Vector3 worldPosition, Vector3 offsetPositi
 		m_indices.add(indices[cell->vertexIndex[t * 3 + 1]]);
 		m_indices.add(indices[cell->vertexIndex[t * 3 + 2]]);
 	}
+}
+
+void MCMesher::polygonizeTransitionCell(Vector3 worldPosition, Vector3 offsetPosition, sbyte* data, float lod, TransitionCellCache* cache)
+{
+	// TODO: transition cell implementation
 }
 
 void MCMesher::generate(Vector3 position, int lod, Ptr<Mesh>& mesh, sbyte* data)
@@ -186,6 +163,8 @@ void MCMesher::generate(Vector3 position, int lod, Ptr<Mesh>& mesh, sbyte* data)
 				var pos = Vector3(float(x), float(y), float(z));
 
 				polygonizeRegularCell(position, pos, data, lod_f, regularCache);
+
+				// how the fuck I can apply transition cell here? Check neigh, or what? TODO: transition cell placement
 			}
 		}
 	}
