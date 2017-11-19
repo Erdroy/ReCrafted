@@ -2,13 +2,15 @@
 
 #include "Universe.h"
 #include "Common/Time.h"
+#include "Common/Input.h"
 #include "Core/Logger.h"
-#include "Graphics/Rendering.h"
 #include "Graphics/Camera.h"
 #include "Graphics/DebugDraw.h"
 #include "World/SpaceObject/SpaceObjectManager.h"
 
 Universe* Universe::m_instance;
+
+bool m_viewUpdateEnabled = true;
 
 void Universe::init()
 {
@@ -26,13 +28,21 @@ void Universe::update()
 {
 	SpaceObjectManager::getInstance()->update();
 
-	auto cameraPosition = Camera::getMainCamera()->get_position();
+	if(Input::isKeyDown(Key_F7))
+	{
+		m_viewUpdateEnabled = !m_viewUpdateEnabled;
+	}
 
-	m_testObject1->updateViewPoint(cameraPosition);
-	m_testObject1->update();
+	if (m_viewUpdateEnabled) 
+	{
+		auto cameraPosition = Camera::getMainCamera()->get_position();
 
-	//m_testObject2->updateViewPoint(cameraPosition);
-	//m_testObject2->update();
+		m_testObject1->updateViewPoint(cameraPosition);
+		m_testObject1->update();
+
+		//m_testObject2->updateViewPoint(cameraPosition);
+		//m_testObject2->update();
+	}
 }
 
 void Universe::simulate()
@@ -53,7 +63,9 @@ void Universe::draw()
 	bgfx::dbgTextPrintf(1, 1, 0x4, "Delta time: %.5f", Time::deltaTime());
 	bgfx::dbgTextPrintf(1, 2, 0x4, "Camera position: { X: %.1f, Y: %.1f, Z: %.1f }", cameraPosition.x, cameraPosition.y, cameraPosition.z);
 
-	m_testObject1->draw();
+	bgfx::dbgTextPrintf(1, 3, 0x4, "LoD Update %s", m_viewUpdateEnabled ? "enabled" : "disabled");
+
+	m_testObject1->draw(); 
 	//m_testObject2->draw();
 }
 
