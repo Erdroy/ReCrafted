@@ -5,6 +5,7 @@
 #include "Game/World/Voxels/VoxelUtils.h"
 #include "Graphics/Mesh.h"
 #include "Transvoxel.hpp"
+#include "VertexCache.h"
 
 MCMesher* MCMesher::m_instance;
 
@@ -52,6 +53,13 @@ sbyte GetVoxel(sbyte* data, Vector3 pos)
 	return GetVoxel(data, x, y, z);
 }
 
+inline Vector3 prevOffset(uint8_t dir)
+{
+	return Vector3(-(dir & 1),
+		-((dir >> 1) & 1),
+		-((dir >> 2) & 1));
+}
+
 byte getCaseCode(sbyte* density, int densityLength)
 {
 	byte code = 0;
@@ -65,11 +73,109 @@ byte getCaseCode(sbyte* density, int densityLength)
 	return code;
 }
 
-void MCMesher::generate(Vector3 position, int lod, Ptr<Mesh>& mesh, sbyte* data)
+void MCMesher::polygonizeRegularCell(Vector3 worldPosition, Vector3 offsetPosition, sbyte* data, float lod, RegularCellCache* cache)
 {
+	var directionMask = static_cast<byte>((offsetPosition.x > 0 ? 1 : 0) | ((offsetPosition.z > 0 ? 1 : 0) << 1) | ((offsetPosition.y > 0 ? 1 : 0) << 2));
+
 	sbyte corner[8];
 	uint indices[15];
 	Vector3 cornerNormals[8];
+
+	for (auto i = 0; i < 8; i++) // OPTIMIZATION: Unroll
+	{
+		corner[i] = GetVoxel(data, offsetPosition + Vector3(CornerIndexInt[i][0], CornerIndexInt[i][1], CornerIndexInt[i][2]));
+	}
+
+	unsigned long caseCode = getCaseCode(corner, 8);
+
+	if ((caseCode ^ ((corner[7] >> 7) & 0xFF)) == 0)
+		return;
+
+	for (var i = 0; i < 8; i++)
+	{
+		var p = offsetPosition + CornerIndex[i];
+
+		cornerNormals[i].x = (GetVoxel(data, p + Vector3(1.0f, 0.0f, 0.0f)) - GetVoxel(data, p - Vector3(1.0f, 0.0f, 0.0f))) * 0.5f;
+		cornerNormals[i].y = (GetVoxel(data, p + Vector3(0.0f, 1.0f, 0.0f)) - GetVoxel(data, p - Vector3(0.0f, 1.0f, 0.0f))) * 0.5f;
+		cornerNormals[i].z = (GetVoxel(data, p + Vector3(0.0f, 0.0f, 1.0f)) - GetVoxel(data, p - Vector3(0.0f, 0.0f, 1.0f))) * 0.5f;
+		cornerNormals[i].normalize();
+
+		cornerNormals[i] *= -1.0f;
+	}
+
+	var vertexData = regularVertexData[caseCode];
+	var cellClass = regularCellClass[caseCode];
+	var cell = &regularCellData[cellClass];
+
+	var vertexCount = cell->GetVertexCount();
+	var triangleCount = cell->GetTriangleCount();
+
+	for (var i = 0; i < vertexCount; i++)
+	{
+		var v1 = static_cast<byte>(vertexData[i] & 0x0F);
+		var v0 = static_cast<byte>(vertexData[i] >> 4 & 0x0F);
+
+		var d0 = corner[v0];
+		var d1 = corner[v1];
+
+		var t = static_cast<float>((d1 << 8) / (d1 - d0));
+		var u = 0x0100 - t;
+		var t0 = t / 256.0f;
+		var t1 = u / 256.0f;
+
+		var index = -1;
+
+		// TODO: Vertex cache (vertex re-use) - some day...
+		/*var edge = static_cast<byte>(vertexData[i] >> 8);
+		var reuseIndex = static_cast<byte>(edge & 0xF);
+		var dir = static_cast<byte>(edge >> 4);
+		var present = (dir & directionMask) == dir;
+
+		if(v1 != 7 && present)
+		{
+			_ASSERT(reuseIndex != 0);
+
+			// reuse already generated vertex
+			var cell1 = cache->get(offsetPosition - prevOffset(dir));
+			index = cell1.verts[reuseIndex];
+		}*/
+		
+		if (index == -1)
+		{
+			// no cached vertex found, generate new one
+			var vertexPosition = GenerateVertex(offsetPosition, worldPosition, static_cast<float>(lod), t, v0, v1, d0, d1);
+
+			m_vertices.add(vertexPosition);
+			m_normals.add(cornerNormals[v0] * t0 + cornerNormals[v1] * t1);
+			m_uvs.add(Vector2::zero());
+			m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
+
+			index = m_vertices.count() - 1;
+		}
+		
+		/*if ((dir & 8) != 0)
+		{
+			// set vertex index in cache
+			cache->get(offsetPosition).verts[reuseIndex] = index;
+		}*/
+
+		indices[i] = static_cast<uint>(index);
+	}
+
+	for (var t = 0; t < triangleCount; t++)
+	{
+		m_indices.add(indices[cell->vertexIndex[t * 3 + 0]]);
+		m_indices.add(indices[cell->vertexIndex[t * 3 + 1]]);
+		m_indices.add(indices[cell->vertexIndex[t * 3 + 2]]);
+	}
+}
+
+void MCMesher::generate(Vector3 position, int lod, Ptr<Mesh>& mesh, sbyte* data)
+{
+	var lod_f = static_cast<float>(lod);
+
+	var regularCache = new RegularCellCache();
+	//var transitionCache = new TransitionCellCache();
 
 	for (auto x = 0; x < SpaceObjectChunk::ChunkSize; x++)
 	{
@@ -79,84 +185,18 @@ void MCMesher::generate(Vector3 position, int lod, Ptr<Mesh>& mesh, sbyte* data)
 			{
 				var pos = Vector3(float(x), float(y), float(z));
 
-				for (auto i = 0; i < 8; i++) // OPTIMIZATION: Unroll
-				{
-					corner[i] = GetVoxel(data, x + CornerIndexInt[i][0], y + CornerIndexInt[i][1], z + CornerIndexInt[i][2]);
-				}
-				
-				unsigned long caseCode = getCaseCode(corner, 8);
-
-				if ((caseCode ^ ((corner[7] >> 7) & 0xFF)) == 0)
-					continue;
-
-				for (var i = 0; i < 8; i++)
-				{
-					var p = pos + CornerIndex[i];
-
-					cornerNormals[i].x = (GetVoxel(data, p + Vector3(1.0f, 0.0f, 0.0f)) - GetVoxel(data, p - Vector3(1.0f, 0.0f, 0.0f))) * 0.5f;
-					cornerNormals[i].y = (GetVoxel(data, p + Vector3(0.0f, 1.0f, 0.0f)) - GetVoxel(data, p - Vector3(0.0f, 1.0f, 0.0f))) * 0.5f;
-					cornerNormals[i].z = (GetVoxel(data, p + Vector3(0.0f, 0.0f, 1.0f)) - GetVoxel(data, p - Vector3(0.0f, 0.0f, 1.0f))) * 0.5f;
-					cornerNormals[i].normalize();
-
-					cornerNormals[i] *= -1.0f;
-				}
-
-				var vertexData = regularVertexData[caseCode];
-				var cellClass = regularCellClass[caseCode];
-
-				var cell = &regularCellData[cellClass];
-
-				var vertexCount = cell->GetVertexCount();
-				var triangleCount = cell->GetTriangleCount();
-
-				for(var i = 0; i < vertexCount; i ++)
-				{
-					//var edge = static_cast<byte>(vertexData[i] >> 8);
-					//var reuseIndex = static_cast<byte>(edge & 0xF);
-					//var rDir = static_cast<byte>(edge >> 4);
-
-					var v1 = static_cast<byte>(vertexData[i] & 0x0F);
-					var v0 = static_cast<byte>(vertexData[i] >> 4 & 0x0F);
-
-					var d0 = corner[v0];
-					var d1 = corner[v1];
-
-					var t = static_cast<float>((d1 << 8) / (d1 - d0));
-					var u = 0x0100 - t;
-					var t0 = t / 256.0f;
-					var t1 = u / 256.0f;
-
-					var index = -1;
-
-					// TODO: vertex reuse
-
-					if (index == -1)
-					{
-						var vertexPosition = GenerateVertex(pos, position, static_cast<float>(lod), t, v0, v1, d0, d1);
-
-						m_vertices.add(vertexPosition);
-						m_normals.add(cornerNormals[v0] * t0 + cornerNormals[v1] * t1);
-						m_uvs.add(Vector2::zero());
-						m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
-
-						index = m_vertices.count() - 1;
-					}
-
-					indices[i] = static_cast<uint>(index);
-				}
-
-				for (var t = 0; t < triangleCount; t++)
-				{
-					m_indices.add(indices[cell->vertexIndex[t * 3 + 0]]);
-					m_indices.add(indices[cell->vertexIndex[t * 3 + 1]]);
-					m_indices.add(indices[cell->vertexIndex[t * 3 + 2]]);
-				}
+				polygonizeRegularCell(position, pos, data, lod_f, regularCache);
 			}
 		}
 	}
 
+	SafeDelete(regularCache);
+	//SafeDelete(transitionCache);
+
 	if (m_indices.count() == 0 || m_vertices.count() == 0)
 		return;
+
+	// TODO: Try using mesh simplification
 
 	mesh->setVertices(m_vertices.data(), m_vertices.count());
 	mesh->setUVs(m_uvs.data());

@@ -11,6 +11,9 @@
 #include "Core/Math/Vector2.h"
 #include "Core/Math/Vector4.h"
 
+struct TransitionCellCache;
+struct RegularCellCache;
+
 class MCMesher : public IVoxelMesher
 {
 private:
@@ -22,6 +25,10 @@ private:
 	Array<Vector3> m_normals = {};
 	Array<Vector4> m_colors = {};
 	Array<Vector2> m_uvs = {};
+
+private:
+	void polygonizeRegularCell(Vector3 worldPosition, Vector3 offsetPosition, sbyte* data, float lod, RegularCellCache* cache);
+	void polygonizeTransitionCell(Vector3 worldPosition, Vector3 offsetPosition, sbyte* data, float lod, TransitionCellCache* cache);
 
 public:
 	virtual ~MCMesher() {}
