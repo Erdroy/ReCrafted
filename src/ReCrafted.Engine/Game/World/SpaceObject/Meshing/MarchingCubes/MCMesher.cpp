@@ -24,19 +24,20 @@ Vector3 GetIntersection(Vector3& p1, Vector3& p2, float d1, float d2)
 	return p1 + -d1 * (p2 - p1) / (d2 - d1);
 }
 
-Vector3 InterpolateVoxelVector(float t, Vector3 P0, Vector3 P1)
+Vector3 Interpolate(Vector3 P0, Vector3 P1, float t)
 {
 	const var s = 1.0f / 256.0f;
 
 	var u = 0x0100 - t;
 	var Q = P0 * t + P1 * u;
+
 	Q *= s;
 	return Q;
 }
 
 Vector3 GenerateVertex(Vector3 offsetPos, Vector3 pos, float lod, float t, byte& v0, byte& v1, sbyte& d0, sbyte& d1)
 {
-	return pos + InterpolateVoxelVector(t, (offsetPos + CornerIndex[v0]) * lod, (offsetPos + CornerIndex[v1]) * lod);
+	return pos + Interpolate((offsetPos + CornerIndex[v0]) * lod, (offsetPos + CornerIndex[v1]) * lod, t);
 }
 
 sbyte GetVoxel(sbyte* data, int x, int y, int z)
@@ -144,33 +145,108 @@ void MCMesher::polygonizeRegularCell(Vector3 worldPosition, Vector3 offsetPositi
 
 void MCMesher::polygonizeTransitionCell(Vector3 worldPosition, Vector3 offsetPosition, sbyte* data, float lod, TransitionCellCache* cache)
 {
+	int row = 0, highRow = 0;
+	int column = 0, highColumn = 0;
+	const int minDim = 0;
+	const int maxDim = 15;
+	// when going in 2D and increasing row and column this mapping translates
+	// them to the 3D voxel coordinates
+	const int* transitionCases[][3] = {
+		{ &column, &row, &minDim },
+		{ &column, &minDim, &row },
+		{ &minDim, &column, &row },
+
+		{ &column, &row, &maxDim },
+		{ &column, &maxDim, &row },
+		{ &maxDim, &column, &row },
+	};
+
+	const int* highResCoords[][3] = {
+		{ &highColumn, &highRow, &minDim },
+		{ &highColumn, &minDim, &highRow },
+		{ &minDim, &highColumn, &highRow },
+
+		{ &highColumn, &highRow, &minDim },
+		{ &highColumn, &minDim, &highRow },
+		{ &minDim, &highColumn, &highRow },
+	};
+
+	float blockDeltas[][3] = {
+		{ 0, 0, -0.5f }, // when going 'back' from a low res cell we need to
+		{ 0, -0.5f, 0 }, // move half a low-level cell 
+		{ -0.5f, 0, 0 },
+
+		{ 0, 0, 1 }, // here we need to skip the whole low res cell
+		{ 0, 1, 0 },
+		{ 1, 0, 0 }
+	};
+
+	const int reverseWinding[] = { 0, 1, 0, 1, 0, 1 };
+
+	static const int caseCodeCoeffs[9] = { 0x01, 0x02, 0x04, 0x80, 0x100, 0x08, 0x40, 0x20, 0x10 };
+	static const int charByteSz = sizeof(char) * 8;
+
 	// TODO: transition cell implementation
 }
 
-void MCMesher::generate(Vector3 position, int lod, Ptr<Mesh>& mesh, sbyte* data)
+void MCMesher::generateCells(Vector3 position, float lod)
 {
-	var lod_f = static_cast<float>(lod);
-
-	var regularCache = new RegularCellCache();
-	//var transitionCache = new TransitionCellCache();
-
 	for (auto x = 0; x < SpaceObjectChunk::ChunkSize; x++)
 	{
 		for (auto y = 0; y < SpaceObjectChunk::ChunkSize; y++)
 		{
 			for (auto z = 0; z < SpaceObjectChunk::ChunkSize; z++)
 			{
+				var index = INDEX_3D(x, y, z, SpaceObjectChunk::ChunkSize);
+
+				m_cells[index] = {x, y, z, -1};
+
+				// TODO: Generate cells (mark which is transition cell etc. - edge near other chunk with higher quality)
+			}
+		}
+	}
+}
+
+void MCMesher::polygonizeCells(Vector3 position, float lod, sbyte* data)
+{
+	var regularCache = new RegularCellCache();
+	var transitionCache = new TransitionCellCache();
+
+	// polygonize
+	for (auto x = 0; x < SpaceObjectChunk::ChunkSize; x++)
+	{
+		for (auto y = 0; y < SpaceObjectChunk::ChunkSize; y++)
+		{
+			for (auto z = 0; z < SpaceObjectChunk::ChunkSize; z++)
+			{
+				const var& cell = m_cells[INDEX_3D(x, y, z, SpaceObjectChunk::ChunkSize)];
+
 				var pos = Vector3(float(x), float(y), float(z));
 
-				polygonizeRegularCell(position, pos, data, lod_f, regularCache);
+				polygonizeRegularCell(position, pos, data, lod, regularCache);
 
-				// how the fuck I can apply transition cell here? Check neigh, or what? TODO: transition cell placement
+				// TODO: transition cell placement (check if this is transition cell, and get it's lod levels)
+				polygonizeTransitionCell(position, pos, data, lod, transitionCache);
 			}
 		}
 	}
 
 	SafeDelete(regularCache);
-	//SafeDelete(transitionCache);
+	SafeDelete(transitionCache);
+}
+
+void MCMesher::generate(Vector3 position, int lod, Ptr<Mesh>& mesh, sbyte* data)
+{
+	var lod_f = static_cast<float>(lod);
+	m_cells = new Cell[SpaceObjectChunk::ChunkSize * SpaceObjectChunk::ChunkSize * SpaceObjectChunk::ChunkSize];
+
+	// generate cells
+	generateCells(position, lod_f);
+
+	// polygonize cells
+	polygonizeCells(position, lod_f, data);
+
+	delete[] m_cells;
 
 	if (m_indices.count() == 0 || m_vertices.count() == 0)
 		return;

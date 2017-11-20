@@ -20,15 +20,28 @@ private:
 	static MCMesher* m_instance;
 
 private:
+	struct Cell
+	{
+	public:
+		int x, y, z;
+		int lod;
+	};
+
+private:
 	Array<Vector3> m_vertices = {};
 	Array<uint> m_indices = {};
 	Array<Vector3> m_normals = {};
 	Array<Vector4> m_colors = {};
 	Array<Vector2> m_uvs = {};
 
+	Cell* m_cells = nullptr;
+
 private:
 	void polygonizeRegularCell(Vector3 worldPosition, Vector3 offsetPosition, sbyte* data, float lod, RegularCellCache* cache);
 	void polygonizeTransitionCell(Vector3 worldPosition, Vector3 offsetPosition, sbyte* data, float lod, TransitionCellCache* cache);
+
+	void generateCells(Vector3 position, float lod);
+	void polygonizeCells(Vector3 position, float lod, sbyte* data);
 
 public:
 	virtual ~MCMesher() {}
