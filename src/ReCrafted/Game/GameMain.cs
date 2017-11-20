@@ -6,6 +6,7 @@ using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
+using ReCrafted.API.UI.Controls;
 using ReCrafted.Core;
 using ReCrafted.Core.Locales;
 using ReCrafted.Game.Core;
@@ -41,6 +42,11 @@ namespace ReCrafted.Game
             GameInfo.FromFile("../assets/gameinfo.json");
 
             Locale.SetLocale("Polski");
+
+            //var panel = UIPanel.Create(new RectangleF(10.0f, 10.0f, 200.0f, 450.0f), UILayoutType.Grid);
+            //panel.Enabled = true;
+            //panel.Visible = true;
+            //panel.Layout.Add(new UIBox());
         }
 
         protected override void Update()

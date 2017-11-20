@@ -1,4 +1,6 @@
-﻿namespace ReCrafted.API.Core
+﻿// ReCrafted © 2016-2017 Always Too Late
+
+namespace ReCrafted.API.Core
 {
     public enum Keys
     {

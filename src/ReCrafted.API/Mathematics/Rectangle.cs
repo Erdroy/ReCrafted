@@ -1,4 +1,4 @@
-﻿// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+﻿// ReCrafted © 2016-2017 Always Too Late
 // Original code: https://github.com/sharpdx/SharpDX
 // Copyright (c) 2010-2014 SharpDX - Alexandre Mutel
 //

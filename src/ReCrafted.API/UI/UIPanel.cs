@@ -1,4 +1,4 @@
-﻿// ReCrafted © 2016-2017 Damian 'Erdroy' Korczowski and Mateusz 'Maturas' Zawistowski
+﻿// ReCrafted © 2016-2017 Always Too Late
 
 using System;
 using System.Collections.Generic;
@@ -66,7 +66,7 @@ namespace ReCrafted.API.UI
                     Type = layoutType,
                     Enabled = true,
                     Region = region,
-                    PreferredSize = new Vector2(100.0f, 100.0f)
+                    PreferredSize = new Vector2(region.Width, region.Height)
                 }
             };
             

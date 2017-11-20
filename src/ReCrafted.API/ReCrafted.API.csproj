@@ -94,12 +94,14 @@
     <Compile Include="Object.cs" />
     <Compile Include="Object.Gen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\Controls\UIBox.cs" />
     <Compile Include="UI\UI.Gen.cs" />
     <Compile Include="UI\UIContainer.cs" />
     <Compile Include="UI\UIControl.cs" />
     <Compile Include="UI\UILayout.cs" />
     <Compile Include="UI\UIPanel.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
