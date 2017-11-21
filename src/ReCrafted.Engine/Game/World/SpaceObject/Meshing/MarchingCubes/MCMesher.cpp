@@ -8,6 +8,7 @@
 #include "VertexCache.h"
 
 MCMesher* MCMesher::m_instance;
+const float S = 1.0f / 256.0f;
 
 Vector3 operator*(const float& lhs, const Vector3& rhs)
 {
@@ -66,13 +67,55 @@ inline Vector3 prevOffset(uint8_t dir)
 		-((dir >> 2) & 1));
 }
 
-inline Vector3 vectorMultiply(Vector3& m, Vector3 v)
+/*Vector3 Interp(Vector3 v0, Vector3 v1, Vector3 p0, Vector3 p1, sbyte* data, byte lodIndex = 0)
 {
-	return Vector3(
-		m.x * v.x + m.y * v.y + m.z * v.z,
-		m.x * v.x + m.y * v.y + m.z * v.z,
-		m.x * v.x + m.y * v.y + m.z * v.z);
-}
+	var s0 = samples[p0];
+	var s1 = samples[p1];
+
+	var t = (s1 << 8) / (s1 - s0);
+	var u = 0x0100 - t;
+
+	if ((t & 0x00ff) == 0)
+	{
+		// The generated vertex lies at one of the corners so there 
+		// is no need to subdivide the interval.
+		if (t == 0)
+		{
+			return v1;
+		}
+
+		return v0;
+	}
+	
+	for (var i = 0; i < lodIndex; ++i)
+	{
+		var vm = (v0 + v1) / 2;
+		var pm = (p0 + p1) / 2;
+
+		var sm = samples[pm];
+
+		// Determine which of the sub-intervals that contain 
+		// the intersection with the isosurface.
+		if (Sign(s0) != Sign(sm))
+		{
+			v1 = vm;
+			p1 = pm;
+			s1 = sm;
+		}
+		else
+		{
+			v0 = vm;
+			p0 = pm;
+			s0 = sm;
+		}
+	}
+
+	// recalculate t and u
+	t = (s1 << 8) / (s1 - s0);
+	u = 0x0100 - t;
+
+	return v0 * t * S + v1 * u * S;
+}*/
 
 void MCMesher::polygonizeRegularCell(Vector3 worldPosition, Vector3 offsetPosition, sbyte* data, float lod, RegularCellCache* cache)
 {
@@ -152,8 +195,6 @@ void MCMesher::polygonizeRegularCell(Vector3 worldPosition, Vector3 offsetPositi
 
 void MCMesher::polygonizeTransitionCell(Vector3 worldPosition, Vector3 offsetPosition, sbyte* data, float lod, TransitionCellCache* cache)
 {
-	const float S = 1.0f / 256.0f;
-
 	var x = static_cast<int>(offsetPosition.x);
 	var y = static_cast<int>(offsetPosition.y);
 	var z = static_cast<int>(offsetPosition.z);
@@ -182,7 +223,7 @@ void MCMesher::polygonizeTransitionCell(Vector3 worldPosition, Vector3 offsetPos
 		(offsetPosition + coords[0x0B]) , (offsetPosition + coords[0x0C]) ,
 	};
 
-	// TODO: normals?
+	// TODO: calculate normals
 
 	const Vector3 samplePos[]= {
 		pos[0], pos[1], pos[2],
@@ -193,6 +234,7 @@ void MCMesher::polygonizeTransitionCell(Vector3 worldPosition, Vector3 offsetPos
 	};
 
 	sbyte samples[13];
+	uint indices[15];
 
 	for (auto i = 0; i < 13; i++) // OPTIMIZATION: Unroll
 	{
@@ -235,18 +277,92 @@ void MCMesher::polygonizeTransitionCell(Vector3 worldPosition, Vector3 offsetPos
 		var t0 = t * S;
 		var t1 = u * S;
 
-		if ((t & 0x00ff) != 0)
+		// TODO: vertex cache
+
+		Vector3 vert = {};
+
+		if ((t & 0x00ff) == 0)
 		{
-			// TODO: cache
-			// TODO: Interpolate vertex
+			// if(!present || indices[i] < 0)
+			
+			var p0 = pos[v0];
+			var p1 = pos[v1];
+
+			//var pi = Interp(p0, p1, samplePos[v0], samplePos[v1], samples/*, lowside ? (byte)lodIndex : (byte)(lodIndex - 1)*/);
+			
+			if (lowside)
+			{
+				// low-resolution side
+
+				//pi[axis] = (double)origin[axis];
+
+				//const Vector3d delta = computeDelta(pi, lodIndex, 16);
+				//const Vector3d proj = projectNormal(vert.normal, delta); // TODO: we need normals
+
+				//vert.pos[PRIMARY] = Vector3d(1000, 1000, 1000);
+				//vert.pos[SECONDARY] = offset + pi + proj;
+			}
+			else
+			{
+				// high-resolution side
+
+				//vert.pos[PRIMARY] = offset + pi;
+				//vert.pos[SECONDARY] = Vector3d(1000, 1000, 1000);
+			}
 		}
 		else
 		{
-			// TODO: Use the reuse information in transitionCornerData
+			var v = t == 0 ? v1 : v0;
+
+			var pi = pos[v];
+
+			if (v > 8)
+			{
+				// low-resolution side
+
+				//pi[axis] = (double)origin[axis];
+
+				//const Vector3d delta = computeDelta(pi, lodIndex, 16);
+				//const Vector3d proj = projectNormal(vert.normal, delta); // TODO: we need normals
+
+				//vert.pos[PRIMARY] = Vector3d(1000, 1000, 1000);
+				//vert.pos[SECONDARY] = offset + pi + proj;
+			}
+			else
+			{
+				// high-resolution side
+
+				//vert.pos[PRIMARY] = offset + pi;
+				//vert.pos[SECONDARY] = Vector3d(1000, 1000, 1000);
+			}
 		}
+
+		// TODO: calculate normal
+
+		m_vertices.add(worldPosition + vert);
+		m_normals.add(Vector3::zero());
+		m_uvs.add(Vector2::zero());
+		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
+
+		indices[i] = static_cast<uint>(m_vertices.count() - 1);
 	}
 
-	// TODO: Generate triangles
+	// generate triangles
+	for (var t = 0; t < triangleCount; t++)
+	{
+		if(inverse)
+		{
+			m_indices.add(indices[cell->vertexIndex[t * 3 + 2]]);
+			m_indices.add(indices[cell->vertexIndex[t * 3 + 1]]);
+			m_indices.add(indices[cell->vertexIndex[t * 3 + 0]]);
+		}
+		else
+		{
+			m_indices.add(indices[cell->vertexIndex[t * 3 + 0]]);
+			m_indices.add(indices[cell->vertexIndex[t * 3 + 1]]);
+			m_indices.add(indices[cell->vertexIndex[t * 3 + 2]]);
+		}
+	}
 }
 
 void MCMesher::generateCells(Vector3 position, float lod)
@@ -283,12 +399,14 @@ void MCMesher::polygonizeCells(Vector3 position, float lod, sbyte* data)
 
 				var pos = Vector3(float(x), float(y), float(z));
 
-				polygonizeRegularCell(position, pos, data, lod, regularCache);
-
 				// TODO: transition cell placement (check if this is transition cell, and get it's lod levels)
 				if (x == 0 || y == 0 || z == 0) // temporary
 				{
 					polygonizeTransitionCell(position, pos, data, lod, transitionCache);
+				}
+				else
+				{
+					polygonizeRegularCell(position, pos, data, lod, regularCache);
 				}
 			}
 		}
