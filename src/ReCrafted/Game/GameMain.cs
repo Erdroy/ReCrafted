@@ -42,7 +42,7 @@ namespace ReCrafted.Game
             GameInfo.FromFile("../assets/gameinfo.json");
 
             Locale.SetLocale("Polski");
-
+            
             //var panel = UIPanel.Create(new RectangleF(10.0f, 10.0f, 200.0f, 450.0f), UILayoutType.Grid);
             //panel.Enabled = true;
             //panel.Visible = true;

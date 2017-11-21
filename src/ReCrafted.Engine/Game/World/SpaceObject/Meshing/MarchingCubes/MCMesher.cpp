@@ -35,6 +35,11 @@ Vector3 Interpolate(Vector3 P0, Vector3 P1, float t)
 	return Q;
 }
 
+int Sign(sbyte b)
+{
+	return (b >> 7) & 1;
+}
+
 Vector3 GenerateVertex(Vector3 offsetPos, Vector3 pos, float lod, float t, byte& v0, byte& v1, sbyte& d0, sbyte& d1)
 {
 	return pos + Interpolate((offsetPos + CornerIndex[v0]) * lod, (offsetPos + CornerIndex[v1]) * lod, t);
@@ -61,17 +66,12 @@ inline Vector3 prevOffset(uint8_t dir)
 		-((dir >> 2) & 1));
 }
 
-byte getCaseCode(sbyte* density, int densityLength)
+inline Vector3 vectorMultiply(Vector3& m, Vector3 v)
 {
-	byte code = 0;
-	byte konj = 0x01;
-	for (int i = 0; i < densityLength; i++)
-	{
-		code |= (byte)((density[i] >> (densityLength - 1 - i)) & konj);
-		konj <<= 1;
-	}
-
-	return code;
+	return Vector3(
+		m.x * v.x + m.y * v.y + m.z * v.z,
+		m.x * v.x + m.y * v.y + m.z * v.z,
+		m.x * v.x + m.y * v.y + m.z * v.z);
 }
 
 void MCMesher::polygonizeRegularCell(Vector3 worldPosition, Vector3 offsetPosition, sbyte* data, float lod, RegularCellCache* cache)
@@ -87,9 +87,16 @@ void MCMesher::polygonizeRegularCell(Vector3 worldPosition, Vector3 offsetPositi
 		corner[i] = GetVoxel(data, offsetPosition + Vector3(CornerIndexInt[i][0], CornerIndexInt[i][1], CornerIndexInt[i][2]));
 	}
 
-	unsigned long caseCode = getCaseCode(corner, 8);
+	var caseCode = ((corner[0] >> 7) & 0x01)
+		| ((corner[1] >> 6) & 0x02)
+		| ((corner[2] >> 5) & 0x04)
+		| ((corner[3] >> 4) & 0x08)
+		| ((corner[4] >> 3) & 0x10)
+		| ((corner[5] >> 2) & 0x20)
+		| ((corner[6] >> 1) & 0x40)
+		| (corner[7] & 0x80);
 
-	if ((caseCode ^ ((corner[7] >> 7) & 0xFF)) == 0)
+	if ((caseCode ^ ((corner[7] >> 7) & 0xff)) == 0)
 		return;
 
 	for (var i = 0; i < 8; i++)
@@ -124,7 +131,7 @@ void MCMesher::polygonizeRegularCell(Vector3 worldPosition, Vector3 offsetPositi
 		var t0 = t / 256.0f;
 		var t1 = u / 256.0f;
 
-		// no cached vertex found, generate new one
+		// TODO: Vertex cache, for now - just generate it.
 		var vertexPosition = GenerateVertex(offsetPosition, worldPosition, static_cast<float>(lod), t, v0, v1, d0, d1);
 
 		m_vertices.add(vertexPosition);
@@ -145,48 +152,101 @@ void MCMesher::polygonizeRegularCell(Vector3 worldPosition, Vector3 offsetPositi
 
 void MCMesher::polygonizeTransitionCell(Vector3 worldPosition, Vector3 offsetPosition, sbyte* data, float lod, TransitionCellCache* cache)
 {
-	int row = 0, highRow = 0;
-	int column = 0, highColumn = 0;
-	const int minDim = 0;
-	const int maxDim = 15;
-	// when going in 2D and increasing row and column this mapping translates
-	// them to the 3D voxel coordinates
-	const int* transitionCases[][3] = {
-		{ &column, &row, &minDim },
-		{ &column, &minDim, &row },
-		{ &minDim, &column, &row },
+	const float S = 1.0f / 256.0f;
 
-		{ &column, &row, &maxDim },
-		{ &column, &maxDim, &row },
-		{ &maxDim, &column, &row },
+	var x = static_cast<int>(offsetPosition.x);
+	var y = static_cast<int>(offsetPosition.y);
+	var z = static_cast<int>(offsetPosition.z);
+
+	static const Vector3 coords[] = {
+		Vector3(0,0,0), Vector3(1,0,0), Vector3(2,0,0), // High-res lower row
+		Vector3(0,1,0), Vector3(1,1,0), Vector3(2,1,0), // High-res middle row
+		Vector3(0,2,0), Vector3(1,2,0), Vector3(2,2,0), // High-res upper row
+
+		Vector3(0,0,2), Vector3(2,0,2), // Low-res lower row
+		Vector3(0,2,2), Vector3(2,2,2)  // Low-res upper row
 	};
 
-	const int* highResCoords[][3] = {
-		{ &highColumn, &highRow, &minDim },
-		{ &highColumn, &minDim, &highRow },
-		{ &minDim, &highColumn, &highRow },
+	// ! BUG-GY BUG !
+	// 
+	//          |
+	//          |
+	//          |
+	//         \ /
 
-		{ &highColumn, &highRow, &minDim },
-		{ &highColumn, &minDim, &highRow },
-		{ &minDim, &highColumn, &highRow },
+	const Vector3 pos[] = {
+		(offsetPosition + coords[0x00]) , (offsetPosition + coords[0x01]) , (offsetPosition + coords[0x02]) ,
+		(offsetPosition + coords[0x03]) , (offsetPosition + coords[0x04]) , (offsetPosition + coords[0x05]) ,
+		(offsetPosition + coords[0x06]) , (offsetPosition + coords[0x07]) , (offsetPosition + coords[0x08]) ,
+		(offsetPosition + coords[0x09]) , (offsetPosition + coords[0x0A]) ,
+		(offsetPosition + coords[0x0B]) , (offsetPosition + coords[0x0C]) ,
 	};
 
-	float blockDeltas[][3] = {
-		{ 0, 0, -0.5f }, // when going 'back' from a low res cell we need to
-		{ 0, -0.5f, 0 }, // move half a low-level cell 
-		{ -0.5f, 0, 0 },
+	// TODO: normals?
 
-		{ 0, 0, 1 }, // here we need to skip the whole low res cell
-		{ 0, 1, 0 },
-		{ 1, 0, 0 }
+	const Vector3 samplePos[]= {
+		pos[0], pos[1], pos[2],
+		pos[3], pos[4], pos[5],
+		pos[6], pos[7], pos[8],
+		pos[0], pos[2],
+		pos[6], pos[8]
 	};
 
-	const int reverseWinding[] = { 0, 1, 0, 1, 0, 1 };
+	sbyte samples[13];
 
-	static const int caseCodeCoeffs[9] = { 0x01, 0x02, 0x04, 0x80, 0x100, 0x08, 0x40, 0x20, 0x10 };
-	static const int charByteSz = sizeof(char) * 8;
+	for (auto i = 0; i < 13; i++) // OPTIMIZATION: Unroll
+	{
+		samples[i] = GetVoxel(data, samplePos[i]);
+	}
 
-	// TODO: transition cell implementation
+	var caseCode = static_cast<uint>(Sign(samples[0]) * 0x001 |
+		Sign(samples[1]) * 0x002 |
+		Sign(samples[2]) * 0x004 |
+		Sign(samples[5]) * 0x008 |
+		Sign(samples[8]) * 0x010 |
+		Sign(samples[7]) * 0x020 |
+		Sign(samples[6]) * 0x040 |
+		Sign(samples[3]) * 0x080 |
+		Sign(samples[4]) * 0x100);
+
+	if (caseCode == 0 || caseCode == 511)
+		return;
+
+	var classIndex = transitionCellClass[caseCode];
+	var cell = &transitionCellData[classIndex & 0x7F];
+	var inverse = (classIndex & 128) != 0;
+
+	var vertexCount = cell->GetVertexCount();
+	var triangleCount = cell->GetTriangleCount();
+
+	for (var i = 0; i < vertexCount; i++)
+	{
+		var edgeCode = transitionVertexData[caseCode][i];
+
+		var v1 = static_cast<byte>(edgeCode >> 4 & 0x0F);
+		var v0 = static_cast<byte>(edgeCode & 0x0F);
+		var lowside = (v0 > 8) && (v1 > 8);
+
+		var d0 = GetVoxel(data, samplePos[v0]);
+		var d1 = GetVoxel(data, samplePos[v1]);
+
+		var t = (d1 << 8) / (d1 - d0);
+		var u = 0x0100 - t;
+		var t0 = t * S;
+		var t1 = u * S;
+
+		if ((t & 0x00ff) != 0)
+		{
+			// TODO: cache
+			// TODO: Interpolate vertex
+		}
+		else
+		{
+			// TODO: Use the reuse information in transitionCornerData
+		}
+	}
+
+	// TODO: Generate triangles
 }
 
 void MCMesher::generateCells(Vector3 position, float lod)
@@ -226,7 +286,10 @@ void MCMesher::polygonizeCells(Vector3 position, float lod, sbyte* data)
 				polygonizeRegularCell(position, pos, data, lod, regularCache);
 
 				// TODO: transition cell placement (check if this is transition cell, and get it's lod levels)
-				polygonizeTransitionCell(position, pos, data, lod, transitionCache);
+				if (x == 0 || y == 0 || z == 0) // temporary
+				{
+					polygonizeTransitionCell(position, pos, data, lod, transitionCache);
+				}
 			}
 		}
 	}

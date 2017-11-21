@@ -3,12 +3,12 @@
 #include "SpaceObjectChunk.h"
 #include "SpaceObjectOctree.h"
 #include "SpaceObject.h"
+#include "Common/Input.h"
+#include "Meshing/MarchingCubes/MCMesher.h"
+#include "Game/World/Voxels/VoxelUtils.h"
 #include "Graphics/DebugDraw.h"
 #include "Graphics/Mesh.h"
 #include "Graphics/Rendering.h"
-#include "Meshing/MarchingCubes/MCMesher.h"
-#include "Game/World/Voxels/VoxelUtils.h"
-#include "Common/Input.h"
 
 float Planet(Vector3& origin, Vector3& position, float radius)
 {
