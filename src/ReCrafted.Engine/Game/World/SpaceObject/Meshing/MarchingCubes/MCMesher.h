@@ -17,15 +17,15 @@ struct RegularCellCache;
 class MCMesher : public IVoxelMesher
 {
 private:
-	static MCMesher* m_instance;
-
-private:
 	struct Cell
 	{
 	public:
-		int x, y, z;
-		int lod;
+		Vector3 vertexPosition;
+		uint vertexIndex;
 	};
+
+private:
+	static MCMesher* m_instance;
 
 private:
 	Array<Vector3> m_vertices = {};
@@ -34,14 +34,7 @@ private:
 	Array<Vector4> m_colors = {};
 	Array<Vector2> m_uvs = {};
 
-	Cell* m_cells = nullptr;
-
-private:
-	void polygonizeRegularCell(Vector3 worldPosition, Vector3 offsetPosition, sbyte* data, float lod, RegularCellCache* cache);
-	void polygonizeTransitionCell(Vector3 worldPosition, Vector3 offsetPosition, sbyte* data, float lod, TransitionCellCache* cache);
-
-	void generateCells(Vector3 position, float lod);
-	void polygonizeCells(Vector3 position, float lod, sbyte* data);
+	Cell m_cells[SpaceObjectChunk::ChunkSize * SpaceObjectChunk::ChunkSize * SpaceObjectChunk::ChunkSize] = {};
 
 public:
 	virtual ~MCMesher() {}
@@ -50,7 +43,7 @@ public:
 	/**
 	* \brief Virtual method for generating a mesh from hermite voxel data.
 	* \param mesh The mesh that will get the new mesh data.
-	* \param data The hermite voxel data (in -127 to 128 range).
+	* \param data The hermite voxel data (in -127 to 127 range).
 	*/
 	void generate(Vector3 position, int lod, Ptr<Mesh>& mesh, sbyte* data) override;
 
