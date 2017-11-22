@@ -67,6 +67,7 @@ project "ReCrafted.Engine"
 			path.join(LIBS_DIR, "freetype/x64"),
 			path.join(LIBS_DIR, "cef/x64"),
 		}
+		linkoptions { "/ignore:4099" }
 	
 	configuration { "x32", "vs*"}
 		-- add bgfx lib path - bgfx always contains all needed libs after being compiled
@@ -76,6 +77,7 @@ project "ReCrafted.Engine"
 			path.join(LIBS_DIR, "freetype/win32"),
 			path.join(LIBS_DIR, "cef/win32"),
 		}
+		linkoptions { "/ignore:4099" }
 	
 	configuration { "vs*", "Debug"}
 		libdirs { 
