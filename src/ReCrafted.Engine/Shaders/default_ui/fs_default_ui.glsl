@@ -14,6 +14,9 @@ PixelShader()
 		// sample texture
 		vec4 color = texture2D(m_texture0, m_uv);
 
+        // apply vertex color
+        color *= m_color;
+
 		// output
 		FS_OUTPUT(0, color);
 		return;
