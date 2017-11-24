@@ -90,7 +90,7 @@ void Shader::init(const char* vs, const char* fs, const char* def)
 	}
 	else
 	{
-		Logger::write("Loaded shader which doesn't have description file!", LogLevel::Warning);
+		Logger::logWarning("Loaded shader which doesn't have description file!");
 	}
 }
 
@@ -106,7 +106,7 @@ bgfx::ProgramHandle Shader::getProgram()
 
 void Shader::dispose()
 {
-	Logger::write("Unloading shader '", m_shaderName, "'", LogLevel::Info);
+	Logger::logInfo("Unloading shader '{0}'", m_shaderName);
 	bgfx::destroy(m_program);
 }
 
@@ -114,7 +114,7 @@ Ptr<Shader> Shader::loadShader(const char* shaderName)
 {
 	Ptr<Shader> shader(new Shader);
 
-	Logger::write("Loading shader '", shaderName, "'.", LogLevel::Info);
+	Logger::logInfo("Loading shader {0}", shaderName);
 
 	strcpy_s(shader->m_shaderName, shaderName);
 
@@ -148,7 +148,7 @@ Ptr<Shader> Shader::loadShader(const char* shaderName)
 	case bgfx::RendererType::Gnm:
 	case bgfx::RendererType::OpenGLES:
 	case bgfx::RendererType::Count:
-		Logger::write("Couldn't load shader, invalid renderer.", LogLevel::Error);
+		Logger::logError("Couldn't load shader, invalid renderer.");
 		return nullptr;
 	}
 

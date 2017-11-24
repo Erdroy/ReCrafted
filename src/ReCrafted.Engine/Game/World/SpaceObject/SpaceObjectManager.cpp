@@ -14,7 +14,7 @@ void SpaceObjectManager::onDispose()
 {
 	m_running = false;
 
-	Logger::write("Waiting for SpaceObjectManager workers to exit...", LogLevel::Info);
+	Logger::logInfo("Waiting for SpaceObjectManager workers to exit...");
 
 	// wait for threads to exit
 	for (auto && thread : m_workerThreads)
@@ -25,7 +25,7 @@ void SpaceObjectManager::onDispose()
 		SafeDelete(thread);
 	}
 
-	Logger::write("SpaceObjectManager workers exited.", LogLevel::Info);
+	Logger::logInfo("SpaceObjectManager workers exited.");
 }
 
 void SpaceObjectManager::worker_function()
@@ -53,7 +53,7 @@ void SpaceObjectManager::init()
 	// run threads
 	var maxThreads = Platform::cpuCount();
 
-	Logger::write("Starting SpaceObjectManager workers.", LogLevel::Info);
+	Logger::logInfo("Starting SpaceObjectManager workers.");
 
 	for(var i = 0; i < maxThreads; i ++)
 	{
@@ -62,7 +62,7 @@ void SpaceObjectManager::init()
 		}));
 	}
 
-	Logger::write("SpaceObjectManager workers started.", LogLevel::Info);
+	Logger::logInfo("SpaceObjectManager workers started.");
 }
 
 void SpaceObjectManager::update()

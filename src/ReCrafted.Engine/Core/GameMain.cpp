@@ -76,7 +76,7 @@ LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 		if (RegisterRawInputDevices(Rid, 1, sizeof Rid[0]) == FALSE) {
 			// error, failed to register
-			Logger::write("Failed to register mouse for RAW Input", LogLevel::Error);
+			Logger::logError("Failed to register mouse for RAW Input");
 			return 0;
 		}
 		return 0;
@@ -150,7 +150,7 @@ void GameMain::initScripting()
 
 	if(!Platform::fileExists("ReCrafted.Game.dll") || !Platform::fileExists("ReCrafted.API.dll"))
 	{
-		Logger::write("Could not find some of game assemblies.", LogLevel::Fatal);
+		Logger::logException("Could not find some of game assemblies.");
 		exit(-1);
 		return;
 	}
@@ -172,7 +172,7 @@ void GameMain::initScripting()
 	m_drawui_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::DrawUI");
 	m_shutdown_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Shutdown");
 
-	Logger::write("Scripting initialized", LogLevel::Info);
+	Logger::logInfo("Scripting initialized");
 }
 
 void GameMain::run()
@@ -292,9 +292,9 @@ void GameMain::onLoad()
 	m_logger = new Logger();
 	m_logger->init();
 
-	Logger::write("ReCrafted - startup", LogLevel::Info);
+	Logger::logInfo("ReCrafted - startup");
 
-	Logger::write("Creating game renderer using Direct3D11 API", LogLevel::Info);
+	Logger::logInfo("Creating game renderer using Direct3D11 API");
 
 	// initialize scripting engine
 	initScripting();
@@ -312,7 +312,7 @@ void GameMain::onLoad()
 	bgfx::setViewClear(RENDERVIEW_GBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
 	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
 
-	Logger::write("Renderer initialized", LogLevel::Info);
+	Logger::logInfo("Renderer initialized");
 
 	// initialize HTML5 UI
 	//HTML5UI::init();
@@ -328,7 +328,7 @@ void GameMain::onLoad()
 	// initialize DebugDraw
 	DebugDraw::init();
 
-	Logger::write("Rendering pipeline initialized", LogLevel::Info);
+	Logger::logInfo("Rendering pipeline initialized");
 
 	m_initialized = true;
 
@@ -340,7 +340,7 @@ void GameMain::onLoad()
 	m_entityPool = new EntityPool;
 	m_entityPool->initialize();
 
-	Logger::write("Game initialized", LogLevel::Info);
+	Logger::logInfo("Game initialized");
 
 	m_init_method->invoke();
 }
@@ -350,7 +350,7 @@ void GameMain::onUnload()
 	if (!m_initialized)
 		return;
 
-	Logger::write("Shutting down...", LogLevel::Info);
+	Logger::logInfo("Shutting down...");
 
 	// invoke shutdown method
 	m_shutdown_method->invoke();
@@ -414,28 +414,28 @@ void GameMain::onUpdate()
 	{
 		m_wireframe = true;
 		bgfx::setDebug(BGFX_DEBUG_WIREFRAME);
-		Logger::write("Switching to wireframe render mode", LogLevel::Info);
+		Logger::logInfo("Switching to wireframe render mode");
 	}
 
 	if (Input::isKeyDown(Key_F4))
 	{
 		m_wireframe = false;
 		bgfx::setDebug(BGFX_DEBUG_NONE);
-		Logger::write("Switching to default render mode", LogLevel::Info);
+		Logger::logInfo("Switching to default render mode");
 	}
 
 	if (Input::isKeyDown(Key_F5))
 	{
 		m_wireframe = false;
 		bgfx::setDebug(BGFX_DEBUG_STATS);
-		Logger::write("Switching to debug stats render mode", LogLevel::Info);
+		Logger::logInfo("Switching to debug stats render mode");
 	}
 
 	if (Input::isKeyDown(Key_F6))
 	{
 		m_wireframe = false;
 		bgfx::setDebug(BGFX_DEBUG_TEXT);
-		Logger::write("Switching to debug text render mode", LogLevel::Info);
+		Logger::logInfo("Switching to debug text render mode");
 	}
 
 	m_universe->update();

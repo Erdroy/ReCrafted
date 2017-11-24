@@ -23,7 +23,7 @@ Ptr<Assembly> Domain::loadAssembly(const char* fileName)
 
 	if (!masm || !mimg)
 	{
-		Logger::write("Failed to load assembly '", fileName, "'", LogLevel::Error);
+		Logger::logError("Failed to load assembly '{0}'", fileName);
 		return nullptr;
 	}
 
@@ -36,7 +36,7 @@ Ptr<Assembly> Domain::loadAssembly(const char* fileName)
 	// add to the loaded assembly list
 	m_loadedAssemblies.add(assembly);
 
-	Logger::write("Loaded assembly '", fileName, "'", LogLevel::Info);
+	Logger::logInfo("Loaded assembly '{0}'", fileName);
 
 	return assembly;
 }
@@ -72,7 +72,7 @@ Ptr<Domain> Domain::createRoot()
 {
 	if(Root)
 	{
-		Logger::write("Cannot create second root domain!", LogLevel::Warning);
+		Logger::logWarning("Cannot create second root domain!");
 		return nullptr;
 	}
 
@@ -87,7 +87,7 @@ Ptr<Domain> Domain::createRoot()
 
 	if(!domain)
 	{
-		Logger::write("Failed to create root domain! Parameters: ", rootDomainName, runtimeVersion, LogLevel::Fatal);
+		Logger::logException("Failed to create root domain! Domain Name: {0} Runtime Version: {1}", rootDomainName, runtimeVersion);
 		GameMain::quit(); // quit
 		return nullptr;
 	}

@@ -47,7 +47,7 @@ void RenderBuffer::end()
 
 	m_created = true;
 
-	Logger::write("Created render buffer", LogLevel::Info);
+	Logger::logInfo("Created render buffer");
 }
 
 void RenderBuffer::addTarget(const char* name, TextureFormat::Enum format)
@@ -90,5 +90,5 @@ void RenderBuffer::dispose()
 {
 	// destroy framebuffer
 	bgfx::destroy(m_framebufferHandle);
-	Logger::write("Unloaded render buffer", LogLevel::Info);
+	Logger::logInfo("Unloaded render buffer");
 }

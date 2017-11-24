@@ -45,7 +45,7 @@ public:
 		char buffer[512] = {};
 		sprintf_s(buffer, fmtd_message, time);
 		
-		Logger::write(buffer, LogLevel::Debug);
+		Logger::logDebug(buffer);
 
 		// clear
 		m_stack.removeAt(m_stack.count() - 1);

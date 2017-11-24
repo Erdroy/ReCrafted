@@ -201,7 +201,7 @@ void Font::loadFont(Text fontFile, int size, bool managed)
 
 	if (hr)
 	{
-		Logger::write("Failed to init freetype library", LogLevel::Error);
+		Logger::logError("Failed to init freetype library");
 		return;
 	}
 
@@ -213,7 +213,7 @@ void Font::loadFont(Text fontFile, int size, bool managed)
 
 	if (hr)
 	{
-		Logger::write("Failed to load freetype font '", path, "'", LogLevel::Error);
+		Logger::logError("Failed to load freetype font '{0}'", path);
 		return;
 	}
 
@@ -221,7 +221,7 @@ void Font::loadFont(Text fontFile, int size, bool managed)
 
 	if (hr)
 	{
-		Logger::write("Failed to select freetype font unicode charmap '", path, "'", LogLevel::Error);
+		Logger::logError("Failed to select freetype font unicode charmap '{0}'", path);
 		return;
 	}
 
@@ -229,7 +229,7 @@ void Font::loadFont(Text fontFile, int size, bool managed)
 
 	if (hr)
 	{
-		Logger::write("Failed to set freetype font size '", path, "'", LogLevel::Error);
+		Logger::logError("Failed to set freetype font '{0}' size of {1}", path, size);
 		return;
 	}
 

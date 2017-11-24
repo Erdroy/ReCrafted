@@ -77,6 +77,6 @@ void Universe::dispose()
 	// shutdown
 	SafeDisposeNN(SpaceObjectManager::getInstance());
 
-	Logger::write("Universe unloaded", LogLevel::Info);
+	Logger::logInfo("Universe unloaded");
 	delete this;
 }
