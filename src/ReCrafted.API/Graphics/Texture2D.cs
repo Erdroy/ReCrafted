@@ -10,6 +10,11 @@ namespace ReCrafted.API.Graphics
     /// </summary>
     public partial class Texture2D
     {
+        public Texture2D(string fileName)
+        {
+            LoadFromFile(fileName);
+        }
+
         /// <summary>
         /// Loads Texture2D from PNG file.
         /// </summary>

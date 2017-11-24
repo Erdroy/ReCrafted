@@ -25,9 +25,7 @@ namespace ReCrafted.Game
             // register unhandled exception handler
             Exceptions.RegisterUEHandler();
 
-            _crosshairTexture = Texture2D.Create();
-            _crosshairTexture.LoadFromFile("../assets/textures/crosshair.png");
-            _crosshairTexture.Apply();
+            _crosshairTexture = Texture2D.CreateAndLoad("../assets/textures/crosshair.png");
 
             _testFont = Font.Load("../assets/fonts/VeraMono.ttf", 12);
 
