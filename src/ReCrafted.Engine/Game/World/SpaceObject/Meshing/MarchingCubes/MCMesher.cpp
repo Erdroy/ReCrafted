@@ -18,7 +18,21 @@ for (auto c = 0; c < SpaceObjectChunk::ChunkSize; c++)
 #define ITERATE_CELLS_END()
 
 #define GET_CELL(_x, _y, _z) m_cells[INDEX_3D(_x, _y, _z, SpaceObjectChunk::ChunkSize)];
-#define IS_BORDER(_x, _y, _z, _min, _max) _x == _min || _x == _max || _y == _min || _y == _max || _z == _min || _z == _max
+#define IS_BORDER(_x, _y, _z) _x == 0 || _x == SpaceObjectChunk::ChunkSize-1 || _y == 0 || _y == SpaceObjectChunk::ChunkSize-1 || _z == 0 || _z == SpaceObjectChunk::ChunkSize-1
+
+#define BORDER_FRONT	0x01
+#define BORDER_BACK		0x02
+#define BORDER_LEFT		0x04
+#define BORDER_RIGHT	0x08
+#define BORDER_TOP		0x10
+#define BORDER_BOTTOM	0x20
+
+#define AXIS_FRONT		0
+#define AXIS_BACK		1
+#define AXIS_LEFT		2
+#define AXIS_RIGHT		3
+#define AXIS_TOP		4
+#define AXIS_BOTTOM		5
 
 const int ISO_LEVEL = 0;
 const float S = 1.0f / 256.0f;
@@ -44,16 +58,16 @@ Vector3 operator/(const Vector3& lhs, const float& rhs)
  */
 inline Vector3 GetIntersection(Vector3& p1, Vector3& p2, float d1, float d2)
 {
-	if (fabs(d1 - d2) < 0.0001f)
-		return (p1 + p2) * 0.5f;
+	//if (fabs(d1 - d2) < 0.0001f)
+	//	return (p1 + p2) * 0.5f;
 
 	return p1 + -d1 * (p2 - p1) / (d2 - d1);
 }
 
-inline Vector3 GetEdge(Vector3 offset, sbyte* data, const Vector3* corners, int* indices, int a, int b)
+inline Vector3 GetEdge(Vector3 offset, sbyte* data, Vector3 cornerA, Vector3 cornerB)
 {
-	var offsetA = offset + corners[indices[a]];
-	var offsetB = offset + corners[indices[b]];
+	var offsetA = offset + cornerA;
+	var offsetB = offset + cornerB;
 
 	// get data
 	var sampleA = data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
@@ -121,22 +135,34 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
 	}
 }
 
-void MCMesher::generateSkirt(const Vector3& position, const Vector3& offset, const Vector3* corners, int axis, float lod, sbyte* data)
+void MCMesher::generateSkirt(const Vector3& position, const Vector3& offset, float lod, uint8_t axis, sbyte* data)
 {
-	var indices = MSCornerIndices[axis];
+	var corners = MSCornerOffsets[axis];
+
 	byte caseIndex = 0;
+	Vector3 edges[8];
 
 	for (auto i = 0; i < 4; i++) // TODO: unroll
 	{
 		if (data[INDEX_3D(
-			static_cast<int>(offset.x + corners[indices[i]].x),
-			static_cast<int>(offset.y + corners[indices[i]].y),
-			static_cast<int>(offset.z + corners[indices[i]].z),
+			static_cast<int>(offset.x + corners[i].x),
+			static_cast<int>(offset.y + corners[i].y),
+			static_cast<int>(offset.z + corners[i].z),
 			SpaceObjectChunk::ChunkDataSize)] < ISO_LEVEL)
 		{
 			caseIndex |= 1 << i;
 		}
 	}
+
+	edges[0] = offset + corners[0];
+	edges[2] = offset + corners[1];
+	edges[4] = offset + corners[2];
+	edges[6] = offset + corners[3];
+
+	edges[1] = GetEdge(offset, data, corners[0], corners[1]);
+	edges[3] = GetEdge(offset, data, corners[1], corners[2]);
+	edges[5] = GetEdge(offset, data, corners[2], corners[3]);
+	edges[7] = GetEdge(offset, data, corners[3], corners[0]);
 
 	for (var i = 0; i < 15; i++)
 	{
@@ -145,21 +171,14 @@ void MCMesher::generateSkirt(const Vector3& position, const Vector3& offset, con
 		if (edge == -1)
 			return;
 
-		var offsetA = offset + MSEdgeOffsets[edge][0]; // TODO: Use indices
-		var offsetB = offset + MSEdgeOffsets[edge][1];
-
-		// get data
-		var sampleA = data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
-		var sampleB = data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
-
-		var vertexPosition = position + GetIntersection(offsetA, offsetB, sampleA, sampleB) * lod;
+		var vertexPosition = position + edges[edge] * lod;
 
 		m_vertices.add(vertexPosition);
 		m_indices.add(m_vertices.count() - 1);
 	}
 }
 
-void MCMesher::generateCells(sbyte* data, const Vector3& position, float lod)
+void MCMesher::generateCells(sbyte* data, const Vector3& position, float lod, uint8_t borders)
 {
 	// generate all cells
 	ITERATE_CELLS_BEGIN(x, y, z)
@@ -174,45 +193,47 @@ void MCMesher::generateCells(sbyte* data, const Vector3& position, float lod)
 		if (!cell->isFullOrEmpty)
 		{
 			generateCube(cell, position, offset, lod, data);
+
+			if (borders > 0)
+			{
+				if (z == SpaceObjectChunk::ChunkSize - 1) // AXIS_FRONT
+				{
+					generateSkirt(position, offset, lod, AXIS_FRONT, data);
+				}
+				if(z == 0) // AXIS_BACK
+				{
+					generateSkirt(position, offset, lod, AXIS_BACK, data);
+				}
+				if (x == 0) // AXIS_BACK
+				{
+					generateSkirt(position, offset, lod, AXIS_LEFT, data);
+				}
+				if (x == SpaceObjectChunk::ChunkSize - 1) // AXIS_RIGHT
+				{
+					generateSkirt(position, offset, lod, AXIS_RIGHT, data);
+				}
+				if (y == SpaceObjectChunk::ChunkSize - 1) // AXIS_TOP
+				{
+					generateSkirt(position, offset, lod, AXIS_TOP, data);
+				}
+				if (y == 0) // AXIS_BOTTOM
+				{
+					generateSkirt(position, offset, lod, AXIS_BOTTOM, data);
+				}
+			}
 		}
 	}
 	ITERATE_CELLS_END()
-}
-
-void MCMesher::generateSkirts(sbyte* data, const Vector3& position, float lod)
-{
-	const Vector3 backCorners[] = {
-		Vector3(1.0f, 0.0f, 0.0f), // 0
-		Vector3(0.0f, 0.0f, 0.0f), // 1
-		Vector3(1.0f, 1.0f, 0.0f), // 2
-		Vector3(0.0f, 1.0f, 0.0f), // 3
-	};
-
-	// generate back/front node skirts
-	for (auto y = 0; y < SpaceObjectChunk::ChunkSize; y++)
-	for (auto x = 0; x < SpaceObjectChunk::ChunkSize; x++)
-	{
-		const var offset = Vector3(float(x), float(y), 0.0f);
-		const var cell = &GET_CELL(x, y, 0);
-
-		if (cell->isFullOrEmpty)
-			continue;
-
-		generateSkirt(position, offset, backCorners, 1, lod, data);
-	}
 }
 
 void MCMesher::generate(const Vector3& position, int lod, Ptr<Mesh>& mesh, sbyte* data)
 {
 	var lodF = static_cast<float>(lod);
 
-	// generate cells
-	generateCells(data, position, lodF);
-	
-	// generate skirts
-	if(lod == 2)
-		generateSkirts(data, position, lodF);
+	// TODO: select which borders need skirts
 
+		generateCells(data, position, lodF, 1);
+	
 	if (m_vertices.count() == 0)
 	{
 		// cleanup

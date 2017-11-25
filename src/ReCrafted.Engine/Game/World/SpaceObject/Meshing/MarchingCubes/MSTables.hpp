@@ -5,30 +5,43 @@
 #ifndef MSTABLES_H
 #define MSTABLES_H
 
-int MSCornerIndices[6][4] =
-{
-	{ 7, 6, 2, 3 }, // front TODO: clamp to 4
-
-	{ 3, 2, 0, 1 }, // back
-
-	{ 4, 7, 3, 0 }, // left
-	{ 6, 5, 1, 2 }, // right
-	{ 4, 5, 6, 7 }, // top
-	{ 3, 2, 1, 0 }  // bottom
-};
-
-Vector3 MSEdgeOffsets[8][2] = {
-	{ Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f) },
-	{ Vector3(0.0f, 1.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f) },
-
-	{ Vector3(1.0f, 1.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f) },
-	{ Vector3(1.0f, 1.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f) },
-
-	{ Vector3(1.0f, 0.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f) },
-	{ Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f) },
-
-	{ Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f) },
-	{ Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f) }
+Vector3 MSCornerOffsets[6][4] = {
+	{ // front
+		{ Vector3(1.0f, 1.0f, 1.0f) },
+		{ Vector3(0.0f, 1.0f, 1.0f) },
+		{ Vector3(0.0f, 0.0f, 1.0f) },
+		{ Vector3(1.0f, 0.0f, 1.0f) }
+	},
+	{ // back
+		{ Vector3(0.0f, 1.0f, 0.0f) },
+		{ Vector3(1.0f, 1.0f, 0.0f) },
+		{ Vector3(1.0f, 0.0f, 0.0f) },
+		{ Vector3(0.0f, 0.0f, 0.0f) }
+	},
+	{ // left
+		{ Vector3(0.0f, 1.0f, 1.0f) },
+		{ Vector3(0.0f, 1.0f, 0.0f) },
+		{ Vector3(0.0f, 0.0f, 0.0f) },
+		{ Vector3(0.0f, 0.0f, 1.0f) }
+	},
+	{ // right
+		{ Vector3(1.0f, 1.0f, 0.0f) },
+		{ Vector3(1.0f, 1.0f, 1.0f) },
+		{ Vector3(1.0f, 0.0f, 1.0f) },
+		{ Vector3(1.0f, 0.0f, 0.0f) }
+	},
+	{ // top
+		{ Vector3(0.0f, 1.0f, 0.0f) },
+		{ Vector3(0.0f, 1.0f, 1.0f) },
+		{ Vector3(1.0f, 1.0f, 1.0f) },
+		{ Vector3(1.0f, 1.0f, 0.0f) }
+	},
+	{ // bottom
+		{ Vector3(0.0f, 0.0f, 0.0f) },
+		{ Vector3(1.0f, 0.0f, 0.0f) },
+		{ Vector3(1.0f, 0.0f, 1.0f) },
+		{ Vector3(0.0f, 0.0f, 1.0f) }
+	}
 };
 
 int MSEdges[16] =

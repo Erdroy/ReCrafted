@@ -47,10 +47,9 @@ private:
 
 	FORCEINLINE void generateCell(Cell* cell, int x, int y, int z, sbyte* data) const;
 	void generateCube(Cell* cell, const Vector3& position, const Vector3& offset, float lod, sbyte* data);
-	void generateSkirt(const Vector3& position, const Vector3& offset, const Vector3* corners, int axis, float lod, sbyte* data);
-
-	FORCEINLINE void generateCells(sbyte* data, const Vector3& position, float lod);
-	FORCEINLINE void generateSkirts(sbyte* data, const Vector3& position, float lod);
+	void generateSkirt(const Vector3& position, const Vector3& offset, float lod, uint8_t axis, sbyte* data);
+	
+	FORCEINLINE void generateCells(sbyte* data, const Vector3& position, float lod, uint8_t borders);
 
 public:
 	/**
