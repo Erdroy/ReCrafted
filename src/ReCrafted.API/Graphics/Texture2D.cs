@@ -10,15 +10,24 @@ namespace ReCrafted.API.Graphics
     /// </summary>
     public partial class Texture2D
     {
-        public Texture2D(string fileName)
+        /// <summary>
+        /// Creates new Texture2D from PNG file.
+        /// </summary>
+        /// <param name="fileName">The PNG file path.</param>
+        /// <exception cref="ReCraftedException">Exception is thrown when the target PNG file was unable to load.</exception>
+        public static Texture2D Create(string fileName)
         {
-            LoadFromFile(fileName);
+            var texture = Create();
+            texture.LoadFromFile(fileName);
+            texture.Apply();
+            return texture;
         }
 
         /// <summary>
         /// Loads Texture2D from PNG file.
         /// </summary>
         /// <param name="fileName">The PNG file relative path (to game executable).</param>
+        /// <exception cref="ReCraftedException">Exception is thrown when the target PNG file was unable to load.</exception>
         public void LoadFromFile(string fileName)
         {
             if (!File.Exists(fileName))

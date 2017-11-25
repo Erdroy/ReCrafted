@@ -25,7 +25,7 @@ namespace ReCrafted.Game
             // register unhandled exception handler
             Exceptions.RegisterUEHandler();
 
-            _crosshairTexture = Texture2D.CreateAndLoad("../assets/textures/crosshair.png");
+            _crosshairTexture = Texture2D.Create("../assets/textures/crosshair.png");
 
             _testFont = Font.Load("../assets/fonts/VeraMono.ttf", 12);
 
@@ -34,6 +34,7 @@ namespace ReCrafted.Game
 
             var camera = Entity.Create("MainCamera");
             camera.Position = new Vector3(8.5f, 930.0f, 14.0f);
+
             FreeCameraController.Current = camera.AddScript<FreeCameraController>();
             
             // Load game info

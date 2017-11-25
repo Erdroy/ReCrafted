@@ -50,26 +50,6 @@ namespace Internal
 	{
 		return Object::createInstance<Texture2D>("ReCrafted.API.Graphics", "Texture2D")->getManagedPtr();
 	}
-
-	MonoObject* createTexture2DAndLoadFile(MonoString* string)
-	{
-		auto texture = Object::createInstance<Texture2D>("ReCrafted.API.Graphics", "Texture2D");
-
-		// convert monostring to ansi string
-		MONO_ANSI_ERR();
-		auto str = MONO_ANSI(string);
-
-		// load from file
-		texture->loadFile(str);
-
-		// free ansi string
-		MONO_ANSI_FREE(str);
-
-		// apply loaded file to texture
-		texture->apply();
-
-		return texture->getManagedPtr();
-	}
 }
 
 void Texture2D::initRuntime()
@@ -103,16 +83,6 @@ void Texture2D::initRuntime()
 			{
 				API_BIND("ReCrafted.API.Graphics.Texture2D::Create", &Internal::createTexture2D);
 
-				API_RETURN("Texture2D");
-			}
-			API_METHOD_END();
-
-			API_COMMENT("Creates new Texture2D and loads given file.");
-			API_METHOD(PUBLIC, STATIC, "CreateAndLoad", EXTERN);
-			{
-				API_BIND("ReCrafted.API.Graphics.Texture2D::CreateAndLoad", &Internal::createTexture2DAndLoadFile);
-
-				API_PARAM("string", "fileName");
 				API_RETURN("Texture2D");
 			}
 			API_METHOD_END();
