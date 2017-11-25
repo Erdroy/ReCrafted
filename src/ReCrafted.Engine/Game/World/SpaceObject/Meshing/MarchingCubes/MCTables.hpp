@@ -19,16 +19,6 @@ int MCCornerDeltasInt[8][3] =
 	{ 0, 1, 1 }  // 7
 };
 
-int MCCornerIndices[6][4] =
-{
-	{ 7, 6, 2, 3 }, // front
-	{ 5, 4, 0, 1 }, // back
-	{ 4, 7, 3, 0 }, // left
-	{ 6, 5, 1, 2 }, // right
-	{ 4, 5, 6, 7 }, // top
-	{ 3, 2, 1, 0 }  // bottom
-};
-
 Vector3 MCCornerDeltas[8] =
 {
 	Vector3(0.0f, 0.0f, 0.0f),
