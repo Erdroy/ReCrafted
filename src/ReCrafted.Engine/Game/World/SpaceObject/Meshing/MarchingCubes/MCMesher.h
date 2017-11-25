@@ -22,6 +22,7 @@ private:
 	public:
 		//Vector3 vertexPosition;
 		//uint vertexIndex;
+		Vector3 vertexNormal;
 
 		byte caseIndex;
 		bool isFullOrEmpty;
@@ -47,7 +48,7 @@ private:
 
 	FORCEINLINE void generateCell(Cell* cell, int x, int y, int z, sbyte* data) const;
 	void generateCube(Cell* cell, const Vector3& position, const Vector3& offset, float lod, sbyte* data);
-	void generateSkirt(const Vector3& position, const Vector3& offset, float lod, uint8_t axis, sbyte* data);
+	void generateSkirt(Cell* cell, const Vector3& position, const Vector3& offset, float lod, uint8_t axis, sbyte* data);
 	
 	FORCEINLINE void generateCells(sbyte* data, const Vector3& position, float lod, uint8_t borders);
 

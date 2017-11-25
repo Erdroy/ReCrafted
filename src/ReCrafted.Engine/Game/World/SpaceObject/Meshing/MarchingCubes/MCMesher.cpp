@@ -76,6 +76,11 @@ inline Vector3 GetEdge(Vector3 offset, sbyte* data, Vector3 cornerA, Vector3 cor
 	return GetIntersection(offsetA, offsetB, sampleA, sampleB);
 }
 
+inline float GetVoxel(sbyte* data, const Vector3& point)
+{
+	return data[INDEX_3D(int(point.x), int(point.y), int(point.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
+}
+
 void MCMesher::clean()
 {
 	// cleanup all arrays
@@ -107,20 +112,23 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
 {
 	// this function is called when this cell is not full and/or empty
 
-	for (auto i = 0; i < 15; i++) // NOTE: we can use 15 as every 16th edge case is '-1' (no vertices)
+	var startIndex = m_vertices.count();
+	var triangleCount = 0;
+
+	for (auto i = 0; i < 15; i++)
 	{
 		auto edge = MCEdgesTable[cell->caseIndex][i];
 
 		// check if this case has vertices
 		if (edge == -1)
-			return;
+			break;
 
 		var offsetA = offset + MCEdgeOffsets[edge][0];
 		var offsetB = offset + MCEdgeOffsets[edge][1];
 
 		// get data
-		var sampleA = data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
-		var sampleB = data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
+		var sampleA = GetVoxel(data, offsetA);
+		var sampleB = GetVoxel(data, offsetB);
 
 		var vertexPosition = position + GetIntersection(offsetA, offsetB, sampleA, sampleB) * lod;
 
@@ -130,12 +138,43 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
 		m_vertices.add(vertexPosition);
 		m_indices.add(m_vertices.count() - 1);
 
-		//cell->vertexPosition = vertexPosition;
-		//cell->vertexIndex = m_vertices.count() - 1;
+		m_uvs.add(Vector2::zero());
+		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
+
+		triangleCount++;
 	}
+
+	triangleCount /= 3;
+
+	// clean normal
+	cell->vertexNormal = Vector3::zero();
+
+	// generate normals
+	for(var i = 0; i < triangleCount; i ++)
+	{
+		var p0 = m_vertices[startIndex + i * 3 + 0];
+		var p1 = m_vertices[startIndex + i * 3 + 1];
+		var p2 = m_vertices[startIndex + i * 3 + 2];
+
+		var plane = Plane(p0, p1, p2);
+		plane.normalize();
+
+		m_normals.add(plane.normal);
+		m_normals.add(plane.normal);
+		m_normals.add(plane.normal);
+
+		cell->vertexNormal += plane.normal;
+	}
+
+	if (triangleCount <= 1)
+		return;
+
+	// smooth the cell normal
+	cell->vertexNormal = cell->vertexNormal / static_cast<float>(triangleCount);
+	cell->vertexNormal.normalize();
 }
 
-void MCMesher::generateSkirt(const Vector3& position, const Vector3& offset, float lod, uint8_t axis, sbyte* data)
+void MCMesher::generateSkirt(Cell* cell, const Vector3& position, const Vector3& offset, float lod, uint8_t axis, sbyte* data)
 {
 	var corners = MSCornerOffsets[axis];
 
@@ -144,14 +183,8 @@ void MCMesher::generateSkirt(const Vector3& position, const Vector3& offset, flo
 
 	for (auto i = 0; i < 4; i++) // TODO: unroll
 	{
-		if (data[INDEX_3D(
-			static_cast<int>(offset.x + corners[i].x),
-			static_cast<int>(offset.y + corners[i].y),
-			static_cast<int>(offset.z + corners[i].z),
-			SpaceObjectChunk::ChunkDataSize)] < ISO_LEVEL)
-		{
+		if (GetVoxel(data, offset + corners[i]) < ISO_LEVEL)
 			caseIndex |= 1 << i;
-		}
 	}
 
 	edges[0] = offset + corners[0];
@@ -164,7 +197,7 @@ void MCMesher::generateSkirt(const Vector3& position, const Vector3& offset, flo
 	edges[5] = GetEdge(offset, data, corners[2], corners[3]);
 	edges[7] = GetEdge(offset, data, corners[3], corners[0]);
 
-	for (var i = 0; i < 15; i++)
+	for (var i = 0; i < 12; i++)
 	{
 		var edge = MSEdgesTable[caseIndex][i];
 
@@ -174,7 +207,14 @@ void MCMesher::generateSkirt(const Vector3& position, const Vector3& offset, flo
 		var vertexPosition = position + edges[edge] * lod;
 
 		m_vertices.add(vertexPosition);
+		m_uvs.add(Vector2::zero());
+		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
 		m_indices.add(m_vertices.count() - 1);
+
+		// calculate normal
+		var normal = cell->vertexNormal;
+
+		m_normals.add(normal);
 	}
 }
 
@@ -194,31 +234,39 @@ void MCMesher::generateCells(sbyte* data, const Vector3& position, float lod, ui
 		{
 			generateCube(cell, position, offset, lod, data);
 
+			// generate skirt for this cell
 			if (borders > 0)
 			{
-				if (z == SpaceObjectChunk::ChunkSize - 1) // AXIS_FRONT
+				// TODO: check if skirt can be generated (if `borders` has the axis flag)
+				// AXIS_FRONT
+				if (z == SpaceObjectChunk::ChunkSize - 1)
 				{
-					generateSkirt(position, offset, lod, AXIS_FRONT, data);
+					generateSkirt(cell, position, offset, lod, AXIS_FRONT, data);
 				}
-				if(z == 0) // AXIS_BACK
+				// AXIS_BACK
+				if(z == 0)
 				{
-					generateSkirt(position, offset, lod, AXIS_BACK, data);
+					generateSkirt(cell, position, offset, lod, AXIS_BACK, data);
 				}
-				if (x == 0) // AXIS_BACK
+				// AXIS_BACK
+				if (x == 0)
 				{
-					generateSkirt(position, offset, lod, AXIS_LEFT, data);
+					generateSkirt(cell, position, offset, lod, AXIS_LEFT, data);
 				}
-				if (x == SpaceObjectChunk::ChunkSize - 1) // AXIS_RIGHT
+				// AXIS_RIGHT
+				if (x == SpaceObjectChunk::ChunkSize - 1)
 				{
-					generateSkirt(position, offset, lod, AXIS_RIGHT, data);
+					generateSkirt(cell, position, offset, lod, AXIS_RIGHT, data);
 				}
-				if (y == SpaceObjectChunk::ChunkSize - 1) // AXIS_TOP
+				// AXIS_TOP
+				if (y == SpaceObjectChunk::ChunkSize - 1)
 				{
-					generateSkirt(position, offset, lod, AXIS_TOP, data);
+					generateSkirt(cell, position, offset, lod, AXIS_TOP, data);
 				}
-				if (y == 0) // AXIS_BOTTOM
+				// AXIS_BOTTOM
+				if (y == 0)
 				{
-					generateSkirt(position, offset, lod, AXIS_BOTTOM, data);
+					generateSkirt(cell, position, offset, lod, AXIS_BOTTOM, data);
 				}
 			}
 		}
@@ -230,38 +278,15 @@ void MCMesher::generate(const Vector3& position, int lod, Ptr<Mesh>& mesh, sbyte
 {
 	var lodF = static_cast<float>(lod);
 
-	// TODO: select which borders need skirts
+	// TODO: select which borders need skirts (if lod > 0)
 
-		generateCells(data, position, lodF, 1);
+	generateCells(data, position, lodF, lod > 1 ? 1 : 0);
 	
 	if (m_vertices.count() == 0)
 	{
 		// cleanup
 		clean();
 		return;
-	}
-
-	// Calculate normals
-	for (var i = 0u; i < m_vertices.count(); i += 3)
-	{
-		var p0 = m_vertices[i + 0];
-		var p1 = m_vertices[i + 1];
-		var p2 = m_vertices[i + 2];
-
-		var plane = Plane(p0, p1, p2);
-		plane.normalize();
-
-		m_normals.add(plane.normal);
-		m_normals.add(plane.normal);
-		m_normals.add(plane.normal);
-
-		m_uvs.add(Vector2::zero());
-		m_uvs.add(Vector2::zero());
-		m_uvs.add(Vector2::zero());
-
-		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
-		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
-		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
 	}
 
 	mesh->setVertices(m_vertices.data(), m_vertices.count());
