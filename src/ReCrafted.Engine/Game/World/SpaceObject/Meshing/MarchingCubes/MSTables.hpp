@@ -5,39 +5,16 @@
 #ifndef MSTABLES_H
 #define MSTABLES_H
 
-// TODO: fix corners ('back' already fixed)
 int MSCornerIndices[6][4] =
 {
-	{ 7, 6, 2, 3 }, // front
-	{ 3, 2, 1, 0 }, // back
+	{ 7, 6, 2, 3 }, // front TODO: clamp to 4
+
+	{ 3, 2, 0, 1 }, // back
+
 	{ 4, 7, 3, 0 }, // left
 	{ 6, 5, 1, 2 }, // right
 	{ 4, 5, 6, 7 }, // top
 	{ 3, 2, 1, 0 }  // bottom
-};
-
-int MSCornerDeltasInt[8][3] =
-{
-	{ 0, 0, 0 }, // 0
-	{ 1, 0, 0 }, // 1
-	{ 1, 1, 0 }, // 2
-	{ 0, 1, 0 }, // 3
-	{ 0, 0, 1 }, // 4
-	{ 1, 0, 1 }, // 5
-	{ 1, 1, 1 }, // 6
-	{ 0, 1, 1 }  // 7
-};
-
-Vector3 MSCornerDeltas[8] =
-{
-	Vector3(0.0f, 0.0f, 0.0f), // 0
-	Vector3(1.0f, 0.0f, 0.0f), // 1
-	Vector3(1.0f, 1.0f, 0.0f), // 2
-	Vector3(0.0f, 1.0f, 0.0f), // 3
-	Vector3(0.0f, 0.0f, 1.0f), // 4
-	Vector3(1.0f, 0.0f, 1.0f), // 5
-	Vector3(1.0f, 1.0f, 1.0f), // 6
-	Vector3(0.0f, 1.0f, 1.0f)  // 7
 };
 
 int MSEdges[16] =

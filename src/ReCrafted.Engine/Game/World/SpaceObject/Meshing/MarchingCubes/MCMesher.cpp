@@ -47,10 +47,10 @@ inline Vector3 GetIntersection(Vector3& p1, Vector3& p2, float d1, float d2)
 	return p1 + -d1 * (p2 - p1) / (d2 - d1);
 }
 
-inline Vector3 GetEdge(Vector3 offset, sbyte* data, int* indices, int a, int b)
+inline Vector3 GetEdge(Vector3 offset, sbyte* data, const Vector3* corners, int* indices, int a, int b)
 {
-	var offsetA = offset + MSCornerDeltas[indices[a]];
-	var offsetB = offset + MSCornerDeltas[indices[b]];
+	var offsetA = offset + corners[indices[a]];
+	var offsetB = offset + corners[indices[b]];
 
 	// get data
 	var sampleA = data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
@@ -118,7 +118,7 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
 	}
 }
 
-void MCMesher::generateSkirt(const Vector3& position, const Vector3& offset, int axis, int x, int y, int z, float lod, sbyte* data)
+void MCMesher::generateSkirt(const Vector3& position, const Vector3& offset, const Vector3* corners, int axis, float lod, sbyte* data)
 {
 	var indices = MSCornerIndices[axis];
 	Vector3 intersectionPoints[8];
@@ -128,9 +128,9 @@ void MCMesher::generateSkirt(const Vector3& position, const Vector3& offset, int
 	for (auto i = 0; i < 4; i++) // TODO: unroll
 	{
 		if (data[INDEX_3D(
-			x + MSCornerDeltasInt[indices[i]][0],
-			y + MSCornerDeltasInt[indices[i]][1],
-			z + MSCornerDeltasInt[indices[i]][2],
+			static_cast<int>(offset.x + corners[indices[i]].x),
+			static_cast<int>(offset.y + corners[indices[i]].y),
+			static_cast<int>(offset.z + corners[indices[i]].z),
 			SpaceObjectChunk::ChunkDataSize)] < ISO_LEVEL)
 		{
 			caseIndex |= 1 << i;
@@ -141,17 +141,15 @@ void MCMesher::generateSkirt(const Vector3& position, const Vector3& offset, int
 
 	var edgeCase = MSEdges[caseIndex];
 
-	intersectionPoints[0] = offset + MSCornerDeltas[indices[0]];
-	intersectionPoints[1] = GetEdge(offset, data, indices, 0, 3);
+	intersectionPoints[0] = offset + corners[indices[0]];
+	intersectionPoints[2] = offset + corners[indices[1]];
+	intersectionPoints[4] = offset + corners[indices[2]];
+	intersectionPoints[6] = offset + corners[indices[3]];
 
-	intersectionPoints[2] = offset + MSCornerDeltas[indices[1]];
-	intersectionPoints[3] = GetEdge(offset, data, indices, 1, 2);
-
-	intersectionPoints[4] = offset + MSCornerDeltas[indices[2]];
-	intersectionPoints[5] = GetEdge(offset, data, indices, 2, 1);
-
-	intersectionPoints[6] = offset + MSCornerDeltas[indices[3]];
-	intersectionPoints[7] = GetEdge(offset, data, indices, 3, 0);
+	intersectionPoints[1] = GetEdge(offset, data, corners, indices, 0, 1);
+	intersectionPoints[3] = GetEdge(offset, data, corners, indices, 1, 2);
+	intersectionPoints[5] = GetEdge(offset, data, corners, indices, 2, 3);
+	intersectionPoints[7] = GetEdge(offset, data, corners, indices, 3, 0);
 
 	// TODO: handle case 5 and 10
 	
@@ -191,6 +189,13 @@ void MCMesher::generateCells(sbyte* data, const Vector3& position, float lod)
 
 void MCMesher::generateSkirts(sbyte* data, const Vector3& position, float lod)
 {
+	const Vector3 backCorners[] = {
+		Vector3(1.0f, 0.0f, 0.0f), // 0
+		Vector3(0.0f, 0.0f, 0.0f), // 1
+		Vector3(1.0f, 1.0f, 0.0f), // 2
+		Vector3(0.0f, 1.0f, 0.0f), // 3
+	};
+
 	// generate back/front node skirts
 	for (auto y = 0; y < SpaceObjectChunk::ChunkSize; y++)
 	for (auto x = 0; x < SpaceObjectChunk::ChunkSize; x++)
@@ -203,7 +208,7 @@ void MCMesher::generateSkirts(sbyte* data, const Vector3& position, float lod)
 		if (cell->isFullOrEmpty)
 			continue;
 
-		generateSkirt(position, offset, 1, x, y, z, lod, data);
+		generateSkirt(position, offset, backCorners, 1, lod, data);
 	}
 }
 
