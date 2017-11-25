@@ -7,19 +7,29 @@
 
 #include "Core/Math/Vector3.h"
 
-int CornerDeltasInt[8][3] =
+int MCCornerDeltasInt[8][3] =
 {
-	{ 0, 0, 0 },
-	{ 1, 0, 0 },
-	{ 1, 1, 0 },
-	{ 0, 1, 0 },
-	{ 0, 0, 1 },
-	{ 1, 0, 1 },
-	{ 1, 1, 1 },
-	{ 0, 1, 1 }
+	{ 0, 0, 0 }, // 0
+	{ 1, 0, 0 }, // 1
+	{ 1, 1, 0 }, // 2
+	{ 0, 1, 0 }, // 3
+	{ 0, 0, 1 }, // 4
+	{ 1, 0, 1 }, // 5
+	{ 1, 1, 1 }, // 6
+	{ 0, 1, 1 }  // 7
 };
 
-Vector3 CornerDeltas[8] =
+int MCCornerIndices[6][4] =
+{
+	{ 7, 6, 2, 3 }, // front
+	{ 5, 4, 0, 1 }, // back
+	{ 4, 7, 3, 0 }, // left
+	{ 6, 5, 1, 2 }, // right
+	{ 4, 5, 6, 7 }, // top
+	{ 3, 2, 1, 0 }  // bottom
+};
+
+Vector3 MCCornerDeltas[8] =
 {
 	Vector3(0.0f, 0.0f, 0.0f),
 	Vector3(1.0f, 0.0f, 0.0f),
@@ -31,7 +41,7 @@ Vector3 CornerDeltas[8] =
 	Vector3(0.0f, 1.0f, 1.0f)
 };
 
-Vector3 EdgeVertexOffsets[12][8] = {
+Vector3 MCEdgeVertexOffsets[12][2] = {
 	{ Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f) },
 	{ Vector3(1.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f) },
 	{ Vector3(0.0f, 1.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f) },
@@ -46,7 +56,7 @@ Vector3 EdgeVertexOffsets[12][8] = {
 	{ Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 1.0f, 1.0f) }
 };
 
-int EdgesTable[256][16] = {
+int MCEdgesTable[256][16] = {
 	{ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
 	{ 0, 8, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
 	{ 0, 1, 9, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },

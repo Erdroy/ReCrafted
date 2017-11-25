@@ -6,10 +6,24 @@
 #include "Graphics/Mesh.h"
 #include "VertexCache.h"
 #include "MCTables.hpp"
+#include "MSTables.hpp"
 
 MCMesher* MCMesher::m_instance;
+
+#define ITERATE_CELLS_BEGIN()\
+for (auto y = 0; y < SpaceObjectChunk::ChunkSize; y++) \
+for (auto x = 0; x < SpaceObjectChunk::ChunkSize; x++) \
+for (auto z = 0; z < SpaceObjectChunk::ChunkSize; z++)
+
+#define ITERATE_CELLS_END()
+
+#define GET_CELL(_x, _y, _z) m_cells[INDEX_3D(_x, _y, _z, SpaceObjectChunk::ChunkSize)];
+#define IS_BORDER(_x, _y, _z, _min, _max) _x == _min || _x == _max || _y == _min || _y == _max || _z == _min || _z == _max
+
+const int ISO_LEVEL = 0;
 const float S = 1.0f / 256.0f;
 
+// TODO: move operator overrides into Vector3
 Vector3 operator*(const float& lhs, const Vector3& rhs)
 {
 	return Vector3(rhs.x * lhs, rhs.y * lhs, rhs.z * lhs);
@@ -20,65 +34,232 @@ Vector3 operator/(const Vector3& lhs, const float& rhs)
 	return Vector3(lhs.x / rhs, lhs.y / rhs, lhs.z / rhs);
 }
 
-Vector3 GetIntersection(Vector3& p1, Vector3& p2, float d1, float d2)
+/**
+ * \brief Calculates surface intersection on edge based on two data samples.
+ * \param p1 The first point.
+ * \param p2 The second point.
+ * \param d1 The first point value.
+ * \param d2 The second point value.
+ * \return The intersection of the given points.
+ */
+inline Vector3 GetIntersection(Vector3& p1, Vector3& p2, float d1, float d2)
 {
 	return p1 + -d1 * (p2 - p1) / (d2 - d1);
 }
 
-void MCMesher::generate(Vector3 position, int lod, Ptr<Mesh>& mesh, sbyte* data)
+void MCMesher::clean()
 {
-	var lod_f = static_cast<float>(lod);
+	// cleanup all arrays
+	m_vertices.clear();
+	m_normals.clear();
+	m_colors.clear();
+	m_uvs.clear();
+	m_indices.clear();
 
-	const var count = SpaceObjectChunk::ChunkDataSize;
+	// NOTE: we do not need to cleanup cells as it is not required, 
+	// because generating new cell overrides old data.
+}
 
-	auto vertexIndex = 0u;
-	for (auto y = 0; y < count - 1; y++)
+void MCMesher::generateCell(Cell* cell, int x, int y, int z, sbyte* data) const
+{
+	byte caseIndex = 0;
+
+	for (auto i = 0; i < 8; i++) // TODO: unroll
 	{
-		for (auto x = 0; x < count - 1; x++)
+		if (data[INDEX_3D(x + MCCornerDeltasInt[i][0], y + MCCornerDeltasInt[i][1], z + MCCornerDeltasInt[i][2], SpaceObjectChunk::ChunkDataSize)] < ISO_LEVEL)
+			caseIndex |= 1 << i;
+	}
+
+	cell->isFullOrEmpty = caseIndex == 255 || caseIndex == 0;
+	cell->caseIndex = caseIndex;
+}
+
+void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& offset, float lod, sbyte* data)
+{
+	// this function is called when this cell is not full and/or empty
+
+	for (auto i = 0; i < 15; i++) // NOTE: we can use 15 as every 16th edge case is '-1' (no vertices)
+	{
+		auto edge = MCEdgesTable[cell->caseIndex][i];
+
+		// check if this case has vertices
+		if (edge == -1)
+			return;
+
+		var offsetA = offset + MCEdgeVertexOffsets[edge][0];
+		var offsetB = offset + MCEdgeVertexOffsets[edge][1];
+
+		// get data
+		var sampleA = data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
+		var sampleB = data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
+
+		var vertexPosition = position + GetIntersection(offsetA, offsetB, sampleA, sampleB) * lod;
+
+		// TODO: materials support
+		// TODO: vertex cache (with vertex color per material support)
+
+		m_vertices.add(vertexPosition);
+		m_indices.add(m_vertices.count() - 1);
+
+		//cell->vertexPosition = vertexPosition;
+		//cell->vertexIndex = m_vertices.count() - 1;
+	}
+}
+
+void MCMesher::generateSkirt(const Vector3& position, const Vector3& offset, int axis, int x, int y, int z, float lod, sbyte* data)
+{
+	var indices = MCCornerIndices[axis];
+	Vector3 intersectionPoints[8];
+
+	byte caseIndex = 0;
+
+	// TODO: fix corners
+
+	for (auto i = 0; i < 4; i++) // TODO: unroll
+	{
+		if (data[INDEX_3D(
+			x + MCCornerDeltasInt[indices[i]][0],
+			y + MCCornerDeltasInt[indices[i]][1],
+			z + MCCornerDeltasInt[indices[i]][2],
+			SpaceObjectChunk::ChunkDataSize)] <= ISO_LEVEL)
 		{
-			for (auto z = 0; z < count - 1; z++)
-			{
-				var pos = Vector3(float(x), float(y), float(z));
-
-				byte corners = 0;
-				for (auto i = 0; i < 8; i++)
-				{
-					if (data[INDEX_3D(x + CornerDeltasInt[i][0], y + CornerDeltasInt[i][1], z + CornerDeltasInt[i][2], count)] < 0)
-						corners |= (1 << i);
-				}
-
-				if (corners == 0 || corners == 255)
-					continue;
-
-				var edgeCase = 0;
-
-				for (auto i = 0; i < 15; i++)
-				{
-					auto edge = EdgesTable[corners][edgeCase];
-
-					if (edge == -1)
-						break;
-
-					var offsetA = pos + EdgeVertexOffsets[edge][0];
-					var offsetB = pos + EdgeVertexOffsets[edge][1];
-
-					var sampleA = data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), count)] / 127.0f;
-					var sampleB = data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), count)] / 127.0f;
-
-					var vertexPosition = position + GetIntersection(offsetA, offsetB, sampleA, sampleB) * lod_f;
-
-					m_vertices.add(vertexPosition);
-					m_indices.add(vertexIndex);
-
-					vertexIndex++;
-					edgeCase++;
-				}
-			}
+			caseIndex |= 1 << i;
 		}
 	}
 
-	if (vertexIndex == 0)
+	// TODO: don't generate triangles if we are completely inside and the view point is far away
+
+	var edgeCase = MSEdges[caseIndex];
+
+	intersectionPoints[0] = offset + MCCornerDeltas[indices[0]];
+	intersectionPoints[2] = offset + MCCornerDeltas[indices[1]];
+	intersectionPoints[4] = offset + MCCornerDeltas[indices[2]];
+	intersectionPoints[6] = offset + MCCornerDeltas[indices[3]];
+
+	//if (edgeCase & 1)
+	{
+		var offsetA = offset + MCCornerDeltas[indices[0]];
+		var offsetB = offset + MCCornerDeltas[indices[1]];
+
+		// get data
+		var sampleA = data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
+		var sampleB = data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
+
+		intersectionPoints[1] = GetIntersection(offsetA, offsetB, sampleA, sampleB);
+	}
+
+	//if (edgeCase & 2)
+	{
+		var offsetA = offset + MCCornerDeltas[indices[1]];
+		var offsetB = offset + MCCornerDeltas[indices[2]];
+
+		// get data
+		var sampleA = data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
+		var sampleB = data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
+
+		intersectionPoints[3] = GetIntersection(offsetA, offsetB, sampleA, sampleB);
+	}
+
+	//if (edgeCase & 4)
+	{
+		var offsetA = offset + MCCornerDeltas[indices[2]];
+		var offsetB = offset + MCCornerDeltas[indices[3]];
+
+		// get data
+		var sampleA = data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
+		var sampleB = data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
+
+		intersectionPoints[5] = GetIntersection(offsetA, offsetB, sampleA, sampleB);
+	}
+
+	//if (edgeCase & 8)
+	{
+		var offsetA = offset + MCCornerDeltas[indices[3]];
+		var offsetB = offset + MCCornerDeltas[indices[0]];
+
+		// get data
+		var sampleA = data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
+		var sampleB = data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
+
+		intersectionPoints[7] = GetIntersection(offsetA, offsetB, sampleA, sampleB);
+	}
+
+	// TODO: handle case 5 and 10
+	
+	// add triangles using MCEdgesTable
+	for (var i = 0; MCEdgesTable[edgeCase][i] != -1; i += 3)
+	{
+		for(var j = 0; j < 3; j++)
+		{
+			var edge = MSEdgesTable[edgeCase][i + j];
+
+			var vertexPosition = position + intersectionPoints[edge] * lod;
+
+			m_vertices.add(vertexPosition);
+			m_indices.add(m_vertices.count() - 1);
+		}
+	}
+}
+
+void MCMesher::generateCells(sbyte* data, const Vector3& position, float lod)
+{
+	// generate all cells
+	ITERATE_CELLS_BEGIN()
+	{
+		const var offset = Vector3(float(x), float(y), float(z));
+		const var cell = &GET_CELL(x, y, z);
+
+		// generate cell data
+		generateCell(cell, x, y, z, data);
+
+		// generate cube mesh
+		if (!cell->isFullOrEmpty)
+		{
+			generateCube(cell, position, offset, lod, data);
+		}
+	}
+	ITERATE_CELLS_END()
+}
+
+void MCMesher::generateSkirts(sbyte* data, const Vector3& position, float lod)
+{
+	ITERATE_CELLS_BEGIN()
+	{
+		if (IS_BORDER(x, y, z, 0, SpaceObjectChunk::ChunkSize)) // TODO: check if chunk is near other chunk with other LoD (how to do this in octree?)
+		{
+			const var offset = Vector3(float(x), float(y), float(z));
+			const var cell = &GET_CELL(x, y, z);
+
+			if (cell->isFullOrEmpty)
+				continue;
+
+			// TODO: CRITICAL!!! GET AXIS of current chunk-edge for proper skirts!
+
+			// generate skirt for this cube
+			if(z == 15)
+				generateSkirt(position, offset, 1, x, y, z, lod, data);
+		}
+	}
+	ITERATE_CELLS_END()
+}
+
+void MCMesher::generate(const Vector3& position, int lod, Ptr<Mesh>& mesh, sbyte* data)
+{
+	var lodF = static_cast<float>(lod);
+
+	// generate cells
+	generateCells(data, position, lodF);
+	
+	// generate skirts
+	//if(lod == 2)
+	//	generateSkirts(data, position, lodF);
+
+	if (m_vertices.count() == 0)
+	{
+		// cleanup
+		clean();
 		return;
+	}
 
 	// Calculate normals
 	for (var i = 0u; i < m_vertices.count(); i += 3)
@@ -111,9 +292,6 @@ void MCMesher::generate(Vector3 position, int lod, Ptr<Mesh>& mesh, sbyte* data)
 
 	mesh->applyChanges();
 
-	m_vertices.clear();
-	m_normals.clear();
-	m_colors.clear();
-	m_uvs.clear();
-	m_indices.clear();
+	// cleanup
+	clean();
 }

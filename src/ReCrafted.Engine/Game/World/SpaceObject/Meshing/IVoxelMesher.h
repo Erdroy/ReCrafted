@@ -23,7 +23,7 @@ public:
 	 * \param mesh The mesh that will get the new mesh data.
 	 * \param data The hermite voxel data (in -127 to 127 range).
 	 */
-	virtual void generate(Vector3 position, int lod, Ptr<Mesh>& mesh, sbyte* data) = 0;
+	virtual void generate(const Vector3& position, int lod, Ptr<Mesh>& mesh, sbyte* data) = 0;
 	// TODO: we will need some neighbor (data) info... Maybe use rows instead of whole data from VoxelStorage?
 };
 

@@ -17,11 +17,14 @@ struct RegularCellCache;
 class MCMesher : public IVoxelMesher
 {
 private:
-	struct Cell
+	ALIGN(4) struct Cell
 	{
 	public:
-		Vector3 vertexPosition;
-		uint vertexIndex;
+		//Vector3 vertexPosition;
+		//uint vertexIndex;
+
+		byte caseIndex;
+		bool isFullOrEmpty;
 	};
 
 private:
@@ -39,13 +42,23 @@ private:
 public:
 	virtual ~MCMesher() {}
 
+private:
+	FORCEINLINE void clean();
+
+	FORCEINLINE void generateCell(Cell* cell, int x, int y, int z, sbyte* data) const;
+	void generateCube(Cell* cell, const Vector3& position, const Vector3& offset, float lod, sbyte* data);
+	void generateSkirt(const Vector3& position, const Vector3& offset, int axis, int x, int y, int z, float lod, sbyte* data);
+
+	FORCEINLINE void generateCells(sbyte* data, const Vector3& position, float lod);
+	FORCEINLINE void generateSkirts(sbyte* data, const Vector3& position, float lod);
+
 public:
 	/**
 	* \brief Virtual method for generating a mesh from hermite voxel data.
 	* \param mesh The mesh that will get the new mesh data.
 	* \param data The hermite voxel data (in -127 to 127 range).
 	*/
-	void generate(Vector3 position, int lod, Ptr<Mesh>& mesh, sbyte* data) override;
+	void generate(const Vector3& position, int lod, Ptr<Mesh>& mesh, sbyte* data) override;
 
 public:
 	static MCMesher* getInstance()

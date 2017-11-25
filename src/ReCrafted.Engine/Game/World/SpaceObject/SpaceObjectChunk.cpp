@@ -9,7 +9,7 @@
 #include "Graphics/Mesh.h"
 #include "Graphics/Rendering.h"
 
-float Planet(Vector3& origin, Vector3& position, float radius)
+float Planet(const Vector3& origin, const Vector3& position, float radius)
 {
 	var height = (position - origin).length();
 
@@ -51,10 +51,10 @@ void SpaceObjectChunk::generate()
 		{
 			for (auto z = 0; z < ChunkDataSize; z++)
 			{
-				var pos = Vector3(float(x), float(y), float(z));
+				const var index = INDEX_3D(x, y, z, ChunkDataSize);
 
-				var index = INDEX_3D(x, y, z, ChunkDataSize);
-				var position = nodePosition + pos * lod_f;
+				const var offset = Vector3(float(x), float(y), float(z));
+				const var position = nodePosition + offset * lod_f;
 
 				var value = Planet(objectPosition, position, objectRadius);
 				var byteValue = static_cast<sbyte>(Math::clamp(value * 127.0f, -127.0f, 127.0f));
@@ -65,7 +65,7 @@ void SpaceObjectChunk::generate()
 	}
 
 	// generate mesh
-	MCMesher::getInstance()->generate(nodePosition, lod, m_mesh, m_voxelData); // TODO: 'VoxelProcessor'
+	MCMesher::getInstance()->generate(nodePosition, lod, m_mesh, m_voxelData);
 
 	// upload changes
 	m_mesh->upload();
