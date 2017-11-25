@@ -31,7 +31,7 @@ Vector3 MCCornerDeltas[8] =
 	Vector3(0.0f, 1.0f, 1.0f)
 };
 
-Vector3 MCEdgeVertexOffsets[12][2] = {
+Vector3 MCEdgeOffsets[12][2] = {
 	{ Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f) },
 	{ Vector3(1.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f) },
 	{ Vector3(0.0f, 1.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f) },

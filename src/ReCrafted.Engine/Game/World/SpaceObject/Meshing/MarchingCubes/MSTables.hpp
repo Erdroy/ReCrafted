@@ -17,9 +17,23 @@ int MSCornerIndices[6][4] =
 	{ 3, 2, 1, 0 }  // bottom
 };
 
+Vector3 MSEdgeOffsets[8][2] = {
+	{ Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f) },
+	{ Vector3(0.0f, 1.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f) },
+
+	{ Vector3(1.0f, 1.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f) },
+	{ Vector3(1.0f, 1.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f) },
+
+	{ Vector3(1.0f, 0.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f) },
+	{ Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f) },
+
+	{ Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f) },
+	{ Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f) }
+};
+
 int MSEdges[16] =
 {
-	0x0, // 0000 -1
+	0x0, // 0000
 	0x9, // 0001 0
 	0x3, // 0010 1
 	0xA, // 0011 0 1

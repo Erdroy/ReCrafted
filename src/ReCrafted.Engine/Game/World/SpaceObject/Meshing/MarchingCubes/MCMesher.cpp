@@ -44,6 +44,9 @@ Vector3 operator/(const Vector3& lhs, const float& rhs)
  */
 inline Vector3 GetIntersection(Vector3& p1, Vector3& p2, float d1, float d2)
 {
+	if (fabs(d1 - d2) < 0.0001f)
+		return (p1 + p2) * 0.5f;
+
 	return p1 + -d1 * (p2 - p1) / (d2 - d1);
 }
 
@@ -98,8 +101,8 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
 		if (edge == -1)
 			return;
 
-		var offsetA = offset + MCEdgeVertexOffsets[edge][0];
-		var offsetB = offset + MCEdgeVertexOffsets[edge][1];
+		var offsetA = offset + MCEdgeOffsets[edge][0];
+		var offsetB = offset + MCEdgeOffsets[edge][1];
 
 		// get data
 		var sampleA = data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
@@ -121,8 +124,6 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
 void MCMesher::generateSkirt(const Vector3& position, const Vector3& offset, const Vector3* corners, int axis, float lod, sbyte* data)
 {
 	var indices = MSCornerIndices[axis];
-	Vector3 intersectionPoints[8];
-
 	byte caseIndex = 0;
 
 	for (auto i = 0; i < 4; i++) // TODO: unroll
@@ -137,33 +138,24 @@ void MCMesher::generateSkirt(const Vector3& position, const Vector3& offset, con
 		}
 	}
 
-	// TODO: don't generate triangles if we are completely inside and the view point is far away
-
-	var edgeCase = MSEdges[caseIndex];
-
-	intersectionPoints[0] = offset + corners[indices[0]];
-	intersectionPoints[2] = offset + corners[indices[1]];
-	intersectionPoints[4] = offset + corners[indices[2]];
-	intersectionPoints[6] = offset + corners[indices[3]];
-
-	intersectionPoints[1] = GetEdge(offset, data, corners, indices, 0, 1);
-	intersectionPoints[3] = GetEdge(offset, data, corners, indices, 1, 2);
-	intersectionPoints[5] = GetEdge(offset, data, corners, indices, 2, 3);
-	intersectionPoints[7] = GetEdge(offset, data, corners, indices, 3, 0);
-
-	// TODO: handle case 5 and 10
-	
-	// add triangles using MCEdgesTable
-	for (var i = 0; MCEdgesTable[edgeCase][i] != -1; i += 3)
+	for (var i = 0; i < 15; i++)
 	{
-		for(var j = 0; j < 3; j++)
-		{
-			var vertexOffset = intersectionPoints[MSEdgesTable[edgeCase][i + j]] * lod;
-			var vertexPosition = position + vertexOffset;
+		var edge = MSEdgesTable[caseIndex][i];
 
-			m_vertices.add(vertexPosition);
-			m_indices.add(m_vertices.count() - 1);
-		}
+		if (edge == -1)
+			return;
+
+		var offsetA = offset + MSEdgeOffsets[edge][0]; // TODO: Use indices
+		var offsetB = offset + MSEdgeOffsets[edge][1];
+
+		// get data
+		var sampleA = data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
+		var sampleB = data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
+
+		var vertexPosition = position + GetIntersection(offsetA, offsetB, sampleA, sampleB) * lod;
+
+		m_vertices.add(vertexPosition);
+		m_indices.add(m_vertices.count() - 1);
 	}
 }
 
@@ -200,10 +192,8 @@ void MCMesher::generateSkirts(sbyte* data, const Vector3& position, float lod)
 	for (auto y = 0; y < SpaceObjectChunk::ChunkSize; y++)
 	for (auto x = 0; x < SpaceObjectChunk::ChunkSize; x++)
 	{
-		var z = 0;
-
-		const var offset = Vector3(float(x), float(y), float(z));
-		const var cell = &GET_CELL(x, y, z);
+		const var offset = Vector3(float(x), float(y), 0.0f);
+		const var cell = &GET_CELL(x, y, 0);
 
 		if (cell->isFullOrEmpty)
 			continue;
