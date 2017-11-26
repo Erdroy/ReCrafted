@@ -14,6 +14,11 @@ namespace Internal
 		
 		return font->getManagedPtr();
 	}
+
+	uint getFontSize(Font* font)
+	{
+		return font->getSize();
+	}
 }
 
 void Font::initRuntime()
@@ -36,6 +41,17 @@ void Font::initRuntime()
 				API_PARAM("int", "fontSize");
 
 				API_RETURN("Font");
+			}
+			API_METHOD_END();
+
+			API_COMMENT("Get size of font.");
+			API_METHOD(PUBLIC, STATIC, "GetSize", EXTERN);
+			{
+				API_BIND("ReCrafted.API.Graphics.Font::GetSize", &Internal::getFontSize);
+
+				API_PARAM("IntPtr", "nativePtr");
+
+				API_RETURN("uint");
 			}
 			API_METHOD_END();
 		}

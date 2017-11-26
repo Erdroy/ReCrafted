@@ -97,6 +97,8 @@ public:
 	/// <param name="size"></param>
 	/// <returns></returns>
 	void loadFont(Text fontFile, int size, bool managed = false);
+
+	uint getSize();
 };
 
 #endif // FONT_H

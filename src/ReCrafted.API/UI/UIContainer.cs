@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 
 namespace ReCrafted.API.UI
@@ -56,5 +58,42 @@ namespace ReCrafted.API.UI
         /// Contains all the controls
         /// </summary>
         public IReadOnlyList<UIControl> Controls => _controls;
+
+        //internal
+        internal bool LookForMouseCollision()
+        {
+            if (!Enabled) return true;
+            UIControl mouseControlCollision = null;
+            var mousePoint = Input.CursorPosition;
+            var reversed = Controls.Reverse();
+            foreach (var control in reversed)
+            {
+                if (!control.OnMouseCollision()) continue;
+                if (control.IgnoreMouseCollision) continue;
+                if (!control.Region.Contains(mousePoint) || mouseControlCollision != null && mouseControlCollision != control)
+                {
+                    if (!control.IsMouseOver) continue;
+                    control.IsMouseOver = false;
+                    control.OnMouseExit();
+                }
+                else
+                {
+                    if (!control.IsMouseOver)
+                    {
+                        control.IsMouseOver = true;
+                        control.OnMouseEnter();
+                    }
+                    else
+                    {
+                        control.OnMouseOver();
+                        if (Input.IsKeyDown(Keys.Mouse0))
+                            control.OnMouseClick();
+                    }
+
+                    mouseControlCollision = control;
+                }
+            }
+            return mouseControlCollision == null;
+        }
     }
 }

@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 
-using ReCrafted.API;
+using System;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
@@ -10,13 +10,13 @@ using ReCrafted.API.UI.Controls;
 using ReCrafted.Core;
 using ReCrafted.Core.Locales;
 using ReCrafted.Game.Core;
+using Object = ReCrafted.API.Object;
 
 namespace ReCrafted.Game
 {
     internal class GameMain : API.Core.Game
     {
         private Texture2D _crosshairTexture;
-        private Font _testFont;
 
         protected override void Initialize()
         {
@@ -27,8 +27,8 @@ namespace ReCrafted.Game
 
             _crosshairTexture = Texture2D.Create("../assets/textures/crosshair.png");
 
-            _testFont = Font.Load("../assets/fonts/VeraMono.ttf", 12);
-
+            UIControl.DefaultFont = Font.Load("../assets/fonts/VeraMono.ttf", 12);
+          
             Cursor.Show = false;
             Cursor.Lock = true;
 
@@ -42,23 +42,33 @@ namespace ReCrafted.Game
 
             Locale.SetLocale("Polski");
 
-            //var tests = Entity.Create("Tests");
-            //tests.AddScript<UITests>();
+            var tests = Entity.Create("Tests");
+            tests.AddScript<UITests>();
         }
 
         protected override void Update()
         {
             if (Input.IsKeyDown(Keys.Escape))
             {
-                Cursor.Show = true;
-                Cursor.Lock = false;
+                if (Cursor.Show)
+                {
+                    Cursor.Show = false;
+                    Cursor.Lock = true;
+                }
+                else
+                {
+                    Cursor.Show = true;
+                    Cursor.Lock = false;
+                }
             }
 
+            /*
             if (Input.IsKeyDown(Keys.Mouse0) || Input.IsKeyDown(Keys.Mouse1))
             {
                 Cursor.Show = false;
                 Cursor.Lock = true;
             }
+            */
             
             DebugDraw.Color = new Color(0, 105, 0, 64);
             DebugDraw.DrawCube(Vector3.Zero, Vector3.One);
@@ -76,9 +86,36 @@ namespace ReCrafted.Game
             
         }
 
+        private const bool EnableUiMs = false;
+        private const int UiProcessDebugFrames = 30;
+
+        private static double _uiProcessDebugMs;
+        private static double _uiProcessDebugTotal;
+        private static double _uiProcessDebugLastMs;
+        private static float _uiProcessDebugTime;
+
         protected override void DrawUI()
         {
-            UIPanel.DrawAll();
+            if (EnableUiMs)
+            {
+                var start = DateTime.Now;
+                UIPanel.DrawAll();
+                var last = (DateTime.Now - start).TotalMilliseconds;
+                _uiProcessDebugMs += last;
+                if (_uiProcessDebugTime < 1)
+                    _uiProcessDebugTime += (float)Time.DeltaTime;
+                else
+                {
+                    _uiProcessDebugLastMs = last;
+                    _uiProcessDebugTime = 0f;
+                    _uiProcessDebugTotal = _uiProcessDebugMs / 10;
+                    _uiProcessDebugMs = 0;
+                }
+            }
+            else
+            {
+                UIPanel.DrawAll();
+            }
 
             UIInternal.Color = Color.White;
             var rect = new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
@@ -86,7 +123,15 @@ namespace ReCrafted.Game
             UIInternal.DrawTexture2D(_crosshairTexture.NativePtr, ref rect, ref uvs);
 
             var pos = new Vector2(20.0f, Display.Height - 20.0f);
-            UIInternal.DrawString(_testFont.NativePtr, "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber, ref pos);
+            UIInternal.DrawString(UIControl.DefaultFont.NativePtr,
+                "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber, ref pos);
+
+            if (EnableUiMs)
+            {
+                pos = new Vector2(20.0f, Display.Height - 40.0f);
+                UIInternal.DrawString(UIControl.DefaultFont.NativePtr,
+                    "Ui process took -> " + _uiProcessDebugTotal + " ms / " + UiProcessDebugFrames + " frames (last " + _uiProcessDebugLastMs + " ms )", ref pos);
+            }
         }
 
         protected override void Shutdown()

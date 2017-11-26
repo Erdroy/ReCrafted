@@ -1,7 +1,6 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
 using System;
-using System.Diagnostics;
 using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
 
@@ -26,12 +25,11 @@ namespace ReCrafted.API.UI
         /// <summary>
         /// Recalculates Layout, duh.
         /// </summary>
-        public void Recalculate()
+        /// <param name="parentRegion">The region in which the layout will be calculated.</param>
+        public void Recalculate(RectangleF parentRegion)
         {
-            //var start = DateTime.Now;
-
             //Apply current region of panel with padding to layout region.
-            var newLayoutRegion = Parent.Region;
+            var newLayoutRegion = parentRegion;
             newLayoutRegion.X += Padding.Right;
             newLayoutRegion.Y += Padding.Top;
             newLayoutRegion.Width -= Padding.Right + Padding.Left;
@@ -52,7 +50,6 @@ namespace ReCrafted.API.UI
                         throw new NotImplementedException("DynamicGrid layout is not implemented yet :/");
                     case UILayoutType.Horizontal:
                     {
-
                         var previousControl = index == 0 ? null : Controls[index - 1];
                         var newRegion = new RectangleF(0f, 0f, 0f, 0f)
                         {
@@ -100,7 +97,10 @@ namespace ReCrafted.API.UI
                                     newRegion.Height = PreferredSize.Y;
                             }
                         }
+                        var regionChanged = currentControl.Region != newRegion;
                         currentControl.Region = newRegion;
+                        if (regionChanged)
+                            currentControl.OnRegionChanged();
                         break;
                     }
                     case UILayoutType.Vertical:
@@ -154,15 +154,16 @@ namespace ReCrafted.API.UI
                             }
                         }
 
+                        var regionChanged = currentControl.Region != newRegion;
                         currentControl.Region = newRegion;
+                        if (regionChanged)
+                                currentControl.OnRegionChanged();
                         break;
                     }
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             }
-
-            //Logger.Write($"Layout recalculation took -> {(DateTime.Now - start).TotalMilliseconds}ms.");
         }
 
         /// <summary>
@@ -194,5 +195,40 @@ namespace ReCrafted.API.UI
         /// Space between controls.
         /// </summary>
         public float Space { get; set; }
+
+        public override void OnRegionChanged()
+        {
+            Recalculate(Region);
+        }
+
+        public override bool OnMouseCollision()
+        {
+            return LookForMouseCollision();
+        }
+
+        /// <summary>
+        /// Creates new UILayout.
+        /// </summary>
+        /// <param name="region">The UILayout region.</param>
+        /// <param name="layoutType">The lay-outing type.</param>
+        /// <returns>The newly created layout.</returns>
+        public static UILayout Create(RectangleF region, UILayoutType layoutType)
+        {
+            // construct new panel
+            var layout = new UILayout
+            {
+                Enabled = true,
+                Parent = null,
+                Region = region,
+                Type = layoutType,
+                PreferredSize = new Vector2(region.Width, region.Height),
+                ForceExpandHeigth = false,
+                ForceExpandWidth = false,
+                Padding = new UIPadding(),
+                Space = 0,
+            };
+
+            return layout;
+        }
     }
 }

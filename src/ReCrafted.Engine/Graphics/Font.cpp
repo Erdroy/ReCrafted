@@ -320,3 +320,8 @@ void Font::loadFont(Text fontFile, int size, bool managed)
 	memcpy(m_glyphs, glyphs.data(), glyphs.size() * sizeof Glyph);
 
 }
+
+uint Font::getSize()
+{
+	return m_size;
+}

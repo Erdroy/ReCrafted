@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
 
@@ -20,8 +21,22 @@ namespace ReCrafted.API.UI
         /// </summary>
         public override void Draw()
         {
-            Layout.Recalculate();
-            Layout.Draw();
+            if (Visible)
+            {
+                UIInternal.Color = PanelColor;
+                UIInternal.DrawBox(Region);
+            }
+
+            if (Enabled)
+            {
+                //recalculate current layout
+                if (ApplyLayout)
+                    Layout.Recalculate(Region);
+                //draw layout
+                Layout.Draw();
+                //calculate mouse collisions
+                Layout.LookForMouseCollision();
+            }
         }
 
         // internal
@@ -29,9 +44,6 @@ namespace ReCrafted.API.UI
         {
             foreach (var panel in Panels)
             {
-                if (!panel.Enabled)
-                    continue;
-
                 try
                 {
                     panel.Draw();
@@ -55,6 +67,8 @@ namespace ReCrafted.API.UI
             var panel = new UIPanel
             {
                 Enabled = true,
+                Visible = true,
+                ApplyLayout = true,
                 Parent = null,
                 Region = region,
                 PanelColor = Color.White,
@@ -65,7 +79,9 @@ namespace ReCrafted.API.UI
                     Region = region,
                     PreferredSize = new Vector2(region.Width, region.Height),
                     ForceExpandHeigth = false,
-                    ForceExpandWidth = false
+                    ForceExpandWidth = false,
+                    Padding = new UIPadding(),
+                    Space = 0,
                 }
             };
             
@@ -82,6 +98,16 @@ namespace ReCrafted.API.UI
         /// Contains all controls.
         /// </summary>
         public UILayout Layout { get; protected set; }
+
+        /// <summary>
+        /// Layout of this panel will be applied in to children's.
+        /// </summary>
+        public bool ApplyLayout { get; set; }
+
+        /// <summary>
+        /// Panel is visible.
+        /// </summary>
+        public bool Visible { get; set; }
 
         /// <summary>
         /// Color of the panel.
