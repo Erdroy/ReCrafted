@@ -20,12 +20,6 @@ namespace ReCrafted.API.UI
         /// </summary>
         public override void Draw()
         {
-            if (Visible)
-            {
-                UIInternal.Color = PanelColor;
-                UIInternal.DrawBox(Region);
-            }
-
             Layout.Recalculate();
             Layout.Draw();
         }
@@ -61,7 +55,6 @@ namespace ReCrafted.API.UI
             var panel = new UIPanel
             {
                 Enabled = true,
-                Visible = true,
                 Parent = null,
                 Region = region,
                 PanelColor = Color.White,
@@ -88,12 +81,7 @@ namespace ReCrafted.API.UI
         /// <summary>
         /// Contains all controls.
         /// </summary>
-        public UILayout Layout { get; private set; }
-
-        /// <summary>
-        /// Shows or hides the panel.
-        /// </summary>
-        public bool Visible { get; set; }
+        public UILayout Layout { get; protected set; }
 
         /// <summary>
         /// Color of the panel.

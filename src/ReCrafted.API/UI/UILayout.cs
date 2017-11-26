@@ -13,7 +13,7 @@ namespace ReCrafted.API.UI
     public enum UILayoutType
     {
         Grid,
-        FixedGrid,
+        DynamicGrid,
         Horizontal,
         Vertical
     }
@@ -28,7 +28,7 @@ namespace ReCrafted.API.UI
         /// </summary>
         public void Recalculate()
         {
-            var start = DateTime.Now;
+            //var start = DateTime.Now;
 
             //Apply current region of panel with padding to layout region.
             var newLayoutRegion = Parent.Region;
@@ -48,11 +48,11 @@ namespace ReCrafted.API.UI
                 {
                     case UILayoutType.Grid:
                         throw new NotImplementedException("Grid layout is not implemented yet :/");
-                    case UILayoutType.FixedGrid:
-                        throw new NotImplementedException("FixedGrid layout is not implemented yet :/");
+                    case UILayoutType.DynamicGrid:
+                        throw new NotImplementedException("DynamicGrid layout is not implemented yet :/");
                     case UILayoutType.Horizontal:
                     {
- 
+
                         var previousControl = index == 0 ? null : Controls[index - 1];
                         var newRegion = new RectangleF(0f, 0f, 0f, 0f)
                         {
@@ -101,13 +101,10 @@ namespace ReCrafted.API.UI
                             }
                         }
                         currentControl.Region = newRegion;
-
-                    }
-                    
                         break;
+                    }
                     case UILayoutType.Vertical:
                     {
-               
                         var previousControl = index == 0 ? null : Controls[index - 1];
                         var newRegion = new RectangleF(0f, 0f, 0f, 0f)
                         {
@@ -158,9 +155,8 @@ namespace ReCrafted.API.UI
                         }
 
                         currentControl.Region = newRegion;
-     
-                    }
                         break;
+                    }
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
