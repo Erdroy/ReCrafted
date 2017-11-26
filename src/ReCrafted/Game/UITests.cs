@@ -1,7 +1,9 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
+using ReCrafted.API;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
+using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
 using ReCrafted.API.UI.Controls;
@@ -43,6 +45,9 @@ namespace ReCrafted.Game
             var button2Colors = UIButtonColors.Defaults;
             button2Colors.NormalColor = Color.Orange;
             button2.Colors = button2Colors;
+
+            var boxTexture = Panel.Layout.Add(UIBox.Create(new RectangleF(100, 100, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
+            boxTexture.BoxColor = Color.Aqua;
 
             /*
             for (int i = 0; i < 1000; i++)

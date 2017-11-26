@@ -1,6 +1,7 @@
 // ReCrafted © 2016-2017 Always Too Late
 
 using System;
+using ReCrafted.API;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
@@ -25,23 +26,25 @@ namespace ReCrafted.Game
             // register unhandled exception handler
             Exceptions.RegisterUEHandler();
 
-            _crosshairTexture = Texture2D.Create("../assets/textures/crosshair.png");
-
-            UIControl.DefaultFont = Font.Load("../assets/fonts/VeraMono.ttf", 12);
+            // Load resources.
+            _crosshairTexture = Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "crosshair.png"));
+            UIControl.DefaultFont = Font.Load(Assets.ResolveAssetFilePath(AssetType.Font, "VeraMono.ttf"), 12);
           
             Cursor.Show = false;
             Cursor.Lock = true;
 
+            // Create camera.
             var camera = Entity.Create("MainCamera");
             camera.Position = new Vector3(35.0f, 925.0f, 62.0f);
-
             FreeCameraController.Current = camera.AddScript<FreeCameraController>();
             
             // Load game info
-            GameInfo.FromFile("../assets/gameinfo.json");
+            GameInfo.FromFile(Assets.ResolveAssetFilePath("gameinfo.json"));
 
+            // Apply locale
             Locale.SetLocale("Polski");
 
+            // Test ui script
             var tests = Entity.Create("Tests");
             tests.AddScript<UITests>();
         }
