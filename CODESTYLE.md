@@ -284,23 +284,97 @@ TODO
 # 7. Layout/Members' order in source code files
 Layout for all source code files:
 
-- usings
-- namespace
-- struct/class
+```CSharp
+// ReCrafted © 2016-2017 Always Too Late
 
-- inner classes/structs/enums...
+using System;
 
-- private static readonly variable
-- private static variable
-- private variable
-- public variable
-
-- override method
-- public method
-- private method
-
-- private static method
-- public static method
-
-- public property
-- public static property
+namespace NAMESPACE
+{
+  /// <summary>
+  /// Some summary.
+  /// </summary>
+  access modifier Name
+  {
+    /// <summary>
+    /// Some summary.
+    /// </summary>
+    access modifier InnerStruct {}
+    
+    private static readonly SomeVariable;
+    private static _someVariable;
+    private int _someVariable;
+    
+    /// <summary>
+    /// Some summary.
+    /// </summary>
+    public int SomeVariable;
+    
+    /// <summary>
+    /// Some summary.
+    /// </summary>
+    public PublicCtor() {}
+    
+    /// <summary>
+    /// Some summary.
+    /// </summary>
+    public ~PublicDtor() {}
+    
+    private PrivateCtor() {}
+    
+    private ~PrivateDtor() {}
+    
+    /// <summary>
+    /// Some summary.
+    /// </summary>
+    override SomeFunction() {}
+    
+    /// <summary>
+    /// Some summary.
+    /// </summary>
+    public SomeFunction() {}
+    
+    /// <summary>
+    /// Some summary.
+    /// </summary>
+    private SomeFunction() {}
+    
+    /// <summary>
+    /// Some summary.
+    /// </summary>
+    public static SomeFunction() {}
+    
+    private static SomeFunction() {}
+    
+    /// <summary>
+    /// Some summary.
+    /// </summary>
+    public int SomeProperty { get; set; }
+    
+    /// <summary>
+    /// Some summary.
+    /// </summary>
+    public int SomeProperty { get; private set; }
+    
+    /// <summary>
+    /// Some summary.
+    /// </summary>
+    public int SomeProperty { get; protected set; }
+    
+    /// <summary>
+    /// Some summary.
+    /// </summary>
+    public static int SomeProperty { get; set; }
+    
+    /// <summary>
+    /// Some summary.
+    /// </summary>
+    public static int SomeProperty { get; private set; }
+    
+    /// <summary>
+    /// Some summary.
+    /// </summary>
+    public static int SomeProperty { get; protected set; }
+  }
+}
+```
