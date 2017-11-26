@@ -9,7 +9,12 @@ externalproject "ReCrafted.API"
    uuid "9D637328-3340-4344-B0AD-710749C1AD08"
    kind "SharedLib"
    language "C#"
-
+externalproject "ReCrafted.VoxelEditor"
+   location (path.join(ROOT_DIR, "src/ReCrafted.VoxelEditor"))
+   uuid "F42BA546-F379-4D44-B404-A096EF0FC363"
+   kind "WindowedApp"
+   language "C#"
+   
 --[[
 externalproject "ReCrafted.APIBuilder"
    location (path.join(ROOT_DIR, "src/ReCrafted.APIBuilder"))

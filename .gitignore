@@ -32,3 +32,5 @@ ReCrafted.NET.VC.db
 ReCrafted.NET.VC.VC.opendb
 libs_prebuilt.zip
 src/ReCrafted.ShaderCompiler/Debug/
+src/ReCrafted.VoxelEditor/bin/
+src/ReCrafted.VoxelEditor/obj/
