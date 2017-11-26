@@ -305,6 +305,8 @@ namespace NAMESPACE
     private static _someVariable;
     private int _someVariable;
     
+    // internal ones...
+    
     /// <summary>
     /// Some summary.
     /// </summary>
@@ -320,6 +322,8 @@ namespace NAMESPACE
     /// </summary>
     public ~PublicDtor() {}
     
+    // internal ones...
+    
     private PrivateCtor() {}
     
     private ~PrivateDtor() {}
@@ -334,15 +338,19 @@ namespace NAMESPACE
     /// </summary>
     public SomeFunction() {}
     
-    /// <summary>
-    /// Some summary.
-    /// </summary>
+    // internal ones...
+    
     private SomeFunction() {}
     
     /// <summary>
     /// Some summary.
     /// </summary>
     public static SomeFunction() {}
+    
+    /// <summary>
+    /// Some summary.
+    /// </summary>
+    internal static SomeFunction() {}
     
     private static SomeFunction() {}
     
@@ -361,6 +369,8 @@ namespace NAMESPACE
     /// </summary>
     public int SomeProperty { get; protected set; }
     
+    // internal ones...
+    
     /// <summary>
     /// Some summary.
     /// </summary>
@@ -375,6 +385,8 @@ namespace NAMESPACE
     /// Some summary.
     /// </summary>
     public static int SomeProperty { get; protected set; }
+    
+    // internal ones...
   }
 }
 ```
