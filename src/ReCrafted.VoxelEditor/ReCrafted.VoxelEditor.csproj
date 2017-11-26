@@ -67,7 +67,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\ApplicationBase.cs" />
+    <Compile Include="Core\Input.cs" />
     <Compile Include="Core\VoxelEditorApp.cs" />
+    <Compile Include="Graphics\Display.cs" />
     <Compile Include="Graphics\UI.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

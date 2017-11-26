@@ -70,9 +70,6 @@ namespace ReCrafted.VoxelEditor.Rendering
 
         public void BeginFrame()
         {
-            // do application events
-            Application.DoEvents();
-
             // set everything
             DeviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
 

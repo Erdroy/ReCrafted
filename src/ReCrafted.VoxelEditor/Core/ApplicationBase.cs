@@ -40,6 +40,7 @@ namespace ReCrafted.VoxelEditor.Core
         /// </summary>
         public void Dispose()
         {
+            Current = null;
             IsRunning = false;
         }
 
