@@ -6,45 +6,23 @@ using ReCrafted.API.Mathematics;
 
 namespace ReCrafted.API.UI.Controls
 {
-    public delegate void ButtonClick();
-
     /// <summary>
-    /// Colors of the button.
+    /// Delegate for UIButton click event.
     /// </summary>
-    public struct UIButtonColors
-    {
-        /// <summary>
-        /// Normal color of button.
-        /// </summary>
-        public Color NormalColor { get; set; }
-
-        /// <summary>
-        /// Color of button when mouse is over.
-        /// </summary>
-        public Color OverColor { get; set; }
-
-        /// <summary>
-        /// Color of button when button is clicked.
-        /// </summary>
-        public Color ClickColor { get; set; }
-
-        /// <summary>
-        /// Default set of button colors.
-        /// </summary>
-        public static UIButtonColors Defaults = new UIButtonColors
-        {
-            NormalColor = Color.White,
-            OverColor = Color.Gray,
-            ClickColor = Color.DarkGray
-        };
-    }
+    public delegate void ButtonClick();
 
     /// <summary>
     /// UIButton control.
     /// </summary>
     public class UIButton : UIControl
     {
+        //current button color
         private Color _color;
+
+        /// <summary>
+        /// Delegate will be invoked, when button has been clicked.
+        /// </summary>
+        public ButtonClick OnClick;
 
         public override void OnMouseEnter()
         {
@@ -80,23 +58,6 @@ namespace ReCrafted.API.UI.Controls
             UIInternal.Color = _color;
             UIInternal.DrawBox(Region);
         }
-
-        public UIButtonColors Colors { get; set; }
-
-        /// <summary>
-        /// Colors on button will be changed smoothly.
-        /// </summary>
-        public bool SmoothColors { get; set; }
-
-        /// <summary>
-        /// Speed of smooth translation.
-        /// </summary>
-        public float SmoothTranslation { get; set; }
-
-        /// <summary>
-        /// Delegate will be invoked, when button has been clicked.
-        /// </summary>
-        public ButtonClick OnClick;
 
         private UIButton() { }
 
@@ -150,5 +111,20 @@ namespace ReCrafted.API.UI.Controls
                 Parent = null
             };
         }
+
+        /// <summary>
+        /// Colors of button.
+        /// </summary>
+        public UIButtonColors Colors { get; set; }
+
+        /// <summary>
+        /// Colors on button will be changed smoothly.
+        /// </summary>
+        public bool SmoothColors { get; set; }
+
+        /// <summary>
+        /// Speed of smooth translation.
+        /// </summary>
+        public float SmoothTranslation { get; set; }
     }
 }

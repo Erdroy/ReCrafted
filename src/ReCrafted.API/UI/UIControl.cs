@@ -11,50 +11,14 @@ namespace ReCrafted.API.UI
     public abstract class UIControl
     {
         /// <summary>
-        /// Default font of all new controls that use font.
-        /// </summary>
-        public static Font DefaultFont { get; set; }
-
-        /// <summary>
         /// Draws all controls.
         /// </summary>
         public abstract void Draw();
 
         /// <summary>
-        /// The parent control.
-        /// </summary>
-        public UIControl Parent { get; internal set; }
-
-        /// <summary>
-        /// The control's region in pixels.
-        /// </summary>
-        public RectangleF Region { get; set; }
-
-        /// <summary>
-        /// Control enable state.
-        /// </summary>
-        public bool Enabled { get; set; }
-
-        /// <summary>
         /// When region of control has been changed by his parent.
         /// </summary>
         public virtual void OnRegionChanged() { }
-
-        /// <summary>
-        /// Is this control ignore the mouse collision?
-        /// </summary>
-        public bool IgnoreMouseCollision { get; set; }
-
-        /// <summary>
-        /// Is mouse currently over this control?
-        /// </summary>
-        public bool IsMouseOver { get; internal set; }
-
-        //internal
-        public virtual bool OnMouseCollision()
-        {
-            return true;      
-        }
 
         /// <summary>
         /// When mouse will enter this control.
@@ -75,5 +39,39 @@ namespace ReCrafted.API.UI
         /// When mouse will click this control.
         /// </summary>
         public virtual void OnMouseClick() { }
+
+        // when mouse collision is calculated, every controll have checks his childres (if exists) if they collide with mouse,
+        // if so method should return false, and then system will stop search for mouse collision at this point
+        internal virtual bool OnMouseCollision() { return true; }
+
+        /// <summary>
+        /// The control's region in pixels.
+        /// </summary>
+        public RectangleF Region { get; set; }
+
+        /// <summary>
+        /// Control enable state.
+        /// </summary>
+        public bool Enabled { get; set; }
+
+        /// <summary>
+        /// Is this control ignore the mouse collision?
+        /// </summary>
+        public bool IgnoreMouseCollision { get; set; }
+
+        /// <summary>
+        /// The parent control.
+        /// </summary>
+        public UIControl Parent { get; internal set; }
+
+        /// <summary>
+        /// Is mouse currently over this control?
+        /// </summary>
+        public bool IsMouseOver { get; internal set; }
+
+        /// <summary>
+        /// Default font of all new controls that use font.
+        /// </summary>
+        public static Font DefaultFont { get; set; }
     }
 }

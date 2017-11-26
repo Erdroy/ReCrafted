@@ -13,7 +13,13 @@ namespace ReCrafted.API.UI
     /// </summary>
     public class UIContainer : UIControl
     {
+        // actual list of control
         private readonly List<UIControl> _controls = new List<UIControl>();
+
+        /// <summary>
+        /// Contains all the controls
+        /// </summary>
+        public IReadOnlyList<UIControl> Controls => _controls;
 
         /// <summary>
         /// Draws all controls.
@@ -54,12 +60,7 @@ namespace ReCrafted.API.UI
             _controls.Remove(instance);
         }
 
-        /// <summary>
-        /// Contains all the controls
-        /// </summary>
-        public IReadOnlyList<UIControl> Controls => _controls;
-
-        //internal
+        // some stuff with mouse collision on controls
         internal bool LookForMouseCollision()
         {
             if (!Enabled) return true;

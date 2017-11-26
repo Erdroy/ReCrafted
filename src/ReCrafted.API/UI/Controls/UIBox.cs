@@ -10,6 +10,8 @@ namespace ReCrafted.API.UI.Controls
     /// </summary>
     public class UIBox : UIControl
     {
+        private UIBox() { }
+
         public override void Draw()
         {
             UIInternal.Color = BoxColor;
@@ -22,18 +24,6 @@ namespace ReCrafted.API.UI.Controls
                 UIInternal.DrawTexture2D(BoxTexture.NativePtr, ref region, ref uvs);
             }
         }
-
-        /// <summary>
-        /// Box texture.
-        /// </summary>
-        public Texture2D BoxTexture { get; set; }
-
-        /// <summary>
-        /// Box color.
-        /// </summary>
-        public Color BoxColor { get; set; }
-
-        private UIBox() { }
 
         /// <summary>
         /// Creates new UIBox.
@@ -116,5 +106,15 @@ namespace ReCrafted.API.UI.Controls
                 Parent = null
             };
         }
+
+        /// <summary>
+        /// Box texture.
+        /// </summary>
+        public Texture2D BoxTexture { get; set; }
+
+        /// <summary>
+        /// Box color.
+        /// </summary>
+        public Color BoxColor { get; set; }
     }
 }

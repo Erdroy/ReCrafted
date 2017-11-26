@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
 
@@ -14,6 +13,7 @@ namespace ReCrafted.API.UI
     /// </summary>
     public class UIPanel : UIControl
     {
+        // actual list of all panels in ui.
         private static readonly List<UIPanel> Panels = new List<UIPanel>();
 
         /// <summary>
@@ -39,7 +39,9 @@ namespace ReCrafted.API.UI
             }
         }
 
-        // internal
+        /// <summary>
+        /// Draws all panels.
+        /// </summary>
         internal static void DrawAll()
         {
             foreach (var panel in Panels)
@@ -95,11 +97,6 @@ namespace ReCrafted.API.UI
         }
 
         /// <summary>
-        /// Contains all controls.
-        /// </summary>
-        public UILayout Layout { get; protected set; }
-
-        /// <summary>
         /// Layout of this panel will be applied in to children's.
         /// </summary>
         public bool ApplyLayout { get; set; }
@@ -113,5 +110,10 @@ namespace ReCrafted.API.UI
         /// Color of the panel.
         /// </summary>
         public Color PanelColor { get; set; }
+
+        /// <summary>
+        /// Contains all controls.
+        /// </summary>
+        public UILayout Layout { get; protected set; }
     }
 }

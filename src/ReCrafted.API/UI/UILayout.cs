@@ -1,7 +1,6 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
 using System;
-using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
 
 namespace ReCrafted.API.UI
@@ -22,6 +21,18 @@ namespace ReCrafted.API.UI
     /// </summary>
     public class UILayout : UIContainer
     {
+        // if region of this parent has been changed, recalculate current layout
+        public override void OnRegionChanged()
+        {
+            Recalculate(Region);
+        }
+
+        // search for mouse collision in all childrens of this layout.
+        internal override bool OnMouseCollision()
+        {
+            return LookForMouseCollision();
+        }
+
         /// <summary>
         /// Recalculates Layout, duh.
         /// </summary>
@@ -167,6 +178,31 @@ namespace ReCrafted.API.UI
         }
 
         /// <summary>
+        /// Creates new UILayout.
+        /// </summary>
+        /// <param name="region">The UILayout region.</param>
+        /// <param name="layoutType">The lay-outing type.</param>
+        /// <returns>The newly created layout.</returns>
+        public static UILayout Create(RectangleF region, UILayoutType layoutType)
+        {
+            // construct new panel
+            var layout = new UILayout
+            {
+                Enabled = true,
+                Parent = null,
+                Region = region,
+                Type = layoutType,
+                PreferredSize = new Vector2(region.Width, region.Height),
+                ForceExpandHeigth = false,
+                ForceExpandWidth = false,
+                Padding = new UIPadding(),
+                Space = 0,
+            };
+
+            return layout;
+        }
+
+        /// <summary>
         /// The layout type.
         /// </summary>
         public UILayoutType Type { get; set; }
@@ -195,40 +231,5 @@ namespace ReCrafted.API.UI
         /// Space between controls.
         /// </summary>
         public float Space { get; set; }
-
-        public override void OnRegionChanged()
-        {
-            Recalculate(Region);
-        }
-
-        public override bool OnMouseCollision()
-        {
-            return LookForMouseCollision();
-        }
-
-        /// <summary>
-        /// Creates new UILayout.
-        /// </summary>
-        /// <param name="region">The UILayout region.</param>
-        /// <param name="layoutType">The lay-outing type.</param>
-        /// <returns>The newly created layout.</returns>
-        public static UILayout Create(RectangleF region, UILayoutType layoutType)
-        {
-            // construct new panel
-            var layout = new UILayout
-            {
-                Enabled = true,
-                Parent = null,
-                Region = region,
-                Type = layoutType,
-                PreferredSize = new Vector2(region.Width, region.Height),
-                ForceExpandHeigth = false,
-                ForceExpandWidth = false,
-                Padding = new UIPadding(),
-                Space = 0,
-            };
-
-            return layout;
-        }
     }
 }

@@ -1,6 +1,5 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
-using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 
@@ -11,27 +10,14 @@ namespace ReCrafted.API.UI.Controls
     /// </summary>
     public class UIText : UIControl
     {
+        private UIText() { }
+
         public override void Draw()
         {
             var pos = new Vector2(Region.X, Region.Y);
             UIInternal.Color = TextColor;
             UIInternal.DrawString(TextFont.NativePtr, Text, ref pos);
         }
-
-        /// <summary>
-        /// Color of the text.
-        /// </summary>
-        public Color TextColor { get; set; }
-
-        /// <summary>
-        /// Text of this control.
-        /// </summary>
-        public string Text { get; set; }
-
-        /// <summary>
-        /// Loaded font of this text.
-        /// </summary>
-        public Font TextFont { get; private set; }
 
         /// <summary>
         /// Updates current font of the text.
@@ -49,8 +35,6 @@ namespace ReCrafted.API.UI.Controls
         {
             return Font.GetSize(TextFont.NativePtr);
         }
-
-        private UIText() { }
 
         /// <summary>
         /// Creates new UIText.
@@ -94,5 +78,21 @@ namespace ReCrafted.API.UI.Controls
                 Parent = null
             };
         }
+
+        /// <summary>
+        /// Color of the text.
+        /// </summary>
+        public Color TextColor { get; set; }
+
+        /// <summary>
+        /// Text of this control.
+        /// </summary>
+        public string Text { get; set; }
+
+        /// <summary>
+        /// Loaded font of this text.
+        /// </summary>
+        public Font TextFont { get; private set; }
+
     }
 }
