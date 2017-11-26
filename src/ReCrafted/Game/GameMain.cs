@@ -33,7 +33,7 @@ namespace ReCrafted.Game
             Cursor.Lock = true;
 
             var camera = Entity.Create("MainCamera");
-            camera.Position = new Vector3(8.5f, 930.0f, 14.0f);
+            camera.Position = new Vector3(35.0f, 925.0f, 62.0f);
 
             FreeCameraController.Current = camera.AddScript<FreeCameraController>();
             
@@ -42,8 +42,8 @@ namespace ReCrafted.Game
 
             Locale.SetLocale("Polski");
 
-            var tests = Entity.Create("Tests");
-            tests.AddScript<UITests>();
+            //var tests = Entity.Create("Tests");
+            //tests.AddScript<UITests>();
         }
 
         protected override void Update()

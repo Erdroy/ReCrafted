@@ -134,43 +134,62 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
 
 		// TODO: materials support
 		// TODO: vertex cache (with vertex color per material support)
+		// TODO: fix issue with 2 vertices
 
 		m_vertices.add(vertexPosition);
 		m_indices.add(m_vertices.count() - 1);
-
-		m_uvs.add(Vector2::zero());
-		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
 
 		triangleCount++;
 	}
 
 	triangleCount /= 3;
 
-	// clean normal
-	cell->vertexNormal = Vector3::zero();
+	if (triangleCount == 0)
+		return;
 
 	// generate normals
+	var normal = Vector3::zero();
+	var triangles = 0;
 	for(var i = 0; i < triangleCount; i ++)
 	{
-		var p0 = m_vertices[startIndex + i * 3 + 0];
-		var p1 = m_vertices[startIndex + i * 3 + 1];
-		var p2 = m_vertices[startIndex + i * 3 + 2];
+		var p0 = m_vertices[m_indices[startIndex + i * 3 + 0]];
+		var p1 = m_vertices[m_indices[startIndex + i * 3 + 1]];
+		var p2 = m_vertices[m_indices[startIndex + i * 3 + 2]];
 
-		var plane = Plane(p0, p1, p2);
-		plane.normalize();
+		var plane = Plane(p2, p1, p0);
 
-		m_normals.add(plane.normal);
-		m_normals.add(plane.normal);
-		m_normals.add(plane.normal);
+		m_uvs.add(Vector2::zero());
+		m_uvs.add(Vector2::zero());
+		m_uvs.add(Vector2::zero());
 
-		cell->vertexNormal += plane.normal;
+		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
+		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
+		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
+
+		if(plane.normal.x != plane.normal.x)
+		{
+			// two points are equal, WTF?
+			// just add some zero-normals for now. TODO: fix when cache will be done!
+			m_normals.add(Vector3::zero());
+			m_normals.add(Vector3::zero());
+			m_normals.add(Vector3::zero());
+		}
+		else
+		{
+			m_normals.add(plane.normal);
+			m_normals.add(plane.normal);
+			m_normals.add(plane.normal);
+
+			normal += plane.normal;
+			triangles++;
+		}
 	}
 
-	if (triangleCount <= 1)
+	if (triangles <= 1)
 		return;
 
 	// smooth the cell normal
-	cell->vertexNormal = cell->vertexNormal / static_cast<float>(triangleCount);
+	cell->vertexNormal = normal / static_cast<float>(triangles);
 	cell->vertexNormal.normalize();
 }
 
@@ -207,14 +226,11 @@ void MCMesher::generateSkirt(Cell* cell, const Vector3& position, const Vector3&
 		var vertexPosition = position + edges[edge] * lod;
 
 		m_vertices.add(vertexPosition);
-		m_uvs.add(Vector2::zero());
-		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
 		m_indices.add(m_vertices.count() - 1);
 
-		// calculate normal
-		var normal = cell->vertexNormal;
-
-		m_normals.add(normal);
+		m_uvs.add(Vector2::zero());
+		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
+		m_normals.add(cell->vertexNormal);
 	}
 }
 

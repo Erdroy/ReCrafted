@@ -104,6 +104,7 @@ void Rendering::beginRender()
 
 	// update shaders uniforms
 	auto lightdir = Vector3(0.1f, -0.5f, 0.3f);
+	lightdir.normalize();
 	m_deferredFinal->setValue(0, &lightdir);
 
 }
@@ -111,6 +112,12 @@ void Rendering::beginRender()
 void Rendering::endRender()
 {
 	setState(false, false);
+	
+	if (Input::isKey(Key_F2))
+	{
+		blit(0, m_gbuffer->getTarget(1));
+		return;
+	}
 
 	// final pass
 	auto textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;

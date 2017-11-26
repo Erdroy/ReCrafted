@@ -63,26 +63,17 @@ public:
 	/// <summary>
 	/// Initializes a new instance of the Plane struct.
 	/// </summary>
-	/// <param name="point1">First point of a triangle defining the plane.</param>
-	/// <param name="point2">Second point of a triangle defining the plane.</param>
-	/// <param name="point3">Third point of a triangle defining the plane.</param>
-	explicit Plane(Vector3 point1, Vector3 point2, Vector3 point3)
+	/// <param name="a">First point of a triangle defining the plane.</param>
+	/// <param name="b">Second point of a triangle defining the plane.</param>
+	/// <param name="c">Third point of a triangle defining the plane.</param>
+	explicit Plane(Vector3 a, Vector3 b, Vector3 c)
 	{
-		auto x1 = point2.x - point1.x;
-		auto y1 = point2.y - point1.y;
-		auto z1 = point2.z - point1.z;
-		auto x2 = point3.x - point1.x;
-		auto y2 = point3.y - point1.y;
-		auto z2 = point3.z - point1.z;
-		auto yz = (y1 * z2) - (z1 * y2);
-		auto xz = (z1 * x2) - (x1 * z2);
-		auto xy = (x1 * y2) - (y1 * x2);
-		auto invPyth = 1.0f / static_cast<float>(Math::sqrtf((yz * yz) + (xz * xz) + (xy * xy)));
-
-		normal.x = yz * invPyth;
-		normal.y = xz * invPyth;
-		normal.z = xy * invPyth;
-		distance = -((normal.x * point1.x) + (normal.y * point1.y) + (normal.z * point1.z));
+		var xa = b - a;
+		var xb = a - c;
+		var dir = Vector3::cross(xa, xb);
+		dir.normalize();
+		normal = dir;
+		distance = dir.length();
 	}
 
 public:
@@ -96,7 +87,7 @@ public:
 		normal.x *= magnitude;
 		normal.y *= magnitude;
 		normal.z *= magnitude;
-		distance *= magnitude;
+		distance = magnitude;
 	}
 public:
 	/// <summary>

@@ -21,7 +21,7 @@ void Universe::init()
 	m_testObject1->init(Vector3::zero(), 1024.0f);
 
 	//m_testObject2 = SpaceObject::createSpaceObject();
-	//m_testObject2->init(Vector3::one() * 300.0f, 128.0f);
+	//m_testObject2->init(Vector3::up() * 1024.0f, 1024.0f);
 }
 
 void Universe::update()
