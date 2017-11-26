@@ -18,6 +18,7 @@ namespace ReCrafted.VoxelEditor.Rendering
         internal DeviceContext DeviceContext;
         internal SwapChain SwapChain;
 
+        private BlendState _defaultBlendState;
         private RenderForm _window;
         private Shader _defaultShader;
         private Texture2D _backBuffer;
@@ -56,9 +57,12 @@ namespace ReCrafted.VoxelEditor.Rendering
 
             var factory = SwapChain.GetParent<Factory>();
             factory.MakeWindowAssociation(_window.Handle, WindowAssociationFlags.IgnoreAll);
-
+            
             // create default render targets etc.
             Resize();
+
+            // create default blend state
+            CreateBlendStates();
 
             // load default shader
             _defaultShader = Shader.FromFile("assets/shaders/default.hlsl");
@@ -74,9 +78,8 @@ namespace ReCrafted.VoxelEditor.Rendering
 
             // apply shader
             _defaultShader.Apply();
-
-            // TODO: blend state
-
+            
+            DeviceContext.OutputMerger.SetBlendState(_defaultBlendState);
             DeviceContext.OutputMerger.SetTargets(_renderView);
             DeviceContext.ClearRenderTargetView(_renderView, Color.Black);
         }
@@ -123,6 +126,30 @@ namespace ReCrafted.VoxelEditor.Rendering
             D3D11Device.Dispose();
         }
         
+        private void CreateBlendStates()
+        {
+            var renderBlendDesc = new RenderTargetBlendDescription
+            {
+                SourceAlphaBlend = BlendOption.Zero,
+                DestinationAlphaBlend = BlendOption.One,
+                SourceBlend = BlendOption.SourceAlpha,
+                DestinationBlend = BlendOption.InverseSourceAlpha,
+                BlendOperation = BlendOperation.Add,
+                AlphaBlendOperation = BlendOperation.Add,
+                IsBlendEnabled = true,
+                RenderTargetWriteMask = ColorWriteMaskFlags.All
+            };
+
+            var blendDesc = new BlendStateDescription
+            {
+                AlphaToCoverageEnable = false,
+                IndependentBlendEnable = true
+            };
+
+            blendDesc.RenderTarget[0] = renderBlendDesc;
+
+            _defaultBlendState = new BlendState(D3D11Device, blendDesc);
+        }
 
         /// <summary>
         /// The render form.

@@ -2,7 +2,6 @@
 
 using System;
 using ReCrafted.VoxelEditor.Rendering;
-using SharpDX;
 
 namespace ReCrafted.VoxelEditor.Graphics
 {
@@ -21,37 +20,6 @@ namespace ReCrafted.VoxelEditor.Graphics
 
         public void Draw()
         {
-            _render2D.Add(new Render2D.DrawCmd
-            {
-                Vertices = new[]
-                {
-                    new Render2D.Vertex
-                    {
-                        Color = Color.Red,
-                        Position = new Vector3(-0.5f, 0.5f, 0.0f),
-                        TexCoord = -Vector2.One
-                    },
-                    new Render2D.Vertex
-                    {
-                        Color = Color.Red,
-                        Position = new Vector3(0.5f, 0.5f, 0.0f),
-                        TexCoord = -Vector2.One
-                    },
-                    new Render2D.Vertex
-                    {
-                        Color = Color.Red,
-                        Position = new Vector3(0.5f, -0.5f, 0.0f),
-                        TexCoord = -Vector2.One
-                    },
-                    new Render2D.Vertex
-                    {
-                        Color = Color.Red,
-                        Position = new Vector3(-0.5f, -0.5f, 0.0f),
-                        TexCoord = -Vector2.One
-                    }
-                }
-            });
-
             _render2D.Draw();
         }
 
