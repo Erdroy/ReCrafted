@@ -1,5 +1,7 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
+using ReCrafted.VoxelEditor.Rendering;
+
 namespace ReCrafted.VoxelEditor.Core
 {
     /// <summary>
@@ -7,24 +9,50 @@ namespace ReCrafted.VoxelEditor.Core
     /// </summary>
     public class VoxelEditorApp : ApplicationBase
     {
+        public VoxelEditorApp()
+        {
+            Current = this;
+        }
+
         protected override void OnInit()
         {
-            throw new System.NotImplementedException();
+            Renderer = new Renderer();
+            Renderer.Init();
+
+            Renderer.RenderForm.Closed += (sender, args) =>
+            {
+                Shutdown();
+            };
         }
 
         protected override void OnLoad()
         {
-            throw new System.NotImplementedException();
         }
 
         protected override void OnUnload()
         {
-            throw new System.NotImplementedException();
+            Renderer.Dispose();
         }
 
         protected override void OnUpdate()
         {
-            throw new System.NotImplementedException();
+            // begin new frame
+            Renderer.BeginFrame();
+            
+            // draw everything
+
+            // end current frame
+            Renderer.EndFrame();
         }
+
+        /// <summary>
+        /// The renderer instance.
+        /// </summary>
+        public Renderer Renderer { get; private set; }
+
+        /// <summary>
+        /// The current voxel editor application instance.
+        /// </summary>
+        public new static VoxelEditorApp Current { get; private set; }
     }
 }
