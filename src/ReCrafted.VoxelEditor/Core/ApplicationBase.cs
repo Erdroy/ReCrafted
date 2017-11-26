@@ -44,7 +44,7 @@ namespace ReCrafted.VoxelEditor.Core
         }
 
         /// <summary>
-        /// Shutdowns the appliaction.
+        /// Shutdowns the application.
         /// </summary>
         public void Shutdown()
         {

@@ -1,5 +1,6 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
+using ReCrafted.VoxelEditor.Graphics;
 using ReCrafted.VoxelEditor.Rendering;
 
 namespace ReCrafted.VoxelEditor.Core
@@ -23,6 +24,9 @@ namespace ReCrafted.VoxelEditor.Core
             {
                 Shutdown();
             };
+
+            UI = new UI();
+            UI.Init();
         }
 
         protected override void OnLoad()
@@ -31,6 +35,7 @@ namespace ReCrafted.VoxelEditor.Core
 
         protected override void OnUnload()
         {
+            UI.Dispose();
             Renderer.Dispose();
         }
 
@@ -38,8 +43,11 @@ namespace ReCrafted.VoxelEditor.Core
         {
             // begin new frame
             Renderer.BeginFrame();
-            
-            // draw everything
+
+            // update ??
+
+            // draw UI
+            UI.Draw();
 
             // end current frame
             Renderer.EndFrame();
@@ -49,6 +57,11 @@ namespace ReCrafted.VoxelEditor.Core
         /// The renderer instance.
         /// </summary>
         public Renderer Renderer { get; private set; }
+
+        /// <summary>
+        /// The UI instance.
+        /// </summary>
+        public UI UI { get; private set; }
 
         /// <summary>
         /// The current voxel editor application instance.
