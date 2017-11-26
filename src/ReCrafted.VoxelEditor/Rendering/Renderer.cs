@@ -75,6 +75,8 @@ namespace ReCrafted.VoxelEditor.Rendering
             // apply shader
             _defaultShader.Apply();
 
+            // TODO: blend state
+
             DeviceContext.OutputMerger.SetTargets(_renderView);
             DeviceContext.ClearRenderTargetView(_renderView, Color.Black);
         }
