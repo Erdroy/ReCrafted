@@ -41,11 +41,9 @@ namespace ReCrafted.Game
             GameInfo.FromFile("../assets/gameinfo.json");
 
             Locale.SetLocale("Polski");
-            
-            //var panel = UIPanel.Create(new RectangleF(10.0f, 10.0f, 200.0f, 450.0f), UILayoutType.Grid);
-            //panel.Enabled = true;
-            //panel.Visible = true;
-            //panel.Layout.Add(new UIBox());
+
+            var tests = Entity.Create("Tests");
+            tests.AddScript<UITests>();
         }
 
         protected override void Update()
@@ -80,14 +78,15 @@ namespace ReCrafted.Game
 
         protected override void DrawUI()
         {
+            UIPanel.DrawAll();
+
+            UIInternal.Color = Color.White;
             var rect = new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
             var uvs = new RectangleF(0.0f, 0.0f, 1.0f, 1.0f);
             UIInternal.DrawTexture2D(_crosshairTexture.NativePtr, ref rect, ref uvs);
 
             var pos = new Vector2(20.0f, Display.Height - 20.0f);
             UIInternal.DrawString(_testFont.NativePtr, "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber, ref pos);
-
-            UIPanel.DrawAll();
         }
 
         protected override void Shutdown()

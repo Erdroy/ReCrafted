@@ -99,6 +99,7 @@
     <Compile Include="UI\UIContainer.cs" />
     <Compile Include="UI\UIControl.cs" />
     <Compile Include="UI\UILayout.cs" />
+    <Compile Include="UI\UIPadding.cs" />
     <Compile Include="UI\UIPanel.cs" />
   </ItemGroup>
   <ItemGroup />

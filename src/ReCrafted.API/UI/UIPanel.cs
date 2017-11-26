@@ -14,13 +14,20 @@ namespace ReCrafted.API.UI
     public class UIPanel : UIControl
     {
         private static readonly List<UIPanel> Panels = new List<UIPanel>();
-        
+
         /// <summary>
         /// Draws all controls added to this UIPanel.
         /// </summary>
         public override void Draw()
         {
-             Layout.Draw();
+            if (Visible)
+            {
+                UIInternal.Color = PanelColor;
+                UIInternal.DrawBox(Region);
+            }
+
+            Layout.Recalculate();
+            Layout.Draw();
         }
 
         // internal
@@ -28,12 +35,8 @@ namespace ReCrafted.API.UI
         {
             foreach (var panel in Panels)
             {
-                if (!panel.Visible)
+                if (!panel.Enabled)
                     continue;
-
-                // temporary
-                UIInternal.Color = Color.DarkViolet;
-                UIInternal.DrawBox(panel.Region);
 
                 try
                 {
@@ -61,12 +64,15 @@ namespace ReCrafted.API.UI
                 Visible = true,
                 Parent = null,
                 Region = region,
+                PanelColor = Color.White,
                 Layout = new UILayout
                 {
                     Type = layoutType,
                     Enabled = true,
                     Region = region,
-                    PreferredSize = new Vector2(region.Width, region.Height)
+                    PreferredSize = new Vector2(region.Width, region.Height),
+                    ForceExpandHeigth = false,
+                    ForceExpandWidth = false
                 }
             };
             
@@ -88,5 +94,10 @@ namespace ReCrafted.API.UI
         /// Shows or hides the panel.
         /// </summary>
         public bool Visible { get; set; }
+
+        /// <summary>
+        /// Color of the panel.
+        /// </summary>
+        public Color PanelColor { get; set; }
     }
 }

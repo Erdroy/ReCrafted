@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using ReCrafted.API.Core;
 
 namespace ReCrafted.API.UI
 {
@@ -17,18 +18,25 @@ namespace ReCrafted.API.UI
         /// </summary>
         public override void Draw()
         {
-            throw new NotImplementedException();
+            foreach (var control in _controls)
+                control.Draw();
         }
-        
+
         /// <summary>
         /// Adds new control to the container and then returns it.
         /// </summary>
         /// <typeparam name="T">Control class which must inherit from UIControl.</typeparam>
         /// <param name="instance">The control instance.</param>
         /// <returns>The control instance, allows to modify preferences easily.</returns>
+        /// <exception cref="System.ArgumentNullException">Exception is thrown when given instance of control is null.</exception>
+        /// <exception cref="ReCraftedException">Exception is thrown when given instance of control already exists in container.</exception>
         public T Add<T>(T instance) where T : UIControl
         {
-            throw new NotImplementedException();
+            if (instance == null) throw new ArgumentNullException(nameof(instance));
+            if (_controls.Contains(instance)) throw new ReCraftedException("Unable to add new control in to container. Controls can by added in to container only once.");
+            instance.Parent = this;
+            _controls.Add(instance);
+            return instance;
         }
 
         /// <summary>
@@ -36,14 +44,17 @@ namespace ReCrafted.API.UI
         /// </summary>
         /// <typeparam name="T">Control class which must inherit from UIControl.</typeparam>
         /// <param name="instance">The control instance.</param>
+        /// <exception cref="ArgumentNullException">Exception is thrown when givent instance of controll is null.</exception>
         public void Remove<T>(T instance) where T : UIControl
         {
-            throw new NotImplementedException();
+            if (instance == null) throw new ArgumentNullException(nameof(instance));
+            if (!_controls.Contains(instance)) return;
+            _controls.Remove(instance);
         }
 
         /// <summary>
         /// Contains all the controls
         /// </summary>
-        public UIControl[] Controls => _controls.ToArray();
+        public IReadOnlyList<UIControl> Controls => _controls;
     }
 }
