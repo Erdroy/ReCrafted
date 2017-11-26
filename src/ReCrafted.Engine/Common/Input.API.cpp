@@ -21,6 +21,11 @@ namespace Internal
 		return Input::isKey(static_cast<Keys>(key));
 	}
 
+	void getCursorPos(Vector2* delta)
+	{
+		*delta = Input::getCursorPos();
+	}
+
 	void getCursorDelta(Vector2* delta)
 	{
 		*delta = Input::getCursorDelta();
@@ -85,9 +90,9 @@ void Input::initRuntime()
 			API_METHOD_END();
 
 			API_COMMENT("Returns cursor's current position.");
-			API_PROPERTY(PUBLIC, STATIC, "Vector2", "CursorPosition", GET);
+			API_PROPERTY(PUBLIC, STATIC, "Vector2", "CursorPosition", GET, BY_REF);
 			{
-				API_BIND("ReCrafted.API.Common.Input::Internal_CursorPosition_Get", &Input::getCursorPos);
+				API_BIND("ReCrafted.API.Common.Input::Internal_CursorPosition_Get", &Internal::getCursorPos);
 			}
 			API_PROPERTY_END();
 

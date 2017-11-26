@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/08/2017 17:06:57 Source: 'Input.API.cpp' Target: 'Common/Input.Gen.cs'
+// Generated: 11/26/2017 14:37:08 Source: 'Input.API.cpp' Target: 'Common/Input.Gen.cs'
 
 using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
@@ -45,7 +45,9 @@ namespace ReCrafted.API.Common
 		{
 			get
 			{
-				return Internal_CursorPosition_Get();
+				Vector2 result;
+				Internal_CursorPosition_Get(out result);
+				return result;
 			}
 		}
 
@@ -63,7 +65,7 @@ namespace ReCrafted.API.Common
 		}
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern Vector2 Internal_CursorPosition_Get();
+		internal static extern void Internal_CursorPosition_Get(out Vector2 result);
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_CursorDelta_Get(out Vector2 result);
 	}
