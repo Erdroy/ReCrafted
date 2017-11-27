@@ -1,5 +1,6 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
+using System;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
@@ -29,7 +30,83 @@ namespace ReCrafted.API.UI.Controls
         /// </summary>
         public ButtonClick OnClick;
 
-        private UIButton() { }
+        /// <summary>
+        /// Creates new UIButton.
+        /// </summary>
+        public UIButton()
+        {
+            _applyDefaults(new RectangleF(), string.Empty, Color.Black, UIButtonColors.Defaults);
+        }
+
+        /// <summary>
+        /// Creates new UIButton.
+        /// </summary>
+        /// <param name="region">Region of new UIButton.</param>
+        public UIButton(RectangleF region)
+        {
+            _applyDefaults(region, string.Empty, Color.Black, UIButtonColors.Defaults);
+        }
+
+        /// <summary>
+        /// Creates new UIButton.
+        /// </summary>
+        /// <param name="text">Text of the new UIButton.</param>
+        public UIButton(string text)
+        {
+            _applyDefaults(new RectangleF(), text, Color.Black, UIButtonColors.Defaults);
+        }
+
+        /// <summary>
+        /// Creates new UIButton.
+        /// </summary>
+        /// <param name="text">Text of the new UIButton.</param>
+        /// <param name="textColor">Color of the text in new UIButton.</param>
+        public UIButton(string text, Color textColor)
+        {
+            _applyDefaults(new RectangleF(), text, textColor, UIButtonColors.Defaults);
+        }
+
+        /// <summary>
+        /// Creates new UIButton.
+        /// </summary>
+        /// <param name="colors">Colors of UIButton.</param>
+        public UIButton(UIButtonColors colors)
+        {
+            _applyDefaults(new RectangleF(), string.Empty, Color.Black, colors);
+        }
+
+        /// <summary>
+        /// Creates new UIButton.
+        /// </summary>
+        /// <param name="region">Region of new UIButton.</param>
+        /// <param name="text">Text of the new UIButton.</param>
+        public UIButton(RectangleF region, string text)
+        {
+            _applyDefaults(region, text, Color.Black, UIButtonColors.Defaults);
+        }
+
+        /// <summary>
+        /// Creates new UIButton.
+        /// </summary>
+        /// <param name="region">Region of new UIButton.</param>
+        /// <param name="text">Text of the new UIButton.</param>
+        /// <param name="textColor">Color of the text in new UIButton.</param>
+        public UIButton(RectangleF region, string text, Color textColor)
+        {
+            _applyDefaults(region, text, textColor, UIButtonColors.Defaults);
+        }
+
+        /// <summary>
+        /// Creates new UIButton.
+        /// </summary>
+        /// <param name="region">Region of new UIButton.</param>
+        /// <param name="text">Text of the new UIButton.</param>
+        /// <param name="textColor">Color of the text in new UIButton.</param>
+        /// <param name="colors">Colors of UIButton.</param>
+        public UIButton(RectangleF region, string text, Color textColor, UIButtonColors colors)
+        {
+            _applyDefaults(region, text, textColor, colors);
+        }
 
         public override void OnMouseEnter()
         {
@@ -59,6 +136,7 @@ namespace ReCrafted.API.UI.Controls
                 _color = Colors.NormalColor;
         }
 
+        // draw button
         public override void Draw()
         {
             if (!Enabled) return;          
@@ -92,95 +170,21 @@ namespace ReCrafted.API.UI.Controls
             return Font.GetSize(TextFont.NativePtr);
         }
 
-        /// <summary>
-        /// Creates new UIButton.
-        /// </summary>
-        /// <returns>Our newly created UIButton control.</returns>
-        public static UIButton Create()
+        // set default properties
+        public void _applyDefaults(RectangleF region, string text, Color textColor, UIButtonColors colors)
         {
-            return Create(new RectangleF(), string.Empty, Color.Black, UIButtonColors.Defaults);
-        }
-
-        /// <summary>
-        /// Creates new UIButton.
-        /// </summary>
-        /// <param name="text">Text of button.</param>
-        /// <returns>Our newly created UIButton control.</returns>
-        public static UIButton Create(string text)
-        {
-            return Create(new RectangleF(), text, Color.Black, UIButtonColors.Defaults);
-        }
-
-        /// <summary>
-        /// Creates new UIButton.
-        /// </summary>
-        /// <param name="text">Text of button.</param>
-        /// <param name="textColor">Color of the button.</param>
-        /// <returns>Our newly created UIButton control.</returns>
-        public static UIButton Create(string text, Color textColor)
-        {
-            return Create(new RectangleF(), text, textColor, UIButtonColors.Defaults);
-        }
-
-        /// <summary>
-        /// Creates new UIButton.
-        /// </summary>
-        /// <param name="region">The UIButton region.</param>
-        /// <returns>Our newly created UIButton control.</returns>
-        public static UIButton Create(RectangleF region)
-        {
-            return Create(region, string.Empty, Color.Black, UIButtonColors.Defaults);
-        }
-
-        /// <summary>
-        /// Creates new UIButton.
-        /// </summary>
-        /// <param name="region">The UIButton region.</param>
-        /// <param name="text">Text of button.</param>
-        /// <returns>Our newly created UIButton control.</returns>
-        public static UIButton Create(RectangleF region, string text)
-        {
-            return Create(region, text, Color.Black, UIButtonColors.Defaults);
-        }
-
-        /// <summary>
-        /// Creates new UIButton.
-        /// </summary>
-        /// <param name="region">The UIButton region.</param>
-        /// <param name="text">Text of button.</param>
-        /// <param name="textColor">Color of the button.</param>
-        /// <returns>Our newly created UIButton control.</returns>
-        public static UIButton Create(RectangleF region, string text, Color textColor)
-        {
-            return Create(region, text, textColor, UIButtonColors.Defaults);
-        }
-
-        /// <summary>
-        /// Creates new UIButton.
-        /// </summary>
-        /// <param name="region">The UIButton region.</param>
-        /// <param name="text">Text of button.</param>
-        /// <param name="textColor">Color of the button.</param>
-        /// <param name="colors">Colors of the UIButton.</param>
-        /// <returns>Our newly created UIButton control.</returns>
-        public static UIButton Create(RectangleF region, string text, Color textColor, UIButtonColors colors)
-        {
-            var button = new UIButton
-            {
-                Region = region,
-                TextFont = DefaultFont, //load default font
-                Text = text,
-                TextColor = textColor,
-                Colors =  colors,
-                SmoothColors = true,
-                SmoothTranslation = 10f,
-                Enabled = true,
-                IgnoreMouseCollision = false,
-                IsMouseOver = false,
-                Parent = null
-            };
-            button._color = button.Colors.NormalColor;
-            return button;
+            Region = region;
+            TextFont = DefaultFont; //set default font
+            Text = text;
+            TextColor = textColor;
+            Colors = colors;
+            SmoothColors = true;
+            SmoothTranslation = 10f;
+            Enabled = true;
+            IgnoreMouseCollision = false;
+            IsMouseOver = false;
+            Parent = null;
+            _color = Colors.NormalColor;
         }
 
         /// <summary>

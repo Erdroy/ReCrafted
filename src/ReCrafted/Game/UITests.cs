@@ -22,7 +22,7 @@ namespace ReCrafted.Game
             DebugPanel = UIPanel.Create(new RectangleF(), UILayoutType.Horizontal);
             DebugPanel.ApplyLayout = false;
 
-            DebugPanelMs = DebugPanel.Layout.AddText(string.Empty);
+            DebugPanelMs = DebugPanel.Add(new UIText());
 
             var panel = UIPanel.Create(new RectangleF(200.0f, 10.0f, 200.0f, 450.0f), UILayoutType.Vertical);
             panel.PanelColor = Color.Red;
@@ -41,9 +41,7 @@ namespace ReCrafted.Game
             panel.Layout.Alignment = UILayoutAlignment.Middle;
             panel.ApplyLayout = true;
 
-            var layout = panel.Layout;
-
-            var button = layout.AddButton(new RectangleF(300, 300, 120, 30), "Some text!", null);
+            var button = panel.Add(new UIButton(new RectangleF(300, 300, 120, 30), "Some text!"));
             button.SmoothColors = true;
             button.OnClick += () =>
             {
@@ -54,19 +52,20 @@ namespace ReCrafted.Game
 
             var button2Colors = UIButtonColors.Defaults;
             button2Colors.NormalColor = Color.Orange;
-            layout.AddButton(new RectangleF(300, 310, 60, 60), string.Empty, button2Colors, null);
+            panel.Add(new UIButton(new RectangleF(300, 310, 60, 60), string.Empty, Color.Black, button2Colors));
 
             var dirtTexture = Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"));
-            var boxTexture = layout.AddBox(new RectangleF(100, 100, 32, 32), dirtTexture);
+            var boxTexture = panel.Add(new UIBox(new RectangleF(100, 100, 32, 32), dirtTexture));
             boxTexture.BoxColor = Color.Aqua;
 
-            layout.AddBox(new RectangleF(100, 100, 32, 32), dirtTexture);
-            layout.AddBox(new RectangleF(100, 105, 32, 32), dirtTexture);
+            panel.Add(new UIBox(new RectangleF(100, 105, 32, 32), dirtTexture));
+            panel.Add(new UIBox(new RectangleF(100, 105, 32, 32), dirtTexture));
 
-            layout.AddText(new RectangleF(10, 10, 160, 30), "12345678912345678912345678912342343243");
+            //panel.Add(new UIText(new RectangleF(10, 10, 160, 30), "12345678912345678912345678912342343243"));
 
-            for (int i = 0; i < 1000; i++)
-                layout.AddBox(new Color(0, 100 * i / 100, 0));
+            /*for (int i = 0; i < 1000; i++)
+                panel.Add(new UIBox(new Color(0, 100 * i / 100, 0)));
+                */
 
             sw.Stop();
             Logger.Write("Ui Construct Took -> " + sw.ElapsedMilliseconds + "ms");
@@ -81,7 +80,7 @@ namespace ReCrafted.Game
             {
                 _uiDebugTime = 0f;
 
-                DebugPanelMs.Region = new RectangleF(20, Display.Height - 40f, 130, 30);
+                DebugPanelMs.Region = new RectangleF(20, Display.Height - 40f, 0, 0);
                 DebugPanelMs.Text = "Ui Process Took -> " + GameMain.TotalMilisecondsForUiPanel + "ms";
             }
         }

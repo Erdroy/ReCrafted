@@ -13,16 +13,82 @@ namespace ReCrafted.API.UI.Controls
     /// </summary>
     public class UIText : UIControl
     {
-        private UIText() { }
+        // current text;
+        private string _text;
+        // size of text 
+        private Vector2 _textsize;
 
+        /// <summary>
+        /// Creates new UIText.
+        /// </summary>
+        public UIText()
+        {
+            _applyDefaults(new RectangleF(), string.Empty, Color.White);
+        }
+
+        /// <summary>
+        /// Creates new UIText.
+        /// </summary>
+        /// <param name="region">Region of the new UIText.</param>
+        public UIText(RectangleF region)
+        {
+            _applyDefaults(region, string.Empty, Color.White);
+        }
+
+        /// <summary>
+        /// Creates new UIText.
+        /// </summary>
+        /// <param name="text">Text of the new UIText.</param>
+        public UIText(string text)
+        {
+            _applyDefaults(new RectangleF(), text, Color.White);
+        }
+
+        /// <summary>
+        /// Creates new UIText.
+        /// </summary>
+        /// <param name="text">Text of new UIText.</param>
+        /// <param name="color">Text color of new UIText.</param>
+        public UIText(string text, Color color)
+        {
+            _applyDefaults(new RectangleF(), text, color);
+        }
+
+        /// <summary>
+        /// Creates new UIText.
+        /// </summary>
+        /// <param name="region">Region of the new UIText.</param>
+        /// <param name="text">Text of the new UIText.</param>
+        public UIText(RectangleF region, string text)
+        {
+            _applyDefaults(region, text, Color.White);
+        }
+
+        /// <summary>
+        /// Creates new UIText.
+        /// </summary>
+        /// <param name="region">Region of the new UIText.</param>
+        /// <param name="text">Textr of the new UIText.</param>
+        /// <param name="color">Text color of new UIText.</param>
+        public UIText(RectangleF region, string text, Color color)
+        {
+            _applyDefaults(region, text, color);
+        }
+
+        // draw text
         public override void Draw()
         {
             if (!Enabled) return;
             var pos = new Vector2(Region.X, Region.Y);
+            if (Region.Width != 0 && Region.Height != 0)
+            {
+                pos.X += Region.Width / 2 - _textsize.X / 2;
+                pos.Y += Region.Height / 2 - _textsize.Y / 2;
+            }
 
             UIInternal.Depth = Depth;
             UIInternal.Color = TextColor;
-            UIInternal.DrawString(TextFont.NativePtr, Text, ref pos);
+            UIInternal.DrawString(TextFont.NativePtr, _text, ref pos);
         }
 
         /// <summary>
@@ -42,47 +108,17 @@ namespace ReCrafted.API.UI.Controls
             return Font.GetSize(TextFont.NativePtr);
         }
 
-        /// <summary>
-        /// Creates new UIText.
-        /// </summary>
-        /// <param name="text">Our text.</param>
-        /// <returns>Our newly created UIText control.</returns>
-        public static UIText Create(string text)
+        // set default properties
+        private void _applyDefaults(RectangleF region, string text, Color color)
         {
-            return Create(new RectangleF(), text, Color.White);
-        }
-
-        /// <summary>
-        /// Creates new UIText.
-        /// </summary>
-        /// <param name="region">The UIText region.</param>
-        /// <param name="text">Our text.</param>
-        /// <returns>Our newly created UIText control.</returns>
-        public static UIText Create(RectangleF region, string text)
-        {
-            return Create(region, text, Color.White);
-        }
-
-        /// <summary>
-        /// Creates new UIBox.
-        /// </summary>
-        /// <param name="region">The UIText region.</param>
-        /// <param name="text">Our text.</param>
-        /// <param name="color">Color of this box.</param>
-        /// <returns>Our newly created UIText control.</returns>
-        public static UIText Create(RectangleF region, string text, Color color)
-        {
-            return new UIText
-            {
-                Region = region,
-                TextFont = DefaultFont, //load default font
-                Text = text,
-                TextColor = color,
-                Enabled = true,
-                IgnoreMouseCollision = true,
-                IsMouseOver = false,
-                Parent = null
-            };
+            Region = region;
+            TextFont = DefaultFont;//set default font
+            Text = text;
+            TextColor = color;
+            Enabled = true;
+            IgnoreMouseCollision = true;
+            IsMouseOver = false;
+            Parent = null;
         }
 
         // creates new rect based on given text and font size
@@ -114,8 +150,16 @@ namespace ReCrafted.API.UI.Controls
 
         /// <summary>
         /// Text of this control.
-        /// </summary>
-        public string Text { get; set; }
+        /// </summary>     
+        public string Text
+        {
+            get { return _text; }
+            set
+            {
+                _text = value;
+                _textsize = UIText.ResolveTextRegion(TextFont, _text);
+            }
+        }
 
         /// <summary>
         /// Loaded font of this text.

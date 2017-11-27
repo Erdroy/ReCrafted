@@ -41,6 +41,30 @@ namespace ReCrafted.API.UI
         }
 
         /// <summary>
+        /// Add new control in to layout container of this panel.
+        /// </summary>
+        /// <typeparam name="T">Control class which must inherit from UIControl.</typeparam>
+        /// <param name="instance">The control instance.</param>
+        /// <returns>The control instance, allows to modify preferences easily.</returns>
+        /// <exception cref="System.ArgumentNullException">Exception is thrown when given instance of control is null.</exception>
+        /// <exception cref="ReCraftedException">Exception is thrown when given instance of control already exists in container.</exception>
+        public T Add<T>(T instance) where T : UIControl
+        {
+            return Layout.Add(instance);
+        }
+
+        /// <summary>
+        /// Removes given control from the layout container of this panel.
+        /// </summary>
+        /// <typeparam name="T">Control class which must inherit from UIControl.</typeparam>
+        /// <param name="instance">The control instance.</param>
+        /// <exception cref="ArgumentNullException">Exception is thrown when givent instance of controll is null.</exception>
+        public void Remove<T>(T instance) where T : UIControl
+        {
+            Layout.Remove(instance);
+        }
+
+        /// <summary>
         /// Draws all panels.
         /// </summary>
         internal static void DrawAll()

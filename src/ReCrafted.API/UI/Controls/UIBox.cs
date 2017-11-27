@@ -10,8 +10,73 @@ namespace ReCrafted.API.UI.Controls
     /// </summary>
     public class UIBox : UIControl
     {
-        private UIBox() { }
+        /// <summary>
+        /// Creates new UIBox.
+        /// </summary>
+        public UIBox()
+        {
+            _applyDefaults(new RectangleF(), null, Color.White);
+        }
 
+        /// <summary>
+        /// Creates new UIBox.
+        /// </summary>
+        /// <param name="region">Region of new UIBox.</param>
+        public UIBox(RectangleF region)
+        {
+            _applyDefaults(region, null, Color.White);
+        }
+
+        /// <summary>
+        /// Creates new UIBox.
+        /// </summary>
+        /// <param name="color">Color of new UIBox.</param>
+        public UIBox(Color color)
+        {
+            _applyDefaults(new RectangleF(), null, color);
+        }
+
+        /// <summary>
+        /// Creates new UIBox.
+        /// </summary>
+        /// <param name="texture">Texture of new UIBox.</param>
+        public UIBox(Texture2D texture)
+        {
+            _applyDefaults(new RectangleF(), texture, Color.White);
+        }
+
+        /// <summary>
+        /// Creates new UIBox.
+        /// </summary>
+        /// <param name="region">Region of new UIBox.</param>
+        /// <param name="texture">Texture of new UIBox.</param>
+        public UIBox(RectangleF region, Texture2D texture)
+        {
+            _applyDefaults(region, texture, Color.White);
+        }
+
+        /// <summary>
+        /// Creates new UIBox.
+        /// </summary>
+        /// <param name="region">Region of new UIBox.</param>
+        /// <param name="color">Color of new UIColor.</param>
+        public UIBox(RectangleF region, Color color)
+        {
+            _applyDefaults(region, null, color);
+        }
+
+        /// <summary>
+        /// Creates new UIBox.
+        /// </summary>
+        /// <param name="region">Region of new UIBox.</param>
+        /// <param name="texture">Texture of new UIBox.</param>
+        /// <param name="color">Color of new UIBox.</param>
+        public UIBox(RectangleF region, Texture2D texture, Color color)
+        {
+            _applyDefaults(region, texture, color);
+        }
+
+        // draw box
         public override void Draw()
         {
             if (!Enabled) return;
@@ -27,86 +92,16 @@ namespace ReCrafted.API.UI.Controls
             }
         }
 
-        /// <summary>
-        /// Creates new UIBox.
-        /// </summary>
-        /// <returns>Our newly created UIBox control.</returns>
-        public static UIBox Create()
+        // set default properties
+        private void _applyDefaults(RectangleF region, Texture2D texture, Color color)
         {
-            return Create(new RectangleF(), null, Color.White);
-        }
-
-        /// <summary>
-        /// Creates new UIBox.
-        /// </summary>
-        /// <param name="region">The UIBox region.</param>
-        /// <returns>Our newly created UIBox control.</returns>
-        public static UIBox Create(RectangleF region)
-        {
-            return Create(region, null, Color.White);
-        }
-
-        /// <summary>
-        /// Creates new UIBox.
-        /// </summary>
-        /// <param name="color">Color of this box.</param>
-        /// <returns>Our newly created UIBox control.</returns>
-        public static UIBox Create(Color color)
-        {
-            return Create(new RectangleF(), null, color);
-        }
-
-        /// <summary>
-        /// Creates new UIBox.
-        /// </summary>
-        ///  /// <param name="texture">Texture of this box.</param>
-        /// <returns>Our newly created UIBox control.</returns>
-        public static UIBox Create(Texture2D texture)
-        {
-            return Create(new RectangleF(), texture, Color.White);
-        }
-
-        /// <summary>
-        /// Creates new UIBox.
-        /// </summary>
-        /// <param name="region">The UIBox region.</param>
-        /// <param name="color">Color of this box.</param>
-        /// <returns>Our newly created UIBox control.</returns>
-        public static UIBox Create(RectangleF region, Color color)
-        {
-            return Create(region, null, color);
-        }
-
-        /// <summary>
-        /// Creates new UIBox.
-        /// </summary>
-        /// <param name="region">The UIBox region.</param>
-        ///  /// <param name="texture">Texture of this box.</param>
-        /// <returns>Our newly created UIBox control.</returns>
-        public static UIBox Create(RectangleF region, Texture2D texture)
-        {
-            return Create(region, texture, Color.White);
-        }
-
-        /// <summary>
-        /// Creates new UIBox.
-        /// </summary>
-        /// <param name="region">The UIBox region.</param>
-        /// <param name="texture">Texture of this box.</param>
-        /// <param name="color">Color of this box.</param>
-        /// <returns>Our newly created UIBox control.</returns>
-        public static UIBox Create(RectangleF region, Texture2D texture, Color color)
-        {
-            return new UIBox
-            {
-                Region = region,
-                BoxTexture = texture,
-                BoxColor = color,
-                Enabled = true,
-                IgnoreMouseCollision = false,
-                IsMouseOver = false,
-                Parent = null
-            };
+            Region = region;
+            BoxTexture = texture;
+            BoxColor = color;
+            Enabled = true;
+            IgnoreMouseCollision = false;
+            IsMouseOver = false;
+            Parent = null;
         }
 
         /// <summary>
