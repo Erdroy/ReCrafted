@@ -1,7 +1,9 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
+using System.Diagnostics;
 using ReCrafted.API;
 using ReCrafted.API.Common;
+using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
@@ -16,10 +18,11 @@ namespace ReCrafted.Game
 
         protected internal override void OnCreate()
         {
+            var sw = Stopwatch.StartNew();
             DebugPanel = UIPanel.Create(new RectangleF(), UILayoutType.Horizontal);
             DebugPanel.ApplyLayout = false;
 
-            DebugPanelMs = DebugPanel.Add(UIText.Create(string.Empty));
+            DebugPanelMs = DebugPanel.Layout.AddText(string.Empty);
 
             var panel = UIPanel.Create(new RectangleF(200.0f, 10.0f, 200.0f, 450.0f), UILayoutType.Vertical);
             panel.PanelColor = Color.Red;
@@ -38,7 +41,9 @@ namespace ReCrafted.Game
             panel.Layout.Alignment = UILayoutAlignment.Middle;
             panel.ApplyLayout = true;
 
-            var button = panel.Add(UIButton.Create(new RectangleF(300, 300, 120, 30), "Some text!"));
+            var layout = panel.Layout;
+
+            var button = layout.AddButton(new RectangleF(300, 300, 120, 30), "Some text!", null);
             button.SmoothColors = true;
             button.OnClick += () =>
             {
@@ -49,23 +54,22 @@ namespace ReCrafted.Game
 
             var button2Colors = UIButtonColors.Defaults;
             button2Colors.NormalColor = Color.Orange;
-            panel.Add(UIButton.Create(new RectangleF(300, 310, 60, 60), string.Empty, Color.Black, button2Colors));
-          
-            var boxTexture = panel.Add(UIBox.Create(new RectangleF(100, 100, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
+            layout.AddButton(new RectangleF(300, 310, 60, 60), string.Empty, button2Colors, null);
+
+            var dirtTexture = Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"));
+            var boxTexture = layout.AddBox(new RectangleF(100, 100, 32, 32), dirtTexture);
             boxTexture.BoxColor = Color.Aqua;
 
-            panel.Add(UIBox.Create(new RectangleF(100, 100, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
-            panel.Add(UIBox.Create(new RectangleF(100, 105, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
+            layout.AddBox(new RectangleF(100, 100, 32, 32), dirtTexture);
+            layout.AddBox(new RectangleF(100, 105, 32, 32), dirtTexture);
 
-            //var text = Panel.Layout.Add(UIText.Create(new RectangleF(10, 10, 160, 30), "12345678912345678912345678912342343243"));
+            layout.AddText(new RectangleF(10, 10, 160, 30), "12345678912345678912345678912342343243");
 
-            /*
             for (int i = 0; i < 1000; i++)
-            {
-                var layout = panel.Layout.Add(UIBox.Create());
-                layout.BoxColor = new Color(0, 100 * i / 100, 0);
-            } 
-            */
+                layout.AddBox(new Color(0, 100 * i / 100, 0));
+
+            sw.Stop();
+            Logger.Write("Ui Construct Took -> " + sw.ElapsedMilliseconds + "ms");
         }
 
         private float _uiDebugTime;
