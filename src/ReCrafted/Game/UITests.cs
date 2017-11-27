@@ -22,11 +22,11 @@ namespace ReCrafted.Game
             DebugPanel = UIPanel.Create(new RectangleF(), UILayoutType.Horizontal);
             DebugPanel.ApplyLayout = false;
 
-            DebugPanelMs = DebugPanel.Layout.Add(UIText.Create(string.Empty));
+            DebugPanelMs = DebugPanel.Add(UIText.Create(string.Empty));
 
             Panel = UIPanel.Create(new RectangleF(10.0f, 10.0f, 200.0f, 450.0f), UILayoutType.Vertical);
             Panel.PanelColor = Color.Red;
-            Panel.Visible = false;
+            Panel.Enabled = false;
             Panel.Layout.ForceExpandHeigth = false;
             Panel.Layout.ForceExpandWidth = false;
             Panel.Layout.Padding = new UIPadding
@@ -40,7 +40,7 @@ namespace ReCrafted.Game
             Panel.Layout.PreferredSize = new Vector2(0, 30);
             Panel.ApplyLayout = false;
 
-            var button = Panel.Layout.Add(UIButton.Create(new RectangleF(300, 300, 120, 30), "Some text!"));
+            var button = Panel.Add(UIButton.Create(new RectangleF(300, 300, 120, 30), "Some text!"));
             button.SmoothColors = true;
             button.OnClick += () =>
             {
@@ -49,23 +49,23 @@ namespace ReCrafted.Game
                 button.Region = region;
             };
 
-            var button2 = Panel.Layout.Add(UIButton.Create(new RectangleF(300, 310, 60, 60)));
+            var button2 = Panel.Add(UIButton.Create(new RectangleF(300, 310, 60, 60)));
             var button2Colors = UIButtonColors.Defaults;
             button2Colors.NormalColor = Color.Orange;
             button2.Colors = button2Colors;
 
-            var boxTexture = Panel.Layout.Add(UIBox.Create(new RectangleF(100, 100, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
+            var boxTexture = Panel.Add(UIBox.Create(new RectangleF(100, 100, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
             boxTexture.BoxColor = Color.Aqua;
 
-            Panel.Layout.Add(UIBox.Create(new RectangleF(100, 100, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
-            Panel.Layout.Add(UIBox.Create(new RectangleF(100, 100, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
-            Panel.Layout.Add(UIBox.Create(new RectangleF(100, 100, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
-            Panel.Layout.Add(UIBox.Create(new RectangleF(100, 100, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
-            Panel.Layout.Add(UIBox.Create(new RectangleF(100, 100, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
-            Panel.Layout.Add(UIBox.Create(new RectangleF(100, 100, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
-            Panel.Layout.Add(UIBox.Create(new RectangleF(100, 100, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
-            Panel.Layout.Add(UIBox.Create(new RectangleF(100, 100, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
-            Panel.Layout.Add(UIBox.Create(new RectangleF(100, 100, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
+            Panel.Add(UIBox.Create(new RectangleF(100, 100, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
+            Panel.Add(UIBox.Create(new RectangleF(100, 105, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
+            Panel.Add(UIBox.Create(new RectangleF(100, 110, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
+            Panel.Add(UIBox.Create(new RectangleF(100, 115, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
+            Panel.Add(UIBox.Create(new RectangleF(100, 120, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
+            Panel.Add(UIBox.Create(new RectangleF(100, 125, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
+            Panel.Add(UIBox.Create(new RectangleF(100, 130, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
+            Panel.Add(UIBox.Create(new RectangleF(100, 135, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
+            Panel.Add(UIBox.Create(new RectangleF(100, 140, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
 
             //var text = Panel.Layout.Add(UIText.Create(new RectangleF(10, 10, 160, 30), "12345678912345678912345678912342343243"));
 
@@ -79,7 +79,7 @@ namespace ReCrafted.Game
 
             Panel2 = UIPanel.Create(new RectangleF(10.0f, 10.0f, 200.0f, 450.0f), UILayoutType.Vertical);
             Panel2.PanelColor = Color.Red;
-            Panel2.Visible = false;
+            Panel2.Enabled = false;
             Panel2.Layout.ForceExpandHeigth = false;
             Panel2.Layout.ForceExpandWidth = false;
             Panel2.Layout.Padding = new UIPadding
@@ -93,7 +93,7 @@ namespace ReCrafted.Game
             Panel2.Layout.PreferredSize = new Vector2(0, 30);
             Panel2.ApplyLayout = false;
 
-            var p2Button1 = Panel2.Layout.Add(UIButton.Create(new RectangleF(100, 110, 32, 32), "Lol"));
+            var p2Button1 = Panel2.Add(UIButton.Create(new RectangleF(100, 110, 32, 32), "Lol"));
         }
 
         private float _uiDebugTime;
@@ -106,7 +106,7 @@ namespace ReCrafted.Game
                 _uiDebugTime = 0f;
 
                 DebugPanelMs.Region = new RectangleF(20, Display.Height - 40f, 130, 30);
-                DebugPanelMs.Text = "Ui Process Took -> " + GameMain.TotalMilisecondsForUiPanel;
+                DebugPanelMs.Text = "Ui Process Took -> " + GameMain.TotalMilisecondsForUiPanel + "ms";
             }
         }
     }

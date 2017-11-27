@@ -61,6 +61,7 @@ namespace ReCrafted.API.UI.Controls
 
         public override void Draw()
         {
+            if (!Enabled) return;
             if (SmoothColors) _color = Color.Lerp(_color, IsMouseOver ? Colors.OverColor : Colors.NormalColor, (float)Time.DeltaTime * SmoothTranslation);
             UIInternal.Color = _color;
             UIInternal.Depth = Depth;

@@ -14,6 +14,7 @@ namespace ReCrafted.API.UI.Controls
 
         public override void Draw()
         {
+            if (!Enabled) return;
             UIInternal.Color = BoxColor;
             UIInternal.Depth = Depth;
             if (BoxTexture == null)

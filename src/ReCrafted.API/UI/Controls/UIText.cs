@@ -17,6 +17,7 @@ namespace ReCrafted.API.UI.Controls
 
         public override void Draw()
         {
+            if (!Enabled) return;
             var pos = new Vector2(Region.X, Region.Y);
 
             UIInternal.Depth = Depth;

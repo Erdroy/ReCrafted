@@ -86,7 +86,7 @@ namespace ReCrafted.API.UI
             foreach (var control in reversed)
             {
                 if (!control.OnMouseCollision()) continue;
-                if (control.IgnoreMouseCollision) continue;
+                if (control.IgnoreMouseCollision || !control.Enabled) continue;
                 if (!control.Region.Contains(mousePoint) || mouseControlCollision != null && mouseControlCollision != control)
                 {
                     if (!control.IsMouseOver) continue;
