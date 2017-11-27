@@ -29,6 +29,12 @@ LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	switch (msg)
 	{
+	case WM_GETMINMAXINFO:
+	{
+		var lpMMI = reinterpret_cast<LPMINMAXINFO>(lparam);
+		lpMMI->ptMinTrackSize.x = 800;
+		lpMMI->ptMinTrackSize.y = 600;
+	}
 	case WM_SETCURSOR:
 	{
 		if(LOWORD(lparam) == HTCLIENT)
