@@ -70,15 +70,15 @@ inline Vector3 GetEdge(Vector3 offset, sbyte* data, Vector3 cornerA, Vector3 cor
 	var offsetB = offset + cornerB;
 
 	// get data
-	var sampleA = data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
-	var sampleB = data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
+	var sampleA = VOXEL_TO_FLOAT(data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), SpaceObjectChunk::ChunkDataSize)]);
+	var sampleB = VOXEL_TO_FLOAT(data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), SpaceObjectChunk::ChunkDataSize)]);
 
 	return GetIntersection(offsetA, offsetB, sampleA, sampleB);
 }
 
 inline float GetVoxel(sbyte* data, const Vector3& point)
 {
-	return data[INDEX_3D(int(point.x), int(point.y), int(point.z), SpaceObjectChunk::ChunkDataSize)] / 127.0f;
+	return VOXEL_TO_FLOAT(data[INDEX_3D(int(point.x), int(point.y), int(point.z), SpaceObjectChunk::ChunkDataSize)]);
 }
 
 void MCMesher::clean()

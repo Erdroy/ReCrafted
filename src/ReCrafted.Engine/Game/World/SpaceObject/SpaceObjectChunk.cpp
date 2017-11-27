@@ -57,9 +57,9 @@ void SpaceObjectChunk::generate()
 				const var position = nodePosition + offset * lod_f;
 
 				var value = Planet(objectPosition, position, objectRadius);
-				var byteValue = static_cast<sbyte>(Math::clamp(value * 127.0f, -127.0f, 127.0f));
+				var byteValue = VOXEL_FROM_FLOAT(value); // convert to voxel data
 
-				m_voxelData[index] = byteValue; // convert to voxel data
+				m_voxelData[index] = byteValue;
 			}
 		}
 	}
