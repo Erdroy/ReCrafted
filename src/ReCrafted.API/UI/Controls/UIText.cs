@@ -18,9 +18,15 @@ namespace ReCrafted.API.UI.Controls
         public override void Draw()
         {
             var pos = new Vector2(Region.X, Region.Y);
-          
+
+            UIInternal.Depth = Depth;
             UIInternal.Color = TextColor;
             UIInternal.DrawString(TextFont.NativePtr, Text, ref pos);
+        }
+
+        internal override void OnDepthChanged()
+        {
+            Depth = Parent.Depth + 1;
         }
 
         /// <summary>

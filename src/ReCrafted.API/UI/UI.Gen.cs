@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/01/2017 21:54:32 Source: 'UI.API.cpp' Target: 'UI/UI.Gen.cs'
+// Generated: 11/27/2017 15:53:30 Source: 'UI.API.cpp' Target: 'UI/UI.Gen.cs'
 
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.Graphics;
@@ -33,7 +33,7 @@ namespace ReCrafted.API.UI
 		internal static extern void DrawTexture2D(IntPtr texturePtr, ref RectangleF rect, ref RectangleF uvs);
 
 		/// <summary>
-		///	The current drawing color
+		///	The current drawing color.
 		/// </summary>
 		internal static Color Color 
 		{
@@ -47,9 +47,28 @@ namespace ReCrafted.API.UI
 			}
 		}
 
+		/// <summary>
+		///	Depth of current drawing ui.
+		/// </summary>
+		internal static float Depth 
+		{
+			get
+			{
+				return Internal_Depth_Get();
+			}
+			set
+			{
+				Internal_Depth_Set(value);
+			}
+		}
+
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_Color_Set(Color value);
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern Color Internal_Color_Get();
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_Depth_Set(float value);
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern float Internal_Depth_Get();
 	}
 }

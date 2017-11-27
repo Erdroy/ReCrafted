@@ -45,8 +45,8 @@ namespace ReCrafted.Game
             Locale.SetLocale("Polski");
 
             // Test ui script
-            // var tests = Entity.Create("Tests");
-            // tests.AddScript<UITests>();
+            var tests = Entity.Create("Tests");
+            tests.AddScript<UITests>();
         }
 
         protected override void Update()
@@ -89,14 +89,9 @@ namespace ReCrafted.Game
             
         }
 
-        private const bool EnableUiMs = false;
-        private const int UiProcessDebugFrames = 30;
-
-        private static double _uiProcessDebugMs;
-        private static double _uiProcessDebugTotal;
+        private const bool EnableUiMs = true;
         private static double _uiProcessDebugLastMs;
         private static float _uiProcessDebugTime;
-
         protected override void DrawUI()
         {
             if (EnableUiMs)
@@ -104,15 +99,12 @@ namespace ReCrafted.Game
                 var start = DateTime.Now;
                 UIPanel.DrawAll();
                 var last = (DateTime.Now - start).TotalMilliseconds;
-                _uiProcessDebugMs += last;
                 if (_uiProcessDebugTime < 1)
                     _uiProcessDebugTime += (float)Time.DeltaTime;
                 else
                 {
                     _uiProcessDebugLastMs = last;
                     _uiProcessDebugTime = 0f;
-                    _uiProcessDebugTotal = _uiProcessDebugMs / 10;
-                    _uiProcessDebugMs = 0;
                 }
             }
             else
@@ -133,7 +125,7 @@ namespace ReCrafted.Game
             {
                 pos = new Vector2(20.0f, Display.Height - 40.0f);
                 UIInternal.DrawString(UIControl.DefaultFont.NativePtr,
-                    "Ui process took -> " + _uiProcessDebugTotal + " ms / " + UiProcessDebugFrames + " frames (last " + _uiProcessDebugLastMs + " ms )", ref pos);
+                    "Ui process took -> " + _uiProcessDebugLastMs + " ms", ref pos);
             }
         }
 

@@ -10,6 +10,9 @@ namespace ReCrafted.API.UI
     /// </summary>
     public abstract class UIControl
     {
+        // control depth
+        internal float Depth;
+
         /// <summary>
         /// Draws all controls.
         /// </summary>
@@ -43,6 +46,9 @@ namespace ReCrafted.API.UI
         // when mouse collision is calculated, every controll have checks his childres (if exists) if they collide with mouse,
         // if so method should return false, and then system will stop search for mouse collision at this point
         internal virtual bool OnMouseCollision() { return true; }
+
+        // when the depth of parent or by parent on this control has been changed
+        internal virtual void OnDepthChanged() { }
 
         /// <summary>
         /// The control's region in pixels.

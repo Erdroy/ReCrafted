@@ -63,13 +63,20 @@ namespace ReCrafted.API.UI.Controls
         {
             if (SmoothColors) _color = Color.Lerp(_color, IsMouseOver ? Colors.OverColor : Colors.NormalColor, (float)Time.DeltaTime * SmoothTranslation);
             UIInternal.Color = _color;
+            UIInternal.Depth = Depth;
             UIInternal.DrawBox(Region);
 
+            UIInternal.Depth = Depth + 0.1f;
             UIInternal.Color = TextColor;
             var buttonTextPositon = new Vector2(Region.X, Region.Y);
             buttonTextPositon.X += Region.Width / 2 - _textsize.X / 2;
             buttonTextPositon.Y += Region.Height / 2 - _textsize.Y / 2;
             UIInternal.DrawString(TextFont.NativePtr, _text, ref buttonTextPositon);
+        }
+
+        internal override void OnDepthChanged()
+        {
+            Depth = Parent.Depth + 1;
         }
 
         /// <summary>

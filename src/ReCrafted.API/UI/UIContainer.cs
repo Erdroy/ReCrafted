@@ -30,6 +30,13 @@ namespace ReCrafted.API.UI
                 control.Draw();
         }
 
+        // when depth of this container has been changed, update depth of all his children's
+        internal override void OnDepthChanged()
+        {
+            foreach (var control in _controls)
+                control.OnDepthChanged();
+        }
+
         /// <summary>
         /// Adds new control to the container and then returns it.
         /// </summary>
@@ -43,6 +50,8 @@ namespace ReCrafted.API.UI
             if (instance == null) throw new ArgumentNullException(nameof(instance));
             if (_controls.Contains(instance)) throw new ReCraftedException("Unable to add new control in to container. Controls can by added in to container only once.");
             instance.Parent = this;
+            instance.Depth = Depth + _controls.Count;
+            instance.OnDepthChanged();
             _controls.Add(instance);
             return instance;
         }

@@ -194,3 +194,8 @@ void UI::setDepth(float depth)
 {
 	m_instance->m_depth = depth;
 }
+
+float UI::getDepth()
+{
+	return m_instance->m_depth;
+}

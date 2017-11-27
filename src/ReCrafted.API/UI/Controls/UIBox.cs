@@ -15,14 +15,20 @@ namespace ReCrafted.API.UI.Controls
         public override void Draw()
         {
             UIInternal.Color = BoxColor;
+            UIInternal.Depth = Depth;
             if (BoxTexture == null)
-            UIInternal.DrawBox(Region);
+                UIInternal.DrawBox(Region);
             else
             {
                 var region = Region;
                 var uvs = new RectangleF(0.0f, 0.0f, 1.0f, 1.0f);
                 UIInternal.DrawTexture2D(BoxTexture.NativePtr, ref region, ref uvs);
             }
+        }
+
+        internal override void OnDepthChanged()
+        {
+            Depth = Parent.Depth + 1;
         }
 
         /// <summary>

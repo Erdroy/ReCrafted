@@ -134,6 +134,11 @@ public:
 	/// </summary>
 	static void setDepth(float depth);
 
+	/// <summary>
+	/// Gets current depth.
+	/// </summary>
+	static float getDepth();
+
 	// drawing
 	/// <summary>
 	/// Draws colored box on the screen.

@@ -67,11 +67,19 @@ void UI::initRuntime()
 			}
 			API_METHOD_END();
 
-			API_COMMENT("The current drawing color");
+			API_COMMENT("The current drawing color.");
 			API_PROPERTY(INTERNAL, STATIC, "Color", "Color", GETSET);
 			{
 				API_BIND("ReCrafted.API.UI.UIInternal::Internal_Color_Get", &UI::getColor);
 				API_BIND("ReCrafted.API.UI.UIInternal::Internal_Color_Set", &UI::setColor);
+			}
+			API_PROPERTY_END();
+
+			API_COMMENT("Depth of current drawing ui.");
+			API_PROPERTY(INTERNAL, STATIC, "float", "Depth", GETSET);
+			{
+				API_BIND("ReCrafted.API.UI.UIInternal::Internal_Depth_Get", &UI::getDepth);
+				API_BIND("ReCrafted.API.UI.UIInternal::Internal_Depth_Set", &UI::setDepth);
 			}
 			API_PROPERTY_END();
 		}
