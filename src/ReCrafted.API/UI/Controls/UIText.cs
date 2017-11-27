@@ -1,5 +1,8 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 
@@ -15,6 +18,7 @@ namespace ReCrafted.API.UI.Controls
         public override void Draw()
         {
             var pos = new Vector2(Region.X, Region.Y);
+          
             UIInternal.Color = TextColor;
             UIInternal.DrawString(TextFont.NativePtr, Text, ref pos);
         }
@@ -69,14 +73,36 @@ namespace ReCrafted.API.UI.Controls
             return new UIText
             {
                 Region = region,
+                TextFont = DefaultFont, //load default font
                 Text = text,
                 TextColor = color,
-                TextFont = DefaultFont,//load default font
                 Enabled = true,
                 IgnoreMouseCollision = true,
                 IsMouseOver = false,
                 Parent = null
             };
+        }
+
+        // creates new rect based on given text and font size
+        // the method may return an invalid size relative to the actual text
+        internal static Vector2 ResolveTextRegion(Font font, string text)
+        {
+            var fontSize = Font.GetSize(font.NativePtr);
+            var lineSize = new List<int> { 0 };
+            int line = 0;
+            foreach (var t in text)
+            {
+                if (t == '\n')
+                {
+                    line++;
+                    lineSize.Add(0);
+                }
+                else
+                {
+                    lineSize[line]++;
+                }
+            }
+            return new Vector2(fontSize * (lineSize.Max() / (fontSize * 0.142f)), fontSize * 1.142f * lineSize.Count);
         }
 
         /// <summary>
@@ -93,6 +119,5 @@ namespace ReCrafted.API.UI.Controls
         /// Loaded font of this text.
         /// </summary>
         public Font TextFont { get; private set; }
-
     }
 }

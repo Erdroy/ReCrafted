@@ -32,7 +32,7 @@ namespace ReCrafted.Game
             Panel.Layout.PreferredSize = new Vector2(0, 30);
             Panel.ApplyLayout = false;
 
-            var button = Panel.Layout.Add(UIButton.Create(new RectangleF(300, 300, 120, 30)));
+            var button = Panel.Layout.Add(UIButton.Create(new RectangleF(300, 300, 120, 30), "Some text!"));
             button.SmoothColors = true;
             button.OnClick += () =>
             {
@@ -48,6 +48,8 @@ namespace ReCrafted.Game
 
             var boxTexture = Panel.Layout.Add(UIBox.Create(new RectangleF(100, 100, 32, 32), Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"))));
             boxTexture.BoxColor = Color.Aqua;
+
+            //var text = Panel.Layout.Add(UIText.Create(new RectangleF(10, 10, 160, 30), "12345678912345678912345678912342343243"));
 
             /*
             for (int i = 0; i < 1000; i++)

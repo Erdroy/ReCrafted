@@ -74,17 +74,7 @@ namespace ReCrafted.API.UI
                 Parent = null,
                 Region = region,
                 PanelColor = Color.White,
-                Layout = new UILayout
-                {
-                    Type = layoutType,
-                    Enabled = true,
-                    Region = region,
-                    PreferredSize = new Vector2(region.Width, region.Height),
-                    ForceExpandHeigth = false,
-                    ForceExpandWidth = false,
-                    Padding = new UIPadding(),
-                    Space = 0,
-                }
+                Layout = UILayout.Create(region, layoutType)
             };
             
             // set panel layout parent

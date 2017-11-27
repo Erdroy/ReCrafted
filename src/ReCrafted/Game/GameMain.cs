@@ -45,8 +45,8 @@ namespace ReCrafted.Game
             Locale.SetLocale("Polski");
 
             // Test ui script
-            var tests = Entity.Create("Tests");
-            tests.AddScript<UITests>();
+            // var tests = Entity.Create("Tests");
+            // tests.AddScript<UITests>();
         }
 
         protected override void Update()

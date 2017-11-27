@@ -2,6 +2,7 @@
 
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
+using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 
 namespace ReCrafted.API.UI.Controls
@@ -16,13 +17,19 @@ namespace ReCrafted.API.UI.Controls
     /// </summary>
     public class UIButton : UIControl
     {
-        //current button color
+        // current button color
         private Color _color;
+        // current button text;
+        private string _text;
+        // size of button text 
+        private Vector2 _textsize;
 
         /// <summary>
         /// Delegate will be invoked, when button has been clicked.
         /// </summary>
         public ButtonClick OnClick;
+
+        private UIButton() { }
 
         public override void OnMouseEnter()
         {
@@ -57,9 +64,30 @@ namespace ReCrafted.API.UI.Controls
             if (SmoothColors) _color = Color.Lerp(_color, IsMouseOver ? Colors.OverColor : Colors.NormalColor, (float)Time.DeltaTime * SmoothTranslation);
             UIInternal.Color = _color;
             UIInternal.DrawBox(Region);
+
+            UIInternal.Color = TextColor;
+            var buttonTextPositon = new Vector2(Region.X, Region.Y);
+            buttonTextPositon.X += Region.Width / 2 - _textsize.X / 2;
+            buttonTextPositon.Y += Region.Height / 2 - _textsize.Y / 2;
+            UIInternal.DrawString(TextFont.NativePtr, _text, ref buttonTextPositon);
         }
 
-        private UIButton() { }
+        /// <summary>
+        /// Updates current font of the text.
+        /// </summary>
+        /// <param name="font">Our new font.</param>
+        public void SetFont(Font font)
+        {
+            TextFont = font;
+        }
+
+        /// <summary>
+        /// Get current font size.
+        /// </summary>
+        public uint GetSize()
+        {
+            return Font.GetSize(TextFont.NativePtr);
+        }
 
         /// <summary>
         /// Creates new UIButton.
@@ -67,17 +95,28 @@ namespace ReCrafted.API.UI.Controls
         /// <returns>Our newly created UIButton control.</returns>
         public static UIButton Create()
         {
-            return Create(new RectangleF(), UIButtonColors.Defaults);
+            return Create(new RectangleF(), string.Empty, Color.White, UIButtonColors.Defaults);
         }
 
         /// <summary>
         /// Creates new UIButton.
         /// </summary>
-        /// <param name="colors">Colors of the UIButton.</param>
+        /// <param name="text">Text of button.</param>
         /// <returns>Our newly created UIButton control.</returns>
-        public static UIButton Create(UIButtonColors colors)
+        public static UIButton Create(string text)
         {
-            return Create(new RectangleF(), colors);
+            return Create(new RectangleF(), text, Color.White, UIButtonColors.Defaults);
+        }
+
+        /// <summary>
+        /// Creates new UIButton.
+        /// </summary>
+        /// <param name="text">Text of button.</param>
+        /// <param name="textColor">Color of the button.</param>
+        /// <returns>Our newly created UIButton control.</returns>
+        public static UIButton Create(string text, Color textColor)
+        {
+            return Create(new RectangleF(), text, textColor, UIButtonColors.Defaults);
         }
 
         /// <summary>
@@ -87,20 +126,48 @@ namespace ReCrafted.API.UI.Controls
         /// <returns>Our newly created UIButton control.</returns>
         public static UIButton Create(RectangleF region)
         {
-            return Create(region, UIButtonColors.Defaults);
+            return Create(region, string.Empty, Color.White, UIButtonColors.Defaults);
         }
 
         /// <summary>
         /// Creates new UIButton.
         /// </summary>
         /// <param name="region">The UIButton region.</param>
+        /// <param name="text">Text of button.</param>
+        /// <returns>Our newly created UIButton control.</returns>
+        public static UIButton Create(RectangleF region, string text)
+        {
+            return Create(region, text, Color.White, UIButtonColors.Defaults);
+        }
+
+        /// <summary>
+        /// Creates new UIButton.
+        /// </summary>
+        /// <param name="region">The UIButton region.</param>
+        /// <param name="text">Text of button.</param>
+        /// <param name="textColor">Color of the button.</param>
+        /// <returns>Our newly created UIButton control.</returns>
+        public static UIButton Create(RectangleF region, string text, Color textColor)
+        {
+            return Create(region, text, textColor, UIButtonColors.Defaults);
+        }
+
+        /// <summary>
+        /// Creates new UIButton.
+        /// </summary>
+        /// <param name="region">The UIButton region.</param>
+        /// <param name="text">Text of button.</param>
+        /// <param name="textColor">Color of the button.</param>
         /// <param name="colors">Colors of the UIButton.</param>
         /// <returns>Our newly created UIButton control.</returns>
-        public static UIButton Create(RectangleF region, UIButtonColors colors)
+        public static UIButton Create(RectangleF region, string text, Color textColor, UIButtonColors colors)
         {
             return new UIButton
             {
                 Region = region,
+                TextFont = DefaultFont, //load default font
+                Text = text,
+                TextColor = textColor,
                 _color = Color.White, 
                 Colors =  colors,
                 SmoothColors = true,
@@ -126,5 +193,28 @@ namespace ReCrafted.API.UI.Controls
         /// Speed of smooth translation.
         /// </summary>
         public float SmoothTranslation { get; set; }
+
+        /// <summary>
+        /// Color of the text.
+        /// </summary>
+        public Color TextColor { get; set; }
+
+        /// <summary>
+        /// Text of this control.
+        /// </summary>     
+        public string Text
+        {
+            get { return _text; }
+            set
+            {
+                _text = value;
+                _textsize = UIText.ResolveTextRegion(TextFont, _text);
+            }
+        }
+
+        /// <summary>
+        /// Loaded font of this text.
+        /// </summary>
+        public Font TextFont { get; private set; }
     }
 }

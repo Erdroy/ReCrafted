@@ -6,7 +6,7 @@ using ReCrafted.API.Mathematics;
 namespace ReCrafted.API.UI
 {
     /// <summary>
-    /// UILayoutType enum
+    /// UILayoutType enum.
     /// </summary>
     public enum UILayoutType
     {
@@ -14,6 +14,22 @@ namespace ReCrafted.API.UI
         DynamicGrid,
         Horizontal,
         Vertical
+    }
+
+    /// <summary>
+    /// UILayout alignment.
+    /// </summary>
+    public enum UILayoutAlignment
+    {
+        LeftTop,
+        LeftMiddle,
+        LeftBottom,
+        MiddleTop,
+        Middle,
+        MiddleBottom,
+        RightTop,
+        RightMiddle,
+        RightBottom
     }
 
     /// <summary>
@@ -197,6 +213,7 @@ namespace ReCrafted.API.UI
                 ForceExpandWidth = false,
                 Padding = new UIPadding(),
                 Space = 0,
+                Alignment = UILayoutAlignment.LeftTop
             };
 
             return layout;
@@ -231,5 +248,10 @@ namespace ReCrafted.API.UI
         /// Space between controls.
         /// </summary>
         public float Space { get; set; }
+
+        /// <summary>
+        /// Layout alignment.
+        /// </summary>
+        public UILayoutAlignment Alignment { get; set; }
     }
 }
