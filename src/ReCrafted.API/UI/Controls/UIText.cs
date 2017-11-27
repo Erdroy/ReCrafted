@@ -24,11 +24,6 @@ namespace ReCrafted.API.UI.Controls
             UIInternal.DrawString(TextFont.NativePtr, Text, ref pos);
         }
 
-        internal override void OnDepthChanged()
-        {
-            Depth = Parent.Depth + 1;
-        }
-
         /// <summary>
         /// Updates current font of the text.
         /// </summary>

@@ -47,9 +47,6 @@ namespace ReCrafted.API.UI
         // if so method should return false, and then system will stop search for mouse collision at this point
         internal virtual bool OnMouseCollision() { return true; }
 
-        // when the depth of parent or by parent on this control has been changed
-        internal virtual void OnDepthChanged() { }
-
         /// <summary>
         /// The control's region in pixels.
         /// </summary>

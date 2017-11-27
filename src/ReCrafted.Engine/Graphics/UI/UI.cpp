@@ -13,7 +13,7 @@ bgfx::UniformHandle m_textureUnif = {};
 
 bool UI::drawcmd_comparison(drawcmd& cmd1, drawcmd& cmd2)
 {
-	return std::tie(cmd1.texture, cmd1.zOrder) < std::tie(cmd2.texture, cmd2.zOrder);
+	return std::tie(cmd1.zOrder, cmd1.texture) < std::tie(cmd2.zOrder, cmd2.texture);
 }
 
 void UI::clear()

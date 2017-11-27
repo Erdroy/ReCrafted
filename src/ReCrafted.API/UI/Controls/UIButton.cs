@@ -74,11 +74,6 @@ namespace ReCrafted.API.UI.Controls
             UIInternal.DrawString(TextFont.NativePtr, _text, ref buttonTextPositon);
         }
 
-        internal override void OnDepthChanged()
-        {
-            Depth = Parent.Depth + 1;
-        }
-
         /// <summary>
         /// Updates current font of the text.
         /// </summary>
@@ -102,7 +97,7 @@ namespace ReCrafted.API.UI.Controls
         /// <returns>Our newly created UIButton control.</returns>
         public static UIButton Create()
         {
-            return Create(new RectangleF(), string.Empty, Color.White, UIButtonColors.Defaults);
+            return Create(new RectangleF(), string.Empty, Color.Black, UIButtonColors.Defaults);
         }
 
         /// <summary>
@@ -112,7 +107,7 @@ namespace ReCrafted.API.UI.Controls
         /// <returns>Our newly created UIButton control.</returns>
         public static UIButton Create(string text)
         {
-            return Create(new RectangleF(), text, Color.White, UIButtonColors.Defaults);
+            return Create(new RectangleF(), text, Color.Black, UIButtonColors.Defaults);
         }
 
         /// <summary>
@@ -133,7 +128,7 @@ namespace ReCrafted.API.UI.Controls
         /// <returns>Our newly created UIButton control.</returns>
         public static UIButton Create(RectangleF region)
         {
-            return Create(region, string.Empty, Color.White, UIButtonColors.Defaults);
+            return Create(region, string.Empty, Color.Black, UIButtonColors.Defaults);
         }
 
         /// <summary>
@@ -144,7 +139,7 @@ namespace ReCrafted.API.UI.Controls
         /// <returns>Our newly created UIButton control.</returns>
         public static UIButton Create(RectangleF region, string text)
         {
-            return Create(region, text, Color.White, UIButtonColors.Defaults);
+            return Create(region, text, Color.Black, UIButtonColors.Defaults);
         }
 
         /// <summary>
@@ -169,13 +164,12 @@ namespace ReCrafted.API.UI.Controls
         /// <returns>Our newly created UIButton control.</returns>
         public static UIButton Create(RectangleF region, string text, Color textColor, UIButtonColors colors)
         {
-            return new UIButton
+            var button = new UIButton
             {
                 Region = region,
                 TextFont = DefaultFont, //load default font
                 Text = text,
                 TextColor = textColor,
-                _color = Color.White, 
                 Colors =  colors,
                 SmoothColors = true,
                 SmoothTranslation = 5f,
@@ -184,6 +178,8 @@ namespace ReCrafted.API.UI.Controls
                 IsMouseOver = false,
                 Parent = null
             };
+            button._color = button.Colors.NormalColor;
+            return button;
         }
 
         /// <summary>

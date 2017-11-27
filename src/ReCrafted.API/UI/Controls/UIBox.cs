@@ -26,11 +26,6 @@ namespace ReCrafted.API.UI.Controls
             }
         }
 
-        internal override void OnDepthChanged()
-        {
-            Depth = Parent.Depth + 1;
-        }
-
         /// <summary>
         /// Creates new UIBox.
         /// </summary>

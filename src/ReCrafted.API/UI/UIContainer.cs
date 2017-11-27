@@ -16,6 +16,9 @@ namespace ReCrafted.API.UI
         // actual list of control
         private readonly List<UIControl> _controls = new List<UIControl>();
 
+        // when control has been added or removed from container.
+        internal Action OnControlsChanged;
+
         /// <summary>
         /// Contains all the controls
         /// </summary>
@@ -28,13 +31,6 @@ namespace ReCrafted.API.UI
         {
             foreach (var control in _controls)
                 control.Draw();
-        }
-
-        // when depth of this container has been changed, update depth of all his children's
-        internal override void OnDepthChanged()
-        {
-            foreach (var control in _controls)
-                control.OnDepthChanged();
         }
 
         /// <summary>
@@ -51,8 +47,8 @@ namespace ReCrafted.API.UI
             if (_controls.Contains(instance)) throw new ReCraftedException("Unable to add new control in to container. Controls can by added in to container only once.");
             instance.Parent = this;
             instance.Depth = Depth + _controls.Count;
-            instance.OnDepthChanged();
             _controls.Add(instance);
+            OnControlsChanged?.Invoke();
             return instance;
         }
 
@@ -67,6 +63,17 @@ namespace ReCrafted.API.UI
             if (instance == null) throw new ArgumentNullException(nameof(instance));
             if (!_controls.Contains(instance)) return;
             _controls.Remove(instance);
+            OnControlsChanged?.Invoke();
+        }
+
+        // recalculate depth of all children controls
+        internal void RecalculateDepth()
+        {
+            for (var index = 0; index < _controls.Count; index++)
+            {
+                var control = _controls[index];
+                control.Depth = Depth + index;
+            }
         }
 
         // some stuff with mouse collision on controls

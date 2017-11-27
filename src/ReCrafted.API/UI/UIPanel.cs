@@ -23,6 +23,7 @@ namespace ReCrafted.API.UI
         {
             if (Visible)
             {
+                UIInternal.Depth = Depth;
                 UIInternal.Color = PanelColor;
                 UIInternal.DrawBox(Region);
             }
@@ -74,11 +75,27 @@ namespace ReCrafted.API.UI
                 Parent = null,
                 Region = region,
                 PanelColor = Color.White,
-                Layout = UILayout.Create(region, layoutType)
+                Depth = 1 + (Panels.Count == 0 ? 0 : Panels[Panels.Count - 1].Depth) +
+                        (Panels.Count == 0 ? 0 : Panels[Panels.Count - 1].Layout.Controls.Count),
+                Layout = UILayout.Create(region, layoutType),
             };
-            
+
             // set panel layout parent
             panel.Layout.Parent = panel;
+            // apply panel depth
+            panel.Layout.Depth = panel.Depth + 1;
+
+            // recalculate whole depth when controls in panel has been changed.
+            panel.Layout.OnControlsChanged += () =>
+            {
+                for (var index = Panels.IndexOf(panel); index < Panels.Count; index++)
+                {
+                    Panels[index].Depth =
+                        1 + (index == 0 ? 0 : Panels[index - 1].Depth + Panels[index - 1].Layout.Controls.Count);
+                    Panels[index].Layout.Depth = Panels[index].Depth;
+                    Panels[index].Layout.RecalculateDepth();
+                }
+            };
 
             // add new panel
             Panels.Add(panel);

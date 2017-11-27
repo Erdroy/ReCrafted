@@ -1,6 +1,7 @@
 // ReCrafted © 2016-2017 Always Too Late
 
 using System;
+using System.Diagnostics;
 using ReCrafted.API;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
@@ -45,7 +46,7 @@ namespace ReCrafted.Game
             Locale.SetLocale("Polski");
 
             // Test ui script
-            var tests = Entity.Create("Tests");
+            var tests = Entity.Create("UiTests");
             tests.AddScript<UITests>();
         }
 
@@ -89,28 +90,14 @@ namespace ReCrafted.Game
             
         }
 
-        private const bool EnableUiMs = true;
-        private static double _uiProcessDebugLastMs;
-        private static float _uiProcessDebugTime;
+        // total miliseconds needs to calculate current ui
+        internal static double TotalMilisecondsForUiPanel;
         protected override void DrawUI()
         {
-            if (EnableUiMs)
-            {
-                var start = DateTime.Now;
-                UIPanel.DrawAll();
-                var last = (DateTime.Now - start).TotalMilliseconds;
-                if (_uiProcessDebugTime < 1)
-                    _uiProcessDebugTime += (float)Time.DeltaTime;
-                else
-                {
-                    _uiProcessDebugLastMs = last;
-                    _uiProcessDebugTime = 0f;
-                }
-            }
-            else
-            {
-                UIPanel.DrawAll();
-            }
+            var sw = Stopwatch.StartNew();
+            UIPanel.DrawAll();
+            sw.Stop();
+            TotalMilisecondsForUiPanel = sw.ElapsedMilliseconds;
 
             UIInternal.Color = Color.White;
             var rect = new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
@@ -118,15 +105,7 @@ namespace ReCrafted.Game
             UIInternal.DrawTexture2D(_crosshairTexture.NativePtr, ref rect, ref uvs);
 
             var pos = new Vector2(20.0f, Display.Height - 20.0f);
-            UIInternal.DrawString(UIControl.DefaultFont.NativePtr,
-                "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber, ref pos);
-
-            if (EnableUiMs)
-            {
-                pos = new Vector2(20.0f, Display.Height - 40.0f);
-                UIInternal.DrawString(UIControl.DefaultFont.NativePtr,
-                    "Ui process took -> " + _uiProcessDebugLastMs + " ms", ref pos);
-            }
+            UIInternal.DrawString(UIControl.DefaultFont.NativePtr, "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber, ref pos);
         }
 
         protected override void Shutdown()
