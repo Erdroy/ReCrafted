@@ -2,8 +2,8 @@
 
 #include "SpaceObjectManager.h"
 #include "SpaceObjectChunk.h"
-#include "Core/concurrentqueue.h"
 #include "Core/Logger.h"
+#include "Core/Containers/concurrentqueue.h"
 #include "Platform/Platform.h"
 
 SpaceObjectManager* Singleton<SpaceObjectManager>::m_instance;
