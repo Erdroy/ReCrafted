@@ -19,6 +19,12 @@ namespace ReCrafted.API.UI
         public abstract void Draw();
 
         /// <summary>
+        /// When focus state of control has been changed.
+        /// </summary>
+        /// <param name="value"></param>
+        public virtual void OnControlFocused(bool value) { }
+
+        /// <summary>
         /// When region of control has been changed by his parent.
         /// </summary>
         public virtual void OnRegionChanged() { }
@@ -73,8 +79,27 @@ namespace ReCrafted.API.UI
         public bool IsMouseOver { get; internal set; }
 
         /// <summary>
+        /// Is this control currently focused? (if possible)
+        /// </summary>
+        public bool IsFocused => FocusedControl == this;
+
+        /// <summary>
         /// Default font of all new controls that use font.
         /// </summary>
         public static Font DefaultFont { get; set; }
+
+        // current focused control by user
+        internal static UIControl FocusedControl { get; private set; }
+
+        // set focused control
+        internal static void SetFocusedControl(UIControl control)
+        {
+            if (control == null)
+                FocusedControl?.OnControlFocused(false);
+            var same = FocusedControl == control;
+            FocusedControl = control;
+            if (FocusedControl != null && !same)
+                FocusedControl.OnControlFocused(true);
+        }
     }
 }

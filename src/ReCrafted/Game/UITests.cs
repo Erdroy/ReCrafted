@@ -32,7 +32,7 @@ namespace ReCrafted.Game
 
             //TestBox = TestPanel.Add(new UIBox(new RectangleF(0f, 0f, 32f, 32f)));
 
-            var panel = UIPanel.Create(new RectangleF(200.0f, 10.0f, 200.0f, 450.0f), UILayoutType.Vertical);
+            var panel = UIPanel.Create(new RectangleF(200.0f, 100.0f, 200.0f, 450.0f), UILayoutType.Vertical);
             panel.PanelColor = Color.Red;
             panel.Enabled = true;
             panel.Layout.ForceExpandHeigth = false;
@@ -46,10 +46,10 @@ namespace ReCrafted.Game
             };
             panel.Layout.Space = 1f;
             panel.Layout.PreferredSize = new Vector2(30, 30);
-            panel.Layout.Alignment = UILayoutAlignment.Middle;
+            panel.Layout.Alignment = UILayoutAlignment.MiddleTop;
             panel.ApplyLayout = true;
 
-            var button = panel.Add(new UIButton(new RectangleF(300, 300, 120, 30), "Some text!"));
+            var button = panel.Add(new UIButton(new RectangleF(0, 0, 130, 32), "Some text!"));
             button.SmoothColors = true;
             button.OnClick += () =>
             {
@@ -58,17 +58,6 @@ namespace ReCrafted.Game
                 button.Region = region;
             };
 
-            var button2Colors = UIControlColors.Defaults;
-            button2Colors.NormalColor = Color.Orange;
-            panel.Add(new UIButton(new RectangleF(300, 310, 60, 60), string.Empty, Color.Black, button2Colors));
-
-            var dirtTexture = Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "dirt.png"));
-            var boxTexture = panel.Add(new UIBox(new RectangleF(100, 100, 32, 32), dirtTexture));
-            boxTexture.BoxColor = Color.Aqua;
-
-            panel.Add(new UIBox(new RectangleF(100, 105, 32, 32), dirtTexture));
-            panel.Add(new UIBox(new RectangleF(100, 105, 32, 32), dirtTexture));
-
             var toggleGroup = new UIToggleGroup();
             var toggle1 = toggleGroup.Add(panel.Add(new UIToggle(new RectangleF(0, 0, 130, 32), "TestToggle1!")));
             toggle1.TextBackgroundColor = new Color(68, 68, 68);
@@ -76,6 +65,8 @@ namespace ReCrafted.Game
             toggle2.TextBackgroundColor = new Color(68, 68, 68);
             var toggle3 = toggleGroup.Add(panel.Add(new UIToggle(new RectangleF(0, 0, 130, 32), "TestToggle3!")));
             toggle3.TextBackgroundColor = new Color(68, 68, 68);
+
+            var textField = panel.Add(new UITextField(new RectangleF(0, 0, 130, 32)));
 
             //panel.Add(new UIText(new RectangleF(10, 10, 160, 30), "12345678912345678912345678912342343243"));
 
@@ -90,18 +81,21 @@ namespace ReCrafted.Game
         private float _uiDebugTime;
         protected override void OnUpdate()
         {
-            if (_uiDebugTime < 1)
+            if (_uiDebugTime < 0.1f)
                 _uiDebugTime += (float) Time.DeltaTime;
             else
             {
                 _uiDebugTime = 0f;
 
-                DebugPanelMs.Region = new RectangleF(20, Display.Height - 40f, 0, 0);
-                DebugPanelMs.Text = "Ui Process Took -> " + GameMain.TotalMilisecondsForUiPanel + "ms";
+                DebugPanelMs.Region = new RectangleF(20, Display.Height - 80f, 0, 0);
+                DebugPanelMs.Text = "Ui Process Took -> " + GameMain.TotalMilisecondsForUiPanel + "ms\n" +
+                                    "Focused Control -> " + (UIControl.FocusedControl?.GetType().ToString() ?? "<none>") + "\n" +
+                                    "Focused Control Regon -> " + (UIControl.FocusedControl?.Region.ToString() ?? "<none>") + "\n" + 
+                                    "Mouse Position -> " + Input.CursorPosition;
             }
 
             if (TestBox != null)
-            _testBoxFollow();
+                _testBoxFollow();
         }
 
         private Vector2 _testBoxPosition = Vector2.One;

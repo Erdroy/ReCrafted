@@ -199,7 +199,7 @@ namespace ReCrafted.API.UI.Controls
         }
 
         // set default properties
-        public void _applyDefaults(RectangleF region, string text, Color textColor, UIControlColors colors)
+        private void _applyDefaults(RectangleF region, string text, Color textColor, UIControlColors colors)
         {
             Region = region;
             TextFont = DefaultFont; //set default font

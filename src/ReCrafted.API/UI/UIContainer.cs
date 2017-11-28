@@ -103,13 +103,25 @@ namespace ReCrafted.API.UI
                     else
                     {
                         control.OnMouseOver();
-                        if (Input.IsKeyDown(Keys.Mouse0))
-                            control.OnMouseClick();
                     }
 
                     mouseControlCollision = control;
                 }
             }
+
+            if (Input.IsKeyDown(Keys.Mouse0))
+            {
+                if (mouseControlCollision != null)
+                {
+                    mouseControlCollision.OnMouseClick();
+                    SetFocusedControl(mouseControlCollision);
+                }
+                else
+                {
+                    SetFocusedControl(null);
+                }
+            }
+
             return mouseControlCollision == null;
         }
     }
