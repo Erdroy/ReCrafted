@@ -44,6 +44,7 @@ LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		break;
 	}
 
+	case WM_WINDOWPOSCHANGED:
 	case WM_EXITSIZEMOVE: // handle window resizing
 	{
 		auto window = static_cast<HWND>(Platform::getGameWindow());
