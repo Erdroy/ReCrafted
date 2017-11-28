@@ -50,17 +50,6 @@ void Font::initRuntime()
 			}
 			API_METHOD_END();
 
-			API_COMMENT("Get size of font.");
-			API_METHOD(INTERNAL, STATIC, "Internal_GetSize", EXTERN);
-			{
-				API_BIND("ReCrafted.API.Graphics.Font::Internal_GetSize", &Internal::getFontSize);
-
-				API_PARAM("IntPtr", "nativePtr");
-
-				API_RETURN("uint");
-			}
-			API_METHOD_END();
-
 			API_COMMENT("Measures size of given string.");
 			API_METHOD(INTERNAL, STATIC, "Internal_MeasureString", EXTERN);
 			{
@@ -73,6 +62,13 @@ void Font::initRuntime()
 				API_RETURN("uint");
 			}
 			API_METHOD_END();
+
+			API_COMMENT("The size of this font.");
+			API_PROPERTY(PUBLIC, STATIC, "uint", "Size", GETSET);
+			{
+				API_BIND("ReCrafted.API.Graphics.Font::Internal_Size_Get", &Internal::getFontSize);
+			}
+			API_PROPERTY_END();
 		}
 		API_CLASS_END();
 	}

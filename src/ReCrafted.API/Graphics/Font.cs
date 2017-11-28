@@ -10,14 +10,6 @@ namespace ReCrafted.API.Graphics
     public partial class Font
     {
         /// <summary>
-        ///	Get size of this font.
-        /// </summary>
-        public uint GetSize()
-        {
-            return Internal_GetSize(NativePtr);
-        }
-
-        /// <summary>
         ///	Measures size of given string.
         /// </summary>
         public Vector2 MeasureString(string text)
