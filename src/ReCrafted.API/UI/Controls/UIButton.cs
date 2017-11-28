@@ -1,6 +1,5 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
-using System;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
@@ -42,7 +41,7 @@ namespace ReCrafted.API.UI.Controls
         /// </summary>
         public UIButton()
         {
-            _applyDefaults(new RectangleF(), string.Empty, Color.Black, UIButtonColors.Defaults);
+            _applyDefaults(new RectangleF(), string.Empty, Color.Black, UIControlColors.Defaults);
         }
 
         /// <summary>
@@ -51,7 +50,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="region">Region of new UIButton.</param>
         public UIButton(RectangleF region)
         {
-            _applyDefaults(region, string.Empty, Color.Black, UIButtonColors.Defaults);
+            _applyDefaults(region, string.Empty, Color.Black, UIControlColors.Defaults);
         }
 
         /// <summary>
@@ -60,7 +59,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="text">Text of the new UIButton.</param>
         public UIButton(string text)
         {
-            _applyDefaults(new RectangleF(), text, Color.Black, UIButtonColors.Defaults);
+            _applyDefaults(new RectangleF(), text, Color.Black, UIControlColors.Defaults);
         }
 
         /// <summary>
@@ -70,14 +69,14 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="textColor">Color of the text in new UIButton.</param>
         public UIButton(string text, Color textColor)
         {
-            _applyDefaults(new RectangleF(), text, textColor, UIButtonColors.Defaults);
+            _applyDefaults(new RectangleF(), text, textColor, UIControlColors.Defaults);
         }
 
         /// <summary>
         /// Creates new UIButton.
         /// </summary>
         /// <param name="colors">Colors of UIButton.</param>
-        public UIButton(UIButtonColors colors)
+        public UIButton(UIControlColors colors)
         {
             _applyDefaults(new RectangleF(), string.Empty, Color.Black, colors);
         }
@@ -89,7 +88,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="text">Text of the new UIButton.</param>
         public UIButton(RectangleF region, string text)
         {
-            _applyDefaults(region, text, Color.Black, UIButtonColors.Defaults);
+            _applyDefaults(region, text, Color.Black, UIControlColors.Defaults);
         }
 
         /// <summary>
@@ -100,7 +99,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="textColor">Color of the text in new UIButton.</param>
         public UIButton(RectangleF region, string text, Color textColor)
         {
-            _applyDefaults(region, text, textColor, UIButtonColors.Defaults);
+            _applyDefaults(region, text, textColor, UIControlColors.Defaults);
         }
 
         /// <summary>
@@ -110,7 +109,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="text">Text of the new UIButton.</param>
         /// <param name="textColor">Color of the text in new UIButton.</param>
         /// <param name="colors">Colors of UIButton.</param>
-        public UIButton(RectangleF region, string text, Color textColor, UIButtonColors colors)
+        public UIButton(RectangleF region, string text, Color textColor, UIControlColors colors)
         {
             _applyDefaults(region, text, textColor, colors);
         }
@@ -120,7 +119,7 @@ namespace ReCrafted.API.UI.Controls
             if (!SmoothColors)
                 _color = Colors.OverColor;
             if (SpringAnimation)
-                _buttonSizeModifier = 1.1f;
+                _buttonSizeModifier = 0.95f;
         }
 
         public override void OnMouseOver()
@@ -140,7 +139,7 @@ namespace ReCrafted.API.UI.Controls
                 if (SpringAnimation)
                 {
                     _buttonVelocity = Vector2.Zero;
-                    _buttonSize = new Vector2(Region.Width * 0.9f, Region.Height * 0.9f);
+                    _buttonSize = new Vector2(Region.Width, Region.Height) * 0.8f;
                 }
 
                 OnClick?.Invoke();
@@ -166,7 +165,7 @@ namespace ReCrafted.API.UI.Controls
             var buttonRegion = Region;
             if (SpringAnimation)
             {
-                var target = new Vector2(buttonRegion.Width * _buttonSizeModifier, buttonRegion.Height * _buttonSizeModifier);
+                var target = new Vector2(buttonRegion.Width, buttonRegion.Height) * _buttonSizeModifier;
                 UIAnimation.SpringVector2(ref _buttonSize, ref _buttonVelocity, target, (float)Time.DeltaTime);
                 buttonRegion = new RectangleF(buttonRegion.X - (_buttonSize.X/2f - buttonRegion.Width/2f),
                                               buttonRegion.Y - (_buttonSize.Y/2f - buttonRegion.Height/2f), 
@@ -200,7 +199,7 @@ namespace ReCrafted.API.UI.Controls
         }
 
         // set default properties
-        public void _applyDefaults(RectangleF region, string text, Color textColor, UIButtonColors colors)
+        public void _applyDefaults(RectangleF region, string text, Color textColor, UIControlColors colors)
         {
             Region = region;
             TextFont = DefaultFont; //set default font
@@ -224,7 +223,7 @@ namespace ReCrafted.API.UI.Controls
         /// <summary>
         /// Colors of button.
         /// </summary>
-        public UIButtonColors Colors { get; set; }
+        public UIControlColors Colors { get; set; }
 
         /// <summary>
         /// Colors on button will be changed smoothly.
@@ -262,6 +261,6 @@ namespace ReCrafted.API.UI.Controls
         /// <summary>
         /// Loaded font of this text.
         /// </summary>
-        public Font TextFont { get; private set; }
+        public Font TextFont { get; set; }
     }
 }

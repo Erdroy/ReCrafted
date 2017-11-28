@@ -7,7 +7,7 @@ namespace ReCrafted.API.UI.Controls
     /// <summary>
     /// Colors of the button.
     /// </summary>
-    public struct UIButtonColors
+    public struct UIControlColors
     {
         /// <summary>
         /// Normal color of button.
@@ -27,7 +27,7 @@ namespace ReCrafted.API.UI.Controls
         /// <summary>
         /// Default set of button colors.
         /// </summary>
-        public static UIButtonColors Defaults = new UIButtonColors
+        public static UIControlColors Defaults = new UIControlColors
         {
             NormalColor = Color.White,
             OverColor = Color.Gray,

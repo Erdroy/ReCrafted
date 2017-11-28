@@ -8,7 +8,6 @@ using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
-using ReCrafted.API.UI.Controls;
 using ReCrafted.Core;
 using ReCrafted.Core.Locales;
 using ReCrafted.Game.Core;
@@ -30,7 +29,7 @@ namespace ReCrafted.Game
             // Load resources.
             _crosshairTexture = Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "crosshair.png"));
             UIControl.DefaultFont = Font.Load(Assets.ResolveAssetFilePath(AssetType.Font, "VeraMono.ttf"), 12);
-          
+
             Cursor.Show = false;
             Cursor.Lock = true;
 

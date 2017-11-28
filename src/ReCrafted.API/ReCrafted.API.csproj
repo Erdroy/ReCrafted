@@ -97,8 +97,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Controls\UIBox.cs" />
     <Compile Include="UI\Controls\UIButton.cs" />
-    <Compile Include="UI\Controls\UIButtonColors.cs" />
+    <Compile Include="UI\UIControlColors.cs" />
     <Compile Include="UI\Controls\UIText.cs" />
+    <Compile Include="UI\Controls\UIToggle.cs" />
     <Compile Include="UI\UI.Gen.cs" />
     <Compile Include="UI\UIAnimation.cs" />
     <Compile Include="UI\UIContainer.cs" />

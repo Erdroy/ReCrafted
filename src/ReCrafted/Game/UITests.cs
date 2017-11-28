@@ -58,7 +58,7 @@ namespace ReCrafted.Game
                 button.Region = region;
             };
 
-            var button2Colors = UIButtonColors.Defaults;
+            var button2Colors = UIControlColors.Defaults;
             button2Colors.NormalColor = Color.Orange;
             panel.Add(new UIButton(new RectangleF(300, 310, 60, 60), string.Empty, Color.Black, button2Colors));
 
@@ -68,6 +68,10 @@ namespace ReCrafted.Game
 
             panel.Add(new UIBox(new RectangleF(100, 105, 32, 32), dirtTexture));
             panel.Add(new UIBox(new RectangleF(100, 105, 32, 32), dirtTexture));
+
+
+            var toggle = panel.Add(new UIToggle(new RectangleF(0, 0, 125, 32), "TestToggle!"));
+            toggle.TextBackgroundColor = new Color(68, 68, 68);
 
             //panel.Add(new UIText(new RectangleF(10, 10, 160, 30), "12345678912345678912345678912342343243"));
 
