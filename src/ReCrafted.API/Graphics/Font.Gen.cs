@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/28/2017 19:46:39 Source: 'Font.API.cpp' Target: 'Graphics/Font.Gen.cs'
+// Generated: 11/28/2017 19:48:08 Source: 'Font.API.cpp' Target: 'Graphics/Font.Gen.cs'
 
 using ReCrafted.API.Mathematics;
 using System;
@@ -28,21 +28,21 @@ namespace ReCrafted.API.Graphics
 		/// <summary>
 		///	The size of this font.
 		/// </summary>
-		public static uint Size 
+		public uint Size 
 		{
 			get
 			{
-				return Internal_Size_Get();
+				return Internal_Size_Get(NativePtr);
 			}
 			set
 			{
-				Internal_Size_Set(value);
+				Internal_Size_Set(NativePtr, value);
 			}
 		}
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern void Internal_Size_Set(uint value);
+		internal static extern void Internal_Size_Set(IntPtr nativePtr, uint value);
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern uint Internal_Size_Get();
+		internal static extern uint Internal_Size_Get(IntPtr nativePtr);
 	}
 }

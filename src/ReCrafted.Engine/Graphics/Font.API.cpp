@@ -64,7 +64,7 @@ void Font::initRuntime()
 			API_METHOD_END();
 
 			API_COMMENT("The size of this font.");
-			API_PROPERTY(PUBLIC, STATIC, "uint", "Size", GETSET);
+			API_PROPERTY(PUBLIC, REGULAR, "uint", "Size", GETSET);
 			{
 				API_BIND("ReCrafted.API.Graphics.Font::Internal_Size_Get", &Internal::getFontSize);
 			}
