@@ -44,10 +44,15 @@ LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		break;
 	}
 
-	case WM_SIZE: // handle window resizing
+	case WM_EXITSIZEMOVE: // handle window resizing
 	{
-		auto width = LOWORD(lparam);
-		auto height = HIWORD(lparam);
+		auto window = static_cast<HWND>(Platform::getGameWindow());
+		RECT rect;
+
+		GetClientRect(window, &rect);
+
+		auto width = rect.right - rect.left;
+		auto height = rect.bottom - rect.top;
 		gameMain_instance->onResize(width, height);
 		break;
 	}
@@ -396,6 +401,10 @@ void GameMain::onResize(uint width, uint height)
 	// check if game is already initialized
 	if (!m_initialized)
 		return; // do not allow to enter this method when game is not initialized yet.
+
+	// do not resize, when we don't have to... or the size is invalid.
+	if (Display::get_Width() == width && Display::get_Height() == height || (width == 0 || height == 0))
+		return;
 
 	Display::set_Width(width);
 	Display::set_Height(height);
