@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/26/2017 16:33:00 Source: 'Font.API.cpp' Target: 'Graphics/Font.Gen.cs'
+// Generated: 11/28/2017 19:48:08 Source: 'Font.API.cpp' Target: 'Graphics/Font.Gen.cs'
 
 using ReCrafted.API.Mathematics;
 using System;
@@ -11,7 +11,7 @@ namespace ReCrafted.API.Graphics
 	/// <summary>
 	///	Font class.
 	/// </summary>
-	public class Font : Object
+	public partial class Font : Object
 	{
 		/// <summary>
 		///	Loads font from file
@@ -20,10 +20,29 @@ namespace ReCrafted.API.Graphics
 		public static extern Font Load(string fileName, int fontSize);
 
 		/// <summary>
-		///	Get size of font.
+		///	Measures size of given string.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		public static extern uint GetSize(IntPtr nativePtr);
+		internal static extern uint Internal_MeasureString(IntPtr nativePtr, string text, out Vector2 size);
 
+		/// <summary>
+		///	The size of this font.
+		/// </summary>
+		public uint Size 
+		{
+			get
+			{
+				return Internal_Size_Get(NativePtr);
+			}
+			set
+			{
+				Internal_Size_Set(NativePtr, value);
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_Size_Set(IntPtr nativePtr, uint value);
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern uint Internal_Size_Get(IntPtr nativePtr);
 	}
 }
