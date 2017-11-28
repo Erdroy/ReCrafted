@@ -158,6 +158,7 @@ Vector2 Font::measureText(Text text)
 	Vector2 pos = {};
 	auto lineheight = m_size * m_lineHeigh;
 
+	var lastWidth = 0.0f;
 	for (auto i = 0; i < text.length(); i++)
 	{
 		auto character = text[i];
@@ -181,6 +182,8 @@ Vector2 Font::measureText(Text text)
 		}
 		else if (character == '\n' || character == 10 || character == 13) // New line character.
 		{
+			lastWidth = max(lastWidth, pos.x);
+
 			pos.x = 0.0f;
 			pos.y += lineheight;
 		}
@@ -189,7 +192,10 @@ Vector2 Font::measureText(Text text)
 			pos += Vector2(float(glyph.advanceX), 0.0f);
 		}
 	}
-	pos += Vector2(0.0f, lineheight);
+
+	pos.x = lastWidth;
+	pos.y += lineheight;
+
 	return pos;
 }
 
