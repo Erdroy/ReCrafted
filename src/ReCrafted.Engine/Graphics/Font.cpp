@@ -193,7 +193,7 @@ Vector2 Font::measureText(Text text)
 		}
 	}
 
-	pos.x = lastWidth;
+	pos.x = max(lastWidth, pos.x);
 	pos.y += lineheight;
 
 	return pos;

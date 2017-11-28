@@ -3,7 +3,6 @@
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
-using ReCrafted.API.Core;
 
 namespace ReCrafted.API.Graphics
 {
