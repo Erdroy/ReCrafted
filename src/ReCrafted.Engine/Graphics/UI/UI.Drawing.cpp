@@ -22,23 +22,25 @@ v3.v = uvs.y;
 
 void UI::setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex& v3) const
 {
-	auto screen_width = Display::get_Width();
-	auto screen_height = Display::get_Height();
+	var screen_width = Display::get_Width() * 0.5f;
+	var screen_height = Display::get_Height() * 0.5f;
 
-	if (screen_height % 2 != 0)
-		screen_height += 1;
+	var rX = rect.x;
+	var rY = rect.y;
+	var rW = rect.width;
+	var rH = rect.height;
 
 	// Width
-	auto width = rect.width / (screen_width * 0.5f);
+	auto width = rW / screen_width;
 
 	// Height
-	auto height = rect.height / (screen_height * 0.5f);
+	auto height = rH / screen_height;
 
 	// X (Top-left)
-	auto x = rect.x / (screen_width * 0.5f) - 1.0f;
+	auto x = rX / screen_width - 1.0f;
 
 	// Y (Top-left)
-	auto y = 1.0f - rect.y / (screen_height * 0.5f) - height;
+	auto y = 1.0f - rY / screen_height - height;
 
 	// calculate x and y of the first vertex.
 	v0.x = x;
@@ -146,6 +148,10 @@ void UI::drawText(Font* font, Text text, Vector2 position)
 
 void UI::drawText(Font* font, Char* characters, int characterCount, Vector2 position)
 {
+	// round position
+	position.x = roundf(position.x);
+	position.y = roundf(position.y);
+
 	auto currentPosition = position;
 	auto lineheight = float(font->m_size) * font->m_lineHeigh;
 
@@ -162,6 +168,9 @@ void UI::drawText(Font* font, Char* characters, int characterCount, Vector2 posi
 
 		auto glyphRect = glyph.rectangle;
 		auto texture = font->m_textures[glyph.texture];
+		
+		var atlasWidth = static_cast<float>(texture->getWidth());
+		var atlasHeight = static_cast<float>(texture->getHeight());
 
 		if (character == ' ') // Space
 		{
@@ -190,7 +199,7 @@ void UI::drawText(Font* font, Char* characters, int characterCount, Vector2 posi
 			m_instance->internal_drawBoxTextured(
 				Rectf(currentX, currentY, float(glyphRect.width), float(glyphRect.height)),
 				texture->getHandle(),
-				Rectf(glyphRect.x / 512.0f, (glyphRect.y + glyphRect.height) / 512.0f, glyphRect.width / 512.0f, -glyphRect.height / 512.0f));
+				Rectf(glyphRect.x / atlasWidth, (glyphRect.y + glyphRect.height) / atlasHeight, glyphRect.width / atlasWidth, -glyphRect.height / atlasHeight));
 
 			currentPosition += Vector2(float(glyph.advanceX), 0.0f);
 		}
