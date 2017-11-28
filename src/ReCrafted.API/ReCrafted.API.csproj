@@ -35,6 +35,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\.projects\vs2015\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -60,6 +63,7 @@
     <Compile Include="Core\Logger.Gen.cs" />
     <Compile Include="Core\LogLevel.cs" />
     <Compile Include="Core\ReCraftedException.cs" />
+    <Compile Include="Graphics\Atlas.cs" />
     <Compile Include="Graphics\DebugDraw.Gen.cs" />
     <Compile Include="Graphics\Font.cs" />
     <Compile Include="Graphics\Font.Gen.cs" />
@@ -111,7 +115,9 @@
     <Compile Include="UI\UIPadding.cs" />
     <Compile Include="UI\UIPanel.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
