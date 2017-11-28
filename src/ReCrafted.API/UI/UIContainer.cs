@@ -114,7 +114,7 @@ namespace ReCrafted.API.UI
                 if (mouseControlCollision != null)
                 {
                     mouseControlCollision.OnMouseClick();
-                    SetFocusedControl(mouseControlCollision);
+                    mouseControlCollision.SetControlFocused();
                 }
                 else
                 {

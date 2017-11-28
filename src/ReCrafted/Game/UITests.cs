@@ -88,7 +88,7 @@ namespace ReCrafted.Game
                 _uiDebugTime = 0f;
 
                 DebugPanelMs.Region = new RectangleF(20, Display.Height - 80f, 0, 0);
-                DebugPanelMs.Text = "Ui Process Took -> " + GameMain.TotalMilisecondsForUiPanel + "ms\n" +
+                DebugPanelMs.Text = "Ui Process Took -> " + GameMain.LastMilisecondsForUiPanel + "ms (avg "+$"{(GameMain.TotalMilisecondsForUiPanel/GameMain.TotalFramesOfUiPanel):0.000}"+")\n" +
                                     "Focused Control -> " + (UIControl.FocusedControl?.GetType().ToString() ?? "<none>") + "\n" +
                                     "Focused Control Regon -> " + (UIControl.FocusedControl?.Region.ToString() ?? "<none>") + "\n" + 
                                     "Mouse Position -> " + Input.CursorPosition;

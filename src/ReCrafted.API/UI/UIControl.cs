@@ -54,6 +54,14 @@ namespace ReCrafted.API.UI
         internal virtual bool OnMouseCollision() { return true; }
 
         /// <summary>
+        /// Sets this control as current focus target.
+        /// </summary>
+        public void SetControlFocused()
+        {
+            SetFocusedControl(this);
+        }
+
+        /// <summary>
         /// The control's region in pixels.
         /// </summary>
         public RectangleF Region { get; set; }

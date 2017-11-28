@@ -90,14 +90,19 @@ namespace ReCrafted.Game
         }
 
         // total miliseconds needs to calculate current ui
+        internal static double LastMilisecondsForUiPanel;
         internal static double TotalMilisecondsForUiPanel;
+        internal static long TotalFramesOfUiPanel;
+
         protected override void DrawUI()
         {
             var sw = Stopwatch.StartNew();
             UIPanel.DrawAll();
             sw.Stop();
-            TotalMilisecondsForUiPanel = sw.ElapsedMilliseconds;
-
+            LastMilisecondsForUiPanel = sw.ElapsedMilliseconds;
+            TotalMilisecondsForUiPanel += sw.ElapsedMilliseconds;
+            TotalFramesOfUiPanel++;
+            
             UIInternal.Color = Color.White;
             var rect = new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
             var uvs = new RectangleF(0.0f, 0.0f, 1.0f, 1.0f);

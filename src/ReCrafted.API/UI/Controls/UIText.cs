@@ -1,9 +1,6 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using ReCrafted.API.Common;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 
@@ -16,8 +13,6 @@ namespace ReCrafted.API.UI.Controls
     {
         // current text;
         private string _text;
-        // size of text 
-        private Vector2 _textsize;
 
         /// <summary>
         /// Creates new UIText.
@@ -80,11 +75,13 @@ namespace ReCrafted.API.UI.Controls
         public override void Draw()
         {
             if (!Enabled) return;
+            TextPosition = new Vector2(Region.X + (Region.Width != 0 ? Region.Width / 2 - TextSize.X / 2 : 0),
+                                       Region.Y + (Region.Height != 0 ? Region.Height / 2 - TextSize.Y / 2 : 0));
+            var pos = TextPosition;
+            UIInternal.Color = Color.Blue;
+            UIInternal.DrawBox(new RectangleF(pos.X, pos.Y, TextSize.X, TextSize.Y));
             UIInternal.Depth = Depth;
             UIInternal.Color = TextColor;
-
-            var fixedTextRegion = GetFixedTextRegion();
-            var pos = new Vector2(fixedTextRegion.X, fixedTextRegion.Y);
             UIInternal.DrawString(TextFont.NativePtr, _text, ref pos);
         }
 
@@ -92,18 +89,11 @@ namespace ReCrafted.API.UI.Controls
         /// Updates current font of the text.
         /// </summary>
         /// <param name="font">Our new font.</param>
+        /// <exception cref="ArgumentNullException">Exception is thrown when the targetfont was null.</exception>
         public void SetFont(Font font)
         {
+            if (font == null) throw new ArgumentNullException(nameof(font));
             TextFont = font;
-        }
-
-        /// <summary>
-        /// Fixed text region.
-        /// </summary>
-        public RectangleF GetFixedTextRegion()
-        {
-            return new RectangleF(Region.X + (Region.Width != 0 ? Region.Width / 2 - _textsize.X / 2 : 0),
-                Region.Y + (Region.Height != 0 ? Region.Height / 2 - _textsize.Y / 2 : 0), _textsize.X, _textsize.Y);
         }
 
         // set default properties
@@ -117,28 +107,6 @@ namespace ReCrafted.API.UI.Controls
             IgnoreMouseCollision = true;
             IsMouseOver = false;
             Parent = null;
-        }
-
-        // creates new rect based on given text and font size
-        // the method may return an invalid size relative to the actual text
-        internal static Vector2 ResolveTextRegion(Font textFont, string text)
-        {
-            var fontSize = textFont.Size;
-            var lineSize = new List<int> { 0 };
-            int line = 0;
-            foreach (var t in text)
-            {
-                if (t == '\n')
-                {
-                    line++;
-                    lineSize.Add(0);
-                }
-                else
-                {
-                    lineSize[line]++;
-                }
-            }
-            return new Vector2(fontSize * (lineSize.Max() / (fontSize * 0.142f)), fontSize * 1.142f * lineSize.Count);
         }
 
         /*
@@ -232,14 +200,19 @@ namespace ReCrafted.API.UI.Controls
             set
             {
                 _text = value;
-                _textsize = UIText.ResolveTextRegion(TextFont, _text);
+                TextSize = TextFont.MeasureString(_text);
             }
         }
 
         /// <summary>
         /// Size of current text.
         /// </summary>
-        public Vector2 TextSize => _textsize;
+        public Vector2 TextSize { get; private set; }
+
+        /// <summary>
+        /// Fixed text position.
+        /// </summary>
+        public Vector2 TextPosition { get; private set; }
 
         /// <summary>
         /// Loaded font of this text.

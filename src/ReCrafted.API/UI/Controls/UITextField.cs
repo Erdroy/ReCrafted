@@ -152,7 +152,7 @@ namespace ReCrafted.API.UI.Controls
             set
             {
                 _text = value;
-                _textsize = UIText.ResolveTextRegion(TextFont, _text);
+                _textsize = TextFont.MeasureString(_text);
             }
         }
 

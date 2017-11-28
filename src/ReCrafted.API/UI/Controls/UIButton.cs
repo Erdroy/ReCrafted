@@ -26,8 +26,6 @@ namespace ReCrafted.API.UI.Controls
 
         // button size for spring animation
         private Vector2 _buttonSize;
-        // button size modifier.
-        private float _buttonSizeModifier;
         // velocity of button spring animation
         private Vector2 _buttonVelocity;
 
@@ -118,8 +116,6 @@ namespace ReCrafted.API.UI.Controls
         {
             if (!SmoothColors)
                 _color = Colors.OverColor;
-            if (SpringAnimation)
-                _buttonSizeModifier = 0.95f;
         }
 
         public override void OnMouseOver()
@@ -150,8 +146,6 @@ namespace ReCrafted.API.UI.Controls
         {
             if (!SmoothColors)
                 _color = Colors.NormalColor;
-            if (SpringAnimation)
-                _buttonSizeModifier = 1.0f;
         }
 
         // draw button
@@ -165,7 +159,7 @@ namespace ReCrafted.API.UI.Controls
             var buttonRegion = Region;
             if (SpringAnimation)
             {
-                var target = new Vector2(buttonRegion.Width, buttonRegion.Height) * _buttonSizeModifier;
+                var target = new Vector2(buttonRegion.Width, buttonRegion.Height);
                 UIAnimation.SpringVector2(ref _buttonSize, ref _buttonVelocity, target, (float)Time.DeltaTime);
                 buttonRegion = new RectangleF(buttonRegion.X - (_buttonSize.X/2f - buttonRegion.Width/2f),
                                               buttonRegion.Y - (_buttonSize.Y/2f - buttonRegion.Height/2f), 
@@ -208,7 +202,6 @@ namespace ReCrafted.API.UI.Controls
 
             _color = Colors.NormalColor;
             _buttonSize = new Vector2(region.Width, region.Height);
-            _buttonSizeModifier = 1f;
             _buttonVelocity = Vector2.One;
         }
 
@@ -246,7 +239,7 @@ namespace ReCrafted.API.UI.Controls
             set
             {
                 _text = value;
-                _textsize = UIText.ResolveTextRegion(TextFont, _text);
+                _textsize = TextFont.MeasureString(_text);
             }
         }
 
