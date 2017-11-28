@@ -10,11 +10,12 @@ namespace ReCrafted.API.Graphics
     public partial class Font
     {
         /// <summary>
-        ///	Measures size of given string.
+        ///    Measures size of given string.
         /// </summary>
         public Vector2 MeasureString(string text)
         {
-            Internal_MeasureString(NativePtr, text, out Vector2 size);
+            Vector2 size;
+            Internal_MeasureString(NativePtr, text, out size);
             return size;
         }
     }
