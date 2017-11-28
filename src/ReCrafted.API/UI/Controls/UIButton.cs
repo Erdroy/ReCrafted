@@ -25,6 +25,13 @@ namespace ReCrafted.API.UI.Controls
         // size of button text 
         private Vector2 _textsize;
 
+        // button size for spring animation
+        private Vector2 _buttonSize;
+        // button size modifier.
+        private float _buttonSizeModifier;
+        // velocity of button spring animation
+        private Vector2 _buttonVelocity;
+
         /// <summary>
         /// Delegate will be invoked, when button has been clicked.
         /// </summary>
@@ -112,6 +119,8 @@ namespace ReCrafted.API.UI.Controls
         {
             if (!SmoothColors)
                 _color = Colors.OverColor;
+            if (SpringAnimation)
+                _buttonSizeModifier = 1.1f;
         }
 
         public override void OnMouseOver()
@@ -127,13 +136,23 @@ namespace ReCrafted.API.UI.Controls
             }
 
             if (Input.IsKeyUp(Keys.Mouse0))
+            {
+                if (SpringAnimation)
+                {
+                    _buttonVelocity = Vector2.Zero;
+                    _buttonSize = new Vector2(Region.Width * 0.9f, Region.Height * 0.9f);
+                }
+
                 OnClick?.Invoke();
+            }
         }
 
         public override void OnMouseExit()
         {
             if (!SmoothColors)
                 _color = Colors.NormalColor;
+            if (SpringAnimation)
+                _buttonSizeModifier = 1.0f;
         }
 
         // draw button
@@ -141,9 +160,19 @@ namespace ReCrafted.API.UI.Controls
         {
             if (!Enabled) return;          
             if (SmoothColors) _color = Color.Lerp(_color, IsMouseOver ? Colors.OverColor : Colors.NormalColor, (float)Time.DeltaTime * SmoothTranslation);
+
             UIInternal.Color = _color;
             UIInternal.Depth = Depth;
-            UIInternal.DrawBox(Region);
+            var buttonRegion = Region;
+            if (SpringAnimation)
+            {
+                var target = new Vector2(buttonRegion.Width * _buttonSizeModifier, buttonRegion.Height * _buttonSizeModifier);
+                UIAnimation.SpringVector2(ref _buttonSize, ref _buttonVelocity, target, (float)Time.DeltaTime);
+                buttonRegion = new RectangleF(buttonRegion.X - (_buttonSize.X/2f - buttonRegion.Width/2f),
+                                              buttonRegion.Y - (_buttonSize.Y/2f - buttonRegion.Height/2f), 
+                                              _buttonSize.X, _buttonSize.Y);
+            }
+            UIInternal.DrawBox(buttonRegion);
 
             UIInternal.Depth = Depth + 0.1f;
             UIInternal.Color = TextColor;
@@ -180,11 +209,16 @@ namespace ReCrafted.API.UI.Controls
             Colors = colors;
             SmoothColors = true;
             SmoothTranslation = 10f;
+            SpringAnimation = true;
             Enabled = true;
             IgnoreMouseCollision = false;
             IsMouseOver = false;
             Parent = null;
+
             _color = Colors.NormalColor;
+            _buttonSize = new Vector2(region.Width, region.Height);
+            _buttonSizeModifier = 1f;
+            _buttonVelocity = Vector2.One;
         }
 
         /// <summary>
@@ -201,6 +235,11 @@ namespace ReCrafted.API.UI.Controls
         /// Speed of smooth translation.
         /// </summary>
         public float SmoothTranslation { get; set; }
+
+        /// <summary>
+        /// Is button currently using spring animation.
+        /// </summary>
+        public bool SpringAnimation { get; set; }
 
         /// <summary>
         /// Color of the text.

@@ -30,7 +30,7 @@ namespace ReCrafted.Game
             TestPanel = UIPanel.Create(new RectangleF(), UILayoutType.Vertical);
             TestPanel.ApplyLayout = false;
 
-            TestBox = TestPanel.Add(new UIBox(new RectangleF(0f, 0f, 32f, 32f)));
+            //TestBox = TestPanel.Add(new UIBox(new RectangleF(0f, 0f, 32f, 32f)));
 
             var panel = UIPanel.Create(new RectangleF(200.0f, 10.0f, 200.0f, 450.0f), UILayoutType.Vertical);
             panel.PanelColor = Color.Red;
@@ -92,6 +92,7 @@ namespace ReCrafted.Game
                 DebugPanelMs.Text = "Ui Process Took -> " + GameMain.TotalMilisecondsForUiPanel + "ms";
             }
 
+            if (TestBox != null)
             _testBoxFollow();
         }
 
