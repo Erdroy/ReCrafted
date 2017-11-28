@@ -43,22 +43,18 @@ void UI::setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex
 	// calculate x and y of the first vertex.
 	v0.x = x;
 	v0.y = y + height;
-	v0.z = 0.0f;
 
 	// calculate x and y of the second vertex.
 	v1.x = x + width;
 	v1.y = y + height;
-	v1.z = 0.0f;
 
 	// calculate x and y of the third vertex.
 	v2.x = x + width;
 	v2.y = y;
-	v2.z = 0.0f;
 
 	// calculate x and y of the fourth vertex.
 	v3.x = x;
 	v3.y = y;
-	v3.z = 0.0f;
 
 	// set colors
 	v0.r = m_color_r;

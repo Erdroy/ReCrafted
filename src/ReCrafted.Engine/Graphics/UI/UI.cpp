@@ -96,7 +96,7 @@ void UI::init()
 	// create vertex description
 	m_vertexdecl = {};
 	m_vertexdecl.begin();
-	m_vertexdecl.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float);
+	m_vertexdecl.add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float);
 	m_vertexdecl.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float);
 	m_vertexdecl.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float);
 	m_vertexdecl.end();
