@@ -98,14 +98,6 @@ namespace ReCrafted.API.UI.Controls
         }
 
         /// <summary>
-        /// Get current font size.
-        /// </summary>
-        public uint GetSize()
-        {
-            return Font.GetSize(TextFont.NativePtr);
-        }
-
-        /// <summary>
         /// Fixed text region.
         /// </summary>
         public RectangleF GetFixedTextRegion()
@@ -131,7 +123,7 @@ namespace ReCrafted.API.UI.Controls
         // the method may return an invalid size relative to the actual text
         internal static Vector2 ResolveTextRegion(Font textFont, string text)
         {
-            var fontSize = Font.GetSize(textFont.NativePtr);
+            var fontSize = textFont.Size;
             var lineSize = new List<int> { 0 };
             int line = 0;
             foreach (var t in text)

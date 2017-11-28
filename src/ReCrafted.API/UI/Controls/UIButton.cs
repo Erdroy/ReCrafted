@@ -190,14 +190,6 @@ namespace ReCrafted.API.UI.Controls
             TextFont = font;
         }
 
-        /// <summary>
-        /// Get current font size.
-        /// </summary>
-        public uint GetSize()
-        {
-            return Font.GetSize(TextFont.NativePtr);
-        }
-
         // set default properties
         private void _applyDefaults(RectangleF region, string text, Color textColor, UIControlColors colors)
         {
