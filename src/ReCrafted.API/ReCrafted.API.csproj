@@ -67,6 +67,7 @@
     <Compile Include="Graphics\DebugDraw.Gen.cs" />
     <Compile Include="Graphics\Font.cs" />
     <Compile Include="Graphics\Font.Gen.cs" />
+    <Compile Include="Graphics\Sprite.cs" />
     <Compile Include="Graphics\Texture2D.cs" />
     <Compile Include="Graphics\Texture2D.Gen.cs" />
     <Compile Include="Mathematics\AngleSingle.cs" />

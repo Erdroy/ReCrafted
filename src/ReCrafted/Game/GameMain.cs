@@ -1,6 +1,5 @@
 // ReCrafted © 2016-2017 Always Too Late
 
-using System;
 using System.Diagnostics;
 using ReCrafted.API;
 using ReCrafted.API.Common;
