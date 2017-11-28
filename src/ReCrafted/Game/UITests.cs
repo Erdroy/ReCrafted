@@ -69,9 +69,13 @@ namespace ReCrafted.Game
             panel.Add(new UIBox(new RectangleF(100, 105, 32, 32), dirtTexture));
             panel.Add(new UIBox(new RectangleF(100, 105, 32, 32), dirtTexture));
 
-
-            var toggle = panel.Add(new UIToggle(new RectangleF(0, 0, 125, 32), "TestToggle!"));
-            toggle.TextBackgroundColor = new Color(68, 68, 68);
+            var toggleGroup = new UIToggleGroup();
+            var toggle1 = toggleGroup.Add(panel.Add(new UIToggle(new RectangleF(0, 0, 130, 32), "TestToggle1!")));
+            toggle1.TextBackgroundColor = new Color(68, 68, 68);
+            var toggle2 = toggleGroup.Add(panel.Add(new UIToggle(new RectangleF(0, 0, 130, 32), "TestToggle2!")));
+            toggle2.TextBackgroundColor = new Color(68, 68, 68);
+            var toggle3 = toggleGroup.Add(panel.Add(new UIToggle(new RectangleF(0, 0, 130, 32), "TestToggle3!")));
+            toggle3.TextBackgroundColor = new Color(68, 68, 68);
 
             //panel.Add(new UIText(new RectangleF(10, 10, 160, 30), "12345678912345678912345678912342343243"));
 

@@ -31,10 +31,21 @@ namespace ReCrafted.API.UI.Controls
         // velocity of check box spring animation
         private Vector2 _checkBoxVelocity;
 
+        // is toggle checked?
+        private bool _isOn;
+
         /// <summary>
         /// Is toggle already checked?
         /// </summary>
-        public bool IsOn;
+        public bool IsOn
+        {
+            get { return _isOn; }
+            set
+            {
+                _isOn = value;
+                _checkBoxColor = _isOn ? CheckBoxColor : Color.Transparent;
+            }
+        }
 
         /// <summary>
         /// When value of toggle has been changed by user.
@@ -143,9 +154,8 @@ namespace ReCrafted.API.UI.Controls
 
             if (Input.IsKeyUp(Keys.Mouse0))
             {
-                IsOn = !IsOn;;
-                _checkBoxColor = IsOn ? CheckBoxColor : Color.Transparent;
-                OnValueChanged?.Invoke(IsOn);
+                IsOn = !_isOn;
+                OnValueChanged?.Invoke(_isOn);
             }
         }
 
@@ -159,7 +169,8 @@ namespace ReCrafted.API.UI.Controls
         public override void Draw()
         {
             if (!Enabled) return;
-            if (SmoothColors) _color = Color.Lerp(_color, IsMouseOver ? Colors.OverColor : Colors.NormalColor, (float)Time.DeltaTime * SmoothTranslation);
+            if (SmoothColors)
+                _color = Color.Lerp(_color, IsMouseOver ? Colors.OverColor : Colors.NormalColor, (float)Time.DeltaTime * SmoothTranslation);
             UIInternal.Depth = Depth;
             UIInternal.Color = TextBackgroundColor;
             UIInternal.DrawBox(Region);
@@ -170,7 +181,7 @@ namespace ReCrafted.API.UI.Controls
 
             UIInternal.Color = _checkBoxColor;
             var checkBoxRegion = backgrounRegion;
-            var target = new Vector2(checkBoxRegion.Width, checkBoxRegion.Height) * (IsOn ? 0.8f : 0.6f);
+            var target = new Vector2(checkBoxRegion.Width, checkBoxRegion.Height) * (_isOn ? 0.8f : 0.6f);
             UIAnimation.SpringVector2(ref _checkBoxSize, ref _checkBoxVelocity, target, (float)Time.DeltaTime);
             checkBoxRegion = new RectangleF(checkBoxRegion.X - (_checkBoxSize.X / 2f - checkBoxRegion.Width / 2f),
                                             checkBoxRegion.Y - (_checkBoxSize.Y / 2f - checkBoxRegion.Height / 2f),
@@ -183,7 +194,7 @@ namespace ReCrafted.API.UI.Controls
             toggleTextPositon.Y += Region.Height / 2 - _textsize.Y / 2;
             UIInternal.DrawString(TextFont.NativePtr, _text, ref toggleTextPositon);
         }
-
+        
         // set default properties
         private void _applyDefaults(RectangleF region, string text, Color textColor, UIControlColors colors, Color checkBoxColor)
         {
