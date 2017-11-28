@@ -16,13 +16,21 @@ namespace ReCrafted.Game
         public UIPanel DebugPanel;
         public UIText DebugPanelMs;
 
+        public UIPanel TestPanel;
+        public UIBox TestBox;
+
         protected internal override void OnCreate()
         {
             var sw = Stopwatch.StartNew();
-            DebugPanel = UIPanel.Create(new RectangleF(), UILayoutType.Horizontal);
+            DebugPanel = UIPanel.Create(new RectangleF(), UILayoutType.Vertical);
             DebugPanel.ApplyLayout = false;
 
             DebugPanelMs = DebugPanel.Add(new UIText());
+
+            TestPanel = UIPanel.Create(new RectangleF(), UILayoutType.Vertical);
+            TestPanel.ApplyLayout = false;
+
+            TestBox = TestPanel.Add(new UIBox(new RectangleF(0f, 0f, 32f, 32f)));
 
             var panel = UIPanel.Create(new RectangleF(200.0f, 10.0f, 200.0f, 450.0f), UILayoutType.Vertical);
             panel.PanelColor = Color.Red;
@@ -83,6 +91,19 @@ namespace ReCrafted.Game
                 DebugPanelMs.Region = new RectangleF(20, Display.Height - 40f, 0, 0);
                 DebugPanelMs.Text = "Ui Process Took -> " + GameMain.TotalMilisecondsForUiPanel + "ms";
             }
+
+            _testBoxFollow();
+        }
+
+        private Vector2 _testBoxPosition = Vector2.One;
+        private Vector2 _testBoxVelocity = Vector2.One;
+        private Vector2 _testBoxTargetPosition = Vector2.One;
+
+        private void _testBoxFollow()
+        {
+            _testBoxTargetPosition = Input.CursorPosition;
+            UIAnimation.SpringVector2(ref _testBoxPosition, ref _testBoxVelocity, _testBoxTargetPosition, (float)Time.DeltaTime);
+            TestBox.Region = new RectangleF(_testBoxPosition.X, _testBoxPosition.Y, 32, 32);
         }
     }
 }
