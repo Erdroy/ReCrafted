@@ -62,6 +62,22 @@ namespace ReCrafted.API.UI
         }
 
         /// <summary>
+        /// Gets root of this control. (In most cases this will be UIPanel)
+        /// </summary>
+        public UIControl GetRoot()
+        {
+            var c = Parent;
+            var p = Parent;
+            while (c != null)
+            {
+                c = c.Parent;
+                if (c != null)
+                    p = c;
+            }
+            return p;
+        }
+
+        /// <summary>
         /// The control's region in pixels.
         /// </summary>
         public RectangleF Region { get; set; }

@@ -1,5 +1,6 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
+using System;
 using System.Collections.Generic;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
@@ -30,7 +31,7 @@ namespace ReCrafted.API.UI.Controls
         // is text currently under carpet selection
         private bool _selectingText;
         // index of character where carpet selection starts
-        private uint _selectingTextStartIndex;
+        private int _selectingTextStartIndex;
 
         /// <summary>
         /// Creates new UITextField.
@@ -95,9 +96,13 @@ namespace ReCrafted.API.UI.Controls
                 {
                     var startPoint = GetPointFromCharIndex(_selectingTextStartIndex);
                     var endPoint = GetPointFromCharIndex(endIndex);
-                    var endCharSize = TextFont.MeasureString(_text[(int)endIndex].ToString());
-                    endPoint.X += endCharSize.X / 2f;
-                    endPoint.Y += endCharSize.Y * 1.2f;
+                    var endCharSize = TextFont.MeasureString(_text[endIndex].ToString());
+
+                    if (startPoint.X < endPoint.X && startPoint.Y < endPoint.X)
+                    {
+                        endPoint.X += endCharSize.X / 2f;
+                        endPoint.Y += endCharSize.Y * 1.2f;
+                    }
 
                     _carpetRegion = new RectangleF(startPoint.X, startPoint.Y, endPoint.X - startPoint.X, endPoint.Y - startPoint.Y);
                 }
@@ -151,11 +156,20 @@ namespace ReCrafted.API.UI.Controls
             TextPosition = new Vector2(Region.X + Region.Width / 2 - TextSize.X / 2, Region.Y + Region.Height / 2 - TextSize.Y / 2);
             var pos = TextPosition;
             UIInternal.DrawString(TextFont.NativePtr, _text, ref pos);
-            pos.Y += 30;
+            pos.Y += 40;
             UIInternal.Color = Color.White;
-            UIInternal.DrawString(TextFont.NativePtr,  GetPointFromCharIndex(GetCharIndexFromCursor()).ToString() + _carpetRegion, ref pos);
+            UIInternal.DrawString(TextFont.NativePtr, GetPointFromCharIndex(GetCharIndexFromCursor()).ToString(), ref pos);
+            pos.Y += 20;
+            UIInternal.Color = Color.White;
+            UIInternal.DrawString(TextFont.NativePtr,_carpetRegion.ToString(), ref pos);
+            pos.Y += 20;
+            UIInternal.Color = Color.White;
+            UIInternal.DrawString(TextFont.NativePtr, "From -> " + _selectingTextStartIndex + " To " + GetCharIndexFromCursor(), ref pos);
+            pos.Y += 20;
+            UIInternal.Color = Color.White;
+            UIInternal.DrawString(TextFont.NativePtr, _text[(int)GetCharIndexFromCursor()].ToString(), ref pos);
 
-            UIInternal.Color = new Color(64f/255f, 134/255f, 247/255f, 0.600f);
+            UIInternal.Color = new Color(64/255f, 134/255f, 247/255f, 0.600f);
             UIInternal.DrawBox(_carpetRegion);
             #endregion
         }
@@ -181,20 +195,52 @@ namespace ReCrafted.API.UI.Controls
             return lines;
         }
 
+        // gets size of text to given line
+        private Vector2 GetRegionSizeToLine(int toLine)
+        {
+            int line = 0;
+            var size = new Vector2(0, TextFont.Size);
+            string lastLine = string.Empty;
+            foreach (char t in _text)
+            {
+                if (t == '\n')
+                {
+                    line++;
+                    size.Y += TextFont.Size;
+                    var lastLineSize = TextFont.MeasureString(lastLine);
+                    if (size.X < lastLineSize.X)
+                        size.X = lastLineSize.X;
+                    lastLine = string.Empty;
+                }
+                else
+                {
+                    lastLine+= t;
+                }
+            }
+            if (!string.IsNullOrEmpty(lastLine))
+            {
+                var lineSize = TextFont.MeasureString(lastLine);
+                if (size.X < lineSize.X)
+                    size.X = lineSize.X;
+            }
+            return size;
+        }
+
         // gets character from text under cursor
-        private uint GetCharIndexFromCursor()
+        private int GetCharIndexFromCursor()
         {
             if (string.IsNullOrEmpty(_text)) return 0;
             var point = Input.CursorPosition;
             var lines = GetLines();
+            int total = 0;
             var lastSize = new Vector2(0, 0);
             for (var line = 0; line < lines.Count; line++)
             {
                 var lineH = TextPosition.Y + line * TextFont.Size;
                 var lineX = TextPosition.X;
-                for (uint index = 0; index < lines[line].Length; index++)
+                for (int index = 0; index < lines[line].Length; index++)
                 {
-                    var cChar = lines[line][(int)index];
+                    var cChar = lines[line][index];
                     var cRect = new RectangleF(lineX, lineH, 0, 0);
                     lineX = cRect.X += lastSize.X;
                     lastSize = TextFont.MeasureString(cChar.ToString());
@@ -202,16 +248,17 @@ namespace ReCrafted.API.UI.Controls
                     cRect.Height = lastSize.Y;
                     if (cRect.Contains(point))
                     {
-                        return index;
+                        return total + index;
                     }
                 }
+                total += lines[line].Length + 2;
             }
 
-            return (uint)(point.X > TextPosition.X ? _text.Length - 1 : 0);
+            return point.X > TextPosition.X + TextSize.X ? _text.Length - 1 : 0;
         }
 
         // gets character screen point
-        private Vector2 GetPointFromCharIndex(uint index)
+        private Vector2 GetPointFromCharIndex(int index)
         {
             if (index == 0) return TextPosition;
             var sizeH = 0f;
@@ -235,6 +282,24 @@ namespace ReCrafted.API.UI.Controls
                 }
             }
             return TextPosition;
+        }
+
+        // gets line from given character index
+        private int GetLineFromCharIndex(int index)
+        {
+            var lines = GetLines();
+            var total = 0;
+            for (int i = 0; i < lines.Count; i++)
+            {
+                for (int l = 0; l < lines[i].Length; l++)
+                {
+                    if (total == index)
+                        return i;
+                    total++;
+                }
+                total++;// n/
+            }
+            return total;
         }
 
         // set default properties
