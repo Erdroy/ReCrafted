@@ -41,13 +41,14 @@ void Profiler::drawDebugScreen()
 
 		var entry = m_lastFrame.at(i);
 
+		var depthOffset = entry.depth * 15.0f;
 		var timeStr = std::to_wstring(entry.time);
 		var time = Text::constant((Char*)timeStr.data());
 
-		var nameSize = 170.0f;
+		var nameSize = 250.0f;
 		var timeSize = m_debugFont->measureText(time);
 
-		UI::drawText(m_debugFont, entry.name, Vector2(0.0f, yOffset));
+		UI::drawText(m_debugFont, entry.name, Vector2(depthOffset, yOffset));
 
 		if(entry.time > entry.timeMax)
 			UI::setColor(Color(0xFF0A00FF));
