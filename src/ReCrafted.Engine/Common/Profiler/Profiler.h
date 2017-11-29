@@ -52,7 +52,7 @@ public:
 	 * \brief Begins new profile.
 	 * \param name The name of the new profile. Use `TEXT_CONST("Text")`.
 	 */
-	FORCEINLINE static void beginProfile(Text name, double timeMed = 17.0f, double timeMax = 17.0f)
+	FORCEINLINE static void beginProfile(Text name, double timeMed = -1.0f, double timeMax = -1.0f)
 	{
 		auto start = Platform::getMiliseconds();
 
