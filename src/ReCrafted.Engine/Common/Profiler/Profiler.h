@@ -27,7 +27,11 @@ private:
 	{
 	public:
 		double time = 0.0f;
+		double timeMed = 0.0f;
+		double timeMax = 0.0f;
 		Text name = {};
+
+		int depth = 0;
 	};
 
 private:
@@ -48,15 +52,16 @@ public:
 	 * \brief Begins new profile.
 	 * \param name The name of the new profile. Use `TEXT_CONST("Text")`.
 	 */
-	FORCEINLINE static void beginProfile(Text name)
+	FORCEINLINE static void beginProfile(Text name, double timeMed = 17.0f, double timeMax = 17.0f)
 	{
 		auto start = Platform::getMiliseconds();
 
 		ProfilerEntry entry;
 		entry.time = start;
 		entry.name = name;
-
-		// TODO: calculate depth
+		entry.timeMed = timeMed;
+		entry.timeMax = timeMax;
+		entry.depth = m_entries.count();
 
 		m_entries.add(entry);
 	}

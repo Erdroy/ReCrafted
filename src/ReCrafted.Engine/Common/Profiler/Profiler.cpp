@@ -37,6 +37,8 @@ void Profiler::drawDebugScreen()
 
 	for (var i = static_cast<int>(m_lastFrame.count()) - 1; i >= 0; i --)
 	{
+		UI::setColor(Color(0xFFFFFFFF));
+
 		var entry = m_lastFrame.at(i);
 
 		var timeStr = std::to_wstring(entry.time);
@@ -46,6 +48,14 @@ void Profiler::drawDebugScreen()
 		var timeSize = m_debugFont->measureText(time);
 
 		UI::drawText(m_debugFont, entry.name, Vector2(0.0f, yOffset));
+
+		if(entry.time > entry.timeMax)
+			UI::setColor(Color(0xFF0A00FF));
+		else if (entry.time > entry.timeMed)
+			UI::setColor(Color(0xAA0A00FF));
+		else
+			UI::setColor(Color(0xFFFFFFFF));
+
 		UI::drawText(m_debugFont, time, Vector2(nameSize + 10.0f, yOffset));
 		UI::drawText(m_debugFont, TEXT_CONST("ms"), Vector2(nameSize + timeSize.x + 15.0f, yOffset));
 
