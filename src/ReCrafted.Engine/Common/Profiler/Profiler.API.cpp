@@ -40,7 +40,6 @@ void Profiler::initRuntime()
 			API_METHOD(PUBLIC, STATIC, "EndProfile", EXTERN);
 			{
 				API_BIND("ReCrafted.API.Common.Profiler::EndProfile", &Profiler::endProfile);
-
 			}
 			API_METHOD_END();
 		}

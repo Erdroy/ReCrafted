@@ -67,7 +67,7 @@ void Profiler::drawDebugScreen()
 		UI::drawText(m_debugFont, time, Vector2(10.0f, yOffset));
 		UI::drawText(m_debugFont, TEXT_CONST("ms"), Vector2(timeSize.x + 15.0f, yOffset));
 
-		UI::drawText(m_debugFont, entry.name, Vector2(timeSize.x + 20.0f + depthOffset, yOffset));
+		UI::drawText(m_debugFont, entry.name, Vector2(timeSize.x + 35.0f + depthOffset, yOffset));
 
 		yOffset += m_debugFont->getSize();
 	}
