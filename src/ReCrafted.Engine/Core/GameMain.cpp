@@ -7,7 +7,6 @@
 #include "Scripting/Assembly.h"
 #include "Scripting/Object.h"
 #include "Graphics/DebugDraw.h"
-#include "Graphics/HTML5_UI/HTML5_UI.h"
 #include "Common/Profiler/Profiler.h"
 
 #define CHECK_SHUTDOWN if (!m_running) break;

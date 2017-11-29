@@ -6,10 +6,10 @@
 
 namespace Internal
 {
-	void beginProfile(MonoString* name)
+	void beginProfile(MonoString* name, float med, float max)
 	{
 		var text = Text::constant(MONO_TEXT(name));
-		Profiler::beginProfile(text);
+		Profiler::beginProfile(text, med, max);
 	}
 }
 
@@ -28,6 +28,11 @@ void Profiler::initRuntime()
 				API_COMMENT("The profile name");
 				API_PARAM("string", "name");
 
+				API_COMMENT("The warning limit");
+				API_PARAM("float", "warm = -1.0f");
+
+				API_COMMENT("The max limit");
+				API_PARAM("float", "max = -1.0f");
 			}
 			API_METHOD_END();
 
