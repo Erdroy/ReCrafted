@@ -77,15 +77,15 @@ namespace ReCrafted.API.UI
         }
 
         // some stuff with mouse collision on controls
-        internal bool LookForMouseCollision()
+        internal UIControl LookForMouseCollision()
         {
-            if (!Enabled) return true;
+            if (!Enabled) return null;
             UIControl mouseControlCollision = null;
             var mousePoint = Input.CursorPosition;
             var reversed = Controls.Reverse();
             foreach (var control in reversed)
             {
-                if (!control.OnMouseCollision()) continue;
+                if (control.OnMouseCollision() != null) continue;
                 if (control.IgnoreMouseCollision || !control.Enabled) continue;
                 if (!control.Region.Contains(mousePoint) || mouseControlCollision != null && mouseControlCollision != control)
                 {
@@ -109,20 +109,7 @@ namespace ReCrafted.API.UI
                 }
             }
 
-            if (Input.IsKeyDown(Keys.Mouse0))
-            {
-                if (mouseControlCollision != null)
-                {
-                    mouseControlCollision.OnMouseClick();
-                    mouseControlCollision.SetControlFocused();
-                }
-                else
-                {
-                    SetFocusedControl(null);
-                }
-            }
-
-            return mouseControlCollision == null;
+            return mouseControlCollision;
         }
     }
 }

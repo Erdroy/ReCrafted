@@ -6,6 +6,7 @@ using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
+using ReCrafted.API.UI;
 
 namespace ReCrafted.Game
 {
@@ -33,6 +34,8 @@ namespace ReCrafted.Game
         private void UpdateLook()
         {
             if(!Cursor.Lock)
+                return;
+            if (UIControl.FocusedControl != null)
                 return;
 
             var cursorDelta = Input.CursorDelta;
@@ -68,6 +71,9 @@ namespace ReCrafted.Game
 
         private void UpdateMovement()
         {
+            if (UIControl.FocusedControl != null)
+                return;
+
             var direction = Vector3.Zero;
 
             var currentSpeed = 20.0f;

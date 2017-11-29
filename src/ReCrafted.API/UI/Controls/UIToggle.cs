@@ -21,8 +21,6 @@ namespace ReCrafted.API.UI.Controls
         private Color _color;
         // current toggle text;
         private string _text;
-        // size of toggle text 
-        private Vector2 _textsize;
 
         // current check box color
         private Color _checkBoxColor;
@@ -189,10 +187,9 @@ namespace ReCrafted.API.UI.Controls
             UIInternal.DrawBox(checkBoxRegion);
 
             UIInternal.Color = TextColor;
-            var toggleTextPositon = new Vector2(Region.X, Region.Y);
-            toggleTextPositon.X += Region.Height * 1.2f;
-            toggleTextPositon.Y += Region.Height / 2 - _textsize.Y / 2;
-            UIInternal.DrawString(TextFont.NativePtr, _text, ref toggleTextPositon);
+            TextPosition = new Vector2(Region.X + Region.Height * 1.2f, Region.Y + Region.Height / 2 - TextSize.Y / 2);
+            var pos = TextPosition;
+            UIInternal.DrawString(TextFont.NativePtr, _text, ref pos);
         }
         
         // set default properties
@@ -239,14 +236,14 @@ namespace ReCrafted.API.UI.Controls
         public float SmoothTranslation { get; set; }
 
         /// <summary>
-        /// Color of the text.
-        /// </summary>
-        public Color TextColor { get; set; }
-
-        /// <summary>
         /// Color of the background of the text.
         /// </summary>
         public Color TextBackgroundColor { get; set; }
+
+        /// <summary>
+        /// Color of the text.
+        /// </summary>
+        public Color TextColor { get; set; }
 
         /// <summary>
         /// Text of this control.
@@ -257,13 +254,23 @@ namespace ReCrafted.API.UI.Controls
             set
             {
                 _text = value;
-                _textsize = TextFont.MeasureString(_text);
+                TextSize = TextFont.MeasureString(_text);
             }
         }
 
         /// <summary>
+        /// Size of current text.
+        /// </summary>
+        public Vector2 TextSize { get; private set; }
+
+        /// <summary>
+        /// Fixed text position.
+        /// </summary>
+        public Vector2 TextPosition { get; private set; }
+
+        /// <summary>
         /// Loaded font of this text.
         /// </summary>
-        public Font TextFont { get; set; }
+        public Font TextFont { get; private set; }
     }
 }

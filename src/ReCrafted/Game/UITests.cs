@@ -67,6 +67,7 @@ namespace ReCrafted.Game
             toggle3.TextBackgroundColor = new Color(68, 68, 68);
 
             var textField = panel.Add(new UITextField(new RectangleF(0, 0, 130, 32)));
+            textField.Text = "Text Field!";
 
             //panel.Add(new UIText(new RectangleF(10, 10, 160, 30), "12345678912345678912345678912342343243"));
 
@@ -88,7 +89,7 @@ namespace ReCrafted.Game
                 _uiDebugTime = 0f;
 
                 DebugPanelMs.Region = new RectangleF(20, Display.Height - 80f, 0, 0);
-                DebugPanelMs.Text = "Ui Process Took -> " + GameMain.LastMilisecondsForUiPanel + "ms (avg "+$"{(GameMain.TotalMilisecondsForUiPanel/GameMain.TotalFramesOfUiPanel):0.000}"+")\n" +
+                DebugPanelMs.Text = "Ui Process Took -> " + $"{GameMain.LastMilisecondsForUiPanel:0.0}" + "ms (avg "+$"{(GameMain.TotalMilisecondsForUiPanel/GameMain.TotalFramesOfUiPanel):0.000}ms"+")\n" +
                                     "Focused Control -> " + (UIControl.FocusedControl?.GetType().ToString() ?? "<none>") + "\n" +
                                     "Focused Control Regon -> " + (UIControl.FocusedControl?.Region.ToString() ?? "<none>") + "\n" + 
                                     "Mouse Position -> " + Input.CursorPosition;

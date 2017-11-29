@@ -62,6 +62,9 @@ namespace ReCrafted.Game
                     Cursor.Show = true;
                     Cursor.Lock = false;
                 }
+
+                if (UIControl.FocusedControl != null)
+                    UIControl.SetFocusedControl(null);
             }
 
             /*
@@ -101,7 +104,12 @@ namespace ReCrafted.Game
             LastMilisecondsForUiPanel = sw.ElapsedMilliseconds;
             TotalMilisecondsForUiPanel += sw.ElapsedMilliseconds;
             TotalFramesOfUiPanel++;
-            
+            if (TotalFramesOfUiPanel > 1000)// clear every 1k frames
+            {
+                TotalFramesOfUiPanel = 0;
+                TotalMilisecondsForUiPanel = 0;
+            }
+
             UIInternal.Color = Color.White;
             var rect = new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
             var uvs = new RectangleF(0.0f, 0.0f, 1.0f, 1.0f);

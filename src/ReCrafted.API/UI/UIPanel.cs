@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
 
@@ -15,6 +16,9 @@ namespace ReCrafted.API.UI
     {
         // actual list of all panels in ui.
         private static readonly List<UIPanel> Panels = new List<UIPanel>();
+
+        // is mouse collide with any control of any panel?
+        internal static bool HaveColision;
 
         /// <summary>
         /// Draws all controls added to this UIPanel.
@@ -36,7 +40,14 @@ namespace ReCrafted.API.UI
                 //draw layout
                 Layout.Draw();
                 //calculate mouse collisions
-                Layout.LookForMouseCollision();
+                if (HaveColision) return;
+                var collision = Layout.LookForMouseCollision();
+                if (!Input.IsKeyDown(Keys.Mouse0)) return;
+                if (collision == null) return;
+                HaveColision = true;
+                collision.OnMouseClick();
+                if (FocusedControl != collision)
+                    SetFocusedControl(collision);
             }
         }
 
@@ -69,6 +80,8 @@ namespace ReCrafted.API.UI
         /// </summary>
         internal static void DrawAll()
         {
+            // reset
+            HaveColision = false;
             foreach (var panel in Panels)
             {
                 try
@@ -80,6 +93,8 @@ namespace ReCrafted.API.UI
                     Logger.Write(ex.ToString(), LogLevel.Error);
                 }
             }
+            if (Input.IsKeyDown(Keys.Mouse0) && !HaveColision)
+                SetFocusedControl(null);
         }
 
         /// <summary>

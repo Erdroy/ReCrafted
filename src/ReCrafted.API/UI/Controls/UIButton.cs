@@ -1,5 +1,6 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
+using System;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
@@ -21,8 +22,6 @@ namespace ReCrafted.API.UI.Controls
         private Color _color;
         // current button text;
         private string _text;
-        // size of button text 
-        private Vector2 _textsize;
 
         // button size for spring animation
         private Vector2 _buttonSize;
@@ -154,8 +153,8 @@ namespace ReCrafted.API.UI.Controls
             if (!Enabled) return;          
             if (SmoothColors) _color = Color.Lerp(_color, IsMouseOver ? Colors.OverColor : Colors.NormalColor, (float)Time.DeltaTime * SmoothTranslation);
 
-            UIInternal.Color = _color;
             UIInternal.Depth = Depth;
+            UIInternal.Color = _color;
             var buttonRegion = Region;
             if (SpringAnimation)
             {
@@ -167,20 +166,21 @@ namespace ReCrafted.API.UI.Controls
             }
             UIInternal.DrawBox(buttonRegion);
 
+            TextPosition = new Vector2(Region.X + Region.Width / 2 - TextSize.X / 2, Region.Y + Region.Height / 2 - TextSize.Y / 2);
+            var pos = TextPosition;
             UIInternal.Depth = Depth + 0.1f;
             UIInternal.Color = TextColor;
-            var buttonTextPositon = new Vector2(Region.X, Region.Y);
-            buttonTextPositon.X += Region.Width / 2 - _textsize.X / 2;
-            buttonTextPositon.Y += Region.Height / 2 - _textsize.Y / 2;
-            UIInternal.DrawString(TextFont.NativePtr, _text, ref buttonTextPositon);
+            UIInternal.DrawString(TextFont.NativePtr, _text, ref pos);
         }
 
         /// <summary>
         /// Updates current font of the text.
         /// </summary>
         /// <param name="font">Our new font.</param>
+        /// <exception cref="ArgumentNullException">Exception is thrown when the targetfont was null.</exception>
         public void SetFont(Font font)
         {
+            if (font == null) throw new ArgumentNullException(nameof(font));
             TextFont = font;
         }
 
@@ -239,13 +239,23 @@ namespace ReCrafted.API.UI.Controls
             set
             {
                 _text = value;
-                _textsize = TextFont.MeasureString(_text);
+                TextSize = TextFont.MeasureString(_text);
             }
         }
 
         /// <summary>
+        /// Size of current text.
+        /// </summary>
+        public Vector2 TextSize { get; private set; }
+
+        /// <summary>
+        /// Fixed text position.
+        /// </summary>
+        public Vector2 TextPosition { get; private set; }
+
+        /// <summary>
         /// Loaded font of this text.
         /// </summary>
-        public Font TextFont { get; set; }
+        public Font TextFont { get; private set; }
     }
 }

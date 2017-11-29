@@ -51,7 +51,7 @@ namespace ReCrafted.API.UI
 
         // when mouse collision is calculated, every controll have checks his childres (if exists) if they collide with mouse,
         // if so method should return false, and then system will stop search for mouse collision at this point
-        internal virtual bool OnMouseCollision() { return true; }
+        internal virtual UIControl OnMouseCollision() { return null; }
 
         /// <summary>
         /// Sets this control as current focus target.

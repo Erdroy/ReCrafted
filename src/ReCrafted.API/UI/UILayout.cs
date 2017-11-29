@@ -65,7 +65,7 @@ namespace ReCrafted.API.UI
         }
 
         // search for mouse collision in all childrens of this layout.
-        internal override bool OnMouseCollision()
+        internal override UIControl OnMouseCollision()
         {
             return LookForMouseCollision();
         }
