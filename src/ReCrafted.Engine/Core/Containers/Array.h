@@ -101,6 +101,12 @@ public:
         return false;
     }
 
+	FORCEINLINE void copy(const Array<T>& array)
+	{
+		for(auto && elem : array)
+			add(elem);
+	}
+
     FORCEINLINE void sort()
     {
         std::sort(m_vector.begin(), m_vector.end());

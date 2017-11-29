@@ -11,6 +11,7 @@
 #include "Graphics/Camera.h"
 #include "Graphics/Font.h"
 #include "Graphics/DebugDraw.h"
+#include "Common/Profiler/Profiler.h"
 
 void Bindings::bind()
 {
@@ -28,6 +29,7 @@ void Bindings::bind()
     Entity::initRuntime();
     Script::initRuntime();
 	DebugDraw::initRuntime();
+	Profiler::initRuntime();
 }
 
 void Bindings::shutdown()

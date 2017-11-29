@@ -8,6 +8,7 @@
 #include "Scripting/Object.h"
 #include "Graphics/DebugDraw.h"
 #include "Graphics/HTML5_UI/HTML5_UI.h"
+#include "Common/Profiler/Profiler.h"
 
 #define CHECK_SHUTDOWN if (!m_running) break;
 
@@ -243,6 +244,8 @@ void GameMain::run()
 
 	while (m_running) // main loop
 	{
+		Profiler::beginProfile(TEXT_CONST("Frame"));
+
 		// update time
 		auto currentTime = Platform::getMiliseconds();
 		Time::m_instance->m_deltaTime = ((currentTime - lastTime) / 1000.0);
@@ -266,11 +269,14 @@ void GameMain::run()
 		// frame
 		{
 			//HTML5UI::update();
+			Profiler::update();
 
 			onUpdate(); CHECK_SHUTDOWN
 			onSimulate(); CHECK_SHUTDOWN // TODO: fixed-time step `onSimulate` call
 			onDraw(); CHECK_SHUTDOWN
 		}
+		Profiler::endProfile();
+		Profiler::endFrame();
 	}
 
 	// unload game assets
@@ -339,6 +345,9 @@ void GameMain::onLoad()
 
 	// initialize DebugDraw
 	DebugDraw::init();
+
+	// initialize profiler
+	Profiler::init();
 
 	Logger::logInfo("Rendering pipeline initialized");
 
@@ -424,6 +433,8 @@ void GameMain::onResize(uint width, uint height)
 
 void GameMain::onUpdate()
 {
+	Profiler::beginProfile(TEXT_CONST("Update"));
+
 	// update event, called every frame
 
 	if (Input::isKeyDown(Key_F3))
@@ -466,19 +477,28 @@ void GameMain::onUpdate()
 			static_cast<int>(round(Display::get_Height() / 2.0f))
 		);
 	}
+
+	Profiler::endProfile();
 }
 
 void GameMain::onSimulate()
 {
+	Profiler::beginProfile(TEXT_CONST("Simulate"));
+
 	// simulation event, called every simulation tick(fixed time)
 
 	m_universe->simulate();
 	m_simulate_method->invoke();
     m_entityPool->simulate();
+
+	Profiler::endProfile();
 }
 
 void GameMain::onDraw()
 {
+	Profiler::beginProfile(TEXT_CONST("Draw (present)"));
+	Profiler::beginProfile(TEXT_CONST("Draw"));
+
 	// draw event, called every frame, must be ended with gpu backbuffer `present` or `swapbuffer` - bgfx::frame()
 	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
 	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
@@ -515,14 +535,21 @@ void GameMain::onDraw()
 	m_ui->beginDraw(); // begin draw UI
 	{
 		m_drawui_method->invoke();
+
+		// draw profiler debug screen
+		Profiler::drawDebugScreen();
 	}
 	m_ui->endDraw(); // end draw UI
 	
 	// draw HTML5 UI
 	//HTML5UI::draw();
 	
+	Profiler::endProfile();
+
 	// next frame, wait vsync
 	bgfx::frame();
+
+	Profiler::endProfile(); // to include `present` delay
 }
 
 void GameMain::onCursorRequest()

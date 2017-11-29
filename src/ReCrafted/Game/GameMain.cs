@@ -88,7 +88,6 @@ namespace ReCrafted.Game
 
         protected override void Draw()
         {
-            
         }
 
         // total miliseconds needs to calculate current ui
@@ -98,6 +97,8 @@ namespace ReCrafted.Game
 
         protected override void DrawUI()
         {
+            Profiler.BeginProfile("DrawUI (.NET)");
+
             var sw = Stopwatch.StartNew();
             UIPanel.DrawAll();
             sw.Stop();
@@ -117,6 +118,8 @@ namespace ReCrafted.Game
 
             var pos = new Vector2(20.0f, Display.Height - 20.0f);
             UIInternal.DrawString(UIControl.DefaultFont.NativePtr, "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber, ref pos);
+
+            Profiler.EndProfile();
         }
 
         protected override void Shutdown()

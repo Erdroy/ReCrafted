@@ -428,8 +428,12 @@ public:
 
 #ifdef USE_UTF16
 #define TEXT(text) Text((Char*)u##text)
+#define TEXT_CHARS(text) (Char*)u##text
+#define TEXT_CONST(text) Text::constant((Char*)u##text)
 #else
 #define TEXT(text) Text((Char*)U##text)
+#define TEXT_CHARS(text) (Char*)U##text
+#define TEXT_CONST(text) Text::constant((Char*)U##text)
 #endif
 
 #endif // TEXT_H
