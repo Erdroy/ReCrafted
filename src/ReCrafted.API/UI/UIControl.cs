@@ -77,6 +77,11 @@ namespace ReCrafted.API.UI
         public bool IgnoreMouseCollision { get; set; }
 
         /// <summary>
+        /// Name of control. (This property might be used in profiling)
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
         /// The parent control.
         /// </summary>
         public UIControl Parent { get; internal set; }

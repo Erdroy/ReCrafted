@@ -34,24 +34,34 @@ namespace ReCrafted.API.UI
 
             if (Visible)
             {
+                Profiler.BeginProfile($"Panel <{(string.IsNullOrEmpty(Name) ? "empty" : Name)}> ");
                 //recalculate current layout
                 if (ApplyLayout)
+                {
+                    Profiler.BeginProfile("Layout.Recalculate");
                     Layout.Recalculate(Region);
+                    Profiler.EndProfile();
+                }
+                Profiler.BeginProfile("Layout.Draw");
                 //draw layout
                 Layout.Draw();
+                Profiler.EndProfile();
                 //calculate mouse collisions
-                if (HaveColision) return;
-                Profiler.BeginProfile("DrawUI (.NET) (Collision)");
-                var collision = Layout.LookForMouseCollision();
-                if (Input.IsKeyDown(Keys.Mouse0))
+                if (!HaveColision)
                 {
-                    if (collision != null)
+                    Profiler.BeginProfile("Layout.LookForMouseCollision");
+                    var collision = Layout.LookForMouseCollision();
+                    if (Input.IsKeyDown(Keys.Mouse0))
                     {
-                        HaveColision = true;
-                        collision.OnMouseClick();
-                        if (FocusedControl != collision)
-                            SetFocusedControl(collision);
+                        if (collision != null)
+                        {
+                            HaveColision = true;
+                            collision.OnMouseClick();
+                            if (FocusedControl != collision)
+                                SetFocusedControl(collision);
+                        }
                     }
+                    Profiler.EndProfile();
                 }
                 Profiler.EndProfile();
             }
@@ -108,12 +118,14 @@ namespace ReCrafted.API.UI
         /// </summary>
         /// <param name="region">The UIPanel region.</param>
         /// <param name="layoutType">The lay-outing type.</param>
+        /// <param name="name">Name of UIPanel.</param>
         /// <returns>The newly created panel.</returns>
-        public static UIPanel Create(RectangleF region, UILayoutType layoutType)
+        public static UIPanel Create(RectangleF region, UILayoutType layoutType, string name = "")
         {
             // construct new panel
             var panel = new UIPanel
             {
+                Name = name,
                 Enabled = true,
                 Visible = true,
                 ApplyLayout = true,

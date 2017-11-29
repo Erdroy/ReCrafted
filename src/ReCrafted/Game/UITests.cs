@@ -14,7 +14,7 @@ namespace ReCrafted.Game
     public class UITests : Script
     {
         public UIPanel DebugPanel;
-        public UIText DebugPanelMs;
+        public UIText DebugPanelText;
 
         public UIPanel TestPanel;
         public UIBox TestBox;
@@ -22,17 +22,17 @@ namespace ReCrafted.Game
         protected internal override void OnCreate()
         {
             var sw = Stopwatch.StartNew();
-            DebugPanel = UIPanel.Create(new RectangleF(), UILayoutType.Vertical);
+            DebugPanel = UIPanel.Create(new RectangleF(), UILayoutType.Vertical, "debug-panel");
             DebugPanel.ApplyLayout = false;
 
-            DebugPanelMs = DebugPanel.Add(new UIText());
+            DebugPanelText = DebugPanel.Add(new UIText());
 
-            TestPanel = UIPanel.Create(new RectangleF(), UILayoutType.Vertical);
+            TestPanel = UIPanel.Create(new RectangleF(), UILayoutType.Vertical, "test-panel");
             TestPanel.ApplyLayout = false;
 
             //TestBox = TestPanel.Add(new UIBox(new RectangleF(0f, 0f, 32f, 32f)));
 
-            var panel = UIPanel.Create(new RectangleF(200.0f, 100.0f, 200.0f, 450.0f), UILayoutType.Vertical);
+            var panel = UIPanel.Create(new RectangleF(200.0f, 100.0f, 200.0f, 450.0f), UILayoutType.Vertical, "panel1");
             panel.PanelColor = Color.Red;
             panel.Enabled = true;
             panel.Layout.ForceExpandHeigth = false;
@@ -88,8 +88,8 @@ namespace ReCrafted.Game
             {
                 _uiDebugTime = 0f;
 
-                DebugPanelMs.Region = new RectangleF(20, Display.Height - 80f, 0, 0);
-                DebugPanelMs.Text = "Focused Control -> " + (UIControl.FocusedControl?.GetType().ToString() ?? "<none>") + "\n" +
+                DebugPanelText.Region = new RectangleF(20, Display.Height - 80f, 0, 0);
+                DebugPanelText.Text = "Focused Control -> " + (UIControl.FocusedControl?.GetType().ToString() ?? "<none>") + "\n" +
                                     "Focused Control Regon -> " + (UIControl.FocusedControl?.Region.ToString() ?? "<none>") + "\n" + 
                                     "Mouse Position -> " + Input.CursorPosition;
             }
