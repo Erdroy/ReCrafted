@@ -44,6 +44,9 @@ private:
 	bool m_showCursor = true;
 	bool m_lockCursor = true;
 
+	int m_targetFps = 60;
+	int m_simulationFps = 66;
+
 	// scripting
 
 	Ptr<Domain> m_domain = nullptr;
@@ -59,6 +62,7 @@ private:
 
 private:
 	void initScripting();
+	void waitForTargetFps(double last);
 
 public:
 	/// <summary>
@@ -138,6 +142,11 @@ public:
 	FORCEINLINE static bool getLockCursor()
 	{
 		return m_instance->m_lockCursor;
+	}
+
+	FORCEINLINE static void setTargetFps(int targetFps)
+	{
+		m_instance->m_targetFps = targetFps;
 	}
 
 	/// <summary>

@@ -11,7 +11,7 @@
 
 #define CHECK_SHUTDOWN if (!m_running) break;
 
-#define RESET_FLAGS (BGFX_RESET_NONE | BGFX_RESET_VSYNC)
+#define RESET_FLAGS (BGFX_RESET_NONE)
 
 GameMain* GameMain::m_instance;
 
@@ -187,6 +187,18 @@ void GameMain::initScripting()
 	Logger::logInfo("Scripting initialized");
 }
 
+void GameMain::waitForTargetFps(double last)
+{
+	var target = 1.0 / m_targetFps * 1000.0;
+	var delta = Platform::getMiliseconds() - last;
+	var sleep = target - delta;
+
+	if (sleep > 0.0)
+	{
+		Sleep(static_cast<DWORD>(sleep));
+	}
+}
+
 void GameMain::run()
 {
 	// TODO: Ignore most initialization when this is CEF sub process
@@ -274,6 +286,14 @@ void GameMain::run()
 			onSimulate(); CHECK_SHUTDOWN // TODO: fixed-time step `onSimulate` call
 			onDraw(); CHECK_SHUTDOWN
 		}
+
+		if(m_targetFps > 0)
+		{
+			Profiler::beginProfile(TEXT_CONST("WaitForTargetFps"));
+			waitForTargetFps(lastTime);
+			Profiler::endProfile();
+		}
+
 		Profiler::endProfile();
 		Profiler::endFrame();
 	}
