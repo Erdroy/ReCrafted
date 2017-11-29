@@ -24,6 +24,9 @@ namespace ReCrafted.Game
 
         protected override void OnUpdate()
         {
+            if (UIControl.FocusedControl != null)
+                return;
+
             UpdateLook();
             UpdateMovement();
 
@@ -34,8 +37,6 @@ namespace ReCrafted.Game
         private void UpdateLook()
         {
             if(!Cursor.Lock)
-                return;
-            if (UIControl.FocusedControl != null)
                 return;
 
             var cursorDelta = Input.CursorDelta;
@@ -71,9 +72,6 @@ namespace ReCrafted.Game
 
         private void UpdateMovement()
         {
-            if (UIControl.FocusedControl != null)
-                return;
-
             var direction = Vector3.Zero;
 
             var currentSpeed = 20.0f;

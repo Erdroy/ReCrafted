@@ -41,13 +41,19 @@ namespace ReCrafted.API.UI
                 Layout.Draw();
                 //calculate mouse collisions
                 if (HaveColision) return;
+                Profiler.BeginProfile("DrawUI (.NET) (Collision)");
                 var collision = Layout.LookForMouseCollision();
-                if (!Input.IsKeyDown(Keys.Mouse0)) return;
-                if (collision == null) return;
-                HaveColision = true;
-                collision.OnMouseClick();
-                if (FocusedControl != collision)
-                    SetFocusedControl(collision);
+                if (Input.IsKeyDown(Keys.Mouse0))
+                {
+                    if (collision != null)
+                    {
+                        HaveColision = true;
+                        collision.OnMouseClick();
+                        if (FocusedControl != collision)
+                            SetFocusedControl(collision);
+                    }
+                }
+                Profiler.EndProfile();
             }
         }
 

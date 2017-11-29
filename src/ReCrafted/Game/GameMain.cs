@@ -1,6 +1,5 @@
 // ReCrafted © 2016-2017 Always Too Late
 
-using System.Diagnostics;
 using ReCrafted.API;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
@@ -66,14 +65,6 @@ namespace ReCrafted.Game
                 if (UIControl.FocusedControl != null)
                     UIControl.SetFocusedControl(null);
             }
-
-            /*
-            if (Input.IsKeyDown(Keys.Mouse0) || Input.IsKeyDown(Keys.Mouse1))
-            {
-                Cursor.Show = false;
-                Cursor.Lock = true;
-            }
-            */
             
             DebugDraw.Color = new Color(0, 105, 0, 64);
             DebugDraw.DrawCube(Vector3.Zero, Vector3.One);
@@ -90,27 +81,12 @@ namespace ReCrafted.Game
         {
         }
 
-        // total miliseconds needs to calculate current ui
-        internal static double LastMilisecondsForUiPanel;
-        internal static double TotalMilisecondsForUiPanel;
-        internal static long TotalFramesOfUiPanel;
-
         protected override void DrawUI()
         {
             Profiler.BeginProfile("DrawUI (.NET)");
 
-            var sw = Stopwatch.StartNew();
             UIPanel.DrawAll();
-            sw.Stop();
-            LastMilisecondsForUiPanel = sw.ElapsedMilliseconds;
-            TotalMilisecondsForUiPanel += sw.ElapsedMilliseconds;
-            TotalFramesOfUiPanel++;
-            if (TotalFramesOfUiPanel > 1000)// clear every 1k frames
-            {
-                TotalFramesOfUiPanel = 0;
-                TotalMilisecondsForUiPanel = 0;
-            }
-
+ 
             UIInternal.Color = Color.White;
             var rect = new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
             var uvs = new RectangleF(0.0f, 0.0f, 1.0f, 1.0f);
