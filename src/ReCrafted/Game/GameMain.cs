@@ -45,21 +45,23 @@ namespace ReCrafted.Game
             // Test ui script
             var tests = Entity.Create("UiTests");
             tests.AddScript<UITests>();
+
+            // Pause Menu
+            var pausemenu = Entity.Create("PauseMenu");
+            pausemenu.AddScript<PauseMenu>();
         }
 
         protected override void Update()
         {
             if (Input.IsKeyDown(Keys.Escape))
             {
-                if (Cursor.Show)
+                if (PauseMenu.Instance.Enabled)
                 {
-                    Cursor.Show = false;
-                    Cursor.Lock = true;
+                    DisablePause();
                 }
                 else
                 {
-                    Cursor.Show = true;
-                    Cursor.Lock = false;
+                    EnablePause();
                 }
 
                 if (UIControl.FocusedControl != null)
@@ -86,12 +88,15 @@ namespace ReCrafted.Game
             Profiler.BeginProfile("DrawUI (.NET)");
 
             UIPanel.DrawAll();
- 
-            UIInternal.Color = Color.White;
-            var rect = new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
-            var uvs = new RectangleF(0.0f, 0.0f, 1.0f, 1.0f);
-            UIInternal.DrawTexture2D(_crosshairTexture.NativePtr, ref rect, ref uvs);
 
+            if (!PauseMenu.Instance.Enabled)
+            {
+                UIInternal.Color = Color.White;
+                var rect = new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
+                var uvs = new RectangleF(0.0f, 0.0f, 1.0f, 1.0f);
+                UIInternal.DrawTexture2D(_crosshairTexture.NativePtr, ref rect, ref uvs);
+            }
+            
             var pos = new Vector2(20.0f, Display.Height - 20.0f);
             UIInternal.DrawString(UIControl.DefaultFont.NativePtr, "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber, ref pos);
 
@@ -101,6 +106,25 @@ namespace ReCrafted.Game
         protected override void Shutdown()
         {
             Object.Destroy(_crosshairTexture);
+        }
+
+        public static void EnablePause()
+        {
+            Cursor.Show = true;
+            Cursor.Lock = false;
+
+            PauseMenu.Instance.Enable();
+        }
+
+        public static void DisablePause()
+        {
+            Cursor.Show = false;
+            Cursor.Lock = true;
+
+            PauseMenu.Instance.Disable();
+
+            if (UIControl.FocusedControl != null)
+                UIControl.SetFocusedControl(null);
         }
         
         public static GameMain Instance { get; private set; }
