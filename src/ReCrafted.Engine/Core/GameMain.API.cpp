@@ -81,6 +81,15 @@ void GameMain::initRuntime()
 				API_BIND("ReCrafted.API.Core.Game::Internal_CursorIcon_Set", &GameMain::setCursorIcon);
 			}
 			API_PROPERTY_END();
+
+			API_COMMENT("Sets clipboard data.");
+			API_METHOD(INTERNAL, STATIC, "SetClipboard", EXTERN);
+			{
+				API_BIND("ReCrafted.API.Core.Game::SetClipboard", &GameMain::setClipboardData);
+
+				API_PARAM("string", "text");
+			}
+			API_METHOD_END();
 		}
 		API_CLASS_END();
 	}

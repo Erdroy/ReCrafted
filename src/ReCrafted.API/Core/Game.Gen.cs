@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/30/2017 18:12:35 Source: 'GameMain.API.cpp' Target: 'Core/Game.Gen.cs'
+// Generated: 11/30/2017 18:58:46 Source: 'GameMain.API.cpp' Target: 'Core/Game.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -29,6 +29,12 @@ namespace ReCrafted.API.Core
 		/// </summary>
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		public static extern void Quit();
+
+		/// <summary>
+		///	Sets clipboard data.
+		/// </summary>
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void SetClipboard(string text);
 
 		/// <summary>
 		///	The simulation tickrate. Default is 60

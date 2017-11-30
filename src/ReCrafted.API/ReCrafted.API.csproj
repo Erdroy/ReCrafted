@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets.cs" />
+    <Compile Include="Common\Clipboard.cs" />
     <Compile Include="Common\Display.Gen.cs" />
     <Compile Include="Common\Entity.cs" />
     <Compile Include="Common\Entity.Gen.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="UI\UILayout.cs" />
     <Compile Include="UI\UIPadding.cs" />
     <Compile Include="UI\UIPanel.cs" />
+    <Compile Include="UI\UISelectableText.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

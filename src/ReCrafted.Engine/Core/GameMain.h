@@ -199,6 +199,35 @@ public:
 	{
 		return m_instance->m_currentCursorInt;
 	}
+
+	/// <summary>
+	/// Sets clipboard data.
+	/// </summary>
+	FORCEINLINE static void setClipboardData(MonoString* string)
+	{
+		MONO_ANSI_ERR();
+		auto str = MONO_ANSI(string);
+		auto s = std::string(str);
+		if (s.empty())
+		{ 
+			return;
+			MONO_ANSI_FREE(str);
+		}
+		OpenClipboard(0);
+		EmptyClipboard();
+		HGLOBAL hg = GlobalAlloc(GMEM_MOVEABLE, s.size() + 1);
+		if (!hg) {
+			CloseClipboard();
+			MONO_ANSI_FREE(str);
+			return;
+		}
+		memcpy(GlobalLock(hg), s.c_str(), s.size());
+		GlobalUnlock(hg);
+		SetClipboardData(CF_TEXT, hg);
+		CloseClipboard();
+		GlobalFree(hg);
+		MONO_ANSI_FREE(str);
+	}
 };
 
 #endif // GAMEMAIN_H
