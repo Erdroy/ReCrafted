@@ -144,9 +144,21 @@ public:
 		return m_instance->m_lockCursor;
 	}
 
+	/**
+	 * \brief Sets the target FPS.
+	 * \param targetFps The target FPS value.
+	 */
 	FORCEINLINE static void setTargetFps(int targetFps)
 	{
 		m_instance->m_targetFps = targetFps;
+	}
+
+	/**
+	* \brief Gets the target FPS.
+	 */
+	FORCEINLINE static int getTargetFps()
+	{
+		return m_instance->m_targetFps;
 	}
 
 	/// <summary>

@@ -201,8 +201,6 @@ void GameMain::waitForTargetFps(double last)
 
 void GameMain::run()
 {
-	// TODO: Ignore most initialization when this is CEF sub process
-
 	// set all needed instance handlers
 	gameMain_instance = m_instance = this;
 

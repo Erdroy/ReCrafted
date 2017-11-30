@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/01/2017 21:54:32 Source: 'GameMain.API.cpp' Target: 'Core/Game.Gen.cs'
+// Generated: 11/30/2017 11:38:31 Source: 'GameMain.API.cpp' Target: 'Core/Game.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -76,6 +76,21 @@ namespace ReCrafted.API.Core
 		}
 
 		/// <summary>
+		///	Gets or sets the target fps. Set to 0 to set FPS Cap to unlimited.
+		/// </summary>
+		public static int TargetFps 
+		{
+			get
+			{
+				return Internal_TargetFps_Get();
+			}
+			set
+			{
+				Internal_TargetFps_Set(value);
+			}
+		}
+
+		/// <summary>
 		///	Is game running state.
 		/// </summary>
 		public static bool IsRunning 
@@ -98,6 +113,10 @@ namespace ReCrafted.API.Core
 		internal static extern void Internal_LockCursor_Set(bool value);
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern bool Internal_LockCursor_Get();
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_TargetFps_Set(int value);
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern int Internal_TargetFps_Get();
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern bool Internal_IsRunning_Get();
 	}

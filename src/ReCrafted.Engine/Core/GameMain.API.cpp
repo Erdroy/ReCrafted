@@ -58,6 +58,14 @@ void GameMain::initRuntime()
 				API_BIND("ReCrafted.API.Core.Game::Internal_LockCursor_Set", &GameMain::setLockCursor);
 			}
 			API_PROPERTY_END();
+
+			API_COMMENT("Gets or sets the target fps. Set to 0 to set FPS Cap to unlimited.");
+			API_PROPERTY(PUBLIC, STATIC, "int", "TargetFps", GETSET);
+			{
+				API_BIND("ReCrafted.API.Core.Game::Internal_TargetFps_Get", &GameMain::getTargetFps);
+				API_BIND("ReCrafted.API.Core.Game::Internal_TargetFps_Set", &GameMain::setTargetFps);
+			}
+			API_PROPERTY_END();
 			
 			API_COMMENT("Is game running state.");
 			API_PROPERTY(PUBLIC, STATIC, "bool", "IsRunning", GET);
