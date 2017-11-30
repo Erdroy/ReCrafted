@@ -24,31 +24,31 @@ namespace ReCrafted.Game
             // register unhandled exception handler
             Exceptions.RegisterUEHandler();
 
-            // Load resources.
+            // load resources
             _crosshairTexture = Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "crosshair.png"));
             UIControl.DefaultFont = Font.Load(Assets.ResolveAssetFilePath(AssetType.Font, "VeraMono.ttf"), 12);
 
             Cursor.Show = false;
             Cursor.Lock = true;
 
-            // Create camera.
+            // create camera
             var camera = Entity.Create("MainCamera");
             camera.Position = new Vector3(35.0f, 925.0f, 62.0f);
             FreeCameraController.Current = camera.AddScript<FreeCameraController>();
             
-            // Load game info
+            // load game info
             GameInfo.FromFile(Assets.ResolveAssetFilePath("gameinfo.json"));
 
-            // Apply locale
+            // apply locale
             Locale.SetLocale("Polski");
 
-            // Test ui script
+            // test ui script
             var tests = Entity.Create("UiTests");
             tests.AddScript<UITests>();
 
-            // Pause Menu
-            var pausemenu = Entity.Create("PauseMenu");
-            pausemenu.AddScript<PauseMenu>();
+            // pause Menu
+            var pauseMenu = Entity.Create("PauseMenu");
+            pauseMenu.AddScript<PauseMenu>();
         }
 
         protected override void Update()
@@ -82,7 +82,6 @@ namespace ReCrafted.Game
 
         protected override void Simulate()
         {
-
         }
 
         protected override void Draw()

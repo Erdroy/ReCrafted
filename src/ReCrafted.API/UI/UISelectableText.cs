@@ -1,5 +1,6 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
+using System;
 using System.Collections.Generic;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
@@ -8,6 +9,18 @@ using ReCrafted.API.Mathematics;
 
 namespace ReCrafted.API.UI
 {
+    /// <summary>
+    /// Delegate for UISelectableText text select event.
+    /// </summary>
+    /// <param name="text">Selected text.</param>
+    public delegate void TextSelected(string text);
+
+    /// <summary>
+    /// Delegate for UISelectableText character click event.
+    /// </summary>
+    /// <param name="position">Index of character that was clicked.</param>
+    public delegate void OnCharacterClick(int position);
+
     /// <summary>
     /// Selectable text add-on for UIControls.
     /// </summary>
@@ -24,8 +37,10 @@ namespace ReCrafted.API.UI
         private bool _selectingText;
         // index of character where selection carpet starts
         private int _selectingTextStartIndex;
-        // index of character where selection carpet ends.
+        // index of character where selection carpet ends
         private int _selectingTextEndIndex;
+        // last selected character
+        private int _lastSelectedIndex = -1;
 
         // last received text
         private string _text;
@@ -33,18 +48,29 @@ namespace ReCrafted.API.UI
         private Font _textFont;
         // last received text position
         private Vector2 _textPosition;
-        // last received text size
-        private Vector2 _textSize;
+
+        /// <summary>
+        /// When selected text was changed.
+        /// </summary>
+        public TextSelected OnTextSelected;
+
+        /// <summary>
+        /// When character in text was clicked.
+        /// </summary>
+        public OnCharacterClick OnCharacterClick;
 
         /// <summary>
         /// Resets current selection.
         /// </summary>
         public void ResetSelection()
         {
+            SelectedText = null;
+
             _carpetRegions = new RectangleF[0];
             _selectingText = false;
             _selectingTextStartIndex = 0;
             _selectingTextEndIndex = 0;
+            _lastSelectedIndex = -1;
         }
 
         /// <summary>
@@ -57,12 +83,11 @@ namespace ReCrafted.API.UI
         /// <param name="textSize">Text screen size.</param>
         /// <param name="carpetDepth">Text screen depth.</param>
         /// <param name="isMouseOver">Is mouse over text.</param>
-        public void Draw(bool calculate, string text, Font font, Vector2 textPosition, Vector2 textSize, float carpetDepth, bool isMouseOver)
+        public void Draw(bool calculate, string text, Font font, Vector2 textPosition, float carpetDepth, bool isMouseOver)
         {
             _text = text;
             _textFont = font;
             _textPosition = textPosition;
-            _textSize = textSize;
 
             // good if you needs some of UISelectableText functions but don't want to use text selection.
             if (!calculate)
@@ -147,19 +172,42 @@ namespace ReCrafted.API.UI
 
                     }
                 }
-                else
+                
+                if (Input.IsKeyUp(Keys.Mouse0))
                 {
                     // some stuff with selected text
-                    if (Input.IsKey(Keys.Control) && Input.IsKeyDown(Keys.C))
+                    if (_selectingTextEndIndex != _selectingTextStartIndex)
                     {
-                        if (_selectingTextEndIndex != _selectingTextStartIndex)
+                        SelectedText = _selectingTextStartIndex < _selectingTextEndIndex
+                            ? _text.Substring(_selectingTextStartIndex,
+                                _selectingTextEndIndex - _selectingTextStartIndex + 1)
+                            : _text.Substring(_selectingTextEndIndex,
+                                _selectingTextStartIndex - _selectingTextEndIndex + 1);
+                        OnTextSelected?.Invoke(SelectedText);
+                    }
+                    else
+                    {
+                        if (_lastSelectedIndex == -1)
                         {
-                            Clipboard.SetText(_text.Substring(_selectingTextStartIndex,
-                                _selectingTextEndIndex - _selectingTextStartIndex + 1));
+                            OnCharacterClick?.Invoke(_selectingTextStartIndex);
+                            var p = _selectingTextStartIndex;
+                            ResetSelection();
+                            _lastSelectedIndex = p;
                         }
                         else
                         {
-                            Clipboard.SetText(_text[_selectingTextStartIndex].ToString());
+                            if (_lastSelectedIndex == _selectingTextStartIndex)
+                            {
+                                SelectedText = _text[_selectingTextStartIndex].ToString();
+                                OnTextSelected?.Invoke(SelectedText);
+                            }
+                            else
+                            {
+                                OnCharacterClick?.Invoke(_selectingTextStartIndex);
+                                var p = _selectingTextStartIndex;
+                                ResetSelection();
+                                _lastSelectedIndex = p;
+                            }
                         }
                     }
                 }
@@ -173,6 +221,9 @@ namespace ReCrafted.API.UI
                     _selectingTextStartIndex = GetCharIndexFromCursor();
                 }
             }
+
+            if (_selectingTextStartIndex == _selectingTextEndIndex && _lastSelectedIndex != _selectingTextStartIndex)
+                return;
 
             UIInternal.Depth = carpetDepth;
             UIInternal.Color = new Color(64 / 255f, 134 / 255f, 247 / 255f, 0.600f);
@@ -367,5 +418,10 @@ namespace ReCrafted.API.UI
             }
             return total;
         }
+
+        /// <summary>
+        /// Currently selected text.
+        /// </summary>
+        public string SelectedText { get; private set; }
     }
 }

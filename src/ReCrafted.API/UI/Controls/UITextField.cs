@@ -26,7 +26,7 @@ namespace ReCrafted.API.UI.Controls
         // class that adds text selection algorithms
         private UISelectableText _selectableText;
         // is text field using text selection algorithms
-        private bool _usingTextSelection;
+        private bool _usingSelectableText;
 
         /// <summary>
         /// Creates new UITextField.
@@ -86,6 +86,9 @@ namespace ReCrafted.API.UI.Controls
         {
             if (!Enabled) return;
 
+            if (!string.IsNullOrEmpty(_selectableText.SelectedText) && Input.IsKey(Keys.Control) && Input.IsKeyDown(Keys.C))
+                Clipboard.SetText(_selectableText.SelectedText);
+
             if (SmoothColors)
                 _color = Color.Lerp(_color, IsMouseOver ? Colors.OverColor : Colors.NormalColor,
                     (float) Time.DeltaTime * SmoothTranslation);
@@ -116,7 +119,7 @@ namespace ReCrafted.API.UI.Controls
             UIInternal.Color = TextColor;
             UIInternal.DrawString(TextFont.NativePtr, _text, ref pos);
 
-            _selectableText.Draw(UsingSelection, _text, TextFont, TextPosition, TextSize, Depth + 0.2f, IsMouseOver);
+            _selectableText.Draw(UsingSelectableText, _text, TextFont, TextPosition, Depth + 0.2f, IsMouseOver);
         }
 
         /// <summary>
@@ -124,7 +127,7 @@ namespace ReCrafted.API.UI.Controls
         /// </summary>
         public void SetActiveTextSelection(bool value)
         {
-            _usingTextSelection = value;
+            _usingSelectableText = value;
             _selectableText.ResetSelection();
         }
 
@@ -148,7 +151,12 @@ namespace ReCrafted.API.UI.Controls
             _textFieldEditBoxSize = new Vector2(region.Width, region.Height);
             _textFieldEditBoxVelocity = Vector2.One;
             _selectableText = new UISelectableText();
-            _usingTextSelection = true;
+            _selectableText.OnCharacterClick += position =>
+            {
+                //make input field position beam
+            };
+
+            _usingSelectableText = true;
         }
 
         /// <summary>
@@ -202,7 +210,7 @@ namespace ReCrafted.API.UI.Controls
         /// <summary>
         /// Is this text field currently using text selection.
         /// </summary>
-        public bool UsingSelection => _usingTextSelection;
+        public bool UsingSelectableText => _usingSelectableText;
 
         /// <summary>
         /// Is any text field currently focused?
