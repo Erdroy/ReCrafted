@@ -5,6 +5,7 @@
 #ifndef SINGLETON_H
 #define SINGLETON_H
 
+// includes
 #include "ReCrafted.h"
 
 template<class T>

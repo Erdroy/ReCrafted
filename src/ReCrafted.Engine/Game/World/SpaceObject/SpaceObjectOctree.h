@@ -14,6 +14,22 @@ class SpaceObjectOctree;
 class SpaceObjectChunk;
 class SpaceObject;
 
+struct NodeDirection
+{
+	enum _enum
+	{
+		Front,
+		Back,
+		Left,
+		Right,
+		Top,
+		Bottom
+	};
+};
+
+/**
+ * \brief OctreeNode of the Octree of SpaceObject.
+ */
 class SpaceObjectOctreeNode
 {
 	friend class SpaceObjectOctree;
@@ -23,9 +39,12 @@ public:
 
 private:
 	SpaceObjectOctree* owner = nullptr;
+	SpaceObjectOctreeNode* parent = nullptr;
+
 	SpaceObjectOctreeNode* m_childrenNodes[8] = {};
 	bool m_populated = false;
 	bool m_root = false;
+	int m_nodeId = 0;
 
 	Ptr<SpaceObjectChunk> m_chunk = nullptr;
 

@@ -6,6 +6,17 @@
 #include "SpaceObjectChunk.h"
 #include "Common/Input.h"
 
+byte localNeighTable[8] = {
+	0b010101,
+	0b011001,
+	0b101001,
+	0b100101,
+	0b010110,
+	0b011010,
+	0b101010,
+	0b100110
+};
+
 Vector3 childrenNodeOffsets[8] = {
 	Vector3(-0.5f,  0.5f,  0.5f),
 	Vector3( 0.5f,  0.5f,  0.5f),
@@ -17,6 +28,8 @@ Vector3 childrenNodeOffsets[8] = {
 	Vector3( 0.5f, -0.5f, -0.5f),
 	Vector3(-0.5f, -0.5f, -0.5f)
 };
+
+#define HAS_LOCAL_NEIGH(id, dir) localNeighTable[id] & (1 << dir)
 
 bool SpaceObjectOctreeNode::hasPopulatedChildren()
 {
@@ -50,6 +63,12 @@ void SpaceObjectOctreeNode::populate()
 
 		// set owner
 		m_childrenNodes[i]->owner = owner;
+
+		// set parent
+		m_childrenNodes[i]->parent = this;
+
+		// set node id
+		m_childrenNodes[i]->m_nodeId = i;
 
 		// call event
 		m_childrenNodes[i]->onCreate();
