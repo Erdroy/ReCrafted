@@ -67,7 +67,13 @@ namespace ReCrafted.Game
                 if (UIControl.FocusedControl != null)
                     UIControl.SetFocusedControl(null);
             }
-            
+
+            if (Input.IsKeyDown(Keys.F8) && !PauseMenu.Instance.Enabled)
+            {
+                Cursor.Show = !Cursor.Show;
+                Cursor.Lock = !Cursor.Show;
+            }
+
             DebugDraw.Color = new Color(0, 105, 0, 64);
             DebugDraw.DrawCube(Vector3.Zero, Vector3.One);
             DebugDraw.Color = new Color(0, 105, 0, 255);
