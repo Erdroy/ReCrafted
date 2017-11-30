@@ -16,6 +16,31 @@ float Planet(const Vector3& origin, const Vector3& position, float radius)
 	return height - radius;
 }
 
+uint8_t SpaceObjectChunk::getLodBorders()
+{
+	uint8_t borders = 0;
+
+	if (node->hasNeighLowerLoD(NodeDirection::Front))
+		borders |= BORDER_FRONT;
+
+	if (node->hasNeighLowerLoD(NodeDirection::Back))
+		borders |= BORDER_BACK;
+
+	if (node->hasNeighLowerLoD(NodeDirection::Left))
+		borders |= BORDER_LEFT;
+
+	if (node->hasNeighLowerLoD(NodeDirection::Right))
+		borders |= BORDER_RIGHT;
+
+	if (node->hasNeighLowerLoD(NodeDirection::Top))
+		borders |= BORDER_TOP;
+
+	if (node->hasNeighLowerLoD(NodeDirection::Back))
+		borders |= BORDER_BOTTOM;
+
+	return borders;
+}
+
 void SpaceObjectChunk::init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject)
 {
 	this->spaceObject = spaceObject;
@@ -64,8 +89,11 @@ void SpaceObjectChunk::generate()
 		}
 	}
 
+	// get which directions this chunk must get the bordering skirts
+	var borders = getLodBorders();
+
 	// generate mesh
-	MCMesher::getInstance()->generate(nodePosition, lod, m_mesh, m_voxelData);
+	MCMesher::getInstance()->generate(nodePosition, lod, borders, m_mesh, m_voxelData);
 
 	// upload changes
 	m_mesh->upload();

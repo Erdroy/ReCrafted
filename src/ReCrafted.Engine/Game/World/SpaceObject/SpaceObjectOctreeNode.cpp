@@ -310,16 +310,35 @@ void SpaceObjectOctreeNode::dispose()
 	}
 }
 
-SpaceObjectOctreeNode* SpaceObjectOctreeNode::getNeighNode(NodeDirection::_enum direction)
+SpaceObjectOctreeNode* SpaceObjectOctreeNode::getNeighNode(NodeDirection::_enum direction) const
 {
+	if (m_root || parent == nullptr)
+		return nullptr;
+
+	// NOTE: we don't have to check if parent nodes are populated, 
+	// because if this chunk exists, the parent must be already populated.
+
 	if(!HAS_LOCAL_NEIGH(m_nodeId, direction))
 	{
-		
-		return nullptr;
+		if (parent->parent == nullptr)
+			return nullptr;
+
+		// get '1-level LoD higher' neigh node
+		return parent->parent->m_childrenNodes[neighDirTable[parent->m_nodeId][dirIndex[direction]]];
 	}
 
 	// get local neighbor node
 	return parent->m_childrenNodes[neighDirTable[m_nodeId][dirIndex[direction]]];
+}
+
+bool SpaceObjectOctreeNode::hasNeighLowerLoD(NodeDirection::_enum direction)
+{
+	var neight = getNeighNode(direction);
+
+	if (!neight)
+		return false;
+
+	return true;
 }
 
 void SpaceObjectOctreeNode::onCreate()

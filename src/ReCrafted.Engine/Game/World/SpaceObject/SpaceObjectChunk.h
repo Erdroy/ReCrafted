@@ -36,6 +36,9 @@ private:
 
 	Ptr<Mesh> m_mesh = nullptr;
 
+private:
+	uint8_t getLodBorders();
+
 public:
 	void init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject);
 	void generate();

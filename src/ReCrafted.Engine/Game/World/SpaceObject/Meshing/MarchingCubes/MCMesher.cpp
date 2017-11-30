@@ -20,13 +20,6 @@ for (auto c = 0; c < SpaceObjectChunk::ChunkSize; c++)
 #define GET_CELL(_x, _y, _z) m_cells[INDEX_3D(_x, _y, _z, SpaceObjectChunk::ChunkSize)];
 #define IS_BORDER(_x, _y, _z) _x == 0 || _x == SpaceObjectChunk::ChunkSize-1 || _y == 0 || _y == SpaceObjectChunk::ChunkSize-1 || _z == 0 || _z == SpaceObjectChunk::ChunkSize-1
 
-#define BORDER_FRONT	0x01
-#define BORDER_BACK		0x02
-#define BORDER_LEFT		0x04
-#define BORDER_RIGHT	0x08
-#define BORDER_TOP		0x10
-#define BORDER_BOTTOM	0x20
-
 #define AXIS_FRONT		0
 #define AXIS_BACK		1
 #define AXIS_LEFT		2
@@ -290,13 +283,11 @@ void MCMesher::generateCells(sbyte* data, const Vector3& position, float lod, ui
 	ITERATE_CELLS_END()
 }
 
-void MCMesher::generate(const Vector3& position, int lod, Ptr<Mesh>& mesh, sbyte* data)
+void MCMesher::generate(const Vector3& position, int lod, uint8_t borders, Ptr<Mesh>& mesh, sbyte* data)
 {
 	var lodF = static_cast<float>(lod);
 
-	// TODO: select which borders need skirts (if lod > 0)
-
-	generateCells(data, position, lodF, lod > 1 ? 1 : 0);
+	generateCells(data, position, lodF, lod > 1 ? borders : 0);
 	
 	if (m_vertices.count() == 0)
 	{

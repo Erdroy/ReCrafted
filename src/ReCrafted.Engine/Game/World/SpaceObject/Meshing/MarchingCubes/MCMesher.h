@@ -11,6 +11,13 @@
 #include "Core/Math/Vector2.h"
 #include "Core/Math/Vector4.h"
 
+#define BORDER_FRONT	0x01
+#define BORDER_BACK		0x02
+#define BORDER_LEFT		0x04
+#define BORDER_RIGHT	0x08
+#define BORDER_TOP		0x10
+#define BORDER_BOTTOM	0x20
+
 struct TransitionCellCache;
 struct RegularCellCache;
 
@@ -58,7 +65,7 @@ public:
 	* \param mesh The mesh that will get the new mesh data.
 	* \param data The hermite voxel data (in -127 to 127 range).
 	*/
-	void generate(const Vector3& position, int lod, Ptr<Mesh>& mesh, sbyte* data) override;
+	void generate(const Vector3& position, int lod, uint8_t borders, Ptr<Mesh>& mesh, sbyte* data) override;
 
 public:
 	static MCMesher* getInstance()
