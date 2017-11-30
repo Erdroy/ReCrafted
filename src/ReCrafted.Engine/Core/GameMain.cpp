@@ -21,10 +21,6 @@ int m_cursorDeltaX = 0u;
 int m_cursorDeltaY = 0u;
 GameMain* gameMain_instance;
 
-#if _WIN32
-HCURSOR m_defaultCursor;
-#endif
-
 LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	switch (msg)
@@ -228,7 +224,7 @@ void GameMain::run()
 	wnd.hIconSm = LoadIcon(nullptr, IDI_APPLICATION);
 	RegisterClassEx(&wnd);
 	
-	m_defaultCursor = LoadCursor(nullptr, IDC_ARROW);
+	m_currentCursor = LoadCursor(nullptr, IDC_ARROW);
 
 	auto window = CreateWindowW(L"recrafted", L"ReCrafted", WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 1280, 720, NULL, NULL, instance, nullptr);
 	Platform::setGameWindow(static_cast<void*>(window));
@@ -574,7 +570,7 @@ void GameMain::onCursorRequest()
 #if _WIN32
 	if(m_showCursor)
 	{
-		SetCursor(m_defaultCursor);
+		SetCursor(m_currentCursor);
 	}
 	else
 	{

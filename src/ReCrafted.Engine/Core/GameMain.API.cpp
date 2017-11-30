@@ -73,6 +73,14 @@ void GameMain::initRuntime()
 				API_BIND("ReCrafted.API.Core.Game::Internal_IsRunning_Get", &GameMain::isRunning);
 			}
 			API_PROPERTY_END();
+
+			API_COMMENT("Gets or sets the cursor icon.");
+			API_PROPERTY(INTERNAL, STATIC, "int", "CursorIcon", GETSET);
+			{
+				API_BIND("ReCrafted.API.Core.Game::Internal_CursorIcon_Get", &GameMain::getCursorIcon);
+				API_BIND("ReCrafted.API.Core.Game::Internal_CursorIcon_Set", &GameMain::setCursorIcon);
+			}
+			API_PROPERTY_END();
 		}
 		API_CLASS_END();
 	}

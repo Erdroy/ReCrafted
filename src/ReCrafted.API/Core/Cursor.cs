@@ -3,6 +3,27 @@
 namespace ReCrafted.API.Core
 {
     /// <summary>
+    /// Type of cursor icon.
+    /// </summary>
+    public enum CursorIcon
+    {
+        /// <summary>
+        /// Icon of cursor is unknown.
+        /// </summary>
+        Unknown = 999,
+
+        /// <summary>
+        /// Standard mouse icon.
+        /// </summary>
+        Arrow = 0,
+
+        /// <summary>
+        /// IBeam icon.
+        /// </summary>
+        Beam = 1
+    }
+
+    /// <summary>
     /// Cursor class. Manages cursor state and lock mode.
     /// </summary>
     public static class Cursor
@@ -23,6 +44,15 @@ namespace ReCrafted.API.Core
         {
             set { Game.ShowCursor = value; }
             get { return Game.ShowCursor; }
+        }
+
+        /// <summary>
+        /// Gets or sets cursor icon.
+        /// </summary>
+        public static CursorIcon Icon
+        {
+            set { Game.CursorIcon = (int)value; }
+            get { return (CursorIcon)Game.CursorIcon; }
         }
     }
 }

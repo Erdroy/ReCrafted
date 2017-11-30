@@ -54,6 +54,7 @@ namespace ReCrafted.API.UI.Controls
         {
             if (!SmoothColors)
                 _color = Colors.OverColor;
+            Cursor.Icon = CursorIcon.Beam;
         }
 
         public override void OnMouseOver()
@@ -73,6 +74,7 @@ namespace ReCrafted.API.UI.Controls
         {
             if (!SmoothColors)
                 _color = Colors.NormalColor;
+            Cursor.Icon = CursorIcon.Arrow;
         }
 
         public override void OnControlFocused(bool value)
@@ -111,8 +113,10 @@ namespace ReCrafted.API.UI.Controls
                     var endLine = GetLineFromCharIndex(endIndex);
                     var endCharSize = TextFont.MeasureString(_text[endIndex].ToString());
 
-                    _carpetRegions = new RectangleF[endLine - startLine + 1];
-                    for (int line = startLine; line < _carpetRegions.Length; line++)
+                    _carpetRegions = new RectangleF[lines.Count];
+                    var p = new Vector2(0, 0);
+                    UIInternal.DrawString(TextFont.NativePtr, "Regions -> " + _carpetRegions.Length + " StartLine -> " + startLine, ref p);
+                    for (int line = startLine; line < lines.Count; line++)
                     {
                         if (line > startLine && line < endLine) // full line
                         {
@@ -145,14 +149,15 @@ namespace ReCrafted.API.UI.Controls
                                         endPoint.X - startPoint.X, endPoint.Y - startPoint.Y + TextFont.Size);
                                 }
                             }
-                            else
+                            else if (endLine == line)
                             {
-                                
+                                _carpetRegions[line] = new RectangleF(TextPosition.X,
+                                    TextPosition.Y + TextFont.Size * line, endPoint.X - TextPosition.X, TextFont.Size);
                             }
-
-                            var p = new Vector2(0, line * TextFont.Size);
-                            UIInternal.DrawString(TextFont.NativePtr, "Start -> " + startLine + " Line -> " + line, ref p);
                         }
+
+                        p = new Vector2(0, (line+1) * TextFont.Size);
+                        UIInternal.DrawString(TextFont.NativePtr, "Start -> " + startLine + " Line -> " + line + " EndLine -> " + endLine, ref p);
                     }
                 }
                 else

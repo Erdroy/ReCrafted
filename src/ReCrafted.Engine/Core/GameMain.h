@@ -47,6 +47,11 @@ private:
 	int m_targetFps = 60;
 	int m_simulationFps = 66;
 
+#if _WIN32
+	HCURSOR m_currentCursor;
+	int m_currentCursorInt = 0;
+#endif
+
 	// scripting
 
 	Ptr<Domain> m_domain = nullptr;
@@ -168,6 +173,31 @@ public:
 	FORCEINLINE static bool isRunning()
 	{
 		return m_instance->m_running;
+	}
+
+	/// <summary>
+	/// Sets the cursor icon.
+	/// </summary>
+	FORCEINLINE static void setCursorIcon(int icon)
+	{
+		switch (icon)
+		{
+			case 1:
+				m_instance->m_currentCursor = LoadCursor(nullptr, IDC_IBEAM);
+				break;
+			default:
+				m_instance->m_currentCursor = LoadCursor(nullptr, IDC_ARROW);
+				break;
+		}
+		m_instance->m_currentCursorInt = icon;
+	}
+
+	/// <summary>
+	/// Gets the cursor icon int.
+	/// </summary>
+	FORCEINLINE static int getCursorIcon()
+	{
+		return m_instance->m_currentCursorInt;
 	}
 };
 

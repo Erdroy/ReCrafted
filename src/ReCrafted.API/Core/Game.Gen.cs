@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/30/2017 11:38:31 Source: 'GameMain.API.cpp' Target: 'Core/Game.Gen.cs'
+// Generated: 11/30/2017 18:12:35 Source: 'GameMain.API.cpp' Target: 'Core/Game.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -101,6 +101,21 @@ namespace ReCrafted.API.Core
 			}
 		}
 
+		/// <summary>
+		///	Gets or sets the cursor icon.
+		/// </summary>
+		internal static int CursorIcon 
+		{
+			get
+			{
+				return Internal_CursorIcon_Get();
+			}
+			set
+			{
+				Internal_CursorIcon_Set(value);
+			}
+		}
+
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_Tickrate_Set(int value);
 		[MethodImpl(MethodImplOptions.InternalCall)]
@@ -119,5 +134,9 @@ namespace ReCrafted.API.Core
 		internal static extern int Internal_TargetFps_Get();
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern bool Internal_IsRunning_Get();
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_CursorIcon_Set(int value);
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern int Internal_CursorIcon_Get();
 	}
 }
