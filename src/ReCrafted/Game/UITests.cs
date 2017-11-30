@@ -58,7 +58,7 @@ namespace ReCrafted.Game
                 button.Region = region;
             };
 
-            var toggleGroup = new UIToggleGroup();
+            var toggleGroup = new UIToggleGroup(1, 2);
             var toggle1 = toggleGroup.Add(panel.Add(new UIToggle(new RectangleF(0, 0, 130, 32), "TestToggle1!")));
             toggle1.TextBackgroundColor = new Color(68, 68, 68);
             var toggle2 = toggleGroup.Add(panel.Add(new UIToggle(new RectangleF(0, 0, 130, 32), "TestToggle2!")));
