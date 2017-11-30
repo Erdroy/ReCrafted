@@ -210,8 +210,8 @@ public:
 		auto s = std::string(str);
 		if (s.empty())
 		{ 
-			return;
 			MONO_ANSI_FREE(str);
+			return;
 		}
 		OpenClipboard(0);
 		EmptyClipboard();
