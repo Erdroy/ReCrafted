@@ -87,8 +87,6 @@ namespace ReCrafted.Game
         {
             Profiler.BeginProfile("DrawUI (.NET)");
 
-            UIPanel.DrawAll();
-
             if (!PauseMenu.Instance.Enabled)
             {
                 UIInternal.Color = Color.White;
@@ -98,7 +96,12 @@ namespace ReCrafted.Game
             }
             
             var pos = new Vector2(20.0f, Display.Height - 20.0f);
+            UIInternal.Color = Color.White;
             UIInternal.DrawString(UIControl.DefaultFont.NativePtr, "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber, ref pos);
+
+
+            UIPanel.DrawAll();
+
 
             Profiler.EndProfile();
         }

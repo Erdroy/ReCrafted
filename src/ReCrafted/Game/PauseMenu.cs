@@ -18,6 +18,16 @@ namespace ReCrafted.Game
         public static PauseMenu Instance;
 
         /// <summary>
+        /// Black background of screen.
+        /// </summary>
+        public UIPanel Background;
+
+        /// <summary>
+        /// Region of PauseMenu main panel.
+        /// </summary>
+        public RectangleF MainPanelRegion => new RectangleF(Display.Width / 2.0f - 75.0f, Display.Height / 2.0f - 100.0f, 150.0f, 200.0f);
+
+        /// <summary>
         /// PauseMenu's main panel
         /// </summary>
         public UIPanel MainPanel;
@@ -51,10 +61,12 @@ namespace ReCrafted.Game
         {
             Instance = this;
 
-            var rect = new RectangleF(Display.Width / 2.0f - 75.0f, Display.Height / 2.0f - 100.0f, 150.0f, 200.0f);
+            Background = UIPanel.Create(new RectangleF(0, 0, Display.Width, Display.Height), UILayoutType.Vertical, "Pause Background");
+            Background.PanelColor = new Color(0, 0, 0, 0.5f);
+            Background.Visible = false;
 
             // Create Main Panel
-            MainPanel = UIPanel.Create(rect, UILayoutType.Vertical, "Pause Menu");
+            MainPanel = UIPanel.Create(MainPanelRegion, UILayoutType.Vertical, "Pause Menu");
 
             MainPanel.PanelColor = Color.Blue;
 
@@ -83,7 +95,10 @@ namespace ReCrafted.Game
             Options = MainPanel.Add(new UIButton("Options"));
 
             // Create Exit button
-            Exit = MainPanel.Add(new UIButton("Exit"));
+            var exitLayout = MainPanel.Add(UILayout.Create(new RectangleF(0, 0, 0, 70), layoutAlignment: UILayoutAlignment.MiddleBottom));
+            exitLayout.ForceExpandWidth = true;
+            exitLayout.PreferredSize = new Vector2(30, 30);
+            Exit = exitLayout.Add(new UIButton("Exit"));
             Exit.OnClick += API.Core.Game.Quit;
 
             Disable();
@@ -93,14 +108,25 @@ namespace ReCrafted.Game
         {
             MainPanel.Enabled = true;
             MainPanel.Visible = true;
+
+            Background.Enabled = true;
         }
 
         public void Disable()
         {
             MainPanel.Enabled = false;
             MainPanel.Visible = false;
+
+            Background.Enabled = false;
         }
 
         public bool Enabled => MainPanel.Enabled;
+
+        protected override void OnUpdate()
+        {
+            if (!Enabled) return;
+            Background.Region = new RectangleF(0, 0, Display.Width, Display.Height);
+            MainPanel.Region = MainPanelRegion;
+        }
     }
 }

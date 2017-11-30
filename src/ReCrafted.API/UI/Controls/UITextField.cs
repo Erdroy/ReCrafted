@@ -14,9 +14,9 @@ namespace ReCrafted.API.UI.Controls
     /// </summary>
     public class UITextField : UIControl
     {
-        // current textfield color
+        // current text field color
         private Color _color;
-        // current textfield text;
+        // current text field text;
         private string _text;
 
         // color of textField edit box.
@@ -27,7 +27,7 @@ namespace ReCrafted.API.UI.Controls
         private Vector2 _textFieldEditBoxVelocity;
 
         // region of selection carpet
-        private RectangleF _carpetRegion;
+        private RectangleF[] _carpetRegions;
         // is text currently under carpet selection
         private bool _selectingText;
         // index of character where carpet selection starts
@@ -91,25 +91,74 @@ namespace ReCrafted.API.UI.Controls
             #region INPUT
             if (_selectingText)
             {
+                var startIndex = _selectingTextStartIndex;
                 var endIndex = GetCharIndexFromCursor();
+                if (startIndex > endIndex)//swap
+                {
+                    var s = startIndex;
+                    startIndex = endIndex;
+                    endIndex = s;
+                }
+
                 if (Input.IsKey(Keys.Mouse0))
                 {
-                    var startPoint = GetPointFromCharIndex(_selectingTextStartIndex);
+                    var lines = GetLines();
+
+                    var startPoint = GetPointFromCharIndex(startIndex);
+                    var startLine = GetLineFromCharIndex(startIndex);
+
                     var endPoint = GetPointFromCharIndex(endIndex);
+                    var endLine = GetLineFromCharIndex(endIndex);
                     var endCharSize = TextFont.MeasureString(_text[endIndex].ToString());
 
-                    if (startPoint.X < endPoint.X && startPoint.Y < endPoint.X)
+                    _carpetRegions = new RectangleF[endLine - startLine + 1];
+                    for (int line = startLine; line < _carpetRegions.Length; line++)
                     {
-                        endPoint.X += endCharSize.X / 2f;
-                        endPoint.Y += endCharSize.Y * 1.2f;
-                    }
+                        if (line > startLine && line < endLine) // full line
+                        {
+                            var lineSize = GetLineSize(line);
+                            _carpetRegions[line] = new RectangleF(TextPosition.X, TextPosition.Y + TextFont.Size * line, lineSize.X, lineSize.Y);
+                        }
+                        else if (line < startLine && line > endLine)// full line
+                        {
+                            var lineSize = GetLineSize(line);
+                            _carpetRegions[line] = new RectangleF(TextPosition.X, TextPosition.Y + TextFont.Size * line, lineSize.X, lineSize.Y);
+                        }
+                        else
+                        {
+                            if (startLine == line)
+                            {
+                                var endOfLine = GetEndCharIndexOfLine(startLine) - 1;
+                                if (endIndex > endOfLine)
+                                {
+                                    if (startLine < endLine)
+                                    {
+                                        var pointOfEndOfLine = GetPointFromCharIndex(endOfLine);
+                                        _carpetRegions[line] = new RectangleF(startPoint.X, startPoint.Y,
+                                            pointOfEndOfLine.X - startPoint.X,
+                                            pointOfEndOfLine.Y - startPoint.Y + TextFont.Size);
+                                    }
+                                }
+                                else
+                                {
+                                    _carpetRegions[line] = new RectangleF(startPoint.X, startPoint.Y,
+                                        endPoint.X - startPoint.X, endPoint.Y - startPoint.Y + TextFont.Size);
+                                }
+                            }
+                            else
+                            {
+                                
+                            }
 
-                    _carpetRegion = new RectangleF(startPoint.X, startPoint.Y, endPoint.X - startPoint.X, endPoint.Y - startPoint.Y);
+                            var p = new Vector2(0, line * TextFont.Size);
+                            UIInternal.DrawString(TextFont.NativePtr, "Start -> " + startLine + " Line -> " + line, ref p);
+                        }
+                    }
                 }
                 else
                 {
                     _selectingText = false;
-                    if (endIndex != _selectingTextStartIndex)
+                    if (endIndex != startIndex)
                     {
                         // some stuff with selected text
                     }
@@ -125,13 +174,6 @@ namespace ReCrafted.API.UI.Controls
                 }
             }
 
-            #endregion
-
-            #region SELECT
-            if (_selectingText)
-            {
-
-            }
             #endregion
 
             #region DRAW
@@ -161,16 +203,21 @@ namespace ReCrafted.API.UI.Controls
             UIInternal.DrawString(TextFont.NativePtr, GetPointFromCharIndex(GetCharIndexFromCursor()).ToString(), ref pos);
             pos.Y += 20;
             UIInternal.Color = Color.White;
-            UIInternal.DrawString(TextFont.NativePtr,_carpetRegion.ToString(), ref pos);
-            pos.Y += 20;
-            UIInternal.Color = Color.White;
             UIInternal.DrawString(TextFont.NativePtr, "From -> " + _selectingTextStartIndex + " To " + GetCharIndexFromCursor(), ref pos);
             pos.Y += 20;
             UIInternal.Color = Color.White;
             UIInternal.DrawString(TextFont.NativePtr, _text[(int)GetCharIndexFromCursor()].ToString(), ref pos);
 
-            UIInternal.Color = new Color(64/255f, 134/255f, 247/255f, 0.600f);
-            UIInternal.DrawBox(_carpetRegion);
+            if (_carpetRegions != null)
+                foreach (var carpet in _carpetRegions)
+                {
+                    UIInternal.Color = new Color(64 / 255f, 134 / 255f, 247 / 255f, 0.600f);
+                    UIInternal.DrawBox(carpet);
+
+                    pos.Y += 20;
+                    UIInternal.Color = Color.White;
+                    UIInternal.DrawString(TextFont.NativePtr, $"Carpet {carpet}", ref pos);
+                }
             #endregion
         }
 
@@ -195,8 +242,24 @@ namespace ReCrafted.API.UI.Controls
             return lines;
         }
 
+        private int GetEndCharIndexOfLine(int line)
+        {
+            var lines = GetLines();
+            var totalCharacters = 0;
+            for (int index = 0; index < lines.Count; index++)
+            {
+                totalCharacters += lines[index].Length;
+                if (index == line)
+                {
+                    return totalCharacters;
+                }
+            }
+            
+            return 0;
+        }
+
         // gets size of text to given line
-        private Vector2 GetRegionSizeToLine(int toLine)
+        private Vector2 GetRegionSizeToLine(int fromLine, int toLine)
         {
             int line = 0;
             var size = new Vector2(0, TextFont.Size);
@@ -211,9 +274,12 @@ namespace ReCrafted.API.UI.Controls
                     if (size.X < lastLineSize.X)
                         size.X = lastLineSize.X;
                     lastLine = string.Empty;
+                    if (line == toLine)
+                        return size;
                 }
                 else
                 {
+                    if (line >= fromLine)
                     lastLine+= t;
                 }
             }
@@ -226,16 +292,27 @@ namespace ReCrafted.API.UI.Controls
             return size;
         }
 
+        private Vector2 GetLineSize(int line)
+        {
+            var lines = GetLines();
+            for (int index = 0; index < lines.Count; index++)
+            {
+                if (index == line)
+                    return TextFont.MeasureString(lines[index]);
+            }
+            return new Vector2(0, 0);
+        }
+
         // gets character from text under cursor
         private int GetCharIndexFromCursor()
         {
             if (string.IsNullOrEmpty(_text)) return 0;
             var point = Input.CursorPosition;
             var lines = GetLines();
-            int total = 0;
-            var lastSize = new Vector2(0, 0);
+            int total = 0;    
             for (var line = 0; line < lines.Count; line++)
             {
+                var lastSize = new Vector2(0, 0);
                 var lineH = TextPosition.Y + line * TextFont.Size;
                 var lineX = TextPosition.X;
                 for (int index = 0; index < lines[line].Length; index++)
@@ -251,10 +328,10 @@ namespace ReCrafted.API.UI.Controls
                         return total + index;
                     }
                 }
-                total += lines[line].Length + 2;
+                total += lines[line].Length + 1;
             }
 
-            return point.X > TextPosition.X + TextSize.X ? _text.Length - 1 : 0;
+            return point.X > TextPosition.X ? _text.Length - 1 : 0;
         }
 
         // gets character screen point
@@ -321,23 +398,24 @@ namespace ReCrafted.API.UI.Controls
             _textFieldEditBoxColor = Color.Transparent;
             _textFieldEditBoxSize = new Vector2(region.Width, region.Height);
             _textFieldEditBoxVelocity = Vector2.One;
+            _carpetRegions = new RectangleF[0];
         }
 
-        // resets current selection cartpet
+        // resets current selection carpet
         private void _resetCarpet()
         {
-            _carpetRegion = new RectangleF(0,0,0,0);
+            _carpetRegions = new RectangleF[0];
             _selectingText = false;
             _selectingTextStartIndex = 0;
         }
 
         /// <summary>
-        /// Colors of textfield.
+        /// Colors of text field.
         /// </summary>
         public UIControlColors Colors { get; set; }
 
         /// <summary>
-        /// Colors on textfield will be changed smoothly.
+        /// Colors on text field will be changed smoothly.
         /// </summary>
         public bool SmoothColors { get; set; }
 

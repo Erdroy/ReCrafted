@@ -32,7 +32,7 @@ namespace ReCrafted.Game
 
             //TestBox = TestPanel.Add(new UIBox(new RectangleF(0f, 0f, 32f, 32f)));
 
-            var panel = UIPanel.Create(new RectangleF(200.0f, 100.0f, 200.0f, 450.0f), UILayoutType.Vertical, "panel1");
+            var panel = UIPanel.Create(new RectangleF(10.0f, 250.0f, 200.0f, 450.0f), UILayoutType.Vertical, "panel1");
             panel.PanelColor = Color.Red;
             panel.Enabled = true;
             panel.Layout.ForceExpandHeigth = false;
@@ -67,7 +67,7 @@ namespace ReCrafted.Game
             toggle3.TextBackgroundColor = new Color(68, 68, 68);
 
             var textField = panel.Add(new UITextField(new RectangleF(0, 0, 130, 32)));
-            textField.Text = "Text Field!\nSome More Text?";
+            textField.Text = "Text Field!\nSome More Text?\nAnother!";
 
             //panel.Add(new UIText(new RectangleF(10, 10, 160, 30), "12345678912345678912345678912342343243"));
 
