@@ -7,14 +7,30 @@
 #include "Common/Input.h"
 
 byte localNeighTable[8] = {
-	0b010101,
-	0b011001,
-	0b101001,
-	0b100101,
-	0b010110,
-	0b011010,
-	0b101010,
-	0b100110
+	0b010101u,
+	0b011001u,
+	0b101001u,
+	0b100101u,
+	0b010110u,
+	0b011010u,
+	0b101010u,
+	0b100110u
+};
+
+byte neighDirTable[8][3] = {
+	{ 3, 1, 4 }, // 0
+	{ 2, 0, 5 }, // 1
+	{ 1, 3, 6 }, // 2
+	{ 0, 2, 7 }, // 3
+
+	{ 7, 5, 0 }, // 4
+	{ 6, 4, 1 }, // 5
+	{ 5, 7, 2 }, // 6
+	{ 4, 6, 3 }  // 7
+};
+
+byte dirIndex[6] = {
+	0, 0, 1, 1, 2, 2
 };
 
 Vector3 childrenNodeOffsets[8] = {
@@ -53,8 +69,8 @@ void SpaceObjectOctreeNode::populate()
 	auto childrenSize = m_size / 2;
 	for (auto i = 0; i < 8; i++)
 	{
-		if (m_childrenNodes[i])
-			throw; // WTF?
+		if (m_childrenNodes[i]) // sanity check
+			delete m_childrenNodes[i];
 
 		auto position = m_position + childrenNodeOffsets[i] * static_cast<float>(childrenSize);
 
@@ -292,6 +308,18 @@ void SpaceObjectOctreeNode::dispose()
 			m_childrenNodes[i] = nullptr;
 		}
 	}
+}
+
+SpaceObjectOctreeNode* SpaceObjectOctreeNode::getNeighNode(NodeDirection::_enum direction)
+{
+	if(!HAS_LOCAL_NEIGH(m_nodeId, direction))
+	{
+		
+		return nullptr;
+	}
+
+	// get local neighbor node
+	return parent->m_childrenNodes[neighDirTable[m_nodeId][dirIndex[direction]]];
 }
 
 void SpaceObjectOctreeNode::onCreate()

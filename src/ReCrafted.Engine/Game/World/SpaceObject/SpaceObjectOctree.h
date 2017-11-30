@@ -16,9 +16,9 @@ class SpaceObject;
 
 struct NodeDirection
 {
-	enum _enum
+	enum _enum : byte
 	{
-		Front,
+		Front = 0,
 		Back,
 		Left,
 		Right,
@@ -65,6 +65,12 @@ public:
 	void updateViews(Array<Vector3>& views);
 	void draw();
 	void dispose();
+
+public:
+	/**
+	 * \brief Gets neighbor node with higher or same LoD, cannot get lower LoD level node.
+	 */
+	SpaceObjectOctreeNode* getNeighNode(NodeDirection::_enum direction);
 
 public:
 	void onCreate();
