@@ -10,20 +10,14 @@
 #include "Core/Containers/Array.h"
 #include "Scripting/Object.h"
 
-class KeyboardBuffer : public Object
+class KeyboardBuffer
 {
 	API_DEF
 
 private:
-	static Ptr<KeyboardBuffer> m_instance;
-
-private:
-	Array<Char> m_buffer = {};
+	static Array<Char> m_buffer;
 
 public:
-	static void init();
-	static void shutdown();
-
 	static void clear();
 	static void write(Char character);
 

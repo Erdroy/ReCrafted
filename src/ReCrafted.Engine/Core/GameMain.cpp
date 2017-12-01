@@ -373,9 +373,6 @@ void GameMain::onLoad()
 	// initialize profiler
 	Profiler::init();
 
-	// initialize keyboard buffer
-	KeyboardBuffer::init();
-
 	Logger::logInfo("Rendering pipeline initialized");
 
 	m_initialized = true;
@@ -420,9 +417,6 @@ void GameMain::onUnload()
 
 	// shutdown debug draw
 	DebugDraw::shutdown();
-
-	// shutdown keyboard buffer
-	KeyboardBuffer::shutdown();
 
 	// shutdown bindings
 	Bindings::shutdown();

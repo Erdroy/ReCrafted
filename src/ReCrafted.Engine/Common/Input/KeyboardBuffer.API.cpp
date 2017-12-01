@@ -27,14 +27,14 @@ void KeyboardBuffer::initRuntime()
 	API_FILE("Common/KeyboardBuffer.Gen.cs");
 	{
 		API_COMMENT("KeyboardBuffer class.");
-		API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Common", "KeyboardBuffer", "Object", PARTIAL, NOCONSTRUCTOR);
+		API_CLASS(PUBLIC, STATIC, "ReCrafted.API.Common", "KeyboardBuffer");
 		{
 			API_COMMENT("Reads the keyboard buffer.");
 			API_METHOD(PUBLIC, STATIC, "Read", EXTERN);
 			{
 				API_BIND("ReCrafted.API.Common.KeyboardBuffer::Read", &Internal::read);
 				
-				API_RETURN("ushort[]");
+				API_RETURN("char[]");
 			}
 			API_METHOD_END();
 		}
