@@ -122,6 +122,9 @@ void Rendering::endRender()
 	// final pass
 	auto textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
 
+	if (GameMain::m_instance->m_wireframe)
+		return;
+
 	bgfx::setTexture(0, m_texture0, m_gbuffer->getTarget(0), textureFlags);
 	bgfx::setTexture(1, m_texture1, m_gbuffer->getTarget(1), textureFlags);
 	
@@ -152,7 +155,8 @@ void Rendering::draw(Ptr<Mesh>& mesh, Ptr<Shader>& shader, Matrix* modelMatrix, 
 
 	bgfx::setVertexBuffer(0, mesh->m_vertexBuffer);
 	bgfx::setIndexBuffer(mesh->m_indexBuffer);
-	bgfx::submit(viewId, shader->m_program);
+
+	bgfx::submit(GameMain::m_instance->m_wireframe ? 0 : viewId, shader->m_program);
 }
 
 void Rendering::draw(Ptr<Mesh>& mesh, Matrix* modelMatrix)
