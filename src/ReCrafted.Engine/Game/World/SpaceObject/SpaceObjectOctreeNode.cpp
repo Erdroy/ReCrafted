@@ -4,7 +4,7 @@
 #include "Core/Math/Color.h"
 #include "Graphics/DebugDraw.h"
 #include "SpaceObjectChunk.h"
-#include "Common/Input.h"
+#include "Common/Input/Input.h"
 
 byte localNeighTable[8] = {
 	0b010101u,

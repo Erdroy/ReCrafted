@@ -3,7 +3,7 @@
 #include "SpaceObjectChunk.h"
 #include "SpaceObjectOctree.h"
 #include "SpaceObject.h"
-#include "Common/Input.h"
+#include "Common/Input/Input.h"
 #include "Meshing/MarchingCubes/MCMesher.h"
 #include "Game/World/Voxels/VoxelUtils.h"
 #include "Graphics/Mesh.h"

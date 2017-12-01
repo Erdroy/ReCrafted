@@ -2,7 +2,7 @@
 
 #include "Universe.h"
 #include "Common/Time.h"
-#include "Common/Input.h"
+#include "Common/Input/Input.h"
 #include "Core/Logger.h"
 #include "Graphics/Camera.h"
 #include "Graphics/DebugDraw.h"
