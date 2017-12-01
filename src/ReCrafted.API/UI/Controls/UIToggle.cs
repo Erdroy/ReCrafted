@@ -174,21 +174,24 @@ namespace ReCrafted.API.UI.Controls
             UIInternal.DrawBox(Region);
 
             UIInternal.Color = _color;
-            var backgrounRegion = new RectangleF(Region.X, Region.Y, Region.Height, Region.Height);
-            UIInternal.DrawBox(backgrounRegion);
+            var backgroundRegion = new RectangleF(Region.X, Region.Y, Region.Height, Region.Height);
+            UIInternal.Depth = Depth + 0.1f;
+            UIInternal.DrawBox(backgroundRegion);
 
             UIInternal.Color = _checkBoxColor;
-            var checkBoxRegion = backgrounRegion;
+            var checkBoxRegion = backgroundRegion;
             var target = new Vector2(checkBoxRegion.Width, checkBoxRegion.Height) * (_isOn ? 0.8f : 0.6f);
             UIAnimation.SpringVector2(ref _checkBoxSize, ref _checkBoxVelocity, target, (float)Time.DeltaTime);
             checkBoxRegion = new RectangleF(checkBoxRegion.X - (_checkBoxSize.X / 2f - checkBoxRegion.Width / 2f),
                                             checkBoxRegion.Y - (_checkBoxSize.Y / 2f - checkBoxRegion.Height / 2f),
-                                           _checkBoxSize.X, _checkBoxSize.Y);            
+                                           _checkBoxSize.X, _checkBoxSize.Y);
+            UIInternal.Depth = Depth + 0.2f;
             UIInternal.DrawBox(checkBoxRegion);
 
             UIInternal.Color = TextColor;
             TextPosition = new Vector2(Region.X + Region.Height * 1.2f, Region.Y + Region.Height / 2 - TextSize.Y / 2);
             var pos = TextPosition;
+            UIInternal.Depth = Depth + 0.3f;
             UIInternal.DrawString(TextFont.NativePtr, _text, ref pos);
         }
 

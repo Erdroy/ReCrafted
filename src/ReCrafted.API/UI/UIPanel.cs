@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
@@ -64,6 +65,10 @@ namespace ReCrafted.API.UI
                             if (FocusedControl != collision)
                                 SetFocusedControl(collision);
                         }
+                        else
+                        {
+                            _checkForPanelCollision();
+                        }
                     }
                     Profiler.EndProfile();
                 }
@@ -74,7 +79,11 @@ namespace ReCrafted.API.UI
                     Reset();
                     _fixedFixible = true;
                 }
-
+            }
+            else
+            {
+                if (Enabled)
+                    _checkForPanelCollision();
             }
         }
 
@@ -107,6 +116,16 @@ namespace ReCrafted.API.UI
             Layout.Remove(instance);
         }
 
+        // checks if mouse collide with this panel
+        private void _checkForPanelCollision()
+        {
+            if (!Region.Contains(Input.CursorPosition)) return;
+            HaveColision = true;
+            OnMouseClick();
+            if (FocusedControl != this)
+                SetFocusedControl(this);
+        }
+
         /// <summary>
         /// Draws all panels.
         /// </summary>
@@ -114,11 +133,11 @@ namespace ReCrafted.API.UI
         {
             // reset
             HaveColision = false;
-            foreach (var panel in Panels)
+            for (var index = Panels.Count - 1; index >= 0; index--)
             {
                 try
                 {
-                    panel.Draw();
+                    Panels[index].Draw();
                 }
                 catch (Exception ex)
                 {
