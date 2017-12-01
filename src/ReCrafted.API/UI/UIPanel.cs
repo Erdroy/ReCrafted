@@ -42,19 +42,13 @@ namespace ReCrafted.API.UI
                 Profiler.BeginProfile($"Panel <{(string.IsNullOrEmpty(Name) ? "empty" : Name)}> ");
                 //recalculate current layout
                 if (ApplyLayout)
-                {
-                    Profiler.BeginProfile("Layout.Recalculate");
                     Layout.Recalculate(Region);
-                    Profiler.EndProfile();
-                }
-                Profiler.BeginProfile("Layout.Draw");
                 //draw layout
                 Layout.Draw();
-                Profiler.EndProfile();
                 //calculate mouse collisions
                 if (!HaveColision)
                 {
-                    Profiler.BeginProfile("Layout.LookForMouseCollision");
+                   
                     var collision = Layout.LookForMouseCollision();
                     if (Input.IsKeyDown(Keys.Mouse0))
                     {
@@ -70,15 +64,14 @@ namespace ReCrafted.API.UI
                             _checkForPanelCollision();
                         }
                     }
-                    Profiler.EndProfile();
                 }
-                Profiler.EndProfile();
-
+               
                 if (!_fixedFixible)
                 {
                     Reset();
                     _fixedFixible = true;
                 }
+                Profiler.EndProfile();
             }
             else
             {

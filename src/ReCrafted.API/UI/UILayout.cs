@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using ReCrafted.API.Common;
 using ReCrafted.API.Mathematics;
 
 namespace ReCrafted.API.UI
@@ -100,6 +101,7 @@ namespace ReCrafted.API.UI
         /// <param name="parentRegion">The region in which the layout will be calculated.</param>
         public void Recalculate(RectangleF parentRegion)
         {
+            Profiler.BeginProfile("UILayout.Recalculate");
             // apply current region of panel with padding to layout region.
             var newLayoutRegion = parentRegion;
             newLayoutRegion.X += Padding.Right;
@@ -208,6 +210,7 @@ namespace ReCrafted.API.UI
                 if (regionChanged)
                     currentControl.OnRegionChanged();
             }
+            Profiler.EndProfile();
         }
 
         // get height of all controls in container

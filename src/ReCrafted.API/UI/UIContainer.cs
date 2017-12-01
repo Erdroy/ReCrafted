@@ -29,8 +29,10 @@ namespace ReCrafted.API.UI
         /// </summary>
         public override void Draw()
         {
+            Profiler.BeginProfile("UIContainer.Draw");
             foreach (var control in _controls)
                 control.Draw();
+            Profiler.EndProfile();
         }
 
         public override void Reset()
@@ -86,6 +88,7 @@ namespace ReCrafted.API.UI
         internal UIControl LookForMouseCollision()
         {
             if (!Enabled) return null;
+            Profiler.BeginProfile("UIContainer.LookForMouseCollision");
             UIControl mouseControlCollision = null;
             var mousePoint = Input.CursorPosition;
             var reversed = Controls.Reverse();
@@ -114,7 +117,7 @@ namespace ReCrafted.API.UI
                     mouseControlCollision = control;
                 }
             }
-
+            Profiler.EndProfile();
             return mouseControlCollision;
         }
     }
