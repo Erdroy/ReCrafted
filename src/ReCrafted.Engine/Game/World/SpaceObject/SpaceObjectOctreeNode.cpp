@@ -33,6 +33,26 @@ byte dirIndex[6] = {
 	0, 0, 1, 1, 2, 2
 };
 
+byte nodeDirIds[8] = {
+	7, // 0
+	4, // 1
+	3, // 2
+	0, // 3
+	6, // 4
+	5, // 5
+	2, // 6
+	1, // 7
+};
+
+Vector3 directionOffset[6] = {
+	Vector3( 0.0f,  0.0f,  1.0f),
+	Vector3( 0.0f,  0.0f, -1.0f),
+	Vector3(-1.0f,  0.0f,  0.0f),
+	Vector3( 1.0f,  0.0f,  0.0f),
+	Vector3( 0.0f,  1.0f,  0.0f),
+	Vector3( 0.0f, -1.0f,  0.0f)
+};
+
 Vector3 childrenNodeOffsets[8] = {
 	Vector3(-0.5f,  0.5f,  0.5f),
 	Vector3( 0.5f,  0.5f,  0.5f),
@@ -77,11 +97,10 @@ void SpaceObjectOctreeNode::populate()
 		// construct node
 		m_childrenNodes[i] = new SpaceObjectOctreeNode(position, childrenSize);
 
-		// set owner
+		// set owner, parent and root
 		m_childrenNodes[i]->owner = owner;
-
-		// set parent
 		m_childrenNodes[i]->parent = this;
+		m_childrenNodes[i]->root = root;
 
 		// set node id
 		m_childrenNodes[i]->m_nodeId = i;
@@ -182,7 +201,7 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 		return;
 
 	// do not populate/depopulate root
-	if (m_root)
+	if (m_isRoot)
 		return;
 
 	// X - node position
@@ -312,33 +331,40 @@ void SpaceObjectOctreeNode::dispose()
 
 SpaceObjectOctreeNode* SpaceObjectOctreeNode::getNeighNode(NodeDirection::_enum direction) const
 {
-	if (m_root || parent == nullptr)
-		return nullptr;
+	// calculate target position
+	var targetPosition = m_position + directionOffset[direction] * float(m_size);
+	var targetLod = m_size;
 
-	// NOTE: we don't have to check if parent nodes are populated, 
-	// because if this chunk exists, the parent must be already populated.
-
-	if(!HAS_LOCAL_NEIGH(m_nodeId, direction))
-	{
-		if (parent->parent == nullptr)
-			return nullptr;
-
-		// get '1-level LoD higher' neigh node
-		return parent->parent->m_childrenNodes[neighDirTable[parent->m_nodeId][dirIndex[direction]]];
-	}
-
-	// get local neighbor node
-	return parent->m_childrenNodes[neighDirTable[m_nodeId][dirIndex[direction]]];
+	// traverse from root to the same target lod as this node
+	return root->findNode(targetPosition, targetLod);
 }
 
-bool SpaceObjectOctreeNode::hasNeighLowerLoD(NodeDirection::_enum direction)
+SpaceObjectOctreeNode* SpaceObjectOctreeNode::findNode(Vector3 position, int size)
 {
-	var neight = getNeighNode(direction);
+	if (m_size == size)
+	{
+		// do not search anymore, because we found the exact node!
+		return this;
+	}
 
-	if (!neight)
-		return false;
+	if (!m_populated)
+	{
+		// uhh, this is lower-lod node, client will not be happy with this, or will be?
+		return this;
+	}
 
-	return true;
+	// NOTE: we don't have to check 'equality' of position because 'size' does this
+	var xSign = position.x > m_position.x;
+	var ySign = position.y > m_position.y;
+	var zSign = position.z > m_position.z;
+
+	var caseCode =  (zSign ? 1 : 0) | (ySign ? 1 : 0) << 1 | (xSign ? 1 : 0) << 2;
+	var childId = nodeDirIds[caseCode];
+	
+	var node = m_childrenNodes[childId];
+
+	// go further
+	return node->findNode(position, size);
 }
 
 void SpaceObjectOctreeNode::onCreate()

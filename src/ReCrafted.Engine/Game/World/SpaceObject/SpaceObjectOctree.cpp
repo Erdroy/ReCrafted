@@ -18,9 +18,11 @@ void SpaceObjectOctree::init(float objectRadius)
 	// create root node
 	m_rootNode = new SpaceObjectOctreeNode(m_position, size);
 	
-	// set owner
+	// set owner, parent and root
 	m_rootNode->owner = this;
-	m_rootNode->m_root = true;
+	m_rootNode->parent = nullptr;
+	m_rootNode->root = m_rootNode;
+	m_rootNode->m_isRoot = true;
 
 	// populate root node
 	m_rootNode->populate();

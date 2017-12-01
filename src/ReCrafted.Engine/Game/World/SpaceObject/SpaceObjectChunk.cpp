@@ -18,7 +18,7 @@ float Planet(const Vector3& origin, const Vector3& position, float radius)
 
 uint8_t SpaceObjectChunk::getLodBorders()
 {
-	uint8_t borders = 0;
+	/*uint8_t borders = 5;
 
 	if (node->hasNeighLowerLoD(NodeDirection::Front))
 		borders |= BORDER_FRONT;
@@ -36,9 +36,10 @@ uint8_t SpaceObjectChunk::getLodBorders()
 		borders |= BORDER_TOP;
 
 	if (node->hasNeighLowerLoD(NodeDirection::Back))
-		borders |= BORDER_BOTTOM;
+		borders |= BORDER_BOTTOM;*/
 
-	return borders;
+	//return borders;
+	return 255;
 }
 
 void SpaceObjectChunk::init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject)
@@ -94,6 +95,9 @@ void SpaceObjectChunk::generate()
 
 	// generate mesh
 	MCMesher::getInstance()->generate(nodePosition, lod, borders, m_mesh, m_voxelData);
+
+	// simplify
+	m_mesh->simplify();
 
 	// upload changes
 	m_mesh->upload();

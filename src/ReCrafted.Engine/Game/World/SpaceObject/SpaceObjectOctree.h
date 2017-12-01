@@ -40,10 +40,11 @@ public:
 private:
 	SpaceObjectOctree* owner = nullptr;
 	SpaceObjectOctreeNode* parent = nullptr;
+	SpaceObjectOctreeNode* root = nullptr;
 
 	SpaceObjectOctreeNode* m_childrenNodes[8] = {};
 	bool m_populated = false;
-	bool m_root = false;
+	bool m_isRoot = false;
 	int m_nodeId = 0;
 
 	Ptr<SpaceObjectChunk> m_chunk = nullptr;
@@ -71,7 +72,7 @@ public:
 	 * \brief Gets neighbor node with higher or same LoD, cannot get lower LoD level node.
 	 */
 	SpaceObjectOctreeNode* getNeighNode(NodeDirection::_enum direction) const;
-	bool hasNeighLowerLoD(NodeDirection::_enum direction);
+	SpaceObjectOctreeNode* findNode(Vector3 position, int size);
 
 public:
 	void onCreate();
