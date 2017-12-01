@@ -3,15 +3,16 @@
 #include "Bindings.h"
 #include "Object.h"
 
-#include "Common/Input.h"
-#include "Common/Display.h"
 #include "Core/GameMain.h"
 #include "Core/Logger.h"
+#include "Common/Display.h"
+#include "Common/Profiler/Profiler.h"
+#include "Common/Input/Input.h"
+#include "Common/Input/KeyboardBuffer.h"
 #include "Graphics/UI/UI.h"
 #include "Graphics/Camera.h"
 #include "Graphics/Font.h"
 #include "Graphics/DebugDraw.h"
-#include "Common/Profiler/Profiler.h"
 
 void Bindings::bind()
 {
@@ -30,6 +31,7 @@ void Bindings::bind()
     Script::initRuntime();
 	DebugDraw::initRuntime();
 	Profiler::initRuntime();
+	KeyboardBuffer::initRuntime();
 }
 
 void Bindings::shutdown()

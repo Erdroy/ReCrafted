@@ -1,6 +1,7 @@
 // ReCrafted © 2016-2017 Always Too Late
 
 #include "KeyboardBuffer.h"
+
 Ptr<KeyboardBuffer> KeyboardBuffer::m_instance;
 
 void KeyboardBuffer::init()
@@ -21,5 +22,10 @@ void KeyboardBuffer::clear()
 
 void KeyboardBuffer::write(Char character)
 {
-	m_instance->m_buffer.add(character);
+	m_instance->m_buffer.add(character); // TODO: use lParam?
+}
+
+Array<Char>* KeyboardBuffer::getBuffer()
+{
+	return &m_instance->m_buffer;
 }
