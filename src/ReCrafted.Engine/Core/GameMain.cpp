@@ -8,6 +8,8 @@
 #include "Scripting/Object.h"
 #include "Graphics/DebugDraw.h"
 #include "Common/Profiler/Profiler.h"
+#include "Common/Input/Input.h"
+#include "Common/Input/KeyboardBuffer.h"
 
 #define CHECK_SHUTDOWN if (!m_running) break;
 
@@ -57,6 +59,12 @@ LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_CLOSE: // handle window closing
 	{
 		gameMain_instance->shutdown();
+		return 0;
+	}
+
+	case WM_CHAR:
+	{
+		KeyboardBuffer::write(static_cast<Char>(wparam));
 		return 0;
 	}
 
@@ -185,6 +193,7 @@ void GameMain::initScripting()
 
 void GameMain::waitForTargetFps(double last)
 {
+	Profiler::beginProfile(TEXT_CONST("WaitForTargetFps"));
 	var target = 1.0 / m_targetFps * 1000.0;
 	var delta = Platform::getMiliseconds() - last;
 	var sleep = target - delta;
@@ -193,6 +202,20 @@ void GameMain::waitForTargetFps(double last)
 	{
 		Sleep(static_cast<DWORD>(sleep));
 	}
+	Profiler::endProfile();
+}
+
+void GameMain::runEvents()
+{
+	Profiler::beginProfile(TEXT_CONST("RunEvents"));
+	MSG msg;
+	msg.message = WM_NULL;
+	while (PeekMessage(&msg, nullptr, 0u, 0u, PM_REMOVE))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+	Profiler::endProfile();
 }
 
 void GameMain::run()
@@ -262,31 +285,19 @@ void GameMain::run()
 		m_cursorDeltaX = 0;
 		m_cursorDeltaY = 0;
 
+		// clear keyboard buffer, `runEvents` will fill the buffer again
+		KeyboardBuffer::clear();
+
 		// process input
-		MSG msg;
-		msg.message = WM_NULL;
-		while (PeekMessage(&msg, nullptr, 0u, 0u, PM_REMOVE))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
+		runEvents();
 
-		// frame
-		{
-			//HTML5UI::update();
-			Profiler::update();
-
-			onUpdate(); CHECK_SHUTDOWN
-			onSimulate(); CHECK_SHUTDOWN // TODO: fixed-time step `onSimulate` call
-			onDraw(); CHECK_SHUTDOWN
-		}
+		Profiler::update();
+		onUpdate(); CHECK_SHUTDOWN
+		onSimulate(); CHECK_SHUTDOWN // TODO: fixed-time step `onSimulate` call
+		onDraw(); CHECK_SHUTDOWN
 
 		if(m_targetFps > 0)
-		{
-			Profiler::beginProfile(TEXT_CONST("WaitForTargetFps"));
 			waitForTargetFps(lastTime);
-			Profiler::endProfile();
-		}
 
 		Profiler::endProfile();
 		Profiler::endFrame();
@@ -362,6 +373,9 @@ void GameMain::onLoad()
 	// initialize profiler
 	Profiler::init();
 
+	// initialize keyboard buffer
+	KeyboardBuffer::init();
+
 	Logger::logInfo("Rendering pipeline initialized");
 
 	m_initialized = true;
@@ -406,6 +420,9 @@ void GameMain::onUnload()
 
 	// shutdown debug draw
 	DebugDraw::shutdown();
+
+	// shutdown keyboard buffer
+	KeyboardBuffer::shutdown();
 
 	// shutdown bindings
 	Bindings::shutdown();

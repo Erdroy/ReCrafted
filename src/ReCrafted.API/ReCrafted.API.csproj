@@ -54,6 +54,7 @@
     <Compile Include="Common\Entity.cs" />
     <Compile Include="Common\Entity.Gen.cs" />
     <Compile Include="Common\Input.Gen.cs" />
+    <Compile Include="Common\KeyboardBuffer.Gen.cs" />
     <Compile Include="Common\Profiler.Gen.cs" />
     <Compile Include="Common\Script.cs" />
     <Compile Include="Common\Script.Gen.cs" />

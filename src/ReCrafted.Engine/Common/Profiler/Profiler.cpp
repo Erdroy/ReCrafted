@@ -2,7 +2,7 @@
 
 #include "Profiler.h"
 #include "Core/Logger.h"
-#include "Common/Input.h"
+#include "Common/Input/Input.h"
 #include "Graphics/UI/UI.h"
 #include "Graphics/Font.h"
 #include <iomanip>

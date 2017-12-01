@@ -7,7 +7,7 @@
 
 // includes
 #include "recraftedConfig.h"
-#include "Common/Input.h"
+#include "Common/Input/Input.h"
 #include "Common/Time.h"
 #include "Game/Universe.h"
 #include "Graphics/Rendering.h"
@@ -48,7 +48,7 @@ private:
 	int m_simulationFps = 66;
 
 #if _WIN32
-	HCURSOR m_currentCursor;
+	HCURSOR m_currentCursor = nullptr;
 	int m_currentCursorInt = 0;
 #endif
 
@@ -68,6 +68,7 @@ private:
 private:
 	void initScripting();
 	void waitForTargetFps(double last);
+	void runEvents();
 
 public:
 	/// <summary>
