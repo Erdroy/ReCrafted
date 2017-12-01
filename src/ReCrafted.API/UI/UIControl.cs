@@ -19,6 +19,11 @@ namespace ReCrafted.API.UI
         public abstract void Draw();
 
         /// <summary>
+        /// Resets control to the default state.
+        /// </summary>
+        public abstract void Reset();
+
+        /// <summary>
         /// When focus state of control has been changed.
         /// </summary>
         /// <param name="value"></param>

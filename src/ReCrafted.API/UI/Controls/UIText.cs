@@ -86,6 +86,11 @@ namespace ReCrafted.API.UI.Controls
             UIInternal.DrawString(TextFont.NativePtr, _text, ref pos);
         }
 
+        public override void Reset()
+        {
+            
+        }
+
         /// <summary>
         /// Updates current font of the text.
         /// </summary>

@@ -92,6 +92,11 @@ namespace ReCrafted.API.UI.Controls
             }
         }
 
+        public override void Reset()
+        {
+            
+        }
+
         // set default properties
         private void _applyDefaults(RectangleF region, Texture2D texture, Color color)
         {

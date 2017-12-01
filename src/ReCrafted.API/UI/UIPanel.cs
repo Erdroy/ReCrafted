@@ -20,6 +20,10 @@ namespace ReCrafted.API.UI
         // is mouse collide with any control of any panel?
         internal static bool HaveColision;
 
+        // is panel visible?
+        private bool _visible;
+        private bool _fixedFixible;
+
         /// <summary>
         /// Draws all controls added to this UIPanel.
         /// </summary>
@@ -64,7 +68,19 @@ namespace ReCrafted.API.UI
                     Profiler.EndProfile();
                 }
                 Profiler.EndProfile();
+
+                if (!_fixedFixible)
+                {
+                    Reset();
+                    _fixedFixible = true;
+                }
+
             }
+        }
+
+        public override void Reset()
+        {
+            Layout?.Reset();
         }
 
         /// <summary>
@@ -168,7 +184,16 @@ namespace ReCrafted.API.UI
         /// <summary>
         /// Panel is visible.
         /// </summary>
-        public bool Visible { get; set; }
+        public bool Visible
+        {
+            get { return _visible; }
+            set
+            {
+                _visible = value;
+                if (_visible)
+                    _fixedFixible = false;
+            }
+        }
 
         /// <summary>
         /// Color of the panel.

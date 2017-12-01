@@ -173,11 +173,18 @@ namespace ReCrafted.API.UI.Controls
             UIInternal.DrawString(TextFont.NativePtr, _text, ref pos);
         }
 
+        public override void Reset()
+        {
+            _color = Colors.NormalColor;
+            _buttonSize = new Vector2(Region.Width, Region.Height);
+            _buttonVelocity = Vector2.Zero;
+        }
+
         /// <summary>
         /// Updates current font of the text.
         /// </summary>
         /// <param name="font">Our new font.</param>
-        /// <exception cref="ArgumentNullException">Exception is thrown when the targetfont was null.</exception>
+        /// <exception cref="ArgumentNullException">Exception is thrown when the target font was null.</exception>
         public void SetFont(Font font)
         {
             if (font == null) throw new ArgumentNullException(nameof(font));
@@ -201,8 +208,8 @@ namespace ReCrafted.API.UI.Controls
             Parent = null;
 
             _color = Colors.NormalColor;
-            _buttonSize = new Vector2(region.Width, region.Height);
-            _buttonVelocity = Vector2.One;
+            _buttonSize = new Vector2(Region.Width, Region.Height);
+            _buttonVelocity = Vector2.Zero;
         }
 
         /// <summary>

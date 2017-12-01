@@ -191,7 +191,12 @@ namespace ReCrafted.API.UI.Controls
             var pos = TextPosition;
             UIInternal.DrawString(TextFont.NativePtr, _text, ref pos);
         }
-        
+
+        public override void Reset()
+        {
+            
+        }
+
         // set default properties
         private void _applyDefaults(RectangleF region, string text, Color textColor, UIControlColors colors, Color checkBoxColor)
         {

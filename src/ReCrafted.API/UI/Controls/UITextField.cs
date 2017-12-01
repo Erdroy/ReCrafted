@@ -139,6 +139,11 @@ namespace ReCrafted.API.UI.Controls
             }
         }
 
+        public override void Reset()
+        {
+            _selectableText.ResetSelection();
+        }
+
         /// <summary>
         /// Sets active text selection algorithm.
         /// </summary>

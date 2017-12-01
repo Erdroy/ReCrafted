@@ -33,6 +33,12 @@ namespace ReCrafted.API.UI
                 control.Draw();
         }
 
+        public override void Reset()
+        {
+            foreach (var control in _controls)
+                control.Reset();
+        }
+
         /// <summary>
         /// Adds new control to the container and then returns it.
         /// </summary>
