@@ -74,13 +74,6 @@ namespace ReCrafted.Game
                 Cursor.Lock = !Cursor.Show;
             }
 
-            var buf = KeyboardBuffer.Read();
-
-            foreach (var ch in buf)
-            {
-                Logger.Write("WM_CHAR " + ch);
-            }
-
             DebugDraw.Color = new Color(0, 105, 0, 64);
             DebugDraw.DrawCube(Vector3.Zero, Vector3.One);
             DebugDraw.Color = new Color(0, 105, 0, 255);
