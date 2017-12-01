@@ -60,6 +60,11 @@ namespace ReCrafted.API.UI
         public OnCharacterClick OnCharacterClick;
 
         /// <summary>
+        /// When selection has been reset.
+        /// </summary>
+        public Action OnResetSelection;
+
+        /// <summary>
         /// Resets current selection.
         /// </summary>
         public void ResetSelection()
@@ -71,6 +76,8 @@ namespace ReCrafted.API.UI
             _selectingTextStartIndex = 0;
             _selectingTextEndIndex = 0;
             _lastSelectedIndex = -1;
+
+            OnResetSelection?.Invoke();
         }
 
         /// <summary>
@@ -80,7 +87,6 @@ namespace ReCrafted.API.UI
         /// <param name="text">Text.</param>
         /// <param name="font">Text font.</param>
         /// <param name="textPosition">Text screen position.</param>
-        /// <param name="textSize">Text screen size.</param>
         /// <param name="carpetDepth">Text screen depth.</param>
         /// <param name="isMouseOver">Is mouse over text.</param>
         public void Draw(bool calculate, string text, Font font, Vector2 textPosition, float carpetDepth, bool isMouseOver)
@@ -189,9 +195,9 @@ namespace ReCrafted.API.UI
                     {
                         if (_lastSelectedIndex == -1)
                         {
-                            OnCharacterClick?.Invoke(_selectingTextStartIndex);
                             var p = _selectingTextStartIndex;
                             ResetSelection();
+                            OnCharacterClick?.Invoke(p);
                             _lastSelectedIndex = p;
                         }
                         else
@@ -203,9 +209,9 @@ namespace ReCrafted.API.UI
                             }
                             else
                             {
-                                OnCharacterClick?.Invoke(_selectingTextStartIndex);
                                 var p = _selectingTextStartIndex;
                                 ResetSelection();
+                                OnCharacterClick?.Invoke(p);
                                 _lastSelectedIndex = p;
                             }
                         }

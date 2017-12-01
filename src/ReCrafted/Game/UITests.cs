@@ -66,7 +66,7 @@ namespace ReCrafted.Game
             var toggle3 = toggleGroup.Add(panel.Add(new UIToggle(new RectangleF(0, 0, 130, 32), "TestToggle3!")));
             toggle3.TextBackgroundColor = new Color(68, 68, 68);
 
-            var textField = panel.Add(new UITextField(new RectangleF(0, 0, 130, 32)));
+            var textField = panel.Add(new UITextField(new RectangleF(0, 0, 130, 128)));
             textField.Text = "Text Field!\nSome More Text?\nAnother!";
 
             //panel.Add(new UIText(new RectangleF(10, 10, 160, 30), "12345678912345678912345678912342343243"));

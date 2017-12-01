@@ -28,6 +28,12 @@ namespace ReCrafted.API.UI.Controls
         // is text field using text selection algorithms
         private bool _usingSelectableText;
 
+        // color of text field position beam
+        private Color _textFieldPositionColor;
+
+        // position of text editing
+        private int _textFieldPosition;
+
         /// <summary>
         /// Creates new UITextField.
         /// </summary>
@@ -120,6 +126,17 @@ namespace ReCrafted.API.UI.Controls
             UIInternal.DrawString(TextFont.NativePtr, _text, ref pos);
 
             _selectableText.Draw(UsingSelectableText, _text, TextFont, TextPosition, Depth + 0.2f, IsMouseOver);
+
+            if (_textFieldPosition != -1)
+            {
+                var charPosition = _selectableText.GetPointFromCharIndex(_textFieldPosition);
+                var beamPosition = new RectangleF(charPosition.X, charPosition.Y - 0.1f, 2, TextFont.Size + 0.2f);
+                _textFieldPositionColor =  Color.Lerp(_textFieldPositionColor, new Color(14/255f, 80/255f, 186/255f, 100/255f), (float) Time.DeltaTime * 3f);
+                if (_textFieldPositionColor.A < 110f)
+                    _textFieldPositionColor.A = 255;
+                UIInternal.Color = _textFieldPositionColor;
+                UIInternal.DrawBox(beamPosition);
+            }
         }
 
         /// <summary>
@@ -153,10 +170,19 @@ namespace ReCrafted.API.UI.Controls
             _selectableText = new UISelectableText();
             _selectableText.OnCharacterClick += position =>
             {
-                //make input field position beam
+                _textFieldPosition = position;
+            };
+            _selectableText.OnTextSelected += s =>
+            {
+                _textFieldPosition = -1;
+            };
+            _selectableText.OnResetSelection += () =>
+            {
+                _textFieldPosition = -1;
             };
 
             _usingSelectableText = true;
+            _textFieldPosition = -1;
         }
 
         /// <summary>
