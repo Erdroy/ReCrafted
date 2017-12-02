@@ -80,7 +80,6 @@ void MCMesher::clean()
 	m_vertices.clear();
 	m_normals.clear();
 	m_colors.clear();
-	m_uvs.clear();
 	m_indices.clear();
 
 	// NOTE: we do not need to cleanup cells as it is not required, 
@@ -151,10 +150,6 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
 
 		var plane = Plane(p2, p1, p0);
 
-		m_uvs.add(Vector2::zero());
-		m_uvs.add(Vector2::zero());
-		m_uvs.add(Vector2::zero());
-
 		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
 		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
 		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
@@ -221,7 +216,6 @@ void MCMesher::generateSkirt(Cell* cell, const Vector3& position, const Vector3&
 		m_vertices.add(vertexPosition);
 		m_indices.add(m_vertices.count() - 1);
 
-		m_uvs.add(Vector2::zero());
 		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
 		m_normals.add(cell->vertexNormal);
 	}
@@ -248,32 +242,32 @@ void MCMesher::generateCells(sbyte* data, const Vector3& position, float lod, ui
 			{
 				// TODO: check if skirt can be generated (if `borders` has the axis flag)
 				// AXIS_FRONT
-				if (z == SpaceObjectChunk::ChunkSize - 1)
+				if (z == SpaceObjectChunk::ChunkSize - 1 && (borders & BORDER_FRONT) != 0)
 				{
 					generateSkirt(cell, position, offset, lod, AXIS_FRONT, data);
 				}
 				// AXIS_BACK
-				if(z == 0)
+				if(z == 0 && (borders & BORDER_BACK) != 0)
 				{
 					generateSkirt(cell, position, offset, lod, AXIS_BACK, data);
 				}
 				// AXIS_BACK
-				if (x == 0)
+				if (x == 0 && (borders & BORDER_LEFT) != 0)
 				{
 					generateSkirt(cell, position, offset, lod, AXIS_LEFT, data);
 				}
 				// AXIS_RIGHT
-				if (x == SpaceObjectChunk::ChunkSize - 1)
+				if (x == SpaceObjectChunk::ChunkSize - 1 && (borders & BORDER_RIGHT) != 0)
 				{
 					generateSkirt(cell, position, offset, lod, AXIS_RIGHT, data);
 				}
 				// AXIS_TOP
-				if (y == SpaceObjectChunk::ChunkSize - 1)
+				if (y == SpaceObjectChunk::ChunkSize - 1 && (borders & BORDER_TOP) != 0)
 				{
 					generateSkirt(cell, position, offset, lod, AXIS_TOP, data);
 				}
 				// AXIS_BOTTOM
-				if (y == 0)
+				if (y == 0 && (borders & BORDER_BOTTOM) != 0)
 				{
 					generateSkirt(cell, position, offset, lod, AXIS_BOTTOM, data);
 				}
@@ -297,11 +291,14 @@ void MCMesher::generate(const Vector3& position, int lod, uint8_t borders, Ptr<M
 	}
 
 	mesh->setVertices(m_vertices.data(), m_vertices.count());
-	mesh->setUVs(m_uvs.data());
 	mesh->setNormals(m_normals.data());
 	mesh->setColors(m_colors.data());
 	mesh->setIndices(m_indices.data(), m_indices.count());
 
+	// simplify
+	//mesh->simplify();
+
+	// apply
 	mesh->applyChanges();
 
 	// cleanup

@@ -1,7 +1,7 @@
 // ReCrafted © 2016-2017 Always Too Late
 
 // inputs
-$input m_uv, m_normal, m_color
+$input m_normal, m_color
 
 #include "../ShaderAPI.glsl"
 

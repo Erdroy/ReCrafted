@@ -4,7 +4,6 @@
 #include "Core/Math/Color.h"
 #include "Graphics/DebugDraw.h"
 #include "SpaceObjectChunk.h"
-#include "Common/Input/Input.h"
 
 byte localNeighTable[8] = {
 	0b010101u,
@@ -169,16 +168,6 @@ void SpaceObjectOctreeNode::update()
 	// update chunk if there is one
 	if (m_chunk)
 		m_chunk->update();
-
-	// draw if this is the last node
-	if (Input::isKey(Key_F1))
-	{
-		auto size = Vector3::one() * static_cast<float>(m_size);
-		DebugDraw::setColor(Color(255, 105, 0));
-		DebugDraw::drawWireCube(m_position, size);
-		DebugDraw::setColor(Color(0.6f, 0.35f, 0.0f, 0.05f));
-		DebugDraw::drawCube(m_position, size);
-	}
 }
 
 void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
@@ -358,7 +347,7 @@ SpaceObjectOctreeNode* SpaceObjectOctreeNode::findNode(Vector3 position, int siz
 	var ySign = position.y > m_position.y;
 	var zSign = position.z > m_position.z;
 
-	var caseCode =  (zSign ? 1 : 0) | (ySign ? 1 : 0) << 1 | (xSign ? 1 : 0) << 2;
+	var caseCode = (zSign ? 1 : 0) | (ySign ? 1 : 0) << 1 | (xSign ? 1 : 0) << 2;
 	var childId = nodeDirIds[caseCode];
 	
 	var node = m_childrenNodes[childId];

@@ -3,7 +3,6 @@
 #include "SpaceObjectChunk.h"
 #include "SpaceObjectOctree.h"
 #include "SpaceObject.h"
-#include "Common/Input/Input.h"
 #include "Meshing/MarchingCubes/MCMesher.h"
 #include "Game/World/Voxels/VoxelUtils.h"
 #include "Graphics/Mesh.h"
@@ -95,9 +94,6 @@ void SpaceObjectChunk::generate()
 
 	// generate mesh
 	MCMesher::getInstance()->generate(nodePosition, lod, borders, m_mesh, m_voxelData);
-
-	// simplify
-	m_mesh->simplify();
 
 	// upload changes
 	m_mesh->upload();

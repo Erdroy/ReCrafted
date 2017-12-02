@@ -24,7 +24,7 @@ project "ReCrafted.Engine"
 		path.join(LIBS_DIR, "json"),
 		path.join(LIBS_DIR, "mono/inc"),
 		path.join(LIBS_DIR, "freetype/include"),
-		path.join(LIBS_DIR, "fmod/include"),
+		path.join(LIBS_DIR, "fmod/inc"),
 	}
 	
 	-- add source/header/shader files

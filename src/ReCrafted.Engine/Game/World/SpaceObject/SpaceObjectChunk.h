@@ -30,7 +30,7 @@ private:
 	Vector3 m_chunkNormal = {};
 
 	/**
-	 * \brief Stores voxel hermite data in -127 to 128 range. TODO: VoxelStorage, Cache
+	 * \brief Stores voxel hermite data in -127 to 127 range.
 	 */
 	sbyte* m_voxelData = nullptr;
 

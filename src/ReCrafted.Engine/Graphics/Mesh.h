@@ -105,6 +105,8 @@ public:
 	/// </summary>
 	void applyChanges();
 
+	void simplify();
+
 	/// <summary>
 	/// Upload buffers to the GPU.
 	/// </summary>

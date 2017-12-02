@@ -1,6 +1,7 @@
 // ReCrafted © 2016-2017 Always Too Late
 
 #include "Mesh.h"
+#include "Core/Math/MeshSimplification/ng_mesh_simplify.h"
 
 void Mesh::init()
 {
@@ -129,6 +130,80 @@ void Mesh::applyChanges()
 	m_normals = nullptr;
 	m_colors = nullptr;
 	m_indices = nullptr;
+}
+
+void Mesh::simplify()
+{
+
+	var simplfiedMesh = new MeshBuffer;
+	simplfiedMesh->numVertices = m_vertices_count;
+	simplfiedMesh->vertices = static_cast<MeshVertex*>(malloc(sizeof(MeshVertex) * m_vertices_count));
+
+	for (var i = 0; i < m_vertices_count; i++)
+	{
+		simplfiedMesh->vertices[i].xyz[0] = m_vertices[i].x;
+		simplfiedMesh->vertices[i].xyz[1] = m_vertices[i].y;
+		simplfiedMesh->vertices[i].xyz[2] = m_vertices[i].z;
+		simplfiedMesh->vertices[i].xyz[3] = 1.0f;
+
+		simplfiedMesh->vertices[i].normal[0] = m_normals[i].x;
+		simplfiedMesh->vertices[i].normal[1] = m_normals[i].y;
+		simplfiedMesh->vertices[i].normal[2] = m_normals[i].z;
+		simplfiedMesh->vertices[i].normal[3] = 1.0f;
+
+		simplfiedMesh->vertices[i].colour[0] = m_colors[i].x;
+		simplfiedMesh->vertices[i].colour[1] = m_colors[i].y;
+		simplfiedMesh->vertices[i].colour[2] = m_colors[i].z;
+		simplfiedMesh->vertices[i].colour[3] = m_colors[i].w;
+	}
+
+	simplfiedMesh->numTriangles = m_indices_count;
+	simplfiedMesh->triangles = static_cast<MeshTriangle*>(malloc(sizeof(uint) * m_indices_count));
+
+	memcpy(simplfiedMesh->triangles, m_indices, sizeof(uint) * m_indices_count);
+
+	vec4 offset;
+	offset[0] = 0.0f;
+	offset[1] = 0.0f;
+	offset[2] = 0.0f;
+	offset[3] = 0.0f;
+
+	MeshSimplificationOptions options;
+	options.edgeFraction = 0.125f;
+	options.maxIterations = 10;
+	options.targetPercentage = 0.05f;
+	options.maxError = 1.0f;
+	options.maxEdgeSize = 0.5f;
+	options.minAngleCosine = 0.8f;
+
+	ngMeshSimplifier(simplfiedMesh, offset, options);
+
+	m_vertices_count = simplfiedMesh->numVertices;
+	m_normals_count = m_vertices_count;
+	m_colors_count = m_vertices_count;
+
+	m_indices_count = simplfiedMesh->numTriangles;
+
+	for (var i = 0; i < simplfiedMesh->numVertices; i++)
+	{
+		m_vertices[i].x = simplfiedMesh->vertices[i].xyz[0];
+		m_vertices[i].y = simplfiedMesh->vertices[i].xyz[1];
+		m_vertices[i].z = simplfiedMesh->vertices[i].xyz[2];
+
+		m_normals[i].x = simplfiedMesh->vertices[i].normal[0];
+		m_normals[i].y = simplfiedMesh->vertices[i].normal[1];
+		m_normals[i].z = simplfiedMesh->vertices[i].normal[2];
+
+		m_colors[i].x = simplfiedMesh->vertices[i].colour[0];
+		m_colors[i].y = simplfiedMesh->vertices[i].colour[1];
+		m_colors[i].z = simplfiedMesh->vertices[i].colour[2];
+		m_colors[i].z = simplfiedMesh->vertices[i].colour[3];
+	}
+
+	free(simplfiedMesh->vertices);
+	free(simplfiedMesh->triangles);
+
+	delete simplfiedMesh;
 }
 
 void Mesh::upload()

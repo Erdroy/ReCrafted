@@ -43,7 +43,6 @@ private:
 	Array<uint> m_indices = {};
 	Array<Vector3> m_normals = {};
 	Array<Vector4> m_colors = {};
-	Array<Vector2> m_uvs = {};
 
 	Cell m_cells[SpaceObjectChunk::ChunkSize * SpaceObjectChunk::ChunkSize * SpaceObjectChunk::ChunkSize] = {};
 
