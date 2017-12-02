@@ -17,7 +17,7 @@ solution "ReCrafted"
 		}
 	else
 		platforms {
-			"x32",
+			--"x32",
 			"x64"
 		}
 	end

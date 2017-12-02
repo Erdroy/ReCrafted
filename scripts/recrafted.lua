@@ -17,15 +17,14 @@ project "ReCrafted.Engine"
 
 	-- add include directories
 	includedirs {
+		path.join(ROOT_DIR, "src/ReCrafted.Engine"),
 		path.join(LIBS_DIR, "bx/include"),
 		path.join(LIBS_DIR, "bimg/include"),
 		path.join(LIBS_DIR, "bgfx/include"),
 		path.join(LIBS_DIR, "json"),
 		path.join(LIBS_DIR, "mono/inc"),
 		path.join(LIBS_DIR, "freetype/include"),
-		path.join(LIBS_DIR, "cef/include"),
-		path.join(LIBS_DIR, "cef"), -- stupid cef
-		path.join(ROOT_DIR, "src/ReCrafted.Engine"),
+		path.join(LIBS_DIR, "fmod/include"),
 	}
 	
 	-- add source/header/shader files
@@ -54,10 +53,10 @@ project "ReCrafted.Engine"
 		targetdir (path.join(TARGET_DIR, "bin64/"))
 		debugdir (path.join(TARGET_DIR, "bin64/"))
 		
-	configuration { "x32" }
-		-- set target dir
-		targetdir (path.join(TARGET_DIR, "bin32/"))
-		debugdir (path.join(TARGET_DIR, "bin32/"))
+	--configuration { "x32" }
+	--	-- set target dir
+	--	targetdir (path.join(TARGET_DIR, "bin32/"))
+	--	debugdir (path.join(TARGET_DIR, "bin32/"))
 	
 	configuration { "x64", "vs*"}
 		-- add bgfx lib path - bgfx always contains all needed libs after being compiled
@@ -65,19 +64,19 @@ project "ReCrafted.Engine"
 			path.join(LIBS_DIR, "bgfx/.build/win64_" .. _ACTION .. "/bin/"),
 			path.join(LIBS_DIR, "mono/lib"),
 			path.join(LIBS_DIR, "freetype/x64"),
-			path.join(LIBS_DIR, "cef/x64"),
+			path.join(LIBS_DIR, "fmod/lib"),
 		}
 		linkoptions { "/ignore:4099" }
 	
-	configuration { "x32", "vs*"}
-		-- add bgfx lib path - bgfx always contains all needed libs after being compiled
-		libdirs { 
-			path.join(LIBS_DIR, "bgfx/.build/win32_" .. _ACTION .. "/bin/"),
-			path.join(LIBS_DIR, "mono/lib"),
-			path.join(LIBS_DIR, "freetype/win32"),
-			path.join(LIBS_DIR, "cef/win32"),
-		}
-		linkoptions { "/ignore:4099" }
+	--configuration { "x32", "vs*"}
+	--	-- add bgfx lib path - bgfx always contains all needed libs after being compiled
+	--	libdirs { 
+	--		path.join(LIBS_DIR, "bgfx/.build/win32_" .. _ACTION .. "/bin/"),
+	--		path.join(LIBS_DIR, "mono/lib"),
+	--		path.join(LIBS_DIR, "freetype/win32"),
+	--		path.join(LIBS_DIR, "fmod/lib"),
+	--	}
+	--	linkoptions { "/ignore:4099" }
 	
 	configuration { "vs*", "Debug"}
 		libdirs { 
