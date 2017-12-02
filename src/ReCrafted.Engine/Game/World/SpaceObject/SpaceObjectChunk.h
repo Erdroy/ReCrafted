@@ -8,6 +8,7 @@
 // includes
 #include "Core/Math/Vector3.h"
 
+interface IVoxelMesher;
 class Mesh;
 class SpaceObject;
 class SpaceObjectOctreeNode;
@@ -41,7 +42,8 @@ private:
 
 public:
 	void init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject);
-	void generate();
+	void generate(IVoxelMesher* mesher);
+	void upload();
 	void update();
 	void draw();
 	void dispose();

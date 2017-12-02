@@ -50,8 +50,10 @@ void SpaceObjectChunk::init(SpaceObjectOctreeNode* node, SpaceObject* spaceObjec
 	m_chunkNormal.normalize();
 }
 
-void SpaceObjectChunk::generate()
+void SpaceObjectChunk::generate(IVoxelMesher* mesher)
 {
+	// WARNING: this function is called on WORKER THREAD!
+
 	m_mesh = Mesh::createMesh();
 
 	// TODO: 'VoxelProcessor'
@@ -93,10 +95,14 @@ void SpaceObjectChunk::generate()
 	var borders = getLodBorders();
 
 	// generate mesh
-	MCMesher::getInstance()->generate(nodePosition, lod, borders, m_mesh, m_voxelData);
+	mesher->generate(nodePosition, lod, borders, m_mesh, m_voxelData);
+}
 
+void SpaceObjectChunk::upload()
+{
 	// upload changes
-	m_mesh->upload();
+	if(m_mesh && m_mesh->canUpload())
+		m_mesh->upload();
 }
 
 void SpaceObjectChunk::update()

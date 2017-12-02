@@ -10,7 +10,18 @@
 #include "Core/Containers/Array.h"
 #include <thread>
 
+struct Delegate;
+class SpaceObjectOctreeNode;
 class SpaceObjectChunk;
+
+struct ProcessMode
+{
+	enum _enum
+	{
+		Populate,
+		Depopulate
+	};
+};
 
 class SpaceObjectManager : public Singleton<SpaceObjectManager>
 {
@@ -34,16 +45,15 @@ public:
 
 	/**
 	* \brief Updates the SpaceObjectManager.
-	* This will invoke all chunk generation callbacks.
+	* This will invoke all node generation callbacks.
 	*/
 	void update();
 
 public:
 	/**
-	 * \brief Enqueues chunk for generation.
-	 * \param chunk The chunk that will be generated.
+	 * \brief Enqueues node for generation.
 	 */
-	void enqueue(SpaceObjectChunk* chunk);
+	static void enqueue(SpaceObjectOctreeNode* node, ProcessMode::_enum mode, Delegate callback);
 };
 
 #endif // SPACEOBJECTMANAGER_H

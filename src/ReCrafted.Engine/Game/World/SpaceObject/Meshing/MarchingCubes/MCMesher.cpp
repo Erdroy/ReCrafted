@@ -8,8 +8,6 @@
 #include "MCTables.hpp"
 #include "MSTables.hpp"
 
-MCMesher* MCMesher::m_instance;
-
 #define ITERATE_CELLS_BEGIN(a, b, c)\
 for (auto a = 0; a < SpaceObjectChunk::ChunkSize; a++) \
 for (auto b = 0; b < SpaceObjectChunk::ChunkSize; b++) \

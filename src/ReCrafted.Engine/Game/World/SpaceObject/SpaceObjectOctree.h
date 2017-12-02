@@ -9,7 +9,9 @@
 #include "Core/Math/Vector3.h"
 #include "Core/Math/BoundingBox.h"
 #include "Core/Containers/Array.h"
+#include "Core/Delegate.h"
 
+interface IVoxelMesher;
 class SpaceObjectOctree;
 class SpaceObjectChunk;
 class SpaceObject;
@@ -30,9 +32,11 @@ struct NodeDirection
 /**
  * \brief OctreeNode of the Octree of SpaceObject.
  */
-class SpaceObjectOctreeNode
+class SpaceObjectOctreeNode : DelegateHandler
 {
+	friend class SpaceObject;
 	friend class SpaceObjectOctree;
+	friend class SpaceObjectManager;
 
 public:
 	static const int MinimumNodeSize = 16;
@@ -44,6 +48,7 @@ private:
 
 	SpaceObjectOctreeNode* m_childrenNodes[8] = {};
 	bool m_populated = false;
+	bool m_processing = false;
 	bool m_isRoot = false;
 	int m_nodeId = 0;
 
@@ -51,6 +56,10 @@ private:
 
 private:
 	bool hasPopulatedChildren();
+
+	void worker_populate(IVoxelMesher* mesher);
+	void worker_depopulate(IVoxelMesher* mesher);
+	void worker_generate(IVoxelMesher* mesher);
 
 public:
 	SpaceObjectOctreeNode(Vector3 position, int size)
@@ -88,8 +97,9 @@ public:
 
 class SpaceObjectOctree
 {
-	friend class SpaceObjectOctreeNode;
 	friend class SpaceObject;
+	friend class SpaceObjectManager;
+	friend class SpaceObjectOctreeNode;
 
 private:
 	SpaceObject* spaceObject = nullptr;

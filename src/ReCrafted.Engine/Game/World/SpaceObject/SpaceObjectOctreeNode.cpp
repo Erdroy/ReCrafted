@@ -1,70 +1,11 @@
 // ReCrafted © 2016-2017 Always Too Late
 
 #include "SpaceObjectOctree.h"
-#include "Core/Math/Color.h"
-#include "Graphics/DebugDraw.h"
 #include "SpaceObjectChunk.h"
+#include "SpaceObjectManager.h"
+#include "SpaceObjectTables.hpp"
 
-byte localNeighTable[8] = {
-	0b010101u,
-	0b011001u,
-	0b101001u,
-	0b100101u,
-	0b010110u,
-	0b011010u,
-	0b101010u,
-	0b100110u
-};
-
-byte neighDirTable[8][3] = {
-	{ 3, 1, 4 }, // 0
-	{ 2, 0, 5 }, // 1
-	{ 1, 3, 6 }, // 2
-	{ 0, 2, 7 }, // 3
-
-	{ 7, 5, 0 }, // 4
-	{ 6, 4, 1 }, // 5
-	{ 5, 7, 2 }, // 6
-	{ 4, 6, 3 }  // 7
-};
-
-byte dirIndex[6] = {
-	0, 0, 1, 1, 2, 2
-};
-
-byte nodeDirIds[8] = {
-	7, // 0
-	4, // 1
-	3, // 2
-	0, // 3
-	6, // 4
-	5, // 5
-	2, // 6
-	1, // 7
-};
-
-Vector3 directionOffset[6] = {
-	Vector3( 0.0f,  0.0f,  1.0f),
-	Vector3( 0.0f,  0.0f, -1.0f),
-	Vector3(-1.0f,  0.0f,  0.0f),
-	Vector3( 1.0f,  0.0f,  0.0f),
-	Vector3( 0.0f,  1.0f,  0.0f),
-	Vector3( 0.0f, -1.0f,  0.0f)
-};
-
-Vector3 childrenNodeOffsets[8] = {
-	Vector3(-0.5f,  0.5f,  0.5f),
-	Vector3( 0.5f,  0.5f,  0.5f),
-	Vector3( 0.5f,  0.5f, -0.5f),
-	Vector3(-0.5f,  0.5f, -0.5f),
-
-	Vector3(-0.5f, -0.5f,  0.5f),
-	Vector3( 0.5f, -0.5f,  0.5f),
-	Vector3( 0.5f, -0.5f, -0.5f),
-	Vector3(-0.5f, -0.5f, -0.5f)
-};
-
-#define HAS_LOCAL_NEIGH(id, dir) localNeighTable[id] & (1 << dir)
+#define HAS_LOCAL_NEIGH(id, dir) LocalNeighTable[id] & (1 << dir)
 
 bool SpaceObjectOctreeNode::hasPopulatedChildren()
 {
@@ -79,19 +20,14 @@ bool SpaceObjectOctreeNode::hasPopulatedChildren()
 	return false;
 }
 
-void SpaceObjectOctreeNode::populate()
+void SpaceObjectOctreeNode::worker_populate(IVoxelMesher* mesher)
 {
-	if (m_size <= MinimumNodeSize)
-		return;
+	// WARNING: this function is called on WORKER THREAD!
 
-	// construct children nodes
 	auto childrenSize = m_size / 2;
 	for (auto i = 0; i < 8; i++)
 	{
-		if (m_childrenNodes[i]) // sanity check
-			delete m_childrenNodes[i];
-
-		auto position = m_position + childrenNodeOffsets[i] * static_cast<float>(childrenSize);
+		auto position = m_position + ChildrenNodeOffsets[i] * static_cast<float>(childrenSize);
 
 		// construct node
 		m_childrenNodes[i] = new SpaceObjectOctreeNode(position, childrenSize);
@@ -105,48 +41,57 @@ void SpaceObjectOctreeNode::populate()
 		m_childrenNodes[i]->m_nodeId = i;
 
 		// call event
-		m_childrenNodes[i]->onCreate();
+		m_childrenNodes[i]->worker_generate(mesher);
 	}
+}
 
-	m_populated = true;
+void SpaceObjectOctreeNode::worker_depopulate(IVoxelMesher* mesher)
+{
+	// WARNING: this function is called on WORKER THREAD!
 
-	// call event
-	onPopulate();
+	worker_generate(mesher);
+}
 
-	onDestroy();
+void SpaceObjectOctreeNode::worker_generate(IVoxelMesher* mesher)
+{
+	// create chunk
+	m_chunk = std::make_shared<SpaceObjectChunk>();
+	m_chunk->init(this, owner->spaceObject);
+	m_chunk->generate(mesher);
+}
+
+void SpaceObjectOctreeNode::populate()
+{
+	if (m_processing)
+		return;
+
+	if (m_size <= MinimumNodeSize)
+		return;
+
+	if (m_populated)
+		return;
+
+	m_processing = true;
+
+	// queue populate job
+	SpaceObjectManager::enqueue(this, ProcessMode::Populate, MakeDelegate(SpaceObjectOctreeNode::onPopulate));
 }
 
 void SpaceObjectOctreeNode::depopulate()
 {
+	/*if (m_processing)
+		return;
+
+	m_processing = true;
+
 	if (!m_populated)
 		return;
 
 	if (hasPopulatedChildren())
 		throw;
 
-	for(auto i = 0; i < 8; i ++)
-	{
-		auto node = m_childrenNodes[i];
-
-		if(node)
-		{
-			// call event
-			node->onDestroy();
-
-			// delete node
-			delete node;
-
-			// cleanup
-			m_childrenNodes[i] = nullptr;
-		}
-	}
-
-	m_populated = false;
-
-	// call event
-	onDepopulate();
-
-	onCreate();
+	// queue depopulate job
+	SpaceObjectManager::enqueue(this, ProcessMode::Depopulate, MakeDelegate(SpaceObjectOctreeNode::onDepopulate));*/
 }
 
 void SpaceObjectOctreeNode::update()
@@ -321,7 +266,7 @@ void SpaceObjectOctreeNode::dispose()
 SpaceObjectOctreeNode* SpaceObjectOctreeNode::getNeighNode(NodeDirection::_enum direction) const
 {
 	// calculate target position
-	var targetPosition = m_position + directionOffset[direction] * float(m_size);
+	var targetPosition = m_position + DirectionOffset[direction] * float(m_size);
 	var targetLod = m_size;
 
 	// traverse from root to the same target lod as this node
@@ -348,7 +293,7 @@ SpaceObjectOctreeNode* SpaceObjectOctreeNode::findNode(Vector3 position, int siz
 	var zSign = position.z > m_position.z;
 
 	var caseCode = (zSign ? 1 : 0) | (ySign ? 1 : 0) << 1 | (xSign ? 1 : 0) << 2;
-	var childId = nodeDirIds[caseCode];
+	var childId = NodeDirIds[caseCode];
 	
 	var node = m_childrenNodes[childId];
 
@@ -358,10 +303,9 @@ SpaceObjectOctreeNode* SpaceObjectOctreeNode::findNode(Vector3 position, int siz
 
 void SpaceObjectOctreeNode::onCreate()
 {
-	// create chunk
-	m_chunk = std::make_shared<SpaceObjectChunk>();
-	m_chunk->init(this, owner->spaceObject);
-	m_chunk->generate();
+	// upload the chunk
+	if(m_chunk)
+		m_chunk->upload();
 }
 
 void SpaceObjectOctreeNode::onDestroy()
@@ -372,8 +316,38 @@ void SpaceObjectOctreeNode::onDestroy()
 
 void SpaceObjectOctreeNode::onPopulate()
 {
+	// upload mesh
+	m_populated = true;
+	m_processing = false;
+
+	for(var i = 0; i < 8; i ++)
+		m_childrenNodes[i]->onCreate();
+
+	onDestroy();
 }
 
 void SpaceObjectOctreeNode::onDepopulate()
 {
+	m_populated = false;
+	m_processing = false;
+
+	// destroy all children
+	for (auto i = 0; i < 8; i++)
+	{
+		auto node = m_childrenNodes[i];
+
+		if (node)
+		{
+			// call event
+			node->onDestroy();
+
+			// delete node
+			delete node;
+
+			// cleanup
+			m_childrenNodes[i] = nullptr;
+		}
+	}
+
+	onCreate();
 }

@@ -1,14 +1,26 @@
 // ReCrafted © 2016-2017 Always Too Late
 
 #include "SpaceObjectManager.h"
-#include "SpaceObjectChunk.h"
 #include "Core/Logger.h"
+#include "Core/Lock.h"
+#include "Core/Delegate.h"
 #include "Core/Containers/concurrentqueue.h"
 #include "Platform/Platform.h"
+#include "SpaceObjectOctree.h"
+#include "Meshing/MarchingCubes/MCMesher.h"
 
 SpaceObjectManager* Singleton<SpaceObjectManager>::m_instance;
 
-moodycamel::ConcurrentQueue<SpaceObjectChunk*> m_loadingQueue;
+ALIGN(8) struct queueItem
+{
+	SpaceObjectOctreeNode* node;
+	ProcessMode::_enum mode;
+	Delegate callback;
+};
+
+moodycamel::ConcurrentQueue<queueItem> m_loadingQueue;
+Array<Delegate> m_callbacks;
+Lock m_calbacksLock;
 
 void SpaceObjectManager::onDispose()
 {
@@ -30,26 +42,36 @@ void SpaceObjectManager::onDispose()
 
 void SpaceObjectManager::worker_function()
 {
-	SpaceObjectChunk* chunk = nullptr;
+	Ptr<IVoxelMesher> mesher(new MCMesher);
 
+	queueItem item;
 	while(m_running)
 	{
-		var found = m_loadingQueue.try_dequeue(chunk);
-		
-		if(!found || !chunk)
+		if(!m_loadingQueue.try_dequeue(item))
 		{
 			Sleep(10);
 			continue;
 		}
 
-		// TODO: generate chunk
+		// populate or depopulate the queued node
+		if(item.mode == ProcessMode::Populate)
+			item.node->worker_populate(mesher.get());
+		else
+			item.node->worker_depopulate(mesher.get());
+
+		// queue callback
+		m_calbacksLock.lock();
+		m_callbacks.add(item.callback);
+		m_calbacksLock.unlock();
 	}
 }
 
 void SpaceObjectManager::init()
 {
+	m_callbacks = {};
+
 	m_running = true;
-	
+
 	// run threads
 	var maxThreads = Platform::cpuCount();
 
@@ -67,10 +89,19 @@ void SpaceObjectManager::init()
 
 void SpaceObjectManager::update()
 {
-
+	// dispatch calbacks
+	m_calbacksLock.lock();
+	for(var & callback : m_callbacks)
+		callback.Invoke();
+	m_calbacksLock.unlock();
 }
 
-void SpaceObjectManager::enqueue(SpaceObjectChunk* chunk)
+void SpaceObjectManager::enqueue(SpaceObjectOctreeNode* node, ProcessMode::_enum mode, Delegate callback)
 {
-	m_loadingQueue.enqueue(chunk);
+	var item = queueItem();
+	item.node = node;
+	item.mode = mode;
+	item.callback = callback;
+
+	m_loadingQueue.enqueue(item);
 }

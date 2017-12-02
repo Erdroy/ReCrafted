@@ -36,9 +36,6 @@ private:
 	};
 
 private:
-	static MCMesher* m_instance;
-
-private:
 	Array<Vector3> m_vertices = {};
 	Array<uint> m_indices = {};
 	Array<Vector3> m_normals = {};
@@ -65,19 +62,6 @@ public:
 	* \param data The hermite voxel data (in -127 to 127 range).
 	*/
 	void generate(const Vector3& position, int lod, uint8_t borders, Ptr<Mesh>& mesh, sbyte* data) override;
-
-public:
-	static MCMesher* getInstance()
-	{
-		if (m_instance)
-			return m_instance;
-
-		// create instance
-		m_instance = new MCMesher;
-
-		// done
-		return m_instance;
-	}
 };
 
 #endif // MCMESHER_H

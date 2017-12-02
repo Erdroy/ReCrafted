@@ -23,10 +23,8 @@ private:
 	IDelegateHandler* m_instance = nullptr;
 	delegate_noparam m_delegate = nullptr;
 
-private:
-	Delegate() {}
-
 public:
+	Delegate() {}
 	Delegate(IDelegateHandler* instance, delegate_noparam delegate) : m_instance(instance), m_delegate(delegate) { }
 
 public:
