@@ -1,13 +1,13 @@
 // ReCrafted © 2016-2017 Always Too Late
 
 #include "SpaceObjectManager.h"
+#include "SpaceObjectOctreeNode.h"
 #include "Core/Logger.h"
 #include "Core/Lock.h"
 #include "Core/Delegate.h"
 #include "Core/Containers/concurrentqueue.h"
-#include "Platform/Platform.h"
-#include "SpaceObjectOctree.h"
 #include "Meshing/MarchingCubes/MCMesher.h"
+#include "Platform/Platform.h"
 
 SpaceObjectManager* Singleton<SpaceObjectManager>::m_instance;
 

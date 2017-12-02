@@ -2,6 +2,7 @@
 
 #include "SpaceObjectChunk.h"
 #include "SpaceObjectOctree.h"
+#include "SpaceObjectOctreeNode.h"
 #include "SpaceObject.h"
 #include "Meshing/MarchingCubes/MCMesher.h"
 #include "Game/World/Voxels/VoxelUtils.h"

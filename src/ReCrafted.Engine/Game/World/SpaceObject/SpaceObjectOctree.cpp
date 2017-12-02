@@ -1,7 +1,7 @@
 // ReCrafted © 2016-2017 Always Too Late
 
 #include "SpaceObjectOctree.h"
-#include "Core/Math/math.h"
+#include "SpaceObjectOctreeNode.h"
 
 void SpaceObjectOctree::init(float objectRadius)
 {

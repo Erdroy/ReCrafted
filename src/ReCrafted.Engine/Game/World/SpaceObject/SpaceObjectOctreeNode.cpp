@@ -1,5 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 
+#include "SpaceObjectOctreeNode.h"
 #include "SpaceObjectOctree.h"
 #include "SpaceObjectChunk.h"
 #include "SpaceObjectManager.h"
