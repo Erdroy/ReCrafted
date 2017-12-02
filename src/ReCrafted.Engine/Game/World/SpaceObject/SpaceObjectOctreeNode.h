@@ -55,6 +55,8 @@ private:
 
 private:
 	bool hasPopulatedChildren();
+	bool isChildrenProcessing() const;
+	void markProcessing();
 
 	void worker_populate(IVoxelMesher* mesher);
 	void worker_depopulate(IVoxelMesher* mesher);

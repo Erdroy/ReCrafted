@@ -11,8 +11,12 @@
 
 float Planet(const Vector3& origin, const Vector3& position, float radius)
 {
-	var height = (position - origin).length();
+	//var local = position - Vector3(radius, radius, radius);
+	//var d = Vector3(fabs(local.x), fabs(local.y), fabs(local.z)) - Vector3(radius, radius, radius);
+	//var m = max(d.x, max(d.y, d.z)); 
+	//return min(m, d.length());
 
+	var height = (position - origin).length();
 	return height - radius;
 }
 
@@ -39,7 +43,7 @@ uint8_t SpaceObjectChunk::getLodBorders()
 		borders |= BORDER_BOTTOM;*/
 
 	//return borders;
-	return 255;
+	return 0xFF;
 }
 
 void SpaceObjectChunk::init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject)

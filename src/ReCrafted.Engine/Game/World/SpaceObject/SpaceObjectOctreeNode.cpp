@@ -21,6 +21,33 @@ bool SpaceObjectOctreeNode::hasPopulatedChildren()
 	return false;
 }
 
+bool SpaceObjectOctreeNode::isChildrenProcessing() const
+{
+	if (m_processing)
+		return true;
+
+	if (m_populated) {
+		for (auto i = 0; i < 8; i++)
+		{
+			if (m_childrenNodes[i]->isChildrenProcessing())
+				return true;
+		}
+	}
+
+	return false;
+}
+
+void SpaceObjectOctreeNode::markProcessing()
+{
+	m_processing = true;
+
+	if (!m_populated)
+		return;
+
+	for (auto i = 0; i < 8; i++)
+		m_childrenNodes[i]->markProcessing();
+}
+
 void SpaceObjectOctreeNode::worker_populate(IVoxelMesher* mesher)
 {
 	// WARNING: this function is called on WORKER THREAD!
@@ -49,7 +76,7 @@ void SpaceObjectOctreeNode::worker_populate(IVoxelMesher* mesher)
 void SpaceObjectOctreeNode::worker_depopulate(IVoxelMesher* mesher)
 {
 	// WARNING: this function is called on WORKER THREAD!
-
+	
 	worker_generate(mesher);
 }
 
@@ -66,10 +93,10 @@ void SpaceObjectOctreeNode::populate()
 	if (m_processing)
 		return;
 
-	if (m_size <= MinimumNodeSize)
+	if (m_populated)
 		return;
 
-	if (m_populated)
+	if (m_size <= MinimumNodeSize)
 		return;
 
 	m_processing = true;
@@ -80,19 +107,19 @@ void SpaceObjectOctreeNode::populate()
 
 void SpaceObjectOctreeNode::depopulate()
 {
-	/*if (m_processing)
+	if (m_processing)
 		return;
-
-	m_processing = true;
 
 	if (!m_populated)
 		return;
 
-	if (hasPopulatedChildren())
-		throw;
+	if (isChildrenProcessing())
+		return;
+
+	//markProcessing();
 
 	// queue depopulate job
-	SpaceObjectManager::enqueue(this, ProcessMode::Depopulate, MakeDelegate(SpaceObjectOctreeNode::onDepopulate));*/
+	//SpaceObjectManager::enqueue(this, ProcessMode::Depopulate, MakeDelegate(SpaceObjectOctreeNode::onDepopulate));
 }
 
 void SpaceObjectOctreeNode::update()
@@ -118,6 +145,9 @@ void SpaceObjectOctreeNode::update()
 
 void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 {
+	if (m_processing)
+		return;
+
 	if(m_populated)
 	{
 		// update children node views, because we are populated
@@ -203,7 +233,7 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 	// IF (all C's are in B-P) AND populated: depopulate - otherwise: go further
 	if (!hasXA && !hasXB)
 	{
-		if (!m_populated)
+		if (m_populated)
 			depopulate();
 		return;
 	}
@@ -317,9 +347,8 @@ void SpaceObjectOctreeNode::onDestroy()
 
 void SpaceObjectOctreeNode::onPopulate()
 {
-	// upload mesh
-	m_populated = true;
 	m_processing = false;
+	m_populated = true;
 
 	for(var i = 0; i < 8; i ++)
 		m_childrenNodes[i]->onCreate();
