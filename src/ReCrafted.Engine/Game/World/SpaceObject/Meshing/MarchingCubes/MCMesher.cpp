@@ -150,9 +150,9 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
 
 		var plane = Plane(p2, p1, p0);
 
-		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
-		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
-		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
+		m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
+		m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
+		m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
 
 		if(plane.normal.x != plane.normal.x)
 		{
@@ -216,7 +216,7 @@ void MCMesher::generateSkirt(Cell* cell, const Vector3& position, const Vector3&
 		m_vertices.add(vertexPosition);
 		m_indices.add(m_vertices.count() - 1);
 
-		m_colors.add(Vector4(85 / 255.0f, 60 / 255.0f, 50 / 255.0f, 1.0f));
+		m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
 		m_normals.add(cell->vertexNormal);
 	}
 }
