@@ -39,13 +39,13 @@ private:
 	Input* m_input = nullptr;
 	Time* m_time = nullptr;
 	UI* m_ui = nullptr;
-	uint m_tickrate = 60u;
 
 	bool m_showCursor = true;
 	bool m_lockCursor = true;
 
+	double m_simulationAcc = 0.0;
+
 	int m_targetFps = 60;
-	int m_simulationFps = 66;
 
 #if _WIN32
 	HCURSOR m_currentCursor = nullptr;
@@ -69,6 +69,7 @@ private:
 	void initScripting();
 	void waitForTargetFps(double last);
 	void runEvents();
+	void simulate();
 
 public:
 	/// <summary>
@@ -99,23 +100,6 @@ public:
 	FORCEINLINE static void quit()
 	{
 		m_instance->m_running = false;
-	}
-
-	/// <summary>
-	/// Set the tick rate of simulation.
-	/// </summary>
-	/// <param name="ticksPerSecond">The amount of ticks per second. Default: 60</param>
-	FORCEINLINE static void setSimulationTickrate(uint ticksPerSecond)
-	{
-		m_instance->m_tickrate = ticksPerSecond;
-	}
-
-	/// <summary>
-	/// Gets the tick rate of simulation.
-	/// </summary>
-	FORCEINLINE static uint getSimulationTickrate()
-	{
-		return m_instance->m_tickrate;
 	}
 
 	/// <summary>

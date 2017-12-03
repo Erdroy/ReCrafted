@@ -17,10 +17,23 @@ void Time::initRuntime()
 				API_BIND("ReCrafted.API.Common.Time::Internal_DeltaTime_Get", &Time::deltaTime);
 			}
 
+			API_COMMENT("Time between each simulation calls.");
+			API_PROPERTY(PUBLIC, STATIC, "double", "FixedDeltaTime", GETSET);
+			{
+				API_BIND("ReCrafted.API.Common.Time::Internal_FixedDeltaTime_Get", &Time::fixedDeltaTime);
+				API_BIND("ReCrafted.API.Common.Time::Internal_FixedDeltaTime_Set", &Time::setFixedDeltaTime);
+			}
+
 			API_COMMENT("Current time.");
 			API_PROPERTY(PUBLIC, STATIC, "double", "CurrentTime", GET);
 			{
 				API_BIND("ReCrafted.API.Common.Time::Internal_CurrentTime_Get", &Time::time);
+			}
+
+			API_COMMENT("The current game simulation time.");
+			API_PROPERTY(PUBLIC, STATIC, "double", "CurrentFixedTime", GET);
+			{
+				API_BIND("ReCrafted.API.Common.Time::Internal_CurrentFixedTime_Get", &Time::fixedTime);
 			}
 
 			API_COMMENT("Current frame count");

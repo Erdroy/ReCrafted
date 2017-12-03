@@ -218,6 +218,24 @@ void GameMain::runEvents()
 	Profiler::endProfile();
 }
 
+void GameMain::simulate()
+{
+	// source: https://gafferongames.com/post/fix_your_timestep/
+
+	const var dt = Time::fixedDeltaTime();
+
+	m_simulationAcc += Time::deltaTime();
+
+	while (m_simulationAcc >= dt)
+	{
+		onSimulate();
+		m_simulationAcc -= dt;
+
+		// perform precise time calculation
+		Time::m_instance->m_fixedTime = static_cast<float>(static_cast<double>(Time::m_instance->m_fixedTime) + dt);
+	}
+}
+
 void GameMain::run()
 {
 	// set all needed instance handlers
@@ -293,7 +311,7 @@ void GameMain::run()
 
 		Profiler::update();
 		onUpdate(); CHECK_SHUTDOWN
-		onSimulate(); CHECK_SHUTDOWN // TODO: fixed-time step `onSimulate` call
+		simulate();
 		onDraw(); CHECK_SHUTDOWN
 
 		if(m_targetFps > 0)

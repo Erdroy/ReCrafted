@@ -23,7 +23,10 @@ private:
 
 private:
 	double m_deltaTime = 0.0;
+	double m_fixedDeltaTime = 1.0 / 60.0;
+
 	float m_time = 0.0;
+	float m_fixedTime = 0.0;
 	int m_frames = 0;
 
 public:
@@ -55,6 +58,24 @@ public:
 		return m_instance->m_deltaTime;
 	}
 
+	/**
+	 * \brief The fixed simulation delta time. Use for 'Simulate' calls.
+	 * \return The fixed delta time value.
+	 */
+	FORCEINLINE static double fixedDeltaTime()
+	{
+		return m_instance->m_fixedDeltaTime;
+	}
+
+	/**
+	* \brief The fixed simulation delta time. Use for 'Simulate' calls.
+	* \return The fixed delta time value.
+	*/
+	FORCEINLINE static void setFixedDeltaTime(double fixedDeltaTime)
+	{
+		m_instance->m_fixedDeltaTime = fixedDeltaTime;
+	}
+
 	/// <summary>
 	/// The current game time.
 	/// </summary>
@@ -62,6 +83,15 @@ public:
 	FORCEINLINE static float time()
 	{
 		return m_instance->m_time;
+	}
+
+	/// <summary>
+	/// The current game simulation time.
+	/// </summary>
+	/// <returns>The time.</returns>
+	FORCEINLINE static float fixedTime()
+	{
+		return m_instance->m_fixedTime;
 	}
 
 	/// <summary>

@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/30/2017 18:58:46 Source: 'GameMain.API.cpp' Target: 'Core/Game.Gen.cs'
+// Generated: 12/03/2017 18:55:38 Source: 'GameMain.API.cpp' Target: 'Core/Game.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -35,21 +35,6 @@ namespace ReCrafted.API.Core
 		/// </summary>
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void SetClipboard(string text);
-
-		/// <summary>
-		///	The simulation tickrate. Default is 60
-		/// </summary>
-		public static int Tickrate 
-		{
-			get
-			{
-				return Internal_Tickrate_Get();
-			}
-			set
-			{
-				Internal_Tickrate_Set(value);
-			}
-		}
 
 		/// <summary>
 		///	Gets or sets the cursor state
@@ -122,10 +107,6 @@ namespace ReCrafted.API.Core
 			}
 		}
 
-		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern void Internal_Tickrate_Set(int value);
-		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern int Internal_Tickrate_Get();
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_ShowCursor_Set(bool value);
 		[MethodImpl(MethodImplOptions.InternalCall)]

@@ -35,14 +35,6 @@ void GameMain::initRuntime()
 			}
 			API_METHOD_END();
 
-			API_COMMENT("The simulation tickrate. Default is 60");
-			API_PROPERTY(PUBLIC, STATIC, "int", "Tickrate", GETSET);
-			{
-				API_BIND("ReCrafted.API.Core.Game::Internal_Tickrate_Get", &GameMain::getSimulationTickrate);
-				API_BIND("ReCrafted.API.Core.Game::Internal_Tickrate_Set", &GameMain::setSimulationTickrate);
-			}
-			API_PROPERTY_END();
-
 			API_COMMENT("Gets or sets the cursor state");
 			API_PROPERTY(PUBLIC, STATIC, "bool", "ShowCursor", GETSET);
 			{
