@@ -319,10 +319,8 @@ namespace ReCrafted.API.UI
             for (int index = 0; index < lines.Count; index++)
             {
                 if (index == line)
-                {
                     return totalCharacters;
-                }
-                totalCharacters += lines[index].Length;
+                totalCharacters += lines[index].Length + index == 0 ? 0 : 1;// \n
             }
 
             return 0;
@@ -381,6 +379,19 @@ namespace ReCrafted.API.UI
                     return _textFont.MeasureString(lines[index]);
             }
             return new Vector2(0, 0);
+        }
+
+        public int GetTotalCount(int toLine)
+        {
+            int total = 0;
+            var lines = GetLines();
+            for (int index = 0; index < lines.Count; index++)
+            {
+                total += lines[index].Length;
+                if (index == toLine)
+                    return total;
+            }
+            return total;
         }
 
         /// <summary>

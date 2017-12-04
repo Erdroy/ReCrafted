@@ -1,10 +1,8 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
 using System.Diagnostics;
-using ReCrafted.API;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
-using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
 using ReCrafted.API.UI.Controls;
@@ -66,8 +64,8 @@ namespace ReCrafted.Game
             var toggle3 = toggleGroup.Add(panel.Add(new UIToggle(new RectangleF(0, 0, 130, 32), "TestToggle3!")));
             toggle3.TextBackgroundColor = new Color(68, 68, 68);
 
-            var textField = panel.Add(new UITextField(new RectangleF(0, 0, 130, 128)));
-            textField.Text = "Text Field!\nSome More Text?\nAnother!";
+            var textField = panel.Add(new UITextField(new RectangleF(0, 0, 130, 128), string.Empty));
+            textField.CharactersLimit = 10;
 
             //panel.Add(new UIText(new RectangleF(10, 10, 160, 30), "12345678912345678912345678912342343243"));
 
@@ -91,19 +89,19 @@ namespace ReCrafted.Game
                 DebugPanelText.Region = new RectangleF(20, Display.Height - 80f, 0, 0);
                 DebugPanelText.Text = "Focused Control -> " + (UIControl.FocusedControl?.GetType().ToString() ?? "<none>") + "\n" +
                                       "Focused Control Root -> " + ((string.IsNullOrEmpty(UIControl.FocusedControl?.GetRoot()?.Name) ? UIControl.FocusedControl?.GetRoot()?.GetType().ToString() : UIControl.FocusedControl?.GetRoot()?.Name) ?? "<none>") + "\n" +
-                                      "Focused Control Regon -> " + (UIControl.FocusedControl?.Region.ToString() ?? "<none>") + "\n" + 
+                                      "Focused Control Region -> " + (UIControl.FocusedControl?.Region.ToString() ?? "<none>") + "\n" + 
                                       "Mouse Position -> " + Input.CursorPosition;
             }
 
             if (TestBox != null)
-                _testBoxFollow();
+                TestBoxFollow();
         }
 
         private Vector2 _testBoxPosition = Vector2.One;
         private Vector2 _testBoxVelocity = Vector2.One;
         private Vector2 _testBoxTargetPosition = Vector2.One;
 
-        private void _testBoxFollow()
+        private void TestBoxFollow()
         {
             _testBoxTargetPosition = Input.CursorPosition;
             UIAnimation.SpringVector2(ref _testBoxPosition, ref _testBoxVelocity, _testBoxTargetPosition, (float)Time.DeltaTime);

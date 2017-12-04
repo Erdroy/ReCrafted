@@ -6,6 +6,10 @@ using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 
+//TODO: Fix white space problems in TextField and SelectableText.
+//TODO: Line selection based on mouse Y when mouse X is out of text region. (currently selection is set always to end of the text)
+//TODO: Finish Up and Down movement functions.
+
 namespace ReCrafted.API.UI.Controls
 {
     /// <summary>
@@ -47,7 +51,7 @@ namespace ReCrafted.API.UI.Controls
         /// </summary>
         public UITextField()
         {
-            _applyDefaults(new RectangleF(), string.Empty, Color.Black, UIControlColors.Defaults);
+            ApplyDefaults(new RectangleF(), string.Empty, Color.Black, UIControlColors.Defaults);
         }
 
         /// <summary>
@@ -56,13 +60,33 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="region">Region of new UITextField.</param>
         public UITextField(RectangleF region)
         {
-            _applyDefaults(region, string.Empty, Color.Black, UIControlColors.Defaults);
+            ApplyDefaults(region, string.Empty, Color.Black, UIControlColors.Defaults);
+        }
+
+        /// <summary>
+        /// Creates new UITextField.
+        /// </summary>
+        /// <param name="text">Text of new UITextField.</param>
+        public UITextField(string text)
+        {
+            ApplyDefaults(new RectangleF(), text, Color.Black, UIControlColors.Defaults);
+        }
+
+        /// <summary>
+        /// Creates new UITextField.
+        /// </summary>
+        /// <param name="region">Region of new UITextField.</param>
+        /// <param name="text">Text of new UITextField.</param>
+        public UITextField(RectangleF region, string text)
+        {
+            ApplyDefaults(region, text, Color.Black, UIControlColors.Defaults);
         }
 
         public override void OnMouseEnter()
         {
             if (!SmoothColors)
                 _color = Colors.OverColor;
+
             Cursor.Icon = CursorIcon.Beam;
         }
 
@@ -83,22 +107,32 @@ namespace ReCrafted.API.UI.Controls
         {
             if (!SmoothColors)
                 _color = Colors.NormalColor;
+
             Cursor.Icon = CursorIcon.Arrow;
         }
 
         public override void OnControlFocused(bool value)
         {
+            AnyTextFieldFocused = value;
+
+            // if focus of input field is set to false, restart selection
             if (!value)
+            {
                 _selectableText.ResetSelection();
+                _textFieldPosition = 0;
+            }
             else
             {
-                if (string.IsNullOrEmpty(Text))
+                // if current text is empty, fix position beam
+                if (string.IsNullOrEmpty(_text))
+                {
+                    _selectableText.ResetSelection();
                     _textFieldPosition = 0;
+                }
             }
 
             if (!SmoothColors)
                 _textFieldEditBoxColor = value ? Colors.ClickColor : Color.Transparent;
-            AnyTextFieldFocused = value;
         }
 
         // draw text field
@@ -148,20 +182,31 @@ namespace ReCrafted.API.UI.Controls
 
             #region INPUT         
 
+            // if input field is focused, handle input
+            if (!IsFocused) return;
             /*
             if (!string.IsNullOrEmpty(_text))
             {
                 var keys = KeyboardBuffer.Read();
                 foreach (var key in keys)
                 {
-                    _removeSelectedText();
+                    RemoveSelectedText();
                 }
             }
             */
 
-            if (_textFieldPosition != -1)
+            // if input field text is empty and position beam isn't zero, fix!
+            if (string.IsNullOrEmpty(_text) && _textFieldPosition != 0)
             {
-                if (!string.IsNullOrEmpty(_text) && (Input.IsKeyDown(Keys.Backspace) || Input.IsKey(Keys.Backspace)))
+                _selectableText.ResetSelection();
+                _textFieldPosition = 0;
+            }
+
+            var type = false;
+            if (!string.IsNullOrEmpty(_text) &&
+                (Input.IsKeyDown(Keys.Backspace) || Input.IsKey(Keys.Backspace))) // handle backspace
+            {
+                if (_text.Length >= 0)
                 {
                     _textFieldWaitForNextKey1 += Time.DeltaTime;
                     if (Input.IsKeyDown(Keys.Backspace) ||
@@ -176,7 +221,10 @@ namespace ReCrafted.API.UI.Controls
                         _textFieldWaitForNextKey2 -= Time.DeltaTime;
                     }
                 }
-                else if (Input.IsKeyDown(Keys.Enter) || Input.IsKey(Keys.Enter))
+            }
+            else if (Input.IsKeyDown(Keys.Enter) || Input.IsKey(Keys.Enter)) // handle enter
+            {
+                if (CharactersLimit == 0 || _text.Length <= CharactersLimit)
                 {
                     _textFieldWaitForNextKey1 += Time.DeltaTime;
                     if (Input.IsKeyDown(Keys.Enter) ||
@@ -193,95 +241,123 @@ namespace ReCrafted.API.UI.Controls
                         _textFieldWaitForNextKey2 -= Time.DeltaTime;
                     }
                 }
-                else if (Input.IsKeyDown(Keys.Left) || Input.IsKey(Keys.Left))
+            }
+            else if (Input.IsKeyDown(Keys.Left) || Input.IsKey(Keys.Left)) // handle left arrow
+            {
+                _textFieldWaitForNextKey1 += Time.DeltaTime;
+                if (Input.IsKeyDown(Keys.Left) ||
+                    _textFieldWaitForNextKey1 > 0.5f && _textFieldWaitForNextKey2 < 0f)
                 {
-                    _textFieldWaitForNextKey1 += Time.DeltaTime;
-                    if (Input.IsKeyDown(Keys.Left) ||
-                        _textFieldWaitForNextKey1 > 0.5f && _textFieldWaitForNextKey2 < 0f)
-                    {
-                        _movePositionLeft();
-                        _textFieldWaitForNextKey2 = 0.1f;
-                    }
-                    else
-                    {
-                        _textFieldWaitForNextKey2 -= Time.DeltaTime;
-                    }
-                }
-                else if (Input.IsKeyDown(Keys.Right) || Input.IsKey(Keys.Right))
-                {
-                    _textFieldWaitForNextKey1 += Time.DeltaTime;
-                    if (Input.IsKeyDown(Keys.Right) ||
-                        _textFieldWaitForNextKey1 > 0.5f && _textFieldWaitForNextKey2 < 0f)
-                    {
-                        _movePositionRight();
-                        _textFieldWaitForNextKey2 = 0.1f;
-                    }
-                    else
-                    {
-                        _textFieldWaitForNextKey2 -= Time.DeltaTime;
-                    }
-                }
-                else if (Input.IsKeyDown(Keys.Up) || Input.IsKey(Keys.Up))
-                {
-                    _textFieldWaitForNextKey1 += Time.DeltaTime;
-                    if (Input.IsKeyDown(Keys.Up) ||
-                        _textFieldWaitForNextKey1 > 0.5f && _textFieldWaitForNextKey2 < 0f)
-                    {
-                        _movePositionUp();
-                        _textFieldWaitForNextKey2 = 0.1f;
-                    }
-                    else
-                    {
-                        _textFieldWaitForNextKey2 -= Time.DeltaTime;
-                    }
-                }
-                else if (Input.IsKeyDown(Keys.Down) || Input.IsKey(Keys.Down))
-                {
-                    _textFieldWaitForNextKey1 += Time.DeltaTime;
-                    if (Input.IsKeyDown(Keys.Down) ||
-                        _textFieldWaitForNextKey1 > 0.5f && _textFieldWaitForNextKey2 < 0f)
-                    {
-                        _movePositionDown();
-                        _textFieldWaitForNextKey2 = 0.1f;
-                    }
-                    else
-                    {
-                        _textFieldWaitForNextKey2 -= Time.DeltaTime;
-                    }
+                    MovePositionLeft();
+                    _textFieldWaitForNextKey2 = 0.1f;
                 }
                 else
                 {
+                    _textFieldWaitForNextKey2 -= Time.DeltaTime;
+                }
+            }
+            else if (Input.IsKeyDown(Keys.Right) || Input.IsKey(Keys.Right)) // handle right arrow
+            {
+                _textFieldWaitForNextKey1 += Time.DeltaTime;
+                if (Input.IsKeyDown(Keys.Right) ||
+                    _textFieldWaitForNextKey1 > 0.5f && _textFieldWaitForNextKey2 < 0f)
+                {
+                    MovePositionRight();
+                    _textFieldWaitForNextKey2 = 0.1f;
+                }
+                else
+                {
+                    _textFieldWaitForNextKey2 -= Time.DeltaTime;
+                }
+            }
+            else if (Input.IsKeyDown(Keys.Up) || Input.IsKey(Keys.Up)) // handle up arrow
+            {
+                _textFieldWaitForNextKey1 += Time.DeltaTime;
+                if (Input.IsKeyDown(Keys.Up) ||
+                    _textFieldWaitForNextKey1 > 0.5f && _textFieldWaitForNextKey2 < 0f)
+                {
+                    MovePositionUp();
+                    _textFieldWaitForNextKey2 = 0.1f;
+                }
+                else
+                {
+                    _textFieldWaitForNextKey2 -= Time.DeltaTime;
+                }
+            }
+            else if (Input.IsKeyDown(Keys.Down) || Input.IsKey(Keys.Down)) // handle down arrow
+            {
+                _textFieldWaitForNextKey1 += Time.DeltaTime;
+                if (Input.IsKeyDown(Keys.Down) ||
+                    _textFieldWaitForNextKey1 > 0.5f && _textFieldWaitForNextKey2 < 0f)
+                {
+                    MovePositionDown();
+                    _textFieldWaitForNextKey2 = 0.1f;
+                }
+                else
+                {
+                    _textFieldWaitForNextKey2 -= Time.DeltaTime;
+                }
+            }
+            else
+            {
+                if (CharactersLimit == 0 || _text.Length <= CharactersLimit)
+                {
+                    _textFieldWaitForNextKey1 = 0f;
+                    // read input
                     var keys = KeyboardBuffer.Read();
-                    foreach (var key in keys)
+                    foreach (var c in keys)
                     {
-                        if (string.IsNullOrEmpty(_text))
-                            _text = key.ToString();
+                        if (_text.Length == 0) // if text is empty, set received character as text.
+                        {
+                            _text = c.ToString();
+                            _textFieldPosition = -1;
+                        }
                         else
                         {
-                            try
+                            if (_textFieldPosition == _text.Length
+                            ) // if position beam is at end of text, just add new character
+                                _text += c.ToString();
+                            else if (_textFieldPosition == -1
+                            ) // if position is at start of the text, insert from zero index
+                                _text = _text.Insert(0, c.ToString());
+                            else // default text insert
                             {
-                                _text = _text.Insert(_textFieldPosition + 1, key.ToString());
-                                _textFieldPosition++;
-                            }
-                            catch (Exception)
-                            {
-                                _text = _text.Insert(_textFieldPosition, key.ToString());
-                                _textFieldPosition += 2;
+                                _text = _text.Insert(_textFieldPosition + 1, c.ToString());
                             }
                         }
+                        // fix position of beam to be always before last added character
+                        _textFieldPosition++;
+                        type = true;
                     }
                 }
-
-                var charPosition = _selectableText.GetPointFromCharIndex(_textFieldPosition);
-                var beamPosition = new RectangleF(charPosition.X, charPosition.Y - 0.1f, 2, TextFont.Size + 0.2f);
-                _textFieldPositionColor = Color.Lerp(_textFieldPositionColor,
-                    new Color(14 / 255f, 80 / 255f, 186 / 255f, 100 / 255f), (float) Time.DeltaTime * 3f);
-                if (_textFieldPositionColor.A < 110f)
-                    _textFieldPositionColor.A = 255;
-                UIInternal.Depth = Depth + 0.3f;
-                UIInternal.Color = _textFieldPositionColor;
-                UIInternal.DrawBox(beamPosition);
             }
+
+            // some debug stuff
+            //pos.Y += 20;
+            //UIInternal.DrawString(TextFont.NativePtr, "TextFieldPosition -> " + _textFieldPosition, ref pos);
+            //var p = _text.Length == 0 ? 0 : (_textFieldPosition == 0 ? 0 : _textFieldPosition);
+
+            // resolve current beam position
+            var charPosition = _text.Length == 0
+                ? _selectableText.GetPointFromCharIndex(0)
+                : (_textFieldPosition == 0
+                    ? _selectableText.GetPointFromCharIndex(0) +
+                      new Vector2(TextFont.MeasureString(_text[0].ToString()).X, 0)
+                    : _selectableText.GetPointFromCharIndex(_textFieldPosition));
+
+            // beam position
+            var beamPosition = new RectangleF(charPosition.X, charPosition.Y - 0.1f, 2, TextFont.Size + 0.2f);
+
+            // animate beam color
+            _textFieldPositionColor = Color.Lerp(_textFieldPositionColor,
+                new Color(14 / 255f, 80 / 255f, 186 / 255f, 100 / 255f), (float) Time.DeltaTime * 3f);
+            if (_textFieldPositionColor.A < 110f || type)
+                _textFieldPositionColor.A = 255;
+
+            // draw position beam
+            UIInternal.Depth = Depth + 0.3f;
+            UIInternal.Color = _textFieldPositionColor;
+            UIInternal.DrawBox(beamPosition);
 
             #endregion
         }
@@ -301,71 +377,58 @@ namespace ReCrafted.API.UI.Controls
         }
 
         // move text field position to left
-        private void _movePositionLeft()
+        private void MovePositionLeft()
         {
-            if (_textFieldPosition == -1) return;
-            if (_textFieldPosition - 1 <= 0) return;
+            if (_textFieldPosition - 1 < -1) return;
             _textFieldPosition--;
         }
 
         // move text field position to right
-        private void _movePositionRight()
+        private void MovePositionRight()
         {
-            if (_textFieldPosition == -1) return;
             if (_textFieldPosition + 1 >= _text.Length) return;
             _textFieldPosition++;
         }
 
         // move text field position up
-        private void _movePositionUp()
+        private void MovePositionUp()
         {
-            if (_textFieldPosition == -1) return;
             var charPoint = _selectableText.GetPointFromCharIndex(_textFieldPosition);
             var point = new Vector2(charPoint.X, charPoint.Y - TextFont.Size / 2f);
             bool exist;
             var newPosition = _selectableText.GetCharIndexFromPoint(point, out exist);
-            if (exist)
+            if (exist) // if character above current exist, just set new position
                 _textFieldPosition = newPosition;
             else
             {
-                var line = _selectableText.GetLineFromCharIndex(_textFieldPosition);
-                if (line == 0)
-                    return;
-                _textFieldPosition = _selectableText.GetLastCharIndexOfLine(line - 1) - 1;
+                //TODO: Move position to upper line.
             }
         }
 
         // move text field position down
-        private void _movePositionDown()
+        private void MovePositionDown()
         {
-            if (_textFieldPosition == -1) return;
             var charPoint = _selectableText.GetPointFromCharIndex(_textFieldPosition);
             var point = new Vector2(charPoint.X, charPoint.Y + TextFont.Size * 1.5f);
             bool exist;
             var newPosition = _selectableText.GetCharIndexFromPoint(point, out exist);
-            if (exist)
+            if (exist) // if character below current exist, just set new position
                 _textFieldPosition = newPosition;
             else
             {
-                var lines = _selectableText.GetLines();
-                var line = _selectableText.GetLineFromCharIndex(_textFieldPosition);
-                if (line == lines.Count - 1)
-                    return;
-                _textFieldPosition = _selectableText.GetLastCharIndexOfLine(line + 1) + 1;
+                //TODO: Move position to line below.
             }
         }
 
         // removes selected text
-        private void _removeSelectedText()
+        private void RemoveSelectedText()
         {
             if (string.IsNullOrEmpty(_selectableText.SelectedText)) return;
-            _text = _text.Remove(_selectableText.SelectedTextStart, _selectableText.SelectedTextEnd);
-            _textFieldPosition = _selectableText.SelectedTextStart;
-            _selectableText.ResetSelection();
+            //TODO: Remove selected text.
         }
 
         // set default properties
-        private void _applyDefaults(RectangleF region, string text, Color textColor, UIControlColors colors)
+        private void ApplyDefaults(RectangleF region, string text, Color textColor, UIControlColors colors)
         {
             Region = region;
             TextFont = DefaultFont; //set default font
@@ -387,14 +450,6 @@ namespace ReCrafted.API.UI.Controls
             _selectableText.OnCharacterClick += position =>
             {
                 _textFieldPosition = position;
-            };
-            _selectableText.OnTextSelected += s =>
-            {
-                _textFieldPosition = -1;
-            };
-            _selectableText.OnResetSelection += () =>
-            {
-                _textFieldPosition = -1;
             };
 
             _usingSelectableText = true;
