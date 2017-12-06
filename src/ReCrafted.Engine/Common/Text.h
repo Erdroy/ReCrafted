@@ -8,9 +8,15 @@
 // includes
 #include <locale>
 #include <codecvt>
+
 #include "Core/Defines.h"
 
 #define USE_UTF16
+#define USE_FMT
+
+#ifdef USE_FMT
+#include "Core/fmt/format.h"
+#endif
 
 #ifdef USE_UTF16
 typedef unsigned short Char;
@@ -420,6 +426,16 @@ public:
 		text.m_const = true;
 		return text;
 	}
+#ifdef USE_FMT
+	FORCEINLINE static Text format(const Text& format, fmt::ArgList args)
+	{
+		auto data = reinterpret_cast<wchar_t*>(format.data());
+		auto string = fmt::format(data, args);
+
+		return Text((Char*)string.data());
+	}
+	FMT_VARIADIC_W(static Text, format, const Text&)
+#endif
 };
 
 #ifdef TEXT
