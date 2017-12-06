@@ -52,8 +52,6 @@ void Profiler::drawDebugScreen()
 		var entry = m_lastFrame.at(i);
 
 		var depthOffset = entry.depth * 15.0f;
-		var timeStr = to_string_with_precision(entry.time, 4);
-		var time = Text::constant((Char*)timeStr.data());
 
 		if (entry.time > entry.timeMax && entry.timeMax >= 0.0f)
 			UI::setColor(Color(0xFF0A00FF));
@@ -62,12 +60,10 @@ void Profiler::drawDebugScreen()
 		else
 			UI::setColor(Color(0xFFFFFFFF));
 
-		var timeSize = m_debugFont->measureText(time);
+		var infoText = Text::format(TEXT("{0:2f} ms - GC {1}, {2} (total)"), entry.time, entry.gcSize, entry.gcTotalSize);
 
-		UI::drawText(m_debugFont, time, Vector2(10.0f, yOffset));
-		UI::drawText(m_debugFont, TEXT_CONST("ms"), Vector2(timeSize.x + 15.0f, yOffset));
-
-		UI::drawText(m_debugFont, entry.name, Vector2(timeSize.x + 35.0f + depthOffset, yOffset));
+		UI::drawText(m_debugFont, infoText, Vector2(10.0f, yOffset));
+		UI::drawText(m_debugFont, entry.name, Vector2(230.0f + depthOffset, yOffset));
 
 		yOffset += m_debugFont->getSize();
 	}

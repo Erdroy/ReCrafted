@@ -124,7 +124,7 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
 
 		// TODO: materials support
 		// TODO: vertex cache (with vertex color per material support)
-		// TODO: fix issue with 2 vertices
+		// TODO: fix issue with 2 vertices (invalid normals)
 
 		m_vertices.add(vertexPosition);
 		m_indices.add(m_vertices.count() - 1);
