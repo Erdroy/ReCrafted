@@ -21,7 +21,6 @@ project "ReCrafted.Engine"
 		path.join(LIBS_DIR, "bx/include"),
 		path.join(LIBS_DIR, "bimg/include"),
 		path.join(LIBS_DIR, "bgfx/include"),
-		path.join(LIBS_DIR, "json"),
 		path.join(LIBS_DIR, "mono/inc"),
 		path.join(LIBS_DIR, "freetype/include"),
 		path.join(LIBS_DIR, "fmod/inc"),

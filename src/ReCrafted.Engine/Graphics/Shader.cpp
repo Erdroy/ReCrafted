@@ -3,7 +3,7 @@
 #include "Shader.h"
 #include "../Platform/Platform.h"
 
-#include <json.hpp>
+#include "Core/json/json.hpp"
 #include "Core/Logger.h"
 
 void Shader::init(const char* vs, const char* fs, const char* def)

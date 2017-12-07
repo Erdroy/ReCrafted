@@ -139,7 +139,7 @@ void Mesh::simplify()
 	simplfiedMesh->numVertices = m_vertices_count;
 	simplfiedMesh->vertices = static_cast<MeshVertex*>(malloc(sizeof(MeshVertex) * m_vertices_count));
 
-	for (var i = 0; i < m_vertices_count; i++)
+	for (var i = 0u; i < m_vertices_count; i++)
 	{
 		simplfiedMesh->vertices[i].xyz[0] = m_vertices[i].x;
 		simplfiedMesh->vertices[i].xyz[1] = m_vertices[i].y;
