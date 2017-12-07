@@ -27,6 +27,7 @@ private:
 	uint m_flags = 0u;
 	uint m_width = 0u;
 	uint m_height = 0u;
+	uint m_bpp = 0u;
 	uint m_mips = 0u;
 
 public:
@@ -104,7 +105,6 @@ public:
 	static Ptr<Texture2D> createTexture();
 
 public:
-	static void loadTextureData(const char* filename, uint** pixels, int* width, int* height);
 	static void releaseTextureData(uint* pixels);
 	static void saveBitmap(const char* filename, uint width, uint height, byte* bits);
 };

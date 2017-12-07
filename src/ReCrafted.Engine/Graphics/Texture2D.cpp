@@ -2,6 +2,7 @@
 
 #include "Texture2D.h"
 #include "upng/upng.h"
+#include "ReCrafted.h"
 
 static void releaseBits(void* _ptr, void* _userData)
 {
@@ -45,6 +46,7 @@ void Texture2D::loadFile(const char* filename, uint flags)
 	m_bits = const_cast<byte*>(upng::upng_get_buffer(m_bitmap));
 	m_width = upng::upng_get_width(m_bitmap);
 	m_height = upng::upng_get_height(m_bitmap);
+	m_bpp = upng::upng_get_bpp(m_bitmap);
 	m_flags = flags;
 	
 	// done!
@@ -179,7 +181,21 @@ uint Texture2D::getHeight() const
 
 void Texture2D::apply()
 {
-	auto size = m_width * m_height * 4;
+	int pitch;
+	bgfx::TextureFormat::Enum format;
+	switch (m_bpp)
+	{
+	case 24:
+		format = bgfx::TextureFormat::RGB8;
+		pitch = 3;
+		break;
+	default:
+		format = bgfx::TextureFormat::RGBA8;
+		pitch = 4;
+		break;
+	}
+
+	auto size = m_width * m_height * pitch;
 
 	if (m_mips > 0)
 	{
@@ -198,26 +214,10 @@ void Texture2D::apply()
 	else
 		mem = bgfx::makeRef(m_bits, size, releaseBitsRaw, static_cast<void*>(m_bits));
 
-	memcpy_s(mem->data, mem->size, m_bits, size);
-	
 	auto mipCount = uint8_t(m_mips + 1);
-	m_textureHandle = bgfx::createTexture2D(uint16_t(m_width), uint16_t(m_height), mipCount, 1, bgfx::TextureFormat::RGBA8, m_flags, mem);
+	m_textureHandle = bgfx::createTexture2D(uint16_t(m_width), uint16_t(m_height), mipCount, 1, format, m_flags, mem);
 
 	m_bits = nullptr;
-}
-
-void Texture2D::loadTextureData(const char* filename, uint** pixels, int* width, int* height)
-{
-	auto bitmap = upng::upng_new_from_file(filename);
-	upng::upng_decode(bitmap);
-
-	auto bits = const_cast<byte*>(upng::upng_get_buffer(bitmap));
-	*width = upng::upng_get_width(bitmap);
-	*height = upng::upng_get_height(bitmap);
-
-	*pixels = new uint[*width * *height];
-
-	memcpy(*pixels, bits, *width * *height * 4);
 }
 
 void Texture2D::releaseTextureData(uint* pixels)
