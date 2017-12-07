@@ -24,17 +24,15 @@ class Profiler
 private:
 	API_DEF
 
-private:
+public:
 	struct ProfilerEntry
 	{
 	public:
+		double gameTime = 0.0f;
 		double time = 0.0f;
 		double timeMed = 0.0f;
 		double timeMax = 0.0f;
 		Text name = {};
-
-		uint64_t gcSize;
-		uint64_t gcTotalSize;
 
 		int depth = 0;
 	};
@@ -67,8 +65,6 @@ public:
 		entry.timeMed = timeMed;
 		entry.timeMax = timeMax;
 		entry.depth = m_entries.count();
-		entry.gcSize = mono_gc_get_used_size();
-		entry.gcTotalSize = mono_gc_get_heap_size();
 
 		m_entries.add(entry);
 	}
@@ -84,13 +80,9 @@ public:
 		var end = Platform::getMiliseconds();
 		var time = end - start;
 
-		var gcCurrent = mono_gc_get_used_size();
-		var gcTotalCurrent = mono_gc_get_heap_size();
-
-		entry.gcSize = gcCurrent - entry.gcSize;
-		entry.gcTotalSize = gcTotalCurrent - entry.gcTotalSize;
-
+		entry.gameTime = start;
 		entry.time = time;
+
 		m_entryiesBuffer.add(entry);
 		m_entries.removeAt(m_entries.count() - 1);
 	}
