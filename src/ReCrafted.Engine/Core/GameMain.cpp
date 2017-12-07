@@ -193,7 +193,7 @@ void GameMain::initScripting()
 
 void GameMain::waitForTargetFps(double last)
 {
-	Profiler::beginProfile(TEXT_CONST("WaitForTargetFps"));
+	Profiler::beginProfile("WaitForTargetFps");
 	var target = 1.0 / m_targetFps * 1000.0;
 	var delta = Platform::getMiliseconds() - last;
 	var sleep = target - delta;
@@ -207,7 +207,7 @@ void GameMain::waitForTargetFps(double last)
 
 void GameMain::runEvents()
 {
-	Profiler::beginProfile(TEXT_CONST("RunEvents"));
+	Profiler::beginProfile("RunEvents");
 	MSG msg;
 	msg.message = WM_NULL;
 	while (PeekMessage(&msg, nullptr, 0u, 0u, PM_REMOVE))
@@ -290,7 +290,7 @@ void GameMain::run()
 
 	while (m_running) // main loop
 	{
-		Profiler::beginProfile(TEXT_CONST("Frame"));
+		Profiler::beginProfile("Frame");
 
 		// update time
 		auto currentTime = Platform::getMiliseconds();
@@ -475,7 +475,7 @@ void GameMain::onResize(uint width, uint height)
 
 void GameMain::onUpdate()
 {
-	Profiler::beginProfile(TEXT_CONST("Update"));
+	Profiler::beginProfile("Update");
 
 	// update event, called every frame
 
@@ -525,7 +525,7 @@ void GameMain::onUpdate()
 
 void GameMain::onSimulate()
 {
-	Profiler::beginProfile(TEXT_CONST("Simulate"));
+	Profiler::beginProfile("Simulate");
 
 	// simulation event, called every simulation tick(fixed time)
 
@@ -538,8 +538,8 @@ void GameMain::onSimulate()
 
 void GameMain::onDraw()
 {
-	Profiler::beginProfile(TEXT_CONST("Draw (present)"));
-	Profiler::beginProfile(TEXT_CONST("Draw"));
+	Profiler::beginProfile("Draw (present)");
+	Profiler::beginProfile("Draw");
 
 	// draw event, called every frame, must be ended with gpu backbuffer `present` or `swapbuffer` - bgfx::frame()
 	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());

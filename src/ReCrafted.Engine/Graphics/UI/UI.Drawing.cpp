@@ -20,6 +20,67 @@ v2.v = uvs.y;\
 v3.u = uvs.x;\
 v3.v = uvs.y;
 
+template<typename T>
+FORCEINLINE void drawTextBase(UI* instance, Font* font, T* characters, int characterCount, Vector2 position)
+{
+	// round position
+	position.x = roundf(position.x);
+	position.y = roundf(position.y);
+
+	auto currentPosition = position;
+	auto lineheight = float(font->getSize()) * font->getLineHeight();
+
+	for (auto i = 0; i < characterCount; i++)
+	{
+		auto character = characters[i];
+		auto glyph = font->getCharacter(character);
+
+		if (glyph.font != font)
+		{
+			// invalid character!
+			glyph = font->getCharacter(Char('?'));
+		}
+
+		auto glyphRect = glyph.rectangle;
+		auto texture = font->getTexture(glyph.texture);
+
+		var atlasWidth = static_cast<float>(texture->getWidth());
+		var atlasHeight = static_cast<float>(texture->getHeight());
+
+		if (character == ' ') // Space
+		{
+			auto glyphData = font->getCharacter(Char('i'));
+			currentPosition += Vector2(float(glyphData.advanceX), 0.0f);
+		}
+		else if (character == 9) // Tab
+		{
+			auto glyphData = font->getCharacter(Char('i'));
+			currentPosition += Vector2(float(glyphData.advanceX) * 3, 0.0f);
+		}
+		else if (character == '\n' || character == 10 || character == 13) // New line character.
+		{
+			currentPosition.x = position.x;
+			currentPosition.y += lineheight;
+		}
+		else // A 'normal' character.
+		{
+			auto currentX = currentPosition.x;
+			auto currentY = currentPosition.y;
+
+			currentX += glyph.horizontalBearingX;
+			currentY += lineheight;
+			currentY -= glyph.horizontalBearingY;
+
+			instance->internal_drawBoxTextured(
+				Rectf(currentX, currentY, float(glyphRect.width), float(glyphRect.height)),
+				texture->getHandle(),
+				Rectf(glyphRect.x / atlasWidth, (glyphRect.y + glyphRect.height) / atlasHeight, glyphRect.width / atlasWidth, -glyphRect.height / atlasHeight));
+
+			currentPosition += Vector2(float(glyph.advanceX), 0.0f);
+		}
+	}
+}
+
 void UI::setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex& v3) const
 {
 	var screen_width = Display::get_Width() * 0.5f;
@@ -146,64 +207,14 @@ void UI::drawText(Font* font, Text text, Vector2 position)
 	drawText(font, text.data(), text.length(), position);
 }
 
-void UI::drawText(Font* font, Char* characters, int characterCount, Vector2 position)
+void UI::drawText(Font* font, const Char* characters, int characterCount, Vector2 position)
 {
-	// round position
-	position.x = roundf(position.x);
-	position.y = roundf(position.y);
+	drawTextBase(m_instance, font, characters, characterCount, position);
+}
 
-	auto currentPosition = position;
-	auto lineheight = float(font->m_size) * font->m_lineHeigh;
-
-	for (auto i = 0; i < characterCount; i++)
-	{
-		auto character = characters[i];
-		auto glyph = font->m_glyphs[character];
-
-		if (glyph.font != font)
-		{
-			// invalid character!
-			glyph = font->m_glyphs['?'];
-		}
-
-		auto glyphRect = glyph.rectangle;
-		auto texture = font->m_textures[glyph.texture];
-		
-		var atlasWidth = static_cast<float>(texture->getWidth());
-		var atlasHeight = static_cast<float>(texture->getHeight());
-
-		if (character == ' ') // Space
-		{
-			auto glyphData = font->m_glyphs[Char('i')];
-			currentPosition += Vector2(float(glyphData.advanceX), 0.0f);
-		}
-		else if (character == 9) // Tab
-		{
-			auto glyphData = font->m_glyphs[Char('i')];
-			currentPosition += Vector2(float(glyphData.advanceX) * 3, 0.0f);
-		}
-		else if (character == '\n' || character == 10 || character == 13) // New line character.
-		{
-			currentPosition.x = position.x;
-			currentPosition.y += lineheight;
-		}
-		else // A 'normal' character.
-		{
-			auto currentX = currentPosition.x;
-			auto currentY = currentPosition.y;
-
-			currentX += glyph.horizontalBearingX;
-			currentY += lineheight;
-			currentY -= glyph.horizontalBearingY;
-
-			m_instance->internal_drawBoxTextured(
-				Rectf(currentX, currentY, float(glyphRect.width), float(glyphRect.height)),
-				texture->getHandle(),
-				Rectf(glyphRect.x / atlasWidth, (glyphRect.y + glyphRect.height) / atlasHeight, glyphRect.width / atlasWidth, -glyphRect.height / atlasHeight));
-
-			currentPosition += Vector2(float(glyph.advanceX), 0.0f);
-		}
-	}
+void UI::drawText(Font* font, const char* characters, int characterCount, Vector2 position)
+{
+	drawTextBase(m_instance, font, characters, characterCount, position);
 }
 
 void UI::drawTexture(Texture2D* texture, Rectf rect, Rectf uvs)

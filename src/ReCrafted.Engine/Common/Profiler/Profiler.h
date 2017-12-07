@@ -10,8 +10,6 @@
 #include "Platform/Platform.h"
 #include "Core/Containers/Array.h"
 
-#include <mono/metadata/mono-gc.h>
-
 class Font;
 
 /// <summary>
@@ -32,7 +30,8 @@ public:
 		double time = 0.0f;
 		double timeMed = 0.0f;
 		double timeMax = 0.0f;
-		Text name = {};
+		const Char* name = nullptr;
+		const char* nameU8 = nullptr;
 
 		int depth = 0;
 	};
@@ -50,18 +49,42 @@ private:
 	static void drawDebugScreen();
 	static void endFrame();
 
+	static void recalcAvg();
+
 public:
 	/**
 	 * \brief Begins new profile.
-	 * \param name The name of the new profile. Use `TEXT_CONST("Text")`.
+	 * \param name The name of the new profile. Use `TEXT_CHARS("Text")`.
 	 */
-	FORCEINLINE static void beginProfile(Text name, double timeMed = -1.0f, double timeMax = -1.0f)
+	FORCEINLINE static void beginProfile(const Char* name, double timeMed = -1.0f, double timeMax = -1.0f)
 	{
+		// TODO: Main thread check (debug)
+
 		auto start = Platform::getMiliseconds();
 
 		ProfilerEntry entry;
 		entry.time = start;
 		entry.name = name;
+		entry.timeMed = timeMed;
+		entry.timeMax = timeMax;
+		entry.depth = m_entries.count();
+
+		m_entries.add(entry);
+	}
+
+	/**
+	* \brief Begins new profile.
+	* \param name The name of the new profile.
+	*/
+	FORCEINLINE static void beginProfile(const char* name, double timeMed = -1.0f, double timeMax = -1.0f)
+	{
+		// TODO: Main thread check (debug)
+
+		auto start = Platform::getMiliseconds();
+
+		ProfilerEntry entry;
+		entry.time = start;
+		entry.nameU8 = name;
 		entry.timeMed = timeMed;
 		entry.timeMax = timeMax;
 		entry.depth = m_entries.count();

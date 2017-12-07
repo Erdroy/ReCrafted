@@ -98,7 +98,31 @@ public:
 	/// <returns></returns>
 	void loadFont(Text fontFile, int size, bool managed = false);
 
-	uint getSize();
+	/**
+	 * \brief Gets texture of this font of given id.
+	 * \param id The texture id.
+	 * \return The texture.
+	 */
+	FORCEINLINE Ptr<Texture2D> getTexture(int id) const
+	{
+		return m_textures[id];
+	}
+
+	/**
+	 * \brief The size of this font.
+	 */
+	FORCEINLINE uint getSize() const
+	{
+		return m_size;
+	}
+
+	/**
+	* \brief The line height multiplier of this font.
+	*/
+	FORCEINLINE float getLineHeight() const
+	{
+		return m_lineHeigh;
+	}
 };
 
 #endif // FONT_H

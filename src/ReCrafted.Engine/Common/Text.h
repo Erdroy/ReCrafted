@@ -280,16 +280,7 @@ public:
 	/// <returns>The length.</returns>
 	int length() const
 	{
-		if (m_data == nullptr)
-			return 0;
-
-		auto i = 0;
-		while (m_data[i] != 0)
-		{
-			i++;
-		}
-
-		return i;
+		return length(m_data);
 	}
 
 	/// <summary>
@@ -426,6 +417,21 @@ public:
 		text.m_const = true;
 		return text;
 	}
+
+	static int length(const Char* str)
+	{
+		if (str == nullptr)
+			return 0;
+
+		auto i = 0;
+		while (str[i] != 0)
+		{
+			i++;
+		}
+
+		return i;
+	}
+
 #ifdef USE_FMT
 	FORCEINLINE static Text format(const Text& format, fmt::ArgList args)
 	{

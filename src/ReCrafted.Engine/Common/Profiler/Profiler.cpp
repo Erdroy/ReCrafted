@@ -6,8 +6,8 @@
 #include "Common/Input/Input.h"
 #include "Graphics/UI/UI.h"
 #include "Graphics/Font.h"
-#include <iomanip>
-#include <sstream>
+
+#include <mono/metadata/mono-gc.h>
 
 Array<Profiler::ProfilerEntry> Profiler::m_entries;
 Array<Profiler::ProfilerEntry> Profiler::m_entryiesBuffer;
@@ -18,18 +18,9 @@ Font* Profiler::m_debugFont;
 struct BufferItem
 {
 	Profiler::ProfilerEntry entry;
-
 };
 
 Array<BufferItem> m_drawBuffer;
-
-template <typename T>
-std::wstring to_string_with_precision(const T a_value, const int n)
-{
-	std::wostringstream out;
-	out << std::fixed << std::setprecision(n) << a_value;
-	return out.str();
-}
 
 void Profiler::init()
 {
@@ -50,10 +41,12 @@ void Profiler::drawDebugScreen()
 	if (!m_drawDebugScreen)
 		return;
 
-	beginProfile(TEXT_CONST("Profiler Draw (self profile)"), 0.5f, 1.0f);
+	beginProfile("Profiler Draw (self profile)", 0.5f, 1.0f);
 	{
 		var depth = UI::getDepth();
 		UI::setDepth(9999.0f);
+
+		recalcAvg();
 
 		var yOffset = 0.0f;
 
@@ -81,11 +74,6 @@ void Profiler::drawDebugScreen()
 		UI::drawText(m_debugFont, TEXT_CONST("[Profiles]"), Vector2(0.0f, yOffset));
 		yOffset += static_cast<float>(m_debugFont->getSize()) * 2.0f;
 
-		// TODO: update buffer and calculate avg
-		// delete all entries that are older than one second
-		// add all the current
-		// calulate avg
-
 		for (var i = static_cast<int>(m_lastFrame.count()) - 1; i >= 0; i--)
 		{
 			UI::setColor(Color(0xFFFFFFFF));
@@ -100,10 +88,14 @@ void Profiler::drawDebugScreen()
 			else
 				UI::setColor(Color(0xFFFFFFFF));
 
-			var infoText = Text::format(TEXT("{0:2f} ms"), entry.time);
+			var infoText = Text::format(TEXT("{0:.4f} ms"), entry.time);
 
 			UI::drawText(m_debugFont, infoText, Vector2(10.0f, yOffset));
-			UI::drawText(m_debugFont, entry.name, Vector2(150.0f + depthOffset, yOffset));
+
+			if(entry.nameU8 != nullptr)
+				UI::drawText(m_debugFont, entry.nameU8, static_cast<int>(strlen(entry.nameU8)), Vector2(150.0f + depthOffset, yOffset));
+			else
+				UI::drawText(m_debugFont, entry.name, Text::length(entry.name), Vector2(150.0f + depthOffset, yOffset));
 
 			yOffset += m_debugFont->getSize();
 		}
@@ -125,4 +117,12 @@ void Profiler::endFrame()
 		Logger::logWarning("Profiler: Not all of the profiles were ended!");
 		m_entries.clear();
 	}
+}
+
+void Profiler::recalcAvg()
+{
+	// TODO: update buffer and calculate avg
+	// delete all entries that are older than one second
+	// add all the current
+	// calulate avg
 }

@@ -83,23 +83,19 @@ private:
 
 private:
 	static bool drawcmd_comparison(drawcmd& cmd1, drawcmd& cmd2);
-
 	void clear();
-
 	void drawnow();
 
 	// drawing
 	
 	FORCEINLINE void setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex& v3) const;
-
 	FORCEINLINE void finalizeVertexData(vertex& v0, vertex& v1, vertex& v2, vertex& v3, uint texture);
 
-	FORCEINLINE void internal_drawBox(Rectf rect);
 
-	FORCEINLINE void internal_drawBoxTextured(Rectf rect, uint texture, Rectf uvs);
-
+public:
 	// internal
-
+	FORCEINLINE void internal_drawBox(Rectf rect);
+	FORCEINLINE void internal_drawBoxTextured(Rectf rect, uint texture, Rectf uvs);
 	FORCEINLINE void push_drawcmd(drawcmd* cmd, int index);
 
 public:
@@ -107,11 +103,8 @@ public:
 
 public:
 	void init();
-
 	void dispose();
-	
 	void beginDraw();
-
 	void endDraw();
 
 public:
@@ -161,7 +154,16 @@ public:
 	/// <param name="characters">The characters to be drawn.</param>
 	/// <param name="characterCount">The character count.</param>
 	/// <param name="position">The point in pixels where the text will be drawn on the screen.</param>
-	static void drawText(Font* font, Char* characters, int characterCount, Vector2 position);
+	static void drawText(Font* font, const Char* characters, int characterCount, Vector2 position);
+
+	/// <summary>
+	/// Draws text on the screen.
+	/// </summary>
+	/// <param name="font">The font which will be used for drawing.</param>
+	/// <param name="characters">The characters to be drawn.</param>
+	/// <param name="characterCount">The character count.</param>
+	/// <param name="position">The point in pixels where the text will be drawn on the screen.</param>
+	static void drawText(Font* font, const char* characters, int characterCount, Vector2 position);
 
 	/// <summary>
 	/// Draws texture.

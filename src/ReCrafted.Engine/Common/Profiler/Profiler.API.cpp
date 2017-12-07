@@ -8,7 +8,7 @@ namespace Internal
 {
 	void beginProfile(MonoString* name, float med, float max)
 	{
-		var text = Text::constant(MONO_TEXT(name));
+		var text = MONO_TEXT(name);
 		Profiler::beginProfile(text, med, max);
 	}
 }
