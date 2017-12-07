@@ -15,6 +15,14 @@ Array<Profiler::ProfilerEntry> Profiler::m_lastFrame;
 bool Profiler::m_drawDebugScreen;
 Font* Profiler::m_debugFont;
 
+struct BufferItem
+{
+	Profiler::ProfilerEntry entry;
+
+};
+
+Array<BufferItem> m_drawBuffer;
+
 template <typename T>
 std::wstring to_string_with_precision(const T a_value, const int n)
 {
@@ -53,9 +61,11 @@ void Profiler::drawDebugScreen()
 	float gcHeapSize;
 	var unitB = ByteFormat::Format(mono_gc_get_heap_size(), &gcHeapSize);
 
+	UI::setColor(Color(0xFF0A00FF));
 	UI::drawText(m_debugFont, TEXT_CONST("Profiler [press F9 to hide]"), Vector2(0.0f, 0.0f));
 	yOffset += static_cast<float>(m_debugFont->getSize()) * 2.0f;
 
+	UI::setColor(Color(0xFFFFFFFF));
 	UI::drawText(m_debugFont, TEXT_CONST("[GC Memory]"), Vector2(0.0f, yOffset));
 	yOffset += static_cast<float>(m_debugFont->getSize()) * 2.0f;
 
