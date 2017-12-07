@@ -11,7 +11,7 @@ namespace ReCrafted.API.UI
     public abstract class UIControl
     {
         // control depth
-        internal float Depth;
+        internal int Depth;
 
         /// <summary>
         /// Draws all controls.

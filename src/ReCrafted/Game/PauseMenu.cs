@@ -61,12 +61,12 @@ namespace ReCrafted.Game
         {
             Instance = this;
 
-            Background = UIPanel.Create(new RectangleF(0, 0, Display.Width, Display.Height), UILayoutType.Vertical, "Pause Background");
+            Background = UIPanel.Create(new RectangleF(0, 0, Display.Width, Display.Height), UILayoutType.Vertical, "Pause Background", 9999);
             Background.PanelColor = new Color(0, 0, 0, 0.5f);
             Background.Visible = false;
 
             // Create Main Panel
-            MainPanel = UIPanel.Create(MainPanelRegion, UILayoutType.Vertical, "Pause Menu");
+            MainPanel = UIPanel.Create(MainPanelRegion, UILayoutType.Vertical, "Pause Menu", 10000);
 
             MainPanel.PanelColor = Color.Blue;
 

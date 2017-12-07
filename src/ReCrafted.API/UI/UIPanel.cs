@@ -147,8 +147,9 @@ namespace ReCrafted.API.UI
         /// <param name="region">The UIPanel region.</param>
         /// <param name="layoutType">The lay-outing type.</param>
         /// <param name="name">Name of UIPanel.</param>
+        /// <param name="baseDepth">Base depth of panel.</param>
         /// <returns>The newly created panel.</returns>
-        public static UIPanel Create(RectangleF region, UILayoutType layoutType, string name = "")
+        public static UIPanel Create(RectangleF region, UILayoutType layoutType, string name = "", int baseDepth = 1)
         {
             // construct new panel
             var panel = new UIPanel
@@ -160,8 +161,7 @@ namespace ReCrafted.API.UI
                 Parent = null,
                 Region = region,
                 PanelColor = Color.White,
-                Depth = 1 + (Panels.Count == 0 ? 0 : Panels[Panels.Count - 1].Depth) +
-                        (Panels.Count == 0 ? 0 : Panels[Panels.Count - 1].Layout.Controls.Count),
+                Depth = baseDepth + (Panels.Count == 0 ? 0 : Panels[Panels.Count - 1].Depth) + (Panels.Count == 0 ? 0 : Panels[Panels.Count - 1].Layout.Controls.Count),
                 Layout = UILayout.Create(region, layoutType),
             };
 

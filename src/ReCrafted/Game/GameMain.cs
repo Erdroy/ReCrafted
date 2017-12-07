@@ -104,9 +104,11 @@ namespace ReCrafted.Game
             UIInternal.Color = Color.White;
             UIInternal.DrawString(UIControl.DefaultFont.NativePtr, "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber, ref pos);
 
-
             UIPanel.DrawAll();
 
+            Profiler.BeginProfile("Sprite.DrawAll");
+            Sprite.DrawAll();
+            Profiler.EndProfile();
 
             Profiler.EndProfile();
         }
