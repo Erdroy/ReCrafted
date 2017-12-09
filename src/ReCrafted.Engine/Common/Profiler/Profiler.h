@@ -52,6 +52,7 @@ private:
 			depth = m_profileStack.count();
 			order = m_profileCount;
 
+			// increment profile count
 			m_profileCount++;
 
 			// increment call count
@@ -164,7 +165,7 @@ public:
 		profile->timeTotal += static_cast<float>(currentTime - profile->timeBegin);
 
 		// update every 1/4 second
-		if ((currentTime - profile->lastAvgUpdate) * 0.001f >= 0.25f)
+		if (currentTime - profile->lastAvgUpdate >= 250.0f)
 		{
 			// calculate avg time
 			profile->timeAvg = profile->timeTotal / float(profile->calls);
