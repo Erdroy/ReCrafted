@@ -432,6 +432,26 @@ public:
 		return i;
 	}
 
+	static bool compare(const Char* str1, const Char* str2)
+	{
+		if (str1 == nullptr || str2 == nullptr)
+			return false;
+
+		auto l1 = length(str1);
+		auto l2 = length(str2);
+
+		if (l1 != l2)
+			return false;
+
+		for(auto i = 0; i < l1; i ++)
+		{
+			if (str1[i] != str2[i])
+				return false;
+		}
+
+		return true;
+	}
+
 #ifdef USE_FMT
 	FORCEINLINE static Text format(const Text& format, fmt::ArgList args)
 	{

@@ -36,6 +36,7 @@ private:
 		double lastAvgUpdate = 0.0f;
 		double timeBegin = 0.0f;
 
+		int order = 0;
 		int calls = 0;
 		int depth = 0;
 
@@ -49,6 +50,9 @@ private:
 			lastUpdate = currentTime;
 			timeBegin = currentTime;
 			depth = m_profileStack.count();
+			order = m_profileCount;
+
+			m_profileCount++;
 
 			// increment call count
 			calls++;
@@ -60,6 +64,10 @@ private:
 	static Array<Profile*> m_profileStack;
 	static bool m_drawDebugScreen;
 	static Font* m_debugFont;
+	static int m_profileCount;
+
+private:
+	static bool Profiler::profileSort(const Profile& lhs, const Profile& rhs);
 
 private:
 	static void init();
@@ -95,7 +103,15 @@ private:
 			else
 			{
 				// TODO: UTF-16 string compare
-				return;
+				if (Text::compare(static_cast<const Char*>(profile.name), static_cast<const Char*>((void*)name)))
+				{
+					// update
+					profile.update(currentTime);
+
+					// add to stack
+					m_profileStack.add(&profile);
+					return;
+				}
 			}
 		}
 
@@ -103,12 +119,11 @@ private:
 		Profile newProfile;
 		newProfile.name = name;
 		newProfile.calls = 0;
-		newProfile.depth = m_profileStack.count();
 		newProfile.timeMed = timeMed;
 		newProfile.timeMax = timeMax;
-		newProfile.lastUpdate = currentTime;
-		newProfile.timeBegin = currentTime;
 		newProfile.utf8 = utf8;
+
+		newProfile.update(currentTime);
 
 		m_profiles.add(newProfile);
 	}

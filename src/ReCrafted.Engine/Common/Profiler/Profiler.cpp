@@ -13,6 +13,12 @@ Array<Profiler::Profile> Profiler::m_profiles;
 Array<Profiler::Profile*> Profiler::m_profileStack;
 bool Profiler::m_drawDebugScreen;
 Font* Profiler::m_debugFont;
+int Profiler::m_profileCount;
+
+bool Profiler::profileSort(const Profile& lhs, const Profile& rhs)
+{
+	return lhs.order > rhs.order;
+}
 
 void Profiler::init()
 {
@@ -67,6 +73,9 @@ void Profiler::drawDebugScreen()
 		UI::drawText(m_debugFont, TEXT_CONST("[Profiles]"), Vector2(0.0f, yOffset));
 		yOffset += static_cast<float>(m_debugFont->getSize()) * 2.0f;
 
+		// sort by order
+		sort(m_profiles.begin(), m_profiles.end(), profileSort);
+
 		for (var i = static_cast<int>(m_profiles.count()) - 1; i >= 0; i--)
 		{
 			UI::setColor(Color(0xFFFFFFFF));
@@ -107,6 +116,8 @@ void Profiler::drawDebugScreen()
 void Profiler::endFrame()
 {
 	// cleanup
+
+	m_profileCount = 0;
 	
 	// clear stack if needed and start yelling at the dev
 	if(m_profileStack.count() > 0)
