@@ -9,18 +9,10 @@
 
 #include <mono/metadata/mono-gc.h>
 
-Array<Profiler::ProfilerEntry> Profiler::m_entries;
-Array<Profiler::ProfilerEntry> Profiler::m_entryiesBuffer;
-Array<Profiler::ProfilerEntry> Profiler::m_lastFrame;
+Array<Profiler::Profile> Profiler::m_profiles;
+Array<Profiler::Profile*> Profiler::m_profileStack;
 bool Profiler::m_drawDebugScreen;
 Font* Profiler::m_debugFont;
-
-struct BufferItem
-{
-	Profiler::ProfilerEntry entry;
-};
-
-Array<BufferItem> m_drawBuffer;
 
 void Profiler::init()
 {
@@ -41,12 +33,13 @@ void Profiler::drawDebugScreen()
 	if (!m_drawDebugScreen)
 		return;
 
+	beginProfile("Profile");
+	endProfile();
+
 	beginProfile("Profiler Draw (self profile)", 0.5f, 1.0f);
 	{
 		var depth = UI::getDepth();
 		UI::setDepth(9999.0f);
-
-		recalcAvg();
 
 		var yOffset = 0.0f;
 
@@ -74,28 +67,34 @@ void Profiler::drawDebugScreen()
 		UI::drawText(m_debugFont, TEXT_CONST("[Profiles]"), Vector2(0.0f, yOffset));
 		yOffset += static_cast<float>(m_debugFont->getSize()) * 2.0f;
 
-		for (var i = static_cast<int>(m_lastFrame.count()) - 1; i >= 0; i--)
+		for (var i = static_cast<int>(m_profiles.count()) - 1; i >= 0; i--)
 		{
 			UI::setColor(Color(0xFFFFFFFF));
 
-			var entry = m_lastFrame.at(i);
+			var entry = m_profiles.at(i);
 			var depthOffset = entry.depth * 15.0f;
 
-			if (entry.time > entry.timeMax && entry.timeMax >= 0.0f)
+			if (entry.timeAvg > entry.timeMax && entry.timeMax >= 0.0f)
 				UI::setColor(Color(0xFF0A00FF));
-			else if (entry.time > entry.timeMed && entry.timeMed >= 0.0f)
+			else if (entry.timeAvg > entry.timeMed && entry.timeMed >= 0.0f)
 				UI::setColor(Color(0xAA0A00FF));
 			else
 				UI::setColor(Color(0xFFFFFFFF));
 
-			var infoText = Text::format(TEXT("{0:.4f} ms"), entry.time);
+			var infoText = Text::format(TEXT("{0:.4f} ms"), entry.timeAvg);
 
 			UI::drawText(m_debugFont, infoText, Vector2(10.0f, yOffset));
 
-			if(entry.nameU8 != nullptr)
-				UI::drawText(m_debugFont, entry.nameU8, static_cast<int>(strlen(entry.nameU8)), Vector2(150.0f + depthOffset, yOffset));
+			if(entry.utf8)
+			{
+				var name = static_cast<const char*>(entry.name);
+				UI::drawText(m_debugFont, name, static_cast<int>(strlen(name)), Vector2(150.0f + depthOffset, yOffset));
+			}
 			else
-				UI::drawText(m_debugFont, entry.name, Text::length(entry.name), Vector2(150.0f + depthOffset, yOffset));
+			{
+				var name = static_cast<const Char*>(entry.name);
+				UI::drawText(m_debugFont, name, Text::length(name), Vector2(150.0f + depthOffset, yOffset));
+			}
 
 			yOffset += m_debugFont->getSize();
 		}
@@ -107,22 +106,20 @@ void Profiler::drawDebugScreen()
 
 void Profiler::endFrame()
 {
-	// copy to present array
-	m_lastFrame.clear();
-	m_lastFrame.copy(m_entryiesBuffer);
-	m_entryiesBuffer.clear();
-
-	if(m_entries.count() != 0)
+	// cleanup
+	
+	// clear stack if needed and start yelling at the dev
+	if(m_profileStack.count() > 0)
 	{
+		m_profileStack.clear();
 		Logger::logWarning("Profiler: Not all of the profiles were ended!");
-		m_entries.clear();
 	}
-}
 
-void Profiler::recalcAvg()
-{
-	// TODO: update buffer and calculate avg
-	// delete all entries that are older than one second
-	// add all the current
-	// calulate avg
+	auto currentTime = Platform::getMiliseconds();
+
+	// remove old profiles
+	m_profiles.erase(std::remove_if(m_profiles.begin(), m_profiles.end(), [currentTime](Profile& profile)
+	{
+		return currentTime - profile.lastUpdate >= 1000.0f;
+	}), m_profiles.end());
 }

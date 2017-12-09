@@ -78,6 +78,18 @@ public:
         return false;
     }
 
+	FORCEINLINE void erase(typename std::vector<T>::const_iterator where)
+	{
+		m_vector.erase(where);
+		m_count = static_cast<uint32_t>(m_vector.size());
+	}
+
+	FORCEINLINE void erase(typename std::vector<T>::const_iterator where, typename std::vector<T>::const_iterator last)
+	{
+		m_vector.erase(where, last);
+		m_count = static_cast<uint32_t>(m_vector.size());
+	}
+
     FORCEINLINE void removeAt(int index)
     {
 		_ASSERT(index >= 0 && index < static_cast<int>(m_count));

@@ -22,24 +22,42 @@ class Profiler
 private:
 	API_DEF
 
-public:
-	struct ProfilerEntry
+private:
+	struct Profile
 	{
 	public:
-		double gameTime = 0.0f;
-		double time = 0.0f;
-		double timeMed = 0.0f;
-		double timeMax = 0.0f;
-		const Char* name = nullptr;
-		const char* nameU8 = nullptr;
+		float timeTotal = 0.0f;
+		float timeAvg = 0.0f;
 
+		float timeMed = 0.0f;
+		float timeMax = 0.0f;
+
+		double lastUpdate = 0.0f;
+		double lastAvgUpdate = 0.0f;
+		double timeBegin = 0.0f;
+
+		int calls = 0;
 		int depth = 0;
+
+		const void* name = nullptr;
+		bool utf8 = false;
+
+	public:
+		void update(double currentTime)
+		{
+			// update time
+			lastUpdate = currentTime;
+			timeBegin = currentTime;
+			depth = m_profileStack.count();
+
+			// increment call count
+			calls++;
+		}
 	};
 
 private:
-	static Array<ProfilerEntry> m_entries;
-	static Array<ProfilerEntry> m_entryiesBuffer;
-	static Array<ProfilerEntry> m_lastFrame;
+	static Array<Profile> m_profiles;
+	static Array<Profile*> m_profileStack;
 	static bool m_drawDebugScreen;
 	static Font* m_debugFont;
 
@@ -47,77 +65,105 @@ private:
 	static void init();
 	static void update();
 	static void drawDebugScreen();
-	static void endFrame();
 
-	static void recalcAvg();
+private:
+	template<typename T>
+	FORCEINLINE static void beginProfile(const T* name, bool utf8, float timeMed, float timeMax)
+	{
+		// TODO: Main thread check (debug)
+
+		var currentTime = Platform::getMiliseconds();
+
+		// try select profile, then update
+		// check if profile already exists with this name
+		for (var & profile : m_profiles)
+		{
+			if (utf8)
+			{
+				// (just compare name pointers, not called by Mono, 
+				// so 'const char*' pointer address is const...)
+				if (profile.name == name)
+				{
+					// update
+					profile.update(currentTime);
+
+					// add to stack
+					m_profileStack.add(&profile);
+					return;
+				}
+			}
+			else
+			{
+				// TODO: UTF-16 string compare
+				return;
+			}
+		}
+
+		// add profile as it is not yet added
+		Profile newProfile;
+		newProfile.name = name;
+		newProfile.calls = 0;
+		newProfile.depth = m_profileStack.count();
+		newProfile.timeMed = timeMed;
+		newProfile.timeMax = timeMax;
+		newProfile.lastUpdate = currentTime;
+		newProfile.timeBegin = currentTime;
+		newProfile.utf8 = utf8;
+
+		m_profiles.add(newProfile);
+	}
 
 public:
 	/**
 	 * \brief Begins new profile.
 	 * \param name The name of the new profile. Use `TEXT_CHARS("Text")`.
 	 */
-	FORCEINLINE static void beginProfile(const Char* name, double timeMed = -1.0f, double timeMax = -1.0f)
+	FORCEINLINE static void beginProfile(const Char* name, float timeMed = -1.0f, float timeMax = -1.0f)
 	{
-		// TODO: Main thread check (debug)
-
-		auto start = Platform::getMiliseconds();
-
-		ProfilerEntry entry;
-		entry.time = start;
-		entry.name = name;
-		entry.timeMed = timeMed;
-		entry.timeMax = timeMax;
-		entry.depth = m_entries.count();
-
-		m_entries.add(entry);
+		beginProfile(name, false, timeMed, timeMax);
 	}
 
 	/**
 	* \brief Begins new profile.
 	* \param name The name of the new profile.
 	*/
-	FORCEINLINE static void beginProfile(const char* name, double timeMed = -1.0f, double timeMax = -1.0f)
+	FORCEINLINE static void beginProfile(const char* name, float timeMed = -1.0f, float timeMax = -1.0f) 
 	{
-		// TODO: Main thread check (debug)
-
-		auto start = Platform::getMiliseconds();
-
-		ProfilerEntry entry;
-		entry.time = start;
-		entry.nameU8 = name;
-		entry.timeMed = timeMed;
-		entry.timeMax = timeMax;
-		entry.depth = m_entries.count();
-
-		m_entries.add(entry);
+		beginProfile(name, true, timeMed, timeMax);
 	}
 
 	/**
 	* \brief Ends the current profile.
 	*/
-	FORCEINLINE static void endProfile()
+	FORCEINLINE static void endProfile() 
 	{
-		var entry = m_entries.last();
+		if (m_profileStack.count() == 0)
+			return;
 
-		var start = entry.time;
-		var end = Platform::getMiliseconds();
-		var time = end - start;
+		var currentTime = Platform::getMiliseconds();
 
-		entry.gameTime = start;
-		entry.time = time;
+		// select profile
+		var profile = m_profileStack.last();
 
-		m_entryiesBuffer.add(entry);
-		m_entries.removeAt(m_entries.count() - 1);
+		// update total time
+		profile->timeTotal += static_cast<float>(currentTime - profile->timeBegin);
+
+		// update every 1/4 second
+		if ((currentTime - profile->lastAvgUpdate) * 0.001f >= 0.25f)
+		{
+			// calculate avg time
+			profile->timeAvg = profile->timeTotal / float(profile->calls);
+			profile->lastAvgUpdate = currentTime;
+		}
+
+		// remove profile
+		m_profileStack.removeAt(m_profileStack.count() - 1);
 	}
 
 	/**
-	 * \brief Gets the last frame info.
-	 * \return The array which contains all of the profiles.
+	 * \brief Ends current frame.
 	 */
-	FORCEINLINE static Array<ProfilerEntry> getFrameInfo()
-	{
-		return m_lastFrame;
-	}
+	static void endFrame();
 };
 
 #endif // PROFILER_H
