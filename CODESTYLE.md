@@ -248,6 +248,8 @@ internal interface IInterfaceName
 
 # 4. Methods
 Name of every method starts with uppercase and they should have description (with all the parameters) in XML comments (if they're public/protected/internal).
+Private Methods do not require any comment.
+
 ```CSharp
 /// <summary>
 /// This is method description.
@@ -257,8 +259,6 @@ private void SomeMethod()
    // ..
 }
 ```
-Every private method should one one-line comment: // private
-which should come after a new line
 
 ```CSharp
 /// <summary>
@@ -266,9 +266,10 @@ which should come after a new line
 /// </summary>
 /// <param name="x">Some param</param>
 public void SomeMethod(object x)
+{
+   // ..
 }
 
-// private
 private void SomeMethod()
 {
    // ..
