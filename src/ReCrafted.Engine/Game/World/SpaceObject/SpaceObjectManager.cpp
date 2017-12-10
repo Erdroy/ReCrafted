@@ -93,6 +93,8 @@ void SpaceObjectManager::update()
 	m_calbacksLock.lock();
 	for(var & callback : m_callbacks)
 		callback.Invoke();
+
+	m_callbacks.clear();
 	m_calbacksLock.unlock();
 }
 

@@ -116,10 +116,10 @@ void SpaceObjectOctreeNode::depopulate()
 	if (isChildrenProcessing())
 		return;
 
-	//markProcessing();
+	m_processing = true;
 
 	// queue depopulate job
-	//SpaceObjectManager::enqueue(this, ProcessMode::Depopulate, MakeDelegate(SpaceObjectOctreeNode::onDepopulate));
+	SpaceObjectManager::enqueue(this, ProcessMode::Depopulate, MakeDelegate(SpaceObjectOctreeNode::onDepopulate));
 }
 
 void SpaceObjectOctreeNode::update()
