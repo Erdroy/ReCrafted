@@ -314,10 +314,11 @@ void GameMain::run()
 		simulate();
 		onDraw(); CHECK_SHUTDOWN
 
+		Profiler::endProfile();
+
 		if(m_targetFps > 0)
 			waitForTargetFps(lastTime);
 
-		Profiler::endProfile();
 		Profiler::endFrame();
 	}
 
@@ -540,52 +541,69 @@ void GameMain::onDraw()
 {
 	Profiler::beginProfile("Draw (present)");
 	Profiler::beginProfile("Draw");
-
-	// draw event, called every frame, must be ended with gpu backbuffer `present` or `swapbuffer` - bgfx::frame()
-	bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
-	bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
-
-	bgfx::touch(RENDERVIEW_BACKBUFFER);
-
-	// update state
-	m_rendering->setState();
-
-	m_rendering->beginRender(); // begin rendering the scene
 	{
-		// render shadows
-		m_rendering->renderShadows();
+		// draw event, called every frame, must be ended with gpu backbuffer `present` or `swapbuffer` - bgfx::frame()
+		bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
+		bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
 
-		// draw all shadow casters
-		m_universe->drawShadowCasters();
+		bgfx::touch(RENDERVIEW_BACKBUFFER);
 
-		// render static objects, eg.: static entities, voxels.
-		m_rendering->renderStatic();
-		m_universe->draw();
+		// update state
+		m_rendering->setState();
 
-		// render all entities
-		m_rendering->renderEntities();
+		Profiler::beginProfile("World Render");
+		{
+			m_rendering->beginRender(); // begin rendering the scene
+			{
+				// render shadows
+				m_rendering->renderShadows();
+
+				// draw all shadow casters
+				m_universe->drawShadowCasters();
+
+				// render static objects, eg.: static entities, voxels.
+				m_rendering->renderStatic();
+				m_universe->draw();
+
+				// render all entities
+				m_rendering->renderEntities();
+			}
+			m_rendering->endRender(); // end rendering the scene
+		}
+		Profiler::endProfile();
+
+		Profiler::beginProfile("DebugDraw Render");
+		{
+			// debug draw
+			DebugDraw::drawAll();
+		}
+		Profiler::endProfile();
+
+		Profiler::beginProfile("UI Render");
+		{
+			// set UI state
+			m_rendering->setState(false, false, true);
+
+			// draw UI
+			m_ui->beginDraw(); // begin draw UI
+
+			Profiler::beginProfile("UI Collect");
+			{
+				m_drawui_method->invoke();
+
+				// draw profiler debug screen
+				Profiler::drawDebugScreen();
+			}
+			Profiler::endProfile();
+
+			Profiler::beginProfile("UI Draw");
+			{
+				m_ui->endDraw(); // end draw UI
+			}
+			Profiler::endProfile();
+		}
+		Profiler::endProfile();
 	}
-	m_rendering->endRender(); // end rendering the scene
-	
-	// debug draw
-	DebugDraw::drawAll();
-
-	// set UI state
-	m_rendering->setState(false, false, true);
-
-	// draw UI
-	m_ui->beginDraw(); // begin draw UI
-	{
-		m_drawui_method->invoke();
-
-		// draw profiler debug screen
-		Profiler::drawDebugScreen();
-	}
-	m_ui->endDraw(); // end draw UI
-	
-	// draw HTML5 UI
-	//HTML5UI::draw();
-	
 	Profiler::endProfile();
 
 	// next frame, wait vsync

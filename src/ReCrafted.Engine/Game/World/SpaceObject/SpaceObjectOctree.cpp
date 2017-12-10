@@ -2,6 +2,7 @@
 
 #include "SpaceObjectOctree.h"
 #include "SpaceObjectOctreeNode.h"
+#include "Common/Profiler/Profiler.h"
 
 void SpaceObjectOctree::init(float objectRadius)
 {
@@ -30,20 +31,26 @@ void SpaceObjectOctree::init(float objectRadius)
 
 void SpaceObjectOctree::update()
 {
+	Profiler::beginProfile("SpaceObjectOctree::update");
 	// do we need fixed update rate here?
 
 	// update root node
 	m_rootNode->update();
+	Profiler::endProfile();
 }
 
 void SpaceObjectOctree::updateViews(Array<Vector3>& views)
 {
+	Profiler::beginProfile("SpaceObjectOctree::updateViews");
 	m_rootNode->updateViews(views);
+	Profiler::endProfile();
 }
 
 void SpaceObjectOctree::draw()
 {
+	Profiler::beginProfile("SpaceObjectOctree::draw");
 	m_rootNode->draw();
+	Profiler::endProfile();
 }
 
 void SpaceObjectOctree::dispose()

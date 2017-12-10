@@ -170,6 +170,9 @@ public:
 			// calculate avg time
 			profile->timeAvg = profile->timeTotal / float(profile->calls);
 			profile->lastAvgUpdate = currentTime;
+
+			profile->timeTotal = 0.0f;
+			profile->calls = 1;
 		}
 
 		// remove profile
