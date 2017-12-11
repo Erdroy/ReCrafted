@@ -128,6 +128,6 @@ void SpaceObjectChunk::draw()
 
 void SpaceObjectChunk::dispose()
 {
-	SafeDelete(m_voxelData);
+	SafeDeleteArray(m_voxelData);
 	SafeDispose(m_mesh);
 }
