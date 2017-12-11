@@ -80,7 +80,7 @@ namespace ReCrafted.Game
             sw.Stop();
             Logger.Write("Ui Construct Took -> " + sw.ElapsedMilliseconds + "ms");
 
-            var texture = Texture2D.Create(Assets.ResolveAssetFilePath("testframe.png"));
+            var texture = Texture2D.Create(Assets.ResolveAssetFilePath("test.png"));
             sprite = Sprite.CreateBordered(new RectangleF(355, 55, 256, 256), texture);
             var sprite2 = Sprite.Create(new RectangleF(355, 355, 256, 256), texture);
         }

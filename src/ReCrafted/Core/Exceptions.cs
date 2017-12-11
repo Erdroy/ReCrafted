@@ -33,7 +33,7 @@ namespace ReCrafted.Game.Core
         }
 
         // private
-        private static void WriteException(Exception exception)
+        internal static void WriteException(Exception exception)
         {
             Logger.Write($"Unhandled Exception: {GetExceptionString(exception)}", LogLevel.Error);
 
