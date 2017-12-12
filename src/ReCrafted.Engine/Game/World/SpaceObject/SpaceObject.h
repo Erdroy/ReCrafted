@@ -7,15 +7,17 @@
 #include "Core/Math/Vector3.h"
 #include "Core/Math/BoundingBox.h"
 #include "SpaceObjectOctree.h"
+#include "SpaceObjectSettings.h"
 
 class SpaceObject
 {
 private:
 	Ptr<SpaceObjectOctree> m_octree = nullptr;
 	Array<Vector3> m_views = {};
+	SpaceObjectSettings m_settings = {};
 	
 public:
-	void init(Vector3 position, float radius);
+	void init(SpaceObjectSettings& settings);
 	void update();
 	void draw();
 	void dispose();
@@ -27,6 +29,8 @@ public:
 	 * \param view The view position.
 	 */
 	void updateViewPoint(Vector3& view);
+
+	SpaceObjectSettings& getSettings();
 
 public:
 	static Ptr<SpaceObject> createSpaceObject();

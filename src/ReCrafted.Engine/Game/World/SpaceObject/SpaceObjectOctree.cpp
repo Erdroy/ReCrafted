@@ -3,21 +3,26 @@
 #include "SpaceObjectOctree.h"
 #include "SpaceObjectOctreeNode.h"
 #include "Common/Profiler/Profiler.h"
+#include "Core/Math/math.h"
+#include "SpaceObject.h"
 
-void SpaceObjectOctree::init(float objectRadius)
+void SpaceObjectOctree::init()
 {
-	auto size = static_cast<int>(objectRadius) * 2;
-
-	// TODO: check if it is power of two
+	// calculate diameter
+	var settings = spaceObject->getSettings();
+	var radius = settings.minSurfaceHeight + settings.maxBuildHeight;
+	var objectSize = Math::roundUpToPow2(static_cast<int>(radius * 2)); // diameter rounded up to power of 2
 
 	// calculate bounds size
-	m_size = Vector3::one() * static_cast<float>(size);
+	var size = Vector3::one() * static_cast<float>(objectSize);
 
 	// build bounds
-	m_bounds = BoundingBox(m_position, m_size);
+	m_bounds = BoundingBox(settings.position, size);
 
 	// create root node
-	m_rootNode = new SpaceObjectOctreeNode(m_position, size);
+	m_rootNode = new SpaceObjectOctreeNode();
+	m_rootNode->set_position(settings.position);
+	m_rootNode->set_size(objectSize);
 	
 	// set owner, parent and root
 	m_rootNode->owner = this;

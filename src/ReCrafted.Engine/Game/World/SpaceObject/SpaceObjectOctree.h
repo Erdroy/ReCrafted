@@ -29,15 +29,13 @@ public:
 	SpaceObjectOctreeNode* m_rootNode = nullptr;
 
 public:
-	void init(float objectRadius);
+	void init();
 	void update();
 	void updateViews(Array<Vector3>& views);
 	void draw();
 	void dispose();
 
 public:
-	PROPERTY(Vector3, position) = {}; // NOTE: center position
-	PROPERTY(Vector3, size) = {};
 	PROPERTY(BoundingBox, bounds) = {};
 };
 

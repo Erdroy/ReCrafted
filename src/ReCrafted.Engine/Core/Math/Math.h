@@ -90,6 +90,19 @@ public:
 		return radiand * internal::radtodeg;
 	}
 
+	FORCEINLINE static unsigned long roundUpToPow2(unsigned long v)
+	{
+		v--;
+		v |= v >> 1;
+		v |= v >> 2;
+		v |= v >> 4;
+		v |= v >> 8;
+		v |= v >> 16;
+		v++;
+
+		return v;
+	}
+
 	FORCEINLINE static int roundUp(int numToRound, int multiple)
 	{
 		// source: http://stackoverflow.com/questions/3407012/c-rounding-up-to-the-nearest-multiple-of-a-number

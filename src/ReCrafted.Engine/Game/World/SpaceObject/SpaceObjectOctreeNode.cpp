@@ -58,7 +58,9 @@ void SpaceObjectOctreeNode::worker_populate(IVoxelMesher* mesher)
 		auto position = m_position + ChildrenNodeOffsets[i] * static_cast<float>(childrenSize);
 
 		// construct node
-		m_childrenNodes[i] = new SpaceObjectOctreeNode(position, childrenSize);
+		m_childrenNodes[i] = new SpaceObjectOctreeNode();
+		m_childrenNodes[i]->m_position = position;
+		m_childrenNodes[i]->m_size = childrenSize;
 
 		// set owner, parent and root
 		m_childrenNodes[i]->owner = owner;

@@ -63,11 +63,7 @@ private:
 	void worker_generate(IVoxelMesher* mesher);
 
 public:
-	SpaceObjectOctreeNode(Vector3 position, int size)
-	{
-		m_position = position;
-		m_size = size;
-	}
+	SpaceObjectOctreeNode() {}
 
 public:
 	void populate();

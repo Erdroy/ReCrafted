@@ -1,18 +1,21 @@
 // ReCrafted © 2016-2017 Always Too Late
 
 #include "SpaceObject.h"
+#include "Core/Math/math.h"
 
-void SpaceObject::init(Vector3 position, float radius)
+void SpaceObject::init(SpaceObjectSettings& settings)
 {
+	// set settings
+	m_settings = settings;
+
 	// create octree instance
 	m_octree = std::make_shared<SpaceObjectOctree>();
 	m_octree->spaceObject = this;
-	m_octree->set_position(position);
-	
-	set_position(position);
+
+	set_position(settings.position);
 
 	// build base node(s)
-	m_octree->init(radius);
+	m_octree->init();
 }
 
 void SpaceObject::update()
@@ -38,6 +41,11 @@ void SpaceObject::updateViewPoint(Vector3& view)
 {
 	// add view
 	m_views.add(view);
+}
+
+SpaceObjectSettings& SpaceObject::getSettings()
+{
+	return m_settings;
 }
 
 Ptr<SpaceObject> SpaceObject::createSpaceObject()
