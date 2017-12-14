@@ -303,7 +303,15 @@ SpaceObjectOctreeNode* SpaceObjectOctreeNode::getNeighNode(NodeDirection::_enum 
 	var targetLod = m_size;
 
 	// traverse from root to the same target lod as this node
-	return root->findNode(targetPosition, targetLod);
+    for (var i = 0; i < owner->m_rootNodesCount; i++)
+    {
+        var node = owner->m_rootNodes[i]->findNode(targetPosition, targetLod);;
+
+        if (node)
+            return node;
+    }
+
+    return nullptr;
 }
 
 SpaceObjectOctreeNode* SpaceObjectOctreeNode::findNode(Vector3 position, int size)

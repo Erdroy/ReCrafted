@@ -6,11 +6,12 @@
 #define SPACEOBJECTOCTREE_H
 
 // includes
+#include "SpaceObjectOctreeNode.h"
+
 #include "Core/Math/Vector3.h"
 #include "Core/Math/BoundingBox.h"
 #include "Core/Containers/Array.h"
 
-class SpaceObjectOctree;
 class SpaceObject;
 
 /**
@@ -25,8 +26,8 @@ class SpaceObjectOctree
 private:
 	SpaceObject* spaceObject = nullptr;
 
-public:
-	SpaceObjectOctreeNode* m_rootNode = nullptr;
+    int m_rootNodesCount = 1;
+    SpaceObjectOctreeNode** m_rootNodes = nullptr;
 
 public:
 	void init();

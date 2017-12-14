@@ -18,9 +18,10 @@ void Universe::init()
 	SpaceObjectManager::getInstance()->init();
 
 	SpaceObjectSettings settings;
-	settings.minSurfaceHeight = 1024.0f;
-	settings.maxBuildHeight = 128.0f;
+	settings.minSurfaceHeight = 900.0f;
+	settings.maxSurfaceHeight = settings.minSurfaceHeight + 100.0f;
 	settings.position = Vector3::zero();
+    settings.rootOctreeDepth = 2;
 
 	m_testObject1 = SpaceObject::createSpaceObject();
 	m_testObject1->init(settings);

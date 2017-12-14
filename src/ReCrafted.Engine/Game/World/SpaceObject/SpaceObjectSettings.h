@@ -11,9 +11,25 @@
 struct SpaceObjectSettings
 {
 public:
+    /**
+	 * \brief The world-space position of the SpaceObject.
+	 */
 	Vector3 position;
+
+    /**
+	 * \brief The minimal surface height.
+	 */
 	float minSurfaceHeight;
-	float maxBuildHeight;
+
+    /**
+	 * \brief The maximal surface height.
+	 */
+	float maxSurfaceHeight;
+
+    /**
+     * \brief The initial virtual-depth of space object octree.
+     */
+    int rootOctreeDepth = 2;
 };
 
 #endif // SPACEOBJECTSETTINGS_H

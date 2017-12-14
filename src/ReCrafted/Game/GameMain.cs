@@ -89,6 +89,14 @@ namespace ReCrafted.Game
                 DebugDraw.DrawCube(Vector3.Zero, Vector3.One);
                 DebugDraw.Color = new Color(0, 105, 0, 255);
                 DebugDraw.DrawWireCube(Vector3.Zero, Vector3.One);
+
+                // draw world-space lines
+                DebugDraw.Color = new Color(0, 255, 0, 255);
+                DebugDraw.DrawLine(Vector3.Down * 2000.0f, Vector3.Up * 2000.0f);
+                DebugDraw.Color = new Color(255, 0, 0, 255);
+                DebugDraw.DrawLine(Vector3.Left * 2000.0f, Vector3.Right * 2000.0f);
+                DebugDraw.Color = new Color(0, 0, 255, 255);
+                DebugDraw.DrawLine(Vector3.ForwardLH * 2000.0f, Vector3.BackwardLH * 2000.0f);
             }
             catch (Exception exception)
             {

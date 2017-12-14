@@ -35,6 +35,16 @@ public:
 		return v;
 	}
 
+    FORCEINLINE static int pow(int x, int n)
+    {
+        return static_cast<int>(::pow(static_cast<float>(x), n));
+    }
+
+    FORCEINLINE static float powf(float x, int n)
+    {
+        return ::pow(x, n);
+    }
+
 	FORCEINLINE static int sign(int x)
 	{
 		return x < 0 ? -1 : 1;
