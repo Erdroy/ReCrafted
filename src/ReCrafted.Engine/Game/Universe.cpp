@@ -18,10 +18,12 @@ void Universe::init()
 	SpaceObjectManager::getInstance()->init();
 
 	SpaceObjectSettings settings;
+    settings.name = "moon";
+    settings.generationType = GenerationType::CubeHeightMap;
+    settings.position = Vector3::zero();
 	settings.minSurfaceHeight = 900.0f;
 	settings.maxSurfaceHeight = settings.minSurfaceHeight + 100.0f; // will round up to 1024 * 2
-	settings.position = Vector3::zero();
-    settings.rootOctreeDepth = 2; // 2 subdivisions (chunk size will be 512)
+    settings.rootOctreeDepth = 3; // 2 subdivisions (chunk size will be 512)
 
 	m_testObject1 = SpaceObject::createSpaceObject(settings);
 }

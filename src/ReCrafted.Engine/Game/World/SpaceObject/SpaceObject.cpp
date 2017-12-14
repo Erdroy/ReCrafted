@@ -1,10 +1,15 @@
 // ReCrafted © 2016-2017 Always Too Late
 
 #include "SpaceObject.h"
-#include "Core/Math/math.h"
+#include "Voxels/VoxelStorage.h"
+#include "Core/Math/Math.h"
 
 void SpaceObject::init(SpaceObjectSettings& settings)
 {
+    // initialize voxel storage
+    m_voxelStorage = std::make_shared<VoxelStorage>();
+    m_voxelStorage->init(settings);
+
 	// set settings
 	m_settings = settings;
 

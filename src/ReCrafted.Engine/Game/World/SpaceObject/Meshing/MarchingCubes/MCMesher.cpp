@@ -2,7 +2,7 @@
 
 #include "MCMesher.h"
 #include "Core/Math/Plane.h"
-#include "Game/World/Voxels/VoxelUtils.h"
+#include "Game/World/SpaceObject/Voxels/VoxelUtils.h"
 #include "Graphics/Mesh.h"
 #include "VertexCache.h"
 #include "MCTables.hpp"

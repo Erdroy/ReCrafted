@@ -9,12 +9,17 @@
 #include "SpaceObjectOctree.h"
 #include "SpaceObjectSettings.h"
 
+class VoxelStorage;
+
 class SpaceObject
 {
 private:
+    SpaceObjectSettings m_settings = {};
+
+    Array<Vector3> m_views = {};
+
 	Ptr<SpaceObjectOctree> m_octree = nullptr;
-	Array<Vector3> m_views = {};
-	SpaceObjectSettings m_settings = {};
+    Ptr<VoxelStorage> m_voxelStorage = nullptr;
 	
 private:
     void init(SpaceObjectSettings& settings);

@@ -1,9 +1,10 @@
 // ReCrafted © 2016-2017 Always Too Late
 
 #include "SpaceObjectOctree.h"
-#include "Common/Profiler/Profiler.h"
 #include "SpaceObject.h"
+#include "Common/Profiler/Profiler.h"
 #include "Core/Math/Math.h"
+#include "Graphics/Rendering.h"
 
 void SpaceObjectOctree::init()
 {
@@ -85,6 +86,9 @@ void SpaceObjectOctree::update()
 void SpaceObjectOctree::draw()
 {
     Profiler::beginProfile("SpaceObjectOctree::draw");
+
+    Rendering::getInstance()->setState();
+
     for (var i = 0; i < m_rootNodesCount; i++)
         m_rootNodes[i]->draw();
     Profiler::endProfile();

@@ -5,7 +5,7 @@
 #include "SpaceObjectOctreeNode.h"
 #include "SpaceObject.h"
 #include "Meshing/MarchingCubes/MCMesher.h"
-#include "Game/World/Voxels/VoxelUtils.h"
+#include "Voxels/VoxelUtils.h"
 #include "Graphics/Mesh.h"
 #include "Graphics/Rendering.h"
 
@@ -119,8 +119,6 @@ void SpaceObjectChunk::draw()
 {
 	if (!m_mesh || !m_mesh->isUploaded())
 		return;
-
-	Rendering::getInstance()->setState();
 
 	auto matrix = Matrix::identity();
 	Rendering::getInstance()->draw(m_mesh, &matrix);
