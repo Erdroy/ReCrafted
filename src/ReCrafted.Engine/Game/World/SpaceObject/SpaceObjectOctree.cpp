@@ -82,19 +82,19 @@ void SpaceObjectOctree::update()
 	Profiler::endProfile();
 }
 
+void SpaceObjectOctree::draw()
+{
+    Profiler::beginProfile("SpaceObjectOctree::draw");
+    for (var i = 0; i < m_rootNodesCount; i++)
+        m_rootNodes[i]->draw();
+    Profiler::endProfile();
+}
+
 void SpaceObjectOctree::updateViews(Array<Vector3>& views)
 {
 	Profiler::beginProfile("SpaceObjectOctree::updateViews");
     for (var i = 0; i < m_rootNodesCount; i++)
         m_rootNodes[i]->updateViews(views);
-	Profiler::endProfile();
-}
-
-void SpaceObjectOctree::draw()
-{
-	Profiler::beginProfile("SpaceObjectOctree::draw");
-    for (var i = 0; i < m_rootNodesCount; i++)
-        m_rootNodes[i]->draw();
 	Profiler::endProfile();
 }
 

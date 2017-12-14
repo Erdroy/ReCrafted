@@ -16,8 +16,10 @@ private:
 	Array<Vector3> m_views = {};
 	SpaceObjectSettings m_settings = {};
 	
+private:
+    void init(SpaceObjectSettings& settings);
+
 public:
-	void init(SpaceObjectSettings& settings);
 	void update();
 	void draw();
 	void dispose();
@@ -30,10 +32,19 @@ public:
 	 */
 	void updateViewPoint(Vector3& view);
 
+    /**
+	 * \brief Gets space object settings reference.
+	 * \return Space object settings reference.
+	 */
 	SpaceObjectSettings& getSettings();
 
 public:
-	static Ptr<SpaceObject> createSpaceObject();
+    /**
+	 * \brief Creates space object from settings.
+	 * \param settings The space object settings.
+	 * \return The new created space object.
+	 */
+	static Ptr<SpaceObject> createSpaceObject(SpaceObjectSettings& settings);
 
 public:
 	PROPERTY(Vector3, position) = {};

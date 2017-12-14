@@ -19,12 +19,11 @@ void Universe::init()
 
 	SpaceObjectSettings settings;
 	settings.minSurfaceHeight = 900.0f;
-	settings.maxSurfaceHeight = settings.minSurfaceHeight + 100.0f;
+	settings.maxSurfaceHeight = settings.minSurfaceHeight + 100.0f; // will round up to 1024 * 2
 	settings.position = Vector3::zero();
-    settings.rootOctreeDepth = 2;
+    settings.rootOctreeDepth = 2; // 2 subdivisions (chunk size will be 512)
 
-	m_testObject1 = SpaceObject::createSpaceObject();
-	m_testObject1->init(settings);
+	m_testObject1 = SpaceObject::createSpaceObject(settings);
 }
 
 void Universe::update()
