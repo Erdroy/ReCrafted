@@ -44,7 +44,7 @@ public:
 ```
 
 # 3. Variables
-Variables should always be private and start with **m_**`lowerCaseLetter` (if not PROPERTY).
+Variables should always be private and start with **m_**`lowerCaseLetter` (if not PROPERTY and it is OWNED by the object) or start lowerCase if this variable is set by other object `void* somePointer = nullptr;`.
 When variable needs to be exposed, use `PROPERTY` or `STATIC_PROPERTY`.
 
 # 4. Enums
