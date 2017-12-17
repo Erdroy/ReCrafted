@@ -8,17 +8,7 @@
 #include "Voxels/VoxelUtils.h"
 #include "Graphics/Mesh.h"
 #include "Graphics/Rendering.h"
-
-float Planet(const Vector3& origin, const Vector3& position, float radius)
-{
-	//var local = position - Vector3(radius, radius, radius);
-	//var d = Vector3(fabs(local.x), fabs(local.y), fabs(local.z)) - Vector3(radius, radius, radius);
-	//var m = max(d.x, max(d.y, d.z)); 
-	//return min(m, d.length());
-
-	var height = (position - origin).length();
-	return height - radius;
-}
+#include "Voxels/VoxelStorage.h"
 
 uint8_t SpaceObjectChunk::getLodBorders()
 {
@@ -64,12 +54,8 @@ void SpaceObjectChunk::generate(IVoxelMesher* mesher)
 	// generate voxel data
 	var dataSize = ChunkDataSize * ChunkDataSize * ChunkDataSize;
 	m_voxelData = new sbyte[dataSize];
-	SecureZeroMemory(m_voxelData, dataSize * sizeof(sbyte));
 
-	var objectSettings = spaceObject->getSettings();
-
-	var objectPosition = objectSettings.position;
-	var objectRadius = objectSettings.minSurfaceHeight;
+    var voxelStorage = spaceObject->getStorage();
 
 	var positionOffset = Vector3::one() * 0.5f * static_cast<float>(node->get_size());
 	var nodePosition = node->get_position() - positionOffset; // lower-left-back corner
@@ -88,10 +74,7 @@ void SpaceObjectChunk::generate(IVoxelMesher* mesher)
 				const var offset = Vector3(float(x), float(y), float(z));
 				const var position = nodePosition + offset * lod_f;
 
-				var value = Planet(objectPosition, position, objectRadius);
-				var byteValue = VOXEL_FROM_FLOAT(value); // convert to voxel data
-
-				m_voxelData[index] = byteValue;
+				m_voxelData[index] = voxelStorage->getVoxel(position);
 			}
 		}
 	}
@@ -100,7 +83,7 @@ void SpaceObjectChunk::generate(IVoxelMesher* mesher)
 	var borders = getLodBorders();
 
 	// generate mesh
-	mesher->generate(nodePosition, lod, borders, m_mesh, m_voxelData);
+    mesher->generate(nodePosition, lod, borders, m_mesh, m_voxelData);
 }
 
 void SpaceObjectChunk::upload()

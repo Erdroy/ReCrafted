@@ -5,7 +5,6 @@
 
 // includes
 #include "Core/Math/Vector3.h"
-#include "Core/Math/BoundingBox.h"
 #include "SpaceObjectOctree.h"
 #include "SpaceObjectSettings.h"
 
@@ -13,6 +12,8 @@ class VoxelStorage;
 
 class SpaceObject
 {
+    friend class VoxelStorage;
+
 private:
     SpaceObjectSettings m_settings = {};
 
@@ -42,6 +43,11 @@ public:
 	 * \return Space object settings reference.
 	 */
 	SpaceObjectSettings& getSettings();
+
+    VoxelStorage* getStorage() const
+    {
+        return m_voxelStorage.get();
+    }
 
 public:
     /**

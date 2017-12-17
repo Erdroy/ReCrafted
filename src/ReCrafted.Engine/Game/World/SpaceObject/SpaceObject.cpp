@@ -9,6 +9,7 @@ void SpaceObject::init(SpaceObjectSettings& settings)
     // initialize voxel storage
     m_voxelStorage = std::make_shared<VoxelStorage>();
     m_voxelStorage->init(settings);
+    m_voxelStorage->spaceObject = this;
 
 	// set settings
 	m_settings = settings;

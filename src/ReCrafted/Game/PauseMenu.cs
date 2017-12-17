@@ -104,6 +104,13 @@ namespace ReCrafted.Game
             Disable();
         }
 
+        protected override void OnUpdate()
+        {
+            if (!Enabled) return;
+            Background.Region = new RectangleF(0, 0, Display.Width, Display.Height);
+            MainPanel.Region = MainPanelRegion;
+        }
+
         public void Enable()
         {
             MainPanel.Enabled = true;
@@ -121,12 +128,5 @@ namespace ReCrafted.Game
         }
 
         public bool Enabled => MainPanel.Enabled;
-
-        protected override void OnUpdate()
-        {
-            if (!Enabled) return;
-            Background.Region = new RectangleF(0, 0, Display.Width, Display.Height);
-            MainPanel.Region = MainPanelRegion;
-        }
     }
 }
