@@ -25,17 +25,17 @@ private:
 	SpaceObject* spaceObject = nullptr;
 	SpaceObjectOctreeNode* node = nullptr;
 
+    /**
+    * \brief Stores voxel hermite data in -127 to 127 range. Do not delete!
+    */
+    sbyte* voxelData = nullptr;
+
 	/**
 	 * \brief The normal from the SpaceObject center.
 	 */
 	Vector3 m_chunkNormal = {};
-
-	/**
-	 * \brief Stores voxel hermite data in -127 to 127 range.
-	 */
-	sbyte* m_voxelData = nullptr;
-
 	Ptr<Mesh> m_mesh = nullptr;
+    bool m_hasVoxels = false;
 
 private:
 	uint8_t getLodBorders();

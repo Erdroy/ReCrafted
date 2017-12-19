@@ -5,14 +5,13 @@
 #include "SpaceObjectOctreeNode.h"
 #include "SpaceObject.h"
 #include "Meshing/MarchingCubes/MCMesher.h"
-#include "Voxels/VoxelUtils.h"
 #include "Graphics/Mesh.h"
 #include "Graphics/Rendering.h"
 #include "Voxels/VoxelStorage.h"
 
 uint8_t SpaceObjectChunk::getLodBorders()
 {
-	/*uint8_t borders = 5;
+	/*uint8_t borders = 0u;
 
 	if (node->hasNeighLowerLoD(NodeDirection::Front))
 		borders |= BORDER_FRONT;
@@ -31,6 +30,8 @@ uint8_t SpaceObjectChunk::getLodBorders()
 
 	if (node->hasNeighLowerLoD(NodeDirection::Back))
 		borders |= BORDER_BOTTOM;*/
+
+    // TODO: cull not needed skirts
 
 	//return borders;
 	return 0xFF;
@@ -52,38 +53,29 @@ void SpaceObjectChunk::generate(IVoxelMesher* mesher)
 	m_mesh = Mesh::createMesh();
 
 	// generate voxel data
-	var dataSize = ChunkDataSize * ChunkDataSize * ChunkDataSize;
-	m_voxelData = new sbyte[dataSize];
-
     var voxelStorage = spaceObject->getStorage();
 
-	var positionOffset = Vector3::one() * 0.5f * static_cast<float>(node->get_size());
-	var nodePosition = node->get_position() - positionOffset; // lower-left-back corner
+	cvar positionOffset = Vector3::one() * 0.5f * static_cast<float>(node->get_size());
+	cvar nodePosition = node->get_position() - positionOffset; // lower-left-back corner
 
-	var lod = int(node->get_size() / float(SpaceObjectOctreeNode::MinimumNodeSize));
-	var lod_f = static_cast<float>(lod);
+	cvar lod = int(node->get_size() / float(SpaceObjectOctreeNode::MinimumNodeSize));
+	
+    // get voxel chunk
+    voxelData = voxelStorage->getVoxelChunk(nodePosition, lod);
 
-	for(auto x = 0; x < ChunkDataSize; x ++)
-	{
-		for (auto y = 0; y < ChunkDataSize; y++)
-		{
-			for (auto z = 0; z < ChunkDataSize; z++)
-			{
-				const var index = INDEX_3D(x, y, z, ChunkDataSize);
+    if(voxelData == nullptr)
+    {
+        m_hasVoxels = false;
+        return;
+    }
 
-				const var offset = Vector3(float(x), float(y), float(z));
-				const var position = nodePosition + offset * lod_f;
-
-				m_voxelData[index] = voxelStorage->getVoxel(position);
-			}
-		}
-	}
+    m_hasVoxels = true;
 
 	// get which directions this chunk must get the bordering skirts
-	var borders = getLodBorders();
+	cvar borders = getLodBorders();
 
 	// generate mesh
-    mesher->generate(nodePosition, lod, borders, m_mesh, m_voxelData);
+    mesher->generate(nodePosition, lod, borders, m_mesh, voxelData);
 }
 
 void SpaceObjectChunk::upload()
@@ -100,7 +92,7 @@ void SpaceObjectChunk::update()
 
 void SpaceObjectChunk::draw()
 {
-	if (!m_mesh || !m_mesh->isUploaded())
+	if (!m_mesh || !m_mesh->isUploaded() || !m_hasVoxels)
 		return;
 
 	auto matrix = Matrix::identity();
@@ -109,6 +101,8 @@ void SpaceObjectChunk::draw()
 
 void SpaceObjectChunk::dispose()
 {
-	SafeDeleteArray(m_voxelData);
+    // TODO: remove when cache will be done!
+    SafeDeleteArrayNN(voxelData);
+
 	SafeDispose(m_mesh);
 }

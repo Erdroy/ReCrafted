@@ -40,7 +40,8 @@ void SpaceObject::draw()
 
 void SpaceObject::dispose()
 {
-	m_octree->dispose();
+    SafeDispose(m_octree);
+    SafeDispose(m_voxelStorage);
 }
 
 void SpaceObject::updateViewPoint(Vector3& view)

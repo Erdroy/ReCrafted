@@ -24,5 +24,6 @@
 #	undef var
 #endif
 #define var auto
+#define cvar const auto
 
 #endif // RECRAFTED_H

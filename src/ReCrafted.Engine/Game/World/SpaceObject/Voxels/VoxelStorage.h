@@ -18,13 +18,26 @@ class VoxelStorage
 
 private:
     SpaceObject* spaceObject = nullptr;
+    SpaceObjectSettings* settings = nullptr;
+
+private:
+    sbyte* generateChunkFromCHM(Vector3 position, int lod);
 
 public:
     void init(SpaceObjectSettings& settings);
+    void dispose();
+
+    // TODO: apply modifications applyCSG or something
 
     sbyte getVoxel(Vector3 position);
 
-    void getVoxelRow(Vector3 start, Vector3 end, int lod, sbyte* voxels);
+    /**
+     * \brief Gets x (SpaceObjectChunk::ChunkDataSize^3) voxels with all modifications. 
+     * Uses CHM cache if needed. Automatically generates data if needed.
+     * \param position The voxel chunk position.
+     * \param lod The LoD for voxels.
+     */
+    sbyte* getVoxelChunk(Vector3 position, int lod);
 };
 
 #endif // VOXELSTORAGE_H

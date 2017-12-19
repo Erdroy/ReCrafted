@@ -44,6 +44,10 @@ public:
 	 */
 	SpaceObjectSettings& getSettings();
 
+    /**
+     * \brief Gets the VoxelStorage instance of this SpaceObject.
+     * \return VoxelStorage instance of this SpaceObject.
+     */
     VoxelStorage* getStorage() const
     {
         return m_voxelStorage.get();
