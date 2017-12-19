@@ -2,9 +2,10 @@
 
 #include "VoxelStorage.h"
 #include "VoxelUtils.h"
-#include "../SpaceObjectSettings.h"
 #include "Core/Math/Math.h"
 #include "Core/Logger.h"
+#include "Game/World/SpaceObject/SpaceObjectChunk.h"
+#include "Game/World/SpaceObject/SpaceObjectSettings.h"
 
 float Planet(const Vector3& origin, const Vector3& position, const float radius)
 {
@@ -12,10 +13,35 @@ float Planet(const Vector3& origin, const Vector3& position, const float radius)
     return height - radius;
 }
 
-sbyte* VoxelStorage::generateChunkFromCHM(Vector3 position, int lod)
+sbyte* VoxelStorage::generateChunkFromCHM(const Vector3 position, const int lod)
 {
+    cvar dataSize = SpaceObjectChunk::ChunkDataSize;
+    cvar lod_f = static_cast<float>(lod);
+    cvar data = new sbyte[dataSize * dataSize * dataSize];
+    
+    // TODO: map texture coord
+    // TODO: sample height from texture (using bicubic filtering)
+    // TODO: generate voxel using sphere SDF and sampled height
+    // TODO: return nullptr where there is no any proper voxel surface (the chunk is completely above or under surface)
 
-    return nullptr;
+    // tempoarary
+    for (var x = 0; x < dataSize; x++)
+    {
+        for (var y = 0; y < dataSize; y++)
+        {
+            for (var z = 0; z < dataSize; z++)
+            {
+                cvar index = INDEX_3D(x, y, z, dataSize);
+
+                cvar offset = Vector3(float(x), float(y), float(z));
+                cvar voxelPosition = position + offset * lod_f;
+
+                data[index] = getVoxel(voxelPosition);
+            }
+        }
+    }
+
+    return data;
 }
 
 void VoxelStorage::init(SpaceObjectSettings& settings)
@@ -44,7 +70,7 @@ sbyte VoxelStorage::getVoxel(Vector3 position)
     return VOXEL_FROM_FLOAT(Planet(spaceObject->m_position, position, spaceObject->m_settings.minSurfaceHeight)); // convert to voxel data
 }
 
-sbyte* VoxelStorage::getVoxelChunk(Vector3 position, int lod)
+sbyte* VoxelStorage::getVoxelChunk(const Vector3 position, const int lod)
 {
     if (settings->generationType == GenerationType::PreGenerated)
     {
@@ -54,12 +80,11 @@ sbyte* VoxelStorage::getVoxelChunk(Vector3 position, int lod)
     }
 
     // TODO: VoxelClipmap class (to store modifications, should allow binary (de) serialization (streams needed! :D))
-    // TODO: VoxelChunkCache class
+    // TODO: VoxelChunkCache class (should store chunks for some time or all the time if chunk is still being used)
 
     // TODO: check if this is cached (use start and lod) and return if present
-    // TODO: if not, generate
+    // TODO: if not, generate and apply modifications if present
 
-    // generate chunk now
-
-    return nullptr;
+    // generate chunk now using CHM
+    return generateChunkFromCHM(position, lod);
 }
