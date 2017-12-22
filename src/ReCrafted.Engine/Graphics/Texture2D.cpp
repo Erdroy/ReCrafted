@@ -219,7 +219,7 @@ void Texture2D::apply()
 
 	m_bits = nullptr;
 }
-
+/*
 void Texture2D::releaseTextureData(uint* pixels)
 {
 	delete pixels;
@@ -273,7 +273,7 @@ void Texture2D::saveBitmap(const char* filename, uint width, uint height, byte* 
 	}
 	fclose(f);
 }
-
+*/
 Ptr<Texture2D> Texture2D::createTexture()
 {
 	Ptr<Texture2D> texture(new Texture2D);

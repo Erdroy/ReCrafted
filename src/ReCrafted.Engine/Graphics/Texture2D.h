@@ -103,10 +103,6 @@ public:
 	/// Loads texture.
 	/// </summary>
 	static Ptr<Texture2D> createTexture();
-
-public:
-	static void releaseTextureData(uint* pixels);
-	static void saveBitmap(const char* filename, uint width, uint height, byte* bits);
 };
 
 #endif // TEXTURE2D_H
