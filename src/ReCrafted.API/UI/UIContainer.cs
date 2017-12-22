@@ -52,6 +52,7 @@ namespace ReCrafted.API.UI
         public T Add<T>(T instance) where T : UIControl
         {
             if (instance == null) throw new ArgumentNullException(nameof(instance));
+            if (instance == this) throw new NotSupportedException("You can't add container as control of container");
             if (_controls.Contains(instance)) throw new ReCraftedException("Unable to add new control in to container. Controls can by added in to container only once.");
             instance.Parent = this;
             instance.Depth = Depth + _controls.Count;
