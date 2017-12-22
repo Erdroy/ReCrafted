@@ -1,0 +1,181 @@
+// ReCrafted © 2016-2017 Always Too Late
+
+#pragma once
+
+#ifndef VOXELCHM_H
+#define VOXELCHM_H
+
+// includes
+#include "ReCrafted.h"
+#include "Core/Math/Vector2.h"
+#include "Core/Math/Vector3.h"
+
+class VoxelCHM : IDisposable
+{
+private:
+    byte* m_faces[6] = {};
+
+private:
+    VoxelCHM() {}
+
+public:
+    FORCEINLINE float sample(const Vector3& point, const float radius) const
+    {
+        cvar spherePoint = mapSphere(point, radius);
+        cvar sphereFace = getFace(spherePoint); // maybe point?
+        cvar texcoord = getTexcoord(sphereFace, point); // maybe spherePoint?
+
+        return sampleSimple(sphereFace, texcoord);
+    }
+
+    float sampleBicubic(int face, Vector2 texcoord) const
+    {
+        return 0.0f;
+    }
+
+    float sampleSimple(int face, Vector2 texcoord) const
+    {
+        return texcoord.length();
+    }
+
+    void dispose() override
+    {
+        
+    }
+
+public:
+    FORCEINLINE static Vector2 getTexcoord(const int face, const Vector3& point)
+    {
+        var localPoint = point;
+        cvar absPoint = Vector3::abs(const_cast<Vector3&>(point));
+        Vector2 texcoord = {};
+        
+        switch(face)
+        {
+        case 0:
+        {
+            localPoint = localPoint * (1.0f / absPoint.x);
+            texcoord.y = -localPoint.y;
+            texcoord.x = -localPoint.z;
+            break;
+        }
+        case 1:
+        {
+            localPoint = localPoint * (1.0f / absPoint.x);
+            texcoord.y = -localPoint.y;
+            texcoord.x = localPoint.z;
+            break;
+        }
+        case 2:
+        {
+            localPoint = localPoint * (1.0f / absPoint.y);
+            texcoord.y = -localPoint.z;
+            texcoord.x = -localPoint.x;
+            break;
+        }
+        case 3:
+        {
+            localPoint = localPoint * (1.0f / absPoint.y);
+            texcoord.y = -localPoint.z;
+            texcoord.x = localPoint.x;
+            break;
+        }
+        case 4:
+        {
+            localPoint = localPoint * (1.0f / absPoint.z);
+            texcoord.y = -localPoint.y;
+            texcoord.x = localPoint.z;
+            break;
+        }
+        case 5:
+        {
+            localPoint = localPoint * (1.0f / absPoint.z);
+            texcoord.y = -localPoint.y;
+            texcoord.x = -localPoint.z;
+            break;
+        }
+        default: throw;
+        }
+
+        texcoord += Vector2::one();
+        texcoord.x *= 0.5f;
+        texcoord.y *= 0.5f;
+
+        if (texcoord.x == 1.0f)
+        {
+            texcoord.x = 0.999999f;
+        }
+        if (texcoord.y == 1.0f)
+        {
+            texcoord.y = 0.999999f;
+        }
+
+        return texcoord;
+    }
+
+    /**
+     * \brief Selects the sphere face is used by the point.
+     * \param point The point which will be check.
+     * \return The result. (0 = front, 1 = back, 2 = top, 3 = bottom, 4 = left, 5 = right)
+     */
+    FORCEINLINE static int getFace(const Vector3& point)
+    {
+        cvar absPoint = Vector3::abs(const_cast<Vector3&>(point));
+
+        if(absPoint.x > absPoint.y)
+        {
+            if(absPoint.x > absPoint.z)
+            {
+                if (point.x > 0.0f)
+                {
+                    return 0;
+                }
+            }
+
+            if (point.z > 0.0f)
+            {
+                return 1;
+            }
+
+            return 4;
+        }
+
+        if (absPoint.y > absPoint.z)
+        {
+            if (point.y > 0.0f)
+            {
+                return 2;
+            }
+
+            return 3;
+        }
+
+        if (point.z > 0.0f)
+        {
+            return 4;
+        }
+
+        return 5;
+    }
+
+    /**
+     * \brief Transforms given point (cube-space not world space!) to a sphere.
+     * \param point This point will be transformed into sphere-space coord.
+     * \param radius The radius of the sphere.
+     * \return The transformed point to the sphere.
+     */
+    FORCEINLINE static Vector3 mapSphere(Vector3 point, const float radius)
+    {
+        point.normalize();
+        return point * radius;
+    }
+
+    /**
+     * \brief Loads CHM from given directory.
+     * \param directoryName The directory name which contains the PNG files (left, back etc.).
+     * \return The created VoxelCHM.
+     */
+    static Ptr<VoxelCHM> loadFromDirectory(const char* directoryName);
+};
+
+#endif // VOXELCHM_H

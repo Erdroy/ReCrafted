@@ -2,29 +2,29 @@
 
 #include "VoxelStorage.h"
 #include "VoxelUtils.h"
+#include "VoxelCHM.h"
 #include "Core/Math/Math.h"
 #include "Core/Logger.h"
 #include "Game/World/SpaceObject/SpaceObjectChunk.h"
 #include "Game/World/SpaceObject/SpaceObjectSettings.h"
 
-float Planet(const Vector3& origin, const Vector3& position, const float radius)
+sbyte generateFromCHM(VoxelCHM* chm, Vector3& origin, const Vector3& position, const float radius, const float hillsHeight)
 {
+    cvar localHeight = radius + chm->sample(position, radius) * hillsHeight;
     cvar height = (position - origin).length();
-    return height - radius;
+    return VOXEL_FROM_FLOAT(radius + (height - localHeight));
 }
 
-sbyte* VoxelStorage::generateChunkFromCHM(const Vector3 position, const int lod)
+sbyte* VoxelStorage::generateChunkFromCHM(Vector3& position, const int lod)
 {
+    cvar chm = m_chm.get();
     cvar dataSize = SpaceObjectChunk::ChunkDataSize;
     cvar lod_f = static_cast<float>(lod);
     cvar data = new sbyte[dataSize * dataSize * dataSize];
-    
-    // TODO: map texture coord
-    // TODO: sample height from texture (using bicubic filtering)
-    // TODO: generate voxel using sphere SDF and sampled height
+
+    // TODO: apply modifications applyCSG or something
     // TODO: return nullptr where there is no any proper voxel surface (the chunk is completely above or under surface)
 
-    // tempoarary
     for (var x = 0; x < dataSize; x++)
     {
         for (var y = 0; y < dataSize; y++)
@@ -36,7 +36,8 @@ sbyte* VoxelStorage::generateChunkFromCHM(const Vector3 position, const int lod)
                 cvar offset = Vector3(float(x), float(y), float(z));
                 cvar voxelPosition = position + offset * lod_f;
 
-                data[index] = getVoxel(voxelPosition);
+                // tempoarary
+                data[index] = generateFromCHM(chm, spaceObject->m_position, voxelPosition, spaceObject->m_settings.minSurfaceHeight, spaceObject->m_settings.hillsHeight);
             }
         }
     }
@@ -56,6 +57,8 @@ void VoxelStorage::init(SpaceObjectSettings& settings)
     }
     else
     {
+        m_chm = VoxelCHM::loadFromDirectory(settings.fileName);
+
         // TODO: load chm sides (VoxelCHM class neded) (up, down, left, right, front and back) [*.png files]
     }
 }
@@ -65,12 +68,7 @@ void VoxelStorage::dispose()
     // release all resources
 }
 
-sbyte VoxelStorage::getVoxel(Vector3 position)
-{
-    return VOXEL_FROM_FLOAT(Planet(spaceObject->m_position, position, spaceObject->m_settings.minSurfaceHeight)); // convert to voxel data
-}
-
-sbyte* VoxelStorage::getVoxelChunk(const Vector3 position, const int lod)
+sbyte* VoxelStorage::getVoxelChunk(Vector3& position, const int lod)
 {
     if (settings->generationType == GenerationType::PreGenerated)
     {

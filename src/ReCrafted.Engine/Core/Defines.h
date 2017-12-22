@@ -72,7 +72,8 @@ inline void LOG(const char* text)
 #endif
 
 #ifdef _WIN32
-#	define interface __interface
+//#	define interface __interface
+#	define interface struct
 #else
 #	define interface struct
 #endif

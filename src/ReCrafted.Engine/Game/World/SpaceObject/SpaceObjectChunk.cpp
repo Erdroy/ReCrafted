@@ -53,15 +53,14 @@ void SpaceObjectChunk::generate(IVoxelMesher* mesher)
 	m_mesh = Mesh::createMesh();
 
 	// generate voxel data
-    var voxelStorage = spaceObject->getStorage();
 
 	cvar positionOffset = Vector3::one() * 0.5f * static_cast<float>(node->get_size());
-	cvar nodePosition = node->get_position() - positionOffset; // lower-left-back corner
-
 	cvar lod = int(node->get_size() / float(SpaceObjectOctreeNode::MinimumNodeSize));
+
+    var nodePosition = node->get_position() - positionOffset; // lower-left-back corner
 	
     // get voxel chunk
-    voxelData = voxelStorage->getVoxelChunk(nodePosition, lod);
+    voxelData = spaceObject->getStorage()->getVoxelChunk(nodePosition, lod);
 
     if(voxelData == nullptr)
     {

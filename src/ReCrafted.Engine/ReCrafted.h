@@ -16,6 +16,8 @@
 
 #include "bgfxPrerequisites.h"
 
+#include "Core/IDisposable.h"
+
 #include "Core/Defines.h"
 #include "Core/Types.h"
 #include "Common/ReCraftedAPI.h"

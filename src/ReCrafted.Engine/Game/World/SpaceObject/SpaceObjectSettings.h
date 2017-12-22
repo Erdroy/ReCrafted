@@ -8,6 +8,9 @@
 // includes
 #include "Core/Math/Vector3.h"
 
+/**
+* \brief SpaceObjectSettings GenerationType enum.
+*/
 struct GenerationType
 {
 public:
@@ -18,13 +21,21 @@ public:
     };
 };
 
+/**
+ * \brief SpaceObjectSettings structure.
+ */
 struct SpaceObjectSettings
 {
 public:
     /**
-     * \brief The name, this will be used to find pregens or CHM's.
+     * \brief The name of the space object.
      */
     const char* name = nullptr;
+
+    /**
+    * \brief The file name (directory), this will be used to find pregens or CHM.
+    */
+    const char* fileName = nullptr;
 
     /**
 	 * \brief The world-space position of the SpaceObject.
@@ -40,6 +51,11 @@ public:
 	 * \brief The maximal surface height.
 	 */
 	float maxSurfaceHeight = 100.0f;
+
+    /**
+    * \brief The base height of hills (ovarall terrain).
+    */
+    float hillsHeight = 100.0f;
 
     /**
      * \brief The initial virtual-depth of space object octree.

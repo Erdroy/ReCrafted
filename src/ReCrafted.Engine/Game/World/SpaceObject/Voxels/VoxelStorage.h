@@ -11,8 +11,9 @@
 
 struct Vector3;
 struct SpaceObjectSettings;
+class VoxelCHM;
 
-class VoxelStorage
+class VoxelStorage : IDisposable
 {
     friend class SpaceObject;
 
@@ -20,16 +21,14 @@ private:
     SpaceObject* spaceObject = nullptr;
     SpaceObjectSettings* settings = nullptr;
 
+    Ptr<VoxelCHM> m_chm = nullptr;
+
 private:
-    sbyte* generateChunkFromCHM(Vector3 position, int lod);
+    sbyte* generateChunkFromCHM(Vector3& position, int lod);
 
 public:
     void init(SpaceObjectSettings& settings);
-    void dispose();
-
-    // TODO: apply modifications applyCSG or something
-
-    sbyte getVoxel(Vector3 position);
+    void dispose() override;
 
     /**
      * \brief Gets x (SpaceObjectChunk::ChunkDataSize^3) voxels with all modifications. 
@@ -37,7 +36,7 @@ public:
      * \param position The voxel chunk position.
      * \param lod The LoD for voxels.
      */
-    sbyte* getVoxelChunk(Vector3 position, int lod);
+    sbyte* getVoxelChunk(Vector3& position, int lod);
 };
 
 #endif // VOXELSTORAGE_H

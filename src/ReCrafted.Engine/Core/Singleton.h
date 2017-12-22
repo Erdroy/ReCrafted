@@ -9,7 +9,7 @@
 #include "ReCrafted.h"
 
 template<class T>
-class Singleton
+class Singleton : IDisposable
 {
 	static T* m_instance;
 
@@ -21,7 +21,7 @@ private:
 	virtual void onDispose() = 0;
 
 public:
-	void dispose()
+	void dispose() override
 	{
 		onDispose();
 		SafeDelete(m_instance);
