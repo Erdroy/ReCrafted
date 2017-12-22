@@ -1,7 +1,6 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
 using System.Diagnostics;
-using ReCrafted.API;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
@@ -80,9 +79,9 @@ namespace ReCrafted.Game
             sw.Stop();
             Logger.Write("Ui Construct Took -> " + sw.ElapsedMilliseconds + "ms");
 
-            var texture = Texture2D.Create(Assets.ResolveAssetFilePath("test.png"));
-            sprite = Sprite.CreateBordered(new RectangleF(355, 55, 256, 256), texture);
-            var sprite2 = Sprite.Create(new RectangleF(355, 355, 256, 256), texture);
+            // var texture = Texture2D.Create(Assets.ResolveAssetFilePath("test.png"));
+            // sprite = Sprite.CreateBordered(new RectangleF(355, 55, 256, 256), texture);
+            // var sprite2 = Sprite.Create(new RectangleF(355, 355, 256, 256), texture);
         }
 
         private float _uiDebugTime;

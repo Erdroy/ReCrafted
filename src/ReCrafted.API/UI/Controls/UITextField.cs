@@ -1,6 +1,5 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
-using System;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;

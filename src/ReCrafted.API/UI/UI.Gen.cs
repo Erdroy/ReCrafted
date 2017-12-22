@@ -3,7 +3,6 @@
 // Generated: 11/27/2017 15:53:30 Source: 'UI.API.cpp' Target: 'UI/UI.Gen.cs'
 
 using ReCrafted.API.Mathematics;
-using ReCrafted.API.Graphics;
 using System;
 using System.Runtime.CompilerServices;
 
