@@ -75,7 +75,7 @@ public:
 
     static void free(byte* bitmap)
     {
-        delete[] bitmap;
+        SafeDeleteArray(bitmap);
     }
 };
 

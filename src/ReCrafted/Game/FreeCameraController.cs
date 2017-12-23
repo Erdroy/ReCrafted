@@ -114,7 +114,5 @@ namespace ReCrafted.Game
         public Camera Camera { get; private set; }
 
         public float CameraSmoothing { get; set; } = 20.0f;
-
-        public static FreeCameraController Current { get; set; }
     }
 }

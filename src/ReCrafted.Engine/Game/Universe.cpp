@@ -64,10 +64,10 @@ void Universe::draw()
 
 void Universe::dispose()
 {
-	SafeDispose(m_testObject1);
-
 	// shutdown
 	SafeDisposeNN(SpaceObjectManager::getInstance());
+
+    SafeDispose(m_testObject1);
 
 	Logger::logInfo("Universe unloaded");
 	delete this;
