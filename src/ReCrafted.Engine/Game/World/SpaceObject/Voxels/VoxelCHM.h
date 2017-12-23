@@ -9,14 +9,21 @@
 #include "ReCrafted.h"
 #include "Core/Math/Vector2.h"
 #include "Core/Math/Vector3.h"
+#include "Graphics/Bitmap.h"
 
 class VoxelCHM : IDisposable
 {
 private:
     byte* m_faces[6] = {};
 
+    int m_bitmapWidth = 0;
+    int m_bitmapHeight = 0;
+
 private:
     VoxelCHM() {}
+
+private:
+    void loadFace(int face, const char* name, const char* directoryName);
 
 public:
     FORCEINLINE float sample(const Vector3& point, const float radius) const
@@ -25,22 +32,40 @@ public:
         cvar sphereFace = getFace(spherePoint); // maybe point?
         cvar texcoord = getTexcoord(sphereFace, point); // maybe spherePoint?
 
+        // TODO: fix texcoord
+
         return sampleSimple(sphereFace, texcoord);
     }
 
-    float sampleBicubic(int face, Vector2 texcoord) const
+    float sampleBicubic(const int face, Vector2 texcoord) const
     {
+        // TODO: bicubic samping needed
+
         return 0.0f;
     }
 
-    float sampleSimple(int face, Vector2 texcoord) const
+    float sampleSimple(const int face, const Vector2 texcoord) const
     {
-        return texcoord.length();
+        cvar bitmap = m_faces[face];
+
+        cvar posX = static_cast<int>(texcoord.x * m_bitmapWidth);
+        cvar posY = static_cast<int>(texcoord.y * m_bitmapHeight);
+
+        if (posX < 0 || posX > m_bitmapWidth)
+            return 0.0f;
+        if (posY < 0 || posY > m_bitmapWidth)
+            return 0.0f;
+
+        cvar pixel = bitmap[posY * m_bitmapWidth + posX];
+
+        return pixel / 255.0f;
     }
 
     void dispose() override
     {
-        
+        // free all 6 faces
+        for(var i = 0; i < 6; i ++)
+            Bitmap::free(m_faces[i]);
     }
 
 public:
@@ -97,9 +122,8 @@ public:
         default: throw;
         }
 
-        texcoord += Vector2::one();
-        texcoord.x *= 0.5f;
-        texcoord.y *= 0.5f;
+        texcoord.x = (texcoord.x + 1.0f) * 0.5f;
+        texcoord.y = (texcoord.y + 1.0f) *0.5f;
 
         if (texcoord.x == 1.0f)
         {

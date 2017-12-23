@@ -20,6 +20,7 @@
 
 #include "Core/Defines.h"
 #include "Core/Types.h"
+#include "Core/Logger.h"
 #include "Common/ReCraftedAPI.h"
 
 #ifdef var

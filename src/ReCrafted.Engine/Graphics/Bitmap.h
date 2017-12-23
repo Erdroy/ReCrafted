@@ -38,26 +38,44 @@ private:
     Bitmap() {}
     
 public:
-    static byte* load(const char* fileName)
+    static byte* load(const char* fileName, int* width, int* height, int* bpp = nullptr)
     {
+        if(!Platform::fileExists(fileName))
+        {
+            Logger::logError("Bitmap::load() file '{0}' not found!", fileName);
+            return nullptr;
+        }
+
         File bmp_file;
         Platform::openFile(&bmp_file, fileName, OpenMode::OpenRead);
 
         BitmapHeader header;
         bmp_file.read(&header, sizeof BitmapHeader);
 
+        // write out the width and height
+        *width = static_cast<int>(header.width);
+        *height = static_cast<int>(header.height);
 
-        return nullptr;
+        if(bpp)
+            *bpp = static_cast<int>(header.bits_per_pixel);
+
+        cvar image_size = header.size - header.bitmap_offset;
+        cvar bitmap = new byte[image_size];
+
+        // read image data
+        bmp_file.read(bitmap, image_size, header.bitmap_offset);
+
+        return bitmap;
     }
 
-    static void save()
+    static void save(byte* bitmap, int width, int height, int bpp)
     {
-        
+        // TODO: save bitmap
     }
 
-    static void free(byte* data)
+    static void free(byte* bitmap)
     {
-        delete[] data;
+        delete[] bitmap;
     }
 };
 

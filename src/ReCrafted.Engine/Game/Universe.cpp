@@ -23,7 +23,7 @@ void Universe::init()
     settings.generationType = GenerationType::CubeHeightMap;
     settings.position = Vector3::zero();
 	settings.minSurfaceHeight = 900.0f;
-	settings.maxSurfaceHeight = settings.minSurfaceHeight + 100.0f; // will round up to 1024 * 2
+	settings.maxSurfaceHeight = settings.minSurfaceHeight + 120.0f; // will round up to 1024 * 2
     settings.hillsHeight = 35.0f;
     settings.rootOctreeDepth = 3; // 2 subdivisions (chunk size will be 512)
 

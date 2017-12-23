@@ -10,7 +10,7 @@
 
 sbyte generateFromCHM(VoxelCHM* chm, Vector3& origin, const Vector3& position, const float radius, const float hillsHeight)
 {
-    cvar localHeight = radius + chm->sample(position, radius) * hillsHeight;
+    cvar localHeight = radius + (chm->sample(position, radius)) * hillsHeight;
     cvar height = (position - origin).length();
     return VOXEL_FROM_FLOAT(radius + (height - localHeight));
 }
