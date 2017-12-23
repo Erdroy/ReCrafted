@@ -33,12 +33,12 @@ Ptr<VoxelCHM> VoxelCHM::loadFromDirectory(const char* directoryName)
 {
     Ptr<VoxelCHM> chm(new VoxelCHM);
 
-    chm->loadFace(0, "/front.bmp", directoryName);
-    chm->loadFace(1, "/back.bmp", directoryName);
-    chm->loadFace(2, "/left.bmp", directoryName);
-    chm->loadFace(3, "/right.bmp", directoryName);
-    chm->loadFace(4, "/up.bmp", directoryName);
-    chm->loadFace(5, "/down.bmp", directoryName);
-
+    chm->loadFace(0, "/left.bmp", directoryName);
+    chm->loadFace(1, "/right.bmp", directoryName);
+    chm->loadFace(2, "/up.bmp", directoryName);
+    chm->loadFace(3, "/down.bmp", directoryName);
+    chm->loadFace(4, "/back.bmp", directoryName);
+    chm->loadFace(5, "/front.bmp", directoryName); 
+    
     return chm;
 }

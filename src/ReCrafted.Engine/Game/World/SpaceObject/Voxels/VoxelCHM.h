@@ -28,6 +28,9 @@ private:
 public:
     FORCEINLINE float sample(const Vector3& point, const float radius) const
     {
+        if (point.length() == 0)
+            return 0.0f;
+
         cvar spherePoint = mapSphere(point, radius);
         cvar sphereFace = getFace(spherePoint); // maybe point?
         cvar texcoord = getTexcoord(sphereFace, point); // maybe spherePoint?
@@ -46,8 +49,14 @@ public:
 
     float sampleSimple(const int face, const Vector2 texcoord) const
     {
-        if (face == 5)
+        if (texcoord.x < 0.0f || texcoord.y < 0.0f || texcoord.x >= 1.0f || texcoord.y >= 1.0f)
+        {
+#ifdef DEBUG
+            throw;
+#else
             return 0.0f;
+#endif
+        }
 
         cvar bitmap = m_faces[face];
 
@@ -138,7 +147,7 @@ public:
     /**
      * \brief Selects the sphere face is used by the point.
      * \param point The point which will be check.
-     * \return The result. (0 = front, 1 = back, 2 = up, 3 = down, 4 = left, 5 = right)
+     * \return The result. (0 = front, 1 = back, 2 = top, 3 = bottom, 4 = left, 5 = right)
      */
     FORCEINLINE static int getFace(const Vector3& point)
     {
@@ -150,17 +159,17 @@ public:
             {
                 if (point.x > 0.0f)
                 {
-                    return 5; // right
+                    return 1; // right
                 }
-                return 4; // left
+                return 0; // left
             }
 
             if (point.z > 0.0f)
             {
-                return 1; // back
+                return 4; // back
             }
 
-            return 0; // front
+            return 5; // forward
         }
 
         if (absPoint.y > absPoint.z)
@@ -175,10 +184,10 @@ public:
 
         if (point.z > 0.0f)
         {
-            return 1; // back
+            return 4; // back
         }
 
-        return 0; // front
+        return 5; // front
     }
 
     /**
