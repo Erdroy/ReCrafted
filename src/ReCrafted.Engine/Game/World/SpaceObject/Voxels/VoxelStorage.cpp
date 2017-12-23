@@ -8,7 +8,7 @@
 #include "Game/World/SpaceObject/SpaceObjectChunk.h"
 #include "Game/World/SpaceObject/SpaceObjectSettings.h"
 
-sbyte generateFromCHM(VoxelCHM* chm, Vector3& origin, const Vector3& position, const float radius, const float hillsHeight)
+FORCEINLINE sbyte generateFromCHM(VoxelCHM* chm, Vector3& origin, const Vector3& position, const float radius, const float hillsHeight)
 {
     cvar localHeight = radius + (chm->sample(position, radius)) * hillsHeight;
     cvar height = (position - origin).length();
@@ -55,12 +55,8 @@ void VoxelStorage::init(SpaceObjectSettings& settings)
         Logger::logError("getVoxelsRow for pregens is not implemented!");
         return;
     }
-    else
-    {
-        m_chm = VoxelCHM::loadFromDirectory(settings.fileName);
 
-        // TODO: load chm sides (VoxelCHM class neded) (up, down, left, right, front and back) [*.png files]
-    }
+    m_chm = VoxelCHM::loadFromDirectory(settings.fileName);
 }
 
 void VoxelStorage::dispose()

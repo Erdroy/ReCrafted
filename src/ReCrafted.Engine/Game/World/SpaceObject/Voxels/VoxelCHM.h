@@ -46,15 +46,13 @@ public:
 
     float sampleSimple(const int face, const Vector2 texcoord) const
     {
+        if (face == 5)
+            return 0.0f;
+
         cvar bitmap = m_faces[face];
 
         cvar posX = static_cast<int>(texcoord.x * m_bitmapWidth);
         cvar posY = static_cast<int>(texcoord.y * m_bitmapHeight);
-
-        if (posX < 0 || posX > m_bitmapWidth)
-            return 0.0f;
-        if (posY < 0 || posY > m_bitmapWidth)
-            return 0.0f;
 
         cvar pixel = bitmap[posY * m_bitmapWidth + posX];
 
@@ -109,14 +107,14 @@ public:
         {
             localPoint = localPoint * (1.0f / absPoint.z);
             texcoord.y = -localPoint.y;
-            texcoord.x = localPoint.z;
+            texcoord.x = localPoint.x;
             break;
         }
         case 5:
         {
             localPoint = localPoint * (1.0f / absPoint.z);
             texcoord.y = -localPoint.y;
-            texcoord.x = -localPoint.z;
+            texcoord.x = -localPoint.x;
             break;
         }
         default: throw;
@@ -140,7 +138,7 @@ public:
     /**
      * \brief Selects the sphere face is used by the point.
      * \param point The point which will be check.
-     * \return The result. (0 = front, 1 = back, 2 = top, 3 = bottom, 4 = left, 5 = right)
+     * \return The result. (0 = front, 1 = back, 2 = up, 3 = down, 4 = left, 5 = right)
      */
     FORCEINLINE static int getFace(const Vector3& point)
     {
@@ -152,34 +150,35 @@ public:
             {
                 if (point.x > 0.0f)
                 {
-                    return 0;
+                    return 5; // right
                 }
+                return 4; // left
             }
 
             if (point.z > 0.0f)
             {
-                return 1;
+                return 1; // back
             }
 
-            return 4;
+            return 0; // front
         }
 
         if (absPoint.y > absPoint.z)
         {
             if (point.y > 0.0f)
             {
-                return 2;
+                return 2; // up
             }
 
-            return 3;
+            return 3; // down
         }
 
         if (point.z > 0.0f)
         {
-            return 4;
+            return 1; // back
         }
 
-        return 5;
+        return 0; // front
     }
 
     /**
