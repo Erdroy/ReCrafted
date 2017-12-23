@@ -265,8 +265,16 @@ void DebugDraw::drawDrawlist(drawlist& drawlist)
 
 void DebugDraw::clean()
 {
+    m_currentLines.m_vertices.release();
+    m_currentLines.m_indices.release();
+    m_currentLines.m_colors.release();
+
 	m_currentLines = {};
 	m_currentLines.lines = true;
+
+    m_currentTriangles.m_vertices.release();
+    m_currentTriangles.m_indices.release();
+    m_currentTriangles.m_colors.release();
 
 	m_currentTriangles = {};
 	m_currentTriangles.lines = false;
