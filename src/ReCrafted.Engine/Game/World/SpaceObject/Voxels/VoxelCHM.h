@@ -25,38 +25,14 @@ private:
 private:
     void loadFace(int face, const char* name, const char* directoryName);
 
-public:
-    FORCEINLINE float sample(const Vector3& point, const float radius) const
+    float sampleFace(const int face, const Vector2 texcoord) const
     {
-        if (point.length() == 0)
-            return 0.0f;
-
-        cvar spherePoint = mapSphere(point, radius);
-        cvar sphereFace = getFace(spherePoint); // maybe point?
-        cvar texcoord = getTexcoord(sphereFace, point); // maybe spherePoint?
-
-        // TODO: fix texcoord
-
-        return sampleSimple(sphereFace, texcoord);
-    }
-
-    float sampleBicubic(const int face, Vector2 texcoord) const
-    {
-        // TODO: bicubic samping needed
-
-        return 0.0f;
-    }
-
-    float sampleSimple(const int face, const Vector2 texcoord) const
-    {
+#ifdef DEBUG
         if (texcoord.x < 0.0f || texcoord.y < 0.0f || texcoord.x >= 1.0f || texcoord.y >= 1.0f)
         {
-#ifdef DEBUG
             throw;
-#else
-            return 0.0f;
-#endif
         }
+#endif
 
         cvar bitmap = m_faces[face];
 
@@ -66,6 +42,19 @@ public:
         cvar pixel = bitmap[posY * m_bitmapWidth + posX];
 
         return pixel / 255.0f;
+    }
+
+public:
+    FORCEINLINE float sample(const Vector3& point, const float radius, const int lod) const
+    {
+        if (point.length() == 0)
+            return 0.0f;
+
+        cvar spherePoint = mapSphere(point, radius);
+        cvar sphereFace = getFace(spherePoint);
+        cvar texcoord = getTexcoord(sphereFace, point);
+
+        return sampleFace(sphereFace, texcoord); // TODO: sample proper LOD level
     }
 
     void dispose() override
@@ -80,7 +69,7 @@ public:
     {
         var localPoint = point;
         cvar absPoint = Vector3::abs(const_cast<Vector3&>(point));
-        Vector2 texcoord = {};
+        Vector2 texcoord;
         
         switch(face)
         {
@@ -116,27 +105,28 @@ public:
         {
             localPoint = localPoint * (1.0f / absPoint.z);
             texcoord.y = -localPoint.y;
-            texcoord.x = localPoint.x;
+            texcoord.x = -localPoint.x;
             break;
         }
         case 5:
         {
             localPoint = localPoint * (1.0f / absPoint.z);
             texcoord.y = -localPoint.y;
-            texcoord.x = -localPoint.x;
+            texcoord.x = localPoint.x;
             break;
         }
         default: throw;
         }
 
+        // clamp
         texcoord.x = (texcoord.x + 1.0f) * 0.5f;
-        texcoord.y = (texcoord.y + 1.0f) *0.5f;
+        texcoord.y = (texcoord.y + 1.0f) * 0.5f;
 
-        if (texcoord.x == 1.0f)
+        if (texcoord.x >= 1.0f)
         {
             texcoord.x = 0.999999f;
         }
-        if (texcoord.y == 1.0f)
+        if (texcoord.y >= 1.0f)
         {
             texcoord.y = 0.999999f;
         }
@@ -184,10 +174,10 @@ public:
 
         if (point.z > 0.0f)
         {
-            return 4; // back
+            return 5; // back
         }
 
-        return 5; // front
+        return 4; // front
     }
 
     /**

@@ -21,6 +21,8 @@ void VoxelCHM::loadFace(const int face, const char* fileName, const char* direct
         return;
     }
 
+    // TODO: bitmap downsampling
+
     // set width and height of this bitmap TODO: check if all faces has the same size?
     m_bitmapWidth = bitmapWidth;
     m_bitmapHeight = bitmapHeight;
@@ -37,8 +39,8 @@ Ptr<VoxelCHM> VoxelCHM::loadFromDirectory(const char* directoryName)
     chm->loadFace(1, "/right.bmp", directoryName);
     chm->loadFace(2, "/up.bmp", directoryName);
     chm->loadFace(3, "/down.bmp", directoryName);
-    chm->loadFace(4, "/back.bmp", directoryName);
-    chm->loadFace(5, "/front.bmp", directoryName); 
+    chm->loadFace(4, "/front.bmp", directoryName);
+    chm->loadFace(5, "/back.bmp", directoryName); 
     
     return chm;
 }

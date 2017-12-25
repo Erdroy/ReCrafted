@@ -8,9 +8,9 @@
 #include "Game/World/SpaceObject/SpaceObjectChunk.h"
 #include "Game/World/SpaceObject/SpaceObjectSettings.h"
 
-FORCEINLINE sbyte generateFromCHM(VoxelCHM* chm, Vector3& origin, const Vector3& position, const float radius, const float hillsHeight)
+FORCEINLINE sbyte generateFromCHM(VoxelCHM* chm, Vector3& origin, const Vector3& position, const int lod, const float radius, const float hillsHeight)
 {
-    cvar localHeight = radius + (chm->sample(position, radius)) * hillsHeight;
+    cvar localHeight = radius + (chm->sample(position, radius, lod)) * hillsHeight;
     cvar height = (position - origin).length();
     return VOXEL_FROM_FLOAT(radius + (height - localHeight));
 }
@@ -37,7 +37,7 @@ sbyte* VoxelStorage::generateChunkFromCHM(Vector3& position, const int lod)
                 cvar voxelPosition = position + offset * lod_f;
 
                 // tempoarary
-                data[index] = generateFromCHM(chm, spaceObject->m_position, voxelPosition, spaceObject->m_settings.minSurfaceHeight, spaceObject->m_settings.hillsHeight);
+                data[index] = generateFromCHM(chm, spaceObject->m_position, voxelPosition, lod, spaceObject->m_settings.minSurfaceHeight, spaceObject->m_settings.hillsHeight);
             }
         }
     }
