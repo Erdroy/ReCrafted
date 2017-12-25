@@ -20,6 +20,7 @@ namespace ReCrafted.Game
             Camera = Camera.Create();
             Camera.SetAsCurrent();
             Camera.Position = Entity.Position;
+            Camera.FarPlane = 10000.0f;
         }
 
         protected override void OnUpdate()
@@ -74,13 +75,13 @@ namespace ReCrafted.Game
         {
             var direction = Vector3.Zero;
 
-            var currentSpeed = 20.0f;
+            var currentSpeed = 50.0f;
 
             if (Input.IsKey(Keys.Shift))
                 currentSpeed *= 2.5f;
 
             if (Input.IsKey(Keys.Control))
-                currentSpeed *= 0.025f;
+                currentSpeed *= 0.25f;
 
             if (Input.IsKey(Keys.W))
                 direction += Camera.Forward;

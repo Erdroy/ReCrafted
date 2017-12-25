@@ -123,13 +123,10 @@ public:
         texcoord.y = (texcoord.y + 1.0f) * 0.5f;
 
         if (texcoord.x >= 1.0f)
-        {
             texcoord.x = 0.999999f;
-        }
+
         if (texcoord.y >= 1.0f)
-        {
             texcoord.y = 0.999999f;
-        }
 
         return texcoord;
     }
@@ -156,10 +153,10 @@ public:
 
             if (point.z > 0.0f)
             {
-                return 4; // back
+                return 5; // back
             }
 
-            return 5; // forward
+            return 4; // forward
         }
 
         if (absPoint.y > absPoint.z)
