@@ -21,6 +21,9 @@ void RenderBuffer::createBuffer(uint width, uint height)
 
 	// build render buffer
 	m_framebufferHandle = bgfx::createFrameBuffer(m_textureCount, m_textureHandles, true);
+    
+    m_width = width;
+    m_height = height;
 }
 
 void RenderBuffer::begin()
@@ -70,6 +73,9 @@ bgfx::TextureHandle RenderBuffer::getTarget(uint slot)
 void RenderBuffer::resize(uint width, uint height)
 {
 	_ASSERT(m_created != false);
+
+    if (m_width == width && m_height == height)
+        return;
 
 	// destroy current framebuffer
 	bgfx::destroy(m_framebufferHandle);

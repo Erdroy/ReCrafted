@@ -23,6 +23,18 @@ int m_cursorDeltaX = 0u;
 int m_cursorDeltaY = 0u;
 GameMain* gameMain_instance;
 
+void wndApplyResize()
+{
+    auto window = static_cast<HWND>(Platform::getGameWindow());
+    RECT rect;
+
+    GetClientRect(window, &rect);
+
+    auto width = rect.right - rect.left;
+    auto height = rect.bottom - rect.top;
+    gameMain_instance->onResize(width, height);
+}
+
 LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	switch (msg)
@@ -42,18 +54,18 @@ LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		break;
 	}
 
-	case WM_WINDOWPOSCHANGED:
+    case WM_SIZE:
+    {
+        if (wparam == 2) 
+            wndApplyResize();
+
+        return 0;
+    }
+    
 	case WM_EXITSIZEMOVE: // handle window resizing
 	{
-		auto window = static_cast<HWND>(Platform::getGameWindow());
-		RECT rect;
-
-		GetClientRect(window, &rect);
-
-		auto width = rect.right - rect.left;
-		auto height = rect.bottom - rect.top;
-		gameMain_instance->onResize(width, height);
-		break;
+        wndApplyResize();
+        return 0;
 	}
 
 	case WM_CLOSE: // handle window closing

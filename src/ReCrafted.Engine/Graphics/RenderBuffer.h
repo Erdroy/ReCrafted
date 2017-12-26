@@ -26,6 +26,9 @@ private:
 	uint m_textureCount = 0u;
 	bool m_created = false;
 
+    uint m_width = 0;
+    uint m_height = 0;
+
 private:
 	
 	void createBuffer(uint width, uint height);
