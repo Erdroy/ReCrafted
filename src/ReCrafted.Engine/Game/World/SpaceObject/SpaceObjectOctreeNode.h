@@ -8,6 +8,7 @@
 // includes
 #include "Core/Delegate.h"
 #include "Core/Math/Vector3.h"
+#include "Core/Math/BoundingBox.h"
 #include "Core/Containers/Array.h"
 
 interface IVoxelMesher;
@@ -90,6 +91,7 @@ public:
 public:
 	PROPERTY(Vector3, position) = {}; // NOTE: center position
 	PROPERTY(int, size) = {};
+    PROPERTY(BoundingBox, bounds) = {};
 };
 
 #endif // SPACEOBJECTOCTREENODE_H

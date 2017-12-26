@@ -5,6 +5,7 @@
 #include "SpaceObjectChunk.h"
 #include "SpaceObjectManager.h"
 #include "SpaceObjectTables.hpp"
+#include "Graphics/Camera.h"
 
 #define HAS_LOCAL_NEIGH(id, dir) LocalNeighTable[id] & (1 << dir)
 
@@ -52,8 +53,9 @@ void SpaceObjectOctreeNode::worker_populate(IVoxelMesher* mesher)
 {
 	// WARNING: this function is called on WORKER THREAD!
 
-	auto childrenSize = m_size / 2;
-	for (auto i = 0; i < 8; i++)
+	cvar childrenSize = m_size / 2;
+    var boundsSize = Vector3::one() * static_cast<float>(childrenSize); 
+    for (auto i = 0; i < 8; i++)
 	{
 		auto position = m_position + ChildrenNodeOffsets[i] * static_cast<float>(childrenSize);
 
@@ -61,11 +63,13 @@ void SpaceObjectOctreeNode::worker_populate(IVoxelMesher* mesher)
 		m_childrenNodes[i] = new SpaceObjectOctreeNode();
 		m_childrenNodes[i]->m_position = position;
 		m_childrenNodes[i]->m_size = childrenSize;
+        m_childrenNodes[i]->m_bounds = BoundingBox(position, boundsSize);
 
 		// set owner, parent and root
 		m_childrenNodes[i]->owner = owner;
 		m_childrenNodes[i]->parent = this;
 		m_childrenNodes[i]->root = root;
+
 
 		// set node id
 		m_childrenNodes[i]->m_nodeId = i;
@@ -247,6 +251,9 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 
 void SpaceObjectOctreeNode::draw()
 {
+    if (!Camera::getMainCamera()->getBoundingFrustum().contains(m_bounds))
+        return;
+
 	if(m_chunk)
 	{
 		m_chunk->draw();
