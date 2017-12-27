@@ -28,6 +28,9 @@ namespace ReCrafted.API.UI.Controls
         // velocity of button spring animation
         private Vector2 _buttonVelocity;
 
+        // button will ignore next click?
+        private bool _ignoreClick;
+
         /// <summary>
         /// Delegate will be invoked, when button has been clicked.
         /// </summary>
@@ -113,12 +116,19 @@ namespace ReCrafted.API.UI.Controls
 
         public override void OnMouseEnter()
         {
+            _ignoreClick = false;
+            if (Input.IsKey(Keys.Mouse0))
+                _ignoreClick = true;
+
             if (!SmoothColors)
                 _color = Colors.OverColor;
         }
 
         public override void OnMouseOver()
         {
+            if (_ignoreClick && Input.IsKeyDown(Keys.Mouse0))
+                _ignoreClick = false;
+
             if (SmoothColors)
             {
                 if (Input.IsKeyUp(Keys.Mouse0))
@@ -129,7 +139,7 @@ namespace ReCrafted.API.UI.Controls
                 _color = Input.IsKey(Keys.Mouse0) ? Colors.ClickColor : Colors.OverColor;
             }
 
-            if (Input.IsKeyUp(Keys.Mouse0))
+            if (!_ignoreClick && Input.IsKeyUp(Keys.Mouse0))
             {
                 if (SpringAnimation)
                 {
@@ -164,11 +174,12 @@ namespace ReCrafted.API.UI.Controls
                                               buttonRegion.Y - (_buttonSize.Y/2f - buttonRegion.Height/2f), 
                                               _buttonSize.X, _buttonSize.Y);
             }
+            UIInternal.Depth = Depth + 0.1f;
             UIInternal.DrawBox(buttonRegion);
 
             TextPosition = new Vector2(Region.X + Region.Width / 2 - TextSize.X / 2, Region.Y + Region.Height / 2 - TextSize.Y / 2);
             var pos = TextPosition;
-            UIInternal.Depth = Depth + 0.1f;
+            UIInternal.Depth = Depth + 0.2f;
             UIInternal.Color = TextColor;
             UIInternal.DrawString(TextFont.NativePtr, _text, ref pos);
         }

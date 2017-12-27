@@ -33,5 +33,15 @@ namespace ReCrafted.API.UI.Controls
             OverColor = Color.Gray,
             ClickColor = Color.DarkGray
         };
+
+        /// <summary>
+        /// Default set of colors for ui handle. (For ex. scroll bar)
+        /// </summary>
+        public static UIControlColors DefaultHandle = new UIControlColors
+        {
+            NormalColor = Color.Gray * 0.5f,
+            OverColor = Color.DarkGray,
+            ClickColor = Color.DarkOrange
+        };
     }
 }

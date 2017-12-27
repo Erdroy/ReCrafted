@@ -205,6 +205,22 @@ namespace ReCrafted.API.UI
         /// <typeparam name="T">Type of control.</typeparam>
         /// <param name="region">Region of panel with control.</param>
         /// <param name="controlInstance">Control instance.</param>
+        public static void CreateControl<T>(RectangleF region, ref T controlInstance) where T : UIControl
+        {
+            var panel = Create(region, UILayoutType.Vertical, $"Control-{controlInstance.Name}");
+            panel.Layout.ForceExpandHeigth = true;
+            panel.Layout.ForceExpandWidth = true;
+            panel.ApplyLayout = true;
+
+            controlInstance = panel.Add(controlInstance);
+        }
+
+        /// <summary>
+        /// Creates new panel with control instance.
+        /// </summary>
+        /// <typeparam name="T">Type of control.</typeparam>
+        /// <param name="region">Region of panel with control.</param>
+        /// <param name="controlInstance">Control instance.</param>
         /// <param name="panel">Created instance of UIPanel.</param>
         public static void CreateControl<T>(RectangleF region, ref T controlInstance, out UIPanel panel) where T : UIControl
         {

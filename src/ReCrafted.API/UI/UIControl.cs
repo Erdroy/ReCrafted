@@ -118,9 +118,9 @@ namespace ReCrafted.API.UI
         public bool IsFocused => FocusedControl == this;
 
         /// <summary>
-        /// Default font of all new controls that use font.
+        /// Default font of all new controls that uses font.
         /// </summary>
-        public static Font DefaultFont { get; set; }
+        public static Font DefaultFont { get; internal set; }
 
         // current focused control by user
         internal static UIControl FocusedControl { get; private set; }

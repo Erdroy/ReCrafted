@@ -197,7 +197,10 @@ namespace ReCrafted.API.UI.Controls
 
         public override void Reset()
         {
-            
+            _color = Colors.NormalColor;
+            _checkBoxSize = new Vector2(Region.Height, Region.Height) * 0.8f;
+            _checkBoxVelocity = Vector2.One;
+            _checkBoxColor = Color.Transparent;
         }
 
         // set default properties

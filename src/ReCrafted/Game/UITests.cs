@@ -1,6 +1,9 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
+using System;
 using System.Diagnostics;
+using System.Globalization;
+using System.Linq.Expressions;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
@@ -68,9 +71,8 @@ namespace ReCrafted.Game
             toggle3.TextBackgroundColor = new Color(68, 68, 68);
             */
 
-            UIPanel textFieldPanel;
             var textField = new UITextField(string.Empty);
-            UIPanel.CreateControl(new RectangleF(700, 300, 130, 128), ref textField, out textFieldPanel);
+            UIPanel.CreateControl(new RectangleF(300, 300, 130, 128), ref textField);
             textField.Text = "123\n456\n789\n\nqwe\n\n\nrty";
             //textFieldItems.Item2.CharactersLimit = 10;
             //var textField = panel.Add(new UITextField(new RectangleF(0, 0, 130, 128), string.Empty));
@@ -81,6 +83,34 @@ namespace ReCrafted.Game
             /*for (int i = 0; i < 1000; i++)
                 panel.Add(new UIBox(new Color(0, 100 * i / 100, 0)));
                 */
+
+            var scrollBar = new UIScrollbar
+            {
+                Vertical = true,
+                Size = 0.1f
+            };
+
+            UIPanel.CreateControl(new RectangleF(200, 500, 150, 450), ref scrollBar);
+
+            var text = new UIText {Text = scrollBar.Position.ToString(CultureInfo.InvariantCulture)};
+
+            UIPanel.CreateControl(new RectangleF(100, 530, 100, 30), ref text);
+
+            var button = new UIButton
+            {
+                Text = "Click Me!"
+            };
+            button.OnClick += () =>
+            {
+                var r = new Random();
+                scrollBar.Position = r.Next(0, 10) / 10f;
+            };
+
+            scrollBar.OnValueChanged += () =>
+            {
+                text.Text = scrollBar.Position.ToString(CultureInfo.InvariantCulture);
+            };
+            UIPanel.CreateControl(new RectangleF(100, 500, 100, 30), ref button);
 
             sw.Stop();
             Logger.Write("Ui Construct Took -> " + sw.ElapsedMilliseconds + "ms");
