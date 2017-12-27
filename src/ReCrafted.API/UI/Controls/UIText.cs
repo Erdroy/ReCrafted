@@ -80,12 +80,19 @@ namespace ReCrafted.API.UI.Controls
 
             var pos = TextPosition;
 
-            UIInternal.Depth = Depth;
-            UIInternal.Color = Color.Blue;
-            UIInternal.DrawBox(Region);
+            if (EnableClipping)
+                UIInternal.BeginViewRect(Region);
+
+            // debug
+            // UIInternal.Depth = Depth;
+            // UIInternal.Color = Color.Blue;
+            // UIInternal.DrawBox(Region);
 
             UIInternal.Color = TextColor;
             UIInternal.DrawString(TextFont.NativePtr, _text, ref pos);
+
+            if (EnableClipping)
+                UIInternal.EndViewRect();
         }
 
         public override void Reset()
@@ -114,6 +121,7 @@ namespace ReCrafted.API.UI.Controls
             Text = text;
             TextColor = color;
             FitRegionSizeToText = true;
+            EnableClipping = false;
             Enabled = true;
             IgnoreMouseCollision = true;
             IsMouseOver = false;
@@ -159,5 +167,10 @@ namespace ReCrafted.API.UI.Controls
         /// Loaded font of this text.
         /// </summary>
         public Font TextFont { get; private set; }
+
+        /// <summary>
+        /// Enable text clipping.
+        /// </summary>
+        public bool EnableClipping { get; set; }
     }
 }

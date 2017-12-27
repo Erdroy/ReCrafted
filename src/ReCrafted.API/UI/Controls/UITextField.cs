@@ -151,6 +151,9 @@ namespace ReCrafted.API.UI.Controls
             if (!Enabled)
                 return;
 
+            if (EnableClipping)
+                UIInternal.BeginViewRect(Region);
+
             #region DRAW
 
             if (!string.IsNullOrEmpty(_selectableText.SelectedText) && Input.IsKey(Keys.Control) &&
@@ -433,6 +436,9 @@ namespace ReCrafted.API.UI.Controls
             UIInternal.DrawBox(beamPosition);
 
             #endregion
+
+            if (EnableClipping)
+                UIInternal.EndViewRect();
         }
 
         public override void Reset()
@@ -558,6 +564,7 @@ namespace ReCrafted.API.UI.Controls
             FitCharactersLimitToSize = false;
             MultipleLine = true;
             CharacterBlackList = new[] { '`' };
+            EnableClipping = false;
             TextFont = DefaultFont; //set default font
             Text = text;
 
@@ -619,6 +626,11 @@ namespace ReCrafted.API.UI.Controls
         /// List of character that can't be used.
         /// </summary>
         public char[] CharacterBlackList { get; set; } = new char[0];
+
+        /// <summary>
+        /// Enable text field clipping.
+        /// </summary>
+        public bool EnableClipping { get; set; }
 
         /// <summary>
         /// Text of this control.
