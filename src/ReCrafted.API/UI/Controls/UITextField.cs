@@ -1,5 +1,7 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
@@ -45,6 +47,16 @@ namespace ReCrafted.API.UI.Controls
         private int _textFieldPosition;
         private double _textFieldWaitForNextKey1;
         private double _textFieldWaitForNextKey2;
+
+        /// <summary>
+        /// On submit event of text field. (Available only when MultipleLines is disabled)
+        /// </summary>
+        public Action OnSubmit;
+
+        /// <summary>
+        /// On value changed of text field.
+        /// </summary>
+        public Action<string> OnValueChanged;
 
         /// <summary>
         /// Creates new UITextField.
@@ -145,27 +157,38 @@ namespace ReCrafted.API.UI.Controls
 
             if (!string.IsNullOrEmpty(_selectableText.SelectedText) && Input.IsKey(Keys.Control) &&
                 Input.IsKeyDown(Keys.C))
+            {
                 Clipboard.SetText(_selectableText.SelectedText);
+            }
 
             if (SmoothColors)
+            {
                 _color = Color.Lerp(_color, IsMouseOver ? Colors.OverColor : Colors.NormalColor,
                     (float) Time.DeltaTime * SmoothTranslation);
+            }
+
             UIInternal.Depth = Depth;
             UIInternal.Color = _color;
             UIInternal.DrawBox(Region);
 
             var buttonRegion = Region;
-            var target = new Vector2(buttonRegion.Width, buttonRegion.Height) * (IsFocused ? 1f : 0.5f);
-            UIAnimation.SpringVector2(ref _textFieldEditBoxSize, ref _textFieldEditBoxVelocity, target,
-                (float) Time.DeltaTime);
-            buttonRegion = new RectangleF(buttonRegion.X - (_textFieldEditBoxSize.X / 2f - buttonRegion.Width / 2f),
-                buttonRegion.Y - (_textFieldEditBoxSize.Y / 2f - buttonRegion.Height / 2f),
-                _textFieldEditBoxSize.X, _textFieldEditBoxSize.Y);
+            if (SpringAnimation)
+            {
+                var target = new Vector2(buttonRegion.Width, buttonRegion.Height) * (IsFocused ? 1f : 0.5f);
+                UIAnimation.SpringVector2(ref _textFieldEditBoxSize, ref _textFieldEditBoxVelocity, target,
+                    (float) Time.DeltaTime);
+                buttonRegion = new RectangleF(buttonRegion.X - (_textFieldEditBoxSize.X / 2f - buttonRegion.Width / 2f),
+                    buttonRegion.Y - (_textFieldEditBoxSize.Y / 2f - buttonRegion.Height / 2f),
+                    _textFieldEditBoxSize.X, _textFieldEditBoxSize.Y);
+            }
 
             if (SmoothColors)
+            {
                 _textFieldEditBoxColor = Color.Lerp(_textFieldEditBoxColor,
                     IsFocused ? Colors.ClickColor : Color.Transparent,
                     (float) Time.DeltaTime * SmoothTranslation * (IsFocused ? 1f : 2f));
+            }
+
             UIInternal.Depth = Depth + 0.1f;
             UIInternal.Color = _textFieldEditBoxColor;
             UIInternal.DrawBox(buttonRegion);
@@ -216,6 +239,7 @@ namespace ReCrafted.API.UI.Controls
                         _text = _text.Remove(_textFieldPosition, 1);
                         _textFieldPosition--;
                         _textFieldWaitForNextKey2 = 0.05f;
+                        OnValueChanged?.Invoke(_text);
                     }
                     else
                     {
@@ -225,21 +249,32 @@ namespace ReCrafted.API.UI.Controls
             }
             else if (Input.IsKeyDown(Keys.Enter) || Input.IsKey(Keys.Enter)) // handle enter
             {
-                if (CharactersLimit == 0 || _text.Length <= CharactersLimit)
+                if (MultipleLine)
                 {
-                    _textFieldWaitForNextKey1 += Time.DeltaTime;
-                    if (Input.IsKeyDown(Keys.Enter) ||
-                        _textFieldWaitForNextKey1 > 0.5f && _textFieldWaitForNextKey2 < 0f)
+                    if (CharactersLimit == 0 || _text.Length <= CharactersLimit)
                     {
-                        _text = string.IsNullOrEmpty(_text)
-                            ? '\n'.ToString()
-                            : _text.Insert(_textFieldPosition + 1, '\n'.ToString());
-                        _textFieldPosition++;
-                        _textFieldWaitForNextKey2 = 0.05f;
+                        _textFieldWaitForNextKey1 += Time.DeltaTime;
+                        if (Input.IsKeyDown(Keys.Enter) ||
+                            _textFieldWaitForNextKey1 > 0.5f && _textFieldWaitForNextKey2 < 0f)
+                        {
+                            _text = string.IsNullOrEmpty(_text)
+                                ? '\n'.ToString()
+                                : _text.Insert(_textFieldPosition + 1, '\n'.ToString());
+                            _textFieldPosition++;
+                            _textFieldWaitForNextKey2 = 0.05f;
+                            OnValueChanged?.Invoke(_text);
+                        }
+                        else
+                        {
+                            _textFieldWaitForNextKey2 -= Time.DeltaTime;
+                        }
                     }
-                    else
+                }
+                else
+                {
+                    if (Input.IsKeyDown(Keys.Enter))
                     {
-                        _textFieldWaitForNextKey2 -= Time.DeltaTime;
+                        OnSubmit?.Invoke();
                     }
                 }
             }
@@ -329,26 +364,57 @@ namespace ReCrafted.API.UI.Controls
                         // fix position of beam to be always before last added character
                         _textFieldPosition++;
                         type = true;
+                        OnValueChanged?.Invoke(_text);
                     }
                 }
             }
 
+            /*
             // some debug stuff
+            UIInternal.Color = Color.White;
             pos.Y -= TextFont.Size * 2;
             UIInternal.DrawString(TextFont.NativePtr, "TextFieldPosition -> " + _textFieldPosition, ref pos);
+            pos.Y -= TextFont.Size * 2;
+            UIInternal.DrawString(TextFont.NativePtr, "TextFieldLine -> " + _selectableText.GetLineFromCharIndex(_textFieldPosition), ref pos);
+            pos.Y -= TextFont.Size * 2;
+            UIInternal.DrawString(TextFont.NativePtr, "TextFieldSize -> " + Text.Length, ref pos);
+
+            // get edited line
+            var nextLine = _selectableText.GetLineFromCharIndex(_textFieldPosition + 1);
+
+            // move to next line
+            nextLine++;
+
+            pos.Y -= TextFont.Size * 2;
+            UIInternal.DrawString(TextFont.NativePtr, "NextLine -> " + nextLine, ref pos);
+
+            // fix resolved line to avoid any exceptions
+            _selectableText.IsLineExist(ref nextLine);
+
+            pos.Y -= TextFont.Size * 2;
+            UIInternal.DrawString(TextFont.NativePtr, "FixedNextLine -> " + nextLine, ref pos);
+
+            // get last character of resolved line
+            bool endOfLineStatex;
+            int endOfLinex = _selectableText.GetLastCharIndexOfLine(nextLine, out endOfLineStatex) - 2;
+
+            pos.Y -= TextFont.Size * 2;
+            UIInternal.DrawString(TextFont.NativePtr, "EndOfNextLine -> " + endOfLinex, ref pos);
+
             UIInternal.Color = Color.White;
             var lines = _selectableText.GetLines();
             for (int lineIndex = 0; lineIndex < lines.Count; lineIndex++)
             {
-                var endOfLine = _selectableText.GetLastCharIndexOfLine(lineIndex);
+                bool endOfLineState;
+                int endOfLine = _selectableText.GetLastCharIndexOfLine(lineIndex, out endOfLineState);
                 pos = _selectableText.GetPointFromCharIndex(endOfLine);
-                pos.X -= 50;
+                pos.X -= 270;
 
-                UIInternal.DrawString(TextFont.NativePtr, $"L{lineIndex}, I{endOfLine}", ref pos);
+                bool success;
+                UIInternal.DrawString(TextFont.NativePtr, $"L{lineIndex},  F-{Text[_selectableText.GetFirstCharIndexOfLine(lineIndex)]},  SIZ-{lines[lineIndex].Length},  TOT-{endOfLine}({endOfLineState})", ref pos);
             }
-
             UIInternal.Color = Color.Black;
-            var p = _text.Length == 0 ? 0 : (_textFieldPosition == 0 ? 0 : _textFieldPosition);
+            */
 
             // resolve current beam position
             var charPosition = FixedCharacterPoint(_textFieldPosition);
@@ -419,9 +485,21 @@ namespace ReCrafted.API.UI.Controls
                 _textFieldPosition = newPosition;
             else
             {
-                var line = _selectableText.GetLineFromCharIndex(_textFieldPosition) - 1;
-                var endOfLine = _selectableText.GetLastCharIndexOfLine(line);
-                _textFieldPosition = endOfLine;               
+                // get edited line
+                var nextLine = _selectableText.GetLineFromCharIndex(_textFieldPosition + 1);
+
+                // move to previous line
+                nextLine--;
+
+                // fix resolved line to avoid any exceptions
+                _selectableText.IsLineExist(ref nextLine);
+
+                // get last character of resolved line
+                bool endOfLineState;
+                int endOfLine = _selectableText.GetLastCharIndexOfLine(nextLine, out endOfLineState) - 2;
+
+                // apply new position of IBeam
+                _textFieldPosition = endOfLine;
             }
         }
 
@@ -436,13 +514,21 @@ namespace ReCrafted.API.UI.Controls
                 _textFieldPosition = newPosition;
             else
             {
-                var line = _selectableText.GetLineFromCharIndex(_textFieldPosition);
-                var endOfLine = _selectableText.GetLastCharIndexOfLine(line);
-                if (_textFieldPosition == endOfLine)
-                    endOfLine++;
-                _textFieldPosition = endOfLine;
+                // get edited line
+                var nextLine = _selectableText.GetLineFromCharIndex(_textFieldPosition + 1);
 
-                Logger.Write($"Line -> {line}, EndOfLine -> {endOfLine}, Position -> {_textFieldPosition}");
+                // move to next line
+                nextLine++;
+
+                // fix resolved line to avoid any exceptions
+                _selectableText.IsLineExist(ref nextLine);
+
+                // get last character of resolved line
+                bool endOfLineState;
+                int endOfLine = _selectableText.GetLastCharIndexOfLine(nextLine, out endOfLineState) - 2;
+
+                // apply new position of IBeam
+                _textFieldPosition = endOfLine;
             }
         }
 
@@ -459,16 +545,21 @@ namespace ReCrafted.API.UI.Controls
         private void ApplyDefaults(RectangleF region, string text, Color textColor, UIControlColors colors)
         {
             Region = region;
-            TextFont = DefaultFont; //set default font
-            Text = text;
-            TextColor = textColor;
-            Colors = colors;
-            SmoothColors = true;
-            SmoothTranslation = 10f;
             Enabled = true;
             IgnoreMouseCollision = false;
             IsMouseOver = false;
             Parent = null;
+
+            Colors = colors;
+            SmoothColors = true;
+            SmoothTranslation = 10f;
+            SpringAnimation = true;
+            TextColor = textColor;
+            CharactersLimit = 0;
+            FitCharactersLimitToSize = false;
+            MultipleLine = true;
+            TextFont = DefaultFont; //set default font
+            Text = text;
 
             _color = Colors.NormalColor;
             _textFieldEditBoxColor = Color.Transparent;
@@ -500,6 +591,11 @@ namespace ReCrafted.API.UI.Controls
         public float SmoothTranslation { get; set; }
 
         /// <summary>
+        /// Is text field currently using spring animation.
+        /// </summary>
+        public bool SpringAnimation { get; set; }
+
+        /// <summary>
         /// Color of the text.
         /// </summary>
         public Color TextColor { get; set; }
@@ -513,6 +609,11 @@ namespace ReCrafted.API.UI.Controls
         /// Limit of characters in text will automatically fit to current region size and font size.
         /// </summary>
         public bool FitCharactersLimitToSize { get; set; }
+
+        /// <summary>
+        /// Is text field are able to use multiple lines? 
+        /// </summary>
+        public bool MultipleLine { get; set; }
 
         /// <summary>
         /// Text of this control.

@@ -76,9 +76,14 @@ namespace ReCrafted.API.UI.Controls
         {
             if (!Enabled) return;
             TextPosition = new Vector2(Region.X + (Region.Width != 0 ? Region.Width / 2 - TextSize.X / 2 : 0),
-                                       Region.Y + (Region.Height != 0 ? Region.Height / 2 - TextSize.Y / 2 : 0));
+                Region.Y + (Region.Height != 0 ? Region.Height / 2 - TextSize.Y / 2 : 0));
+
             var pos = TextPosition;
+
             UIInternal.Depth = Depth;
+            UIInternal.Color = Color.Blue;
+            UIInternal.DrawBox(Region);
+
             UIInternal.Color = TextColor;
             UIInternal.DrawString(TextFont.NativePtr, _text, ref pos);
         }
@@ -106,6 +111,7 @@ namespace ReCrafted.API.UI.Controls
             TextFont = DefaultFont;//set default font
             Text = text;
             TextColor = color;
+            FitRegionSizeToText = true;
             Enabled = true;
             IgnoreMouseCollision = true;
             IsMouseOver = false;
@@ -127,6 +133,8 @@ namespace ReCrafted.API.UI.Controls
             {
                 _text = value;
                 TextSize = TextFont.MeasureString(_text);
+                if (FitRegionSizeToText)
+                    Region = new RectangleF(Region.X, Region.Y, TextSize.X, TextSize.Y);
             }
         }
 
@@ -144,5 +152,10 @@ namespace ReCrafted.API.UI.Controls
         /// Loaded font of this text.
         /// </summary>
         public Font TextFont { get; private set; }
+
+        /// <summary>
+        /// Region size will be automatically updated to current text size.
+        /// </summary>
+        public bool FitRegionSizeToText { get; set; }
     }
 }

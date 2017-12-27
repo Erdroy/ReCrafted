@@ -46,13 +46,11 @@ namespace ReCrafted.Game
 
                 TargetFps = 120;
 
-                // test ui script
-                var tests = Entity.Create("UiTests");
-                tests.AddScript<UITests>();
-
                 // pause Menu
-                var pauseMenu = Entity.Create("PauseMenu");
-                pauseMenu.AddScript<PauseMenu>();
+                var mainEntity = Entity.Create("MainEntity");
+                //mainEntity.AddScript<UITests>();
+                mainEntity.AddScript<PauseMenu>();
+                mainEntity.AddScript<SuperConsole>();
             }
             catch (Exception exception)
             {
@@ -66,17 +64,31 @@ namespace ReCrafted.Game
             {
                 if (Input.IsKeyDown(Keys.Escape))
                 {
-                    if (PauseMenu.Instance.Enabled)
+                    if (SuperConsole.Instance.Enabled)
+                        DisableConsole();
+                    else
                     {
-                        DisablePause();
+                        if (PauseMenu.Instance.Enabled)
+                        {
+                            DisablePause();
+                        }
+                        else
+                        {
+                            EnablePause();
+                        }
+                    }
+                }
+
+                if (Input.IsKeyDown(Keys.OEM3))
+                {
+                    if (SuperConsole.Instance.Enabled)
+                    {
+                        DisableConsole();
                     }
                     else
                     {
-                        EnablePause();
+                        EnableConsole();
                     }
-
-                    //if (UIControl.FocusedControl != null)
-                    //    UIControl.SetFocusedControl(null);
                 }
 
                 if (Input.IsKeyDown(Keys.F8) && !PauseMenu.Instance.Enabled)
@@ -149,6 +161,9 @@ namespace ReCrafted.Game
             Object.Destroy(_crosshairTexture);
         }
 
+        /// <summary>
+        /// Enables pause menu.
+        /// </summary>
         public static void EnablePause()
         {
             Cursor.Show = true;
@@ -157,6 +172,9 @@ namespace ReCrafted.Game
             PauseMenu.Instance.Enable();
         }
 
+        /// <summary>
+        /// Disables pause menu.
+        /// </summary>
         public static void DisablePause()
         {
             Cursor.Show = false;
@@ -167,7 +185,35 @@ namespace ReCrafted.Game
             if (UIControl.FocusedControl != null)
                 UIControl.SetFocusedControl(null);
         }
-        
+
+        /// <summary>
+        /// Enables console.
+        /// </summary>
+        public static void EnableConsole()
+        {
+            Cursor.Show = true;
+            Cursor.Lock = false;
+
+            SuperConsole.Instance.Enable();
+        }
+
+        /// <summary>
+        /// Disables console.
+        /// </summary>
+        public static void DisableConsole()
+        {
+            Cursor.Show = false;
+            Cursor.Lock = true;
+
+            SuperConsole.Instance.Disable();
+
+            if (UIControl.FocusedControl != null)
+                UIControl.SetFocusedControl(null);
+        }
+
+        /// <summary>
+        /// Instance of main game class.
+        /// </summary>
         public static GameMain Instance { get; private set; }
     }
 }

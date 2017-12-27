@@ -60,6 +60,7 @@
     <Compile Include="Game\GameMain.cs" />
     <Compile Include="Game\FreeCameraController.cs" />
     <Compile Include="Game\PauseMenu.cs" />
+    <Compile Include="Game\SuperConsole.cs" />
     <Compile Include="Game\UITests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
@@ -133,9 +135,6 @@ namespace ReCrafted.API.UI
                     var endPoint = GetPointFromCharIndex(endIndex);
                     var endLine = GetLineFromCharIndex(endIndex);
 
-                    //var p = new Vector2(0, 0);
-                    //UIInternal.DrawString(TextFont.NativePtr, "From -> " + startIndex + ", To -> " + endIndex, ref p);
-
                     _carpetRegions = new RectangleF[lines.Count];
                     for (int line = startLine; line < lines.Count; line++)
                     {
@@ -160,7 +159,8 @@ namespace ReCrafted.API.UI
                                 if (startIndex == 0)
                                     startCharSize.X = 0;
 
-                                var endOfLine = GetLastCharIndexOfLine(startLine) - 1;
+                                bool endOfLineState;
+                                var endOfLine = GetLastCharIndexOfLine(startLine, out endOfLineState) - 1;
                                 if (endIndex > endOfLine)
                                 {
                                     if (startLine < endLine)
@@ -283,46 +283,75 @@ namespace ReCrafted.API.UI
             }
 
             return lines;
+            
         }
 
+        /// <summary>
+        /// Checks if given line is empty.
+        /// </summary>
+        /// <param name="line">Line to check.</param>
         public bool IsLineEmpty(int line)
         {
             var lines = GetLines();
             if (line <= 0) throw new ArgumentOutOfRangeException(nameof(line), line, null);
             if (line >= lines.Count) throw new ArgumentOutOfRangeException(nameof(line), line, null);
 
-            return string.IsNullOrEmpty(lines[line]) || string.IsNullOrWhiteSpace(lines[line]);
+            return string.IsNullOrEmpty(lines[line]) || string.IsNullOrWhiteSpace(lines[line]) ||
+                   lines[line].Length == 1 && lines[line][0] == '\n';
+        }
+
+        /// <summary>
+        /// Checks if given line exist and will fix if out of range.
+        /// </summary>
+        public bool IsLineExist(ref int line)
+        {
+            if (line < 0)
+            {
+                line = 0;
+                return false;
+            }
+
+            var lines = GetLines();
+            if (line >= lines.Count)
+            {
+                line = lines.Count - 1;
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
         /// Gets last character index of line.
         /// </summary>
         /// <param name="line">Our line.</param>
+        /// <param name="success">Is the last character index of line was resolved successfully?</param>
         /// <param name="insertCharPerLine"></param>
         /// <returns>Character index.</returns>
-        public int GetLastCharIndexOfLine(int line, bool insertCharPerLine = true)
+        public int GetLastCharIndexOfLine(int line, out bool success, bool insertCharPerLine = true)
         {
             var lines = GetLines();
-            var totalCharacters = -1;
-            for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
-            {
-                if (insertCharPerLine)
-                {
-                    totalCharacters++;
-                }
+            line = MathUtil.Clamp(line, 0, lines.Count - 1);
 
-                if (!string.IsNullOrEmpty(lines[lineIndex]) && !string.IsNullOrWhiteSpace(lines[lineIndex]))
-                {
-                    totalCharacters += lines[lineIndex].Length;
-                }
+            var charIndex = 0;
+            for (int lineIndex = 0; lineIndex < lines.Count; lineIndex++)
+            {
+                charIndex++;
+                charIndex += lines[lineIndex].Length;
+                //Logger.Write($"Line #{lineIndex} -> {lines[lineIndex].Length}");
 
                 if (lineIndex == line)
                 {
-                    return totalCharacters;
+                    success = true;
+
+                    //Logger.Write($"Line success -> {line} with -> {charIndex}");
+                    return charIndex;
                 }
             }
 
-            return line == 0 ? 0 : totalCharacters;
+            //Logger.Write($"Line fails -> {line}");
+            success = false;
+            return 0;
         }
 
         /// <summary>
@@ -345,42 +374,13 @@ namespace ReCrafted.API.UI
         }
 
         /// <summary>
-        /// Gets total size of region from line to line.
+        /// Gets line of character index.
         /// </summary>
-        /// <param name="fromLine">From line.</param>
-        /// <param name="toLine">To line.</param>
-        /// <returns>Calculated region size.</returns>
-        public Vector2 GetRegionSizeOfLines(int fromLine, int toLine)
+        /// <param name="index">Index of character.</param>
+        /// <returns>Index of line.</returns>
+        public int GetLineFromCharIndex(int index)
         {
-            int line = 0;
-            var size = new Vector2(0, _textFont.Size);
-            string lastLine = string.Empty;
-            foreach (char t in _text)
-            {
-                if (t == '\n')
-                {
-                    line++;
-                    size.Y += _textFont.Size;
-                    var lastLineSize = _textFont.MeasureString(lastLine);
-                    if (size.X < lastLineSize.X)
-                        size.X = lastLineSize.X;
-                    lastLine = string.Empty;
-                    if (line == toLine)
-                        return size;
-                }
-                else
-                {
-                    if (line >= fromLine)
-                        lastLine += t;
-                }
-            }
-            if (!string.IsNullOrEmpty(lastLine))
-            {
-                var lineSize = _textFont.MeasureString(lastLine);
-                if (size.X < lineSize.X)
-                    size.X = lineSize.X;
-            }
-            return size;
+            return _text.Take(index).Count(c => c == '\n');
         }
 
         /// <summary>
@@ -397,19 +397,6 @@ namespace ReCrafted.API.UI
                     return _textFont.MeasureString(lines[index]);
             }
             return new Vector2(0, 0);
-        }
-
-        public int GetTotalCount(int toLine)
-        {
-            int total = 0;
-            var lines = GetLines();
-            for (int index = 0; index < lines.Count; index++)
-            {
-                total += lines[index].Length;
-                if (index == toLine)
-                    return total;
-            }
-            return total;
         }
 
         /// <summary>
@@ -479,8 +466,7 @@ namespace ReCrafted.API.UI
                 }
                 else
                 {
-                    var charSize = _textFont.MeasureString(_text[i].ToString());
-                    sizeW += charSize.X;
+                    sizeW += _textFont.MeasureString(_text[i].ToString()).X;
                 }
 
                 if (i == index)
@@ -489,29 +475,6 @@ namespace ReCrafted.API.UI
                 }
             }
             return _textPosition;
-        }
-
-        /// <summary>
-        /// Gets line of character index.
-        /// </summary>
-        /// <param name="index">Index of character.</param>
-        /// <returns>Index of line.</returns>
-        public int GetLineFromCharIndex(int index)
-        {
-            var lines = GetLines();
-            var totalCharacters = 0;
-            for (int lineIndex = 0; lineIndex < lines.Count; lineIndex++)
-            {
-                for (int charIndex = 0; charIndex < lines[lineIndex].Length; charIndex++)
-                {
-                    totalCharacters++;
-                    if (totalCharacters == index)
-                        return lineIndex;
-                }
-            }
-
-            Logger.Write($"Unable to find line of character index -> {index}.");
-            return index <= 1 ? 0 : _text.Length - 1;
         }
 
         /// <summary>

@@ -30,14 +30,14 @@ namespace ReCrafted.API.UI
         public override void Draw()
         {
             Profiler.BeginProfile("UIContainer.Draw");
-            foreach (var control in _controls)
+            foreach (var control in Controls.Reverse())
                 control.Draw();
             Profiler.EndProfile();
         }
 
         public override void Reset()
         {
-            foreach (var control in _controls)
+            foreach (var control in ReverseContainer ? Controls.Reverse() : _controls)
                 control.Reset();
         }
 
@@ -122,5 +122,10 @@ namespace ReCrafted.API.UI
             Profiler.EndProfile();
             return mouseControlCollision;
         }
+
+        /// <summary>
+        /// Id true Container content will be displayed from end to start.
+        /// </summary>
+        public bool ReverseContainer { get; set; }
     }
 }
