@@ -95,7 +95,7 @@ namespace DebugMesh
 
 void DebugDraw::drawLine(Vector3 pointA, Vector3 pointB)
 {
-	if (m_currentLines.isFull())
+	/*if (m_currentLines.isFull())
 	{
 		// push this list
 		m_drawLists.add(m_currentLines);
@@ -115,12 +115,12 @@ void DebugDraw::drawLine(Vector3 pointA, Vector3 pointB)
 	m_currentLines.m_colors.add(Vector4(m_color.r / 255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a / 255.0f));
 
 	m_currentLines.m_indices.add(index + 0);
-	m_currentLines.m_indices.add(index + 1);
+	m_currentLines.m_indices.add(index + 1);*/
 }
 
 void DebugDraw::drawTriangles(Vector3* vertices, uint16_t* indices, uint16_t vertexCount, uint16_t indexCount)
 {
-	if (m_currentTriangles.isFull())
+	/*if (m_currentTriangles.isFull())
 	{
 		// push this list
 		m_drawLists.add(m_currentTriangles);
@@ -142,7 +142,7 @@ void DebugDraw::drawTriangles(Vector3* vertices, uint16_t* indices, uint16_t ver
 	}
 
 	for (auto i = 0; i < indexCount; i++)
-		m_currentTriangles.m_indices.add(index + indices[i]);
+		m_currentTriangles.m_indices.add(index + indices[i]);*/
 
 }
 
@@ -158,22 +158,22 @@ Color* DebugDraw::getColor()
 
 void DebugDraw::drawWireCube(Vector3 center, Vector3 size)
 {
-	auto halfSize = size * 0.5f;
+	/*auto halfSize = size * 0.5f;
 
 	for(auto i = 0; i < 12; i ++)
-		drawLine(center + DebugMesh::m_wireCubeEdges[i][0] * halfSize, center + DebugMesh::m_wireCubeEdges[i][1] * halfSize);
+		drawLine(center + DebugMesh::m_wireCubeEdges[i][0] * halfSize, center + DebugMesh::m_wireCubeEdges[i][1] * halfSize);*/
 }
 
 void DebugDraw::drawCube(Vector3 center, Vector3 size)
 {
-	auto halfSize = size * 0.5f;
+	/*auto halfSize = size * 0.5f;
 
 	Vector3 vertices[36];
 
 	for(auto i = 0; i < 36; i ++)
 		vertices[i] = center + DebugMesh::m_cubeVertices[i] * halfSize;
 
-	drawTriangles(vertices, DebugMesh::m_cubeIndices, 8, 36);
+	drawTriangles(vertices, DebugMesh::m_cubeIndices, 8, 36);*/
 }
 
 void DebugDraw::init()
@@ -200,7 +200,7 @@ void DebugDraw::shutdown()
 
 void DebugDraw::drawAll()
 {
-	if(m_currentLines.m_indices.count() > 0)
+	/*if(m_currentLines.m_indices.count() > 0)
 		m_drawLists.add(m_currentLines);
 
 	if (m_currentTriangles.m_indices.count() > 0)
@@ -218,12 +218,12 @@ void DebugDraw::drawAll()
 	}
 
 	// clean
-	clean();
+	clean();*/
 }
 
 void DebugDraw::drawDrawlist(drawlist& drawlist)
 {
-	if(drawlist.lines)
+	/*if(drawlist.lines)
 	{
 		Rendering::getInstance()->setState(false, false, false, true, false);
 	}
@@ -260,7 +260,7 @@ void DebugDraw::drawDrawlist(drawlist& drawlist)
 	auto modelMatrix = Matrix::identity();
 	Rendering::getInstance()->setWorldMatrice(modelMatrix);
 
-	bgfx::submit(0, m_shader->getProgram());
+	bgfx::submit(0, m_shader->getProgram());*/
 }
 
 void DebugDraw::clean()
