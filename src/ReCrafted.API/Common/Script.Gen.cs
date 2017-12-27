@@ -1,9 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/01/2017 23:02:25 Source: 'Script.API.cpp' Target: 'Common/Script.Gen.cs'
-
-using System;
-using System.Runtime.CompilerServices;
+// Generated: 11/24/2017 20:56:33 Source: 'Script.API.cpp' Target: 'Common/Script.Gen.cs'
 
 namespace ReCrafted.API.Common 
 {

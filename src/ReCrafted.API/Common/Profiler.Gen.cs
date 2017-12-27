@@ -3,7 +3,6 @@
 // Generated: 12/27/2017 12:20:39 Source: 'Profiler.API.cpp' Target: 'Common/Profiler.Gen.cs'
 // Generated: 12/27/2017 16:04:59 Source: 'Profiler.API.cpp' Target: 'Common/Profiler.Gen.cs'
 
-using System;
 using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Common 

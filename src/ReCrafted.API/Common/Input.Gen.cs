@@ -4,7 +4,6 @@
 
 using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
-using System;
 using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Common 

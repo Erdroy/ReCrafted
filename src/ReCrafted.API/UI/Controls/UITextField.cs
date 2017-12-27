@@ -1,8 +1,6 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
@@ -10,7 +8,6 @@ using ReCrafted.API.Mathematics;
 
 //TODO: Fix white space problems in TextField and SelectableText.
 //TODO: Line selection based on mouse Y when mouse X is out of text region. (currently selection is set always to end of the text)
-//TODO: Finish Up and Down movement functions.
 
 namespace ReCrafted.API.UI.Controls
 {

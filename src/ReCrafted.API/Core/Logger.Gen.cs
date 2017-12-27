@@ -2,7 +2,6 @@
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
 // Generated: 11/25/2017 21:56:52 Source: 'Logger.API.cpp' Target: 'Core/Logger.Gen.cs'
 
-using System;
 using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Core 

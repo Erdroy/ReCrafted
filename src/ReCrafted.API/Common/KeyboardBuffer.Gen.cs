@@ -1,8 +1,7 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 12/01/2017 14:58:16 Source: 'KeyboardBuffer.API.cpp' Target: 'Common/KeyboardBuffer.Gen.cs'
+// Generated: 12/27/2017 12:20:39 Source: 'KeyboardBuffer.API.cpp' Target: 'Common/KeyboardBuffer.Gen.cs'
 
-using System;
 using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Common 
