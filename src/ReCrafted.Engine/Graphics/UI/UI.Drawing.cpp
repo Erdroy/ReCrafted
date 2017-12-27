@@ -7,11 +7,9 @@
 
 #define BOX_VERTICES_DEFINE() vertex v0 = {}; vertex v1 = {}; vertex v2 = {}; vertex v3 = {}; Rectf uvdiff = {};
 
-#define BOX_VERTICES_SETUP() setupVertexData(rect, v0, v1, v2, v3, uvdiff);
+#define BOX_VERTICES_SETUP() setupVertexData(rect, v0, v1, v2, v3, &uvdiff);
 
 #define BOX_VERTICES_FINALIZE(texture) finalizeVertexData(v0, v1, v2, v3, texture);
-
-#define BOX_VERTICES_VIEW_RECT()\
 
 #define BOX_VERTICES_SETUP_UVS() v0.u = uvs.x;\
 v0.v = uvs.y + uvs.height;\
@@ -74,8 +72,8 @@ FORCEINLINE void drawTextBase(UI* instance, Font* font, T* characters, int chara
 			currentY -= glyph.horizontalBearingY;
 
 			instance->internal_drawBoxTextured(
+                texture.get(),
 				Rectf(currentX, currentY, float(glyphRect.width), float(glyphRect.height)),
-				texture->getHandle(),
 				Rectf(glyphRect.x / atlasWidth, (glyphRect.y + glyphRect.height) / atlasHeight, glyphRect.width / atlasWidth, -glyphRect.height / atlasHeight));
 
 			currentPosition += Vector2(float(glyph.advanceX), 0.0f);
@@ -83,7 +81,7 @@ FORCEINLINE void drawTextBase(UI* instance, Font* font, T* characters, int chara
 	}
 }
 
-void UI::setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex& v3, Rectf& uvDiff) const
+void UI::setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex& v3, Rectf* uvDiff) const
 {
 	var screen_width = Display::get_Width() * 0.5f;
 	var screen_height = Display::get_Height() * 0.5f;
@@ -129,7 +127,7 @@ void UI::setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex
         }
     }
 
-    uvDiff = Rectf(uv_xDiff, uv_yDiff, uv_xzDiff, uv_ywDiff);
+    *uvDiff = Rectf(uv_xDiff, uv_yDiff, uv_xzDiff, uv_ywDiff);
 
 	var rX = rect.x;
 	var rY = rect.y;
@@ -225,20 +223,41 @@ void UI::internal_drawBox(Rectf rect)
 {
 	BOX_VERTICES_DEFINE();
 	BOX_VERTICES_SETUP();
-    BOX_VERTICES_VIEW_RECT();
 
 	BOX_VERTICES_FINALIZE(0);
 }
 
-void UI::internal_drawBoxTextured(Rectf rect, uint texture, Rectf uvs)
+void UI::internal_drawBoxTextured(Texture2D* texture, Rectf rect, Rectf uvs)
 {
+    auto textureHandle = texture->getHandle();
+
 	BOX_VERTICES_DEFINE();
 	BOX_VERTICES_SETUP();
-    BOX_VERTICES_VIEW_RECT();
 
-	BOX_VERTICES_SETUP_UVS();
+    if(m_instance->m_useViewRect)
+    {
+        cvar tex_width = static_cast<float>(texture->getWidth());
+        cvar tex_height = static_cast<float>(texture->getHeight());
 
-	BOX_VERTICES_FINALIZE(texture);
+        cvar xdiff = uvdiff.x / tex_width;
+        cvar ydiff = uvdiff.y / tex_height;
+
+        var xzdiff = uvdiff.width / tex_width;
+        var ywdiff = uvdiff.height / tex_height;
+
+        xzdiff += xdiff;
+        ywdiff += ydiff;
+
+        uvs.x += xdiff;
+        uvs.width -= xzdiff;
+
+        uvs.y += ydiff;
+        uvs.height -= ywdiff;
+    }
+
+    BOX_VERTICES_SETUP_UVS();
+
+	BOX_VERTICES_FINALIZE(textureHandle);
 }
 
 void UI::drawBox(Rectf rect)
@@ -272,6 +291,5 @@ void UI::drawTexture(Texture2D* texture, Rectf rect, Rectf uvs)
 	uvs.y += uvs.height;
 	uvs.height = -uvs.height;
 
-	auto handle = texture->getHandle();
-	m_instance->internal_drawBoxTextured(rect, handle, uvs);
+	m_instance->internal_drawBoxTextured(texture, rect, uvs);
 }
