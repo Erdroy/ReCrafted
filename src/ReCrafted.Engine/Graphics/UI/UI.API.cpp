@@ -33,7 +33,7 @@ void UI::initRuntime()
 		API_USING("ReCrafted.API.Graphics");
 
 		API_COMMENT("UI internal class.");
-		API_CLASS(INTERNAL, STATIC, "ReCrafted.API.UI", "UIInternal");
+		API_CLASS(INTERNAL, STATIC, "ReCrafted.API.UI", "UIInternal", PARTIAL);
 		{
 			API_COMMENT("Draws box.");
 			API_METHOD(INTERNAL, STATIC, "DrawBox", EXTERN);

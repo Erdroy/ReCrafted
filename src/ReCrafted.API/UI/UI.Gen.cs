@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 12/27/2017 16:04:59 Source: 'UI.API.cpp' Target: 'UI/UI.Gen.cs'
+// Generated: 12/27/2017 16:28:59 Source: 'UI.API.cpp' Target: 'UI/UI.Gen.cs'
 
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.Graphics;
@@ -12,7 +12,7 @@ namespace ReCrafted.API.UI
 	/// <summary>
 	///	UI internal class.
 	/// </summary>
-	internal static class UIInternal 
+	internal static partial class UIInternal 
 	{
 		/// <summary>
 		///	Draws box.

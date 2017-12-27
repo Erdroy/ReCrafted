@@ -32,7 +32,6 @@ namespace ReCrafted.Game
             TestPanel.ApplyLayout = false;
 
             //TestBox = TestPanel.Add(new UIBox(new RectangleF(0f, 0f, 32f, 32f)));
-
             var panel = UIPanel.Create(new RectangleF(10.0f, 250.0f, 200.0f, 450.0f), UILayoutType.Vertical, "panel1");
             panel.PanelColor = Color.Red;
             panel.Enabled = true;

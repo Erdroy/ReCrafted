@@ -108,6 +108,7 @@
     <Compile Include="UI\Controls\UIButton.cs" />
     <Compile Include="UI\Controls\UITextField.cs" />
     <Compile Include="UI\Controls\UIToggleGroup.cs" />
+    <Compile Include="UI\UI.cs" />
     <Compile Include="UI\UIControlColors.cs" />
     <Compile Include="UI\Controls\UIText.cs" />
     <Compile Include="UI\Controls\UIToggle.cs" />
