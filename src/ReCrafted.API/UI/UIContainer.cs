@@ -53,6 +53,7 @@ namespace ReCrafted.API.UI
         {
             if (instance == null) throw new ArgumentNullException(nameof(instance));
             if (instance == this) throw new NotSupportedException("You can't add container as control of container");
+            if (instance is UIPanel) throw new NotSupportedException("You can't add UIPanel to container.");
             if (_controls.Contains(instance)) throw new ReCraftedException("Unable to add new control in to container. Controls can by added in to container only once.");
             instance.Parent = this;
             instance.Depth = Depth + _controls.Count;
@@ -66,7 +67,7 @@ namespace ReCrafted.API.UI
         /// </summary>
         /// <typeparam name="T">Control class which must inherit from UIControl.</typeparam>
         /// <param name="instance">The control instance.</param>
-        /// <exception cref="ArgumentNullException">Exception is thrown when givent instance of controll is null.</exception>
+        /// <exception cref="ArgumentNullException">Exception is thrown when given instance of control is null.</exception>
         public void Remove<T>(T instance) where T : UIControl
         {
             if (instance == null) throw new ArgumentNullException(nameof(instance));
