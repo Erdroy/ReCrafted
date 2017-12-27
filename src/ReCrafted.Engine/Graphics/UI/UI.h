@@ -88,15 +88,14 @@ private:
 	void drawnow();
 
 	// drawing
-	
-	FORCEINLINE void setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex& v3, Rectf& uvDiff) const;
+	FORCEINLINE void setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex& v3, Rectf* uvDiff) const;
 	FORCEINLINE void finalizeVertexData(vertex& v0, vertex& v1, vertex& v2, vertex& v3, uint texture);
 
 
 public:
 	// internal
 	FORCEINLINE void internal_drawBox(Rectf rect);
-	FORCEINLINE void internal_drawBoxTextured(Rectf rect, uint texture, Rectf uvs);
+	FORCEINLINE void internal_drawBoxTextured(Texture2D* texture, Rectf rect, Rectf uvs);
 	FORCEINLINE void push_drawcmd(drawcmd* cmd, int index);
 
 public:
