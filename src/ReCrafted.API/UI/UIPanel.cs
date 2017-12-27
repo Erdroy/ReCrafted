@@ -212,6 +212,16 @@ namespace ReCrafted.API.UI
         public Color PanelColor { get; set; }
 
         /// <summary>
+        /// Enable scroll bars.
+        /// </summary>
+        public bool EnableScrollBars { get; set; }
+
+        /// <summary>
+        /// Enable content clipping.
+        /// </summary>
+        public bool EnableClipping { get; set; }
+
+        /// <summary>
         /// Contains all controls.
         /// </summary>
         public UILayout Layout { get; protected set; }
