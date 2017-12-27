@@ -38,10 +38,8 @@ private:
 	{
 		vertex vertices[4];
 		uint16_t indices[6];
-		Rectf clipRect = {};
 		uint texture = 0;
 		float zOrder = 0.0f;
-		bool hasClipRect = false;
 		bool hasTexture = false;
 		bool hasRenderTexture = false;
 	};
@@ -79,6 +77,9 @@ private:
 
 	float m_depth = 0.0f;
 
+    bool m_useViewRect = false;
+    Rectf m_viewRect = {};
+
 	Ptr<Shader> m_shader = nullptr;
 
 private:
@@ -88,7 +89,7 @@ private:
 
 	// drawing
 	
-	FORCEINLINE void setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex& v3) const;
+	FORCEINLINE void setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex& v3, Rectf& uvDiff) const;
 	FORCEINLINE void finalizeVertexData(vertex& v0, vertex& v1, vertex& v2, vertex& v3, uint texture);
 
 
@@ -130,6 +131,13 @@ public:
 	/// Gets current depth.
 	/// </summary>
 	static float getDepth();
+
+    /**
+     * \brief Sets the current view rect and state.
+     * \param viewRect The view rect.
+     * \param enabled The state, when false view rect will not be used.
+     */
+    static void setViewRect(Rectf* viewRect, bool enabled);
 
 	// drawing
 	/// <summary>

@@ -56,6 +56,16 @@ void UI::initRuntime()
 			}
 			API_METHOD_END();
 
+            API_COMMENT("Sets view rect.");
+            API_METHOD(INTERNAL, STATIC, "UpdateViewRect", EXTERN);
+            {
+                API_BIND("ReCrafted.API.UI.UIInternal::UpdateViewRect", &UI::setViewRect);
+
+                API_PARAM("ref RectangleF", "viewRect");
+                API_PARAM("bool", "use");
+            }
+            API_METHOD_END();
+
 			API_COMMENT("Draws Texture2D.");
 			API_METHOD(INTERNAL, STATIC, "DrawTexture2D", EXTERN);
 			{
