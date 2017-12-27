@@ -89,9 +89,6 @@ void Rendering::resize(uint width, uint height)
 {
 	_ASSERT(Camera::m_mainCamera != nullptr);
 
-	// update main camera perspective
-	Camera::m_mainCamera->updatePerspective();
-	
 	m_gbuffer->resize(width, height);
 }
 

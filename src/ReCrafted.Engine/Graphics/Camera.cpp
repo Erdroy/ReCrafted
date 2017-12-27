@@ -67,12 +67,6 @@ void Camera::updateRotation()
 	m_up = Vector3::cross(m_forward, m_right);
 }
 
-void Camera::updatePerspective()
-{
-	// create projection matrix
-	Matrix::createPerspectiveFovLH(Math::degreeToRadian(m_fov), Display::getAspectRatio(), m_nearPlane, m_farPlane, &m_projection);
-}
-
 void Camera::update()
 {
 	// update rotation
@@ -82,8 +76,14 @@ void Camera::update()
 	m_lookAt = m_position + m_forward;
 
 	// create view matrix
-	Matrix::createViewLH(m_position, m_lookAt, m_upLock, &m_view);
+	Matrix::createViewLH(m_position, m_lookAt, m_up, &m_view);
+
+    // create projection matrix
+    Matrix::createPerspectiveFovLH(Math::degreeToRadian(m_fov), Display::getAspectRatio(), m_nearPlane, m_farPlane, &m_projection);
+
+    // create view projection matrix
+    m_viewProjection = m_view * m_projection;
 
 	// update camera frustum for culling
-	m_frustum = BoundingFrustum::FromCamera(m_position, m_forward, m_up, Math::degreeToRadian(m_fov), m_nearPlane, m_farPlane, Display::getAspectRatio());
+    m_frustum.setPlanes(m_viewProjection);
 }

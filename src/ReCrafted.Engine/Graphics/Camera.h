@@ -32,12 +32,12 @@ private:
 	// camera matrices
 	Matrix m_view = {};
 	Matrix m_projection = {};
+    Matrix m_viewProjection = {};
 
 	BoundingFrustum m_frustum = {};
 
 private:
 	void updateRotation();
-	void updatePerspective();
 	void update();
 
 public:
@@ -52,7 +52,6 @@ public:
 
 		// initialize
 		update();
-		updatePerspective();
 
 		// set as main camera if there is no any other
 		if (m_mainCamera == nullptr)
@@ -81,7 +80,7 @@ public:
 	/// Gets the camera bounding frustum.
 	/// </summary>
 	/// <returns>The bounding frustum.</returns>
-	FORCEINLINE BoundingFrustum getBoundingFrustum() const
+	FORCEINLINE BoundingFrustum& getBoundingFrustum()
 	{
 		return m_frustum;
 	}

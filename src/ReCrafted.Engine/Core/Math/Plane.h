@@ -77,6 +77,15 @@ public:
 	}
 
 public:
+    FORCEINLINE float dot(const Vector3 point) const
+    {
+        return normal.x * point.x 
+        + normal.y * point.y 
+        + normal.z * point.z 
+        + distance * 1;
+    }
+
+public:
 	/// <summary>
 	/// Changes the coefficients of the normal vector of the plane to make it of unit length.
 	/// </summary>
