@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
+using ReCrafted.API.UI.Controls;
 
 namespace ReCrafted.API.UI
 {
@@ -27,6 +28,15 @@ namespace ReCrafted.API.UI
         // are scroll bars enabled?
         private bool _enableScrollbars;
 
+        // internal panel for scroll bars
+        private UIPanel _internalPanel;
+
+        // vertical scroll bar
+        private UIScrollbar _verticalScrollbar;
+
+        // horizontal scroll bar
+        private UIScrollbar _horizotnalScrollbar;
+
         /// <summary>
         /// Draws all controls added to this UIPanel.
         /// </summary>
@@ -44,9 +54,12 @@ namespace ReCrafted.API.UI
                 Profiler.BeginProfile($"Panel <{(string.IsNullOrEmpty(Name) ? "empty" : Name)}> ");
 
                 //recalculate current layout
+                var region = EnableScrollBars ? new RectangleF(Region.X, Region.X, 
+                    Region.Width - (VerticalScrollBar ? ScrollBarsSize : 0), 
+                    Region.Height - (HorizontalScrollBar ?  ScrollBarsSize : 0)) : Region;
                 if (ApplyLayout)
                 {
-                    var r = Layout.Recalculate(Region);
+                    var r = Layout.Recalculate(region);
                     if (EnableClipping)
                     {
                         UIInternal.BeginViewRect(r);
@@ -56,7 +69,7 @@ namespace ReCrafted.API.UI
                 {
                     if (EnableClipping)
                     {
-                        UIInternal.BeginViewRect(Region);
+                        UIInternal.BeginViewRect(region);
                     }
                 }
 
@@ -65,7 +78,7 @@ namespace ReCrafted.API.UI
                 //calculate mouse collisions
                 if (!HaveCollision)
                 {
-                   
+
                     var collision = Layout.LookForMouseCollision();
                     if (Input.IsKeyDown(Keys.Mouse0))
                     {
@@ -82,7 +95,7 @@ namespace ReCrafted.API.UI
                         }
                     }
                 }
-               
+
                 if (!_fixed)
                 {
                     Reset();
@@ -94,6 +107,21 @@ namespace ReCrafted.API.UI
                     UIInternal.EndViewRect();
                 }
                 Profiler.EndProfile();
+
+                if (Enabled && EnableScrollBars)
+                {
+                    Profiler.BeginProfile($"Panel <{(string.IsNullOrEmpty(Name) ? "empty" : Name)}> ");
+                    _horizotnalScrollbar.Enabled = HorizontalScrollBar;
+                    if (HorizontalScrollBar)
+                        _horizotnalScrollbar.Region = new RectangleF(region.X, region.Y + region.Height, region.Width, ScrollBarsSize);
+
+                    _verticalScrollbar.Enabled = VerticalScrollBar;
+                    if (VerticalScrollBar)
+                        _verticalScrollbar.Region = new RectangleF(region.X + region.Width, region.Y, ScrollBarsSize, region.Height);
+
+                    _internalPanel.Draw();
+                    Profiler.EndProfile();
+                }
             }
             else
             {
@@ -142,6 +170,38 @@ namespace ReCrafted.API.UI
                 SetFocusedControl(this);
         }
 
+        // hide scroll bars if exists
+        private void _hideScrollbars()
+        {
+            if (_internalPanel != null)
+            {
+                _internalPanel.Enabled = false;
+                _internalPanel.Visible = false;
+            }
+        }
+
+        // create scroll bars if don't exists
+        private void _makeScrollBars()
+        {
+            if (_internalPanel != null)
+            {
+                _internalPanel.Enabled = true;
+                _internalPanel.Visible = true;
+            }
+            else
+            {
+                _internalPanel = Create(Region, UILayoutType.Vertical, Name + "<Internal>", Depth);
+                _internalPanel.ApplyLayout = false;
+                _internalPanel.PanelColor = Color.Transparent;
+                _internalPanel.Parent = this;
+                _horizotnalScrollbar = _internalPanel.Add(new UIScrollbar());
+                _horizotnalScrollbar.Vertical = false;
+
+                _verticalScrollbar = _internalPanel.Add(new UIScrollbar());
+                _verticalScrollbar.Vertical = true;
+            }
+        }
+
         /// <summary>
         /// Draws all panels.
         /// </summary>
@@ -153,6 +213,9 @@ namespace ReCrafted.API.UI
             {
                 try
                 {
+                    if (Panels[index].Parent != null)
+                        continue;
+
                     Panels[index].Draw();
                 }
                 catch (Exception ex)
@@ -187,7 +250,9 @@ namespace ReCrafted.API.UI
                 Depth = baseDepth + (Panels.Count == 0 ? 0 : Panels[Panels.Count - 1].Depth) + (Panels.Count == 0 ? 0 : Panels[Panels.Count - 1].Layout.Controls.Count),
                 Layout = UILayout.Create(region, layoutType),
                 EnableClipping = false,
-                EnableScrollBars = false
+                EnableScrollBars = false,
+                HorizontalScrollBar = true,
+                VerticalScrollBar = true
             };
 
             // set panel layout parent
@@ -288,14 +353,29 @@ namespace ReCrafted.API.UI
                 if (p == _enableScrollbars) return;
                 if (_enableScrollbars)
                 {
-
+                    _makeScrollBars();
                 }
                 else
                 {
-                        
+                    _hideScrollbars();
                 }
             }
         }
+
+        /// <summary>
+        /// Horizontal scroll bar enable state.
+        /// </summary>
+        public bool HorizontalScrollBar { get; set; }
+
+        /// <summary>
+        /// Vertical scroll bar enable state.
+        /// </summary>
+        public bool VerticalScrollBar { get; set; }
+
+        /// <summary>
+        /// Size of scroll bars.
+        /// </summary>
+        public int ScrollBarsSize = 20;
 
         /// <summary>
         /// Contains all controls.

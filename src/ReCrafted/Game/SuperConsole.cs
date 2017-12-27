@@ -18,7 +18,7 @@ namespace ReCrafted.Game
         /// <summary>
         /// Region of SuperConsole text container.
         /// </summary>
-        public RectangleF TextContainerRegion => new RectangleF(0, 0, Display.Width, Display.Height / 6f);
+        public RectangleF TextContainerRegion => new RectangleF(0, 0, Display.Width, Display.Height / 4f);
 
         /// <summary>
         /// SuperConsole text container.
@@ -28,7 +28,7 @@ namespace ReCrafted.Game
         /// <summary>
         /// Region of SuperConsole input.
         /// </summary>
-        public RectangleF InputRegion => new RectangleF(0, Display.Height / 6f + 25f, Display.Width, 25);
+        public RectangleF InputRegion => new RectangleF(0, Display.Height / 4f, Display.Width, 25);
 
         /// <summary>
         /// Container of console input field.
@@ -47,9 +47,11 @@ namespace ReCrafted.Game
             // Create Main Panel
             TextContainer = UIPanel.Create(TextContainerRegion, UILayoutType.Vertical, "Super Console", 10001);
 
-            TextContainer.PanelColor = Color.Red;
+            TextContainer.PanelColor = Color.DarkGray * 2f;
             TextContainer.EnableClipping = false;
             TextContainer.EnableScrollBars = true;
+            TextContainer.HorizontalScrollBar = false;
+            TextContainer.VerticalScrollBar = true;
 
             TextContainer.Layout.ReverseContainer = true;
 
@@ -59,7 +61,7 @@ namespace ReCrafted.Game
             TextContainer.Layout.Padding = new UIPadding
             {
                 Top = 0,
-                Bottom = 5,
+                Bottom = 10,
                 Left = 5,
                 Right = 10
             };
