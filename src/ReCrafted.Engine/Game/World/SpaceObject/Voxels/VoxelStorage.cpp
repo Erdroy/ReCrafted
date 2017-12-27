@@ -8,11 +8,22 @@
 #include "Game/World/SpaceObject/SpaceObjectChunk.h"
 #include "Game/World/SpaceObject/SpaceObjectSettings.h"
 
-FORCEINLINE sbyte generateFromCHM(VoxelCHM* chm, Vector3& origin, const Vector3& position, const int lod, const float radius, const float hillsHeight)
+FORCEINLINE sbyte sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, const Vector3& position, const int lod, const float radius, const float hillsHeight)
 {
-    cvar localHeight = radius + (chm->sample(position, radius, lod)) * hillsHeight;
-    cvar height = (position - origin).length();
-    return VOXEL_FROM_FLOAT(radius + (height - localHeight));
+    // calculate current voxel size
+    cvar lodSize = pow(2.0f, lod - 1);
+
+    // the terrain height (over planet, sphere is the base)
+    cvar terrainHeight = radius + chm->sample(position, radius, lod) * hillsHeight;
+
+    // the height over sphere
+    cvar sphereHeight = (position - origin).length();
+
+    // calculate voxel value
+    cvar voxelValue = (sphereHeight - terrainHeight) / lodSize;
+
+    // convert voxel value to voxel
+    return VOXEL_FROM_FLOAT(voxelValue);
 }
 
 sbyte* VoxelStorage::generateChunkFromCHM(Vector3& position, const int lod)
@@ -37,7 +48,7 @@ sbyte* VoxelStorage::generateChunkFromCHM(Vector3& position, const int lod)
                 cvar voxelPosition = position + offset * lod_f;
 
                 // tempoarary
-                data[index] = generateFromCHM(chm, spaceObject->m_position, voxelPosition, lod, spaceObject->m_settings.minSurfaceHeight, spaceObject->m_settings.hillsHeight);
+                data[index] = sdf_planet_generate(chm, spaceObject->m_position, voxelPosition, lod, spaceObject->m_settings.minSurfaceHeight, spaceObject->m_settings.hillsHeight);
             }
         }
     }
