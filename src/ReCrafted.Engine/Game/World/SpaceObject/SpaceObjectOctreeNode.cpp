@@ -251,8 +251,8 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 
 void SpaceObjectOctreeNode::draw()
 {
-    if (!Camera::getMainCamera()->getBoundingFrustum().contains(m_bounds))
-        return;
+    //if (!Camera::getMainCamera()->getBoundingFrustum().contains(m_bounds))
+    //    return;
 
 	if(m_chunk)
 	{
