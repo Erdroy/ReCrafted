@@ -47,8 +47,8 @@ namespace ReCrafted.Game
                 TargetFps = 120;
 
                 // test ui script
-                //var tests = Entity.Create("UiTests");
-                //tests.AddScript<UITests>();
+                var tests = Entity.Create("UiTests");
+                tests.AddScript<UITests>();
 
                 // pause Menu
                 var pauseMenu = Entity.Create("PauseMenu");

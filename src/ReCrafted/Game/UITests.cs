@@ -68,7 +68,7 @@ namespace ReCrafted.Game
             toggle3.TextBackgroundColor = new Color(68, 68, 68);
 
             var textField = panel.Add(new UITextField(new RectangleF(0, 0, 130, 128), string.Empty));
-            textField.CharactersLimit = 10;
+            //textField.CharactersLimit = 10;
 
             //panel.Add(new UIText(new RectangleF(10, 10, 160, 30), "12345678912345678912345678912342343243"));
 

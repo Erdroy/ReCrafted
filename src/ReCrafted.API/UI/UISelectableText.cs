@@ -22,7 +22,7 @@ namespace ReCrafted.API.UI
     public delegate void OnCharacterClick(int position);
 
     /// <summary>
-    /// Selectable text add-on for UIControls.
+    /// Selectable text class for UIControls.
     /// </summary>
     public class UISelectableText
     {
@@ -285,27 +285,45 @@ namespace ReCrafted.API.UI
             return lines;
         }
 
+        public bool IsLineEmpty(int line)
+        {
+            var lines = GetLines();
+            if (line <= 0) throw new ArgumentOutOfRangeException(nameof(line), line, null);
+            if (line >= lines.Count) throw new ArgumentOutOfRangeException(nameof(line), line, null);
+
+            return string.IsNullOrEmpty(lines[line]) || string.IsNullOrWhiteSpace(lines[line]);
+        }
+
         /// <summary>
         /// Gets last character index of line.
         /// </summary>
         /// <param name="line">Our line.</param>
+        /// <param name="insertCharPerLine"></param>
         /// <returns>Character index.</returns>
-        public int GetLastCharIndexOfLine(int line)
+        public int GetLastCharIndexOfLine(int line, bool insertCharPerLine = true)
         {
             var lines = GetLines();
-            var totalCharacters = 0;
-            for (int index = 0; index < lines.Count; index++)
+            var totalCharacters = -1;
+            for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
             {
-                totalCharacters += lines[index].Length == 0 ? 1 : lines[index].Length;
-                if (index == line)
+                if (insertCharPerLine)
+                {
+                    totalCharacters++;
+                }
+
+                if (!string.IsNullOrEmpty(lines[lineIndex]) && !string.IsNullOrWhiteSpace(lines[lineIndex]))
+                {
+                    totalCharacters += lines[lineIndex].Length;
+                }
+
+                if (lineIndex == line)
                 {
                     return totalCharacters;
                 }
             }
 
-            return 0;
+            return line == 0 ? 0 : totalCharacters;
         }
-
 
         /// <summary>
         /// Gets first character index of line.
@@ -316,11 +334,11 @@ namespace ReCrafted.API.UI
         {
             var lines = GetLines();
             var totalCharacters = 0;
-            for (int index = 0; index < lines.Count; index++)
+            for (int lineIndex = 0; lineIndex < lines.Count; lineIndex++)
             {
-                if (index == line)
+                if (lineIndex == line)
                     return totalCharacters;
-                totalCharacters += lines[index].Length + index == 0 ? 0 : 1;// \n
+                totalCharacters += lines[lineIndex].Length + lineIndex == 0 ? 0 : 1;// \n
             }
 
             return 0;
@@ -481,18 +499,19 @@ namespace ReCrafted.API.UI
         public int GetLineFromCharIndex(int index)
         {
             var lines = GetLines();
-            var total = 0;
-            for (int i = 0; i < lines.Count; i++)
+            var totalCharacters = 0;
+            for (int lineIndex = 0; lineIndex < lines.Count; lineIndex++)
             {
-                for (int l = 0; l < lines[i].Length; l++)
+                for (int charIndex = 0; charIndex < lines[lineIndex].Length; charIndex++)
                 {
-                    if (total == index)
-                        return i;
-                    total++;
+                    totalCharacters++;
+                    if (totalCharacters == index)
+                        return lineIndex;
                 }
-                total++; // n/
             }
-            return total;
+
+            Logger.Write($"Unable to find line of character index -> {index}.");
+            return index <= 1 ? 0 : _text.Length - 1;
         }
 
         /// <summary>
@@ -501,12 +520,12 @@ namespace ReCrafted.API.UI
         public string SelectedText { get; private set; }
 
         /// <summary>
-        /// Start character index of selected text.
+        /// Start character index of currently selected text.
         /// </summary>
         public int SelectedTextStart { get; private set; }
 
         /// <summary>
-        /// End character index of selected text.
+        /// End character index of currently selected text.
         /// </summary>
         public int SelectedTextEnd { get; private set; }
     }

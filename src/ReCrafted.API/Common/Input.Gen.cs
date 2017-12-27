@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/26/2017 14:37:08 Source: 'Input.API.cpp' Target: 'Common/Input.Gen.cs'
+// Generated: 12/27/2017 12:20:39 Source: 'Input.API.cpp' Target: 'Common/Input.Gen.cs'
 
 using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
