@@ -39,7 +39,7 @@ namespace ReCrafted.Game
             var panel = UIPanel.Create(new RectangleF(10.0f, 250.0f, 200.0f, 450.0f), UILayoutType.Vertical, "panel1");
             panel.PanelColor = Color.Red;
             panel.Enabled = true;
-            panel.Layout.ForceExpandHeigth = false;
+            panel.Layout.ForceExpandHeight = false;
             panel.Layout.ForceExpandWidth = false;
             panel.Layout.Padding = new UIPadding
             {
@@ -84,33 +84,26 @@ namespace ReCrafted.Game
                 panel.Add(new UIBox(new Color(0, 100 * i / 100, 0)));
                 */
 
-            var scrollBar = new UIScrollbar
-            {
-                Vertical = true,
-                Size = 0.1f
-            };
-
-            UIPanel.CreateControl(new RectangleF(200, 500, 150, 450), ref scrollBar);
-
-            var text = new UIText {Text = scrollBar.Position.ToString(CultureInfo.InvariantCulture)};
-
+            var text = new UIText();
             UIPanel.CreateControl(new RectangleF(100, 530, 100, 30), ref text);
 
-            var button = new UIButton
+            var scrollBar = new UIScrollbar  { Vertical = true, Size = 0.1f };
+            UIPanel.CreateControl(new RectangleF(200, 500, 150, 450), ref scrollBar);
+
+            scrollBar.OnValueChanged += () =>
             {
-                Text = "Click Me!"
+                text.Text = scrollBar.Position.ToString(CultureInfo.InvariantCulture) + '\n' + scrollBar.Size.ToString(CultureInfo.InvariantCulture);
             };
+
+            var button = new UIButton  { Text = "Click Me!" };
             button.OnClick += () =>
             {
                 var r = new Random();
                 scrollBar.Position = r.Next(0, 10) / 10f;
+                scrollBar.Size = r.Next(0, 10) / 10f;
             };
 
-            scrollBar.OnValueChanged += () =>
-            {
-                text.Text = scrollBar.Position.ToString(CultureInfo.InvariantCulture);
-            };
-            UIPanel.CreateControl(new RectangleF(100, 500, 100, 30), ref button);
+            UIPanel.CreateControl(new RectangleF(100, 500, 100, 30), ref button);      
 
             sw.Stop();
             Logger.Write("Ui Construct Took -> " + sw.ElapsedMilliseconds + "ms");

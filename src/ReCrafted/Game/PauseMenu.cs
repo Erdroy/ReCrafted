@@ -70,7 +70,7 @@ namespace ReCrafted.Game
 
             MainPanel.PanelColor = Color.Blue;
 
-            MainPanel.Layout.ForceExpandHeigth = false;
+            MainPanel.Layout.ForceExpandHeight = false;
             MainPanel.Layout.ForceExpandWidth = true;
             MainPanel.Layout.Padding = new UIPadding
             {

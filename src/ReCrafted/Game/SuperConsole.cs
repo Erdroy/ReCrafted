@@ -28,7 +28,7 @@ namespace ReCrafted.Game
         /// <summary>
         /// Region of SuperConsole input.
         /// </summary>
-        public RectangleF InputRegion => new RectangleF(0, Display.Height / 6f, Display.Width, 25);
+        public RectangleF InputRegion => new RectangleF(0, Display.Height / 6f + 25f, Display.Width, 25);
 
         /// <summary>
         /// Container of console input field.
@@ -48,23 +48,24 @@ namespace ReCrafted.Game
             TextContainer = UIPanel.Create(TextContainerRegion, UILayoutType.Vertical, "Super Console", 10001);
 
             TextContainer.PanelColor = Color.Red;
-            TextContainer.EnableClipping = true;
+            TextContainer.EnableClipping = false;
             TextContainer.EnableScrollBars = true;
 
-            TextContainer.Layout.ReverseContainer = false;
+            TextContainer.Layout.ReverseContainer = true;
 
             TextContainer.Layout.PreferredSize = new Vector2(0, 30);
-            TextContainer.Layout.ForceExpandHeigth = false;
+            TextContainer.Layout.ForceExpandHeight = false;
             TextContainer.Layout.ForceExpandWidth = true;
             TextContainer.Layout.Padding = new UIPadding
             {
-                Top = 10,
+                Top = 0,
                 Bottom = 5,
                 Left = 5,
                 Right = 10
             };
-            TextContainer.Layout.Space = 1.0f;
+            TextContainer.Layout.Space = UIControl.DefaultFont.Size / 2f;
             TextContainer.Layout.Alignment = UILayoutAlignment.LeftBottom;
+            TextContainer.Layout.Offset = new Vector2(0, -10);
             TextContainer.ApplyLayout = true;
 
             UIPanel inputTextFieldContainer;
@@ -83,6 +84,12 @@ namespace ReCrafted.Game
 
         private void OnInputSubmit()
         {
+            if (string.IsNullOrEmpty(Input.Text) || string.IsNullOrWhiteSpace(Input.Text))
+            {
+                Input.Text = string.Empty;
+                return;
+            }
+
             var text = TextContainer.Add(new UIText(string.Empty));
             text.FitRegionSizeToText = true;
             text.Text = Input.Text;
@@ -101,7 +108,6 @@ namespace ReCrafted.Game
         /// </summary>
         public void Enable()
         {
-            /*
             TextContainer.Enabled = true;
             TextContainer.Visible = true;
 
@@ -109,16 +115,6 @@ namespace ReCrafted.Game
             InputContainer.Visible = true;
 
             UIControl.SetFocusedControl(Input);
-
-            bool cl = true;
-            foreach (var c in Input.Text)
-            {
-                if (c != '`')
-                    cl = false;
-            }
-            if (cl)
-                Input.Text = string.Empty;
-                */
         }
 
         /// <summary>

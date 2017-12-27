@@ -18,11 +18,14 @@ namespace ReCrafted.API.UI
         private static readonly List<UIPanel> Panels = new List<UIPanel>();
 
         // is mouse collide with any control of any panel?
-        internal static bool HaveColision;
+        internal static bool HaveCollision;
 
         // is panel visible?
         private bool _visible;
-        private bool _fixedFixible;
+        private bool _fixed;
+
+        // are scroll bars enabled?
+        private bool _enableScrollbars;
 
         /// <summary>
         /// Draws all controls added to this UIPanel.
@@ -40,18 +43,27 @@ namespace ReCrafted.API.UI
             {
                 Profiler.BeginProfile($"Panel <{(string.IsNullOrEmpty(Name) ? "empty" : Name)}> ");
 
-                if (EnableClipping)
-                {
-                    UIInternal.BeginViewRect(Region);
-                }
-
                 //recalculate current layout
                 if (ApplyLayout)
-                    Layout.Recalculate(Region);
+                {
+                    var r = Layout.Recalculate(Region);
+                    if (EnableClipping)
+                    {
+                        UIInternal.BeginViewRect(r);
+                    }
+                }
+                else
+                {
+                    if (EnableClipping)
+                    {
+                        UIInternal.BeginViewRect(Region);
+                    }
+                }
+
                 //draw layout
                 Layout.Draw();
                 //calculate mouse collisions
-                if (!HaveColision)
+                if (!HaveCollision)
                 {
                    
                     var collision = Layout.LookForMouseCollision();
@@ -59,7 +71,7 @@ namespace ReCrafted.API.UI
                     {
                         if (collision != null)
                         {
-                            HaveColision = true;
+                            HaveCollision = true;
                             collision.OnMouseClick();
                             if (FocusedControl != collision)
                                 SetFocusedControl(collision);
@@ -71,10 +83,10 @@ namespace ReCrafted.API.UI
                     }
                 }
                
-                if (!_fixedFixible)
+                if (!_fixed)
                 {
                     Reset();
-                    _fixedFixible = true;
+                    _fixed = true;
                 }
 
                 if (EnableClipping)
@@ -124,7 +136,7 @@ namespace ReCrafted.API.UI
         private void _checkForPanelCollision()
         {
             if (!Region.Contains(Input.CursorPosition)) return;
-            HaveColision = true;
+            HaveCollision = true;
             OnMouseClick();
             if (FocusedControl != this)
                 SetFocusedControl(this);
@@ -136,7 +148,7 @@ namespace ReCrafted.API.UI
         internal static void DrawAll()
         {
             // reset
-            HaveColision = false;
+            HaveCollision = false;
             for (var index = Panels.Count - 1; index >= 0; index--)
             {
                 try
@@ -148,7 +160,7 @@ namespace ReCrafted.API.UI
                     Logger.Write(ex.ToString(), LogLevel.Error);
                 }
             }
-            if (Input.IsKeyDown(Keys.Mouse0) && !HaveColision)
+            if (Input.IsKeyDown(Keys.Mouse0) && !HaveCollision)
                 SetFocusedControl(null);
         }
 
@@ -174,6 +186,8 @@ namespace ReCrafted.API.UI
                 PanelColor = Color.White,
                 Depth = baseDepth + (Panels.Count == 0 ? 0 : Panels[Panels.Count - 1].Depth) + (Panels.Count == 0 ? 0 : Panels[Panels.Count - 1].Layout.Controls.Count),
                 Layout = UILayout.Create(region, layoutType),
+                EnableClipping = false,
+                EnableScrollBars = false
             };
 
             // set panel layout parent
@@ -208,7 +222,7 @@ namespace ReCrafted.API.UI
         public static void CreateControl<T>(RectangleF region, ref T controlInstance) where T : UIControl
         {
             var panel = Create(region, UILayoutType.Vertical, $"Control-{controlInstance.Name}");
-            panel.Layout.ForceExpandHeigth = true;
+            panel.Layout.ForceExpandHeight = true;
             panel.Layout.ForceExpandWidth = true;
             panel.ApplyLayout = true;
 
@@ -225,7 +239,7 @@ namespace ReCrafted.API.UI
         public static void CreateControl<T>(RectangleF region, ref T controlInstance, out UIPanel panel) where T : UIControl
         {
             panel = Create(region, UILayoutType.Vertical, $"Control-{controlInstance.Name}");
-            panel.Layout.ForceExpandHeigth = true;
+            panel.Layout.ForceExpandHeight = true;
             panel.Layout.ForceExpandWidth = true;
             panel.ApplyLayout = true;
 
@@ -233,7 +247,7 @@ namespace ReCrafted.API.UI
         }
 
         /// <summary>
-        /// Layout of this panel will be applied in to children's.
+        /// Layout of this panel will be applied in to children.
         /// </summary>
         public bool ApplyLayout { get; set; }
 
@@ -247,7 +261,7 @@ namespace ReCrafted.API.UI
             {
                 _visible = value;
                 if (_visible)
-                    _fixedFixible = false;
+                    _fixed = false;
             }
         }
 
@@ -257,14 +271,31 @@ namespace ReCrafted.API.UI
         public Color PanelColor { get; set; }
 
         /// <summary>
-        /// Enable scroll bars.
-        /// </summary>
-        public bool EnableScrollBars { get; set; }
-
-        /// <summary>
         /// Enable content clipping.
         /// </summary>
         public bool EnableClipping { get; set; }
+
+        /// <summary>
+        /// Enable scroll bars.
+        /// </summary>
+        public bool EnableScrollBars
+        {
+            get { return _enableScrollbars; }
+            set
+            {
+                var p = _enableScrollbars;
+                _enableScrollbars = value;
+                if (p == _enableScrollbars) return;
+                if (_enableScrollbars)
+                {
+
+                }
+                else
+                {
+                        
+                }
+            }
+        }
 
         /// <summary>
         /// Contains all controls.

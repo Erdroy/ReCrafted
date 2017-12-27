@@ -107,6 +107,8 @@ namespace ReCrafted.API.UI.Controls
         // set default properties
         private void _applyDefaults(RectangleF region, string text, Color color)
         {
+            IgnoreLayoutResize = true;
+
             Region = region;
             TextFont = DefaultFont;//set default font
             Text = text;
@@ -122,6 +124,11 @@ namespace ReCrafted.API.UI.Controls
         /// Color of the text.
         /// </summary>
         public Color TextColor { get; set; }
+
+        /// <summary>
+        /// Region size will be automatically updated to current text size.
+        /// </summary>
+        public bool FitRegionSizeToText { get; set; }
 
         /// <summary>
         /// Text of this control.
@@ -152,10 +159,5 @@ namespace ReCrafted.API.UI.Controls
         /// Loaded font of this text.
         /// </summary>
         public Font TextFont { get; private set; }
-
-        /// <summary>
-        /// Region size will be automatically updated to current text size.
-        /// </summary>
-        public bool FitRegionSizeToText { get; set; }
     }
 }

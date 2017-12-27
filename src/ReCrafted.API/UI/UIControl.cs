@@ -13,6 +13,9 @@ namespace ReCrafted.API.UI
         // control depth
         internal int Depth;
 
+        // is this control ignoring layout size changes?
+        internal bool IgnoreLayoutResize;
+
         /// <summary>
         /// Draws all controls.
         /// </summary>

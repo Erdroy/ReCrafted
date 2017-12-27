@@ -21,7 +21,7 @@ namespace ReCrafted.API.UI.Controls
         // is scroll bar handle currently dragging?
         private bool _drag;
 
-        // position of handle in screen
+        // position of handle on screen
         private float _handlePosition;
 
         // fixed position of handle

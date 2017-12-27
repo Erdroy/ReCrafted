@@ -1,6 +1,7 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
 using System;
+using System.Linq;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
@@ -340,6 +341,9 @@ namespace ReCrafted.API.UI.Controls
                     var keys = KeyboardBuffer.Read();
                     foreach (var c in keys)
                     {
+                        if (CharacterBlackList.Contains(c))
+                            break;
+
                         if (_text.Length == 0) // if text is empty, set received character as text.
                         {
                             _text = c.ToString();
@@ -347,11 +351,9 @@ namespace ReCrafted.API.UI.Controls
                         }
                         else
                         {
-                            if (_textFieldPosition == _text.Length
-                            ) // if position beam is at end of text, just add new character
+                            if (_textFieldPosition == _text.Length ) // if position beam is at end of text, just add new character
                                 _text += c.ToString();
-                            else if (_textFieldPosition == -1
-                            ) // if position is at start of the text, insert from zero index
+                            else if (_textFieldPosition == -1) // if position is at start of the text, insert from zero index
                                 _text = _text.Insert(0, c.ToString());
                             else // default text insert
                             {
@@ -555,6 +557,7 @@ namespace ReCrafted.API.UI.Controls
             CharactersLimit = 0;
             FitCharactersLimitToSize = false;
             MultipleLine = true;
+            CharacterBlackList = new[] { '`' };
             TextFont = DefaultFont; //set default font
             Text = text;
 
@@ -611,6 +614,11 @@ namespace ReCrafted.API.UI.Controls
         /// Is text field are able to use multiple lines? 
         /// </summary>
         public bool MultipleLine { get; set; }
+
+        /// <summary>
+        /// List of character that can't be used.
+        /// </summary>
+        public char[] CharacterBlackList { get; set; } = new char[0];
 
         /// <summary>
         /// Text of this control.

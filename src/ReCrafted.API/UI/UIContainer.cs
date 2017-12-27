@@ -22,7 +22,18 @@ namespace ReCrafted.API.UI
         /// <summary>
         /// Contains all the controls
         /// </summary>
-        public IReadOnlyList<UIControl> Controls => _controls;
+        public IReadOnlyList<UIControl> Controls {
+            get
+            {
+                if (ReverseContainer)
+                {
+                    var controls = new List<UIControl>(_controls);
+                    controls.Reverse();
+                    return controls;
+                }
+                return _controls;
+            }
+        }
 
         /// <summary>
         /// Draws all controls.
@@ -30,14 +41,15 @@ namespace ReCrafted.API.UI
         public override void Draw()
         {
             Profiler.BeginProfile("UIContainer.Draw");
-            foreach (var control in Controls.Reverse())
+
+            foreach (var control in Controls)
                 control.Draw();
             Profiler.EndProfile();
         }
 
         public override void Reset()
         {
-            foreach (var control in ReverseContainer ? Controls.Reverse() : _controls)
+            foreach (var control in Controls)
                 control.Reset();
         }
 
@@ -79,9 +91,9 @@ namespace ReCrafted.API.UI
         // recalculate depth of all children controls
         internal void RecalculateDepth()
         {
-            for (var index = 0; index < _controls.Count; index++)
+            for (var index = 0; index < Controls.Count; index++)
             {
-                var control = _controls[index];
+                var control = Controls[index];
                 control.Depth = Depth + index;
             }
         }

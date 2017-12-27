@@ -99,7 +99,8 @@ namespace ReCrafted.API.UI
         /// Recalculates Layout, duh.
         /// </summary>
         /// <param name="parentRegion">The region in which the layout will be calculated.</param>
-        public void Recalculate(RectangleF parentRegion)
+        /// <returns>New recalculated region of layout.</returns>
+        public RectangleF Recalculate(RectangleF parentRegion)
         {
             Profiler.BeginProfile("UILayout.Recalculate");
             // apply current region of panel with padding to layout region.
@@ -140,64 +141,80 @@ namespace ReCrafted.API.UI
                     case UILayoutType.Horizontal:
                     {
                         #region APPLY_HORIZONTAL_SIZE
-                        if (ForceExpandWidth)
+
+                        if (currentControl.IgnoreLayoutResize)
                         {
-                            newRegion.Width = horizontalSize;                    
-                            if (newRegion.Width < PreferredSize.X)
-                                newRegion.Width = PreferredSize.X;
-                            newRegion.Width -= Space / 1.5f;
                         }
                         else
                         {
-                            newRegion.Width = currentControl.Region.Width;             
-                            if (newRegion.Width < PreferredSize.X)
-                                newRegion.Width = PreferredSize.X;     
+                            if (ForceExpandWidth)
+                            {
+                                newRegion.Width = horizontalSize;
+                                if (newRegion.Width < PreferredSize.X)
+                                    newRegion.Width = PreferredSize.X;
+                                newRegion.Width -= Space / 1.5f;
+                            }
+                            else
+                            {
+                                newRegion.Width = currentControl.Region.Width;
+                                if (newRegion.Width < PreferredSize.X)
+                                    newRegion.Width = PreferredSize.X;
+                            }
+
+                            if (ForceExpandHeight)
+                            {
+                                newRegion.Height = Region.Height;
+                                if (newRegion.Height < PreferredSize.Y)
+                                    newRegion.Height = PreferredSize.Y;
+                            }
+                            else
+                            {
+                                newRegion.Height = currentControl.Region.Height;
+                                if (newRegion.Height < PreferredSize.Y)
+                                    newRegion.Height = PreferredSize.Y;
+                            }
                         }
 
-                        if (ForceExpandHeigth)
-                        {
-                            newRegion.Height = Region.Height;                
-                            if (newRegion.Height < PreferredSize.Y)
-                                newRegion.Height = PreferredSize.Y;
-                        }
-                        else
-                        {
-                            newRegion.Height = currentControl.Region.Height;                     
-                            if (newRegion.Height < PreferredSize.Y)
-                                newRegion.Height = PreferredSize.Y;
-                        }
                         #endregion
                         break;
                     }
                     case UILayoutType.Vertical:
                     {
                         #region APPLY_VERTICAL_SIZE
-                        if (ForceExpandWidth)
+
+                        if (currentControl.IgnoreLayoutResize)
                         {
-                            newRegion.Width = Region.Width;   
-                            if (newRegion.Width < PreferredSize.X)
-                                newRegion.Width = PreferredSize.X;
                         }
                         else
                         {
-                            newRegion.Width = currentControl.Region.Width;              
-                            if (newRegion.Width < PreferredSize.X)
-                                newRegion.Width = PreferredSize.X;                        
+                            if (ForceExpandWidth)
+                            {
+                                newRegion.Width = Region.Width;
+                                if (newRegion.Width < PreferredSize.X)
+                                    newRegion.Width = PreferredSize.X;
+                            }
+                            else
+                            {
+                                newRegion.Width = currentControl.Region.Width;
+                                if (newRegion.Width < PreferredSize.X)
+                                    newRegion.Width = PreferredSize.X;
+                            }
+
+                            if (ForceExpandHeight)
+                            {
+                                newRegion.Height = veticalSize;
+                                if (newRegion.Height < PreferredSize.Y)
+                                    newRegion.Height = PreferredSize.Y;
+                                newRegion.Height -= Space / 1.5f;
+                            }
+                            else
+                            {
+                                newRegion.Height = currentControl.Region.Height;
+                                if (newRegion.Height < PreferredSize.Y)
+                                    newRegion.Height = PreferredSize.Y;
+                            }
                         }
 
-                        if (ForceExpandHeigth)
-                        {
-                            newRegion.Height = veticalSize;                     
-                            if (newRegion.Height < PreferredSize.Y)
-                                newRegion.Height = PreferredSize.Y;
-                            newRegion.Height -= Space / 1.5f;
-                        }
-                        else
-                        {
-                            newRegion.Height = currentControl.Region.Height;
-                            if (newRegion.Height < PreferredSize.Y)
-                                newRegion.Height = PreferredSize.Y;                           
-                        }
                         #endregion
                         break;
                     }
@@ -205,12 +222,14 @@ namespace ReCrafted.API.UI
                         throw new ArgumentOutOfRangeException();
                 }
 
+                newRegion = new RectangleF(newRegion.X + Offset.X, newRegion.Y + Offset.Y, newRegion.Width, newRegion.Height);
                 var regionChanged = currentControl.Region != newRegion;
                 currentControl.Region = newRegion;
                 if (regionChanged)
                     currentControl.OnRegionChanged();
             }
             Profiler.EndProfile();
+            return Region;
         }
 
         // get height of all controls in container
@@ -318,7 +337,7 @@ namespace ReCrafted.API.UI
                 Region = region,
                 Type = layoutType,
                 PreferredSize = new Vector2(region.Width, region.Height),
-                ForceExpandHeigth = false,
+                ForceExpandHeight = false,
                 ForceExpandWidth = false,
                 Padding = new UIPadding(),
                 Space = 0,
@@ -339,14 +358,19 @@ namespace ReCrafted.API.UI
         public Vector2 PreferredSize { get; set; }
 
         /// <summary>
-        /// Forces width of all childrens to the width of this layout.
+        /// Offset of layout content.
+        /// </summary>
+        public Vector2 Offset { get; set; }
+
+        /// <summary>
+        /// Forces width of all children to the width of this layout.
         /// </summary>
         public bool ForceExpandWidth { get; set; }
 
         /// <summary>
-        /// Forces height of all childrens.
+        /// Forces height of all children.
         /// </summary>
-        public bool ForceExpandHeigth { get; set; }
+        public bool ForceExpandHeight { get; set; }
 
         /// <summary>
         /// Layout padding.

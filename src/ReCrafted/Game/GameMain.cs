@@ -48,7 +48,7 @@ namespace ReCrafted.Game
 
                 // pause Menu
                 var mainEntity = Entity.Create("MainEntity");
-                mainEntity.AddScript<UITests>();
+                //mainEntity.AddScript<UITests>();
                 mainEntity.AddScript<PauseMenu>();
                 mainEntity.AddScript<SuperConsole>();
             }
