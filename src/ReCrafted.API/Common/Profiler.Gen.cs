@@ -1,6 +1,6 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/29/2017 22:14:47 Source: 'Profiler.API.cpp' Target: 'Common/Profiler.Gen.cs'
+// Generated: 12/27/2017 16:04:59 Source: 'Profiler.API.cpp' Target: 'Common/Profiler.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;

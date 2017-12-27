@@ -5,11 +5,13 @@
 #include "Common/Display.h"
 #include "Graphics/Font.h"
 
-#define BOX_VERTICES_DEFINE() vertex v0 = {}; vertex v1 = {}; vertex v2 = {}; vertex v3 = {};
+#define BOX_VERTICES_DEFINE() vertex v0 = {}; vertex v1 = {}; vertex v2 = {}; vertex v3 = {}; Rectf uvdiff = {};
 
-#define BOX_VERTICES_SETUP() setupVertexData(rect, v0, v1, v2, v3);
+#define BOX_VERTICES_SETUP() setupVertexData(rect, v0, v1, v2, v3, uvdiff);
 
 #define BOX_VERTICES_FINALIZE(texture) finalizeVertexData(v0, v1, v2, v3, texture);
+
+#define BOX_VERTICES_VIEW_RECT()\
 
 #define BOX_VERTICES_SETUP_UVS() v0.u = uvs.x;\
 v0.v = uvs.y + uvs.height;\
@@ -81,10 +83,53 @@ FORCEINLINE void drawTextBase(UI* instance, Font* font, T* characters, int chara
 	}
 }
 
-void UI::setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex& v3) const
+void UI::setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex& v3, Rectf& uvDiff) const
 {
 	var screen_width = Display::get_Width() * 0.5f;
 	var screen_height = Display::get_Height() * 0.5f;
+
+    var uv_xDiff = 0.0f;
+    var uv_yDiff = 0.0f;
+    var uv_xzDiff = 0.0f;
+    var uv_ywDiff = 0.0f;
+
+    if (m_instance->m_useViewRect)
+    {
+        // apply view rect
+
+        var& clipRect = m_viewRect;
+
+        if (rect.x >= clipRect.x + clipRect.width || rect.x + rect.width <= clipRect.x || rect.y >= clipRect.y + clipRect.height || rect.y + rect.height <= clipRect.y)
+            return;
+
+        if (rect.x < clipRect.x && rect.x + rect.width > clipRect.x)
+        {
+            uv_xDiff = clipRect.x - rect.x;
+            rect.x = clipRect.x;
+            rect.width -= uv_xDiff;
+        }
+
+        if (rect.y < clipRect.y && rect.y + rect.height > clipRect.y)
+        {
+            uv_yDiff = clipRect.y - rect.y;
+            rect.y = clipRect.y;
+            rect.height -= uv_yDiff;
+        }
+
+        if (rect.x < clipRect.x + clipRect.width && rect.x + rect.width > clipRect.x + clipRect.width)
+        {
+            uv_xzDiff = rect.x + rect.width - (clipRect.x + clipRect.width);
+            rect.width -= uv_xzDiff;
+        }
+
+        if (rect.y < clipRect.y + clipRect.height && rect.y + rect.height > clipRect.y + clipRect.height)
+        {
+            uv_ywDiff = rect.y + rect.height - (clipRect.y + clipRect.height);
+            rect.height -= uv_ywDiff;
+        }
+    }
+
+    uvDiff = Rectf(uv_xDiff, uv_yDiff, uv_xzDiff, uv_ywDiff);
 
 	var rX = rect.x;
 	var rY = rect.y;
@@ -102,7 +147,7 @@ void UI::setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex
 
 	// Y (Top-left)
 	auto y = 1.0f - rY / screen_height - height;
-
+    
 	// calculate x and y of the first vertex.
 	v0.x = x;
 	v0.y = y + height;
@@ -162,7 +207,7 @@ void UI::finalizeVertexData(vertex& v0, vertex& v1, vertex& v2, vertex& v3, uint
 	cmd.vertices[1] = v1;
 	cmd.vertices[2] = v2;
 	cmd.vertices[3] = v3;
-
+    
 	// first triangle
 	cmd.indices[0] = 0;
 	cmd.indices[1] = 1;
@@ -180,6 +225,7 @@ void UI::internal_drawBox(Rectf rect)
 {
 	BOX_VERTICES_DEFINE();
 	BOX_VERTICES_SETUP();
+    BOX_VERTICES_VIEW_RECT();
 
 	BOX_VERTICES_FINALIZE(0);
 }
@@ -188,6 +234,7 @@ void UI::internal_drawBoxTextured(Rectf rect, uint texture, Rectf uvs)
 {
 	BOX_VERTICES_DEFINE();
 	BOX_VERTICES_SETUP();
+    BOX_VERTICES_VIEW_RECT();
 
 	BOX_VERTICES_SETUP_UVS();
 

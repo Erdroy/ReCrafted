@@ -199,3 +199,9 @@ float UI::getDepth()
 {
 	return m_instance->m_depth;
 }
+
+void UI::setViewRect(Rectf* viewRect, bool enabled)
+{
+    m_instance->m_viewRect = *viewRect;
+    m_instance->m_useViewRect = enabled;
+}

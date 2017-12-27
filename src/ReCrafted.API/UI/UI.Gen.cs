@@ -1,8 +1,9 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/27/2017 15:53:30 Source: 'UI.API.cpp' Target: 'UI/UI.Gen.cs'
+// Generated: 12/27/2017 16:04:59 Source: 'UI.API.cpp' Target: 'UI/UI.Gen.cs'
 
 using ReCrafted.API.Mathematics;
+using ReCrafted.API.Graphics;
 using System;
 using System.Runtime.CompilerServices;
 
@@ -24,6 +25,12 @@ namespace ReCrafted.API.UI
 		/// </summary>
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void DrawString(IntPtr font, string text, ref Vector2 position);
+
+		/// <summary>
+		///	Sets view rect.
+		/// </summary>
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void UpdateViewRect(ref RectangleF viewRect, bool use);
 
 		/// <summary>
 		///	Draws Texture2D.
