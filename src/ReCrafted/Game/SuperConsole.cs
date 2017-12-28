@@ -1,7 +1,9 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
 using System;
+using ReCrafted.API;
 using ReCrafted.API.Common;
+using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
 using ReCrafted.API.UI.Controls;
@@ -48,10 +50,16 @@ namespace ReCrafted.Game
             TextContainer = UIPanel.Create(TextContainerRegion, UILayoutType.Vertical, "Super Console", 10001);
 
             TextContainer.PanelColor = Color.DarkGray * 2f;
-            TextContainer.EnableClipping = false;
+            TextContainer.EnableClipping = true;
             TextContainer.EnableScrollBars = true;
             TextContainer.HorizontalScrollBar = false;
             TextContainer.VerticalScrollBar = true;
+
+            TextContainer.VerticalTopButton.Texture = Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "arrowup.png"));
+            TextContainer.VerticalTopButton.Text = string.Empty;
+
+            TextContainer.VerticalBottomButton.Texture = Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "arrowdown.png"));
+            TextContainer.VerticalBottomButton.Text = string.Empty;
 
             TextContainer.Layout.ReverseContainer = true;
 
@@ -60,12 +68,12 @@ namespace ReCrafted.Game
             TextContainer.Layout.ForceExpandWidth = true;
             TextContainer.Layout.Padding = new UIPadding
             {
-                Top = 0,
+                Top = 10,
                 Bottom = 10,
                 Left = 5,
                 Right = 10
             };
-            TextContainer.Layout.Space = UIControl.DefaultFont.Size / 2f;
+            TextContainer.Layout.Space = -UIControl.DefaultFont.Size / 1.5f;
             TextContainer.Layout.Alignment = UILayoutAlignment.LeftBottom;
             TextContainer.Layout.Offset = new Vector2(0, -10);
             TextContainer.ApplyLayout = true;
@@ -92,9 +100,7 @@ namespace ReCrafted.Game
                 return;
             }
 
-            var text = TextContainer.Add(new UIText(string.Empty));
-            text.FitRegionSizeToText = true;
-            text.Text = Input.Text;
+            Write(Input.Text);
             Input.Text = string.Empty;
         }
 
@@ -129,6 +135,17 @@ namespace ReCrafted.Game
 
             InputContainer.Enabled = false;
             InputContainer.Visible = false;
+        }
+
+        /// <summary>
+        /// Writes text to console.
+        /// </summary>
+        /// <param name="text">Text to write.</param>
+        public static void Write(string text)
+        {
+            var uiText = Instance.TextContainer.Add(new UIText(string.Empty));
+            uiText.FitRegionSizeToText = true;
+            uiText.Text = $"{DateTime.Now:T} [INFO] {text}";
         }
 
         /// <summary>

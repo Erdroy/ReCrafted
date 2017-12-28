@@ -39,7 +39,7 @@ namespace ReCrafted.API.UI.Controls
         /// </summary>
         public static UIControlColors DefaultHandle = new UIControlColors
         {
-            NormalColor = Color.Gray * 0.5f,
+            NormalColor = Color.DarkGray,
             OverColor = Color.DarkGray,
             ClickColor = Color.DarkOrange
         };

@@ -23,6 +23,7 @@ namespace ReCrafted.API.UI
 
         // is panel visible?
         private bool _visible;
+
         private bool _fixed;
 
         // are scroll bars enabled?
@@ -34,8 +35,40 @@ namespace ReCrafted.API.UI
         // vertical scroll bar
         private UIScrollbar _verticalScrollbar;
 
+        // vertical button top
+        private UIButton _verticalButtonTop;
+
+        // vertical button bottom
+        private UIButton _verticalButtonBottom;
+
         // horizontal scroll bar
         private UIScrollbar _horizotnalScrollbar;
+
+        // position of current scroll view
+        private Vector2 _scrollViewPosition;
+
+        // position of current scroll view
+        private Vector2 _fixedScrollViewPosition;
+
+        // display of scroll view
+        private RectangleF _scrollViewDisplay;
+
+        public override void OnMouseOver()
+        {
+            if (EnableScrollBars)
+            {
+                if (VerticalScrollBar)
+                {
+                    _verticalScrollbar.Position += 0; // scroll input here
+                    _scrollViewPosition.Y = _scrollViewDisplay.Height * _verticalScrollbar.Position;
+                }
+                else  if (HorizontalScrollBar)
+                {
+                    _horizotnalScrollbar.Position += 0; // scroll input here
+                    _scrollViewPosition.X = _scrollViewDisplay.Width * _horizotnalScrollbar.Position;
+                }
+            }
+        }
 
         /// <summary>
         /// Draws all controls added to this UIPanel.
@@ -54,27 +87,73 @@ namespace ReCrafted.API.UI
                 Profiler.BeginProfile($"Panel <{(string.IsNullOrEmpty(Name) ? "empty" : Name)}> ");
 
                 //recalculate current layout
-                var region = EnableScrollBars ? new RectangleF(Region.X, Region.X, 
-                    Region.Width - (VerticalScrollBar ? ScrollBarsSize : 0), 
-                    Region.Height - (HorizontalScrollBar ?  ScrollBarsSize : 0)) : Region;
-                if (ApplyLayout)
+                if (EnableScrollBars)
                 {
-                    var r = Layout.Recalculate(region);
-                    if (EnableClipping)
-                    {
-                        UIInternal.BeginViewRect(r);
-                    }
+                    _scrollViewPosition = new Vector2(HorizontalScrollBar ? _scrollViewPosition.X : 0,
+                        VerticalScrollBar ? _scrollViewPosition.Y : 0);
+                    _fixedScrollViewPosition = Vector2.Lerp(_fixedScrollViewPosition, _scrollViewPosition,
+                        (float) Time.DeltaTime * 10f);
+                }
+
+                RectangleF layoutRegion;
+                if (EnableScrollBars)
+                {
+                    layoutRegion = new RectangleF(Region.X + _fixedScrollViewPosition.X,
+                        Region.Y + _fixedScrollViewPosition.Y,
+                        Region.Width - (VerticalScrollBar ? ScrollBarsSize : 0),
+                        Region.Height - (HorizontalScrollBar ? ScrollBarsSize : 0));
                 }
                 else
                 {
-                    if (EnableClipping)
-                    {
-                        UIInternal.BeginViewRect(region);
-                    }
+                    layoutRegion = Region;
+                }
+
+                var scrollRegion = new RectangleF(Region.X, Region.X,
+                    Region.Width - (VerticalScrollBar ? ScrollBarsSize : 0),
+                    Region.Height - (HorizontalScrollBar ? ScrollBarsSize : 0));
+
+                var recalculatedLayout = new RectangleF();
+                if (ApplyLayout)
+                {
+                    recalculatedLayout = Layout.Recalculate(layoutRegion);
+                }
+
+                layoutRegion = recalculatedLayout == new RectangleF() ? layoutRegion : recalculatedLayout;
+                if (EnableClipping)
+                {
+                    UIInternal.BeginViewRect(EnableScrollBars ? scrollRegion : layoutRegion);
                 }
 
                 //draw layout
                 Layout.Draw();
+
+                if (EnableScrollBars)
+                {
+                    var displayHeight = 0f;
+                    var displayWidth = 0f;
+
+                    foreach (var c in Layout.Controls)
+                    {
+                        displayHeight += c.Region.Height + Math.Abs(Layout.Space) / 2f;
+                        if (c.Region.Width > displayWidth)
+                            displayWidth = c.Region.Width;
+                    }
+
+                    _scrollViewDisplay = new RectangleF(layoutRegion.X,  layoutRegion.Y + layoutRegion.Height - displayHeight, displayWidth, displayHeight);
+
+                    // debug
+                    // UIInternal.Color = Color.Green;
+                    // UIInternal.Depth = 99999;
+                    // UIInternal.DrawBox(_scrollViewDisplay);
+
+                    var verticalSize = MathUtil.Clamp(scrollRegion.Height / _scrollViewDisplay.Height, 0.05f, 1f);
+                    _verticalScrollbar.Size = verticalSize;
+
+                    //var p = new Vector2(_scrollViewDisplay.X, _scrollViewDisplay.Y);
+                    //UIInternal.Color = Color.White;
+                    //UIInternal.DrawString(DefaultFont.NativePtr, _scrollViewDisplay.ToString(), ref p);
+                }
+
                 //calculate mouse collisions
                 if (!HaveCollision)
                 {
@@ -103,21 +182,31 @@ namespace ReCrafted.API.UI
                 }
 
                 if (EnableClipping)
-                {
                     UIInternal.EndViewRect();
-                }
+
                 Profiler.EndProfile();
 
                 if (Enabled && EnableScrollBars)
                 {
                     Profiler.BeginProfile($"Panel <{(string.IsNullOrEmpty(Name) ? "empty" : Name)}> ");
+
                     _horizotnalScrollbar.Enabled = HorizontalScrollBar;
                     if (HorizontalScrollBar)
-                        _horizotnalScrollbar.Region = new RectangleF(region.X, region.Y + region.Height, region.Width, ScrollBarsSize);
+                        _horizotnalScrollbar.Region = new RectangleF(scrollRegion.X,
+                            scrollRegion.Y + scrollRegion.Height, scrollRegion.Width, ScrollBarsSize);
 
                     _verticalScrollbar.Enabled = VerticalScrollBar;
                     if (VerticalScrollBar)
-                        _verticalScrollbar.Region = new RectangleF(region.X + region.Width, region.Y, ScrollBarsSize, region.Height);
+                    {
+                        _verticalScrollbar.Region = new RectangleF(scrollRegion.X + scrollRegion.Width, scrollRegion.Y + ScrollBarsSize,
+                            ScrollBarsSize, scrollRegion.Height - ScrollBarsSize * 2);
+                        _verticalButtonTop.Region = new RectangleF(scrollRegion.X + scrollRegion.Width, scrollRegion.Y, ScrollBarsSize, ScrollBarsSize);
+                        if (!HorizontalScrollBar)
+                        {
+                            _verticalButtonBottom.Region = new RectangleF(scrollRegion.X + scrollRegion.Width,
+                                scrollRegion.Y + scrollRegion.Height- ScrollBarsSize, ScrollBarsSize, ScrollBarsSize);
+                        }
+                    }
 
                     _internalPanel.Draw();
                     Profiler.EndProfile();
@@ -134,6 +223,7 @@ namespace ReCrafted.API.UI
         public override void Reset()
         {
             Layout?.Reset();
+            _internalPanel?.Reset();
         }
 
         /// <summary>
@@ -196,9 +286,38 @@ namespace ReCrafted.API.UI
                 _internalPanel.Parent = this;
                 _horizotnalScrollbar = _internalPanel.Add(new UIScrollbar());
                 _horizotnalScrollbar.Vertical = false;
+                _horizotnalScrollbar.OnValueChanged += position =>
+                {
+                    if (_horizotnalScrollbar.IsDragging)
+                    {
+                        _scrollViewPosition.X = _scrollViewDisplay.Width * position;
+                    }
+                };
 
                 _verticalScrollbar = _internalPanel.Add(new UIScrollbar());
                 _verticalScrollbar.Vertical = true;
+                _verticalScrollbar.OnHandleChanged += position =>
+                {
+                    if (_verticalScrollbar.IsDragging)
+                    {
+                        _scrollViewPosition.Y = _scrollViewDisplay.Height * position;
+                    }
+                };
+
+                _verticalButtonTop = _internalPanel.Add(new UIButton(new RectangleF(), @"/\", Color.DarkOrange, UIControlColors.DefaultHandle));
+                _verticalButtonTop.OnClick += () =>
+                {
+                    _verticalScrollbar.Position = 0f;
+                    _scrollViewPosition.Y = 0f;
+                };
+                _verticalButtonBottom = _internalPanel.Add(new UIButton(new RectangleF(), @"\/", Color.DarkOrange, UIControlColors.DefaultHandle));
+                /*
+                _verticalButtonBottom.OnClick += () =>
+                {
+                    _verticalScrollbar.Position = 1f;
+                    _scrollViewPosition.Y = _scrollViewDisplay.Height;
+                };
+                */
             }
         }
 
@@ -247,13 +366,23 @@ namespace ReCrafted.API.UI
                 Parent = null,
                 Region = region,
                 PanelColor = Color.White,
-                Depth = baseDepth + (Panels.Count == 0 ? 0 : Panels[Panels.Count - 1].Depth) + (Panels.Count == 0 ? 0 : Panels[Panels.Count - 1].Layout.Controls.Count),
+                Depth = baseDepth + (Panels.Count == 0 ? 0 : Panels[Panels.Count - 1].Depth) +
+                        (Panels.Count == 0 ? 0 : Panels[Panels.Count - 1].Layout.Controls.Count),
                 Layout = UILayout.Create(region, layoutType),
                 EnableClipping = false,
                 EnableScrollBars = false,
                 HorizontalScrollBar = true,
                 VerticalScrollBar = true
             };
+
+            panel._visible = panel.Visible;
+            panel._fixed = false;
+
+            panel._enableScrollbars = false;
+            panel._scrollViewPosition = Vector2.Zero;
+
+            panel._fixedScrollViewPosition = Vector2.Zero;
+            panel._scrollViewDisplay = new RectangleF();
 
             // set panel layout parent
             panel.Layout.Parent = panel;
@@ -301,7 +430,8 @@ namespace ReCrafted.API.UI
         /// <param name="region">Region of panel with control.</param>
         /// <param name="controlInstance">Control instance.</param>
         /// <param name="panel">Created instance of UIPanel.</param>
-        public static void CreateControl<T>(RectangleF region, ref T controlInstance, out UIPanel panel) where T : UIControl
+        public static void CreateControl<T>(RectangleF region, ref T controlInstance, out UIPanel panel)
+            where T : UIControl
         {
             panel = Create(region, UILayoutType.Vertical, $"Control-{controlInstance.Name}");
             panel.Layout.ForceExpandHeight = true;
@@ -381,5 +511,25 @@ namespace ReCrafted.API.UI
         /// Contains all controls.
         /// </summary>
         public UILayout Layout { get; protected set; }
+
+        /// <summary>
+        /// Vertical scroll bar.
+        /// </summary>
+        public UIScrollbar VerticalScrollbar => _verticalScrollbar;
+
+        /// <summary>
+        /// Top vertical button.
+        /// </summary>
+        public UIButton VerticalTopButton => _verticalButtonTop;
+
+        /// <summary>
+        /// Bottom vertical button.
+        /// </summary>
+        public UIButton VerticalBottomButton => _verticalButtonBottom;
+
+        /// <summary>
+        /// Horizontal scroll bar.
+        /// </summary>
+        public UIScrollbar HorizontalScrollbar => _horizotnalScrollbar;
     }
 }

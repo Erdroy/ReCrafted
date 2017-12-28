@@ -85,7 +85,7 @@ namespace ReCrafted.API.UI.Controls
 
             // debug
             // UIInternal.Depth = Depth;
-            // UIInternal.Color = Color.Blue;
+            // UIInternal.Color = Color.Green;
             // UIInternal.DrawBox(Region);
 
             UIInternal.Color = TextColor;
@@ -95,9 +95,23 @@ namespace ReCrafted.API.UI.Controls
                 UIInternal.EndViewRect();
         }
 
+        // reset
         public override void Reset()
         {
-            
+
+        }
+
+        // on region changed
+        public override void OnRegionChanged()
+        {
+            base.OnRegionChanged();
+
+            if (FitRegionSizeToText)
+            {
+                TextSize = TextFont.MeasureString(_text);
+                if (FitRegionSizeToText)
+                    Region = new RectangleF(Region.X, Region.Y, TextSize.X, TextSize.Y);
+            }
         }
 
         /// <summary>
@@ -117,7 +131,7 @@ namespace ReCrafted.API.UI.Controls
             IgnoreLayoutResize = true;
 
             Region = region;
-            TextFont = DefaultFont;//set default font
+            TextFont = DefaultFont; //set default font
             Text = text;
             TextColor = color;
             FitRegionSizeToText = true;
@@ -126,6 +140,12 @@ namespace ReCrafted.API.UI.Controls
             IgnoreMouseCollision = true;
             IsMouseOver = false;
             Parent = null;
+
+            if (Math.Abs(Region.Height) < 0.01f)
+                Region = new RectangleF(Region.X, Region.Y, Region.Width, TextFont.MeasureString(text).Y);
+
+            if (Math.Abs(Region.Width) < 0.01f)
+                Region = new RectangleF(Region.X, Region.Y, TextFont.MeasureString(text).X, Region.Height);
         }
 
         /// <summary>

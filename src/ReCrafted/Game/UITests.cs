@@ -90,7 +90,7 @@ namespace ReCrafted.Game
             var scrollBar = new UIScrollbar  { Vertical = true, Size = 0.1f };
             UIPanel.CreateControl(new RectangleF(200, 500, 150, 450), ref scrollBar);
 
-            scrollBar.OnValueChanged += () =>
+            scrollBar.OnValueChanged += value =>
             {
                 text.Text = scrollBar.Position.ToString(CultureInfo.InvariantCulture) + '\n' + scrollBar.Size.ToString(CultureInfo.InvariantCulture);
             };

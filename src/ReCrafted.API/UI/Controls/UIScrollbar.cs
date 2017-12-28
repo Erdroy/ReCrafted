@@ -18,9 +18,6 @@ namespace ReCrafted.API.UI.Controls
         // current scroll bar background color
         private Color _backgroundColor;
 
-        // is scroll bar handle currently dragging?
-        private bool _drag;
-
         // position of handle on screen
         private float _handlePosition;
 
@@ -30,9 +27,19 @@ namespace ReCrafted.API.UI.Controls
         private RectangleF _handleRegion;
 
         /// <summary>
-        /// Event of scroll ball value (position) change.
+        /// Event of scroll bar value (position) change.
         /// </summary>
-        public Action OnValueChanged;
+        public Action<float> OnValueChanged;
+
+        /// <summary>
+        /// When scroll bar handle changes his position.
+        /// </summary>
+        public Action<float> OnHandleChanged;
+
+        /// <summary>
+        /// When scroll bar handle has been click by user.
+        /// </summary>
+        public Action OnHandleClick;
 
         /// <summary>
         /// Creates new instance of UI Scroll bar.
@@ -80,7 +87,8 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="size">Size of handle in scroll bar.</param>
         /// <param name="colors">Colors of scroll bar handle.</param>
         /// <param name="backgroundColor">Colors of scroll bar background.</param>
-        public UIScrollbar(RectangleF region, float position, float size, UIControlColors colors, UIControlColors backgroundColor)
+        public UIScrollbar(RectangleF region, float position, float size, UIControlColors colors,
+            UIControlColors backgroundColor)
         {
             _applyDefaults(region, position, size, colors, backgroundColor);
         }
@@ -97,7 +105,7 @@ namespace ReCrafted.API.UI.Controls
         {
             if (!SmoothColors)
             {
-                if (_drag)
+                if (IsDragging)
                     _backgroundColor = BackgroundColor.NormalColor;
                 else
                 {
@@ -118,21 +126,23 @@ namespace ReCrafted.API.UI.Controls
         {
             if (IsMouseOver && Input.IsKeyDown(Keys.Mouse0))
             {
-                _drag = true;
+                IsDragging = true;
                 _handlePosition = Vertical
                     ? Input.CursorPosition.Y - Region.Y + _handleRegion.Height / 2
                     : Input.CursorPosition.X - Region.X + _handleRegion.Width / 2;
+                OnValueChanged?.Invoke(Position);
+                OnHandleClick?.Invoke();
             }
-            else if (_drag && Input.IsKeyUp(Keys.Mouse0))
-                _drag = false;
-            if (_drag)
+            else if (IsDragging && Input.IsKeyUp(Keys.Mouse0))
+                IsDragging = false;
+            if (IsDragging)
             {
                 var p = _handlePosition;
                 _handlePosition += (Vertical ? Input.CursorDelta.Y : Input.CursorDelta.X) *
                                    MathUtil.Clamp(Size * 7f, 0.5f, 1f);
                 _handlePosition = MathUtil.Clamp(_handlePosition, 0, Vertical ? Region.Height : Region.Width);
                 if (Math.Abs(p - _handlePosition) > 0.05f)
-                    OnValueChanged?.Invoke();
+                    OnValueChanged?.Invoke(Position);
 
                 _color = Color.Lerp(_color, Colors.ClickColor, (float) Time.DeltaTime * SmoothTranslation);
             }
@@ -146,7 +156,7 @@ namespace ReCrafted.API.UI.Controls
             UIInternal.Depth = Depth;
             _backgroundColor = SmoothColors
                 ? Color.Lerp(_backgroundColor,
-                    _drag
+                    IsDragging
                         ? BackgroundColor.NormalColor
                         : IsMouseOver
                             ? BackgroundColor.OverColor
@@ -160,6 +170,7 @@ namespace ReCrafted.API.UI.Controls
 
             Size = MathUtil.Clamp(Size, 0.05f, 1f);
 
+            var pe = _fixedHandlePosition;
             if (Vertical)
             {
                 var height = MathUtil.Clamp(Region.Height * Size, Region.Height * 0.05f, Region.Height);
@@ -185,6 +196,10 @@ namespace ReCrafted.API.UI.Controls
                 _fixedHandlePosition = MathUtil.Lerp(_fixedHandlePosition, hp, (float) Time.DeltaTime * 15f);
 
                 _handleRegion = new RectangleF(_fixedHandlePosition, Region.Y, width, Region.Height);
+            }
+            if (Math.Abs(pe - _fixedHandlePosition) > 0.01f)
+            {
+                OnHandleChanged?.Invoke(Position);
             }
             UIInternal.DrawBox(_handleRegion);
         }
@@ -217,7 +232,7 @@ namespace ReCrafted.API.UI.Controls
             _color = Colors.NormalColor;
             _backgroundColor = BackgroundColor.NormalColor;
 
-            _drag = false;
+            IsDragging = false;
             _handlePosition = 0f;
             _fixedHandlePosition = 0f;
         }
@@ -273,9 +288,16 @@ namespace ReCrafted.API.UI.Controls
                 else
                     _handlePosition = Region.Width * value;
 
+                _handlePosition = MathUtil.Clamp(_handlePosition, 0f, 1f);
+
                 if (Math.Abs(p - _handlePosition) > 0.05f)
-                    OnValueChanged?.Invoke();
+                    OnValueChanged?.Invoke(Position);
             }
         }
+
+        /// <summary>
+        /// Is scroll bar handle currently dragging by user?
+        /// </summary>
+        public bool IsDragging { get; private set; }
     }
 }

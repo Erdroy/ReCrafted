@@ -22,7 +22,8 @@ namespace ReCrafted.API.UI
         /// <summary>
         /// Contains all the controls
         /// </summary>
-        public IReadOnlyList<UIControl> Controls {
+        public IReadOnlyList<UIControl> Controls
+        {
             get
             {
                 if (ReverseContainer)
@@ -66,9 +67,12 @@ namespace ReCrafted.API.UI
             if (instance == null) throw new ArgumentNullException(nameof(instance));
             if (instance == this) throw new NotSupportedException("You can't add container as control of container");
             if (instance is UIPanel) throw new NotSupportedException("You can't add UIPanel to container.");
-            if (_controls.Contains(instance)) throw new ReCraftedException("Unable to add new control in to container. Controls can by added in to container only once.");
+            if (_controls.Contains(instance))
+                throw new ReCraftedException(
+                    "Unable to add new control in to container. Controls can by added in to container only once.");
             instance.Parent = this;
             instance.Depth = Depth + _controls.Count;
+            instance.OnRegionChanged();
             _controls.Add(instance);
             OnControlsChanged?.Invoke();
             return instance;
@@ -84,6 +88,7 @@ namespace ReCrafted.API.UI
         {
             if (instance == null) throw new ArgumentNullException(nameof(instance));
             if (!_controls.Contains(instance)) return;
+            instance.OnRegionChanged();
             _controls.Remove(instance);
             OnControlsChanged?.Invoke();
         }
@@ -110,7 +115,8 @@ namespace ReCrafted.API.UI
             {
                 if (control.OnMouseCollision() != null) continue;
                 if (control.IgnoreMouseCollision || !control.Enabled) continue;
-                if (!control.Region.Contains(mousePoint) || mouseControlCollision != null && mouseControlCollision != control)
+                if (!control.Region.Contains(mousePoint) ||
+                    mouseControlCollision != null && mouseControlCollision != control)
                 {
                     if (!control.IsMouseOver) continue;
                     control.IsMouseOver = false;

@@ -41,7 +41,7 @@ namespace ReCrafted.API.UI.Controls
         /// </summary>
         public UIButton()
         {
-            _applyDefaults(new RectangleF(), string.Empty, Color.Black, UIControlColors.Defaults);
+            _applyDefaults(new RectangleF(), string.Empty, Color.Black, UIControlColors.Defaults, null);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="region">Region of new UIButton.</param>
         public UIButton(RectangleF region)
         {
-            _applyDefaults(region, string.Empty, Color.Black, UIControlColors.Defaults);
+            _applyDefaults(region, string.Empty, Color.Black, UIControlColors.Defaults, null);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="text">Text of the new UIButton.</param>
         public UIButton(string text)
         {
-            _applyDefaults(new RectangleF(), text, Color.Black, UIControlColors.Defaults);
+            _applyDefaults(new RectangleF(), text, Color.Black, UIControlColors.Defaults, null);
         }
 
         /// <summary>
@@ -69,16 +69,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="textColor">Color of the text in new UIButton.</param>
         public UIButton(string text, Color textColor)
         {
-            _applyDefaults(new RectangleF(), text, textColor, UIControlColors.Defaults);
-        }
-
-        /// <summary>
-        /// Creates new UIButton.
-        /// </summary>
-        /// <param name="colors">Colors of UIButton.</param>
-        public UIButton(UIControlColors colors)
-        {
-            _applyDefaults(new RectangleF(), string.Empty, Color.Black, colors);
+            _applyDefaults(new RectangleF(), text, textColor, UIControlColors.Defaults, null);
         }
 
         /// <summary>
@@ -88,7 +79,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="text">Text of the new UIButton.</param>
         public UIButton(RectangleF region, string text)
         {
-            _applyDefaults(region, text, Color.Black, UIControlColors.Defaults);
+            _applyDefaults(region, text, Color.Black, UIControlColors.Defaults, null);
         }
 
         /// <summary>
@@ -99,7 +90,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="textColor">Color of the text in new UIButton.</param>
         public UIButton(RectangleF region, string text, Color textColor)
         {
-            _applyDefaults(region, text, textColor, UIControlColors.Defaults);
+            _applyDefaults(region, text, textColor, UIControlColors.Defaults, null);
         }
 
         /// <summary>
@@ -111,7 +102,20 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="colors">Colors of UIButton.</param>
         public UIButton(RectangleF region, string text, Color textColor, UIControlColors colors)
         {
-            _applyDefaults(region, text, textColor, colors);
+            _applyDefaults(region, text, textColor, colors, null);
+        }
+
+        /// <summary>
+        /// Creates new UIButton.
+        /// </summary>
+        /// <param name="region">Region of new UIButton.</param>
+        /// <param name="text">Text of the new UIButton.</param>
+        /// <param name="textColor">Color of the text in new UIButton.</param>
+        /// <param name="colors">Colors of UIButton.</param>
+        /// <param name="texture">Texture of button.</param>
+        public UIButton(RectangleF region, string text, Color textColor, UIControlColors colors, Texture2D texture)
+        {
+            _applyDefaults(region, text, textColor, colors, texture);
         }
 
         public override void OnMouseEnter()
@@ -176,6 +180,16 @@ namespace ReCrafted.API.UI.Controls
             }
             UIInternal.Depth = Depth + 0.1f;
             UIInternal.DrawBox(buttonRegion);
+            //if (Texture == null)
+            //    UIInternal.DrawBox(buttonRegion);
+            //else
+            if (Texture != null)
+            {
+                UIInternal.Depth = Depth + 0.2f;
+                UIInternal.Color = _color * 1.5f;
+                var uvs = new RectangleF(0f, 0f, 1f, 1f);
+                UIInternal.DrawTexture2D(Texture.NativePtr, ref buttonRegion, ref uvs);
+            }
 
             TextPosition = new Vector2(Region.X + Region.Width / 2 - TextSize.X / 2, Region.Y + Region.Height / 2 - TextSize.Y / 2);
             var pos = TextPosition;
@@ -203,7 +217,7 @@ namespace ReCrafted.API.UI.Controls
         }
 
         // set default properties
-        private void _applyDefaults(RectangleF region, string text, Color textColor, UIControlColors colors)
+        private void _applyDefaults(RectangleF region, string text, Color textColor, UIControlColors colors, Texture2D texture)
         {
             Region = region;
             TextFont = DefaultFont; //set default font
@@ -213,6 +227,7 @@ namespace ReCrafted.API.UI.Controls
             SmoothColors = true;
             SmoothTranslation = 10f;
             SpringAnimation = true;
+            Texture = texture;
             Enabled = true;
             IgnoreMouseCollision = false;
             IsMouseOver = false;
@@ -247,6 +262,11 @@ namespace ReCrafted.API.UI.Controls
         /// Color of the text.
         /// </summary>
         public Color TextColor { get; set; }
+
+        /// <summary>
+        /// Texture of button.
+        /// </summary>
+        public Texture2D Texture { get; set; }
 
         /// <summary>
         /// Text of this control.

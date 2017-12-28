@@ -128,8 +128,10 @@ namespace ReCrafted.API.UI
                 var previousControl = index == 0 ? null : Controls[index - 1];
                 var newRegion = new RectangleF(0f, 0f, 0f, 0f)
                 {
-                    X = CalculateRegionXForControl(side, totalContentWidth, index, previousControl?.Region.X ?? 0, previousControl?.Region.Width ?? 0, currentControl.Region.Width),
-                    Y = CalculateRegionYForControl(position, totalContentHeigth, index, previousControl?.Region.Y ?? 0, previousControl?.Region.Height ?? 0, currentControl.Region.Height)
+                    X = CalculateRegionXForControl(side, totalContentWidth, index, previousControl?.Region.X ?? 0,
+                        previousControl?.Region.Width ?? 0, currentControl.Region.Width),
+                    Y = CalculateRegionYForControl(position, totalContentHeigth, index, previousControl?.Region.Y ?? 0,
+                        previousControl?.Region.Height ?? 0, currentControl.Region.Height)
                 };
 
                 switch (Type)
@@ -176,6 +178,7 @@ namespace ReCrafted.API.UI
                         }
 
                         #endregion
+
                         break;
                     }
                     case UILayoutType.Vertical:
@@ -216,18 +219,24 @@ namespace ReCrafted.API.UI
                         }
 
                         #endregion
+
                         break;
                     }
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
 
-                newRegion = new RectangleF(newRegion.X + Offset.X, newRegion.Y + Offset.Y, newRegion.Width, newRegion.Height);
+                newRegion = new RectangleF(newRegion.X + Offset.X, newRegion.Y + Offset.Y, newRegion.Width,
+                    newRegion.Height);
                 var regionChanged = currentControl.Region != newRegion;
                 currentControl.Region = newRegion;
                 if (regionChanged)
                     currentControl.OnRegionChanged();
             }
+
+            // UIInternal.Color = Color.Blue;
+            // UIInternal.DrawBox(Region);
+            // UIInternal.Color = Color.White;
             Profiler.EndProfile();
             return Region;
         }
@@ -245,7 +254,8 @@ namespace ReCrafted.API.UI
         }
 
         // calculates new region y of control based on current layout
-        private float CalculateRegionYForControl(UILayoutAlignmentPosition position, float totalContentHeight, int controlIndex, float prevY, float prevH, float currH)
+        private float CalculateRegionYForControl(UILayoutAlignmentPosition position, float totalContentHeight,
+            int controlIndex, float prevY, float prevH, float currH)
         {
             switch (Type)
             {
@@ -271,7 +281,9 @@ namespace ReCrafted.API.UI
                         case UILayoutAlignmentPosition.Top:
                             return controlIndex == 0 ? Region.Y : prevY + prevH + Space;
                         case UILayoutAlignmentPosition.Middle:
-                            return controlIndex == 0 ? Region.Y + Region.Height / 2 - totalContentHeight / 2 : prevY + prevH + Space;
+                            return controlIndex == 0
+                                ? Region.Y + Region.Height / 2 - totalContentHeight / 2
+                                : prevY + prevH + Space;
                         case UILayoutAlignmentPosition.Bottom:
                             return controlIndex == 0 ? Region.Y + Region.Height - currH : prevY - currH - Space;
                         default:
@@ -283,7 +295,8 @@ namespace ReCrafted.API.UI
         }
 
         // calculates new region x of control based on current layout
-        private float CalculateRegionXForControl(UILayoutAlignmentSide side, float totalContentWidth, int controlIndex, float prevX, float prevW, float currW)
+        private float CalculateRegionXForControl(UILayoutAlignmentSide side, float totalContentWidth, int controlIndex,
+            float prevX, float prevW, float currW)
         {
             switch (Type)
             {
@@ -297,7 +310,9 @@ namespace ReCrafted.API.UI
                         case UILayoutAlignmentSide.Left:
                             return controlIndex == 0 ? Region.X : prevX + prevW + Space;
                         case UILayoutAlignmentSide.Middle:
-                            return controlIndex == 0 ? Region.X + Region.Width / 2 - totalContentWidth / 2 : prevX + prevW + Space;
+                            return controlIndex == 0
+                                ? Region.X + Region.Width / 2 - totalContentWidth / 2
+                                : prevX + prevW + Space;
                         case UILayoutAlignmentSide.Right:
                             return controlIndex == 0 ? Region.X + Region.Width - currW : prevX - currW - Space;
                         default:
@@ -327,7 +342,8 @@ namespace ReCrafted.API.UI
         /// <param name="layoutType">The lay-outing type.</param>
         /// <param name="layoutAlignment">Alignment type.</param>
         /// <returns>The newly created layout.</returns>
-        public static UILayout Create(RectangleF region, UILayoutType layoutType = UILayoutType.Vertical, UILayoutAlignment layoutAlignment = UILayoutAlignment.LeftTop)
+        public static UILayout Create(RectangleF region, UILayoutType layoutType = UILayoutType.Vertical,
+            UILayoutAlignment layoutAlignment = UILayoutAlignment.LeftTop)
         {
             // construct new panel
             var layout = new UILayout
