@@ -1,12 +1,15 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
 using System;
+using System.Linq;
 using ReCrafted.API;
 using ReCrafted.API.Common;
+using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
 using ReCrafted.API.UI.Controls;
+using ReCrafted.Game.Super;
 
 namespace ReCrafted.Game
 {
@@ -55,10 +58,12 @@ namespace ReCrafted.Game
             TextContainer.HorizontalScrollBar = false;
             TextContainer.VerticalScrollBar = true;
 
-            TextContainer.VerticalTopButton.Texture = Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "arrowup.png"));
+            TextContainer.VerticalTopButton.Texture =
+                Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "arrowup.png"));
             TextContainer.VerticalTopButton.Text = string.Empty;
 
-            TextContainer.VerticalBottomButton.Texture = Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "arrowdown.png"));
+            TextContainer.VerticalBottomButton.Texture =
+                Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "arrowdown.png"));
             TextContainer.VerticalBottomButton.Text = string.Empty;
 
             TextContainer.Layout.ReverseContainer = true;
@@ -89,6 +94,12 @@ namespace ReCrafted.Game
             Input.MultipleLine = false;
             Input.OnSubmit += OnInputSubmit;
 
+            // init super commands
+            SuperCommands.Init();
+
+            // register default commands
+            SuperDefaults.RegisterSuperDefaults();
+
             Disable();
         }
 
@@ -100,7 +111,14 @@ namespace ReCrafted.Game
                 return;
             }
 
-            Write(Input.Text);
+            var t = Write($"> " + Input.Text);
+            t.TextColor = Color.LimeGreen;
+
+            SuperCommands.Instance.ExecuteRaw(Input.Text);
+            //var parameters = Input.Text.Split(' ').ToList();
+            //var name = parameters[0];
+            //parameters.RemoveAt(0);
+            //SuperCommands.Instance.Execute(name, parameters.ToArray());
             Input.Text = string.Empty;
         }
 
@@ -141,11 +159,34 @@ namespace ReCrafted.Game
         /// Writes text to console.
         /// </summary>
         /// <param name="text">Text to write.</param>
-        public static void Write(string text)
+        /// <param name="level">Level of log.</param>
+        public static UIText Write(string text, LogLevel level = LogLevel.Info)
         {
             var uiText = Instance.TextContainer.Add(new UIText(string.Empty));
             uiText.FitRegionSizeToText = true;
-            uiText.Text = $"{DateTime.Now:T} [INFO] {text}";
+            switch (level)
+            {
+                case LogLevel.Info:
+                    uiText.TextColor = Color.White;
+                    break;
+                case LogLevel.Debug:
+                    uiText.TextColor = Color.Orange;
+                    break;
+                case LogLevel.Warning:
+                    uiText.TextColor = Color.Yellow;
+                    break;
+                case LogLevel.Error:
+                    uiText.TextColor = Color.Red;
+                    break;
+                case LogLevel.Fatal:
+                    uiText.TextColor = Color.DarkRed;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(level), level, null);
+            }
+            uiText.Text = $"{DateTime.Now:T} [{level.ToString().ToUpper()}] {text}";
+
+            return uiText;
         }
 
         /// <summary>

@@ -60,7 +60,9 @@
     <Compile Include="Game\GameMain.cs" />
     <Compile Include="Game\FreeCameraController.cs" />
     <Compile Include="Game\PauseMenu.cs" />
-    <Compile Include="Game\SuperConsole.cs" />
+    <Compile Include="Game\Super\SuperCommands.cs" />
+    <Compile Include="Game\Super\SuperConsole.cs" />
+    <Compile Include="Game\Super\SuperDefaults.cs" />
     <Compile Include="Game\UITests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
