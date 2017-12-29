@@ -105,6 +105,9 @@ namespace ReCrafted.API.UI
         {
             DefaultFont = Font.Load(Assets.ResolveAssetFilePath(AssetType.Font, "VeraMono.ttf"), 12);
 
+            DefaultArrowUp = Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "arrowup.png"), Color.Black);
+            DefaultArrowDown = Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "arrowdown.png"), Color.Black);
+
             _defaultPanel = UIPanel.Create(new RectangleF(), UILayoutType.Vertical, "Default");
             _defaultPanel.Layout.ForceExpandWidth = false;
             _defaultPanel.Layout.ForceExpandHeight = false;
@@ -203,7 +206,17 @@ namespace ReCrafted.API.UI
         /// <summary>
         /// Default font of all new controls that uses font.
         /// </summary>
-        public static Font DefaultFont { get; internal set; }
+        public static Font DefaultFont { get; private set; }
+
+        /// <summary>
+        /// Default arrow up sprite.
+        /// </summary>
+        public static Sprite DefaultArrowUp { get; private set; }
+
+        /// <summary>
+        /// Default arrow down sprite.
+        /// </summary>
+        public static Sprite DefaultArrowDown { get; private set; }
 
         // current focused control by user
         internal static UIControl FocusedControl { get; private set; }

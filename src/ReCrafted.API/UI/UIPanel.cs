@@ -22,13 +22,16 @@ namespace ReCrafted.API.UI
         // is mouse collide with any control of any panel?
         internal static bool HaveCollision;
 
+        // last collision of mouse on control of any panel
+        internal static UIControl LastCollision;
+
         private bool _fixed;
 
         // are scroll bars enabled?
         private bool _enableScrollbars;
 
         // internal panel for scroll bars
-        private UIPanel _internalPanel;
+        internal UIPanel _internalPanel;
 
         // vertical scroll bar
         private UIScrollbar _verticalScrollbar;
@@ -52,7 +55,7 @@ namespace ReCrafted.API.UI
         private RectangleF _scrollViewDisplay;
 
         // region of layout
-        private RectangleF _layoutRegion;
+        private RectangleF _scrollLayoutRegion;
 
         // region of scroll view
         private RectangleF _scrollRegion;
@@ -113,15 +116,16 @@ namespace ReCrafted.API.UI
                 var recalculatedLayout = new RectangleF();
                 if (ApplyLayout)
                 {
-                    recalculatedLayout = Layout.Recalculate(_layoutRegion);
+                    recalculatedLayout = Layout.Recalculate(EnableScrollBars ? _scrollLayoutRegion : Region);
                 }
 
                 // handle clipping
                 if (EnableClipping)
                 {
-                    UIInternal.BeginViewRect(EnableScrollBars
-                        ? _scrollRegion
-                        : (recalculatedLayout == new RectangleF() ? _layoutRegion : recalculatedLayout));
+                    //UIInternal.Depth = UIInternal.Depth + 13;
+                    var region = EnableScrollBars ? _scrollRegion : (recalculatedLayout == new RectangleF() ? Region : recalculatedLayout);
+                    //UIInternal.DrawBox(region);
+                    UIInternal.BeginViewRect(region);
                 }
 
                 //draw layout
@@ -130,22 +134,24 @@ namespace ReCrafted.API.UI
                 //calculate mouse collisions
                 if (!HaveCollision)
                 {
-
-                    var collision = Layout.LookForMouseCollision();
+                    var currentCollision = Layout.LookForMouseCollision();
                     if (Input.IsKeyDown(Keys.Mouse0))
                     {
-                        if (collision != null)
+                        if (currentCollision != null)
                         {
                             HaveCollision = true;
-                            collision.OnMouseClick();
-                            if (FocusedControl != collision)
-                                SetFocusedControl(collision);
+                            currentCollision.OnMouseClick();
+                            if (FocusedControl != currentCollision)
+                                SetFocusedControl(currentCollision);
                         }
                         else
                         {
                             _checkForPanelCollision();
                         }
                     }
+
+                    if (currentCollision != null)
+                        LastCollision = currentCollision;
                 }
 
                 // fix
@@ -173,12 +179,10 @@ namespace ReCrafted.API.UI
 
                     _verticalScrollbar.Enabled = VerticalScrollBar;
                     if (VerticalScrollBar)
-                    {
                         _verticalScrollbar.Region = new RectangleF(_scrollRegion.X + _scrollRegion.Width,
                             _scrollRegion.Y + _scrollBarsSize,
                             _scrollBarsSize, _scrollRegion.Height - _scrollBarsSize * 2);
-                    }
-
+      
                     _internalPanel.Draw();
                     Profiler.EndProfile();
                 }
@@ -284,17 +288,17 @@ namespace ReCrafted.API.UI
         // content of panel's layout or panel's region has been changed 
         private void OnChanged()
         {
+            if (!EnableScrollBars)
+                return;
+
             // recalculate layout region
-            _layoutRegion = new RectangleF(Region.X + _fixedScrollViewPosition.X,
+            _scrollLayoutRegion = new RectangleF(Region.X + _fixedScrollViewPosition.X,
                 Region.Y + _fixedScrollViewPosition.Y,
                 Region.Width - (VerticalScrollBar ? _scrollBarsSize : 0),
                 Region.Height - (HorizontalScrollBar ? _scrollBarsSize : 0));
 
-            if (!EnableScrollBars)
-                return;
-
             // recalculate scroll region
-            _scrollRegion = new RectangleF(Region.X, Region.X,
+            _scrollRegion = new RectangleF(Region.X, Region.Y,
                 Region.Width - (VerticalScrollBar ? _scrollBarsSize : 0),
                 Region.Height - (HorizontalScrollBar ? _scrollBarsSize : 0));
 
@@ -310,7 +314,7 @@ namespace ReCrafted.API.UI
                     displayWidth = c.Region.Width;
             }
 
-            _scrollViewDisplay = new RectangleF(_layoutRegion.X, _layoutRegion.Y + _layoutRegion.Height - displayHeight,
+            _scrollViewDisplay = new RectangleF(_scrollLayoutRegion.X, _scrollLayoutRegion.Y + _scrollLayoutRegion.Height - displayHeight,
                 displayWidth, displayHeight);
 
             var verticalSize = MathUtil.Clamp(_scrollRegion.Height / _scrollViewDisplay.Height, 0.05f, 1f);
@@ -375,15 +379,15 @@ namespace ReCrafted.API.UI
                     OnChanged();
                 };
 
-                _verticalButtonTop = _internalPanel.Add(new UIButton(new RectangleF(), @"/\", Color.DarkOrange,
-                    UIControlColors.DefaultHandle));
+                _verticalButtonTop = _internalPanel.Add(new UIButton(new RectangleF(), string.Empty, Color.DarkOrange,
+                    UIControlColors.DefaultHandle, DefaultArrowUp));
                 _verticalButtonTop.OnClick += () =>
                 {
                     _verticalScrollbar.Position = 0f;
                     _scrollViewPosition.Y = 0f;
                 };
-                _verticalButtonBottom = _internalPanel.Add(new UIButton(new RectangleF(), @"\/", Color.DarkOrange,
-                    UIControlColors.DefaultHandle));
+                _verticalButtonBottom = _internalPanel.Add(new UIButton(new RectangleF(), string.Empty, Color.DarkOrange,
+                    UIControlColors.DefaultHandle, DefaultArrowDown));
                 /*
                 _verticalButtonBottom.OnClick += () =>
                 {
@@ -445,14 +449,13 @@ namespace ReCrafted.API.UI
                 EnableScrollBars = false,
                 ScrollBarSize = 20,
                 HorizontalScrollBar = true,
-                VerticalScrollBar = true
+                VerticalScrollBar = true,
+
+                _enableScrollbars = false,
+                _scrollViewPosition = Vector2.Zero,
+                _fixedScrollViewPosition = Vector2.Zero,
+                _scrollViewDisplay = new RectangleF()
             };
-
-            panel._enableScrollbars = false;
-            panel._scrollViewPosition = Vector2.Zero;
-
-            panel._fixedScrollViewPosition = Vector2.Zero;
-            panel._scrollViewDisplay = new RectangleF();
 
             panel._scrollBarsSize = panel.ScrollBarSize;
 

@@ -19,14 +19,14 @@ namespace ReCrafted.API.UI.Controls
     public class UIButton : UIControl
     {
         // current button color
-        private Color _color;
+        protected Color _color;
         // current button text;
         private string _text;
 
         // button size for spring animation
-        private Vector2 _buttonSize;
+        protected Vector2 _buttonSize;
         // velocity of button spring animation
-        private Vector2 _buttonVelocity;
+        protected Vector2 _buttonVelocity;
 
         // button will ignore next click?
         private bool _ignoreClick;
@@ -189,12 +189,12 @@ namespace ReCrafted.API.UI.Controls
                 UIInternal.DrawBox(buttonRegion);
 
                 UIInternal.Depth = Depth + 0.2f;
-                UIInternal.Color = _color;
+                UIInternal.Color = _color * Sprite.SpriteColor;
                 Sprite.Draw(Region);
             }
 
             TextPosition = new Vector2(Region.X + Region.Width / 2 - TextSize.X / 2, Region.Y + Region.Height / 2 - TextSize.Y / 2);
-            var pos = TextPosition;
+            var pos = TextPosition + FixedTextPosition;
             UIInternal.Depth = Depth + 0.2f;
             UIInternal.Color = TextColor;
             UIInternal.DrawString(TextFont.NativePtr, _text, ref pos);
@@ -294,8 +294,13 @@ namespace ReCrafted.API.UI.Controls
         public Vector2 TextPosition { get; private set; }
 
         /// <summary>
+        /// Fixed text position.
+        /// </summary>
+        public Vector2 FixedTextPosition { get; set; }
+
+        /// <summary>
         /// Loaded font of this text.
         /// </summary>
-        public Font TextFont { get; private set; }
+        public Font TextFont { get; set; }
     }
 }

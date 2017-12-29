@@ -55,25 +55,16 @@ namespace ReCrafted.Game.Super
             TextContainer.HorizontalScrollBar = false;
             TextContainer.VerticalScrollBar = true;
 
-            TextContainer.VerticalTopButton.Sprite =
-                Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "arrowup.png"));
-            TextContainer.VerticalTopButton.Text = string.Empty;
-
-            TextContainer.VerticalBottomButton.Sprite =
-                Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "arrowdown.png"));
-            TextContainer.VerticalBottomButton.Text = string.Empty;
-
             TextContainer.Layout.ReverseContainer = true;
-
             TextContainer.Layout.PreferredSize = new Vector2(0, 30);
             TextContainer.Layout.ForceExpandHeight = false;
             TextContainer.Layout.ForceExpandWidth = true;
             TextContainer.Layout.Padding = new UIPadding
             {
-                Top = 10,
-                Bottom = 10,
+                Top = 5,
+                Bottom = 5,
                 Left = 5,
-                Right = 10
+                Right = 5
             };
             TextContainer.Layout.Space = -UIControl.DefaultFont.Size / 1.5f;
             TextContainer.Layout.Alignment = UILayoutAlignment.LeftBottom;

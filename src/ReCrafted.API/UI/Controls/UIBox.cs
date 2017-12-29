@@ -80,12 +80,16 @@ namespace ReCrafted.API.UI.Controls
         public override void Draw()
         {
             if (!Enabled) return;
-            UIInternal.Color = BoxColor;
+
             UIInternal.Depth = Depth;
             if (Sprite == null)
+            {
+                UIInternal.Color = BoxColor;
                 UIInternal.DrawBox(Region);
+            }
             else
             {
+                UIInternal.Color = BoxColor * Sprite.SpriteColor;
                 Sprite.Draw(Region);
             }
         }

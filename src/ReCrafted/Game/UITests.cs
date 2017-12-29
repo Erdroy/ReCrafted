@@ -1,8 +1,8 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
@@ -15,9 +15,6 @@ namespace ReCrafted.Game
     {
         public UIPanel DebugPanel;
         public UIText DebugPanelText;
-
-        public UIPanel TestPanel;
-
         protected internal override void OnCreate()
         {
             var sw = Stopwatch.StartNew();
@@ -27,9 +24,6 @@ namespace ReCrafted.Game
             DebugPanel.ApplyLayout = false;
 
             DebugPanelText = DebugPanel.Add(new UIText());
-
-            TestPanel = UIPanel.Create(new RectangleF(), UILayoutType.Vertical, "test-panel");
-            TestPanel.ApplyLayout = false;
 
             // test panel
             /*
@@ -71,6 +65,7 @@ namespace ReCrafted.Game
             panelTextField.Text = "123\n456\n789\n\nqwe\n\n\nrty";
             */
 
+            /*
             var freeScrollbarText = UIControl.CreateControl(new UIText(new RectangleF(100, 530, 100, 30)));
             var freeScrollBar = UIControl.CreateControl(new UIScrollbar(new RectangleF(200, 500, 150, 450)) { Vertical = true, Size = 0.1f });
 
@@ -88,6 +83,12 @@ namespace ReCrafted.Game
             };
 
             UIControl.CreateControl(ref freeScrollBarButton);      
+            */
+
+            var dropDown = UIControl.CreateControl(new UIDropdown(new RectangleF(100, 100, 120, 30)));
+            var values = new List<string> {"Hello", "World", "3", "4", "5", "6", "7", "8"};
+            dropDown.Values = values;
+            dropDown.ListHeight = 100;
 
             sw.Stop();
             Logger.Write("Ui Construct Took -> " + sw.ElapsedMilliseconds + "ms");
@@ -102,10 +103,11 @@ namespace ReCrafted.Game
             {
                 _uiDebugTime = 0f;
 
-                DebugPanelText.Region = new RectangleF(20, Display.Height - 80f, 0, 0);
+                DebugPanelText.Region = new RectangleF(20, Display.Height - 100f, 0, 0);
                 DebugPanelText.Text = "Focused Control -> " + (UIControl.FocusedControl?.GetType().ToString() ?? "<none>") + "\n" +
                                       "Focused Control Root -> " + ((string.IsNullOrEmpty(UIControl.FocusedControl?.GetRoot()?.Name) ? UIControl.FocusedControl?.GetRoot()?.GetType().ToString() : UIControl.FocusedControl?.GetRoot()?.Name) ?? "<none>") + "\n" +
-                                      "Focused Control Region -> " + (UIControl.FocusedControl?.Region.ToString() ?? "<none>") + "\n" + 
+                                      "Focused Control Region -> " + (UIControl.FocusedControl?.Region.ToString() ?? "<none>") + "\n" +
+                                      "Last Mouse Control -> " + (UIPanel.LastCollision?.GetType().ToString() ?? "<null>") + "\n" +
                                       "Mouse Position -> " + Input.CursorPosition;
             }
         }

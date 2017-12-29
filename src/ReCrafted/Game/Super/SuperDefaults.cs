@@ -1,5 +1,6 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
+using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
 
 namespace ReCrafted.Game.Super
@@ -14,6 +15,7 @@ namespace ReCrafted.Game.Super
         /// </summary>
         public static void RegisterSuperDefaults()
         {
+            // help
             SuperCommands.Register("", "help", () =>
             {
                 var commands = SuperCommands.Instance.GetAllCommands();
@@ -26,7 +28,18 @@ namespace ReCrafted.Game.Super
                 }
             }, "Prints all commands.");
 
+            // exit
             SuperCommands.Register("", new[] {"exit", "quit", "close"}, API.Core.Game.Quit, "Close ReCrafted.");
+
+            // debug
+            SuperCommands.Register("", "debug", () =>
+            {
+                SuperConsole.Write("Hello Info", LogLevel.Info);
+                SuperConsole.Write("Hello Debug", LogLevel.Debug);
+                SuperConsole.Write("Hello Warning", LogLevel.Warning);
+                SuperConsole.Write("Hello Error", LogLevel.Error);
+                SuperConsole.Write("Hello Fatal", LogLevel.Fatal);
+            }, "Prints all types of log in console.");
         }
     }
 }

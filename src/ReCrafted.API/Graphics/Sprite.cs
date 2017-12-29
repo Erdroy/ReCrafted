@@ -134,7 +134,18 @@ namespace ReCrafted.API.Graphics
         /// <returns>Created instance of sprite.</returns>
         public static Sprite Create(string texturePath)
         {
-            return Create(Texture2D.Create(texturePath));
+            return Create(Texture2D.Create(texturePath), Color.White);
+        }
+
+        /// <summary>
+        /// Creates new sprite instance.
+        /// </summary>
+        /// <param name="texturePath">Texture of sprite.</param>
+        /// <param name="color">Color of sprite.</param>
+        /// <returns>Created instance of sprite.</returns>
+        public static Sprite Create(string texturePath, Color color)
+        {
+            return Create(Texture2D.Create(texturePath), color);
         }
 
         /// <summary>
@@ -144,10 +155,22 @@ namespace ReCrafted.API.Graphics
         /// <returns>Created instance of sprite.</returns>
         public static Sprite Create(Texture2D texture)
         {
+            return Create(texture, Color.White);
+        }
+
+        /// <summary>
+        /// Creates new sprite instance.
+        /// </summary>
+        /// <param name="texture">Texture of sprite.</param>
+        /// <param name="color">Color of sprite.</param>
+        /// <returns>Created instance of sprite.</returns>
+        public static Sprite Create(Texture2D texture, Color color)
+        {
             var sprite = new Sprite
             {
                 UVs = new RectangleF(0.0f, 0.0f, 1.0f, 1.0f),
                 Texture = texture,
+                SpriteColor = color,
                 BorderRadius = 0,
 
                 _borderElements = null
@@ -155,6 +178,7 @@ namespace ReCrafted.API.Graphics
 
             return sprite;
         }
+
 
         /// <summary>
         /// Base UVs of sprite.
@@ -165,6 +189,11 @@ namespace ReCrafted.API.Graphics
         /// Texture of sprite.
         /// </summary>
         public Texture2D Texture { get; set; }
+
+        /// <summary>
+        /// Default color of sprite.
+        /// </summary>
+        public Color SpriteColor { get; set; }
 
         /// <summary>
         /// Size of border of sprite.

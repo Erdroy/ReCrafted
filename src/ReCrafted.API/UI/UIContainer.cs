@@ -145,5 +145,25 @@ namespace ReCrafted.API.UI
         /// Id true Container content will be displayed from end to start.
         /// </summary>
         public bool ReverseContainer { get; set; }
+
+        /// <summary>
+        /// Is mouse over on any control added to container?
+        /// </summary>
+        public bool IsMouseOverContent
+        {
+            get
+            {
+                if (IsMouseOver)
+                    return true;
+
+                var v = false;
+                foreach (var c in _controls)
+                {
+                    if (c.IsMouseOver)
+                        v = true;
+                }
+                return v;
+            }
+        }
     }
 }

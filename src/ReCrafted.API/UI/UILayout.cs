@@ -105,8 +105,9 @@ namespace ReCrafted.API.UI
         {
             Profiler.BeginProfile("UILayout.Recalculate");
             // apply current region of panel with padding to layout region.
+
             var newLayoutRegion = parentRegion;
-            newLayoutRegion.X += Padding.Right;
+            newLayoutRegion.X += Padding.Left;
             newLayoutRegion.Y += Padding.Top;
             newLayoutRegion.Width -= Padding.Right + Padding.Left;
             newLayoutRegion.Height -= Padding.Bottom + Padding.Top;
@@ -279,12 +280,12 @@ namespace ReCrafted.API.UI
                 var regionChanged = currentControl.Region != newRegion;
                 currentControl.Region = newRegion;
                 if (regionChanged)
+                {
                     currentControl.OnRegionChanged();
+                    OnControlsChanged();
+                }
             }
 
-            // UIInternal.Color = Color.Blue;
-            // UIInternal.DrawBox(Region);
-            // UIInternal.Color = Color.White;
             Profiler.EndProfile();
             return Region;
         }
