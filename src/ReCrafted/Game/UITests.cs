@@ -3,7 +3,6 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq.Expressions;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
@@ -20,8 +19,6 @@ namespace ReCrafted.Game
 
         public UIPanel TestPanel;
         public UIBox TestBox;
-
-        public Sprite sprite;
 
         protected internal override void OnCreate()
         {
@@ -71,8 +68,7 @@ namespace ReCrafted.Game
             toggle3.TextBackgroundColor = new Color(68, 68, 68);
             */
 
-            var textField = new UITextField(string.Empty);
-            UIPanel.CreateControl(new RectangleF(300, 300, 130, 128), ref textField);
+            var textField = UIControl.CreateControl(new UITextField(new RectangleF(300, 300, 130, 128), string.Empty));
             textField.Text = "123\n456\n789\n\nqwe\n\n\nrty";
             //textFieldItems.Item2.CharactersLimit = 10;
             //var textField = panel.Add(new UITextField(new RectangleF(0, 0, 130, 128), string.Empty));
@@ -84,18 +80,15 @@ namespace ReCrafted.Game
                 panel.Add(new UIBox(new Color(0, 100 * i / 100, 0)));
                 */
 
-            var text = new UIText();
-            UIPanel.CreateControl(new RectangleF(100, 530, 100, 30), ref text);
-
-            var scrollBar = new UIScrollbar  { Vertical = true, Size = 0.1f };
-            UIPanel.CreateControl(new RectangleF(200, 500, 150, 450), ref scrollBar);
+            var text = UIControl.CreateControl(new UIText(new RectangleF(100, 530, 100, 30)));
+            var scrollBar = UIControl.CreateControl(new UIScrollbar(new RectangleF(200, 500, 150, 450)) { Vertical = true, Size = 0.1f });
 
             scrollBar.OnValueChanged += value =>
             {
                 text.Text = scrollBar.Position.ToString(CultureInfo.InvariantCulture) + '\n' + scrollBar.Size.ToString(CultureInfo.InvariantCulture);
             };
 
-            var button = new UIButton  { Text = "Click Me!" };
+            var button = new UIButton (new RectangleF(100, 500, 100, 30)) { Text = "Click Me!" };
             button.OnClick += () =>
             {
                 var r = new Random();
@@ -103,7 +96,7 @@ namespace ReCrafted.Game
                 scrollBar.Size = r.Next(0, 10) / 10f;
             };
 
-            UIPanel.CreateControl(new RectangleF(100, 500, 100, 30), ref button);      
+            UIControl.CreateControl(ref button);      
 
             sw.Stop();
             Logger.Write("Ui Construct Took -> " + sw.ElapsedMilliseconds + "ms");

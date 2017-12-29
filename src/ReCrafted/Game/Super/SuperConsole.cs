@@ -1,7 +1,6 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
 using System;
-using System.Linq;
 using ReCrafted.API;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
@@ -9,10 +8,12 @@ using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
 using ReCrafted.API.UI.Controls;
-using ReCrafted.Game.Super;
 
-namespace ReCrafted.Game
+namespace ReCrafted.Game.Super
 {
+    /// <summary>
+    /// In-Game console UI class.
+    /// </summary>
     public class SuperConsole : Script
     {
         /// <summary>
@@ -36,15 +37,11 @@ namespace ReCrafted.Game
         public RectangleF InputRegion => new RectangleF(0, Display.Height / 4f, Display.Width, 25);
 
         /// <summary>
-        /// Container of console input field.
-        /// </summary>
-        public UIPanel InputContainer;
-
-        /// <summary>
         /// Input text field of super console.
         /// </summary>
         public UITextField Input;
 
+        // on create
         protected internal override void OnCreate()
         {
             Instance = this;
@@ -58,12 +55,12 @@ namespace ReCrafted.Game
             TextContainer.HorizontalScrollBar = false;
             TextContainer.VerticalScrollBar = true;
 
-            TextContainer.VerticalTopButton.Texture =
-                Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "arrowup.png"));
+            TextContainer.VerticalTopButton.Sprite =
+                Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "arrowup.png"));
             TextContainer.VerticalTopButton.Text = string.Empty;
 
-            TextContainer.VerticalBottomButton.Texture =
-                Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "arrowdown.png"));
+            TextContainer.VerticalBottomButton.Sprite =
+                Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "arrowdown.png"));
             TextContainer.VerticalBottomButton.Text = string.Empty;
 
             TextContainer.Layout.ReverseContainer = true;
@@ -83,12 +80,7 @@ namespace ReCrafted.Game
             TextContainer.Layout.Offset = new Vector2(0, -10);
             TextContainer.ApplyLayout = true;
 
-            UIPanel inputTextFieldContainer;
-            UITextField inpuTextField = new UITextField(string.Empty);
-
-            UIPanel.CreateControl(InputRegion, ref inpuTextField, out inputTextFieldContainer);
-            InputContainer = inputTextFieldContainer;
-            Input = inpuTextField;
+            Input = UIControl.CreateControl(new UITextField(InputRegion, string.Empty));
 
             Input.SpringAnimation = false;
             Input.MultipleLine = false;
@@ -103,6 +95,7 @@ namespace ReCrafted.Game
             Disable();
         }
 
+        // on input submit
         private void OnInputSubmit()
         {
             if (string.IsNullOrEmpty(Input.Text) || string.IsNullOrWhiteSpace(Input.Text))
@@ -111,22 +104,20 @@ namespace ReCrafted.Game
                 return;
             }
 
-            var t = Write($"> " + Input.Text);
+            var t = Write($"> {Input.Text}");
             t.TextColor = Color.LimeGreen;
-
             SuperCommands.Instance.ExecuteRaw(Input.Text);
-            //var parameters = Input.Text.Split(' ').ToList();
-            //var name = parameters[0];
-            //parameters.RemoveAt(0);
-            //SuperCommands.Instance.Execute(name, parameters.ToArray());
             Input.Text = string.Empty;
         }
 
+        // on update
         protected override void OnUpdate()
         {
-            if (!Enabled) return;
+            if (!Enabled)
+                return;
+
             TextContainer.Region = TextContainerRegion;
-            InputContainer.Region = InputRegion;
+            Input.Region = InputRegion;
         }
 
         /// <summary>
@@ -135,10 +126,7 @@ namespace ReCrafted.Game
         public void Enable()
         {
             TextContainer.Enabled = true;
-            TextContainer.Visible = true;
-
-            InputContainer.Enabled = true;
-            InputContainer.Visible = true;
+            Input.Enabled = true;
 
             UIControl.SetFocusedControl(Input);
         }
@@ -149,10 +137,7 @@ namespace ReCrafted.Game
         public void Disable()
         {
             TextContainer.Enabled = false;
-            TextContainer.Visible = false;
-
-            InputContainer.Enabled = false;
-            InputContainer.Visible = false;
+            Input.Enabled = false;
         }
 
         /// <summary>

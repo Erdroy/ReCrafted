@@ -8,7 +8,7 @@ using ReCrafted.API.UI.Controls;
 namespace ReCrafted.Game
 {
     /// <summary>
-    /// PauseMenu UI class
+    /// PauseMenu UI class.
     /// </summary>
     public class PauseMenu : Script
     {
@@ -57,13 +57,14 @@ namespace ReCrafted.Game
         /// </summary>
         public UIButton Exit;
 
+        // on create
         protected internal override void OnCreate()
         {
             Instance = this;
 
             Background = UIPanel.Create(new RectangleF(0, 0, Display.Width, Display.Height), UILayoutType.Vertical, "Pause Background", 9999);
             Background.PanelColor = new Color(0, 0, 0, 0.5f);
-            Background.Visible = false;
+            Background.Enabled = false;
 
             // Create Main Panel
             MainPanel = UIPanel.Create(MainPanelRegion, UILayoutType.Vertical, "Pause Menu", 10000);
@@ -104,6 +105,7 @@ namespace ReCrafted.Game
             Disable();
         }
 
+        // on update
         protected override void OnUpdate()
         {
             if (!Enabled) return;
@@ -111,22 +113,27 @@ namespace ReCrafted.Game
             MainPanel.Region = MainPanelRegion;
         }
 
+        /// <summary>
+        /// Enable pause menu.
+        /// </summary>
         public void Enable()
         {
             MainPanel.Enabled = true;
-            MainPanel.Visible = true;
-
             Background.Enabled = true;
         }
 
+        /// <summary>
+        /// Disable pause menu.
+        /// </summary>
         public void Disable()
         {
             MainPanel.Enabled = false;
-            MainPanel.Visible = false;
-
             Background.Enabled = false;
         }
 
+        /// <summary>
+        /// Is pause menu enabled.
+        /// </summary>
         public bool Enabled => MainPanel.Enabled;
     }
 }

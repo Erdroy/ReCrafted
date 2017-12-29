@@ -10,6 +10,9 @@ namespace ReCrafted.API.UI
     /// </summary>
     public abstract class UIControl
     {
+        // default panel of controls
+        private static UIPanel _defaultPanel;
+
         // control depth
         internal int Depth;
 
@@ -86,9 +89,62 @@ namespace ReCrafted.API.UI
         }
 
         /// <summary>
+        /// Initialize defaults of controls.
+        /// </summary>
+        internal static void Init()
+        {
+            DefaultFont = Font.Load(Assets.ResolveAssetFilePath(AssetType.Font, "VeraMono.ttf"), 12);
+
+            _defaultPanel = UIPanel.Create(new RectangleF(), UILayoutType.Vertical, "Default");
+            _defaultPanel.Layout.ForceExpandWidth = false;
+            _defaultPanel.Layout.ForceExpandHeight = false;
+            _defaultPanel.ApplyLayout = false;
+
+            _defaultPanel.EnableClipping = false;
+        }
+
+        /// <summary>
+        /// Creates new panel with control instance.
+        /// </summary>
+        /// <typeparam name="T">Type of control.</typeparam>
+        /// <param name="controlInstance">Control instance.</param>
+        public static T CreateControl<T>(T controlInstance) where T : UIControl
+        {
+            return _defaultPanel.Add(controlInstance);
+        }
+
+        /// <summary>
+        /// Creates new panel with control instance.
+        /// </summary>
+        /// <typeparam name="T">Type of control.</typeparam>
+        /// <param name="controlInstance">Control instance.</param>
+        public static void CreateControl<T>(ref T controlInstance) where T : UIControl
+        {
+            controlInstance = _defaultPanel.Add(controlInstance);
+        }
+
+        /// <summary>
         /// The control's region in pixels.
         /// </summary>
         public RectangleF Region { get; set; }
+
+        /// <summary>
+        /// The control's position in pixels.
+        /// </summary>
+        public Vector2 Position
+        {
+            get { return new Vector2(Region.X, Region.Y); }
+            set { Region = new RectangleF(value.X, value.Y, Region.Width, Region.Height); }
+        }
+
+        /// <summary>
+        /// The control's size in pixels.
+        /// </summary>
+        public Vector2 Size
+        {
+            get { return new Vector2(Region.Width, Region.Height);}
+            set { Region = new RectangleF(Region.X, Region.Y, value.X, value.Y); }
+        }
 
         /// <summary>
         /// Control enable state.

@@ -1,10 +1,12 @@
-﻿using System;
+﻿// ReCrafted © 2016-2017 Always Too Late
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ReCrafted.API.Core;
 
-namespace ReCrafted.Game
+namespace ReCrafted.Game.Super
 {
     /// <summary>
     /// Allows to register commands.

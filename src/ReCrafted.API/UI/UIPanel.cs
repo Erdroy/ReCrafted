@@ -21,9 +21,6 @@ namespace ReCrafted.API.UI
         // is mouse collide with any control of any panel?
         internal static bool HaveCollision;
 
-        // is panel visible?
-        private bool _visible;
-
         private bool _fixed;
 
         // are scroll bars enabled?
@@ -62,7 +59,7 @@ namespace ReCrafted.API.UI
                     _verticalScrollbar.Position += 0; // scroll input here
                     _scrollViewPosition.Y = _scrollViewDisplay.Height * _verticalScrollbar.Position;
                 }
-                else  if (HorizontalScrollBar)
+                else if (HorizontalScrollBar)
                 {
                     _horizotnalScrollbar.Position += 0; // scroll input here
                     _scrollViewPosition.X = _scrollViewDisplay.Width * _horizotnalScrollbar.Position;
@@ -80,10 +77,7 @@ namespace ReCrafted.API.UI
                 UIInternal.Depth = Depth;
                 UIInternal.Color = PanelColor;
                 UIInternal.DrawBox(Region);
-            }
 
-            if (Visible)
-            {
                 Profiler.BeginProfile($"Panel <{(string.IsNullOrEmpty(Name) ? "empty" : Name)}> ");
 
                 //recalculate current layout
@@ -139,7 +133,8 @@ namespace ReCrafted.API.UI
                             displayWidth = c.Region.Width;
                     }
 
-                    _scrollViewDisplay = new RectangleF(layoutRegion.X,  layoutRegion.Y + layoutRegion.Height - displayHeight, displayWidth, displayHeight);
+                    _scrollViewDisplay = new RectangleF(layoutRegion.X,
+                        layoutRegion.Y + layoutRegion.Height - displayHeight, displayWidth, displayHeight);
 
                     // debug
                     // UIInternal.Color = Color.Green;
@@ -186,7 +181,7 @@ namespace ReCrafted.API.UI
 
                 Profiler.EndProfile();
 
-                if (Enabled && EnableScrollBars)
+                if (EnableScrollBars)
                 {
                     Profiler.BeginProfile($"Panel <{(string.IsNullOrEmpty(Name) ? "empty" : Name)}> ");
 
@@ -198,24 +193,22 @@ namespace ReCrafted.API.UI
                     _verticalScrollbar.Enabled = VerticalScrollBar;
                     if (VerticalScrollBar)
                     {
-                        _verticalScrollbar.Region = new RectangleF(scrollRegion.X + scrollRegion.Width, scrollRegion.Y + ScrollBarsSize,
+                        _verticalScrollbar.Region = new RectangleF(scrollRegion.X + scrollRegion.Width,
+                            scrollRegion.Y + ScrollBarsSize,
                             ScrollBarsSize, scrollRegion.Height - ScrollBarsSize * 2);
-                        _verticalButtonTop.Region = new RectangleF(scrollRegion.X + scrollRegion.Width, scrollRegion.Y, ScrollBarsSize, ScrollBarsSize);
+                        _verticalButtonTop.Region = new RectangleF(scrollRegion.X + scrollRegion.Width,
+                            scrollRegion.Y, ScrollBarsSize, ScrollBarsSize);
                         if (!HorizontalScrollBar)
                         {
                             _verticalButtonBottom.Region = new RectangleF(scrollRegion.X + scrollRegion.Width,
-                                scrollRegion.Y + scrollRegion.Height- ScrollBarsSize, ScrollBarsSize, ScrollBarsSize);
+                                scrollRegion.Y + scrollRegion.Height - ScrollBarsSize, ScrollBarsSize,
+                                ScrollBarsSize);
                         }
                     }
 
                     _internalPanel.Draw();
                     Profiler.EndProfile();
                 }
-            }
-            else
-            {
-                if (Enabled)
-                    _checkForPanelCollision();
             }
         }
 
@@ -266,7 +259,6 @@ namespace ReCrafted.API.UI
             if (_internalPanel != null)
             {
                 _internalPanel.Enabled = false;
-                _internalPanel.Visible = false;
             }
         }
 
@@ -276,7 +268,6 @@ namespace ReCrafted.API.UI
             if (_internalPanel != null)
             {
                 _internalPanel.Enabled = true;
-                _internalPanel.Visible = true;
             }
             else
             {
@@ -304,13 +295,15 @@ namespace ReCrafted.API.UI
                     }
                 };
 
-                _verticalButtonTop = _internalPanel.Add(new UIButton(new RectangleF(), @"/\", Color.DarkOrange, UIControlColors.DefaultHandle));
+                _verticalButtonTop = _internalPanel.Add(new UIButton(new RectangleF(), @"/\", Color.DarkOrange,
+                    UIControlColors.DefaultHandle));
                 _verticalButtonTop.OnClick += () =>
                 {
                     _verticalScrollbar.Position = 0f;
                     _scrollViewPosition.Y = 0f;
                 };
-                _verticalButtonBottom = _internalPanel.Add(new UIButton(new RectangleF(), @"\/", Color.DarkOrange, UIControlColors.DefaultHandle));
+                _verticalButtonBottom = _internalPanel.Add(new UIButton(new RectangleF(), @"\/", Color.DarkOrange,
+                    UIControlColors.DefaultHandle));
                 /*
                 _verticalButtonBottom.OnClick += () =>
                 {
@@ -361,7 +354,6 @@ namespace ReCrafted.API.UI
             {
                 Name = name,
                 Enabled = true,
-                Visible = true,
                 ApplyLayout = true,
                 Parent = null,
                 Region = region,
@@ -374,9 +366,6 @@ namespace ReCrafted.API.UI
                 HorizontalScrollBar = true,
                 VerticalScrollBar = true
             };
-
-            panel._visible = panel.Visible;
-            panel._fixed = false;
 
             panel._enableScrollbars = false;
             panel._scrollViewPosition = Vector2.Zero;
@@ -408,57 +397,9 @@ namespace ReCrafted.API.UI
         }
 
         /// <summary>
-        /// Creates new panel with control instance.
-        /// </summary>
-        /// <typeparam name="T">Type of control.</typeparam>
-        /// <param name="region">Region of panel with control.</param>
-        /// <param name="controlInstance">Control instance.</param>
-        public static void CreateControl<T>(RectangleF region, ref T controlInstance) where T : UIControl
-        {
-            var panel = Create(region, UILayoutType.Vertical, $"Control-{controlInstance.Name}");
-            panel.Layout.ForceExpandHeight = true;
-            panel.Layout.ForceExpandWidth = true;
-            panel.ApplyLayout = true;
-
-            controlInstance = panel.Add(controlInstance);
-        }
-
-        /// <summary>
-        /// Creates new panel with control instance.
-        /// </summary>
-        /// <typeparam name="T">Type of control.</typeparam>
-        /// <param name="region">Region of panel with control.</param>
-        /// <param name="controlInstance">Control instance.</param>
-        /// <param name="panel">Created instance of UIPanel.</param>
-        public static void CreateControl<T>(RectangleF region, ref T controlInstance, out UIPanel panel)
-            where T : UIControl
-        {
-            panel = Create(region, UILayoutType.Vertical, $"Control-{controlInstance.Name}");
-            panel.Layout.ForceExpandHeight = true;
-            panel.Layout.ForceExpandWidth = true;
-            panel.ApplyLayout = true;
-
-            controlInstance = panel.Add(controlInstance);
-        }
-
-        /// <summary>
         /// Layout of this panel will be applied in to children.
         /// </summary>
         public bool ApplyLayout { get; set; }
-
-        /// <summary>
-        /// Panel is visible.
-        /// </summary>
-        public bool Visible
-        {
-            get { return _visible; }
-            set
-            {
-                _visible = value;
-                if (_visible)
-                    _fixed = false;
-            }
-        }
 
         /// <summary>
         /// Color of the panel.

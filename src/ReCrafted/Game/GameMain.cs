@@ -7,16 +7,22 @@ using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
+using ReCrafted.API.UI.Controls;
 using ReCrafted.Core;
 using ReCrafted.Game.Core;
-using Object = ReCrafted.API.Object;
+using ReCrafted.Game.Super;
 
 namespace ReCrafted.Game
 {
     internal class GameMain : API.Core.Game
     {
-        private Texture2D _crosshairTexture;
+        // cross hair control
+        private UIBox _crosshairBox;
 
+        // build number control
+        private UIText _buildNumberText;
+
+        // initialize
         protected override void Initialize()
         {
             try
@@ -27,8 +33,9 @@ namespace ReCrafted.Game
                 Exceptions.RegisterUEHandler();
 
                 // load resources
-                _crosshairTexture = Texture2D.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "crosshair.png"));
-                UIControl.DefaultFont = Font.Load(Assets.ResolveAssetFilePath(AssetType.Font, "VeraMono.ttf"), 12);
+               
+                // initialize default ui panel
+                UIControl.Init();
 
                 Cursor.Show = false;
                 Cursor.Lock = true;
@@ -44,11 +51,19 @@ namespace ReCrafted.Game
                 // apply locale
                 //Locale.SetLocale("Polski");
 
+                // apply target fps
                 TargetFps = 120;
 
+                // create some default controls
+                _crosshairBox = UIControl.CreateControl(new UIBox(Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "crosshair.png"))));
+
+                _buildNumberText = UIControl.CreateControl(new UIText());
+                _buildNumberText.Text = "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber;
+
+                // initialize default scripts
                 // pause Menu
                 var mainEntity = Entity.Create("MainEntity");
-                //mainEntity.AddScript<UITests>();
+                // mainEntity.AddScript<UITests>();
                 mainEntity.AddScript<PauseMenu>();
                 mainEntity.AddScript<SuperConsole>();
             }
@@ -58,10 +73,14 @@ namespace ReCrafted.Game
             }
         }
 
+        // on update
         protected override void Update()
         {
             try
             {
+                _crosshairBox.Region = new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
+                _buildNumberText.Position = new Vector2(20.0f, Display.Height - 20.0f);
+
                 if (Input.IsKeyDown(Keys.Escape))
                 {
                     if (SuperConsole.Instance.Enabled)
@@ -116,38 +135,23 @@ namespace ReCrafted.Game
             }
         }
 
+        // simulate
         protected override void Simulate()
         {
         }
 
+        // draw
         protected override void Draw()
         {
         }
 
+        // draw ui
         protected override void DrawUI()
         {
             try
             {
                 Profiler.BeginProfile("DrawUI (.NET)");
-
-                if (!PauseMenu.Instance.Enabled)
-                {
-                    UIInternal.Color = Color.White;
-                    var rect = new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
-                    var uvs = new RectangleF(0.0f, 0.0f, 1.0f, 1.0f);
-                    UIInternal.DrawTexture2D(_crosshairTexture.NativePtr, ref rect, ref uvs);
-                }
-
-                var pos = new Vector2(20.0f, Display.Height - 20.0f);
-                UIInternal.Color = Color.White;
-                UIInternal.DrawString(UIControl.DefaultFont.NativePtr, "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber, ref pos);
-
                 UIPanel.DrawAll();
-
-                Profiler.BeginProfile("Sprite.DrawAll");
-                Sprite.DrawAll();
-                Profiler.EndProfile();
-
                 Profiler.EndProfile();
             }
             catch (Exception exception)
@@ -156,9 +160,10 @@ namespace ReCrafted.Game
             }
         }
 
+        // shutdown
         protected override void Shutdown()
         {
-            Object.Destroy(_crosshairTexture);
+
         }
 
         /// <summary>
@@ -166,6 +171,8 @@ namespace ReCrafted.Game
         /// </summary>
         public static void EnablePause()
         {
+            Instance._crosshairBox.Enabled = false;
+
             Cursor.Show = true;
             Cursor.Lock = false;
 
@@ -177,6 +184,8 @@ namespace ReCrafted.Game
         /// </summary>
         public static void DisablePause()
         {
+            Instance._crosshairBox.Enabled = true;
+
             Cursor.Show = false;
             Cursor.Lock = true;
 

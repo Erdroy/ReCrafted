@@ -1,4 +1,5 @@
-﻿using ReCrafted.API.Core;
+﻿// ReCrafted © 2016-2017 Always Too Late
+
 using ReCrafted.API.Mathematics;
 
 namespace ReCrafted.Game.Super

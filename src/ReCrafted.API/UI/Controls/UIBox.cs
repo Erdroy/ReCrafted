@@ -39,20 +39,20 @@ namespace ReCrafted.API.UI.Controls
         /// <summary>
         /// Creates new UIBox.
         /// </summary>
-        /// <param name="texture">Texture of new UIBox.</param>
-        public UIBox(Texture2D texture)
+        /// <param name="sprite">Sprite of new UIBox.</param>
+        public UIBox(Sprite sprite)
         {
-            _applyDefaults(new RectangleF(), texture, Color.White);
+            _applyDefaults(new RectangleF(), sprite, Color.White);
         }
 
         /// <summary>
         /// Creates new UIBox.
         /// </summary>
         /// <param name="region">Region of new UIBox.</param>
-        /// <param name="texture">Texture of new UIBox.</param>
-        public UIBox(RectangleF region, Texture2D texture)
+        /// <param name="sprite">Sprite of new UIBox.</param>
+        public UIBox(RectangleF region, Sprite sprite)
         {
-            _applyDefaults(region, texture, Color.White);
+            _applyDefaults(region, sprite, Color.White);
         }
 
         /// <summary>
@@ -69,11 +69,11 @@ namespace ReCrafted.API.UI.Controls
         /// Creates new UIBox.
         /// </summary>
         /// <param name="region">Region of new UIBox.</param>
-        /// <param name="texture">Texture of new UIBox.</param>
+        /// <param name="sprite">Sprite of new UIBox.</param>
         /// <param name="color">Color of new UIBox.</param>
-        public UIBox(RectangleF region, Texture2D texture, Color color)
+        public UIBox(RectangleF region, Sprite sprite, Color color)
         {
-            _applyDefaults(region, texture, color);
+            _applyDefaults(region, sprite, color);
         }
 
         // draw box
@@ -82,26 +82,25 @@ namespace ReCrafted.API.UI.Controls
             if (!Enabled) return;
             UIInternal.Color = BoxColor;
             UIInternal.Depth = Depth;
-            if (BoxTexture == null)
+            if (Sprite == null)
                 UIInternal.DrawBox(Region);
             else
             {
-                var region = Region;
-                var uvs = new RectangleF(0.0f, 0.0f, 1.0f, 1.0f);
-                UIInternal.DrawTexture2D(BoxTexture.NativePtr, ref region, ref uvs);
+                Sprite.Draw(Region);
             }
         }
 
+        // reset box
         public override void Reset()
         {
             
         }
 
         // set default properties
-        private void _applyDefaults(RectangleF region, Texture2D texture, Color color)
+        private void _applyDefaults(RectangleF region, Sprite sprite, Color color)
         {
             Region = region;
-            BoxTexture = texture;
+            Sprite = sprite;
             BoxColor = color;
             Enabled = true;
             IgnoreMouseCollision = false;
@@ -112,7 +111,7 @@ namespace ReCrafted.API.UI.Controls
         /// <summary>
         /// Box texture.
         /// </summary>
-        public Texture2D BoxTexture { get; set; }
+        public Sprite Sprite { get; set; }
 
         /// <summary>
         /// Box color.
