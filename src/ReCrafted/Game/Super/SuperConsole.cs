@@ -1,10 +1,8 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
 using System;
-using ReCrafted.API;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
-using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
 using ReCrafted.API.UI.Controls;
@@ -163,6 +161,17 @@ namespace ReCrafted.Game.Super
             uiText.Text = $"{DateTime.Now:T} [{level.ToString().ToUpper()}] {text}";
 
             return uiText;
+        }
+
+        /// <summary>
+        /// Clears console.
+        /// </summary>
+        public static void Clear()
+        {
+            while (Instance.TextContainer.Layout.Controls.Count > 0)
+            {
+                Instance.TextContainer.Layout.Remove(Instance.TextContainer.Layout.Controls[0]);
+            }
         }
 
         /// <summary>

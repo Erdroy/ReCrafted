@@ -40,6 +40,9 @@ namespace ReCrafted.Game.Super
                 SuperConsole.Write("Hello Error", LogLevel.Error);
                 SuperConsole.Write("Hello Fatal", LogLevel.Fatal);
             }, "Prints all types of log in console.");
+
+            // clear
+            SuperCommands.Register("", "clear", SuperConsole.Clear, "Clears console.");
         }
     }
 }
