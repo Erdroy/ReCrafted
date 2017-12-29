@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
@@ -50,6 +51,19 @@ namespace ReCrafted.API.UI
         // display of scroll view
         private RectangleF _scrollViewDisplay;
 
+        // region of layout
+        private RectangleF _layoutRegion;
+
+        // region of scroll view
+        private RectangleF _scrollRegion;
+
+        // size of scroll bar;
+        private int _scrollBarsSize;
+
+        // region of panel updated every frame, to check for changes
+        private RectangleF _previousRegion;
+
+        // on mouse over
         public override void OnMouseOver()
         {
             if (EnableScrollBars)
@@ -74,13 +88,19 @@ namespace ReCrafted.API.UI
         {
             if (Enabled)
             {
+                Profiler.BeginProfile($"Panel <{(string.IsNullOrEmpty(Name) ? "empty" : Name)}> ");
+
                 UIInternal.Depth = Depth;
                 UIInternal.Color = PanelColor;
                 UIInternal.DrawBox(Region);
 
-                Profiler.BeginProfile($"Panel <{(string.IsNullOrEmpty(Name) ? "empty" : Name)}> ");
+                if (_previousRegion != Region)
+                {
+                    _previousRegion = Region;
+                    OnChanged();
+                }
 
-                //recalculate current layout
+                // update scroll view position
                 if (EnableScrollBars)
                 {
                     _scrollViewPosition = new Vector2(HorizontalScrollBar ? _scrollViewPosition.X : 0,
@@ -89,65 +109,23 @@ namespace ReCrafted.API.UI
                         (float) Time.DeltaTime * 10f);
                 }
 
-                RectangleF layoutRegion;
-                if (EnableScrollBars)
-                {
-                    layoutRegion = new RectangleF(Region.X + _fixedScrollViewPosition.X,
-                        Region.Y + _fixedScrollViewPosition.Y,
-                        Region.Width - (VerticalScrollBar ? ScrollBarsSize : 0),
-                        Region.Height - (HorizontalScrollBar ? ScrollBarsSize : 0));
-                }
-                else
-                {
-                    layoutRegion = Region;
-                }
-
-                var scrollRegion = new RectangleF(Region.X, Region.X,
-                    Region.Width - (VerticalScrollBar ? ScrollBarsSize : 0),
-                    Region.Height - (HorizontalScrollBar ? ScrollBarsSize : 0));
-
+                // recalculate current layout
                 var recalculatedLayout = new RectangleF();
                 if (ApplyLayout)
                 {
-                    recalculatedLayout = Layout.Recalculate(layoutRegion);
+                    recalculatedLayout = Layout.Recalculate(_layoutRegion);
                 }
 
-                layoutRegion = recalculatedLayout == new RectangleF() ? layoutRegion : recalculatedLayout;
+                // handle clipping
                 if (EnableClipping)
                 {
-                    UIInternal.BeginViewRect(EnableScrollBars ? scrollRegion : layoutRegion);
+                    UIInternal.BeginViewRect(EnableScrollBars
+                        ? _scrollRegion
+                        : (recalculatedLayout == new RectangleF() ? _layoutRegion : recalculatedLayout));
                 }
 
                 //draw layout
                 Layout.Draw();
-
-                if (EnableScrollBars)
-                {
-                    var displayHeight = 0f;
-                    var displayWidth = 0f;
-
-                    foreach (var c in Layout.Controls)
-                    {
-                        displayHeight += c.Region.Height + Math.Abs(Layout.Space) / 2f;
-                        if (c.Region.Width > displayWidth)
-                            displayWidth = c.Region.Width;
-                    }
-
-                    _scrollViewDisplay = new RectangleF(layoutRegion.X,
-                        layoutRegion.Y + layoutRegion.Height - displayHeight, displayWidth, displayHeight);
-
-                    // debug
-                    // UIInternal.Color = Color.Green;
-                    // UIInternal.Depth = 99999;
-                    // UIInternal.DrawBox(_scrollViewDisplay);
-
-                    var verticalSize = MathUtil.Clamp(scrollRegion.Height / _scrollViewDisplay.Height, 0.05f, 1f);
-                    _verticalScrollbar.Size = verticalSize;
-
-                    //var p = new Vector2(_scrollViewDisplay.X, _scrollViewDisplay.Y);
-                    //UIInternal.Color = Color.White;
-                    //UIInternal.DrawString(DefaultFont.NativePtr, _scrollViewDisplay.ToString(), ref p);
-                }
 
                 //calculate mouse collisions
                 if (!HaveCollision)
@@ -170,40 +148,35 @@ namespace ReCrafted.API.UI
                     }
                 }
 
+                // fix
                 if (!_fixed)
                 {
                     Reset();
                     _fixed = true;
                 }
 
+                // handle clipping
                 if (EnableClipping)
                     UIInternal.EndViewRect();
 
                 Profiler.EndProfile();
 
+                // handle scroll bars
                 if (EnableScrollBars)
                 {
-                    Profiler.BeginProfile($"Panel <{(string.IsNullOrEmpty(Name) ? "empty" : Name)}> ");
+                    Profiler.BeginProfile($"Panel <{(string.IsNullOrEmpty(_internalPanel.Name) ? "empty" : _internalPanel.Name)}> ");
 
                     _horizotnalScrollbar.Enabled = HorizontalScrollBar;
                     if (HorizontalScrollBar)
-                        _horizotnalScrollbar.Region = new RectangleF(scrollRegion.X,
-                            scrollRegion.Y + scrollRegion.Height, scrollRegion.Width, ScrollBarsSize);
+                        _horizotnalScrollbar.Region = new RectangleF(_scrollRegion.X,
+                            _scrollRegion.Y + _scrollRegion.Height, _scrollRegion.Width, _scrollBarsSize);
 
                     _verticalScrollbar.Enabled = VerticalScrollBar;
                     if (VerticalScrollBar)
                     {
-                        _verticalScrollbar.Region = new RectangleF(scrollRegion.X + scrollRegion.Width,
-                            scrollRegion.Y + ScrollBarsSize,
-                            ScrollBarsSize, scrollRegion.Height - ScrollBarsSize * 2);
-                        _verticalButtonTop.Region = new RectangleF(scrollRegion.X + scrollRegion.Width,
-                            scrollRegion.Y, ScrollBarsSize, ScrollBarsSize);
-                        if (!HorizontalScrollBar)
-                        {
-                            _verticalButtonBottom.Region = new RectangleF(scrollRegion.X + scrollRegion.Width,
-                                scrollRegion.Y + scrollRegion.Height - ScrollBarsSize, ScrollBarsSize,
-                                ScrollBarsSize);
-                        }
+                        _verticalScrollbar.Region = new RectangleF(_scrollRegion.X + _scrollRegion.Width,
+                            _scrollRegion.Y + _scrollBarsSize,
+                            _scrollBarsSize, _scrollRegion.Height - _scrollBarsSize * 2);
                     }
 
                     _internalPanel.Draw();
@@ -233,6 +206,61 @@ namespace ReCrafted.API.UI
         }
 
         /// <summary>
+        /// Adds space between last an next control of layout container of this panel.
+        /// </summary>
+        /// <param name="space">Space amount.</param>
+        public void AddSpace(int space)
+        {
+            Layout.Add(new UIBox
+            {
+                BoxColor = Color.Transparent,
+                IgnoreMouseCollision = true,
+                PreferredSize = new Vector2(space, space)
+            });
+        }
+
+        /// <summary>
+        /// Adds flexable space between last an next control of layout container of this panel.
+        /// Flexable space works only if layout container have enabled force expand option.
+        /// </summary>
+        /// <param name="nextControlSize">Size of next control after flex space. By default (zero value) flex size is the average control size of layout force expand.</param>
+        public void AddFlexSpace(int nextControlSize = 0)
+        {
+            var preferredSize = new Vector2(0, 0);
+            if (nextControlSize != 0)
+            {
+                switch (Layout.Type)
+                {
+                    case UILayoutType.Grid:
+                        throw new NotImplementedException("Grid layout type is not yet implemented.");
+                    case UILayoutType.DynamicGrid:
+                        throw new NotImplementedException("DynamicGrid layout type is not yet implemented.");
+                    case UILayoutType.Horizontal:
+                        var totalWidth = Layout.Controls.Sum(c => c.Region.Width + Layout.Space * 1.5f);
+                        var width = Layout.Region.Width - totalWidth - nextControlSize;
+                        if (width > 0.01f)
+                            preferredSize = new Vector2(width, 0);
+                        break;
+                    case UILayoutType.Vertical:
+                        var totalHeight = Layout.Controls.Sum(c => c.Region.Height + Layout.Space * 1.5f);
+                        var height = Layout.Region.Height - totalHeight - nextControlSize;
+                        if (height > 0.01f)
+                            preferredSize = new Vector2(0, height);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            Layout.Add(new UIBox
+            {
+                BoxColor = Color.Transparent,
+                IgnoreMouseCollision = true,
+                PreferredSize = preferredSize
+            });
+        }
+
+        /// <summary>
         /// Removes given control from the layout container of this panel.
         /// </summary>
         /// <typeparam name="T">Control class which must inherit from UIControl.</typeparam>
@@ -252,6 +280,56 @@ namespace ReCrafted.API.UI
             if (FocusedControl != this)
                 SetFocusedControl(this);
         }
+
+        // content of panel's layout or panel's region has been changed 
+        private void OnChanged()
+        {
+            // recalculate layout region
+            _layoutRegion = new RectangleF(Region.X + _fixedScrollViewPosition.X,
+                Region.Y + _fixedScrollViewPosition.Y,
+                Region.Width - (VerticalScrollBar ? _scrollBarsSize : 0),
+                Region.Height - (HorizontalScrollBar ? _scrollBarsSize : 0));
+
+            if (!EnableScrollBars)
+                return;
+
+            // recalculate scroll region
+            _scrollRegion = new RectangleF(Region.X, Region.X,
+                Region.Width - (VerticalScrollBar ? _scrollBarsSize : 0),
+                Region.Height - (HorizontalScrollBar ? _scrollBarsSize : 0));
+
+            // recalculate size of scroll view display and apply new size of scroll bars handle
+
+            var displayHeight = 0f;
+            var displayWidth = 0f;
+
+            foreach (var c in Layout.Controls)
+            {
+                displayHeight += c.Region.Height + Math.Abs(Layout.Space) / 2f;
+                if (c.Region.Width > displayWidth)
+                    displayWidth = c.Region.Width;
+            }
+
+            _scrollViewDisplay = new RectangleF(_layoutRegion.X, _layoutRegion.Y + _layoutRegion.Height - displayHeight,
+                displayWidth, displayHeight);
+
+            var verticalSize = MathUtil.Clamp(_scrollRegion.Height / _scrollViewDisplay.Height, 0.05f, 1f);
+            _verticalScrollbar.Size = verticalSize;
+
+            // update buttons
+            if (VerticalScrollBar)
+            {
+                _verticalButtonTop.Region = new RectangleF(_scrollRegion.X + _scrollRegion.Width,
+                    _scrollRegion.Y, _scrollBarsSize, _scrollBarsSize);
+                if (!HorizontalScrollBar)
+                {
+                    _verticalButtonBottom.Region = new RectangleF(_scrollRegion.X + _scrollRegion.Width,
+                        _scrollRegion.Y + _scrollRegion.Height - _scrollBarsSize, _scrollBarsSize,
+                        _scrollBarsSize);
+                }
+            }
+        }
+
 
         // hide scroll bars if exists
         private void _hideScrollbars()
@@ -293,6 +371,8 @@ namespace ReCrafted.API.UI
                     {
                         _scrollViewPosition.Y = _scrollViewDisplay.Height * position;
                     }
+
+                    OnChanged();
                 };
 
                 _verticalButtonTop = _internalPanel.Add(new UIButton(new RectangleF(), @"/\", Color.DarkOrange,
@@ -363,6 +443,7 @@ namespace ReCrafted.API.UI
                 Layout = UILayout.Create(region, layoutType),
                 EnableClipping = false,
                 EnableScrollBars = false,
+                ScrollBarSize = 20,
                 HorizontalScrollBar = true,
                 VerticalScrollBar = true
             };
@@ -372,6 +453,8 @@ namespace ReCrafted.API.UI
 
             panel._fixedScrollViewPosition = Vector2.Zero;
             panel._scrollViewDisplay = new RectangleF();
+
+            panel._scrollBarsSize = panel.ScrollBarSize;
 
             // set panel layout parent
             panel.Layout.Parent = panel;
@@ -389,6 +472,10 @@ namespace ReCrafted.API.UI
                     Panels[index].Layout.RecalculateDepth();
                 }
             };
+
+            panel.Layout.OnControlsChanged += panel.OnChanged;
+
+            panel.OnChanged();
 
             // add new panel
             Panels.Add(panel);
@@ -430,6 +517,8 @@ namespace ReCrafted.API.UI
                 {
                     _hideScrollbars();
                 }
+
+                OnChanged();
             }
         }
 
@@ -446,7 +535,14 @@ namespace ReCrafted.API.UI
         /// <summary>
         /// Size of scroll bars.
         /// </summary>
-        public int ScrollBarsSize = 20;
+        public int ScrollBarSize {
+            get { return _scrollBarsSize; }
+            set
+            {
+                _scrollBarsSize = value;
+                OnChanged();
+            }
+        }
 
         /// <summary>
         /// Contains all controls.

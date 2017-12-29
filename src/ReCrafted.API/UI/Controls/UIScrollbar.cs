@@ -46,7 +46,7 @@ namespace ReCrafted.API.UI.Controls
         /// </summary>
         public UIScrollbar()
         {
-            _applyDefaults(new RectangleF(), 0f, 0.5f, UIControlColors.DefaultHandle, UIControlColors.Defaults);
+            _applyDefaults(new RectangleF(), 0f, 0.5f, UIControlColors.DefaultHandle, UIControlColors.DefaultHandleBackground);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="region">Region of new scroll bar.</param>
         public UIScrollbar(RectangleF region)
         {
-            _applyDefaults(region, 0f, 0.5f, UIControlColors.DefaultHandle, UIControlColors.Defaults);
+            _applyDefaults(region, 0f, 0.5f, UIControlColors.DefaultHandle, UIControlColors.DefaultHandleBackground);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="size">Size of handle in scroll bar.</param>
         public UIScrollbar(RectangleF region, float position, float size)
         {
-            _applyDefaults(region, position, size, UIControlColors.DefaultHandle, UIControlColors.Defaults);
+            _applyDefaults(region, position, size, UIControlColors.DefaultHandle, UIControlColors.DefaultHandleBackground);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="size">Size of handle in scroll bar.</param>
         public UIScrollbar(float position, float size)
         {
-            _applyDefaults(new RectangleF(), position, size, UIControlColors.DefaultHandle, UIControlColors.Defaults);
+            _applyDefaults(new RectangleF(), position, size, UIControlColors.DefaultHandle, UIControlColors.DefaultHandleBackground);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace ReCrafted.API.UI.Controls
             }
             else
             {
-                _color = Color.Lerp(_color, Colors.NormalColor, (float) Time.DeltaTime * SmoothTranslation);
+                _color = Color.Lerp(_color, IsMouseOver ? Colors.OverColor : Colors.NormalColor, (float) Time.DeltaTime * SmoothTranslation);
                 if (!IsMouseOver && FocusedControl == this)
                     SetFocusedControl(null);
             }

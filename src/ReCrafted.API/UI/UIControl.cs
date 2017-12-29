@@ -13,6 +13,9 @@ namespace ReCrafted.API.UI
         // default panel of controls
         private static UIPanel _defaultPanel;
 
+        // control preferred size;
+        private Vector2 _preferredSize;
+
         // control depth
         internal int Depth;
 
@@ -33,43 +36,50 @@ namespace ReCrafted.API.UI
         /// When focus state of control has been changed.
         /// </summary>
         /// <param name="value"></param>
-        public virtual void OnControlFocused(bool value) { }
+        public virtual void OnControlFocused(bool value)
+        {
+        }
 
         /// <summary>
         /// When region of control has been changed by his parent.
         /// </summary>
-        public virtual void OnRegionChanged() { }
+        public virtual void OnRegionChanged()
+        {
+        }
 
         /// <summary>
         /// When mouse will enter this control.
         /// </summary>
-        public virtual void OnMouseEnter() { }
+        public virtual void OnMouseEnter()
+        {
+        }
 
         /// <summary>
         /// When mouse will exit this control.
         /// </summary>
-        public virtual void OnMouseExit() { }
+        public virtual void OnMouseExit()
+        {
+        }
 
         /// <summary>
         /// When mouse is over this control.
         /// </summary>
-        public virtual void OnMouseOver() { }
+        public virtual void OnMouseOver()
+        {
+        }
 
         /// <summary>
         /// When mouse will click this control.
         /// </summary>
-        public virtual void OnMouseClick() { }
+        public virtual void OnMouseClick()
+        {
+        }
 
         // when mouse collision is calculated, every controll have checks his childres (if exists) if they collide with mouse,
         // if so method should return false, and then system will stop search for mouse collision at this point
-        internal virtual UIControl OnMouseCollision() { return null; }
-
-        /// <summary>
-        /// Sets this control as current focus target.
-        /// </summary>
-        public void SetControlFocused()
+        internal virtual UIControl OnMouseCollision()
         {
-            SetFocusedControl(this);
+            return null;
         }
 
         /// <summary>
@@ -142,8 +152,22 @@ namespace ReCrafted.API.UI
         /// </summary>
         public Vector2 Size
         {
-            get { return new Vector2(Region.Width, Region.Height);}
+            get { return new Vector2(Region.Width, Region.Height); }
             set { Region = new RectangleF(Region.X, Region.Y, value.X, value.Y); }
+        }
+
+        /// <summary>
+        /// Preferred size of control is used by force expand by H/V and Dynamic Grid layout type.
+        /// </summary>
+        public Vector2 PreferredSize
+        {
+            get { return _preferredSize; }
+            set
+            {
+                _preferredSize = value;
+                if (Size == Vector2.Zero)
+                    Size = value;
+            }
         }
 
         /// <summary>
@@ -184,7 +208,10 @@ namespace ReCrafted.API.UI
         // current focused control by user
         internal static UIControl FocusedControl { get; private set; }
 
-        // set focused control
+        /// <summary>
+        /// Sets currently focused control.
+        /// </summary>
+        /// <param name="control"></param>
         internal static void SetFocusedControl(UIControl control)
         {
             if (control == null)

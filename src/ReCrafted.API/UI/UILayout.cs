@@ -1,6 +1,7 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
 using System;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using ReCrafted.API.Common;
 using ReCrafted.API.Mathematics;
@@ -112,10 +113,13 @@ namespace ReCrafted.API.UI
             Region = newLayoutRegion;
 
             // some calculations
-            var veticalSize = Region.Height / Controls.Count;
+            var verticalSize = Region.Height / Controls.Count;
             var horizontalSize = Region.Width / Controls.Count;
 
-            var totalContentHeigth = GetTotalContentHeight();
+            var calculatedWidth = 0f;
+            var calculatedHeight = 0f;
+
+            var totalContentHeight = GetTotalContentHeight();
             var totalContentWidth = GetTotalContentWidth();
 
             var position = GetLayoutAlignmentPosition();
@@ -130,7 +134,7 @@ namespace ReCrafted.API.UI
                 {
                     X = CalculateRegionXForControl(side, totalContentWidth, index, previousControl?.Region.X ?? 0,
                         previousControl?.Region.Width ?? 0, currentControl.Region.Width),
-                    Y = CalculateRegionYForControl(position, totalContentHeigth, index, previousControl?.Region.Y ?? 0,
+                    Y = CalculateRegionYForControl(position, totalContentHeight, index, previousControl?.Region.Y ?? 0,
                         previousControl?.Region.Height ?? 0, currentControl.Region.Height)
                 };
 
@@ -144,36 +148,58 @@ namespace ReCrafted.API.UI
                     {
                         #region APPLY_HORIZONTAL_SIZE
 
-                        if (currentControl.IgnoreLayoutResize)
-                        {
-                        }
-                        else
+                        if (!currentControl.IgnoreLayoutResize)
                         {
                             if (ForceExpandWidth)
                             {
-                                newRegion.Width = horizontalSize;
-                                if (newRegion.Width < PreferredSize.X)
-                                    newRegion.Width = PreferredSize.X;
+                                if (currentControl.PreferredSize.X > 0.01f)
+                                {
+                                    // apply preferred size of control
+                                    newRegion.Width = currentControl.PreferredSize.X;
+
+                                    calculatedWidth += newRegion.Width;
+
+                                    // recalculate horizontal size for next controls
+                                    horizontalSize = (Region.Width - calculatedWidth) / (Controls.Count - index);
+                                }
+                                else
+                                {
+                                    // apply size of horizontal force expand
+                                    newRegion.Width = horizontalSize;
+
+                                    calculatedWidth += newRegion.Width;
+                                }
+
+                                // apply horizontal space
                                 newRegion.Width -= Space / 1.5f;
                             }
                             else
                             {
+                                // apply default size of control
                                 newRegion.Width = currentControl.Region.Width;
-                                if (newRegion.Width < PreferredSize.X)
-                                    newRegion.Width = PreferredSize.X;
+                                if (currentControl.PreferredSize.X > 0.01f &&
+                                    newRegion.Width < currentControl.PreferredSize.X)
+                                {
+                                    // apply preferred size if current width is less than preferred value
+                                    newRegion.Width = currentControl.PreferredSize.X;
+                                }
                             }
 
                             if (ForceExpandHeight)
                             {
+                                // apply height of current layout
                                 newRegion.Height = Region.Height;
-                                if (newRegion.Height < PreferredSize.Y)
-                                    newRegion.Height = PreferredSize.Y;
                             }
                             else
                             {
+                                // apply default size of control
                                 newRegion.Height = currentControl.Region.Height;
-                                if (newRegion.Height < PreferredSize.Y)
-                                    newRegion.Height = PreferredSize.Y;
+                                if (currentControl.PreferredSize.Y > 0.01f &&
+                                    newRegion.Height < currentControl.PreferredSize.Y)
+                                {
+                                    // apply preferred size if current height is less than preferred value
+                                    newRegion.Height = currentControl.PreferredSize.Y;
+                                }
                             }
                         }
 
@@ -185,36 +211,58 @@ namespace ReCrafted.API.UI
                     {
                         #region APPLY_VERTICAL_SIZE
 
-                        if (currentControl.IgnoreLayoutResize)
-                        {
-                        }
-                        else
+                        if (!currentControl.IgnoreLayoutResize)
                         {
                             if (ForceExpandWidth)
                             {
+                                // apply width of current layout
                                 newRegion.Width = Region.Width;
-                                if (newRegion.Width < PreferredSize.X)
-                                    newRegion.Width = PreferredSize.X;
                             }
                             else
                             {
+                                // apply default size of control
                                 newRegion.Width = currentControl.Region.Width;
-                                if (newRegion.Width < PreferredSize.X)
-                                    newRegion.Width = PreferredSize.X;
+                                if (currentControl.PreferredSize.X > 0.01f &&
+                                    newRegion.Width < currentControl.PreferredSize.X)
+                                {
+                                    // apply preferred size if current height is less than preferred value
+                                    newRegion.Width = currentControl.PreferredSize.X;
+                                }
                             }
 
                             if (ForceExpandHeight)
                             {
-                                newRegion.Height = veticalSize;
-                                if (newRegion.Height < PreferredSize.Y)
-                                    newRegion.Height = PreferredSize.Y;
+                                if (currentControl.PreferredSize.Y > 0.01f)
+                                {
+                                    // apply preferred size of control
+                                    newRegion.Height = currentControl.PreferredSize.Y;
+
+                                    calculatedHeight += newRegion.Height;
+
+                                    // recalculate vertical  size for next controls
+                                    verticalSize = (Region.Height - calculatedHeight) / (Controls.Count - index);
+                                }
+                                else
+                                {
+                                    // apply size of horizontal force expand
+                                    newRegion.Height = verticalSize;
+
+                                    calculatedHeight += newRegion.Height;
+                                }
+
+                                // apply vertical space
                                 newRegion.Height -= Space / 1.5f;
                             }
                             else
                             {
+                                // apply default size of control
                                 newRegion.Height = currentControl.Region.Height;
-                                if (newRegion.Height < PreferredSize.Y)
-                                    newRegion.Height = PreferredSize.Y;
+                                if (currentControl.PreferredSize.Y > 0.01f &&
+                                    newRegion.Height < currentControl.PreferredSize.Y)
+                                {
+                                    // apply preferred size if current height is less than preferred value
+                                    newRegion.Height = currentControl.PreferredSize.Y;
+                                }
                             }
                         }
 
@@ -255,7 +303,7 @@ namespace ReCrafted.API.UI
 
         // calculates new region y of control based on current layout
         private float CalculateRegionYForControl(UILayoutAlignmentPosition position, float totalContentHeight,
-            int controlIndex, float prevY, float prevH, float currH)
+            int controlIndex, float previousY, float previousHeight, float currentHeight)
         {
             switch (Type)
             {
@@ -269,9 +317,9 @@ namespace ReCrafted.API.UI
                         case UILayoutAlignmentPosition.Top:
                             return Region.Y;
                         case UILayoutAlignmentPosition.Middle:
-                            return Region.Y + Region.Height / 2 - currH / 2;
+                            return Region.Y + Region.Height / 2 - currentHeight / 2;
                         case UILayoutAlignmentPosition.Bottom:
-                            return Region.Y + Region.Height - currH;
+                            return Region.Y + Region.Height - currentHeight;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
@@ -279,13 +327,15 @@ namespace ReCrafted.API.UI
                     switch (position)
                     {
                         case UILayoutAlignmentPosition.Top:
-                            return controlIndex == 0 ? Region.Y : prevY + prevH + Space;
+                            return controlIndex == 0 ? Region.Y : previousY + previousHeight + Space;
                         case UILayoutAlignmentPosition.Middle:
                             return controlIndex == 0
                                 ? Region.Y + Region.Height / 2 - totalContentHeight / 2
-                                : prevY + prevH + Space;
+                                : previousY + previousHeight + Space;
                         case UILayoutAlignmentPosition.Bottom:
-                            return controlIndex == 0 ? Region.Y + Region.Height - currH : prevY - currH - Space;
+                            return controlIndex == 0
+                                ? Region.Y + Region.Height - currentHeight
+                                : previousY - currentHeight - Space;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
@@ -367,11 +417,6 @@ namespace ReCrafted.API.UI
         /// The layout type.
         /// </summary>
         public UILayoutType Type { get; set; }
-
-        /// <summary>
-        /// Preferred size for Grid and H/V layout type.
-        /// </summary>
-        public Vector2 PreferredSize { get; set; }
 
         /// <summary>
         /// Offset of layout content.

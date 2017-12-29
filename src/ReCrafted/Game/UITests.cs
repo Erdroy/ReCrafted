@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Globalization;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
-using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
 using ReCrafted.API.UI.Controls;
@@ -18,11 +17,12 @@ namespace ReCrafted.Game
         public UIText DebugPanelText;
 
         public UIPanel TestPanel;
-        public UIBox TestBox;
 
         protected internal override void OnCreate()
         {
             var sw = Stopwatch.StartNew();
+
+            // ui debug
             DebugPanel = UIPanel.Create(new RectangleF(), UILayoutType.Vertical, "debug-panel");
             DebugPanel.ApplyLayout = false;
 
@@ -31,8 +31,8 @@ namespace ReCrafted.Game
             TestPanel = UIPanel.Create(new RectangleF(), UILayoutType.Vertical, "test-panel");
             TestPanel.ApplyLayout = false;
 
+            // test panel
             /*
-            //TestBox = TestPanel.Add(new UIBox(new RectangleF(0f, 0f, 32f, 32f)));
             var panel = UIPanel.Create(new RectangleF(10.0f, 250.0f, 200.0f, 450.0f), UILayoutType.Vertical, "panel1");
             panel.PanelColor = Color.Red;
             panel.Enabled = true;
@@ -50,60 +50,47 @@ namespace ReCrafted.Game
             panel.Layout.Alignment = UILayoutAlignment.MiddleTop;
             panel.ApplyLayout = true;
 
-            var button = panel.Add(new UIButton(new RectangleF(0, 0, 130, 32), "Some text!"));
-            button.SmoothColors = true;
-            button.OnClick += () =>
+            var panelButton = panel.Add(new UIButton(new RectangleF(0, 0, 130, 32), "Some text!"));
+            panelButton.SmoothColors = true;
+            panelButton.OnClick += () =>
             {
-                var region = button.Region;
+                var region = panelButton.Region;
                 region.Y += 30;
-                button.Region = region;
+                panelButton.Region = region;
             };
 
-            var toggleGroup = new UIToggleGroup(1, 2);
-            var toggle1 = toggleGroup.Add(panel.Add(new UIToggle(new RectangleF(0, 0, 130, 32), "TestToggle1!")));
-            toggle1.TextBackgroundColor = new Color(68, 68, 68);
-            var toggle2 = toggleGroup.Add(panel.Add(new UIToggle(new RectangleF(0, 0, 130, 32), "TestToggle2!")));
-            toggle2.TextBackgroundColor = new Color(68, 68, 68);
-            var toggle3 = toggleGroup.Add(panel.Add(new UIToggle(new RectangleF(0, 0, 130, 32), "TestToggle3!")));
-            toggle3.TextBackgroundColor = new Color(68, 68, 68);
+            var panelToggleGroup = new UIToggleGroup(1, 2);
+            var panelToggle1 = panelToggleGroup.Add(panel.Add(new UIToggle(new RectangleF(0, 0, 130, 32), "TestToggle1!")));
+            panelToggle1.TextBackgroundColor = new Color(68, 68, 68);
+            var panelToggle2 = panelToggleGroup.Add(panel.Add(new UIToggle(new RectangleF(0, 0, 130, 32), "TestToggle2!")));
+            panelToggle2.TextBackgroundColor = new Color(68, 68, 68);
+            var panelToggle3 = panelToggleGroup.Add(panel.Add(new UIToggle(new RectangleF(0, 0, 130, 32), "TestToggle3!")));
+            panelToggle3.TextBackgroundColor = new Color(68, 68, 68);
+
+            var panelTextField = UIControl.CreateControl(new UITextField(new RectangleF(300, 300, 130, 128), string.Empty));
+            panelTextField.Text = "123\n456\n789\n\nqwe\n\n\nrty";
             */
 
-            var textField = UIControl.CreateControl(new UITextField(new RectangleF(300, 300, 130, 128), string.Empty));
-            textField.Text = "123\n456\n789\n\nqwe\n\n\nrty";
-            //textFieldItems.Item2.CharactersLimit = 10;
-            //var textField = panel.Add(new UITextField(new RectangleF(0, 0, 130, 128), string.Empty));
-            //textField.CharactersLimit = 10;
+            var freeScrollbarText = UIControl.CreateControl(new UIText(new RectangleF(100, 530, 100, 30)));
+            var freeScrollBar = UIControl.CreateControl(new UIScrollbar(new RectangleF(200, 500, 150, 450)) { Vertical = true, Size = 0.1f });
 
-            //panel.Add(new UIText(new RectangleF(10, 10, 160, 30), "12345678912345678912345678912342343243"));
-
-            /*for (int i = 0; i < 1000; i++)
-                panel.Add(new UIBox(new Color(0, 100 * i / 100, 0)));
-                */
-
-            var text = UIControl.CreateControl(new UIText(new RectangleF(100, 530, 100, 30)));
-            var scrollBar = UIControl.CreateControl(new UIScrollbar(new RectangleF(200, 500, 150, 450)) { Vertical = true, Size = 0.1f });
-
-            scrollBar.OnValueChanged += value =>
+            freeScrollBar.OnValueChanged += value =>
             {
-                text.Text = scrollBar.Position.ToString(CultureInfo.InvariantCulture) + '\n' + scrollBar.Size.ToString(CultureInfo.InvariantCulture);
+                freeScrollbarText.Text = freeScrollBar.Position.ToString(CultureInfo.InvariantCulture) + '\n' + freeScrollBar.Size.ToString(CultureInfo.InvariantCulture);
             };
 
-            var button = new UIButton (new RectangleF(100, 500, 100, 30)) { Text = "Click Me!" };
-            button.OnClick += () =>
+            var freeScrollBarButton = new UIButton (new RectangleF(100, 500, 100, 30)) { Text = "Click Me!" };
+            freeScrollBarButton.OnClick += () =>
             {
                 var r = new Random();
-                scrollBar.Position = r.Next(0, 10) / 10f;
-                scrollBar.Size = r.Next(0, 10) / 10f;
+                freeScrollBar.Position = r.Next(0, 10) / 10f;
+                freeScrollBar.Size = r.Next(0, 10) / 10f;
             };
 
-            UIControl.CreateControl(ref button);      
+            UIControl.CreateControl(ref freeScrollBarButton);      
 
             sw.Stop();
             Logger.Write("Ui Construct Took -> " + sw.ElapsedMilliseconds + "ms");
-
-            // var texture = Texture2D.Create(Assets.ResolveAssetFilePath("test.png"));
-            // sprite = Sprite.CreateBordered(new RectangleF(355, 55, 256, 256), texture);
-            // var sprite2 = Sprite.Create(new RectangleF(355, 355, 256, 256), texture);
         }
 
         private float _uiDebugTime;
@@ -121,20 +108,6 @@ namespace ReCrafted.Game
                                       "Focused Control Region -> " + (UIControl.FocusedControl?.Region.ToString() ?? "<none>") + "\n" + 
                                       "Mouse Position -> " + Input.CursorPosition;
             }
-
-            if (TestBox != null)
-                TestBoxFollow();
-        }
-
-        private Vector2 _testBoxPosition = Vector2.One;
-        private Vector2 _testBoxVelocity = Vector2.One;
-        private Vector2 _testBoxTargetPosition = Vector2.One;
-
-        private void TestBoxFollow()
-        {
-            _testBoxTargetPosition = Input.CursorPosition;
-            UIAnimation.SpringVector2(ref _testBoxPosition, ref _testBoxVelocity, _testBoxTargetPosition, (float)Time.DeltaTime);
-            TestBox.Region = new RectangleF(_testBoxPosition.X, _testBoxPosition.Y, 32, 32);
         }
     }
 }

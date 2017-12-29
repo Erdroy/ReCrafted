@@ -41,7 +41,7 @@ namespace ReCrafted.API.UI.Controls
         /// </summary>
         public UIButton()
         {
-            _applyDefaults(new RectangleF(), string.Empty, Color.Black, UIControlColors.Defaults, null);
+            _applyDefaults(new RectangleF(), string.Empty, Color.Black, UIControlColors.Default, null);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="region">Region of new UIButton.</param>
         public UIButton(RectangleF region)
         {
-            _applyDefaults(region, string.Empty, Color.Black, UIControlColors.Defaults, null);
+            _applyDefaults(region, string.Empty, Color.Black, UIControlColors.Default, null);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="text">Text of the new UIButton.</param>
         public UIButton(string text)
         {
-            _applyDefaults(new RectangleF(), text, Color.Black, UIControlColors.Defaults, null);
+            _applyDefaults(new RectangleF(), text, Color.Black, UIControlColors.Default, null);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="textColor">Color of the text in new UIButton.</param>
         public UIButton(string text, Color textColor)
         {
-            _applyDefaults(new RectangleF(), text, textColor, UIControlColors.Defaults, null);
+            _applyDefaults(new RectangleF(), text, textColor, UIControlColors.Default, null);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="text">Text of the new UIButton.</param>
         public UIButton(RectangleF region, string text)
         {
-            _applyDefaults(region, text, Color.Black, UIControlColors.Defaults, null);
+            _applyDefaults(region, text, Color.Black, UIControlColors.Default, null);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="textColor">Color of the text in new UIButton.</param>
         public UIButton(RectangleF region, string text, Color textColor)
         {
-            _applyDefaults(region, text, textColor, UIControlColors.Defaults, null);
+            _applyDefaults(region, text, textColor, UIControlColors.Default, null);
         }
 
         /// <summary>

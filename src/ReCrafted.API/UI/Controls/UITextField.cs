@@ -61,7 +61,7 @@ namespace ReCrafted.API.UI.Controls
         /// </summary>
         public UITextField()
         {
-            ApplyDefaults(new RectangleF(), string.Empty, Color.Black, UIControlColors.Defaults);
+            ApplyDefaults(new RectangleF(), string.Empty, Color.Black, UIControlColors.Default);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="region">Region of new UITextField.</param>
         public UITextField(RectangleF region)
         {
-            ApplyDefaults(region, string.Empty, Color.Black, UIControlColors.Defaults);
+            ApplyDefaults(region, string.Empty, Color.Black, UIControlColors.Default);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="text">Text of new UITextField.</param>
         public UITextField(string text)
         {
-            ApplyDefaults(new RectangleF(), text, Color.Black, UIControlColors.Defaults);
+            ApplyDefaults(new RectangleF(), text, Color.Black, UIControlColors.Default);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="text">Text of new UITextField.</param>
         public UITextField(RectangleF region, string text)
         {
-            ApplyDefaults(region, text, Color.Black, UIControlColors.Defaults);
+            ApplyDefaults(region, text, Color.Black, UIControlColors.Default);
         }
 
         public override void OnMouseEnter()

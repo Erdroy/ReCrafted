@@ -25,13 +25,23 @@ namespace ReCrafted.API.UI.Controls
         public Color ClickColor { get; set; }
 
         /// <summary>
-        /// Default set of button colors.
+        /// Default set of colors. (For ex. button, background of toggle)
         /// </summary>
-        public static UIControlColors Defaults = new UIControlColors
+        public static UIControlColors Default = new UIControlColors
         {
             NormalColor = Color.White,
             OverColor = Color.Gray,
             ClickColor = Color.DarkGray
+        };
+
+        /// <summary>
+        /// Default set of check box colors.
+        /// </summary>
+        public static UIControlColors DefaultCheckBox = new UIControlColors
+        {
+            NormalColor = Color.Orange,
+            OverColor = Color.Orange,
+            ClickColor = Color.Orange
         };
 
         /// <summary>
@@ -40,8 +50,18 @@ namespace ReCrafted.API.UI.Controls
         public static UIControlColors DefaultHandle = new UIControlColors
         {
             NormalColor = Color.DarkGray,
-            OverColor = Color.DarkGray,
+            OverColor = Color.Orange,
             ClickColor = Color.DarkOrange
+        };
+
+        /// <summary>
+        /// Default set of colors for ui handle background. (For ex. scroll bar)
+        /// </summary>
+        public static UIControlColors DefaultHandleBackground = new UIControlColors
+        {
+            NormalColor = Color.White,
+            OverColor = Color.White,
+            ClickColor = Color.White
         };
     }
 }

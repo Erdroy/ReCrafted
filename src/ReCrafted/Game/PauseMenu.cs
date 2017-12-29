@@ -62,6 +62,7 @@ namespace ReCrafted.Game
         {
             Instance = this;
 
+            // Create Background (shadow)
             Background = UIPanel.Create(new RectangleF(0, 0, Display.Width, Display.Height), UILayoutType.Vertical, "Pause Background", 9999);
             Background.PanelColor = new Color(0, 0, 0, 0.5f);
             Background.Enabled = false;
@@ -71,7 +72,7 @@ namespace ReCrafted.Game
 
             MainPanel.PanelColor = Color.Blue;
 
-            MainPanel.Layout.ForceExpandHeight = false;
+            MainPanel.Layout.ForceExpandHeight = true;
             MainPanel.Layout.ForceExpandWidth = true;
             MainPanel.Layout.Padding = new UIPadding
             {
@@ -81,27 +82,33 @@ namespace ReCrafted.Game
                 Right = 10
             };
             MainPanel.Layout.Space = 5.0f;
-            MainPanel.Layout.PreferredSize = new Vector2(30, 30);
             MainPanel.Layout.Alignment = UILayoutAlignment.MiddleTop;
             MainPanel.ApplyLayout = true;
 
+            // Create Title text
             Title = MainPanel.Add(new UIText());
+            Title.PreferredSize = new Vector2(0, 30);
             Title.Text = "ReCrafted";
+
+            MainPanel.AddSpace(10);
 
             // Create Resume button
             Resume = MainPanel.Add(new UIButton("Resume"));
+            Resume.PreferredSize = new Vector2(0, 30);
             Resume.OnClick += GameMain.DisablePause;
 
             // Create Options button
             Options = MainPanel.Add(new UIButton("Options"));
+            Options.PreferredSize = new Vector2(0, 30);
+
+            MainPanel.AddFlexSpace(30);
 
             // Create Exit button
-            var exitLayout = MainPanel.Add(UILayout.Create(new RectangleF(0, 0, 0, 70), layoutAlignment: UILayoutAlignment.MiddleBottom));
-            exitLayout.ForceExpandWidth = true;
-            exitLayout.PreferredSize = new Vector2(30, 30);
-            Exit = exitLayout.Add(new UIButton("Exit"));
+            Exit = MainPanel.Add(new UIButton("Exit"));
+            Exit.PreferredSize = new Vector2(0, 30);
             Exit.OnClick += API.Core.Game.Quit;
 
+            // Disable Main menu
             Disable();
         }
 

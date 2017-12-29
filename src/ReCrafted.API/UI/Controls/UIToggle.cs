@@ -41,7 +41,7 @@ namespace ReCrafted.API.UI.Controls
             set
             {
                 _isOn = value;
-                _checkBoxColor = _isOn ? CheckBoxColor : Color.Transparent;
+                _checkBoxColor = _isOn ? CheckBoxColors.NormalColor : Color.Transparent;
             }
         }
 
@@ -55,7 +55,7 @@ namespace ReCrafted.API.UI.Controls
         /// </summary>
         public UIToggle()
         {
-            _applyDefaults(new RectangleF(), string.Empty, Color.White, UIControlColors.Defaults, Color.Orange);
+            _applyDefaults(new RectangleF(), string.Empty, Color.White, UIControlColors.Default, UIControlColors.DefaultCheckBox);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="region">Region of the new UIToggle.</param>
         public UIToggle(RectangleF region)
         {
-            _applyDefaults(region, string.Empty, Color.White, UIControlColors.Defaults, Color.Orange);
+            _applyDefaults(region, string.Empty, Color.White, UIControlColors.Default, UIControlColors.DefaultCheckBox);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="text">Text of the new UIToggle.</param>
         public UIToggle(string text)
         {
-            _applyDefaults(new RectangleF(), text, Color.White, UIControlColors.Defaults, Color.Orange);
+            _applyDefaults(new RectangleF(), text, Color.White, UIControlColors.Default, UIControlColors.DefaultCheckBox);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="textColor">Color of text in the new UIToggle.</param>
         public UIToggle(string text, Color textColor)
         {
-            _applyDefaults(new RectangleF(), text, textColor, UIControlColors.Defaults, Color.Orange);
+            _applyDefaults(new RectangleF(), text, textColor, UIControlColors.Default, UIControlColors.DefaultCheckBox);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="text">Text of the new UIToggle.</param>
         public UIToggle(RectangleF region, string text)
         {
-            _applyDefaults(region, text, Color.White, UIControlColors.Defaults, Color.Orange);
+            _applyDefaults(region, text, Color.White, UIControlColors.Default, UIControlColors.DefaultCheckBox);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="textColor">Color of text in the new UIToggle.</param>
         public UIToggle(RectangleF region, string text, Color textColor)
         {
-            _applyDefaults(region, text, textColor, UIControlColors.Defaults, Color.Orange);
+            _applyDefaults(region, text, textColor, UIControlColors.Default, UIControlColors.DefaultCheckBox);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="colors">Colors of the new UIToggle.</param>
         public UIToggle(RectangleF region, string text, Color textColor, UIControlColors colors)
         {
-            _applyDefaults(region, text, textColor, colors, Color.Orange);
+            _applyDefaults(region, text, textColor, colors, UIControlColors.DefaultCheckBox);
         }
 
         /// <summary>
@@ -126,10 +126,10 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="text">Text of the new UIToggle.</param>
         /// <param name="textColor">Color of text in the new UIToggle.</param>
         /// <param name="colors">Colors of the new UIToggle.</param>
-        /// <param name="checkBoxColor">Color of checkbox in new UIToggle.</param>
-        public UIToggle(RectangleF region, string text, Color textColor, UIControlColors colors, Color checkBoxColor)
+        /// <param name="checkBoxColors">Color of checkbox in new UIToggle.</param>
+        public UIToggle(RectangleF region, string text, Color textColor, UIControlColors colors, UIControlColors checkBoxColors)
         {
-            _applyDefaults(region, text, textColor, colors, checkBoxColor);
+            _applyDefaults(region, text, textColor, colors, checkBoxColors);
         }
 
         public override void OnMouseEnter()
@@ -204,7 +204,7 @@ namespace ReCrafted.API.UI.Controls
         }
 
         // set default properties
-        private void _applyDefaults(RectangleF region, string text, Color textColor, UIControlColors colors, Color checkBoxColor)
+        private void _applyDefaults(RectangleF region, string text, Color textColor, UIControlColors colors, UIControlColors checkBoxColors)
         {
             Region = region;
             TextFont = DefaultFont; //set default font
@@ -214,7 +214,7 @@ namespace ReCrafted.API.UI.Controls
             Colors = colors;
             SmoothColors = true;
             SmoothTranslation = 10f;
-            CheckBoxColor = checkBoxColor;
+            CheckBoxColors = checkBoxColors;
             Enabled = true;
             IgnoreMouseCollision = false;
             IsMouseOver = false;
@@ -234,7 +234,7 @@ namespace ReCrafted.API.UI.Controls
         /// <summary>
         /// Color of checkbox in toggle.
         /// </summary>
-        public Color CheckBoxColor { get; set; }
+        public UIControlColors CheckBoxColors { get; set; }
 
         /// <summary>
         /// Colors on toggle will be changed smoothly.
