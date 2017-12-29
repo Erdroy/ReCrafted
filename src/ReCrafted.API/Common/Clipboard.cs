@@ -17,5 +17,14 @@ namespace ReCrafted.API.Common
         {
             Game.SetClipboard(text);
         }
+
+        /// <summary>
+        /// Gets text from Clipboard.
+        /// </summary>
+        /// <returns>Clipboard text.</returns>
+        public static string GetText()
+        {
+            return Game.GetClipboard();
+        }
     }
 }

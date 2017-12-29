@@ -1,7 +1,8 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 12/27/2017 12:20:39 Source: 'GameMain.API.cpp' Target: 'Core/Game.Gen.cs'
+// Generated: 12/29/2017 22:29:04 Source: 'GameMain.API.cpp' Target: 'Core/Game.Gen.cs'
 
+using System;
 using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Core 
@@ -34,6 +35,12 @@ namespace ReCrafted.API.Core
 		/// </summary>
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void SetClipboard(string text);
+
+		/// <summary>
+		///	Gets clipboard data.
+		/// </summary>
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern string GetClipboard();
 
 		/// <summary>
 		///	Gets or sets the cursor state

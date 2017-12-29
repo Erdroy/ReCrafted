@@ -71,15 +71,15 @@ namespace ReCrafted.API.UI
         {
             if (EnableScrollBars)
             {
-                if (VerticalScrollBar)
+                if (EnableVerticalScrollbar)
                 {
-                    _verticalScrollbar.Position += 0; // scroll input here
-                    _scrollViewPosition.Y = _scrollViewDisplay.Height * _verticalScrollbar.Position;
+                    _verticalScrollbar.HandlePosition += 0; // scroll input here
+                    _scrollViewPosition.Y = _scrollViewDisplay.Height * _verticalScrollbar.HandlePosition;
                 }
-                else if (HorizontalScrollBar)
+                else if (EnableHorizontalScrollbar)
                 {
-                    _horizotnalScrollbar.Position += 0; // scroll input here
-                    _scrollViewPosition.X = _scrollViewDisplay.Width * _horizotnalScrollbar.Position;
+                    _horizotnalScrollbar.HandlePosition += 0; // scroll input here
+                    _scrollViewPosition.X = _scrollViewDisplay.Width * _horizotnalScrollbar.HandlePosition;
                 }
             }
         }
@@ -106,8 +106,8 @@ namespace ReCrafted.API.UI
                 // update scroll view position
                 if (EnableScrollBars)
                 {
-                    _scrollViewPosition = new Vector2(HorizontalScrollBar ? _scrollViewPosition.X : 0,
-                        VerticalScrollBar ? _scrollViewPosition.Y : 0);
+                    _scrollViewPosition = new Vector2(EnableHorizontalScrollbar ? _scrollViewPosition.X : 0,
+                        EnableVerticalScrollbar ? _scrollViewPosition.Y : 0);
                     _fixedScrollViewPosition = Vector2.Lerp(_fixedScrollViewPosition, _scrollViewPosition,
                         (float) Time.DeltaTime * 10f);
                 }
@@ -172,17 +172,21 @@ namespace ReCrafted.API.UI
                 {
                     Profiler.BeginProfile($"Panel <{(string.IsNullOrEmpty(_internalPanel.Name) ? "empty" : _internalPanel.Name)}> ");
 
-                    _horizotnalScrollbar.Enabled = HorizontalScrollBar;
-                    if (HorizontalScrollBar)
+                    _horizotnalScrollbar.Enabled = EnableHorizontalScrollbar;
+                    if (EnableHorizontalScrollbar)
                         _horizotnalScrollbar.Region = new RectangleF(_scrollRegion.X,
                             _scrollRegion.Y + _scrollRegion.Height, _scrollRegion.Width, _scrollBarsSize);
 
-                    _verticalScrollbar.Enabled = VerticalScrollBar;
-                    if (VerticalScrollBar)
+                    _verticalScrollbar.Enabled = EnableVerticalScrollbar;
+                    _verticalButtonTop.Enabled = EnableScrollButtons;
+                    _verticalButtonBottom.Enabled = EnableScrollButtons;
+                    if (EnableVerticalScrollbar)
+                    {
                         _verticalScrollbar.Region = new RectangleF(_scrollRegion.X + _scrollRegion.Width,
-                            _scrollRegion.Y + _scrollBarsSize,
-                            _scrollBarsSize, _scrollRegion.Height - _scrollBarsSize * 2);
-      
+                            _scrollRegion.Y + (EnableScrollButtons ? _scrollBarsSize : 0),
+                            _scrollBarsSize, _scrollRegion.Height - _scrollBarsSize * ((EnableHorizontalScrollbar ? 1 : 0 ) + (EnableScrollButtons ? 1 : 0)));
+                    }
+
                     _internalPanel.Draw();
                     Profiler.EndProfile();
                 }
@@ -294,13 +298,13 @@ namespace ReCrafted.API.UI
             // recalculate layout region
             _scrollLayoutRegion = new RectangleF(Region.X + _fixedScrollViewPosition.X,
                 Region.Y + _fixedScrollViewPosition.Y,
-                Region.Width - (VerticalScrollBar ? _scrollBarsSize : 0),
-                Region.Height - (HorizontalScrollBar ? _scrollBarsSize : 0));
+                Region.Width - (EnableVerticalScrollbar ? _scrollBarsSize : 0),
+                Region.Height - (EnableHorizontalScrollbar ? _scrollBarsSize : 0));
 
             // recalculate scroll region
             _scrollRegion = new RectangleF(Region.X, Region.Y,
-                Region.Width - (VerticalScrollBar ? _scrollBarsSize : 0),
-                Region.Height - (HorizontalScrollBar ? _scrollBarsSize : 0));
+                Region.Width - (EnableVerticalScrollbar ? _scrollBarsSize : 0),
+                Region.Height - (EnableHorizontalScrollbar ? _scrollBarsSize : 0));
 
             // recalculate size of scroll view display and apply new size of scroll bars handle
 
@@ -318,14 +322,14 @@ namespace ReCrafted.API.UI
                 displayWidth, displayHeight);
 
             var verticalSize = MathUtil.Clamp(_scrollRegion.Height / _scrollViewDisplay.Height, 0.05f, 1f);
-            _verticalScrollbar.Size = verticalSize;
+            _verticalScrollbar.HandleSize = verticalSize;
 
             // update buttons
-            if (VerticalScrollBar)
+            if (EnableVerticalScrollbar && EnableScrollButtons)
             {
                 _verticalButtonTop.Region = new RectangleF(_scrollRegion.X + _scrollRegion.Width,
                     _scrollRegion.Y, _scrollBarsSize, _scrollBarsSize);
-                if (!HorizontalScrollBar)
+                if (!EnableHorizontalScrollbar)
                 {
                     _verticalButtonBottom.Region = new RectangleF(_scrollRegion.X + _scrollRegion.Width,
                         _scrollRegion.Y + _scrollRegion.Height - _scrollBarsSize, _scrollBarsSize,
@@ -361,40 +365,33 @@ namespace ReCrafted.API.UI
                 _horizotnalScrollbar.Vertical = false;
                 _horizotnalScrollbar.OnValueChanged += position =>
                 {
-                    if (_horizotnalScrollbar.IsDragging)
-                    {
-                        _scrollViewPosition.X = _scrollViewDisplay.Width * position;
-                    }
+                    _scrollViewPosition.X = _scrollViewDisplay.Width * position;
+
+                    OnChanged();
                 };
 
                 _verticalScrollbar = _internalPanel.Add(new UIScrollbar());
                 _verticalScrollbar.Vertical = true;
                 _verticalScrollbar.OnHandleChanged += position =>
                 {
-                    if (_verticalScrollbar.IsDragging)
-                    {
-                        _scrollViewPosition.Y = _scrollViewDisplay.Height * position;
-                    }
+                    _scrollViewPosition.Y = _scrollViewDisplay.Height * position;
 
                     OnChanged();
                 };
 
-                _verticalButtonTop = _internalPanel.Add(new UIButton(new RectangleF(), string.Empty, Color.DarkOrange,
-                    UIControlColors.DefaultHandle, DefaultArrowUp));
+                _verticalButtonTop = _internalPanel.Add(new UIButton(new RectangleF(), string.Empty, 
+                    Color.DarkOrange, UIControlColors.DefaultHandle, DefaultArrowUp));
                 _verticalButtonTop.OnClick += () =>
                 {
-                    _verticalScrollbar.Position = 0f;
-                    _scrollViewPosition.Y = 0f;
+                    _verticalScrollbar.HandlePosition = 0;
                 };
-                _verticalButtonBottom = _internalPanel.Add(new UIButton(new RectangleF(), string.Empty, Color.DarkOrange,
-                    UIControlColors.DefaultHandle, DefaultArrowDown));
-                /*
+
+                _verticalButtonBottom = _internalPanel.Add(new UIButton(new RectangleF(), string.Empty,
+                    Color.DarkOrange, UIControlColors.DefaultHandle, DefaultArrowDown));
                 _verticalButtonBottom.OnClick += () =>
                 {
-                    _verticalScrollbar.Position = 1f;
-                    _scrollViewPosition.Y = _scrollViewDisplay.Height;
+                    _verticalScrollbar.HandlePosition = 1;
                 };
-                */
             }
         }
 
@@ -448,8 +445,9 @@ namespace ReCrafted.API.UI
                 EnableClipping = false,
                 EnableScrollBars = false,
                 ScrollBarSize = 20,
-                HorizontalScrollBar = true,
-                VerticalScrollBar = true,
+                EnableHorizontalScrollbar = true,
+                EnableVerticalScrollbar = true,
+                EnableScrollButtons = true,
 
                 _enableScrollbars = false,
                 _scrollViewPosition = Vector2.Zero,
@@ -528,12 +526,17 @@ namespace ReCrafted.API.UI
         /// <summary>
         /// Horizontal scroll bar enable state.
         /// </summary>
-        public bool HorizontalScrollBar { get; set; }
+        public bool EnableHorizontalScrollbar { get; set; }
 
         /// <summary>
         /// Vertical scroll bar enable state.
         /// </summary>
-        public bool VerticalScrollBar { get; set; }
+        public bool EnableVerticalScrollbar { get; set; }
+
+        /// <summary>
+        /// Enable scroll buttons.
+        /// </summary>
+        public bool EnableScrollButtons { get; set; }
 
         /// <summary>
         /// Size of scroll bars.

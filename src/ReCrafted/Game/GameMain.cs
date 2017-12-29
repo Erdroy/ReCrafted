@@ -110,7 +110,7 @@ namespace ReCrafted.Game
                     }
                 }
 
-                if (Input.IsKeyDown(Keys.F8) && !PauseMenu.Instance.Enabled)
+                if (Input.IsKeyDown(Keys.F8) && (PauseMenu.Instance == null || !PauseMenu.Instance.Enabled))
                 {
                     Cursor.Show = !Cursor.Show;
                     Cursor.Lock = !Cursor.Show;

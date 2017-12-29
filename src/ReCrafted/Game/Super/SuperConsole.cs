@@ -50,8 +50,10 @@ namespace ReCrafted.Game.Super
             TextContainer.PanelColor = Color.DarkGray * 2f;
             TextContainer.EnableClipping = true;
             TextContainer.EnableScrollBars = true;
-            TextContainer.HorizontalScrollBar = false;
-            TextContainer.VerticalScrollBar = true;
+            TextContainer.EnableHorizontalScrollbar = false;
+            TextContainer.EnableVerticalScrollbar = true;
+
+            TextContainer.EnableScrollButtons = false;
 
             TextContainer.Layout.ReverseContainer = true;
             TextContainer.Layout.PreferredSize = new Vector2(0, 30);

@@ -57,6 +57,11 @@ namespace ReCrafted.API.UI
         private Vector2 _textPosition;
 
         /// <summary>
+        /// When text starts selection.
+        /// </summary>
+        public Action OnTextStartSelected;
+
+        /// <summary>
         /// When selected text was changed.
         /// </summary>
         public TextSelected OnTextSelected;
@@ -194,50 +199,7 @@ namespace ReCrafted.API.UI
                 if (Input.IsKeyUp(Keys.Mouse0))
                 {
                     // some stuff with selected text
-                    if (_selectingTextEndIndex != _selectingTextStartIndex)
-                    {
-                        if (_selectingTextStartIndex < _selectingTextEndIndex)
-                        {
-                            SelectedText = _text.Substring(_selectingTextStartIndex, _selectingTextEndIndex - _selectingTextStartIndex + 1);
-                            SelectedTextStart = _selectingTextStartIndex;
-                            SelectedTextEnd = _selectingTextEndIndex + 1;
-                        }
-                        else
-                        {
-                            SelectedText = _text.Substring(_selectingTextEndIndex, _selectingTextStartIndex - _selectingTextEndIndex + 1);
-                            SelectedTextStart = _selectingTextEndIndex;
-                            SelectedTextEnd = _selectingTextStartIndex + 1;
-                        }
-
-                        OnTextSelected?.Invoke(SelectedText);
-                    }
-                    else
-                    {
-                        if (_lastSelectedIndex == -1)
-                        {
-                            var p = _selectingTextStartIndex;
-                            ResetSelection();
-                            OnCharacterClick?.Invoke(p);
-                            _lastSelectedIndex = p;
-                        }
-                        else
-                        {
-                            if (_lastSelectedIndex == _selectingTextStartIndex)
-                            {
-                                SelectedText = _text[_selectingTextStartIndex].ToString();
-                                SelectedTextStart = _selectingTextStartIndex;
-                                SelectedTextEnd = _selectingTextStartIndex;
-                                OnTextSelected?.Invoke(SelectedText);
-                            }
-                            else
-                            {
-                                var p = _selectingTextStartIndex;
-                                ResetSelection();
-                                OnCharacterClick?.Invoke(p);
-                                _lastSelectedIndex = p;
-                            }
-                        }
-                    }
+                    _handleSelectedText();
                 }
             }
 
@@ -247,6 +209,7 @@ namespace ReCrafted.API.UI
                 {
                     _selectingText = true;
                     _selectingTextStartIndex = GetCharIndexFromPoint(Input.CursorPosition);
+                    OnTextStartSelected?.Invoke();
                 }
             }
 
@@ -258,6 +221,18 @@ namespace ReCrafted.API.UI
             if (_carpetRegions != null)
                 foreach (var carpet in _carpetRegions)
                     UIInternal.DrawBox(carpet);
+        }
+
+        /// <summary>
+        /// Select target region of text.
+        /// </summary>
+        public void SelectRegion(int start, int end)
+        {
+            _selectingText = true;
+            _selectingTextStartIndex = start;
+            _selectingTextEndIndex = end;
+
+            _handleSelectedText();
         }
 
         /// <summary>
@@ -474,6 +449,55 @@ namespace ReCrafted.API.UI
                 }
             }
             return _textPosition;
+        }
+
+        private void _handleSelectedText()
+        {
+            // some stuff with selected text
+            if (_selectingTextEndIndex != _selectingTextStartIndex)
+            {
+                if (_selectingTextStartIndex < _selectingTextEndIndex)
+                {
+                    SelectedText = _text.Substring(_selectingTextStartIndex, _selectingTextEndIndex - _selectingTextStartIndex + 1);
+                    SelectedTextStart = _selectingTextStartIndex;
+                    SelectedTextEnd = _selectingTextEndIndex + 1;
+                }
+                else
+                {
+                    SelectedText = _text.Substring(_selectingTextEndIndex, _selectingTextStartIndex - _selectingTextEndIndex + 1);
+                    SelectedTextStart = _selectingTextEndIndex;
+                    SelectedTextEnd = _selectingTextStartIndex + 1;
+                }
+
+                OnTextSelected?.Invoke(SelectedText);
+            }
+            else
+            {
+                if (_lastSelectedIndex == -1)
+                {
+                    var p = _selectingTextStartIndex;
+                    ResetSelection();
+                    OnCharacterClick?.Invoke(p);
+                    _lastSelectedIndex = p;
+                }
+                else
+                {
+                    if (_lastSelectedIndex == _selectingTextStartIndex)
+                    {
+                        SelectedText = _text[_selectingTextStartIndex].ToString();
+                        SelectedTextStart = _selectingTextStartIndex;
+                        SelectedTextEnd = _selectingTextStartIndex;
+                        OnTextSelected?.Invoke(SelectedText);
+                    }
+                    else
+                    {
+                        var p = _selectingTextStartIndex;
+                        ResetSelection();
+                        OnCharacterClick?.Invoke(p);
+                        _lastSelectedIndex = p;
+                    }
+                }
+            }
         }
 
         /// <summary>

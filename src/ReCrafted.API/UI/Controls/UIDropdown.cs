@@ -140,14 +140,17 @@ namespace ReCrafted.API.UI.Controls
             _buttonsContainer.EnableClipping = true;
             _buttonsContainer.EnableScrollBars = true;
 
-            _buttonsContainer.HorizontalScrollBar = false;
-            _buttonsContainer.VerticalScrollBar = true;
+            _buttonsContainer.EnableHorizontalScrollbar = false;
+            _buttonsContainer.EnableVerticalScrollbar = true;
+            _buttonsContainer.EnableScrollButtons = false;
 
             _buttonsContainer.Layout.Space = 0;
             _buttonsContainer.Layout.ForceExpandWidth = true;
             _buttonsContainer.Layout.ForceExpandHeight = true;
 
             _buttonsContainer.Layout.Alignment = UILayoutAlignment.MiddleBottom;
+
+            _buttonsContainer.VerticalScrollbar.Reverse = true;
 
             _rightImage = new UIBox();
 

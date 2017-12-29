@@ -82,6 +82,15 @@ void GameMain::initRuntime()
 				API_PARAM("string", "text");
 			}
 			API_METHOD_END();
+
+			API_COMMENT("Gets clipboard data.");
+			API_METHOD(INTERNAL, STATIC, "GetClipboard", EXTERN);
+			{
+				API_BIND("ReCrafted.API.Core.Game::GetClipboard", &GameMain::getClipboardData);
+
+				API_RETURN("string");
+			}
+			API_METHOD_END();
 		}
 		API_CLASS_END();
 	}

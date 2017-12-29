@@ -213,6 +213,31 @@ public:
 		GlobalFree(hg);
 		MONO_ANSI_FREE(str);
 	}
+
+
+	/// <summary>
+	/// Gets clipboard data.
+	/// </summary>
+	FORCEINLINE static MonoString* getClipboardData()
+	{
+		std::string text = "";
+		if (OpenClipboard(nullptr))
+		{
+			HANDLE hData = GetClipboardData(CF_TEXT);
+			if (hData != nullptr)
+			{
+				char * pszText = static_cast<char*>(GlobalLock(hData));
+				if (pszText != nullptr)
+				{
+					text = pszText;
+					GlobalUnlock(hData);
+					CloseClipboard();
+				}
+			}
+		}
+
+		return mono_string_new(mono_domain_get(), text.c_str());
+	}
 };
 
 #endif // GAMEMAIN_H

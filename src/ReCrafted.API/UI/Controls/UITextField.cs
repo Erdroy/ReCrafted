@@ -155,13 +155,6 @@ namespace ReCrafted.API.UI.Controls
                 UIInternal.BeginViewRect(Region);
 
             #region DRAW
-
-            if (!string.IsNullOrEmpty(_selectableText.SelectedText) && Input.IsKey(Keys.Control) &&
-                Input.IsKeyDown(Keys.C))
-            {
-                Clipboard.SetText(_selectableText.SelectedText);
-            }
-
             if (SmoothColors)
             {
                 _color = Color.Lerp(_color, IsMouseOver ? Colors.OverColor : Colors.NormalColor,
@@ -211,14 +204,11 @@ namespace ReCrafted.API.UI.Controls
             if (!IsFocused)
                 return;
 
-            if (!string.IsNullOrEmpty(_text))
+            if (!string.IsNullOrEmpty(_text) && !Input.IsKey(Keys.Control))
             {
                 var keys = KeyboardBuffer.Read();
                 foreach (var key in keys)
-                {
-                    if (RemoveSelectedText())
-                        return;
-                }
+                    RemoveSelectedText();
             }
 
             // if input field text is empty and position beam isn't zero, fix!
@@ -335,6 +325,25 @@ namespace ReCrafted.API.UI.Controls
                     _textFieldWaitForNextKey2 -= Time.DeltaTime;
                 }
             }
+            else if (Input.IsKey(Keys.Control) && (Input.IsKeyDown(Keys.V) || Input.IsKey(Keys.V)))
+            {
+                _textFieldWaitForNextKey1 += Time.DeltaTime;
+                if (Input.IsKeyDown(Keys.V) ||
+                    _textFieldWaitForNextKey1 > 0.5f && _textFieldWaitForNextKey2 < 0f)
+                {
+                    PasteText();
+                    _textFieldWaitForNextKey2 = 0.1f;
+                }
+                else
+                {
+                    _textFieldWaitForNextKey2 -= Time.DeltaTime;
+                }
+            }
+            else if (Input.IsKey(Keys.Control) && Input.IsKeyDown(Keys.C))
+            {
+                if (!string.IsNullOrEmpty(_selectableText.SelectedText))
+                    Clipboard.SetText(_selectableText.SelectedText);
+            }
             else
             {
                 if (CharactersLimit == 0 || _text.Length <= CharactersLimit)
@@ -418,22 +427,28 @@ namespace ReCrafted.API.UI.Controls
             UIInternal.Color = Color.Black;
             */
 
-            // resolve current beam position
-            var charPosition = FixedCharacterPoint(_textFieldPosition);
+            if (_textFieldPosition > -2)
+            {
+                // resolve current beam position
+                if (_textFieldPosition >= Text.Length)
+                    _textFieldPosition = Text.Length - 1;
 
-            // beam position
-            var beamPosition = new RectangleF(charPosition.X, charPosition.Y - 0.1f, 2, TextFont.Size + 0.2f);
+                var charPosition = FixedCharacterPoint(_textFieldPosition);
 
-            // animate beam color
-            _textFieldPositionColor = Color.Lerp(_textFieldPositionColor,
-                new Color(14 / 255f, 80 / 255f, 186 / 255f, 100 / 255f), (float) Time.DeltaTime * 3f);
-            if (_textFieldPositionColor.A < 110f || type)
-                _textFieldPositionColor.A = 255;
+                // beam position
+                var beamPosition = new RectangleF(charPosition.X, charPosition.Y - 0.4f, 2, TextFont.Size + 0.8f);
 
-            // draw position beam
-            UIInternal.Depth = Depth + 0.3f;
-            UIInternal.Color = _textFieldPositionColor;
-            UIInternal.DrawBox(beamPosition);
+                // animate beam color
+                _textFieldPositionColor = Color.Lerp(_textFieldPositionColor,
+                    new Color(14 / 255f, 80 / 255f, 186 / 255f, 100 / 255f), (float) Time.DeltaTime * 3f);
+                if (_textFieldPositionColor.A < 110f || type)
+                    _textFieldPositionColor.A = 255;
+
+                // draw position beam
+                UIInternal.Depth = Depth + 0.3f;
+                UIInternal.Color = _textFieldPositionColor;
+                UIInternal.DrawBox(beamPosition);
+            }
 
             #endregion
 
@@ -441,6 +456,7 @@ namespace ReCrafted.API.UI.Controls
                 UIInternal.EndViewRect();
         }
 
+        // reset
         public override void Reset()
         {
             _selectableText.ResetSelection();
@@ -455,6 +471,9 @@ namespace ReCrafted.API.UI.Controls
             _selectableText.ResetSelection();
         }
 
+        /// <summary>
+        /// Gets fixed position of character in text.
+        /// </summary>
         private Vector2 FixedCharacterPoint(int characterPosition)
         {
             return _text.Length == 0
@@ -468,21 +487,47 @@ namespace ReCrafted.API.UI.Controls
         // move text field position to left
         private void MovePositionLeft()
         {
-            if (_textFieldPosition - 1 < -1) return;
+            if (!string.IsNullOrEmpty(_selectableText.SelectedText))
+            {
+                var index = _selectableText.SelectedTextStart;
+                _selectableText.ResetSelection();
+                _textFieldPosition = index - 1;
+                return;
+            }
+
+            if (_textFieldPosition - 1 < -1)
+                return;
             _textFieldPosition--;
         }
 
         // move text field position to right
         private void MovePositionRight()
         {
-            if (_textFieldPosition + 1 >= _text.Length) return;
+            if (!string.IsNullOrEmpty(_selectableText.SelectedText))
+            {
+                var index = _selectableText.SelectedTextEnd;
+                _selectableText.ResetSelection();
+                _textFieldPosition = index - 1;
+                return;
+            }
+
+            if (_textFieldPosition + 1 >= _text.Length)
+                return;
             _textFieldPosition++;
         }
 
         // move text field position up
         private void MovePositionUp()
         {
-            var charPoint = _selectableText.GetPointFromCharIndex(_textFieldPosition);
+            var pos = _textFieldPosition;
+            if (!string.IsNullOrEmpty(_selectableText.SelectedText))
+            {
+                var index = _selectableText.SelectedTextStart;
+                _selectableText.ResetSelection();
+                pos = index;
+            }
+
+            var charPoint = _selectableText.GetPointFromCharIndex(pos);
             var point = new Vector2(charPoint.X, charPoint.Y - TextFont.Size / 2f);
             bool exist;
             var newPosition = _selectableText.GetCharIndexFromPoint(point, out exist);
@@ -491,27 +536,41 @@ namespace ReCrafted.API.UI.Controls
             else
             {
                 // get edited line
-                var nextLine = _selectableText.GetLineFromCharIndex(_textFieldPosition + 1);
+                var nextLine = _selectableText.GetLineFromCharIndex(pos + 1);
 
                 // move to previous line
                 nextLine--;
+                if (nextLine < 0)
+                {
+                    _textFieldPosition = -1;
+                }
+                else
+                {
+                    // fix resolved line to avoid any exceptions
+                    _selectableText.IsLineExist(ref nextLine);
 
-                // fix resolved line to avoid any exceptions
-                _selectableText.IsLineExist(ref nextLine);
+                    // get last character of resolved line
+                    bool endOfLineState;
+                    int endOfLine = _selectableText.GetLastCharIndexOfLine(nextLine, out endOfLineState) - 2;
 
-                // get last character of resolved line
-                bool endOfLineState;
-                int endOfLine = _selectableText.GetLastCharIndexOfLine(nextLine, out endOfLineState) - 2;
-
-                // apply new position of IBeam
-                _textFieldPosition = endOfLine;
+                    // apply new position of IBeam
+                    _textFieldPosition = endOfLine;
+                }
             }
         }
 
         // move text field position down
         private void MovePositionDown()
         {
-            var charPoint = _selectableText.GetPointFromCharIndex(_textFieldPosition);
+            var pos = _textFieldPosition;
+            if (!string.IsNullOrEmpty(_selectableText.SelectedText))
+            {
+                var index = _selectableText.SelectedTextStart;
+                _selectableText.ResetSelection();
+                pos = index;
+            }
+
+            var charPoint = _selectableText.GetPointFromCharIndex(pos);
             var point = new Vector2(charPoint.X, charPoint.Y + TextFont.Size * 1.5f);
             bool exist;
             var newPosition = _selectableText.GetCharIndexFromPoint(point, out exist);
@@ -520,7 +579,7 @@ namespace ReCrafted.API.UI.Controls
             else
             {
                 // get edited line
-                var nextLine = _selectableText.GetLineFromCharIndex(_textFieldPosition + 1);
+                var nextLine = _selectableText.GetLineFromCharIndex(pos + 1);
 
                 // move to next line
                 nextLine++;
@@ -538,12 +597,52 @@ namespace ReCrafted.API.UI.Controls
         }
 
         // removes selected text
-        private bool RemoveSelectedText()
+        private void RemoveSelectedText()
         {
-            if (string.IsNullOrEmpty(_selectableText.SelectedText)) return false;
-            //TODO: Remove selected text.
+            if (string.IsNullOrEmpty(_selectableText.SelectedText))
+                return;
 
-            return false;
+            var index = _selectableText.SelectedTextStart;
+            Text = Text.Remove(_selectableText.SelectedTextStart, _selectableText.SelectedTextEnd - _selectableText.SelectedTextStart);
+            _textFieldPosition = index - 1;
+
+            _selectableText.ResetSelection();
+        }
+
+        // paste text
+        private void PasteText()
+        {
+            if (!string.IsNullOrEmpty(_selectableText.SelectedText))
+            {
+                // remove selected text before paste
+                var index = _selectableText.SelectedTextStart;
+                Text = Text.Remove(_selectableText.SelectedTextStart,
+                    _selectableText.SelectedTextEnd - _selectableText.SelectedTextStart);
+                _textFieldPosition = index - 1;
+
+                _selectableText.ResetSelection();
+            }
+
+            _textFieldPosition++;
+            var start = _textFieldPosition;
+            var clipboardText = Clipboard.GetText();
+
+            if (!MultipleLine)
+            {
+                while (clipboardText.Contains(Environment.NewLine))
+                {
+                    clipboardText = clipboardText.Replace(Environment.NewLine, " ");
+                }
+            }
+
+            if (Text.Length > _textFieldPosition)
+            {
+                Text = Text.Insert(_textFieldPosition, clipboardText);
+                _textFieldPosition += clipboardText.Length;
+                _textFieldPosition--;
+            }
+
+            //_selectableText.SelectRegion(start, _textFieldPosition);
         }
 
         // set default properties
@@ -576,6 +675,11 @@ namespace ReCrafted.API.UI.Controls
             _selectableText.OnCharacterClick += position =>
             {
                 _textFieldPosition = position;
+            };
+
+            _selectableText.OnTextStartSelected += () =>
+            {
+                _textFieldPosition = -2;
             };
 
             _usingSelectableText = true;

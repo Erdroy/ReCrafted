@@ -46,7 +46,8 @@ namespace ReCrafted.API.UI.Controls
         /// </summary>
         public UIScrollbar()
         {
-            _applyDefaults(new RectangleF(), 0f, 0.5f, UIControlColors.DefaultHandle, UIControlColors.DefaultHandleBackground);
+            _applyDefaults(new RectangleF(), 0f, 0.5f, UIControlColors.DefaultHandle,
+                UIControlColors.DefaultHandleBackground);
         }
 
         /// <summary>
@@ -66,7 +67,8 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="size">Size of handle in scroll bar.</param>
         public UIScrollbar(RectangleF region, float position, float size)
         {
-            _applyDefaults(region, position, size, UIControlColors.DefaultHandle, UIControlColors.DefaultHandleBackground);
+            _applyDefaults(region, position, size, UIControlColors.DefaultHandle,
+                UIControlColors.DefaultHandleBackground);
         }
 
         /// <summary>
@@ -76,7 +78,8 @@ namespace ReCrafted.API.UI.Controls
         /// <param name="size">Size of handle in scroll bar.</param>
         public UIScrollbar(float position, float size)
         {
-            _applyDefaults(new RectangleF(), position, size, UIControlColors.DefaultHandle, UIControlColors.DefaultHandleBackground);
+            _applyDefaults(new RectangleF(), position, size, UIControlColors.DefaultHandle,
+                UIControlColors.DefaultHandleBackground);
         }
 
         /// <summary>
@@ -130,25 +133,37 @@ namespace ReCrafted.API.UI.Controls
                 _handlePosition = Vertical
                     ? Input.CursorPosition.Y - Region.Y + _handleRegion.Height / 2
                     : Input.CursorPosition.X - Region.X + _handleRegion.Width / 2;
-                OnValueChanged?.Invoke(Position);
+                if (Reverse)
+                    _handlePosition = Vertical ? Region.Height - _handlePosition : Region.Width - _handlePosition;
+                OnValueChanged?.Invoke(HandlePosition);
                 OnHandleClick?.Invoke();
             }
             else if (IsDragging && Input.IsKeyUp(Keys.Mouse0))
                 IsDragging = false;
+
             if (IsDragging)
             {
-                var p = _handlePosition;
-                _handlePosition += (Vertical ? Input.CursorDelta.Y : Input.CursorDelta.X) *
-                                   MathUtil.Clamp(Size * 7f, 0.5f, 1f);
+                var previousHandlePosition = _handlePosition;
+
+                var delta = (Vertical ? Input.CursorDelta.Y : Input.CursorDelta.X) *
+                            MathUtil.Clamp(HandleSize * 7f, 0.5f, 1f);
+                if (Reverse)
+                    _handlePosition -= delta;
+                else
+                {
+                    _handlePosition += delta;
+                }
+
                 _handlePosition = MathUtil.Clamp(_handlePosition, 0, Vertical ? Region.Height : Region.Width);
-                if (Math.Abs(p - _handlePosition) > 0.05f)
-                    OnValueChanged?.Invoke(Position);
+                if (Math.Abs(previousHandlePosition - _handlePosition) > 0.05f)
+                    OnValueChanged?.Invoke(HandlePosition);
 
                 _color = Color.Lerp(_color, Colors.ClickColor, (float) Time.DeltaTime * SmoothTranslation);
             }
             else
             {
-                _color = Color.Lerp(_color, IsMouseOver ? Colors.OverColor : Colors.NormalColor, (float) Time.DeltaTime * SmoothTranslation);
+                _color = Color.Lerp(_color, IsMouseOver ? Colors.OverColor : Colors.NormalColor,
+                    (float) Time.DeltaTime * SmoothTranslation);
                 if (!IsMouseOver && FocusedControl == this)
                     SetFocusedControl(null);
             }
@@ -168,16 +183,18 @@ namespace ReCrafted.API.UI.Controls
             UIInternal.Depth = Depth + 0.1f;
             UIInternal.Color = _color;
 
-            Size = MathUtil.Clamp(Size, 0.05f, 1f);
+            HandleSize = MathUtil.Clamp(HandleSize, 0.05f, 1f);
 
             var pe = _fixedHandlePosition;
             if (Vertical)
             {
-                var height = MathUtil.Clamp(Region.Height * Size, Region.Height * 0.05f, Region.Height);
+                var height = MathUtil.Clamp(Region.Height * HandleSize, Region.Height * 0.05f, Region.Height);
 
                 var min = Region.Y;
                 var max = Region.Y + Region.Height - height;
-                var hp = Region.Y + _handlePosition - height;
+                var hp = Reverse
+                    ? Region.Y + Region.Height - _handlePosition - height
+                    : Region.Y + _handlePosition - height;
                 hp = MathUtil.Clamp(hp, min, max);
 
                 _fixedHandlePosition = MathUtil.Lerp(_fixedHandlePosition, hp, (float) Time.DeltaTime * 15f);
@@ -186,21 +203,25 @@ namespace ReCrafted.API.UI.Controls
             }
             else
             {
-                var width = MathUtil.Clamp(Region.Width * Size, Region.Width * 0.05f, Region.Width);
+                var width = MathUtil.Clamp(Region.Width * HandleSize, Region.Width * 0.05f, Region.Width);
 
                 var min = Region.X;
                 var max = Region.X + Region.Width - width;
-                var hp = Region.X + _handlePosition - width;
+                var hp = Reverse
+                    ? Region.X + Region.Width - _handlePosition - width
+                    : Region.X + _handlePosition - width;
                 hp = MathUtil.Clamp(hp, min, max);
 
                 _fixedHandlePosition = MathUtil.Lerp(_fixedHandlePosition, hp, (float) Time.DeltaTime * 15f);
 
                 _handleRegion = new RectangleF(_fixedHandlePosition, Region.Y, width, Region.Height);
             }
+
             if (Math.Abs(pe - _fixedHandlePosition) > 0.01f)
             {
-                OnHandleChanged?.Invoke(Position);
+                OnHandleChanged?.Invoke(HandlePosition);
             }
+
             UIInternal.DrawBox(_handleRegion);
         }
 
@@ -226,8 +247,8 @@ namespace ReCrafted.API.UI.Controls
             SmoothColors = true;
             SmoothTranslation = 10f;
             Vertical = false;
-            Size = size;
-            Position = position;
+            HandleSize = size;
+            HandlePosition = position;
 
             _color = Colors.NormalColor;
             _backgroundColor = BackgroundColor.NormalColor;
@@ -264,14 +285,19 @@ namespace ReCrafted.API.UI.Controls
         public bool Vertical { get; set; }
 
         /// <summary>
+        /// Position of scroll bar handle will be reversed.
+        /// </summary>
+        public bool Reverse { get; set; }
+
+        /// <summary>
         /// Current size of scroll bar.
         /// </summary>
-        public float Size { get; set; }
+        public float HandleSize { get; set; }
 
         /// <summary>
         /// Current position of scroll bar.
         /// </summary>
-        public float Position
+        public float HandlePosition
         {
             get
             {
@@ -282,16 +308,20 @@ namespace ReCrafted.API.UI.Controls
 
             set
             {
-                var p = _handlePosition;
+                var previousHandlePosition = _handlePosition;
                 if (Vertical)
+                {
                     _handlePosition = Region.Height * value;
+                }
                 else
+                {
                     _handlePosition = Region.Width * value;
+                }
 
                 _handlePosition = MathUtil.Clamp(_handlePosition, 0f, 1f);
 
-                if (Math.Abs(p - _handlePosition) > 0.05f)
-                    OnValueChanged?.Invoke(Position);
+                if (Math.Abs(previousHandlePosition - _handlePosition) > 0.05f)
+                    OnValueChanged?.Invoke(HandlePosition);
             }
         }
 
