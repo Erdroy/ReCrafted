@@ -6,14 +6,9 @@
 #define LOGGER_H
 
 // includes
-#include "Platform/Platform.h"
-#include "Common/ReCraftedAPI.h"
+#include "ReCrafted.h"
 #include "Common/Text.h"
 #include "fmt/format.h"
-
-#ifndef LOGGER_MAXSIZE
-#	define LOGGER_MAXSIZE 8192
-#endif
 
 /**
  * \brief Log level enum, specifies the log level.
@@ -22,8 +17,7 @@ struct LogLevel
 {
 	enum Enum
 	{
-		Info = 0,
-		Debug,
+		Message = 0,
 		Warning,
 		Error,
 		Fatal,
@@ -31,6 +25,8 @@ struct LogLevel
 		Count
 	};
 };
+
+class Method;
 
 /**
  * \brief Logger class - provides basic logging system.
@@ -41,25 +37,22 @@ class Logger
 	friend class GameMain;
 
 private:
-	API_DEF
-
-private:
 	static Logger* m_instance;
 
 private:
-	File m_logFile = {};
-	bool m_canWrite = false;
+    Ptr<Method> m_api_log_callback = nullptr;
+    Ptr<Method> m_api_log_shutdown = nullptr;
 	
 private:
 	Logger() { m_instance = this; }
 
 private:
 	void init();
+    void postInit();
 	void dispose();
 
 private:
-	void write(const char* message, LogLevel::Enum logLevel = LogLevel::Debug) const;
-	void write(Char* message, LogLevel::Enum logLevel = LogLevel::Debug) const;
+    void invokeCallback(const char* message, LogLevel::Enum logLevel);
 
 public:
 	/**
@@ -68,7 +61,7 @@ public:
 	 */
 	FORCEINLINE static void logException(const char* message)
 	{
-		m_instance->write(message, LogLevel::Fatal);
+        m_instance->invokeCallback(message, LogLevel::Fatal);
 	}
 
 	/**
@@ -79,7 +72,8 @@ public:
 	FORCEINLINE static void logException(const char* format, fmt::ArgList args)
 	{
 		auto string = fmt::format(format, args);
-		m_instance->write(string.c_str(), LogLevel::Fatal);
+        auto cstring = string.c_str();
+        m_instance->invokeCallback(cstring, LogLevel::Fatal);
 	}
 	FMT_VARIADIC(static void, logException, const char *)
 
@@ -89,7 +83,7 @@ public:
 	*/
 	FORCEINLINE static void logError(const char* message)
 	{
-		m_instance->write(message, LogLevel::Error);
+        m_instance->invokeCallback(message, LogLevel::Error);
 	}
 
 	/**
@@ -99,8 +93,9 @@ public:
 	*/
 	FORCEINLINE static void logError(const char* format, fmt::ArgList args)
 	{
-		auto string = fmt::format(format, args);
-		m_instance->write(string.c_str(), LogLevel::Error);
+        auto string = fmt::format(format, args);
+        auto cstring = string.c_str();
+        m_instance->invokeCallback(cstring, LogLevel::Error);
 	}
 	FMT_VARIADIC(static void, logError, const char *)
 
@@ -110,7 +105,7 @@ public:
 	*/
 	FORCEINLINE static void logWarning(const char* message)
 	{
-		m_instance->write(message, LogLevel::Warning);
+        m_instance->invokeCallback(message, LogLevel::Warning);
 	}
 
 	/**
@@ -120,8 +115,9 @@ public:
 	*/
 	FORCEINLINE static void logWarning(const char* format, fmt::ArgList args)
 	{
-		auto string = fmt::format(format, args);
-		m_instance->write(string.c_str(), LogLevel::Warning);
+        auto string = fmt::format(format, args);
+        auto cstring = string.c_str();
+        m_instance->invokeCallback(cstring, LogLevel::Warning);
 	}
 	FMT_VARIADIC(static void, logWarning, const char *)
 
@@ -131,7 +127,7 @@ public:
 	*/
 	FORCEINLINE static void logInfo(const char* message)
 	{
-		m_instance->write(message, LogLevel::Info);
+        m_instance->invokeCallback(message, LogLevel::Message);
 	}
 
 	/**
@@ -142,73 +138,32 @@ public:
 	FORCEINLINE static void logInfo(const char* format, fmt::ArgList args)
 	{
 		auto string = fmt::format(format, args);
-		m_instance->write(string.c_str(), LogLevel::Info);
+        auto cstring = string.c_str();
+        m_instance->invokeCallback(cstring, LogLevel::Message);
 	}
 	FMT_VARIADIC(static void, logInfo, const char *)
 
 	/**
-	* \brief Writes debug message into log file.
+	* \brief Writes info message into log file.
 	* \param message The message.
 	*/
-	FORCEINLINE static void logDebug(const char* message)
+	FORCEINLINE static void log(const char* message)
 	{
-		m_instance->write(message, LogLevel::Debug);
+        m_instance->invokeCallback(message, LogLevel::Message);
 	}
 
 	/**
-	* \brief Writes debug message into log file.
+	* \brief Writes info message into log file.
 	* \param format The message format.
 	* \param args The message arguments.
 	*/
-	FORCEINLINE static void logDebug(const char* format, fmt::ArgList args)
+	FORCEINLINE static void log(const char* format, fmt::ArgList args)
 	{
 		auto string = fmt::format(format, args);
-		m_instance->write(string.c_str(), LogLevel::Debug);
+        auto cstring = string.c_str();
+        m_instance->invokeCallback(cstring, LogLevel::Message);
 	}
-	FMT_VARIADIC(static void, logDebug, const char *)
-
-public:
-	/**
-	 * \brief Writes message into log file using given log level.
-	 * \param logLevel The log level.
-	 * \param message The message.
-	 */
-	FORCEINLINE static void log(LogLevel::Enum logLevel, const char* message)
-	{
-		m_instance->write(message, logLevel);
-	}
-
-	/**
-	* \brief Writes debug message into log file.
-	* \param format The message format.
-	* \param args The message arguments.
-	*/
-	FORCEINLINE static void log(LogLevel::Enum logLevel, const char* format, fmt::ArgList args)
-	{
-		auto string = fmt::format(format, args);
-		m_instance->write(string.c_str(), logLevel);
-	}
-	FMT_VARIADIC(static void, log, LogLevel::Enum, const char *)
-
-	/**
-	* \brief Writes (UTF-16) message into log file using given log level.
-	* \param logLevel The log level.
-	* \param message The message.
-	*/
-	FORCEINLINE static void log(LogLevel::Enum logLevel, Char* message)
-	{
-		m_instance->write(message, logLevel);
-	}
-
-	/**
-	* \brief Writes (UTF-16) text message into log file using given log level.
-	* \param logLevel The log level.
-	* \param message The message.
-	*/
-	FORCEINLINE static void log(LogLevel::Enum logLevel, const Text& message)
-	{
-		m_instance->write(message.data(), logLevel);
-	}
+	FMT_VARIADIC(static void, log, const char *)
 };
 
 #endif // LOGGER_H

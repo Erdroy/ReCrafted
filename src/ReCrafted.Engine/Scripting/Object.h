@@ -58,6 +58,8 @@ public:
     virtual void onDestroy() {}
 
 public:
+    static Ptr<Method> findStaticMethod(const char* methodName);
+
 	/// <summary>
 	/// Creates instance of API class.
 	/// WARNING: Only for API objects!

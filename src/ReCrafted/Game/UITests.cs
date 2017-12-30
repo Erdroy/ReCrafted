@@ -91,7 +91,7 @@ namespace ReCrafted.Game
             dropDown.ListHeight = 150;
             
             sw.Stop();
-            Logger.Write("Ui Construct Took -> " + sw.ElapsedMilliseconds + "ms");
+            Logger.Log("Ui Construct Took -> " + sw.ElapsedMilliseconds + "ms");
         }
 
         private float _uiDebugTime;

@@ -15,6 +15,7 @@ class Assembly
 	friend class ScriptingEngine;
 	friend class Domain;
 	friend class Class;
+    friend class Object;
 
 private:
 	MonoDomain* m_domain = nullptr;

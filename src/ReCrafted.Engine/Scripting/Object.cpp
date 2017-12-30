@@ -18,6 +18,8 @@ Ptr<Method> Object::findMethod(const char* methodName) const
 
     auto methodHandle = mono_method_desc_search_in_class(methodDesc, m_class);
 
+    mono_method_desc_free(methodDesc);
+
 	if (!methodHandle)
 		return nullptr;
 
@@ -45,6 +47,26 @@ Ptr<Field> Object::findField(const char* fieldName) const
 MonoObject* Object::getManagedPtr() const
 {
 	return m_object;
+}
+
+Ptr<Method> Object::findStaticMethod(const char* methodName)
+{
+    auto methodDesc = mono_method_desc_new(methodName, true);
+    if (!methodDesc)
+        return nullptr;
+
+    auto image = mono_assembly_get_image(Assembly::API.get()->m_assembly);
+    auto methodHandle = mono_method_desc_search_in_image(methodDesc, image);
+
+    mono_method_desc_free(methodDesc);
+
+    if (!methodHandle)
+        return nullptr;
+
+    Ptr<Method> method(new Method);
+    method->m_object = nullptr;
+    method->m_method = methodHandle;
+    return method;
 }
 
 void Object::create(Ptr<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject)

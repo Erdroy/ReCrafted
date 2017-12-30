@@ -416,7 +416,7 @@ namespace ReCrafted.API.UI
                 }
                 catch (Exception ex)
                 {
-                    Logger.Write(ex.ToString(), LogLevel.Error);
+                    Logger.LogError(ex.ToString());
                 }
             }
             if (Input.IsKeyDown(Keys.Mouse0) && !HaveCollision)

@@ -12,7 +12,7 @@ namespace ReCrafted.Game.Core
         /// </summary>
         public static void RegisterUEHandler()
         {
-            Logger.Write("Registered UnhandledException handler");
+            Logger.Log("Registered UnhandledException handler");
 
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
@@ -35,7 +35,7 @@ namespace ReCrafted.Game.Core
         // private
         internal static void WriteException(Exception exception)
         {
-            Logger.Write($"Unhandled Exception: {GetExceptionString(exception)}", LogLevel.Error);
+            Logger.Log($"Unhandled Exception: {GetExceptionString(exception)}", LogLevel.Error);
 
             // check for inner exception
             if (exception.InnerException == null)
@@ -46,7 +46,7 @@ namespace ReCrafted.Game.Core
             // handle all inner exceptions
             while (exception != null)
             {
-                Logger.Write($"Inner Exception: {GetExceptionString(exception)}", LogLevel.Error);
+                Logger.Log($"Inner Exception: {GetExceptionString(exception)}", LogLevel.Error);
 
                 if (exception.InnerException == null)
                     return;

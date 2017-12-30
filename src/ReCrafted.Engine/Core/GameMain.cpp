@@ -184,9 +184,7 @@ void GameMain::initScripting()
 
 	if(!Platform::fileExists("ReCrafted.Game.dll") || !Platform::fileExists("ReCrafted.API.dll"))
 	{
-		Logger::logException("Could not find some of game assemblies.");
 		exit(-1);
-		return;
 	}
 
 	// load base assemblies
@@ -206,7 +204,8 @@ void GameMain::initScripting()
 	m_drawui_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::DrawUI");
 	m_shutdown_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Shutdown");
 
-	Logger::logInfo("Scripting initialized");
+    // call postInit as scripting has been initialized
+    Logger::m_instance->postInit();
 }
 
 void GameMain::waitForTargetFps(double last)
@@ -371,12 +370,11 @@ void GameMain::onLoad()
 	m_logger = new Logger();
 	m_logger->init();
 
+    // initialize scripting engine
+    initScripting();
+
 	Logger::logInfo("ReCrafted - startup");
-
 	Logger::logInfo("Creating game renderer using Direct3D11 API");
-
-	// initialize scripting engine
-	initScripting();
 
 	// initialize bgfx
 	bgfx::init(bgfx::RendererType::Direct3D11);
@@ -449,22 +447,23 @@ void GameMain::onUnload()
 	m_ui->dispose();
 	SafeDispose(m_ui);
 
-	// shutdown scripting engine
-	m_domain->cleanup();
-
 	// shutdown debug draw
 	DebugDraw::shutdown();
 
 	// shutdown bindings
 	Bindings::shutdown();
 
-	// shutdown HTML5 UI
-	//HTML5UI::shutdown();
+    // say bye
+    Logger::logInfo("Bye!");
 
-	// shutdown rendering
-	bgfx::shutdown();
-
+    // kill logger
 	SafeDispose(m_logger);
+
+    // shutdown scripting engine
+    m_domain->cleanup();
+
+    // shutdown rendering
+    bgfx::shutdown();
 }
 
 void GameMain::onResize(uint width, uint height)

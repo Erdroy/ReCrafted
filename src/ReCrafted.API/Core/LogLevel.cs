@@ -5,7 +5,6 @@ namespace ReCrafted.API.Core
     public enum LogLevel
     {
         Info = 0,
-        Debug,
         Warning,
         Error,
         Fatal

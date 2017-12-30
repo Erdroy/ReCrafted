@@ -17,10 +17,8 @@ private:
 	MonoMethod* m_method = nullptr;
 
 public:
-	/// <summary>
-	/// Invokes the method.
-	/// </summary>
-	void invoke() const;
+	void invoke(void** params = nullptr) const;
+    void invokeStatic(void** params = nullptr) const;
 };
 
 #endif // METHOD_H

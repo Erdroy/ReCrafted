@@ -145,9 +145,6 @@ namespace ReCrafted.Game.Super
                 case LogLevel.Info:
                     uiText.TextColor = Color.White;
                     break;
-                case LogLevel.Debug:
-                    uiText.TextColor = Color.Orange;
-                    break;
                 case LogLevel.Warning:
                     uiText.TextColor = Color.Yellow;
                     break;

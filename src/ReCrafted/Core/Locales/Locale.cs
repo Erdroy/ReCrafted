@@ -28,7 +28,7 @@ namespace ReCrafted.Core.Locales
                 throw new Exception(language + " language is not avaliable!");
             }
 
-            Logger.Write("Loading locale...");
+            Logger.Log("Loading locale...");
 
             var json = File.ReadAllText($"../locales/{language}.json");
             var obj = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);

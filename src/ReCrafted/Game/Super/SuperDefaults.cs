@@ -35,7 +35,6 @@ namespace ReCrafted.Game.Super
             SuperCommands.Register("", "debug", () =>
             {
                 SuperConsole.Write("Hello Info", LogLevel.Info);
-                SuperConsole.Write("Hello Debug", LogLevel.Debug);
                 SuperConsole.Write("Hello Warning", LogLevel.Warning);
                 SuperConsole.Write("Hello Error", LogLevel.Error);
                 SuperConsole.Write("Hello Fatal", LogLevel.Fatal);

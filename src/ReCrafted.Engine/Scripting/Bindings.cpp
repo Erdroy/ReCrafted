@@ -4,7 +4,6 @@
 #include "Object.h"
 
 #include "Core/GameMain.h"
-#include "Core/Logger.h"
 #include "Common/Display.h"
 #include "Common/Profiler/Profiler.h"
 #include "Common/Input/Input.h"
@@ -18,7 +17,6 @@ void Bindings::bind()
 {
 	Object::initRuntime();
 
-	Logger::initRuntime();
 	Input::initRuntime();
 	GameMain::initRuntime();
 	Time::initRuntime();

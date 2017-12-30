@@ -178,7 +178,6 @@ namespace ReCrafted.Game
         // shutdown
         protected override void Shutdown()
         {
-
         }
 
         /// <summary>
