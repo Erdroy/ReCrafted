@@ -23,7 +23,7 @@ namespace ReCrafted.API.UI
         internal static bool HaveCollision;
 
         // last collision of mouse on control of any panel
-        internal static UIControl LastCollision;
+        internal static UIControl Collision;
 
         private bool _fixed;
 
@@ -132,26 +132,35 @@ namespace ReCrafted.API.UI
                 Layout.Draw();
 
                 //calculate mouse collisions
-                if (!HaveCollision)
+                if (Cursor.Lock)
                 {
-                    var currentCollision = Layout.LookForMouseCollision();
-                    if (Input.IsKeyDown(Keys.Mouse0))
+                    Collision = null;
+                    HaveCollision = false;
+                }
+                else
+                {
+                    if (!HaveCollision)
                     {
-                        if (currentCollision != null)
+                        Collision = Layout.LookForMouseCollision();
+                        if (Collision != null)
                         {
                             HaveCollision = true;
-                            currentCollision.OnMouseClick();
-                            if (FocusedControl != currentCollision)
-                                SetFocusedControl(currentCollision);
+                            if (Input.IsKeyDown(Keys.Mouse0))
+                            {
+                                Collision.OnMouseClick();
+                                if (FocusedControl != Collision)
+                                    SetFocusedControl(Collision);
+                            }
                         }
                         else
                         {
-                            _checkForPanelCollision();
+                            if (Region.Contains(Input.CursorPosition))
+                            {
+                                Collision = this;
+                                HaveCollision = true;
+                            }
                         }
                     }
-
-                    if (currentCollision != null)
-                        LastCollision = currentCollision;
                 }
 
                 // fix
@@ -277,16 +286,6 @@ namespace ReCrafted.API.UI
         public void Remove<T>(T instance) where T : UIControl
         {
             Layout.Remove(instance);
-        }
-
-        // checks if mouse collide with this panel
-        private void _checkForPanelCollision()
-        {
-            if (!Region.Contains(Input.CursorPosition)) return;
-            HaveCollision = true;
-            OnMouseClick();
-            if (FocusedControl != this)
-                SetFocusedControl(this);
         }
 
         // content of panel's layout or panel's region has been changed 

@@ -104,10 +104,10 @@ namespace ReCrafted.Game
                 _uiDebugTime = 0f;
 
                 DebugPanelText.Region = new RectangleF(20, Display.Height - 100f, 0, 0);
-                DebugPanelText.Text = "Focused Control -> " + (UIControl.FocusedControl?.GetType().ToString() ?? "<none>") + "\n" +
+                DebugPanelText.Text = "Focused Control -> " + (UIControl.FocusedControl?.GetType().ToString() ?? "<none>") + " (" + (UIControl.FocusedControl?.Name ?? "<none>") + ") \n" +
                                       "Focused Control Root -> " + ((string.IsNullOrEmpty(UIControl.FocusedControl?.GetRoot()?.Name) ? UIControl.FocusedControl?.GetRoot()?.GetType().ToString() : UIControl.FocusedControl?.GetRoot()?.Name) ?? "<none>") + "\n" +
                                       "Focused Control Region -> " + (UIControl.FocusedControl?.Region.ToString() ?? "<none>") + "\n" +
-                                      "Last Mouse Control -> " + (UIPanel.LastCollision?.GetType().ToString() ?? "<null>") + "\n" +
+                                      "Under Mouse Control -> " + (UIPanel.Collision?.GetType().ToString() ?? "<null>") + " (" + (UIPanel.Collision?.Name ?? "<null>") + ") \n" +
                                       "Mouse Position -> " + Input.CursorPosition;
             }
         }
