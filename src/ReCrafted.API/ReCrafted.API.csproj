@@ -123,6 +123,7 @@
     <Compile Include="UI\UIPadding.cs" />
     <Compile Include="UI\UIPanel.cs" />
     <Compile Include="UI\UISelectableText.cs" />
+    <Compile Include="Utils\TextWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
