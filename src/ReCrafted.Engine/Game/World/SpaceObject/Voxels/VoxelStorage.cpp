@@ -5,13 +5,14 @@
 #include "VoxelCHM.h"
 #include "Core/Math/Math.h"
 #include "Core/Logger.h"
+#include "Game/World/SpaceObject/LODTable.h"
 #include "Game/World/SpaceObject/SpaceObjectChunk.h"
 #include "Game/World/SpaceObject/SpaceObjectSettings.h"
 
 FORCEINLINE sbyte sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, const Vector3& position, const int lod, const float radius, const float hillsHeight)
 {
     // calculate current voxel size
-    cvar lodSize = pow(2.0f, lod - 1);
+    cvar lodSize = lodtable[lod];
 
     // the terrain height (over planet, sphere is the base)
     cvar terrainHeight = radius + chm->sample(position, radius, lod) * hillsHeight;
