@@ -85,10 +85,10 @@ namespace ReCrafted.Game
             UIControl.CreateControl(ref freeScrollBarButton);      
             */
 
-            //var dropDown = UIControl.CreateControl(new UIDropdown(new RectangleF(600, 600, 120, 30)));
-            //var values = new List<string> {"Hello", "World", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
-            //dropDown.Values = values;
-            //dropDown.ListHeight = 150;
+            var dropDown = UIControl.CreateControl(new UIDropdown(new RectangleF(600, 600, 120, 30)));
+            var values = new List<string> {"Hello", "World", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
+            dropDown.Values = values;
+            dropDown.ListHeight = 150;
             
             sw.Stop();
             Logger.Write("Ui Construct Took -> " + sw.ElapsedMilliseconds + "ms");
@@ -106,8 +106,9 @@ namespace ReCrafted.Game
                 DebugPanelText.Region = new RectangleF(20, Display.Height - 100f, 0, 0);
                 DebugPanelText.Text = "Focused Control -> " + (UIControl.FocusedControl?.GetType().ToString() ?? "<none>") + " (" + (UIControl.FocusedControl?.Name ?? "<none>") + ") \n" +
                                       "Focused Control Root -> " + ((string.IsNullOrEmpty(UIControl.FocusedControl?.GetRoot()?.Name) ? UIControl.FocusedControl?.GetRoot()?.GetType().ToString() : UIControl.FocusedControl?.GetRoot()?.Name) ?? "<none>") + "\n" +
-                                      "Focused Control Region -> " + (UIControl.FocusedControl?.Region.ToString() ?? "<none>") + "\n" +
-                                      "Under Mouse Control -> " + (UIPanel.Collision?.GetType().ToString() ?? "<null>") + " (" + (UIPanel.Collision?.Name ?? "<null>") + ") \n" +
+                                      "Focused Control Region -> " + (UIControl.FocusedControl?.Region.ToString() ?? "<none>") + "\n" +                           
+                                      "Under Mouse Control -> " + (UIPanel.Collision?.GetType().ToString() ?? "<null>") + " (" + (UIPanel.Collision?.Name ?? "<null>") + ") ( Parent - " + (UIPanel.Collision?.Parent?.Name ?? "<null>") + " ) \n" +
+                                      "Under Mouse Control Root -> " + ((string.IsNullOrEmpty(UIPanel.Collision?.GetRoot()?.Name) ? UIPanel.Collision?.GetRoot()?.GetType().ToString() : UIPanel.Collision?.GetRoot()?.Name) ?? "<none>") + "\n" +
                                       "Mouse Position -> " + Input.CursorPosition;
             }
         }

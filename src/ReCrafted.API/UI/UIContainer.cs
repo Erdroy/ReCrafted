@@ -88,6 +88,7 @@ namespace ReCrafted.API.UI
         {
             if (instance == null) throw new ArgumentNullException(nameof(instance));
             if (!_controls.Contains(instance)) return;
+            instance.Parent = null;
             instance.OnRegionChanged();
             _controls.Remove(instance);
             OnControlsChanged?.Invoke();
@@ -106,19 +107,26 @@ namespace ReCrafted.API.UI
         // some stuff with mouse collision on controls
         internal UIControl LookForMouseCollision()
         {
-            if (!Enabled) return null;
+            if (!Enabled)
+                return null;
+
             Profiler.BeginProfile("UIContainer.LookForMouseCollision");
             UIControl mouseControlCollision = null;
             var mousePoint = Input.CursorPosition;
             var reversed = Controls.Reverse();
             foreach (var control in reversed)
             {
-                if (control.OnMouseCollision() != null) continue;
-                if (control.IgnoreMouseCollision || !control.Enabled) continue;
+                if (control.OnMouseCollision() != null)
+                    continue;
+                if (control.IgnoreMouseCollision || !control.Enabled)
+                    continue;
+
                 if (!control.Region.Contains(mousePoint) ||
                     mouseControlCollision != null && mouseControlCollision != control)
                 {
-                    if (!control.IsMouseOver) continue;
+                    if (!control.IsMouseOver)
+                        continue;
+
                     control.IsMouseOver = false;
                     control.OnMouseExit();
                 }
@@ -137,6 +145,7 @@ namespace ReCrafted.API.UI
                     mouseControlCollision = control;
                 }
             }
+
             Profiler.EndProfile();
             return mouseControlCollision;
         }

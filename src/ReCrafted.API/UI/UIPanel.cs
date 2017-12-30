@@ -19,11 +19,11 @@ namespace ReCrafted.API.UI
         // actual list of all panels in ui.
         private static readonly List<UIPanel> Panels = new List<UIPanel>();
 
-        // is mouse collide with any control of any panel?
-        internal static bool HaveCollision;
-
         // last collision of mouse on control of any panel
         internal static UIControl Collision;
+
+        // is mouse collide with any control of any panel?
+        internal static bool HaveCollision => Collision != null;
 
         private bool _fixed;
 
@@ -91,6 +91,31 @@ namespace ReCrafted.API.UI
         {
             if (Enabled)
             {
+                // handle scroll bars
+                if (EnableScrollBars)
+                {
+                    Profiler.BeginProfile($"Panel <{(string.IsNullOrEmpty(_internalPanel.Name) ? "empty" : _internalPanel.Name)}> ");
+
+                    _horizotnalScrollbar.Enabled = EnableHorizontalScrollbar;
+                    if (EnableHorizontalScrollbar)
+                        _horizotnalScrollbar.Region = new RectangleF(_scrollRegion.X,
+                            _scrollRegion.Y + _scrollRegion.Height, _scrollRegion.Width, _scrollBarsSize);
+
+                    _verticalScrollbar.Enabled = EnableVerticalScrollbar;
+                    _verticalButtonTop.Enabled = EnableScrollButtons;
+                    _verticalButtonBottom.Enabled = EnableScrollButtons;
+                    if (EnableVerticalScrollbar)
+                    {
+                        _verticalScrollbar.Region = new RectangleF(_scrollRegion.X + _scrollRegion.Width,
+                            _scrollRegion.Y + (EnableScrollButtons ? _scrollBarsSize : 0),
+                            _scrollBarsSize, _scrollRegion.Height - _scrollBarsSize * ((EnableHorizontalScrollbar ? 1 : 0) + (EnableScrollButtons ? 1 : 0)));
+                    }
+
+                    _internalPanel.Region = Region;
+                    _internalPanel.Draw();
+                    Profiler.EndProfile();
+                }
+
                 Profiler.BeginProfile($"Panel <{(string.IsNullOrEmpty(Name) ? "empty" : Name)}> ");
 
                 UIInternal.Depth = Depth;
@@ -133,31 +158,25 @@ namespace ReCrafted.API.UI
 
                 //calculate mouse collisions
                 if (Cursor.Lock)
-                {
                     Collision = null;
-                    HaveCollision = false;
-                }
                 else
                 {
                     if (!HaveCollision)
                     {
                         Collision = Layout.LookForMouseCollision();
+                        if (Collision == null)
+                        {
+                            if (!IgnoreMouseCollision && Region.Contains(Input.CursorPosition))
+                                Collision = this;
+                        }
+
                         if (Collision != null)
                         {
-                            HaveCollision = true;
                             if (Input.IsKeyDown(Keys.Mouse0))
                             {
                                 Collision.OnMouseClick();
                                 if (FocusedControl != Collision)
                                     SetFocusedControl(Collision);
-                            }
-                        }
-                        else
-                        {
-                            if (Region.Contains(Input.CursorPosition))
-                            {
-                                Collision = this;
-                                HaveCollision = true;
                             }
                         }
                     }
@@ -175,30 +194,6 @@ namespace ReCrafted.API.UI
                     UIInternal.EndViewRect();
 
                 Profiler.EndProfile();
-
-                // handle scroll bars
-                if (EnableScrollBars)
-                {
-                    Profiler.BeginProfile($"Panel <{(string.IsNullOrEmpty(_internalPanel.Name) ? "empty" : _internalPanel.Name)}> ");
-
-                    _horizotnalScrollbar.Enabled = EnableHorizontalScrollbar;
-                    if (EnableHorizontalScrollbar)
-                        _horizotnalScrollbar.Region = new RectangleF(_scrollRegion.X,
-                            _scrollRegion.Y + _scrollRegion.Height, _scrollRegion.Width, _scrollBarsSize);
-
-                    _verticalScrollbar.Enabled = EnableVerticalScrollbar;
-                    _verticalButtonTop.Enabled = EnableScrollButtons;
-                    _verticalButtonBottom.Enabled = EnableScrollButtons;
-                    if (EnableVerticalScrollbar)
-                    {
-                        _verticalScrollbar.Region = new RectangleF(_scrollRegion.X + _scrollRegion.Width,
-                            _scrollRegion.Y + (EnableScrollButtons ? _scrollBarsSize : 0),
-                            _scrollBarsSize, _scrollRegion.Height - _scrollBarsSize * ((EnableHorizontalScrollbar ? 1 : 0 ) + (EnableScrollButtons ? 1 : 0)));
-                    }
-
-                    _internalPanel.Draw();
-                    Profiler.EndProfile();
-                }
             }
         }
 
@@ -356,11 +351,14 @@ namespace ReCrafted.API.UI
             }
             else
             {
-                _internalPanel = Create(Region, UILayoutType.Vertical, Name + "<Internal>", Depth);
+                _internalPanel = Create(Region, UILayoutType.Vertical, Name + "-Internal (Scroll)", Depth);
                 _internalPanel.ApplyLayout = false;
                 _internalPanel.PanelColor = Color.Transparent;
                 _internalPanel.Parent = this;
+                _internalPanel.IgnoreMouseCollision = true;
+
                 _horizotnalScrollbar = _internalPanel.Add(new UIScrollbar());
+                _horizotnalScrollbar.Name = "Horizontal Scrollbar";
                 _horizotnalScrollbar.Vertical = false;
                 _horizotnalScrollbar.OnValueChanged += position =>
                 {
@@ -370,6 +368,7 @@ namespace ReCrafted.API.UI
                 };
 
                 _verticalScrollbar = _internalPanel.Add(new UIScrollbar());
+                _verticalScrollbar.Name = "Vertical Scrollbar";
                 _verticalScrollbar.Vertical = true;
                 _verticalScrollbar.OnHandleChanged += position =>
                 {
@@ -400,7 +399,8 @@ namespace ReCrafted.API.UI
         internal static void DrawAll()
         {
             // reset
-            HaveCollision = false;
+            Collision = null;
+
             for (var index = Panels.Count - 1; index >= 0; index--)
             {
                 try
@@ -473,12 +473,17 @@ namespace ReCrafted.API.UI
                 }
             };
 
-            panel.Layout.OnControlsChanged += panel.OnChanged;
-
-            panel.OnChanged();
-
             // add new panel
             Panels.Add(panel);
+
+            // sort list by depth
+            Panels.Sort((x, y) => x.Depth.CompareTo(y.Depth));
+
+            // call on change event
+            panel.OnChanged();
+
+            // register on change event
+            panel.Layout.OnControlsChanged += panel.OnChanged;
 
             return panel;
         }

@@ -171,6 +171,7 @@ namespace ReCrafted.API.UI.Controls
         // when current value of drop down was click
         private void OnValueClick()
         {
+            Logger.Write("OnClick");
             _displayList = !_displayList;
         }
 
