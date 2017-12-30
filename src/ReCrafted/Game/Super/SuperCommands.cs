@@ -236,7 +236,7 @@ namespace ReCrafted.Game.Super
 
             if (commands.Length == 0)
             {
-                SuperConsole.Write("'" + commandName + "' command not found.", LogLevel.Error);
+                Logger.LogError("'" + commandName + "' command not found.");
                 return;
             }
 
@@ -254,9 +254,7 @@ namespace ReCrafted.Game.Super
 
             if (!found)
             {
-                SuperConsole.Write(
-                    "'" + commandName + "' command exists, but invalid parameters were given." + parameters.Length,
-                    LogLevel.Error);
+                Logger.LogError("'" + commandName + "' command exists, but invalid parameters were given." + parameters.Length);
                 return;
             }
 
@@ -283,8 +281,7 @@ namespace ReCrafted.Game.Super
                         }
                         else
                         {
-                            SuperConsole.Write("invalid parameter type were given for '" + parameter + "'",
-                                LogLevel.Error);
+                            Logger.LogError("invalid parameter type were given for '" + parameter + "'");
                             return;
                         }
                         break;
@@ -296,8 +293,7 @@ namespace ReCrafted.Game.Super
                         }
                         else
                         {
-                            SuperConsole.Write("invalid parameter type were given for '" + parameter + "'",
-                                LogLevel.Error);
+                            Logger.LogError("invalid parameter type were given for '" + parameter + "'");
 
                             return;
                         }
@@ -310,8 +306,7 @@ namespace ReCrafted.Game.Super
                         }
                         else
                         {
-                            SuperConsole.Write("invalid parameter type were given for '" + parameter + "'",
-                                LogLevel.Error);
+                            Logger.LogError("invalid parameter type were given for '" + parameter + "'");
                             return;
                         }
                         break;
@@ -323,13 +318,12 @@ namespace ReCrafted.Game.Super
                         }
                         else
                         {
-                            SuperConsole.Write("invalid parameter type were given for '" + parameter + "'",
-                                LogLevel.Error);
+                            Logger.LogError("invalid parameter type were given for '" + parameter + "'");
                             return;
                         }
                         break;
                     default:
-                        SuperConsole.Write("command target method has invalid type in parameters!", LogLevel.Error);
+                        Logger.LogError("command target method has invalid type in parameters!");
                         return;
                 }
 
@@ -370,7 +364,7 @@ namespace ReCrafted.Game.Super
         {
             if (Instance != null)
             {
-                SuperConsole.Write("MyCommand can be initialized only once!", LogLevel.Error);
+                Logger.LogError("SuperCommands can be initialized only once!");
                 return;
             }
 

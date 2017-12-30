@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
@@ -15,6 +16,7 @@ namespace ReCrafted.Game
     {
         public UIPanel DebugPanel;
         public UIText DebugPanelText;
+
         protected internal override void OnCreate()
         {
             var sw = Stopwatch.StartNew();
@@ -63,33 +65,36 @@ namespace ReCrafted.Game
 
             var panelTextField = UIControl.CreateControl(new UITextField(new RectangleF(300, 300, 130, 128), string.Empty));
             panelTextField.Text = "123\n456\n789\n\nqwe\n\n\nrty";
-            *
+            */
 
-            /*
+
             var freeScrollbarText = UIControl.CreateControl(new UIText(new RectangleF(100, 530, 100, 30)));
-            var freeScrollBar = UIControl.CreateControl(new UIScrollbar(new RectangleF(200, 500, 150, 450)) { Vertical = true, Size = 0.1f });
+            var freeScrollBar =
+                UIControl.CreateControl(
+                    new UIScrollbar(new RectangleF(200, 500, 150, 450)) {Vertical = true, HandleSize = 0.1f});
 
             freeScrollBar.OnValueChanged += value =>
             {
-                freeScrollbarText.Text = freeScrollBar.Position.ToString(CultureInfo.InvariantCulture) + '\n' + freeScrollBar.Size.ToString(CultureInfo.InvariantCulture);
+                freeScrollbarText.Text = freeScrollBar.Position.ToString(CultureInfo.InvariantCulture) + '\n' +
+                                         freeScrollBar.Size.ToString(CultureInfo.InvariantCulture);
             };
 
-            var freeScrollBarButton = new UIButton (new RectangleF(100, 500, 100, 30)) { Text = "Click Me!" };
+            var freeScrollBarButton = new UIButton(new RectangleF(100, 500, 100, 30)) {Text = "Click Me!"};
             freeScrollBarButton.OnClick += () =>
             {
                 var r = new Random();
-                freeScrollBar.Position = r.Next(0, 10) / 10f;
-                freeScrollBar.Size = r.Next(0, 10) / 10f;
+                freeScrollBar.HandlePosition = r.Next(0, 10) / 10f;
+                freeScrollBar.HandleSize = r.Next(0, 10) / 10f;
             };
 
-            UIControl.CreateControl(ref freeScrollBarButton);      
-            */
+            UIControl.CreateControl(ref freeScrollBarButton);
 
-            var dropDown = UIControl.CreateControl(new UIDropdown(new RectangleF(600, 600, 120, 30)));
-            var values = new List<string> {"Hello", "World", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
-            dropDown.Values = values;
-            dropDown.ListHeight = 150;
-            
+
+            //var dropDown = UIControl.CreateControl(new UIDropdown(new RectangleF(600, 600, 120, 30)));
+            //var values = new List<string> {"Hello", "World", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
+            //dropDown.Values = values;
+            //dropDown.ListHeight = 150;
+
             sw.Stop();
             Logger.Log("Ui Construct Took -> " + sw.ElapsedMilliseconds + "ms");
         }

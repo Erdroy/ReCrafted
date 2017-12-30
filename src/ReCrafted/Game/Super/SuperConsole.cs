@@ -83,7 +83,22 @@ namespace ReCrafted.Game.Super
             // register default commands
             SuperDefaults.RegisterSuperDefaults();
 
+            // handle logger
+            Logger.OnMessage += OnLoggerMessage;
+
+            // hide console
             Disable();
+        }
+
+        protected override void OnDestroy()
+        {
+            Logger.OnMessage -= OnLoggerMessage;
+        }
+
+        // logger message callback
+        private void OnLoggerMessage(string message, LogLevel level)
+        {
+            Write(message, level);
         }
 
         // on input submit
@@ -157,7 +172,8 @@ namespace ReCrafted.Game.Super
                 default:
                     throw new ArgumentOutOfRangeException(nameof(level), level, null);
             }
-            uiText.Text = $"{DateTime.Now:T} [{level.ToString().ToUpper()}] {text}";
+
+            uiText.Text = text;
 
             return uiText;
         }

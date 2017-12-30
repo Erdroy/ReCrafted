@@ -171,14 +171,12 @@ namespace ReCrafted.API.UI.Controls
         // when current value of drop down was click
         private void OnValueClick()
         {
-            Logger.Log("OnClick");
             _displayList = !_displayList;
         }
 
         // when value from drop down list was selected
         private void OnValueSelected(int index)
         {
-            Logger.Log($"Select {index}");
             _displayList = false;
             Value = index;
         }
