@@ -624,15 +624,11 @@ namespace ReCrafted.API.UI.Controls
             }
 
             _textFieldPosition++;
-            var start = _textFieldPosition;
             var clipboardText = Clipboard.GetText();
-
             if (!MultipleLine)
             {
                 while (clipboardText.Contains(Environment.NewLine))
-                {
                     clipboardText = clipboardText.Replace(Environment.NewLine, " ");
-                }
             }
 
             if (Text.Length > _textFieldPosition)
@@ -641,8 +637,6 @@ namespace ReCrafted.API.UI.Controls
                 _textFieldPosition += clipboardText.Length;
                 _textFieldPosition--;
             }
-
-            //_selectableText.SelectRegion(start, _textFieldPosition);
         }
 
         // set default properties

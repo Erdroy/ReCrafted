@@ -352,7 +352,7 @@ namespace ReCrafted.API.UI
 
         // calculates new region x of control based on current layout
         private float CalculateRegionXForControl(UILayoutAlignmentSide side, float totalContentWidth, int controlIndex,
-            float prevX, float prevW, float currW)
+            float previousX, float previousWidth, float currentWidth)
         {
             switch (Type)
             {
@@ -364,13 +364,13 @@ namespace ReCrafted.API.UI
                     switch (side)
                     {
                         case UILayoutAlignmentSide.Left:
-                            return controlIndex == 0 ? Region.X : prevX + prevW + Space;
+                            return controlIndex == 0 ? Region.X : previousX + previousWidth + Space;
                         case UILayoutAlignmentSide.Middle:
                             return controlIndex == 0
                                 ? Region.X + Region.Width / 2 - totalContentWidth / 2
-                                : prevX + prevW + Space;
+                                : previousX + previousWidth + Space;
                         case UILayoutAlignmentSide.Right:
-                            return controlIndex == 0 ? Region.X + Region.Width - currW : prevX - currW - Space;
+                            return controlIndex == 0 ? Region.X + Region.Width - currentWidth : previousX - currentWidth - Space;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
@@ -380,9 +380,9 @@ namespace ReCrafted.API.UI
                         case UILayoutAlignmentSide.Left:
                             return Region.X;
                         case UILayoutAlignmentSide.Middle:
-                            return Region.X + Region.Width / 2 - currW / 2;
+                            return Region.X + Region.Width / 2 - currentWidth / 2;
                         case UILayoutAlignmentSide.Right:
-                            return Region.X + Region.Width - currW;
+                            return Region.X + Region.Width - currentWidth;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }

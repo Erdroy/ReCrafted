@@ -11,9 +11,9 @@ using ReCrafted.API.UI.Controls;
 namespace ReCrafted.Game.Interface
 {
     /// <summary>
-    /// Type of message.
+    /// Type and style of message.
     /// </summary>
-    public enum MessangerType
+    public enum MessageType
     {
         Info,
         Question,
@@ -22,9 +22,9 @@ namespace ReCrafted.Game.Interface
     }
 
     /// <summary>
-    /// Buttons in message.
+    /// Type of buttons in message.
     /// </summary>
-    public enum MessagerButtons
+    public enum MessageButtons
     {
         None,
         Ok,
@@ -36,9 +36,9 @@ namespace ReCrafted.Game.Interface
 
 
     /// <summary>
-    /// Button type.
+    /// Button type of message.
     /// </summary>
-    public enum MessagerButton
+    public enum MessageButton
     {
         None,
         Ok,
@@ -47,57 +47,99 @@ namespace ReCrafted.Game.Interface
         Cancel
     }
 
+    public enum MessagePosition
+    {
+        Left,
+        Right,
+        Middle,
+        Top,
+        Bottom
+    }
+
+    /// <summary>
+    /// Messanger on click event.
+    /// </summary>
+    /// <param name="button">Source button of this event.</param>
+    public delegate void MessangerClick(MessageButton button);
+
+    /// <summary>
+    /// UI Messanger class.
+    /// </summary>
     public class Messanger : Script
     {
+        /// <summary>
+        /// Messanger queue item.
+        /// </summary>
         private class QueueItem
         {
+            /// <summary>
+            /// Text of item.
+            /// </summary>
             public string Text;
+
+            /// <summary>
+            /// Title of item.
+            /// </summary>
             public string Title;
+
+            /// <summary>
+            /// Duration of item.
+            /// </summary>
             public double Duration;
 
-            public MessangerType Type;
-            public MessagerButtons Buttons;
+            /// <summary>
+            /// Position of item.
+            /// </summary>
+            public MessagePosition Position;
 
-            public Action<MessagerButton> OnClick;
+            /// <summary>
+            /// Type of item.
+            /// </summary>
+            public MessageType Type;
 
-            public double _time;
-            public bool _done;
+            /// <summary>
+            /// Buttons of item.
+            /// </summary>
+            public MessageButtons Buttons;
+
+            /// <summary>
+            /// On click callback.
+            /// </summary>
+            public MessangerClick OnClick;
+
+            /// <summary>
+            /// Time, how long this item is displayed.
+            /// </summary>
+            internal double Time;
+
+            /// <summary>
+            /// Is time of this item done?
+            /// </summary>
+            internal bool Done;
         }
-
-        // actual list of center messages
-        private static List<QueueItem> _centerMessageQueue = new List<QueueItem>();
 
         /// <summary>
         /// Instance of messenger.
         /// </summary>
         private static Messanger _instance;
 
+        // actual list of center messages
+        private static readonly List<QueueItem> CenterMessageQueue = new List<QueueItem>();
+
         // actual size of center message
         private Vector2 _centerMessageSize;
 
-        // actual velocity of center message animation
         private Vector2 _centerMessageVelocity;
 
-        // panel of center message
         private UIPanel _centerMessagePanel;
-
-        // icon of center message panel
         private UIBox _centerMessageIcon;
-
-        // title of center message
         private UIButton _centerMessageTitle;
-
-        // text of center message
         private UIText _centerMessageText;
 
-        private UIButton _okButton;
-
-        private UIButton _yesButton;
-
-        private UIButton _noButton;
-
-        private UIButton _cancelButton;
-
+        private UIButton _centerMessageOkButton;
+        private UIButton _centerMessageYesButton;
+        private UIButton _centerMessageNoButton;
+        private UIButton _centerMessageCancelButton;
 
         /// <summary>
         /// Start size of displayed center message.
@@ -124,15 +166,17 @@ namespace ReCrafted.Game.Interface
         protected internal override void OnCreate()
         {
             _instance = this;
-            _centerMessageSize = CenterMessageSizeMin;
 
+            // create center messsage panel
+            _centerMessageSize = CenterMessageSizeMin;
             _centerMessagePanel = UIPanel.Create(CenterMessageRegion, UILayoutType.Vertical, "Messenger-Center");
             _centerMessagePanel.Layout.ForceExpandWidth = true;
             _centerMessagePanel.Layout.ForceExpandHeight = true;
 
             _centerMessagePanel.Enabled = false;
 
-            var header = _centerMessagePanel.Add(UILayout.Create(new RectangleF(), UILayoutType.Horizontal, UILayoutAlignment.LeftMiddle));
+            var header = _centerMessagePanel.Add(UILayout.Create(new RectangleF(), UILayoutType.Horizontal,
+                UILayoutAlignment.LeftMiddle));
             header.PreferredSize = new Vector2(0, 30);
             header.ForceExpandHeight = true;
             header.Space = 10;
@@ -157,54 +201,57 @@ namespace ReCrafted.Game.Interface
             _centerMessageText.TextColor = Color.Black;
 
             _centerMessagePanel.AddFlexSpace(1);
-            var footer = _centerMessagePanel.Add(UILayout.Create(new RectangleF(), UILayoutType.Horizontal, UILayoutAlignment.Middle));
+            var footer = _centerMessagePanel.Add(UILayout.Create(new RectangleF(), UILayoutType.Horizontal,
+                UILayoutAlignment.Middle));
             footer.PreferredSize = new Vector2(0, 30);
             footer.ForceExpandHeight = true;
             footer.Space = 10;
 
-            _okButton = footer.Add(new UIButton("Ok"));
-            _okButton.PreferredSize = new Vector2(100, 0);
-            _okButton.Enabled = false;
-            _okButton.OnClick += () =>
+            _centerMessageOkButton = footer.Add(new UIButton("Ok"));
+            _centerMessageOkButton.PreferredSize = new Vector2(100, 0);
+            _centerMessageOkButton.Enabled = false;
+            _centerMessageOkButton.OnClick += () =>
             {
-                OnCenterMesssageButton(MessagerButton.Ok);
+                OnCenterMesssageButton(MessageButton.Ok);
             };
-            _yesButton = footer.Add(new UIButton("Yes"));
-            _yesButton.PreferredSize = new Vector2(100, 0);
-            _yesButton.Enabled = false;
-            _yesButton.OnClick += () =>
+            _centerMessageYesButton = footer.Add(new UIButton("Yes"));
+            _centerMessageYesButton.PreferredSize = new Vector2(100, 0);
+            _centerMessageYesButton.Enabled = false;
+            _centerMessageYesButton.OnClick += () =>
             {
-                OnCenterMesssageButton(MessagerButton.Yes);
+                OnCenterMesssageButton(MessageButton.Yes);
             };
-            _noButton = footer.Add(new UIButton("No"));
-            _noButton.PreferredSize = new Vector2(100, 0);
-            _noButton.Enabled = false;
-            _noButton.OnClick += () =>
+            _centerMessageNoButton = footer.Add(new UIButton("No"));
+            _centerMessageNoButton.PreferredSize = new Vector2(100, 0);
+            _centerMessageNoButton.Enabled = false;
+            _centerMessageNoButton.OnClick += () =>
             {
-                OnCenterMesssageButton(MessagerButton.No);
+                OnCenterMesssageButton(MessageButton.No);
             };
-            _cancelButton = footer.Add(new UIButton("Cancel"));
-            _cancelButton.PreferredSize = new Vector2(100, 0);
-            _cancelButton.Enabled = false;
-            _cancelButton.OnClick += () =>
+            _centerMessageCancelButton = footer.Add(new UIButton("Cancel"));
+            _centerMessageCancelButton.PreferredSize = new Vector2(100, 0);
+            _centerMessageCancelButton.Enabled = false;
+            _centerMessageCancelButton.OnClick += () =>
             {
-                OnCenterMesssageButton(MessagerButton.Cancel);
+                OnCenterMesssageButton(MessageButton.Cancel);
             };
         }
 
-        private void OnCenterMesssageButton(MessagerButton ok)
+        // center message button on click event
+        private void OnCenterMesssageButton(MessageButton ok)
         {
-            if (_centerMessageQueue.Count == 0)
+            if (CenterMessageQueue.Count == 0)
                 return;
-            _centerMessageQueue[0].OnClick?.Invoke(ok);
-            _centerMessageQueue[0]._done = true;
+
+            CenterMessageQueue[0].OnClick?.Invoke(ok);
+            CenterMessageQueue[0].Done = true;
             CenterMessageMoveNext();
         }
 
         // on update
         protected override void OnUpdate()
         {
-            var first = _centerMessageQueue.Count == 0 ? null : _centerMessageQueue.First();
+            var first = CenterMessageQueue.Count == 0 ? null : CenterMessageQueue.First();
             if (first != null && _centerMessagePanel.Enabled)
             {
                 var target = CenterMessageSizeMax;
@@ -221,11 +268,11 @@ namespace ReCrafted.Game.Interface
                 }
                 else
                 {
-                    if (first._time < first.Duration)
-                        first._time += Time.DeltaTime;
+                    if (first.Time < first.Duration)
+                        first.Time += Time.DeltaTime;
                     else
                     {
-                        first._done = true;
+                        first.Done = true;
                         CenterMessageMoveNext();
                     }
                 }
@@ -235,9 +282,9 @@ namespace ReCrafted.Game.Interface
         // move to next item
         private static void CenterMessageMoveNext()
         {
-            if (_centerMessageQueue.Count == 0 || !_centerMessageQueue[0]._done)
+            if (CenterMessageQueue.Count == 0 || !CenterMessageQueue[0].Done)
                 return;
-            _centerMessageQueue.RemoveAt(0);
+            CenterMessageQueue.RemoveAt(0);
             CenterMessageRestartTransform();
         }
 
@@ -246,44 +293,47 @@ namespace ReCrafted.Game.Interface
         {
             _instance._centerMessageSize = _instance.CenterMessageSizeMin;
             _instance._centerMessagePanel.PanelColor = Color.Transparent;
-            _instance._centerMessagePanel.Enabled = _centerMessageQueue.Count != 0;
+            _instance._centerMessagePanel.Enabled = CenterMessageQueue.Count != 0;
             _instance._centerMessageIcon.Enabled = _instance._centerMessagePanel.Enabled;
 
-            if (_centerMessageQueue.Count != 0)
+            if (CenterMessageQueue.Count != 0)
             {
-                _instance._centerMessageTitle.Text = _centerMessageQueue[0].Title;
-                _instance._centerMessageText.Text = _centerMessageQueue[0].Text;
+                _instance._centerMessageTitle.Text = CenterMessageQueue[0].Title;
+                _instance._centerMessageText.Text = CenterMessageQueue[0].Text;
 
-                switch (_centerMessageQueue[0].Type)
+                switch (CenterMessageQueue[0].Type)
                 {
-                    case MessangerType.Info:
+                    case MessageType.Info:
                         _instance._centerMessageIcon.Sprite = UIControl.DefaultInfo;
                         break;
-                    case MessangerType.Question:
+                    case MessageType.Question:
                         _instance._centerMessageIcon.Sprite = UIControl.DefaultQuestion;
                         break;
-                    case MessangerType.Warning:
+                    case MessageType.Warning:
                         _instance._centerMessageIcon.Sprite = UIControl.DefaultWarning;
                         break;
-                    case MessangerType.Error:
+                    case MessageType.Error:
                         _instance._centerMessageIcon.Sprite = UIControl.DefaultError;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
 
-                var b = _centerMessageQueue[0].Buttons;
-                _instance._okButton.Enabled = b == MessagerButtons.Ok || b == MessagerButtons.OkNoCancel;
-                _instance._yesButton.Enabled = b == MessagerButtons.YesNo || b == MessagerButtons.YesNoCancel;
-                _instance._noButton.Enabled = b == MessagerButtons.OkNoCancel || b == MessagerButtons.YesNo ||
-                                              b == MessagerButtons.YesNoCancel;
-                _instance._cancelButton.Enabled = b == MessagerButtons.OkNoCancel || b == MessagerButtons.YesNoCancel;
+                var b = CenterMessageQueue[0].Buttons;
+                _instance._centerMessageOkButton.Enabled = b == MessageButtons.Ok || b == MessageButtons.OkNoCancel;
+                _instance._centerMessageYesButton.Enabled =
+                    b == MessageButtons.YesNo || b == MessageButtons.YesNoCancel;
+                _instance._centerMessageNoButton.Enabled =
+                    b == MessageButtons.OkNoCancel || b == MessageButtons.YesNo ||
+                    b == MessageButtons.YesNoCancel;
+                _instance._centerMessageCancelButton.Enabled =
+                    b == MessageButtons.OkNoCancel || b == MessageButtons.YesNoCancel;
 
             }
         }
 
         /// <summary>
-        /// Show center message.
+        /// Show center message on screen.
         /// </summary>
         /// <param name="text">Text of message.</param>
         /// <param name="title">Title message.</param>
@@ -291,18 +341,19 @@ namespace ReCrafted.Game.Interface
         /// <param name="onClick">On click callback.</param>
         /// <param name="type">Type of message.</param>
         /// <param name="buttons">Buttons in message.</param>
-        public static void ShowCenterMessage(string text, string title, double duration, Action<MessagerButton> onClick,
-            MessangerType type = MessangerType.Info, MessagerButtons buttons = MessagerButtons.Ok)
+        public static void ShowCenterMessage(string text, string title, double duration, MessangerClick onClick,
+            MessageType type = MessageType.Info, MessageButtons buttons = MessageButtons.Ok)
         {
             if (duration <= 0f)
                 duration = -2f;
 
-            _centerMessageQueue.Add(new QueueItem
+            CenterMessageQueue.Add(new QueueItem
             {
                 Text = text,
                 Title = title,
                 Duration = duration,
 
+                Position = MessagePosition.Middle,
                 Type = type,
                 Buttons = buttons,
 
@@ -310,8 +361,22 @@ namespace ReCrafted.Game.Interface
             });
 
             CenterMessageMoveNext();
-            if (_centerMessageQueue.Count == 1)
+            if (CenterMessageQueue.Count == 1)
                 CenterMessageRestartTransform();
+        }
+
+        /// <summary>
+        /// Show small notify on screen.
+        /// </summary>
+        /// <param name="position">Position of notify.</param>
+        /// <param name="text">Text of notify.</param>
+        /// <param name="title">Title of notify.</param>
+        /// <param name="duration">Duration of notify.</param>
+        /// <param name="type">Type of notify.</param>
+        public static void ShowNotify(MessagePosition position, string text, string title, double duration,
+            MessageType type = MessageType.Info)
+        {
+            throw new NotImplementedException("ShowNotify is not yet implemented.");
         }
     }
 }

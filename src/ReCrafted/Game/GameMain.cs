@@ -129,7 +129,7 @@ namespace ReCrafted.Game
                     Messanger.ShowCenterMessage("Test!", "Lul", 4f, button =>
                     {
                         Messanger.ShowCenterMessage(button.ToString() + "!", "ClickEvent!", 4f, null);
-                    }, MessangerType.Error, MessagerButtons.OkNoCancel);
+                    }, MessageType.Error, MessageButtons.OkNoCancel);
 
                 DebugDraw.Color = new Color(0, 105, 0, 64);
                 DebugDraw.DrawCube(Vector3.Zero, Vector3.One);

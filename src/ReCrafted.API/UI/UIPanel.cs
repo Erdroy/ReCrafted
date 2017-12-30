@@ -31,7 +31,7 @@ namespace ReCrafted.API.UI
         private bool _enableScrollbars;
 
         // internal panel for scroll bars
-        internal UIPanel _internalPanel;
+        internal UIPanel InternalPanel;
 
         // vertical scroll bar
         private UIScrollbar _verticalScrollbar;
@@ -95,7 +95,7 @@ namespace ReCrafted.API.UI
                 if (EnableScrollBars)
                 {
                     Profiler.BeginProfile(
-                        $"Panel <{(string.IsNullOrEmpty(_internalPanel.Name) ? "empty" : _internalPanel.Name)}> ");
+                        $"Panel <{(string.IsNullOrEmpty(InternalPanel.Name) ? "empty" : InternalPanel.Name)}> ");
 
                     _horizotnalScrollbar.Enabled = EnableHorizontalScrollbar;
                     if (EnableHorizontalScrollbar)
@@ -114,8 +114,8 @@ namespace ReCrafted.API.UI
                             ((EnableHorizontalScrollbar ? 1 : 0) + (EnableScrollButtons ? 1 : 0)));
                     }
 
-                    _internalPanel.Region = Region;
-                    _internalPanel.Draw();
+                    InternalPanel.Region = Region;
+                    InternalPanel.Draw();
                     Profiler.EndProfile();
                 }
 
@@ -204,7 +204,7 @@ namespace ReCrafted.API.UI
         public override void Reset()
         {
             Layout?.Reset();
-            _internalPanel?.Reset();
+            InternalPanel?.Reset();
         }
 
         /// <summary>
@@ -340,28 +340,28 @@ namespace ReCrafted.API.UI
         // hide scroll bars if exists
         private void _hideScrollbars()
         {
-            if (_internalPanel != null)
+            if (InternalPanel != null)
             {
-                _internalPanel.Enabled = false;
+                InternalPanel.Enabled = false;
             }
         }
 
         // create scroll bars if don't exists
         private void _makeScrollBars()
         {
-            if (_internalPanel != null)
+            if (InternalPanel != null)
             {
-                _internalPanel.Enabled = true;
+                InternalPanel.Enabled = true;
             }
             else
             {
-                _internalPanel = Create(Region, UILayoutType.Vertical, Name + "-Internal (Scroll)", Depth);
-                _internalPanel.ApplyLayout = false;
-                _internalPanel.PanelColor = Color.Transparent;
-                _internalPanel.Parent = this;
-                _internalPanel.IgnoreMouseCollision = true;
+                InternalPanel = Create(Region, UILayoutType.Vertical, Name + "-Internal (Scroll)", Depth);
+                InternalPanel.ApplyLayout = false;
+                InternalPanel.PanelColor = Color.Transparent;
+                InternalPanel.Parent = this;
+                InternalPanel.IgnoreMouseCollision = true;
 
-                _horizotnalScrollbar = _internalPanel.Add(new UIScrollbar());
+                _horizotnalScrollbar = InternalPanel.Add(new UIScrollbar());
                 _horizotnalScrollbar.Name = "Horizontal Scrollbar";
                 _horizotnalScrollbar.Vertical = false;
                 _horizotnalScrollbar.OnValueChanged += position =>
@@ -371,7 +371,7 @@ namespace ReCrafted.API.UI
                     OnChanged();
                 };
 
-                _verticalScrollbar = _internalPanel.Add(new UIScrollbar());
+                _verticalScrollbar = InternalPanel.Add(new UIScrollbar());
                 _verticalScrollbar.Name = "Vertical Scrollbar";
                 _verticalScrollbar.Vertical = true;
                 _verticalScrollbar.OnHandleChanged += position =>
@@ -381,14 +381,14 @@ namespace ReCrafted.API.UI
                     OnChanged();
                 };
 
-                _verticalButtonTop = _internalPanel.Add(new UIButton(new RectangleF(), string.Empty,
+                _verticalButtonTop = InternalPanel.Add(new UIButton(new RectangleF(), string.Empty,
                     Color.DarkOrange, UIControlColors.DefaultHandle, DefaultArrowUp));
                 _verticalButtonTop.OnClick += () =>
                 {
                     _verticalScrollbar.HandlePosition = 0;
                 };
 
-                _verticalButtonBottom = _internalPanel.Add(new UIButton(new RectangleF(), string.Empty,
+                _verticalButtonBottom = InternalPanel.Add(new UIButton(new RectangleF(), string.Empty,
                     Color.DarkOrange, UIControlColors.DefaultHandle, DefaultArrowDown));
                 _verticalButtonBottom.OnClick += () =>
                 {

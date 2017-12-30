@@ -102,7 +102,7 @@ namespace ReCrafted.API.UI.Controls
                 if (!IsMouseOver &&
                     !_buttonsContainer.IsMouseOver &&
                     !_buttonsContainer.Layout.IsMouseOverContent &&
-                    !_buttonsContainer._internalPanel.Layout.IsMouseOverContent &&
+                    !_buttonsContainer.InternalPanel.Layout.IsMouseOverContent &&
                     _displayList && Input.IsKeyDown(Keys.Mouse0))
                 {
                     _displayList = false;
