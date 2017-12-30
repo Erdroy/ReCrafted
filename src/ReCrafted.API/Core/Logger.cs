@@ -39,12 +39,12 @@ namespace ReCrafted.API.Core
             _logThread = new Thread(ThreadRunner);
             _logThread.Start();
 
+            // create backup directory if doesn't exist yet.
+            if (!Directory.Exists("../logs"))
+                Directory.CreateDirectory("../logs");
+
             if (File.Exists(LogFile))
             {
-                // create backup directory if doesn't exist yet.
-                if (!Directory.Exists("../logs"))
-                    Directory.CreateDirectory("../logs");
-
                 // TODO: compress file
 
                 // move the file and change it's name
