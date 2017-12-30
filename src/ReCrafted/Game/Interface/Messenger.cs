@@ -57,15 +57,15 @@ namespace ReCrafted.Game.Interface
     }
 
     /// <summary>
-    /// Messanger on click event.
+    /// Messenger on click event.
     /// </summary>
     /// <param name="button">Source button of this event.</param>
-    public delegate void MessangerClick(MessageButton button);
+    public delegate void MessengerClick(MessageButton button);
 
     /// <summary>
-    /// UI Messanger class.
+    /// UI Messenger class.
     /// </summary>
-    public class Messanger : Script
+    public class Messenger : Script
     {
         /// <summary>
         /// Messanger queue item.
@@ -105,7 +105,7 @@ namespace ReCrafted.Game.Interface
             /// <summary>
             /// On click callback.
             /// </summary>
-            public MessangerClick OnClick;
+            public MessengerClick OnClick;
 
             /// <summary>
             /// Time, how long this item is displayed.
@@ -121,7 +121,7 @@ namespace ReCrafted.Game.Interface
         /// <summary>
         /// Instance of messenger.
         /// </summary>
-        private static Messanger _instance;
+        private static Messenger _instance;
 
         // actual list of center messages
         private static readonly List<QueueItem> CenterMessageQueue = new List<QueueItem>();
@@ -212,33 +212,33 @@ namespace ReCrafted.Game.Interface
             _centerMessageOkButton.Enabled = false;
             _centerMessageOkButton.OnClick += () =>
             {
-                OnCenterMesssageButton(MessageButton.Ok);
+                OnCenterMessengeButton(MessageButton.Ok);
             };
             _centerMessageYesButton = footer.Add(new UIButton("Yes"));
             _centerMessageYesButton.PreferredSize = new Vector2(100, 0);
             _centerMessageYesButton.Enabled = false;
             _centerMessageYesButton.OnClick += () =>
             {
-                OnCenterMesssageButton(MessageButton.Yes);
+                OnCenterMessengeButton(MessageButton.Yes);
             };
             _centerMessageNoButton = footer.Add(new UIButton("No"));
             _centerMessageNoButton.PreferredSize = new Vector2(100, 0);
             _centerMessageNoButton.Enabled = false;
             _centerMessageNoButton.OnClick += () =>
             {
-                OnCenterMesssageButton(MessageButton.No);
+                OnCenterMessengeButton(MessageButton.No);
             };
             _centerMessageCancelButton = footer.Add(new UIButton("Cancel"));
             _centerMessageCancelButton.PreferredSize = new Vector2(100, 0);
             _centerMessageCancelButton.Enabled = false;
             _centerMessageCancelButton.OnClick += () =>
             {
-                OnCenterMesssageButton(MessageButton.Cancel);
+                OnCenterMessengeButton(MessageButton.Cancel);
             };
         }
 
         // center message button on click event
-        private void OnCenterMesssageButton(MessageButton ok)
+        private void OnCenterMessengeButton(MessageButton ok)
         {
             if (CenterMessageQueue.Count == 0)
                 return;
@@ -341,7 +341,7 @@ namespace ReCrafted.Game.Interface
         /// <param name="onClick">On click callback.</param>
         /// <param name="type">Type of message.</param>
         /// <param name="buttons">Buttons in message.</param>
-        public static void ShowCenterMessage(string text, string title, double duration, MessangerClick onClick,
+        public static void ShowCenterMessage(string text, string title, double duration, MessengerClick onClick,
             MessageType type = MessageType.Info, MessageButtons buttons = MessageButtons.Ok)
         {
             if (duration <= 0f)

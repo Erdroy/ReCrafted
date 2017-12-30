@@ -70,7 +70,7 @@ namespace ReCrafted.Game
                 mainEntity.AddScript<UITests>();
                 mainEntity.AddScript<SuperConsole>();
                 mainEntity.AddScript<PauseMenu>();
-                mainEntity.AddScript<Messanger>();
+                mainEntity.AddScript<Messenger>();
             }
             catch (Exception exception)
             {
@@ -123,12 +123,12 @@ namespace ReCrafted.Game
                 }
 
                 if (Input.IsKeyDown(Keys.G))
-                    Messanger.ShowCenterMessage("Test!", "Lul", 4f, null);
+                    Messenger.ShowCenterMessage("Test!", "Lul", 4f, null);
 
                 if (Input.IsKeyDown(Keys.H))
-                    Messanger.ShowCenterMessage("Test!", "Lul", 4f, button =>
+                    Messenger.ShowCenterMessage("Test!", "Lul", 4f, button =>
                     {
-                        Messanger.ShowCenterMessage(button.ToString() + "!", "ClickEvent!", 4f, null);
+                        Messenger.ShowCenterMessage(button.ToString() + "!", "ClickEvent!", 4f, null);
                     }, MessageType.Error, MessageButtons.OkNoCancel);
 
                 DebugDraw.Color = new Color(0, 105, 0, 64);
