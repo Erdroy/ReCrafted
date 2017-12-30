@@ -105,8 +105,13 @@ namespace ReCrafted.API.UI
         {
             DefaultFont = Font.Load(Assets.ResolveAssetFilePath(AssetType.Font, "VeraMono.ttf"), 12);
 
-            DefaultArrowUp = Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "arrowup.png"), Color.Black);
-            DefaultArrowDown = Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "arrowdown.png"), Color.Black);
+            DefaultArrowUp = Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "arrowup.png"), Color.Black);
+            DefaultArrowDown = Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "arrowdown.png"), Color.Black);
+
+            DefaultError = Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "error.png"));
+            DefaultWarning = Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "warning.png"));
+            DefaultInfo= Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "info.png"));
+            DefaultQuestion = Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "question.png"));
 
             _defaultPanel = UIPanel.Create(new RectangleF(), UILayoutType.Vertical, "Default");
             _defaultPanel.Layout.ForceExpandWidth = false;
@@ -217,6 +222,26 @@ namespace ReCrafted.API.UI
         /// Default arrow down sprite.
         /// </summary>
         public static Sprite DefaultArrowDown { get; private set; }
+
+        /// <summary>
+        /// Default error icon.
+        /// </summary>
+        public static Sprite DefaultError { get; private set; }
+
+        /// <summary>
+        /// Default warning icon.
+        /// </summary>
+        public static Sprite DefaultWarning { get; private set; }
+
+        /// <summary>
+        /// Default info icon.
+        /// </summary>
+        public static Sprite DefaultInfo { get; private set; }
+
+        /// <summary>
+        /// Default question icon.
+        /// </summary>
+        public static Sprite DefaultQuestion { get; private set; }
 
         // current focused control by user
         internal static UIControl FocusedControl { get; private set; }

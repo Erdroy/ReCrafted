@@ -85,11 +85,11 @@ namespace ReCrafted.Game
             UIControl.CreateControl(ref freeScrollBarButton);      
             */
 
-            var dropDown = UIControl.CreateControl(new UIDropdown(new RectangleF(600, 600, 120, 30)));
-            var values = new List<string> {"Hello", "World", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
-            dropDown.Values = values;
-            dropDown.ListHeight = 150;
-
+            //var dropDown = UIControl.CreateControl(new UIDropdown(new RectangleF(600, 600, 120, 30)));
+            //var values = new List<string> {"Hello", "World", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
+            //dropDown.Values = values;
+            //dropDown.ListHeight = 150;
+            
             sw.Stop();
             Logger.Write("Ui Construct Took -> " + sw.ElapsedMilliseconds + "ms");
         }

@@ -78,7 +78,7 @@ namespace ReCrafted.API.UI.Controls
             TextPosition = new Vector2(Region.X + (Region.Width != 0 ? Region.Width / 2 - TextSize.X / 2 : 0),
                 Region.Y + (Region.Height != 0 ? Region.Height / 2 - TextSize.Y / 2 : 0));
 
-            var pos = TextPosition;
+            var pos = TextPosition + FixedTextPosition;
 
             if (EnableClipping)
                 UIInternal.BeginViewRect(Region);
@@ -182,6 +182,11 @@ namespace ReCrafted.API.UI.Controls
         /// Fixed text position.
         /// </summary>
         public Vector2 TextPosition { get; private set; }
+
+        /// <summary>
+        /// Fixed text position.
+        /// </summary>
+        public Vector2 FixedTextPosition { get; set; }
 
         /// <summary>
         /// Loaded font of this text.

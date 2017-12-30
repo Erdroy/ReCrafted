@@ -63,5 +63,15 @@ namespace ReCrafted.API.UI.Controls
             OverColor = Color.White,
             ClickColor = Color.White
         };
+
+        public static UIControlColors Create(Color color)
+        {
+            return new UIControlColors
+            {
+                NormalColor = color,
+                OverColor = color,
+                ClickColor = color
+            };
+        }
     }
 }

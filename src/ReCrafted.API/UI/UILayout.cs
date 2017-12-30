@@ -275,6 +275,12 @@ namespace ReCrafted.API.UI
                         throw new ArgumentOutOfRangeException();
                 }
 
+                if (!currentControl.Enabled)
+                {
+                    newRegion.Width = 0;
+                    newRegion.Height = 0;
+                }
+
                 newRegion = new RectangleF(newRegion.X + Offset.X, newRegion.Y + Offset.Y, newRegion.Width,
                     newRegion.Height);
                 var regionChanged = currentControl.Region != newRegion;
@@ -282,7 +288,7 @@ namespace ReCrafted.API.UI
                 if (regionChanged)
                 {
                     currentControl.OnRegionChanged();
-                    OnControlsChanged();
+                    OnControlsChanged?.Invoke();
                 }
             }
 

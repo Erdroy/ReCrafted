@@ -20,6 +20,11 @@ namespace ReCrafted.API
         Font,
 
         /// <summary>
+        /// Interface textures asset directory.
+        /// </summary>
+        Interface,
+
+        /// <summary>
         /// Default asset dirextory.
         /// </summary>
         None
@@ -36,6 +41,11 @@ namespace ReCrafted.API
         /// Path to textures folder.
         /// </summary>
         public const string TexturePath = AssetPath + "textures/";
+
+        /// <summary>
+        /// Path to interface textures folder.
+        /// </summary>
+        public const string InterfacePath = TexturePath + "interface/";
 
         /// <summary>
         /// Path to font folder.
@@ -68,6 +78,8 @@ namespace ReCrafted.API
                     return $"{TexturePath}{name}";
                 case AssetType.Font:
                     return $"{FontPath}{name}";
+                case AssetType.Interface:
+                    return $"{InterfacePath}{name}";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }

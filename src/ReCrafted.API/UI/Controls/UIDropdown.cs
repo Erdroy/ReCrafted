@@ -9,6 +9,12 @@ using ReCrafted.API.Mathematics;
 namespace ReCrafted.API.UI.Controls
 {
     /// <summary>
+    /// Drop down value change delegate.
+    /// </summary>
+    /// <param name="value"></param>
+    public delegate void DropDownValueChanged(int value);
+
+    /// <summary>
     /// UI Drop down class.
     /// </summary>
     public class UIDropdown : UIButton
@@ -31,6 +37,11 @@ namespace ReCrafted.API.UI.Controls
         private UIBox _rightImage;
 
         private bool _fixed;
+
+        /// <summary>
+        /// When value of drop down has been changed.
+        /// </summary>
+        public DropDownValueChanged OnDropDownValueChanged;
 
         /// <summary>
         /// Creates new UI Drop down.
@@ -252,10 +263,14 @@ namespace ReCrafted.API.UI.Controls
             get { return _selectedItem ; }
             set
             {
+                var prev = _selectedItem;
                 _selectedItem = value;
                 _selectedItem = MathUtil.Clamp(_selectedItem, 0, _values.Count - 1);
 
                 Text = SelectedText;
+
+                if (prev != _selectedItem)
+                    OnDropDownValueChanged?.Invoke(value);
             }
         }
 

@@ -5,7 +5,7 @@ using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
 using ReCrafted.API.UI.Controls;
 
-namespace ReCrafted.Game
+namespace ReCrafted.Game.Interface
 {
     /// <summary>
     /// PauseMenu UI class.
@@ -115,7 +115,8 @@ namespace ReCrafted.Game
         // on update
         protected override void OnUpdate()
         {
-            if (!Enabled) return;
+            if (!Enabled)
+                return;
             Background.Region = new RectangleF(0, 0, Display.Width, Display.Height);
             MainPanel.Region = MainPanelRegion;
         }

@@ -20,11 +20,13 @@ namespace ReCrafted.API.UI.Controls
     {
         // current button color
         protected Color _color;
+
         // current button text;
         private string _text;
 
         // button size for spring animation
         protected Vector2 _buttonSize;
+
         // velocity of button spring animation
         protected Vector2 _buttonVelocity;
 
@@ -164,36 +166,43 @@ namespace ReCrafted.API.UI.Controls
         // draw button
         public override void Draw()
         {
-            if (!Enabled) return;          
-            if (SmoothColors) _color = Color.Lerp(_color, IsMouseOver ? Colors.OverColor : Colors.NormalColor, (float)Time.DeltaTime * SmoothTranslation);
+            if (!Enabled)
+                return;
 
-            UIInternal.Depth = Depth;
-            UIInternal.Color = _color;
+            if (SmoothColors)
+                _color = Color.Lerp(_color, IsMouseOver ? Colors.OverColor : Colors.NormalColor,
+                    (float) Time.DeltaTime * SmoothTranslation);
+
             var buttonRegion = Region;
             if (SpringAnimation)
             {
                 var target = new Vector2(buttonRegion.Width, buttonRegion.Height);
-                UIAnimation.SpringVector2(ref _buttonSize, ref _buttonVelocity, target, (float)Time.DeltaTime);
-                buttonRegion = new RectangleF(buttonRegion.X - (_buttonSize.X/2f - buttonRegion.Width/2f),
-                                              buttonRegion.Y - (_buttonSize.Y/2f - buttonRegion.Height/2f), 
-                                              _buttonSize.X, _buttonSize.Y);
+                UIAnimation.SpringVector2(ref _buttonSize, ref _buttonVelocity, target, (float) Time.DeltaTime);
+                buttonRegion = new RectangleF(buttonRegion.X - (_buttonSize.X / 2f - buttonRegion.Width / 2f),
+                    buttonRegion.Y - (_buttonSize.Y / 2f - buttonRegion.Height / 2f),
+                    _buttonSize.X, _buttonSize.Y);
             }
 
-            UIInternal.Depth = Depth + 0.1f;
-            UIInternal.Color = _color;
+            UIInternal.Depth = Depth;
             if (Sprite == null)
-               UIInternal.DrawBox(buttonRegion);
+            {
+                UIInternal.Color = _color;
+                UIInternal.DrawBox(buttonRegion);
+            }
             else
             {
-                UIInternal.Color = _color * 1.5f;
+                UIInternal.Color = _color * 1.1f;
                 UIInternal.DrawBox(buttonRegion);
 
-                UIInternal.Depth = Depth + 0.2f;
+                UIInternal.Depth = Depth + 0.1f;
                 UIInternal.Color = _color * Sprite.SpriteColor;
                 Sprite.Draw(Region);
             }
 
-            TextPosition = new Vector2(Region.X + Region.Width / 2 - TextSize.X / 2, Region.Y + Region.Height / 2 - TextSize.Y / 2);
+            TextPosition = CenterText
+                ? new Vector2(Region.X + Region.Width / 2 - TextSize.X / 2,
+                    Region.Y + Region.Height / 2 - TextSize.Y / 2)
+                : new Vector2(Region.X, Region.Y);
             var pos = TextPosition + FixedTextPosition;
             UIInternal.Depth = Depth + 0.2f;
             UIInternal.Color = TextColor;
@@ -219,7 +228,8 @@ namespace ReCrafted.API.UI.Controls
         }
 
         // set default properties
-        private void _applyDefaults(RectangleF region, string text, Color textColor, UIControlColors colors, Sprite sprite)
+        private void _applyDefaults(RectangleF region, string text, Color textColor, UIControlColors colors,
+            Sprite sprite)
         {
             Region = region;
             TextFont = DefaultFont; //set default font
@@ -230,6 +240,7 @@ namespace ReCrafted.API.UI.Controls
             SmoothTranslation = 10f;
             SpringAnimation = true;
             Sprite = sprite;
+            CenterText = true;
             Enabled = true;
             IgnoreMouseCollision = false;
             IsMouseOver = false;
@@ -302,5 +313,10 @@ namespace ReCrafted.API.UI.Controls
         /// Loaded font of this text.
         /// </summary>
         public Font TextFont { get; set; }
+
+        /// <summary>
+        /// Center text.
+        /// </summary>
+        public bool CenterText { get; set; }
     }
 }

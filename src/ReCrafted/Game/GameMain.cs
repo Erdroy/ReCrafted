@@ -10,6 +10,7 @@ using ReCrafted.API.UI;
 using ReCrafted.API.UI.Controls;
 using ReCrafted.Core;
 using ReCrafted.Game.Core;
+using ReCrafted.Game.Interface;
 using ReCrafted.Game.Super;
 
 namespace ReCrafted.Game
@@ -33,7 +34,7 @@ namespace ReCrafted.Game
                 Exceptions.RegisterUEHandler();
 
                 // load resources
-               
+
                 // initialize default ui panel
                 UIControl.Init();
 
@@ -55,17 +56,21 @@ namespace ReCrafted.Game
                 TargetFps = 120;
 
                 // create some default controls
-                _crosshairBox = UIControl.CreateControl(new UIBox(Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Texture, "crosshair.png"))));
+                _crosshairBox =
+                    UIControl.CreateControl(
+                        new UIBox(Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "crosshair.png"))));
 
                 _buildNumberText = UIControl.CreateControl(new UIText());
-                _buildNumberText.Text = "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber;
+                _buildNumberText.Text =
+                    "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber;
 
                 // initialize default scripts
                 // pause Menu
                 var mainEntity = Entity.Create("MainEntity");
                 mainEntity.AddScript<UITests>();
-                mainEntity.AddScript<PauseMenu>();
                 mainEntity.AddScript<SuperConsole>();
+                mainEntity.AddScript<PauseMenu>();
+                mainEntity.AddScript<Messanger>();
             }
             catch (Exception exception)
             {
@@ -78,7 +83,8 @@ namespace ReCrafted.Game
         {
             try
             {
-                _crosshairBox.Region = new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
+                _crosshairBox.Region =
+                    new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
                 _buildNumberText.Position = new Vector2(20.0f, Display.Height - 20.0f);
 
                 if (Input.IsKeyDown(Keys.Escape))
@@ -115,6 +121,15 @@ namespace ReCrafted.Game
                     Cursor.Show = !Cursor.Show;
                     Cursor.Lock = !Cursor.Show;
                 }
+
+                if (Input.IsKeyDown(Keys.G))
+                    Messanger.ShowCenterMessage("Test!", "Lul", 4f, null);
+
+                if (Input.IsKeyDown(Keys.H))
+                    Messanger.ShowCenterMessage("Test!", "Lul", 4f, button =>
+                    {
+                        Messanger.ShowCenterMessage(button.ToString() + "!", "ClickEvent!", 4f, null);
+                    }, MessangerType.Error, MessagerButtons.OkNoCancel);
 
                 DebugDraw.Color = new Color(0, 105, 0, 64);
                 DebugDraw.DrawCube(Vector3.Zero, Vector3.One);
