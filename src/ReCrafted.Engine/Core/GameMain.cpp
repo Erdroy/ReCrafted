@@ -141,6 +141,12 @@ LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 				}
 			}
 
+            if (raw->data.mouse.ulButtons & RI_MOUSE_WHEEL)
+            {
+                cvar scrollDelta = static_cast<SHORT>(static_cast<USHORT>(raw->data.mouse.usButtonData)) / static_cast<float>(WHEEL_DELTA);
+                Input::getInstance()->emitScroll(scrollDelta);
+            }
+
 			if(raw->data.mouse.ulButtons & RI_MOUSE_LEFT_BUTTON_DOWN)
 				Input::getInstance()->emit(false, INPUT_LBUTTON);
 			

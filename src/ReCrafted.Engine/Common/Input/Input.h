@@ -39,6 +39,8 @@ private:
 
 	Vector2 m_cursorPos = {};
 	Vector2 m_cursorDelta = {};
+    float m_scrollDelta_u = 0.0f;
+    float m_scrollDelta = 0.0f;
 
 public:
 	/// <summary>
@@ -51,6 +53,9 @@ public:
 
 	// INTERNAL
 	void emit(bool up, uint key);
+
+    // INTERNAL
+    void emitScroll(float delta);
 
 	// INTERNAL
 	void update(int cursorX, int cursorY, int deltaX, int deltaY);
@@ -113,6 +118,16 @@ public:
 	{
 		return m_instance->m_cursorDelta;
 	}
+
+    /**
+     * \brief Returns current scroll (mouse wheel) delta.
+     * \return The scrolls delta.
+     */
+    FORCEINLINE static float getScrollDelta()
+    {
+        return m_instance->m_scrollDelta;
+    }
+
 
 	/// <summary>
 	/// Set the cursor position.

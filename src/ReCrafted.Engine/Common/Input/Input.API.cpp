@@ -102,6 +102,13 @@ void Input::initRuntime()
 				API_BIND("ReCrafted.API.Common.Input::Internal_CursorDelta_Get", &Internal::getCursorDelta);
 			}
 			API_PROPERTY_END();
+
+            API_COMMENT("Returns current scroll (mouse wheel) delta.");
+            API_PROPERTY(PUBLIC, STATIC, "float", "ScrollDelta", GET);
+            {
+                API_BIND("ReCrafted.API.Common.Input::Internal_ScrollDelta_Get", &Input::getScrollDelta);
+            }
+            API_PROPERTY_END();
 		}
 		API_CLASS_END();
 	}

@@ -1,9 +1,10 @@
 // ReCrafted © 2016-2017 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 12/27/2017 12:20:39 Source: 'Input.API.cpp' Target: 'Common/Input.Gen.cs'
+// Generated: 12/30/2017 14:15:07 Source: 'Input.API.cpp' Target: 'Common/Input.Gen.cs'
 
 using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Common 
@@ -63,9 +64,22 @@ namespace ReCrafted.API.Common
 			}
 		}
 
+		/// <summary>
+		///	Returns current scroll (mouse wheel) delta.
+		/// </summary>
+		public static float ScrollDelta 
+		{
+			get
+			{
+				return Internal_ScrollDelta_Get();
+			}
+		}
+
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_CursorPosition_Get(out Vector2 result);
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_CursorDelta_Get(out Vector2 result);
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern float Internal_ScrollDelta_Get();
 	}
 }

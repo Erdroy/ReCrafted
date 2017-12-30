@@ -15,6 +15,11 @@ void Input::emit(bool up, uint key)
 	m_keys[key] = up ? 0 : 1;
 }
 
+void Input::emitScroll(float delta)
+{
+    m_scrollDelta_u += delta;
+}
+
 void Input::update(int cursorX, int cursorY, int deltaX, int deltaY)
 {
 	// copy all keys
@@ -24,6 +29,10 @@ void Input::update(int cursorX, int cursorY, int deltaX, int deltaY)
 	// update cursor pos
 	m_cursorPos = Vector2(float(cursorX), float(cursorY));
 	m_cursorDelta = Vector2(float(deltaX), float(deltaY));
+
+    // clear scroll
+    m_scrollDelta = m_scrollDelta_u;
+    m_scrollDelta_u = 0.0f;
 }
 
 void Input::releaseAll()
@@ -31,6 +40,10 @@ void Input::releaseAll()
 	// clear all keys
 	for (auto i = 0; i < INPUT_TABLE_SIZE; i++)
 		m_keys[i] = byte(0);
+
+    // clear scroll
+    m_scrollDelta_u = 0.0f;
+    m_scrollDelta = 0.0f;
 }
 
 void Input::dispose()
