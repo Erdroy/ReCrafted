@@ -132,32 +132,36 @@ namespace ReCrafted.Game.Interface
 
             _centerMessagePanel.Enabled = false;
 
-            _centerMessageTitle = _centerMessagePanel.Add(new UIButton());
+            var header = _centerMessagePanel.Add(UILayout.Create(new RectangleF(), UILayoutType.Horizontal, UILayoutAlignment.LeftMiddle));
+            header.PreferredSize = new Vector2(0, 30);
+            header.ForceExpandHeight = true;
+            header.Space = 10;
+
+            _centerMessageIcon = header.Add(new UIBox());
+            _centerMessageIcon.PreferredSize = new Vector2(30, 30);
+            _centerMessageIcon.Sprite = UIControl.DefaultInfo;
+            _centerMessageIcon.Enabled = false;
+
+            _centerMessageTitle = header.Add(new UIButton());
+            _centerMessageTitle.PreferredSize = new Vector2(0, 30);
+            _centerMessageTitle.FixedTextPosition = new Vector2(0, UIControl.DefaultFont.Size / 2f + 2f);
+            _centerMessageTitle.Colors = UIControlColors.Create(CenterMessageColor * 0.8f);
             _centerMessageTitle.SpringAnimation = false;
             _centerMessageTitle.SmoothColors = false;
             _centerMessageTitle.CenterText = false;
-            _centerMessageTitle.FixedTextPosition = new Vector2(40, UIControl.DefaultFont.Size / 2f + 2f);
-
-            _centerMessageTitle.Colors = UIControlColors.Create(CenterMessageColor * 0.8f);
-            _centerMessageTitle.PreferredSize = new Vector2(0, 30);
-
-            _centerMessageIcon = UIControl.CreateControl(new UIBox());
-            _centerMessageIcon.Sprite = UIControl.DefaultInfo;
-
-            _centerMessageIcon.Enabled = false;
 
             _centerMessagePanel.AddSpace(5);
 
             _centerMessageText = _centerMessagePanel.Add(new UIText());
-            _centerMessageText.TextColor = Color.Black;
             _centerMessageText.FixedTextPosition = new Vector2(5, 0);
+            _centerMessageText.TextColor = Color.Black;
 
             _centerMessagePanel.AddFlexSpace(1);
-            var footer = _centerMessagePanel.Add(UILayout.Create(new RectangleF(), UILayoutType.Horizontal,
-                UILayoutAlignment.Middle));
-            footer.ForceExpandHeight = true;
+            var footer = _centerMessagePanel.Add(UILayout.Create(new RectangleF(), UILayoutType.Horizontal, UILayoutAlignment.Middle));
             footer.PreferredSize = new Vector2(0, 30);
+            footer.ForceExpandHeight = true;
             footer.Space = 10;
+
             _okButton = footer.Add(new UIButton("Ok"));
             _okButton.PreferredSize = new Vector2(100, 0);
             _okButton.Enabled = false;
@@ -208,13 +212,9 @@ namespace ReCrafted.Game.Interface
                     (float) Time.DeltaTime, 0.6f);
                 _centerMessagePanel.Region = CenterMessageRegion;
                 _centerMessagePanel.PanelColor = Color.Lerp(_centerMessagePanel.PanelColor, CenterMessageColor,
-                    (float) Time.DeltaTime * 10f);
+                    (float) Time.DeltaTime * 15f);
 
-                _centerMessageIcon.Depth = _centerMessagePanel.Depth + 1;
-                _centerMessageIcon.Region =
-                    new RectangleF(_centerMessagePanel.Region.X, _centerMessagePanel.Region.Y, 30, 30);
                 _centerMessageIcon.BoxColor = _centerMessagePanel.PanelColor;
-
 
                 if (first.Duration <= -2f)
                 {

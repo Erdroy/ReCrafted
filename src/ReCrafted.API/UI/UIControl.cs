@@ -1,5 +1,6 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
+using System;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 
@@ -19,6 +20,9 @@ namespace ReCrafted.API.UI
         // control depth
         internal int Depth;
 
+        // depth change action hook
+        internal Action OnDepthChangedAction;
+
         // is this control ignoring layout size changes?
         internal bool IgnoreLayoutResize;
 
@@ -31,6 +35,14 @@ namespace ReCrafted.API.UI
         /// Resets control to the default state.
         /// </summary>
         public abstract void Reset();
+
+        /// <summary>
+        /// Depth of this control has been recalculated by current container.
+        /// </summary>
+        public virtual void OnDepthChanged()
+        {
+
+        }
 
         /// <summary>
         /// When focus state of control has been changed.
@@ -192,6 +204,11 @@ namespace ReCrafted.API.UI
         /// Name of control. (This property might be used in profiling)
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Base depth of control.
+        /// </summary>
+        public int BaseDepth { get; set; }
 
         /// <summary>
         /// The parent control.

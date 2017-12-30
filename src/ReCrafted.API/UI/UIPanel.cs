@@ -94,7 +94,8 @@ namespace ReCrafted.API.UI
                 // handle scroll bars
                 if (EnableScrollBars)
                 {
-                    Profiler.BeginProfile($"Panel <{(string.IsNullOrEmpty(_internalPanel.Name) ? "empty" : _internalPanel.Name)}> ");
+                    Profiler.BeginProfile(
+                        $"Panel <{(string.IsNullOrEmpty(_internalPanel.Name) ? "empty" : _internalPanel.Name)}> ");
 
                     _horizotnalScrollbar.Enabled = EnableHorizontalScrollbar;
                     if (EnableHorizontalScrollbar)
@@ -108,7 +109,9 @@ namespace ReCrafted.API.UI
                     {
                         _verticalScrollbar.Region = new RectangleF(_scrollRegion.X + _scrollRegion.Width,
                             _scrollRegion.Y + (EnableScrollButtons ? _scrollBarsSize : 0),
-                            _scrollBarsSize, _scrollRegion.Height - _scrollBarsSize * ((EnableHorizontalScrollbar ? 1 : 0) + (EnableScrollButtons ? 1 : 0)));
+                            _scrollBarsSize,
+                            _scrollRegion.Height - _scrollBarsSize *
+                            ((EnableHorizontalScrollbar ? 1 : 0) + (EnableScrollButtons ? 1 : 0)));
                     }
 
                     _internalPanel.Region = Region;
@@ -147,9 +150,9 @@ namespace ReCrafted.API.UI
                 // handle clipping
                 if (EnableClipping)
                 {
-                    //UIInternal.Depth = UIInternal.Depth + 13;
-                    var region = EnableScrollBars ? _scrollRegion : (recalculatedLayout == new RectangleF() ? Region : recalculatedLayout);
-                    //UIInternal.DrawBox(region);
+                    var region = EnableScrollBars
+                        ? _scrollRegion
+                        : (recalculatedLayout == new RectangleF() ? Region : recalculatedLayout);
                     UIInternal.BeginViewRect(region);
                 }
 
@@ -312,7 +315,8 @@ namespace ReCrafted.API.UI
                     displayWidth = c.Region.Width;
             }
 
-            _scrollViewDisplay = new RectangleF(_scrollLayoutRegion.X, _scrollLayoutRegion.Y + _scrollLayoutRegion.Height - displayHeight,
+            _scrollViewDisplay = new RectangleF(_scrollLayoutRegion.X,
+                _scrollLayoutRegion.Y + _scrollLayoutRegion.Height - displayHeight,
                 displayWidth, displayHeight);
 
             var verticalSize = MathUtil.Clamp(_scrollRegion.Height / _scrollViewDisplay.Height, 0.05f, 1f);
@@ -377,7 +381,7 @@ namespace ReCrafted.API.UI
                     OnChanged();
                 };
 
-                _verticalButtonTop = _internalPanel.Add(new UIButton(new RectangleF(), string.Empty, 
+                _verticalButtonTop = _internalPanel.Add(new UIButton(new RectangleF(), string.Empty,
                     Color.DarkOrange, UIControlColors.DefaultHandle, DefaultArrowUp));
                 _verticalButtonTop.OnClick += () =>
                 {
@@ -420,6 +424,26 @@ namespace ReCrafted.API.UI
         }
 
         /// <summary>
+        /// Recalculate depth of all panels.
+        /// </summary>
+        internal static void RecalculatePanelsDepth()
+        {
+            for (var index = 0; index < Panels.Count; index++)
+            {
+                var previous = index == 0 ? null : Panels[index - 1];
+                var current = Panels[index];
+
+                if (previous != null)
+                    current.Depth = current.BaseDepth + previous.Depth + previous.Layout.Controls.Count + previous.Layout.Controls.Sum(c => c.BaseDepth) + 1;
+                else
+                    current.Depth = current.BaseDepth;
+
+                current.Layout.Depth = current.Depth + 1;
+                current.Layout.RecalculateDepth();
+            }
+        }
+
+        /// <summary>
         /// Creates new UIPanel.
         /// </summary>
         /// <param name="region">The UIPanel region.</param>
@@ -438,8 +462,8 @@ namespace ReCrafted.API.UI
                 Parent = null,
                 Region = region,
                 PanelColor = Color.White,
-                Depth = baseDepth + (Panels.Count == 0 ? 0 : Panels[Panels.Count - 1].Depth) +
-                        (Panels.Count == 0 ? 0 : Panels[Panels.Count - 1].Layout.Controls.Count),
+                BaseDepth =  baseDepth,
+                Depth = baseDepth, 
                 Layout = UILayout.Create(region, layoutType),
                 EnableClipping = false,
                 EnableScrollBars = false,
@@ -462,22 +486,14 @@ namespace ReCrafted.API.UI
             panel.Layout.Depth = panel.Depth + 1;
 
             // recalculate whole depth when controls in panel has been changed.
-            panel.Layout.OnControlsChanged += () =>
-            {
-                for (var index = Panels.IndexOf(panel); index < Panels.Count; index++)
-                {
-                    Panels[index].Depth =
-                        1 + (index == 0 ? 0 : Panels[index - 1].Depth + Panels[index - 1].Layout.Controls.Count);
-                    Panels[index].Layout.Depth = Panels[index].Depth;
-                    Panels[index].Layout.RecalculateDepth();
-                }
-            };
+            panel.Layout.OnControlsChanged += RecalculatePanelsDepth;
 
             // add new panel
             Panels.Add(panel);
 
             // sort list by depth
-            Panels.Sort((x, y) => x.Depth.CompareTo(y.Depth));
+            // Panels.Sort((x, y) => x.Depth.CompareTo(y.Depth));
+            RecalculatePanelsDepth();
 
             // call on change event
             panel.OnChanged();
@@ -545,7 +561,8 @@ namespace ReCrafted.API.UI
         /// <summary>
         /// Size of scroll bars.
         /// </summary>
-        public int ScrollBarSize {
+        public int ScrollBarSize
+        {
             get { return _scrollBarsSize; }
             set
             {

@@ -48,10 +48,17 @@ namespace ReCrafted.API.UI
             Profiler.EndProfile();
         }
 
+        // reset controls
         public override void Reset()
         {
             foreach (var control in Controls)
                 control.Reset();
+        }
+
+        // on depth changed
+        public override void OnDepthChanged()
+        {
+            RecalculateDepth();
         }
 
         /// <summary>
@@ -71,7 +78,7 @@ namespace ReCrafted.API.UI
                 throw new ReCraftedException(
                     "Unable to add new control in to container. Controls can by added in to container only once.");
             instance.Parent = this;
-            instance.Depth = Depth + _controls.Count;
+            instance.Depth = Depth + _controls.Count + instance.BaseDepth;
             instance.OnRegionChanged();
             _controls.Add(instance);
             OnControlsChanged?.Invoke();
@@ -100,7 +107,9 @@ namespace ReCrafted.API.UI
             for (var index = 0; index < Controls.Count; index++)
             {
                 var control = Controls[index];
-                control.Depth = Depth + index;
+                control.Depth = Depth + control.BaseDepth + index + 1;
+                control.OnDepthChanged();
+                control.OnDepthChangedAction?.Invoke();
             }
         }
 

@@ -1,7 +1,6 @@
 ﻿// ReCrafted © 2016-2017 Always Too Late
 
 using System;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using ReCrafted.API.Common;
 using ReCrafted.API.Mathematics;
