@@ -8,6 +8,7 @@
 #include "Graphics/Mesh.h"
 #include "Graphics/Rendering.h"
 #include "Voxels/VoxelStorage.h"
+#include "Voxels/VoxelClipmap.h"
 
 uint8_t SpaceObjectChunk::getLodBorders()
 {
@@ -58,9 +59,19 @@ void SpaceObjectChunk::generate(IVoxelMesher* mesher)
 	cvar lod = int(node->get_size() / float(SpaceObjectOctreeNode::MinimumNodeSize));
 
     var nodePosition = node->get_position() - positionOffset; // lower-left-back corner
-	
+
+    // TODO: VoxelCache class (should store chunks for some time or all the time if chunk is still being used)
+    // TODO: check if this is cached (use start and lod) (and not modified by this time) and get if present
+    // TODO: if not - generate and modify
+
     // get voxel chunk
     voxelData = spaceObject->getStorage()->getVoxelChunk(nodePosition, lod);
+
+    // modify chunk data
+    cvar clipmap = spaceObject->getClipmap();
+
+    if(clipmap->chunkModified(nodePosition, lod))
+        clipmap->chunkModify(nodePosition, lod, voxelData);
 
     if(voxelData == nullptr)
     {

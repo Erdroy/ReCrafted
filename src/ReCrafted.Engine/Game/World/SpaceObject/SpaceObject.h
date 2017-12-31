@@ -9,6 +9,7 @@
 #include "SpaceObjectSettings.h"
 
 class VoxelStorage;
+class VoxelClipmap;
 
 class SpaceObject
 {
@@ -21,6 +22,7 @@ private:
 
 	Ptr<SpaceObjectOctree> m_octree = nullptr;
     Ptr<VoxelStorage> m_voxelStorage = nullptr;
+    Ptr<VoxelClipmap> m_voxelClipmap = nullptr;
 	
 private:
     void init(SpaceObjectSettings& settings);
@@ -51,6 +53,15 @@ public:
     VoxelStorage* getStorage() const
     {
         return m_voxelStorage.get();
+    }
+
+    /**
+    * \brief Gets the VoxelClipmap instance of this SpaceObject.
+    * \return VoxelClipmap instance of this SpaceObject.
+    */
+    VoxelClipmap* getClipmap() const
+    {
+        return m_voxelClipmap.get();
     }
 
 public:

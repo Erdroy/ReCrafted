@@ -85,12 +85,6 @@ sbyte* VoxelStorage::getVoxelChunk(Vector3& position, const int lod)
         return nullptr;
     }
 
-    // TODO: VoxelClipmap class (to store modifications, should allow binary (de) serialization (streams needed! :D))
-    // TODO: VoxelChunkCache class (should store chunks for some time or all the time if chunk is still being used)
-
-    // TODO: check if this is cached (use start and lod) and return if present
-    // TODO: if not, generate and apply modifications if present
-
     // generate chunk now using CHM
     return generateChunkFromCHM(position, lod);
 }
