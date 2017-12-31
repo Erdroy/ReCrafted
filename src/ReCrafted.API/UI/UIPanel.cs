@@ -166,21 +166,30 @@ namespace ReCrafted.API.UI
                 {
                     if (!HaveCollision)
                     {
-                        Collision = Layout.LookForMouseCollision();
-                        if (Collision == null)
+                        // if clipping is enabled, mouse can collide only with visible content
+                        if (!EnableClipping || EnableClipping && Region.Contains(Input.CursorPosition))
                         {
-                            if (!IgnoreMouseCollision && Region.Contains(Input.CursorPosition))
-                                Collision = this;
-                        }
-
-                        if (Collision != null)
-                        {
-                            if (Input.IsKeyDown(Keys.Mouse0))
+                            Collision = Layout.LookForMouseCollision(false);
+                            if (Collision == null)
                             {
-                                Collision.OnMouseClick();
-                                if (FocusedControl != Collision)
-                                    SetFocusedControl(Collision);
+                                if (!IgnoreMouseCollision && Region.Contains(Input.CursorPosition))
+                                    Collision = this;
                             }
+
+                            if (Collision != null)
+                            {
+                                if (Input.IsKeyDown(Keys.Mouse0))
+                                {
+                                    Collision.OnMouseClick();
+                                    if (FocusedControl != Collision)
+                                        SetFocusedControl(Collision);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Layout.LookForMouseCollision(true);
+                            Collision = null;
                         }
                     }
                 }
@@ -204,7 +213,12 @@ namespace ReCrafted.API.UI
         public override void Reset()
         {
             Layout?.Reset();
+            if (ApplyLayout)
+            Layout?.Precalculate(Region);
+
             InternalPanel?.Reset();
+            if (ApplyLayout)
+            InternalPanel?.Layout.Precalculate(Region);
         }
 
         /// <summary>

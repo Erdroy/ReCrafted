@@ -68,7 +68,7 @@ namespace ReCrafted.API.UI
         // search for mouse collision in all childrens of this layout.
         internal override UIControl OnMouseCollision()
         {
-            return LookForMouseCollision();
+            return LookForMouseCollision(false);
         }
 
         /// <summary>
@@ -101,6 +101,27 @@ namespace ReCrafted.API.UI
         /// <param name="parentRegion">The region in which the layout will be calculated.</param>
         /// <returns>New recalculated region of layout.</returns>
         public RectangleF Recalculate(RectangleF parentRegion)
+        {
+            return InternalRecalculate(parentRegion, false);
+        }
+
+        /// <summary>
+        /// Pre-calculates Layout, duh.
+        /// </summary>
+        /// <param name="parentRegion">The region in which the layout will be calculated.</param>
+        /// <returns>New recalculated region of layout.</returns>
+        internal RectangleF Precalculate(RectangleF parentRegion)
+        {
+            return InternalRecalculate(parentRegion, true);
+        }
+
+        /// <summary>
+        /// Recalculates Layout, duh.
+        /// </summary>
+        /// <param name="parentRegion">The region in which the layout will be calculated.</param>
+        /// <param name="precalculate">Is this the pre calculation?</param>
+        /// <returns>New recalculated region of layout.</returns>
+        internal RectangleF InternalRecalculate(RectangleF parentRegion, bool precalculate)
         {
             Profiler.BeginProfile("UILayout.Recalculate");
             // apply current region of panel with padding to layout region.
@@ -274,7 +295,7 @@ namespace ReCrafted.API.UI
                         throw new ArgumentOutOfRangeException();
                 }
 
-                if (!currentControl.Enabled)
+                if (!currentControl.Enabled && !precalculate)
                 {
                     newRegion.Width = 0;
                     newRegion.Height = 0;

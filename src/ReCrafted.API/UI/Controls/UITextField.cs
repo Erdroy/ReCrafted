@@ -459,7 +459,14 @@ namespace ReCrafted.API.UI.Controls
         // reset
         public override void Reset()
         {
+            Cursor.Icon = CursorIcon.Arrow;
             _selectableText.ResetSelection();
+        }
+
+        // on control active
+        public override void OnControlActive(bool value)
+        {
+            Cursor.Icon = CursorIcon.Arrow;
         }
 
         /// <summary>

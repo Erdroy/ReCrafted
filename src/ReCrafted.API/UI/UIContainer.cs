@@ -114,7 +114,7 @@ namespace ReCrafted.API.UI
         }
 
         // some stuff with mouse collision on controls
-        internal UIControl LookForMouseCollision()
+        internal UIControl LookForMouseCollision(bool cancel)
         {
             if (!Enabled)
                 return null;
@@ -127,11 +127,10 @@ namespace ReCrafted.API.UI
             {
                 if (control.OnMouseCollision() != null)
                     continue;
-                if (control.IgnoreMouseCollision || !control.Enabled)
+                if (!cancel && (control.IgnoreMouseCollision || !control.Enabled))
                     continue;
 
-                if (!control.Region.Contains(mousePoint) ||
-                    mouseControlCollision != null && mouseControlCollision != control)
+                if ((!control.Region.Contains(mousePoint) || cancel) || mouseControlCollision != null && mouseControlCollision != control)
                 {
                     if (!control.IsMouseOver)
                         continue;
@@ -139,7 +138,7 @@ namespace ReCrafted.API.UI
                     control.IsMouseOver = false;
                     control.OnMouseExit();
                 }
-                else
+                else if (!cancel)
                 {
                     if (!control.IsMouseOver)
                     {

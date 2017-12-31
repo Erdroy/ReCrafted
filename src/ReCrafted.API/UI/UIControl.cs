@@ -17,6 +17,9 @@ namespace ReCrafted.API.UI
         // control preferred size;
         private Vector2 _preferredSize;
 
+        // is control enabled
+        private bool _enabled = true;
+
         // control depth
         internal int Depth;
 
@@ -41,7 +44,6 @@ namespace ReCrafted.API.UI
         /// </summary>
         public virtual void OnDepthChanged()
         {
-
         }
 
         /// <summary>
@@ -49,6 +51,14 @@ namespace ReCrafted.API.UI
         /// </summary>
         /// <param name="value"></param>
         public virtual void OnControlFocused(bool value)
+        {
+        }
+
+        /// <summary>
+        /// When control has been enabled or disabled.
+        /// </summary>
+        /// <param name="value">State of enable.</param>
+        public virtual void OnControlActive(bool value)
         {
         }
 
@@ -129,8 +139,8 @@ namespace ReCrafted.API.UI
             _defaultPanel.Layout.ForceExpandWidth = false;
             _defaultPanel.Layout.ForceExpandHeight = false;
             _defaultPanel.ApplyLayout = false;
-
             _defaultPanel.EnableClipping = false;
+            _defaultPanel.EnableScrollBars = false;
         }
 
         /// <summary>
@@ -193,7 +203,19 @@ namespace ReCrafted.API.UI
         /// <summary>
         /// Control enable state.
         /// </summary>
-        public bool Enabled { get; set; }
+        public bool Enabled
+        {
+            get { return _enabled; }
+            set
+            {
+                var previous = _enabled;
+                _enabled = value;
+                if (previous != value)
+                {
+                    OnControlActive(value);
+                }
+            }
+        }
 
         /// <summary>
         /// Is this control ignore the mouse collision?

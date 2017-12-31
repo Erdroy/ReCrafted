@@ -67,7 +67,7 @@ namespace ReCrafted.Game
                 // initialize default scripts
                 // pause Menu
                 var mainEntity = Entity.Create("MainEntity");
-                //mainEntity.AddScript<UITests>();
+                // mainEntity.AddScript<UITests>();
                 mainEntity.AddScript<SuperConsole>();
                 mainEntity.AddScript<PauseMenu>();
                 mainEntity.AddScript<Messenger>();
@@ -122,14 +122,17 @@ namespace ReCrafted.Game
                     Cursor.Lock = !Cursor.Show;
                 }
 
-                if (Input.IsKeyDown(Keys.G))
-                    Messenger.ShowCenterMessage("Test!", "Lul", 4f, null);
+                if (UIControl.FocusedControl == null)
+                {
+                    if (Input.IsKeyDown(Keys.G))
+                        Messenger.ShowCenterMessage("Test!", "Lul", 4f, null);
 
-                if (Input.IsKeyDown(Keys.H))
-                    Messenger.ShowCenterMessage("Test!", "Lul", 4f, button =>
-                    {
-                        Messenger.ShowCenterMessage(button.ToString() + "!", "ClickEvent!", 4f, null);
-                    }, MessageType.Error, MessageButtons.OkNoCancel);
+                    if (Input.IsKeyDown(Keys.H))
+                        Messenger.ShowCenterMessage("Test!", "Lul", 4f, button =>
+                        {
+                            Messenger.ShowCenterMessage(button.ToString() + "!", "ClickEvent!", 4f, null);
+                        }, MessageType.Error, MessageButtons.OkNoCancel);
+                }
 
                 DebugDraw.Color = new Color(0, 105, 0, 64);
                 DebugDraw.DrawCube(Vector3.Zero, Vector3.One);

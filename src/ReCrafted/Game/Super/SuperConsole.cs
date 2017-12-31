@@ -98,6 +98,9 @@ namespace ReCrafted.Game.Super
         // logger message callback
         private void OnLoggerMessage(string message, LogLevel level)
         {
+            if (message.EndsWith('\n'.ToString()))
+                message = message.Remove(message.Length - 2, 2);
+
             Write(message, level);
         }
 
