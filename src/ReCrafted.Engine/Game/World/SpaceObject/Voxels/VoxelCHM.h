@@ -51,8 +51,8 @@ public:
             return 0.0f;
 
         cvar spherePoint = mapSphere(point, radius);
-        cvar sphereFace = getFace(spherePoint);
-        cvar texcoord = getTexcoord(sphereFace, point);
+        cvar sphereFace = getFace(point);
+        cvar texcoord = getTexcoord(sphereFace, spherePoint);
 
         return sampleFace(sphereFace, texcoord); // TODO: sample proper LOD level
     }
@@ -67,51 +67,49 @@ public:
 public:
     FORCEINLINE static Vector2 getTexcoord(const int face, const Vector3& point)
     {
-        var localPoint = point;
-        cvar absPoint = Vector3::abs(const_cast<Vector3&>(point));
         Vector2 texcoord;
         
         switch(face)
         {
         case 0:
         {
-            localPoint = localPoint * (1.0f / absPoint.x);
-            texcoord.y = -localPoint.y;
+            cvar localPoint = point * (1.0f / fabs(point.x));
+            texcoord.y = localPoint.y;
             texcoord.x = -localPoint.z;
             break;
         }
         case 1:
         {
-            localPoint = localPoint * (1.0f / absPoint.x);
-            texcoord.y = -localPoint.y;
+            cvar localPoint = point * (1.0f / fabs(point.x));
+            texcoord.y = localPoint.y;
             texcoord.x = localPoint.z;
             break;
         }
         case 2:
         {
-            localPoint = localPoint * (1.0f / absPoint.y);
-            texcoord.y = -localPoint.z;
-            texcoord.x = -localPoint.x;
+            cvar localPoint = point * (1.0f / fabs(point.y));
+            texcoord.y = localPoint.z;
+            texcoord.x = localPoint.x;
             break;
         }
         case 3:
         {
-            localPoint = localPoint * (1.0f / absPoint.y);
-            texcoord.y = -localPoint.z;
-            texcoord.x = localPoint.x;
+            cvar localPoint = point * (1.0f / fabs(point.y));
+            texcoord.y = localPoint.z;
+            texcoord.x = -localPoint.x;
             break;
         }
         case 4:
         {
-            localPoint = localPoint * (1.0f / absPoint.z);
-            texcoord.y = -localPoint.y;
+            cvar localPoint = point * (1.0f / fabs(point.z));
+            texcoord.y = localPoint.y;
             texcoord.x = -localPoint.x;
             break;
         }
         case 5:
         {
-            localPoint = localPoint * (1.0f / absPoint.z);
-            texcoord.y = -localPoint.y;
+            cvar localPoint = point * (1.0f / fabs(point.z));
+            texcoord.y = localPoint.y;
             texcoord.x = localPoint.x;
             break;
         }
@@ -134,7 +132,7 @@ public:
     /**
      * \brief Selects the sphere face is used by the point.
      * \param point The point which will be check.
-     * \return The result. (0 = front, 1 = back, 2 = top, 3 = bottom, 4 = left, 5 = right)
+     * \return The result.
      */
     FORCEINLINE static int getFace(const Vector3& point)
     {
@@ -153,10 +151,9 @@ public:
 
             if (point.z > 0.0f)
             {
-                return 5; // back
+                return 4; // forward
             }
-
-            return 4; // forward
+            return 5; // back
         }
 
         if (absPoint.y > absPoint.z)
@@ -171,10 +168,9 @@ public:
 
         if (point.z > 0.0f)
         {
-            return 5; // back
+            return 4; // front
         }
-
-        return 4; // front
+        return 5; // back
     }
 
     /**
