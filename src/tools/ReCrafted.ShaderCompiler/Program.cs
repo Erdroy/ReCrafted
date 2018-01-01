@@ -1,4 +1,6 @@
-﻿using System;
+﻿// ReCrafted (c) 2016-2018 Always Too Late
+
+using System;
 using System.Diagnostics;
 using System.IO;
 

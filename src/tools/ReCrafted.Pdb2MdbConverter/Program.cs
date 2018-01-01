@@ -1,4 +1,5 @@
-﻿
+﻿// ReCrafted (c) 2016-2018 Always Too Late
+
 using System;
 using System.IO;
 using Pdb2Mdb;

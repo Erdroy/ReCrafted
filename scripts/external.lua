@@ -9,33 +9,46 @@ externalproject "ReCrafted.API"
    uuid "9D637328-3340-4344-B0AD-710749C1AD08"
    kind "SharedLib"
    language "C#"
-externalproject "ReCrafted.VoxelEditor"
+   
+externalproject "editor/ReCrafted.VoxelEditor"
    location (path.join(ROOT_DIR, "src/ReCrafted.VoxelEditor"))
    uuid "F42BA546-F379-4D44-B404-A096EF0FC363"
    kind "WindowedApp"
    language "C#"
+   filename "ReCrafted.VoxelEditor"
    
---[[
-externalproject "ReCrafted.APIBuilder"
-   location (path.join(ROOT_DIR, "src/ReCrafted.APIBuilder"))
+externalproject "tools/ReCrafted.APIBuilder"
+   location (path.join(ROOT_DIR, "src/tools/ReCrafted.APIBuilder"))
    uuid "B5D814D8-240E-41CD-B88E-E05916A67636"
    kind "ConsoleApp"
    language "C#"
-externalproject "ReCrafted.Pdb2MdbConverter"
-   location (path.join(ROOT_DIR, "src/ReCrafted.APIBuilder"))
+   filename "ReCrafted.APIBuilder"
+   
+externalproject "tools/ReCrafted.AtlasPacker"
+   location (path.join(ROOT_DIR, "src/tools/ReCrafted.AtlasPacker"))
+   uuid "7BF99624-A92B-4E7F-94C1-C3AA5DEAE07E"
+   kind "WindowedApp"
+   language "C#"
+   filename "ReCrafted.AtlasPacker"
+   
+externalproject "tools/ReCrafted.Pdb2MdbConverter"
+   location (path.join(ROOT_DIR, "src/tools/ReCrafted.Pdb2MdbConverter"))
    uuid "045864EB-723B-4C3D-BB84-182C9FF862BA"
    kind "ConsoleApp"
    language "C#"
+   filename "ReCrafted.Pdb2MdbConverter"
    
-externalproject "ReCrafted.ShaderCompiler"
-   location (path.join(ROOT_DIR, "src/ReCrafted.ShaderCompiler"))
+externalproject "tools/ReCrafted.ShaderCompiler"
+   location (path.join(ROOT_DIR, "src/tools/ReCrafted.ShaderCompiler"))
    uuid "B584DB24-317F-4EF6-B8DD-207306327F0B"
    kind "ConsoleApp"
    language "C#"
+   filename "ReCrafted.ShaderCompiler"
    
-externalproject "ReCrafted.VersionBuilder"
-   location (path.join(ROOT_DIR, "src/ReCrafted.VersionBuilder"))
+externalproject "tools/ReCrafted.VersionBuilder"
+   location (path.join(ROOT_DIR, "src/tools/ReCrafted.VersionBuilder"))
    uuid "E27EB8A3-DCF1-44C5-AFA0-2055B243D7A5"
    kind "ConsoleApp"
    language "C#"
-]]
+   filename "ReCrafted.VersionBuilder"
+   
