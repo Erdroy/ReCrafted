@@ -163,7 +163,6 @@ public:
     FORCEINLINE T& last()
     {
         _ASSERT(m_count > 0u);
-        _ASSERT(m_count != 0u);
 
         return m_vector[m_count - 1];
     }
@@ -171,7 +170,6 @@ public:
     FORCEINLINE const T& last() const
     {
         _ASSERT(m_count > 0u);
-        _ASSERT(m_count != 0u);
 
         return m_vector[m_count - 1];
     }
@@ -179,7 +177,6 @@ public:
     FORCEINLINE T& first()
     {
         _ASSERT(m_count > 0u);
-        _ASSERT(m_count != 0u);
 
         return m_vector[0];
     }
@@ -187,7 +184,6 @@ public:
     FORCEINLINE const T& first() const
     {
         _ASSERT(m_count > 0u);
-        _ASSERT(m_count != 0u);
 
         return m_vector[0];
     }
