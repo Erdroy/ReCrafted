@@ -1,4 +1,4 @@
-// ReCrafted © 2016-2017 Always Too Late
+// ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
 // Generated: 11/08/2017 16:47:06 Source: 'Camera.API.cpp' Target: 'Graphics/Camera.Gen.cs'
 

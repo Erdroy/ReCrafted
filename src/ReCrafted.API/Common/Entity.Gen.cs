@@ -1,4 +1,4 @@
-// ReCrafted © 2016-2017 Always Too Late
+// ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
 // Generated: 11/01/2017 23:02:25 Source: 'Entity.API.cpp' Target: 'Common/Entity.Gen.cs'
 

@@ -1,6 +1,6 @@
-// ReCrafted © 2016-2017 Always Too Late
+// ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 12/29/2017 22:29:04 Source: 'GameMain.API.cpp' Target: 'Core/Game.Gen.cs'
+// Generated: 12/30/2017 14:15:07 Source: 'GameMain.API.cpp' Target: 'Core/Game.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;

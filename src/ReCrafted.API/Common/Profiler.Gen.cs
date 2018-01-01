@@ -1,4 +1,4 @@
-// ReCrafted © 2016-2017 Always Too Late
+// ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
 // Generated: 12/27/2017 12:20:39 Source: 'Profiler.API.cpp' Target: 'Common/Profiler.Gen.cs'
 // Generated: 12/27/2017 16:04:59 Source: 'Profiler.API.cpp' Target: 'Common/Profiler.Gen.cs'

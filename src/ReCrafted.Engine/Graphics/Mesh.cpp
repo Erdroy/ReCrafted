@@ -1,4 +1,4 @@
-// ReCrafted © 2016-2017 Always Too Late
+// ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Mesh.h"
 #include "Core/Math/MeshSimplification/ng_mesh_simplify.h"

@@ -1,4 +1,4 @@
-// ReCrafted © 2016-2017 Always Too Late
+// ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Universe.h"
 #include "Common/Time.h"
@@ -24,7 +24,7 @@ void Universe::init()
     settings.position = Vector3::zero();
 	settings.minSurfaceHeight = 900.0f;
 	settings.maxSurfaceHeight = settings.minSurfaceHeight + 120.0f; // will round up to 1024 * 2
-    settings.hillsHeight = 35.0f;
+    settings.hillsHeight = 40.0f;
     settings.rootOctreeDepth = 3; // 2 subdivisions (chunk size will be 512)
 
 	m_testObject1 = SpaceObject::createSpaceObject(settings);

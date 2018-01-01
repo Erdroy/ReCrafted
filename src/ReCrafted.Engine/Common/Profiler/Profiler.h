@@ -1,4 +1,4 @@
-// ReCrafted © 2016-2017 Always Too Late
+// ReCrafted (c) 2016-2018 Always Too Late
 
 #pragma once
 
@@ -81,7 +81,7 @@ private:
 	{
 		// TODO: Main thread check (debug)
 
-		var currentTime = Platform::getMiliseconds();
+		/*var currentTime = Platform::getMiliseconds();
 
 		// try select profile, then update
 		// check if profile already exists with this name
@@ -126,7 +126,7 @@ private:
 
 		newProfile.update(currentTime);
 
-		m_profiles.add(newProfile);
+		m_profiles.add(newProfile);*/
 	}
 
 public:
@@ -153,7 +153,7 @@ public:
 	*/
 	FORCEINLINE static void endProfile() 
 	{
-		if (m_profileStack.count() == 0)
+		/*if (m_profileStack.count() == 0)
 			return;
 
 		var currentTime = Platform::getMiliseconds();
@@ -176,7 +176,7 @@ public:
 		}
 
 		// remove profile
-		m_profileStack.removeAt(m_profileStack.count() - 1);
+		m_profileStack.removeAt(m_profileStack.count() - 1);*/
 	}
 
 	/**

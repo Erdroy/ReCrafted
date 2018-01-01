@@ -1,4 +1,4 @@
-// ReCrafted © 2016-2017 Always Too Late
+// ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
 // Generated: 12/27/2017 16:28:59 Source: 'UI.API.cpp' Target: 'UI/UI.Gen.cs'
 

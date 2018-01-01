@@ -1,8 +1,8 @@
-// ReCrafted © 2016-2017 Always Too Late
+// ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Font.h"
 
-// ReCrafted © 2016-2017 Always Too Late
+// ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Graphics/UI/UI.h"
 #include "Graphics/Texture2D.h"
