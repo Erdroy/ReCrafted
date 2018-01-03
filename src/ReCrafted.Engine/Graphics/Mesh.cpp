@@ -134,22 +134,21 @@ void Mesh::applyChanges()
 
 void Mesh::simplify()
 {
-
-	var simplfiedMesh = new MeshBuffer;
+	cvar simplfiedMesh = new MeshBuffer;
 	simplfiedMesh->numVertices = m_vertices_count;
-	simplfiedMesh->vertices = static_cast<MeshVertex*>(malloc(sizeof(MeshVertex) * m_vertices_count));
+	simplfiedMesh->vertices = new MeshVertex[m_vertices_count];
 
 	for (var i = 0u; i < m_vertices_count; i++)
 	{
 		simplfiedMesh->vertices[i].xyz[0] = m_vertices[i].x;
 		simplfiedMesh->vertices[i].xyz[1] = m_vertices[i].y;
 		simplfiedMesh->vertices[i].xyz[2] = m_vertices[i].z;
-		simplfiedMesh->vertices[i].xyz[3] = 1.0f;
+		simplfiedMesh->vertices[i].xyz[3] = 0.0f;
 
 		simplfiedMesh->vertices[i].normal[0] = m_normals[i].x;
 		simplfiedMesh->vertices[i].normal[1] = m_normals[i].y;
 		simplfiedMesh->vertices[i].normal[2] = m_normals[i].z;
-		simplfiedMesh->vertices[i].normal[3] = 1.0f;
+		simplfiedMesh->vertices[i].normal[3] = 0.0f;
 
 		simplfiedMesh->vertices[i].colour[0] = m_colors[i].x;
 		simplfiedMesh->vertices[i].colour[1] = m_colors[i].y;
@@ -157,16 +156,16 @@ void Mesh::simplify()
 		simplfiedMesh->vertices[i].colour[3] = m_colors[i].w;
 	}
 
-	simplfiedMesh->numTriangles = m_indices_count;
-	simplfiedMesh->triangles = static_cast<MeshTriangle*>(malloc(sizeof(uint) * m_indices_count));
+	simplfiedMesh->numTriangles = m_indices_count / 3;
+    simplfiedMesh->triangles = new MeshTriangle[m_indices_count / 3];
 
-	memcpy(simplfiedMesh->triangles, m_indices, sizeof(uint) * m_indices_count);
+	memcpy(simplfiedMesh->triangles, m_indices, sizeof(MeshTriangle) * (m_indices_count / 3));
 
 	vec4 offset;
-	offset[0] = 0.0f;
-	offset[1] = 0.0f;
-	offset[2] = 0.0f;
-	offset[3] = 0.0f;
+	offset[0] = 1.0f;
+	offset[1] = 1.0f;
+	offset[2] = 1.0f;
+	offset[3] = 1.0f;
 
 	MeshSimplificationOptions options;
 	options.edgeFraction = 0.125f;
@@ -181,8 +180,7 @@ void Mesh::simplify()
 	m_vertices_count = simplfiedMesh->numVertices;
 	m_normals_count = m_vertices_count;
 	m_colors_count = m_vertices_count;
-
-	m_indices_count = simplfiedMesh->numTriangles;
+	m_indices_count = simplfiedMesh->numTriangles * 3;
 
 	for (var i = 0; i < simplfiedMesh->numVertices; i++)
 	{
@@ -197,11 +195,13 @@ void Mesh::simplify()
 		m_colors[i].x = simplfiedMesh->vertices[i].colour[0];
 		m_colors[i].y = simplfiedMesh->vertices[i].colour[1];
 		m_colors[i].z = simplfiedMesh->vertices[i].colour[2];
-		m_colors[i].z = simplfiedMesh->vertices[i].colour[3];
+		m_colors[i].w = simplfiedMesh->vertices[i].colour[3];
 	}
 
-	free(simplfiedMesh->vertices);
-	free(simplfiedMesh->triangles);
+    memcpy(m_indices, simplfiedMesh->triangles, sizeof(MeshTriangle) * simplfiedMesh->numTriangles);
+
+    delete[] simplfiedMesh->vertices;
+	delete[] simplfiedMesh->triangles;
 
 	delete simplfiedMesh;
 }
