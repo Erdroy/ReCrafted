@@ -1,8 +1,9 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "VoxelStorage.h"
-#include "VoxelUtils.h"
+#include "VoxelClipmap.h"
 #include "VoxelCHM.h"
+#include "VoxelUtils.h"
 #include "Core/Math/Math.h"
 #include "Core/Logger.h"
 #include "Game/World/SpaceObject/LODTable.h"
@@ -85,6 +86,18 @@ sbyte* VoxelStorage::getVoxelChunk(Vector3& position, const int lod)
         return nullptr;
     }
 
+    cvar chunk = generateChunkFromCHM(position, lod);
+
+    // TODO: VoxelCache class (should store chunks for some time or all the time if chunk is still being used)
+    // TODO: check if this is cached (use start and lod) (and not modified by this time) and get if present
+    // TODO: if not - generate and modify
+
+    // modify chunk data
+    cvar clipmap = spaceObject->getClipmap();
+
+    if (clipmap->chunkModified(position, lod))
+        clipmap->chunkModify(position, lod, chunk);
+
     // generate chunk now using CHM
-    return generateChunkFromCHM(position, lod);
+    return chunk;
 }
