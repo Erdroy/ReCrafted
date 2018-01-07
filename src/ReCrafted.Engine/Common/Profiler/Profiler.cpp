@@ -117,7 +117,7 @@ void Profiler::endFrame()
 {
 	// cleanup
 
-	/*m_profileCount = 0;
+	m_profileCount = 0;
 	
 	// clear stack if needed and start yelling at the dev
 	if(m_profileStack.count() > 0)
@@ -132,5 +132,5 @@ void Profiler::endFrame()
 	m_profiles.erase(std::remove_if(m_profiles.begin(), m_profiles.end(), [currentTime](Profile& profile)
 	{
 		return currentTime - profile.lastUpdate >= 1000.0f;
-	}), m_profiles.end());*/
+	}), m_profiles.end());
 }

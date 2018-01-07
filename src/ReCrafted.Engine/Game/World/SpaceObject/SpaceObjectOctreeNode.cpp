@@ -151,7 +151,7 @@ void SpaceObjectOctreeNode::update()
 
 void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 {
-    const float viewRangeMultiplier = 10.0f;
+    const float viewRangeMultiplier = 4.0f;
 
 	if (m_processing)
 		return;

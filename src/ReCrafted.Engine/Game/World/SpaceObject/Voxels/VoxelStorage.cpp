@@ -28,7 +28,7 @@ FORCEINLINE sbyte sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, cons
     return VOXEL_FROM_FLOAT(voxelValue);
 }
 
-sbyte* VoxelStorage::generateChunkFromCHM(Vector3& position, const int lod)
+sbyte* VoxelStorage::generateChunkFromCHM(const Vector3& position, const int lod)
 {
     cvar chm = m_chm.get();
     cvar dataSize = SpaceObjectChunk::ChunkDataSize;
@@ -77,7 +77,7 @@ void VoxelStorage::dispose()
     // release all resources
 }
 
-sbyte* VoxelStorage::getVoxelChunk(Vector3& position, const int lod)
+sbyte* VoxelStorage::getVoxelChunk(const Vector3& position, const int lod)
 {
     if (settings->generationType == GenerationType::PreGenerated)
     {

@@ -24,7 +24,7 @@ private:
     Ptr<VoxelCHM> m_chm = nullptr;
 
 private:
-    sbyte* generateChunkFromCHM(Vector3& position, int lod);
+    sbyte* generateChunkFromCHM(const Vector3& position, int lod);
 
 public:
     void init(SpaceObjectSettings& settings);
@@ -36,7 +36,7 @@ public:
      * \param position The voxel chunk position.
      * \param lod The LoD for voxels.
      */
-    sbyte* getVoxelChunk(Vector3& position, int lod);
+    sbyte* getVoxelChunk(const Vector3& position, int lod);
 };
 
 #endif // VOXELSTORAGE_H

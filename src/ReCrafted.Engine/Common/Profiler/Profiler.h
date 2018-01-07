@@ -81,40 +81,44 @@ private:
 	{
 		// TODO: Main thread check (debug)
 
-		/*var currentTime = Platform::getMiliseconds();
+		var currentTime = Platform::getMiliseconds();
 
 		// try select profile, then update
 		// check if profile already exists with this name
-		for (var & profile : m_profiles)
-		{
-			if (utf8)
-			{
-				// (just compare name pointers, not called by Mono, 
-				// so 'const char*' pointer address is const...)
-				if (profile.name == name)
-				{
-					// update
-					profile.update(currentTime);
+		
+	    if(m_profiles.count() > 0)
+	    {
+            for (var profile : m_profiles)
+            {
+                if (utf8)
+                {
+                    // (just compare name pointers, not called by Mono, 
+                    // so 'const char*' pointer address is const...)
+                    if (profile.name == name)
+                    {
+                        // update
+                        profile.update(currentTime);
 
-					// add to stack
-					m_profileStack.add(&profile);
-					return;
-				}
-			}
-			else
-			{
-				// TODO: UTF-16 string compare
-				if (Text::compare(static_cast<const Char*>(profile.name), static_cast<const Char*>((void*)name)))
-				{
-					// update
-					profile.update(currentTime);
+                        // add to stack
+                        m_profileStack.add(&profile);
+                        return;
+                    }
+                }
+                else
+                {
+                    // TODO: UTF-16 string compare
+                    if (Text::compare(static_cast<const Char*>(profile.name), static_cast<const Char*>((void*)name)))
+                    {
+                        // update
+                        profile.update(currentTime);
 
-					// add to stack
-					m_profileStack.add(&profile);
-					return;
-				}
-			}
-		}
+                        // add to stack
+                        m_profileStack.add(&profile);
+                        return;
+                    }
+                }
+            }
+	    }
 
 		// add profile as it is not yet added
 		Profile newProfile;
@@ -126,7 +130,7 @@ private:
 
 		newProfile.update(currentTime);
 
-		m_profiles.add(newProfile);*/
+		m_profiles.add(newProfile);
 	}
 
 public:
@@ -153,7 +157,7 @@ public:
 	*/
 	FORCEINLINE static void endProfile() 
 	{
-		/*if (m_profileStack.count() == 0)
+		if (m_profileStack.count() == 0)
 			return;
 
 		var currentTime = Platform::getMiliseconds();
@@ -176,7 +180,7 @@ public:
 		}
 
 		// remove profile
-		m_profileStack.removeAt(m_profileStack.count() - 1);*/
+		m_profileStack.removeAt(m_profileStack.count() - 1);
 	}
 
 	/**

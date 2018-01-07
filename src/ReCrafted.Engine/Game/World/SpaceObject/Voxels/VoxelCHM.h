@@ -50,9 +50,16 @@ public:
         if (point.length() == 0)
             return 0.0f;
 
-        cvar spherePoint = mapSphere(point, radius);
+        //cvar spherePoint = mapSphere(point, radius);
         cvar sphereFace = getFace(point);
-        cvar texcoord = getTexcoord(sphereFace, spherePoint);
+        cvar texcoord = getTexcoord(sphereFace, point);
+
+        if (texcoord.x == 0.0f || texcoord.y == 0.0f)
+            return -1.0f;
+        if (texcoord.x >= 0.9999f || texcoord.y >= 0.9999f)
+            return 1.0f;
+
+        return 0.0f;
 
         return sampleFace(sphereFace, texcoord); // TODO: sample proper LOD level
     }
@@ -121,10 +128,10 @@ public:
         texcoord.y = (texcoord.y + 1.0f) * 0.5f;
 
         if (texcoord.x >= 1.0f)
-            texcoord.x = 0.999999f;
+            texcoord.x = 0.9999f;
 
         if (texcoord.y >= 1.0f)
-            texcoord.y = 0.999999f;
+            texcoord.y = 0.9999f;
 
         return texcoord;
     }
