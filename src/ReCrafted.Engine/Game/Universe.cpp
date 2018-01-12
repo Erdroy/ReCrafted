@@ -7,6 +7,7 @@
 #include "Graphics/Camera.h"
 #include "Graphics/DebugDraw.h"
 #include "World/SpaceObject/SpaceObjectManager.h"
+#include "World/SpaceObject/Voxels/VoxelClipmap.h"
 
 Universe* Universe::m_instance;
 
@@ -38,6 +39,11 @@ void Universe::update()
 	{
 		m_viewUpdateEnabled = !m_viewUpdateEnabled;
 	}
+
+    if(Input::isKeyDown(Key_Mouse2))
+    {
+        m_testObject1->getClipmap()->addCSGShape(CSGMode::Subtractive, CSGShape::Sphere, Camera::getMainCamera()->get_position(), 5.0f);
+    }
 
 	if (m_viewUpdateEnabled) 
 	{

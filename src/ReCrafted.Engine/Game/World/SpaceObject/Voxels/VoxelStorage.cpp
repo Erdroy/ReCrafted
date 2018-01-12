@@ -35,7 +35,6 @@ sbyte* VoxelStorage::generateChunkFromCHM(const Vector3& position, const int lod
     cvar lod_f = static_cast<float>(lod);
     cvar data = new sbyte[dataSize * dataSize * dataSize];
 
-    // TODO: apply modifications applyCSG or something
     // TODO: return nullptr where there is no any proper voxel surface (the chunk is completely above or under surface)
 
     for (var x = 0; x < dataSize; x++)

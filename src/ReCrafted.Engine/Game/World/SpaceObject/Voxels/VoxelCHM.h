@@ -54,12 +54,12 @@ public:
         cvar sphereFace = getFace(point);
         cvar texcoord = getTexcoord(sphereFace, point);
 
-        if (texcoord.x == 0.0f || texcoord.y == 0.0f)
+        /*if (texcoord.x == 0.0f || texcoord.y == 0.0f)
             return -1.0f;
         if (texcoord.x >= 0.9999f || texcoord.y >= 0.9999f)
             return 1.0f;
 
-        return 0.0f;
+        return 0.0f;*/
 
         return sampleFace(sphereFace, texcoord); // TODO: sample proper LOD level
     }
