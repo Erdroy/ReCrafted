@@ -49,4 +49,10 @@ void VoxelClipmap::chunkModify(const Vector3& position, int lod, sbyte* voxels)
             voxels[INDEX_3D(x, y, z, dataSize)] = VOXEL_FROM_FLOAT(1.0f);
         }
     }
+
+    // TODO: get all CSG modifications for this chunk
+    // TODO: apply all CSG modifications:
+    //  TODO: get CSG bounds and clip them to the chunk box
+    //  TODO: iterate all voxels and check if some of those are inside or outside CSG operations
+    //  TODO: apply operation if needed
 }
