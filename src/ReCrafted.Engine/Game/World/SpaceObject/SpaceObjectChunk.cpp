@@ -60,7 +60,7 @@ void SpaceObjectChunk::generate(IVoxelMesher* mesher)
     cvar nodePosition = node->get_position() - positionOffset; // lower-left-back corner
 
     // get voxel chunk
-    voxelData = spaceObject->getStorage()->getVoxelChunk(nodePosition, lod);
+    cvar voxelData = spaceObject->getStorage()->getVoxelChunk(nodePosition, lod);
 
     if(voxelData == nullptr)
     {
@@ -75,6 +75,8 @@ void SpaceObjectChunk::generate(IVoxelMesher* mesher)
 
 	// generate mesh
     mesher->generate(nodePosition, lod, borders, m_mesh, voxelData);
+
+    SafeDeleteArrayNN(voxelData);
 }
 
 void SpaceObjectChunk::upload()
@@ -100,8 +102,5 @@ void SpaceObjectChunk::draw()
 
 void SpaceObjectChunk::dispose()
 {
-    // TODO: remove when cache will be done!
-    SafeDeleteArrayNN(voxelData);
-
 	SafeDispose(m_mesh);
 }

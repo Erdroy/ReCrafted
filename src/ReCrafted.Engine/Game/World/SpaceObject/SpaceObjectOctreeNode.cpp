@@ -356,6 +356,7 @@ void SpaceObjectOctreeNode::onCreate()
 	// upload the chunk
 	if(m_chunk)
 		m_chunk->upload();
+
 }
 
 void SpaceObjectOctreeNode::onDestroy()
