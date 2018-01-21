@@ -31,6 +31,9 @@ struct CSGShape
 
 class VoxelClipmap : IDisposable
 {
+private:
+    const float CSGPositionSnap = 0.25f; // 16 * (1/snap) [64] operations per row
+
 public:
     void init(SpaceObjectSettings& settings);
     void dispose() override;

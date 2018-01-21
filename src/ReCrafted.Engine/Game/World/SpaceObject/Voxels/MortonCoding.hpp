@@ -121,7 +121,7 @@ const uint32_t morton256_z[] =
 	0x00924804, 0x00924820, 0x00924824, 0x00924900, 0x00924904, 0x00924920, 0x00924924
 };
 
-FORCEINLINE uint32_t GetMortonCode(byte x, byte y, byte z)
+FORCEINLINE uint32_t mortonCode(const byte x, const byte y, const byte z)
 {
 	return morton256_x[x] | morton256_y[y] | morton256_z[z];
 }

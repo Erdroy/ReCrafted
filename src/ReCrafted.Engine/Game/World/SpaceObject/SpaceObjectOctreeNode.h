@@ -46,13 +46,15 @@ private:
 	SpaceObjectOctreeNode* parent = nullptr;
 	SpaceObjectOctreeNode* root = nullptr;
 
-	SpaceObjectOctreeNode* m_childrenNodes[8] = {};
-	bool m_populated = false;
-	bool m_processing = false;
-	bool m_isRoot = false;
-	int m_nodeId = 0;
-
+    SpaceObjectOctreeNode* m_childrenNodes[8] = {};
 	Ptr<SpaceObjectChunk> m_chunk = nullptr;
+
+    bool m_populated = false;
+    bool m_processing = false;
+    bool m_isRoot = false;
+    int m_childrenId = 0;
+
+    uint64_t m_nodeId = 0;
 
 private:
 	bool hasPopulatedChildren();

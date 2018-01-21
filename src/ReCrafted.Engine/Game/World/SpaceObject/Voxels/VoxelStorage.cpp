@@ -85,7 +85,8 @@ sbyte* VoxelStorage::getVoxelChunk(const Vector3& position, const int lod)
         return nullptr;
     }
 
-    cvar chunk = generateChunkFromCHM(position, lod);
+    // generate chunk now using CHM
+    cvar voxelData = generateChunkFromCHM(position, lod);
 
     // TODO: VoxelCache class (should store chunks for some time or all the time if chunk is still being used)
     // TODO: check if this is cached (use start and lod) (and not modified by this time) and get if present
@@ -94,9 +95,10 @@ sbyte* VoxelStorage::getVoxelChunk(const Vector3& position, const int lod)
     // modify chunk data
     cvar clipmap = spaceObject->getClipmap();
 
+    // modify the chunk if needed
     if (clipmap->chunkModified(position, lod))
-        clipmap->chunkModify(position, lod, chunk);
+        clipmap->chunkModify(position, lod, voxelData);
 
-    // generate chunk now using CHM
-    return chunk;
+    // done
+    return voxelData;
 }

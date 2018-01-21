@@ -72,7 +72,7 @@ void SpaceObjectOctreeNode::worker_populate(IVoxelMesher* mesher)
 
 
 		// set node id
-		m_childrenNodes[i]->m_nodeId = i;
+		m_childrenNodes[i]->m_childrenId = i;
 
 		// call event
 		m_childrenNodes[i]->worker_generate(mesher);
