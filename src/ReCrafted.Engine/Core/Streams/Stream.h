@@ -91,7 +91,7 @@ public:
         cvar bytesToRead = outputOffsetSize < count ? outputOffsetSize : count;
 
         // copy data
-        memcpy(static_cast<byte*>(buffer) + offset, m_buffer, bytesToRead);
+        memcpy(buffer, m_buffer + offset, bytesToRead);
 
         // done
         return bytesToRead;
@@ -133,7 +133,7 @@ protected:
     /**
      * \brief Closes the stream.
      */
-    virtual void close() {};
+    virtual void close() const {}
 };
 
 #endif // STREAM_H
