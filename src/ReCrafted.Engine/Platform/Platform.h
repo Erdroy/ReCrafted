@@ -12,7 +12,7 @@
 
 struct OpenMode
 {
-	enum Enum
+	enum _enum
 	{
 		OpenRead,
 		OpenWrite,
@@ -41,11 +41,11 @@ public:
 
 	void read(void* buffer) const;
 
-	void write(void* data, size_t data_lenght) const;
+	void write(void* data, const size_t dataLenght) const;
 
 	void flush() const;
 
-	void close();
+	void close() const;
 };
 
 class Platform
@@ -118,7 +118,7 @@ public:
 	 * \param fileName The open mode.
 	 * \param fileOpenMode The file.
 	 */
-	static void openFile(File* file, const char* fileName, OpenMode::Enum fileOpenMode = OpenMode::OpenReadWrite);
+	static void openFile(File* file, const char* fileName, OpenMode::_enum fileOpenMode = OpenMode::OpenReadWrite);
 
 	/**
 	 * \brief Get the current working directory.

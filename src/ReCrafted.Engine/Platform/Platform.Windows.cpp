@@ -1,6 +1,7 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Platform.h"
+#include "ReCrafted.h"
 
 #if _WIN32
 
@@ -49,26 +50,25 @@ void File::read(void* buffer) const
 	read(buffer, FileSize);
 }
 
-void File::write(void* data, size_t data_lenght) const
+void File::write(void* data, const size_t dataLenght) const
 {
-	auto file = static_cast<FILE*>(m_file);
+    cvar file = static_cast<FILE*>(m_file);
 
-	fwrite(data, data_lenght, 1, file);
+	fwrite(data, dataLenght, 1, file);
 }
 
 void File::flush() const
 {
-	auto file = static_cast<FILE*>(m_file);
+    cvar file = static_cast<FILE*>(m_file);
 
 	fflush(file);
 }
 
-void File::close()
+void File::close() const
 {
-	auto file = static_cast<FILE*>(m_file);
+	cvar file = static_cast<FILE*>(m_file);
 
 	fclose(file);
-	m_file = nullptr;
 }
 
 void Platform::initialize()
@@ -158,7 +158,7 @@ bool Platform::fileExists(const char* fileName)
 	return error == 0;
 }
 
-void Platform::openFile(File* file, const char* fileName, OpenMode::Enum fileOpenMode)
+void Platform::openFile(File* file, const char* fileName, OpenMode::_enum fileOpenMode)
 {
 	strcpy_s(file->FileName, fileName);
 
@@ -181,15 +181,12 @@ void Platform::openFile(File* file, const char* fileName, OpenMode::Enum fileOpe
 	default: break;
 	}
 
-	auto error = fopen_s(reinterpret_cast<FILE**>(&file->m_file), fileName, openMode);
+    file->m_file = fopen(fileName, openMode);
 
-	if (error != 0)
-	{
-		// file not found
-		_ASSERT(false);
-	}
+    // file not found
+    assert(file->m_file != nullptr);
 
-	auto filep = static_cast<FILE*>(file->m_file);
+	cvar filep = static_cast<FILE*>(file->m_file);
 
 	// measure file size
 	fseek(filep, 0, SEEK_END);
