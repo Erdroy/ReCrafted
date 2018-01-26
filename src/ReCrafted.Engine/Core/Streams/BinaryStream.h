@@ -11,12 +11,12 @@
 /**
  * \brief BinaryStream class. Implements reading and writing binary data to stream.
  */
-class BinaryStream : Stream
+class BinaryStream : public Stream
 {
 #define DEFINE_READER(type, name)                   \
     type read##name(){                              \
         type tmp = type();                          \
-        m_innerStream.read(&tmp, sizeof(type),      \
+        m_stream.read(&tmp, sizeof(type),      \
         m_position, sizeof(type));                  \
         m_position += sizeof(type);                 \
         return tmp;                                 \
@@ -24,7 +24,7 @@ class BinaryStream : Stream
 
 #define DEFINE_WRITER(type, name)                   \
     void write##name(type value){                   \
-        m_innerStream.write(&value, sizeof(type),   \
+        m_stream.write(&value, sizeof(type),   \
         m_position, sizeof(type));                  \
         m_position += sizeof(type);                 \
     }
@@ -34,7 +34,7 @@ class BinaryStream : Stream
     DEFINE_WRITER(type, name)
 
 private:
-    Stream& m_innerStream;
+    Stream& m_stream;
     size_t m_position = 0u;
     
 public:
@@ -42,7 +42,7 @@ public:
      * \brief Opens BinaryStream for writing or/and reading binary data.
      * \param stream The stream to read from or write to.
      */
-    explicit BinaryStream(Stream& stream): m_innerStream(stream) {}
+    explicit BinaryStream(Stream& stream): m_stream(stream) {}
 
 public:
     /**
@@ -163,7 +163,7 @@ public:
      */
     void readBytes(char* buffer, const size_t count)
     {
-        m_innerStream.read(buffer, count, m_position, count);
+        m_stream.read(buffer, count, m_position, count);
         m_position += count;
     }
 
@@ -174,7 +174,7 @@ public:
     */
     void writeBytes(char* buffer, const size_t count)
     {
-        m_innerStream.write(buffer, count, m_position, count);
+        m_stream.write(buffer, count, m_position, count);
         m_position += count;
     }
 
@@ -200,6 +200,18 @@ public:
     }
 
     /**
+    * \brief Writes string to this stream. 
+    * \param string The ANSI string.
+    * 
+    * \note Data won't get a length prefix!
+    */
+    void writeStringRaw(char* string)
+    {
+        cvar length = strlen(string);
+        writeBytes(string, length);
+    }
+
+    /**
      * \brief Resets the position of the stream.
      */
     void reset()
@@ -213,7 +225,7 @@ protected:
     */
     void close() const override
     {
-        m_innerStream.dispose();
+        m_stream.dispose();
     }
 
 #undef DEFINE_READER
