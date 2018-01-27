@@ -29,6 +29,29 @@ public:
     /**
     * \brief Reads data from the buffer with given offset and of given count.
     * \param buffer The buffer to read from.
+    * \param offset The read offset in bytes.
+    * \param count The count of bytes to read.
+    * \return The count of read bytes.
+    */
+    size_t read(void* buffer, const size_t offset, const size_t count) const override
+    {
+        return Stream::read(buffer, offset, count);
+    }
+
+    /**
+    * \brief Writes data to the buffer with given offset and of given count.
+    * \param buffer The buffer to write to.
+    * \param offset The write offset in bytes.
+    * \param count The count of bytes to write.
+    */
+    void write(void* buffer, const size_t offset, const size_t count) const override
+    {
+        Stream::write(buffer, offset, count);
+    }
+
+    /**
+    * \brief Reads data from the buffer with given offset and of given count.
+    * \param buffer The buffer to read from.
     * \param bufferSize The buffer size.
     * \param offset The read offset in bytes.
     * \param count The count of bytes to read.
