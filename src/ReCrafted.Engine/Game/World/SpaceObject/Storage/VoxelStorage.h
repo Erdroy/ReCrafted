@@ -7,7 +7,10 @@
 
 // includes
 #include "ReCrafted.h"
+#include "VoxelStorageHeader.h"
+#include "VoxelStorageChunkEntry.h"
 #include "Game/World/SpaceObject/SpaceObject.h"
+#include "Core/Streams/FileStream.h"
 
 struct Vector3;
 struct SpaceObjectSettings;
@@ -19,17 +22,26 @@ class VoxelStorage : IDisposable
 
 private:
     SpaceObject* spaceObject = nullptr;
-    SpaceObjectSettings* settings = nullptr;
-
-    Ptr<VoxelCHM> m_chm = nullptr;
+    SpaceObjectSettings settings = {};
 
 private:
-    sbyte* generateChunkFromCHM(const Vector3& position, int lod);
+    Ptr<VoxelCHM> m_chm = nullptr;
+    FileStream* m_vxhStream = nullptr;
+    VoxelStorageHeader* m_vxh = nullptr;
+    VoxelStorageChunkEntry* m_vxhMap = nullptr;
+
+private:
+    FORCEINLINE static sbyte sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, const Vector3& position, const int lod, const float radius, const float hillsHeight);
+    FORCEINLINE sbyte* generateChunkFromCHM(const Vector3& position, int lod);
+
+    void loadHeader();
+    void saveHeader();
 
 public:
     void init(SpaceObjectSettings& settings);
     void dispose() override;
 
+public:
     /**
      * \brief Gets x (SpaceObjectChunk::ChunkDataSize^3) voxels with all modifications. 
      * Uses CHM cache if needed. Automatically generates data if needed.

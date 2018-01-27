@@ -7,7 +7,6 @@
 #include "Graphics/Camera.h"
 #include "Graphics/DebugDraw.h"
 #include "World/SpaceObject/SpaceObjectManager.h"
-#include "World/SpaceObject/Voxels/VoxelClipmap.h"
 
 Universe* Universe::m_instance;
 
@@ -15,12 +14,17 @@ bool m_viewUpdateEnabled = true;
 
 void Universe::init()
 {
+    // initialize save system
+
 	// initialize space object manager
 	SpaceObjectManager::getInstance()->init();
 
+    // temporary, replace with World::load("../saves/SaveName", MakeDelegate(Universe::OnWorldLoaded));
+    // when saves will be done
 	SpaceObjectSettings settings;
     settings.name = "moon";
     settings.fileName = "../assets/spacebodies/moon";
+    settings.saveName = "../saves/dev/voxelstorage/moon.vxh";
     settings.generationType = GenerationType::CubeHeightMap;
     settings.position = Vector3::zero();
 	settings.minSurfaceHeight = 900.0f;
@@ -42,7 +46,7 @@ void Universe::update()
 
     if(Input::isKeyDown(Key_Mouse2))
     {
-        m_testObject1->getClipmap()->addCSGShape(CSGMode::Subtractive, CSGShape::Sphere, Camera::getMainCamera()->get_position(), 5.0f);
+        //m_testObject1->getClipmap()->addCSGShape(CSGMode::Subtractive, CSGShape::Sphere, Camera::getMainCamera()->get_position(), 5.0f);
     }
 
 	if (m_viewUpdateEnabled) 

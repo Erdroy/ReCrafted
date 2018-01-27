@@ -38,6 +38,11 @@ public:
     const char* fileName = nullptr;
 
     /**
+    * \brief The save name (directory), this will be used to storage data of this space object.
+    */
+    const char* saveName = nullptr;
+
+    /**
 	 * \brief The world-space position of the SpaceObject.
 	 */
 	Vector3 position = {};

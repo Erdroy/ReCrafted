@@ -1,16 +1,21 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "VoxelStorage.h"
-#include "VoxelClipmap.h"
-#include "VoxelCHM.h"
-#include "VoxelUtils.h"
+#include "VoxelStorageHeader.h"
+#include "VoxelStorageChunkEntry.h"
+
 #include "Core/Math/Math.h"
 #include "Core/Logger.h"
-#include "Game/World/SpaceObject/LODTable.h"
-#include "Game/World/SpaceObject/SpaceObjectChunk.h"
-#include "Game/World/SpaceObject/SpaceObjectSettings.h"
+#include "Core/Streams/FileStream.h"
+#include "Core/Streams/BinaryStream.h"
 
-FORCEINLINE sbyte sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, const Vector3& position, const int lod, const float radius, const float hillsHeight)
+#include "../Generator/VoxelCHM.h"
+#include "../Utilities/VoxelUtils.h"
+#include "../LODTable.h"
+#include "../SpaceObjectChunk.h"
+#include "../SpaceObjectSettings.h"
+
+sbyte VoxelStorage::sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, const Vector3& position, const int lod, const float radius, const float hillsHeight)
 {
     // calculate current voxel size
     cvar lodSize = lodtable[lod];
@@ -57,9 +62,48 @@ sbyte* VoxelStorage::generateChunkFromCHM(const Vector3& position, const int lod
     return data;
 }
 
+void VoxelStorage::loadHeader()
+{
+    // create header if needed
+    if (!Platform::fileExists(settings.saveName))
+    {
+        // open voxel header file stream
+        m_vxhStream = new FileStream(settings.saveName, OpenMode::OpenWrite);
+
+        // no header is found, create new one
+        VoxelStorageHeader header = {};
+
+        m_vxhStream->write(&header, 0u, sizeof(VoxelStorageHeader));
+        m_vxhStream->flush();
+        m_vxhStream->dispose();
+        SafeDisposeNN(m_vxhStream);
+        SafeDelete(m_vxhStream);
+    }
+
+    // open voxel header file stream
+    m_vxhStream = new FileStream(settings.saveName, OpenMode::OpenReadWrite);
+
+    // load VoxelStorageHeader
+    m_vxh = new VoxelStorageHeader();
+    m_vxhStream->read(m_vxh, 0u, sizeof(VoxelStorageHeader));
+
+    // read chunk map if needed
+    if(m_vxh->chunkMapSize > 0u)
+    {
+        cvar length = m_vxh->chunkMapSize * sizeof(VoxelStorageChunkEntry);
+        m_vxhMap = new VoxelStorageChunkEntry[m_vxh->chunkMapSize];
+        m_vxhStream->read(m_vxhMap, sizeof(VoxelStorageHeader), length);
+    }
+}
+
+void VoxelStorage::saveHeader()
+{
+    // TODO: write header
+}
+
 void VoxelStorage::init(SpaceObjectSettings& settings)
 {
-    this->settings = &settings;
+    this->settings = settings;
 
     if(settings.generationType == GenerationType::PreGenerated)
     {
@@ -67,6 +111,9 @@ void VoxelStorage::init(SpaceObjectSettings& settings)
         Logger::logError("getVoxelsRow for pregens is not implemented!");
         return;
     }
+    
+    // load header
+    loadHeader();
 
     m_chm = VoxelCHM::loadFromDirectory(settings.fileName);
 }
@@ -74,16 +121,22 @@ void VoxelStorage::init(SpaceObjectSettings& settings)
 void VoxelStorage::dispose()
 {
     // release all resources
+    SafeDisposeNN(m_vxhStream);
+    SafeDelete(m_vxhStream);
+    SafeDelete(m_vxh);
+    SafeDeleteArray(m_vxhMap);
 }
 
 sbyte* VoxelStorage::getVoxelChunk(const Vector3& position, const int lod)
 {
-    if (settings->generationType == GenerationType::PreGenerated)
+    if (settings.generationType == GenerationType::PreGenerated)
     {
         // TODO: pregens
         Logger::logError("getVoxelsRow for pregens is not implemented!");
         return nullptr;
     }
+
+    // TODO: check if this chunk is present in storage
 
     // generate chunk now using CHM
     cvar voxelData = generateChunkFromCHM(position, lod);
@@ -91,13 +144,6 @@ sbyte* VoxelStorage::getVoxelChunk(const Vector3& position, const int lod)
     // TODO: VoxelCache class (should store chunks for some time or all the time if chunk is still being used)
     // TODO: check if this is cached (use start and lod) (and not modified by this time) and get if present
     // TODO: if not - generate and modify
-
-    // modify chunk data
-    cvar clipmap = spaceObject->getClipmap();
-
-    // modify the chunk if needed
-    if (clipmap->chunkModified(position, lod))
-        clipmap->chunkModify(position, lod, voxelData);
 
     // done
     return voxelData;

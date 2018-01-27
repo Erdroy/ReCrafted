@@ -7,7 +7,7 @@
 #include "Meshing/MarchingCubes/MCMesher.h"
 #include "Graphics/Mesh.h"
 #include "Graphics/Rendering.h"
-#include "Voxels/VoxelStorage.h"
+#include "Storage/VoxelStorage.h"
 
 uint8_t SpaceObjectChunk::getLodBorders()
 {

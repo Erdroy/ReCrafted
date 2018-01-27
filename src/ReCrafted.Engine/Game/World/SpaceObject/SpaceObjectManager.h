@@ -8,6 +8,7 @@
 // includes
 #include "Core/Singleton.h"
 #include "Core/Containers/Array.h"
+
 #include <thread>
 
 struct Delegate;

@@ -2,8 +2,9 @@
 
 #include "MCMesher.h"
 #include "Core/Math/Plane.h"
-#include "Game/World/SpaceObject/Voxels/VoxelUtils.h"
 #include "Graphics/Mesh.h"
+#include "../../Utilities/VoxelUtils.h"
+
 #include "MCTables.hpp"
 #include "MSTables.hpp"
 
