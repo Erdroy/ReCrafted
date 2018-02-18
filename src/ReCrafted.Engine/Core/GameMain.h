@@ -9,13 +9,14 @@
 #include "recraftedConfig.h"
 #include "Common/Input/Input.h"
 #include "Common/Time.h"
+#include "Common/EntityPool.h"
 #include "Game/Universe.h"
 #include "Graphics/Rendering.h"
 #include "Graphics/Camera.h"
 #include "Graphics/UI/UI.h"
 #include "Scripting/Domain.h"
 #include "Scripting/Method.h"
-#include "Common/EntityPool.h"
+#include "Physics/PhysicsManager.h"
 #include "Logger.h"
 
 class GameMain
@@ -34,6 +35,7 @@ private:
 
 	EntityPool* m_entityPool = nullptr;
 	Rendering* m_rendering = nullptr;
+    PhysicsManager* m_physicsManager = nullptr;
 	Universe* m_universe = nullptr;
 	Logger* m_logger = nullptr;
 	Input* m_input = nullptr;

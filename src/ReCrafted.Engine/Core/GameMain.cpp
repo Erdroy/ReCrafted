@@ -394,6 +394,10 @@ void GameMain::onLoad()
 	// initialize HTML5 UI
 	//HTML5UI::init();
 
+    // intialize physics
+    m_physicsManager = new PhysicsManager();
+    m_physicsManager->init();
+
 	// initialize rendering
 	m_rendering = new Rendering;
 	m_rendering->init();
@@ -442,6 +446,10 @@ void GameMain::onUnload()
 	SafeDispose(m_rendering);
 	SafeDispose(m_universe);
 	SafeDispose(m_entityPool);
+
+    // release physics
+    SafeDispose(m_physicsManager);
+    SafeDelete(m_physicsManager);
 
 	// shutdown UI
 	m_ui->dispose();

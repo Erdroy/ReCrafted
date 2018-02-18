@@ -1,0 +1,63 @@
+// ReCrafted (c) 2016-2018 Always Too Late
+
+#include "PhysicsManager.h"
+
+#include <pxphysicsapi.h>
+
+#pragma comment (lib, "PxFoundation_x64.lib")
+#pragma comment (lib, "PxTask_x64.lib")
+
+#pragma comment (lib, "PhysX3_x64.lib")
+#pragma comment (lib, "PhysX3Common_x64.lib")
+#pragma comment (lib, "PhysX3Extensions.lib")
+#pragma comment (lib, "PhysX3CharacterKinematic_x64.lib")
+
+namespace PhysXCallback
+{
+    class PhysXAllocator : public physx::PxAllocatorCallback
+    {
+    public:
+        void* allocate(size_t size, const char* typeName, const char* fileName, int line) override
+        {
+            return physx::platformAlignedAlloc(size);
+        }
+
+        void deallocate(void* ptr) override
+        {
+            physx::platformAlignedFree(ptr);
+        }
+    } PhysXAllocatorCallback;
+
+    class PhysXError : public physx::PxErrorCallback
+    {
+    public:
+        void reportError(physx::PxErrorCode::Enum code, const char* message, const char* file, int line) override
+        {
+            Logger::logError("PhysX error code: {0}, message: '{1}' file {2} ({3})", code, message, file, line);
+        }
+    } PhysXErrorCallback;
+}
+
+physx::PxFoundation* m_pxFoundation;
+physx::PxPhysics* m_pxPhysics;
+
+void PhysicsManager::init()
+{
+    physx::PxTolerancesScale ToleranceScale;
+    ToleranceScale.length = 1;
+    ToleranceScale.mass = 1000;
+    ToleranceScale.speed = 1000;
+    
+    m_pxFoundation = PxCreateFoundation(PX_FOUNDATION_VERSION, PhysXCallback::PhysXAllocatorCallback, PhysXCallback::PhysXErrorCallback);
+    m_pxPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_pxFoundation, ToleranceScale, false);
+    //PxInitExtensions(*m_pxPhysics, nullptr);
+}
+
+void PhysicsManager::update()
+{
+}
+
+void PhysicsManager::dispose()
+{
+
+}
