@@ -42,8 +42,19 @@ void SpaceObjectChunk::init(SpaceObjectOctreeNode* node, SpaceObject* spaceObjec
 	this->spaceObject = spaceObject;
 	this->node = node;
 
+    // calculate chunk normal
 	m_chunkNormal = spaceObject->get_position() - node->get_position();
 	m_chunkNormal.normalize();
+
+    // calculate chunk position (origin)
+    cvar positionOffset = Vector3::one() * static_cast<float>(node->get_size()) * 0.5f;
+    m_position = node->get_position() - positionOffset; // lower-left-back corner
+
+    // calculate lod
+    m_lod = int(node->get_size() / float(SpaceObjectOctreeNode::MinimumNodeSize));
+
+    // calculate id
+    m_id = CalculateChunkId(m_position);
 }
 
 void SpaceObjectChunk::generate(IVoxelMesher* mesher)
@@ -52,15 +63,8 @@ void SpaceObjectChunk::generate(IVoxelMesher* mesher)
 
 	m_mesh = Mesh::createMesh();
 
-	// generate voxel data
-
-    cvar lod = int(node->get_size() / float(SpaceObjectOctreeNode::MinimumNodeSize));
-
-	cvar positionOffset = Vector3::one() * static_cast<float>(node->get_size()) * 0.5f;
-    cvar nodePosition = node->get_position() - positionOffset; // lower-left-back corner
-
     // get voxel chunk
-    cvar voxelData = spaceObject->getStorage()->getVoxelChunk(nodePosition, lod);
+    cvar voxelData = spaceObject->getStorage()->getVoxelChunk(m_position, m_lod);
 
     if(voxelData == nullptr)
     {
@@ -74,7 +78,7 @@ void SpaceObjectChunk::generate(IVoxelMesher* mesher)
 	cvar borders = getLodBorders();
 
 	// generate mesh
-    mesher->generate(nodePosition, lod, borders, m_mesh, voxelData);
+    mesher->generate(m_position, m_lod, borders, m_mesh, voxelData);
 
     SafeDeleteArrayNN(voxelData);
 }
@@ -103,4 +107,27 @@ void SpaceObjectChunk::draw()
 void SpaceObjectChunk::dispose()
 {
 	SafeDispose(m_mesh);
+}
+
+uint64_t SpaceObjectChunk::CalculateChunkId(const Vector3& position)
+{
+    // limit: 1 048 575 (note: mul by 16 - when converting to WS)
+    // size: 20 bit's per integer
+
+    // convert components into integers
+    cvar posX = static_cast<uint64_t>(position.x / ChunkSize);
+    cvar posY = static_cast<uint64_t>(position.y / ChunkSize);
+    cvar posZ = static_cast<uint64_t>(position.z / ChunkSize);
+
+    // perform asserts
+    assert(chunkPosX <= 1048575);
+    assert(chunkPosY <= 1048575);
+    assert(chunkPosZ <= 1048575);
+
+    // mask-off the last 20 bits and pack into uint64
+    var chunkId = (posX & 0xFFFFF) << 40;
+    chunkId |= (posY & 0xFFFFF) << 20;
+    chunkId |= posZ & 0xFFFFF;
+
+    return chunkId;
 }

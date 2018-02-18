@@ -25,10 +25,15 @@ private:
 	SpaceObject* spaceObject = nullptr;
 	SpaceObjectOctreeNode* node = nullptr;
 
+    int m_lod = 0;
+    uint64_t m_id = 0u;
+
 	/**
 	 * \brief The normal from the SpaceObject center.
 	 */
 	Vector3 m_chunkNormal = {};
+    Vector3 m_position = {};
+
 	Ptr<Mesh> m_mesh = nullptr;
     bool m_hasVoxels = false;
 
@@ -42,6 +47,9 @@ public:
 	void update();
 	void draw();
 	void dispose();
+
+public:
+    static uint64_t CalculateChunkId(const Vector3& position);
 };
 
 #endif // SPACEOBJECTCHUNK_H

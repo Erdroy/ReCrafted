@@ -7,10 +7,12 @@
 
 // includes
 #include "ReCrafted.h"
+#include "Core/Streams/FileStream.h"
+#include "Core/sparsepp/spp.h"
+#include "Game/World/SpaceObject/SpaceObject.h"
+
 #include "VoxelStorageHeader.h"
 #include "VoxelStorageChunkEntry.h"
-#include "Game/World/SpaceObject/SpaceObject.h"
-#include "Core/Streams/FileStream.h"
 
 struct Vector3;
 struct SpaceObjectSettings;
@@ -28,7 +30,6 @@ private:
     Ptr<VoxelCHM> m_chm = nullptr;
     FileStream* m_vxhStream = nullptr;
     VoxelStorageHeader* m_vxh = nullptr;
-    VoxelStorageChunkEntry* m_vxhMap = nullptr;
 
 private:
     FORCEINLINE static sbyte sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, const Vector3& position, const int lod, const float radius, const float hillsHeight);
@@ -36,6 +37,9 @@ private:
 
     void loadHeader();
     void saveHeader();
+
+public:
+    void writeChunk(sbyte* chunkData, const Vector3& position, int lod);
 
 public:
     void init(SpaceObjectSettings& settings);

@@ -13,7 +13,6 @@
 */
 struct VoxelStorageChunkEntry
 {
-    uint64_t nodeId;
     uint8_t storageId;
     uint32_t storageOffset;
 };

@@ -4,16 +4,16 @@
 #include "VoxelStorageHeader.h"
 #include "VoxelStorageChunkEntry.h"
 
-#include "Core/Math/Math.h"
 #include "Core/Logger.h"
+#include "Core/Math/Math.h"
 #include "Core/Streams/FileStream.h"
 #include "Core/Streams/BinaryStream.h"
 
-#include "../Generator/VoxelCHM.h"
-#include "../Utilities/VoxelUtils.h"
 #include "../LODTable.h"
 #include "../SpaceObjectChunk.h"
 #include "../SpaceObjectSettings.h"
+#include "../Generator/VoxelCHM.h"
+#include "../Utilities/VoxelUtils.h"
 
 sbyte VoxelStorage::sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, const Vector3& position, const int lod, const float radius, const float hillsHeight)
 {
@@ -91,14 +91,28 @@ void VoxelStorage::loadHeader()
     if(m_vxh->chunkMapSize > 0u)
     {
         cvar length = m_vxh->chunkMapSize * sizeof(VoxelStorageChunkEntry);
-        m_vxhMap = new VoxelStorageChunkEntry[m_vxh->chunkMapSize];
-        m_vxhStream->read(m_vxhMap, sizeof(VoxelStorageHeader), length);
+
+
+        //m_vxhMap = new VoxelStorageChunkEntry[m_vxh->chunkMapSize];
+        //m_vxhStream->read(m_vxhMap, sizeof(VoxelStorageHeader), length);
     }
 }
 
 void VoxelStorage::saveHeader()
 {
-    // TODO: write header
+    cvar length = m_vxh->chunkMapSize * sizeof(VoxelStorageChunkEntry);
+
+    // write header
+    m_vxhStream->write(m_vxh, 0u, sizeof(VoxelStorageHeader));
+    //m_vxhStream->read(m_vxhMap, sizeof(VoxelStorageHeader), length);
+}
+
+void VoxelStorage::writeChunk(sbyte* chunkData, const Vector3& position, int lod)
+{
+
+    // TODO: check if this chunk if saved, is so, get the offset
+    // TODO: if not saved, find free offset
+    // TODO: write chunk to given offset (and file)
 }
 
 void VoxelStorage::init(SpaceObjectSettings& settings)
@@ -124,7 +138,6 @@ void VoxelStorage::dispose()
     SafeDisposeNN(m_vxhStream);
     SafeDelete(m_vxhStream);
     SafeDelete(m_vxh);
-    SafeDeleteArray(m_vxhMap);
 }
 
 sbyte* VoxelStorage::getVoxelChunk(const Vector3& position, const int lod)
