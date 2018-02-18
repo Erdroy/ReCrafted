@@ -45,6 +45,7 @@ project "ReCrafted.Engine"
 		symbols "On"
 
 	configuration { "Release" }
+		defines { "NDEBUG" }
 		flags { "OptimizeSpeed", "No64BitChecks", "NoBufferSecurityCheck" }
 		runtime "Release"
 
