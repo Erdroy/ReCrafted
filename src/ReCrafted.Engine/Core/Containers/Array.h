@@ -130,6 +130,11 @@ public:
         std::sort(m_vector.begin(), m_vector.end(), X());
     }
 
+    FORCEINLINE void reverse()
+    {
+        std::reverse(m_vector.begin(), m_vector.end());
+    }
+
     FORCEINLINE uint32_t count() const
     {
         return m_count;
