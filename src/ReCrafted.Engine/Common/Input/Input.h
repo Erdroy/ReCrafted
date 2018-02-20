@@ -62,6 +62,9 @@ public:
     // INTERNAL
     void emitScroll(float delta);
 
+    // INTERNAL
+    void emitMouseMove(int deltaX, int deltaY, int cursorX, int cursorY);
+
 	// INTERNAL
 	// releases all keys
 	void releaseAll();

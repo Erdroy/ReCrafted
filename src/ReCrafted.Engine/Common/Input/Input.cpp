@@ -4,6 +4,11 @@
 
 Input* Input::m_instance;
 
+int m_cursorX = 0u;
+int m_cursorY = 0u;
+int m_cursorDeltaX = 0u;
+int m_cursorDeltaY = 0u;
+
 void Input::onInit()
 {
     // clear all keys
@@ -23,8 +28,11 @@ void Input::update()
         m_lastkeys[i] = m_keys[i];
 
     // update cursor pos
-    m_cursorPos = Vector2(float(0), float(0)); // TODO: implement event-based cursor update
-    m_cursorDelta = Vector2(float(0), float(0));
+    m_cursorPos = Vector2(float(m_cursorX), float(m_cursorY)); // TODO: implement event-based cursor update
+    m_cursorDelta = Vector2(float(m_cursorDeltaX), float(m_cursorDeltaY));
+
+    m_cursorDeltaX = 0;
+    m_cursorDeltaY = 0;
 
     // clear scroll
     m_scrollDelta = m_scrollDelta_u;
@@ -39,6 +47,15 @@ void Input::emit(bool up, uint key)
 void Input::emitScroll(float delta)
 {
     m_scrollDelta_u += delta;
+}
+
+void Input::emitMouseMove(int deltaX, int deltaY, int cursorX, int cursorY)
+{
+    m_cursorDeltaX += deltaX;
+    m_cursorDeltaY += deltaY;
+
+    m_cursorX = cursorX;
+    m_cursorY = cursorY;
 }
 
 void Input::releaseAll()

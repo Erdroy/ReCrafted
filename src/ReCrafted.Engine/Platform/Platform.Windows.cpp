@@ -73,11 +73,7 @@ void File::close() const
 	fclose(file);
 }
 
-LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
-
-    return DefWindowProc(hWnd, msg, wparam, lparam);
-}
+LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 void Platform::initialize()
 {
@@ -93,7 +89,7 @@ void Platform::initialize()
 	m_cpuCount = sysinfo.dwNumberOfProcessors;
 
     // create window class
-    auto instance = getHInstance();
+    cvar instance = getHInstance();
 
     WNDCLASSEX wnd;
     memset(&wnd, 0, sizeof(wnd));
@@ -209,7 +205,7 @@ bool Platform::fileExists(const char* fileName)
 	// check if file exists 
 	// by just trying to open for read 
 	// and checking the error
-	auto error = fopen_s(&file, fileName, "r");
+	cvar error = fopen_s(&file, fileName, "r");
 
 	// close the file now if exist to avoid some leaks or somethin
 	if (error == 0)

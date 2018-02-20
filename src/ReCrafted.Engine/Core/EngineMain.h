@@ -16,6 +16,9 @@
 class EngineMain : public ApplicationBase
 {
 private:
+    static EngineMain* m_instance;
+
+private:
     EngineComponentManager* m_componentManager = nullptr;
 
     Ptr<UpdateLoop> m_updateLoop = {};
@@ -24,6 +27,7 @@ private:
     double m_lastUpdateTime = 0.0;
 
 public:
+    EngineMain() { m_instance = this; }
     virtual ~EngineMain() {}
 
 private:
@@ -42,6 +46,12 @@ public:
 
 public:
     void quit();
+
+public:
+    static EngineMain* getInstance()
+    {
+        return m_instance;
+    }
 };
 
 #endif // ENGINEMAIN_H

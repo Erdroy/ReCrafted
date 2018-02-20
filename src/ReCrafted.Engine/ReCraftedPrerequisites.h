@@ -29,6 +29,7 @@
 
 class IDisposable;
 
+class Application;
 class ApplicationBase;
 class ApplicationWindow;
 
@@ -37,6 +38,8 @@ class UpdateLoop;
 class EngineMain;
 class EngineComponent;
 class EngineComponentManager;
+
+struct Delegate;
 
 class Profiler;
 class Logger;

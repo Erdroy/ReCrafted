@@ -19,6 +19,8 @@
 #include "Graphics/UI/UI.h"
 #include "Game/Universe.h"
 
+EngineMain* EngineMain::m_instance;
+
 void EngineMain::registerComponents() const
 {
     // initialize the rest of the engine components
@@ -62,21 +64,24 @@ void EngineMain::onUpdate()
 {
     Profiler::beginProfile("Frame");
 
-    // run platform events
-    Platform::runEvents();
-
     // update time
     cvar currentTime = Platform::getMiliseconds();
     Time::m_instance->m_deltaTime = (currentTime - m_lastUpdateTime) / 1000.0;
     Time::m_instance->m_time = float(currentTime / 1000.0);
     m_lastUpdateTime = currentTime;
 
+    // update input
+    Input::getInstance()->update();
+
     // clear keyboard buffer
     KeyboardBuffer::clear();
 
+    // run platform events
+    Platform::runEvents();
+
     // update
-    Input::getInstance()->update();
     Profiler::update();
+    EntityPool::getInstance()->update();
     Rendering::getInstance()->update();
     Universe::getInstance()->update();
     Application::getInstance()->update();
@@ -143,7 +148,6 @@ void EngineMain::shutdown()
 {
     Logger::log("ReCrafted shutdown");
     Logger::logInfo("Shutting down...");
-
 
     // dispose window (using Ptr<> - no need to delete)
     SafeDispose(m_mainWindow);
