@@ -19,6 +19,8 @@ class Font;
 
 class UI : public EngineComponent
 {
+    friend class Rendering;
+
 	API_DEF
 
 private:

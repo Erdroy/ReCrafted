@@ -15,6 +15,7 @@
 class Universe : public EngineComponent
 {
     friend class EngineMain;
+    friend class Rendering;
 
 private:
     static Universe* m_instance;

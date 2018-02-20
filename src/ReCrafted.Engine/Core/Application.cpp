@@ -42,7 +42,11 @@ void Application::update()
 void Application::render()
 {
     m_render_method->invoke();
-    //m_renderui_method->invoke();
+}
+
+void Application::renderUI()
+{
+    m_renderui_method->invoke();
 }
 
 Application* Application::getInstance()

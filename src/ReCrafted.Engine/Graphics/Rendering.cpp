@@ -5,6 +5,10 @@
 #include "Core/Logger.h"
 #include "Common/Display.h"
 #include "Common/Input/Input.h"
+#include "Common/Profiler/Profiler.h"
+#include "Game/Universe.h"
+#include "UI/UI.h"
+#include "Core/Application.h"
 
 Rendering* Rendering::m_instance;
 
@@ -194,6 +198,8 @@ void Rendering::beginRender()
 	lightdir.normalize();
 	m_deferredFinal->setValue(0, &lightdir);
 
+    // bind gbuffer
+    m_gbuffer->bind();
 }
 
 void Rendering::endRender()
@@ -221,19 +227,69 @@ void Rendering::endRender()
 	bgfx::submit(RENDERVIEW_BACKBUFFER, m_deferredFinal->m_program);
 }
 
-void Rendering::renderShadows()
+void Rendering::renderWorld()
 {
-
+    Profiler::beginProfile("Render World");
+    {
+        // render universe
+        Universe::getInstance()->render();
+    }
+    Profiler::endProfile();
 }
 
-void Rendering::renderStatic()
+void Rendering::renderUI()
 {
-	m_gbuffer->bind();
+    Profiler::beginProfile("Render UI");
+    {
+        // set UI state
+        setState(false, false, true);
+
+        // draw UI
+        UI::m_instance->beginDraw(); // begin draw UI
+
+        Profiler::beginProfile("UI Collect");
+        {
+            // render application UI
+            Application::getInstance()->renderUI();
+
+            // draw profiler debug screen
+            Profiler::drawDebugScreen();
+        }
+        Profiler::endProfile();
+
+        Profiler::beginProfile("UI Process");
+        {
+            UI::m_instance->endDraw(); // end draw UI
+        }
+        Profiler::endProfile();
+    }
+    Profiler::endProfile();
 }
 
-void Rendering::renderEntities()
+void Rendering::render()
 {
-	m_gbuffer->bind();
+    // draw event, called every frame, must be ended with gpu backbuffer `present` or `swapbuffer` - bgfx::frame()
+    bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
+    bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
+
+    bgfx::touch(RENDERVIEW_BACKBUFFER);
+
+    // set default render state
+    setState();
+
+    // begin rendering the scene
+    beginRender();
+    {
+        // render world
+        renderWorld();
+
+        // render UI
+        renderUI();
+    }
+    endRender(); // end rendering the scene
+
+    // next frame, wait vsync
+    bgfx::frame();
 }
 
 void Rendering::draw(Ptr<Mesh>& mesh, Ptr<Shader>& shader, Matrix* modelMatrix, int viewId)

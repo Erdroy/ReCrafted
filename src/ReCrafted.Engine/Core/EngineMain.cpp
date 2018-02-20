@@ -76,6 +76,7 @@ void EngineMain::onUpdate()
 
     // update
     Input::getInstance()->update();
+    Profiler::update();
     Rendering::getInstance()->update();
     Universe::getInstance()->update();
     Application::getInstance()->update();
@@ -83,11 +84,13 @@ void EngineMain::onUpdate()
 
 void EngineMain::onRender()
 {
-    // TODO: proper render handling
-    //Rendering::getInstance()->beginRender();
-    //Universe::getInstance()->render();
-    //Application::getInstance()->render();
-
+    Profiler::beginProfile("Render");
+    {
+        Rendering::getInstance()->render();
+    }
+    Profiler::endProfile();
+    
+    // end 'Frame' profile
     Profiler::endProfile();
     Profiler::endFrame();
 }

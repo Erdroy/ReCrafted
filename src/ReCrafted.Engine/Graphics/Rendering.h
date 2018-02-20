@@ -56,38 +56,21 @@ private:
 
     void update();
 
+    void beginRender();
+    void endRender();
+
+    void renderWorld();
+    void renderUI();
+
 public:
-	/// <summary>
+    void render();
+    
+    /// <summary>
 	/// Resize
 	/// </summary>
 	/// <param name="width">Width</param>
 	/// <param name="height">Height</param>
 	void resize(uint width, uint height);
-
-	/// <summary>
-	/// Begin scene render
-	/// </summary>
-	void beginRender();
-
-	/// <summary>
-	/// End scene render
-	/// </summary>
-	void endRender();
-
-	/// <summary>
-	/// Render shadowmap
-	/// </summary>
-	void renderShadows();
-
-	/// <summary>
-	/// Render static objects - voxels etc.
-	/// </summary>
-	void renderStatic();
-
-	/// <summary>
-	/// Render all dynamic entities.
-	/// </summary>
-	void renderEntities();
 
 	/// <summary>
 	/// Draw mesh using custom shader.

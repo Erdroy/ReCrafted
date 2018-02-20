@@ -16,6 +16,7 @@
 class Application : public EngineComponent
 {
     friend class EngineMain;
+    friend class Rendering;
 
     API_DEF
 
@@ -43,6 +44,7 @@ private:
     void simulate();
     void update();
     void render();
+    void renderUI();
 
 public:
     static Application* getInstance();

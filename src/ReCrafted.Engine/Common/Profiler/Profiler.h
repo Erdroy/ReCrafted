@@ -18,7 +18,8 @@ class Font;
 /// </summary>
 class Profiler : public EngineComponent
 {
-	friend class GameMain;
+	friend class EngineMain;
+	friend class Rendering;
 
 private:
 	API_DEF
