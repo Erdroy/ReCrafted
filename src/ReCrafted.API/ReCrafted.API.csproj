@@ -60,8 +60,8 @@
     <Compile Include="Common\Script.cs" />
     <Compile Include="Common\Script.Gen.cs" />
     <Compile Include="Common\Time.Gen.cs" />
+    <Compile Include="Core\Application.Gen.cs" />
     <Compile Include="Core\Cursor.cs" />
-    <Compile Include="Core\Game.Gen.cs" />
     <Compile Include="Core\Keys.cs" />
     <Compile Include="Core\Logger.cs" />
     <Compile Include="Core\LogLevel.cs" />

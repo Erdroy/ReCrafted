@@ -23,27 +23,27 @@ public:
 	void dispose();
 };
 
-struct ScopeLock
+struct IScopeLock
 {
 private:
 	Lock* m_lock = nullptr;
 
 private:
-	ScopeLock(){}
+    IScopeLock(){}
 
 public:
-	ScopeLock(Lock* lock)
+    IScopeLock(Lock* lock)
 	{
 		m_lock = lock;
 		m_lock->lock();
 	}
 
-	~ScopeLock()
+	~IScopeLock()
 	{
 		m_lock->unlock();
 	}
 };
 
-#define lock_lock(x) ScopeLock x##_lock(&x);
+#define ScopeLock(x) IScopeLock x##_lock(&x);
 
 #endif // LOCK_H

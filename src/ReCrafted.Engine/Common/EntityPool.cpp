@@ -4,12 +4,12 @@
 
 EntityPool* EntityPool::m_instance;
 
-void EntityPool::initialize()
+void EntityPool::onInit()
 {
     m_instance = this;
 }
 
-void EntityPool::dispose()
+void EntityPool::onShutdown()
 {
 }
 

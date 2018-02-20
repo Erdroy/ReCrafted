@@ -8,51 +8,36 @@
 // includes
 #include "World/SpaceObject/SpaceObject.h"
 
-/// <summary>
-/// Universe class - main class for whole game world.
-/// Manages voxel engine, AI, players, handles multiplayer etc.
-/// </summary>
-class Universe
+/**
+ * \brief Universe class - main class for whole game world.
+ * Manages voxel engine, AI, players, handles multiplayer etc.
+ */
+class Universe : public EngineComponent
 {
-	friend class GameMain;
+    friend class EngineMain;
 
 private:
-	static Universe* m_instance;
+    static Universe* m_instance;
 
 private:
-	Ptr<SpaceObject> m_testObject1 = nullptr;
-
-private:
-	void init();
-
-private:
-	Universe() { m_instance = this; }
+    Ptr<SpaceObject> m_testObject1 = nullptr;
 
 public:
-	/// <summary>
-	/// Updates the whole universe.
-	/// </summary>
-	void update();
+    Universe() { m_instance = this; }
 
-	/// <summary>
-	/// Simulates the whole universe.
-	/// </summary>
-	void simulate();
+private:
+    void onInit() override;
+    void onShutdown() override;
 
-	/// <summary>
-	/// Draws all shadow casters.
-	/// </summary>
-	void drawShadowCasters();
+    void update();
+    void simulate();
+    void render();
 
-	/// <summary>
-	/// Draws the whole universe.
-	/// </summary>
-	void draw();
-
-	/// <summary>
-	/// Disposes the universe.
-	/// </summary>
-	void dispose();
+public:
+    static Universe* getInstance()
+    {
+        return m_instance;
+    }
 };
 
 #endif // UNIVERSE_H

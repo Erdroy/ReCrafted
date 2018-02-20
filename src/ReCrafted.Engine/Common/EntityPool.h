@@ -7,11 +7,12 @@
 
 // includes
 #include "ReCrafted.h"
+#include "Core/EngineComponent.h"
 #include "Entity.h"
 #include "Platform/Platform.h"
 #include "Core/Containers/Array.h"
 
-class EntityPool
+class EntityPool : public EngineComponent
 {
 private:
 	static EntityPool* m_instance;
@@ -19,9 +20,9 @@ private:
 private:
 	Array<Ptr<Entity>> m_entities = {};
 
-public:
-	void initialize();
-	void dispose();
+private:
+    void onInit() override;
+    void onShutdown() override;
 
 public:
     void update();
@@ -42,6 +43,11 @@ public:
 	static void destroyEntity(Entity* entity)
 	{
 		
+	}
+
+    static EntityPool* getInstance()
+	{
+        return m_instance;
 	}
 };
 

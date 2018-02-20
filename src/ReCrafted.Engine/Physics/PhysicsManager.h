@@ -6,15 +6,15 @@
 #define PHYSICSMANAGER_H
 
 // includes
-#include "Core/IDisposable.h"
+#include "ReCrafted.h"
+#include "Core/EngineComponent.h"
 
-class PhysicsManager : IDisposable
+class PhysicsManager : public EngineComponent
 {
 private:
-public:
-    void init();
+    void onInit() override;
     void update();
-    void dispose() override;
+    void onShutdown() override;
 };
 
 #endif // PHYSICSMANAGER_H

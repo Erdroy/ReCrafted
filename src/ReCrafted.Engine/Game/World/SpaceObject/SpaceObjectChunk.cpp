@@ -119,11 +119,6 @@ uint64_t SpaceObjectChunk::CalculateChunkId(const Vector3& position)
     cvar posY = static_cast<uint64_t>(position.y / ChunkSize);
     cvar posZ = static_cast<uint64_t>(position.z / ChunkSize);
 
-    // perform asserts
-    assert(chunkPosX <= 1048575);
-    assert(chunkPosY <= 1048575);
-    assert(chunkPosZ <= 1048575);
-
     // mask-off the last 20 bits and pack into uint64
     var chunkId = (posX & 0xFFFFF) << 40;
     chunkId |= (posY & 0xFFFFF) << 20;

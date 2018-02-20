@@ -3,8 +3,9 @@
 #include "Bindings.h"
 #include "Object.h"
 
-#include "Core/GameMain.h"
 #include "Common/Display.h"
+#include "Common/Time.h"
+#include "Common/Entity.h"
 #include "Common/Profiler/Profiler.h"
 #include "Common/Input/Input.h"
 #include "Common/Input/KeyboardBuffer.h"
@@ -12,13 +13,16 @@
 #include "Graphics/Camera.h"
 #include "Graphics/Font.h"
 #include "Graphics/DebugDraw.h"
+#include "Script.h"
+#include "Core/Application.h"
 
 void Bindings::bind()
 {
 	Object::initRuntime();
 
+    Application::initRuntime();
+
 	Input::initRuntime();
-	GameMain::initRuntime();
 	Time::initRuntime();
 	Display::initRuntime();
 	UI::initRuntime();

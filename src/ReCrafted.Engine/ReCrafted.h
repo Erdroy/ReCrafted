@@ -9,5 +9,6 @@
 
 // includes prereqs
 #include "ReCraftedPrerequisites.h"
+#include "ReCraftedConfig.h"
 
 #endif // RECRAFTED_H

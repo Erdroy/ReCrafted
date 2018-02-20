@@ -2,6 +2,8 @@
 
 #include "Platform.h"
 #include "ReCrafted.h"
+#include "Common/Profiler/Profiler.h"
+#include "Common/Display.h"
 
 #if _WIN32
 
@@ -14,7 +16,7 @@ static LARGE_INTEGER m_frequency;
 static double m_start;
 static double m_freqCoeff;
 
-void* Platform::m_gameWindow;
+void* Platform::m_currentWindow;
 unsigned char Platform::m_theadCount;
 int Platform::m_cpuCount;
 
@@ -71,6 +73,12 @@ void File::close() const
 	fclose(file);
 }
 
+LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+
+    return DefWindowProc(hWnd, msg, wparam, lparam);
+}
+
 void Platform::initialize()
 {
 	// initialize timer
@@ -84,6 +92,22 @@ void Platform::initialize()
 	GetSystemInfo(&sysinfo);
 	m_cpuCount = sysinfo.dwNumberOfProcessors;
 
+    // create window class
+    auto instance = getHInstance();
+
+    WNDCLASSEX wnd;
+    memset(&wnd, 0, sizeof(wnd));
+    wnd.cbSize = sizeof(wnd);
+    wnd.style = CS_HREDRAW | CS_VREDRAW;
+    wnd.lpfnWndProc = WindowEventProcessor;
+    wnd.hInstance = instance;
+    wnd.hIcon = LoadIcon(nullptr, IDI_APPLICATION);
+    wnd.hCursor = nullptr;
+    wnd.lpszClassName = L"recrafted";
+    wnd.hIconSm = LoadIcon(nullptr, IDI_APPLICATION);
+    RegisterClassEx(&wnd);
+
+    Logger::log("Initialized platform: Win32");
 }
 
 Guid Platform::newGuid()
@@ -112,20 +136,57 @@ int Platform::cpuCount()
 	return m_cpuCount;
 }
 
-void* Platform::getGameWindow()
+void* Platform::createWindow(Text windowName, int width, int height, const uint64_t style)
 {
-	return m_gameWindow;
+    var mStyle = style;
+
+    if (mStyle == 0u)
+        mStyle = WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_MAXIMIZE;
+
+    // create window now
+    cvar window = CreateWindowW(L"recrafted", windowName.wstr().c_str(), static_cast<DWORD>(mStyle), 0, 0, width, height, NULL, NULL, getHInstance(), nullptr);
+
+    // show the window
+    ShowWindow(static_cast<HWND>(window), SW_MAXIMIZE); 
+
+    setCurrentWindow(window);
+
+    return window;
 }
 
-void Platform::setGameWindow(void* gameWindow)
+void Platform::runEvents()
 {
-	m_gameWindow = gameWindow;
+    Profiler::beginProfile("RunEvents");
+    MSG msg;
+    msg.message = WM_NULL;
+    while (PeekMessage(&msg, nullptr, 0u, 0u, PM_REMOVE))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+    Profiler::endProfile();
 }
 
-void Platform::getGameWindowSize(unsigned* width, unsigned* height)
+void Platform::destroyWindow(void* windowHandle)
+{
+    // destroy window
+    DestroyWindow(static_cast<HWND>(windowHandle));
+}
+
+void Platform::setCurrentWindow(void* windowHandle)
+{
+    m_currentWindow = windowHandle;
+}
+
+void* Platform::getCurrentWindow()
+{
+	return m_currentWindow;
+}
+
+void Platform::getCurrentWindowSize(unsigned int* width, unsigned int* height)
 {
 	RECT windowRect;
-	GetClientRect(static_cast<HWND>(m_gameWindow), &windowRect);
+	GetClientRect(static_cast<HWND>(m_currentWindow), &windowRect);
 
 	*width = windowRect.right - windowRect.left;
 	*height = windowRect.bottom - windowRect.top;
@@ -137,7 +198,7 @@ void Platform::setCursorPosition(uint16_t x, uint16_t y)
 	point.x = long(x);
 	point.y = long(y);
 
-	ClientToScreen(static_cast<HWND>(m_gameWindow), &point);
+	ClientToScreen(static_cast<HWND>(m_currentWindow), &point);
 	SetCursorPos(point.x, point.y);
 }
 

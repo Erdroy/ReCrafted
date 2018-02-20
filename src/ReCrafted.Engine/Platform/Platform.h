@@ -51,7 +51,7 @@ public:
 class Platform
 {
 private:
-	static void* m_gameWindow;
+	static void* m_currentWindow;
 
 	// timer
 	static unsigned char m_theadCount;
@@ -78,24 +78,26 @@ public:
 	 */
 	static int cpuCount();
 
+    static void runEvents();
+
+    static void* createWindow(Text windowName, int width = 1280, int height = 720, uint64_t style = 0u);
+
+    static void destroyWindow(void* windowHandle);
+
+    static void setCurrentWindow(void* windowHandle);
+
 	/**
 	* \brief Gets the main game window handle.
 	* \return The game window handle.
 	*/
-	static void* getGameWindow();
-
-	/**
-	 * \brief Sets  the main game window handle.
-	 * \param gameWindow The game window handle. 
-	 */
-	static void setGameWindow(void* gameWindow);
+	static void* getCurrentWindow();
 
 	/**
 	 * \brief Get size of game window.
 	 * \param width (out)The width.
 	 * \param height (out)The height.
 	 */
-	static void getGameWindowSize(unsigned int* width, unsigned int* height);
+	static void getCurrentWindowSize(unsigned int* width, unsigned int* height);
 
 	/**
 	 * \brief Set the cursor position.

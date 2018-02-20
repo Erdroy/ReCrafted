@@ -20,12 +20,18 @@ bool Profiler::profileSort(const Profile& lhs, const Profile& rhs)
 	return lhs.order > rhs.order;
 }
 
-void Profiler::init()
+void Profiler::onInit()
 {
-	m_drawDebugScreen = false;
+    m_drawDebugScreen = false;
 
-	m_debugFont = new Font();
-	m_debugFont->loadFont(TEXT_CONST("../assets/fonts/VeraMono.ttf"), 12);
+    m_debugFont = new Font();
+    m_debugFont->loadFont(TEXT_CONST("../assets/fonts/VeraMono.ttf"), 12);
+}
+
+void Profiler::onShutdown()
+{
+    // destroy font
+    Object::destroy(m_debugFont);
 }
 
 void Profiler::update()

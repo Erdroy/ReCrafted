@@ -1,7 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Camera.h"
-#include "Core/GameMain.h"
 #include "Common/Display.h"
 
 // declare m_mainCamera static variable

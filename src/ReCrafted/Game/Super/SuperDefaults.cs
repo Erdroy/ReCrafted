@@ -29,7 +29,7 @@ namespace ReCrafted.Game.Super
             }, "Prints all commands.");
 
             // exit
-            SuperCommands.Register("", new[] {"exit", "quit", "close"}, API.Core.Game.Quit, "Close ReCrafted.");
+            //SuperCommands.Register("", new[] {"exit", "quit", "close"}, API.Core.Game.Quit, "Close ReCrafted.");
 
             // debug
             SuperCommands.Register("", "debug", () =>

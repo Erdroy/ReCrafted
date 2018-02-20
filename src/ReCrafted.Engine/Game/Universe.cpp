@@ -1,9 +1,7 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Universe.h"
-#include "Common/Time.h"
 #include "Common/Input/Input.h"
-#include "Core/Logger.h"
 #include "Graphics/Camera.h"
 #include "Graphics/DebugDraw.h"
 #include "World/SpaceObject/SpaceObjectManager.h"
@@ -12,27 +10,34 @@ Universe* Universe::m_instance;
 
 bool m_viewUpdateEnabled = true;
 
-void Universe::init()
+void Universe::onInit()
 {
     // initialize save system
 
-	// initialize space object manager
-	SpaceObjectManager::getInstance()->init();
+    // initialize space object manager
+    SpaceObjectManager::getInstance()->init();
 
     // temporary, replace with World::load("../saves/SaveName", MakeDelegate(Universe::OnWorldLoaded));
     // when saves will be done
-	SpaceObjectSettings settings;
+    SpaceObjectSettings settings;
     settings.name = "moon";
     settings.fileName = "../assets/spacebodies/moon";
     settings.saveName = "../saves/dev/voxelstorage/moon.vxh";
     settings.generationType = GenerationType::CubeHeightMap;
     settings.position = Vector3::zero();
-	settings.minSurfaceHeight = 900.0f;
-	settings.maxSurfaceHeight = settings.minSurfaceHeight + 120.0f; // will round up to 1024 * 2
+    settings.minSurfaceHeight = 900.0f;
+    settings.maxSurfaceHeight = settings.minSurfaceHeight + 120.0f; // will round up to 1024 * 2
     settings.hillsHeight = 40.0f;
     settings.rootOctreeDepth = 3; // 2 subdivisions (chunk size will be 512)
 
-	m_testObject1 = SpaceObject::createSpaceObject(settings);
+    m_testObject1 = SpaceObject::createSpaceObject(settings);
+}
+
+void Universe::onShutdown()
+{
+    // shutdown
+    SafeDisposeNN(SpaceObjectManager::getInstance());
+    SafeDispose(m_testObject1);
 }
 
 void Universe::update()
@@ -62,23 +67,7 @@ void Universe::simulate()
 {
 }
 
-void Universe::drawShadowCasters()
+void Universe::render()
 {
-
-}
-
-void Universe::draw()
-{
-	m_testObject1->draw();
-}
-
-void Universe::dispose()
-{
-	// shutdown
-	SafeDisposeNN(SpaceObjectManager::getInstance());
-
-    SafeDispose(m_testObject1);
-
-	Logger::logInfo("Universe unloaded");
-	delete this;
+    m_testObject1->draw();
 }

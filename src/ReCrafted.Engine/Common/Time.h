@@ -6,17 +6,19 @@
 #define TIME_H
 
 // includes
-#include "Core/Defines.h"
+#include "ReCrafted.h"
+#include "Core/EngineComponent.h"
 #include "Common/ReCraftedAPI.h"
 
-/// <summary>
-/// Time class.
-/// </summary>
-class Time
+/**
+ * \brief Time class. Implements Time components and API.
+ */
+class Time : public EngineComponent
 {
 	API_DEF
 
 	friend class GameMain;
+	friend class EngineMain;
 
 private:
 	static Time* m_instance;
@@ -30,29 +32,25 @@ private:
 	int m_frames = 0;
 
 public:
-	/// <summary>
-	/// Default constuctor for Time class.
-	/// </summary>
+    /**
+	 * \brief Default constuctor for Time class.
+	 */
 	Time() { m_instance = this; }
 
-public:
-	/// <summary>
-	/// Dispose the time.
-	/// </summary>
-	FORCEINLINE void dispose()
-	{
-		m_deltaTime = 0.0f;
+private:
+    void onInit() override { }
 
-		// suicide
-		delete this;
-	}
+    void onShutdown() override
+    {
+        m_deltaTime = 0.0f;
+    }
 
 public:
-	/// <summary>
-	/// The current frame delta time.
-	/// Use for 'Update' calls.
-	/// </summary>
-	/// <returns>The frame delta time.</returns>
+    /**
+	 * \brief The current frame delta time.
+	 * Use for 'Update' calls.
+	 * \return The frame delta time.
+	 */
 	FORCEINLINE static double deltaTime()
 	{
 		return m_instance->m_deltaTime;
@@ -76,28 +74,28 @@ public:
 		m_instance->m_fixedDeltaTime = fixedDeltaTime;
 	}
 
-	/// <summary>
-	/// The current game time.
-	/// </summary>
-	/// <returns>The time.</returns>
+    /**
+	 * \brief The current game time.
+	 * \return The time.
+	 */
 	FORCEINLINE static float time()
 	{
 		return m_instance->m_time;
 	}
 
-	/// <summary>
-	/// The current game simulation time.
-	/// </summary>
-	/// <returns>The time.</returns>
+    /**
+	 * \brief The current game simulation time.
+	 * \return The time.
+	 */
 	FORCEINLINE static float fixedTime()
 	{
 		return m_instance->m_fixedTime;
 	}
 
-	/// <summary>
-	/// The current game frame count.
-	/// </summary>
-	/// <returns>The frame count.</returns>
+    /**
+	 * \brief The current game frame count.
+	 * \return The frame count.
+	 */
 	FORCEINLINE static int frames()
 	{
 		return m_instance->m_frames;

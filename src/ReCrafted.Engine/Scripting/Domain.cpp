@@ -3,7 +3,6 @@
 #include "Domain.h"
 #include "Core/Logger.h"
 #include "Core/GameInfo.h"
-#include "Core/GameMain.h"
 
 Ptr<Domain> Domain::Root;
 
@@ -22,10 +21,7 @@ Ptr<Assembly> Domain::loadAssembly(const char* fileName)
 	auto mimg = mono_assembly_get_image(masm);
 
 	if (!masm || !mimg)
-	{
-		Logger::logError("Failed to load assembly '{0}'", fileName);
 		return nullptr;
-	}
 
 	// create assembly instance
 	Ptr<Assembly> assembly(new Assembly);
@@ -35,8 +31,6 @@ Ptr<Assembly> Domain::loadAssembly(const char* fileName)
 
 	// add to the loaded assembly list
 	m_loadedAssemblies.add(assembly);
-
-	Logger::logInfo("Loaded assembly '{0}'", fileName);
 
 	return assembly;
 }
@@ -88,7 +82,6 @@ Ptr<Domain> Domain::createRoot()
 	if(!domain)
 	{
 		Logger::logException("Failed to create root domain! Domain Name: {0} Runtime Version: {1}", rootDomainName, runtimeVersion);
-		GameMain::quit(); // quit
 		return nullptr;
 	}
 

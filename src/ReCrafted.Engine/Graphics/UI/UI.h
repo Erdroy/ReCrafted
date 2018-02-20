@@ -4,6 +4,8 @@
 #define UI_H
 
 // includes
+#include "ReCrafted.h"
+#include "Core/EngineComponent.h"
 #include "Core/Math/Color.h"
 #include "Core/Math/Rectf.h"
 #include "Common/ReCraftedAPI.h"
@@ -15,7 +17,7 @@
 struct Text;
 class Font;
 
-class UI
+class UI : public EngineComponent
 {
 	API_DEF
 
@@ -101,9 +103,11 @@ public:
 public:
 	UI() { m_instance = this; }
 
+private:
+    void onInit() override;
+    void onShutdown() override;
+
 public:
-	void init();
-	void dispose();
 	void beginDraw();
 	void endDraw();
 

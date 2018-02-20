@@ -1,6 +1,7 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "PhysicsManager.h"
+#include "Core/Logger.h"
 
 #include <pxphysicsapi.h>
 
@@ -41,13 +42,13 @@ namespace PhysXCallback
 physx::PxFoundation* m_pxFoundation;
 physx::PxPhysics* m_pxPhysics;
 
-void PhysicsManager::init()
+void PhysicsManager::onInit()
 {
     physx::PxTolerancesScale ToleranceScale;
     ToleranceScale.length = 1;
     ToleranceScale.mass = 1000;
     ToleranceScale.speed = 1000;
-    
+
     m_pxFoundation = PxCreateFoundation(PX_FOUNDATION_VERSION, PhysXCallback::PhysXAllocatorCallback, PhysXCallback::PhysXErrorCallback);
     m_pxPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_pxFoundation, ToleranceScale, false);
     //PxInitExtensions(*m_pxPhysics, nullptr);
@@ -57,7 +58,6 @@ void PhysicsManager::update()
 {
 }
 
-void PhysicsManager::dispose()
+void PhysicsManager::onShutdown()
 {
-
 }

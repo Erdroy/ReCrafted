@@ -24,6 +24,9 @@ void ScriptingEngine::onInit()
 
 void ScriptingEngine::onShutdown()
 {
+    // destroy all objects
+    Object::destroyall();
+
     // shutdown bindings
     Bindings::shutdown();
 

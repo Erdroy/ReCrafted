@@ -1,7 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "UI.h"
-#include "Core/GameMain.h"
 #include "Common/Display.h"
 #include "Graphics/Font.h"
 

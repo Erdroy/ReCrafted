@@ -33,8 +33,10 @@ namespace ReCrafted.API.Core
         /// </summary>
         public static bool Lock
         {
-            set { Game.LockCursor = value; }
-            get { return Game.LockCursor; }
+            get;
+            set;
+            //set { Game.LockCursor = value; }
+            //get { return Game.LockCursor; }
         }
 
         /// <summary>
@@ -42,8 +44,10 @@ namespace ReCrafted.API.Core
         /// </summary>
         public static bool Show
         {
-            set { Game.ShowCursor = value; }
-            get { return Game.ShowCursor; }
+            get;
+            set;
+            //set { Game.ShowCursor = value; }
+            //get { return Game.ShowCursor; }
         }
 
         /// <summary>
@@ -51,8 +55,10 @@ namespace ReCrafted.API.Core
         /// </summary>
         public static CursorIcon Icon
         {
-            set { Game.CursorIcon = (int)value; }
-            get { return (CursorIcon)Game.CursorIcon; }
+            get;
+            set;
+            //set { Game.CursorIcon = (int)value; }
+            //get { return (CursorIcon)Game.CursorIcon; }
         }
     }
 }

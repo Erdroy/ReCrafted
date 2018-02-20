@@ -1,7 +1,5 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
-using ReCrafted.API.Core;
-
 namespace ReCrafted.API.Common
 {
     /// <summary>
@@ -15,7 +13,7 @@ namespace ReCrafted.API.Common
         /// <param name="text">Data to set.</param>
         public static void SetText(string text)
         {
-            Game.SetClipboard(text);
+            //Game.SetClipboard(text);
         }
 
         /// <summary>
@@ -24,7 +22,8 @@ namespace ReCrafted.API.Common
         /// <returns>Clipboard text.</returns>
         public static string GetText()
         {
-            return Game.GetClipboard();
+            //return Game.GetClipboard();
+            return string.Empty;
         }
     }
 }

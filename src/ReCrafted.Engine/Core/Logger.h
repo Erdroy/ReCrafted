@@ -7,6 +7,7 @@
 
 // includes
 #include "ReCrafted.h"
+#include "EngineComponent.h"
 #include "Common/Text.h"
 #include "fmt/format.h"
 
@@ -32,9 +33,10 @@ class Method;
  * \brief Logger class - provides basic logging system.
  * Writes logs into log file or message event.
  */
-class Logger
+class Logger : public EngineComponent
 {
-	friend class GameMain;
+private:
+    friend class EngineMain;
 
 private:
 	static Logger* m_instance;
@@ -43,13 +45,15 @@ private:
     Ptr<Method> m_api_log_callback = nullptr;
     Ptr<Method> m_api_log_shutdown = nullptr;
 	
-private:
+public:
 	Logger() { m_instance = this; }
 
+protected:
+    ~Logger() = default;
+
 private:
-	void init();
-    void postInit();
-	void dispose();
+	void onInit() override;
+	void onShutdown() override;
 
 private:
     void invokeCallback(const char* message, LogLevel::Enum logLevel);

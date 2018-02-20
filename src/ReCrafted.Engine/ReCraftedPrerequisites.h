@@ -38,7 +38,16 @@ class EngineMain;
 class EngineComponent;
 class EngineComponentManager;
 
+class Profiler;
 class Logger;
+class Display;
+class Time;
+class Input;
+class PhysicsManager;
+class Rendering;
+class UI;
+class EntityPool;
+class Universe;
 
 class ScriptingEngine;
 class Bindings;
@@ -49,5 +58,7 @@ class Field;
 class Method;
 class Object;
 class Script;
+
+class KeyboardBuffer;
 
 #endif // RECRAFTEDPREREQUISITES_H

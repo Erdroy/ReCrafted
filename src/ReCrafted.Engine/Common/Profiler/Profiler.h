@@ -7,6 +7,7 @@
 
 // includes
 #include "ReCrafted.h"
+#include "Core/EngineComponent.h"
 #include "Platform/Platform.h"
 #include "Core/Containers/Array.h"
 
@@ -15,7 +16,7 @@ class Font;
 /// <summary>
 /// Profiler class.
 /// </summary>
-class Profiler
+class Profiler : public EngineComponent
 {
 	friend class GameMain;
 
@@ -71,7 +72,10 @@ private:
 	static bool Profiler::profileSort(const Profile& lhs, const Profile& rhs);
 
 private:
-	static void init();
+    void onInit() override;
+    void onShutdown() override;
+
+private:
 	static void update();
 	static void drawDebugScreen();
 

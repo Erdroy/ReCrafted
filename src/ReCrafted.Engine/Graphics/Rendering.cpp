@@ -3,10 +3,12 @@
 #include "Rendering.h"
 #include "Camera.h"
 #include "Core/Logger.h"
-#include "DebugDraw.h"
-#include "Core/GameMain.h"
+#include "Common/Display.h"
+#include "Common/Input/Input.h"
 
 Rendering* Rendering::m_instance;
+
+#define RESET_FLAGS (BGFX_RESET_NONE)
 
 void Rendering::loadInternalShaders()
 {
@@ -70,24 +72,112 @@ void Rendering::createBlitQuad()
 	m_blitMesh->upload();
 }
 
-void Rendering::init()
+void Rendering::onInit()
+{  
+    // initialize bgfx platform data
+    bgfx::PlatformData pd;
+    memset(&pd, 0, sizeof(pd));
+    pd.nwh = Platform::getCurrentWindow();
+    bgfx::setPlatformData(pd);
+
+    Logger::logInfo("Creating renderer with Direct3D11 API");
+
+    // initialize rendering
+    bgfx::init(bgfx::RendererType::Direct3D11);
+    bgfx::reset(Display::get_Width(), Display::get_Height(), RESET_FLAGS);
+
+    bgfx::setDebug(BGFX_DEBUG_NONE);
+
+    // Set view 0 clear state.
+    bgfx::setViewClear(RENDERVIEW_BACKBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
+    bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
+
+    bgfx::setViewClear(RENDERVIEW_GBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
+    bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
+
+    Logger::logInfo("Renderer initialized");
+
+    // create uniforms
+    createUniforms();
+
+    // create render buffers
+    createRenderBuffers();
+
+    // create quad
+    createBlitQuad();
+
+    // load all shaders
+    loadInternalShaders();
+}
+
+void Rendering::onShutdown()
 {
-	// create uniforms
-	createUniforms();
+    Logger::logInfo("Unloading rendering pipeline");
 
-	// create render buffers
-	createRenderBuffers();
+    m_gbuffer->dispose();
+    Logger::logInfo("Unloaded render buffers");
 
-	// create quad
-	createBlitQuad();
+    m_blitMesh->dispose();
 
-	// load all shaders
-	loadInternalShaders();
+    m_blitShader->dispose();
+    m_gbufferShader->dispose();
+    m_deferredFinal->dispose();
+    Logger::logInfo("Unloaded shaders");
+
+    bgfx::destroy(m_modelViewProjection);
+    bgfx::destroy(m_texture0);
+    bgfx::destroy(m_texture1);
+    bgfx::destroy(m_texture2);
+    bgfx::destroy(m_texture3);
+    Logger::logInfo("Unloaded uniforms");
+
+    // shutdown rendering
+    bgfx::shutdown();
+}
+
+void Rendering::update()
+{
+    if (Input::isKeyDown(Key_F3))
+    {
+        m_wireframe = true;
+        bgfx::setDebug(BGFX_DEBUG_WIREFRAME);
+        Logger::logInfo("Switching to wireframe render mode");
+    }
+
+    if (Input::isKeyDown(Key_F4))
+    {
+        m_wireframe = false;
+        bgfx::setDebug(BGFX_DEBUG_NONE);
+        Logger::logInfo("Switching to default render mode");
+    }
+
+    if (Input::isKeyDown(Key_F5))
+    {
+        m_wireframe = false;
+        bgfx::setDebug(BGFX_DEBUG_STATS);
+        Logger::logInfo("Switching to debug stats render mode");
+    }
+
+    if (Input::isKeyDown(Key_F6))
+    {
+        m_wireframe = false;
+        bgfx::setDebug(BGFX_DEBUG_TEXT);
+        Logger::logInfo("Switching to debug text render mode");
+    }
 }
 
 void Rendering::resize(uint width, uint height)
 {
 	_ASSERT(Camera::m_mainCamera != nullptr);
+
+    Display::set_Width(width);
+    Display::set_Height(height);
+
+    // reset bgfx state, this should force renderer to resize all the viewports etc.
+    bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
+    bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
+
+    bgfx::reset(Display::get_Width(), Display::get_Height(), RESET_FLAGS);
 
 	m_gbuffer->resize(width, height);
 }
@@ -119,7 +209,7 @@ void Rendering::endRender()
 	// final pass
 	auto textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
 
-	if (GameMain::m_instance->m_wireframe)
+	if (m_wireframe)
 		return;
 
 	bgfx::setTexture(0, m_texture0, m_gbuffer->getTarget(0), textureFlags);
@@ -153,7 +243,7 @@ void Rendering::draw(Ptr<Mesh>& mesh, Ptr<Shader>& shader, Matrix* modelMatrix, 
 	bgfx::setVertexBuffer(0, mesh->m_vertexBuffer);
 	bgfx::setIndexBuffer(mesh->m_indexBuffer);
 
-	bgfx::submit(GameMain::m_instance->m_wireframe ? 0 : viewId, shader->m_program);
+	bgfx::submit(m_wireframe ? 0 : viewId, shader->m_program);
 }
 
 void Rendering::draw(Ptr<Mesh>& mesh, Matrix* modelMatrix)
@@ -223,29 +313,4 @@ void Rendering::setState(bool tristrip, bool msaa, bool uiRendering, bool debugL
 		bgfx::setState(0 | BGFX_STATE_DEFAULT | BGFX_STATE_PT_TRISTRIP);
 	else
 		bgfx::setState(0 | BGFX_STATE_DEFAULT);
-}
-
-void Rendering::dispose()
-{
-	Logger::logInfo("Unloading rendering pipeline");
-
-	m_gbuffer->dispose();
-	Logger::logInfo("Unloaded render buffers");
-	
-	m_blitMesh->dispose();
-
-	m_blitShader->dispose();
-	m_gbufferShader->dispose();
-	m_deferredFinal->dispose();
-	Logger::logInfo("Unloaded shaders");
-
-	bgfx::destroy(m_modelViewProjection);
-	bgfx::destroy(m_texture0);
-	bgfx::destroy(m_texture1);
-	bgfx::destroy(m_texture2);
-	bgfx::destroy(m_texture3);
-	Logger::logInfo("Unloaded uniforms");
-
-	// suicide
-	delete this;
 }

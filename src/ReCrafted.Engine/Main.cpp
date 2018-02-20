@@ -1,12 +1,14 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
+// includes
+#include "ReCrafted.h"
 #include "Core/GameInfo.h"
-#include "Graphics/HTML5_UI/HTML5_UI.h"
+#include "Core/EngineMain.h"
+
 #ifdef _WIN32
 
-// includes
+// platform-specific includes
 #include <Windows.h>
-#include "Core/GameMain.h"
 
 /// <summary>
 /// WinMain - Main entry for Windows platform
@@ -19,11 +21,17 @@ int CALLBACK WinMain(
 {
 	GameInfo::parseArguments(Text(GetCommandLineA()));
 
-	//HTML5UI::initChildren();
+    // create engine instance
+    var engine = EngineMain();
 
-	// run the game
-	GameMain core = {};
-	core.run();
+    // initialize engine
+    engine.initialize();
+
+    // run engine loop
+    engine.run();
+
+    // shutdown engine
+    engine.shutdown();
 
 	return ERROR_SUCCESS;
 }

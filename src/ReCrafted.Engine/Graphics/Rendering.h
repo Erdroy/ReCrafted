@@ -6,6 +6,9 @@
 #define RENDERING_H
 
 // includes
+#include "ReCrafted.h"
+#include "Core/EngineComponent.h"
+
 #include "Core/Math/Math.h"
 #include "Core/Defines.h"
 #include "Core/Types.h"
@@ -13,15 +16,19 @@
 #include "Shader.h"
 #include "RenderBuffer.h"
 
-/// <summary>
-/// Rendering class.
-/// </summary>
-class Rendering
+/**
+ * \brief Rendering class.
+ */
+class Rendering : public EngineComponent
 {
+    friend class EngineMain;
+
 private:
 	static Rendering* m_instance;
 
 private:
+    bool m_wireframe = false;
+
 	bgfx::UniformHandle m_modelViewProjection = {};
 	bgfx::UniformHandle m_texture0 = {};
 	bgfx::UniformHandle m_texture1 = {};
@@ -43,12 +50,13 @@ private:
 public:
 	Rendering() { m_instance = this; }
 
-public:
-	/// <summary>
-	/// Initialize rendering
-	/// </summary>
-	void init();
+private:
+    void onInit() override;
+    void onShutdown() override;
 
+    void update();
+
+public:
 	/// <summary>
 	/// Resize
 	/// </summary>
@@ -113,11 +121,6 @@ public:
 	/// <param name="tristrip">Enable triangle strip primitives?</param>
 	/// <param name="msaa">Allow MSAA?</param>
 	void setState(bool tristrip = false, bool msaa = true, bool uiRendering = false, bool debugLines = false, bool debugTriangles = false);
-
-	/// <summary>
-	/// Dispose everything.
-	/// </summary>
-	void dispose();
 
 public:
 	/// <summary>

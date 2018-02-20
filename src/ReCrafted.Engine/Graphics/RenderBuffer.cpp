@@ -43,7 +43,7 @@ void RenderBuffer::end()
 	uint height;
 	
 	// get window client size
-	Platform::getGameWindowSize(&width, &height);
+	Platform::getCurrentWindowSize(&width, &height);
 
 	// create framebuffer
 	createBuffer(width, height);

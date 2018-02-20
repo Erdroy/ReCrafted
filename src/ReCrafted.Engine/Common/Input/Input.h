@@ -6,11 +6,10 @@
 #define INPUT_H
 
 // includes
-#include "Core/Defines.h"
-#include "Core/Types.h"
+#include "ReCrafted.h"
+#include "Core/EngineComponent.h"
 #include "Core/Math/math.h"
 #include "Platform/Platform.h"
-#include "Common/ReCraftedAPI.h"
 
 #define INPUT_KEYCOUNT 256
 #define INPUT_TABLE_SIZE INPUT_KEYCOUNT + 3
@@ -23,11 +22,13 @@
 
 enum Keys;
 
-/// <summary>
-/// Input class.
-/// </summary>
-class Input
+/**
+ * \brief Input class.
+ */
+class Input : public EngineComponent
 {
+    friend class EngineMain;
+
 	API_DEF
 
 private:
@@ -43,14 +44,18 @@ private:
     float m_scrollDelta = 0.0f;
 
 public:
-	/// <summary>
-	/// Default Input class constructor.
-	/// </summary>
+    /**
+	 * \brief Default Input class constructor.
+	 */
 	Input() { m_instance = this; }
 
-	// INTERNAL
-	void init();
+private:
+    void onInit() override;
+    void onShutdown() override;
 
+    void update();
+
+public:
 	// INTERNAL
 	void emit(bool up, uint key);
 
@@ -58,62 +63,56 @@ public:
     void emitScroll(float delta);
 
 	// INTERNAL
-	void update(int cursorX, int cursorY, int deltaX, int deltaY);
-
-	// INTERNAL
 	// releases all keys
 	void releaseAll();
 
-	// INTERNAL
-	void dispose();
-
 public:
-	/// <summary>
-	/// Check if key is down.
-	/// </summary>
-	/// <param name="key">The key</param>
-	/// <returns>True when key is down.</returns>
+    /**
+	 * \brief Checks if key is down.
+	 * \param key The key
+	 * \return Returns true when key is down.
+	 */
 	FORCEINLINE static bool isKeyDown(Keys key)
 	{
 		auto keyId = INPUT_KEY_TO_KEYID(key);
 		return m_instance->m_keys[keyId] == 1 && m_instance->m_lastkeys[keyId] == 0;
 	}
 
-	/// <summary>
-	/// Check if key is up.
-	/// </summary>
-	/// <param name="key">The key</param>
-	/// <returns>True when key is up.</returns>
+    /**
+    * \brief Checks if key is up.
+    * \param key The key
+    * \return Returns true when key is up.
+    */
 	FORCEINLINE static bool isKeyUp(Keys key)
 	{
 		auto keyId = INPUT_KEY_TO_KEYID(key);
 		return m_instance->m_keys[keyId] == 0 && m_instance->m_lastkeys[keyId] == 1;
 	}
 
-	/// <summary>
-	/// Check if key is held from 2 frames.
-	/// </summary>
-	/// <param name="key">The key</param>
-	/// <returns>True when key is held.</returns>
+    /**
+    * \brief Checks if key is held.
+    * \param key The key
+    * \return Returns true when key is held.
+    */
 	FORCEINLINE static bool isKey(Keys key)
 	{
 		auto keyId = INPUT_KEY_TO_KEYID(key);
 		return m_instance->m_keys[keyId] == 1 && m_instance->m_lastkeys[keyId] == 1;
 	}
 
-	/// <summary>
-	/// Returns current cursor's position in client-space.
-	/// </summary>
-	/// <returns>The position.</returns>
+    /**
+	 * \brief Returns current cursor's position in client-space.
+	 * \return The position position.
+	 */
 	FORCEINLINE static Vector2 getCursorPos()
 	{
 		return m_instance->m_cursorPos;
 	}
 
-	/// <summary>
-	/// Returns current cursor's delta.
-	/// </summary>
-	/// <returns>The position.</returns>
+    /**
+	 * \brief Returns current cursor's delta.
+	 * \return The position.
+	 */
 	FORCEINLINE static Vector2 getCursorDelta()
 	{
 		return m_instance->m_cursorDelta;
@@ -128,21 +127,20 @@ public:
         return m_instance->m_scrollDelta;
     }
 
-
-	/// <summary>
-	/// Set the cursor position.
-	/// </summary>
-	/// <param name="x">The x coord of target cursor position in pixels.</param>
-	/// <param name="y">The y coord of target cursor position in pixels.</param>
+    /**
+	 * \brief Sets cursor position.
+	 * \param x The x coord of target cursor position in pixels.
+	 * \param y The y coord of target cursor position in pixels.
+	 */
 	FORCEINLINE static void setCursorPos(int x, int y)
 	{
 		Platform::setCursorPosition(uint16_t(x), uint16_t(y));
 	}
 
-	/// <summary>
-	/// Get instance of input class
-	/// </summary>
-	/// <returns>The instance.</returns>
+    /**
+	 * \brief Get instance of input class.
+	 * \returnThe instance. 
+	 */
 	FORCEINLINE static Input* getInstance()
 	{
 		return m_instance;

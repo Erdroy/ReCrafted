@@ -1,7 +1,6 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
 #include "UI.h"
-#include "Platform/Platform.h"
 #include "Graphics/Rendering.h"
 
 #include <algorithm>
@@ -85,7 +84,7 @@ void UI::push_drawcmd(drawcmd* cmd, int index) // protip: we can use forceinline
 	m_indexCount += 6;
 }
 
-void UI::init()
+void UI::onInit()
 {
 	// allocate vertex buffer data
 	m_vertexBufferData = new byte[m_vertexBufferSize];
@@ -111,7 +110,7 @@ void UI::init()
 	m_textureUnif = bgfx::createUniform("m_texture0", bgfx::UniformType::Int1);
 }
 
-void UI::dispose()
+void UI::onShutdown()
 {
 	// delete the buffers data
 	SafeDelete(m_vertexBufferData);
