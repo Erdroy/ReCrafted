@@ -53,10 +53,8 @@ namespace ReCrafted.API.Core
         /// </summary>
         public static CursorIcon Icon
         {
-            get;
-            set;
-            //set { Game.CursorIcon = (int)value; }
-            //get { return (CursorIcon)Game.CursorIcon; }
+            set { Application.CursorIcon = (int)value; }
+            get { return (CursorIcon)Application.CursorIcon; }
         }
     }
 }

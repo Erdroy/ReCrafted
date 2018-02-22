@@ -4,6 +4,7 @@
 #include "Scripting/Mono.h"
 #include "EngineMain.h"
 #include "UpdateLoop.h"
+#include "Platform/Platform.h"
 
 Application* Application::m_instance;
 
@@ -17,6 +18,16 @@ namespace Internal
     void setTargetFps(int targetFps)
     {
         EngineMain::getInstance()->getUpdateLoop()->set_targetFps(targetFps);
+    }
+
+    int getCursorIcon()
+    {
+        return Platform::getCursorIcon();
+    }
+
+    void setCursorIcon(int iconId)
+    {
+        Platform::setCursorIcon(iconId);
     }
 }
 
@@ -57,6 +68,14 @@ void Application::initRuntime()
             API_PROPERTY(PUBLIC, STATIC, "bool", "VSync", GETSET);
             {
                 // TODO: implement VSync enable/disable
+            }
+            API_PROPERTY_END();
+
+            API_COMMENT("Gets or sets current cursor icon.");
+            API_PROPERTY(PUBLIC, STATIC, "int", "CursorIcon", GETSET);
+            {
+                API_BIND("ReCrafted.API.Core.Application::Internal_CursorIcon_Get", &Internal::getCursorIcon);
+                API_BIND("ReCrafted.API.Core.Application::Internal_CursorIcon_Set", &Internal::setCursorIcon);
             }
             API_PROPERTY_END();
         }

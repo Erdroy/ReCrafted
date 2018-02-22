@@ -130,6 +130,18 @@ public:
 	}
 
     /**
+     * \brief Gets cursor icon id.
+     * \return The cursor icon id.
+     */
+    static int getCursorIcon();
+
+    /**
+     * \brief Sets cursor icon id.
+     * \param iconId The cursor icon id.
+     */
+    static void setCursorIcon(int iconId);
+
+    /**
     * \brief Get size of given window.
     * \param width (out)The width.
     * \param height (out)The height.

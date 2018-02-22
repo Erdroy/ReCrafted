@@ -27,6 +27,11 @@ int Platform::m_cpuCount;
 
 HICON m_currentCursor = nullptr;
 
+HICON m_cursorArrow = nullptr;
+HICON m_cursorIBeam = nullptr;
+
+int m_currentCursorId = 0;
+
 LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 void Platform::initialize()
@@ -42,10 +47,16 @@ void Platform::initialize()
 	GetSystemInfo(&sysinfo);
 	m_cpuCount = sysinfo.dwNumberOfProcessors;
 
+    // create cursor
+    m_currentCursor = LoadCursor(nullptr, IDC_ARROW);
+
+    m_cursorArrow = m_currentCursor;
+    m_cursorIBeam = LoadCursor(nullptr, IDC_IBEAM);
+
+    m_currentCursorId = 0;
+
     // create window class
     cvar instance = getHInstance();
-
-    m_currentCursor = LoadCursor(nullptr, IDC_ARROW);
 
     WNDCLASSEX wnd;
     memset(&wnd, 0, sizeof(wnd));
@@ -140,6 +151,26 @@ void Platform::setCurrentWindow(void* windowHandle)
 void* Platform::getCurrentWindow()
 {
 	return m_currentWindow;
+}
+
+int Platform::getCursorIcon()
+{
+    return m_currentCursorId;
+}
+
+void Platform::setCursorIcon(int iconId)
+{
+    switch (iconId)
+    {
+    case 1:
+        m_currentCursor = m_cursorIBeam;
+        break;
+    default:
+        m_currentCursor = m_cursorArrow;
+        break;
+    }
+
+    m_currentCursorId = iconId;
 }
 
 void Platform::getWindowSize(void* windowHandle, unsigned* width, unsigned* height)
