@@ -65,6 +65,7 @@ void EngineMain::onUpdate()
     Profiler::beginProfile("Frame");
 
     // update time
+    // TODO: Time::getInstance()->update();
     cvar currentTime = Platform::getMiliseconds();
     Time::m_instance->m_deltaTime = (currentTime - m_lastUpdateTime) / 1000.0;
     Time::m_instance->m_time = float(currentTime / 1000.0);

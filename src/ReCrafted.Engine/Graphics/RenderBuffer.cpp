@@ -4,6 +4,8 @@
 #include "Platform/Platform.h"
 #include "Core/Logger.h"
 
+#include "bgfxPrerequisites.h"
+
 void RenderBuffer::createBuffer(uint width, uint height)
 {
 	// sampler flags

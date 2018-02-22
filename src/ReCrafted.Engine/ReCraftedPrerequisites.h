@@ -5,15 +5,8 @@
 #ifndef RECRAFTEDPREREQUISITES_H
 #define RECRAFTEDPREREQUISITES_H
 
-#ifdef _WIN32
-// TODO: remove this...
-#include <Windows.h>
-#endif
-
 #include <ctime>
 #include <vector>
-
-#include "bgfxPrerequisites.h"
 
 #include "Core/IDisposable.h"
 #include "Core/Defines.h"

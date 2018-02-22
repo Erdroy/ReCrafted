@@ -10,6 +10,8 @@
 #include "Core/Math/Math.h"
 #include "Core/Math/FastRectanglePack.h"
 
+#include <algorithm>
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include <freetype/ftglyph.h>

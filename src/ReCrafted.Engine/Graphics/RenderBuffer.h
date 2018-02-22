@@ -9,6 +9,8 @@
 #include "ReCrafted.h"
 #include "TextureFormat.h"
 
+#include "bgfxPrerequisites.h"
+
 #define RENDERBUFFER_MAXTARGETS 8
 
 #define RENDERVIEW_BACKBUFFER 0
