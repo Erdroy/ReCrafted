@@ -49,6 +49,11 @@ public:
 public:
     void quit();
 
+    FORCEINLINE UpdateLoop* getUpdateLoop() const
+    {
+        return m_updateLoop.get();
+    }
+
 public:
     static EngineMain* getInstance()
     {

@@ -8,4 +8,10 @@
 #define COMPILE_WITH_GRAPHICS 1
 #define COMPILE_WITH_PHYSICS 1
 
+#if _DEBUG
+#define USE_CRTDBG 1
+#else
+#define USE_CRTDBG 0
+#endif
+
 #endif // RECRAFTEDCONFIG_H

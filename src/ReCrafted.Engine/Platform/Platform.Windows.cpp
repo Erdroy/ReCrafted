@@ -7,6 +7,11 @@
 
 #if _WIN32
 
+#if USE_CRTDBG
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+#endif
+
 #include <cstdio>
 #include <Windows.h>
 
@@ -20,58 +25,7 @@ void* Platform::m_currentWindow;
 unsigned char Platform::m_theadCount;
 int Platform::m_cpuCount;
 
-File::~File()
-{
-	if (m_file)
-		close();
-}
-
-void File::seek(long position) const
-{
-	auto file = static_cast<FILE*>(m_file);
-
-	fseek(file, position, SEEK_SET);
-}
-
-void File::read(void* buffer, size_t length, size_t offset) const
-{
-	auto file = static_cast<FILE*>(m_file);
-
-	if (offset > 0)
-	{
-		// set offset
-		fseek(file, long(offset), SEEK_SET);
-	}
-
-	// read
-	fread(buffer, length, 1, file);
-}
-
-void File::read(void* buffer) const
-{
-	read(buffer, FileSize);
-}
-
-void File::write(void* data, const size_t dataLenght) const
-{
-    cvar file = static_cast<FILE*>(m_file);
-
-	fwrite(data, dataLenght, 1, file);
-}
-
-void File::flush() const
-{
-    cvar file = static_cast<FILE*>(m_file);
-
-	fflush(file);
-}
-
-void File::close() const
-{
-	cvar file = static_cast<FILE*>(m_file);
-
-	fclose(file);
-}
+HICON m_currentCursor = nullptr;
 
 LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
@@ -91,6 +45,8 @@ void Platform::initialize()
     // create window class
     cvar instance = getHInstance();
 
+    m_currentCursor = LoadCursor(nullptr, IDC_ARROW);
+
     WNDCLASSEX wnd;
     memset(&wnd, 0, sizeof(wnd));
     wnd.cbSize = sizeof(wnd);
@@ -98,12 +54,19 @@ void Platform::initialize()
     wnd.lpfnWndProc = WindowEventProcessor;
     wnd.hInstance = instance;
     wnd.hIcon = LoadIcon(nullptr, IDI_APPLICATION);
-    wnd.hCursor = nullptr;
+    wnd.hCursor = m_currentCursor;
     wnd.lpszClassName = L"recrafted";
     wnd.hIconSm = LoadIcon(nullptr, IDI_APPLICATION);
     RegisterClassEx(&wnd);
 
     Logger::log("Initialized platform: Win32");
+}
+
+void Platform::shutdown()
+{
+#if USE_CRTDBG
+    _CrtDumpMemoryLeaks();
+#endif
 }
 
 Guid Platform::newGuid()

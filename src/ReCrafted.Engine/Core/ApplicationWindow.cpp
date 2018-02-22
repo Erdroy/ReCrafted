@@ -7,7 +7,10 @@ Array<ApplicationWindow*> ApplicationWindow::m_windows;
 
 void ApplicationWindow::create()
 {
-    m_windowHandle = Platform::createWindow(TEXT("ReCrafted"));
+    m_width = 1280;
+    m_height = 720;
+
+    m_windowHandle = Platform::createWindow(TEXT("ReCrafted"), m_width, m_height);
 
     m_windows.add(this);
 }
@@ -18,6 +21,12 @@ void ApplicationWindow::dispose()
         Platform::destroyWindow(m_windowHandle);
 
     m_windows.remove(this);
+}
+
+void ApplicationWindow::updateSizeNow()
+{
+    // get size
+    Platform::getWindowSize(m_windowHandle, &m_width, &m_height);
 }
 
 void ApplicationWindow::setOnResized(Delegate callback)

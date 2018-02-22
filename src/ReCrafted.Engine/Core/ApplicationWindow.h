@@ -20,9 +20,14 @@ private:
     void* m_windowHandle = nullptr;
     Delegate m_onResized = {};
 
+private:
+
 public:
     void create();
     void dispose() override;
+
+public:
+    void updateSizeNow();
 
 public:
     void setOnResized(Delegate callback);

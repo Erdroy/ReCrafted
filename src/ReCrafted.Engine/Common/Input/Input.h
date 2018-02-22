@@ -43,6 +43,9 @@ private:
     float m_scrollDelta_u = 0.0f;
     float m_scrollDelta = 0.0f;
 
+    bool m_lockCursor = false;
+    bool m_showCursor = true;
+
 public:
     /**
 	 * \brief Default Input class constructor.
@@ -139,6 +142,38 @@ public:
 	{
 		Platform::setCursorPosition(uint16_t(x), uint16_t(y));
 	}
+
+    /**
+     * \brief Gets cursor lock state.
+     */
+    FORCEINLINE static bool getLockCursor()
+	{
+        return m_instance->m_lockCursor;
+	}
+
+    /**
+    * \brief Sets cursor lock state.
+    */
+    FORCEINLINE static void setLockCursor(bool lock)
+	{
+        m_instance->m_lockCursor = lock;
+	}
+
+    /**
+    * \brief Gets cursor visibility state.
+    */
+    FORCEINLINE static bool getShowCursor()
+    {
+        return m_instance->m_showCursor;
+    }
+
+    /**
+    * \brief Sets cursor visibility state.
+    */
+    FORCEINLINE static void setShowCursor(bool show)
+    {
+        m_instance->m_showCursor = show;
+    }
 
     /**
 	 * \brief Get instance of input class.

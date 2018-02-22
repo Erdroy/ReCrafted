@@ -1,7 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Entity.h"
-#include "Common/ReCraftedAPI.h"
 #include "Scripting/Mono.h"
 #include "EntityPool.h"
 

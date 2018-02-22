@@ -9,6 +9,8 @@
 
 #include <Windows.h>
 
+extern HICON m_currentCursor;
+
 LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     switch (msg)
@@ -23,9 +25,16 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
     {
         if (LOWORD(lparam) == HTCLIENT)
         {
-            //gameMain_instance->onCursorRequest();
+            if (Input::getShowCursor())
+            {
+                SetCursor(m_currentCursor);
+            }
+            else
+            {
+                SetCursor(nullptr);
+            }
         }
-        break;
+        return 0;
     }
     case WM_SIZE:
     {

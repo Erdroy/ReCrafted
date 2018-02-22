@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 12/30/2017 14:15:07 Source: 'Input.API.cpp' Target: 'Common/Input.Gen.cs'
+// Generated: 02/22/2018 22:43:15 Source: 'Input.API.cpp' Target: 'Common/Input.Gen.cs'
 
 using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
@@ -33,12 +33,6 @@ namespace ReCrafted.API.Common
 		public static extern bool IsKey(Keys key);
 
 		/// <summary>
-		///	Changes cursor's current positon.
-		/// </summary>
-		[MethodImpl(MethodImplOptions.InternalCall)]
-		public static extern void SetCursorPosition(Vector2 position);
-
-		/// <summary>
 		///	Returns cursor's current position.
 		/// </summary>
 		public static Vector2 CursorPosition 
@@ -48,6 +42,10 @@ namespace ReCrafted.API.Common
 				Vector2 result;
 				Internal_CursorPosition_Get(out result);
 				return result;
+			}
+			set
+			{
+				Internal_CursorPosition_Set(ref value);
 			}
 		}
 
@@ -75,11 +73,51 @@ namespace ReCrafted.API.Common
 			}
 		}
 
+		/// <summary>
+		///	Gets or sets the cursor lock state
+		/// </summary>
+		public static bool LockCursor 
+		{
+			get
+			{
+				return Internal_LockCursor_Get();
+			}
+			set
+			{
+				Internal_LockCursor_Set(value);
+			}
+		}
+
+		/// <summary>
+		///	Gets or sets the cursor visibility state
+		/// </summary>
+		public static bool ShowCursor 
+		{
+			get
+			{
+				return Internal_ShowCursor_Get();
+			}
+			set
+			{
+				Internal_ShowCursor_Set(value);
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_CursorPosition_Set(ref Vector2 value);
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_CursorPosition_Get(out Vector2 result);
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_CursorDelta_Get(out Vector2 result);
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern float Internal_ScrollDelta_Get();
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_LockCursor_Set(bool value);
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern bool Internal_LockCursor_Get();
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_ShowCursor_Set(bool value);
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern bool Internal_ShowCursor_Get();
 	}
 }

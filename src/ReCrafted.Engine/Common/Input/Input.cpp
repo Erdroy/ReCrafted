@@ -1,6 +1,7 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Input.h"
+#include "Common/Display.h"
 
 Input* Input::m_instance;
 
@@ -37,6 +38,16 @@ void Input::update()
     // clear scroll
     m_scrollDelta = m_scrollDelta_u;
     m_scrollDelta_u = 0.0f;
+
+    // lock cursor
+    if (m_lockCursor)
+    {
+        // lock position
+        setCursorPos(
+            static_cast<int>(round(Display::get_Width() / 2.0f)),
+            static_cast<int>(round(Display::get_Height() / 2.0f))
+        );
+    }
 }
 
 void Input::emit(bool up, uint key)

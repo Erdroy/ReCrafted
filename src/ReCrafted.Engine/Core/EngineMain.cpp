@@ -41,14 +41,11 @@ void EngineMain::createMainWindow()
     m_mainWindow->create();
     m_mainWindow->setOnResized(MakeDelegate(EngineMain::onWindowResized));
 
-    uint width;
-    uint height;
+    // update size
+    m_mainWindow->updateSizeNow();
 
-    // get game window size
-    Platform::getCurrentWindowSize(&width, &height); // TODO: get width/height for ApplicationWindow
-
-    Display::set_Width(width);
-    Display::set_Height(height);
+    Display::set_Width(m_mainWindow->get_width());
+    Display::set_Height(m_mainWindow->get_height());
 }
 
 void EngineMain::onSimulate()
@@ -110,6 +107,9 @@ void EngineMain::onWindowResized()
 
 void EngineMain::initialize()
 {
+    // create update loop
+    m_updateLoop = std::make_shared<UpdateLoop>();
+
     // initialize component manager
     m_componentManager = EngineComponentManager::getInstance();
 
@@ -139,9 +139,6 @@ void EngineMain::run()
     m_componentManager->onLoad();
 
     Logger::log("ReCrafted run");
-
-    // create update loop
-    m_updateLoop = std::make_shared<UpdateLoop>();
 
     // set loop callbacks
     m_updateLoop->setSimulateCallback(MakeDelegate(EngineMain::onSimulate));

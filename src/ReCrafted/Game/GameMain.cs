@@ -15,7 +15,7 @@ using ReCrafted.Game.Super;
 
 namespace ReCrafted.Game
 {
-    internal class GameMain : API.Core.Application
+    internal class GameMain : Application
     {
         // cross hair control
         private UIBox _crosshairBox;
@@ -53,7 +53,7 @@ namespace ReCrafted.Game
                 //Locale.SetLocale("Polski");
 
                 // apply target fps
-                //TargetFps = 120;
+                TargetFps = 60;
 
                 // create some default controls
                 _crosshairBox =

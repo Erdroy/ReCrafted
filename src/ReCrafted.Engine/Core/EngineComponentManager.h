@@ -38,6 +38,8 @@ public:
      * 
      * \note Component CANNOT be released/destroyed by hand. 
      * EngineComponentManager takes care of that!
+     * Components are automaticaly released in reverse order 
+     * that they are registered.
      */
     void registerComponent(EngineComponent* component);
 

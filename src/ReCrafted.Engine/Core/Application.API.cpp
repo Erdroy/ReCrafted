@@ -1,8 +1,24 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Application.h"
+#include "Scripting/Mono.h"
+#include "EngineMain.h"
+#include "UpdateLoop.h"
 
 Application* Application::m_instance;
+
+namespace Internal
+{
+    int getTargetFps()
+    {
+        return EngineMain::getInstance()->getUpdateLoop()->get_targetFps();
+    }
+
+    void setTargetFps(int targetFps)
+    {
+        EngineMain::getInstance()->getUpdateLoop()->set_targetFps(targetFps);
+    }
+}
 
 void Application::initRuntime()
 {
@@ -28,6 +44,21 @@ void Application::initRuntime()
 
             API_METHOD(PROTECTED, ABSTRACT, "RenderUI");
             API_METHOD_END();
+
+            API_COMMENT("The target amount of frames per second (FPS).");
+            API_PROPERTY(PUBLIC, STATIC, "int", "TargetFps", GETSET);
+            {
+                API_BIND("ReCrafted.API.Core.Application::Internal_TargetFps_Get", &Internal::getTargetFps);
+                API_BIND("ReCrafted.API.Core.Application::Internal_TargetFps_Set", &Internal::setTargetFps);
+            }
+            API_PROPERTY_END();
+
+            API_COMMENT("Enables or disables vertical synchronization (vsync).");
+            API_PROPERTY(PUBLIC, STATIC, "bool", "VSync", GETSET);
+            {
+                // TODO: implement VSync enable/disable
+            }
+            API_PROPERTY_END();
         }
         API_CLASS_END();
     }

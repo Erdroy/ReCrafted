@@ -58,7 +58,15 @@ private:
 	static int m_cpuCount;
 
 public:
+    /**
+	 * \brief Initializes platform.
+	 */
 	static void initialize();
+
+    /**
+     * \brief Shutdowns platform.
+     */
+    static void shutdown();
 
 	/**
 	 * \brief Creates new Guid.
@@ -78,12 +86,31 @@ public:
 	 */
 	static int cpuCount();
 
+    /**
+     * \brief Runs all system loop events.
+     */
     static void runEvents();
 
+    /**
+     * \brief Creates new window.
+     * \param windowName The window title.
+     * \param width The initial window client-size width.
+     * \param height The initial window client-size height. 
+     * \param style The style of the window. Look for docs of all of the platforms.
+     * \return The created window handle.
+     */
     static void* createWindow(Text windowName, int width = 1280, int height = 720, uint64_t style = 0u);
 
+    /**
+     * \brief Destroys window with given handle.
+     * \param windowHandle Handle of the window.
+     */
     static void destroyWindow(void* windowHandle);
 
+    /**
+     * \brief Sets given window handle as current (main).
+     * \param windowHandle Handle of the window.
+     */
     static void setCurrentWindow(void* windowHandle);
 
 	/**
