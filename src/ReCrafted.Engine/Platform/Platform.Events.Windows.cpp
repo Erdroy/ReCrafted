@@ -9,18 +9,6 @@
 
 #include <Windows.h>
 
-void wndApplyResize()
-{
-    auto window = static_cast<HWND>(Platform::getCurrentWindow());
-    RECT rect;
-
-    GetClientRect(window, &rect);
-
-    auto width = rect.right - rect.left;
-    auto height = rect.bottom - rect.top;
-    //gameMain_instance->onResize(width, height);
-}
-
 LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     switch (msg)
@@ -42,14 +30,14 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
     case WM_SIZE:
     {
         if (wparam == 2)
-            wndApplyResize();
+            ApplicationWindow::windowResize(hWnd);
 
         return 0;
     }
 
     case WM_EXITSIZEMOVE: // handle window resizing
     {
-        wndApplyResize();
+        ApplicationWindow::windowResize(hWnd);
         return 0;
     }
 

@@ -39,6 +39,8 @@ private:
     void onUpdate();
     void onRender();
 
+    void onWindowResized();
+
 public:
     void initialize() override;
     void run() override;

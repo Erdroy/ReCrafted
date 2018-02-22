@@ -97,7 +97,17 @@ public:
 	 * \param width (out)The width.
 	 * \param height (out)The height.
 	 */
-	static void getCurrentWindowSize(unsigned int* width, unsigned int* height);
+	static void getCurrentWindowSize(unsigned int* width, unsigned int* height)
+	{
+        return getWindowSize(m_currentWindow, width, height);
+	}
+
+    /**
+    * \brief Get size of given window.
+    * \param width (out)The width.
+    * \param height (out)The height.
+    */
+    static void getWindowSize(void* windowHandle, unsigned int* width, unsigned int* height);
 
 	/**
 	 * \brief Set the cursor position.

@@ -6,16 +6,33 @@
 #define APPLICATIONWINDOW_H
 
 // includes
+#include "ReCrafted.h"
 #include "IDisposable.h"
+#include "Core/Delegate.h"
+#include "Core/Containers/Array.h"
 
 class ApplicationWindow : IDisposable
 {
 private:
+    static Array<ApplicationWindow*> m_windows;
+
+private:
     void* m_windowHandle = nullptr;
+    Delegate m_onResized = {};
 
 public:
     void create();
     void dispose() override;
+
+public:
+    void setOnResized(Delegate callback);
+
+public:
+    static void windowResize(void* windowHandle);
+
+public:
+    PROPERTY(uint, width) = 0u;
+    PROPERTY(uint, height) = 0u;
 };
 
 #endif // APPLICATIONWINDOW_H

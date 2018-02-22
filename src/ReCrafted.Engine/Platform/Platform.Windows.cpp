@@ -179,13 +179,13 @@ void* Platform::getCurrentWindow()
 	return m_currentWindow;
 }
 
-void Platform::getCurrentWindowSize(unsigned int* width, unsigned int* height)
+void Platform::getWindowSize(void* windowHandle, unsigned* width, unsigned* height)
 {
-	RECT windowRect;
-	GetClientRect(static_cast<HWND>(m_currentWindow), &windowRect);
+    RECT windowRect;
+    GetClientRect(static_cast<HWND>(windowHandle), &windowRect);
 
-	*width = windowRect.right - windowRect.left;
-	*height = windowRect.bottom - windowRect.top;
+    *width = windowRect.right - windowRect.left;
+    *height = windowRect.bottom - windowRect.top;
 }
 
 void Platform::setCursorPosition(uint16_t x, uint16_t y)

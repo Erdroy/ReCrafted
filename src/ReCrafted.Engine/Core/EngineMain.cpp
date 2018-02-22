@@ -39,6 +39,7 @@ void EngineMain::createMainWindow()
 {
     m_mainWindow = std::make_shared<ApplicationWindow>();
     m_mainWindow->create();
+    m_mainWindow->setOnResized(MakeDelegate(EngineMain::onWindowResized));
 
     uint width;
     uint height;
@@ -99,6 +100,12 @@ void EngineMain::onRender()
     // end 'Frame' profile
     Profiler::endProfile();
     Profiler::endFrame();
+}
+
+void EngineMain::onWindowResized()
+{
+    // resize now
+    Rendering::getInstance()->resize(m_mainWindow->get_width(), m_mainWindow->get_height());
 }
 
 void EngineMain::initialize()
