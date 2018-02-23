@@ -4,6 +4,7 @@
 #include "ReCrafted.h"
 #include "Core/GameInfo.h"
 #include "Core/EngineMain.h"
+#include "Platform/Platform.h"
 
 #ifdef _WIN32
 
@@ -32,6 +33,9 @@ int CALLBACK WinMain(
 
     // shutdown engine
     engine.shutdown();
+
+    // shutdown platform
+    Platform::shutdown();
 
 	return ERROR_SUCCESS;
 }

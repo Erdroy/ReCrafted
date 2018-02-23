@@ -8,7 +8,6 @@
 #include <ctime>
 #include <vector>
 
-#include "Core/IDisposable.h"
 #include "Core/Defines.h"
 #include "Core/Types.h"
 #include "Core/Logger.h"
@@ -20,7 +19,8 @@
 #define var auto
 #define cvar const auto
 
-class IDisposable;
+interface IDisposable;
+interface IResource;
 
 class Application;
 class ApplicationBase;
@@ -33,6 +33,11 @@ class EngineComponent;
 class EngineComponentManager;
 
 struct Delegate;
+
+struct Vector2;
+struct Vector3;
+struct Vector4;
+struct Matrix;
 
 class Profiler;
 class Logger;

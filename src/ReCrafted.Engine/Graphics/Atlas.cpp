@@ -21,7 +21,7 @@ Rect Atlas::getRect(const char* name)
 		}
 	}
 
-	throw "Not found";
+    return {};
 }
 
 Ptr<Texture2D> Atlas::getTexture() const

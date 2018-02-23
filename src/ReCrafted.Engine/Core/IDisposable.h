@@ -5,7 +5,11 @@
 #ifndef IDISPOSABLE_H
 #define IDISPOSABLE_H
 
-class IDisposable
+// includes
+#include "ReCrafted.h"
+#include "Defines.h"
+
+interface IDisposable
 {
 public:
     virtual ~IDisposable() = default;

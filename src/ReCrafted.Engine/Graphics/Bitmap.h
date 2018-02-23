@@ -8,6 +8,7 @@
 // includes
 #include "ReCrafted.h"
 #include "Platform/Platform.h"
+#include "IResource.h"
 
 #pragma pack(push, 1)
 struct BitmapHeader
@@ -35,7 +36,7 @@ public:
 class Bitmap
 {
 private:
-    Bitmap() {}
+    Bitmap() { }
     
 public:
     static byte* load(const char* fileName, int* width, int* height, int* bpp = nullptr)

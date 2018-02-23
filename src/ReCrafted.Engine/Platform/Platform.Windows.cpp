@@ -3,7 +3,6 @@
 #include "Platform.h"
 #include "ReCrafted.h"
 #include "Common/Profiler/Profiler.h"
-#include "Common/Display.h"
 
 #if _WIN32
 

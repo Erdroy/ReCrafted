@@ -14,24 +14,32 @@ static void releaseBitsRaw(void* _ptr, void* _userData)
 	free(_userData);
 }
 
-Texture2D::~Texture2D()
+void Texture2D::dispose()
 {
-	bgfx::destroy(m_textureHandle);
+    if (!bgfx::isValid(m_textureHandle))
+        return;
 
-	if (m_bits)
-	{
-		if (m_bitmap)
-		{
-			upng::upng_free(m_bitmap);
-			m_bits = nullptr;
-			m_bitmap = nullptr;
-		}
-		else
-		{
-			free(m_bits);
-			m_bits = nullptr;
-		}
-	}
+    bgfx::destroy(m_textureHandle);
+
+    if (m_bits)
+    {
+        if (m_bitmap)
+        {
+            upng::upng_free(m_bitmap);
+            m_bits = nullptr;
+            m_bitmap = nullptr;
+        }
+        else
+        {
+            free(m_bits);
+            m_bits = nullptr;
+        }
+    }
+}
+
+void Texture2D::onDestroy()
+{
+    dispose();
 }
 
 void Texture2D::loadFile(const char* filename, uint flags)

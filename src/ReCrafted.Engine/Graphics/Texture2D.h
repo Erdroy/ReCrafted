@@ -6,14 +6,20 @@
 #define TEXTURE2D_H
 
 // includes
+#include "ReCrafted.h"
 #include "Core/Types.h"
-#include <bgfx/bgfx.h>
-#include <Common/ReCraftedAPI.h>
-#include <Scripting/Object.h>
+#include "Common/ReCraftedAPI.h"
+#include "Scripting/Object.h"
+#include "IResource.h"
+
+#include "bgfxPrerequisites.h"
 
 typedef struct upng_t upng_t;
 
-class Texture2D : public Object
+/**
+ * \brief Texture2D class.
+ */
+class Texture2D : public Object, IResource
 {
 	friend class Shader;
 	API_DEF
@@ -31,77 +37,120 @@ private:
 	uint m_mips = 0u;
 
 public:
-	~Texture2D();
+    IRESOURCE_IMPL(Texture2D)
+
+private:
+    void onDestroy() override;
 
 public:
-	/// <summary>
-	/// Load texture from file.
-	/// </summary>
-	/// <param name="filename">The file.</param>
-	/// <param name="flags">BGFX Texture flags.</param>
-	void loadFile(const char* filename, uint flags = 0u);
+    void dispose() override;
 
-	/// <summary>
-	/// Load texture from memory.
-	/// </summary>
-	/// <param name="data">The texture bits pointer.</param>
-	/// <param name="width">The width.</param>
-	/// <param name="height">The height.</param>
-	/// <param name="flags">BGFX Texture flags.</param>
+public:
+    /**
+	 * \brief Loads texture from file.
+	 * \param filename The file.
+	 * \param flags BGFX Texture flags.
+	 */
+	void loadFile(const char* filename, uint flags = 0u);
+    
+    /**
+	 * \brief Loads texture from memory.
+	 * \param data The texture bits pointer.
+	 * \param width The width.
+	 * \param height The height.
+	 * \param flags BGFX Texture flags.
+	 */
 	void loadMemory(void* data, int width, int height, uint flags = 0u);
 
-	/// <summary>
-	/// Create texture memory of given size.
-	/// </summary>
-	/// <param name="width">The width.</param>
-	/// <param name="height">The height.</param>
-	/// <param name="flags">BGFX Texture flags.</param>
+    /**
+	 * \brief Creates texture memory of given size.
+	 * \param width The width.
+	 * \param height The height.
+	 * \param flags BGFX Texture flags.
+	 */
 	void createMemory(int width, int height, uint flags = 0u);
 
-	/// <summary>
-	/// Add mipmap. This will reallocate the memory.
-	/// </summary>
-	/// <param name="width">The width.</param>
-	/// <param name="height">The height.</param>
-	/// <param name="pixels">The pixels pointer.</param>
+    /**
+	 * \brief Adds mipmap. This will reallocate the memory.
+	 * \param width The width.
+	 * \param height The height.
+	 * \param pixels The pixels pointer.
+	 */
 	void addMip(int width, int height, uint* pixels);
 
-	/// <summary>
-	/// Get pixel at given position.
-	/// </summary>
-	/// <param name="x">The x coord.</param>
-	/// <param name="y">The y coord.</param>
-	/// <returns>The pixel HEX.</returns>
+    /**
+	 * \brief Get pixel at given position.
+	 * \param x The x coord.
+	 * \param y The y coord.
+	 * \return Pixel HEX format.
+	 */
 	uint getPixel(int x, int y);
 
-	/// <summary>
-	/// Get all pixels in the texture(Returns pixel buffer).
-	/// This will be invalid after calling `apply`.
-	/// </summary>
-	/// <returns>The pixels.</returns>
+    /**
+	 * \brief Get all pixels in the texture(Returns pixel buffer).
+	 * \return The pixels data.
+	 * 
+	 * \note This will be invalid after calling `apply`.
+	 */
 	uint* getPixels() const;
 
+    /**
+	 * \brief Sets pixel at given position.
+	 * \param x The x coord.
+	 * \param y The y coord.
+	 * \param pixel Pixel in HEX format.
+	 */
 	void setPixel(int x, int y, uint pixel);
 
+    /**
+    * \brief Sets pixel at given position.
+    * \param x The x coord.
+    * \param y The y coord.
+    * \param r R channel value.
+    * \param g G channel value.
+    * \param b B channel value.
+    * \param a A channel value.
+    */
 	void setPixel(int x, int y, byte r, byte g, byte b, byte a);
 
+    /**
+	 * \brief Sets pixels at given position with given size.
+	 * \param x The start X coord.
+	 * \param y The start Y coord.
+	 * \param width The width of the pixel array.
+	 * \param height The height of the pixel array. 
+	 * \param pixels The pixels data.
+	 */
 	void setPixels(int x, int y, int width, int height, uint* pixels);
 
+    /**
+	 * \brief Gets handle of this texture.
+	 * \return 
+	 */
 	uint getHandle();
 
+    /**
+	 * \brief Gets the width of this texture.
+	 * \return The width of this texture.
+	 */
 	uint getWidth() const;
 
+    /**
+    * \brief Gets the height of this texture.
+    * \return The height of this texture.
+    */
 	uint getHeight() const;
-
-	/// <summary>
-	/// Apply, all pixel operations will be unavailable after calling this method.
-	/// </summary>
+    
+    /**
+	 * \brief Apply, all pixel operations will be unavailable after calling this method.
+	 */
 	void apply();
 
 public:
-	/// <summary>
-	/// Loads texture.
-	/// </summary>
+    /**
+	 * \brief Creates new empty texture.
+	 * \return The newly created texture.
+	 */
 	static Ptr<Texture2D> createTexture();
 };
 

@@ -12,10 +12,10 @@
 
 struct Text;
 
-/// <summary>
-/// Atlas class.
-/// </summary>
-class Atlas
+/**
+ * \brief Atlas class.
+ */
+class Atlas : public IResource
 {
 public:
 	struct Element
@@ -29,30 +29,33 @@ private:
 	Array<Element> m_elements = {};
 
 private:
-	Atlas() {}
+    IRESOURCE_IMPL(Atlas)
 
 public:
-	/// <summary>
-	/// Gets element's rect by name.
-	/// Throws error when not found.
-	/// </summary>
+    /**
+	 * \brief Gets element's rect by name.
+	 * \param name The element's name.
+	 * \return The rect.
+	 */
 	Rect getRect(const char* name);
 
-	/// <summary>
-	/// Gets atlas texture.
-	/// </summary>
+    /**
+	 * \brief Gets texture of this atlas.
+	 * \return The texture pointer.
+	 */
 	Ptr<Texture2D> getTexture() const;
 	
-	/// <summary>
-	/// Disposes the atlas.
-	/// </summary>
-	void dispose();
+    /**
+	 * \brief Disposes this atlas.
+	 */
+	void dispose() override;
 
 public:
-	/// <summary>
-	/// Loads atlas from JSON file.
-	/// </summary>
-	/// <param name="path">The JSON file name.</param>
+    /**
+	 * \brief Loads atlas from given JSON file.
+	 * \param fileName The JSON file name.
+	 * \return The loaded atlas, or null when file is not found.
+	 */
 	static Ptr<Atlas> load(Text fileName);
 };
 

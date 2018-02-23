@@ -135,6 +135,9 @@ void Rendering::onShutdown()
     bgfx::destroy(m_texture3);
     Logger::logInfo("Unloaded uniforms");
 
+    // check resource leaks
+    IResource::checkLeaks();
+
     // shutdown rendering
     bgfx::shutdown();
 }

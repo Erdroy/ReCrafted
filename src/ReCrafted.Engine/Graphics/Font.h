@@ -10,13 +10,17 @@
 #include "Core/Math/Rect.h"
 #include "Core/Math/Rectf.h"
 #include "Common/Text.h"
+#include "IResource.h"
 
 #include <vector>
 #include <Scripting/Object.h>
 
 class Texture2D;
 
-class Font : public Object
+/**
+ * \brief Font class.
+ */
+class Font : public Object, IResource
 {
 	friend class UI;
 	API_DEF;
@@ -49,25 +53,13 @@ private:
 	float m_lineHeigh = 1.0f; // actually multiplier
 
 public:
-	/// <summary>
-	/// Default constructor
-	/// </summary>
-	Font() {}
-
-	/// <summary>
-	/// Default destructor
-	/// </summary>
-	~Font()
-	{
-		if(m_glyphs)
-			delete [] m_glyphs;
-	}
+    IRESOURCE_IMPL(Font)
 
 public:
-	/// <summary>
-	/// Font initializer.
-	/// </summary>
-	/// <param name="glyphCount">The font glyph count.</param>
+    /**
+	 * \brief Initializez font.
+	 * \param glyphCount The total glyph count.
+	 */
 	void init(uint glyphCount)
 	{
 		m_glyphCount = glyphCount;
@@ -75,27 +67,38 @@ public:
 		memset(m_glyphs, 0, glyphCount * sizeof Glyph);
 	}
 
-	/// <summary>
-	/// Gets character glyph info struct.
-	/// </summary>
+    /**
+     * \brief Disposes this font.
+     */
+    void dispose() override
+	{
+        if (m_glyphs)
+            delete[] m_glyphs;
+	}
+
+    /**
+	 * \brief Gets character glyph info struct.
+	 * \param character The character.
+	 * \return The character's glyph info.
+	 */
 	FORCEINLINE Glyph getCharacter(Char character) const
 	{
 		return m_glyphs[character];
 	}
 
-	/// <summary>
-	/// Measures text size.
-	/// </summary>
-	/// <param name="text">The text to be measured.</param>
-	/// <returns>The size.</returns>
+    /**
+	 * \brief Measures text size.
+	 * \param text The text to be measured.
+	 * \return The measured size.
+	 */
 	Vector2 measureText(Text text);
 
-	/// <summary>
-	/// Loads new font
-	/// </summary>
-	/// <param name="fontFile"></param>
-	/// <param name="size"></param>
-	/// <returns></returns>
+    /**
+	 * \brief Loads font from file and renders it into given size.
+	 * \param fontFile The font file name.
+	 * \param size The size of the font.
+	 * \param managed
+	 */
 	void loadFont(Text fontFile, int size, bool managed = false);
 
 	/**

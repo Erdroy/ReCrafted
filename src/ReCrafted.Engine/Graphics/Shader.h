@@ -6,18 +6,14 @@
 #define SHADER_H
 
 // includes
+#include "ReCrafted.h"
 #include "Core/Types.h"
 #include "Texture2D.h"
 
-struct Vector2;
-struct Vector3;
-struct Vector4;
-struct Matrix;
-
-/// <summary>
-/// Shader class.
-/// </summary>
-class Shader
+/**
+ * \brief Shader class.
+ */
+class Shader : IResource
 {
 	friend class Rendering;
 	friend class UI;
@@ -33,37 +29,49 @@ private:
 
 	uint m_uniformCount = 0u;
 
+public:
+    IRESOURCE_IMPL(Shader)
+
 private:
 	void init(const char* vs, const char* fs, const char* def);
 
 public:
-
-	/// <summary>
-	/// Set value.
-	/// </summary>
-	/// <param name="slot">Slot, starts at 0.</param>
-	/// <param name="value">The value.</param>
+    /**
+	 * \brief Sets value of given type and value to a given slot.
+	 * \tparam T Value type.
+	 * \param slot Slot, starts at 0.
+	 * \param value The value.
+	 */
 	template<class T>
 	void setValue(uint slot, T* value)
 	{
 		bgfx::setUniform(m_uniforms[slot], value);
 	}
 
+    /**
+	 * \brief Sets texture at given slot.
+	 * \param slot The texture slot, starts at 0.
+	 * \param texture The texture.
+	 */
 	void setTexture(int slot, Ptr<Texture2D> texture);
 
+    /**
+	 * \brief Gets BGFX shader program handle.
+	 * \return The BGFX shader program handle.
+	 */
 	bgfx::ProgramHandle getProgram();
 
-	/// <summary>
-	/// Disposes this shader.
-	/// </summary>
-	void dispose();
+    /**
+	 * \brief Disposes this shader.
+	 */
+	void dispose() override;
 
 public:
-	/// <summary>
-	/// Load shader by name.
-	/// </summary>
-	/// <param name="shaderFile">The shader name, eg.: unlit/unlit_color</param>
-	/// <returns>The loaded shader, or null when file not found.</returns>
+    /**
+	 * \brief Loads shader by name.
+	 * \param shaderFile The shader name, eg.: unlit/unlit_color
+	 * \return The loaded shader, or nullptr when file not found.
+	 */
 	static Ptr<Shader> loadShader(const char* shaderFile);
 };
 

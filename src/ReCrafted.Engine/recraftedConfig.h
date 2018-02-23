@@ -9,8 +9,10 @@
 #define COMPILE_WITH_PHYSICS 1
 
 #if _DEBUG
+#define COMPILE_WITH_RESOURCE_LISTING 1
 #define USE_CRTDBG 1
 #else
+#define COMPILE_WITH_RESOURCE_LISTING 0
 #define USE_CRTDBG 0
 #endif
 
