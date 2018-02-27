@@ -93,7 +93,7 @@ private:
 		
 	    if(m_profiles.count() > 0)
 	    {
-            for (var profile : m_profiles)
+            for (var && profile : m_profiles)
             {
                 if (utf8)
                 {
