@@ -1,14 +1,14 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Profiler.h"
+#include "Common/Time.h"
+#include "Common/Input/Input.h"
 #include "Core/Logger.h"
 #include "Core/ByteFormat.h"
-#include "Common/Input/Input.h"
 #include "Graphics/UI/UI.h"
 #include "Graphics/Font.h"
 
 #include <mono/metadata/mono-gc.h>
-#include "Common/Time.h"
 
 Array<Profiler::Profile> Profiler::m_profiles;
 Array<Profiler::Profile*> Profiler::m_profileStack;
@@ -84,7 +84,7 @@ void Profiler::drawDebugScreen()
 		yOffset += static_cast<float>(m_debugFont->getSize()) * 2.0f;
 
 		UI::drawText(m_debugFont,
-            Text::format(TEXT_CONST("FPS: {0}\nUsed size: {1} {2}\nHeap size: {3} {4}"), m_fps, gcUsedSize, ByteFormat::ToString(unitA), gcHeapSize, ByteFormat::ToString(unitB)),
+            Text::format(TEXT_CONST("FPS: {0}\nUsed memory: {1} {2}\nHeap size: {3} {4}"), m_fps, gcUsedSize, ByteFormat::ToString(unitA), gcHeapSize, ByteFormat::ToString(unitB)),
 			Vector2(0.0f, yOffset)
 		);
 		yOffset += static_cast<float>(m_debugFont->getSize()) * 3.0f;
