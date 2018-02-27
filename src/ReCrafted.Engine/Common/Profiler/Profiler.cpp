@@ -8,12 +8,17 @@
 #include "Graphics/Font.h"
 
 #include <mono/metadata/mono-gc.h>
+#include "Common/Time.h"
 
 Array<Profiler::Profile> Profiler::m_profiles;
 Array<Profiler::Profile*> Profiler::m_profileStack;
 bool Profiler::m_drawDebugScreen;
 Font* Profiler::m_debugFont;
 int Profiler::m_profileCount;
+
+float m_fps = 0.0f;
+float m_lastFPSCountTime = 0;
+int m_frames;
 
 bool Profiler::profileSort(const Profile& lhs, const Profile& rhs)
 {
@@ -36,6 +41,15 @@ void Profiler::onShutdown()
 
 void Profiler::update()
 {
+    m_frames++;
+
+    if(Time::time() - m_lastFPSCountTime > 1.0f)
+    {
+        m_fps = m_frames;
+        m_frames = 0;
+        m_lastFPSCountTime = Time::time();
+    }
+
 	if (Input::isKeyDown(Key_F9))
 		m_drawDebugScreen = !m_drawDebugScreen;
 }
@@ -65,13 +79,12 @@ void Profiler::drawDebugScreen()
 		UI::drawText(m_debugFont, TEXT_CONST("Profiler [press F9 to hide]"), Vector2(0.0f, 0.0f));
 		yOffset += static_cast<float>(m_debugFont->getSize()) * 2.0f;
 
-		UI::setColor(Color(0xFFFFFFFF));
+        UI::setColor(Color(0xFFFFFFFF));
 		UI::drawText(m_debugFont, TEXT_CONST("[GC Memory]"), Vector2(0.0f, yOffset));
 		yOffset += static_cast<float>(m_debugFont->getSize()) * 2.0f;
 
 		UI::drawText(m_debugFont,
-			Text::format(TEXT("Used size: {0} {1}\nHeap size: {2} {3}"),
-				gcUsedSize, ByteFormat::ToString(unitA), gcHeapSize, ByteFormat::ToString(unitB)),
+            Text::format(TEXT_CONST("FPS: {0}\nUsed size: {1} {2}\nHeap size: {3} {4}"), m_fps, gcUsedSize, ByteFormat::ToString(unitA), gcHeapSize, ByteFormat::ToString(unitB)),
 			Vector2(0.0f, yOffset)
 		);
 		yOffset += static_cast<float>(m_debugFont->getSize()) * 3.0f;
