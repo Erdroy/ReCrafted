@@ -4,7 +4,7 @@
 #include "Scripting/Method.h"
 #include "Scripting/Object.h"
 
-Logger* Logger::m_instance;
+SINGLETON_IMPL(Logger)
 
 void Logger::onInit()
 {
@@ -12,7 +12,7 @@ void Logger::onInit()
     m_api_log_shutdown = Object::findStaticMethod("ReCrafted.API.Core.Logger::Shutdown");
 }
 
-void Logger::onShutdown()
+void Logger::onDispose()
 {
     m_api_log_shutdown->invokeStatic();
 }

@@ -22,14 +22,14 @@ class EngineComponentManager : public Singleton<EngineComponentManager>
 
 private:
     Lock m_componentsLock = {};
-    Array<EngineComponent*> m_components = {};
+    Array<EngineComponentBase*> m_components = {};
 
 private:
     void onLoad();
     void onDispose() override;
 
 private:
-    void releaseComponent(EngineComponent* component);
+    void releaseComponent(EngineComponentBase* component);
 
 public:
     /**
@@ -41,7 +41,7 @@ public:
      * Components are automaticaly released in reverse order 
      * that they are registered.
      */
-    void registerComponent(EngineComponent* component);
+    void registerComponent(EngineComponentBase* component);
 
     /**
      * \brief Unregisters engine component and releases it's memory.
@@ -49,7 +49,7 @@ public:
      * 
      * \note This method locks component list, and CANNOT be invoked from UPDATE, SIMULATE or RENDER call!
      */
-    void unregisterComponent(EngineComponent* component);
+    void unregisterComponent(EngineComponentBase* component);
 };
 
 #endif // ENGINECOMPONENTMANAGER_H

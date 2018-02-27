@@ -39,6 +39,8 @@ namespace PhysXCallback
     } PhysXErrorCallback;
 }
 
+SINGLETON_IMPL(PhysicsManager)
+
 physx::PxFoundation* m_pxFoundation;
 physx::PxPhysics* m_pxPhysics;
 
@@ -58,6 +60,6 @@ void PhysicsManager::update()
 {
 }
 
-void PhysicsManager::onShutdown()
+void PhysicsManager::onDispose()
 {
 }

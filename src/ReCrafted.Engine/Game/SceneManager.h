@@ -2,22 +2,23 @@
 
 #pragma once
 
-#ifndef PHYSICSMANAGER_H
-#define PHYSICSMANAGER_H
+#ifndef SCENEMANAGER_H
+#define SCENEMANAGER_H
 
 // includes
 #include "ReCrafted.h"
 #include "Core/EngineComponent.h"
 
-class PhysicsManager : public EngineComponent<PhysicsManager>
+class SceneManager : public EngineComponent<SceneManager>
 {
+    API_DEF
+
 public:
-    virtual ~PhysicsManager() = default;
+    virtual ~SceneManager() = default;
 
 private:
     void onInit() override;
-    void update();
     void onDispose() override;
 };
 
-#endif // PHYSICSMANAGER_H
+#endif // SCENEMANAGER_H

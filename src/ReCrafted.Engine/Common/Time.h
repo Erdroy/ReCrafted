@@ -13,15 +13,12 @@
 /**
  * \brief Time class. Implements Time components and API.
  */
-class Time : public EngineComponent
+class Time : public EngineComponent<Time>
 {
 	API_DEF
 
 	friend class GameMain;
 	friend class EngineMain;
-
-private:
-	static Time* m_instance;
 
 private:
 	double m_deltaTime = 0.0;
@@ -31,16 +28,10 @@ private:
 	float m_fixedTime = 0.0;
 	int m_frames = 0;
 
-public:
-    /**
-	 * \brief Default constuctor for Time class.
-	 */
-	Time() { m_instance = this; }
-
 private:
     void onInit() override { }
 
-    void onShutdown() override
+    void onDispose() override
     {
         m_deltaTime = 0.0f;
     }

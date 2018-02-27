@@ -6,10 +6,10 @@
 #define LOGGER_H
 
 // includes
-#include "ReCrafted.h"
-#include "EngineComponent.h"
 #include "Common/Text.h"
 #include "fmt/format.h"
+
+#include "EngineComponent.h"
 
 /**
  * \brief Log level enum, specifies the log level.
@@ -33,27 +33,21 @@ class Method;
  * \brief Logger class - provides basic logging system.
  * Writes logs into log file or message event.
  */
-class Logger : public EngineComponent
+class Logger : public EngineComponent<Logger>
 {
 private:
     friend class EngineMain;
-
-private:
-	static Logger* m_instance;
 
 private:
     Ptr<Method> m_api_log_callback = nullptr;
     Ptr<Method> m_api_log_shutdown = nullptr;
 	
 public:
-	Logger() { m_instance = this; }
-
-protected:
     ~Logger() = default;
 
 private:
 	void onInit() override;
-	void onShutdown() override;
+	void onDispose() override;
 
 private:
     void invokeCallback(const char* message, LogLevel::Enum logLevel);

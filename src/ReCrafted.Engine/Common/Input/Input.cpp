@@ -3,7 +3,7 @@
 #include "Input.h"
 #include "Common/Display.h"
 
-Input* Input::m_instance;
+SINGLETON_IMPL(Input)
 
 int m_cursorX = 0u;
 int m_cursorY = 0u;
@@ -16,7 +16,7 @@ void Input::onInit()
     releaseAll();
 }
 
-void Input::onShutdown()
+void Input::onDispose()
 {
     // clear all keys
     releaseAll();

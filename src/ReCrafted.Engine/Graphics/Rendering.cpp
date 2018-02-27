@@ -10,7 +10,7 @@
 #include "UI/UI.h"
 #include "Core/Application.h"
 
-Rendering* Rendering::m_instance;
+SINGLETON_IMPL(Rendering)
 
 #define RESET_FLAGS (BGFX_RESET_NONE)
 
@@ -114,7 +114,7 @@ void Rendering::onInit()
     loadInternalShaders();
 }
 
-void Rendering::onShutdown()
+void Rendering::onDispose()
 {
     Logger::logInfo("Unloading rendering pipeline");
 

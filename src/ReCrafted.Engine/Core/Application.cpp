@@ -5,6 +5,8 @@
 #include "Scripting/Object.h"
 #include "Scripting/Method.h"
 
+SINGLETON_IMPL(Application)
+
 void Application::onInit()
 {
     // create gamemain instance
@@ -19,7 +21,7 @@ void Application::onInit()
     m_shutdown_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Shutdown");
 }
 
-void Application::onShutdown()
+void Application::onDispose()
 {
     m_shutdown_method->invoke();
 }
@@ -47,9 +49,4 @@ void Application::render()
 void Application::renderUI()
 {
     m_renderui_method->invoke();
-}
-
-Application* Application::getInstance()
-{
-    return m_instance;
 }

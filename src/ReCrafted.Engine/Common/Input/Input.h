@@ -25,14 +25,11 @@ enum Keys;
 /**
  * \brief Input class.
  */
-class Input : public EngineComponent
+class Input : public EngineComponent<Input>
 {
     friend class EngineMain;
 
 	API_DEF
-
-private:
-	static Input* m_instance;
 
 private:
 	byte m_lastkeys[INPUT_TABLE_SIZE] = {};
@@ -46,20 +43,17 @@ private:
     bool m_lockCursor = false;
     bool m_showCursor = true;
 
-public:
-    /**
-	 * \brief Default Input class constructor.
-	 */
-	Input() { m_instance = this; }
-
 private:
     void onInit() override;
-    void onShutdown() override;
+    void onDispose() override;
 
     void update();
 
 public:
-	// INTERNAL
+    virtual ~Input() = default;
+
+public:
+    // INTERNAL
 	void emit(bool up, uint key);
 
     // INTERNAL
@@ -174,15 +168,6 @@ public:
     {
         m_instance->m_showCursor = show;
     }
-
-    /**
-	 * \brief Get instance of input class.
-	 * \returnThe instance. 
-	 */
-	FORCEINLINE static Input* getInstance()
-	{
-		return m_instance;
-	}
 };
 
 enum Keys

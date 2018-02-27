@@ -7,10 +7,19 @@
 
 // includes
 #include "ReCrafted.h"
+#include "IDisposable.h"
 
+/**
+ * \brief Singleton class.
+ * \tparam T The singleton's handled object type
+ * 
+ * \note PLEASE remember to add SINGLETON_IMPL(NAME_OF_CLASS) to the source file!
+ * To release a Singleton, please call 'dispose' function.
+ */
 template<class T>
 class Singleton : IDisposable
 {
+protected:
 	static T* m_instance;
 
 protected:
@@ -37,5 +46,7 @@ public:
 		return m_instance;
 	}
 };
+
+#define SINGLETON_IMPL(x) x* Singleton<##x##>::m_instance;
 
 #endif // SINGLETON_H

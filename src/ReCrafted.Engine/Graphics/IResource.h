@@ -9,6 +9,7 @@
 #include "ReCrafted.h"
 #include "Core/Containers/Array.h"
 #include "Core/Lock.h"
+#include "Core/Logger.h"
 
 /**
  * \brief IResource class. Base class for all graphics resources.

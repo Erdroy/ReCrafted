@@ -2,14 +2,14 @@
 
 #include "SpaceObjectManager.h"
 #include "SpaceObjectOctreeNode.h"
-#include "Core/Logger.h"
 #include "Core/Lock.h"
 #include "Core/Delegate.h"
+#include "Core/Logger.h"
 #include "Core/Containers/concurrentqueue.h"
 #include "Meshing/MarchingCubes/MCMesher.h"
 #include "Platform/Platform.h"
 
-SpaceObjectManager* Singleton<SpaceObjectManager>::m_instance;
+SINGLETON_IMPL(SpaceObjectManager)
 
 ALIGN(8) struct queueItem
 {

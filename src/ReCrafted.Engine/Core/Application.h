@@ -13,15 +13,13 @@
  * \brief Application class. EngineComponent for ScriptingEngine, 
  * which makes possible to run update/simulate/render calls in Mono.
  */
-class Application : public EngineComponent
+class Application : public EngineComponent<Application>
 {
+private:
     friend class EngineMain;
     friend class Rendering;
 
     API_DEF
-
-private:
-    static Application* m_instance;
 
 private:
     Ptr<Object> m_gamemain = nullptr;
@@ -33,11 +31,11 @@ private:
     Ptr<Method> m_shutdown_method = nullptr;
 
 public:
-    Application() { m_instance = this; }
+    virtual ~Application() = default;
 
 private:
     void onInit() override;
-    void onShutdown() override;
+    void onDispose() override;
     void onLoad() override;
 
 private:
@@ -45,9 +43,6 @@ private:
     void update();
     void render();
     void renderUI();
-
-public:
-    static Application* getInstance();
 };
 
 #endif // APPLICATION_H

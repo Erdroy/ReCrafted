@@ -9,14 +9,17 @@
 #include "ReCrafted.h"
 #include "Core/EngineComponent.h"
 
-class ScriptingEngine : public EngineComponent
+class ScriptingEngine : public EngineComponent<ScriptingEngine>
 {
 private:
     Ptr<Domain> m_domain = nullptr;
 
 public:
+    virtual ~ScriptingEngine() = default;
+    
+public:
     void onInit() override;
-    void onShutdown() override;
+    void onDispose() override;
 };
 
 #endif // SCRIPTINGENGINE_H

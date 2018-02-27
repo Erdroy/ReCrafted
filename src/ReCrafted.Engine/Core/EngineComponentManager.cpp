@@ -1,8 +1,9 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "EngineComponentManager.h"
+#include "Singleton.h"
 
-EngineComponentManager* Singleton<EngineComponentManager>::m_instance;
+SINGLETON_IMPL(EngineComponentManager)
 
 void EngineComponentManager::onLoad()
 {
@@ -30,16 +31,15 @@ void EngineComponentManager::onDispose()
     m_components.clear();
 }
 
-void EngineComponentManager::releaseComponent(EngineComponent* component)
+void EngineComponentManager::releaseComponent(EngineComponentBase* component)
 {
     assert(component);
 
-    // dispose and delete component
-    SafeDispose(component);
-    SafeDelete(component);
+    // shutdown and delete component
+    component->shutdown();
 }
 
-void EngineComponentManager::registerComponent(EngineComponent* component)
+void EngineComponentManager::registerComponent(EngineComponentBase* component)
 {
     assert(component);
 
@@ -52,7 +52,7 @@ void EngineComponentManager::registerComponent(EngineComponent* component)
     m_components.add(component);
 }
 
-void EngineComponentManager::unregisterComponent(EngineComponent* component)
+void EngineComponentManager::unregisterComponent(EngineComponentBase* component)
 {
     assert(component);
 

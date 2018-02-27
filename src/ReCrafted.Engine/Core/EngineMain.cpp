@@ -24,15 +24,15 @@ EngineMain* EngineMain::m_instance;
 void EngineMain::registerComponents() const
 {
     // initialize the rest of the engine components
-    m_componentManager->registerComponent(new Rendering());
-    m_componentManager->registerComponent(new Application());
-    m_componentManager->registerComponent(new Profiler());
-    m_componentManager->registerComponent(new Time());
-    m_componentManager->registerComponent(new Input());
-    m_componentManager->registerComponent(new PhysicsManager());
-    m_componentManager->registerComponent(new EntityPool());
-    m_componentManager->registerComponent(new Universe());
-    m_componentManager->registerComponent(new UI());
+    m_componentManager->registerComponent(Rendering::getInstance());
+    m_componentManager->registerComponent(Application::getInstance());
+    m_componentManager->registerComponent(Profiler::getInstance());
+    m_componentManager->registerComponent(Time::getInstance());
+    m_componentManager->registerComponent(Input::getInstance());
+    m_componentManager->registerComponent(PhysicsManager::getInstance());
+    m_componentManager->registerComponent(EntityPool::getInstance());
+    m_componentManager->registerComponent(Universe::getInstance());
+    m_componentManager->registerComponent(UI::getInstance());
 }
 
 void EngineMain::createMainWindow()
@@ -114,8 +114,8 @@ void EngineMain::initialize()
     m_componentManager = EngineComponentManager::getInstance();
 
     // initialize basic pre-log components
-    m_componentManager->registerComponent(new ScriptingEngine());
-    m_componentManager->registerComponent(new Logger());
+    m_componentManager->registerComponent(ScriptingEngine::getInstance());
+    m_componentManager->registerComponent(Logger::getInstance());
 
     // Say something, as now we have scripting and logger initialized, 
     // so we can scream around.

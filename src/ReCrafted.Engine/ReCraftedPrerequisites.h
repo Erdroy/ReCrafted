@@ -7,10 +7,12 @@
 
 #include <ctime>
 #include <vector>
+#include <cassert>
 
 #include "Core/Defines.h"
 #include "Core/Types.h"
-#include "Core/Logger.h"
+#include "Core/IDisposable.h"
+#include "Core/Singleton.h"
 #include "Common/ReCraftedAPI.h"
 
 #ifdef var
@@ -29,7 +31,7 @@ class ApplicationWindow;
 class UpdateLoop;
 
 class EngineMain;
-class EngineComponent;
+class EngineComponentBase;
 class EngineComponentManager;
 
 struct Delegate;
@@ -40,7 +42,6 @@ struct Vector4;
 struct Matrix;
 
 class Profiler;
-class Logger;
 class Display;
 class Time;
 class Input;

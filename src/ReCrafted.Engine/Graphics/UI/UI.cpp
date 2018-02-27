@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <tuple>
 
-UI* UI::m_instance;
+SINGLETON_IMPL(UI)
 
 bgfx::UniformHandle m_textureUnif = {};
 
@@ -110,7 +110,7 @@ void UI::onInit()
 	m_textureUnif = bgfx::createUniform("m_texture0", bgfx::UniformType::Int1);
 }
 
-void UI::onShutdown()
+void UI::onDispose()
 {
 	// delete the buffers data
 	SafeDelete(m_vertexBufferData);

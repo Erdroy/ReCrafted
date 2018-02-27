@@ -19,12 +19,9 @@
 /**
  * \brief Rendering class.
  */
-class Rendering : public EngineComponent
+class Rendering : public EngineComponent<Rendering>
 {
     friend class EngineMain;
-
-private:
-	static Rendering* m_instance;
 
 private:
     bool m_wireframe = false;
@@ -47,12 +44,9 @@ private:
 	void createRenderBuffers();
 	void createBlitQuad();
 
-public:
-	Rendering() { m_instance = this; }
-
 private:
     void onInit() override;
-    void onShutdown() override;
+    void onDispose() override;
 
     void update();
 
@@ -61,6 +55,9 @@ private:
 
     void renderWorld();
     void renderUI();
+
+public:
+    virtual ~Rendering() = default;
 
 public:
     void render();
@@ -104,16 +101,6 @@ public:
 	/// <param name="tristrip">Enable triangle strip primitives?</param>
 	/// <param name="msaa">Allow MSAA?</param>
 	void setState(bool tristrip = false, bool msaa = true, bool uiRendering = false, bool debugLines = false, bool debugTriangles = false);
-
-public:
-	/// <summary>
-	/// Get instance of current rendering instance.
-	/// </summary>
-	/// <returns>The current rendering instance.</returns>
-	FORCEINLINE static Rendering* getInstance()
-	{
-		return m_instance;
-	}
 };
 
 #endif // RENDERING_H

@@ -2,4 +2,4 @@
 
 #include "Time.h"
 
-Time* Time::m_instance;
+SINGLETON_IMPL(Time)

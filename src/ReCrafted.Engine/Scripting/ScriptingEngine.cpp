@@ -5,6 +5,8 @@
 #include "Domain.h"
 #include "Platform/Platform.h"
 
+SINGLETON_IMPL(ScriptingEngine)
+
 void ScriptingEngine::onInit()
 {
     // create root domain
@@ -22,7 +24,7 @@ void ScriptingEngine::onInit()
     Bindings::bind();
 }
 
-void ScriptingEngine::onShutdown()
+void ScriptingEngine::onDispose()
 {
     // destroy all objects
     Object::destroyall();

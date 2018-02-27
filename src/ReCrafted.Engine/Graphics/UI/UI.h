@@ -17,7 +17,7 @@
 struct Text;
 class Font;
 
-class UI : public EngineComponent
+class UI : public EngineComponent<UI>
 {
     friend class Rendering;
 
@@ -54,9 +54,6 @@ private:
 
 	const int m_vertexBufferSize = m_maxVertexCount * sizeof vertex;
 	const int m_indexBufferSize = m_maxIndexCount * sizeof uint16_t;
-
-private:
-	static UI* m_instance;
 
 private:
 	Array<drawcmd> m_drawCmds = {};
@@ -97,17 +94,17 @@ private:
 
 
 public:
-	// internal
+    virtual ~UI() = default;
+
+public:
+    // internal
 	FORCEINLINE void internal_drawBox(Rectf rect);
 	FORCEINLINE void internal_drawBoxTextured(Texture2D* texture, Rectf rect, Rectf uvs);
 	FORCEINLINE void push_drawcmd(drawcmd* cmd, int index);
 
-public:
-	UI() { m_instance = this; }
-
 private:
     void onInit() override;
-    void onShutdown() override;
+    void onDispose() override;
 
 public:
 	void beginDraw();

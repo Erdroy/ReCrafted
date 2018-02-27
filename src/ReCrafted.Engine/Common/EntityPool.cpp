@@ -2,14 +2,13 @@
 
 #include "EntityPool.h"
 
-EntityPool* EntityPool::m_instance;
+SINGLETON_IMPL(EntityPool)
 
 void EntityPool::onInit()
 {
-    m_instance = this;
 }
 
-void EntityPool::onShutdown()
+void EntityPool::onDispose()
 {
 }
 

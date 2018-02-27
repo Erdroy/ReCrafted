@@ -6,8 +6,6 @@
 #include "UpdateLoop.h"
 #include "Platform/Platform.h"
 
-Application* Application::m_instance;
-
 namespace Internal
 {
     int getTargetFps()

@@ -4,6 +4,7 @@
 #include "Common/Input/Input.h"
 #include "Common/Input/KeyboardBuffer.h"
 #include "Core/EngineMain.h"
+#include "Core/Logger.h"
 
 #if _WIN32
 

@@ -6,7 +6,7 @@
 #include "Graphics/DebugDraw.h"
 #include "World/SpaceObject/SpaceObjectManager.h"
 
-Universe* Universe::m_instance;
+SINGLETON_IMPL(Universe)
 
 bool m_viewUpdateEnabled = true;
 
@@ -33,7 +33,7 @@ void Universe::onInit()
     m_testObject1 = SpaceObject::createSpaceObject(settings);
 }
 
-void Universe::onShutdown()
+void Universe::onDispose()
 {
     // shutdown
     SafeDisposeNN(SpaceObjectManager::getInstance());

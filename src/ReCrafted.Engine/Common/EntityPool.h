@@ -12,17 +12,17 @@
 #include "Platform/Platform.h"
 #include "Core/Containers/Array.h"
 
-class EntityPool : public EngineComponent
+class EntityPool : public EngineComponent<EntityPool>
 {
-private:
-	static EntityPool* m_instance;
-
 private:
 	Array<Ptr<Entity>> m_entities = {};
 
 private:
     void onInit() override;
-    void onShutdown() override;
+    void onDispose() override;
+
+public:
+    virtual ~EntityPool() = default;
 
 public:
     void update();
@@ -43,11 +43,6 @@ public:
 	static void destroyEntity(Entity* entity)
 	{
 		
-	}
-
-    static EntityPool* getInstance()
-	{
-        return m_instance;
 	}
 };
 

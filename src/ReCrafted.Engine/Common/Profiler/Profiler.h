@@ -16,7 +16,7 @@ class Font;
 /// <summary>
 /// Profiler class.
 /// </summary>
-class Profiler : public EngineComponent
+class Profiler : public EngineComponent<Profiler>
 {
 	friend class EngineMain;
 	friend class Rendering;
@@ -74,7 +74,7 @@ private:
 
 private:
     void onInit() override;
-    void onShutdown() override;
+    void onDispose() override;
 
 private:
 	static void update();
@@ -139,7 +139,10 @@ private:
 	}
 
 public:
-	/**
+    virtual ~Profiler() = default;
+
+public:
+    /**
 	 * \brief Begins new profile.
 	 * \param name The name of the new profile. Use `TEXT_CHARS("Text")`.
 	 */

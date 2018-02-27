@@ -6,7 +6,7 @@
 #define SPACEOBJECTMANAGER_H
 
 // includes
-#include "Core/Singleton.h"
+#include "ReCrafted.h"
 #include "Core/Containers/Array.h"
 
 #include <thread>

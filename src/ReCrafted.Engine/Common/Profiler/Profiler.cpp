@@ -10,6 +10,8 @@
 
 #include <mono/metadata/mono-gc.h>
 
+SINGLETON_IMPL(Profiler)
+
 Array<Profiler::Profile> Profiler::m_profiles;
 Array<Profiler::Profile*> Profiler::m_profileStack;
 bool Profiler::m_drawDebugScreen;
@@ -33,7 +35,7 @@ void Profiler::onInit()
     m_debugFont->loadFont(TEXT_CONST("../assets/fonts/VeraMono.ttf"), 12);
 }
 
-void Profiler::onShutdown()
+void Profiler::onDispose()
 {
     // destroy font
     Object::destroy(m_debugFont);
@@ -45,7 +47,7 @@ void Profiler::update()
 
     if(Time::time() - m_lastFPSCountTime > 1.0f)
     {
-        m_fps = m_frames;
+        m_fps = int(m_frames);
         m_frames = 0;
         m_lastFPSCountTime = Time::time();
     }
