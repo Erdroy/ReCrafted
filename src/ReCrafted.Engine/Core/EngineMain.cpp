@@ -12,12 +12,13 @@
 #include "Core/Application.h"
 #include "Core/Logger.h"
 #include "Core/UpdateLoop.h"
-#include "Scripting/ScriptingEngine.h"
-#include "Platform/Platform.h"
-#include "Physics/PhysicsManager.h"
+#include "Game/Universe.h"
 #include "Graphics/Rendering.h"
 #include "Graphics/UI/UI.h"
-#include "Game/Universe.h"
+#include "Platform/Platform.h"
+#include "Physics/PhysicsManager.h"
+#include "Scene/SceneManager.h"
+#include "Scripting/ScriptingEngine.h"
 
 EngineMain* EngineMain::m_instance;
 
@@ -31,6 +32,7 @@ void EngineMain::registerComponents() const
     m_componentManager->registerComponent(Input::getInstance());
     m_componentManager->registerComponent(PhysicsManager::getInstance());
     m_componentManager->registerComponent(EntityPool::getInstance());
+    m_componentManager->registerComponent(SceneManager::getInstance());
     m_componentManager->registerComponent(Universe::getInstance());
     m_componentManager->registerComponent(UI::getInstance());
 }
@@ -79,9 +81,10 @@ void EngineMain::onUpdate()
     Platform::runEvents();
 
     // update
-    Profiler::update();
+    Profiler::getInstance()->update();
     EntityPool::getInstance()->update();
     Rendering::getInstance()->update();
+    SceneManager::getInstance()->update();
     Universe::getInstance()->update();
     Application::getInstance()->update();
 }

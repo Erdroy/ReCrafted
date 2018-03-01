@@ -11,6 +11,8 @@
 
 class SceneManager : public EngineComponent<SceneManager>
 {
+    friend class EngineMain;
+
 private:
     SCRIPTING_API_IMPL()
 
@@ -20,6 +22,9 @@ public:
 private:
     void onInit() override;
     void onDispose() override;
+
+private:
+    void update();
 };
 
 #endif // SCENEMANAGER_H

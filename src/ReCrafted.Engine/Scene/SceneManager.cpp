@@ -11,3 +11,8 @@ void SceneManager::onInit()
 void SceneManager::onDispose()
 {
 }
+
+void SceneManager::update()
+{
+
+}
