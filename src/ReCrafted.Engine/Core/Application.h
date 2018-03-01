@@ -15,11 +15,11 @@
  */
 class Application : public EngineComponent<Application>
 {
-private:
     friend class EngineMain;
     friend class Rendering;
 
-    API_DEF
+private:
+    SCRIPTING_API_IMPL()
 
 private:
     Ptr<Object> m_gamemain = nullptr;

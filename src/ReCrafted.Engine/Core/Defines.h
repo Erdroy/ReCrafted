@@ -13,10 +13,6 @@
 #define FORCEINLINE __forceinline
 #endif
 
-#ifndef FORCE_NO_INLINE
-#define FORCE_NO_INLINE __declspec(noinline)
-#endif
-
 #define SafeDispose(ptr) if(ptr) { ptr->dispose(); ptr = nullptr;}
 #define SafeDisposeNN(ptr) if(ptr) { ptr->dispose(); }
 
@@ -28,23 +24,6 @@
 
 #define SafeDeleteArray(ptr) if(ptr) { delete [] ptr; ptr = nullptr; }
 #define SafeDeleteArrayNN(ptr) if(ptr) { delete [] ptr; }
-
-#ifndef VS_LOG_H
-#define VS_LOG_H
-
-#if defined(_WIN32)
-#include <Windows.h>
-
-inline void LOG(const char* text)
-{
-	//OutputDebugStringA(text);
-	//OutputDebugStringA("\n");
-}
-#endif
-
-#define VS_LOG(text) LOG(text)
-
-#endif // VS_LOG_H
 
 #define MISSING_CODE() throw "Code fragment is missing"
 
@@ -65,7 +44,11 @@ inline void LOG(const char* text)
     }                            \
     private: static type m_##name
 
-#define ALIGN(x) __declspec(align(x)) 
+#ifdef _WIN32
+#   define ALIGN(x) __declspec(align(x)) 
+#else
+#   define ALIGN(x) __attribute__ (aligned (x))
+#endif
 
 #ifdef interface
 #	undef interface

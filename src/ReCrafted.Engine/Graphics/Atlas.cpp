@@ -31,9 +31,9 @@ Ptr<Texture2D> Atlas::getTexture() const
 
 Ptr<Atlas> Atlas::load(Text fileName)
 {
-	char jsonName[MAX_PATH] = {};
-	char pngName[MAX_PATH] = {};
-	fileName.c_str(jsonName, MAX_PATH);
+	char jsonName[512] = {};
+	char pngName[512] = {};
+	fileName.c_str(jsonName, 512);
 
 	// build png filename
 	strcpy_s(pngName, jsonName);

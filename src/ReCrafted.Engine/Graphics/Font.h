@@ -23,7 +23,9 @@ class Texture2D;
 class Font : public Object, IResource
 {
 	friend class UI;
-	API_DEF;
+
+private:
+	SCRIPTING_API_IMPL()
 
 public:
 	struct Glyph

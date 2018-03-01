@@ -18,9 +18,9 @@ bool Profiler::m_drawDebugScreen;
 Font* Profiler::m_debugFont;
 int Profiler::m_profileCount;
 
-float m_fps = 0.0f;
 float m_lastFPSCountTime = 0;
-int m_frames;
+int m_frames = 0;
+int m_fps = 0;
 
 bool Profiler::profileSort(const Profile& lhs, const Profile& rhs)
 {
@@ -47,7 +47,7 @@ void Profiler::update()
 
     if(Time::time() - m_lastFPSCountTime > 1.0f)
     {
-        m_fps = int(m_frames);
+        m_fps = m_frames;
         m_frames = 0;
         m_lastFPSCountTime = Time::time();
     }

@@ -28,7 +28,7 @@ void UpdateLoop::waitForTargetFps(double last)
 
     if (sleep > 0.0)
     {
-        Sleep(static_cast<DWORD>(sleep));
+        Platform::sleep(static_cast<uint>(sleep));
     }
     Profiler::endProfile();
 }

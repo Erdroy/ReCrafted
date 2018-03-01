@@ -1,14 +1,14 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
+#if _WIN32
+
+#include <Windows.h>
+
 #include "ReCrafted.h"
 #include "Common/Input/Input.h"
 #include "Common/Input/KeyboardBuffer.h"
 #include "Core/EngineMain.h"
 #include "Core/Logger.h"
-
-#if _WIN32
-
-#include <Windows.h>
 
 extern HICON m_currentCursor;
 

@@ -1,10 +1,5 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
-#include "Platform.h"
-#include "ReCrafted.h"
-#include "Common/Profiler/Profiler.h"
-#include "Core/Logger.h"
-
 #if _WIN32
 
 #if USE_CRTDBG
@@ -14,6 +9,11 @@
 
 #include <cstdio>
 #include <Windows.h>
+
+#include "Platform.h"
+#include "ReCrafted.h"
+#include "Common/Profiler/Profiler.h"
+#include "Core/Logger.h"
 
 #pragma comment(lib, "Rpcrt4.lib")
 
@@ -180,6 +180,11 @@ void Platform::getWindowSize(void* windowHandle, unsigned* width, unsigned* heig
 
     *width = windowRect.right - windowRect.left;
     *height = windowRect.bottom - windowRect.top;
+}
+
+void Platform::sleep(unsigned int miliseconds)
+{
+    Sleep(miliseconds);
 }
 
 void Platform::setCursorPosition(uint16_t x, uint16_t y)

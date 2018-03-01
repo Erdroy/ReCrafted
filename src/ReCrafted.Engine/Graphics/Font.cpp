@@ -184,7 +184,7 @@ Vector2 Font::measureText(Text text)
 		}
 		else if (character == '\n' || character == 10 || character == 13) // New line character.
 		{
-			lastWidth = max(lastWidth, pos.x);
+			lastWidth = std::max(lastWidth, pos.x);
 
 			pos.x = 0.0f;
 			pos.y += lineheight;
@@ -195,7 +195,7 @@ Vector2 Font::measureText(Text text)
 		}
 	}
 
-	pos.x = max(lastWidth, pos.x);
+	pos.x = std::max(lastWidth, pos.x);
 	pos.y += lineheight;
 
 	return pos;

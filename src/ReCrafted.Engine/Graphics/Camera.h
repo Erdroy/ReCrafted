@@ -20,7 +20,9 @@ class Camera : public Object
 {
 	friend class Rendering;
 	friend class GameMain;
-	API_DEF
+
+private:
+	SCRIPTING_API_IMPL()
 
 private:
 	static Camera* m_mainCamera;

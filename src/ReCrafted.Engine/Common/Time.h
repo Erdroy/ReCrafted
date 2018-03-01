@@ -15,10 +15,11 @@
  */
 class Time : public EngineComponent<Time>
 {
-	API_DEF
+    friend class EngineMain;
 
-	friend class GameMain;
-	friend class EngineMain;
+private:
+	SCRIPTING_API_IMPL()
+
 
 private:
 	double m_deltaTime = 0.0;

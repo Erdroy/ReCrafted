@@ -29,7 +29,8 @@ class Input : public EngineComponent<Input>
 {
     friend class EngineMain;
 
-	API_DEF
+private:
+	SCRIPTING_API_IMPL()
 
 private:
 	byte m_lastkeys[INPUT_TABLE_SIZE] = {};

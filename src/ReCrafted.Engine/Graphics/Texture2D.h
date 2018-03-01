@@ -22,7 +22,9 @@ typedef struct upng_t upng_t;
 class Texture2D : public Object, IResource
 {
 	friend class Shader;
-	API_DEF
+
+private:
+	SCRIPTING_API_IMPL()
 
 private:
 	bgfx::TextureHandle m_textureHandle = {};

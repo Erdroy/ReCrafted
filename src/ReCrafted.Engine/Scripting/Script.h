@@ -14,7 +14,8 @@ class Entity;
 
 class Script : public Object
 {
-    API_DEF
+private:
+    SCRIPTING_API_IMPL()
 
 private:
     Entity* m_entity = nullptr;

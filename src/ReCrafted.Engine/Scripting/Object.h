@@ -21,9 +21,10 @@ class Field;
 
 class Object
 {
-	API_DEF
-
     friend class Class;
+
+private:
+	SCRIPTING_API_IMPL()
 
 private:
 	static Array<Ptr<Object>> m_objects;

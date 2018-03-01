@@ -12,7 +12,8 @@
 
 class KeyboardBuffer
 {
-	API_DEF
+private:
+	SCRIPTING_API_IMPL()
 
 private:
 	static Array<Char> m_buffer;

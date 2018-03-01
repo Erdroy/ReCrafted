@@ -22,7 +22,7 @@ class Profiler : public EngineComponent<Profiler>
 	friend class Rendering;
 
 private:
-	API_DEF
+	SCRIPTING_API_IMPL()
 
 private:
 	struct Profile

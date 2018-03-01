@@ -10,17 +10,18 @@
 
 class Display
 {
-	API_DEF
+private:
+	SCRIPTING_API_IMPL()
 
-	public:
-		STATIC_PROPERTY(uint, Width);
-		STATIC_PROPERTY(uint, Height);
+public:
+    STATIC_PROPERTY(uint, Width);
+    STATIC_PROPERTY(uint, Height);
 
-	public:
-		FORCEINLINE static float getAspectRatio()
-		{
-			return static_cast<float>(m_Width) / static_cast<float>(m_Height);
-		}
+public:
+    FORCEINLINE static float getAspectRatio()
+    {
+        return static_cast<float>(m_Width) / static_cast<float>(m_Height);
+    }
 };
 
 #endif // DISPLAY_H

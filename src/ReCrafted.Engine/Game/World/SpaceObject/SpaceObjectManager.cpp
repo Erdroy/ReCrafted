@@ -49,7 +49,7 @@ void SpaceObjectManager::worker_function()
 	{
 		if(!m_loadingQueue.try_dequeue(item))
 		{
-			Sleep(10);
+			Platform::sleep(10);
 			continue;
 		}
 

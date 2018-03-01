@@ -15,8 +15,9 @@
 
 class Entity : public Object
 {
-    API_DEF
+    SCRIPTING_API_IMPL()
 
+private:
 	friend class EntityPool;
     friend class GameMain;
 

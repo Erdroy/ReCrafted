@@ -1,15 +1,15 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
+#ifdef _WIN32
+
+// platform-specific includes
+#include <Windows.h>
+
 // includes
 #include "ReCrafted.h"
 #include "Core/GameInfo.h"
 #include "Core/EngineMain.h"
 #include "Platform/Platform.h"
-
-#ifdef _WIN32
-
-// platform-specific includes
-#include <Windows.h>
 
 /// <summary>
 /// WinMain - Main entry for Windows platform

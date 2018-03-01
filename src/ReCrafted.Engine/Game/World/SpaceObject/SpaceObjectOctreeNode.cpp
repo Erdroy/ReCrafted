@@ -151,7 +151,7 @@ void SpaceObjectOctreeNode::update()
 
 void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 {
-    const float viewRangeMultiplier = 4.0f;
+    cvar viewRangeMultiplier = 4.0f;
 
 	if (m_processing)
 		return;
@@ -206,19 +206,19 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 	}
 
 	// dist(X, A) = node_size + node_size * 0.5f
-	auto distXA = m_size + m_size * 0.5f * viewRangeMultiplier;
+	cvar distXA = m_size + m_size * 0.5f * viewRangeMultiplier;
 
 	// dist(X, B) = dist(X, A) + node_size * 0.25
-	auto distXB = distXA + m_size * 0.25f * viewRangeMultiplier;
+	cvar distXB = distXA + m_size * 0.25f * viewRangeMultiplier;
 
 	// flags
-	auto hasXA = false;
-	auto hasXB = false;
+	var hasXA = false;
+	var hasXB = false;
 
 	// check view flags
 	for (auto && view : views)
 	{
-		auto distanceXC = Vector3::distance(m_position, view);
+		cvar distanceXC = Vector3::distance(m_position, view);
 
 		if (distanceXC <= distXA)
 		{

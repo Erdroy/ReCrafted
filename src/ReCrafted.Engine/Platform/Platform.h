@@ -148,6 +148,12 @@ public:
     */
     static void getWindowSize(void* windowHandle, unsigned int* width, unsigned int* height);
 
+    /**
+     * \brief Sleeps the current thread for given time.
+     * \param miliseconds The time to sleep.
+     */
+    static void sleep(unsigned int miliseconds);
+
 	/**
 	 * \brief Set the cursor position.
 	 * \param x The x coord of target cursor position in pixels.

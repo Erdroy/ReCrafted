@@ -21,7 +21,8 @@ class UI : public EngineComponent<UI>
 {
     friend class Rendering;
 
-	API_DEF
+private:
+	SCRIPTING_API_IMPL()
 
 private:
 	struct vertex

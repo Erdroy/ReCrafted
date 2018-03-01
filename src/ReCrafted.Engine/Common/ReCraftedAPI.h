@@ -5,7 +5,7 @@
 #define API_BUILD
 
 // mono extensions
-#define API_DEF friend class Bindings; protected: static void initRuntime(); private:
+#define SCRIPTING_API_IMPL() friend class Bindings; protected: static void initRuntime(); private:
 
 #define MONO_TEXT(x) mono_string_chars(x)
 #define MONO_ANSI_ERR() MonoError error;

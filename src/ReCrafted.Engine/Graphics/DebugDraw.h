@@ -16,9 +16,11 @@ struct Color;
 
 class DebugDraw
 {
-	API_DEF
+    friend class GameMain;
 
-	friend class GameMain;
+private:
+	SCRIPTING_API_IMPL()
+
 
 private:
 	struct drawlist
