@@ -9,7 +9,8 @@
 #include "ReCrafted.h"
 #include "Core/EngineComponent.h"
 
-#include "Core/Math/Math.h"
+#include "bgfxPrerequisites.h"
+
 #include "Core/Defines.h"
 #include "Core/Types.h"
 #include "Mesh.h"
