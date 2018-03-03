@@ -69,7 +69,7 @@ public:
 # 8. Layout/Members order in header files
 
 ```CPP
-// ReCrafted © 2016-2017 Always Too Late
+// ReCrafted © 2016-2018 Always Too Late
 
 // includes
 #include "someHeader.h"
@@ -151,7 +151,7 @@ public:
 
 Template for a default source code file
 ```CSharp
-// ReCrafted © 2016-2017 Always Too Late
+// ReCrafted © 2016-2018 Always Too Late
 
 /// <summary>
 /// [DESCRIPTION]
@@ -286,7 +286,7 @@ TODO
 Layout for all source code files:
 
 ```CSharp
-// ReCrafted © 2016-2017 Always Too Late
+// ReCrafted © 2016-2018 Always Too Late
 
 using System;
 
