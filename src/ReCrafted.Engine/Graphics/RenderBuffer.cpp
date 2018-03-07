@@ -33,7 +33,7 @@ void RenderBuffer::begin()
 	_ASSERT(m_created != true);
 
 	// zeroe all textures
-	for (auto i = 0; i < RENDERBUFFER_MAXTARGETS; i++)
+	for (auto i = 0; i < MAX_RENDERBUFFER_TARGETS; i++)
 		m_textures[i] = {};
 }
 

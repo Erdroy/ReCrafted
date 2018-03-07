@@ -11,8 +11,6 @@
 
 #include "bgfxPrerequisites.h"
 
-#define RENDERBUFFER_MAXTARGETS 8
-
 #define RENDERVIEW_BACKBUFFER 0
 #define RENDERVIEW_GBUFFER 1
 
@@ -23,8 +21,8 @@ class RenderBuffer
 {
 private:
 	bgfx::FrameBufferHandle m_framebufferHandle = {};
-	TextureFormat::Enum m_textures[RENDERBUFFER_MAXTARGETS] = {};
-	bgfx::TextureHandle m_textureHandles[RENDERBUFFER_MAXTARGETS] = {};
+	TextureFormat::Enum m_textures[MAX_RENDERBUFFER_TARGETS] = {};
+	bgfx::TextureHandle m_textureHandles[MAX_RENDERBUFFER_TARGETS] = {};
 	uint m_textureCount = 0u;
 	bool m_created = false;
 
