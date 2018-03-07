@@ -19,6 +19,7 @@
 #include "Physics/PhysicsManager.h"
 #include "Scene/SceneManager.h"
 #include "Scripting/ScriptingEngine.h"
+#include "Graphics/Renderer/Renderer.h"
 
 EngineMain* EngineMain::m_instance;
 
@@ -26,6 +27,7 @@ void EngineMain::registerComponents() const
 {
     // initialize the rest of the engine components
     m_componentManager->registerComponent(Rendering::getInstance());
+    m_componentManager->registerComponent(Renderer::getInstance());
     m_componentManager->registerComponent(Application::getInstance());
     m_componentManager->registerComponent(Profiler::getInstance());
     m_componentManager->registerComponent(Time::getInstance());
@@ -84,6 +86,7 @@ void EngineMain::onUpdate()
     Profiler::getInstance()->update();
     EntityPool::getInstance()->update();
     Rendering::getInstance()->update();
+    Renderer::getInstance()->update();
     SceneManager::getInstance()->update();
     Universe::getInstance()->update();
     Application::getInstance()->update();
@@ -94,6 +97,7 @@ void EngineMain::onRender()
     Profiler::beginProfile("Render");
     {
         Rendering::getInstance()->render();
+        Renderer::getInstance()->render();
     }
     Profiler::endProfile();
     
