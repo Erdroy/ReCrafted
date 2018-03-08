@@ -66,7 +66,7 @@ void RenderBuffer::addTarget(const char* name, TextureFormat::Enum format)
 
 bgfx::TextureHandle RenderBuffer::getTarget(uint slot)
 {
-	_ASSERT(slot < RENDERBUFFER_MAXTARGETS);
+	_ASSERT(slot < MAX_RENDERBUFFER_TARGETS);
 	_ASSERT(m_textureHandles[slot].idx > 0);
 
 	return m_textureHandles[slot];

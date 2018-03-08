@@ -19,7 +19,7 @@ class Font;
 
 class UI : public EngineComponent<UI>
 {
-    friend class Rendering;
+    friend class Renderer;
 
 private:
 	SCRIPTING_API_IMPL()

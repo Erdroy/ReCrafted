@@ -13,7 +13,6 @@
 #include "Core/Logger.h"
 #include "Core/UpdateLoop.h"
 #include "Game/Universe.h"
-#include "Graphics/Rendering.h"
 #include "Graphics/UI/UI.h"
 #include "Platform/Platform.h"
 #include "Physics/PhysicsManager.h"
@@ -26,7 +25,6 @@ EngineMain* EngineMain::m_instance;
 void EngineMain::registerComponents() const
 {
     // initialize the rest of the engine components
-    m_componentManager->registerComponent(Rendering::getInstance());
     m_componentManager->registerComponent(Renderer::getInstance());
     m_componentManager->registerComponent(Application::getInstance());
     m_componentManager->registerComponent(Profiler::getInstance());
@@ -85,7 +83,6 @@ void EngineMain::onUpdate()
     // update
     Profiler::getInstance()->update();
     EntityPool::getInstance()->update();
-    Rendering::getInstance()->update();
     Renderer::getInstance()->update();
     SceneManager::getInstance()->update();
     Universe::getInstance()->update();
@@ -94,13 +91,8 @@ void EngineMain::onUpdate()
 
 void EngineMain::onRender()
 {
-    Profiler::beginProfile("Render");
-    {
-        Rendering::getInstance()->render();
-        Renderer::getInstance()->render();
-    }
-    Profiler::endProfile();
-    
+    Renderer::getInstance()->render();
+
     // end 'Frame' profile
     Profiler::endProfile();
     Profiler::endFrame();
@@ -109,7 +101,7 @@ void EngineMain::onRender()
 void EngineMain::onWindowResized()
 {
     // resize now
-    Rendering::getInstance()->resize(m_mainWindow->get_width(), m_mainWindow->get_height());
+    Renderer::getInstance()->resize(m_mainWindow->get_width(), m_mainWindow->get_height());
 }
 
 void EngineMain::initialize()

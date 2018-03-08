@@ -18,8 +18,7 @@ class Entity;
 /// </summary>
 class Camera : public Object
 {
-	friend class Rendering;
-	friend class GameMain;
+	friend class Renderer;
 
 private:
 	SCRIPTING_API_IMPL()
@@ -34,7 +33,6 @@ private:
 	// camera matrices
 	Matrix m_view = {};
 	Matrix m_projection = {};
-    Matrix m_viewProjection = {};
 
 	BoundingFrustum m_frustum = {};
 
@@ -102,11 +100,12 @@ public:
 	PROPERTY(float, fov) = 75.0f;
 	PROPERTY(float, farPlane) = 1000.0f;
 	PROPERTY(float, nearPlane) = 0.02f;
-	PROPERTY(Vector3, position) = {};
-	PROPERTY(Vector3, rotation) = {};
-	PROPERTY(Vector3, forward) = {};
-	PROPERTY(Vector3, up) = {};
-	PROPERTY(Vector3, right) = {};
+    PROPERTY_REF(Vector3, position) = {};
+    PROPERTY_REF(Vector3, rotation) = {};
+    PROPERTY_REF(Vector3, forward) = {};
+    PROPERTY_REF(Vector3, up) = {};
+    PROPERTY_REF(Vector3, right) = {};
+    PROPERTY_REF(Matrix, viewProjection) = {};
 };
 
 #endif // CAMERA_H

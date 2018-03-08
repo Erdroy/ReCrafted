@@ -18,7 +18,7 @@ struct Vector4;
  */
 class Mesh : IResource
 {
-	friend class Rendering;
+    friend class Renderer;
 
 private:
 	bgfx::VertexDecl m_vertexdecl = {};

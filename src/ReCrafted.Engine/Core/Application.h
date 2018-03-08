@@ -16,7 +16,7 @@
 class Application : public EngineComponent<Application>
 {
     friend class EngineMain;
-    friend class Rendering;
+    friend class Renderer;
 
 private:
     SCRIPTING_API_IMPL()

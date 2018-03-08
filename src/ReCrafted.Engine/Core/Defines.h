@@ -35,6 +35,16 @@
 		m_##name = v;			\
 	}							\
 	private: type m_##name
+
+#define PROPERTY_REF(type, name)	\
+	public: __inline type& get_##name##() {		\
+		return m_##name ;		\
+	}							\
+	public: __inline void set_##name##(type& v) {	\
+		m_##name = v;			\
+	}							\
+	private: type m_##name
+
 #define STATIC_PROPERTY(type, name)    \
     public: __inline static type get_##name##() {        \
         return m_##name ;        \

@@ -15,7 +15,7 @@
  */
 class Shader : IResource
 {
-	friend class Rendering;
+	friend class Renderer;
 	friend class UI;
 
 private:

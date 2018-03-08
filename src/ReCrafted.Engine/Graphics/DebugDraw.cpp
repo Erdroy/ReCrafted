@@ -3,8 +3,6 @@
 #include "DebugDraw.h"
 #include "Core/Math/Vector3.h"
 #include "Core/Math/Color.h"
-#include "Camera.h"
-#include "Rendering.h"
 
 bgfx::VertexDecl DebugDraw::m_vertexDecl;
 Ptr<Shader> DebugDraw::m_shader;
