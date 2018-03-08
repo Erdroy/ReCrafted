@@ -49,7 +49,7 @@ public:
 	void dispose();
 
 public:
-    static uint64_t CalculateChunkId(const Vector3& position);
+    static uint64_t calculateChunkId(const Vector3& position);
 };
 
 #endif // SPACEOBJECTCHUNK_H

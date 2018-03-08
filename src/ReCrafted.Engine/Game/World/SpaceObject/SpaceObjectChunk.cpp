@@ -6,8 +6,9 @@
 #include "SpaceObject.h"
 #include "Meshing/MarchingCubes/MCMesher.h"
 #include "Graphics/Mesh.h"
-#include "Graphics/Rendering.h"
+#include "Graphics/Renderer/Renderer.h"
 #include "Storage/VoxelStorage.h"
+#include "Graphics/Camera.h"
 
 uint8_t SpaceObjectChunk::getLodBorders()
 {
@@ -54,7 +55,7 @@ void SpaceObjectChunk::init(SpaceObjectOctreeNode* node, SpaceObject* spaceObjec
     m_lod = int(node->get_size() / float(SpaceObjectOctreeNode::MinimumNodeSize));
 
     // calculate id
-    m_id = CalculateChunkId(m_position);
+    m_id = calculateChunkId(m_position);
 }
 
 void SpaceObjectChunk::generate(IVoxelMesher* mesher)
@@ -64,7 +65,7 @@ void SpaceObjectChunk::generate(IVoxelMesher* mesher)
 	m_mesh = Mesh::createMesh();
 
     // get voxel chunk
-    cvar voxelData = spaceObject->getStorage()->getVoxelChunk(m_position, m_lod);
+    cvar voxelData = spaceObject->getStorage()->getVoxelChunk(node->get_position(), m_position, m_lod);
 
     if(voxelData == nullptr)
     {
@@ -100,8 +101,7 @@ void SpaceObjectChunk::draw()
 	if (!m_mesh || !m_mesh->isUploaded() || !m_hasVoxels)
 		return;
 
-	auto matrix = Matrix::identity();
-	Rendering::getInstance()->draw(m_mesh, &matrix);
+	Renderer::getInstance()->draw(m_mesh);
 }
 
 void SpaceObjectChunk::dispose()
@@ -109,15 +109,15 @@ void SpaceObjectChunk::dispose()
 	SafeDispose(m_mesh);
 }
 
-uint64_t SpaceObjectChunk::CalculateChunkId(const Vector3& position)
+uint64_t SpaceObjectChunk::calculateChunkId(const Vector3& position)
 {
-    // limit: 1 048 575 (note: mul by 16 - when converting to WS)
+    // limit: 8 388 608 (world space) / 1 048 576 (node space)
     // size: 20 bit's per integer
 
     // convert components into integers
-    cvar posX = static_cast<uint64_t>(position.x / ChunkSize);
-    cvar posY = static_cast<uint64_t>(position.y / ChunkSize);
-    cvar posZ = static_cast<uint64_t>(position.z / ChunkSize);
+    cvar posX = static_cast<uint64_t>(position.x / 8.0f);
+    cvar posY = static_cast<uint64_t>(position.y / 8.0f);
+    cvar posZ = static_cast<uint64_t>(position.z / 8.0f);
 
     // mask-off the last 20 bits and pack into uint64
     var chunkId = (posX & 0xFFFFF) << 40;

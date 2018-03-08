@@ -7,12 +7,14 @@
 
 // includes
 #include "ReCrafted.h"
+#include "Core/Lock.h"
 #include "Core/Streams/FileStream.h"
-#include "Core/sparsepp/spp.h"
 #include "Game/World/SpaceObject/SpaceObject.h"
 
 #include "VoxelStorageHeader.h"
 #include "VoxelStorageChunkEntry.h"
+
+#include "Core/sparsepp/spp.h"
 
 struct Vector3;
 struct SpaceObjectSettings;
@@ -28,8 +30,11 @@ private:
 
 private:
     Ptr<VoxelCHM> m_chm = nullptr;
+
+    Lock m_vxhLock = {};
     FileStream* m_vxhStream = nullptr;
     VoxelStorageHeader* m_vxh = nullptr;
+    spp::sparse_hash_map<uint64_t, int> m_voxelMap;
 
 private:
     FORCEINLINE static sbyte sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, const Vector3& position, const int lod, const float radius, const float hillsHeight);
@@ -49,10 +54,11 @@ public:
     /**
      * \brief Gets x (SpaceObjectChunk::ChunkDataSize^3) voxels with all modifications. 
      * Uses CHM cache if needed. Automatically generates data if needed.
-     * \param position The voxel chunk position.
+     * \param nodePosition The octree node position.
+     * \param chunkPosition The voxel chunk position.
      * \param lod The LoD for voxels.
      */
-    sbyte* getVoxelChunk(const Vector3& position, int lod);
+    sbyte* getVoxelChunk(const Vector3& nodePosition, const Vector3& chunkPosition, int lod);
 };
 
 #endif // VOXELSTORAGE_H

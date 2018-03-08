@@ -109,6 +109,17 @@ void VoxelStorage::saveHeader()
 
 void VoxelStorage::writeChunk(sbyte* chunkData, const Vector3& position, int lod)
 {
+    ScopeLock(m_vxhLock);
+
+    cvar chunkId = SpaceObjectChunk::calculateChunkId(position);
+
+    if(m_voxelMap.contains(chunkId))
+    {
+        var pos = m_voxelMap[chunkId];
+        return;
+    }
+
+    m_voxelMap[chunkId] = lod;
 
     // TODO: check if this chunk if saved, is so, get the offset
     // TODO: if not saved, find free offset
@@ -140,7 +151,7 @@ void VoxelStorage::dispose()
     SafeDelete(m_vxh);
 }
 
-sbyte* VoxelStorage::getVoxelChunk(const Vector3& position, const int lod)
+sbyte* VoxelStorage::getVoxelChunk(const Vector3& nodePosition, const Vector3& chunkPosition, const int lod)
 {
     if (settings.generationType == GenerationType::PreGenerated)
     {
@@ -152,8 +163,8 @@ sbyte* VoxelStorage::getVoxelChunk(const Vector3& position, const int lod)
     // TODO: check if this chunk is present in storage
 
     // generate chunk now using CHM
-    cvar voxelData = generateChunkFromCHM(position, lod);
-
+    cvar voxelData = generateChunkFromCHM(chunkPosition, lod);
+    writeChunk(nullptr, nodePosition, lod);
     // TODO: VoxelCache class (should store chunks for some time or all the time if chunk is still being used)
     // TODO: check if this is cached (use start and lod) (and not modified by this time) and get if present
     // TODO: if not - generate and modify

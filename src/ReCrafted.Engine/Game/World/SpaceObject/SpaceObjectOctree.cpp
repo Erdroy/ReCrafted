@@ -4,7 +4,7 @@
 #include "SpaceObject.h"
 #include "Common/Profiler/Profiler.h"
 #include "Core/Math/Math.h"
-#include "Graphics/Rendering.h"
+#include "Graphics/Renderer/Renderer.h"
 
 void SpaceObjectOctree::init()
 {
@@ -87,7 +87,7 @@ void SpaceObjectOctree::draw()
 {
     Profiler::beginProfile("SpaceObjectOctree::draw");
 
-    Rendering::getInstance()->setState();
+    Renderer::getInstance()->setStage(RenderStage::Default);
 
     for (var i = 0; i < m_rootNodesCount; i++)
         m_rootNodes[i]->draw();

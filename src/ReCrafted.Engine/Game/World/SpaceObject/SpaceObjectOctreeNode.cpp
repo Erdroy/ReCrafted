@@ -83,7 +83,6 @@ void SpaceObjectOctreeNode::worker_depopulate(IVoxelMesher* mesher)
 {
 	// WARNING: this function is called on WORKER THREAD!
 	
-	worker_generate(mesher);
 }
 
 void SpaceObjectOctreeNode::worker_generate(IVoxelMesher* mesher)
@@ -122,7 +121,7 @@ void SpaceObjectOctreeNode::depopulate()
 	if (isChildrenProcessing())
 		return;
 
-	m_processing = true;
+	//m_processing = true;
 
 	// queue depopulate job
 	SpaceObjectManager::enqueue(this, ProcessMode::Depopulate, MakeDelegate(SpaceObjectOctreeNode::onDepopulate));
@@ -256,18 +255,15 @@ void SpaceObjectOctreeNode::draw()
     //if (!Camera::getMainCamera()->getBoundingFrustum().contains(m_bounds))
     //    return;
 
-	if(m_chunk)
+	if(m_chunk && !m_populated)
 	{
 		m_chunk->draw();
 		return;
 	}
 
-	if (!m_populated)
-		return;
-
-	for (auto i = 0; i < 8; i++)
+	for (var i = 0; i < 8; i++)
 	{
-		auto node = m_childrenNodes[i];
+		var node = m_childrenNodes[i];
 
 		if (node)
 		{
@@ -373,7 +369,7 @@ void SpaceObjectOctreeNode::onPopulate()
 	for(var i = 0; i < 8; i ++)
 		m_childrenNodes[i]->onCreate();
 
-	onDestroy();
+	//onDestroy();
 }
 
 void SpaceObjectOctreeNode::onDepopulate()
