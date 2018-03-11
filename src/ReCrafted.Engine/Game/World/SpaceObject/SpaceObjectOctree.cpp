@@ -32,6 +32,8 @@ void SpaceObjectOctree::init()
     var rootNodeOffset = static_cast<float>(rootNodesLength / 2 * rootNodeSize) - rootNodeSize * 0.5f;
     var rootNodePositionOffset = Vector3(rootNodeOffset, rootNodeOffset, rootNodeOffset);
 
+    var boundsSize = Vector3::one() * static_cast<float>(rootNodeSize);
+
     // create root nodes
     m_rootNodes = new SpaceObjectOctreeNode*[m_rootNodesCount];
     var nodeId = 0;
@@ -61,6 +63,7 @@ void SpaceObjectOctree::init()
                 node->parent = nullptr;
                 node->root = node;
                 node->m_isRoot = true;
+                node->m_bounds = BoundingBox(position, boundsSize);
 
                 // populate node
                 node->populate();
@@ -111,4 +114,37 @@ void SpaceObjectOctree::dispose()
     }
 
     delete [] m_rootNodes;
+}
+
+SpaceObjectOctreeNode* SpaceObjectOctree::findNode(Vector3 position, int size) const
+{
+    for (var i = 0; i < m_rootNodesCount; i++)
+    {
+        cvar node = m_rootNodes[i]->findNode(position, size);
+
+        if (node)
+            return node;
+    }
+
+    return nullptr;
+}
+
+Array<SpaceObjectOctreeNode*> SpaceObjectOctree::findIntersecting(BoundingBox& box)
+{
+    Array<SpaceObjectOctreeNode*> intersecting = {};
+
+    for (var i = 0; i < m_rootNodesCount; i++)
+    {
+        cvar node = m_rootNodes[i];
+
+        if(BoundingBox::intersects(node->m_bounds, box))
+        {
+            // proceed to find lowest LoD
+            var nodes = node->findIntersecting(box);
+            for (var && intersectingNode : nodes)
+                intersecting.add(intersectingNode);
+        }
+    }
+
+    return intersecting;
 }

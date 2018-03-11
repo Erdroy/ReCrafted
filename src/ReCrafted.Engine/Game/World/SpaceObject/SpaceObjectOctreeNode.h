@@ -65,6 +65,10 @@ private:
 	void worker_depopulate(IVoxelMesher* mesher);
 	void worker_generate(IVoxelMesher* mesher);
 
+    Array<SpaceObjectOctreeNode*> findIntersecting(BoundingBox& box);
+    SpaceObjectOctreeNode* getNeighNode(NodeDirection::_enum direction) const;
+    SpaceObjectOctreeNode* findNode(Vector3 position, int size);
+
 public:
 	SpaceObjectOctreeNode() {}
 
@@ -75,13 +79,6 @@ public:
 	void updateViews(Array<Vector3>& views);
 	void draw();
 	void dispose();
-
-public:
-	/**
-	* \brief Gets neighbor node with higher or same LoD, cannot get lower LoD level node.
-	*/
-	SpaceObjectOctreeNode* getNeighNode(NodeDirection::_enum direction) const;
-	SpaceObjectOctreeNode* findNode(Vector3 position, int size);
 
 public:
 	void onCreate();

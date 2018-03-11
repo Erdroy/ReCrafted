@@ -50,6 +50,23 @@ void SpaceObject::updateViewPoint(Vector3& view)
 	m_views.add(view);
 }
 
+void SpaceObject::modify(VoxelEditMode::_enum mode, VoxelEditShape::_enum shape, Vector3& position, float size)
+{
+    // TODO:
+    // build bounding box
+    // find intersecting chunks
+    // get their LoD-0 data
+    // apply modification
+    // - how to apply this to all lod's?
+    // - how to store/save it
+
+    var bbSize = Vector3(size, size, size);
+    var boundingBox = BoundingBox(position, bbSize);
+    var toModify = m_octree->findIntersecting(boundingBox); // NOTE: this will give us all LoD levels, but we need only the LoD-0.
+
+
+}
+
 SpaceObjectSettings& SpaceObject::getSettings()
 {
 	return m_settings;

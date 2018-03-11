@@ -5,6 +5,7 @@
 #include "Graphics/Camera.h"
 #include "Graphics/DebugDraw.h"
 #include "World/SpaceObject/SpaceObjectManager.h"
+#include "World/SpaceObject/Storage/VoxelStorage.h"
 
 SINGLETON_IMPL(Universe)
 
@@ -51,7 +52,7 @@ void Universe::update()
 
     if(Input::isKeyDown(Key_Mouse2))
     {
-        //m_testObject1->getClipmap()->addCSGShape(CSGMode::Subtractive, CSGShape::Sphere, Camera::getMainCamera()->get_position(), 5.0f);
+        m_testObject1->modify(VoxelEditMode::Subtractive, VoxelEditShape::Sphere, Camera::getMainCamera()->get_position(), 5.0f);
     }
 
 	if (m_viewUpdateEnabled) 

@@ -37,6 +37,10 @@ public:
 	void dispose();
 
 public:
+    SpaceObjectOctreeNode* findNode(Vector3 position, int size) const;
+    Array<SpaceObjectOctreeNode*> findIntersecting(BoundingBox& box);
+
+public:
 	PROPERTY(BoundingBox, bounds) = {};
 };
 

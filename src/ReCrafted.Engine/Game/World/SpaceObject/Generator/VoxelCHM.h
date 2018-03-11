@@ -39,8 +39,8 @@ private:
         cvar posX = static_cast<int>(texcoord.x * m_bitmapWidth);
         cvar posY = static_cast<int>(texcoord.y * m_bitmapHeight);
 
-        cvar pixel = bitmap[posY * m_bitmapWidth + posX];
-
+        var pixel = (float) bitmap[posY * m_bitmapWidth + posX];
+        
         return pixel / 255.0f;
     }
 
@@ -50,16 +50,8 @@ public:
         if (point.length() == 0)
             return 0.0f;
 
-        //cvar spherePoint = mapSphere(point, radius);
         cvar sphereFace = getFace(point);
         cvar texcoord = getTexcoord(sphereFace, point);
-
-        /*if (texcoord.x == 0.0f || texcoord.y == 0.0f)
-            return -1.0f;
-        if (texcoord.x >= 0.9999f || texcoord.y >= 0.9999f)
-            return 1.0f;
-
-        return 0.0f;*/
 
         return sampleFace(sphereFace, texcoord); // TODO: sample proper LOD level
     }

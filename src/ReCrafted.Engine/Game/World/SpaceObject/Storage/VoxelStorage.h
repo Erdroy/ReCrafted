@@ -11,6 +11,8 @@
 #include "Core/Streams/FileStream.h"
 #include "Game/World/SpaceObject/SpaceObject.h"
 
+#include "VoxelEditMode.h"
+#include "VoxelEditShape.h"
 #include "VoxelStorageHeader.h"
 #include "VoxelStorageChunkEntry.h"
 
@@ -51,14 +53,14 @@ public:
     void dispose() override;
 
 public:
+
     /**
      * \brief Gets x (SpaceObjectChunk::ChunkDataSize^3) voxels with all modifications. 
      * Uses CHM cache if needed. Automatically generates data if needed.
      * \param nodePosition The octree node position.
-     * \param chunkPosition The voxel chunk position.
      * \param lod The LoD for voxels.
      */
-    sbyte* getVoxelChunk(const Vector3& nodePosition, const Vector3& chunkPosition, int lod);
+    sbyte* getVoxelChunk(const Vector3& nodePosition, int lod);
 };
 
 #endif // VOXELSTORAGE_H

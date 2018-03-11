@@ -151,7 +151,7 @@ void VoxelStorage::dispose()
     SafeDelete(m_vxh);
 }
 
-sbyte* VoxelStorage::getVoxelChunk(const Vector3& nodePosition, const Vector3& chunkPosition, const int lod)
+sbyte* VoxelStorage::getVoxelChunk(const Vector3& nodePosition, const int lod)
 {
     if (settings.generationType == GenerationType::PreGenerated)
     {
@@ -159,6 +159,10 @@ sbyte* VoxelStorage::getVoxelChunk(const Vector3& nodePosition, const Vector3& c
         Logger::logError("getVoxelsRow for pregens is not implemented!");
         return nullptr;
     }
+    
+    cvar nodeSize = lod * float(SpaceObjectOctreeNode::MinimumNodeSize);
+    cvar positionOffset = Vector3::one() * nodeSize * 0.5f;
+    cvar chunkPosition = nodePosition - positionOffset; // lower-left-back corner
 
     // TODO: check if this chunk is present in storage
 

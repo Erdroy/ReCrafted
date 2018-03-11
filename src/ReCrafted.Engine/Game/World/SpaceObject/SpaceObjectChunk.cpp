@@ -55,7 +55,7 @@ void SpaceObjectChunk::init(SpaceObjectOctreeNode* node, SpaceObject* spaceObjec
     m_lod = int(node->get_size() / float(SpaceObjectOctreeNode::MinimumNodeSize));
 
     // calculate id
-    m_id = calculateChunkId(m_position);
+    m_id = calculateChunkId(node->get_position());
 }
 
 void SpaceObjectChunk::generate(IVoxelMesher* mesher)
@@ -65,7 +65,7 @@ void SpaceObjectChunk::generate(IVoxelMesher* mesher)
 	m_mesh = Mesh::createMesh();
 
     // get voxel chunk
-    cvar voxelData = spaceObject->getStorage()->getVoxelChunk(node->get_position(), m_position, m_lod);
+    cvar voxelData = spaceObject->getStorage()->getVoxelChunk(node->get_position(), m_lod);
 
     if(voxelData == nullptr)
     {
