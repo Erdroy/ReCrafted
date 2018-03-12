@@ -143,7 +143,8 @@ Ptr<VoxelChunkData> VoxelStorage::createChunkData(Vector3& nodePosition, const i
     var chunk = std::make_shared<VoxelChunkData>();
     chunk->m_size = nodeSize;
     chunk->m_id = chunkId;
-    chunk->m_position = nodePosition;
+    chunk->m_nodePosition = nodePosition;
+    chunk->m_chunkPosition = nodePosition - Vector3::one() * float(nodeSize) * 0.5f;
 
     m_voxelChunks[chunkId] = chunk;
 
@@ -173,7 +174,7 @@ void VoxelStorage::readChunkData(Ptr<VoxelChunkData> chunkData)
 
     // TODO: check if we have some data saved, if so, read from file
 
-    cvar nodePosition = chunkData->m_position;
+    cvar nodePosition = chunkData->m_nodePosition;
     cvar nodeSize = chunkData->m_size;
     cvar positionOffset = Vector3::one() * float(nodeSize) * 0.5f;
     cvar chunkPosition = nodePosition - positionOffset; // lower-left-back corner
@@ -197,5 +198,5 @@ void VoxelStorage::freeChunkData(Ptr<VoxelChunkData> chunkData)
     ScopeLock(m_voxelChunksLock);
 
     cvar chunkId = chunkData->m_id;
-    
+    // TODO: free chunk data and release space in hashmap
 }

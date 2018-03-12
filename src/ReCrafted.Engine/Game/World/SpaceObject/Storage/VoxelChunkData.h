@@ -21,12 +21,15 @@ private:
     int m_size = 0;
     bool m_loaded = false;
     uint64_t m_id = 0u;
-    Vector3 m_position = {};
+    Vector3 m_nodePosition = {};
+    Vector3 m_chunkPosition = {};
 
 public:
     VoxelChunkData()
     {
-        m_voxelData = new sbyte[ChunkDataSize * ChunkDataSize * ChunkDataSize];
+        cvar size = ChunkDataSize * ChunkDataSize * ChunkDataSize;
+        m_voxelData = new sbyte[size];
+        memset(m_voxelData, 127, size);
     }
 
     ~VoxelChunkData()
@@ -43,6 +46,16 @@ public:
     sbyte* getData() const
     {
         return m_voxelData;
+    }
+
+    Vector3 getNodePosition() const
+    {
+        return m_nodePosition;
+    }
+
+    Vector3 getChunkPosition() const
+    {
+        return m_chunkPosition;
     }
 
     bool isLoaded() const

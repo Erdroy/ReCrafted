@@ -211,6 +211,12 @@ void Mesh::upload()
 	if (m_vertexBufferData == nullptr || m_indexBufferData == nullptr)
 		return;
 
+    if (m_vertexBuffer.idx != 0)
+        bgfx::destroy(m_vertexBuffer);
+
+    if (m_indexBuffer.idx != 0)
+        bgfx::destroy(m_indexBuffer);
+
 	m_vertexBuffer = bgfx::createVertexBuffer(m_vertexBufferData, m_vertexdecl);
 	m_indexBuffer = bgfx::createIndexBuffer(m_indexBufferData, BGFX_BUFFER_INDEX32);
 
@@ -233,16 +239,11 @@ void Mesh::dispose()
 	m_colors_count = 0u;
 	m_indices_count = 0u;
 
-	if (m_vertexBuffer.idx != 0)
-	{
-		bgfx::destroy(m_vertexBuffer);
-	}
+    if (m_vertexBuffer.idx != 0)
+        bgfx::destroy(m_vertexBuffer);
 
-	if (m_indexBuffer.idx != 0)
-	{
-		bgfx::destroy(m_indexBuffer);
-	}
-	// do not commit suicide, this type of object is handled in soft pointers usually(and SHOULD BE!)
+    if (m_indexBuffer.idx != 0)
+        bgfx::destroy(m_indexBuffer);
 }
 
 Ptr<Mesh> Mesh::createMesh()

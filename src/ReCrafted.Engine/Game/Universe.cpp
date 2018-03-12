@@ -52,7 +52,13 @@ void Universe::update()
 
     if(Input::isKeyDown(Key_Mouse0))
     {
-        m_testObject1->modify(VoxelEditMode::Subtractive, VoxelEditShape::Sphere, Camera::getMainCamera()->get_position(), 5.0f);
+        var modPosition = Camera::getMainCamera()->get_position() + Camera::getMainCamera()->get_forward() * 5.0f;
+        m_testObject1->modify(VoxelEditMode::Subtractive, VoxelEditShape::Sphere, modPosition, 2.5f);
+    }
+    if (Input::isKeyDown(Key_Mouse2))
+    {
+        var modPosition = Camera::getMainCamera()->get_position() + Camera::getMainCamera()->get_forward() * 5.0f;
+        m_testObject1->modify(VoxelEditMode::Subtractive, VoxelEditShape::Cube, modPosition, 2.5f);
     }
 
 	if (m_viewUpdateEnabled) 
