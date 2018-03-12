@@ -129,21 +129,19 @@ SpaceObjectOctreeNode* SpaceObjectOctree::findNode(Vector3 position, int size) c
     return nullptr;
 }
 
-Array<SpaceObjectOctreeNode*> SpaceObjectOctree::findIntersecting(BoundingBox& box)
+Array<SpaceObjectOctreeNode*> SpaceObjectOctree::findIntersecting(BoundingBox& box) const
 {
     Array<SpaceObjectOctreeNode*> intersecting = {};
 
+    // find all intersecting nodes
+    // iterate all root nodes
     for (var i = 0; i < m_rootNodesCount; i++)
     {
         cvar node = m_rootNodes[i];
 
+        // check if this node intersects with given bounding box, if so, proceed further
         if(BoundingBox::intersects(node->m_bounds, box))
-        {
-            // proceed to find lowest LoD
-            var nodes = node->findIntersecting(box);
-            for (var && intersectingNode : nodes)
-                intersecting.add(intersectingNode);
-        }
+            node->findIntersecting(intersecting, box);
     }
 
     return intersecting;

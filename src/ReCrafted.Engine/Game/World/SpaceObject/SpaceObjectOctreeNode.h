@@ -65,7 +65,7 @@ private:
 	void worker_depopulate(IVoxelMesher* mesher);
 	void worker_generate(IVoxelMesher* mesher);
 
-    Array<SpaceObjectOctreeNode*> findIntersecting(BoundingBox& box);
+    void findIntersecting(Array<SpaceObjectOctreeNode*>& nodes, BoundingBox& box, const int targetNodeSize = 16);
     SpaceObjectOctreeNode* getNeighNode(NodeDirection::_enum direction) const;
     SpaceObjectOctreeNode* findNode(Vector3 position, int size);
 

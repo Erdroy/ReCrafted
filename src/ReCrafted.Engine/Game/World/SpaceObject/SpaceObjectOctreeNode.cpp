@@ -93,35 +93,25 @@ void SpaceObjectOctreeNode::worker_generate(IVoxelMesher* mesher)
 	m_chunk->generate(mesher);
 }
 
-Array<SpaceObjectOctreeNode*> SpaceObjectOctreeNode::findIntersecting(BoundingBox& box)
+void SpaceObjectOctreeNode::findIntersecting(Array<SpaceObjectOctreeNode*>& nodes, BoundingBox& box, const int targetNodeSize)
 {
-    Array<SpaceObjectOctreeNode*> intersecting = {};
-
+    // iterate all children nodes
     for (var i = 0; i < 8; i++)
     {
         cvar node = m_childrenNodes[i];
 
+        if(node == nullptr)
+            continue;
+
         if (BoundingBox::intersects(node->m_bounds, box))
         {
-            // proceed to find lowest LoD
-            if(node->m_size == 1)
-            {
-                intersecting.add(node);
-            }
+            if(node->m_size == targetNodeSize)
+                nodes.add(node);
             else
-            {
-                var nodes = node->findIntersecting(box);
-
-                if(nodes.count() > 0u)
-                {
-                    for (var && intersectingNode : nodes)
-                        intersecting.add(intersectingNode);
-                }
-            }
+                node->findIntersecting(nodes, box);
         }
     }
 
-    return intersecting;
 }
 
 void SpaceObjectOctreeNode::populate()

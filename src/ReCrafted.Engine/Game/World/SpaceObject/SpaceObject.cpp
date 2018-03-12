@@ -3,6 +3,8 @@
 #include "SpaceObject.h"
 #include "Core/Math/Math.h"
 #include "Storage/VoxelStorage.h"
+#include "Core/Logger.h"
+#include "Common/Profiler/Profiler.h"
 
 void SpaceObject::init(SpaceObjectSettings& settings)
 {
@@ -63,7 +65,6 @@ void SpaceObject::modify(VoxelEditMode::_enum mode, VoxelEditShape::_enum shape,
     var bbSize = Vector3(size, size, size);
     var boundingBox = BoundingBox(position, bbSize);
     var toModify = m_octree->findIntersecting(boundingBox); // NOTE: this will give us all LoD levels, but we need only the LoD-0.
-
 
 }
 
