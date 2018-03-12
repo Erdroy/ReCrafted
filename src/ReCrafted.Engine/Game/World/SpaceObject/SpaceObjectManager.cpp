@@ -53,11 +53,19 @@ void SpaceObjectManager::worker_function()
 			continue;
 		}
 
-		// populate or depopulate the queued node
-		if(item.mode == ProcessMode::Populate)
-			item.node->worker_populate(mesher.get());
-		else
-			item.node->worker_depopulate(mesher.get());
+        // populate or depopulate the queued node
+	    switch (item.mode) { 
+	        case ProcessMode::Populate:
+                item.node->worker_populate(mesher.get()); 
+	        break;
+            case ProcessMode::Depopulate:
+                item.node->worker_depopulate(mesher.get());
+	        break;
+            case ProcessMode::Regenerate:
+                item.node->worker_refresh(mesher.get());
+	        break;
+            default:;
+	    }
 
 		// queue callback
 		m_calbacksLock.lock();

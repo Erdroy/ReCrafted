@@ -8,6 +8,8 @@
 // includes
 #include "Core/Math/Vector3.h"
 
+#include "Storage/VoxelChunkData.h"
+
 interface IVoxelMesher;
 class Mesh;
 class SpaceObject;
@@ -17,22 +19,14 @@ class SpaceObjectChunk
 {
 	friend class SpaceObjectManager;
 
-public:
-	static const int ChunkSize = 16; // 16 'cubes' on signle axis
-	static const int ChunkDataSize = ChunkSize + 1; // 17 corners on signle axis (cubes_count + 1)
-
 private:
 	SpaceObject* spaceObject = nullptr;
 	SpaceObjectOctreeNode* node = nullptr;
 
     int m_lod = 0;
     uint64_t m_id = 0u;
-
-	/**
-	 * \brief The normal from the SpaceObject center.
-	 */
-	Vector3 m_chunkNormal = {};
     Vector3 m_position = {};
+    Ptr<VoxelChunkData> m_chunkData = {};
 
 	Ptr<Mesh> m_mesh = nullptr;
     bool m_hasVoxels = false;
@@ -44,9 +38,14 @@ public:
 	void init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject);
 	void generate(IVoxelMesher* mesher);
 	void upload();
-	void update();
 	void draw();
 	void dispose();
+
+public:
+    Ptr<VoxelChunkData> getChunkData() const
+    {
+        return m_chunkData;
+    }
 
 public:
     static uint64_t calculateChunkId(const Vector3& position);

@@ -20,7 +20,8 @@ struct ProcessMode
 	enum _enum
 	{
 		Populate,
-		Depopulate
+		Depopulate,
+        Regenerate
 	};
 };
 

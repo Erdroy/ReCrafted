@@ -3,8 +3,9 @@
 #include "SpaceObject.h"
 #include "Core/Math/Math.h"
 #include "Storage/VoxelStorage.h"
-#include "Core/Logger.h"
 #include "Common/Profiler/Profiler.h"
+#include "SpaceObjectChunk.h"
+#include "Utilities/VoxelUtils.h"
 
 void SpaceObject::init(SpaceObjectSettings& settings)
 {
@@ -66,6 +67,36 @@ void SpaceObject::modify(VoxelEditMode::_enum mode, VoxelEditShape::_enum shape,
     var boundingBox = BoundingBox(position, bbSize);
     var toModify = m_octree->findIntersecting(boundingBox); // NOTE: this will give us all LoD levels, but we need only the LoD-0.
 
+    for(var && node : toModify)
+    {
+        cvar chunk = node->getChunk();
+        cvar chunkData = chunk->getChunkData();
+        cvar voxels = chunkData->getData();
+        cvar size = chunkData->getSize();
+
+        // modify the data (this is in-place edit, so voxels are modified as we modify the array)
+        for(var x = static_cast<int>(boundingBox.left() / size); x < boundingBox.right() / size; x ++)
+        {
+            for (var y = static_cast<int>(boundingBox.bottom() / size); y < boundingBox.top() / size; y++)
+            {
+                for (var z = static_cast<int>(boundingBox.back() / size); z < boundingBox.front() / size; z++)
+                {
+
+                    voxels[INDEX_3D(x, y, z, 17)] = 127;
+                }
+            }
+        }
+
+        m_voxelStorage->writeChunkData(chunkData);
+
+        // TODO: apply on all higher-LoD nodes
+
+        // write chunk as it is modified now
+        //m_voxelStorage->writeChunk(chunkData, node->get_position(), node->get_size());
+
+        // queue node to regenerate
+        node->regenerate();
+    }
 }
 
 SpaceObjectSettings& SpaceObject::getSettings()

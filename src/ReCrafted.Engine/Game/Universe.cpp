@@ -50,7 +50,7 @@ void Universe::update()
 		m_viewUpdateEnabled = !m_viewUpdateEnabled;
 	}
 
-    if(Input::isKeyDown(Key_Mouse2))
+    if(Input::isKeyDown(Key_Mouse0))
     {
         m_testObject1->modify(VoxelEditMode::Subtractive, VoxelEditShape::Sphere, Camera::getMainCamera()->get_position(), 5.0f);
     }

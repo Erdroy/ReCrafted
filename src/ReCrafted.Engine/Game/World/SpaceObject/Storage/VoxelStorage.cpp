@@ -33,12 +33,11 @@ sbyte VoxelStorage::sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, co
     return VOXEL_FROM_FLOAT(voxelValue);
 }
 
-sbyte* VoxelStorage::generateChunkFromCHM(const Vector3& position, const int lod)
+void VoxelStorage::generateChunkFromCHM(sbyte* voxelData, const Vector3& position, const int lod)
 {
     cvar chm = m_chm.get();
-    cvar dataSize = SpaceObjectChunk::ChunkDataSize;
+    cvar dataSize = VoxelChunkData::ChunkDataSize;
     cvar lod_f = static_cast<float>(lod);
-    cvar data = new sbyte[dataSize * dataSize * dataSize];
 
     // TODO: return nullptr where there is no any proper voxel surface (the chunk is completely above or under surface)
 
@@ -54,12 +53,10 @@ sbyte* VoxelStorage::generateChunkFromCHM(const Vector3& position, const int lod
                 cvar voxelPosition = position + offset * lod_f;
 
                 // tempoarary
-                data[index] = sdf_planet_generate(chm, spaceObject->m_position, voxelPosition, lod, spaceObject->m_settings.minSurfaceHeight, spaceObject->m_settings.hillsHeight);
+                voxelData[index] = sdf_planet_generate(chm, spaceObject->m_position, voxelPosition, lod, spaceObject->m_settings.minSurfaceHeight, spaceObject->m_settings.hillsHeight);
             }
         }
     }
-
-    return data;
 }
 
 void VoxelStorage::loadHeader()
@@ -107,25 +104,6 @@ void VoxelStorage::saveHeader()
     //m_vxhStream->read(m_vxhMap, sizeof(VoxelStorageHeader), length);
 }
 
-void VoxelStorage::writeChunk(sbyte* chunkData, const Vector3& position, int lod)
-{
-    ScopeLock(m_vxhLock);
-
-    cvar chunkId = SpaceObjectChunk::calculateChunkId(position);
-
-    if(m_voxelMap.contains(chunkId))
-    {
-        var pos = m_voxelMap[chunkId];
-        return;
-    }
-
-    m_voxelMap[chunkId] = lod;
-
-    // TODO: check if this chunk if saved, is so, get the offset
-    // TODO: if not saved, find free offset
-    // TODO: write chunk to given offset (and file)
-}
-
 void VoxelStorage::init(SpaceObjectSettings& settings)
 {
     this->settings = settings;
@@ -145,34 +123,79 @@ void VoxelStorage::init(SpaceObjectSettings& settings)
 
 void VoxelStorage::dispose()
 {
+    m_voxelChunks.clear();
+
     // release all resources
     SafeDisposeNN(m_vxhStream);
     SafeDelete(m_vxhStream);
     SafeDelete(m_vxh);
 }
 
-sbyte* VoxelStorage::getVoxelChunk(const Vector3& nodePosition, const int lod)
+Ptr<VoxelChunkData> VoxelStorage::createChunkData(Vector3& nodePosition, const int nodeSize)
+{
+    ScopeLock(m_voxelChunksLock);
+
+    cvar chunkId = SpaceObjectChunk::calculateChunkId(nodePosition);
+
+    if (m_voxelChunks.contains(chunkId))
+        return m_voxelChunks[chunkId];
+
+    var chunk = std::make_shared<VoxelChunkData>();
+    chunk->m_size = nodeSize;
+    chunk->m_id = chunkId;
+    chunk->m_position = nodePosition;
+
+    m_voxelChunks[chunkId] = chunk;
+
+    return chunk;
+}
+
+Ptr<VoxelChunkData> VoxelStorage::getChunkData(Vector3& nodePosition)
+{
+    ScopeLock(m_voxelChunksLock);
+
+    cvar chunkId = SpaceObjectChunk::calculateChunkId(nodePosition);
+
+    if (!m_voxelChunks.contains(chunkId))
+        return {};
+
+    return m_voxelChunks[chunkId];
+}
+
+void VoxelStorage::readChunkData(Ptr<VoxelChunkData> chunkData)
 {
     if (settings.generationType == GenerationType::PreGenerated)
     {
-        // TODO: pregens
-        Logger::logError("getVoxelsRow for pregens is not implemented!");
-        return nullptr;
+        // TODO: pregen support
+        Logger::logError("VoxelStorage::readChunkData for pre generated data is not implemented, yet!");
+        return;
     }
-    
-    cvar nodeSize = lod * float(SpaceObjectOctreeNode::MinimumNodeSize);
-    cvar positionOffset = Vector3::one() * nodeSize * 0.5f;
-    cvar chunkPosition = nodePosition - positionOffset; // lower-left-back corner
 
-    // TODO: check if this chunk is present in storage
+    // TODO: check if we have some data saved, if so, read from file
+
+    cvar nodePosition = chunkData->m_position;
+    cvar nodeSize = chunkData->m_size;
+    cvar positionOffset = Vector3::one() * float(nodeSize) * 0.5f;
+    cvar chunkPosition = nodePosition - positionOffset; // lower-left-back corner
+    cvar lod = chunkData->m_size / SpaceObjectOctreeNode::MinimumNodeSize;
 
     // generate chunk now using CHM
-    cvar voxelData = generateChunkFromCHM(chunkPosition, lod);
-    writeChunk(nullptr, nodePosition, lod);
-    // TODO: VoxelCache class (should store chunks for some time or all the time if chunk is still being used)
-    // TODO: check if this is cached (use start and lod) (and not modified by this time) and get if present
-    // TODO: if not - generate and modify
+    generateChunkFromCHM(chunkData->getData(), chunkPosition, lod);
 
-    // done
-    return voxelData;
+    // mark as loaded
+    chunkData->m_loaded = true;
+}
+
+void VoxelStorage::writeChunkData(Ptr<VoxelChunkData> chunkData)
+{
+    // TODO: check main thread
+    // TODO: chunk save system
+}
+
+void VoxelStorage::freeChunkData(Ptr<VoxelChunkData> chunkData)
+{
+    ScopeLock(m_voxelChunksLock);
+
+    cvar chunkId = chunkData->m_id;
+    
 }

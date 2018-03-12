@@ -7,16 +7,15 @@
 
 // includes
 #include "ReCrafted.h"
+
 #include "Core/Lock.h"
 #include "Core/Streams/FileStream.h"
+#include "Core/sparsepp/spp.h"
 #include "Game/World/SpaceObject/SpaceObject.h"
 
-#include "VoxelEditMode.h"
-#include "VoxelEditShape.h"
+#include "VoxelChunkData.h"
 #include "VoxelStorageHeader.h"
 #include "VoxelStorageChunkEntry.h"
-
-#include "Core/sparsepp/spp.h"
 
 struct Vector3;
 struct SpaceObjectSettings;
@@ -33,34 +32,28 @@ private:
 private:
     Ptr<VoxelCHM> m_chm = nullptr;
 
-    Lock m_vxhLock = {};
     FileStream* m_vxhStream = nullptr;
     VoxelStorageHeader* m_vxh = nullptr;
-    spp::sparse_hash_map<uint64_t, int> m_voxelMap;
+    spp::sparse_hash_map<uint64_t, Ptr<VoxelChunkData>> m_voxelChunks; // TODO: move into separate class and make some proper caching
+    Lock m_voxelChunksLock = {};
 
 private:
     FORCEINLINE static sbyte sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, const Vector3& position, const int lod, const float radius, const float hillsHeight);
-    FORCEINLINE sbyte* generateChunkFromCHM(const Vector3& position, int lod);
+    FORCEINLINE void VoxelStorage::generateChunkFromCHM(sbyte* voxelData, const Vector3& position, const int lod);
 
     void loadHeader();
     void saveHeader();
-
-public:
-    void writeChunk(sbyte* chunkData, const Vector3& position, int lod);
 
 public:
     void init(SpaceObjectSettings& settings);
     void dispose() override;
 
 public:
-
-    /**
-     * \brief Gets x (SpaceObjectChunk::ChunkDataSize^3) voxels with all modifications. 
-     * Uses CHM cache if needed. Automatically generates data if needed.
-     * \param nodePosition The octree node position.
-     * \param lod The LoD for voxels.
-     */
-    sbyte* getVoxelChunk(const Vector3& nodePosition, int lod);
+    Ptr<VoxelChunkData> createChunkData(Vector3& nodePosition, int nodeSize);
+    Ptr<VoxelChunkData> getChunkData(Vector3& nodePosition);
+    void readChunkData(Ptr<VoxelChunkData> chunkData);
+    void writeChunkData(Ptr<VoxelChunkData> chunkData);
+    void freeChunkData(Ptr<VoxelChunkData> chunkData);
 };
 
 #endif // VOXELSTORAGE_H

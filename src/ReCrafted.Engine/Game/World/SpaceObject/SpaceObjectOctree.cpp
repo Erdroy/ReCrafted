@@ -76,14 +76,6 @@ void SpaceObjectOctree::init()
 
 void SpaceObjectOctree::update()
 {
-	Profiler::beginProfile("SpaceObjectOctree::update");
-	// do we need fixed update rate here?
-
-    // update root nodes
-    for(var i = 0; i < m_rootNodesCount; i ++)
-	    m_rootNodes[i]->update();
-
-	Profiler::endProfile();
 }
 
 void SpaceObjectOctree::draw()

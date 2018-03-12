@@ -9,14 +9,14 @@
 #include "MSTables.hpp"
 
 #define ITERATE_CELLS_BEGIN(a, b, c)\
-for (auto a = 0; a < SpaceObjectChunk::ChunkSize; a++) \
-for (auto b = 0; b < SpaceObjectChunk::ChunkSize; b++) \
-for (auto c = 0; c < SpaceObjectChunk::ChunkSize; c++)
+for (auto a = 0; a < VoxelChunkData::ChunkSize; a++) \
+for (auto b = 0; b < VoxelChunkData::ChunkSize; b++) \
+for (auto c = 0; c < VoxelChunkData::ChunkSize; c++)
 
 #define ITERATE_CELLS_END()
 
-#define GET_CELL(_x, _y, _z) m_cells[INDEX_3D(_x, _y, _z, SpaceObjectChunk::ChunkSize)];
-#define IS_BORDER(_x, _y, _z) _x == 0 || _x == SpaceObjectChunk::ChunkSize-1 || _y == 0 || _y == SpaceObjectChunk::ChunkSize-1 || _z == 0 || _z == SpaceObjectChunk::ChunkSize-1
+#define GET_CELL(_x, _y, _z) m_cells[INDEX_3D(_x, _y, _z, VoxelChunkData::ChunkSize)];
+#define IS_BORDER(_x, _y, _z) _x == 0 || _x == VoxelChunkData::ChunkSize-1 || _y == 0 || _y == VoxelChunkData::ChunkSize-1 || _z == 0 || _z == VoxelChunkData::ChunkSize-1
 
 #define AXIS_FRONT		0
 #define AXIS_BACK		1
@@ -61,15 +61,15 @@ inline Vector3 GetEdge(Vector3 offset, sbyte* data, Vector3 cornerA, Vector3 cor
 	var offsetB = offset + cornerB;
 
 	// get data
-	var sampleA = VOXEL_TO_FLOAT(data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), SpaceObjectChunk::ChunkDataSize)]);
-	var sampleB = VOXEL_TO_FLOAT(data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), SpaceObjectChunk::ChunkDataSize)]);
+	var sampleA = VOXEL_TO_FLOAT(data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), VoxelChunkData::ChunkDataSize)]);
+	var sampleB = VOXEL_TO_FLOAT(data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), VoxelChunkData::ChunkDataSize)]);
 
 	return GetIntersection(offsetA, offsetB, sampleA, sampleB);
 }
 
 inline float GetVoxel(sbyte* data, const Vector3& point)
 {
-	return VOXEL_TO_FLOAT(data[INDEX_3D(int(point.x), int(point.y), int(point.z), SpaceObjectChunk::ChunkDataSize)]);
+	return VOXEL_TO_FLOAT(data[INDEX_3D(int(point.x), int(point.y), int(point.z), VoxelChunkData::ChunkDataSize)]);
 }
 
 void MCMesher::clean()
@@ -90,7 +90,7 @@ void MCMesher::generateCell(Cell* cell, int x, int y, int z, sbyte* data) const
 
 	for (auto i = 0; i < 8; i++) // TODO: unroll
 	{
-		if (data[INDEX_3D(x + MCCornerDeltasInt[i][0], y + MCCornerDeltasInt[i][1], z + MCCornerDeltasInt[i][2], SpaceObjectChunk::ChunkDataSize)] < ISO_LEVEL)
+		if (data[INDEX_3D(x + MCCornerDeltasInt[i][0], y + MCCornerDeltasInt[i][1], z + MCCornerDeltasInt[i][2], VoxelChunkData::ChunkDataSize)] < ISO_LEVEL)
 			caseIndex |= 1 << i;
 	}
 
@@ -240,7 +240,7 @@ void MCMesher::generateCells(sbyte* data, const Vector3& position, float lod, ui
 			{
 				// TODO: check if skirt can be generated (if `borders` has the axis flag)
 				// AXIS_FRONT
-				if (z == SpaceObjectChunk::ChunkSize - 1 && (borders & BORDER_FRONT) != 0)
+				if (z == VoxelChunkData::ChunkSize - 1 && (borders & BORDER_FRONT) != 0)
 				{
 					generateSkirt(cell, position, offset, lod, AXIS_FRONT, data);
 				}
@@ -255,12 +255,12 @@ void MCMesher::generateCells(sbyte* data, const Vector3& position, float lod, ui
 					generateSkirt(cell, position, offset, lod, AXIS_LEFT, data);
 				}
 				// AXIS_RIGHT
-				if (x == SpaceObjectChunk::ChunkSize - 1 && (borders & BORDER_RIGHT) != 0)
+				if (x == VoxelChunkData::ChunkSize - 1 && (borders & BORDER_RIGHT) != 0)
 				{
 					generateSkirt(cell, position, offset, lod, AXIS_RIGHT, data);
 				}
 				// AXIS_TOP
-				if (y == SpaceObjectChunk::ChunkSize - 1 && (borders & BORDER_TOP) != 0)
+				if (y == VoxelChunkData::ChunkSize - 1 && (borders & BORDER_TOP) != 0)
 				{
 					generateSkirt(cell, position, offset, lod, AXIS_TOP, data);
 				}

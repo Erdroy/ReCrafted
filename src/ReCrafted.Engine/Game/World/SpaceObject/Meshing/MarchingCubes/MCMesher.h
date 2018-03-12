@@ -41,7 +41,7 @@ private:
 	Array<Vector3> m_normals = {};
 	Array<Vector4> m_colors = {};
 
-	Cell m_cells[SpaceObjectChunk::ChunkSize * SpaceObjectChunk::ChunkSize * SpaceObjectChunk::ChunkSize] = {};
+	Cell m_cells[VoxelChunkData::ChunkSize * VoxelChunkData::ChunkSize * VoxelChunkData::ChunkSize] = {};
 
 public:
 	virtual ~MCMesher() {}

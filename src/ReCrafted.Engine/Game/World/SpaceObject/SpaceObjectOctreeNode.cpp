@@ -70,7 +70,6 @@ void SpaceObjectOctreeNode::worker_populate(IVoxelMesher* mesher)
 		m_childrenNodes[i]->parent = this;
 		m_childrenNodes[i]->root = root;
 
-
 		// set node id
 		m_childrenNodes[i]->m_childrenId = i;
 
@@ -91,6 +90,14 @@ void SpaceObjectOctreeNode::worker_generate(IVoxelMesher* mesher)
 	m_chunk = std::make_shared<SpaceObjectChunk>();
 	m_chunk->init(this, owner->spaceObject);
 	m_chunk->generate(mesher);
+}
+
+void SpaceObjectOctreeNode::worker_refresh(IVoxelMesher* mesher)
+{
+    SafeDispose(m_chunk);
+
+    // generate this chunk agains
+    worker_generate(mesher);
 }
 
 void SpaceObjectOctreeNode::findIntersecting(Array<SpaceObjectOctreeNode*>& nodes, BoundingBox& box, const int targetNodeSize)
@@ -133,40 +140,19 @@ void SpaceObjectOctreeNode::populate()
 
 void SpaceObjectOctreeNode::depopulate()
 {
-	if (m_processing)
+	if (m_processing || !m_populated || isChildrenProcessing())
 		return;
-
-	if (!m_populated)
-		return;
-
-	if (isChildrenProcessing())
-		return;
-
-	//m_processing = true;
 
 	// queue depopulate job
 	SpaceObjectManager::enqueue(this, ProcessMode::Depopulate, MakeDelegate(SpaceObjectOctreeNode::onDepopulate));
 }
 
-void SpaceObjectOctreeNode::update()
+void SpaceObjectOctreeNode::regenerate()
 {
-	// update children when there is any
-	if(m_populated)
-	{
-		for (auto i = 0; i < 8; i++)
-		{
-			auto node = m_childrenNodes[i];
+    if (m_processing || m_populated)
+        return;
 
-			if (node)
-				node->update();
-		}
-
-		return;
-	}
-
-	// update chunk if there is one
-	if (m_chunk)
-		m_chunk->update();
+    SpaceObjectManager::enqueue(this, ProcessMode::Regenerate, MakeDelegate(SpaceObjectOctreeNode::onCreate));
 }
 
 void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)

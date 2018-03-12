@@ -64,6 +64,7 @@ private:
 	void worker_populate(IVoxelMesher* mesher);
 	void worker_depopulate(IVoxelMesher* mesher);
 	void worker_generate(IVoxelMesher* mesher);
+    void worker_refresh(IVoxelMesher* mesher);
 
     void findIntersecting(Array<SpaceObjectOctreeNode*>& nodes, BoundingBox& box, const int targetNodeSize = 16);
     SpaceObjectOctreeNode* getNeighNode(NodeDirection::_enum direction) const;
@@ -73,12 +74,14 @@ public:
 	SpaceObjectOctreeNode() {}
 
 public:
-	void populate();
-	void depopulate();
-	void update();
 	void updateViews(Array<Vector3>& views);
 	void draw();
 	void dispose();
+
+public:
+    void populate();
+    void depopulate();
+    void regenerate();
 
 public:
 	void onCreate();
@@ -86,6 +89,12 @@ public:
 
 	void onPopulate();
 	void onDepopulate();
+
+public:
+    SpaceObjectChunk* getChunk() const
+    {
+        return m_chunk.get();
+    }
 
 public:
 	PROPERTY(Vector3, position) = {}; // NOTE: center position

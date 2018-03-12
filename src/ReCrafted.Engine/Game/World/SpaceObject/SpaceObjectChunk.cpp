@@ -43,9 +43,11 @@ void SpaceObjectChunk::init(SpaceObjectOctreeNode* node, SpaceObject* spaceObjec
 	this->spaceObject = spaceObject;
 	this->node = node;
 
-    // calculate chunk normal
-	m_chunkNormal = spaceObject->get_position() - node->get_position();
-	m_chunkNormal.normalize();
+    var storage = spaceObject->getStorage();
+
+    // create chunk data
+    var nodePosition = node->get_position();
+    m_chunkData = storage->createChunkData(nodePosition, node->get_size());
 
     // calculate chunk position (origin)
     cvar positionOffset = Vector3::one() * static_cast<float>(node->get_size()) * 0.5f;
@@ -64,24 +66,20 @@ void SpaceObjectChunk::generate(IVoxelMesher* mesher)
 
 	m_mesh = Mesh::createMesh();
 
-    // get voxel chunk
-    cvar voxelData = spaceObject->getStorage()->getVoxelChunk(node->get_position(), m_lod);
-
-    if(voxelData == nullptr)
-    {
-        m_hasVoxels = false;
-        return;
-    }
-
-    m_hasVoxels = true;
-
 	// get which directions this chunk must get the bordering skirts
 	cvar borders = getLodBorders();
+    cvar voxelData = m_chunkData->getData();
+    var storage = spaceObject->getStorage();
+
+    // try to read chunk data (if not read actually)
+    if(!m_chunkData->isLoaded())
+        storage->readChunkData(m_chunkData);
 
 	// generate mesh
     mesher->generate(m_position, m_lod, borders, m_mesh, voxelData);
 
-    SafeDeleteArrayNN(voxelData);
+    // TODO: check if generated voxel data has any visible surface
+    m_hasVoxels = true;
 }
 
 void SpaceObjectChunk::upload()
@@ -89,11 +87,6 @@ void SpaceObjectChunk::upload()
 	// upload changes
 	if(m_mesh && m_mesh->canUpload())
 		m_mesh->upload();
-}
-
-void SpaceObjectChunk::update()
-{
-	
 }
 
 void SpaceObjectChunk::draw()
@@ -106,6 +99,10 @@ void SpaceObjectChunk::draw()
 
 void SpaceObjectChunk::dispose()
 {
+    // dispose chunk
+    var storage = spaceObject->getStorage();
+    storage->freeChunkData(m_chunkData);
+
 	SafeDispose(m_mesh);
 }
 
