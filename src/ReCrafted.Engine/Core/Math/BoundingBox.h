@@ -103,7 +103,21 @@ public:
 	/// </summary>
 	FORCEINLINE static bool intersects(BoundingBox& a, BoundingBox& b) 
 	{
-		return (a.left() < b.right() && a.right() > b.left() && a.top() < b.bottom() && a.bottom() > b.top() && a.back() < b.front() && a.front() > b.back());
+        cvar amin = a.minimum();
+        cvar bmin = b.minimum();
+        cvar amax = a.maximum();
+        cvar bmax = b.maximum();
+
+        if (amin.x > bmax.x || bmin.x > amax.x)
+            return false;
+
+        if (amin.y > bmax.y || bmin.y > amax.y)
+            return false;
+
+        if (amin.z > bmax.z || bmin.z > amax.z)
+            return false;
+
+        return true;
 	}
 
 	/// <summary>
