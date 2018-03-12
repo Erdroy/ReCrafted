@@ -63,7 +63,7 @@ void SpaceObject::modify(VoxelEditMode::_enum mode, VoxelEditShape::_enum shape,
     // - how to apply this to all lod's?
     // - how to store/save it
 
-    var bbSize = Vector3(size, size, size);
+    var bbSize = Vector3(size, size, size) * 2.0f;
     var boundingBox = BoundingBox(position, bbSize);
     var toModify = m_octree->findIntersecting(boundingBox); // NOTE: this will give us all LoD levels, but we need only the LoD-0.
 
@@ -72,27 +72,31 @@ void SpaceObject::modify(VoxelEditMode::_enum mode, VoxelEditShape::_enum shape,
         cvar chunk = node->getChunk();
         cvar chunkData = chunk->getChunkData();
         cvar voxels = chunkData->getData();
-        cvar size = chunkData->getSize();
 
-        // modify the data (this is in-place edit, so voxels are modified as we modify the array)
-        for(var x = static_cast<int>(boundingBox.left() / size); x < boundingBox.right() / size; x ++)
+        for (var x = 0; x < 17; x++)
+        for (var y = 0; y < 17; y++)
+        for (var z = 0; z < 17; z++)
         {
-            for (var y = static_cast<int>(boundingBox.bottom() / size); y < boundingBox.top() / size; y++)
+            var point = Vector3(float(x), float(y), float(z)) + chunkData->getChunkPosition();
+            
+            if(shape == VoxelEditShape::Cube)
             {
-                for (var z = static_cast<int>(boundingBox.back() / size); z < boundingBox.front() / size; z++)
+                if (BoundingBox::contains(boundingBox, point))
                 {
-
-                    voxels[INDEX_3D(x, y, z, 17)] = 127;
+                    voxels[INDEX_3D(x, y, z, 17)] = VOXEL_FROM_FLOAT(1.0f);
+                }
+            }
+            else
+            {
+                cvar distance = Vector3::distance(position, point);
+                if (distance <= size)
+                {
+                    voxels[INDEX_3D(x, y, z, 17)] = VOXEL_FROM_FLOAT(1.0f);
                 }
             }
         }
 
-        m_voxelStorage->writeChunkData(chunkData);
-
         // TODO: apply on all higher-LoD nodes
-
-        // write chunk as it is modified now
-        //m_voxelStorage->writeChunk(chunkData, node->get_position(), node->get_size());
 
         // queue node to regenerate
         node->regenerate();
