@@ -99,10 +99,6 @@ void SpaceObjectChunk::draw()
 
 void SpaceObjectChunk::dispose()
 {
-    // dispose chunk
-    var storage = spaceObject->getStorage();
-    storage->freeChunkData(m_chunkData);
-
 	SafeDispose(m_mesh);
 }
 

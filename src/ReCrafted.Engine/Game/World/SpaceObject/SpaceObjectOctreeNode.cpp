@@ -30,7 +30,12 @@ bool SpaceObjectOctreeNode::isChildrenProcessing() const
 	if (m_populated) {
 		for (auto i = 0; i < 8; i++)
 		{
-			if (m_childrenNodes[i]->isChildrenProcessing())
+            cvar node = m_childrenNodes[i];
+			
+            if (!node)
+                continue;
+		    
+		    if (node->isChildrenProcessing())
 				return true;
 		}
 	}
@@ -60,21 +65,21 @@ void SpaceObjectOctreeNode::worker_populate(IVoxelMesher* mesher)
 		auto position = m_position + ChildrenNodeOffsets[i] * static_cast<float>(childrenSize);
 
 		// construct node
-		m_childrenNodes[i] = new SpaceObjectOctreeNode();
-		m_childrenNodes[i]->m_position = position;
-		m_childrenNodes[i]->m_size = childrenSize;
-        m_childrenNodes[i]->m_bounds = BoundingBox(position, boundsSize);
+		cvar childNode = m_childrenNodes[i] = new SpaceObjectOctreeNode();
+        childNode->m_position = position;
+        childNode->m_size = childrenSize;
+        childNode->m_bounds = BoundingBox(position, boundsSize);
 
 		// set owner, parent and root
-		m_childrenNodes[i]->owner = owner;
-		m_childrenNodes[i]->parent = this;
-		m_childrenNodes[i]->root = root;
+        childNode->owner = owner;
+        childNode->parent = this;
+        childNode->root = root;
 
 		// set node id
-		m_childrenNodes[i]->m_childrenId = i;
+        childNode->m_childrenId = i;
 
-		// call event
-		m_childrenNodes[i]->worker_generate(mesher);
+		// generate chunk
+        childNode->createChunk(mesher);
 	}
 }
 
@@ -84,20 +89,21 @@ void SpaceObjectOctreeNode::worker_depopulate(IVoxelMesher* mesher)
 	
 }
 
-void SpaceObjectOctreeNode::worker_generate(IVoxelMesher* mesher)
+void SpaceObjectOctreeNode::createChunk(IVoxelMesher* mesher)
 {
 	// create chunk
-	m_chunk = std::make_shared<SpaceObjectChunk>();
-	m_chunk->init(this, owner->spaceObject);
-	m_chunk->generate(mesher);
+	var chunk = std::make_shared<SpaceObjectChunk>();
+    chunk->init(this, owner->spaceObject);
+    chunk->generate(mesher);
+
+    // set new chunk for upload
+    m_newChunk = chunk;
 }
 
 void SpaceObjectOctreeNode::worker_refresh(IVoxelMesher* mesher)
 {
-    SafeDispose(m_chunk);
-
     // generate this chunk agains
-    worker_generate(mesher);
+    createChunk(mesher);
 }
 
 void SpaceObjectOctreeNode::findIntersecting(Array<SpaceObjectOctreeNode*>& nodes, BoundingBox& box, const int targetNodeSize)
@@ -107,15 +113,24 @@ void SpaceObjectOctreeNode::findIntersecting(Array<SpaceObjectOctreeNode*>& node
     {
         cvar node = m_childrenNodes[i];
 
-        if(node == nullptr)
+        if(!node)
             continue;
 
         if (BoundingBox::intersects(node->m_bounds, box))
         {
-            if(node->m_size == targetNodeSize)
+            if (targetNodeSize == 0)
+            {
+                node->findIntersecting(nodes, box, targetNodeSize);
                 nodes.add(node);
+            }
+            else if(node->m_size == targetNodeSize)
+            {
+                nodes.add(node);
+            }
             else
-                node->findIntersecting(nodes, box);
+            {
+                node->findIntersecting(nodes, box, targetNodeSize);
+            }
         }
     }
 
@@ -149,10 +164,27 @@ void SpaceObjectOctreeNode::depopulate()
 
 void SpaceObjectOctreeNode::regenerate()
 {
-    if (m_processing || m_populated)
+    if (m_processing)
         return;
 
     SpaceObjectManager::enqueue(this, ProcessMode::Regenerate, MakeDelegate(SpaceObjectOctreeNode::onCreate));
+}
+
+void SpaceObjectOctreeNode::update()
+{
+    if(m_populated)
+    {
+        for (auto i = 0; i < 8; i++)
+        {
+            auto node = m_childrenNodes[i];
+
+            if (node)
+                node->update();
+        }
+        return;
+    }
+
+    onUpdate();
 }
 
 void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
@@ -281,14 +313,12 @@ void SpaceObjectOctreeNode::draw()
 
 void SpaceObjectOctreeNode::dispose()
 {
-	if (!m_populated)
-	{
-		// draw chunk if exists
-		if(m_chunk)
-			m_chunk->dispose();
+    // draw chunk if exists
+    if (m_chunk)
+        m_chunk->dispose();
 
+	if (!m_populated)
 		return;
-	}
 
 	for (auto i = 0; i < 8; i++)
 	{
@@ -354,12 +384,23 @@ SpaceObjectOctreeNode* SpaceObjectOctreeNode::findNode(Vector3 position, int siz
 	return node->findNode(position, size);
 }
 
+void SpaceObjectOctreeNode::onUpdate()
+{
+    // upload the (new) chunk
+
+    if (m_newChunk)
+    {
+        if (m_chunk)
+            SafeDispose(m_chunk);
+
+        m_chunk = m_newChunk;
+        m_chunk->upload();
+        m_newChunk = nullptr;
+    }
+}
+
 void SpaceObjectOctreeNode::onCreate()
 {
-	// upload the chunk
-	if(m_chunk)
-		m_chunk->upload();
-
 }
 
 void SpaceObjectOctreeNode::onDestroy()
@@ -374,7 +415,12 @@ void SpaceObjectOctreeNode::onPopulate()
 	m_populated = true;
 
 	for(var i = 0; i < 8; i ++)
-		m_childrenNodes[i]->onCreate();
+	{
+        cvar node = m_childrenNodes[i];
+
+        if(node)
+            node->onCreate();
+	}
 
 	//onDestroy();
 }

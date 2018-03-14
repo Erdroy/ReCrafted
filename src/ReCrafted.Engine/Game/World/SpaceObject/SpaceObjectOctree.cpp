@@ -76,6 +76,10 @@ void SpaceObjectOctree::init()
 
 void SpaceObjectOctree::update()
 {
+    Profiler::beginProfile("SpaceObjectOctree::update");
+    for (var i = 0; i < m_rootNodesCount; i++)
+        m_rootNodes[i]->update();
+    Profiler::endProfile();
 }
 
 void SpaceObjectOctree::draw()
@@ -121,9 +125,11 @@ SpaceObjectOctreeNode* SpaceObjectOctree::findNode(Vector3 position, int size) c
     return nullptr;
 }
 
-Array<SpaceObjectOctreeNode*> SpaceObjectOctree::findIntersecting(BoundingBox& box) const
+Array<SpaceObjectOctreeNode*> SpaceObjectOctree::findIntersecting(BoundingBox& box, bool all) const
 {
     Array<SpaceObjectOctreeNode*> intersecting = {};
+
+    cvar targetSize = all ? 0 : 16;
 
     // find all intersecting nodes
     // iterate all root nodes
@@ -133,7 +139,10 @@ Array<SpaceObjectOctreeNode*> SpaceObjectOctree::findIntersecting(BoundingBox& b
 
         // check if this node intersects with given bounding box, if so, proceed further
         if(BoundingBox::intersects(node->m_bounds, box))
-            node->findIntersecting(intersecting, box);
+        {
+            node->findIntersecting(intersecting, box, targetSize);
+            intersecting.add(node);
+        }
     }
 
     return intersecting;

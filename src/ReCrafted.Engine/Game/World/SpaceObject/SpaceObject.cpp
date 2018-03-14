@@ -65,20 +65,27 @@ void SpaceObject::modify(VoxelEditMode::_enum mode, VoxelEditShape::_enum shape,
 
     var bbSize = Vector3(size, size, size) * 2.0f;
     var boundingBox = BoundingBox(position, bbSize);
-    var toModify = m_octree->findIntersecting(boundingBox); // NOTE: this will give us all LoD levels, but we need only the LoD-0.
+    var nodes = m_octree->findIntersecting(boundingBox, true); // NOTE: this will give us all LoD levels, but we need only the LoD-0.
 
-    for(var && node : toModify)
+    for(var && node : nodes)
     {
         cvar chunk = node->getChunk();
+
+        if (!chunk)
+            continue;
+
         cvar chunkData = chunk->getChunkData();
         cvar voxels = chunkData->getData();
+        cvar chunkScale = static_cast<float>(chunkData->getSize()) / static_cast<float>(VoxelChunkData::ChunkSize);
 
         for (var x = 0; x < 17; x++)
         for (var y = 0; y < 17; y++)
         for (var z = 0; z < 17; z++)
         {
-            var point = Vector3(float(x), float(y), float(z)) + chunkData->getChunkPosition();
+            var point = Vector3(float(x), float(y), float(z)) * chunkScale + chunkData->getChunkPosition();
             
+            // TODO: cleanup, lol
+
             if(shape == VoxelEditShape::Cube)
             {
                 if (BoundingBox::contains(boundingBox, point))
@@ -89,16 +96,19 @@ void SpaceObject::modify(VoxelEditMode::_enum mode, VoxelEditShape::_enum shape,
             else
             {
                 cvar distance = Vector3::distance(position, point);
-                if (distance <= size)
+                if (distance <= size + 0.5f)
                 {
-                    voxels[INDEX_3D(x, y, z, 17)] = VOXEL_FROM_FLOAT(1.0f);
+                    var value = size - distance;
+                    var currentValue = voxels[INDEX_3D(x, y, z, 17)];
+                    var newValue = VOXEL_FROM_FLOAT(value);
+
+                    if(newValue > currentValue)
+                        voxels[INDEX_3D(x, y, z, 17)] = newValue;
                 }
             }
         }
 
-        // TODO: apply on all higher-LoD nodes
-
-        // queue node to regenerate
+        // queue current node to regenerate
         node->regenerate();
     }
 }

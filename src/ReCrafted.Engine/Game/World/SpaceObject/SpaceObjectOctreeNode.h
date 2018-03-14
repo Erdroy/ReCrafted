@@ -48,6 +48,7 @@ private:
 
     SpaceObjectOctreeNode* m_childrenNodes[8] = {};
 	Ptr<SpaceObjectChunk> m_chunk = nullptr;
+    Ptr<SpaceObjectChunk> m_newChunk = nullptr;
 
     bool m_populated = false;
     bool m_processing = false;
@@ -61,9 +62,10 @@ private:
 	bool isChildrenProcessing() const;
 	void markProcessing();
 
+    void createChunk(IVoxelMesher* mesher);
+
 	void worker_populate(IVoxelMesher* mesher);
 	void worker_depopulate(IVoxelMesher* mesher);
-	void worker_generate(IVoxelMesher* mesher);
     void worker_refresh(IVoxelMesher* mesher);
 
     void findIntersecting(Array<SpaceObjectOctreeNode*>& nodes, BoundingBox& box, const int targetNodeSize = 16);
@@ -74,6 +76,7 @@ public:
 	SpaceObjectOctreeNode() {}
 
 public:
+    void update();
 	void updateViews(Array<Vector3>& views);
 	void draw();
 	void dispose();
@@ -84,6 +87,8 @@ public:
     void regenerate();
 
 public:
+    void onUpdate();
+
 	void onCreate();
 	void onDestroy();
 
