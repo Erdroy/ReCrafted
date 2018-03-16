@@ -58,7 +58,7 @@ void Universe::update()
     if (Input::isKeyDown(Key_Mouse2))
     {
         var modPosition = Camera::getMainCamera()->get_position() + Camera::getMainCamera()->get_forward() * 5.0f;
-        m_testObject1->modify(VoxelEditMode::Subtractive, VoxelEditShape::Cube, modPosition, 1.0f);
+        m_testObject1->modify(VoxelEditMode::Additive, VoxelEditShape::Cube, modPosition, 1.0f);
     }
 
 	if (m_viewUpdateEnabled) 
