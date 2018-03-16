@@ -25,8 +25,8 @@ private:
 	bgfx::VertexBufferHandle m_vertexBuffer = {};
 	bgfx::IndexBufferHandle m_indexBuffer = {};
 
-	const bgfx::Memory* m_vertexBufferData = nullptr;
-	const bgfx::Memory* m_indexBufferData = nullptr;
+    bgfxMemoryEx m_vertexBufferData = {};
+    bgfxMemoryEx m_indexBufferData = {};
 
 	Vector3* m_vertices = nullptr;
 	Vector2* m_uvs = nullptr;
