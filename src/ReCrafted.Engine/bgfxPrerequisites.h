@@ -12,4 +12,24 @@
 #include <bgfx/platform.h>
 #include <math.h>
 
+struct bgfxMemoryEx
+{
+public:
+    char* memory = nullptr;
+    size_t size = 0u;
+
+public:
+    const bgfx::Memory* getMemory();
+    void release();
+
+public:
+    static bgfxMemoryEx alloc(size_t size)
+    {
+        bgfxMemoryEx mem;
+        mem.memory = new char[size];
+        mem.size = size;
+        return mem;
+    }
+};
+
 #endif // BGFXPREREQUISITES_H

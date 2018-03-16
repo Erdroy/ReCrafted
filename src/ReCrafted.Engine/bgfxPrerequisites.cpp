@@ -14,3 +14,21 @@
 #pragma comment (lib, "bimgRelease.lib")
 #pragma comment (lib, "bimg_decodeRelease.lib")
 #endif
+
+void releasebgfxmemory(void* _ptr, void* _userData)
+{
+    const auto memory = static_cast<bgfxMemoryEx*>(_userData);
+
+    if (memory->memory)
+        delete[] memory->memory;
+}
+
+const bgfx::Memory* bgfxMemoryEx::getMemory()
+{
+    return bgfx::makeRef(memory, size, releasebgfxmemory, this);
+}
+
+void bgfxMemoryEx::release()
+{
+    releasebgfxmemory(nullptr, this);
+}
