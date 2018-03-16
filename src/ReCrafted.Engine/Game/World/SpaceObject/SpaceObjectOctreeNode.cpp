@@ -54,6 +54,17 @@ void SpaceObjectOctreeNode::markProcessing()
 		m_childrenNodes[i]->markProcessing();
 }
 
+void SpaceObjectOctreeNode::createChunk(IVoxelMesher* mesher)
+{
+    // create chunk
+    var chunk = std::make_shared<SpaceObjectChunk>();
+    chunk->init(this, owner->spaceObject);
+    chunk->generate(mesher);
+
+    // set new chunk for upload
+    m_newChunk = chunk;
+}
+
 void SpaceObjectOctreeNode::worker_populate(IVoxelMesher* mesher)
 {
 	// WARNING: this function is called on WORKER THREAD!
@@ -87,17 +98,6 @@ void SpaceObjectOctreeNode::worker_depopulate(IVoxelMesher* mesher)
 {
 	// WARNING: this function is called on WORKER THREAD!
 	
-}
-
-void SpaceObjectOctreeNode::createChunk(IVoxelMesher* mesher)
-{
-	// create chunk
-	var chunk = std::make_shared<SpaceObjectChunk>();
-    chunk->init(this, owner->spaceObject);
-    chunk->generate(mesher);
-
-    // set new chunk for upload
-    m_newChunk = chunk;
 }
 
 void SpaceObjectOctreeNode::worker_refresh(IVoxelMesher* mesher)
@@ -138,13 +138,7 @@ void SpaceObjectOctreeNode::findIntersecting(Array<SpaceObjectOctreeNode*>& node
 
 void SpaceObjectOctreeNode::populate()
 {
-	if (m_processing)
-		return;
-
-	if (m_populated)
-		return;
-
-	if (m_size <= MinimumNodeSize)
+	if (m_processing || m_populated || m_size <= MinimumNodeSize)
 		return;
 
 	m_processing = true;
@@ -167,6 +161,7 @@ void SpaceObjectOctreeNode::regenerate()
     if (m_processing)
         return;
 
+    // queue regenerate job
     SpaceObjectManager::enqueue(this, ProcessMode::Regenerate, MakeDelegate(SpaceObjectOctreeNode::onCreate));
 }
 

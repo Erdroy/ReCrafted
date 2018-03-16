@@ -29,7 +29,7 @@ private:
     Ptr<VoxelChunkData> m_chunkData = {};
 
 	Ptr<Mesh> m_mesh = nullptr;
-    bool m_hasVoxels = false;
+    bool m_hasSurface = false;
 
 private:
 	uint8_t getLodBorders();

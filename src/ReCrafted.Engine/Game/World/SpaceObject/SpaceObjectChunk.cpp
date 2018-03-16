@@ -6,9 +6,9 @@
 #include "SpaceObject.h"
 #include "Meshing/MarchingCubes/MCMesher.h"
 #include "Graphics/Mesh.h"
+#include "Graphics/Camera.h"
 #include "Graphics/Renderer/Renderer.h"
 #include "Storage/VoxelStorage.h"
-#include "Graphics/Camera.h"
 
 uint8_t SpaceObjectChunk::getLodBorders()
 {
@@ -38,7 +38,7 @@ uint8_t SpaceObjectChunk::getLodBorders()
 	return 0xFF;
 }
 
-void SpaceObjectChunk::init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject)
+void SpaceObjectChunk::init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject) // WARNING: this function is called on WORKER THREAD!
 {
 	this->spaceObject = spaceObject;
 	this->node = node;
@@ -58,11 +58,15 @@ void SpaceObjectChunk::init(SpaceObjectOctreeNode* node, SpaceObject* spaceObjec
 
     // calculate id
     m_id = calculateChunkId(node->get_position());
+
+    // TODO: check if chunk has any visible surface
+    m_hasSurface = true;
 }
 
-void SpaceObjectChunk::generate(IVoxelMesher* mesher)
+void SpaceObjectChunk::generate(IVoxelMesher* mesher) // WARNING: this function is called on WORKER THREAD!
 {
-	// WARNING: this function is called on WORKER THREAD!
+    if (!m_hasSurface)
+        return;
 
 	m_mesh = Mesh::createMesh();
 
@@ -77,9 +81,6 @@ void SpaceObjectChunk::generate(IVoxelMesher* mesher)
 
 	// generate mesh
     mesher->generate(m_position, m_lod, borders, m_mesh, voxelData);
-
-    // TODO: check if generated voxel data has any visible surface
-    m_hasVoxels = true;
 }
 
 void SpaceObjectChunk::upload()
@@ -91,7 +92,7 @@ void SpaceObjectChunk::upload()
 
 void SpaceObjectChunk::draw()
 {
-	if (!m_mesh || !m_mesh->isUploaded() || !m_hasVoxels)
+	if (!m_mesh || !m_mesh->isUploaded() || !m_hasSurface)
 		return;
 
 	Renderer::getInstance()->draw(m_mesh);
