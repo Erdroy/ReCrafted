@@ -161,6 +161,8 @@ void SpaceObjectOctreeNode::regenerate()
     if (m_processing)
         return;
 
+    m_processing = true;
+
     // queue regenerate job
     SpaceObjectManager::enqueue(this, ProcessMode::Regenerate, MakeDelegate(SpaceObjectOctreeNode::onCreate));
 }
@@ -383,6 +385,12 @@ void SpaceObjectOctreeNode::onUpdate()
 {
     // upload the (new) chunk
 
+}
+
+void SpaceObjectOctreeNode::onCreate()
+{
+    m_processing = false;
+
     if (m_newChunk)
     {
         if (m_chunk)
@@ -392,10 +400,6 @@ void SpaceObjectOctreeNode::onUpdate()
         m_chunk->upload();
         m_newChunk = nullptr;
     }
-}
-
-void SpaceObjectOctreeNode::onCreate()
-{
 }
 
 void SpaceObjectOctreeNode::onDestroy()
