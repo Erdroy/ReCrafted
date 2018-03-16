@@ -17,15 +17,12 @@
 
 void releasebgfxmemory(void* _ptr, void* _userData)
 {
-    const auto memory = static_cast<bgfxMemoryEx*>(_userData);
-
-    if (memory->memory)
-        delete[] memory->memory;
+    delete[] static_cast<char*>(_ptr);
 }
 
-const bgfx::Memory* bgfxMemoryEx::getMemory()
+const bgfx::Memory* bgfxMemoryEx::getMemory() const
 {
-    return bgfx::makeRef(memory, size, releasebgfxmemory, this);
+    return bgfx::makeRef(memory, static_cast<uint32_t>(size), releasebgfxmemory);
 }
 
 void bgfxMemoryEx::release()

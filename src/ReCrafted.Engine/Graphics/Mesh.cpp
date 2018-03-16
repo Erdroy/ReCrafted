@@ -202,16 +202,10 @@ void Mesh::upload()
 		return;
 
     if (m_vertexBuffer.idx != 0)
-    {
         bgfx::destroy(m_vertexBuffer);
-        m_vertexBuffer.idx = 0;
-    }
 
     if (m_indexBuffer.idx != 0)
-    {
         bgfx::destroy(m_indexBuffer);
-        m_indexBuffer.idx = 0;
-    }
 
 	m_vertexBuffer = bgfx::createVertexBuffer(m_vertexBufferData.getMemory(), m_vertexdecl);
 	m_indexBuffer = bgfx::createIndexBuffer(m_indexBufferData.getMemory(), BGFX_BUFFER_INDEX32);

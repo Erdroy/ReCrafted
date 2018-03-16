@@ -19,7 +19,7 @@ public:
     size_t size = 0u;
 
 public:
-    const bgfx::Memory* getMemory();
+    const bgfx::Memory* getMemory() const;
     void release();
 
 public:
