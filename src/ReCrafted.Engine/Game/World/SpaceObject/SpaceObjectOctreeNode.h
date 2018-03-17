@@ -48,10 +48,10 @@ private:
 
     SpaceObjectOctreeNode* m_childrenNodes[8] = {};
 	Ptr<SpaceObjectChunk> m_chunk = nullptr;
-    Ptr<SpaceObjectChunk> m_newChunk = nullptr;
 
     bool m_populated = false;
     bool m_processing = false;
+    bool m_rebuilding = false;
     bool m_isRoot = false;
     int m_childrenId = 0;
 
@@ -66,7 +66,7 @@ private:
 
 	void worker_populate(IVoxelMesher* mesher);
 	void worker_depopulate(IVoxelMesher* mesher);
-    void worker_refresh(IVoxelMesher* mesher);
+    void worker_rebuild(IVoxelMesher* mesher);
 
     void findIntersecting(Array<SpaceObjectOctreeNode*>& nodes, BoundingBox& box, const int targetNodeSize = 16);
     SpaceObjectOctreeNode* getNeighNode(NodeDirection::_enum direction) const;
@@ -84,12 +84,13 @@ public:
 public:
     void populate();
     void depopulate();
-    void regenerate();
+    void rebuild();
 
 public:
     void onUpdate();
 
 	void onCreate();
+	void onRebuild();
 	void onDestroy();
 
 	void onPopulate();

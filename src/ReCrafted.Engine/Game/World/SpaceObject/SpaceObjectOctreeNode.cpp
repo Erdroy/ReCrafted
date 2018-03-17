@@ -57,18 +57,13 @@ void SpaceObjectOctreeNode::markProcessing()
 void SpaceObjectOctreeNode::createChunk(IVoxelMesher* mesher)
 {
     // create chunk
-    var chunk = std::make_shared<SpaceObjectChunk>();
-    chunk->init(this, owner->spaceObject);
-    chunk->generate(mesher);
-
-    // set new chunk for upload
-    m_newChunk = chunk;
+    m_chunk = std::make_shared<SpaceObjectChunk>();
+    m_chunk->init(this, owner->spaceObject);
+    m_chunk->generate(mesher);
 }
 
-void SpaceObjectOctreeNode::worker_populate(IVoxelMesher* mesher)
+void SpaceObjectOctreeNode::worker_populate(IVoxelMesher* mesher) // WARNING: this function is called on WORKER THREAD!
 {
-	// WARNING: this function is called on WORKER THREAD!
-
 	cvar childrenSize = m_size / 2;
     var boundsSize = Vector3::one() * static_cast<float>(childrenSize); 
     for (auto i = 0; i < 8; i++)
@@ -94,16 +89,15 @@ void SpaceObjectOctreeNode::worker_populate(IVoxelMesher* mesher)
 	}
 }
 
-void SpaceObjectOctreeNode::worker_depopulate(IVoxelMesher* mesher)
+void SpaceObjectOctreeNode::worker_depopulate(IVoxelMesher* mesher) // WARNING: this function is called on WORKER THREAD!
 {
-	// WARNING: this function is called on WORKER THREAD!
 	
 }
 
-void SpaceObjectOctreeNode::worker_refresh(IVoxelMesher* mesher)
+void SpaceObjectOctreeNode::worker_rebuild(IVoxelMesher* mesher) // WARNING: this function is called on WORKER THREAD!
 {
-    // generate this chunk agains
-    createChunk(mesher);
+    // rebuild chunks mesh
+    m_chunk->rebuild(mesher);
 }
 
 void SpaceObjectOctreeNode::findIntersecting(Array<SpaceObjectOctreeNode*>& nodes, BoundingBox& box, const int targetNodeSize)
@@ -156,15 +150,15 @@ void SpaceObjectOctreeNode::depopulate()
 	SpaceObjectManager::enqueue(this, ProcessMode::Depopulate, MakeDelegate(SpaceObjectOctreeNode::onDepopulate));
 }
 
-void SpaceObjectOctreeNode::regenerate()
+void SpaceObjectOctreeNode::rebuild()
 {
-    if (m_processing)
+    if (m_processing || m_rebuilding)
         return;
 
-    m_processing = true;
-
-    // queue regenerate job
-    SpaceObjectManager::enqueue(this, ProcessMode::Regenerate, MakeDelegate(SpaceObjectOctreeNode::onCreate));
+    m_rebuilding = true;
+    
+    // queue rebuild job
+    SpaceObjectManager::enqueue(this, ProcessMode::Rebuild, MakeDelegate(SpaceObjectOctreeNode::onRebuild));
 }
 
 void SpaceObjectOctreeNode::update()
@@ -383,23 +377,24 @@ SpaceObjectOctreeNode* SpaceObjectOctreeNode::findNode(Vector3 position, int siz
 
 void SpaceObjectOctreeNode::onUpdate()
 {
-    // upload the (new) chunk
-
 }
 
 void SpaceObjectOctreeNode::onCreate()
 {
     m_processing = false;
 
-    if (m_newChunk)
-    {
-        if (m_chunk)
-            SafeDispose(m_chunk);
-
-        m_chunk = m_newChunk;
+    // upload chunk if needed
+    if (m_chunk->needsUpload())
         m_chunk->upload();
-        m_newChunk = nullptr;
-    }
+}
+
+void SpaceObjectOctreeNode::onRebuild()
+{
+    m_rebuilding = false;
+
+    // upload chunk if needed
+    if (m_chunk->needsUpload())
+        m_chunk->upload();
 }
 
 void SpaceObjectOctreeNode::onDestroy()

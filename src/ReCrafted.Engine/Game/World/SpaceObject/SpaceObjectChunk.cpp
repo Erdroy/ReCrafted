@@ -68,7 +68,7 @@ void SpaceObjectChunk::generate(IVoxelMesher* mesher) // WARNING: this function 
     if (!m_hasSurface)
         return;
 
-	m_mesh = Mesh::createMesh();
+	var mesh = Mesh::createMesh();
 
 	// get which directions this chunk must get the bordering skirts
 	cvar borders = getLodBorders();
@@ -80,14 +80,44 @@ void SpaceObjectChunk::generate(IVoxelMesher* mesher) // WARNING: this function 
         storage->readChunkData(m_chunkData);
 
 	// generate mesh
-    mesher->generate(m_position, m_lod, borders, m_mesh, voxelData);
+    mesher->generate(m_position, m_lod, borders, mesh, voxelData);
+
+    ScopeLock(m_meshLock);
+    SafeDispose(m_newMesh);
+    m_newMesh = mesh;
+}
+
+void SpaceObjectChunk::rebuild(IVoxelMesher* mesher)
+{
+    if (!m_chunkData->isLoaded())
+        return;
+
+    var mesh = Mesh::createMesh();
+
+    cvar borders = getLodBorders();
+    cvar voxelData = m_chunkData->getData();
+
+    mesher->generate(m_position, m_lod, borders, mesh, voxelData);
+
+    ScopeLock(m_meshLock);
+    SafeDispose(m_newMesh);
+    m_newMesh = mesh;
 }
 
 void SpaceObjectChunk::upload()
 {
 	// upload changes
-	if(m_mesh && m_mesh->canUpload())
-		m_mesh->upload();
+	if(m_newMesh && m_newMesh->canUpload())
+	{
+        ScopeLock(m_meshLock);
+
+        if(m_mesh)
+            SafeDispose(m_mesh)
+
+        m_newMesh->upload();
+        m_mesh = m_newMesh;
+        m_newMesh = nullptr;
+	}
 }
 
 void SpaceObjectChunk::draw()

@@ -7,7 +7,7 @@
 
 // includes
 #include "Core/Math/Vector3.h"
-
+#include "Core/Lock.h"
 #include "Storage/VoxelChunkData.h"
 
 interface IVoxelMesher;
@@ -26,22 +26,33 @@ private:
     int m_lod = 0;
     uint64_t m_id = 0u;
     Vector3 m_position = {};
-    Ptr<VoxelChunkData> m_chunkData = {};
 
-	Ptr<Mesh> m_mesh = nullptr;
     bool m_hasSurface = false;
+
+    Ptr<VoxelChunkData> m_chunkData = {};
+	Ptr<Mesh> m_mesh = nullptr;
+	Ptr<Mesh> m_newMesh = nullptr;
+
+    Lock m_meshLock = {};
 
 private:
 	uint8_t getLodBorders();
 
 public:
 	void init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject);
-	void generate(IVoxelMesher* mesher);
 	void upload();
 	void draw();
 	void dispose();
 
 public:
+    void generate(IVoxelMesher* mesher);
+    void rebuild(IVoxelMesher* mesher);
+
+    bool needsUpload() const
+    {
+        return m_newMesh != nullptr;
+    }
+
     Ptr<VoxelChunkData> getChunkData() const
     {
         return m_chunkData;
