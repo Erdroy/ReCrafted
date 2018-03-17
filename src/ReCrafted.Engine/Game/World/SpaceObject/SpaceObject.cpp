@@ -53,17 +53,13 @@ void SpaceObject::updateViewPoint(Vector3& view)
 	m_views.add(view);
 }
 
-void SpaceObject::modify(VoxelEditMode::_enum mode, VoxelEditShape::_enum shape, Vector3& position, float size)
+void SpaceObject::modify(VoxelEditMode::_enum mode, Vector3& position, float size)
 {
-    // TODO:
-    // build bounding box
-    // find intersecting chunks
-    // get their LoD-0 data
-    // apply modification
-    // - how to apply this to all lod's?
-    // - how to store/save it
-
     var bbSize = Vector3(size, size, size) * 2.0f;
+    bbSize.x = ceilf(bbSize.x);
+    bbSize.y = ceilf(bbSize.y);
+    bbSize.z = ceilf(bbSize.z);
+
     var boundingBox = BoundingBox(position, bbSize);
     var nodes = m_octree->findIntersecting(boundingBox, true); // NOTE: this will give us all LoD levels, but we need only the LoD-0.
 
@@ -71,45 +67,44 @@ void SpaceObject::modify(VoxelEditMode::_enum mode, VoxelEditShape::_enum shape,
     {
         cvar chunk = node->getChunk();
 
-        if (!chunk)
+        if (chunk == nullptr)
             continue;
 
         cvar chunkData = chunk->getChunkData();
         cvar voxels = chunkData->getData();
         cvar chunkScale = static_cast<float>(chunkData->getSize()) / static_cast<float>(VoxelChunkData::ChunkSize);
 
-        for (var x = 0; x < 17; x++)
-        for (var y = 0; y < 17; y++)
-        for (var z = 0; z < 17; z++)
+        for (var x = 0; x < VoxelChunkData::ChunkDataSize; x++)
+        for (var y = 0; y < VoxelChunkData::ChunkDataSize; y++)
+        for (var z = 0; z < VoxelChunkData::ChunkDataSize; z++)
         {
             var point = Vector3(float(x), float(y), float(z)) * chunkScale + chunkData->getChunkPosition();
-            
-            // TODO: cleanup, lol
 
-            if(shape == VoxelEditShape::Cube)
+            cvar currentValue = voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)];
+            cvar distance = Vector3::distance(position, point);
+
+            if (distance <= size + 0.5f)
             {
-                if (BoundingBox::contains(boundingBox, point))
+                var value = size - distance;
+                var newValue = VOXEL_FROM_FLOAT(value);
+
+                if (mode == VoxelEditMode::Additive)
                 {
-                    voxels[INDEX_3D(x, y, z, 17)] = VOXEL_FROM_FLOAT(1.0f);
+                    newValue = -newValue;
+
+                    if (newValue < currentValue)
+                        voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)] = newValue;
                 }
-            }
-            else
-            {
-                cvar distance = Vector3::distance(position, point);
-                if (distance <= size + 0.5f)
+                else
                 {
-                    var value = size - distance;
-                    var currentValue = voxels[INDEX_3D(x, y, z, 17)];
-                    var newValue = VOXEL_FROM_FLOAT(value);
-
-                    if(newValue > currentValue)
-                        voxels[INDEX_3D(x, y, z, 17)] = newValue;
+                    if (newValue > currentValue)
+                        voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)] = newValue;
                 }
             }
         }
 
-        // queue current node to regenerate
-        node->regenerate();
+        // queue current node to rebuild
+        node->rebuild();
     }
 }
 

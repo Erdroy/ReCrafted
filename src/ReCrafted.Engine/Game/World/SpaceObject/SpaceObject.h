@@ -7,7 +7,6 @@
 #include "Core/Math/Vector3.h"
 #include "SpaceObjectOctree.h"
 #include "SpaceObjectSettings.h"
-#include "Storage/VoxelEditShape.h"
 #include "Storage/VoxelEditMode.h"
 
 class VoxelStorage;
@@ -43,11 +42,10 @@ public:
     /**
      * \brief Modifies this voxel space object, using given method.
      * \param mode The edit mode.
-     * \param shape The edit shape.
      * \param position The edit position.
      * \param size The edit size.
      */
-    void modify(VoxelEditMode::_enum mode, VoxelEditShape::_enum shape, Vector3& position, float size);
+    void modify(VoxelEditMode::_enum mode, Vector3& position, float size);
 
     /**
 	 * \brief Gets space object settings reference.

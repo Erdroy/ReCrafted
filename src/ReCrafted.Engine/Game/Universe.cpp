@@ -50,15 +50,16 @@ void Universe::update()
 		m_viewUpdateEnabled = !m_viewUpdateEnabled;
 	}
 
+    var modPosition = Camera::getMainCamera()->get_position() + Camera::getMainCamera()->get_forward() * 5.0f;
+
     if(Input::isKey(Key_Mouse0))
     {
-        var modPosition = Camera::getMainCamera()->get_position() + Camera::getMainCamera()->get_forward() * 5.0f;
-        m_testObject1->modify(VoxelEditMode::Subtractive, VoxelEditShape::Sphere, modPosition, 5.0f);
+        m_testObject1->modify(VoxelEditMode::Subtractive, modPosition, 1.5f);
     }
-    if (Input::isKeyDown(Key_Mouse2))
+
+    if (Input::isKey(Key_Mouse1))
     {
-        var modPosition = Camera::getMainCamera()->get_position() + Camera::getMainCamera()->get_forward() * 5.0f;
-        m_testObject1->modify(VoxelEditMode::Additive, VoxelEditShape::Cube, modPosition, 1.0f);
+        m_testObject1->modify(VoxelEditMode::Additive, modPosition, 1.5f);
     }
 
 	if (m_viewUpdateEnabled) 
