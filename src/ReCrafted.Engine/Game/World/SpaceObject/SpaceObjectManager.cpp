@@ -61,8 +61,8 @@ void SpaceObjectManager::worker_function()
             case ProcessMode::Depopulate:
                 item.node->worker_depopulate(mesher.get());
 	        break;
-            case ProcessMode::Regenerate:
-                item.node->worker_refresh(mesher.get());
+            case ProcessMode::Rebuild:
+                item.node->worker_rebuild(mesher.get());
 	        break;
             default:;
 	    }

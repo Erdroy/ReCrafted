@@ -21,7 +21,7 @@ struct ProcessMode
 	{
 		Populate,
 		Depopulate,
-        Regenerate
+        Rebuild
 	};
 };
 
