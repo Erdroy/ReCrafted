@@ -18,7 +18,7 @@ private:
 
 private:
     void* m_windowHandle = nullptr;
-    Delegate m_onResized = {};
+    Delegate<void> m_onResized = {};
 
 private:
 
@@ -30,7 +30,7 @@ public:
     void updateSizeNow();
 
 public:
-    void setOnResized(Delegate callback);
+    void setOnResized(Delegate<void> callback);
 
 public:
     static void windowResize(void* windowHandle);

@@ -81,7 +81,7 @@ namespace ReCrafted.Game
                 currentSpeed *= 2.5f;
 
             if (Input.IsKey(Keys.Control))
-                currentSpeed *= 0.25f;
+                currentSpeed *= 0.05f;
 
             if (Input.IsKey(Keys.W))
                 direction += Camera.Forward;

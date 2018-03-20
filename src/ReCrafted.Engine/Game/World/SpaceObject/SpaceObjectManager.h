@@ -7,11 +7,11 @@
 
 // includes
 #include "ReCrafted.h"
+#include "Core/Delegate.h"
 #include "Core/Containers/Array.h"
 
 #include <thread>
 
-struct Delegate;
 class SpaceObjectOctreeNode;
 class SpaceObjectChunk;
 
@@ -55,7 +55,7 @@ public:
 	/**
 	 * \brief Enqueues node for generation.
 	 */
-	static void enqueue(SpaceObjectOctreeNode* node, ProcessMode::_enum mode, Delegate callback);
+	static void enqueue(SpaceObjectOctreeNode* node, ProcessMode::_enum mode, Delegate<void> callback);
 };
 
 #endif // SPACEOBJECTMANAGER_H

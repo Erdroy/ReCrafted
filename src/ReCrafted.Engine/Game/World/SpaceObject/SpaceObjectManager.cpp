@@ -15,11 +15,11 @@ ALIGN(8) struct queueItem
 {
 	SpaceObjectOctreeNode* node;
 	ProcessMode::_enum mode;
-	Delegate callback;
+    Delegate<void> callback;
 };
 
 moodycamel::ConcurrentQueue<queueItem> m_loadingQueue;
-Array<Delegate> m_callbacks;
+Array<Delegate<void>> m_callbacks;
 Lock m_calbacksLock;
 
 void SpaceObjectManager::onDispose()
@@ -106,7 +106,7 @@ void SpaceObjectManager::update()
 	m_calbacksLock.unlock();
 }
 
-void SpaceObjectManager::enqueue(SpaceObjectOctreeNode* node, ProcessMode::_enum mode, Delegate callback)
+void SpaceObjectManager::enqueue(SpaceObjectOctreeNode* node, ProcessMode::_enum mode, Delegate<void> callback)
 {
 	var item = queueItem();
 	item.node = node;

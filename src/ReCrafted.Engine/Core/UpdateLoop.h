@@ -14,9 +14,9 @@
 class UpdateLoop
 {
 private:
-    Delegate m_simulate;
-    Delegate m_update;
-    Delegate m_render;
+    Delegate<void> m_simulate;
+    Delegate<void> m_update;
+    Delegate<void> m_render;
 
     bool m_running = true;
     double m_simulationAcc = 0.0;
@@ -45,19 +45,19 @@ public:
      * \brief Sets update callback.
      * \param callback The update callback delegate.
      */
-    void setUpdateCallback(Delegate callback);
+    void setUpdateCallback(Delegate<void> callback);
 
     /**
     * \brief Sets simulation callback.
     * \param callback The simulation callback delegate.
     */
-    void setSimulateCallback(Delegate callback);
+    void setSimulateCallback(Delegate<void> callback);
 
     /**
     * \brief Sets render callback.
     * \param callback The render callback delegate.
     */
-    void setRenderCallback(Delegate callback);
+    void setRenderCallback(Delegate<void> callback);
 
 public:
     PROPERTY(int, targetFps) = 60;

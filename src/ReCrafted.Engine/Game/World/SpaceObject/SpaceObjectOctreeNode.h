@@ -34,7 +34,7 @@ struct NodeDirection
 /**
 * \brief OctreeNode of the Octree of SpaceObject.
 */
-class SpaceObjectOctreeNode : DelegateHandler
+class SpaceObjectOctreeNode
 {
 	friend class SpaceObject;
 	friend class SpaceObjectOctree;

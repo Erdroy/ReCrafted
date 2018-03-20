@@ -19,6 +19,7 @@
 #include "Scene/SceneManager.h"
 #include "Scripting/ScriptingEngine.h"
 #include "Graphics/Renderer/Renderer.h"
+#include "Event.h"
 
 EngineMain* EngineMain::m_instance;
 

@@ -10,15 +10,15 @@
 
 interface IDelegateHandler {};
 
-#define DelegateHandler public IDelegateHandler
-
-typedef void(IDelegateHandler::*delegate_noparam)();
-
 /**
- * \brief Delegate structure.
+ * \brief Delegate class.
  */
-struct Delegate
+template<typename T>
+class Delegate
 {
+public:
+    typedef void(IDelegateHandler::*delegate_noparam)(T* param);
+
 private:
 	IDelegateHandler* m_instance = nullptr;
 	delegate_noparam m_delegate = nullptr;
@@ -28,15 +28,23 @@ public:
 	Delegate(IDelegateHandler* instance, delegate_noparam delegate) : m_instance(instance), m_delegate(delegate) { }
 
 public:
-	FORCEINLINE void Invoke() const 
-	{
-		if (this->m_instance == nullptr)
-			return;
+    FORCEINLINE void Invoke() const
+    {
+        if (this->m_instance == nullptr)
+            return;
 
-		(this->m_instance->*this->m_delegate)();
-	}
+        (this->m_instance->*this->m_delegate)(nullptr);
+    }
+
+    FORCEINLINE void Invoke(T* param) const
+    {
+        if (this->m_instance == nullptr)
+            return;
+
+        (this->m_instance->*this->m_delegate)(param);
+    }
 };
 
-#define MakeDelegate(func) Delegate((IDelegateHandler*)this, (delegate_noparam)&func)
+#define MakeDelegate(func) Delegate<void>((IDelegateHandler*)this, (Delegate<void>::delegate_noparam)&func)
 
 #endif // DELEGATE_H
