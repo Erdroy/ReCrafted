@@ -125,11 +125,11 @@ SpaceObjectOctreeNode* SpaceObjectOctree::findNode(Vector3 position, int size) c
     return nullptr;
 }
 
-Array<SpaceObjectOctreeNode*> SpaceObjectOctree::findIntersecting(BoundingBox& box, bool all) const
+Array<SpaceObjectOctreeNode*> SpaceObjectOctree::findIntersecting(BoundingBox& box, bool leafOnly) const
 {
     Array<SpaceObjectOctreeNode*> intersecting = {};
 
-    cvar targetSize = all ? 0 : 16;
+    cvar targetSize = leafOnly ? 16 : 0;
 
     // find all intersecting nodes
     // iterate all root nodes

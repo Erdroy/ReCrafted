@@ -61,47 +61,16 @@ void SpaceObject::modify(VoxelEditMode::_enum mode, Vector3& position, float siz
     bbSize.z = ceilf(bbSize.z);
 
     var boundingBox = BoundingBox(position, bbSize);
-    var nodes = m_octree->findIntersecting(boundingBox, true); // NOTE: this will give us all LoD levels, but we need only the LoD-0.
+    var nodes = m_octree->findIntersecting(boundingBox, true); // NOTE: this will give us all type of LoD levels
 
     for(var && node : nodes)
     {
-        cvar chunk = node->getChunk();
-
-        if (chunk == nullptr)
+        // do not modify when node don't have chunk
+        if (node->getChunk() == nullptr)
             continue;
 
-        cvar chunkData = chunk->getChunkData();
-        cvar voxels = chunkData->getData();
-        cvar chunkScale = static_cast<float>(chunkData->getSize()) / static_cast<float>(VoxelChunkData::ChunkSize);
-
-        for (var x = 0; x < VoxelChunkData::ChunkDataSize; x++)
-        for (var y = 0; y < VoxelChunkData::ChunkDataSize; y++)
-        for (var z = 0; z < VoxelChunkData::ChunkDataSize; z++)
-        {
-            var point = Vector3(float(x), float(y), float(z)) * chunkScale + chunkData->getChunkPosition();
-
-            cvar currentValue = voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)];
-            cvar distance = Vector3::distance(position, point);
-
-            if (distance <= size + 0.5f)
-            {
-                var value = size - distance;
-                var newValue = VOXEL_FROM_FLOAT(value);
-
-                if (mode == VoxelEditMode::Additive)
-                {
-                    newValue = -newValue;
-
-                    if (newValue < currentValue)
-                        voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)] = newValue;
-                }
-                else
-                {
-                    if (newValue > currentValue)
-                        voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)] = newValue;
-                }
-            }
-        }
+        // modify this node
+        node->modify(mode, position, size);
 
         // queue current node to rebuild
         node->rebuild();

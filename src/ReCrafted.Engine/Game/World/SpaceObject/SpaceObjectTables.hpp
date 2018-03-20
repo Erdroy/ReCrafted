@@ -16,4 +16,6 @@ byte NodeDirIds[];
 Vector3 DirectionOffset[];
 Vector3 ChildrenNodeOffsets[];
 
+float lodtable[];
+
 #endif // SPACEOBJECTTABLES_H

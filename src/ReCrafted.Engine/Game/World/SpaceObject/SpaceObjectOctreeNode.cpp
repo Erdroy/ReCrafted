@@ -6,6 +6,7 @@
 #include "SpaceObjectManager.h"
 #include "SpaceObjectTables.hpp"
 #include "Graphics/Camera.h"
+#include "Utilities/VoxelUtils.h"
 
 #define HAS_LOCAL_NEIGH(id, dir) LocalNeighTable[id] & (1 << dir)
 
@@ -159,6 +160,117 @@ void SpaceObjectOctreeNode::rebuild()
     
     // queue rebuild job
     SpaceObjectManager::enqueue(this, ProcessMode::Rebuild, MakeDelegate(SpaceObjectOctreeNode::onRebuild));
+}
+
+void SpaceObjectOctreeNode::modify(VoxelEditMode::_enum mode, Vector3& position, float size)
+{
+    cvar chunk = getChunk();
+
+    if (chunk == nullptr)
+        return;
+
+    cvar chunkData = chunk->getChunkData();
+    cvar voxels = chunkData->getData();
+    cvar chunkScale = static_cast<float>(chunkData->getLod());
+
+    for (var x = 0; x < VoxelChunkData::ChunkDataSize; x++)
+    for (var y = 0; y < VoxelChunkData::ChunkDataSize; y++)
+    for (var z = 0; z < VoxelChunkData::ChunkDataSize; z++)
+    {
+        var point = Vector3(float(x), float(y), float(z)) * chunkScale + chunkData->getChunkPosition();
+
+        cvar currentValue = voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)];
+        cvar distance = Vector3::distance(position, point);
+
+        if (distance <= size + 0.5f)
+        {
+            var value = size - distance;
+            var newValue = VOXEL_FROM_FLOAT(value);
+
+            if (mode == VoxelEditMode::Additive)
+            {
+                newValue = -newValue;
+
+                if (newValue < currentValue)
+                    voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)] = newValue;
+            }
+            else
+            {
+                if (newValue > currentValue)
+                    voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)] = newValue;
+            }
+        }
+    }
+}
+
+void SpaceObjectOctreeNode::onUpdate()
+{
+}
+
+void SpaceObjectOctreeNode::onCreate()
+{
+    m_processing = false;
+
+    // upload chunk if needed
+    if (m_chunk->needsUpload())
+        m_chunk->upload();
+}
+
+void SpaceObjectOctreeNode::onRebuild()
+{
+    m_rebuilding = false;
+
+    // upload chunk if needed
+    if (m_chunk->needsUpload())
+        m_chunk->upload();
+}
+
+void SpaceObjectOctreeNode::onDestroy()
+{
+    // destroy chunk
+    SafeDispose(m_chunk);
+}
+
+void SpaceObjectOctreeNode::onPopulate()
+{
+    m_processing = false;
+    m_populated = true;
+
+    for (var i = 0; i < 8; i++)
+    {
+        cvar node = m_childrenNodes[i];
+
+        if (node)
+            node->onCreate();
+    }
+
+    //onDestroy();
+}
+
+void SpaceObjectOctreeNode::onDepopulate()
+{
+    m_populated = false;
+    m_processing = false;
+
+    // destroy all children
+    for (auto i = 0; i < 8; i++)
+    {
+        auto node = m_childrenNodes[i];
+
+        if (node)
+        {
+            // call event
+            node->onDestroy();
+
+            // delete node
+            delete node;
+
+            // cleanup
+            m_childrenNodes[i] = nullptr;
+        }
+    }
+
+    onCreate();
 }
 
 void SpaceObjectOctreeNode::update()
@@ -373,74 +485,4 @@ SpaceObjectOctreeNode* SpaceObjectOctreeNode::findNode(Vector3 position, int siz
 
 	// go further
 	return node->findNode(position, size);
-}
-
-void SpaceObjectOctreeNode::onUpdate()
-{
-}
-
-void SpaceObjectOctreeNode::onCreate()
-{
-    m_processing = false;
-
-    // upload chunk if needed
-    if (m_chunk->needsUpload())
-        m_chunk->upload();
-}
-
-void SpaceObjectOctreeNode::onRebuild()
-{
-    m_rebuilding = false;
-
-    // upload chunk if needed
-    if (m_chunk->needsUpload())
-        m_chunk->upload();
-}
-
-void SpaceObjectOctreeNode::onDestroy()
-{
-	// destroy chunk
-	SafeDispose(m_chunk);
-}
-
-void SpaceObjectOctreeNode::onPopulate()
-{
-	m_processing = false;
-	m_populated = true;
-
-	for(var i = 0; i < 8; i ++)
-	{
-        cvar node = m_childrenNodes[i];
-
-        if(node)
-            node->onCreate();
-	}
-
-	//onDestroy();
-}
-
-void SpaceObjectOctreeNode::onDepopulate()
-{
-	m_populated = false;
-	m_processing = false;
-
-	// destroy all children
-	for (auto i = 0; i < 8; i++)
-	{
-		auto node = m_childrenNodes[i];
-
-		if (node)
-		{
-			// call event
-			node->onDestroy();
-
-			// delete node
-			delete node;
-
-			// cleanup
-			m_childrenNodes[i] = nullptr;
-		}
-	}
-
-	onCreate();
 }

@@ -43,6 +43,11 @@ public:
         return m_size;
     }
 
+    int getLod() const
+    {
+        return m_size / ChunkSize;
+    }
+
     sbyte* getData() const
     {
         return m_voxelData;

@@ -6,10 +6,12 @@
 #define SPACEOBJECTOCTREENODE_H
 
 // includes
+#include "ReCrafted.h"
 #include "Core/Delegate.h"
 #include "Core/Math/Vector3.h"
 #include "Core/Math/BoundingBox.h"
 #include "Core/Containers/Array.h"
+#include "Storage/VoxelEditMode.h"
 
 interface IVoxelMesher;
 class SpaceObjectOctree;
@@ -68,6 +70,14 @@ private:
 	void worker_depopulate(IVoxelMesher* mesher);
     void worker_rebuild(IVoxelMesher* mesher);
 
+    void onUpdate();
+    void onCreate();
+    void onRebuild();
+    void onDestroy();
+
+    void onPopulate();
+    void onDepopulate();
+
     void findIntersecting(Array<SpaceObjectOctreeNode*>& nodes, BoundingBox& box, const int targetNodeSize = 16);
     SpaceObjectOctreeNode* getNeighNode(NodeDirection::_enum direction) const;
     SpaceObjectOctreeNode* findNode(Vector3 position, int size);
@@ -87,14 +97,7 @@ public:
     void rebuild();
 
 public:
-    void onUpdate();
-
-	void onCreate();
-	void onRebuild();
-	void onDestroy();
-
-	void onPopulate();
-	void onDepopulate();
+    void modify(VoxelEditMode::_enum mode, Vector3& position, float size);
 
 public:
     SpaceObjectChunk* getChunk() const

@@ -9,9 +9,9 @@
 #include "Core/Streams/FileStream.h"
 #include "Core/Streams/BinaryStream.h"
 
-#include "../LODTable.h"
 #include "../SpaceObjectChunk.h"
 #include "../SpaceObjectSettings.h"
+#include "../SpaceObjectTables.hpp"
 #include "../Generator/VoxelCHM.h"
 #include "../Utilities/VoxelUtils.h"
 

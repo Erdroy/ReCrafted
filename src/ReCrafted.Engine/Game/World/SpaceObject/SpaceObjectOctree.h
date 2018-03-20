@@ -38,7 +38,7 @@ public:
 
 public:
     SpaceObjectOctreeNode* findNode(Vector3 position, int size) const;
-    Array<SpaceObjectOctreeNode*> findIntersecting(BoundingBox& box, bool all = false) const;
+    Array<SpaceObjectOctreeNode*> findIntersecting(BoundingBox& box, bool leafOnly = false) const;
 
 public:
 	PROPERTY(BoundingBox, bounds) = {};
