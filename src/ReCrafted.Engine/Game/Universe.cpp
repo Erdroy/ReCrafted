@@ -54,12 +54,12 @@ void Universe::update()
 
     if(Input::isKey(Key_Mouse0))
     {
-        m_testObject1->modify(VoxelEditMode::Subtractive, modPosition, 1.5f);
+        m_testObject1->modify(VoxelEditMode::Subtractive, modPosition, 5.0f);
     }
 
     if (Input::isKey(Key_Mouse1))
     {
-        m_testObject1->modify(VoxelEditMode::Additive, modPosition, 1.5f);
+        m_testObject1->modify(VoxelEditMode::Additive, modPosition, 3.5f);
     }
 
 	if (m_viewUpdateEnabled) 

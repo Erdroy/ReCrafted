@@ -46,7 +46,7 @@ void SpaceObject::dispose()
     SafeDispose(m_octree);
     SafeDispose(m_voxelStorage);
 }
-
+ 
 void SpaceObject::updateViewPoint(Vector3& view)
 {
 	// add view
@@ -61,7 +61,7 @@ void SpaceObject::modify(VoxelEditMode::_enum mode, Vector3& position, float siz
     bbSize.z = ceilf(bbSize.z);
 
     var boundingBox = BoundingBox(position, bbSize);
-    var nodes = m_octree->findIntersecting(boundingBox, true); // NOTE: this will give us all type of LoD levels
+    var nodes = m_octree->findIntersecting(boundingBox, false); // NOTE: this will give us all type of LoD levels
 
     for(var && node : nodes)
     {
