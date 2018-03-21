@@ -43,6 +43,12 @@ public:
 
         (this->m_instance->*this->m_delegate)(param);
     }
+
+public:
+    bool operator == (const Delegate<T>& second)
+    {
+        return m_delegate == second.m_delegate && m_instance == second.m_instance;
+    }
 };
 
 #define MakeDelegate(func) Delegate<void>((IDelegateHandler*)this, (Delegate<void>::delegate_noparam)&func)
