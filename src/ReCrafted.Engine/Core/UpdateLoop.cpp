@@ -40,6 +40,8 @@ void UpdateLoop::start()
     while(m_running)
     {
         cvar currentTime = Platform::getMiliseconds();
+
+        Profiler::beginProfile("Frame");
         
         if(m_updateCallback)
         {
@@ -61,6 +63,10 @@ void UpdateLoop::start()
         
         waitForTargetFps(lastTime);
         lastTime = currentTime;
+
+        // end 'Frame' profile
+        Profiler::endProfile();
+        Profiler::endFrame();
     }
 }
 

@@ -63,8 +63,6 @@ void EngineMain::onSimulate()
 
 void EngineMain::onUpdate()
 {
-    Profiler::beginProfile("Frame");
-
     // update time
     // TODO: Time::getInstance()->update();
     cvar currentTime = Platform::getMiliseconds();
@@ -93,10 +91,6 @@ void EngineMain::onUpdate()
 void EngineMain::onRender()
 {
     Renderer::getInstance()->render();
-
-    // end 'Frame' profile
-    Profiler::endProfile();
-    Profiler::endFrame();
 }
 
 void EngineMain::onWindowResized()
