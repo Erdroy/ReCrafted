@@ -23,6 +23,8 @@ namespace ReCrafted.Game
         // build number control
         private UIText _buildNumberText;
 
+        private WebUIView _uiView;
+
         // initialize
         protected override void Initialize()
         {
@@ -71,6 +73,11 @@ namespace ReCrafted.Game
                 mainEntity.AddScript<SuperConsole>();
                 mainEntity.AddScript<PauseMenu>();
                 mainEntity.AddScript<Messenger>();
+
+                // create example webui view
+                _uiView = WebUI.Create();
+                _uiView.Navigate("https://www.youtube.com/watch?v=VMyfBWqU01U");
+
             }
             catch (Exception exception)
             {

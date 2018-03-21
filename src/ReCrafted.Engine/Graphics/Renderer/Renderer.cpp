@@ -14,6 +14,7 @@
 #include "Game/Universe.h"
 #include "Core/Application.h"
 #include "Graphics/UI/UI.h"
+#include "Graphics/WebUI/WebUI.h"
 
 SINGLETON_IMPL(Renderer)
 
@@ -252,6 +253,8 @@ void Renderer::resize(uint width, uint height)
     Display::set_Width(width);
     Display::set_Height(height);
 
+    WebUI::m_instance->resize(width, height);
+
     // reset bgfx state, this should force renderer to resize all the viewports etc.
     bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
     bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
@@ -273,7 +276,7 @@ void Renderer::renderBegin()
     setShader(m_gbufferShader);
 
     // update shaders uniforms
-    auto lightdir = Vector3::down();
+    var lightdir = Vector3(0.39f, -0.9f, 0.13f);
     lightdir.normalize();
     m_deferredFinal->setValue(0, &lightdir);
 
@@ -339,6 +342,12 @@ void Renderer::renderUI()
         Profiler::beginProfile("UI Process");
         {
             UI::m_instance->endDraw(); // end draw UI
+        }
+        Profiler::endProfile();
+
+        Profiler::beginProfile("WebUI");
+        {
+            WebUI::getInstance()->render();
         }
         Profiler::endProfile();
     }

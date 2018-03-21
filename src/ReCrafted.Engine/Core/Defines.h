@@ -60,15 +60,4 @@
 #   define ALIGN(x) __attribute__ (aligned (x))
 #endif
 
-#ifdef interface
-#	undef interface
-#endif
-
-#ifdef _WIN32
-//#	define interface __interface
-#	define interface struct
-#else
-#	define interface struct
-#endif
-
 #endif // DEFINES_H

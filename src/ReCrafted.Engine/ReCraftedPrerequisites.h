@@ -21,8 +21,8 @@
 #define var auto
 #define cvar const auto
 
-interface IDisposable;
-interface IResource;
+struct IDisposable;
+struct IResource;
 
 class Application;
 class ApplicationBase;
@@ -45,6 +45,8 @@ struct Vector3;
 struct Vector4;
 struct Matrix;
 
+struct Text;
+
 class Profiler;
 class Display;
 class Time;
@@ -54,6 +56,10 @@ class Renderer;
 class UI;
 class EntityPool;
 class Universe;
+
+class WebUI;
+class WebUIView;
+class WebUIEngine;
 
 class ScriptingEngine;
 class Bindings;

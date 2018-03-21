@@ -15,7 +15,7 @@ class Mesh;
 /**
  * \brief The voxel mesher interface class.
  */
-interface IVoxelMesher
+struct IVoxelMesher
 {
 public:
 	/**

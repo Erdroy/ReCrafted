@@ -464,7 +464,7 @@ public:
 #endif
 };
 
-#ifdef TEXT
+#if defined(TEXT)
 #undef TEXT
 #endif
 

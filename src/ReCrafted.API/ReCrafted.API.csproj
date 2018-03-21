@@ -74,6 +74,8 @@
     <Compile Include="Graphics\Sprite.cs" />
     <Compile Include="Graphics\Texture2D.cs" />
     <Compile Include="Graphics\Texture2D.Gen.cs" />
+    <Compile Include="Graphics\WebUI.Gen.cs" />
+    <Compile Include="Graphics\WebUIView.Gen.cs" />
     <Compile Include="Mathematics\AngleSingle.cs" />
     <Compile Include="Mathematics\BoundingBox.cs" />
     <Compile Include="Mathematics\BoundingFrustum.cs" />

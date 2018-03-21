@@ -14,12 +14,12 @@
 #include "Core/UpdateLoop.h"
 #include "Game/Universe.h"
 #include "Graphics/UI/UI.h"
+#include "Graphics/WebUI/WebUI.h"
 #include "Platform/Platform.h"
 #include "Physics/PhysicsManager.h"
 #include "Scene/SceneManager.h"
 #include "Scripting/ScriptingEngine.h"
 #include "Graphics/Renderer/Renderer.h"
-#include "Event.h"
 
 EngineMain* EngineMain::m_instance;
 
@@ -36,6 +36,7 @@ void EngineMain::registerComponents() const
     m_componentManager->registerComponent(SceneManager::getInstance());
     m_componentManager->registerComponent(Universe::getInstance());
     m_componentManager->registerComponent(UI::getInstance());
+    m_componentManager->registerComponent(WebUI::getInstance());
 }
 
 void EngineMain::createMainWindow()
@@ -86,6 +87,7 @@ void EngineMain::onUpdate()
     SceneManager::getInstance()->update();
     Universe::getInstance()->update();
     Application::getInstance()->update();
+    WebUI::getInstance()->update();
 }
 
 void EngineMain::onRender()

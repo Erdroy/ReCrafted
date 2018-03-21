@@ -10,6 +10,7 @@
 #include "Core/GameInfo.h"
 #include "Core/EngineMain.h"
 #include "Platform/Platform.h"
+#include "Graphics/WebUI/WebUIEngine.h"
 
 /// <summary>
 /// WinMain - Main entry for Windows platform
@@ -20,6 +21,9 @@ int CALLBACK WinMain(
 	LPSTR lpCmdLine,
 	int nCmdShow)
 {
+    // run WebUI engine children process
+    WebUIEngine::runChildren();
+
 	GameInfo::parseArguments(Text(GetCommandLineA()));
 
     // create engine instance

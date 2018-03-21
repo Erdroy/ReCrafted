@@ -13,7 +13,7 @@
 #include "Core/Containers/Array.h"
 #include "Storage/VoxelEditMode.h"
 
-interface IVoxelMesher;
+struct IVoxelMesher;
 class SpaceObjectOctree;
 class SpaceObjectChunk;
 class SpaceObject;

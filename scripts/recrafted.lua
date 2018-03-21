@@ -25,6 +25,8 @@ project "ReCrafted.Engine"
 		path.join(LIBS_DIR, "freetype/include"),
 		path.join(LIBS_DIR, "fmod/inc"),
 		path.join(LIBS_DIR, "physx34/include"),
+		path.join(LIBS_DIR, "cef/include"),
+		path.join(LIBS_DIR, "cef"),
 	}
 	
 	-- add source/header/shader files
@@ -67,6 +69,7 @@ project "ReCrafted.Engine"
 			path.join(LIBS_DIR, "freetype/x64"),
 			path.join(LIBS_DIR, "fmod/lib"),
 			path.join(LIBS_DIR, "physx34/lib/vc14win64"),
+			path.join(LIBS_DIR, "cef/lib"),
 		}
 		linkoptions { "/ignore:4099" }
 	

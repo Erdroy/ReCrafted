@@ -9,7 +9,7 @@
 #include "ReCrafted.h"
 #include "Defines.h"
 
-interface IDisposable
+struct IDisposable
 {
 public:
     virtual ~IDisposable() = default;

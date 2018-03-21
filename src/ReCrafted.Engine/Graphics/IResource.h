@@ -17,7 +17,7 @@
  * Also must implement the IResource logic, using (public:) IRESOURCE_IMPL(ClassName) 
  * or please manually call addRef and release functions!
  */
-interface IResource : public IDisposable
+struct IResource : public IDisposable
 {
 private:
     static uint m_resCount;

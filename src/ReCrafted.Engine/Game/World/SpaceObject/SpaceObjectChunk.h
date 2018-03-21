@@ -10,7 +10,7 @@
 #include "Core/Lock.h"
 #include "Storage/VoxelChunkData.h"
 
-interface IVoxelMesher;
+struct IVoxelMesher;
 class Mesh;
 class SpaceObject;
 class SpaceObjectOctreeNode;

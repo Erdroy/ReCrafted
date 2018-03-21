@@ -8,7 +8,7 @@
 // includes
 #include "ReCrafted.h"
 
-interface IDelegateHandler {};
+struct IDelegateHandler {};
 
 /**
  * \brief Delegate class.
