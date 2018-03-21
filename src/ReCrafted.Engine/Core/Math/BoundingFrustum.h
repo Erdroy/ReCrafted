@@ -22,7 +22,7 @@ private:
 
         if (planeNormal.x >= 0)
         {
-            p->x = bmin.x;
+            p->x = bmax.x;
             n->x = bmin.x;
         }
 		if (planeNormal.y >= 0)
@@ -110,42 +110,36 @@ public:
         planeLeft.normal.y = matrix.M13 + matrix.M10;
         planeLeft.normal.z = matrix.M23 + matrix.M20;
         planeLeft.distance = matrix.M33 + matrix.M30;
-        planeLeft.normalize();
 
         // Right plane
         planeRight.normal.x = matrix.M03 - matrix.M00;
         planeRight.normal.y = matrix.M13 - matrix.M10;
         planeRight.normal.z = matrix.M23 - matrix.M20;
         planeRight.distance = matrix.M33 - matrix.M30;
-        planeRight.normalize();
 
         // Top plane
         planeTop.normal.x = matrix.M03 - matrix.M01;
         planeTop.normal.y = matrix.M13 - matrix.M11;
         planeTop.normal.z = matrix.M23 - matrix.M21;
         planeTop.distance = matrix.M33 - matrix.M31;
-        planeTop.normalize();
 
         // Bottom plane
         planeBottom.normal.x = matrix.M03 + matrix.M01;
         planeBottom.normal.y = matrix.M13 + matrix.M11;
         planeBottom.normal.z = matrix.M23 + matrix.M21;
         planeBottom.distance = matrix.M33 + matrix.M31;
-        planeBottom.normalize();
 
         // Near plane
         planeNear.normal.x = matrix.M02;
         planeNear.normal.y = matrix.M12;
         planeNear.normal.z = matrix.M22;
         planeNear.distance = matrix.M32;
-        planeNear.normalize();
 
         // Far plane
         planeFar.normal.x = matrix.M03 - matrix.M02;
         planeFar.normal.y = matrix.M13 - matrix.M12;
         planeFar.normal.z = matrix.M23 - matrix.M22;
         planeFar.distance = matrix.M33 - matrix.M32;
-        planeFar.normalize();
 	}
 
 public:
