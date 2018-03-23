@@ -15,11 +15,6 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include <freetype/ftglyph.h>
-#if _DEBUG
-#pragma comment(lib, "freetype28MTd.lib")
-#else
-#pragma comment(lib, "freetype28MT.lib")
-#endif
 
 struct PreFontGlyph
 {

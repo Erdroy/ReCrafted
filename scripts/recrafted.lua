@@ -41,15 +41,19 @@ project "ReCrafted.Engine"
 			"call " .. ROOT_DIR .. "/onbuild.bat " .. ROOT_DIR .. "/ Engine",
 		}
 	
+	links { "Rpcrt4", "mono", "libcef", "PxFoundation_x64", "PxTask_x64", "PhysX3_x64", "PhysX3Common_x64", "PhysX3Extensions", "PhysX3CharacterKinematic_x64" }
+		
 	configuration { "Debug" }
 		defines { "DEBUG", "_ITERATOR_DEBUG_LEVEL=0" }
 		runtime "Debug"
 		symbols "On"
+		links { "libcef_dll_wrapper_debug", "freetype28MTd", "bgfxDebug", "bxDebug", "bimgDebug", "bimg_decodeDebug" }
 
 	configuration { "Release" }
 		defines { "NDEBUG" }
 		flags { "OptimizeSpeed", "No64BitChecks", "NoBufferSecurityCheck" }
 		runtime "Release"
+		links { "libcef_dll_wrapper", "freetype28MT", "bgfxRelease", "bxRelease", "bimgRelease", "bimg_decodeRelease" }
 
 	configuration { "x64" }
 		-- set target dir

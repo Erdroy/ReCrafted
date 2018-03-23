@@ -5,14 +5,6 @@
 
 #include <pxphysicsapi.h>
 
-#pragma comment (lib, "PxFoundation_x64.lib")
-#pragma comment (lib, "PxTask_x64.lib")
-
-#pragma comment (lib, "PhysX3_x64.lib")
-#pragma comment (lib, "PhysX3Common_x64.lib")
-#pragma comment (lib, "PhysX3Extensions.lib")
-#pragma comment (lib, "PhysX3CharacterKinematic_x64.lib")
-
 namespace PhysXCallback
 {
     class PhysXAllocator : public physx::PxAllocatorCallback

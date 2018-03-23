@@ -16,8 +16,6 @@
 #include "Common/Profiler/Profiler.h"
 #include "Core/Logger.h"
 
-#pragma comment(lib, "Rpcrt4.lib")
-
 static LARGE_INTEGER m_frequency;
 static double m_start;
 static double m_freqCoeff;

@@ -17,14 +17,6 @@
 #define GetCurrentDir getcwd
 #endif
 
-#pragma comment(lib, "libcef.lib")
-
-#ifdef _DEBUG
-#pragma comment(lib, "libcef_dll_wrapper_debug.lib")
-#else
-#pragma comment(lib, "libcef_dll_wrapper.lib")
-#endif
-
 SINGLETON_IMPL(WebUIEngine)
 
 class HtmlApp : public CefApp, public CefBrowserProcessHandler
