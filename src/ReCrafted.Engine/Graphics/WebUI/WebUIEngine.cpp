@@ -103,6 +103,9 @@ void WebUIEngine::runCEF()
 
     // run message loop
     CefRunMessageLoop();
+    
+    // shutdown cef now
+    CefShutdown();
 }
 
 void WebUIEngine::init()
