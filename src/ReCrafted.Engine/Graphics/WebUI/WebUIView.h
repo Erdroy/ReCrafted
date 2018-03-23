@@ -13,9 +13,9 @@
 #include <cef_render_handler.h>
 #include <cef_client.h>
 
-class RenderHandler : public CefRenderHandler
+class BrowserClient : public CefClient, public CefRenderHandler
 {
-    IMPLEMENT_REFCOUNTING(RenderHandler);
+    IMPLEMENT_REFCOUNTING(BrowserClient);
 
 public:
     bool GetViewRect(CefRefPtr<CefBrowser> browser, CefRect &rect) override
@@ -50,29 +50,10 @@ public:
         // https://github.com/daktronics/cef-mixer/blob/master/src/html_layer.cpp
         // https://github.com/Erdroy/ReCrafted/blob/WebUI/src/ReCrafted.Engine/Graphics/WebUI/WebUI.cpp
     }
-};
-
-class BrowserClient : public CefClient
-{
-    IMPLEMENT_REFCOUNTING(BrowserClient);
-
-private:
-    CefRefPtr<CefRenderHandler> m_renderHandler = nullptr;
-
-public:
-    BrowserClient()
-    {
-        m_renderHandler = new RenderHandler();
-    }
-
-    ~BrowserClient()
-    {
-        SafeDelete(m_renderHandler);
-    }
 
     CefRefPtr<CefRenderHandler> GetRenderHandler() override
     {
-        return m_renderHandler;
+        return this;
     }
 };
 

@@ -65,12 +65,14 @@ void WebUIEngine::init()
     CefString(&settings.locales_dir_path).FromASCII("cef/locales");
     CefString(&settings.cache_path).FromASCII("cef/cache");
     CefString(&settings.log_file).FromASCII("cef/debug.log");
-    CefString(&settings.user_agent).FromASCII("ReCrafted-Browser");
+    CefString(&settings.user_agent).FromASCII("ReCraftedBrowser");
 
     settings.log_severity = LOGSEVERITY_WARNING;
     settings.remote_debugging_port = 25000;
     settings.background_color = 0x00000000;
     settings.windowless_rendering_enabled = true;
+    //settings.multi_threaded_message_loop = false;
+    settings.external_message_pump = false;
 
     CefEnableHighDPISupport();
 
@@ -96,6 +98,7 @@ void WebUIEngine::init()
 
 void WebUIEngine::update()
 {
+    //CefDoMessageLoopWork();
 }
 
 void WebUIEngine::dispose()

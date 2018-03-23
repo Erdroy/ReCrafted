@@ -76,7 +76,7 @@ namespace ReCrafted.Game
 
                 // create example webui view
                 _uiView = WebUI.Create();
-                _uiView.Navigate("https://www.youtube.com/watch?v=VMyfBWqU01U");
+                _uiView.Navigate("https://www.youtube.com/watch?v=5_j84-ZRlOI");
 
             }
             catch (Exception exception)

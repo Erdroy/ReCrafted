@@ -2,8 +2,6 @@
 
 #include "WebUIView.h"
 
-#undef interface
-
 #include <cef_app.h>
 #include <cef_client.h>
 #include <cef_render_handler.h>
@@ -29,13 +27,10 @@ void WebUIView::init()
     window_info.shared_textures_enabled = true;
 
     m_browserClient = new BrowserClient();
-    m_browser = CefBrowserHost::CreateBrowserSync(window_info, m_browserClient, "https://www.youtube.com/watch?v=VMyfBWqU01U", browserSettings, nullptr);
+    m_browser = CefBrowserHost::CreateBrowserSync(window_info, m_browserClient, "", browserSettings, nullptr);
 
     var host = m_browser->GetHost();
     host->WasResized();
-
-    var frame = m_browser->GetMainFrame();
-    frame->LoadURL("https://www.youtube.com/watch?v=VMyfBWqU01U");
 }
 
 void WebUIView::resize(uint width, uint height)
@@ -50,10 +45,10 @@ void WebUIView::onDestroy()
 
 void WebUIView::navigate(Text url)
 {
-    //cvar curl = url.std_str();
+    cvar curl = url.std_str();
 
-    //var frame = m_browser->GetMainFrame();
-    //frame->LoadURL(curl);
+    var frame = m_browser->GetMainFrame();
+    frame->LoadURL(curl);
 }
 
 void WebUIView::execute(const char* javaScriptSource)

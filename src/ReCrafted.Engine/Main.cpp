@@ -21,10 +21,10 @@ int CALLBACK WinMain(
 	LPSTR lpCmdLine,
 	int nCmdShow)
 {
+	GameInfo::parseArguments(Text(GetCommandLineA()));
+
     // run WebUI engine children process
     WebUIEngine::runChildren();
-
-	GameInfo::parseArguments(Text(GetCommandLineA()));
 
     // create engine instance
     var engine = EngineMain();
