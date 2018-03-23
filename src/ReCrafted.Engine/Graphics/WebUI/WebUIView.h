@@ -9,14 +9,7 @@
 #include "ReCrafted.h"
 #include "Scripting/Object.h"
 
-struct WebUIViewBase
-{
-public:
-    virtual ~WebUIViewBase() = default;
-
-public:
-    virtual void update() = 0;
-};
+class CEFView;
 
 class WebUIView : public Object
 {
@@ -26,13 +19,17 @@ private:
     SCRIPTING_API_IMPL()
 
 private:
-    WebUIViewBase* m_viewBase = nullptr;
+    CEFView* m_viewBase = nullptr;
 
 private:
     void init();
     void update();
     void resize(uint width, uint height);
+    void render();
     void onDestroy() override;
+
+public:
+    CEFView* getView() const;
 
 public:
     void navigate(Text url);

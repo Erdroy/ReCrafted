@@ -1,12 +1,16 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "WebUIView.h"
+#include "WebUIEngine.h"
+#include "bgfxPrerequisites.h"
 
 #include <cef_app.h>
 #include <cef_client.h>
 #include <cef_render_handler.h>
 #include <internal/cef_ptr.h>
 #include <cef_browser.h>
+
+#include "directx11impl.h"
 
 #undef TEXT
 
@@ -15,16 +19,36 @@
 #include "Core/Logger.h"
 #include "Core/Lock.h"
 #include "Core/Delegate.h"
-#include "WebUIEngine.h"
+#include "Graphics/Renderer/Renderer.h"
 
 // https://github.com/daktronics/cef-mixer/blob/master/src/html_layer.cpp
-class CEFView : public WebUIViewBase, public CefClient, public CefRenderHandler, public CefLifeSpanHandler
+class CEFView : public CefClient, public CefRenderHandler, public CefLifeSpanHandler
 {
     friend class WebUIView;
 
 private:
-    CefRefPtr<CefBrowser> m_browser;
+    CefRefPtr<CefBrowser> m_browser = nullptr;
     Lock m_browserLock = {};
+
+    bgfx::TextureHandle m_buffer = {};
+
+    uint64 m_syncKey = 0u;
+
+    void* m_sharedHandle = nullptr;
+    ID3D11Texture2D* m_sharedBuffer = nullptr;
+    ID3D11Texture2D* m_frontBuffer = nullptr;
+    ID3D11Texture2D* m_backBuffer = nullptr;
+
+    ID3D11Device* m_device = nullptr;
+    ID3D11DeviceContext* m_deviceContext = nullptr;
+
+public:
+    ~CEFView()
+    {
+        bgfx::destroy(m_buffer);
+        SafeRelease(m_frontBuffer);
+        SafeRelease(m_backBuffer);
+    }
 
 public:
     CefRefPtr<CefRenderHandler> GetRenderHandler() override
@@ -58,14 +82,11 @@ public:
     void OnAfterCreated(CefRefPtr<CefBrowser> browser) override
     {
         assert(CefCurrentlyOn(TID_UI));
-
         ScopeLock(m_browserLock);
         m_browser = browser;
     }
 
-    void OnPaint(CefRefPtr<CefBrowser> browser, PaintElementType type, const RectList &dirtyRects, const void *buffer, int width, int height) override
-    {
-    }
+    void OnPaint(CefRefPtr<CefBrowser> browser, PaintElementType type, const RectList &dirtyRects, const void *buffer, int width, int height) override { }
 
     void OnAcceleratedPaint(
         CefRefPtr<CefBrowser> browser,
@@ -77,10 +98,72 @@ public:
         if (type == PET_POPUP)
             return;
 
+        //https://github.com/daktronics/cef-mixer/blob/master/src/html_layer.cpp#L83
+        //https://github.com/daktronics/cef-mixer/blob/master/src/d3d11.cpp#L526
+
+        ScopeLock(m_browserLock);
+
+        if(m_browser)
+        {
+            // TODO: if previous frame is not rendered yet, wait here
+
+            if(m_sharedBuffer)
+            {
+                // check if shared handle changed if shared buffer is not null,
+                // if so - release textures
+                if(m_sharedHandle != share_handle)
+                {
+                    m_sharedHandle = nullptr;
+
+                    // release resources
+                    bgfx::destroy(m_buffer);
+                    SafeRelease(m_frontBuffer);
+                    SafeRelease(m_backBuffer);
+                }
+            }
+
+            if(!m_sharedBuffer)
+            {
+                // open shared buffer texture
+                m_sharedBuffer = RendererImpl::openSharedTexture(share_handle);
+                m_sharedHandle = share_handle;
+
+                // create back and front buffer if shared buffer is present
+                if(m_sharedBuffer)
+                {
+                    cvar flags = 0
+                        | BGFX_TEXTURE_RT
+                        | BGFX_TEXTURE_MIN_POINT
+                        | BGFX_TEXTURE_MAG_POINT
+                        | BGFX_TEXTURE_MIP_POINT
+                        | BGFX_TEXTURE_U_CLAMP
+                        | BGFX_TEXTURE_V_CLAMP;
+
+                    // set sync key
+                    m_syncKey = sync_key;
+
+                    // get shared buffer texture info
+                    cvar width = RendererImpl::getWidth(m_sharedBuffer);
+                    cvar height = RendererImpl::getHeight(m_sharedBuffer);
+                    cvar format = RendererImpl::getFormat(m_sharedBuffer);
+
+                    // create textures
+                    m_buffer = bgfx::createTexture2D(width, height, false, 1, bgfx::TextureFormat::BGRA8, flags, nullptr);
+                    m_frontBuffer = RendererImpl::createTexture(width, height, format);
+                    m_backBuffer = RendererImpl::createTexture(width, height, format);
+                }
+            }
+        }
     }
 
 public:
-    void update() override
+    void init()
+    {
+        m_device = static_cast<ID3D11Device*>(bgfx::getInternalData()->context);
+        m_device->GetImmediateContext(&m_deviceContext);
+    }
+
+    void update()
     {
         const int64_t time_us = 0u;
         const int64_t deadline_us = 0u;
@@ -89,9 +172,42 @@ public:
         ScopeLock(m_browserLock);
         
         if(m_browser)
-        {
             m_browser->GetHost()->SendExternalBeginFrame(time_us, deadline_us, interval_us);
+    }
+
+    bgfx::TextureHandle swap()
+    {
+        if(!m_frontBuffer || !m_backBuffer)
+            return m_buffer;
+
+        // TODO: swap front with back buffer if any frame is rendered
+        std::swap(m_frontBuffer, m_backBuffer);
+        
+        // issue copy when necessary
+        if(m_backBuffer && m_sharedBuffer)
+        {
+            IDXGIKeyedMutex* syncMutex;
+            m_sharedBuffer->QueryInterface(__uuidof(IDXGIKeyedMutex), reinterpret_cast<LPVOID*>(&syncMutex));
+
+            if (!syncMutex)
+                return m_buffer;
+
+            cvar state = syncMutex->AcquireSync(m_syncKey, 1u);
+
+            if (state == WAIT_OBJECT_0)
+            {
+                // if state is WAIT_OBJECT_0 we have something 
+                // new to render, so copy the resources now.
+                m_deviceContext->CopyResource(m_backBuffer, m_sharedBuffer);
+            }
+
+            // release sync right now
+            syncMutex->ReleaseSync(m_syncKey);
         }
+
+        // override bgfx texture
+        bgfx::overrideInternal(m_buffer, reinterpret_cast<uintptr_t>(m_frontBuffer));
+        return m_buffer;
     }
 
 public:
@@ -113,8 +229,11 @@ void WebUIView::init()
     window_info.shared_texture_enabled = true;
 	window_info.external_begin_frame_enabled = true;
 
+    // initialize cef view
     m_viewBase = new CEFView();
+    m_viewBase->init();
 
+    // create brower for current view
     CefBrowserHost::CreateBrowser(
         window_info,
         static_cast<CEFView*>(m_viewBase),
@@ -130,16 +249,33 @@ void WebUIView::update()
 
 void WebUIView::resize(uint width, uint height)
 {
-    cvar view = static_cast<CEFView*>(m_viewBase);
+    cvar view = getView();
     view->update();
+}
+
+void WebUIView::render()
+{
+    // swap texture
+    cvar view = getView();
+    
+    var texture = view->swap();
+
+    // draw texture
+    Renderer::getInstance()->setStage(RenderStage::DrawWebUI);
+    Renderer::getInstance()->blit(0, texture);
 }
 
 void WebUIView::onDestroy()
 {
-    cvar view = static_cast<CEFView*>(m_viewBase);
+    cvar view = getView();
 
     if(view && view->m_browser)
         view->m_browser->GetHost()->CloseBrowser(false);
+}
+
+CEFView* WebUIView::getView() const
+{
+    return static_cast<CEFView*>(m_viewBase);
 }
 
 void WebUIView::navigate(Text url)
@@ -147,17 +283,15 @@ void WebUIView::navigate(Text url)
     if (!WebUIEngine::isInitialized())
         return;
 
+    cvar view = getView();
     cvar curl = url.std_str();
-    cvar view = static_cast<CEFView*>(m_viewBase);
-
     var frame = view->m_browser->GetMainFrame();
     frame->LoadURL(curl);
 }
 
 void WebUIView::execute(const char* javaScriptSource)
 {
-    cvar view = static_cast<CEFView*>(m_viewBase);
-
+    cvar view = getView();
     view->m_browser->GetMainFrame()->ExecuteJavaScript(CefString(javaScriptSource), CefString(""), 0);
 }
 

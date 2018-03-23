@@ -43,6 +43,8 @@ void WebUI::update()
 
 void WebUI::render()
 {
+    for (var && view : m_views)
+        view->render();
 }
 
 Ptr<WebUIView> WebUI::createView()
