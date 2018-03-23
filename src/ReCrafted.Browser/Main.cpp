@@ -11,6 +11,6 @@ int CALLBACK WinMain(
     CefMainArgs args(hInstance);
 
     const auto result = CefExecuteProcess(args, nullptr, nullptr);
-
     printf("ReCrafted.Browser CEF exit with code %d", result);
+    return result;
 }

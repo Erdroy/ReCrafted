@@ -10,13 +10,15 @@
 #include <internal/cef_ptr.h>
 #include <cef_browser.h>
 
+#include <condition_variable>
+#include <atomic>
+
 #include "directx11impl.h"
 
 #undef TEXT
 
 #include "Common/Text.h"
 #include "Common/Display.h"
-#include "Core/Logger.h"
 #include "Core/Lock.h"
 #include "Core/Delegate.h"
 #include "Graphics/Renderer/Renderer.h"
@@ -29,6 +31,10 @@ class CEFView : public CefClient, public CefRenderHandler, public CefLifeSpanHan
 private:
     CefRefPtr<CefBrowser> m_browser = nullptr;
     Lock m_browserLock = {};
+    std::mutex m_lock = {};
+
+    std::condition_variable m_syncVar = {};
+    std::atomic_int32_t m_swapCount;
 
     bgfx::TextureHandle m_buffer = {};
 
@@ -101,58 +107,70 @@ public:
         //https://github.com/daktronics/cef-mixer/blob/master/src/html_layer.cpp#L83
         //https://github.com/daktronics/cef-mixer/blob/master/src/d3d11.cpp#L526
 
-        ScopeLock(m_browserLock);
 
         if(m_browser)
         {
-            // TODO: if previous frame is not rendered yet, wait here
-
-            if(m_sharedBuffer)
+            // if previous frame is not rendered yet, wait here
             {
-                // check if shared handle changed if shared buffer is not null,
-                // if so - release textures
-                if(m_sharedHandle != share_handle)
-                {
-                    m_sharedHandle = nullptr;
+                std::unique_lock<std::mutex> lock(m_lock);
+                m_syncVar.wait(lock, [&]() {
+                    return m_swapCount.load() == 0;
+                });
+            }
+            {
 
-                    // release resources
-                    bgfx::destroy(m_buffer);
-                    SafeRelease(m_frontBuffer);
-                    SafeRelease(m_backBuffer);
+                // setup lock guard
+                std::lock_guard<std::mutex> guard(m_lock);
+
+                // check shared handle
+                if (m_sharedBuffer)
+                {
+                    // check if shared handle changed if shared buffer is not null,
+                    // if so - release textures
+                    if (m_sharedHandle != share_handle)
+                    {
+                        m_sharedHandle = nullptr;
+
+                        // release resources
+                        bgfx::destroy(m_buffer);
+                        SafeRelease(m_frontBuffer);
+                        SafeRelease(m_backBuffer);
+                    }
+                }
+
+                if (!m_sharedBuffer)
+                {
+                    // open shared buffer texture
+                    m_sharedBuffer = RendererImpl::openSharedTexture(share_handle);
+                    m_sharedHandle = share_handle;
+
+                    // create back and front buffer if shared buffer is present
+                    if (m_sharedBuffer)
+                    {
+                        cvar flags = 0
+                            | BGFX_TEXTURE_RT
+                            | BGFX_TEXTURE_MIN_POINT
+                            | BGFX_TEXTURE_MAG_POINT
+                            | BGFX_TEXTURE_MIP_POINT
+                            | BGFX_TEXTURE_U_CLAMP
+                            | BGFX_TEXTURE_V_CLAMP;
+
+                        // get shared buffer texture info
+                        cvar width = RendererImpl::getWidth(m_sharedBuffer);
+                        cvar height = RendererImpl::getHeight(m_sharedBuffer);
+                        cvar format = RendererImpl::getFormat(m_sharedBuffer);
+
+                        // create textures
+                        m_buffer = bgfx::createTexture2D(width, height, false, 1, bgfx::TextureFormat::BGRA8, flags, nullptr);
+                        m_frontBuffer = RendererImpl::createTexture(width, height, format);
+                        m_backBuffer = RendererImpl::createTexture(width, height, format);
+                    }
                 }
             }
 
-            if(!m_sharedBuffer)
-            {
-                // open shared buffer texture
-                m_sharedBuffer = RendererImpl::openSharedTexture(share_handle);
-                m_sharedHandle = share_handle;
-
-                // create back and front buffer if shared buffer is present
-                if(m_sharedBuffer)
-                {
-                    cvar flags = 0
-                        | BGFX_TEXTURE_RT
-                        | BGFX_TEXTURE_MIN_POINT
-                        | BGFX_TEXTURE_MAG_POINT
-                        | BGFX_TEXTURE_MIP_POINT
-                        | BGFX_TEXTURE_U_CLAMP
-                        | BGFX_TEXTURE_V_CLAMP;
-
-                    // set sync key
-                    m_syncKey = sync_key;
-
-                    // get shared buffer texture info
-                    cvar width = RendererImpl::getWidth(m_sharedBuffer);
-                    cvar height = RendererImpl::getHeight(m_sharedBuffer);
-                    cvar format = RendererImpl::getFormat(m_sharedBuffer);
-
-                    // create textures
-                    m_buffer = bgfx::createTexture2D(width, height, false, 1, bgfx::TextureFormat::BGRA8, flags, nullptr);
-                    m_frontBuffer = RendererImpl::createTexture(width, height, format);
-                    m_backBuffer = RendererImpl::createTexture(width, height, format);
-                }
-            }
+            // set sync key
+            m_syncKey = sync_key;
+            m_swapCount = 1;
         }
     }
 
@@ -175,13 +193,26 @@ public:
             m_browser->GetHost()->SendExternalBeginFrame(time_us, deadline_us, interval_us);
     }
 
-    bgfx::TextureHandle swap()
+    bgfx::TextureHandle getRenderTexture() const
     {
-        if(!m_frontBuffer || !m_backBuffer)
-            return m_buffer;
+        return m_buffer;
+    }
 
-        // TODO: swap front with back buffer if any frame is rendered
-        std::swap(m_frontBuffer, m_backBuffer);
+    void swap()
+    {
+        ScopeLock(m_browserLock);
+
+        if (!m_browser || !m_frontBuffer || !m_backBuffer)
+            return;
+
+        // setup lock guard
+        std::lock_guard<std::mutex> guard(m_lock);
+
+        // swap front with back buffer ONLY when any frame was rendered
+        if(m_swapCount)
+        {
+            std::swap(m_frontBuffer, m_backBuffer);
+        }
         
         // issue copy when necessary
         if(m_backBuffer && m_sharedBuffer)
@@ -190,11 +221,9 @@ public:
             m_sharedBuffer->QueryInterface(__uuidof(IDXGIKeyedMutex), reinterpret_cast<LPVOID*>(&syncMutex));
 
             if (!syncMutex)
-                return m_buffer;
+                return;
 
-            cvar state = syncMutex->AcquireSync(m_syncKey, 1u);
-
-            if (state == WAIT_OBJECT_0)
+            if (syncMutex->AcquireSync(m_syncKey, 1u) == WAIT_OBJECT_0)
             {
                 // if state is WAIT_OBJECT_0 we have something 
                 // new to render, so copy the resources now.
@@ -207,7 +236,10 @@ public:
 
         // override bgfx texture
         bgfx::overrideInternal(m_buffer, reinterpret_cast<uintptr_t>(m_frontBuffer));
-        return m_buffer;
+
+        // notify about this swap
+        m_swapCount = 0;
+        m_syncVar.notify_one();
     }
 
 public:
@@ -257,12 +289,11 @@ void WebUIView::render()
 {
     // swap texture
     cvar view = getView();
-    
-    var texture = view->swap();
+    view->swap();
 
     // draw texture
     Renderer::getInstance()->setStage(RenderStage::DrawWebUI);
-    Renderer::getInstance()->blit(0, texture);
+    Renderer::getInstance()->blit(0, view->getRenderTexture());
 }
 
 void WebUIView::onDestroy()
