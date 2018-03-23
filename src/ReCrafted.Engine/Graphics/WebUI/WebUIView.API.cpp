@@ -14,6 +14,11 @@ namespace Internal
         if (view)
             view->navigate(url);
     }
+    
+    void execute(WebUIView* view, MonoString* string)
+    {
+
+    }
 }
 
 void WebUIView::initRuntime()
@@ -31,6 +36,15 @@ void WebUIView::initRuntime()
                 API_BIND("ReCrafted.API.Graphics.WebUIView::Internal_Navigate", &Internal::navigate);
 
                 API_PARAM("string", "url");
+            }
+            API_METHOD_END();
+            
+            API_COMMENT("Executes given JavaScript code.");
+            API_METHOD(PUBLIC, REGULAR, "ExecuteJS", EXTERN);
+            {
+                API_BIND("ReCrafted.API.Graphics.WebUIView::Internal_ExecuteJS", &Internal::execute);
+
+                API_PARAM("string", "javaScript");
             }
             API_METHOD_END();
         }

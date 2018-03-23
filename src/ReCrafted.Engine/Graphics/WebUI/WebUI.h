@@ -20,7 +20,7 @@ private:
 
 private:
     Array<Ptr<WebUIView>> m_views = {};
-    Ptr<WebUIEngine> m_engine = nullptr;
+    WebUIEngine* m_engine = nullptr;
 
 private:
     void onInit() override;

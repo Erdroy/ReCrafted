@@ -344,12 +344,15 @@ void Renderer::renderUI()
             UI::m_instance->endDraw(); // end draw UI
         }
         Profiler::endProfile();
+    }
+    Profiler::endProfile();
 
-        Profiler::beginProfile("WebUI");
-        {
-            WebUI::getInstance()->render();
-        }
-        Profiler::endProfile();
+    Profiler::beginProfile("WebUI Render");
+    {
+        // set WebUI state
+        setStage(RenderStage::DrawWebUI);
+
+        WebUI::getInstance()->render();
     }
     Profiler::endProfile();
 }

@@ -11,7 +11,7 @@ void WebUI::onInit()
 {
     Logger::log("WebUI is being initialized...");
 
-    m_engine = Ptr<WebUIEngine>(WebUIEngine::getInstance());
+    m_engine = WebUIEngine::getInstance();
     m_engine->init();
 
     Logger::log("WebUI initialized");
@@ -47,10 +47,10 @@ void WebUI::render()
 Ptr<WebUIView> WebUI::createView()
 {
     var view = Object::createInstance<WebUIView>("ReCrafted.API.Graphics", "WebUIView");
-    view->init();
+   /* view->init();
     m_views.add(view);
 
     Logger::log("Created new WebUIView");
-
+    */
     return view;
 }

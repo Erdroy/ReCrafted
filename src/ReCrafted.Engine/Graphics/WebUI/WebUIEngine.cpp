@@ -2,11 +2,13 @@
 
 #include "WebUIEngine.h"
 #include "Core/Logger.h"
+#include "Platform/Platform.h"
 
 #include <cef_app.h>
 #include <cef_client.h>
+#include <include/cef_version.h>
+
 #include <thread>
-#include "Platform/Platform.h"
 
 #ifdef _WIN32
 #include <direct.h>
@@ -54,16 +56,6 @@ public:
         CefQuitMessageLoop();
     }
     IMPLEMENT_REFCOUNTING(QuitTask);
-};
-
-class CreateViewTask : public CefTask
-{
-public:
-    CreateViewTask() { }
-    void Execute() override {
-
-    }
-    IMPLEMENT_REFCOUNTING(CreateViewTask);
 };
 
 CefRefPtr<HtmlApp> m_app = nullptr;
@@ -120,7 +112,13 @@ void WebUIEngine::init()
     });
     
     m_initialized = true;
-    Logger::log("WebUIEngine initialized");
+    Logger::log("WebUIEngine initialized CEF_VERSION: {0} (Chromium: {1}.{2}.{3}.{4})", 
+        CEF_VERSION, 
+        CHROME_VERSION_MAJOR, 
+        CHROME_VERSION_MINOR, 
+        CHROME_VERSION_BUILD, 
+        CHROME_VERSION_PATCH
+    );
 }
 
 void WebUIEngine::onDispose()
