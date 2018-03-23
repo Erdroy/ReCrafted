@@ -5,6 +5,8 @@
 
 #include <cef_app.h>
 #include <cef_client.h>
+#include <thread>
+#include "Platform/Platform.h"
 
 #ifdef _WIN32
 #include <direct.h>
@@ -22,6 +24,8 @@
 #else
 #pragma comment(lib, "libcef_dll_wrapper.lib")
 #endif
+
+SINGLETON_IMPL(WebUIEngine)
 
 class HtmlApp : public CefApp, public CefBrowserProcessHandler
 {
@@ -50,9 +54,30 @@ private:
     IMPLEMENT_REFCOUNTING(HtmlApp);
 };
 
-CefRefPtr<HtmlApp> m_app = nullptr;
+class QuitTask : public CefTask
+{
+public:
+    QuitTask() { }
+    void Execute() override {
+        CefQuitMessageLoop();
+    }
+    IMPLEMENT_REFCOUNTING(QuitTask);
+};
 
-void WebUIEngine::init()
+class CreateViewTask : public CefTask
+{
+public:
+    CreateViewTask() { }
+    void Execute() override {
+
+    }
+    IMPLEMENT_REFCOUNTING(CreateViewTask);
+};
+
+CefRefPtr<HtmlApp> m_app = nullptr;
+Ptr<std::thread> m_cefThread = nullptr;
+
+void WebUIEngine::runCEF()
 {
     char resourcesDir[FILENAME_MAX];
     if (!GetCurrentDir(resourcesDir, sizeof(resourcesDir)))
@@ -71,8 +96,7 @@ void WebUIEngine::init()
     settings.remote_debugging_port = 25000;
     settings.background_color = 0x00000000;
     settings.windowless_rendering_enabled = true;
-    //settings.multi_threaded_message_loop = false;
-    settings.external_message_pump = false;
+    settings.multi_threaded_message_loop = false;
 
     CefEnableHighDPISupport();
 
@@ -93,25 +117,48 @@ void WebUIEngine::init()
         return;
     }
 
+    // run message loop
+    CefRunMessageLoop();
+}
+
+void WebUIEngine::init()
+{
+    m_cefThread = std::make_shared<std::thread>([this] {
+        runCEF();
+    });
+    
+    m_initialized = true;
     Logger::log("WebUIEngine initialized");
 }
 
-void WebUIEngine::update()
+void WebUIEngine::onDispose()
 {
-    //CefDoMessageLoopWork();
-}
-
-void WebUIEngine::dispose()
-{
-    //CefShutdown();
+    if (m_cefThread)
+    {
+        // post Quit task to CEF to say - kill yourself.
+        CefRefPtr<CefTask> task(new QuitTask());
+        CefPostTask(TID_UI, task.get());
+        m_cefThread->join();
+        m_cefThread.reset();
+    }
 }
 
 void WebUIEngine::runChildren()
 {
+    // this can run on main thread, as children process will exit after running
+    // TODO: ReCrafted.Browser.exe - separate application for browser processes
     CefMainArgs args(getHInstance());
 
     cvar result = CefExecuteProcess(args, nullptr, nullptr);
 
     if (result >= 0) // run CEF process, and exit when main process exits
         exit(0);
+}
+
+bool WebUIEngine::isInitialized()
+{
+    if (!m_instance)
+        return false;
+
+    return m_instance->m_initialized;
 }

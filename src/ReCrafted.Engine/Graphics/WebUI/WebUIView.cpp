@@ -14,10 +14,14 @@
 #include "Core/Logger.h"
 #include "Core/Delegate.h"
 #include "Platform/Platform.h"
+#include "WebUIEngine.h"
 
 void WebUIView::init()
 {
-    CefBrowserSettings browserSettings = {};
+    if (!WebUIEngine::isInitialized())
+        return;
+
+    /*CefBrowserSettings browserSettings = {};
     browserSettings.windowless_frame_rate = 60;
     browserSettings.plugins = STATE_DISABLED;
     browserSettings.webgl = STATE_ENABLED;
@@ -30,7 +34,7 @@ void WebUIView::init()
     m_browser = CefBrowserHost::CreateBrowserSync(window_info, m_browserClient, "", browserSettings, nullptr);
 
     var host = m_browser->GetHost();
-    host->WasResized();
+    host->WasResized();*/
 }
 
 void WebUIView::resize(uint width, uint height)
@@ -45,10 +49,13 @@ void WebUIView::onDestroy()
 
 void WebUIView::navigate(Text url)
 {
-    cvar curl = url.std_str();
+    if (!WebUIEngine::isInitialized())
+        return;
+
+    /*cvar curl = url.std_str();
 
     var frame = m_browser->GetMainFrame();
-    frame->LoadURL(curl);
+    frame->LoadURL(curl);*/
 }
 
 void WebUIView::execute(const char* javaScriptSource)

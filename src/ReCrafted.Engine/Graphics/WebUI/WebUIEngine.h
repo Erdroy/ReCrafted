@@ -8,15 +8,21 @@
 // includes
 #include "ReCrafted.h"
 
-class WebUIEngine : public IDisposable
+class WebUIEngine : public Singleton<WebUIEngine>
 {
+private:
+    bool m_initialized = false;
+
+private:
+    void runCEF();
+
 public:
     void init();
-    void update();
-    void dispose() override;
+    void onDispose() override;
 
 public:
     static void runChildren();
+    static bool isInitialized();
 };
 
 #endif // WEBUIENGINE_H

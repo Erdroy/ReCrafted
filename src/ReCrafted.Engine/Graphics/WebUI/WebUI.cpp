@@ -11,7 +11,7 @@ void WebUI::onInit()
 {
     Logger::log("WebUI is being initialized...");
 
-    m_engine = std::make_shared<WebUIEngine>();
+    m_engine = Ptr<WebUIEngine>(WebUIEngine::getInstance());
     m_engine->init();
 
     Logger::log("WebUI initialized");
@@ -37,7 +37,7 @@ void WebUI::resize(uint width, uint height)
 
 void WebUI::update()
 {
-    m_engine->update();
+
 }
 
 void WebUI::render()
