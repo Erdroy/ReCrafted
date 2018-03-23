@@ -31,6 +31,15 @@ void EngineComponentManager::onDispose()
     m_components.clear();
 }
 
+void EngineComponentManager::update()
+{
+    ScopeLock(m_componentsLock);
+
+    // call onLoad in all components
+    for (var && component : m_components)
+        component->update();
+}
+
 void EngineComponentManager::releaseComponent(EngineComponentBase* component)
 {
     assert(component);

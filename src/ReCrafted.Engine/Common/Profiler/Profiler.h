@@ -46,7 +46,7 @@ private:
 		bool utf8 = false;
 
 	public:
-		void update(double currentTime)
+		void update(double currentTime) 
 		{
 			// update time
 			lastUpdate = currentTime;

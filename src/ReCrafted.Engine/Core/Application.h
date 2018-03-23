@@ -37,10 +37,10 @@ private:
     void onInit() override;
     void onDispose() override;
     void onLoad() override;
+    void update() override;
 
 private:
     void simulate();
-    void update();
     void render();
     void renderUI();
 };

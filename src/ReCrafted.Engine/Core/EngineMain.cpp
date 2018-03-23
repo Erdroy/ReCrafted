@@ -81,13 +81,10 @@ void EngineMain::onUpdate()
     Platform::runEvents();
 
     // update
-    Profiler::getInstance()->update();
-    EntityPool::getInstance()->update();
-    Renderer::getInstance()->update();
-    SceneManager::getInstance()->update();
-    Universe::getInstance()->update();
-    Application::getInstance()->update();
-    WebUI::getInstance()->update();
+    Profiler::update();
+
+    // update all components
+    m_componentManager->update();
 }
 
 void EngineMain::onRender()

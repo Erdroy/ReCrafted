@@ -16,7 +16,7 @@ public:
 
 private:
     void onInit() override;
-    void update();
+    void update() override;
     void onDispose() override;
 };
 

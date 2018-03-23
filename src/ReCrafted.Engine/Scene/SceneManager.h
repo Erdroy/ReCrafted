@@ -24,7 +24,7 @@ private:
     void onDispose() override;
 
 private:
-    void update();
+    void update() override;
 };
 
 #endif // SCENEMANAGER_H

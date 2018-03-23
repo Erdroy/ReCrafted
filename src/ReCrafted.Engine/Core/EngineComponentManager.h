@@ -27,6 +27,7 @@ private:
 private:
     void onLoad();
     void onDispose() override;
+    void update();
 
 private:
     void releaseComponent(EngineComponentBase* component);

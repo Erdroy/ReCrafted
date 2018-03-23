@@ -28,8 +28,8 @@ public:
 private:
     void onInit() override;
     void onDispose() override;
+    void update() override;
 
-    void update();
     void simulate();
     void render();
 };

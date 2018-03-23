@@ -48,7 +48,7 @@ private:
     void onInit() override;
     void onDispose() override;
 
-    void update();
+    void update() override;
 
 public:
     virtual ~Input() = default;

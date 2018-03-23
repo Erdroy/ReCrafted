@@ -42,8 +42,8 @@ private:
 private:
     void onInit() override;
     void onDispose() override;
+    void update() override;
 
-    void update();
     void render();
     void resize(uint width, uint height);
 

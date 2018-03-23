@@ -25,7 +25,7 @@ public:
     virtual ~EntityPool() = default;
 
 public:
-    void update();
+    void update() override;
     void simulate();
 
 public:
