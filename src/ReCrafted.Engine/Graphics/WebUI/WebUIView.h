@@ -9,6 +9,15 @@
 #include "ReCrafted.h"
 #include "Scripting/Object.h"
 
+struct WebUIViewBase
+{
+public:
+    virtual ~WebUIViewBase() = default;
+
+public:
+    virtual void update() = 0;
+};
+
 class WebUIView : public Object
 {
     friend class WebUI;
@@ -17,7 +26,11 @@ private:
     SCRIPTING_API_IMPL()
 
 private:
+    WebUIViewBase* m_viewBase = nullptr;
+
+private:
     void init();
+    void update();
     void resize(uint width, uint height);
     void onDestroy() override;
 

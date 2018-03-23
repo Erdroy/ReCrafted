@@ -17,7 +17,18 @@ namespace Internal
     
     void execute(WebUIView* view, MonoString* string)
     {
+        if (!view)
+            return;
 
+        // convert monostring to ansi string
+        MONO_ANSI_ERR();
+        auto str = MONO_ANSI(string);
+
+        // execute js
+        view->execute(str);
+
+        // free ansi string
+        MONO_ANSI_FREE(str);
     }
 }
 

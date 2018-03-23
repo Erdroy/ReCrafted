@@ -37,7 +37,8 @@ void WebUI::resize(uint width, uint height)
 
 void WebUI::update()
 {
-
+    for (var && view : m_views)
+        view->update();
 }
 
 void WebUI::render()
@@ -47,10 +48,10 @@ void WebUI::render()
 Ptr<WebUIView> WebUI::createView()
 {
     var view = Object::createInstance<WebUIView>("ReCrafted.API.Graphics", "WebUIView");
-   /* view->init();
+    view->init();
     m_views.add(view);
 
     Logger::log("Created new WebUIView");
-    */
+    
     return view;
 }

@@ -13,15 +13,18 @@
 #include "Common/Text.h"
 #include "Common/Display.h"
 #include "Core/Logger.h"
+#include "Core/Lock.h"
 #include "Core/Delegate.h"
 #include "WebUIEngine.h"
 
-class HtmlView : public CefClient, public CefRenderHandler, public CefLifeSpanHandler
+// https://github.com/daktronics/cef-mixer/blob/master/src/html_layer.cpp
+class CEFView : public WebUIViewBase, public CefClient, public CefRenderHandler, public CefLifeSpanHandler
 {
     friend class WebUIView;
 
 private:
     CefRefPtr<CefBrowser> m_browser;
+    Lock m_browserLock = {};
 
 public:
     CefRefPtr<CefRenderHandler> GetRenderHandler() override
@@ -29,7 +32,8 @@ public:
         return this;
     }
 
-    CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler() override {
+    CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler() override 
+    {
         return this;
     }
 
@@ -51,6 +55,14 @@ public:
         return true;
     }
 
+    void OnAfterCreated(CefRefPtr<CefBrowser> browser) override
+    {
+        assert(CefCurrentlyOn(TID_UI));
+
+        ScopeLock(m_browserLock);
+        m_browser = browser;
+    }
+
     void OnPaint(CefRefPtr<CefBrowser> browser, PaintElementType type, const RectList &dirtyRects, const void *buffer, int width, int height) override
     {
     }
@@ -62,34 +74,28 @@ public:
         void* share_handle,
         uint64 sync_key) override
     {
-        // https://github.com/daktronics/cef-mixer/blob/master/src/html_layer.cpp
-        // https://github.com/Erdroy/ReCrafted/blob/WebUI/src/ReCrafted.Engine/Graphics/WebUI/WebUI.cpp
-    }
+        if (type == PET_POPUP)
+            return;
 
-    void OnAfterCreated(CefRefPtr<CefBrowser> browser) override
-    {
-        assert(CefCurrentlyOn(TID_UI));
-
-        m_browser = browser;
-    }
-
-    bool OnBeforePopup(CefRefPtr<CefBrowser> browser,
-        CefRefPtr<CefFrame> frame,
-        const CefString& target_url,
-        const CefString& target_frame_name,
-        WindowOpenDisposition target_disposition,
-        bool user_gesture,
-        const CefPopupFeatures& popupFeatures,
-        CefWindowInfo& windowInfo,
-        CefRefPtr<CefClient>& client,
-        CefBrowserSettings& settings,
-        bool* no_javascript_access) override
-    {
-        return false;
     }
 
 public:
-    IMPLEMENT_REFCOUNTING(HtmlView);
+    void update() override
+    {
+        const int64_t time_us = 0u;
+        const int64_t deadline_us = 0u;
+        const int64_t interval_us = 0u;
+
+        ScopeLock(m_browserLock);
+        
+        if(m_browser)
+        {
+            m_browser->GetHost()->SendExternalBeginFrame(time_us, deadline_us, interval_us);
+        }
+    }
+
+public:
+    IMPLEMENT_REFCOUNTING(CEFView);
 };
 
 void WebUIView::init()
@@ -97,7 +103,7 @@ void WebUIView::init()
     if (!WebUIEngine::isInitialized())
         return;
 
-    /*CefBrowserSettings viewSettings = {};
+    CefBrowserSettings viewSettings = {};
     viewSettings.windowless_frame_rate = 120;
     viewSettings.webgl = STATE_DISABLED;
     viewSettings.plugins = STATE_DISABLED;
@@ -107,26 +113,33 @@ void WebUIView::init()
     window_info.shared_texture_enabled = true;
 	window_info.external_begin_frame_enabled = true;
 
-    CefRefPtr<HtmlView> view(new HtmlView());
+    m_viewBase = new CEFView();
 
     CefBrowserHost::CreateBrowser(
         window_info,
-        view,
+        static_cast<CEFView*>(m_viewBase),
         "about:blank",
         viewSettings,
-        nullptr);*/
+        nullptr);
+}
 
-
+void WebUIView::update()
+{
+    m_viewBase->update();
 }
 
 void WebUIView::resize(uint width, uint height)
 {
+    cvar view = static_cast<CEFView*>(m_viewBase);
+    view->update();
 }
 
 void WebUIView::onDestroy()
 {
-    //m_browser->GetHost()->CloseBrowser(false);
-    //m_browserClient->Release();
+    cvar view = static_cast<CEFView*>(m_viewBase);
+
+    if(view && view->m_browser)
+        view->m_browser->GetHost()->CloseBrowser(false);
 }
 
 void WebUIView::navigate(Text url)
@@ -134,14 +147,18 @@ void WebUIView::navigate(Text url)
     if (!WebUIEngine::isInitialized())
         return;
 
-    /*cvar curl = url.std_str();
+    cvar curl = url.std_str();
+    cvar view = static_cast<CEFView*>(m_viewBase);
 
-    var frame = m_browser->GetMainFrame();
-    frame->LoadURL(curl);*/
+    var frame = view->m_browser->GetMainFrame();
+    frame->LoadURL(curl);
 }
 
 void WebUIView::execute(const char* javaScriptSource)
 {
+    cvar view = static_cast<CEFView*>(m_viewBase);
+
+    view->m_browser->GetMainFrame()->ExecuteJavaScript(CefString(javaScriptSource), CefString(""), 0);
 }
 
 void WebUIView::bind(const char* bindName, Delegate<void> delegate)
