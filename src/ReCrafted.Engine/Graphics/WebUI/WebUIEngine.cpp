@@ -74,13 +74,15 @@ void WebUIEngine::runCEF()
     CefString(&settings.locales_dir_path).FromASCII("cef/locales");
     CefString(&settings.cache_path).FromASCII("cef/cache");
     CefString(&settings.log_file).FromASCII("cef/debug.log");
-    CefString(&settings.user_agent).FromASCII("ReCraftedBrowser");
+    CefString(&settings.user_agent).FromASCII("ReCrafted.Browser");
+    CefString(&settings.browser_subprocess_path).FromASCII("ReCrafted.Browser.exe");
 
     settings.log_severity = LOGSEVERITY_WARNING;
     settings.remote_debugging_port = 25000;
     settings.background_color = 0x00000000;
     settings.windowless_rendering_enabled = true;
     settings.multi_threaded_message_loop = false;
+    settings.external_begin_frame_enabled = true;
 
     CefEnableHighDPISupport();
 
@@ -139,7 +141,6 @@ void WebUIEngine::onDispose()
 void WebUIEngine::runChildren()
 {
     // this can run on main thread, as children process will exit after running
-    // TODO: ReCrafted.Browser.exe - separate application for browser processes
     CefMainArgs args(getHInstance());
 
     cvar result = CefExecuteProcess(args, nullptr, nullptr);
