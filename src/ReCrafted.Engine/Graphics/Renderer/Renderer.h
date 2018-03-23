@@ -61,6 +61,13 @@ public:
     void draw(Ptr<Mesh>& mesh);
 
     /**
+     * \brief Blits texture into given view.
+     * \param view The view id.
+     * \param texture The texture to be blit into the desired view.
+     */
+    void blit(uint view, bgfx::TextureHandle texture);
+
+    /**
      * \brief Sets given shader as current.
      */
     void setShader(Ptr<Shader>& shader);

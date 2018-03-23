@@ -34,18 +34,6 @@ Ptr<Shader> m_blitShader = nullptr;
 Ptr<Shader> m_gbufferShader = nullptr;
 Ptr<Shader> m_deferredFinal = nullptr;
 
-/*
-void Renderer::blit(uint view, bgfx::TextureHandle texture)
-{
-    auto textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
-
-    bgfx::setTexture(0, m_texture0, texture, textureFlags);
-
-    bgfx::setVertexBuffer(0, m_blitMesh->m_vertexBuffer);
-    bgfx::setIndexBuffer(m_blitMesh->m_indexBuffer);
-    bgfx::submit(view, m_blitShader->m_program);
-}*/
-
 void Renderer::loadInternalShaders()
 {
     Logger::logInfo("Loading internal shaders");
@@ -363,6 +351,17 @@ void Renderer::draw(Ptr<Mesh>& mesh)
     bgfx::setIndexBuffer(mesh->m_indexBuffer);
 
     bgfx::submit(m_wireframe ? 0 : m_viewId, m_currentShader->m_program);
+}
+
+void Renderer::blit(uint view, bgfx::TextureHandle texture)
+{
+    auto textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
+
+    bgfx::setTexture(0, m_texture0, texture, textureFlags);
+
+    bgfx::setVertexBuffer(0, m_blitMesh->m_vertexBuffer);
+    bgfx::setIndexBuffer(m_blitMesh->m_indexBuffer);
+    bgfx::submit(view, m_blitShader->m_program);
 }
 
 void Renderer::setShader(Ptr<Shader>& shader)
