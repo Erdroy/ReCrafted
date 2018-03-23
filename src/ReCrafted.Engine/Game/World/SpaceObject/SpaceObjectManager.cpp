@@ -42,6 +42,8 @@ void SpaceObjectManager::onDispose()
 
 void SpaceObjectManager::worker_function()
 {
+    Platform::setThreadName("SpaceObjectManager Worker");
+
 	Ptr<IVoxelMesher> mesher(new MCMesher);
 
 	queueItem item;
@@ -81,7 +83,7 @@ void SpaceObjectManager::init()
 	m_running = true;
 
 	// run threads
-	var maxThreads = Platform::cpuCount();
+	cvar maxThreads = Platform::cpuCount();
 
 	Logger::logInfo("Starting SpaceObjectManager workers.");
 

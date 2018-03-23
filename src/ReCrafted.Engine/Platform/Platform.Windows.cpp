@@ -1,5 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
+#include <thread>
 #if _WIN32
 
 #if USE_CRTDBG
@@ -33,6 +34,44 @@ HICON m_cursorIBeam = nullptr;
 int m_currentCursorId = 0;
 
 LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam);
+
+// source: https://stackoverflow.com/questions/10121560/stdthread-naming-your-thread
+#pragma pack(push,8)
+typedef struct tagTHREADNAME_INFO
+{
+    DWORD dwType; // Must be 0x1000.
+    LPCSTR szName; // Pointer to name (in user addr space).
+    DWORD dwThreadID; // Thread ID (-1=caller thread).
+    DWORD dwFlags; // Reserved for future use, must be zero.
+} THREADNAME_INFO;
+#pragma pack(pop)
+
+void SetThreadName(uint32_t dwThreadID, const char* threadName)
+{
+    THREADNAME_INFO info;
+    info.dwType = 0x1000;
+    info.szName = threadName;
+    info.dwThreadID = dwThreadID;
+    info.dwFlags = 0;
+
+    __try
+    {
+        RaiseException(0x406D1388, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR*)&info);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+    }
+}
+void SetThreadName(const char* threadName)
+{
+    SetThreadName(GetCurrentThreadId(), threadName);
+}
+
+void SetThreadName(std::thread* thread, const char* threadName)
+{
+    DWORD threadId = ::GetThreadId(static_cast<HANDLE>(thread->native_handle()));
+    SetThreadName(threadId, threadName);
+}
 
 void Platform::initialize()
 {
@@ -264,5 +303,10 @@ void Platform::getWorkingDirectory(char* buffer)
 
 	// copy
 	strcpy_s(buffer, length, i_buffer);
+}
+
+void Platform::setThreadName(const char* name)
+{
+    SetThreadName(name);
 }
 #endif

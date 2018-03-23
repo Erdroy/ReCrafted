@@ -182,6 +182,12 @@ public:
 	 * \param buffer Output buffer.
 	 */
 	static void getWorkingDirectory(char* buffer);
+    
+    /**
+     * \brief Sets debug name for the current thread.
+     * \param name The desired thread name.
+     */
+    static void setThreadName(const char* name);
 };
 
 #endif // PLATFORM_H

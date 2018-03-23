@@ -45,6 +45,12 @@ public:
     }
 
 public:
+    bool isValid() const
+    {
+        return m_instance && m_delegate;
+    }
+
+public:
     bool operator == (const Delegate<T>& second)
     {
         return m_delegate == second.m_delegate && m_instance == second.m_instance;

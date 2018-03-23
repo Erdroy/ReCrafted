@@ -20,12 +20,14 @@
 #include "Scene/SceneManager.h"
 #include "Scripting/ScriptingEngine.h"
 #include "Graphics/Renderer/Renderer.h"
+#include "TaskManager.h"
 
 EngineMain* EngineMain::m_instance;
 
 void EngineMain::registerComponents() const
 {
     // initialize the rest of the engine components
+    m_componentManager->registerComponent(TaskManager::getInstance());
     m_componentManager->registerComponent(Renderer::getInstance());
     m_componentManager->registerComponent(Application::getInstance());
     m_componentManager->registerComponent(Profiler::getInstance());
@@ -100,6 +102,8 @@ void EngineMain::onWindowResized()
 
 void EngineMain::initialize()
 {
+    Platform::setThreadName("Main Thread");
+
     // create update loop
     m_updateLoop = std::make_shared<UpdateLoop>();
 

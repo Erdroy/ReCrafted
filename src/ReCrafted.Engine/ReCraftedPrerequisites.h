@@ -61,6 +61,9 @@ class WebUI;
 class WebUIView;
 class WebUIEngine;
 
+class TaskManager;
+struct Task;
+
 class ScriptingEngine;
 class Bindings;
 class Domain;
