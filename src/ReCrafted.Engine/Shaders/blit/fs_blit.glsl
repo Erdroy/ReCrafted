@@ -9,6 +9,9 @@ SAMPLER2D(m_texture0, 0);
 
 PixelShader()
 {
-	vec4 color = texture2D(m_texture0, m_uv);
+    vec2 uv = m_uv;
+    uv.y = 1.0f - uv.y;
+
+	vec4 color = texture2D(m_texture0, uv);
 	FS_OUTPUT(0, color);
 }

@@ -111,7 +111,7 @@ namespace ReCrafted.Game
 
                 if (Input.IsKeyDown(Keys.N))
                 {
-                    _uiView.Navigate("https://www.youtube.com/watch?v=5_j84-ZRlOI");
+                    _uiView.Navigate("https://www.youtube.com/watch?v=VAF4rfu-ETA");
                 }
 
                 if (Input.IsKeyDown(Keys.X))

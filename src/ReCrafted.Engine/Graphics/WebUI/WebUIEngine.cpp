@@ -75,7 +75,7 @@ void WebUIEngine::runCEF()
     CefString(&settings.cache_path).FromASCII("cef/cache");
     CefString(&settings.log_file).FromASCII("cef/debug.log");
     CefString(&settings.user_agent).FromASCII("ReCrafted.Browser");
-    CefString(&settings.browser_subprocess_path).FromASCII("ReCrafted.Browser.exe");
+    //CefString(&settings.browser_subprocess_path).FromASCII("ReCrafted.Browser.exe");
 
     settings.log_severity = LOGSEVERITY_WARNING;
     settings.remote_debugging_port = 25000;

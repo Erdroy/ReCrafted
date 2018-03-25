@@ -111,60 +111,58 @@ public:
         if(m_browser)
         {
             // if previous frame is not rendered yet, wait here
-            {
+            /*{
                 std::unique_lock<std::mutex> lock(m_lock);
-                m_syncVar.wait(lock, [&]() {
+                m_syncVar.wait(m_lock, [&]() {
                     return m_swapCount.load() == 0;
                 });
-            }
+            }*/
+
+            // setup lock guard
+            std::lock_guard<std::mutex> guard(m_lock);
+
+            // check shared handle
+            if (m_sharedBuffer)
             {
+                // check if shared handle changed if shared buffer is not null,
+                // if so - release textures
+                if (m_sharedHandle != share_handle)
+                {
+                    m_sharedHandle = nullptr;
 
-                // setup lock guard
-                std::lock_guard<std::mutex> guard(m_lock);
+                    // release resources
+                    bgfx::destroy(m_buffer);
+                    SafeRelease(m_frontBuffer);
+                    SafeRelease(m_backBuffer);
+                }
+            }
 
-                // check shared handle
+            if (!m_sharedBuffer)
+            {
+                // open shared buffer texture
+                m_sharedBuffer = RendererImpl::openSharedTexture(share_handle);
+                m_sharedHandle = share_handle;
+
+                // create back and front buffer if shared buffer is present
                 if (m_sharedBuffer)
                 {
-                    // check if shared handle changed if shared buffer is not null,
-                    // if so - release textures
-                    if (m_sharedHandle != share_handle)
-                    {
-                        m_sharedHandle = nullptr;
+                    cvar flags = 0
+                        | BGFX_TEXTURE_RT
+                        | BGFX_TEXTURE_MIN_POINT
+                        | BGFX_TEXTURE_MAG_POINT
+                        | BGFX_TEXTURE_MIP_POINT
+                        | BGFX_TEXTURE_U_CLAMP
+                        | BGFX_TEXTURE_V_CLAMP;
 
-                        // release resources
-                        bgfx::destroy(m_buffer);
-                        SafeRelease(m_frontBuffer);
-                        SafeRelease(m_backBuffer);
-                    }
-                }
+                    // get shared buffer texture info
+                    cvar width = RendererImpl::getWidth(m_sharedBuffer);
+                    cvar height = RendererImpl::getHeight(m_sharedBuffer);
+                    cvar format = RendererImpl::getFormat(m_sharedBuffer);
 
-                if (!m_sharedBuffer)
-                {
-                    // open shared buffer texture
-                    m_sharedBuffer = RendererImpl::openSharedTexture(share_handle);
-                    m_sharedHandle = share_handle;
-
-                    // create back and front buffer if shared buffer is present
-                    if (m_sharedBuffer)
-                    {
-                        cvar flags = 0
-                            | BGFX_TEXTURE_RT
-                            | BGFX_TEXTURE_MIN_POINT
-                            | BGFX_TEXTURE_MAG_POINT
-                            | BGFX_TEXTURE_MIP_POINT
-                            | BGFX_TEXTURE_U_CLAMP
-                            | BGFX_TEXTURE_V_CLAMP;
-
-                        // get shared buffer texture info
-                        cvar width = RendererImpl::getWidth(m_sharedBuffer);
-                        cvar height = RendererImpl::getHeight(m_sharedBuffer);
-                        cvar format = RendererImpl::getFormat(m_sharedBuffer);
-
-                        // create textures
-                        m_buffer = bgfx::createTexture2D(width, height, false, 1, bgfx::TextureFormat::BGRA8, flags, nullptr);
-                        m_frontBuffer = RendererImpl::createTexture(width, height, format);
-                        m_backBuffer = RendererImpl::createTexture(width, height, format);
-                    }
+                    // create textures
+                    m_buffer = bgfx::createTexture2D(width, height, false, 1, bgfx::TextureFormat::BGRA8, flags, nullptr);
+                    m_frontBuffer = RendererImpl::createTexture(width, height, format);
+                    m_backBuffer = RendererImpl::createTexture(width, height, format);
                 }
             }
 
@@ -200,18 +198,20 @@ public:
 
     void swap()
     {
+        // setup lock guard
+        std::lock_guard<std::mutex> guard(m_lock);
         ScopeLock(m_browserLock);
 
         if (!m_browser || !m_frontBuffer || !m_backBuffer)
             return;
 
-        // setup lock guard
-        std::lock_guard<std::mutex> guard(m_lock);
-
         // swap front with back buffer ONLY when any frame was rendered
         if(m_swapCount)
         {
             std::swap(m_frontBuffer, m_backBuffer);
+
+            // override bgfx texture
+            bgfx::overrideInternal(m_buffer, reinterpret_cast<uintptr_t>(m_frontBuffer));
         }
         
         // issue copy when necessary
@@ -223,7 +223,7 @@ public:
             if (!syncMutex)
                 return;
 
-            if (syncMutex->AcquireSync(m_syncKey, 1u) == WAIT_OBJECT_0)
+            if (syncMutex->AcquireSync(m_syncKey, 0u) == WAIT_OBJECT_0)
             {
                 // if state is WAIT_OBJECT_0 we have something 
                 // new to render, so copy the resources now.
@@ -233,9 +233,6 @@ public:
             // release sync right now
             syncMutex->ReleaseSync(m_syncKey);
         }
-
-        // override bgfx texture
-        bgfx::overrideInternal(m_buffer, reinterpret_cast<uintptr_t>(m_frontBuffer));
 
         // notify about this swap
         m_swapCount = 0;
@@ -293,7 +290,7 @@ void WebUIView::render()
 
     // draw texture
     Renderer::getInstance()->setStage(RenderStage::DrawWebUI);
-    Renderer::getInstance()->blit(0, view->getRenderTexture());
+    Renderer::getInstance()->blit(0, view->getRenderTexture(), true);
 }
 
 void WebUIView::onDestroy()

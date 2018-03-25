@@ -353,9 +353,12 @@ void Renderer::draw(Ptr<Mesh>& mesh)
     bgfx::submit(m_wireframe ? 0 : m_viewId, m_currentShader->m_program);
 }
 
-void Renderer::blit(uint view, bgfx::TextureHandle texture)
+void Renderer::blit(uint view, bgfx::TextureHandle texture, bool swapY)
 {
     auto textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
+
+    cvar swap = swapY ? 1.0f : -1.0f;
+    m_blitShader->setValue(0, &swap);
 
     bgfx::setTexture(0, m_texture0, texture, textureFlags);
 
