@@ -38,7 +38,7 @@ void EngineMain::registerComponents() const
     m_componentManager->registerComponent(SceneManager::getInstance());
     m_componentManager->registerComponent(Universe::getInstance());
     m_componentManager->registerComponent(UI::getInstance());
-    m_componentManager->registerComponent(WebUI::getInstance());
+    //m_componentManager->registerComponent(WebUI::getInstance());
 }
 
 void EngineMain::createMainWindow()

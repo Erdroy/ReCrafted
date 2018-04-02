@@ -273,17 +273,26 @@ void WebUIView::init()
 
 void WebUIView::update()
 {
+    if (!WebUIEngine::isInitialized())
+        return;
+
     m_viewBase->update();
 }
 
 void WebUIView::resize(uint width, uint height)
 {
+    if (!WebUIEngine::isInitialized())
+        return;
+
     cvar view = getView();
     view->update();
 }
 
 void WebUIView::render()
 {
+    if (!WebUIEngine::isInitialized())
+        return;
+
     // swap texture
     cvar view = getView();
     view->swap();
@@ -319,6 +328,9 @@ void WebUIView::navigate(Text url)
 
 void WebUIView::execute(const char* javaScriptSource)
 {
+    if (!WebUIEngine::isInitialized())
+        return;
+
     cvar view = getView();
     view->m_browser->GetMainFrame()->ExecuteJavaScript(CefString(javaScriptSource), CefString(""), 0);
 }
