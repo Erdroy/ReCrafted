@@ -68,23 +68,13 @@ void SpaceObjectChunk::generate(IVoxelMesher* mesher) // WARNING: this function 
     if (!m_hasSurface)
         return;
 
-	var mesh = Mesh::createMesh();
-
-	// get which directions this chunk must get the bordering skirts
-	cvar borders = getLodBorders();
-    cvar voxelData = m_chunkData->getData();
     var storage = spaceObject->getStorage();
 
     // try to read chunk data (if not read actually)
     if(!m_chunkData->isLoaded())
         storage->readChunkData(m_chunkData);
 
-	// generate mesh
-    mesher->generate(m_position, m_lod, borders, mesh, voxelData);
-
-    ScopeLock(m_meshLock);
-    SafeDispose(m_newMesh);
-    m_newMesh = mesh;
+    rebuild(mesher);
 }
 
 void SpaceObjectChunk::rebuild(IVoxelMesher* mesher)
