@@ -11,6 +11,7 @@
 
 #include "Core/Defines.h"
 #include "Core/Types.h"
+#include "Core/Memory.h"
 #include "Core/IDisposable.h"
 #include "Core/Singleton.h"
 #include "Common/ReCraftedAPI.h"

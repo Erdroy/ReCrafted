@@ -21,6 +21,10 @@ int CALLBACK WinMain(
 	LPSTR lpCmdLine,
 	int nCmdShow)
 {
+    // initialize memory
+    rpmalloc_initialize();
+
+    // parse arguments
 	GameInfo::parseArguments(Text(GetCommandLineA()));
 
     // run WebUI engine children process
@@ -40,6 +44,8 @@ int CALLBACK WinMain(
 
     // shutdown platform
     Platform::shutdown();
+
+    rpmalloc_finalize();
 
 	return ERROR_SUCCESS;
 }

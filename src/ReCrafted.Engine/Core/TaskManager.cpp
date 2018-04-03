@@ -12,6 +12,8 @@ SINGLETON_IMPL(TaskManager)
 void TaskManager::worker_function()
 {
     Platform::setThreadName("TaskManager Worker");
+    
+    var thread = RPMallocThread();
 
     Task task;
     while (m_running)

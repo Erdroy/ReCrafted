@@ -44,6 +44,8 @@ void SpaceObjectManager::worker_function()
 {
     Platform::setThreadName("SpaceObjectManager Worker");
 
+    var thread = RPMallocThread();
+
 	Ptr<IVoxelMesher> mesher(new MCMesher);
 
 	queueItem item;

@@ -5,7 +5,7 @@
 #ifndef ARRAY_H
 #define ARRAY_H
 
-#include "Core/Defines.h"
+#include "ReCrafted.h"
 #include <vector>
 #include <algorithm>
 
