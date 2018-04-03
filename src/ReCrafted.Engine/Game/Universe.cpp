@@ -3,7 +3,6 @@
 #include "Universe.h"
 #include "Common/Input/Input.h"
 #include "Graphics/Camera.h"
-#include "Graphics/DebugDraw.h"
 #include "World/SpaceObject/SpaceObjectManager.h"
 #include "World/SpaceObject/Storage/VoxelStorage.h"
 

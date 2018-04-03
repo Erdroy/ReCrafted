@@ -12,7 +12,6 @@
 #include "Graphics/UI/UI.h"
 #include "Graphics/Camera.h"
 #include "Graphics/Font.h"
-#include "Graphics/DebugDraw.h"
 #include "Script.h"
 #include "Core/Application.h"
 #include "Graphics/WebUI/WebUI.h"
@@ -35,7 +34,6 @@ void Bindings::bind()
 	Font::initRuntime();
     Entity::initRuntime();
     Script::initRuntime();
-	DebugDraw::initRuntime();
 	Profiler::initRuntime();
 	KeyboardBuffer::initRuntime();
 }
