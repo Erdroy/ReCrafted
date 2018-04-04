@@ -6,7 +6,6 @@
 #define SINGLETON_H
 
 // includes
-#include "ReCrafted.h"
 #include "IDisposable.h"
 
 /**

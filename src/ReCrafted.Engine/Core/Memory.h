@@ -3,16 +3,13 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
-
 // includes
-#include <cstdio>
-#include <cstdlib>
-#include <memory>
+#include "ReCraftedConfig.h"
 
+#include <memory>
 #include <rpmalloc.h>
 
-#ifdef COMPILE_WITH_RPMALLOC
-
+#if COMPILE_WITH_RPMALLOC
 #pragma warning( push )
 #pragma warning( disable : 4595)
 inline void* operator new(const std::size_t size) noexcept
@@ -34,8 +31,7 @@ inline void operator delete[](void* ptr) noexcept
 {
     rpfree(ptr);
 }
-#pragma warning( pop ) 
-
+#pragma warning( pop )
 #endif
 
 struct RPMallocThread
