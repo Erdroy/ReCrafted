@@ -36,7 +36,8 @@ private:
     std::condition_variable m_syncVar = {};
     std::atomic_int32_t m_swapCount;
 
-    bgfx::TextureHandle m_buffer = {};
+    bgfx::TextureHandle m_bgfxFrontBuffer = {};
+    bgfx::TextureHandle m_bgfxBackBuffer = {};
 
     uint64 m_syncKey = 0u;
 
@@ -51,7 +52,8 @@ private:
 public:
     ~CEFView()
     {
-        bgfx::destroy(m_buffer);
+        bgfx::destroy(m_bgfxFrontBuffer);
+        bgfx::destroy(m_bgfxBackBuffer);
         SafeRelease(m_frontBuffer);
         SafeRelease(m_backBuffer);
     }
@@ -110,7 +112,7 @@ public:
 
         if(m_browser)
         {
-            // if previous frame is not rendered yet, wait here
+            // TODO: if previous frame is not rendered yet, wait here
             /*{
                 std::unique_lock<std::mutex> lock(m_lock);
                 m_syncVar.wait(m_lock, [&]() {
@@ -131,7 +133,8 @@ public:
                     m_sharedHandle = nullptr;
 
                     // release resources
-                    bgfx::destroy(m_buffer);
+                    bgfx::destroy(m_bgfxFrontBuffer);
+                    bgfx::destroy(m_bgfxBackBuffer);
                     SafeRelease(m_frontBuffer);
                     SafeRelease(m_backBuffer);
                 }
@@ -160,9 +163,15 @@ public:
                     cvar format = RendererImpl::getFormat(m_sharedBuffer);
 
                     // create textures
-                    m_buffer = bgfx::createTexture2D(width, height, false, 1, bgfx::TextureFormat::BGRA8, flags, nullptr);
+                    m_bgfxFrontBuffer = bgfx::createTexture2D(width, height, false, 1, bgfx::TextureFormat::BGRA8, flags, nullptr);
+                    m_bgfxBackBuffer = bgfx::createTexture2D(width, height, false, 1, bgfx::TextureFormat::BGRA8, flags, nullptr);
+
                     m_frontBuffer = RendererImpl::createTexture(width, height, format);
                     m_backBuffer = RendererImpl::createTexture(width, height, format);
+
+                    // override bgfx texture
+                    bgfx::overrideInternal(m_bgfxFrontBuffer, reinterpret_cast<uintptr_t>(m_frontBuffer));
+                    bgfx::overrideInternal(m_bgfxBackBuffer, reinterpret_cast<uintptr_t>(m_backBuffer));
                 }
             }
 
@@ -193,7 +202,7 @@ public:
 
     bgfx::TextureHandle getRenderTexture() const
     {
-        return m_buffer;
+        return m_bgfxFrontBuffer;
     }
 
     void swap()
@@ -209,9 +218,7 @@ public:
         if(m_swapCount)
         {
             std::swap(m_frontBuffer, m_backBuffer);
-
-            // override bgfx texture
-            bgfx::overrideInternal(m_buffer, reinterpret_cast<uintptr_t>(m_frontBuffer));
+            std::swap(m_bgfxFrontBuffer, m_bgfxBackBuffer);
         }
         
         // issue copy when necessary
