@@ -12,8 +12,6 @@ SINGLETON_IMPL(TaskManager)
 void TaskManager::worker_function()
 {
     Platform::setThreadName("TaskManager Worker");
-    
-    var thread = RPMallocThread();
 
     Task task;
     while (m_running)
@@ -44,6 +42,7 @@ void TaskManager::onInit()
     for (var i = 0; i < maxThreads; i++)
     {
         m_workerThreads.add(new std::thread([this] {
+            var thread = RPMallocThread();
             worker_function();
         }));
     }

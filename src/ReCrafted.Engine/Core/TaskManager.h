@@ -13,6 +13,7 @@
 #include "Containers/Array.h"
 
 #include <concurrentqueue.h>
+#include <atomic>
 
 /**
  * \brief TaskManager class. Allows queueing task for processing in multi-threaded enviroment.
@@ -22,7 +23,7 @@ class TaskManager : public EngineComponent<TaskManager>
     friend struct Task;
 
 private:
-    bool m_running = false;
+    std::atomic<bool> m_running = false;
     uint m_sleepTime = 10;
     uint m_lastId = 0u;
     Lock m_callbackLock = {};

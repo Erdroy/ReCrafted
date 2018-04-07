@@ -25,9 +25,9 @@ Lock m_calbacksLock;
 
 void SpaceObjectManager::onDispose()
 {
-	m_running = false;
-
 	Logger::logInfo("Waiting for SpaceObjectManager workers to exit...");
+
+    m_running = false;
 
 	// wait for threads to exit
 	for (auto && thread : m_workerThreads)
@@ -45,38 +45,38 @@ void SpaceObjectManager::worker_function()
 {
     Platform::setThreadName("SpaceObjectManager Worker");
 
-    var thread = RPMallocThread();
+    // create mesher
+    var mesher = MCMesher();
 
-    MCMesher mesher = {};
-
-	queueItem item;
-	while(m_running)
-	{
-		if(!m_loadingQueue.try_dequeue(item))
-		{
-			Platform::sleep(10);
-			continue;
-		}
+    // run
+    queueItem item;
+    while (m_running)
+    {
+        if (!m_loadingQueue.try_dequeue(item))
+        {
+            Platform::sleep(10);
+            continue;
+        }
 
         // populate or depopulate the queued node
-	    switch (item.mode) { 
-	        case ProcessMode::Populate:
-                item.node->worker_populate(&mesher); 
-	        break;
-            case ProcessMode::Depopulate:
-                item.node->worker_depopulate(&mesher);
-	        break;
-            case ProcessMode::Rebuild:
-                item.node->worker_rebuild(&mesher);
-	        break;
-            default:;
-	    }
+        switch (item.mode) {
+        case ProcessMode::Populate:
+            item.node->worker_populate(&mesher);
+            break;
+        case ProcessMode::Depopulate:
+            item.node->worker_depopulate(&mesher);
+            break;
+        case ProcessMode::Rebuild:
+            item.node->worker_rebuild(&mesher);
+            break;
+        default:;
+        }
 
-		// queue callback
-		m_calbacksLock.lock();
-		m_callbacks.add(item.callback);
-		m_calbacksLock.unlock();
-	}
+        // queue callback
+        m_calbacksLock.lock();
+        m_callbacks.add(item.callback);
+        m_calbacksLock.unlock();
+    }
 }
 
 void SpaceObjectManager::init()
@@ -88,11 +88,12 @@ void SpaceObjectManager::init()
 	// run threads
 	cvar maxThreads = Platform::cpuCount();
 
-	Logger::logInfo("Starting SpaceObjectManager workers.");
+	Logger::logInfo("Starting {0} SpaceObjectManager workers.", maxThreads);
 
 	for(var i = 0; i < maxThreads; i ++)
 	{
 		m_workerThreads.add(new std::thread([this] {
+            var thread = RPMallocThread();
 			worker_function();
 		}));
 	}

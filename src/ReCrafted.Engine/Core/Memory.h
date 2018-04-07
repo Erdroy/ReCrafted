@@ -44,7 +44,8 @@ public:
 
     ~RPMallocThread()
     {
-        rpmalloc_thread_finalize();
+        // TODO: Fix thread finalization
+        //rpmalloc_thread_finalize();
     }
 };
 #endif // MEMORY_H

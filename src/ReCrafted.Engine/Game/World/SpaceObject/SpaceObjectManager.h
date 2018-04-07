@@ -11,6 +11,7 @@
 #include "Core/Containers/Array.h"
 
 #include <thread>
+#include <atomic>
 
 class SpaceObjectOctreeNode;
 class SpaceObjectChunk;
@@ -29,7 +30,7 @@ class SpaceObjectManager : public Singleton<SpaceObjectManager>
 {
 private:
 	Array<std::thread*> m_workerThreads = {};
-	volatile bool m_running = false;
+    std::atomic<bool> m_running = false;
 
 public:
 	virtual ~SpaceObjectManager() { }
@@ -37,7 +38,8 @@ public:
 private:
 	void onDispose() override;
 
-	void worker_function();
+public:
+    void worker_function();
 
 public:
 	/**
