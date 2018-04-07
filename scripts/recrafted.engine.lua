@@ -28,6 +28,11 @@ project "ReCrafted.Engine"
 		path.join(LIBS_DIR, "cef/include"),
 		path.join(LIBS_DIR, "cef"),
 		path.join(LIBS_DIR, "rpmalloc/include"),
+		path.join(LIBS_DIR, "base64/include"),
+		path.join(LIBS_DIR, "json/include"),
+		path.join(LIBS_DIR, "tsl/include"),
+		path.join(LIBS_DIR, "sparsepp/include"),
+		path.join(LIBS_DIR, "concurrentqueue/include"),
 	}
 	
 	-- add source/header/shader files
@@ -42,7 +47,7 @@ project "ReCrafted.Engine"
 			"call " .. ROOT_DIR .. "/onbuild.bat " .. ROOT_DIR .. "/ Engine",
 		}
 	
-	links { "Rpcrt4", "mono", "libcef", "PxFoundation_x64", "PxTask_x64", "PhysX3_x64", "PhysX3Common_x64", "PhysX3Extensions", "PhysX3CharacterKinematic_x64" }
+	links { "d3d11", "dxguid", "dxgi", "d3dcompiler", "Rpcrt4", "mono", "libcef", "PxFoundation_x64", "PxTask_x64", "PhysX3_x64", "PhysX3Common_x64", "PhysX3Extensions", "PhysX3CharacterKinematic_x64" }
 		
 	configuration { "Debug" }
 		defines { "DEBUG", "_ITERATOR_DEBUG_LEVEL=0" }

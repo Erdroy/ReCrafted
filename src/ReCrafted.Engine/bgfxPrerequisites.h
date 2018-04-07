@@ -27,7 +27,7 @@ public:
     static bgfxMemoryEx alloc(size_t size)
     {
         bgfxMemoryEx mem;
-        mem.memory = new char[size];
+        mem.memory = static_cast<char*>(malloc(size));
         mem.size = size;
         return mem;
     }

@@ -1,9 +1,10 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Atlas.h"
-#include "Core/json/json.hpp"
 #include "Common/Text.h"
 #include "Platform/Platform.h"
+
+#include <json.hpp>
 
 void Atlas::dispose()
 {

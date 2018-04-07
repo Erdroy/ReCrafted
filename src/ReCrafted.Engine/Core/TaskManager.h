@@ -10,8 +10,9 @@
 #include "EngineComponent.h"
 #include "Lock.h"
 #include "Task.h"
-#include "Containers/concurrentqueue.h"
 #include "Containers/Array.h"
+
+#include <concurrentqueue.h>
 
 /**
  * \brief TaskManager class. Allows queueing task for processing in multi-threaded enviroment.

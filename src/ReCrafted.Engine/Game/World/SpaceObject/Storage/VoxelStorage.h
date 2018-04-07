@@ -10,12 +10,12 @@
 
 #include "Core/Lock.h"
 #include "Core/Streams/FileStream.h"
-#include "Core/sparsepp/spp.h"
 #include "Game/World/SpaceObject/SpaceObject.h"
 
 #include "VoxelChunkData.h"
 #include "VoxelStorageHeader.h"
-#include "VoxelStorageChunkEntry.h"
+
+#include <spp.h>
 
 struct Vector3;
 struct SpaceObjectSettings;

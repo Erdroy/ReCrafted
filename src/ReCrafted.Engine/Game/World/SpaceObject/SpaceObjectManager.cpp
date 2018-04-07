@@ -5,9 +5,10 @@
 #include "Core/Lock.h"
 #include "Core/Delegate.h"
 #include "Core/Logger.h"
-#include "Core/Containers/concurrentqueue.h"
 #include "Meshing/MarchingCubes/MCMesher.h"
 #include "Platform/Platform.h"
+
+#include <concurrentqueue.h>
 
 SINGLETON_IMPL(SpaceObjectManager)
 
@@ -46,7 +47,7 @@ void SpaceObjectManager::worker_function()
 
     var thread = RPMallocThread();
 
-	Ptr<IVoxelMesher> mesher(new MCMesher);
+    MCMesher mesher = {};
 
 	queueItem item;
 	while(m_running)
@@ -60,13 +61,13 @@ void SpaceObjectManager::worker_function()
         // populate or depopulate the queued node
 	    switch (item.mode) { 
 	        case ProcessMode::Populate:
-                item.node->worker_populate(mesher.get()); 
+                item.node->worker_populate(&mesher); 
 	        break;
             case ProcessMode::Depopulate:
-                item.node->worker_depopulate(mesher.get());
+                item.node->worker_depopulate(&mesher);
 	        break;
             case ProcessMode::Rebuild:
-                item.node->worker_rebuild(mesher.get());
+                item.node->worker_rebuild(&mesher);
 	        break;
             default:;
 	    }

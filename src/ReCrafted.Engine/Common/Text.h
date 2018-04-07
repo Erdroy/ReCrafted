@@ -9,10 +9,10 @@
 #include <locale>
 #include <codecvt>
 
-#include "Core/Defines.h"
-
 #define USE_UTF16
 #define USE_FMT
+
+#include "ReCraftedConfig.h"
 
 #ifdef USE_FMT
 #include "Core/fmt/format.h"
@@ -22,6 +22,17 @@
 typedef unsigned short Char;
 #else
 typedef unsigned int Char;
+#endif
+
+#if COMPILE_WITH_RPMALLOC
+#include <rpmalloc.h>
+#define TEXT_ALLOC rpmalloc
+#define TEXT_REALLOC rprealloc
+#define TEXT_FREE rpfree
+#else
+#define TEXT_ALLOC malloc
+#define TEXT_REALLOC realloc
+#define TEXT_FREE free
 #endif
 
 /// <summary>
@@ -37,7 +48,7 @@ private:
 private:
 	void alloc_chars(int count)
 	{
-		m_data = static_cast<Char*>(malloc(sizeof(Char) * (count + 1)));
+		m_data = static_cast<Char*>(TEXT_ALLOC(sizeof(Char) * (count + 1)));
 	}
 
 	void realloc_chars(int count)
@@ -48,7 +59,7 @@ private:
 			return;
 		}
 
-		auto tmp = static_cast<Char*>(realloc(m_data, sizeof(Char) * (count + 1)));
+		auto tmp = static_cast<Char*>(TEXT_REALLOC(m_data, sizeof(Char) * (count + 1)));
 
 		if (tmp == nullptr)
 			throw;
@@ -161,8 +172,17 @@ public:
 	{
 		if (!m_const)
 		{
-			SafeFree(m_data);
-			SafeFree(m_cstrData);
+            if (m_data)
+            {
+                TEXT_FREE(m_data); 
+                m_data = nullptr;
+            }
+
+            if (m_cstrData)
+            {
+                TEXT_FREE(m_cstrData);
+                m_cstrData = nullptr;
+            }
 		}
 	}
 
@@ -432,6 +452,17 @@ public:
 		return i;
 	}
 
+#ifdef USE_FMT
+    __forceinline static Text format(const Text& format, fmt::ArgList args)
+    {
+        auto data = reinterpret_cast<wchar_t*>(format.data());
+        auto string = fmt::format(data, args);
+
+        return Text((Char*)string.data());
+    }
+    FMT_VARIADIC_W(static Text, format, const Text&)
+#endif
+
 	static bool compare(const Char* str1, const Char* str2)
 	{
 		if (str1 == nullptr || str2 == nullptr)
@@ -451,17 +482,6 @@ public:
 
 		return true;
 	}
-
-#ifdef USE_FMT
-	FORCEINLINE static Text format(const Text& format, fmt::ArgList args)
-	{
-		auto data = reinterpret_cast<wchar_t*>(format.data());
-		auto string = fmt::format(data, args);
-
-		return Text((Char*)string.data());
-	}
-	FMT_VARIADIC_W(static Text, format, const Text&)
-#endif
 };
 
 #if defined(TEXT)

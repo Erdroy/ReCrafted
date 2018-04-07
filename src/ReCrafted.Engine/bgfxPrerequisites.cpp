@@ -4,7 +4,7 @@
 
 void releasebgfxmemory(void* _ptr, void* _userData)
 {
-    delete[] static_cast<char*>(_ptr);
+    free(_ptr);
 }
 
 const bgfx::Memory* bgfxMemoryEx::getMemory() const
