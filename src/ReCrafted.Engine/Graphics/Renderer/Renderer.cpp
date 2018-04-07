@@ -241,7 +241,8 @@ void Renderer::resize(uint width, uint height)
     Display::set_Width(width);
     Display::set_Height(height);
 
-    WebUI::m_instance->resize(width, height);
+    if(WebUI::getInstance())
+        WebUI::getInstance()->resize(width, height);
 
     // reset bgfx state, this should force renderer to resize all the viewports etc.
     bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());

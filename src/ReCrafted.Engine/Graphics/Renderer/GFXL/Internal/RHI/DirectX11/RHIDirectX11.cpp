@@ -1,7 +1,10 @@
 // GFXL - Graphics Library (c) 2016-2017 Damian 'Erdroy' Korczowski
 
+#include "DirectX11.h"
+
 #include "RHIDirectX11.h"
 #include "Platform/Platform.h"
+#include "Core/Memory.h"
 
 #if GFXL_RENDERER_D3D11
 
@@ -10,8 +13,6 @@
 
 #include "Internal/RHIDirectX11_RenderBuffer.h"
 #include "Internal/RHIDirectX11_Shader.h"
-
-#include "DirectX11.h"
 
 #include <json.hpp>
 #include <thread>
@@ -137,6 +138,8 @@ namespace GFXL
 
         void WorkerThreadInstance::WorkerThread()
         {
+            var threadMemory = RPMallocThread();
+
             // Wait for main thread to signal ready
             WaitForSingleObject(m_workerFrameEvents[threadId], INFINITE);
 
@@ -168,12 +171,12 @@ namespace GFXL
             if (m_commandCount == 0u)
                 return;
 
-            auto position = m_commandDataStart;
+            var position = m_commandDataStart;
 
             // Execute command list
-            for (auto i = 0u; i < m_commandCount; i++)
+            for (var i = 0u; i < m_commandCount; i++)
             {
-                auto header = commandList->Read_GFXLCommandHeader(&position);
+                var header = commandList->Read_GFXLCommandHeader(&position);
                 position -= sizeof header;
 
                 ExecuteCommand(header, &position);
@@ -184,7 +187,7 @@ namespace GFXL
         {
 #define DEFINE_COMMAND_EXECUTOR(name) \
             case GFXLCommandHeader::name: { \
-                auto command = commandList->ReadCommand<Command_##name>(position);\
+                var command = commandList->ReadCommand<Command_##name>(position);\
                 Execute_##name(&command);\
                 break; \
 		    }
@@ -195,19 +198,19 @@ namespace GFXL
                 break;
             case GFXLCommandHeader::ApplyWindow:
             {
-                auto command = commandList->ReadCommand<Command_ApplyWindow>(position);
+                var command = commandList->ReadCommand<Command_ApplyWindow>(position);
                 m_swapChain = m_swapChains[command.window.idx];
                 break;
             }
             case GFXLCommandHeader::DestroyWindow:
             {
-                auto command = commandList->ReadCommand<Command_DestroyWindow>(position);
+                var command = commandList->ReadCommand<Command_DestroyWindow>(position);
 
-                auto idx = command.window.idx;
+                var idx = command.window.idx;
 
                 SafeRelease(m_swapChains[idx]);
 
-                auto renderBufferIdx = command.window.renderBuffer.idx;
+                var renderBufferIdx = command.window.renderBuffer.idx;
                 //SafeRelease(m_renderBuffers[renderBufferIdx]);
 
                 break;
@@ -231,16 +234,16 @@ namespace GFXL
 
         void WorkerThreadInstance::Execute_CreateShader(Command_CreateShader* command) const
         {
-            auto shaderIdx = command->shader.idx;
+            var shaderIdx = command->shader.idx;
 
             File file;
             Platform::openFile(&file, command->fileName, OpenMode::OpenRead);
 
-            const auto data = new byte[file.FileSize];
+            const var data = new byte[file.FileSize];
             memset(data, 0, file.FileSize);
             file.read(data, file.FileSize);
 
-            auto jsonData = json::parse(data);
+            var jsonData = json::parse(data);
             m_shaders[shaderIdx] = RHIDirectX11_Shader::Create(m_device, jsonData);
 
             delete[] data;
@@ -249,20 +252,20 @@ namespace GFXL
 
         void WorkerThreadInstance::Execute_ApplyShader(Command_ApplyShader* command) const
         {
-            auto shaderIdx = command->shader.idx;
-            auto shader = m_shaders[shaderIdx];
+            var shaderIdx = command->shader.idx;
+            var shader = m_shaders[shaderIdx];
             shader->Bind(m_context, command->passId);
         }
 
         void WorkerThreadInstance::Execute_DestroyShader(Command_DestroyShader* command) const
         {
-            auto shaderIdx = command->shader.idx;
+            var shaderIdx = command->shader.idx;
             SafeRelease(m_shaders[shaderIdx]);
         }
 
         void WorkerThreadInstance::Execute_ClearRenderBuffer(Command_ClearRenderBuffer* command) const
         {
-            auto renderBufferIdx = command->renderBuffer.idx;
+            var renderBufferIdx = command->renderBuffer.idx;
 
             // TODO: check if we can pass frame index (is it back buffer - render buffer)
 
@@ -271,7 +274,7 @@ namespace GFXL
 
         void WorkerThreadInstance::Execute_ApplyRenderBuffer(Command_ApplyRenderBuffer* command) const
         {
-            auto renderBufferIdx = command->renderBuffer.idx;
+            var renderBufferIdx = command->renderBuffer.idx;
 
             // TODO: check if we can pass frame index (is it back buffer - render buffer)
 
@@ -280,7 +283,7 @@ namespace GFXL
 
         void RHIDirectX11::kickFrameEvent()
         {
-            for (auto thread : m_workerThreads)
+            for (var thread : m_workerThreads)
             {
                 if (!thread)
                     break;
@@ -303,7 +306,7 @@ namespace GFXL
             commandList.Assign(m_workerThreadCount, dataBegin, commandCount);
 
             // Write assigned commands info to all worker threads
-            for (auto i = 0; i < m_workerThreadCount; i++)
+            for (var i = 0; i < m_workerThreadCount; i++)
             {
                 m_workerThreads[i]->m_commandDataStart = dataBegin[i];
                 m_workerThreads[i]->m_commandCount = commandCount[i];
@@ -329,7 +332,7 @@ namespace GFXL
                 D3D_FEATURE_LEVEL_11_0
             };
 
-            auto hr = D3D11CreateDevice(nullptr,
+            var hr = D3D11CreateDevice(nullptr,
                 D3D_DRIVER_TYPE_HARDWARE,
                 nullptr,
 #ifdef _DEBUG
@@ -362,9 +365,9 @@ namespace GFXL
             // TODO: make single threaded model use main thread...
 
             // Spawn Worker Threads
-            for (auto i = 0; i < cpuCount && i < GFXL_MAX_WORKER_THREADS; i++)
+            for (var i = 0; i < cpuCount && i < GFXL_MAX_WORKER_THREADS; i++)
             {
-                auto workerInstance = new WorkerThreadInstance;
+                var workerInstance = new WorkerThreadInstance;
 
                 // Create frame done signal event
                 m_workerFrameEvents[i] = CreateEvent(nullptr, FALSE, FALSE, nullptr);
@@ -409,8 +412,8 @@ namespace GFXL
             kickFrameEvent();
 
             // Wait for worker threads to finish
-            auto idx = 0;
-            for (auto thread : m_workerThreads)
+            var idx = 0;
+            for (var thread : m_workerThreads)
             {
                 if (thread) {
 
@@ -426,19 +429,19 @@ namespace GFXL
             }
 
             // Destroy outputs (if not released)
-            for (auto i = 0; i < GFXL_MAX_WINDOWS; i++)
+            for (var i = 0; i < GFXL_MAX_WINDOWS; i++)
             {
                 SafeRelease(m_swapChains[i]);
             }
 
             // Destroy render buffers (if not released)
-            for (auto i = 0; i < GFXL_MAX_RENDER_BUFFERS; i++)
+            for (var i = 0; i < GFXL_MAX_RENDER_BUFFERS; i++)
             {
                 SafeRelease(m_renderBuffers[i]);
             }
 
             // Destroy shaders (if not released)
-            for (auto i = 0; i < GFXL_MAX_SHADERS; i++)
+            for (var i = 0; i < GFXL_MAX_SHADERS; i++)
             {
                 SafeRelease(m_shaders[i]);
             }
@@ -453,8 +456,8 @@ namespace GFXL
 
         void RHIDirectX11::Frame()
         {
-            static auto FrameCount = 0;
-            static auto FirstFrame = true;
+            static var FrameCount = 0;
+            static var FirstFrame = true;
             static std::vector<CComPtr<ID3D11CommandList>> commandLists = {};
 
             if (FirstFrame)
@@ -470,13 +473,13 @@ namespace GFXL
 
             if (m_settings & Settings::SingleThreaded)
             {
-                auto thread = m_workerThreads[0];
+                var thread = m_workerThreads[0];
 
                 // Mannualy process frame now
                 thread->ProcessFrame();
 
                 CComPtr<ID3D11CommandList> commandList = nullptr;
-                auto hr = thread->m_context->FinishCommandList(FALSE, &commandList);
+                var hr = thread->m_context->FinishCommandList(FALSE, &commandList);
 
                 if(FAILED(hr))
                 {
@@ -493,7 +496,7 @@ namespace GFXL
                 WaitForMultipleObjects(m_workerThreadCount, m_workerFinishEvents, true, INFINITE);
 
                 // Build command list array
-                for (auto thread : m_workerThreads)
+                for (var thread : m_workerThreads)
                 {
                     if (!thread)
                         break;
@@ -502,7 +505,7 @@ namespace GFXL
                     thread->ProcessFrame();
 
                     CComPtr<ID3D11CommandList> commandList = nullptr;
-                    auto hr = thread->m_context->FinishCommandList(FALSE, &commandList);
+                    var hr = thread->m_context->FinishCommandList(FALSE, &commandList);
 
                     if (FAILED(hr))
                     {
@@ -516,7 +519,7 @@ namespace GFXL
             }
 
             // Execute command lists
-            for(auto && commandList : commandLists)
+            for(var && commandList : commandLists)
             {
                 m_deviceContext->ExecuteCommandList(commandList, TRUE);
             }
@@ -524,7 +527,7 @@ namespace GFXL
             // Present frame
             if (m_swapChain)
             {
-                auto hr = m_swapChain->Present(m_resetFlags & ResetFlags::VSync ? 1 : 0, 0);
+                var hr = m_swapChain->Present(m_resetFlags & ResetFlags::VSync ? 1 : 0, 0);
 
                 if (FAILED(hr))
                 {
@@ -555,7 +558,7 @@ namespace GFXL
         {
             waitForGPU();
 
-            auto hWnd = static_cast<HWND>(windowHandle);
+            var hWnd = static_cast<HWND>(windowHandle);
 
             RECT windowRect = {};
             GetClientRect(hWnd, &windowRect);
@@ -563,9 +566,9 @@ namespace GFXL
             UINT width = windowRect.right - windowRect.left;
             UINT height = windowRect.bottom - windowRect.top;
 
-            auto bufferCount = m_resetFlags & ResetFlags::TripleBuffered ? FrameBufferCount : 1;
+            var bufferCount = m_resetFlags & ResetFlags::TripleBuffered ? FrameBufferCount : 1;
 
-            auto sampleCount = 1;
+            var sampleCount = 1;
 
             if (m_resetFlags & ResetFlags::MSAAx2)
                 sampleCount *= 2;
@@ -574,7 +577,7 @@ namespace GFXL
                 sampleCount *= 4;
 
             IDXGIDevice* device;
-            auto hr = m_device->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&device));
+            var hr = m_device->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&device));
 
             if (FAILED(hr))
             {
@@ -635,7 +638,7 @@ namespace GFXL
             m_swapChain = m_swapChains[window.idx];
 
             ID3D11RenderTargetView* renderTargets[FrameBufferCount] = {};
-            for (auto i = 0; i < bufferCount; i++)
+            for (var i = 0; i < bufferCount; i++)
             {
                 ID3D11Resource* resource = nullptr;
                 hr = m_swapChain->GetBuffer(i, IID_PPV_ARGS(&resource)); // NOTE: potential leak?

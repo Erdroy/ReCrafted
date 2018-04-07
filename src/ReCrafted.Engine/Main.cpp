@@ -1,16 +1,22 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
-#ifdef _WIN32
+#if defined(_WIN32)
+
+// includes
+#include "ReCraftedConfig.h"
 
 // platform-specific includes
 #include <Windows.h>
 
-// includes
 #include "ReCrafted.h"
 #include "Core/GameInfo.h"
 #include "Core/EngineMain.h"
 #include "Platform/Platform.h"
 #include "Graphics/WebUI/WebUIEngine.h"
+
+#if GFXL_TEST
+void initRendererTests();
+#endif
 
 /// <summary>
 /// WinMain - Main entry for Windows platform
@@ -36,8 +42,12 @@ int CALLBACK WinMain(
     // initialize engine
     engine.initialize();
 
+#if GFXL_TEST
+    initRendererTests();
+#else
     // run engine loop
     engine.run();
+#endif
 
     // shutdown engine
     engine.shutdown();

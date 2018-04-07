@@ -1,6 +1,7 @@
 // GFXL - Graphics Library (c) 2016-2017 Damian 'Erdroy' Korczowski
 
 #include "RHIDirectX11_Shader.h"
+#include "../../../../GFXL.hpp"
 #include <base64.h>
 
 namespace GFXL
@@ -75,11 +76,11 @@ namespace GFXL
         }
 
         // try to find cached input layout
-        for (auto & il : m_inputLayouts)
+        for (var & il : m_inputLayouts)
         {
             if (il.elements.size() == inputLayoutDesc.size())
             {
-                for (auto i = 0u; i < inputLayoutDesc.size(); i++)
+                for (var i = 0u; i < inputLayoutDesc.size(); i++)
                 {
                     if (inputLayoutDesc[i].Format == il.elements[i].Format &&
                         inputLayoutDesc[i].SemanticIndex == il.elements[i].SemanticIndex &&
@@ -95,7 +96,7 @@ namespace GFXL
         }
 
         // Try to create Input Layout
-        auto hr = pD3DDevice->CreateInputLayout(&inputLayoutDesc[0], static_cast<UINT>(inputLayoutDesc.size()), shaderData, shaderDataSize, pInputLayout);
+        var hr = pD3DDevice->CreateInputLayout(&inputLayoutDesc[0], static_cast<UINT>(inputLayoutDesc.size()), shaderData, shaderDataSize, pInputLayout);
 
         _ASSERT(SUCCEEDED(hr));
 
@@ -103,7 +104,7 @@ namespace GFXL
         pVertexShaderReflection->Release();
 
         // cache the input layout
-        auto newIl = InputLayout();
+        var newIl = InputLayout();
         newIl.elements = inputLayoutDesc;
         newIl.inputLayout = *pInputLayout;
         m_inputLayouts.push_back(newIl);
@@ -142,15 +143,15 @@ namespace GFXL
     {
         // TODO: Handle invalid passId
 
-        auto& pass = m_passes[passId];
+        var& pass = m_passes[passId];
         BindPass(contenxt, pass);
     }
 
     void RHIDirectX11_Shader::Bind(ID3D11DeviceContext* contenxt, std::string passName)
     {
-        for(auto i = 0u; i < m_passes.size(); i ++)
+        for(var i = 0u; i < m_passes.size(); i ++)
         {
-            auto& pass = m_passes[i];
+            var& pass = m_passes[i];
             if(pass.m_name == passName)
             {
                 BindPass(contenxt, pass);
@@ -167,29 +168,29 @@ namespace GFXL
 
     RHIDirectX11_Shader* RHIDirectX11_Shader::Create(ID3D11Device* device, nlohmann::json& jsonData)
     {
-        auto shader = new RHIDirectX11_Shader();
-        auto buffers = jsonData["UniformBuffers"];
-        auto passes = jsonData["Passes"];
+        var shader = new RHIDirectX11_Shader();
+        var buffers = jsonData["UniformBuffers"];
+        var passes = jsonData["Passes"];
 
         shader->m_name = jsonData["Name"].get<std::string>();
         shader->m_desc = jsonData["Description"].get<std::string>();
 
         // Create all passes
-        for(auto i = 0u; i < passes.size(); i ++)
+        for(var i = 0u; i < passes.size(); i ++)
         {
             // create pass instance and get it's ref
             shader->m_passes.push_back({});
-            auto& pass = shader->m_passes[shader->m_passes.size() - 1];
+            var& pass = shader->m_passes[shader->m_passes.size() - 1];
 
             // set pass name
             pass.m_name = passes[i]["Name"].get<std::string>();
             
             // try to create vertex shader
-            auto vsBC = passes[i]["VSByteCode"];
+            var vsBC = passes[i]["VSByteCode"];
             if (vsBC.is_string())
             {
-                auto byteCode = base64_decode(vsBC.get<std::string>());
-                auto hr = device->CreateVertexShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_vertexShader);
+                var byteCode = base64_decode(vsBC.get<std::string>());
+                var hr = device->CreateVertexShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_vertexShader);
 
                 _ASSERT(SUCCEEDED(hr));
 
@@ -201,34 +202,34 @@ namespace GFXL
             }
 
             // try to create pixel shader
-            auto psBC = passes[i]["PSByteCode"];
+            var psBC = passes[i]["PSByteCode"];
             if (psBC.is_string())
             {
-                auto byteCode = base64_decode(psBC.get<std::string>());
-                auto hr = device->CreatePixelShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_pixelShader);
+                var byteCode = base64_decode(psBC.get<std::string>());
+                var hr = device->CreatePixelShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_pixelShader);
 
                 _ASSERT(SUCCEEDED(hr));
             }
 
             // try to create compute shader
-            auto csBC = passes[i]["CSByteCode"];
+            var csBC = passes[i]["CSByteCode"];
             if(csBC.is_string())
             {
-                auto byteCode = base64_decode(csBC.get<std::string>());
-                auto hr = device->CreateComputeShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_computeShader);
+                var byteCode = base64_decode(csBC.get<std::string>());
+                var hr = device->CreateComputeShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_computeShader);
 
                 _ASSERT(SUCCEEDED(hr));
             }
         }
 
         // Create constant buffers
-        for (auto i = 0u; i < buffers.size(); i++)
+        for (var i = 0u; i < buffers.size(); i++)
         {
             // create buffer instance and get it's ref
             shader->m_buffers.push_back({});
-            auto& buffer = shader->m_buffers[shader->m_buffers.size() - 1];
+            var& buffer = shader->m_buffers[shader->m_buffers.size() - 1];
 
-            auto bufferData = buffers[i];
+            var bufferData = buffers[i];
 
             // set buffer name
             buffer.m_name = bufferData["Name"].get<std::string>();

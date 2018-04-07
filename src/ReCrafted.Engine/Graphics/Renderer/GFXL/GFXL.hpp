@@ -6,6 +6,7 @@
 #define GFXL_H
 
 #include "Internal/defines.h"
+#include "ReCrafted.h"
 
 namespace GFXL
 {
