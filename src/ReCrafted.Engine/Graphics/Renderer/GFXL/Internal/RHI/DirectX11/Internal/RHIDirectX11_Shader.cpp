@@ -2,6 +2,7 @@
 
 #include "RHIDirectX11_Shader.h"
 #include "../../../../GFXL.hpp"
+#include "Core/Lock.h"
 #include <base64.h>
 
 namespace GFXL
@@ -12,6 +13,7 @@ namespace GFXL
         CComPtr<ID3D11InputLayout> inputLayout;
     };
 
+    Lock m_inputLayoutLock = {};
     std::vector<InputLayout> m_inputLayouts = {};
     void* m_lastInputLayout = nullptr;
 
@@ -76,6 +78,7 @@ namespace GFXL
         }
 
         // try to find cached input layout
+        ScopeLock(m_inputLayoutLock);
         for (var & il : m_inputLayouts)
         {
             if (il.elements.size() == inputLayoutDesc.size())
