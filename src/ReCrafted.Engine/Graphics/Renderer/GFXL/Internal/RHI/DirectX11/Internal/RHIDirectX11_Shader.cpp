@@ -183,7 +183,7 @@ namespace GFXL
         {
             // create pass instance and get it's ref
             shader->m_passes.push_back({});
-            var& pass = shader->m_passes[shader->m_passes.size() - 1];
+            rvar pass = shader->m_passes[shader->m_passes.size() - 1];
 
             // set pass name
             pass.m_name = passes[i]["Name"].get<std::string>();
@@ -230,7 +230,7 @@ namespace GFXL
         {
             // create buffer instance and get it's ref
             shader->m_buffers.push_back({});
-            var& buffer = shader->m_buffers[shader->m_buffers.size() - 1];
+            rvar buffer = shader->m_buffers[shader->m_buffers.size() - 1];
 
             var bufferData = buffers[i];
 
