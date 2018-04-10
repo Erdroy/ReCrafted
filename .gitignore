@@ -34,3 +34,5 @@ libs_prebuilt.zip
 src/ReCrafted.ShaderCompiler/Debug/
 src/ReCrafted.VoxelEditor/bin/
 src/ReCrafted.VoxelEditor/obj/
+src/tools/ReCrafted.ShaderCompiler2/bin/
+src/tools/ReCrafted.ShaderCompiler2/obj/

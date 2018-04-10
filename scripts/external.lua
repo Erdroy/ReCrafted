@@ -45,6 +45,13 @@ externalproject "tools/ReCrafted.ShaderCompiler"
    language "C#"
    filename "ReCrafted.ShaderCompiler"
    
+externalproject "tools/ReCrafted.ShaderCompiler2"
+   location (path.join(ROOT_DIR, "src/tools/ReCrafted.ShaderCompiler2"))
+   uuid "84A4B03C-0E8B-4644-8D0E-45320A07686C"
+   kind "ConsoleApp"
+   language "C#"
+   filename "ReCrafted.ShaderCompiler2"
+   
 externalproject "tools/ReCrafted.VersionBuilder"
    location (path.join(ROOT_DIR, "src/tools/ReCrafted.VersionBuilder"))
    uuid "E27EB8A3-DCF1-44C5-AFA0-2055B243D7A5"
