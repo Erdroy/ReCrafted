@@ -60,7 +60,7 @@ namespace GFXL
         // == pointer-only resources (DO NOT RELEASE!) ==
         IDXGISwapChain*            m_swapChain = nullptr;
 
-
+#pragma region WorkerThread impl
         class WorkerThreadInstance
         {
             friend class RHIDirectX11;
@@ -228,13 +228,13 @@ namespace GFXL
         {
             SafeRelease(m_context);
         }
-
+#pragma endregion
 
         // ========== WorkerThreadInstance::Executors ==========
-
+#pragma region WorkerThread command execution implementation
         void WorkerThreadInstance::Execute_CreateShader(Command_CreateShader* command) const
         {
-            var shaderIdx = command->shader.idx;
+            cvar shaderIdx = command->shader.idx;
 
             File file;
             Platform::openFile(&file, command->fileName, OpenMode::OpenRead);
@@ -281,6 +281,9 @@ namespace GFXL
             m_renderBuffers[renderBufferIdx]->Bind(m_context, 0);
         }
 
+#pragma endregion
+
+#pragma region RHI base implementation
         void RHIDirectX11::kickFrameEvent()
         {
             for (var thread : m_workerThreads)
@@ -553,7 +556,9 @@ namespace GFXL
             // Increment frame count
             FrameCount++;
         }
+#pragma endregion 
 
+#pragma region RHI interface implementation
         void RHIDirectX11::CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle, void* windowHandle)
         {
             waitForGPU();
@@ -671,6 +676,7 @@ namespace GFXL
         void RHIDirectX11::ResizeWindow(WindowHandle window, int width, int height)
         {
         }
+#pragma endregion
     }
 }
 
