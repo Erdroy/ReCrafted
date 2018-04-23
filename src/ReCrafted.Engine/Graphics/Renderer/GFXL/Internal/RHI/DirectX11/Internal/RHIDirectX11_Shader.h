@@ -20,25 +20,29 @@ namespace GFXL
         class Buffer
         {
         public:
-            ~Buffer()
+            class Field
             {
-            }
+            public:
+                std::string m_name = {};
+                uint16_t m_size = 0u;
+                uint16_t m_offset = 0u;
+            };
 
         public:
             std::string m_name = {};
+            std::vector<Field> m_fields = {};
+            byte* m_data = nullptr;
+            uint16_t m_size = 0u;
 
+        public:
+            ~Buffer()
+            {
+                delete[] m_data;
+            }
         };
 
         class Pass
         {
-        public:
-            ~Pass()
-            {
-                SafeRelease(m_vertexShader);
-                SafeRelease(m_pixelShader);
-                SafeRelease(m_computeShader);
-            }
-
         public:
             std::string m_name = {};
 
@@ -52,6 +56,14 @@ namespace GFXL
 
             std::string m_csName = {};
             ID3D11ComputeShader* m_computeShader = nullptr;
+
+        public:
+            ~Pass()
+            {
+                SafeRelease(m_vertexShader);
+                SafeRelease(m_pixelShader);
+                SafeRelease(m_computeShader);
+            }
         };
 
     private:
@@ -70,7 +82,7 @@ namespace GFXL
         void Release();
 
     public:
-        static RHIDirectX11_Shader* Create(ID3D11Device* device, nlohmann::json& jsonData);
+        static RHIDirectX11_Shader* Create(ID3D11Device* device, nlohmann::json& shaderJson);
     };
 }
 
