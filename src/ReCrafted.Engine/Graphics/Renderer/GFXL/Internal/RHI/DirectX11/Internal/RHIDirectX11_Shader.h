@@ -34,10 +34,13 @@ namespace GFXL
             byte* m_data = nullptr;
             uint16_t m_size = 0u;
 
+            ID3D11Buffer* m_buffer = nullptr;
+
         public:
             ~Buffer()
             {
                 delete[] m_data;
+                SafeRelease(m_buffer);
             }
         };
 

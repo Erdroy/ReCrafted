@@ -17,6 +17,11 @@ namespace GFXL
     std::vector<InputLayout> m_inputLayouts = {};
     void* m_lastInputLayout = nullptr;
 
+    uint D3D11HLSLFixBufferSize(uint size)
+    {
+        return (size + 64 - 1) / 64 * 64;
+    }
+
     // source: https://takinginitiative.wordpress.com/2011/12/11/directx-1011-basic-shader-reflection-automatic-input-layout-creation/
     HRESULT D3D11CreateInputLayout(ID3D11Device* pD3DDevice, void* shaderData, size_t shaderDataSize, ID3D11InputLayout** pInputLayout)
     {
@@ -165,31 +170,32 @@ namespace GFXL
 
     void RHIDirectX11_Shader::Release()
     {
+        m_buffers.clear();
         m_passes.clear();
         delete this;
     }
 
-    RHIDirectX11_Shader* RHIDirectX11_Shader::Create(ID3D11Device* device, nlohmann::json& jsonData)
+    RHIDirectX11_Shader* RHIDirectX11_Shader::Create(ID3D11Device* device, nlohmann::json& shaderJson)
     {
         var shader = new RHIDirectX11_Shader();
-        var buffers = jsonData["UniformBuffers"];
-        var passes = jsonData["Passes"];
+        var buffers = shaderJson["UniformBuffers"];
+        var passes = shaderJson["Passes"];
 
-        shader->m_name = jsonData["Name"].get<std::string>();
-        shader->m_desc = jsonData["Description"].get<std::string>();
+        shader->m_name = shaderJson["Name"].get<std::string>();
+        shader->m_desc = shaderJson["Description"].get<std::string>();
 
         // Create all passes
-        for(var i = 0u; i < passes.size(); i ++)
+        for (rvar passJson : passes)
         {
             // create pass instance and get it's ref
             shader->m_passes.push_back({});
             rvar pass = shader->m_passes[shader->m_passes.size() - 1];
 
             // set pass name
-            pass.m_name = passes[i]["Name"].get<std::string>();
+            pass.m_name = passJson["Name"].get<std::string>();
             
             // try to create vertex shader
-            var vsBC = passes[i]["VSByteCode"];
+            var vsBC = passJson["VSByteCode"];
             if (vsBC.is_string())
             {
                 var byteCode = base64_decode(vsBC.get<std::string>());
@@ -205,7 +211,7 @@ namespace GFXL
             }
 
             // try to create pixel shader
-            var psBC = passes[i]["PSByteCode"];
+            var psBC = passJson["PSByteCode"];
             if (psBC.is_string())
             {
                 var byteCode = base64_decode(psBC.get<std::string>());
@@ -215,7 +221,7 @@ namespace GFXL
             }
 
             // try to create compute shader
-            var csBC = passes[i]["CSByteCode"];
+            var csBC = passJson["CSByteCode"];
             if(csBC.is_string())
             {
                 var byteCode = base64_decode(csBC.get<std::string>());
@@ -226,20 +232,64 @@ namespace GFXL
         }
 
         // Create constant buffers
-        for (var i = 0u; i < buffers.size(); i++)
+        for (rvar bufferJson : buffers)
         {
             // create buffer instance and get it's ref
             shader->m_buffers.push_back({});
             rvar buffer = shader->m_buffers[shader->m_buffers.size() - 1];
 
-            var bufferData = buffers[i];
-
             // set buffer name
-            buffer.m_name = bufferData["Name"].get<std::string>();
+            buffer.m_name = bufferJson["Name"].get<std::string>();
+            
+            var fieldsArray = bufferJson["Uniforms"];
 
-            // TODO: load fields
-            // TODO: create data
-            // TODO: create d3d11 buffer
+            var fieldOffset = 0u;
+            for (rvar fieldData : fieldsArray)
+            {
+                buffer.m_fields.push_back({});
+                rvar field = buffer.m_fields[buffer.m_fields.size() - 1];
+
+                cvar name = fieldData["Name"].get<std::string>();
+                cvar size = fieldData["Size"].get<int>();
+
+                // set buffer name
+                field.m_name = name;
+
+                // set buffer size
+                field.m_size = size;
+
+                // set field offset
+                field.m_offset = fieldOffset;
+
+                // add field offset
+                fieldOffset += static_cast<uint>(size);
+            }
+
+            // field offset is not the size of the buffer
+            // but we still need to round int up to multiply of 64
+            cvar bufferSize = D3D11HLSLFixBufferSize(fieldOffset);
+            buffer.m_size = bufferSize;
+
+            // create buffer data
+            buffer.m_data = new byte[bufferSize];
+
+            // create D3D11 buffer
+            D3D11_BUFFER_DESC desc = {};
+            desc.Usage = D3D11_USAGE_DYNAMIC;
+            desc.ByteWidth = bufferSize;
+            desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+            desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+            D3D11_SUBRESOURCE_DATA subresource_data = {};
+            subresource_data.pSysMem = buffer.m_data;
+            subresource_data.SysMemPitch = 0;
+            subresource_data.SysMemSlicePitch = 0;
+
+            var hr = device->CreateBuffer(&desc, &subresource_data, &buffer.m_buffer);
+
+            _ASSERT(SUCCEEDED(hr));
+
+            // TODO: select targets
         }
         
         // TODO: Setup sampler states
