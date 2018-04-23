@@ -74,6 +74,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compiler\D3DHelper.cs" />
     <Compile Include="Compiler\D3DIncludeHandler.cs" />
     <Compile Include="Compiler\FunctionAttribute.cs" />
     <Compile Include="Compiler\ShaderCompiler.Uniform.Impl.cs" />
@@ -106,4 +107,8 @@
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
 </Project>

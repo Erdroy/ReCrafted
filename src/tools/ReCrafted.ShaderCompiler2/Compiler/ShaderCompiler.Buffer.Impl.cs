@@ -59,10 +59,14 @@ namespace ReCrafted.ShaderCompiler.Compiler
                 switch (token.Type)
                 {
                     case TokenType.Identifier:
+                        var uniformType = token.Value;
+                        var uniformName = ExpectToken(TokenType.Identifier).Value;
+                        var uniformSize = D3DHelper.TypeToSize(uniformType);
+                        Console.WriteLine(uniformType + " " + uniformSize);
                         var uniform = new ShaderUniform
                         {
-                            Name = token.Value,
-                            Type = ExpectToken(TokenType.Identifier).Value,
+                            Name = uniformName,
+                            Size = uniformSize,
                             Index = uniformIndex
                         };
 

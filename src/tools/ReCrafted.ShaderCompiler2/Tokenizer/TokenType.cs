@@ -21,7 +21,7 @@
 namespace ReCrafted.ShaderCompiler.Tokenizer
 {
     /// <summary>
-    /// Type of a token language.
+    /// Size of a token language.
     /// </summary>
     public enum TokenType
     {

@@ -8,7 +8,7 @@ namespace ReCrafted.ShaderCompiler.Description
     public class ShaderUniform
     {
         public string Name { get; set; }
-        public string Type { get; set; }
+        public int Size { get; set; }
 
         public int Index { get; set; }
     }
