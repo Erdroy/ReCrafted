@@ -122,16 +122,48 @@ namespace GFXL
 
     void RHIDirectX11_Shader::BindPass(ID3D11DeviceContext* context, Pass& pass)
     {
+        // for constant buffers we don't need to check index value as there is only one index per buffer, 
+        // so there is no way that someone will get overlapping indices.
+
+        // set vertex shader
         if (pass.m_vertexShader)
+        {
             context->VSSetShader(pass.m_vertexShader, nullptr, 0);
 
+            // set constant buffers
+            for(rvar buffer : pass.m_vsBuffers) // TODO: apply all buffers in single API call
+            {
+                ID3D11Buffer* buffers[] = { buffer.m_buffer };
+                context->VSSetConstantBuffers(buffer.m_index, 1u, buffers);
+            }
+        }
+
+        // set pixel shader
         if (pass.m_pixelShader)
+        {
             context->PSSetShader(pass.m_pixelShader, nullptr, 0);
 
+            // set constant buffers
+            for (rvar buffer : pass.m_psBuffers)
+            {
+                ID3D11Buffer* buffers[] = { buffer.m_buffer };
+                context->PSSetConstantBuffers(buffer.m_index, 1u, buffers);
+            }
+        }
+
+        // set compute shader
         if (pass.m_computeShader)
+        {
             context->CSSetShader(pass.m_computeShader, nullptr, 0);
 
-        // TODO: Set constant buffers
+            // set constant buffers
+            for (rvar buffer : pass.m_csBuffers)
+            {
+                ID3D11Buffer* buffers[] = { buffer.m_buffer };
+                context->CSSetConstantBuffers(buffer.m_index, 1u, buffers);
+            }
+        }
+
         // TODO: Set sampler states
 
         // we have only one pointer for every certain input layout
@@ -208,6 +240,9 @@ namespace GFXL
                 hr = D3D11CreateInputLayout(device, byteCode.data(), byteCode.size(), &pass.m_inputLayout);
 
                 _ASSERT(SUCCEEDED(hr));
+
+                // set function name
+                pass.m_vsName = passJson["VSFunction"].get<std::string>();
             }
 
             // try to create pixel shader
@@ -218,6 +253,9 @@ namespace GFXL
                 var hr = device->CreatePixelShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_pixelShader);
 
                 _ASSERT(SUCCEEDED(hr));
+
+                // set function name
+                pass.m_psName = passJson["PSFunction"].get<std::string>();
             }
 
             // try to create compute shader
@@ -228,6 +266,9 @@ namespace GFXL
                 var hr = device->CreateComputeShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_computeShader);
 
                 _ASSERT(SUCCEEDED(hr));
+
+                // set function name
+                pass.m_csName = passJson["CSFunction"].get<std::string>();
             }
         }
 
@@ -236,15 +277,21 @@ namespace GFXL
         {
             // create buffer instance and get it's ref
             shader->m_buffers.push_back({});
-            rvar buffer = shader->m_buffers[shader->m_buffers.size() - 1];
+
+            cvar bufferIndex = static_cast<uint>(shader->m_buffers.size()) - 1;
+            cvar bufferName = bufferJson["Name"].get<std::string>();
+            cvar bufferTargets = bufferJson["Targets"];
+            cvar bufferUniforms = bufferJson["Uniforms"];
+            rvar buffer = shader->m_buffers[bufferIndex];
+
+            // set buffer index
+            buffer.m_index = bufferIndex;
 
             // set buffer name
-            buffer.m_name = bufferJson["Name"].get<std::string>();
-            
-            var fieldsArray = bufferJson["Uniforms"];
+            buffer.m_name = bufferName;
 
             var fieldOffset = 0u;
-            for (rvar fieldData : fieldsArray)
+            for (rvar fieldData : bufferUniforms)
             {
                 buffer.m_fields.push_back({});
                 rvar field = buffer.m_fields[buffer.m_fields.size() - 1];
@@ -289,7 +336,26 @@ namespace GFXL
 
             _ASSERT(SUCCEEDED(hr));
 
-            // TODO: select targets
+            // select targets and add to all passes shader functions
+            for (rvar pass : shader->m_passes)
+            {
+                for (rvar funcName : bufferTargets)
+                {
+                    cvar name = funcName.get<std::string>();
+
+                    // add VS function target
+                    if(name == pass.m_vsName)
+                        pass.m_vsBuffers.push_back(buffer);
+
+                    // add PS function target
+                    if (name == pass.m_psName)
+                        pass.m_psBuffers.push_back(buffer);
+
+                    // add CS function target
+                    if (name == pass.m_csName)
+                        pass.m_csBuffers.push_back(buffer);
+                }
+            }
         }
         
         // TODO: Setup sampler states

@@ -33,6 +33,7 @@ namespace GFXL
             std::vector<Field> m_fields = {};
             byte* m_data = nullptr;
             uint16_t m_size = 0u;
+            uint8_t m_index = 0u;
 
             ID3D11Buffer* m_buffer = nullptr;
 
@@ -53,12 +54,15 @@ namespace GFXL
 
             std::string m_vsName = {};
             ID3D11VertexShader* m_vertexShader = nullptr;
+            std::vector<Buffer> m_vsBuffers = {};
 
             std::string m_psName = {};
             ID3D11PixelShader* m_pixelShader = nullptr;
+            std::vector<Buffer> m_psBuffers = {};
 
             std::string m_csName = {};
             ID3D11ComputeShader* m_computeShader = nullptr;
+            std::vector<Buffer> m_csBuffers = {};
 
         public:
             ~Pass()
