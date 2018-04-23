@@ -57,7 +57,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
 
                 case "matrix":      // matrix
                 case "float4x4":    // float4x4
-                    return 48;
+                    return 64;
 
                 default:
                     return 0;
