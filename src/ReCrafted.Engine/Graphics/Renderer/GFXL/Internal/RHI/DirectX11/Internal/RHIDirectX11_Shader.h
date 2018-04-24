@@ -86,7 +86,24 @@ namespace GFXL
     public:
         void Bind(ID3D11DeviceContext* context, int passId);
         void Bind(ID3D11DeviceContext* context, std::string passName);
+
+        void BindTexture(ID3D11DeviceContext* context, uint8_t slot, ID3D11Texture2D* texture);
+        void BindTexture(ID3D11DeviceContext* context, uint8_t slot, ID3D11Texture3D* texture);
+
+        void BindBuffer(ID3D11DeviceContext* context, uint8_t slot, ID3D11Buffer* buffer);
+
+        void BindBlendState(ID3D11DeviceContext* context, uint8_t slot, ID3D11BlendState* state);
+
+        void ApplyChanges();
+
         void Release();
+
+    public:
+        template<typename T>
+        void SetValue(int buffer, int index, T value)
+        {
+
+        }
 
     public:
         static RHIDirectX11_Shader* Create(ID3D11Device* device, nlohmann::json& shaderJson);
