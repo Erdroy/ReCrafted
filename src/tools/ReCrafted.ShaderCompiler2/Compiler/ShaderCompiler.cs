@@ -32,6 +32,9 @@ namespace ReCrafted.ShaderCompiler.Compiler
         
         public StringBuilder ProcessedSourceCode = new StringBuilder();
         public List<string> Includes = new List<string>();
+        public List<string> Samplers = new List<string>();
+        public List<string> Textures2D = new List<string>();
+        public List<string> Textures3D = new List<string>();
         public List<ShaderPass> Passes = new List<ShaderPass>();
         public List<ShaderUniformBuffer> Buffers = new List<ShaderUniformBuffer>();
         public List<ShaderUniform> Uniforms = new List<ShaderUniform>();
@@ -148,6 +151,9 @@ namespace ReCrafted.ShaderCompiler.Compiler
             {
                 Name = ShaderName,
                 Description = ShaderDescription,
+                SamplerStates = Samplers.ToArray(),
+                Textures2D = Textures2D.ToArray(),
+                Textures3D = Textures3D.ToArray(),
                 Passes = Passes.ToArray(),
                 UniformBuffers = Buffers.ToArray()
             };

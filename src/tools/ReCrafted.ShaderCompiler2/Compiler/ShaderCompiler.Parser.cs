@@ -97,7 +97,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
                 case "Texture2D":
                 case "Texture3D":
                 case "SamplerState":
-                    ParseUniform();
+                    ParseUniform(token.Value);
                     break;
             }
         }
