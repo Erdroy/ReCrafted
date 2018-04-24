@@ -62,7 +62,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
                         var uniformType = token.Value;
                         var uniformName = ExpectToken(TokenType.Identifier).Value;
                         var uniformSize = D3DHelper.TypeToSize(uniformType);
-                        Console.WriteLine(uniformType + " " + uniformSize);
+
                         var uniform = new ShaderUniform
                         {
                             Name = uniformName,
