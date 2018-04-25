@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-namespace ReCrafted.ShaderCompiler.Tokenizer
+namespace ReCrafted.Tokenizer
 {
     /// <summary>
     /// Size of a token language.

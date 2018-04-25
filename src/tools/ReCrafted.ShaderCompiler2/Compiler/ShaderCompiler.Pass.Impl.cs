@@ -1,11 +1,11 @@
-﻿// GFXL - Graphics Library (c) 2016-2017 Damian 'Erdroy' Korczowski
+﻿// ReCrafted (c) 2016-2018 Always Too Late
 
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using ReCrafted.ShaderCompiler.Description;
-using ReCrafted.ShaderCompiler.Tokenizer;
+using ReCrafted.Tokenizer;
 
 namespace ReCrafted.ShaderCompiler.Compiler
 {
@@ -14,13 +14,13 @@ namespace ReCrafted.ShaderCompiler.Compiler
         private void ParsePass()
         {
             // expect name
-            var passName = ExpectToken(TokenType.Identifier);
+            var passName = _parser.ExpectToken(TokenType.Identifier);
             
             if (Options.Current.Verbose)
                 Console.WriteLine("Processing pass '" + passName.Value + "'.");
-            
+
             // expect { after pass name
-            ExpectToken(TokenType.LeftCurlyBrace);
+            _parser.ExpectToken(TokenType.LeftCurlyBrace);
 
             // construct shader pass
             var pass = new ShaderPass
@@ -31,7 +31,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
             var done = false;
             do
             {
-                var token = NextToken();
+                var token = _parser.NextToken();
                 switch (token.Type)
                 {
                     case TokenType.Identifier:
@@ -39,7 +39,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
                         var arguments = ParseFunctionArguments();
 
                         // expect semicolon at the end
-                        ExpectToken(TokenType.SemiColon);
+                        _parser.ExpectToken(TokenType.SemiColon);
 
                         switch (functionName)
                         {
@@ -68,7 +68,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
                             }
 
                             default:
-                                throw new Exception("Invalid pass function '" + functionName + "' at line " + _currentLineNumber + ".");
+                                throw new Exception("Invalid pass function '" + functionName + "' at line " + _parser.CurrentLine + ".");
                         }
                         break;
 
@@ -77,7 +77,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
                         break;
 
                     default:
-                        throw new Exception("Expected Identifier or right curly brace at line " + _currentLineNumber + ", but got " + token.Type + ".");
+                        throw new Exception("Expected Identifier or right curly brace at line " + _parser.CurrentLine + ", but got " + token.Type + ".");
                 }
 
             } while (!done);
@@ -89,7 +89,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
         private int ParseSetProfile(string functionName, IReadOnlyList<Token> arguments)
         {
             if (arguments.Count != 1)
-                throw new Exception("Invalid amount of arguments passing to the " + functionName + " at line " + _currentLineNumber + ".");
+                throw new Exception("Invalid amount of arguments passing to the " + functionName + " at line " + _parser.CurrentLine + ".");
 
             // get first argument
             var argument = arguments.First();
@@ -97,11 +97,11 @@ namespace ReCrafted.ShaderCompiler.Compiler
 
             // validate profile type
             if (argument.Type != TokenType.Number)
-                throw new Exception("Invalid profile passed (" + argumentValue + ") to the SetProfile function at line " + _currentLineNumber + "! Available: 2.0 up to 6.0.");
+                throw new Exception("Invalid profile passed (" + argumentValue + ") to the SetProfile function at line " + _parser.CurrentLine + "! Available: 2.0 up to 6.0.");
 
             // parse and check profile
             if (!int.TryParse(argumentValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var profile) || profile < 2 || profile > 6)
-                throw new Exception("Invalid profile passed (" + argumentValue + ") to the SetProfile function at line " + _currentLineNumber + "! Available: 2.0 up to 6.0.");
+                throw new Exception("Invalid profile passed (" + argumentValue + ") to the SetProfile function at line " + _parser.CurrentLine + "! Available: 2.0 up to 6.0.");
             
             return profile;
         }
@@ -109,7 +109,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
         private string ParseSetShader(string functionName, IReadOnlyList<Token> arguments)
         {
             if (arguments.Count != 1)
-                throw new Exception("Invalid amount of arguments passing to the " + functionName + " at line " + _currentLineNumber + ".");
+                throw new Exception("Invalid amount of arguments passing to the " + functionName + " at line " + _parser.CurrentLine + ".");
 
             // get first argument
             var argument = arguments.First();
@@ -117,7 +117,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
 
             // validate profile type
             if (argument.Type != TokenType.Identifier)
-                throw new Exception("Invalid shader function name passed (" + argumentValue + ") to the SetShader function at line " + _currentLineNumber + "!");
+                throw new Exception("Invalid shader function name passed (" + argumentValue + ") to the SetShader function at line " + _parser.CurrentLine + "!");
 
             // set shader function
             return argumentValue;

@@ -1,11 +1,10 @@
-﻿// GFXL - Graphics Library (c) 2016-2017 Damian 'Erdroy' Korczowski
+﻿// ReCrafted (c) 2016-2018 Always Too Late
 
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Newtonsoft.Json;
-using ReCrafted.ShaderCompiler.Tokenizer;
+using ReCrafted.Tokenizer;
 using ReCrafted.ShaderCompiler.Description;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D;
@@ -19,18 +18,13 @@ namespace ReCrafted.ShaderCompiler.Compiler
         private readonly string _inputFile;
         private readonly string _outputFile;
 
-        private IEnumerator<Token> _tokenEnumerator;
-
-        private Token _previousToken;
-        private int _currentLineNumber;
-        private bool _ignoreSource;
+        private Tokenizer.Tokenizer _parser;
 
         private FunctionAttribute _lastAttribute;
 
         public string ShaderName;
         public string ShaderDescription;
         
-        public StringBuilder ProcessedSourceCode = new StringBuilder();
         public List<string> Includes = new List<string>();
         public List<string> Samplers = new List<string>();
         public List<string> Textures2D = new List<string>();
@@ -44,42 +38,27 @@ namespace ReCrafted.ShaderCompiler.Compiler
             _inputFile = input;
             _outputFile = output;
 
+            _parser = new Tokenizer.Tokenizer(input);
+
             if (!File.Exists(_inputFile))
                 throw new Exception("File " + _inputFile + " doesn't exists!");
         }
-
-        public void Tokenize()
+        
+        public void Parse()
         {
-            if (_tokenEnumerator != null)
-                throw new Exception("This shader is already tokenized!");
+            if (_parser.CurrentToken?.Type==TokenType.EndOfFile)
+               throw new Exception("This shader is already parsed!");
 
             if (Options.Current.Verbose)
                 Console.WriteLine("Parsing " + Options.Current.InputFile);
 
-            using (var file = new FileStream(_inputFile, FileMode.Open))
-            {
-                using (var reader = new StreamReader(file))
-                {
-                    var sourceCode = reader.ReadToEnd();
-
-                    if (Options.Current.Verbose)
-                        Console.WriteLine("Tokenizing total " + sourceCode.Length + " characters");
-
-                    var tokens = Tokenizer.Tokenizer.Run(sourceCode);
-                    _tokenEnumerator = tokens.GetEnumerator();
-                }
-            }
-        }
-
-        public void Parse()
-        {
-            if (_tokenEnumerator.Current?.Type==TokenType.EndOfFile)
-               throw new Exception("This shader is already parsed!");
+            _parser = new Tokenizer.Tokenizer(Options.Current.InputFile);
+            _parser.Tokenize();
 
             do
             {
                 // get and check current token
-                var token = NextToken();
+                var token = _parser.NextToken();
 
                 if (token == null)
                     continue;
@@ -88,11 +67,11 @@ namespace ReCrafted.ShaderCompiler.Compiler
                 {
                     case TokenType.LeftBracket:
                     {
-                        // only our custom attributes use these brackets
-                        // start ignoring source code right there
-                        IgnoreSource(true);
+                            // only our custom attributes use these brackets
+                            // start ignoring source code right there
+                        _parser.IgnoreSource(true);
                         HandleAttribute();
-                        IgnoreSource(false);
+                        _parser.IgnoreSource(false);
                         break;
                     }
 
@@ -120,7 +99,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
 
             // We don't need semantics for D3D as it will get it using reflection. What about other planned backends?
 
-            var sourceCode = ProcessedSourceCode.ToString();
+            var sourceCode = _parser.ProcessedSourceCode.ToString();
 
             if (Options.Current.Verbose)
                 Console.WriteLine("Pre-processing...");
@@ -173,17 +152,9 @@ namespace ReCrafted.ShaderCompiler.Compiler
 
         public void Dispose()
         {
-            _tokenEnumerator.Dispose();
+            _parser?.Dispose();
         }
-
-        private void IgnoreSource(bool ignore)
-        {
-            _ignoreSource = ignore;
-
-            if (!ignore)
-                _previousToken = null;
-        }
-
+        
         private void CompileD3D(ref string sourceCode)
         {
             if (Options.Current.Verbose)

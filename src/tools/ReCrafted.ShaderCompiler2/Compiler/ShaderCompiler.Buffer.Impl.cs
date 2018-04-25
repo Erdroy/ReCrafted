@@ -1,9 +1,9 @@
-﻿// GFXL - Graphics Library (c) 2016-2017 Damian 'Erdroy' Korczowski
+﻿// ReCrafted (c) 2016-2018 Always Too Late
 
 using System;
 using System.Collections.Generic;
 using ReCrafted.ShaderCompiler.Description;
-using ReCrafted.ShaderCompiler.Tokenizer;
+using ReCrafted.Tokenizer;
 
 namespace ReCrafted.ShaderCompiler.Compiler
 {
@@ -11,7 +11,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
     {
         private void ParseBuffer()
         {
-            var bufferName = ExpectToken(TokenType.Identifier);
+            var bufferName = _parser.ExpectToken(TokenType.Identifier);
 
             // construct uniform buffer
             var buffer = new ShaderUniformBuffer
@@ -21,16 +21,16 @@ namespace ReCrafted.ShaderCompiler.Compiler
 
             if (Options.Current.Verbose)
                 Console.WriteLine("Processing buffer '" + bufferName.Value + "'.");
-            
+
             // consume ': register(X)'
-            ExpectToken(TokenType.Colon); // :
-            ExpectToken(TokenType.Identifier); // register
-            ExpectToken(TokenType.LeftParent); // (
-            buffer.Index = int.Parse(ExpectToken(TokenType.Identifier).Value.Remove(0, 1)); // laaazy
-            ExpectToken(TokenType.RightParent); // )
+            _parser.ExpectToken(TokenType.Colon); // :
+            _parser.ExpectToken(TokenType.Identifier); // register
+            _parser.ExpectToken(TokenType.LeftParent); // (
+            buffer.Index = int.Parse(_parser.ExpectToken(TokenType.Identifier).Value.Remove(0, 1)); // laaazy
+            _parser.ExpectToken(TokenType.RightParent); // )
 
             // expect {
-            ExpectToken(TokenType.LeftCurlyBrace);
+            _parser.ExpectToken(TokenType.LeftCurlyBrace);
             
             // process attribute
             if (_lastAttribute != null && _lastAttribute.Parameters.Length > 0)
@@ -41,7 +41,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
                 foreach (var token in _lastAttribute.Parameters)
                 {
                     if (token.Type != TokenType.Identifier)
-                        throw new Exception("Invalid parameter type passed (" + token.Value + ") to target at line " + _currentLineNumber);
+                        throw new Exception("Invalid parameter type passed (" + token.Value + ") to target at line " + _parser.CurrentLine);
 
                     targets.Add(token.Value);
                 }
@@ -55,12 +55,12 @@ namespace ReCrafted.ShaderCompiler.Compiler
             var done = false;
             do
             {
-                var token = NextToken();
+                var token = _parser.NextToken();
                 switch (token.Type)
                 {
                     case TokenType.Identifier:
                         var uniformType = token.Value;
-                        var uniformName = ExpectToken(TokenType.Identifier).Value;
+                        var uniformName = _parser.ExpectToken(TokenType.Identifier).Value;
                         var uniformSize = D3DHelper.TypeToSize(uniformType);
 
                         var uniform = new ShaderUniform
@@ -73,7 +73,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
                         uniforms.Add(uniform);
 
                         // and for the end, expect semicolon at the end
-                        ExpectToken(TokenType.SemiColon);
+                        _parser.ExpectToken(TokenType.SemiColon);
                         uniformIndex++;
                         break;
                     case TokenType.RightCurlyBrace:

@@ -1,4 +1,4 @@
-﻿// GFXL - Graphics Library (c) 2016-2017 Damian 'Erdroy' Korczowski
+﻿// ReCrafted (c) 2016-2018 Always Too Late
 
 using System;
 using System.IO;

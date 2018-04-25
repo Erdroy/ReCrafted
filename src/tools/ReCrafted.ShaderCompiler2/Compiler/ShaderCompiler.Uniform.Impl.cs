@@ -1,6 +1,6 @@
-﻿// GFXL - Graphics Library (c) 2016-2017 Damian 'Erdroy' Korczowski
+﻿// ReCrafted (c) 2016-2018 Always Too Late
 
-using ReCrafted.ShaderCompiler.Tokenizer;
+using ReCrafted.Tokenizer;
 
 namespace ReCrafted.ShaderCompiler.Compiler
 {
@@ -13,24 +13,24 @@ namespace ReCrafted.ShaderCompiler.Compiler
             {
                 case "Texture2D":
                 {
-                    var name = ExpectToken(TokenType.Identifier);
+                    var name = _parser.ExpectToken(TokenType.Identifier);
                     Textures2D.Add(name.Value);
                     break;
                 }
                 case "Texture3D":
                 {
-                    var name = ExpectToken(TokenType.Identifier);
+                    var name = _parser.ExpectToken(TokenType.Identifier);
                     Textures3D.Add(name.Value);
                     break;
                 }
 
                 case "SamplerState":
                 {
-                    ExpectToken(TokenType.LessThan);
-                    IgnoreSource(true);
-                    var type = ExpectToken(TokenType.Identifier);
-                    ExpectToken(TokenType.GreaterThan);
-                    IgnoreSource(false);
+                    _parser.ExpectToken(TokenType.LessThan);
+                    _parser.IgnoreSource(true);
+                    var type = _parser.ExpectToken(TokenType.Identifier);
+                    _parser.ExpectToken(TokenType.GreaterThan);
+                    _parser.IgnoreSource(false);
 
                     Samplers.Add(type.Value);
                     break;

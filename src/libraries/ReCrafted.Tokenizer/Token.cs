@@ -20,7 +20,7 @@
 
 using System;
 
-namespace ReCrafted.ShaderCompiler.Tokenizer
+namespace ReCrafted.Tokenizer
 {
     /// <summary>
     /// Contains information about a token language.
@@ -36,12 +36,10 @@ namespace ReCrafted.ShaderCompiler.Tokenizer
         /// </summary>
         /// <param name="type">The type.</param>
         /// <param name="value">The value.</param>
-        /// <param name="span">The span.</param>
-        public Token(TokenType type, string value, SourceSpan span)
+        public Token(TokenType type, string value)
         {
             Type = type;
             Value = value;
-            Span = span;
         }
 
         /// <summary>
@@ -53,11 +51,6 @@ namespace ReCrafted.ShaderCompiler.Tokenizer
         /// Value of the token.
         /// </summary>
         public string Value;
-
-        /// <summary>
-        /// The source span.
-        /// </summary>
-        public SourceSpan Span;
 
         public bool EqualString(string value, bool caseSensitive = false)
         {

@@ -1,4 +1,4 @@
-﻿// GFXL - Graphics Library (c) 2016-2017 Damian 'Erdroy' Korczowski
+﻿// ReCrafted (c) 2016-2018 Always Too Late
 
 using System;
 using System.Diagnostics;
@@ -26,8 +26,12 @@ namespace ReCrafted.ShaderCompiler
 
             try
             {
-                compiler.Tokenize();
+                var perfCounterParse = new Stopwatch();
+                perfCounterParse.Start();
                 compiler.Parse();
+                perfCounterParse.Stop();
+                Console.WriteLine("Parsing done in " + perfCounterParse.ElapsedMilliseconds + " ms.");
+
                 compiler.Compile();
                 compiler.Save();
             }
