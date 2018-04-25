@@ -52,12 +52,12 @@ externalproject "tools/ReCrafted.ShaderCompiler2"
    language "C#"
    filename "ReCrafted.ShaderCompiler2"
    
-externalproject "libraries/ReCrafted.Tokenizer"
-   location (path.join(ROOT_DIR, "src/libraries/ReCrafted.Tokenizer"))
+externalproject "libraries/ReCrafted.CodeTokenizer"
+   location (path.join(ROOT_DIR, "src/libraries/ReCrafted.CodeTokenizer"))
    uuid "C36BA940-4B4D-4178-BEFE-CD9D6CA18732"
    kind "SharedLib"
    language "C#"
-   filename "ReCrafted.Tokenizer"
+   filename "ReCrafted.CodeTokenizer"
    
 externalproject "tools/ReCrafted.VersionBuilder"
    location (path.join(ROOT_DIR, "src/tools/ReCrafted.VersionBuilder"))

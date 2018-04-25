@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
-using ReCrafted.Tokenizer;
+using ReCrafted.CodeTokenizer;
 using ReCrafted.ShaderCompiler.Description;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D;
@@ -18,7 +18,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
         private readonly string _inputFile;
         private readonly string _outputFile;
 
-        private Tokenizer.Tokenizer _parser;
+        private Tokenizer _parser;
 
         private FunctionAttribute _lastAttribute;
 
@@ -38,7 +38,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
             _inputFile = input;
             _outputFile = output;
 
-            _parser = new Tokenizer.Tokenizer(input);
+            _parser = new Tokenizer(input);
 
             if (!File.Exists(_inputFile))
                 throw new Exception("File " + _inputFile + " doesn't exists!");
@@ -52,7 +52,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
             if (Options.Current.Verbose)
                 Console.WriteLine("Parsing " + Options.Current.InputFile);
 
-            _parser = new Tokenizer.Tokenizer(Options.Current.InputFile);
+            _parser = new Tokenizer(Options.Current.InputFile);
             _parser.Tokenize();
 
             do

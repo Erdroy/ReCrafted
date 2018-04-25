@@ -103,9 +103,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\ReCrafted.Tokenizer\ReCrafted.Tokenizer.csproj">
+    <ProjectReference Include="..\..\libraries\ReCrafted.CodeTokenizer\ReCrafted.CodeTokenizer.csproj">
       <Project>{c36ba940-4b4d-4178-befe-cd9d6ca18732}</Project>
-      <Name>ReCrafted.Tokenizer</Name>
+      <Name>ReCrafted.CodeTokenizer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -36,5 +36,5 @@ src/ReCrafted.VoxelEditor/bin/
 src/ReCrafted.VoxelEditor/obj/
 src/tools/ReCrafted.ShaderCompiler2/bin/
 src/tools/ReCrafted.ShaderCompiler2/obj/
-src/libraries/ReCrafted.Tokenizer/bin/
-src/libraries/ReCrafted.Tokenizer/obj/
+src/libraries/ReCrafted.CodeTokenizer/bin/
+src/libraries/ReCrafted.CodeTokenizer/obj/

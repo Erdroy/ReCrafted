@@ -7,8 +7,8 @@
     <ProjectGuid>{C36BA940-4B4D-4178-BEFE-CD9D6CA18732}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ReCrafted.Tokenizer</RootNamespace>
-    <AssemblyName>ReCrafted.Tokenizer</AssemblyName>
+    <RootNamespace>ReCrafted.CodeTokenizer</RootNamespace>
+    <AssemblyName>ReCrafted.CodeTokenizer</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

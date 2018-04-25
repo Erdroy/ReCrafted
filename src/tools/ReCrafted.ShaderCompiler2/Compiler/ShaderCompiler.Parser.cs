@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using ReCrafted.Tokenizer;
+using ReCrafted.CodeTokenizer;
 
 namespace ReCrafted.ShaderCompiler.Compiler
 {
