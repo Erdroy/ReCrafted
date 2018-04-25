@@ -1,9 +1,10 @@
-// GFXL - Graphics Library (c) 2016-2017 Damian 'Erdroy' Korczowski
+// ReCrafted (c) 2016-2018 Always Too Late
 
 #include "RHIDirectX11_Shader.h"
 #include "../../../../GFXL.hpp"
 #include "Core/Lock.h"
 #include <base64.h>
+#include "Platform/Platform.h"
 
 namespace GFXL
 {
@@ -358,6 +359,7 @@ namespace GFXL
             }
         }
         
+        // TODO: Load uniforms (textures, buffers, samplers etc.)
         // TODO: Setup sampler states
 
         return shader;

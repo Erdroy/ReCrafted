@@ -1,4 +1,4 @@
-// GFXL - Graphics Library (c) 2016-2017 Damian 'Erdroy' Korczowski
+// ReCrafted (c) 2016-2018 Always Too Late
 
 #pragma once
 
@@ -89,10 +89,14 @@ namespace GFXL
 
         void BindTexture(ID3D11DeviceContext* context, uint8_t slot, ID3D11Texture2D* texture);
         void BindTexture(ID3D11DeviceContext* context, uint8_t slot, ID3D11Texture3D* texture);
+        void BindTexture(ID3D11DeviceContext* context, std::string name, ID3D11Texture2D* texture);
+        void BindTexture(ID3D11DeviceContext* context, std::string name, ID3D11Texture3D* texture);
 
         void BindBuffer(ID3D11DeviceContext* context, uint8_t slot, ID3D11Buffer* buffer);
+        void BindBuffer(ID3D11DeviceContext* context, std::string name, ID3D11Buffer* buffer);
 
         void BindBlendState(ID3D11DeviceContext* context, uint8_t slot, ID3D11BlendState* state);
+        void BindBlendState(ID3D11DeviceContext* context, std::string name, ID3D11BlendState* state);
 
         void ApplyChanges();
 
