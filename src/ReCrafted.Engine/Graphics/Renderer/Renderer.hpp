@@ -5,9 +5,9 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include "ReCrafted.h"
 #include "RendererDefines.h"
 #include "RendererConfig.h"
-#include "ReCrafted.h"
 
 namespace Renderer
 {
@@ -217,43 +217,57 @@ namespace Renderer
 
 	// ======== COMMON ========
 
-	/**
-	 * \brief Initializes Renderer
-	 * \param api The renderer API to be used, it can be set only once.
-	 * \param settings The Renderer settings.
-	 */
+    /// <summary>
+    /// Initializes Renderer
+    /// </summary>
+    /// <param name="api">The renderer API to be used, it can be set only once.</param>
+    /// <param name="flags">The renderer flags.</param>
+    /// <param name="settings">The renderer settings.</param>
 	RENDERER_FUNCTION(void)                     Initialize(RendererAPI::_enum api, ResetFlags::_enum flags, Settings::_enum settings);
 
-	/**
-	 * \brief Checks if Renderer is initialized.
-	 * \return Returns true when Renderer is initialized.
-	 */
+    /// <summary>
+    /// Checks if Renderer is initialized.
+    /// </summary>
+    /// <returns>True, when Renderer is initialized.</returns>
 	RENDERER_FUNCTION(bool)                     IsInitialized();
 
-	/**
-	 * \brief Shutdowns Renderer.
-	 */
+    /// <summary>
+    /// Shutdows the renderer.
+    /// </summary>
 	RENDERER_FUNCTION(void)                     Shutdown();
 
+    /// <summary>
+    /// Allocates given amount of memory.
+    /// </summary>
+    /// <param name="size">Amount of memory to allocate.</param>
+    /// <returns>The allocated memory pointer.</returns>
+    RENDERER_FUNCTION(RendererMemory)           Allocate(size_t size);
+
+    /// <summary>
+    /// Frees given memory pointer.
+    /// </summary>
+    /// <param name="memory">The memory pointer to be released.</param>
+    RENDERER_FUNCTION(void)                     Free(RendererMemory memory);
 
 
 	// ======== RENDERING - BASIC ========
 
-	/**
-	* \brief Ends current frame.
-	*/
+    /// <summary>
+    /// Finalizes current frame and executes all threads or commands when single threaded.
+    /// </summary>
 	RENDERER_FUNCTION(void)                     Frame();
 
-	/**
-	* \brief Creates new window handle.
-	* 
-	* \note Currently only one window is supported.
-	*/
+    /// <summary>
+    /// Creates new window handle.
+    /// Note: Currently only one window is supported.
+    /// </summary>
+    /// <returns>The created window.</returns>
 	RENDERER_FUNCTION(WindowHandle)             CreateWindowHandle(void* windowHandle);
 
-	/**
-	* \brief Sets given window as current.
-	*/
+    /// <summary>
+    /// Sets given window as current.
+    /// </summary>
+    /// <param name="handle">The window handle to be set as current.</param>
 	RENDERER_FUNCTION(void)                     ApplyWindow(WindowHandle handle);
 
 	/**
@@ -278,6 +292,12 @@ namespace Renderer
 
 	// NOT IMPLEMENTED!
 	RENDERER_FUNCTION(void)                     ResizeRenderBuffer(/*TODO*/);
+
+    RENDERER_FUNCTION(VertexBufferHandle)       CreateVertexBuffer(uint count, uint vertexSize, bool dynamic = false);
+    RENDERER_FUNCTION(VertexBufferHandle)       CreateVertexBuffer(uint count, uint vertexSize, RendererMemory memory, bool dynamic = false);
+    RENDERER_FUNCTION(void)                     UpdateVertexBuffer(VertexBufferHandle handle, uint count, uint offset, RendererMemory memory);
+    RENDERER_FUNCTION(void)                     ApplyVertexBuffer(VertexBufferHandle handle);
+    RENDERER_FUNCTION(void)                     DestroyVertexBuffer(VertexBufferHandle handle);
 
     /**
 	 * \brief Sets given render buffer as current render target.

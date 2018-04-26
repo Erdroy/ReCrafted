@@ -48,7 +48,9 @@ namespace Renderer
 	RENDERER_DEFINE_HANDLE_ALLOCATOR(WindowHandle, RENDERER_MAX_WINDOWS);
 	RENDERER_DEFINE_HANDLE_ALLOCATOR(RenderBufferHandle, RENDERER_MAX_RENDER_BUFFERS);
     RENDERER_DEFINE_HANDLE_ALLOCATOR(Texture2DHandle, RENDERER_MAX_TEXTURES2D);
-    RENDERER_DEFINE_HANDLE_ALLOCATOR(ShaderHandle, RENDERER_MAX_SHADERS);
+    RENDERER_DEFINE_HANDLE_ALLOCATOR(ShaderHandle, RENDERER_MAX_SHADER_PROGRAMS);
+    RENDERER_DEFINE_HANDLE_ALLOCATOR(VertexBufferHandle, RENDERER_MAX_VERTEX_BUFFERS);
+    RENDERER_DEFINE_HANDLE_ALLOCATOR(IndexBufferHandle, RENDERER_MAX_INDEX_BUFFERS);
 
 	const std::thread::id MAIN_THREAD_ID = std::this_thread::get_id();
 
@@ -103,10 +105,15 @@ namespace Renderer
 		m_renderer->Shutdown();
 	}
 
-	void Fullscreen(bool useFullScreen)
-	{
+    RendererMemory Allocate(const size_t size)
+    {
+        return static_cast<RendererMemory>(new byte[size]);
+    }
 
-	}
+    void Free(RendererMemory memory)
+    {
+        delete[] static_cast<byte*>(memory);
+    }
 
 	void Frame()
 	{
@@ -116,14 +123,11 @@ namespace Renderer
 	WindowHandle CreateWindowHandle(void* windowHandle)
 	{
 		// Create output
-		auto handle = AllocWindowHandle();
-        auto renderBuffer = AllocRenderBufferHandle();
+        cvar handle = AllocWindowHandle();
+        cvar renderBuffer = AllocRenderBufferHandle();
 
-		if(RENDERER_CHECK_HANDLE(handle))
-			Internal::Fatal("Failed to allocate WindowHandle.");
-
-        if (RENDERER_CHECK_HANDLE(renderBuffer))
-            Internal::Fatal("Failed to allocate RenderBuffer.");
+        RENDERER_VALIDATE_HANDLE(handle);
+        RENDERER_VALIDATE_HANDLE(renderBuffer);
 
 		m_renderer->CreateWindowHandle(handle, renderBuffer, windowHandle);
 
@@ -161,17 +165,61 @@ namespace Renderer
 
 	RenderBufferHandle CreateRenderBuffer()
 	{
-        auto handle = AllocRenderBufferHandle();
+        cvar handle = AllocRenderBufferHandle();
+        RENDERER_VALIDATE_HANDLE(handle);
 
-        if (RENDERER_CHECK_HANDLE(handle))
-            Internal::Fatal("Failed to allocate RenderBuffer.");
-
-        // TODO: create render buffer impls
+        // TODO: create render buffer impl
 
 		return handle;
 	}
 
-	void ApplyRenderBuffer(RenderBufferHandle handle)
+    VertexBufferHandle CreateVertexBuffer(uint count, uint vertexSize, bool dynamic)
+    {
+        return CreateVertexBuffer(count, vertexSize, nullptr, dynamic);
+    }
+
+    VertexBufferHandle CreateVertexBuffer(uint count, uint vertexSize, RendererMemory memory, bool dynamic)
+    {
+        cvar handle = AllocVertexBufferHandle();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_CreateVertexBuffer command;
+        command.handle = handle;
+        command.vertexCount = count;
+        command.vertexSize = vertexSize;
+        command.memory = memory;
+        command.dynamic = dynamic;
+
+        g_commandList->WriteCommand(&command);
+
+        return handle;
+    }
+
+    void UpdateVertexBuffer(VertexBufferHandle handle, uint count, uint offset, RendererMemory memory)
+    {
+        RENDERER_VALIDATE_HANDLE(handle);
+
+    }
+
+    void ApplyVertexBuffer(VertexBufferHandle handle)
+    {
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_ApplyVertexBuffer command;
+        command.handle = handle;
+        g_commandList->WriteCommand(&command);
+    }
+
+    void DestroyVertexBuffer(VertexBufferHandle handle)
+    {
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_DestroyVertexBuffer command;
+        command.handle = handle;
+        g_commandList->WriteCommand(&command);
+    }
+
+    void ApplyRenderBuffer(RenderBufferHandle handle)
 	{
         RENDERER_VALIDATE_HANDLE(handle);
 
@@ -198,10 +246,8 @@ namespace Renderer
 
     Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat)
     {
-        auto handle = AllocTexture2DHandle();
-
-        if (RENDERER_CHECK_HANDLE(handle))
-            Internal::Fatal("Failed to allocate Texture2D.");
+        cvar handle = AllocTexture2DHandle();
+        RENDERER_VALIDATE_HANDLE(handle);
 
         m_renderer->CreateTexture2D(handle, width, height, textureFormat);
 
@@ -210,10 +256,8 @@ namespace Renderer
 
     ShaderHandle CreateShader(const char* fileName)
     {
-        auto handle = AllocShaderHandle();
-
-        if (RENDERER_CHECK_HANDLE(handle))
-            Internal::Fatal("Failed to allocate Shader.");
+        cvar handle = AllocShaderHandle();
+        RENDERER_VALIDATE_HANDLE(handle);
 
         Command_CreateShader command;
         command.shader = handle;

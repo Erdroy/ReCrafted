@@ -47,9 +47,11 @@ namespace Renderer
 
         // == resources ==
         IDXGISwapChain*		        m_swapChains[RENDERER_MAX_WINDOWS] = {};
-        RHIDirectX11_Shader*        m_shaders[RENDERER_MAX_SHADERS] = {};
+        RHIDirectX11_Shader*        m_shaders[RENDERER_MAX_SHADER_PROGRAMS] = {};
         RHIDirectX11_RenderBuffer*  m_renderBuffers[RENDERER_MAX_RENDER_BUFFERS] = {};
         //RHIDirectX11_Texture2D*   m_textures2d[RENDERER_MAX_TEXTURES2D] = {};
+        ID3D11Buffer*               m_vertexBuffers[RENDERER_MAX_VERTEX_BUFFERS] = {};
+        //ID3D11Buffer*               m_indexBuffers[RENDERER_MAX_INDEX_BUFFERS] = {};
 
 
         // == d3d11 resources ==
@@ -100,6 +102,9 @@ namespace Renderer
             FORCEINLINE void Execute_CreateShader(Command_CreateShader* command) const;
             FORCEINLINE void Execute_ApplyShader(Command_ApplyShader* command) const;
             FORCEINLINE void Execute_DestroyShader(Command_DestroyShader* command) const;
+            FORCEINLINE void Execute_CreateVertexBuffer(Command_CreateVertexBuffer* command) const;
+            FORCEINLINE void Execute_ApplyVertexBuffer(Command_ApplyVertexBuffer* command) const;
+            FORCEINLINE void Execute_DestroyVertexBuffer(Command_DestroyVertexBuffer* command) const;
         };
 
         void WorkerThreadInstance::WaitForPreviousFrame()
@@ -220,6 +225,9 @@ namespace Renderer
             DEFINE_COMMAND_EXECUTOR(CreateShader);
             DEFINE_COMMAND_EXECUTOR(ApplyShader);
             DEFINE_COMMAND_EXECUTOR(DestroyShader);
+            DEFINE_COMMAND_EXECUTOR(CreateVertexBuffer);
+            DEFINE_COMMAND_EXECUTOR(ApplyVertexBuffer);
+            DEFINE_COMMAND_EXECUTOR(DestroyVertexBuffer);
             default: break;
             }
         }
@@ -261,6 +269,52 @@ namespace Renderer
         {
             var shaderIdx = command->shader.idx;
             SafeRelease(m_shaders[shaderIdx]);
+        }
+
+        void WorkerThreadInstance::Execute_CreateVertexBuffer(Command_CreateVertexBuffer* command) const
+        {
+            rvar buffer = m_vertexBuffers[command->handle.idx];
+            _ASSERT(buffer == nullptr);
+
+            // create buffer description
+            D3D11_BUFFER_DESC desc = {};
+            desc.Usage = command->dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT;
+            desc.ByteWidth = command->vertexSize * command->vertexCount;
+            desc.StructureByteStride = command->vertexSize;
+            desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+            desc.CPUAccessFlags = command->dynamic ? D3D11_CPU_ACCESS_WRITE : 0;
+
+            // create optional initial buffer data
+            D3D11_SUBRESOURCE_DATA subresource_data = {};
+            subresource_data.pSysMem = command->memory;
+            subresource_data.SysMemPitch = 0;
+            subresource_data.SysMemSlicePitch = 0;
+
+            // create d3d11 buffer
+            var hr = m_device->CreateBuffer(&desc, command->memory ? &subresource_data : nullptr, &buffer);
+            _ASSERT(SUCCEEDED(hr));
+        }
+
+        void WorkerThreadInstance::Execute_ApplyVertexBuffer(Command_ApplyVertexBuffer* command) const
+        {
+            rvar buffer = m_vertexBuffers[command->handle.idx];
+            _ASSERT(buffer != nullptr);
+
+            ID3D11Buffer* buffers[] = { buffer };
+
+            D3D11_BUFFER_DESC desc = {};
+            buffer->GetDesc(&desc);
+
+            uint offset = 0u;
+            m_deviceContext->IASetVertexBuffers(0, 1, buffers, &desc.StructureByteStride, &offset);
+        }
+
+        void WorkerThreadInstance::Execute_DestroyVertexBuffer(Command_DestroyVertexBuffer* command) const
+        {
+            rvar buffer = m_vertexBuffers[command->handle.idx];
+            _ASSERT(buffer != nullptr);
+
+            SafeRelease(buffer);
         }
 
         void WorkerThreadInstance::Execute_ClearRenderBuffer(Command_ClearRenderBuffer* command) const
@@ -444,7 +498,7 @@ namespace Renderer
             }
 
             // Destroy shaders (if not released)
-            for (var i = 0; i < RENDERER_MAX_SHADERS; i++)
+            for (var i = 0; i < RENDERER_MAX_SHADER_PROGRAMS; i++)
             {
                 SafeRelease(m_shaders[i]);
             }
