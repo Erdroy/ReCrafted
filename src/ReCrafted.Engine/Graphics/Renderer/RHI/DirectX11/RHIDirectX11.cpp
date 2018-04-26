@@ -90,7 +90,7 @@ namespace Renderer
 
             void ProcessFrame();
             void ExecuteCommandList();
-            void ExecuteCommand(RendererCommandHeader::_enum header, uint32_t* position);
+            void ExecuteCommand(CommandHeader::_enum header, uint32_t* position);
 
             void Cleanup();
 
@@ -176,17 +176,17 @@ namespace Renderer
             // Execute command list
             for (var i = 0u; i < m_commandCount; i++)
             {
-                var header = commandList->Read_RendererCommandHeader(&position);
+                var header = commandList->Read_CommandHeader(&position);
                 position -= sizeof header;
 
                 ExecuteCommand(header, &position);
             }
         }
 
-        void WorkerThreadInstance::ExecuteCommand(RendererCommandHeader::_enum header, uint32_t* position)
+        void WorkerThreadInstance::ExecuteCommand(CommandHeader::_enum header, uint32_t* position)
         {
 #define DEFINE_COMMAND_EXECUTOR(name) \
-            case RendererCommandHeader::name: { \
+            case CommandHeader::name: { \
                 var command = commandList->ReadCommand<Command_##name>(position);\
                 Execute_##name(&command);\
                 break; \
@@ -194,15 +194,15 @@ namespace Renderer
 
             switch (header)
             {
-            case RendererCommandHeader::Empty:
+            case CommandHeader::Empty:
                 break;
-            case RendererCommandHeader::ApplyWindow:
+            case CommandHeader::ApplyWindow:
             {
                 var command = commandList->ReadCommand<Command_ApplyWindow>(position);
                 m_swapChain = m_swapChains[command.window.idx];
                 break;
             }
-            case RendererCommandHeader::DestroyWindow:
+            case CommandHeader::DestroyWindow:
             {
                 var command = commandList->ReadCommand<Command_DestroyWindow>(position);
 

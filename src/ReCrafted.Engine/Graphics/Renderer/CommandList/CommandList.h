@@ -89,7 +89,7 @@ namespace Renderer
 	public:
 		// ReSharper disable CppRedundantEmptyDeclaration
 
-		DefineReaderWriter(RendererCommandHeader::_enum, RendererCommandHeader);
+		DefineReaderWriter(CommandHeader::_enum, CommandHeader);
 		DefineReaderWriter(RendererMemory, RendererMemory);
 		DefineReaderWriter(ObjectHandle, Handle);
 		DefineReaderWriter(bool, bool);

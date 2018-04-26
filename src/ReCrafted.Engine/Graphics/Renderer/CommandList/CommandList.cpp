@@ -39,7 +39,7 @@ namespace Renderer
 		for(auto i = 0u; i < m_commandCount; i ++)
 		{
 			auto spos = position;
-			Read_RendererCommandHeader(&position);
+			Read_CommandHeader(&position);
 			auto size = Read_uint16(&position);
 			position = spos + size;
 			command++;

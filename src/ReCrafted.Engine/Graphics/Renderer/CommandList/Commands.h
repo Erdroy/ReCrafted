@@ -7,16 +7,16 @@
 
 #include <stdint.h>
 
-#define RendererCommand(name) RENDERER_ALIGN(8)                                 \
+#define Command(name) RENDERER_ALIGN(8)                                 \
 struct Command_##name {	                                                \
 public:                                                                 \
 	Command_##name() : size(sizeof(Command_##name)) { }	                \
 public:                                                                 \
-	const RendererCommandHeader::_enum header = RendererCommandHeader::##name;
+	const CommandHeader::_enum header = CommandHeader::##name;
 
 namespace Renderer
 {
-	struct RendererCommandHeader
+	struct CommandHeader
 	{
 		enum _enum : uint16_t
 		{
@@ -35,48 +35,48 @@ namespace Renderer
 		};
 	};
 
-	RendererCommand(Empty);
+	Command(Empty);
     uint16_t size = 0u; 
 	};
 
-	RendererCommand(ApplyWindow);
+	Command(ApplyWindow);
     uint16_t size = 0u;
     WindowHandle window;
 	};
 
-	RendererCommand(DestroyWindow);
+	Command(DestroyWindow);
     uint16_t size = 0u;
     WindowHandle window;
 	};
 
-    RendererCommand(ApplyRenderBuffer);
+    Command(ApplyRenderBuffer);
     uint16_t size = 0u;
     RenderBufferHandle renderBuffer;
     };
 
-    RendererCommand(ClearRenderBuffer);
+    Command(ClearRenderBuffer);
     uint16_t size = 0u;
     RenderBufferHandle renderBuffer;
     Color color;
     };
 
-    RendererCommand(DestroyRenderBuffer);
+    Command(DestroyRenderBuffer);
     uint16_t size = 0u;
     };
 
-    RendererCommand(CreateShader);
+    Command(CreateShader);
     uint16_t size = 0u;
     ShaderHandle shader;
     char fileName[_MAX_PATH]; // note: we cannot use std::string as this is 'fixed size' type struct!
     };
 
-    RendererCommand(ApplyShader);
+    Command(ApplyShader);
     uint16_t size = 0u;
     ShaderHandle shader;
     uint16_t passId = 0u;
     };
 
-    RendererCommand(DestroyShader);
+    Command(DestroyShader);
     uint16_t size = 0u;
     ShaderHandle shader;
     };
