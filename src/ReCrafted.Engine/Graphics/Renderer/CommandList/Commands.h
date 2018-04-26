@@ -24,6 +24,9 @@ namespace Renderer
 		{
 			Empty,
 
+            Draw,
+            DrawIndexed,
+
 			ApplyWindow,
 			DestroyWindow,
 
@@ -42,7 +45,13 @@ namespace Renderer
 		};
 	};
 
-    Command(Empty,
+    Command(Empty, );
+
+    Command(Draw,
+        uint vertexCount = 0u;
+    );
+    Command(DrawIndexed,
+        uint indexCount = 0u;
     );
 
     Command(ApplyWindow,

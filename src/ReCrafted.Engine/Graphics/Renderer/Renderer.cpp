@@ -120,7 +120,21 @@ namespace Renderer
 		m_renderer->Frame();
 	}
 
-	WindowHandle CreateWindowHandle(void* windowHandle)
+    void Draw(uint vertexCount)
+    {
+        Command_Draw command;
+        command.vertexCount = vertexCount;
+        g_commandList->WriteCommand(&command);
+    }
+
+    void DrawIndexed(uint indexCount)
+    {
+        Command_DrawIndexed command;
+        command.indexCount = indexCount;
+        g_commandList->WriteCommand(&command);
+    }
+
+    WindowHandle CreateWindowHandle(void* windowHandle)
 	{
 		// Create output
         cvar handle = AllocWindowHandle();

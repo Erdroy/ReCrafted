@@ -97,6 +97,8 @@ namespace Renderer
             void Cleanup();
 
         public:
+            FORCEINLINE void Execute_Draw(Command_Draw* command) const;
+            FORCEINLINE void Execute_DrawIndexed(Command_DrawIndexed* command) const;
             FORCEINLINE void Execute_ClearRenderBuffer(Command_ClearRenderBuffer* command) const;
             FORCEINLINE void Execute_ApplyRenderBuffer(Command_ApplyRenderBuffer* command) const;
             FORCEINLINE void Execute_CreateShader(Command_CreateShader* command) const;
@@ -204,6 +206,14 @@ namespace Renderer
             case CommandHeader::ApplyWindow:
             {
                 var command = commandList->ReadCommand<Command_ApplyWindow>(position);
+
+                D3D11_VIEWPORT vpd = {};
+                vpd.Width = 1920; // TODO: set window size, we need window description table
+                vpd.Height = 1080;
+
+                D3D11_VIEWPORT viewport[] = { vpd };
+                m_context->RSSetViewports(1, viewport);
+
                 m_swapChain = m_swapChains[command.window.idx];
                 break;
             }
@@ -220,6 +230,8 @@ namespace Renderer
 
                 break;
             }
+            DEFINE_COMMAND_EXECUTOR(Draw);
+            DEFINE_COMMAND_EXECUTOR(DrawIndexed);
             DEFINE_COMMAND_EXECUTOR(ClearRenderBuffer);
             DEFINE_COMMAND_EXECUTOR(ApplyRenderBuffer);
             DEFINE_COMMAND_EXECUTOR(CreateShader);
@@ -235,6 +247,22 @@ namespace Renderer
         void WorkerThreadInstance::Cleanup()
         {
             SafeRelease(m_context);
+        }
+
+        void WorkerThreadInstance::Execute_Draw(Command_Draw* command) const
+        {
+            if (m_resetFlags & ResetFlags::DrawTriangleLists)
+                m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+            m_context->Draw(command->vertexCount, 0);
+        }
+
+        void WorkerThreadInstance::Execute_DrawIndexed(Command_DrawIndexed* command) const
+        {
+            if (m_resetFlags & ResetFlags::DrawTriangleLists)
+                m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+            m_context->DrawIndexed(command->indexCount, 0, 0);
         }
 #pragma endregion
 
@@ -302,11 +330,9 @@ namespace Renderer
 
             ID3D11Buffer* buffers[] = { buffer };
 
-            D3D11_BUFFER_DESC desc = {};
-            buffer->GetDesc(&desc);
-
             uint offset = 0u;
-            m_deviceContext->IASetVertexBuffers(0, 1, buffers, &desc.StructureByteStride, &offset);
+            uint stride = sizeof (float) * 3; // TODO: read stride from current vertex shader
+            m_context->IASetVertexBuffers(0, 1, buffers, &stride, &offset);
         }
 
         void WorkerThreadInstance::Execute_DestroyVertexBuffer(Command_DestroyVertexBuffer* command) const

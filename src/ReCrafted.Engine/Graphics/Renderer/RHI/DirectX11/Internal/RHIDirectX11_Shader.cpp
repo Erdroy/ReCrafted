@@ -16,7 +16,6 @@ namespace Renderer
 
     Lock m_inputLayoutLock = {};
     std::vector<InputLayout> m_inputLayouts = {};
-    void* m_lastInputLayout = nullptr;
 
     uint D3D11HLSLFixBufferSize(uint size)
     {
@@ -167,17 +166,8 @@ namespace Renderer
 
         // TODO: Set sampler states
 
-        // we have only one pointer for every certain input layout
-        // for example if we use 10 shaders with the same Input structure
-        // there is only one m_inputLayout pointer due to caching.
-        if (m_lastInputLayout != pass.m_inputLayout)
-        {
-            // set input layout
-            context->IASetInputLayout(pass.m_inputLayout);
-
-            // update the layout
-            m_lastInputLayout = pass.m_inputLayout;
-        }
+        // set input layout
+        context->IASetInputLayout(pass.m_inputLayout);
     }
 
     void RHIDirectX11_Shader::Bind(ID3D11DeviceContext* contenxt, int passId)

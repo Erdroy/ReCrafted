@@ -27,7 +27,7 @@ void initRendererTests()
     // Initialize Renderer
     Renderer::Initialize(
         Renderer::RendererAPI::DirectX11,
-        Renderer::ResetFlags::VSync,
+        Renderer::ResetFlags::VSync | Renderer::ResetFlags::DrawTriangleLists,
         Renderer::Settings::Debug
     );
 
@@ -76,6 +76,9 @@ void initRendererTests()
 
         // Set triangle VB as current
         Renderer::ApplyVertexBuffer(triangleVB);
+
+        // Draw triangle
+        Renderer::Draw(3);
 
         // Push frame
         Renderer::Frame();

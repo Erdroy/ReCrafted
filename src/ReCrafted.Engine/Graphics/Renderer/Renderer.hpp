@@ -33,7 +33,10 @@ namespace Renderer
             TripleBuffered      = 1 << 0,
             MSAAx2              = 1 << 1,
             MSAAx4              = 1 << 2,
-            VSync              = 1 << 3,
+            VSync               = 1 << 3,
+
+            DrawTriangleLists   = 1 << 4,
+            DrawLineLists       = 1 << 5,
         };
     };
     RENDERER_ENUM(ResetFlags);
@@ -256,6 +259,9 @@ namespace Renderer
     /// Finalizes current frame and executes all threads or commands when single threaded.
     /// </summary>
 	RENDERER_FUNCTION(void)                     Frame();
+
+    RENDERER_FUNCTION(void)                     Draw(uint vertexCount);
+    RENDERER_FUNCTION(void)                     DrawIndexed(uint indexCount);
 
     /// <summary>
     /// Creates new window handle.
