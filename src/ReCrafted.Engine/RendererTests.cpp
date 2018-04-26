@@ -15,19 +15,10 @@ static bool m_running = true;
 
 void initRendererTests()
 {
-    // Create application window
-    //WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, nullptr, nullptr, LoadCursor(nullptr, IDC_ARROW), nullptr, nullptr, TEXT("Renderer Example"), nullptr };
-    //RegisterClassEx(&wc);
-    //auto hwnd = CreateWindow(TEXT("Renderer Example"), TEXT("Renderer Example"), WS_OVERLAPPEDWINDOW, 100, 100, 1280, 768, NULL, NULL, wc.hInstance, NULL);
-
-    // Show the window
-    //ShowWindow(hwnd, SW_SHOWDEFAULT);
-    //UpdateWindow(hwnd);
-
     // Initialize Renderer
     Renderer::Initialize(
         Renderer::RendererAPI::DirectX11,
-        Renderer::ResetFlags::VSync | Renderer::ResetFlags::DrawTriangleLists,
+        Renderer::ResetFlags::VSync,
         Renderer::Settings::Debug
     );
 

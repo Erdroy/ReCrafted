@@ -192,14 +192,14 @@ namespace Renderer
         return CreateVertexBuffer(count, vertexSize, nullptr, dynamic);
     }
 
-    VertexBufferHandle CreateVertexBuffer(uint count, uint vertexSize, RendererMemory memory, bool dynamic)
+    VertexBufferHandle CreateVertexBuffer(uint vertexCount, uint vertexSize, RendererMemory memory, bool dynamic)
     {
         cvar handle = AllocVertexBufferHandle();
         RENDERER_VALIDATE_HANDLE(handle);
 
         Command_CreateVertexBuffer command;
         command.handle = handle;
-        command.vertexCount = count;
+        command.vertexCount = vertexCount;
         command.vertexSize = vertexSize;
         command.memory = memory;
         command.dynamic = dynamic;

@@ -35,8 +35,7 @@ namespace Renderer
             MSAAx4              = 1 << 2,
             VSync               = 1 << 3,
 
-            DrawTriangleLists   = 1 << 4,
-            DrawLineLists       = 1 << 5,
+            DrawLineLists       = 1 << 4,
         };
     };
     RENDERER_ENUM(ResetFlags);
@@ -252,6 +251,11 @@ namespace Renderer
     /// <param name="memory">The memory pointer to be released.</param>
     RENDERER_FUNCTION(void)                     Free(RendererMemory memory);
 
+    // TODO: NOT IMPLEMENTED!
+    RENDERER_FUNCTION(void)                     SetFlag(ResetFlags::_enum flag, bool value);
+
+    // TODO: NOT IMPLEMENTED!
+    RENDERER_FUNCTION(bool)                     GetFlag(ResetFlags::_enum flag);
 
 	// ======== RENDERING - BASIC ========
 
@@ -260,7 +264,14 @@ namespace Renderer
     /// </summary>
 	RENDERER_FUNCTION(void)                     Frame();
 
+    /// <summary>
+    /// Draws given amount of vertices from the current vertex buffer.
+    /// </summary>
     RENDERER_FUNCTION(void)                     Draw(uint vertexCount);
+
+    /// <summary>
+    /// Draws given amount of indices from the current index buffer.
+    /// </summary>
     RENDERER_FUNCTION(void)                     DrawIndexed(uint indexCount);
 
     /// <summary>
@@ -276,79 +287,102 @@ namespace Renderer
     /// <param name="handle">The window handle to be set as current.</param>
 	RENDERER_FUNCTION(void)                     ApplyWindow(WindowHandle handle);
 
-	/**
-	* \brief Gets render buffer of given window.
-	* \param handle The window which render buffer will be returned.
-	* \return The render buffer, or invalid handle when something went wrong
-	* 
-	* \note The returned RenderBuffer will be deleted when the window is destroyed -
-	*  you cannot pass the RBH to DestroyRenderBuffer, it will throw fatal error.
-	* \note Window's RenderBuffer does not support depth stencil! To use it, you will need
-	*  to create own RenderBuffer with depth flag, then blit to the target window's RB.
-	*/
+    /// <summary>
+    /// Gets render buffer of given window. 
+    /// The returned RenderBuffer will be deleted when the window is destroyed -
+    /// you cannot pass the RBH to DestroyRenderBuffer, it will throw fatal error.
+    /// Window's RenderBuffer does not support depth stencil! To use it, you will need
+    /// to create own RenderBuffer with depth flag, then blit to the target window's RB.
+    /// </summary>
+    /// <param name="handle">The window which render buffer will be returned.</param>
+    /// <returns>The render buffer, or invalid handle when something went wrong.</returns>
 	RENDERER_FUNCTION(RenderBufferHandle)       GetWindowRenderBuffer(WindowHandle handle);
 
-	/**
-	* \brief Destroys given window.
-	*/
+    /// <summary>
+    /// Destroys given window.
+    /// </summary>
+    /// <param name="handle">The window handle.</param>
 	RENDERER_FUNCTION(void)                     DestroyWindow(WindowHandle handle);
 
-	// NOT IMPLEMENTED!
+	// TODO: NOT IMPLEMENTED!
 	RENDERER_FUNCTION(RenderBufferHandle)       CreateRenderBuffer(/*TODO*/);
-
-	// NOT IMPLEMENTED!
+     
+	// TODO: NOT IMPLEMENTED!
 	RENDERER_FUNCTION(void)                     ResizeRenderBuffer(/*TODO*/);
 
+    /// <summary>
+    /// Sets given render buffer as current render target.
+    /// </summary>
+    /// <param name="handle">The render buffer to be set.</param>
+    RENDERER_FUNCTION(void)                     ApplyRenderBuffer(RenderBufferHandle handle);
+
+    /// <summary>
+    /// Clears given render buffer.
+    /// </summary>
+    /// <param name="handle">The render buffer handle.</param>
+    /// <param name="color">The color which will be used to clear the render buffer.</param>
+    RENDERER_FUNCTION(void)                     ClearRenderBuffer(RenderBufferHandle handle, Color color);
+
+    // NOT IMPLEMENTED!
+    RENDERER_FUNCTION(void)                     DestroyRenderBuffer(RenderBufferHandle handle);
+
+    /// <summary>
+    /// Creates new VertexBuffer without memory initialization.
+    /// Warning: You will not be able to use this buffer in the current frame!
+    /// </summary>
+    /// <param name="vertexCount">The count of vertices.</param>
+    /// <param name="vertexSize">The size of a single vertex.</param>
+    /// <param name="dynamic">When true, this buffer will be allowed to be updated through UpdateVertexBuffer.</param>
     RENDERER_FUNCTION(VertexBufferHandle)       CreateVertexBuffer(uint count, uint vertexSize, bool dynamic = false);
-    RENDERER_FUNCTION(VertexBufferHandle)       CreateVertexBuffer(uint count, uint vertexSize, RendererMemory memory, bool dynamic = false);
+
+    /// <summary>
+    /// Creates new VertexBuffer.
+    /// Warning: You will not be able to use this buffer in the current frame!
+    /// </summary>
+    /// <param name="vertexCount">The count of vertices.</param>
+    /// <param name="vertexSize">The size of a single vertex.</param>
+    /// <param name="memory">The memory pointer. This memory will be freed after vertex buffer is created.</param>
+    /// <param name="dynamic">When true, this buffer will be allowed to be updated through UpdateVertexBuffer.</param>
+    RENDERER_FUNCTION(VertexBufferHandle)       CreateVertexBuffer(uint vertexCount, uint vertexSize, RendererMemory memory, bool dynamic = false);
+
+    // TODO: NOT IMPLEMENTED!
     RENDERER_FUNCTION(void)                     UpdateVertexBuffer(VertexBufferHandle handle, uint count, uint offset, RendererMemory memory);
+
+    /// <summary>
+    /// Sets given vertex buffer as current.
+    /// </summary>
+    /// <param name="handle">The vertex buffer handle.</param>
     RENDERER_FUNCTION(void)                     ApplyVertexBuffer(VertexBufferHandle handle);
+
+    /// <summary>
+    /// Destroys given vertex buffer.
+    /// </summary>
+    /// <param name="handle">The vertex buffer handle.</param>
     RENDERER_FUNCTION(void)                     DestroyVertexBuffer(VertexBufferHandle handle);
 
-    /**
-	 * \brief Sets given render buffer as current render target.
-	 * \param handle The render buffer to be set.
-	 */
-	RENDERER_FUNCTION(void)                     ApplyRenderBuffer(RenderBufferHandle handle);
-
-	/**
-	 * \brief Clears given render buffer.
-	 * \param handle The render buffer handle.
-	 * \param color The color which will be used to clear the render buffer.
-	 */
-	RENDERER_FUNCTION(void)                     ClearRenderBuffer(RenderBufferHandle handle, Color color);
-
-	// NOT IMPLEMENTED!
-	RENDERER_FUNCTION(void)                     DestroyRenderBuffer(RenderBufferHandle handle);
-
-    // NOT IMPLEMENTED!
+    // TODO: NOT IMPLEMENTED!
     RENDERER_FUNCTION(Texture2DHandle)          CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat);
 
-    /**
-     * \brief Loads shader and creates it's shader handle.
-     * \param fileName The compiled shader file.
-     * \return The created shader handle.
-     */
+    /// <summary>
+    /// Loads shader and creates it's shader handle.
+    /// Warning: You will not be able to use this buffer in the current frame!
+    /// </summary>
+    /// <param name="fileName">The compiled shader file.</param>
+    /// <returns>The created shader handle.</returns>
     RENDERER_FUNCTION(ShaderHandle)             CreateShader(const char* fileName);
 
-    /**
-    * \brief Sets given shader as current.
-    * \param handle The shader handle to be set.
-    */
+    /// <summary>
+    /// Sets given shader pass as current.
+    /// </summary>
+    /// <param name="handle">The shader handle.</param>
+    /// <param name="passId">The shader pass index.</param>
     RENDERER_FUNCTION(void)                     ApplyShader(ShaderHandle handle, int passId);
 
-    /**
-    * \brief Destroys given shader.
-    */
+    /// <summary>
+    /// Destroys given shader.
+    /// </summary>
+    /// <param name="handle">The shader handle.</param>
     RENDERER_FUNCTION(void)                     DestroyShader(ShaderHandle handle);
-
-	// ======== RUNTIME ========
-
-	// NOT IMPLEMENTED!
-	RENDERER_FUNCTION(void)                     SetFlag(ResetFlags::_enum flag, bool value);
-
-    // NOT IMPLEMENTED!
-    RENDERER_FUNCTION(bool)                     GetFlag(ResetFlags::_enum flag);
 }
 
 #endif // RENDERER_H

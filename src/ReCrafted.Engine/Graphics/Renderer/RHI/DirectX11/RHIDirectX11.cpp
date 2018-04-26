@@ -28,6 +28,25 @@ namespace Renderer
 
         const int FrameBufferCount = 3;
 
+        struct WindowDesc
+        {
+        public:
+            RenderBufferHandle renderBuffer = {};
+            IDXGISwapChain* swapChain = nullptr;
+            HWND hwnd = nullptr;
+
+        public:
+            void GetSize(uint* width, uint* height) const
+            {
+                _ASSERT(hwnd);
+
+                RECT windowRect = {};
+                GetClientRect(hwnd, &windowRect);
+
+                *width = windowRect.right - windowRect.left;
+                *height = windowRect.bottom - windowRect.top;
+            }
+        };
 
         // == common ==
         volatile bool               m_running;
@@ -46,6 +65,7 @@ namespace Renderer
 
 
         // == resources ==
+        WindowDesc                  m_windows[RENDERER_MAX_WINDOWS] = {};
         IDXGISwapChain*		        m_swapChains[RENDERER_MAX_WINDOWS] = {};
         RHIDirectX11_Shader*        m_shaders[RENDERER_MAX_SHADER_PROGRAMS] = {};
         RHIDirectX11_RenderBuffer*  m_renderBuffers[RENDERER_MAX_RENDER_BUFFERS] = {};
@@ -208,23 +228,32 @@ namespace Renderer
                 break;
             case CommandHeader::ApplyWindow:
             {
-                var command = commandList->ReadCommand<Command_ApplyWindow>(position);
+                cvar command = commandList->ReadCommand<Command_ApplyWindow>(position);
+                cvar idx = command.window.idx;
 
+                uint width;
+                uint height;
+
+                // get window description and it's size
+                rvar windowDesc = m_windows[idx];
+                windowDesc.GetSize(&width, &height);
+
+                // create and set viewport with size of the current window
                 D3D11_VIEWPORT vpd = {};
-                vpd.Width = 1920; // TODO: set window size, we need window description table
-                vpd.Height = 1080;
+                vpd.Width = static_cast<float>(width);                
+                vpd.Height = static_cast<float>(height);
 
                 D3D11_VIEWPORT viewport[] = { vpd };
                 m_context->RSSetViewports(1, viewport);
 
-                m_swapChain = m_swapChains[command.window.idx];
+                // set window's swapchain as current
+                m_swapChain = m_swapChains[idx];
                 break;
             }
             case CommandHeader::DestroyWindow:
             {
-                var command = commandList->ReadCommand<Command_DestroyWindow>(position);
-
-                var idx = command.window.idx;
+                cvar command = commandList->ReadCommand<Command_DestroyWindow>(position);
+                cvar idx = command.window.idx;
 
                 SafeRelease(m_swapChains[idx]);
 
@@ -257,7 +286,9 @@ namespace Renderer
 #pragma region WorkerThread command execution implementation
         void WorkerThreadInstance::Execute_Draw(Command_Draw* command)
         {
-            if (m_resetFlags & ResetFlags::DrawTriangleLists)
+            if (m_resetFlags & ResetFlags::DrawLineLists)
+                m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+            else
                 m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
             m_context->Draw(command->vertexCount, 0);
@@ -265,7 +296,9 @@ namespace Renderer
 
         void WorkerThreadInstance::Execute_DrawIndexed(Command_DrawIndexed* command)
         {
-            if (m_resetFlags & ResetFlags::DrawTriangleLists)
+            if (m_resetFlags & ResetFlags::DrawLineLists)
+                m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+            else
                 m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
             m_context->DrawIndexed(command->indexCount, 0, 0);
@@ -559,6 +592,9 @@ namespace Renderer
                 }
             }
 
+            // Assign new commands for all threads
+            assignCommands();
+
             if (m_settings & Settings::SingleThreaded)
             {
                 var thread = m_workerThreads[0];
@@ -619,9 +655,6 @@ namespace Renderer
                     Internal::Fatal("Failed to present frame!");
                 }
             }
-
-            // Assign new commands for all threads
-            assignCommands();
 
             if (!(m_settings & Settings::SingleThreaded))
             {
@@ -741,6 +774,13 @@ namespace Renderer
             // WARNING: No depth stencil view for back buffers!
 
             // TODO: DepthStencilView
+
+            WindowDesc windowDesc = {};
+            windowDesc.renderBuffer = renderBufferHandle;
+            windowDesc.hwnd = hWnd;
+            windowDesc.swapChain = m_swapChain;
+
+            m_windows[window.idx] = windowDesc;
 
             // Build 'proxy' render buffer
             m_renderBuffers[renderBufferHandle.idx] = RHIDirectX11_RenderBuffer::Create(m_device, bufferCount, renderTargets, nullptr);
