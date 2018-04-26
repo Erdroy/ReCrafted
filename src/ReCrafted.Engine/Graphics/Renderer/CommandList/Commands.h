@@ -5,14 +5,16 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
-#include <stdint.h>
+#include <cstdint>
 
-#define Command(name) RENDERER_ALIGN(8)                                 \
-struct Command_##name {	                                                \
-public:                                                                 \
+#define Command(name, body) RENDERER_ALIGN(8) struct Command_##name {   \
+    public:                                                             \
 	Command_##name() : size(sizeof(Command_##name)) { }	                \
 public:                                                                 \
-	const CommandHeader::_enum header = CommandHeader::##name;
+	const CommandHeader::_enum header = CommandHeader::##name;          \
+    uint16_t size = 0u;                                                 \
+    body                                                                \
+};
 
 namespace Renderer
 {
@@ -29,59 +31,69 @@ namespace Renderer
             ClearRenderBuffer,
             DestroyRenderBuffer,
 
+            CreateVertexBuffer,
+            ApplyVertexBuffer,
+            UpdateVertexBuffer,
+            DestroyVertexBuffer,
+
             CreateShader,
             ApplyShader,
 		    DestroyShader,
 		};
 	};
 
-	Command(Empty);
-    uint16_t size = 0u; 
-	};
+    Command(Empty,
+    );
 
-	Command(ApplyWindow);
-    uint16_t size = 0u;
-    WindowHandle window;
-	};
+    Command(ApplyWindow,
+        WindowHandle window;
+    );
 
-	Command(DestroyWindow);
-    uint16_t size = 0u;
-    WindowHandle window;
-	};
+	Command(DestroyWindow,
+        WindowHandle window;
+    );
 
-    Command(ApplyRenderBuffer);
-    uint16_t size = 0u;
-    RenderBufferHandle renderBuffer;
-    };
+    Command(ApplyRenderBuffer,
+        RenderBufferHandle renderBuffer;
+    );
 
-    Command(ClearRenderBuffer);
-    uint16_t size = 0u;
-    RenderBufferHandle renderBuffer;
-    Color color;
-    };
+    Command(ClearRenderBuffer,
+        RenderBufferHandle renderBuffer;
+        Color color;
+    );
 
-    Command(DestroyRenderBuffer);
-    uint16_t size = 0u;
-    };
+    Command(DestroyRenderBuffer,
+    );
 
-    Command(CreateShader);
-    uint16_t size = 0u;
-    ShaderHandle shader;
-    char fileName[_MAX_PATH]; // note: we cannot use std::string as this is 'fixed size' type struct!
-    };
+    Command(CreateShader,
+        ShaderHandle shader;
+        char fileName[_MAX_PATH]; // note: we cannot use std::string as this is 'fixed size' type struct!
+    );
 
-    Command(ApplyShader);
-    uint16_t size = 0u;
-    ShaderHandle shader;
-    uint16_t passId = 0u;
-    };
+    Command(ApplyShader,
+        ShaderHandle shader;
+        uint16_t passId = 0u;
+    );
 
-    Command(DestroyShader);
-    uint16_t size = 0u;
-    ShaderHandle shader;
-    };
+    Command(DestroyShader,
+        ShaderHandle shader;
+    );
 
+    Command(CreateVertexBuffer,
+        RendererMemory memory;
+        VertexBufferHandle handle;
+        uint vertexCount;
+        uint8_t vertexSize;
+        bool dynamic;
+    );
 
+    Command(ApplyVertexBuffer,
+        VertexBufferHandle handle;
+    );
+
+    Command(DestroyVertexBuffer,
+        VertexBufferHandle handle;
+    );
 }
 
 #endif // COMMANDS_H
