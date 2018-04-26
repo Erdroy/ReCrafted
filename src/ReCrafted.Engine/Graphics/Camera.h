@@ -18,7 +18,7 @@ class Entity;
 /// </summary>
 class Camera : public Object
 {
-	friend class Renderer;
+	friend class Graphics;
 
 private:
 	SCRIPTING_API_IMPL()

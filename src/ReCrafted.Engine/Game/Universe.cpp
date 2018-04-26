@@ -16,7 +16,7 @@ void Universe::onInit()
 
     // initialize space object manager
     SpaceObjectManager::getInstance()->init();
-
+    
     // temporary, replace with World::load("../saves/SaveName", MakeDelegate(Universe::OnWorldLoaded));
     // when saves will be done
     SpaceObjectSettings settings;
@@ -53,7 +53,7 @@ void Universe::update()
 
     if(Input::isKey(Key_Mouse0))
     {
-        m_testObject1->modify(VoxelEditMode::Subtractive, modPosition, 1.5f);
+        m_testObject1->modify(VoxelEditMode::Subtractive, modPosition, 5.0f);
     }
 
     if (Input::isKey(Key_Mouse1))

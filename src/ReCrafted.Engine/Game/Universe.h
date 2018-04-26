@@ -17,7 +17,7 @@ class Universe : public EngineComponent<Universe>
 {
 private:
     friend class EngineMain;
-    friend class Renderer;
+    friend class Graphics;
 
 private:
     Ptr<SpaceObject> m_testObject1 = nullptr;

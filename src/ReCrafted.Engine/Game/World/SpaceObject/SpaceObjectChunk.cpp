@@ -7,7 +7,7 @@
 #include "Meshing/MarchingCubes/MCMesher.h"
 #include "Graphics/Mesh.h"
 #include "Graphics/Camera.h"
-#include "Graphics/Renderer/Renderer.h"
+#include "Graphics/Graphics.h"
 #include "Storage/VoxelStorage.h"
 
 uint8_t SpaceObjectChunk::getLodBorders()
@@ -115,7 +115,7 @@ void SpaceObjectChunk::draw()
 	if (!m_mesh || !m_mesh->isUploaded() || !m_hasSurface)
 		return;
 
-	Renderer::getInstance()->draw(m_mesh);
+	Graphics::getInstance()->draw(m_mesh);
 }
 
 void SpaceObjectChunk::dispose()

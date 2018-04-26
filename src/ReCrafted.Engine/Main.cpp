@@ -14,7 +14,7 @@
 #include "Platform/Platform.h"
 #include "Graphics/WebUI/WebUIEngine.h"
 
-#if GFXL_TEST
+#if RENDERER_TEST
 void initRendererTests();
 #endif
 
@@ -42,7 +42,7 @@ int CALLBACK WinMain(
     // initialize engine
     engine.initialize();
 
-#if GFXL_TEST
+#if RENDERER_TEST
     initRendererTests();
 #else
     // run engine loop

@@ -107,8 +107,8 @@ namespace ReCrafted.ShaderCompiler.Compiler
             // pre process source code (this will add include source code etc.)
             var preprocessedSource = ShaderBytecode.Preprocess(sourceCode, new[]
             {
-                new ShaderMacro("GFXL_SHADER", "1"),
-                new ShaderMacro("GFXL_VERSION", "1")
+                new ShaderMacro("RENDERER_SHADER", "1"),
+                new ShaderMacro("RENDERER_VERSION", "1")
             }, new D3DIncludeHandler(_inputFile), out var compilationErrors, _inputFile);
 
             if(!string.IsNullOrEmpty(compilationErrors))

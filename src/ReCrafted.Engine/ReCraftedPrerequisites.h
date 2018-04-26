@@ -55,7 +55,7 @@ class Display;
 class Time;
 class Input;
 class PhysicsManager;
-class Renderer;
+class Graphics;
 class UI;
 class EntityPool;
 class Universe;

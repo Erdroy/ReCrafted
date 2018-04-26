@@ -12,7 +12,7 @@
 
 class WebUI : public EngineComponent<WebUI>
 {
-    friend class Renderer;
+    friend class Graphics;
     friend class EngineMain;
 
 private:

@@ -21,7 +21,7 @@
 #include "Common/Display.h"
 #include "Core/Lock.h"
 #include "Core/Delegate.h"
-#include "Graphics/Renderer/Renderer.h"
+#include "Graphics/Graphics.h"
 
 // https://github.com/daktronics/cef-mixer/blob/master/src/html_layer.cpp
 class CEFView : public CefClient, public CefRenderHandler, public CefLifeSpanHandler
@@ -305,8 +305,8 @@ void WebUIView::render()
     view->swap();
 
     // draw texture
-    Renderer::getInstance()->setStage(RenderStage::DrawWebUI);
-    Renderer::getInstance()->blit(0, view->getRenderTexture(), true);
+    Graphics::getInstance()->setStage(RenderStage::DrawWebUI);
+    Graphics::getInstance()->blit(0, view->getRenderTexture(), true);
 }
 
 void WebUIView::onDestroy()

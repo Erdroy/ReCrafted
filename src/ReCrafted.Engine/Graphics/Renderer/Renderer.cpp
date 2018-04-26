@@ -1,426 +1,251 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
-#include "Renderer.h"
+#include "Renderer.hpp"
+#include "RendererConfig.h"
+#include "RHI/RHIBase.h"
+#include "RHI/DirectX12/RHIDirectX12.h"
+#include "RHI/DirectX11/RHIDirectX11.h"
 
-#include "Common/Display.h"
-#include "Common/Profiler/Profiler.h"
-#include "Core/Logger.h"
-#include "Graphics/Camera.h"
-#include "Graphics/RenderBuffer.h"
-#include "Platform/Platform.h"
+#include <thread>
 
-#include "bgfxPrerequisites.h"
-#include "Common/Input/Input.h"
-#include "Game/Universe.h"
-#include "Core/Application.h"
-#include "Graphics/UI/UI.h"
-#include "Graphics/WebUI/WebUI.h"
+#if _WIN32
+#include <Windows.h>
+#endif
 
-SINGLETON_IMPL(Renderer)
-
-#define RESET_FLAGS (BGFX_RESET_NONE)
-
-Renderer* g_rendererInstance;
-
-bgfx::UniformHandle m_modelViewProjection = {};
-bgfx::UniformHandle m_texture0 = {};
-bgfx::UniformHandle m_texture1 = {};
-bgfx::UniformHandle m_texture2 = {};
-bgfx::UniformHandle m_texture3 = {};
-
-Ptr<RenderBuffer> m_gbuffer = nullptr;
-Ptr<Mesh> m_blitMesh = nullptr;
-Ptr<Shader> m_blitShader = nullptr;
-Ptr<Shader> m_gbufferShader = nullptr;
-Ptr<Shader> m_deferredFinal = nullptr;
-
-void Renderer::loadInternalShaders()
+namespace Renderer
 {
-    Logger::logInfo("Loading internal shaders");
+	namespace Internal 
+	{
+		void Log(const char* message)
+		{
+#if _WIN32
+            OutputDebugStringA("Renderer Log: ");
+            OutputDebugStringA(message);
+            OutputDebugStringA("\n");
+#else
+            std::cout << "Renderer Log: " << message << std::endl;
+#endif
+		}
 
-    m_blitShader = Shader::loadShader("blit");
-    m_gbufferShader = Shader::loadShader("gbuffer_standard");
-    m_deferredFinal = Shader::loadShader("deferred_final");
-}
+		void Fatal(const char* message)
+		{
+#if _WIN32
+			OutputDebugStringA("Renderer Fatal: ");
+			OutputDebugStringA(message);
+			OutputDebugStringA("\n");
+#else
+			std::cout << "Renderer Fatal: " << message << std::endl;
+#endif
+			throw;
+			// exit(-1);
+		}
+	}
 
-void Renderer::createUniforms()
-{
-    Logger::logInfo("Creating default uniforms");
+	// ==== COMMANDS ====
 
-    // create uniforms
-    m_modelViewProjection = bgfx::createUniform("m_modelViewProjection", bgfx::UniformType::Mat4);
-    m_texture0 = bgfx::createUniform("m_texture0", bgfx::UniformType::Int1);
-    m_texture1 = bgfx::createUniform("m_texture1", bgfx::UniformType::Int1);
-    m_texture2 = bgfx::createUniform("m_texture2", bgfx::UniformType::Int1);
-    m_texture3 = bgfx::createUniform("m_texture3", bgfx::UniformType::Int1);
-}
 
-void Renderer::createRenderBuffers()
-{
-    Logger::logInfo("Creating render buffers");
+	// ==== HANDLE DEFINITIONS ====
+	RENDERER_DEFINE_HANDLE_ALLOCATOR(WindowHandle, RENDERER_MAX_WINDOWS);
+	RENDERER_DEFINE_HANDLE_ALLOCATOR(RenderBufferHandle, RENDERER_MAX_RENDER_BUFFERS);
+    RENDERER_DEFINE_HANDLE_ALLOCATOR(Texture2DHandle, RENDERER_MAX_TEXTURES2D);
+    RENDERER_DEFINE_HANDLE_ALLOCATOR(ShaderHandle, RENDERER_MAX_SHADERS);
 
-    // create render buffer for geometry pass
-    m_gbuffer = RenderBuffer::createRenderTarget();
-    m_gbuffer->begin();
-    m_gbuffer->addTarget("ALBEDO", TextureFormat::RGBA8);
-    m_gbuffer->addTarget("[RGB]NORMALS, [A]AmbientOcculusion", TextureFormat::RGBA8);
-    m_gbuffer->addTarget("DEPTH", TextureFormat::D24);
-    m_gbuffer->end();
-}
+	const std::thread::id MAIN_THREAD_ID = std::this_thread::get_id();
 
-void Renderer::createBlitQuad()
-{
-    static Vector3 vertices[4] = {
-        Vector3(-1.0f, 1.0f, 0.0f),
-        Vector3(1.0f, 1.0f, 0.0f),
-        Vector3(1.0f,-1.0f, 0.0f),
-        Vector3(-1.0f,-1.0f, 0.0f)
-    };
-    static Vector2 uvs[4] = {
-        Vector2(0.0f,-1.0f),
-        Vector2(1.0f,-1.0f),
-        Vector2(1.0f, 0.0f),
-        Vector2(0.0f, 0.0f)
-    };
+	// TODO: Check if API calls are using main-thread
 
-    static uint indices[6] = {
-        2, 1, 0,
-        2, 0, 3
-    };
+	static bool m_running = false;
+	static RHI::RHIBase* m_renderer;
 
-    m_blitMesh = Mesh::createMesh();
-    m_blitMesh->setVertices(vertices, 4);
-    m_blitMesh->setUVs(uvs);
-    m_blitMesh->setIndices(indices, 6);
-    m_blitMesh->applyChanges();
-    m_blitMesh->upload();
-}
+	static CommandList* g_commandList;
 
-void Renderer::bgfx_initialize()
-{
-    Logger::logInfo("Creating renderer with Direct3D11 API");
+	void Initialize(RendererAPI::_enum api, ResetFlags::_enum flags, Settings::_enum settings)
+	{
+		switch (api)
+		{
+#if RENDERER_RENDERER_D3D12
+		case RendererAPI::DirectX12:
+			m_renderer = new RHI::RHIDirectX12;
+			m_renderer->Initialize(settings, flags);
+			g_commandList = &m_renderer->commandList;
+			break;
+#endif
+#if RENDERER_RENDERER_D3D11
+		case RendererAPI::DirectX11:
+            m_renderer = new RHI::RHIDirectX11;
+            m_renderer->Initialize(settings, flags);
+            g_commandList = &m_renderer->commandList;
+            break;
+#endif
+#if RENDERER_RENDERER_VULKAN
+		case RendererAPI::Vulkan:
+            break;
+#endif
+#if RENDERER_RENDERER_METAL
+        case RendererAPI::Metal:
+            break;
+#endif
+		default:
+			Internal::Fatal("Selected RendererAPI is not currently supported, yet.");
+			break;
+		}
+		m_running = true;
+	}
 
-    // initialize bgfx platform data
-    bgfx::PlatformData pd;
-    memset(&pd, 0, sizeof(pd));
-    pd.nwh = Platform::getCurrentWindow();
-    bgfx::setPlatformData(pd);
+	bool IsInitialized()
+	{
+		return m_running;
+	}
 
-    // initialize rendering
-    bgfx::init(bgfx::RendererType::Direct3D11);
-    bgfx::reset(Display::get_Width(), Display::get_Height(), RESET_FLAGS);
+	void Shutdown()
+	{
+		m_running = false;
+		m_renderer->Shutdown();
+	}
 
-    bgfx::setDebug(BGFX_DEBUG_NONE);
+	void Fullscreen(bool useFullScreen)
+	{
 
-    // Set view 0 clear state.
-    bgfx::setViewClear(RENDERVIEW_BACKBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
-    bgfx::setViewClear(RENDERVIEW_GBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
+	}
 
-    Logger::logInfo("Renderer initialized");
-}
+	void Frame()
+	{
+		m_renderer->Frame();
+	}
 
-void Renderer::onInit()
-{
-    g_rendererInstance = this;
+	WindowHandle CreateWindowHandle(void* windowHandle)
+	{
+		// Create output
+		auto handle = AllocWindowHandle();
+        auto renderBuffer = AllocRenderBufferHandle();
 
-    // initialize bgfx
-    bgfx_initialize();
+		if(RENDERER_CHECK_HANDLE(handle))
+			Internal::Fatal("Failed to allocate WindowHandle.");
 
-    // create uniforms
-    createUniforms();
+        if (RENDERER_CHECK_HANDLE(renderBuffer))
+            Internal::Fatal("Failed to allocate RenderBuffer.");
 
-    // create render buffers
-    createRenderBuffers();
+		m_renderer->CreateWindowHandle(handle, renderBuffer, windowHandle);
 
-    // create quad
-    createBlitQuad();
+        WindowHandle_table[handle.idx].renderBuffer = renderBuffer;
 
-    // load all shaders
-    loadInternalShaders();
-}
+		return handle;
+	}
 
-void Renderer::onDispose()
-{
-    Logger::logInfo("Unloading rendering pipeline");
+	void ApplyWindow(WindowHandle handle)
+	{
+		RENDERER_VALIDATE_HANDLE(handle);
+		
+		Command_ApplyWindow command;
+		command.window = handle;
+		g_commandList->WriteCommand(&command);
+	}
 
-    m_gbuffer->dispose();
-    Logger::logInfo("Unloaded render buffers");
+	RenderBufferHandle GetWindowRenderBuffer(WindowHandle handle)
+	{
+        RENDERER_VALIDATE_HANDLE(handle);
 
-    // dispose meshes
-    m_blitMesh->dispose();
-    Logger::logInfo("Unloaded render meshes");
+		return WindowHandle_table[handle.idx].renderBuffer;
+	}
 
-    // dispose shaders
-    m_blitShader->dispose();
-    m_gbufferShader->dispose();
-    m_deferredFinal->dispose();
-    Logger::logInfo("Unloaded render shaders");
+	void DestroyWindow(WindowHandle handle)
+	{
+		RENDERER_VALIDATE_HANDLE(handle);
 
-    bgfx::destroy(m_modelViewProjection);
-    bgfx::destroy(m_texture0);
-    bgfx::destroy(m_texture1);
-    bgfx::destroy(m_texture2);
-    bgfx::destroy(m_texture3);
-    Logger::logInfo("Unloaded render uniforms");
+		Command_DestroyWindow command;
+		command.window = handle;
+		g_commandList->WriteCommand(&command);
 
-    // check resource leaks
-    Logger::logInfo("Checking for resource leaks");
-    IResource::checkLeaks();
+		FreeWindowHandle(handle);
+	}
 
-    // shutdown bgfx
-    bgfx::shutdown();
+	RenderBufferHandle CreateRenderBuffer()
+	{
+        auto handle = AllocRenderBufferHandle();
 
-    Logger::logInfo("Rendering is down");
-}
+        if (RENDERER_CHECK_HANDLE(handle))
+            Internal::Fatal("Failed to allocate RenderBuffer.");
 
-void Renderer::update()
-{
-    if (Input::isKeyDown(Key_F3))
+        // TODO: create render buffer impls
+
+		return handle;
+	}
+
+	void ApplyRenderBuffer(RenderBufferHandle handle)
+	{
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_ApplyRenderBuffer command;
+        command.renderBuffer = handle;
+
+        g_commandList->WriteCommand(&command);
+	}
+
+	void ClearRenderBuffer(RenderBufferHandle handle, Color color)
+	{
+        RENDERER_VALIDATE_HANDLE(handle);
+
+		Command_ClearRenderBuffer command;
+		command.renderBuffer = handle;
+		command.color = color;
+
+		g_commandList->WriteCommand(&command);
+	}
+
+	void DestroyRenderBuffer(RenderBufferHandle handle)
+	{
+	}
+
+    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat)
     {
-        m_wireframe = true;
-        bgfx::setDebug(BGFX_DEBUG_WIREFRAME);
-        Logger::logInfo("Switching to wireframe render mode");
+        auto handle = AllocTexture2DHandle();
+
+        if (RENDERER_CHECK_HANDLE(handle))
+            Internal::Fatal("Failed to allocate Texture2D.");
+
+        m_renderer->CreateTexture2D(handle, width, height, textureFormat);
+
+        return handle;
     }
 
-    if (Input::isKeyDown(Key_F4))
+    ShaderHandle CreateShader(const char* fileName)
     {
-        m_wireframe = false;
-        bgfx::setDebug(BGFX_DEBUG_NONE);
-        Logger::logInfo("Switching to default render mode");
+        auto handle = AllocShaderHandle();
+
+        if (RENDERER_CHECK_HANDLE(handle))
+            Internal::Fatal("Failed to allocate Shader.");
+
+        Command_CreateShader command;
+        command.shader = handle;
+        strcpy_s(command.fileName, fileName);
+
+        g_commandList->WriteCommand(&command);
+
+        return handle;
     }
 
-    if (Input::isKeyDown(Key_F5))
+    void ApplyShader(ShaderHandle handle, int passId)
     {
-        m_wireframe = false;
-        bgfx::setDebug(BGFX_DEBUG_STATS);
-        Logger::logInfo("Switching to debug stats render mode");
+        Command_ApplyShader command;
+        command.shader = handle;
+        command.passId = static_cast<uint16_t>(passId);
+        g_commandList->WriteCommand(&command);
     }
 
-    if (Input::isKeyDown(Key_F6))
+    void DestroyShader(ShaderHandle handle)
     {
-        m_wireframe = false;
-        bgfx::setDebug(BGFX_DEBUG_TEXT);
-        Logger::logInfo("Switching to debug text render mode");
-    }
-}
-
-void Renderer::render()
-{
-    Profiler::beginProfile("Render");
-    {
-        // draw event, called every frame, must be ended with gpu backbuffer `present` or `swapbuffer` - bgfx::frame()
-        bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
-        bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
-
-        bgfx::touch(RENDERVIEW_BACKBUFFER);
-
-        // set default render stage
-        setStage(RenderStage::Default);
-
-        // begin rendering the scene
-        renderBegin();
-        {
-            // render world
-            renderWorld();
-
-            // render UI
-            renderUI();
-        }
-        renderEnd(); // end rendering scene
-
-        // next frame, wait vsync
-        bgfx::frame();
-    }
-    Profiler::endProfile();
-}
-
-void Renderer::resize(uint width, uint height)
-{
-    _ASSERT(Camera::m_mainCamera != nullptr);
-
-    Display::set_Width(width);
-    Display::set_Height(height);
-
-    if(WebUI::getInstance())
-        WebUI::getInstance()->resize(width, height);
-
-    // reset bgfx state, this should force renderer to resize all the viewports etc.
-    bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
-    bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
-
-    bgfx::reset(Display::get_Width(), Display::get_Height(), RESET_FLAGS);
-
-    m_gbuffer->resize(width, height);
-}
-
-void Renderer::renderBegin()
-{
-    // update main camera
-    Camera::m_mainCamera->update();
-
-    // set default matrix
-    setMatrix(Camera::getMainCamera()->get_viewProjection());
-
-    // set default shader
-    setShader(m_gbufferShader);
-
-    // update shaders uniforms
-    var lightdir = Vector3(0.39f, -0.9f, 0.13f);
-    lightdir.normalize();
-    m_deferredFinal->setValue(0, &lightdir);
-
-    // bind gbuffer
-    m_gbuffer->bind();
-}
-
-void Renderer::renderEnd()
-{
-    setStage(RenderStage::Default);
-
-    if (Input::isKey(Key_F2))
-    {
-        //blit(0, m_gbuffer->getTarget(1));
-        return;
+        Command_DestroyShader command;
+        command.shader = handle;
+        g_commandList->WriteCommand(&command);
     }
 
-    // final pass
-    cvar textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
-
-    if (m_wireframe)
-        return;
-
-    bgfx::setTexture(0, m_texture0, m_gbuffer->getTarget(0), textureFlags);
-    bgfx::setTexture(1, m_texture1, m_gbuffer->getTarget(1), textureFlags);
-
-    // draw into backbuffer
-    bgfx::setVertexBuffer(0, m_blitMesh->m_vertexBuffer);
-    bgfx::setIndexBuffer(m_blitMesh->m_indexBuffer);
-    bgfx::submit(RENDERVIEW_BACKBUFFER, m_deferredFinal->m_program);
-}
-
-void Renderer::renderWorld()
-{
-    Profiler::beginProfile("Render World");
+    void SetFlag(ResetFlags::_enum flag, bool value)
     {
-        // render universe
-        Universe::getInstance()->render();
+
     }
-    Profiler::endProfile();
-}
 
-void Renderer::renderUI()
-{
-    Profiler::beginProfile("Render UI");
+    bool GetFlag(ResetFlags::_enum flag)
     {
-        // set UI state
-        setStage(RenderStage::DrawUI);
-
-        // draw UI
-        UI::m_instance->beginDraw(); // begin draw UI
-
-        Profiler::beginProfile("UI Collect");
-        {
-            // render application UI
-            Application::getInstance()->renderUI();
-
-            // draw profiler debug screen
-            Profiler::drawDebugScreen();
-        }
-        Profiler::endProfile();
-
-        Profiler::beginProfile("UI Process");
-        {
-            UI::m_instance->endDraw(); // end draw UI
-        }
-        Profiler::endProfile();
-    }
-    Profiler::endProfile();
-
-    Profiler::beginProfile("WebUI Render");
-    {
-        // set WebUI state
-        setStage(RenderStage::DrawWebUI);
-
-        WebUI::getInstance()->render();
-    }
-    Profiler::endProfile();
-}
-
-void Renderer::draw(Ptr<Mesh>& mesh)
-{
-    bgfx::setVertexBuffer(0, mesh->m_vertexBuffer);
-    bgfx::setIndexBuffer(mesh->m_indexBuffer);
-
-    bgfx::submit(m_wireframe ? 0 : m_viewId, m_currentShader->m_program);
-}
-
-void Renderer::blit(uint view, bgfx::TextureHandle texture, bool swapY)
-{
-    auto textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
-
-    cvar swap = swapY ? 1.0f : -1.0f;
-    m_blitShader->setValue(0, &swap);
-
-    bgfx::setTexture(0, m_texture0, texture, textureFlags);
-
-    bgfx::setVertexBuffer(0, m_blitMesh->m_vertexBuffer);
-    bgfx::setIndexBuffer(m_blitMesh->m_indexBuffer);
-    bgfx::submit(view, m_blitShader->m_program);
-}
-
-void Renderer::setShader(Ptr<Shader>& shader)
-{
-    m_currentShader = shader;
-}
-
-void Renderer::setView(int viewId)
-{
-    m_viewId = viewId;
-}
-
-void Renderer::setMatrix(Matrix& mvpMatrix)
-{
-    mvpMatrix.transpose();
-    bgfx::setUniform(m_modelViewProjection, &mvpMatrix);
-}
-
-void Renderer::setStage(RenderStage::_enum stage)
-{
-    m_renderStage = stage;
-
-    switch (stage)
-    {
-    case RenderStage::DrawUI:
-    case RenderStage::DrawWebUI:
-        bgfx::setState(0
-            | BGFX_STATE_RGB_WRITE
-            | BGFX_STATE_ALPHA_WRITE
-            | BGFX_STATE_BLEND_FUNC_SEPARATE(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA, BGFX_STATE_BLEND_ZERO, BGFX_STATE_BLEND_ONE)
-            | BGFX_STATE_BLEND_EQUATION(BGFX_STATE_BLEND_EQUATION_ADD)
-            & ~BGFX_STATE_DEPTH_TEST_LESS
-        );
-        return;
-
-    case RenderStage::DebugDrawLines:
-        bgfx::setState(0
-            | BGFX_STATE_RGB_WRITE
-            | BGFX_STATE_PT_LINES
-            | BGFX_STATE_LINEAA
-            | BGFX_STATE_CULL_CW
-            | BGFX_STATE_BLEND_ALPHA);
-        return;
-
-    case RenderStage::DebugDrawTriangles:
-        bgfx::setState(0
-            | BGFX_STATE_RGB_WRITE
-            | BGFX_STATE_CULL_CCW
-            | BGFX_STATE_BLEND_ALPHA);
-        return;
-
-    case RenderStage::Default:
-    default:
-        setView(1);
-        bgfx::setState(0 | BGFX_STATE_DEFAULT);
-        return;
+        return false;
     }
 }

@@ -19,7 +19,7 @@
 #include "Physics/PhysicsManager.h"
 #include "Scene/SceneManager.h"
 #include "Scripting/ScriptingEngine.h"
-#include "Graphics/Renderer/Renderer.h"
+#include "Graphics/Graphics.h"
 #include "TaskManager.h"
 
 EngineMain* EngineMain::m_instance;
@@ -28,7 +28,7 @@ void EngineMain::registerComponents() const
 {
     // initialize the rest of the engine components
     m_componentManager->registerComponent(TaskManager::getInstance());
-    m_componentManager->registerComponent(Renderer::getInstance());
+    m_componentManager->registerComponent(Graphics::getInstance());
     m_componentManager->registerComponent(Application::getInstance());
     m_componentManager->registerComponent(Profiler::getInstance());
     m_componentManager->registerComponent(Time::getInstance());
@@ -91,13 +91,13 @@ void EngineMain::onUpdate()
 
 void EngineMain::onRender()
 {
-    Renderer::getInstance()->render();
+    Graphics::getInstance()->render();
 }
 
 void EngineMain::onWindowResized()
 {
     // resize now
-    Renderer::getInstance()->resize(m_mainWindow->get_width(), m_mainWindow->get_height());
+    Graphics::getInstance()->resize(m_mainWindow->get_width(), m_mainWindow->get_height());
 }
 
 void EngineMain::initialize()

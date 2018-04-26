@@ -1,7 +1,7 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
 #include "UI.h"
-#include "Graphics/Renderer/Renderer.h"
+#include "Graphics/Graphics.h"
 
 #include <algorithm>
 #include <tuple>
@@ -37,7 +37,7 @@ void UI::drawnow()
 	memcpy(tib.data, m_indexBufferData, m_indexCount * sizeof(uint16_t));
 
 	// set state
-    Renderer::getInstance()->setStage(RenderStage::DrawUI);
+    Graphics::getInstance()->setStage(RenderStage::DrawUI);
 
 	// set buffers
 	bgfx::setVertexBuffer(0, &tvb, 0, m_vertexCount);

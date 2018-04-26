@@ -69,7 +69,7 @@
     <Compile Include="Graphics\Atlas.cs" />
     <Compile Include="Graphics\Font.cs" />
     <Compile Include="Graphics\Font.Gen.cs" />
-    <Compile Include="Graphics\Renderer.Gen.cs" />
+    <Compile Include="Graphics\Graphics.Gen.cs" />
     <Compile Include="Graphics\Sprite.cs" />
     <Compile Include="Graphics\Texture2D.cs" />
     <Compile Include="Graphics\Texture2D.Gen.cs" />

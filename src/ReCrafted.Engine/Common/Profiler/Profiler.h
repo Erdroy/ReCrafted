@@ -19,7 +19,7 @@ class Font;
 class Profiler : public EngineComponent<Profiler>
 {
 	friend class EngineMain;
-	friend class Renderer;
+	friend class Graphics;
 
 private:
 	SCRIPTING_API_IMPL()
