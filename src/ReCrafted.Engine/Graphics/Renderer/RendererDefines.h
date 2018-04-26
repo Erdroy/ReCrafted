@@ -1,8 +1,8 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 #pragma once
 
-#ifndef DEFINES_H
-#define DEFINES_H
+#ifndef RENDERER_DEFINES_H
+#define RENDERER_DEFINES_H
 
 #include <iostream>
 #include <stdint.h>
@@ -52,11 +52,11 @@ public:
 	\
 	void Free##type##( type value ) { _ASSERT( value.idx != 0u ); type##_table[ value.idx ].idx = 0u; }
 
-#define RENDERER_CHECK_HANDLE(handle) handle.idx == 0u
+#define RENDERER_CHECK_HANDLE(handle) handle.idx != 0u
 
 #define RENDERER_VALIDATE_HANDLE(name)\
-	if (RENDERER_CHECK_HANDLE(##name##)) Internal::Fatal("Invalid handle passed!");
+        _ASSERT(RENDERER_CHECK_HANDLE(name));
 
 #define RENDERER_FORCEINLINE __forceinline
 
-#endif // DEFINES_H
+#endif // RENDERER_DEFINES_H
