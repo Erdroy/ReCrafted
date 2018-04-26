@@ -18,25 +18,30 @@ namespace Renderer
 		_ASSERT(dataBegin);
 		_ASSERT(commandCount);
 
-		auto commandsPerThread = m_commandCount / threadCount;
+        if(m_commandCount < RENDERER_COMMAND_LIST_MIN_CMD_COUNT)
+        {
+            for (var i = 0u; i < threadCount; i++)
+            {
+                dataBegin[i] = 0;
+                commandCount[i] = 0;
+            }
+
+            dataBegin[0] = 0;
+            commandCount[0] = m_commandCount;
+            return;
+        }
+
+		cvar commandsPerThread = m_commandCount / threadCount;
 		auto command = 0u;
 		auto thread = 0u;
 
 		auto position = 0u;
 
-		// Fix division problem (3 / 4 = 0)
-		if(m_commandCount < threadCount)
-		{
-			commandsPerThread = 1;
-			threadCount = m_commandCount;
-		}
-
-		 if (commandsPerThread == 0)
-			return;
-
 		dataBegin[thread] = 0;
 
-		for(auto i = 0u; i < m_commandCount; i ++)
+        // TODO: Fix command assignation
+
+		for(var i = 0u; i < m_commandCount; i ++)
 		{
 			auto spos = position;
 			Read_CommandHeader(&position);
