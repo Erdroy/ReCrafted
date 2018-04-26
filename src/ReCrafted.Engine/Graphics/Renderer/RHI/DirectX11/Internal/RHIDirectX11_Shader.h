@@ -9,6 +9,7 @@
 #include "../../../RendererConfig.h"
 
 #include <json.hpp>
+#include "Scripting/Assembly.h"
 
 namespace Renderer
 {
@@ -80,6 +81,8 @@ namespace Renderer
         std::vector<Buffer> m_buffers = {};
         std::vector<Pass> m_passes = {};
 
+        uint m_stride = 0u;
+
     private:
         void BindPass(ID3D11DeviceContext* context, Pass& pass);
 
@@ -99,6 +102,8 @@ namespace Renderer
         void BindBlendState(ID3D11DeviceContext* context, std::string name, ID3D11BlendState* state);
 
         void ApplyChanges();
+
+        uint GetStride();
 
         void Release();
 

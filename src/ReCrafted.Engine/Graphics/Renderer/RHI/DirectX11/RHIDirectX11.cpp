@@ -75,6 +75,9 @@ namespace Renderer
 
             ID3D11DeviceContext* m_context = nullptr;
 
+        private:
+            RHIDirectX11_Shader* m_currentShader = nullptr;
+
         public:
             std::thread thread;
 
@@ -97,16 +100,16 @@ namespace Renderer
             void Cleanup();
 
         public:
-            FORCEINLINE void Execute_Draw(Command_Draw* command) const;
-            FORCEINLINE void Execute_DrawIndexed(Command_DrawIndexed* command) const;
-            FORCEINLINE void Execute_ClearRenderBuffer(Command_ClearRenderBuffer* command) const;
-            FORCEINLINE void Execute_ApplyRenderBuffer(Command_ApplyRenderBuffer* command) const;
-            FORCEINLINE void Execute_CreateShader(Command_CreateShader* command) const;
-            FORCEINLINE void Execute_ApplyShader(Command_ApplyShader* command) const;
-            FORCEINLINE void Execute_DestroyShader(Command_DestroyShader* command) const;
-            FORCEINLINE void Execute_CreateVertexBuffer(Command_CreateVertexBuffer* command) const;
-            FORCEINLINE void Execute_ApplyVertexBuffer(Command_ApplyVertexBuffer* command) const;
-            FORCEINLINE void Execute_DestroyVertexBuffer(Command_DestroyVertexBuffer* command) const;
+            FORCEINLINE void Execute_Draw(Command_Draw* command);
+            FORCEINLINE void Execute_DrawIndexed(Command_DrawIndexed* command);
+            FORCEINLINE void Execute_ClearRenderBuffer(Command_ClearRenderBuffer* command);
+            FORCEINLINE void Execute_ApplyRenderBuffer(Command_ApplyRenderBuffer* command);
+            FORCEINLINE void Execute_CreateShader(Command_CreateShader* command);
+            FORCEINLINE void Execute_ApplyShader(Command_ApplyShader* command);
+            FORCEINLINE void Execute_DestroyShader(Command_DestroyShader* command);
+            FORCEINLINE void Execute_CreateVertexBuffer(Command_CreateVertexBuffer* command);
+            FORCEINLINE void Execute_ApplyVertexBuffer(Command_ApplyVertexBuffer* command);
+            FORCEINLINE void Execute_DestroyVertexBuffer(Command_DestroyVertexBuffer* command);
         };
 
         void WorkerThreadInstance::WaitForPreviousFrame()
@@ -248,8 +251,11 @@ namespace Renderer
         {
             SafeRelease(m_context);
         }
+#pragma endregion
 
-        void WorkerThreadInstance::Execute_Draw(Command_Draw* command) const
+        // ========== WorkerThreadInstance::Executors ==========
+#pragma region WorkerThread command execution implementation
+        void WorkerThreadInstance::Execute_Draw(Command_Draw* command)
         {
             if (m_resetFlags & ResetFlags::DrawTriangleLists)
                 m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -257,18 +263,15 @@ namespace Renderer
             m_context->Draw(command->vertexCount, 0);
         }
 
-        void WorkerThreadInstance::Execute_DrawIndexed(Command_DrawIndexed* command) const
+        void WorkerThreadInstance::Execute_DrawIndexed(Command_DrawIndexed* command)
         {
             if (m_resetFlags & ResetFlags::DrawTriangleLists)
                 m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
             m_context->DrawIndexed(command->indexCount, 0, 0);
         }
-#pragma endregion
 
-        // ========== WorkerThreadInstance::Executors ==========
-#pragma region WorkerThread command execution implementation
-        void WorkerThreadInstance::Execute_CreateShader(Command_CreateShader* command) const
+        void WorkerThreadInstance::Execute_CreateShader(Command_CreateShader* command)
         {
             cvar shaderIdx = command->shader.idx;
 
@@ -286,20 +289,22 @@ namespace Renderer
             file.close();
         }
 
-        void WorkerThreadInstance::Execute_ApplyShader(Command_ApplyShader* command) const
+        void WorkerThreadInstance::Execute_ApplyShader(Command_ApplyShader* command)
         {
             var shaderIdx = command->shader.idx;
             var shader = m_shaders[shaderIdx];
             shader->Bind(m_context, command->passId);
+
+            m_currentShader = shader;
         }
 
-        void WorkerThreadInstance::Execute_DestroyShader(Command_DestroyShader* command) const
+        void WorkerThreadInstance::Execute_DestroyShader(Command_DestroyShader* command)
         {
             var shaderIdx = command->shader.idx;
             SafeRelease(m_shaders[shaderIdx]);
         }
 
-        void WorkerThreadInstance::Execute_CreateVertexBuffer(Command_CreateVertexBuffer* command) const
+        void WorkerThreadInstance::Execute_CreateVertexBuffer(Command_CreateVertexBuffer* command)
         {
             rvar buffer = m_vertexBuffers[command->handle.idx];
             _ASSERT(buffer == nullptr);
@@ -323,7 +328,7 @@ namespace Renderer
             _ASSERT(SUCCEEDED(hr));
         }
 
-        void WorkerThreadInstance::Execute_ApplyVertexBuffer(Command_ApplyVertexBuffer* command) const
+        void WorkerThreadInstance::Execute_ApplyVertexBuffer(Command_ApplyVertexBuffer* command)
         {
             rvar buffer = m_vertexBuffers[command->handle.idx];
             _ASSERT(buffer != nullptr);
@@ -331,11 +336,11 @@ namespace Renderer
             ID3D11Buffer* buffers[] = { buffer };
 
             uint offset = 0u;
-            uint stride = sizeof (float) * 3; // TODO: read stride from current vertex shader
+            uint stride = m_currentShader->GetStride();
             m_context->IASetVertexBuffers(0, 1, buffers, &stride, &offset);
         }
 
-        void WorkerThreadInstance::Execute_DestroyVertexBuffer(Command_DestroyVertexBuffer* command) const
+        void WorkerThreadInstance::Execute_DestroyVertexBuffer(Command_DestroyVertexBuffer* command)
         {
             rvar buffer = m_vertexBuffers[command->handle.idx];
             _ASSERT(buffer != nullptr);
@@ -343,7 +348,7 @@ namespace Renderer
             SafeRelease(buffer);
         }
 
-        void WorkerThreadInstance::Execute_ClearRenderBuffer(Command_ClearRenderBuffer* command) const
+        void WorkerThreadInstance::Execute_ClearRenderBuffer(Command_ClearRenderBuffer* command)
         {
             var renderBufferIdx = command->renderBuffer.idx;
 
@@ -352,7 +357,7 @@ namespace Renderer
             m_renderBuffers[renderBufferIdx]->Clear(m_context, command->color, 0x0, 0);
         }
 
-        void WorkerThreadInstance::Execute_ApplyRenderBuffer(Command_ApplyRenderBuffer* command) const
+        void WorkerThreadInstance::Execute_ApplyRenderBuffer(Command_ApplyRenderBuffer* command)
         {
             var renderBufferIdx = command->renderBuffer.idx;
 
@@ -583,9 +588,6 @@ namespace Renderer
                 {
                     if (!thread)
                         break;
-
-                    // Mannualy process frame now
-                    thread->ProcessFrame();
 
                     CComPtr<ID3D11CommandList> commandList = nullptr;
                     var hr = thread->m_context->FinishCommandList(FALSE, &commandList);

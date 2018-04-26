@@ -17,13 +17,8 @@ namespace Renderer
     Lock m_inputLayoutLock = {};
     std::vector<InputLayout> m_inputLayouts = {};
 
-    uint D3D11HLSLFixBufferSize(uint size)
-    {
-        return (size + 64 - 1) / 64 * 64;
-    }
-
     // source: https://takinginitiative.wordpress.com/2011/12/11/directx-1011-basic-shader-reflection-automatic-input-layout-creation/
-    HRESULT D3D11CreateInputLayout(ID3D11Device* pD3DDevice, void* shaderData, size_t shaderDataSize, ID3D11InputLayout** pInputLayout)
+    HRESULT D3D11CreateInputLayout(ID3D11Device* pD3DDevice, void* shaderData, size_t shaderDataSize, uint* stride, ID3D11InputLayout** pInputLayout)
     {
         // Reflect shader info
         ID3D11ShaderReflection* pVertexShaderReflection = NULL;
@@ -80,6 +75,7 @@ namespace Renderer
 
             //save element desc
             inputLayoutDesc.push_back(elementDesc);
+            *stride += DXGIFormatGetSize(elementDesc.Format);
         }
 
         // try to find cached input layout
@@ -191,6 +187,11 @@ namespace Renderer
         }
     }
 
+    uint RHIDirectX11_Shader::GetStride()
+    {
+        return m_stride;
+    }
+
     void RHIDirectX11_Shader::Release()
     {
         m_buffers.clear();
@@ -228,7 +229,7 @@ namespace Renderer
 
                 // every vertex shader needs input layout to be bound to the GPU, 
                 // so create or use cached input layout
-                hr = D3D11CreateInputLayout(device, byteCode.data(), byteCode.size(), &pass.m_inputLayout);
+                hr = D3D11CreateInputLayout(device, byteCode.data(), byteCode.size(), &shader->m_stride, &pass.m_inputLayout);
 
                 _ASSERT(SUCCEEDED(hr));
 
@@ -305,7 +306,7 @@ namespace Renderer
 
             // field offset is not the size of the buffer
             // but we still need to round int up to multiply of 64
-            cvar bufferSize = D3D11HLSLFixBufferSize(fieldOffset);
+            cvar bufferSize = HLSLFixBufferSize(fieldOffset);
             buffer.m_size = bufferSize;
 
             // create buffer data
