@@ -592,9 +592,6 @@ namespace Renderer
                 }
             }
 
-            // Assign new commands for all threads
-            assignCommands();
-
             if (m_settings & Settings::SingleThreaded)
             {
                 var thread = m_workerThreads[0];
@@ -655,6 +652,9 @@ namespace Renderer
                     Internal::Fatal("Failed to present frame!");
                 }
             }
+
+            // Assign new commands for all threads
+            assignCommands();
 
             if (!(m_settings & Settings::SingleThreaded))
             {
