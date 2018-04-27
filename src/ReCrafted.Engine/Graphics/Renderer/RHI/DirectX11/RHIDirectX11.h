@@ -30,8 +30,7 @@ namespace Renderer
 
         public:
             void CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle, void* windowHandle) override;
-            void CreateTexture2D(Texture2DHandle textureHandle, uint16_t width, uint16_t height, TextureFormat::_enum textureFormat) override;
-
+            
         public:
             void ResizeWindow(WindowHandle window, int width, int height) override;
         };

@@ -790,11 +790,6 @@ namespace Renderer
             SafeRelease(device);
         }
 
-        void RHIDirectX11::CreateTexture2D(Texture2DHandle textureHandle, uint16_t width, uint16_t height, TextureFormat::_enum textureFormat)
-        {
-            //m_textures2d[textureHandle.idx] = RHIDirectX11_Texture2D::Create(m_device, width, height, textureFormat);
-        }
-
         void RHIDirectX11::ResizeWindow(WindowHandle window, int width, int height)
         {
         }

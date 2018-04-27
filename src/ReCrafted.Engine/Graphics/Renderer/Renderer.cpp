@@ -263,8 +263,6 @@ namespace Renderer
         cvar handle = AllocTexture2DHandle();
         RENDERER_VALIDATE_HANDLE(handle);
 
-        m_renderer->CreateTexture2D(handle, width, height, textureFormat);
-
         return handle;
     }
 

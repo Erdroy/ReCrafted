@@ -29,8 +29,7 @@ namespace Renderer
 
         public:
             virtual void CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle, void* windowHandle) = 0;
-            virtual void CreateTexture2D(Texture2DHandle textureHandle, uint16_t width, uint16_t height, TextureFormat::_enum textureFormat) = 0;
-
+            
 		public:
             virtual void ResizeWindow(WindowHandle window, int width, int height) = 0;
 		};
