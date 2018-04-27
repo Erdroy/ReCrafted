@@ -328,7 +328,6 @@ namespace Renderer
 
     /// <summary>
     /// Creates new VertexBuffer without memory initialization.
-    /// Warning: You will not be able to use this buffer in the current frame!
     /// </summary>
     /// <param name="vertexCount">The count of vertices.</param>
     /// <param name="vertexSize">The size of a single vertex.</param>
@@ -337,7 +336,6 @@ namespace Renderer
 
     /// <summary>
     /// Creates new VertexBuffer.
-    /// Warning: You will not be able to use this buffer in the current frame!
     /// </summary>
     /// <param name="vertexCount">The count of vertices.</param>
     /// <param name="vertexSize">The size of a single vertex.</param>
@@ -365,7 +363,6 @@ namespace Renderer
 
     /// <summary>
     /// Loads shader and creates it's shader handle.
-    /// Warning: You will not be able to use this buffer in the current frame!
     /// </summary>
     /// <param name="fileName">The compiled shader file.</param>
     /// <returns>The created shader handle.</returns>
