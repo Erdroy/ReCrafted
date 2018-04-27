@@ -31,12 +31,12 @@ namespace Renderer
 
 
         // == events ==
-		HANDLE                      m_workerFinishEvents[RENDERER_MAX_WORKER_THREADS];
-		HANDLE                      m_workerFrameEvents	[RENDERER_MAX_WORKER_THREADS];
+		HANDLE                      m_workerFinishEvents[RENDERER_MAX_RENDER_THREADS];
+		HANDLE                      m_workerFrameEvents	[RENDERER_MAX_RENDER_THREADS];
 
 
         // == worker-related stuff ==
-		WorkerThreadInstance*	    m_workerThreads     [RENDERER_MAX_WORKER_THREADS]               = {};
+		WorkerThreadInstance*	    m_workerThreads     [RENDERER_MAX_RENDER_THREADS]               = {};
 
 
         // == resources ==
@@ -345,8 +345,8 @@ namespace Renderer
 
 		void RHIDirectX12::assignCommands()
 		{
-			uint32_t dataBegin[RENDERER_MAX_WORKER_THREADS] = {};
-			uint32_t commandCount[RENDERER_MAX_WORKER_THREADS] = {};
+			uint32_t dataBegin[RENDERER_MAX_RENDER_THREADS] = {};
+			uint32_t commandCount[RENDERER_MAX_RENDER_THREADS] = {};
 
 			// Assign new commands
 			commandList.Assign(m_workerThreadCount, dataBegin, commandCount);
@@ -451,7 +451,7 @@ namespace Renderer
 				cpuCount = 1;
 
 			// Spawn Worker Threads
-			for(auto i = 0; i < cpuCount && i < RENDERER_MAX_WORKER_THREADS; i++)
+			for(auto i = 0; i < cpuCount && i < RENDERER_MAX_RENDER_THREADS; i++)
 			{
 				auto workerInstance = new WorkerThreadInstance;
 

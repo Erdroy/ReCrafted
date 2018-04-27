@@ -56,12 +56,12 @@ namespace Renderer
 
 
         // == events ==
-        HANDLE                      m_workerFinishEvents[RENDERER_MAX_WORKER_THREADS];
-        HANDLE                      m_workerFrameEvents[RENDERER_MAX_WORKER_THREADS];
+        HANDLE                      m_workerFinishEvents[RENDERER_MAX_RENDER_THREADS];
+        HANDLE                      m_workerFrameEvents[RENDERER_MAX_RENDER_THREADS];
 
 
         // == worker-related stuff ==
-        WorkerThreadInstance*	    m_workerThreads[RENDERER_MAX_WORKER_THREADS] = {};
+        WorkerThreadInstance*	    m_workerThreads[RENDERER_MAX_RENDER_THREADS] = {};
 
 
         // == resources ==
@@ -420,8 +420,8 @@ namespace Renderer
 
         void RHIDirectX11::assignCommands()
         {
-            uint32_t dataBegin[RENDERER_MAX_WORKER_THREADS] = {};
-            uint32_t commandCount[RENDERER_MAX_WORKER_THREADS] = {};
+            uint32_t dataBegin[RENDERER_MAX_RENDER_THREADS] = {};
+            uint32_t commandCount[RENDERER_MAX_RENDER_THREADS] = {};
 
             // Assign new commands
             commandList.Assign(m_workerThreadCount, dataBegin, commandCount);
@@ -486,7 +486,7 @@ namespace Renderer
             // TODO: make single threaded model use main thread...
 
             // Spawn Worker Threads
-            for (var i = 0; i < cpuCount && i < RENDERER_MAX_WORKER_THREADS; i++)
+            for (var i = 0; i < cpuCount && i < RENDERER_MAX_RENDER_THREADS; i++)
             {
                 var workerInstance = new WorkerThreadInstance;
 
@@ -510,7 +510,7 @@ namespace Renderer
                 // Initialize worker
                 workerInstance->InitializeWorker();
 
-                // Setup thread when we only need it
+                // Setup thread when we are going to be multi threading
                 if (!(m_settings & Settings::SingleThreaded))
                 {
                     workerInstance->thread = std::thread([workerInstance] { workerInstance->WorkerThread(); });

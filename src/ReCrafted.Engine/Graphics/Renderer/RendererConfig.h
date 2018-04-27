@@ -27,7 +27,7 @@
 #define RENDERER_COMMAND_LIST_INCREMENT		(8 << 10)
 #define RENDERER_COMMAND_LIST_MIN_CMD_COUNT	(128)
 
-#define RENDERER_MAX_WORKER_THREADS			(16)
+#define RENDERER_MAX_RENDER_THREADS			(1)
 #define RENDERER_MAX_WINDOWS				(16)
 #define RENDERER_MAX_RENDER_BUFFERS			(128)
 #define RENDERER_MAX_RENDER_BUFFER_TARGETS  (16)
@@ -35,5 +35,9 @@
 #define RENDERER_MAX_VERTEX_BUFFERS         (16 << 10)
 #define RENDERER_MAX_INDEX_BUFFERS          (16 << 10)
 #define RENDERER_MAX_SHADER_PROGRAMS        (1 << 10)
+
+#if RENDERER_MAX_RENDER_THREADS > 1
+#error Only single multi-threading worker thread is currently supported!
+#endif
 
 #endif // RENDERER_CONFIG_H
