@@ -90,21 +90,19 @@ namespace Renderer
         private:
             HANDLE m_fenceEvent = {};
 
-            uint32_t m_commandDataStart = 0u;
             uint32_t m_commandCount = 0u;
 
             ID3D11DeviceContext* m_context = nullptr;
 
         private:
             RHIDirectX11_Shader* m_currentShader = nullptr;
+            CommandList m_commandList;
 
         public:
             std::thread thread;
 
             int threadId = 0;
             int frameCount = 0;
-
-            CommandList* commandList;
 
         public:
             void WaitForPreviousFrame();
@@ -201,12 +199,11 @@ namespace Renderer
             if (m_commandCount == 0u)
                 return;
 
-            var position = m_commandDataStart;
-
             // Execute command list
+            var position = 0u;
             for (var i = 0u; i < m_commandCount; i++)
             {
-                var header = commandList->Read_CommandHeader(&position);
+                var header = m_commandList.Read_CommandHeader(&position);
                 position -= sizeof header;
 
                 ExecuteCommand(header, &position);
@@ -217,7 +214,7 @@ namespace Renderer
         {
 #define DEFINE_COMMAND_EXECUTOR(name) \
             case CommandHeader::name: { \
-                var command = commandList->ReadCommand<Command_##name>(position);\
+                var command = m_commandList.ReadCommand<Command_##name>(position);\
                 Execute_##name(&command);\
                 break; \
 		    }
@@ -228,7 +225,7 @@ namespace Renderer
                 break;
             case CommandHeader::ApplyWindow:
             {
-                cvar command = commandList->ReadCommand<Command_ApplyWindow>(position);
+                cvar command = m_commandList.ReadCommand<Command_ApplyWindow>(position);
                 cvar idx = command.window.idx;
 
                 uint width;
@@ -252,7 +249,7 @@ namespace Renderer
             }
             case CommandHeader::DestroyWindow:
             {
-                cvar command = commandList->ReadCommand<Command_DestroyWindow>(position);
+                cvar command = m_commandList.ReadCommand<Command_DestroyWindow>(position);
                 cvar idx = command.window.idx;
 
                 SafeRelease(m_swapChains[idx]);
@@ -278,6 +275,8 @@ namespace Renderer
 
         void WorkerThreadInstance::Cleanup()
         {
+            m_commandList.Destroy();
+
             SafeRelease(m_context);
         }
 #pragma endregion
@@ -421,16 +420,23 @@ namespace Renderer
         void RHIDirectX11::assignCommands()
         {
             uint32_t dataBegin[RENDERER_MAX_RENDER_THREADS] = {};
+            uint32_t dataEnd[RENDERER_MAX_RENDER_THREADS] = {};
             uint32_t commandCount[RENDERER_MAX_RENDER_THREADS] = {};
 
             // Assign new commands
-            commandList.Assign(m_workerThreadCount, dataBegin, commandCount);
+            commandList.Assign(m_workerThreadCount, dataBegin, dataEnd, commandCount);
 
             // Write assigned commands info to all worker threads
             for (var i = 0; i < m_workerThreadCount; i++)
             {
-                m_workerThreads[i]->m_commandDataStart = dataBegin[i];
+                cvar size = dataEnd[i] - dataBegin[i];
+
+                // resize to the given size
+                m_workerThreads[i]->m_commandList.Resize(size);
                 m_workerThreads[i]->m_commandCount = commandCount[i];
+
+                // copy data
+                memcpy(m_workerThreads[i]->m_commandList.cmdlist, commandList.cmdlist + dataBegin[i], size);
             }
         }
 
@@ -483,8 +489,6 @@ namespace Renderer
             if (m_settings & Settings::SingleThreaded)
                 cpuCount = 1;
 
-            // TODO: make single threaded model use main thread...
-
             // Spawn Worker Threads
             for (var i = 0; i < cpuCount && i < RENDERER_MAX_RENDER_THREADS; i++)
             {
@@ -505,7 +509,8 @@ namespace Renderer
                 }
 
                 workerInstance->threadId = i;
-                workerInstance->commandList = &commandList;
+                workerInstance->m_commandList = {};
+                workerInstance->m_commandList.Initialize();
 
                 // Initialize worker
                 workerInstance->InitializeWorker();
@@ -592,17 +597,25 @@ namespace Renderer
                 }
             }
 
-            if (m_settings & Settings::SingleThreaded)
+            // Wait for all worker threads when Multi-Threaded
+            if (!(m_settings & Settings::SingleThreaded))
+                WaitForMultipleObjects(m_workerThreadCount, m_workerFinishEvents, true, INFINITE);
+
+            // Build command list array
+            for (var thread : m_workerThreads)
             {
-                var thread = m_workerThreads[0];
+                // Mannualy assing commands and process frame when Single-Threadeed
+                if (m_settings & Settings::SingleThreaded)
+                {
+                    assignCommands();
+                    thread->ProcessFrame();
+                }
 
-                // Mannualy process frame now
-                thread->ProcessFrame();
-
+                // Finish D3D11 command list
                 CComPtr<ID3D11CommandList> commandList = nullptr;
                 var hr = thread->m_context->FinishCommandList(FALSE, &commandList);
 
-                if(FAILED(hr))
+                if (FAILED(hr))
                 {
                     Internal::Fatal("Failed to finish command list!");
                     return;
@@ -610,30 +623,10 @@ namespace Renderer
 
                 // Add current thread's command list
                 commandLists.push_back(commandList);
-            }
-            else
-            {
-                // Wait for all worker threads
-                WaitForMultipleObjects(m_workerThreadCount, m_workerFinishEvents, true, INFINITE);
 
-                // Build command list array
-                for (var thread : m_workerThreads)
-                {
-                    if (!thread)
-                        break;
-
-                    CComPtr<ID3D11CommandList> commandList = nullptr;
-                    var hr = thread->m_context->FinishCommandList(FALSE, &commandList);
-
-                    if (FAILED(hr))
-                    {
-                        Internal::Fatal("Failed to finish command list!");
-                        return;
-                    }
-
-                    // Add current thread's command list
-                    commandLists.push_back(commandList);
-                }
+                // Break now when Single-Threadeed
+                if (m_settings & Settings::SingleThreaded)
+                    break;
             }
 
             // Execute command lists
@@ -653,11 +646,11 @@ namespace Renderer
                 }
             }
 
-            // Assign new commands for all threads
-            assignCommands();
-
             if (!(m_settings & Settings::SingleThreaded))
             {
+                // Assign new commands for all threads
+                assignCommands();
+
                 // Signal workers that this frame is now done
                 kickFrameEvent();
             }

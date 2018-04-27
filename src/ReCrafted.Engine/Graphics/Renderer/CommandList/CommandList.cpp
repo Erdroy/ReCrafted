@@ -12,13 +12,13 @@ namespace Renderer
 		this->size = size;
 	}
 
-	void CommandList::Assign(uint8_t threadCount, uint32_t* dataBegin, uint32_t* commandCount)
+	void CommandList::Assign(uint8_t threadCount, uint32_t* dataBegin, uint32_t* dataEnd, uint32_t* commandCount)
 	{
 		_ASSERT(threadCount);
 		_ASSERT(dataBegin);
 		_ASSERT(commandCount);
 
-        if(m_commandCount < RENDERER_COMMAND_LIST_MIN_CMD_COUNT)
+        //if(m_commandCount < RENDERER_COMMAND_LIST_MIN_CMD_COUNT || threadCount == 1)
         {
             for (var i = 0u; i < threadCount; i++)
             {
@@ -27,19 +27,19 @@ namespace Renderer
             }
 
             dataBegin[0] = 0;
+            dataEnd[0] = size;
             commandCount[0] = m_commandCount;
-            return;
+            //return;
         }
 
-		cvar commandsPerThread = m_commandCount / threadCount;
-		auto command = 0u;
-		auto thread = 0u;
+		/*cvar commandsPerThread = m_commandCount / threadCount;
+		var commands = 0u;
+        var totalSize = 0u;
+        var thread = 0u;
 
-		auto position = 0u;
+        var position = 0u;
 
 		dataBegin[thread] = 0;
-
-        // TODO: Fix command assignation
 
 		for(var i = 0u; i < m_commandCount; i ++)
 		{
@@ -47,14 +47,15 @@ namespace Renderer
 			Read_CommandHeader(&position);
 			auto size = Read_uint16(&position);
 			position = spos + size;
-			command++;
+			commands++;
+            totalSize += size;
 
 			// Read till command count is >= commandsPerThread - write command count,
 			// if we filled all allowed commands, increment thread, write data start and continue
 
-			if(command >= commandsPerThread)
+			if(commands >= commandsPerThread)
 			{
-				commandCount[thread] = command;
+				commandCount[thread] = commands;
 
 				if(thread + 1 >= threadCount)
 				{
@@ -65,9 +66,11 @@ namespace Renderer
 				thread++;
 
 				dataBegin[thread] = position;
-				command = 0u;
+                dataEnd[thread] = position + totalSize;
+				commands = 0u;
+                totalSize = 0;
 			}
-		}
+		}*/
 	}
 
 	void CommandList::Destroy()

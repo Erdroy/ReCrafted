@@ -1,3 +1,5 @@
+*.tmp
+
 .projects/
 username.txt
 libs/

@@ -7,6 +7,7 @@
 #include "RHI/DirectX11/RHIDirectX11.h"
 
 #include <thread>
+#include <algorithm>
 
 #if _WIN32
 #include <Windows.h>

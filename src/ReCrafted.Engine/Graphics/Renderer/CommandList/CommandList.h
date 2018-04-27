@@ -30,7 +30,7 @@ namespace Renderer
 	public:
 		void Initialize(uint32_t size = RENDERER_COMMAND_LIST_SIZE);
 
-		void Assign(uint8_t threadCount, uint32_t* dataBegin, uint32_t* dataEnd);
+		void Assign(uint8_t threadCount, uint32_t* dataBegin, uint32_t* dataEnd, uint32_t* commandCount);
 
 		void Destroy();
 
@@ -65,6 +65,10 @@ namespace Renderer
 	public:
 		void Resize(uint32_t size)
 		{
+            // we don't really want to resize down or when it is 0, lol
+            if (this->size <= size || size == 0)
+                return;
+
 			auto new_cmdlist = static_cast<byte*>(realloc(cmdlist, size));
 
 			// check if the realloc actually reallocated the memory
