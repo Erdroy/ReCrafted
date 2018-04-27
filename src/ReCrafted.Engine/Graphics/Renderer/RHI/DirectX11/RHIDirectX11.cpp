@@ -101,8 +101,8 @@ namespace Renderer
         public:
             std::thread thread;
 
-            int threadId;
-            int frameCount;
+            int threadId = 0;
+            int frameCount = 0;
 
             CommandList* commandList;
 

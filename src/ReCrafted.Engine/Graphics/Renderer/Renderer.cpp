@@ -41,9 +41,6 @@ namespace Renderer
 		}
 	}
 
-	// ==== COMMANDS ====
-
-
 	// ==== HANDLE DEFINITIONS ====
 	RENDERER_DEFINE_HANDLE_ALLOCATOR(WindowHandle, RENDERER_MAX_WINDOWS);
 	RENDERER_DEFINE_HANDLE_ALLOCATOR(RenderBufferHandle, RENDERER_MAX_RENDER_BUFFERS);
@@ -52,9 +49,7 @@ namespace Renderer
     RENDERER_DEFINE_HANDLE_ALLOCATOR(VertexBufferHandle, RENDERER_MAX_VERTEX_BUFFERS);
     RENDERER_DEFINE_HANDLE_ALLOCATOR(IndexBufferHandle, RENDERER_MAX_INDEX_BUFFERS);
 
-	const std::thread::id MAIN_THREAD_ID = std::this_thread::get_id();
-
-	// TODO: Check if API calls are using main-thread
+	static std::thread::id g_mainThreadId = {};
 
 	static bool m_running = false;
 	static RHI::RHIBase* m_renderer;
@@ -63,6 +58,9 @@ namespace Renderer
 
 	void Initialize(RendererAPI::_enum api, ResetFlags::_enum flags, Settings::_enum settings)
 	{
+        // get main thread index
+        g_mainThreadId = std::this_thread::get_id();
+
 		switch (api)
 		{
 #if RENDERER_RENDERER_D3D12
@@ -101,27 +99,37 @@ namespace Renderer
 
 	void Shutdown()
 	{
+        CHECK_MAIN_THREAD();
+
 		m_running = false;
 		m_renderer->Shutdown();
 	}
 
     RendererMemory Allocate(const size_t size)
     {
+        CHECK_MAIN_THREAD();
+
         return static_cast<RendererMemory>(new byte[size]);
     }
 
     void Free(RendererMemory memory)
     {
+        CHECK_MAIN_THREAD();
+
         delete[] static_cast<byte*>(memory);
     }
 
 	void Frame()
 	{
+        CHECK_MAIN_THREAD();
+
 		m_renderer->Frame();
 	}
 
     void Draw(uint vertexCount)
     {
+        CHECK_MAIN_THREAD();
+
         Command_Draw command;
         command.vertexCount = vertexCount;
         g_commandList->WriteCommand(&command);
@@ -129,6 +137,8 @@ namespace Renderer
 
     void DrawIndexed(uint indexCount)
     {
+        CHECK_MAIN_THREAD();
+
         Command_DrawIndexed command;
         command.indexCount = indexCount;
         g_commandList->WriteCommand(&command);
@@ -136,6 +146,8 @@ namespace Renderer
 
     WindowHandle CreateWindowHandle(void* windowHandle)
 	{
+        CHECK_MAIN_THREAD();
+
 		// Create output
         cvar handle = AllocWindowHandle();
         cvar renderBuffer = AllocRenderBufferHandle();
@@ -152,6 +164,8 @@ namespace Renderer
 
 	void ApplyWindow(WindowHandle handle)
 	{
+        CHECK_MAIN_THREAD();
+
 		RENDERER_VALIDATE_HANDLE(handle);
 		
 		Command_ApplyWindow command;
@@ -161,6 +175,8 @@ namespace Renderer
 
 	RenderBufferHandle GetWindowRenderBuffer(WindowHandle handle)
 	{
+        CHECK_MAIN_THREAD();
+
         RENDERER_VALIDATE_HANDLE(handle);
 
 		return WindowHandle_table[handle.idx].renderBuffer;
@@ -168,6 +184,8 @@ namespace Renderer
 
 	void DestroyWindow(WindowHandle handle)
 	{
+        CHECK_MAIN_THREAD();
+
 		RENDERER_VALIDATE_HANDLE(handle);
 
 		Command_DestroyWindow command;
@@ -179,6 +197,8 @@ namespace Renderer
 
 	RenderBufferHandle CreateRenderBuffer()
 	{
+        CHECK_MAIN_THREAD();
+
         cvar handle = AllocRenderBufferHandle();
         RENDERER_VALIDATE_HANDLE(handle);
 
@@ -189,11 +209,15 @@ namespace Renderer
 
     VertexBufferHandle CreateVertexBuffer(uint count, uint vertexSize, bool dynamic)
     {
+        CHECK_MAIN_THREAD();
+
         return CreateVertexBuffer(count, vertexSize, nullptr, dynamic);
     }
 
     VertexBufferHandle CreateVertexBuffer(uint vertexCount, uint vertexSize, RendererMemory memory, bool dynamic)
     {
+        CHECK_MAIN_THREAD();
+
         cvar handle = AllocVertexBufferHandle();
         RENDERER_VALIDATE_HANDLE(handle);
 
@@ -211,12 +235,16 @@ namespace Renderer
 
     void UpdateVertexBuffer(VertexBufferHandle handle, uint count, uint offset, RendererMemory memory)
     {
+        CHECK_MAIN_THREAD();
+
         RENDERER_VALIDATE_HANDLE(handle);
 
     }
 
     void ApplyVertexBuffer(VertexBufferHandle handle)
     {
+        CHECK_MAIN_THREAD();
+
         RENDERER_VALIDATE_HANDLE(handle);
 
         Command_ApplyVertexBuffer command;
@@ -226,6 +254,8 @@ namespace Renderer
 
     void DestroyVertexBuffer(VertexBufferHandle handle)
     {
+        CHECK_MAIN_THREAD();
+
         RENDERER_VALIDATE_HANDLE(handle);
 
         Command_DestroyVertexBuffer command;
@@ -235,6 +265,8 @@ namespace Renderer
 
     void ApplyRenderBuffer(RenderBufferHandle handle)
 	{
+        CHECK_MAIN_THREAD();
+
         RENDERER_VALIDATE_HANDLE(handle);
 
         Command_ApplyRenderBuffer command;
@@ -245,6 +277,8 @@ namespace Renderer
 
 	void ClearRenderBuffer(RenderBufferHandle handle, Color color)
 	{
+        CHECK_MAIN_THREAD();
+
         RENDERER_VALIDATE_HANDLE(handle);
 
 		Command_ClearRenderBuffer command;
@@ -256,10 +290,14 @@ namespace Renderer
 
 	void DestroyRenderBuffer(RenderBufferHandle handle)
 	{
+        CHECK_MAIN_THREAD();
+
 	}
 
     Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat)
     {
+        CHECK_MAIN_THREAD();
+
         cvar handle = AllocTexture2DHandle();
         RENDERER_VALIDATE_HANDLE(handle);
 
@@ -268,6 +306,8 @@ namespace Renderer
 
     ShaderHandle CreateShader(const char* fileName)
     {
+        CHECK_MAIN_THREAD();
+
         cvar handle = AllocShaderHandle();
         RENDERER_VALIDATE_HANDLE(handle);
 
@@ -282,6 +322,8 @@ namespace Renderer
 
     void ApplyShader(ShaderHandle handle, int passId)
     {
+        CHECK_MAIN_THREAD();
+
         Command_ApplyShader command;
         command.shader = handle;
         command.passId = static_cast<uint16_t>(passId);
@@ -290,6 +332,8 @@ namespace Renderer
 
     void DestroyShader(ShaderHandle handle)
     {
+        CHECK_MAIN_THREAD();
+
         Command_DestroyShader command;
         command.shader = handle;
         g_commandList->WriteCommand(&command);
@@ -297,11 +341,15 @@ namespace Renderer
 
     void SetFlag(ResetFlags::_enum flag, bool value)
     {
+        CHECK_MAIN_THREAD();
+
 
     }
 
     bool GetFlag(ResetFlags::_enum flag)
     {
+        CHECK_MAIN_THREAD();
+
         return false;
     }
 }

@@ -59,4 +59,10 @@ public:
 
 #define RENDERER_FORCEINLINE __forceinline
 
+#ifdef _DEBUG
+#define CHECK_MAIN_THREAD() _ASSERT(std::this_thread::get_id() == g_mainThreadId)
+#else
+#define CHECK_MAIN_THREAD()
+#endif
+
 #endif // RENDERER_DEFINES_H
