@@ -41,6 +41,13 @@ namespace Renderer
 		}
 	}
 
+    class MemoryAllocation
+	{
+	public:
+        uint ttl = 0u;
+        RendererMemory memory = nullptr;
+	};
+
 	// ==== HANDLE DEFINITIONS ====
 	RENDERER_DEFINE_HANDLE_ALLOCATOR(WindowHandle, RENDERER_MAX_WINDOWS);
 	RENDERER_DEFINE_HANDLE_ALLOCATOR(RenderBufferHandle, RENDERER_MAX_RENDER_BUFFERS);
@@ -50,11 +57,47 @@ namespace Renderer
     RENDERER_DEFINE_HANDLE_ALLOCATOR(IndexBufferHandle, RENDERER_MAX_INDEX_BUFFERS);
 
 	static std::thread::id g_mainThreadId = {};
+    static CommandList* g_commandList;
 
 	static bool m_running = false;
 	static RHI::RHIBase* m_renderer;
 
-	static CommandList* g_commandList;
+#if RENDERER_MEMORY_AUTO_DEALLOC_ENABLE
+    // we don't really want to use our Array<T> type here, 
+    // vector will still use rpmalloc due to overloaded new/delete operators
+    std::vector<MemoryAllocation> m_memoryAllocations = {};
+#endif
+
+    void UpdateMemory()
+    {
+#if RENDERER_MEMORY_AUTO_DEALLOC_ENABLE
+        // we don't need any lock's here as everything happens on the main thread.
+
+        // decrement lifetime of memory that is still alive
+        for (rvar memory : m_memoryAllocations)
+        {
+            if (memory.ttl > 0) // sanity check
+                memory.ttl--;
+        }
+
+        // deallocate memory that is out of life time
+        for (rvar memory : m_memoryAllocations)
+        {
+            if(memory.ttl == 0)
+            {
+                if(memory.memory)
+                    Free(memory.memory);
+                memory.memory = nullptr;
+            }
+        }
+
+        // clean deallocated memory entries
+        m_memoryAllocations.erase(std::remove_if(m_memoryAllocations.begin(), m_memoryAllocations.end(), [](MemoryAllocation& memory) 
+        {
+            return !memory.memory;
+        }), m_memoryAllocations.end());
+#endif
+    }
 
 	void Initialize(RendererAPI::_enum api, ResetFlags::_enum flags, Settings::_enum settings)
 	{
@@ -105,11 +148,25 @@ namespace Renderer
 		m_renderer->Shutdown();
 	}
 
-    RendererMemory Allocate(const size_t size)
+    RendererMemory Allocate(const size_t size, uint lifeTime)
     {
         CHECK_MAIN_THREAD();
 
-        return static_cast<RendererMemory>(new byte[size]);
+        cvar memory = static_cast<RendererMemory>(new byte[size]);
+        
+#if RENDERER_MEMORY_AUTO_DEALLOC_ENABLE
+        if(lifeTime > 0)
+        {
+            // we don't need any lock's here as everything happens on the main thread.
+
+            MemoryAllocation mem = {};
+            mem.memory = memory;
+            mem.ttl = lifeTime;
+            m_memoryAllocations.emplace_back(mem);
+        }
+#endif
+
+        return memory;
     }
 
     void Free(RendererMemory memory)
@@ -124,6 +181,9 @@ namespace Renderer
         CHECK_MAIN_THREAD();
 
 		m_renderer->Frame();
+
+        // update memory
+        UpdateMemory();
 	}
 
     void Draw(uint vertexCount)

@@ -240,13 +240,20 @@ namespace Renderer
 
     /// <summary>
     /// Allocates given amount of memory.
+    /// The allocated memory is available only for ONE frame or the specified amount.
     /// </summary>
     /// <param name="size">Amount of memory to allocate.</param>
+    /// <param name="lifeTime">
+    /// The amount of frames that must pass to automatically free the memory.
+    /// When 0, the memory life time will be unlimited and it will be required to 
+    /// release it by using Renderer::Free(...) function.
+    /// </param>
     /// <returns>The allocated memory pointer.</returns>
-    RENDERER_FUNCTION(RendererMemory)           Allocate(size_t size);
+    RENDERER_FUNCTION(RendererMemory)           Allocate(size_t size, uint lifeTime = 1);
 
     /// <summary>
     /// Frees given memory pointer.
+    /// 
     /// </summary>
     /// <param name="memory">The memory pointer to be released.</param>
     RENDERER_FUNCTION(void)                     Free(RendererMemory memory);
