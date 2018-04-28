@@ -40,6 +40,7 @@ namespace Renderer
             DestroyVertexBuffer,
 
             CreateShader,
+            SetShaderValue,
             ApplyShader,
 		    DestroyShader,
 		};
@@ -82,6 +83,13 @@ namespace Renderer
     Command(ApplyShader,
         ShaderHandle shader;
         uint16_t passId = 0u;
+    );
+
+    Command(SetShaderValue, // CUSTOM!
+        ShaderHandle shader;
+        uint8_t bufferId;
+        uint8_t fieldId;
+        uint8_t dataSize;
     );
 
     Command(DestroyShader,

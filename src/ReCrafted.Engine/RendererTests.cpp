@@ -3,9 +3,10 @@
 
 #include <Windows.h>
 
-#include "Core/Math/Vector3.h"
 #include "ReCraftedConfig.h"
 #include "Platform/Platform.h"
+#include "Core/Math/Vector3.h"
+#include "Core/Math/Vector4.h"
 
 #if RENDERER_TEST
 
@@ -43,7 +44,7 @@ void initRendererTests()
     simpleMesh[2].y = -1.0f;
     simpleMesh[2].z = 1.0f;
 
-    var triangleVB = Renderer::CreateVertexBuffer(3, sizeof Vector3, (byte*)&simpleMesh, false);
+    var triangleVB = Renderer::CreateVertexBuffer(3, sizeof Vector3, (byte*)&simpleMesh, true);
 
     // Main loop
     MSG msg;
@@ -63,7 +64,8 @@ void initRendererTests()
 
         // Set shader as current
         Renderer::ApplyShader(shader, 0);
-        //Renderer::SetShaderValue(0, 1.0f);
+        var newValue = Vector4(1.0f, 0.5f, 0.0f, 1.0f);
+        Renderer::SetShaderValue(shader, 0, 0, &newValue, sizeof (Vector4));
 
         // Set triangle VB as current
         Renderer::ApplyVertexBuffer(triangleVB);

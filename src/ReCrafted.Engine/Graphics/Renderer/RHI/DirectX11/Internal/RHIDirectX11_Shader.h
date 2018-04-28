@@ -36,6 +36,8 @@ namespace Renderer
             uint16_t m_size = 0u;
             uint8_t m_index = 0u;
 
+            bool m_dirty = false;
+
             ID3D11Buffer* m_buffer = nullptr;
 
         public:
@@ -81,6 +83,8 @@ namespace Renderer
         std::vector<Buffer> m_buffers = {};
         std::vector<Pass> m_passes = {};
 
+        bool m_dirty = false;
+
         uint m_stride = 0u;
 
     private:
@@ -101,6 +105,8 @@ namespace Renderer
         void BindBlendState(ID3D11DeviceContext* context, uint8_t slot, ID3D11BlendState* state);
         void BindBlendState(ID3D11DeviceContext* context, std::string name, ID3D11BlendState* state);
 
+        void SetValue(int buffer, int index, void* data, size_t dataSize);
+
         void ApplyChanges();
 
         uint GetStride();
@@ -111,7 +117,7 @@ namespace Renderer
         template<typename T>
         void SetValue(int buffer, int index, T value)
         {
-
+            SetValue(buffer, index, &value, sizeof T);
         }
 
     public:

@@ -259,6 +259,16 @@ namespace Renderer
 
                 break;
             }
+            case CommandHeader::SetShaderValue:
+            {
+                float data[16];
+                cvar command = m_commandList.ReadCommand<Command_SetShaderValue>(position);
+                m_commandList.Read(data, position, command.dataSize);
+
+                rvar shader = m_shaders[command.shader.idx];
+                shader->SetValue(command.bufferId, command.fieldId, data, command.dataSize);
+                break;
+            }
             DEFINE_COMMAND_EXECUTOR(Draw);
             DEFINE_COMMAND_EXECUTOR(DrawIndexed);
             DEFINE_COMMAND_EXECUTOR(ClearRenderBuffer);

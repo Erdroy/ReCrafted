@@ -375,6 +375,8 @@ namespace Renderer
     /// <returns>The created shader handle.</returns>
     RENDERER_FUNCTION(ShaderHandle)             CreateShader(const char* fileName);
 
+    RENDERER_FUNCTION(void)                     SetShaderValue(ShaderHandle handle, int bufferId, int fieldId, void* data, size_t dataSize);
+
     /// <summary>
     /// Sets given shader pass as current.
     /// </summary>

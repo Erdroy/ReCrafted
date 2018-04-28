@@ -226,7 +226,6 @@ namespace Renderer
 	void ApplyWindow(WindowHandle handle)
 	{
         CHECK_MAIN_THREAD();
-
 		RENDERER_VALIDATE_HANDLE(handle);
 		
 		Command_ApplyWindow command;
@@ -237,7 +236,6 @@ namespace Renderer
 	RenderBufferHandle GetWindowRenderBuffer(WindowHandle handle)
 	{
         CHECK_MAIN_THREAD();
-
         RENDERER_VALIDATE_HANDLE(handle);
 
 		return WindowHandle_table[handle.idx].renderBuffer;
@@ -246,7 +244,6 @@ namespace Renderer
 	void DestroyWindow(WindowHandle handle)
 	{
         CHECK_MAIN_THREAD();
-
 		RENDERER_VALIDATE_HANDLE(handle);
 
 		Command_DestroyWindow command;
@@ -297,7 +294,6 @@ namespace Renderer
     void UpdateVertexBuffer(VertexBufferHandle handle, uint count, uint offset, RendererMemory memory)
     {
         CHECK_MAIN_THREAD();
-
         RENDERER_VALIDATE_HANDLE(handle);
 
     }
@@ -305,7 +301,6 @@ namespace Renderer
     void ApplyVertexBuffer(VertexBufferHandle handle)
     {
         CHECK_MAIN_THREAD();
-
         RENDERER_VALIDATE_HANDLE(handle);
 
         Command_ApplyVertexBuffer command;
@@ -316,7 +311,6 @@ namespace Renderer
     void DestroyVertexBuffer(VertexBufferHandle handle)
     {
         CHECK_MAIN_THREAD();
-
         RENDERER_VALIDATE_HANDLE(handle);
 
         Command_DestroyVertexBuffer command;
@@ -327,7 +321,6 @@ namespace Renderer
     void ApplyRenderBuffer(RenderBufferHandle handle)
 	{
         CHECK_MAIN_THREAD();
-
         RENDERER_VALIDATE_HANDLE(handle);
 
         Command_ApplyRenderBuffer command;
@@ -339,7 +332,6 @@ namespace Renderer
 	void ClearRenderBuffer(RenderBufferHandle handle, Color color)
 	{
         CHECK_MAIN_THREAD();
-
         RENDERER_VALIDATE_HANDLE(handle);
 
 		Command_ClearRenderBuffer command;
@@ -352,6 +344,7 @@ namespace Renderer
 	void DestroyRenderBuffer(RenderBufferHandle handle)
 	{
         CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
 
 	}
 
@@ -381,9 +374,26 @@ namespace Renderer
         return handle;
     }
 
+    void SetShaderValue(ShaderHandle handle, int bufferId, int fieldId, void* data, size_t dataSize)
+    {
+        CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        _ASSERT(dataSize <= 64u); // float4x4 is the biggest type that we can pass
+
+        Command_SetShaderValue command;
+        command.shader = handle;
+        command.bufferId = static_cast<uint8_t>(bufferId);
+        command.fieldId = static_cast<uint8_t>(fieldId);
+        command.dataSize = static_cast<uint8_t>(dataSize);
+        g_commandList->WriteCommand(&command);
+        g_commandList->Write(data, static_cast<uint32_t>(dataSize));
+    }
+
     void ApplyShader(ShaderHandle handle, int passId)
     {
         CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
 
         Command_ApplyShader command;
         command.shader = handle;
