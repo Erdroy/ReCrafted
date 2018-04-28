@@ -162,6 +162,10 @@ namespace Renderer
 
         // TODO: Set sampler states
 
+        // apply shader changes
+        if (m_dirty)
+            ApplyChanges();
+
         // set input layout
         context->IASetInputLayout(pass.m_inputLayout);
     }
@@ -185,6 +189,28 @@ namespace Renderer
                 return;
             }
         }
+    }
+
+    void RHIDirectX11_Shader::SetValue(int buffer, int index, void* data, size_t dataSize)
+    {
+        _ASSERT(buffer < m_buffers.size());
+
+        // Get buffer description
+        rvar bufferDesc = m_buffers[buffer];
+        _ASSERT(bufferDesc.m_size >= dataSize);
+        _ASSERT(index < bufferDesc.m_fields.size());
+
+        // Get field description
+        rvar fieldDesc = bufferDesc.m_fields[index];
+        _ASSERT(fieldDesc.m_size == dataSize);
+
+        // Copy new data
+        memcpy(bufferDesc.m_data + fieldDesc.m_offset, data, dataSize);
+
+        // Set dirty flag
+        bufferDesc.m_dirty = true;
+
+        m_dirty = true;
     }
 
     uint RHIDirectX11_Shader::GetStride()
