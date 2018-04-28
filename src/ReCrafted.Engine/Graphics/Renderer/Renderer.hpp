@@ -333,12 +333,12 @@ namespace Renderer
     /// </summary>
     /// <param name="vertexCount">The count of vertices.</param>
     /// <param name="vertexSize">The size of a single vertex.</param>
-    /// <param name="memory">The memory pointer.</param>
+    /// <param name="data">The memory pointer.</param>
     /// <param name="dynamic">When true, this buffer will be allowed to be updated through UpdateVertexBuffer.</param>
-    RENDERER_FUNCTION(VertexBufferHandle)       CreateVertexBuffer(uint vertexCount, uint vertexSize, RendererMemory memory, bool dynamic = false);
+    RENDERER_FUNCTION(VertexBufferHandle)       CreateVertexBuffer(uint vertexCount, uint vertexSize, RendererMemory data, bool dynamic = false);
 
     // TODO: NOT IMPLEMENTED!
-    RENDERER_FUNCTION(void)                     UpdateVertexBuffer(VertexBufferHandle handle, uint count, uint offset, RendererMemory memory);
+    RENDERER_FUNCTION(void)                     UpdateVertexBuffer(VertexBufferHandle handle, uint count, uint offset, RendererMemory data);
 
     /// <summary>
     /// Sets given vertex buffer as current.
@@ -356,13 +356,13 @@ namespace Renderer
     /// Creates new IndexBuffer.
     /// </summary>
     /// <param name="vertexCount">The count of indices.</param>
-    /// <param name="memory">The memory pointer.</param>
+    /// <param name="data">The memory pointer.</param>
     /// <param name="is32bit">Specifies the passed single index size. By default it is 32 bit. When false, it is 16.</param>
     /// <param name="dynamic">When true, this buffer will be allowed to be updated through UpdateIndexBuffer.</param>
-    RENDERER_FUNCTION(IndexBufferHandle)        CreateIndexBuffer(uint indexCount, RendererMemory memory, bool is32bit = true, bool dynamic = false);
+    RENDERER_FUNCTION(IndexBufferHandle)        CreateIndexBuffer(uint indexCount, RendererMemory data, bool is32bit = true, bool dynamic = false);
 
     // TODO: NOT IMPLEMENTED!
-    RENDERER_FUNCTION(void)                     UpdateIndexBuffer(IndexBufferHandle handle, uint count, uint offset, RendererMemory memory);
+    RENDERER_FUNCTION(void)                     UpdateIndexBuffer(IndexBufferHandle handle, uint count, uint offset, RendererMemory data);
 
     /// <summary>
     /// Sets given index buffer as current.
@@ -376,8 +376,28 @@ namespace Renderer
     /// <param name="handle">The index buffer handle.</param>
     RENDERER_FUNCTION(void)                     DestroyIndexBuffer(IndexBufferHandle handle);
 
-    // TODO: NOT IMPLEMENTED!
-    RENDERER_FUNCTION(Texture2DHandle)          CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat);
+    /// <summary>
+    /// Creates new Texture2D.
+    /// </summary>
+    /// <param name="width">The Width of the new texture.</param>
+    /// <param name="height">The Height of the new texture.</param>
+    /// <param name="textureFormat">The format of the new texture.</param>
+    /// <param name="data">Texture data (can be null, then you can upload data by using UpdateTexture2D function)</param>
+    /// <param name="dataSize">Data size.</param>
+    RENDERER_FUNCTION(Texture2DHandle)          CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize);
+
+    /// <summary>
+    /// Sets given texture as current at given slot.
+    /// </summary>
+    /// <param name="handle">The texture handle.</param>
+    /// <param name="slot">The texture target slot.</param>
+    RENDERER_FUNCTION(void)                     ApplyTexture2D(Texture2DHandle handle, uint8_t slot);
+
+    /// <summary>
+    /// Destroys given texture.
+    /// </summary>
+    /// <param name="handle">The texture handle.</param>
+    RENDERER_FUNCTION(void)                     DestroyTexture2D(Texture2DHandle handle);
 
     /// <summary>
     /// Loads shader and creates it's shader handle.

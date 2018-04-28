@@ -145,6 +145,14 @@ namespace Renderer
 	{
         CHECK_MAIN_THREAD();
 
+        for (rvar memory : m_memoryAllocations)
+        {
+            if (memory.memory)
+                Free(memory.memory);
+            memory.memory = nullptr;
+        }
+        m_memoryAllocations.clear();
+
 		m_running = false;
 		m_renderer->Shutdown();
 	}
@@ -274,7 +282,7 @@ namespace Renderer
         return CreateVertexBuffer(count, vertexSize, nullptr, dynamic);
     }
 
-    VertexBufferHandle CreateVertexBuffer(uint vertexCount, uint vertexSize, RendererMemory memory, bool dynamic)
+    VertexBufferHandle CreateVertexBuffer(uint vertexCount, uint vertexSize, RendererMemory data, bool dynamic)
     {
         CHECK_MAIN_THREAD();
 
@@ -285,7 +293,7 @@ namespace Renderer
         command.handle = handle;
         command.vertexCount = vertexCount;
         command.vertexSize = vertexSize;
-        command.memory = memory;
+        command.memory = data;
         command.dynamic = dynamic;
 
         g_commandList->WriteCommand(&command);
@@ -293,7 +301,7 @@ namespace Renderer
         return handle;
     }
 
-    void UpdateVertexBuffer(VertexBufferHandle handle, uint count, uint offset, RendererMemory memory)
+    void UpdateVertexBuffer(VertexBufferHandle handle, uint count, uint offset, RendererMemory data)
     {
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
@@ -321,7 +329,7 @@ namespace Renderer
         g_commandList->WriteCommand(&command);
     }
 
-    IndexBufferHandle CreateIndexBuffer(uint indexCount, RendererMemory memory, bool is32bit, bool dynamic)
+    IndexBufferHandle CreateIndexBuffer(uint indexCount, RendererMemory data, bool is32bit, bool dynamic)
     {
         CHECK_MAIN_THREAD();
 
@@ -332,7 +340,7 @@ namespace Renderer
         command.handle = handle;
         command.indexCount = indexCount;
         command.indexSize = is32bit ? 32 : 16;
-        command.memory = memory;
+        command.memory = data;
         command.dynamic = dynamic;
 
         g_commandList->WriteCommand(&command);
@@ -340,7 +348,7 @@ namespace Renderer
         return handle;
     }
 
-    void UpdateIndexBuffer(IndexBufferHandle handle, uint count, uint offset, RendererMemory memory)
+    void UpdateIndexBuffer(IndexBufferHandle handle, uint count, uint offset, RendererMemory data)
     {
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
@@ -368,47 +376,44 @@ namespace Renderer
         g_commandList->WriteCommand(&command);
     }
 
-    void ApplyRenderBuffer(RenderBufferHandle handle)
-	{
-        CHECK_MAIN_THREAD();
-        RENDERER_VALIDATE_HANDLE(handle);
-
-        Command_ApplyRenderBuffer command;
-        command.renderBuffer = handle;
-
-        g_commandList->WriteCommand(&command);
-	}
-
-	void ClearRenderBuffer(RenderBufferHandle handle, Color color)
-	{
-        CHECK_MAIN_THREAD();
-        RENDERER_VALIDATE_HANDLE(handle);
-
-		Command_ClearRenderBuffer command;
-		command.renderBuffer = handle;
-		command.color = color;
-
-		g_commandList->WriteCommand(&command);
-	}
-
-	void DestroyRenderBuffer(RenderBufferHandle handle)
-	{
-        CHECK_MAIN_THREAD();
-        RENDERER_VALIDATE_HANDLE(handle);
-
-        // TODO: NOT IMPLEMENTED!
-	}
-
-    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat)
+    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize)
     {
         CHECK_MAIN_THREAD();
 
         cvar handle = AllocTexture2DHandle();
         RENDERER_VALIDATE_HANDLE(handle);
 
-        // TODO: NOT IMPLEMENTED!
+        Command_CreateTexture2D command;
+        command.handle = handle;
+        command.width = width;
+        command.height = height;
+        command.textureFormat = textureFormat;
+        command.memory = data;
+        command.dataSize = dataSize;
+        g_commandList->WriteCommand(&command);
 
         return handle;
+    }
+
+    void ApplyTexture2D(Texture2DHandle handle, uint8_t slot)
+    {
+        CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_ApplyTexture2D command;
+        command.handle = handle;
+        command.slot = slot;
+        g_commandList->WriteCommand(&command);
+    }
+
+    void DestroyTexture2D(Texture2DHandle handle)
+    {
+        CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_DestroyTexture2D command;
+        command.handle = handle;
+        g_commandList->WriteCommand(&command);
     }
 
     ShaderHandle CreateShader(const char* fileName)
@@ -461,6 +466,37 @@ namespace Renderer
         Command_DestroyShader command;
         command.shader = handle;
         g_commandList->WriteCommand(&command);
+    }
+
+    void ApplyRenderBuffer(RenderBufferHandle handle)
+    {
+        CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_ApplyRenderBuffer command;
+        command.renderBuffer = handle;
+
+        g_commandList->WriteCommand(&command);
+    }
+
+    void ClearRenderBuffer(RenderBufferHandle handle, Color color)
+    {
+        CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_ClearRenderBuffer command;
+        command.renderBuffer = handle;
+        command.color = color;
+
+        g_commandList->WriteCommand(&command);
+    }
+
+    void DestroyRenderBuffer(RenderBufferHandle handle)
+    {
+        CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        // TODO: NOT IMPLEMENTED!
     }
 
     void SetFlag(ResetFlags::_enum flag, bool value)

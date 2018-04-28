@@ -44,6 +44,11 @@ namespace Renderer
             UpdateIndexBuffer,
             DestroyIndexBuffer,
 
+            CreateTexture2D,
+            ApplyTexture2D,
+            UpdateTexture2D,
+            DestroyTexture2D,
+
             CreateShader,
             SetShaderValue,
             ApplyShader,
@@ -102,8 +107,8 @@ namespace Renderer
     );
 
     Command(CreateVertexBuffer,
-        RendererMemory memory;
         VertexBufferHandle handle;
+        RendererMemory memory;
         uint vertexCount;
         uint8_t vertexSize;
         bool dynamic;
@@ -118,8 +123,8 @@ namespace Renderer
     );
 
     Command(CreateIndexBuffer,
-        RendererMemory memory;
         IndexBufferHandle handle;
+        RendererMemory memory;
         uint indexCount;
         uint8_t indexSize;
         bool dynamic;
@@ -131,6 +136,24 @@ namespace Renderer
 
     Command(DestroyIndexBuffer,
         IndexBufferHandle handle;
+    );
+
+    Command(CreateTexture2D,
+        Texture2DHandle handle;
+        uint16_t width;
+        uint16_t height;
+        TextureFormat::_enum textureFormat;
+        RendererMemory memory;
+        size_t dataSize;
+    );
+
+    Command(ApplyTexture2D,
+        Texture2DHandle handle;
+        uint8_t slot;
+    );
+
+    Command(DestroyTexture2D,
+        Texture2DHandle handle;
     );
 }
 

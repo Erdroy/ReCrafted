@@ -55,7 +55,7 @@ void initRendererTests()
     cvar ibMemory = Renderer::Allocate(3 * sizeof(uint));
     memcpy(ibMemory, simpleMeshIndices, 3 * sizeof(uint));
 
-    cvar triangleVB = Renderer::CreateVertexBuffer(3, sizeof Vector3, vbMemory, true);
+    cvar triangleVB = Renderer::CreateVertexBuffer(3, sizeof Vector3, vbMemory);
     cvar triangleIB = Renderer::CreateIndexBuffer(3, ibMemory);
 
     // Main loop
