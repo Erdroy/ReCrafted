@@ -5,6 +5,7 @@
 
 #include "ReCraftedConfig.h"
 #include "Platform/Platform.h"
+#include "Core/Math/Vector2.h"
 #include "Core/Math/Vector3.h"
 #include "Core/Math/Vector4.h"
 
@@ -31,34 +32,54 @@ void initRendererTests()
     cvar shader = Renderer::CreateShader("shaders/simpleShader.shader");
     cvar clearColor = Renderer::Color{ 0.0f, 0.2f, 0.4f, 1.0f };
 
-    Vector3 simpleMeshVertices[3];
-    simpleMeshVertices[0].x = -1.0f;
-    simpleMeshVertices[0].y = -1.0f;
-    simpleMeshVertices[0].z = 1.0f;
+    struct { Vector3 pos; Vector2 uv; } simpleMeshVertices[3];
+    simpleMeshVertices[0].pos.x = -1.0f;
+    simpleMeshVertices[0].pos.y = -1.0f;
+    simpleMeshVertices[0].pos.z = 1.0f;
+    simpleMeshVertices[0].uv.x = 0.0f;
+    simpleMeshVertices[0].uv.y = 0.0f;
 
-    simpleMeshVertices[1].x = 0.0f;
-    simpleMeshVertices[1].y = 1.0f;
-    simpleMeshVertices[1].z = 1.0f;
+    simpleMeshVertices[1].pos.x = 0.0f;
+    simpleMeshVertices[1].pos.y = 1.0f;
+    simpleMeshVertices[1].pos.z = 1.0f;
+    simpleMeshVertices[1].uv.x = 0.5f;
+    simpleMeshVertices[1].uv.y = 1.0f;
 
-    simpleMeshVertices[2].x = 1.0f;
-    simpleMeshVertices[2].y = -1.0f;
-    simpleMeshVertices[2].z = 1.0f;
+    simpleMeshVertices[2].pos.x = 1.0f;
+    simpleMeshVertices[2].pos.y = -1.0f;
+    simpleMeshVertices[2].pos.z = 1.0f;
+    simpleMeshVertices[2].uv.x = 1.0f;
+    simpleMeshVertices[2].uv.y = 0.0f;
 
     uint simpleMeshIndices[3];
     simpleMeshIndices[0] = 0;
     simpleMeshIndices[1] = 1;
     simpleMeshIndices[2] = 2;
 
-    cvar vbMemory = Renderer::Allocate(3 * sizeof(Vector3));
-    memcpy(vbMemory, simpleMeshVertices, 3 * sizeof(Vector3));
+    cvar vbMemory = Renderer::Allocate(3 * sizeof(Vector3) + 3 * sizeof(Vector2));
+    memcpy(vbMemory, simpleMeshVertices, 3 * sizeof(Vector3) + 3 * sizeof(Vector2));
 
     cvar ibMemory = Renderer::Allocate(3 * sizeof(uint));
     memcpy(ibMemory, simpleMeshIndices, 3 * sizeof(uint));
 
-    cvar triangleVB = Renderer::CreateVertexBuffer(3, sizeof Vector3, vbMemory);
+    cvar triangleVB = Renderer::CreateVertexBuffer(3, sizeof Vector3 + sizeof Vector2, vbMemory);
     cvar triangleIB = Renderer::CreateIndexBuffer(3, ibMemory);
 
-    cvar texture = Renderer::CreateTexture2D(800, 600, Renderer::TextureFormat::RGBA8, nullptr, 0u);
+    cvar textureDataSize = 32 * 32 * 4;
+    cvar textureData = (byte*)Renderer::Allocate(textureDataSize);
+
+    for (var y = 0; y < 32; y++)
+    {
+        for (var x = 0; x < 32 * 4; x += 4)
+        {
+            textureData[x + y * 32 * 4 + 0] = byte(float(rand()) / float(RAND_MAX) * 255);
+            textureData[x + y * 32 * 4 + 1] = byte(float(rand()) / float(RAND_MAX) * 255);
+            textureData[x + y * 32 * 4 + 2] = byte(float(rand()) / float(RAND_MAX) * 255);
+            textureData[x + y * 32 * 4 + 3] = 255;
+        }
+    }
+
+    cvar texture = Renderer::CreateTexture2D(32, 32, Renderer::TextureFormat::RGBA8, textureData, textureDataSize);
 
     // Main loop
     MSG msg;

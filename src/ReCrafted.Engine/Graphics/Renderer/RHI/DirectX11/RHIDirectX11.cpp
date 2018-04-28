@@ -97,7 +97,7 @@ namespace Renderer
 
 
         // == pointer-only resources (DO NOT RELEASE!) ==
-        IDXGISwapChain*            m_swapChain = nullptr;
+        IDXGISwapChain*             m_swapChain = nullptr;
 
 #pragma region WorkerThread impl
         class WorkerThreadInstance
@@ -516,7 +516,7 @@ namespace Renderer
 
             D3D11_SUBRESOURCE_DATA subresData = {};
             subresData.pSysMem = command->memory;
-            subresData.SysMemPitch = 0;
+            subresData.SysMemPitch = command->width * (TextureFormatInfo[command->textureFormat][0] / 8);
             subresData.SysMemSlicePitch = 0;
 
             var hr = m_device->CreateTexture2D(&textureDesc, command->memory ? &subresData : nullptr, &texture.texture);

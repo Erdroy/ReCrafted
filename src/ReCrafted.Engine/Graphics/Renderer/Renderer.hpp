@@ -176,6 +176,81 @@ namespace Renderer
     };
     RENDERER_ENUM(TextureFormat);
 
+    static const int TextureFormatInfo[][1] =
+    {
+        { 0 }, // Unknown
+
+        { 1 }, // R1
+        { 8 }, // A8
+
+        { 8 }, // R8
+        { 8 }, // R8I
+        { 8 }, // R8U
+        { 8 }, // R8S
+
+        { 16 }, // R16
+        { 16 }, // R16I
+        { 16 }, // R16U
+        { 16 }, // R16F
+        { 16 }, // R16S
+
+        { 32 }, // R32I
+        { 32 }, // R32U
+        { 32 }, // R32F
+
+        { 16 }, // RG8
+        { 16 }, // RG8I
+        { 16 }, // RG8U
+        { 16 }, // RG8S
+
+        { 32 }, // RG16
+        { 32 }, // RG16I
+        { 32 }, // RG16U
+        { 32 }, // RG16F
+        { 32 }, // RG16S
+
+        { 64 }, // RG32I
+        { 64 }, // RG32U
+        { 64 }, // RG32F
+
+        { 24 }, // RGB8
+        { 24 }, // RGB8I
+        { 24 }, // RGB8U
+        { 24 }, // RGB8S
+
+        { 32 }, // BGRA8
+
+        { 32 }, // RGBA8
+        { 32 }, // RGBA8I
+        { 32 }, // RGBA8U
+        { 32 }, // RGBA8S
+
+        { 64 }, // RGBA16
+        { 64 }, // RGBA16I
+        { 64 }, // RGBA16U
+        { 64 }, // RGBA16F
+        { 64 }, // RGBA16S
+
+        { 128 }, // RGBA32I
+        { 128 }, // RGBA32U
+        { 128 }, // RGBA32F
+
+        { 16 }, // R5G6B5
+        { 16 }, // RGBA4
+        { 16 }, // RGB5A1
+        { 32 }, // RGB10A2
+        { 32 }, // RG11B10F
+
+        { 16 }, // D16
+        { 16 }, // D16F
+        { 24 }, // D24
+        { 24 }, // D24F
+        { 32 }, // D24S8
+        { 32 }, // D32
+        { 32 }, // D32F
+
+        };
+
 	struct Color
 	{
 	public:
