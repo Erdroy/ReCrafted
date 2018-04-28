@@ -174,6 +174,8 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
 
+        // TODO: check if this memory exists in memAllocs
+
         delete[] static_cast<byte*>(memory);
     }
 
@@ -260,7 +262,7 @@ namespace Renderer
         cvar handle = AllocRenderBufferHandle();
         RENDERER_VALIDATE_HANDLE(handle);
 
-        // TODO: create render buffer impl
+        // TODO: NOT IMPLEMENTED!
 
 		return handle;
 	}
@@ -296,6 +298,7 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        // TODO: NOT IMPLEMENTED!
     }
 
     void ApplyVertexBuffer(VertexBufferHandle handle)
@@ -314,6 +317,53 @@ namespace Renderer
         RENDERER_VALIDATE_HANDLE(handle);
 
         Command_DestroyVertexBuffer command;
+        command.handle = handle;
+        g_commandList->WriteCommand(&command);
+    }
+
+    IndexBufferHandle CreateIndexBuffer(uint indexCount, RendererMemory memory, bool is32bit, bool dynamic)
+    {
+        CHECK_MAIN_THREAD();
+
+        cvar handle = AllocIndexBufferHandle();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_CreateIndexBuffer command;
+        command.handle = handle;
+        command.indexCount = indexCount;
+        command.indexSize = is32bit ? 32 : 16;
+        command.memory = memory;
+        command.dynamic = dynamic;
+
+        g_commandList->WriteCommand(&command);
+
+        return handle;
+    }
+
+    void UpdateIndexBuffer(IndexBufferHandle handle, uint count, uint offset, RendererMemory memory)
+    {
+        CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        // TODO: NOT IMPLEMENTED!
+    }
+
+    void ApplyIndexBuffer(IndexBufferHandle handle)
+    {
+        CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_ApplyIndexBuffer command;
+        command.handle = handle;
+        g_commandList->WriteCommand(&command);
+    }
+
+    void DestroyIndexBuffer(IndexBufferHandle handle)
+    {
+        CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_DestroyIndexBuffer command;
         command.handle = handle;
         g_commandList->WriteCommand(&command);
     }
@@ -346,6 +396,7 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        // TODO: NOT IMPLEMENTED!
 	}
 
     Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat)
@@ -354,6 +405,8 @@ namespace Renderer
 
         cvar handle = AllocTexture2DHandle();
         RENDERER_VALIDATE_HANDLE(handle);
+
+        // TODO: NOT IMPLEMENTED!
 
         return handle;
     }
@@ -414,12 +467,14 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
 
-
+        // TODO: NOT IMPLEMENTED!
     }
 
     bool GetFlag(ResetFlags::_enum flag)
     {
         CHECK_MAIN_THREAD();
+
+        // TODO: NOT IMPLEMENTED!
 
         return false;
     }

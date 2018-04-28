@@ -39,6 +39,11 @@ namespace Renderer
             UpdateVertexBuffer,
             DestroyVertexBuffer,
 
+            CreateIndexBuffer,
+            ApplyIndexBuffer,
+            UpdateIndexBuffer,
+            DestroyIndexBuffer,
+
             CreateShader,
             SetShaderValue,
             ApplyShader,
@@ -110,6 +115,22 @@ namespace Renderer
 
     Command(DestroyVertexBuffer,
         VertexBufferHandle handle;
+    );
+
+    Command(CreateIndexBuffer,
+        RendererMemory memory;
+        IndexBufferHandle handle;
+        uint indexCount;
+        uint8_t indexSize;
+        bool dynamic;
+    );
+
+    Command(ApplyIndexBuffer,
+        IndexBufferHandle handle;
+    );
+
+    Command(DestroyIndexBuffer,
+        IndexBufferHandle handle;
     );
 }
 

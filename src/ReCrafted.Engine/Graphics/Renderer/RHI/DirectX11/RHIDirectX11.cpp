@@ -48,6 +48,13 @@ namespace Renderer
             }
         };
 
+        struct IndexBufferDesc
+        {
+        public:
+            ID3D11Buffer* buffer = nullptr;
+            bool is32bit = true;
+        };
+
         // == common ==
         volatile bool               m_running;
         int                         m_workerThreadCount;
@@ -71,7 +78,7 @@ namespace Renderer
         RHIDirectX11_RenderBuffer*  m_renderBuffers[RENDERER_MAX_RENDER_BUFFERS] = {};
         //RHIDirectX11_Texture2D*   m_textures2d[RENDERER_MAX_TEXTURES2D] = {};
         ID3D11Buffer*               m_vertexBuffers[RENDERER_MAX_VERTEX_BUFFERS] = {};
-        //ID3D11Buffer*               m_indexBuffers[RENDERER_MAX_INDEX_BUFFERS] = {};
+        IndexBufferDesc             m_indexBuffers[RENDERER_MAX_INDEX_BUFFERS] = {};
 
 
         // == d3d11 resources ==
@@ -128,6 +135,9 @@ namespace Renderer
             FORCEINLINE void Execute_CreateVertexBuffer(Command_CreateVertexBuffer* command);
             FORCEINLINE void Execute_ApplyVertexBuffer(Command_ApplyVertexBuffer* command);
             FORCEINLINE void Execute_DestroyVertexBuffer(Command_DestroyVertexBuffer* command);
+            FORCEINLINE void Execute_CreateIndexBuffer(Command_CreateIndexBuffer* command);
+            FORCEINLINE void Execute_ApplyIndexBuffer(Command_ApplyIndexBuffer* command);
+            FORCEINLINE void Execute_DestroyIndexBuffer(Command_DestroyIndexBuffer* command);
         };
 
         void WorkerThreadInstance::WaitForPreviousFrame()
@@ -279,6 +289,9 @@ namespace Renderer
             DEFINE_COMMAND_EXECUTOR(CreateVertexBuffer);
             DEFINE_COMMAND_EXECUTOR(ApplyVertexBuffer);
             DEFINE_COMMAND_EXECUTOR(DestroyVertexBuffer);
+            DEFINE_COMMAND_EXECUTOR(CreateIndexBuffer);
+            DEFINE_COMMAND_EXECUTOR(ApplyIndexBuffer);
+            DEFINE_COMMAND_EXECUTOR(DestroyIndexBuffer);
             default: break;
             }
         }
@@ -388,6 +401,51 @@ namespace Renderer
             _ASSERT(buffer != nullptr);
 
             SafeRelease(buffer);
+        }
+
+        void WorkerThreadInstance::Execute_CreateIndexBuffer(Command_CreateIndexBuffer* command)
+        {
+            rvar buffer = m_indexBuffers[command->handle.idx];
+            _ASSERT(buffer.buffer == nullptr);
+
+            buffer.is32bit = command->indexSize == 32;
+
+            cvar bufferSizeBytes = buffer.is32bit ? 4 : 2;
+
+            // create buffer description
+            D3D11_BUFFER_DESC desc = {};
+            desc.Usage = command->dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT;
+            desc.ByteWidth = bufferSizeBytes * command->indexCount;
+            desc.StructureByteStride = bufferSizeBytes;
+            desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+            desc.CPUAccessFlags = command->dynamic ? D3D11_CPU_ACCESS_WRITE : 0;
+
+            // create optional initial buffer data
+            D3D11_SUBRESOURCE_DATA subresource_data = {};
+            subresource_data.pSysMem = command->memory;
+            subresource_data.SysMemPitch = 0;
+            subresource_data.SysMemSlicePitch = 0;
+
+            // create d3d11 buffer
+            var hr = m_device->CreateBuffer(&desc, command->memory ? &subresource_data : nullptr, &buffer.buffer);
+
+            _ASSERT(SUCCEEDED(hr));
+        }
+
+        void WorkerThreadInstance::Execute_ApplyIndexBuffer(Command_ApplyIndexBuffer* command)
+        {
+            rvar buffer = m_indexBuffers[command->handle.idx];
+            _ASSERT(buffer.buffer != nullptr);
+
+            m_context->IASetIndexBuffer(buffer.buffer, buffer.is32bit ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT, 0u);
+        }
+
+        void WorkerThreadInstance::Execute_DestroyIndexBuffer(Command_DestroyIndexBuffer* command)
+        {
+            rvar buffer = m_indexBuffers[command->handle.idx];
+            _ASSERT(buffer.buffer != nullptr);
+
+            SafeRelease(buffer.buffer);
         }
 
         void WorkerThreadInstance::Execute_ClearRenderBuffer(Command_ClearRenderBuffer* command)

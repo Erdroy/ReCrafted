@@ -172,7 +172,7 @@ namespace Renderer
 
     void RHIDirectX11_Shader::Bind(ID3D11DeviceContext* context, int passId)
     {
-        // TODO: Handle invalid passId
+        _ASSERT(passId < m_passes.size());
 
         var& pass = m_passes[passId];
         BindPass(context, pass);

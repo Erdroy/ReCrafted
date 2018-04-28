@@ -19,7 +19,7 @@ void initRendererTests()
     // Initialize Renderer
     Renderer::Initialize(
         Renderer::RendererAPI::DirectX11,
-        Renderer::ResetFlags::VSync,
+        Renderer::ResetFlags::VSync | Renderer::ResetFlags::DrawLineLists,
         Renderer::Settings::Debug
     );
 
@@ -44,7 +44,16 @@ void initRendererTests()
     simpleMesh[2].y = -1.0f;
     simpleMesh[2].z = 1.0f;
 
+    uint simpleMeshIndices[6];
+    simpleMeshIndices[0] = 0;
+    simpleMeshIndices[1] = 1;
+    simpleMeshIndices[2] = 1;
+    simpleMeshIndices[3] = 2;
+    simpleMeshIndices[4] = 2;
+    simpleMeshIndices[5] = 0;
+
     var triangleVB = Renderer::CreateVertexBuffer(3, sizeof Vector3, (byte*)&simpleMesh, true);
+    var triangleIB = Renderer::CreateIndexBuffer(6, (byte*)&simpleMeshIndices);
 
     // Main loop
     MSG msg;
@@ -71,9 +80,10 @@ void initRendererTests()
 
         // Set triangle VB as current
         Renderer::ApplyVertexBuffer(triangleVB);
+        Renderer::ApplyIndexBuffer(triangleIB);
 
         // Draw triangle
-        Renderer::Draw(3);
+        Renderer::DrawIndexed(6);
 
         // Push frame
         Renderer::Frame();
