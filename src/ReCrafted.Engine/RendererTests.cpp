@@ -19,7 +19,7 @@ void initRendererTests()
     // Initialize Renderer
     Renderer::Initialize(
         Renderer::RendererAPI::DirectX11,
-        Renderer::ResetFlags::VSync | Renderer::ResetFlags::DrawLineLists,
+        Renderer::ResetFlags::VSync,
         Renderer::Settings::Debug
     );
 
@@ -31,29 +31,32 @@ void initRendererTests()
     cvar shader = Renderer::CreateShader("shaders/simpleShader.shader");
     cvar clearColor = Renderer::Color{ 0.0f, 0.2f, 0.4f, 1.0f };
 
-    Vector3 simpleMesh[3];
-    simpleMesh[0].x = -1.0f;
-    simpleMesh[0].y = -1.0f;
-    simpleMesh[0].z = 1.0f;
+    Vector3 simpleMeshVertices[3];
+    simpleMeshVertices[0].x = -1.0f;
+    simpleMeshVertices[0].y = -1.0f;
+    simpleMeshVertices[0].z = 1.0f;
 
-    simpleMesh[1].x = 0.0f;
-    simpleMesh[1].y = 1.0f;
-    simpleMesh[1].z = 1.0f;
+    simpleMeshVertices[1].x = 0.0f;
+    simpleMeshVertices[1].y = 1.0f;
+    simpleMeshVertices[1].z = 1.0f;
 
-    simpleMesh[2].x = 1.0f;
-    simpleMesh[2].y = -1.0f;
-    simpleMesh[2].z = 1.0f;
+    simpleMeshVertices[2].x = 1.0f;
+    simpleMeshVertices[2].y = -1.0f;
+    simpleMeshVertices[2].z = 1.0f;
 
-    uint simpleMeshIndices[6];
+    uint simpleMeshIndices[3];
     simpleMeshIndices[0] = 0;
     simpleMeshIndices[1] = 1;
-    simpleMeshIndices[2] = 1;
-    simpleMeshIndices[3] = 2;
-    simpleMeshIndices[4] = 2;
-    simpleMeshIndices[5] = 0;
+    simpleMeshIndices[2] = 2;
 
-    var triangleVB = Renderer::CreateVertexBuffer(3, sizeof Vector3, (byte*)&simpleMesh, true);
-    var triangleIB = Renderer::CreateIndexBuffer(6, (byte*)&simpleMeshIndices);
+    cvar vbMemory = Renderer::Allocate(3 * sizeof(Vector3));
+    memcpy(vbMemory, simpleMeshVertices, 3 * sizeof(Vector3));
+
+    cvar ibMemory = Renderer::Allocate(3 * sizeof(uint));
+    memcpy(ibMemory, simpleMeshIndices, 3 * sizeof(uint));
+
+    cvar triangleVB = Renderer::CreateVertexBuffer(3, sizeof Vector3, vbMemory, true);
+    cvar triangleIB = Renderer::CreateIndexBuffer(3, ibMemory);
 
     // Main loop
     MSG msg;
@@ -83,7 +86,7 @@ void initRendererTests()
         Renderer::ApplyIndexBuffer(triangleIB);
 
         // Draw triangle
-        Renderer::DrawIndexed(6);
+        Renderer::DrawIndexed(3);
 
         // Push frame
         Renderer::Frame();

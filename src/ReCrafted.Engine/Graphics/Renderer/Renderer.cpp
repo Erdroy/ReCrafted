@@ -74,13 +74,6 @@ namespace Renderer
 #if RENDERER_MEMORY_AUTO_DEALLOC_ENABLE
         // we don't need any lock's here as everything happens on the main thread.
 
-        // decrement lifetime of memory that is still alive
-        for (rvar memory : m_memoryAllocations)
-        {
-            if (memory.ttl > 0) // sanity check
-                memory.ttl--;
-        }
-
         // deallocate memory that is out of life time
         for (rvar memory : m_memoryAllocations)
         {
@@ -97,6 +90,13 @@ namespace Renderer
         {
             return !memory.memory;
         }), m_memoryAllocations.end());
+
+        // decrement lifetime of memory that is still alive
+        for (rvar memory : m_memoryAllocations)
+        {
+            if (memory.ttl > 0) // sanity check
+                memory.ttl--;
+        }
 #endif
     }
 

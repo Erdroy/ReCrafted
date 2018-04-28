@@ -54,19 +54,6 @@ namespace Renderer
 	};
 	RENDERER_ENUM(RendererAPI);
 
-    struct ShaderType
-    {
-        enum _enum : char
-        {
-            PixelShader,
-            VertexShader,
-            ComputeShader,
-
-            Count
-        };
-    };
-    RENDERER_ENUM(ShaderType);
-
     struct VertexAttribute
     {
         enum _enum : char
