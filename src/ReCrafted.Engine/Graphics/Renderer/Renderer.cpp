@@ -187,6 +187,22 @@ namespace Renderer
         delete[] static_cast<byte*>(memory);
     }
 
+    void SetFlag(ResetFlags::_enum flag, bool value)
+    {
+        CHECK_MAIN_THREAD();
+
+        // TODO: NOT IMPLEMENTED!
+    }
+
+    bool GetFlag(ResetFlags::_enum flag)
+    {
+        CHECK_MAIN_THREAD();
+
+        // TODO: NOT IMPLEMENTED!
+
+        return false;
+    }
+
 	void Frame()
 	{
         CHECK_MAIN_THREAD();
@@ -274,6 +290,37 @@ namespace Renderer
 
 		return handle;
 	}
+
+    void ApplyRenderBuffer(RenderBufferHandle handle)
+    {
+        CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_ApplyRenderBuffer command;
+        command.renderBuffer = handle;
+
+        g_commandList->WriteCommand(&command);
+    }
+
+    void ClearRenderBuffer(RenderBufferHandle handle, Color color)
+    {
+        CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_ClearRenderBuffer command;
+        command.renderBuffer = handle;
+        command.color = color;
+
+        g_commandList->WriteCommand(&command);
+    }
+
+    void DestroyRenderBuffer(RenderBufferHandle handle)
+    {
+        CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        // TODO: NOT IMPLEMENTED!
+    }
 
     VertexBufferHandle CreateVertexBuffer(uint count, uint vertexSize, bool dynamic)
     {
@@ -468,50 +515,4 @@ namespace Renderer
         g_commandList->WriteCommand(&command);
     }
 
-    void ApplyRenderBuffer(RenderBufferHandle handle)
-    {
-        CHECK_MAIN_THREAD();
-        RENDERER_VALIDATE_HANDLE(handle);
-
-        Command_ApplyRenderBuffer command;
-        command.renderBuffer = handle;
-
-        g_commandList->WriteCommand(&command);
-    }
-
-    void ClearRenderBuffer(RenderBufferHandle handle, Color color)
-    {
-        CHECK_MAIN_THREAD();
-        RENDERER_VALIDATE_HANDLE(handle);
-
-        Command_ClearRenderBuffer command;
-        command.renderBuffer = handle;
-        command.color = color;
-
-        g_commandList->WriteCommand(&command);
-    }
-
-    void DestroyRenderBuffer(RenderBufferHandle handle)
-    {
-        CHECK_MAIN_THREAD();
-        RENDERER_VALIDATE_HANDLE(handle);
-
-        // TODO: NOT IMPLEMENTED!
-    }
-
-    void SetFlag(ResetFlags::_enum flag, bool value)
-    {
-        CHECK_MAIN_THREAD();
-
-        // TODO: NOT IMPLEMENTED!
-    }
-
-    bool GetFlag(ResetFlags::_enum flag)
-    {
-        CHECK_MAIN_THREAD();
-
-        // TODO: NOT IMPLEMENTED!
-
-        return false;
-    }
 }

@@ -58,6 +58,8 @@ void initRendererTests()
     cvar triangleVB = Renderer::CreateVertexBuffer(3, sizeof Vector3, vbMemory);
     cvar triangleIB = Renderer::CreateIndexBuffer(3, ibMemory);
 
+    cvar texture = Renderer::CreateTexture2D(800, 600, Renderer::TextureFormat::RGBA8, nullptr, 0u);
+
     // Main loop
     MSG msg;
     ZeroMemory(&msg, sizeof(msg));

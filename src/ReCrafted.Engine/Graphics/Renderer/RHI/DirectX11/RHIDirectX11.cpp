@@ -55,6 +55,16 @@ namespace Renderer
             bool is32bit = true;
         };
 
+        struct Texture2DDesc
+        {
+        public:
+            ID3D11Texture2D* texture = nullptr;
+            ID3D11ShaderResourceView* srv = nullptr;
+            uint16_t width = 0u;
+            uint16_t height = 0u;
+            TextureFormat::_enum format;
+        };
+
         // == common ==
         volatile bool               m_running;
         int                         m_workerThreadCount;
@@ -76,9 +86,9 @@ namespace Renderer
         IDXGISwapChain*		        m_swapChains[RENDERER_MAX_WINDOWS] = {};
         RHIDirectX11_Shader*        m_shaders[RENDERER_MAX_SHADER_PROGRAMS] = {};
         RHIDirectX11_RenderBuffer*  m_renderBuffers[RENDERER_MAX_RENDER_BUFFERS] = {};
-        //RHIDirectX11_Texture2D*   m_textures2d[RENDERER_MAX_TEXTURES2D] = {};
         ID3D11Buffer*               m_vertexBuffers[RENDERER_MAX_VERTEX_BUFFERS] = {};
         IndexBufferDesc             m_indexBuffers[RENDERER_MAX_INDEX_BUFFERS] = {};
+        Texture2DDesc               m_textures[RENDERER_MAX_TEXTURES2D] = {};
 
 
         // == d3d11 resources ==
@@ -138,6 +148,7 @@ namespace Renderer
             FORCEINLINE void Execute_CreateIndexBuffer(Command_CreateIndexBuffer* command);
             FORCEINLINE void Execute_ApplyIndexBuffer(Command_ApplyIndexBuffer* command);
             FORCEINLINE void Execute_DestroyIndexBuffer(Command_DestroyIndexBuffer* command);
+            FORCEINLINE void Execute_CreateTexture2D(Command_CreateTexture2D* command);
         };
 
         void WorkerThreadInstance::WaitForPreviousFrame()
@@ -292,6 +303,7 @@ namespace Renderer
             DEFINE_COMMAND_EXECUTOR(CreateIndexBuffer);
             DEFINE_COMMAND_EXECUTOR(ApplyIndexBuffer);
             DEFINE_COMMAND_EXECUTOR(DestroyIndexBuffer);
+            DEFINE_COMMAND_EXECUTOR(CreateTexture2D);
             default: break;
             }
         }
@@ -464,6 +476,48 @@ namespace Renderer
             // TODO: check if we can pass frame index (is it back buffer - render buffer)
 
             m_renderBuffers[renderBufferIdx]->Bind(m_context, 0);
+        }
+
+        void WorkerThreadInstance::Execute_CreateTexture2D(Command_CreateTexture2D* command)
+        {
+            rvar texture = m_textures[command->handle.idx];
+            _ASSERT(texture.texture == nullptr);
+
+            cvar mipLevels = command->mipLevels == 0 ? 1 : command->mipLevels;
+
+            D3D11_TEXTURE2D_DESC textureDesc;
+            textureDesc.ArraySize = 1;
+            textureDesc.Width = command->width;
+            textureDesc.Height = command->height;
+            textureDesc.MipLevels = mipLevels;
+            textureDesc.MiscFlags = 0;
+            textureDesc.SampleDesc.Count = 1;
+            textureDesc.SampleDesc.Quality = 0;
+
+            textureDesc.CPUAccessFlags = 0;
+
+            textureDesc.Format = DGXI_TextureFormats[command->textureFormat][0];
+            textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+            textureDesc.Usage = D3D11_USAGE_DEFAULT;
+
+            D3D11_SUBRESOURCE_DATA subresData = {};
+            subresData.pSysMem = command->memory;
+            subresData.SysMemPitch = 0;
+            subresData.SysMemSlicePitch = 0;
+
+            var hr = m_device->CreateTexture2D(&textureDesc, command->memory ? &subresData : nullptr, &texture.texture);
+
+            _ASSERT(SUCCEEDED(hr));
+
+            D3D11_SHADER_RESOURCE_VIEW_DESC resView_desc = {};
+            resView_desc.Format = DGXI_TextureFormats[command->textureFormat][1];
+            resView_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+            resView_desc.Texture2D.MipLevels = mipLevels;
+            resView_desc.Texture2D.MostDetailedMip = 0;
+
+            hr = m_device->CreateShaderResourceView(texture.texture, &resView_desc, &texture.srv);
+            _ASSERT(SUCCEEDED(hr));
+
         }
 
 #pragma endregion
