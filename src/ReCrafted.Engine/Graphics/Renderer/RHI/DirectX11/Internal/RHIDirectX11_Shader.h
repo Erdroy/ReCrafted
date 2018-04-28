@@ -94,16 +94,14 @@ namespace Renderer
         void Bind(ID3D11DeviceContext* context, int passId);
         void Bind(ID3D11DeviceContext* context, std::string passName);
 
-        void BindTexture(ID3D11DeviceContext* context, uint8_t slot, ID3D11Texture2D* texture);
-        void BindTexture(ID3D11DeviceContext* context, uint8_t slot, ID3D11Texture3D* texture);
-        void BindTexture(ID3D11DeviceContext* context, std::string name, ID3D11Texture2D* texture);
-        void BindTexture(ID3D11DeviceContext* context, std::string name, ID3D11Texture3D* texture);
+        void BindTexture(ID3D11DeviceContext* context, uint8_t slot, ID3D11ShaderResourceView* srv);
+        //void BindTexture(ID3D11DeviceContext* context, std::string name, ID3D11ShaderResourceView* srv);
 
-        void BindBuffer(ID3D11DeviceContext* context, uint8_t slot, ID3D11Buffer* buffer);
-        void BindBuffer(ID3D11DeviceContext* context, std::string name, ID3D11Buffer* buffer);
+        //void BindBuffer(ID3D11DeviceContext* context, uint8_t slot, ID3D11Buffer* buffer);
+        //void BindBuffer(ID3D11DeviceContext* context, std::string name, ID3D11Buffer* buffer);
 
-        void BindBlendState(ID3D11DeviceContext* context, uint8_t slot, ID3D11BlendState* state);
-        void BindBlendState(ID3D11DeviceContext* context, std::string name, ID3D11BlendState* state);
+        //void BindBlendState(ID3D11DeviceContext* context, uint8_t slot, ID3D11BlendState* state);
+        //void BindBlendState(ID3D11DeviceContext* context, std::string name, ID3D11BlendState* state);
 
         void SetValue(int buffer, int index, void* data, size_t dataSize);
 

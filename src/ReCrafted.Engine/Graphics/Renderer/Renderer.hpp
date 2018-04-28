@@ -392,10 +392,38 @@ namespace Renderer
     /// </summary>
     /// <param name="width">The Width of the new texture.</param>
     /// <param name="height">The Height of the new texture.</param>
+    /// <param name="mipLevels">The amount of mip maps of the new texture.</param>
+    /// <param name="textureFormat">The format of the new texture.</param>
+    /// <param name="data">Texture data (can be null, then you can upload data by using UpdateTexture2D function)</param>
+    /// <param name="dataSize">Data size.</param>
+    RENDERER_FUNCTION(Texture2DHandle)          CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels, TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize);
+
+    /// <summary>
+    /// Creates new Texture2D.
+    /// </summary>
+    /// <param name="width">The Width of the new texture.</param>
+    /// <param name="height">The Height of the new texture.</param>
     /// <param name="textureFormat">The format of the new texture.</param>
     /// <param name="data">Texture data (can be null, then you can upload data by using UpdateTexture2D function)</param>
     /// <param name="dataSize">Data size.</param>
     RENDERER_FUNCTION(Texture2DHandle)          CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize);
+
+    /// <summary>
+    /// Creates new Texture2D.
+    /// </summary>
+    /// <param name="width">The Width of the new texture.</param>
+    /// <param name="height">The Height of the new texture.</param>
+    /// <param name="mipLevels">The amount of mip maps of the new texture.</param>
+    /// <param name="textureFormat">The format of the new texture.</param>
+    RENDERER_FUNCTION(Texture2DHandle)          CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels, TextureFormat::_enum textureFormat);
+
+    /// <summary>
+    /// Creates new Texture2D.
+    /// </summary>
+    /// <param name="width">The Width of the new texture.</param>
+    /// <param name="height">The Height of the new texture.</param>
+    /// <param name="textureFormat">The format of the new texture.</param>
+    RENDERER_FUNCTION(Texture2DHandle)          CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat);
 
     /// <summary>
     /// Sets given texture as current at given slot.

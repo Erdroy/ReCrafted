@@ -191,6 +191,12 @@ namespace Renderer
         }
     }
 
+    void RHIDirectX11_Shader::BindTexture(ID3D11DeviceContext* context, uint8_t slot, ID3D11ShaderResourceView* srv)
+    {
+        ID3D11ShaderResourceView* srvs[] = { srv };
+        context->PSSetShaderResources(slot, 1, srvs);
+    }
+
     void RHIDirectX11_Shader::SetValue(int buffer, int index, void* data, size_t dataSize)
     {
         _ASSERT(buffer < m_buffers.size());

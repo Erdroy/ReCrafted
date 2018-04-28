@@ -87,6 +87,8 @@ void initRendererTests()
         Renderer::ApplyVertexBuffer(triangleVB);
         Renderer::ApplyIndexBuffer(triangleIB);
 
+        Renderer::ApplyTexture2D(texture, 0);
+
         // Draw triangle
         Renderer::DrawIndexed(3);
 

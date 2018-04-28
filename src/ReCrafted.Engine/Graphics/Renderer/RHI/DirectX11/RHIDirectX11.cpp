@@ -137,18 +137,25 @@ namespace Renderer
         public:
             FORCEINLINE void Execute_Draw(Command_Draw* command);
             FORCEINLINE void Execute_DrawIndexed(Command_DrawIndexed* command);
+
             FORCEINLINE void Execute_ClearRenderBuffer(Command_ClearRenderBuffer* command);
             FORCEINLINE void Execute_ApplyRenderBuffer(Command_ApplyRenderBuffer* command);
+
             FORCEINLINE void Execute_CreateShader(Command_CreateShader* command);
             FORCEINLINE void Execute_ApplyShader(Command_ApplyShader* command);
             FORCEINLINE void Execute_DestroyShader(Command_DestroyShader* command);
+
             FORCEINLINE void Execute_CreateVertexBuffer(Command_CreateVertexBuffer* command);
             FORCEINLINE void Execute_ApplyVertexBuffer(Command_ApplyVertexBuffer* command);
             FORCEINLINE void Execute_DestroyVertexBuffer(Command_DestroyVertexBuffer* command);
+
             FORCEINLINE void Execute_CreateIndexBuffer(Command_CreateIndexBuffer* command);
             FORCEINLINE void Execute_ApplyIndexBuffer(Command_ApplyIndexBuffer* command);
             FORCEINLINE void Execute_DestroyIndexBuffer(Command_DestroyIndexBuffer* command);
+
             FORCEINLINE void Execute_CreateTexture2D(Command_CreateTexture2D* command);
+            FORCEINLINE void Execute_ApplyTexture2D(Command_ApplyTexture2D* command);
+            FORCEINLINE void Execute_DestroyTexture2D(Command_DestroyTexture2D* command);
         };
 
         void WorkerThreadInstance::WaitForPreviousFrame()
@@ -292,18 +299,25 @@ namespace Renderer
             }
             DEFINE_COMMAND_EXECUTOR(Draw);
             DEFINE_COMMAND_EXECUTOR(DrawIndexed);
+
             DEFINE_COMMAND_EXECUTOR(ClearRenderBuffer);
             DEFINE_COMMAND_EXECUTOR(ApplyRenderBuffer);
+
             DEFINE_COMMAND_EXECUTOR(CreateShader);
             DEFINE_COMMAND_EXECUTOR(ApplyShader);
             DEFINE_COMMAND_EXECUTOR(DestroyShader);
+
             DEFINE_COMMAND_EXECUTOR(CreateVertexBuffer);
             DEFINE_COMMAND_EXECUTOR(ApplyVertexBuffer);
             DEFINE_COMMAND_EXECUTOR(DestroyVertexBuffer);
+
             DEFINE_COMMAND_EXECUTOR(CreateIndexBuffer);
             DEFINE_COMMAND_EXECUTOR(ApplyIndexBuffer);
             DEFINE_COMMAND_EXECUTOR(DestroyIndexBuffer);
+
             DEFINE_COMMAND_EXECUTOR(CreateTexture2D);
+            DEFINE_COMMAND_EXECUTOR(ApplyTexture2D);
+            DEFINE_COMMAND_EXECUTOR(DestroyTexture2D);
             default: break;
             }
         }
@@ -518,6 +532,26 @@ namespace Renderer
             hr = m_device->CreateShaderResourceView(texture.texture, &resView_desc, &texture.srv);
             _ASSERT(SUCCEEDED(hr));
 
+            texture.width = command->width;
+            texture.height = command->height;
+        }
+
+        void WorkerThreadInstance::Execute_ApplyTexture2D(Command_ApplyTexture2D* command)
+        {
+            rvar texture = m_textures[command->handle.idx];
+            _ASSERT(texture.texture != nullptr);
+            _ASSERT(m_currentShader != nullptr);
+
+            // bind the texture
+            m_currentShader->BindTexture(m_context, command->slot, texture.srv);
+        }
+
+        void WorkerThreadInstance::Execute_DestroyTexture2D(Command_DestroyTexture2D* command)
+        {
+            rvar texture = m_textures[command->handle.idx];
+            _ASSERT(texture.texture != nullptr);
+
+            SafeRelease(texture.texture);
         }
 
 #pragma endregion

@@ -423,7 +423,7 @@ namespace Renderer
         g_commandList->WriteCommand(&command);
     }
 
-    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize)
+    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels, TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize)
     {
         CHECK_MAIN_THREAD();
 
@@ -434,12 +434,28 @@ namespace Renderer
         command.handle = handle;
         command.width = width;
         command.height = height;
+        command.mipLevels = mipLevels;
         command.textureFormat = textureFormat;
         command.memory = data;
         command.dataSize = dataSize;
         g_commandList->WriteCommand(&command);
 
         return handle;
+    }
+
+    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize)
+    {
+        return CreateTexture2D(width, height, 1u, textureFormat, data, dataSize);
+    }
+
+    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels, TextureFormat::_enum textureFormat)
+    {
+        return CreateTexture2D(width, height, 1u, textureFormat, nullptr, 0u);
+    }
+
+    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat)
+    {
+        return CreateTexture2D(width, height, 1u, textureFormat, nullptr, 0u);
     }
 
     void ApplyTexture2D(Texture2DHandle handle, uint8_t slot)
