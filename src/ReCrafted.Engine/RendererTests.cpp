@@ -62,10 +62,12 @@ void initRendererTests()
         Renderer::ApplyRenderBuffer(frameBuffer);
         Renderer::ClearRenderBuffer(frameBuffer, clearColor);
 
-        // Set shader as current
-        Renderer::ApplyShader(shader, 0);
+        // Set shader value
         var newValue = Vector4(1.0f, 0.5f, 0.0f, 1.0f);
         Renderer::SetShaderValue(shader, 0, 0, &newValue, sizeof (Vector4));
+
+        // Set shader as current
+        Renderer::ApplyShader(shader, 0);
 
         // Set triangle VB as current
         Renderer::ApplyVertexBuffer(triangleVB);

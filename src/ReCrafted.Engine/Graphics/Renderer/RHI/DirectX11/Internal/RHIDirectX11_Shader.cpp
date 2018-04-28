@@ -164,28 +164,28 @@ namespace Renderer
 
         // apply shader changes
         if (m_dirty)
-            ApplyChanges();
+            ApplyChanges(context);
 
         // set input layout
         context->IASetInputLayout(pass.m_inputLayout);
     }
 
-    void RHIDirectX11_Shader::Bind(ID3D11DeviceContext* contenxt, int passId)
+    void RHIDirectX11_Shader::Bind(ID3D11DeviceContext* context, int passId)
     {
         // TODO: Handle invalid passId
 
         var& pass = m_passes[passId];
-        BindPass(contenxt, pass);
+        BindPass(context, pass);
     }
 
-    void RHIDirectX11_Shader::Bind(ID3D11DeviceContext* contenxt, std::string passName)
+    void RHIDirectX11_Shader::Bind(ID3D11DeviceContext* context, std::string passName)
     {
         for(var i = 0u; i < m_passes.size(); i ++)
         {
             var& pass = m_passes[i];
             if(pass.m_name == passName)
             {
-                BindPass(contenxt, pass);
+                BindPass(context, pass);
                 return;
             }
         }
@@ -211,6 +211,31 @@ namespace Renderer
         bufferDesc.m_dirty = true;
 
         m_dirty = true;
+    }
+
+    void RHIDirectX11_Shader::ApplyChanges(ID3D11DeviceContext* context)
+    {
+        for(rvar buffer : m_buffers)
+        {
+            if(buffer.m_dirty)
+            {
+                D3D11_MAPPED_SUBRESOURCE m_mappedSubres;
+
+                // map buffer
+                cvar hr = context->Map(buffer.m_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &m_mappedSubres);
+                _ASSERT(SUCCEEDED(hr));
+
+                // upload buffer data
+                memcpy(m_mappedSubres.pData, buffer.m_data, buffer.m_size);
+
+                // unmap buffer
+                context->Unmap(buffer.m_buffer, 0);
+
+                buffer.m_dirty = false;
+            }
+        }
+
+        m_dirty = false;
     }
 
     uint RHIDirectX11_Shader::GetStride()

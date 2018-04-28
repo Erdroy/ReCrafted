@@ -107,7 +107,7 @@ namespace Renderer
 
         void SetValue(int buffer, int index, void* data, size_t dataSize);
 
-        void ApplyChanges();
+        void ApplyChanges(ID3D11DeviceContext* context);
 
         uint GetStride();
 
