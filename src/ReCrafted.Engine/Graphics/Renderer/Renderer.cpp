@@ -320,6 +320,8 @@ namespace Renderer
         RENDERER_VALIDATE_HANDLE(handle);
 
         // TODO: NOT IMPLEMENTED!
+
+        FreeRenderBufferHandle(handle);
     }
 
     VertexBufferHandle CreateVertexBuffer(uint count, uint vertexSize, bool dynamic)
@@ -374,6 +376,8 @@ namespace Renderer
         Command_DestroyVertexBuffer command;
         command.handle = handle;
         g_commandList->WriteCommand(&command);
+
+        FreeVertexBufferHandle(handle);
     }
 
     IndexBufferHandle CreateIndexBuffer(uint indexCount, RendererMemory data, bool is32bit, bool dynamic)
@@ -421,6 +425,8 @@ namespace Renderer
         Command_DestroyIndexBuffer command;
         command.handle = handle;
         g_commandList->WriteCommand(&command);
+
+        FreeIndexBufferHandle(handle);
     }
 
     Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels, TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize)
@@ -477,6 +483,8 @@ namespace Renderer
         Command_DestroyTexture2D command;
         command.handle = handle;
         g_commandList->WriteCommand(&command);
+
+        FreeTexture2DHandle(handle);
     }
 
     ShaderHandle CreateShader(const char* fileName)
@@ -529,6 +537,8 @@ namespace Renderer
         Command_DestroyShader command;
         command.shader = handle;
         g_commandList->WriteCommand(&command);
+
+        FreeShaderHandle(handle);
     }
 
 }
