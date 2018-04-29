@@ -543,7 +543,7 @@ namespace Renderer
             _ASSERT(m_currentShader != nullptr);
 
             // bind the texture
-            m_currentShader->BindTexture(m_context, command->slot, texture.srv);
+            m_currentShader->BindResource(m_context, command->slot, texture.srv);
         }
 
         void WorkerThreadInstance::Execute_DestroyTexture2D(Command_DestroyTexture2D* command)

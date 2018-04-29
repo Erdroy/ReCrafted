@@ -250,11 +250,12 @@ namespace Renderer
             }
         }
 
-        // TODO: Set sampler states
-
         // apply shader changes
         if (m_dirty)
             ApplyChanges(context);
+
+        // apply sampler states (PixelShader only)
+        context->PSSetSamplers(0u, m_samplers.size(), m_samplers.data());
 
         // set input layout
         context->IASetInputLayout(pass.m_inputLayout);
@@ -281,8 +282,9 @@ namespace Renderer
         }
     }
 
-    void RHIDirectX11_Shader::BindTexture(ID3D11DeviceContext* context, uint8_t slot, ID3D11ShaderResourceView* srv)
+    void RHIDirectX11_Shader::BindResource(ID3D11DeviceContext* context, uint8_t slot, ID3D11ShaderResourceView* srv)
     {
+        // apply shader resource (PixelShader only)
         ID3D11ShaderResourceView* srvs[] = { srv };
         context->PSSetShaderResources(slot, 1, srvs);
     }
