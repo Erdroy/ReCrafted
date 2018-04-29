@@ -138,8 +138,10 @@ namespace Renderer
             FORCEINLINE void Execute_Draw(Command_Draw* command);
             FORCEINLINE void Execute_DrawIndexed(Command_DrawIndexed* command);
 
+            FORCEINLINE void Execute_CreateRenderBuffer(Command_CreateRenderBuffer* command);
             FORCEINLINE void Execute_ClearRenderBuffer(Command_ClearRenderBuffer* command);
             FORCEINLINE void Execute_ApplyRenderBuffer(Command_ApplyRenderBuffer* command);
+            FORCEINLINE void Execute_DestroyRenderBuffer(Command_DestroyRenderBuffer* command);
 
             FORCEINLINE void Execute_CreateShader(Command_CreateShader* command);
             FORCEINLINE void Execute_ApplyShader(Command_ApplyShader* command);
@@ -300,8 +302,10 @@ namespace Renderer
             DEFINE_COMMAND_EXECUTOR(Draw);
             DEFINE_COMMAND_EXECUTOR(DrawIndexed);
 
+            DEFINE_COMMAND_EXECUTOR(CreateRenderBuffer);
             DEFINE_COMMAND_EXECUTOR(ClearRenderBuffer);
             DEFINE_COMMAND_EXECUTOR(ApplyRenderBuffer);
+            DEFINE_COMMAND_EXECUTOR(DestroyRenderBuffer);
 
             DEFINE_COMMAND_EXECUTOR(CreateShader);
             DEFINE_COMMAND_EXECUTOR(ApplyShader);
@@ -352,6 +356,7 @@ namespace Renderer
             m_context->DrawIndexed(command->indexCount, 0, 0);
         }
 
+
         void WorkerThreadInstance::Execute_CreateShader(Command_CreateShader* command)
         {
             cvar shaderIdx = command->shader.idx;
@@ -384,6 +389,7 @@ namespace Renderer
             var shaderIdx = command->shader.idx;
             SafeRelease(m_shaders[shaderIdx]);
         }
+
 
         void WorkerThreadInstance::Execute_CreateVertexBuffer(Command_CreateVertexBuffer* command)
         {
@@ -428,6 +434,7 @@ namespace Renderer
 
             SafeRelease(buffer);
         }
+
 
         void WorkerThreadInstance::Execute_CreateIndexBuffer(Command_CreateIndexBuffer* command)
         {
@@ -474,23 +481,42 @@ namespace Renderer
             SafeRelease(buffer.buffer);
         }
 
+
+        void WorkerThreadInstance::Execute_CreateRenderBuffer(Command_CreateRenderBuffer* command)
+        {
+            rvar buffer = m_renderBuffers[command->handle.idx];
+            _ASSERT(buffer == nullptr);
+
+        }
+
         void WorkerThreadInstance::Execute_ClearRenderBuffer(Command_ClearRenderBuffer* command)
         {
-            var renderBufferIdx = command->renderBuffer.idx;
+            rvar buffer = m_renderBuffers[command->handle.idx];
+            _ASSERT(buffer != nullptr);
 
             // TODO: check if we can pass frame index (is it back buffer - render buffer)
 
-            m_renderBuffers[renderBufferIdx]->Clear(m_context, command->color, 0x0, 0);
+            buffer->Clear(m_context, command->color, 0x0, 0);
         }
 
         void WorkerThreadInstance::Execute_ApplyRenderBuffer(Command_ApplyRenderBuffer* command)
         {
-            var renderBufferIdx = command->renderBuffer.idx;
+            rvar buffer = m_renderBuffers[command->handle.idx];
+            _ASSERT(buffer != nullptr);
 
             // TODO: check if we can pass frame index (is it back buffer - render buffer)
 
-            m_renderBuffers[renderBufferIdx]->Bind(m_context, 0);
+            buffer->Bind(m_context, 0);
         }
+
+        void WorkerThreadInstance::Execute_DestroyRenderBuffer(Command_DestroyRenderBuffer* command)
+        {
+            rvar buffer = m_renderBuffers[command->handle.idx];
+            _ASSERT(buffer != nullptr);
+
+            SafeRelease(buffer);
+        }
+
 
         void WorkerThreadInstance::Execute_CreateTexture2D(Command_CreateTexture2D* command)
         {

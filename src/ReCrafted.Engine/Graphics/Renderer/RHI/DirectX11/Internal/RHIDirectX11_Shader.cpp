@@ -2,9 +2,8 @@
 
 #include "RHIDirectX11_Shader.h"
 #include "../../../Renderer.hpp"
-#include "Core/Lock.h"
+
 #include <base64.h>
-#include "Platform/Platform.h"
 
 namespace Renderer
 {

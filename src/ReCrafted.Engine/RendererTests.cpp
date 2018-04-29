@@ -8,6 +8,7 @@
 #include "Core/Math/Vector2.h"
 #include "Core/Math/Vector3.h"
 #include "Core/Math/Vector4.h"
+#include "Graphics/Renderer/RHI/DirectX12/Internal/RHIDirectX12_Texture2D.h"
 
 #if RENDERER_TEST
 
@@ -81,9 +82,12 @@ void initRendererTests()
 
     cvar texture = Renderer::CreateTexture2D(32, 32, Renderer::TextureFormat::RGBA8, textureData, textureDataSize);
 
+    Renderer::TextureFormat::_enum textureFormats[2] = { Renderer::TextureFormat::RGBA8, Renderer::TextureFormat::R8 };
+    cvar rb = Renderer::CreateRenderBuffer(textureFormats, 2);
+
+    MSG msg = {};
+
     // Main loop
-    MSG msg;
-    ZeroMemory(&msg, sizeof(msg));
     while (m_running)
     {
         while (PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))

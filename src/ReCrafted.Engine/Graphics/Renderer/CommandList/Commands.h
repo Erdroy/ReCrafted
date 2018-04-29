@@ -30,6 +30,7 @@ namespace Renderer
 			ApplyWindow,
 			DestroyWindow,
 
+            CreateRenderBuffer,
             ApplyRenderBuffer,
             ClearRenderBuffer,
             DestroyRenderBuffer,
@@ -73,16 +74,25 @@ namespace Renderer
         WindowHandle window;
     );
 
+    Command(CreateRenderBuffer,
+        RenderBufferHandle handle;
+        uint8_t texturesCount;
+        TextureFormat::_enum textures[RENDERER_MAX_RENDER_BUFFER_TARGETS];
+        TextureFormat::_enum depthFormat;
+        bool createDepthStencil;
+    ); 
+    
     Command(ApplyRenderBuffer,
-        RenderBufferHandle renderBuffer;
+        RenderBufferHandle handle;
     );
 
     Command(ClearRenderBuffer,
-        RenderBufferHandle renderBuffer;
+        RenderBufferHandle handle;
         Color color;
     );
 
     Command(DestroyRenderBuffer,
+        RenderBufferHandle handle;
     );
 
     Command(CreateShader,

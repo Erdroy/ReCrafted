@@ -384,8 +384,7 @@ namespace Renderer
     /// <param name="handle">The window handle.</param>
 	RENDERER_FUNCTION(void)                     DestroyWindow(WindowHandle handle);
 
-	// TODO: NOT IMPLEMENTED!
-	RENDERER_FUNCTION(RenderBufferHandle)       CreateRenderBuffer(/*TODO*/);
+	RENDERER_FUNCTION(RenderBufferHandle)       CreateRenderBuffer(TextureFormat::_enum* textures, uint8_t texturesCount, TextureFormat::_enum depthFormat = TextureFormat::Unknown, bool depthStencil = false);
      
 	// TODO: NOT IMPLEMENTED!
 	RENDERER_FUNCTION(void)                     ResizeRenderBuffer(/*TODO*/);
@@ -543,6 +542,10 @@ namespace Renderer
     /// </summary>
     /// <param name="handle">The shader handle.</param>
     RENDERER_FUNCTION(void)                     DestroyShader(ShaderHandle handle);
+
+    // ======== RENDERING ========
+
+    //RENDERER_FUNCTION(void)                     Blit(RenderBufferHandle destination, RenderBufferHandle source, ShaderHandle customShader = {});
 }
 
 #endif // RENDERER_H

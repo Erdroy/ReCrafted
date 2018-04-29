@@ -279,17 +279,27 @@ namespace Renderer
 		FreeWindowHandle(handle);
 	}
 
-	RenderBufferHandle CreateRenderBuffer()
-	{
+    RenderBufferHandle CreateRenderBuffer(TextureFormat::_enum* textures, uint8_t texturesCount, TextureFormat::_enum depthFormat, bool depthStencil)
+    {
         CHECK_MAIN_THREAD();
 
         cvar handle = AllocRenderBufferHandle();
         RENDERER_VALIDATE_HANDLE(handle);
 
-        // TODO: NOT IMPLEMENTED!
+        Command_CreateRenderBuffer command;
+        command.handle = handle;
+        command.createDepthStencil = depthStencil;
+        command.depthFormat = depthFormat;
+        command.texturesCount = texturesCount;
 
-		return handle;
-	}
+        // copy texture formats
+        for(var i = 0; i < texturesCount && i < RENDERER_MAX_RENDER_BUFFER_TARGETS; i ++)
+            command.textures[i] = textures[i];
+
+        g_commandList->WriteCommand(&command);
+
+        return handle;
+    }
 
     void ApplyRenderBuffer(RenderBufferHandle handle)
     {
@@ -297,7 +307,7 @@ namespace Renderer
         RENDERER_VALIDATE_HANDLE(handle);
 
         Command_ApplyRenderBuffer command;
-        command.renderBuffer = handle;
+        command.handle = handle;
 
         g_commandList->WriteCommand(&command);
     }
@@ -308,7 +318,7 @@ namespace Renderer
         RENDERER_VALIDATE_HANDLE(handle);
 
         Command_ClearRenderBuffer command;
-        command.renderBuffer = handle;
+        command.handle = handle;
         command.color = color;
 
         g_commandList->WriteCommand(&command);
@@ -319,7 +329,10 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
-        // TODO: NOT IMPLEMENTED!
+        Command_ClearRenderBuffer command;
+        command.handle = handle;
+
+        g_commandList->WriteCommand(&command);
 
         FreeRenderBufferHandle(handle);
     }
