@@ -83,6 +83,9 @@ namespace Renderer
         std::vector<Buffer> m_buffers = {};
         std::vector<Pass> m_passes = {};
 
+        //std::vector<std::string> m_textures2d = {};
+        std::vector<ID3D11SamplerState*> m_samplers = {};
+
         bool m_dirty = false;
 
         uint m_stride = 0u;

@@ -14,8 +14,14 @@ namespace Renderer
         CComPtr<ID3D11InputLayout> inputLayout;
     };
 
-    Lock m_inputLayoutLock = {};
+    struct SamplerState
+    {
+        std::string name;
+        ID3D11SamplerState* sampler;
+    };
+
     std::vector<InputLayout> m_inputLayouts = {};
+    std::vector<SamplerState> m_samplerStates = {};
 
     // source: https://takinginitiative.wordpress.com/2011/12/11/directx-1011-basic-shader-reflection-automatic-input-layout-creation/
     HRESULT D3D11CreateInputLayout(ID3D11Device* pD3DDevice, void* shaderData, size_t shaderDataSize, uint* stride, ID3D11InputLayout** pInputLayout)
@@ -79,8 +85,7 @@ namespace Renderer
         }
 
         // try to find cached input layout
-        ScopeLock(m_inputLayoutLock);
-        for (var & il : m_inputLayouts)
+        for (rvar il : m_inputLayouts)
         {
             if (il.elements.size() == inputLayoutDesc.size())
             {
@@ -114,6 +119,91 @@ namespace Renderer
         m_inputLayouts.push_back(newIl);
 
         return hr;
+    }
+
+    HRESULT D3D11CreateSamplerState(ID3D11Device* pD3DDevice, std::string& samplerType, ID3D11SamplerState** samplerState)
+    {
+        // check if we already have this sampler type created
+        for (rvar sampler : m_samplerStates)
+        {
+            if(sampler.name == samplerType)
+            {
+                *samplerState = sampler.sampler;
+                return S_OK;
+            }
+        }
+        
+        /*
+         * PointClamped, PointMirror, PointWrap
+         * LinearClamped, LinearMirror, LinearWrap
+         * TODO: AnisotropicClamped, AnisotropicMirror, AnisotropicWrap
+         */
+
+        CD3D11_SAMPLER_DESC samplerDesc = {};
+        samplerDesc.MipLODBias = 0.0f;
+        samplerDesc.MaxAnisotropy = 16;
+        samplerDesc.BorderColor[0] = 0;
+        samplerDesc.BorderColor[1] = 0;
+        samplerDesc.BorderColor[2] = 0;
+        samplerDesc.BorderColor[3] = 0;
+        samplerDesc.MinLOD = 0;
+        samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+        samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+
+        if(samplerType == "PointClamped")
+        {
+            samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+            samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+            samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+            samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+        }
+        else if (samplerType == "PointWrap")
+        {
+            samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+            samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+            samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+            samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+        }
+        else if (samplerType == "PointMirror")
+        {
+            samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+            samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
+            samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
+            samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
+        } 
+        else if(samplerType == "LinearClamped")
+        {
+            samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+            samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+            samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+            samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+        }
+        else if (samplerType == "LinearWrap")
+        {
+            samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+            samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+            samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+            samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+        }
+        else if (samplerType == "LinearMirror")
+        {
+            samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+            samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
+            samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
+            samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
+        }
+
+        // create sampler
+        ID3D11SamplerState* sampler;
+        var hr = pD3DDevice->CreateSamplerState(&samplerDesc, &sampler);
+        _ASSERT(SUCCEEDED(hr));
+
+        // add created sampler
+        m_samplerStates.push_back({ samplerType, sampler });
+
+        // return sampler state
+        *samplerState = sampler;
+        return S_OK;
     }
 
     void RHIDirectX11_Shader::BindPass(ID3D11DeviceContext* context, Pass& pass)
@@ -407,8 +497,22 @@ namespace Renderer
             }
         }
 
-        // TODO: Load uniforms (textures, buffers, samplers etc.)
-        // TODO: Setup sampler states
+        // TODO: Load uniforms (textures, buffers, samplers etc.) - needed to allow binding by name
+        //var textures2d = shaderJson["Textures2D"];
+        //for (rvar texture : textures2d)
+        //    shader->m_textures2d.push_back(texture.get<std::string>());
+
+        var samplers = shaderJson["SamplerStates"];
+        for (rvar sampler : samplers)
+        {
+            var samplerName = sampler.get<std::string>();
+
+            ID3D11SamplerState* samplerState;
+            cvar hr = D3D11CreateSamplerState(device, samplerName, &samplerState);
+            _ASSERT(SUCCEEDED(hr));
+
+            shader->m_samplers.push_back(samplerState);
+        }
 
         return shader;
     }
