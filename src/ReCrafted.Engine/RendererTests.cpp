@@ -8,7 +8,6 @@
 #include "Core/Math/Vector2.h"
 #include "Core/Math/Vector3.h"
 #include "Core/Math/Vector4.h"
-#include "Graphics/Renderer/RHI/DirectX12/Internal/RHIDirectX12_Texture2D.h"
 
 #if RENDERER_TEST
 
@@ -80,10 +79,10 @@ void initRendererTests()
         }
     }
 
-    cvar texture = Renderer::CreateTexture2D(32, 32, Renderer::TextureFormat::RGBA8, textureData, textureDataSize);
 
     Renderer::TextureFormat::_enum textureFormats[2] = { Renderer::TextureFormat::RGBA8, Renderer::TextureFormat::R8 };
-    cvar rb = Renderer::CreateRenderBuffer(textureFormats, 2);
+    cvar renderBuffer = Renderer::CreateRenderBuffer(800, 600, textureFormats, 2, Renderer::TextureFormat::D32F);
+    cvar texture = Renderer::CreateTexture2D(32, 32, Renderer::TextureFormat::RGBA8, textureData, textureDataSize);
 
     MSG msg = {};
 
@@ -121,6 +120,7 @@ void initRendererTests()
         Renderer::Frame();
     }
 
+    Renderer::DestroyRenderBuffer(renderBuffer);
     Renderer::DestroyVertexBuffer(triangleVB);
     Renderer::DestroyShader(shader);
     Renderer::DestroyWindow(window);

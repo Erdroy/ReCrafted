@@ -279,16 +279,19 @@ namespace Renderer
 
 	// ======== OBJECT HANDLE DEFINES ========
 
-	RENDERER_DEFINE_HANDLE(RenderBuffer);
     RENDERER_DEFINE_HANDLE(Texture2D);
     RENDERER_DEFINE_HANDLE(VertexBuffer);
     RENDERER_DEFINE_HANDLE(IndexBuffer);
     RENDERER_DEFINE_HANDLE(Shader);
 
+    RENDERER_DEFINE_HANDLE_BEGIN(RenderBuffer)
+    std::vector<Texture2DHandle> renderTextures = {};
+    Texture2DHandle depthBuffer = {};
+    RENDERER_DEFINE_HANDLE_END();
+
     RENDERER_DEFINE_HANDLE_BEGIN(Window)
     RenderBufferHandle renderBuffer = {};
     RENDERER_DEFINE_HANDLE_END();
-
 
 	// ======== COMMON ========
 
@@ -384,7 +387,7 @@ namespace Renderer
     /// <param name="handle">The window handle.</param>
 	RENDERER_FUNCTION(void)                     DestroyWindow(WindowHandle handle);
 
-	RENDERER_FUNCTION(RenderBufferHandle)       CreateRenderBuffer(TextureFormat::_enum* textures, uint8_t texturesCount, TextureFormat::_enum depthFormat = TextureFormat::Unknown, bool depthStencil = false);
+	RENDERER_FUNCTION(RenderBufferHandle)       CreateRenderBuffer(uint16_t width, uint16_t height, TextureFormat::_enum* textures, uint8_t texturesCount, TextureFormat::_enum depthFormat = TextureFormat::Unknown);
      
 	// TODO: NOT IMPLEMENTED!
 	RENDERER_FUNCTION(void)                     ResizeRenderBuffer(/*TODO*/);

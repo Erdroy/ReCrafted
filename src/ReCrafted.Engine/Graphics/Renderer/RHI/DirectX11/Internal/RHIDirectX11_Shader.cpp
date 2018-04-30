@@ -254,7 +254,7 @@ namespace Renderer
             ApplyChanges(context);
 
         // apply sampler states (PixelShader only)
-        context->PSSetSamplers(0u, m_samplers.size(), m_samplers.data());
+        context->PSSetSamplers(0u, static_cast<uint>(m_samplers.size()), m_samplers.data());
 
         // set input layout
         context->IASetInputLayout(pass.m_inputLayout);

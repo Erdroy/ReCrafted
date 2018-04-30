@@ -279,7 +279,7 @@ namespace Renderer
 		FreeWindowHandle(handle);
 	}
 
-    RenderBufferHandle CreateRenderBuffer(TextureFormat::_enum* textures, uint8_t texturesCount, TextureFormat::_enum depthFormat, bool depthStencil)
+    RenderBufferHandle CreateRenderBuffer(uint16_t width, uint16_t height, TextureFormat::_enum* textures, uint8_t texturesCount, TextureFormat::_enum depthFormat)
     {
         CHECK_MAIN_THREAD();
 
@@ -288,17 +288,42 @@ namespace Renderer
 
         Command_CreateRenderBuffer command;
         command.handle = handle;
-        command.createDepthStencil = depthStencil;
-        command.depthFormat = depthFormat;
+        command.width = width;
+        command.height = height;
+        command.createDepthStencil = depthFormat != TextureFormat::Unknown;
         command.texturesCount = texturesCount;
 
         // copy texture formats
         for(var i = 0; i < texturesCount && i < RENDERER_MAX_RENDER_BUFFER_TARGETS; i ++)
-            command.textures[i] = textures[i];
+        {
+            cvar textureFormat = textures[i];
+            cvar texture = CreateTexture2D(width, height, 1, textureFormat, nullptr, 0u, true);
+
+            RENDERER_VALIDATE_HANDLE(texture);
+
+            command.renderTargets[i] = texture;
+
+            // set handle's render textures
+            RenderBufferHandle_table[handle.idx].renderTextures.push_back(texture);
+        }
+
+        // create depth buffer
+        if(depthFormat != TextureFormat::Unknown)
+        {
+            cvar texture = CreateTexture2D(width, height, 1, depthFormat, nullptr, 0u, true);
+
+            RENDERER_VALIDATE_HANDLE(texture);
+
+            command.depthTarget = texture;
+
+            // set handle's depth buffer
+            RenderBufferHandle_table[handle.idx].depthBuffer = texture;
+        }
 
         g_commandList->WriteCommand(&command);
 
-        return handle;
+        // return fresh handle (as the current 'cvar handle' doesn't have render textures)
+        return RenderBufferHandle_table[handle.idx];
     }
 
     void ApplyRenderBuffer(RenderBufferHandle handle)
@@ -329,11 +354,21 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
-        Command_ClearRenderBuffer command;
+        Command_DestroyRenderBuffer command;
         command.handle = handle;
 
         g_commandList->WriteCommand(&command);
 
+        // destroy render textures
+        std::for_each(handle.renderTextures.begin(), handle.renderTextures.end(), [] (Texture2DHandle handle){
+            DestroyTexture2D(handle);
+        });
+
+        // destroy depth buffer if created
+        if(handle.depthBuffer.idx > 0)
+            DestroyTexture2D(handle.depthBuffer);
+
+        // free render buffer handle
         FreeRenderBufferHandle(handle);
     }
 

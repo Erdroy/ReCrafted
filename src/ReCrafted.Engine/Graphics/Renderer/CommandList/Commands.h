@@ -76,9 +76,11 @@ namespace Renderer
 
     Command(CreateRenderBuffer,
         RenderBufferHandle handle;
+        uint16_t width;
+        uint16_t height;
         uint8_t texturesCount;
-        TextureFormat::_enum textures[RENDERER_MAX_RENDER_BUFFER_TARGETS];
-        TextureFormat::_enum depthFormat;
+        Texture2DHandle renderTargets[RENDERER_MAX_RENDER_BUFFER_TARGETS];
+        Texture2DHandle depthTarget;
         bool createDepthStencil;
     ); 
     

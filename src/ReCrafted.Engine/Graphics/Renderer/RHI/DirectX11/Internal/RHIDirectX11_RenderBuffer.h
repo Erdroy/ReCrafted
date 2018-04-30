@@ -6,6 +6,7 @@
 #define RHIDIRECTX11_RENDERBUFFER_H
 
 #include "../DirectX11.h"
+#include "../../../Renderer.hpp"
 #include "../../../RendererConfig.h"
 
 namespace Renderer
