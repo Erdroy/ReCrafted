@@ -90,15 +90,22 @@ namespace Renderer
             {
                 for (var i = 0u; i < inputLayoutDesc.size(); i++)
                 {
-                    if (inputLayoutDesc[i].Format == il.elements[i].Format &&
-                        inputLayoutDesc[i].SemanticIndex == il.elements[i].SemanticIndex &&
-                        strcmp(inputLayoutDesc[i].SemanticName, il.elements[i].SemanticName) == 0)
-                    {
-                        // we have found the same vertex input layout!
-                        // set the input layout and return
-                        *pInputLayout = il.inputLayout;
-                        return S_OK;
-                    }
+                    rvar element = il.elements[i];
+                    rvar current = inputLayoutDesc[i];
+
+                    if (current.Format != element.Format)
+                        break;
+
+                    if (current.SemanticIndex != element.SemanticIndex)
+                        break;
+
+                    if (strcmp(current.SemanticName, element.SemanticName) != 0)
+                        break;
+
+                    // we have found the same vertex input layout!
+                    // set the input layout and return
+                    *pInputLayout = il.inputLayout;
+                    return S_OK;
                 }
             }
         }
