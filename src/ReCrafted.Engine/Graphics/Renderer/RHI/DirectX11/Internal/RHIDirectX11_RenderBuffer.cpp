@@ -22,11 +22,6 @@ namespace Renderer
 
     void RHIDirectX11_RenderBuffer::Release()
     {
-        SafeRelease(m_depthStencilView);
-
-        for (var i = 0; i < m_rtvCount; i++)
-            SafeRelease(m_renderTargetViews[i]);
-
         m_rtvCount = 0;
         delete this;
     }

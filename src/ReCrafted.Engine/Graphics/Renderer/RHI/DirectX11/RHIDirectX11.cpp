@@ -60,9 +60,12 @@ namespace Renderer
         public:
             ID3D11Texture2D* texture = nullptr;
             ID3D11ShaderResourceView* srv = nullptr;
+            ID3D11RenderTargetView* rtv = nullptr;
+            ID3D11DepthStencilView* dsv = nullptr;
+
             uint16_t width = 0u;
             uint16_t height = 0u;
-            TextureFormat::_enum format;
+            TextureFormat::_enum format = TextureFormat::Unknown;
         };
 
         // == common ==
@@ -487,6 +490,29 @@ namespace Renderer
             rvar buffer = m_renderBuffers[command->handle.idx];
             _ASSERT(buffer == nullptr);
 
+            _ASSERT(command->texturesCount > 0);
+            _ASSERT(command->width >= 16);
+            _ASSERT(command->height >= 16);
+
+            // select rtv's
+            std::vector<ID3D11RenderTargetView*> rtvs = {};
+            for(var i = 0; i < command->texturesCount; i ++)
+            {
+                cvar texture = m_textures[command->renderTargets[i].idx];
+                _ASSERT(texture.rtv != nullptr);
+                rtvs.push_back(texture.rtv);
+            }
+
+            // select dsv if enabled
+            ID3D11DepthStencilView* dsv = nullptr;
+            if(command->createDepthStencil)
+            {
+                dsv = m_textures[command->depthTarget.idx].dsv;
+                _ASSERT(dsv != nullptr);
+            }
+
+            // create render buffer
+            m_renderBuffers[command->handle.idx] = RHIDirectX11_RenderBuffer::Create(m_device, command->texturesCount, rtvs.data(), dsv);
         }
 
         void WorkerThreadInstance::Execute_ClearRenderBuffer(Command_ClearRenderBuffer* command)
