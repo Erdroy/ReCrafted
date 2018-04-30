@@ -442,7 +442,7 @@ namespace Renderer
         FreeIndexBufferHandle(handle);
     }
 
-    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels, TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize)
+    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels, TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize, bool renderTargetFlag)
     {
         CHECK_MAIN_THREAD();
 
@@ -457,6 +457,7 @@ namespace Renderer
         command.textureFormat = textureFormat;
         command.memory = data;
         command.dataSize = dataSize;
+        command.renderTarget = renderTargetFlag;
         g_commandList->WriteCommand(&command);
 
         return handle;

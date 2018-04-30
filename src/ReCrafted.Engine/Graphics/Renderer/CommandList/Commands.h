@@ -156,6 +156,7 @@ namespace Renderer
         TextureFormat::_enum textureFormat;
         RendererMemory memory;
         size_t dataSize;
+        bool renderTarget;
     );
 
     Command(ApplyTexture2D,

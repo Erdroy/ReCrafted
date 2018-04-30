@@ -470,7 +470,7 @@ namespace Renderer
     /// <param name="textureFormat">The format of the new texture.</param>
     /// <param name="data">Texture data (can be null, then you can upload data by using UpdateTexture2D function)</param>
     /// <param name="dataSize">Data size.</param>
-    RENDERER_FUNCTION(Texture2DHandle)          CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels, TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize);
+    RENDERER_FUNCTION(Texture2DHandle)          CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels, TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize, bool renderTargetFlag = false);
 
     /// <summary>
     /// Creates new Texture2D.

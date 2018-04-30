@@ -524,6 +524,7 @@ namespace Renderer
             _ASSERT(texture.texture == nullptr);
 
             cvar mipLevels = command->mipLevels == 0 ? 1 : command->mipLevels;
+            cvar createDepthBuffer = command->textureFormat >= TextureFormat::D16;
 
             D3D11_TEXTURE2D_DESC textureDesc;
             textureDesc.ArraySize = 1;
@@ -533,12 +534,27 @@ namespace Renderer
             textureDesc.MiscFlags = 0;
             textureDesc.SampleDesc.Count = 1;
             textureDesc.SampleDesc.Quality = 0;
-
             textureDesc.CPUAccessFlags = 0;
-
-            textureDesc.Format = DGXI_TextureFormats[command->textureFormat][0];
-            textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
             textureDesc.Usage = D3D11_USAGE_DEFAULT;
+
+            if(createDepthBuffer)
+            {
+                textureDesc.Format = DGXI_TextureFormats[command->textureFormat][2];
+                textureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+            }
+            else
+            {
+                textureDesc.Format = DGXI_TextureFormats[command->textureFormat][0];
+                
+                if(command->renderTarget)
+                {
+                    textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+                }
+                else
+                {
+                    textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+                }
+            }
 
             D3D11_SUBRESOURCE_DATA subresData = {};
             subresData.pSysMem = command->memory;
@@ -546,17 +562,41 @@ namespace Renderer
             subresData.SysMemSlicePitch = 0;
 
             var hr = m_device->CreateTexture2D(&textureDesc, command->memory ? &subresData : nullptr, &texture.texture);
-
             _ASSERT(SUCCEEDED(hr));
 
-            D3D11_SHADER_RESOURCE_VIEW_DESC resView_desc = {};
-            resView_desc.Format = DGXI_TextureFormats[command->textureFormat][1];
-            resView_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-            resView_desc.Texture2D.MipLevels = mipLevels;
-            resView_desc.Texture2D.MostDetailedMip = 0;
+            if (createDepthBuffer)
+            {
+                D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc = {};
 
-            hr = m_device->CreateShaderResourceView(texture.texture, &resView_desc, &texture.srv);
-            _ASSERT(SUCCEEDED(hr));
+                depthStencilViewDesc.Format = DGXI_TextureFormats[command->textureFormat][2];
+                depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+                depthStencilViewDesc.Texture2D.MipSlice = 0;
+
+                hr = m_device->CreateDepthStencilView(texture.texture, &depthStencilViewDesc, &texture.dsv);
+                _ASSERT(SUCCEEDED(hr));
+            }
+            else
+            {
+                D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+                srvDesc.Format = DGXI_TextureFormats[command->textureFormat][1];
+                srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+                srvDesc.Texture2D.MipLevels = mipLevels;
+                srvDesc.Texture2D.MostDetailedMip = 0;
+
+                hr = m_device->CreateShaderResourceView(texture.texture, &srvDesc, &texture.srv);
+                _ASSERT(SUCCEEDED(hr));
+
+                if (command->renderTarget)
+                {
+                    D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
+                    rtvDesc.Format = DGXI_TextureFormats[command->textureFormat][1];
+                    rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+                    rtvDesc.Texture2D.MipSlice = 0;
+
+                    hr = m_device->CreateRenderTargetView(texture.texture, &rtvDesc, &texture.rtv);
+                    _ASSERT(SUCCEEDED(hr));
+                }
+            }
 
             texture.width = command->width;
             texture.height = command->height;
