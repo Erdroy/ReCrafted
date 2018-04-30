@@ -22,13 +22,15 @@ namespace Renderer
 	{
 		enum _enum : uint16_t
 		{
-			Empty,
+			Unknown,
 
             Draw,
             DrawIndexed,
 
 			ApplyWindow,
 			DestroyWindow,
+
+            ResizeFrameBuffer,
 
             CreateRenderBuffer,
             ApplyRenderBuffer,
@@ -48,16 +50,19 @@ namespace Renderer
             CreateTexture2D,
             ApplyTexture2D,
             UpdateTexture2D,
+            ResizeTexture2D,
             DestroyTexture2D,
 
             CreateShader,
             SetShaderValue,
             ApplyShader,
 		    DestroyShader,
+
+            Count
 		};
 	};
 
-    Command(Empty, );
+    Command(Unknown, );
 
     Command(Draw,
         uint vertexCount = 0u;
@@ -74,6 +79,13 @@ namespace Renderer
         WindowHandle window;
     );
 
+    Command(ResizeFrameBuffer,
+        RenderBufferHandle handle;
+        WindowHandle windowHandle;
+        uint16_t width;
+        uint16_t height;
+    );
+
     Command(CreateRenderBuffer,
         RenderBufferHandle handle;
         uint16_t width;
@@ -82,8 +94,8 @@ namespace Renderer
         Texture2DHandle renderTargets[RENDERER_MAX_RENDER_BUFFER_TARGETS];
         Texture2DHandle depthTarget;
         bool createDepthStencil;
-    ); 
-    
+    );
+
     Command(ApplyRenderBuffer,
         RenderBufferHandle handle;
     );
@@ -164,6 +176,12 @@ namespace Renderer
     Command(ApplyTexture2D,
         Texture2DHandle handle;
         uint8_t slot;
+    );    
+    
+    Command(ResizeTexture2D,
+        Texture2DHandle handle;
+        uint16_t width;
+        uint16_t height;
     );
 
     Command(DestroyTexture2D,

@@ -203,7 +203,11 @@ namespace Renderer
         return false;
     }
 
-	void Frame()
+    void SetAnisotropicFiltering(AnisotropicFiltering::_enum filtering)
+    {
+    }
+
+    void Frame()
 	{
         CHECK_MAIN_THREAD();
 
@@ -259,7 +263,26 @@ namespace Renderer
 		g_commandList->WriteCommand(&command);
 	}
 
-	RenderBufferHandle GetWindowRenderBuffer(WindowHandle handle)
+    void ResizeWindow(WindowHandle handle, uint16_t width, uint16_t height)
+    {
+        CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        // this is not as easy as the render textures,
+        // we need to resize whole back-buffer, 
+        // so swapchain and other things :sad:
+
+        // write resize frame buffer command
+        Command_ResizeFrameBuffer command;
+        command.handle = GetWindowRenderBuffer(handle);
+        command.windowHandle = handle;
+        command.width = width;
+        command.height = height;
+
+        g_commandList->WriteCommand(&command);
+    }
+
+    RenderBufferHandle GetWindowRenderBuffer(WindowHandle handle)
 	{
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
@@ -326,6 +349,20 @@ namespace Renderer
         return RenderBufferHandle_table[handle.idx];
     }
 
+    void ResizeRenderBuffer(RenderBufferHandle handle, uint16_t width, uint16_t height)
+    {
+        // note: frame buffers do not have any render textures
+        cvar isFrameBuffer = handle.renderTextures.empty();
+        _ASSERT(isFrameBuffer == false); // Cannot resize Frame Buffer!
+
+        // resize all textures
+        for (rvar texture : handle.renderTextures)
+            ResizeTexture2D(texture, width, height);
+
+        if (RENDERER_CHECK_HANDLE(handle.depthBuffer))
+            ResizeTexture2D(handle.depthBuffer, width, height);
+    }
+
     void ApplyRenderBuffer(RenderBufferHandle handle)
     {
         CHECK_MAIN_THREAD();
@@ -353,6 +390,10 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
+
+        // note: frame buffers do not have any render textures
+        cvar isFrameBuffer = handle.renderTextures.empty();
+        _ASSERT(isFrameBuffer == false); // Cannot destroy Frame Buffer!
 
         Command_DestroyRenderBuffer command;
         command.handle = handle;
@@ -484,6 +525,10 @@ namespace Renderer
         cvar handle = AllocTexture2DHandle();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        // set texture format
+        Texture2DHandle_table[handle.idx].textureFormat = textureFormat;
+
+        // create texture2d command
         Command_CreateTexture2D command;
         command.handle = handle;
         command.width = width;
@@ -495,7 +540,7 @@ namespace Renderer
         command.renderTarget = renderTargetFlag;
         g_commandList->WriteCommand(&command);
 
-        return handle;
+        return Texture2DHandle_table[handle.idx];
     }
 
     Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize)
@@ -505,7 +550,7 @@ namespace Renderer
 
     Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels, TextureFormat::_enum textureFormat)
     {
-        return CreateTexture2D(width, height, 1u, textureFormat, nullptr, 0u);
+        return CreateTexture2D(width, height, mipLevels, textureFormat, nullptr, 0u);
     }
 
     Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat)
@@ -521,6 +566,18 @@ namespace Renderer
         Command_ApplyTexture2D command;
         command.handle = handle;
         command.slot = slot;
+        g_commandList->WriteCommand(&command);
+    }
+
+    void ResizeTexture2D(Texture2DHandle handle, uint16_t width, uint16_t height)
+    {
+        CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_ResizeTexture2D command;
+        command.handle = handle;
+        command.width = width;
+        command.height = height;
         g_commandList->WriteCommand(&command);
     }
 

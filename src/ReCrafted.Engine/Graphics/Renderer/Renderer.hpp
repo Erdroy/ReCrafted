@@ -54,6 +54,21 @@ namespace Renderer
 	};
 	RENDERER_ENUM(RendererAPI);
 
+    struct AnisotropicFiltering
+    {
+        enum _enum : char
+        {
+            NoFiltering,
+            AnisotropicX2,
+            AnisotropicX4,
+            AnisotropicX8,
+            AnisotropicX16,
+
+            Count
+        };
+    };
+    RENDERER_ENUM(AnisotropicFiltering);
+
     struct VertexAttribute
     {
         enum _enum : char
@@ -279,10 +294,13 @@ namespace Renderer
 
 	// ======== OBJECT HANDLE DEFINES ========
 
-    RENDERER_DEFINE_HANDLE(Texture2D);
     RENDERER_DEFINE_HANDLE(VertexBuffer);
     RENDERER_DEFINE_HANDLE(IndexBuffer);
     RENDERER_DEFINE_HANDLE(Shader);
+
+    RENDERER_DEFINE_HANDLE_BEGIN(Texture2D);
+    TextureFormat::_enum textureFormat = TextureFormat::Unknown;
+    RENDERER_DEFINE_HANDLE_END();
 
     RENDERER_DEFINE_HANDLE_BEGIN(RenderBuffer)
     std::vector<Texture2DHandle> renderTextures = {};
@@ -340,6 +358,9 @@ namespace Renderer
     // TODO: NOT IMPLEMENTED!
     RENDERER_FUNCTION(bool)                     GetFlag(ResetFlags::_enum flag);
 
+    // TODO: NOT IMPLEMENTED!
+    RENDERER_FUNCTION(void)                     SetAnisotropicFiltering(AnisotropicFiltering::_enum filtering);
+
 	// ======== RENDERING - BASIC ========
 
     /// <summary>
@@ -370,6 +391,8 @@ namespace Renderer
     /// <param name="handle">The window handle to be set as current.</param>
 	RENDERER_FUNCTION(void)                     ApplyWindow(WindowHandle handle);
 
+    RENDERER_FUNCTION(void)                     ResizeWindow(WindowHandle handle, uint16_t width, uint16_t height);
+
     /// <summary>
     /// Gets render buffer of given window. 
     /// The returned RenderBuffer will be deleted when the window is destroyed -
@@ -388,9 +411,8 @@ namespace Renderer
 	RENDERER_FUNCTION(void)                     DestroyWindow(WindowHandle handle);
 
 	RENDERER_FUNCTION(RenderBufferHandle)       CreateRenderBuffer(uint16_t width, uint16_t height, TextureFormat::_enum* textures, uint8_t texturesCount, TextureFormat::_enum depthFormat = TextureFormat::Unknown);
-     
-	// TODO: NOT IMPLEMENTED!
-	RENDERER_FUNCTION(void)                     ResizeRenderBuffer(/*TODO*/);
+
+	RENDERER_FUNCTION(void)                     ResizeRenderBuffer(RenderBufferHandle handle, uint16_t width, uint16_t height);
 
     /// <summary>
     /// Sets given render buffer as current render target.
@@ -405,7 +427,10 @@ namespace Renderer
     /// <param name="color">The color which will be used to clear the render buffer.</param>
     RENDERER_FUNCTION(void)                     ClearRenderBuffer(RenderBufferHandle handle, Color color);
 
-    // NOT IMPLEMENTED!
+    /// <summary>
+    /// Destroys given render buffer.
+    /// </summary>
+    /// <param name="handle">The render buffer handle.</param>
     RENDERER_FUNCTION(void)                     DestroyRenderBuffer(RenderBufferHandle handle);
 
     /// <summary>
@@ -508,6 +533,8 @@ namespace Renderer
     /// <param name="handle">The texture handle.</param>
     /// <param name="slot">The texture target slot.</param>
     RENDERER_FUNCTION(void)                     ApplyTexture2D(Texture2DHandle handle, uint8_t slot);
+
+    RENDERER_FUNCTION(void)                     ResizeTexture2D(Texture2DHandle handle, uint16_t width, uint16_t height);
 
     /// <summary>
     /// Destroys given texture.

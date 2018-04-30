@@ -141,6 +141,8 @@ namespace Renderer
             FORCEINLINE void Execute_Draw(Command_Draw* command);
             FORCEINLINE void Execute_DrawIndexed(Command_DrawIndexed* command);
 
+            FORCEINLINE void Execute_ResizeFrameBuffer(Command_ResizeFrameBuffer* command);
+
             FORCEINLINE void Execute_CreateRenderBuffer(Command_CreateRenderBuffer* command);
             FORCEINLINE void Execute_ClearRenderBuffer(Command_ClearRenderBuffer* command);
             FORCEINLINE void Execute_ApplyRenderBuffer(Command_ApplyRenderBuffer* command);
@@ -160,6 +162,7 @@ namespace Renderer
 
             FORCEINLINE void Execute_CreateTexture2D(Command_CreateTexture2D* command);
             FORCEINLINE void Execute_ApplyTexture2D(Command_ApplyTexture2D* command);
+            FORCEINLINE void Execute_ResizeTexture2D(Command_ResizeTexture2D* command);
             FORCEINLINE void Execute_DestroyTexture2D(Command_DestroyTexture2D* command);
         };
 
@@ -254,8 +257,6 @@ namespace Renderer
 
             switch (header)
             {
-            case CommandHeader::Empty:
-                break;
             case CommandHeader::ApplyWindow:
             {
                 cvar command = m_commandList.ReadCommand<Command_ApplyWindow>(position);
@@ -288,7 +289,7 @@ namespace Renderer
                 SafeRelease(m_swapChains[idx]);
 
                 var renderBufferIdx = command.window.renderBuffer.idx;
-                //SafeRelease(m_renderBuffers[renderBufferIdx]);
+                SafeRelease(m_renderBuffers[renderBufferIdx]);
 
                 break;
             }
@@ -304,6 +305,8 @@ namespace Renderer
             }
             DEFINE_COMMAND_EXECUTOR(Draw);
             DEFINE_COMMAND_EXECUTOR(DrawIndexed);
+
+            DEFINE_COMMAND_EXECUTOR(ResizeFrameBuffer);
 
             DEFINE_COMMAND_EXECUTOR(CreateRenderBuffer);
             DEFINE_COMMAND_EXECUTOR(ClearRenderBuffer);
@@ -324,8 +327,12 @@ namespace Renderer
 
             DEFINE_COMMAND_EXECUTOR(CreateTexture2D);
             DEFINE_COMMAND_EXECUTOR(ApplyTexture2D);
+            DEFINE_COMMAND_EXECUTOR(ResizeTexture2D);
             DEFINE_COMMAND_EXECUTOR(DestroyTexture2D);
-            default: break;
+
+            case CommandHeader::Unknown:
+            default: 
+                break;
             }
         }
 
@@ -357,6 +364,47 @@ namespace Renderer
                 m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
             m_context->DrawIndexed(command->indexCount, 0, 0);
+        }
+
+        void WorkerThreadInstance::Execute_ResizeFrameBuffer(Command_ResizeFrameBuffer* command)
+        {
+            rvar renderBuffer = m_renderBuffers[command->handle.idx];
+            cvar swapChain = m_swapChains[command->windowHandle.idx];
+
+            _ASSERT(renderBuffer != nullptr);
+            _ASSERT(swapChain != nullptr);
+
+            cvar bufferCount = m_resetFlags & ResetFlags::TripleBuffered ? FrameBufferCount : 1;
+            cvar bufferFormat = m_settings & Settings::BGRAFrameBuffer ? DXGI_FORMAT_B8G8R8A8_UNORM : DXGI_FORMAT_R8G8B8A8_UNORM;
+            
+            // destroy render targets
+            cvar rtvs = renderBuffer->GetRTVs();
+            for(var i = 0; i < bufferCount; i ++)
+            {
+                SafeRelease(rtvs[i]);
+            }
+
+            // destroy depth buffer
+            if (renderBuffer->GetDSV())
+                renderBuffer->GetDSV()->Release();
+            
+            swapChain->ResizeBuffers(static_cast<uint>(bufferCount), command->width, command->height, bufferFormat, 0u);
+
+            ID3D11RenderTargetView* renderTargets[FrameBufferCount] = {};
+            for (var i = 0; i < bufferCount; i++)
+            {
+                ID3D11Resource* resource = nullptr;
+                var hr = m_swapChain->GetBuffer(i, IID_PPV_ARGS(&resource));
+                _ASSERT(SUCCEEDED(hr));
+
+                m_device->CreateRenderTargetView(resource, nullptr, &renderTargets[i]);
+                SafeRelease(resource);
+            }
+
+            // WARNING: No depth stencil view for back buffers!
+            // TODO: Create depth stencil view
+
+            renderBuffer->SetRTVs(renderTargets);
         }
 
 
@@ -626,6 +674,7 @@ namespace Renderer
 
             texture.width = command->width;
             texture.height = command->height;
+            texture.format = command->textureFormat;
         }
 
         void WorkerThreadInstance::Execute_ApplyTexture2D(Command_ApplyTexture2D* command)
@@ -636,6 +685,39 @@ namespace Renderer
 
             // bind the texture
             m_currentShader->BindResource(m_context, command->slot, texture.srv);
+        }
+
+        void WorkerThreadInstance::Execute_ResizeTexture2D(Command_ResizeTexture2D* command)
+        {
+            rvar texture = m_textures[command->handle.idx];
+            _ASSERT(texture.texture != nullptr);
+
+            D3D11_TEXTURE2D_DESC textureDesc;
+            texture.texture->GetDesc(&textureDesc);
+
+            // check if this texture has RTV, if so, this is a render target texture
+            cvar isRenderTarget = texture.rtv != nullptr;
+
+            // release the texture and all of it's views
+            SafeRelease(texture.texture);
+            SafeRelease(texture.srv);
+            SafeRelease(texture.rtv);
+            SafeRelease(texture.dsv);
+
+            // rebuild texture based on the texture description
+            Command_CreateTexture2D fakeCommand;
+
+            fakeCommand.handle = command->handle;
+            fakeCommand.mipLevels = textureDesc.MipLevels;
+            fakeCommand.renderTarget = isRenderTarget;
+            fakeCommand.width = command->width;
+            fakeCommand.height = command->height;
+            fakeCommand.textureFormat = texture.format;
+            fakeCommand.dataSize = 0u;
+            fakeCommand.memory = nullptr;
+
+            // create new texture
+            Execute_CreateTexture2D(&fakeCommand);
         }
 
         void WorkerThreadInstance::Execute_DestroyTexture2D(Command_DestroyTexture2D* command)
@@ -1002,7 +1084,7 @@ namespace Renderer
             for (var i = 0; i < bufferCount; i++)
             {
                 ID3D11Resource* resource = nullptr;
-                hr = m_swapChain->GetBuffer(i, IID_PPV_ARGS(&resource)); // NOTE: potential leak?
+                hr = m_swapChain->GetBuffer(i, IID_PPV_ARGS(&resource));
 
                 if (FAILED(hr))
                 {
@@ -1010,11 +1092,11 @@ namespace Renderer
                 }
 
                 m_device->CreateRenderTargetView(resource, nullptr, &renderTargets[i]);
+                SafeRelease(resource);
             }
 
             // WARNING: No depth stencil view for back buffers!
-
-            // TODO: DepthStencilView
+            // TODO: Create depth stencil view
 
             WindowDesc windowDesc = {};
             windowDesc.renderBuffer = renderBufferHandle;

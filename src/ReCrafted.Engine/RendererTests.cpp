@@ -84,6 +84,9 @@ void initRendererTests()
     cvar renderBuffer = Renderer::CreateRenderBuffer(800, 600, textureFormats, 2, Renderer::TextureFormat::D32F);
     cvar texture = Renderer::CreateTexture2D(32, 32, Renderer::TextureFormat::RGBA8, textureData, textureDataSize);
 
+    //Renderer::ResizeWindow(window, 1280, 720);
+    //Renderer::ResizeRenderBuffer(renderBuffer, 1280, 720);
+
     MSG msg = {};
 
     // Main loop
@@ -118,6 +121,7 @@ void initRendererTests()
 
         // Push frame
         Renderer::Frame();
+
     }
 
     Renderer::DestroyRenderBuffer(renderBuffer);
@@ -125,7 +129,5 @@ void initRendererTests()
     Renderer::DestroyShader(shader);
     Renderer::DestroyWindow(window);
     Renderer::Shutdown();
-
-    //UnregisterClassW(TEXT("Renderer Example"), nullptr);
 }
 #endif

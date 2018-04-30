@@ -24,6 +24,28 @@ namespace Renderer
         ID3D11DepthStencilView* m_depthStencilView = nullptr;
 
     public:
+        ID3D11RenderTargetView** GetRTVs() const
+        {
+            return const_cast<ID3D11RenderTargetView**>(m_renderTargetViews);
+        }
+
+        ID3D11DepthStencilView* GetDSV() const
+        {
+            return m_depthStencilView;
+        }
+
+        void SetRTVs(ID3D11RenderTargetView** rtvs)
+        {
+            for (var i = 0; i < m_rtvCount; i++)
+                m_renderTargetViews[i] = rtvs[i];
+        }
+
+        void SetDSV(ID3D11DepthStencilView* dsv)
+        {
+            m_depthStencilView = dsv;
+        }
+
+    public:
         RHIDirectX11_RenderBuffer(ID3D11Device* device)
         {
             m_device = device;
