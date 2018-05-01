@@ -36,19 +36,19 @@ void initRendererTests()
     struct { Vector3 pos; Vector2 uv; } simpleMeshVertices[3];
     simpleMeshVertices[0].pos.x = -1.0f;
     simpleMeshVertices[0].pos.y = -1.0f;
-    simpleMeshVertices[0].pos.z = 1.0f;
+    simpleMeshVertices[0].pos.z = 0.0f;
     simpleMeshVertices[0].uv.x = 0.0f;
     simpleMeshVertices[0].uv.y = 0.0f;
 
     simpleMeshVertices[1].pos.x = 0.0f;
     simpleMeshVertices[1].pos.y = 1.0f;
-    simpleMeshVertices[1].pos.z = 1.0f;
+    simpleMeshVertices[1].pos.z = 0.0f;
     simpleMeshVertices[1].uv.x = 0.5f;
     simpleMeshVertices[1].uv.y = 1.0f;
 
     simpleMeshVertices[2].pos.x = 1.0f;
     simpleMeshVertices[2].pos.y = -1.0f;
-    simpleMeshVertices[2].pos.z = 1.0f;
+    simpleMeshVertices[2].pos.z = 0.0f;
     simpleMeshVertices[2].uv.x = 1.0f;
     simpleMeshVertices[2].uv.y = 0.0f;
 
@@ -58,13 +58,23 @@ void initRendererTests()
     simpleMeshIndices[2] = 2;
 
     cvar vbMemory = Renderer::Allocate(3 * sizeof(Vector3) + 3 * sizeof(Vector2));
-    memcpy(vbMemory, simpleMeshVertices, 3 * sizeof(Vector3) + 3 * sizeof(Vector2));
-
     cvar ibMemory = Renderer::Allocate(3 * sizeof(uint));
+    memcpy(vbMemory, simpleMeshVertices, 3 * sizeof(Vector3) + 3 * sizeof(Vector2));
     memcpy(ibMemory, simpleMeshIndices, 3 * sizeof(uint));
 
     cvar triangleVB = Renderer::CreateVertexBuffer(3, sizeof Vector3 + sizeof Vector2, vbMemory);
     cvar triangleIB = Renderer::CreateIndexBuffer(3, ibMemory);
+
+    simpleMeshVertices[0].pos.z = 0.0f;
+    simpleMeshVertices[1].pos.z = 1.0f;
+    simpleMeshVertices[2].pos.z = 2.0f;
+    simpleMeshVertices[0].pos.x = -1.0f;
+    simpleMeshVertices[1].pos.x = -1.0f;
+    simpleMeshVertices[2].pos.x = 1.0f;
+    cvar vbMemory1 = Renderer::Allocate(3 * sizeof(Vector3) + 3 * sizeof(Vector2));
+    memcpy(vbMemory1, simpleMeshVertices, 3 * sizeof(Vector3) + 3 * sizeof(Vector2));
+
+    cvar triangleVB1 = Renderer::CreateVertexBuffer(3, sizeof Vector3 + sizeof Vector2, vbMemory1);
 
     cvar textureDataSize = 32 * 32 * 4;
     cvar textureData = (byte*)Renderer::Allocate(textureDataSize);
@@ -111,12 +121,18 @@ void initRendererTests()
 
         // Set shader as current
         Renderer::ApplyShader(shader, 0);
+        Renderer::ApplyTexture2D(texture, 0);
+
+        // Set triangle VB as current
+        Renderer::ApplyVertexBuffer(triangleVB1);
+        Renderer::ApplyIndexBuffer(triangleIB);
+
+        // Draw triangle
+        Renderer::DrawIndexed(3);
 
         // Set triangle VB as current
         Renderer::ApplyVertexBuffer(triangleVB);
         Renderer::ApplyIndexBuffer(triangleIB);
-
-        Renderer::ApplyTexture2D(texture, 0);
 
         // Draw triangle
         Renderer::DrawIndexed(3);

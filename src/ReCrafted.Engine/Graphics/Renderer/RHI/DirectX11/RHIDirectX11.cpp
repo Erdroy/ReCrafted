@@ -95,9 +95,7 @@ namespace Renderer
         Texture2DDesc               m_textures[RENDERER_MAX_TEXTURES2D] = {};
 
         ID3D11DepthStencilState*    m_depthStencilState;
-        ID3D11DepthStencilState*    m_depthStencilStateDisabled;
-        ID3D11DepthStencilState*    m_depthStencilStateWriteOnly;
-        ID3D11DepthStencilState*    m_depthStencilStateReadOnly;
+        ID3D11DepthStencilState*    m_depthStencilState_Disabled;
 
         // == d3d11 resources ==
         ID3D11Device*               m_device = nullptr;
@@ -334,7 +332,7 @@ namespace Renderer
             /*if(command->value)
                 m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1u);
             else
-                m_deviceContext->OMSetDepthStencilState(m_depthStencilStateDisabled, 1u);*/
+                m_deviceContext->OMSetDepthStencilState(m_depthStencilState_Disabled, 1u);*/
         }
 #pragma endregion
 
@@ -770,8 +768,24 @@ namespace Renderer
 
         void RHIDirectX11::PreFrameRender()
         {
+            // reset previous states
+            m_deviceContext->ClearState();
+
+            // Setup default state
+
             // Bind depth stencil state when needed
-            m_deviceContext->OMSetDepthStencilState(GetFlag(RenderFlags::DepthStencil) ? m_depthStencilState : nullptr, 1u);
+            var depthRead = GetFlag(RenderFlags::DepthTest);
+            var depthWrite = GetFlag(RenderFlags::DepthStencil);
+
+            if(depthRead && depthWrite)
+            {
+                m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1u);
+            }
+            else
+            {
+                m_deviceContext->OMSetDepthStencilState(m_depthStencilState_Disabled, 1u);
+            }
+
         }
 
         void RHIDirectX11::assignCommands()
@@ -834,21 +848,18 @@ namespace Renderer
             _ASSERT(SUCCEEDED(hr));
 
             // Get CPU count
-            SYSTEM_INFO sysinfo;
-            GetSystemInfo(&sysinfo);
-            int cpuCount = sysinfo.dwNumberOfProcessors;
-
+            int cpuCount = std::thread::hardware_concurrency();
             if (m_settings & Settings::SingleThreaded)
                 cpuCount = 1;
 
             // Create depth stencil state
-            D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
+            D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 
             depthStencilDesc.DepthEnable = true;
             depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
             depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
 
-            depthStencilDesc.StencilEnable = true;
+            depthStencilDesc.StencilEnable = false;
             depthStencilDesc.StencilReadMask = 0xFF;
             depthStencilDesc.StencilWriteMask = 0xFF;
 
@@ -868,20 +879,7 @@ namespace Renderer
 
             // create disabled DSS
             depthStencilDesc.DepthEnable = false;
-            depthStencilDesc.StencilEnable = false;
-            hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateDisabled);
-            _ASSERT(SUCCEEDED(hr));
-
-            // create write-only DSS
-            depthStencilDesc.DepthEnable = false;
-            depthStencilDesc.StencilEnable = true;
-            hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateWriteOnly);
-            _ASSERT(SUCCEEDED(hr));
-
-            // create read-only DSS
-            depthStencilDesc.DepthEnable = true;
-            depthStencilDesc.StencilEnable = false;
-            hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateReadOnly);
+            hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState_Disabled);
             _ASSERT(SUCCEEDED(hr));
 
             // Spawn Worker Threads

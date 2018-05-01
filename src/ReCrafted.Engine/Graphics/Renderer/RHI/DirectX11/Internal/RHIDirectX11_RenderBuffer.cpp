@@ -13,7 +13,7 @@ namespace Renderer
         context->ClearRenderTargetView(rtv, reinterpret_cast<float*>(&color));
 
         if(m_depthStencilView)
-            context->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, depth, 0);
+            context->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, depth, 0);
     }
 
     void RHIDirectX11_RenderBuffer::Bind(ID3D11DeviceContext* context, int frameIndex)
@@ -22,13 +22,8 @@ namespace Renderer
         vpd.Width = static_cast<float>(m_width);
         vpd.Height = static_cast<float>(m_height);
 
-        var depthBuffer = m_depthStencilView;
-
-        if (!GetFlag(RenderFlags::DepthTest))
-            depthBuffer = nullptr;
-
         context->RSSetViewports(1, &vpd);
-        context->OMSetRenderTargets(m_rtvCount, m_renderTargetViews, depthBuffer);
+        context->OMSetRenderTargets(m_rtvCount, m_renderTargetViews, m_depthStencilView);
     }
 
     void RHIDirectX11_RenderBuffer::Release()
