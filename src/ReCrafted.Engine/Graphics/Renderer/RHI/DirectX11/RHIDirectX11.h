@@ -18,6 +18,8 @@ namespace Renderer
             static void kickFrameEvent();
             static void waitForGPU();
 
+            void PreFrameRender();
+
         public:
             void assignCommands();
 

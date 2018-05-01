@@ -36,6 +36,9 @@ namespace Renderer
             VSync               = 1 << 3,
 
             DrawLineLists       = 1 << 4,
+
+            DepthStencil        = 1 << 5,
+            DepthTest           = 1 << 6,
         };
     };
     RENDERER_ENUM(ResetFlags);

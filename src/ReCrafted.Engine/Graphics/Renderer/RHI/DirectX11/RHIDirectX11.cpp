@@ -93,6 +93,7 @@ namespace Renderer
         IndexBufferDesc             m_indexBuffers[RENDERER_MAX_INDEX_BUFFERS] = {};
         Texture2DDesc               m_textures[RENDERER_MAX_TEXTURES2D] = {};
 
+        ID3D11DepthStencilState*    m_depthStencilState;
 
         // == d3d11 resources ==
         ID3D11Device*               m_device = nullptr;
@@ -747,6 +748,12 @@ namespace Renderer
             // TODO: impl
         }
 
+        void RHIDirectX11::PreFrameRender()
+        {
+            // Bind depth stencil state when needed
+            m_deviceContext->OMSetDepthStencilState(GetFlag(ResetFlags::DepthStencil) ? m_depthStencilState : nullptr, 1u);
+        }
+
         void RHIDirectX11::assignCommands()
         {
             uint32_t dataBegin[RENDERER_MAX_RENDER_THREADS] = {};
@@ -818,6 +825,30 @@ namespace Renderer
 
             if (m_settings & Settings::SingleThreaded)
                 cpuCount = 1;
+
+            // Create depth stencil state
+            D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
+
+            depthStencilDesc.DepthEnable = true;
+            depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+            depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+            depthStencilDesc.StencilEnable = true;
+            depthStencilDesc.StencilReadMask = 0xFF;
+            depthStencilDesc.StencilWriteMask = 0xFF;
+
+            depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+            depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+            depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+            depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+            hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState); 
+            _ASSERT(SUCCEEDED(hr));
 
             // Spawn Worker Threads
             for (var i = 0; i < cpuCount && i < RENDERER_MAX_RENDER_THREADS; i++)
@@ -906,6 +937,7 @@ namespace Renderer
             commandList.Destroy();
 
             // Destroy D3D11 objects created on main-thread
+            SafeRelease(m_depthStencilState);
             SafeRelease(m_deviceContext);
             SafeRelease(m_device);
         }
@@ -937,6 +969,7 @@ namespace Renderer
                 // Mannualy assing commands and process frame when Single-Threadeed
                 if (m_settings & Settings::SingleThreaded)
                 {
+                    PreFrameRender();
                     assignCommands();
                     thread->ProcessFrame();
                 }
@@ -978,6 +1011,8 @@ namespace Renderer
 
             if (!(m_settings & Settings::SingleThreaded))
             {
+                PreFrameRender();
+
                 // Assign new commands for all threads
                 assignCommands();
 

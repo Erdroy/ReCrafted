@@ -15,9 +15,17 @@ namespace Renderer
 
     void RHIDirectX11_RenderBuffer::Bind(ID3D11DeviceContext* context, int frameIndex)
     {
-        cvar rtv = m_renderTargetViews[frameIndex];
+        D3D11_VIEWPORT vpd = {};
+        vpd.Width = static_cast<float>(m_width);
+        vpd.Height = static_cast<float>(m_height);
 
-        context->OMSetRenderTargets(1, &rtv, m_depthStencilView);
+        var depthBuffer = m_depthStencilView;
+
+        if (!GetFlag(ResetFlags::DepthTest))
+            depthBuffer = nullptr;
+
+        context->RSSetViewports(1, &vpd);
+        context->OMSetRenderTargets(m_rtvCount, m_renderTargetViews, depthBuffer);
     }
 
     void RHIDirectX11_RenderBuffer::Release()
@@ -26,11 +34,13 @@ namespace Renderer
         delete this;
     }
 
-    RHIDirectX11_RenderBuffer* RHIDirectX11_RenderBuffer::Create(ID3D11Device* device, int textureCount, ID3D11RenderTargetView* rtvs[16], ID3D11DepthStencilView* dsv)
+    RHIDirectX11_RenderBuffer* RHIDirectX11_RenderBuffer::Create(ID3D11Device* device, uint16_t width, uint16_t height, int textureCount, ID3D11RenderTargetView* rtvs[16], ID3D11DepthStencilView* dsv)
     {
         cvar renderBuffer = new RHIDirectX11_RenderBuffer(device);
 
         // Copy resource pointers
+        renderBuffer->m_width = width;
+        renderBuffer->m_height = height;
         renderBuffer->m_rtvCount = textureCount;
         renderBuffer->m_depthStencilView = dsv;
 

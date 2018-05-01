@@ -18,6 +18,9 @@ namespace Renderer
     private:
         ID3D11Device* m_device = nullptr;
 
+        uint16_t m_width = 0u;
+        uint16_t m_height = 0u;
+
         int m_rtvCount = 0;
 
         ID3D11RenderTargetView* m_renderTargetViews[RENDERER_MAX_RENDER_BUFFER_TARGETS];
@@ -45,6 +48,12 @@ namespace Renderer
             m_depthStencilView = dsv;
         }
 
+        void SetSize(uint16_t width, uint16_t height)
+        {
+            m_width = width;
+            m_height = height;
+        }
+
     public:
         RHIDirectX11_RenderBuffer(ID3D11Device* device)
         {
@@ -60,6 +69,8 @@ namespace Renderer
     public:
         static RHIDirectX11_RenderBuffer* Create(
             ID3D11Device* device,
+            uint16_t width,
+            uint16_t height,
             int textureCount,
             ID3D11RenderTargetView* rtvs[RENDERER_MAX_RENDER_BUFFER_TARGETS],
             ID3D11DepthStencilView* dsv
