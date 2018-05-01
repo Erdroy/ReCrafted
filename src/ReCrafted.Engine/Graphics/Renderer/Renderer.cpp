@@ -383,6 +383,19 @@ namespace Renderer
 
         if (RENDERER_CHECK_HANDLE(handle.depthBuffer))
             ResizeTexture2D(handle.depthBuffer, width, height);
+
+        // write resize frame buffer command
+        Command_ResizeRenderBuffer command;
+        command.handle = handle;
+        command.texturesCount = handle.renderTextures.size();
+        command.depthTarget = handle.depthBuffer;
+        command.width = width;
+        command.height = height;
+
+        for(var i = 0u; i < command.texturesCount; i ++)
+            command.renderTargets[i] = handle.renderTextures[i];
+
+        g_commandList->WriteCommand(&command);
     }
 
     void ApplyRenderBuffer(RenderBufferHandle handle)

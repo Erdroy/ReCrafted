@@ -75,6 +75,7 @@ namespace Renderer
         ResetFlags::_enum           m_resetFlags;
 
 
+
         // == events ==
         HANDLE                      m_workerFinishEvents[RENDERER_MAX_RENDER_THREADS];
         HANDLE                      m_workerFrameEvents[RENDERER_MAX_RENDER_THREADS];
@@ -145,6 +146,7 @@ namespace Renderer
             FORCEINLINE void Execute_ResizeFrameBuffer(Command_ResizeFrameBuffer* command);
 
             FORCEINLINE void Execute_CreateRenderBuffer(Command_CreateRenderBuffer* command);
+            FORCEINLINE void Execute_ResizeRenderBuffer(Command_ResizeRenderBuffer* command);
             FORCEINLINE void Execute_ClearRenderBuffer(Command_ClearRenderBuffer* command);
             FORCEINLINE void Execute_ApplyRenderBuffer(Command_ApplyRenderBuffer* command);
             FORCEINLINE void Execute_DestroyRenderBuffer(Command_DestroyRenderBuffer* command);
@@ -182,21 +184,11 @@ namespace Renderer
 
         void WorkerThreadInstance::InitializeWorker()
         {
-            HRESULT hr;
-            hr = m_device->CreateDeferredContext(0, &m_context);
-
-            if(FAILED(hr))
-            {
-                Internal::Fatal("Failed to create D3D11 deferred context!");
-                return;
-            }
+            var hr = m_device->CreateDeferredContext(0, &m_context);
+            _ASSERT(SUCCEEDED(hr));
 
             m_fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-
-            if (m_fenceEvent == nullptr)
-            {
-                Internal::Fatal("Failed to create event!");
-            }
+            _ASSERT(m_fenceEvent != nullptr);
 
             // we are done with worker thread setup now
         }
@@ -263,21 +255,6 @@ namespace Renderer
                 cvar command = m_commandList.ReadCommand<Command_ApplyWindow>(position);
                 cvar idx = command.window.idx;
 
-                uint width;
-                uint height;
-
-                // get window description and it's size
-                rvar windowDesc = m_windows[idx];
-                windowDesc.GetSize(&width, &height);
-
-                // create and set viewport with size of the current window
-                D3D11_VIEWPORT vpd = {};
-                vpd.Width = static_cast<float>(width);                
-                vpd.Height = static_cast<float>(height);
-
-                D3D11_VIEWPORT viewport[] = { vpd };
-                m_context->RSSetViewports(1, viewport);
-
                 // set window's swapchain as current
                 m_swapChain = m_swapChains[idx];
                 break;
@@ -310,6 +287,7 @@ namespace Renderer
             DEFINE_COMMAND_EXECUTOR(ResizeFrameBuffer);
 
             DEFINE_COMMAND_EXECUTOR(CreateRenderBuffer);
+            DEFINE_COMMAND_EXECUTOR(ResizeRenderBuffer);
             DEFINE_COMMAND_EXECUTOR(ClearRenderBuffer);
             DEFINE_COMMAND_EXECUTOR(ApplyRenderBuffer);
             DEFINE_COMMAND_EXECUTOR(DestroyRenderBuffer);
@@ -404,7 +382,7 @@ namespace Renderer
 
             // WARNING: No depth stencil view for back buffers!
             // TODO: Create depth stencil view
-
+            renderBuffer->SetSize(command->width, command->height);
             renderBuffer->SetRTVs(renderTargets);
         }
 
@@ -561,7 +539,34 @@ namespace Renderer
             }
 
             // create render buffer
-            m_renderBuffers[command->handle.idx] = RHIDirectX11_RenderBuffer::Create(m_device, command->texturesCount, rtvs.data(), dsv);
+            m_renderBuffers[command->handle.idx] = RHIDirectX11_RenderBuffer::Create(m_device, command->width, command->height, command->texturesCount, rtvs.data(), dsv);
+        }
+
+        void WorkerThreadInstance::Execute_ResizeRenderBuffer(Command_ResizeRenderBuffer* command)
+        {
+            rvar buffer = m_renderBuffers[command->handle.idx];
+            _ASSERT(buffer != nullptr);
+
+            _ASSERT(command->width >= 16);
+            _ASSERT(command->height >= 16);
+
+            // set size
+            buffer->SetSize(command->width, command->height);
+
+            // rebind all textures
+            // select rtv's
+            // TODO: Set RTVs
+            std::vector<ID3D11RenderTargetView*> rtvs = {};
+            for (var i = 0u; i < command->texturesCount; i++)
+            {
+                cvar texture = m_textures[command->renderTargets[i].idx];
+                _ASSERT(texture.rtv != nullptr);
+                rtvs.push_back(texture.rtv);
+            }
+            buffer->SetRTVs(rtvs.data());
+
+            if (RENDERER_CHECK_HANDLE(command->depthTarget))
+                buffer->SetDSV(m_textures[command->depthTarget.idx].dsv);
         }
 
         void WorkerThreadInstance::Execute_ClearRenderBuffer(Command_ClearRenderBuffer* command)
@@ -785,7 +790,7 @@ namespace Renderer
 
             if (m_resetFlags & ResetFlags::TripleBuffered)
             {
-                Internal::Fatal("D3D11 does not support tripple buffering, yet!");
+                _ASSERT(false); // D3D11 does not support tripple buffering, yet!
                 return;
             }
 
@@ -811,12 +816,7 @@ namespace Renderer
                 &level,
                 &m_deviceContext
             );
-
-            if (FAILED(hr))
-            {
-                Internal::Fatal("Could not create device!");
-                return;
-            }
+            _ASSERT(SUCCEEDED(hr));
 
             // Get CPU count
             SYSTEM_INFO sysinfo;
@@ -857,17 +857,11 @@ namespace Renderer
 
                 // Create frame done signal event
                 m_workerFrameEvents[i] = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-                if (m_workerFrameEvents[i] == nullptr)
-                {
-                    Internal::Fatal("Failed to create event!");
-                }
+                _ASSERT(m_workerFrameEvents[i] != nullptr);
 
                 // Create worker finish signal event
                 m_workerFinishEvents[i] = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-                if (m_workerFinishEvents[i] == nullptr)
-                {
-                    Internal::Fatal("Failed to create event!");
-                }
+                _ASSERT(m_workerFinishEvents[i] != nullptr);
 
                 workerInstance->threadId = i;
                 workerInstance->m_commandList = {};
@@ -977,12 +971,7 @@ namespace Renderer
                 // Finish D3D11 command list
                 CComPtr<ID3D11CommandList> commandList = nullptr;
                 var hr = thread->m_context->FinishCommandList(FALSE, &commandList);
-
-                if (FAILED(hr))
-                {
-                    Internal::Fatal("Failed to finish command list!");
-                    return;
-                }
+                _ASSERT(SUCCEEDED(hr));
 
                 // Add current thread's command list
                 commandLists.push_back(commandList);
@@ -1002,11 +991,7 @@ namespace Renderer
             if (m_swapChain)
             {
                 var hr = m_swapChain->Present(m_resetFlags & ResetFlags::VSync ? 1 : 0, 0);
-
-                if (FAILED(hr))
-                {
-                    Internal::Fatal("Failed to present frame!");
-                }
+                _ASSERT(SUCCEEDED(hr));
             }
 
             if (!(m_settings & Settings::SingleThreaded))
@@ -1056,30 +1041,15 @@ namespace Renderer
 
             IDXGIDevice* device;
             var hr = m_device->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&device));
-
-            if (FAILED(hr))
-            {
-                Internal::Fatal("Failed to query IDXGI device. (QueryInterface)");
-                return;
-            }
+            _ASSERT(SUCCEEDED(hr));
 
             IDXGIAdapter* adapter;
             hr = device->GetParent(__uuidof(IDXGIAdapter), reinterpret_cast<void**>(&adapter));
-
-            if (FAILED(hr))
-            {
-                Internal::Fatal("Failed to get parent(adapter) of device. (GetParent)");
-                return;
-            }
+            _ASSERT(SUCCEEDED(hr));
 
             IDXGIFactory* factory;
             hr = adapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&factory));
-
-            if (FAILED(hr))
-            {
-                Internal::Fatal("Failed to get parent(factory) of adapter. (GetParent)");
-                return;
-            }
+            _ASSERT(SUCCEEDED(hr));
 
             // Create the Swap Chain
             DXGI_SAMPLE_DESC sampleDesc;
@@ -1103,12 +1073,7 @@ namespace Renderer
 
             IDXGISwapChain* tempSwapChain;
             hr = factory->CreateSwapChain(m_device, &swapChainDesc, &tempSwapChain);
-
-            if (FAILED(hr))
-            {
-                Internal::Fatal("Could not create swap chain!");
-                return;
-            }
+            _ASSERT(SUCCEEDED(hr));
 
             m_swapChains[window.idx] = static_cast<IDXGISwapChain*>(tempSwapChain);
 
@@ -1120,11 +1085,7 @@ namespace Renderer
             {
                 ID3D11Resource* resource = nullptr;
                 hr = m_swapChain->GetBuffer(i, IID_PPV_ARGS(&resource));
-
-                if (FAILED(hr))
-                {
-                    Internal::Fatal("Could not create render target!");
-                }
+                _ASSERT(SUCCEEDED(hr));
 
                 m_device->CreateRenderTargetView(resource, nullptr, &renderTargets[i]);
                 SafeRelease(resource);
@@ -1141,7 +1102,7 @@ namespace Renderer
             m_windows[window.idx] = windowDesc;
 
             // Build 'proxy' render buffer
-            m_renderBuffers[renderBufferHandle.idx] = RHIDirectX11_RenderBuffer::Create(m_device, bufferCount, renderTargets, nullptr);
+            m_renderBuffers[renderBufferHandle.idx] = RHIDirectX11_RenderBuffer::Create(m_device, width, height, bufferCount, renderTargets, nullptr);
 
             SafeRelease(factory);
             SafeRelease(adapter);

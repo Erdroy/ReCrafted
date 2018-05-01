@@ -33,6 +33,7 @@ namespace Renderer
             ResizeFrameBuffer,
 
             CreateRenderBuffer,
+            ResizeRenderBuffer,
             ApplyRenderBuffer,
             ClearRenderBuffer,
             DestroyRenderBuffer,
@@ -82,18 +83,30 @@ namespace Renderer
     Command(ResizeFrameBuffer,
         RenderBufferHandle handle;
         WindowHandle windowHandle;
+        Texture2DHandle renderTargets[RENDERER_MAX_RENDER_BUFFER_TARGETS];
+        Texture2DHandle depthTarget;
         uint16_t width;
         uint16_t height;
+        uint8_t texturesCount;
     );
 
     Command(CreateRenderBuffer,
         RenderBufferHandle handle;
         uint16_t width;
         uint16_t height;
-        uint8_t texturesCount;
         Texture2DHandle renderTargets[RENDERER_MAX_RENDER_BUFFER_TARGETS];
         Texture2DHandle depthTarget;
+        uint8_t texturesCount;
         bool createDepthStencil;
+    );
+
+    Command(ResizeRenderBuffer,
+        RenderBufferHandle handle;
+        Texture2DHandle renderTargets[RENDERER_MAX_RENDER_BUFFER_TARGETS];
+        Texture2DHandle depthTarget;
+        uint16_t width;
+        uint16_t height;
+        uint8_t texturesCount;
     );
 
     Command(ApplyRenderBuffer,

@@ -78,14 +78,13 @@ void initRendererTests()
             textureData[x + y * 32 * 4 + 3] = 255;
         }
     }
-
-
-    Renderer::TextureFormat::_enum textureFormats[2] = { Renderer::TextureFormat::RGBA8, Renderer::TextureFormat::R8 };
-    cvar renderBuffer = Renderer::CreateRenderBuffer(800, 600, textureFormats, 2, Renderer::TextureFormat::D32F);
     cvar texture = Renderer::CreateTexture2D(32, 32, Renderer::TextureFormat::RGBA8, textureData, textureDataSize);
 
-    //Renderer::ResizeWindow(window, 1280, 720);
-    //Renderer::ResizeRenderBuffer(renderBuffer, 1280, 720);
+
+    Renderer::TextureFormat::_enum textureFormats[1] = { Renderer::TextureFormat::RGBA8 };
+    cvar renderBuffer = Renderer::CreateRenderBuffer(1280, 720, textureFormats, 1, Renderer::TextureFormat::D32);
+
+    Renderer::ResizeRenderBuffer(renderBuffer, 3840, 2160);
 
     MSG msg = {};
 
@@ -100,8 +99,9 @@ void initRendererTests()
 
         // Set output as current
         Renderer::ApplyWindow(window);
-        Renderer::ApplyRenderBuffer(frameBuffer);
-        Renderer::ClearRenderBuffer(frameBuffer, clearColor);
+
+        Renderer::ApplyRenderBuffer(renderBuffer);
+        Renderer::ClearRenderBuffer(renderBuffer, clearColor);
 
         // Set shader value
         var newValue = Vector4(1.0f, 0.5f, 0.0f, 1.0f);
@@ -118,6 +118,9 @@ void initRendererTests()
 
         // Draw triangle
         Renderer::DrawIndexed(3);
+
+        // blit renderbuffer[0] into framebuffer
+        Renderer::Blit(frameBuffer, renderBuffer.renderTextures[0]);
 
         // Push frame
         Renderer::Frame();
