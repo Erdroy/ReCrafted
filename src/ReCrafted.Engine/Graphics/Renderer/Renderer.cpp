@@ -63,6 +63,7 @@ namespace Renderer
 	static bool m_running = false;
 	static RHI::RHIBase* m_renderer;
 
+    ResetFlags::_enum m_resetFlags;
 #if RENDERER_MEMORY_AUTO_DEALLOC_ENABLE
     // we don't really want to use our Array<T> type here, 
     // vector will still use rpmalloc due to overloaded new/delete operators
@@ -104,6 +105,8 @@ namespace Renderer
 	{
         // get main thread index
         g_mainThreadId = std::this_thread::get_id();
+
+        m_resetFlags = flags;
 
 		switch (api)
 		{
@@ -189,18 +192,12 @@ namespace Renderer
 
     void SetFlag(ResetFlags::_enum flag, bool value)
     {
-        CHECK_MAIN_THREAD();
-
         // TODO: NOT IMPLEMENTED!
     }
 
     bool GetFlag(ResetFlags::_enum flag)
     {
-        CHECK_MAIN_THREAD();
-
-        // TODO: NOT IMPLEMENTED!
-
-        return false;
+        return (m_resetFlags & flag);
     }
 
     void SetAnisotropicFiltering(AnisotropicFiltering::_enum filtering)
