@@ -27,7 +27,7 @@ namespace Renderer
 		volatile bool               m_running;
 		int                         m_workerThreadCount;
 		Settings::_enum             m_settings;
-        ResetFlags::_enum           m_resetFlags;
+        RenderFlags::_enum           m_renderFlags;
 
 
         // == events ==
@@ -359,10 +359,10 @@ namespace Renderer
 			}
 		}
 
-		void RHIDirectX12::Initialize(Settings::_enum settings, ResetFlags::_enum flags)
+		void RHIDirectX12::Initialize(Settings::_enum settings, RenderFlags::_enum flags)
 		{
 			m_settings = settings;
-            m_resetFlags = flags;
+            m_renderFlags = flags;
 			m_running = true;
 
 			HRESULT hr;
@@ -649,23 +649,23 @@ namespace Renderer
 
             auto sampleCount = 1;
 
-            if(m_resetFlags & ResetFlags::MSAAx2)
+            if(m_renderFlags & RenderFlags::MSAAx2)
                 sampleCount *= 2;
 
-            if (m_resetFlags & ResetFlags::MSAAx4)
+            if (m_renderFlags & RenderFlags::MSAAx4)
                 sampleCount *= 4;
 
             DXGI_SAMPLE_DESC sampleDesc;
             sampleDesc.Count = sampleCount;
             sampleDesc.Quality = 0;
-            auto bufferCount = m_resetFlags & ResetFlags::TripleBuffered ? FrameBufferCount : 1;
+            auto bufferCount = m_renderFlags & RenderFlags::TripleBuffered ? FrameBufferCount : 1;
 
 		    // Describe and create the swap chain.
             DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
             swapChainDesc.BufferCount = bufferCount; // number of buffers we have
             swapChainDesc.BufferDesc = backBufferDesc; // our back buffer description
             swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // this says the pipeline will render to this swap chain
-		    swapChainDesc.SwapEffect = m_resetFlags & ResetFlags::TripleBuffered ? DXGI_SWAP_EFFECT_FLIP_DISCARD; // dxgi will discard the buffer (data) after we call present
+		    swapChainDesc.SwapEffect = m_renderFlags & RenderFlags::TripleBuffered ? DXGI_SWAP_EFFECT_FLIP_DISCARD; // dxgi will discard the buffer (data) after we call present
             swapChainDesc.OutputWindow = hWnd; // handle to our window
             swapChainDesc.SampleDesc = sampleDesc; // our multi-sampling description
             swapChainDesc.Windowed = true; // set to true, then if in fullscreen must call SetFullScreenState with true for full screen to get uncapped fps

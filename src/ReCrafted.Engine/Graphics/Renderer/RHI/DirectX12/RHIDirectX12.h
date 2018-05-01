@@ -22,7 +22,7 @@ namespace Renderer
 			void assignCommands();
 
 		public:
-			void Initialize(Settings::_enum settings, ResetFlags::_enum flags) override;
+			void Initialize(Settings::_enum settings, RenderFlags::_enum flags) override;
 			void Shutdown() override;
 
 		public:

@@ -63,7 +63,7 @@ namespace Renderer
 	static bool m_running = false;
 	static RHI::RHIBase* m_renderer;
 
-    ResetFlags::_enum m_resetFlags;
+    RenderFlags::_enum m_renderFlags;
 
     ShaderHandle m_blitShader;
     VertexBufferHandle m_quadVB; 
@@ -106,12 +106,12 @@ namespace Renderer
 #endif
     }
 
-	void Initialize(RendererAPI::_enum api, ResetFlags::_enum flags, Settings::_enum settings)
+	void Initialize(RendererAPI::_enum api, RenderFlags::_enum flags, Settings::_enum settings)
 	{
         // get main thread index
         g_mainThreadId = std::this_thread::get_id();
 
-        m_resetFlags = flags;
+        m_renderFlags = flags;
 
 		switch (api)
 		{
@@ -124,7 +124,7 @@ namespace Renderer
 #endif
 #if RENDERER_RENDERER_D3D11
 		case RendererAPI::DirectX11:
-            m_renderer = new RHI::RHIDirectX11;
+            m_renderer = new RHI::RHIDirectX11();
             m_renderer->Initialize(settings, flags);
             g_commandList = &m_renderer->commandList;
             break;
@@ -215,14 +215,17 @@ namespace Renderer
         delete[] static_cast<byte*>(memory);
     }
 
-    void SetFlag(ResetFlags::_enum flag, bool value)
+    void SetFlag(RenderFlags::_enum flag, bool value)
     {
-        // TODO: NOT IMPLEMENTED!
+        Command_SetFlag command;
+        command.flag = flag;
+        command.value = value;
+        g_commandList->WriteCommand(&command);
     }
 
-    bool GetFlag(ResetFlags::_enum flag)
+    bool GetFlag(RenderFlags::_enum flag)
     {
-        return (m_resetFlags & flag);
+        return (m_renderFlags & flag) != 0;
     }
 
     void SetAnisotropicFiltering(AnisotropicFiltering::_enum filtering)
@@ -387,7 +390,7 @@ namespace Renderer
         // write resize frame buffer command
         Command_ResizeRenderBuffer command;
         command.handle = handle;
-        command.texturesCount = handle.renderTextures.size();
+        command.texturesCount = static_cast<uint8_t>(handle.renderTextures.size());
         command.depthTarget = handle.depthBuffer;
         command.width = width;
         command.height = height;
@@ -409,7 +412,7 @@ namespace Renderer
         g_commandList->WriteCommand(&command);
     }
 
-    void ClearRenderBuffer(RenderBufferHandle handle, Color color)
+    void ClearRenderBuffer(RenderBufferHandle handle, Color color, bool depth)
     {
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
@@ -417,6 +420,7 @@ namespace Renderer
         Command_ClearRenderBuffer command;
         command.handle = handle;
         command.color = color;
+        command.depth = depth;
 
         g_commandList->WriteCommand(&command);
     }
@@ -696,7 +700,6 @@ namespace Renderer
             ApplyShader(m_blitShader, 0);
         }
 
-
         // bind render target
         ApplyRenderBuffer(destination);
 
@@ -707,8 +710,15 @@ namespace Renderer
         ApplyVertexBuffer(m_quadVB);
         ApplyIndexBuffer(m_quadIB);
 
+        // disable depth test
+        cvar depthTest = GetFlag(RenderFlags::DepthTest);
+        SetFlag(RenderFlags::DepthTest, false);
+
         // draw the quad
         DrawIndexed(6);
+
+        // re-enable depth-test when needed
+        SetFlag(RenderFlags::DepthTest, depthTest);
 
         // done.
     }

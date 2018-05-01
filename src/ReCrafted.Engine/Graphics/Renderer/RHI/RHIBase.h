@@ -21,7 +21,7 @@ namespace Renderer
 			virtual ~RHIBase() = default;
 
 		public:
-			virtual void Initialize(Settings::_enum settings, ResetFlags::_enum flags) = 0;
+			virtual void Initialize(Settings::_enum settings, RenderFlags::_enum flags) = 0;
 			virtual void Shutdown() = 0;
 
 		public:

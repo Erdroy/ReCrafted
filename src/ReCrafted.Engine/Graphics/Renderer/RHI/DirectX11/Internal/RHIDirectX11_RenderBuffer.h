@@ -60,7 +60,7 @@ namespace Renderer
             m_device = device;
         }
 
-        void Clear(ID3D11DeviceContext* context, Color color, unsigned int depthMask = 0x0, int frameIndex = -1);
+        void Clear(ID3D11DeviceContext* context, Color color, float depth, int frameIndex = -1);
 
         void Bind(ID3D11DeviceContext* context, int frameIndex = -1);
 

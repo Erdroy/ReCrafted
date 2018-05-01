@@ -8,6 +8,7 @@
 #include "Core/Math/Vector2.h"
 #include "Core/Math/Vector3.h"
 #include "Core/Math/Vector4.h"
+#include "Core/Logger.h"
 
 #if RENDERER_TEST
 
@@ -20,7 +21,7 @@ void initRendererTests()
     // Initialize Renderer
     Renderer::Initialize(
         Renderer::RendererAPI::DirectX11,
-        Renderer::ResetFlags::VSync,
+        Renderer::RenderFlags::DepthTest | Renderer::RenderFlags::DepthStencil,
         Renderer::Settings::Debug
     );
 
@@ -96,6 +97,7 @@ void initRendererTests()
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
+        var start = Platform::getMiliseconds();
 
         // Set output as current
         Renderer::ApplyWindow(window);
@@ -125,6 +127,8 @@ void initRendererTests()
         // Push frame
         Renderer::Frame();
 
+        var time = Platform::getMiliseconds() - start;
+        Logger::log("Frame render time: {0}", time);
     }
 
     Renderer::DestroyRenderBuffer(renderBuffer);

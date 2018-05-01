@@ -72,7 +72,7 @@ namespace Renderer
         volatile bool               m_running;
         int                         m_workerThreadCount;
         Settings::_enum             m_settings;
-        ResetFlags::_enum           m_resetFlags;
+        RenderFlags::_enum          m_renderFlags;
 
 
 
@@ -95,6 +95,9 @@ namespace Renderer
         Texture2DDesc               m_textures[RENDERER_MAX_TEXTURES2D] = {};
 
         ID3D11DepthStencilState*    m_depthStencilState;
+        ID3D11DepthStencilState*    m_depthStencilStateDisabled;
+        ID3D11DepthStencilState*    m_depthStencilStateWriteOnly;
+        ID3D11DepthStencilState*    m_depthStencilStateReadOnly;
 
         // == d3d11 resources ==
         ID3D11Device*               m_device = nullptr;
@@ -140,6 +143,8 @@ namespace Renderer
             void Cleanup();
 
         public:
+            FORCEINLINE void Execute_SetFlag(Command_SetFlag* command);
+
             FORCEINLINE void Execute_Draw(Command_Draw* command);
             FORCEINLINE void Execute_DrawIndexed(Command_DrawIndexed* command);
 
@@ -281,6 +286,8 @@ namespace Renderer
                 shader->SetValue(command.bufferId, command.fieldId, data, command.dataSize);
                 break;
             }
+            DEFINE_COMMAND_EXECUTOR(SetFlag);
+
             DEFINE_COMMAND_EXECUTOR(Draw);
             DEFINE_COMMAND_EXECUTOR(DrawIndexed);
 
@@ -321,13 +328,21 @@ namespace Renderer
 
             SafeRelease(m_context);
         }
+
+        void WorkerThreadInstance::Execute_SetFlag(Command_SetFlag* command)
+        {
+            /*if(command->value)
+                m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1u);
+            else
+                m_deviceContext->OMSetDepthStencilState(m_depthStencilStateDisabled, 1u);*/
+        }
 #pragma endregion
 
         // ========== WorkerThreadInstance::Executors ==========
 #pragma region WorkerThread command execution implementation
         void WorkerThreadInstance::Execute_Draw(Command_Draw* command)
         {
-            if (m_resetFlags & ResetFlags::DrawLineLists)
+            if (m_renderFlags & RenderFlags::DrawLineLists)
                 m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
             else
                 m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -337,7 +352,7 @@ namespace Renderer
 
         void WorkerThreadInstance::Execute_DrawIndexed(Command_DrawIndexed* command)
         {
-            if (m_resetFlags & ResetFlags::DrawLineLists)
+            if (m_renderFlags & RenderFlags::DrawLineLists)
                 m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
             else
                 m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -353,7 +368,7 @@ namespace Renderer
             _ASSERT(renderBuffer != nullptr);
             _ASSERT(swapChain != nullptr);
 
-            cvar bufferCount = m_resetFlags & ResetFlags::TripleBuffered ? FrameBufferCount : 1;
+            cvar bufferCount = m_renderFlags & RenderFlags::TripleBuffered ? FrameBufferCount : 1;
             cvar bufferFormat = m_settings & Settings::BGRAFrameBuffer ? DXGI_FORMAT_B8G8R8A8_UNORM : DXGI_FORMAT_R8G8B8A8_UNORM;
             
             // destroy render targets
@@ -576,7 +591,7 @@ namespace Renderer
 
             // TODO: check if we can pass frame index (is it back buffer - render buffer)
 
-            buffer->Clear(m_context, command->color, 0x0, 0);
+            buffer->Clear(m_context, command->color, command->depth, 0);
         }
 
         void WorkerThreadInstance::Execute_ApplyRenderBuffer(Command_ApplyRenderBuffer* command)
@@ -756,7 +771,7 @@ namespace Renderer
         void RHIDirectX11::PreFrameRender()
         {
             // Bind depth stencil state when needed
-            m_deviceContext->OMSetDepthStencilState(GetFlag(ResetFlags::DepthStencil) ? m_depthStencilState : nullptr, 1u);
+            m_deviceContext->OMSetDepthStencilState(GetFlag(RenderFlags::DepthStencil) ? m_depthStencilState : nullptr, 1u);
         }
 
         void RHIDirectX11::assignCommands()
@@ -782,13 +797,13 @@ namespace Renderer
             }
         }
 
-        void RHIDirectX11::Initialize(Settings::_enum settings, ResetFlags::_enum flags)
+        void RHIDirectX11::Initialize(Settings::_enum settings, RenderFlags::_enum flags)
         {
             m_settings = settings;
-            m_resetFlags = flags;
+            m_renderFlags = flags;
             m_running = true;
 
-            if (m_resetFlags & ResetFlags::TripleBuffered)
+            if (m_renderFlags & RenderFlags::TripleBuffered)
             {
                 _ASSERT(false); // D3D11 does not support tripple buffering, yet!
                 return;
@@ -847,7 +862,26 @@ namespace Renderer
             depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
             depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
+            // create regular full DSS
             hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState); 
+            _ASSERT(SUCCEEDED(hr));
+
+            // create disabled DSS
+            depthStencilDesc.DepthEnable = false;
+            depthStencilDesc.StencilEnable = false;
+            hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateDisabled);
+            _ASSERT(SUCCEEDED(hr));
+
+            // create write-only DSS
+            depthStencilDesc.DepthEnable = false;
+            depthStencilDesc.StencilEnable = true;
+            hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateWriteOnly);
+            _ASSERT(SUCCEEDED(hr));
+
+            // create read-only DSS
+            depthStencilDesc.DepthEnable = true;
+            depthStencilDesc.StencilEnable = false;
+            hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateReadOnly);
             _ASSERT(SUCCEEDED(hr));
 
             // Spawn Worker Threads
@@ -908,6 +942,9 @@ namespace Renderer
                 m_workerThreads[idx] = nullptr;
                 idx++;
             }
+
+            // clear state
+            m_deviceContext->ClearState();
 
             // Destroy outputs (if not released)
             for (var i = 0; i < RENDERER_MAX_WINDOWS; i++)
@@ -990,7 +1027,7 @@ namespace Renderer
             // Present frame
             if (m_swapChain)
             {
-                var hr = m_swapChain->Present(m_resetFlags & ResetFlags::VSync ? 1 : 0, 0);
+                var hr = m_swapChain->Present(m_renderFlags & RenderFlags::VSync ? 1 : 0, 0);
                 _ASSERT(SUCCEEDED(hr));
             }
 
@@ -1029,14 +1066,14 @@ namespace Renderer
             UINT width = windowRect.right - windowRect.left;
             UINT height = windowRect.bottom - windowRect.top;
 
-            var bufferCount = m_resetFlags & ResetFlags::TripleBuffered ? FrameBufferCount : 1;
+            var bufferCount = m_renderFlags & RenderFlags::TripleBuffered ? FrameBufferCount : 1;
 
             var sampleCount = 1;
 
-            if (m_resetFlags & ResetFlags::MSAAx2)
+            if (m_renderFlags & RenderFlags::MSAAx2)
                 sampleCount *= 2;
 
-            if (m_resetFlags & ResetFlags::MSAAx4)
+            if (m_renderFlags & RenderFlags::MSAAx4)
                 sampleCount *= 4;
 
             IDXGIDevice* device;

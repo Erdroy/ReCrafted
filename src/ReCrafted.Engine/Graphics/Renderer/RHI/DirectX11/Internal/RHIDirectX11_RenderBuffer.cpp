@@ -5,12 +5,15 @@
 
 namespace Renderer
 {
-    void RHIDirectX11_RenderBuffer::Clear(ID3D11DeviceContext* context, Color color, unsigned depthMask, int frameIndex)
+    void RHIDirectX11_RenderBuffer::Clear(ID3D11DeviceContext* context, Color color, float depth, int frameIndex)
     {
         cvar rtv = m_renderTargetViews[frameIndex];
 
         // Clear the render target by using the ClearRenderTargetView command
         context->ClearRenderTargetView(rtv, reinterpret_cast<float*>(&color));
+
+        if(m_depthStencilView)
+            context->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, depth, 0);
     }
 
     void RHIDirectX11_RenderBuffer::Bind(ID3D11DeviceContext* context, int frameIndex)
@@ -21,7 +24,7 @@ namespace Renderer
 
         var depthBuffer = m_depthStencilView;
 
-        if (!GetFlag(ResetFlags::DepthTest))
+        if (!GetFlag(RenderFlags::DepthTest))
             depthBuffer = nullptr;
 
         context->RSSetViewports(1, &vpd);

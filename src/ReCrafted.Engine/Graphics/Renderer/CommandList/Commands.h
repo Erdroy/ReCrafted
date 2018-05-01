@@ -24,6 +24,8 @@ namespace Renderer
 		{
 			Unknown,
 
+            SetFlag,
+
             Draw,
             DrawIndexed,
 
@@ -65,9 +67,15 @@ namespace Renderer
 
     Command(Unknown, );
 
+    Command(SetFlag,
+        RenderFlags::_enum flag = RenderFlags::None;
+        bool value = false;
+    );
+
     Command(Draw,
         uint vertexCount = 0u;
     );
+
     Command(DrawIndexed,
         uint indexCount = 0u;
     );
@@ -116,6 +124,7 @@ namespace Renderer
     Command(ClearRenderBuffer,
         RenderBufferHandle handle;
         Color color;
+        float depth = 1.0f;
     );
 
     Command(DestroyRenderBuffer,

@@ -25,7 +25,7 @@ namespace Renderer
 	};
 	RENDERER_ENUM(Settings);
 
-    struct ResetFlags
+    struct RenderFlags
     {
         enum _enum : char
         {
@@ -41,7 +41,7 @@ namespace Renderer
             DepthTest           = 1 << 6,
         };
     };
-    RENDERER_ENUM(ResetFlags);
+    RENDERER_ENUM(RenderFlags);
 
 	struct RendererAPI
 	{
@@ -322,7 +322,7 @@ namespace Renderer
     /// <param name="api">The renderer API to be used, it can be set only once.</param>
     /// <param name="flags">The renderer flags.</param>
     /// <param name="settings">The renderer settings.</param>
-	RENDERER_FUNCTION(void)                     Initialize(RendererAPI::_enum api, ResetFlags::_enum flags, Settings::_enum settings);
+	RENDERER_FUNCTION(void)                     Initialize(RendererAPI::_enum api, RenderFlags::_enum flags, Settings::_enum settings);
 
     /// <summary>
     /// Checks if Renderer is initialized.
@@ -350,16 +350,15 @@ namespace Renderer
 
     /// <summary>
     /// Frees given memory pointer.
-    /// 
     /// </summary>
     /// <param name="memory">The memory pointer to be released.</param>
     RENDERER_FUNCTION(void)                     Free(RendererMemory memory);
 
     // TODO: NOT IMPLEMENTED!
-    RENDERER_FUNCTION(void)                     SetFlag(ResetFlags::_enum flag, bool value);
+    RENDERER_FUNCTION(void)                     SetFlag(RenderFlags::_enum flag, bool value);
 
     // TODO: NOT IMPLEMENTED!
-    RENDERER_FUNCTION(bool)                     GetFlag(ResetFlags::_enum flag);
+    RENDERER_FUNCTION(bool)                     GetFlag(RenderFlags::_enum flag);
 
     // TODO: NOT IMPLEMENTED!
     RENDERER_FUNCTION(void)                     SetAnisotropicFiltering(AnisotropicFiltering::_enum filtering);
@@ -447,7 +446,8 @@ namespace Renderer
     /// </summary>
     /// <param name="handle">The render buffer handle.</param>
     /// <param name="color">The color which will be used to clear the render buffer.</param>
-    RENDERER_FUNCTION(void)                     ClearRenderBuffer(RenderBufferHandle handle, Color color);
+    /// <param name="depth">The depth value which will be used to fill the depth buffer.</param>
+    RENDERER_FUNCTION(void)                     ClearRenderBuffer(RenderBufferHandle handle, Color color, bool depth = 1.0f);
 
     /// <summary>
     /// Destroys given render buffer.
