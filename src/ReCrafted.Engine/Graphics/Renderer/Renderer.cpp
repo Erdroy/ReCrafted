@@ -64,6 +64,11 @@ namespace Renderer
 	static RHI::RHIBase* m_renderer;
 
     ResetFlags::_enum m_resetFlags;
+
+    ShaderHandle m_blitShader;
+    VertexBufferHandle m_quadVB; 
+    IndexBufferHandle m_quadIB;
+
 #if RENDERER_MEMORY_AUTO_DEALLOC_ENABLE
     // we don't really want to use our Array<T> type here, 
     // vector will still use rpmalloc due to overloaded new/delete operators
@@ -137,6 +142,26 @@ namespace Renderer
 			break;
 		}
 		m_running = true;
+
+        // load shaders
+        m_blitShader = CreateShader("shaders/blit.shader");
+
+        // create quad mesh
+        static float quadVertices[16] = {
+        //   position     uv
+            -1.0f,  1.0f, 0.0f, 0.0f,
+             1.0f,  1.0f, 1.0f, 0.0f,
+             1.0f, -1.0f, 1.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f, 1.0f
+        };
+
+        static uint16_t quadIndices[6] = {
+            0, 1, 2,
+            3, 0, 2
+        };
+
+        m_quadVB = CreateVertexBuffer(4, sizeof(float) * 4, reinterpret_cast<RendererMemory>(&quadVertices), false);
+        m_quadIB = CreateIndexBuffer(6, reinterpret_cast<RendererMemory>(&quadIndices), false);
 	}
 
 	bool IsInitialized()
@@ -523,7 +548,8 @@ namespace Renderer
         RENDERER_VALIDATE_HANDLE(handle);
 
         // set texture format
-        Texture2DHandle_table[handle.idx].textureFormat = textureFormat;
+        rvar texture = Texture2DHandle_table[handle.idx];
+        texture.textureFormat = textureFormat;
 
         // create texture2d command
         Command_CreateTexture2D command;
@@ -644,4 +670,33 @@ namespace Renderer
         FreeShaderHandle(handle);
     }
 
+    void Blit(RenderBufferHandle destination, Texture2DHandle source, ShaderHandle customShader)
+    {
+        if(RENDERER_CHECK_HANDLE(customShader))
+        {
+            // bind custom shader
+            ApplyShader(customShader, 0);
+        }
+        else
+        {
+            // bind shader
+            ApplyShader(m_blitShader, 0);
+        }
+
+
+        // bind render target
+        ApplyRenderBuffer(destination);
+
+        // bind texture
+        ApplyTexture2D(source, 0u);
+
+        // apply vertex and index buffer
+        ApplyVertexBuffer(m_quadVB);
+        ApplyIndexBuffer(m_quadIB);
+
+        // draw the quad
+        DrawIndexed(6);
+
+        // done.
+    }
 }
