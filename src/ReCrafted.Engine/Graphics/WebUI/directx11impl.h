@@ -10,7 +10,6 @@
 #include <d3d11.h>
 #include <direct.h>
 #include <dxgi.h>
-#include <bgfx/platform.h>
 
 #define SafeRelease(res) if(res) { res->Release(); res = nullptr; }
 
@@ -40,7 +39,7 @@ public:
 
     static ID3D11Texture2D* openSharedTexture(void* sharedHandle)
     {
-        cvar device = static_cast<ID3D11Device*>(bgfx::getInternalData()->context);
+        /*cvar device = static_cast<ID3D11Device*>(bgfx::getInternalData()->context);
 
         ID3D11Texture2D* texture = nullptr;
         auto hr = device->OpenSharedResource(sharedHandle, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&texture));
@@ -48,12 +47,13 @@ public:
         if (FAILED(hr))
             return nullptr;
 
-        return texture;
+        return texture;*/
+        return nullptr;
     }
 
     static ID3D11Texture2D* createTexture(uint width, uint height, uint format)
     {
-        cvar device = static_cast<ID3D11Device*>(bgfx::getInternalData()->context);
+        /*cvar device = static_cast<ID3D11Device*>(bgfx::getInternalData()->context);
 
         D3D11_TEXTURE2D_DESC textureDesc;
         textureDesc.ArraySize = 1;
@@ -74,7 +74,8 @@ public:
         if (FAILED(hr))
             return nullptr;
 
-        return texture;
+        return texture;*/
+        return nullptr;
     }
 };
 

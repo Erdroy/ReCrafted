@@ -8,7 +8,7 @@
 
 SINGLETON_IMPL(UI)
 
-bgfx::UniformHandle m_textureUnif = {};
+//bgfx::UniformHandle m_textureUnif = {};
 
 bool UI::drawcmd_comparison(drawcmd& cmd1, drawcmd& cmd2)
 {
@@ -26,7 +26,7 @@ void UI::clear()
 void UI::drawnow()
 {
 	// allocate transient buffers
-	bgfx::TransientVertexBuffer tvb;
+	/*bgfx::TransientVertexBuffer tvb;
 	bgfx::TransientIndexBuffer tib;
 
 	if(!bgfx::allocTransientBuffers(&tvb, m_vertexdecl, m_vertexCount, &tib, m_indexCount))
@@ -44,7 +44,7 @@ void UI::drawnow()
 	bgfx::setIndexBuffer(&tib, 0, m_indexCount);
 
 	// draw
-	bgfx::submit(0, m_shader->m_program);
+	bgfx::submit(0, m_shader->m_program);*/
 
 	// reset buffer IO positions
 	m_vertexBufferDataPos = 0u;
@@ -93,12 +93,12 @@ void UI::onInit()
 	m_indexBufferData = new byte[m_indexBufferSize];
 
 	// create vertex description
-	m_vertexdecl = {};
+	/*m_vertexdecl = {};
 	m_vertexdecl.begin();
 	m_vertexdecl.add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float);
 	m_vertexdecl.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float);
 	m_vertexdecl.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float);
-	m_vertexdecl.end();
+	m_vertexdecl.end();*/
 
 	// load shader
 	m_shader = Shader::loadShader("default_ui");
@@ -107,7 +107,7 @@ void UI::onInit()
 	m_drawCmds = Array<drawcmd>(8 << 10);
 
 	// crate uniform
-	m_textureUnif = bgfx::createUniform("m_texture0", bgfx::UniformType::Int1);
+	//m_textureUnif = bgfx::createUniform("m_texture0", bgfx::UniformType::Int1);
 }
 
 void UI::onDispose()
@@ -135,13 +135,13 @@ void UI::endDraw()
 	auto drawCmdCount = m_drawCmds.size();
 	auto vertexCount = 0;
 
-	bgfx::TextureHandle textureHandle;
-	textureHandle.idx = 0xFFFF;
+	/*bgfx::TextureHandle textureHandle;
+	textureHandle.idx = 0xFFFF;*/
 
 	for (auto i = 0u; i < m_drawCmds.size(); i++)
 	{
 		auto drawcmd = &m_drawCmds[i];
-		auto textureChanged = drawcmd->texture > 0 && textureHandle.idx != drawcmd->texture;
+		auto textureChanged = drawcmd->texture > 0 /*&& textureHandle.idx != drawcmd->texture*/;
 
 		if(vertexCount + 4u > m_maxVertexCount || (textureChanged && vertexCount > 0u))
 		{
@@ -153,8 +153,8 @@ void UI::endDraw()
 		// set new texture
 		if(textureChanged)
 		{
-			textureHandle.idx = drawcmd->texture;
-			bgfx::setTexture(0, m_textureUnif, textureHandle);
+			/*textureHandle.idx = drawcmd->texture;
+			bgfx::setTexture(0, m_textureUnif, textureHandle);*/
 		}
 
 		// push draw command

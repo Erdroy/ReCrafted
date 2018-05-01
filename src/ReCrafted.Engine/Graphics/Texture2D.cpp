@@ -16,10 +16,10 @@ static void releaseBitsRaw(void* _ptr, void* _userData)
 
 void Texture2D::dispose()
 {
-    if (!bgfx::isValid(m_textureHandle))
+    /*if (!bgfx::isValid(m_textureHandle))
         return;
 
-    bgfx::destroy(m_textureHandle);
+    bgfx::destroy(m_textureHandle);*/
 
     if (m_bits)
     {
@@ -174,7 +174,8 @@ void Texture2D::setPixels(int x, int y, int width, int height, uint* pixels)
 
 uint Texture2D::getHandle()
 {
-	return m_textureHandle.idx;
+    return 0u;
+	//return m_textureHandle.idx;
 }
 
 uint Texture2D::getWidth() const
@@ -189,7 +190,7 @@ uint Texture2D::getHeight() const
 
 void Texture2D::apply()
 {
-	int pitch;
+	/*int pitch;
 	bgfx::TextureFormat::Enum format;
 	switch (m_bpp)
 	{
@@ -225,7 +226,7 @@ void Texture2D::apply()
 	auto mipCount = uint8_t(m_mips + 1);
 	m_textureHandle = bgfx::createTexture2D(uint16_t(m_width), uint16_t(m_height), mipCount, 1, format, m_flags, mem);
 
-	m_bits = nullptr;
+	m_bits = nullptr;*/
 }
 /*
 void Texture2D::releaseTextureData(uint* pixels)

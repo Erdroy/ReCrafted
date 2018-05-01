@@ -65,7 +65,7 @@ public:
      * \param view The view id.
      * \param texture The texture to be blit into the desired view.
      */
-    void blit(uint view, bgfx::TextureHandle texture, bool swapY = false);
+    void blit(uint view, /*bgfx::TextureHandle texture, */bool swapY = false);
 
     /**
      * \brief Sets given shader as current.

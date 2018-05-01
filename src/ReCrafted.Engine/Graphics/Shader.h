@@ -21,12 +21,6 @@ class Shader : IResource
 private:
 	char m_shaderName[128] = {};
 
-	bgfx::ShaderHandle m_vertexshader = {};
-	bgfx::ShaderHandle m_fragmentshader = {};
-	bgfx::ProgramHandle m_program = {};
-	bgfx::UniformHandle m_uniforms[16] = {};
-	bgfx::UniformHandle m_textures[16] = {};
-
 	uint m_uniformCount = 0u;
 
 public:
@@ -45,7 +39,7 @@ public:
 	template<class T>
 	void setValue(uint slot, T* value)
 	{
-		bgfx::setUniform(m_uniforms[slot], value);
+		//bgfx::setUniform(m_uniforms[slot], value);
 	}
 
     /**
@@ -59,7 +53,7 @@ public:
 	 * \brief Gets BGFX shader program handle.
 	 * \return The BGFX shader program handle.
 	 */
-	bgfx::ProgramHandle getProgram();
+	//bgfx::ProgramHandle getProgram();
 
     /**
 	 * \brief Disposes this shader.

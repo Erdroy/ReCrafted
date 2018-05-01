@@ -9,7 +9,6 @@
 #include "Graphics/RenderBuffer.h"
 #include "Platform/Platform.h"
 
-#include "bgfxPrerequisites.h"
 #include "Common/Input/Input.h"
 #include "Game/Universe.h"
 #include "Core/Application.h"
@@ -21,12 +20,6 @@ SINGLETON_IMPL(Graphics)
 #define RESET_FLAGS (BGFX_RESET_NONE)
 
 Graphics* g_rendererInstance;
-
-bgfx::UniformHandle m_modelViewProjection = {};
-bgfx::UniformHandle m_texture0 = {};
-bgfx::UniformHandle m_texture1 = {};
-bgfx::UniformHandle m_texture2 = {};
-bgfx::UniformHandle m_texture3 = {};
 
 Ptr<RenderBuffer> m_gbuffer = nullptr;
 Ptr<Mesh> m_blitMesh = nullptr;
@@ -48,11 +41,11 @@ void Graphics::createUniforms()
     Logger::logInfo("Creating default uniforms");
 
     // create uniforms
-    m_modelViewProjection = bgfx::createUniform("m_modelViewProjection", bgfx::UniformType::Mat4);
+    /*m_modelViewProjection = bgfx::createUniform("m_modelViewProjection", bgfx::UniformType::Mat4);
     m_texture0 = bgfx::createUniform("m_texture0", bgfx::UniformType::Int1);
     m_texture1 = bgfx::createUniform("m_texture1", bgfx::UniformType::Int1);
     m_texture2 = bgfx::createUniform("m_texture2", bgfx::UniformType::Int1);
-    m_texture3 = bgfx::createUniform("m_texture3", bgfx::UniformType::Int1);
+    m_texture3 = bgfx::createUniform("m_texture3", bgfx::UniformType::Int1);*/
 }
 
 void Graphics::createRenderBuffers()
@@ -101,7 +94,7 @@ void Graphics::bgfx_initialize()
     Logger::logInfo("Creating renderer with Direct3D11 API");
 
     // initialize bgfx platform data
-    bgfx::PlatformData pd;
+   /* bgfx::PlatformData pd;
     memset(&pd, 0, sizeof(pd));
     pd.nwh = Platform::getCurrentWindow();
     bgfx::setPlatformData(pd);
@@ -114,7 +107,7 @@ void Graphics::bgfx_initialize()
 
     // Set view 0 clear state.
     bgfx::setViewClear(RENDERVIEW_BACKBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
-    bgfx::setViewClear(RENDERVIEW_GBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
+    bgfx::setViewClear(RENDERVIEW_GBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);*/
 
     Logger::logInfo("Graphics initialized");
 }
@@ -156,19 +149,12 @@ void Graphics::onDispose()
     m_deferredFinal->dispose();
     Logger::logInfo("Unloaded render shaders");
 
-    bgfx::destroy(m_modelViewProjection);
-    bgfx::destroy(m_texture0);
-    bgfx::destroy(m_texture1);
-    bgfx::destroy(m_texture2);
-    bgfx::destroy(m_texture3);
-    Logger::logInfo("Unloaded render uniforms");
-
     // check resource leaks
     Logger::logInfo("Checking for resource leaks");
     IResource::checkLeaks();
 
     // shutdown bgfx
-    bgfx::shutdown();
+    //bgfx::shutdown();
 
     Logger::logInfo("Graphics is down");
 }
@@ -178,28 +164,28 @@ void Graphics::update()
     if (Input::isKeyDown(Key_F3))
     {
         m_wireframe = true;
-        bgfx::setDebug(BGFX_DEBUG_WIREFRAME);
+        //bgfx::setDebug(BGFX_DEBUG_WIREFRAME);
         Logger::logInfo("Switching to wireframe render mode");
     }
 
     if (Input::isKeyDown(Key_F4))
     {
         m_wireframe = false;
-        bgfx::setDebug(BGFX_DEBUG_NONE);
+        //bgfx::setDebug(BGFX_DEBUG_NONE);
         Logger::logInfo("Switching to default render mode");
     }
 
     if (Input::isKeyDown(Key_F5))
     {
         m_wireframe = false;
-        bgfx::setDebug(BGFX_DEBUG_STATS);
+        //bgfx::setDebug(BGFX_DEBUG_STATS);
         Logger::logInfo("Switching to debug stats render mode");
     }
 
     if (Input::isKeyDown(Key_F6))
     {
         m_wireframe = false;
-        bgfx::setDebug(BGFX_DEBUG_TEXT);
+        //bgfx::setDebug(BGFX_DEBUG_TEXT);
         Logger::logInfo("Switching to debug text render mode");
     }
 }
@@ -209,10 +195,8 @@ void Graphics::render()
     Profiler::beginProfile("Render");
     {
         // draw event, called every frame, must be ended with gpu backbuffer `present` or `swapbuffer` - bgfx::frame()
-        bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
-        bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
-
-        bgfx::touch(RENDERVIEW_BACKBUFFER);
+        //bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
+        //bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
 
         // set default render stage
         setStage(RenderStage::Default);
@@ -229,7 +213,7 @@ void Graphics::render()
         renderEnd(); // end rendering scene
 
         // next frame, wait vsync
-        bgfx::frame();
+        //bgfx::frame();
     }
     Profiler::endProfile();
 }
@@ -245,10 +229,10 @@ void Graphics::resize(uint width, uint height)
         WebUI::getInstance()->resize(width, height);
 
     // reset bgfx state, this should force renderer to resize all the viewports etc.
-    bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
-    bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
+    //bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
+    //bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
 
-    bgfx::reset(Display::get_Width(), Display::get_Height(), RESET_FLAGS);
+    //bgfx::reset(Display::get_Width(), Display::get_Height(), RESET_FLAGS);
 
     m_gbuffer->resize(width, height);
 }
@@ -284,7 +268,7 @@ void Graphics::renderEnd()
     }
 
     // final pass
-    cvar textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
+    /*cvar textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
 
     if (m_wireframe)
         return;
@@ -295,7 +279,7 @@ void Graphics::renderEnd()
     // draw into backbuffer
     bgfx::setVertexBuffer(0, m_blitMesh->m_vertexBuffer);
     bgfx::setIndexBuffer(m_blitMesh->m_indexBuffer);
-    bgfx::submit(RENDERVIEW_BACKBUFFER, m_deferredFinal->m_program);
+    bgfx::submit(RENDERVIEW_BACKBUFFER, m_deferredFinal->m_program);*/
 }
 
 void Graphics::renderWorld()
@@ -348,15 +332,15 @@ void Graphics::renderUI()
 
 void Graphics::draw(Ptr<Mesh>& mesh)
 {
-    bgfx::setVertexBuffer(0, mesh->m_vertexBuffer);
+    /*bgfx::setVertexBuffer(0, mesh->m_vertexBuffer);
     bgfx::setIndexBuffer(mesh->m_indexBuffer);
 
-    bgfx::submit(m_wireframe ? 0 : m_viewId, m_currentShader->m_program);
+    bgfx::submit(m_wireframe ? 0 : m_viewId, m_currentShader->m_program);*/
 }
 
-void Graphics::blit(uint view, bgfx::TextureHandle texture, bool swapY)
+void Graphics::blit(uint view, /*bgfx::TextureHandle texture,*/ bool swapY)
 {
-    auto textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
+    /*auto textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
 
     cvar swap = swapY ? 1.0f : -1.0f;
     m_blitShader->setValue(0, &swap);
@@ -365,7 +349,7 @@ void Graphics::blit(uint view, bgfx::TextureHandle texture, bool swapY)
 
     bgfx::setVertexBuffer(0, m_blitMesh->m_vertexBuffer);
     bgfx::setIndexBuffer(m_blitMesh->m_indexBuffer);
-    bgfx::submit(view, m_blitShader->m_program);
+    bgfx::submit(view, m_blitShader->m_program);*/
 }
 
 void Graphics::setShader(Ptr<Shader>& shader)
@@ -381,12 +365,12 @@ void Graphics::setView(int viewId)
 void Graphics::setMatrix(Matrix& mvpMatrix)
 {
     mvpMatrix.transpose();
-    bgfx::setUniform(m_modelViewProjection, &mvpMatrix);
+    //bgfx::setUniform(m_modelViewProjection, &mvpMatrix);
 }
 
 void Graphics::setStage(RenderStage::_enum stage)
 {
-    m_renderStage = stage;
+    /*m_renderStage = stage;
 
     switch (stage)
     {
@@ -422,5 +406,5 @@ void Graphics::setStage(RenderStage::_enum stage)
         setView(1);
         bgfx::setState(0 | BGFX_STATE_DEFAULT);
         return;
-    }
+    }*/
 }

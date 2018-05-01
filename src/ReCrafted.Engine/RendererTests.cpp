@@ -144,7 +144,7 @@ void initRendererTests()
         Renderer::Frame();
 
         var time = Platform::getMiliseconds() - start;
-        Logger::log("Frame render time: {0}", time);
+        //Logger::log("Frame render time: {0}", time);
     }
 
     Renderer::DestroyRenderBuffer(renderBuffer);

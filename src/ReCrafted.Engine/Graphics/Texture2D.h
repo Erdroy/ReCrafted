@@ -12,8 +12,6 @@
 #include "Scripting/Object.h"
 #include "IResource.h"
 
-#include "bgfxPrerequisites.h"
-
 typedef struct upng_t upng_t;
 
 /**
@@ -27,7 +25,7 @@ private:
 	SCRIPTING_API_IMPL()
 
 private:
-	bgfx::TextureHandle m_textureHandle = {};
+	//bgfx::TextureHandle m_textureHandle = {};
 
 	upng_t* m_bitmap = nullptr;
 	byte* m_bits = nullptr;

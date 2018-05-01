@@ -54,7 +54,7 @@ void Mesh::applyChanges()
 	_ASSERT(m_vertices_count != 0);
 	_ASSERT(m_indices_count != 0);
 
-	m_vertexdecl = {};
+	/*m_vertexdecl = {};
 	m_vertexdecl.begin();
 	m_vertexdecl.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float);
 
@@ -111,7 +111,7 @@ void Mesh::applyChanges()
 		auto offset = i * sizeof(uint);
 		memcpy(memoryPtr + offset, &indice, sizeof(uint));
 	}
-
+    */
 	m_uploaded = false;
 	m_hasChanges = true;
 
@@ -198,7 +198,7 @@ void Mesh::simplify()
 
 void Mesh::upload()
 {
-	if (m_vertexBufferData.memory == nullptr || m_indexBufferData.memory == nullptr)
+	/*if (m_vertexBufferData.memory == nullptr || m_indexBufferData.memory == nullptr)
 		return;
 
     if (m_vertexBuffer.idx != 0)
@@ -211,7 +211,7 @@ void Mesh::upload()
 	m_indexBuffer = bgfx::createIndexBuffer(m_indexBufferData.getMemory(), BGFX_BUFFER_INDEX32);
 
     m_vertexBufferData = {};
-    m_indexBufferData = {};
+    m_indexBufferData = {};*/
 
 	m_uploaded = true;
 	m_hasChanges = false;
@@ -232,14 +232,14 @@ void Mesh::dispose()
 	m_colors_count = 0u;
 	m_indices_count = 0u;
 
-    m_vertexBufferData.release();
+    /*m_vertexBufferData.release();
     m_indexBufferData.release();
 
     if (m_vertexBuffer.idx != 0)
         bgfx::destroy(m_vertexBuffer);
 
     if (m_indexBuffer.idx != 0)
-        bgfx::destroy(m_indexBuffer);
+        bgfx::destroy(m_indexBuffer);*/
 }
 
 Ptr<Mesh> Mesh::createMesh()

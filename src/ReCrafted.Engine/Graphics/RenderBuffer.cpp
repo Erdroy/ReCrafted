@@ -4,12 +4,10 @@
 #include "Platform/Platform.h"
 #include "Core/Logger.h"
 
-#include "bgfxPrerequisites.h"
-
 void RenderBuffer::createBuffer(uint width, uint height)
 {
 	// sampler flags
-	const auto samplerFlags = 0
+	/*const auto samplerFlags = 0
 		| BGFX_TEXTURE_RT
 		| BGFX_TEXTURE_MIN_POINT
 		| BGFX_TEXTURE_MAG_POINT
@@ -22,7 +20,7 @@ void RenderBuffer::createBuffer(uint width, uint height)
 		m_textureHandles[i] = bgfx::createTexture2D(uint16_t(width), uint16_t(height), false, 1, static_cast<bgfx::TextureFormat::Enum>(m_textures[i]), samplerFlags);
 
 	// build render buffer
-	m_framebufferHandle = bgfx::createFrameBuffer(m_textureCount, m_textureHandles, true);
+	m_framebufferHandle = bgfx::createFrameBuffer(m_textureCount, m_textureHandles, true);*/
     
     m_width = width;
     m_height = height;
@@ -63,14 +61,14 @@ void RenderBuffer::addTarget(const char* name, TextureFormat::Enum format)
 	m_textures[m_textureCount] = format;
 	m_textureCount++;
 }
-
+/*
 bgfx::TextureHandle RenderBuffer::getTarget(uint slot)
 {
 	_ASSERT(slot < MAX_RENDERBUFFER_TARGETS);
 	_ASSERT(m_textureHandles[slot].idx > 0);
 
 	return m_textureHandles[slot];
-}
+}*/
 
 void RenderBuffer::resize(uint width, uint height)
 {
@@ -80,7 +78,7 @@ void RenderBuffer::resize(uint width, uint height)
         return;
 
 	// destroy current framebuffer
-	bgfx::destroy(m_framebufferHandle);
+	//bgfx::destroy(m_framebufferHandle);
 	
 	// create new framebuffer
 	createBuffer(width, height);
@@ -91,12 +89,12 @@ void RenderBuffer::bind()
 	_ASSERT(m_created != false);
 
 	// TODO: bind framebuffer
-	bgfx::setViewFrameBuffer(RENDERVIEW_GBUFFER, m_framebufferHandle);
+	//bgfx::setViewFrameBuffer(RENDERVIEW_GBUFFER, m_framebufferHandle);
 }
 
 void RenderBuffer::dispose()
 {
 	// destroy framebuffer
-	bgfx::destroy(m_framebufferHandle);
+	//bgfx::destroy(m_framebufferHandle);
 	Logger::logInfo("Unloaded render buffer");
 }

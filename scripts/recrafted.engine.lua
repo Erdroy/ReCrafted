@@ -18,9 +18,6 @@ project "ReCrafted.Engine"
 	-- add include directories
 	includedirs {
 		path.join(ROOT_DIR, "src/ReCrafted.Engine"),
-		path.join(LIBS_DIR, "bx/include"),
-		path.join(LIBS_DIR, "bimg/include"),
-		path.join(LIBS_DIR, "bgfx/include"),
 		path.join(LIBS_DIR, "mono/inc"),
 		path.join(LIBS_DIR, "freetype/include"),
 		path.join(LIBS_DIR, "fmod/inc"),
@@ -53,13 +50,13 @@ project "ReCrafted.Engine"
 		defines { "DEBUG", "_ITERATOR_DEBUG_LEVEL=0" }
 		runtime "Debug"
 		symbols "On"
-		links { "libcef_dll_wrapper_debug", "rpmallocd", "freetype28MTd", "bgfxDebug", "bxDebug", "bimgDebug", "bimg_decodeDebug" }
+		links { "libcef_dll_wrapper_debug", "rpmallocd", "freetype28MTd" }
 
 	configuration { "Release" }
 		defines { "NDEBUG" }
 		flags { "OptimizeSpeed", "No64BitChecks", "NoBufferSecurityCheck" }
 		runtime "Release"
-		links { "libcef_dll_wrapper", "rpmalloc", "freetype28MT", "bgfxRelease", "bxRelease", "bimgRelease", "bimg_decodeRelease" }
+		links { "libcef_dll_wrapper", "rpmalloc", "freetype28MT" }
 
 	configuration { "x64" }
 		-- set target dir
@@ -73,8 +70,7 @@ project "ReCrafted.Engine"
 	
 	configuration { "x64", "vs*"}
 		-- add bgfx lib path - bgfx always contains all needed libs after being compiled
-		libdirs { 
-			path.join(LIBS_DIR, "bgfx/.build/win64_" .. _ACTION .. "/bin/"),
+		libdirs {
 			path.join(LIBS_DIR, "mono/lib"),
 			path.join(LIBS_DIR, "freetype/x64"),
 			path.join(LIBS_DIR, "fmod/lib"),

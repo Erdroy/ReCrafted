@@ -59,8 +59,6 @@ private:
 private:
 	Array<drawcmd> m_drawCmds = {};
 
-	bgfx::VertexDecl m_vertexdecl = {};
-
 	const byte* m_vertexBufferData = nullptr;
 	const byte* m_indexBufferData = nullptr;
 

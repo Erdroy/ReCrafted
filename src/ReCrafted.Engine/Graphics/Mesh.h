@@ -6,7 +6,6 @@
 #define MESH_H
 
 // includes
-#include "bgfxPrerequisites.h"
 #include "Core/Types.h"
 #include "Core/Math/Math.h"
 #include "IResource.h"
@@ -21,12 +20,12 @@ class Mesh : IResource
     friend class Graphics;
 
 private:
-	bgfx::VertexDecl m_vertexdecl = {};
+	/*bgfx::VertexDecl m_vertexdecl = {};
 	bgfx::VertexBufferHandle m_vertexBuffer = {};
 	bgfx::IndexBufferHandle m_indexBuffer = {};
 
     bgfxMemoryEx m_vertexBufferData = {};
-    bgfxMemoryEx m_indexBufferData = {};
+    bgfxMemoryEx m_indexBufferData = {};*/
 
 	Vector3* m_vertices = nullptr;
 	Vector2* m_uvs = nullptr;

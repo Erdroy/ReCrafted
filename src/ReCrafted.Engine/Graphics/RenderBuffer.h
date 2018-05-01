@@ -9,8 +9,6 @@
 #include "ReCrafted.h"
 #include "TextureFormat.h"
 
-#include "bgfxPrerequisites.h"
-
 #define RENDERVIEW_BACKBUFFER 0
 #define RENDERVIEW_GBUFFER 1
 
@@ -20,9 +18,9 @@
 class RenderBuffer
 {
 private:
-	bgfx::FrameBufferHandle m_framebufferHandle = {};
+	//bgfx::FrameBufferHandle m_framebufferHandle = {};
 	TextureFormat::Enum m_textures[MAX_RENDERBUFFER_TARGETS] = {};
-	bgfx::TextureHandle m_textureHandles[MAX_RENDERBUFFER_TARGETS] = {};
+	//bgfx::TextureHandle m_textureHandles[MAX_RENDERBUFFER_TARGETS] = {};
 	uint m_textureCount = 0u;
 	bool m_created = false;
 
@@ -57,7 +55,7 @@ public:
 	/// </summary>
 	/// <param name="slot">The texture/target slot.</param>
 	/// <returns>The target texture handle.</returns>
-	bgfx::TextureHandle getTarget(uint slot);
+	//bgfx::TextureHandle getTarget(uint slot);
 
 	/// <summary>
 	/// Resize the render buffer.

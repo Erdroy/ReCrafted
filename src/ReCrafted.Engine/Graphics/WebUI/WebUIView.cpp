@@ -2,7 +2,6 @@
 
 #include "WebUIView.h"
 #include "WebUIEngine.h"
-#include "bgfxPrerequisites.h"
 
 #include <cef_app.h>
 #include <cef_client.h>
@@ -36,8 +35,8 @@ private:
     std::condition_variable m_syncVar = {};
     std::atomic_int32_t m_swapCount;
 
-    bgfx::TextureHandle m_bgfxFrontBuffer = {};
-    bgfx::TextureHandle m_bgfxBackBuffer = {};
+    //bgfx::TextureHandle m_bgfxFrontBuffer = {};
+    //bgfx::TextureHandle m_bgfxBackBuffer = {};
 
     uint64 m_syncKey = 0u;
 
@@ -52,8 +51,8 @@ private:
 public:
     ~CEFView()
     {
-        bgfx::destroy(m_bgfxFrontBuffer);
-        bgfx::destroy(m_bgfxBackBuffer);
+        //bgfx::destroy(m_bgfxFrontBuffer);
+        //bgfx::destroy(m_bgfxBackBuffer);
         SafeRelease(m_frontBuffer);
         SafeRelease(m_backBuffer);
     }
@@ -133,8 +132,8 @@ public:
                     m_sharedHandle = nullptr;
 
                     // release resources
-                    bgfx::destroy(m_bgfxFrontBuffer);
-                    bgfx::destroy(m_bgfxBackBuffer);
+                    //bgfx::destroy(m_bgfxFrontBuffer);
+                    //bgfx::destroy(m_bgfxBackBuffer);
                     SafeRelease(m_frontBuffer);
                     SafeRelease(m_backBuffer);
                 }
@@ -149,7 +148,7 @@ public:
                 // create back and front buffer if shared buffer is present
                 if (m_sharedBuffer)
                 {
-                    cvar flags = 0
+                    /*cvar flags = 0
                         | BGFX_TEXTURE_RT
                         | BGFX_TEXTURE_MIN_POINT
                         | BGFX_TEXTURE_MAG_POINT
@@ -171,7 +170,7 @@ public:
 
                     // override bgfx texture
                     bgfx::overrideInternal(m_bgfxFrontBuffer, reinterpret_cast<uintptr_t>(m_frontBuffer));
-                    bgfx::overrideInternal(m_bgfxBackBuffer, reinterpret_cast<uintptr_t>(m_backBuffer));
+                    bgfx::overrideInternal(m_bgfxBackBuffer, reinterpret_cast<uintptr_t>(m_backBuffer));*/
                 }
             }
 
@@ -184,8 +183,8 @@ public:
 public:
     void init()
     {
-        m_device = static_cast<ID3D11Device*>(bgfx::getInternalData()->context);
-        m_device->GetImmediateContext(&m_deviceContext);
+        //m_device = static_cast<ID3D11Device*>(bgfx::getInternalData()->context);
+        //m_device->GetImmediateContext(&m_deviceContext);
     }
 
     void update()
@@ -200,11 +199,11 @@ public:
             m_browser->GetHost()->SendExternalBeginFrame(time_us, deadline_us, interval_us);
     }
 
-    bgfx::TextureHandle getRenderTexture() const
+    /*bgfx::TextureHandle getRenderTexture() const
     {
         return m_bgfxFrontBuffer;
     }
-
+    */
     void swap()
     {
         // setup lock guard
@@ -218,7 +217,7 @@ public:
         if(m_swapCount)
         {
             std::swap(m_frontBuffer, m_backBuffer);
-            std::swap(m_bgfxFrontBuffer, m_bgfxBackBuffer);
+            //std::swap(m_bgfxFrontBuffer, m_bgfxBackBuffer);
         }
         
         // issue copy when necessary
@@ -306,7 +305,7 @@ void WebUIView::render()
 
     // draw texture
     Graphics::getInstance()->setStage(RenderStage::DrawWebUI);
-    Graphics::getInstance()->blit(0, view->getRenderTexture(), true);
+   // Graphics::getInstance()->blit(0, view->getRenderTexture(), true);
 }
 
 void WebUIView::onDestroy()

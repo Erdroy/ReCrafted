@@ -9,7 +9,8 @@
 
 void Shader::init(const char* vs, const char* fs, const char* def)
 {
-	if(!Platform::fileExists(vs) || !Platform::fileExists(fs))
+
+	/*if(!Platform::fileExists(vs) || !Platform::fileExists(fs))
 	{
 		_ASSERT(false); // throw error
 	}
@@ -73,7 +74,7 @@ void Shader::init(const char* vs, const char* fs, const char* def)
 			auto uniformName = uniformData["name"].get<std::string>();
 			auto uniformType = uniformData["type"].get<std::string>();
 
-			auto type = bgfx::UniformType::Vec4;
+			/*auto type = bgfx::UniformType::Vec4;
 
 			if(uniformType == "mat4")
 				type = bgfx::UniformType::Mat4;
@@ -92,23 +93,18 @@ void Shader::init(const char* vs, const char* fs, const char* def)
 	else
 	{
 		Logger::logWarning("Loaded shader which doesn't have description file!");
-	}
+	}*/
 }
 
 void Shader::setTexture(int slot, Ptr<Texture2D> texture)
 {
-	bgfx::setTexture(slot, m_textures[slot], texture->m_textureHandle);
-}
-
-bgfx::ProgramHandle Shader::getProgram()
-{
-	return m_program;
+	//bgfx::setTexture(slot, m_textures[slot], texture->m_textureHandle);
 }
 
 void Shader::dispose()
 {
 	Logger::logInfo("Unloading shader '{0}'", m_shaderName);
-	bgfx::destroy(m_program);
+	//bgfx::destroy(m_program);
 }
 
 Ptr<Shader> Shader::loadShader(const char* shaderName)
@@ -121,7 +117,7 @@ Ptr<Shader> Shader::loadShader(const char* shaderName)
 
 	// select file base path
 	const char* shaderPath = "???";
-	switch (bgfx::getRendererType())
+	/*switch (bgfx::getRendererType())
 	{
 	case bgfx::RendererType::Direct3D9:
 		shaderPath = "../assets/shaders/dx9/";   
@@ -151,7 +147,7 @@ Ptr<Shader> Shader::loadShader(const char* shaderName)
 	case bgfx::RendererType::Count:
 		Logger::logError("Couldn't load shader, invalid renderer.");
 		return nullptr;
-	}
+	}*/
 
 	char vsPath[512] = {};
 	char fsPath[512] = {};
