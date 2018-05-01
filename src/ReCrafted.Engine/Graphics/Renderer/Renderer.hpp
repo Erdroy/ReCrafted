@@ -391,6 +391,11 @@ namespace Renderer
     /// <param name="handle">The window handle to be set as current.</param>
 	RENDERER_FUNCTION(void)                     ApplyWindow(WindowHandle handle);
 
+    /// <summary>
+    /// Resizes given window frame buffer.
+    /// </summary>
+    /// <param name="width">The new width of the window frame buffer.</param>
+    /// <param name="height">The new height of the window frame buffer.</param>
     RENDERER_FUNCTION(void)                     ResizeWindow(WindowHandle handle, uint16_t width, uint16_t height);
 
     /// <summary>
@@ -410,8 +415,22 @@ namespace Renderer
     /// <param name="handle">The window handle.</param>
 	RENDERER_FUNCTION(void)                     DestroyWindow(WindowHandle handle);
 
+    /// <summary>
+    /// Creates new render buffer from using texture formats.
+    /// </summary>
+    /// <param name="width">The width of the render buffer.</param>
+    /// <param name="height">The height of the render buffer.</param>
+    /// <param name="textures">The texture formats.</param>
+    /// <param name="texturesCount">The amount of given texture formats.</param>
+    /// <param name="depthFormat">The depth format, leave Unknown to not create depth buffer.</param>
+    /// <returns>The created render buffer.</returns>
 	RENDERER_FUNCTION(RenderBufferHandle)       CreateRenderBuffer(uint16_t width, uint16_t height, TextureFormat::_enum* textures, uint8_t texturesCount, TextureFormat::_enum depthFormat = TextureFormat::Unknown);
 
+    /// <summary>
+    /// Resizes given render uffer.
+    /// </summary>
+    /// <param name="width">The new width of the render buffer.</param>
+    /// <param name="height">The new height of the render buffer.</param>
 	RENDERER_FUNCTION(void)                     ResizeRenderBuffer(RenderBufferHandle handle, uint16_t width, uint16_t height);
 
     /// <summary>
@@ -534,6 +553,11 @@ namespace Renderer
     /// <param name="slot">The texture target slot.</param>
     RENDERER_FUNCTION(void)                     ApplyTexture2D(Texture2DHandle handle, uint8_t slot);
 
+    /// <summary>
+    /// Resizes given texture2d.
+    /// </summary>
+    /// <param name="width">The new width of the texture2d.</param>
+    /// <param name="height">The new height of the texture2d.</param>
     RENDERER_FUNCTION(void)                     ResizeTexture2D(Texture2DHandle handle, uint16_t width, uint16_t height);
 
     /// <summary>
