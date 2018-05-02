@@ -4,14 +4,12 @@
 
 #include "Common/Display.h"
 #include "Common/Profiler/Profiler.h"
+#include "Common/Input/Input.h"
 #include "Core/Logger.h"
+#include "Core/Application.h"
+#include "Game/Universe.h"
 #include "Graphics/Camera.h"
 #include "Graphics/RenderBuffer.h"
-#include "Platform/Platform.h"
-
-#include "Common/Input/Input.h"
-#include "Game/Universe.h"
-#include "Core/Application.h"
 #include "Graphics/UI/UI.h"
 #include "Graphics/WebUI/WebUI.h"
 
@@ -22,8 +20,6 @@ SINGLETON_IMPL(Graphics)
 Graphics* g_rendererInstance;
 
 Ptr<RenderBuffer> m_gbuffer = nullptr;
-Ptr<Mesh> m_blitMesh = nullptr;
-Ptr<Shader> m_blitShader = nullptr;
 Ptr<Shader> m_gbufferShader = nullptr;
 Ptr<Shader> m_deferredFinal = nullptr;
 
@@ -31,7 +27,6 @@ void Graphics::loadInternalShaders()
 {
     Logger::logInfo("Loading internal shaders");
 
-    m_blitShader = Shader::loadShader("blit");
     m_gbufferShader = Shader::loadShader("gbuffer_standard");
     m_deferredFinal = Shader::loadShader("deferred_final");
 }
@@ -61,35 +56,7 @@ void Graphics::createRenderBuffers()
     m_gbuffer->end();
 }
 
-void Graphics::createBlitQuad()
-{
-    static Vector3 vertices[4] = {
-        Vector3(-1.0f, 1.0f, 0.0f),
-        Vector3(1.0f, 1.0f, 0.0f),
-        Vector3(1.0f,-1.0f, 0.0f),
-        Vector3(-1.0f,-1.0f, 0.0f)
-    };
-    static Vector2 uvs[4] = {
-        Vector2(0.0f,-1.0f),
-        Vector2(1.0f,-1.0f),
-        Vector2(1.0f, 0.0f),
-        Vector2(0.0f, 0.0f)
-    };
-
-    static uint indices[6] = {
-        2, 1, 0,
-        2, 0, 3
-    };
-
-    m_blitMesh = Mesh::createMesh();
-    m_blitMesh->setVertices(vertices, 4);
-    m_blitMesh->setUVs(uvs);
-    m_blitMesh->setIndices(indices, 6);
-    m_blitMesh->applyChanges();
-    m_blitMesh->upload();
-}
-
-void Graphics::bgfx_initialize()
+void Graphics::initializeRenderer()
 {
     Logger::logInfo("Creating renderer with Direct3D11 API");
 
@@ -108,6 +75,17 @@ void Graphics::bgfx_initialize()
     // Set view 0 clear state.
     bgfx::setViewClear(RENDERVIEW_BACKBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
     bgfx::setViewClear(RENDERVIEW_GBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);*/
+    
+    // Initialize Renderer
+    Renderer::Initialize(
+        Renderer::RendererAPI::DirectX11,
+        Renderer::RenderFlags::DepthTest | Renderer::RenderFlags::DepthStencil,
+        Renderer::Settings::Debug
+    );
+
+    // Create Output
+    m_window = Renderer::CreateWindowHandle(Platform::getCurrentWindow());
+    m_frameBuffer = Renderer::GetWindowRenderBuffer(m_window);
 
     Logger::logInfo("Graphics initialized");
 }
@@ -116,17 +94,14 @@ void Graphics::onInit()
 {
     g_rendererInstance = this;
 
-    // initialize bgfx
-    bgfx_initialize();
+    // initialize renderer
+    initializeRenderer();
 
     // create uniforms
     createUniforms();
 
     // create render buffers
     createRenderBuffers();
-
-    // create quad
-    createBlitQuad();
 
     // load all shaders
     loadInternalShaders();
@@ -139,12 +114,7 @@ void Graphics::onDispose()
     m_gbuffer->dispose();
     Logger::logInfo("Unloaded render buffers");
 
-    // dispose meshes
-    m_blitMesh->dispose();
-    Logger::logInfo("Unloaded render meshes");
-
     // dispose shaders
-    m_blitShader->dispose();
     m_gbufferShader->dispose();
     m_deferredFinal->dispose();
     Logger::logInfo("Unloaded render shaders");
@@ -153,8 +123,8 @@ void Graphics::onDispose()
     Logger::logInfo("Checking for resource leaks");
     IResource::checkLeaks();
 
-    // shutdown bgfx
-    //bgfx::shutdown();
+    // shutdown renderer
+    Renderer::Shutdown();
 
     Logger::logInfo("Graphics is down");
 }
@@ -194,9 +164,11 @@ void Graphics::render()
 {
     Profiler::beginProfile("Render");
     {
-        // draw event, called every frame, must be ended with gpu backbuffer `present` or `swapbuffer` - bgfx::frame()
-        //bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
-        //bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
+        cvar clearColor = Renderer::Color{ 0.0f, 0.2f, 0.4f, 1.0f };
+
+        Renderer::ApplyWindow(m_window);
+        Renderer::ApplyRenderBuffer(m_frameBuffer);
+        Renderer::ClearRenderBuffer(m_frameBuffer, clearColor);
 
         // set default render stage
         setStage(RenderStage::Default);
@@ -213,7 +185,7 @@ void Graphics::render()
         renderEnd(); // end rendering scene
 
         // next frame, wait vsync
-        //bgfx::frame();
+        Renderer::Frame();
     }
     Profiler::endProfile();
 }
@@ -336,20 +308,6 @@ void Graphics::draw(Ptr<Mesh>& mesh)
     bgfx::setIndexBuffer(mesh->m_indexBuffer);
 
     bgfx::submit(m_wireframe ? 0 : m_viewId, m_currentShader->m_program);*/
-}
-
-void Graphics::blit(uint view, /*bgfx::TextureHandle texture,*/ bool swapY)
-{
-    /*auto textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
-
-    cvar swap = swapY ? 1.0f : -1.0f;
-    m_blitShader->setValue(0, &swap);
-
-    bgfx::setTexture(0, m_texture0, texture, textureFlags);
-
-    bgfx::setVertexBuffer(0, m_blitMesh->m_vertexBuffer);
-    bgfx::setIndexBuffer(m_blitMesh->m_indexBuffer);
-    bgfx::submit(view, m_blitShader->m_program);*/
 }
 
 void Graphics::setShader(Ptr<Shader>& shader)

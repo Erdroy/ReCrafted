@@ -2,8 +2,8 @@
 
 #pragma once
 
-#ifndef RENDERER_H
-#define RENDERER_H
+#ifndef GRAPHICS_H
+#define GRAPHICS_H
 
 // includes
 #include "ReCrafted.h"
@@ -11,6 +11,8 @@
 #include "Graphics/Shader.h"
 #include "Graphics/Mesh.h"
 #include "RenderStage.h"
+
+#include "Graphics/Renderer/Renderer.hpp"
 
 /**
  * \brief Graphics class.
@@ -28,6 +30,9 @@ private:
     Ptr<Shader> m_currentShader = nullptr;
     RenderStage::_enum m_renderStage = RenderStage::Default;
 
+    Renderer::WindowHandle m_window = {};
+    Renderer::RenderBufferHandle m_frameBuffer = {};
+
 public:
     virtual ~Graphics() = default;
 
@@ -35,9 +40,8 @@ private:
     void loadInternalShaders();
     void createUniforms();
     void createRenderBuffers();
-    void createBlitQuad();
 
-    void bgfx_initialize();
+    void initializeRenderer();
 
 private:
     void onInit() override;
@@ -59,13 +63,6 @@ public:
      * \param mesh The mesh class pointer.
      */
     void draw(Ptr<Mesh>& mesh);
-
-    /**
-     * \brief Blits texture into given view.
-     * \param view The view id.
-     * \param texture The texture to be blit into the desired view.
-     */
-    void blit(uint view, /*bgfx::TextureHandle texture, */bool swapY = false);
 
     /**
      * \brief Sets given shader as current.
@@ -96,4 +93,4 @@ public:
     }
 };
 
-#endif // RENDERER_H
+#endif // GRAPHICS_H

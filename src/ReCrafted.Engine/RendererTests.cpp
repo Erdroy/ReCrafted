@@ -1,16 +1,17 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // ReSharper disable CppRedundantQualifier
 
+#include "ReCraftedConfig.h"
+
+#if RENDERER_TEST
+
 #include <Windows.h>
 
-#include "ReCraftedConfig.h"
 #include "Platform/Platform.h"
 #include "Core/Math/Vector2.h"
 #include "Core/Math/Vector3.h"
 #include "Core/Math/Vector4.h"
 #include "Core/Logger.h"
-
-#if RENDERER_TEST
 
 #include "Graphics/Renderer/Renderer.hpp"
 
