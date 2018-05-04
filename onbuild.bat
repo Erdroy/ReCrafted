@@ -19,28 +19,13 @@ tools\\ReCrafted.VersionBuilder.exe "%VER%" build\\assets\\gameinfo.json
 
 IF "%2%" == "Engine" (
 REM run shader compiler
-RD /S /Q build\assets\shaders
-tools\\ReCrafted.ShaderCompiler.exe %1%
+REM RD /S /Q build\assets\shaders
+REM tools\\ReCrafted.ShaderCompiler.exe %1%
 )
 
 IF "%2%" == "Game" (
 REM convert pdbs into mdbs
-goto pdb32
 
-:pdb32
-IF EXIST build/bin32 (
-echo Converting 32bit PDB's into MDB's
-echo Converting bin32/ReCrafted.Game.pdb into bin32/ReCrafted.Game.mdb
-tools\\ReCrafted.Pdb2MdbConverter.exe build/bin32/ReCrafted.Game.dll
-
-echo Converting bin32/ReCrafted.API.pdb into bin32/ReCrafted.API.mdb
-tools\\ReCrafted.Pdb2MdbConverter.exe build/bin32/ReCrafted.API.dll
-goto pdb64
-) ELSE (
-goto pdb64
-)
-
-:pdb64
 IF EXIST build/bin64 (
 echo Converting 64bit PDB's into MDB's
 echo Converting bin64/ReCrafted.Game.pdb into bin64/ReCrafted.Game.mdb

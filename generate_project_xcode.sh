@@ -1,1 +1,0 @@
-@echo offecho Generating project for XCode4...tools\premake5.exe xcode4echo XCode4 project created.

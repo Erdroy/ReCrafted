@@ -24,6 +24,13 @@ externalproject "tools/ReCrafted.APIBuilder"
    language "C#"
    filename "ReCrafted.APIBuilder"
    
+externalproject "tools/ReCrafted.LocaleConverter"
+   location (path.join(ROOT_DIR, "src/tools/ReCrafted.LocaleConverter"))
+   uuid "F9C929A6-F523-4582-8139-26438B1710D6"
+   kind "ConsoleApp"
+   language "C#"
+   filename "ReCrafted.LocaleConverter"
+   
 externalproject "tools/ReCrafted.AtlasPacker"
    location (path.join(ROOT_DIR, "src/tools/ReCrafted.AtlasPacker"))
    uuid "7BF99624-A92B-4E7F-94C1-C3AA5DEAE07E"
@@ -40,17 +47,10 @@ externalproject "tools/ReCrafted.Pdb2MdbConverter"
    
 externalproject "tools/ReCrafted.ShaderCompiler"
    location (path.join(ROOT_DIR, "src/tools/ReCrafted.ShaderCompiler"))
-   uuid "B584DB24-317F-4EF6-B8DD-207306327F0B"
-   kind "ConsoleApp"
-   language "C#"
-   filename "ReCrafted.ShaderCompiler"
-   
-externalproject "tools/ReCrafted.ShaderCompiler2"
-   location (path.join(ROOT_DIR, "src/tools/ReCrafted.ShaderCompiler2"))
    uuid "84A4B03C-0E8B-4644-8D0E-45320A07686C"
    kind "ConsoleApp"
    language "C#"
-   filename "ReCrafted.ShaderCompiler2"
+   filename "ReCrafted.ShaderCompiler"
    
 externalproject "libraries/ReCrafted.CodeTokenizer"
    location (path.join(ROOT_DIR, "src/libraries/ReCrafted.CodeTokenizer"))
