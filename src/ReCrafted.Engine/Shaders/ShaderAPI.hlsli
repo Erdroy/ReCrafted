@@ -5,12 +5,12 @@
 
 // ==== PRESETS ====
 // Preset: SURFACE (GBuffer filler)
-#ifdef SURFACE
+#ifdef PRESET_SURFACE
 #define USE_3DSPACE
 #define USE_LOGZBUFFER
 //#define USE_UV
 #define USE_VERTEXCOLOR
-#endif // SURFACE
+#endif // PRESET_SURFACE
 
 // ==== API INCLUDES ====
 #include "../API/Common.hlsli"

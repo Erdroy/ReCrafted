@@ -3,7 +3,7 @@
 #name "GBuffer Standard"
 #desc "GBuffer Standard shader used for shading on almost every visible object in game"
 
-#define SURFACE
+#define PRESET_SURFACE
 #include "../RCShaderAPI.hlsli"
 
 pass Default

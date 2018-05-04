@@ -33,8 +33,11 @@ GBuffer SampleGBuffer(float2 uv)
 
     gbuffer.Color = SAMPLE_GBUFFER(GBufferT0, uv).rgb;
     gbuffer.Normal = SAMPLE_GBUFFER(GBufferT1, uv).rgb;
+
+#ifdef USE_3DSPACE
     //gbuffer.ViewPos = 0; // TODO: Calculate ViewPos
     //gbuffer.WorldPos = 0;  // TODO: Calculate WorldPos
+#endif
 
     return gbuffer;
 }
