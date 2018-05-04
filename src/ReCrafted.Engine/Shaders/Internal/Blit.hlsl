@@ -18,23 +18,29 @@ struct VSOutput
     float2 TexCoord : TEXCOORD;
 };
 
-VSOutput VSMain(VSInput input)
+/// <summary>
+/// Vertex Shader Function
+/// BlitVSMain
+/// </summary>
+void BlitVSMain(in VSInput i, out VSOutput o)
 {
-	VSOutput output = (VSOutput)0;
-	output.Position = float4(input.Position, 0.0f, 1.0f);
-	output.TexCoord = input.TexCoord;
-	return output;
+	o.Position = float4(i.Position, 0.0f, 1.0f);
+	o.TexCoord = i.TexCoord;
 }
 
-float4 PSMain(VSOutput input) : SV_Target0
+/// <summary>
+/// Pixel Shader Function
+/// BlitPSMain
+/// </summary>
+void BlitPSMain(in VSOutput input, out float4 color) : SV_Target0
 {
-	//return float4(input.TexCoord, 0.0f, 1.0f);
-	return Texture.Sample(Sampler, input.TexCoord);
+	//color = float4(input.TexCoord, 0.0f, 1.0f);
+    color = Texture.Sample(Sampler, input.TexCoord);
 }
 
 pass Default
 {
 	SetProfile(5.0);
-	SetVertexShader(VSMain);
-	SetPixelShader(PSMain);
+	SetVertexShader(BlitVSMain);
+	SetPixelShader(BlitPSMain);
 }

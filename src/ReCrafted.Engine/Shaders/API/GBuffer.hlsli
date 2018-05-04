@@ -3,15 +3,14 @@
 #ifndef GBUFFER_HLSLI
 #define GBUFFER_HLSLI
 
-#ifdef USE_GBUFFER
+#ifdef USE_GBUFFERSAMPLING
 SamplerState<LinearClamped> GBufferSampler : register(s0);
 
 Texture2D GBufferT0 : register(t0); // Color
 Texture2D GBufferT1 : register(t1); // Normal
 
-#define SAMPLE_GBUFFER(tex, uv) tex.Sample(GBufferSampler, uv);
-
-#endif // USE_GBUFFER
+#define SAMPLE_GBUFFER(tex, uv) tex.Sample(GBufferSampler, uv)
+#endif // USE_GBUFFERSAMPLING
 
 struct GBufferOutput 
 {
@@ -27,16 +26,18 @@ struct GBuffer
     float3 WorldPos;
 };
 
+#ifdef USE_GBUFFERSAMPLING
 GBuffer SampleGBuffer(float2 uv) 
 {
     GBuffer gbuffer = (GBuffer)0;
 
-    gbuffer.Color = GBufferT0.Sample(GBufferSampler, uv).rgb;
-    gbuffer.Normal = GBufferT1.Sample(GBufferSampler, uv).rgb;
+    gbuffer.Color = SAMPLE_GBUFFER(GBufferT0, uv).rgb;
+    gbuffer.Normal = SAMPLE_GBUFFER(GBufferT1, uv).rgb;
     //gbuffer.ViewPos = 0; // TODO: Calculate ViewPos
     //gbuffer.WorldPos = 0;  // TODO: Calculate WorldPos
 
     return gbuffer;
 }
+#endif // USE_GBUFFERSAMPLING
 
 #endif // GBUFFER_HLSLI
