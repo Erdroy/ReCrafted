@@ -64,42 +64,23 @@ namespace ReCrafted.CodeTokenizer
             @"(?<unk>[^\s]+)",
             RegexOptions.Compiled
         );
-
-        private readonly string _inputFile;
-
+        
         private IEnumerator<Token> _tokenEnumerator;
         private Token _previousToken;
         private bool _ignoreSource;
         private int _currentLineNumber;
 
-        private Tokenizer() { }
-
-        /// <summary>
-        /// Creates a new instance of <see cref="Tokenizer"/>.
-        /// </summary>
-        /// <param name="inputFile">The input file for this parser to run on.</param>
-        public Tokenizer(string inputFile)
-        {
-            _inputFile = inputFile;
-        }
-
         /// <summary>
         /// Tokenizes the given file (through constructor).
         /// </summary>
-        public void Tokenize()
+        /// <param name="sourceCode">The source code for this tokenizer to run on.</param>
+        public void Tokenize(string sourceCode)
         {
             if (_tokenEnumerator != null)
                 throw new Exception("This shader is already parsed!");
-            
-            using (var file = new FileStream(_inputFile, FileMode.Open))
-            {
-                using (var reader = new StreamReader(file))
-                {
-                    var sourceCode = reader.ReadToEnd();
-                    var tokens = Tokenize(sourceCode);
-                    _tokenEnumerator = tokens.GetEnumerator();
-                }
-            }
+
+            var tokens = TokenizeInternal(sourceCode);
+            _tokenEnumerator = tokens.GetEnumerator();
         }
 
         /// <summary>
@@ -218,7 +199,7 @@ namespace ReCrafted.CodeTokenizer
             _tokenEnumerator?.Dispose();
         }
         
-        private IEnumerable<Token> Tokenize(string input)
+        private IEnumerable<Token> TokenizeInternal(string input)
         {
             var matches = RegexTokenizer.Matches(input);
             foreach (Match match in matches)

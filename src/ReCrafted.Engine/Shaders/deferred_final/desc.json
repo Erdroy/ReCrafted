@@ -1,9 +1,0 @@
-{
-	"name":"standard shader for deferred lighting",
-	"uniforms":[
-		{
-			"name":"m_lightdir",
-			"type":"vec3"
-		}
-	]
-}

@@ -95,14 +95,6 @@
     <Compile Include="Compiler\ShaderCompiler.Pass.Impl.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\..\build\bin64\gfxlshaders\ShaderAPI.hlsli">
-      <Link>ShaderAPI.hlsli</Link>
-    </Content>
-    <Content Include="..\..\..\build\bin64\gfxlshaders\simpleShader.hlsl">
-      <Link>simpleShader.hlsl</Link>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\libraries\ReCrafted.CodeTokenizer\ReCrafted.CodeTokenizer.csproj">
       <Project>{c36ba940-4b4d-4178-befe-cd9d6ca18732}</Project>
       <Name>ReCrafted.CodeTokenizer</Name>

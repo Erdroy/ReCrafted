@@ -37,23 +37,34 @@ namespace ReCrafted.ShaderCompiler.Compiler
         {
             _inputFile = input;
             _outputFile = output;
-
-            _parser = new Tokenizer(input);
-
+            
             if (!File.Exists(_inputFile))
                 throw new Exception("File " + _inputFile + " doesn't exists!");
         }
         
         public void Parse()
         {
-            if (_parser.CurrentToken?.Type==TokenType.EndOfFile)
+            if (_parser?.CurrentToken?.Type==TokenType.EndOfFile)
                throw new Exception("This shader is already parsed!");
 
             if (Options.Current.Verbose)
                 Console.WriteLine("Parsing " + Options.Current.InputFile);
 
-            _parser = new Tokenizer(Options.Current.InputFile);
-            _parser.Tokenize();
+            if (Options.Current.Verbose)
+                Console.WriteLine("Pre-processing...");
+
+            // pre process source code (this will add include source code etc.)
+            var preprocessedSource = ShaderBytecode.Preprocess(File.ReadAllText(_inputFile), new[]
+            {
+                new ShaderMacro("RENDERER_SHADER", "1"),
+                new ShaderMacro("RENDERER_VERSION", "1")
+            }, new D3DIncludeHandler(_inputFile), out var compilationErrors, _inputFile);
+
+            if (!string.IsNullOrEmpty(compilationErrors))
+                throw new Exception(compilationErrors);
+            
+            _parser = new Tokenizer();
+            _parser.Tokenize(preprocessedSource);
 
             do
             {
@@ -98,24 +109,11 @@ namespace ReCrafted.ShaderCompiler.Compiler
             // TODO: Per-function profile set (SetVertexShader(VSMain, 5.0))
 
             // We don't need semantics for D3D as it will get it using reflection. What about other planned backends?
-
+            
             var sourceCode = _parser.ProcessedSourceCode.ToString();
 
-            if (Options.Current.Verbose)
-                Console.WriteLine("Pre-processing...");
-
-            // pre process source code (this will add include source code etc.)
-            var preprocessedSource = ShaderBytecode.Preprocess(sourceCode, new[]
-            {
-                new ShaderMacro("RENDERER_SHADER", "1"),
-                new ShaderMacro("RENDERER_VERSION", "1")
-            }, new D3DIncludeHandler(_inputFile), out var compilationErrors, _inputFile);
-
-            if(!string.IsNullOrEmpty(compilationErrors))
-                throw new Exception(compilationErrors);
-            
             // compile for DirectX
-            CompileD3D(ref preprocessedSource);
+            CompileD3D(ref sourceCode);
 
             // TODO: compile for Vulkan / OpenGL or whatever else...
 

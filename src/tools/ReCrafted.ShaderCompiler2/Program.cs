@@ -39,6 +39,7 @@ namespace ReCrafted.ShaderCompiler
             {
                 var errorMessage = Options.Current.Verbose ? ex.ToString() : ex.Message;
                 Console.WriteLine("Failed to parse shader.\nError: " + errorMessage);
+                Console.ReadLine();
                 return;
             }
             

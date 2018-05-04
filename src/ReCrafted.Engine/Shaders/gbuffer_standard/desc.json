@@ -1,7 +1,0 @@
-{
-	"name":"standard shader for geometry buffering",
-    "uniforms": [],
-    "textures": [
-        "m_texture"
-    ] 
-}
