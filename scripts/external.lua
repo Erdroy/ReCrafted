@@ -17,6 +17,13 @@ externalproject "editor/ReCrafted.VoxelEditor"
    language "C#"
    filename "ReCrafted.VoxelEditor"
    
+externalproject "tools/ReCrafted.BuildManager"
+   location (path.join(ROOT_DIR, "src/tools/ReCrafted.BuildManager"))
+   uuid "0187992E-80C3-4F5B-9D40-C1D707E766C2"
+   kind "ConsoleApp"
+   language "C#"
+   filename "ReCrafted.BuildManager"
+   
 externalproject "tools/ReCrafted.APIBuilder"
    location (path.join(ROOT_DIR, "src/tools/ReCrafted.APIBuilder"))
    uuid "B5D814D8-240E-41CD-B88E-E05916A67636"
