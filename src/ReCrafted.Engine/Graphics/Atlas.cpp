@@ -25,12 +25,12 @@ Rect Atlas::getRect(const char* name)
     return {};
 }
 
-Ptr<Texture2D> Atlas::getTexture() const
+Ref<Texture2D> Atlas::getTexture() const
 {
 	return m_texture;
 }
 
-Ptr<Atlas> Atlas::load(Text fileName)
+Ref<Atlas> Atlas::load(Text fileName)
 {
 	char jsonName[512] = {};
 	char pngName[512] = {};
@@ -57,7 +57,7 @@ Ptr<Atlas> Atlas::load(Text fileName)
 		auto json = nlohmann::json::parse(data);
 
 		// create instance
-		Ptr<Atlas> atlas(new Atlas);
+		Ref<Atlas> atlas(new Atlas);
 
 		// build element list
 		for(auto i = 0u; i < json.size(); i ++)

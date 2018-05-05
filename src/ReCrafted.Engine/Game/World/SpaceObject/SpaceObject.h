@@ -20,8 +20,8 @@ private:
 
     Array<Vector3> m_views = {};
 
-	Ptr<SpaceObjectOctree> m_octree = nullptr;
-    Ptr<VoxelStorage> m_voxelStorage = nullptr;
+	Ref<SpaceObjectOctree> m_octree = nullptr;
+    Ref<VoxelStorage> m_voxelStorage = nullptr;
 	
 private:
     void init(SpaceObjectSettings& settings);
@@ -68,7 +68,7 @@ public:
 	 * \param settings The space object settings.
 	 * \return The new created space object.
 	 */
-	static Ptr<SpaceObject> createSpaceObject(SpaceObjectSettings& settings);
+	static Ref<SpaceObject> createSpaceObject(SpaceObjectSettings& settings);
 
 public:
 	PROPERTY(Vector3, position) = {};

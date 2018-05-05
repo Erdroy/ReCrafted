@@ -30,11 +30,11 @@ private:
     SpaceObjectSettings settings = {};
 
 private:
-    Ptr<VoxelCHM> m_chm = nullptr;
+    Ref<VoxelCHM> m_chm = nullptr;
 
     FileStream* m_vxhStream = nullptr;
     VoxelStorageHeader* m_vxh = nullptr;
-    spp::sparse_hash_map<uint64_t, Ptr<VoxelChunkData>> m_voxelChunks; // TODO: move into separate class and make some proper caching
+    spp::sparse_hash_map<uint64_t, Ref<VoxelChunkData>> m_voxelChunks; // TODO: move into separate class and make some proper caching
     Lock m_voxelChunksLock = {};
 
 private:
@@ -49,11 +49,11 @@ public:
     void dispose() override;
 
 public:
-    Ptr<VoxelChunkData> createChunkData(Vector3& nodePosition, int nodeSize);
-    Ptr<VoxelChunkData> getChunkData(Vector3& nodePosition);
-    void readChunkData(Ptr<VoxelChunkData> chunkData);
-    void writeChunkData(Ptr<VoxelChunkData> chunkData);
-    void freeChunkData(Ptr<VoxelChunkData> chunkData);
+    Ref<VoxelChunkData> createChunkData(Vector3& nodePosition, int nodeSize);
+    Ref<VoxelChunkData> getChunkData(Vector3& nodePosition);
+    void readChunkData(Ref<VoxelChunkData> chunkData);
+    void writeChunkData(Ref<VoxelChunkData> chunkData);
+    void freeChunkData(Ref<VoxelChunkData> chunkData);
 };
 
 #endif // VOXELSTORAGE_H

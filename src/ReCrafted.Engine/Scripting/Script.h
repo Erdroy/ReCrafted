@@ -20,9 +20,9 @@ private:
 private:
     Entity* m_entity = nullptr;
 
-    Ptr<Method> m_onUpdate = nullptr;
-    Ptr<Method> m_onSimulate = nullptr;
-    Ptr<Method> m_onDestroy = nullptr;
+    Ref<Method> m_onUpdate = nullptr;
+    Ref<Method> m_onSimulate = nullptr;
+    Ref<Method> m_onDestroy = nullptr;
 
 public:
     void init(Entity* entity)

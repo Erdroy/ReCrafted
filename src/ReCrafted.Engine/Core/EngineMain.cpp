@@ -151,7 +151,7 @@ void EngineMain::shutdown()
     Logger::log("ReCrafted shutdown");
     Logger::logInfo("Shutting down...");
 
-    // dispose window (using Ptr<> - no need to delete)
+    // dispose window (using Ref<> - no need to delete)
     SafeDispose(m_mainWindow);
 
     // dispose component manager at the very end

@@ -275,7 +275,7 @@ void MCMesher::generateCells(sbyte* data, const Vector3& position, float lod, ui
 	ITERATE_CELLS_END()
 }
 
-void MCMesher::generate(const Vector3& position, int lod, uint8_t borders, Ptr<Mesh>& mesh, sbyte* data)
+void MCMesher::generate(const Vector3& position, int lod, uint8_t borders, Ref<Mesh>& mesh, sbyte* data)
 {
 	var lodF = static_cast<float>(lod);
 

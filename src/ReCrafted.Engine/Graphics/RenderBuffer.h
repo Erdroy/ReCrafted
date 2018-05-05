@@ -79,9 +79,9 @@ public:
 	/// Create render buffer.
 	/// </summary>
 	/// <returns>The created render buffer.</returns>
-	FORCEINLINE static Ptr<RenderBuffer> createRenderTarget()
+	FORCEINLINE static Ref<RenderBuffer> createRenderTarget()
 	{
-		Ptr<RenderBuffer> renderTarget(new RenderBuffer);
+		Ref<RenderBuffer> renderTarget(new RenderBuffer);
 		return renderTarget;
 	}
 };

@@ -49,7 +49,7 @@ private:
 	SpaceObjectOctreeNode* root = nullptr;
 
     SpaceObjectOctreeNode* m_childrenNodes[8] = {};
-	Ptr<SpaceObjectChunk> m_chunk = nullptr;
+	Ref<SpaceObjectChunk> m_chunk = nullptr;
 
     bool m_populated = false;
     bool m_processing = false;

@@ -19,9 +19,9 @@ SINGLETON_IMPL(Graphics)
 
 Graphics* g_rendererInstance;
 
-Ptr<RenderBuffer> m_gbuffer = nullptr;
-Ptr<Shader> m_gbufferShader = nullptr;
-Ptr<Shader> m_deferredFinal = nullptr;
+Ref<RenderBuffer> m_gbuffer = nullptr;
+Ref<Shader> m_gbufferShader = nullptr;
+Ref<Shader> m_deferredFinal = nullptr;
 
 void Graphics::loadInternalShaders()
 {
@@ -302,7 +302,7 @@ void Graphics::renderUI()
     Profiler::endProfile();
 }
 
-void Graphics::draw(Ptr<Mesh>& mesh)
+void Graphics::draw(Ref<Mesh>& mesh)
 {
     /*bgfx::setVertexBuffer(0, mesh->m_vertexBuffer);
     bgfx::setIndexBuffer(mesh->m_indexBuffer);
@@ -310,7 +310,7 @@ void Graphics::draw(Ptr<Mesh>& mesh)
     bgfx::submit(m_wireframe ? 0 : m_viewId, m_currentShader->m_program);*/
 }
 
-void Graphics::setShader(Ptr<Shader>& shader)
+void Graphics::setShader(Ref<Shader>& shader)
 {
     m_currentShader = shader;
 }

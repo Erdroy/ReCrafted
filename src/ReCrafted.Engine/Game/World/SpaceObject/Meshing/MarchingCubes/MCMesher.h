@@ -61,7 +61,7 @@ public:
 	* \param mesh The mesh that will get the new mesh data.
 	* \param data The hermite voxel data (in -127 to 127 range).
 	*/
-	void generate(const Vector3& position, int lod, uint8_t borders, Ptr<Mesh>& mesh, sbyte* data) override;
+	void generate(const Vector3& position, int lod, uint8_t borders, Ref<Mesh>& mesh, sbyte* data) override;
 };
 
 #endif // MCMESHER_H

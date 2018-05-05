@@ -31,9 +31,9 @@ void VoxelCHM::loadFace(const int face, const char* fileName, const char* direct
     m_faces[face] = bitmap;
 }
 
-Ptr<VoxelCHM> VoxelCHM::loadFromDirectory(const char* directoryName)
+Ref<VoxelCHM> VoxelCHM::loadFromDirectory(const char* directoryName)
 {
-    Ptr<VoxelCHM> chm(new VoxelCHM);
+    Ref<VoxelCHM> chm(new VoxelCHM);
 
     chm->loadFace(0, "/left.bmp", directoryName);
     chm->loadFace(1, "/right.bmp", directoryName);

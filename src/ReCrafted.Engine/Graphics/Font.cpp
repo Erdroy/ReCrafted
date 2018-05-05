@@ -246,7 +246,7 @@ void Font::loadFont(Text fontFile, int size, bool managed)
 
 	auto charmapId = 0;
 
-	auto textures = Array<Ptr<Texture2D>>();
+	auto textures = Array<Ref<Texture2D>>();
 
 	while (glyphsLeft.size() > 0u)
 	{

@@ -131,7 +131,7 @@ void VoxelStorage::dispose()
     SafeDelete(m_vxh);
 }
 
-Ptr<VoxelChunkData> VoxelStorage::createChunkData(Vector3& nodePosition, const int nodeSize)
+Ref<VoxelChunkData> VoxelStorage::createChunkData(Vector3& nodePosition, const int nodeSize)
 {
     ScopeLock(m_voxelChunksLock);
 
@@ -151,7 +151,7 @@ Ptr<VoxelChunkData> VoxelStorage::createChunkData(Vector3& nodePosition, const i
     return chunk;
 }
 
-Ptr<VoxelChunkData> VoxelStorage::getChunkData(Vector3& nodePosition)
+Ref<VoxelChunkData> VoxelStorage::getChunkData(Vector3& nodePosition)
 {
     ScopeLock(m_voxelChunksLock);
 
@@ -163,7 +163,7 @@ Ptr<VoxelChunkData> VoxelStorage::getChunkData(Vector3& nodePosition)
     return m_voxelChunks[chunkId];
 }
 
-void VoxelStorage::readChunkData(Ptr<VoxelChunkData> chunkData)
+void VoxelStorage::readChunkData(Ref<VoxelChunkData> chunkData)
 {
     if (settings.generationType == GenerationType::PreGenerated)
     {
@@ -187,13 +187,13 @@ void VoxelStorage::readChunkData(Ptr<VoxelChunkData> chunkData)
     chunkData->m_loaded = true;
 }
 
-void VoxelStorage::writeChunkData(Ptr<VoxelChunkData> chunkData)
+void VoxelStorage::writeChunkData(Ref<VoxelChunkData> chunkData)
 {
     // TODO: check main thread
     // TODO: chunk save system
 }
 
-void VoxelStorage::freeChunkData(Ptr<VoxelChunkData> chunkData)
+void VoxelStorage::freeChunkData(Ref<VoxelChunkData> chunkData)
 {
     ScopeLock(m_voxelChunksLock);
 

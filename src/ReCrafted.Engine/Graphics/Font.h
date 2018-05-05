@@ -46,7 +46,7 @@ private:
 	uint m_charmapWidth = 512;
 	uint m_charmapHeight = 512;
 
-	Array<Ptr<Texture2D>> m_textures = {};
+	Array<Ref<Texture2D>> m_textures = {};
 
 	Glyph* m_glyphs = nullptr;
 	Glyph m_nullGlyph = {};
@@ -108,7 +108,7 @@ public:
 	 * \param id The texture id.
 	 * \return The texture.
 	 */
-	FORCEINLINE Ptr<Texture2D> getTexture(int id) const
+	FORCEINLINE Ref<Texture2D> getTexture(int id) const
 	{
 		return m_textures[id];
 	}

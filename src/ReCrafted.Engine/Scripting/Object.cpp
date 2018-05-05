@@ -7,9 +7,9 @@
 #include "Method.h"
 #include "Field.h"
 
-Array<Ptr<Object>> Object::m_objects;
+Array<Ref<Object>> Object::m_objects;
 
-Ptr<Method> Object::findMethod(const char* methodName) const
+Ref<Method> Object::findMethod(const char* methodName) const
 {
 	auto methodDesc = mono_method_desc_new(methodName, true);
 
@@ -23,20 +23,20 @@ Ptr<Method> Object::findMethod(const char* methodName) const
 	if (!methodHandle)
 		return nullptr;
 
-	Ptr<Method> method(new Method);
+	Ref<Method> method(new Method);
 	method->m_object = m_object;
 	method->m_method = methodHandle;
 	return method;
 }
 
-Ptr<Field> Object::findField(const char* fieldName) const
+Ref<Field> Object::findField(const char* fieldName) const
 {
 	auto fieldDesc = mono_class_get_field_from_name(m_class, fieldName);
 
 	if (!fieldDesc)
 		return nullptr;
 
-	Ptr<Field> field(new Field);
+	Ref<Field> field(new Field);
 
 	field->m_object = m_object;
 	field->m_field = fieldDesc;
@@ -49,7 +49,7 @@ MonoObject* Object::getManagedPtr() const
 	return m_object;
 }
 
-Ptr<Method> Object::findStaticMethod(const char* methodName)
+Ref<Method> Object::findStaticMethod(const char* methodName)
 {
     auto methodDesc = mono_method_desc_new(methodName, true);
     if (!methodDesc)
@@ -63,13 +63,13 @@ Ptr<Method> Object::findStaticMethod(const char* methodName)
     if (!methodHandle)
         return nullptr;
 
-    Ptr<Method> method(new Method);
+    Ref<Method> method(new Method);
     method->m_object = nullptr;
     method->m_method = methodHandle;
     return method;
 }
 
-void Object::create(Ptr<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject)
+void Object::create(Ref<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject)
 {
 	auto instance = mono_object_new(domain, monoClass);
 	mono_runtime_object_init(instance);
@@ -92,7 +92,7 @@ void Object::create(Ptr<Object>& object, MonoDomain* domain, MonoClass* monoClas
 	}
 }
 
-void Object::initializeInstance(Ptr<Object>& object, MonoObject* instance)
+void Object::initializeInstance(Ref<Object>& object, MonoObject* instance)
 {
     mono_runtime_object_init(instance);
 
@@ -111,7 +111,7 @@ void Object::initializeInstance(Ptr<Object>& object, MonoObject* instance)
     registerObject(object);
 }
 
-void Object::registerObject(Ptr<Object> object)
+void Object::registerObject(Ref<Object> object)
 {
 	m_objects.add(object);
 }

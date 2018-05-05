@@ -15,7 +15,7 @@
 class EntityPool : public EngineComponent<EntityPool>
 {
 private:
-	Array<Ptr<Entity>> m_entities = {};
+	Array<Ref<Entity>> m_entities = {};
 
 private:
     void onInit() override;
@@ -29,9 +29,9 @@ public:
     void simulate();
 
 public:
-	static Ptr<Entity> createEntity(Text entityName)
+	static Ref<Entity> createEntity(Text entityName)
 	{
-		Ptr<Entity> entity(new Entity);
+		Ref<Entity> entity(new Entity);
         entity->guid = Platform::newGuid();
 		entity->name = entityName;
 

@@ -242,9 +242,9 @@ void Mesh::dispose()
         bgfx::destroy(m_indexBuffer);*/
 }
 
-Ptr<Mesh> Mesh::createMesh()
+Ref<Mesh> Mesh::createMesh()
 {
-	Ptr<Mesh> mesh(new Mesh);
+	Ref<Mesh> mesh(new Mesh);
 	mesh->init();
 
 	if (mesh == nullptr)

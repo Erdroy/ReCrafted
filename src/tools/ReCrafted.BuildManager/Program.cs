@@ -7,7 +7,7 @@ namespace ReCrafted.BuildManager
 {
     internal class Program
     {
-        private static Type[] BuildCommands = new[] { typeof(BuildShaders)};
+        //private static Type[] BuildCommands = new[] { typeof(BuildShaders)};
 
         private static void Main(string[] args)
         {
@@ -20,7 +20,7 @@ namespace ReCrafted.BuildManager
             if (Options.Current == null)
                 return;
 
-            RunCommand(Options.Current.Command);
+            //RunCommand(Options.Current.Command);
         }
     }
 }

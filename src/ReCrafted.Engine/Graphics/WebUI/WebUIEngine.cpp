@@ -59,7 +59,7 @@ public:
 };
 
 CefRefPtr<HtmlApp> m_app = nullptr;
-Ptr<std::thread> m_cefThread = nullptr;
+Ref<std::thread> m_cefThread = nullptr;
 
 void WebUIEngine::runCEF()
 {

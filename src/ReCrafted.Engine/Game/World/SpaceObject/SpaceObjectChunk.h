@@ -29,9 +29,9 @@ private:
 
     bool m_hasSurface = false;
 
-    Ptr<VoxelChunkData> m_chunkData = {};
-	Ptr<Mesh> m_mesh = nullptr;
-	Ptr<Mesh> m_newMesh = nullptr;
+    Ref<VoxelChunkData> m_chunkData = {};
+	Ref<Mesh> m_mesh = nullptr;
+	Ref<Mesh> m_newMesh = nullptr;
 
     Lock m_meshLock = {};
 
@@ -53,7 +53,7 @@ public:
         return m_newMesh != nullptr;
     }
 
-    Ptr<VoxelChunkData> getChunkData() const
+    Ref<VoxelChunkData> getChunkData() const
     {
         return m_chunkData;
     }

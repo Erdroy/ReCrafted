@@ -27,11 +27,11 @@ public:
 	/// <summary>
 	/// Finds class using namespace and class name.
 	/// </summary>
-	Ptr<Class> findClass(const char* class_namespace, const char* class_name);
+	Ref<Class> findClass(const char* class_namespace, const char* class_name);
 
 public:
-	static Ptr<Assembly> API;
-	static Ptr<Assembly> Game;
+	static Ref<Assembly> API;
+	static Ref<Assembly> Game;
 };
 
 #endif // ASSEMBLY_H

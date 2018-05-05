@@ -22,13 +22,13 @@ private:
     SCRIPTING_API_IMPL()
 
 private:
-    Ptr<Object> m_gamemain = nullptr;
-    Ptr<Method> m_init_method = nullptr;
-    Ptr<Method> m_update_method = nullptr;
-    Ptr<Method> m_simulate_method = nullptr;
-    Ptr<Method> m_render_method = nullptr;
-    Ptr<Method> m_renderui_method = nullptr;
-    Ptr<Method> m_shutdown_method = nullptr;
+    Ref<Object> m_gamemain = nullptr;
+    Ref<Method> m_init_method = nullptr;
+    Ref<Method> m_update_method = nullptr;
+    Ref<Method> m_simulate_method = nullptr;
+    Ref<Method> m_render_method = nullptr;
+    Ref<Method> m_renderui_method = nullptr;
+    Ref<Method> m_shutdown_method = nullptr;
 
 public:
     virtual ~Application() = default;

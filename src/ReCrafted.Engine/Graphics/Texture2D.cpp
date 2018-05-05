@@ -283,8 +283,8 @@ void Texture2D::saveBitmap(const char* filename, uint width, uint height, byte* 
 	fclose(f);
 }
 */
-Ptr<Texture2D> Texture2D::createTexture()
+Ref<Texture2D> Texture2D::createTexture()
 {
-	Ptr<Texture2D> texture(new Texture2D);
+	Ref<Texture2D> texture(new Texture2D);
 	return texture;
 }

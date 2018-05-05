@@ -133,7 +133,7 @@ public:
 	 * \brief Creates new mesh.
 	 * \return The newly created mesh pointer.
 	 */
-	static Ptr<Mesh> createMesh();
+	static Ref<Mesh> createMesh();
 };
 
 #endif // MESH_H

@@ -4,7 +4,7 @@
 #include "Core/Logger.h"
 #include "Core/GameInfo.h"
 
-Ptr<Domain> Domain::Root;
+Ref<Domain> Domain::Root;
 
 const char* jit_options[] = {
 	"--soft-breakpoints",
@@ -14,7 +14,7 @@ const char* jit_options[] = {
 const char* rootDomainName = "ReCrafted";
 const char* runtimeVersion = "v4.0.30319";
 
-Ptr<Assembly> Domain::loadAssembly(const char* fileName)
+Ref<Assembly> Domain::loadAssembly(const char* fileName)
 {
 	// do mono related stuff
 	auto masm = mono_domain_assembly_open(m_domain, fileName);
@@ -24,7 +24,7 @@ Ptr<Assembly> Domain::loadAssembly(const char* fileName)
 		return nullptr;
 
 	// create assembly instance
-	Ptr<Assembly> assembly(new Assembly);
+	Ref<Assembly> assembly(new Assembly);
 	assembly->m_assembly = masm;
 	assembly->m_image = mimg;
 	assembly->m_domain = m_domain;
@@ -46,23 +46,23 @@ MonoDomain* Domain::getMono() const
 	return m_domain;
 }
 
-Ptr<Domain> Domain::create(MonoDomain* monoDomain)
+Ref<Domain> Domain::create(MonoDomain* monoDomain)
 {
-	Ptr<Domain> domain(new Domain);
+	Ref<Domain> domain(new Domain);
 	domain->m_domain = monoDomain;
 	return domain;
 }
 
-Ptr<Domain> Domain::create(const char* name, Ptr<Domain> parent)
+Ref<Domain> Domain::create(const char* name, Ref<Domain> parent)
 {
-	Ptr<Domain> domain(new Domain);
+	Ref<Domain> domain(new Domain);
 
 	domain->m_domain = mono_domain_create();
 
 	return domain;
 }
 
-Ptr<Domain> Domain::createRoot()
+Ref<Domain> Domain::createRoot()
 {
 	if(Root)
 	{

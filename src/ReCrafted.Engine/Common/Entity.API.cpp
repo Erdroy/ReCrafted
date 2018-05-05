@@ -75,7 +75,7 @@ namespace Internal
 
     void addScript(Entity* entity, MonoObject* scriptInstance)
     {
-        Ptr<Script> script(new Script);
+        Ref<Script> script(new Script);
 
         Object::initializeInstance(script, scriptInstance);
         entity->addScript(script);

@@ -21,8 +21,8 @@ private:
 private:
     EngineComponentManager* m_componentManager = nullptr;
 
-    Ptr<UpdateLoop> m_updateLoop = {};
-    Ptr<ApplicationWindow> m_mainWindow = {};
+    Ref<UpdateLoop> m_updateLoop = {};
+    Ref<ApplicationWindow> m_mainWindow = {};
 
     double m_lastUpdateTime = 0.0;
 

@@ -25,7 +25,7 @@ public:
 	};
 
 private:
-	Ptr<Texture2D> m_texture = nullptr;
+	Ref<Texture2D> m_texture = nullptr;
 	Array<Element> m_elements = {};
 
 private:
@@ -43,7 +43,7 @@ public:
 	 * \brief Gets texture of this atlas.
 	 * \return The texture pointer.
 	 */
-	Ptr<Texture2D> getTexture() const;
+	Ref<Texture2D> getTexture() const;
 	
     /**
 	 * \brief Disposes this atlas.
@@ -56,7 +56,7 @@ public:
 	 * \param fileName The JSON file name.
 	 * \return The loaded atlas, or null when file is not found.
 	 */
-	static Ptr<Atlas> load(Text fileName);
+	static Ref<Atlas> load(Text fileName);
 };
 
 #endif // ATLAS_H

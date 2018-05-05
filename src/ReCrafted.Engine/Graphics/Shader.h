@@ -47,7 +47,7 @@ public:
 	 * \param slot The texture slot, starts at 0.
 	 * \param texture The texture.
 	 */
-	void setTexture(int slot, Ptr<Texture2D> texture);
+	void setTexture(int slot, Ref<Texture2D> texture);
 
     /**
 	 * \brief Gets BGFX shader program handle.
@@ -66,7 +66,7 @@ public:
 	 * \param shaderFile The shader name, eg.: unlit/unlit_color
 	 * \return The loaded shader, or nullptr when file not found.
 	 */
-	static Ptr<Shader> loadShader(const char* shaderFile);
+	static Ref<Shader> loadShader(const char* shaderFile);
 };
 
 #endif // SHADER_H

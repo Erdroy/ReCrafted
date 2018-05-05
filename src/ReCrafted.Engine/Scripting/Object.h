@@ -27,7 +27,7 @@ private:
 	SCRIPTING_API_IMPL()
 
 private:
-	static Array<Ptr<Object>> m_objects;
+	static Array<Ref<Object>> m_objects;
 
 private:
 	MonoObject* m_object = nullptr;
@@ -41,12 +41,12 @@ public:
     /**
     * \brief Finds method using given name.
     */
-	Ptr<Method> findMethod(const char* methodName) const;
+	Ref<Method> findMethod(const char* methodName) const;
 
     /**
     * \brief Finds field using given name.
     */
-	Ptr<Field> findField(const char* fieldName) const;
+	Ref<Field> findField(const char* fieldName) const;
 
     /**
     * \brief Gets managed object pointer.
@@ -59,7 +59,7 @@ public:
     virtual void onDestroy() {}
 
 public:
-    static Ptr<Method> findStaticMethod(const char* methodName);
+    static Ref<Method> findStaticMethod(const char* methodName);
 
 	/// <summary>
 	/// Creates instance of API class.
@@ -67,15 +67,15 @@ public:
 	/// Setting `initializeNativePtr` to false, can instantiate every non-static class.
 	/// </summary>
 	template <class T>
-	static Ptr<T> createInstance(const char* ns, const char* className, Ptr<Assembly> assembly = nullptr, bool initializeNativePtr = true)
+	static Ref<T> createInstance(const char* ns, const char* className, Ref<Assembly> assembly = nullptr, bool initializeNativePtr = true)
 	{
-		Ptr<T> object(new T);
+		Ref<T> object(new T);
 
 		if (assembly == nullptr)
 			assembly = Assembly::API;
 
 		auto cls = assembly->findClass(ns, className);
-        auto objectPtr = static_cast<Ptr<Object>>(object);
+        auto objectPtr = static_cast<Ref<Object>>(object);
 	    create(objectPtr, Domain::Root->getMono(), cls->m_class, initializeNativePtr);
 		return object;
 	}
@@ -86,13 +86,13 @@ public:
     /// Setting `initializeNativePtr` to false, can instantiate every non-static class.
     /// </summary>
     template <class T>
-    static void createInstance(Ptr<T> object, const char* ns, const char* className, Ptr<Assembly> assembly = nullptr, bool initializeNativePtr = true)
+    static void createInstance(Ref<T> object, const char* ns, const char* className, Ref<Assembly> assembly = nullptr, bool initializeNativePtr = true)
     {
         if (assembly == nullptr)
             assembly = Assembly::API;
 
         auto cls = assembly->findClass(ns, className);
-        auto objectPtr = static_cast<Ptr<Object>>(object);
+        auto objectPtr = static_cast<Ref<Object>>(object);
         create(objectPtr, Domain::Root->getMono(), cls->m_class, initializeNativePtr);
     }
 
@@ -102,21 +102,21 @@ public:
      * \param instance The instance to be initialized. 
      */
     template <class T>
-    static void initializeInstance(Ptr<T> object, MonoObject* instance)
+    static void initializeInstance(Ref<T> object, MonoObject* instance)
 	{
-        auto objectPtr = static_cast<Ptr<Object>>(object);
+        auto objectPtr = static_cast<Ref<Object>>(object);
         initializeInstance(objectPtr, instance);
 	}
 
 public:
-	static void create(Ptr<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject);
-    static void initializeInstance(Ptr<Object>& object, MonoObject* instance);
-	static void registerObject(Ptr<Object> object);
+	static void create(Ref<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject);
+    static void initializeInstance(Ref<Object>& object, MonoObject* instance);
+	static void registerObject(Ref<Object> object);
 	static void destroy(Object* object);
 	static void destroyall();
 	static void finalize(Object* object);
 
-    FORCEINLINE static void destroy(Ptr<Object> object)
+    FORCEINLINE static void destroy(Ref<Object> object)
     {
         destroy(object.get());
     }

@@ -2,12 +2,12 @@
 
 #include "Assembly.h"
 
-Ptr<Assembly> Assembly::API;
-Ptr<Assembly> Assembly::Game;
+Ref<Assembly> Assembly::API;
+Ref<Assembly> Assembly::Game;
 
-Ptr<Class> Assembly::findClass(const char* class_namespace, const char* class_name)
+Ref<Class> Assembly::findClass(const char* class_namespace, const char* class_name)
 {
-	Ptr<Class> newClass(new Class);
+	Ref<Class> newClass(new Class);
 	newClass->m_class = mono_class_from_name(m_image, class_namespace, class_name);
 	newClass->m_assembly = this;
 	return newClass;

@@ -27,7 +27,7 @@ private:
 private:
     int m_viewId = 0;
     bool m_wireframe = false;
-    Ptr<Shader> m_currentShader = nullptr;
+    Ref<Shader> m_currentShader = nullptr;
     RenderStage::_enum m_renderStage = RenderStage::Default;
 
     Renderer::WindowHandle m_window = {};
@@ -62,12 +62,12 @@ public:
      * \brief Draws given mesh using current shader, view and matrix.
      * \param mesh The mesh class pointer.
      */
-    void draw(Ptr<Mesh>& mesh);
+    void draw(Ref<Mesh>& mesh);
 
     /**
      * \brief Sets given shader as current.
      */
-    void setShader(Ptr<Shader>& shader);
+    void setShader(Ref<Shader>& shader);
 
     /**
     * \brief Sets given view id as current.

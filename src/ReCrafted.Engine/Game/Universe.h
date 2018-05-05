@@ -20,7 +20,7 @@ private:
     friend class Graphics;
 
 private:
-    Ptr<SpaceObject> m_testObject1 = nullptr;
+    Ref<SpaceObject> m_testObject1 = nullptr;
 
 public:
     virtual ~Universe() = default;

@@ -151,7 +151,7 @@ public:
 	 * \brief Creates new empty texture.
 	 * \return The newly created texture.
 	 */
-	static Ptr<Texture2D> createTexture();
+	static Ref<Texture2D> createTexture();
 };
 
 #endif // TEXTURE2D_H

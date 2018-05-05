@@ -96,7 +96,7 @@ void Shader::init(const char* vs, const char* fs, const char* def)
 	}*/
 }
 
-void Shader::setTexture(int slot, Ptr<Texture2D> texture)
+void Shader::setTexture(int slot, Ref<Texture2D> texture)
 {
 	//bgfx::setTexture(slot, m_textures[slot], texture->m_textureHandle);
 }
@@ -107,9 +107,9 @@ void Shader::dispose()
 	//bgfx::destroy(m_program);
 }
 
-Ptr<Shader> Shader::loadShader(const char* shaderName)
+Ref<Shader> Shader::loadShader(const char* shaderName)
 {
-	Ptr<Shader> shader(new Shader);
+	Ref<Shader> shader(new Shader);
 
 	Logger::logInfo("Loading shader {0}", shaderName);
 

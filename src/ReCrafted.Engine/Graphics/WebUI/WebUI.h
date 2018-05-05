@@ -19,7 +19,7 @@ private:
     SCRIPTING_API_IMPL()
 
 private:
-    Array<Ptr<WebUIView>> m_views = {};
+    Array<Ref<WebUIView>> m_views = {};
     WebUIEngine* m_engine = nullptr;
 
 private:
@@ -34,7 +34,7 @@ public:
     virtual ~WebUI() = default;
 
 public:
-    Ptr<WebUIView> createView();
+    Ref<WebUIView> createView();
 };
 
 #endif // WEBUI_H
