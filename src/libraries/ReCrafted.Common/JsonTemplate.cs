@@ -1,9 +1,9 @@
-﻿// Edus © 2017 Always Too Late
+﻿// ReCrafted (c) 2016-2018 Always Too Late
 
 using System.IO;
 using Newtonsoft.Json;
 
-namespace ReCrafted.Core
+namespace ReCrafted.Common
 {
     /// <summary>
     /// JsonTemplate base class, implements few useful functions for JSON (de) serialization.

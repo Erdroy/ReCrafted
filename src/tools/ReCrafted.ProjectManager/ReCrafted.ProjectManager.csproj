@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0187992E-80C3-4F5B-9D40-C1D707E766C2}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>ReCrafted.BuildManager</RootNamespace>
-    <AssemblyName>ReCrafted.BuildManager</AssemblyName>
+    <RootNamespace>ReCrafted.ProjectManager</RootNamespace>
+    <AssemblyName>ReCrafted.ProjectManager</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -56,12 +56,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command.cs" />
+    <Compile Include="Commands\SetupProject.cs" />
+    <Compile Include="DeveloperInfo.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReflectiveEnumerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\libraries\ReCrafted.Common\ReCrafted.Common.csproj">
+      <Project>{d97fb88e-ee48-48f0-80d8-0a79e1b630ef}</Project>
+      <Name>ReCrafted.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

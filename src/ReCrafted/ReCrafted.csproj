@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ReCrafted</RootNamespace>
     <AssemblyName>ReCrafted.Game</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -39,9 +39,8 @@
     <StartWorkingDirectory>..\..\build\bin64\</StartWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\.projects\vs2015\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\.projects\vs2015\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -55,7 +54,6 @@
   <ItemGroup>
     <Compile Include="Core\Exceptions.cs" />
     <Compile Include="Core\GameInfo.cs" />
-    <Compile Include="Core\JsonTemplate.cs" />
     <Compile Include="Core\Locales\Locale.cs" />
     <Compile Include="Game\GameMain.cs" />
     <Compile Include="Game\FreeCameraController.cs" />
@@ -68,6 +66,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\libraries\ReCrafted.Common\ReCrafted.Common.csproj">
+      <Project>{d97fb88e-ee48-48f0-80d8-0a79e1b630ef}</Project>
+      <Name>ReCrafted.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ReCrafted.API\ReCrafted.API.csproj">
       <Project>{9d637328-3340-4344-b0ad-710749c1ad08}</Project>
       <Name>ReCrafted.API</Name>
@@ -76,7 +78,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>call $(ProjectDir)..\..\onbuild.bat $(ProjectDir)..\..\ Game</PostBuildEvent>

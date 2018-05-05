@@ -1,5 +1,7 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
+using ReCrafted.Common;
+
 namespace ReCrafted.Core
 {
     /// <summary>

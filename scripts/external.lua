@@ -17,12 +17,12 @@ externalproject "editor/ReCrafted.VoxelEditor"
    language "C#"
    filename "ReCrafted.VoxelEditor"
    
-externalproject "tools/ReCrafted.BuildManager"
-   location (path.join(ROOT_DIR, "src/tools/ReCrafted.BuildManager"))
+externalproject "tools/ReCrafted.ProjectManager"
+   location (path.join(ROOT_DIR, "src/tools/ReCrafted.ProjectManager"))
    uuid "0187992E-80C3-4F5B-9D40-C1D707E766C2"
    kind "ConsoleApp"
    language "C#"
-   filename "ReCrafted.BuildManager"
+   filename "ReCrafted.ProjectManager"
    
 externalproject "tools/ReCrafted.APIBuilder"
    location (path.join(ROOT_DIR, "src/tools/ReCrafted.APIBuilder"))
@@ -65,6 +65,13 @@ externalproject "libraries/ReCrafted.CodeTokenizer"
    kind "SharedLib"
    language "C#"
    filename "ReCrafted.CodeTokenizer"
+   
+externalproject "libraries/ReCrafted.Common"
+   location (path.join(ROOT_DIR, "src/libraries/ReCrafted.Common"))
+   uuid "D97FB88E-EE48-48F0-80D8-0A79E1B630EF"
+   kind "SharedLib"
+   language "C#"
+   filename "ReCrafted.Common"
    
 externalproject "tools/ReCrafted.VersionBuilder"
    location (path.join(ROOT_DIR, "src/tools/ReCrafted.VersionBuilder"))
