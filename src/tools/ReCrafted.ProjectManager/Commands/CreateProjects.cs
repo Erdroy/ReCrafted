@@ -20,10 +20,13 @@ namespace ReCrafted.ProjectManager.Commands
 
             if (string.IsNullOrEmpty(Options.Current.Toolchain))
             {
-                Console.WriteLine("Please specify the target toolchain with -t or --toolchain parameter! " +
+                Console.WriteLine("Next time, please specify the target toolchain with -t or --toolchain parameter! " +
                                   "Available options are: 'vs2015', 'vs2015' and 'vs2015'.");
-                Environment.Exit(-1);
+
+                Options.Current.Toolchain = "vs2015";
             }
+
+            Console.WriteLine("Creating projects for " + Options.Current.Toolchain);
             
             var process = new Process
             {

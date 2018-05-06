@@ -11,6 +11,6 @@ tools/*.xml
 build/
 bin/
 obj/
-libs/
+lib/
 docfx_project/
 packages/

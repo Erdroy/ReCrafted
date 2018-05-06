@@ -1,7 +1,7 @@
 ROOT_DIR = path.getabsolute(".")
 OUTPUT_DIR = path.join(ROOT_DIR, ".projects/", _ACTION)
 TARGET_DIR = path.join(ROOT_DIR, "build/")
-LIBS_DIR = path.join(ROOT_DIR, "libs/")
+LIBS_DIR = path.join(ROOT_DIR, "lib/")
 
 -- generate solution
 solution "ReCrafted"

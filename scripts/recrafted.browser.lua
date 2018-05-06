@@ -27,12 +27,9 @@ project "ReCrafted.Browser"
 		path.join(ROOT_DIR, "src/ReCrafted.Browser/**"),
 	}
 	
-	-- add onbuild script and multi processor compilation
+	-- add multi processor compilation
 	configuration { "vs*"}
 		buildoptions { "/MP" }
-		postbuildcommands {
-			"call " .. ROOT_DIR .. "/onbuild.bat " .. ROOT_DIR .. "/ Engine",
-		}
 	
 	links { "libcef" }
 		
