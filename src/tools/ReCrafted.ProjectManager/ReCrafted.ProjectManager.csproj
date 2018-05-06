@@ -59,6 +59,7 @@
     <Compile Include="Command.cs" />
     <Compile Include="Commands\CompileShaders.cs" />
     <Compile Include="Commands\CreateProjects.cs" />
+    <Compile Include="Commands\GenerateAPI.cs" />
     <Compile Include="Commands\PostBuild.cs" />
     <Compile Include="Commands\SetupProject.cs" />
     <Compile Include="Commands\UpdateBuildInfo.cs" />

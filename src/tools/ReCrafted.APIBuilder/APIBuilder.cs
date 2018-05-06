@@ -8,7 +8,7 @@ using ReCrafted.APIBuilder.Tags;
 
 namespace ReCrafted.APIBuilder
 {
-    internal class APIBuilder
+    public class APIBuilder
     {
         private readonly Dictionary<string, Type> _apiTags = new Dictionary<string, Type>
         {

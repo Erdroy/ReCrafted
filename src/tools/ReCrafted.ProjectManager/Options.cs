@@ -18,6 +18,9 @@ namespace ReCrafted.ProjectManager
         [Option("skip-shaders", Required = false, HelpText = "When added, the shader compilation will be skipped while PostBuild command is executed.")]
         public bool SkipShaders { get; set; }
 
+        [Option("skip-api", Required = false, HelpText = "When added, the API generation will be skipped while PostBuild command is executed.")]
+        public bool SkipAPI { get; set; }
+
         public static Options Current { get; set; }
     }
 }
