@@ -73,10 +73,3 @@ externalproject "libraries/ReCrafted.Common"
    language "C#"
    filename "ReCrafted.Common"
    
-externalproject "tools/ReCrafted.VersionBuilder"
-   location (path.join(ROOT_DIR, "src/tools/ReCrafted.VersionBuilder"))
-   uuid "E27EB8A3-DCF1-44C5-AFA0-2055B243D7A5"
-   kind "ConsoleApp"
-   language "C#"
-   filename "ReCrafted.VersionBuilder"
-   

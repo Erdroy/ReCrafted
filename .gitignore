@@ -1,9 +1,6 @@
 *.tmp
 
-username.txt
-libs_prebuilt.zip
-ReCrafted.NET.VC.db
-ReCrafted.NET.VC.VC.opendb
+developer.json
 
 tools/*.pdb
 tools/*.config
@@ -14,7 +11,6 @@ tools/*.xml
 build/
 bin/
 obj/
-docfx_project/
 libs/
-libs_temp/
+docfx_project/
 packages/
