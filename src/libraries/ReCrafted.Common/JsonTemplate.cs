@@ -15,7 +15,8 @@ namespace ReCrafted.Common
         /// Converts this object to JSON and then writes the JSON to given file.
         /// </summary>
         /// <param name="fileName">The file name.</param>
-        public void ToFile(string fileName)
+        /// <param name="formatting">The formatting type.</param>
+        public void ToFile(string fileName, Formatting formatting = Formatting.None)
         {
             // Write to the file
             using (var file = new FileStream(fileName, FileMode.Create))
@@ -23,7 +24,7 @@ namespace ReCrafted.Common
                 using (var writer = new StreamWriter(file))
                 {
                     // Convert this object to JSON
-                    var json = ToJson();
+                    var json = ToJson(formatting);
 
                     // Write the converted JSON to the file
                     writer.Write(json);
@@ -34,6 +35,7 @@ namespace ReCrafted.Common
         /// <summary>
         /// Converts this object to JSON.
         /// </summary>
+        /// <param name="formatting">The formatting type.</param>
         /// <returns>The converted JSON string.</returns>
         public string ToJson(Formatting formatting = Formatting.None)
         {

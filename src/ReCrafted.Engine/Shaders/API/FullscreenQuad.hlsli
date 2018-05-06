@@ -11,7 +11,7 @@ struct QuadVS
 
 struct QuadPS
 {
-    float2 Position : SV_POSITION;
+    float4 Position : SV_POSITION;
     float2 UV : TEXCOORD0;
 };
 
@@ -21,7 +21,7 @@ struct QuadPS
 /// </summary>
 void QuadVSMain(in QuadVS i, out QuadPS o) 
 {
-    o.Position = TransformPosition2D(i.Position);
+    o.Position = TransformPosition2D(float3(i.Position, 0.0f));
     o.UV = i.UV;
 }
 

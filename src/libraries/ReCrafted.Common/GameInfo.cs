@@ -1,9 +1,10 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
-using ReCrafted.Common;
+using System;
 
-namespace ReCrafted.Core
+namespace ReCrafted.Common
 {
+    /// <inheritdoc />
     /// <summary>
     /// GameInfo JSON class.
     /// </summary>
@@ -26,6 +27,16 @@ namespace ReCrafted.Core
         /// The current build number.
         /// </summary>
         public int BuildNumber { get; set; }
+
+        /// <summary>
+        /// The username of the author who created this build.
+        /// </summary>
+        public string BuildAuthor { get; set; }
+
+        /// <summary>
+        /// The build date.
+        /// </summary>
+        public DateTime BuildTime { get; set; }
 
         /// <summary>
         /// The current GameInfo, contains all values of the current build.

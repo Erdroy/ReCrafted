@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using ReCrafted.APIBuilder.Tags;
 
@@ -112,6 +113,28 @@ namespace ReCrafted.APIBuilder
             }
 
             return Files.ToArray();
+        }
+
+        public static void Build()
+        {
+            var timer = new Stopwatch();
+            timer.Start();
+
+            var currentDir = Environment.CurrentDirectory;
+            if (currentDir.Contains("tools"))
+                currentDir += "\\..";
+
+            var apiSourceFiles = Directory.GetFiles(currentDir + "\\src\\ReCrafted.Engine\\", "*.API.cpp", SearchOption.AllDirectories);
+
+            var builder = new APIBuilder();
+            foreach (var sourceFile in apiSourceFiles)
+            {
+                Console.WriteLine("Processing: " + Path.GetFileName(sourceFile));
+                builder.Build(sourceFile, currentDir);
+            }
+
+            timer.Stop();
+            Console.WriteLine($"Generated in {timer.ElapsedMilliseconds} ms.");
         }
 
         public static int LineNumber { get; private set; }

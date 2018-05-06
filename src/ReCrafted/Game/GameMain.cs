@@ -8,7 +8,7 @@ using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
 using ReCrafted.API.UI.Controls;
-using ReCrafted.Core;
+using ReCrafted.Common;
 using ReCrafted.Game.Core;
 using ReCrafted.Game.Interface;
 using ReCrafted.Game.Super;

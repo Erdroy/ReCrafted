@@ -53,7 +53,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Exceptions.cs" />
-    <Compile Include="Core\GameInfo.cs" />
     <Compile Include="Core\Locales\Locale.cs" />
     <Compile Include="Game\GameMain.cs" />
     <Compile Include="Game\FreeCameraController.cs" />
@@ -80,7 +79,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call $(ProjectDir)..\..\onbuild.bat $(ProjectDir)..\..\ Game</PostBuildEvent>
+    <PostBuildEvent>call $(ProjectDir)..\..\pm PostBuild --skip-shaders</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

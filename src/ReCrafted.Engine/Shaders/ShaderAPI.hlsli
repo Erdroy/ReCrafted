@@ -18,7 +18,7 @@
 #include "../API/FullscreenQuad.hlsli"
 
 // ==== PRESET INCLUDES ====
-#ifdef SURFACE
+#ifdef PRESET_SURFACE
 #include "../API/Surface.hlsli"
 #endif
 

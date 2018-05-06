@@ -74,6 +74,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ShaderCompiler.cs" />
     <Compile Include="Compiler\D3DHelper.cs" />
     <Compile Include="Compiler\D3DIncludeHandler.cs" />
     <Compile Include="Compiler\FunctionAttribute.cs" />

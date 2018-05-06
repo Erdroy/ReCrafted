@@ -65,7 +65,7 @@ namespace ReCrafted.VoxelEditor.Rendering
             CreateBlendStates();
 
             // load default shader
-            _defaultShader = Shader.FromFile("assets/shaders/default.hlsl");
+            _defaultShader = Shader.FromFile("../assets/editor/shaders/default.hlsl");
         }
 
         public void BeginFrame()

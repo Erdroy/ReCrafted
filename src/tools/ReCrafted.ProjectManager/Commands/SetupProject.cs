@@ -22,7 +22,7 @@ namespace ReCrafted.ProjectManager.Commands
                 Username = Options.Current.Username
             };
 
-            File.WriteAllText(Program.RootDirectory + "\\developer.json", developerInfo.ToJson(Formatting.Indented));
+            File.WriteAllText(Program.DeveloperInfoFile, developerInfo.ToJson(Formatting.Indented));
         }
     }
 }

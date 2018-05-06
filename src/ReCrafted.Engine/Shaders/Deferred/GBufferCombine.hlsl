@@ -10,9 +10,9 @@
 /// Pixel Shader Function
 /// CombinePSMain
 /// </summary>
-float4 CombinePSMain(in QuadPS i)
+float4 CombinePSMain(in QuadPS i) : SV_Target0
 {
-    GBuffer gbuffer = SampleGBuffer(i.uv);
+    GBuffer gbuffer = SampleGBuffer(i.UV);
 
     return float4(0.0f, 0.0f, 0.0f, 1.0f);
 }

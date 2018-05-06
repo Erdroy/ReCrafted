@@ -57,10 +57,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command.cs" />
+    <Compile Include="Commands\CompileShaders.cs" />
+    <Compile Include="Commands\CreateProjects.cs" />
+    <Compile Include="Commands\PostBuild.cs" />
     <Compile Include="Commands\SetupProject.cs" />
+    <Compile Include="Commands\UpdateBuildInfo.cs" />
     <Compile Include="DeveloperInfo.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="ProjectBuildInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectiveEnumerator.cs" />
   </ItemGroup>
@@ -71,6 +76,14 @@
     <ProjectReference Include="..\..\libraries\ReCrafted.Common\ReCrafted.Common.csproj">
       <Project>{d97fb88e-ee48-48f0-80d8-0a79e1b630ef}</Project>
       <Name>ReCrafted.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ReCrafted.APIBuilder\ReCrafted.APIBuilder.csproj">
+      <Project>{b5d814d8-240e-41cd-b88e-e05916a67636}</Project>
+      <Name>ReCrafted.APIBuilder</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ReCrafted.ShaderCompiler\ReCrafted.ShaderCompiler.csproj">
+      <Project>{b584db24-317f-4ef6-b8dd-207306327f0b}</Project>
+      <Name>ReCrafted.ShaderCompiler</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

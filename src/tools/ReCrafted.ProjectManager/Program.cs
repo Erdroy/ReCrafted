@@ -9,6 +9,10 @@ namespace ReCrafted.ProjectManager
     {
         public static string RootDirectory { get; private set; }
 
+        public static string DeveloperInfoFile => RootDirectory + "\\developer.json";
+        public static string BuildInfoFile => RootDirectory + "\\buildinfo.json";
+        public static string GameInfoFile => RootDirectory + "\\build\\assets\\gameinfo.json";
+
         private static void Main(string[] args)
         {
             Parser.Default.ParseArguments<Options>(args)

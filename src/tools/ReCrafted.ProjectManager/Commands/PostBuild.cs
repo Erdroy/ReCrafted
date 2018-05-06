@@ -1,0 +1,30 @@
+﻿// ReCrafted (c) 2016-2018 Always Too Late
+
+using System;
+using System.Linq;
+
+namespace ReCrafted.ProjectManager.Commands
+{
+    public class PostBuild : Command
+    {
+        public override void Execute()
+        {
+            if (!Options.Current.SkipShaders)
+            {
+                // compile shaders
+                Program.RunCommand("CompileShaders");
+            }
+
+            // update build info
+            Program.RunCommand("UpdateBuildInfo");
+
+            var info = ProjectBuildInfo.FromFile(Program.BuildInfoFile);
+            var buildNumber = info.BuildCounts.Sum(x => x.Value);
+
+            // print some cool data
+            Console.WriteLine($"==== Build done! Current build number ({info.BuildName}): {buildNumber}, " +
+                              $"build time: {info.LastBuild.ToShortDateString()} {info.LastBuild.ToShortTimeString()} ====");
+            Environment.Exit(0);
+        }
+    }
+}
