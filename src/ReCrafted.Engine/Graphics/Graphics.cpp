@@ -15,32 +15,18 @@
 
 SINGLETON_IMPL(Graphics)
 
-#define RESET_FLAGS (BGFX_RESET_NONE)
-
 Graphics* g_rendererInstance;
 
 Ref<RenderBuffer> m_gbuffer = nullptr;
-Ref<Shader> m_gbufferShader = nullptr;
-Ref<Shader> m_deferredFinal = nullptr;
+Ref<Shader> m_gbufferFillShader = nullptr;
+Ref<Shader> m_gbufferCombine = nullptr;
 
 void Graphics::loadInternalShaders()
 {
     Logger::logInfo("Loading internal shaders");
 
-    m_gbufferShader = Shader::loadShader("gbuffer_standard");
-    m_deferredFinal = Shader::loadShader("deferred_final");
-}
-
-void Graphics::createUniforms()
-{
-    Logger::logInfo("Creating default uniforms");
-
-    // create uniforms
-    /*m_modelViewProjection = bgfx::createUniform("m_modelViewProjection", bgfx::UniformType::Mat4);
-    m_texture0 = bgfx::createUniform("m_texture0", bgfx::UniformType::Int1);
-    m_texture1 = bgfx::createUniform("m_texture1", bgfx::UniformType::Int1);
-    m_texture2 = bgfx::createUniform("m_texture2", bgfx::UniformType::Int1);
-    m_texture3 = bgfx::createUniform("m_texture3", bgfx::UniformType::Int1);*/
+    m_gbufferFillShader = Shader::loadShader("GBufferStandard");
+    m_gbufferCombine = Shader::loadShader("GBufferCombine");
 }
 
 void Graphics::createRenderBuffers()
@@ -50,9 +36,8 @@ void Graphics::createRenderBuffers()
     // create render buffer for geometry pass
     m_gbuffer = RenderBuffer::createRenderTarget();
     m_gbuffer->begin();
-    m_gbuffer->addTarget("ALBEDO", TextureFormat::RGBA8);
-    m_gbuffer->addTarget("[RGB]NORMALS, [A]AmbientOcculusion", TextureFormat::RGBA8);
-    m_gbuffer->addTarget("DEPTH", TextureFormat::D24);
+    m_gbuffer->addTarget("ALBEDO", Renderer::TextureFormat::RGBA8);
+    m_gbuffer->addTarget("[RGB]NORMALS, [A]AmbientOcculusion", Renderer::TextureFormat::RGBA8);
     m_gbuffer->end();
 }
 
@@ -60,26 +45,10 @@ void Graphics::initializeRenderer()
 {
     Logger::logInfo("Creating renderer with Direct3D11 API");
 
-    // initialize bgfx platform data
-   /* bgfx::PlatformData pd;
-    memset(&pd, 0, sizeof(pd));
-    pd.nwh = Platform::getCurrentWindow();
-    bgfx::setPlatformData(pd);
-
-    // initialize rendering
-    bgfx::init(bgfx::RendererType::Direct3D11);
-    bgfx::reset(Display::get_Width(), Display::get_Height(), RESET_FLAGS);
-
-    bgfx::setDebug(BGFX_DEBUG_NONE);
-
-    // Set view 0 clear state.
-    bgfx::setViewClear(RENDERVIEW_BACKBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
-    bgfx::setViewClear(RENDERVIEW_GBUFFER, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);*/
-    
     // Initialize Renderer
     Renderer::Initialize(
         Renderer::RendererAPI::DirectX11,
-        Renderer::RenderFlags::DepthTest | Renderer::RenderFlags::DepthStencil,
+        Renderer::RenderFlags::VSync | Renderer::RenderFlags::DepthTest | Renderer::RenderFlags::DepthStencil,
         Renderer::Settings::Debug
     );
 
@@ -97,9 +66,6 @@ void Graphics::onInit()
     // initialize renderer
     initializeRenderer();
 
-    // create uniforms
-    createUniforms();
-
     // create render buffers
     createRenderBuffers();
 
@@ -115,8 +81,8 @@ void Graphics::onDispose()
     Logger::logInfo("Unloaded render buffers");
 
     // dispose shaders
-    m_gbufferShader->dispose();
-    m_deferredFinal->dispose();
+    m_gbufferFillShader->dispose();
+    m_gbufferCombine->dispose();
     Logger::logInfo("Unloaded render shaders");
 
     // check resource leaks
@@ -218,12 +184,12 @@ void Graphics::renderBegin()
     setMatrix(Camera::getMainCamera()->get_viewProjection());
 
     // set default shader
-    setShader(m_gbufferShader);
+    setShader(m_gbufferFillShader);
 
     // update shaders uniforms
     var lightdir = Vector3(0.39f, -0.9f, 0.13f);
     lightdir.normalize();
-    m_deferredFinal->setValue(0, &lightdir);
+    m_gbufferCombine->setValue(0, &lightdir);
 
     // bind gbuffer
     m_gbuffer->bind();
@@ -235,11 +201,13 @@ void Graphics::renderEnd()
 
     if (Input::isKey(Key_F2))
     {
-        //blit(0, m_gbuffer->getTarget(1));
+        //Renderer::Blit(m_frameBuffer, m_gbuffer->getTarget(0));
         return;
     }
 
-    // final pass
+    // combine gbuffer
+    //Renderer::ApplyShader(m_gbufferCombine->m_shaderHandle, 0);
+
     /*cvar textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
 
     if (m_wireframe)
@@ -251,7 +219,7 @@ void Graphics::renderEnd()
     // draw into backbuffer
     bgfx::setVertexBuffer(0, m_blitMesh->m_vertexBuffer);
     bgfx::setIndexBuffer(m_blitMesh->m_indexBuffer);
-    bgfx::submit(RENDERVIEW_BACKBUFFER, m_deferredFinal->m_program);*/
+    bgfx::submit(RENDERVIEW_BACKBUFFER, m_gbufferCombine->m_program);*/
 }
 
 void Graphics::renderWorld()

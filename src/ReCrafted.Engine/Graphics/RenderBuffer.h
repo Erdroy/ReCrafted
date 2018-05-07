@@ -7,7 +7,7 @@
 
 // includes
 #include "ReCrafted.h"
-#include "TextureFormat.h"
+#include "Graphics/Renderer/Renderer.hpp"
 
 #define RENDERVIEW_BACKBUFFER 0
 #define RENDERVIEW_GBUFFER 1
@@ -18,9 +18,8 @@
 class RenderBuffer
 {
 private:
-	//bgfx::FrameBufferHandle m_framebufferHandle = {};
-	TextureFormat::Enum m_textures[MAX_RENDERBUFFER_TARGETS] = {};
-	//bgfx::TextureHandle m_textureHandles[MAX_RENDERBUFFER_TARGETS] = {};
+	Renderer::RenderBufferHandle m_renderBuffer = {};
+    Renderer::TextureFormat::_enum m_textures[MAX_RENDERBUFFER_TARGETS] = {};
 	uint m_textureCount = 0u;
 	bool m_created = false;
 
@@ -48,14 +47,14 @@ public:
 	/// </summary>
 	/// <param name="name">The target name, only for better building in code.</param>
 	/// <param name="format">The target format.</param>
-	void addTarget(const char* name, TextureFormat::Enum format);
+	void addTarget(const char* name, Renderer::TextureFormat::_enum format);
 
 	/// <summary>
 	/// Returns texture handle at slot.
 	/// </summary>
 	/// <param name="slot">The texture/target slot.</param>
 	/// <returns>The target texture handle.</returns>
-	//bgfx::TextureHandle getTarget(uint slot);
+	Renderer::Texture2DHandle getTarget(uint slot);
 
 	/// <summary>
 	/// Resize the render buffer.

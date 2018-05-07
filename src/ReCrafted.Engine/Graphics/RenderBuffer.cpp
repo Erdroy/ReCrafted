@@ -6,21 +6,8 @@
 
 void RenderBuffer::createBuffer(uint width, uint height)
 {
-	// sampler flags
-	/*const auto samplerFlags = 0
-		| BGFX_TEXTURE_RT
-		| BGFX_TEXTURE_MIN_POINT
-		| BGFX_TEXTURE_MAG_POINT
-		| BGFX_TEXTURE_MIP_POINT
-		| BGFX_TEXTURE_U_CLAMP
-		| BGFX_TEXTURE_V_CLAMP;
-
-	// create textures
-	for (auto i = 0u; i < m_textureCount; i++)
-		m_textureHandles[i] = bgfx::createTexture2D(uint16_t(width), uint16_t(height), false, 1, static_cast<bgfx::TextureFormat::Enum>(m_textures[i]), samplerFlags);
-
 	// build render buffer
-	m_framebufferHandle = bgfx::createFrameBuffer(m_textureCount, m_textureHandles, true);*/
+    m_renderBuffer = Renderer::CreateRenderBuffer(width, height, m_textures, m_textureCount, Renderer::TextureFormat::D32F);
     
     m_width = width;
     m_height = height;
@@ -29,10 +16,6 @@ void RenderBuffer::createBuffer(uint width, uint height)
 void RenderBuffer::begin()
 {
 	_ASSERT(m_created != true);
-
-	// zeroe all textures
-	for (auto i = 0; i < MAX_RENDERBUFFER_TARGETS; i++)
-		m_textures[i] = {};
 }
 
 void RenderBuffer::end()
@@ -53,7 +36,7 @@ void RenderBuffer::end()
 	Logger::logInfo("Created render buffer");
 }
 
-void RenderBuffer::addTarget(const char* name, TextureFormat::Enum format)
+void RenderBuffer::addTarget(const char* name, Renderer::TextureFormat::_enum format)
 {
 	_ASSERT(m_created != true);
 
@@ -61,14 +44,13 @@ void RenderBuffer::addTarget(const char* name, TextureFormat::Enum format)
 	m_textures[m_textureCount] = format;
 	m_textureCount++;
 }
-/*
-bgfx::TextureHandle RenderBuffer::getTarget(uint slot)
+
+Renderer::Texture2DHandle RenderBuffer::getTarget(uint slot)
 {
 	_ASSERT(slot < MAX_RENDERBUFFER_TARGETS);
-	_ASSERT(m_textureHandles[slot].idx > 0);
-
-	return m_textureHandles[slot];
-}*/
+	
+	return m_renderBuffer.renderTextures[slot];
+}
 
 void RenderBuffer::resize(uint width, uint height)
 {
@@ -77,24 +59,19 @@ void RenderBuffer::resize(uint width, uint height)
     if (m_width == width && m_height == height)
         return;
 
-	// destroy current framebuffer
-	//bgfx::destroy(m_framebufferHandle);
-	
-	// create new framebuffer
-	createBuffer(width, height);
+    // resize RB
+    Renderer::ResizeRenderBuffer(m_renderBuffer, width, height);
 }
 
 void RenderBuffer::bind()
 {
 	_ASSERT(m_created != false);
 
-	// TODO: bind framebuffer
-	//bgfx::setViewFrameBuffer(RENDERVIEW_GBUFFER, m_framebufferHandle);
+    Renderer::ApplyRenderBuffer(m_renderBuffer);
 }
 
 void RenderBuffer::dispose()
 {
 	// destroy framebuffer
-	//bgfx::destroy(m_framebufferHandle);
-	Logger::logInfo("Unloaded render buffer");
+    Renderer::DestroyRenderBuffer(m_renderBuffer);
 }

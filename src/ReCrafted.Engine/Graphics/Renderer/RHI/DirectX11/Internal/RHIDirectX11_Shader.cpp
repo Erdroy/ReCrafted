@@ -360,8 +360,11 @@ namespace Renderer
         var buffers = shaderJson["UniformBuffers"];
         var passes = shaderJson["Passes"];
 
-        shader->m_name = shaderJson["Name"].get<std::string>();
-        shader->m_desc = shaderJson["Description"].get<std::string>();
+        if (!shaderJson["Name"].is_null())
+            shader->m_name = shaderJson["Name"].get<std::string>();
+
+        if (!shaderJson["Description"].is_null())
+            shader->m_desc = shaderJson["Description"].get<std::string>();
 
         // Create all passes
         for (rvar passJson : passes)

@@ -38,7 +38,6 @@ public:
 
 private:
     void loadInternalShaders();
-    void createUniforms();
     void createRenderBuffers();
 
     void initializeRenderer();

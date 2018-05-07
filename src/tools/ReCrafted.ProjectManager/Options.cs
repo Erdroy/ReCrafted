@@ -15,10 +15,10 @@ namespace ReCrafted.ProjectManager
         [Option('t', "toolchain", Required = false, HelpText = "The target tool chain to generate project for. Used with CreateProject command.")]
         public string Toolchain { get; set; }
 
-        [Option("skip-shaders", Required = false, HelpText = "When added, the shader compilation will be skipped while PostBuild command is executed.")]
+        [Option("skip-shaders", Default = false, Required = false, HelpText = "When added, the shader compilation will be skipped while PostBuild command is executed.")]
         public bool SkipShaders { get; set; }
 
-        [Option("skip-api", Required = false, HelpText = "When added, the API generation will be skipped while PostBuild command is executed.")]
+        [Option("skip-api", Default = false, Required = false, HelpText = "When added, the API generation will be skipped while PostBuild command is executed.")]
         public bool SkipAPI { get; set; }
 
         public static Options Current { get; set; }
