@@ -32,11 +32,23 @@ public:
 	uint32_t idx = 0u;
 };
 
-#define RENDERER_DEFINE_HANDLE(name)                struct name##Handle : public ObjectHandle {  }
+#define RENDERER_DEFINE_HANDLE(name)         struct name##Handle : public ObjectHandle {  }
 
-#define RENDERER_DEFINE_HANDLE_BEGIN(name)   struct name##Handle : public ObjectHandle { public:
-#define RENDERER_DEFINE_HANDLE_END() \
-}
+#define RENDERER_DEFINE_HANDLE_WITH_DESCRIPTOR(type) \
+struct type##Handle : public ObjectHandle {  };\
+struct type##Description; \
+type##Description& Get##type##Description(type##Handle handle); \
+struct type##Description { public:
+
+#define RENDERER_DEFINE_HANDLE_WITH_DESCRIPTOR_END() } \
+
+
+#define RENDERER_DEFINE_HANDLE_DESCRIPTOR_TABLE(type, maxval) \
+    type##Description type##_desc_table[maxval] = {};\
+    type##Description& Get##type##Description(type##Handle handle) {\
+        _ASSERT( handle.idx != 0u );\
+        return type##_desc_table[handle.idx];\
+    }
 
 #define RENDERER_DEFINE_HANDLE_ALLOCATOR(type, maxval)  \
 	type type##_table[maxval] = {};                     \

@@ -50,9 +50,15 @@ namespace Renderer
 	};
 
 	// ==== HANDLE DEFINITIONS ====
-	RENDERER_DEFINE_HANDLE_ALLOCATOR(WindowHandle, RENDERER_MAX_WINDOWS);
-	RENDERER_DEFINE_HANDLE_ALLOCATOR(RenderBufferHandle, RENDERER_MAX_RENDER_BUFFERS);
+    RENDERER_DEFINE_HANDLE_ALLOCATOR(WindowHandle, RENDERER_MAX_WINDOWS);
+    RENDERER_DEFINE_HANDLE_DESCRIPTOR_TABLE(Window, RENDERER_MAX_WINDOWS);
+
+    RENDERER_DEFINE_HANDLE_ALLOCATOR(RenderBufferHandle, RENDERER_MAX_RENDER_BUFFERS);
+    RENDERER_DEFINE_HANDLE_DESCRIPTOR_TABLE(RenderBuffer, RENDERER_MAX_RENDER_BUFFERS);
+
     RENDERER_DEFINE_HANDLE_ALLOCATOR(Texture2DHandle, RENDERER_MAX_TEXTURES2D);
+    RENDERER_DEFINE_HANDLE_DESCRIPTOR_TABLE(Texture2D, RENDERER_MAX_TEXTURES2D);
+
     RENDERER_DEFINE_HANDLE_ALLOCATOR(ShaderHandle, RENDERER_MAX_SHADER_PROGRAMS);
     RENDERER_DEFINE_HANDLE_ALLOCATOR(VertexBufferHandle, RENDERER_MAX_VERTEX_BUFFERS);
     RENDERER_DEFINE_HANDLE_ALLOCATOR(IndexBufferHandle, RENDERER_MAX_INDEX_BUFFERS);
@@ -273,7 +279,8 @@ namespace Renderer
 
 		m_renderer->CreateWindowHandle(handle, renderBuffer, windowHandle);
 
-        WindowHandle_table[handle.idx].renderBuffer = renderBuffer;
+        rvar desc = GetWindowDescription(handle);
+        desc.renderBuffer = renderBuffer;
 
 		return handle;
 	}
@@ -312,7 +319,9 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
-		return WindowHandle_table[handle.idx].renderBuffer;
+        rvar desc = GetWindowDescription(handle);
+
+		return desc.renderBuffer;
 	}
 
 	void DestroyWindow(WindowHandle handle)
@@ -341,6 +350,8 @@ namespace Renderer
         command.createDepthStencil = depthFormat != TextureFormat::Unknown;
         command.texturesCount = texturesCount;
 
+        rvar renderBufferDesc = GetRenderBufferDescription(handle);
+
         // copy texture formats
         for(var i = 0; i < texturesCount && i < RENDERER_MAX_RENDER_BUFFER_TARGETS; i ++)
         {
@@ -352,7 +363,7 @@ namespace Renderer
             command.renderTargets[i] = texture;
 
             // set handle's render textures
-            RenderBufferHandle_table[handle.idx].renderTextures.push_back(texture);
+            renderBufferDesc.renderTextures.push_back(texture);
         }
 
         // create depth buffer
@@ -365,7 +376,7 @@ namespace Renderer
             command.depthTarget = texture;
 
             // set handle's depth buffer
-            RenderBufferHandle_table[handle.idx].depthBuffer = texture;
+            renderBufferDesc.depthBuffer = texture;
         }
 
         g_commandList->WriteCommand(&command);
@@ -376,27 +387,29 @@ namespace Renderer
 
     void ResizeRenderBuffer(RenderBufferHandle handle, uint16_t width, uint16_t height)
     {
+        rvar renderBufferDesc = GetRenderBufferDescription(handle);
+
         // note: frame buffers do not have any render textures
-        cvar isFrameBuffer = handle.renderTextures.empty();
+        cvar isFrameBuffer = renderBufferDesc.renderTextures.empty();
         _ASSERT(isFrameBuffer == false); // Cannot resize Frame Buffer!
 
         // resize all textures
-        for (rvar texture : handle.renderTextures)
+        for (rvar texture : renderBufferDesc.renderTextures)
             ResizeTexture2D(texture, width, height);
 
-        if (RENDERER_CHECK_HANDLE(handle.depthBuffer))
-            ResizeTexture2D(handle.depthBuffer, width, height);
+        if (RENDERER_CHECK_HANDLE(renderBufferDesc.depthBuffer))
+            ResizeTexture2D(renderBufferDesc.depthBuffer, width, height);
 
         // write resize frame buffer command
         Command_ResizeRenderBuffer command;
         command.handle = handle;
-        command.texturesCount = static_cast<uint8_t>(handle.renderTextures.size());
-        command.depthTarget = handle.depthBuffer;
+        command.texturesCount = static_cast<uint8_t>(renderBufferDesc.renderTextures.size());
+        command.depthTarget = renderBufferDesc.depthBuffer;
         command.width = width;
         command.height = height;
 
         for(var i = 0u; i < command.texturesCount; i ++)
-            command.renderTargets[i] = handle.renderTextures[i];
+            command.renderTargets[i] = renderBufferDesc.renderTextures[i];
 
         g_commandList->WriteCommand(&command);
     }
@@ -430,8 +443,10 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        rvar renderBufferDesc = GetRenderBufferDescription(handle);
+
         // note: frame buffers do not have any render textures
-        cvar isFrameBuffer = handle.renderTextures.empty();
+        cvar isFrameBuffer = renderBufferDesc.renderTextures.empty();
         _ASSERT(isFrameBuffer == false); // Cannot destroy Frame Buffer!
 
         Command_DestroyRenderBuffer command;
@@ -440,13 +455,13 @@ namespace Renderer
         g_commandList->WriteCommand(&command);
 
         // destroy render textures
-        std::for_each(handle.renderTextures.begin(), handle.renderTextures.end(), [] (Texture2DHandle handle){
+        std::for_each(renderBufferDesc.renderTextures.begin(), renderBufferDesc.renderTextures.end(), [] (Texture2DHandle handle){
             DestroyTexture2D(handle);
         });
 
         // destroy depth buffer if created
-        if(handle.depthBuffer.idx > 0)
-            DestroyTexture2D(handle.depthBuffer);
+        if(renderBufferDesc.depthBuffer.idx > 0)
+            DestroyTexture2D(renderBufferDesc.depthBuffer);
 
         // free render buffer handle
         FreeRenderBufferHandle(handle);
@@ -565,8 +580,8 @@ namespace Renderer
         RENDERER_VALIDATE_HANDLE(handle);
 
         // set texture format
-        rvar texture = Texture2DHandle_table[handle.idx];
-        texture.textureFormat = textureFormat;
+        rvar renderBufferDesc = GetTexture2DDescription(handle);
+        renderBufferDesc.textureFormat = textureFormat;
 
         // create texture2d command
         Command_CreateTexture2D command;

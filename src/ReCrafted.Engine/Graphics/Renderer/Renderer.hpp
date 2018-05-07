@@ -296,23 +296,22 @@ namespace Renderer
 
 
 	// ======== OBJECT HANDLE DEFINES ========
-
     RENDERER_DEFINE_HANDLE(VertexBuffer);
     RENDERER_DEFINE_HANDLE(IndexBuffer);
     RENDERER_DEFINE_HANDLE(Shader);
 
-    RENDERER_DEFINE_HANDLE_BEGIN(Texture2D);
+    RENDERER_DEFINE_HANDLE_WITH_DESCRIPTOR(Texture2D);
     TextureFormat::_enum textureFormat = TextureFormat::Unknown;
-    RENDERER_DEFINE_HANDLE_END();
+    RENDERER_DEFINE_HANDLE_WITH_DESCRIPTOR_END();
 
-    RENDERER_DEFINE_HANDLE_BEGIN(RenderBuffer)
+    RENDERER_DEFINE_HANDLE_WITH_DESCRIPTOR(RenderBuffer)
     std::vector<Texture2DHandle> renderTextures = {};
     Texture2DHandle depthBuffer = {};
-    RENDERER_DEFINE_HANDLE_END();
+    RENDERER_DEFINE_HANDLE_WITH_DESCRIPTOR_END();
 
-    RENDERER_DEFINE_HANDLE_BEGIN(Window)
+    RENDERER_DEFINE_HANDLE_WITH_DESCRIPTOR(Window)
     RenderBufferHandle renderBuffer = {};
-    RENDERER_DEFINE_HANDLE_END();
+    RENDERER_DEFINE_HANDLE_WITH_DESCRIPTOR_END();
 
 	// ======== COMMON ========
 

@@ -49,7 +49,8 @@ Renderer::Texture2DHandle RenderBuffer::getTarget(uint slot)
 {
 	_ASSERT(slot < MAX_RENDERBUFFER_TARGETS);
 	
-	return m_renderBuffer.renderTextures[slot];
+    var renderBufferDesc = Renderer::GetRenderBufferDescription(m_renderBuffer);
+	return renderBufferDesc.renderTextures[slot];
 }
 
 void RenderBuffer::resize(uint width, uint height)

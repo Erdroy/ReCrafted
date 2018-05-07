@@ -269,7 +269,9 @@ namespace Renderer
 
                 SafeRelease(m_swapChains[idx]);
 
-                var renderBufferIdx = command.window.renderBuffer.idx;
+                var windowDesc = GetWindowDescription(command.window);
+
+                var renderBufferIdx = windowDesc.renderBuffer.idx;
                 SafeRelease(m_renderBuffers[renderBufferIdx]);
 
                 break;
