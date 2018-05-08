@@ -2,6 +2,7 @@
 
 #include "Mesh.h"
 #include "Core/Math/MeshSimplification/ng_mesh_simplify.h"
+#include "Renderer/Renderer.hpp"
 
 void Mesh::init()
 {
@@ -54,29 +55,24 @@ void Mesh::applyChanges()
 	_ASSERT(m_vertices_count != 0);
 	_ASSERT(m_indices_count != 0);
 
-	/*m_vertexdecl = {};
-	m_vertexdecl.begin();
-	m_vertexdecl.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float);
-
-	if (m_uvs) 
-		m_vertexdecl.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float);
+    m_vertexSize = sizeof(Vector3);
+    if (m_uvs)
+        m_vertexSize += sizeof(Vector2);
 
 	if (m_normals) 
-		m_vertexdecl.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float);
+        m_vertexSize += sizeof(Vector3);
 
-	if (m_colors) 
-		m_vertexdecl.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float);
-
-	m_vertexdecl.end();
+	if (m_colors)
+        m_vertexSize += sizeof(Vector4);
 
 	// allocate memory for vertex buffer
-	m_vertexBufferData = bgfxMemoryEx::alloc(m_vertices_count * m_vertexdecl.getStride());
-	var memoryPtr = reinterpret_cast<byte*>(m_vertexBufferData.memory);
+	m_vertexBufferData = Renderer::Allocate(m_vertices_count * m_vertexSize);
+	var memoryPtr = reinterpret_cast<byte*>(m_vertexBufferData);
 
 	// build mesh data
 	for(auto i = 0u; i < m_vertices_count; i ++)
 	{
-		cvar offset = i * m_vertexdecl.getStride();
+		cvar offset = i * m_vertexSize;
 		auto dataOffset = 0u;
 
 		auto vertice = m_vertices[i];
@@ -102,8 +98,8 @@ void Mesh::applyChanges()
 	}
 
 	// allocate memory for index buffer
-	m_indexBufferData = bgfxMemoryEx::alloc(m_indices_count * sizeof(uint));
-	memoryPtr = reinterpret_cast<byte*>(m_indexBufferData.memory);
+	m_indexBufferData = Renderer::Allocate(m_indices_count * sizeof(uint));
+	memoryPtr = reinterpret_cast<byte*>(m_indexBufferData);
 
 	for(auto i = 0u; i < m_indices_count; i ++)
 	{
@@ -111,7 +107,7 @@ void Mesh::applyChanges()
 		auto offset = i * sizeof(uint);
 		memcpy(memoryPtr + offset, &indice, sizeof(uint));
 	}
-    */
+    
 	m_uploaded = false;
 	m_hasChanges = true;
 
@@ -198,20 +194,20 @@ void Mesh::simplify()
 
 void Mesh::upload()
 {
-	/*if (m_vertexBufferData.memory == nullptr || m_indexBufferData.memory == nullptr)
+	if (m_vertexBufferData == nullptr || m_indexBufferData == nullptr)
 		return;
 
-    if (m_vertexBuffer.idx != 0)
-        bgfx::destroy(m_vertexBuffer);
+    if (RENDERER_CHECK_HANDLE(m_vertexBuffer))
+        Renderer::DestroyVertexBuffer(m_vertexBuffer);
 
-    if (m_indexBuffer.idx != 0)
-        bgfx::destroy(m_indexBuffer);
+    if (RENDERER_CHECK_HANDLE(m_indexBuffer))
+        Renderer::DestroyIndexBuffer(m_indexBuffer);
 
-	m_vertexBuffer = bgfx::createVertexBuffer(m_vertexBufferData.getMemory(), m_vertexdecl);
-	m_indexBuffer = bgfx::createIndexBuffer(m_indexBufferData.getMemory(), BGFX_BUFFER_INDEX32);
+	m_vertexBuffer = Renderer::CreateVertexBuffer(m_vertices_count, m_vertexSize, m_vertexBufferData);
+	m_indexBuffer = Renderer::CreateIndexBuffer(m_indices_count, m_indexBufferData);
 
-    m_vertexBufferData = {};
-    m_indexBufferData = {};*/
+    m_vertexBufferData = nullptr;
+    m_indexBufferData = nullptr;
 
 	m_uploaded = true;
 	m_hasChanges = false;
@@ -219,6 +215,12 @@ void Mesh::upload()
 
 void Mesh::dispose()
 {
+    if (RENDERER_CHECK_HANDLE(m_vertexBuffer))
+        Renderer::DestroyVertexBuffer(m_vertexBuffer);
+
+    if (RENDERER_CHECK_HANDLE(m_indexBuffer))
+        Renderer::DestroyIndexBuffer(m_indexBuffer);
+
 	// clean
 	m_vertices = nullptr;
 	m_uvs = nullptr;
@@ -231,24 +233,11 @@ void Mesh::dispose()
 	m_normals_count = 0u;
 	m_colors_count = 0u;
 	m_indices_count = 0u;
-
-    /*m_vertexBufferData.release();
-    m_indexBufferData.release();
-
-    if (m_vertexBuffer.idx != 0)
-        bgfx::destroy(m_vertexBuffer);
-
-    if (m_indexBuffer.idx != 0)
-        bgfx::destroy(m_indexBuffer);*/
 }
 
 Ref<Mesh> Mesh::createMesh()
 {
 	Ref<Mesh> mesh(new Mesh);
 	mesh->init();
-
-	if (mesh == nullptr)
-		throw;
-
 	return mesh;
 }

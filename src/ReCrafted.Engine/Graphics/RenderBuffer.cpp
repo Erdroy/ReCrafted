@@ -7,7 +7,7 @@
 void RenderBuffer::createBuffer(uint width, uint height)
 {
 	// build render buffer
-    m_renderBuffer = Renderer::CreateRenderBuffer(width, height, m_textures, m_textureCount, Renderer::TextureFormat::D32F);
+    m_renderBufferHandle = Renderer::CreateRenderBuffer(width, height, m_textures, m_textureCount, Renderer::TextureFormat::D32F);
     
     m_width = width;
     m_height = height;
@@ -49,7 +49,7 @@ Renderer::Texture2DHandle RenderBuffer::getTarget(uint slot)
 {
 	_ASSERT(slot < MAX_RENDERBUFFER_TARGETS);
 	
-    var renderBufferDesc = Renderer::GetRenderBufferDescription(m_renderBuffer);
+    var renderBufferDesc = Renderer::GetRenderBufferDescription(m_renderBufferHandle);
 	return renderBufferDesc.renderTextures[slot];
 }
 
@@ -61,18 +61,18 @@ void RenderBuffer::resize(uint width, uint height)
         return;
 
     // resize RB
-    Renderer::ResizeRenderBuffer(m_renderBuffer, width, height);
+    Renderer::ResizeRenderBuffer(m_renderBufferHandle, width, height);
 }
 
 void RenderBuffer::bind()
 {
 	_ASSERT(m_created != false);
 
-    Renderer::ApplyRenderBuffer(m_renderBuffer);
+    Renderer::ApplyRenderBuffer(m_renderBufferHandle);
 }
 
 void RenderBuffer::dispose()
 {
 	// destroy framebuffer
-    Renderer::DestroyRenderBuffer(m_renderBuffer);
+    Renderer::DestroyRenderBuffer(m_renderBufferHandle);
 }

@@ -44,6 +44,13 @@ private:
 	Cell m_cells[VoxelChunkData::ChunkSize * VoxelChunkData::ChunkSize * VoxelChunkData::ChunkSize] = {};
 
 public:
+    MCMesher()
+    {
+        m_vertices.reserve(16 << 10);
+        m_indices.reserve(16 << 10);
+        m_normals.reserve(16 << 10);
+        m_colors.reserve(16 << 10);
+    }
 	virtual ~MCMesher() {}
 
 private:

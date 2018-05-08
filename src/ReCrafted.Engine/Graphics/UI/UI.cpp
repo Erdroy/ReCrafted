@@ -101,7 +101,7 @@ void UI::onInit()
 	m_vertexdecl.end();*/
 
 	// load shader
-	m_shader = Shader::loadShader("default_ui");
+	//m_shader = Shader::loadShader("../assets/shaders/UIStandard");
 
 	// allocate draw command for first upload (it's 1/4 of max vertex count as there is 4 vertexes per command)
 	m_drawCmds = Array<drawcmd>(8 << 10);

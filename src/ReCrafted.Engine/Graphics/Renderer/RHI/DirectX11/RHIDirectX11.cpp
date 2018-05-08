@@ -187,8 +187,15 @@ namespace Renderer
 
         void WorkerThreadInstance::InitializeWorker()
         {
-            var hr = m_device->CreateDeferredContext(0, &m_context);
-            _ASSERT(SUCCEEDED(hr));
+            if (m_settings & Settings::SingleThreaded)
+            {
+                m_context = m_deviceContext;
+            }
+            else
+            {
+                var hr = m_device->CreateDeferredContext(0, &m_context);
+                _ASSERT(SUCCEEDED(hr));
+            }
 
             m_fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
             _ASSERT(m_fenceEvent != nullptr);
@@ -457,6 +464,7 @@ namespace Renderer
 
             // create d3d11 buffer
             var hr = m_device->CreateBuffer(&desc, command->memory ? &subresource_data : nullptr, &buffer);
+
             _ASSERT(SUCCEEDED(hr));
         }
 
@@ -1004,18 +1012,20 @@ namespace Renderer
                     assignCommands();
                     thread->ProcessFrame();
                 }
+                else
+                {
+                    // Finish D3D11 command list
+                    CComPtr<ID3D11CommandList> commandList = nullptr;
+                    var hr = thread->m_context->FinishCommandList(FALSE, &commandList);
+                    _ASSERT(SUCCEEDED(hr));
 
-                // Finish D3D11 command list
-                CComPtr<ID3D11CommandList> commandList = nullptr;
-                var hr = thread->m_context->FinishCommandList(FALSE, &commandList);
-                _ASSERT(SUCCEEDED(hr));
+                    // Add current thread's command list
+                    commandLists.push_back(commandList);
 
-                // Add current thread's command list
-                commandLists.push_back(commandList);
-
-                // Break now when Single-Threadeed
-                if (m_settings & Settings::SingleThreaded)
-                    break;
+                    // Break now when Single-Threadeed
+                    if (m_settings & Settings::SingleThreaded)
+                        break;
+                }
             }
 
             // Execute command lists

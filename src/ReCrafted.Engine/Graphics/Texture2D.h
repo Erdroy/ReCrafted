@@ -10,6 +10,7 @@
 #include "Core/Types.h"
 #include "Common/ReCraftedAPI.h"
 #include "Scripting/Object.h"
+#include "Renderer/Renderer.hpp"
 #include "IResource.h"
 
 typedef struct upng_t upng_t;
@@ -25,7 +26,7 @@ private:
 	SCRIPTING_API_IMPL()
 
 private:
-	//bgfx::TextureHandle m_textureHandle = {};
+    Renderer::Texture2DHandle m_textureHandle;
 
 	upng_t* m_bitmap = nullptr;
 	byte* m_bits = nullptr;
@@ -35,6 +36,8 @@ private:
 	uint m_height = 0u;
 	uint m_bpp = 0u;
 	uint m_mips = 0u;
+
+    Renderer::TextureFormat::_enum m_textureFormat = {};
 
 public:
     IRESOURCE_IMPL(Texture2D)
@@ -124,12 +127,6 @@ public:
 	void setPixels(int x, int y, int width, int height, uint* pixels);
 
     /**
-	 * \brief Gets handle of this texture.
-	 * \return 
-	 */
-	uint getHandle();
-
-    /**
 	 * \brief Gets the width of this texture.
 	 * \return The width of this texture.
 	 */
@@ -151,7 +148,7 @@ public:
 	 * \brief Creates new empty texture.
 	 * \return The newly created texture.
 	 */
-	static Ref<Texture2D> createTexture();
+	static Ref<Texture2D> createTexture(Renderer::TextureFormat::_enum format);
 };
 
 #endif // TEXTURE2D_H

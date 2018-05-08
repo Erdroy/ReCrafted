@@ -18,8 +18,10 @@
 /// </summary>
 class RenderBuffer
 {
+    friend class Graphics;
+
 private:
-	Renderer::RenderBufferHandle m_renderBuffer = {};
+	Renderer::RenderBufferHandle m_renderBufferHandle = {};
     Renderer::TextureFormat::_enum m_textures[MAX_RENDERBUFFER_TARGETS] = {};
 	uint m_textureCount = 0u;
 	bool m_created = false;

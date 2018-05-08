@@ -193,7 +193,7 @@ namespace Renderer
 
     RendererMemory Allocate(const size_t size, uint lifeTime)
     {
-        CHECK_MAIN_THREAD();
+        //CHECK_MAIN_THREAD();
 
         cvar memory = static_cast<RendererMemory>(new byte[size]);
         
@@ -214,7 +214,7 @@ namespace Renderer
 
     void Free(RendererMemory memory)
     {
-        CHECK_MAIN_THREAD();
+        //CHECK_MAIN_THREAD();
 
         // TODO: check if this memory exists in memAllocs
 
@@ -702,7 +702,7 @@ namespace Renderer
         FreeShaderHandle(handle);
     }
 
-    void Blit(RenderBufferHandle destination, Texture2DHandle source, ShaderHandle customShader)
+    void BlitTexture(RenderBufferHandle destination, Texture2DHandle source, ShaderHandle customShader)
     {
         if(RENDERER_CHECK_HANDLE(customShader))
         {
@@ -736,5 +736,32 @@ namespace Renderer
         SetFlag(RenderFlags::DepthTest, depthTest);
 
         // done.
+    }
+
+    void BlitTextures(ShaderHandle customShader, RenderBufferHandle destination, Texture2DHandle* sources, uint8_t sourceCount, uint8_t baseSlot)
+    {
+        // bind custom shader
+        ApplyShader(customShader, 0);
+
+        // bind render target
+        ApplyRenderBuffer(destination);
+
+        // bind textures
+        for(var i = 0u; i < sourceCount; i ++)
+            ApplyTexture2D(sources[i], baseSlot + i);
+
+        // apply vertex and index buffer
+        ApplyVertexBuffer(m_quadVB);
+        ApplyIndexBuffer(m_quadIB);
+
+        // disable depth test
+        cvar depthTest = GetFlag(RenderFlags::DepthTest);
+        SetFlag(RenderFlags::DepthTest, false);
+
+        // draw the quad
+        DrawIndexed(6);
+
+        // re-enable depth-test when needed
+        SetFlag(RenderFlags::DepthTest, depthTest);
     }
 }

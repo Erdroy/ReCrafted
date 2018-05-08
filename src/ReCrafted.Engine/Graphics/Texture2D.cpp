@@ -16,10 +16,8 @@ static void releaseBitsRaw(void* _ptr, void* _userData)
 
 void Texture2D::dispose()
 {
-    /*if (!bgfx::isValid(m_textureHandle))
-        return;
-
-    bgfx::destroy(m_textureHandle);*/
+    if (RENDERER_CHECK_HANDLE(m_textureHandle))
+        Renderer::DestroyTexture2D(m_textureHandle);
 
     if (m_bits)
     {
@@ -172,12 +170,6 @@ void Texture2D::setPixels(int x, int y, int width, int height, uint* pixels)
 	}
 }
 
-uint Texture2D::getHandle()
-{
-    return 0u;
-	//return m_textureHandle.idx;
-}
-
 uint Texture2D::getWidth() const
 {
 	return m_width;
@@ -190,50 +182,33 @@ uint Texture2D::getHeight() const
 
 void Texture2D::apply()
 {
-	/*int pitch;
-	bgfx::TextureFormat::Enum format;
-	switch (m_bpp)
-	{
-	case 24:
-		format = bgfx::TextureFormat::RGB8;
-		pitch = 3;
-		break;
-	default:
-		format = bgfx::TextureFormat::RGBA8;
-		pitch = 4;
-		break;
-	}
-
-	auto size = m_width * m_height * pitch;
+    /*cvar pitch = Renderer::TextureFormatInfo[m_textureFormat][0] / 8;
+	var size = m_width * m_height * pitch;
 
 	if (m_mips > 0)
 	{
-		auto lwidth = m_width;
+		var lwidth = m_width;
 		for (auto i = 0u; i < m_mips; i++)
 		{
-			auto w = lwidth / 2;
+			cvar w = lwidth / 2;
 			size += w * w * 4;
 			lwidth = w;
 		}
 	}
 
-	const bgfx::Memory* mem;
+	Renderer::RendererMemory mem;
 	if (m_bitmap)
 		mem = bgfx::makeRef(m_bits, size, releaseBits, static_cast<void*>(m_bitmap));
 	else
 		mem = bgfx::makeRef(m_bits, size, releaseBitsRaw, static_cast<void*>(m_bits));
 
 	auto mipCount = uint8_t(m_mips + 1);
-	m_textureHandle = bgfx::createTexture2D(uint16_t(m_width), uint16_t(m_height), mipCount, 1, format, m_flags, mem);
-
+	//m_textureHandle = bgfx::createTexture2D(uint16_t(m_width), uint16_t(m_height), mipCount, 1, m_textureFormat, m_flags, mem);
+    m_textureHandle = Renderer::CreateTexture2D(uint16_t(m_width), uint16_t(m_height), mipCount, m_textureFormat, , );
 	m_bits = nullptr;*/
 }
-/*
-void Texture2D::releaseTextureData(uint* pixels)
-{
-	delete pixels;
-}
 
+/*
 void Texture2D::saveBitmap(const char* filename, uint width, uint height, byte* bitsRaw)
 {
 	FILE *f;
@@ -283,8 +258,9 @@ void Texture2D::saveBitmap(const char* filename, uint width, uint height, byte* 
 	fclose(f);
 }
 */
-Ref<Texture2D> Texture2D::createTexture()
+Ref<Texture2D> Texture2D::createTexture(Renderer::TextureFormat::_enum format)
 {
 	Ref<Texture2D> texture(new Texture2D);
+    texture->m_textureFormat = format;
 	return texture;
 }

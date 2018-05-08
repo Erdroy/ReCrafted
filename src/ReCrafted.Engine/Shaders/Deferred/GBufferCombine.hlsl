@@ -6,6 +6,12 @@
 #define USE_GBUFFERSAMPLING
 #include "../ShaderAPI.hlsli"
 
+[Target(CombinePSMain)]
+cbuffer Data : register(b0)
+{
+    float3 lightDir;
+};
+
 /// <summary>
 /// Pixel Shader Function
 /// CombinePSMain
@@ -14,7 +20,7 @@ float4 CombinePSMain(in QuadPS i) : SV_Target0
 {
     GBuffer gbuffer = SampleGBuffer(i.UV);
 
-    return float4(0.0f, 0.0f, 0.0f, 1.0f);
+    return float4(gbuffer.Color, 1.0f);
 }
 
 pass Default

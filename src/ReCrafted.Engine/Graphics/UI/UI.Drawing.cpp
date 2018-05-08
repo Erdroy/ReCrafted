@@ -228,7 +228,7 @@ void UI::internal_drawBox(Rectf rect)
 
 void UI::internal_drawBoxTextured(Texture2D* texture, Rectf rect, Rectf uvs)
 {
-    auto textureHandle = texture->getHandle();
+    auto textureHandle = 0u;// bgfx texture->m_textureHandle;
 
 	BOX_VERTICES_DEFINE();
 	BOX_VERTICES_SETUP();

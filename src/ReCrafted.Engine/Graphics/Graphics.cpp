@@ -17,16 +17,12 @@ SINGLETON_IMPL(Graphics)
 
 Graphics* g_rendererInstance;
 
-Ref<RenderBuffer> m_gbuffer = nullptr;
-Ref<Shader> m_gbufferFillShader = nullptr;
-Ref<Shader> m_gbufferCombine = nullptr;
-
 void Graphics::loadInternalShaders()
 {
     Logger::logInfo("Loading internal shaders");
 
-    m_gbufferFillShader = Shader::loadShader("GBufferStandard");
-    m_gbufferCombine = Shader::loadShader("GBufferCombine");
+    m_gbufferFillShader = Shader::loadShader("../assets/shaders/GBufferStandard.shader");
+    m_gbufferCombine = Shader::loadShader("../assets/shaders/GBufferCombine.shader");
 }
 
 void Graphics::createRenderBuffers()
@@ -97,33 +93,7 @@ void Graphics::onDispose()
 
 void Graphics::update()
 {
-    if (Input::isKeyDown(Key_F3))
-    {
-        m_wireframe = true;
-        //bgfx::setDebug(BGFX_DEBUG_WIREFRAME);
-        Logger::logInfo("Switching to wireframe render mode");
-    }
 
-    if (Input::isKeyDown(Key_F4))
-    {
-        m_wireframe = false;
-        //bgfx::setDebug(BGFX_DEBUG_NONE);
-        Logger::logInfo("Switching to default render mode");
-    }
-
-    if (Input::isKeyDown(Key_F5))
-    {
-        m_wireframe = false;
-        //bgfx::setDebug(BGFX_DEBUG_STATS);
-        Logger::logInfo("Switching to debug stats render mode");
-    }
-
-    if (Input::isKeyDown(Key_F6))
-    {
-        m_wireframe = false;
-        //bgfx::setDebug(BGFX_DEBUG_TEXT);
-        Logger::logInfo("Switching to debug text render mode");
-    }
 }
 
 void Graphics::render()
@@ -132,9 +102,11 @@ void Graphics::render()
     {
         cvar clearColor = Renderer::Color{ 0.0f, 0.2f, 0.4f, 1.0f };
 
+        cvar renderBuffer = m_gbuffer->m_renderBufferHandle;
+
         Renderer::ApplyWindow(m_window);
-        Renderer::ApplyRenderBuffer(m_frameBuffer);
-        Renderer::ClearRenderBuffer(m_frameBuffer, clearColor);
+        Renderer::ApplyRenderBuffer(renderBuffer);
+        Renderer::ClearRenderBuffer(renderBuffer, clearColor);
 
         // set default render stage
         setStage(RenderStage::Default);
@@ -166,13 +138,8 @@ void Graphics::resize(uint width, uint height)
     if(WebUI::getInstance())
         WebUI::getInstance()->resize(width, height);
 
-    // reset bgfx state, this should force renderer to resize all the viewports etc.
-    //bgfx::setViewRect(RENDERVIEW_BACKBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
-    //bgfx::setViewRect(RENDERVIEW_GBUFFER, 0, 0, Display::get_Width(), Display::get_Height());
-
-    //bgfx::reset(Display::get_Width(), Display::get_Height(), RESET_FLAGS);
-
     m_gbuffer->resize(width, height);
+    Renderer::ResizeWindow(m_window, width, height);
 }
 
 void Graphics::renderBegin()
@@ -180,11 +147,11 @@ void Graphics::renderBegin()
     // update main camera
     Camera::m_mainCamera->update();
 
-    // set default matrix
-    setMatrix(Camera::getMainCamera()->get_viewProjection());
-
     // set default shader
     setShader(m_gbufferFillShader);
+
+    // set default matrix
+    setMatrix(Camera::getMainCamera()->get_viewProjection());
 
     // update shaders uniforms
     var lightdir = Vector3(0.39f, -0.9f, 0.13f);
@@ -201,25 +168,21 @@ void Graphics::renderEnd()
 
     if (Input::isKey(Key_F2))
     {
-        //Renderer::Blit(m_frameBuffer, m_gbuffer->getTarget(0));
+        Renderer::BlitTexture(m_frameBuffer, m_gbuffer->getTarget(0));
         return;
     }
 
     // combine gbuffer
-    //Renderer::ApplyShader(m_gbufferCombine->m_shaderHandle, 0);
+    rvar gbufferDescription = Renderer::GetRenderBufferDescription(m_gbuffer->m_renderBufferHandle);
+    Renderer::BlitTextures(
+        m_gbufferCombine->m_shaderHandle, 
+        m_frameBuffer, 
+        gbufferDescription.renderTextures.data(), 
+        static_cast<uint8_t>(gbufferDescription.renderTextures.size())
+    );
 
-    /*cvar textureFlags = 0 | BGFX_TEXTURE_MIN_POINT | BGFX_TEXTURE_MAG_POINT | BGFX_TEXTURE_MIP_POINT;
-
-    if (m_wireframe)
-        return;
-
-    bgfx::setTexture(0, m_texture0, m_gbuffer->getTarget(0), textureFlags);
-    bgfx::setTexture(1, m_texture1, m_gbuffer->getTarget(1), textureFlags);
-
-    // draw into backbuffer
-    bgfx::setVertexBuffer(0, m_blitMesh->m_vertexBuffer);
-    bgfx::setIndexBuffer(m_blitMesh->m_indexBuffer);
-    bgfx::submit(RENDERVIEW_BACKBUFFER, m_gbufferCombine->m_program);*/
+    // reset everything
+    m_currentShader = nullptr;
 }
 
 void Graphics::renderWorld()
@@ -272,15 +235,22 @@ void Graphics::renderUI()
 
 void Graphics::draw(Ref<Mesh>& mesh)
 {
-    /*bgfx::setVertexBuffer(0, mesh->m_vertexBuffer);
-    bgfx::setIndexBuffer(mesh->m_indexBuffer);
+    if (!(RENDERER_CHECK_HANDLE(mesh->m_vertexBuffer)) || !(RENDERER_CHECK_HANDLE(mesh->m_indexBuffer)))
+        return;
 
-    bgfx::submit(m_wireframe ? 0 : m_viewId, m_currentShader->m_program);*/
+    Renderer::ApplyVertexBuffer(mesh->m_vertexBuffer);
+    Renderer::ApplyIndexBuffer(mesh->m_indexBuffer);
+
+    Renderer::DrawIndexed(mesh->m_indices_count);
 }
 
 void Graphics::setShader(Ref<Shader>& shader)
 {
-    m_currentShader = shader;
+    if(m_currentShader != shader)
+    {
+        Renderer::ApplyShader(shader->m_shaderHandle, 0);
+        m_currentShader = shader;
+    }
 }
 
 void Graphics::setView(int viewId)
@@ -291,7 +261,7 @@ void Graphics::setView(int viewId)
 void Graphics::setMatrix(Matrix& mvpMatrix)
 {
     mvpMatrix.transpose();
-    //bgfx::setUniform(m_modelViewProjection, &mvpMatrix);
+    Renderer::SetShaderValue(m_currentShader->m_shaderHandle, 0, 0, &mvpMatrix, sizeof(Matrix));
 }
 
 void Graphics::setStage(RenderStage::_enum stage)

@@ -602,13 +602,24 @@ namespace Renderer
     // ======== RENDERING ========
 
     /// <summary>
-    /// Copies render texture to the first slot/render texture of render buffer.
+    /// Draws render texture to the first slot/render texture of render buffer.
     /// Note: This will change current render buffer binding etc.
     /// </summary>
     /// <param name="destination">The destination render buffer.</param>
-    /// <param name="source">The shader handle.</param>
+    /// <param name="source">The source texture handle.</param>
     /// <param name="customShader">The custom shader.</param>
-    RENDERER_FUNCTION(void)                     Blit(RenderBufferHandle destination, Texture2DHandle source, ShaderHandle customShader = {});
+    RENDERER_FUNCTION(void)                     BlitTexture(RenderBufferHandle destination, Texture2DHandle source, ShaderHandle customShader = {});
+
+    /// <summary>
+    /// Draws render textures to the render buffer using custom shader.
+    /// Note: This will change current render buffer binding etc.
+    /// </summary>
+    /// <param name="customShader">The custom shader.</param>
+    /// <param name="destination">The destination render buffer.</param>
+    /// <param name="sources">The source textures handles.</param>
+    /// <param name="sourceCount">The amout of the source textures.</param>
+    RENDERER_FUNCTION(void)                     BlitTextures(ShaderHandle customShader, RenderBufferHandle destination, Texture2DHandle* sources, uint8_t sourceCount, uint8_t baseSlot = 0u);
+
 }
 
 #endif // RENDERER_H

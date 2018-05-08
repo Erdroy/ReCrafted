@@ -9,6 +9,7 @@
 #include "ReCrafted.h"
 #include "Core/Types.h"
 #include "Texture2D.h"
+#include "Renderer/Renderer.hpp"
 
 /**
  * \brief Shader class.
@@ -19,15 +20,11 @@ class Shader : IResource
 	friend class UI;
 
 private:
+    Renderer::ShaderHandle m_shaderHandle;
 	char m_shaderName[128] = {};
-
-	uint m_uniformCount = 0u;
 
 public:
     IRESOURCE_IMPL(Shader)
-
-private:
-	void init(const char* vs, const char* fs, const char* def);
 
 public:
     /**
@@ -39,7 +36,7 @@ public:
 	template<class T>
 	void setValue(uint slot, T* value)
 	{
-		//bgfx::setUniform(m_uniforms[slot], value);
+        Renderer::SetShaderValue(m_shaderHandle, 0, slot, value, sizeof(T));
 	}
 
     /**
@@ -47,13 +44,20 @@ public:
 	 * \param slot The texture slot, starts at 0.
 	 * \param texture The texture.
 	 */
-	void setTexture(int slot, Ref<Texture2D> texture);
+	void setTexture(int slot, Ref<Texture2D> texture)
+	{
+        Renderer::ApplyTexture2D(texture->m_textureHandle, slot);
+	}
 
     /**
-	 * \brief Gets BGFX shader program handle.
-	 * \return The BGFX shader program handle.
-	 */
-	//bgfx::ProgramHandle getProgram();
+    * \brief Sets texture at given slot.
+    * \param slot The texture slot, starts at 0.
+    * \param texture The texture.
+    */
+    void setTexture(int slot, Renderer::Texture2DHandle texture)
+    {
+        Renderer::ApplyTexture2D(texture, slot);
+    }
 
     /**
 	 * \brief Disposes this shader.
@@ -63,10 +67,10 @@ public:
 public:
     /**
 	 * \brief Loads shader by name.
-	 * \param shaderFile The shader name, eg.: unlit/unlit_color
+	 * \param shaderName The shader name, eg.: GBufferStandard etc.
 	 * \return The loaded shader, or nullptr when file not found.
 	 */
-	static Ref<Shader> loadShader(const char* shaderFile);
+	static Ref<Shader> loadShader(const char* shaderName);
 };
 
 #endif // SHADER_H

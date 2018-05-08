@@ -43,7 +43,11 @@ namespace Renderer
         public:
             ~Buffer()
             {
-                delete[] m_data;
+                if(m_data)
+                {
+                    delete[] m_data;
+                    m_data = nullptr;
+                }
                 SafeRelease(m_buffer);
             }
         };
@@ -57,15 +61,15 @@ namespace Renderer
 
             std::string m_vsName = {};
             ID3D11VertexShader* m_vertexShader = nullptr;
-            std::vector<Buffer> m_vsBuffers = {};
+            std::vector<Buffer*> m_vsBuffers = {};
 
             std::string m_psName = {};
             ID3D11PixelShader* m_pixelShader = nullptr;
-            std::vector<Buffer> m_psBuffers = {};
+            std::vector<Buffer*> m_psBuffers = {};
 
             std::string m_csName = {};
             ID3D11ComputeShader* m_computeShader = nullptr;
-            std::vector<Buffer> m_csBuffers = {};
+            std::vector<Buffer*> m_csBuffers = {};
 
         public:
             ~Pass()

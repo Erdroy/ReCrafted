@@ -225,8 +225,8 @@ namespace Renderer
             // set constant buffers
             for(rvar buffer : pass.m_vsBuffers) // TODO: apply all buffers in single API call
             {
-                ID3D11Buffer* buffers[] = { buffer.m_buffer };
-                context->VSSetConstantBuffers(buffer.m_index, 1u, buffers);
+                ID3D11Buffer* buffers[] = { buffer->m_buffer };
+                context->VSSetConstantBuffers(buffer->m_index, 1u, buffers);
             }
         }
 
@@ -238,8 +238,8 @@ namespace Renderer
             // set constant buffers
             for (rvar buffer : pass.m_psBuffers)
             {
-                ID3D11Buffer* buffers[] = { buffer.m_buffer };
-                context->PSSetConstantBuffers(buffer.m_index, 1u, buffers);
+                ID3D11Buffer* buffers[] = { buffer->m_buffer };
+                context->PSSetConstantBuffers(buffer->m_index, 1u, buffers);
             }
         }
 
@@ -251,8 +251,8 @@ namespace Renderer
             // set constant buffers
             for (rvar buffer : pass.m_csBuffers)
             {
-                ID3D11Buffer* buffers[] = { buffer.m_buffer };
-                context->CSSetConstantBuffers(buffer.m_index, 1u, buffers);
+                ID3D11Buffer* buffers[] = { buffer->m_buffer };
+                context->CSSetConstantBuffers(buffer->m_index, 1u, buffers);
             }
         }
 
@@ -495,15 +495,15 @@ namespace Renderer
 
                     // add VS function target
                     if(name == pass.m_vsName)
-                        pass.m_vsBuffers.push_back(buffer);
+                        pass.m_vsBuffers.push_back(&buffer);
 
                     // add PS function target
                     if (name == pass.m_psName)
-                        pass.m_psBuffers.push_back(buffer);
+                        pass.m_psBuffers.push_back(&buffer);
 
                     // add CS function target
                     if (name == pass.m_csName)
-                        pass.m_csBuffers.push_back(buffer);
+                        pass.m_csBuffers.push_back(&buffer);
                 }
             }
         }

@@ -9,8 +9,9 @@
 #include "ReCrafted.h"
 #include "Core/EngineComponent.h"
 #include "Graphics/Shader.h"
+#include "Graphics/RenderBuffer.h"
 #include "Graphics/Mesh.h"
-#include "RenderStage.h"
+#include "Graphics/RenderStage.h"
 
 #include "Graphics/Renderer/Renderer.hpp"
 
@@ -27,7 +28,13 @@ private:
 private:
     int m_viewId = 0;
     bool m_wireframe = false;
+
     Ref<Shader> m_currentShader = nullptr;
+
+    Ref<RenderBuffer> m_gbuffer = nullptr;
+    Ref<Shader> m_gbufferFillShader = nullptr;
+    Ref<Shader> m_gbufferCombine = nullptr;
+
     RenderStage::_enum m_renderStage = RenderStage::Default;
 
     Renderer::WindowHandle m_window = {};

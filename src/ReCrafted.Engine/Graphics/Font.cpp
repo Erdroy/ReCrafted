@@ -298,7 +298,7 @@ void Font::loadFont(Text fontFile, int size, bool managed)
 		}
 
 		// create texture
-		auto texture = Texture2D::createTexture();
+		auto texture = Texture2D::createTexture(Renderer::TextureFormat::RGBA8);
 		texture->loadMemory(newbitsPtr, charmapWidth, charmapHeight);
 		texture->apply();
 		textures.add(texture);

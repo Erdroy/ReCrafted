@@ -66,10 +66,10 @@ namespace Renderer
 		void Resize(uint32_t size)
 		{
             // we don't really want to resize down or when it is 0, lol
-            if (this->size <= size || size == 0)
+            if (this->size >= size || size == 0)
                 return;
 
-			auto new_cmdlist = static_cast<byte*>(realloc(cmdlist, size));
+			auto new_cmdlist = static_cast<byte*>(rprealloc(cmdlist, size));
 
 			// check if the realloc actually reallocated the memory
 			_ASSERT(new_cmdlist != nullptr);

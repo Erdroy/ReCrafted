@@ -18,6 +18,9 @@
 void initRendererTests();
 #endif
 
+extern "C" { _declspec(dllexport) unsigned int NvOptimusEnablement = 0x00000001; }
+extern "C" { __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1; }
+
 /// <summary>
 /// WinMain - Main entry for Windows platform
 /// </summary>

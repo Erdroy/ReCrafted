@@ -9,6 +9,7 @@
 #include "Core/Types.h"
 #include "Core/Math/Math.h"
 #include "IResource.h"
+#include "Renderer/Renderer.hpp"
 
 struct Vector4;
 
@@ -20,12 +21,11 @@ class Mesh : IResource
     friend class Graphics;
 
 private:
-	/*bgfx::VertexDecl m_vertexdecl = {};
-	bgfx::VertexBufferHandle m_vertexBuffer = {};
-	bgfx::IndexBufferHandle m_indexBuffer = {};
+    Renderer::RendererMemory m_vertexBufferData = {};
+    Renderer::RendererMemory m_indexBufferData = {};
 
-    bgfxMemoryEx m_vertexBufferData = {};
-    bgfxMemoryEx m_indexBufferData = {};*/
+    Renderer::VertexBufferHandle m_vertexBuffer = {};
+    Renderer::IndexBufferHandle m_indexBuffer = {};
 
 	Vector3* m_vertices = nullptr;
 	Vector2* m_uvs = nullptr;
@@ -35,6 +35,8 @@ private:
 
 	bool m_uploaded = false;
 	bool m_hasChanges = false;
+
+    uint m_vertexSize = 0u;
 
 	uint m_vertices_count = 0u;
 	uint m_uvs_count = 0u;

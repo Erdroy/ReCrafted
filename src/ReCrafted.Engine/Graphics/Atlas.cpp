@@ -77,7 +77,7 @@ Ref<Atlas> Atlas::load(Text fileName)
 		}
 
 		// load texture
-		auto texture = Texture2D::createTexture();
+		auto texture = Texture2D::createTexture(Renderer::TextureFormat::RGBA8);
 		texture->loadFile(pngName);
 		texture->apply();
 
