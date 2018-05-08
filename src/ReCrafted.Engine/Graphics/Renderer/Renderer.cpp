@@ -2,6 +2,7 @@
 
 #include "Renderer.hpp"
 #include "RendererConfig.h"
+#include "Core/Lock.h"
 #include "RHI/RHIBase.h"
 #include "RHI/DirectX12/RHIDirectX12.h"
 #include "RHI/DirectX11/RHIDirectX11.h"
@@ -79,12 +80,15 @@ namespace Renderer
     // we don't really want to use our Array<T> type here, 
     // vector will still use rpmalloc due to overloaded new/delete operators
     std::vector<MemoryAllocation> m_memoryAllocations = {};
+    Lock m_memoryAllocationsLock = {};
 #endif
 
     void UpdateMemory()
     {
 #if RENDERER_MEMORY_AUTO_DEALLOC_ENABLE
         // we don't need any lock's here as everything happens on the main thread.
+
+        ScopeLock(m_memoryAllocationsLock);
 
         // deallocate memory that is out of life time
         for (rvar memory : m_memoryAllocations)
@@ -181,8 +185,9 @@ namespace Renderer
 
         for (rvar memory : m_memoryAllocations)
         {
-            if (memory.memory)
-                Free(memory.memory);
+            _ASSERT(memory.memory); // scream at Erdroy when he is way too dumb and frees the memory manually
+
+            Free(memory.memory);
             memory.memory = nullptr;
         }
         m_memoryAllocations.clear();
@@ -193,14 +198,14 @@ namespace Renderer
 
     RendererMemory Allocate(const size_t size, uint lifeTime)
     {
-        //CHECK_MAIN_THREAD();
-
         cvar memory = static_cast<RendererMemory>(new byte[size]);
         
 #if RENDERER_MEMORY_AUTO_DEALLOC_ENABLE
         if(lifeTime > 0)
         {
             // we don't need any lock's here as everything happens on the main thread.
+
+            ScopeLock(m_memoryAllocationsLock);
 
             MemoryAllocation mem = {};
             mem.memory = memory;
@@ -214,10 +219,6 @@ namespace Renderer
 
     void Free(RendererMemory memory)
     {
-        //CHECK_MAIN_THREAD();
-
-        // TODO: check if this memory exists in memAllocs
-
         delete[] static_cast<byte*>(memory);
     }
 

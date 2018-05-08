@@ -345,7 +345,7 @@ namespace Renderer
     /// release it by using Renderer::Free(...) function.
     /// </param>
     /// <returns>The allocated memory pointer.</returns>
-    RENDERER_FUNCTION(RendererMemory)           Allocate(size_t size, uint lifeTime = 1);
+    RENDERER_FUNCTION(RendererMemory)           Allocate(size_t size, uint lifeTime = 2);
 
     /// <summary>
     /// Frees given memory pointer.
