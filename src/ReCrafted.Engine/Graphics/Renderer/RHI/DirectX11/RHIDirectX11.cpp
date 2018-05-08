@@ -53,6 +53,11 @@ namespace Renderer
         public:
             ID3D11Buffer* buffer = nullptr;
             bool is32bit = true;
+        public:
+            void Dispose()
+            {
+                SafeRelease(buffer);
+            }
         };
 
         struct Texture2DDesc
@@ -66,6 +71,15 @@ namespace Renderer
             uint16_t width = 0u;
             uint16_t height = 0u;
             TextureFormat::_enum format = TextureFormat::Unknown;
+
+        public:
+            void Dispose()
+            {
+                SafeRelease(texture);
+                SafeRelease(srv);
+                SafeRelease(rtv);
+                SafeRelease(dsv);
+            }
         };
 
         // == common ==
@@ -970,6 +984,24 @@ namespace Renderer
             for (var i = 0; i < RENDERER_MAX_SHADER_PROGRAMS; i++)
             {
                 SafeRelease(m_shaders[i]);
+            }
+
+            // Destroy vertex buffers (if not released)
+            for (var i = 0; i < RENDERER_MAX_VERTEX_BUFFERS; i++)
+            {
+                SafeRelease(m_vertexBuffers[i]);
+            }
+
+            // Destroy index buffers (if not released)
+            for (var i = 0; i < RENDERER_MAX_INDEX_BUFFERS; i++)
+            {
+                m_indexBuffers[i].Dispose();
+            }
+
+            // Destroy textures (if not released)
+            for (var i = 0; i < RENDERER_MAX_TEXTURES2D; i++)
+            {
+                m_textures[i].Dispose();
             }
 
             // Destroy command list
