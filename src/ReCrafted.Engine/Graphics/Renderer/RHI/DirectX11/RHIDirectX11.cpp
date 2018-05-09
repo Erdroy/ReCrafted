@@ -85,6 +85,7 @@ namespace Renderer
         // == common ==
         volatile bool               m_running;
         int                         m_workerThreadCount;
+        int                         m_msaaSampleCount;
         Settings::_enum             m_settings;
         RenderFlags::_enum          m_renderFlags;
 
@@ -668,13 +669,15 @@ namespace Renderer
             cvar mipLevels = command->mipLevels == 0 ? 1 : command->mipLevels;
             cvar createDepthBuffer = command->textureFormat >= TextureFormat::D16;
 
+            cvar rt = command->renderTarget || createDepthBuffer;
+
             D3D11_TEXTURE2D_DESC textureDesc;
             textureDesc.ArraySize = 1;
             textureDesc.Width = command->width;
             textureDesc.Height = command->height;
             textureDesc.MipLevels = mipLevels;
             textureDesc.MiscFlags = 0;
-            textureDesc.SampleDesc.Count = 1;
+            textureDesc.SampleDesc.Count = m_msaaSampleCount;
             textureDesc.SampleDesc.Quality = 0;
             textureDesc.CPUAccessFlags = 0;
             textureDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -687,15 +690,7 @@ namespace Renderer
             else
             {
                 textureDesc.Format = DGXI_TextureFormats[command->textureFormat][0];
-                
-                if(command->renderTarget)
-                {
-                    textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-                }
-                else
-                {
-                    textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-                }
+                textureDesc.BindFlags = rt ? D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE : D3D11_BIND_SHADER_RESOURCE;
             }
 
             D3D11_SUBRESOURCE_DATA subresData = {};
@@ -711,7 +706,7 @@ namespace Renderer
                 D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc = {};
 
                 depthStencilViewDesc.Format = DGXI_TextureFormats[command->textureFormat][2];
-                depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+                depthStencilViewDesc.ViewDimension = rt ? D3D11_DSV_DIMENSION_TEXTURE2DMS : D3D11_DSV_DIMENSION_TEXTURE2D;
                 depthStencilViewDesc.Texture2D.MipSlice = 0;
 
                 hr = m_device->CreateDepthStencilView(texture.texture, &depthStencilViewDesc, &texture.dsv);
@@ -721,7 +716,7 @@ namespace Renderer
             {
                 D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
                 srvDesc.Format = DGXI_TextureFormats[command->textureFormat][1];
-                srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+                srvDesc.ViewDimension = rt ? D3D11_SRV_DIMENSION_TEXTURE2DMS : D3D11_SRV_DIMENSION_TEXTURE2D;
                 srvDesc.Texture2D.MipLevels = mipLevels;
                 srvDesc.Texture2D.MostDetailedMip = 0;
 
@@ -732,7 +727,7 @@ namespace Renderer
                 {
                     D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
                     rtvDesc.Format = DGXI_TextureFormats[command->textureFormat][1];
-                    rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+                    rtvDesc.ViewDimension = rt ? D3D11_RTV_DIMENSION_TEXTURE2DMS : D3D11_RTV_DIMENSION_TEXTURE2D;
                     rtvDesc.Texture2D.MipSlice = 0;
 
                     hr = m_device->CreateRenderTargetView(texture.texture, &rtvDesc, &texture.rtv);
@@ -885,6 +880,13 @@ namespace Renderer
             if (m_settings & Settings::SingleThreaded)
                 cpuCount = 1;
 
+            // select multi-sampling count
+            m_msaaSampleCount = 1;
+            if (m_renderFlags & RenderFlags::MSAAx2)
+                m_msaaSampleCount *= 2;
+            if (m_renderFlags & RenderFlags::MSAAx4)
+                m_msaaSampleCount *= 4;
+
             // Create depth stencil state
             D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 
@@ -917,12 +919,12 @@ namespace Renderer
 
             // create regular RS
             D3D11_RASTERIZER_DESC rasterizerDesc = {};
-            rasterizerDesc.AntialiasedLineEnable = false;
-            rasterizerDesc.MultisampleEnable = false;
+            rasterizerDesc.AntialiasedLineEnable = m_msaaSampleCount > 1;
+            rasterizerDesc.MultisampleEnable = m_msaaSampleCount > 1;
             rasterizerDesc.CullMode = D3D11_CULL_BACK;
             rasterizerDesc.FillMode = D3D11_FILL_SOLID;
             rasterizerDesc.DepthClipEnable = true;
-
+            
             hr = m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState);
             _ASSERT(SUCCEEDED(hr));
             
@@ -1132,14 +1134,6 @@ namespace Renderer
 
             var bufferCount = m_renderFlags & RenderFlags::TripleBuffered ? FrameBufferCount : 1;
 
-            var sampleCount = 1;
-
-            if (m_renderFlags & RenderFlags::MSAAx2)
-                sampleCount *= 2;
-
-            if (m_renderFlags & RenderFlags::MSAAx4)
-                sampleCount *= 4;
-
             IDXGIDevice* device;
             var hr = m_device->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&device));
             _ASSERT(SUCCEEDED(hr));
@@ -1154,7 +1148,7 @@ namespace Renderer
 
             // Create the Swap Chain
             DXGI_SAMPLE_DESC sampleDesc;
-            sampleDesc.Count = sampleCount;
+            sampleDesc.Count = m_msaaSampleCount;
             sampleDesc.Quality = 0;
 
             DXGI_MODE_DESC backBufferDesc = {}; // this is to describe our display mode

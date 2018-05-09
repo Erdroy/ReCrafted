@@ -44,7 +44,7 @@ void Graphics::initializeRenderer()
     // Initialize Renderer
     Renderer::Initialize(
         Renderer::RendererAPI::DirectX11,
-        Renderer::RenderFlags::VSync | Renderer::RenderFlags::DepthTest | Renderer::RenderFlags::DepthStencil,
+        Renderer::RenderFlags::DepthTest | Renderer::RenderFlags::DepthStencil | Renderer::RenderFlags::MSAAx4,
         Renderer::Settings::Debug
     );
 
