@@ -260,7 +260,7 @@ void Graphics::setView(int viewId)
 
 void Graphics::setMatrix(Matrix& mvpMatrix)
 {
-    mvpMatrix.transpose();
+    //mvpMatrix.transpose();
     Renderer::SetShaderValue(m_currentShader->m_shaderHandle, 0, 0, &mvpMatrix, sizeof(Matrix));
 }
 

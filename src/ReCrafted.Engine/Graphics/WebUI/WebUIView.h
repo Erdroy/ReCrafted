@@ -32,7 +32,7 @@ public:
     CEFView* getView() const;
 
 public:
-    void navigate(Text url);
+    void navigate(Text& url);
     void execute(const char* javaScriptSource);
     void bind(const char* bindName, Delegate<void> delegate);
 };

@@ -321,7 +321,7 @@ CEFView* WebUIView::getView() const
     return static_cast<CEFView*>(m_viewBase);
 }
 
-void WebUIView::navigate(Text url)
+void WebUIView::navigate(Text& url)
 {
     if (!WebUIEngine::isInitialized())
         return;

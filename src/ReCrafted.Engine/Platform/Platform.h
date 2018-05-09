@@ -99,7 +99,7 @@ public:
      * \param style The style of the window. Look for docs of all of the platforms.
      * \return The created window handle.
      */
-    static void* createWindow(Text windowName, int width = 1280, int height = 720, uint64_t style = 0u);
+    static void* createWindow(Text& windowName, int width = 1280, int height = 720, uint64_t style = 0u);
 
     /**
      * \brief Destroys window with given handle.

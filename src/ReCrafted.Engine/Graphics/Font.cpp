@@ -150,7 +150,7 @@ byte* GenerateCharmap(FT_Face face, int charmap, uint charmapWidth, uint charmap
 	return texturePtr;
 }
 
-Vector2 Font::measureText(Text text)
+Vector2 Font::measureText(Text& text)
 {
 	Vector2 pos = {};
 	auto lineheight = m_size * m_lineHeigh;
@@ -196,7 +196,7 @@ Vector2 Font::measureText(Text text)
 	return pos;
 }
 
-void Font::loadFont(Text fontFile, int size, bool managed)
+void Font::loadFont(Text& fontFile, int size, bool managed)
 {
 	FT_Library library = nullptr;
 

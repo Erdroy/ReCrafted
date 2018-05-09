@@ -30,7 +30,7 @@ Ref<Texture2D> Atlas::getTexture() const
 	return m_texture;
 }
 
-Ref<Atlas> Atlas::load(Text fileName)
+Ref<Atlas> Atlas::load(Text& fileName)
 {
 	char jsonName[512] = {};
 	char pngName[512] = {};

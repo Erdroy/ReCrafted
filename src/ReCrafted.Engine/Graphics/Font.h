@@ -93,7 +93,7 @@ public:
 	 * \param text The text to be measured.
 	 * \return The measured size.
 	 */
-	Vector2 measureText(Text text);
+	Vector2 measureText(Text& text);
 
     /**
 	 * \brief Loads font from file and renders it into given size.
@@ -101,7 +101,7 @@ public:
 	 * \param size The size of the font.
 	 * \param managed
 	 */
-	void loadFont(Text fontFile, int size, bool managed = false);
+	void loadFont(Text& fontFile, int size, bool managed = false);
 
 	/**
 	 * \brief Gets texture of this font of given id.

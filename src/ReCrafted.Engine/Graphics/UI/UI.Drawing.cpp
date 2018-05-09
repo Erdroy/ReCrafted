@@ -267,7 +267,7 @@ void UI::drawBox(Rectf rect)
 	m_instance->internal_drawBox(rect);
 }
 
-void UI::drawText(Font* font, Text text, Vector2 position)
+void UI::drawText(Font* font, Text& text, Vector2 position)
 {
 	drawText(font, text.data(), text.length(), position);
 }

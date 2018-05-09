@@ -143,7 +143,7 @@ int Platform::cpuCount()
 	return m_cpuCount;
 }
 
-void* Platform::createWindow(Text windowName, int width, int height, const uint64_t style)
+void* Platform::createWindow(Text& windowName, int width, int height, const uint64_t style)
 {
     var mStyle = style;
 

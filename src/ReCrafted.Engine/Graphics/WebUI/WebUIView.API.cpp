@@ -9,7 +9,7 @@ namespace Internal
 {
     void navigate(WebUIView* view, MonoString* string)
     {
-        cvar url = Text::constant(MONO_TEXT(string));
+        var url = Text::constant(MONO_TEXT(string));
 
         if (view)
             view->navigate(url);

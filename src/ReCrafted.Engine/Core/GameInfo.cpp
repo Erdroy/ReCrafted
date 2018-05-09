@@ -6,7 +6,7 @@
 
 Array<Text> GameInfo::cliArguments;
 
-bool GameInfo::containsArgument(Text text)
+bool GameInfo::containsArgument(Text& text)
 {
 	for(auto i = 0u; i < cliArguments.size(); i ++)
 	{
@@ -17,7 +17,7 @@ bool GameInfo::containsArgument(Text text)
 	return false;
 }
 
-void GameInfo::parseArguments(Text text)
+void GameInfo::parseArguments(Text& text)
 {
 	auto length = text.length();
 	auto isString = false;

@@ -56,7 +56,7 @@ public:
 	 * \param fileName The JSON file name.
 	 * \return The loaded atlas, or null when file is not found.
 	 */
-	static Ref<Atlas> load(Text fileName);
+	static Ref<Atlas> load(Text& fileName);
 };
 
 #endif // ATLAS_H
