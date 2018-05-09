@@ -41,7 +41,7 @@ project "ReCrafted.Engine"
 	configuration { "vs*"}
 		buildoptions { "/MP" }
 		postbuildcommands {
-			"call " .. ROOT_DIR .. "/pm.bat PostBuild",
+			"call " .. ROOT_DIR .. "/pm.bat PostBuild --skip-shaders --skip-api",
 		}
 	
 	links { "d3d11", "dxguid", "dxgi", "d3dcompiler", "Rpcrt4", "mono", "libcef", "PxFoundation_x64", "PxTask_x64", "PhysX3_x64", "PhysX3Common_x64", "PhysX3Extensions", "PhysX3CharacterKinematic_x64" }
