@@ -152,7 +152,14 @@ void Graphics::renderBegin()
     setShader(m_gbufferFillShader);
 
     // set default matrix
-    setMatrix(Camera::getMainCamera()->get_viewProjection());
+    rvar mvpMatrix = Camera::getMainCamera()->get_viewProjection();
+    Renderer::SetShaderValue(m_currentShader->m_shaderHandle, 0, 0, &mvpMatrix, sizeof(Matrix));
+
+    var nearPlane = Camera::getMainCamera()->get_nearPlane();
+    Renderer::SetShaderValue(m_currentShader->m_shaderHandle, 0, 1, &nearPlane, sizeof(float));
+
+    var farPlane = Camera::getMainCamera()->get_farPlane();
+    Renderer::SetShaderValue(m_currentShader->m_shaderHandle, 0, 2, &farPlane, sizeof(float));
 
     // bind gbuffer
     m_gbuffer->bind();

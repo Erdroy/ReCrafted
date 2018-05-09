@@ -51,13 +51,12 @@ void SurfaceVSMain(in SurfaceVSInput i, out SurfacePSInput o)
 #endif // USE_VERTEXCOLOR
 
 #ifdef USE_LOGZBUFFER
-    //float fc = 1.0f / log(farPlane * nearPlane + 1.0);
-    //float depth = log(position.w * nearPlane + 1.0) * fc;
+    float fc = 1.0f / log(farPlane * nearPlane + 1.0);
+    float depth = log(position.w * nearPlane + 1.0) * fc;
 
     // set Z
-    //o.Position.z = (2.0 * depth - 1.0) * position.w;
-
-    // TODO: maybe write DEPTH to PS stage, this should give some +++
+    o.Position.z = depth * position.w;
+    //o.Position.z = (2.0 * depth - 1.0) * position.w; // for opengl
 #endif
 }
 
