@@ -223,10 +223,22 @@ namespace Renderer
             context->VSSetShader(pass.m_vertexShader, nullptr, 0);
 
             // set constant buffers
-            for(rvar buffer : pass.m_vsBuffers) // TODO: apply all buffers in single API call
+            if (!pass.m_vsBuffers.empty())
             {
-                ID3D11Buffer* buffers[] = { buffer->m_buffer };
-                context->VSSetConstantBuffers(buffer->m_index, 1u, buffers);
+                for (rvar buffer : pass.m_vsBuffers) // TODO: apply all buffers in single API call
+                {
+                    ID3D11Buffer* buffers[] = { buffer->m_buffer };
+                    context->VSSetConstantBuffers(buffer->m_index, 1u, buffers);
+                }
+            }
+            else
+            {
+                // bind all buffers instead
+                for (rvar buffer : m_buffers) // TODO: apply all buffers in single API call
+                {
+                    ID3D11Buffer* buffers[] = { buffer.m_buffer };
+                    context->VSSetConstantBuffers(buffer.m_index, 1u, buffers);
+                }
             }
         }
 
@@ -236,10 +248,22 @@ namespace Renderer
             context->PSSetShader(pass.m_pixelShader, nullptr, 0);
 
             // set constant buffers
-            for (rvar buffer : pass.m_psBuffers)
+            if (!pass.m_psBuffers.empty())
             {
-                ID3D11Buffer* buffers[] = { buffer->m_buffer };
-                context->PSSetConstantBuffers(buffer->m_index, 1u, buffers);
+                for (rvar buffer : pass.m_psBuffers)
+                {
+                    ID3D11Buffer* buffers[] = { buffer->m_buffer };
+                    context->PSSetConstantBuffers(buffer->m_index, 1u, buffers);
+                }
+            }
+            else
+            {
+                // bind all buffers instead
+                for (rvar buffer : m_buffers) // TODO: apply all buffers in single API call
+                {
+                    ID3D11Buffer* buffers[] = { buffer.m_buffer };
+                    context->PSSetConstantBuffers(buffer.m_index, 1u, buffers);
+                }
             }
         }
 
@@ -248,11 +272,23 @@ namespace Renderer
         {
             context->CSSetShader(pass.m_computeShader, nullptr, 0);
 
-            // set constant buffers
-            for (rvar buffer : pass.m_csBuffers)
+            // set constant buffers 
+            if (!pass.m_csBuffers.empty())
             {
-                ID3D11Buffer* buffers[] = { buffer->m_buffer };
-                context->CSSetConstantBuffers(buffer->m_index, 1u, buffers);
+                for (rvar buffer : pass.m_csBuffers)
+                {
+                    ID3D11Buffer* buffers[] = { buffer->m_buffer };
+                    context->CSSetConstantBuffers(buffer->m_index, 1u, buffers);
+                }
+            }
+            else
+            {
+                // bind all buffers instead
+                for (rvar buffer : m_buffers) // TODO: apply all buffers in single API call
+                {
+                    ID3D11Buffer* buffers[] = { buffer.m_buffer };
+                    context->CSSetConstantBuffers(buffer.m_index, 1u, buffers);
+                }
             }
         }
 

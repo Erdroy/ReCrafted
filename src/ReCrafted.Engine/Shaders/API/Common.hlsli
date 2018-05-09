@@ -4,7 +4,6 @@
 #define COMMON_HLSLI
 
 #ifdef USE_3DSPACE
-[Target(PSMain, VSMain)]
 cbuffer DefaultContants : register(b0)
 {
     matrix MVP;
