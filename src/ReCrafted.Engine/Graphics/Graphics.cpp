@@ -30,7 +30,7 @@ void Graphics::createRenderBuffers()
     Logger::logInfo("Creating render buffers");
 
     // create render buffer for geometry pass
-    m_gbuffer = RenderBuffer::createRenderTarget();
+    m_gbuffer = RenderBuffer::createRenderBuffer();
     m_gbuffer->begin();
     m_gbuffer->addTarget("ALBEDO", Renderer::TextureFormat::RGBA8);
     m_gbuffer->addTarget("[RGB]NORMALS, [A]AmbientOcculusion", Renderer::TextureFormat::RGBA8);
@@ -100,18 +100,19 @@ void Graphics::render()
 {
     Profiler::beginProfile("Render");
     {
-        cvar clearColor = Renderer::Color{ 0.0f, 0.2f, 0.4f, 1.0f };
+        cvar clearColor = Renderer::Color{ 0.0f, 0.0f, 0.0f, 1.0f };
 
         cvar renderBuffer = m_gbuffer->m_renderBufferHandle;
 
         Renderer::ApplyWindow(m_window);
         Renderer::ApplyRenderBuffer(renderBuffer);
         Renderer::ClearRenderBuffer(renderBuffer, clearColor);
+        Renderer::ClearRenderBuffer(m_frameBuffer, clearColor);
 
         // set default render stage
         setStage(RenderStage::Default);
 
-        // begin rendering the scene
+        // begin rendering
         renderBegin();
         {
             // render world
@@ -120,7 +121,7 @@ void Graphics::render()
             // render UI
             renderUI();
         }
-        renderEnd(); // end rendering scene
+        renderEnd(); // end rendering
 
         // next frame, wait vsync
         Renderer::Frame();
@@ -153,11 +154,6 @@ void Graphics::renderBegin()
     // set default matrix
     setMatrix(Camera::getMainCamera()->get_viewProjection());
 
-    // update shaders uniforms
-    var lightdir = Vector3(0.39f, -0.9f, 0.13f);
-    lightdir.normalize();
-    m_gbufferCombine->setValue(0, &lightdir);
-
     // bind gbuffer
     m_gbuffer->bind();
 }
@@ -166,13 +162,30 @@ void Graphics::renderEnd()
 {
     setStage(RenderStage::Default);
 
-    if (Input::isKey(Key_F2))
+    if (Input::isKey(Key_F1))
     {
         Renderer::BlitTexture(m_frameBuffer, m_gbuffer->getTarget(0));
+        // reset everything
+        m_currentShader = nullptr;
+        return;
+    }
+
+    if (Input::isKey(Key_F2))
+    {
+        Renderer::BlitTexture(m_frameBuffer, m_gbuffer->getTarget(1));
+        // reset everything
+        m_currentShader = nullptr;
         return;
     }
 
     // combine gbuffer
+
+    // update shaders uniforms
+    var lightdir = Vector3(0.39f, 0.9f, 0.13f);
+    lightdir.normalize();
+    m_gbufferCombine->setValue(0, &lightdir);
+
+    // blit render textures using gbuffercombine shader
     rvar gbufferDescription = Renderer::GetRenderBufferDescription(m_gbuffer->m_renderBufferHandle);
     Renderer::BlitTextures(
         m_gbufferCombine->m_shaderHandle, 
@@ -260,7 +273,6 @@ void Graphics::setView(int viewId)
 
 void Graphics::setMatrix(Matrix& mvpMatrix)
 {
-    //mvpMatrix.transpose();
     Renderer::SetShaderValue(m_currentShader->m_shaderHandle, 0, 0, &mvpMatrix, sizeof(Matrix));
 }
 

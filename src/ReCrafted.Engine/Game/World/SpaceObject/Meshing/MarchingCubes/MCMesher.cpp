@@ -90,7 +90,7 @@ void MCMesher::generateCell(Cell* cell, int x, int y, int z, sbyte* data) const
 
 	for (auto i = 0; i < 8; i++) // TODO: unroll
 	{
-		if (data[INDEX_3D(x + MCCornerDeltasInt[i][0], y + MCCornerDeltasInt[i][1], z + MCCornerDeltasInt[i][2], VoxelChunkData::ChunkDataSize)] < ISO_LEVEL)
+		if (data[INDEX_3D(x + MCCornerDeltasInt[i][0], y + MCCornerDeltasInt[i][1], z + MCCornerDeltasInt[i][2], VoxelChunkData::ChunkDataSize)] > ISO_LEVEL)
 			caseIndex |= 1 << i;
 	}
 
@@ -204,12 +204,12 @@ void MCMesher::generateSkirt(Cell* cell, const Vector3& position, const Vector3&
 
 	for (var i = 0; i < 12; i++)
 	{
-		var edge = MSEdgesTable[caseIndex][i];
+		cvar edge = MSEdgesTable[caseIndex][i];
 
 		if (edge == -1)
 			return;
 
-		var vertexPosition = position + edges[edge] * lod;
+		cvar vertexPosition = position + edges[edge] * lod;
 
 		m_vertices.add(vertexPosition);
 		m_indices.add(m_vertices.count() - 1);

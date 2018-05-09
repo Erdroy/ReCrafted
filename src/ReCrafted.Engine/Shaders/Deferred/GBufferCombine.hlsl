@@ -15,13 +15,10 @@ cbuffer Data : register(b0)
 float3 CalculateLighting(float3 normal) 
 {
     float3 dir = normalize(lightDir);
-
     float nDotL = dot(normal, dir);
-    nDotL = clamp(nDotL, 0.0f, 1.0f);
+    float3 lightColor = float3(1.0f, 0.95f, 0.9f);
 
-    float3 lightColor = float3(1.0f, 0.85f, 0.9f);
-
-    return lightColor * nDotL + float3(0.6f, 0.6f, 0.6f);
+    return lightColor * nDotL + float3(0.35f, 0.35f, 0.35f);
 }
 
 /// <summary>

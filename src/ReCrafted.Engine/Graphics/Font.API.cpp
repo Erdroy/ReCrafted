@@ -18,6 +18,10 @@ namespace Internal
 	void fontMeasure(Font* font, MonoString* str, Vector2* size)
 	{
 		auto text = Text::constant(MONO_TEXT(str));
+
+        if (text.size() == 0)
+            return;
+
 		*size = font->measureText(text);
 	}
 

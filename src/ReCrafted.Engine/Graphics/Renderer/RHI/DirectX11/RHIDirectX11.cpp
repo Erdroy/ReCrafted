@@ -150,6 +150,7 @@ namespace Renderer
             void InitializeWorker();
             void WorkerThread();
 
+            void PrepareFrame();
             void ProcessFrame();
             void ExecuteCommandList();
             void ExecuteCommand(CommandHeader::_enum header, uint32_t* position);
@@ -243,9 +244,31 @@ namespace Renderer
             Internal::Log("Worker Thread stopped");
         }
 
+        void WorkerThreadInstance::PrepareFrame()
+        {
+            // Setup default states
+
+            // Bind depth stencil state when needed
+            var depthRead = GetFlag(RenderFlags::DepthTest);
+            var depthWrite = GetFlag(RenderFlags::DepthStencil);
+
+            if (depthRead && depthWrite)
+            {
+                m_context->OMSetDepthStencilState(m_depthStencilState, 1u);
+            }
+            else
+            {
+                m_context->OMSetDepthStencilState(m_depthStencilState_Disabled, 1u);
+            }
+
+            // Bind rasterizer state
+            m_context->RSSetState(m_rasterizerState);
+        }
+
         void WorkerThreadInstance::ProcessFrame()
         {
             WaitForPreviousFrame();
+            PrepareFrame();
             ExecuteCommandList();
         }
 
@@ -421,6 +444,7 @@ namespace Renderer
 
             // WARNING: No depth stencil view for back buffers!
             // TODO: Create depth stencil view
+
             renderBuffer->SetSize(command->width, command->height);
             renderBuffer->SetRTVs(renderTargets);
         }
@@ -614,7 +638,7 @@ namespace Renderer
 
             // TODO: check if we can pass frame index (is it back buffer - render buffer)
 
-            buffer->Clear(m_context, command->color, command->depth, 0);
+            buffer->Clear(m_context, command->color, command->depth);
         }
 
         void WorkerThreadInstance::Execute_ApplyRenderBuffer(Command_ApplyRenderBuffer* command)
@@ -624,7 +648,7 @@ namespace Renderer
 
             // TODO: check if we can pass frame index (is it back buffer - render buffer)
 
-            buffer->Bind(m_context, 0);
+            buffer->Bind(m_context);
         }
 
         void WorkerThreadInstance::Execute_DestroyRenderBuffer(Command_DestroyRenderBuffer* command)
@@ -795,24 +819,6 @@ namespace Renderer
         {
             // reset previous states
             m_deviceContext->ClearState();
-
-            // Setup default state
-
-            // Bind depth stencil state when needed
-            var depthRead = GetFlag(RenderFlags::DepthTest);
-            var depthWrite = GetFlag(RenderFlags::DepthStencil);
-
-            if(depthRead && depthWrite)
-            {
-                m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1u);
-            }
-            else
-            {
-                m_deviceContext->OMSetDepthStencilState(m_depthStencilState_Disabled, 1u);
-            }
-
-            // Bind rasterizer state
-            m_deviceContext->RSSetState(m_rasterizerState);
         }
 
         void RHIDirectX11::assignCommands()
@@ -887,8 +893,8 @@ namespace Renderer
             depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
 
             depthStencilDesc.StencilEnable = false;
-            depthStencilDesc.StencilReadMask = 0xFF;
-            depthStencilDesc.StencilWriteMask = 0xFF;
+            depthStencilDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+            depthStencilDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
 
             depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
             depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;

@@ -29,10 +29,6 @@ private:
     uint m_width = 0;
     uint m_height = 0;
 
-private:
-	
-	void createBuffer(uint width, uint height);
-
 public:
 	/// <summary>
 	/// Begin render buffer building.
@@ -81,7 +77,7 @@ public:
 	/// Create render buffer.
 	/// </summary>
 	/// <returns>The created render buffer.</returns>
-	FORCEINLINE static Ref<RenderBuffer> createRenderTarget()
+	FORCEINLINE static Ref<RenderBuffer> createRenderBuffer()
 	{
 		Ref<RenderBuffer> renderTarget(new RenderBuffer);
 		return renderTarget;

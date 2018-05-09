@@ -68,7 +68,7 @@ void SurfaceVSMain(in SurfaceVSInput i, out SurfacePSInput o)
 void SurfacePSMain(in SurfacePSInput i, out GBufferOutput o)
 {
     // TODO: Consider whenever we need to use texture sampling, raw vertex color or textureColor * vertexColor
-    o.Color = float4(1.0f, 0.0f, 1.0f, 1.0f); //float4(i.Color, 1.0f);
+    o.Color = i.Color;
     o.Normal = float4(i.Normal, 1.0f);
 }
 

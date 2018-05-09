@@ -4,15 +4,6 @@
 #include "Platform/Platform.h"
 #include "Core/Logger.h"
 
-void RenderBuffer::createBuffer(uint width, uint height)
-{
-	// build render buffer
-    m_renderBufferHandle = Renderer::CreateRenderBuffer(width, height, m_textures, m_textureCount, Renderer::TextureFormat::D32F);
-    
-    m_width = width;
-    m_height = height;
-}
-
 void RenderBuffer::begin()
 {
 	_ASSERT(m_created != true);
@@ -28,9 +19,11 @@ void RenderBuffer::end()
 	// get window client size
 	Platform::getCurrentWindowSize(&width, &height);
 
-	// create framebuffer
-	createBuffer(width, height);
+    // build render buffer
+    m_renderBufferHandle = Renderer::CreateRenderBuffer(width, height, m_textures, m_textureCount, Renderer::TextureFormat::D32);
 
+    m_width = width;
+    m_height = height;
 	m_created = true;
 
 	Logger::logInfo("Created render buffer");
