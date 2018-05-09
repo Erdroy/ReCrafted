@@ -111,6 +111,8 @@ namespace Renderer
         ID3D11DepthStencilState*    m_depthStencilState;
         ID3D11DepthStencilState*    m_depthStencilState_Disabled;
 
+        ID3D11RasterizerState*      m_rasterizerState;
+
         // == d3d11 resources ==
         ID3D11Device*               m_device = nullptr;
         ID3D11DeviceContext*        m_deviceContext = nullptr;
@@ -347,7 +349,8 @@ namespace Renderer
         {
             m_commandList.Destroy();
 
-            SafeRelease(m_context);
+            if (!(m_settings & Settings::SingleThreaded))
+                SafeRelease(m_context);
         }
 
         void WorkerThreadInstance::Execute_SetFlag(Command_SetFlag* command)
@@ -456,7 +459,6 @@ namespace Renderer
             SafeRelease(m_shaders[shaderIdx]);
         }
 
-
         void WorkerThreadInstance::Execute_CreateVertexBuffer(Command_CreateVertexBuffer* command)
         {
             rvar buffer = m_vertexBuffers[command->handle.idx];
@@ -547,7 +549,6 @@ namespace Renderer
 
             SafeRelease(buffer.buffer);
         }
-
 
         void WorkerThreadInstance::Execute_CreateRenderBuffer(Command_CreateRenderBuffer* command)
         {
@@ -810,6 +811,8 @@ namespace Renderer
                 m_deviceContext->OMSetDepthStencilState(m_depthStencilState_Disabled, 1u);
             }
 
+            // Bind rasterizer state
+            m_deviceContext->RSSetState(m_rasterizerState);
         }
 
         void RHIDirectX11::assignCommands()
@@ -905,6 +908,18 @@ namespace Renderer
             depthStencilDesc.DepthEnable = false;
             hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState_Disabled);
             _ASSERT(SUCCEEDED(hr));
+
+            // create regular RS
+            D3D11_RASTERIZER_DESC rasterizerDesc = {};
+            rasterizerDesc.AntialiasedLineEnable = false;
+            rasterizerDesc.MultisampleEnable = false;
+            rasterizerDesc.CullMode = D3D11_CULL_BACK;
+            rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+            rasterizerDesc.DepthClipEnable = true;
+
+            hr = m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState);
+            _ASSERT(SUCCEEDED(hr));
+            
 
             // Spawn Worker Threads
             for (var i = 0; i < cpuCount && i < RENDERER_MAX_RENDER_THREADS; i++)
@@ -1009,6 +1024,7 @@ namespace Renderer
 
             // Destroy D3D11 objects created on main-thread
             SafeRelease(m_depthStencilState);
+            SafeRelease(m_rasterizerState);
             SafeRelease(m_deviceContext);
             SafeRelease(m_device);
         }
