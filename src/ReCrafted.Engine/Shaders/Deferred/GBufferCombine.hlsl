@@ -12,6 +12,18 @@ cbuffer Data : register(b0)
     float3 lightDir;
 };
 
+float3 CalculateLighting(float3 normal) 
+{
+    float3 dir = normalize(lightDir);
+
+    float nDotL = dot(normal, dir);
+    nDotL = clamp(nDotL, 0.0f, 1.0f);
+
+    float3 lightColor = float3(1.0f, 0.85f, 0.9f);
+
+    return lightColor * nDotL + float3(0.6f, 0.6f, 0.6f);
+}
+
 /// <summary>
 /// Pixel Shader Function
 /// CombinePSMain
@@ -19,8 +31,11 @@ cbuffer Data : register(b0)
 float4 CombinePSMain(in QuadPS i) : SV_Target0
 {
     GBuffer gbuffer = SampleGBuffer(i.UV);
+    float3 color = gbuffer.Color;
 
-    return float4(gbuffer.Color, 1.0f);
+    color *= CalculateLighting(gbuffer.Normal);
+
+    return float4(color, 1.0f);
 }
 
 pass Default
