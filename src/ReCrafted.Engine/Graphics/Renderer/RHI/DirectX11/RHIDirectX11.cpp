@@ -223,6 +223,8 @@ namespace Renderer
 
         void WorkerThreadInstance::WorkerThread()
         {
+            Platform::setThreadName("Render Thread");
+
             var threadMemory = RPMallocThread();
 
             // Wait for main thread to signal ready
