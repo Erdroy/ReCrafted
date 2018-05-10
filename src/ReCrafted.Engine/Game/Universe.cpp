@@ -63,10 +63,9 @@ void Universe::update()
 
 	if (m_viewUpdateEnabled) 
 	{
-		auto cameraPosition = Camera::getMainCamera()->get_position();
-
+		var cameraPosition = Camera::getMainCamera()->get_position();
 		m_testObject1->updateViewPoint(cameraPosition);
-		m_testObject1->update();
+        m_testObject1->update();
 	}
 }
 

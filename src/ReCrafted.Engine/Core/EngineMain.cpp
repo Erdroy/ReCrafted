@@ -74,7 +74,7 @@ void EngineMain::onUpdate()
     m_lastUpdateTime = currentTime;
 
     // update input
-    Input::getInstance()->update();
+    Input::getInstance()->updateInput();
 
     // clear keyboard buffer
     KeyboardBuffer::clear();

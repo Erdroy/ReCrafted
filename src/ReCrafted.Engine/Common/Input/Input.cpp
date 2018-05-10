@@ -22,7 +22,7 @@ void Input::onDispose()
     releaseAll();
 }
 
-void Input::update()
+void Input::updateInput()
 {
     // copy all keys
     for (auto i = 0; i < INPUT_TABLE_SIZE; i++)
