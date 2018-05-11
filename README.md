@@ -1,21 +1,34 @@
 # ReCrafted
 
-## External tools
-- [VisualStudio 2015/2017](https://www.visualstudio.com/) (IDE, Windows)
-- [VisualStudio Code](https://code.visualstudio.com/) with C++ extensions (IDE, Linux) | Currently not supported
-- XCode (IDE, OSX) | Currently not supported
-
 ## Building
-1. Clone ReCrafted repo into suitable directory: `X:/ReCrafted/` (should contain: licenses, src, tools etc.)
-2. Clone ReCraftedBinaries repo into suitable directory: `X:/ReCrafted/build/` (should contain: assets, bin64, mono etc.)
-3. Download precompiled libs:
-https://erdroy.com/libs_prebuilt.zip
-4. Unzip all files from downloaded archive - `libs_prebuilt.zip/libs_temp/` into `X:/ReCrafted/libs/`.
-5. Create `X:/ReCrafted/username.txt` file with your nickname.
-6. Run generate_project_X.(sh/bat) file in the root directory to build needed projects.
-7. Done! For example: open .projects/vs2015/ReCrafted.sln for C++ project.
+1. Clone ReCrafted repository into suitable directory: `X:/ReCrafted/` (should contain: licenses, src, tools etc.)
+2. Clone ReCraftedBinaries repository into `build` subdirectory: `X:/ReCrafted/build/` (should contain: assets, bin64, mono etc.).
+3. Run command `.\pm SetupProject --username "YOUR USERNAME"` 
+4. Run command `.\pm Update3rdParty`, or mannualy download zip from https://erdroy.com/ReCrafted3rdParty.zip and unzip all files from downloaded archive - `ReCrafted3rdParty.zip` into `X:/ReCrafted/lib/` (should contain directories like ).
+5. Run command `.\pm CreateProjects -t vs2015` to create needed projects for Visual Studio 2015.
+6. Done! Now you can open `.projects/vs2015/ReCrafted.sln` to start project solution.
 
-Warning: If you pull newly created files for C++ project, you must run generate_project_X.(sh/bat) again and then reload project.
+**Warning**: Please DO NOT upgrade projects at first startup.
+
+**Warning**: If you pull newly created files for C++ project, then you must run command `.\pm CreateProjects -t vs2015` and reload projects (window will popup in VS).
+
+*Note: Game supports only Windows x86_64.*
+
+## Project Manager commands
+To run PM commands, you need to open PS or CMD in the project's root directory `X:/ReCrafted`, the best way to do this, is hold Left-Shift and click RMB in Explorer and then click 'Open PowerShell/CMD window here'.
+
+1. `CreateProjects` - Creates solution and C++ project that can be used in Visual Studio or other IDE if available. (No arguments)
+2. `SetupProject` - Setups project configuration and developer information. Run with `--username USERNAME`, where USERNAME is your nickname or full name. Remember to **always** have the same username.
+3. `GenerateAPI` - Generates C# API. (No arguments)
+4. `Pack3rdParty` - Packages needed files from `lib` directory to `ReCrafted3rdParty.zip` (No arguments)
+5. `PackGameFull` - Creates clean game archive from current build. Run with `-o FILENAME` or `--output FILENAME` to specify where game build will be outputed.
+6. `PackGamePatch` - Creates game patch from current build. Run with `-o FILENAME` or `--output FILENAME` to specify where game patch will be outputed. 
+7. `CompileShaders` - Compiles all shaders from `src/ReCrafted.Engine/Shaders/**.hlsl`. (No arguments) 
+8. `UpdateBuildInfo` - Internal command. Increments build count. (No arguments)
+9. `PostBuild` - Internal command. Invokes UpdateBuildInfo and Compile Shaders. (No arguments)
+
+## External tools
+- [VisualStudio 2015/2017](https://www.visualstudio.com/)
 
 ## Links
 - [Trello](https://trello.com/b/xGap0YZQ/recrafted)

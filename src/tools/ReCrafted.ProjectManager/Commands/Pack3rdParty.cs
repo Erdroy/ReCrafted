@@ -19,7 +19,7 @@ namespace ReCrafted.ProjectManager.Commands
                 "*.dll",
                 "*.def",
                 "*.pdb"
-            }, "PrebuiltLibraries.zip");
+            }, "ReCrafted3rdParty.zip");
         }
 
         /// <summary>
