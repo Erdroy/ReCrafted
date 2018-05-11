@@ -152,7 +152,7 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
 		m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
 		m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
 
-		if(plane.normal.x != plane.normal.x)
+		/*if(plane.normal.x != plane.normal.x)
 		{
 			// two points are equal, WTF?
 			// just add some zero-normals for now. TODO: fix when cache will be done!
@@ -160,7 +160,7 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
 			m_normals.add(Vector3::zero());
 			m_normals.add(Vector3::zero());
 		}
-		else
+		else*/
 		{
 			m_normals.add(plane.normal);
 			m_normals.add(plane.normal);
@@ -277,7 +277,7 @@ void MCMesher::generateCells(sbyte* data, const Vector3& position, float lod, ui
 
 void MCMesher::generate(const Vector3& position, int lod, uint8_t borders, Ref<Mesh>& mesh, sbyte* data)
 {
-	var lodF = static_cast<float>(lod);
+	cvar lodF = static_cast<float>(lod);
 
 	generateCells(data, position, lodF, lod > 1 ? borders : 0);
 	

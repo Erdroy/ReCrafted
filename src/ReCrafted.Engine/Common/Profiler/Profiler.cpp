@@ -29,10 +29,12 @@ bool Profiler::profileSort(const Profile& lhs, const Profile& rhs)
 
 void Profiler::onInit()
 {
+    var debugFont = TEXT_CONST("../assets/fonts/VeraMono.ttf");
+
     m_drawDebugScreen = false;
 
     m_debugFont = new Font();
-    m_debugFont->loadFont(TEXT_CONST("../assets/fonts/VeraMono.ttf"), 12);
+    m_debugFont->loadFont(debugFont, 12);
 }
 
 void Profiler::onDispose()

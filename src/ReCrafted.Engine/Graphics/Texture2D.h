@@ -45,6 +45,9 @@ public:
 private:
     void onDestroy() override;
 
+    static void releaseBitmap(void* ptr);
+    static void releaseData(void* ptr);
+
 public:
     void dispose() override;
 
@@ -72,14 +75,6 @@ public:
 	 * \param flags BGFX Texture flags.
 	 */
 	void createMemory(int width, int height, uint flags = 0u);
-
-    /**
-	 * \brief Adds mipmap. This will reallocate the memory.
-	 * \param width The width.
-	 * \param height The height.
-	 * \param pixels The pixels pointer.
-	 */
-	void addMip(int width, int height, uint* pixels);
 
     /**
 	 * \brief Get pixel at given position.
