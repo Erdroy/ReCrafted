@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 02/22/2018 18:10:24 Source: 'Entity.API.cpp' Target: 'Common/Entity.Gen.cs'
+// Generated: 05/11/2018 21:54:47 Source: 'Entity.API.cpp' Target: 'Common/Entity.Gen.cs'
 
 using ReCrafted.API.Mathematics;
 using System;

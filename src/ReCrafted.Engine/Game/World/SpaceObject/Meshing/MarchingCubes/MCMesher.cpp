@@ -16,8 +16,7 @@ for (auto c = 0; c < VoxelChunkData::ChunkSize; c++)
 #define ITERATE_CELLS_END()
 
 #define GET_CELL(_x, _y, _z) m_cells[INDEX_3D(_x, _y, _z, VoxelChunkData::ChunkSize)];
-#define IS_BORDER(_x, _y, _z
-) _x == 0 || _x == VoxelChunkData::ChunkSize-1 || _y == 0 || _y == VoxelChunkData::ChunkSize-1 || _z == 0 || _z == VoxelChunkData::ChunkSize-1
+#define IS_BORDER(_x, _y, _z) _x == 0 || _x == VoxelChunkData::ChunkSize-1 || _y == 0 || _y == VoxelChunkData::ChunkSize-1 || _z == 0 || _z == VoxelChunkData::ChunkSize-1
 
 #define AXIS_FRONT		0
 #define AXIS_BACK		1

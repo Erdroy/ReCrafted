@@ -12,8 +12,7 @@
 namespace Renderer
 {
 #define DefineWriter(type) RENDERER_FORCEINLINE void Write( type header) { Write(&header, sizeof( type )); }
-#define DefineReader(type, name
-    ) RENDERER_FORCEINLINE type Read_##name(uint32_t* position) { type tmp; Read(&tmp, position, sizeof( type )); return tmp; }
+#define DefineReader(type, name) RENDERER_FORCEINLINE type Read_##name(uint32_t* position) { type tmp; Read(&tmp, position, sizeof( type )); return tmp; }
 #define DefineReaderWriter(type, name)	\
 			DefineWriter(type);			\
 			DefineReader(type, name);
