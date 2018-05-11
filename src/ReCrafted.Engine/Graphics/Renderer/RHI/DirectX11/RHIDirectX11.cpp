@@ -178,10 +178,12 @@ namespace Renderer
 
             FORCEINLINE void Execute_CreateVertexBuffer(Command_CreateVertexBuffer* command);
             FORCEINLINE void Execute_ApplyVertexBuffer(Command_ApplyVertexBuffer* command);
+            FORCEINLINE void Execute_UpdateVertexBuffer(Command_UpdateVertexBuffer* command);
             FORCEINLINE void Execute_DestroyVertexBuffer(Command_DestroyVertexBuffer* command);
 
             FORCEINLINE void Execute_CreateIndexBuffer(Command_CreateIndexBuffer* command);
             FORCEINLINE void Execute_ApplyIndexBuffer(Command_ApplyIndexBuffer* command);
+            FORCEINLINE void Execute_UpdateIndexBuffer(Command_UpdateIndexBuffer* command);
             FORCEINLINE void Execute_DestroyIndexBuffer(Command_DestroyIndexBuffer* command);
 
             FORCEINLINE void Execute_CreateTexture2D(Command_CreateTexture2D* command);
@@ -352,10 +354,12 @@ namespace Renderer
 
             DEFINE_COMMAND_EXECUTOR(CreateVertexBuffer);
             DEFINE_COMMAND_EXECUTOR(ApplyVertexBuffer);
+            DEFINE_COMMAND_EXECUTOR(UpdateVertexBuffer);
             DEFINE_COMMAND_EXECUTOR(DestroyVertexBuffer);
 
             DEFINE_COMMAND_EXECUTOR(CreateIndexBuffer);
             DEFINE_COMMAND_EXECUTOR(ApplyIndexBuffer);
+            DEFINE_COMMAND_EXECUTOR(UpdateIndexBuffer);
             DEFINE_COMMAND_EXECUTOR(DestroyIndexBuffer);
 
             DEFINE_COMMAND_EXECUTOR(CreateTexture2D);
@@ -521,6 +525,21 @@ namespace Renderer
             m_context->IASetVertexBuffers(0, 1, buffers, &stride, &offset);
         }
 
+        void WorkerThreadInstance::Execute_UpdateVertexBuffer(Command_UpdateVertexBuffer* command)
+        {
+            rvar buffer = m_vertexBuffers[command->handle.idx];
+            _ASSERT(buffer != nullptr);
+
+            D3D11_MAPPED_SUBRESOURCE res;
+            var hr = m_context->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
+            _ASSERT(SUCCEEDED(hr));
+
+            cvar ptr = static_cast<byte*>(res.pData) + command->memoryOffset;
+            memcpy(ptr, command->memory, command->memorySize);
+
+            m_context->Unmap(buffer, 0);
+        }
+
         void WorkerThreadInstance::Execute_DestroyVertexBuffer(Command_DestroyVertexBuffer* command)
         {
             rvar buffer = m_vertexBuffers[command->handle.idx];
@@ -528,7 +547,6 @@ namespace Renderer
 
             SafeRelease(buffer);
         }
-
 
         void WorkerThreadInstance::Execute_CreateIndexBuffer(Command_CreateIndexBuffer* command)
         {
@@ -565,6 +583,21 @@ namespace Renderer
             _ASSERT(buffer.buffer != nullptr);
 
             m_context->IASetIndexBuffer(buffer.buffer, buffer.is32bit ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT, 0u);
+        }
+
+        void WorkerThreadInstance::Execute_UpdateIndexBuffer(Command_UpdateIndexBuffer* command)
+        {
+            rvar buffer = m_indexBuffers[command->handle.idx];
+            _ASSERT(buffer != nullptr);
+
+            D3D11_MAPPED_SUBRESOURCE res;
+            var hr = m_context->Map(buffer.buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
+            _ASSERT(SUCCEEDED(hr));
+
+            cvar ptr = static_cast<byte*>(res.pData) + command->memoryOffset;
+            memcpy(ptr, command->memory, command->memorySize);
+
+            m_context->Unmap(buffer.buffer, 0);
         }
 
         void WorkerThreadInstance::Execute_DestroyIndexBuffer(Command_DestroyIndexBuffer* command)

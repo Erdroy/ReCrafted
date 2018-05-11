@@ -481,8 +481,14 @@ namespace Renderer
     /// <param name="dynamic">When true, this buffer will be allowed to be updated through UpdateVertexBuffer.</param>
     RENDERER_FUNCTION(VertexBufferHandle)       CreateVertexBuffer(uint vertexCount, uint vertexSize, RendererMemory data, bool dynamic = false);
 
-    // TODO: NOT IMPLEMENTED!
-    RENDERER_FUNCTION(void)                     UpdateVertexBuffer(VertexBufferHandle handle, uint count, uint offset, RendererMemory data);
+    /// <summary>
+    /// Updates dynamic vertex buffer.
+    /// </summary>
+    /// <param name="handle">The vertex buffer handle.</param>
+    /// <param name="data">The memory pointer.</param>
+    /// <param name="size">The total memory size.</param>
+    /// <param name="offset">The destination memory offset.</param>
+    RENDERER_FUNCTION(void)                     UpdateVertexBuffer(VertexBufferHandle handle, RendererMemory data, uint size, uint offset);
 
     /// <summary>
     /// Sets given vertex buffer as current.
@@ -499,14 +505,20 @@ namespace Renderer
     /// <summary>
     /// Creates new IndexBuffer.
     /// </summary>
-    /// <param name="vertexCount">The count of indices.</param>
+    /// <param name="indexCount">The count of indices.</param>
     /// <param name="data">The memory pointer.</param>
     /// <param name="is32bit">Specifies the passed single index size. By default it is 32 bit. When false, it is 16.</param>
     /// <param name="dynamic">When true, this buffer will be allowed to be updated through UpdateIndexBuffer.</param>
     RENDERER_FUNCTION(IndexBufferHandle)        CreateIndexBuffer(uint indexCount, RendererMemory data, bool is32bit = true, bool dynamic = false);
 
-    // TODO: NOT IMPLEMENTED!
-    RENDERER_FUNCTION(void)                     UpdateIndexBuffer(IndexBufferHandle handle, uint count, uint offset, RendererMemory data);
+    /// <summary>
+    /// Updates dynamic index buffer.
+    /// </summary>
+    /// <param name="handle">The index buffer handle.</param>
+    /// <param name="data">The memory pointer.</param>
+    /// <param name="size">The total memory size.</param>
+    /// <param name="offset">The destination memory offset.</param>
+    RENDERER_FUNCTION(void)                     UpdateIndexBuffer(IndexBufferHandle handle, RendererMemory data, uint size, uint offset);
 
     /// <summary>
     /// Sets given index buffer as current.

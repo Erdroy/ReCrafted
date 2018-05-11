@@ -460,12 +460,18 @@ namespace Renderer
         return handle;
     }
 
-    void UpdateVertexBuffer(VertexBufferHandle handle, uint count, uint offset, RendererMemory data)
+    void UpdateVertexBuffer(VertexBufferHandle handle, RendererMemory data, uint size, uint offset)
     {
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
-        // TODO: NOT IMPLEMENTED!
+        Command_UpdateVertexBuffer command;
+        command.handle = handle;
+        command.memory = data;
+        command.memorySize = size;
+        command.memoryOffset = offset;
+
+        g_commandList->WriteCommand(&command);
     }
 
     void ApplyVertexBuffer(VertexBufferHandle handle)
@@ -509,12 +515,18 @@ namespace Renderer
         return handle;
     }
 
-    void UpdateIndexBuffer(IndexBufferHandle handle, uint count, uint offset, RendererMemory data)
+    void UpdateIndexBuffer(IndexBufferHandle handle, RendererMemory data, uint size, uint offset)
     {
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
-        // TODO: NOT IMPLEMENTED!
+        Command_UpdateIndexBuffer command;
+        command.handle = handle;
+        command.memory = data;
+        command.memorySize = size;
+        command.memoryOffset = offset;
+
+        g_commandList->WriteCommand(&command);
     }
 
     void ApplyIndexBuffer(IndexBufferHandle handle)

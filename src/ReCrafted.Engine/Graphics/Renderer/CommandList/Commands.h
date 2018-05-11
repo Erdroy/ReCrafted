@@ -164,6 +164,13 @@ namespace Renderer
         VertexBufferHandle handle;
     );
 
+    Command(UpdateVertexBuffer,
+        VertexBufferHandle handle;
+        RendererMemory memory;
+        uint memorySize;
+        uint memoryOffset;
+    );
+
     Command(DestroyVertexBuffer,
         VertexBufferHandle handle;
     );
@@ -178,6 +185,13 @@ namespace Renderer
 
     Command(ApplyIndexBuffer,
         IndexBufferHandle handle;
+    );
+
+    Command(UpdateIndexBuffer,
+        IndexBufferHandle handle;
+        RendererMemory memory;
+        uint memorySize;
+        uint memoryOffset;
     );
 
     Command(DestroyIndexBuffer,
