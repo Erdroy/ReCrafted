@@ -290,13 +290,6 @@ namespace Renderer
 		}
 	};
 
-	namespace Internal
-	{
-		RENDERER_FUNCTION(void) Log(const char* message);
-		RENDERER_FUNCTION(void) Fatal(const char* message);
-	}
-
-
 	// ======== OBJECT HANDLE DEFINES ========
     RENDERER_DEFINE_HANDLE(VertexBuffer);
     RENDERER_DEFINE_HANDLE(IndexBuffer);

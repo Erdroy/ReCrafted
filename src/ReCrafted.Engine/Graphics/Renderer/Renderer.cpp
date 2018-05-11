@@ -16,33 +16,6 @@
 
 namespace Renderer
 {
-	namespace Internal 
-	{
-		void Log(const char* message)
-		{
-#if _WIN32
-            OutputDebugStringA("Renderer Log: ");
-            OutputDebugStringA(message);
-            OutputDebugStringA("\n");
-#else
-            std::cout << "Renderer Log: " << message << std::endl;
-#endif
-		}
-
-		void Fatal(const char* message)
-		{
-#if _WIN32
-			OutputDebugStringA("Renderer Fatal: ");
-			OutputDebugStringA(message);
-			OutputDebugStringA("\n");
-#else
-			std::cout << "Renderer Fatal: " << message << std::endl;
-#endif
-			throw;
-			// exit(-1);
-		}
-	}
-
     class MemoryAllocation
 	{
 	public:
@@ -133,35 +106,12 @@ namespace Renderer
 
         m_renderFlags = flags;
 
-		switch (api)
-		{
-#if RENDERER_RENDERER_D3D12
-		case RendererAPI::DirectX12:
-			m_renderer = new RHI::RHIDirectX12;
-			m_renderer->Initialize(settings, flags);
-			g_commandList = &m_renderer->commandList;
-			break;
-#endif
-#if RENDERER_RENDERER_D3D11
-		case RendererAPI::DirectX11:
-            m_renderer = new RHI::RHIDirectX11();
-            m_renderer->Initialize(settings, flags);
-            g_commandList = &m_renderer->commandList;
-            break;
-#endif
-#if RENDERER_RENDERER_VULKAN
-		case RendererAPI::Vulkan:
-            break;
-#endif
-#if RENDERER_RENDERER_METAL
-        case RendererAPI::Metal:
-            break;
-#endif
-		default:
-			Internal::Fatal("Selected RendererAPI is not currently supported, yet.");
-			break;
-		}
-		m_running = true;
+        _ASSERT(api == RendererAPI::DirectX11);
+
+        m_renderer = new RHI::RHIDirectX11();
+        m_renderer->Initialize(settings, flags);
+        g_commandList = &m_renderer->commandList;
+        m_running = true;
 
         // load shaders
         m_blitShader = CreateShader("../assets/shaders/Blit.shader");

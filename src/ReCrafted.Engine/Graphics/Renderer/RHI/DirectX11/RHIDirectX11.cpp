@@ -243,8 +243,6 @@ namespace Renderer
 
                 frameCount++;
             }
-
-            Internal::Log("Worker Thread stopped");
         }
 
         void WorkerThreadInstance::PrepareFrame()
