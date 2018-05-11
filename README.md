@@ -1,4 +1,5 @@
 # ReCrafted
+![alt text](https://github.com/Erdroy/ReCrafted/raw/master/images/repoheader.png)
 
 ## Building
 1. Clone ReCrafted repository into suitable directory: `X:/ReCrafted/` (should contain: licenses, src, tools etc.)
@@ -9,6 +10,7 @@
 6. Done! Now you can open `.projects/vs2015/ReCrafted.sln` to start project solution.
 
 **Warning**: Please DO NOT upgrade projects at first startup.
+![alt text](https://github.com/Erdroy/ReCrafted/raw/master/images/donotupgrademeufreak.png)
 
 **Warning**: If you pull newly created files for C++ project, then you must run command `.\pm CreateProjects -t vs2015` and reload projects (window will popup in VS).
 
