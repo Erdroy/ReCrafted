@@ -2,7 +2,7 @@
 
 #include "RHIDirectX12_Texture2D.h"
 
-#if RENDERER_RENDERER_D3D12
+#if RENDERER_RHI_D3D12
 namespace Renderer
 {
     void RHIDirectX12_Texture2D::Release()

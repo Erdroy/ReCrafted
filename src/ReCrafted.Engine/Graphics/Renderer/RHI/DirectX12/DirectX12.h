@@ -5,7 +5,7 @@
 #ifndef DIRECTX12_H
 #define DIRECTX12_H
 
-#if RENDERER_RENDERER_D3D12
+#if RENDERER_RHI_D3D12
 
 #include <d3d12.h>
 #include <dxgi1_4.h>

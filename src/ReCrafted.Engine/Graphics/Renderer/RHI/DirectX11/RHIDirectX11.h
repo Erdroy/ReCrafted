@@ -7,7 +7,7 @@
 
 #include "../RHIBase.h"
 
-#if RENDERER_RENDERER_D3D11
+#if RENDERER_RHI_D3D11
 namespace Renderer
 {
     namespace RHI

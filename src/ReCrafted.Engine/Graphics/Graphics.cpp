@@ -40,12 +40,12 @@ void Graphics::createRenderBuffers()
 void Graphics::initializeRenderer()
 {
     Logger::logInfo("Creating renderer with Direct3D11 API");
-
+    
     // Initialize Renderer
     Renderer::Initialize(
         Renderer::RendererAPI::DirectX11,
-        Renderer::RenderFlags::DepthTest | Renderer::RenderFlags::DepthStencil | Renderer::RenderFlags::MSAAx4,
-        Renderer::Settings::Debug
+        Renderer::Settings::Debug,
+        Renderer::RenderFlags::_enum(Renderer::RenderFlags::Default | Renderer::RenderFlags::MSAAx4)
     );
 
     // Create Output

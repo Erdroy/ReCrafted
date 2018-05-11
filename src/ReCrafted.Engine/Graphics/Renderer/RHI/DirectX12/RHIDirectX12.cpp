@@ -2,7 +2,7 @@
 
 #include "RHIDirectX12.h"
 
-#if RENDERER_RENDERER_D3D12
+#if RENDERER_RHI_D3D12
 
 #include "../../../Renderer.hpp"
 #include "../../../RendererConfig.h"

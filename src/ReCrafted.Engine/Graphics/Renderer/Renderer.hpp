@@ -29,7 +29,7 @@ namespace Renderer
 
     struct RenderFlags
     {
-        enum _enum : char
+        enum _enum : uint
         {
             None                = 0,
             TripleBuffered      = 1 << 0,
@@ -41,7 +41,14 @@ namespace Renderer
 
             DepthStencil        = 1 << 5,
             DepthTest           = 1 << 6,
+
+            AnisotropicX2       = 1 << 8,
+            AnisotropicX4       = 1 << 9,
+            AnisotropicX8       = 1 << 10,
+            AnisotropicX16      = 1 << 11,
         };
+
+        static const uint Default = DepthTest | DepthStencil | VSync;
     };
     RENDERER_ENUM(RenderFlags);
 
@@ -58,21 +65,6 @@ namespace Renderer
 		};
 	};
 	RENDERER_ENUM(RendererAPI);
-
-    struct AnisotropicFiltering
-    {
-        enum _enum : char
-        {
-            NoFiltering,
-            AnisotropicX2,
-            AnisotropicX4,
-            AnisotropicX8,
-            AnisotropicX16,
-
-            Count
-        };
-    };
-    RENDERER_ENUM(AnisotropicFiltering);
 
     struct VertexAttribute
     {
@@ -316,7 +308,7 @@ namespace Renderer
     /// <param name="api">The renderer API to be used, it can be set only once.</param>
     /// <param name="flags">The renderer flags.</param>
     /// <param name="settings">The renderer settings.</param>
-	RENDERER_FUNCTION(void)                     Initialize(RendererAPI::_enum api, RenderFlags::_enum flags, Settings::_enum settings);
+	RENDERER_FUNCTION(void)                     Initialize(RendererAPI::_enum api, Settings::_enum settings, RenderFlags::_enum flags = RenderFlags::_enum(RenderFlags::Default));
 
     /// <summary>
     /// Checks if Renderer is initialized.
@@ -368,9 +360,6 @@ namespace Renderer
 
     // TODO: NOT IMPLEMENTED!
     RENDERER_FUNCTION(bool)                     GetFlag(RenderFlags::_enum flag);
-
-    // TODO: NOT IMPLEMENTED!
-    RENDERER_FUNCTION(void)                     SetAnisotropicFiltering(AnisotropicFiltering::_enum filtering);
 
 	// ======== RENDERING - BASIC ========
 

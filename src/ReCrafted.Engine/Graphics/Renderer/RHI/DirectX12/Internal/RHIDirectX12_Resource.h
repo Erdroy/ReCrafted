@@ -8,7 +8,7 @@
 #include "../DirectX12.h"
 #include "../../../RendererDefines.h"
 
-#if RENDERER_RENDERER_D3D12
+#if RENDERER_RHI_D3D12
 namespace Renderer 
 {
     class RHIDirectX12_Resource

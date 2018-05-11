@@ -6,7 +6,7 @@
 #include "Platform/Platform.h"
 #include "Core/Memory.h"
 
-#if RENDERER_RENDERER_D3D11
+#if RENDERER_RHI_D3D11
 
 #include "../../Renderer.hpp"
 #include "../../RendererConfig.h"

@@ -44,6 +44,8 @@ namespace Renderer
 	static bool m_running = false;
 	static RHI::RHIBase* m_renderer;
 
+    const uint RenderFlags::Default;
+
     RenderFlags::_enum m_renderFlags;
 
     ShaderHandle m_blitShader;
@@ -99,7 +101,7 @@ namespace Renderer
 #endif
     }
 
-	void Initialize(RendererAPI::_enum api, RenderFlags::_enum flags, Settings::_enum settings)
+	void Initialize(RendererAPI::_enum api, Settings::_enum settings, RenderFlags::_enum flags)
 	{
         // get main thread index
         g_mainThreadId = std::this_thread::get_id();
@@ -199,10 +201,6 @@ namespace Renderer
     bool GetFlag(RenderFlags::_enum flag)
     {
         return (m_renderFlags & flag) != 0;
-    }
-
-    void SetAnisotropicFiltering(AnisotropicFiltering::_enum filtering)
-    {
     }
 
     void Frame()
