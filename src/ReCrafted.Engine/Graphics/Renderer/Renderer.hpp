@@ -9,6 +9,8 @@
 #include "RendererDefines.h"
 #include "RendererConfig.h"
 
+#include <functional>
+
 namespace Renderer
 {
 	typedef byte* RendererMemory;
@@ -348,7 +350,22 @@ namespace Renderer
     RENDERER_FUNCTION(RendererMemory)           Allocate(size_t size, uint lifeTime = 2);
 
     /// <summary>
+    /// Allocates given amount of memory.
+    /// The allocated memory is available only for ONE frame or the specified amount.
+    /// </summary>
+    /// <param name="data">The initial data, this data will be used interally.</param>
+    /// <param name="releaseFunc">Release function pointer, that will be used to release given memory when its life time reaches 0.</param>
+    /// <param name="lifeTime">
+    /// The amount of frames that must pass to automatically free the memory.
+    /// When 0, the memory life time will be unlimited and it will be required to 
+    /// release it by using Renderer::Free(...) function.
+    /// </param>
+    /// <returns>The allocated memory pointer.</returns>
+    RENDERER_FUNCTION(RendererMemory)           Allocate(void* data, std::function<void(void*)> releaseFunc, uint lifeTime = 2);
+
+    /// <summary>
     /// Frees given memory pointer.
+    /// Warning: Only memory allocated using 'Allocate(size, lifeTime)' can be releases using this function.
     /// </summary>
     /// <param name="memory">The memory pointer to be released.</param>
     RENDERER_FUNCTION(void)                     Free(RendererMemory memory);

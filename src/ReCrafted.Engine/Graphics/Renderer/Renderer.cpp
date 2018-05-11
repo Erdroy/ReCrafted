@@ -48,6 +48,7 @@ namespace Renderer
 	public:
         uint ttl = 0u;
         RendererMemory memory = nullptr;
+        std::function<void(void*)> releaseFunc = {};
 	};
 
 	// ==== HANDLE DEFINITIONS ====
@@ -83,6 +84,11 @@ namespace Renderer
     Lock m_memoryAllocationsLock = {};
 #endif
 
+    void FreeRendererMemory(void* ptr)
+    {
+        Free(static_cast<RendererMemory>(ptr));
+    }
+
     void UpdateMemory()
     {
 #if RENDERER_MEMORY_AUTO_DEALLOC_ENABLE
@@ -96,7 +102,11 @@ namespace Renderer
             if(memory.ttl == 0)
             {
                 if(memory.memory)
-                    Free(memory.memory);
+                {
+                    // release memory
+                    memory.releaseFunc(static_cast<void*>(memory.memory));
+                }
+
                 memory.memory = nullptr;
             }
         }
@@ -198,10 +208,15 @@ namespace Renderer
 
     RendererMemory Allocate(const size_t size, uint lifeTime)
     {
-        cvar memory = static_cast<RendererMemory>(new byte[size]);
-        
+        return Allocate(new byte[size], std::function<void(void*)>(&FreeRendererMemory), lifeTime);
+    }
+
+    RendererMemory Allocate(void* data, std::function<void(void*)> releaseFunc, uint lifeTime)
+    {
+        //cvar memory = static_cast<RendererMemory>();
+        cvar memory = static_cast<RendererMemory>(data);
 #if RENDERER_MEMORY_AUTO_DEALLOC_ENABLE
-        if(lifeTime > 0)
+        if (lifeTime > 0)
         {
             // we don't need any lock's here as everything happens on the main thread.
 
@@ -210,6 +225,7 @@ namespace Renderer
             MemoryAllocation mem = {};
             mem.memory = memory;
             mem.ttl = lifeTime;
+            mem.releaseFunc = releaseFunc;
             m_memoryAllocations.emplace_back(mem);
         }
 #endif
