@@ -23,11 +23,13 @@ namespace Renderer
     std::vector<SamplerState> m_samplerStates = {};
 
     // source: https://takinginitiative.wordpress.com/2011/12/11/directx-1011-basic-shader-reflection-automatic-input-layout-creation/
-    HRESULT D3D11CreateInputLayout(ID3D11Device* pD3DDevice, void* shaderData, size_t shaderDataSize, uint* stride, ID3D11InputLayout** pInputLayout)
+    HRESULT D3D11CreateInputLayout(ID3D11Device* pD3DDevice, void* shaderData, size_t shaderDataSize, uint* stride,
+                                   ID3D11InputLayout** pInputLayout)
     {
         // Reflect shader info
         ID3D11ShaderReflection* pVertexShaderReflection = NULL;
-        if (FAILED(D3DReflect(shaderData, shaderDataSize, IID_ID3D11ShaderReflection, (void**)&pVertexShaderReflection)))
+        if (FAILED(D3DReflect(shaderData, shaderDataSize, IID_ID3D11ShaderReflection, (void**)&pVertexShaderReflection))
+        )
         {
             return S_FALSE;
         }
@@ -38,7 +40,7 @@ namespace Renderer
 
         // Read input layout description from shader info
         std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayoutDesc;
-        for (uint32_t i = 0; i< shaderDesc.InputParameters; i++)
+        for (uint32_t i = 0; i < shaderDesc.InputParameters; i++)
         {
             D3D11_SIGNATURE_PARAMETER_DESC paramDesc;
             pVertexShaderReflection->GetInputParameterDesc(i, &paramDesc);
@@ -56,26 +58,37 @@ namespace Renderer
             if (paramDesc.Mask == 1)
             {
                 if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) elementDesc.Format = DXGI_FORMAT_R32_UINT;
-                else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) elementDesc.Format = DXGI_FORMAT_R32_SINT;
-                else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) elementDesc.Format = DXGI_FORMAT_R32_FLOAT;
+                else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) elementDesc.Format =
+                    DXGI_FORMAT_R32_SINT;
+                else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) elementDesc.Format =
+                    DXGI_FORMAT_R32_FLOAT;
             }
             else if (paramDesc.Mask <= 3)
             {
-                if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) elementDesc.Format = DXGI_FORMAT_R32G32_UINT;
-                else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) elementDesc.Format = DXGI_FORMAT_R32G32_SINT;
-                else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) elementDesc.Format = DXGI_FORMAT_R32G32_FLOAT;
+                if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) elementDesc.Format =
+                    DXGI_FORMAT_R32G32_UINT;
+                else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) elementDesc.Format =
+                    DXGI_FORMAT_R32G32_SINT;
+                else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) elementDesc.Format =
+                    DXGI_FORMAT_R32G32_FLOAT;
             }
             else if (paramDesc.Mask <= 7)
             {
-                if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) elementDesc.Format = DXGI_FORMAT_R32G32B32_UINT;
-                else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) elementDesc.Format = DXGI_FORMAT_R32G32B32_SINT;
-                else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) elementDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+                if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) elementDesc.Format =
+                    DXGI_FORMAT_R32G32B32_UINT;
+                else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) elementDesc.Format =
+                    DXGI_FORMAT_R32G32B32_SINT;
+                else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) elementDesc.Format =
+                    DXGI_FORMAT_R32G32B32_FLOAT;
             }
             else if (paramDesc.Mask <= 15)
             {
-                if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) elementDesc.Format = DXGI_FORMAT_R32G32B32A32_UINT;
-                else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) elementDesc.Format = DXGI_FORMAT_R32G32B32A32_SINT;
-                else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) elementDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+                if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) elementDesc.Format =
+                    DXGI_FORMAT_R32G32B32A32_UINT;
+                else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) elementDesc.Format =
+                    DXGI_FORMAT_R32G32B32A32_SINT;
+                else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) elementDesc.Format =
+                    DXGI_FORMAT_R32G32B32A32_FLOAT;
             }
 
             //save element desc
@@ -111,7 +124,8 @@ namespace Renderer
         }
 
         // Try to create Input Layout
-        var hr = pD3DDevice->CreateInputLayout(&inputLayoutDesc[0], static_cast<UINT>(inputLayoutDesc.size()), shaderData, shaderDataSize, pInputLayout);
+        var hr = pD3DDevice->CreateInputLayout(&inputLayoutDesc[0], static_cast<UINT>(inputLayoutDesc.size()),
+                                               shaderData, shaderDataSize, pInputLayout);
 
         _ASSERT(SUCCEEDED(hr));
 
@@ -127,18 +141,19 @@ namespace Renderer
         return hr;
     }
 
-    HRESULT D3D11CreateSamplerState(ID3D11Device* pD3DDevice, std::string& samplerType, ID3D11SamplerState** samplerState)
+    HRESULT D3D11CreateSamplerState(ID3D11Device* pD3DDevice, std::string& samplerType,
+                                    ID3D11SamplerState** samplerState)
     {
         // check if we already have this sampler type created
         for (rvar sampler : m_samplerStates)
         {
-            if(sampler.name == samplerType)
+            if (sampler.name == samplerType)
             {
                 *samplerState = sampler.sampler;
                 return S_OK;
             }
         }
-        
+
         /*
          * PointClamped, PointMirror, PointWrap
          * LinearClamped, LinearMirror, LinearWrap
@@ -156,7 +171,7 @@ namespace Renderer
         samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
         samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
 
-        if(samplerType == "PointClamped")
+        if (samplerType == "PointClamped")
         {
             samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
             samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
@@ -176,8 +191,8 @@ namespace Renderer
             samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
             samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
             samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
-        } 
-        else if(samplerType == "LinearClamped")
+        }
+        else if (samplerType == "LinearClamped")
         {
             samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
             samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
@@ -205,7 +220,7 @@ namespace Renderer
         _ASSERT(SUCCEEDED(hr));
 
         // add created sampler
-        m_samplerStates.push_back({ samplerType, sampler });
+        m_samplerStates.push_back({samplerType, sampler});
 
         // return sampler state
         *samplerState = sampler;
@@ -227,7 +242,7 @@ namespace Renderer
             {
                 for (rvar buffer : pass.m_vsBuffers) // TODO: apply all buffers in single API call
                 {
-                    ID3D11Buffer* buffers[] = { buffer->m_buffer };
+                    ID3D11Buffer* buffers[] = {buffer->m_buffer};
                     context->VSSetConstantBuffers(buffer->m_index, 1u, buffers);
                 }
             }
@@ -236,7 +251,7 @@ namespace Renderer
                 // bind all buffers instead
                 for (rvar buffer : m_buffers) // TODO: apply all buffers in single API call
                 {
-                    ID3D11Buffer* buffers[] = { buffer.m_buffer };
+                    ID3D11Buffer* buffers[] = {buffer.m_buffer};
                     context->VSSetConstantBuffers(buffer.m_index, 1u, buffers);
                 }
             }
@@ -252,7 +267,7 @@ namespace Renderer
             {
                 for (rvar buffer : pass.m_psBuffers)
                 {
-                    ID3D11Buffer* buffers[] = { buffer->m_buffer };
+                    ID3D11Buffer* buffers[] = {buffer->m_buffer};
                     context->PSSetConstantBuffers(buffer->m_index, 1u, buffers);
                 }
             }
@@ -261,7 +276,7 @@ namespace Renderer
                 // bind all buffers instead
                 for (rvar buffer : m_buffers) // TODO: apply all buffers in single API call
                 {
-                    ID3D11Buffer* buffers[] = { buffer.m_buffer };
+                    ID3D11Buffer* buffers[] = {buffer.m_buffer};
                     context->PSSetConstantBuffers(buffer.m_index, 1u, buffers);
                 }
             }
@@ -277,7 +292,7 @@ namespace Renderer
             {
                 for (rvar buffer : pass.m_csBuffers)
                 {
-                    ID3D11Buffer* buffers[] = { buffer->m_buffer };
+                    ID3D11Buffer* buffers[] = {buffer->m_buffer};
                     context->CSSetConstantBuffers(buffer->m_index, 1u, buffers);
                 }
             }
@@ -286,7 +301,7 @@ namespace Renderer
                 // bind all buffers instead
                 for (rvar buffer : m_buffers) // TODO: apply all buffers in single API call
                 {
-                    ID3D11Buffer* buffers[] = { buffer.m_buffer };
+                    ID3D11Buffer* buffers[] = {buffer.m_buffer};
                     context->CSSetConstantBuffers(buffer.m_index, 1u, buffers);
                 }
             }
@@ -313,10 +328,10 @@ namespace Renderer
 
     void RHIDirectX11_Shader::Bind(ID3D11DeviceContext* context, std::string passName)
     {
-        for(var i = 0u; i < m_passes.size(); i ++)
+        for (var i = 0u; i < m_passes.size(); i ++)
         {
             var& pass = m_passes[i];
-            if(pass.m_name == passName)
+            if (pass.m_name == passName)
             {
                 BindPass(context, pass);
                 return;
@@ -327,7 +342,7 @@ namespace Renderer
     void RHIDirectX11_Shader::BindResource(ID3D11DeviceContext* context, uint8_t slot, ID3D11ShaderResourceView* srv)
     {
         // apply shader resource (PixelShader only)
-        ID3D11ShaderResourceView* srvs[] = { srv };
+        ID3D11ShaderResourceView* srvs[] = {srv};
         context->PSSetShaderResources(slot, 1, srvs);
     }
 
@@ -355,9 +370,9 @@ namespace Renderer
 
     void RHIDirectX11_Shader::ApplyChanges(ID3D11DeviceContext* context)
     {
-        for(rvar buffer : m_buffers)
+        for (rvar buffer : m_buffers)
         {
-            if(buffer.m_dirty)
+            if (buffer.m_dirty)
             {
                 D3D11_MAPPED_SUBRESOURCE m_mappedSubres;
 
@@ -411,7 +426,7 @@ namespace Renderer
 
             // set pass name
             pass.m_name = passJson["Name"].get<std::string>();
-            
+
             // try to create vertex shader
             var vsBC = passJson["VSByteCode"];
             if (vsBC.is_string())
@@ -423,7 +438,8 @@ namespace Renderer
 
                 // every vertex shader needs input layout to be bound to the GPU, 
                 // so create or use cached input layout
-                hr = D3D11CreateInputLayout(device, byteCode.data(), byteCode.size(), &shader->m_stride, &pass.m_inputLayout);
+                hr = D3D11CreateInputLayout(device, byteCode.data(), byteCode.size(), &shader->m_stride,
+                                            &pass.m_inputLayout);
 
                 _ASSERT(SUCCEEDED(hr));
 
@@ -446,7 +462,7 @@ namespace Renderer
 
             // try to create compute shader
             var csBC = passJson["CSByteCode"];
-            if(csBC.is_string())
+            if (csBC.is_string())
             {
                 var byteCode = base64_decode(csBC.get<std::string>());
                 var hr = device->CreateComputeShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_computeShader);
@@ -530,7 +546,7 @@ namespace Renderer
                     cvar name = funcName.get<std::string>();
 
                     // add VS function target
-                    if(name == pass.m_vsName)
+                    if (name == pass.m_vsName)
                         pass.m_vsBuffers.push_back(&buffer);
 
                     // add PS function target

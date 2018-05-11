@@ -21,7 +21,9 @@ private:
     size_t m_bufferSize = 0u;
 
 protected:
-    Stream() { }
+    Stream()
+    {
+    }
 
 public:
     /**
@@ -156,7 +158,9 @@ protected:
     /**
      * \brief Closes the stream.
      */
-    virtual void close() const {}
+    virtual void close() const
+    {
+    }
 };
 
 #endif // STREAM_H

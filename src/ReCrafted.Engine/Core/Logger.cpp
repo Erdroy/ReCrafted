@@ -22,7 +22,7 @@ void Logger::invokeCallback(const char* message, LogLevel::Enum logLevel)
     if (m_api_log_callback)
     {
         cvar string = mono_string_new(mono_domain_get(), message);
-        void* params[] = { string, &logLevel };
+        void* params[] = {string, &logLevel};
         m_api_log_callback->invokeStatic(params);
     }
 }

@@ -4,5 +4,5 @@
 
 char* Class::getType() const
 {
-	return  mono_type_get_name(mono_class_get_type(m_class));
+    return mono_type_get_name(mono_class_get_type(m_class));
 }

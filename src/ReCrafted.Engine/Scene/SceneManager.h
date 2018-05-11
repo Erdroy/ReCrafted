@@ -14,7 +14,7 @@ class SceneManager : public EngineComponent<SceneManager>
     friend class EngineMain;
 
 private:
-    SCRIPTING_API_IMPL()
+SCRIPTING_API_IMPL()
 
 public:
     virtual ~SceneManager() = default;

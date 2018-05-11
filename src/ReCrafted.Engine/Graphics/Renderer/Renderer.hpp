@@ -13,58 +13,61 @@
 
 namespace Renderer
 {
-	typedef byte* RendererMemory;
+    typedef byte* RendererMemory;
 
-	struct Settings
-	{
-		enum _enum : char
-		{
-			None                = 0,
-			Debug               = 1 << 0,
-			SingleThreaded      = 1 << 1,
-			BGRAFrameBuffer     = 1 << 2
-		};
-	};
-	RENDERER_ENUM(Settings);
+    struct Settings
+    {
+        enum _enum : char
+        {
+            None = 0,
+            Debug = 1 << 0,
+            SingleThreaded = 1 << 1,
+            BGRAFrameBuffer = 1 << 2
+        };
+    };
+
+    RENDERER_ENUM(Settings);
 
     struct RenderFlags
     {
         enum _enum : uint
         {
-            None                = 0,
-            TripleBuffered      = 1 << 0,
-            MSAAx2              = 1 << 1,
-            MSAAx4              = 1 << 2,
-            VSync               = 1 << 3,
+            None = 0,
+            TripleBuffered = 1 << 0,
+            MSAAx2 = 1 << 1,
+            MSAAx4 = 1 << 2,
+            VSync = 1 << 3,
 
-            DrawLineLists       = 1 << 4,
+            DrawLineLists = 1 << 4,
 
-            DepthStencil        = 1 << 5,
-            DepthTest           = 1 << 6,
+            DepthStencil = 1 << 5,
+            DepthTest = 1 << 6,
 
-            AnisotropicX2       = 1 << 8,
-            AnisotropicX4       = 1 << 9,
-            AnisotropicX8       = 1 << 10,
-            AnisotropicX16      = 1 << 11,
+            AnisotropicX2 = 1 << 8,
+            AnisotropicX4 = 1 << 9,
+            AnisotropicX8 = 1 << 10,
+            AnisotropicX16 = 1 << 11,
         };
 
         static const uint Default = DepthTest | DepthStencil | VSync;
     };
+
     RENDERER_ENUM(RenderFlags);
 
-	struct RendererAPI
-	{
-		enum _enum : char
-		{
-			DirectX11,
-			DirectX12,
-			Vulkan,
-			Metal,
+    struct RendererAPI
+    {
+        enum _enum : char
+        {
+            DirectX11,
+            DirectX12,
+            Vulkan,
+            Metal,
 
             Count
-		};
-	};
-	RENDERER_ENUM(RendererAPI);
+        };
+    };
+
+    RENDERER_ENUM(RendererAPI);
 
     struct VertexAttribute
     {
@@ -90,6 +93,7 @@ namespace Renderer
             Count
         };
     };
+
     RENDERER_ENUM(VertexAttribute);
 
     struct VertexAttributeType
@@ -104,6 +108,7 @@ namespace Renderer
             Count
         };
     };
+
     RENDERER_ENUM(VertexAttributeType);
 
     struct TextureFormat
@@ -186,121 +191,127 @@ namespace Renderer
             Count,
         };
     };
+
     RENDERER_ENUM(TextureFormat);
 
     static const int TextureFormatInfo[][1] =
     {
-        { 0 }, // Unknown
+        {0}, // Unknown
 
-        { 1 }, // R1
-        { 8 }, // A8
+        {1}, // R1
+        {8}, // A8
 
-        { 8 }, // R8
-        { 8 }, // R8I
-        { 8 }, // R8U
-        { 8 }, // R8S
+        {8}, // R8
+        {8}, // R8I
+        {8}, // R8U
+        {8}, // R8S
 
-        { 16 }, // R16
-        { 16 }, // R16I
-        { 16 }, // R16U
-        { 16 }, // R16F
-        { 16 }, // R16S
+        {16}, // R16
+        {16}, // R16I
+        {16}, // R16U
+        {16}, // R16F
+        {16}, // R16S
 
-        { 32 }, // R32I
-        { 32 }, // R32U
-        { 32 }, // R32F
+        {32}, // R32I
+        {32}, // R32U
+        {32}, // R32F
 
-        { 16 }, // RG8
-        { 16 }, // RG8I
-        { 16 }, // RG8U
-        { 16 }, // RG8S
+        {16}, // RG8
+        {16}, // RG8I
+        {16}, // RG8U
+        {16}, // RG8S
 
-        { 32 }, // RG16
-        { 32 }, // RG16I
-        { 32 }, // RG16U
-        { 32 }, // RG16F
-        { 32 }, // RG16S
+        {32}, // RG16
+        {32}, // RG16I
+        {32}, // RG16U
+        {32}, // RG16F
+        {32}, // RG16S
 
-        { 64 }, // RG32I
-        { 64 }, // RG32U
-        { 64 }, // RG32F
+        {64}, // RG32I
+        {64}, // RG32U
+        {64}, // RG32F
 
-        { 24 }, // RGB8
-        { 24 }, // RGB8I
-        { 24 }, // RGB8U
-        { 24 }, // RGB8S
+        {24}, // RGB8
+        {24}, // RGB8I
+        {24}, // RGB8U
+        {24}, // RGB8S
 
-        { 32 }, // BGRA8
+        {32}, // BGRA8
 
-        { 32 }, // RGBA8
-        { 32 }, // RGBA8I
-        { 32 }, // RGBA8U
-        { 32 }, // RGBA8S
+        {32}, // RGBA8
+        {32}, // RGBA8I
+        {32}, // RGBA8U
+        {32}, // RGBA8S
 
-        { 64 }, // RGBA16
-        { 64 }, // RGBA16I
-        { 64 }, // RGBA16U
-        { 64 }, // RGBA16F
-        { 64 }, // RGBA16S
+        {64}, // RGBA16
+        {64}, // RGBA16I
+        {64}, // RGBA16U
+        {64}, // RGBA16F
+        {64}, // RGBA16S
 
-        { 128 }, // RGBA32I
-        { 128 }, // RGBA32U
-        { 128 }, // RGBA32F
+        {128}, // RGBA32I
+        {128}, // RGBA32U
+        {128}, // RGBA32F
 
-        { 16 }, // R5G6B5
-        { 16 }, // RGBA4
-        { 16 }, // RGB5A1
-        { 32 }, // RGB10A2
-        { 32 }, // RG11B10F
+        {16}, // R5G6B5
+        {16}, // RGBA4
+        {16}, // RGB5A1
+        {32}, // RGB10A2
+        {32}, // RG11B10F
 
-        { 16 }, // D16
-        { 16 }, // D16F
-        { 24 }, // D24
-        { 24 }, // D24F
-        { 32 }, // D24S8
-        { 32 }, // D32
-        { 32 }, // D32F
+        {16}, // D16
+        {16}, // D16F
+        {24}, // D24
+        {24}, // D24F
+        {32}, // D24S8
+        {32}, // D32
+        {32}, // D32F
 
-        };
+    };
 
-	struct Color
-	{
-	public:
-		float r = 0.0f;
-		float g = 0.0f;
-		float b = 0.0f;
-		float a = 0.0f;
+    struct Color
+    {
+    public:
+        float r = 0.0f;
+        float g = 0.0f;
+        float b = 0.0f;
+        float a = 0.0f;
 
-	public:
-		Color() {}
-		Color(float r, float g, float b, float a)
-		{
-			this->r = r;
-			this->g = g;
-			this->b = b;
-			this->a = a;
-		}
-	};
+    public:
+        Color()
+        {
+        }
 
-	// ======== OBJECT HANDLE DEFINES ========
+        Color(float r, float g, float b, float a)
+        {
+            this->r = r;
+            this->g = g;
+            this->b = b;
+            this->a = a;
+        }
+    };
+
+    // ======== OBJECT HANDLE DEFINES ========
     RENDERER_DEFINE_HANDLE(VertexBuffer);
+
     RENDERER_DEFINE_HANDLE(IndexBuffer);
+
     RENDERER_DEFINE_HANDLE(Shader);
 
     RENDERER_DEFINE_HANDLE_WITH_DESCRIPTOR(Texture2D);
-    TextureFormat::_enum textureFormat = TextureFormat::Unknown;
+        TextureFormat::_enum textureFormat = TextureFormat::Unknown;
     RENDERER_DEFINE_HANDLE_WITH_DESCRIPTOR_END();
 
     RENDERER_DEFINE_HANDLE_WITH_DESCRIPTOR(RenderBuffer)
-    std::vector<Texture2DHandle> renderTextures = {};
-    Texture2DHandle depthBuffer = {};
+        std::vector<Texture2DHandle> renderTextures = {};
+        Texture2DHandle depthBuffer = {};
     RENDERER_DEFINE_HANDLE_WITH_DESCRIPTOR_END();
 
     RENDERER_DEFINE_HANDLE_WITH_DESCRIPTOR(Window)
-    RenderBufferHandle renderBuffer = {};
+        RenderBufferHandle renderBuffer = {};
     RENDERER_DEFINE_HANDLE_WITH_DESCRIPTOR_END();
 
-	// ======== COMMON ========
+    // ======== COMMON ========
 
     /// <summary>
     /// Initializes Renderer
@@ -308,18 +319,19 @@ namespace Renderer
     /// <param name="api">The renderer API to be used, it can be set only once.</param>
     /// <param name="flags">The renderer flags.</param>
     /// <param name="settings">The renderer settings.</param>
-	RENDERER_FUNCTION(void)                     Initialize(RendererAPI::_enum api, Settings::_enum settings, RenderFlags::_enum flags = RenderFlags::_enum(RenderFlags::Default));
+    RENDERER_FUNCTION(void) Initialize(RendererAPI::_enum api, Settings::_enum settings,
+                                       RenderFlags::_enum flags = RenderFlags::_enum(RenderFlags::Default));
 
     /// <summary>
     /// Checks if Renderer is initialized.
     /// </summary>
     /// <returns>True, when Renderer is initialized.</returns>
-	RENDERER_FUNCTION(bool)                     IsInitialized();
+    RENDERER_FUNCTION(bool) IsInitialized();
 
     /// <summary>
     /// Shutdows the renderer.
     /// </summary>
-	RENDERER_FUNCTION(void)                     Shutdown();
+    RENDERER_FUNCTION(void) Shutdown();
 
     /// <summary>
     /// Allocates given amount of memory.
@@ -332,7 +344,7 @@ namespace Renderer
     /// release it by using Renderer::Free(...) function.
     /// </param>
     /// <returns>The allocated memory pointer.</returns>
-    RENDERER_FUNCTION(RendererMemory)           Allocate(size_t size, uint lifeTime = 2);
+    RENDERER_FUNCTION(RendererMemory) Allocate(size_t size, uint lifeTime = 2);
 
     /// <summary>
     /// Allocates given amount of memory.
@@ -346,57 +358,57 @@ namespace Renderer
     /// release it by using Renderer::Free(...) function.
     /// </param>
     /// <returns>The allocated memory pointer.</returns>
-    RENDERER_FUNCTION(RendererMemory)           Allocate(void* data, std::function<void(void*)> releaseFunc, uint lifeTime = 2);
+    RENDERER_FUNCTION(RendererMemory) Allocate(void* data, std::function<void(void*)> releaseFunc, uint lifeTime = 2);
 
     /// <summary>
     /// Frees given memory pointer.
     /// Warning: Only memory allocated using 'Allocate(size, lifeTime)' can be releases using this function.
     /// </summary>
     /// <param name="memory">The memory pointer to be released.</param>
-    RENDERER_FUNCTION(void)                     Free(RendererMemory memory);
+    RENDERER_FUNCTION(void) Free(RendererMemory memory);
 
     // TODO: NOT IMPLEMENTED!
-    RENDERER_FUNCTION(void)                     SetFlag(RenderFlags::_enum flag, bool value);
+    RENDERER_FUNCTION(void) SetFlag(RenderFlags::_enum flag, bool value);
 
     // TODO: NOT IMPLEMENTED!
-    RENDERER_FUNCTION(bool)                     GetFlag(RenderFlags::_enum flag);
+    RENDERER_FUNCTION(bool) GetFlag(RenderFlags::_enum flag);
 
-	// ======== RENDERING - BASIC ========
+    // ======== RENDERING - BASIC ========
 
     /// <summary>
     /// Finalizes current frame and executes all threads or commands when single threaded.
     /// </summary>
-	RENDERER_FUNCTION(void)                     Frame();
+    RENDERER_FUNCTION(void) Frame();
 
     /// <summary>
     /// Draws given amount of vertices from the current vertex buffer.
     /// </summary>
-    RENDERER_FUNCTION(void)                     Draw(uint vertexCount);
+    RENDERER_FUNCTION(void) Draw(uint vertexCount);
 
     /// <summary>
     /// Draws given amount of indices from the current index buffer.
     /// </summary>
-    RENDERER_FUNCTION(void)                     DrawIndexed(uint indexCount);
+    RENDERER_FUNCTION(void) DrawIndexed(uint indexCount);
 
     /// <summary>
     /// Creates new window handle.
     /// Note: Currently only one window is supported.
     /// </summary>
     /// <returns>The created window.</returns>
-	RENDERER_FUNCTION(WindowHandle)             CreateWindowHandle(void* windowHandle);
+    RENDERER_FUNCTION(WindowHandle) CreateWindowHandle(void* windowHandle);
 
     /// <summary>
     /// Sets given window as current.
     /// </summary>
     /// <param name="handle">The window handle to be set as current.</param>
-	RENDERER_FUNCTION(void)                     ApplyWindow(WindowHandle handle);
+    RENDERER_FUNCTION(void) ApplyWindow(WindowHandle handle);
 
     /// <summary>
     /// Resizes given window frame buffer.
     /// </summary>
     /// <param name="width">The new width of the window frame buffer.</param>
     /// <param name="height">The new height of the window frame buffer.</param>
-    RENDERER_FUNCTION(void)                     ResizeWindow(WindowHandle handle, uint16_t width, uint16_t height);
+    RENDERER_FUNCTION(void) ResizeWindow(WindowHandle handle, uint16_t width, uint16_t height);
 
     /// <summary>
     /// Gets render buffer of given window. 
@@ -407,13 +419,13 @@ namespace Renderer
     /// </summary>
     /// <param name="handle">The window which render buffer will be returned.</param>
     /// <returns>The render buffer, or invalid handle when something went wrong.</returns>
-	RENDERER_FUNCTION(RenderBufferHandle)       GetWindowRenderBuffer(WindowHandle handle);
+    RENDERER_FUNCTION(RenderBufferHandle) GetWindowRenderBuffer(WindowHandle handle);
 
     /// <summary>
     /// Destroys given window.
     /// </summary>
     /// <param name="handle">The window handle.</param>
-	RENDERER_FUNCTION(void)                     DestroyWindow(WindowHandle handle);
+    RENDERER_FUNCTION(void) DestroyWindow(WindowHandle handle);
 
     /// <summary>
     /// Creates new render buffer from using texture formats.
@@ -424,20 +436,22 @@ namespace Renderer
     /// <param name="texturesCount">The amount of given texture formats.</param>
     /// <param name="depthFormat">The depth format, leave Unknown to not create depth buffer.</param>
     /// <returns>The created render buffer.</returns>
-	RENDERER_FUNCTION(RenderBufferHandle)       CreateRenderBuffer(uint16_t width, uint16_t height, TextureFormat::_enum* textures, uint8_t texturesCount, TextureFormat::_enum depthFormat = TextureFormat::Unknown);
+    RENDERER_FUNCTION(RenderBufferHandle) CreateRenderBuffer(uint16_t width, uint16_t height,
+                                                             TextureFormat::_enum* textures, uint8_t texturesCount,
+                                                             TextureFormat::_enum depthFormat = TextureFormat::Unknown);
 
     /// <summary>
     /// Resizes given render uffer.
     /// </summary>
     /// <param name="width">The new width of the render buffer.</param>
     /// <param name="height">The new height of the render buffer.</param>
-	RENDERER_FUNCTION(void)                     ResizeRenderBuffer(RenderBufferHandle handle, uint16_t width, uint16_t height);
+    RENDERER_FUNCTION(void) ResizeRenderBuffer(RenderBufferHandle handle, uint16_t width, uint16_t height);
 
     /// <summary>
     /// Sets given render buffer as current render target.
     /// </summary>
     /// <param name="handle">The render buffer to be set.</param>
-    RENDERER_FUNCTION(void)                     ApplyRenderBuffer(RenderBufferHandle handle);
+    RENDERER_FUNCTION(void) ApplyRenderBuffer(RenderBufferHandle handle);
 
     /// <summary>
     /// Clears given render buffer.
@@ -445,13 +459,13 @@ namespace Renderer
     /// <param name="handle">The render buffer handle.</param>
     /// <param name="color">The color which will be used to clear the render buffer.</param>
     /// <param name="depth">The depth value which will be used to fill the depth buffer.</param>
-    RENDERER_FUNCTION(void)                     ClearRenderBuffer(RenderBufferHandle handle, Color color, bool depth = 1.0f);
+    RENDERER_FUNCTION(void) ClearRenderBuffer(RenderBufferHandle handle, Color color, bool depth = 1.0f);
 
     /// <summary>
     /// Destroys given render buffer.
     /// </summary>
     /// <param name="handle">The render buffer handle.</param>
-    RENDERER_FUNCTION(void)                     DestroyRenderBuffer(RenderBufferHandle handle);
+    RENDERER_FUNCTION(void) DestroyRenderBuffer(RenderBufferHandle handle);
 
     /// <summary>
     /// Creates new VertexBuffer without memory initialization.
@@ -459,7 +473,7 @@ namespace Renderer
     /// <param name="vertexCount">The count of vertices.</param>
     /// <param name="vertexSize">The size of a single vertex.</param>
     /// <param name="dynamic">When true, this buffer will be allowed to be updated through UpdateVertexBuffer.</param>
-    RENDERER_FUNCTION(VertexBufferHandle)       CreateVertexBuffer(uint count, uint vertexSize, bool dynamic = false);
+    RENDERER_FUNCTION(VertexBufferHandle) CreateVertexBuffer(uint count, uint vertexSize, bool dynamic = false);
 
     /// <summary>
     /// Creates new VertexBuffer.
@@ -468,7 +482,8 @@ namespace Renderer
     /// <param name="vertexSize">The size of a single vertex.</param>
     /// <param name="data">The memory pointer.</param>
     /// <param name="dynamic">When true, this buffer will be allowed to be updated through UpdateVertexBuffer.</param>
-    RENDERER_FUNCTION(VertexBufferHandle)       CreateVertexBuffer(uint vertexCount, uint vertexSize, RendererMemory data, bool dynamic = false);
+    RENDERER_FUNCTION(VertexBufferHandle) CreateVertexBuffer(uint vertexCount, uint vertexSize, RendererMemory data,
+                                                             bool dynamic = false);
 
     /// <summary>
     /// Updates dynamic vertex buffer.
@@ -477,19 +492,19 @@ namespace Renderer
     /// <param name="data">The memory pointer.</param>
     /// <param name="size">The total memory size.</param>
     /// <param name="offset">The destination memory offset.</param>
-    RENDERER_FUNCTION(void)                     UpdateVertexBuffer(VertexBufferHandle handle, RendererMemory data, uint size, uint offset);
+    RENDERER_FUNCTION(void) UpdateVertexBuffer(VertexBufferHandle handle, RendererMemory data, uint size, uint offset);
 
     /// <summary>
     /// Sets given vertex buffer as current.
     /// </summary>
     /// <param name="handle">The vertex buffer handle.</param>
-    RENDERER_FUNCTION(void)                     ApplyVertexBuffer(VertexBufferHandle handle);
+    RENDERER_FUNCTION(void) ApplyVertexBuffer(VertexBufferHandle handle);
 
     /// <summary>
     /// Destroys given vertex buffer.
     /// </summary>
     /// <param name="handle">The vertex buffer handle.</param>
-    RENDERER_FUNCTION(void)                     DestroyVertexBuffer(VertexBufferHandle handle);
+    RENDERER_FUNCTION(void) DestroyVertexBuffer(VertexBufferHandle handle);
 
     /// <summary>
     /// Creates new IndexBuffer.
@@ -498,7 +513,8 @@ namespace Renderer
     /// <param name="data">The memory pointer.</param>
     /// <param name="is32bit">Specifies the passed single index size. By default it is 32 bit. When false, it is 16.</param>
     /// <param name="dynamic">When true, this buffer will be allowed to be updated through UpdateIndexBuffer.</param>
-    RENDERER_FUNCTION(IndexBufferHandle)        CreateIndexBuffer(uint indexCount, RendererMemory data, bool is32bit = true, bool dynamic = false);
+    RENDERER_FUNCTION(IndexBufferHandle) CreateIndexBuffer(uint indexCount, RendererMemory data, bool is32bit = true,
+                                                           bool dynamic = false);
 
     /// <summary>
     /// Updates dynamic index buffer.
@@ -507,19 +523,19 @@ namespace Renderer
     /// <param name="data">The memory pointer.</param>
     /// <param name="size">The total memory size.</param>
     /// <param name="offset">The destination memory offset.</param>
-    RENDERER_FUNCTION(void)                     UpdateIndexBuffer(IndexBufferHandle handle, RendererMemory data, uint size, uint offset);
+    RENDERER_FUNCTION(void) UpdateIndexBuffer(IndexBufferHandle handle, RendererMemory data, uint size, uint offset);
 
     /// <summary>
     /// Sets given index buffer as current.
     /// </summary>
     /// <param name="handle">The index buffer handle.</param>
-    RENDERER_FUNCTION(void)                     ApplyIndexBuffer(IndexBufferHandle handle);
+    RENDERER_FUNCTION(void) ApplyIndexBuffer(IndexBufferHandle handle);
 
     /// <summary>
     /// Destroys given index buffer.
     /// </summary>
     /// <param name="handle">The index buffer handle.</param>
-    RENDERER_FUNCTION(void)                     DestroyIndexBuffer(IndexBufferHandle handle);
+    RENDERER_FUNCTION(void) DestroyIndexBuffer(IndexBufferHandle handle);
 
     /// <summary>
     /// Creates new Texture2D.
@@ -530,7 +546,9 @@ namespace Renderer
     /// <param name="textureFormat">The format of the new texture.</param>
     /// <param name="data">Texture data (can be null, then you can upload data by using UpdateTexture2D function)</param>
     /// <param name="dataSize">Data size.</param>
-    RENDERER_FUNCTION(Texture2DHandle)          CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels, TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize, bool renderTargetFlag = false);
+    RENDERER_FUNCTION(Texture2DHandle) CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels,
+                                                       TextureFormat::_enum textureFormat, RendererMemory data,
+                                                       size_t dataSize, bool renderTargetFlag = false);
 
     /// <summary>
     /// Creates new Texture2D.
@@ -540,7 +558,9 @@ namespace Renderer
     /// <param name="textureFormat">The format of the new texture.</param>
     /// <param name="data">Texture data (can be null, then you can upload data by using UpdateTexture2D function)</param>
     /// <param name="dataSize">Data size.</param>
-    RENDERER_FUNCTION(Texture2DHandle)          CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize);
+    RENDERER_FUNCTION(Texture2DHandle) CreateTexture2D(uint16_t width, uint16_t height,
+                                                       TextureFormat::_enum textureFormat, RendererMemory data,
+                                                       size_t dataSize);
 
     /// <summary>
     /// Creates new Texture2D.
@@ -549,7 +569,8 @@ namespace Renderer
     /// <param name="height">The Height of the new texture.</param>
     /// <param name="mipLevels">The amount of mip maps of the new texture.</param>
     /// <param name="textureFormat">The format of the new texture.</param>
-    RENDERER_FUNCTION(Texture2DHandle)          CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels, TextureFormat::_enum textureFormat);
+    RENDERER_FUNCTION(Texture2DHandle) CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels,
+                                                       TextureFormat::_enum textureFormat);
 
     /// <summary>
     /// Creates new Texture2D.
@@ -557,34 +578,35 @@ namespace Renderer
     /// <param name="width">The Width of the new texture.</param>
     /// <param name="height">The Height of the new texture.</param>
     /// <param name="textureFormat">The format of the new texture.</param>
-    RENDERER_FUNCTION(Texture2DHandle)          CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat);
+    RENDERER_FUNCTION(Texture2DHandle) CreateTexture2D(uint16_t width, uint16_t height,
+                                                       TextureFormat::_enum textureFormat);
 
     /// <summary>
     /// Sets given texture as current at given slot.
     /// </summary>
     /// <param name="handle">The texture handle.</param>
     /// <param name="slot">The texture target slot.</param>
-    RENDERER_FUNCTION(void)                     ApplyTexture2D(Texture2DHandle handle, uint8_t slot);
+    RENDERER_FUNCTION(void) ApplyTexture2D(Texture2DHandle handle, uint8_t slot);
 
     /// <summary>
     /// Resizes given texture2d.
     /// </summary>
     /// <param name="width">The new width of the texture2d.</param>
     /// <param name="height">The new height of the texture2d.</param>
-    RENDERER_FUNCTION(void)                     ResizeTexture2D(Texture2DHandle handle, uint16_t width, uint16_t height);
+    RENDERER_FUNCTION(void) ResizeTexture2D(Texture2DHandle handle, uint16_t width, uint16_t height);
 
     /// <summary>
     /// Destroys given texture.
     /// </summary>
     /// <param name="handle">The texture handle.</param>
-    RENDERER_FUNCTION(void)                     DestroyTexture2D(Texture2DHandle handle);
+    RENDERER_FUNCTION(void) DestroyTexture2D(Texture2DHandle handle);
 
     /// <summary>
     /// Loads shader and creates it's shader handle.
     /// </summary>
     /// <param name="fileName">The compiled shader file.</param>
     /// <returns>The created shader handle.</returns>
-    RENDERER_FUNCTION(ShaderHandle)             CreateShader(const char* fileName);
+    RENDERER_FUNCTION(ShaderHandle) CreateShader(const char* fileName);
 
     /// <summary>
     /// Sets shader value of given field in a specified buffer.
@@ -595,20 +617,20 @@ namespace Renderer
     /// <param name="fieldId">The field id.</param>
     /// <param name="data">The data pointer.</param>
     /// <param name="dataSize">The data size.</param>
-    RENDERER_FUNCTION(void)                     SetShaderValue(ShaderHandle handle, int bufferId, int fieldId, void* data, size_t dataSize);
+    RENDERER_FUNCTION(void) SetShaderValue(ShaderHandle handle, int bufferId, int fieldId, void* data, size_t dataSize);
 
     /// <summary>
     /// Sets given shader pass as current.
     /// </summary>
     /// <param name="handle">The shader handle.</param>
     /// <param name="passId">The shader pass index.</param>
-    RENDERER_FUNCTION(void)                     ApplyShader(ShaderHandle handle, int passId);
+    RENDERER_FUNCTION(void) ApplyShader(ShaderHandle handle, int passId);
 
     /// <summary>
     /// Destroys given shader.
     /// </summary>
     /// <param name="handle">The shader handle.</param>
-    RENDERER_FUNCTION(void)                     DestroyShader(ShaderHandle handle);
+    RENDERER_FUNCTION(void) DestroyShader(ShaderHandle handle);
 
     // ======== RENDERING ========
 
@@ -619,7 +641,8 @@ namespace Renderer
     /// <param name="destination">The destination render buffer.</param>
     /// <param name="source">The source texture handle.</param>
     /// <param name="customShader">The custom shader.</param>
-    RENDERER_FUNCTION(void)                     BlitTexture(RenderBufferHandle destination, Texture2DHandle source, ShaderHandle customShader = {});
+    RENDERER_FUNCTION(void) BlitTexture(RenderBufferHandle destination, Texture2DHandle source,
+                                        ShaderHandle customShader = {});
 
     /// <summary>
     /// Draws render textures to the render buffer using custom shader.
@@ -629,9 +652,8 @@ namespace Renderer
     /// <param name="destination">The destination render buffer.</param>
     /// <param name="sources">The source textures handles.</param>
     /// <param name="sourceCount">The amout of the source textures.</param>
-    RENDERER_FUNCTION(void)                     BlitTextures(ShaderHandle customShader, RenderBufferHandle destination, Texture2DHandle* sources, uint8_t sourceCount, uint8_t baseSlot = 0u);
-
+    RENDERER_FUNCTION(void) BlitTextures(ShaderHandle customShader, RenderBufferHandle destination,
+                                         Texture2DHandle* sources, uint8_t sourceCount, uint8_t baseSlot = 0u);
 }
 
 #endif // RENDERER_H
-

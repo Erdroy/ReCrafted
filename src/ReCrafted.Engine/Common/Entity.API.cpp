@@ -12,7 +12,7 @@ namespace Internal
         auto entity = EntityPool::createEntity(TEXT_FROM_MONO_STRING(name));
 
         Object::createInstance<Entity>(entity, "ReCrafted.API.Common", "Entity");
-        
+
         return entity->getManagedPtr();
     }
 

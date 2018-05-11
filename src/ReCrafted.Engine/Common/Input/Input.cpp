@@ -52,7 +52,7 @@ void Input::updateInput()
 
 void Input::emit(bool up, uint key)
 {
-	m_keys[key] = up ? 0 : 1;
+    m_keys[key] = up ? 0 : 1;
 }
 
 void Input::emitScroll(float delta)
@@ -71,9 +71,9 @@ void Input::emitMouseMove(int deltaX, int deltaY, int cursorX, int cursorY)
 
 void Input::releaseAll()
 {
-	// clear all keys
-	for (auto i = 0; i < INPUT_TABLE_SIZE; i++)
-		m_keys[i] = byte(0);
+    // clear all keys
+    for (auto i = 0; i < INPUT_TABLE_SIZE; i++)
+        m_keys[i] = byte(0);
 
     // clear scroll
     m_scrollDelta_u = 0.0f;

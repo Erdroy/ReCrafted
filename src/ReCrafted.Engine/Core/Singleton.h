@@ -15,35 +15,40 @@
  * \note PLEASE remember to add SINGLETON_IMPL(NAME_OF_CLASS) to the source file!
  * To release a Singleton, please call 'dispose' function.
  */
-template<class T>
+template <class T>
 class Singleton : IDisposable
 {
 protected:
-	static T* m_instance;
+    static T* m_instance;
 
 protected:
-	Singleton() {}
-	~Singleton() {}
+    Singleton()
+    {
+    }
+
+    ~Singleton()
+    {
+    }
 
 private:
-	virtual void onDispose() = 0;
+    virtual void onDispose() = 0;
 
 public:
-	void dispose() override
-	{
-		onDispose();
-		SafeDelete(m_instance);
-	}
+    void dispose() override
+    {
+        onDispose();
+        SafeDelete(m_instance);
+    }
 
 public:
-	static T* getInstance()
-	{
-		if (m_instance)
-			return m_instance;
+    static T* getInstance()
+    {
+        if (m_instance)
+            return m_instance;
 
-		m_instance = new T;
-		return m_instance;
-	}
+        m_instance = new T;
+        return m_instance;
+    }
 };
 
 #define SINGLETON_IMPL(x) x* Singleton<##x##>::m_instance;

@@ -23,7 +23,7 @@ class Graphics : public EngineComponent<Graphics>
     friend class EngineMain;
 
 private:
-    SCRIPTING_API_IMPL()
+SCRIPTING_API_IMPL()
 
 private:
     int m_viewId = 0;

@@ -11,7 +11,7 @@
 #include "Lock.h"
 #include "Containers/Array.h"
 
-template<typename T>
+template <typename T>
 class Event
 {
 private:
@@ -24,7 +24,7 @@ public:
         ScopeLock(m_lock);
 
         // invoke all listeners
-        for (var && listener : m_listeners)
+        for (var&& listener : m_listeners)
             listener.Invoke();
     }
 
@@ -33,7 +33,7 @@ public:
         ScopeLock(m_lock);
 
         // invoke all listeners
-        for (var && listener : m_listeners)
+        for (var&& listener : m_listeners)
             listener.Invoke(param);
     }
 

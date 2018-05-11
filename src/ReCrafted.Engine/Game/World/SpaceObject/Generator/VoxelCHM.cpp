@@ -17,7 +17,8 @@ void VoxelCHM::loadFace(const int face, const char* fileName, const char* direct
 
     if (bitsPerPixel != 8)
     {
-        Logger::logError("VoxelCHM::loadFromDirectory() invalid bits per pixel count got! ({0} expected 8)", bitsPerPixel);
+        Logger::logError("VoxelCHM::loadFromDirectory() invalid bits per pixel count got! ({0} expected 8)",
+                         bitsPerPixel);
         return;
     }
 
@@ -40,7 +41,7 @@ Ref<VoxelCHM> VoxelCHM::loadFromDirectory(const char* directoryName)
     chm->loadFace(2, "/up.bmp", directoryName);
     chm->loadFace(3, "/down.bmp", directoryName);
     chm->loadFace(4, "/front.bmp", directoryName);
-    chm->loadFace(5, "/back.bmp", directoryName); 
-    
+    chm->loadFace(5, "/back.bmp", directoryName);
+
     return chm;
 }

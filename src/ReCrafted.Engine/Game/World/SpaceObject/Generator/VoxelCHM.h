@@ -20,7 +20,9 @@ private:
     int m_bitmapHeight = 0;
 
 private:
-    VoxelCHM() {}
+    VoxelCHM()
+    {
+    }
 
 private:
     void loadFace(int face, const char* name, const char* directoryName);
@@ -39,8 +41,8 @@ private:
         cvar posX = static_cast<int>(texcoord.x * m_bitmapWidth);
         cvar posY = static_cast<int>(texcoord.y * m_bitmapHeight);
 
-        var pixel = (float) bitmap[posY * m_bitmapWidth + posX];
-        
+        var pixel = (float)bitmap[posY * m_bitmapWidth + posX];
+
         return pixel / 255.0f;
     }
 
@@ -59,7 +61,7 @@ public:
     void dispose() override
     {
         // free all 6 faces
-        for(var i = 0; i < 6; i ++)
+        for (var i = 0; i < 6; i ++)
             Bitmap::free(m_faces[i]);
     }
 
@@ -67,51 +69,51 @@ public:
     FORCEINLINE static Vector2 getTexcoord(const int face, const Vector3& point)
     {
         Vector2 texcoord;
-        
-        switch(face)
+
+        switch (face)
         {
         case 0:
-        {
-            cvar localPoint = point * (1.0f / fabs(point.x));
-            texcoord.y = localPoint.y;
-            texcoord.x = -localPoint.z;
-            break;
-        }
+            {
+                cvar localPoint = point * (1.0f / fabs(point.x));
+                texcoord.y = localPoint.y;
+                texcoord.x = -localPoint.z;
+                break;
+            }
         case 1:
-        {
-            cvar localPoint = point * (1.0f / fabs(point.x));
-            texcoord.y = localPoint.y;
-            texcoord.x = localPoint.z;
-            break;
-        }
+            {
+                cvar localPoint = point * (1.0f / fabs(point.x));
+                texcoord.y = localPoint.y;
+                texcoord.x = localPoint.z;
+                break;
+            }
         case 2:
-        {
-            cvar localPoint = point * (1.0f / fabs(point.y));
-            texcoord.y = localPoint.z;
-            texcoord.x = localPoint.x;
-            break;
-        }
+            {
+                cvar localPoint = point * (1.0f / fabs(point.y));
+                texcoord.y = localPoint.z;
+                texcoord.x = localPoint.x;
+                break;
+            }
         case 3:
-        {
-            cvar localPoint = point * (1.0f / fabs(point.y));
-            texcoord.y = localPoint.z;
-            texcoord.x = -localPoint.x;
-            break;
-        }
+            {
+                cvar localPoint = point * (1.0f / fabs(point.y));
+                texcoord.y = localPoint.z;
+                texcoord.x = -localPoint.x;
+                break;
+            }
         case 4:
-        {
-            cvar localPoint = point * (1.0f / fabs(point.z));
-            texcoord.y = localPoint.y;
-            texcoord.x = -localPoint.x;
-            break;
-        }
+            {
+                cvar localPoint = point * (1.0f / fabs(point.z));
+                texcoord.y = localPoint.y;
+                texcoord.x = -localPoint.x;
+                break;
+            }
         case 5:
-        {
-            cvar localPoint = point * (1.0f / fabs(point.z));
-            texcoord.y = localPoint.y;
-            texcoord.x = localPoint.x;
-            break;
-        }
+            {
+                cvar localPoint = point * (1.0f / fabs(point.z));
+                texcoord.y = localPoint.y;
+                texcoord.x = localPoint.x;
+                break;
+            }
         default: throw;
         }
 
@@ -137,9 +139,9 @@ public:
     {
         cvar absPoint = Vector3::abs(const_cast<Vector3&>(point));
 
-        if(absPoint.x > absPoint.y)
+        if (absPoint.x > absPoint.y)
         {
-            if(absPoint.x > absPoint.z)
+            if (absPoint.x > absPoint.z)
             {
                 if (point.x > 0.0f)
                 {

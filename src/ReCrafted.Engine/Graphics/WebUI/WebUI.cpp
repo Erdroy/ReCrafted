@@ -19,7 +19,7 @@ void WebUI::onInit()
 
 void WebUI::onDispose()
 {
-    for (var && view : m_views)
+    for (var&& view : m_views)
         Object::destroy(view);
 
     m_views.clear();
@@ -31,19 +31,19 @@ void WebUI::onDispose()
 
 void WebUI::resize(uint width, uint height)
 {
-    for (var && view : m_views)
+    for (var&& view : m_views)
         view->resize(width, height);
 }
 
 void WebUI::update()
 {
-    for (var && view : m_views)
+    for (var&& view : m_views)
         view->update();
 }
 
 void WebUI::render()
 {
-    for (var && view : m_views)
+    for (var&& view : m_views)
         view->render();
 }
 
@@ -54,6 +54,6 @@ Ref<WebUIView> WebUI::createView()
     m_views.add(view);
 
     Logger::log("Created new WebUIView");
-    
+
     return view;
 }

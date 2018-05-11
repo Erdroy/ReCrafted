@@ -83,44 +83,43 @@ namespace Renderer
         };
 
         // == common ==
-        volatile bool               m_running;
-        int                         m_workerThreadCount;
-        int                         m_msaaSampleCount;
-        Settings::_enum             m_settings;
-        RenderFlags::_enum          m_renderFlags;
-
+        volatile bool m_running;
+        int m_workerThreadCount;
+        int m_msaaSampleCount;
+        Settings::_enum m_settings;
+        RenderFlags::_enum m_renderFlags;
 
 
         // == events ==
-        HANDLE                      m_workerFinishEvents[RENDERER_MAX_RENDER_THREADS];
-        HANDLE                      m_workerFrameEvents[RENDERER_MAX_RENDER_THREADS];
+        HANDLE m_workerFinishEvents[RENDERER_MAX_RENDER_THREADS];
+        HANDLE m_workerFrameEvents[RENDERER_MAX_RENDER_THREADS];
 
 
         // == worker-related stuff ==
-        WorkerThreadInstance*	    m_workerThreads[RENDERER_MAX_RENDER_THREADS] = {};
+        WorkerThreadInstance* m_workerThreads[RENDERER_MAX_RENDER_THREADS] = {};
 
 
         // == resources ==
-        WindowDesc                  m_windows[RENDERER_MAX_WINDOWS] = {};
-        IDXGISwapChain*		        m_swapChains[RENDERER_MAX_WINDOWS] = {};
-        RHIDirectX11_Shader*        m_shaders[RENDERER_MAX_SHADER_PROGRAMS] = {};
-        RHIDirectX11_RenderBuffer*  m_renderBuffers[RENDERER_MAX_RENDER_BUFFERS] = {};
-        ID3D11Buffer*               m_vertexBuffers[RENDERER_MAX_VERTEX_BUFFERS] = {};
-        IndexBufferDesc             m_indexBuffers[RENDERER_MAX_INDEX_BUFFERS] = {};
-        Texture2DDesc               m_textures[RENDERER_MAX_TEXTURES2D] = {};
+        WindowDesc m_windows[RENDERER_MAX_WINDOWS] = {};
+        IDXGISwapChain* m_swapChains[RENDERER_MAX_WINDOWS] = {};
+        RHIDirectX11_Shader* m_shaders[RENDERER_MAX_SHADER_PROGRAMS] = {};
+        RHIDirectX11_RenderBuffer* m_renderBuffers[RENDERER_MAX_RENDER_BUFFERS] = {};
+        ID3D11Buffer* m_vertexBuffers[RENDERER_MAX_VERTEX_BUFFERS] = {};
+        IndexBufferDesc m_indexBuffers[RENDERER_MAX_INDEX_BUFFERS] = {};
+        Texture2DDesc m_textures[RENDERER_MAX_TEXTURES2D] = {};
 
-        ID3D11DepthStencilState*    m_depthStencilState;
-        ID3D11DepthStencilState*    m_depthStencilState_Disabled;
+        ID3D11DepthStencilState* m_depthStencilState;
+        ID3D11DepthStencilState* m_depthStencilState_Disabled;
 
-        ID3D11RasterizerState*      m_rasterizerState;
+        ID3D11RasterizerState* m_rasterizerState;
 
         // == d3d11 resources ==
-        ID3D11Device*               m_device = nullptr;
-        ID3D11DeviceContext*        m_deviceContext = nullptr;
+        ID3D11Device* m_device = nullptr;
+        ID3D11DeviceContext* m_deviceContext = nullptr;
 
 
         // == pointer-only resources (DO NOT RELEASE!) ==
-        IDXGISwapChain*             m_swapChain = nullptr;
+        IDXGISwapChain* m_swapChain = nullptr;
 
 #pragma region WorkerThread impl
         class WorkerThreadInstance
@@ -303,38 +302,38 @@ namespace Renderer
             switch (header)
             {
             case CommandHeader::ApplyWindow:
-            {
-                cvar command = m_commandList.ReadCommand<Command_ApplyWindow>(position);
-                cvar idx = command.window.idx;
+                {
+                    cvar command = m_commandList.ReadCommand<Command_ApplyWindow>(position);
+                    cvar idx = command.window.idx;
 
-                // set window's swapchain as current
-                m_swapChain = m_swapChains[idx];
-                break;
-            }
+                    // set window's swapchain as current
+                    m_swapChain = m_swapChains[idx];
+                    break;
+                }
             case CommandHeader::DestroyWindow:
-            {
-                cvar command = m_commandList.ReadCommand<Command_DestroyWindow>(position);
-                cvar idx = command.window.idx;
+                {
+                    cvar command = m_commandList.ReadCommand<Command_DestroyWindow>(position);
+                    cvar idx = command.window.idx;
 
-                SafeRelease(m_swapChains[idx]);
+                    SafeRelease(m_swapChains[idx]);
 
-                var windowDesc = GetWindowDescription(command.window);
+                    var windowDesc = GetWindowDescription(command.window);
 
-                var renderBufferIdx = windowDesc.renderBuffer.idx;
-                SafeRelease(m_renderBuffers[renderBufferIdx]);
+                    var renderBufferIdx = windowDesc.renderBuffer.idx;
+                    SafeRelease(m_renderBuffers[renderBufferIdx]);
 
-                break;
-            }
+                    break;
+                }
             case CommandHeader::SetShaderValue:
-            {
-                float data[16];
-                cvar command = m_commandList.ReadCommand<Command_SetShaderValue>(position);
-                m_commandList.Read(data, position, command.dataSize);
+                {
+                    float data[16];
+                    cvar command = m_commandList.ReadCommand<Command_SetShaderValue>(position);
+                    m_commandList.Read(data, position, command.dataSize);
 
-                rvar shader = m_shaders[command.shader.idx];
-                shader->SetValue(command.bufferId, command.fieldId, data, command.dataSize);
-                break;
-            }
+                    rvar shader = m_shaders[command.shader.idx];
+                    shader->SetValue(command.bufferId, command.fieldId, data, command.dataSize);
+                    break;
+                }
             DEFINE_COMMAND_EXECUTOR(SetFlag);
 
             DEFINE_COMMAND_EXECUTOR(Draw);
@@ -368,7 +367,7 @@ namespace Renderer
             DEFINE_COMMAND_EXECUTOR(DestroyTexture2D);
 
             case CommandHeader::Unknown:
-            default: 
+            default:
                 break;
             }
         }
@@ -421,11 +420,13 @@ namespace Renderer
             _ASSERT(swapChain != nullptr);
 
             cvar bufferCount = m_renderFlags & RenderFlags::TripleBuffered ? FrameBufferCount : 1;
-            cvar bufferFormat = m_settings & Settings::BGRAFrameBuffer ? DXGI_FORMAT_B8G8R8A8_UNORM : DXGI_FORMAT_R8G8B8A8_UNORM;
-            
+            cvar bufferFormat = m_settings & Settings::BGRAFrameBuffer
+                                    ? DXGI_FORMAT_B8G8R8A8_UNORM
+                                    : DXGI_FORMAT_R8G8B8A8_UNORM;
+
             // destroy render targets
             cvar rtvs = renderBuffer->GetRTVs();
-            for(var i = 0; i < bufferCount; i ++)
+            for (var i = 0; i < bufferCount; i ++)
             {
                 SafeRelease(rtvs[i]);
             }
@@ -433,7 +434,7 @@ namespace Renderer
             // destroy depth buffer
             if (renderBuffer->GetDSV())
                 renderBuffer->GetDSV()->Release();
-            
+
             swapChain->ResizeBuffers(static_cast<uint>(bufferCount), command->width, command->height, bufferFormat, 0u);
 
             ID3D11RenderTargetView* renderTargets[FrameBufferCount] = {};
@@ -518,7 +519,7 @@ namespace Renderer
             rvar buffer = m_vertexBuffers[command->handle.idx];
             _ASSERT(buffer != nullptr);
 
-            ID3D11Buffer* buffers[] = { buffer };
+            ID3D11Buffer* buffers[] = {buffer};
 
             uint offset = 0u;
             uint stride = m_currentShader->GetStride();
@@ -582,7 +583,8 @@ namespace Renderer
             rvar buffer = m_indexBuffers[command->handle.idx];
             _ASSERT(buffer.buffer != nullptr);
 
-            m_context->IASetIndexBuffer(buffer.buffer, buffer.is32bit ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT, 0u);
+            m_context->IASetIndexBuffer(buffer.buffer, buffer.is32bit ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT,
+                                        0u);
         }
 
         void WorkerThreadInstance::Execute_UpdateIndexBuffer(Command_UpdateIndexBuffer* command)
@@ -619,7 +621,7 @@ namespace Renderer
 
             // select rtv's
             std::vector<ID3D11RenderTargetView*> rtvs = {};
-            for(var i = 0; i < command->texturesCount; i ++)
+            for (var i = 0; i < command->texturesCount; i ++)
             {
                 cvar texture = m_textures[command->renderTargets[i].idx];
                 _ASSERT(texture.rtv != nullptr);
@@ -628,14 +630,15 @@ namespace Renderer
 
             // select dsv if enabled
             ID3D11DepthStencilView* dsv = nullptr;
-            if(command->createDepthStencil)
+            if (command->createDepthStencil)
             {
                 dsv = m_textures[command->depthTarget.idx].dsv;
                 _ASSERT(dsv != nullptr);
             }
 
             // create render buffer
-            m_renderBuffers[command->handle.idx] = RHIDirectX11_RenderBuffer::Create(m_device, command->width, command->height, command->texturesCount, rtvs.data(), dsv);
+            m_renderBuffers[command->handle.idx] = RHIDirectX11_RenderBuffer::Create(
+                m_device, command->width, command->height, command->texturesCount, rtvs.data(), dsv);
         }
 
         void WorkerThreadInstance::Execute_ResizeRenderBuffer(Command_ResizeRenderBuffer* command)
@@ -715,7 +718,7 @@ namespace Renderer
             textureDesc.CPUAccessFlags = 0;
             textureDesc.Usage = D3D11_USAGE_DEFAULT;
 
-            if(createDepthBuffer)
+            if (createDepthBuffer)
             {
                 textureDesc.Format = DGXI_TextureFormats[command->textureFormat][2];
                 textureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
@@ -723,7 +726,9 @@ namespace Renderer
             else
             {
                 textureDesc.Format = DGXI_TextureFormats[command->textureFormat][0];
-                textureDesc.BindFlags = rt ? D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE : D3D11_BIND_SHADER_RESOURCE;
+                textureDesc.BindFlags = rt
+                                            ? D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
+                                            : D3D11_BIND_SHADER_RESOURCE;
             }
 
             D3D11_SUBRESOURCE_DATA subresData = {};
@@ -739,7 +744,9 @@ namespace Renderer
                 D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc = {};
 
                 depthStencilViewDesc.Format = DGXI_TextureFormats[command->textureFormat][2];
-                depthStencilViewDesc.ViewDimension = rt ? D3D11_DSV_DIMENSION_TEXTURE2DMS : D3D11_DSV_DIMENSION_TEXTURE2D;
+                depthStencilViewDesc.ViewDimension = rt
+                                                         ? D3D11_DSV_DIMENSION_TEXTURE2DMS
+                                                         : D3D11_DSV_DIMENSION_TEXTURE2D;
                 depthStencilViewDesc.Texture2D.MipSlice = 0;
 
                 hr = m_device->CreateDepthStencilView(texture.texture, &depthStencilViewDesc, &texture.dsv);
@@ -892,19 +899,19 @@ namespace Renderer
             };
 
             var hr = D3D11CreateDevice(nullptr,
-                D3D_DRIVER_TYPE_HARDWARE,
-                nullptr,
+                                       D3D_DRIVER_TYPE_HARDWARE,
+                                       nullptr,
 #ifdef _DEBUG
                 D3D11_CREATE_DEVICE_DEBUG,
 #else
-                0,
+                                       0,
 #endif
-                featureLevels,
-                1,
-                D3D11_SDK_VERSION,
-                &m_device,
-                &level,
-                &m_deviceContext
+                                       featureLevels,
+                                       1,
+                                       D3D11_SDK_VERSION,
+                                       &m_device,
+                                       &level,
+                                       &m_deviceContext
             );
             _ASSERT(SUCCEEDED(hr));
 
@@ -942,7 +949,7 @@ namespace Renderer
             depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
             // create regular full DSS
-            hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState); 
+            hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState);
             _ASSERT(SUCCEEDED(hr));
 
             // create disabled DSS
@@ -957,10 +964,10 @@ namespace Renderer
             rasterizerDesc.CullMode = D3D11_CULL_BACK;
             rasterizerDesc.FillMode = D3D11_FILL_SOLID;
             rasterizerDesc.DepthClipEnable = true;
-            
+
             hr = m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState);
             _ASSERT(SUCCEEDED(hr));
-            
+
 
             // Spawn Worker Threads
             for (var i = 0; i < cpuCount && i < RENDERER_MAX_RENDER_THREADS; i++)
@@ -1008,8 +1015,8 @@ namespace Renderer
             var idx = 0;
             for (var thread : m_workerThreads)
             {
-                if (thread) {
-
+                if (thread)
+                {
                     if (thread->thread.joinable())
                         thread->thread.join();
 
@@ -1118,7 +1125,7 @@ namespace Renderer
             }
 
             // Execute command lists
-            for(var && commandList : commandLists)
+            for (var&& commandList : commandLists)
             {
                 m_deviceContext->ExecuteCommandList(commandList, TRUE);
             }
@@ -1150,10 +1157,11 @@ namespace Renderer
             // Increment frame count
             FrameCount++;
         }
-#pragma endregion 
+#pragma endregion
 
 #pragma region RHI interface implementation
-        void RHIDirectX11::CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle, void* windowHandle)
+        void RHIDirectX11::CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle,
+                                              void* windowHandle)
         {
             waitForGPU();
 
@@ -1187,17 +1195,22 @@ namespace Renderer
             DXGI_MODE_DESC backBufferDesc = {}; // this is to describe our display mode
             backBufferDesc.Width = width; // buffer width
             backBufferDesc.Height = height; // buffer height
-            backBufferDesc.Format = m_settings & Settings::BGRAFrameBuffer ? DXGI_FORMAT_B8G8R8A8_UNORM : DXGI_FORMAT_R8G8B8A8_UNORM;
+            backBufferDesc.Format = m_settings & Settings::BGRAFrameBuffer
+                                        ? DXGI_FORMAT_B8G8R8A8_UNORM
+                                        : DXGI_FORMAT_R8G8B8A8_UNORM;
 
             // Describe and create the swap chain.
             DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
             swapChainDesc.BufferCount = bufferCount; // number of buffers we have
             swapChainDesc.BufferDesc = backBufferDesc; // our back buffer description
-            swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // this says the pipeline will render to this swap chain
-            swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD; // dxgi will discard the buffer (data) after we call present
+            swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+            // this says the pipeline will render to this swap chain
+            swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+            // dxgi will discard the buffer (data) after we call present
             swapChainDesc.OutputWindow = hWnd; // handle to our window
             swapChainDesc.SampleDesc = sampleDesc; // our multi-sampling description
-            swapChainDesc.Windowed = true; // set to true, then if in fullscreen must call SetFullScreenState with true for full screen to get uncapped fps
+            swapChainDesc.Windowed = true;
+            // set to true, then if in fullscreen must call SetFullScreenState with true for full screen to get uncapped fps
 
             IDXGISwapChain* tempSwapChain;
             hr = factory->CreateSwapChain(m_device, &swapChainDesc, &tempSwapChain);
@@ -1230,7 +1243,8 @@ namespace Renderer
             m_windows[window.idx] = windowDesc;
 
             // Build 'proxy' render buffer
-            m_renderBuffers[renderBufferHandle.idx] = RHIDirectX11_RenderBuffer::Create(m_device, width, height, bufferCount, renderTargets, nullptr);
+            m_renderBuffers[renderBufferHandle.idx] = RHIDirectX11_RenderBuffer::Create(
+                m_device, width, height, bufferCount, renderTargets, nullptr);
 
             SafeRelease(factory);
             SafeRelease(adapter);

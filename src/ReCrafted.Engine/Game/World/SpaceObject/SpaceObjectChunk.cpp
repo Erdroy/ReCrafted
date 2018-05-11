@@ -12,36 +12,37 @@
 
 uint8_t SpaceObjectChunk::getLodBorders()
 {
-	/*uint8_t borders = 0u;
+    /*uint8_t borders = 0u;
 
-	if (node->hasNeighLowerLoD(NodeDirection::Front))
-		borders |= BORDER_FRONT;
+    if (node->hasNeighLowerLoD(NodeDirection::Front))
+        borders |= BORDER_FRONT;
 
-	if (node->hasNeighLowerLoD(NodeDirection::Back))
-		borders |= BORDER_BACK;
+    if (node->hasNeighLowerLoD(NodeDirection::Back))
+        borders |= BORDER_BACK;
 
-	if (node->hasNeighLowerLoD(NodeDirection::Left))
-		borders |= BORDER_LEFT;
+    if (node->hasNeighLowerLoD(NodeDirection::Left))
+        borders |= BORDER_LEFT;
 
-	if (node->hasNeighLowerLoD(NodeDirection::Right))
-		borders |= BORDER_RIGHT;
+    if (node->hasNeighLowerLoD(NodeDirection::Right))
+        borders |= BORDER_RIGHT;
 
-	if (node->hasNeighLowerLoD(NodeDirection::Top))
-		borders |= BORDER_TOP;
+    if (node->hasNeighLowerLoD(NodeDirection::Top))
+        borders |= BORDER_TOP;
 
-	if (node->hasNeighLowerLoD(NodeDirection::Back))
-		borders |= BORDER_BOTTOM;*/
+    if (node->hasNeighLowerLoD(NodeDirection::Back))
+        borders |= BORDER_BOTTOM;*/
 
     // TODO: cull not needed skirts
 
-	//return borders;
-	return 0xFF;
+    //return borders;
+    return 0xFF;
 }
 
-void SpaceObjectChunk::init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject) // WARNING: this function is called on WORKER THREAD!
+void SpaceObjectChunk::init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject)
+// WARNING: this function is called on WORKER THREAD!
 {
-	this->spaceObject = spaceObject;
-	this->node = node;
+    this->spaceObject = spaceObject;
+    this->node = node;
 
     var storage = spaceObject->getStorage();
 
@@ -71,7 +72,7 @@ void SpaceObjectChunk::generate(IVoxelMesher* mesher) // WARNING: this function 
     var storage = spaceObject->getStorage();
 
     // try to read chunk data (if not read actually)
-    if(!m_chunkData->isLoaded())
+    if (!m_chunkData->isLoaded())
         storage->readChunkData(m_chunkData);
 
     rebuild(mesher);
@@ -96,31 +97,31 @@ void SpaceObjectChunk::rebuild(IVoxelMesher* mesher)
 
 void SpaceObjectChunk::upload()
 {
-	// upload changes
-	if(m_newMesh && m_newMesh->canUpload())
-	{
+    // upload changes
+    if (m_newMesh && m_newMesh->canUpload())
+    {
         ScopeLock(m_meshLock);
 
-        if(m_mesh)
+        if (m_mesh)
             SafeDispose(m_mesh)
 
         m_newMesh->upload();
         m_mesh = m_newMesh;
         m_newMesh = nullptr;
-	}
+    }
 }
 
 void SpaceObjectChunk::draw()
 {
-	if (!m_mesh || !m_mesh->isUploaded() || !m_hasSurface)
-		return;
+    if (!m_mesh || !m_mesh->isUploaded() || !m_hasSurface)
+        return;
 
-	Graphics::getInstance()->draw(m_mesh);
+    Graphics::getInstance()->draw(m_mesh);
 }
 
 void SpaceObjectChunk::dispose()
 {
-	SafeDispose(m_mesh);
+    SafeDispose(m_mesh);
 }
 
 uint64_t SpaceObjectChunk::calculateChunkId(const Vector3& position)

@@ -24,7 +24,8 @@ SINGLETON_IMPL(WebUIEngine)
 class HtmlApp : public CefApp, public CefBrowserProcessHandler
 {
 public:
-    HtmlApp() {
+    HtmlApp()
+    {
     }
 
     virtual CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler() override
@@ -45,17 +46,22 @@ public:
 
 private:
 
-    IMPLEMENT_REFCOUNTING(HtmlApp);
+IMPLEMENT_REFCOUNTING(HtmlApp);
 };
 
 class QuitTask : public CefTask
 {
 public:
-    QuitTask() { }
-    void Execute() override {
+    QuitTask()
+    {
+    }
+
+    void Execute() override
+    {
         CefQuitMessageLoop();
     }
-    IMPLEMENT_REFCOUNTING(QuitTask);
+
+IMPLEMENT_REFCOUNTING(QuitTask);
 };
 
 CefRefPtr<HtmlApp> m_app = nullptr;
@@ -105,24 +111,25 @@ void WebUIEngine::runCEF()
 
     // run message loop
     CefRunMessageLoop();
-    
+
     // shutdown cef now
     CefShutdown();
 }
 
 void WebUIEngine::init()
 {
-    m_cefThread = std::make_shared<std::thread>([this] {
+    m_cefThread = std::make_shared<std::thread>([this]
+    {
         runCEF();
     });
-    
+
     m_initialized = true;
-    Logger::log("WebUIEngine initialized CEF_VERSION: {0} (Chromium: {1}.{2}.{3}.{4})", 
-        CEF_VERSION, 
-        CHROME_VERSION_MAJOR, 
-        CHROME_VERSION_MINOR, 
-        CHROME_VERSION_BUILD, 
-        CHROME_VERSION_PATCH
+    Logger::log("WebUIEngine initialized CEF_VERSION: {0} (Chromium: {1}.{2}.{3}.{4})",
+                CEF_VERSION,
+                CHROME_VERSION_MAJOR,
+                CHROME_VERSION_MINOR,
+                CHROME_VERSION_BUILD,
+                CHROME_VERSION_PATCH
     );
 }
 

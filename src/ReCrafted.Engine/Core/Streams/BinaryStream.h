@@ -36,13 +36,15 @@ class BinaryStream : public Stream
 private:
     Stream& m_stream;
     size_t m_position = 0u;
-    
+
 public:
     /**
      * \brief Opens BinaryStream for writing or/and reading binary data.
      * \param stream The stream to read from or write to.
      */
-    explicit BinaryStream(Stream& stream): m_stream(stream) {}
+    explicit BinaryStream(Stream& stream): m_stream(stream)
+    {
+    }
 
 public:
     /**
@@ -54,7 +56,7 @@ public:
      * \brief Writes Byte.
      */
     DEFINE_WRITER(byte, Byte)
-        
+
     /**
     * \brief Reads Bool.
     */
@@ -64,7 +66,7 @@ public:
      * \brief Writes Bool.
      */
     DEFINE_WRITER(bool, Bool)
-        
+
     /**
     * \brief Reads Int.
     */
@@ -74,7 +76,7 @@ public:
      * \brief Writes Int.
      */
     DEFINE_WRITER(int, Int)
-        
+
     /**
     * \brief Reads Single.
     */
@@ -124,7 +126,7 @@ public:
      * \brief Writes UInt64.
      */
     DEFINE_WRITER(uint64_t, UInt64)
-        
+
     /**
     * \brief Reads Int16.
     */
@@ -134,7 +136,7 @@ public:
      * \brief Writes Int16.
      */
     DEFINE_WRITER(int16_t, Int16)
-        
+
     /**
     * \brief Reads Int32.
     */
@@ -144,7 +146,7 @@ public:
      * \brief Writes Int32.
      */
     DEFINE_WRITER(int32_t, Int32)
-        
+
     /**
     * \brief Reads Int64.
     */

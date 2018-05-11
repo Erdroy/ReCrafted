@@ -15,7 +15,8 @@
 #include "../Generator/VoxelCHM.h"
 #include "../Utilities/VoxelUtils.h"
 
-sbyte VoxelStorage::sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, const Vector3& position, const int lod, const float radius, const float hillsHeight)
+sbyte VoxelStorage::sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, const Vector3& position, const int lod,
+                                        const float radius, const float hillsHeight)
 {
     // calculate current voxel size
     cvar lodSize = lodtable[lod];
@@ -53,7 +54,9 @@ void VoxelStorage::generateChunkFromCHM(sbyte* voxelData, const Vector3& positio
                 cvar voxelPosition = position + offset * lod_f;
 
                 // tempoarary
-                voxelData[index] = sdf_planet_generate(chm, spaceObject->m_position, voxelPosition, lod, spaceObject->m_settings.minSurfaceHeight, spaceObject->m_settings.hillsHeight);
+                voxelData[index] = sdf_planet_generate(chm, spaceObject->m_position, voxelPosition, lod,
+                                                       spaceObject->m_settings.minSurfaceHeight,
+                                                       spaceObject->m_settings.hillsHeight);
             }
         }
     }
@@ -85,7 +88,7 @@ void VoxelStorage::loadHeader()
     m_vxhStream->read(m_vxh, 0u, sizeof(VoxelStorageHeader));
 
     // read chunk map if needed
-    if(m_vxh->chunkMapSize > 0u)
+    if (m_vxh->chunkMapSize > 0u)
     {
         cvar length = m_vxh->chunkMapSize * sizeof(VoxelStorageChunkEntry);
 
@@ -108,13 +111,13 @@ void VoxelStorage::init(SpaceObjectSettings& settings)
 {
     this->settings = settings;
 
-    if(settings.generationType == GenerationType::PreGenerated)
+    if (settings.generationType == GenerationType::PreGenerated)
     {
         // TODO: load pregen (VoxelPregen class neded) [*.rcv file]
         Logger::logError("getVoxelsRow for pregens is not implemented!");
         return;
     }
-    
+
     // load header
     loadHeader();
 

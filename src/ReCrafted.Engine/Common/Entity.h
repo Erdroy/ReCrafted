@@ -15,10 +15,10 @@
 
 class Entity : public Object
 {
-    SCRIPTING_API_IMPL()
+SCRIPTING_API_IMPL()
 
 private:
-	friend class EntityPool;
+    friend class EntityPool;
     friend class GameMain;
 
 public:
@@ -34,11 +34,11 @@ public:
     Entity* parent = nullptr;
 
 public:
-	void addScript(Ref<Script> script);
-	void removeScript(Ref<Script> script);
+    void addScript(Ref<Script> script);
+    void removeScript(Ref<Script> script);
 
-	void addChildren(Ref<Entity> entity);
-	void removeChildren(Ref<Entity> entity);
+    void addChildren(Ref<Entity> entity);
+    void removeChildren(Ref<Entity> entity);
 
 public:
     void update();

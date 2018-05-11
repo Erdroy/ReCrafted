@@ -17,14 +17,14 @@
 namespace Renderer
 {
     class MemoryAllocation
-	{
-	public:
+    {
+    public:
         uint ttl = 0u;
         RendererMemory memory = nullptr;
         std::function<void(void*)> releaseFunc = {};
-	};
+    };
 
-	// ==== HANDLE DEFINITIONS ====
+    // ==== HANDLE DEFINITIONS ====
     RENDERER_DEFINE_HANDLE_ALLOCATOR(WindowHandle, RENDERER_MAX_WINDOWS);
     RENDERER_DEFINE_HANDLE_DESCRIPTOR_TABLE(Window, RENDERER_MAX_WINDOWS);
 
@@ -38,18 +38,18 @@ namespace Renderer
     RENDERER_DEFINE_HANDLE_ALLOCATOR(VertexBufferHandle, RENDERER_MAX_VERTEX_BUFFERS);
     RENDERER_DEFINE_HANDLE_ALLOCATOR(IndexBufferHandle, RENDERER_MAX_INDEX_BUFFERS);
 
-	static std::thread::id g_mainThreadId = {};
+    static std::thread::id g_mainThreadId = {};
     static CommandList* g_commandList;
 
-	static bool m_running = false;
-	static RHI::RHIBase* m_renderer;
+    static bool m_running = false;
+    static RHI::RHIBase* m_renderer;
 
     const uint RenderFlags::Default;
 
     RenderFlags::_enum m_renderFlags;
 
     ShaderHandle m_blitShader;
-    VertexBufferHandle m_quadVB; 
+    VertexBufferHandle m_quadVB;
     IndexBufferHandle m_quadIB;
 
 #if RENDERER_MEMORY_AUTO_DEALLOC_ENABLE
@@ -74,9 +74,9 @@ namespace Renderer
         // deallocate memory that is out of life time
         for (rvar memory : m_memoryAllocations)
         {
-            if(memory.ttl == 0)
+            if (memory.ttl == 0)
             {
-                if(memory.memory)
+                if (memory.memory)
                 {
                     // release memory
                     memory.releaseFunc(static_cast<void*>(memory.memory));
@@ -87,10 +87,11 @@ namespace Renderer
         }
 
         // clean deallocated memory entries
-        m_memoryAllocations.erase(std::remove_if(m_memoryAllocations.begin(), m_memoryAllocations.end(), [](MemoryAllocation& memory) 
-        {
-            return !memory.memory;
-        }), m_memoryAllocations.end());
+        m_memoryAllocations.erase(std::remove_if(m_memoryAllocations.begin(), m_memoryAllocations.end(),
+                                                 [](MemoryAllocation& memory)
+                                                 {
+                                                     return !memory.memory;
+                                                 }), m_memoryAllocations.end());
 
         // decrement lifetime of memory that is still alive
         for (rvar memory : m_memoryAllocations)
@@ -101,8 +102,8 @@ namespace Renderer
 #endif
     }
 
-	void Initialize(RendererAPI::_enum api, Settings::_enum settings, RenderFlags::_enum flags)
-	{
+    void Initialize(RendererAPI::_enum api, Settings::_enum settings, RenderFlags::_enum flags)
+    {
         // get main thread index
         g_mainThreadId = std::this_thread::get_id();
 
@@ -120,10 +121,10 @@ namespace Renderer
 
         // create quad mesh
         static float quadVertices[16] = {
-        //   position     uv
-            -1.0f,  1.0f, 0.0f, 0.0f,
-             1.0f,  1.0f, 1.0f, 0.0f,
-             1.0f, -1.0f, 1.0f, 1.0f,
+            //   position     uv
+            -1.0f, 1.0f, 0.0f, 0.0f,
+            1.0f, 1.0f, 1.0f, 0.0f,
+            1.0f, -1.0f, 1.0f, 1.0f,
             -1.0f, -1.0f, 0.0f, 1.0f
         };
 
@@ -134,15 +135,15 @@ namespace Renderer
 
         m_quadVB = CreateVertexBuffer(4, sizeof(float) * 4, reinterpret_cast<RendererMemory>(&quadVertices), false);
         m_quadIB = CreateIndexBuffer(6, reinterpret_cast<RendererMemory>(&quadIndices), false);
-	}
+    }
 
-	bool IsInitialized()
-	{
-		return m_running;
-	}
+    bool IsInitialized()
+    {
+        return m_running;
+    }
 
-	void Shutdown()
-	{
+    void Shutdown()
+    {
         CHECK_MAIN_THREAD();
 
         for (rvar memory : m_memoryAllocations)
@@ -154,9 +155,9 @@ namespace Renderer
         }
         m_memoryAllocations.clear();
 
-		m_running = false;
-		m_renderer->Shutdown();
-	}
+        m_running = false;
+        m_renderer->Shutdown();
+    }
 
     RendererMemory Allocate(const size_t size, uint lifeTime)
     {
@@ -204,14 +205,14 @@ namespace Renderer
     }
 
     void Frame()
-	{
+    {
         CHECK_MAIN_THREAD();
 
-		m_renderer->Frame();
+        m_renderer->Frame();
 
         // update memory
         UpdateMemory();
-	}
+    }
 
     void Draw(uint vertexCount)
     {
@@ -232,33 +233,33 @@ namespace Renderer
     }
 
     WindowHandle CreateWindowHandle(void* windowHandle)
-	{
+    {
         CHECK_MAIN_THREAD();
 
-		// Create output
+        // Create output
         cvar handle = AllocWindowHandle();
         cvar renderBuffer = AllocRenderBufferHandle();
 
         RENDERER_VALIDATE_HANDLE(handle);
         RENDERER_VALIDATE_HANDLE(renderBuffer);
 
-		m_renderer->CreateWindowHandle(handle, renderBuffer, windowHandle);
+        m_renderer->CreateWindowHandle(handle, renderBuffer, windowHandle);
 
         rvar desc = GetWindowDescription(handle);
         desc.renderBuffer = renderBuffer;
 
-		return handle;
-	}
+        return handle;
+    }
 
-	void ApplyWindow(WindowHandle handle)
-	{
+    void ApplyWindow(WindowHandle handle)
+    {
         CHECK_MAIN_THREAD();
-		RENDERER_VALIDATE_HANDLE(handle);
-		
-		Command_ApplyWindow command;
-		command.window = handle;
-		g_commandList->WriteCommand(&command);
-	}
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_ApplyWindow command;
+        command.window = handle;
+        g_commandList->WriteCommand(&command);
+    }
 
     void ResizeWindow(WindowHandle handle, uint16_t width, uint16_t height)
     {
@@ -280,28 +281,29 @@ namespace Renderer
     }
 
     RenderBufferHandle GetWindowRenderBuffer(WindowHandle handle)
-	{
+    {
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
         rvar desc = GetWindowDescription(handle);
 
-		return desc.renderBuffer;
-	}
+        return desc.renderBuffer;
+    }
 
-	void DestroyWindow(WindowHandle handle)
-	{
+    void DestroyWindow(WindowHandle handle)
+    {
         CHECK_MAIN_THREAD();
-		RENDERER_VALIDATE_HANDLE(handle);
+        RENDERER_VALIDATE_HANDLE(handle);
 
-		Command_DestroyWindow command;
-		command.window = handle;
-		g_commandList->WriteCommand(&command);
+        Command_DestroyWindow command;
+        command.window = handle;
+        g_commandList->WriteCommand(&command);
 
-		FreeWindowHandle(handle);
-	}
+        FreeWindowHandle(handle);
+    }
 
-    RenderBufferHandle CreateRenderBuffer(uint16_t width, uint16_t height, TextureFormat::_enum* textures, uint8_t texturesCount, TextureFormat::_enum depthFormat)
+    RenderBufferHandle CreateRenderBuffer(uint16_t width, uint16_t height, TextureFormat::_enum* textures,
+                                          uint8_t texturesCount, TextureFormat::_enum depthFormat)
     {
         CHECK_MAIN_THREAD();
 
@@ -318,7 +320,7 @@ namespace Renderer
         rvar renderBufferDesc = GetRenderBufferDescription(handle);
 
         // copy texture formats
-        for(var i = 0; i < texturesCount && i < RENDERER_MAX_RENDER_BUFFER_TARGETS; i ++)
+        for (var i = 0; i < texturesCount && i < RENDERER_MAX_RENDER_BUFFER_TARGETS; i ++)
         {
             cvar textureFormat = textures[i];
             cvar texture = CreateTexture2D(width, height, 1, textureFormat, nullptr, 0u, true);
@@ -332,7 +334,7 @@ namespace Renderer
         }
 
         // create depth buffer
-        if(depthFormat != TextureFormat::Unknown)
+        if (depthFormat != TextureFormat::Unknown)
         {
             cvar texture = CreateTexture2D(width, height, 1, depthFormat, nullptr, 0u, true);
 
@@ -373,7 +375,7 @@ namespace Renderer
         command.width = width;
         command.height = height;
 
-        for(var i = 0u; i < command.texturesCount; i ++)
+        for (var i = 0u; i < command.texturesCount; i ++)
             command.renderTargets[i] = renderBufferDesc.renderTextures[i];
 
         g_commandList->WriteCommand(&command);
@@ -420,12 +422,14 @@ namespace Renderer
         g_commandList->WriteCommand(&command);
 
         // destroy render textures
-        std::for_each(renderBufferDesc.renderTextures.begin(), renderBufferDesc.renderTextures.end(), [] (Texture2DHandle handle){
-            DestroyTexture2D(handle);
-        });
+        std::for_each(renderBufferDesc.renderTextures.begin(), renderBufferDesc.renderTextures.end(),
+                      [](Texture2DHandle handle)
+                      {
+                          DestroyTexture2D(handle);
+                      });
 
         // destroy depth buffer if created
-        if(renderBufferDesc.depthBuffer.idx > 0)
+        if (renderBufferDesc.depthBuffer.idx > 0)
             DestroyTexture2D(renderBufferDesc.depthBuffer);
 
         // free render buffer handle
@@ -549,7 +553,9 @@ namespace Renderer
         FreeIndexBufferHandle(handle);
     }
 
-    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels, TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize, bool renderTargetFlag)
+    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels,
+                                    TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize,
+                                    bool renderTargetFlag)
     {
         CHECK_MAIN_THREAD();
 
@@ -575,12 +581,14 @@ namespace Renderer
         return Texture2DHandle_table[handle.idx];
     }
 
-    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize)
+    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat,
+                                    RendererMemory data, size_t dataSize)
     {
         return CreateTexture2D(width, height, 1u, textureFormat, data, dataSize);
     }
 
-    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels, TextureFormat::_enum textureFormat)
+    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels,
+                                    TextureFormat::_enum textureFormat)
     {
         return CreateTexture2D(width, height, mipLevels, textureFormat, nullptr, 0u);
     }
@@ -681,7 +689,7 @@ namespace Renderer
 
     void BlitTexture(RenderBufferHandle destination, Texture2DHandle source, ShaderHandle customShader)
     {
-        if(RENDERER_CHECK_HANDLE(customShader))
+        if (RENDERER_CHECK_HANDLE(customShader))
         {
             // bind custom shader
             ApplyShader(customShader, 0);
@@ -715,7 +723,8 @@ namespace Renderer
         // done.
     }
 
-    void BlitTextures(ShaderHandle customShader, RenderBufferHandle destination, Texture2DHandle* sources, uint8_t sourceCount, uint8_t baseSlot)
+    void BlitTextures(ShaderHandle customShader, RenderBufferHandle destination, Texture2DHandle* sources,
+                      uint8_t sourceCount, uint8_t baseSlot)
     {
         // bind custom shader
         ApplyShader(customShader, 0);
@@ -724,7 +733,7 @@ namespace Renderer
         ApplyRenderBuffer(destination);
 
         // bind textures
-        for(var i = 0u; i < sourceCount; i ++)
+        for (var i = 0u; i < sourceCount; i ++)
             ApplyTexture2D(sources[i], baseSlot + i);
 
         // apply vertex and index buffer

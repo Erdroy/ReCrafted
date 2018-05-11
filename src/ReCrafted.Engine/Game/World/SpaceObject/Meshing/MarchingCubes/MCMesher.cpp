@@ -16,7 +16,8 @@ for (auto c = 0; c < VoxelChunkData::ChunkSize; c++)
 #define ITERATE_CELLS_END()
 
 #define GET_CELL(_x, _y, _z) m_cells[INDEX_3D(_x, _y, _z, VoxelChunkData::ChunkSize)];
-#define IS_BORDER(_x, _y, _z) _x == 0 || _x == VoxelChunkData::ChunkSize-1 || _y == 0 || _y == VoxelChunkData::ChunkSize-1 || _z == 0 || _z == VoxelChunkData::ChunkSize-1
+#define IS_BORDER(_x, _y, _z
+) _x == 0 || _x == VoxelChunkData::ChunkSize-1 || _y == 0 || _y == VoxelChunkData::ChunkSize-1 || _z == 0 || _z == VoxelChunkData::ChunkSize-1
 
 #define AXIS_FRONT		0
 #define AXIS_BACK		1
@@ -31,12 +32,12 @@ const float S = 1.0f / 256.0f;
 // TODO: move operator overrides into Vector3
 Vector3 operator*(const float& lhs, const Vector3& rhs)
 {
-	return Vector3(rhs.x * lhs, rhs.y * lhs, rhs.z * lhs);
+    return Vector3(rhs.x * lhs, rhs.y * lhs, rhs.z * lhs);
 }
 
 Vector3 operator/(const Vector3& lhs, const float& rhs)
 {
-	return Vector3(lhs.x / rhs, lhs.y / rhs, lhs.z / rhs);
+    return Vector3(lhs.x / rhs, lhs.y / rhs, lhs.z / rhs);
 }
 
 /**
@@ -49,256 +50,260 @@ Vector3 operator/(const Vector3& lhs, const float& rhs)
  */
 inline Vector3 GetIntersection(Vector3& p1, Vector3& p2, float d1, float d2)
 {
-	//if (fabs(d1 - d2) < 0.0001f)
-	//	return (p1 + p2) * 0.5f;
+    //if (fabs(d1 - d2) < 0.0001f)
+    //	return (p1 + p2) * 0.5f;
 
-	return p1 + -d1 * (p2 - p1) / (d2 - d1);
+    return p1 + -d1 * (p2 - p1) / (d2 - d1);
 }
 
 inline Vector3 GetEdge(Vector3 offset, sbyte* data, Vector3 cornerA, Vector3 cornerB)
 {
-	var offsetA = offset + cornerA;
-	var offsetB = offset + cornerB;
+    var offsetA = offset + cornerA;
+    var offsetB = offset + cornerB;
 
-	// get data
-	var sampleA = VOXEL_TO_FLOAT(data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), VoxelChunkData::ChunkDataSize)]);
-	var sampleB = VOXEL_TO_FLOAT(data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), VoxelChunkData::ChunkDataSize)]);
+    // get data
+    var sampleA = VOXEL_TO_FLOAT(data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), VoxelChunkData::
+        ChunkDataSize)]);
+    var sampleB = VOXEL_TO_FLOAT(data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), VoxelChunkData::
+        ChunkDataSize)]);
 
-	return GetIntersection(offsetA, offsetB, sampleA, sampleB);
+    return GetIntersection(offsetA, offsetB, sampleA, sampleB);
 }
 
 inline float GetVoxel(sbyte* data, const Vector3& point)
 {
-	return VOXEL_TO_FLOAT(data[INDEX_3D(int(point.x), int(point.y), int(point.z), VoxelChunkData::ChunkDataSize)]);
+    return VOXEL_TO_FLOAT(data[INDEX_3D(int(point.x), int(point.y), int(point.z), VoxelChunkData::ChunkDataSize)]);
 }
 
 void MCMesher::clean()
 {
-	// cleanup all arrays
-	m_vertices.clear();
-	m_normals.clear();
-	m_colors.clear();
-	m_indices.clear();
+    // cleanup all arrays
+    m_vertices.clear();
+    m_normals.clear();
+    m_colors.clear();
+    m_indices.clear();
 
-	// NOTE: we do not need to cleanup cells as it is not required, 
-	// because generating new cell overrides old data.
+    // NOTE: we do not need to cleanup cells as it is not required, 
+    // because generating new cell overrides old data.
 }
 
 void MCMesher::generateCell(Cell* cell, int x, int y, int z, sbyte* data) const
 {
-	byte caseIndex = 0;
+    byte caseIndex = 0;
 
-	for (auto i = 0; i < 8; i++) // TODO: unroll
-	{
-		if (data[INDEX_3D(x + MCCornerDeltasInt[i][0], y + MCCornerDeltasInt[i][1], z + MCCornerDeltasInt[i][2], VoxelChunkData::ChunkDataSize)] > ISO_LEVEL)
-			caseIndex |= 1 << i;
-	}
+    for (auto i = 0; i < 8; i++) // TODO: unroll
+    {
+        if (data[INDEX_3D(x + MCCornerDeltasInt[i][0], y + MCCornerDeltasInt[i][1], z + MCCornerDeltasInt[i][2],
+            VoxelChunkData::ChunkDataSize)] > ISO_LEVEL)
+            caseIndex |= 1 << i;
+    }
 
-	cell->isFullOrEmpty = caseIndex == 255 || caseIndex == 0;
-	cell->caseIndex = caseIndex;
+    cell->isFullOrEmpty = caseIndex == 255 || caseIndex == 0;
+    cell->caseIndex = caseIndex;
 }
 
 void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& offset, float lod, sbyte* data)
 {
-	// this function is called when this cell is not full and/or empty
+    // this function is called when this cell is not full and/or empty
 
-	var startIndex = m_vertices.count();
-	var triangleCount = 0;
+    var startIndex = m_vertices.count();
+    var triangleCount = 0;
 
-	for (auto i = 0; i < 15; i++)
-	{
-		auto edge = MCEdgesTable[cell->caseIndex][i];
+    for (auto i = 0; i < 15; i++)
+    {
+        auto edge = MCEdgesTable[cell->caseIndex][i];
 
-		// check if this case has vertices
-		if (edge == -1)
-			break;
+        // check if this case has vertices
+        if (edge == -1)
+            break;
 
-		var offsetA = offset + MCEdgeOffsets[edge][0];
-		var offsetB = offset + MCEdgeOffsets[edge][1];
+        var offsetA = offset + MCEdgeOffsets[edge][0];
+        var offsetB = offset + MCEdgeOffsets[edge][1];
 
-		// get data
-		var sampleA = GetVoxel(data, offsetA);
-		var sampleB = GetVoxel(data, offsetB);
+        // get data
+        var sampleA = GetVoxel(data, offsetA);
+        var sampleB = GetVoxel(data, offsetB);
 
-		var vertexPosition = position + GetIntersection(offsetA, offsetB, sampleA, sampleB) * lod;
+        var vertexPosition = position + GetIntersection(offsetA, offsetB, sampleA, sampleB) * lod;
 
-		// TODO: materials support
-		// TODO: vertex cache (with vertex color per material support)
-		// TODO: fix issue with 2 vertices (invalid normals)
+        // TODO: materials support
+        // TODO: vertex cache (with vertex color per material support)
+        // TODO: fix issue with 2 vertices (invalid normals)
 
-		m_vertices.add(vertexPosition);
-		m_indices.add(m_vertices.count() - 1);
+        m_vertices.add(vertexPosition);
+        m_indices.add(m_vertices.count() - 1);
 
-		triangleCount++;
-	}
+        triangleCount++;
+    }
 
-	triangleCount /= 3;
+    triangleCount /= 3;
 
-	if (triangleCount == 0)
-		return;
+    if (triangleCount == 0)
+        return;
 
-	// generate normals
-	var normal = Vector3::zero();
-	var triangles = 0;
-	for(var i = 0; i < triangleCount; i ++)
-	{
-		var p0 = m_vertices[m_indices[startIndex + i * 3 + 0]];
-		var p1 = m_vertices[m_indices[startIndex + i * 3 + 1]];
-		var p2 = m_vertices[m_indices[startIndex + i * 3 + 2]];
+    // generate normals
+    var normal = Vector3::zero();
+    var triangles = 0;
+    for (var i = 0; i < triangleCount; i ++)
+    {
+        var p0 = m_vertices[m_indices[startIndex + i * 3 + 0]];
+        var p1 = m_vertices[m_indices[startIndex + i * 3 + 1]];
+        var p2 = m_vertices[m_indices[startIndex + i * 3 + 2]];
 
-		var plane = Plane(p2, p1, p0);
+        var plane = Plane(p2, p1, p0);
 
-		m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
-		m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
-		m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
+        m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
+        m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
+        m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
 
-		/*if(plane.normal.x != plane.normal.x)
-		{
-			// two points are equal, WTF?
-			// just add some zero-normals for now. TODO: fix when cache will be done!
-			m_normals.add(Vector3::zero());
-			m_normals.add(Vector3::zero());
-			m_normals.add(Vector3::zero());
-		}
-		else*/
-		{
-			m_normals.add(plane.normal);
-			m_normals.add(plane.normal);
-			m_normals.add(plane.normal);
+        /*if(plane.normal.x != plane.normal.x)
+        {
+            // two points are equal, WTF?
+            // just add some zero-normals for now. TODO: fix when cache will be done!
+            m_normals.add(Vector3::zero());
+            m_normals.add(Vector3::zero());
+            m_normals.add(Vector3::zero());
+        }
+        else*/
+        {
+            m_normals.add(plane.normal);
+            m_normals.add(plane.normal);
+            m_normals.add(plane.normal);
 
-			normal += plane.normal;
-			triangles++;
-		}
-	}
+            normal += plane.normal;
+            triangles++;
+        }
+    }
 
-	if (triangles <= 1)
-		return;
+    if (triangles <= 1)
+        return;
 
-	// smooth the cell normal
-	cell->vertexNormal = normal / static_cast<float>(triangles);
-	cell->vertexNormal.normalize();
+    // smooth the cell normal
+    cell->vertexNormal = normal / static_cast<float>(triangles);
+    cell->vertexNormal.normalize();
 }
 
-void MCMesher::generateSkirt(Cell* cell, const Vector3& position, const Vector3& offset, float lod, uint8_t axis, sbyte* data)
+void MCMesher::generateSkirt(Cell* cell, const Vector3& position, const Vector3& offset, float lod, uint8_t axis,
+                             sbyte* data)
 {
-	var corners = MSCornerOffsets[axis];
+    var corners = MSCornerOffsets[axis];
 
-	byte caseIndex = 0;
-	Vector3 edges[8];
+    byte caseIndex = 0;
+    Vector3 edges[8];
 
-	for (auto i = 0; i < 4; i++) // TODO: unroll
-	{
-		if (GetVoxel(data, offset + corners[i]) < ISO_LEVEL)
-			caseIndex |= 1 << i;
-	}
+    for (auto i = 0; i < 4; i++) // TODO: unroll
+    {
+        if (GetVoxel(data, offset + corners[i]) < ISO_LEVEL)
+            caseIndex |= 1 << i;
+    }
 
-	edges[0] = offset + corners[0];
-	edges[2] = offset + corners[1];
-	edges[4] = offset + corners[2];
-	edges[6] = offset + corners[3];
+    edges[0] = offset + corners[0];
+    edges[2] = offset + corners[1];
+    edges[4] = offset + corners[2];
+    edges[6] = offset + corners[3];
 
-	edges[1] = GetEdge(offset, data, corners[0], corners[1]);
-	edges[3] = GetEdge(offset, data, corners[1], corners[2]);
-	edges[5] = GetEdge(offset, data, corners[2], corners[3]);
-	edges[7] = GetEdge(offset, data, corners[3], corners[0]);
+    edges[1] = GetEdge(offset, data, corners[0], corners[1]);
+    edges[3] = GetEdge(offset, data, corners[1], corners[2]);
+    edges[5] = GetEdge(offset, data, corners[2], corners[3]);
+    edges[7] = GetEdge(offset, data, corners[3], corners[0]);
 
-	for (var i = 0; i < 12; i++)
-	{
-		cvar edge = MSEdgesTable[caseIndex][i];
+    for (var i = 0; i < 12; i++)
+    {
+        cvar edge = MSEdgesTable[caseIndex][i];
 
-		if (edge == -1)
-			return;
+        if (edge == -1)
+            return;
 
-		cvar vertexPosition = position + edges[edge] * lod;
+        cvar vertexPosition = position + edges[edge] * lod;
 
-		m_vertices.add(vertexPosition);
-		m_indices.add(m_vertices.count() - 1);
+        m_vertices.add(vertexPosition);
+        m_indices.add(m_vertices.count() - 1);
 
-		m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
-		m_normals.add(cell->vertexNormal);
-	}
+        m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
+        m_normals.add(cell->vertexNormal);
+    }
 }
 
 void MCMesher::generateCells(sbyte* data, const Vector3& position, float lod, uint8_t borders)
 {
-	// generate all cells
-	ITERATE_CELLS_BEGIN(x, y, z)
-	{
-		const var offset = Vector3(float(x), float(y), float(z));
-		const var cell = &GET_CELL(x, y, z);
+    // generate all cells
+    ITERATE_CELLS_BEGIN(x, y, z)
+    {
+        const var offset = Vector3(float(x), float(y), float(z));
+        const var cell = &GET_CELL(x, y, z);
 
-		// generate cell data
-		generateCell(cell, x, y, z, data);
+        // generate cell data
+        generateCell(cell, x, y, z, data);
 
-		// generate cube mesh
-		if (!cell->isFullOrEmpty)
-		{
-			generateCube(cell, position, offset, lod, data);
+        // generate cube mesh
+        if (!cell->isFullOrEmpty)
+        {
+            generateCube(cell, position, offset, lod, data);
 
-			// generate skirt for this cell
-			if (borders > 0)
-			{
-				// TODO: check if skirt can be generated (if `borders` has the axis flag)
-				// AXIS_FRONT
-				if (z == VoxelChunkData::ChunkSize - 1 && (borders & BORDER_FRONT) != 0)
-				{
-					generateSkirt(cell, position, offset, lod, AXIS_FRONT, data);
-				}
-				// AXIS_BACK
-				if(z == 0 && (borders & BORDER_BACK) != 0)
-				{
-					generateSkirt(cell, position, offset, lod, AXIS_BACK, data);
-				}
-				// AXIS_BACK
-				if (x == 0 && (borders & BORDER_LEFT) != 0)
-				{
-					generateSkirt(cell, position, offset, lod, AXIS_LEFT, data);
-				}
-				// AXIS_RIGHT
-				if (x == VoxelChunkData::ChunkSize - 1 && (borders & BORDER_RIGHT) != 0)
-				{
-					generateSkirt(cell, position, offset, lod, AXIS_RIGHT, data);
-				}
-				// AXIS_TOP
-				if (y == VoxelChunkData::ChunkSize - 1 && (borders & BORDER_TOP) != 0)
-				{
-					generateSkirt(cell, position, offset, lod, AXIS_TOP, data);
-				}
-				// AXIS_BOTTOM
-				if (y == 0 && (borders & BORDER_BOTTOM) != 0)
-				{
-					generateSkirt(cell, position, offset, lod, AXIS_BOTTOM, data);
-				}
-			}
-		}
-	}
-	ITERATE_CELLS_END()
+            // generate skirt for this cell
+            if (borders > 0)
+            {
+                // TODO: check if skirt can be generated (if `borders` has the axis flag)
+                // AXIS_FRONT
+                if (z == VoxelChunkData::ChunkSize - 1 && (borders & BORDER_FRONT) != 0)
+                {
+                    generateSkirt(cell, position, offset, lod, AXIS_FRONT, data);
+                }
+                // AXIS_BACK
+                if (z == 0 && (borders & BORDER_BACK) != 0)
+                {
+                    generateSkirt(cell, position, offset, lod, AXIS_BACK, data);
+                }
+                // AXIS_BACK
+                if (x == 0 && (borders & BORDER_LEFT) != 0)
+                {
+                    generateSkirt(cell, position, offset, lod, AXIS_LEFT, data);
+                }
+                // AXIS_RIGHT
+                if (x == VoxelChunkData::ChunkSize - 1 && (borders & BORDER_RIGHT) != 0)
+                {
+                    generateSkirt(cell, position, offset, lod, AXIS_RIGHT, data);
+                }
+                // AXIS_TOP
+                if (y == VoxelChunkData::ChunkSize - 1 && (borders & BORDER_TOP) != 0)
+                {
+                    generateSkirt(cell, position, offset, lod, AXIS_TOP, data);
+                }
+                // AXIS_BOTTOM
+                if (y == 0 && (borders & BORDER_BOTTOM) != 0)
+                {
+                    generateSkirt(cell, position, offset, lod, AXIS_BOTTOM, data);
+                }
+            }
+        }
+    }
+    ITERATE_CELLS_END()
 }
 
 void MCMesher::generate(const Vector3& position, int lod, uint8_t borders, Ref<Mesh>& mesh, sbyte* data)
 {
-	cvar lodF = static_cast<float>(lod);
+    cvar lodF = static_cast<float>(lod);
 
-	generateCells(data, position, lodF, lod > 1 ? borders : 0);
-	
-	if (m_vertices.count() == 0)
-	{
-		// cleanup
-		clean();
-		return;
-	}
+    generateCells(data, position, lodF, lod > 1 ? borders : 0);
 
-	mesh->setVertices(m_vertices.data(), m_vertices.count());
-	mesh->setNormals(m_normals.data());
-	mesh->setColors(m_colors.data());
-	mesh->setIndices(m_indices.data(), m_indices.count());
+    if (m_vertices.count() == 0)
+    {
+        // cleanup
+        clean();
+        return;
+    }
 
-	// simplify
-	//mesh->simplify();
+    mesh->setVertices(m_vertices.data(), m_vertices.count());
+    mesh->setNormals(m_normals.data());
+    mesh->setColors(m_colors.data());
+    mesh->setIndices(m_indices.data(), m_indices.count());
 
-	// apply
-	mesh->applyChanges();
+    // simplify
+    //mesh->simplify();
 
-	// cleanup
-	clean();
+    // apply
+    mesh->applyChanges();
+
+    // cleanup
+    clean();
 }

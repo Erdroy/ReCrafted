@@ -34,7 +34,7 @@ public:
      * \brief Starts the loop.
      */
     void start();
-    
+
     /**
     * \brief Stops the loop.
     */
@@ -60,7 +60,7 @@ public:
     void setRenderCallback(Delegate<void> callback);
 
 public:
-    PROPERTY(int, targetFps) = 60;
+PROPERTY(int, targetFps) = 60;
 };
 
 #endif // UPDATELOOP_H

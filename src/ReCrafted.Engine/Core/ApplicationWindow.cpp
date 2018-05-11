@@ -17,7 +17,7 @@ void ApplicationWindow::create()
 
 void ApplicationWindow::dispose()
 {
-    if(m_windowHandle)
+    if (m_windowHandle)
         Platform::destroyWindow(m_windowHandle);
 
     m_windows.remove(this);
@@ -38,7 +38,7 @@ void ApplicationWindow::windowResize(void* windowHandle)
 {
     ApplicationWindow* window = nullptr;
 
-    for(var && wnd : m_windows)
+    for (var&& wnd : m_windows)
     {
         if (wnd->m_windowHandle == windowHandle)
         {
@@ -57,7 +57,7 @@ void ApplicationWindow::windowResize(void* windowHandle)
     Platform::getWindowSize(windowHandle, &currentWidth, &currentHeight);
 
     // check
-    if(window->m_width != currentWidth || window->m_height != currentHeight)
+    if (window->m_width != currentWidth || window->m_height != currentHeight)
     {
         window->m_width = currentWidth;
         window->m_height = currentHeight;

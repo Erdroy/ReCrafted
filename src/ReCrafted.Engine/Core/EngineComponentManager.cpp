@@ -10,7 +10,7 @@ void EngineComponentManager::onLoad()
     ScopeLock(m_componentsLock);
 
     // call onLoad in all components
-    for (var && component : m_components)
+    for (var&& component : m_components)
         component->onLoad();
 }
 
@@ -21,7 +21,7 @@ void EngineComponentManager::onDispose()
     // release all components in reverse order
     m_components.reverse();
 
-    for (var && component : m_components)
+    for (var&& component : m_components)
     {
         // release this component
         releaseComponent(component);
@@ -36,7 +36,7 @@ void EngineComponentManager::update()
     ScopeLock(m_componentsLock);
 
     // call onLoad in all components
-    for (var && component : m_components)
+    for (var&& component : m_components)
         component->update();
 }
 

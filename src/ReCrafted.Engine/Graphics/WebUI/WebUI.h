@@ -16,7 +16,7 @@ class WebUI : public EngineComponent<WebUI>
     friend class EngineMain;
 
 private:
-    SCRIPTING_API_IMPL()
+SCRIPTING_API_IMPL()
 
 private:
     Array<Ref<WebUIView>> m_views = {};

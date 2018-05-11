@@ -10,20 +10,20 @@
 
 class Class
 {
-	friend class ScriptingEngine;
-	friend class Assembly;
-	friend class Object;
-	friend class Method;
+    friend class ScriptingEngine;
+    friend class Assembly;
+    friend class Object;
+    friend class Method;
 
 private:
-	Assembly* m_assembly = nullptr;
-	MonoClass* m_class = nullptr;
+    Assembly* m_assembly = nullptr;
+    MonoClass* m_class = nullptr;
 
 public:
-	/// <summary>
-	/// Gets mono type.
-	/// </summary>
-	char* getType() const;
+    /// <summary>
+    /// Gets mono type.
+    /// </summary>
+    char* getType() const;
 };
 
 #endif // CLASS_H

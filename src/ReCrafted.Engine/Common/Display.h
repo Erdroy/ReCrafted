@@ -11,11 +11,11 @@
 class Display
 {
 private:
-	SCRIPTING_API_IMPL()
+SCRIPTING_API_IMPL()
 
 public:
-    STATIC_PROPERTY(uint, Width);
-    STATIC_PROPERTY(uint, Height);
+STATIC_PROPERTY(uint, Width);
+STATIC_PROPERTY(uint, Height);
 
 public:
     FORCEINLINE static float getAspectRatio()

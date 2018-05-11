@@ -15,45 +15,45 @@
 
 class Domain
 {
-	friend class ScriptingEngine;
-	friend class Class;
+    friend class ScriptingEngine;
+    friend class Class;
 
 private:
-	MonoDomain* m_domain = nullptr;
+    MonoDomain* m_domain = nullptr;
 
-	Array<Ref<Assembly>> m_loadedAssemblies = {};
-
-public:
-	/// <summary>
-	/// Loads assembly using given fileName.
-	/// </summary>
-	Ref<Assembly> loadAssembly(const char* fileName);
-
-	/// <summary>
-	/// Cleanups the domain.
-	/// </summary>
-	void cleanup();
-
-	MonoDomain* getMono() const;
+    Array<Ref<Assembly>> m_loadedAssemblies = {};
 
 public:
-	/// <summary>
-	/// Creates Domain from MonoDomain.
-	/// </summary>
-	static Ref<Domain> create(MonoDomain* monoDomain);
+    /// <summary>
+    /// Loads assembly using given fileName.
+    /// </summary>
+    Ref<Assembly> loadAssembly(const char* fileName);
 
-	/// <summary>
-	/// Creates domain of given name.
-	/// </summary>
-	static Ref<Domain> create(const char* name, Ref<Domain> parent);
+    /// <summary>
+    /// Cleanups the domain.
+    /// </summary>
+    void cleanup();
 
-	/// <summary>
-	/// Creates root domain.
-	/// </summary>
-	static Ref<Domain> createRoot();
+    MonoDomain* getMono() const;
 
 public:
-	static Ref<Domain> Root;
+    /// <summary>
+    /// Creates Domain from MonoDomain.
+    /// </summary>
+    static Ref<Domain> create(MonoDomain* monoDomain);
+
+    /// <summary>
+    /// Creates domain of given name.
+    /// </summary>
+    static Ref<Domain> create(const char* name, Ref<Domain> parent);
+
+    /// <summary>
+    /// Creates root domain.
+    /// </summary>
+    static Ref<Domain> createRoot();
+
+public:
+    static Ref<Domain> Root;
 };
 
 #endif // DOMAIN_H

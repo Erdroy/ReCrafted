@@ -41,7 +41,8 @@ void TaskManager::onInit()
     m_running = true;
     for (var i = 0; i < maxThreads; i++)
     {
-        m_workerThreads.add(new std::thread([this] {
+        m_workerThreads.add(new std::thread([this]
+        {
             var thread = RPMallocThread();
             worker_function();
         }));
@@ -55,7 +56,7 @@ void TaskManager::onDispose()
     Logger::logInfo("Waiting for TaskManager workers to exit...");
 
     // wait for threads to exit
-    for (auto && thread : m_workerThreads)
+    for (auto&& thread : m_workerThreads)
     {
         if (thread && thread->joinable())
             thread->join();
@@ -76,7 +77,7 @@ void TaskManager::update()
 
     ScopeLock(m_callbackLock);
 
-    for(var && callback : m_callbacks)
+    for (var&& callback : m_callbacks)
         callback.Invoke();
 
     m_callbacks.clear();
@@ -91,7 +92,7 @@ Task TaskManager::createTask(Delegate<void> function, Delegate<bool> callback)
     task.m_id = m_instance->m_lastId++;
     task.m_function = function;
     task.m_callback = callback;
-    
+
     m_instance->m_tasks.enqueue(task);
 
     return task;

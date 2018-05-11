@@ -14,9 +14,9 @@ class CEFView;
 class WebUIView : public Object
 {
     friend class WebUI;
-    
+
 private:
-    SCRIPTING_API_IMPL()
+SCRIPTING_API_IMPL()
 
 private:
     CEFView* m_viewBase = nullptr;

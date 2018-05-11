@@ -16,7 +16,7 @@ void Universe::onInit()
 
     // initialize space object manager
     SpaceObjectManager::getInstance()->init();
-    
+
     // temporary, replace with World::load("../saves/SaveName", MakeDelegate(Universe::OnWorldLoaded));
     // when saves will be done
     SpaceObjectSettings settings;
@@ -42,16 +42,16 @@ void Universe::onDispose()
 
 void Universe::update()
 {
-	SpaceObjectManager::getInstance()->update();
+    SpaceObjectManager::getInstance()->update();
 
-	if(Input::isKeyDown(Key_F7))
-	{
-		m_viewUpdateEnabled = !m_viewUpdateEnabled;
-	}
+    if (Input::isKeyDown(Key_F7))
+    {
+        m_viewUpdateEnabled = !m_viewUpdateEnabled;
+    }
 
     var modPosition = Camera::getMainCamera()->get_position() + Camera::getMainCamera()->get_forward() * 5.0f;
 
-    if(Input::isKey(Key_Mouse0))
+    if (Input::isKey(Key_Mouse0))
     {
         m_testObject1->modify(VoxelEditMode::Subtractive, modPosition, 5.0f);
     }
@@ -61,12 +61,12 @@ void Universe::update()
         m_testObject1->modify(VoxelEditMode::Additive, modPosition, 1.5f);
     }
 
-	if (m_viewUpdateEnabled) 
-	{
-		var cameraPosition = Camera::getMainCamera()->get_position();
-		m_testObject1->updateViewPoint(cameraPosition);
+    if (m_viewUpdateEnabled)
+    {
+        var cameraPosition = Camera::getMainCamera()->get_position();
+        m_testObject1->updateViewPoint(cameraPosition);
         m_testObject1->update();
-	}
+    }
 }
 
 void Universe::simulate()

@@ -34,11 +34,13 @@ private:
 
     FileStream* m_vxhStream = nullptr;
     VoxelStorageHeader* m_vxh = nullptr;
-    spp::sparse_hash_map<uint64_t, Ref<VoxelChunkData>> m_voxelChunks; // TODO: move into separate class and make some proper caching
+    spp::sparse_hash_map<uint64_t, Ref<VoxelChunkData>> m_voxelChunks;
+    // TODO: move into separate class and make some proper caching
     Lock m_voxelChunksLock = {};
 
 private:
-    FORCEINLINE static sbyte sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, const Vector3& position, const int lod, const float radius, const float hillsHeight);
+    FORCEINLINE static sbyte sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, const Vector3& position,
+                                                 const int lod, const float radius, const float hillsHeight);
     FORCEINLINE void VoxelStorage::generateChunkFromCHM(sbyte* voxelData, const Vector3& position, const int lod);
 
     void loadHeader();

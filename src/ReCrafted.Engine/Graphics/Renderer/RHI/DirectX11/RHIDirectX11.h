@@ -31,8 +31,9 @@ namespace Renderer
             void Frame() override;
 
         public:
-            void CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle, void* windowHandle) override;
-            
+            void CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle, void* windowHandle)
+            override;
+
         public:
             void ResizeWindow(WindowHandle window, int width, int height) override;
         };

@@ -32,9 +32,13 @@ protected:
 protected:
     virtual void onInit() = 0;
 
-    virtual void onLoad() {}
+    virtual void onLoad()
+    {
+    }
 
-    virtual void update() {}
+    virtual void update()
+    {
+    }
 };
 
 #endif // ENGINECOMPONENTBASE_H

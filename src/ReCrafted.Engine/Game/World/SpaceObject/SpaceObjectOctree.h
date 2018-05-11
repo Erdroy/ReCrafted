@@ -19,29 +19,29 @@ class SpaceObject;
 */
 class SpaceObjectOctree
 {
-	friend class SpaceObject;
-	friend class SpaceObjectManager;
-	friend class SpaceObjectOctreeNode;
+    friend class SpaceObject;
+    friend class SpaceObjectManager;
+    friend class SpaceObjectOctreeNode;
 
 private:
-	SpaceObject* spaceObject = nullptr;
+    SpaceObject* spaceObject = nullptr;
 
     int m_rootNodesCount = 1;
     SpaceObjectOctreeNode** m_rootNodes = nullptr;
 
 public:
-	void init();
-	void update();
-	void updateViews(Array<Vector3>& views);
-	void draw();
-	void dispose();
+    void init();
+    void update();
+    void updateViews(Array<Vector3>& views);
+    void draw();
+    void dispose();
 
 public:
     SpaceObjectOctreeNode* findNode(Vector3 position, int size) const;
     Array<SpaceObjectOctreeNode*> findIntersecting(BoundingBox& box, bool leafOnly) const;
 
 public:
-	PROPERTY(BoundingBox, bounds) = {};
+PROPERTY(BoundingBox, bounds) = {};
 };
 
 #endif // SPACEOBJECTOCTREE_H

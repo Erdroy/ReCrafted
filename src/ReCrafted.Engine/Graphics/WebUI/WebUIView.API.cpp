@@ -14,7 +14,7 @@ namespace Internal
         if (view)
             view->navigate(url);
     }
-    
+
     void execute(WebUIView* view, MonoString* string)
     {
         if (!view)
@@ -49,7 +49,7 @@ void WebUIView::initRuntime()
                 API_PARAM("string", "url");
             }
             API_METHOD_END();
-            
+
             API_COMMENT("Executes given JavaScript code.");
             API_METHOD(PUBLIC, REGULAR, "ExecuteJS", EXTERN);
             {

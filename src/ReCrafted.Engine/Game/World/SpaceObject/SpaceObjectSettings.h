@@ -45,17 +45,17 @@ public:
     /**
 	 * \brief The world-space position of the SpaceObject.
 	 */
-	Vector3 position = {};
+    Vector3 position = {};
 
     /**
 	 * \brief The minimal surface height.
 	 */
-	float minSurfaceHeight = 300.0f;
+    float minSurfaceHeight = 300.0f;
 
     /**
 	 * \brief The maximal surface height.
 	 */
-	float maxSurfaceHeight = 100.0f;
+    float maxSurfaceHeight = 100.0f;
 
     /**
     * \brief The base height of hills (ovarall terrain).

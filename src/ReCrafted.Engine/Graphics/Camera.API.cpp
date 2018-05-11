@@ -6,280 +6,281 @@
 
 namespace Internal
 {
-	void setAsCurrent(Camera* camera)
-	{
-		if (!camera)
-			return;
+    void setAsCurrent(Camera* camera)
+    {
+        if (!camera)
+            return;
 
-		camera->setAsCurrent();
-	}
+        camera->setAsCurrent();
+    }
 
-	MonoObject* getCurrent()
-	{
-		auto camera = Camera::getMainCamera();
+    MonoObject* getCurrent()
+    {
+        auto camera = Camera::getMainCamera();
 
-		if (!camera)
-			return nullptr;
+        if (!camera)
+            return nullptr;
 
-		return camera->getManagedPtr();
-	}
+        return camera->getManagedPtr();
+    }
 
-	void setFov(Camera* camera, float value)
-	{
-		if (!camera)
-			return;
+    void setFov(Camera* camera, float value)
+    {
+        if (!camera)
+            return;
 
-		camera->set_fov(value);
-	}
+        camera->set_fov(value);
+    }
 
-	float getFov(Camera* camera)
-	{
-		if (!camera)
-			return 0.0f;
+    float getFov(Camera* camera)
+    {
+        if (!camera)
+            return 0.0f;
 
-		return camera->get_fov();
-	}
+        return camera->get_fov();
+    }
 
-	void setPos(Camera* camera, Vector3* pos)
-	{
-		if (!camera)
-			return;
+    void setPos(Camera* camera, Vector3* pos)
+    {
+        if (!camera)
+            return;
 
-		camera->set_position(*pos);
-	}
+        camera->set_position(*pos);
+    }
 
-	void getPos(Camera* camera, Vector3* pos)
-	{
-		if (!camera)
-			return;
+    void getPos(Camera* camera, Vector3* pos)
+    {
+        if (!camera)
+            return;
 
-		*pos = camera->get_position();
-	}
+        *pos = camera->get_position();
+    }
 
-	void setRot(Camera* camera, Vector3* rot)
-	{
-		if (!camera)
-			return;
+    void setRot(Camera* camera, Vector3* rot)
+    {
+        if (!camera)
+            return;
 
-		camera->set_rotation(*rot);
-	}
+        camera->set_rotation(*rot);
+    }
 
-	void getRot(Camera* camera, Vector3* rot)
-	{
-		if (!camera)
-			return;
+    void getRot(Camera* camera, Vector3* rot)
+    {
+        if (!camera)
+            return;
 
-		*rot = camera->get_rotation();
-	}
+        *rot = camera->get_rotation();
+    }
 
-	void getBoundingFrustum(Camera* camera, BoundingFrustum* frustum)
-	{
-		if (!camera) return;
+    void getBoundingFrustum(Camera* camera, BoundingFrustum* frustum)
+    {
+        if (!camera) return;
 
-		*frustum = camera->getBoundingFrustum();
-	}
+        *frustum = camera->getBoundingFrustum();
+    }
 
-	bool getFreeMov(Camera* camera)
-	{
-		if (!camera) return false;
+    bool getFreeMov(Camera* camera)
+    {
+        if (!camera) return false;
 
-		return camera->get_freeMovement();
-	}
+        return camera->get_freeMovement();
+    }
 
-	void setFreeMov(Camera* camera, bool mov)
-	{
-		if (!camera) return;
+    void setFreeMov(Camera* camera, bool mov)
+    {
+        if (!camera) return;
 
-		camera->set_freeMovement(mov);
-	}
+        camera->set_freeMovement(mov);
+    }
 
-	float getFarPlane(Camera* camera)
-	{
-		if (!camera) return 0.0f;
+    float getFarPlane(Camera* camera)
+    {
+        if (!camera) return 0.0f;
 
-		return camera->get_farPlane();
-	}
+        return camera->get_farPlane();
+    }
 
-	void setFarPlane(Camera* camera, float farplane)
-	{
-		if (!camera) return;
+    void setFarPlane(Camera* camera, float farplane)
+    {
+        if (!camera) return;
 
-		camera->set_farPlane(farplane);
-	}
+        camera->set_farPlane(farplane);
+    }
 
-	float getNearPlane(Camera* camera)
-	{
-		if (!camera) return 0.0f;
+    float getNearPlane(Camera* camera)
+    {
+        if (!camera) return 0.0f;
 
-		return camera->get_nearPlane();
-	}
+        return camera->get_nearPlane();
+    }
 
-	void setNearPlane(Camera* camera, float nearplane)
-	{
-		if (!camera) return;
+    void setNearPlane(Camera* camera, float nearplane)
+    {
+        if (!camera) return;
 
-		camera->set_nearPlane(nearplane);
-	}
+        camera->set_nearPlane(nearplane);
+    }
 
-	void getForward(Camera* camera, Vector3* forward)
-	{
-		if (!camera) return;
+    void getForward(Camera* camera, Vector3* forward)
+    {
+        if (!camera) return;
 
-		*forward = camera->get_forward();
-	}
+        *forward = camera->get_forward();
+    }
 
-	void setForward(Camera* camera, Vector3* forward)
-	{
-		if (!camera) return;
+    void setForward(Camera* camera, Vector3* forward)
+    {
+        if (!camera) return;
 
-		camera->set_forward(*forward);
-	}
+        camera->set_forward(*forward);
+    }
 
-	void getUp(Camera* camera, Vector3* up)
-	{
-		if (!camera) return;
+    void getUp(Camera* camera, Vector3* up)
+    {
+        if (!camera) return;
 
-		*up = camera->get_up();
-	}
+        *up = camera->get_up();
+    }
 
-	void setUp(Camera* camera, Vector3* up)
-	{
-		if (!camera) return;
+    void setUp(Camera* camera, Vector3* up)
+    {
+        if (!camera) return;
 
-		camera->set_up(*up);
-	}
+        camera->set_up(*up);
+    }
 
-	void getRight(Camera* camera, Vector3* right)
-	{
-		if (!camera) return;
+    void getRight(Camera* camera, Vector3* right)
+    {
+        if (!camera) return;
 
-		*right = camera->get_right();
-	}
+        *right = camera->get_right();
+    }
 
-	void setRight(Camera* camera, Vector3* right)
-	{
-		if (!camera) return;
+    void setRight(Camera* camera, Vector3* right)
+    {
+        if (!camera) return;
 
-		camera->set_right(*right);
-	}
+        camera->set_right(*right);
+    }
 
-	MonoObject* createCamera()
-	{
-		return Object::createInstance<Camera>("ReCrafted.API.Graphics", "Camera")->getManagedPtr();
-	}
+    MonoObject* createCamera()
+    {
+        return Object::createInstance<Camera>("ReCrafted.API.Graphics", "Camera")->getManagedPtr();
+    }
 }
 
 void Camera::initRuntime()
 {
-	// create type binding
+    // create type binding
 
-	API_FILE("Graphics/Camera.Gen.cs");
-	{
-		API_USING("ReCrafted.API.Mathematics");
+    API_FILE("Graphics/Camera.Gen.cs");
+    {
+        API_USING("ReCrafted.API.Mathematics");
 
-		API_COMMENT("Camera class.");
-		API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Camera", "Object", NOCONSTRUCTOR);
-		{
-			API_COMMENT("Creates new Camera");
-			API_METHOD(PUBLIC, STATIC, "Create", EXTERN);
-			{
-				API_BIND("ReCrafted.API.Graphics.Camera::Create", &Internal::createCamera);
+        API_COMMENT("Camera class.");
+        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Camera", "Object", NOCONSTRUCTOR);
+        {
+            API_COMMENT("Creates new Camera");
+            API_METHOD(PUBLIC, STATIC, "Create", EXTERN);
+            {
+                API_BIND("ReCrafted.API.Graphics.Camera::Create", &Internal::createCamera);
 
-				API_RETURN("Camera");
-			}
-			API_METHOD_END();
+                API_RETURN("Camera");
+            }
+            API_METHOD_END();
 
-			API_COMMENT("Sets the camera as current.");
-			API_METHOD(PUBLIC, REGULAR, "SetAsCurrent", EXTERN);
-			{
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_SetAsCurrent", &Internal::setAsCurrent);
-			}
-			API_METHOD_END();
+            API_COMMENT("Sets the camera as current.");
+            API_METHOD(PUBLIC, REGULAR, "SetAsCurrent", EXTERN);
+            {
+                API_BIND("ReCrafted.API.Graphics.Camera::Internal_SetAsCurrent", &Internal::setAsCurrent);
+            }
+            API_METHOD_END();
 
-			API_COMMENT("Camera's Field of view.");
-			API_PROPERTY(PUBLIC, REGULAR, "float", "Fov", GETSET);
-			{
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Fov_Get", &Internal::getFov);
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Fov_Set", &Internal::setFov);
-			}
-			API_PROPERTY_END();
+            API_COMMENT("Camera's Field of view.");
+            API_PROPERTY(PUBLIC, REGULAR, "float", "Fov", GETSET);
+            {
+                API_BIND("ReCrafted.API.Graphics.Camera::Internal_Fov_Get", &Internal::getFov);
+                API_BIND("ReCrafted.API.Graphics.Camera::Internal_Fov_Set", &Internal::setFov);
+            }
+            API_PROPERTY_END();
 
-			API_COMMENT("Camera's position.");
-			API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Position", GETSET, BY_REF);
-			{
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Position_Get", &Internal::getPos);
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Position_Set", &Internal::setPos);
-			}
-			API_PROPERTY_END();
+            API_COMMENT("Camera's position.");
+            API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Position", GETSET, BY_REF);
+            {
+                API_BIND("ReCrafted.API.Graphics.Camera::Internal_Position_Get", &Internal::getPos);
+                API_BIND("ReCrafted.API.Graphics.Camera::Internal_Position_Set", &Internal::setPos);
+            }
+            API_PROPERTY_END();
 
-			API_COMMENT("Camera's rotation.");
-			API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Rotation", GETSET, BY_REF);
-			{
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Rotation_Get", &Internal::getRot);
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Rotation_Set", &Internal::setRot);
-			}
-			API_PROPERTY_END();
+            API_COMMENT("Camera's rotation.");
+            API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Rotation", GETSET, BY_REF);
+            {
+                API_BIND("ReCrafted.API.Graphics.Camera::Internal_Rotation_Get", &Internal::getRot);
+                API_BIND("ReCrafted.API.Graphics.Camera::Internal_Rotation_Set", &Internal::setRot);
+            }
+            API_PROPERTY_END();
 
-			API_COMMENT("Camera's bounding frustum");
-			API_PROPERTY(PUBLIC, REGULAR, "BoundingFrustum", "GetBoundingFrustum", GET, BY_REF);
-			{
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_GetBoundingFrustum_Get", &Internal::getBoundingFrustum);
-			}
-			API_PROPERTY_END();
+            API_COMMENT("Camera's bounding frustum");
+            API_PROPERTY(PUBLIC, REGULAR, "BoundingFrustum", "GetBoundingFrustum", GET, BY_REF);
+            {
+                API_BIND("ReCrafted.API.Graphics.Camera::Internal_GetBoundingFrustum_Get", &Internal::getBoundingFrustum
+                );
+            }
+            API_PROPERTY_END();
 
-			API_COMMENT("Is camera's free movement enabled?");
-			API_PROPERTY(PUBLIC, REGULAR, "bool", "FreeMovement", GETSET);
-			{
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_FreeMovement_Get", &Internal::getFreeMov);
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_FreeMovement_Set", &Internal::setFreeMov);
-			}
-			API_PROPERTY_END();
+            API_COMMENT("Is camera's free movement enabled?");
+            API_PROPERTY(PUBLIC, REGULAR, "bool", "FreeMovement", GETSET);
+            {
+                API_BIND("ReCrafted.API.Graphics.Camera::Internal_FreeMovement_Get", &Internal::getFreeMov);
+                API_BIND("ReCrafted.API.Graphics.Camera::Internal_FreeMovement_Set", &Internal::setFreeMov);
+            }
+            API_PROPERTY_END();
 
-			API_COMMENT("Far camera plane");
-			API_PROPERTY(PUBLIC, REGULAR, "float", "FarPlane", GETSET);
-			{
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_FarPlane_Get", &Internal::getFarPlane);
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_FarPlane_Set", &Internal::setFarPlane);
-			}
-			API_PROPERTY_END();
+            API_COMMENT("Far camera plane");
+            API_PROPERTY(PUBLIC, REGULAR, "float", "FarPlane", GETSET);
+            {
+                API_BIND("ReCrafted.API.Graphics.Camera::Internal_FarPlane_Get", &Internal::getFarPlane);
+                API_BIND("ReCrafted.API.Graphics.Camera::Internal_FarPlane_Set", &Internal::setFarPlane);
+            }
+            API_PROPERTY_END();
 
-			API_COMMENT("Near camera plane");
-			API_PROPERTY(PUBLIC, REGULAR, "float", "NearPlane", GETSET);
-			{
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_NearPlane_Get", &Internal::getNearPlane);
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_NearPlane_Set", &Internal::setNearPlane);
-			}
-			API_PROPERTY_END();
+            API_COMMENT("Near camera plane");
+            API_PROPERTY(PUBLIC, REGULAR, "float", "NearPlane", GETSET);
+            {
+                API_BIND("ReCrafted.API.Graphics.Camera::Internal_NearPlane_Get", &Internal::getNearPlane);
+                API_BIND("ReCrafted.API.Graphics.Camera::Internal_NearPlane_Set", &Internal::setNearPlane);
+            }
+            API_PROPERTY_END();
 
-			API_COMMENT("Camera's Z positive axis");
-			API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Forward", GET, BY_REF);
-			{
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Forward_Get", &Internal::getForward);
-			}
-			API_PROPERTY_END();
+            API_COMMENT("Camera's Z positive axis");
+            API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Forward", GET, BY_REF);
+            {
+                API_BIND("ReCrafted.API.Graphics.Camera::Internal_Forward_Get", &Internal::getForward);
+            }
+            API_PROPERTY_END();
 
-			API_COMMENT("Camera's Y positive axis");
-			API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Up", GET, BY_REF);
-			{
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Up_Get", &Internal::getUp);
-			}
-			API_PROPERTY_END();
+            API_COMMENT("Camera's Y positive axis");
+            API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Up", GET, BY_REF);
+            {
+                API_BIND("ReCrafted.API.Graphics.Camera::Internal_Up_Get", &Internal::getUp);
+            }
+            API_PROPERTY_END();
 
-			API_COMMENT("Camera's X positive axis");
-			API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Right", GET, BY_REF);
-			{
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Right_Get", &Internal::getRight);
-			}
-			API_PROPERTY_END();
+            API_COMMENT("Camera's X positive axis");
+            API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Right", GET, BY_REF);
+            {
+                API_BIND("ReCrafted.API.Graphics.Camera::Internal_Right_Get", &Internal::getRight);
+            }
+            API_PROPERTY_END();
 
-			API_COMMENT("The current camera.");
-			API_PROPERTY(PUBLIC, STATIC, "Camera", "Current", GET);
-			{
-				API_BIND("ReCrafted.API.Graphics.Camera::Internal_Current_Get", &Internal::getCurrent);
-			}
-			API_PROPERTY_END();
-		}
-		API_CLASS_END();
-	}
-	API_FILE_END();
+            API_COMMENT("The current camera.");
+            API_PROPERTY(PUBLIC, STATIC, "Camera", "Current", GET);
+            {
+                API_BIND("ReCrafted.API.Graphics.Camera::Internal_Current_Get", &Internal::getCurrent);
+            }
+            API_PROPERTY_END();
+        }
+        API_CLASS_END();
+    }
+    API_FILE_END();
 }

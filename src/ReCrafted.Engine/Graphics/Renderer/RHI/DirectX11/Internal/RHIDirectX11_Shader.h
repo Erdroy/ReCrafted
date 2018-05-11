@@ -43,7 +43,7 @@ namespace Renderer
         public:
             ~Buffer()
             {
-                if(m_data)
+                if (m_data)
                 {
                     delete[] m_data;
                     m_data = nullptr;
@@ -119,7 +119,7 @@ namespace Renderer
         void Release();
 
     public:
-        template<typename T>
+        template <typename T>
         void SetValue(int buffer, int index, T value)
         {
             SetValue(buffer, index, &value, sizeof T);

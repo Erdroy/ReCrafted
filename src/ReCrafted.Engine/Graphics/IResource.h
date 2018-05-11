@@ -60,7 +60,7 @@ public:
      */
     static void checkLeaks()
     {
-        if(m_resCount > 0u)
+        if (m_resCount > 0u)
             Logger::logWarning("Resource leaks detected! There is {0} unreleased resource objects!", m_resCount);
     }
 };

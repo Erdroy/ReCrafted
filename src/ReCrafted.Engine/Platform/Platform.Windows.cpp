@@ -60,6 +60,7 @@ void SetThreadName(uint32_t dwThreadID, const char* threadName)
     {
     }
 }
+
 void SetThreadName(const char* threadName)
 {
     SetThreadName(GetCurrentThreadId(), threadName);
@@ -73,16 +74,16 @@ void SetThreadName(std::thread* thread, const char* threadName)
 
 void Platform::initialize()
 {
-	// initialize timer
-	QueryPerformanceFrequency(&m_frequency);
-	m_freqCoeff = double(m_frequency.QuadPart) / 1000.0;
+    // initialize timer
+    QueryPerformanceFrequency(&m_frequency);
+    m_freqCoeff = double(m_frequency.QuadPart) / 1000.0;
 
-	m_start = getMiliseconds();
+    m_start = getMiliseconds();
 
-	// get cpu count
-	SYSTEM_INFO sysinfo;
-	GetSystemInfo(&sysinfo);
-	m_cpuCount = sysinfo.dwNumberOfProcessors;
+    // get cpu count
+    SYSTEM_INFO sysinfo;
+    GetSystemInfo(&sysinfo);
+    m_cpuCount = sysinfo.dwNumberOfProcessors;
 
     // create cursor
     m_currentCursor = LoadCursor(nullptr, IDC_ARROW);
@@ -119,28 +120,28 @@ void Platform::shutdown()
 
 Guid Platform::newGuid()
 {
-	Guid guid = {};
-	UUID uuid = {};
+    Guid guid = {};
+    UUID uuid = {};
 
-	// Create UUID
-	UuidCreate(&uuid);
+    // Create UUID
+    UuidCreate(&uuid);
 
-	// Copy data to our Guid structure
-	memcpy_s(&guid, sizeof Guid, &uuid, sizeof UUID);
+    // Copy data to our Guid structure
+    memcpy_s(&guid, sizeof Guid, &uuid, sizeof UUID);
 
-	return guid;
+    return guid;
 }
 
 double Platform::getMiliseconds()
 {
-	LARGE_INTEGER current;
-	QueryPerformanceCounter(&current);
-	return double(current.QuadPart) / m_freqCoeff - m_start;
+    LARGE_INTEGER current;
+    QueryPerformanceCounter(&current);
+    return double(current.QuadPart) / m_freqCoeff - m_start;
 }
 
 int Platform::cpuCount()
 {
-	return m_cpuCount;
+    return m_cpuCount;
 }
 
 void* Platform::createWindow(Text& windowName, int width, int height, const uint64_t style)
@@ -151,10 +152,11 @@ void* Platform::createWindow(Text& windowName, int width, int height, const uint
         mStyle = WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_MAXIMIZE;
 
     // create window now
-    cvar window = CreateWindowW(L"recrafted", windowName.wstr().c_str(), static_cast<DWORD>(mStyle), 0, 0, width, height, NULL, NULL, getHInstance(), nullptr);
+    cvar window = CreateWindowW(L"recrafted", windowName.wstr().c_str(), static_cast<DWORD>(mStyle), 0, 0, width, height
+            , NULL, NULL, getHInstance(), nullptr);
 
     // show the window
-    ShowWindow(static_cast<HWND>(window), SW_MAXIMIZE); 
+    ShowWindow(static_cast<HWND>(window), SW_MAXIMIZE);
 
     setCurrentWindow(window);
 
@@ -187,7 +189,7 @@ void Platform::setCurrentWindow(void* windowHandle)
 
 void* Platform::getCurrentWindow()
 {
-	return m_currentWindow;
+    return m_currentWindow;
 }
 
 int Platform::getCursorIcon()
@@ -226,81 +228,81 @@ void Platform::sleep(unsigned int miliseconds)
 
 void Platform::setCursorPosition(uint16_t x, uint16_t y)
 {
-	POINT point = {};
-	point.x = long(x);
-	point.y = long(y);
+    POINT point = {};
+    point.x = long(x);
+    point.y = long(y);
 
-	ClientToScreen(static_cast<HWND>(m_currentWindow), &point);
-	SetCursorPos(point.x, point.y);
+    ClientToScreen(static_cast<HWND>(m_currentWindow), &point);
+    SetCursorPos(point.x, point.y);
 }
 
 bool Platform::fileExists(const char* fileName)
 {
-	FILE* file;
+    FILE* file;
 
-	// check if file exists 
-	// by just trying to open for read 
-	// and checking the error
-	cvar error = fopen_s(&file, fileName, "r");
+    // check if file exists 
+    // by just trying to open for read 
+    // and checking the error
+    cvar error = fopen_s(&file, fileName, "r");
 
-	// close the file now if exist to avoid some leaks or somethin
-	if (error == 0)
-		fclose(file);
+    // close the file now if exist to avoid some leaks or somethin
+    if (error == 0)
+        fclose(file);
 
-	// return the value
-	return error == 0;
+    // return the value
+    return error == 0;
 }
 
 void Platform::openFile(File* file, const char* fileName, OpenMode::_enum fileOpenMode)
 {
-	strcpy_s(file->FileName, fileName);
+    strcpy_s(file->FileName, fileName);
 
-	// select open mode
-	const char* openMode = "??";
-	switch (fileOpenMode)
-	{
-	case OpenMode::OpenRead:
-		openMode = "r";
-		break;
-	case OpenMode::OpenWrite:
-		openMode = "w";
-		break;
-	case OpenMode::OpenAppend:
-		openMode = "w+";
-		break;
-	case OpenMode::OpenReadWrite:
-		openMode = "r+";
-		break;
-	default: break;
-	}
+    // select open mode
+    const char* openMode = "??";
+    switch (fileOpenMode)
+    {
+    case OpenMode::OpenRead:
+        openMode = "r";
+        break;
+    case OpenMode::OpenWrite:
+        openMode = "w";
+        break;
+    case OpenMode::OpenAppend:
+        openMode = "w+";
+        break;
+    case OpenMode::OpenReadWrite:
+        openMode = "r+";
+        break;
+    default: break;
+    }
 
     file->m_file = fopen(fileName, openMode);
 
     // file not found
     assert(file->m_file != nullptr);
 
-	cvar filep = static_cast<FILE*>(file->m_file);
+    cvar filep = static_cast<FILE*>(file->m_file);
 
-	// measure file size
-	fseek(filep, 0, SEEK_END);
-	file->FileSize = ftell(filep);
-	fseek(filep, 0, SEEK_SET);
+    // measure file size
+    fseek(filep, 0, SEEK_END);
+    file->FileSize = ftell(filep);
+    fseek(filep, 0, SEEK_SET);
 }
 
 void Platform::getWorkingDirectory(char* buffer)
 {
-	char i_buffer[MAX_PATH];
-	GetModuleFileNameA(nullptr, i_buffer, MAX_PATH);
+    char i_buffer[MAX_PATH];
+    GetModuleFileNameA(nullptr, i_buffer, MAX_PATH);
 
-	// remove 'ReCrafted.exe', and copy
-	auto length = strlen(i_buffer);
-	for (auto i = length - 13u; i < length; i++)
-	{
-		i_buffer[i] = '\0';
-	}
+    // remove 'ReCrafted.exe', and copy
+    auto length = strlen(i_buffer);
+    for (auto i = length - 13u; i < length; i++)
+    {
+        i_buffer[i] = '\0';
+    }
 
-	// copy
-	strcpy_s(buffer, length, i_buffer);
+    // copy
+    strcpy_s(buffer, length, i_buffer);
 }
 
 void Platform::setThreadName(const char* name)

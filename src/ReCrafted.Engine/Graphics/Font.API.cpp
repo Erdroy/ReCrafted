@@ -5,76 +5,76 @@
 
 namespace Internal
 {
-	MonoObject* loadFont(MonoString* fileName, int fontSize)
-	{
-		auto text = Text::constant(MONO_TEXT(fileName));
-		auto font = Object::createInstance<Font>("ReCrafted.API.Graphics", "Font");;
-	
-		font->loadFont(text, fontSize, true);
-		
-		return font->getManagedPtr();
-	}
+    MonoObject* loadFont(MonoString* fileName, int fontSize)
+    {
+        auto text = Text::constant(MONO_TEXT(fileName));
+        auto font = Object::createInstance<Font>("ReCrafted.API.Graphics", "Font");;
 
-	void fontMeasure(Font* font, MonoString* str, Vector2* size)
-	{
-		auto text = Text::constant(MONO_TEXT(str));
+        font->loadFont(text, fontSize, true);
+
+        return font->getManagedPtr();
+    }
+
+    void fontMeasure(Font* font, MonoString* str, Vector2* size)
+    {
+        auto text = Text::constant(MONO_TEXT(str));
 
         if (text.size() == 0)
             return;
 
-		*size = font->measureText(text);
-	}
+        *size = font->measureText(text);
+    }
 
-	uint getFontSize(Font* font)
-	{
-		return font->getSize();
-	}
+    uint getFontSize(Font* font)
+    {
+        return font->getSize();
+    }
 }
 
 void Font::initRuntime()
 {
-	// create type binding
+    // create type binding
 
-	API_FILE("Graphics/Font.Gen.cs");
-	{
-		API_USING("ReCrafted.API.Mathematics");
+    API_FILE("Graphics/Font.Gen.cs");
+    {
+        API_USING("ReCrafted.API.Mathematics");
 
-		API_COMMENT("Font class.");
-		API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Font", "Object", PARTIAL);
-		{
-			API_COMMENT("Loads font from file");
-			API_METHOD(PUBLIC, STATIC, "Load", EXTERN);
-			{
-				API_BIND("ReCrafted.API.Graphics.Font::Load", &Internal::loadFont);
+        API_COMMENT("Font class.");
+        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Font", "Object", PARTIAL);
+        {
+            API_COMMENT("Loads font from file");
+            API_METHOD(PUBLIC, STATIC, "Load", EXTERN);
+            {
+                API_BIND("ReCrafted.API.Graphics.Font::Load", &Internal::loadFont);
 
-				API_PARAM("string", "fileName");
-				API_PARAM("int", "fontSize");
+                API_PARAM("string", "fileName");
+                API_PARAM("int", "fontSize");
 
-				API_RETURN("Font");
-			}
-			API_METHOD_END();
+                API_RETURN("Font");
+            }
+            API_METHOD_END();
 
-			API_COMMENT("Measures size of given string.");
-			API_METHOD(INTERNAL, STATIC, "Internal_MeasureString", EXTERN);
-			{
-				API_BIND("ReCrafted.API.Graphics.Font::Internal_MeasureString", &Internal::fontMeasure);
+            API_COMMENT("Measures size of given string.");
+            API_METHOD(INTERNAL, STATIC, "Internal_MeasureString", EXTERN);
+            {
+                API_BIND("ReCrafted.API.Graphics.Font::Internal_MeasureString", &Internal::fontMeasure);
 
-				API_PARAM("IntPtr", "nativePtr");
-				API_PARAM("string", "text");
-				API_PARAM("out Vector2", "size");
+                API_PARAM("IntPtr", "nativePtr");
+                API_PARAM("string", "text");
+                API_PARAM("out Vector2", "size");
 
-				API_RETURN("uint");
-			}
-			API_METHOD_END();
+                API_RETURN("uint");
+            }
+            API_METHOD_END();
 
-			API_COMMENT("The size of this font.");
-			API_PROPERTY(PUBLIC, REGULAR, "uint", "Size", GETSET);
-			{
-				API_BIND("ReCrafted.API.Graphics.Font::Internal_Size_Get", &Internal::getFontSize);
-			}
-			API_PROPERTY_END();
-		}
-		API_CLASS_END();
-	}
-	API_FILE_END();
+            API_COMMENT("The size of this font.");
+            API_PROPERTY(PUBLIC, REGULAR, "uint", "Size", GETSET);
+            {
+                API_BIND("ReCrafted.API.Graphics.Font::Internal_Size_Get", &Internal::getFontSize);
+            }
+            API_PROPERTY_END();
+        }
+        API_CLASS_END();
+    }
+    API_FILE_END();
 }

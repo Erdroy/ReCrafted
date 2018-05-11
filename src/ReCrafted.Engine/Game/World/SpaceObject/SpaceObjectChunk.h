@@ -17,11 +17,11 @@ class SpaceObjectOctreeNode;
 
 class SpaceObjectChunk
 {
-	friend class SpaceObjectManager;
+    friend class SpaceObjectManager;
 
 private:
-	SpaceObject* spaceObject = nullptr;
-	SpaceObjectOctreeNode* node = nullptr;
+    SpaceObject* spaceObject = nullptr;
+    SpaceObjectOctreeNode* node = nullptr;
 
     int m_lod = 0;
     uint64_t m_id = 0u;
@@ -30,19 +30,19 @@ private:
     bool m_hasSurface = false;
 
     Ref<VoxelChunkData> m_chunkData = {};
-	Ref<Mesh> m_mesh = nullptr;
-	Ref<Mesh> m_newMesh = nullptr;
+    Ref<Mesh> m_mesh = nullptr;
+    Ref<Mesh> m_newMesh = nullptr;
 
     Lock m_meshLock = {};
 
 private:
-	uint8_t getLodBorders();
+    uint8_t getLodBorders();
 
 public:
-	void init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject);
-	void upload();
-	void draw();
-	void dispose();
+    void init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject);
+    void upload();
+    void draw();
+    void dispose();
 
 public:
     void generate(IVoxelMesher* mesher);

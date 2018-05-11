@@ -63,18 +63,18 @@ public:
         return this;
     }
 
-    CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler() override 
+    CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler() override
     {
         return this;
     }
 
-    bool GetViewRect(CefRefPtr<CefBrowser> browser, CefRect &rect) override
+    bool GetViewRect(CefRefPtr<CefBrowser> browser, CefRect& rect) override
     {
         rect = CefRect(0, 0, Display::get_Width(), Display::get_Height());
         return true;
     }
 
-    bool GetRootScreenRect(CefRefPtr<CefBrowser> browser, CefRect &rect) override
+    bool GetRootScreenRect(CefRefPtr<CefBrowser> browser, CefRect& rect) override
     {
         return GetViewRect(browser, rect);
     }
@@ -93,7 +93,10 @@ public:
         m_browser = browser;
     }
 
-    void OnPaint(CefRefPtr<CefBrowser> browser, PaintElementType type, const RectList &dirtyRects, const void *buffer, int width, int height) override { }
+    void OnPaint(CefRefPtr<CefBrowser> browser, PaintElementType type, const RectList& dirtyRects, const void* buffer,
+                 int width, int height) override
+    {
+    }
 
     void OnAcceleratedPaint(
         CefRefPtr<CefBrowser> browser,
@@ -109,7 +112,7 @@ public:
         //https://github.com/daktronics/cef-mixer/blob/master/src/d3d11.cpp#L526
 
 
-        if(m_browser)
+        if (m_browser)
         {
             // TODO: if previous frame is not rendered yet, wait here
             /*{
@@ -194,8 +197,8 @@ public:
         const int64_t interval_us = 0u;
 
         ScopeLock(m_browserLock);
-        
-        if(m_browser)
+
+        if (m_browser)
             m_browser->GetHost()->SendExternalBeginFrame(time_us, deadline_us, interval_us);
     }
 
@@ -214,14 +217,14 @@ public:
             return;
 
         // swap front with back buffer ONLY when any frame was rendered
-        if(m_swapCount)
+        if (m_swapCount)
         {
             std::swap(m_frontBuffer, m_backBuffer);
             //std::swap(m_bgfxFrontBuffer, m_bgfxBackBuffer);
         }
-        
+
         // issue copy when necessary
-        if(m_backBuffer && m_sharedBuffer)
+        if (m_backBuffer && m_sharedBuffer)
         {
             IDXGIKeyedMutex* syncMutex;
             m_sharedBuffer->QueryInterface(__uuidof(IDXGIKeyedMutex), reinterpret_cast<LPVOID*>(&syncMutex));
@@ -246,7 +249,7 @@ public:
     }
 
 public:
-    IMPLEMENT_REFCOUNTING(CEFView);
+IMPLEMENT_REFCOUNTING(CEFView);
 };
 
 void WebUIView::init()
@@ -262,7 +265,7 @@ void WebUIView::init()
     CefWindowInfo window_info = {};
     window_info.SetAsWindowless(nullptr);
     window_info.shared_texture_enabled = true;
-	window_info.external_begin_frame_enabled = true;
+    window_info.external_begin_frame_enabled = true;
 
     // initialize cef view
     m_viewBase = new CEFView();
@@ -305,14 +308,14 @@ void WebUIView::render()
 
     // draw texture
     Graphics::getInstance()->setStage(RenderStage::DrawWebUI);
-   // Graphics::getInstance()->blit(0, view->getRenderTexture(), true);
+    // Graphics::getInstance()->blit(0, view->getRenderTexture(), true);
 }
 
 void WebUIView::onDestroy()
 {
     cvar view = getView();
 
-    if(view && view->m_browser)
+    if (view && view->m_browser)
         view->m_browser->GetHost()->CloseBrowser(false);
 }
 

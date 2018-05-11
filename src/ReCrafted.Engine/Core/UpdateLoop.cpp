@@ -37,26 +37,26 @@ void UpdateLoop::start()
 {
     var lastTime = Platform::getMiliseconds();
 
-    while(m_running)
+    while (m_running)
     {
         cvar currentTime = Platform::getMiliseconds();
 
         Profiler::beginProfile("Frame Total");
         Profiler::beginProfile("Frame");
 
-        if(m_updateCallback)
+        if (m_updateCallback)
         {
             // call update
             m_update.Invoke();
         }
 
-        if(m_simulateCallback)
+        if (m_simulateCallback)
         {
             // run simulate
             simulate();
         }
 
-        if(m_renderCallback)
+        if (m_renderCallback)
         {
             // call render
             m_render.Invoke();

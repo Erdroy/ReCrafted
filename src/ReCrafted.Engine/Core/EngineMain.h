@@ -28,7 +28,10 @@ private:
 
 public:
     EngineMain() { m_instance = this; }
-    virtual ~EngineMain() {}
+
+    virtual ~EngineMain()
+    {
+    }
 
 private:
     void registerComponents() const;

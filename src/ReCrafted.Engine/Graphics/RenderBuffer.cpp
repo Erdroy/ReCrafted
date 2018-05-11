@@ -6,49 +6,50 @@
 
 void RenderBuffer::begin()
 {
-	_ASSERT(m_created != true);
+    _ASSERT(m_created != true);
 }
 
 void RenderBuffer::end()
 {
-	_ASSERT(m_created != true);
+    _ASSERT(m_created != true);
 
-	uint width;
-	uint height;
-	
-	// get window client size
-	Platform::getCurrentWindowSize(&width, &height);
+    uint width;
+    uint height;
+
+    // get window client size
+    Platform::getCurrentWindowSize(&width, &height);
 
     // build render buffer
-    m_renderBufferHandle = Renderer::CreateRenderBuffer(width, height, m_textures, m_textureCount, Renderer::TextureFormat::D32);
+    m_renderBufferHandle = Renderer::CreateRenderBuffer(width, height, m_textures, m_textureCount,
+                                                        Renderer::TextureFormat::D32);
 
     m_width = width;
     m_height = height;
-	m_created = true;
+    m_created = true;
 
-	Logger::logInfo("Created render buffer");
+    Logger::logInfo("Created render buffer");
 }
 
 void RenderBuffer::addTarget(const char* name, Renderer::TextureFormat::_enum format)
 {
-	_ASSERT(m_created != true);
+    _ASSERT(m_created != true);
 
-	// add texture
-	m_textures[m_textureCount] = format;
-	m_textureCount++;
+    // add texture
+    m_textures[m_textureCount] = format;
+    m_textureCount++;
 }
 
 Renderer::Texture2DHandle RenderBuffer::getTarget(uint slot)
 {
-	_ASSERT(slot < MAX_RENDERBUFFER_TARGETS);
-	
+    _ASSERT(slot < MAX_RENDERBUFFER_TARGETS);
+
     var renderBufferDesc = Renderer::GetRenderBufferDescription(m_renderBufferHandle);
-	return renderBufferDesc.renderTextures[slot];
+    return renderBufferDesc.renderTextures[slot];
 }
 
 void RenderBuffer::resize(uint width, uint height)
 {
-	_ASSERT(m_created != false);
+    _ASSERT(m_created != false);
 
     if (m_width == width && m_height == height)
         return;
@@ -59,13 +60,13 @@ void RenderBuffer::resize(uint width, uint height)
 
 void RenderBuffer::bind()
 {
-	_ASSERT(m_created != false);
+    _ASSERT(m_created != false);
 
     Renderer::ApplyRenderBuffer(m_renderBufferHandle);
 }
 
 void RenderBuffer::dispose()
 {
-	// destroy framebuffer
+    // destroy framebuffer
     Renderer::DestroyRenderBuffer(m_renderBufferHandle);
 }

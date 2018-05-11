@@ -8,10 +8,10 @@
 
 void SpaceObjectOctree::init()
 {
-	// calculate diameter
-	var settings = spaceObject->getSettings();
-	var radius = settings.maxSurfaceHeight;
-	var objectSize = Math::roundUpToPow2(static_cast<int>(radius * 2)); // diameter rounded up to power of 2
+    // calculate diameter
+    var settings = spaceObject->getSettings();
+    var radius = settings.maxSurfaceHeight;
+    var objectSize = Math::roundUpToPow2(static_cast<int>(radius * 2)); // diameter rounded up to power of 2
 
     // calculate bounds size
     var size = Vector3::one() * static_cast<float>(objectSize);
@@ -37,7 +37,7 @@ void SpaceObjectOctree::init()
     // create root nodes
     m_rootNodes = new SpaceObjectOctreeNode*[m_rootNodesCount];
     var nodeId = 0;
-    for(var x = 0; x < rootNodesLength; x ++)
+    for (var x = 0; x < rootNodesLength; x ++)
     {
         for (var y = 0; y < rootNodesLength; y++)
         {
@@ -49,8 +49,8 @@ void SpaceObjectOctree::init()
 
                 // calculate node position
                 var position = Vector3(
-                    static_cast<float>(x * rootNodeSize), 
-                    static_cast<float>(y * rootNodeSize), 
+                    static_cast<float>(x * rootNodeSize),
+                    static_cast<float>(y * rootNodeSize),
                     static_cast<float>(z * rootNodeSize));
                 position -= rootNodePositionOffset;
 
@@ -95,10 +95,10 @@ void SpaceObjectOctree::draw()
 
 void SpaceObjectOctree::updateViews(Array<Vector3>& views)
 {
-	Profiler::beginProfile("SpaceObjectOctree::updateViews");
+    Profiler::beginProfile("SpaceObjectOctree::updateViews");
     for (var i = 0; i < m_rootNodesCount; i++)
         m_rootNodes[i]->updateViews(views);
-	Profiler::endProfile();
+    Profiler::endProfile();
 }
 
 void SpaceObjectOctree::dispose()
@@ -138,7 +138,7 @@ Array<SpaceObjectOctreeNode*> SpaceObjectOctree::findIntersecting(BoundingBox& b
         cvar node = m_rootNodes[i];
 
         // check if this node intersects with given bounding box, if so, proceed further
-        if(BoundingBox::intersects(node->m_bounds, box))
+        if (BoundingBox::intersects(node->m_bounds, box))
         {
             node->findIntersecting(intersecting, box, targetSize);
             intersecting.add(node);

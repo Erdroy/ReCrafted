@@ -43,7 +43,8 @@ void PhysicsManager::onInit()
     ToleranceScale.mass = 1000;
     ToleranceScale.speed = 1000;
 
-    m_pxFoundation = PxCreateFoundation(PX_FOUNDATION_VERSION, PhysXCallback::PhysXAllocatorCallback, PhysXCallback::PhysXErrorCallback);
+    m_pxFoundation = PxCreateFoundation(PX_FOUNDATION_VERSION, PhysXCallback::PhysXAllocatorCallback,
+                                        PhysXCallback::PhysXErrorCallback);
     m_pxPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_pxFoundation, ToleranceScale, false);
     //PxInitExtensions(*m_pxPhysics, nullptr);
 }

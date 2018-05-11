@@ -15,7 +15,7 @@ class Entity;
 class Script : public Object
 {
 private:
-    SCRIPTING_API_IMPL()
+SCRIPTING_API_IMPL()
 
 private:
     Entity* m_entity = nullptr;
@@ -36,7 +36,7 @@ public:
 
     FORCEINLINE void update() const
     {
-        if(m_onUpdate)
+        if (m_onUpdate)
             m_onUpdate->invoke();
     }
 
@@ -53,7 +53,7 @@ public:
     }
 
 public:
-	void dispose();
+    void dispose();
 };
 
 #endif // SCRIPT_H

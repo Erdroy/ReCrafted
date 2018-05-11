@@ -18,12 +18,12 @@ class Mesh;
 struct IVoxelMesher
 {
 public:
-	/**
-	 * \brief Virtual method for generating a mesh from hermite voxel data.
-	 * \param mesh The mesh that will get the new mesh data.
-	 * \param data The hermite voxel data (in -127 to 127 range).
-	 */
-	virtual void generate(const Vector3& position, int lod, uint8_t borders, Ref<Mesh>& mesh, sbyte* data) = 0;
+    /**
+     * \brief Virtual method for generating a mesh from hermite voxel data.
+     * \param mesh The mesh that will get the new mesh data.
+     * \param data The hermite voxel data (in -127 to 127 range).
+     */
+    virtual void generate(const Vector3& position, int lod, uint8_t borders, Ref<Mesh>& mesh, sbyte* data) = 0;
 };
 
 #endif // IMESHER_H

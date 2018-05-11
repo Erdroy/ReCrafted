@@ -10,32 +10,32 @@
 
 Lock::Lock()
 {
-	m_counter = 0;
-	m_semaphore = CreateSemaphore(nullptr, 0, 1, nullptr);
+    m_counter = 0;
+    m_semaphore = CreateSemaphore(nullptr, 0, 1, nullptr);
 }
 
 void Lock::lock()
 {
-	if (_InterlockedIncrement(&m_counter) > 1)
-	{
-		WaitForSingleObject(m_semaphore, INFINITE);
-	}
+    if (_InterlockedIncrement(&m_counter) > 1)
+    {
+        WaitForSingleObject(m_semaphore, INFINITE);
+    }
 }
 
 bool Lock::tryLock()
 {
-	return _InterlockedCompareExchange(&m_counter, 1, 0) == 0u;
+    return _InterlockedCompareExchange(&m_counter, 1, 0) == 0u;
 }
 
 void Lock::unlock()
 {
-	if (_InterlockedDecrement(&m_counter) > 0)
-	{
-		ReleaseSemaphore(m_semaphore, 1, nullptr);
-	}
+    if (_InterlockedDecrement(&m_counter) > 0)
+    {
+        ReleaseSemaphore(m_semaphore, 1, nullptr);
+    }
 }
 
 void Lock::dispose()
 {
-	CloseHandle(m_semaphore);
+    CloseHandle(m_semaphore);
 }

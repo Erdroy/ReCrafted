@@ -18,23 +18,28 @@
 void initRendererTests();
 #endif
 
-extern "C" { _declspec(dllexport) unsigned int NvOptimusEnablement = 0x00000001; }
-extern "C" { __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1; }
+extern "C" {
+_declspec(dllexport) unsigned int NvOptimusEnablement = 0x00000001;
+}
+
+extern "C" {
+__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
 
 /// <summary>
 /// WinMain - Main entry for Windows platform
 /// </summary>
 int CALLBACK WinMain(
-	HINSTANCE hInstance,
-	HINSTANCE hPrevInstance,
-	LPSTR lpCmdLine,
-	int nCmdShow)
+    HINSTANCE hInstance,
+    HINSTANCE hPrevInstance,
+    LPSTR lpCmdLine,
+    int nCmdShow)
 {
     // initialize memory
     rpmalloc_initialize();
 
     // parse arguments
-	GameInfo::parseArguments(Text(GetCommandLineA()));
+    GameInfo::parseArguments(Text(GetCommandLineA()));
 
     // run WebUI engine children process
     WebUIEngine::runChildren();
@@ -60,6 +65,6 @@ int CALLBACK WinMain(
 
     rpmalloc_finalize();
 
-	return ERROR_SUCCESS;
+    return ERROR_SUCCESS;
 }
 #endif

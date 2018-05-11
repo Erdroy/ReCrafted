@@ -57,7 +57,8 @@ void EngineMain::createMainWindow()
 void EngineMain::onSimulate()
 {
     // update fixed time
-    Time::m_instance->m_fixedTime = static_cast<float>(static_cast<double>(Time::m_instance->m_fixedTime) + Time::m_instance->m_fixedDeltaTime);
+    Time::m_instance->m_fixedTime = static_cast<float>(static_cast<double>(Time::m_instance->m_fixedTime) + Time::
+        m_instance->m_fixedDeltaTime);
 
     // simulate
     Universe::getInstance()->simulate();

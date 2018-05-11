@@ -17,8 +17,8 @@ public:
     /**
      * \brief The signature of the header.
      */
-    char signature[7] = { 'V', 'X', 'H', ' ', '1', '.', '0' };
-    
+    char signature[7] = {'V', 'X', 'H', ' ', '1', '.', '0'};
+
     /**
      * \brief Amount of chunks that can be saved in single voxel storage *.vx file.
      */

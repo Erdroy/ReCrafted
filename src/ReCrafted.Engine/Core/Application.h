@@ -19,7 +19,7 @@ class Application : public EngineComponent<Application>
     friend class Graphics;
 
 private:
-    SCRIPTING_API_IMPL()
+SCRIPTING_API_IMPL()
 
 private:
     Ref<Object> m_gamemain = nullptr;

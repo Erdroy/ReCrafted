@@ -7,14 +7,14 @@ namespace Renderer
 {
     void RHIDirectX11_RenderBuffer::Clear(ID3D11DeviceContext* context, Color color, float depth)
     {
-        for(var i = 0; i < m_rtvCount; i ++)
+        for (var i = 0; i < m_rtvCount; i ++)
         {
             // Clear the render target by using the ClearRenderTargetView command
             cvar rtv = m_renderTargetViews[i];
             context->ClearRenderTargetView(rtv, reinterpret_cast<float*>(&color));
         }
 
-        if(m_depthStencilView)
+        if (m_depthStencilView)
             context->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, depth, 0);
     }
 
@@ -36,7 +36,9 @@ namespace Renderer
         delete this;
     }
 
-    RHIDirectX11_RenderBuffer* RHIDirectX11_RenderBuffer::Create(ID3D11Device* device, uint16_t width, uint16_t height, int textureCount, ID3D11RenderTargetView* rtvs[16], ID3D11DepthStencilView* dsv)
+    RHIDirectX11_RenderBuffer* RHIDirectX11_RenderBuffer::Create(ID3D11Device* device, uint16_t width, uint16_t height,
+                                                                 int textureCount, ID3D11RenderTargetView* rtvs[16],
+                                                                 ID3D11DepthStencilView* dsv)
     {
         cvar renderBuffer = new RHIDirectX11_RenderBuffer(device);
 

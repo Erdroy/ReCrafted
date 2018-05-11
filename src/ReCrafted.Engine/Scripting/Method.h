@@ -10,14 +10,14 @@
 
 class Method
 {
-	friend class Object;
+    friend class Object;
 
 private:
-	MonoObject* m_object = nullptr;
-	MonoMethod* m_method = nullptr;
+    MonoObject* m_object = nullptr;
+    MonoMethod* m_method = nullptr;
 
 public:
-	void invoke(void** params = nullptr) const;
+    void invoke(void** params = nullptr) const;
     void invokeStatic(void** params = nullptr) const;
 };
 

@@ -8,24 +8,29 @@
 // includes
 #include "ReCrafted.h"
 
-struct IDelegateHandler {};
+struct IDelegateHandler
+{
+};
 
 /**
  * \brief Delegate class.
  */
-template<typename T>
+template <typename T>
 class Delegate
 {
 public:
-    typedef void(IDelegateHandler::*delegate_t)(T* param);
+    typedef void (IDelegateHandler::*delegate_t)(T* param);
 
 private:
-	IDelegateHandler* m_instance = nullptr;
+    IDelegateHandler* m_instance = nullptr;
     delegate_t m_delegate = nullptr;
 
 public:
-	Delegate() = default;
-    Delegate(IDelegateHandler* instance, delegate_t delegate) : m_instance(instance), m_delegate(delegate) { }
+    Delegate() = default;
+
+    Delegate(IDelegateHandler* instance, delegate_t delegate) : m_instance(instance), m_delegate(delegate)
+    {
+    }
 
 public:
     FORCEINLINE void Invoke() const
@@ -51,7 +56,7 @@ public:
     }
 
 public:
-    bool operator == (const Delegate<T>& second)
+    bool operator ==(const Delegate<T>& second)
     {
         return m_delegate == second.m_delegate && m_instance == second.m_instance;
     }

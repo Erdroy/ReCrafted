@@ -14,5 +14,4 @@ void SceneManager::onDispose()
 
 void SceneManager::update()
 {
-
 }

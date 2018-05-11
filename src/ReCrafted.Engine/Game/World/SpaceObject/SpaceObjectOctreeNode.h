@@ -20,15 +20,15 @@ class SpaceObject;
 
 struct NodeDirection
 {
-	enum _enum : byte
-	{
-		Front = 0,
-		Back,
-		Left,
-		Right,
-		Top,
-		Bottom
-	};
+    enum _enum : byte
+    {
+        Front = 0,
+        Back,
+        Left,
+        Right,
+        Top,
+        Bottom
+    };
 };
 
 /**
@@ -36,20 +36,20 @@ struct NodeDirection
 */
 class SpaceObjectOctreeNode
 {
-	friend class SpaceObject;
-	friend class SpaceObjectOctree;
-	friend class SpaceObjectManager;
+    friend class SpaceObject;
+    friend class SpaceObjectOctree;
+    friend class SpaceObjectManager;
 
 public:
-	static const int MinimumNodeSize = 16;
+    static const int MinimumNodeSize = 16;
 
 private:
-	SpaceObjectOctree* owner = nullptr;
-	SpaceObjectOctreeNode* parent = nullptr;
-	SpaceObjectOctreeNode* root = nullptr;
+    SpaceObjectOctree* owner = nullptr;
+    SpaceObjectOctreeNode* parent = nullptr;
+    SpaceObjectOctreeNode* root = nullptr;
 
     SpaceObjectOctreeNode* m_childrenNodes[8] = {};
-	Ref<SpaceObjectChunk> m_chunk = nullptr;
+    Ref<SpaceObjectChunk> m_chunk = nullptr;
 
     bool m_populated = false;
     bool m_processing = false;
@@ -60,14 +60,14 @@ private:
     uint64_t m_nodeId = 0;
 
 private:
-	bool hasPopulatedChildren();
-	bool isChildrenProcessing() const;
-	void markProcessing();
+    bool hasPopulatedChildren();
+    bool isChildrenProcessing() const;
+    void markProcessing();
 
     void createChunk(IVoxelMesher* mesher);
 
-	void worker_populate(IVoxelMesher* mesher);
-	void worker_depopulate(IVoxelMesher* mesher);
+    void worker_populate(IVoxelMesher* mesher);
+    void worker_depopulate(IVoxelMesher* mesher);
     void worker_rebuild(IVoxelMesher* mesher);
 
     void onUpdate();
@@ -83,13 +83,15 @@ private:
     SpaceObjectOctreeNode* findNode(Vector3 position, int size);
 
 public:
-	SpaceObjectOctreeNode() {}
+    SpaceObjectOctreeNode()
+    {
+    }
 
 public:
     void update();
-	void updateViews(Array<Vector3>& views);
-	void draw();
-	void dispose();
+    void updateViews(Array<Vector3>& views);
+    void draw();
+    void dispose();
 
 public:
     void populate();
@@ -106,9 +108,9 @@ public:
     }
 
 public:
-	PROPERTY(Vector3, position) = {}; // NOTE: center position
-	PROPERTY(int, size) = {};
-    PROPERTY(BoundingBox, bounds) = {};
+PROPERTY(Vector3, position) = {}; // NOTE: center position
+PROPERTY(int, size) = {};
+PROPERTY(BoundingBox, bounds) = {};
 };
 
 #endif // SPACEOBJECTOCTREENODE_H

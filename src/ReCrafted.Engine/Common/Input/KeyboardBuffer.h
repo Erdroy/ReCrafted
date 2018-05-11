@@ -13,16 +13,16 @@
 class KeyboardBuffer
 {
 private:
-	SCRIPTING_API_IMPL()
+SCRIPTING_API_IMPL()
 
 private:
-	static Array<Char> m_buffer;
+    static Array<Char> m_buffer;
 
 public:
-	static void clear();
-	static void write(Char character);
+    static void clear();
+    static void write(Char character);
 
-	static Array<Char>* getBuffer();
+    static Array<Char>* getBuffer();
 };
 
 #endif // KEYBOARDBUFFER_H

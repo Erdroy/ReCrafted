@@ -16,15 +16,15 @@
  */
 class Shader : IResource
 {
-	friend class Graphics;
-	friend class UI;
+    friend class Graphics;
+    friend class UI;
 
 private:
     Renderer::ShaderHandle m_shaderHandle;
-	char m_shaderName[128] = {};
+    char m_shaderName[128] = {};
 
 public:
-    IRESOURCE_IMPL(Shader)
+IRESOURCE_IMPL(Shader)
 
 public:
     /**
@@ -33,21 +33,21 @@ public:
 	 * \param slot Slot, starts at 0.
 	 * \param value The value.
 	 */
-	template<class T>
-	void setValue(uint slot, T* value)
-	{
+    template <class T>
+    void setValue(uint slot, T* value)
+    {
         Renderer::SetShaderValue(m_shaderHandle, 0, slot, value, sizeof(T));
-	}
+    }
 
     /**
 	 * \brief Sets texture at given slot.
 	 * \param slot The texture slot, starts at 0.
 	 * \param texture The texture.
 	 */
-	void setTexture(int slot, Ref<Texture2D> texture)
-	{
+    void setTexture(int slot, Ref<Texture2D> texture)
+    {
         Renderer::ApplyTexture2D(texture->m_textureHandle, slot);
-	}
+    }
 
     /**
     * \brief Sets texture at given slot.
@@ -62,7 +62,7 @@ public:
     /**
 	 * \brief Disposes this shader.
 	 */
-	void dispose() override;
+    void dispose() override;
 
 public:
     /**
@@ -70,7 +70,7 @@ public:
 	 * \param shaderName The shader name, eg.: GBufferStandard etc.
 	 * \return The loaded shader, or nullptr when file not found.
 	 */
-	static Ref<Shader> loadShader(const char* shaderName);
+    static Ref<Shader> loadShader(const char* shaderName);
 };
 
 #endif // SHADER_H

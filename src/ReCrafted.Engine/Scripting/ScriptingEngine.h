@@ -16,7 +16,7 @@ private:
 
 public:
     virtual ~ScriptingEngine() = default;
-    
+
 public:
     void onInit() override;
     void onDispose() override;

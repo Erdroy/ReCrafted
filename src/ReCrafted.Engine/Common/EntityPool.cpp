@@ -14,7 +14,7 @@ void EntityPool::onDispose()
 
 void EntityPool::update()
 {
-    for (auto && entity : m_entities)
+    for (auto&& entity : m_entities)
     {
         if (entity->parent)
             continue;
@@ -25,7 +25,7 @@ void EntityPool::update()
 
 void EntityPool::simulate()
 {
-    for (auto && entity : m_entities)
+    for (auto&& entity : m_entities)
     {
         if (entity->parent)
             continue;

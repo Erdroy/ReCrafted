@@ -40,7 +40,7 @@ void Graphics::createRenderBuffers()
 void Graphics::initializeRenderer()
 {
     Logger::logInfo("Creating renderer with Direct3D11 API");
-    
+
     // Initialize Renderer
     Renderer::Initialize(
         Renderer::RendererAPI::DirectX11,
@@ -93,14 +93,13 @@ void Graphics::onDispose()
 
 void Graphics::update()
 {
-
 }
 
 void Graphics::render()
 {
     Profiler::beginProfile("Render");
     {
-        cvar clearColor = Renderer::Color{ 0.0f, 0.0f, 0.0f, 1.0f };
+        cvar clearColor = Renderer::Color{0.0f, 0.0f, 0.0f, 1.0f};
 
         cvar renderBuffer = m_gbuffer->m_renderBufferHandle;
 
@@ -136,7 +135,7 @@ void Graphics::resize(uint width, uint height)
     Display::set_Width(width);
     Display::set_Height(height);
 
-    if(WebUI::getInstance())
+    if (WebUI::getInstance())
         WebUI::getInstance()->resize(width, height);
 
     m_gbuffer->resize(width, height);
@@ -195,9 +194,9 @@ void Graphics::renderEnd()
     // blit render textures using gbuffercombine shader
     rvar gbufferDescription = Renderer::GetRenderBufferDescription(m_gbuffer->m_renderBufferHandle);
     Renderer::BlitTextures(
-        m_gbufferCombine->m_shaderHandle, 
-        m_frameBuffer, 
-        gbufferDescription.renderTextures.data(), 
+        m_gbufferCombine->m_shaderHandle,
+        m_frameBuffer,
+        gbufferDescription.renderTextures.data(),
         static_cast<uint8_t>(gbufferDescription.renderTextures.size())
     );
 
@@ -266,7 +265,7 @@ void Graphics::draw(Ref<Mesh>& mesh)
 
 void Graphics::setShader(Ref<Shader>& shader)
 {
-    if(m_currentShader != shader)
+    if (m_currentShader != shader)
     {
         Renderer::ApplyShader(shader->m_shaderHandle, 0);
         m_currentShader = shader;

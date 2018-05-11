@@ -4,19 +4,19 @@
 
 namespace Renderer
 {
-	void CommandList::Initialize(uint32_t size)
-	{
-		_ASSERT(size != 0);
-		
-		cmdlist = static_cast<RendererMemory>(new byte[size]);
-		this->size = size;
-	}
+    void CommandList::Initialize(uint32_t size)
+    {
+        _ASSERT(size != 0);
 
-	void CommandList::Assign(uint8_t threadCount, uint32_t* dataBegin, uint32_t* dataEnd, uint32_t* commandCount)
-	{
-		_ASSERT(threadCount);
-		_ASSERT(dataBegin);
-		_ASSERT(commandCount);
+        cmdlist = static_cast<RendererMemory>(new byte[size]);
+        this->size = size;
+    }
+
+    void CommandList::Assign(uint8_t threadCount, uint32_t* dataBegin, uint32_t* dataEnd, uint32_t* commandCount)
+    {
+        _ASSERT(threadCount);
+        _ASSERT(dataBegin);
+        _ASSERT(commandCount);
 
         //if(m_commandCount < RENDERER_COMMAND_LIST_MIN_CMD_COUNT || threadCount == 1)
         {
@@ -32,51 +32,51 @@ namespace Renderer
             //return;
         }
 
-		/*cvar commandsPerThread = m_commandCount / threadCount;
-		var commands = 0u;
+        /*cvar commandsPerThread = m_commandCount / threadCount;
+        var commands = 0u;
         var totalSize = 0u;
         var thread = 0u;
 
         var position = 0u;
 
-		dataBegin[thread] = 0;
+        dataBegin[thread] = 0;
 
-		for(var i = 0u; i < m_commandCount; i ++)
-		{
-			auto spos = position;
-			Read_CommandHeader(&position);
-			auto size = Read_uint16(&position);
-			position = spos + size;
-			commands++;
+        for(var i = 0u; i < m_commandCount; i ++)
+        {
+            auto spos = position;
+            Read_CommandHeader(&position);
+            auto size = Read_uint16(&position);
+            position = spos + size;
+            commands++;
             totalSize += size;
 
-			// Read till command count is >= commandsPerThread - write command count,
-			// if we filled all allowed commands, increment thread, write data start and continue
+            // Read till command count is >= commandsPerThread - write command count,
+            // if we filled all allowed commands, increment thread, write data start and continue
 
-			if(commands >= commandsPerThread)
-			{
-				commandCount[thread] = commands;
+            if(commands >= commandsPerThread)
+            {
+                commandCount[thread] = commands;
 
-				if(thread + 1 >= threadCount)
-				{
-					_ASSERT(i < m_commandCount);
-					break;
-				}
+                if(thread + 1 >= threadCount)
+                {
+                    _ASSERT(i < m_commandCount);
+                    break;
+                }
 
-				thread++;
+                thread++;
 
-				dataBegin[thread] = position;
+                dataBegin[thread] = position;
                 dataEnd[thread] = position + totalSize;
-				commands = 0u;
+                commands = 0u;
                 totalSize = 0;
-			}
-		}*/
-	}
+            }
+        }*/
+    }
 
-	void CommandList::Destroy()
-	{
-		// free the memory
-		delete[] cmdlist;
-		cmdlist = nullptr;
-	}
+    void CommandList::Destroy()
+    {
+        // free the memory
+        delete[] cmdlist;
+        cmdlist = nullptr;
+    }
 }

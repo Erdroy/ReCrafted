@@ -36,8 +36,8 @@ public:
     static void windowResize(void* windowHandle);
 
 public:
-    PROPERTY(uint, width) = 0u;
-    PROPERTY(uint, height) = 0u;
+PROPERTY(uint, width) = 0u;
+PROPERTY(uint, height) = 0u;
 };
 
 #endif // APPLICATIONWINDOW_H

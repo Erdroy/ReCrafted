@@ -18,94 +18,94 @@ class Entity;
 /// </summary>
 class Camera : public Object
 {
-	friend class Graphics;
+    friend class Graphics;
 
 private:
-	SCRIPTING_API_IMPL()
+SCRIPTING_API_IMPL()
 
 private:
-	static Camera* m_mainCamera;
+    static Camera* m_mainCamera;
 
 private:
-	Vector3 m_upLock = Vector3(0.0f, 1.0f, 0.0f);
-	Vector3 m_lookAt = {};
+    Vector3 m_upLock = Vector3(0.0f, 1.0f, 0.0f);
+    Vector3 m_lookAt = {};
 
-	// camera matrices
-	Matrix m_view = {};
-	Matrix m_projection = {};
+    // camera matrices
+    Matrix m_view = {};
+    Matrix m_projection = {};
 
-	BoundingFrustum m_frustum = {};
+    BoundingFrustum m_frustum = {};
 
 private:
-	void updateRotation();
-	void update();
+    void updateRotation();
+    void update();
 
 public:
-	/// <summary>
-	/// Default Camera constructor.
-	/// </summary>
-	Camera()
-	{
-		m_forward = Vector3::forward();
-		m_right = Vector3::right();
-		m_up = Vector3::up();
+    /// <summary>
+    /// Default Camera constructor.
+    /// </summary>
+    Camera()
+    {
+        m_forward = Vector3::forward();
+        m_right = Vector3::right();
+        m_up = Vector3::up();
 
-		// initialize
-		update();
+        // initialize
+        update();
 
-		// set as main camera if there is no any other
-		if (m_mainCamera == nullptr)
-			m_mainCamera = this;
-	}
-
-public:
-	/// <summary>
-	/// Sets this camera as current.
-	/// </summary>
-	FORCEINLINE void setAsCurrent()
-	{
-		m_mainCamera = this;
-	}
-
-	/// <summary>
-	/// Sets the camera 'look-at'.
-	/// </summary>
-	/// <param name="lookAt"></param>
-	FORCEINLINE void setLookAt(Vector3 lookAt)
-	{
-		m_lookAt = lookAt;
-	}
-
-	/// <summary>
-	/// Gets the camera bounding frustum.
-	/// </summary>
-	/// <returns>The bounding frustum.</returns>
-	FORCEINLINE BoundingFrustum& getBoundingFrustum()
-	{
-		return m_frustum;
-	}
+        // set as main camera if there is no any other
+        if (m_mainCamera == nullptr)
+            m_mainCamera = this;
+    }
 
 public:
-	/// <summary>
-	/// Gets the main camera.
-	/// </summary>
-	/// <returns></returns>
-	FORCEINLINE static Camera* getMainCamera()
-	{
-		return m_mainCamera;
-	}
+    /// <summary>
+    /// Sets this camera as current.
+    /// </summary>
+    FORCEINLINE void setAsCurrent()
+    {
+        m_mainCamera = this;
+    }
+
+    /// <summary>
+    /// Sets the camera 'look-at'.
+    /// </summary>
+    /// <param name="lookAt"></param>
+    FORCEINLINE void setLookAt(Vector3 lookAt)
+    {
+        m_lookAt = lookAt;
+    }
+
+    /// <summary>
+    /// Gets the camera bounding frustum.
+    /// </summary>
+    /// <returns>The bounding frustum.</returns>
+    FORCEINLINE BoundingFrustum& getBoundingFrustum()
+    {
+        return m_frustum;
+    }
 
 public:
-	PROPERTY(bool, freeMovement) = false;
-	PROPERTY(float, fov) = 75.0f;
-	PROPERTY(float, farPlane) = 1000.0f;
-	PROPERTY(float, nearPlane) = 0.02f;
-    PROPERTY_REF(Vector3, position) = {};
-    PROPERTY_REF(Vector3, rotation) = {};
-    PROPERTY_REF(Vector3, forward) = {};
-    PROPERTY_REF(Vector3, up) = {};
-    PROPERTY_REF(Vector3, right) = {};
-    PROPERTY_REF(Matrix, viewProjection) = {};
+    /// <summary>
+    /// Gets the main camera.
+    /// </summary>
+    /// <returns></returns>
+    FORCEINLINE static Camera* getMainCamera()
+    {
+        return m_mainCamera;
+    }
+
+public:
+PROPERTY(bool, freeMovement) = false;
+PROPERTY(float, fov) = 75.0f;
+PROPERTY(float, farPlane) = 1000.0f;
+PROPERTY(float, nearPlane) = 0.02f;
+PROPERTY_REF(Vector3, position) = {};
+PROPERTY_REF(Vector3, rotation) = {};
+PROPERTY_REF(Vector3, forward) = {};
+PROPERTY_REF(Vector3, up) = {};
+PROPERTY_REF(Vector3, right) = {};
+PROPERTY_REF(Matrix, viewProjection) = {};
 };
 
 #endif // CAMERA_H

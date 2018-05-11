@@ -55,7 +55,7 @@
     private: static type m_##name
 
 #ifdef _WIN32
-#   define ALIGN(x) __declspec(align(x)) 
+#   define ALIGN(x) __declspec(align(x))
 #else
 #   define ALIGN(x) __attribute__ (aligned (x))
 #endif

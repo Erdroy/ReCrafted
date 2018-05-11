@@ -10,7 +10,7 @@
 #include "Singleton.h"
 #include "EngineComponentBase.h"
 
-template<class T>
+template <class T>
 class EngineComponent : public EngineComponentBase, public Singleton<T>
 {
     friend class EngineComponentManager;

@@ -5,7 +5,6 @@
 
 namespace Internal
 {
-
 }
 
 void Script::initRuntime()
@@ -15,7 +14,6 @@ void Script::initRuntime()
         API_COMMENT("Script base class.");
         API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Common", "Script", "Object", PARTIAL, NOCONSTRUCTOR);
         {
-
         }
         API_CLASS_END();
     }

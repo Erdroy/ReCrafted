@@ -18,19 +18,19 @@ public:                                                                 \
 
 namespace Renderer
 {
-	struct CommandHeader
-	{
-		enum _enum : uint16_t
-		{
-			Unknown,
+    struct CommandHeader
+    {
+        enum _enum : uint16_t
+        {
+            Unknown,
 
             SetFlag,
 
             Draw,
             DrawIndexed,
 
-			ApplyWindow,
-			DestroyWindow,
+            ApplyWindow,
+            DestroyWindow,
 
             ResizeFrameBuffer,
 
@@ -59,11 +59,11 @@ namespace Renderer
             CreateShader,
             SetShaderValue,
             ApplyShader,
-		    DestroyShader,
+            DestroyShader,
 
             Count
-		};
-	};
+        };
+    };
 
     Command(Unknown, );
 
@@ -84,7 +84,7 @@ namespace Renderer
         WindowHandle window;
     );
 
-	Command(DestroyWindow,
+    Command(DestroyWindow,
         WindowHandle window;
     );
 
@@ -212,8 +212,8 @@ namespace Renderer
     Command(ApplyTexture2D,
         Texture2DHandle handle;
         uint8_t slot;
-    );    
-    
+    );
+
     Command(ResizeTexture2D,
         Texture2DHandle handle;
         uint16_t width;

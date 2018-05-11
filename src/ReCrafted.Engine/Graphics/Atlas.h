@@ -18,18 +18,18 @@ struct Text;
 class Atlas : public IResource
 {
 public:
-	struct Element
-	{
-		char name[32] = {};
-		Rect rect = {};
-	};
+    struct Element
+    {
+        char name[32] = {};
+        Rect rect = {};
+    };
 
 private:
-	Ref<Texture2D> m_texture = nullptr;
-	Array<Element> m_elements = {};
+    Ref<Texture2D> m_texture = nullptr;
+    Array<Element> m_elements = {};
 
 private:
-    IRESOURCE_IMPL(Atlas)
+IRESOURCE_IMPL(Atlas)
 
 public:
     /**
@@ -37,18 +37,18 @@ public:
 	 * \param name The element's name.
 	 * \return The rect.
 	 */
-	Rect getRect(const char* name);
+    Rect getRect(const char* name);
 
     /**
 	 * \brief Gets texture of this atlas.
 	 * \return The texture pointer.
 	 */
-	Ref<Texture2D> getTexture() const;
-	
+    Ref<Texture2D> getTexture() const;
+
     /**
 	 * \brief Disposes this atlas.
 	 */
-	void dispose() override;
+    void dispose() override;
 
 public:
     /**
@@ -56,7 +56,7 @@ public:
 	 * \param fileName The JSON file name.
 	 * \return The loaded atlas, or null when file is not found.
 	 */
-	static Ref<Atlas> load(Text& fileName);
+    static Ref<Atlas> load(Text& fileName);
 };
 
 #endif // ATLAS_H

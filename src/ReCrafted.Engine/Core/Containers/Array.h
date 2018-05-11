@@ -9,7 +9,7 @@
 #include <vector>
 #include <algorithm>
 
-template<class T>
+template <class T>
 class Array
 {
 private:
@@ -49,11 +49,12 @@ public:
 
     FORCEINLINE bool remove(T item)
     {
-		_ASSERT(m_count > 0u);
+        _ASSERT(m_count > 0u);
 
         auto index = std::find(m_vector.begin(), m_vector.end(), item);
-        
-        if (index != m_vector.end()) {
+
+        if (index != m_vector.end())
+        {
             m_vector.erase(index);
             m_count--;
             return true;
@@ -64,11 +65,11 @@ public:
 
     FORCEINLINE bool remove(void* itemPointer)
     {
-		_ASSERT(m_count > 0u);
+        _ASSERT(m_count > 0u);
 
-        for(auto i = 0u; i < m_count; i ++)
+        for (auto i = 0u; i < m_count; i ++)
         {
-            if(m_vector[i].get() == itemPointer)
+            if (m_vector[i].get() == itemPointer)
             {
                 m_vector.erase(m_vector.begin() + i);
                 return true;
@@ -78,53 +79,54 @@ public:
         return false;
     }
 
-	FORCEINLINE void erase(typename std::vector<T>::const_iterator where)
-	{
-		m_vector.erase(where);
-		m_count = static_cast<uint32_t>(m_vector.size());
-	}
+    FORCEINLINE void erase(typename std::vector<T>::const_iterator where)
+    {
+        m_vector.erase(where);
+        m_count = static_cast<uint32_t>(m_vector.size());
+    }
 
-	FORCEINLINE void erase(typename std::vector<T>::const_iterator where, typename std::vector<T>::const_iterator last)
-	{
-		m_vector.erase(where, last);
-		m_count = static_cast<uint32_t>(m_vector.size());
-	}
+    FORCEINLINE void erase(typename std::vector<T>::const_iterator where, typename std::vector<T>::const_iterator last)
+    {
+        m_vector.erase(where, last);
+        m_count = static_cast<uint32_t>(m_vector.size());
+    }
 
     FORCEINLINE void removeAt(int index)
     {
-		_ASSERT(index >= 0 && index < static_cast<int>(m_count));
+        _ASSERT(index >= 0 && index < static_cast<int>(m_count));
 
         m_vector.erase(m_vector.begin() + index);
         m_count--;
     }
 
-	FORCEINLINE void reserve(uint32_t size)
+    FORCEINLINE void reserve(uint32_t size)
     {
-		m_vector.reserve(size);
-		m_count = size;
+        m_vector.reserve(size);
+        m_count = size;
     }
 
     FORCEINLINE bool contains(T item)
     {
-        if (std::find(m_vector.begin(), m_vector.end(), item) != m_vector.end()) {
+        if (std::find(m_vector.begin(), m_vector.end(), item) != m_vector.end())
+        {
             return true;
         }
 
         return false;
     }
 
-	FORCEINLINE void copy(const Array<T>& array)
-	{
-		for(auto && elem : array)
-			add(elem);
-	}
+    FORCEINLINE void copy(const Array<T>& array)
+    {
+        for (auto&& elem : array)
+            add(elem);
+    }
 
     FORCEINLINE void sort()
     {
         std::sort(m_vector.begin(), m_vector.end());
     }
 
-    template<class X>
+    template <class X>
     FORCEINLINE void sort()
     {
         std::sort(m_vector.begin(), m_vector.end(), X());
@@ -160,7 +162,7 @@ public:
         return m_vector.end();
     }
 
-    FORCEINLINE typename std::vector<T>::const_iterator end()const
+    FORCEINLINE typename std::vector<T>::const_iterator end() const
     {
         return m_vector.end();
     }

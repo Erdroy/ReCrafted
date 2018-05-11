@@ -36,12 +36,14 @@ public:
 class Bitmap
 {
 private:
-    Bitmap() { }
-    
+    Bitmap()
+    {
+    }
+
 public:
     static byte* load(const char* fileName, int* width, int* height, int* bpp = nullptr)
     {
-        if(!Platform::fileExists(fileName))
+        if (!Platform::fileExists(fileName))
         {
             Logger::logError("Bitmap::load() file '{0}' not found!", fileName);
             return nullptr;
@@ -57,7 +59,7 @@ public:
         *width = static_cast<int>(header.width);
         *height = static_cast<int>(header.height);
 
-        if(bpp)
+        if (bpp)
             *bpp = static_cast<int>(header.bits_per_pixel);
 
         cvar image_size = header.size - header.bitmap_offset;

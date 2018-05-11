@@ -8,87 +8,87 @@
 
 void Atlas::dispose()
 {
-	// dispose texture
-	m_texture = nullptr;
+    // dispose texture
+    m_texture = nullptr;
 }
 
 Rect Atlas::getRect(const char* name)
 {
-	for(auto i = 0u; i < m_elements.size(); i ++)
-	{
-		if(strcmp(m_elements[i].name, name) == 0)
-		{
-			return m_elements[i].rect;
-		}
-	}
+    for (auto i = 0u; i < m_elements.size(); i ++)
+    {
+        if (strcmp(m_elements[i].name, name) == 0)
+        {
+            return m_elements[i].rect;
+        }
+    }
 
     return {};
 }
 
 Ref<Texture2D> Atlas::getTexture() const
 {
-	return m_texture;
+    return m_texture;
 }
 
 Ref<Atlas> Atlas::load(Text& fileName)
 {
-	char jsonName[512] = {};
-	char pngName[512] = {};
-	fileName.c_str(jsonName, 512);
+    char jsonName[512] = {};
+    char pngName[512] = {};
+    fileName.c_str(jsonName, 512);
 
-	// build png filename
-	strcpy_s(pngName, jsonName);
-	auto len = strlen(pngName);
-	pngName[len - 4] = 'p';
-	pngName[len - 3] = 'n';
-	pngName[len - 2] = 'g';
-	pngName[len - 1] = '\0';
+    // build png filename
+    strcpy_s(pngName, jsonName);
+    auto len = strlen(pngName);
+    pngName[len - 4] = 'p';
+    pngName[len - 3] = 'n';
+    pngName[len - 2] = 'g';
+    pngName[len - 1] = '\0';
 
-	if (Platform::fileExists(jsonName))
-	{
-		File jsonFile = {};
-		Platform::openFile(&jsonFile, jsonName, OpenMode::OpenRead);
+    if (Platform::fileExists(jsonName))
+    {
+        File jsonFile = {};
+        Platform::openFile(&jsonFile, jsonName, OpenMode::OpenRead);
 
-		// read data
-		auto data = new char[jsonFile.FileSize];
-		memset(data, 0, jsonFile.FileSize);
-		jsonFile.read(data, jsonFile.FileSize);
+        // read data
+        auto data = new char[jsonFile.FileSize];
+        memset(data, 0, jsonFile.FileSize);
+        jsonFile.read(data, jsonFile.FileSize);
 
-		auto json = nlohmann::json::parse(data);
+        auto json = nlohmann::json::parse(data);
 
-		// create instance
-		Ref<Atlas> atlas(new Atlas);
+        // create instance
+        Ref<Atlas> atlas(new Atlas);
 
-		// build element list
-		for(auto i = 0u; i < json.size(); i ++)
-		{
-			atlas->m_elements.add({});
-			auto elem = &atlas->m_elements[atlas->m_elements.size() - 1];
+        // build element list
+        for (auto i = 0u; i < json.size(); i ++)
+        {
+            atlas->m_elements.add({});
+            auto elem = &atlas->m_elements[atlas->m_elements.size() - 1];
 
-			auto name = json[i]["Name"].get<std::string>();
-			strcpy(elem->name, name.c_str());
+            auto name = json[i]["Name"].get<std::string>();
+            strcpy(elem->name, name.c_str());
 
-			auto x = json[i]["X"].get<int>();
-			auto y = json[i]["Y"].get<int>();
-			auto w = json[i]["Width"].get<int>();
-			auto h = json[i]["Height"].get<int>();
+            auto x = json[i]["X"].get<int>();
+            auto y = json[i]["Y"].get<int>();
+            auto w = json[i]["Width"].get<int>();
+            auto h = json[i]["Height"].get<int>();
 
-			elem->rect = Rect(x, y, w, h);
-		}
+            elem->rect = Rect(x, y, w, h);
+        }
 
-		// load texture
-		auto texture = Texture2D::createTexture(Renderer::TextureFormat::RGBA8);
-		texture->loadFile(pngName);
-		texture->apply();
+        // load texture
+        auto texture = Texture2D::createTexture(Renderer::TextureFormat::RGBA8);
+        texture->loadFile(pngName);
+        texture->apply();
 
-		// set loaded texture
-		atlas->m_texture = texture;
+        // set loaded texture
+        atlas->m_texture = texture;
 
-		// free data
-		delete[] data;
+        // free data
+        delete[] data;
 
-		return atlas;
-	}
+        return atlas;
+    }
 
-	return nullptr;
+    return nullptr;
 }

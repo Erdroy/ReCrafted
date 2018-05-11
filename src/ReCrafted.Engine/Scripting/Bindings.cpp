@@ -19,26 +19,25 @@
 
 void Bindings::bind()
 {
-	Object::initRuntime();
+    Object::initRuntime();
 
     Application::initRuntime();
 
-	Input::initRuntime();
-	Time::initRuntime();
-	Display::initRuntime();
-	UI::initRuntime();
+    Input::initRuntime();
+    Time::initRuntime();
+    Display::initRuntime();
+    UI::initRuntime();
     WebUI::initRuntime();
     WebUIView::initRuntime();
-	Camera::initRuntime();
-	Texture2D::initRuntime();
-	Font::initRuntime();
+    Camera::initRuntime();
+    Texture2D::initRuntime();
+    Font::initRuntime();
     Entity::initRuntime();
     Script::initRuntime();
-	Profiler::initRuntime();
-	KeyboardBuffer::initRuntime();
+    Profiler::initRuntime();
+    KeyboardBuffer::initRuntime();
 }
 
 void Bindings::shutdown()
 {
-
 }

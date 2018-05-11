@@ -11,26 +11,26 @@
 
 class Field
 {
-	friend class Object;
+    friend class Object;
 
 private:
-	MonoObject* m_object = nullptr;
-	MonoClassField* m_field = nullptr;
+    MonoObject* m_object = nullptr;
+    MonoClassField* m_field = nullptr;
 
 public:
-	/// <summary>
-	/// Sets value.
-	/// </summary>
-	void setValue(void* value) const;
+    /// <summary>
+    /// Sets value.
+    /// </summary>
+    void setValue(void* value) const;
 
-	/// <summary>
-	/// Gets value.
-	/// </summary>
-	void getValue(void* value) const;
+    /// <summary>
+    /// Gets value.
+    /// </summary>
+    void getValue(void* value) const;
 
-	/// <summary>
-	/// Gets field type.
-	/// </summary>
-	FieldType::_enum getType() const;
+    /// <summary>
+    /// Gets field type.
+    /// </summary>
+    FieldType::_enum getType() const;
 };
 #endif // FIELD_H

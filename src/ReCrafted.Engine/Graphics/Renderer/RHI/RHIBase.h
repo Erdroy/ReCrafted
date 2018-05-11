@@ -10,30 +10,31 @@
 
 namespace Renderer
 {
-	namespace RHI
-	{
-		class RHIBase
-		{
-		public:
-			CommandList commandList = {};
-
-		public:
-			virtual ~RHIBase() = default;
-
-		public:
-			virtual void Initialize(Settings::_enum settings, RenderFlags::_enum flags) = 0;
-			virtual void Shutdown() = 0;
-
-		public:
-			virtual void Frame() = 0;
+    namespace RHI
+    {
+        class RHIBase
+        {
+        public:
+            CommandList commandList = {};
 
         public:
-            virtual void CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle, void* windowHandle) = 0;
-            
-		public:
+            virtual ~RHIBase() = default;
+
+        public:
+            virtual void Initialize(Settings::_enum settings, RenderFlags::_enum flags) = 0;
+            virtual void Shutdown() = 0;
+
+        public:
+            virtual void Frame() = 0;
+
+        public:
+            virtual void CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle,
+                                            void* windowHandle) = 0;
+
+        public:
             virtual void ResizeWindow(WindowHandle window, int width, int height) = 0;
-		};
-	}
+        };
+    }
 }
 
 #endif // RHIBASE_H

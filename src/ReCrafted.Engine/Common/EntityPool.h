@@ -15,7 +15,7 @@
 class EntityPool : public EngineComponent<EntityPool>
 {
 private:
-	Array<Ref<Entity>> m_entities = {};
+    Array<Ref<Entity>> m_entities = {};
 
 private:
     void onInit() override;
@@ -29,21 +29,20 @@ public:
     void simulate();
 
 public:
-	static Ref<Entity> createEntity(Text entityName)
-	{
-		Ref<Entity> entity(new Entity);
+    static Ref<Entity> createEntity(Text entityName)
+    {
+        Ref<Entity> entity(new Entity);
         entity->guid = Platform::newGuid();
-		entity->name = entityName;
+        entity->name = entityName;
 
         m_instance->m_entities.add(entity);
 
-		return entity;
-	}
+        return entity;
+    }
 
-	static void destroyEntity(Entity* entity)
-	{
-		
-	}
+    static void destroyEntity(Entity* entity)
+    {
+    }
 };
 
 #endif // ENTITYPOOL_H

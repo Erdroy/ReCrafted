@@ -14,8 +14,8 @@ SINGLETON_IMPL(SpaceObjectManager)
 
 ALIGN(8) struct queueItem
 {
-	SpaceObjectOctreeNode* node;
-	ProcessMode::_enum mode;
+    SpaceObjectOctreeNode* node;
+    ProcessMode::_enum mode;
     Delegate<void> callback;
 };
 
@@ -25,20 +25,20 @@ Lock m_calbacksLock;
 
 void SpaceObjectManager::onDispose()
 {
-	Logger::logInfo("Waiting for SpaceObjectManager workers to exit...");
+    Logger::logInfo("Waiting for SpaceObjectManager workers to exit...");
 
     m_running = false;
 
-	// wait for threads to exit
-	for (auto && thread : m_workerThreads)
-	{
-		if (thread && thread->joinable())
-			thread->join();
+    // wait for threads to exit
+    for (auto&& thread : m_workerThreads)
+    {
+        if (thread && thread->joinable())
+            thread->join();
 
-		SafeDelete(thread);
-	}
+        SafeDelete(thread);
+    }
 
-	Logger::logInfo("SpaceObjectManager workers exited.");
+    Logger::logInfo("SpaceObjectManager workers exited.");
 }
 
 void SpaceObjectManager::worker_function()
@@ -59,7 +59,8 @@ void SpaceObjectManager::worker_function()
         }
 
         // populate or depopulate the queued node
-        switch (item.mode) {
+        switch (item.mode)
+        {
         case ProcessMode::Populate:
             item.node->worker_populate(&mesher);
             break;
@@ -69,7 +70,7 @@ void SpaceObjectManager::worker_function()
         case ProcessMode::Rebuild:
             item.node->worker_rebuild(&mesher);
             break;
-        default:;
+        default: ;
         }
 
         // queue callback
@@ -81,43 +82,44 @@ void SpaceObjectManager::worker_function()
 
 void SpaceObjectManager::init()
 {
-	m_callbacks = {};
+    m_callbacks = {};
 
-	m_running = true;
+    m_running = true;
 
-	// run threads
-	cvar maxThreads = Platform::cpuCount();
+    // run threads
+    cvar maxThreads = Platform::cpuCount();
 
-	Logger::logInfo("Starting {0} SpaceObjectManager workers.", maxThreads);
+    Logger::logInfo("Starting {0} SpaceObjectManager workers.", maxThreads);
 
-	for(var i = 0; i < maxThreads; i ++)
-	{
-		m_workerThreads.add(new std::thread([this] {
+    for (var i = 0; i < maxThreads; i ++)
+    {
+        m_workerThreads.add(new std::thread([this]
+        {
             var thread = RPMallocThread();
-			worker_function();
-		}));
-	}
+            worker_function();
+        }));
+    }
 
-	Logger::logInfo("SpaceObjectManager workers started.");
+    Logger::logInfo("SpaceObjectManager workers started.");
 }
 
 void SpaceObjectManager::update()
 {
-	// dispatch calbacks
-	m_calbacksLock.lock();
-	for(var & callback : m_callbacks)
-		callback.Invoke();
+    // dispatch calbacks
+    m_calbacksLock.lock();
+    for (var& callback : m_callbacks)
+        callback.Invoke();
 
-	m_callbacks.clear();
-	m_calbacksLock.unlock();
+    m_callbacks.clear();
+    m_calbacksLock.unlock();
 }
 
 void SpaceObjectManager::enqueue(SpaceObjectOctreeNode* node, ProcessMode::_enum mode, Delegate<void> callback)
 {
-	var item = queueItem();
-	item.node = node;
-	item.mode = mode;
-	item.callback = callback;
+    var item = queueItem();
+    item.node = node;
+    item.mode = mode;
+    item.callback = callback;
 
-	m_loadingQueue.enqueue(item);
+    m_loadingQueue.enqueue(item);
 }

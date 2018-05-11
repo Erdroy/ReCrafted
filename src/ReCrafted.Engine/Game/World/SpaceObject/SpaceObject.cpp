@@ -14,31 +14,31 @@ void SpaceObject::init(SpaceObjectSettings& settings)
     m_voxelStorage->init(settings);
     m_voxelStorage->spaceObject = this;
 
-	// set settings
-	m_settings = settings;
+    // set settings
+    m_settings = settings;
 
-	// create octree instance
-	m_octree = std::make_shared<SpaceObjectOctree>();
-	m_octree->spaceObject = this;
+    // create octree instance
+    m_octree = std::make_shared<SpaceObjectOctree>();
+    m_octree->spaceObject = this;
 
-	set_position(settings.position);
+    set_position(settings.position);
 
-	// build base node(s)
-	m_octree->init();
+    // build base node(s)
+    m_octree->init();
 }
 
 void SpaceObject::update()
 {
-	m_octree->update();
-	m_octree->updateViews(m_views);
+    m_octree->update();
+    m_octree->updateViews(m_views);
 
-	// clear views for this frame
-	m_views.clear();
+    // clear views for this frame
+    m_views.clear();
 }
 
 void SpaceObject::draw()
 {
-	m_octree->draw();
+    m_octree->draw();
 }
 
 void SpaceObject::dispose()
@@ -46,11 +46,11 @@ void SpaceObject::dispose()
     SafeDispose(m_octree);
     SafeDispose(m_voxelStorage);
 }
- 
+
 void SpaceObject::updateViewPoint(Vector3& view)
 {
-	// add view
-	m_views.add(view);
+    // add view
+    m_views.add(view);
 }
 
 void SpaceObject::modify(VoxelEditMode::_enum mode, Vector3& position, float size)
@@ -63,7 +63,7 @@ void SpaceObject::modify(VoxelEditMode::_enum mode, Vector3& position, float siz
     var boundingBox = BoundingBox(position, bbSize);
     var nodes = m_octree->findIntersecting(boundingBox, false); // NOTE: this will give us all type of LoD levels
 
-    for(var && node : nodes)
+    for (var&& node : nodes)
     {
         // do not modify when node don't have chunk
         if (node->getChunk() == nullptr)
@@ -79,7 +79,7 @@ void SpaceObject::modify(VoxelEditMode::_enum mode, Vector3& position, float siz
 
 SpaceObjectSettings& SpaceObject::getSettings()
 {
-	return m_settings;
+    return m_settings;
 }
 
 Ref<SpaceObject> SpaceObject::createSpaceObject(SpaceObjectSettings& settings)
