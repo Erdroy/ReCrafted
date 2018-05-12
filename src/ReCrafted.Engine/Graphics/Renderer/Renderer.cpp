@@ -498,6 +498,13 @@ namespace Renderer
         FreeVertexBufferHandle(handle);
     }
 
+    IndexBufferHandle CreateIndexBuffer(uint count, bool is32bit, bool dynamic)
+    {
+        CHECK_MAIN_THREAD();
+
+        return CreateIndexBuffer(count, nullptr, is32bit, dynamic);
+    }
+
     IndexBufferHandle CreateIndexBuffer(uint indexCount, RendererMemory data, bool is32bit, bool dynamic)
     {
         CHECK_MAIN_THREAD();

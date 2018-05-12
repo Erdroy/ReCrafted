@@ -507,6 +507,14 @@ namespace Renderer
     RENDERER_FUNCTION(void) DestroyVertexBuffer(VertexBufferHandle handle);
 
     /// <summary>
+    /// Creates new IndexBuffer without memory initialization.
+    /// </summary>
+    /// <param name="count">The count of indices.</param>
+    /// <param name="is32bit">Specifies the passed single index size. By default it is 32 bit. When false, it is 16.</param>
+    /// <param name="dynamic">When true, this buffer will be allowed to be updated through UpdateIndexBuffer.</param>
+    RENDERER_FUNCTION(IndexBufferHandle) CreateIndexBuffer(uint count, bool is32bit = true, bool dynamic = false);
+
+    /// <summary>
     /// Creates new IndexBuffer.
     /// </summary>
     /// <param name="indexCount">The count of indices.</param>
