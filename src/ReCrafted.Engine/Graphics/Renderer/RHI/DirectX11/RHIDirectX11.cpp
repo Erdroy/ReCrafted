@@ -116,6 +116,8 @@ namespace Renderer
         ID3D11RasterizerState* m_rasterizerState;
         ID3D11RasterizerState* m_rasterizerState_WireFrame;
 
+        ID3D11BlendState* m_blendState_Overlay;
+
         // == d3d11 resources ==
         ID3D11Device* m_device = nullptr;
         ID3D11DeviceContext* m_deviceContext = nullptr;
@@ -414,21 +416,27 @@ namespace Renderer
 
                 if (stencilEnabled && depthEnabled)
                 {
-                    m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1u);
+                    m_context->OMSetDepthStencilState(m_depthStencilState, 1u);
                 }
                 else if(stencilEnabled)
                 {
-                    m_deviceContext->OMSetDepthStencilState(m_depthStencilState_NoDepth, 1u);
+                    m_context->OMSetDepthStencilState(m_depthStencilState_NoDepth, 1u);
                 }
                 else if (depthEnabled)
                 {
-                    m_deviceContext->OMSetDepthStencilState(m_depthStencilState_NoStencil, 1u);
+                    m_context->OMSetDepthStencilState(m_depthStencilState_NoStencil, 1u);
                 }
                 else
                 {
-                    m_deviceContext->OMSetDepthStencilState(m_depthStencilState_Disabled, 1u);
+                    m_context->OMSetDepthStencilState(m_depthStencilState_Disabled, 1u);
                 }
 
+                break;
+            }
+
+            case RenderFlags::RenderOverlay:
+            {
+                m_context->OMSetBlendState(command->value ? m_blendState_Overlay : nullptr, nullptr, 0xFFFFFFFF);
                 break;
             }
 
@@ -1036,10 +1044,29 @@ namespace Renderer
             hr = m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState);
             _ASSERT(SUCCEEDED(hr));
 
+            // create wireframe RC
             rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
             hr = m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState_WireFrame);
             _ASSERT(SUCCEEDED(hr));
 
+            // Create overlay blend-state
+            D3D11_BLEND_DESC blendDesc = {};
+            rvar blendTarget = blendDesc.RenderTarget[0] = {};
+
+            blendDesc.AlphaToCoverageEnable = false;
+            blendDesc.IndependentBlendEnable = false;
+
+            blendTarget.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+            blendTarget.BlendEnable = true;
+            blendTarget.BlendOp = D3D11_BLEND_OP_ADD;
+            blendTarget.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+            blendTarget.SrcBlend = D3D11_BLEND_SRC_ALPHA;
+            blendTarget.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+            blendTarget.SrcBlendAlpha = D3D11_BLEND_ONE;
+            blendTarget.DestBlendAlpha = D3D11_BLEND_ONE;
+
+            hr = m_device->CreateBlendState(&blendDesc, &m_blendState_Overlay);
+            _ASSERT(SUCCEEDED(hr));
 
             // Spawn Worker Threads
             for (var i = 0; i < cpuCount && i < RENDERER_MAX_RENDER_THREADS; i++)

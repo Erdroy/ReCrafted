@@ -50,6 +50,8 @@ namespace Renderer
             AnisotropicX8 = 1 << 10,
             AnisotropicX16 = 1 << 11,
 
+            RenderOverlay = 1 << 12,
+
             Count
         };
         
