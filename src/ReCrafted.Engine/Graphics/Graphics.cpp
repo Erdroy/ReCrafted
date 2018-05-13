@@ -45,8 +45,10 @@ void Graphics::initializeRenderer()
     Renderer::Initialize(
         Renderer::RendererAPI::DirectX11,
         Renderer::Settings::Debug,
-        Renderer::RenderFlags::_enum((Renderer::RenderFlags::Default) & ~Renderer::RenderFlags::VSync)
+        Renderer::RenderFlags::_enum(Renderer::RenderFlags::Default)
     );
+
+    Renderer::SetFlag(Renderer::RenderFlags::VSync, false);
 
     // Create Output
     m_window = Renderer::CreateWindowHandle(Platform::getCurrentWindow());
@@ -275,11 +277,6 @@ void Graphics::setShader(Ref<Shader>& shader)
     }
 }
 
-void Graphics::setView(int viewId)
-{
-    m_viewId = viewId;
-}
-
 void Graphics::setMatrix(Matrix& mvpMatrix)
 {
     Renderer::SetShaderValue(m_currentShader->m_shaderHandle, 0, 0, &mvpMatrix, sizeof(Matrix));
@@ -287,41 +284,41 @@ void Graphics::setMatrix(Matrix& mvpMatrix)
 
 void Graphics::setStage(RenderStage::_enum stage)
 {
-    /*m_renderStage = stage;
+    m_renderStage = stage;
 
     switch (stage)
     {
     case RenderStage::DrawUI:
     case RenderStage::DrawWebUI:
-        bgfx::setState(0
+        /*bgfx::setState(0
             | BGFX_STATE_RGB_WRITE
             | BGFX_STATE_ALPHA_WRITE
             | BGFX_STATE_BLEND_FUNC_SEPARATE(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA, BGFX_STATE_BLEND_ZERO, BGFX_STATE_BLEND_ONE)
             | BGFX_STATE_BLEND_EQUATION(BGFX_STATE_BLEND_EQUATION_ADD)
             & ~BGFX_STATE_DEPTH_TEST_LESS
-        );
+        );*/
+        Renderer::SetFlag(Renderer::RenderFlags::DepthTest, false);
+        Renderer::SetFlag(Renderer::RenderFlags::DepthStencil, false);
+
+        // TODO: set blend state
+
         return;
 
     case RenderStage::DebugDrawLines:
-        bgfx::setState(0
-            | BGFX_STATE_RGB_WRITE
-            | BGFX_STATE_PT_LINES
-            | BGFX_STATE_LINEAA
-            | BGFX_STATE_CULL_CW
-            | BGFX_STATE_BLEND_ALPHA);
+        Renderer::SetFlag(Renderer::RenderFlags::DrawLineLists, true);
+        // TODO: set blend state
         return;
 
     case RenderStage::DebugDrawTriangles:
-        bgfx::setState(0
-            | BGFX_STATE_RGB_WRITE
-            | BGFX_STATE_CULL_CCW
-            | BGFX_STATE_BLEND_ALPHA);
+        Renderer::SetFlag(Renderer::RenderFlags::DrawLineLists, false);
+        // TODO: set blend state
         return;
 
     case RenderStage::Default:
     default:
-        setView(1);
-        bgfx::setState(0 | BGFX_STATE_DEFAULT);
-        return;
-    }*/
+    {
+        Renderer::SetFlags(Renderer::RenderFlags::_enum(Renderer::RenderFlags::Default));
+        Renderer::SetFlag(Renderer::RenderFlags::VSync, false);
+    }
+    }
 }

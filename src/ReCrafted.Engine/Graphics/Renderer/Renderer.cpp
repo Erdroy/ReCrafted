@@ -201,6 +201,13 @@ namespace Renderer
         g_commandList->WriteCommand(&command);
     }
 
+    void SetFlags(RenderFlags::_enum flag)
+    {
+        Command_SetFlag command;
+        command.flag = flag;
+        g_commandList->WriteCommand(&command);
+    }
+
     bool GetFlag(RenderFlags::_enum flag)
     {
         return (m_renderFlags & flag) != 0;

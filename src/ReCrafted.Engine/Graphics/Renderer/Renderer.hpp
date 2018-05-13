@@ -40,15 +40,19 @@ namespace Renderer
 
             DrawLineLists = 1 << 4,
 
-            DepthStencil = 1 << 5,
-            DepthTest = 1 << 6,
+            DrawWireFrame = 1 << 5,
+
+            DepthStencil = 1 << 6,
+            DepthTest = 1 << 7,
 
             AnisotropicX2 = 1 << 8,
             AnisotropicX4 = 1 << 9,
             AnisotropicX8 = 1 << 10,
             AnisotropicX16 = 1 << 11,
-        };
 
+            Count
+        };
+        
         static const uint Default = DepthTest | DepthStencil | VSync;
     };
 
@@ -68,48 +72,6 @@ namespace Renderer
     };
 
     RENDERER_ENUM(RendererAPI);
-
-    struct VertexAttribute
-    {
-        enum _enum : char
-        {
-            Position,
-            Normal,
-            Tangent,
-            BiTangent,
-            Color0,
-            Color1,
-            Color2,
-            Color3,
-            TexCoord0,
-            TexCoord1,
-            TexCoord2,
-            TexCoord3,
-            TexCoord4,
-            TexCoord5,
-            TexCoord6,
-            TexCoord7,
-
-            Count
-        };
-    };
-
-    RENDERER_ENUM(VertexAttribute);
-
-    struct VertexAttributeType
-    {
-        enum _enum : char
-        {
-            UInt8,
-            Int16,
-            Half,
-            Float,
-
-            Count
-        };
-    };
-
-    RENDERER_ENUM(VertexAttributeType);
 
     struct TextureFormat
     {
@@ -367,10 +329,10 @@ namespace Renderer
     /// <param name="memory">The memory pointer to be released.</param>
     RENDERER_FUNCTION(void) Free(RendererMemory memory);
 
-    // TODO: NOT IMPLEMENTED!
     RENDERER_FUNCTION(void) SetFlag(RenderFlags::_enum flag, bool value);
 
-    // TODO: NOT IMPLEMENTED!
+    RENDERER_FUNCTION(void) SetFlags(RenderFlags::_enum flag);
+
     RENDERER_FUNCTION(bool) GetFlag(RenderFlags::_enum flag);
 
     // ======== RENDERING - BASIC ========

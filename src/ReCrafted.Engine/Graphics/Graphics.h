@@ -26,7 +26,6 @@ private:
 SCRIPTING_API_IMPL()
 
 private:
-    int m_viewId = 0;
     bool m_wireframe = false;
 
     Ref<Shader> m_currentShader = nullptr;
@@ -74,11 +73,6 @@ public:
      * \brief Sets given shader as current.
      */
     void setShader(Ref<Shader>& shader);
-
-    /**
-    * \brief Sets given view id as current.
-    */
-    void setView(int viewId);
 
     /**
     * \brief Sets given matrix as current.

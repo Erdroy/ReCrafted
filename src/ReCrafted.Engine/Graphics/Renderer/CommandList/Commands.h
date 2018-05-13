@@ -25,6 +25,7 @@ namespace Renderer
             Unknown,
 
             SetFlag,
+            SetFlags,
 
             Draw,
             DrawIndexed,
@@ -70,6 +71,10 @@ namespace Renderer
     Command(SetFlag,
         RenderFlags::_enum flag = RenderFlags::None;
         bool value = false;
+    );
+
+    Command(SetFlags,
+        RenderFlags::_enum flags = RenderFlags::None;
     );
 
     Command(Draw,

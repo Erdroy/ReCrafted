@@ -110,8 +110,11 @@ namespace Renderer
 
         ID3D11DepthStencilState* m_depthStencilState;
         ID3D11DepthStencilState* m_depthStencilState_Disabled;
+        ID3D11DepthStencilState* m_depthStencilState_NoDepth;
+        ID3D11DepthStencilState* m_depthStencilState_NoStencil;
 
         ID3D11RasterizerState* m_rasterizerState;
+        ID3D11RasterizerState* m_rasterizerState_WireFrame;
 
         // == d3d11 resources ==
         ID3D11Device* m_device = nullptr;
@@ -150,6 +153,8 @@ namespace Renderer
             void InitializeWorker();
             void WorkerThread();
 
+            void ResetFlags();
+
             void PrepareFrame();
             void ProcessFrame();
             void ExecuteCommandList();
@@ -159,6 +164,7 @@ namespace Renderer
 
         public:
             FORCEINLINE void Execute_SetFlag(Command_SetFlag* command);
+            FORCEINLINE void Execute_SetFlags(Command_SetFlags* command);
 
             FORCEINLINE void Execute_Draw(Command_Draw* command);
             FORCEINLINE void Execute_DrawIndexed(Command_DrawIndexed* command);
@@ -246,25 +252,28 @@ namespace Renderer
             }
         }
 
+        void WorkerThreadInstance::ResetFlags()
+        {
+            // Setup default states (reset)
+            for (var i = 0u; 1u << i < RenderFlags::Count; i++)
+            {
+                cvar flag = RenderFlags::_enum(1u << i);  // NOLINT
+                cvar flagState = GetFlag(flag);
+
+                Command_SetFlag command = {};
+                command.flag = flag;
+                command.value = flagState;
+
+                Execute_SetFlag(&command);
+            }
+        }
+
         void WorkerThreadInstance::PrepareFrame()
         {
-            // Setup default states
+            m_context->ClearState();
 
-            // Bind depth stencil state when needed
-            var depthRead = GetFlag(RenderFlags::DepthTest);
-            var depthWrite = GetFlag(RenderFlags::DepthStencil);
-
-            if (depthRead && depthWrite)
-            {
-                m_context->OMSetDepthStencilState(m_depthStencilState, 1u);
-            }
-            else
-            {
-                m_context->OMSetDepthStencilState(m_depthStencilState_Disabled, 1u);
-            }
-
-            // Bind rasterizer state
-            m_context->RSSetState(m_rasterizerState);
+            // setup all flags to default
+            ResetFlags();
         }
 
         void WorkerThreadInstance::ProcessFrame()
@@ -335,6 +344,7 @@ namespace Renderer
                     break;
                 }
             DEFINE_COMMAND_EXECUTOR(SetFlag);
+            DEFINE_COMMAND_EXECUTOR(SetFlags);
 
             DEFINE_COMMAND_EXECUTOR(Draw);
             DEFINE_COMMAND_EXECUTOR(DrawIndexed);
@@ -382,10 +392,66 @@ namespace Renderer
 
         void WorkerThreadInstance::Execute_SetFlag(Command_SetFlag* command)
         {
-            /*if(command->value)
-                m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1u);
-            else
-                m_deviceContext->OMSetDepthStencilState(m_depthStencilState_Disabled, 1u);*/
+            switch(command->flag)
+            {
+            case RenderFlags::DrawLineLists:
+            {
+                m_context->IASetPrimitiveTopology(command->value ? D3D11_PRIMITIVE_TOPOLOGY_LINELIST : D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+                break;
+            }
+
+            case RenderFlags::DrawWireFrame:
+            {
+                m_context->RSSetState(command->value ? m_rasterizerState_WireFrame : m_rasterizerState);
+                break;
+            }
+
+            case RenderFlags::DepthTest:
+            case RenderFlags::DepthStencil:
+            {
+                cvar stencilEnabled = m_renderFlags & RenderFlags::DepthStencil;
+                cvar depthEnabled = m_renderFlags & RenderFlags::DepthTest;
+
+                if (stencilEnabled && depthEnabled)
+                {
+                    m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1u);
+                }
+                else if(stencilEnabled)
+                {
+                    m_deviceContext->OMSetDepthStencilState(m_depthStencilState_NoDepth, 1u);
+                }
+                else if (depthEnabled)
+                {
+                    m_deviceContext->OMSetDepthStencilState(m_depthStencilState_NoStencil, 1u);
+                }
+                else
+                {
+                    m_deviceContext->OMSetDepthStencilState(m_depthStencilState_Disabled, 1u);
+                }
+
+                break;
+            }
+
+            case RenderFlags::AnisotropicX2:
+            case RenderFlags::AnisotropicX4:
+            case RenderFlags::AnisotropicX8:
+            case RenderFlags::AnisotropicX16:
+
+            case RenderFlags::MSAAx2:
+            case RenderFlags::MSAAx4:
+            case RenderFlags::VSync:
+            case RenderFlags::TripleBuffered:
+            case RenderFlags::None:
+            case RenderFlags::Count:
+            default: 
+                break;
+            }
+        }
+
+        void WorkerThreadInstance::Execute_SetFlags(Command_SetFlags* command)
+        {
+            m_renderFlags = command->flags;
+            ResetFlags();
         }
 #pragma endregion
 
@@ -393,21 +459,11 @@ namespace Renderer
 #pragma region WorkerThread command execution implementation
         void WorkerThreadInstance::Execute_Draw(Command_Draw* command)
         {
-            if (m_renderFlags & RenderFlags::DrawLineLists)
-                m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-            else
-                m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
             m_context->Draw(command->vertexCount, 0);
         }
 
         void WorkerThreadInstance::Execute_DrawIndexed(Command_DrawIndexed* command)
         {
-            if (m_renderFlags & RenderFlags::DrawLineLists)
-                m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-            else
-                m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
             m_context->DrawIndexed(command->indexCount, 0, 0);
         }
 
@@ -454,7 +510,6 @@ namespace Renderer
             renderBuffer->SetSize(command->width, command->height);
             renderBuffer->SetRTVs(renderTargets);
         }
-
 
         void WorkerThreadInstance::Execute_CreateShader(Command_CreateShader* command)
         {
@@ -948,12 +1003,25 @@ namespace Renderer
             depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
             depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-            // create regular full DSS
+            // create regular DSS
             hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState);
+            _ASSERT(SUCCEEDED(hr));
+
+            // create no-depth DSS
+            depthStencilDesc.DepthEnable = false;
+            depthStencilDesc.StencilEnable = true;
+            hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState_NoDepth);
+            _ASSERT(SUCCEEDED(hr));
+
+            // create no-stencil DSS
+            depthStencilDesc.DepthEnable = true;
+            depthStencilDesc.StencilEnable = false;
+            hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState_NoStencil);
             _ASSERT(SUCCEEDED(hr));
 
             // create disabled DSS
             depthStencilDesc.DepthEnable = false;
+            depthStencilDesc.StencilEnable = false;
             hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState_Disabled);
             _ASSERT(SUCCEEDED(hr));
 
@@ -966,6 +1034,10 @@ namespace Renderer
             rasterizerDesc.DepthClipEnable = true;
 
             hr = m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState);
+            _ASSERT(SUCCEEDED(hr));
+
+            rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
+            hr = m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState_WireFrame);
             _ASSERT(SUCCEEDED(hr));
 
 
