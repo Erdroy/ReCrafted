@@ -37,7 +37,7 @@ private:
     uint m_bpp = 0u;
     uint m_mips = 0u;
 
-    Renderer::TextureFormat::_enum m_textureFormat = {};
+    Renderer::TextureFormat::_enum m_textureFormat = Renderer::TextureFormat::RGBA8;
 
 public:
 IRESOURCE_IMPL(Texture2D)
@@ -45,8 +45,8 @@ IRESOURCE_IMPL(Texture2D)
 private:
     void onDestroy() override;
 
-    static void releaseBitmap(void* ptr);
-    static void releaseData(void* ptr);
+    static void releaseBitmap(void* ptr, void* userData);
+    static void releaseData(void* ptr, void* userData);
 
 public:
     void dispose() override;
@@ -137,6 +137,12 @@ public:
 	 * \brief Apply, all pixel operations will be unavailable after calling this method.
 	 */
     void apply();
+
+public:
+    Renderer::Texture2DHandle getHandle() const
+    {
+        return m_textureHandle;
+    }
 
 public:
     /**

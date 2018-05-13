@@ -590,7 +590,7 @@ namespace Renderer
         void WorkerThreadInstance::Execute_UpdateIndexBuffer(Command_UpdateIndexBuffer* command)
         {
             rvar buffer = m_indexBuffers[command->handle.idx];
-            _ASSERT(buffer != nullptr);
+            _ASSERT(buffer.buffer != nullptr);
 
             D3D11_MAPPED_SUBRESOURCE res;
             var hr = m_context->Map(buffer.buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
@@ -713,7 +713,7 @@ namespace Renderer
             textureDesc.Height = command->height;
             textureDesc.MipLevels = mipLevels;
             textureDesc.MiscFlags = 0;
-            textureDesc.SampleDesc.Count = m_msaaSampleCount;
+            textureDesc.SampleDesc.Count = rt ? m_msaaSampleCount : 1;
             textureDesc.SampleDesc.Quality = 0;
             textureDesc.CPUAccessFlags = 0;
             textureDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -744,7 +744,7 @@ namespace Renderer
                 D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc = {};
 
                 depthStencilViewDesc.Format = DGXI_TextureFormats[command->textureFormat][2];
-                depthStencilViewDesc.ViewDimension = rt
+                depthStencilViewDesc.ViewDimension = m_msaaSampleCount > 1
                                                          ? D3D11_DSV_DIMENSION_TEXTURE2DMS
                                                          : D3D11_DSV_DIMENSION_TEXTURE2D;
                 depthStencilViewDesc.Texture2D.MipSlice = 0;
@@ -756,7 +756,7 @@ namespace Renderer
             {
                 D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
                 srvDesc.Format = DGXI_TextureFormats[command->textureFormat][1];
-                srvDesc.ViewDimension = rt ? D3D11_SRV_DIMENSION_TEXTURE2DMS : D3D11_SRV_DIMENSION_TEXTURE2D;
+                srvDesc.ViewDimension = m_msaaSampleCount > 1 ? D3D11_SRV_DIMENSION_TEXTURE2DMS : D3D11_SRV_DIMENSION_TEXTURE2D;
                 srvDesc.Texture2D.MipLevels = mipLevels;
                 srvDesc.Texture2D.MostDetailedMip = 0;
 
@@ -767,7 +767,7 @@ namespace Renderer
                 {
                     D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
                     rtvDesc.Format = DGXI_TextureFormats[command->textureFormat][1];
-                    rtvDesc.ViewDimension = rt ? D3D11_RTV_DIMENSION_TEXTURE2DMS : D3D11_RTV_DIMENSION_TEXTURE2D;
+                    rtvDesc.ViewDimension = m_msaaSampleCount > 1 ? D3D11_RTV_DIMENSION_TEXTURE2DMS : D3D11_RTV_DIMENSION_TEXTURE2D;
                     rtvDesc.Texture2D.MipSlice = 0;
 
                     hr = m_device->CreateRenderTargetView(texture.texture, &rtvDesc, &texture.rtv);

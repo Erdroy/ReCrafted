@@ -48,7 +48,8 @@ namespace Internal
 
     MonoObject* createTexture2D()
     {
-        return Object::createInstance<Texture2D>("ReCrafted.API.Graphics", "Texture2D")->getManagedPtr();
+        cvar texture = Object::createInstance<Texture2D>("ReCrafted.API.Graphics", "Texture2D");
+        return texture->getManagedPtr();
     }
 }
 

@@ -32,12 +32,12 @@ void Texture2D::onDestroy()
     dispose();
 }
 
-void Texture2D::releaseBitmap(void* ptr)
+void Texture2D::releaseBitmap(void* ptr, void* userData)
 {
-    upng::upng_free(static_cast<upng_t*>(ptr));
+    upng::upng_free(static_cast<upng_t*>(userData));
 }
 
-void Texture2D::releaseData(void* ptr)
+void Texture2D::releaseData(void* ptr, void* userData)
 {
     delete[] static_cast<byte*>(ptr);
 }
@@ -162,13 +162,12 @@ void Texture2D::apply()
 
     Renderer::RendererMemory memory;
     if (m_bitmap)
-        memory = Renderer::Allocate(m_bitmap, std::function<void(void*)>(&Texture2D::releaseBitmap));
+        memory = Renderer::Allocate(m_bits, std::function<void(void*, void*)>(&Texture2D::releaseBitmap), m_bitmap);
     else
-        memory = Renderer::Allocate(m_bits, std::function<void(void*)>(&Texture2D::releaseData));
+        memory = Renderer::Allocate(m_bits, std::function<void(void*, void*)>(&Texture2D::releaseData));
 
     cvar mipCount = uint8_t(m_mips + 1);
-    m_textureHandle = Renderer::CreateTexture2D(uint16_t(m_width), uint16_t(m_height), mipCount, m_textureFormat,
-                                                memory, size);
+    m_textureHandle = Renderer::CreateTexture2D(uint16_t(m_width), uint16_t(m_height), mipCount, m_textureFormat, memory, size);
     m_bits = nullptr;
 }
 

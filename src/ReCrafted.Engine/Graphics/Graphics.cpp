@@ -45,7 +45,7 @@ void Graphics::initializeRenderer()
     Renderer::Initialize(
         Renderer::RendererAPI::DirectX11,
         Renderer::Settings::Debug,
-        Renderer::RenderFlags::_enum((Renderer::RenderFlags::Default | Renderer::RenderFlags::MSAAx4) & ~Renderer::RenderFlags::VSync)
+        Renderer::RenderFlags::_enum((Renderer::RenderFlags::Default) & ~Renderer::RenderFlags::VSync)
     );
 
     // Create Output

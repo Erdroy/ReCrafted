@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 05/11/2018 21:54:47 Source: 'Texture2D.API.cpp' Target: 'Graphics/Texture2D.Gen.cs'
+// Generated: 05/13/2018 17:34:57 Source: 'Texture2D.API.cpp' Target: 'Graphics/Texture2D.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
