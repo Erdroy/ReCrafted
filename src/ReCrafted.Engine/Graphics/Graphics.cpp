@@ -160,6 +160,9 @@ void Graphics::renderBegin()
     var farPlane = Camera::getMainCamera()->get_farPlane();
     Renderer::SetShaderValue(m_currentShader->m_shaderHandle, 0, 2, &farPlane, sizeof(float));
 
+    // apply shader changes
+    Renderer::ApplyShader(m_gbufferFillShader->m_shaderHandle, 0);
+
     // bind gbuffer
     m_gbuffer->bind();
 }

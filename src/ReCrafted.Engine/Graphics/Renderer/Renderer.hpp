@@ -629,6 +629,7 @@ namespace Renderer
 
     /// <summary>
     /// Sets given shader pass as current.
+    /// Updates all uniforms in shader program. Please make sure that you SetShaderValue before calling this.
     /// </summary>
     /// <param name="handle">The shader handle.</param>
     /// <param name="passId">The shader pass index.</param>
