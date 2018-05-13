@@ -358,7 +358,7 @@ namespace Renderer
     /// release it by using Renderer::Free(...) function.
     /// </param>
     /// <returns>The allocated memory pointer.</returns>
-    RENDERER_FUNCTION(RendererMemory) Allocate(void* data, std::function<void(void*)> releaseFunc, uint lifeTime = 2);
+    RENDERER_FUNCTION(RendererMemory) Allocate(void* data, std::function<void(void*, void*)> releaseFunc, void* userData = nullptr, uint lifeTime = 2);
 
     /// <summary>
     /// Frees given memory pointer.

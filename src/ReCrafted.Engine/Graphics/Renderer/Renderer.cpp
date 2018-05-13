@@ -20,8 +20,9 @@ namespace Renderer
     {
     public:
         uint ttl = 0u;
+        void* userData = nullptr;
         RendererMemory memory = nullptr;
-        std::function<void(void*)> releaseFunc = {};
+        std::function<void(void*, void*)> releaseFunc = {};
     };
 
     // ==== HANDLE DEFINITIONS ====
@@ -59,7 +60,7 @@ namespace Renderer
     Lock m_memoryAllocationsLock = {};
 #endif
 
-    void FreeRendererMemory(void* ptr)
+    void FreeRendererMemory(void* ptr, void* userData)
     {
         Free(static_cast<RendererMemory>(ptr));
     }
@@ -76,10 +77,10 @@ namespace Renderer
         {
             if (memory.ttl == 0)
             {
-                if (memory.memory)
+                if (memory.memory && memory.releaseFunc != nullptr)
                 {
                     // release memory
-                    memory.releaseFunc(static_cast<void*>(memory.memory));
+                    memory.releaseFunc(static_cast<void*>(memory.memory), memory.userData);
                 }
 
                 memory.memory = nullptr;
@@ -161,10 +162,10 @@ namespace Renderer
 
     RendererMemory Allocate(const size_t size, uint lifeTime)
     {
-        return Allocate(new byte[size], std::function<void(void*)>(&FreeRendererMemory), lifeTime);
+        return Allocate(new byte[size], std::function<void(void*, void*)>(&FreeRendererMemory), nullptr, lifeTime);
     }
 
-    RendererMemory Allocate(void* data, std::function<void(void*)> releaseFunc, uint lifeTime)
+    RendererMemory Allocate(void* data, std::function<void(void*, void*)> releaseFunc, void* userData, uint lifeTime)
     {
         //cvar memory = static_cast<RendererMemory>();
         cvar memory = static_cast<RendererMemory>(data);
@@ -178,6 +179,7 @@ namespace Renderer
             MemoryAllocation mem = {};
             mem.memory = memory;
             mem.ttl = lifeTime;
+            mem.userData = userData;
             mem.releaseFunc = releaseFunc;
             m_memoryAllocations.emplace_back(mem);
         }
