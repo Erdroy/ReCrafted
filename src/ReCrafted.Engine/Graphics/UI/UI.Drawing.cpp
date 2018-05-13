@@ -130,22 +130,22 @@ void UI::setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex
 
     *uvDiff = Rectf(uv_xDiff, uv_yDiff, uv_xzDiff, uv_ywDiff);
 
-    var rX = rect.x;
-    var rY = rect.y;
-    var rW = rect.width;
-    var rH = rect.height;
+    cvar rX = rect.x;
+    cvar rY = rect.y;
+    cvar rW = rect.width;
+    cvar rH = rect.height;
 
     // Width
-    auto width = rW / screen_width;
+    cvar width = rW / screen_width;
 
     // Height
-    auto height = rH / screen_height;
+    cvar height = rH / screen_height;
 
     // X (Top-left)
-    auto x = rX / screen_width - 1.0f;
+    cvar x = rX / screen_width - 1.0f;
 
     // Y (Top-left)
-    auto y = 1.0f - rY / screen_height - height;
+    cvar y = 1.0f - rY / screen_height - height;
 
     // calculate x and y of the first vertex.
     v0.x = x;
@@ -213,9 +213,9 @@ void UI::finalizeVertexData(vertex& v0, vertex& v1, vertex& v2, vertex& v3, uint
     cmd.indices[2] = 2;
 
     // second triangle
-    cmd.indices[3] = 0;
+    cmd.indices[3] = 2;
     cmd.indices[4] = 3;
-    cmd.indices[5] = 2;
+    cmd.indices[5] = 0;
 
     m_drawCmds.add(cmd);
 }
@@ -230,7 +230,7 @@ void UI::internal_drawBox(Rectf rect)
 
 void UI::internal_drawBoxTextured(Texture2D* texture, Rectf rect, Rectf uvs)
 {
-    auto textureHandle = 0u; // bgfx texture->m_textureHandle;
+    cvar textureHandle = texture->getHandle().idx;
 
     BOX_VERTICES_DEFINE();
     BOX_VERTICES_SETUP();

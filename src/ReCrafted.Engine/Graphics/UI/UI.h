@@ -50,23 +50,28 @@ private:
     };
 
 private:
-    const unsigned int m_maxVertexCount = 65535 * 3;
-    const unsigned int m_maxIndexCount = 65535;
+    const uint m_maxVertexCount = 65532; // (65532 % 2 = 0)
+    const uint m_maxDrawCommands = m_maxVertexCount / 4;
+    const uint m_maxIndexCount = m_maxDrawCommands * 6;
 
-    const int m_vertexBufferSize = m_maxVertexCount * sizeof vertex;
-    const int m_indexBufferSize = m_maxIndexCount * sizeof uint16_t;
+    const uint m_vertexSize = sizeof(vertex);
+    const uint m_indexSize = sizeof(uint16_t);
+    const uint m_vertexBufferSize = m_vertexSize * m_maxVertexCount * sizeof vertex;
+    const uint m_indexBufferSize = m_maxIndexCount * sizeof uint16_t;
+
+private:
+    Renderer::VertexBufferHandle m_vertexBuffer = {};
+    Renderer::RendererMemory m_vertexBufferData = nullptr;
+    uint m_vertexCount = 0u;
+    uint m_vertexBufferDataPos = 0u;
+
+    Renderer::IndexBufferHandle m_indexBuffer = {};
+    Renderer::RendererMemory m_indexBufferData = nullptr;
+    uint m_indexCount = 0u;
+    uint m_indexBufferDataPos = 0u;
 
 private:
     Array<drawcmd> m_drawCmds = {};
-
-    const byte* m_vertexBufferData = nullptr;
-    const byte* m_indexBufferData = nullptr;
-
-    uint m_vertexBufferDataPos = 0u;
-    uint m_indexBufferDataPos = 0u;
-
-    uint m_vertexCount = 0u;
-    uint m_indexCount = 0u;
 
     Color m_color = {};
 
@@ -90,7 +95,6 @@ private:
     // drawing
     FORCEINLINE void setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex& v3, Rectf* uvDiff) const;
     FORCEINLINE void finalizeVertexData(vertex& v0, vertex& v1, vertex& v2, vertex& v3, uint texture);
-
 
 public:
     virtual ~UI() = default;
