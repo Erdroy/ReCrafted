@@ -118,11 +118,11 @@ void Graphics::render()
         {
             // render world
             renderWorld();
-
-            // render UI
-            renderUI();
         }
         renderEnd(); // end rendering
+
+        // render UI
+        renderUI();
 
         // next frame, wait vsync
         Renderer::Frame();
