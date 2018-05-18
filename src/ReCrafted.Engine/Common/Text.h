@@ -122,8 +122,14 @@ public:
     /// <param name="text">The text that will be copied.</param>
     Text(const Text& text)
     {
-        auto length = text.length();
+        if(text.m_const)
+        {
+            m_data = text.m_data;
+            m_const = true;
+            return;
+        }
 
+        const auto length = text.length();
         alloc_chars(length);
         copy_chars(text.m_data, length);
         m_cstrData = text.m_cstrData;
@@ -437,7 +443,7 @@ public:
     /// </summary>
     static Text constant(uint16_t* chars)
     {
-        Text text = {};
+        Text text;
         text.m_data = chars;
         text.m_const = true;
         return text;
