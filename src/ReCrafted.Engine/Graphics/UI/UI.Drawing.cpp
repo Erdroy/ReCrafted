@@ -48,12 +48,12 @@ FORCEINLINE void drawTextBase(UI* instance, Font* font, T* characters, int chara
 
         if (character == ' ') // Space
         {
-            auto glyphData = font->getCharacter(Char('i'));
+            cvar glyphData = font->getCharacter(Char('i'));
             currentPosition += Vector2(float(glyphData.advanceX), 0.0f);
         }
         else if (character == 9) // Tab
         {
-            auto glyphData = font->getCharacter(Char('i'));
+            cvar glyphData = font->getCharacter(Char('i'));
             currentPosition += Vector2(float(glyphData.advanceX) * 3, 0.0f);
         }
         else if (character == '\n' || character == 10 || character == 13) // New line character.
@@ -83,8 +83,8 @@ FORCEINLINE void drawTextBase(UI* instance, Font* font, T* characters, int chara
 
 void UI::setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex& v3, Rectf* uvDiff) const
 {
-    var screen_width = Display::get_Width() * 0.5f;
-    var screen_height = Display::get_Height() * 0.5f;
+    cvar screenWidth = Display::get_Width() * 0.5f;
+    cvar screenHeight = Display::get_Height() * 0.5f;
 
     var uv_xDiff = 0.0f;
     var uv_yDiff = 0.0f;
@@ -136,16 +136,16 @@ void UI::setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex
     cvar rH = rect.height;
 
     // Width
-    cvar width = rW / screen_width;
+    cvar width = rW / screenWidth;
 
     // Height
-    cvar height = rH / screen_height;
+    cvar height = rH / screenHeight;
 
     // X (Top-left)
-    cvar x = rX / screen_width - 1.0f;
+    cvar x = rX / screenWidth - 1.0f;
 
     // Y (Top-left)
-    cvar y = 1.0f - rY / screen_height - height;
+    cvar y = 1.0f - rY / screenHeight - height;
 
     // calculate x and y of the first vertex.
     v0.x = x;

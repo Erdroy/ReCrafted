@@ -165,6 +165,9 @@ void Graphics::renderBegin()
     // apply shader changes
     Renderer::ApplyShader(m_gbufferFillShader->m_shaderHandle, 0);
 
+    if (Input::isKey(Key_F1))
+        Renderer::SetFlag(Renderer::RenderFlags::DrawWireFrame, true);
+
     // bind gbuffer
     m_gbuffer->bind();
 }
@@ -175,6 +178,7 @@ void Graphics::renderEnd()
 
     if (Input::isKey(Key_F1))
     {
+        Renderer::SetFlag(Renderer::RenderFlags::DrawWireFrame, false);
         Renderer::BlitTexture(m_frameBuffer, m_gbuffer->getTarget(0));
         // reset everything
         m_currentShader = nullptr;
@@ -182,6 +186,14 @@ void Graphics::renderEnd()
     }
 
     if (Input::isKey(Key_F2))
+    {
+        Renderer::BlitTexture(m_frameBuffer, m_gbuffer->getTarget(0));
+        // reset everything
+        m_currentShader = nullptr;
+        return;
+    }
+
+    if (Input::isKey(Key_F3))
     {
         Renderer::BlitTexture(m_frameBuffer, m_gbuffer->getTarget(1));
         // reset everything

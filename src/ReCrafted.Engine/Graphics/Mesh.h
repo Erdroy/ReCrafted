@@ -116,11 +116,6 @@ public:
     void applyChanges();
 
     /**
-	 * \brief Simplifies this mesh in-place.
-	 */
-    void simplify();
-
-    /**
 	 * \brief Upload buffers to the GPU.
 	 */
     void upload();

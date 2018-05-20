@@ -97,11 +97,11 @@ void SpaceObjectChunk::rebuild(IVoxelMesher* mesher)
 
 void SpaceObjectChunk::upload()
 {
+    ScopeLock(m_meshLock);
+
     // upload changes
     if (m_newMesh && m_newMesh->canUpload())
     {
-        ScopeLock(m_meshLock);
-
         if (m_mesh)
             SafeDispose(m_mesh)
 

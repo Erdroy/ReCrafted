@@ -29,10 +29,10 @@ private:
     public:
         //Vector3 vertexPosition;
         //uint vertexIndex;
-        Vector3 vertexNormal;
+        Vector3 vertexNormal = {};
 
-        byte caseIndex;
-        bool isFullOrEmpty;
+        byte caseIndex = 0u;
+        bool isFullOrEmpty = true;
     };
 
 private:

@@ -22,7 +22,7 @@ void UpdateLoop::simulate()
 void UpdateLoop::waitForTargetFps(double last)
 {
     Profiler::beginProfile("WaitForTargetFps");
-    cvar target = 1.0 / m_targetFps * 1000.0;
+    cvar target = (1.0 / m_targetFps) * 1000.0;
     cvar delta = Platform::getMiliseconds() - last;
     cvar sleep = target - delta;
 

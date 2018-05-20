@@ -67,13 +67,13 @@ void UI::push_drawcmd(drawcmd* cmd, int index)
     cmd->indices[5] += index;
 
     // copy vertex data
-    var vertexBufferData = m_vertexBufferData;
+    var vertexBufferData = static_cast<byte*>(m_vertexBufferData);
     vertexBufferData += m_vertexBufferDataPos;
 
     memcpy(vertexBufferData, cmd->vertices, m_vertexSize * 4);
 
     // copy index data
-    var indexBufferData = m_indexBufferData;
+    var indexBufferData = static_cast<byte*>(m_indexBufferData);
     indexBufferData += m_indexBufferDataPos;
 
     memcpy(indexBufferData, cmd->indices, m_indexSize * 6);

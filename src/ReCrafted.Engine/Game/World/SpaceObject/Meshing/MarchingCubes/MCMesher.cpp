@@ -105,12 +105,12 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
 {
     // this function is called when this cell is not full and/or empty
 
-    var startIndex = m_vertices.count();
+    cvar startIndex = m_vertices.count();
     var triangleCount = 0;
 
     for (auto i = 0; i < 15; i++)
     {
-        auto edge = MCEdgesTable[cell->caseIndex][i];
+        cvar edge = MCEdgesTable[cell->caseIndex][i];
 
         // check if this case has vertices
         if (edge == -1)
@@ -120,22 +120,20 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
         var offsetB = offset + MCEdgeOffsets[edge][1];
 
         // get data
-        var sampleA = GetVoxel(data, offsetA);
-        var sampleB = GetVoxel(data, offsetB);
+        cvar sampleA = GetVoxel(data, offsetA);
+        cvar sampleB = GetVoxel(data, offsetB);
 
-        var vertexPosition = position + GetIntersection(offsetA, offsetB, sampleA, sampleB) * lod;
+        cvar vertexPosition = position + GetIntersection(offsetA, offsetB, sampleA, sampleB) * lod;
 
         // TODO: materials support
         // TODO: vertex cache (with vertex color per material support)
         // TODO: fix issue with 2 vertices (invalid normals)
 
         m_vertices.add(vertexPosition);
-        m_indices.add(m_vertices.count() - 1);
+        m_indices.add(startIndex + i);
 
         triangleCount++;
     }
-
-    triangleCount /= 3;
 
     if (triangleCount == 0)
         return;
@@ -143,19 +141,19 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
     // generate normals
     var normal = Vector3::zero();
     var triangles = 0;
-    for (var i = 0; i < triangleCount; i ++)
+    for (var i = 0; i < triangleCount; i += 3)
     {
-        var p0 = m_vertices[m_indices[startIndex + i * 3 + 0]];
-        var p1 = m_vertices[m_indices[startIndex + i * 3 + 1]];
-        var p2 = m_vertices[m_indices[startIndex + i * 3 + 2]];
+        cvar p0 = m_vertices[m_indices[startIndex + i + 0]];
+        cvar p1 = m_vertices[m_indices[startIndex + i + 1]];
+        cvar p2 = m_vertices[m_indices[startIndex + i + 2]];
 
-        var plane = Plane(p2, p1, p0);
+        cvar plane = Plane(p2, p1, p0);
 
         m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
         m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
         m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
 
-        /*if(plane.normal.x != plane.normal.x)
+        if(plane.normal.x != plane.normal.x)
         {
             // two points are equal, WTF?
             // just add some zero-normals for now. TODO: fix when cache will be done!
@@ -163,7 +161,7 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
             m_normals.add(Vector3::zero());
             m_normals.add(Vector3::zero());
         }
-        else*/
+        else
         {
             m_normals.add(plane.normal);
             m_normals.add(plane.normal);
@@ -285,7 +283,7 @@ void MCMesher::generate(const Vector3& position, int lod, uint8_t borders, Ref<M
 
     generateCells(data, position, lodF, lod > 1 ? borders : 0);
 
-    if (m_vertices.count() == 0)
+    if (m_vertices.count() < 3 || m_indices.count() < 3)
     {
         // cleanup
         clean();
@@ -295,10 +293,7 @@ void MCMesher::generate(const Vector3& position, int lod, uint8_t borders, Ref<M
     mesh->setVertices(m_vertices.data(), m_vertices.count());
     mesh->setNormals(m_normals.data());
     mesh->setColors(m_colors.data());
-    mesh->setIndices(m_indices.data(), m_indices.count());
-
-    // simplify
-    //mesh->simplify();
+    mesh->setIndices(m_indices.data(), m_vertices.count());
 
     // apply
     mesh->applyChanges();

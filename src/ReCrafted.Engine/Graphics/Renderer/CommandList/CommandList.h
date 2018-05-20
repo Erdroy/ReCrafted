@@ -40,7 +40,7 @@ namespace Renderer
             _ASSERT(*position < this->size);
             _ASSERT(data != nullptr);
 
-            auto ptr = cmdlist + *position;
+            cvar ptr = static_cast<byte*>(cmdlist) + *position;
             memcpy_s(data, size, ptr, size);
             *position += size;
         }
@@ -50,7 +50,7 @@ namespace Renderer
             if (wposition + size >= this->size)
                 Resize(this->size + RENDERER_COMMAND_LIST_INCREMENT); // resize up by adding 8k bytes
 
-            auto ptr = cmdlist + wposition;
+            cvar ptr = static_cast<byte*>(cmdlist) + wposition;
             memcpy_s(ptr, this->size, data, size);
 
             wposition += size;
