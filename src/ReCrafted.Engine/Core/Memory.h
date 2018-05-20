@@ -8,6 +8,8 @@
 
 #include <memory>
 #include <rpmalloc.h>
+#include <cstdlib>
+#include <new>
 
 #if COMPILE_WITH_RPMALLOC
 #pragma warning( push )
@@ -57,6 +59,23 @@ inline void operator delete[](void* ptr, size_t) noexcept {
     if (rpmalloc_is_thread_initialized())
         rpfree(ptr);
 }
+
+template <class T>
+struct RPAllocator {
+    typedef T value_type;
+    RPAllocator() = default;
+    template <class U> constexpr RPAllocator(const RPAllocator<U>&) noexcept {}
+    T* allocate(std::size_t n) {
+        if (n > std::size_t(-1) / sizeof(T)) throw std::bad_alloc();
+        if (auto p = static_cast<T*>(rpmalloc(n * sizeof(T)))) return p;
+        throw std::bad_alloc();
+    }
+    void deallocate(T* p, std::size_t) noexcept { rpfree(p); }
+};
+template <class T, class U>
+bool operator==(const RPAllocator<T>&, const RPAllocator<U>&) { return true; }
+template <class T, class U>
+bool operator!=(const RPAllocator<T>&, const RPAllocator<U>&) { return false; }
 
 #pragma warning( pop )
 #endif
