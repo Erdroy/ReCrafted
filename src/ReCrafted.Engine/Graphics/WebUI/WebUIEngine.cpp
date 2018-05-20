@@ -4,10 +4,6 @@
 #include "Core/Logger.h"
 #include "Platform/Platform.h"
 
-#include <cef_app.h>
-#include <cef_client.h>
-#include <include/cef_version.h>
-
 #include <thread>
 
 #ifdef _WIN32
@@ -21,6 +17,7 @@
 
 SINGLETON_IMPL(WebUIEngine)
 
+#if 0
 class HtmlApp : public CefApp, public CefBrowserProcessHandler
 {
 public:
@@ -63,8 +60,9 @@ public:
 
 IMPLEMENT_REFCOUNTING(QuitTask);
 };
+#endif
 
-CefRefPtr<HtmlApp> m_app = nullptr;
+//CefRefPtr<HtmlApp> m_app = nullptr;
 Ref<std::thread> m_cefThread = nullptr;
 
 void WebUIEngine::runCEF()
@@ -75,7 +73,7 @@ void WebUIEngine::runCEF()
 
     strcat(resourcesDir, "\\cef\\resources");
 
-    CefSettings settings = {};
+    /*CefSettings settings = {};
     CefString(&settings.resources_dir_path).FromASCII(resourcesDir);
     CefString(&settings.locales_dir_path).FromASCII("cef/locales");
     CefString(&settings.cache_path).FromASCII("cef/cache");
@@ -113,7 +111,7 @@ void WebUIEngine::runCEF()
     CefRunMessageLoop();
 
     // shutdown cef now
-    CefShutdown();
+    CefShutdown();*/
 }
 
 void WebUIEngine::init()
@@ -124,13 +122,13 @@ void WebUIEngine::init()
     });
 
     m_initialized = true;
-    Logger::log("WebUIEngine initialized CEF_VERSION: {0} (Chromium: {1}.{2}.{3}.{4})",
+    /*Logger::log("WebUIEngine initialized CEF_VERSION: {0} (Chromium: {1}.{2}.{3}.{4})",
                 CEF_VERSION,
                 CHROME_VERSION_MAJOR,
                 CHROME_VERSION_MINOR,
                 CHROME_VERSION_BUILD,
                 CHROME_VERSION_PATCH
-    );
+    );*/
 }
 
 void WebUIEngine::onDispose()
@@ -138,22 +136,22 @@ void WebUIEngine::onDispose()
     if (m_cefThread)
     {
         // post Quit task to CEF to say - kill yourself.
-        CefRefPtr<CefTask> task(new QuitTask());
+        /*CefRefPtr<CefTask> task(new QuitTask());
         CefPostTask(TID_UI, task.get());
         m_cefThread->join();
-        m_cefThread.reset();
+        m_cefThread.reset();*/
     }
 }
 
 void WebUIEngine::runChildren()
 {
     // this can run on main thread, as children process will exit after running
-    CefMainArgs args(getHInstance());
+    /*CefMainArgs args(getHInstance());
 
     cvar result = CefExecuteProcess(args, nullptr, nullptr);
 
     if (result >= 0) // run CEF process, and exit when main process exits
-        exit(0);
+        exit(0);*/
 }
 
 bool WebUIEngine::isInitialized()

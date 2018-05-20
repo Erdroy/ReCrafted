@@ -3,12 +3,6 @@
 #include "WebUIView.h"
 #include "WebUIEngine.h"
 
-#include <cef_app.h>
-#include <cef_client.h>
-#include <cef_render_handler.h>
-#include <internal/cef_ptr.h>
-#include <cef_browser.h>
-
 #include <condition_variable>
 #include <atomic>
 
@@ -22,6 +16,7 @@
 #include "Core/Delegate.h"
 #include "Graphics/Graphics.h"
 
+#if 0
 // https://github.com/daktronics/cef-mixer/blob/master/src/html_layer.cpp
 class CEFView : public CefClient, public CefRenderHandler, public CefLifeSpanHandler
 {
@@ -251,13 +246,14 @@ public:
 public:
 IMPLEMENT_REFCOUNTING(CEFView);
 };
+#endif
 
 void WebUIView::init()
 {
     if (!WebUIEngine::isInitialized())
         return;
 
-    CefBrowserSettings viewSettings = {};
+    /*CefBrowserSettings viewSettings = {};
     viewSettings.windowless_frame_rate = 120;
     viewSettings.webgl = STATE_DISABLED;
     viewSettings.plugins = STATE_DISABLED;
@@ -277,7 +273,7 @@ void WebUIView::init()
         static_cast<CEFView*>(m_viewBase),
         "about:blank",
         viewSettings,
-        nullptr);
+        nullptr);*/
 }
 
 void WebUIView::update()
@@ -285,7 +281,7 @@ void WebUIView::update()
     if (!WebUIEngine::isInitialized())
         return;
 
-    m_viewBase->update();
+    //m_viewBase->update();
 }
 
 void WebUIView::resize(uint width, uint height)
@@ -293,8 +289,8 @@ void WebUIView::resize(uint width, uint height)
     if (!WebUIEngine::isInitialized())
         return;
 
-    cvar view = getView();
-    view->update();
+    //cvar view = getView();
+    //view->update();
 }
 
 void WebUIView::render()
@@ -303,8 +299,8 @@ void WebUIView::render()
         return;
 
     // swap texture
-    cvar view = getView();
-    view->swap();
+    //cvar view = getView();
+    //view->swap();
 
     // draw texture
     Graphics::getInstance()->setStage(RenderStage::DrawWebUI);
@@ -315,8 +311,8 @@ void WebUIView::onDestroy()
 {
     cvar view = getView();
 
-    if (view && view->m_browser)
-        view->m_browser->GetHost()->CloseBrowser(false);
+    //if (view && view->m_browser)
+    //    view->m_browser->GetHost()->CloseBrowser(false);
 }
 
 CEFView* WebUIView::getView() const
@@ -331,8 +327,8 @@ void WebUIView::navigate(Text& url)
 
     cvar view = getView();
     cvar curl = url.std_str();
-    var frame = view->m_browser->GetMainFrame();
-    frame->LoadURL(curl);
+    //var frame = view->m_browser->GetMainFrame();
+    //frame->LoadURL(curl);
 }
 
 void WebUIView::execute(const char* javaScriptSource)
@@ -340,8 +336,8 @@ void WebUIView::execute(const char* javaScriptSource)
     if (!WebUIEngine::isInitialized())
         return;
 
-    cvar view = getView();
-    view->m_browser->GetMainFrame()->ExecuteJavaScript(CefString(javaScriptSource), CefString(""), 0);
+    //cvar view = getView();
+    //view->m_browser->GetMainFrame()->ExecuteJavaScript(CefString(javaScriptSource), CefString(""), 0);
 }
 
 void WebUIView::bind(const char* bindName, Delegate<void> delegate)

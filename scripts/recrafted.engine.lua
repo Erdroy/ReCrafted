@@ -22,8 +22,6 @@ project "ReCrafted.Engine"
 		path.join(LIBS_DIR, "freetype/include"),
 		path.join(LIBS_DIR, "fmod/inc"),
 		path.join(LIBS_DIR, "physx34/include"),
-		path.join(LIBS_DIR, "cef/include"),
-		path.join(LIBS_DIR, "cef"),
 		path.join(LIBS_DIR, "rpmalloc/include"),
 		path.join(LIBS_DIR, "base64/include"),
 		path.join(LIBS_DIR, "json/include"),
@@ -44,19 +42,19 @@ project "ReCrafted.Engine"
 			"call " .. ROOT_DIR .. "/pm.bat PostBuild --skip-shaders --skip-api",
 		}
 	
-	links { "d3d11", "dxguid", "dxgi", "d3dcompiler", "Rpcrt4", "mono", "libcef", "PxFoundation_x64", "PxTask_x64", "PhysX3_x64", "PhysX3Common_x64", "PhysX3Extensions", "PhysX3CharacterKinematic_x64" }
+	links { "d3d11", "dxguid", "dxgi", "d3dcompiler", "Rpcrt4", "mono", "PxFoundation_x64", "PxTask_x64", "PhysX3_x64", "PhysX3Common_x64", "PhysX3Extensions", "PhysX3CharacterKinematic_x64" }
 		
 	configuration { "Debug" }
 		defines { "DEBUG", "_ITERATOR_DEBUG_LEVEL=0" }
 		runtime "Debug"
 		symbols "On"
-		links { "libcef_dll_wrapper_debug", "rpmallocd", "freetype28MTd" }
+		links { "rpmallocd", "freetype28MTd" }
 
 	configuration { "Release" }
 		defines { "NDEBUG" }
 		flags { "OptimizeSpeed", "No64BitChecks", "NoBufferSecurityCheck" }
 		runtime "Release"
-		links { "libcef_dll_wrapper", "rpmalloc", "freetype28MT" }
+		links { "rpmalloc", "freetype28MT" }
 
 	configuration { "x64" }
 		-- set target dir
@@ -75,7 +73,6 @@ project "ReCrafted.Engine"
 			path.join(LIBS_DIR, "freetype/x64"),
 			path.join(LIBS_DIR, "fmod/lib"),
 			path.join(LIBS_DIR, "physx34/lib/vc14win64"),
-			path.join(LIBS_DIR, "cef/lib"),
 			path.join(LIBS_DIR, "rpmalloc/lib"),
 		}
 		linkoptions { "/ignore:4099" }
