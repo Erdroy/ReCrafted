@@ -27,6 +27,8 @@ namespace Renderer
             void Initialize(Settings::_enum settings, RenderFlags::_enum flags) override;
             void Shutdown() override;
 
+            void GetRenderStatistics(RenderStatistics* stats) override;
+
         public:
             void Frame() override;
 

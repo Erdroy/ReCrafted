@@ -66,6 +66,9 @@ void Profiler::drawDebugScreen()
     beginProfile("Profile");
     endProfile();
 
+    Renderer::RenderStatistics renderStats = {};
+    Renderer::GetRenderStatistics(&renderStats);
+
     beginProfile("Profiler Draw (self profile)", 0.5f, 1.0f);
     {
         var depth = UI::getDepth();

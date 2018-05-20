@@ -5,6 +5,12 @@
 
 namespace Renderer
 {
+    // == stats ==
+    namespace RHI
+    {
+        extern uint32_t m_apiCalls;
+    }
+
     void RHIDirectX11_RenderBuffer::Clear(ID3D11DeviceContext* context, Color color, float depth)
     {
         for (var i = 0; i < m_rtvCount; i ++)
@@ -12,10 +18,14 @@ namespace Renderer
             // Clear the render target by using the ClearRenderTargetView command
             cvar rtv = m_renderTargetViews[i];
             context->ClearRenderTargetView(rtv, reinterpret_cast<float*>(&color));
+            ADD_APICALL();
         }
 
         if (m_depthStencilView)
+        {
             context->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, depth, 0);
+            ADD_APICALL();
+        }
     }
 
     void RHIDirectX11_RenderBuffer::Bind(ID3D11DeviceContext* context)
@@ -27,7 +37,10 @@ namespace Renderer
         vpd.MaxDepth = 1.0f;
 
         context->RSSetViewports(1, &vpd);
+        ADD_APICALL();
+
         context->OMSetRenderTargets(m_rtvCount, m_renderTargetViews, m_depthStencilView);
+        ADD_APICALL();
     }
 
     void RHIDirectX11_RenderBuffer::Release()

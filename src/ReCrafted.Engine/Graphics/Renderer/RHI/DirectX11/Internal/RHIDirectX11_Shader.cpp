@@ -19,6 +19,12 @@ namespace Renderer
         ID3D11SamplerState* sampler;
     };
 
+    // == stats ==
+    namespace RHI
+    {
+        extern uint32_t m_apiCalls;
+    }
+
     std::vector<InputLayout> m_inputLayouts = {};
     std::vector<SamplerState> m_samplerStates = {};
 
@@ -43,7 +49,7 @@ namespace Renderer
         for (uint32_t i = 0; i < shaderDesc.InputParameters; i++)
         {
             D3D11_SIGNATURE_PARAMETER_DESC paramDesc;
-            pVertexShaderReflection->GetInputParameterDesc(i, &paramDesc);
+            DX_CALL(pVertexShaderReflection->GetInputParameterDesc(i, &paramDesc));
 
             // fill out input element desc
             D3D11_INPUT_ELEMENT_DESC elementDesc;
@@ -124,12 +130,10 @@ namespace Renderer
         }
 
         // Try to create Input Layout
-        var hr = pD3DDevice->CreateInputLayout(&inputLayoutDesc[0], static_cast<UINT>(inputLayoutDesc.size()),
-                                               shaderData, shaderDataSize, pInputLayout);
+        DX_CALL(pD3DDevice->CreateInputLayout(&inputLayoutDesc[0], static_cast<UINT>(inputLayoutDesc.size()),
+                                               shaderData, shaderDataSize, pInputLayout));
 
-        _ASSERT(SUCCEEDED(hr));
-
-        //Free allocation shader reflection memory
+        // Free allocation shader reflection memory
         pVertexShaderReflection->Release();
 
         // cache the input layout
@@ -138,7 +142,7 @@ namespace Renderer
         newIl.inputLayout = *pInputLayout;
         m_inputLayouts.push_back(newIl);
 
-        return hr;
+        return S_OK;
     }
 
     HRESULT D3D11CreateSamplerState(ID3D11Device* pD3DDevice, std::string& samplerType,
@@ -216,8 +220,7 @@ namespace Renderer
 
         // create sampler
         ID3D11SamplerState* sampler;
-        var hr = pD3DDevice->CreateSamplerState(&samplerDesc, &sampler);
-        _ASSERT(SUCCEEDED(hr));
+        DX_CALL(pD3DDevice->CreateSamplerState(&samplerDesc, &sampler));
 
         // add created sampler
         m_samplerStates.push_back({samplerType, sampler});
@@ -236,6 +239,7 @@ namespace Renderer
         if (pass.m_vertexShader)
         {
             context->VSSetShader(pass.m_vertexShader, nullptr, 0);
+            ADD_APICALL();
 
             // set constant buffers
             if (!pass.m_vsBuffers.empty())
@@ -244,6 +248,7 @@ namespace Renderer
                 {
                     ID3D11Buffer* buffers[] = {buffer->m_buffer};
                     context->VSSetConstantBuffers(buffer->m_index, 1u, buffers);
+                    ADD_APICALL();
                 }
             }
             else
@@ -253,6 +258,7 @@ namespace Renderer
                 {
                     ID3D11Buffer* buffers[] = {buffer.m_buffer};
                     context->VSSetConstantBuffers(buffer.m_index, 1u, buffers);
+                    ADD_APICALL();
                 }
             }
         }
@@ -261,6 +267,7 @@ namespace Renderer
         if (pass.m_pixelShader)
         {
             context->PSSetShader(pass.m_pixelShader, nullptr, 0);
+            ADD_APICALL();
 
             // set constant buffers
             if (!pass.m_psBuffers.empty())
@@ -269,6 +276,7 @@ namespace Renderer
                 {
                     ID3D11Buffer* buffers[] = {buffer->m_buffer};
                     context->PSSetConstantBuffers(buffer->m_index, 1u, buffers);
+                    ADD_APICALL();
                 }
             }
             else
@@ -278,6 +286,7 @@ namespace Renderer
                 {
                     ID3D11Buffer* buffers[] = {buffer.m_buffer};
                     context->PSSetConstantBuffers(buffer.m_index, 1u, buffers);
+                    ADD_APICALL();
                 }
             }
         }
@@ -286,6 +295,7 @@ namespace Renderer
         if (pass.m_computeShader)
         {
             context->CSSetShader(pass.m_computeShader, nullptr, 0);
+            ADD_APICALL();
 
             // set constant buffers 
             if (!pass.m_csBuffers.empty())
@@ -294,6 +304,7 @@ namespace Renderer
                 {
                     ID3D11Buffer* buffers[] = {buffer->m_buffer};
                     context->CSSetConstantBuffers(buffer->m_index, 1u, buffers);
+                    ADD_APICALL();
                 }
             }
             else
@@ -303,6 +314,7 @@ namespace Renderer
                 {
                     ID3D11Buffer* buffers[] = {buffer.m_buffer};
                     context->CSSetConstantBuffers(buffer.m_index, 1u, buffers);
+                    ADD_APICALL();
                 }
             }
         }
@@ -313,9 +325,11 @@ namespace Renderer
 
         // apply sampler states (PixelShader only)
         context->PSSetSamplers(0u, static_cast<uint>(m_samplers.size()), m_samplers.data());
+        ADD_APICALL();
 
         // set input layout
         context->IASetInputLayout(pass.m_inputLayout);
+        ADD_APICALL();
     }
 
     void RHIDirectX11_Shader::Bind(ID3D11DeviceContext* context, int passId)
@@ -344,6 +358,7 @@ namespace Renderer
         // apply shader resource (PixelShader only)
         ID3D11ShaderResourceView* srvs[] = {srv};
         context->PSSetShaderResources(slot, 1, srvs);
+        ADD_APICALL();
     }
 
     void RHIDirectX11_Shader::SetValue(int buffer, int index, void* data, size_t dataSize)
@@ -377,8 +392,7 @@ namespace Renderer
                 D3D11_MAPPED_SUBRESOURCE m_mappedSubres;
 
                 // map buffer
-                cvar hr = context->Map(buffer.m_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &m_mappedSubres);
-                _ASSERT(SUCCEEDED(hr));
+                DX_CALL(context->Map(buffer.m_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &m_mappedSubres));
 
                 // upload buffer data
                 memcpy(m_mappedSubres.pData, buffer.m_data, buffer.m_size);
@@ -432,16 +446,12 @@ namespace Renderer
             if (vsBC.is_string())
             {
                 var byteCode = base64_decode(vsBC.get<std::string>());
-                var hr = device->CreateVertexShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_vertexShader);
-
-                _ASSERT(SUCCEEDED(hr));
+                DX_CALL(device->CreateVertexShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_vertexShader));
 
                 // every vertex shader needs input layout to be bound to the GPU, 
                 // so create or use cached input layout
-                hr = D3D11CreateInputLayout(device, byteCode.data(), byteCode.size(), &shader->m_stride,
-                                            &pass.m_inputLayout);
-
-                _ASSERT(SUCCEEDED(hr));
+                DX_CALL(D3D11CreateInputLayout(device, byteCode.data(), byteCode.size(), &shader->m_stride,
+                                            &pass.m_inputLayout));
 
                 // set function name
                 pass.m_vsName = passJson["VSFunction"].get<std::string>();
@@ -452,9 +462,7 @@ namespace Renderer
             if (psBC.is_string())
             {
                 var byteCode = base64_decode(psBC.get<std::string>());
-                var hr = device->CreatePixelShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_pixelShader);
-
-                _ASSERT(SUCCEEDED(hr));
+                DX_CALL(device->CreatePixelShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_pixelShader));
 
                 // set function name
                 pass.m_psName = passJson["PSFunction"].get<std::string>();
@@ -465,9 +473,7 @@ namespace Renderer
             if (csBC.is_string())
             {
                 var byteCode = base64_decode(csBC.get<std::string>());
-                var hr = device->CreateComputeShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_computeShader);
-
-                _ASSERT(SUCCEEDED(hr));
+                DX_CALL(device->CreateComputeShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_computeShader));
 
                 // set function name
                 pass.m_csName = passJson["CSFunction"].get<std::string>();
@@ -534,9 +540,7 @@ namespace Renderer
             subresource_data.SysMemPitch = 0;
             subresource_data.SysMemSlicePitch = 0;
 
-            var hr = device->CreateBuffer(&desc, &subresource_data, &buffer.m_buffer);
-
-            _ASSERT(SUCCEEDED(hr));
+            DX_CALL(device->CreateBuffer(&desc, &subresource_data, &buffer.m_buffer));
 
             // select targets and add to all passes shader functions
             for (rvar pass : shader->m_passes)
@@ -571,8 +575,7 @@ namespace Renderer
             var samplerName = sampler.get<std::string>();
 
             ID3D11SamplerState* samplerState;
-            cvar hr = D3D11CreateSamplerState(device, samplerName, &samplerState);
-            _ASSERT(SUCCEEDED(hr));
+            DX_CALL(D3D11CreateSamplerState(device, samplerName, &samplerState));
 
             shader->m_samplers.push_back(samplerState);
         }

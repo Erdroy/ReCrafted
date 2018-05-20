@@ -24,6 +24,8 @@ namespace Renderer
             virtual void Initialize(Settings::_enum settings, RenderFlags::_enum flags) = 0;
             virtual void Shutdown() = 0;
 
+            virtual void GetRenderStatistics(RenderStatistics* stats) = 0;
+
         public:
             virtual void Frame() = 0;
 

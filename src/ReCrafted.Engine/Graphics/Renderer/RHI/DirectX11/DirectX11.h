@@ -14,6 +14,10 @@
 #define SafeRelease(x) if (x != NULL) { x->Release(); x = nullptr; }
 #define SafeCloseHandle(x) if(x != NULL) { CloseHandle(x); x = NULL; }
 
+#define ADD_APICALL() RHI::m_apiCalls++
+#define ADD_DRAWCALL() RHI::m_drawCalls++
+
+#define DX_CALL(x) _ASSERT(SUCCEEDED(x)); ADD_APICALL()
 
 inline uint32_t HLSLFixBufferSize(uint32_t size)
 {

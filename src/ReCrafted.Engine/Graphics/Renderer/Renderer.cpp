@@ -229,6 +229,11 @@ namespace Renderer
         return (m_renderFlags & flag) != 0;
     }
 
+    void GetRenderStatistics(RenderStatistics* stats)
+    {
+        m_renderer->GetRenderStatistics(stats);
+    }
+
     void Frame()
     {
         CHECK_MAIN_THREAD();

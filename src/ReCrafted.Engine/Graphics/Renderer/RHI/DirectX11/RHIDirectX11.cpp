@@ -90,6 +90,21 @@ namespace Renderer
         RenderFlags::_enum m_renderFlags;
         RenderFlags::_enum m_defaultFlags;
 
+        // == stats ==
+        uint32_t m_apiCalls = 0u;
+        uint32_t m_drawCalls = 0u;
+        uint32_t m_commandCount = 0u;
+
+        uint32_t m_verticesDrawn = 0u;
+        uint32_t m_indicesDrawn = 0u;
+
+        // last stats (for GetRenderStatistics, to make sure, that outputed stats are the total ones)
+        uint32_t m_lastApiCalls = 0u;
+        uint32_t m_lastDrawCalls = 0u;
+        uint32_t m_lastCommandCount = 0u;
+
+        uint32_t m_lastVerticesDrawn = 0u;
+        uint32_t m_lastIndicesDrawn = 0u;
 
         // == events ==
         HANDLE m_workerFinishEvents[RENDERER_MAX_RENDER_THREADS];
@@ -223,8 +238,7 @@ namespace Renderer
             }
             else
             {
-                var hr = m_device->CreateDeferredContext(0, &m_context);
-                _ASSERT(SUCCEEDED(hr));
+                DX_CALL(m_device->CreateDeferredContext(0, &m_context));
             }
 
             m_fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
@@ -427,12 +441,14 @@ namespace Renderer
             case RenderFlags::DrawLineLists:
             {
                 m_context->IASetPrimitiveTopology(command->value ? D3D11_PRIMITIVE_TOPOLOGY_LINELIST : D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+                ADD_APICALL();
                 break;
             }
 
             case RenderFlags::DrawWireFrame:
             {
                 m_context->RSSetState(command->value ? m_rasterizerState_WireFrame : m_rasterizerState);
+                ADD_APICALL();
                 break;
             }
 
@@ -445,18 +461,22 @@ namespace Renderer
                 if (stencilEnabled && depthEnabled)
                 {
                     m_context->OMSetDepthStencilState(m_depthStencilState, 1u);
+                    ADD_APICALL();
                 }
                 else if(stencilEnabled)
                 {
                     m_context->OMSetDepthStencilState(m_depthStencilState_NoDepth, 1u);
+                    ADD_APICALL();
                 }
                 else if (depthEnabled)
                 {
                     m_context->OMSetDepthStencilState(m_depthStencilState_NoStencil, 1u);
+                    ADD_APICALL();
                 }
                 else
                 {
                     m_context->OMSetDepthStencilState(m_depthStencilState_Disabled, 1u);
+                    ADD_APICALL();
                 }
 
                 break;
@@ -465,6 +485,7 @@ namespace Renderer
             case RenderFlags::RenderOverlay:
             {
                 m_context->OMSetBlendState(command->value ? m_blendState_Overlay : nullptr, nullptr, 0xFFFFFFFF);
+                ADD_APICALL();
                 break;
             }
 
@@ -495,12 +516,20 @@ namespace Renderer
 #pragma region WorkerThread command execution implementation
         void WorkerThreadInstance::Execute_Draw(Command_Draw* command)
         {
+            m_verticesDrawn += command->vertexCount;
+
             m_context->Draw(command->vertexCount, 0);
+            ADD_APICALL();
+            ADD_DRAWCALL();
         }
 
         void WorkerThreadInstance::Execute_DrawIndexed(Command_DrawIndexed* command)
         {
+            m_indicesDrawn += command->indexCount;
+
             m_context->DrawIndexed(command->indexCount, 0, 0);
+            ADD_APICALL();
+            ADD_DRAWCALL();
         }
 
         void WorkerThreadInstance::Execute_ResizeFrameBuffer(Command_ResizeFrameBuffer* command)
@@ -527,16 +556,15 @@ namespace Renderer
             if (renderBuffer->GetDSV())
                 renderBuffer->GetDSV()->Release();
 
-            swapChain->ResizeBuffers(static_cast<uint>(bufferCount), command->width, command->height, bufferFormat, 0u);
+            DX_CALL(swapChain->ResizeBuffers(static_cast<uint>(bufferCount), command->width, command->height, bufferFormat, 0u));
 
             ID3D11RenderTargetView* renderTargets[FrameBufferCount] = {};
             for (var i = 0; i < bufferCount; i++)
             {
                 ID3D11Resource* resource = nullptr;
-                var hr = m_swapChain->GetBuffer(i, IID_PPV_ARGS(&resource));
-                _ASSERT(SUCCEEDED(hr));
+                DX_CALL(m_swapChain->GetBuffer(i, IID_PPV_ARGS(&resource)));
 
-                m_device->CreateRenderTargetView(resource, nullptr, &renderTargets[i]);
+                DX_CALL(m_device->CreateRenderTargetView(resource, nullptr, &renderTargets[i]));
                 SafeRelease(resource);
             }
 
@@ -600,9 +628,7 @@ namespace Renderer
             subresource_data.SysMemSlicePitch = 0;
 
             // create d3d11 buffer
-            var hr = m_device->CreateBuffer(&desc, command->memory ? &subresource_data : nullptr, &buffer);
-
-            _ASSERT(SUCCEEDED(hr));
+            DX_CALL(m_device->CreateBuffer(&desc, command->memory ? &subresource_data : nullptr, &buffer));
         }
 
         void WorkerThreadInstance::Execute_ApplyVertexBuffer(Command_ApplyVertexBuffer* command)
@@ -615,6 +641,7 @@ namespace Renderer
             uint offset = 0u;
             uint stride = m_currentShader->GetStride();
             m_context->IASetVertexBuffers(0, 1, buffers, &stride, &offset);
+            ADD_APICALL();
         }
 
         void WorkerThreadInstance::Execute_UpdateVertexBuffer(Command_UpdateVertexBuffer* command)
@@ -622,14 +649,14 @@ namespace Renderer
             rvar buffer = m_vertexBuffers[command->handle.idx];
             _ASSERT(buffer != nullptr);
 
-            D3D11_MAPPED_SUBRESOURCE res;
-            var hr = m_context->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
-            _ASSERT(SUCCEEDED(hr));
+            D3D11_MAPPED_SUBRESOURCE res = {};
+            DX_CALL(m_context->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res));
 
             cvar ptr = static_cast<byte*>(res.pData) + command->memoryOffset;
             memcpy(ptr, command->memory, command->memorySize);
 
             m_context->Unmap(buffer, 0);
+            ADD_APICALL();
         }
 
         void WorkerThreadInstance::Execute_DestroyVertexBuffer(Command_DestroyVertexBuffer* command)
@@ -664,9 +691,7 @@ namespace Renderer
             subresource_data.SysMemSlicePitch = 0;
 
             // create d3d11 buffer
-            var hr = m_device->CreateBuffer(&desc, command->memory ? &subresource_data : nullptr, &buffer.buffer);
-
-            _ASSERT(SUCCEEDED(hr));
+            DX_CALL(m_device->CreateBuffer(&desc, command->memory ? &subresource_data : nullptr, &buffer.buffer));
         }
 
         void WorkerThreadInstance::Execute_ApplyIndexBuffer(Command_ApplyIndexBuffer* command)
@@ -676,6 +701,7 @@ namespace Renderer
 
             m_context->IASetIndexBuffer(buffer.buffer, buffer.is32bit ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT,
                                         0u);
+            ADD_APICALL();
         }
 
         void WorkerThreadInstance::Execute_UpdateIndexBuffer(Command_UpdateIndexBuffer* command)
@@ -684,13 +710,13 @@ namespace Renderer
             _ASSERT(buffer.buffer != nullptr);
 
             D3D11_MAPPED_SUBRESOURCE res;
-            var hr = m_context->Map(buffer.buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
-            _ASSERT(SUCCEEDED(hr));
+            DX_CALL(m_context->Map(buffer.buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res));
 
             cvar ptr = static_cast<byte*>(res.pData) + command->memoryOffset;
             memcpy(ptr, command->memory, command->memorySize);
 
             m_context->Unmap(buffer.buffer, 0);
+            ADD_APICALL();
         }
 
         void WorkerThreadInstance::Execute_DestroyIndexBuffer(Command_DestroyIndexBuffer* command)
@@ -826,8 +852,7 @@ namespace Renderer
             subresData.SysMemPitch = command->width * (TextureFormatInfo[command->textureFormat][0] / 8);
             subresData.SysMemSlicePitch = 0;
 
-            var hr = m_device->CreateTexture2D(&textureDesc, command->memory ? &subresData : nullptr, &texture.texture);
-            _ASSERT(SUCCEEDED(hr));
+            DX_CALL(m_device->CreateTexture2D(&textureDesc, command->memory ? &subresData : nullptr, &texture.texture));
 
             if (createDepthBuffer)
             {
@@ -839,8 +864,7 @@ namespace Renderer
                                                          : D3D11_DSV_DIMENSION_TEXTURE2D;
                 depthStencilViewDesc.Texture2D.MipSlice = 0;
 
-                hr = m_device->CreateDepthStencilView(texture.texture, &depthStencilViewDesc, &texture.dsv);
-                _ASSERT(SUCCEEDED(hr));
+                DX_CALL(m_device->CreateDepthStencilView(texture.texture, &depthStencilViewDesc, &texture.dsv));
             }
             else
             {
@@ -850,8 +874,7 @@ namespace Renderer
                 srvDesc.Texture2D.MipLevels = mipLevels;
                 srvDesc.Texture2D.MostDetailedMip = 0;
 
-                hr = m_device->CreateShaderResourceView(texture.texture, &srvDesc, &texture.srv);
-                _ASSERT(SUCCEEDED(hr));
+                DX_CALL(m_device->CreateShaderResourceView(texture.texture, &srvDesc, &texture.srv));
 
                 if (command->renderTarget)
                 {
@@ -860,8 +883,7 @@ namespace Renderer
                     rtvDesc.ViewDimension = m_msaaSampleCount > 1 ? D3D11_RTV_DIMENSION_TEXTURE2DMS : D3D11_RTV_DIMENSION_TEXTURE2D;
                     rtvDesc.Texture2D.MipSlice = 0;
 
-                    hr = m_device->CreateRenderTargetView(texture.texture, &rtvDesc, &texture.rtv);
-                    _ASSERT(SUCCEEDED(hr));
+                    DX_CALL(m_device->CreateRenderTargetView(texture.texture, &rtvDesc, &texture.rtv));
                 }
             }
 
@@ -944,6 +966,20 @@ namespace Renderer
         {
             // reset previous states
             m_deviceContext->ClearState();
+
+            // push stats
+            m_lastApiCalls = m_apiCalls;
+            m_lastDrawCalls = m_drawCalls;
+            m_lastCommandCount = m_commandCount;
+            m_lastIndicesDrawn = m_indicesDrawn;
+            m_lastVerticesDrawn = m_verticesDrawn;
+
+            // reset stats
+            m_apiCalls = 0;
+            m_drawCalls = 0;
+            m_commandCount = 0;
+            m_indicesDrawn = 0;
+            m_verticesDrawn = 0;
         }
 
         void RHIDirectX11::assignCommands()
@@ -963,6 +999,9 @@ namespace Renderer
                 // resize to the given size
                 m_workerThreads[i]->m_commandList.Resize(size);
                 m_workerThreads[i]->m_commandCount = commandCount[i];
+
+                // Count the command count!
+                m_commandCount += commandCount[i];
 
                 // copy data
                 memcpy(m_workerThreads[i]->m_commandList.cmdlist, static_cast<byte*>(commandList.cmdlist) + dataBegin[i], size);
@@ -989,22 +1028,14 @@ namespace Renderer
                 D3D_FEATURE_LEVEL_11_0
             };
 
-            var hr = D3D11CreateDevice(nullptr,
-                                       D3D_DRIVER_TYPE_HARDWARE,
-                                       nullptr,
+            cvar
 #ifdef _DEBUG
-                D3D11_CREATE_DEVICE_DEBUG,
+            deviceFlags = D3D11_CREATE_DEVICE_DEBUG;
 #else
-                                       0,
+            , deviceFlags = 0;
 #endif
-                                       featureLevels,
-                                       1,
-                                       D3D11_SDK_VERSION,
-                                       &m_device,
-                                       &level,
-                                       &m_deviceContext
-            );
-            _ASSERT(SUCCEEDED(hr));
+
+            DX_CALL(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, deviceFlags, featureLevels, 1, D3D11_SDK_VERSION, &m_device, &level, &m_deviceContext));
 
             // Get CPU count
             int cpuCount = std::thread::hardware_concurrency();
@@ -1040,26 +1071,22 @@ namespace Renderer
             depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
             // create regular DSS
-            hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState);
-            _ASSERT(SUCCEEDED(hr));
+            DX_CALL(m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState));
 
             // create no-depth DSS
             depthStencilDesc.DepthEnable = false;
             depthStencilDesc.StencilEnable = true;
-            hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState_NoDepth);
-            _ASSERT(SUCCEEDED(hr));
+            DX_CALL(m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState_NoDepth));
 
             // create no-stencil DSS
             depthStencilDesc.DepthEnable = true;
             depthStencilDesc.StencilEnable = false;
-            hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState_NoStencil);
-            _ASSERT(SUCCEEDED(hr));
+            DX_CALL(m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState_NoStencil));
 
             // create disabled DSS
             depthStencilDesc.DepthEnable = false;
             depthStencilDesc.StencilEnable = false;
-            hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState_Disabled);
-            _ASSERT(SUCCEEDED(hr));
+            DX_CALL(m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState_Disabled));
 
             // create regular RS
             D3D11_RASTERIZER_DESC rasterizerDesc = {};
@@ -1069,13 +1096,11 @@ namespace Renderer
             rasterizerDesc.FillMode = D3D11_FILL_SOLID;
             rasterizerDesc.DepthClipEnable = true;
 
-            hr = m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState);
-            _ASSERT(SUCCEEDED(hr));
+            DX_CALL(m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState));
 
             // create wireframe RC
             rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
-            hr = m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState_WireFrame);
-            _ASSERT(SUCCEEDED(hr));
+            DX_CALL(m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState_WireFrame));
 
             // Create overlay blend-state
             D3D11_BLEND_DESC blendDesc = {};
@@ -1093,8 +1118,7 @@ namespace Renderer
             blendTarget.SrcBlendAlpha = D3D11_BLEND_ONE;
             blendTarget.DestBlendAlpha = D3D11_BLEND_ONE;
 
-            hr = m_device->CreateBlendState(&blendDesc, &m_blendState_Overlay);
-            _ASSERT(SUCCEEDED(hr));
+            DX_CALL(m_device->CreateBlendState(&blendDesc, &m_blendState_Overlay));
 
             // Spawn Worker Threads
             for (var i = 0; i < cpuCount && i < RENDERER_MAX_RENDER_THREADS; i++)
@@ -1204,6 +1228,34 @@ namespace Renderer
             SafeRelease(m_device);
         }
 
+        void RHIDirectX11::GetRenderStatistics(RenderStatistics* stats)
+        {
+            // collect stats
+            stats->apiCallCount = m_lastApiCalls;
+            stats->drawCallCount = m_lastDrawCalls;
+            stats->commandCount = m_lastCommandCount;
+
+            stats->verticesDrawn = m_lastVerticesDrawn;
+            stats->indicesDrawn = m_lastIndicesDrawn;
+
+            stats->flags = m_renderFlags;
+
+            for (crvar elem : m_vertexBuffers)
+                stats->vertexBufferCount += elem != nullptr ? 1 : 0;
+
+            for (crvar elem : m_indexBuffers)
+                stats->indexBufferCount += elem.buffer != nullptr ? 1 : 0;
+
+            for (crvar elem : m_textures)
+                stats->texture2DCount += elem.texture != nullptr ? 1 : 0;
+
+            for (crvar elem : m_shaders)
+                stats->shaderCount += elem != nullptr ? 1 : 0;
+
+            for (crvar elem : m_renderBuffers)
+                stats->renderBufferCount += elem != nullptr ? 1 : 0;
+        }
+
         void RHIDirectX11::Frame()
         {
             static var FrameCount = 0;
@@ -1239,8 +1291,7 @@ namespace Renderer
                 {
                     // Finish D3D11 command list
                     CComPtr<ID3D11CommandList> commandList = nullptr;
-                    var hr = thread->m_context->FinishCommandList(FALSE, &commandList);
-                    _ASSERT(SUCCEEDED(hr));
+                    DX_CALL(thread->m_context->FinishCommandList(FALSE, &commandList));
 
                     // Add current thread's command list
                     commandLists.push_back(commandList);
@@ -1260,8 +1311,7 @@ namespace Renderer
             // Present frame
             if (m_swapChain)
             {
-                var hr = m_swapChain->Present(m_renderFlags & RenderFlags::VSync ? 1 : 0, 0);
-                _ASSERT(SUCCEEDED(hr));
+                DX_CALL(m_swapChain->Present(m_renderFlags & RenderFlags::VSync ? 1 : 0, 0));
             }
 
             if (!(m_settings & Settings::SingleThreaded))
@@ -1303,16 +1353,13 @@ namespace Renderer
             var bufferCount = m_renderFlags & RenderFlags::TripleBuffered ? FrameBufferCount : 1;
 
             IDXGIDevice* device;
-            var hr = m_device->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&device));
-            _ASSERT(SUCCEEDED(hr));
+            DX_CALL(m_device->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&device)));
 
             IDXGIAdapter* adapter;
-            hr = device->GetParent(__uuidof(IDXGIAdapter), reinterpret_cast<void**>(&adapter));
-            _ASSERT(SUCCEEDED(hr));
+            DX_CALL(device->GetParent(__uuidof(IDXGIAdapter), reinterpret_cast<void**>(&adapter)));
 
             IDXGIFactory* factory;
-            hr = adapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&factory));
-            _ASSERT(SUCCEEDED(hr));
+            DX_CALL(adapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&factory)));
 
             // Create the Swap Chain
             DXGI_SAMPLE_DESC sampleDesc;
@@ -1340,8 +1387,7 @@ namespace Renderer
             // set to true, then if in fullscreen must call SetFullScreenState with true for full screen to get uncapped fps
 
             IDXGISwapChain* tempSwapChain;
-            hr = factory->CreateSwapChain(m_device, &swapChainDesc, &tempSwapChain);
-            _ASSERT(SUCCEEDED(hr));
+            DX_CALL(factory->CreateSwapChain(m_device, &swapChainDesc, &tempSwapChain));
 
             m_swapChains[window.idx] = static_cast<IDXGISwapChain*>(tempSwapChain);
 
@@ -1352,8 +1398,7 @@ namespace Renderer
             for (var i = 0; i < bufferCount; i++)
             {
                 ID3D11Resource* resource = nullptr;
-                hr = m_swapChain->GetBuffer(i, IID_PPV_ARGS(&resource));
-                _ASSERT(SUCCEEDED(hr));
+                DX_CALL(m_swapChain->GetBuffer(i, IID_PPV_ARGS(&resource)));
 
                 m_device->CreateRenderTargetView(resource, nullptr, &renderTargets[i]);
                 SafeRelease(resource);

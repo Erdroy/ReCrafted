@@ -233,6 +233,27 @@ namespace Renderer
 
     };
 
+    struct RenderStatistics
+    {
+    public:
+        uint32_t drawCallCount;
+        uint32_t apiCallCount;
+
+        uint32_t commandCount;
+
+        uint32_t verticesDrawn;
+        uint32_t indicesDrawn;
+
+        uint32_t vertexBufferCount;
+        uint32_t indexBufferCount;
+        uint32_t texture2DCount;
+        uint8_t texture3DCount;
+        uint16_t shaderCount;
+        uint8_t renderBufferCount;
+
+        uint32_t flags;
+    };
+
     struct Color
     {
     public:
@@ -344,6 +365,11 @@ namespace Renderer
     RENDERER_FUNCTION(void) SetFlags(RenderFlags::_enum flag);
 
     RENDERER_FUNCTION(bool) GetFlag(RenderFlags::_enum flag);
+
+    /// <summary>
+    /// Gets render statistics of the last frame.
+    /// </summary>
+    RENDERER_FUNCTION(void) GetRenderStatistics(RenderStatistics* stats);
 
     // ======== RENDERING - BASIC ========
 
