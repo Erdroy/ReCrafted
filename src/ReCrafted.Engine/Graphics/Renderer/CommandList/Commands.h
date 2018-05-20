@@ -24,6 +24,8 @@ namespace Renderer
         {
             Unknown,
 
+            QueueFree,
+
             SetFlag,
             SetFlags,
 
@@ -67,6 +69,10 @@ namespace Renderer
     };
 
     Command(Unknown, );
+
+    Command(QueueFree, 
+        RendererMemory memory;
+    );
 
     Command(SetFlag,
         RenderFlags::_enum flag = RenderFlags::None;

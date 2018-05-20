@@ -13,7 +13,7 @@
 
 namespace Renderer
 {
-    typedef byte* RendererMemory;
+    typedef void* RendererMemory;
 
     struct Settings
     {
@@ -299,7 +299,7 @@ namespace Renderer
 
     /// <summary>
     /// Allocates given amount of memory.
-    /// The allocated memory is available only for ONE frame or the specified amount.
+    /// The allocated memory is available only for ONE frame by default or the specified amount of frames (see: lifeTime).
     /// </summary>
     /// <param name="size">Amount of memory to allocate.</param>
     /// <param name="lifeTime">
@@ -326,10 +326,18 @@ namespace Renderer
 
     /// <summary>
     /// Frees given memory pointer.
-    /// Warning: Only memory allocated using 'Allocate(size, lifeTime)' can be releases using this function.
+    /// Warning: Only memory allocated using 'Allocate(...)' can be releases using this function.
     /// </summary>
     /// <param name="memory">The memory pointer to be released.</param>
     RENDERER_FUNCTION(void) Free(RendererMemory memory);
+
+    /// <summary>
+    /// Frees given memory pointer on the RenderThread - after the last command (eg.: UpdateVertexBuffer).
+    /// Warning: This can be called only from the MainThread!
+    /// Warning: Only memory allocated using 'Allocate(...)' (with lifeTime set to 0!) can be releases using this function.
+    /// </summary>
+    /// <param name="memory">The memory pointer to be released.</param>
+    RENDERER_FUNCTION(void) QueueFree(RendererMemory memory);
 
     RENDERER_FUNCTION(void) SetFlag(RenderFlags::_enum flag, bool value);
 
@@ -437,7 +445,10 @@ namespace Renderer
     /// <param name="vertexCount">The count of vertices.</param>
     /// <param name="vertexSize">The size of a single vertex.</param>
     /// <param name="dynamic">When true, this buffer will be allowed to be updated through UpdateVertexBuffer.</param>
-    RENDERER_FUNCTION(VertexBufferHandle) CreateVertexBuffer(uint count, uint vertexSize, bool dynamic = false);
+    /// <param name="buffer">When non-null there will be allocated buffer (and this param will be pointer to it), 
+    /// and it will be released after the buffer is uploaded to the GPU. Also, buffer is marked as DYNAMIC and to upload the data, 
+    /// you must update data by calling UpdateVertexBuffer(...).</param>
+    RENDERER_FUNCTION(VertexBufferHandle) CreateVertexBuffer(uint count, uint vertexSize, bool dynamic = false, RendererMemory* buffer = nullptr);
 
     /// <summary>
     /// Creates new VertexBuffer.
@@ -476,7 +487,10 @@ namespace Renderer
     /// <param name="count">The count of indices.</param>
     /// <param name="is32bit">Specifies the passed single index size. By default it is 32 bit. When false, it is 16.</param>
     /// <param name="dynamic">When true, this buffer will be allowed to be updated through UpdateIndexBuffer.</param>
-    RENDERER_FUNCTION(IndexBufferHandle) CreateIndexBuffer(uint count, bool is32bit = true, bool dynamic = false);
+    /// <param name="buffer">When non-null there will be allocated buffer (and this param will be pointer to it), 
+    /// and it will be released after the buffer is uploaded to the GPU. Also, buffer is marked as DYNAMIC and to upload the data, 
+    /// you must update data by calling UpdateIndexBuffer(...).</param>
+    RENDERER_FUNCTION(IndexBufferHandle) CreateIndexBuffer(uint count, bool is32bit = true, bool dynamic = false, RendererMemory* buffer = nullptr);
 
     /// <summary>
     /// Creates new IndexBuffer.

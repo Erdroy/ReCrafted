@@ -21,7 +21,7 @@ namespace Renderer
     public:
         uint ttl = 0u;
         void* userData = nullptr;
-        RendererMemory memory = nullptr;
+        void* memory = nullptr;
         std::function<void(void*, void*)> releaseFunc = {};
     };
 
@@ -62,7 +62,7 @@ namespace Renderer
 
     void FreeRendererMemory(void* ptr, void* userData)
     {
-        Free(static_cast<RendererMemory>(ptr));
+        Free(ptr);
     }
 
     void UpdateMemory()
@@ -151,7 +151,12 @@ namespace Renderer
         {
             _ASSERT(memory.memory); // scream at Erdroy when he is way too dumb and frees the memory manually
 
-            Free(memory.memory);
+            if (memory.memory && memory.releaseFunc != nullptr)
+            {
+                // release memory
+                memory.releaseFunc(static_cast<void*>(memory.memory), memory.userData);
+            }
+
             memory.memory = nullptr;
         }
         m_memoryAllocations.clear();
@@ -162,22 +167,22 @@ namespace Renderer
 
     RendererMemory Allocate(const size_t size, uint lifeTime)
     {
-        return Allocate(new byte[size], std::function<void(void*, void*)>(&FreeRendererMemory), nullptr, lifeTime);
+        if (size == 0)
+            return nullptr;
+
+        cvar data = rpmalloc(size);
+        return Allocate(data, std::function<void(void*, void*)>(&FreeRendererMemory), nullptr, lifeTime);
     }
 
     RendererMemory Allocate(void* data, std::function<void(void*, void*)> releaseFunc, void* userData, uint lifeTime)
     {
-        //cvar memory = static_cast<RendererMemory>();
-        cvar memory = static_cast<RendererMemory>(data);
 #if RENDERER_MEMORY_AUTO_DEALLOC_ENABLE
         if (lifeTime > 0)
         {
-            // we don't need any lock's here as everything happens on the main thread.
-
             ScopeLock(m_memoryAllocationsLock);
 
             MemoryAllocation mem = {};
-            mem.memory = memory;
+            mem.memory = data;
             mem.ttl = lifeTime;
             mem.userData = userData;
             mem.releaseFunc = releaseFunc;
@@ -185,16 +190,27 @@ namespace Renderer
         }
 #endif
 
-        return memory;
+        return RendererMemory(data);
     }
 
     void Free(RendererMemory memory)
     {
-        delete[] static_cast<byte*>(memory);
+        rpfree(static_cast<byte*>(memory));
+    }
+
+    void QueueFree(RendererMemory memory)
+    {
+        CHECK_MAIN_THREAD();
+
+        Command_QueueFree command;
+        command.memory = memory;
+        g_commandList->WriteCommand(&command);
     }
 
     void SetFlag(RenderFlags::_enum flag, bool value)
     {
+        m_renderFlags = RenderFlags::_enum(m_renderFlags & ~flag);
+
         Command_SetFlag command;
         command.flag = flag;
         command.value = value;
@@ -445,11 +461,14 @@ namespace Renderer
         FreeRenderBufferHandle(handle);
     }
 
-    VertexBufferHandle CreateVertexBuffer(uint count, uint vertexSize, bool dynamic)
+    VertexBufferHandle CreateVertexBuffer(uint count, uint vertexSize, bool dynamic, RendererMemory* buffer)
     {
         CHECK_MAIN_THREAD();
 
-        return CreateVertexBuffer(count, vertexSize, nullptr, dynamic);
+        if(buffer != nullptr)
+            *buffer = Allocate(count * vertexSize);
+
+        return CreateVertexBuffer(count, vertexSize, buffer, buffer ? true : dynamic);
     }
 
     VertexBufferHandle CreateVertexBuffer(uint vertexCount, uint vertexSize, RendererMemory data, bool dynamic)
@@ -507,11 +526,14 @@ namespace Renderer
         FreeVertexBufferHandle(handle);
     }
 
-    IndexBufferHandle CreateIndexBuffer(uint count, bool is32bit, bool dynamic)
+    IndexBufferHandle CreateIndexBuffer(uint count, bool is32bit, bool dynamic, RendererMemory* buffer)
     {
         CHECK_MAIN_THREAD();
 
-        return CreateIndexBuffer(count, nullptr, is32bit, dynamic);
+        if (buffer != nullptr)
+            *buffer = Allocate(count * (is32bit ? 4u : 2u));
+
+        return CreateIndexBuffer(count, nullptr, is32bit, buffer ? true : dynamic);
     }
 
     IndexBufferHandle CreateIndexBuffer(uint indexCount, RendererMemory data, bool is32bit, bool dynamic)

@@ -88,6 +88,7 @@ namespace Renderer
         int m_msaaSampleCount;
         Settings::_enum m_settings;
         RenderFlags::_enum m_renderFlags;
+        RenderFlags::_enum m_defaultFlags;
 
 
         // == events ==
@@ -165,6 +166,8 @@ namespace Renderer
             void Cleanup();
 
         public:
+            FORCEINLINE void Execute_QueueFree(Command_QueueFree* command);
+
             FORCEINLINE void Execute_SetFlag(Command_SetFlag* command);
             FORCEINLINE void Execute_SetFlags(Command_SetFlags* command);
 
@@ -256,6 +259,8 @@ namespace Renderer
 
         void WorkerThreadInstance::ResetFlags()
         {
+            m_renderFlags = m_defaultFlags;
+
             // Setup default states (reset)
             for (var i = 0u; 1u << i < RenderFlags::Count; i++)
             {
@@ -265,6 +270,7 @@ namespace Renderer
                 Command_SetFlag command = {};
                 command.flag = flag;
                 command.value = flagState;
+                command.size = 0;
 
                 Execute_SetFlag(&command);
             }
@@ -345,6 +351,8 @@ namespace Renderer
                     shader->SetValue(command.bufferId, command.fieldId, data, command.dataSize);
                     break;
                 }
+            DEFINE_COMMAND_EXECUTOR(QueueFree);
+
             DEFINE_COMMAND_EXECUTOR(SetFlag);
             DEFINE_COMMAND_EXECUTOR(SetFlags);
 
@@ -379,6 +387,7 @@ namespace Renderer
             DEFINE_COMMAND_EXECUTOR(DestroyTexture2D);
 
             case CommandHeader::Unknown:
+            case CommandHeader::Count:
             default:
                 break;
             }
@@ -392,8 +401,27 @@ namespace Renderer
                 SafeRelease(m_context);
         }
 
+        void WorkerThreadInstance::Execute_QueueFree(Command_QueueFree* command)
+        {
+            // Free memory when valid
+            if(command->memory != nullptr)
+                Free(command->memory);
+        }
+
         void WorkerThreadInstance::Execute_SetFlag(Command_SetFlag* command)
         {
+            if(command->size != 0) // when not called by ResetFlags
+            {
+                if(command->value)
+                {
+                    m_renderFlags = RenderFlags::_enum(m_renderFlags | command->flag);
+                }
+                else
+                {
+                    m_renderFlags = RenderFlags::_enum(m_renderFlags & ~command->flag);
+                }
+            }
+
             switch(command->flag)
             {
             case RenderFlags::DrawLineLists:
@@ -759,7 +787,6 @@ namespace Renderer
             SafeRelease(buffer);
         }
 
-
         void WorkerThreadInstance::Execute_CreateTexture2D(Command_CreateTexture2D* command)
         {
             rvar texture = m_textures[command->handle.idx];
@@ -938,7 +965,7 @@ namespace Renderer
                 m_workerThreads[i]->m_commandCount = commandCount[i];
 
                 // copy data
-                memcpy(m_workerThreads[i]->m_commandList.cmdlist, commandList.cmdlist + dataBegin[i], size);
+                memcpy(m_workerThreads[i]->m_commandList.cmdlist, static_cast<byte*>(commandList.cmdlist) + dataBegin[i], size);
             }
         }
 
@@ -946,6 +973,7 @@ namespace Renderer
         {
             m_settings = settings;
             m_renderFlags = flags;
+            m_defaultFlags = flags;
             m_running = true;
 
             if (m_renderFlags & RenderFlags::TripleBuffered)

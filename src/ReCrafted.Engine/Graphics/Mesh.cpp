@@ -1,7 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Mesh.h"
-#include "Core/Math/MeshSimplification/ng_mesh_simplify.h"
 #include "Renderer/Renderer.hpp"
 
 void Mesh::init()
@@ -51,8 +50,8 @@ bool Mesh::canUpload()
 void Mesh::applyChanges()
 {
     _ASSERT(m_vertices);
-    _ASSERT(m_vertices_count != 0);
-    _ASSERT(m_indices_count != 0);
+    _ASSERT(m_vertices_count > 0);
+    _ASSERT(m_indices_count > 0);
 
     m_vertexSize = sizeof(Vector3);
     if (m_uvs)
@@ -65,29 +64,29 @@ void Mesh::applyChanges()
         m_vertexSize += sizeof(Vector4);
 
     // allocate memory for vertex buffer
-    m_vertexBufferData = Renderer::Allocate(m_vertices_count * m_vertexSize);
+    m_vertexBufferData = Renderer::Allocate(m_vertices_count * m_vertexSize, 0);
     var memoryPtr = reinterpret_cast<byte*>(m_vertexBufferData);
 
     // build mesh data
     for (auto i = 0u; i < m_vertices_count; i ++)
     {
         cvar offset = i * m_vertexSize;
-        auto dataOffset = 0u;
+        var dataOffset = 0u;
 
-        auto vertice = m_vertices[i];
+        var vertice = m_vertices[i];
 
         memcpy(memoryPtr + offset + dataOffset, &vertice, sizeof(float) * 3);
         dataOffset += 3 * sizeof(float);
 
-        if (m_uvs)
-        {
-            memcpy(memoryPtr + offset + dataOffset, &m_uvs[i], sizeof(float) * 2);
-            dataOffset += 2 * sizeof(float);
-        }
         if (m_normals)
         {
             memcpy(memoryPtr + offset + dataOffset, &m_normals[i], sizeof(float) * 3);
             dataOffset += 3 * sizeof(float);
+        }
+        if (m_uvs)
+        {
+            memcpy(memoryPtr + offset + dataOffset, &m_uvs[i], sizeof(float) * 2);
+            dataOffset += 2 * sizeof(float);
         }
         if (m_colors)
         {
@@ -97,13 +96,13 @@ void Mesh::applyChanges()
     }
 
     // allocate memory for index buffer
-    m_indexBufferData = Renderer::Allocate(m_indices_count * sizeof(uint));
+    m_indexBufferData = Renderer::Allocate(m_indices_count * sizeof(uint), 0);
     memoryPtr = reinterpret_cast<byte*>(m_indexBufferData);
 
     for (auto i = 0u; i < m_indices_count; i ++)
     {
-        auto indice = m_indices[i];
-        auto offset = i * sizeof(uint);
+        var indice = m_indices[i];
+        cvar offset = i * sizeof(uint);
         memcpy(memoryPtr + offset, &indice, sizeof(uint));
     }
 
@@ -117,80 +116,6 @@ void Mesh::applyChanges()
     m_indices = nullptr;
 }
 
-void Mesh::simplify()
-{
-    cvar simplfiedMesh = new MeshBuffer;
-    simplfiedMesh->numVertices = m_vertices_count;
-    simplfiedMesh->vertices = new MeshVertex[m_vertices_count];
-
-    for (var i = 0u; i < m_vertices_count; i++)
-    {
-        simplfiedMesh->vertices[i].xyz[0] = m_vertices[i].x;
-        simplfiedMesh->vertices[i].xyz[1] = m_vertices[i].y;
-        simplfiedMesh->vertices[i].xyz[2] = m_vertices[i].z;
-        simplfiedMesh->vertices[i].xyz[3] = 0.0f;
-
-        simplfiedMesh->vertices[i].normal[0] = m_normals[i].x;
-        simplfiedMesh->vertices[i].normal[1] = m_normals[i].y;
-        simplfiedMesh->vertices[i].normal[2] = m_normals[i].z;
-        simplfiedMesh->vertices[i].normal[3] = 0.0f;
-
-        simplfiedMesh->vertices[i].colour[0] = m_colors[i].x;
-        simplfiedMesh->vertices[i].colour[1] = m_colors[i].y;
-        simplfiedMesh->vertices[i].colour[2] = m_colors[i].z;
-        simplfiedMesh->vertices[i].colour[3] = m_colors[i].w;
-    }
-
-    simplfiedMesh->numTriangles = m_indices_count / 3;
-    simplfiedMesh->triangles = new MeshTriangle[m_indices_count / 3];
-
-    memcpy(simplfiedMesh->triangles, m_indices, sizeof(MeshTriangle) * (m_indices_count / 3));
-
-    vec4 offset;
-    offset[0] = 1.0f;
-    offset[1] = 1.0f;
-    offset[2] = 1.0f;
-    offset[3] = 1.0f;
-
-    MeshSimplificationOptions options;
-    options.edgeFraction = 0.125f;
-    options.maxIterations = 10;
-    options.targetPercentage = 0.05f;
-    options.maxError = 1.0f;
-    options.maxEdgeSize = 0.5f;
-    options.minAngleCosine = 0.8f;
-
-    ngMeshSimplifier(simplfiedMesh, offset, options);
-
-    m_vertices_count = simplfiedMesh->numVertices;
-    m_normals_count = m_vertices_count;
-    m_colors_count = m_vertices_count;
-    m_indices_count = simplfiedMesh->numTriangles * 3;
-
-    for (var i = 0; i < simplfiedMesh->numVertices; i++)
-    {
-        m_vertices[i].x = simplfiedMesh->vertices[i].xyz[0];
-        m_vertices[i].y = simplfiedMesh->vertices[i].xyz[1];
-        m_vertices[i].z = simplfiedMesh->vertices[i].xyz[2];
-
-        m_normals[i].x = simplfiedMesh->vertices[i].normal[0];
-        m_normals[i].y = simplfiedMesh->vertices[i].normal[1];
-        m_normals[i].z = simplfiedMesh->vertices[i].normal[2];
-
-        m_colors[i].x = simplfiedMesh->vertices[i].colour[0];
-        m_colors[i].y = simplfiedMesh->vertices[i].colour[1];
-        m_colors[i].z = simplfiedMesh->vertices[i].colour[2];
-        m_colors[i].w = simplfiedMesh->vertices[i].colour[3];
-    }
-
-    memcpy(m_indices, simplfiedMesh->triangles, sizeof(MeshTriangle) * simplfiedMesh->numTriangles);
-
-    delete[] simplfiedMesh->vertices;
-    delete[] simplfiedMesh->triangles;
-
-    delete simplfiedMesh;
-}
-
 void Mesh::upload()
 {
     if (m_vertexBufferData == nullptr || m_indexBufferData == nullptr)
@@ -202,8 +127,17 @@ void Mesh::upload()
     if (RENDERER_CHECK_HANDLE(m_indexBuffer))
         Renderer::DestroyIndexBuffer(m_indexBuffer);
 
+    // Create vertex buffer
     m_vertexBuffer = Renderer::CreateVertexBuffer(m_vertices_count, m_vertexSize, m_vertexBufferData);
+
+    // Free vb memory
+    Renderer::QueueFree(m_vertexBufferData);
+
+    // Create index buffer
     m_indexBuffer = Renderer::CreateIndexBuffer(m_indices_count, m_indexBufferData);
+
+    // Free ib memory
+    Renderer::QueueFree(m_indexBufferData);
 
     m_vertexBufferData = nullptr;
     m_indexBufferData = nullptr;
@@ -219,6 +153,12 @@ void Mesh::dispose()
 
     if (RENDERER_CHECK_HANDLE(m_indexBuffer))
         Renderer::DestroyIndexBuffer(m_indexBuffer);
+
+    if(m_vertexBufferData)
+        Renderer::QueueFree(m_vertexBufferData);
+
+    if (m_indexBufferData)
+        Renderer::QueueFree(m_indexBufferData);
 
     // clean
     m_vertices = nullptr;
