@@ -10,6 +10,7 @@
 #include "Core/EngineComponent.h"
 #include "Platform/Platform.h"
 #include "Core/Containers/Array.h"
+#include "Core/Math/Color.h"
 
 class Font;
 
@@ -45,6 +46,8 @@ private:
         const void* name = nullptr;
         bool utf8 = false;
 
+        bool updated = false;
+
     public:
         void update(double currentTime)
         {
@@ -57,6 +60,8 @@ private:
             // increment profile count
             m_profileCount++;
 
+            updated = true;
+
             // increment call count
             calls++;
         }
@@ -65,20 +70,29 @@ private:
 private:
     static Array<Profile> m_profiles;
     static Array<Profile*> m_profileStack;
-    static bool m_drawDebugScreen;
-    static Font* m_debugFont;
     static int m_profileCount;
 
+    bool m_drawDebugScreen = false;
+    Font* m_debugFont = nullptr;
+    float m_lineOffset = 0.0f;
+    float m_lastFPSCountTime = 0;
+    int m_frames = 0;
+    int m_fps = 0;
+
 private:
-    static bool Profiler::profileSort(const Profile& lhs, const Profile& rhs);
+    static bool profileSort(const Profile& lhs, const Profile& rhs);
 
 private:
     void onInit() override;
     void onDispose() override;
+    void update() override;
 
 private:
-    static void update();
-    static void drawDebugScreen();
+    void drawLine(Text text, Color color);
+    void space(int lines);
+
+private:
+    void drawDebugScreen();
 
 private:
     template <typename T>
@@ -86,7 +100,7 @@ private:
     {
         // TODO: Main thread check (debug)
 
-        var currentTime = Platform::getMiliseconds();
+        cvar currentTime = Platform::getMiliseconds();
 
         // try select profile, then update
         // check if profile already exists with this name
@@ -168,7 +182,7 @@ public:
         if (m_profileStack.count() == 0)
             return;
 
-        var currentTime = Platform::getMiliseconds();
+        cvar currentTime = Platform::getMiliseconds();
 
         // select profile
         var profile = m_profileStack.last();

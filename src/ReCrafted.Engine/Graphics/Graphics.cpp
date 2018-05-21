@@ -99,7 +99,7 @@ void Graphics::update()
 
 void Graphics::render()
 {
-    Profiler::beginProfile("Render");
+    Profiler::beginProfile("Frame");
     {
         cvar clearColor = Renderer::Color{0.0f, 0.0f, 0.0f, 1.0f};
 
@@ -124,8 +124,12 @@ void Graphics::render()
         // render UI
         renderUI();
 
-        // next frame, wait vsync
-        Renderer::Frame();
+        Profiler::beginProfile("Render");
+        {
+            // next frame, wait vsync
+            Renderer::Frame();
+        }
+        Profiler::endProfile();
     }
     Profiler::endProfile();
 }
@@ -247,7 +251,7 @@ void Graphics::renderUI()
             Application::getInstance()->renderUI();
 
             // draw profiler debug screen
-            Profiler::drawDebugScreen();
+            Profiler::getInstance()->drawDebugScreen();
         }
         Profiler::endProfile();
 

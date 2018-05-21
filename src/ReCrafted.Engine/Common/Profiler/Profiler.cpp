@@ -14,13 +14,7 @@ SINGLETON_IMPL(Profiler)
 
 Array<Profiler::Profile> Profiler::m_profiles;
 Array<Profiler::Profile*> Profiler::m_profileStack;
-bool Profiler::m_drawDebugScreen;
-Font* Profiler::m_debugFont;
 int Profiler::m_profileCount;
-
-float m_lastFPSCountTime = 0;
-int m_frames = 0;
-int m_fps = 0;
 
 bool Profiler::profileSort(const Profile& lhs, const Profile& rhs)
 {
@@ -46,6 +40,7 @@ void Profiler::onDispose()
 void Profiler::update()
 {
     m_frames++;
+    m_lineOffset = 10.0f;
 
     if (Time::time() - m_lastFPSCountTime > 1.0f)
     {
@@ -58,6 +53,18 @@ void Profiler::update()
         m_drawDebugScreen = !m_drawDebugScreen;
 }
 
+void Profiler::drawLine(Text text, Color color)
+{
+    UI::setColor(color);
+    UI::drawText(m_debugFont, text, Vector2(10.0f, m_lineOffset));
+    m_lineOffset += static_cast<float>(m_debugFont->getSize());
+}
+
+void Profiler::space(int lines)
+{
+    m_lineOffset += static_cast<float>(m_debugFont->getSize()) * lines;
+}
+
 void Profiler::drawDebugScreen()
 {
     if (!m_drawDebugScreen)
@@ -66,77 +73,87 @@ void Profiler::drawDebugScreen()
     beginProfile("Profile");
     endProfile();
 
-    Renderer::RenderStatistics renderStats = {};
-    Renderer::GetRenderStatistics(&renderStats);
-
     beginProfile("Profiler Draw (self profile)", 0.5f, 1.0f);
     {
-        var depth = UI::getDepth();
+        Renderer::RenderStatistics renderStats = {};
+        Renderer::GetRenderStatistics(&renderStats);
+
+        cvar previousDepth = UI::getDepth();
         UI::setDepth(9999.0f);
 
-        var yOffset = 0.0f;
+        drawLine(TEXT_CONST("Profiler [press F9 to hide]"), Color(0xFF0A00FF));
+        space(3);
+
+        drawLine(TEXT_CONST("[Engine Statistics]"), Color(0xFF0A00FF));
+        space(1);
 
         float gcUsedSize;
-        var unitA = ByteFormat::Format(mono_gc_get_used_size(), &gcUsedSize);
-
         float gcHeapSize;
-        var unitB = ByteFormat::Format(mono_gc_get_heap_size(), &gcHeapSize);
+        cvar unitA = ByteFormat::Format(mono_gc_get_used_size(), &gcUsedSize);
+        cvar unitB = ByteFormat::Format(mono_gc_get_heap_size(), &gcHeapSize);
+        drawLine(Text::format(TEXT_CONST("FPS: {0}"), m_fps), Color(0xFFFF00FF));
+        drawLine(Text::format(TEXT_CONST("GC memory usage: {0} {1}"), gcUsedSize, ByteFormat::ToString(unitA)), Color(0xFFFFFFFF));
+        drawLine(Text::format(TEXT_CONST("GC Heap size: {0} {1}"), gcHeapSize, ByteFormat::ToString(unitB)), Color(0xFFFFFFFF));
+        space(2);
 
-        UI::setColor(Color(0xFF0A00FF));
-        UI::drawText(m_debugFont, TEXT_CONST("Profiler [press F9 to hide]"), Vector2(0.0f, 0.0f));
-        yOffset += static_cast<float>(m_debugFont->getSize()) * 2.0f;
+        drawLine(TEXT_CONST("[Render Statistics]"), Color(0xFF0A00FF));
+        space(1);
 
-        UI::setColor(Color(0xFFFFFFFF));
-        UI::drawText(m_debugFont, TEXT_CONST("[GC Memory]"), Vector2(0.0f, yOffset));
-        yOffset += static_cast<float>(m_debugFont->getSize()) * 2.0f;
+        drawLine(Text::format(TEXT_CONST("API Calls: {0}"), renderStats.apiCallCount), Color(0xFFFFFFFF));
+        drawLine(Text::format(TEXT_CONST("Draw Calls: {0}"), renderStats.drawCallCount), Color(0xFFFFFFFF));
+        drawLine(Text::format(TEXT_CONST("Frame Commands: {0}"), renderStats.commandCount), Color(0xFFFFFFFF));
+        drawLine(Text::format(TEXT_CONST("Vertices Drawn: {0}"), renderStats.verticesDrawn), Color(0xFFFFFFFF));
+        drawLine(Text::format(TEXT_CONST("Indices Drawn: {0}"), renderStats.indicesDrawn), Color(0xFFFFFFFF));
+        drawLine(Text::format(TEXT_CONST("Vertex Buffers: {0}"), renderStats.vertexBufferCount), Color(0xFFFFFFFF));
+        drawLine(Text::format(TEXT_CONST("Index Buffers: {0}"), renderStats.indexBufferCount), Color(0xFFFFFFFF));
+        drawLine(Text::format(TEXT_CONST("Render Buffers: {0}"), renderStats.renderBufferCount), Color(0xFFFFFFFF));
+        drawLine(Text::format(TEXT_CONST("Textures: {0}"), renderStats.texture2DCount), Color(0xFFFFFFFF));
+        drawLine(Text::format(TEXT_CONST("Loaded Shaders: {0}"), renderStats.shaderCount), Color(0xFFFFFFFF));
+        drawLine(Text::format(TEXT_CONST("Flags: {0}"), renderStats.flags), Color(0xFFFFFFFF));
+        space(2);
 
-        UI::drawText(m_debugFont,
-                     Text::format(
-                         TEXT_CONST("FPS: {0}\nUsed memory: {1} {2}\nHeap size: {3} {4}"), m_fps, gcUsedSize,
-                         ByteFormat::ToString(unitA), gcHeapSize, ByteFormat::ToString(unitB)),
-                     Vector2(0.0f, yOffset)
-        );
-        yOffset += static_cast<float>(m_debugFont->getSize()) * 3.0f;
-
-        UI::drawText(m_debugFont, TEXT_CONST("[Profiles]"), Vector2(0.0f, yOffset));
-        yOffset += static_cast<float>(m_debugFont->getSize()) * 2.0f;
+        drawLine(TEXT_CONST("[Profiles]"), Color(0xFF0A00FF));
+        space(1);
 
         // sort by order
         sort(m_profiles.begin(), m_profiles.end(), profileSort);
 
         for (var i = static_cast<int>(m_profiles.count()) - 1; i >= 0; i--)
         {
-            UI::setColor(Color(0xFFFFFFFF));
+            rvar entry = m_profiles.at(i);
+            cvar depthOffset = entry.depth * 15.0f;
+            
+            if (!entry.updated)
+                continue;
 
-            var entry = m_profiles.at(i);
-            var depthOffset = entry.depth * 15.0f;
-
+            Color color;
             if (entry.timeAvg > entry.timeMax && entry.timeMax >= 0.0f)
-                UI::setColor(Color(0xFF0A00FF));
+                color = Color(0xFF0A00FF);
             else if (entry.timeAvg > entry.timeMed && entry.timeMed >= 0.0f)
-                UI::setColor(Color(0xAA0A00FF));
+                color = Color(0xAA0A00FF);
             else
-                UI::setColor(Color(0xFFFFFFFF));
+                color = Color(0xFFFFFFFF);
 
-            var infoText = Text::format(TEXT("{0:.4f} ms"), entry.timeAvg);
-
-            UI::drawText(m_debugFont, infoText, Vector2(10.0f, yOffset));
+            cvar offset = Vector2(150.0f + depthOffset, m_lineOffset);
 
             if (entry.utf8)
             {
-                var name = static_cast<const char*>(entry.name);
-                UI::drawText(m_debugFont, name, static_cast<int>(strlen(name)), Vector2(150.0f + depthOffset, yOffset));
+                UI::setColor(Color(0xFFFFFFFF));
+                cvar name = static_cast<const char*>(entry.name);
+                UI::drawText(m_debugFont, name, static_cast<int>(strlen(name)), offset);
             }
             else
             {
-                var name = static_cast<const Char*>(entry.name);
-                UI::drawText(m_debugFont, name, Text::length(name), Vector2(150.0f + depthOffset, yOffset));
+                UI::setColor(Color(0xFFAAAAFF));
+                cvar name = static_cast<const Char*>(entry.name);
+                UI::drawText(m_debugFont, name, Text::length(name), offset);
             }
 
-            yOffset += m_debugFont->getSize();
+            drawLine(Text::format(TEXT("{0:.4f} ms"), entry.timeAvg), color);
+            entry.updated = false;
         }
 
-        UI::setDepth(depth);
+        UI::setDepth(previousDepth);
     }
     endProfile();
 }

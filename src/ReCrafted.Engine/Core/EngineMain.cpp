@@ -83,9 +83,6 @@ void EngineMain::onUpdate()
     // run platform events
     Platform::runEvents();
 
-    // update
-    Profiler::update();
-
     // update all components
     m_componentManager->update();
 }
