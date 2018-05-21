@@ -183,6 +183,8 @@ namespace Renderer
         public:
             FORCEINLINE void Execute_QueueFree(Command_QueueFree* command);
 
+            FORCEINLINE void Execute_ExecuteTask(Command_ExecuteTask* command);
+
             FORCEINLINE void Execute_SetFlag(Command_SetFlag* command);
             FORCEINLINE void Execute_SetFlags(Command_SetFlags* command);
 
@@ -367,6 +369,8 @@ namespace Renderer
                 }
             DEFINE_COMMAND_EXECUTOR(QueueFree);
 
+            DEFINE_COMMAND_EXECUTOR(ExecuteTask);
+
             DEFINE_COMMAND_EXECUTOR(SetFlag);
             DEFINE_COMMAND_EXECUTOR(SetFlags);
 
@@ -420,6 +424,16 @@ namespace Renderer
             // Free memory when valid
             if(command->memory != nullptr)
                 Free(command->memory);
+        }
+
+        void WorkerThreadInstance::Execute_ExecuteTask(Command_ExecuteTask* command)
+        {
+            // Set device and context
+            command->task->device = m_device;
+            command->task->context = m_context;
+
+            // Execute task
+            command->task->execute();
         }
 
         void WorkerThreadInstance::Execute_SetFlag(Command_SetFlag* command)
@@ -1032,7 +1046,7 @@ namespace Renderer
 #ifdef _DEBUG
             deviceFlags = D3D11_CREATE_DEVICE_DEBUG;
 #else
-            , deviceFlags = 0;
+            deviceFlags = 0;
 #endif
 
             DX_CALL(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, deviceFlags, featureLevels, 1, D3D11_SDK_VERSION, &m_device, &level, &m_deviceContext));

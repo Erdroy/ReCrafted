@@ -730,6 +730,15 @@ namespace Renderer
         FreeShaderHandle(handle);
     }
 
+    void ExecuteTask(RenderTask* task)
+    {
+        CHECK_MAIN_THREAD();
+
+        Command_ExecuteTask command;
+        command.task = task;
+        g_commandList->WriteCommand(&command);
+    }
+
     void BlitTexture(RenderBufferHandle destination, Texture2DHandle source, ShaderHandle customShader)
     {
         if (RENDERER_CHECK_HANDLE(customShader))

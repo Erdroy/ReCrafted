@@ -26,6 +26,8 @@ namespace Renderer
 
             QueueFree,
 
+            ExecuteTask,
+
             SetFlag,
             SetFlags,
 
@@ -72,6 +74,10 @@ namespace Renderer
 
     Command(QueueFree, 
         RendererMemory memory;
+    );
+
+    Command(ExecuteTask,
+        RenderTask* task = nullptr;
     );
 
     Command(SetFlag,

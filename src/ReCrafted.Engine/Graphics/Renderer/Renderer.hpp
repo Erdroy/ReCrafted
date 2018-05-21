@@ -233,6 +233,19 @@ namespace Renderer
 
     };
 
+    struct RenderTask
+    {
+    public:
+        void* device = nullptr;
+        void* context = nullptr;
+
+    public:
+        virtual ~RenderTask() = default;
+
+    public:
+        virtual void execute() = 0;
+    };
+
     struct RenderStatistics
     {
     public:
@@ -360,10 +373,19 @@ namespace Renderer
     /// <param name="memory">The memory pointer to be released.</param>
     RENDERER_FUNCTION(void) QueueFree(RendererMemory memory);
 
+    /// <summary>
+    /// Sets given value to a specified flag.
+    /// </summary>
     RENDERER_FUNCTION(void) SetFlag(RenderFlags::_enum flag, bool value);
 
+    /// <summary>
+    /// Sets all given flags to true.
+    /// </summary>
     RENDERER_FUNCTION(void) SetFlags(RenderFlags::_enum flag);
 
+    /// <summary>
+    /// Gets given flag state/value.
+    /// </summary>
     RENDERER_FUNCTION(bool) GetFlag(RenderFlags::_enum flag);
 
     /// <summary>
@@ -646,6 +668,23 @@ namespace Renderer
     RENDERER_FUNCTION(void) DestroyShader(ShaderHandle handle);
 
     // ======== RENDERING ========
+    
+    /// <summary>
+    /// Executes given RenderTask on the Render Thread.
+    /// Every task has access to device (if D3D) and deferred context.
+    /// </summary>
+    /// <param name="task">The render task pointer.</param>
+    RENDERER_FUNCTION(void) ExecuteTask(RenderTask* task);
+
+    /// <summary>
+    /// Executes given RenderTask on the Render Thread.
+    /// Every task has access to device (if D3D) and deferred context.
+    /// </summary>
+    template<typename T>
+    RENDERER_FUNCTION(void) ExecuteTask() {
+        static T task;
+        ExecuteTask(static_cast<RenderTask*>(&task));
+    }
 
     /// <summary>
     /// Draws render texture to the first slot/render texture of render buffer.
