@@ -327,6 +327,10 @@ void Platform::reportAssert(Text expression, Text fileName, unsigned int line, T
     // Show message box
     MessageBoxA(static_cast<HWND>(m_currentWindow), formated.c_str(), "Error", MB_OK | MB_ICONERROR);
 
+#if _DEBUG
+    __debugbreak();
+#endif
+
     // and exit...
     exit(-1);
 }
