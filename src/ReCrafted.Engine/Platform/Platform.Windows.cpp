@@ -309,4 +309,26 @@ void Platform::setThreadName(const char* name)
 {
     SetThreadName(name);
 }
+
+void Platform::reportAssert(Text expression, Text fileName, unsigned int line, Text message)
+{
+    std::string formated;
+    if(message.std_str().size() > 1)
+    {
+        formated = fmt::format("Assertion failed! File: {0}:{1} - {2}\n Message: {3}", fileName.std_str(), line, expression.std_str(), message.std_str());
+    }
+    else
+    {
+        formated = fmt::format("Assertion failed! File: {0}:{1} - {2}", fileName.std_str(), line, expression.std_str());
+    }
+
+    Logger::logException("{0}", formated);
+
+    // Show message box
+    MessageBoxA(static_cast<HWND>(m_currentWindow), formated.c_str(), "Error", MB_OK | MB_ICONERROR);
+
+    // and exit...
+    exit(-1);
+}
+
 #endif

@@ -7,7 +7,6 @@
 
 #include <ctime>
 #include <vector>
-#include <cassert>
 
 #include "Core/Defines.h"
 #include "Core/Types.h"

@@ -5,6 +5,8 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
+#include "Core/Assert.h"
+
 #if _WIN32
 #define getHInstance() static_cast<HINSTANCE>(GetModuleHandle(nullptr))
 #endif

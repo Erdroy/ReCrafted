@@ -80,6 +80,8 @@ public:
     */
     static double getMiliseconds();
 
+    static void reportAssert(Text expression, Text fileName, unsigned int line, Text message);
+
     /**
      * \brief Gets the CPU count.
      * \return The CPU count. 
