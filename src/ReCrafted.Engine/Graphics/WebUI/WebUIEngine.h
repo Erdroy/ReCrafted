@@ -13,15 +13,14 @@ class WebUIEngine : public Singleton<WebUIEngine>
 private:
     bool m_initialized = false;
 
-private:
-    void runCEF();
-
 public:
     void init();
     void onDispose() override;
 
+    void Update();
+    void Render();
+
 public:
-    static void runChildren();
     static bool isInitialized();
 };
 

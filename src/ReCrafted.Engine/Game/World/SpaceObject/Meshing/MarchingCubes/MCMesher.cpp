@@ -31,12 +31,12 @@ const float S = 1.0f / 256.0f;
 // TODO: move operator overrides into Vector3
 Vector3 operator*(const float& lhs, const Vector3& rhs)
 {
-    return Vector3(rhs.x * lhs, rhs.y * lhs, rhs.z * lhs);
+    return {rhs.x * lhs, rhs.y * lhs, rhs.z * lhs};
 }
 
 Vector3 operator/(const Vector3& lhs, const float& rhs)
 {
-    return Vector3(lhs.x / rhs, lhs.y / rhs, lhs.z / rhs);
+    return {lhs.x / rhs, lhs.y / rhs, lhs.z / rhs};
 }
 
 /**
@@ -49,9 +49,6 @@ Vector3 operator/(const Vector3& lhs, const float& rhs)
  */
 inline Vector3 GetIntersection(Vector3& p1, Vector3& p2, float d1, float d2)
 {
-    //if (fabs(d1 - d2) < 0.0001f)
-    //	return (p1 + p2) * 0.5f;
-
     return p1 + -d1 * (p2 - p1) / (d2 - d1);
 }
 
@@ -61,10 +58,8 @@ inline Vector3 GetEdge(Vector3 offset, sbyte* data, Vector3 cornerA, Vector3 cor
     var offsetB = offset + cornerB;
 
     // get data
-    var sampleA = VOXEL_TO_FLOAT(data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), VoxelChunkData::
-        ChunkDataSize)]);
-    var sampleB = VOXEL_TO_FLOAT(data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), VoxelChunkData::
-        ChunkDataSize)]);
+    cvar sampleA = VOXEL_TO_FLOAT(data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), VoxelChunkData::ChunkDataSize)]);
+    cvar sampleB = VOXEL_TO_FLOAT(data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), VoxelChunkData::ChunkDataSize)]);
 
     return GetIntersection(offsetA, offsetB, sampleA, sampleB);
 }
@@ -153,23 +148,12 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
         m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
         m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
 
-        if(plane.normal.x != plane.normal.x)
-        {
-            // two points are equal, WTF?
-            // just add some zero-normals for now. TODO: fix when cache will be done!
-            m_normals.add(Vector3::zero());
-            m_normals.add(Vector3::zero());
-            m_normals.add(Vector3::zero());
-        }
-        else
-        {
-            m_normals.add(plane.normal);
-            m_normals.add(plane.normal);
-            m_normals.add(plane.normal);
+        m_normals.add(plane.normal);
+        m_normals.add(plane.normal);
+        m_normals.add(plane.normal);
 
-            normal += plane.normal;
-            triangles++;
-        }
+        normal += plane.normal;
+        triangles++;
     }
 
     if (triangles <= 1)
@@ -183,7 +167,7 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
 void MCMesher::generateSkirt(Cell* cell, const Vector3& position, const Vector3& offset, float lod, uint8_t axis,
                              sbyte* data)
 {
-    var corners = MSCornerOffsets[axis];
+    cvar corners = MSCornerOffsets[axis];
 
     byte caseIndex = 0;
     Vector3 edges[8];

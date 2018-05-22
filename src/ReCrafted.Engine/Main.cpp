@@ -41,9 +41,6 @@ int CALLBACK WinMain(
     // parse arguments
     GameInfo::parseArguments(Text(GetCommandLineA()));
 
-    // run WebUI engine children process
-    WebUIEngine::runChildren();
-
     // create engine instance
     var engine = EngineMain();
 

@@ -90,6 +90,12 @@ void SpaceObjectChunk::rebuild(IVoxelMesher* mesher)
 
     mesher->generate(m_position, m_lod, borders, mesh, voxelData);
 
+    if(mesh->getVertexCount() == 0)
+    {
+        SafeDispose(mesh);
+        return;
+    }
+
     ScopeLock(m_meshLock);
     SafeDispose(m_newMesh);
     m_newMesh = mesh;

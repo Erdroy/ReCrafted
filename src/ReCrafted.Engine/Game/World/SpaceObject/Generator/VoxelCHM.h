@@ -20,16 +20,11 @@ private:
     int m_bitmapHeight = 0;
 
 private:
-    VoxelCHM()
-    {
-    }
-
-private:
-    void loadFace(int face, const char* name, const char* directoryName);
+    void loadFace(int face, const char* fileName, const char* directoryName);
 
     float sampleFace(const int face, const Vector2 texcoord) const
     {
-#ifdef DEBUG
+#ifdef _DEBUG
         if (texcoord.x < 0.0f || texcoord.y < 0.0f || texcoord.x >= 1.0f || texcoord.y >= 1.0f)
         {
             throw;
@@ -41,7 +36,7 @@ private:
         cvar posX = static_cast<int>(texcoord.x * m_bitmapWidth);
         cvar posY = static_cast<int>(texcoord.y * m_bitmapHeight);
 
-        var pixel = (float)bitmap[posY * m_bitmapWidth + posX];
+        cvar pixel = static_cast<float>(bitmap[posY * m_bitmapWidth + posX]);
 
         return pixel / 255.0f;
     }
@@ -61,8 +56,8 @@ public:
     void dispose() override
     {
         // free all 6 faces
-        for (var i = 0; i < 6; i ++)
-            Bitmap::free(m_faces[i]);
+        for (rvar face : m_faces)
+            Bitmap::free(face);
     }
 
 public:

@@ -37,12 +37,16 @@ void WebUI::resize(uint width, uint height)
 
 void WebUI::update()
 {
+    m_engine->Update();
+
     for (var&& view : m_views)
         view->update();
 }
 
 void WebUI::render()
 {
+    m_engine->Render();
+
     for (var&& view : m_views)
         view->render();
 }

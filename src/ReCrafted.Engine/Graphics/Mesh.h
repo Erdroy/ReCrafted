@@ -126,6 +126,12 @@ public:
     void dispose() override;
 
 public:
+    int getVertexCount() const
+    {
+        return m_vertices_count;
+    }
+
+public:
     /**
 	 * \brief Creates new mesh.
 	 * \return The newly created mesh pointer.

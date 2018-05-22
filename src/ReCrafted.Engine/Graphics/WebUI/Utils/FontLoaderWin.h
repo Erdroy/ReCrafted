@@ -1,0 +1,26 @@
+
+#ifndef FONTLOADERWIN_H
+#define FONTLOADERWIN_H
+
+#include <Ultralight/platform/FontLoader.h>
+#include <map>
+
+namespace ultralight {
+
+    /**
+    * FontLoader implementation for Windows.
+    */
+    class FontLoaderWin : public FontLoader {
+    public:
+        FontLoaderWin() {}
+        virtual ~FontLoaderWin() {}
+        virtual String16 fallback_font() const override;
+        virtual Ref<Buffer> Load(const String16& family, int weight, bool italic, float size) override;
+    protected:
+        std::map<uint64_t, RefPtr<Buffer>> fonts_;
+    };
+
+}  // namespace ultralight
+
+
+#endif // FONTLOADERWIN_H
