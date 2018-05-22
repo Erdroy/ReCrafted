@@ -28,6 +28,7 @@ project "ReCrafted.Engine"
 		path.join(LIBS_DIR, "tsl/include"),
 		path.join(LIBS_DIR, "sparsepp/include"),
 		path.join(LIBS_DIR, "concurrentqueue/include"),
+		path.join(LIBS_DIR, "ultralight/include"),
 	}
 	
 	-- add source/header/shader files
@@ -42,7 +43,7 @@ project "ReCrafted.Engine"
 			"call " .. ROOT_DIR .. "/pm.bat PostBuild --skip-shaders --skip-api",
 		}
 	
-	links { "d3d11", "dxguid", "dxgi", "d3dcompiler", "Rpcrt4", "mono", "PxFoundation_x64", "PxTask_x64", "PhysX3_x64", "PhysX3Common_x64", "PhysX3Extensions", "PhysX3CharacterKinematic_x64" }
+	links { "d3d11", "dxguid", "dxgi", "d3dcompiler", "Rpcrt4", "Ultralight", "UltralightCore", "WebCore", "mono", "PxFoundation_x64", "PxTask_x64", "PhysX3_x64", "PhysX3Common_x64", "PhysX3Extensions", "PhysX3CharacterKinematic_x64" }
 		
 	configuration { "Debug" }
 		defines { "DEBUG", "_ITERATOR_DEBUG_LEVEL=0" }
@@ -74,6 +75,7 @@ project "ReCrafted.Engine"
 			path.join(LIBS_DIR, "fmod/lib"),
 			path.join(LIBS_DIR, "physx34/lib/vc14win64"),
 			path.join(LIBS_DIR, "rpmalloc/lib"),
+			path.join(LIBS_DIR, "ultralight/lib"),
 		}
 		linkoptions { "/ignore:4099" }
 	

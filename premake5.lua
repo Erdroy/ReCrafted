@@ -27,5 +27,4 @@ solution "ReCrafted"
 	startproject "ReCrafted"
 
 dofile "scripts/recrafted.engine.lua"
-dofile "scripts/recrafted.browser.lua"
 dofile "scripts/external.lua"
