@@ -34,13 +34,15 @@ sbyte VoxelStorage::sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, co
     return VOXEL_FROM_FLOAT(voxelValue);
 }
 
-void VoxelStorage::generateChunkFromCHM(sbyte* voxelData, const Vector3& position, const int lod)
+void VoxelStorage::generateChunkFromCHM(sbyte** voxelData, const Vector3& position, const int lod)
 {
     cvar chm = m_chm.get();
     cvar dataSize = VoxelChunkData::ChunkDataSize;
     cvar lod_f = static_cast<float>(lod);
 
-    // TODO: return nullptr where there is no any proper voxel surface (the chunk is completely above or under surface)
+    sbyte last = 0u;
+    var first = true;
+    var hasSurface = false;
 
     for (var x = 0; x < dataSize; x++)
     {
@@ -53,13 +55,24 @@ void VoxelStorage::generateChunkFromCHM(sbyte* voxelData, const Vector3& positio
                 cvar offset = Vector3(float(x), float(y), float(z));
                 cvar voxelPosition = position + offset * lod_f;
 
+                cvar value = sdf_planet_generate(chm, spaceObject->m_position, voxelPosition, lod,
+                    spaceObject->m_settings.minSurfaceHeight,
+                    spaceObject->m_settings.hillsHeight);
+
                 // tempoarary
-                voxelData[index] = sdf_planet_generate(chm, spaceObject->m_position, voxelPosition, lod,
-                                                       spaceObject->m_settings.minSurfaceHeight,
-                                                       spaceObject->m_settings.hillsHeight);
+                (*voxelData)[index] = value;
+
+                if(last != value && !first)
+                    hasSurface = true;
+
+                last = value;
+                first = false;
             }
         }
     }
+
+    if (!hasSurface)
+        *voxelData = nullptr;
 }
 
 void VoxelStorage::loadHeader()
@@ -184,10 +197,15 @@ void VoxelStorage::readChunkData(Ref<VoxelChunkData> chunkData)
     cvar lod = chunkData->m_size / SpaceObjectOctreeNode::MinimumNodeSize;
 
     // generate chunk now using CHM
-    generateChunkFromCHM(chunkData->getData(), chunkPosition, lod);
+    var data = chunkData->getData();
+    generateChunkFromCHM(&data, chunkPosition, lod);
 
     // mark as loaded
+    chunkData->m_hasSurface = data != nullptr;
     chunkData->m_loaded = true;
+
+    // TODO: improve our surface detection by checking for modified chunk data - if there is none, chunkData should be null.
+    // When we want to modify the terrain, we should at first create chunk data.
 }
 
 void VoxelStorage::writeChunkData(Ref<VoxelChunkData> chunkData)

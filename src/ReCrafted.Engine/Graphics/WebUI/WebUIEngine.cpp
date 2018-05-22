@@ -15,7 +15,6 @@
 #include <Shlwapi.h>
 #include <thread>
 
-
 SINGLETON_IMPL(WebUIEngine)
 
 ultralight::RefPtr<ultralight::Renderer> m_renderer = nullptr;
@@ -26,7 +25,7 @@ void WebUIEngine::init()
     TCHAR cur_dir[_MAX_PATH];
     GetCurrentDirectory(_MAX_PATH, cur_dir);
     TCHAR asset_dir[_MAX_PATH];
-    PathCombine(asset_dir, cur_dir, L"./assets/");
+    PathCombine(asset_dir, cur_dir, L"./../assets/");
 
     // Setup our Platform API handlers
     rvar platform = ultralight::Platform::instance();
@@ -42,7 +41,7 @@ void WebUIEngine::init()
     //platform.set_gpu_driver(new ultralight::GPUDriverD3D(context));
     platform.set_font_loader(new ultralight::FontLoaderWin());
     platform.set_file_system(new ultralight::FileSystemWin(asset_dir));
-
+    
     m_renderer = ultralight::Renderer::Create();
 
     m_initialized = true;

@@ -175,7 +175,9 @@ void SpaceObjectOctreeNode::modify(VoxelEditMode::_enum mode, Vector3& position,
     cvar chunkScale = static_cast<float>(chunkData->getLod());
 
     for (var x = 0; x < VoxelChunkData::ChunkDataSize; x++)
+    {
         for (var y = 0; y < VoxelChunkData::ChunkDataSize; y++)
+        {
             for (var z = 0; z < VoxelChunkData::ChunkDataSize; z++)
             {
                 var point = Vector3(float(x), float(y), float(z)) * chunkScale + chunkData->getChunkPosition();
@@ -202,6 +204,10 @@ void SpaceObjectOctreeNode::modify(VoxelEditMode::_enum mode, Vector3& position,
                     }
                 }
             }
+        }
+    }
+
+    chunkData->HasSurface(true);
 }
 
 void SpaceObjectOctreeNode::onUpdate()

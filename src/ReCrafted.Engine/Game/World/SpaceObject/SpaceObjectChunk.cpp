@@ -61,26 +61,25 @@ void SpaceObjectChunk::init(SpaceObjectOctreeNode* node, SpaceObject* spaceObjec
     m_id = calculateChunkId(node->get_position());
 
     // TODO: check if chunk has any visible surface
-    m_hasSurface = true;
 }
 
 void SpaceObjectChunk::generate(IVoxelMesher* mesher) // WARNING: this function is called on WORKER THREAD!
 {
-    if (!m_hasSurface)
-        return;
-
     var storage = spaceObject->getStorage();
 
     // try to read chunk data (if not read actually)
     if (!m_chunkData->isLoaded())
         storage->readChunkData(m_chunkData);
 
+    if(!m_chunkData->HasSurface())
+        return;
+
     rebuild(mesher);
 }
 
 void SpaceObjectChunk::rebuild(IVoxelMesher* mesher)
 {
-    if (!m_chunkData->isLoaded())
+    if (!m_chunkData->isLoaded() || !m_chunkData->HasSurface())
         return;
 
     var mesh = Mesh::createMesh();
@@ -119,7 +118,7 @@ void SpaceObjectChunk::upload()
 
 void SpaceObjectChunk::draw()
 {
-    if (!m_mesh || !m_mesh->isUploaded() || !m_hasSurface)
+    if (!m_mesh || !m_mesh->isUploaded())
         return;
 
     Graphics::getInstance()->draw(m_mesh);

@@ -41,7 +41,7 @@ private:
 private:
     FORCEINLINE static sbyte sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, const Vector3& position,
                                                  const int lod, const float radius, const float hillsHeight);
-    FORCEINLINE void VoxelStorage::generateChunkFromCHM(sbyte* voxelData, const Vector3& position, const int lod);
+    FORCEINLINE void VoxelStorage::generateChunkFromCHM(sbyte** voxelData, const Vector3& position, const int lod);
 
     void loadHeader();
     void saveHeader();

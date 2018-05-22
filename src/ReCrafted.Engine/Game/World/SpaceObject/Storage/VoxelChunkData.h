@@ -20,6 +20,7 @@ private:
     sbyte* m_voxelData = nullptr;
     int m_size = 0;
     bool m_loaded = false;
+    bool m_hasSurface = false;
     uint64_t m_id = 0u;
     Vector3 m_nodePosition = {};
     Vector3 m_chunkPosition = {};
@@ -34,7 +35,7 @@ public:
 
     ~VoxelChunkData()
     {
-        SafeDeleteArrayNN(m_voxelData);
+        SafeDeleteArray(m_voxelData);
     }
 
 public:
@@ -66,6 +67,16 @@ public:
     bool isLoaded() const
     {
         return m_loaded;
+    }
+
+    bool HasSurface() const
+    {
+        return m_hasSurface;
+    }
+
+    void HasSurface(bool value)
+    {
+        m_hasSurface = value;
     }
 };
 

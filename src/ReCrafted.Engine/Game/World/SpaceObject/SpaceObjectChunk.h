@@ -27,8 +27,6 @@ private:
     uint64_t m_id = 0u;
     Vector3 m_position = {};
 
-    bool m_hasSurface = false;
-
     Ref<VoxelChunkData> m_chunkData = {};
     Ref<Mesh> m_mesh = nullptr;
     Ref<Mesh> m_newMesh = nullptr;
