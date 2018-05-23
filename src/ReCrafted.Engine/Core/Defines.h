@@ -56,6 +56,10 @@
     }                            \
     private: static type m_##name
 
+#define NULL_COPY_AND_ASSIGN(type) \
+    type(const type& v) {(void)v;} \
+    void operator=(const type& v) { (void)v; }
+
 #ifdef _WIN32
 #   define ALIGN(x) __declspec(align(x))
 #else
