@@ -99,7 +99,7 @@ void Graphics::update()
 
 void Graphics::render()
 {
-    Profiler::beginProfile("Frame");
+    Profiler::beginProfile("Rendering");
     {
         cvar clearColor = Renderer::Color{0.0f, 0.0f, 0.0f, 1.0f};
 

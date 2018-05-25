@@ -3,10 +3,10 @@
 #include "WebUIEngine.h"
 #include "Core/Logger.h"
 
-#pragma warning(push, 0)
-#include "Utils/FileSystemWin.h"
-#include "Utils/FontLoaderWin.h"
+#include "Impl/FileSystemWin.h"
+#include "Impl/FontLoaderWin.h"
 
+#pragma warning(push, 0)
 #include <Ultralight/Renderer.h>
 #include <Ultralight/platform/Platform.h>
 #include <Ultralight/platform/Config.h>
