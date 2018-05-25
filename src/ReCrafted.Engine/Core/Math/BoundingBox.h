@@ -18,8 +18,8 @@ public:
     /// </summary>
     BoundingBox()
     {
-        center = Vector3::zero();
-        size = Vector3::zero();
+        center = Vector3::Zero();
+        size = Vector3::Zero();
     }
 
     /// <summary>
@@ -37,7 +37,7 @@ public:
     /// <summary>
     /// Minimum X coordinate of this BoundingBox
     /// </summary>
-    FORCEINLINE float left() const
+    FORCEINLINE float Left() const
     {
         return center.x - (size.x / 2);
     }
@@ -45,7 +45,7 @@ public:
     /// <summary>
     /// Maximum X coordinate of this BoundingBox
     /// </summary>
-    FORCEINLINE float right() const
+    FORCEINLINE float Right() const
     {
         return center.x + (size.x / 2);
     }
@@ -53,7 +53,7 @@ public:
     /// <summary>
     /// Minimum Y coordinate of this BoundingBox
     /// </summary>
-    FORCEINLINE float bottom() const
+    FORCEINLINE float Bottom() const
     {
         return center.y - (size.y / 2);
     }
@@ -61,7 +61,7 @@ public:
     /// <summary>
     /// Maximum Y coordinate of this BoundingBox
     /// </summary>
-    FORCEINLINE float top() const
+    FORCEINLINE float Top() const
     {
         return center.y + (size.y / 2);
     }
@@ -69,7 +69,7 @@ public:
     /// <summary>
     /// Minimum Z coordinate of this BoundingBox
     /// </summary>
-    FORCEINLINE float back() const
+    FORCEINLINE float Back() const
     {
         return center.z - (size.z / 2);
     }
@@ -77,7 +77,7 @@ public:
     /// <summary>
     /// Maximum Z coordinate of this BoundingBox
     /// </summary>
-    FORCEINLINE float front() const
+    FORCEINLINE float Front() const
     {
         return center.z + (size.z / 2);
     }
@@ -85,7 +85,7 @@ public:
     /// <summary>
     /// The maximum of the bounding box.
     /// </summary>
-    FORCEINLINE Vector3 maximum() const
+    FORCEINLINE Vector3 Maximum() const
     {
         return center + size * 0.5f;
     }
@@ -93,7 +93,7 @@ public:
     /// <summary>
     /// The minimum of the bounding box.
     /// </summary>
-    FORCEINLINE Vector3 minimum() const
+    FORCEINLINE Vector3 Minimum() const
     {
         return center - size * 0.5f;
     }
@@ -101,12 +101,12 @@ public:
     /// <summary>
     /// Check if two BoundingBoxes intersect each other
     /// </summary>
-    FORCEINLINE static bool intersects(BoundingBox& a, BoundingBox& b)
+    FORCEINLINE static bool Intersects(BoundingBox& a, BoundingBox& b)
     {
-        cvar amin = a.minimum();
-        cvar bmin = b.minimum();
-        cvar amax = a.maximum();
-        cvar bmax = b.maximum();
+        cvar amin = a.Minimum();
+        cvar bmin = b.Minimum();
+        cvar amax = a.Maximum();
+        cvar bmax = b.Maximum();
 
         if (amin.x > bmax.x || bmin.x > amax.x)
             return false;
@@ -123,26 +123,26 @@ public:
     /// <summary>
     /// Check if two BoundingBoxes intersect each other
     /// </summary>
-    FORCEINLINE static void intersects(BoundingBox& a, BoundingBox& b, bool* result)
+    FORCEINLINE static void Intersects(BoundingBox& a, BoundingBox& b, bool* result)
     {
-        *result = intersects(a, b);
+        *result = Intersects(a, b);
     }
 
     /// <summary>
     /// Check if point is within a BoundingBox
     /// </summary>
-    FORCEINLINE static bool contains(BoundingBox& box, Vector3& point)
+    FORCEINLINE static bool Contains(BoundingBox& box, Vector3& point)
     {
-        return point.x > box.left() && point.x < box.right() && point.y > box.bottom() && point.y < box.top() && point.z
-            > box.back() && point.z < box.front();
+        return point.x > box.Left() && point.x < box.Right() && point.y > box.Bottom() && point.y < box.Top() && point.z
+            > box.Back() && point.z < box.Front();
     }
 
     /// <summary>
     /// Check if point is within a BoundingBox
     /// </summary>
-    FORCEINLINE static void contains(BoundingBox& box, Vector3& point, bool* result)
+    FORCEINLINE static void Contains(BoundingBox& box, Vector3& point, bool* result)
     {
-        *result = contains(box, point);
+        *result = Contains(box, point);
     }
 
 public:

@@ -21,7 +21,7 @@ public:
     } value;
 
 public:
-    Text toString()
+    Text ToString()
     {
         char buffer[37];
 

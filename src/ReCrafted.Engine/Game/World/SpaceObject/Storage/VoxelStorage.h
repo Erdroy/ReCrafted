@@ -41,21 +41,21 @@ private:
 private:
     FORCEINLINE static sbyte sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, const Vector3& position,
                                                  const int lod, const float radius, const float hillsHeight);
-    FORCEINLINE void VoxelStorage::generateChunkFromCHM(sbyte** voxelData, const Vector3& position, const int lod);
+    FORCEINLINE void GenerateChunkFromCHM(sbyte** voxelData, const Vector3& position, const int lod);
 
-    void loadHeader();
-    void saveHeader();
-
-public:
-    void init(SpaceObjectSettings& settings);
-    void dispose() override;
+    void LoadHeader();
+    void SaveHeader();
 
 public:
-    Ref<VoxelChunkData> createChunkData(Vector3& nodePosition, int nodeSize);
-    Ref<VoxelChunkData> getChunkData(Vector3& nodePosition);
-    void readChunkData(Ref<VoxelChunkData> chunkData);
-    void writeChunkData(Ref<VoxelChunkData> chunkData);
-    void freeChunkData(Ref<VoxelChunkData> chunkData);
+    void Init(SpaceObjectSettings& settings);
+    void Dispose() override;
+
+public:
+    Ref<VoxelChunkData> CreateChunkData(Vector3& nodePosition, int nodeSize);
+    Ref<VoxelChunkData> GetChunkData(Vector3& nodePosition);
+    void ReadChunkData(Ref<VoxelChunkData> chunkData);
+    void WriteChunkData(Ref<VoxelChunkData> chunkData);
+    void FreeChunkData(Ref<VoxelChunkData> chunkData);
 };
 
 #endif // VOXELSTORAGE_H

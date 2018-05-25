@@ -6,15 +6,15 @@
 
 #include <json.hpp>
 
-void Atlas::dispose()
+void Atlas::Dispose()
 {
-    // dispose texture
+    // Dispose texture
     m_texture = nullptr;
 }
 
-Rect Atlas::getRect(const char* name)
+Rect Atlas::GetRect(const char* name)
 {
-    for (auto i = 0u; i < m_elements.size(); i ++)
+    for (auto i = 0u; i < m_elements.Size(); i ++)
     {
         if (strcmp(m_elements[i].name, name) == 0)
         {
@@ -25,16 +25,16 @@ Rect Atlas::getRect(const char* name)
     return {};
 }
 
-Ref<Texture2D> Atlas::getTexture() const
+Ref<Texture2D> Atlas::GetTexture() const
 {
     return m_texture;
 }
 
-Ref<Atlas> Atlas::load(Text& fileName)
+Ref<Atlas> Atlas::Load(Text& fileName)
 {
     char jsonName[512] = {};
     char pngName[512] = {};
-    fileName.c_str(jsonName, 512);
+    fileName.CStr(jsonName, 512);
 
     // build png filename
     strcpy_s(pngName, jsonName);
@@ -44,15 +44,15 @@ Ref<Atlas> Atlas::load(Text& fileName)
     pngName[len - 2] = 'g';
     pngName[len - 1] = '\0';
 
-    if (Platform::fileExists(jsonName))
+    if (Platform::FileExists(jsonName))
     {
         File jsonFile = {};
-        Platform::openFile(&jsonFile, jsonName, OpenMode::OpenRead);
+        Platform::OpenFile(&jsonFile, jsonName, OpenMode::OpenRead);
 
         // read data
         auto data = new char[jsonFile.FileSize];
         memset(data, 0, jsonFile.FileSize);
-        jsonFile.read(data, jsonFile.FileSize);
+        jsonFile.Read(data, jsonFile.FileSize);
 
         auto json = nlohmann::json::parse(data);
 
@@ -62,8 +62,8 @@ Ref<Atlas> Atlas::load(Text& fileName)
         // build element list
         for (auto i = 0u; i < json.size(); i ++)
         {
-            atlas->m_elements.add({});
-            auto elem = &atlas->m_elements[atlas->m_elements.size() - 1];
+            atlas->m_elements.Add({});
+            auto elem = &atlas->m_elements[atlas->m_elements.Size() - 1];
 
             auto name = json[i]["Name"].get<std::string>();
             strcpy(elem->name, name.c_str());
@@ -77,9 +77,9 @@ Ref<Atlas> Atlas::load(Text& fileName)
         }
 
         // load texture
-        auto texture = Texture2D::createTexture(Renderer::TextureFormat::RGBA8);
-        texture->loadFile(pngName);
-        texture->apply();
+        auto texture = Texture2D::CreateTexture(Renderer::TextureFormat::RGBA8);
+        texture->LoadFromFile(pngName);
+        texture->Apply();
 
         // set loaded texture
         atlas->m_texture = texture;

@@ -24,20 +24,20 @@ private:
     Ref<VoxelStorage> m_voxelStorage = nullptr;
 
 private:
-    void init(SpaceObjectSettings& settings);
+    void Init(SpaceObjectSettings& settings);
 
 public:
-    void update();
-    void draw();
-    void dispose();
+    void Update();
+    void Draw();
+    void Dispose();
 
 public:
     /**
      * \brief Updates the SpaceObject LoD view points using this view point for the next frame.
-     * Can be used on client-side. To use this, call this in early update, before the octree updates.
+     * Can be used on client-side. To use this, call this in early Update, before the octree updates.
      * \param view The view position.
      */
-    void updateViewPoint(Vector3& view);
+    void UpdateViewPoint(Vector3& view);
 
     /**
      * \brief Modifies this voxel space object, using given method.
@@ -45,19 +45,19 @@ public:
      * \param position The edit position.
      * \param size The edit size.
      */
-    void modify(VoxelEditMode::_enum mode, Vector3& position, float size);
+    void Modify(VoxelEditMode::_enum mode, Vector3& position, float size);
 
     /**
 	 * \brief Gets space object settings reference.
 	 * \return Space object settings reference.
 	 */
-    SpaceObjectSettings& getSettings();
+    SpaceObjectSettings& GetSettings();
 
     /**
      * \brief Gets the VoxelStorage instance of this SpaceObject.
      * \return VoxelStorage instance of this SpaceObject.
      */
-    VoxelStorage* getStorage() const
+    VoxelStorage* GetStorage() const
     {
         return m_voxelStorage.get();
     }
@@ -68,10 +68,10 @@ public:
 	 * \param settings The space object settings.
 	 * \return The new created space object.
 	 */
-    static Ref<SpaceObject> createSpaceObject(SpaceObjectSettings& settings);
+    static Ref<SpaceObject> CreateSpaceObject(SpaceObjectSettings& settings);
 
 public:
-PROPERTY(Vector3, position) = {};
+PROPERTY(Vector3, Position) = {};
 };
 
 #endif // SPACEOBJECT_H

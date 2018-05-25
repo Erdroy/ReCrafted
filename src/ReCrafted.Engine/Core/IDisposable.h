@@ -13,7 +13,7 @@ struct IDisposable
 {
 public:
     virtual ~IDisposable() = default;
-    virtual void dispose() = 0;
+    virtual void Dispose() = 0;
 };
 
 #endif // IDISPOSABLE_H

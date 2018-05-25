@@ -48,7 +48,7 @@ public:
 IRESOURCE_IMPL(Mesh)
 
 private:
-    void init();
+    void Init();
 
 public:
     /**
@@ -59,7 +59,7 @@ public:
 	 * \note To apply changes, you must call 'applyChanges'
 	 * after setting all data you need.
 	 */
-    void setVertices(Vector3* vertices, uint count);
+    void SetVertices(Vector3* vertices, uint count);
 
     /**
     * \brief Set uvs for this mesh.
@@ -68,7 +68,7 @@ public:
     * \note To apply changes, you must call 'applyChanges'
     * after setting all data you need.
     */
-    void setUVs(Vector2* uvs);
+    void SetUVs(Vector2* uvs);
 
     /**
     * \brief Set normals for this mesh.
@@ -77,7 +77,7 @@ public:
     * \note To apply changes, you must call 'applyChanges'
     * after setting all data you need.
     */
-    void setNormals(Vector3* normals);
+    void SetNormals(Vector3* normals);
 
     /**
     * \brief Set colors for this mesh.
@@ -86,7 +86,7 @@ public:
     * \note To apply changes, you must call 'applyChanges'
     * after setting all data you need.
     */
-    void setColors(Vector4* colors);
+    void SetColors(Vector4* colors);
 
     /**
     * \brief Set colors for this mesh.
@@ -96,37 +96,37 @@ public:
     * \note To apply changes, you must call 'applyChanges'
     * after setting all data you need.
     */
-    void setIndices(uint* indices, uint count);
+    void SetIndices(uint* indices, uint count);
 
     /**
 	 * \brief Indicates the upload state of this mesh.
 	 * \return True when all changes are uploaded to the GPU.
 	 */
-    bool isUploaded() const;
+    bool IsUploaded() const;
 
     /**
 	 * \brief Can the mesh be uploaded?
 	 * \return True when it can be.
 	 */
-    bool canUpload();
+    bool CanUpload();
 
     /**
 	 * \brief Apply changes.
 	 */
-    void applyChanges();
+    void ApplyChanges();
 
     /**
 	 * \brief Upload buffers to the GPU.
 	 */
-    void upload();
+    void Upload();
 
     /**
 	 * \brief Disposes this mesh.
 	 */
-    void dispose() override;
+    void Dispose() override;
 
 public:
-    int getVertexCount() const
+    int GetVertexCount() const
     {
         return m_vertices_count;
     }
@@ -136,7 +136,7 @@ public:
 	 * \brief Creates new mesh.
 	 * \return The newly created mesh pointer.
 	 */
-    static Ref<Mesh> createMesh();
+    static Ref<Mesh> CreateMesh();
 };
 
 #endif // MESH_H

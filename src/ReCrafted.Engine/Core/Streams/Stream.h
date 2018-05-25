@@ -45,7 +45,7 @@ public:
      * \brief Returns stream open state.
      * \return True when this stream is open.
      */
-    bool isOpen() const
+    bool IsOpen() const
     {
         return m_open;
     }
@@ -53,11 +53,11 @@ public:
     /**
      * \brief Disposes the stream.
      */
-    void dispose() override
+    void Dispose() override
     {
         if (m_open)
         {
-            close();
+            Close();
             m_open = false;
         }
     }
@@ -70,9 +70,9 @@ public:
     * \param count The count of bytes to read.
     * \return The count of read bytes.
     */
-    virtual size_t read(void* buffer, const size_t offset, const size_t count) const
+    virtual size_t Read(void* buffer, const size_t offset, const size_t count) const
     {
-        return read(buffer, count, offset, count);
+        return Read(buffer, count, offset, count);
     }
 
     /**
@@ -81,9 +81,9 @@ public:
     * \param offset The write offset in bytes.
     * \param count The count of bytes to write.
     */
-    virtual void write(void* buffer, const size_t offset, const size_t count) const
+    virtual void Write(void* buffer, const size_t offset, const size_t count) const
     {
-        write(buffer, count, offset, count);
+        Write(buffer, count, offset, count);
     }
 
     /**
@@ -94,7 +94,7 @@ public:
      * \param count The count of bytes to read.
      * \return The count of read bytes.
      */
-    virtual size_t read(void* buffer, const size_t bufferSize, const size_t offset, const size_t count) const
+    virtual size_t Read(void* buffer, const size_t bufferSize, const size_t offset, const size_t count) const
     {
         // check if the stream is open
         assert(m_open);
@@ -129,7 +129,7 @@ public:
     * \param offset The write offset in bytes.
     * \param count The count of bytes to write.
     */
-    virtual void write(void* buffer, const size_t bufferSize, const size_t offset, const size_t count) const
+    virtual void Write(void* buffer, const size_t bufferSize, const size_t offset, const size_t count) const
     {
         // check if the stream is open
         assert(m_open);
@@ -158,7 +158,7 @@ protected:
     /**
      * \brief Closes the stream.
      */
-    virtual void close() const
+    virtual void Close() const
     {
     }
 };

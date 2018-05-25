@@ -35,17 +35,17 @@ public:
 
     ~File();
 
-    void seek(long position) const;
+    void Seek(long position) const;
 
-    void read(void* buffer, size_t length, size_t offset = 0) const;
+    void Read(void* buffer, size_t length, size_t offset = 0) const;
 
-    void read(void* buffer) const;
+    void Read(void* buffer) const;
 
-    void write(void* data, const size_t dataLenght) const;
+    void Write(void* data, const size_t dataLenght) const;
 
-    void flush() const;
+    void Flush() const;
 
-    void close() const;
+    void Close() const;
 };
 
 class Platform
@@ -61,37 +61,44 @@ public:
     /**
 	 * \brief Initializes platform.
 	 */
-    static void initialize();
+    static void Initialize();
 
     /**
      * \brief Shutdowns platform.
      */
-    static void shutdown();
+    static void Shutdown();
 
     /**
      * \brief Creates new Guid.
      * \return The new unique guid.
      */
-    static Guid newGuid();
+    static Guid NewGuid();
 
     /**
     * \brief Get time in miliseconds.
     * \return The time in miliseconds.
     */
-    static double getMiliseconds();
+    static double GetMiliseconds();
 
-    static void reportAssert(Text expression, Text fileName, unsigned int line, Text message);
+    /**
+     * \brief Reports failed assert message.
+     * \param expression The assert expression.
+     * \param fileName The source file.
+     * \param line The source file line where the assert failed.
+     * \param message The additional message.
+     */
+    static void ReportAssert(Text expression, Text fileName, unsigned int line, Text message);
 
     /**
      * \brief Gets the CPU count.
      * \return The CPU count. 
      */
-    static int cpuCount();
+    static int CpuCount();
 
     /**
      * \brief Runs all system loop events.
      */
-    static void runEvents();
+    static void RunEvents();
 
     /**
      * \brief Creates new window.
@@ -101,74 +108,74 @@ public:
      * \param style The style of the window. Look for docs of all of the platforms.
      * \return The created window handle.
      */
-    static void* createWindow(Text& windowName, int width = 1280, int height = 720, uint64_t style = 0u);
+    static void* CreateNewWindow(Text& windowName, int width = 1280, int height = 720, uint64_t style = 0u);
 
     /**
      * \brief Destroys window with given handle.
      * \param windowHandle Handle of the window.
      */
-    static void destroyWindow(void* windowHandle);
+    static void DestroyWindow(void* windowHandle);
 
     /**
      * \brief Sets given window handle as current (main).
      * \param windowHandle Handle of the window.
      */
-    static void setCurrentWindow(void* windowHandle);
+    static void SetCurrentWindow(void* windowHandle);
 
     /**
     * \brief Gets the main game window handle.
     * \return The game window handle.
     */
-    static void* getCurrentWindow();
+    static void* GetCurrentWindow();
 
     /**
      * \brief Get size of game window.
      * \param width (out)The width.
      * \param height (out)The height.
      */
-    static void getCurrentWindowSize(unsigned int* width, unsigned int* height)
+    static void GetCurrentWindowSize(unsigned int* width, unsigned int* height)
     {
-        return getWindowSize(m_currentWindow, width, height);
+        return GetWindowSize(m_currentWindow, width, height);
     }
 
     /**
      * \brief Gets cursor icon id.
      * \return The cursor icon id.
      */
-    static int getCursorIcon();
+    static int GetCursorIcon();
 
     /**
      * \brief Sets cursor icon id.
      * \param iconId The cursor icon id.
      */
-    static void setCursorIcon(int iconId);
+    static void SetCursorIcon(int iconId);
 
     /**
     * \brief Get size of given window.
     * \param width (out)The width.
     * \param height (out)The height.
     */
-    static void getWindowSize(void* windowHandle, unsigned int* width, unsigned int* height);
+    static void GetWindowSize(void* windowHandle, unsigned int* width, unsigned int* height);
 
     /**
      * \brief Sleeps the current thread for given time.
      * \param miliseconds The time to sleep.
      */
-    static void sleep(unsigned int miliseconds);
+    static void Sleep(unsigned int miliseconds);
 
     /**
      * \brief Set the cursor position.
      * \param x The x coord of target cursor position in pixels.
      * \param y The y coord of target cursor position in pixels.
      */
-    static void setCursorPosition(uint16_t x, uint16_t y);
+    static void SetCursorPosition(uint16_t x, uint16_t y);
 
     /**
      * \brief Checks if file exists.
      * \param fileName The file path and name. Using working directory.
      * \return True when file exists.
      */
-    static bool fileExists(const char* fileName);
+    static bool FileExists(const char* fileName);
 
     /**
      * \brief Open file for operations.
@@ -177,19 +184,19 @@ public:
      * \param fileName The open mode.
      * \param fileOpenMode The file.
      */
-    static void openFile(File* file, const char* fileName, OpenMode::_enum fileOpenMode = OpenMode::OpenReadWrite);
+    static void OpenFile(File* file, const char* fileName, OpenMode::_enum fileOpenMode = OpenMode::OpenReadWrite);
 
     /**
      * \brief Get the current working directory.
      * \param buffer Output buffer.
      */
-    static void getWorkingDirectory(char* buffer);
+    static void GetWorkingDirectory(char* buffer);
 
     /**
      * \brief Sets debug name for the current thread.
      * \param name The desired thread name.
      */
-    static void setThreadName(const char* name);
+    static void SetThreadName(const char* name);
 };
 
 #endif // PLATFORM_H

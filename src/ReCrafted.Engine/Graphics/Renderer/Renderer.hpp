@@ -495,7 +495,7 @@ namespace Renderer
     /// <param name="dynamic">When true, this buffer will be allowed to be updated through UpdateVertexBuffer.</param>
     /// <param name="buffer">When non-null there will be allocated buffer (and this param will be pointer to it), 
     /// and it will be released after the buffer is uploaded to the GPU. Also, buffer is marked as DYNAMIC and to upload the data, 
-    /// you must update data by calling UpdateVertexBuffer(...).</param>
+    /// you must Update data by calling UpdateVertexBuffer(...).</param>
     RENDERER_FUNCTION(VertexBufferHandle) CreateVertexBuffer(uint count, uint vertexSize, bool dynamic = false, RendererMemory* buffer = nullptr);
 
     /// <summary>
@@ -537,7 +537,7 @@ namespace Renderer
     /// <param name="dynamic">When true, this buffer will be allowed to be updated through UpdateIndexBuffer.</param>
     /// <param name="buffer">When non-null there will be allocated buffer (and this param will be pointer to it), 
     /// and it will be released after the buffer is uploaded to the GPU. Also, buffer is marked as DYNAMIC and to upload the data, 
-    /// you must update data by calling UpdateIndexBuffer(...).</param>
+    /// you must Update data by calling UpdateIndexBuffer(...).</param>
     RENDERER_FUNCTION(IndexBufferHandle) CreateIndexBuffer(uint count, bool is32bit = true, bool dynamic = false, RendererMemory* buffer = nullptr);
 
     /// <summary>

@@ -34,30 +34,30 @@ private:
     Lock m_meshLock = {};
 
 private:
-    uint8_t getLodBorders();
+    uint8_t GetLodBorders();
 
 public:
-    void init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject);
-    void upload();
-    void draw();
-    void dispose();
+    void Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject);
+    void Upload();
+    void Draw();
+    void Dispose();
 
 public:
-    void generate(IVoxelMesher* mesher);
-    void rebuild(IVoxelMesher* mesher);
+    void Generate(IVoxelMesher* mesher);
+    void Rebuild(IVoxelMesher* mesher);
 
-    bool needsUpload() const
+    bool NeedsUpload() const
     {
         return m_newMesh != nullptr;
     }
 
-    Ref<VoxelChunkData> getChunkData() const
+    Ref<VoxelChunkData> GetChunkData() const
     {
         return m_chunkData;
     }
 
 public:
-    static uint64_t calculateChunkId(const Vector3& position);
+    static uint64_t CalculateChunkId(const Vector3& position);
 };
 
 #endif // SPACEOBJECTCHUNK_H

@@ -59,7 +59,7 @@ public:
     explicit Plane(Vector3 point, Vector3 normal)
     {
         normal = normal;
-        distance = -Vector3::dot(normal, point);
+        distance = -Vector3::Dot(normal, point);
     }
 
     /// <summary>
@@ -72,14 +72,14 @@ public:
     {
         var xa = b - a;
         var xb = a - c;
-        var dir = Vector3::cross(xa, xb);
-        dir.normalize();
+        var dir = Vector3::Cross(xa, xb);
+        dir.Normalize();
         normal = dir;
-        distance = dir.length();
+        distance = dir.Length();
     }
 
 public:
-    FORCEINLINE float dot(const Vector3 point) const
+    FORCEINLINE float Dot(const Vector3 point) const
     {
         return normal.x * point.x
             + normal.y * point.y
@@ -87,13 +87,12 @@ public:
             + distance * 1;
     }
 
-public:
     /// <summary>
-    /// Changes the coefficients of the normal vector of the plane to make it of unit length.
+    /// Changes the coefficients of the normal vector of the plane to make it of unit Length.
     /// </summary>
-    FORCEINLINE void normalize()
+    FORCEINLINE void Normalize()
     {
-        auto magnitude = 1.0f / static_cast<float>(Math::sqrtf(
+        auto magnitude = 1.0f / static_cast<float>(Math::SqrtF(
             (normal.x * normal.x) + (normal.y * normal.y) + (normal.z * normal.z)));
 
         normal.x *= magnitude;
@@ -109,10 +108,10 @@ public:
     /// <param name="plane">The plane to test.</param>
     /// <param name="point">The point to test.</param>
     /// <returns>Whether the two objects intersected.</returns>
-    FORCEINLINE static PlaneIntersection planeIntersectsPoint(Plane& plane, Vector3& point)
+    FORCEINLINE static PlaneIntersection PlaneIntersectsPoint(Plane& plane, Vector3& point)
     {
         float distance;
-        Vector3::dot(plane.normal, point, &distance);
+        Vector3::Dot(plane.normal, point, &distance);
         distance += plane.distance;
 
         if (distance > 0.0f)

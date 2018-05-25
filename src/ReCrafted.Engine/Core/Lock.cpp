@@ -14,7 +14,7 @@ Lock::Lock()
     m_semaphore = CreateSemaphore(nullptr, 0, 1, nullptr);
 }
 
-void Lock::lock()
+void Lock::LockNow()
 {
     if (_InterlockedIncrement(&m_counter) > 1)
     {
@@ -22,12 +22,12 @@ void Lock::lock()
     }
 }
 
-bool Lock::tryLock()
+bool Lock::TryLock()
 {
     return _InterlockedCompareExchange(&m_counter, 1, 0) == 0u;
 }
 
-void Lock::unlock()
+void Lock::UnlockNow()
 {
     if (_InterlockedDecrement(&m_counter) > 0)
     {
@@ -35,7 +35,7 @@ void Lock::unlock()
     }
 }
 
-void Lock::dispose()
+void Lock::Dispose()
 {
     CloseHandle(m_semaphore);
 }

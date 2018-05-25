@@ -6,14 +6,14 @@
 
 namespace Internal
 {
-    void beginProfile(MonoString* name, float med, float max)
+    void BeginProfile(MonoString* name, float med, float max)
     {
         var text = MONO_TEXT(name);
-        Profiler::beginProfile(text, med, max);
+        Profiler::BeginProfile(text, med, max);
     }
 }
 
-void Profiler::initRuntime()
+void Profiler::InitRuntime()
 {
     API_FILE("Common/Profiler.Gen.cs");
     {
@@ -23,7 +23,7 @@ void Profiler::initRuntime()
             API_COMMENT("Begins profiling.");
             API_METHOD(PUBLIC, STATIC, "BeginProfile", EXTERN);
             {
-                API_BIND("ReCrafted.API.Common.Profiler::BeginProfile", &Internal::beginProfile);
+                API_BIND("ReCrafted.API.Common.Profiler::BeginProfile", &Internal::BeginProfile);
 
                 API_COMMENT("The profile name");
                 API_PARAM("string", "name");
@@ -39,7 +39,7 @@ void Profiler::initRuntime()
             API_COMMENT("Ends profiling.");
             API_METHOD(PUBLIC, STATIC, "EndProfile", EXTERN);
             {
-                API_BIND("ReCrafted.API.Common.Profiler::EndProfile", &Profiler::endProfile);
+                API_BIND("ReCrafted.API.Common.Profiler::EndProfile", &Profiler::EndProfile);
             }
             API_METHOD_END();
         }

@@ -25,12 +25,12 @@ private:
     Array<EngineComponentBase*> m_components = {};
 
 private:
-    void onLoad();
-    void onDispose() override;
-    void update();
+    void OnLoad();
+    void OnDispose() override;
+    void Update();
 
 private:
-    void releaseComponent(EngineComponentBase* component);
+    void ReleaseComponent(EngineComponentBase* component);
 
 public:
     /**
@@ -42,7 +42,7 @@ public:
      * Components are automaticaly released in reverse order 
      * that they are registered.
      */
-    void registerComponent(EngineComponentBase* component);
+    void RegisterComponent(EngineComponentBase* component);
 
     /**
      * \brief Unregisters engine component and releases it's memory.
@@ -50,7 +50,7 @@ public:
      * 
      * \note This method locks component list, and CANNOT be invoked from UPDATE, SIMULATE or RENDER call!
      */
-    void unregisterComponent(EngineComponentBase* component);
+    void UnregisterComponent(EngineComponentBase* component);
 };
 
 #endif // ENGINECOMPONENTMANAGER_H

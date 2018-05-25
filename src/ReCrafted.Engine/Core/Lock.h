@@ -16,11 +16,11 @@ struct Lock
 public:
     Lock();
 
-    void lock();
-    bool tryLock();
-    void unlock();
+    void LockNow();
+    bool TryLock();
+    void UnlockNow();
 
-    void dispose();
+    void Dispose();
 };
 
 struct IScopeLock
@@ -37,12 +37,12 @@ public:
     IScopeLock(Lock* lock)
     {
         m_lock = lock;
-        m_lock->lock();
+        m_lock->LockNow();
     }
 
     ~IScopeLock()
     {
-        m_lock->unlock();
+        m_lock->UnlockNow();
     }
 };
 

@@ -7,57 +7,57 @@
 
 SINGLETON_IMPL(WebUI)
 
-void WebUI::onInit()
+void WebUI::OnInit()
 {
-    Logger::log("WebUI is being initialized...");
+    Logger::Log("WebUI is being initialized...");
 
-    m_engine = WebUIEngine::getInstance();
-    m_engine->init();
+    m_engine = WebUIEngine::GetInstance();
+    m_engine->Init();
 
-    Logger::log("WebUI initialized");
+    Logger::Log("WebUI initialized");
 }
 
-void WebUI::onDispose()
+void WebUI::OnDispose()
 {
     for (var&& view : m_views)
-        Object::destroy(view);
+        Object::Destroy(view);
 
-    m_views.clear();
+    m_views.Clear();
 
     SafeDispose(m_engine);
 
-    Logger::log("WebUI disposed");
+    Logger::Log("WebUI disposed");
 }
 
-void WebUI::resize(uint width, uint height)
+void WebUI::Resize(uint width, uint height)
 {
     for (var&& view : m_views)
-        view->resize(width, height);
+        view->Resize(width, height);
 }
 
-void WebUI::update()
+void WebUI::Update()
 {
     m_engine->Update();
 
     for (var&& view : m_views)
-        view->update();
+        view->Update();
 }
 
-void WebUI::render()
+void WebUI::Render()
 {
     m_engine->Render();
 
     for (var&& view : m_views)
-        view->render();
+        view->Render();
 }
 
-Ref<WebUIView> WebUI::createView()
+Ref<WebUIView> WebUI::CreateView()
 {
-    var view = Object::createInstance<WebUIView>("ReCrafted.API.Graphics", "WebUIView");
-    view->init();
-    m_views.add(view);
+    var view = Object::CreateInstance<WebUIView>("ReCrafted.API.Graphics", "WebUIView");
+    view->Init();
+    m_views.Add(view);
 
-    Logger::log("Created new WebUIView");
+    Logger::Log("Created new WebUIView");
 
     return view;
 }

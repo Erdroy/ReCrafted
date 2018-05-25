@@ -45,27 +45,27 @@ private:
     bool m_showCursor = true;
 
 private:
-    void onInit() override;
-    void onDispose() override;
+    void OnInit() override;
+    void OnDispose() override;
 
-    void updateInput();
+    void UpdateInput();
 
 public:
     virtual ~Input() = default;
 
 public:
     // INTERNAL
-    void emit(bool up, uint key);
+    void OnKeyEvent(bool up, uint key);
 
     // INTERNAL
-    void emitScroll(float delta);
+    void OnScrollEvent(float delta);
 
     // INTERNAL
-    void emitMouseMove(int deltaX, int deltaY, int cursorX, int cursorY);
+    void OnCursorEvent(int deltaX, int deltaY, int cursorX, int cursorY);
 
     // INTERNAL
     // releases all keys
-    void releaseAll();
+    void ReleaseAllKeys();
 
 public:
     /**
@@ -73,7 +73,7 @@ public:
 	 * \param key The key
 	 * \return Returns true when key is down.
 	 */
-    FORCEINLINE static bool isKeyDown(Keys key)
+    FORCEINLINE static bool IsKeyDown(Keys key)
     {
         auto keyId = INPUT_KEY_TO_KEYID(key);
         return m_instance->m_keys[keyId] == 1 && m_instance->m_lastkeys[keyId] == 0;
@@ -84,7 +84,7 @@ public:
     * \param key The key
     * \return Returns true when key is up.
     */
-    FORCEINLINE static bool isKeyUp(Keys key)
+    FORCEINLINE static bool IsKeyUp(Keys key)
     {
         auto keyId = INPUT_KEY_TO_KEYID(key);
         return m_instance->m_keys[keyId] == 0 && m_instance->m_lastkeys[keyId] == 1;
@@ -95,7 +95,7 @@ public:
     * \param key The key
     * \return Returns true when key is held.
     */
-    FORCEINLINE static bool isKey(Keys key)
+    FORCEINLINE static bool IsKey(Keys key)
     {
         auto keyId = INPUT_KEY_TO_KEYID(key);
         return m_instance->m_keys[keyId] == 1 && m_instance->m_lastkeys[keyId] == 1;
@@ -105,7 +105,7 @@ public:
 	 * \brief Returns current cursor's position in client-space.
 	 * \return The position position.
 	 */
-    FORCEINLINE static Vector2 getCursorPos()
+    FORCEINLINE static Vector2 GetCursorPos()
     {
         return m_instance->m_cursorPos;
     }
@@ -114,7 +114,7 @@ public:
 	 * \brief Returns current cursor's delta.
 	 * \return The position.
 	 */
-    FORCEINLINE static Vector2 getCursorDelta()
+    FORCEINLINE static Vector2 GetCursorDelta()
     {
         return m_instance->m_cursorDelta;
     }
@@ -123,7 +123,7 @@ public:
      * \brief Returns current scroll (mouse wheel) delta.
      * \return The scrolls delta.
      */
-    FORCEINLINE static float getScrollDelta()
+    FORCEINLINE static float GetScrollDelta()
     {
         return m_instance->m_scrollDelta;
     }
@@ -133,15 +133,15 @@ public:
 	 * \param x The x coord of target cursor position in pixels.
 	 * \param y The y coord of target cursor position in pixels.
 	 */
-    FORCEINLINE static void setCursorPos(int x, int y)
+    FORCEINLINE static void SetCursorPos(int x, int y)
     {
-        Platform::setCursorPosition(uint16_t(x), uint16_t(y));
+        Platform::SetCursorPosition(uint16_t(x), uint16_t(y));
     }
 
     /**
      * \brief Gets cursor lock state.
      */
-    FORCEINLINE static bool getLockCursor()
+    FORCEINLINE static bool GetLockCursor()
     {
         return m_instance->m_lockCursor;
     }
@@ -149,7 +149,7 @@ public:
     /**
     * \brief Sets cursor lock state.
     */
-    FORCEINLINE static void setLockCursor(bool lock)
+    FORCEINLINE static void SetLockCursor(bool lock)
     {
         m_instance->m_lockCursor = lock;
     }
@@ -157,7 +157,7 @@ public:
     /**
     * \brief Gets cursor visibility state.
     */
-    FORCEINLINE static bool getShowCursor()
+    FORCEINLINE static bool GetShowCursor()
     {
         return m_instance->m_showCursor;
     }
@@ -165,7 +165,7 @@ public:
     /**
     * \brief Sets cursor visibility state.
     */
-    FORCEINLINE static void setShowCursor(bool show)
+    FORCEINLINE static void SetShowCursor(bool show)
     {
         m_instance->m_showCursor = show;
     }

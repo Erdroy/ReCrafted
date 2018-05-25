@@ -11,17 +11,17 @@ namespace Internal
         if (!camera)
             return;
 
-        camera->setAsCurrent();
+        camera->SetAsCurrent();
     }
 
     MonoObject* getCurrent()
     {
-        auto camera = Camera::getMainCamera();
+        auto camera = Camera::GetMainCamera();
 
         if (!camera)
             return nullptr;
 
-        return camera->getManagedPtr();
+        return camera->GetManagedPtr();
     }
 
     void setFov(Camera* camera, float value)
@@ -29,7 +29,7 @@ namespace Internal
         if (!camera)
             return;
 
-        camera->set_fov(value);
+        camera->SetFov(value);
     }
 
     float getFov(Camera* camera)
@@ -37,7 +37,7 @@ namespace Internal
         if (!camera)
             return 0.0f;
 
-        return camera->get_fov();
+        return camera->GetFov();
     }
 
     void setPos(Camera* camera, Vector3* pos)
@@ -45,7 +45,7 @@ namespace Internal
         if (!camera)
             return;
 
-        camera->set_position(*pos);
+        camera->SetPosition(*pos);
     }
 
     void getPos(Camera* camera, Vector3* pos)
@@ -53,7 +53,7 @@ namespace Internal
         if (!camera)
             return;
 
-        *pos = camera->get_position();
+        *pos = camera->GetPosition();
     }
 
     void setRot(Camera* camera, Vector3* rot)
@@ -61,7 +61,7 @@ namespace Internal
         if (!camera)
             return;
 
-        camera->set_rotation(*rot);
+        camera->SetRotation(*rot);
     }
 
     void getRot(Camera* camera, Vector3* rot)
@@ -69,107 +69,107 @@ namespace Internal
         if (!camera)
             return;
 
-        *rot = camera->get_rotation();
+        *rot = camera->GetRotation();
     }
 
     void getBoundingFrustum(Camera* camera, BoundingFrustum* frustum)
     {
         if (!camera) return;
 
-        *frustum = camera->getBoundingFrustum();
+        *frustum = camera->GetBoundingFrustum();
     }
 
     bool getFreeMov(Camera* camera)
     {
         if (!camera) return false;
 
-        return camera->get_freeMovement();
+        return camera->GetFreeMovement();
     }
 
     void setFreeMov(Camera* camera, bool mov)
     {
         if (!camera) return;
 
-        camera->set_freeMovement(mov);
+        camera->SetFreeMovement(mov);
     }
 
     float getFarPlane(Camera* camera)
     {
         if (!camera) return 0.0f;
 
-        return camera->get_farPlane();
+        return camera->GetFarPlane();
     }
 
     void setFarPlane(Camera* camera, float farplane)
     {
         if (!camera) return;
 
-        camera->set_farPlane(farplane);
+        camera->SetFarPlane(farplane);
     }
 
     float getNearPlane(Camera* camera)
     {
         if (!camera) return 0.0f;
 
-        return camera->get_nearPlane();
+        return camera->GetNearPlane();
     }
 
     void setNearPlane(Camera* camera, float nearplane)
     {
         if (!camera) return;
 
-        camera->set_nearPlane(nearplane);
+        camera->SetNearPlane(nearplane);
     }
 
     void getForward(Camera* camera, Vector3* forward)
     {
         if (!camera) return;
 
-        *forward = camera->get_forward();
+        *forward = camera->GetForward();
     }
 
     void setForward(Camera* camera, Vector3* forward)
     {
         if (!camera) return;
 
-        camera->set_forward(*forward);
+        camera->SetForward(*forward);
     }
 
     void getUp(Camera* camera, Vector3* up)
     {
         if (!camera) return;
 
-        *up = camera->get_up();
+        *up = camera->GetUp();
     }
 
     void setUp(Camera* camera, Vector3* up)
     {
         if (!camera) return;
 
-        camera->set_up(*up);
+        camera->SetUp(*up);
     }
 
     void getRight(Camera* camera, Vector3* right)
     {
         if (!camera) return;
 
-        *right = camera->get_right();
+        *right = camera->GetRight();
     }
 
     void setRight(Camera* camera, Vector3* right)
     {
         if (!camera) return;
 
-        camera->set_right(*right);
+        camera->SetRight(*right);
     }
 
     MonoObject* createCamera()
     {
-        return Object::createInstance<Camera>("ReCrafted.API.Graphics", "Camera")->getManagedPtr();
+        return Object::CreateInstance<Camera>("ReCrafted.API.Graphics", "Camera")->GetManagedPtr();
     }
 }
 
-void Camera::initRuntime()
+void Camera::InitRuntime()
 {
     // create type binding
 

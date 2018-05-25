@@ -18,29 +18,29 @@ private:
     Array<Ref<Entity>> m_entities = {};
 
 private:
-    void onInit() override;
-    void onDispose() override;
+    void OnInit() override;
+    void OnDispose() override;
 
 public:
     virtual ~EntityPool() = default;
 
 public:
-    void update() override;
-    void simulate();
+    void Update() override;
+    void Simulate();
 
 public:
-    static Ref<Entity> createEntity(Text entityName)
+    static Ref<Entity> CreateEntity(Text entityName)
     {
         Ref<Entity> entity(new Entity);
-        entity->guid = Platform::newGuid();
+        entity->guid = Platform::NewGuid();
         entity->name = entityName;
 
-        m_instance->m_entities.add(entity);
+        m_instance->m_entities.Add(entity);
 
         return entity;
     }
 
-    static void destroyEntity(Entity* entity)
+    static void DestroyEntity(Entity* entity)
     {
     }
 };

@@ -4,13 +4,13 @@
 #include "Common/Profiler/Profiler.h"
 #include "Common/Time.h"
 
-void UpdateLoop::simulate()
+void UpdateLoop::Simulate()
 {
     // source: https://gafferongames.com/post/fix_your_timestep/
 
-    const var dt = Time::fixedDeltaTime();
+    const var dt = Time::FixedDeltaTime();
 
-    m_simulationAcc += Time::deltaTime();
+    m_simulationAcc += Time::DeltaTime();
 
     while (m_simulationAcc >= dt)
     {
@@ -19,41 +19,41 @@ void UpdateLoop::simulate()
     }
 }
 
-void UpdateLoop::waitForTargetFps(double last)
+void UpdateLoop::WaitForTargetFps(double last)
 {
-    Profiler::beginProfile("WaitForTargetFps");
-    cvar target = (1.0 / m_targetFps) * 1000.0;
-    cvar delta = Platform::getMiliseconds() - last;
+    Profiler::BeginProfile("WaitForTargetFps");
+    cvar target = (1.0 / m_TargetFps) * 1000.0;
+    cvar delta = Platform::GetMiliseconds() - last;
     cvar sleep = target - delta;
 
     if (sleep > 0.0)
     {
-        Platform::sleep(static_cast<uint>(sleep));
+        Platform::Sleep(static_cast<uint>(sleep));
     }
-    Profiler::endProfile();
+    Profiler::EndProfile();
 }
 
-void UpdateLoop::start()
+void UpdateLoop::Start()
 {
-    var lastTime = Platform::getMiliseconds();
+    var lastTime = Platform::GetMiliseconds();
 
     while (m_running)
     {
-        cvar currentTime = Platform::getMiliseconds();
+        cvar currentTime = Platform::GetMiliseconds();
 
-        Profiler::beginProfile("Frame Total");
-        Profiler::beginProfile("Frame");
+        Profiler::BeginProfile("Frame Total");
+        Profiler::BeginProfile("Frame");
 
         if (m_updateCallback)
         {
-            // call update
+            // call Update
             m_update.Invoke();
         }
 
         if (m_simulateCallback)
         {
-            // run simulate
-            simulate();
+            // run Simulate
+            Simulate();
         }
 
         if (m_renderCallback)
@@ -62,39 +62,39 @@ void UpdateLoop::start()
             m_render.Invoke();
         }
 
-        Profiler::endProfile();
+        Profiler::EndProfile();
 
-        waitForTargetFps(lastTime);
+        WaitForTargetFps(lastTime);
         lastTime = currentTime;
 
         // end 'Frame' profile
-        Profiler::endProfile();
-        Profiler::endFrame();
+        Profiler::EndProfile();
+        Profiler::GetInstance()->EndFrame();
     }
 }
 
-void UpdateLoop::stop()
+void UpdateLoop::Stop()
 {
     m_running = false;
 }
 
-void UpdateLoop::setUpdateCallback(Delegate<void> callback)
+void UpdateLoop::SetUpdateCallback(Delegate<void> callback)
 {
     m_updateCallback = true;
 
-    // set update callback
+    // set Update callback
     m_update = callback;
 }
 
-void UpdateLoop::setSimulateCallback(Delegate<void> callback)
+void UpdateLoop::SetSimulateCallback(Delegate<void> callback)
 {
     m_simulateCallback = true;
 
-    // set simulate callback
+    // set Simulate callback
     m_simulate = callback;
 }
 
-void UpdateLoop::setRenderCallback(Delegate<void> callback)
+void UpdateLoop::SetRenderCallback(Delegate<void> callback)
 {
     m_renderCallback = true;
 

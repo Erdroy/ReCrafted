@@ -6,23 +6,23 @@
 
 SINGLETON_IMPL(Logger)
 
-void Logger::onInit()
+void Logger::OnInit()
 {
-    m_api_log_callback = Object::findStaticMethod("ReCrafted.API.Core.Logger::OnEngineLog");
-    m_api_log_shutdown = Object::findStaticMethod("ReCrafted.API.Core.Logger::Shutdown");
+    m_api_log_callback = Object::FindStaticMethod("ReCrafted.API.Core.Logger::OnEngineLog");
+    m_api_log_shutdown = Object::FindStaticMethod("ReCrafted.API.Core.Logger::Shutdown");
 }
 
-void Logger::onDispose()
+void Logger::OnDispose()
 {
-    m_api_log_shutdown->invokeStatic();
+    m_api_log_shutdown->InvokeStatic();
 }
 
-void Logger::invokeCallback(const char* message, LogLevel::Enum logLevel)
+void Logger::InvokeCallback(const char* message, LogLevel::Enum logLevel)
 {
     if (m_api_log_callback)
     {
         cvar string = mono_string_new(mono_domain_get(), message);
         void* params[] = {string, &logLevel};
-        m_api_log_callback->invokeStatic(params);
+        m_api_log_callback->InvokeStatic(params);
     }
 }

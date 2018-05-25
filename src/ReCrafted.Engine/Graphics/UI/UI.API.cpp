@@ -10,7 +10,7 @@ namespace Internal
         if (texture == nullptr)
             return;
 
-        UI::drawTexture(texture, *rect, *uvs);
+        UI::DrawTexture(texture, *rect, *uvs);
     }
 
     void drawString(Font* font, MonoString* string, Vector2* position)
@@ -21,11 +21,11 @@ namespace Internal
         auto str = MONO_TEXT(string);
         auto strlen = mono_string_length(string);
 
-        UI::drawText(font, static_cast<Char*>(str), strlen, *position);
+        UI::DrawText(font, static_cast<Char*>(str), strlen, *position);
     }
 }
 
-void UI::initRuntime()
+void UI::InitRuntime()
 {
     API_FILE("UI/UI.Gen.cs");
     {
@@ -38,7 +38,7 @@ void UI::initRuntime()
             API_COMMENT("Draws box.");
             API_METHOD(INTERNAL, STATIC, "DrawBox", EXTERN);
             {
-                API_BIND("ReCrafted.API.UI.UIInternal::DrawBox", &UI::drawBox);
+                API_BIND("ReCrafted.API.UI.UIInternal::DrawBox", &UI::DrawBox);
 
                 API_COMMENT("The rectangle which will be used to draw box");
                 API_PARAM("RectangleF", "rect");
@@ -59,7 +59,7 @@ void UI::initRuntime()
             API_COMMENT("Sets view rect.");
             API_METHOD(INTERNAL, STATIC, "UpdateViewRect", EXTERN);
             {
-                API_BIND("ReCrafted.API.UI.UIInternal::UpdateViewRect", &UI::setViewRect);
+                API_BIND("ReCrafted.API.UI.UIInternal::UpdateViewRect", &UI::SetViewRect);
 
                 API_PARAM("ref RectangleF", "viewRect");
                 API_PARAM("bool", "use");
@@ -80,16 +80,16 @@ void UI::initRuntime()
             API_COMMENT("The current drawing color.");
             API_PROPERTY(INTERNAL, STATIC, "Color", "Color", GETSET);
             {
-                API_BIND("ReCrafted.API.UI.UIInternal::Internal_Color_Get", &UI::getColor);
-                API_BIND("ReCrafted.API.UI.UIInternal::Internal_Color_Set", &UI::setColor);
+                API_BIND("ReCrafted.API.UI.UIInternal::Internal_Color_Get", &UI::GetColor);
+                API_BIND("ReCrafted.API.UI.UIInternal::Internal_Color_Set", &UI::SetColor);
             }
             API_PROPERTY_END();
 
             API_COMMENT("Depth of current drawing ui.");
             API_PROPERTY(INTERNAL, STATIC, "float", "Depth", GETSET);
             {
-                API_BIND("ReCrafted.API.UI.UIInternal::Internal_Depth_Get", &UI::getDepth);
-                API_BIND("ReCrafted.API.UI.UIInternal::Internal_Depth_Set", &UI::setDepth);
+                API_BIND("ReCrafted.API.UI.UIInternal::Internal_Depth_Get", &UI::GetDepth);
+                API_BIND("ReCrafted.API.UI.UIInternal::Internal_Depth_Set", &UI::SetDepth);
             }
             API_PROPERTY_END();
         }

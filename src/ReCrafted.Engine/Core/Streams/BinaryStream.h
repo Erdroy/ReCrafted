@@ -14,17 +14,17 @@
 class BinaryStream : public Stream
 {
 #define DEFINE_READER(type, name)                   \
-    type read##name(){                              \
+    type Read##name(){                              \
         type tmp = type();                          \
-        m_stream.read(&tmp, sizeof(type),      \
+        m_stream.Read(&tmp, sizeof(type),      \
         m_position, sizeof(type));                  \
         m_position += sizeof(type);                 \
         return tmp;                                 \
     }
 
 #define DEFINE_WRITER(type, name)                   \
-    void write##name(type value){                   \
-        m_stream.write(&value, sizeof(type),   \
+    void Write##name(type value){                   \
+        m_stream.Write(&value, sizeof(type),   \
         m_position, sizeof(type));                  \
         m_position += sizeof(type);                 \
     }
@@ -163,9 +163,9 @@ public:
      * \param buffer The buffer to read to.
      * \param count The amount of bytes to read.
      */
-    void readBytes(char* buffer, const size_t count)
+    void ReadBytes(char* buffer, const size_t count)
     {
-        m_stream.read(buffer, count, m_position, count);
+        m_stream.Read(buffer, count, m_position, count);
         m_position += count;
     }
 
@@ -174,9 +174,9 @@ public:
     * \param buffer The buffer to read from.
     * \param count The amount of bytes to read.
     */
-    void writeBytes(char* buffer, const size_t count)
+    void WriteBytes(char* buffer, const size_t count)
     {
-        m_stream.write(buffer, count, m_position, count);
+        m_stream.Write(buffer, count, m_position, count);
         m_position += count;
     }
 
@@ -184,39 +184,39 @@ public:
      * \brief Reads ANSI string to given buffer.
      * \param string The string buffer.
      */
-    void readString(char* string)
+    void ReadString(char* string)
     {
-        cvar length = readUInt16();
-        readBytes(string, length);
+        cvar length = ReadUInt16();
+        ReadBytes(string, length);
     }
 
     /**
      * \brief Writes string to this stream.
      * \param string The ANSI string.
      */
-    void writeString(char* string)
+    void WriteString(char* string)
     {
         cvar length = strlen(string);
-        writeUInt16(static_cast<uint16_t>(length));
-        writeBytes(string, length);
+        WriteUInt16(static_cast<uint16_t>(length));
+        WriteBytes(string, length);
     }
 
     /**
     * \brief Writes string to this stream. 
     * \param string The ANSI string.
     * 
-    * \note Data won't get a length prefix!
+    * \note Data won't get a Length prefix!
     */
-    void writeStringRaw(char* string)
+    void WriteStringRaw(char* string)
     {
         cvar length = strlen(string);
-        writeBytes(string, length);
+        WriteBytes(string, length);
     }
 
     /**
      * \brief Resets the position of the stream.
      */
-    void reset()
+    void Reset()
     {
         m_position = 0u;
     }
@@ -225,9 +225,9 @@ protected:
     /**
     * \brief Closes the stream.
     */
-    void close() const override
+    void Close() const override
     {
-        m_stream.dispose();
+        m_stream.Dispose();
     }
 
 #undef DEFINE_READER

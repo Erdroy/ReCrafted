@@ -49,12 +49,12 @@ private:
         bool updated = false;
 
     public:
-        void update(double currentTime)
+        void Update(double currentTime)
         {
-            // update time
+            // Update time
             lastUpdate = currentTime;
             timeBegin = currentTime;
-            depth = m_profileStack.count();
+            depth = m_profileStack.Count();
             order = m_profileCount;
 
             // increment profile count
@@ -79,60 +79,63 @@ private:
     int m_frames = 0;
     int m_fps = 0;
 
-private:
-    static bool profileSort(const Profile& lhs, const Profile& rhs);
+public:
+    virtual ~Profiler() = default;
 
 private:
-    void onInit() override;
-    void onDispose() override;
-    void update() override;
+    static bool ProfileSort(const Profile& lhs, const Profile& rhs);
 
-private:
-    void drawLine(Text text, Color color);
-    void space(int lines);
+    void OnInit() override;
+    void OnDispose() override;
+    void Update() override;
 
-private:
-    void drawDebugScreen();
+    void DrawTextLine(Text text, Color color);
+    void MakeLineSpace(int lines);
+
+    void DrawDebugScreen();
+
+public:
+    void EndFrame();
 
 private:
     template <typename T>
-    FORCEINLINE static void beginProfile(const T* name, bool utf8, float timeMed, float timeMax)
+    FORCEINLINE static void BeginProfile(const T* name, bool utf8, float timeMed, float timeMax)
     {
         // TODO: Main thread check (debug)
 
-        cvar currentTime = Platform::getMiliseconds();
+        cvar currentTime = Platform::GetMiliseconds();
 
-        // try select profile, then update
+        // try select profile, then Update
         // check if profile already exists with this name
 
-        if (m_profiles.count() > 0)
+        if (m_profiles.Count() > 0)
         {
             for (var&& profile : m_profiles)
             {
                 if (utf8)
                 {
-                    // (just compare name pointers, not called by Mono, 
+                    // (just Compare name pointers, not called by Mono, 
                     // so 'const char*' pointer address is const...)
                     if (profile.name == name)
                     {
-                        // update
-                        profile.update(currentTime);
+                        // Update
+                        profile.Update(currentTime);
 
                         // add to stack
-                        m_profileStack.add(&profile);
+                        m_profileStack.Add(&profile);
                         return;
                     }
                 }
                 else
                 {
-                    // TODO: UTF-16 string compare
-                    if (Text::compare(static_cast<const Char*>(profile.name), static_cast<const Char*>((void*)name)))
+                    // TODO: UTF-16 string Compare
+                    if (Text::Compare(static_cast<const Char*>(profile.name), static_cast<const Char*>((void*)name)))
                     {
-                        // update
-                        profile.update(currentTime);
+                        // Update
+                        profile.Update(currentTime);
 
                         // add to stack
-                        m_profileStack.add(&profile);
+                        m_profileStack.Add(&profile);
                         return;
                     }
                 }
@@ -147,50 +150,47 @@ private:
         newProfile.timeMax = timeMax;
         newProfile.utf8 = utf8;
 
-        newProfile.update(currentTime);
+        newProfile.Update(currentTime);
 
-        m_profiles.add(newProfile);
+        m_profiles.Add(newProfile);
     }
-
-public:
-    virtual ~Profiler() = default;
 
 public:
     /**
 	 * \brief Begins new profile.
 	 * \param name The name of the new profile. Use `TEXT_CHARS("Text")`.
 	 */
-    FORCEINLINE static void beginProfile(const Char* name, float timeMed = -1.0f, float timeMax = -1.0f)
+    FORCEINLINE static void BeginProfile(const Char* name, float timeMed = -1.0f, float timeMax = -1.0f)
     {
-        beginProfile(name, false, timeMed, timeMax);
+        BeginProfile(name, false, timeMed, timeMax);
     }
 
     /**
     * \brief Begins new profile.
     * \param name The name of the new profile.
     */
-    FORCEINLINE static void beginProfile(const char* name, float timeMed = -1.0f, float timeMax = -1.0f)
+    FORCEINLINE static void BeginProfile(const char* name, float timeMed = -1.0f, float timeMax = -1.0f)
     {
-        beginProfile(name, true, timeMed, timeMax);
+        BeginProfile(name, true, timeMed, timeMax);
     }
 
     /**
     * \brief Ends the current profile.
     */
-    FORCEINLINE static void endProfile()
+    FORCEINLINE static void EndProfile()
     {
-        if (m_profileStack.count() == 0)
+        if (m_profileStack.Count() == 0)
             return;
 
-        cvar currentTime = Platform::getMiliseconds();
+        cvar currentTime = Platform::GetMiliseconds();
 
         // select profile
-        var profile = m_profileStack.last();
+        var profile = m_profileStack.Last();
 
-        // update total time
+        // Update total time
         profile->timeTotal += static_cast<float>(currentTime - profile->timeBegin);
 
-        // update every 1/4 second
+        // Update every 1/4 second
         if (currentTime - profile->lastAvgUpdate >= 250.0f)
         {
             // calculate avg time
@@ -201,14 +201,9 @@ public:
             profile->calls = 1;
         }
 
-        // remove profile
-        m_profileStack.removeAt(m_profileStack.count() - 1);
+        // Remove profile
+        m_profileStack.RemoveAt(m_profileStack.Count() - 1);
     }
-
-    /**
-     * \brief Ends current frame.
-     */
-    static void endFrame();
 };
 
 #endif // PROFILER_H

@@ -11,32 +11,32 @@
 /**
 * \brief EngineComponentBase base class.
 * Implements base class for all engine components with
-* virtual functions like: update, simulate and render.
+* virtual functions like: Update, Simulate and render.
 */
 class EngineComponentBase
 {
     friend class EngineComponentManager;
 
 private:
-    void init()
+    void Init()
     {
-        onInit();
+        OnInit();
     }
 
 protected:
     ~EngineComponentBase() = default;
 
 protected:
-    virtual void shutdown() = 0;
+    virtual void Shutdown() = 0;
 
 protected:
-    virtual void onInit() = 0;
+    virtual void OnInit() = 0;
 
-    virtual void onLoad()
+    virtual void OnLoad()
     {
     }
 
-    virtual void update()
+    virtual void Update()
     {
     }
 };

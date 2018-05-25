@@ -18,8 +18,8 @@ public:
     virtual ~ScriptingEngine() = default;
 
 public:
-    void onInit() override;
-    void onDispose() override;
+    void OnInit() override;
+    void OnDispose() override;
 };
 
 #endif // SCRIPTINGENGINE_H

@@ -61,7 +61,7 @@ Vector3 ChildrenNodeOffsets[8] = {
     Vector3(-0.5f, -0.5f, -0.5f)
 };
 
-float lodtable[22] = {
+float LoDTable[22] = {
     0.0f,
     1.0f,
     2.0f,

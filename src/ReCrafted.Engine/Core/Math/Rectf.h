@@ -32,7 +32,7 @@ public:
     /// <summary>
     /// Size of this Rectangle
     /// </summary>
-    FORCEINLINE Vector2 size() const
+    FORCEINLINE Vector2 Size() const
     {
         return Vector2(width, height);
     }
@@ -40,18 +40,18 @@ public:
     /// <summary>
     /// Size of this Rectangle
     /// </summary>
-    FORCEINLINE void size(const Vector2& size)
+    FORCEINLINE void Size(const Vector2& size)
     {
         width = size.x;
         height = size.y;
     }
 
-    FORCEINLINE Vector2 center() const
+    FORCEINLINE Vector2 Center() const
     {
         return Vector2(x, y);
     }
 
-    FORCEINLINE void center(const Vector2& center)
+    FORCEINLINE void Center(const Vector2& center)
     {
         x = center.x;
         y = center.y;
@@ -60,7 +60,7 @@ public:
     /// <summary>
     /// Minimum X coordinate of this Rectangle
     /// </summary>
-    FORCEINLINE float left() const
+    FORCEINLINE float Left() const
     {
         return x - (width / 2);
     }
@@ -68,7 +68,7 @@ public:
     /// <summary>
     /// Maximum X coordinate of this Rectangle
     /// </summary>
-    FORCEINLINE float right() const
+    FORCEINLINE float Right() const
     {
         return x + (width / 2);
     }
@@ -76,7 +76,7 @@ public:
     /// <summary>
     /// Minimum Y coordinate of this Rectangle
     /// </summary>
-    FORCEINLINE float bottom() const
+    FORCEINLINE float Bottom() const
     {
         return y - (height / 2);
     }
@@ -84,7 +84,7 @@ public:
     /// <summary>
     /// Maximum Y coordinate of this Rectangle
     /// </summary>
-    FORCEINLINE float top() const
+    FORCEINLINE float Top() const
     {
         return y + (height / 2);
     }
@@ -93,33 +93,33 @@ public:
     /// <summary>
     /// Check if two Rectangles intersect each other
     /// </summary>
-    FORCEINLINE static bool intersects(Rectf& a, Rectf& b)
+    FORCEINLINE static bool Intersects(Rectf& a, Rectf& b)
     {
-        return (a.left() < b.right() && a.right() > b.left() && a.top() < b.bottom() && a.bottom() > b.top());
+        return (a.Left() < b.Right() && a.Right() > b.Left() && a.Top() < b.Bottom() && a.Bottom() > b.Top());
     }
 
     /// <summary>
     /// Check if two Rectangles intersect each other
     /// </summary>
-    FORCEINLINE static void intersects(Rectf& a, Rectf& b, bool* result)
+    FORCEINLINE static void Intersects(Rectf& a, Rectf& b, bool* result)
     {
-        *result = intersects(a, b);
+        *result = Intersects(a, b);
     }
 
     /// <summary>
     /// Check if point is within a Rectangle
     /// </summary>
-    FORCEINLINE static bool contains(Rectf& rect, Vector2& point)
+    FORCEINLINE static bool Contains(Rectf& rect, Vector2& point)
     {
-        return point.x > rect.left() && point.x < rect.right() && point.y > rect.bottom() && point.y < rect.top();
+        return point.x > rect.Left() && point.x < rect.Right() && point.y > rect.Bottom() && point.y < rect.Top();
     }
 
     /// <summary>
     /// Check if point is within a Rectangle
     /// </summary>
-    FORCEINLINE static void contains(Rectf& rect, Vector2& point, bool* result)
+    FORCEINLINE static void Contains(Rectf& rect, Vector2& point, bool* result)
     {
-        *result = contains(rect, point);
+        *result = Contains(rect, point);
     }
 
 public:

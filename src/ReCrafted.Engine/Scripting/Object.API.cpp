@@ -7,11 +7,11 @@ namespace Internal
 {
     void objectDestroy(Object* object)
     {
-        Object::destroy(object);
+        Object::Destroy(object);
     }
 }
 
-void Object::initRuntime()
+void Object::InitRuntime()
 {
     API_FILE("Object.Gen.cs");
     {
@@ -26,7 +26,7 @@ void Object::initRuntime()
             }
             API_METHOD(INTERNAL, STATIC, "InternalObjectFinalized", EXTERN);
             {
-                API_BIND("ReCrafted.API.Object::InternalObjectFinalized", &Object::finalize);
+                API_BIND("ReCrafted.API.Object::InternalObjectFinalized", &Object::Finalize);
 
                 API_PARAM("IntPtr", "nativePtr");
             }

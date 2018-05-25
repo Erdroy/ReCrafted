@@ -26,41 +26,41 @@ private:
     bool m_renderCallback = false;
 
 private:
-    void simulate();
-    void waitForTargetFps(double last);
+    void Simulate();
+    void WaitForTargetFps(double last);
 
 public:
     /**
      * \brief Starts the loop.
      */
-    void start();
+    void Start();
 
     /**
     * \brief Stops the loop.
     */
-    void stop();
+    void Stop();
 
 public:
     /**
-     * \brief Sets update callback.
-     * \param callback The update callback delegate.
+     * \brief Sets Update callback.
+     * \param callback The Update callback delegate.
      */
-    void setUpdateCallback(Delegate<void> callback);
+    void SetUpdateCallback(Delegate<void> callback);
 
     /**
     * \brief Sets simulation callback.
     * \param callback The simulation callback delegate.
     */
-    void setSimulateCallback(Delegate<void> callback);
+    void SetSimulateCallback(Delegate<void> callback);
 
     /**
     * \brief Sets render callback.
     * \param callback The render callback delegate.
     */
-    void setRenderCallback(Delegate<void> callback);
+    void SetRenderCallback(Delegate<void> callback);
 
 public:
-PROPERTY(int, targetFps) = 60;
+PROPERTY(int, TargetFps) = 60;
 };
 
 #endif // UPDATELOOP_H

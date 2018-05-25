@@ -46,16 +46,16 @@ private:
     bool m_const = false;
 
 private:
-    void alloc_chars(int count)
+    void AllocData(int count)
     {
         m_data = static_cast<Char*>(TEXT_ALLOC(sizeof(Char) * (count + 1)));
     }
 
-    void realloc_chars(int count)
+    void ReallocData(int count)
     {
         if (m_data == nullptr)
         {
-            alloc_chars(count);
+            AllocData(count);
             return;
         }
 
@@ -67,18 +67,18 @@ private:
         m_data = tmp;
     }
 
-    void copy_chars(Char* source, int count) const
+    void CopyData(Char* source, int count) const
     {
         auto sz = sizeof(Char) * count;
         memcpy(m_data, source, sz);
         m_data[count] = 0;
     }
 
-    void add_chars(Char* source, int count, int totalcount) const
+    void AddData(Char* source, int count, int totalcount) const
     {
         auto sz = sizeof(Char) * count;
 
-        auto ptr = m_data + length();
+        auto ptr = m_data + Length();
         memcpy(ptr, source, sz);
 
         m_data[totalcount] = 0;
@@ -87,25 +87,25 @@ private:
 private:
     explicit Text(Text* text)
     {
-        auto len = text->length();
+        auto len = text->Length();
 
-        alloc_chars(len);
-        copy_chars(text->m_data, len);
+        AllocData(len);
+        CopyData(text->m_data, len);
     }
 
     explicit Text(const Text* text)
     {
-        auto len = text->length();
+        auto len = text->Length();
 
-        alloc_chars(len);
-        copy_chars(text->m_data, len);
+        AllocData(len);
+        CopyData(text->m_data, len);
     }
 
     explicit Text(const Text* text, int start, int count)
     {
-        alloc_chars(count);
+        AllocData(count);
         auto ptr = text->m_data + start;
-        copy_chars(ptr, count);
+        CopyData(ptr, count);
     }
 
 public:
@@ -129,9 +129,9 @@ public:
             return;
         }
 
-        const auto length = text.length();
-        alloc_chars(length);
-        copy_chars(text.m_data, length);
+        const auto length = text.Length();
+        AllocData(length);
+        CopyData(text.m_data, length);
         m_cstrData = text.m_cstrData;
         m_const = text.m_const;
     }
@@ -148,8 +148,8 @@ public:
             length++;
         }
 
-        alloc_chars(length);
-        copy_chars(string, length);
+        AllocData(length);
+        CopyData(string, length);
     }
 
     /// <summary>
@@ -164,7 +164,7 @@ public:
             length++;
         }
 
-        alloc_chars(length);
+        AllocData(length);
 
         for (auto i = 0; i < length; i ++)
         {
@@ -198,24 +198,24 @@ public:
     /// <summary>
     /// Appents text to this text.
     /// </summary>
-    /// <param name="text">The text to append.</param>
-    void append(Text& text)
+    /// <param name="text">The text to Append.</param>
+    void Append(Text& text)
     {
         if (m_const)
             return;
 
-        auto textlen = length();
-        auto sectextlen = text.length();
+        auto textlen = Length();
+        auto sectextlen = text.Length();
         auto newlen = textlen + sectextlen;
 
         if (sectextlen == 0)
             return;
 
         // realloc
-        realloc_chars(newlen);
+        ReallocData(newlen);
 
         // add
-        add_chars(text.m_data, sectextlen, newlen);
+        AddData(text.m_data, sectextlen, newlen);
     }
 
     /// <summary>
@@ -223,13 +223,13 @@ public:
     /// </summary>
     /// <param name="start">Where start reading.</param>
     /// <param name="count">How much characters we want.</param>
-    /// <returns>The subtext text.</returns>
-    Text subtext(int start, int count) const
+    /// <returns>The Subtext text.</returns>
+    Text Subtext(int start, int count) const
     {
-        auto textLength = length();
+        auto textLength = Length();
 
         if (start + count > textLength)
-            return empty();
+            return Empty();
 
         return Text(this, start, count);
     }
@@ -238,26 +238,26 @@ public:
     /// Remove characters from start.
     /// </summary>
     /// <param name="start">The start index when start removing characters.</param>
-    /// <param name="count">The amount of characters to remove.</param>
+    /// <param name="count">The amount of characters to Remove.</param>
     /// <returns>The new text.</returns>
-    Text remove(int start, int count) const
+    Text Remove(int start, int count) const
     {
         if (m_const)
-            return empty();
+            return Empty();
 
-        auto textLength = length();
+        auto textLength = Length();
         auto s = start + count;
 
         if (start == 0)
-            return subtext(s, textLength - s);
+            return Subtext(s, textLength - s);
 
         if (start + count >= textLength)
-            return subtext(0, start);
+            return Subtext(0, start);
 
-        auto s1 = subtext(0, start);
-        auto s2 = subtext(s, textLength - s);
+        auto s1 = Subtext(0, start);
+        auto s2 = Subtext(s, textLength - s);
 
-        s1.append(s2);
+        s1.Append(s2);
 
         return Text(&s1);
     }
@@ -267,7 +267,7 @@ public:
     /// </summary>
     /// <param name="character">The character for find.</param>
     /// <returns>The index.</returns>
-    int indexOf(Char character) const
+    int IndexOf(Char character) const
     {
         auto i = 0;
         while (true)
@@ -287,9 +287,9 @@ public:
     /// </summary>
     /// <param name="character">The character for find.</param>
     /// <returns>The index.</returns>
-    int lastIndexOf(Char character) const
+    int LastIndexOf(Char character) const
     {
-        auto i = length() - 1;
+        auto i = Length() - 1;
         while (true)
         {
             if (m_data[i] == character)
@@ -303,28 +303,28 @@ public:
     }
 
     /// <summary>
-    /// Returns the text length.
+    /// Returns the text Length.
     /// </summary>
-    /// <returns>The length.</returns>
-    int length() const
+    /// <returns>The Length.</returns>
+    int Length() const
     {
-        return length(m_data);
+        return Length(m_data);
     }
 
     /// <summary>
     /// Returns the size of this string in bytes.
     /// </summary>
     /// <returns>The size of this string.</returns>
-    int size() const
+    int Size() const
     {
         // character count * char size + zero terminating character.
-        return length() * sizeof(Char) + sizeof(Char);
+        return Length() * sizeof(Char) + sizeof(Char);
     }
 
     /// <summary>
     /// Returns the text data / characters.
     /// </summary>
-    Char* data() const
+    Char* Data() const
     {
         return m_data;
     }
@@ -332,7 +332,7 @@ public:
     /// <summary>
     /// Clones this string.
     /// </summary>
-    Text clone() const
+    Text Clone() const
     {
         return Text(m_data);
     }
@@ -340,9 +340,9 @@ public:
     /// <summary>
     /// Builds const string.
     /// </summary>
-    void c_str(char* buffer, int buffer_size) const
+    void CStr(char* buffer, int buffer_size) const
     {
-        for (auto i = 0; i < buffer_size && i < length(); i ++)
+        for (auto i = 0; i < buffer_size && i < Length(); i ++)
         {
             buffer[i] = static_cast<char>(m_data[i]);
         }
@@ -353,7 +353,7 @@ public:
     /// This is slow, and it isn't recommended to use.
     /// </summary>
     /// <returns>Const C string.</returns>
-    std::string std_str() const
+    std::string StdStr() const
     {
 #ifdef USE_UTF16
         std::wstring_convert<std::codecvt_utf8_utf16<__int16>, __int16> conversion;
@@ -369,9 +369,9 @@ public:
     /// This is slow, and it isn't recommended to use.
     /// </summary>
     /// <returns>Const Wide C string.</returns>
-    std::wstring wstr() const
+    std::wstring StdWStr() const
     {
-        auto str = std_str();
+        auto str = StdStr();
         std::wstring temp(str.length(), L' ');
         copy(str.begin(), str.end(), temp.begin());
 
@@ -381,34 +381,34 @@ public:
 public:
     Text& Text::operator=(const Text& r)
     {
-        auto len = r.length();
+        auto len = r.Length();
 
-        alloc_chars(len);
-        copy_chars(r.m_data, len);
+        AllocData(len);
+        CopyData(r.m_data, len);
 
         return *this;
     }
 
     Text Text::operator+(Text& text) const
     {
-        auto thisStr = clone();
+        auto thisStr = Clone();
 
-        thisStr.append(text);
+        thisStr.Append(text);
 
         return thisStr;
     }
 
     void Text::operator+=(const Text& text)
     {
-        append(const_cast<Text&>(text));
+        Append(const_cast<Text&>(text));
     }
 
     bool Text::operator ==(const Text& text) const
     {
-        if (length() != text.length())
+        if (Length() != text.Length())
             return false;
 
-        for (auto i = 0; i < length(); i++)
+        for (auto i = 0; i < Length(); i++)
         {
             if (m_data[i] != text[i])
                 return false;
@@ -432,7 +432,7 @@ public:
     /// Returns empty text.
     /// </summary>
     /// <returns>The new empty text.</returns>
-    static Text empty()
+    static Text Empty()
     {
         return Text();
     }
@@ -441,7 +441,7 @@ public:
     /// Creates const text which cannot be modified,
     /// but works best for recursive calling (loading a file eg.: "Font.API::Internal::loadFont").
     /// </summary>
-    static Text constant(uint16_t* chars)
+    static Text Constant(uint16_t* chars)
     {
         Text text;
         text.m_data = chars;
@@ -449,7 +449,7 @@ public:
         return text;
     }
 
-    static int length(const Char* str)
+    static int Length(const Char* str)
     {
         if (str == nullptr)
             return 0;
@@ -464,24 +464,24 @@ public:
     }
 
 #ifdef USE_FMT
-    __forceinline static Text format(const Text& format, fmt::ArgList args)
+    __forceinline static Text Format(const Text& format, fmt::ArgList args)
     {
-        auto data = reinterpret_cast<wchar_t*>(format.data());
+        auto data = reinterpret_cast<wchar_t*>(format.Data());
         auto string = fmt::format(data, args);
 
         return Text((Char*)string.data());
     }
 
-    FMT_VARIADIC_W(static Text, format, const Text&)
+    FMT_VARIADIC_W(static Text, Format, const Text&)
 #endif
 
-    static bool compare(const Char* str1, const Char* str2)
+    static bool Compare(const Char* str1, const Char* str2)
     {
         if (str1 == nullptr || str2 == nullptr)
             return false;
 
-        auto l1 = length(str1);
-        auto l2 = length(str2);
+        auto l1 = Length(str1);
+        auto l2 = Length(str2);
 
         if (l1 != l2)
             return false;
@@ -503,11 +503,11 @@ public:
 #ifdef USE_UTF16
 #define TEXT(text) Text((Char*)u##text)
 #define TEXT_CHARS(text) (Char*)u##text
-#define TEXT_CONST(text) Text::constant((Char*)u##text)
+#define TEXT_CONST(text) Text::Constant((Char*)u##text)
 #else
 #define TEXT(text) Text((Char*)U##text)
 #define TEXT_CHARS(text) (Char*)U##text
-#define TEXT_CONST(text) Text::constant((Char*)U##text)
+#define TEXT_CONST(text) Text::Constant((Char*)U##text)
 #endif
 
 #endif // TEXT_H

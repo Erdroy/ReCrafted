@@ -9,17 +9,17 @@
 File::~File()
 {
     if (m_file)
-        close();
+        Close();
 }
 
-void File::seek(long position) const
+void File::Seek(long position) const
 {
     auto file = static_cast<FILE*>(m_file);
 
     fseek(file, position, SEEK_SET);
 }
 
-void File::read(void* buffer, size_t length, size_t offset) const
+void File::Read(void* buffer, size_t length, size_t offset) const
 {
     auto file = static_cast<FILE*>(m_file);
 
@@ -33,26 +33,26 @@ void File::read(void* buffer, size_t length, size_t offset) const
     fread(buffer, length, 1, file);
 }
 
-void File::read(void* buffer) const
+void File::Read(void* buffer) const
 {
-    read(buffer, FileSize);
+    Read(buffer, FileSize);
 }
 
-void File::write(void* data, const size_t dataLenght) const
+void File::Write(void* data, const size_t dataLenght) const
 {
     cvar file = static_cast<FILE*>(m_file);
 
     fwrite(data, dataLenght, 1, file);
 }
 
-void File::flush() const
+void File::Flush() const
 {
     cvar file = static_cast<FILE*>(m_file);
 
     fflush(file);
 }
 
-void File::close() const
+void File::Close() const
 {
     cvar file = static_cast<FILE*>(m_file);
 

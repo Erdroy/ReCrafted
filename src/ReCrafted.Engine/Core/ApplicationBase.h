@@ -14,9 +14,9 @@ protected:
     ~ApplicationBase() = default;
 
 public:
-    virtual void initialize() = 0;
-    virtual void run() = 0;
-    virtual void shutdown() = 0;
+    virtual void Initialize() = 0;
+    virtual void Run() = 0;
+    virtual void Shutdown() = 0;
 };
 
 #endif // APPLICATIONBASE_H

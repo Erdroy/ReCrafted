@@ -7,17 +7,17 @@
 
 #include <json.hpp>
 
-void Shader::dispose()
+void Shader::Dispose()
 {
-    Logger::logInfo("Unloading shader '{0}'", m_shaderName);
+    Logger::LogInfo("Unloading shader '{0}'", m_shaderName);
     Renderer::DestroyShader(m_shaderHandle);
 }
 
-Ref<Shader> Shader::loadShader(const char* shaderName)
+Ref<Shader> Shader::LoadShader(const char* shaderName)
 {
     Ref<Shader> shader(new Shader);
 
-    Logger::logInfo("Loading shader {0}", shaderName);
+    Logger::LogInfo("Loading shader {0}", shaderName);
     strcpy_s(shader->m_shaderName, shaderName);
     shader->m_shaderHandle = Renderer::CreateShader(shaderName);
     return shader;

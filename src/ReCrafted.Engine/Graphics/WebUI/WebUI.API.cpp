@@ -8,11 +8,11 @@ namespace Internal
 {
     MonoObject* createView()
     {
-        return WebUI::getInstance()->createView()->getManagedPtr();
+        return WebUI::GetInstance()->CreateView()->GetManagedPtr();
     }
 }
 
-void WebUI::initRuntime()
+void WebUI::InitRuntime()
 {
     API_FILE("Graphics/WebUI.Gen.cs");
     {

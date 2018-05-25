@@ -7,31 +7,31 @@
 
 SINGLETON_IMPL(ScriptingEngine)
 
-void ScriptingEngine::onInit()
+void ScriptingEngine::OnInit()
 {
     // create root domain
-    m_domain = Domain::createRoot();
+    m_domain = Domain::CreateRoot();
 
     // check base files
-    if (!Platform::fileExists("ReCrafted.Game.dll") || !Platform::fileExists("ReCrafted.API.dll"))
+    if (!Platform::FileExists("ReCrafted.Game.dll") || !Platform::FileExists("ReCrafted.API.dll"))
         exit(-1);
 
     // load base assemblies
-    Assembly::Game = m_domain->loadAssembly("ReCrafted.Game.dll");
-    Assembly::API = m_domain->loadAssembly("ReCrafted.API.dll");
+    Assembly::Game = m_domain->LoadAssembly("ReCrafted.Game.dll");
+    Assembly::API = m_domain->LoadAssembly("ReCrafted.API.dll");
 
     // apply bindings
-    Bindings::bind();
+    Bindings::Bind();
 }
 
-void ScriptingEngine::onDispose()
+void ScriptingEngine::OnDispose()
 {
-    // destroy all objects
-    Object::destroyall();
+    // Destroy all objects
+    Object::DestroyAll();
 
-    // shutdown bindings
-    Bindings::shutdown();
+    // Shutdown bindings
+    Bindings::Shutdown();
 
-    // shutdown scripting engine
-    m_domain->cleanup();
+    // Shutdown scripting engine
+    m_domain->Cleanup();
 }

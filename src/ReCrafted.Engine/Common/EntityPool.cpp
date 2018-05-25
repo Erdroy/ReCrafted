@@ -4,32 +4,32 @@
 
 SINGLETON_IMPL(EntityPool)
 
-void EntityPool::onInit()
+void EntityPool::OnInit()
 {
 }
 
-void EntityPool::onDispose()
+void EntityPool::OnDispose()
 {
 }
 
-void EntityPool::update()
+void EntityPool::Update()
 {
     for (auto&& entity : m_entities)
     {
         if (entity->parent)
             continue;
 
-        entity->update();
+        entity->Update();
     }
 }
 
-void EntityPool::simulate()
+void EntityPool::Simulate()
 {
     for (auto&& entity : m_entities)
     {
         if (entity->parent)
             continue;
 
-        entity->simulate();
+        entity->Simulate();
     }
 }

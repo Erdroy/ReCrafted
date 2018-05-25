@@ -27,30 +27,30 @@ public:
     /// <summary>
     /// Loads assembly using given fileName.
     /// </summary>
-    Ref<Assembly> loadAssembly(const char* fileName);
+    Ref<Assembly> LoadAssembly(const char* fileName);
 
     /// <summary>
     /// Cleanups the domain.
     /// </summary>
-    void cleanup();
+    void Cleanup();
 
-    MonoDomain* getMono() const;
+    MonoDomain* GetMono() const;
 
 public:
     /// <summary>
     /// Creates Domain from MonoDomain.
     /// </summary>
-    static Ref<Domain> create(MonoDomain* monoDomain);
+    static Ref<Domain> Create(MonoDomain* monoDomain);
 
     /// <summary>
     /// Creates domain of given name.
     /// </summary>
-    static Ref<Domain> create(const char* name, Ref<Domain> parent);
+    static Ref<Domain> Create(const char* name, Ref<Domain> parent);
 
     /// <summary>
     /// Creates root domain.
     /// </summary>
-    static Ref<Domain> createRoot();
+    static Ref<Domain> CreateRoot();
 
 public:
     static Ref<Domain> Root;

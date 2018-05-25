@@ -32,16 +32,16 @@ private:
     Array<std::thread*> m_workerThreads = {};
 
 private:
-    void worker_function();
+    void WorkerFunction();
 
 private:
-    void onInit() override;
-    void onDispose() override;
-    void onLoad() override;
-    void update() override;
+    void OnInit() override;
+    void OnDispose() override;
+    void OnLoad() override;
+    void Update() override;
 
 private:
-    static Task createTask(Delegate<void> function, Delegate<bool> callback);
+    static Task CreateTask(Delegate<void> function, Delegate<bool> callback);
 };
 
 #endif // TASKMANAGER_H

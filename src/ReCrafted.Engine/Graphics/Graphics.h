@@ -43,51 +43,51 @@ public:
     virtual ~Graphics() = default;
 
 private:
-    void loadInternalShaders();
-    void createRenderBuffers();
+    void LoadInternalShaders();
+    void CreateRenderBuffers();
 
-    void initializeRenderer();
-
-private:
-    void onInit() override;
-    void onDispose() override;
-    void update() override;
-
-    void render();
-    void resize(uint width, uint height);
+    void InitializeRenderer();
 
 private:
-    void renderBegin();
-    void renderEnd();
-    void renderWorld();
-    void renderUI();
+    void OnInit() override;
+    void OnDispose() override;
+    void Update() override;
+
+    void Render();
+    void Resize(uint width, uint height);
+
+private:
+    void RenderBegin();
+    void RenderEnd();
+    void RenderWorld();
+    void RenderUI();
 
 public:
     /**
      * \brief Draws given mesh using current shader, view and matrix.
      * \param mesh The mesh class pointer.
      */
-    void draw(Ref<Mesh>& mesh);
+    void Draw(Ref<Mesh>& mesh);
 
     /**
      * \brief Sets given shader as current.
      */
-    void setShader(Ref<Shader>& shader);
+    void SetShader(Ref<Shader>& shader);
 
     /**
     * \brief Sets given matrix as current.
     */
-    void setMatrix(Matrix& mvpMatrix);
+    void SetMatrix(Matrix& mvpMatrix);
 
     /**
     * \brief Sets given stage as current.
     */
-    void setStage(RenderStage::_enum stage);
+    void SetStage(RenderStage::_enum stage);
 
     /**
     * \brief Gets current set render stage.
     */
-    RenderStage::_enum getStage() const
+    RenderStage::_enum GetStage() const
     {
         return m_renderStage;
     }

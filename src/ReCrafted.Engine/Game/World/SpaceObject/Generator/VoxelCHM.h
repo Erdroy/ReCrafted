@@ -20,9 +20,9 @@ private:
     int m_bitmapHeight = 0;
 
 private:
-    void loadFace(int face, const char* fileName, const char* directoryName);
+    void LoadFace(int face, const char* fileName, const char* directoryName);
 
-    float sampleFace(const int face, const Vector2 texcoord) const
+    float SampleFace(const int face, const Vector2 texcoord) const
     {
 #ifdef _DEBUG
         if (texcoord.x < 0.0f || texcoord.y < 0.0f || texcoord.x >= 1.0f || texcoord.y >= 1.0f)
@@ -42,26 +42,26 @@ private:
     }
 
 public:
-    FORCEINLINE float sample(const Vector3& point, const float radius, const int lod) const
+    FORCEINLINE float Sample(const Vector3& point, const float radius, const int lod) const
     {
-        if (point.length() == 0)
+        if (point.Length() == 0)
             return 0.0f;
 
-        cvar sphereFace = getFace(point);
-        cvar texcoord = getTexcoord(sphereFace, point);
+        cvar sphereFace = GetFace(point);
+        cvar texcoord = GetTexcoord(sphereFace, point);
 
-        return sampleFace(sphereFace, texcoord); // TODO: sample proper LOD level
+        return SampleFace(sphereFace, texcoord); // TODO: sample proper LOD level
     }
 
-    void dispose() override
+    void Dispose() override
     {
         // free all 6 faces
         for (rvar face : m_faces)
-            Bitmap::free(face);
+            Bitmap::Free(face);
     }
 
 public:
-    FORCEINLINE static Vector2 getTexcoord(const int face, const Vector3& point)
+    FORCEINLINE static Vector2 GetTexcoord(const int face, const Vector3& point)
     {
         Vector2 texcoord;
 
@@ -130,9 +130,9 @@ public:
      * \param point The point which will be check.
      * \return The result.
      */
-    FORCEINLINE static int getFace(const Vector3& point)
+    FORCEINLINE static int GetFace(const Vector3& point)
     {
-        cvar absPoint = Vector3::abs(const_cast<Vector3&>(point));
+        cvar absPoint = Vector3::Abs(const_cast<Vector3&>(point));
 
         if (absPoint.x > absPoint.y)
         {
@@ -175,9 +175,9 @@ public:
      * \param radius The radius of the sphere.
      * \return The transformed point to the sphere.
      */
-    FORCEINLINE static Vector3 mapSphere(Vector3 point, const float radius)
+    FORCEINLINE static Vector3 MapSphere(Vector3 point, const float radius)
     {
-        point.normalize();
+        point.Normalize();
         return point * radius;
     }
 
@@ -186,7 +186,7 @@ public:
      * \param directoryName The directory name which contains the PNG files (left, back etc.).
      * \return The created VoxelCHM.
      */
-    static Ref<VoxelCHM> loadFromDirectory(const char* directoryName);
+    static Ref<VoxelCHM> LoadFromDirectory(const char* directoryName);
 };
 
 #endif // VOXELCHM_H

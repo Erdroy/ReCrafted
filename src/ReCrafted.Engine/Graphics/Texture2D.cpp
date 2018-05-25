@@ -6,7 +6,7 @@
 #include "Core/Delegate.h"
 #include <functional>
 
-void Texture2D::dispose()
+void Texture2D::Dispose()
 {
     if (RENDERER_CHECK_HANDLE(m_textureHandle))
         Renderer::DestroyTexture2D(m_textureHandle);
@@ -27,22 +27,22 @@ void Texture2D::dispose()
     }
 }
 
-void Texture2D::onDestroy()
+void Texture2D::OnDestroy()
 {
-    dispose();
+    Dispose();
 }
 
-void Texture2D::releaseBitmap(void* ptr, void* userData)
+void Texture2D::ReleaseBitmap(void* ptr, void* userData)
 {
     upng::upng_free(static_cast<upng_t*>(userData));
 }
 
-void Texture2D::releaseData(void* ptr, void* userData)
+void Texture2D::ReleaseData(void* ptr, void* userData)
 {
     delete[] static_cast<byte*>(ptr);
 }
 
-void Texture2D::loadFile(const char* filename, uint flags)
+void Texture2D::LoadFromFile(const char* filename, uint flags)
 {
     m_bitmap = upng::upng_new_from_file(filename);
 
@@ -62,7 +62,7 @@ void Texture2D::loadFile(const char* filename, uint flags)
     // FreeImage bitmap will be unloaded with in `releaseBits`
 }
 
-void Texture2D::loadMemory(void* data, int width, int height, uint flags)
+void Texture2D::LoadFromMemory(void* data, int width, int height, uint flags)
 {
     m_width = width;
     m_height = height;
@@ -74,12 +74,12 @@ void Texture2D::loadMemory(void* data, int width, int height, uint flags)
         memcpy(m_bits, data, width * height * 4);
 }
 
-void Texture2D::createMemory(int width, int height, uint flags)
+void Texture2D::CreateMemory(int width, int height, uint flags)
 {
-    loadMemory(nullptr, width, height, flags);
+    LoadFromMemory(nullptr, width, height, flags);
 }
 
-uint Texture2D::getPixel(int x, int y)
+uint Texture2D::GetPixel(int x, int y)
 {
     if (m_bits == nullptr)
         return 0x0u;
@@ -94,12 +94,12 @@ uint Texture2D::getPixel(int x, int y)
     return a | b << 8 | g << 16 | r << 24;
 }
 
-uint* Texture2D::getPixels() const
+uint* Texture2D::GetPixels() const
 {
     return reinterpret_cast<uint*>(m_bits);
 }
 
-void Texture2D::setPixel(int x, int y, uint pixel)
+void Texture2D::SetPixel(int x, int y, uint pixel)
 {
     if (m_bits == nullptr)
         return;
@@ -109,7 +109,7 @@ void Texture2D::setPixel(int x, int y, uint pixel)
     pixels[idx] = pixel;
 }
 
-void Texture2D::setPixel(int x, int y, byte r, byte g, byte b, byte a)
+void Texture2D::SetPixel(int x, int y, byte r, byte g, byte b, byte a)
 {
     if (m_bits == nullptr)
         return;
@@ -119,7 +119,7 @@ void Texture2D::setPixel(int x, int y, byte r, byte g, byte b, byte a)
     pixels[idx] = a | b << 8 | g << 16 | r << 24;
 }
 
-void Texture2D::setPixels(int x, int y, int width, int height, uint* pixels)
+void Texture2D::SetPixels(int x, int y, int width, int height, uint* pixels)
 {
     cvar mpixels = reinterpret_cast<uint*>(m_bits);
     for (auto my = y; my < y + height; my++)
@@ -131,17 +131,17 @@ void Texture2D::setPixels(int x, int y, int width, int height, uint* pixels)
     }
 }
 
-uint Texture2D::getWidth() const
+uint Texture2D::GetWidth() const
 {
     return m_width;
 }
 
-uint Texture2D::getHeight() const
+uint Texture2D::GetHeight() const
 {
     return m_height;
 }
 
-void Texture2D::apply()
+void Texture2D::Apply()
 {
     _ASSERT(m_bitmap || m_bits);
 
@@ -162,16 +162,16 @@ void Texture2D::apply()
 
     Renderer::RendererMemory memory;
     if (m_bitmap)
-        memory = Renderer::Allocate(m_bits, std::function<void(void*, void*)>(&Texture2D::releaseBitmap), m_bitmap);
+        memory = Renderer::Allocate(m_bits, std::function<void(void*, void*)>(&Texture2D::ReleaseBitmap), m_bitmap);
     else
-        memory = Renderer::Allocate(m_bits, std::function<void(void*, void*)>(&Texture2D::releaseData));
+        memory = Renderer::Allocate(m_bits, std::function<void(void*, void*)>(&Texture2D::ReleaseData));
 
     cvar mipCount = uint8_t(m_mips + 1);
     m_textureHandle = Renderer::CreateTexture2D(uint16_t(m_width), uint16_t(m_height), mipCount, m_textureFormat, memory, size);
     m_bits = nullptr;
 }
 
-Ref<Texture2D> Texture2D::createTexture(Renderer::TextureFormat::_enum format)
+Ref<Texture2D> Texture2D::CreateTexture(Renderer::TextureFormat::_enum format)
 {
     Ref<Texture2D> texture(new Texture2D);
     texture->m_textureFormat = format;

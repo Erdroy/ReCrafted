@@ -10,7 +10,7 @@
 #include "Graphics/Graphics.h"
 #include "Storage/VoxelStorage.h"
 
-uint8_t SpaceObjectChunk::getLodBorders()
+uint8_t SpaceObjectChunk::GetLodBorders()
 {
     /*uint8_t borders = 0u;
 
@@ -38,58 +38,58 @@ uint8_t SpaceObjectChunk::getLodBorders()
     return 0xFF;
 }
 
-void SpaceObjectChunk::init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject)
+void SpaceObjectChunk::Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject)
 // WARNING: this function is called on WORKER THREAD!
 {
     this->spaceObject = spaceObject;
     this->node = node;
 
-    var storage = spaceObject->getStorage();
+    var storage = spaceObject->GetStorage();
 
     // create chunk data
-    var nodePosition = node->get_position();
-    m_chunkData = storage->createChunkData(nodePosition, node->get_size());
+    var nodePosition = node->GetPosition();
+    m_chunkData = storage->CreateChunkData(nodePosition, node->GetSize());
 
     // calculate chunk position (origin)
-    cvar positionOffset = Vector3::one() * static_cast<float>(node->get_size()) * 0.5f;
-    m_position = node->get_position() - positionOffset; // lower-left-back corner
+    cvar positionOffset = Vector3::One() * static_cast<float>(node->GetSize()) * 0.5f;
+    m_position = node->GetPosition() - positionOffset; // lower-left-back corner
 
     // calculate lod
-    m_lod = int(node->get_size() / float(SpaceObjectOctreeNode::MinimumNodeSize));
+    m_lod = int(node->GetSize() / float(SpaceObjectOctreeNode::MinimumNodeSize));
 
     // calculate id
-    m_id = calculateChunkId(node->get_position());
+    m_id = CalculateChunkId(node->GetPosition());
 
     // TODO: check if chunk has any visible surface
 }
 
-void SpaceObjectChunk::generate(IVoxelMesher* mesher) // WARNING: this function is called on WORKER THREAD!
+void SpaceObjectChunk::Generate(IVoxelMesher* mesher) // WARNING: this function is called on WORKER THREAD!
 {
-    var storage = spaceObject->getStorage();
+    var storage = spaceObject->GetStorage();
 
     // try to read chunk data (if not read actually)
-    if (!m_chunkData->isLoaded())
-        storage->readChunkData(m_chunkData);
+    if (!m_chunkData->IsLoaded())
+        storage->ReadChunkData(m_chunkData);
 
     if(!m_chunkData->HasSurface())
         return;
 
-    rebuild(mesher);
+    Rebuild(mesher);
 }
 
-void SpaceObjectChunk::rebuild(IVoxelMesher* mesher)
+void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
 {
-    if (!m_chunkData->isLoaded() || !m_chunkData->HasSurface())
+    if (!m_chunkData->IsLoaded() || !m_chunkData->HasSurface())
         return;
 
-    var mesh = Mesh::createMesh();
+    var mesh = Mesh::CreateMesh();
 
-    cvar borders = getLodBorders();
-    cvar voxelData = m_chunkData->getData();
+    cvar borders = GetLodBorders();
+    cvar voxelData = m_chunkData->GetData();
 
-    mesher->generate(m_position, m_lod, borders, mesh, voxelData);
+    mesher->Generate(m_position, m_lod, borders, mesh, voxelData);
 
-    if(mesh->getVertexCount() == 0)
+    if(mesh->GetVertexCount() == 0)
     {
         SafeDispose(mesh);
         return;
@@ -100,36 +100,36 @@ void SpaceObjectChunk::rebuild(IVoxelMesher* mesher)
     m_newMesh = mesh;
 }
 
-void SpaceObjectChunk::upload()
+void SpaceObjectChunk::Upload()
 {
     ScopeLock(m_meshLock);
 
     // upload changes
-    if (m_newMesh && m_newMesh->canUpload())
+    if (m_newMesh && m_newMesh->CanUpload())
     {
         if (m_mesh)
             SafeDispose(m_mesh)
 
-        m_newMesh->upload();
+        m_newMesh->Upload();
         m_mesh = m_newMesh;
         m_newMesh = nullptr;
     }
 }
 
-void SpaceObjectChunk::draw()
+void SpaceObjectChunk::Draw()
 {
-    if (!m_mesh || !m_mesh->isUploaded())
+    if (!m_mesh || !m_mesh->IsUploaded())
         return;
 
-    Graphics::getInstance()->draw(m_mesh);
+    Graphics::GetInstance()->Draw(m_mesh);
 }
 
-void SpaceObjectChunk::dispose()
+void SpaceObjectChunk::Dispose()
 {
     SafeDispose(m_mesh);
 }
 
-uint64_t SpaceObjectChunk::calculateChunkId(const Vector3& position)
+uint64_t SpaceObjectChunk::CalculateChunkId(const Vector3& position)
 {
     // limit: 8 388 608 (world space) / 1 048 576 (node space)
     // size: 20 bit's per integer

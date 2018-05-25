@@ -7,11 +7,11 @@
 #include "SpaceObjectChunk.h"
 #include "Utilities/VoxelUtils.h"
 
-void SpaceObject::init(SpaceObjectSettings& settings)
+void SpaceObject::Init(SpaceObjectSettings& settings)
 {
     // initialize voxel storage
     m_voxelStorage = std::make_shared<VoxelStorage>();
-    m_voxelStorage->init(settings);
+    m_voxelStorage->Init(settings);
     m_voxelStorage->spaceObject = this;
 
     // set settings
@@ -21,39 +21,39 @@ void SpaceObject::init(SpaceObjectSettings& settings)
     m_octree = std::make_shared<SpaceObjectOctree>();
     m_octree->spaceObject = this;
 
-    set_position(settings.position);
+    SetPosition(settings.position);
 
     // build base node(s)
-    m_octree->init();
+    m_octree->Init();
 }
 
-void SpaceObject::update()
+void SpaceObject::Update()
 {
-    m_octree->update();
-    m_octree->updateViews(m_views);
+    m_octree->Update();
+    m_octree->UpdateViews(m_views);
 
     // clear views for this frame
-    m_views.clear();
+    m_views.Clear();
 }
 
-void SpaceObject::draw()
+void SpaceObject::Draw()
 {
-    m_octree->draw();
+    m_octree->Draw();
 }
 
-void SpaceObject::dispose()
+void SpaceObject::Dispose()
 {
     SafeDispose(m_octree);
     SafeDispose(m_voxelStorage);
 }
 
-void SpaceObject::updateViewPoint(Vector3& view)
+void SpaceObject::UpdateViewPoint(Vector3& view)
 {
     // add view
-    m_views.add(view);
+    m_views.Add(view);
 }
 
-void SpaceObject::modify(VoxelEditMode::_enum mode, Vector3& position, float size)
+void SpaceObject::Modify(VoxelEditMode::_enum mode, Vector3& position, float size)
 {
     var bbSize = Vector3(size, size, size) * 2.0f;
     bbSize.x = ceilf(bbSize.x);
@@ -61,30 +61,30 @@ void SpaceObject::modify(VoxelEditMode::_enum mode, Vector3& position, float siz
     bbSize.z = ceilf(bbSize.z);
 
     var boundingBox = BoundingBox(position, bbSize);
-    var nodes = m_octree->findIntersecting(boundingBox, false); // NOTE: this will give us all type of LoD levels
+    var nodes = m_octree->FindIntersecting(boundingBox, false); // NOTE: this will give us all type of LoD levels
 
     for (var&& node : nodes)
     {
         // do not modify when node don't have chunk
-        if (node->getChunk() == nullptr)
+        if (node->GetChunk() == nullptr)
             continue;
 
         // modify this node
-        node->modify(mode, position, size);
+        node->Modify(mode, position, size);
 
         // queue current node to rebuild
-        node->rebuild();
+        node->Rebuild();
     }
 }
 
-SpaceObjectSettings& SpaceObject::getSettings()
+SpaceObjectSettings& SpaceObject::GetSettings()
 {
     return m_settings;
 }
 
-Ref<SpaceObject> SpaceObject::createSpaceObject(SpaceObjectSettings& settings)
+Ref<SpaceObject> SpaceObject::CreateSpaceObject(SpaceObjectSettings& settings)
 {
     var spaceObject = std::make_shared<SpaceObject>();
-    spaceObject->init(settings);
+    spaceObject->Init(settings);
     return spaceObject;
 }

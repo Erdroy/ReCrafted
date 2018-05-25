@@ -7,32 +7,32 @@
 
 namespace Internal
 {
-    MonoObject* createEntity(MonoString* name)
+    MonoObject* CreateEntity(MonoString* name)
     {
-        auto entity = EntityPool::createEntity(TEXT_FROM_MONO_STRING(name));
+        auto entity = EntityPool::CreateEntity(TEXT_FROM_MONO_STRING(name));
 
-        Object::createInstance<Entity>(entity, "ReCrafted.API.Common", "Entity");
+        Object::CreateInstance<Entity>(entity, "ReCrafted.API.Common", "Entity");
 
-        return entity->getManagedPtr();
+        return entity->GetManagedPtr();
     }
 
-    Vector3 getPosition(Entity* entity)
+    Vector3 GetPosition(Entity* entity)
     {
         if (!entity)
-            return Vector3::zero();
+            return Vector3::Zero();
 
         return entity->position;
     }
 
-    Vector3 getRotation(Entity* entity)
+    Vector3 GetRotation(Entity* entity)
     {
         if (!entity)
-            return Vector3::zero();
+            return Vector3::Zero();
 
         return entity->rotation;
     }
 
-    void setPosition(Entity* entity, Vector3 position)
+    void SetPosition(Entity* entity, Vector3 position)
     {
         if (!entity)
             return;
@@ -40,7 +40,7 @@ namespace Internal
         entity->position = position;
     }
 
-    void setRotation(Entity* entity, Vector3 rotation)
+    void SetRotation(Entity* entity, Vector3 rotation)
     {
         if (!entity)
             return;
@@ -48,7 +48,7 @@ namespace Internal
         entity->rotation = rotation;
     }
 
-    Guid getGuid(Entity* entity)
+    Guid GetGuid(Entity* entity)
     {
         if (!entity)
             return {};
@@ -56,7 +56,7 @@ namespace Internal
         return entity->guid;
     }
 
-    MonoString* getName(Entity* entity)
+    MonoString* GetName(Entity* entity)
     {
         if (!entity)
             return nullptr;
@@ -64,7 +64,7 @@ namespace Internal
         return MONO_STRING_FROM_TEXT(entity->name);
     }
 
-    void setName(Entity* entity, MonoString* name)
+    void SetName(Entity* entity, MonoString* name)
     {
         if (!entity)
             return;
@@ -73,23 +73,23 @@ namespace Internal
         entity->name = newName;
     }
 
-    void addScript(Entity* entity, MonoObject* scriptInstance)
+    void AddScript(Entity* entity, MonoObject* scriptInstance)
     {
         Ref<Script> script(new Script);
 
-        Object::initializeInstance(script, scriptInstance);
-        entity->addScript(script);
+        Object::InitializeInstance(script, scriptInstance);
+        entity->AddScript(script);
 
-        script->init(entity);
+        script->Init(entity);
     }
 
-    void removeScript(Entity* entity, Script* script)
+    void RemoveScript(Entity* entity, Script* script)
     {
-        // TODO: remove scripts
+        // TODO: Remove scripts
     }
 }
 
-void Entity::initRuntime()
+void Entity::InitRuntime()
 {
     API_FILE("Common/Entity.Gen.cs")
     {
@@ -101,7 +101,7 @@ void Entity::initRuntime()
             API_COMMENT("Creates new Entity");
             API_METHOD(PUBLIC, STATIC, "Create", EXTERN);
             {
-                API_BIND("ReCrafted.API.Common.Entity::Create", &Internal::createEntity);
+                API_BIND("ReCrafted.API.Common.Entity::Create", &Internal::CreateEntity);
 
                 API_PARAM("string", "entityName");
 
@@ -112,44 +112,44 @@ void Entity::initRuntime()
             API_COMMENT("The position of this entity.");
             API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Position", GETSET);
             {
-                API_BIND("ReCrafted.API.Common.Entity::Internal_Position_Get", &Internal::getPosition);
-                API_BIND("ReCrafted.API.Common.Entity::Internal_Position_Set", &Internal::setPosition);
+                API_BIND("ReCrafted.API.Common.Entity::Internal_Position_Get", &Internal::GetPosition);
+                API_BIND("ReCrafted.API.Common.Entity::Internal_Position_Set", &Internal::SetPosition);
             }
             API_PROPERTY_END();
 
             API_COMMENT("The rotation of this entity.");
             API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Rotation", GETSET);
             {
-                API_BIND("ReCrafted.API.Common.Entity::Internal_Rotation_Get", &Internal::getRotation);
-                API_BIND("ReCrafted.API.Common.Entity::Internal_Rotation_Set", &Internal::setRotation);
+                API_BIND("ReCrafted.API.Common.Entity::Internal_Rotation_Get", &Internal::GetRotation);
+                API_BIND("ReCrafted.API.Common.Entity::Internal_Rotation_Set", &Internal::SetRotation);
             }
             API_PROPERTY_END();
 
             API_COMMENT("The guid of this entity.");
             API_PROPERTY(PUBLIC, REGULAR, "Guid", "Guid", GET);
             {
-                API_BIND("ReCrafted.API.Common.Entity::Internal_Guid_Get", &Internal::getGuid);
+                API_BIND("ReCrafted.API.Common.Entity::Internal_Guid_Get", &Internal::GetGuid);
             }
             API_PROPERTY_END();
 
             API_COMMENT("The name of this entity.");
             API_PROPERTY(PUBLIC, REGULAR, "string", "Name", GETSET);
             {
-                API_BIND("ReCrafted.API.Common.Entity::Internal_Name_Get", &Internal::getName);
-                API_BIND("ReCrafted.API.Common.Entity::Internal_Name_Set", &Internal::setName);
+                API_BIND("ReCrafted.API.Common.Entity::Internal_Name_Get", &Internal::GetName);
+                API_BIND("ReCrafted.API.Common.Entity::Internal_Name_Set", &Internal::SetName);
             }
             API_PROPERTY_END();
 
             API_METHOD(PRIVATE, REGULAR, "AddScript", EXTERN, NOPROXY);
             {
-                API_BIND("ReCrafted.API.Common.Entity::Internal_AddScript", &Internal::addScript);
+                API_BIND("ReCrafted.API.Common.Entity::Internal_AddScript", &Internal::AddScript);
                 API_PARAM("Script", "instance");
             }
             API_METHOD_END();
 
             API_METHOD(PRIVATE, REGULAR, "RemoveScript", EXTERN, NOPROXY);
             {
-                API_BIND("ReCrafted.API.Common.Entity::Internal_RemoveScript", &Internal::removeScript);
+                API_BIND("ReCrafted.API.Common.Entity::Internal_RemoveScript", &Internal::RemoveScript);
                 API_PARAM("Script", "instance");
             }
             API_METHOD_END();

@@ -10,26 +10,26 @@ namespace Internal
 {
     int getTargetFps()
     {
-        return EngineMain::getInstance()->getUpdateLoop()->get_targetFps();
+        return EngineMain::GetInstance()->GetUpdateLoop()->GetTargetFps();
     }
 
     void setTargetFps(int targetFps)
     {
-        EngineMain::getInstance()->getUpdateLoop()->set_targetFps(targetFps);
+        EngineMain::GetInstance()->GetUpdateLoop()->SetTargetFps(targetFps);
     }
 
     int getCursorIcon()
     {
-        return Platform::getCursorIcon();
+        return Platform::GetCursorIcon();
     }
 
     void setCursorIcon(int iconId)
     {
-        Platform::setCursorIcon(iconId);
+        Platform::SetCursorIcon(iconId);
     }
 }
 
-void Application::initRuntime()
+void Application::InitRuntime()
 {
     API_FILE("Core/Application.Gen.cs");
     {

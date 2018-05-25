@@ -27,7 +27,7 @@ public:
     /// <summary>
     /// Finds class using namespace and class name.
     /// </summary>
-    Ref<Class> findClass(const char* class_namespace, const char* class_name);
+    Ref<Class> FindClass(const char* class_namespace, const char* class_name);
 
 public:
     static Ref<Assembly> API;

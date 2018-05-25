@@ -26,7 +26,7 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
         {
             if (LOWORD(lparam) == HTCLIENT)
             {
-                if (Input::getShowCursor())
+                if (Input::GetShowCursor())
                 {
                     SetCursor(m_currentCursor);
                 }
@@ -40,38 +40,38 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
     case WM_SIZE:
         {
             if (wparam == 2)
-                ApplicationWindow::windowResize(hWnd);
+                ApplicationWindow::WindowResize(hWnd);
 
             return 0;
         }
 
     case WM_EXITSIZEMOVE: // handle window resizing
         {
-            ApplicationWindow::windowResize(hWnd);
+            ApplicationWindow::WindowResize(hWnd);
             return 0;
         }
 
     case WM_CLOSE: // handle window closing
         {
-            EngineMain::getInstance()->quit();
+            EngineMain::GetInstance()->Quit();
             return 0;
         }
 
     case WM_CHAR:
         {
-            KeyboardBuffer::write(static_cast<Char>(wparam));
+            KeyboardBuffer::Write(static_cast<Char>(wparam));
             return 0;
         }
 
         // input handling
     case WM_KEYDOWN:
         {
-            Input::getInstance()->emit(false, uint(wparam));
+            Input::GetInstance()->OnKeyEvent(false, uint(wparam));
             return 0;
         }
     case WM_KEYUP:
         {
-            Input::getInstance()->emit(true, uint(wparam));
+            Input::GetInstance()->OnKeyEvent(true, uint(wparam));
             return 0;
         }
     case WM_CREATE:
@@ -83,12 +83,12 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
             Rid[0].usUsagePage = 0x01;
             Rid[0].usUsage = 0x02;
             Rid[0].dwFlags = 0;
-            Rid[0].hwndTarget = static_cast<HWND>(Platform::getCurrentWindow());
+            Rid[0].hwndTarget = static_cast<HWND>(Platform::GetCurrentWindow());
 
             if (RegisterRawInputDevices(Rid, 1, sizeof Rid[0]) == FALSE)
             {
                 // error, failed to register
-                Logger::logError("Failed to register mouse for RAW Input");
+                Logger::LogError("Failed to register mouse for RAW Input");
                 return 0;
             }
             return 0;
@@ -109,8 +109,8 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
             {
                 if (raw->data.mouse.usFlags == MOUSE_MOVE_RELATIVE)
                 {
-                    // update cursor pos
-                    auto winHwnd = Platform::getCurrentWindow();
+                    // Update cursor pos
+                    auto winHwnd = Platform::GetCurrentWindow();
 
                     if (winHwnd)
                     {
@@ -119,37 +119,37 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
 
                         ScreenToClient(static_cast<HWND>(winHwnd), &cursorPos);
 
-                        Input::getInstance()->emitMouseMove(raw->data.mouse.lLastX, raw->data.mouse.lLastY, cursorPos.x,
+                        Input::GetInstance()->OnCursorEvent(raw->data.mouse.lLastX, raw->data.mouse.lLastY, cursorPos.x,
                                                             cursorPos.y);
                     }
                     else
-                        Input::getInstance()->emitMouseMove(raw->data.mouse.lLastX, raw->data.mouse.lLastY, 0, 0);
+                        Input::GetInstance()->OnCursorEvent(raw->data.mouse.lLastX, raw->data.mouse.lLastY, 0, 0);
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_WHEEL)
                 {
                     cvar scrollDelta = static_cast<SHORT>(static_cast<USHORT>(raw->data.mouse.usButtonData)) /
                             static_cast<float>(WHEEL_DELTA);
-                    Input::getInstance()->emitScroll(scrollDelta);
+                    Input::GetInstance()->OnScrollEvent(scrollDelta);
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_LEFT_BUTTON_DOWN)
-                    Input::getInstance()->emit(false, INPUT_LBUTTON);
+                    Input::GetInstance()->OnKeyEvent(false, INPUT_LBUTTON);
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_LEFT_BUTTON_UP)
-                    Input::getInstance()->emit(true, INPUT_LBUTTON);
+                    Input::GetInstance()->OnKeyEvent(true, INPUT_LBUTTON);
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_MIDDLE_BUTTON_DOWN)
-                    Input::getInstance()->emit(false, INPUT_MBUTTON);
+                    Input::GetInstance()->OnKeyEvent(false, INPUT_MBUTTON);
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_MIDDLE_BUTTON_UP)
-                    Input::getInstance()->emit(true, INPUT_MBUTTON);
+                    Input::GetInstance()->OnKeyEvent(true, INPUT_MBUTTON);
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_RIGHT_BUTTON_DOWN)
-                    Input::getInstance()->emit(false, INPUT_RBUTTON);
+                    Input::GetInstance()->OnKeyEvent(false, INPUT_RBUTTON);
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_RIGHT_BUTTON_UP)
-                    Input::getInstance()->emit(true, INPUT_RBUTTON);
+                    Input::GetInstance()->OnKeyEvent(true, INPUT_RBUTTON);
             }
 
             return DefWindowProc(hWnd, msg, wparam, lparam);

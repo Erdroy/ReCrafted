@@ -6,9 +6,9 @@
 
 #define BOX_VERTICES_DEFINE() vertex v0 = {}; vertex v1 = {}; vertex v2 = {}; vertex v3 = {}; Rectf uvdiff = {};
 
-#define BOX_VERTICES_SETUP() setupVertexData(rect, v0, v1, v2, v3, &uvdiff);
+#define BOX_VERTICES_SETUP() SetupVertexData(rect, v0, v1, v2, v3, &uvdiff);
 
-#define BOX_VERTICES_FINALIZE(texture) finalizeVertexData(v0, v1, v2, v3, texture);
+#define BOX_VERTICES_FINALIZE(texture) FinalizeVertexData(v0, v1, v2, v3, texture);
 
 #define BOX_VERTICES_SETUP_UVS() v0.u = uvs.x;\
 v0.v = uvs.y + uvs.height;\
@@ -27,33 +27,33 @@ FORCEINLINE void drawTextBase(UI* instance, Font* font, T* characters, int chara
     position.y = roundf(position.y);
 
     auto currentPosition = position;
-    auto lineheight = float(font->getSize()) * font->getLineHeight();
+    auto lineheight = float(font->GetSize()) * font->GetLineHeight();
 
     for (auto i = 0; i < characterCount; i++)
     {
         auto character = characters[i];
-        auto glyph = font->getCharacter(character);
+        auto glyph = font->GetCharacter(character);
 
         if (glyph.font != font)
         {
             // invalid character!
-            glyph = font->getCharacter(Char('?'));
+            glyph = font->GetCharacter(Char('?'));
         }
 
         auto glyphRect = glyph.rectangle;
-        auto texture = font->getTexture(glyph.texture);
+        auto texture = font->GetTexture(glyph.texture);
 
-        var atlasWidth = static_cast<float>(texture->getWidth());
-        var atlasHeight = static_cast<float>(texture->getHeight());
+        var atlasWidth = static_cast<float>(texture->GetWidth());
+        var atlasHeight = static_cast<float>(texture->GetHeight());
 
         if (character == ' ') // Space
         {
-            cvar glyphData = font->getCharacter(Char('i'));
+            cvar glyphData = font->GetCharacter(Char('i'));
             currentPosition += Vector2(float(glyphData.advanceX), 0.0f);
         }
         else if (character == 9) // Tab
         {
-            cvar glyphData = font->getCharacter(Char('i'));
+            cvar glyphData = font->GetCharacter(Char('i'));
             currentPosition += Vector2(float(glyphData.advanceX) * 3, 0.0f);
         }
         else if (character == '\n' || character == 10 || character == 13) // New line character.
@@ -70,7 +70,7 @@ FORCEINLINE void drawTextBase(UI* instance, Font* font, T* characters, int chara
             currentY += lineheight;
             currentY -= glyph.horizontalBearingY;
 
-            instance->internal_drawBoxTextured(
+            instance->InternalDrawBoxTextured(
                 texture.get(),
                 Rectf(currentX, currentY, float(glyphRect.width), float(glyphRect.height)),
                 Rectf(glyphRect.x / atlasWidth, (glyphRect.y + glyphRect.height) / atlasHeight,
@@ -81,10 +81,10 @@ FORCEINLINE void drawTextBase(UI* instance, Font* font, T* characters, int chara
     }
 }
 
-void UI::setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex& v3, Rectf* uvDiff) const
+void UI::SetupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex& v3, Rectf* uvDiff) const
 {
-    cvar screenWidth = Display::get_Width() * 0.5f;
-    cvar screenHeight = Display::get_Height() * 0.5f;
+    cvar screenWidth = Display::GetWidth() * 0.5f;
+    cvar screenHeight = Display::GetHeight() * 0.5f;
 
     var uv_xDiff = 0.0f;
     var uv_yDiff = 0.0f;
@@ -185,7 +185,7 @@ void UI::setupVertexData(Rectf& rect, vertex& v0, vertex& v1, vertex& v2, vertex
     v3.a = m_color_a;
 }
 
-void UI::finalizeVertexData(vertex& v0, vertex& v1, vertex& v2, vertex& v3, uint texture)
+void UI::FinalizeVertexData(vertex& v0, vertex& v1, vertex& v2, vertex& v3, uint texture)
 {
     // build draw command
     auto cmd = drawcmd();
@@ -217,10 +217,10 @@ void UI::finalizeVertexData(vertex& v0, vertex& v1, vertex& v2, vertex& v3, uint
     cmd.indices[4] = 3;
     cmd.indices[5] = 0;
 
-    m_drawCmds.add(cmd);
+    m_drawCmds.Add(cmd);
 }
 
-void UI::internal_drawBox(Rectf rect)
+void UI::InternalDrawBox(Rectf rect)
 {
     BOX_VERTICES_DEFINE();
     BOX_VERTICES_SETUP();
@@ -228,17 +228,17 @@ void UI::internal_drawBox(Rectf rect)
     BOX_VERTICES_FINALIZE(0);
 }
 
-void UI::internal_drawBoxTextured(Texture2D* texture, Rectf rect, Rectf uvs)
+void UI::InternalDrawBoxTextured(Texture2D* texture, Rectf rect, Rectf uvs)
 {
-    cvar textureHandle = texture->getHandle().idx;
+    cvar textureHandle = texture->GetHandle().idx;
 
     BOX_VERTICES_DEFINE();
     BOX_VERTICES_SETUP();
 
     if (m_instance->m_useViewRect)
     {
-        cvar tex_width = static_cast<float>(texture->getWidth());
-        cvar tex_height = static_cast<float>(texture->getHeight());
+        cvar tex_width = static_cast<float>(texture->GetWidth());
+        cvar tex_height = static_cast<float>(texture->GetHeight());
 
         cvar xdiff = uvdiff.x / tex_width;
         cvar ydiff = uvdiff.y / tex_height;
@@ -261,30 +261,30 @@ void UI::internal_drawBoxTextured(Texture2D* texture, Rectf rect, Rectf uvs)
     BOX_VERTICES_FINALIZE(textureHandle);
 }
 
-void UI::drawBox(Rectf rect)
+void UI::DrawBox(Rectf rect)
 {
     rect.width -= rect.x;
     rect.height -= rect.y;
 
-    m_instance->internal_drawBox(rect);
+    m_instance->InternalDrawBox(rect);
 }
 
-void UI::drawText(Font* font, Text& text, Vector2 position)
+void UI::DrawText(Font* font, Text& text, Vector2 position)
 {
-    drawText(font, text.data(), text.length(), position);
+    DrawText(font, text.Data(), text.Length(), position);
 }
 
-void UI::drawText(Font* font, const Char* characters, int characterCount, Vector2 position)
-{
-    drawTextBase(m_instance, font, characters, characterCount, position);
-}
-
-void UI::drawText(Font* font, const char* characters, int characterCount, Vector2 position)
+void UI::DrawText(Font* font, const Char* characters, int characterCount, Vector2 position)
 {
     drawTextBase(m_instance, font, characters, characterCount, position);
 }
 
-void UI::drawTexture(Texture2D* texture, Rectf rect, Rectf uvs)
+void UI::DrawText(Font* font, const char* characters, int characterCount, Vector2 position)
+{
+    drawTextBase(m_instance, font, characters, characterCount, position);
+}
+
+void UI::DrawTexture(Texture2D* texture, Rectf rect, Rectf uvs)
 {
     rect.width -= rect.x;
     rect.height -= rect.y;
@@ -292,5 +292,5 @@ void UI::drawTexture(Texture2D* texture, Rectf rect, Rectf uvs)
     uvs.y += uvs.height;
     uvs.height = -uvs.height;
 
-    m_instance->internal_drawBoxTextured(texture, rect, uvs);
+    m_instance->InternalDrawBoxTextured(texture, rect, uvs);
 }

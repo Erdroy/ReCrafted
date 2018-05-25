@@ -72,13 +72,13 @@ void SetThreadName(std::thread* thread, const char* threadName)
     SetThreadName(threadId, threadName);
 }
 
-void Platform::initialize()
+void Platform::Initialize()
 {
     // initialize timer
     QueryPerformanceFrequency(&m_frequency);
     m_freqCoeff = double(m_frequency.QuadPart) / 1000.0;
 
-    m_start = getMiliseconds();
+    m_start = GetMiliseconds();
 
     // get cpu count
     SYSTEM_INFO sysinfo;
@@ -108,17 +108,17 @@ void Platform::initialize()
     wnd.hIconSm = LoadIcon(nullptr, IDI_APPLICATION);
     RegisterClassEx(&wnd);
 
-    Logger::log("Initialized platform: Win32");
+    Logger::Log("Initialized platform: Win32");
 }
 
-void Platform::shutdown()
+void Platform::Shutdown()
 {
 #if USE_CRTDBG
     _CrtDumpMemoryLeaks();
 #endif
 }
 
-Guid Platform::newGuid()
+Guid Platform::NewGuid()
 {
     Guid guid = {};
     UUID uuid = {};
@@ -132,19 +132,19 @@ Guid Platform::newGuid()
     return guid;
 }
 
-double Platform::getMiliseconds()
+double Platform::GetMiliseconds()
 {
     LARGE_INTEGER current;
     QueryPerformanceCounter(&current);
     return double(current.QuadPart) / m_freqCoeff - m_start;
 }
 
-int Platform::cpuCount()
+int Platform::CpuCount()
 {
     return m_cpuCount;
 }
 
-void* Platform::createWindow(Text& windowName, int width, int height, const uint64_t style)
+void* Platform::CreateNewWindow(Text& windowName, int width, int height, const uint64_t style)
 {
     var mStyle = style;
 
@@ -152,20 +152,20 @@ void* Platform::createWindow(Text& windowName, int width, int height, const uint
         mStyle = WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_MAXIMIZE;
 
     // create window now
-    cvar window = CreateWindowW(L"recrafted", windowName.wstr().c_str(), static_cast<DWORD>(mStyle), 0, 0, width, height
+    cvar window = CreateWindowW(L"recrafted", windowName.StdWStr().c_str(), static_cast<DWORD>(mStyle), 0, 0, width, height
             , NULL, NULL, getHInstance(), nullptr);
 
     // show the window
     ShowWindow(static_cast<HWND>(window), SW_MAXIMIZE);
 
-    setCurrentWindow(window);
+    SetCurrentWindow(window);
 
     return window;
 }
 
-void Platform::runEvents()
+void Platform::RunEvents()
 {
-    Profiler::beginProfile("RunEvents");
+    Profiler::BeginProfile("RunEvents");
     MSG msg;
     msg.message = WM_NULL;
     while (PeekMessage(&msg, nullptr, 0u, 0u, PM_REMOVE))
@@ -173,31 +173,31 @@ void Platform::runEvents()
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
-    Profiler::endProfile();
+    Profiler::EndProfile();
 }
 
-void Platform::destroyWindow(void* windowHandle)
+void Platform::DestroyWindow(void* windowHandle)
 {
-    // destroy window
-    DestroyWindow(static_cast<HWND>(windowHandle));
+    // Destroy window
+    ::DestroyWindow(static_cast<HWND>(windowHandle));
 }
 
-void Platform::setCurrentWindow(void* windowHandle)
+void Platform::SetCurrentWindow(void* windowHandle)
 {
     m_currentWindow = windowHandle;
 }
 
-void* Platform::getCurrentWindow()
+void* Platform::GetCurrentWindow()
 {
     return m_currentWindow;
 }
 
-int Platform::getCursorIcon()
+int Platform::GetCursorIcon()
 {
     return m_currentCursorId;
 }
 
-void Platform::setCursorIcon(int iconId)
+void Platform::SetCursorIcon(int iconId)
 {
     switch (iconId)
     {
@@ -212,7 +212,7 @@ void Platform::setCursorIcon(int iconId)
     m_currentCursorId = iconId;
 }
 
-void Platform::getWindowSize(void* windowHandle, unsigned* width, unsigned* height)
+void Platform::GetWindowSize(void* windowHandle, unsigned* width, unsigned* height)
 {
     RECT windowRect;
     GetClientRect(static_cast<HWND>(windowHandle), &windowRect);
@@ -221,12 +221,12 @@ void Platform::getWindowSize(void* windowHandle, unsigned* width, unsigned* heig
     *height = windowRect.bottom - windowRect.top;
 }
 
-void Platform::sleep(unsigned int miliseconds)
+void Platform::Sleep(unsigned int miliseconds)
 {
-    Sleep(miliseconds);
+    ::Sleep(miliseconds);
 }
 
-void Platform::setCursorPosition(uint16_t x, uint16_t y)
+void Platform::SetCursorPosition(uint16_t x, uint16_t y)
 {
     POINT point = {};
     point.x = long(x);
@@ -236,7 +236,7 @@ void Platform::setCursorPosition(uint16_t x, uint16_t y)
     SetCursorPos(point.x, point.y);
 }
 
-bool Platform::fileExists(const char* fileName)
+bool Platform::FileExists(const char* fileName)
 {
     FILE* file;
 
@@ -253,7 +253,7 @@ bool Platform::fileExists(const char* fileName)
     return error == 0;
 }
 
-void Platform::openFile(File* file, const char* fileName, OpenMode::_enum fileOpenMode)
+void Platform::OpenFile(File* file, const char* fileName, OpenMode::_enum fileOpenMode)
 {
     strcpy_s(file->FileName, fileName);
 
@@ -289,12 +289,12 @@ void Platform::openFile(File* file, const char* fileName, OpenMode::_enum fileOp
     fseek(filep, 0, SEEK_SET);
 }
 
-void Platform::getWorkingDirectory(char* buffer)
+void Platform::GetWorkingDirectory(char* buffer)
 {
     char i_buffer[MAX_PATH];
     GetModuleFileNameA(nullptr, i_buffer, MAX_PATH);
 
-    // remove 'ReCrafted.exe', and copy
+    // Remove 'ReCrafted.exe', and copy
     auto length = strlen(i_buffer);
     for (auto i = length - 13u; i < length; i++)
     {
@@ -305,24 +305,24 @@ void Platform::getWorkingDirectory(char* buffer)
     strcpy_s(buffer, length, i_buffer);
 }
 
-void Platform::setThreadName(const char* name)
+void Platform::SetThreadName(const char* name)
 {
-    SetThreadName(name);
+    ::SetThreadName(name);
 }
 
-void Platform::reportAssert(Text expression, Text fileName, unsigned int line, Text message)
+void Platform::ReportAssert(Text expression, Text fileName, unsigned int line, Text message)
 {
     std::string formated;
-    if(message.std_str().size() > 1)
+    if(message.StdStr().size() > 1)
     {
-        formated = fmt::format("Assertion failed! File: {0}:{1} - {2}\n Message: {3}", fileName.std_str(), line, expression.std_str(), message.std_str());
+        formated = fmt::format("Assertion failed! File: {0}:{1} - {2}\n Message: {3}", fileName.StdStr(), line, expression.StdStr(), message.StdStr());
     }
     else
     {
-        formated = fmt::format("Assertion failed! File: {0}:{1} - {2}", fileName.std_str(), line, expression.std_str());
+        formated = fmt::format("Assertion failed! File: {0}:{1} - {2}", fileName.StdStr(), line, expression.StdStr());
     }
 
-    Logger::logException("{0}", formated);
+    Logger::LogException("{0}", formated);
 
     // Show message box
     MessageBoxA(static_cast<HWND>(m_currentWindow), formated.c_str(), "Error", MB_OK | MB_ICONERROR);

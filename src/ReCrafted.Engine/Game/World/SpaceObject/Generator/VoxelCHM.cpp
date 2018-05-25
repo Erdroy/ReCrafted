@@ -3,7 +3,7 @@
 #include "VoxelCHM.h"
 #include "Graphics/Bitmap.h"
 
-void VoxelCHM::loadFace(const int face, const char* fileName, const char* directoryName)
+void VoxelCHM::LoadFace(const int face, const char* fileName, const char* directoryName)
 {
     char buffer[512];
     memset(buffer, 0, 512);
@@ -13,11 +13,11 @@ void VoxelCHM::loadFace(const int face, const char* fileName, const char* direct
     int bitmapWidth;
     int bitmapHeight;
     int bitsPerPixel;
-    cvar bitmap = Bitmap::load(buffer, &bitmapWidth, &bitmapHeight, &bitsPerPixel);
+    cvar bitmap = Bitmap::Load(buffer, &bitmapWidth, &bitmapHeight, &bitsPerPixel);
 
     if (bitsPerPixel != 8)
     {
-        Logger::logError("VoxelCHM::loadFromDirectory() invalid bits per pixel count got! ({0} expected 8)",
+        Logger::LogError("VoxelCHM::loadFromDirectory() invalid bits per pixel count got! ({0} expected 8)",
                          bitsPerPixel);
         return;
     }
@@ -32,16 +32,16 @@ void VoxelCHM::loadFace(const int face, const char* fileName, const char* direct
     m_faces[face] = bitmap;
 }
 
-Ref<VoxelCHM> VoxelCHM::loadFromDirectory(const char* directoryName)
+Ref<VoxelCHM> VoxelCHM::LoadFromDirectory(const char* directoryName)
 {
     Ref<VoxelCHM> chm(new VoxelCHM);
 
-    chm->loadFace(0, "/left.bmp", directoryName);
-    chm->loadFace(1, "/right.bmp", directoryName);
-    chm->loadFace(2, "/up.bmp", directoryName);
-    chm->loadFace(3, "/down.bmp", directoryName);
-    chm->loadFace(4, "/front.bmp", directoryName);
-    chm->loadFace(5, "/back.bmp", directoryName);
+    chm->LoadFace(0, "/left.bmp", directoryName);
+    chm->LoadFace(1, "/right.bmp", directoryName);
+    chm->LoadFace(2, "/up.bmp", directoryName);
+    chm->LoadFace(3, "/down.bmp", directoryName);
+    chm->LoadFace(4, "/front.bmp", directoryName);
+    chm->LoadFace(5, "/back.bmp", directoryName);
 
     return chm;
 }

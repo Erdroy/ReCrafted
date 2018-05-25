@@ -13,7 +13,7 @@
  * \tparam T The singleton's handled object type
  * 
  * \note PLEASE remember to add SINGLETON_IMPL(NAME_OF_CLASS) to the source file!
- * To release a Singleton, please call 'dispose' function.
+ * To release a Singleton, please call 'Dispose' function.
  */
 template <class T>
 class Singleton : IDisposable
@@ -31,17 +31,17 @@ protected:
     }
 
 private:
-    virtual void onDispose() = 0;
+    virtual void OnDispose() = 0;
 
 public:
-    void dispose() override
+    void Dispose() override
     {
-        onDispose();
+        OnDispose();
         SafeDelete(m_instance);
     }
 
 public:
-    static T* getInstance()
+    static T* GetInstance()
     {
         if (m_instance)
             return m_instance;

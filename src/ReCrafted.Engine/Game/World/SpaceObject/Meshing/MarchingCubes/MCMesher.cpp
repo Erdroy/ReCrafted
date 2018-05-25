@@ -69,19 +69,19 @@ inline float GetVoxel(sbyte* data, const Vector3& point)
     return VOXEL_TO_FLOAT(data[INDEX_3D(int(point.x), int(point.y), int(point.z), VoxelChunkData::ChunkDataSize)]);
 }
 
-void MCMesher::clean()
+void MCMesher::Clean()
 {
     // cleanup all arrays
-    m_vertices.clear();
-    m_normals.clear();
-    m_colors.clear();
-    m_indices.clear();
+    m_vertices.Clear();
+    m_normals.Clear();
+    m_colors.Clear();
+    m_indices.Clear();
 
     // NOTE: we do not need to cleanup cells as it is not required, 
     // because generating new cell overrides old data.
 }
 
-void MCMesher::generateCell(Cell* cell, int x, int y, int z, sbyte* data) const
+void MCMesher::GenerateCell(Cell* cell, int x, int y, int z, sbyte* data) const
 {
     byte caseIndex = 0;
 
@@ -96,11 +96,11 @@ void MCMesher::generateCell(Cell* cell, int x, int y, int z, sbyte* data) const
     cell->caseIndex = caseIndex;
 }
 
-void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& offset, float lod, sbyte* data)
+void MCMesher::GenerateCube(Cell* cell, const Vector3& position, const Vector3& offset, float lod, sbyte* data)
 {
     // this function is called when this cell is not full and/or empty
 
-    cvar startIndex = m_vertices.count();
+    cvar startIndex = m_vertices.Count();
     var triangleCount = 0;
 
     for (auto i = 0; i < 15; i++)
@@ -124,8 +124,8 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
         // TODO: vertex cache (with vertex color per material support)
         // TODO: fix issue with 2 vertices (invalid normals)
 
-        m_vertices.add(vertexPosition);
-        m_indices.add(startIndex + i);
+        m_vertices.Add(vertexPosition);
+        m_indices.Add(startIndex + i);
 
         triangleCount++;
     }
@@ -134,7 +134,7 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
         return;
 
     // generate normals
-    var normal = Vector3::zero();
+    var normal = Vector3::Zero();
     var triangles = 0;
     for (var i = 0; i < triangleCount; i += 3)
     {
@@ -144,13 +144,13 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
 
         cvar plane = Plane(p2, p1, p0);
 
-        m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
-        m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
-        m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
+        m_colors.Add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
+        m_colors.Add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
+        m_colors.Add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
 
-        m_normals.add(plane.normal);
-        m_normals.add(plane.normal);
-        m_normals.add(plane.normal);
+        m_normals.Add(plane.normal);
+        m_normals.Add(plane.normal);
+        m_normals.Add(plane.normal);
 
         normal += plane.normal;
         triangles++;
@@ -161,10 +161,10 @@ void MCMesher::generateCube(Cell* cell, const Vector3& position, const Vector3& 
 
     // smooth the cell normal
     cell->vertexNormal = normal / static_cast<float>(triangles);
-    cell->vertexNormal.normalize();
+    cell->vertexNormal.Normalize();
 }
 
-void MCMesher::generateSkirt(Cell* cell, const Vector3& position, const Vector3& offset, float lod, uint8_t axis,
+void MCMesher::GenerateSkirt(Cell* cell, const Vector3& position, const Vector3& offset, float lod, uint8_t axis,
                              sbyte* data)
 {
     cvar corners = MSCornerOffsets[axis];
@@ -197,15 +197,15 @@ void MCMesher::generateSkirt(Cell* cell, const Vector3& position, const Vector3&
 
         cvar vertexPosition = position + edges[edge] * lod;
 
-        m_vertices.add(vertexPosition);
-        m_indices.add(m_vertices.count() - 1);
+        m_vertices.Add(vertexPosition);
+        m_indices.Add(m_vertices.Count() - 1);
 
-        m_colors.add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
-        m_normals.add(cell->vertexNormal);
+        m_colors.Add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
+        m_normals.Add(cell->vertexNormal);
     }
 }
 
-void MCMesher::generateCells(sbyte* data, const Vector3& position, float lod, uint8_t borders)
+void MCMesher::GenerateCells(sbyte* data, const Vector3& position, float lod, uint8_t borders)
 {
     // generate all cells
     ITERATE_CELLS_BEGIN(x, y, z)
@@ -214,12 +214,12 @@ void MCMesher::generateCells(sbyte* data, const Vector3& position, float lod, ui
         const var cell = &GET_CELL(x, y, z);
 
         // generate cell data
-        generateCell(cell, x, y, z, data);
+        GenerateCell(cell, x, y, z, data);
 
         // generate cube mesh
         if (!cell->isFullOrEmpty)
         {
-            generateCube(cell, position, offset, lod, data);
+            GenerateCube(cell, position, offset, lod, data);
 
             // generate skirt for this cell
             if (borders > 0)
@@ -228,32 +228,32 @@ void MCMesher::generateCells(sbyte* data, const Vector3& position, float lod, ui
                 // AXIS_FRONT
                 if (z == VoxelChunkData::ChunkSize - 1 && (borders & BORDER_FRONT) != 0)
                 {
-                    generateSkirt(cell, position, offset, lod, AXIS_FRONT, data);
+                    GenerateSkirt(cell, position, offset, lod, AXIS_FRONT, data);
                 }
                 // AXIS_BACK
                 if (z == 0 && (borders & BORDER_BACK) != 0)
                 {
-                    generateSkirt(cell, position, offset, lod, AXIS_BACK, data);
+                    GenerateSkirt(cell, position, offset, lod, AXIS_BACK, data);
                 }
                 // AXIS_BACK
                 if (x == 0 && (borders & BORDER_LEFT) != 0)
                 {
-                    generateSkirt(cell, position, offset, lod, AXIS_LEFT, data);
+                    GenerateSkirt(cell, position, offset, lod, AXIS_LEFT, data);
                 }
                 // AXIS_RIGHT
                 if (x == VoxelChunkData::ChunkSize - 1 && (borders & BORDER_RIGHT) != 0)
                 {
-                    generateSkirt(cell, position, offset, lod, AXIS_RIGHT, data);
+                    GenerateSkirt(cell, position, offset, lod, AXIS_RIGHT, data);
                 }
                 // AXIS_TOP
                 if (y == VoxelChunkData::ChunkSize - 1 && (borders & BORDER_TOP) != 0)
                 {
-                    generateSkirt(cell, position, offset, lod, AXIS_TOP, data);
+                    GenerateSkirt(cell, position, offset, lod, AXIS_TOP, data);
                 }
                 // AXIS_BOTTOM
                 if (y == 0 && (borders & BORDER_BOTTOM) != 0)
                 {
-                    generateSkirt(cell, position, offset, lod, AXIS_BOTTOM, data);
+                    GenerateSkirt(cell, position, offset, lod, AXIS_BOTTOM, data);
                 }
             }
         }
@@ -261,27 +261,27 @@ void MCMesher::generateCells(sbyte* data, const Vector3& position, float lod, ui
     ITERATE_CELLS_END()
 }
 
-void MCMesher::generate(const Vector3& position, int lod, uint8_t borders, Ref<Mesh>& mesh, sbyte* data)
+void MCMesher::Generate(const Vector3& position, int lod, uint8_t borders, Ref<Mesh>& mesh, sbyte* data)
 {
     cvar lodF = static_cast<float>(lod);
 
-    generateCells(data, position, lodF, lod > 1 ? borders : 0);
+    GenerateCells(data, position, lodF, lod > 1 ? borders : 0);
 
-    if (m_vertices.count() < 3 || m_indices.count() < 3)
+    if (m_vertices.Count() < 3 || m_indices.Count() < 3)
     {
         // cleanup
-        clean();
+        Clean();
         return;
     }
 
-    mesh->setVertices(m_vertices.data(), m_vertices.count());
-    mesh->setNormals(m_normals.data());
-    mesh->setColors(m_colors.data());
-    mesh->setIndices(m_indices.data(), m_vertices.count());
+    mesh->SetVertices(m_vertices.Data(), m_vertices.Count());
+    mesh->SetNormals(m_normals.Data());
+    mesh->SetColors(m_colors.Data());
+    mesh->SetIndices(m_indices.Data(), m_vertices.Count());
 
     // apply
-    mesh->applyChanges();
+    mesh->ApplyChanges();
 
     // cleanup
-    clean();
+    Clean();
 }

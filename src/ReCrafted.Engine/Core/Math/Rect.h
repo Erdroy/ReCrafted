@@ -32,7 +32,7 @@ public:
     /// <summary>
     /// Size of this Rectangle
     /// </summary>
-    FORCEINLINE Vector2 size() const
+    FORCEINLINE Vector2 Size() const
     {
         return Vector2(float(width), float(height));
     }
@@ -40,7 +40,7 @@ public:
     /// <summary>
     /// Size of this Rectangle
     /// </summary>
-    FORCEINLINE void size(const Vector2& size)
+    FORCEINLINE void Size(const Vector2& size)
     {
         width = static_cast<int>(size.x);
         height = static_cast<int>(size.y);
@@ -49,7 +49,7 @@ public:
     /// <summary>
     /// Center of this Rectangle
     /// </summary>
-    FORCEINLINE Vector2 center() const
+    FORCEINLINE Vector2 Center() const
     {
         return Vector2(float(x), float(y));
     }
@@ -57,7 +57,7 @@ public:
     /// <summary>
     /// Center of this Rectangle
     /// </summary>
-    FORCEINLINE void center(const Vector2& center)
+    FORCEINLINE void Center(const Vector2& center)
     {
         x = static_cast<int>(center.x);
         y = static_cast<int>(center.y);
@@ -66,7 +66,7 @@ public:
     /// <summary>
     /// Minimum X coordinate of this Rectangle
     /// </summary>
-    FORCEINLINE int left() const
+    FORCEINLINE int Left() const
     {
         return x - (width / 2);
     }
@@ -74,7 +74,7 @@ public:
     /// <summary>
     /// Maximum X coordinate of this Rectangle
     /// </summary>
-    FORCEINLINE int right() const
+    FORCEINLINE int Right() const
     {
         return x + (width / 2);
     }
@@ -82,7 +82,7 @@ public:
     /// <summary>
     /// Minimum Y coordinate of this Rectangle
     /// </summary>
-    FORCEINLINE int bottom() const
+    FORCEINLINE int Bottom() const
     {
         return y - (height / 2);
     }
@@ -90,7 +90,7 @@ public:
     /// <summary>
     /// Maximum Y coordinate of this Rectangle
     /// </summary>
-    FORCEINLINE int top() const
+    FORCEINLINE int Top() const
     {
         return y + (height / 2);
     }
@@ -99,33 +99,33 @@ public:
     /// <summary>
     /// Check if two Rectangles intersect each other
     /// </summary>
-    FORCEINLINE static bool intersects(Rect& a, Rect& b)
+    FORCEINLINE static bool Intersects(Rect& a, Rect& b)
     {
-        return (a.left() < b.right() && a.right() > b.left() && a.top() < b.bottom() && a.bottom() > b.top());
+        return (a.Left() < b.Right() && a.Right() > b.Left() && a.Top() < b.Bottom() && a.Bottom() > b.Top());
     }
 
     /// <summary>
     /// Check if two Rectangles intersect each other
     /// </summary>
-    FORCEINLINE static void intersects(Rect& a, Rect& b, bool* result)
+    FORCEINLINE static void Intersects(Rect& a, Rect& b, bool* result)
     {
-        *result = intersects(a, b);
+        *result = Intersects(a, b);
     }
 
     /// <summary>
     /// Check if point is within a Rectangle
     /// </summary>
-    FORCEINLINE static bool contains(Rect& rect, Vector2& point)
+    FORCEINLINE static bool Contains(Rect& rect, Vector2& point)
     {
-        return point.x > rect.left() && point.x < rect.right() && point.y > rect.bottom() && point.y < rect.top();
+        return point.x > rect.Left() && point.x < rect.Right() && point.y > rect.Bottom() && point.y < rect.Top();
     }
 
     /// <summary>
     /// Check if point is within a Rectangle
     /// </summary>
-    FORCEINLINE static void contains(Rect& rect, Vector2& point, bool* result)
+    FORCEINLINE static void Contains(Rect& rect, Vector2& point, bool* result)
     {
-        *result = contains(rect, point);
+        *result = Contains(rect, point);
     }
 
 public:

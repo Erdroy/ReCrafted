@@ -9,10 +9,10 @@ namespace Internal
 {
     void navigate(WebUIView* view, MonoString* string)
     {
-        var url = Text::constant(MONO_TEXT(string));
+        var url = Text::Constant(MONO_TEXT(string));
 
         if (view)
-            view->navigate(url);
+            view->Navigate(url);
     }
 
     void execute(WebUIView* view, MonoString* string)
@@ -25,14 +25,14 @@ namespace Internal
         auto str = MONO_ANSI(string);
 
         // execute js
-        view->execute(str);
+        view->Execute(str);
 
         // free ansi string
         MONO_ANSI_FREE(str);
     }
 }
 
-void WebUIView::initRuntime()
+void WebUIView::InitRuntime()
 {
     // TODO: open/execute/bind methods
 

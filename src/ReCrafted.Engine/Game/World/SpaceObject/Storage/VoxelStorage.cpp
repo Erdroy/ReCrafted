@@ -19,13 +19,13 @@ sbyte VoxelStorage::sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, co
                                         const float radius, const float hillsHeight)
 {
     // calculate current voxel size
-    cvar lodSize = lodtable[lod];
+    cvar lodSize = LoDTable[lod];
 
     // the terrain height (over planet, sphere is the base)
-    cvar terrainHeight = radius + chm->sample(position, radius, lod) * hillsHeight;
+    cvar terrainHeight = radius + chm->Sample(position, radius, lod) * hillsHeight;
 
     // the height over sphere
-    cvar sphereHeight = (position - origin).length();
+    cvar sphereHeight = (position - origin).Length();
 
     // calculate voxel value
     cvar voxelValue = (sphereHeight - terrainHeight) / lodSize;
@@ -34,7 +34,7 @@ sbyte VoxelStorage::sdf_planet_generate(VoxelCHM* chm, const Vector3& origin, co
     return VOXEL_FROM_FLOAT(voxelValue);
 }
 
-void VoxelStorage::generateChunkFromCHM(sbyte** voxelData, const Vector3& position, const int lod)
+void VoxelStorage::GenerateChunkFromCHM(sbyte** voxelData, const Vector3& position, const int lod)
 {
     cvar chm = m_chm.get();
     cvar dataSize = VoxelChunkData::ChunkDataSize;
@@ -55,7 +55,7 @@ void VoxelStorage::generateChunkFromCHM(sbyte** voxelData, const Vector3& positi
                 cvar offset = Vector3(float(x), float(y), float(z));
                 cvar voxelPosition = position + offset * lod_f;
 
-                cvar value = sdf_planet_generate(chm, spaceObject->m_position, voxelPosition, lod,
+                cvar value = sdf_planet_generate(chm, spaceObject->m_Position, voxelPosition, lod,
                     spaceObject->m_settings.minSurfaceHeight,
                     spaceObject->m_settings.hillsHeight);
 
@@ -75,10 +75,10 @@ void VoxelStorage::generateChunkFromCHM(sbyte** voxelData, const Vector3& positi
         *voxelData = nullptr;
 }
 
-void VoxelStorage::loadHeader()
+void VoxelStorage::LoadHeader()
 {
     // create header if needed
-    if (!Platform::fileExists(settings.saveName))
+    if (!Platform::FileExists(settings.saveName))
     {
         // open voxel header file stream
         m_vxhStream = new FileStream(settings.saveName, OpenMode::OpenWrite);
@@ -86,9 +86,9 @@ void VoxelStorage::loadHeader()
         // no header is found, create new one
         VoxelStorageHeader header = {};
 
-        m_vxhStream->write(&header, 0u, sizeof(VoxelStorageHeader));
-        m_vxhStream->flush();
-        m_vxhStream->dispose();
+        m_vxhStream->Write(&header, 0u, sizeof(VoxelStorageHeader));
+        m_vxhStream->Flush();
+        m_vxhStream->Dispose();
         SafeDisposeNN(m_vxhStream);
         SafeDelete(m_vxhStream);
     }
@@ -98,7 +98,7 @@ void VoxelStorage::loadHeader()
 
     // load VoxelStorageHeader
     m_vxh = new VoxelStorageHeader();
-    m_vxhStream->read(m_vxh, 0u, sizeof(VoxelStorageHeader));
+    m_vxhStream->Read(m_vxh, 0u, sizeof(VoxelStorageHeader));
 
     // read chunk map if needed
     if (m_vxh->chunkMapSize > 0u)
@@ -107,37 +107,37 @@ void VoxelStorage::loadHeader()
 
 
         //m_vxhMap = new VoxelStorageChunkEntry[m_vxh->chunkMapSize];
-        //m_vxhStream->read(m_vxhMap, sizeof(VoxelStorageHeader), length);
+        //m_vxhStream->read(m_vxhMap, sizeof(VoxelStorageHeader), Length);
     }
 }
 
-void VoxelStorage::saveHeader()
+void VoxelStorage::SaveHeader()
 {
     cvar length = m_vxh->chunkMapSize * sizeof(VoxelStorageChunkEntry);
 
     // write header
-    m_vxhStream->write(m_vxh, 0u, sizeof(VoxelStorageHeader));
-    //m_vxhStream->read(m_vxhMap, sizeof(VoxelStorageHeader), length);
+    m_vxhStream->Write(m_vxh, 0u, sizeof(VoxelStorageHeader));
+    //m_vxhStream->read(m_vxhMap, sizeof(VoxelStorageHeader), Length);
 }
 
-void VoxelStorage::init(SpaceObjectSettings& settings)
+void VoxelStorage::Init(SpaceObjectSettings& settings)
 {
     this->settings = settings;
 
     if (settings.generationType == GenerationType::PreGenerated)
     {
         // TODO: load pregen (VoxelPregen class neded) [*.rcv file]
-        Logger::logError("getVoxelsRow for pregens is not implemented!");
+        Logger::LogError("getVoxelsRow for pregens is not implemented!");
         return;
     }
 
     // load header
-    loadHeader();
+    LoadHeader();
 
-    m_chm = VoxelCHM::loadFromDirectory(settings.fileName);
+    m_chm = VoxelCHM::LoadFromDirectory(settings.fileName);
 }
 
-void VoxelStorage::dispose()
+void VoxelStorage::Dispose()
 {
     m_voxelChunks.clear();
 
@@ -147,11 +147,11 @@ void VoxelStorage::dispose()
     SafeDelete(m_vxh);
 }
 
-Ref<VoxelChunkData> VoxelStorage::createChunkData(Vector3& nodePosition, const int nodeSize)
+Ref<VoxelChunkData> VoxelStorage::CreateChunkData(Vector3& nodePosition, const int nodeSize)
 {
     ScopeLock(m_voxelChunksLock);
 
-    cvar chunkId = SpaceObjectChunk::calculateChunkId(nodePosition);
+    cvar chunkId = SpaceObjectChunk::CalculateChunkId(nodePosition);
 
     if (m_voxelChunks.contains(chunkId))
         return m_voxelChunks[chunkId];
@@ -160,18 +160,18 @@ Ref<VoxelChunkData> VoxelStorage::createChunkData(Vector3& nodePosition, const i
     chunk->m_size = nodeSize;
     chunk->m_id = chunkId;
     chunk->m_nodePosition = nodePosition;
-    chunk->m_chunkPosition = nodePosition - Vector3::one() * float(nodeSize) * 0.5f;
+    chunk->m_chunkPosition = nodePosition - Vector3::One() * float(nodeSize) * 0.5f;
 
     m_voxelChunks[chunkId] = chunk;
 
     return chunk;
 }
 
-Ref<VoxelChunkData> VoxelStorage::getChunkData(Vector3& nodePosition)
+Ref<VoxelChunkData> VoxelStorage::GetChunkData(Vector3& nodePosition)
 {
     ScopeLock(m_voxelChunksLock);
 
-    cvar chunkId = SpaceObjectChunk::calculateChunkId(nodePosition);
+    cvar chunkId = SpaceObjectChunk::CalculateChunkId(nodePosition);
 
     if (!m_voxelChunks.contains(chunkId))
         return {};
@@ -179,12 +179,12 @@ Ref<VoxelChunkData> VoxelStorage::getChunkData(Vector3& nodePosition)
     return m_voxelChunks[chunkId];
 }
 
-void VoxelStorage::readChunkData(Ref<VoxelChunkData> chunkData)
+void VoxelStorage::ReadChunkData(Ref<VoxelChunkData> chunkData)
 {
     if (settings.generationType == GenerationType::PreGenerated)
     {
         // TODO: pregen support
-        Logger::logError("VoxelStorage::readChunkData for pre generated data is not implemented, yet!");
+        Logger::LogError("VoxelStorage::readChunkData for pre generated data is not implemented, yet!");
         return;
     }
 
@@ -192,13 +192,13 @@ void VoxelStorage::readChunkData(Ref<VoxelChunkData> chunkData)
 
     cvar nodePosition = chunkData->m_nodePosition;
     cvar nodeSize = chunkData->m_size;
-    cvar positionOffset = Vector3::one() * float(nodeSize) * 0.5f;
+    cvar positionOffset = Vector3::One() * float(nodeSize) * 0.5f;
     cvar chunkPosition = nodePosition - positionOffset; // lower-left-back corner
     cvar lod = chunkData->m_size / SpaceObjectOctreeNode::MinimumNodeSize;
 
     // generate chunk now using CHM
-    var data = chunkData->getData();
-    generateChunkFromCHM(&data, chunkPosition, lod);
+    var data = chunkData->GetData();
+    GenerateChunkFromCHM(&data, chunkPosition, lod);
 
     // mark as loaded
     chunkData->m_hasSurface = data != nullptr;
@@ -208,13 +208,13 @@ void VoxelStorage::readChunkData(Ref<VoxelChunkData> chunkData)
     // When we want to modify the terrain, we should at first create chunk data.
 }
 
-void VoxelStorage::writeChunkData(Ref<VoxelChunkData> chunkData)
+void VoxelStorage::WriteChunkData(Ref<VoxelChunkData> chunkData)
 {
     // TODO: check main thread
     // TODO: chunk save system
 }
 
-void VoxelStorage::freeChunkData(Ref<VoxelChunkData> chunkData)
+void VoxelStorage::FreeChunkData(Ref<VoxelChunkData> chunkData)
 {
     ScopeLock(m_voxelChunksLock);
 

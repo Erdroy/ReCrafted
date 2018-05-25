@@ -18,7 +18,7 @@ STATIC_PROPERTY(uint, Width);
 STATIC_PROPERTY(uint, Height);
 
 public:
-    FORCEINLINE static float getAspectRatio()
+    FORCEINLINE static float GetAspectRatio()
     {
         return static_cast<float>(m_Width) / static_cast<float>(m_Height);
     }

@@ -41,19 +41,19 @@ private:
     }
 
 public:
-    static byte* load(const char* fileName, int* width, int* height, int* bpp = nullptr)
+    static byte* Load(const char* fileName, int* width, int* height, int* bpp = nullptr)
     {
-        if (!Platform::fileExists(fileName))
+        if (!Platform::FileExists(fileName))
         {
-            Logger::logError("Bitmap::load() file '{0}' not found!", fileName);
+            Logger::LogError("Bitmap::load() file '{0}' not found!", fileName);
             return nullptr;
         }
 
         File bmp_file;
-        Platform::openFile(&bmp_file, fileName, OpenMode::OpenRead);
+        Platform::OpenFile(&bmp_file, fileName, OpenMode::OpenRead);
 
         BitmapHeader header;
-        bmp_file.read(&header, sizeof BitmapHeader);
+        bmp_file.Read(&header, sizeof BitmapHeader);
 
         // write out the width and height
         *width = static_cast<int>(header.width);
@@ -66,17 +66,17 @@ public:
         cvar bitmap = new byte[image_size];
 
         // read image data
-        bmp_file.read(bitmap, image_size, header.bitmap_offset);
+        bmp_file.Read(bitmap, image_size, header.bitmap_offset);
 
         return bitmap;
     }
 
-    static void save(byte* bitmap, int width, int height, int bpp)
+    static void Save(byte* bitmap, int width, int height, int bpp)
     {
         // TODO: save bitmap
     }
 
-    static void free(byte* bitmap)
+    static void Free(byte* bitmap)
     {
         SafeDeleteArray(bitmap);
     }

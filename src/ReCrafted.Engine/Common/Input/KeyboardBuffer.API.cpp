@@ -7,22 +7,22 @@
 
 namespace Internal
 {
-    MonoArray* read()
+    MonoArray* Read()
     {
-        var buffer = KeyboardBuffer::getBuffer();
+        var buffer = KeyboardBuffer::GetBuffer();
 
         var uintClass = mono_get_uint16_class();
-        var array = mono_array_new(Domain::Root->getMono(), uintClass, buffer->count());
+        var array = mono_array_new(Domain::Root->GetMono(), uintClass, buffer->Count());
 
         // copy
-        for (var i = 0u; i < buffer->count(); i++)
-            mono_array_set(array, uint16_t, i, buffer->at(i));
+        for (var i = 0u; i < buffer->Count(); i++)
+            mono_array_set(array, uint16_t, i, buffer->At(i));
 
         return array;
     }
 }
 
-void KeyboardBuffer::initRuntime()
+void KeyboardBuffer::InitRuntime()
 {
     API_FILE("Common/KeyboardBuffer.Gen.cs");
     {
@@ -32,7 +32,7 @@ void KeyboardBuffer::initRuntime()
             API_COMMENT("Reads the keyboard buffer.");
             API_METHOD(PUBLIC, STATIC, "Read", EXTERN);
             {
-                API_BIND("ReCrafted.API.Common.KeyboardBuffer::Read", &Internal::read);
+                API_BIND("ReCrafted.API.Common.KeyboardBuffer::Read", &Internal::Read);
 
                 API_RETURN("char[]");
             }

@@ -4,7 +4,7 @@
 
 extern Graphics* g_rendererInstance;
 
-void Graphics::initRuntime()
+void Graphics::InitRuntime()
 {
     API_FILE("Graphics/Graphics.Gen.cs");
     {

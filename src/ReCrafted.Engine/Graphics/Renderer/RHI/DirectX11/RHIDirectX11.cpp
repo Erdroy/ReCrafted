@@ -251,7 +251,7 @@ namespace Renderer
 
         void WorkerThreadInstance::WorkerThread()
         {
-            Platform::setThreadName("Render Thread");
+            Platform::SetThreadName("Render Thread");
 
             var threadMemory = RPMallocThread();
 
@@ -559,14 +559,14 @@ namespace Renderer
                                     ? DXGI_FORMAT_B8G8R8A8_UNORM
                                     : DXGI_FORMAT_R8G8B8A8_UNORM;
 
-            // destroy render targets
+            // Destroy render targets
             cvar rtvs = renderBuffer->GetRTVs();
             for (var i = 0; i < bufferCount; i ++)
             {
                 SafeRelease(rtvs[i]);
             }
 
-            // destroy depth buffer
+            // Destroy depth buffer
             if (renderBuffer->GetDSV())
                 renderBuffer->GetDSV()->Release();
 
@@ -594,17 +594,17 @@ namespace Renderer
             cvar shaderIdx = command->shader.idx;
 
             File file;
-            Platform::openFile(&file, command->fileName, OpenMode::OpenRead);
+            Platform::OpenFile(&file, command->fileName, OpenMode::OpenRead);
 
             const var data = new byte[file.FileSize];
             memset(data, 0, file.FileSize);
-            file.read(data, file.FileSize);
+            file.Read(data, file.FileSize);
 
             var jsonData = json::parse(data);
             m_shaders[shaderIdx] = RHIDirectX11_Shader::Create(m_device, jsonData);
 
             delete[] data;
-            file.close();
+            file.Close();
         }
 
         void WorkerThreadInstance::Execute_ApplyShader(Command_ApplyShader* command)

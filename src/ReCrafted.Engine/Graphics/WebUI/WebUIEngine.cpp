@@ -19,7 +19,7 @@ SINGLETON_IMPL(WebUIEngine)
 
 ultralight::RefPtr<ultralight::Renderer> m_renderer = nullptr;
 
-void WebUIEngine::init()
+void WebUIEngine::Init()
 {
     // Determine the path to our asset directory.
     TCHAR cur_dir[_MAX_PATH];
@@ -45,12 +45,12 @@ void WebUIEngine::init()
     m_renderer = ultralight::Renderer::Create();
 
     m_initialized = true;
-    Logger::log("WebUIEngine initialized using Ultralight {0} (WebKitCore)", ULTRALIGHT_VERSION);
+    Logger::Log("WebUIEngine initialized using Ultralight {0} (WebKitCore)", ULTRALIGHT_VERSION);
 }
 
-void WebUIEngine::onDispose()
+void WebUIEngine::OnDispose()
 {
-    if (!isInitialized())
+    if (!IsInitialized())
         return;
 
     // Destroy our Platform handlers
@@ -68,7 +68,7 @@ void WebUIEngine::onDispose()
 
 void WebUIEngine::Update()
 {
-    if (!isInitialized())
+    if (!IsInitialized())
         return;
 
     m_renderer->Update();
@@ -76,7 +76,7 @@ void WebUIEngine::Update()
 
 void WebUIEngine::Render()
 {
-    if (!isInitialized())
+    if (!IsInitialized())
         return;
 
     m_renderer->Render();
@@ -91,7 +91,7 @@ void WebUIEngine::Render()
     }*/
 }
 
-bool WebUIEngine::isInitialized()
+bool WebUIEngine::IsInitialized()
 {
     if (!m_instance)
         return false;

@@ -8,41 +8,41 @@ namespace Internal
 {
     bool IsKeyDown(int key)
     {
-        return Input::isKeyDown(static_cast<Keys>(key));
+        return Input::IsKeyDown(static_cast<Keys>(key));
     }
 
     bool IsKeyUp(int key)
     {
-        return Input::isKeyUp(static_cast<Keys>(key));
+        return Input::IsKeyUp(static_cast<Keys>(key));
     }
 
     bool IsKey(int key)
     {
-        return Input::isKey(static_cast<Keys>(key));
+        return Input::IsKey(static_cast<Keys>(key));
     }
 
-    void getCursorPos(Vector2* position)
+    void GetCursorPos(Vector2* position)
     {
-        *position = Input::getCursorPos();
+        *position = Input::GetCursorPos();
     }
 
-    void setCursorPos(Vector2* position)
+    void SetCursorPos(Vector2* position)
     {
-        Input::setCursorPos(static_cast<int>(position->x), static_cast<int>(position->y));
+        Input::SetCursorPos(static_cast<int>(position->x), static_cast<int>(position->y));
     }
 
-    void setCursorDelta(Vector2* delta)
+    void SetCursorDelta(Vector2* delta)
     {
-        *delta = Input::getCursorDelta();
+        *delta = Input::GetCursorDelta();
     }
 
-    void getCursorDelta(Vector2* delta)
+    void GetCursorDelta(Vector2* delta)
     {
-        *delta = Input::getCursorDelta();
+        *delta = Input::GetCursorDelta();
     }
 }
 
-void Input::initRuntime()
+void Input::InitRuntime()
 {
     API_FILE("Common/Input.Gen.cs");
     {
@@ -88,38 +88,38 @@ void Input::initRuntime()
             API_COMMENT("Returns cursor's current position.");
             API_PROPERTY(PUBLIC, STATIC, "Vector2", "CursorPosition", GETSET, BY_REF);
             {
-                API_BIND("ReCrafted.API.Common.Input::Internal_CursorPosition_Get", &Internal::getCursorPos);
-                API_BIND("ReCrafted.API.Common.Input::Internal_CursorPosition_Set", &Internal::setCursorPos);
+                API_BIND("ReCrafted.API.Common.Input::Internal_CursorPosition_Get", &Internal::GetCursorPos);
+                API_BIND("ReCrafted.API.Common.Input::Internal_CursorPosition_Set", &Internal::SetCursorPos);
             }
             API_PROPERTY_END();
 
             API_COMMENT("Returns cursor's position change since last frame.");
             API_PROPERTY(PUBLIC, STATIC, "Vector2", "CursorDelta", GET, BY_REF);
             {
-                API_BIND("ReCrafted.API.Common.Input::Internal_CursorDelta_Get", &Internal::getCursorDelta);
+                API_BIND("ReCrafted.API.Common.Input::Internal_CursorDelta_Get", &Internal::GetCursorDelta);
             }
             API_PROPERTY_END();
 
             API_COMMENT("Returns current scroll (mouse wheel) delta.");
             API_PROPERTY(PUBLIC, STATIC, "float", "ScrollDelta", GET);
             {
-                API_BIND("ReCrafted.API.Common.Input::Internal_ScrollDelta_Get", &Input::getScrollDelta);
+                API_BIND("ReCrafted.API.Common.Input::Internal_ScrollDelta_Get", &Input::GetScrollDelta);
             }
             API_PROPERTY_END();
 
             API_COMMENT("Gets or sets the cursor lock state");
             API_PROPERTY(PUBLIC, STATIC, "bool", "LockCursor", GETSET);
             {
-                API_BIND("ReCrafted.API.Common.Input::Internal_LockCursor_Get", &Input::getLockCursor);
-                API_BIND("ReCrafted.API.Common.Input::Internal_LockCursor_Set", &Input::setLockCursor);
+                API_BIND("ReCrafted.API.Common.Input::Internal_LockCursor_Get", &Input::GetLockCursor);
+                API_BIND("ReCrafted.API.Common.Input::Internal_LockCursor_Set", &Input::SetLockCursor);
             }
             API_PROPERTY_END();
 
             API_COMMENT("Gets or sets the cursor visibility state");
             API_PROPERTY(PUBLIC, STATIC, "bool", "ShowCursor", GETSET);
             {
-                API_BIND("ReCrafted.API.Common.Input::Internal_ShowCursor_Get", &Input::getShowCursor);
-                API_BIND("ReCrafted.API.Common.Input::Internal_ShowCursor_Set", &Input::setShowCursor);
+                API_BIND("ReCrafted.API.Common.Input::Internal_ShowCursor_Get", &Input::GetShowCursor);
+                API_BIND("ReCrafted.API.Common.Input::Internal_ShowCursor_Set", &Input::SetShowCursor);
             }
             API_PROPERTY_END();
         }

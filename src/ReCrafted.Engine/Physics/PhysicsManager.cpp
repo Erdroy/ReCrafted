@@ -26,7 +26,7 @@ namespace PhysXCallback
     public:
         void reportError(physx::PxErrorCode::Enum code, const char* message, const char* file, int line) override
         {
-            Logger::logError("PhysX error code: {0}, message: '{1}' file {2} ({3})", code, message, file, line);
+            Logger::LogError("PhysX error code: {0}, message: '{1}' file {2} ({3})", code, message, file, line);
         }
     } PhysXErrorCallback;
 }
@@ -36,7 +36,7 @@ SINGLETON_IMPL(PhysicsManager)
 physx::PxFoundation* m_pxFoundation;
 physx::PxPhysics* m_pxPhysics;
 
-void PhysicsManager::onInit()
+void PhysicsManager::OnInit()
 {
     physx::PxTolerancesScale ToleranceScale;
     ToleranceScale.length = 1;
@@ -49,10 +49,10 @@ void PhysicsManager::onInit()
     //PxInitExtensions(*m_pxPhysics, nullptr);
 }
 
-void PhysicsManager::update()
+void PhysicsManager::Update()
 {
 }
 
-void PhysicsManager::onDispose()
+void PhysicsManager::OnDispose()
 {
 }

@@ -9,16 +9,16 @@
 
 SINGLETON_IMPL(TaskManager)
 
-void TaskManager::worker_function()
+void TaskManager::WorkerFunction()
 {
-    Platform::setThreadName("TaskManager Worker");
+    Platform::SetThreadName("TaskManager Worker");
 
     Task task;
     while (m_running)
     {
         if (!m_tasks.try_dequeue(task))
         {
-            Platform::sleep(m_sleepTime);
+            Platform::Sleep(m_sleepTime);
             continue;
         }
 
@@ -26,34 +26,34 @@ void TaskManager::worker_function()
         task.run();
 
         // queue callback
-        m_callbackLock.lock();
-        m_callbacks.add(task.m_callback);
-        m_callbackLock.unlock();
+        m_callbackLock.LockNow();
+        m_callbacks.Add(task.m_callback);
+        m_callbackLock.UnlockNow();
     }
 }
 
-void TaskManager::onInit()
+void TaskManager::OnInit()
 {
     // run threads
-    cvar maxThreads = Platform::cpuCount();
+    cvar maxThreads = Platform::CpuCount();
 
-    Logger::logInfo("Starting TaskManager workers.");
+    Logger::LogInfo("Starting TaskManager workers.");
     m_running = true;
     for (var i = 0; i < maxThreads; i++)
     {
-        m_workerThreads.add(new std::thread([this]
+        m_workerThreads.Add(new std::thread([this]
         {
             var thread = RPMallocThread();
-            worker_function();
+            WorkerFunction();
         }));
     }
 }
 
-void TaskManager::onDispose()
+void TaskManager::OnDispose()
 {
     m_running = false;
 
-    Logger::logInfo("Waiting for TaskManager workers to exit...");
+    Logger::LogInfo("Waiting for TaskManager workers to exit...");
 
     // wait for threads to exit
     for (auto&& thread : m_workerThreads)
@@ -64,31 +64,31 @@ void TaskManager::onDispose()
         SafeDelete(thread);
     }
 
-    Logger::logInfo("TaskManager workers exited.");
+    Logger::LogInfo("TaskManager workers exited.");
 }
 
-void TaskManager::onLoad()
+void TaskManager::OnLoad()
 {
 }
 
-void TaskManager::update()
+void TaskManager::Update()
 {
-    Profiler::beginProfile("TaskManager dispatch");
+    Profiler::BeginProfile("TaskManager dispatch");
 
     ScopeLock(m_callbackLock);
 
     for (var&& callback : m_callbacks)
         callback.Invoke();
 
-    m_callbacks.clear();
+    m_callbacks.Clear();
 
-    Profiler::endProfile();
+    Profiler::EndProfile();
 }
 
-Task TaskManager::createTask(Delegate<void> function, Delegate<bool> callback)
+Task TaskManager::CreateTask(Delegate<void> function, Delegate<bool> callback)
 {
     var task = Task();
-    task.m_timeQueue = Platform::getMiliseconds();
+    task.m_timeQueue = Platform::GetMiliseconds();
     task.m_id = m_instance->m_lastId++;
     task.m_function = function;
     task.m_callback = callback;

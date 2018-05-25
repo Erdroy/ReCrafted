@@ -34,7 +34,7 @@ public:
     * \param function The function which will be run on remote thread.
     * \return The created task.
     */
-    static Task createTask(Delegate<void> function);
+    static Task CreateTask(Delegate<void> function);
 
     /**
     * \brief Creates task without calback.
@@ -42,7 +42,7 @@ public:
     * \param function The function which will be called on main thread after the task is completed.
     * \return The created task.
     */
-    static Task createTask(Delegate<void> function, Delegate<bool> callback);
+    static Task CreateTask(Delegate<void> function, Delegate<bool> callback);
 };
 
 #endif // TASK_H

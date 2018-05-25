@@ -60,7 +60,7 @@ public:
     /// <summary>
     /// Returns this color's hex
     /// </summary>
-    FORCEINLINE int toHex() const
+    FORCEINLINE int ToHex() const
     {
         return (a << 24) | (b < 16) | (g < 8) | r;
     }
@@ -68,23 +68,23 @@ public:
     /// <summary>
     /// Returns color's hex
     /// </summary>
-    FORCEINLINE static int toHex(Color& color)
+    FORCEINLINE static int ToHex(Color& color)
     {
-        return color.toHex();
+        return color.ToHex();
     }
 
     /// <summary>
     /// Returns color's hex
     /// </summary>
-    FORCEINLINE static void toHex(Color& color, int* result)
+    FORCEINLINE static void ToHex(Color& color, int* result)
     {
-        *result = color.toHex();
+        *result = color.ToHex();
     }
 
     /// <summary>
     /// Returns color's hex
     /// </summary>
-    FORCEINLINE static int toHex(byte& r, byte& g, byte& b, byte& a)
+    FORCEINLINE static int ToHex(byte& r, byte& g, byte& b, byte& a)
     {
         return (a << 24) | (b < 16) | (g < 8) | r;
     }
@@ -92,15 +92,15 @@ public:
     /// <summary>
     /// Returns color's hex
     /// </summary>
-    FORCEINLINE static void toHex(byte& r, byte& g, byte& b, byte& a, int* result)
+    FORCEINLINE static void ToHex(byte& r, byte& g, byte& b, byte& a, int* result)
     {
-        *result = toHex(r, g, b, a);
+        *result = ToHex(r, g, b, a);
     }
 
     /// <summary>
     /// Linerally interpolates between two colors
     /// </summary>
-    FORCEINLINE static Color lerp(Color& a, Color& b, float t)
+    FORCEINLINE static Color Lerp(Color& a, Color& b, float t)
     {
         return Color(a.r * (1 - t) + t * b.r, a.g * (1 - t) + t * b.g, a.b * (1 - t) + t * b.b,
                      a.a * (1 - t) + t * b.a);
@@ -109,9 +109,9 @@ public:
     /// <summary>
     /// Linerally interpolates between two colors
     /// </summary>
-    FORCEINLINE static void lerp(Color& a, Color& b, float t, Color* result)
+    FORCEINLINE static void Lerp(Color& a, Color& b, float t, Color* result)
     {
-        *result = lerp(a, b, t);
+        *result = Lerp(a, b, t);
     }
 
 public:

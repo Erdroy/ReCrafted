@@ -4,14 +4,14 @@
 
 SINGLETON_IMPL(SceneManager)
 
-void SceneManager::onInit()
+void SceneManager::OnInit()
 {
 }
 
-void SceneManager::onDispose()
+void SceneManager::OnDispose()
 {
 }
 
-void SceneManager::update()
+void SceneManager::Update()
 {
 }

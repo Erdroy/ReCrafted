@@ -5,71 +5,71 @@
 
 SINGLETON_IMPL(EngineComponentManager)
 
-void EngineComponentManager::onLoad()
+void EngineComponentManager::OnLoad()
 {
     ScopeLock(m_componentsLock);
 
-    // call onLoad in all components
+    // call OnLoad in all components
     for (var&& component : m_components)
-        component->onLoad();
+        component->OnLoad();
 }
 
-void EngineComponentManager::onDispose()
+void EngineComponentManager::OnDispose()
 {
     ScopeLock(m_componentsLock);
 
     // release all components in reverse order
-    m_components.reverse();
+    m_components.Reverse();
 
     for (var&& component : m_components)
     {
         // release this component
-        releaseComponent(component);
+        ReleaseComponent(component);
     }
 
     // clear list
-    m_components.clear();
+    m_components.Clear();
 }
 
-void EngineComponentManager::update()
+void EngineComponentManager::Update()
 {
     ScopeLock(m_componentsLock);
 
-    // call onLoad in all components
+    // call OnLoad in all components
     for (var&& component : m_components)
-        component->update();
+        component->Update();
 }
 
-void EngineComponentManager::releaseComponent(EngineComponentBase* component)
+void EngineComponentManager::ReleaseComponent(EngineComponentBase* component)
 {
     assert(component);
 
-    // shutdown and delete component
-    component->shutdown();
+    // Shutdown and delete component
+    component->Shutdown();
 }
 
-void EngineComponentManager::registerComponent(EngineComponentBase* component)
+void EngineComponentManager::RegisterComponent(EngineComponentBase* component)
 {
     assert(component);
 
     ScopeLock(m_componentsLock);
 
     // initialize component
-    component->init();
+    component->Init();
 
     // add component to the component list
-    m_components.add(component);
+    m_components.Add(component);
 }
 
-void EngineComponentManager::unregisterComponent(EngineComponentBase* component)
+void EngineComponentManager::UnregisterComponent(EngineComponentBase* component)
 {
     assert(component);
 
     ScopeLock(m_componentsLock);
 
     // release component
-    releaseComponent(component);
+    ReleaseComponent(component);
 
-    // remove component from the list
-    m_components.remove(component);
+    // Remove component from the list
+    m_components.Remove(component);
 }

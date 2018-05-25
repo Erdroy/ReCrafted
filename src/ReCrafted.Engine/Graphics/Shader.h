@@ -34,7 +34,7 @@ public:
 	 * \param value The value.
 	 */
     template <class T>
-    void setValue(uint slot, T* value)
+    void SetValue(uint slot, T* value)
     {
         Renderer::SetShaderValue(m_shaderHandle, 0, slot, value, sizeof(T));
     }
@@ -44,7 +44,7 @@ public:
 	 * \param slot The texture slot, starts at 0.
 	 * \param texture The texture.
 	 */
-    void setTexture(int slot, Ref<Texture2D> texture)
+    void SetTexture(int slot, Ref<Texture2D> texture)
     {
         Renderer::ApplyTexture2D(texture->m_textureHandle, slot);
     }
@@ -54,7 +54,7 @@ public:
     * \param slot The texture slot, starts at 0.
     * \param texture The texture.
     */
-    void setTexture(int slot, Renderer::Texture2DHandle texture)
+    void SetTexture(int slot, Renderer::Texture2DHandle texture)
     {
         Renderer::ApplyTexture2D(texture, slot);
     }
@@ -62,7 +62,7 @@ public:
     /**
 	 * \brief Disposes this shader.
 	 */
-    void dispose() override;
+    void Dispose() override;
 
 public:
     /**
@@ -70,7 +70,7 @@ public:
 	 * \param shaderName The shader name, eg.: GBufferStandard etc.
 	 * \return The loaded shader, or nullptr when file not found.
 	 */
-    static Ref<Shader> loadShader(const char* shaderName);
+    static Ref<Shader> LoadShader(const char* shaderName);
 };
 
 #endif // SHADER_H

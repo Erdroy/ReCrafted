@@ -36,33 +36,33 @@ private:
 
     BoundingFrustum m_frustum = {};
 
-private:
-    void updateRotation();
-    void update();
-
 public:
     /// <summary>
     /// Default Camera constructor.
     /// </summary>
     Camera()
     {
-        m_forward = Vector3::forward();
-        m_right = Vector3::right();
-        m_up = Vector3::up();
+        m_Forward = Vector3::Forward();
+        m_Right = Vector3::Right();
+        m_Up = Vector3::Up();
 
         // initialize
-        update();
+        Update();
 
         // set as main camera if there is no any other
         if (m_mainCamera == nullptr)
             m_mainCamera = this;
     }
 
+private:
+    void UpdateRotation();
+    void Update();
+
 public:
     /// <summary>
     /// Sets this camera as current.
     /// </summary>
-    FORCEINLINE void setAsCurrent()
+    FORCEINLINE void SetAsCurrent()
     {
         m_mainCamera = this;
     }
@@ -71,7 +71,7 @@ public:
     /// Sets the camera 'look-at'.
     /// </summary>
     /// <param name="lookAt"></param>
-    FORCEINLINE void setLookAt(Vector3 lookAt)
+    FORCEINLINE void SetLookAt(Vector3 lookAt)
     {
         m_lookAt = lookAt;
     }
@@ -80,7 +80,7 @@ public:
     /// Gets the camera bounding frustum.
     /// </summary>
     /// <returns>The bounding frustum.</returns>
-    FORCEINLINE BoundingFrustum& getBoundingFrustum()
+    FORCEINLINE BoundingFrustum& GetBoundingFrustum()
     {
         return m_frustum;
     }
@@ -90,22 +90,22 @@ public:
     /// Gets the main camera.
     /// </summary>
     /// <returns></returns>
-    FORCEINLINE static Camera* getMainCamera()
+    FORCEINLINE static Camera* GetMainCamera()
     {
         return m_mainCamera;
     }
 
 public:
-PROPERTY(bool, freeMovement) = false;
-PROPERTY(float, fov) = 75.0f;
-PROPERTY(float, farPlane) = 1000.0f;
-PROPERTY(float, nearPlane) = 0.02f;
-PROPERTY_REF(Vector3, position) = {};
-PROPERTY_REF(Vector3, rotation) = {};
-PROPERTY_REF(Vector3, forward) = {};
-PROPERTY_REF(Vector3, up) = {};
-PROPERTY_REF(Vector3, right) = {};
-PROPERTY_REF(Matrix, viewProjection) = {};
+PROPERTY(bool, FreeMovement) = false;
+PROPERTY(float, Fov) = 75.0f;
+PROPERTY(float, FarPlane) = 1000.0f;
+PROPERTY(float, NearPlane) = 0.02f;
+PROPERTY_REF(Vector3, Position) = {};
+PROPERTY_REF(Vector3, Rotation) = {};
+PROPERTY_REF(Vector3, Forward) = {};
+PROPERTY_REF(Vector3, Up) = {};
+PROPERTY_REF(Vector3, Right) = {};
+PROPERTY_REF(Matrix, ViewProjection) = {};
 };
 
 #endif // CAMERA_H

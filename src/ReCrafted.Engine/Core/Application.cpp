@@ -7,46 +7,46 @@
 
 SINGLETON_IMPL(Application)
 
-void Application::onInit()
+void Application::OnInit()
 {
     // create gamemain instance
-    m_gamemain = Object::createInstance<Object>("ReCrafted.Game", "GameMain", Assembly::Game, false);
+    m_gamemain = Object::CreateInstance<Object>("ReCrafted.Game", "GameMain", Assembly::Game, false);
 
     // find methods
-    m_init_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Initialize");
-    m_simulate_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Simulate");
-    m_update_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Update");
-    m_render_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Render");
-    m_renderui_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::RenderUI");
-    m_shutdown_method = m_gamemain->findMethod("ReCrafted.Game.GameMain::Shutdown");
+    m_init_method = m_gamemain->FindMethod("ReCrafted.Game.GameMain::Initialize");
+    m_simulate_method = m_gamemain->FindMethod("ReCrafted.Game.GameMain::Simulate");
+    m_update_method = m_gamemain->FindMethod("ReCrafted.Game.GameMain::Update");
+    m_render_method = m_gamemain->FindMethod("ReCrafted.Game.GameMain::Render");
+    m_renderui_method = m_gamemain->FindMethod("ReCrafted.Game.GameMain::RenderUI");
+    m_shutdown_method = m_gamemain->FindMethod("ReCrafted.Game.GameMain::Shutdown");
 }
 
-void Application::onDispose()
+void Application::OnDispose()
 {
-    m_shutdown_method->invoke();
+    m_shutdown_method->Invoke();
 }
 
-void Application::onLoad()
+void Application::OnLoad()
 {
-    m_init_method->invoke();
+    m_init_method->Invoke();
 }
 
-void Application::simulate()
+void Application::Simulate()
 {
-    m_simulate_method->invoke();
+    m_simulate_method->Invoke();
 }
 
-void Application::update()
+void Application::Update()
 {
-    m_update_method->invoke();
+    m_update_method->Invoke();
 }
 
-void Application::render()
+void Application::Render()
 {
-    m_render_method->invoke();
+    m_render_method->Invoke();
 }
 
-void Application::renderUI()
+void Application::RenderUI()
 {
-    m_renderui_method->invoke();
+    m_renderui_method->Invoke();
 }

@@ -4,12 +4,12 @@
 #include "Platform/Platform.h"
 #include "Core/Logger.h"
 
-void RenderBuffer::begin()
+void RenderBuffer::Begin()
 {
     _ASSERT(m_created != true);
 }
 
-void RenderBuffer::end()
+void RenderBuffer::End()
 {
     _ASSERT(m_created != true);
 
@@ -17,7 +17,7 @@ void RenderBuffer::end()
     uint height;
 
     // get window client size
-    Platform::getCurrentWindowSize(&width, &height);
+    Platform::GetCurrentWindowSize(&width, &height);
 
     // build render buffer
     m_renderBufferHandle = Renderer::CreateRenderBuffer(width, height, m_textures, m_textureCount,
@@ -27,10 +27,10 @@ void RenderBuffer::end()
     m_height = height;
     m_created = true;
 
-    Logger::logInfo("Created render buffer");
+    Logger::LogInfo("Created render buffer");
 }
 
-void RenderBuffer::addTarget(const char* name, Renderer::TextureFormat::_enum format)
+void RenderBuffer::AddTarget(const char* name, Renderer::TextureFormat::_enum format)
 {
     _ASSERT(m_created != true);
 
@@ -39,7 +39,7 @@ void RenderBuffer::addTarget(const char* name, Renderer::TextureFormat::_enum fo
     m_textureCount++;
 }
 
-Renderer::Texture2DHandle RenderBuffer::getTarget(uint slot)
+Renderer::Texture2DHandle RenderBuffer::GetTarget(uint slot)
 {
     _ASSERT(slot < MAX_RENDERBUFFER_TARGETS);
 
@@ -47,7 +47,7 @@ Renderer::Texture2DHandle RenderBuffer::getTarget(uint slot)
     return renderBufferDesc.renderTextures[slot];
 }
 
-void RenderBuffer::resize(uint width, uint height)
+void RenderBuffer::Resize(uint width, uint height)
 {
     _ASSERT(m_created != false);
 
@@ -58,15 +58,15 @@ void RenderBuffer::resize(uint width, uint height)
     Renderer::ResizeRenderBuffer(m_renderBufferHandle, width, height);
 }
 
-void RenderBuffer::bind()
+void RenderBuffer::Bind()
 {
     _ASSERT(m_created != false);
 
     Renderer::ApplyRenderBuffer(m_renderBufferHandle);
 }
 
-void RenderBuffer::dispose()
+void RenderBuffer::Dispose()
 {
-    // destroy framebuffer
+    // Destroy framebuffer
     Renderer::DestroyRenderBuffer(m_renderBufferHandle);
 }

@@ -37,18 +37,18 @@ public:
 	 * \param name The element's name.
 	 * \return The rect.
 	 */
-    Rect getRect(const char* name);
+    Rect GetRect(const char* name);
 
     /**
 	 * \brief Gets texture of this atlas.
 	 * \return The texture pointer.
 	 */
-    Ref<Texture2D> getTexture() const;
+    Ref<Texture2D> GetTexture() const;
 
     /**
 	 * \brief Disposes this atlas.
 	 */
-    void dispose() override;
+    void Dispose() override;
 
 public:
     /**
@@ -56,7 +56,7 @@ public:
 	 * \param fileName The JSON file name.
 	 * \return The loaded atlas, or null when file is not found.
 	 */
-    static Ref<Atlas> load(Text& fileName);
+    static Ref<Atlas> Load(Text& fileName);
 };
 
 #endif // ATLAS_H

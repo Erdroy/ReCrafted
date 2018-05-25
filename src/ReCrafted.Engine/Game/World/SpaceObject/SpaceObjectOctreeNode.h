@@ -60,27 +60,27 @@ private:
     uint64_t m_nodeId = 0;
 
 private:
-    bool hasPopulatedChildren();
-    bool isChildrenProcessing() const;
-    void markProcessing();
+    bool HasPopulatedChildren();
+    bool IsChildrenProcessing() const;
+    void MarkProcessing();
 
-    void createChunk(IVoxelMesher* mesher);
+    void CreateChunk(IVoxelMesher* mesher);
 
-    void worker_populate(IVoxelMesher* mesher);
-    void worker_depopulate(IVoxelMesher* mesher);
-    void worker_rebuild(IVoxelMesher* mesher);
+    void WorkerPopulate(IVoxelMesher* mesher);
+    void WorkerDepopulate(IVoxelMesher* mesher);
+    void WorkerRebuild(IVoxelMesher* mesher);
 
-    void onUpdate();
-    void onCreate();
-    void onRebuild();
-    void onDestroy();
+    void OnUpdate();
+    void OnCreate();
+    void OnRebuild();
+    void OnDestroy();
 
-    void onPopulate();
-    void onDepopulate();
+    void OnPopulate();
+    void OnDepopulate();
 
-    void findIntersecting(Array<SpaceObjectOctreeNode*>& nodes, BoundingBox& box, const int targetNodeSize = 16);
-    SpaceObjectOctreeNode* getNeighNode(NodeDirection::_enum direction) const;
-    SpaceObjectOctreeNode* findNode(Vector3 position, int size);
+    void FindIntersecting(Array<SpaceObjectOctreeNode*>& nodes, BoundingBox& box, const int targetNodeSize = 16);
+    SpaceObjectOctreeNode* GetNeighNode(NodeDirection::_enum direction) const;
+    SpaceObjectOctreeNode* FindNode(Vector3 position, int size);
 
 public:
     SpaceObjectOctreeNode()
@@ -88,29 +88,29 @@ public:
     }
 
 public:
-    void update();
-    void updateViews(Array<Vector3>& views);
-    void draw();
-    void dispose();
+    void Update();
+    void UpdateViews(Array<Vector3>& views);
+    void Draw();
+    void Dispose();
 
 public:
-    void populate();
-    void depopulate();
-    void rebuild();
+    void Populate();
+    void Depopulate();
+    void Rebuild();
 
 public:
-    void modify(VoxelEditMode::_enum mode, Vector3& position, float size);
+    void Modify(VoxelEditMode::_enum mode, Vector3& position, float size);
 
 public:
-    SpaceObjectChunk* getChunk() const
+    SpaceObjectChunk* GetChunk() const
     {
         return m_chunk.get();
     }
 
 public:
-PROPERTY(Vector3, position) = {}; // NOTE: center position
-PROPERTY(int, size) = {};
-PROPERTY(BoundingBox, bounds) = {};
+PROPERTY(Vector3, Position) = {}; // NOTE: center position
+PROPERTY(int, Size) = {};
+PROPERTY(BoundingBox, Bounds) = {};
 };
 
 #endif // SPACEOBJECTOCTREENODE_H

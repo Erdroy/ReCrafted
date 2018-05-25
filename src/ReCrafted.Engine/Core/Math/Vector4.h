@@ -78,7 +78,7 @@ public:
     /// <summary>
     /// Normalize this vector.
     /// </summary>
-    FORCEINLINE void normalize()
+    FORCEINLINE void Normalize()
     {
         auto i = 1.0f / sqrt(x * x + y * y + z * z + w * w);
 
@@ -89,10 +89,10 @@ public:
     }
 
     /// <summary>
-    /// Calculate length of this vector.
+    /// Calculate Length of this vector.
     /// </summary>
-    /// <returns>The length of this vector.</returns>
-    FORCEINLINE float length() const
+    /// <returns>The Length of this vector.</returns>
+    FORCEINLINE float Length() const
     {
         return sqrt(x * x + y * y + z * z + w * w);
     }
@@ -101,7 +101,7 @@ public:
     /// <summary>
     /// Shorthand for [0, 0, 0, 0]
     /// </summary>
-    FORCEINLINE static Vector4 zero()
+    FORCEINLINE static Vector4 Zero()
     {
         return Vector4(0.0f, 0.0f, 0.0f, 0.0f);
     }
@@ -109,7 +109,7 @@ public:
     /// <summary>
     /// Shorthand for [1, 1, 1, 1]
     /// </summary>
-    FORCEINLINE static Vector4 one()
+    FORCEINLINE static Vector4 One()
     {
         return Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     }
@@ -117,7 +117,7 @@ public:
     /// <summary>
     /// Shorthand for [0, 0, 1, 0]
     /// </summary>
-    FORCEINLINE static Vector4 forward()
+    FORCEINLINE static Vector4 Forward()
     {
         return Vector4(0.0f, 0.0f, 1.0f, 0.0f);
     }
@@ -125,7 +125,7 @@ public:
     /// <summary>
     /// Shorthand for [0, 0, -1, 0]
     /// </summary>
-    FORCEINLINE static Vector4 back()
+    FORCEINLINE static Vector4 Back()
     {
         return Vector4(0.0f, 0.0f, -1.0f, 0.0f);
     }
@@ -133,7 +133,7 @@ public:
     /// <summary>
     /// Shorthand for [1, 0, 0]
     /// </summary>
-    FORCEINLINE static Vector4 right()
+    FORCEINLINE static Vector4 Right()
     {
         return Vector4(1.0f, 0.0f, 0.0f, 0.0f);
     }
@@ -141,7 +141,7 @@ public:
     /// <summary>
     /// Shorthand for [-1, 0, 0, 0]
     /// </summary>
-    FORCEINLINE static Vector4 left()
+    FORCEINLINE static Vector4 Left()
     {
         return Vector4(-1.0f, 0.0f, 0.0f, 0.0f);
     }
@@ -149,7 +149,7 @@ public:
     /// <summary>
     /// Shorthand for [0, 1, 0, 0]
     /// </summary>
-    FORCEINLINE static Vector4 up()
+    FORCEINLINE static Vector4 Up()
     {
         return Vector4(0.0f, 1.0f, 0.0f, 0.0f);
     }
@@ -157,7 +157,7 @@ public:
     /// <summary>
     /// Shorthand for [0, -1, 0, 0]
     /// </summary>
-    FORCEINLINE static Vector4 down()
+    FORCEINLINE static Vector4 Down()
     {
         return Vector4(0.0f, -1.0f, 0.0f, 0.0f);
     }
@@ -165,7 +165,7 @@ public:
     /// <summary>
     /// Shorthand for [0, 0, 0, 1]
     /// </summary>
-    FORCEINLINE static Vector4 deeper()
+    FORCEINLINE static Vector4 Deeper()
     {
         return Vector4(0.0f, 0.0f, 0.0f, 1.0f);
     }
@@ -173,7 +173,7 @@ public:
     /// <summary>
     /// Shorthand for [0, 0, 0, -1]
     /// </summary>
-    FORCEINLINE static Vector4 closer()
+    FORCEINLINE static Vector4 Closer()
     {
         return Vector4(0.0f, 0.0f, 0.0f, -1.0f);
     }
@@ -181,40 +181,40 @@ public:
     /// <summary>
     /// Returns normalized vector
     /// </summary>
-    FORCEINLINE static Vector4 normalize(Vector4 vector)
+    FORCEINLINE static Vector4 Normalize(Vector4 vector)
     {
-        vector.normalize();
+        vector.Normalize();
         return vector;
     }
 
     /// <summary>
     /// Returns normalized vector
     /// </summary>
-    FORCEINLINE static void normalize(Vector4 vector, Vector4* result)
+    FORCEINLINE static void Normalize(Vector4 vector, Vector4* result)
     {
-        *result = normalize(vector);
+        *result = Normalize(vector);
     }
 
     /// <summary>
-    /// Calculate length of vector
+    /// Calculate Length of vector
     /// </summary>
-    FORCEINLINE static float length(Vector4 vector)
+    FORCEINLINE static float Length(Vector4 vector)
     {
-        return vector.length();
+        return vector.Length();
     }
 
     /// <summary>
-    /// Calculate length of vector
+    /// Calculate Length of vector
     /// </summary>
-    FORCEINLINE static void length(Vector4 vector, float* result)
+    FORCEINLINE static void Length(Vector4 vector, float* result)
     {
-        *result = length(vector);
+        *result = Length(vector);
     }
 
     /// <summary>
     /// Dot product of two vectors
     /// </summary>
-    FORCEINLINE static float dot(Vector4& a, Vector4& b)
+    FORCEINLINE static float Dot(Vector4& a, Vector4& b)
     {
         return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
     }
@@ -222,15 +222,15 @@ public:
     /// <summary>
     /// Dot product of two vectors
     /// </summary>
-    FORCEINLINE static void dot(Vector4& a, Vector4& b, float* result)
+    FORCEINLINE static void Dot(Vector4& a, Vector4& b, float* result)
     {
-        *result = dot(a, b);
+        *result = Dot(a, b);
     }
 
     /// <summary>
     /// Linerally interpolates between two vectors
     /// </summary>
-    FORCEINLINE static Vector4 lerp(Vector4& a, Vector4& b, float t)
+    FORCEINLINE static Vector4 Lerp(Vector4& a, Vector4& b, float t)
     {
         return Vector4(a.x * (1 - t) + t * b.x, a.y * (1 - t) + t * b.y, a.z * (1 - t) + t * b.z,
                        a.w * (1 - t) + t * b.w);
@@ -239,15 +239,15 @@ public:
     /// <summary>
     /// Linerally interpolates between two vectors
     /// </summary>
-    FORCEINLINE static void lerp(Vector4& a, Vector4& b, float t, Vector4* result)
+    FORCEINLINE static void Lerp(Vector4& a, Vector4& b, float t, Vector4* result)
     {
-        *result = lerp(a, b, t);
+        *result = Lerp(a, b, t);
     }
 
     /// <summary>
     /// Negation of the vector
     /// </summary>
-    FORCEINLINE static Vector4 negate(Vector4& a)
+    FORCEINLINE static Vector4 Negate(Vector4& a)
     {
         return Vector4(a.x * -1.0f, a.y * -1.0f, a.z * -1.0f, a.w * -1.0f);
     }
@@ -255,15 +255,15 @@ public:
     /// <summary>
     /// Negation of the vector
     /// </summary>
-    FORCEINLINE static void negate(Vector4& a, Vector4* result)
+    FORCEINLINE static void Negate(Vector4& a, Vector4* result)
     {
-        *result = negate(a);
+        *result = Negate(a);
     }
 
     /// <summary>
     /// Absolute value of the vector
     /// </summary>
-    FORCEINLINE static Vector4 abs(Vector4& a)
+    FORCEINLINE static Vector4 Abs(Vector4& a)
     {
         return Vector4(fabs(a.x), fabs(a.y), fabs(a.z), fabs(a.w));
     }
@@ -271,15 +271,15 @@ public:
     /// <summary>
     /// Absolute value of the vector
     /// </summary>
-    FORCEINLINE static void abs(Vector4& a, Vector4* result)
+    FORCEINLINE static void Abs(Vector4& a, Vector4* result)
     {
-        *result = abs(a);
+        *result = Abs(a);
     }
 
     /// <summary>
     /// Distance between two vectors
     /// </summary>
-    FORCEINLINE static float distance(Vector4& a, Vector4& b)
+    FORCEINLINE static float Distance(Vector4& a, Vector4& b)
     {
         return sqrtf(
             (b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y) + (b.z - a.z) * (b.z - a.z) + (b.w - a.w) * (b.w - a.w
@@ -289,9 +289,9 @@ public:
     /// <summary>
     /// Distance between two vectors
     /// </summary>
-    FORCEINLINE static void distance(Vector4& a, Vector4& b, float* result)
+    FORCEINLINE static void Distance(Vector4& a, Vector4& b, float* result)
     {
-        *result = distance(a, b);
+        *result = Distance(a, b);
     }
 
 public:

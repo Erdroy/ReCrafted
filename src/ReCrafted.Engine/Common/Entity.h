@@ -34,18 +34,18 @@ public:
     Entity* parent = nullptr;
 
 public:
-    void addScript(Ref<Script> script);
-    void removeScript(Ref<Script> script);
+    void AddScript(Ref<Script> script);
+    void RemoveScript(Ref<Script> script);
 
-    void addChildren(Ref<Entity> entity);
-    void removeChildren(Ref<Entity> entity);
-
-public:
-    void update();
-    void simulate();
+    void AddChildren(Ref<Entity> entity);
+    void RemoveChildren(Ref<Entity> entity);
 
 public:
-    void onDestroy() override;
+    void Update();
+    void Simulate();
+
+public:
+    void OnDestroy() override;
 };
 
 #endif // ENTITY_H

@@ -13,7 +13,7 @@
 
 /**
  * \brief IResource class. Base class for all graphics resources.
- * Implements instance counting. MUST override 'dispose' function.
+ * Implements instance counting. MUST override 'Dispose' function.
  * Also must implement the IResource logic, using (public:) IRESOURCE_IMPL(ClassName) 
  * or please manually call addRef and release functions!
  */
@@ -31,7 +31,7 @@ protected:
     /**
      * \brief Adds instance.
      */
-    void addRef()
+    void AddRef()
     {
         m_resCount++;
 
@@ -44,13 +44,13 @@ protected:
     /**
      * \brief Removes instance.
      */
-    void release()
+    void Release()
     {
         m_resCount--;
 
 #if COMPILE_WITH_RESOURCE_LISTING
         ScopeLock(m_resourcesLock);
-        m_resources.remove(this);
+        m_resources.Remove(this);
 #endif
     }
 
@@ -58,13 +58,13 @@ public:
     /**
      * \brief Checks for any left resource. Should be called after releasing (supposedly) all resources.
      */
-    static void checkLeaks()
+    static void CheckLeaks()
     {
         if (m_resCount > 0u)
-            Logger::logWarning("Resource leaks detected! There is {0} unreleased resource objects!", m_resCount);
+            Logger::LogWarning("Resource leaks detected! There is {0} unreleased resource objects!", m_resCount);
     }
 };
 
-#define IRESOURCE_IMPL(name)name(){addRef();}public:~name(){release();}
+#define IRESOURCE_IMPL(name)name(){AddRef();}public:~name(){Release();}
 
 #endif // IRESOURCE_H

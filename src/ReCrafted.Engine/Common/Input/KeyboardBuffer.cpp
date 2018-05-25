@@ -4,17 +4,17 @@
 
 Array<Char> KeyboardBuffer::m_buffer;
 
-void KeyboardBuffer::clear()
+void KeyboardBuffer::Clear()
 {
-    m_buffer.clear();
+    m_buffer.Clear();
 }
 
-void KeyboardBuffer::write(Char character)
+void KeyboardBuffer::Write(Char character)
 {
-    m_buffer.add(character); // TODO: use lParam?
+    m_buffer.Add(character); // TODO: use lParam?
 }
 
-Array<Char>* KeyboardBuffer::getBuffer()
+Array<Char>* KeyboardBuffer::GetBuffer()
 {
     return &m_buffer;
 }

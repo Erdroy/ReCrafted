@@ -15,9 +15,9 @@ public:
     virtual ~PhysicsManager() = default;
 
 private:
-    void onInit() override;
-    void update() override;
-    void onDispose() override;
+    void OnInit() override;
+    void Update() override;
+    void OnDispose() override;
 };
 
 #endif // PHYSICSMANAGER_H

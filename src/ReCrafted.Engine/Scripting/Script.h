@@ -25,35 +25,35 @@ private:
     Ref<Method> m_onDestroy = nullptr;
 
 public:
-    void init(Entity* entity)
+    void Init(Entity* entity)
     {
         m_entity = entity;
 
-        m_onUpdate = findMethod("ReCrafted.API.Common.Script::OnUpdate");
-        m_onSimulate = findMethod("ReCrafted.API.Common.Script::OnSimulate");
-        m_onDestroy = findMethod("ReCrafted.API.Common.Script::OnDestroy");
+        m_onUpdate = FindMethod("ReCrafted.API.Common.Script::OnUpdate");
+        m_onSimulate = FindMethod("ReCrafted.API.Common.Script::OnSimulate");
+        m_onDestroy = FindMethod("ReCrafted.API.Common.Script::OnDestroy");
     }
 
-    FORCEINLINE void update() const
+    FORCEINLINE void Update() const
     {
         if (m_onUpdate)
-            m_onUpdate->invoke();
+            m_onUpdate->Invoke();
     }
 
-    FORCEINLINE void simulate() const
+    FORCEINLINE void Simulate() const
     {
         if (m_onSimulate)
-            m_onSimulate->invoke();
+            m_onSimulate->Invoke();
     }
 
-    void onDestroy() override
+    void OnDestroy() override
     {
         if (m_onDestroy)
-            m_onDestroy->invoke();
+            m_onDestroy->Invoke();
     }
 
 public:
-    void dispose();
+    void Dispose();
 };
 
 #endif // SCRIPT_H

@@ -15,8 +15,8 @@
 #define FORCEINLINE __forceinline
 #endif
 
-#define SafeDispose(ptr) if(ptr) { ptr->dispose(); ptr = nullptr;}
-#define SafeDisposeNN(ptr) if(ptr) { ptr->dispose(); }
+#define SafeDispose(ptr) if(ptr) { ptr->Dispose(); ptr = nullptr;}
+#define SafeDisposeNN(ptr) if(ptr) { ptr->Dispose(); }
 
 #define SafeFree(ptr) if(ptr) { free(ptr); ptr = nullptr; }
 #define SafeFreeNN(ptr) if(ptr) { free(ptr); }
@@ -30,28 +30,28 @@
 #define MISSING_CODE() throw "Code fragment is missing"
 
 #define PROPERTY(type, name)	\
-	public: __inline type get_##name##() {		\
+	public: __inline type Get##name##() {		\
 		return m_##name ;		\
 	}							\
-	public: __inline void set_##name##(type v) {	\
+	public: __inline void Set##name##(type v) {	\
 		m_##name = v;			\
 	}							\
 	private: type m_##name
 
 #define PROPERTY_REF(type, name)	\
-	public: __inline type& get_##name##() {		\
+	public: __inline type& Get##name##() {		\
 		return m_##name ;		\
 	}							\
-	public: __inline void set_##name##(type& v) {	\
+	public: __inline void Set##name##(type& v) {	\
 		m_##name = v;			\
 	}							\
 	private: type m_##name
 
 #define STATIC_PROPERTY(type, name)    \
-    public: __inline static type get_##name##() {        \
+    public: __inline static type Get##name##() {        \
         return m_##name ;        \
     }                            \
-    public: __inline static void set_##name##(type v) {    \
+    public: __inline static void Set##name##(type v) {    \
         m_##name = v;            \
     }                            \
     private: static type m_##name

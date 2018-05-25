@@ -14,14 +14,14 @@ private:
     bool m_initialized = false;
 
 public:
-    void init();
-    void onDispose() override;
+    void Init();
+    void OnDispose() override;
 
     void Update();
     void Render();
 
 public:
-    static bool isInitialized();
+    static bool IsInitialized();
 };
 
 #endif // WEBUIENGINE_H

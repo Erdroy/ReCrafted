@@ -2,7 +2,7 @@
 
 #include "SceneManager.h"
 
-void SceneManager::initRuntime()
+void SceneManager::InitRuntime()
 {
     API_FILE("Scene/SceneManager.Gen.cs");
     {

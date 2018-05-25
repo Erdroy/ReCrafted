@@ -41,12 +41,12 @@ Array<PreFontGlyph> GetGlyphs(FT_Face face)
         PreFontGlyph pfg = {};
         pfg.Character = static_cast<Char>(ch);
         pfg.Glyph = glyph;
-        pfg.HorizontalBearingX = static_cast<uint>(Math::clamp<int>(face->glyph->metrics.horiBearingX, 0, 256) >> 6);
+        pfg.HorizontalBearingX = static_cast<uint>(Math::Clamp<int>(face->glyph->metrics.horiBearingX, 0, 256) >> 6);
         pfg.HorizontalBearingY = static_cast<uint>(face->glyph->metrics.horiBearingY >> 6);
         pfg.AdvanceX = static_cast<uint>(glyph->advance.x) >> 16;
         pfg.AdvanceY = static_cast<uint>(face->glyph->linearVertAdvance) >> 16;
 
-        glyphs.add(pfg);
+        glyphs.Add(pfg);
     }
 
     return glyphs;
@@ -88,7 +88,7 @@ byte* GenerateCharmap(FT_Face face, int charmap, uint charmapWidth, uint charmap
     FastRectanglePack bin = {};
     bin.Init(charmapWidth, charmapHeight, 0);
 
-    for (auto i = 0u; i < glyphs.size(); i++)
+    for (auto i = 0u; i < glyphs.Size(); i++)
     {
         auto glyphData = glyphs[i];
         auto glyph = glyphData.Glyph;
@@ -99,10 +99,10 @@ byte* GenerateCharmap(FT_Face face, int charmap, uint charmapWidth, uint charmap
 
         auto rect = bin.Insert(bitmap.width, bitmap.rows);
 
-        outputGlyphs.add({});
+        outputGlyphs.Add({});
         if (bitmap.width != 0 && bitmap.rows != 0)
         {
-            Font::Glyph* fontGlyph = &outputGlyphs[outputGlyphs.size() - 1];
+            Font::Glyph* fontGlyph = &outputGlyphs[outputGlyphs.Size() - 1];
             // Store glyph data.
             fontGlyph->character = glyphData.Character;
             fontGlyph->texture = charmap;
@@ -129,7 +129,7 @@ byte* GenerateCharmap(FT_Face face, int charmap, uint charmapWidth, uint charmap
                 else
                 {
                     // No more space
-                    failed.add(glyphData);
+                    failed.Add(glyphData);
                 }
             }
         }
@@ -143,7 +143,7 @@ byte* GenerateCharmap(FT_Face face, int charmap, uint charmapWidth, uint charmap
             else
             {
                 // No more space
-                failed.add(glyphData);
+                failed.Add(glyphData);
             }
         }
     }
@@ -151,13 +151,13 @@ byte* GenerateCharmap(FT_Face face, int charmap, uint charmapWidth, uint charmap
     return texturePtr;
 }
 
-Vector2 Font::measureText(Text& text)
+Vector2 Font::MeasureText(Text& text)
 {
     Vector2 pos = {};
     auto lineheight = m_size * m_lineHeigh;
 
     var lastWidth = 0.0f;
-    for (auto i = 0; i < text.length(); i++)
+    for (auto i = 0; i < text.Length(); i++)
     {
         auto character = text[i];
         auto glyph = m_glyphs[character];
@@ -197,7 +197,7 @@ Vector2 Font::measureText(Text& text)
     return pos;
 }
 
-void Font::loadFont(Text& fontFile, int size, bool managed)
+void Font::LoadFont(Text& fontFile, int size, bool managed)
 {
     FT_Library library = nullptr;
 
@@ -205,11 +205,11 @@ void Font::loadFont(Text& fontFile, int size, bool managed)
 
     if (hr)
     {
-        Logger::logError("Failed to init freetype library");
+        Logger::LogError("Failed to Init freetype library");
         return;
     }
 
-    auto pcst = fontFile.std_str();
+    auto pcst = fontFile.StdStr();
     auto path = pcst.c_str();
 
     FT_Face face;
@@ -217,7 +217,7 @@ void Font::loadFont(Text& fontFile, int size, bool managed)
 
     if (hr)
     {
-        Logger::logError("Failed to load freetype font '{0}'", path);
+        Logger::LogError("Failed to load freetype font '{0}'", path);
         return;
     }
 
@@ -225,7 +225,7 @@ void Font::loadFont(Text& fontFile, int size, bool managed)
 
     if (hr)
     {
-        Logger::logError("Failed to select freetype font unicode charmap '{0}'", path);
+        Logger::LogError("Failed to select freetype font unicode charmap '{0}'", path);
         return;
     }
 
@@ -233,7 +233,7 @@ void Font::loadFont(Text& fontFile, int size, bool managed)
 
     if (hr)
     {
-        Logger::logError("Failed to set freetype font '{0}' size of {1}", path, size);
+        Logger::LogError("Failed to set freetype font '{0}' size of {1}", path, size);
         return;
     }
 
@@ -249,13 +249,13 @@ void Font::loadFont(Text& fontFile, int size, bool managed)
 
     auto textures = Array<Ref<Texture2D>>();
 
-    while (glyphsLeft.size() > 0u)
+    while (glyphsLeft.Size() > 0u)
     {
         auto bits = GenerateCharmap(face, charmapId, charmapWidth, charmapHeight, glyphsLeft, glyphsFailed, glyphs);
 
-        glyphsLeft.clear();
+        glyphsLeft.Clear();
         glyphsLeft = glyphsFailed;
-        glyphsFailed.clear();
+        glyphsFailed.Clear();
 
         // create alpha
         auto newbits = CreateBitmap(charmapWidth, charmapHeight, 32);
@@ -299,10 +299,10 @@ void Font::loadFont(Text& fontFile, int size, bool managed)
         }
 
         // create texture
-        auto texture = Texture2D::createTexture(Renderer::TextureFormat::RGBA8);
-        texture->loadMemory(newbitsPtr, charmapWidth, charmapHeight);
-        texture->apply();
-        textures.add(texture);
+        auto texture = Texture2D::CreateTexture(Renderer::TextureFormat::RGBA8);
+        texture->LoadFromMemory(newbitsPtr, charmapWidth, charmapHeight);
+        texture->Apply();
+        textures.Add(texture);
 
         // close
         ReleaseBitmap(newbitsPtr);
@@ -310,16 +310,16 @@ void Font::loadFont(Text& fontFile, int size, bool managed)
         charmapId++;
     }
 
-    init(static_cast<uint>(glyphs.size()));
+    Init(static_cast<uint>(glyphs.Size()));
 
     m_size = size;
     m_textures = textures;
     m_charmapWidth = charmapWidth;
     m_charmapHeight = charmapHeight;
-    m_nullGlyph = getCharacter(Char('?'));
+    m_nullGlyph = GetCharacter(Char('?'));
 
     for (auto&& gl : glyphs)
         gl.font = this;
 
-    memcpy(m_glyphs, glyphs.data(), glyphs.size() * sizeof Glyph);
+    memcpy(m_glyphs, glyphs.Data(), glyphs.Size() * sizeof Glyph);
 }

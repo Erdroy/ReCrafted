@@ -17,27 +17,27 @@
 #include "Graphics/WebUI/WebUI.h"
 #include "Graphics/WebUI/WebUIView.h"
 
-void Bindings::bind()
+void Bindings::Bind()
 {
-    Object::initRuntime();
+    Object::InitRuntime();
 
-    Application::initRuntime();
+    Application::InitRuntime();
 
-    Input::initRuntime();
-    Time::initRuntime();
-    Display::initRuntime();
-    UI::initRuntime();
-    WebUI::initRuntime();
-    WebUIView::initRuntime();
-    Camera::initRuntime();
-    Texture2D::initRuntime();
-    Font::initRuntime();
-    Entity::initRuntime();
-    Script::initRuntime();
-    Profiler::initRuntime();
-    KeyboardBuffer::initRuntime();
+    Input::InitRuntime();
+    Time::InitRuntime();
+    Display::InitRuntime();
+    UI::InitRuntime();
+    WebUI::InitRuntime();
+    WebUIView::InitRuntime();
+    Camera::InitRuntime();
+    Texture2D::InitRuntime();
+    Font::InitRuntime();
+    Entity::InitRuntime();
+    Script::InitRuntime();
+    Profiler::InitRuntime();
+    KeyboardBuffer::InitRuntime();
 }
 
-void Bindings::shutdown()
+void Bindings::Shutdown()
 {
 }

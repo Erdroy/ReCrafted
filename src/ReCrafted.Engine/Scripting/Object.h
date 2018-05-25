@@ -41,27 +41,27 @@ public:
     /**
     * \brief Finds method using given name.
     */
-    Ref<Method> findMethod(const char* methodName) const;
+    Ref<Method> FindMethod(const char* methodName) const;
 
     /**
     * \brief Finds field using given name.
     */
-    Ref<Field> findField(const char* fieldName) const;
+    Ref<Field> FindField(const char* fieldName) const;
 
     /**
     * \brief Gets managed object pointer.
     */
-    MonoObject* getManagedPtr() const;
+    MonoObject* GetManagedPtr() const;
 
     /**
      * \brief Called when object is being destroyed.
      */
-    virtual void onDestroy()
+    virtual void OnDestroy()
     {
     }
 
 public:
-    static Ref<Method> findStaticMethod(const char* methodName);
+    static Ref<Method> FindStaticMethod(const char* methodName);
 
     /// <summary>
     /// Creates instance of API class.
@@ -69,7 +69,7 @@ public:
     /// Setting `initializeNativePtr` to false, can instantiate every non-static class.
     /// </summary>
     template <class T>
-    static Ref<T> createInstance(const char* ns, const char* className, Ref<Assembly> assembly = nullptr,
+    static Ref<T> CreateInstance(const char* ns, const char* className, Ref<Assembly> assembly = nullptr,
                                  bool initializeNativePtr = true)
     {
         Ref<T> object(new T);
@@ -77,9 +77,9 @@ public:
         if (assembly == nullptr)
             assembly = Assembly::API;
 
-        auto cls = assembly->findClass(ns, className);
+        auto cls = assembly->FindClass(ns, className);
         auto objectPtr = static_cast<Ref<Object>>(object);
-        create(objectPtr, Domain::Root->getMono(), cls->m_class, initializeNativePtr);
+        Create(objectPtr, Domain::Root->GetMono(), cls->m_class, initializeNativePtr);
         return object;
     }
 
@@ -89,15 +89,15 @@ public:
     /// Setting `initializeNativePtr` to false, can instantiate every non-static class.
     /// </summary>
     template <class T>
-    static void createInstance(Ref<T> object, const char* ns, const char* className, Ref<Assembly> assembly = nullptr,
+    static void CreateInstance(Ref<T> object, const char* ns, const char* className, Ref<Assembly> assembly = nullptr,
                                bool initializeNativePtr = true)
     {
         if (assembly == nullptr)
             assembly = Assembly::API;
 
-        auto cls = assembly->findClass(ns, className);
+        auto cls = assembly->FindClass(ns, className);
         auto objectPtr = static_cast<Ref<Object>>(object);
-        create(objectPtr, Domain::Root->getMono(), cls->m_class, initializeNativePtr);
+        Create(objectPtr, Domain::Root->GetMono(), cls->m_class, initializeNativePtr);
     }
 
     /**
@@ -106,23 +106,23 @@ public:
      * \param instance The instance to be initialized. 
      */
     template <class T>
-    static void initializeInstance(Ref<T> object, MonoObject* instance)
+    static void InitializeInstance(Ref<T> object, MonoObject* instance)
     {
         auto objectPtr = static_cast<Ref<Object>>(object);
-        initializeInstance(objectPtr, instance);
+        InitializeInstance(objectPtr, instance);
     }
 
 public:
-    static void create(Ref<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject);
-    static void initializeInstance(Ref<Object>& object, MonoObject* instance);
-    static void registerObject(Ref<Object> object);
-    static void destroy(Object* object);
-    static void destroyall();
-    static void finalize(Object* object);
+    static void Create(Ref<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject);
+    static void InitializeInstance(Ref<Object>& object, MonoObject* instance);
+    static void RegisterObject(Ref<Object> object);
+    static void Destroy(Object* object);
+    static void DestroyAll();
+    static void Finalize(Object* object);
 
-    FORCEINLINE static void destroy(Ref<Object> object)
+    FORCEINLINE static void Destroy(Ref<Object> object)
     {
-        destroy(object.get());
+        Destroy(object.get());
     }
 };
 

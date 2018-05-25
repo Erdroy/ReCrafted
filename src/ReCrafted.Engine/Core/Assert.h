@@ -12,7 +12,7 @@
 #define _ASSERT_(expression, message)                                                                                                               \
         (void)(                                                                                                                                     \
             (!!(expression)) ||                                                                                                                     \
-            (Platform::reportAssert(Text::constant((uint16_t*)_UNICODE_(#expression)), Text(__FILE__), (unsigned)(__LINE__), Text(message)), 0)     \
+            (Platform::ReportAssert(Text::Constant((uint16_t*)_UNICODE_(#expression)), Text(__FILE__), (unsigned)(__LINE__), Text(message)), 0)     \
         )
 
 #define ASSERT(expression) _ASSERT_(expression, "")

@@ -24,7 +24,7 @@ class Math
 {
 public:
     template <class T>
-    FORCEINLINE static T clamp(T v, T min, T max)
+    FORCEINLINE static T Clamp(T v, T min, T max)
     {
         if (v < min)
             return min;
@@ -35,72 +35,72 @@ public:
         return v;
     }
 
-    FORCEINLINE static int pow(int x, int n)
+    FORCEINLINE static int Pow(int x, int n)
     {
         return static_cast<int>(::pow(static_cast<float>(x), n));
     }
 
-    FORCEINLINE static float powf(float x, int n)
+    FORCEINLINE static float PowF(float x, int n)
     {
         return ::pow(x, n);
     }
 
-    FORCEINLINE static int sign(int x)
+    FORCEINLINE static int Sign(int x)
     {
         return x < 0 ? -1 : 1;
     }
 
-    FORCEINLINE static float signf(float x)
+    FORCEINLINE static float SignF(float x)
     {
         return x < 0.0f ? -1.0f : 1.0f;
     }
 
-    FORCEINLINE static int signfz(float x)
+    FORCEINLINE static int SignF0(float x)
     {
         return x > 0 ? 1 : x < 0 ? -1 : 0;
     }
 
-    FORCEINLINE static float minf(float a, float b)
+    FORCEINLINE static float MinF(float a, float b)
     {
         return a < b ? a : b;
     }
 
-    FORCEINLINE static float maxf(float a, float b)
+    FORCEINLINE static float MaxF(float a, float b)
     {
         return a > b ? a : b;
     }
 
-    FORCEINLINE static float sqrtf(float x)
+    FORCEINLINE static float SqrtF(float x)
     {
         return sqrt(x);
     }
 
-    FORCEINLINE static float tanf(float x)
+    FORCEINLINE static float TanF(float x)
     {
         return tan(x);
     }
 
-    FORCEINLINE static float cosx(float x)
+    FORCEINLINE static float Cos(float x)
     {
         return cos(x); // TODO: optimize cos
     }
 
-    FORCEINLINE static float sinx(float x)
+    FORCEINLINE static float Sin(float x)
     {
         return sin(x); // TODO: optimize sin
     }
 
-    FORCEINLINE static float degreeToRadian(float degree)
+    FORCEINLINE static float DegreeToRadian(float degree)
     {
         return degree * internal::degtorad;
     }
 
-    FORCEINLINE static float radianToDegree(float radiand)
+    FORCEINLINE static float RadianToDegree(float radiand)
     {
         return radiand * internal::radtodeg;
     }
 
-    FORCEINLINE static unsigned long roundUpToPow2(unsigned long v)
+    FORCEINLINE static unsigned long RoundUpToPow2(unsigned long v)
     {
         v--;
         v |= v >> 1;
@@ -113,7 +113,7 @@ public:
         return v;
     }
 
-    FORCEINLINE static int roundUp(int numToRound, int multiple)
+    FORCEINLINE static int RoundUp(int numToRound, int multiple)
     {
         // source: http://stackoverflow.com/questions/3407012/c-rounding-up-to-the-nearest-multiple-of-a-number
 

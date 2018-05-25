@@ -19,7 +19,7 @@ private:
     Lock m_lock = {};
 
 public:
-    void invoke()
+    void Invoke()
     {
         ScopeLock(m_lock);
 
@@ -28,7 +28,7 @@ public:
             listener.Invoke();
     }
 
-    void invoke(T* param)
+    void Invoke(T* param)
     {
         ScopeLock(m_lock);
 
@@ -37,19 +37,19 @@ public:
             listener.Invoke(param);
     }
 
-    void addListener(Delegate<T> delegate)
+    void AddListener(Delegate<T> delegate)
     {
         ScopeLock(m_lock);
-        m_listeners.add(delegate);
+        m_listeners.Add(delegate);
     }
 
-    void removeListener(Delegate<T> delegate)
+    void RemoveListener(Delegate<T> delegate)
     {
         ScopeLock(m_lock);
-        m_listeners.remove(delegate);
+        m_listeners.Remove(delegate);
     }
 
-    void removeListeners()
+    void RemoveListeners()
     {
         ScopeLock(m_lock);
         m_listeners.clear();

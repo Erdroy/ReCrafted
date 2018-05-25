@@ -14,7 +14,7 @@ public:
     /// <summary>
     /// Downscale src_bits bitmap to size of `src_width / 2`.
     /// </summary>
-    static byte* downscale(byte* src_bits, uint src_width, uint elems)
+    static byte* DownScale(byte* src_bits, uint src_width, uint elems)
     {
 #define ADD_CHANNELS(pixel) \
 		dpx_r += (pixel & 0xFF000000) >> 24; \

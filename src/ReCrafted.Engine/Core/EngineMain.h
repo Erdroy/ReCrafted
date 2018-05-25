@@ -34,31 +34,31 @@ public:
     }
 
 private:
-    void registerComponents() const;
-    void createMainWindow();
+    void RegisterComponents() const;
+    void CreateMainWindow();
 
 private:
-    void onSimulate();
-    void onUpdate();
-    void onRender();
+    void OnSimulate();
+    void OnUpdate();
+    void OnRender();
 
-    void onWindowResized();
-
-public:
-    void initialize() override;
-    void run() override;
-    void shutdown() override;
+    void OnWindowResized();
 
 public:
-    void quit();
+    void Initialize() override;
+    void Run() override;
+    void Shutdown() override;
 
-    FORCEINLINE UpdateLoop* getUpdateLoop() const
+public:
+    void Quit();
+
+    FORCEINLINE UpdateLoop* GetUpdateLoop() const
     {
         return m_updateLoop.get();
     }
 
 public:
-    static EngineMain* getInstance()
+    static EngineMain* GetInstance()
     {
         return m_instance;
     }

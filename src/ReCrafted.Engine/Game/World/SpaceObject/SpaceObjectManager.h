@@ -38,28 +38,28 @@ public:
     }
 
 private:
-    void onDispose() override;
+    void OnDispose() override;
 
 public:
-    void worker_function();
+    void WorkerFunction();
 
 public:
     /**
     * \brief Initializes the SpaceObjectManager.
     */
-    void init();
+    void Init();
 
     /**
     * \brief Updates the SpaceObjectManager.
     * This will invoke all node generation callbacks.
     */
-    void update();
+    void Update();
 
 public:
     /**
      * \brief Enqueues node for generation.
      */
-    static void enqueue(SpaceObjectOctreeNode* node, ProcessMode::_enum mode, Delegate<void> callback);
+    static void Enqueue(SpaceObjectOctreeNode* node, ProcessMode::_enum mode, Delegate<void> callback);
 };
 
 #endif // SPACEOBJECTMANAGER_H

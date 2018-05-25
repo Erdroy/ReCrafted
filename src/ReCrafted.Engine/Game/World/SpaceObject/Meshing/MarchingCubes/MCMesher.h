@@ -46,10 +46,10 @@ private:
 public:
     MCMesher()
     {
-        m_vertices.reserve(16 << 10);
-        m_indices.reserve(16 << 10);
-        m_normals.reserve(16 << 10);
-        m_colors.reserve(16 << 10);
+        m_vertices.Reserve(16 << 10);
+        m_indices.Reserve(16 << 10);
+        m_normals.Reserve(16 << 10);
+        m_colors.Reserve(16 << 10);
     }
 
     virtual ~MCMesher()
@@ -57,14 +57,14 @@ public:
     }
 
 private:
-    FORCEINLINE void clean();
+    FORCEINLINE void Clean();
 
-    FORCEINLINE void generateCell(Cell* cell, int x, int y, int z, sbyte* data) const;
-    void generateCube(Cell* cell, const Vector3& position, const Vector3& offset, float lod, sbyte* data);
-    void generateSkirt(Cell* cell, const Vector3& position, const Vector3& offset, float lod, uint8_t axis,
+    FORCEINLINE void GenerateCell(Cell* cell, int x, int y, int z, sbyte* data) const;
+    FORCEINLINE void GenerateCube(Cell* cell, const Vector3& position, const Vector3& offset, float lod, sbyte* data);
+    FORCEINLINE void GenerateSkirt(Cell* cell, const Vector3& position, const Vector3& offset, float lod, uint8_t axis,
                        sbyte* data);
 
-    FORCEINLINE void generateCells(sbyte* data, const Vector3& position, float lod, uint8_t borders);
+    FORCEINLINE void GenerateCells(sbyte* data, const Vector3& position, float lod, uint8_t borders);
 
 public:
     /**
@@ -72,7 +72,7 @@ public:
     * \param mesh The mesh that will get the new mesh data.
     * \param data The hermite voxel data (in -127 to 127 range).
     */
-    void generate(const Vector3& position, int lod, uint8_t borders, Ref<Mesh>& mesh, sbyte* data) override;
+    void Generate(const Vector3& position, int lod, uint8_t borders, Ref<Mesh>& mesh, sbyte* data) override;
 };
 
 #endif // MCMESHER_H

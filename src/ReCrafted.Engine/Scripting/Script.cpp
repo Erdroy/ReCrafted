@@ -4,7 +4,7 @@
 
 #include "Common/Entity.h"
 
-void Script::dispose()
+void Script::Dispose()
 {
     m_onUpdate = nullptr;
     m_onSimulate = nullptr;

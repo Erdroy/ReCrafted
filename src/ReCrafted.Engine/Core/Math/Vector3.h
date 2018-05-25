@@ -33,7 +33,7 @@ public:
     /// <summary>
     /// Normalize this vector.
     /// </summary>
-    FORCEINLINE void normalize()
+    FORCEINLINE void Normalize()
     {
         auto i = 1.0f / sqrt(x * x + y * y + z * z);
 
@@ -43,19 +43,19 @@ public:
     }
 
     /// <summary>
-    /// Calculate length of this vector.
+    /// Calculate Length of this vector.
     /// </summary>
-    /// <returns>The length of this vector.</returns>
-    FORCEINLINE float length() const
+    /// <returns>The Length of this vector.</returns>
+    FORCEINLINE float Length() const
     {
         return sqrt(x * x + y * y + z * z);
     }
 
     /// <summary>
-    /// Calculate squared length of this vector.
+    /// Calculate squared Length of this vector.
     /// </summary>
-    /// <returns>The length of this vector.</returns>
-    FORCEINLINE float lengthSqr() const
+    /// <returns>The Length of this vector.</returns>
+    FORCEINLINE float LengthSqr() const
     {
         return x * x + y * y + z * z;
     }
@@ -64,7 +64,7 @@ public:
     /// <summary>
     /// Shorthand for [0, 0, 0]
     /// </summary>
-    FORCEINLINE static Vector3 zero()
+    FORCEINLINE static Vector3 Zero()
     {
         return Vector3(0.0f, 0.0f, 0.0f);
     }
@@ -72,7 +72,7 @@ public:
     /// <summary>
     /// Shorthand for [1, 1, 1]
     /// </summary>
-    FORCEINLINE static Vector3 one()
+    FORCEINLINE static Vector3 One()
     {
         return Vector3(1.0f, 1.0f, 1.0f);
     }
@@ -80,7 +80,7 @@ public:
     /// <summary>
     /// Shorthand for [0, 0, 1]
     /// </summary>
-    FORCEINLINE static Vector3 forward()
+    FORCEINLINE static Vector3 Forward()
     {
         return Vector3(0.0f, 0.0f, 1.0f);
     }
@@ -88,7 +88,7 @@ public:
     /// <summary>
     /// Shorthand for [0, 0, -1]
     /// </summary>
-    FORCEINLINE static Vector3 back()
+    FORCEINLINE static Vector3 Back()
     {
         return Vector3(0.0f, 0.0f, -1.0f);
     }
@@ -96,7 +96,7 @@ public:
     /// <summary>
     /// Shorthand for [1, 0, 0]
     /// </summary>
-    FORCEINLINE static Vector3 right()
+    FORCEINLINE static Vector3 Right()
     {
         return Vector3(1.0f, 0.0f, 0.0f);
     }
@@ -104,7 +104,7 @@ public:
     /// <summary>
     /// Shorthand for [-1, 0, 0]
     /// </summary>
-    FORCEINLINE static Vector3 left()
+    FORCEINLINE static Vector3 Left()
     {
         return Vector3(-1.0f, 0.0f, 0.0f);
     }
@@ -112,7 +112,7 @@ public:
     /// <summary>
     /// Shorthand for [0, 1, 0]
     /// </summary>
-    FORCEINLINE static Vector3 up()
+    FORCEINLINE static Vector3 Up()
     {
         return Vector3(0.0f, 1.0f, 0.0f);
     }
@@ -120,7 +120,7 @@ public:
     /// <summary>
     /// Shorthand for [0, -1, 0]
     /// </summary>
-    FORCEINLINE static Vector3 down()
+    FORCEINLINE static Vector3 Down()
     {
         return Vector3(0.0f, -1.0f, 0.0f);
     }
@@ -128,40 +128,40 @@ public:
     /// <summary>
     /// Returns normalized vector
     /// </summary>
-    FORCEINLINE static Vector3 normalize(Vector3 vector)
+    FORCEINLINE static Vector3 Normalize(Vector3 vector)
     {
-        vector.normalize();
+        vector.Normalize();
         return vector;
     }
 
     /// <summary>
     /// Returns normalized vector
     /// </summary>
-    FORCEINLINE static void normalize(Vector3 vector, Vector3* result)
+    FORCEINLINE static void Normalize(Vector3 vector, Vector3* result)
     {
-        *result = normalize(vector);
+        *result = Normalize(vector);
     }
 
     /// <summary>
-    /// Calculate length of vector
+    /// Calculate Length of vector
     /// </summary>
-    FORCEINLINE static float length(Vector3 vector)
+    FORCEINLINE static float Length(Vector3 vector)
     {
-        return vector.length();
+        return vector.Length();
     }
 
     /// <summary>
-    /// Calculate length of vector
+    /// Calculate Length of vector
     /// </summary>
-    FORCEINLINE static void length(Vector3 vector, float* result)
+    FORCEINLINE static void Length(Vector3 vector, float* result)
     {
-        *result = length(vector);
+        *result = Length(vector);
     }
 
     /// <summary>
     /// Dot product of two vectors
     /// </summary>
-    FORCEINLINE static float dot(Vector3& a, Vector3& b)
+    FORCEINLINE static float Dot(Vector3& a, Vector3& b)
     {
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
@@ -169,15 +169,15 @@ public:
     /// <summary>
     /// Dot product of two vectors
     /// </summary>
-    FORCEINLINE static void dot(Vector3& a, Vector3& b, float* result)
+    FORCEINLINE static void Dot(Vector3& a, Vector3& b, float* result)
     {
-        *result = dot(a, b);
+        *result = Dot(a, b);
     }
 
     /// <summary>
     /// Cross product of two vectors
     /// </summary>
-    FORCEINLINE static Vector3 cross(Vector3& a, Vector3& b)
+    FORCEINLINE static Vector3 Cross(Vector3& a, Vector3& b)
     {
         return Vector3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
     }
@@ -185,15 +185,15 @@ public:
     /// <summary>
     /// Cross product of two vectors
     /// </summary>
-    FORCEINLINE static void cross(Vector3& a, Vector3& b, Vector3* result)
+    FORCEINLINE static void Cross(Vector3& a, Vector3& b, Vector3* result)
     {
-        *result = cross(a, b);
+        *result = Cross(a, b);
     }
 
     /// <summary>
     /// Linerally interpolates between two vectors
     /// </summary>
-    FORCEINLINE static Vector3 lerp(Vector3& a, Vector3& b, float t)
+    FORCEINLINE static Vector3 Lerp(Vector3& a, Vector3& b, float t)
     {
         return Vector3(a.x * (1 - t) + t * b.x, a.y * (1 - t) + t * b.y, a.z * (1 - t) + t * b.z);
     }
@@ -201,15 +201,15 @@ public:
     /// <summary>
     /// Linerally interpolates between two vectors
     /// </summary>
-    FORCEINLINE static void lerp(Vector3& a, Vector3& b, float t, Vector3* result)
+    FORCEINLINE static void Lerp(Vector3& a, Vector3& b, float t, Vector3* result)
     {
-        *result = lerp(a, b, t);
+        *result = Lerp(a, b, t);
     }
 
     /// <summary>
     /// Negation of the vector
     /// </summary>
-    FORCEINLINE static Vector3 negate(Vector3& a)
+    FORCEINLINE static Vector3 Negate(Vector3& a)
     {
         return Vector3(a.x * -1.0f, a.y * -1.0f, a.z * -1.0f);
     }
@@ -217,15 +217,15 @@ public:
     /// <summary>
     /// Negation of the vector
     /// </summary>
-    FORCEINLINE static void negate(Vector3& a, Vector3* result)
+    FORCEINLINE static void Negate(Vector3& a, Vector3* result)
     {
-        *result = negate(a);
+        *result = Negate(a);
     }
 
     /// <summary>
     /// Absolute value of the vector
     /// </summary>
-    FORCEINLINE static Vector3 abs(Vector3& a)
+    FORCEINLINE static Vector3 Abs(Vector3& a)
     {
         return Vector3(fabs(a.x), fabs(a.y), fabs(a.z));
     }
@@ -233,15 +233,15 @@ public:
     /// <summary>
     /// Absolute value of the vector
     /// </summary>
-    FORCEINLINE static void abs(Vector3& a, Vector3* result)
+    FORCEINLINE static void Abs(Vector3& a, Vector3* result)
     {
-        *result = abs(a);
+        *result = Abs(a);
     }
 
     /// <summary>
     /// Distance between two vectors
     /// </summary>
-    FORCEINLINE static float distance(Vector3& a, Vector3& b)
+    FORCEINLINE static float Distance(Vector3& a, Vector3& b)
     {
         return sqrtf((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y) + (b.z - a.z) * (b.z - a.z));
     }
@@ -249,9 +249,9 @@ public:
     /// <summary>
     /// Distance between two vectors
     /// </summary>
-    FORCEINLINE static void distance(Vector3& a, Vector3& b, float* result)
+    FORCEINLINE static void Distance(Vector3& a, Vector3& b, float* result)
     {
-        *result = distance(a, b);
+        *result = Distance(a, b);
     }
 
 public:

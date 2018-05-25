@@ -3,57 +3,57 @@
 #include "Entity.h"
 #include "EntityPool.h"
 
-void Entity::addScript(Ref<Script> script)
+void Entity::AddScript(Ref<Script> script)
 {
-    scripts.add(script);
+    scripts.Add(script);
 }
 
-void Entity::removeScript(Ref<Script> script)
-{
-}
-
-void Entity::addChildren(Ref<Entity> entity)
-{
-    children.add(entity);
-}
-
-void Entity::removeChildren(Ref<Entity> entity)
+void Entity::RemoveScript(Ref<Script> script)
 {
 }
 
-void Entity::update()
+void Entity::AddChildren(Ref<Entity> entity)
 {
-    for (auto&& script : scripts)
-    {
-        script->update();
-    }
+    children.Add(entity);
 }
 
-void Entity::simulate()
+void Entity::RemoveChildren(Ref<Entity> entity)
+{
+}
+
+void Entity::Update()
 {
     for (auto&& script : scripts)
     {
-        script->simulate();
+        script->Update();
     }
 }
 
-void Entity::onDestroy()
+void Entity::Simulate()
+{
+    for (auto&& script : scripts)
+    {
+        script->Simulate();
+    }
+}
+
+void Entity::OnDestroy()
 {
     // Dispose scripts
     for (auto&& script : scripts)
     {
-        destroy(script);
-        script->dispose();
+        Destroy(script);
+        script->Dispose();
     }
 
     // Destroy children
     for (auto&& child : children)
     {
-        destroy(child);
+        Destroy(child);
     }
 
-    scripts.clear();
-    children.clear();
+    scripts.Clear();
+    children.Clear();
 
-    EntityPool::destroyEntity(this);
+    EntityPool::DestroyEntity(this);
 }

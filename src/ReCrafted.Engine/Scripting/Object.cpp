@@ -9,7 +9,7 @@
 
 Array<Ref<Object>> Object::m_objects;
 
-Ref<Method> Object::findMethod(const char* methodName) const
+Ref<Method> Object::FindMethod(const char* methodName) const
 {
     auto methodDesc = mono_method_desc_new(methodName, true);
 
@@ -29,7 +29,7 @@ Ref<Method> Object::findMethod(const char* methodName) const
     return method;
 }
 
-Ref<Field> Object::findField(const char* fieldName) const
+Ref<Field> Object::FindField(const char* fieldName) const
 {
     auto fieldDesc = mono_class_get_field_from_name(m_class, fieldName);
 
@@ -44,12 +44,12 @@ Ref<Field> Object::findField(const char* fieldName) const
     return field;
 }
 
-MonoObject* Object::getManagedPtr() const
+MonoObject* Object::GetManagedPtr() const
 {
     return m_object;
 }
 
-Ref<Method> Object::findStaticMethod(const char* methodName)
+Ref<Method> Object::FindStaticMethod(const char* methodName)
 {
     auto methodDesc = mono_method_desc_new(methodName, true);
     if (!methodDesc)
@@ -69,7 +69,7 @@ Ref<Method> Object::findStaticMethod(const char* methodName)
     return method;
 }
 
-void Object::create(Ref<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject)
+void Object::Create(Ref<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject)
 {
     auto instance = mono_object_new(domain, monoClass);
     mono_runtime_object_init(instance);
@@ -84,15 +84,15 @@ void Object::create(Ref<Object>& object, MonoDomain* domain, MonoClass* monoClas
     if (isObject)
     {
         // set native pointer
-        auto testField = object->findField("NativePtr");
-        testField->setValue(&object);
+        auto testField = object->FindField("NativePtr");
+        testField->SetValue(&object);
 
         // register object
-        registerObject(object);
+        RegisterObject(object);
     }
 }
 
-void Object::initializeInstance(Ref<Object>& object, MonoObject* instance)
+void Object::InitializeInstance(Ref<Object>& object, MonoObject* instance)
 {
     mono_runtime_object_init(instance);
 
@@ -104,51 +104,51 @@ void Object::initializeInstance(Ref<Object>& object, MonoObject* instance)
     object->m_class = mono_object_get_class(instance);
 
     // set native pointer
-    auto testField = object->findField("NativePtr");
-    testField->setValue(&object);
+    auto testField = object->FindField("NativePtr");
+    testField->SetValue(&object);
 
     // register object
-    registerObject(object);
+    RegisterObject(object);
 }
 
-void Object::registerObject(Ref<Object> object)
+void Object::RegisterObject(Ref<Object> object)
 {
-    m_objects.add(object);
+    m_objects.Add(object);
 }
 
-void Object::destroy(Object* object)
+void Object::Destroy(Object* object)
 {
-    object->onDestroy();
+    object->OnDestroy();
 
     // free garbage collector handle
     mono_gchandle_free(object->m_gchandle);
     object->m_gchandle = 0u;
 
     // unregister
-    m_objects.remove(object);
+    m_objects.Remove(object);
 }
 
-void Object::destroyall()
+void Object::DestroyAll()
 {
-    for (auto i = 0u; i < m_objects.size(); i ++)
+    for (auto i = 0u; i < m_objects.Size(); i ++)
     {
         auto object = m_objects[i];
 
-        object->onDestroy();
+        object->OnDestroy();
 
         // free garbage collector handle
         mono_gchandle_free(object->m_gchandle);
     }
 
-    m_objects.clear();
+    m_objects.Clear();
 }
 
-void Object::finalize(Object* object)
+void Object::Finalize(Object* object)
 {
-    if (m_objects.count() > 0u && m_objects.remove(object))
+    if (m_objects.Count() > 0u && m_objects.Remove(object))
     {
-        object->onDestroy();
-        Logger::logWarning("Object was finalized, but not destroyed at first!");
+        object->OnDestroy();
+        Logger::LogWarning("Object was finalized, but not destroyed at first!");
     }
 
     // cleanup

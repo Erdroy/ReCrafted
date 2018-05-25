@@ -39,26 +39,26 @@ int CALLBACK WinMain(
     rpmalloc_initialize();
 
     // parse arguments
-    GameInfo::parseArguments(Text(GetCommandLineA()));
+    GameInfo::ParseArguments(Text(GetCommandLineA()));
 
     // create engine instance
     var engine = EngineMain();
 
     // initialize engine
-    engine.initialize();
+    engine.Initialize();
 
 #if RENDERER_TEST
     initRendererTests();
 #else
     // run engine loop
-    engine.run();
+    engine.Run();
 #endif
 
-    // shutdown engine
-    engine.shutdown();
+    // Shutdown engine
+    engine.Shutdown();
 
-    // shutdown platform
-    Platform::shutdown();
+    // Shutdown platform
+    Platform::Shutdown();
 
     rpmalloc_finalize();
 

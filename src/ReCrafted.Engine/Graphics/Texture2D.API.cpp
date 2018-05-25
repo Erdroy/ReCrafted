@@ -10,7 +10,7 @@ namespace Internal
     {
         if (!texture) return 0;
 
-        auto width = texture->getWidth();
+        auto width = texture->GetWidth();
 
         return width;
     }
@@ -19,7 +19,7 @@ namespace Internal
     {
         if (!texture) return 0;
 
-        auto height = texture->getHeight();
+        auto height = texture->GetHeight();
 
         return height;
     }
@@ -28,7 +28,7 @@ namespace Internal
     {
         if (!texture) return;
 
-        texture->apply();
+        texture->Apply();
     }
 
     void loadFile(Texture2D* texture, MonoString* string)
@@ -40,7 +40,7 @@ namespace Internal
         auto str = MONO_ANSI(string);
 
         // load from file
-        texture->loadFile(str);
+        texture->LoadFromFile(str);
 
         // free ansi string
         MONO_ANSI_FREE(str);
@@ -48,12 +48,12 @@ namespace Internal
 
     MonoObject* createTexture2D()
     {
-        cvar texture = Object::createInstance<Texture2D>("ReCrafted.API.Graphics", "Texture2D");
-        return texture->getManagedPtr();
+        cvar texture = Object::CreateInstance<Texture2D>("ReCrafted.API.Graphics", "Texture2D");
+        return texture->GetManagedPtr();
     }
 }
 
-void Texture2D::initRuntime()
+void Texture2D::InitRuntime()
 {
     // create type binding
 

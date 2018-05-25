@@ -546,7 +546,7 @@ class BasicStringRef {
   /**
     \rst
     Constructs a string reference object from a C string computing
-    the size with ``std::char_traits<Char>::length``.
+    the size with ``std::char_traits<Char>::Length``.
     \endrst
    */
   BasicStringRef(const Char *s)
@@ -597,7 +597,7 @@ class BasicStringRef {
   /** Returns the string size. */
   std::size_t size() const { return size_; }
 
-  // Lexicographically compare this string reference to other.
+  // Lexicographically Compare this string reference to other.
   int compare(BasicStringRef other) const {
     std::size_t size = size_ < other.size_ ? size_ : other.size_;
     int result = std::char_traits<Char>::compare(data_, other.data_, size);
@@ -2692,7 +2692,7 @@ class BasicWriter {
   void operator<<(
       typename internal::WCharHelper<const wchar_t *, Char>::Unsupported);
 
-  // Appends floating-point length specifier to the format string.
+  // Appends floating-point Length specifier to the format string.
   // The second argument is only used for overload resolution.
   void append_float_length(Char *&format_ptr, long double) {
     *format_ptr++ = 'L';
@@ -3201,7 +3201,7 @@ void BasicWriter<Char>::write_double(T value, const Spec &spec) {
   for (;;) {
     std::size_t buffer_size = buffer_.capacity() - offset;
 #if FMT_MSC_VER
-    // MSVC's vsnprintf_s doesn't work with zero size, so reserve
+    // MSVC's vsnprintf_s doesn't work with zero size, so Reserve
     // space for at least one extra character to make the size non-zero.
     // Note that the buffer's capacity will increase by more than 1.
     if (buffer_size == 0) {

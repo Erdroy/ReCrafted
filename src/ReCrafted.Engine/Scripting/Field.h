@@ -21,16 +21,16 @@ public:
     /// <summary>
     /// Sets value.
     /// </summary>
-    void setValue(void* value) const;
+    void SetValue(void* value) const;
 
     /// <summary>
     /// Gets value.
     /// </summary>
-    void getValue(void* value) const;
+    void GetValue(void* value) const;
 
     /// <summary>
     /// Gets field type.
     /// </summary>
-    FieldType::_enum getType() const;
+    FieldType::_enum GetType() const;
 };
 #endif // FIELD_H

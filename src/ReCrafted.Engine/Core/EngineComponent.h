@@ -19,9 +19,9 @@ protected:
     ~EngineComponent() = default;
 
 private:
-    void shutdown() override
+    void Shutdown() override
     {
-        Singleton<T>::dispose();
+        Singleton<T>::Dispose();
     }
 };
 

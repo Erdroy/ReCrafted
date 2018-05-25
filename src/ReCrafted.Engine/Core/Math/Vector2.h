@@ -29,7 +29,7 @@ public:
     /// <summary>
     /// Normalize this vector.
     /// </summary>
-    FORCEINLINE void normalize()
+    FORCEINLINE void Normalize()
     {
         auto i = 1.0f / sqrt(x * x + y * y);
 
@@ -38,10 +38,10 @@ public:
     }
 
     /// <summary>
-    /// Calculate length of this vector.
+    /// Calculate Length of this vector.
     /// </summary>
-    /// <returns>The length of this vector.</returns>
-    FORCEINLINE float length() const
+    /// <returns>The Length of this vector.</returns>
+    FORCEINLINE float Length() const
     {
         return sqrt(x * x + y * y);
     }
@@ -51,7 +51,7 @@ public:
     /// <summary>
     /// Shorthand for [0, 0]
     /// </summary>
-    FORCEINLINE static Vector2 zero()
+    FORCEINLINE static Vector2 Zero()
     {
         return Vector2(0.0f, 0.0f);
     }
@@ -59,7 +59,7 @@ public:
     /// <summary>
     /// Shorthand for [1, 1]
     /// </summary>
-    FORCEINLINE static Vector2 one()
+    FORCEINLINE static Vector2 One()
     {
         return Vector2(1.0f, 1.0f);
     }
@@ -67,7 +67,7 @@ public:
     /// <summary>
     /// Shorthand for [1, 0]
     /// </summary>
-    FORCEINLINE static Vector2 right()
+    FORCEINLINE static Vector2 Right()
     {
         return Vector2(1.0f, 0.0f);
     }
@@ -75,7 +75,7 @@ public:
     /// <summary>
     /// Shorthand for [-1, 0]
     /// </summary>
-    FORCEINLINE static Vector2 left()
+    FORCEINLINE static Vector2 Left()
     {
         return Vector2(-1.0f, 0.0f);
     }
@@ -83,7 +83,7 @@ public:
     /// <summary>
     /// Shorthand for [0, 1]
     /// </summary>
-    FORCEINLINE static Vector2 up()
+    FORCEINLINE static Vector2 Up()
     {
         return Vector2(0.0f, 1.0f);
     }
@@ -91,7 +91,7 @@ public:
     /// <summary>
     /// Shorthand for [0, -1]
     /// </summary>
-    FORCEINLINE static Vector2 down()
+    FORCEINLINE static Vector2 Down()
     {
         return Vector2(0.0f, -1.0f);
     }
@@ -99,40 +99,40 @@ public:
     /// <summary>
     /// Returns normalized vector
     /// </summary>
-    FORCEINLINE static Vector2 normalize(Vector2 vector)
+    FORCEINLINE static Vector2 Normalize(Vector2 vector)
     {
-        vector.normalize();
+        vector.Normalize();
         return vector;
     }
 
     /// <summary>
     /// Returns normalized vector
     /// </summary>
-    FORCEINLINE static void normalize(Vector2 vector, Vector2* result)
+    FORCEINLINE static void Normalize(Vector2 vector, Vector2* result)
     {
-        *result = normalize(vector);
+        *result = Normalize(vector);
     }
 
     /// <summary>
-    /// Calculate length of vector
+    /// Calculate Length of vector
     /// </summary>
-    FORCEINLINE static float length(Vector2& vector)
+    FORCEINLINE static float Length(Vector2& vector)
     {
-        return vector.length();
+        return vector.Length();
     }
 
     /// <summary>
-    /// Calculate length of vector
+    /// Calculate Length of vector
     /// </summary>
-    FORCEINLINE static void length(Vector2& vector, float* result)
+    FORCEINLINE static void Length(Vector2& vector, float* result)
     {
-        *result = length(vector);
+        *result = Length(vector);
     }
 
     /// <summary>
     /// Dot product of two vectors
     /// </summary>
-    FORCEINLINE static float dot(Vector2& a, Vector2& b)
+    FORCEINLINE static float Dot(Vector2& a, Vector2& b)
     {
         return a.x * b.x + a.y * b.y;
     }
@@ -140,15 +140,15 @@ public:
     /// <summary>
     /// Dot product of two vectors
     /// </summary>
-    FORCEINLINE static void dot(Vector2& a, Vector2& b, float* result)
+    FORCEINLINE static void Dot(Vector2& a, Vector2& b, float* result)
     {
-        *result = dot(a, b);
+        *result = Dot(a, b);
     }
 
     /// <summary>
     /// Linerally interpolates between two vectors
     /// </summary>
-    FORCEINLINE static Vector2 lerp(Vector2& a, Vector2& b, float t)
+    FORCEINLINE static Vector2 Lerp(Vector2& a, Vector2& b, float t)
     {
         return Vector2(a.x * (1 - t) + t * b.x, a.y * (1 - t) + t * b.y);
     }
@@ -156,15 +156,15 @@ public:
     /// <summary>
     /// Linerally interpolates between two vectors
     /// </summary>
-    FORCEINLINE static void lerp(Vector2& a, Vector2& b, float t, Vector2* result)
+    FORCEINLINE static void Lerp(Vector2& a, Vector2& b, float t, Vector2* result)
     {
-        *result = lerp(a, b, t);
+        *result = Lerp(a, b, t);
     }
 
     /// <summary>
     /// Negation of the vector
     /// </summary>
-    FORCEINLINE static Vector2 negate(Vector2& a)
+    FORCEINLINE static Vector2 Negate(Vector2& a)
     {
         return Vector2(a.x * -1.0f, a.y * -1.0f);
     }
@@ -172,15 +172,15 @@ public:
     /// <summary>
     /// Negation of the vector
     /// </summary>
-    FORCEINLINE static void negate(Vector2& a, Vector2* result)
+    FORCEINLINE static void Negate(Vector2& a, Vector2* result)
     {
-        *result = negate(a);
+        *result = Negate(a);
     }
 
     /// <summary>
     /// Absolute value of the vector
     /// </summary>
-    FORCEINLINE static Vector2 abs(Vector2& a)
+    FORCEINLINE static Vector2 Abs(Vector2& a)
     {
         return Vector2(fabs(a.x), fabs(a.y));
     }
@@ -188,15 +188,15 @@ public:
     /// <summary>
     /// Absolute value of the vector
     /// </summary>
-    FORCEINLINE static void abs(Vector2& a, Vector2* result)
+    FORCEINLINE static void Abs(Vector2& a, Vector2* result)
     {
-        *result = abs(a);
+        *result = Abs(a);
     }
 
     /// <summary>
     /// Distance between two vectors
     /// </summary>
-    FORCEINLINE static float distance(Vector2& a, Vector2& b)
+    FORCEINLINE static float Distance(Vector2& a, Vector2& b)
     {
         return sqrtf((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y));
     }
@@ -204,9 +204,9 @@ public:
     /// <summary>
     /// Distance between two vectors
     /// </summary>
-    FORCEINLINE static void distance(Vector2& a, Vector2& b, float* result)
+    FORCEINLINE static void Distance(Vector2& a, Vector2& b, float* result)
     {
-        *result = distance(a, b);
+        *result = Distance(a, b);
     }
 
 public:

@@ -10,7 +10,7 @@
 
 #define HAS_LOCAL_NEIGH(id, dir) LocalNeighTable[id] & (1 << dir)
 
-bool SpaceObjectOctreeNode::hasPopulatedChildren()
+bool SpaceObjectOctreeNode::HasPopulatedChildren()
 {
     for (auto i = 0; i < 8; i++)
     {
@@ -23,7 +23,7 @@ bool SpaceObjectOctreeNode::hasPopulatedChildren()
     return false;
 }
 
-bool SpaceObjectOctreeNode::isChildrenProcessing() const
+bool SpaceObjectOctreeNode::IsChildrenProcessing() const
 {
     if (m_processing)
         return true;
@@ -37,7 +37,7 @@ bool SpaceObjectOctreeNode::isChildrenProcessing() const
             if (!node)
                 continue;
 
-            if (node->isChildrenProcessing())
+            if (node->IsChildrenProcessing())
                 return true;
         }
     }
@@ -45,7 +45,7 @@ bool SpaceObjectOctreeNode::isChildrenProcessing() const
     return false;
 }
 
-void SpaceObjectOctreeNode::markProcessing()
+void SpaceObjectOctreeNode::MarkProcessing()
 {
     m_processing = true;
 
@@ -53,30 +53,30 @@ void SpaceObjectOctreeNode::markProcessing()
         return;
 
     for (auto i = 0; i < 8; i++)
-        m_childrenNodes[i]->markProcessing();
+        m_childrenNodes[i]->MarkProcessing();
 }
 
-void SpaceObjectOctreeNode::createChunk(IVoxelMesher* mesher)
+void SpaceObjectOctreeNode::CreateChunk(IVoxelMesher* mesher)
 {
     // create chunk
     m_chunk = std::make_shared<SpaceObjectChunk>();
-    m_chunk->init(this, owner->spaceObject);
-    m_chunk->generate(mesher);
+    m_chunk->Init(this, owner->spaceObject);
+    m_chunk->Generate(mesher);
 }
 
-void SpaceObjectOctreeNode::worker_populate(IVoxelMesher* mesher) // WARNING: this function is called on WORKER THREAD!
+void SpaceObjectOctreeNode::WorkerPopulate(IVoxelMesher* mesher) // WARNING: this function is called on WORKER THREAD!
 {
-    cvar childrenSize = m_size / 2;
-    var boundsSize = Vector3::one() * static_cast<float>(childrenSize);
+    cvar childrenSize = m_Size / 2;
+    var boundsSize = Vector3::One() * static_cast<float>(childrenSize);
     for (auto i = 0; i < 8; i++)
     {
-        auto position = m_position + ChildrenNodeOffsets[i] * static_cast<float>(childrenSize);
+        auto position = m_Position + ChildrenNodeOffsets[i] * static_cast<float>(childrenSize);
 
         // construct node
         cvar childNode = m_childrenNodes[i] = new SpaceObjectOctreeNode();
-        childNode->m_position = position;
-        childNode->m_size = childrenSize;
-        childNode->m_bounds = BoundingBox(position, boundsSize);
+        childNode->m_Position = position;
+        childNode->m_Size = childrenSize;
+        childNode->m_Bounds = BoundingBox(position, boundsSize);
 
         // set owner, parent and root
         childNode->owner = owner;
@@ -87,22 +87,22 @@ void SpaceObjectOctreeNode::worker_populate(IVoxelMesher* mesher) // WARNING: th
         childNode->m_childrenId = i;
 
         // generate chunk
-        childNode->createChunk(mesher);
+        childNode->CreateChunk(mesher);
     }
 }
 
-void SpaceObjectOctreeNode::worker_depopulate(IVoxelMesher* mesher)
+void SpaceObjectOctreeNode::WorkerDepopulate(IVoxelMesher* mesher)
 // WARNING: this function is called on WORKER THREAD!
 {
 }
 
-void SpaceObjectOctreeNode::worker_rebuild(IVoxelMesher* mesher) // WARNING: this function is called on WORKER THREAD!
+void SpaceObjectOctreeNode::WorkerRebuild(IVoxelMesher* mesher) // WARNING: this function is called on WORKER THREAD!
 {
     // rebuild chunks mesh
-    m_chunk->rebuild(mesher);
+    m_chunk->Rebuild(mesher);
 }
 
-void SpaceObjectOctreeNode::findIntersecting(Array<SpaceObjectOctreeNode*>& nodes, BoundingBox& box,
+void SpaceObjectOctreeNode::FindIntersecting(Array<SpaceObjectOctreeNode*>& nodes, BoundingBox& box,
                                              const int targetNodeSize)
 {
     // iterate all children nodes
@@ -113,46 +113,46 @@ void SpaceObjectOctreeNode::findIntersecting(Array<SpaceObjectOctreeNode*>& node
         if (!node)
             continue;
 
-        if (BoundingBox::intersects(node->m_bounds, box))
+        if (BoundingBox::Intersects(node->m_Bounds, box))
         {
             if (targetNodeSize == 0)
             {
-                node->findIntersecting(nodes, box, targetNodeSize);
-                nodes.add(node);
+                node->FindIntersecting(nodes, box, targetNodeSize);
+                nodes.Add(node);
             }
-            else if (node->m_size == targetNodeSize)
+            else if (node->m_Size == targetNodeSize)
             {
-                nodes.add(node);
+                nodes.Add(node);
             }
             else
             {
-                node->findIntersecting(nodes, box, targetNodeSize);
+                node->FindIntersecting(nodes, box, targetNodeSize);
             }
         }
     }
 }
 
-void SpaceObjectOctreeNode::populate()
+void SpaceObjectOctreeNode::Populate()
 {
-    if (m_processing || m_populated || m_size <= MinimumNodeSize)
+    if (m_processing || m_populated || m_Size <= MinimumNodeSize)
         return;
 
     m_processing = true;
 
     // queue populate job
-    SpaceObjectManager::enqueue(this, ProcessMode::Populate, MakeDelegate(SpaceObjectOctreeNode::onPopulate));
+    SpaceObjectManager::Enqueue(this, ProcessMode::Populate, MakeDelegate(SpaceObjectOctreeNode::OnPopulate));
 }
 
-void SpaceObjectOctreeNode::depopulate()
+void SpaceObjectOctreeNode::Depopulate()
 {
-    if (m_processing || !m_populated || isChildrenProcessing())
+    if (m_processing || !m_populated || IsChildrenProcessing())
         return;
 
     // queue depopulate job
-    SpaceObjectManager::enqueue(this, ProcessMode::Depopulate, MakeDelegate(SpaceObjectOctreeNode::onDepopulate));
+    SpaceObjectManager::Enqueue(this, ProcessMode::Depopulate, MakeDelegate(SpaceObjectOctreeNode::OnDepopulate));
 }
 
-void SpaceObjectOctreeNode::rebuild()
+void SpaceObjectOctreeNode::Rebuild()
 {
     if (m_processing || m_rebuilding)
         return;
@@ -160,19 +160,19 @@ void SpaceObjectOctreeNode::rebuild()
     m_rebuilding = true;
 
     // queue rebuild job
-    SpaceObjectManager::enqueue(this, ProcessMode::Rebuild, MakeDelegate(SpaceObjectOctreeNode::onRebuild));
+    SpaceObjectManager::Enqueue(this, ProcessMode::Rebuild, MakeDelegate(SpaceObjectOctreeNode::OnRebuild));
 }
 
-void SpaceObjectOctreeNode::modify(VoxelEditMode::_enum mode, Vector3& position, float size)
+void SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position, float size)
 {
-    cvar chunk = getChunk();
+    cvar chunk = GetChunk();
 
     if (chunk == nullptr)
         return;
 
-    cvar chunkData = chunk->getChunkData();
-    cvar voxels = chunkData->getData();
-    cvar chunkScale = static_cast<float>(chunkData->getLod());
+    cvar chunkData = chunk->GetChunkData();
+    cvar voxels = chunkData->GetData();
+    cvar chunkScale = static_cast<float>(chunkData->GetLod());
 
     for (var x = 0; x < VoxelChunkData::ChunkDataSize; x++)
     {
@@ -180,10 +180,10 @@ void SpaceObjectOctreeNode::modify(VoxelEditMode::_enum mode, Vector3& position,
         {
             for (var z = 0; z < VoxelChunkData::ChunkDataSize; z++)
             {
-                var point = Vector3(float(x), float(y), float(z)) * chunkScale + chunkData->getChunkPosition();
+                var point = Vector3(float(x), float(y), float(z)) * chunkScale + chunkData->GetChunkPosition();
 
                 cvar currentValue = voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)];
-                cvar distance = Vector3::distance(position, point);
+                cvar distance = Vector3::Distance(position, point);
 
                 if (distance <= size + 0.5f)
                 {
@@ -210,35 +210,35 @@ void SpaceObjectOctreeNode::modify(VoxelEditMode::_enum mode, Vector3& position,
     chunkData->HasSurface(true);
 }
 
-void SpaceObjectOctreeNode::onUpdate()
+void SpaceObjectOctreeNode::OnUpdate()
 {
 }
 
-void SpaceObjectOctreeNode::onCreate()
+void SpaceObjectOctreeNode::OnCreate()
 {
     m_processing = false;
 
     // upload chunk if needed
-    if (m_chunk->needsUpload())
-        m_chunk->upload();
+    if (m_chunk->NeedsUpload())
+        m_chunk->Upload();
 }
 
-void SpaceObjectOctreeNode::onRebuild()
+void SpaceObjectOctreeNode::OnRebuild()
 {
     m_rebuilding = false;
 
     // upload chunk if needed
-    if (m_chunk->needsUpload())
-        m_chunk->upload();
+    if (m_chunk->NeedsUpload())
+        m_chunk->Upload();
 }
 
-void SpaceObjectOctreeNode::onDestroy()
+void SpaceObjectOctreeNode::OnDestroy()
 {
-    // destroy chunk
+    // Destroy chunk
     SafeDispose(m_chunk);
 }
 
-void SpaceObjectOctreeNode::onPopulate()
+void SpaceObjectOctreeNode::OnPopulate()
 {
     m_processing = false;
     m_populated = true;
@@ -248,18 +248,18 @@ void SpaceObjectOctreeNode::onPopulate()
         cvar node = m_childrenNodes[i];
 
         if (node)
-            node->onCreate();
+            node->OnCreate();
     }
 
-    //onDestroy();
+    //OnDestroy();
 }
 
-void SpaceObjectOctreeNode::onDepopulate()
+void SpaceObjectOctreeNode::OnDepopulate()
 {
     m_populated = false;
     m_processing = false;
 
-    // destroy all children
+    // Destroy all children
     for (auto i = 0; i < 8; i++)
     {
         auto node = m_childrenNodes[i];
@@ -267,7 +267,7 @@ void SpaceObjectOctreeNode::onDepopulate()
         if (node)
         {
             // call event
-            node->onDestroy();
+            node->OnDestroy();
 
             // delete node
             delete node;
@@ -277,10 +277,10 @@ void SpaceObjectOctreeNode::onDepopulate()
         }
     }
 
-    onCreate();
+    OnCreate();
 }
 
-void SpaceObjectOctreeNode::update()
+void SpaceObjectOctreeNode::Update()
 {
     if (m_populated)
     {
@@ -289,15 +289,15 @@ void SpaceObjectOctreeNode::update()
             auto node = m_childrenNodes[i];
 
             if (node)
-                node->update();
+                node->Update();
         }
         return;
     }
 
-    onUpdate();
+    OnUpdate();
 }
 
-void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
+void SpaceObjectOctreeNode::UpdateViews(Array<Vector3>& views)
 {
     cvar viewRangeMultiplier = 4.0f;
 
@@ -306,19 +306,19 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
 
     if (m_populated)
     {
-        // update children node views, because we are populated
+        // Update children node views, because we are populated
         for (auto i = 0; i < 8; i++)
         {
             auto node = m_childrenNodes[i];
 
             if (node)
-                node->updateViews(views);
+                node->UpdateViews(views);
         }
     }
 
     // we cannot depopulate/populate etc. because this node has populated children
     // which should be depoplated first, but this doesn't happen this time
-    if (m_populated && hasPopulatedChildren())
+    if (m_populated && HasPopulatedChildren())
         return;
 
     // do not populate/depopulate root
@@ -345,19 +345,19 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
     // IF (there is no C's) AND populated: depopulate - otherwise: ignore.
 
     // fast exit
-    if (views.count() == 0)
+    if (views.Count() == 0)
     {
         // IF (there is no C's) AND populated: depopulate - otherwise: ignore.
         if (m_populated)
-            depopulate();
+            Depopulate();
         return;
     }
 
     // dist(X, A) = node_size + node_size * 0.5f
-    cvar distXA = m_size + m_size * 0.5f * viewRangeMultiplier;
+    cvar distXA = m_Size + m_Size * 0.5f * viewRangeMultiplier;
 
     // dist(X, B) = dist(X, A) + node_size * 0.25
-    cvar distXB = distXA + m_size * 0.25f * viewRangeMultiplier;
+    cvar distXB = distXA + m_Size * 0.25f * viewRangeMultiplier;
 
     // flags
     var hasXA = false;
@@ -366,7 +366,7 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
     // check view flags
     for (auto&& view : views)
     {
-        cvar distanceXC = Vector3::distance(m_position, view);
+        cvar distanceXC = Vector3::Distance(m_Position, view);
 
         if (distanceXC <= distXA)
         {
@@ -382,7 +382,7 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
     if (hasXA)
     {
         if (!m_populated)
-            populate();
+            Populate();
         return;
     }
 
@@ -390,23 +390,23 @@ void SpaceObjectOctreeNode::updateViews(Array<Vector3>& views)
     if (!hasXA && !hasXB)
     {
         if (m_populated)
-            depopulate();
+            Depopulate();
         return;
     }
 
     // IF (there is no C's) AND populated: depopulate - otherwise: ignore.
-    if (m_populated && views.count() > 0)
-        depopulate();
+    if (m_populated && views.Count() > 0)
+        Depopulate();
 }
 
-void SpaceObjectOctreeNode::draw()
+void SpaceObjectOctreeNode::Draw()
 {
-    if (!Camera::getMainCamera()->getBoundingFrustum().contains(m_bounds))
+    if (!Camera::GetMainCamera()->GetBoundingFrustum().Contains(m_Bounds))
         return;
 
     if (m_chunk && !m_populated)
     {
-        m_chunk->draw();
+        m_chunk->Draw();
         return;
     }
 
@@ -416,16 +416,16 @@ void SpaceObjectOctreeNode::draw()
 
         if (node)
         {
-            node->draw();
+            node->Draw();
         }
     }
 }
 
-void SpaceObjectOctreeNode::dispose()
+void SpaceObjectOctreeNode::Dispose()
 {
     // draw chunk if exists
     if (m_chunk)
-        m_chunk->dispose();
+        m_chunk->Dispose();
 
     if (!m_populated)
         return;
@@ -436,8 +436,8 @@ void SpaceObjectOctreeNode::dispose()
 
         if (node)
         {
-            // dispose
-            node->dispose();
+            // Dispose
+            node->Dispose();
 
             // delete node
             delete node;
@@ -448,16 +448,16 @@ void SpaceObjectOctreeNode::dispose()
     }
 }
 
-SpaceObjectOctreeNode* SpaceObjectOctreeNode::getNeighNode(NodeDirection::_enum direction) const
+SpaceObjectOctreeNode* SpaceObjectOctreeNode::GetNeighNode(NodeDirection::_enum direction) const
 {
     // calculate target position
-    var targetPosition = m_position + DirectionOffset[direction] * float(m_size);
-    var targetLod = m_size;
+    var targetPosition = m_Position + DirectionOffset[direction] * float(m_Size);
+    var targetLod = m_Size;
 
     // traverse from root to the same target lod as this node
     for (var i = 0; i < owner->m_rootNodesCount; i++)
     {
-        var node = owner->m_rootNodes[i]->findNode(targetPosition, targetLod);;
+        var node = owner->m_rootNodes[i]->FindNode(targetPosition, targetLod);;
 
         if (node)
             return node;
@@ -466,9 +466,9 @@ SpaceObjectOctreeNode* SpaceObjectOctreeNode::getNeighNode(NodeDirection::_enum 
     return nullptr;
 }
 
-SpaceObjectOctreeNode* SpaceObjectOctreeNode::findNode(Vector3 position, int size)
+SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNode(Vector3 position, int size)
 {
-    if (m_size == size)
+    if (m_Size == size)
     {
         // do not search anymore, because we found the exact node!
         return this;
@@ -481,9 +481,9 @@ SpaceObjectOctreeNode* SpaceObjectOctreeNode::findNode(Vector3 position, int siz
     }
 
     // NOTE: we don't have to check 'equality' of position because 'size' does this
-    var xSign = position.x > m_position.x;
-    var ySign = position.y > m_position.y;
-    var zSign = position.z > m_position.z;
+    var xSign = position.x > m_Position.x;
+    var ySign = position.y > m_Position.y;
+    var zSign = position.z > m_Position.z;
 
     var caseCode = (zSign ? 1 : 0) | (ySign ? 1 : 0) << 1 | (xSign ? 1 : 0) << 2;
     var childId = NodeDirIds[caseCode];
@@ -491,5 +491,5 @@ SpaceObjectOctreeNode* SpaceObjectOctreeNode::findNode(Vector3 position, int siz
     var node = m_childrenNodes[childId];
 
     // go further
-    return node->findNode(position, size);
+    return node->FindNode(position, size);
 }

@@ -33,12 +33,12 @@ public:
     /// <summary>
     /// Begin render buffer building.
     /// </summary>
-    void begin();
+    void Begin();
 
     /// <summary>
     /// End render buffer building.
     /// </summary>
-    void end();
+    void End();
 
     /// <summary>
     /// Add texture to render buffer.
@@ -46,38 +46,38 @@ public:
     /// </summary>
     /// <param name="name">The target name, only for better building in code.</param>
     /// <param name="format">The target format.</param>
-    void addTarget(const char* name, Renderer::TextureFormat::_enum format);
+    void AddTarget(const char* name, Renderer::TextureFormat::_enum format);
 
     /// <summary>
     /// Returns texture handle at slot.
     /// </summary>
     /// <param name="slot">The texture/target slot.</param>
     /// <returns>The target texture handle.</returns>
-    Renderer::Texture2DHandle getTarget(uint slot);
+    Renderer::Texture2DHandle GetTarget(uint slot);
 
     /// <summary>
     /// Resize the render buffer.
     /// </summary>
     /// <param name="width">The width.</param>
     /// <param name="height">The height.</param>
-    void resize(uint width, uint height);
+    void Resize(uint width, uint height);
 
     /// <summary>
     /// Bind this render buffer.
     /// </summary>
-    void bind();
+    void Bind();
 
     /// <summary>
     /// Dispose this render buffer.
     /// </summary>
-    void dispose();
+    void Dispose();
 
 public:
     /// <summary>
     /// Create render buffer.
     /// </summary>
     /// <returns>The created render buffer.</returns>
-    FORCEINLINE static Ref<RenderBuffer> createRenderBuffer()
+    FORCEINLINE static Ref<RenderBuffer> CreateRenderBuffer()
     {
         Ref<RenderBuffer> renderTarget(new RenderBuffer);
         return renderTarget;

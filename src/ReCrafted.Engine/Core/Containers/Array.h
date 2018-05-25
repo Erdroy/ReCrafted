@@ -40,14 +40,14 @@ public:
     }
 
 public:
-    FORCEINLINE void add(T item)
+    FORCEINLINE void Add(T item)
     {
         m_vector.push_back(item);
 
         m_count++;
     }
 
-    FORCEINLINE bool remove(T item)
+    FORCEINLINE bool Remove(T item)
     {
         _ASSERT(m_count > 0u);
 
@@ -63,7 +63,7 @@ public:
         return false;
     }
 
-    FORCEINLINE bool remove(void* itemPointer)
+    FORCEINLINE bool Remove(void* itemPointer)
     {
         _ASSERT(m_count > 0u);
 
@@ -79,19 +79,19 @@ public:
         return false;
     }
 
-    FORCEINLINE void erase(typename std::vector<T>::const_iterator where)
+    FORCEINLINE void Erase(typename std::vector<T>::const_iterator where)
     {
         m_vector.erase(where);
         m_count = static_cast<uint32_t>(m_vector.size());
     }
 
-    FORCEINLINE void erase(typename std::vector<T>::const_iterator where, typename std::vector<T>::const_iterator last)
+    FORCEINLINE void Erase(typename std::vector<T>::const_iterator where, typename std::vector<T>::const_iterator last)
     {
         m_vector.erase(where, last);
         m_count = static_cast<uint32_t>(m_vector.size());
     }
 
-    FORCEINLINE void removeAt(int index)
+    FORCEINLINE void RemoveAt(int index)
     {
         _ASSERT(index >= 0 && index < static_cast<int>(m_count));
 
@@ -99,13 +99,13 @@ public:
         m_count--;
     }
 
-    FORCEINLINE void reserve(uint32_t size)
+    FORCEINLINE void Reserve(uint32_t size)
     {
         m_vector.reserve(size);
         m_count = size;
     }
 
-    FORCEINLINE bool contains(T item)
+    FORCEINLINE bool Contains(T item)
     {
         if (std::find(m_vector.begin(), m_vector.end(), item) != m_vector.end())
         {
@@ -115,34 +115,34 @@ public:
         return false;
     }
 
-    FORCEINLINE void copy(const Array<T>& array)
+    FORCEINLINE void Copy(const Array<T>& array)
     {
         for (auto&& elem : array)
-            add(elem);
+            Add(elem);
     }
 
-    FORCEINLINE void sort()
+    FORCEINLINE void Sort()
     {
         std::sort(m_vector.begin(), m_vector.end());
     }
 
     template <class X>
-    FORCEINLINE void sort()
+    FORCEINLINE void Sort()
     {
         std::sort(m_vector.begin(), m_vector.end(), X());
     }
 
-    FORCEINLINE void reverse()
+    FORCEINLINE void Reverse()
     {
         std::reverse(m_vector.begin(), m_vector.end());
     }
 
-    FORCEINLINE uint32_t count() const
+    FORCEINLINE uint32_t Count() const
     {
         return m_count;
     }
 
-    FORCEINLINE uint32_t size() const
+    FORCEINLINE uint32_t Size() const
     {
         return static_cast<uint32_t>(m_vector.size());
     }
@@ -167,53 +167,53 @@ public:
         return m_vector.end();
     }
 
-    FORCEINLINE T& last()
+    FORCEINLINE T& Last()
     {
         _ASSERT(m_count > 0u);
 
         return m_vector[m_count - 1];
     }
 
-    FORCEINLINE const T& last() const
+    FORCEINLINE const T& Last() const
     {
         _ASSERT(m_count > 0u);
 
         return m_vector[m_count - 1];
     }
 
-    FORCEINLINE T& first()
+    FORCEINLINE T& First()
     {
         _ASSERT(m_count > 0u);
 
         return m_vector[0];
     }
 
-    FORCEINLINE const T& first() const
+    FORCEINLINE const T& First() const
     {
         _ASSERT(m_count > 0u);
 
         return m_vector[0];
     }
 
-    FORCEINLINE T& at(int index)
+    FORCEINLINE T& At(int index)
     {
         _ASSERT(index >= 0 && index < static_cast<int>(m_count));
 
         return m_vector[index];
     }
 
-    FORCEINLINE T* data()
+    FORCEINLINE T* Data()
     {
         return m_vector.data();
     }
 
-    FORCEINLINE void clear()
+    FORCEINLINE void Clear()
     {
         m_count = 0;
         m_vector.clear();
     }
 
-    FORCEINLINE void release()
+    FORCEINLINE void Release()
     {
         m_count = 0;
         m_vector.clear();

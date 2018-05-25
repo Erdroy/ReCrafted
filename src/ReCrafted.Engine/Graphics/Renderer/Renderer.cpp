@@ -240,7 +240,7 @@ namespace Renderer
 
         m_renderer->Frame();
 
-        // update memory
+        // Update memory
         UpdateMemory();
     }
 
@@ -444,21 +444,21 @@ namespace Renderer
 
         // note: frame buffers do not have any render textures
         cvar isFrameBuffer = renderBufferDesc.renderTextures.empty();
-        _ASSERT(isFrameBuffer == false); // Cannot destroy Frame Buffer!
+        _ASSERT(isFrameBuffer == false); // Cannot Destroy Frame Buffer!
 
         Command_DestroyRenderBuffer command;
         command.handle = handle;
 
         g_commandList->WriteCommand(&command);
 
-        // destroy render textures
+        // Destroy render textures
         std::for_each(renderBufferDesc.renderTextures.begin(), renderBufferDesc.renderTextures.end(),
                       [](Texture2DHandle handle)
                       {
                           DestroyTexture2D(handle);
                       });
 
-        // destroy depth buffer if created
+        // Destroy depth buffer if created
         if (renderBufferDesc.depthBuffer.idx > 0)
             DestroyTexture2D(renderBufferDesc.depthBuffer);
 

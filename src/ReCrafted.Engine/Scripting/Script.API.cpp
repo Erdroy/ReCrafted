@@ -7,7 +7,7 @@ namespace Internal
 {
 }
 
-void Script::initRuntime()
+void Script::InitRuntime()
 {
     API_FILE("Common/Script.Gen.cs")
     {

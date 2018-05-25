@@ -6,24 +6,24 @@
 #include "Core/Math/Math.h"
 #include "Graphics/Graphics.h"
 
-void SpaceObjectOctree::init()
+void SpaceObjectOctree::Init()
 {
     // calculate diameter
-    var settings = spaceObject->getSettings();
+    var settings = spaceObject->GetSettings();
     var radius = settings.maxSurfaceHeight;
-    var objectSize = Math::roundUpToPow2(static_cast<int>(radius * 2)); // diameter rounded up to power of 2
+    var objectSize = Math::RoundUpToPow2(static_cast<int>(radius * 2)); // diameter rounded up to power of 2
 
     // calculate bounds size
-    var size = Vector3::one() * static_cast<float>(objectSize);
+    var size = Vector3::One() * static_cast<float>(objectSize);
 
     // build bounds
-    m_bounds = BoundingBox(settings.position, size);
+    m_Bounds = BoundingBox(settings.position, size);
 
-    // calculate length of root nodes on single axis
-    var rootNodesLength = Math::pow(2, settings.rootOctreeDepth);
+    // calculate Length of root nodes on single axis
+    var rootNodesLength = Math::Pow(2, settings.rootOctreeDepth);
 
     // calculate the count of root nodes
-    m_rootNodesCount = Math::pow(rootNodesLength, 3);
+    m_rootNodesCount = Math::Pow(rootNodesLength, 3);
 
     // calculate the node size
     var rootNodeSize = objectSize / rootNodesLength;
@@ -32,7 +32,7 @@ void SpaceObjectOctree::init()
     var rootNodeOffset = static_cast<float>(rootNodesLength / 2 * rootNodeSize) - rootNodeSize * 0.5f;
     var rootNodePositionOffset = Vector3(rootNodeOffset, rootNodeOffset, rootNodeOffset);
 
-    var boundsSize = Vector3::one() * static_cast<float>(rootNodeSize);
+    var boundsSize = Vector3::One() * static_cast<float>(rootNodeSize);
 
     // create root nodes
     m_rootNodes = new SpaceObjectOctreeNode*[m_rootNodesCount];
@@ -55,18 +55,18 @@ void SpaceObjectOctree::init()
                 position -= rootNodePositionOffset;
 
                 // set position and size
-                node->set_position(position);
-                node->set_size(rootNodeSize);
+                node->SetPosition(position);
+                node->SetSize(rootNodeSize);
 
                 // set owner, parent and root
                 node->owner = this;
                 node->parent = nullptr;
                 node->root = node;
                 node->m_isRoot = true;
-                node->m_bounds = BoundingBox(position, boundsSize);
+                node->m_Bounds = BoundingBox(position, boundsSize);
 
                 // populate node
-                node->populate();
+                node->Populate();
 
                 nodeId++;
             }
@@ -74,34 +74,34 @@ void SpaceObjectOctree::init()
     }
 }
 
-void SpaceObjectOctree::update()
+void SpaceObjectOctree::Update()
 {
-    Profiler::beginProfile("SpaceObjectOctree::update");
+    Profiler::BeginProfile("SpaceObjectOctree::Update");
     for (var i = 0; i < m_rootNodesCount; i++)
-        m_rootNodes[i]->update();
-    Profiler::endProfile();
+        m_rootNodes[i]->Update();
+    Profiler::EndProfile();
 }
 
-void SpaceObjectOctree::draw()
+void SpaceObjectOctree::Draw()
 {
-    Profiler::beginProfile("SpaceObjectOctree::draw");
+    Profiler::BeginProfile("SpaceObjectOctree::draw");
 
-    Graphics::getInstance()->setStage(RenderStage::Default);
+    Graphics::GetInstance()->SetStage(RenderStage::Default);
 
     for (var i = 0; i < m_rootNodesCount; i++)
-        m_rootNodes[i]->draw();
-    Profiler::endProfile();
+        m_rootNodes[i]->Draw();
+    Profiler::EndProfile();
 }
 
-void SpaceObjectOctree::updateViews(Array<Vector3>& views)
+void SpaceObjectOctree::UpdateViews(Array<Vector3>& views)
 {
-    Profiler::beginProfile("SpaceObjectOctree::updateViews");
+    Profiler::BeginProfile("SpaceObjectOctree::updateViews");
     for (var i = 0; i < m_rootNodesCount; i++)
-        m_rootNodes[i]->updateViews(views);
-    Profiler::endProfile();
+        m_rootNodes[i]->UpdateViews(views);
+    Profiler::EndProfile();
 }
 
-void SpaceObjectOctree::dispose()
+void SpaceObjectOctree::Dispose()
 {
     for (var i = 0; i < m_rootNodesCount; i++)
     {
@@ -112,11 +112,11 @@ void SpaceObjectOctree::dispose()
     delete [] m_rootNodes;
 }
 
-SpaceObjectOctreeNode* SpaceObjectOctree::findNode(Vector3 position, int size) const
+SpaceObjectOctreeNode* SpaceObjectOctree::FindNode(Vector3 position, int size) const
 {
     for (var i = 0; i < m_rootNodesCount; i++)
     {
-        cvar node = m_rootNodes[i]->findNode(position, size);
+        cvar node = m_rootNodes[i]->FindNode(position, size);
 
         if (node)
             return node;
@@ -125,7 +125,7 @@ SpaceObjectOctreeNode* SpaceObjectOctree::findNode(Vector3 position, int size) c
     return nullptr;
 }
 
-Array<SpaceObjectOctreeNode*> SpaceObjectOctree::findIntersecting(BoundingBox& box, bool leafOnly) const
+Array<SpaceObjectOctreeNode*> SpaceObjectOctree::FindIntersecting(BoundingBox& box, bool leafOnly) const
 {
     Array<SpaceObjectOctreeNode*> intersecting = {};
 
@@ -138,10 +138,10 @@ Array<SpaceObjectOctreeNode*> SpaceObjectOctree::findIntersecting(BoundingBox& b
         cvar node = m_rootNodes[i];
 
         // check if this node intersects with given bounding box, if so, proceed further
-        if (BoundingBox::intersects(node->m_bounds, box))
+        if (BoundingBox::Intersects(node->m_Bounds, box))
         {
-            node->findIntersecting(intersecting, box, targetSize);
-            intersecting.add(node);
+            node->FindIntersecting(intersecting, box, targetSize);
+            intersecting.Add(node);
         }
     }
 

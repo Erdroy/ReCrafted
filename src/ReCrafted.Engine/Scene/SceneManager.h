@@ -20,11 +20,11 @@ public:
     virtual ~SceneManager() = default;
 
 private:
-    void onInit() override;
-    void onDispose() override;
+    void OnInit() override;
+    void OnDispose() override;
 
 private:
-    void update() override;
+    void Update() override;
 };
 
 #endif // SCENEMANAGER_H

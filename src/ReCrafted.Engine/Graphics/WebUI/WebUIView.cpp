@@ -8,33 +8,33 @@
 #include "Core/Delegate.h"
 #include "Graphics/Graphics.h"
 
-void WebUIView::init()
+void WebUIView::Init()
 {
-    if (!WebUIEngine::isInitialized())
+    if (!WebUIEngine::IsInitialized())
         return;
 
 }
 
-void WebUIView::update()
+void WebUIView::Update()
 {
-    if (!WebUIEngine::isInitialized())
+    if (!WebUIEngine::IsInitialized())
         return;
 
-    //m_viewBase->update();
+    //m_viewBase->Update();
 }
 
-void WebUIView::resize(uint width, uint height)
+void WebUIView::Resize(uint width, uint height)
 {
-    if (!WebUIEngine::isInitialized())
+    if (!WebUIEngine::IsInitialized())
         return;
 
     //cvar view = getView();
-    //view->update();
+    //view->Update();
 }
 
-void WebUIView::render()
+void WebUIView::Render()
 {
-    if (!WebUIEngine::isInitialized())
+    if (!WebUIEngine::IsInitialized())
         return;
 
     // swap texture
@@ -42,43 +42,43 @@ void WebUIView::render()
     //view->swap();
 
     // draw texture
-    Graphics::getInstance()->setStage(RenderStage::DrawWebUI);
-    // Graphics::getInstance()->blit(0, view->getRenderTexture(), true);
+    Graphics::GetInstance()->SetStage(RenderStage::DrawWebUI);
+    // Graphics::GetInstance()->blit(0, view->getRenderTexture(), true);
 }
 
-void WebUIView::onDestroy()
+void WebUIView::OnDestroy()
 {
-    cvar view = getView();
+    cvar view = GetView();
 
     //if (view && view->m_browser)
     //    view->m_browser->GetHost()->CloseBrowser(false);
 }
 
-CEFView* WebUIView::getView() const
+CEFView* WebUIView::GetView() const
 {
     return static_cast<CEFView*>(m_viewBase);
 }
 
-void WebUIView::navigate(Text& url)
+void WebUIView::Navigate(Text& url)
 {
-    if (!WebUIEngine::isInitialized())
+    if (!WebUIEngine::IsInitialized())
         return;
 
-    cvar view = getView();
-    cvar curl = url.std_str();
+    cvar view = GetView();
+    cvar curl = url.StdStr();
     //var frame = view->m_browser->GetMainFrame();
     //frame->LoadURL(curl);
 }
 
-void WebUIView::execute(const char* javaScriptSource)
+void WebUIView::Execute(const char* javaScriptSource)
 {
-    if (!WebUIEngine::isInitialized())
+    if (!WebUIEngine::IsInitialized())
         return;
 
     //cvar view = getView();
     //view->m_browser->GetMainFrame()->ExecuteJavaScript(CefString(javaScriptSource), CefString(""), 0);
 }
 
-void WebUIView::bind(const char* bindName, Delegate<void> delegate)
+void WebUIView::Bind(const char* bindName, Delegate<void> delegate)
 {
 }

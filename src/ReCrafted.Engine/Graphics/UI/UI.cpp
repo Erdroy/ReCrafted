@@ -13,19 +13,19 @@ bool UI::drawcmd_comparison(drawcmd& cmd1, drawcmd& cmd2)
     return std::tie(cmd1.zOrder, cmd1.texture) < std::tie(cmd2.zOrder, cmd2.texture);
 }
 
-void UI::clear()
+void UI::Clear()
 {
     // clear draw command array
-    m_drawCmds.clear();
+    m_drawCmds.Clear();
 
-    setDepth(0.0f);
+    SetDepth(0.0f);
 
     // reset flags?
 }
 
-void UI::drawnow()
+void UI::DrawNow()
 {
-    // update buffers
+    // Update buffers
     cvar vbSize = m_vertexCount * m_vertexSize;
     cvar ibSize = m_indexCount * m_indexSize;
 
@@ -35,7 +35,7 @@ void UI::drawnow()
     memcpy(vbData, m_vertexBufferData, vbSize);
     memcpy(ibData, m_indexBufferData, ibSize);
 
-    // update buffers
+    // Update buffers
     Renderer::UpdateVertexBuffer(m_vertexBuffer, vbData, m_vertexBufferDataPos, 0u);
     Renderer::UpdateIndexBuffer(m_indexBuffer, ibData, m_indexBufferDataPos, 0u);
 
@@ -55,7 +55,7 @@ void UI::drawnow()
 }
 
 // protip: we can use forceinline on this method because we are using it only in this source file.
-void UI::push_drawcmd(drawcmd* cmd, int index)
+void UI::PushDrawCmd(drawcmd* cmd, int index)
 {
     // push draw cmd data
 
@@ -86,7 +86,7 @@ void UI::push_drawcmd(drawcmd* cmd, int index)
     m_indexCount += 6;
 }
 
-void UI::onInit()
+void UI::OnInit()
 {
     // create dynamic vertex buffer
     m_vertexBufferData = Renderer::Allocate(m_vertexBufferSize, 0);
@@ -97,15 +97,15 @@ void UI::onInit()
     m_indexBuffer = Renderer::CreateIndexBuffer(m_maxIndexCount, false, true);
 
     // load shader
-    m_shader = Shader::loadShader("../assets/shaders/UIDefault.shader");
+    m_shader = Shader::LoadShader("../assets/shaders/UIDefault.shader");
 
     // allocate draw command for first upload (it's 1/4 of max vertex count as there is 4 vertexes per command)
     m_drawCmds = Array<drawcmd>();
 }
 
-void UI::onDispose()
+void UI::OnDispose()
 {
-    // destroy buffers
+    // Destroy buffers
     Renderer::DestroyVertexBuffer(m_vertexBuffer);
     Renderer::DestroyIndexBuffer(m_indexBuffer);
 
@@ -113,28 +113,28 @@ void UI::onDispose()
     Renderer::Free(m_vertexBufferData);
     Renderer::Free(m_indexBufferData);
 
-    // dispose shader
+    // Dispose shader
     SafeDispose(m_shader);
 }
 
-void UI::beginDraw()
+void UI::BeginDraw()
 {
     // clear before drawing
-    clear();
+    Clear();
 }
 
-void UI::endDraw()
+void UI::EndDraw()
 {
     // sort using zOrder (slave key) and texture (master key)
     sort(m_drawCmds.begin(), m_drawCmds.end(), drawcmd_comparison);
 
-    cvar drawCmdCount = m_drawCmds.size();
+    cvar drawCmdCount = m_drawCmds.Size();
 
     var vertexCount = 0;
     Renderer::Texture2DHandle textureHandle;
     textureHandle.idx = 0xFFFFFFFF;
 
-    for (var i = 0u; i < m_drawCmds.size(); i++)
+    for (var i = 0u; i < m_drawCmds.Size(); i++)
     {
         cvar drawcmd = &m_drawCmds[i];
         cvar textureChanged = drawcmd->texture > 0 && textureHandle.idx != drawcmd->texture;
@@ -142,7 +142,7 @@ void UI::endDraw()
         if (vertexCount + 4u > m_maxVertexCount || (textureChanged && vertexCount > 0))
         {
             // draw now, reset, and draw more!
-            drawnow();
+            DrawNow();
             vertexCount = 0;
         }
 
@@ -154,7 +154,7 @@ void UI::endDraw()
         }
 
         // push draw command
-        push_drawcmd(drawcmd, vertexCount);
+        PushDrawCmd(drawcmd, vertexCount);
 
         // increase the vertex count used for batching
         vertexCount += 4;
@@ -162,16 +162,16 @@ void UI::endDraw()
         // draw if this is the last command
         if (i + 1 >= drawCmdCount)
         {
-            drawnow();
+            DrawNow();
             break;
         }
     }
 
     // clear after drawing
-    clear();
+    Clear();
 }
 
-void UI::setColor(Color color)
+void UI::SetColor(Color color)
 {
     m_instance->m_color = color;
     m_instance->m_color_r = color.r / 255.0f;
@@ -180,22 +180,22 @@ void UI::setColor(Color color)
     m_instance->m_color_a = color.a / 255.0f;
 }
 
-Color UI::getColor()
+Color UI::GetColor()
 {
     return m_instance->m_color;
 }
 
-void UI::setDepth(float depth)
+void UI::SetDepth(float depth)
 {
     m_instance->m_depth = depth;
 }
 
-float UI::getDepth()
+float UI::GetDepth()
 {
     return m_instance->m_depth;
 }
 
-void UI::setViewRect(Rectf* viewRect, bool enabled)
+void UI::SetViewRect(Rectf* viewRect, bool enabled)
 {
     m_instance->m_viewRect = *viewRect;
     m_instance->m_useViewRect = enabled;

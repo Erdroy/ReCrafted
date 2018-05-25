@@ -39,32 +39,32 @@ public:
     }
 
 public:
-    int getSize() const
+    int GetSize() const
     {
         return m_size;
     }
 
-    int getLod() const
+    int GetLod() const
     {
         return m_size / ChunkSize;
     }
 
-    sbyte* getData() const
+    sbyte* GetData() const
     {
         return m_voxelData;
     }
 
-    Vector3 getNodePosition() const
+    Vector3 GetNodePosition() const
     {
         return m_nodePosition;
     }
 
-    Vector3 getChunkPosition() const
+    Vector3 GetChunkPosition() const
     {
         return m_chunkPosition;
     }
 
-    bool isLoaded() const
+    bool IsLoaded() const
     {
         return m_loaded;
     }

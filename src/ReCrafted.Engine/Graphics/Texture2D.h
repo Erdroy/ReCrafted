@@ -43,13 +43,13 @@ public:
 IRESOURCE_IMPL(Texture2D)
 
 private:
-    void onDestroy() override;
+    void OnDestroy() override;
 
-    static void releaseBitmap(void* ptr, void* userData);
-    static void releaseData(void* ptr, void* userData);
+    static void ReleaseBitmap(void* ptr, void* userData);
+    static void ReleaseData(void* ptr, void* userData);
 
 public:
-    void dispose() override;
+    void Dispose() override;
 
 public:
     /**
@@ -57,7 +57,7 @@ public:
 	 * \param filename The file.
 	 * \param flags BGFX Texture flags.
 	 */
-    void loadFile(const char* filename, uint flags = 0u);
+    void LoadFromFile(const char* filename, uint flags = 0u);
 
     /**
 	 * \brief Loads texture from memory.
@@ -66,7 +66,7 @@ public:
 	 * \param height The height.
 	 * \param flags BGFX Texture flags.
 	 */
-    void loadMemory(void* data, int width, int height, uint flags = 0u);
+    void LoadFromMemory(void* data, int width, int height, uint flags = 0u);
 
     /**
 	 * \brief Creates texture memory of given size.
@@ -74,7 +74,7 @@ public:
 	 * \param height The height.
 	 * \param flags BGFX Texture flags.
 	 */
-    void createMemory(int width, int height, uint flags = 0u);
+    void CreateMemory(int width, int height, uint flags = 0u);
 
     /**
 	 * \brief Get pixel at given position.
@@ -82,7 +82,7 @@ public:
 	 * \param y The y coord.
 	 * \return Pixel HEX format.
 	 */
-    uint getPixel(int x, int y);
+    uint GetPixel(int x, int y);
 
     /**
 	 * \brief Get all pixels in the texture(Returns pixel buffer).
@@ -90,7 +90,7 @@ public:
 	 * 
 	 * \note This will be invalid after calling `apply`.
 	 */
-    uint* getPixels() const;
+    uint* GetPixels() const;
 
     /**
 	 * \brief Sets pixel at given position.
@@ -98,7 +98,7 @@ public:
 	 * \param y The y coord.
 	 * \param pixel Pixel in HEX format.
 	 */
-    void setPixel(int x, int y, uint pixel);
+    void SetPixel(int x, int y, uint pixel);
 
     /**
     * \brief Sets pixel at given position.
@@ -109,7 +109,7 @@ public:
     * \param b B channel value.
     * \param a A channel value.
     */
-    void setPixel(int x, int y, byte r, byte g, byte b, byte a);
+    void SetPixel(int x, int y, byte r, byte g, byte b, byte a);
 
     /**
 	 * \brief Sets pixels at given position with given size.
@@ -119,27 +119,27 @@ public:
 	 * \param height The height of the pixel array. 
 	 * \param pixels The pixels data.
 	 */
-    void setPixels(int x, int y, int width, int height, uint* pixels);
+    void SetPixels(int x, int y, int width, int height, uint* pixels);
 
     /**
 	 * \brief Gets the width of this texture.
 	 * \return The width of this texture.
 	 */
-    uint getWidth() const;
+    uint GetWidth() const;
 
     /**
     * \brief Gets the height of this texture.
     * \return The height of this texture.
     */
-    uint getHeight() const;
+    uint GetHeight() const;
 
     /**
 	 * \brief Apply, all pixel operations will be unavailable after calling this method.
 	 */
-    void apply();
+    void Apply();
 
 public:
-    Renderer::Texture2DHandle getHandle() const
+    Renderer::Texture2DHandle GetHandle() const
     {
         return m_textureHandle;
     }
@@ -149,7 +149,7 @@ public:
 	 * \brief Creates new empty texture.
 	 * \return The newly created texture.
 	 */
-    static Ref<Texture2D> createTexture(Renderer::TextureFormat::_enum format);
+    static Ref<Texture2D> CreateTexture(Renderer::TextureFormat::_enum format);
 };
 
 #endif // TEXTURE2D_H

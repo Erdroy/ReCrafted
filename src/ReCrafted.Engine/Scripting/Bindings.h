@@ -11,9 +11,8 @@
 class Bindings
 {
 public:
-    static void bind();
-
-    static void shutdown();
+    static void Bind();
+    static void Shutdown();
 };
 
 #endif // BINDINGS_H

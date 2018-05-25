@@ -23,21 +23,21 @@ private:
 private:
 
 public:
-    void create();
-    void dispose() override;
+    void Create();
+    void Dispose() override;
 
 public:
-    void updateSizeNow();
+    void UpdateSizeNow();
 
 public:
-    void setOnResized(Delegate<void> callback);
+    void SetOnResized(Delegate<void> callback);
 
 public:
-    static void windowResize(void* windowHandle);
+    static void WindowResize(void* windowHandle);
 
 public:
-PROPERTY(uint, width) = 0u;
-PROPERTY(uint, height) = 0u;
+PROPERTY(uint, Width) = 0u;
+PROPERTY(uint, Height) = 0u;
 };
 
 #endif // APPLICATIONWINDOW_H

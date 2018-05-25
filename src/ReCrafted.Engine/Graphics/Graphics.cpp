@@ -17,29 +17,29 @@ SINGLETON_IMPL(Graphics)
 
 Graphics* g_rendererInstance;
 
-void Graphics::loadInternalShaders()
+void Graphics::LoadInternalShaders()
 {
-    Logger::logInfo("Loading internal shaders");
+    Logger::LogInfo("Loading internal shaders");
 
-    m_gbufferFillShader = Shader::loadShader("../assets/shaders/GBufferStandard.shader");
-    m_gbufferCombine = Shader::loadShader("../assets/shaders/GBufferCombine.shader");
+    m_gbufferFillShader = Shader::LoadShader("../assets/shaders/GBufferStandard.shader");
+    m_gbufferCombine = Shader::LoadShader("../assets/shaders/GBufferCombine.shader");
 }
 
-void Graphics::createRenderBuffers()
+void Graphics::CreateRenderBuffers()
 {
-    Logger::logInfo("Creating render buffers");
+    Logger::LogInfo("Creating render buffers");
 
     // create render buffer for geometry pass
-    m_gbuffer = RenderBuffer::createRenderBuffer();
-    m_gbuffer->begin();
-    m_gbuffer->addTarget("ALBEDO", Renderer::TextureFormat::RGBA8);
-    m_gbuffer->addTarget("[RGB]NORMALS, [A]AmbientOcculusion", Renderer::TextureFormat::RGBA8);
-    m_gbuffer->end();
+    m_gbuffer = RenderBuffer::CreateRenderBuffer();
+    m_gbuffer->Begin();
+    m_gbuffer->AddTarget("ALBEDO", Renderer::TextureFormat::RGBA8);
+    m_gbuffer->AddTarget("[RGB]NORMALS, [A]AmbientOcculusion", Renderer::TextureFormat::RGBA8);
+    m_gbuffer->End();
 }
 
-void Graphics::initializeRenderer()
+void Graphics::InitializeRenderer()
 {
-    Logger::logInfo("Creating renderer with Direct3D11 API");
+    Logger::LogInfo("Creating renderer with Direct3D11 API");
 
     // Initialize Renderer
     Renderer::Initialize(
@@ -51,55 +51,55 @@ void Graphics::initializeRenderer()
     Renderer::SetFlag(Renderer::RenderFlags::VSync, false);
 
     // Create Output
-    m_window = Renderer::CreateWindowHandle(Platform::getCurrentWindow());
+    m_window = Renderer::CreateWindowHandle(Platform::GetCurrentWindow());
     m_frameBuffer = Renderer::GetWindowRenderBuffer(m_window);
 
-    Logger::logInfo("Graphics initialized");
+    Logger::LogInfo("Graphics initialized");
 }
 
-void Graphics::onInit()
+void Graphics::OnInit()
 {
     g_rendererInstance = this;
 
     // initialize renderer
-    initializeRenderer();
+    InitializeRenderer();
 
     // create render buffers
-    createRenderBuffers();
+    CreateRenderBuffers();
 
     // load all shaders
-    loadInternalShaders();
+    LoadInternalShaders();
 }
 
-void Graphics::onDispose()
+void Graphics::OnDispose()
 {
-    Logger::logInfo("Unloading rendering pipeline");
+    Logger::LogInfo("Unloading rendering pipeline");
 
-    m_gbuffer->dispose();
-    Logger::logInfo("Unloaded render buffers");
+    m_gbuffer->Dispose();
+    Logger::LogInfo("Unloaded render buffers");
 
-    // dispose shaders
-    m_gbufferFillShader->dispose();
-    m_gbufferCombine->dispose();
-    Logger::logInfo("Unloaded render shaders");
+    // Dispose shaders
+    m_gbufferFillShader->Dispose();
+    m_gbufferCombine->Dispose();
+    Logger::LogInfo("Unloaded render shaders");
 
     // check resource leaks
-    Logger::logInfo("Checking for resource leaks");
-    IResource::checkLeaks();
+    Logger::LogInfo("Checking for resource leaks");
+    IResource::CheckLeaks();
 
-    // shutdown renderer
+    // Shutdown renderer
     Renderer::Shutdown();
 
-    Logger::logInfo("Graphics is down");
+    Logger::LogInfo("Graphics is down");
 }
 
-void Graphics::update()
+void Graphics::Update()
 {
 }
 
-void Graphics::render()
+void Graphics::Render()
 {
-    Profiler::beginProfile("Rendering");
+    Profiler::BeginProfile("Rendering");
     {
         cvar clearColor = Renderer::Color{0.0f, 0.0f, 0.0f, 1.0f};
 
@@ -111,95 +111,95 @@ void Graphics::render()
         Renderer::ClearRenderBuffer(m_frameBuffer, clearColor);
 
         // set default render stage
-        setStage(RenderStage::Default);
+        SetStage(RenderStage::Default);
 
         // begin rendering
-        renderBegin();
+        RenderBegin();
         {
             // render world
-            renderWorld();
+            RenderWorld();
         }
-        renderEnd(); // end rendering
+        RenderEnd(); // end rendering
 
         // render UI
-        renderUI();
+        RenderUI();
 
-        Profiler::beginProfile("Render");
+        Profiler::BeginProfile("Render");
         {
             // next frame, wait vsync
             Renderer::Frame();
         }
-        Profiler::endProfile();
+        Profiler::EndProfile();
     }
-    Profiler::endProfile();
+    Profiler::EndProfile();
 }
 
-void Graphics::resize(uint width, uint height)
+void Graphics::Resize(uint width, uint height)
 {
     _ASSERT(Camera::m_mainCamera != nullptr);
 
-    Display::set_Width(width);
-    Display::set_Height(height);
+    Display::SetWidth(width);
+    Display::SetHeight(height);
 
-    if (WebUI::getInstance())
-        WebUI::getInstance()->resize(width, height);
+    if (WebUI::GetInstance())
+        WebUI::GetInstance()->Resize(width, height);
 
-    m_gbuffer->resize(width, height);
+    m_gbuffer->Resize(width, height);
     Renderer::ResizeWindow(m_window, width, height);
 }
 
-void Graphics::renderBegin()
+void Graphics::RenderBegin()
 {
-    // update main camera
-    Camera::m_mainCamera->update();
+    // Update main camera
+    Camera::m_mainCamera->Update();
 
     // set default shader
-    setShader(m_gbufferFillShader);
+    SetShader(m_gbufferFillShader);
 
     // set default matrix
-    rvar mvpMatrix = Camera::getMainCamera()->get_viewProjection();
+    rvar mvpMatrix = Camera::GetMainCamera()->GetViewProjection();
     Renderer::SetShaderValue(m_currentShader->m_shaderHandle, 0, 0, &mvpMatrix, sizeof(Matrix));
 
-    var nearPlane = Camera::getMainCamera()->get_nearPlane();
+    var nearPlane = Camera::GetMainCamera()->GetNearPlane();
     Renderer::SetShaderValue(m_currentShader->m_shaderHandle, 0, 1, &nearPlane, sizeof(float));
 
-    var farPlane = Camera::getMainCamera()->get_farPlane();
+    var farPlane = Camera::GetMainCamera()->GetFarPlane();
     Renderer::SetShaderValue(m_currentShader->m_shaderHandle, 0, 2, &farPlane, sizeof(float));
 
     // apply shader changes
     Renderer::ApplyShader(m_gbufferFillShader->m_shaderHandle, 0);
 
-    if (Input::isKey(Key_F1))
+    if (Input::IsKey(Key_F1))
         Renderer::SetFlag(Renderer::RenderFlags::DrawWireFrame, true);
 
     // bind gbuffer
-    m_gbuffer->bind();
+    m_gbuffer->Bind();
 }
 
-void Graphics::renderEnd()
+void Graphics::RenderEnd()
 {
-    setStage(RenderStage::Default);
+    SetStage(RenderStage::Default);
 
-    if (Input::isKey(Key_F1))
+    if (Input::IsKey(Key_F1))
     {
         Renderer::SetFlag(Renderer::RenderFlags::DrawWireFrame, false);
-        Renderer::BlitTexture(m_frameBuffer, m_gbuffer->getTarget(0));
+        Renderer::BlitTexture(m_frameBuffer, m_gbuffer->GetTarget(0));
         // reset everything
         m_currentShader = nullptr;
         return;
     }
 
-    if (Input::isKey(Key_F2))
+    if (Input::IsKey(Key_F2))
     {
-        Renderer::BlitTexture(m_frameBuffer, m_gbuffer->getTarget(0));
+        Renderer::BlitTexture(m_frameBuffer, m_gbuffer->GetTarget(0));
         // reset everything
         m_currentShader = nullptr;
         return;
     }
 
-    if (Input::isKey(Key_F3))
+    if (Input::IsKey(Key_F3))
     {
-        Renderer::BlitTexture(m_frameBuffer, m_gbuffer->getTarget(1));
+        Renderer::BlitTexture(m_frameBuffer, m_gbuffer->GetTarget(1));
         // reset everything
         m_currentShader = nullptr;
         return;
@@ -207,10 +207,10 @@ void Graphics::renderEnd()
 
     // combine gbuffer
 
-    // update shaders uniforms
+    // Update shaders uniforms
     var lightdir = Vector3(0.39f, 0.9f, 0.13f);
-    lightdir.normalize();
-    m_gbufferCombine->setValue(0, &lightdir);
+    lightdir.Normalize();
+    m_gbufferCombine->SetValue(0, &lightdir);
 
     // blit render textures using gbuffercombine shader
     rvar gbufferDescription = Renderer::GetRenderBufferDescription(m_gbuffer->m_renderBufferHandle);
@@ -225,55 +225,55 @@ void Graphics::renderEnd()
     m_currentShader = nullptr;
 }
 
-void Graphics::renderWorld()
+void Graphics::RenderWorld()
 {
-    Profiler::beginProfile("Render World");
+    Profiler::BeginProfile("Render World");
     {
         // render universe
-        Universe::getInstance()->render();
+        Universe::GetInstance()->Render();
     }
-    Profiler::endProfile();
+    Profiler::EndProfile();
 }
 
-void Graphics::renderUI()
+void Graphics::RenderUI()
 {
-    Profiler::beginProfile("Render UI");
+    Profiler::BeginProfile("Render UI");
     {
         // set UI state
-        setStage(RenderStage::DrawUI);
+        SetStage(RenderStage::DrawUI);
 
         // draw UI
-        UI::m_instance->beginDraw(); // begin draw UI
+        UI::m_instance->BeginDraw(); // begin draw UI
 
-        Profiler::beginProfile("UI Collect");
+        Profiler::BeginProfile("UI Collect");
         {
             // render application UI
-            Application::getInstance()->renderUI();
+            Application::GetInstance()->RenderUI();
 
             // draw profiler debug screen
-            Profiler::getInstance()->drawDebugScreen();
+            Profiler::GetInstance()->DrawDebugScreen();
         }
-        Profiler::endProfile();
+        Profiler::EndProfile();
 
-        Profiler::beginProfile("UI Process");
+        Profiler::BeginProfile("UI Process");
         {
-            UI::m_instance->endDraw(); // end draw UI
+            UI::m_instance->EndDraw(); // end draw UI
         }
-        Profiler::endProfile();
+        Profiler::EndProfile();
     }
-    Profiler::endProfile();
+    Profiler::EndProfile();
 
-    Profiler::beginProfile("WebUI Render");
+    Profiler::BeginProfile("WebUI Render");
     {
         // set WebUI state
-        setStage(RenderStage::DrawWebUI);
+        SetStage(RenderStage::DrawWebUI);
 
-        WebUI::getInstance()->render();
+        WebUI::GetInstance()->Render();
     }
-    Profiler::endProfile();
+    Profiler::EndProfile();
 }
 
-void Graphics::draw(Ref<Mesh>& mesh)
+void Graphics::Draw(Ref<Mesh>& mesh)
 {
     if (!(RENDERER_CHECK_HANDLE(mesh->m_vertexBuffer)) || !(RENDERER_CHECK_HANDLE(mesh->m_indexBuffer)))
         return;
@@ -284,7 +284,7 @@ void Graphics::draw(Ref<Mesh>& mesh)
     Renderer::DrawIndexed(mesh->m_indices_count);
 }
 
-void Graphics::setShader(Ref<Shader>& shader)
+void Graphics::SetShader(Ref<Shader>& shader)
 {
     if (m_currentShader != shader)
     {
@@ -293,12 +293,12 @@ void Graphics::setShader(Ref<Shader>& shader)
     }
 }
 
-void Graphics::setMatrix(Matrix& mvpMatrix)
+void Graphics::SetMatrix(Matrix& mvpMatrix)
 {
     Renderer::SetShaderValue(m_currentShader->m_shaderHandle, 0, 0, &mvpMatrix, sizeof(Matrix));
 }
 
-void Graphics::setStage(RenderStage::_enum stage)
+void Graphics::SetStage(RenderStage::_enum stage)
 {
     m_renderStage = stage;
 

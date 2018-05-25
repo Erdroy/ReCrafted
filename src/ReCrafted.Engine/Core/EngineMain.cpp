@@ -24,140 +24,140 @@
 
 EngineMain* EngineMain::m_instance;
 
-void EngineMain::registerComponents() const
+void EngineMain::RegisterComponents() const
 {
     // initialize the rest of the engine components
-    m_componentManager->registerComponent(TaskManager::getInstance());
-    m_componentManager->registerComponent(Graphics::getInstance());
-    m_componentManager->registerComponent(Application::getInstance());
-    m_componentManager->registerComponent(Profiler::getInstance());
-    m_componentManager->registerComponent(Time::getInstance());
-    m_componentManager->registerComponent(Input::getInstance());
-    m_componentManager->registerComponent(PhysicsManager::getInstance());
-    m_componentManager->registerComponent(EntityPool::getInstance());
-    m_componentManager->registerComponent(SceneManager::getInstance());
-    m_componentManager->registerComponent(Universe::getInstance());
-    m_componentManager->registerComponent(UI::getInstance());
-    m_componentManager->registerComponent(WebUI::getInstance());
+    m_componentManager->RegisterComponent(TaskManager::GetInstance());
+    m_componentManager->RegisterComponent(Graphics::GetInstance());
+    m_componentManager->RegisterComponent(Application::GetInstance());
+    m_componentManager->RegisterComponent(Profiler::GetInstance());
+    m_componentManager->RegisterComponent(Time::GetInstance());
+    m_componentManager->RegisterComponent(Input::GetInstance());
+    m_componentManager->RegisterComponent(PhysicsManager::GetInstance());
+    m_componentManager->RegisterComponent(EntityPool::GetInstance());
+    m_componentManager->RegisterComponent(SceneManager::GetInstance());
+    m_componentManager->RegisterComponent(Universe::GetInstance());
+    m_componentManager->RegisterComponent(UI::GetInstance());
+    m_componentManager->RegisterComponent(WebUI::GetInstance());
 }
 
-void EngineMain::createMainWindow()
+void EngineMain::CreateMainWindow()
 {
     m_mainWindow = std::make_shared<ApplicationWindow>();
-    m_mainWindow->create();
-    m_mainWindow->setOnResized(MakeDelegate(EngineMain::onWindowResized));
+    m_mainWindow->Create();
+    m_mainWindow->SetOnResized(MakeDelegate(EngineMain::OnWindowResized));
 
-    // update size
-    m_mainWindow->updateSizeNow();
+    // Update size
+    m_mainWindow->UpdateSizeNow();
 
-    Display::set_Width(m_mainWindow->get_width());
-    Display::set_Height(m_mainWindow->get_height());
+    Display::SetWidth(m_mainWindow->GetWidth());
+    Display::SetHeight(m_mainWindow->GetHeight());
 }
 
-void EngineMain::onSimulate()
+void EngineMain::OnSimulate()
 {
-    // update fixed time
+    // Update fixed time
     Time::m_instance->m_fixedTime = static_cast<float>(static_cast<double>(Time::m_instance->m_fixedTime) + Time::
         m_instance->m_fixedDeltaTime);
 
-    // simulate
-    Universe::getInstance()->simulate();
-    Application::getInstance()->simulate();
+    // Simulate
+    Universe::GetInstance()->Simulate();
+    Application::GetInstance()->Simulate();
 }
 
-void EngineMain::onUpdate()
+void EngineMain::OnUpdate()
 {
-    // update time
-    // TODO: Time::getInstance()->update();
-    cvar currentTime = Platform::getMiliseconds();
+    // Update time
+    // TODO: Time::GetInstance()->Update();
+    cvar currentTime = Platform::GetMiliseconds();
     Time::m_instance->m_deltaTime = (currentTime - m_lastUpdateTime) / 1000.0;
     Time::m_instance->m_time = float(currentTime / 1000.0);
     m_lastUpdateTime = currentTime;
 
-    // update input
-    Input::getInstance()->updateInput();
+    // Update input
+    Input::GetInstance()->UpdateInput();
 
     // clear keyboard buffer
-    KeyboardBuffer::clear();
+    KeyboardBuffer::Clear();
 
     // run platform events
-    Platform::runEvents();
+    Platform::RunEvents();
 
-    // update all components
-    m_componentManager->update();
+    // Update all components
+    m_componentManager->Update();
 }
 
-void EngineMain::onRender()
+void EngineMain::OnRender()
 {
-    Graphics::getInstance()->render();
+    Graphics::GetInstance()->Render();
 }
 
-void EngineMain::onWindowResized()
+void EngineMain::OnWindowResized()
 {
     // resize now
-    Graphics::getInstance()->resize(m_mainWindow->get_width(), m_mainWindow->get_height());
+    Graphics::GetInstance()->Resize(m_mainWindow->GetWidth(), m_mainWindow->GetHeight());
 }
 
-void EngineMain::initialize()
+void EngineMain::Initialize()
 {
-    Platform::setThreadName("Main Thread");
+    Platform::SetThreadName("Main Thread");
 
-    // create update loop
+    // create Update loop
     m_updateLoop = std::make_shared<UpdateLoop>();
 
     // initialize component manager
-    m_componentManager = EngineComponentManager::getInstance();
+    m_componentManager = EngineComponentManager::GetInstance();
 
     // initialize basic pre-log components
-    m_componentManager->registerComponent(ScriptingEngine::getInstance());
-    m_componentManager->registerComponent(Logger::getInstance());
+    m_componentManager->RegisterComponent(ScriptingEngine::GetInstance());
+    m_componentManager->RegisterComponent(Logger::GetInstance());
 
     // Say something, as now we have scripting and logger initialized, 
     // so we can scream around.
-    Logger::log("ReCrafted startup");
+    Logger::Log("ReCrafted startup");
 
     // initialize platform
-    Platform::initialize();
+    Platform::Initialize();
 
     // create main window
-    createMainWindow();
+    CreateMainWindow();
 
     // register all needed components
-    registerComponents();
+    RegisterComponents();
 }
 
-void EngineMain::run()
+void EngineMain::Run()
 {
-    Logger::log("ReCrafted load");
+    Logger::Log("ReCrafted load");
 
     // call load callback
-    m_componentManager->onLoad();
+    m_componentManager->OnLoad();
 
-    Logger::log("ReCrafted run");
+    Logger::Log("ReCrafted run");
 
     // set loop callbacks
-    m_updateLoop->setSimulateCallback(MakeDelegate(EngineMain::onSimulate));
-    m_updateLoop->setUpdateCallback(MakeDelegate(EngineMain::onUpdate));
-    m_updateLoop->setRenderCallback(MakeDelegate(EngineMain::onRender));
+    m_updateLoop->SetSimulateCallback(MakeDelegate(EngineMain::OnSimulate));
+    m_updateLoop->SetUpdateCallback(MakeDelegate(EngineMain::OnUpdate));
+    m_updateLoop->SetRenderCallback(MakeDelegate(EngineMain::OnRender));
 
     // start loop
-    m_updateLoop->start();
+    m_updateLoop->Start();
 }
 
-void EngineMain::shutdown()
+void EngineMain::Shutdown()
 {
-    Logger::log("ReCrafted shutdown");
-    Logger::logInfo("Shutting down...");
+    Logger::Log("ReCrafted Shutdown");
+    Logger::LogInfo("Shutting down...");
 
-    // dispose window (using Ref<> - no need to delete)
+    // Dispose window (using Ref<> - no need to delete)
     SafeDispose(m_mainWindow);
 
-    // dispose component manager at the very end
+    // Dispose component manager at the very end
     SafeDispose(m_componentManager);
 }
 
-void EngineMain::quit()
+void EngineMain::Quit()
 {
-    // stop update loop
-    m_updateLoop->stop();
+    // stop Update loop
+    m_updateLoop->Stop();
 }

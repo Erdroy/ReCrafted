@@ -10,12 +10,12 @@ SINGLETON_IMPL(Universe)
 
 bool m_viewUpdateEnabled = true;
 
-void Universe::onInit()
+void Universe::OnInit()
 {
     // initialize save system
 
     // initialize space object manager
-    SpaceObjectManager::getInstance()->init();
+    SpaceObjectManager::GetInstance()->Init();
 
     // temporary, replace with World::load("../saves/SaveName", MakeDelegate(Universe::OnWorldLoaded));
     // when saves will be done
@@ -24,56 +24,56 @@ void Universe::onInit()
     settings.fileName = "../assets/spacebodies/moon";
     settings.saveName = "../saves/dev/voxelstorage/moon.vxh";
     settings.generationType = GenerationType::CubeHeightMap;
-    settings.position = Vector3::zero();
+    settings.position = Vector3::Zero();
     settings.minSurfaceHeight = 900.0f;
     settings.maxSurfaceHeight = settings.minSurfaceHeight + 120.0f; // will round up to 1024 * 2
     settings.hillsHeight = 40.0f;
     settings.rootOctreeDepth = 3; // 2 subdivisions (chunk size will be 512)
 
-    m_testObject1 = SpaceObject::createSpaceObject(settings);
+    m_testObject1 = SpaceObject::CreateSpaceObject(settings);
 }
 
-void Universe::onDispose()
+void Universe::OnDispose()
 {
-    // shutdown
-    SafeDisposeNN(SpaceObjectManager::getInstance());
+    // Shutdown
+    SafeDisposeNN(SpaceObjectManager::GetInstance());
     SafeDispose(m_testObject1);
 }
 
-void Universe::update()
+void Universe::Update()
 {
-    SpaceObjectManager::getInstance()->update();
+    SpaceObjectManager::GetInstance()->Update();
 
-    if (Input::isKeyDown(Key_F7))
+    if (Input::IsKeyDown(Key_F7))
     {
         m_viewUpdateEnabled = !m_viewUpdateEnabled;
     }
 
-    var modPosition = Camera::getMainCamera()->get_position() + Camera::getMainCamera()->get_forward() * 5.0f;
+    var modPosition = Camera::GetMainCamera()->GetPosition() + Camera::GetMainCamera()->GetForward() * 5.0f;
 
-    if (Input::isKey(Key_Mouse0))
+    if (Input::IsKey(Key_Mouse0))
     {
-        m_testObject1->modify(VoxelEditMode::Subtractive, modPosition, 5.0f);
+        m_testObject1->Modify(VoxelEditMode::Subtractive, modPosition, 5.0f);
     }
 
-    if (Input::isKey(Key_Mouse1))
+    if (Input::IsKey(Key_Mouse1))
     {
-        m_testObject1->modify(VoxelEditMode::Additive, modPosition, 1.5f);
+        m_testObject1->Modify(VoxelEditMode::Additive, modPosition, 1.5f);
     }
 
     if (m_viewUpdateEnabled)
     {
-        var cameraPosition = Camera::getMainCamera()->get_position();
-        m_testObject1->updateViewPoint(cameraPosition);
-        m_testObject1->update();
+        var cameraPosition = Camera::GetMainCamera()->GetPosition();
+        m_testObject1->UpdateViewPoint(cameraPosition);
+        m_testObject1->Update();
     }
 }
 
-void Universe::simulate()
+void Universe::Simulate()
 {
 }
 
-void Universe::render()
+void Universe::Render()
 {
-    m_testObject1->draw();
+    m_testObject1->Draw();
 }

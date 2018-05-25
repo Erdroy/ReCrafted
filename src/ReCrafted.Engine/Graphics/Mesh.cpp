@@ -3,51 +3,51 @@
 #include "Mesh.h"
 #include "Renderer/Renderer.hpp"
 
-void Mesh::init()
+void Mesh::Init()
 {
 }
 
-void Mesh::setVertices(Vector3* vertices, uint count)
+void Mesh::SetVertices(Vector3* vertices, uint count)
 {
     m_vertices = vertices;
     m_vertices_count = count;
 }
 
-void Mesh::setUVs(Vector2* uvs)
+void Mesh::SetUVs(Vector2* uvs)
 {
     m_uvs = uvs;
     m_uvs_count = m_vertices_count;
 }
 
-void Mesh::setNormals(Vector3* normals)
+void Mesh::SetNormals(Vector3* normals)
 {
     m_normals = normals;
     m_normals_count = m_vertices_count;
 }
 
-void Mesh::setColors(Vector4* colors)
+void Mesh::SetColors(Vector4* colors)
 {
     m_colors = colors;
     m_colors_count = m_vertices_count;
 }
 
-void Mesh::setIndices(uint* indices, uint count)
+void Mesh::SetIndices(uint* indices, uint count)
 {
     m_indices = indices;
     m_indices_count = count;
 }
 
-bool Mesh::isUploaded() const
+bool Mesh::IsUploaded() const
 {
     return m_uploaded;
 }
 
-bool Mesh::canUpload()
+bool Mesh::CanUpload()
 {
     return m_hasChanges;
 }
 
-void Mesh::applyChanges()
+void Mesh::ApplyChanges()
 {
     _ASSERT(m_vertices);
     _ASSERT(m_vertices_count > 0);
@@ -116,7 +116,7 @@ void Mesh::applyChanges()
     m_indices = nullptr;
 }
 
-void Mesh::upload()
+void Mesh::Upload()
 {
     if (m_vertexBufferData == nullptr || m_indexBufferData == nullptr)
         return;
@@ -146,7 +146,7 @@ void Mesh::upload()
     m_hasChanges = false;
 }
 
-void Mesh::dispose()
+void Mesh::Dispose()
 {
     if (RENDERER_CHECK_HANDLE(m_vertexBuffer))
         Renderer::DestroyVertexBuffer(m_vertexBuffer);
@@ -174,9 +174,9 @@ void Mesh::dispose()
     m_indices_count = 0u;
 }
 
-Ref<Mesh> Mesh::createMesh()
+Ref<Mesh> Mesh::CreateMesh()
 {
     Ref<Mesh> mesh(new Mesh);
-    mesh->init();
+    mesh->Init();
     return mesh;
 }

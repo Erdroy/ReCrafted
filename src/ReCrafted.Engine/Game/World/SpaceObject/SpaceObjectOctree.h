@@ -30,18 +30,18 @@ private:
     SpaceObjectOctreeNode** m_rootNodes = nullptr;
 
 public:
-    void init();
-    void update();
-    void updateViews(Array<Vector3>& views);
-    void draw();
-    void dispose();
+    void Init();
+    void Update();
+    void UpdateViews(Array<Vector3>& views);
+    void Draw();
+    void Dispose();
 
 public:
-    SpaceObjectOctreeNode* findNode(Vector3 position, int size) const;
-    Array<SpaceObjectOctreeNode*> findIntersecting(BoundingBox& box, bool leafOnly) const;
+    SpaceObjectOctreeNode* FindNode(Vector3 position, int size) const;
+    Array<SpaceObjectOctreeNode*> FindIntersecting(BoundingBox& box, bool leafOnly) const;
 
 public:
-PROPERTY(BoundingBox, bounds) = {};
+PROPERTY(BoundingBox, Bounds) = {};
 };
 
 #endif // SPACEOBJECTOCTREE_H

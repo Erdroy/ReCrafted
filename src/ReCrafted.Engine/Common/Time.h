@@ -30,11 +30,11 @@ private:
     int m_frames = 0;
 
 private:
-    void onInit() override
+    void OnInit() override
     {
     }
 
-    void onDispose() override
+    void OnDispose() override
     {
         m_deltaTime = 0.0f;
     }
@@ -45,7 +45,7 @@ public:
 	 * Use for 'Update' calls.
 	 * \return The frame delta time.
 	 */
-    FORCEINLINE static double deltaTime()
+    FORCEINLINE static double DeltaTime()
     {
         return m_instance->m_deltaTime;
     }
@@ -54,7 +54,7 @@ public:
      * \brief The fixed simulation delta time. Use for 'Simulate' calls.
      * \return The fixed delta time value.
      */
-    FORCEINLINE static double fixedDeltaTime()
+    FORCEINLINE static double FixedDeltaTime()
     {
         return m_instance->m_fixedDeltaTime;
     }
@@ -63,16 +63,16 @@ public:
     * \brief The fixed simulation delta time. Use for 'Simulate' calls.
     * \return The fixed delta time value.
     */
-    FORCEINLINE static void setFixedDeltaTime(double fixedDeltaTime)
+    FORCEINLINE static void SetFixedDeltaTime(double fixedDeltaTime)
     {
         m_instance->m_fixedDeltaTime = fixedDeltaTime;
     }
 
     /**
-	 * \brief The current game time.
-	 * \return The time.
-	 */
-    FORCEINLINE static float time()
+    * \brief The current game time.
+    * \return The time.
+    */
+    FORCEINLINE static float CurrentTime()
     {
         return m_instance->m_time;
     }
@@ -81,7 +81,7 @@ public:
 	 * \brief The current game simulation time.
 	 * \return The time.
 	 */
-    FORCEINLINE static float fixedTime()
+    FORCEINLINE static float CurrentFixedTime()
     {
         return m_instance->m_fixedTime;
     }
@@ -90,7 +90,7 @@ public:
 	 * \brief The current game frame count.
 	 * \return The frame count.
 	 */
-    FORCEINLINE static int frames()
+    FORCEINLINE static int Frames()
     {
         return m_instance->m_frames;
     }

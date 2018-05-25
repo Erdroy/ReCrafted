@@ -12,10 +12,10 @@
 struct BoundingFrustum
 {
 private:
-    static void getBoxToPlanePVertexNVertex(BoundingBox& box, Vector3& planeNormal, Vector3* p, Vector3* n)
+    static void GetBoxToPlanePVertexNVertex(BoundingBox& box, Vector3& planeNormal, Vector3* p, Vector3* n)
     {
-        cvar bmin = box.minimum();
-        cvar bmax = box.maximum();
+        cvar bmin = box.Minimum();
+        cvar bmax = box.Maximum();
 
         *p = bmin;
         *n = bmax;
@@ -43,7 +43,7 @@ public:
     /// </summary>
     /// <param name="index">Plane index where 0 fro Left, 1 for Right, 2 for Top, 3 for Bottom, 4 for Near, 5 for Far</param>
     /// <returns>The plane.</returns>
-    Plane& getPlane(const int index)
+    Plane& GetPlane(const int index)
     {
         switch (index)
         {
@@ -69,41 +69,41 @@ public:
     /// </summary>
     /// <param name="box">The bounding box.</param>
     /// <returns>The result, true when contains.</returns>
-    bool contains(BoundingBox& box)
+    bool Contains(BoundingBox& box)
     {
         Vector3 p;
         Vector3 n;
 
         for (auto i = 0; i < 6; i++)
         {
-            var plane = getPlane(i);
+            var plane = GetPlane(i);
 
-            getBoxToPlanePVertexNVertex(box, plane.normal, &p, &n);
+            GetBoxToPlanePVertexNVertex(box, plane.normal, &p, &n);
 
-            if (Plane::planeIntersectsPoint(plane, p) == Back)
+            if (Plane::PlaneIntersectsPoint(plane, p) == Back)
                 return false;
 
-            if (Plane::planeIntersectsPoint(plane, n) == Back)
+            if (Plane::PlaneIntersectsPoint(plane, n) == Back)
                 return true;
         }
 
         return true;
     }
 
-    bool containsSphere(Vector3& position, const float radius)
+    bool ContainsSphere(Vector3& position, const float radius)
     {
         for (var i = 0; i < 6; i++)
         {
-            var plane = getPlane(i);
+            var plane = GetPlane(i);
 
-            if (plane.dot(position) + radius < 0.0f)
+            if (plane.Dot(position) + radius < 0.0f)
                 return false;
         }
 
         return true;
     }
 
-    void setPlanes(Matrix& matrix)
+    void SetPlanes(Matrix& matrix)
     {
         // Left plane
         planeLeft.normal.x = matrix.M03 + matrix.M00;

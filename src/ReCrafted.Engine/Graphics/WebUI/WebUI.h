@@ -23,18 +23,18 @@ private:
     WebUIEngine* m_engine = nullptr;
 
 private:
-    void onInit() override;
-    void onDispose() override;
-    void update() override;
+    void OnInit() override;
+    void OnDispose() override;
+    void Update() override;
 
-    void resize(uint width, uint height);
-    void render();
+    void Resize(uint width, uint height);
+    void Render();
 
 public:
     virtual ~WebUI() = default;
 
 public:
-    Ref<WebUIView> createView();
+    Ref<WebUIView> CreateView();
 };
 
 #endif // WEBUI_H

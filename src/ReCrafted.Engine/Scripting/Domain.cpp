@@ -14,7 +14,7 @@ const char* jit_options[] = {
 const char* rootDomainName = "ReCrafted";
 const char* runtimeVersion = "v4.0.30319";
 
-Ref<Assembly> Domain::loadAssembly(const char* fileName)
+Ref<Assembly> Domain::LoadAssembly(const char* fileName)
 {
     // do mono related stuff
     auto masm = mono_domain_assembly_open(m_domain, fileName);
@@ -30,30 +30,30 @@ Ref<Assembly> Domain::loadAssembly(const char* fileName)
     assembly->m_domain = m_domain;
 
     // add to the loaded assembly list
-    m_loadedAssemblies.add(assembly);
+    m_loadedAssemblies.Add(assembly);
 
     return assembly;
 }
 
-void Domain::cleanup()
+void Domain::Cleanup()
 {
     //mono_jit_cleanup(m_domain);
     m_domain = nullptr;
 }
 
-MonoDomain* Domain::getMono() const
+MonoDomain* Domain::GetMono() const
 {
     return m_domain;
 }
 
-Ref<Domain> Domain::create(MonoDomain* monoDomain)
+Ref<Domain> Domain::Create(MonoDomain* monoDomain)
 {
     Ref<Domain> domain(new Domain);
     domain->m_domain = monoDomain;
     return domain;
 }
 
-Ref<Domain> Domain::create(const char* name, Ref<Domain> parent)
+Ref<Domain> Domain::Create(const char* name, Ref<Domain> parent)
 {
     Ref<Domain> domain(new Domain);
 
@@ -62,17 +62,17 @@ Ref<Domain> Domain::create(const char* name, Ref<Domain> parent)
     return domain;
 }
 
-Ref<Domain> Domain::createRoot()
+Ref<Domain> Domain::CreateRoot()
 {
     if (Root)
     {
-        Logger::logWarning("Cannot create second root domain!");
+        Logger::LogWarning("Cannot create second root domain!");
         return nullptr;
     }
 
     mono_set_dirs("../mono/lib", "../mono/etc");
 
-    if (GameInfo::containsArgument(TEXT("-debug")) && !GameInfo::containsArgument(TEXT("-nodebug")))
+    if (GameInfo::ContainsArgument(TEXT("-debug")) && !GameInfo::ContainsArgument(TEXT("-nodebug")))
     {
         mono_jit_parse_options(2, const_cast<char**>(jit_options));
     }
@@ -81,18 +81,18 @@ Ref<Domain> Domain::createRoot()
 
     if (!domain)
     {
-        Logger::logException("Failed to create root domain! Domain Name: {0} Runtime Version: {1}", rootDomainName,
+        Logger::LogException("Failed to create root domain! Domain Name: {0} Runtime Version: {1}", rootDomainName,
                              runtimeVersion);
         return nullptr;
     }
 
-    if (!GameInfo::containsArgument(TEXT("-nodebug")))
+    if (!GameInfo::ContainsArgument(TEXT("-nodebug")))
     {
         mono_debug_init(MONO_DEBUG_FORMAT_MONO);
         mono_debug_domain_create(domain);
     }
 
     // create instance
-    Root = create(domain);
+    Root = Create(domain);
     return Root;
 }

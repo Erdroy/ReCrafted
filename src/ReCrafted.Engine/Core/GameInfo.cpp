@@ -6,9 +6,9 @@
 
 Array<Text> GameInfo::cliArguments;
 
-bool GameInfo::containsArgument(Text& text)
+bool GameInfo::ContainsArgument(Text& text)
 {
-    for (auto i = 0u; i < cliArguments.size(); i ++)
+    for (auto i = 0u; i < cliArguments.Size(); i ++)
     {
         if (cliArguments[i] == text)
             return true;
@@ -17,9 +17,9 @@ bool GameInfo::containsArgument(Text& text)
     return false;
 }
 
-void GameInfo::parseArguments(Text& text)
+void GameInfo::ParseArguments(Text& text)
 {
-    auto length = text.length();
+    auto length = text.Length();
     auto isString = false;
     auto argStart = 0;
 
@@ -32,7 +32,7 @@ void GameInfo::parseArguments(Text& text)
             if (isString)
             {
                 // substr
-                cliArguments.add(text.subtext(argStart, i - argStart));
+                cliArguments.Add(text.Subtext(argStart, i - argStart));
                 argStart = i + 2; // " and space
                 i++;
                 isString = false;
@@ -48,7 +48,7 @@ void GameInfo::parseArguments(Text& text)
             if (ch == static_cast<Char>(' '))
             {
                 // substr
-                cliArguments.add(text.subtext(argStart, i - argStart));
+                cliArguments.Add(text.Subtext(argStart, i - argStart));
                 argStart = i + 1;
             }
         }
@@ -60,5 +60,5 @@ void GameInfo::parseArguments(Text& text)
     if (length == argStart)
         return;
 
-    cliArguments.add(text.subtext(argStart, length - argStart));
+    cliArguments.Add(text.Subtext(argStart, length - argStart));
 }

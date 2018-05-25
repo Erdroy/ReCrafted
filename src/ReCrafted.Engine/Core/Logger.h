@@ -46,20 +46,20 @@ public:
     ~Logger() = default;
 
 private:
-    void onInit() override;
-    void onDispose() override;
+    void OnInit() override;
+    void OnDispose() override;
 
 private:
-    void invokeCallback(const char* message, LogLevel::Enum logLevel);
+    void InvokeCallback(const char* message, LogLevel::Enum logLevel);
 
 public:
     /**
      * \brief Writes exception message into log file.
      * \param message The message.
      */
-    FORCEINLINE static void logException(const char* message)
+    FORCEINLINE static void LogException(const char* message)
     {
-        m_instance->invokeCallback(message, LogLevel::Fatal);
+        m_instance->InvokeCallback(message, LogLevel::Fatal);
     }
 
     /**
@@ -67,22 +67,22 @@ public:
     * \param format The message format.
     * \param args The message arguments.
     */
-    FORCEINLINE static void logException(const char* format, fmt::ArgList args)
+    FORCEINLINE static void LogException(const char* format, fmt::ArgList args)
     {
         auto string = fmt::format(format, args);
         auto cstring = string.c_str();
-        m_instance->invokeCallback(cstring, LogLevel::Fatal);
+        m_instance->InvokeCallback(cstring, LogLevel::Fatal);
     }
 
-    FMT_VARIADIC(static void, logException, const char *)
+    FMT_VARIADIC(static void, LogException, const char *)
 
     /**
     * \brief Writes error message into log file.
     * \param message The message.
     */
-    FORCEINLINE static void logError(const char* message)
+    FORCEINLINE static void LogError(const char* message)
     {
-        m_instance->invokeCallback(message, LogLevel::Error);
+        m_instance->InvokeCallback(message, LogLevel::Error);
     }
 
     /**
@@ -90,22 +90,22 @@ public:
     * \param format The message format.
     * \param args The message arguments.
     */
-    FORCEINLINE static void logError(const char* format, fmt::ArgList args)
+    FORCEINLINE static void LogError(const char* format, fmt::ArgList args)
     {
         auto string = fmt::format(format, args);
         auto cstring = string.c_str();
-        m_instance->invokeCallback(cstring, LogLevel::Error);
+        m_instance->InvokeCallback(cstring, LogLevel::Error);
     }
 
-    FMT_VARIADIC(static void, logError, const char *)
+    FMT_VARIADIC(static void, LogError, const char *)
 
     /**
     * \brief Writes warning message into log file.
     * \param message The message.
     */
-    FORCEINLINE static void logWarning(const char* message)
+    FORCEINLINE static void LogWarning(const char* message)
     {
-        m_instance->invokeCallback(message, LogLevel::Warning);
+        m_instance->InvokeCallback(message, LogLevel::Warning);
     }
 
     /**
@@ -113,22 +113,22 @@ public:
     * \param format The message format.
     * \param args The message arguments.
     */
-    FORCEINLINE static void logWarning(const char* format, fmt::ArgList args)
+    FORCEINLINE static void LogWarning(const char* format, fmt::ArgList args)
     {
         auto string = fmt::format(format, args);
         auto cstring = string.c_str();
-        m_instance->invokeCallback(cstring, LogLevel::Warning);
+        m_instance->InvokeCallback(cstring, LogLevel::Warning);
     }
 
-    FMT_VARIADIC(static void, logWarning, const char *)
+    FMT_VARIADIC(static void, LogWarning, const char *)
 
     /**
     * \brief Writes info message into log file.
     * \param message The message.
     */
-    FORCEINLINE static void logInfo(const char* message)
+    FORCEINLINE static void LogInfo(const char* message)
     {
-        m_instance->invokeCallback(message, LogLevel::Message);
+        m_instance->InvokeCallback(message, LogLevel::Message);
     }
 
     /**
@@ -136,22 +136,22 @@ public:
     * \param format The message format.
     * \param args The message arguments.
     */
-    FORCEINLINE static void logInfo(const char* format, fmt::ArgList args)
+    FORCEINLINE static void LogInfo(const char* format, fmt::ArgList args)
     {
         auto string = fmt::format(format, args);
         auto cstring = string.c_str();
-        m_instance->invokeCallback(cstring, LogLevel::Message);
+        m_instance->InvokeCallback(cstring, LogLevel::Message);
     }
 
-    FMT_VARIADIC(static void, logInfo, const char *)
+    FMT_VARIADIC(static void, LogInfo, const char *)
 
     /**
     * \brief Writes info message into log file.
     * \param message The message.
     */
-    FORCEINLINE static void log(const char* message)
+    FORCEINLINE static void Log(const char* message)
     {
-        m_instance->invokeCallback(message, LogLevel::Message);
+        m_instance->InvokeCallback(message, LogLevel::Message);
     }
 
     /**
@@ -159,14 +159,14 @@ public:
     * \param format The message format.
     * \param args The message arguments.
     */
-    FORCEINLINE static void log(const char* format, fmt::ArgList args)
+    FORCEINLINE static void Log(const char* format, fmt::ArgList args)
     {
         auto string = fmt::format(format, args);
         auto cstring = string.c_str();
-        m_instance->invokeCallback(cstring, LogLevel::Message);
+        m_instance->InvokeCallback(cstring, LogLevel::Message);
     }
 
-    FMT_VARIADIC(static void, log, const char *)
+    FMT_VARIADIC(static void, Log, const char *)
 };
 
 #endif // LOGGER_H

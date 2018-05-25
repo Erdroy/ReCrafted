@@ -22,19 +22,19 @@ private:
     CEFView* m_viewBase = nullptr;
 
 private:
-    void init();
-    void update();
-    void resize(uint width, uint height);
-    void render();
-    void onDestroy() override;
+    void Init();
+    void Update();
+    void Resize(uint width, uint height);
+    void Render();
+    void OnDestroy() override;
 
 public:
-    CEFView* getView() const;
+    CEFView* GetView() const;
 
 public:
-    void navigate(Text& url);
-    void execute(const char* javaScriptSource);
-    void bind(const char* bindName, Delegate<void> delegate);
+    void Navigate(Text& url);
+    void Execute(const char* javaScriptSource);
+    void Bind(const char* bindName, Delegate<void> delegate);
 };
 
 #endif // WEBUIVIEW_H

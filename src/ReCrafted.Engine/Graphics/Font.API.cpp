@@ -7,31 +7,31 @@ namespace Internal
 {
     MonoObject* loadFont(MonoString* fileName, int fontSize)
     {
-        auto text = Text::constant(MONO_TEXT(fileName));
-        auto font = Object::createInstance<Font>("ReCrafted.API.Graphics", "Font");;
+        auto text = Text::Constant(MONO_TEXT(fileName));
+        auto font = Object::CreateInstance<Font>("ReCrafted.API.Graphics", "Font");;
 
-        font->loadFont(text, fontSize, true);
+        font->LoadFont(text, fontSize, true);
 
-        return font->getManagedPtr();
+        return font->GetManagedPtr();
     }
 
     void fontMeasure(Font* font, MonoString* str, Vector2* size)
     {
-        auto text = Text::constant(MONO_TEXT(str));
+        auto text = Text::Constant(MONO_TEXT(str));
 
-        if (text.size() == 0)
+        if (text.Size() == 0)
             return;
 
-        *size = font->measureText(text);
+        *size = font->MeasureText(text);
     }
 
     uint getFontSize(Font* font)
     {
-        return font->getSize();
+        return font->GetSize();
     }
 }
 
-void Font::initRuntime()
+void Font::InitRuntime()
 {
     // create type binding
 

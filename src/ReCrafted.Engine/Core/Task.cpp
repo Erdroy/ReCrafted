@@ -6,20 +6,20 @@
 
 void Task::run()
 {
-    m_timeStart = Platform::getMiliseconds();
+    m_timeStart = Platform::GetMiliseconds();
 
     m_function.Invoke();
     m_completed = true;
 
-    m_timeEnd = Platform::getMiliseconds();
+    m_timeEnd = Platform::GetMiliseconds();
 }
 
-Task Task::createTask(Delegate<void> function)
+Task Task::CreateTask(Delegate<void> function)
 {
-    return TaskManager::createTask(function, {});
+    return TaskManager::CreateTask(function, {});
 }
 
-Task Task::createTask(Delegate<void> function, Delegate<bool> callback)
+Task Task::CreateTask(Delegate<void> function, Delegate<bool> callback)
 {
-    return TaskManager::createTask(function, callback);
+    return TaskManager::CreateTask(function, callback);
 }

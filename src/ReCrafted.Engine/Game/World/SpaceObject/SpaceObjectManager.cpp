@@ -23,9 +23,9 @@ moodycamel::ConcurrentQueue<queueItem> m_loadingQueue;
 Array<Delegate<void>> m_callbacks;
 Lock m_calbacksLock;
 
-void SpaceObjectManager::onDispose()
+void SpaceObjectManager::OnDispose()
 {
-    Logger::logInfo("Waiting for SpaceObjectManager workers to exit...");
+    Logger::LogInfo("Waiting for SpaceObjectManager workers to exit...");
 
     m_running = false;
 
@@ -38,12 +38,12 @@ void SpaceObjectManager::onDispose()
         SafeDelete(thread);
     }
 
-    Logger::logInfo("SpaceObjectManager workers exited.");
+    Logger::LogInfo("SpaceObjectManager workers exited.");
 }
 
-void SpaceObjectManager::worker_function()
+void SpaceObjectManager::WorkerFunction()
 {
-    Platform::setThreadName("SpaceObjectManager Worker");
+    Platform::SetThreadName("SpaceObjectManager Worker");
 
     // create mesher
     var mesher = MCMesher();
@@ -54,7 +54,7 @@ void SpaceObjectManager::worker_function()
     {
         if (!m_loadingQueue.try_dequeue(item))
         {
-            Platform::sleep(10);
+            Platform::Sleep(10);
             continue;
         }
 
@@ -62,59 +62,59 @@ void SpaceObjectManager::worker_function()
         switch (item.mode)
         {
         case ProcessMode::Populate:
-            item.node->worker_populate(&mesher);
+            item.node->WorkerPopulate(&mesher);
             break;
         case ProcessMode::Depopulate:
-            item.node->worker_depopulate(&mesher);
+            item.node->WorkerDepopulate(&mesher);
             break;
         case ProcessMode::Rebuild:
-            item.node->worker_rebuild(&mesher);
+            item.node->WorkerRebuild(&mesher);
             break;
         default: ;
         }
 
         // queue callback
-        m_calbacksLock.lock();
-        m_callbacks.add(item.callback);
-        m_calbacksLock.unlock();
+        m_calbacksLock.LockNow();
+        m_callbacks.Add(item.callback);
+        m_calbacksLock.UnlockNow();
     }
 }
 
-void SpaceObjectManager::init()
+void SpaceObjectManager::Init()
 {
     m_callbacks = {};
 
     m_running = true;
 
     // run threads
-    cvar maxThreads = Platform::cpuCount();
+    cvar maxThreads = Platform::CpuCount();
 
-    Logger::logInfo("Starting {0} SpaceObjectManager workers.", maxThreads);
+    Logger::LogInfo("Starting {0} SpaceObjectManager workers.", maxThreads);
 
     for (var i = 0; i < maxThreads; i ++)
     {
-        m_workerThreads.add(new std::thread([this]
+        m_workerThreads.Add(new std::thread([this]
         {
             var thread = RPMallocThread();
-            worker_function();
+            WorkerFunction();
         }));
     }
 
-    Logger::logInfo("SpaceObjectManager workers started.");
+    Logger::LogInfo("SpaceObjectManager workers started.");
 }
 
-void SpaceObjectManager::update()
+void SpaceObjectManager::Update()
 {
     // dispatch calbacks
-    m_calbacksLock.lock();
+    m_calbacksLock.LockNow();
     for (var& callback : m_callbacks)
         callback.Invoke();
 
-    m_callbacks.clear();
-    m_calbacksLock.unlock();
+    m_callbacks.Clear();
+    m_calbacksLock.UnlockNow();
 }
 
-void SpaceObjectManager::enqueue(SpaceObjectOctreeNode* node, ProcessMode::_enum mode, Delegate<void> callback)
+void SpaceObjectManager::Enqueue(SpaceObjectOctreeNode* node, ProcessMode::_enum mode, Delegate<void> callback)
 {
     var item = queueItem();
     item.node = node;

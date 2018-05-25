@@ -10,26 +10,26 @@ int m_cursorY = 0u;
 int m_cursorDeltaX = 0u;
 int m_cursorDeltaY = 0u;
 
-void Input::onInit()
+void Input::OnInit()
 {
     // clear all keys
-    releaseAll();
+    ReleaseAllKeys();
 }
 
-void Input::onDispose()
+void Input::OnDispose()
 {
     // clear all keys
-    releaseAll();
+    ReleaseAllKeys();
 }
 
-void Input::updateInput()
+void Input::UpdateInput()
 {
     // copy all keys
     for (auto i = 0; i < INPUT_TABLE_SIZE; i++)
         m_lastkeys[i] = m_keys[i];
 
-    // update cursor pos
-    m_cursorPos = Vector2(float(m_cursorX), float(m_cursorY)); // TODO: implement event-based cursor update
+    // Update cursor pos
+    m_cursorPos = Vector2(float(m_cursorX), float(m_cursorY)); // TODO: implement event-based cursor Update
     m_cursorDelta = Vector2(float(m_cursorDeltaX), float(m_cursorDeltaY));
 
     m_cursorDeltaX = 0;
@@ -43,24 +43,24 @@ void Input::updateInput()
     if (m_lockCursor)
     {
         // lock position
-        setCursorPos(
-            static_cast<int>(round(Display::get_Width() / 2.0f)),
-            static_cast<int>(round(Display::get_Height() / 2.0f))
+        SetCursorPos(
+            static_cast<int>(round(Display::GetWidth() / 2.0f)),
+            static_cast<int>(round(Display::GetHeight() / 2.0f))
         );
     }
 }
 
-void Input::emit(bool up, uint key)
+void Input::OnKeyEvent(bool up, uint key)
 {
     m_keys[key] = up ? 0 : 1;
 }
 
-void Input::emitScroll(float delta)
+void Input::OnScrollEvent(float delta)
 {
     m_scrollDelta_u += delta;
 }
 
-void Input::emitMouseMove(int deltaX, int deltaY, int cursorX, int cursorY)
+void Input::OnCursorEvent(int deltaX, int deltaY, int cursorX, int cursorY)
 {
     m_cursorDeltaX += deltaX;
     m_cursorDeltaY += deltaY;
@@ -69,7 +69,7 @@ void Input::emitMouseMove(int deltaX, int deltaY, int cursorX, int cursorY)
     m_cursorY = cursorY;
 }
 
-void Input::releaseAll()
+void Input::ReleaseAllKeys()
 {
     // clear all keys
     for (auto i = 0; i < INPUT_TABLE_SIZE; i++)

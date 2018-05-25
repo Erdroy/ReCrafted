@@ -11,7 +11,7 @@
 
 /**
  * \brief Application class. EngineComponent for ScriptingEngine, 
- * which makes possible to run update/simulate/render calls in Mono.
+ * which makes possible to run Update/Simulate/render calls in Mono.
  */
 class Application : public EngineComponent<Application>
 {
@@ -34,15 +34,15 @@ public:
     virtual ~Application() = default;
 
 private:
-    void onInit() override;
-    void onDispose() override;
-    void onLoad() override;
-    void update() override;
+    void OnInit() override;
+    void OnDispose() override;
+    void OnLoad() override;
+    void Update() override;
 
 private:
-    void simulate();
-    void render();
-    void renderUI();
+    void Simulate();
+    void Render();
+    void RenderUI();
 };
 
 #endif // APPLICATION_H

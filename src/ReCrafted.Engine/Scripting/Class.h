@@ -23,7 +23,7 @@ public:
     /// <summary>
     /// Gets mono type.
     /// </summary>
-    char* getType() const;
+    char* GetType() const;
 };
 
 #endif // CLASS_H

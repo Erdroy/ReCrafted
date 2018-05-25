@@ -26,7 +26,7 @@ public:
     /// <summary>
     /// Transpose the matrix.
     /// </summary>
-    FORCEINLINE void transpose()
+    FORCEINLINE void Transpose()
     {
         // make temporary copy
         auto temp = *this;
@@ -58,7 +58,7 @@ public:
     /// Sets 1 to [0,0], [1,1], [2,2], [3,3].
     /// </summary>
     /// <returns>The identity matrix.</returns>
-    FORCEINLINE static Matrix identity()
+    FORCEINLINE static Matrix Identity()
     {
         auto matrix = Matrix();
 
@@ -74,7 +74,7 @@ public:
     /// Returns default empty-zeroed matrix.
     /// </summary>
     /// <returns>The empty matrix.</returns>
-    FORCEINLINE static Matrix zero()
+    FORCEINLINE static Matrix Zero()
     {
         return Matrix();
     }
@@ -84,9 +84,9 @@ public:
     /// </summary>
     /// <param name="matrix">Matrix to transpose.</param>
     /// <returns>The result.</returns>
-    FORCEINLINE static Matrix transpose(Matrix matrix)
+    FORCEINLINE static Matrix Transpose(Matrix matrix)
     {
-        matrix.transpose();
+        matrix.Transpose();
         return matrix;
     }
 
@@ -95,9 +95,9 @@ public:
     /// </summary>
     /// <param name="matrix">Matrix to transpose.</param>
     /// <param name="result">The result.</param>
-    FORCEINLINE static void transpose(Matrix matrix, Matrix* result)
+    FORCEINLINE static void Transpose(Matrix matrix, Matrix* result)
     {
-        matrix.transpose();
+        matrix.Transpose();
         *result = matrix;
     }
 
@@ -109,9 +109,9 @@ public:
     /// <param name="znear">The Z-Near plane distance.</param>
     /// <param name="zfar">The Z-Far plane distance.</param>
     /// <returns>The result.</returns>
-    FORCEINLINE static Matrix createPerspectiveFovLH(float xfov, float aspect, float znear, float zfar)
+    FORCEINLINE static Matrix CreatePerspectiveFovLH(float xfov, float aspect, float znear, float zfar)
     {
-        auto m = zero();
+        auto m = Zero();
         auto yScale = 1.0f / tan(xfov * 0.5f);
         auto q = zfar / (zfar - znear);
 
@@ -124,23 +124,23 @@ public:
         return m;
     }
 
-    FORCEINLINE static void createPerspectiveFovLH(float xfov, float aspect, float znear, float zfar, Matrix* result)
+    FORCEINLINE static void CreatePerspectiveFovLH(float xfov, float aspect, float znear, float zfar, Matrix* result)
     {
-        *result = createPerspectiveFovLH(xfov, aspect, znear, zfar);
+        *result = CreatePerspectiveFovLH(xfov, aspect, znear, zfar);
     }
 
 
-    FORCEINLINE static Matrix createViewLH(Vector3 position, Vector3 target, Vector3 up)
+    FORCEINLINE static Matrix CreateViewLH(Vector3 position, Vector3 target, Vector3 up)
     {
-        auto m = identity();
+        auto m = Identity();
 
         auto zAxis = target - position;
-        zAxis.normalize();
+        zAxis.Normalize();
 
-        auto xAxis = Vector3::cross(up, zAxis);
-        xAxis.normalize();
+        auto xAxis = Vector3::Cross(up, zAxis);
+        xAxis.Normalize();
 
-        auto yAxis = Vector3::cross(zAxis, xAxis);
+        auto yAxis = Vector3::Cross(zAxis, xAxis);
 
         m.M00 = xAxis.x;
         m.M01 = yAxis.x;
@@ -154,16 +154,16 @@ public:
         m.M21 = yAxis.z;
         m.M22 = zAxis.z;
 
-        m.M30 = -Vector3::dot(xAxis, position);
-        m.M31 = -Vector3::dot(yAxis, position);
-        m.M32 = -Vector3::dot(zAxis, position);
+        m.M30 = -Vector3::Dot(xAxis, position);
+        m.M31 = -Vector3::Dot(yAxis, position);
+        m.M32 = -Vector3::Dot(zAxis, position);
 
         return m;
     }
 
-    FORCEINLINE static void createViewLH(Vector3 position, Vector3 target, Vector3 up, Matrix* result)
+    FORCEINLINE static void CreateViewLH(Vector3 position, Vector3 target, Vector3 up, Matrix* result)
     {
-        *result = createViewLH(position, target, up);
+        *result = CreateViewLH(position, target, up);
     }
 
 public:

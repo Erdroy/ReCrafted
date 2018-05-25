@@ -22,7 +22,7 @@ public:
     */
     explicit FileStream(const char* fileName, const OpenMode::_enum openMode)
     {
-        Platform::openFile(&m_file, fileName, openMode);
+        Platform::OpenFile(&m_file, fileName, openMode);
     }
 
 public:
@@ -33,9 +33,9 @@ public:
     * \param count The count of bytes to read.
     * \return The count of read bytes.
     */
-    size_t read(void* buffer, const size_t offset, const size_t count) const override
+    size_t Read(void* buffer, const size_t offset, const size_t count) const override
     {
-        return Stream::read(buffer, offset, count);
+        return Stream::Read(buffer, offset, count);
     }
 
     /**
@@ -44,9 +44,9 @@ public:
     * \param offset The write offset in bytes.
     * \param count The count of bytes to write.
     */
-    void write(void* buffer, const size_t offset, const size_t count) const override
+    void Write(void* buffer, const size_t offset, const size_t count) const override
     {
-        Stream::write(buffer, offset, count);
+        Stream::Write(buffer, offset, count);
     }
 
     /**
@@ -57,7 +57,7 @@ public:
     * \param count The count of bytes to read.
     * \return The count of read bytes.
     */
-    size_t read(void* buffer, const size_t bufferSize, const size_t offset, const size_t count) const override
+    size_t Read(void* buffer, const size_t bufferSize, const size_t offset, const size_t count) const override
     {
         // calculate the size of buffer with offset and
         // check if we can read to the buffer anything after the offset being applied
@@ -65,7 +65,7 @@ public:
         assert(outputOffsetSize > 0);
 
         // read from the file
-        m_file.read(buffer, count, offset);
+        m_file.Read(buffer, count, offset);
 
         // done
         return count;
@@ -78,7 +78,7 @@ public:
     * \param offset The write offset in bytes.
     * \param count The count of bytes to write.
     */
-    void write(void* buffer, const size_t bufferSize, const size_t offset, const size_t count) const override
+    void Write(void* buffer, const size_t bufferSize, const size_t offset, const size_t count) const override
     {
         // calculate the size of buffer with offset and
         // check if we can write to the buffer anything after the offset being applied
@@ -86,28 +86,28 @@ public:
         assert(outputOffsetSize > 0);
 
         // seek position
-        m_file.seek(static_cast<long>(offset));
+        m_file.Seek(static_cast<long>(offset));
 
         // write to the file
-        m_file.write(buffer, count);
+        m_file.Write(buffer, count);
     }
 
     /**
     * \brief Flushes the file stream.
     */
-    void flush() const
+    void Flush() const
     {
-        m_file.flush();
+        m_file.Flush();
     }
 
 protected:
     /**
     * \brief Closes the stream.
     */
-    void close() const override
+    void Close() const override
     {
-        m_file.flush();
-        m_file.close();
+        m_file.Flush();
+        m_file.Close();
     }
 };
 

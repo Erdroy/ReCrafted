@@ -26,12 +26,12 @@ public:
     virtual ~Universe() = default;
 
 private:
-    void onInit() override;
-    void onDispose() override;
-    void update() override;
+    void OnInit() override;
+    void OnDispose() override;
+    void Update() override;
 
-    void simulate();
-    void render();
+    void Simulate();
+    void Render();
 };
 
 #endif // UNIVERSE_H

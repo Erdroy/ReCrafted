@@ -62,7 +62,7 @@ public:
 	 * \brief Initializez font.
 	 * \param glyphCount The total glyph count.
 	 */
-    void init(uint glyphCount)
+    void Init(uint glyphCount)
     {
         m_glyphCount = glyphCount;
         m_glyphs = new Glyph[glyphCount];
@@ -72,7 +72,7 @@ public:
     /**
      * \brief Disposes this font.
      */
-    void dispose() override
+    void Dispose() override
     {
         if (m_glyphs)
             delete[] m_glyphs;
@@ -83,7 +83,7 @@ public:
 	 * \param character The character.
 	 * \return The character's glyph info.
 	 */
-    FORCEINLINE Glyph getCharacter(Char character) const
+    FORCEINLINE Glyph GetCharacter(Char character) const
     {
         return m_glyphs[character];
     }
@@ -93,7 +93,7 @@ public:
 	 * \param text The text to be measured.
 	 * \return The measured size.
 	 */
-    Vector2 measureText(Text& text);
+    Vector2 MeasureText(Text& text);
 
     /**
 	 * \brief Loads font from file and renders it into given size.
@@ -101,14 +101,14 @@ public:
 	 * \param size The size of the font.
 	 * \param managed
 	 */
-    void loadFont(Text& fontFile, int size, bool managed = false);
+    void LoadFont(Text& fontFile, int size, bool managed = false);
 
     /**
      * \brief Gets texture of this font of given id.
      * \param id The texture id.
      * \return The texture.
      */
-    FORCEINLINE Ref<Texture2D> getTexture(int id) const
+    FORCEINLINE Ref<Texture2D> GetTexture(int id) const
     {
         return m_textures[id];
     }
@@ -116,7 +116,7 @@ public:
     /**
      * \brief The size of this font.
      */
-    FORCEINLINE uint getSize() const
+    FORCEINLINE uint GetSize() const
     {
         return m_size;
     }
@@ -124,7 +124,7 @@ public:
     /**
     * \brief The line height multiplier of this font.
     */
-    FORCEINLINE float getLineHeight() const
+    FORCEINLINE float GetLineHeight() const
     {
         return m_lineHeigh;
     }

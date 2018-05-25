@@ -5,36 +5,36 @@
 
 Array<ApplicationWindow*> ApplicationWindow::m_windows;
 
-void ApplicationWindow::create()
+void ApplicationWindow::Create()
 {
-    m_width = 1280;
-    m_height = 720;
+    m_Width = 1280;
+    m_Height = 720;
 
-    m_windowHandle = Platform::createWindow(TEXT("ReCrafted"), m_width, m_height);
+    m_windowHandle = Platform::CreateNewWindow(TEXT("ReCrafted"), m_Width, m_Height);
 
-    m_windows.add(this);
+    m_windows.Add(this);
 }
 
-void ApplicationWindow::dispose()
+void ApplicationWindow::Dispose()
 {
     if (m_windowHandle)
-        Platform::destroyWindow(m_windowHandle);
+        Platform::DestroyWindow(m_windowHandle);
 
-    m_windows.remove(this);
+    m_windows.Remove(this);
 }
 
-void ApplicationWindow::updateSizeNow()
+void ApplicationWindow::UpdateSizeNow()
 {
     // get size
-    Platform::getWindowSize(m_windowHandle, &m_width, &m_height);
+    Platform::GetWindowSize(m_windowHandle, &m_Width, &m_Height);
 }
 
-void ApplicationWindow::setOnResized(Delegate<void> callback)
+void ApplicationWindow::SetOnResized(Delegate<void> callback)
 {
     m_onResized = callback;
 }
 
-void ApplicationWindow::windowResize(void* windowHandle)
+void ApplicationWindow::WindowResize(void* windowHandle)
 {
     ApplicationWindow* window = nullptr;
 
@@ -54,13 +54,13 @@ void ApplicationWindow::windowResize(void* windowHandle)
     var currentHeight = 0u;
 
     // get size
-    Platform::getWindowSize(windowHandle, &currentWidth, &currentHeight);
+    Platform::GetWindowSize(windowHandle, &currentWidth, &currentHeight);
 
     // check
-    if (window->m_width != currentWidth || window->m_height != currentHeight)
+    if (window->m_Width != currentWidth || window->m_Height != currentHeight)
     {
-        window->m_width = currentWidth;
-        window->m_height = currentHeight;
+        window->m_Width = currentWidth;
+        window->m_Height = currentHeight;
     }
 
     // invoke callback if needed
