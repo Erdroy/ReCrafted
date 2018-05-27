@@ -22,11 +22,6 @@ struct IResource : public IDisposable
 private:
     static uint m_resCount;
 
-#if COMPILE_WITH_RESOURCE_LISTING
-    static Array<IResource*> m_resources;
-    static Lock m_resourcesLock;
-#endif
-
 protected:
     /**
      * \brief Adds instance.
@@ -34,11 +29,6 @@ protected:
     void AddRef()
     {
         m_resCount++;
-
-#if COMPILE_WITH_RESOURCE_LISTING
-        ScopeLock(m_resourcesLock);
-        m_resources.add(this);
-#endif
     }
 
     /**
@@ -47,11 +37,6 @@ protected:
     void Release()
     {
         m_resCount--;
-
-#if COMPILE_WITH_RESOURCE_LISTING
-        ScopeLock(m_resourcesLock);
-        m_resources.Remove(this);
-#endif
     }
 
 public:

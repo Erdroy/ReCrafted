@@ -22,7 +22,7 @@ class RenderBuffer
 
 private:
     Renderer::RenderBufferHandle m_renderBufferHandle = {};
-    Renderer::TextureFormat::_enum m_textures[MAX_RENDERBUFFER_TARGETS] = {};
+    Renderer::TextureFormat::_enum m_textures[RENDERER_MAX_RENDER_BUFFER_TARGETS] = {};
     uint m_textureCount = 0u;
     bool m_created = false;
 

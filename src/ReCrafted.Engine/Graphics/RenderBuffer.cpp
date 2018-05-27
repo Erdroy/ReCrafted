@@ -41,7 +41,7 @@ void RenderBuffer::AddTarget(const char* name, Renderer::TextureFormat::_enum fo
 
 Renderer::Texture2DHandle RenderBuffer::GetTarget(uint slot)
 {
-    _ASSERT(slot < MAX_RENDERBUFFER_TARGETS);
+    _ASSERT(slot < RENDERER_MAX_RENDER_BUFFER_TARGETS);
 
     var renderBufferDesc = Renderer::GetRenderBufferDescription(m_renderBufferHandle);
     return renderBufferDesc.renderTextures[slot];

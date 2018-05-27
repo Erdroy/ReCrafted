@@ -5,18 +5,14 @@
 // includes
 #include "ReCraftedConfig.h"
 
-// platform-specific includes
-#include <Windows.h>
-
 #include "ReCrafted.h"
 #include "Core/GameInfo.h"
 #include "Core/EngineMain.h"
 #include "Platform/Platform.h"
 #include "Graphics/WebUI/WebUIEngine.h"
 
-#if RENDERER_TEST
-void initRendererTests();
-#endif
+// platform-specific includes
+#include <Windows.h>
 
 extern "C" {
 _declspec(dllexport) unsigned int NvOptimusEnablement = 0x00000001;
@@ -39,7 +35,8 @@ int CALLBACK WinMain(
     rpmalloc_initialize();
 
     // parse arguments
-    GameInfo::ParseArguments(Text(GetCommandLineA()));
+    var arguments = Text(GetCommandLineA());
+    GameInfo::ParseArguments(arguments);
 
     // create engine instance
     var engine = EngineMain();
@@ -47,12 +44,8 @@ int CALLBACK WinMain(
     // initialize engine
     engine.Initialize();
 
-#if RENDERER_TEST
-    initRendererTests();
-#else
     // run engine loop
     engine.Run();
-#endif
 
     // Shutdown engine
     engine.Shutdown();
