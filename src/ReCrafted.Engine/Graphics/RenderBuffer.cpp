@@ -21,7 +21,7 @@ void RenderBuffer::End()
 
     // build render buffer
     m_renderBufferHandle = Renderer::CreateRenderBuffer(width, height, m_textures, m_textureCount,
-                                                        Renderer::TextureFormat::D32);
+                                                        Renderer::TextureFormat::D32F);
 
     m_width = width;
     m_height = height;

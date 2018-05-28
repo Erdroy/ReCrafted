@@ -75,11 +75,6 @@ public:
     void SetShader(Ref<Shader>& shader);
 
     /**
-    * \brief Sets given matrix as current.
-    */
-    void SetMatrix(Matrix& mvpMatrix);
-
-    /**
     * \brief Sets given stage as current.
     */
     void SetStage(RenderStage::_enum stage);

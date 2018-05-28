@@ -22,6 +22,8 @@ struct SurfacePSInput
     float4 Position : SV_POSITION;
     float3 Normal   : NORMAL;
 
+    float LogZ : TEXCOORD0;
+
 #ifdef USE_UV
     float2 UV       : TEXCOORD0;
 #endif // USE_UV
@@ -51,12 +53,11 @@ void SurfaceVSMain(in SurfaceVSInput i, out SurfacePSInput o)
 #endif // USE_VERTEXCOLOR
 
 #ifdef USE_LOGZBUFFER
-    float fc = 1.0f / log(farPlane * nearPlane + 1.0);
-    float depth = log(position.w * nearPlane + 1.0) * fc;
+    const float C = 1.0f;
+    const float FC = 1.0 / log(farPlane * C + 1);
 
-    // set Z
-    o.Position.z = depth * position.w;
-    //o.Position.z = (2.0 * depth - 1.0) * position.w; // for opengl
+    o.LogZ = log(position.w * C + 1) * FC; 
+    o.Position.z = o.LogZ * position.w;
 #endif
 }
 
@@ -69,6 +70,10 @@ void SurfacePSMain(in SurfacePSInput i, out GBufferOutput o)
     // TODO: Consider whenever we need to use texture sampling, raw vertex color or textureColor * vertexColor
     o.Color = i.Color;
     o.Normal = float4(i.Normal, 1.0f);
+
+#ifdef USE_LOGZBUFFER
+    o.Depth = i.LogZ;
+#endif
 }
 
 #endif // SURFACE_HLSLI

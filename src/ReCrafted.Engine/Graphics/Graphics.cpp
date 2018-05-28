@@ -158,13 +158,13 @@ void Graphics::RenderBegin()
 
     // set default matrix
     rvar mvpMatrix = Camera::GetMainCamera()->GetViewProjection();
-    Renderer::SetShaderValue(m_currentShader->m_shaderHandle, 0, 0, &mvpMatrix, sizeof(Matrix));
+    m_currentShader->SetValue(0, &mvpMatrix);
 
     var nearPlane = Camera::GetMainCamera()->GetNearPlane();
-    Renderer::SetShaderValue(m_currentShader->m_shaderHandle, 0, 1, &nearPlane, sizeof(float));
+    m_currentShader->SetValue(1, &nearPlane);
 
     var farPlane = Camera::GetMainCamera()->GetFarPlane();
-    Renderer::SetShaderValue(m_currentShader->m_shaderHandle, 0, 2, &farPlane, sizeof(float));
+    m_currentShader->SetValue(2, &farPlane);
 
     // apply shader changes
     Renderer::ApplyShader(m_gbufferFillShader->m_shaderHandle, 0);
@@ -205,6 +205,14 @@ void Graphics::RenderEnd()
         return;
     }
 
+    if (Input::IsKey(Key_F4))
+    {
+        Renderer::BlitTexture(m_frameBuffer, m_gbuffer->GetDepthBuffer());
+        // reset everything
+        m_currentShader = nullptr;
+        return;
+    }
+
     // combine gbuffer
 
     // Update shaders uniforms
@@ -214,11 +222,16 @@ void Graphics::RenderEnd()
 
     // blit render textures using gbuffercombine shader
     rvar gbufferDescription = Renderer::GetRenderBufferDescription(m_gbuffer->m_renderBufferHandle);
+
+    // Build render target list (Color, Normal, Depth)
+    var renderTargets = std::vector<Renderer::Texture2DHandle>(gbufferDescription.renderTextures);
+    renderTargets.push_back(m_gbuffer->GetDepthBuffer());
+
     Renderer::BlitTextures(
         m_gbufferCombine->m_shaderHandle,
         m_frameBuffer,
-        gbufferDescription.renderTextures.data(),
-        static_cast<uint8_t>(gbufferDescription.renderTextures.size())
+        renderTargets.data(),
+        static_cast<uint8_t>(renderTargets.size())
     );
 
     // reset everything
@@ -291,11 +304,6 @@ void Graphics::SetShader(Ref<Shader>& shader)
         Renderer::ApplyShader(shader->m_shaderHandle, 0);
         m_currentShader = shader;
     }
-}
-
-void Graphics::SetMatrix(Matrix& mvpMatrix)
-{
-    Renderer::SetShaderValue(m_currentShader->m_shaderHandle, 0, 0, &mvpMatrix, sizeof(Matrix));
 }
 
 void Graphics::SetStage(RenderStage::_enum stage)
