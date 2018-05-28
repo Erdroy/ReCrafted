@@ -55,6 +55,8 @@ public:
     /// <returns>The target texture handle.</returns>
     Renderer::Texture2DHandle GetTarget(uint slot);
 
+    Renderer::Texture2DHandle GetDepthBuffer();
+
     /// <summary>
     /// Resize the render buffer.
     /// </summary>

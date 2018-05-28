@@ -850,8 +850,8 @@ namespace Renderer
 
             if (createDepthBuffer)
             {
-                textureDesc.Format = DGXI_TextureFormats[command->textureFormat][2];
-                textureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+                textureDesc.Format = DGXI_TextureFormats[command->textureFormat][0];
+                textureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
             }
             else
             {
@@ -879,6 +879,14 @@ namespace Renderer
                 depthStencilViewDesc.Texture2D.MipSlice = 0;
 
                 DX_CALL(m_device->CreateDepthStencilView(texture.texture, &depthStencilViewDesc, &texture.dsv));
+
+                D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+                srvDesc.Format = DGXI_TextureFormats[command->textureFormat][1];
+                srvDesc.ViewDimension = m_msaaSampleCount > 1 ? D3D11_SRV_DIMENSION_TEXTURE2DMS : D3D11_SRV_DIMENSION_TEXTURE2D;
+                srvDesc.Texture2D.MipLevels = mipLevels;
+                srvDesc.Texture2D.MostDetailedMip = 0;
+
+                DX_CALL(m_device->CreateShaderResourceView(texture.texture, &srvDesc, &texture.srv));
             }
             else
             {
