@@ -8,7 +8,9 @@
 // includes
 #include "../IVoxelMesher.h"
 #include "Core/Containers/Array.h"
+#include "Voxels/Storage/VoxelChunkData.h"
 #include "Core/Math/Vector2.h"
+#include "Core/Math/Vector3.h"
 #include "Core/Math/Vector4.h"
 
 #define BORDER_FRONT	0x01

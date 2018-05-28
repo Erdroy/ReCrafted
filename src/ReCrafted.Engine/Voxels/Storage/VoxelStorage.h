@@ -10,7 +10,7 @@
 
 #include "Core/Lock.h"
 #include "Core/Streams/FileStream.h"
-#include "Game/World/SpaceObject/SpaceObject.h"
+#include "Voxels/SpaceObject.h"
 
 #include "VoxelChunkData.h"
 #include "VoxelStorageHeader.h"

@@ -3,8 +3,9 @@
 #include "Universe.h"
 #include "Common/Input/Input.h"
 #include "Graphics/Camera.h"
-#include "World/SpaceObject/SpaceObjectManager.h"
-#include "World/SpaceObject/Storage/VoxelStorage.h"
+#include "Voxels/SpaceObjectManager.h"
+#include "Voxels/Storage/VoxelStorage.h"
+#include "Voxels/SpaceObjectSettings.h"
 
 SINGLETON_IMPL(Universe)
 

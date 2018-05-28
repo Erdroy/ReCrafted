@@ -8,7 +8,7 @@
 // includes
 #include "ReCrafted.h"
 #include "Core/Defines.h"
-#include "Game/World/SpaceObject/SpaceObjectChunk.h"
+#include "Voxels/SpaceObjectChunk.h"
 
 class Mesh;
 

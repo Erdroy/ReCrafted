@@ -6,7 +6,7 @@
 #define UNIVERSE_H
 
 // includes
-#include "World/SpaceObject/SpaceObject.h"
+#include "Voxels/SpaceObject.h"
 #include "Core/EngineComponent.h"
 
 /**
