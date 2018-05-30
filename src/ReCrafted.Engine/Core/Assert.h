@@ -17,4 +17,6 @@
 
 #define ASSERT(expression) _ASSERT_(expression, "")
 
+#define STATIC_ASSERT(expr) typedef char __static_assert_t[(expr) != 0]
+
 #endif // ASSERT_H

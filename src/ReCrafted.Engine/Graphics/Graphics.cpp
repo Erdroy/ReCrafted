@@ -220,6 +220,15 @@ void Graphics::RenderEnd()
     lightdir.Normalize();
     m_gbufferCombine->SetValue(0, &lightdir);
 
+    var cameraPosition = Camera::GetMainCamera()->GetPosition();
+    m_gbufferCombine->SetValue(1, &cameraPosition);
+
+    Vector4 viewInfo = {};
+    viewInfo.x = Camera::GetMainCamera()->GetNearPlane();
+    viewInfo.y = Camera::GetMainCamera()->GetFarPlane();
+
+    m_gbufferCombine->SetValue(2, &viewInfo);
+
     // blit render textures using gbuffercombine shader
     rvar gbufferDescription = Renderer::GetRenderBufferDescription(m_gbuffer->m_renderBufferHandle);
 
