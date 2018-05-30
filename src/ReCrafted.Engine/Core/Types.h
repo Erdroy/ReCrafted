@@ -15,6 +15,9 @@ typedef signed char sbyte;
 typedef unsigned int uint;
 
 template <class T>
-using Ref = std::shared_ptr<T>;
+using RefPtr = std::shared_ptr<T>;
+
+template <class T>
+using Ref = std::reference_wrapper<T>;
 
 #endif // TYPES_H

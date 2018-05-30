@@ -149,7 +149,7 @@ public:
 	 * \brief Creates new empty texture.
 	 * \return The newly created texture.
 	 */
-    static Ref<Texture2D> CreateTexture(Renderer::TextureFormat::_enum format);
+    static RefPtr<Texture2D> CreateTexture(Renderer::TextureFormat::_enum format);
 };
 
 #endif // TEXTURE2D_H

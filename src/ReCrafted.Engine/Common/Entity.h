@@ -22,8 +22,8 @@ private:
     friend class GameMain;
 
 public:
-    Array<Ref<Script>> scripts = {};
-    Array<Ref<Entity>> children = {};
+    Array<RefPtr<Script>> scripts = {};
+    Array<RefPtr<Entity>> children = {};
 
     Vector3 position = {};
     Vector3 rotation = {};
@@ -34,11 +34,11 @@ public:
     Entity* parent = nullptr;
 
 public:
-    void AddScript(Ref<Script> script);
-    void RemoveScript(Ref<Script> script);
+    void AddScript(RefPtr<Script> script);
+    void RemoveScript(RefPtr<Script> script);
 
-    void AddChildren(Ref<Entity> entity);
-    void RemoveChildren(Ref<Entity> entity);
+    void AddChildren(RefPtr<Entity> entity);
+    void RemoveChildren(RefPtr<Entity> entity);
 
 public:
     void Update();

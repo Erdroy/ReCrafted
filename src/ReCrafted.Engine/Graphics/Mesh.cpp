@@ -174,9 +174,9 @@ void Mesh::Dispose()
     m_indices_count = 0u;
 }
 
-Ref<Mesh> Mesh::CreateMesh()
+RefPtr<Mesh> Mesh::CreateMesh()
 {
-    Ref<Mesh> mesh(new Mesh);
+    RefPtr<Mesh> mesh(new Mesh);
     mesh->Init();
     return mesh;
 }

@@ -44,7 +44,7 @@ public:
 	 * \param slot The texture slot, starts at 0.
 	 * \param texture The texture.
 	 */
-    void SetTexture(int slot, Ref<Texture2D> texture)
+    void SetTexture(int slot, RefPtr<Texture2D> texture)
     {
         Renderer::ApplyTexture2D(texture->m_textureHandle, slot);
     }
@@ -70,7 +70,7 @@ public:
 	 * \param shaderName The shader name, eg.: GBufferStandard etc.
 	 * \return The loaded shader, or nullptr when file not found.
 	 */
-    static Ref<Shader> LoadShader(const char* shaderName);
+    static RefPtr<Shader> LoadShader(const char* shaderName);
 };
 
 #endif // SHADER_H

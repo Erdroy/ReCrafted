@@ -3,21 +3,21 @@
 #include "Entity.h"
 #include "EntityPool.h"
 
-void Entity::AddScript(Ref<Script> script)
+void Entity::AddScript(RefPtr<Script> script)
 {
     scripts.Add(script);
 }
 
-void Entity::RemoveScript(Ref<Script> script)
+void Entity::RemoveScript(RefPtr<Script> script)
 {
 }
 
-void Entity::AddChildren(Ref<Entity> entity)
+void Entity::AddChildren(RefPtr<Entity> entity)
 {
     children.Add(entity);
 }
 
-void Entity::RemoveChildren(Ref<Entity> entity)
+void Entity::RemoveChildren(RefPtr<Entity> entity)
 {
 }
 

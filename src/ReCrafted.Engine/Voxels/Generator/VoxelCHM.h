@@ -186,7 +186,7 @@ public:
      * \param directoryName The directory name which contains the PNG files (left, back etc.).
      * \return The created VoxelCHM.
      */
-    static Ref<VoxelCHM> LoadFromDirectory(const char* directoryName);
+    static RefPtr<VoxelCHM> LoadFromDirectory(const char* directoryName);
 };
 
 #endif // VOXELCHM_H

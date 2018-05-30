@@ -247,7 +247,7 @@ void Font::LoadFont(Text& fontFile, int size, bool managed)
 
     auto charmapId = 0;
 
-    auto textures = Array<Ref<Texture2D>>();
+    auto textures = Array<RefPtr<Texture2D>>();
 
     while (glyphsLeft.Size() > 0u)
     {

@@ -21,13 +21,13 @@ class Domain
 private:
     MonoDomain* m_domain = nullptr;
 
-    Array<Ref<Assembly>> m_loadedAssemblies = {};
+    Array<RefPtr<Assembly>> m_loadedAssemblies = {};
 
 public:
     /// <summary>
     /// Loads assembly using given fileName.
     /// </summary>
-    Ref<Assembly> LoadAssembly(const char* fileName);
+    RefPtr<Assembly> LoadAssembly(const char* fileName);
 
     /// <summary>
     /// Cleanups the domain.
@@ -40,20 +40,20 @@ public:
     /// <summary>
     /// Creates Domain from MonoDomain.
     /// </summary>
-    static Ref<Domain> Create(MonoDomain* monoDomain);
+    static RefPtr<Domain> Create(MonoDomain* monoDomain);
 
     /// <summary>
     /// Creates domain of given name.
     /// </summary>
-    static Ref<Domain> Create(const char* name, Ref<Domain> parent);
+    static RefPtr<Domain> Create(const char* name, RefPtr<Domain> parent);
 
     /// <summary>
     /// Creates root domain.
     /// </summary>
-    static Ref<Domain> CreateRoot();
+    static RefPtr<Domain> CreateRoot();
 
 public:
-    static Ref<Domain> Root;
+    static RefPtr<Domain> Root;
 };
 
 #endif // DOMAIN_H

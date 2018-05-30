@@ -20,9 +20,9 @@ SCRIPTING_API_IMPL()
 private:
     Entity* m_entity = nullptr;
 
-    Ref<Method> m_onUpdate = nullptr;
-    Ref<Method> m_onSimulate = nullptr;
-    Ref<Method> m_onDestroy = nullptr;
+    RefPtr<Method> m_onUpdate = nullptr;
+    RefPtr<Method> m_onSimulate = nullptr;
+    RefPtr<Method> m_onDestroy = nullptr;
 
 public:
     void Init(Entity* entity)

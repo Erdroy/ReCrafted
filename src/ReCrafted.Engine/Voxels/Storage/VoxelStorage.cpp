@@ -147,7 +147,7 @@ void VoxelStorage::Dispose()
     SafeDelete(m_vxh);
 }
 
-Ref<VoxelChunkData> VoxelStorage::CreateChunkData(Vector3& nodePosition, const int nodeSize)
+RefPtr<VoxelChunkData> VoxelStorage::CreateChunkData(Vector3& nodePosition, const int nodeSize)
 {
     ScopeLock(m_voxelChunksLock);
 
@@ -167,7 +167,7 @@ Ref<VoxelChunkData> VoxelStorage::CreateChunkData(Vector3& nodePosition, const i
     return chunk;
 }
 
-Ref<VoxelChunkData> VoxelStorage::GetChunkData(Vector3& nodePosition)
+RefPtr<VoxelChunkData> VoxelStorage::GetChunkData(Vector3& nodePosition)
 {
     ScopeLock(m_voxelChunksLock);
 
@@ -179,7 +179,7 @@ Ref<VoxelChunkData> VoxelStorage::GetChunkData(Vector3& nodePosition)
     return m_voxelChunks[chunkId];
 }
 
-void VoxelStorage::ReadChunkData(Ref<VoxelChunkData> chunkData)
+void VoxelStorage::ReadChunkData(RefPtr<VoxelChunkData> chunkData)
 {
     if (settings.generationType == GenerationType::PreGenerated)
     {
@@ -208,13 +208,13 @@ void VoxelStorage::ReadChunkData(Ref<VoxelChunkData> chunkData)
     // When we want to modify the terrain, we should at first create chunk data.
 }
 
-void VoxelStorage::WriteChunkData(Ref<VoxelChunkData> chunkData)
+void VoxelStorage::WriteChunkData(RefPtr<VoxelChunkData> chunkData)
 {
     // TODO: check main thread
     // TODO: chunk save system
 }
 
-void VoxelStorage::FreeChunkData(Ref<VoxelChunkData> chunkData)
+void VoxelStorage::FreeChunkData(RefPtr<VoxelChunkData> chunkData)
 {
     ScopeLock(m_voxelChunksLock);
 

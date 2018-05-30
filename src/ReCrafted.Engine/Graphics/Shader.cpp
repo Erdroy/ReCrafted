@@ -13,9 +13,9 @@ void Shader::Dispose()
     Renderer::DestroyShader(m_shaderHandle);
 }
 
-Ref<Shader> Shader::LoadShader(const char* shaderName)
+RefPtr<Shader> Shader::LoadShader(const char* shaderName)
 {
-    Ref<Shader> shader(new Shader);
+    RefPtr<Shader> shader(new Shader);
 
     Logger::LogInfo("Loading shader {0}", shaderName);
     strcpy_s(shader->m_shaderName, shaderName);

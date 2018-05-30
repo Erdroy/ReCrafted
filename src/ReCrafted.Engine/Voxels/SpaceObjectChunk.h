@@ -27,9 +27,9 @@ private:
     uint64_t m_id = 0u;
     Vector3 m_position = {};
 
-    Ref<VoxelChunkData> m_chunkData = {};
-    Ref<Mesh> m_mesh = nullptr;
-    Ref<Mesh> m_newMesh = nullptr;
+    RefPtr<VoxelChunkData> m_chunkData = {};
+    RefPtr<Mesh> m_mesh = nullptr;
+    RefPtr<Mesh> m_newMesh = nullptr;
 
     Lock m_meshLock = {};
 
@@ -51,7 +51,7 @@ public:
         return m_newMesh != nullptr;
     }
 
-    Ref<VoxelChunkData> GetChunkData() const
+    RefPtr<VoxelChunkData> GetChunkData() const
     {
         return m_chunkData;
     }

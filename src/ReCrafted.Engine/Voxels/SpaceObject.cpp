@@ -82,7 +82,7 @@ SpaceObjectSettings& SpaceObject::GetSettings()
     return m_settings;
 }
 
-Ref<SpaceObject> SpaceObject::CreateSpaceObject(SpaceObjectSettings& settings)
+RefPtr<SpaceObject> SpaceObject::CreateSpaceObject(SpaceObjectSettings& settings)
 {
     var spaceObject = std::make_shared<SpaceObject>();
     spaceObject->Init(settings);

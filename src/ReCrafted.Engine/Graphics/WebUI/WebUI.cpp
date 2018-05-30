@@ -51,7 +51,7 @@ void WebUI::Render()
         view->Render();
 }
 
-Ref<WebUIView> WebUI::CreateView()
+RefPtr<WebUIView> WebUI::CreateView()
 {
     var view = Object::CreateInstance<WebUIView>("ReCrafted.API.Graphics", "WebUIView");
     view->Init();

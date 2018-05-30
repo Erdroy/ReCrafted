@@ -28,11 +28,11 @@ SCRIPTING_API_IMPL()
 private:
     bool m_wireframe = false;
 
-    Ref<Shader> m_currentShader = nullptr;
+    RefPtr<Shader> m_currentShader = nullptr;
 
-    Ref<RenderBuffer> m_gbuffer = nullptr;
-    Ref<Shader> m_gbufferFillShader = nullptr;
-    Ref<Shader> m_gbufferCombine = nullptr;
+    RefPtr<RenderBuffer> m_gbuffer = nullptr;
+    RefPtr<Shader> m_gbufferFillShader = nullptr;
+    RefPtr<Shader> m_gbufferCombine = nullptr;
 
     RenderStage::_enum m_renderStage = RenderStage::Default;
 
@@ -67,12 +67,12 @@ public:
      * \brief Draws given mesh using current shader, view and matrix.
      * \param mesh The mesh class pointer.
      */
-    void Draw(Ref<Mesh>& mesh);
+    void Draw(RefPtr<Mesh>& mesh);
 
     /**
      * \brief Sets given shader as current.
      */
-    void SetShader(Ref<Shader>& shader);
+    void SetShader(RefPtr<Shader>& shader);
 
     /**
     * \brief Sets given stage as current.

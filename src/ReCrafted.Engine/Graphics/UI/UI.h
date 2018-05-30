@@ -85,7 +85,7 @@ private:
     bool m_useViewRect = false;
     Rectf m_viewRect = {};
 
-    Ref<Shader> m_shader = nullptr;
+    RefPtr<Shader> m_shader = nullptr;
 
 private:
     static bool drawcmd_comparison(drawcmd& cmd1, drawcmd& cmd2);

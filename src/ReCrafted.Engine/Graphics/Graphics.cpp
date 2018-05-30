@@ -295,7 +295,7 @@ void Graphics::RenderUI()
     Profiler::EndProfile();
 }
 
-void Graphics::Draw(Ref<Mesh>& mesh)
+void Graphics::Draw(RefPtr<Mesh>& mesh)
 {
     if (!(RENDERER_CHECK_HANDLE(mesh->m_vertexBuffer)) || !(RENDERER_CHECK_HANDLE(mesh->m_indexBuffer)))
         return;
@@ -306,7 +306,7 @@ void Graphics::Draw(Ref<Mesh>& mesh)
     Renderer::DrawIndexed(mesh->m_indices_count);
 }
 
-void Graphics::SetShader(Ref<Shader>& shader)
+void Graphics::SetShader(RefPtr<Shader>& shader)
 {
     if (m_currentShader != shader)
     {

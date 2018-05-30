@@ -171,9 +171,9 @@ void Texture2D::Apply()
     m_bits = nullptr;
 }
 
-Ref<Texture2D> Texture2D::CreateTexture(Renderer::TextureFormat::_enum format)
+RefPtr<Texture2D> Texture2D::CreateTexture(Renderer::TextureFormat::_enum format)
 {
-    Ref<Texture2D> texture(new Texture2D);
+    RefPtr<Texture2D> texture(new Texture2D);
     texture->m_textureFormat = format;
     return texture;
 }

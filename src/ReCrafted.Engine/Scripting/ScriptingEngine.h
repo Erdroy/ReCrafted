@@ -12,7 +12,7 @@
 class ScriptingEngine : public EngineComponent<ScriptingEngine>
 {
 private:
-    Ref<Domain> m_domain = nullptr;
+    RefPtr<Domain> m_domain = nullptr;
 
 public:
     virtual ~ScriptingEngine() = default;

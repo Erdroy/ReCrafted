@@ -39,8 +39,8 @@ private:
     friend class EngineMain;
 
 private:
-    Ref<Method> m_api_log_callback = nullptr;
-    Ref<Method> m_api_log_shutdown = nullptr;
+    RefPtr<Method> m_api_log_callback = nullptr;
+    RefPtr<Method> m_api_log_shutdown = nullptr;
 
 public:
     ~Logger() = default;
