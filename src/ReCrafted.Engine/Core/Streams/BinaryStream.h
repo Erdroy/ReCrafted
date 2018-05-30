@@ -50,6 +50,18 @@ public:
     /**
     * \brief Reads Byte.
     */
+    template<typename T>
+    DEFINE_READER(T, Struct)
+
+    /**
+    * \brief Writes Byte.
+    */
+    template<typename T>
+    DEFINE_WRITER(T, Struct)
+
+    /**
+    * \brief Reads Byte.
+    */
     DEFINE_READER(byte, Byte)
 
     /**
