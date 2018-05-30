@@ -17,6 +17,12 @@
 
 #define ASSERT(expression) _ASSERT_(expression, "")
 
+#if _DEBUG
+#   define DEBUG_ASSERT(expression) _ASSERT_(expression, "")
+#else
+#   define DEBUG_ASSERT(expression)
+#endif
+
 #define STATIC_ASSERT(expr) typedef char __static_assert_t[(expr) != 0]
 
 #endif // ASSERT_H
