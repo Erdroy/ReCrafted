@@ -1,30 +1,39 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "SpaceObject.h"
+#include "Common/Profiler/Profiler.h"
+#include "Core/TaskManager.h"
 #include "Core/Math/Math.h"
 #include "Storage/VoxelStorage.h"
-#include "Common/Profiler/Profiler.h"
-#include "SpaceObjectChunk.h"
-#include "Utilities/VoxelUtils.h"
+#include "Generator/VoxelGenerator.h"
 
 void SpaceObject::Init(SpaceObjectSettings& settings)
 {
-    // initialize voxel storage
-    m_voxelStorage = std::make_shared<VoxelStorage>();
-    m_voxelStorage->Init(settings);
-    m_voxelStorage->spaceObject = this;
-
     // set settings
     m_settings = settings;
+
+    // initialize voxel generator
+    m_generator = std::make_shared<VoxelGenerator>();
+    m_generator->spaceObject = this;
+    m_generator->Init(&m_settings);
+
+    // initialize voxel storage
+    m_voxelStorage = std::make_shared<VoxelStorage>();
+    m_voxelStorage->spaceObject = this;
+    m_voxelStorage->Init(&m_settings);
 
     // create octree instance
     m_octree = std::make_shared<SpaceObjectOctree>();
     m_octree->spaceObject = this;
 
-    SetPosition(settings.position);
+    // Set current position
+    SetPosition(m_settings.position);
+}
 
-    // build base node(s)
-    m_octree->Init();
+void SpaceObject::GeneratePrimary()
+{
+    m_generator->Load();
+    m_octree->GeneratePrimary();
 }
 
 void SpaceObject::Update()

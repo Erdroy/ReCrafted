@@ -33,7 +33,8 @@ public:
     const char* name = nullptr;
 
     /**
-    * \brief The file name (directory), this will be used to find pregens or CHM.
+    * \brief The file name containing the surface data.
+    * This will be used to load CHM or pregenerated.
     */
     const char* fileName = nullptr;
 
@@ -50,17 +51,17 @@ public:
     /**
 	 * \brief The minimal surface height.
 	 */
-    float minSurfaceHeight = 300.0f;
+    int minSurfaceHeight = 300;
 
     /**
 	 * \brief The maximal surface height.
 	 */
-    float maxSurfaceHeight = 100.0f;
+    int maxSurfaceHeight = 100;
 
     /**
     * \brief The base height of hills (ovarall terrain).
     */
-    float hillsHeight = 100.0f;
+    int hillsHeight = 100;
 
     /**
      * \brief The initial virtual-depth of space object octree.

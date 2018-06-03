@@ -6,7 +6,7 @@
 #include "Core/Math/Math.h"
 #include "Graphics/Graphics.h"
 
-void SpaceObjectOctree::Init()
+void SpaceObjectOctree::GeneratePrimary()
 {
     // calculate diameter
     var settings = spaceObject->GetSettings();

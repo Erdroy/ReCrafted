@@ -30,11 +30,13 @@ private:
     SpaceObjectOctreeNode** m_rootNodes = nullptr;
 
 public:
-    void Init();
     void Update();
     void UpdateViews(Array<Vector3>& views);
     void Draw();
     void Dispose();
+
+public:
+    void GeneratePrimary();
 
 public:
     SpaceObjectOctreeNode* FindNode(Vector3 position, int size) const;

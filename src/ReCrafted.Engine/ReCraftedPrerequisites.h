@@ -20,8 +20,8 @@
 #endif
 #define var auto
 #define cvar const auto
-#define rvar auto&
-#define crvar const auto&
+#define rvar var&
+#define crvar cvar&
 
 struct IDisposable;
 struct IResource;

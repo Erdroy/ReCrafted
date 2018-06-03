@@ -22,16 +22,19 @@ void Universe::OnInit()
     // when saves will be done
     SpaceObjectSettings settings;
     settings.name = "moon";
-    settings.fileName = "../assets/spacebodies/moon";
+    settings.fileName = "../assets/voxeldata/moon.chm";
     settings.saveName = "../saves/dev/voxelstorage/moon.vxh";
     settings.generationType = GenerationType::CubeHeightMap;
     settings.position = Vector3::Zero();
-    settings.minSurfaceHeight = 900.0f;
-    settings.maxSurfaceHeight = settings.minSurfaceHeight + 120.0f; // will round up to 1024 * 2
-    settings.hillsHeight = 40.0f;
+    settings.minSurfaceHeight = 900;
+    settings.maxSurfaceHeight = settings.minSurfaceHeight + 120; // will round up to 1024 * 2
+    settings.hillsHeight = 40;
     settings.rootOctreeDepth = 3; // 2 subdivisions (chunk size will be 512)
 
     m_testObject1 = SpaceObject::CreateSpaceObject(settings);
+
+    // Generate primary data
+    m_testObject1->GeneratePrimary();
 }
 
 void Universe::OnDispose()

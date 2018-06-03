@@ -5,15 +5,15 @@
 
 // includes
 #include "Core/Math/Vector3.h"
+#include "SpaceObject.h"
 #include "SpaceObjectOctree.h"
 #include "SpaceObjectSettings.h"
 #include "Storage/VoxelEditMode.h"
 
-class VoxelStorage;
-
 class SpaceObject
 {
     friend class VoxelStorage;
+    friend class VoxelGenerator;
 
 private:
     SpaceObjectSettings m_settings = {};
@@ -21,12 +21,14 @@ private:
     Array<Vector3> m_views = {};
 
     RefPtr<SpaceObjectOctree> m_octree = nullptr;
+    RefPtr<VoxelGenerator> m_generator = nullptr;
     RefPtr<VoxelStorage> m_voxelStorage = nullptr;
 
 private:
     void Init(SpaceObjectSettings& settings);
 
 public:
+    void GeneratePrimary();
     void Update();
     void Draw();
     void Dispose();
@@ -60,6 +62,15 @@ public:
     VoxelStorage* GetStorage() const
     {
         return m_voxelStorage.get();
+    }
+
+    /**
+     * \brief Gets the VoxelGenerator instance of this SpaceObject.
+     * \return VoxelGenerator instance of this SpaceObject.
+     */
+    VoxelGenerator* GetGenerator() const
+    {
+        return m_generator.get();
     }
 
 public:
