@@ -177,7 +177,10 @@ public:
      */
     void ReadBytes(char* buffer, const size_t count)
     {
-        m_stream.Read(buffer, count, m_position, count);
+        cvar read = m_stream.Read(buffer, count, m_position, count);
+        
+        ASSERT(read == count);
+
         m_position += count;
     }
 
