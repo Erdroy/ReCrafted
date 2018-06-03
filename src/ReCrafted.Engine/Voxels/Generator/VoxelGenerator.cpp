@@ -43,7 +43,7 @@ void VoxelGenerator::Init(SpaceObjectSettings* settings)
 void VoxelGenerator::Load()
 {
     ASSERT(m_bitmap == nullptr);
-    m_bitmap = CHMBitmap::CreateFromFile("../assets/voxeldata/moon.chm");
+    m_bitmap = CHMBitmap::CreateFromFile(settings->fileName);
 }
 
 void VoxelGenerator::Unload()
@@ -60,7 +60,7 @@ bool VoxelGenerator::GenerateChunkData(sbyte* voxelData, const Vector3& position
 {
     cvar dataSize = VoxelChunkData::ChunkDataSize;
     cvar lod_f = static_cast<float>(lod);
-    cvar chunkPosition = spaceObject->GetPosition(); // TODO: Maybe just use provided `position`?
+    cvar chunkPosition = spaceObject->GetPosition();
 
     // calculate current voxel size
     cvar lodSize = LoDTable[lod];
