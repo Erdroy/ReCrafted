@@ -1,9 +1,17 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using AForge.Imaging.Filters;
 using ReCrafted.VoxelEditor.Graphics;
 using ReCrafted.VoxelEditor.Rendering;
+using ReCrafted.VoxelEditor.Voxels;
 using SharpDX;
+using Color = SharpDX.Color;
+using RectangleF = SharpDX.RectangleF;
 
 namespace ReCrafted.VoxelEditor.Core
 {
@@ -38,6 +46,56 @@ namespace ReCrafted.VoxelEditor.Core
 
         protected override void OnLoad()
         {
+            // Temporary, create CHMTexture
+            var texture = CHMBitmap.Create(2048, 2048, 8);
+            
+            for (var i = 0; i < 6; i++)
+            {
+                var faceType = (CHMBitmap.FaceType)i;
+
+                // Read bitmap
+                var fileName = "../assets/spacebodies/moon/" + faceType.ToString().ToLower() + ".bmp";
+                var bitmap = new Bitmap(fileName);
+
+                var mipWidth = bitmap.Width / 2;
+                var mipHeight = bitmap.Width / 2;
+
+                for (var j = 0; j < 8; j++)
+                {
+                    if (j > 0)
+                    {
+                        // Generate mip
+                        var mipBitmap = ResizeImage(bitmap, mipWidth, mipHeight);
+
+                        var mipBitmapDataRaw = BitmapToByte(mipBitmap);
+                        texture.AddFaceMip(faceType, j, mipBitmapDataRaw, mipWidth, mipHeight);
+
+                        //mipBitmap.Save("CHMBitmap-lod" + j + ".bmp");
+
+                        // Release mip bitmap
+                        mipBitmap.Dispose();
+
+                        // Set next mip size
+                        mipWidth = mipWidth / 2;
+                        mipHeight = mipHeight / 2;
+                    }
+                    else
+                    {
+                        var bitmapDataRaw = BitmapToByte(bitmap);
+                        //bitmap.Save("CHMBitmap-lod0.bmp");
+                        texture.AddFaceMip(faceType, j, bitmapDataRaw, bitmap.Width, bitmap.Height);
+                    }
+                }
+
+                // Release bitmap
+                bitmap.Dispose();
+            }
+
+            texture.Save("../assets/voxeldata/moon.chm");
+            texture.Dispose();
+            
+            // Shutdown
+            Shutdown();
         }
 
         protected override void OnUnload()
@@ -78,7 +136,7 @@ namespace ReCrafted.VoxelEditor.Core
 
             if (UI.Button(new RectangleF(2.0f, 2.0f, 100.0f, 26.0f), "Hello!", new Color(255, 105, 0, 255)))
             {
-
+                
             }
 
             if (UI.Button(new RectangleF(104.0f, 2.0f, 100.0f, 26.0f), "Hello!", new Color(255, 105, 0, 255)))
@@ -87,6 +145,44 @@ namespace ReCrafted.VoxelEditor.Core
             }
 
             _toggle1 = UI.Toggle(_toggle1, new Vector2(10.0f, 100.0f), Color.Gray);
+        }
+
+        private static Bitmap ResizeImage(Image image, int width, int height)
+        {
+            // source: https://stackoverflow.com/questions/10442269/scaling-a-system-drawing-bitmap-to-a-given-size-while-maintaining-aspect-ratio
+
+            var dstRect = new System.Drawing.Rectangle(0, 0, width, height);
+            var dstImage = new Bitmap(width, height);
+
+            dstImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = System.Drawing.Graphics.FromImage(dstImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, dstRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+            
+            return Grayscale.CommonAlgorithms.BT709.Apply(dstImage);
+        }
+
+        private static byte[] BitmapToByte(Bitmap img)
+        {
+            var rect = new System.Drawing.Rectangle(new System.Drawing.Point(0), img.Size);
+            var data = img.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format8bppIndexed);
+            var size = data.Stride * data.Height;
+            var bytes = new byte[size];
+            Marshal.Copy(data.Scan0, bytes, 0, size);
+            img.UnlockBits(data);
+            return bytes;
         }
 
         /// <summary>
