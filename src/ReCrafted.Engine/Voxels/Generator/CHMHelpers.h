@@ -62,8 +62,8 @@ public:
         case 5:
         {
             cvar localPoint = point * (1.0f / fabs(point.y));
-            texcoord.y = localPoint.z;
-            texcoord.x = -localPoint.x;
+            texcoord.y = -localPoint.z;
+            texcoord.x = localPoint.x;
             break;
         }
         default: throw;
@@ -71,7 +71,7 @@ public:
 
         // clamp
         texcoord.x = (texcoord.x + 1.0f) * 0.5f;
-        texcoord.y = (texcoord.y + 1.0f) * 0.5f;
+        texcoord.y = 1.0f - (texcoord.y + 1.0f) * 0.5f;
 
         if (texcoord.x >= 1.0f)
             texcoord.x = 0.99999f;
