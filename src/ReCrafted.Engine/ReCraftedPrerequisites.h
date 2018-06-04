@@ -7,6 +7,7 @@
 
 #include <ctime>
 #include <vector>
+#include <thread>
 
 #include "Core/Defines.h"
 #include "Core/Types.h"
@@ -14,6 +15,8 @@
 #include "Core/IDisposable.h"
 #include "Core/Singleton.h"
 #include "Common/ReCraftedAPI.h"
+
+#include "Platform/Platform.h"
 
 #ifdef var
 #	undef var

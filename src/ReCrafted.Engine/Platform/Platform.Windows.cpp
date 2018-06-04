@@ -23,6 +23,7 @@ static double m_freqCoeff;
 void* Platform::m_currentWindow;
 unsigned char Platform::m_theadCount;
 int Platform::m_cpuCount;
+std::thread::id Platform::m_mainThread;
 
 HICON m_currentCursor = nullptr;
 
@@ -74,6 +75,9 @@ void SetThreadName(std::thread* thread, const char* threadName)
 
 void Platform::Initialize()
 {
+    // set current thread as main
+    m_mainThread = std::this_thread::get_id();
+
     // initialize timer
     QueryPerformanceFrequency(&m_frequency);
     m_freqCoeff = double(m_frequency.QuadPart) / 1000.0;

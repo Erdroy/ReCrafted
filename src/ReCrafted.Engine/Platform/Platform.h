@@ -7,6 +7,7 @@
 
 // includes
 #include "Core/Guid.h"
+#include <thread>
 
 #define PATHLENGTH 512
 
@@ -56,6 +57,8 @@ private:
     // timer
     static unsigned char m_theadCount;
     static int m_cpuCount;
+
+    static std::thread::id m_mainThread;
 
 public:
     /**
@@ -197,6 +200,15 @@ public:
      * \param name The desired thread name.
      */
     static void SetThreadName(const char* name);
+
+    /**
+     * \brief Gets the main thread id.
+     * \return The main thread id.
+     */
+    static std::thread::id GetMainThreadId()
+    {
+        return m_mainThread;
+    }
 };
 
 #endif // PLATFORM_H
