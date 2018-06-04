@@ -9,12 +9,26 @@
 #include "Graphics/Font.h"
 
 #include <mono/metadata/mono-gc.h>
+#include "Graphics/Camera.h"
 
 SINGLETON_IMPL(Profiler)
 
 Array<Profiler::Profile> Profiler::m_profiles;
 Array<Profiler::Profile*> Profiler::m_profileStack;
 int Profiler::m_profileCount;
+
+Color GetFPSLineColor(int fps)
+{
+    var color = Color(0x00FF00FF);
+
+    if (fps < 59)
+        color = Color(0xFFFF00FF);
+
+    if (fps < 29)
+        color = Color(0xFF0000FF);
+
+    return color;
+}
 
 bool Profiler::ProfileSort(const Profile& lhs, const Profile& rhs)
 {
@@ -78,6 +92,26 @@ void Profiler::DrawDebugScreen()
         Renderer::RenderStatistics renderStats = {};
         Renderer::GetRenderStatistics(&renderStats);
 
+        rpmalloc_global_statistics_t statistics;
+        rpmalloc_global_statistics(&statistics);
+
+        float gcUsedSize;
+        float gcHeapSize;
+        cvar gcUsedSizeUnit = ByteFormat::Format(mono_gc_get_used_size(), &gcUsedSize);
+        cvar gcHeapSizeUnit = ByteFormat::Format(mono_gc_get_heap_size(), &gcHeapSize);
+
+        float memStatsCached;
+        float memStatsMapped;
+        float memStatsMappedTotal;
+        float memStatsUnmappedTotal;
+        cvar memStatsCachedUnit = ByteFormat::Format(statistics.cached, &memStatsCached);
+        cvar memStatsMappedUnit = ByteFormat::Format(statistics.mapped, &memStatsMapped);
+        cvar memStatsMappedTotalUnit = ByteFormat::Format(statistics.mapped_total, &memStatsMappedTotal);
+        cvar memStatsUnmappedTotalUnit = ByteFormat::Format(statistics.unmapped_total, &memStatsUnmappedTotal);
+
+        cvar camPos = Camera::GetMainCamera()->GetPosition();
+        cvar camRot = Camera::GetMainCamera()->GetRotation();
+
         cvar previousDepth = UI::GetDepth();
         UI::SetDepth(9999.0f);
 
@@ -85,15 +119,21 @@ void Profiler::DrawDebugScreen()
         MakeLineSpace(3);
 
         DrawTextLine(TEXT_CONST("[Engine Statistics]"), Color(0xFF0A00FF));
+        DrawTextLine(Text::Format(TEXT_CONST("FPS: {0}"), m_fps), GetFPSLineColor(m_fps));
+        DrawTextLine(Text::Format(TEXT_CONST("Camera Position: X:{0:.2f} Y:{1:.2f} Z:{2:.2f}"), camPos.x, camPos.y, camPos.z), Color(0xFFFFFFFF));
+        DrawTextLine(Text::Format(TEXT_CONST("Camera Rotation: X:{0:.2f} Y:{1:.2f}"), camRot.x, camRot.y), Color(0xFFFFFFFF));
+        MakeLineSpace(1);
+        
+        DrawTextLine(TEXT_CONST("[Unmanaged Memory]"), Color(0xFF0A00FF));
+        DrawTextLine(Text::Format(TEXT_CONST("Cached: {0} {1}"), memStatsCached, ByteFormat::ToString(memStatsCachedUnit)), Color(0xFFFFFFFF));
+        DrawTextLine(Text::Format(TEXT_CONST("Mapped: {0} {1}"), memStatsMapped, ByteFormat::ToString(memStatsMappedUnit)), Color(0xFFFFFFFF));
+        DrawTextLine(Text::Format(TEXT_CONST("Mapped Total: {0} {1}"), memStatsMappedTotal, ByteFormat::ToString(memStatsMappedTotalUnit)), Color(0xFFFFFFFF));
+        DrawTextLine(Text::Format(TEXT_CONST("Unmapped Total: {0} {1}"), memStatsUnmappedTotal, ByteFormat::ToString(memStatsUnmappedTotalUnit)), Color(0xFFFFFFFF));
         MakeLineSpace(1);
 
-        float gcUsedSize;
-        float gcHeapSize;
-        cvar unitA = ByteFormat::Format(mono_gc_get_used_size(), &gcUsedSize);
-        cvar unitB = ByteFormat::Format(mono_gc_get_heap_size(), &gcHeapSize);
-        DrawTextLine(Text::Format(TEXT_CONST("FPS: {0}"), m_fps), Color(0xFFFF00FF));
-        DrawTextLine(Text::Format(TEXT_CONST("GC memory usage: {0} {1}"), gcUsedSize, ByteFormat::ToString(unitA)), Color(0xFFFFFFFF));
-        DrawTextLine(Text::Format(TEXT_CONST("GC Heap size: {0} {1}"), gcHeapSize, ByteFormat::ToString(unitB)), Color(0xFFFFFFFF));
+        DrawTextLine(TEXT_CONST("[Managed Memory]"), Color(0xFF0A00FF));
+        DrawTextLine(Text::Format(TEXT_CONST("GC memory usage: {0} {1}"), gcUsedSize, ByteFormat::ToString(gcUsedSizeUnit)), Color(0xFFFFFFFF));
+        DrawTextLine(Text::Format(TEXT_CONST("GC Heap size: {0} {1}"), gcHeapSize, ByteFormat::ToString(gcHeapSizeUnit)), Color(0xFFFFFFFF));
         MakeLineSpace(2);
 
         DrawTextLine(TEXT_CONST("[Render Statistics]"), Color(0xFF0A00FF));
@@ -149,7 +189,7 @@ void Profiler::DrawDebugScreen()
                 UI::DrawText(m_debugFont, name, Text::Length(name), offset);
             }
 
-            DrawTextLine(Text::Format(TEXT("{0:.4f} ms"), entry.timeAvg), color);
+            DrawTextLine(Text::Format(TEXT("{0:.3f} ms"), entry.timeAvg), color);
             entry.updated = false;
         }
 
