@@ -11,6 +11,7 @@
 #include "Platform/Platform.h"
 #include "Core/Containers/Array.h"
 #include "Core/Math/Color.h"
+#include "Core/Math/Math.h"
 
 class Font;
 
@@ -31,9 +32,11 @@ private:
     public:
         float timeTotal = 0.0f;
         float timeAvg = 0.0f;
-
-        float timeMed = 0.0f;
+        float timeMin = FLT_MAX;
         float timeMax = 0.0f;
+
+        float timeoutMed = 0.0f;
+        float timeoutMax = 0.0f;
 
         double lastUpdate = 0.0f;
         double lastAvgUpdate = 0.0f;
@@ -73,8 +76,10 @@ private:
     static int m_profileCount;
 
     bool m_drawDebugScreen = false;
+    bool m_drawProfiles = false;
     Font* m_debugFont = nullptr;
     float m_lineOffset = 0.0f;
+    float m_horiOffset = 10.0f;
     float m_lastFPSCountTime = 0;
     int m_frames = 0;
     int m_fps = 0;
@@ -146,8 +151,8 @@ private:
         Profile newProfile;
         newProfile.name = name;
         newProfile.calls = 0;
-        newProfile.timeMed = timeMed;
-        newProfile.timeMax = timeMax;
+        newProfile.timeoutMed = timeMed;
+        newProfile.timeoutMax = timeMax;
         newProfile.utf8 = utf8;
 
         newProfile.Update(currentTime);
@@ -185,17 +190,25 @@ public:
         cvar currentTime = Platform::GetMiliseconds();
 
         // select profile
-        var profile = m_profileStack.Last();
+        crvar profile = m_profileStack.Last();
+
+        cvar time = currentTime - profile->timeBegin;
 
         // Update total time
-        profile->timeTotal += static_cast<float>(currentTime - profile->timeBegin);
+        profile->timeTotal += static_cast<float>(time);
 
-        // Update every 1/4 second
-        if (currentTime - profile->lastAvgUpdate >= 250.0f)
+        profile->timeMin = Math::MinF(float(time), profile->timeMin);
+        profile->timeMax = Math::MaxF(float(time), profile->timeMax);
+
+        // Update every second
+        if (currentTime - profile->lastAvgUpdate >= 1000.0f)
         {
             // calculate avg time
             profile->timeAvg = profile->timeTotal / float(profile->calls);
             profile->lastAvgUpdate = currentTime;
+
+            profile->timeMin = float(time);
+            profile->timeMax = float(time);
 
             profile->timeTotal = 0.0f;
             profile->calls = 1;

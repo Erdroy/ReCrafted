@@ -65,12 +65,15 @@ void Profiler::Update()
 
     if (Input::IsKeyDown(Key_F9))
         m_drawDebugScreen = !m_drawDebugScreen;
+
+    if (Input::IsKeyDown(Key_P) && m_drawDebugScreen)
+        m_drawProfiles = !m_drawProfiles;
 }
 
 void Profiler::DrawTextLine(Text text, Color color)
 {
     UI::SetColor(color);
-    UI::DrawText(m_debugFont, text, Vector2(10.0f, m_lineOffset));
+    UI::DrawText(m_debugFont, text, Vector2(m_horiOffset, m_lineOffset));
     m_lineOffset += static_cast<float>(m_debugFont->GetSize());
 }
 
@@ -114,8 +117,9 @@ void Profiler::DrawDebugScreen()
 
         cvar previousDepth = UI::GetDepth();
         UI::SetDepth(9999.0f);
+        m_horiOffset = 10.0f;
 
-        DrawTextLine(TEXT_CONST("Profiler [press F9 to hide]"), Color(0xFF0A00FF));
+        DrawTextLine(TEXT_CONST("Statistics [press F9 to hide, press P to show/hide profiles]"), Color(0xFF0A00FF));
         MakeLineSpace(3);
 
         DrawTextLine(TEXT_CONST("[Engine Statistics]"), Color(0xFF0A00FF));
@@ -152,45 +156,53 @@ void Profiler::DrawDebugScreen()
         DrawTextLine(Text::Format(TEXT_CONST("Flags: {0}"), renderStats.flags), Color(0xFFFFFFFF));
         MakeLineSpace(2);
 
-        DrawTextLine(TEXT_CONST("[Profiles]"), Color(0xFF0A00FF));
-        MakeLineSpace(1);
-
-        // sort by order
-        sort(m_profiles.begin(), m_profiles.end(), ProfileSort);
-
-        for (var i = static_cast<int>(m_profiles.Count()) - 1; i >= 0; i--)
+        if(m_drawProfiles)
         {
-            rvar entry = m_profiles.At(i);
-            cvar depthOffset = entry.depth * 15.0f;
-            
-            if (!entry.updated)
-                continue;
+            m_horiOffset = 400.0f;
+            m_lineOffset = 10.0f;
 
-            Color color;
-            if (entry.timeAvg > entry.timeMax && entry.timeMax >= 0.0f)
-                color = Color(0xFF0A00FF);
-            else if (entry.timeAvg > entry.timeMed && entry.timeMed >= 0.0f)
-                color = Color(0xAA0A00FF);
-            else
-                color = Color(0xFFFFFFFF);
+            MakeLineSpace(4);
 
-            cvar offset = Vector2(150.0f + depthOffset, m_lineOffset);
+            DrawTextLine(TEXT_CONST("[Profiles]"), Color(0xFF0A00FF));
+            MakeLineSpace(1);
 
-            if (entry.utf8)
+            // sort by order
+            sort(m_profiles.begin(), m_profiles.end(), ProfileSort);
+
+            for (var i = static_cast<int>(m_profiles.Count()) - 1; i >= 0; i--)
             {
-                UI::SetColor(Color(0xFFFFFFFF));
-                cvar name = static_cast<const char*>(entry.name);
-                UI::DrawText(m_debugFont, name, static_cast<int>(strlen(name)), offset);
-            }
-            else
-            {
-                UI::SetColor(Color(0xFFAAAAFF));
-                cvar name = static_cast<const Char*>(entry.name);
-                UI::DrawText(m_debugFont, name, Text::Length(name), offset);
-            }
+                rvar entry = m_profiles.At(i);
+                cvar depthOffset = entry.depth * 15.0f;
 
-            DrawTextLine(Text::Format(TEXT("{0:.3f} ms"), entry.timeAvg), color);
-            entry.updated = false;
+                if (!entry.updated)
+                    continue;
+
+                Color color;
+                if (entry.timeAvg > entry.timeoutMax && entry.timeoutMax >= 0.0f)
+                    color = Color(0xFF0A00FF);
+                else if (entry.timeAvg > entry.timeoutMed && entry.timeoutMed >= 0.0f)
+                    color = Color(0xAA0A00FF);
+                else
+                    color = Color(0xFFFFFFFF);
+
+                cvar offset = Vector2(m_horiOffset + 225.0f + depthOffset, m_lineOffset);
+
+                if (entry.utf8)
+                {
+                    UI::SetColor(Color(0xFFFFFFFF));
+                    cvar name = static_cast<const char*>(entry.name);
+                    UI::DrawText(m_debugFont, name, static_cast<int>(strlen(name)), offset);
+                }
+                else
+                {
+                    UI::SetColor(Color(0xFFAAAAFF));
+                    cvar name = static_cast<const Char*>(entry.name);
+                    UI::DrawText(m_debugFont, name, Text::Length(name), offset);
+                }
+
+                DrawTextLine(Text::Format(TEXT("{0:.3f} ms  {1:.3f} ms  {2:.3f} ms"), entry.timeAvg, entry.timeMin, entry.timeMax), color);
+                entry.updated = false;
+            }
         }
 
         UI::SetDepth(previousDepth);
