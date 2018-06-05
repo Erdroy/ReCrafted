@@ -53,6 +53,9 @@ void Mesh::ApplyChanges()
     _ASSERT(m_vertices_count > 0);
     _ASSERT(m_indices_count > 0);
 
+    ASSERT(m_vertexBufferData == nullptr);
+    ASSERT(m_indexBufferData == nullptr);
+
     m_vertexSize = sizeof(Vector3);
     if (m_uvs)
         m_vertexSize += sizeof(Vector2);
@@ -118,8 +121,8 @@ void Mesh::ApplyChanges()
 
 void Mesh::Upload()
 {
-    if (m_vertexBufferData == nullptr || m_indexBufferData == nullptr)
-        return;
+    ASSERT(m_vertexBufferData != nullptr);
+    ASSERT(m_indexBufferData != nullptr);
 
     if (RENDERER_CHECK_HANDLE(m_vertexBuffer))
         Renderer::DestroyVertexBuffer(m_vertexBuffer);

@@ -57,6 +57,7 @@ namespace Renderer
             void Dispose()
             {
                 SafeRelease(buffer);
+                buffer = nullptr;
             }
         };
 
@@ -738,7 +739,7 @@ namespace Renderer
             rvar buffer = m_indexBuffers[command->handle.idx];
             _ASSERT(buffer.buffer != nullptr);
 
-            SafeRelease(buffer.buffer);
+            buffer.Dispose();
         }
 
         void WorkerThreadInstance::Execute_CreateRenderBuffer(Command_CreateRenderBuffer* command)

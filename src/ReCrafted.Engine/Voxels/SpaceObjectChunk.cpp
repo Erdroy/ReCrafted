@@ -102,17 +102,20 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
 
 void SpaceObjectChunk::Upload()
 {
-    ScopeLock(m_meshLock);
-
     // upload changes
     if (m_newMesh && m_newMesh->CanUpload())
     {
-        if (m_mesh)
-            SafeDispose(m_mesh)
+        ScopeLock(m_meshLock);
 
+        // Upload new mesh
         m_newMesh->Upload();
-        m_mesh = m_newMesh;
-        m_newMesh = nullptr;
+
+        // Dispose old mesh
+        if (m_mesh)
+            SafeDispose(m_mesh);
+
+        // Swap mesh
+        m_mesh.swap(m_newMesh);
     }
 }
 
@@ -127,6 +130,7 @@ void SpaceObjectChunk::Draw()
 void SpaceObjectChunk::Dispose()
 {
     SafeDispose(m_mesh);
+    SafeDispose(m_newMesh);
 }
 
 uint64_t SpaceObjectChunk::CalculateChunkId(const Vector3& position)

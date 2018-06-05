@@ -12,6 +12,9 @@
 sbyte VoxelGenerator::GenerateFromCHM(const Vector3& origin, const Vector3& position,
     const int mipLevel, const int lodSize, const int radius, const int height) const
 {
+    if (position.LengthSqr() == 0)
+        return 0;
+
     // Get sphere face
     cvar sphereFace = CHMHelpers::GetFace(position);
 

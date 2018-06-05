@@ -58,6 +58,8 @@ void SpaceObjectOctreeNode::MarkProcessing()
 
 void SpaceObjectOctreeNode::CreateChunk(IVoxelMesher* mesher)
 {
+    ASSERT(m_chunk == nullptr);
+
     // create chunk
     m_chunk = std::make_shared<SpaceObjectChunk>();
     m_chunk->Init(this, owner->spaceObject);
@@ -163,6 +165,78 @@ void SpaceObjectOctreeNode::Rebuild()
     SpaceObjectManager::Enqueue(this, ProcessMode::Rebuild, MakeDelegate(SpaceObjectOctreeNode::OnRebuild));
 }
 
+void SpaceObjectOctreeNode::OnUpdate()
+{
+}
+
+void SpaceObjectOctreeNode::OnCreate()
+{
+    ASSERT(m_chunk != nullptr);
+
+    m_processing = false;
+
+    // Upload chunk if needed
+    if (m_chunk->NeedsUpload())
+        m_chunk->Upload();
+}
+
+void SpaceObjectOctreeNode::OnRebuild()
+{
+    ASSERT(m_chunk != nullptr);
+
+    m_rebuilding = false;
+
+    // Upload chunk if needed
+    if (m_chunk->NeedsUpload())
+        m_chunk->Upload();
+}
+
+void SpaceObjectOctreeNode::OnDestroy()
+{
+    ASSERT(m_populated == false);
+    ASSERT(m_processing == false);
+
+    // Destroy chunk
+    SafeDispose(m_chunk);
+}
+
+void SpaceObjectOctreeNode::OnPopulate()
+{
+    m_processing = false;
+    m_populated = true;
+
+    for (var i = 0; i < 8; i++)
+    {
+        cvar node = m_childrenNodes[i];
+
+        if (node)
+            node->OnCreate();
+    }
+}
+
+void SpaceObjectOctreeNode::OnDepopulate()
+{
+    m_populated = false;
+    m_processing = false;
+
+    // Destroy all children
+    for (rvar node : m_childrenNodes)
+    {
+        if (node)
+        {
+            // Dispose node
+            SafeDispose(node);
+
+            // delete node
+            delete node;
+
+            node = nullptr;
+        }
+    }
+
+    OnCreate();
+}
+
 void SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position, float size)
 {
     cvar chunk = GetChunk();
@@ -208,76 +282,6 @@ void SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position,
     }
 
     chunkData->HasSurface(true);
-}
-
-void SpaceObjectOctreeNode::OnUpdate()
-{
-}
-
-void SpaceObjectOctreeNode::OnCreate()
-{
-    m_processing = false;
-
-    // upload chunk if needed
-    if (m_chunk->NeedsUpload())
-        m_chunk->Upload();
-}
-
-void SpaceObjectOctreeNode::OnRebuild()
-{
-    m_rebuilding = false;
-
-    // upload chunk if needed
-    if (m_chunk->NeedsUpload())
-        m_chunk->Upload();
-}
-
-void SpaceObjectOctreeNode::OnDestroy()
-{
-    // Destroy chunk
-    SafeDispose(m_chunk);
-}
-
-void SpaceObjectOctreeNode::OnPopulate()
-{
-    m_processing = false;
-    m_populated = true;
-
-    for (var i = 0; i < 8; i++)
-    {
-        cvar node = m_childrenNodes[i];
-
-        if (node)
-            node->OnCreate();
-    }
-
-    //OnDestroy();
-}
-
-void SpaceObjectOctreeNode::OnDepopulate()
-{
-    m_populated = false;
-    m_processing = false;
-
-    // Destroy all children
-    for (auto i = 0; i < 8; i++)
-    {
-        auto node = m_childrenNodes[i];
-
-        if (node)
-        {
-            // call event
-            node->OnDestroy();
-
-            // delete node
-            delete node;
-
-            // cleanup
-            m_childrenNodes[i] = nullptr;
-        }
-    }
-
-    OnCreate();
 }
 
 void SpaceObjectOctreeNode::Update()
@@ -423,27 +427,23 @@ void SpaceObjectOctreeNode::Draw()
 
 void SpaceObjectOctreeNode::Dispose()
 {
-    // draw chunk if exists
-    if (m_chunk)
-        m_chunk->Dispose();
+    // Dispose chunk if exists
+    SafeDispose(m_chunk);
 
     if (!m_populated)
         return;
 
-    for (auto i = 0; i < 8; i++)
+    for (rvar node : m_childrenNodes)
     {
-        auto node = m_childrenNodes[i];
-
         if (node)
         {
-            // Dispose
-            node->Dispose();
+            // Dispose node
+            SafeDispose(node);
 
             // delete node
             delete node;
 
-            // cleanup
-            m_childrenNodes[i] = nullptr;
+            node = nullptr;
         }
     }
 }
