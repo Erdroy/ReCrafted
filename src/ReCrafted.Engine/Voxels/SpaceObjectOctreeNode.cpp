@@ -61,7 +61,7 @@ void SpaceObjectOctreeNode::CreateChunk(IVoxelMesher* mesher)
     ASSERT(m_chunk == nullptr);
 
     // create chunk
-    m_chunk = std::make_shared<SpaceObjectChunk>();
+    m_chunk.reset(new SpaceObjectChunk());
     m_chunk->Init(this, owner->spaceObject);
     m_chunk->Generate(mesher);
 }
@@ -75,7 +75,10 @@ void SpaceObjectOctreeNode::WorkerPopulate(IVoxelMesher* mesher) // WARNING: thi
         auto position = m_Position + ChildrenNodeOffsets[i] * static_cast<float>(childrenSize);
 
         // construct node
-        cvar childNode = m_childrenNodes[i] = new SpaceObjectOctreeNode();
+        cvar childNode = new SpaceObjectOctreeNode();
+
+        m_childrenNodes[i] = childNode;
+        
         childNode->m_Position = position;
         childNode->m_Size = childrenSize;
         childNode->m_Bounds = BoundingBox(position, boundsSize);
@@ -85,16 +88,15 @@ void SpaceObjectOctreeNode::WorkerPopulate(IVoxelMesher* mesher) // WARNING: thi
         childNode->parent = this;
         childNode->root = root;
 
-        // set node id
-        childNode->m_childrenId = i;
+        // set node depth
+        childNode->SetDepth(GetDepth() + 1);
 
         // generate chunk
         childNode->CreateChunk(mesher);
     }
 }
 
-void SpaceObjectOctreeNode::WorkerDepopulate(IVoxelMesher* mesher)
-// WARNING: this function is called on WORKER THREAD!
+void SpaceObjectOctreeNode::WorkerDepopulate(IVoxelMesher* mesher) // WARNING: this function is called on WORKER THREAD!
 {
 }
 

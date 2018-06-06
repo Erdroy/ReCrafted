@@ -13,17 +13,17 @@ void SpaceObject::Init(SpaceObjectSettings& settings)
     m_settings = settings;
 
     // initialize voxel generator
-    m_generator = std::make_shared<VoxelGenerator>();
+    m_generator.reset(new VoxelGenerator());
     m_generator->spaceObject = this;
     m_generator->Init(&m_settings);
 
     // initialize voxel storage
-    m_voxelStorage = std::make_shared<VoxelStorage>();
+    m_voxelStorage.reset(new VoxelStorage());
     m_voxelStorage->spaceObject = this;
     m_voxelStorage->Init(&m_settings);
 
     // create octree instance
-    m_octree = std::make_shared<SpaceObjectOctree>();
+    m_octree.reset(new SpaceObjectOctree());
     m_octree->spaceObject = this;
 
     // Set current position
@@ -86,14 +86,9 @@ void SpaceObject::Modify(VoxelEditMode::_enum mode, Vector3& position, float siz
     }
 }
 
-SpaceObjectSettings& SpaceObject::GetSettings()
-{
-    return m_settings;
-}
-
 RefPtr<SpaceObject> SpaceObject::CreateSpaceObject(SpaceObjectSettings& settings)
 {
-    var spaceObject = std::make_shared<SpaceObject>();
+    RefPtr<SpaceObject> spaceObject(new SpaceObject());
     spaceObject->Init(settings);
     return spaceObject;
 }

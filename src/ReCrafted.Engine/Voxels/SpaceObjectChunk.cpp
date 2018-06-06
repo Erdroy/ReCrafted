@@ -48,7 +48,7 @@ void SpaceObjectChunk::Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObjec
 
     // create chunk data
     var nodePosition = node->GetPosition();
-    m_chunkData = storage->CreateChunkData(nodePosition, node->GetSize());
+    m_chunkData = storage->CreateChunkData(nodePosition, node->GetSize(), node->GetDepth());
 
     // calculate chunk position (origin)
     cvar positionOffset = Vector3::One() * static_cast<float>(node->GetSize()) * 0.5f;

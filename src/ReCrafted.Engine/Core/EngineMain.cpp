@@ -43,7 +43,7 @@ void EngineMain::RegisterComponents() const
 
 void EngineMain::CreateMainWindow()
 {
-    m_mainWindow = std::make_shared<ApplicationWindow>();
+    m_mainWindow.reset(new ApplicationWindow());
     m_mainWindow->Create();
     m_mainWindow->SetOnResized(MakeDelegate(EngineMain::OnWindowResized));
 
@@ -103,7 +103,7 @@ void EngineMain::Initialize()
     Platform::SetThreadName("Main Thread");
 
     // create Update loop
-    m_updateLoop = std::make_shared<UpdateLoop>();
+    m_updateLoop.reset(new UpdateLoop());
 
     // initialize component manager
     m_componentManager = EngineComponentManager::GetInstance();

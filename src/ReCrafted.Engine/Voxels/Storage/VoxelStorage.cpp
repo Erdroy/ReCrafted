@@ -83,7 +83,7 @@ void VoxelStorage::Dispose()
     SafeDelete(m_vxh);
 }
 
-RefPtr<VoxelChunkData> VoxelStorage::CreateChunkData(Vector3& nodePosition, const int nodeSize)
+RefPtr<VoxelChunkData> VoxelStorage::CreateChunkData(Vector3& nodePosition, const int nodeSize, const int nodeDepth)
 {
     ScopeLock(m_voxelChunksLock);
 
@@ -92,9 +92,10 @@ RefPtr<VoxelChunkData> VoxelStorage::CreateChunkData(Vector3& nodePosition, cons
     if (m_voxelChunks.contains(chunkId))
         return m_voxelChunks[chunkId];
 
-    var chunk = std::make_shared<VoxelChunkData>();
+    RefPtr<VoxelChunkData> chunk(new VoxelChunkData());
     chunk->m_size = nodeSize;
     chunk->m_id = chunkId;
+    chunk->m_nodeDepth = nodeDepth;
     chunk->m_nodePosition = nodePosition;
     chunk->m_chunkPosition = nodePosition - Vector3::One() * float(nodeSize) * 0.5f;
 
@@ -133,7 +134,7 @@ void VoxelStorage::ReadChunkData(RefPtr<VoxelChunkData> chunkData)
     cvar lod = chunkData->m_size / SpaceObjectOctreeNode::MinimumNodeSize;
     
     // generate chunk now using CHM
-    cvar hasSurface = spaceObject->GetGenerator()->GenerateChunkData(chunkData->GetData(), chunkPosition, lod);
+    cvar hasSurface = spaceObject->GetGenerator()->GenerateChunkData(chunkData->GetData(), chunkPosition, lod, chunkData->m_nodeDepth);
 
     // mark as loaded
     chunkData->m_hasSurface = hasSurface;

@@ -59,11 +59,15 @@ void VoxelGenerator::Dispose()
     SafeDispose(m_bitmap);
 }
 
-bool VoxelGenerator::GenerateChunkData(sbyte* voxelData, const Vector3& position, int lod)
+bool VoxelGenerator::GenerateChunkData(sbyte* voxelData, const Vector3& position, int lod, int depth)
 {
+    cvar octree = spaceObject->GetOctree();
+
     cvar dataSize = VoxelChunkData::ChunkDataSize;
     cvar lod_f = static_cast<float>(lod);
     cvar chunkPosition = spaceObject->GetPosition();
+
+    cvar mipLevel = Math::Clamp(octree->GetMaxDepth() - depth, 0, m_bitmap->GetLoDCount());
 
     // calculate current voxel size
     cvar lodSize = LoDTable[lod];
@@ -79,7 +83,7 @@ bool VoxelGenerator::GenerateChunkData(sbyte* voxelData, const Vector3& position
                 cvar offset = Vector3(float(x), float(y), float(z));
                 cvar voxelPosition = position + offset * lod_f;
 
-                cvar value = GenerateFromCHM(chunkPosition, voxelPosition, 0, lodSize,
+                cvar value = GenerateFromCHM(chunkPosition, voxelPosition, mipLevel, lodSize,
                     settings->minSurfaceHeight,
                     settings->hillsHeight);
 

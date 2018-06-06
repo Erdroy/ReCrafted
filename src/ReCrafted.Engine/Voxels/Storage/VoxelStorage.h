@@ -40,7 +40,7 @@ public:
     void Dispose() override;
 
 public:
-    RefPtr<VoxelChunkData> CreateChunkData(Vector3& nodePosition, int nodeSize);
+    RefPtr<VoxelChunkData> CreateChunkData(Vector3& nodePosition, int nodeSize, int nodeDepth);
     RefPtr<VoxelChunkData> GetChunkData(Vector3& nodePosition);
     void ReadChunkData(RefPtr<VoxelChunkData> chunkData);
     void WriteChunkData(RefPtr<VoxelChunkData> chunkData);

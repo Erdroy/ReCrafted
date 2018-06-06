@@ -22,6 +22,7 @@ private:
     bool m_loaded = false;
     bool m_hasSurface = false;
     uint64_t m_id = 0u;
+    int m_nodeDepth = 0;
     Vector3 m_nodePosition = {};
     Vector3 m_chunkPosition = {};
 

@@ -9,9 +9,9 @@
 void SpaceObjectOctree::GeneratePrimary()
 {
     // calculate diameter
-    var settings = spaceObject->GetSettings();
-    var radius = settings.maxSurfaceHeight;
-    var objectSize = Math::RoundUpToPow2(static_cast<int>(radius * 2)); // diameter rounded up to power of 2
+    rvar settings = spaceObject->GetSettings();
+    cvar radius = settings.maxSurfaceHeight;
+    cvar objectSize = Math::RoundUpToPow2(static_cast<int>(radius * 2)); // diameter rounded up to power of 2
 
     // calculate bounds size
     var size = Vector3::One() * static_cast<float>(objectSize);
@@ -20,19 +20,20 @@ void SpaceObjectOctree::GeneratePrimary()
     m_Bounds = BoundingBox(settings.position, size);
 
     // calculate Length of root nodes on single axis
-    var rootNodesLength = Math::Pow(2, settings.rootOctreeDepth);
+    cvar rootNodesLength = Math::Pow(2, settings.rootOctreeDepth);
+
+    // calculate the node size
+    cvar rootNodeSize = objectSize / rootNodesLength;
+    
+    // calculate the center offset
+    cvar rootNodeOffset = static_cast<float>(static_cast<float>(rootNodesLength) / 2 * rootNodeSize) - rootNodeSize * 0.5f;
+    cvar rootNodePositionOffset = Vector3(rootNodeOffset, rootNodeOffset, rootNodeOffset);
+
+    // Calculate bounding box size
+    var boundsSize = Vector3::One() * static_cast<float>(rootNodeSize);
 
     // calculate the count of root nodes
     m_rootNodesCount = Math::Pow(rootNodesLength, 3);
-
-    // calculate the node size
-    var rootNodeSize = objectSize / rootNodesLength;
-
-    // calculate the center offset
-    var rootNodeOffset = static_cast<float>(rootNodesLength / 2 * rootNodeSize) - rootNodeSize * 0.5f;
-    var rootNodePositionOffset = Vector3(rootNodeOffset, rootNodeOffset, rootNodeOffset);
-
-    var boundsSize = Vector3::One() * static_cast<float>(rootNodeSize);
 
     // create root nodes
     m_rootNodes = new SpaceObjectOctreeNode*[m_rootNodesCount];
@@ -64,6 +65,8 @@ void SpaceObjectOctree::GeneratePrimary()
                 node->root = node;
                 node->m_isRoot = true;
                 node->m_Bounds = BoundingBox(position, boundsSize);
+                
+                node->SetDepth(0); // Set 0 as first node depth
 
                 // populate node
                 node->Populate();
@@ -72,6 +75,20 @@ void SpaceObjectOctree::GeneratePrimary()
             }
         }
     }
+
+    // Calculate max depth
+    // This value will be used mainly for mip map selection for CHM bitmap
+    var maxDepth = 0;
+    
+    var currentSize = rootNodeSize;
+    while(currentSize >= 16) // TODO: This can be optimized using bit operations ([number of 0 from the end] - rootOctreeDepth)
+    {
+        maxDepth++;
+        currentSize /= 2;
+    }
+
+    // Set the max depth
+    SetMaxDepth(maxDepth);
 }
 
 void SpaceObjectOctree::Update()

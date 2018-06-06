@@ -39,7 +39,7 @@ public:
     }
 
 public:
-    bool GenerateChunkData(sbyte* voxelData, const Vector3& position, int lod);
+    bool GenerateChunkData(sbyte* voxelData, const Vector3& position, int lod, int depth);
 };
 
 #endif // VOXELGENERATOR_H

@@ -53,11 +53,23 @@ public:
 	 * \brief Gets space object settings reference.
 	 * \return Space object settings reference.
 	 */
-    SpaceObjectSettings& GetSettings();
+    SpaceObjectSettings& GetSettings()
+    {
+        return m_settings;
+    }
+
+    /**
+    * \brief Gets the SpaceObjectOctree instance of this SpaceObject.
+    * \return SpaceObjectOctree instance owned by this SpaceObject.
+    */
+    SpaceObjectOctree* GetOctree() const
+    {
+        return m_octree.get();
+    }
 
     /**
      * \brief Gets the VoxelStorage instance of this SpaceObject.
-     * \return VoxelStorage instance of this SpaceObject.
+     * \return VoxelStorage instance owned by this SpaceObject.
      */
     VoxelStorage* GetStorage() const
     {
@@ -66,7 +78,7 @@ public:
 
     /**
      * \brief Gets the VoxelGenerator instance of this SpaceObject.
-     * \return VoxelGenerator instance of this SpaceObject.
+     * \return VoxelGenerator instance owned by this SpaceObject.
      */
     VoxelGenerator* GetGenerator() const
     {

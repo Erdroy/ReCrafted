@@ -55,9 +55,6 @@ private:
     bool m_processing = false;
     bool m_rebuilding = false;
     bool m_isRoot = false;
-    int m_childrenId = 0;
-
-    uint64_t m_nodeId = 0;
 
 private:
     bool HasPopulatedChildren();
@@ -108,8 +105,9 @@ public:
     }
 
 public:
+PROPERTY(int, Size) = 0;
+PROPERTY(int, Depth) = 0;
 PROPERTY(Vector3, Position) = {}; // NOTE: center position
-PROPERTY(int, Size) = {};
 PROPERTY(BoundingBox, Bounds) = {};
 };
 
