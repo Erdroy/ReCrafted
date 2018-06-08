@@ -115,7 +115,7 @@ void SpaceObjectChunk::Upload()
             SafeDispose(m_mesh);
 
         // Swap mesh
-        m_mesh.swap(m_newMesh);
+        m_mesh.swap(m_newMesh); // m_newMesh will be null, as we've released already the old mesh
     }
 }
 

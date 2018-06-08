@@ -290,10 +290,8 @@ void SpaceObjectOctreeNode::Update()
 {
     if (m_populated)
     {
-        for (auto i = 0; i < 8; i++)
+        for (rvar node : m_childrenNodes)
         {
-            auto node = m_childrenNodes[i];
-
             if (node)
                 node->Update();
         }
@@ -416,10 +414,8 @@ void SpaceObjectOctreeNode::Draw()
         return;
     }
 
-    for (var i = 0; i < 8; i++)
+    for (rvar node : m_childrenNodes)
     {
-        var node = m_childrenNodes[i];
-
         if (node)
         {
             node->Draw();

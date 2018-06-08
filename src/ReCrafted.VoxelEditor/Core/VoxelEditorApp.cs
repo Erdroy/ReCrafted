@@ -56,7 +56,7 @@ namespace ReCrafted.VoxelEditor.Core
                 // Read bitmap
                 var fileName = "../assets/spacebodies/moon/" + faceType.ToString().ToLower() + ".bmp";
                 var bitmap = new Bitmap(fileName);
-
+                
                 var mipWidth = bitmap.Width / 2;
                 var mipHeight = bitmap.Width / 2;
 
@@ -81,6 +81,7 @@ namespace ReCrafted.VoxelEditor.Core
                     }
                     else
                     {
+                        // NOTE: We want to 'resize' the image, to hold the gray-scale level, not optimal but needed. TODO: Try to get better way to generate mip maps gray-scale
                         var bitmapDataRaw = BitmapToByte(bitmap);
                         //bitmap.Save("CHMBitmap-lod0.bmp");
                         texture.AddFaceMip(faceType, j, bitmapDataRaw, bitmap.Width, bitmap.Height);

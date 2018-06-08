@@ -133,13 +133,10 @@ void Mesh::Upload()
     // Create vertex buffer
     m_vertexBuffer = Renderer::CreateVertexBuffer(m_vertices_count, m_vertexSize, m_vertexBufferData);
 
-    // Free vb memory
-    Renderer::QueueFree(m_vertexBufferData);
-
     // Create index buffer
     m_indexBuffer = Renderer::CreateIndexBuffer(m_indices_count, m_indexBufferData);
 
-    // Free ib memory
+    Renderer::QueueFree(m_vertexBufferData);
     Renderer::QueueFree(m_indexBufferData);
 
     m_vertexBufferData = nullptr;
@@ -158,10 +155,10 @@ void Mesh::Dispose()
         Renderer::DestroyIndexBuffer(m_indexBuffer);
 
     if(m_vertexBufferData)
-        Renderer::QueueFree(m_vertexBufferData);
+        Renderer::Free(m_vertexBufferData);
 
     if (m_indexBufferData)
-        Renderer::QueueFree(m_indexBufferData);
+        Renderer::Free(m_indexBufferData);
 
     // clean
     m_vertices = nullptr;

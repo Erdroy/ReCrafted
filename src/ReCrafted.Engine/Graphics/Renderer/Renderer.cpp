@@ -176,6 +176,9 @@ namespace Renderer
 
     RendererMemory Allocate(void* data, std::function<void(void*, void*)> releaseFunc, void* userData, uint lifeTime)
     {
+        if (data == nullptr)
+            return nullptr;
+
 #if RENDERER_MEMORY_AUTO_DEALLOC_ENABLE
         if (lifeTime > 0)
         {
