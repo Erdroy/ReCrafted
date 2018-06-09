@@ -1,6 +1,9 @@
 #include "D3DRenderer.h"
 #include <iostream>
 #include <algorithm>
+#include "Graphics/Renderer/Renderer.hpp"
+#include "Graphics/Renderer/RHI/RHIContext.h"
+#include <atlcomcli.h>
 
 D3DRenderer::D3DRenderer(HWND hWnd, bool fullscreen, bool sRGB, int samples) {
     Initialize(hWnd, fullscreen, sRGB, samples);
@@ -23,11 +26,18 @@ bool D3DRenderer::Initialize(HWND hWnd, bool fullscreen, bool sRGB, int samples)
     UINT width = rc.right - rc.left;
     UINT height = rc.bottom - rc.top;
 
-    // device
-    // device c
-    // swap
-    // bb
-    // bb rtv
+    Renderer::RHIContext context;
+    Renderer::GetContext(&context);
+
+    cvar currentWindow = context.windows[1];
+
+    device_ = CComPtr<ID3D11Device>(static_cast<ID3D11Device*>(context.device));
+    immediate_context_ = CComPtr<ID3D11DeviceContext>(static_cast<ID3D11DeviceContext*>(context.deviceContext));
+
+    hwnd_ = static_cast<HWND>(currentWindow.windowHandle);
+    swap_chain_ = CComPtr<IDXGISwapChain>(static_cast<IDXGISwapChain*>(currentWindow.swapChain));
+
+    back_buffer_view_ = CComPtr<ID3D11RenderTargetView>(static_cast<ID3D11RenderTargetView*>(currentWindow.backBuffer));
 
     immediate_context_->OMSetRenderTargets(1, back_buffer_view_.GetAddressOf(), nullptr);
 

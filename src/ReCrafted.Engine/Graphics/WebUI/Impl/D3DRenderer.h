@@ -62,7 +62,6 @@ private:
     ComPtr<ID3D11RenderTargetView> back_buffer_view_;
     ComPtr<ID3D11BlendState> blend_state_;
     ComPtr<ID3D11RasterizerState> rasterizer_state_;
-    D3D_FEATURE_LEVEL feature_level_;
     double scale_;
     uint32_t width_;
     uint32_t height_;

@@ -5,6 +5,8 @@
 
 #include "Impl/FileSystemWin.h"
 #include "Impl/FontLoaderWin.h"
+#include "Impl/GPUDriverD3D.h"
+#include "Impl/D3DRenderer.h"
 
 #pragma warning(push, 0)
 #include <Ultralight/Renderer.h>
@@ -18,6 +20,7 @@
 SINGLETON_IMPL(WebUIEngine)
 
 ultralight::RefPtr<ultralight::Renderer> m_renderer = nullptr;
+D3DRenderer* m_context = nullptr;
 
 void WebUIEngine::Init()
 {
@@ -30,6 +33,8 @@ void WebUIEngine::Init()
     // Setup our Platform API handlers
     rvar platform = ultralight::Platform::instance();
 
+    m_context = new D3DRenderer(nullptr, false);
+
     // Setup ultralight config
     ultralight::Config config;
     config.face_winding = ultralight::kFaceWinding_Clockwise;
@@ -38,7 +43,7 @@ void WebUIEngine::Init()
     config.use_distance_field_paths = true;
 
     platform.set_config(config);
-    //platform.set_gpu_driver(new ultralight::GPUDriverD3D(context));
+    platform.set_gpu_driver(new ultralight::GPUDriverD3D(m_context));
     platform.set_font_loader(new ultralight::FontLoaderWin());
     platform.set_file_system(new ultralight::FileSystemWin(asset_dir));
     
@@ -62,8 +67,8 @@ void WebUIEngine::OnDispose()
     delete static_cast<ultralight::FontLoaderWin*>(platform.font_loader());
     platform.set_font_loader(nullptr);
 
-    //delete static_cast<GPUDriverD3D*>(platform.gpu_driver());
-    //platform.set_gpu_driver(nullptr);
+    delete static_cast<ultralight::GPUDriverD3D*>(platform.gpu_driver());
+    platform.set_gpu_driver(nullptr);
 }
 
 void WebUIEngine::Update()
@@ -82,9 +87,9 @@ void WebUIEngine::Render()
     m_renderer->Render();
 
     rvar platform = ultralight::Platform::instance();
-    /*var driver = static_cast<GPUDriverD3D*>(platform.gpu_driver());
+    var driver = static_cast<ultralight::GPUDriverD3D*>(platform.gpu_driver());
 
-    if (driver->HasCommandsPending())
+    /*if (driver->HasCommandsPending())
     {
         driver->DrawCommandList();
         // ui_->Draw(); ?

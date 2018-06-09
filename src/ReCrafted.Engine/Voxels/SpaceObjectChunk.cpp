@@ -96,23 +96,23 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
     }
 
     ScopeLock(m_meshLock);
-    SafeDispose(m_newMesh);
+
+    ASSERT(m_newMesh == nullptr);
     m_newMesh = mesh;
 }
 
 void SpaceObjectChunk::Upload()
 {
+    ScopeLock(m_meshLock); // TODO: Use condition variable
+
     // upload changes
     if (m_newMesh && m_newMesh->CanUpload())
     {
-        ScopeLock(m_meshLock);
-
         // Upload new mesh
         m_newMesh->Upload();
 
         // Dispose old mesh
-        if (m_mesh)
-            SafeDispose(m_mesh);
+        SafeDispose(m_mesh);
 
         // Swap mesh
         m_mesh.swap(m_newMesh); // m_newMesh will be null, as we've released already the old mesh
