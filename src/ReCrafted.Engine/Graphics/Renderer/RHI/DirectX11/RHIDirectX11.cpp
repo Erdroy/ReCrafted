@@ -11,6 +11,8 @@
 #include "../../Renderer.hpp"
 #include "../../RendererConfig.h"
 
+#include "../RHIContext.h"
+
 #include "Internal/RHIDirectX11_RenderBuffer.h"
 #include "Internal/RHIDirectX11_Shader.h"
 
@@ -83,6 +85,7 @@ namespace Renderer
             }
         };
 
+
         // == common ==
         volatile bool m_running;
         int m_workerThreadCount;
@@ -90,6 +93,7 @@ namespace Renderer
         Settings::_enum m_settings;
         RenderFlags::_enum m_renderFlags;
         RenderFlags::_enum m_defaultFlags;
+
 
         // == stats ==
         uint32_t m_apiCalls = 0u;
@@ -99,6 +103,7 @@ namespace Renderer
         uint32_t m_verticesDrawn = 0u;
         uint32_t m_indicesDrawn = 0u;
 
+
         // last stats (for GetRenderStatistics, to make sure, that outputed stats are the total ones)
         uint32_t m_lastApiCalls = 0u;
         uint32_t m_lastDrawCalls = 0u;
@@ -106,6 +111,7 @@ namespace Renderer
 
         uint32_t m_lastVerticesDrawn = 0u;
         uint32_t m_lastIndicesDrawn = 0u;
+
 
         // == events ==
         HANDLE m_workerFinishEvents[RENDERER_MAX_RENDER_THREADS];
@@ -134,6 +140,7 @@ namespace Renderer
         ID3D11RasterizerState* m_rasterizerState_WireFrame;
 
         ID3D11BlendState* m_blendState_Overlay;
+
 
         // == d3d11 resources ==
         ID3D11Device* m_device = nullptr;
@@ -1277,6 +1284,27 @@ namespace Renderer
 
             for (crvar elem : m_renderBuffers)
                 stats->renderBufferCount += elem != nullptr ? 1 : 0;
+        }
+
+        void RHIDirectX11::GetContext(Renderer::RHIContext* context)
+        {
+            context->device = m_device;
+            context->deviceContext = m_deviceContext;
+
+            // copy windows data
+            var windowId = 0;
+            for (rvar window : m_windows)
+            {
+                if (window.hwnd)
+                {
+                    rvar windowDesc = context->windows[windowId];
+
+                    windowDesc.windowHandle = window.hwnd;
+                    windowDesc.swapChain = window.swapChain;
+                    windowDesc.backBuffer = m_renderBuffers[window.renderBuffer.idx]->GetRTVs()[0];
+                }
+                windowId++;
+            }
         }
 
         void RHIDirectX11::Frame()

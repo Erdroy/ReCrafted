@@ -165,6 +165,11 @@ namespace Renderer
         m_renderer->Shutdown();
     }
 
+    void GetContext(RHIContext* context)
+    {
+        m_renderer->GetContext(context);
+    }
+
     RendererMemory Allocate(const size_t size, uint lifeTime)
     {
         if (size == 0)

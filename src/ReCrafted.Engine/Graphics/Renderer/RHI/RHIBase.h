@@ -10,6 +10,8 @@
 
 namespace Renderer
 {
+    struct RHIContext;
+
     namespace RHI
     {
         class RHIBase
@@ -25,15 +27,13 @@ namespace Renderer
             virtual void Shutdown() = 0;
 
             virtual void GetRenderStatistics(RenderStatistics* stats) = 0;
+            virtual void GetContext(Renderer::RHIContext* context) = 0;
 
         public:
             virtual void Frame() = 0;
 
         public:
-            virtual void CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle,
-                                            void* windowHandle) = 0;
-
-        public:
+            virtual void CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle, void* windowHandle) = 0;
             virtual void ResizeWindow(WindowHandle window, int width, int height) = 0;
         };
     }

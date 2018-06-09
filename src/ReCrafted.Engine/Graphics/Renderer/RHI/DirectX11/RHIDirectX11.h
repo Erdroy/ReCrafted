@@ -8,8 +8,11 @@
 #include "../RHIBase.h"
 
 #if RENDERER_RHI_D3D11
+
 namespace Renderer
 {
+    struct RHIContext;
+
     namespace RHI
     {
         class RHIDirectX11 : public RHIBase
@@ -28,15 +31,13 @@ namespace Renderer
             void Shutdown() override;
 
             void GetRenderStatistics(RenderStatistics* stats) override;
+            void GetContext(Renderer::RHIContext* context) override;
 
         public:
             void Frame() override;
 
         public:
-            void CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle, void* windowHandle)
-            override;
-
-        public:
+            void CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle, void* windowHandle) override;
             void ResizeWindow(WindowHandle window, int width, int height) override;
         };
     }

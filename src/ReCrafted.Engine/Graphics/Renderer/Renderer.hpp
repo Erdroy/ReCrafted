@@ -15,6 +15,8 @@ namespace Renderer
 {
     typedef void* RendererMemory;
 
+    struct RHIContext;
+
     struct Settings
     {
         enum _enum : char
@@ -330,6 +332,11 @@ namespace Renderer
     /// Shutdows the renderer.
     /// </summary>
     RENDERER_FUNCTION(void) Shutdown();
+
+    /// <summary>
+    /// Gets the current renderer context data.
+    /// </summary>
+    RENDERER_FUNCTION(void) GetContext(RHIContext* context);
 
     /// <summary>
     /// Allocates given amount of memory.
