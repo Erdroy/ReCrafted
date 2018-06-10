@@ -15,11 +15,11 @@ struct IDelegateHandler
 /**
  * \brief Delegate class.
  */
-template <typename T>
+template <typename Type>
 class Delegate
 {
 public:
-    typedef void (IDelegateHandler::*delegate_t)(T* param);
+    typedef void (IDelegateHandler::*delegate_t)(Type*);
 
 private:
     IDelegateHandler* m_instance = nullptr;
@@ -41,7 +41,7 @@ public:
         (this->m_instance->*this->m_delegate)(nullptr);
     }
 
-    FORCEINLINE void Invoke(T* param) const
+    FORCEINLINE void Invoke(Type* param) const
     {
         if (this->m_instance == nullptr)
             return;
@@ -56,7 +56,7 @@ public:
     }
 
 public:
-    bool operator ==(const Delegate<T>& second)
+    bool operator ==(const Delegate<Type>& second)
     {
         return m_delegate == second.m_delegate && m_instance == second.m_instance;
     }

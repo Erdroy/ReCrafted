@@ -1359,6 +1359,9 @@ namespace Renderer
                 m_deviceContext->ExecuteCommandList(commandList, TRUE);
             }
 
+            // Call beforePresent event
+            callbacksBeforeRender.Invoke();
+
             // Present frame
             if (m_swapChain)
             {

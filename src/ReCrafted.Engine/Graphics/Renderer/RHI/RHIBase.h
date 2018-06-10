@@ -8,6 +8,9 @@
 #include "../Renderer.hpp"
 #include "../CommandList/CommandList.h"
 
+#include "Core/Delegate.h"
+#include "Core/Event.h"
+
 namespace Renderer
 {
     struct RHIContext;
@@ -18,6 +21,7 @@ namespace Renderer
         {
         public:
             CommandList commandList = {};
+            Event<void> callbacksBeforeRender = {};
 
         public:
             virtual ~RHIBase() = default;

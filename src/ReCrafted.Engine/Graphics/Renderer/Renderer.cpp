@@ -340,6 +340,11 @@ namespace Renderer
         FreeWindowHandle(handle);
     }
 
+    void AddOnPresentCallback(Delegate<void>& event)
+    {
+        m_renderer->callbacksBeforeRender.AddListener(event);
+    }
+
     RenderBufferHandle CreateRenderBuffer(uint16_t width, uint16_t height, TextureFormat::_enum* textures,
                                           uint8_t texturesCount, TextureFormat::_enum depthFormat)
     {
