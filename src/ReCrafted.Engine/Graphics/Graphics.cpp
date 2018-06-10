@@ -54,6 +54,10 @@ void Graphics::InitializeRenderer()
     m_window = Renderer::CreateWindowHandle(Platform::GetCurrentWindow());
     m_frameBuffer = Renderer::GetWindowRenderBuffer(m_window);
 
+    // Set renderer callbacks
+    var onFramePresent = MakeDelegate(Graphics::OnFramePresent);
+    Renderer::AddOnPresentCallback(onFramePresent);
+
     Logger::LogInfo("Graphics initialized");
 }
 
@@ -284,7 +288,10 @@ void Graphics::RenderUI()
         Profiler::EndProfile();
     }
     Profiler::EndProfile();
+}
 
+void Graphics::OnFramePresent(void* unused)
+{
     Profiler::BeginProfile("WebUI Render");
     {
         // set WebUI state

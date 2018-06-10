@@ -20,6 +20,7 @@
 SINGLETON_IMPL(WebUIEngine)
 
 ultralight::RefPtr<ultralight::Renderer> m_renderer = nullptr;
+ultralight::GPUDriver* m_driver = nullptr;
 D3DRenderer* m_context = nullptr;
 
 void WebUIEngine::Init()
@@ -42,8 +43,10 @@ void WebUIEngine::Init()
     config.use_distance_field_fonts = false; // TODO: detect high dpi and set to true
     config.use_distance_field_paths = true;
 
+    m_driver = new ultralight::GPUDriverD3D(m_context);
+
     platform.set_config(config);
-    platform.set_gpu_driver(new ultralight::GPUDriverD3D(m_context));
+    platform.set_gpu_driver(m_driver);
     platform.set_font_loader(new ultralight::FontLoaderWin());
     platform.set_file_system(new ultralight::FileSystemWin(asset_dir));
     
@@ -89,11 +92,20 @@ void WebUIEngine::Render()
     rvar platform = ultralight::Platform::instance();
     var driver = static_cast<ultralight::GPUDriverD3D*>(platform.gpu_driver());
 
-    /*if (driver->HasCommandsPending())
-    {
+    m_needsViewUpdate = driver->HasCommandsPending();
+
+    if (m_needsViewUpdate)
         driver->DrawCommandList();
-        // ui_->Draw(); ?
-    }*/
+}
+
+WebUIRenderer WebUIEngine::GetRenderer()
+{
+    return static_cast<WebUIRenderer>(m_renderer.get());
+}
+
+WebUIDriver WebUIEngine::GetDriver()
+{
+    return static_cast<WebUIDriver>(m_driver);
 }
 
 bool WebUIEngine::IsInitialized()

@@ -9,8 +9,6 @@
 #include "ReCrafted.h"
 #include "Scripting/Object.h"
 
-class CEFView;
-
 class WebUIView : public Object
 {
     friend class WebUI;
@@ -19,7 +17,12 @@ private:
 SCRIPTING_API_IMPL()
 
 private:
-    CEFView* m_viewBase = nullptr;
+    int m_width = 0;
+    int m_height = 0;
+    int m_x = 0;
+    int m_y = 0;
+
+    void* m_overlay = nullptr;
 
 private:
     void Init();
@@ -29,7 +32,10 @@ private:
     void OnDestroy() override;
 
 public:
-    CEFView* GetView() const;
+    int Width() const { return m_width; }
+    int Height() const { return m_height; }
+    int X() const { return m_x; }
+    int Y() const { return m_y; }
 
 public:
     void Navigate(Text& url);

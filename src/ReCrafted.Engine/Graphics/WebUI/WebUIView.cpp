@@ -4,79 +4,58 @@
 #include "WebUIEngine.h"
 #include "Common/Text.h"
 #include "Common/Display.h"
-#include "Core/Lock.h"
 #include "Core/Delegate.h"
 #include "Graphics/Graphics.h"
+#include <Ultralight/Renderer.h>
+#include <Ultralight/platform/GPUDriver.h>
+#include "Impl/Overlay.h"
 
 void WebUIView::Init()
 {
-    if (!WebUIEngine::IsInitialized())
-        return;
+    m_width = Display::GetWidth();
+    m_height = Display::GetHeight();
 
+    cvar renderer = static_cast<ultralight::Renderer*>(WebUIEngine::GetRenderer());
+    cvar driver = static_cast<GPUDriver*>(WebUIEngine::GetDriver());
+
+    m_overlay = new Overlay(renderer, driver, m_width, m_height, m_x, m_y, 1.0f);
+
+    cvar overlay = static_cast<Overlay*>(m_overlay);
+    var view = overlay->view();
+
+    view->LoadURL("https://google.com/");
 }
 
 void WebUIView::Update()
 {
-    if (!WebUIEngine::IsInitialized())
-        return;
 
-    //m_viewBase->Update();
 }
 
 void WebUIView::Resize(uint width, uint height)
 {
-    if (!WebUIEngine::IsInitialized())
-        return;
 
-    //cvar view = getView();
-    //view->Update();
 }
 
 void WebUIView::Render()
 {
-    if (!WebUIEngine::IsInitialized())
-        return;
-
-    // swap texture
-    //cvar view = getView();
-    //view->swap();
-
-    // draw texture
-    Graphics::GetInstance()->SetStage(RenderStage::DrawWebUI);
-    // Graphics::GetInstance()->blit(0, view->getRenderTexture(), true);
+    cvar overlay = static_cast<Overlay*>(m_overlay);
+    overlay->Draw();
 }
 
 void WebUIView::OnDestroy()
 {
-    cvar view = GetView();
-
-    //if (view && view->m_browser)
-    //    view->m_browser->GetHost()->CloseBrowser(false);
-}
-
-CEFView* WebUIView::GetView() const
-{
-    return static_cast<CEFView*>(m_viewBase);
+    cvar overlay = static_cast<Overlay*>(m_overlay);
+    delete overlay;
 }
 
 void WebUIView::Navigate(Text& url)
 {
-    if (!WebUIEngine::IsInitialized())
-        return;
 
-    cvar view = GetView();
-    cvar curl = url.StdStr();
-    //var frame = view->m_browser->GetMainFrame();
-    //frame->LoadURL(curl);
 }
 
 void WebUIView::Execute(const char* javaScriptSource)
 {
-    if (!WebUIEngine::IsInitialized())
-        return;
 
-    //cvar view = getView();
-    //view->m_browser->GetMainFrame()->ExecuteJavaScript(CefString(javaScriptSource), CefString(""), 0);
 }
 
 void WebUIView::Bind(const char* bindName, Delegate<void> delegate)

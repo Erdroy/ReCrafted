@@ -342,6 +342,14 @@ namespace ultralight {
 
         auto immediate_ctx = context_->immediate_context();
 
+        D3D11_VIEWPORT vpd = {};
+        vpd.Width = static_cast<float>(800);
+        vpd.Height = static_cast<float>(600);
+        vpd.MinDepth = 0.0f;
+        vpd.MaxDepth = 1.0f;
+
+        immediate_ctx->RSSetViewports(1, &vpd);
+
         auto& geometry = i->second;
         UINT stride = sizeof(Vertex_2f_4ub_2f_2f_28f);
         UINT offset = 0;
@@ -393,17 +401,6 @@ namespace ultralight {
         command_list_.clear();
     }
 
-    const WCHAR* GetShaderPath(ShaderType shader) {
-        switch (shader) {
-        case kShaderType_Fill:  return L"ps\\fill.hlsl";
-        default: {
-            MessageBox(nullptr,
-                L"GetShaderPath(): Unknown shader type.", L"Error", MB_OK);
-            return L"ps\\fill.hlsl";
-        }
-        }
-    }
-
     ComPtr<ID3D11PixelShader> GPUDriverD3D::GetShader(uint8_t shader) {
         ShaderType shader_type = (ShaderType)shader;
         auto i = shaders_.find(shader_type);
@@ -415,10 +412,10 @@ namespace ultralight {
         HRESULT hr;
 
         ComPtr<ID3DBlob> ps_blob;
-        hr = D3DReadFileToBlob(L"shaders\\hlsl\\fill.fxc", ps_blob.GetAddressOf());
+        hr = D3DReadFileToBlob(L"..\\assets\\shaders\\ultralight_fill.fxc", ps_blob.GetAddressOf());
         if (FAILED(hr)) {
             MessageBox(nullptr,
-                L"GPUDriverD3D::GetShader, File shaders\\hlsl\\fill.fxc not found. Check your working directory.", L"Error", MB_OK);
+                L"GPUDriverD3D::GetShader, File ..\\assets\\shaders\\ultralight_fill.fxc not found. Check your working directory.", L"Error", MB_OK);
             return nullptr;
         }
 
@@ -438,10 +435,10 @@ namespace ultralight {
 
         HRESULT hr;
         ComPtr<ID3DBlob> vs_blob;
-        hr = D3DReadFileToBlob(L"shaders\\hlsl\\v2f_c4f_t2f_t2f_d28f.fxc", vs_blob.GetAddressOf());
+        hr = D3DReadFileToBlob(L"..\\assets\\shaders\\ultralight_v2f_c4f_t2f_t2f_d28f.fxc", vs_blob.GetAddressOf());
         if (FAILED(hr)) {
             MessageBox(nullptr,
-                L"GPUDriverD3D::GetVertexLayout, File shaders\\hlsl\\v2f_c4f_t2f_t2f_d28f.fxc cannot be loaded. Check your working directory.", L"Error", MB_OK);
+                L"GPUDriverD3D::GetVertexLayout, File ..\\assets\\shaders\\ultralight_v2f_c4f_t2f_t2f_d28f.fxc cannot be loaded. Check your working directory.", L"Error", MB_OK);
             return nullptr;
         }
 

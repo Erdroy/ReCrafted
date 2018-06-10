@@ -12,13 +12,13 @@
 #include "Graphics/RenderBuffer.h"
 #include "Graphics/Mesh.h"
 #include "Graphics/RenderStage.h"
-
 #include "Graphics/Renderer/Renderer.hpp"
+#include "Core/Delegate.h"
 
 /**
  * \brief Graphics class.
  */
-class Graphics : public EngineComponent<Graphics>
+class Graphics : public EngineComponent<Graphics>, IDelegateHandler
 {
     friend class EngineMain;
 
@@ -52,6 +52,8 @@ private:
     void OnInit() override;
     void OnDispose() override;
     void Update() override;
+
+    void OnFramePresent(void*);
 
     void Render();
     void Resize(uint width, uint height);

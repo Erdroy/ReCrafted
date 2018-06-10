@@ -47,12 +47,18 @@ void WebUI::Render()
 {
     m_engine->Render();
 
-    for (var&& view : m_views)
-        view->Render();
+    //if (m_engine->NeedsViewsUpdate()) 
+    {
+        for (var&& view : m_views)
+            view->Render();
+    }
 }
 
 RefPtr<WebUIView> WebUI::CreateView()
 {
+    if (!m_engine->IsInitialized())
+        return nullptr;
+
     var view = Object::CreateInstance<WebUIView>("ReCrafted.API.Graphics", "WebUIView");
     view->Init();
     m_views.Add(view);
