@@ -148,6 +148,12 @@ int Platform::CpuCount()
     return m_cpuCount;
 }
 
+void Platform::Log(const char* logMessage)
+{
+    OutputDebugStringA(logMessage);
+    OutputDebugStringA("\n");
+}
+
 void* Platform::CreateNewWindow(Text& windowName, int width, int height, const uint64_t style)
 {
     var mStyle = style;

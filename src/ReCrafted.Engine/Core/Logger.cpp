@@ -19,6 +19,12 @@ void Logger::OnDispose()
 
 void Logger::InvokeCallback(const char* message, LogLevel::Enum logLevel)
 {
+    Platform::Log(message);
+
+    cvar mainThread = IS_MAIN_THREAD();
+    if (!mainThread)
+        return;
+
     if (m_api_log_callback)
     {
         cvar string = mono_string_new(mono_domain_get(), message);

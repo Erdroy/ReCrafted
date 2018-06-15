@@ -99,6 +99,12 @@ public:
     static int CpuCount();
 
     /**
+     * \brief Standard logging. Used to output messages to Visual Studio.
+     * \param logMessage The log message.
+     */
+    static void Log(const char* logMessage);
+
+    /**
      * \brief Runs all system loop events.
      */
     static void RunEvents();
