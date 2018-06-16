@@ -67,7 +67,8 @@ private:
     void WorkerDepopulate(IVoxelMesher* mesher);
     void WorkerRebuild(IVoxelMesher* mesher);
 
-    void OnUpdate();
+    void DestroyChildren();
+
     void OnCreate();
     void OnRebuild();
     void OnDestroy();
@@ -85,7 +86,6 @@ public:
     }
 
 public:
-    void Update();
     void UpdateViews(Array<Vector3>& views);
     void Draw();
     void Dispose();

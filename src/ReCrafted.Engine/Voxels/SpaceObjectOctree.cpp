@@ -93,10 +93,6 @@ void SpaceObjectOctree::GeneratePrimary()
 
 void SpaceObjectOctree::Update()
 {
-    Profiler::BeginProfile("SpaceObjectOctree::Update");
-    for (var i = 0; i < m_rootNodesCount; i++)
-        m_rootNodes[i]->Update();
-    Profiler::EndProfile();
 }
 
 void SpaceObjectOctree::Draw()

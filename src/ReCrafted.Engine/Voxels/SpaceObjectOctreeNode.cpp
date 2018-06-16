@@ -7,16 +7,15 @@
 #include "SpaceObjectTables.hpp"
 #include "Graphics/Camera.h"
 #include "Utilities/VoxelUtils.h"
+#include "SpaceObject.h"
 
 #define HAS_LOCAL_NEIGH(id, dir) LocalNeighTable[id] & (1 << dir)
 
 bool SpaceObjectOctreeNode::HasPopulatedChildren()
 {
-    for (auto i = 0; i < 8; i++)
+    for (rvar node : m_childrenNodes)
     {
-        auto node = m_childrenNodes[i];
-
-        if (node && node->m_populated)
+        if (node->m_populated)
             return true;
     }
 
@@ -33,9 +32,6 @@ bool SpaceObjectOctreeNode::IsChildrenProcessing() const
         for (auto i = 0; i < 8; i++)
         {
             cvar node = m_childrenNodes[i];
-
-            if (!node)
-                continue;
 
             if (node->IsChildrenProcessing())
                 return true;
@@ -76,8 +72,6 @@ void SpaceObjectOctreeNode::WorkerPopulate(IVoxelMesher* mesher) // WARNING: thi
 
         // construct node
         cvar childNode = new SpaceObjectOctreeNode();
-
-        m_childrenNodes[i] = childNode;
         
         childNode->m_Position = position;
         childNode->m_Size = childrenSize;
@@ -93,6 +87,8 @@ void SpaceObjectOctreeNode::WorkerPopulate(IVoxelMesher* mesher) // WARNING: thi
 
         // generate chunk
         childNode->CreateChunk(mesher);
+
+        m_childrenNodes[i] = childNode;
     }
 }
 
@@ -106,6 +102,23 @@ void SpaceObjectOctreeNode::WorkerRebuild(IVoxelMesher* mesher) // WARNING: this
     m_chunk->Rebuild(mesher);
 }
 
+void SpaceObjectOctreeNode::DestroyChildren()
+{
+    ASSERT(m_populated);
+
+    // Destroy all children
+    for (rvar node : m_childrenNodes)
+    {
+        // Dispose node
+        SafeDisposeNN(node);
+
+        // delete node
+        delete node;
+
+        node = nullptr;
+    }
+}
+
 void SpaceObjectOctreeNode::FindIntersecting(Array<SpaceObjectOctreeNode*>& nodes, BoundingBox& box,
                                              const int targetNodeSize)
 {
@@ -113,9 +126,6 @@ void SpaceObjectOctreeNode::FindIntersecting(Array<SpaceObjectOctreeNode*>& node
     for (var i = 0; i < 8; i++)
     {
         cvar node = m_childrenNodes[i];
-
-        if (!node)
-            continue;
 
         if (BoundingBox::Intersects(node->m_Bounds, box))
         {
@@ -138,8 +148,10 @@ void SpaceObjectOctreeNode::FindIntersecting(Array<SpaceObjectOctreeNode*>& node
 
 void SpaceObjectOctreeNode::Populate()
 {
-    if (m_processing || m_populated || m_Size <= MinimumNodeSize)
+    if (m_Size <= MinimumNodeSize)
         return;
+
+    ASSERT(m_processing == false && m_populated == false);
 
     m_processing = true;
 
@@ -149,11 +161,12 @@ void SpaceObjectOctreeNode::Populate()
 
 void SpaceObjectOctreeNode::Depopulate()
 {
-    if (m_processing || !m_populated || IsChildrenProcessing())
-        return;
+    ASSERT(IsChildrenProcessing() == false);
+    ASSERT(m_processing == false);
+    ASSERT(m_populated == true);
 
-    // queue depopulate job
-    SpaceObjectManager::Enqueue(this, ProcessMode::Depopulate, MakeDelegate(SpaceObjectOctreeNode::OnDepopulate));
+    DestroyChildren();
+    OnDepopulate();
 }
 
 void SpaceObjectOctreeNode::Rebuild()
@@ -167,18 +180,14 @@ void SpaceObjectOctreeNode::Rebuild()
     SpaceObjectManager::Enqueue(this, ProcessMode::Rebuild, MakeDelegate(SpaceObjectOctreeNode::OnRebuild));
 }
 
-void SpaceObjectOctreeNode::OnUpdate()
-{
-}
-
 void SpaceObjectOctreeNode::OnCreate()
 {
-    ASSERT(m_chunk != nullptr);
+    //ASSERT(m_chunk != nullptr);
 
     m_processing = false;
 
     // Upload chunk if needed
-    if (m_chunk->NeedsUpload())
+    if (m_chunk && m_chunk->NeedsUpload())
         m_chunk->Upload();
 }
 
@@ -189,17 +198,21 @@ void SpaceObjectOctreeNode::OnRebuild()
     m_rebuilding = false;
 
     // Upload chunk if needed
-    if (m_chunk->NeedsUpload())
+    if (m_chunk && m_chunk->NeedsUpload())
         m_chunk->Upload();
 }
 
 void SpaceObjectOctreeNode::OnDestroy()
 {
-    ASSERT(m_populated == false);
     ASSERT(m_processing == false);
 
-    // Destroy chunk
+    // Dispose chunk if exists
     SafeDispose(m_chunk);
+
+    if (!m_populated)
+        return;
+
+    DestroyChildren();
 }
 
 void SpaceObjectOctreeNode::OnPopulate()
@@ -210,9 +223,7 @@ void SpaceObjectOctreeNode::OnPopulate()
     for (var i = 0; i < 8; i++)
     {
         cvar node = m_childrenNodes[i];
-
-        if (node)
-            node->OnCreate();
+        node->OnCreate();
     }
 }
 
@@ -221,84 +232,7 @@ void SpaceObjectOctreeNode::OnDepopulate()
     m_populated = false;
     m_processing = false;
 
-    // Destroy all children
-    for (rvar node : m_childrenNodes)
-    {
-        if (node)
-        {
-            // Dispose node
-            SafeDispose(node);
-
-            // delete node
-            delete node;
-
-            node = nullptr;
-        }
-    }
-
     OnCreate();
-}
-
-void SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position, float size)
-{
-    cvar chunk = GetChunk();
-
-    if (chunk == nullptr)
-        return;
-
-    cvar chunkData = chunk->GetChunkData();
-    cvar voxels = chunkData->GetData();
-    cvar chunkScale = static_cast<float>(chunkData->GetLod());
-
-    for (var x = 0; x < VoxelChunkData::ChunkDataSize; x++)
-    {
-        for (var y = 0; y < VoxelChunkData::ChunkDataSize; y++)
-        {
-            for (var z = 0; z < VoxelChunkData::ChunkDataSize; z++)
-            {
-                var point = Vector3(float(x), float(y), float(z)) * chunkScale + chunkData->GetChunkPosition();
-
-                cvar currentValue = voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)];
-                cvar distance = Vector3::Distance(position, point);
-
-                if (distance <= size + 0.5f)
-                {
-                    var value = size - distance;
-                    var newValue = VOXEL_FROM_FLOAT(value);
-
-                    if (mode == VoxelEditMode::Additive)
-                    {
-                        newValue = -newValue;
-
-                        if (newValue < currentValue)
-                            voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)] = newValue;
-                    }
-                    else
-                    {
-                        if (newValue > currentValue)
-                            voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)] = newValue;
-                    }
-                }
-            }
-        }
-    }
-
-    chunkData->HasSurface(true);
-}
-
-void SpaceObjectOctreeNode::Update()
-{
-    if (m_populated)
-    {
-        for (rvar node : m_childrenNodes)
-        {
-            if (node)
-                node->Update();
-        }
-        return;
-    }
-
-    OnUpdate();
 }
 
 void SpaceObjectOctreeNode::UpdateViews(Array<Vector3>& views)
@@ -311,12 +245,9 @@ void SpaceObjectOctreeNode::UpdateViews(Array<Vector3>& views)
     if (m_populated)
     {
         // Update children node views, because we are populated
-        for (auto i = 0; i < 8; i++)
+        for (rvar node : m_childrenNodes)
         {
-            auto node = m_childrenNodes[i];
-
-            if (node)
-                node->UpdateViews(views);
+            node->UpdateViews(views);
         }
     }
 
@@ -399,7 +330,7 @@ void SpaceObjectOctreeNode::UpdateViews(Array<Vector3>& views)
     }
 
     // IF (there is no C's) AND populated: depopulate - otherwise: ignore.
-    if (m_populated && views.Count() > 0)
+    if (m_populated && views.Count() == 0)
         Depopulate();
 }
 
@@ -414,36 +345,68 @@ void SpaceObjectOctreeNode::Draw()
         return;
     }
 
-    for (rvar node : m_childrenNodes)
-    {
-        if (node)
-        {
-            node->Draw();
-        }
-    }
-}
-
-void SpaceObjectOctreeNode::Dispose()
-{
-    // Dispose chunk if exists
-    SafeDispose(m_chunk);
-
     if (!m_populated)
         return;
 
     for (rvar node : m_childrenNodes)
     {
-        if (node)
+        node->Draw();
+    }
+}
+
+void SpaceObjectOctreeNode::Dispose()
+{
+    OnDestroy();
+}
+
+void SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position, float size)
+{
+    cvar chunk = GetChunk();
+
+    if (chunk == nullptr)
+        return;
+
+    cvar chunkData = chunk->GetChunkData();
+    cvar voxels = chunkData->GetData();
+    cvar chunkScale = static_cast<float>(chunkData->GetLod());
+
+    if (!chunkData->HasData())
+        chunkData->AllocateData();
+
+    for (var x = 0; x < VoxelChunkData::ChunkDataSize; x++)
+    {
+        for (var y = 0; y < VoxelChunkData::ChunkDataSize; y++)
         {
-            // Dispose node
-            SafeDispose(node);
+            for (var z = 0; z < VoxelChunkData::ChunkDataSize; z++)
+            {
+                var point = Vector3(float(x), float(y), float(z)) * chunkScale + chunkData->GetChunkPosition();
 
-            // delete node
-            delete node;
+                cvar currentValue = voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)];
+                cvar distance = Vector3::Distance(position, point);
 
-            node = nullptr;
+                if (distance <= size + 0.5f)
+                {
+                    var value = size - distance;
+                    var newValue = VOXEL_FROM_FLOAT(value);
+
+                    if (mode == VoxelEditMode::Additive)
+                    {
+                        newValue = -newValue;
+
+                        if (newValue < currentValue)
+                            voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)] = newValue;
+                    }
+                    else
+                    {
+                        if (newValue > currentValue)
+                            voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)] = newValue;
+                    }
+                }
+            }
         }
     }
+
+    chunkData->HasSurface(true);
 }
 
 SpaceObjectOctreeNode* SpaceObjectOctreeNode::GetNeighNode(NodeDirection::_enum direction) const
