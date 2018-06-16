@@ -40,7 +40,6 @@ sbyte VoxelGenerator::GenerateFromCHM(const Vector3& origin, const Vector3& posi
 void VoxelGenerator::Init(SpaceObjectSettings* settings)
 {
     this->settings = settings;
-
 }
 
 void VoxelGenerator::Load()
@@ -72,6 +71,9 @@ bool VoxelGenerator::GenerateChunkData(sbyte* voxelData, const Vector3& position
     // calculate current voxel size
     cvar lodSize = LoDTable[lod];
 
+    var hasSurface = false;
+    sbyte lastVoxel = 0;
+
     for (var x = 0; x < dataSize; x++)
     {
         for (var y = 0; y < dataSize; y++)
@@ -87,11 +89,15 @@ bool VoxelGenerator::GenerateChunkData(sbyte* voxelData, const Vector3& position
                     settings->minSurfaceHeight,
                     settings->hillsHeight);
 
+                if(!hasSurface && lastVoxel != value && index > 1)
+                    hasSurface = true;
+
+                lastVoxel = value;
+
                 voxelData[index] = value;
             }
         }
     }
 
-    // TODO: Check if chunk has surface
-    return true;
+    return hasSurface;
 }
