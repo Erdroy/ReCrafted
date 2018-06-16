@@ -29,17 +29,28 @@ private:
 public:
     VoxelChunkData()
     {
-        cvar size = ChunkDataSize * ChunkDataSize * ChunkDataSize;
-        m_voxelData = new sbyte[size];
-        memset(m_voxelData, 127, size);
+        AllocateData();
     }
 
     ~VoxelChunkData()
     {
-        SafeDeleteArray(m_voxelData);
+        DeallocateData();
     }
 
 public:
+    void AllocateData()
+    {
+        ASSERT(m_voxelData == nullptr);
+
+        cvar size = ChunkDataSize * ChunkDataSize * ChunkDataSize;
+        m_voxelData = new sbyte[size];
+    }
+
+    void DeallocateData()
+    {
+        SafeDeleteArray(m_voxelData);
+    }
+
     int GetSize() const
     {
         return m_size;
@@ -68,6 +79,11 @@ public:
     bool IsLoaded() const
     {
         return m_loaded;
+    }
+
+    bool HasData() const
+    {
+        return m_voxelData != nullptr;
     }
 
     bool HasSurface() const
