@@ -32,7 +32,9 @@ int CALLBACK WinMain(
     int nCmdShow)
 {
     // initialize memory
-    rpmalloc_initialize();
+    rpmalloc_config_t config = {};
+    //config.enable_huge_pages = 1;
+    rpmalloc_initialize_config(&config);
 
     // parse arguments
     var arguments = Text(GetCommandLineA());
