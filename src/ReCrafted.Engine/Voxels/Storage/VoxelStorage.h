@@ -42,7 +42,7 @@ public:
 public:
     RefPtr<VoxelChunkData> CreateChunkData(Vector3& nodePosition, int nodeSize, int nodeDepth);
     RefPtr<VoxelChunkData> GetChunkData(Vector3& nodePosition);
-    void ReadChunkData(RefPtr<VoxelChunkData> chunkData);
+    void ReadChunkData(const RefPtr<VoxelChunkData>& chunkData);
     void WriteChunkData(RefPtr<VoxelChunkData> chunkData);
     void FreeChunkData(RefPtr<VoxelChunkData> chunkData);
 };

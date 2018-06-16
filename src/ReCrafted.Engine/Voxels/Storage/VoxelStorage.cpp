@@ -111,12 +111,12 @@ RefPtr<VoxelChunkData> VoxelStorage::GetChunkData(Vector3& nodePosition)
     cvar chunkId = SpaceObjectChunk::CalculateChunkId(nodePosition);
 
     if (!m_voxelChunks.contains(chunkId))
-        return {};
+        return nullptr;
 
     return m_voxelChunks[chunkId];
 }
 
-void VoxelStorage::ReadChunkData(RefPtr<VoxelChunkData> chunkData)
+void VoxelStorage::ReadChunkData(const RefPtr<VoxelChunkData>& chunkData)
 {
     if (settings->generationType == GenerationType::PreGenerated)
     {
@@ -136,6 +136,9 @@ void VoxelStorage::ReadChunkData(RefPtr<VoxelChunkData> chunkData)
     // generate chunk now using CHM
     cvar hasSurface = spaceObject->GetGenerator()->GenerateChunkData(chunkData->GetData(), chunkPosition, lod, chunkData->m_nodeDepth);
 
+    if (!hasSurface) // TODO: improve chunk data allocation by making delayed data alloc (alloc and copy when there is valid surface)
+        chunkData->DeallocateData();
+
     // mark as loaded
     chunkData->m_hasSurface = hasSurface;
     chunkData->m_loaded = true;
@@ -154,6 +157,6 @@ void VoxelStorage::FreeChunkData(RefPtr<VoxelChunkData> chunkData)
 {
     ScopeLock(m_voxelChunksLock);
 
-    cvar chunkId = chunkData->m_id;
-    // TODO: free chunk data and release space in hashmap
+    chunkData->DeallocateData();
+    m_voxelChunks.erase(chunkData->m_id);
 }
