@@ -279,9 +279,6 @@ void MCMesher::Generate(const Vector3& position, int lod, uint8_t borders, RefPt
     mesh->SetColors(m_colors.Data());
     mesh->SetIndices(m_indices.Data(), m_vertices.Count());
 
-    // apply
-    mesh->ApplyChanges();
-
     // cleanup
     Clean();
 }

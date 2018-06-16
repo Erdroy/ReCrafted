@@ -59,8 +59,6 @@ void SpaceObjectChunk::Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObjec
 
     // calculate id
     m_id = CalculateChunkId(node->GetPosition());
-
-    // TODO: check if chunk has any visible surface
 }
 
 void SpaceObjectChunk::Generate(IVoxelMesher* mesher) // WARNING: this function is called on WORKER THREAD!
@@ -92,8 +90,13 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
     if(mesh->GetVertexCount() == 0)
     {
         SafeDispose(mesh);
+        m_newMesh = nullptr;
+        m_chunkData->HasSurface(false);
         return;
     }
+
+    // Apply mesh changes, prepare for upload
+    mesh->ApplyChanges();
 
     ScopeLock(m_meshLock);
 
@@ -111,17 +114,17 @@ void SpaceObjectChunk::Upload()
         // Upload new mesh
         m_newMesh->Upload();
 
-        // Dispose old mesh
-        SafeDispose(m_mesh);
-
         // Swap mesh
-        m_mesh.swap(m_newMesh); // m_newMesh will be null, as we've released already the old mesh
+        m_mesh.swap(m_newMesh);
+
+        // Dispose old mesh (m_newMesh is the old mesh, look: m_mesh.swap() in the line above)
+        SafeDispose(m_newMesh);
     }
 }
 
 void SpaceObjectChunk::Draw()
 {
-    if (!m_mesh || !m_mesh->IsUploaded())
+    if (!m_mesh)
         return;
 
     Graphics::GetInstance()->Draw(m_mesh);
