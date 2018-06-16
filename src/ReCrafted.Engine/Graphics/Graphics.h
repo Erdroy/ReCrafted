@@ -62,6 +62,7 @@ private:
     void RenderBegin();
     void RenderEnd();
     void RenderWorld();
+    void RenderDebugDraw();
     void RenderUI();
 
 public:

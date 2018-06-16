@@ -13,13 +13,14 @@
 #include "Core/Logger.h"
 #include "Core/UpdateLoop.h"
 #include "Game/Universe.h"
+#include "Graphics/Graphics.h"
+#include "Graphics/DebugDraw.h"
 #include "Graphics/UI/UI.h"
 #include "Graphics/WebUI/WebUI.h"
 #include "Platform/Platform.h"
 #include "Physics/PhysicsManager.h"
 #include "Scene/SceneManager.h"
 #include "Scripting/ScriptingEngine.h"
-#include "Graphics/Graphics.h"
 #include "TaskManager.h"
 
 EngineMain* EngineMain::m_instance;
@@ -37,6 +38,7 @@ void EngineMain::RegisterComponents() const
     m_componentManager->RegisterComponent(EntityPool::GetInstance());
     m_componentManager->RegisterComponent(SceneManager::GetInstance());
     m_componentManager->RegisterComponent(Universe::GetInstance());
+    m_componentManager->RegisterComponent(DebugDraw::GetInstance());
     m_componentManager->RegisterComponent(UI::GetInstance());
     m_componentManager->RegisterComponent(WebUI::GetInstance());
 }

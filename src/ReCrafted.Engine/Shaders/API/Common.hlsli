@@ -15,10 +15,10 @@ cbuffer DefaultContants : register(b0)
 }
 #endif // USE_3DSPACE
 
-#define TransformPosition3D(pos) mul(MVP, float4(pos, 1.0f));
-#define TransformPosition2D(pos) float4(pos, 1.0f);
+#define TransformPosition3D(pos) mul(MVP, float4(pos, 1.0f))
+#define TransformPosition2D(pos) float4(pos, 1.0f)
 
-#define EncodeNormal(n) normalize(n) * 0.5f + 0.5f;
+#define EncodeNormal(n) normalize(n) * 0.5f + 0.5f
 
 #ifdef USE_3DSPACE
 #define TransformPosition(pos) TransformPosition3D(pos)

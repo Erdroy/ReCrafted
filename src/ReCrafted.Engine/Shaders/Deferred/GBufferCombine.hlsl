@@ -3,6 +3,7 @@
 #name "GBuffer Combine"
 #desc "GBuffer combine shader"
 
+#define USE_FULLSCREENQUAD
 #define USE_GBUFFERSAMPLING
 #include "../ShaderAPI.hlsli"
 

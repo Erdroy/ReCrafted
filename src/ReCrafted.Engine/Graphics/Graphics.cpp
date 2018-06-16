@@ -12,6 +12,7 @@
 #include "Graphics/RenderBuffer.h"
 #include "Graphics/UI/UI.h"
 #include "Graphics/WebUI/WebUI.h"
+#include "DebugDraw.h"
 
 SINGLETON_IMPL(Graphics)
 
@@ -125,15 +126,14 @@ void Graphics::Render()
         }
         RenderEnd(); // end rendering
 
+        // render debug draw
+        RenderDebugDraw();
+
         // render UI
         RenderUI();
 
-        Profiler::BeginProfile("Render");
-        {
-            // next frame, wait vsync
-            Renderer::Frame();
-        }
-        Profiler::EndProfile();
+        // next frame, wait vsync
+        Renderer::Frame();
     }
     Profiler::EndProfile();
 }
@@ -261,6 +261,15 @@ void Graphics::RenderWorld()
     Profiler::EndProfile();
 }
 
+void Graphics::RenderDebugDraw()
+{
+    Profiler::BeginProfile("Render Debug");
+    {
+        DebugDraw::GetInstance()->Render();
+    }
+    Profiler::EndProfile();
+}
+
 void Graphics::RenderUI()
 {
     Profiler::BeginProfile("Render UI");
@@ -292,7 +301,7 @@ void Graphics::RenderUI()
 
 void Graphics::OnFramePresent(void* unused)
 {
-    Profiler::BeginProfile("WebUI Render");
+    Profiler::BeginProfile("Render WebUI");
     {
         // set WebUI state
         SetStage(RenderStage::DrawWebUI);
