@@ -102,7 +102,6 @@ public:
     FORCEINLINE void Reserve(uint32_t size)
     {
         m_vector.reserve(size);
-        m_count = size;
     }
 
     FORCEINLINE bool Contains(T item)
