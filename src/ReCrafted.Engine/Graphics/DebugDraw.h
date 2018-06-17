@@ -10,6 +10,7 @@
 #include "Core/EngineComponent.h"
 #include "Core/Containers/Array.h"
 #include "Core/Math/Math.h"
+#include "Core/Math/BoundingFrustum.h"
 #include "Core/Math/Color.h"
 #include "Renderer/Renderer.hpp"
 
@@ -180,6 +181,14 @@ public:
     static void SetColor(const Color& color);
 
     /**
+     * \brief Draws arrow at the end point with line.
+     * \param start The line start.
+     * \param end The line end and arrow position.
+     * \param arrowSize The arrow length.
+     */
+    static void DrawArrow(const Vector3& start, const Vector3& end, float arrowSize = 0.25f);
+
+    /**
     * \brief Draws line.
     * \param start The line start.
     * \param end The line end.
@@ -199,6 +208,26 @@ public:
     * \param size The size of the box.
     */
     static void DrawWireBox(const Vector3& center, const Vector3& size);
+
+    /**
+     * \brief Draws given frustum as lines between every corner.
+     * \param frustum The frustum.
+     */
+    static void DrawWireFrustum(const BoundingFrustum& frustum);
+
+    /**
+     * \brief Draws sphere at given position.
+     * \param center The sphere draw position.
+     * \param radius The sphere radius.
+     */
+    static void DrawSphere(const Vector3& center, float radius);
+
+    /**
+    * \brief Draws wire sphere at given position.
+    * \param center The sphere draw position.
+    * \param radius The sphere radius.
+    */
+    static void DrawWireSphere(const Vector3& center, float radius);
 };
 
 #endif // DEBUGDRAW_H

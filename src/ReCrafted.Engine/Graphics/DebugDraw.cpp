@@ -248,6 +248,20 @@ void DebugDraw::SetColor(const Color& color)
     m_instance->m_currentColor = color.ToVector4();
 }
 
+void DebugDraw::DrawArrow(const Vector3& start, const Vector3& end, float arrowSize)
+{
+    var direction = Vector3::Normalize(end - start);
+    var directionToCamera = Vector3::Normalize(end - Camera::GetMainCamera()->GetPosition());
+    cvar arrowOffsetAxis = Vector3::Cross(direction, directionToCamera);
+
+    cvar arrowDirection = direction * arrowSize;
+    cvar arrowOffset = arrowSize * 0.5f;
+
+    DrawLine(start, end);
+    DrawLine(end, end - arrowDirection + arrowOffsetAxis * arrowOffset);
+    DrawLine(end, end - arrowDirection - arrowOffsetAxis * arrowOffset);
+}
+
 void DebugDraw::DrawLine(const Vector3& start, const Vector3& end)
 {
     ASSERT(IS_MAIN_THREAD());
@@ -286,4 +300,34 @@ void DebugDraw::DrawWireBox(const Vector3& center, const Vector3& size)
 
     for (crvar edge : DebugMesh::m_wireCubeEdges)
         m_instance->DrawLine(center + edge[0] * halfSize, center + edge[1] * halfSize);
+}
+
+void DebugDraw::DrawWireFrustum(const BoundingFrustum& frustum)
+{
+    cvar frustumCorners = frustum.GetCorners();
+
+    DrawLine(frustumCorners[0], frustumCorners[1]);
+    DrawLine(frustumCorners[1], frustumCorners[2]);
+    DrawLine(frustumCorners[2], frustumCorners[3]);
+    DrawLine(frustumCorners[3], frustumCorners[0]);
+
+    DrawLine(frustumCorners[4], frustumCorners[5]);
+    DrawLine(frustumCorners[5], frustumCorners[6]);
+    DrawLine(frustumCorners[6], frustumCorners[7]);
+    DrawLine(frustumCorners[7], frustumCorners[4]);
+
+    DrawLine(frustumCorners[0], frustumCorners[4]);
+    DrawLine(frustumCorners[1], frustumCorners[5]);
+    DrawLine(frustumCorners[2], frustumCorners[6]);
+    DrawLine(frustumCorners[3], frustumCorners[7]);
+}
+
+void DebugDraw::DrawSphere(const Vector3& center, float radius)
+{
+    // TODO: Draw sphere
+}
+
+void DebugDraw::DrawWireSphere(const Vector3& center, float radius)
+{
+    // TODO: Draw wire sphere - two circles on planes: XZ and [ZY or XY - based on camera angles]
 }
