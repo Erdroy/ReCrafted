@@ -191,6 +191,16 @@ namespace ReCrafted.CodeTokenizer
         }
 
         /// <summary>
+        /// Skips all tokens until the tokenizer steps into token of given type 
+        /// (and it is also skipped, so, NextToken will give the next token).
+        /// </summary>
+        /// <param name="tokenType">The expected token type.</param>
+        public void SkipUntil(TokenType tokenType)
+        {
+            do { } while (NextToken(true).Type != tokenType);
+        }
+
+        /// <summary>
         /// Disposes the <see cref="Tokenizer"/>.
         /// </summary>
         public void Dispose()
