@@ -15,7 +15,7 @@
 #define FORCEINLINE __forceinline
 #endif
 
-#define IS_MAIN_THREAD() Platform::GetMainThreadId() == std::this_thread::get_id();
+#define IS_MAIN_THREAD() Platform::GetMainThreadId() == std::this_thread::get_id()
 
 #define SafeDispose(ptr) if(ptr) { ptr->Dispose(); ptr = nullptr;}
 #define SafeDisposeNN(ptr) if(ptr) { ptr->Dispose(); }
