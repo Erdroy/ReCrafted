@@ -34,10 +34,10 @@ Vector3 operator*(const float& lhs, const Vector3& rhs)
     return {rhs.x * lhs, rhs.y * lhs, rhs.z * lhs};
 }
 
-Vector3 operator/(const Vector3& lhs, const float& rhs)
+/*Vector3 operator/(const Vector3& lhs, const float& rhs)
 {
     return {lhs.x / rhs, lhs.y / rhs, lhs.z / rhs};
-}
+}*/
 
 /**
  * \brief Calculates surface intersection on edge based on two data samples.
