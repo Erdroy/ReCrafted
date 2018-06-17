@@ -85,6 +85,22 @@ public:
         return m_frustum;
     }
 
+    /**
+     * \brief Gets projection matrix of this camera.
+     */
+    const Matrix& GetProjection() const
+    {
+        return m_projection;
+    }
+
+    /**
+    * \brief Gets view matrix of this camera.
+    */
+    const Matrix& GetView() const
+    {
+        return m_view;
+    }
+
 public:
     /// <summary>
     /// Gets the main camera.
