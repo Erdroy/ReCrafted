@@ -11,6 +11,7 @@
 #include "Core/Containers/Array.h"
 #include "Core/Math/Math.h"
 #include "Core/Math/Color.h"
+#include "Renderer/Renderer.hpp"
 
 /**
  * \brief The DebugDraw class. Provides drawing functions for debugging.
@@ -23,31 +24,36 @@ private:
     const uint m_maxBatches = 128;
 
 private:
-    struct ALIGN(4) Vertex
+    ALIGN(4) struct Vertex
     {
         Vector3 position = {};
-        Color color = {};
+        Vector4 color = {};
 
-        Vertex(const Vector3& _position, const Color& _color) : position(_position), color(_color) { }
+        Vertex(const Vector3& _position, const Vector4& _color) : position(_position), color(_color) { }
     };
+    STATIC_ASSERT(sizeof(Vertex) == 28);
 
-    struct ALIGN(4) Point
+    ALIGN(4) struct Point
     {
         Vector3 position = {};
-        Color color = {};
+        Vector4 color = {};
 
-        Point(const Vector3& _position, const Color& _color) : position(_position), color(_color) { }
+        Point(const Vector3& _position, const Vector4& _color) : position(_position), color(_color) { }
     };
+    STATIC_ASSERT(sizeof(Point) == 28);
 
     class Batch
     {
-    private:
-        const uint m_maxVerticesPerBatch = 65536;
-        const uint m_maxPointsPerBatch = m_maxVerticesPerBatch;
+    public:
+        static const uint maxPointsPerBatch = 65536;
+
+        static const uint maxVerticesPerBatch = maxPointsPerBatch;
+        static const uint maxIndicesPerBatch = (maxVerticesPerBatch / 4) * 6;
 
     private:
         Array<Point> m_lines = {};
         Array<Vertex> m_vertices = {};
+        Array<uint> m_indices = {};
 
     public:
         /**
@@ -56,8 +62,19 @@ private:
         Batch()
         {
             // Reserve memory for vertices and lines.
-            m_vertices.Reserve(m_maxVerticesPerBatch);
-            m_lines.Reserve(m_maxPointsPerBatch);
+            m_lines.Reserve(maxPointsPerBatch);
+            m_vertices.Reserve(maxVerticesPerBatch);
+            m_indices.Reserve(maxIndicesPerBatch);
+        }
+
+        /**
+         * \brief Default Batch destructor.
+         */
+        ~Batch()
+        {
+            m_lines.Release();
+            m_vertices.Release();
+            m_indices.Release();
         }
 
     public:
@@ -69,6 +86,7 @@ private:
             // Clear vertices and lines
             m_lines.Clear();
             m_vertices.Clear();
+            m_indices.Clear();
         }
 
         /**
@@ -84,8 +102,8 @@ private:
          */
         bool IsFull() const
         {
-            return m_lines.Count() >= m_maxPointsPerBatch - 2
-                || m_vertices.Count() >= m_maxVerticesPerBatch - 3;
+            return m_lines.Count() >= maxPointsPerBatch - 2
+                || m_vertices.Count() >= maxVerticesPerBatch - 3;
         }
 
         /**
@@ -104,6 +122,14 @@ private:
             return m_vertices;
         }
 
+        /**
+        * \brief Gets index list from this batch.
+        */
+        Array<uint>& GetIndexList()
+        {
+            return m_indices;
+        }
+
     public:
         inline bool operator==(const Batch& rhs)
         {
@@ -113,8 +139,13 @@ private:
 
 private:
     Array<Batch> m_batches;
-    RefPtr<Batch> m_currentBatch;
-    Color m_currentColor;
+    Batch* m_currentBatch;
+    Vector4 m_currentColor;
+
+    Renderer::ShaderHandle m_debugShader = {};
+    Renderer::VertexBufferHandle m_linesVB = {};
+    Renderer::VertexBufferHandle m_trianglesVB = {};
+    Renderer::IndexBufferHandle m_trianglesIB = {};
 
 public:
     DebugDraw()
@@ -122,8 +153,8 @@ public:
         // Add one batch
         m_batches = {};
         m_batches.Add({});
-        m_currentBatch.reset(&m_batches[0]);
-        m_currentColor = Color(0xFF0000FF);
+        m_currentBatch = &m_batches[0];
+        m_currentColor = Color(0xFF0000FF).ToVector4();
     }
 
 private:
@@ -131,19 +162,38 @@ private:
     void OnLoad() override;
     void Update() override;
 
-    void RenderLines(const Batch& batch);
-    void RenderTriangles(const Batch& batch);
+    void RenderLines(Batch& batch);
+    void RenderTriangles(Batch& batch);
 
     void Render();
     void OnDispose() override;
 
-    void DrawLine(const Vector3& start, const Vector3& end);
+    FORCEINLINE void InternalDrawLine(const Vector3& start, const Vector3& end);
 
-    RefPtr<Batch>& GetBatch();
+    Batch* GetBatch();
 
 public:
+    /**
+     * \brief Sets current debug draw render color.
+     * \param color The color.
+     */
     static void SetColor(const Color& color);
-    static void DrawBox(const Vector3& position, const Vector3& size);
+
+    static void DrawLine(const Vector3& start, const Vector3& end);
+
+    /**
+     * \brief Draws box using given position (center) and size.
+     * \param center The center position.
+     * \param size The size of the box.
+     */
+    static void DrawBox(const Vector3& center, const Vector3& size);
+
+    /**
+    * \brief Draws wire box using given position (center) and size.
+    * \param center The center position.
+    * \param size The size of the box.
+    */
+    static void DrawWireBox(const Vector3& center, const Vector3& size);
 };
 
 #endif // DEBUGDRAW_H

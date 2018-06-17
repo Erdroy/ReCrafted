@@ -341,6 +341,7 @@ void Graphics::SetStage(RenderStage::_enum stage)
     case RenderStage::DrawWebUI:
         Renderer::SetFlag(Renderer::RenderFlags::DepthTest, false);
         Renderer::SetFlag(Renderer::RenderFlags::DepthStencil, false);
+        Renderer::SetFlag(Renderer::RenderFlags::DrawLineLists, false);
         Renderer::SetFlag(Renderer::RenderFlags::RenderOverlay, true); // temporary simplified blend-states TODO: Expose Renderer's blend state creation
         return;
 
@@ -348,12 +349,14 @@ void Graphics::SetStage(RenderStage::_enum stage)
         Renderer::SetFlag(Renderer::RenderFlags::DepthTest, false);
         Renderer::SetFlag(Renderer::RenderFlags::DepthStencil, false);
         Renderer::SetFlag(Renderer::RenderFlags::DrawLineLists, true);
+        Renderer::SetFlag(Renderer::RenderFlags::RenderOverlay, true);
         return;
 
     case RenderStage::DebugDrawTriangles:
         Renderer::SetFlag(Renderer::RenderFlags::DepthTest, false);
         Renderer::SetFlag(Renderer::RenderFlags::DepthStencil, false);
         Renderer::SetFlag(Renderer::RenderFlags::DrawLineLists, false);
+        Renderer::SetFlag(Renderer::RenderFlags::RenderOverlay, true);
         return;
 
     case RenderStage::Default:
