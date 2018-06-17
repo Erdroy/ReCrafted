@@ -9,6 +9,8 @@
 #include "Plane.h"
 #include "BoundingBox.h"
 
+#include "Core/Containers/Array.h"
+
 struct BoundingFrustum
 {
 private:
@@ -35,6 +37,16 @@ private:
             p->z = bmax.z;
             n->z = bmin.z;
         }
+    }
+
+    Vector3 Get3PlanesInterPoint(const Plane& p1, const Plane& p2, const Plane& p3) const
+    {
+        var v =
+            Vector3::Cross(p2.normal, p3.normal) / Vector3::Dot(p1.normal, Vector3::Cross(p2.normal, p3.normal)) * -p1.distance
+            -Vector3::Cross(p3.normal, p1.normal) / Vector3::Dot(p2.normal, Vector3::Cross(p3.normal, p1.normal)) * p2.distance
+            -Vector3::Cross(p1.normal, p2.normal) / Vector3::Dot(p3.normal, Vector3::Cross(p1.normal, p2.normal)) * p3.distance;
+
+        return v;
     }
 
 public:
@@ -103,7 +115,7 @@ public:
         return true;
     }
 
-    void SetPlanes(Matrix& matrix)
+    void SetPlanes(const Matrix& matrix)
     {
         // Left plane
         planeLeft.normal.x = matrix.M03 + matrix.M00;
@@ -140,6 +152,23 @@ public:
         planeFar.normal.y = matrix.M13 - matrix.M12;
         planeFar.normal.z = matrix.M23 - matrix.M22;
         planeFar.distance = matrix.M33 - matrix.M32;
+    }
+
+    Array<Vector3> GetCorners() const
+    {
+        Array<Vector3> corners = {};
+        corners.Reserve(8);
+
+        corners[0] = Get3PlanesInterPoint(planeNear, planeBottom, planeRight);    //Near1
+        corners[1] = Get3PlanesInterPoint(planeNear, planeTop, planeRight);       //Near2
+        corners[2] = Get3PlanesInterPoint(planeNear, planeTop, planeLeft);        //Near3
+        corners[3] = Get3PlanesInterPoint(planeNear, planeBottom, planeLeft);     //Near3
+        corners[4] = Get3PlanesInterPoint(planeFar, planeBottom, planeRight);    //Far1
+        corners[5] = Get3PlanesInterPoint(planeFar, planeTop, planeRight);       //Far2
+        corners[6] = Get3PlanesInterPoint(planeFar, planeTop, planeLeft);        //Far3
+        corners[7] = Get3PlanesInterPoint(planeFar, planeBottom, planeLeft);     //Far3
+
+        return corners;
     }
 
 public:
