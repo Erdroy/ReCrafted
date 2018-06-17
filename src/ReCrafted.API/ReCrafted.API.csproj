@@ -67,6 +67,7 @@
     <Compile Include="Core\LogLevel.cs" />
     <Compile Include="Core\ReCraftedException.cs" />
     <Compile Include="Graphics\Atlas.cs" />
+    <Compile Include="Graphics\DebugDraw.Gen.cs" />
     <Compile Include="Graphics\Font.cs" />
     <Compile Include="Graphics\Font.Gen.cs" />
     <Compile Include="Graphics\Graphics.Gen.cs" />

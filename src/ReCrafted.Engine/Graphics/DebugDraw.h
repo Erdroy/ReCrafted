@@ -22,6 +22,9 @@ class DebugDraw : public EngineComponent<DebugDraw>
     friend class Graphics;
 
 private:
+    SCRIPTING_API_IMPL()
+
+private:
     const uint m_maxBatches = 128;
 
 private:
@@ -160,8 +163,6 @@ public:
 
 private:
     void OnInit() override;
-    void OnLoad() override;
-    void Update() override;
 
     void RenderLines(Batch& batch);
     void RenderTriangles(Batch& batch);
@@ -179,6 +180,11 @@ public:
      * \param color The color.
      */
     static void SetColor(const Color& color);
+
+    /**
+    * \brief Gets current debug draw render color.
+    */
+    static Color GetColor();
 
     /**
      * \brief Draws arrow at the end point with line.

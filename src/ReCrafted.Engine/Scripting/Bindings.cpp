@@ -16,6 +16,7 @@
 #include "Core/Application.h"
 #include "Graphics/WebUI/WebUI.h"
 #include "Graphics/WebUI/WebUIView.h"
+#include "Graphics/DebugDraw.h"
 
 void Bindings::Bind()
 {
@@ -31,6 +32,7 @@ void Bindings::Bind()
     WebUIView::InitRuntime();
     Camera::InitRuntime();
     Texture2D::InitRuntime();
+    DebugDraw::InitRuntime();
     Font::InitRuntime();
     Entity::InitRuntime();
     Script::InitRuntime();

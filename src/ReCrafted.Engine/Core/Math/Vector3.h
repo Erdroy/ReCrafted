@@ -128,10 +128,11 @@ public:
     /// <summary>
     /// Returns normalized vector
     /// </summary>
-    FORCEINLINE static Vector3 Normalize(Vector3& vector)
+    FORCEINLINE static Vector3 Normalize(const Vector3& vector)
     {
-        vector.Normalize();
-        return vector;
+        var out = vector;
+        out.Normalize();
+        return out;
     }
 
     /// <summary>

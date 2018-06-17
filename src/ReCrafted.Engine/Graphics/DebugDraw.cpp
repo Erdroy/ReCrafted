@@ -95,14 +95,6 @@ void DebugDraw::OnInit()
     m_trianglesIB = Renderer::CreateIndexBuffer(Batch::maxIndicesPerBatch, nullptr, true, true);
 }
 
-void DebugDraw::OnLoad()
-{
-}
-
-void DebugDraw::Update()
-{
-}
-
 void DebugDraw::RenderLines(Batch& batch)
 {
     rvar lineList = batch.GetLineList();
@@ -246,6 +238,11 @@ void DebugDraw::SetColor(const Color& color)
     ASSERT(IS_MAIN_THREAD());
 
     m_instance->m_currentColor = color.ToVector4();
+}
+
+Color DebugDraw::GetColor()
+{
+    return Color::FromVector4(m_instance->m_currentColor);
 }
 
 void DebugDraw::DrawArrow(const Vector3& start, const Vector3& end, float arrowSize)

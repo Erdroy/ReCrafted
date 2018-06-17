@@ -45,7 +45,7 @@ namespace ReCrafted.Game
 
                 // create camera
                 var camera = Entity.Create("MainCamera");
-                camera.Position = new Vector3(35.0f, 925.0f, 62.0f);
+                camera.Position = new Vector3(0.0f, 0.0f, -5.0f);
                 camera.AddScript<FreeCameraController>();
 
                 // load game info
@@ -149,10 +149,10 @@ namespace ReCrafted.Game
                         }, MessageType.Error, MessageButtons.OkNoCancel);
                 }
 
-                /*DebugDraw.Color = new Color(0, 105, 0, 64);
-                DebugDraw.DrawCube(Vector3.Zero, Vector3.One);
+                DebugDraw.Color = new Color(0, 105, 0, 64);
+                DebugDraw.DrawBox(Vector3.Zero, Vector3.One);
                 DebugDraw.Color = new Color(0, 105, 0, 255);
-                DebugDraw.DrawWireCube(Vector3.Zero, Vector3.One);
+                DebugDraw.DrawWireBox(Vector3.Zero, Vector3.One);
 
                 // draw world-space lines
                 DebugDraw.Color = new Color(0, 255, 0, 32);
@@ -160,7 +160,7 @@ namespace ReCrafted.Game
                 DebugDraw.Color = new Color(255, 0, 0, 32);
                 DebugDraw.DrawLine(Vector3.Left * 2000.0f, Vector3.Right * 2000.0f);
                 DebugDraw.Color = new Color(0, 0, 255, 32);
-                DebugDraw.DrawLine(Vector3.ForwardLH * 2000.0f, Vector3.BackwardLH * 2000.0f);*/
+                DebugDraw.DrawLine(Vector3.ForwardLH * 2000.0f, Vector3.BackwardLH * 2000.0f);
             }
             catch (Exception exception)
             {
