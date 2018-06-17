@@ -58,6 +58,10 @@ namespace ReCrafted.ShaderCompiler.Compiler
                 var token = _parser.NextToken();
                 switch (token.Type)
                 {
+                    case TokenType.Preprocessor:
+                        _parser.SkipUntil(TokenType.Newline);
+                        break;
+
                     case TokenType.Identifier:
                         var uniformType = token.Value;
                         var uniformName = _parser.ExpectToken(TokenType.Identifier).Value;
