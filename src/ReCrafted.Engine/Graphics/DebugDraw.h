@@ -179,6 +179,11 @@ public:
      */
     static void SetColor(const Color& color);
 
+    /**
+    * \brief Draws line.
+    * \param start The line start.
+    * \param end The line end.
+    */
     static void DrawLine(const Vector3& start, const Vector3& end);
 
     /**

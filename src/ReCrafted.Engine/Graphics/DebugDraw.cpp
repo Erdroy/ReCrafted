@@ -74,15 +74,15 @@ namespace DebugMesh
         Vector3(1.0f, -1.0f, -1.0f),    // 7  ---b
     };
 
-    uint16_t m_cubeIndices[6] = {
+    uint32_t m_cubeIndices[36] = {
         0, 1, 2, 2, 3, 0, // top
-        /*6, 5, 4, 4, 7, 6, // bottom
+        6, 5, 4, 4, 7, 6, // bottom
 
         7, 4, 0, 0, 3, 7, // front
         1, 5, 6, 6, 2, 1, // back
 
         1, 0, 5, 0, 4, 5, // left
-        6, 7, 2, 7, 3, 2  // right*/
+        6, 7, 2, 7, 3, 2  // right
     };
 }
 
@@ -92,7 +92,7 @@ void DebugDraw::OnInit()
 
     m_linesVB = Renderer::CreateVertexBuffer(Batch::maxPointsPerBatch, sizeof(Point), true);
     m_trianglesVB = Renderer::CreateVertexBuffer(Batch::maxVerticesPerBatch, sizeof(Vertex), true);
-    m_trianglesIB = Renderer::CreateIndexBuffer(Batch::maxVerticesPerBatch, nullptr, true, true);
+    m_trianglesIB = Renderer::CreateIndexBuffer(Batch::maxIndicesPerBatch, nullptr, true, true);
 }
 
 void DebugDraw::OnLoad()
@@ -160,14 +160,14 @@ void DebugDraw::RenderTriangles(Batch& batch)
 
     // Update vertex buffer and index buffer
     Renderer::UpdateVertexBuffer(m_trianglesVB, vertexData, static_cast<uint>(vertexDataSize), 0u);
-    Renderer::UpdateIndexBuffer(m_trianglesIB, vertexData, static_cast<uint>(indexDataSize), 0u);
+    Renderer::UpdateIndexBuffer(m_trianglesIB, indexData, static_cast<uint>(indexDataSize), 0u);
 
     // Apply vertex buffer
     Renderer::ApplyVertexBuffer(m_trianglesVB);
     Renderer::ApplyIndexBuffer(m_trianglesIB);
 
     // Draw
-    Renderer::Draw(indexCount);
+    Renderer::DrawIndexed(indexCount);
 }
 
 void DebugDraw::Render()
@@ -194,6 +194,10 @@ void DebugDraw::Render()
 void DebugDraw::OnDispose()
 {
     m_batches.Release();
+
+    Renderer::DestroyVertexBuffer(m_linesVB);
+    Renderer::DestroyVertexBuffer(m_trianglesVB);
+    Renderer::DestroyIndexBuffer(m_trianglesIB);
 
     Renderer::DestroyShader(m_debugShader);
 }
@@ -258,7 +262,7 @@ void DebugDraw::DrawBox(const Vector3& center, const Vector3& size)
     cvar halfSize = size * 0.5f;
 
     // Add new triangles to the current batch
-    var batch = m_instance->GetBatch();
+    var batch = m_instance->GetBatch(); // NOTE: The batch vertex/index count limit will be probably overshoot right there, but whatever.
     rvar vertexList = batch->GetVertexList();
     rvar indexList = batch->GetIndexList();
 

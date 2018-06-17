@@ -1,7 +1,7 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
-#ifndef RCSHADERAPI_HLSLI
-#define RCSHADERAPI_HLSLI
+#ifndef SHADERAPI_HLSLI
+#define SHADERAPI_HLSLI
 
 // ==== PRESETS ====
 // Preset: SURFACE (GBuffer filler)
@@ -22,4 +22,4 @@
 #include "../API/Surface.hlsli"
 #endif
 
-#endif // RCSHADERAPI_HLSLI
+#endif // SHADERAPI_HLSLI
