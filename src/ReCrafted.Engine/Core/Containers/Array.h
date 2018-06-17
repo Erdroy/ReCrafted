@@ -104,6 +104,9 @@ public:
         m_vector.reserve(size);
     }
 
+    /**
+    * \brief Note: Using this, assumes that the T has comparsion operator overloaded (if class/struct)
+    */
     FORCEINLINE bool Contains(T item)
     {
         if (std::find(m_vector.begin(), m_vector.end(), item) != m_vector.end())
@@ -112,6 +115,19 @@ public:
         }
 
         return false;
+    }
+
+    /**
+     * \brief Note: Using this, assumes that the T has comparsion operator overloaded (if class/struct)
+     */
+    FORCEINLINE int IndexOf(T& item)
+    {
+        var iterator = std::find(m_vector.begin(), m_vector.end(), item);
+
+        if (iterator == m_vector.end())
+            return -1;
+
+        return static_cast<int>(std::distance(m_vector.begin(), iterator));
     }
 
     FORCEINLINE void Copy(const Array<T>& array)
