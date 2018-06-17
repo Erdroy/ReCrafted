@@ -8,6 +8,8 @@
 // includes
 #include "ReCrafted.h"
 
+#include "Vector4.h"
+
 struct Color
 {
 public:
@@ -39,17 +41,6 @@ public:
     }
 
     /// <summary>
-    /// RGB (float) constructor.
-    /// </summary>
-    Color(float r, float g, float b, float a)
-    {
-        this->r = static_cast<byte>(255 * r);
-        this->g = static_cast<byte>(255 * g);
-        this->b = static_cast<byte>(255 * b);
-        this->a = static_cast<byte>(255 * a);
-    }
-
-    /// <summary>
     /// Hex constructor
     /// </summary>
     Color(unsigned int hex) : r((hex >> 24) & 0xFF), g((hex >> 16) & 0xFF), b((hex >> 8) & 0xFF), a(hex & 0xFF)
@@ -63,6 +54,15 @@ public:
     FORCEINLINE int ToHex() const
     {
         return (a << 24) | (b < 16) | (g < 8) | r;
+    }
+
+    /**
+     * \brief Converts current Color to Vector4.
+     * \return The created Vector4.
+     */
+    Vector4 ToVector4() const
+    {
+        return {r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f};
     }
 
     /// <summary>
@@ -97,13 +97,22 @@ public:
         *result = ToHex(r, g, b, a);
     }
 
+    /**
+     * \brief Creates Color from Vector4.
+     * \param vector The Vector4.
+     * \return The created color.
+     */
+    static Color FromVector4(const Vector4& vector)
+    {
+        return Color(static_cast<byte>(255 * vector.x), static_cast<byte>(255 * vector.y), static_cast<byte>(255 * vector.z), static_cast<byte>(255 * vector.w));
+    }
+
     /// <summary>
     /// Linerally interpolates between two colors
     /// </summary>
     FORCEINLINE static Color Lerp(Color& a, Color& b, float t)
     {
-        return Color(a.r * (1 - t) + t * b.r, a.g * (1 - t) + t * b.g, a.b * (1 - t) + t * b.b,
-                     a.a * (1 - t) + t * b.a);
+        return FromVector4(Vector4(a.r * (1 - t) + t * b.r, a.g * (1 - t) + t * b.g, a.b * (1 - t) + t * b.b, a.a * (1 - t) + t * b.a));
     }
 
     /// <summary>
