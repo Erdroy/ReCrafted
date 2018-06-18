@@ -62,20 +62,25 @@
     <Compile Include="Game\Super\SuperConsole.cs" />
     <Compile Include="Game\Super\SuperDefaults.cs" />
     <Compile Include="Game\UITests.cs" />
+    <Compile Include="Game\UITests2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\libraries\ReCrafted.Common\ReCrafted.Common.csproj">
       <Project>{d97fb88e-ee48-48f0-80d8-0a79e1b630ef}</Project>
       <Name>ReCrafted.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\libraries\ReCrafted.UI\ReCrafted.UI.csproj">
+      <Project>{63e577a6-39bb-4326-b2ed-b2b1e76e54a0}</Project>
+      <Name>ReCrafted.UI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ReCrafted.API\ReCrafted.API.csproj">
       <Project>{9d637328-3340-4344-b0ad-710749c1ad08}</Project>
       <Name>ReCrafted.API</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
