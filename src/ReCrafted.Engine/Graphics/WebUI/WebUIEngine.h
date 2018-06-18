@@ -8,9 +8,6 @@
 // includes
 #include "ReCrafted.h"
 
-typedef void* WebUIRenderer;
-typedef void* WebUIDriver;
-
 class WebUIEngine : public Singleton<WebUIEngine>
 {
 private:
@@ -21,7 +18,6 @@ public:
     void Init();
     void OnDispose() override;
 
-    void Update();
     void Render();
 
 public:
@@ -31,9 +27,7 @@ public:
     }
 
 public:
-    static WebUIRenderer GetRenderer();
-    static WebUIDriver GetDriver();
-
+    static void* CreateUIView(WebUIView* view);
     static bool IsInitialized();
 };
 

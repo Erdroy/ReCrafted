@@ -78,6 +78,9 @@ void Platform::Initialize()
     // set current thread as main
     m_mainThread = std::this_thread::get_id();
 
+    // Set the thread affinity mask for better clock
+    SetThreadAffinityMask(GetCurrentThread(), 1);
+
     // initialize timer
     QueryPerformanceFrequency(&m_frequency);
     m_freqCoeff = double(m_frequency.QuadPart) / 1000.0;

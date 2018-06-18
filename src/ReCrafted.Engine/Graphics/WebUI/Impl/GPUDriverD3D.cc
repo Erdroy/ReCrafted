@@ -342,20 +342,25 @@ namespace ultralight {
 
         auto immediate_ctx = context_->immediate_context();
 
+        uint32_t width;
+        uint32_t height;
+        context_->screen_size(width, height);
+
         D3D11_VIEWPORT vpd = {};
-        vpd.Width = static_cast<float>(800);
-        vpd.Height = static_cast<float>(600);
+        vpd.Width = static_cast<float>(width);
+        vpd.Height = static_cast<float>(height);
         vpd.MinDepth = 0.0f;
         vpd.MaxDepth = 1.0f;
 
         immediate_ctx->RSSetViewports(1, &vpd);
-
+        
         auto& geometry = i->second;
         UINT stride = sizeof(Vertex_2f_4ub_2f_2f_28f);
         UINT offset = 0;
         immediate_ctx->IASetVertexBuffers(0, 1, geometry.first.GetAddressOf(), &stride, &offset);
         immediate_ctx->IASetIndexBuffer(geometry.second.Get(), DXGI_FORMAT_R32_UINT, 0);
         immediate_ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        immediate_ctx->IASetInputLayout(GetVertexLayout().Get());
 
         auto sampler_state = GetSamplerState();
         immediate_ctx->PSSetSamplers(0, 1, sampler_state.GetAddressOf());

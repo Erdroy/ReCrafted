@@ -6,8 +6,6 @@
 #include "Common/Display.h"
 #include "Core/Delegate.h"
 #include "Graphics/Graphics.h"
-#include <Ultralight/Renderer.h>
-#include <Ultralight/platform/GPUDriver.h>
 #include "Impl/Overlay.h"
 
 void WebUIView::Init()
@@ -15,15 +13,7 @@ void WebUIView::Init()
     m_width = Display::GetWidth();
     m_height = Display::GetHeight();
 
-    cvar renderer = static_cast<ultralight::Renderer*>(WebUIEngine::GetRenderer());
-    cvar driver = static_cast<GPUDriver*>(WebUIEngine::GetDriver());
-
-    m_overlay = new Overlay(renderer, driver, m_width, m_height, m_x, m_y, 1.0f);
-
-    cvar overlay = static_cast<Overlay*>(m_overlay);
-    var view = overlay->view();
-
-    view->LoadURL("https://google.com/");
+    m_overlay = WebUIEngine::CreateUIView(this);
 }
 
 void WebUIView::Update()
@@ -50,7 +40,10 @@ void WebUIView::OnDestroy()
 
 void WebUIView::Navigate(Text& url)
 {
+    cvar overlay = static_cast<Overlay*>(m_overlay);
 
+    var view = overlay->view();
+    view->LoadURL(url.StdStr().c_str());
 }
 
 void WebUIView::Execute(const char* javaScriptSource)

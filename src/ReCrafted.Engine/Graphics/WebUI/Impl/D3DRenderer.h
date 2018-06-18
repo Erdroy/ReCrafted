@@ -31,7 +31,7 @@ public:
     virtual ~D3DRenderer();
 
     // Render all renderables.
-    void Render(float deltaTime);
+    void Render(float delta);
 
     // Add Renderable to be rendered during next Render call
     void AddRenderable(Renderable* renderable);

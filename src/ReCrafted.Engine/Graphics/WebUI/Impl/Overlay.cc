@@ -7,7 +7,7 @@ static ultralight::IndexType patternCW[] = { 0, 1, 3, 1, 2, 3 };
 static ultralight::IndexType patternCCW[] = { 0, 3, 1, 1, 3, 2 };
 
 Overlay::Overlay(ultralight::Renderer* renderer, GPUDriver* driver, int width, int height, int x, int y, float scale) :
-    view_(renderer->CreateView(width, height, false)), width_(width), height_(height),
+    view_(renderer->CreateView(width, height, true)), width_(width), height_(height),
     x_(x), y_(y), scale_(scale), driver_(driver)
 {
 }

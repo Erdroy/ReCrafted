@@ -97,6 +97,9 @@ bool D3DRenderer::Initialize(HWND hWnd, bool fullscreen, bool sRGB, int samples)
 }
 
 void D3DRenderer::Render(float delta) {
+    immediate_context_->OMSetBlendState(blend_state_.Get(), NULL, 0xffffffff);
+    immediate_context_->RSSetState(rasterizer_state_.Get());
+
     std::for_each(renderables_.begin(), renderables_.end(), [this, delta](auto renderable)
     {
         renderable->Render(this, delta);

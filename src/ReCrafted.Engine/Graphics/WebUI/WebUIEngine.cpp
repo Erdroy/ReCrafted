@@ -1,14 +1,18 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "WebUIEngine.h"
+#include "Common/Time.h"
+#include "Common/Display.h"
 #include "Core/Logger.h"
+#include "WebUIView.h"
 
+#pragma warning(push, 0)
 #include "Impl/FileSystemWin.h"
 #include "Impl/FontLoaderWin.h"
 #include "Impl/GPUDriverD3D.h"
 #include "Impl/D3DRenderer.h"
+#include "Impl/Overlay.h"
 
-#pragma warning(push, 0)
 #include <Ultralight/Renderer.h>
 #include <Ultralight/platform/Platform.h>
 #include <Ultralight/platform/Config.h>
@@ -19,38 +23,93 @@
 
 SINGLETON_IMPL(WebUIEngine)
 
-ultralight::RefPtr<ultralight::Renderer> m_renderer = nullptr;
-ultralight::GPUDriver* m_driver = nullptr;
+class UltralightRenderer : public Renderable
+{
+private:
+    ultralight::RefPtr<ultralight::Renderer> m_renderer = nullptr;
+    ultralight::GPUDriver* m_driver = nullptr;
+
+public:
+    UltralightRenderer(D3DContext* context)
+    {
+        // Determine the path to our asset directory.
+        TCHAR cur_dir[_MAX_PATH];
+        GetCurrentDirectory(_MAX_PATH, cur_dir);
+        TCHAR asset_dir[_MAX_PATH];
+        PathCombine(asset_dir, cur_dir, L"./../assets/");
+
+        // Setup our Platform API handlers
+        rvar platform = ultralight::Platform::instance();
+
+        // Setup ultralight config
+        ultralight::Config config;
+        config.face_winding = ultralight::kFaceWinding_Clockwise;
+        config.device_scale_hint = 1.0f;
+        config.use_distance_field_fonts = true;
+        config.use_distance_field_paths = true;
+
+        m_driver = new ultralight::GPUDriverD3D(context);
+
+        platform.set_config(config);
+        platform.set_gpu_driver(m_driver);
+        platform.set_font_loader(new ultralight::FontLoaderWin());
+        platform.set_file_system(new ultralight::FileSystemWin(asset_dir));
+
+        m_renderer = ultralight::Renderer::Create();
+        
+    }
+
+    virtual ~UltralightRenderer()
+    {
+        // Destroy our Platform handlers
+        rvar platform = ultralight::Platform::instance();
+
+        delete static_cast<ultralight::FileSystemWin*>(platform.file_system());
+        platform.set_file_system(nullptr);
+
+        delete static_cast<ultralight::FontLoaderWin*>(platform.font_loader());
+        platform.set_font_loader(nullptr);
+
+        delete static_cast<ultralight::GPUDriverD3D*>(platform.gpu_driver());
+        platform.set_gpu_driver(nullptr);
+    }
+
+    void Render(D3DContext* context, float delta) override
+    {
+        m_renderer->Update();
+        m_renderer->Render();
+
+        crvar platform = ultralight::Platform::instance();
+        cvar driver = platform.gpu_driver();
+
+        if (driver->HasCommandsPending())
+            driver->DrawCommandList();
+    }
+
+    void* CreateUIView(WebUIView* view) const
+    {
+        return new Overlay(m_renderer.get(), m_driver, view->Width(), view->Height(), view->X(), view->Y(), 1.0f);
+    }
+
+    static UltralightRenderer* Create(D3DContext* context)
+    {
+        return new UltralightRenderer(context);
+    }
+};
+
 D3DRenderer* m_context = nullptr;
+UltralightRenderer* m_renderer = nullptr;
 
 void WebUIEngine::Init()
 {
-    // Determine the path to our asset directory.
-    TCHAR cur_dir[_MAX_PATH];
-    GetCurrentDirectory(_MAX_PATH, cur_dir);
-    TCHAR asset_dir[_MAX_PATH];
-    PathCombine(asset_dir, cur_dir, L"./../assets/");
-
-    // Setup our Platform API handlers
-    rvar platform = ultralight::Platform::instance();
-
+    // Create D3DRenderer and Ultralight renderer
     m_context = new D3DRenderer(nullptr, false);
+    m_renderer = UltralightRenderer::Create(m_context);
 
-    // Setup ultralight config
-    ultralight::Config config;
-    config.face_winding = ultralight::kFaceWinding_Clockwise;
-    config.device_scale_hint = 1.0f;
-    config.use_distance_field_fonts = false; // TODO: detect high dpi and set to true
-    config.use_distance_field_paths = true;
-
-    m_driver = new ultralight::GPUDriverD3D(m_context);
-
-    platform.set_config(config);
-    platform.set_gpu_driver(m_driver);
-    platform.set_font_loader(new ultralight::FontLoaderWin());
-    platform.set_file_system(new ultralight::FileSystemWin(asset_dir));
-    
-    m_renderer = ultralight::Renderer::Create();
+    // Initialize context
+    m_context->set_scale(1.0);
+    m_context->set_screen_size(Display::GetWidth(), Display::GetHeight());
+    m_context->AddRenderable(m_renderer);
 
     m_initialized = true;
     Logger::Log("WebUIEngine initialized using Ultralight {0} (WebKitCore)", ULTRALIGHT_VERSION);
@@ -61,25 +120,8 @@ void WebUIEngine::OnDispose()
     if (!IsInitialized())
         return;
 
-    // Destroy our Platform handlers
-    rvar platform = ultralight::Platform::instance();
-
-    delete static_cast<ultralight::FileSystemWin*>(platform.file_system());
-    platform.set_file_system(nullptr);
-
-    delete static_cast<ultralight::FontLoaderWin*>(platform.font_loader());
-    platform.set_font_loader(nullptr);
-
-    delete static_cast<ultralight::GPUDriverD3D*>(platform.gpu_driver());
-    platform.set_gpu_driver(nullptr);
-}
-
-void WebUIEngine::Update()
-{
-    if (!IsInitialized())
-        return;
-
-    m_renderer->Update();
+    delete m_renderer;
+    delete m_context;
 }
 
 void WebUIEngine::Render()
@@ -87,31 +129,15 @@ void WebUIEngine::Render()
     if (!IsInitialized())
         return;
 
-    m_renderer->Render();
-
-    rvar platform = ultralight::Platform::instance();
-    var driver = static_cast<ultralight::GPUDriverD3D*>(platform.gpu_driver());
-
-    m_needsViewUpdate = driver->HasCommandsPending();
-
-    if (m_needsViewUpdate)
-        driver->DrawCommandList();
+    m_context->Render(float(Time::DeltaTime()));
 }
 
-WebUIRenderer WebUIEngine::GetRenderer()
+void* WebUIEngine::CreateUIView(WebUIView* view)
 {
-    return static_cast<WebUIRenderer>(m_renderer.get());
-}
-
-WebUIDriver WebUIEngine::GetDriver()
-{
-    return static_cast<WebUIDriver>(m_driver);
+    return m_renderer->CreateUIView(view);
 }
 
 bool WebUIEngine::IsInitialized()
 {
-    if (!m_instance)
-        return false;
-
-    return m_instance->m_initialized;
+    return m_instance && m_instance->m_initialized;
 }

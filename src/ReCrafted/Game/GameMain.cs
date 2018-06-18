@@ -78,6 +78,8 @@ namespace ReCrafted.Game
 
                 // create example webui view
                 _uiView = WebUI.Create();
+                //_uiView.Navigate("https://google.com/");
+                _uiView.Navigate("https://evanw.github.io/csg.js/");
 
                 _tests2 = new UITests2();
                 _tests2.Init();
@@ -114,16 +116,6 @@ namespace ReCrafted.Game
                             EnablePause();
                         }
                     }
-                }
-
-                if (Input.IsKeyDown(Keys.N))
-                {
-                    _uiView.Navigate("https://www.youtube.com/watch?v=VAF4rfu-ETA");
-                }
-
-                if (Input.IsKeyDown(Keys.X))
-                {
-                    _uiView.ExecuteJS("document.getElementsByTagName('video')[0].play()");
                 }
 
                 if (Input.IsKeyDown(Keys.OEM3))
