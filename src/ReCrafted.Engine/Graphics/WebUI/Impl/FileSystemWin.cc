@@ -41,433 +41,491 @@
 #include <algorithm>
 #include <memory>
 #include <strsafe.h>
+#include <rpmalloc.h>
 
 #undef max
 
 namespace ultralight {
 
-class PathWalker {
-public:
-  PathWalker(LPCWSTR directory, LPCWSTR pattern) {
-    TCHAR szDir[MAX_PATH];
+    class PathWalker {
+    public:
+        PathWalker(LPCWSTR directory, LPCWSTR pattern) {
+            TCHAR szDir[MAX_PATH];
 
-    StringCchCopy(szDir, MAX_PATH, directory);
-    StringCchCat(szDir, MAX_PATH, pattern);
+            StringCchCopy(szDir, MAX_PATH, directory);
+            StringCchCat(szDir, MAX_PATH, pattern);
 
-    m_handle = ::FindFirstFileW(szDir, &m_data);
-  }
+            m_handle = ::FindFirstFileW(szDir, &m_data);
+        }
 
-  ~PathWalker() {
-    if (!isValid())
-      return;
-    ::FindClose(m_handle);
-  }
+        ~PathWalker() {
+            if (!isValid())
+                return;
+            ::FindClose(m_handle);
+        }
 
-  bool isValid() const { return m_handle != INVALID_HANDLE_VALUE; }
-  const WIN32_FIND_DATAW& data() const { return m_data; }
+        bool isValid() const { return m_handle != INVALID_HANDLE_VALUE; }
+        const WIN32_FIND_DATAW& data() const { return m_data; }
 
-  bool step() {
-    return ::FindNextFileW(m_handle, &m_data);
-  }
+        bool step() {
+            return ::FindNextFileW(m_handle, &m_data);
+        }
 
-private:
-  HANDLE m_handle;
-  WIN32_FIND_DATAW m_data;
-};
+    private:
+        HANDLE m_handle;
+        WIN32_FIND_DATAW m_data;
+    };
 
-static const ULONGLONG kSecondsFromFileTimeToTimet = 11644473600;
+    static const ULONGLONG kSecondsFromFileTimeToTimet = 11644473600;
 
-static bool getFindData(LPCWSTR path, WIN32_FIND_DATAW& findData)
-{
-  HANDLE handle = FindFirstFileW(path, &findData);
-  if (handle == INVALID_HANDLE_VALUE)
-    return false;
-  FindClose(handle);
-  return true;
-}
-
-static bool getFileSizeFromFindData(const WIN32_FIND_DATAW& findData, int64_t& size)
-{
-  ULARGE_INTEGER fileSize;
-  fileSize.HighPart = findData.nFileSizeHigh;
-  fileSize.LowPart = findData.nFileSizeLow;
-
-
-  if (fileSize.QuadPart > static_cast<ULONGLONG>(std::numeric_limits<int64_t>::max()))
-    return false;
-  size = fileSize.QuadPart;
-  return true;
-}
-
-static bool getFileSizeFromByHandleFileInformationStructure(const BY_HANDLE_FILE_INFORMATION& fileInformation, int64_t& size)
-{
-  ULARGE_INTEGER fileSize;
-  fileSize.HighPart = fileInformation.nFileSizeHigh;
-  fileSize.LowPart = fileInformation.nFileSizeLow;
-
-  if (fileSize.QuadPart > static_cast<ULONGLONG>(std::numeric_limits<int64_t>::max()))
-    return false;
-
-  size = fileSize.QuadPart;
-  return true;
-}
-
-static void getFileCreationTimeFromFindData(const WIN32_FIND_DATAW& findData, time_t& time)
-{
-  ULARGE_INTEGER fileTime;
-  fileTime.HighPart = findData.ftCreationTime.dwHighDateTime;
-  fileTime.LowPart = findData.ftCreationTime.dwLowDateTime;
-
-  // Information about converting time_t to FileTime is available at http://msdn.microsoft.com/en-us/library/ms724228%28v=vs.85%29.aspx
-  time = fileTime.QuadPart / 10000000 - kSecondsFromFileTimeToTimet;
-}
-
-
-static void getFileModificationTimeFromFindData(const WIN32_FIND_DATAW& findData, time_t& time)
-{
-  ULARGE_INTEGER fileTime;
-  fileTime.HighPart = findData.ftLastWriteTime.dwHighDateTime;
-  fileTime.LowPart = findData.ftLastWriteTime.dwLowDateTime;
-
-  // Information about converting time_t to FileTime is available at http://msdn.microsoft.com/en-us/library/ms724228%28v=vs.85%29.aspx
-  time = fileTime.QuadPart / 10000000 - kSecondsFromFileTimeToTimet;
-}
-
-bool getFileSize(LPCWSTR path, int64_t& size)
-{
-  WIN32_FIND_DATAW findData;
-  if (!getFindData(path, findData))
-    return false;
-
-  return getFileSizeFromFindData(findData, size);
-}
-
-bool getFileSize(FileHandle fileHandle, int64_t& size)
-{
-  BY_HANDLE_FILE_INFORMATION fileInformation;
-  if (!::GetFileInformationByHandle((HANDLE)fileHandle, &fileInformation))
-    return false;
-
-  return getFileSizeFromByHandleFileInformationStructure(fileInformation, size);
-}
-
-bool getFileModificationTime(LPCWSTR path, time_t& time)
-{
-  WIN32_FIND_DATAW findData;
-  if (!getFindData(path, findData))
-    return false;
-
-  getFileModificationTimeFromFindData(findData, time);
-  return true;
-}
-
-bool getFileCreationTime(LPCWSTR path, time_t& time)
-{
-  WIN32_FIND_DATAW findData;
-  if (!getFindData(path, findData))
-    return false;
-
-  getFileCreationTimeFromFindData(findData, time);
-  return true;
-}
-
-std::wstring GetMimeType(const std::wstring &szExtension)
-{
-  // return mime type for extension
-  HKEY hKey = NULL;
-  std::wstring szResult = L"application/unknown";
-
-  // open registry key
-  if (RegOpenKeyEx(HKEY_CLASSES_ROOT, szExtension.c_str(),
-    0, KEY_READ, &hKey) == ERROR_SUCCESS)
-  {
-    // define buffer
-    wchar_t szBuffer[256] = { 0 };
-    DWORD dwBuffSize = sizeof(szBuffer);
-
-    // get content type
-    if (RegQueryValueEx(hKey, L"Content Type", NULL, NULL,
-      (LPBYTE)szBuffer, &dwBuffSize) == ERROR_SUCCESS)
+    static bool getFindData(LPCWSTR path, WIN32_FIND_DATAW& findData)
     {
-      // success
-      szResult = szBuffer;
+        HANDLE handle = FindFirstFileW(path, &findData);
+        if (handle == INVALID_HANDLE_VALUE)
+            return false;
+        FindClose(handle);
+        return true;
     }
 
-    // close key
-    RegCloseKey(hKey);
-  }
+    static bool getFileSizeFromFindData(const WIN32_FIND_DATAW& findData, int64_t& size)
+    {
+        ULARGE_INTEGER fileSize;
+        fileSize.HighPart = findData.nFileSizeHigh;
+        fileSize.LowPart = findData.nFileSizeLow;
 
-  // return result
-  return szResult;
-}
 
-FileSystemWin::FileSystemWin(LPCWSTR baseDir) {
-  baseDir_.reset(new WCHAR[_MAX_PATH]);
-  StringCchCopy(baseDir_.get(), MAX_PATH, baseDir);
-}
-
-FileSystemWin::~FileSystemWin() {}
-
-bool FileSystemWin::FileExists(const String16& path) {
-  WIN32_FIND_DATAW findData;
-  return getFindData(GetRelative(path).get(), findData);
-}
-
-bool FileSystemWin::DeleteFile_(const String16& path) {
-  return !!DeleteFileW(GetRelative(path).get());
-}
-
-bool FileSystemWin::DeleteEmptyDirectory(const String16& path) {
-  return !!RemoveDirectoryW(GetRelative(path).get());
-}
-
-bool FileSystemWin::MoveFile_(const String16& old_path, const String16& new_path) {
-  return !!::MoveFileEx(GetRelative(old_path).get(), GetRelative(new_path).get(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING);
-}
-
-bool FileSystemWin::GetFileSize(const String16& path, int64_t& result) {
-  WIN32_FIND_DATAW findData;
-  if (!getFindData(GetRelative(path).get(), findData))
-    return false;
-
-  return getFileSizeFromFindData(findData, result);
-}
-
-bool FileSystemWin::GetFileMimeType(const String16& path, String16& result)
-{
-  LPWSTR ext = PathFindExtension(path.data());
-  std::wstring mimetype = GetMimeType(ext);
-  result = String16(mimetype.c_str(), mimetype.length());
-  return true;
-}
-
-bool FileSystemWin::GetFileSize(FileHandle handle, int64_t& result) {
-  BY_HANDLE_FILE_INFORMATION fileInformation;
-  if (!::GetFileInformationByHandle((HANDLE)handle, &fileInformation))
-    return false;
-
-  return getFileSizeFromByHandleFileInformationStructure(fileInformation, result);
-}
-
-bool FileSystemWin::GetFileModificationTime(const String16& path, time_t& result) {
-  WIN32_FIND_DATAW findData;
-  if (!getFindData(GetRelative(path).get(), findData))
-    return false;
-
-  getFileModificationTimeFromFindData(findData, result);
-  return true;
-}
-
-bool FileSystemWin::GetFileCreationTime(const String16& path, time_t& result) {
-  WIN32_FIND_DATAW findData;
-  if (!getFindData(GetRelative(path).get(), findData))
-    return false;
-
-  getFileCreationTimeFromFindData(findData, result);
-  return true;
-}
-
-MetadataType FileSystemWin::GetMetadataType(const String16& path) {
-  WIN32_FIND_DATAW findData;
-  if (!getFindData(GetRelative(path).get(), findData))
-    return kMetadataType_Unknown;
-
-  return (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? kMetadataType_Directory : kMetadataType_File;
-}
-
-String16 FileSystemWin::GetPathByAppendingComponent(const String16& path, const String16& component) {
-  if (path.length() > MAX_PATH)
-    return String16();
-
-  Vector<Char16> buffer(MAX_PATH);
-  memcpy(buffer.data(), path.data(), path.length() * sizeof(Char16));
-
-  if (!PathAppendW(buffer.data(), component.data()))
-    return String16();
-
-  return String16(buffer.data(), wcslen(buffer.data()));
-}
-
-bool FileSystemWin::CreateDirectory_(const String16& path) {
-  if (SHCreateDirectoryEx(0, GetRelative(path).get(), 0) != ERROR_SUCCESS) {
-    DWORD error = GetLastError();
-    if (error != ERROR_FILE_EXISTS && error != ERROR_ALREADY_EXISTS) {
-      Vector<char> utf8 = String(path).utf8();
-      fprintf(stderr, "FileSystemWin::CreateDirectory_, Failed to create path %s", utf8.data());
-      return false;
+        if (fileSize.QuadPart > static_cast<ULONGLONG>(std::numeric_limits<int64_t>::max()))
+            return false;
+        size = fileSize.QuadPart;
+        return true;
     }
-  }
-  return true;
-}
 
-String16 FileSystemWin::GetHomeDirectory() {
-  return String16();
-}
+    static bool getFileSizeFromByHandleFileInformationStructure(const BY_HANDLE_FILE_INFORMATION& fileInformation, int64_t& size)
+    {
+        ULARGE_INTEGER fileSize;
+        fileSize.HighPart = fileInformation.nFileSizeHigh;
+        fileSize.LowPart = fileInformation.nFileSizeLow;
 
-String16 FileSystemWin::GetFilenameFromPath(const String16& path) {
-  LPTSTR filename = ::PathFindFileName(path.data());
-  return String16(filename, wcslen(filename));
-}
+        if (fileSize.QuadPart > static_cast<ULONGLONG>(std::numeric_limits<int64_t>::max()))
+            return false;
 
-String16 FileSystemWin::GetDirectoryNameFromPath(const String16& path) {
-  Vector<Char16> utf16(path.length());
-  memcpy(utf16.data(), path.data(), utf16.size() * sizeof(Char16));
-  if (::PathRemoveFileSpec(utf16.data()))
-    return String16(utf16.data(), wcslen(utf16.data()));
+        size = fileSize.QuadPart;
+        return true;
+    }
 
-  return path;
-}
+    static void getFileCreationTimeFromFindData(const WIN32_FIND_DATAW& findData, time_t& time)
+    {
+        ULARGE_INTEGER fileTime;
+        fileTime.HighPart = findData.ftCreationTime.dwHighDateTime;
+        fileTime.LowPart = findData.ftCreationTime.dwLowDateTime;
 
-bool FileSystemWin::GetVolumeFreeSpace(const String16& path, uint64_t& result) {
-  return false;
-}
+        // Information about converting time_t to FileTime is available at http://msdn.microsoft.com/en-us/library/ms724228%28v=vs.85%29.aspx
+        time = fileTime.QuadPart / 10000000 - kSecondsFromFileTimeToTimet;
+    }
 
-int32_t FileSystemWin::GetVolumeId(const String16& path) {
-  HANDLE handle = (HANDLE)OpenFile(path, false);
-  if (handle == INVALID_HANDLE_VALUE)
-    return 0;
 
-  BY_HANDLE_FILE_INFORMATION fileInformation = {};
-  if (!::GetFileInformationByHandle(handle, &fileInformation)) {
-    CloseFile((FileHandle&)handle);
-    return 0;
-  }
+    static void getFileModificationTimeFromFindData(const WIN32_FIND_DATAW& findData, time_t& time)
+    {
+        ULARGE_INTEGER fileTime;
+        fileTime.HighPart = findData.ftLastWriteTime.dwHighDateTime;
+        fileTime.LowPart = findData.ftLastWriteTime.dwLowDateTime;
 
-  CloseFile((FileHandle&)handle);
+        // Information about converting time_t to FileTime is available at http://msdn.microsoft.com/en-us/library/ms724228%28v=vs.85%29.aspx
+        time = fileTime.QuadPart / 10000000 - kSecondsFromFileTimeToTimet;
+    }
 
-  return fileInformation.dwVolumeSerialNumber;
-}
+    bool getFileSize(LPCWSTR path, int64_t& size)
+    {
+        WIN32_FIND_DATAW findData;
+        if (!getFindData(path, findData))
+            return false;
 
-Vector<String16> FileSystemWin::ListDirectory(const String16& path, const String16& filter) {
-  Vector<String16> entries;
+        return getFileSizeFromFindData(findData, size);
+    }
 
-  PathWalker walker(GetRelative(path).get(), filter.data());
-  if (!walker.isValid())
-    return entries;
+    bool getFileSize(FileHandle fileHandle, int64_t& size)
+    {
+        BY_HANDLE_FILE_INFORMATION fileInformation;
+        if (!::GetFileInformationByHandle((HANDLE)fileHandle, &fileInformation))
+            return false;
 
-  do {
-    if (walker.data().dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-      continue;
+        return getFileSizeFromByHandleFileInformationStructure(fileInformation, size);
+    }
 
-    String16 filename(walker.data().cFileName, wcslen(walker.data().cFileName));
-    entries.push_back(path + "\\" + filename);
-  } while (walker.step());
+    bool getFileModificationTime(LPCWSTR path, time_t& time)
+    {
+        WIN32_FIND_DATAW findData;
+        if (!getFindData(path, findData))
+            return false;
 
-  return entries;
-}
+        getFileModificationTimeFromFindData(findData, time);
+        return true;
+    }
 
-String16 FileSystemWin::OpenTemporaryFile(const String16& prefix, FileHandle& handle) {
-  handle = (FileHandle)INVALID_HANDLE_VALUE;
+    bool getFileCreationTime(LPCWSTR path, time_t& time)
+    {
+        WIN32_FIND_DATAW findData;
+        if (!getFindData(path, findData))
+            return false;
 
-  wchar_t tempPath[MAX_PATH];
-  int tempPathLength = ::GetTempPathW(MAX_PATH, tempPath);
-  if (tempPathLength <= 0 || tempPathLength > MAX_PATH)
-    return String16();
+        getFileCreationTimeFromFindData(findData, time);
+        return true;
+    }
 
-  String16 proposedPath;
-  do {
-    wchar_t tempFile[] = L"XXXXXXXX.tmp"; // Use 8.3 style name (more characters aren't helpful due to 8.3 short file names)
-    const int randomPartLength = 8;
+    std::wstring GetMimeType(const std::wstring &szExtension)
+    {
+        // return mime type for extension
+        HKEY hKey = NULL;
+        std::wstring szResult = L"application/unknown";
 
-    // Limit to valid filesystem characters, also excluding others that could be problematic, like punctuation.
-    // don't include both upper and lowercase since Windows file systems are typically not case sensitive.
-    const char validChars[] = "0123456789abcdefghijklmnopqrstuvwxyz";
-    for (int i = 0; i < randomPartLength; ++i)
-      tempFile[i] = validChars[rand() % (sizeof(validChars) - 1)];
+        // open registry key
+        if (RegOpenKeyEx(HKEY_CLASSES_ROOT, szExtension.c_str(),
+            0, KEY_READ, &hKey) == ERROR_SUCCESS)
+        {
+            // define buffer
+            wchar_t szBuffer[256] = { 0 };
+            DWORD dwBuffSize = sizeof(szBuffer);
 
-    proposedPath = GetPathByAppendingComponent(String16(tempPath, wcslen(tempPath)), String16(tempFile, wcslen(tempFile)));
-    if (proposedPath.empty())
-      break;
+            // get content type
+            if (RegQueryValueEx(hKey, L"Content Type", NULL, NULL,
+                (LPBYTE)szBuffer, &dwBuffSize) == ERROR_SUCCESS)
+            {
+                // success
+                szResult = szBuffer;
+            }
 
-    // use CREATE_NEW to avoid overwriting an existing file with the same name
-    handle = (FileHandle)::CreateFileW(proposedPath.data(), GENERIC_READ | GENERIC_WRITE, 0, 0, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, 0);
-  } while (handle == (FileHandle)INVALID_HANDLE_VALUE && GetLastError() == ERROR_ALREADY_EXISTS);
+            // close key
+            RegCloseKey(hKey);
+        }
 
-  if (handle == (FileHandle)INVALID_HANDLE_VALUE)
-    return String16();
+        // return result
+        return szResult;
+    }
 
-  return proposedPath;
-}
+    FileSystemWin::FileSystemWin(LPCWSTR baseDir) {
+        baseDir_.reset(new WCHAR[_MAX_PATH]);
+        StringCchCopy(baseDir_.get(), MAX_PATH, baseDir);
+    }
 
-FileHandle FileSystemWin::OpenFile(const String16& path, bool open_for_writing) {
-  DWORD desiredAccess = 0;
-  DWORD creationDisposition = 0;
-  DWORD shareMode = 0;
-  if (open_for_writing) {
-    desiredAccess = GENERIC_WRITE;
-    creationDisposition = CREATE_ALWAYS;
-  } else {
-    desiredAccess = GENERIC_READ;
-    creationDisposition = OPEN_EXISTING;
-    shareMode = FILE_SHARE_READ;
-  }
+    FileSystemWin::~FileSystemWin() {}
 
-  return (FileHandle)CreateFile(GetRelative(path).get(), desiredAccess, shareMode, 
-    0, creationDisposition, FILE_ATTRIBUTE_NORMAL, 0);
-}
+    void FileSystemWin::CheckThread()
+    {
+        if (!rpmalloc_is_thread_initialized())
+            rpmalloc_thread_initialize();
+    }
 
-void FileSystemWin::CloseFile(FileHandle& handle) {
-  if (handle != (FileHandle)INVALID_HANDLE_VALUE) {
-    ::CloseHandle((HANDLE)handle);
-    handle = (FileHandle)INVALID_HANDLE_VALUE;
-  }
-}
+    bool FileSystemWin::FileExists(const String16& path) {
+        CheckThread();
 
-int64_t FileSystemWin::SeekFile(FileHandle handle, int64_t offset, FileSeekOrigin origin) {
-  DWORD moveMethod = FILE_BEGIN;
+        WIN32_FIND_DATAW findData;
+        return getFindData(GetRelative(path).get(), findData);
+    }
 
-  if (origin == kFileSeekOrigin_Current)
-    moveMethod = FILE_CURRENT;
-  else if (origin == kFileSeekOrigin_End)
-    moveMethod = FILE_END;
+    bool FileSystemWin::DeleteFile_(const String16& path) {
+        CheckThread();
 
-  LARGE_INTEGER largeOffset;
-  largeOffset.QuadPart = offset;
+        return !!DeleteFileW(GetRelative(path).get());
+    }
 
-  largeOffset.LowPart = SetFilePointer((HANDLE)handle, largeOffset.LowPart, &largeOffset.HighPart, moveMethod);
+    bool FileSystemWin::DeleteEmptyDirectory(const String16& path) {
+        CheckThread();
 
-  if (largeOffset.LowPart == INVALID_SET_FILE_POINTER && GetLastError() != NO_ERROR)
-    return -1;
+        return !!RemoveDirectoryW(GetRelative(path).get());
+    }
 
-  return largeOffset.QuadPart;
-}
+    bool FileSystemWin::MoveFile_(const String16& old_path, const String16& new_path) {
+        CheckThread();
 
-bool FileSystemWin::TruncateFile(FileHandle handle, int64_t offset) {
-  return false;
-}
+        return !!::MoveFileEx(GetRelative(old_path).get(), GetRelative(new_path).get(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING);
+    }
 
-int64_t FileSystemWin::WriteToFile(FileHandle handle, const char* data, int64_t length) {
-  if (handle == (FileHandle)INVALID_HANDLE_VALUE)
-    return -1;
+    bool FileSystemWin::GetFileSize(const String16& path, int64_t& result) {
+        CheckThread();
 
-  DWORD bytesWritten;
-  bool success = WriteFile((HANDLE)handle, data, length, &bytesWritten, 0);
+        WIN32_FIND_DATAW findData;
+        if (!getFindData(GetRelative(path).get(), findData))
+            return false;
 
-  if (!success)
-    return -1;
-  return static_cast<int64_t>(bytesWritten);
-}
+        return getFileSizeFromFindData(findData, result);
+    }
 
-int64_t FileSystemWin::ReadFromFile(FileHandle handle, char* data, int64_t length) {
-  if (handle == (FileHandle)INVALID_HANDLE_VALUE)
-    return -1;
+    bool FileSystemWin::GetFileMimeType(const String16& path, String16& result)
+    {
+        CheckThread();
 
-  DWORD bytesRead;
-  bool success = ::ReadFile((HANDLE)handle, data, length, &bytesRead, 0);
+        LPWSTR ext = PathFindExtension(path.data());
+        std::wstring mimetype = GetMimeType(ext);
+        result = String16(mimetype.c_str(), mimetype.length());
+        return true;
+    }
 
-  if (!success)
-    return -1;
-  return static_cast<int64_t>(bytesRead);
-}
+    bool FileSystemWin::GetFileSize(FileHandle handle, int64_t& result) {
+        CheckThread();
 
-bool FileSystemWin::CopyFile_(const String16& source, const String16& destination) {
-  return !!::CopyFile(GetRelative(source).get(), GetRelative(destination).get(), TRUE);
-}
+        BY_HANDLE_FILE_INFORMATION fileInformation;
+        if (!::GetFileInformationByHandle((HANDLE)handle, &fileInformation))
+            return false;
 
-std::unique_ptr<WCHAR[]> FileSystemWin::GetRelative(const String16& path) {
-  std::unique_ptr<WCHAR[]> relPath(new WCHAR[_MAX_PATH]);
-  PathCombine(relPath.get(), baseDir_.get(), path.data());
-  return relPath;
-}
+        return getFileSizeFromByHandleFileInformationStructure(fileInformation, result);
+    }
+
+    bool FileSystemWin::GetFileModificationTime(const String16& path, time_t& result) {
+        CheckThread();
+
+        WIN32_FIND_DATAW findData;
+        if (!getFindData(GetRelative(path).get(), findData))
+            return false;
+
+        getFileModificationTimeFromFindData(findData, result);
+        return true;
+    }
+
+    bool FileSystemWin::GetFileCreationTime(const String16& path, time_t& result) {
+        CheckThread();
+
+        WIN32_FIND_DATAW findData;
+        if (!getFindData(GetRelative(path).get(), findData))
+            return false;
+
+        getFileCreationTimeFromFindData(findData, result);
+        return true;
+    }
+
+    MetadataType FileSystemWin::GetMetadataType(const String16& path) {
+        CheckThread();
+
+        WIN32_FIND_DATAW findData;
+        if (!getFindData(GetRelative(path).get(), findData))
+            return kMetadataType_Unknown;
+
+        return (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? kMetadataType_Directory : kMetadataType_File;
+    }
+
+    String16 FileSystemWin::GetPathByAppendingComponent(const String16& path, const String16& component) {
+        CheckThread();
+
+        if (path.length() > MAX_PATH)
+            return String16();
+
+        Vector<Char16> buffer(MAX_PATH);
+        memcpy(buffer.data(), path.data(), path.length() * sizeof(Char16));
+
+        if (!PathAppendW(buffer.data(), component.data()))
+            return String16();
+
+        return String16(buffer.data(), wcslen(buffer.data()));
+    }
+
+    bool FileSystemWin::CreateDirectory_(const String16& path) {
+        CheckThread();
+
+        if (SHCreateDirectoryEx(0, GetRelative(path).get(), 0) != ERROR_SUCCESS) {
+            DWORD error = GetLastError();
+            if (error != ERROR_FILE_EXISTS && error != ERROR_ALREADY_EXISTS) {
+                Vector<char> utf8 = String(path).utf8();
+                fprintf(stderr, "FileSystemWin::CreateDirectory_, Failed to create path %s", utf8.data());
+                return false;
+            }
+        }
+        return true;
+    }
+
+    String16 FileSystemWin::GetHomeDirectory() {
+        CheckThread();
+
+        return String16();
+    }
+
+    String16 FileSystemWin::GetFilenameFromPath(const String16& path) {
+        CheckThread();
+
+        LPTSTR filename = ::PathFindFileName(path.data());
+        return String16(filename, wcslen(filename));
+    }
+
+    String16 FileSystemWin::GetDirectoryNameFromPath(const String16& path) {
+        CheckThread();
+
+        Vector<Char16> utf16(path.length());
+        memcpy(utf16.data(), path.data(), utf16.size() * sizeof(Char16));
+        if (::PathRemoveFileSpec(utf16.data()))
+            return String16(utf16.data(), wcslen(utf16.data()));
+
+        return path;
+    }
+
+    bool FileSystemWin::GetVolumeFreeSpace(const String16& path, uint64_t& result) {
+        return false;
+    }
+
+    int32_t FileSystemWin::GetVolumeId(const String16& path) {
+        CheckThread();
+
+        HANDLE handle = (HANDLE)OpenFile(path, false);
+        if (handle == INVALID_HANDLE_VALUE)
+            return 0;
+
+        BY_HANDLE_FILE_INFORMATION fileInformation = {};
+        if (!::GetFileInformationByHandle(handle, &fileInformation)) {
+            CloseFile((FileHandle&)handle);
+            return 0;
+        }
+
+        CloseFile((FileHandle&)handle);
+
+        return fileInformation.dwVolumeSerialNumber;
+    }
+
+    Vector<String16> FileSystemWin::ListDirectory(const String16& path, const String16& filter) {
+        CheckThread();
+
+        Vector<String16> entries;
+
+        PathWalker walker(GetRelative(path).get(), filter.data());
+        if (!walker.isValid())
+            return entries;
+
+        do {
+            if (walker.data().dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+                continue;
+
+            String16 filename(walker.data().cFileName, wcslen(walker.data().cFileName));
+            entries.push_back(path + "\\" + filename);
+        } while (walker.step());
+
+        return entries;
+    }
+
+    String16 FileSystemWin::OpenTemporaryFile(const String16& prefix, FileHandle& handle) {
+        CheckThread();
+
+        handle = (FileHandle)INVALID_HANDLE_VALUE;
+
+        wchar_t tempPath[MAX_PATH];
+        int tempPathLength = ::GetTempPathW(MAX_PATH, tempPath);
+        if (tempPathLength <= 0 || tempPathLength > MAX_PATH)
+            return String16();
+
+        String16 proposedPath;
+        do {
+            wchar_t tempFile[] = L"XXXXXXXX.tmp"; // Use 8.3 style name (more characters aren't helpful due to 8.3 short file names)
+            const int randomPartLength = 8;
+
+            // Limit to valid filesystem characters, also excluding others that could be problematic, like punctuation.
+            // don't include both upper and lowercase since Windows file systems are typically not case sensitive.
+            const char validChars[] = "0123456789abcdefghijklmnopqrstuvwxyz";
+            for (int i = 0; i < randomPartLength; ++i)
+                tempFile[i] = validChars[rand() % (sizeof(validChars) - 1)];
+
+            proposedPath = GetPathByAppendingComponent(String16(tempPath, wcslen(tempPath)), String16(tempFile, wcslen(tempFile)));
+            if (proposedPath.empty())
+                break;
+
+            // use CREATE_NEW to avoid overwriting an existing file with the same name
+            handle = (FileHandle)::CreateFileW(proposedPath.data(), GENERIC_READ | GENERIC_WRITE, 0, 0, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, 0);
+        } while (handle == (FileHandle)INVALID_HANDLE_VALUE && GetLastError() == ERROR_ALREADY_EXISTS);
+
+        if (handle == (FileHandle)INVALID_HANDLE_VALUE)
+            return String16();
+
+        return proposedPath;
+    }
+
+    FileHandle FileSystemWin::OpenFile(const String16& path, bool open_for_writing) {
+        CheckThread();
+
+        
+        DWORD desiredAccess = 0;
+        DWORD creationDisposition = 0;
+        DWORD shareMode = 0;
+        if (open_for_writing) {
+            desiredAccess = GENERIC_WRITE;
+            creationDisposition = CREATE_ALWAYS;
+        }
+        else {
+            desiredAccess = GENERIC_READ;
+            creationDisposition = OPEN_EXISTING;
+            shareMode = FILE_SHARE_READ;
+        }
+
+        return (FileHandle)CreateFile(GetRelative(path).get(), desiredAccess, shareMode,
+            0, creationDisposition, FILE_ATTRIBUTE_NORMAL, 0);
+    }
+
+    void FileSystemWin::CloseFile(FileHandle& handle) {
+        if (handle != (FileHandle)INVALID_HANDLE_VALUE) {
+            ::CloseHandle((HANDLE)handle);
+            handle = (FileHandle)INVALID_HANDLE_VALUE;
+        }
+    }
+
+    int64_t FileSystemWin::SeekFile(FileHandle handle, int64_t offset, FileSeekOrigin origin) {
+        CheckThread();
+
+        DWORD moveMethod = FILE_BEGIN;
+
+        if (origin == kFileSeekOrigin_Current)
+            moveMethod = FILE_CURRENT;
+        else if (origin == kFileSeekOrigin_End)
+            moveMethod = FILE_END;
+
+        LARGE_INTEGER largeOffset;
+        largeOffset.QuadPart = offset;
+
+        largeOffset.LowPart = SetFilePointer((HANDLE)handle, largeOffset.LowPart, &largeOffset.HighPart, moveMethod);
+
+        if (largeOffset.LowPart == INVALID_SET_FILE_POINTER && GetLastError() != NO_ERROR)
+            return -1;
+
+        return largeOffset.QuadPart;
+    }
+
+    bool FileSystemWin::TruncateFile(FileHandle handle, int64_t offset) {
+        return false;
+    }
+
+    int64_t FileSystemWin::WriteToFile(FileHandle handle, const char* data, int64_t length) {
+        CheckThread();
+
+        if (handle == (FileHandle)INVALID_HANDLE_VALUE)
+            return -1;
+
+        DWORD bytesWritten;
+        bool success = WriteFile((HANDLE)handle, data, length, &bytesWritten, 0);
+
+        if (!success)
+            return -1;
+        return static_cast<int64_t>(bytesWritten);
+    }
+
+    int64_t FileSystemWin::ReadFromFile(FileHandle handle, char* data, int64_t length) {
+        CheckThread();
+
+        if (handle == (FileHandle)INVALID_HANDLE_VALUE)
+            return -1;
+
+        DWORD bytesRead;
+        bool success = ::ReadFile((HANDLE)handle, data, length, &bytesRead, 0);
+
+        if (!success)
+            return -1;
+        return static_cast<int64_t>(bytesRead);
+    }
+
+    bool FileSystemWin::CopyFile_(const String16& source, const String16& destination) {
+        CheckThread();
+
+        return !!::CopyFile(GetRelative(source).get(), GetRelative(destination).get(), TRUE);
+    }
+
+    std::unique_ptr<WCHAR[]> FileSystemWin::GetRelative(const String16& path) {
+        CheckThread();
+
+
+        std::unique_ptr<WCHAR[]> relPath(new WCHAR[_MAX_PATH]);
+        PathCombine(relPath.get(), baseDir_.get(), path.data());
+        return relPath;
+    }
 
 }  // namespace ultralight
