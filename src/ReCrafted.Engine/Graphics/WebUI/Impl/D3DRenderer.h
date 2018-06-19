@@ -58,7 +58,6 @@ private:
     bool Initialize(HWND hWnd, bool fullscreen, bool sRGB, int samples);
     void OnResize();
 
-    HWND hwnd_;
     ComPtr<ID3D11Device> device_;
     ComPtr<ID3D11DeviceContext> immediate_context_;
     ComPtr<IDXGISwapChain> swap_chain_;
@@ -70,7 +69,6 @@ private:
     uint32_t height_;
     UINT back_buffer_width_;
     UINT back_buffer_height_;
-    int samples_ = 1;
     std::vector<Renderable*> renderables_;
 };
 

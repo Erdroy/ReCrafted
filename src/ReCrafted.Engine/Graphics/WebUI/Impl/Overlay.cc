@@ -91,20 +91,24 @@ void Overlay::MouseWheel(int delta, int x, int y) {
   view()->FireScrollEvent(evt);
 }
 
+void Overlay::OnFinishLoading(ultralight::View* caller)
+{
+}
+
 void Overlay::UpdateGeometry() {
   bool initial_creation = false;
   if (vertices_.empty()) {
     vertices_.resize(4);
     indices_.resize(6);
 
-    auto& config = Platform::instance().config();
+    auto& config = ultralight::Platform::instance().config();
     if (config.face_winding == kFaceWinding_Clockwise)
       memcpy(indices_.data(), patternCW, sizeof(IndexType) * indices_.size());
     else
       memcpy(indices_.data(), patternCCW, sizeof(IndexType) * indices_.size());
 
     memset(&gpu_state_, 0, sizeof(gpu_state_));
-    Matrix identity;
+    ultralight::Matrix identity;
     identity.SetIdentity();
     gpu_state_.transform = ConvertAffineTo4x4(identity);
     gpu_state_.enable_blend = true;
