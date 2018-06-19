@@ -31,6 +31,8 @@ void WebUI::OnDispose()
 
 void WebUI::Resize(uint width, uint height)
 {
+    m_engine->Resize(width, height);
+
     for (var&& view : m_views)
         view->Resize(width, height);
 }

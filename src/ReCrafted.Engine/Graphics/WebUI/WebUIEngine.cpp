@@ -41,14 +41,14 @@ public:
         // Setup our Platform API handlers
         rvar platform = ultralight::Platform::instance();
 
+        m_driver = new ultralight::GPUDriverD3D(context);
+
         // Setup ultralight config
         ultralight::Config config;
         config.face_winding = ultralight::kFaceWinding_Clockwise;
         config.device_scale_hint = 1.0f;
         config.use_distance_field_fonts = true;
         config.use_distance_field_paths = true;
-
-        m_driver = new ultralight::GPUDriverD3D(context);
 
         platform.set_config(config);
         platform.set_gpu_driver(m_driver);
@@ -88,7 +88,9 @@ public:
 
     void* CreateUIView(WebUIView* view) const
     {
-        return new Overlay(m_renderer.get(), m_driver, view->Width(), view->Height(), view->X(), view->Y(), 1.0f);
+        var overlay = new Overlay(m_renderer.get(), m_driver, view->Width(), view->Height(), view->X(), view->Y(), 1.0f);
+        overlay->view()->set_load_listener(overlay);
+        return overlay;
     }
 
     static UltralightRenderer* Create(D3DContext* context)
@@ -132,8 +134,19 @@ void WebUIEngine::Render()
     m_context->Render(float(Time::DeltaTime()));
 }
 
+void WebUIEngine::Resize(uint width, uint height)
+{
+    if (!IsInitialized())
+        return;
+
+    m_context->Resize(width, height);
+}
+
 void* WebUIEngine::CreateUIView(WebUIView* view)
 {
+    if (!IsInitialized())
+        return nullptr;
+
     return m_renderer->CreateUIView(view);
 }
 

@@ -21,6 +21,8 @@ public:
     void Render();
 
 public:
+    void Resize(uint width, uint height);
+
     bool NeedsViewsUpdate() const
     {
         return m_needsViewUpdate;

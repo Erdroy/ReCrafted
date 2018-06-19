@@ -30,6 +30,8 @@ public:
     D3DRenderer(HWND hWnd, bool fullscreen, bool sRGB = true, int samples = 1);
     virtual ~D3DRenderer();
 
+    void Resize(uint16_t width, uint16_t height);
+
     // Render all renderables.
     void Render(float delta);
 
@@ -54,6 +56,7 @@ public:
 
 private:
     bool Initialize(HWND hWnd, bool fullscreen, bool sRGB, int samples);
+    void OnResize();
 
     HWND hwnd_;
     ComPtr<ID3D11Device> device_;
