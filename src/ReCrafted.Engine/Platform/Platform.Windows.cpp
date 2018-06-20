@@ -344,6 +344,8 @@ void Platform::ReportAssert(Text expression, Text fileName, unsigned int line, T
 #endif
 
 #if ASSERT_FAIL_EXCEPTION
+    throw std::exception(expression.StdStr().c_str());
+#else
     // and exit...
     exit(-1);
 #endif
