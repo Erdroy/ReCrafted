@@ -6,21 +6,30 @@
 
 void Task::Run()
 {
-    m_timeStart = Platform::GetMiliseconds();
+    m_timeStart = static_cast<float>(Platform::GetMiliseconds());
 
-    m_function.Invoke();
+    // Execute custom task, or just a function
+    if(m_customTask)
+        m_customTask->Execute(m_userData);
+    else
+        m_function.Invoke();
+
     m_completed = true;
-
-    m_timeEnd = Platform::GetMiliseconds();
+    m_timeEnd = static_cast<float>(Platform::GetMiliseconds());
 
     // Unlock
     m_executionLock.UnlockNow();
+
+    delete m_customTask;
 }
 
 void Task::Queue()
 {
     // Lock execution
     m_executionLock.LockNow();
+
+    // Set queue time
+    m_timeQueue = static_cast<float>(Platform::GetMiliseconds());
 
     _ASSERT_(m_queued == false, "Task is already queued!");
     TaskManager::QueueTask(*this);
@@ -33,7 +42,11 @@ void Task::WaitForFinish()
 
 void Task::Cancel()
 {
-    TaskManager::CancelTask(m_id);
+    if(TaskManager::CancelTask(m_id))
+    {
+        // Delete custom task when everything is done
+        delete m_customTask;
+    }
 }
 
 Task Task::RunTask(Delegate<void> function)
@@ -54,10 +67,15 @@ Task Task::RunTask(Delegate<void> function, Delegate<bool> callback)
 
 Task Task::CreateTask(Delegate<void> function)
 {
-    return TaskManager::CreateTask(function, {}, false);
+    return TaskManager::CreateTask(function, {});
 }
 
 Task Task::CreateTask(Delegate<void> function, Delegate<bool> callback)
 {
-    return TaskManager::CreateTask(function, callback, false);
+    return TaskManager::CreateTask(function, callback);
+}
+
+Task Task::CreateTask(ITask* customTask, void* userData)
+{
+    return TaskManager::CreateTask(customTask, userData);
 }

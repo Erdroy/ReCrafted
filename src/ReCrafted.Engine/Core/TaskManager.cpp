@@ -87,12 +87,13 @@ void TaskManager::Update()
     Profiler::EndProfile();
 }
 
-void TaskManager::CancelTask(uint taksId)
+bool TaskManager::CancelTask(uint taksId)
 {
     rvar lock = m_instance->m_callbackLock;
     ScopeLock(lock);
 
     MISSING_CODE("Task cancelation is not implemented, yet!");
+    return false;
 }
 
 void TaskManager::QueueTask(const Task& task)
@@ -103,16 +104,28 @@ void TaskManager::QueueTask(const Task& task)
     m_instance->m_tasks.enqueue(task);
 }
 
-Task TaskManager::CreateTask(Delegate<void> function, Delegate<bool> callback, bool enqueue)
+Task TaskManager::CreateTask(Delegate<void> function, Delegate<bool> callback)
 {
+    rvar lock = m_instance->m_createTaskLock;
+    ScopeLock(lock);
+
     var task = Task();
-    task.m_timeQueue = Platform::GetMiliseconds();
     task.m_id = m_instance->m_lastId++;
     task.m_function = function;
     task.m_callback = callback;
 
-    if (enqueue)
-        QueueTask(task);
+    return task;
+}
+
+Task TaskManager::CreateTask(ITask* customTask, void* userData)
+{
+    rvar lock = m_instance->m_createTaskLock;
+    ScopeLock(lock);
+
+    var task = Task();
+    task.m_id = m_instance->m_lastId++;
+    task.m_customTask = customTask;
+    task.m_userData = userData;
 
     return task;
 }
