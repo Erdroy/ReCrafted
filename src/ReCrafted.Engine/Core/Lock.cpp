@@ -2,7 +2,7 @@
 
 #include "Lock.h"
 
-#include <windows.h>
+#include <Windows.h>
 #include <intrin.h>
 
 // TODO: cross-platform implementation
@@ -12,6 +12,11 @@ Lock::Lock()
 {
     m_counter = 0;
     m_semaphore = CreateSemaphore(nullptr, 0, 1, nullptr);
+}
+
+Lock::~Lock()
+{
+    CloseHandle(m_semaphore);
 }
 
 void Lock::LockNow()
@@ -33,9 +38,4 @@ void Lock::UnlockNow()
     {
         ReleaseSemaphore(m_semaphore, 1, nullptr);
     }
-}
-
-void Lock::Dispose()
-{
-    CloseHandle(m_semaphore);
 }

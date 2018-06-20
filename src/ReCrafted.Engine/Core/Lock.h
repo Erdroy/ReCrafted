@@ -15,12 +15,13 @@ struct Lock
 
 public:
     Lock();
+    ~Lock();
 
+public:
     void LockNow();
     bool TryLock();
     void UnlockNow();
 
-    void Dispose();
 };
 
 struct IScopeLock
