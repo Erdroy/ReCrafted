@@ -16,6 +16,8 @@ void TaskManager::WorkerFunction()
     Task task;
     while (m_running)
     {
+        ScopeLock(m_globalLock);
+
         if (!m_tasks.try_dequeue(task))
         {
             Platform::Sleep(m_sleepTime);
@@ -23,7 +25,7 @@ void TaskManager::WorkerFunction()
         }
 
         // run task
-        task.run();
+        task.Run();
 
         // queue callback
         m_callbackLock.LockNow();
@@ -85,7 +87,23 @@ void TaskManager::Update()
     Profiler::EndProfile();
 }
 
-Task TaskManager::CreateTask(Delegate<void> function, Delegate<bool> callback)
+void TaskManager::CancelTask(uint taksId)
+{
+    rvar lock = m_instance->m_callbackLock;
+    ScopeLock(lock);
+
+    MISSING_CODE("Task cancelation is not implemented, yet!");
+}
+
+void TaskManager::QueueTask(const Task& task)
+{
+    rvar lock = m_instance->m_callbackLock;
+    ScopeLock(lock);
+
+    m_instance->m_tasks.enqueue(task);
+}
+
+Task TaskManager::CreateTask(Delegate<void> function, Delegate<bool> callback, bool enqueue)
 {
     var task = Task();
     task.m_timeQueue = Platform::GetMiliseconds();
@@ -93,7 +111,8 @@ Task TaskManager::CreateTask(Delegate<void> function, Delegate<bool> callback)
     task.m_function = function;
     task.m_callback = callback;
 
-    m_instance->m_tasks.enqueue(task);
+    if (enqueue)
+        QueueTask(task);
 
     return task;
 }

@@ -26,6 +26,7 @@ private:
     std::atomic<bool> m_running = false;
     uint m_sleepTime = 10;
     uint m_lastId = 0u;
+    Lock m_globalLock = {};
     Lock m_callbackLock = {};
     moodycamel::ConcurrentQueue<Task> m_tasks;
     Array<Delegate<bool>> m_callbacks = {};
@@ -41,7 +42,9 @@ private:
     void Update() override;
 
 private:
-    static Task CreateTask(Delegate<void> function, Delegate<bool> callback);
+    static void CancelTask(uint taksId);
+    static void QueueTask(const Task& task);
+    static Task CreateTask(Delegate<void> function, Delegate<bool> callback, bool enqueue);
 };
 
 #endif // TASKMANAGER_H
