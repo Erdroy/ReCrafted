@@ -205,6 +205,11 @@ void* Platform::GetCurrentWindow()
     return m_currentWindow;
 }
 
+void Platform::SetCursorVisibility(bool visible)
+{
+    ShowCursor(visible);
+}
+
 int Platform::GetCursorIcon()
 {
     return m_currentCursorId;

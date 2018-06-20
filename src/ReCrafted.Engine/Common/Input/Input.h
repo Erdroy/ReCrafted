@@ -167,6 +167,9 @@ public:
     */
     FORCEINLINE static void SetShowCursor(bool show)
     {
+        if (show != m_instance->m_showCursor)
+            Platform::SetCursorVisibility(show);
+
         m_instance->m_showCursor = show;
     }
 };

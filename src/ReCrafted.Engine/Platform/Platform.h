@@ -148,6 +148,11 @@ public:
     }
 
     /**
+     * \brief Show or hide cursor.
+     */
+    static void SetCursorVisibility(bool visible);
+
+    /**
      * \brief Gets cursor icon id.
      * \return The cursor icon id.
      */

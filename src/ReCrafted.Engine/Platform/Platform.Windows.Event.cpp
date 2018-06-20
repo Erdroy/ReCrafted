@@ -22,21 +22,24 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
             lpMMI->ptMinTrackSize.x = 800;
             lpMMI->ptMinTrackSize.y = 600;
         }
-    case WM_SETCURSOR:
+    /*case WM_SETCURSOR:
         {
             if (LOWORD(lparam) == HTCLIENT)
             {
                 if (Input::GetShowCursor())
                 {
-                    SetCursor(m_currentCursor);
+                    //SetCursor(m_currentCursor);
+                    ShowCursor(true);
                 }
                 else
                 {
-                    SetCursor(nullptr);
+                    ShowCursor(false);
+                    //SetCursor(nullptr);
                 }
             }
-            return 0;
-        }
+            //return 0;
+            break;
+        }*/
     case WM_SIZE:
         {
             if (wparam == 2)
