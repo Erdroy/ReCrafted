@@ -29,6 +29,8 @@ private:
     ultralight::RefPtr<ultralight::Renderer> m_renderer = nullptr;
     ultralight::GPUDriver* m_driver = nullptr;
 
+    bool m_needsViewUpdate = false;
+
 public:
     UltralightRenderer(D3DContext* context)
     {
@@ -82,7 +84,9 @@ public:
         crvar platform = ultralight::Platform::instance();
         cvar driver = platform.gpu_driver();
 
-        if (driver->HasCommandsPending())
+        m_needsViewUpdate = driver->HasCommandsPending();
+
+        if(m_needsViewUpdate)
             driver->DrawCommandList();
     }
 
@@ -91,6 +95,11 @@ public:
         var overlay = new Overlay(m_renderer.get(), m_driver, view->Width(), view->Height(), view->X(), view->Y(), 1.0f);
         overlay->view()->set_load_listener(overlay);
         return overlay;
+    }
+
+    bool NeedsViewUpdate() const
+    {
+        return m_needsViewUpdate;
     }
 
     static UltralightRenderer* Create(D3DContext* context)
@@ -132,6 +141,7 @@ void WebUIEngine::Render()
         return;
 
     m_context->Render(float(Time::DeltaTime()));
+    m_needsViewUpdate = m_renderer->NeedsViewUpdate();
 }
 
 void WebUIEngine::Resize(uint width, uint height)

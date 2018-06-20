@@ -47,7 +47,7 @@ void WebUI::Render()
 {
     m_engine->Render();
 
-    //if (m_engine->NeedsViewsUpdate()) 
+    //if (m_engine->NeedsViewsUpdate()) // TODO: To allow drawing only when needed, we need to create RenderTarget for each WebUIView, and then blit it to the backbuffer
     {
         for (var&& view : m_views)
             view->Render();
