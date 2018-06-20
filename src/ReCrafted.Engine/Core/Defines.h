@@ -29,7 +29,7 @@
 #define SafeDeleteArray(ptr) if(ptr) { delete [] ptr; ptr = nullptr; }
 #define SafeDeleteArrayNN(ptr) if(ptr) { delete [] ptr; }
 
-#define MISSING_CODE() throw "Code fragment is missing"
+#define MISSING_CODE(msg) Platform::ReportAssert(TEXT_CONST("MISSING_CODE()"), Text(__FILE__), (unsigned)(__LINE__), Text(msg))
 
 #define PROPERTY(type, name)	\
 	public: __inline type Get##name##() {		\
