@@ -19,6 +19,11 @@ Lock::~Lock()
     CloseHandle(m_semaphore);
 }
 
+void Lock::Enter()
+{
+    WaitForSingleObject(m_semaphore, INFINITE);
+}
+
 void Lock::LockNow()
 {
     if (_InterlockedIncrement(&m_counter) > 1)

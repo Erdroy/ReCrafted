@@ -22,6 +22,7 @@ public:
     bool TryLock();
     void UnlockNow();
 
+    void Enter();
 };
 
 struct IScopeLock
