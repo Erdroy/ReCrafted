@@ -8,6 +8,7 @@
 // includes
 #include "ReCrafted.h"
 #include "Delegate.h"
+#include "Lock.h"
 
 struct ITask
 {
@@ -33,6 +34,8 @@ private:
 
     Delegate<void> m_function;
     Delegate<bool> m_callback;
+
+    Lock m_executionLock = {};
 
 private:
     void Run();
