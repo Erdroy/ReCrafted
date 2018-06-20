@@ -1,14 +1,9 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
-#include <thread>
 #if _WIN32
 
-#if USE_CRTDBG
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#endif
-
 #include <cstdio>
+#include <thread>
 #include <Windows.h>
 
 #include "Platform.h"
@@ -120,9 +115,6 @@ void Platform::Initialize()
 
 void Platform::Shutdown()
 {
-#if USE_CRTDBG
-    _CrtDumpMemoryLeaks();
-#endif
 }
 
 Guid Platform::NewGuid()
@@ -342,15 +334,19 @@ void Platform::ReportAssert(Text expression, Text fileName, unsigned int line, T
 
     Logger::LogException("{0}", formated);
 
+#if ASSERT_FAIL_SHOW_MESSAGE_BOX
     // Show message box
     MessageBoxA(static_cast<HWND>(m_currentWindow), formated.c_str(), "Error", MB_OK | MB_ICONERROR);
+#endif
 
-#if _DEBUG
+#if _DEBUG && ASSERT_FAIL_DEBUG_BREAK
     __debugbreak();
 #endif
 
+#if ASSERT_FAIL_EXCEPTION
     // and exit...
     exit(-1);
+#endif
 }
 
 #endif
