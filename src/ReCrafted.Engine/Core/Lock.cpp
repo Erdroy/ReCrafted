@@ -21,7 +21,11 @@ Lock::~Lock()
 
 void Lock::Enter()
 {
-    WaitForSingleObject(m_semaphore, INFINITE);
+    //WaitForSingleObject(m_semaphore, INFINITE);
+
+    // Kinda nasty way to do this, but works.
+    LockNow();
+    UnlockNow();
 }
 
 void Lock::LockNow()
