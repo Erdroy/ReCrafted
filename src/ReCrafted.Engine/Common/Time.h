@@ -29,6 +29,8 @@ private:
     float m_fixedTime = 0.0;
     int m_frames = 0;
 
+    double m_lastUpdateTime = 0.0;
+
 private:
     void OnInit() override
     {
@@ -38,6 +40,8 @@ private:
     {
         m_deltaTime = 0.0f;
     }
+
+    void OnFrame();
 
 public:
     /**

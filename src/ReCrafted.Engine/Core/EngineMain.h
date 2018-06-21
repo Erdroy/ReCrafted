@@ -24,8 +24,6 @@ private:
     RefPtr<UpdateLoop> m_updateLoop = {};
     RefPtr<ApplicationWindow> m_mainWindow = {};
 
-    double m_lastUpdateTime = 0.0;
-
 public:
     EngineMain() { m_instance = this; }
 

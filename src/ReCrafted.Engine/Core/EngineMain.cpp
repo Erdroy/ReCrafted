@@ -70,11 +70,7 @@ void EngineMain::OnSimulate()
 void EngineMain::OnUpdate()
 {
     // Update time
-    // TODO: Time::GetInstance()->Update();
-    cvar currentTime = Platform::GetMiliseconds();
-    Time::m_instance->m_deltaTime = (currentTime - m_lastUpdateTime) / 1000.0;
-    Time::m_instance->m_time = float(currentTime / 1000.0);
-    m_lastUpdateTime = currentTime;
+    Time::GetInstance()->OnFrame();
 
     // Update input
     Input::GetInstance()->UpdateInput();
