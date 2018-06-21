@@ -14,6 +14,10 @@ void Task::Run()
     else
         m_function.Invoke();
 
+    // Run 'Continue' task
+    if(m_continueWith)
+        m_continueWith->Run();
+
     m_completed = true;
     m_timeEnd = static_cast<float>(Platform::GetMiliseconds());
 
@@ -21,15 +25,30 @@ void Task::Run()
     m_executionLock.UnlockNow();
 }
 
-void Task::Queue()
+void Task::PrepareForQueue()
 {
-    _ASSERT_(m_queued == false, "Task is already queued!");
-
     // Lock execution
     m_executionLock.LockNow();
 
     // Set queue time
     m_timeQueue = static_cast<float>(Platform::GetMiliseconds());
+}
+
+void Task::ContinueWith(Task* task)
+{
+    ASSERT(m_continueWith == nullptr);
+    ASSERT(task != nullptr);
+    ASSERT(task->m_queued == false);
+
+    m_continueWith = task;
+    m_continueWith->PrepareForQueue();
+}
+
+void Task::Queue()
+{
+    _ASSERT_(m_queued == false, "Task is already queued!");
+
+    PrepareForQueue();
 
     TaskManager::QueueTask(this);
 }
@@ -72,5 +91,7 @@ Task* Task::CreateTask(Delegate<void> function, Delegate<bool> callback)
 
 Task* Task::CreateTask(ITask* customTask, void* userData)
 {
+    ASSERT(customTask != nullptr);
+
     return TaskManager::CreateTask(customTask, userData);
 }

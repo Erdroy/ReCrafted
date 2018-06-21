@@ -38,6 +38,7 @@ private:
 private:
     void WorkerFunction();
     Task* AcquireTask();
+    void ReleaseTask(Task* task);
 
 private:
     void OnInit() override;

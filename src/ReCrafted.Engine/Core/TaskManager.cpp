@@ -44,10 +44,29 @@ Task* TaskManager::AcquireTask()
     return task;
 }
 
+void TaskManager::ReleaseTask(Task* task)
+{
+    // Invoke callback
+    task->m_callback.Invoke();
+
+    // Release 'Continue' task
+    if (task->m_continueWith)
+        ReleaseTask(task->m_continueWith);
+
+    // Clean task
+    CleanupTask(task);
+
+    // Return task back to the pool
+    m_taskPool.enqueue(task);
+}
+
 void TaskManager::CleanupTask(Task* task)
 {
-    if (task->m_customTask)
-        delete task->m_customTask;
+    delete task->m_customTask;
+
+    // Cleanup 'continue with' task
+    if (task->m_continueWith)
+        CleanupTask(task->m_continueWith);
 
     task->m_id = 0u;
     task->m_timeQueue = 0.0f;
@@ -59,6 +78,7 @@ void TaskManager::CleanupTask(Task* task)
     task->m_callback = {};
     task->m_customTask = nullptr;
     task->m_userData = nullptr;
+    task->m_continueWith = nullptr;
 }
 
 void TaskManager::OnInit()
@@ -111,14 +131,7 @@ void TaskManager::Update()
     Task* task;
     while(m_taskReleaseQueue.try_dequeue(task))
     {
-        // Invoke callback
-        task->m_callback.Invoke();
-
-        // Clean task
-        CleanupTask(task);
-
-        // Return task back to the pool
-        m_taskPool.enqueue(task);
+        ReleaseTask(task);
     }
 
     Profiler::EndProfile();

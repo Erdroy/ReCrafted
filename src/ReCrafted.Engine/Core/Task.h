@@ -38,6 +38,7 @@ private:
     Lock m_executionLock = {};
     ITask* m_customTask = nullptr;
     void* m_userData = nullptr;
+    Task* m_continueWith = nullptr;
 
 public:
     Task() = default;
@@ -45,8 +46,15 @@ public:
 
 private:
     void Run();
+    void PrepareForQueue();
 
 public:
+    /**
+     * \brief Continue this task with another.
+     * \param task The task which will be executed right after current.
+     */
+    void ContinueWith(Task* task);
+
     /**
      * \brief Queues this task for execution. 
      * Warning: make sure that this task is not already queued.
