@@ -13,25 +13,52 @@ void TaskManager::WorkerFunction()
 {
     Platform::SetThreadName("TaskManager Worker");
 
-    Task task;
+    Task* task;
     while (m_running)
     {
         ScopeLock(m_globalLock);
 
-        if (!m_tasks.try_dequeue(task))
+        if (!m_taskExecuteQueue.try_dequeue(task))
         {
             Platform::Sleep(m_sleepTime);
             continue;
         }
 
         // run task
-        task.Run();
+        task->Run();
 
-        // queue callback
-        m_callbackLock.LockNow();
-        m_callbacks.Add(task.m_callback);
-        m_callbackLock.UnlockNow();
+        // queue task for release
+        m_taskReleaseQueue.enqueue(task);
     }
+}
+
+Task* TaskManager::AcquireTask()
+{
+    Task* task;
+
+    // Try to get task from the pool, 
+    // if there is no any free task, create new one
+    if (!m_taskPool.try_dequeue(task))
+        task = new Task();
+
+    return task;
+}
+
+void TaskManager::CleanupTask(Task* task)
+{
+    if (task->m_customTask)
+        delete task->m_customTask;
+
+    task->m_id = 0u;
+    task->m_timeQueue = 0.0f;
+    task->m_timeStart = 0.0f;
+    task->m_timeEnd = 0.0f;
+    task->m_queued = false;
+    task->m_completed = false;
+    task->m_function = {};
+    task->m_callback = {};
+    task->m_customTask = nullptr;
+    task->m_userData = nullptr;
 }
 
 void TaskManager::OnInit()
@@ -49,6 +76,10 @@ void TaskManager::OnInit()
             WorkerFunction();
         }));
     }
+
+    // Initialize tasks
+    for (var i = 0; i < InitialTaskCount; i++)
+        m_taskPool.enqueue(new Task());
 }
 
 void TaskManager::OnDispose()
@@ -58,7 +89,7 @@ void TaskManager::OnDispose()
     Logger::LogInfo("Waiting for TaskManager workers to exit...");
 
     // wait for threads to exit
-    for (auto&& thread : m_workerThreads)
+    for (rvar thread : m_workerThreads)
     {
         if (thread && thread->joinable())
             thread->join();
@@ -77,55 +108,51 @@ void TaskManager::Update()
 {
     Profiler::BeginProfile("TaskManager dispatch");
 
-    ScopeLock(m_callbackLock);
+    Task* task;
+    while(m_taskReleaseQueue.try_dequeue(task))
+    {
+        // Invoke callback
+        task->m_callback.Invoke();
 
-    for (var&& callback : m_callbacks)
-        callback.Invoke();
+        // Clean task
+        CleanupTask(task);
 
-    m_callbacks.Clear();
+        // Return task back to the pool
+        m_taskPool.enqueue(task);
+    }
 
     Profiler::EndProfile();
 }
 
-bool TaskManager::CancelTask(uint taksId)
+bool TaskManager::CancelTask(uint taskId)
 {
-    rvar lock = m_instance->m_callbackLock;
-    ScopeLock(lock);
-
     MISSING_CODE("Task cancelation is not implemented, yet!");
     return false;
 }
 
-void TaskManager::QueueTask(const Task& task)
+void TaskManager::QueueTask(Task* task)
 {
-    rvar lock = m_instance->m_callbackLock;
-    ScopeLock(lock);
-
-    m_instance->m_tasks.enqueue(task);
+    m_instance->m_taskExecuteQueue.enqueue(task);
 }
 
-Task TaskManager::CreateTask(Delegate<void> function, Delegate<bool> callback)
+Task* TaskManager::CreateTask(Delegate<void> function, Delegate<bool> callback)
 {
-    rvar lock = m_instance->m_createTaskLock;
-    ScopeLock(lock);
+    var task = m_instance->AcquireTask();
 
-    var task = Task();
-    task.m_id = m_instance->m_lastId++;
-    task.m_function = function;
-    task.m_callback = callback;
+    task->m_id = m_instance->m_lastId++;
+    task->m_function = function;
+    task->m_callback = callback;
 
     return task;
 }
 
-Task TaskManager::CreateTask(ITask* customTask, void* userData)
+Task* TaskManager::CreateTask(ITask* customTask, void* userData)
 {
-    rvar lock = m_instance->m_createTaskLock;
-    ScopeLock(lock);
+    var task = m_instance->AcquireTask();
 
-    var task = Task();
-    task.m_id = m_instance->m_lastId++;
-    task.m_customTask = customTask;
-    task.m_userData = userData;
+    task->m_id = m_instance->m_lastId++;
+    task->m_customTask = customTask;
+    task->m_userData = userData;
 
     return task;
 }

@@ -23,18 +23,21 @@ class TaskManager : public EngineComponent<TaskManager>
     friend struct Task;
 
 private:
+    static const int InitialTaskCount = 32;
+
+private:
+    Array<std::thread*> m_workerThreads = {};
     std::atomic<bool> m_running = false;
     uint m_sleepTime = 10;
     uint m_lastId = 0u;
-    Lock m_createTaskLock = {};
     Lock m_globalLock = {};
-    Lock m_callbackLock = {};
-    moodycamel::ConcurrentQueue<Task> m_tasks;
-    Array<Delegate<bool>> m_callbacks = {};
-    Array<std::thread*> m_workerThreads = {};
+    moodycamel::ConcurrentQueue<Task*> m_taskExecuteQueue;
+    moodycamel::ConcurrentQueue<Task*> m_taskReleaseQueue;
+    moodycamel::ConcurrentQueue<Task*> m_taskPool;
 
 private:
     void WorkerFunction();
+    Task* AcquireTask();
 
 private:
     void OnInit() override;
@@ -43,10 +46,11 @@ private:
     void Update() override;
 
 private:
-    static bool CancelTask(uint taksId);
-    static void QueueTask(const Task& task);
-    static Task CreateTask(Delegate<void> function, Delegate<bool> callback);
-    static Task CreateTask(ITask* customTask, void* userData);
+    static void CleanupTask(Task* task);
+    static bool CancelTask(uint taskId);
+    static void QueueTask(Task* task);
+    static Task* CreateTask(Delegate<void> function, Delegate<bool> callback);
+    static Task* CreateTask(ITask* customTask, void* userData);
 };
 
 #endif // TASKMANAGER_H

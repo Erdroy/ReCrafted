@@ -74,45 +74,57 @@ public:
 
 public:
     /**
-    * \brief Creates and runs task without calback.
+    * \brief Creates and runs task without callback.
     * \param function The function which will be run on remote thread.
     * \return The created task.
     */
-    static Task RunTask(Delegate<void> function);
+    static Task* RunTask(Delegate<void> function);
 
     /**
-    * \brief Creates and runs task without calback.
+    * \brief Creates and runs task with callback.
     * \param function The function which will be run on remote thread.
     * \param function The function which will be called on main thread after the task is completed.
     * \return The created task.
     */
-    static Task RunTask(Delegate<void> function, Delegate<bool> callback);
+    static Task* RunTask(Delegate<void> function, Delegate<bool> callback);
 
     /**
-    * \brief Creates task without calback.
+    * \brief Creates task without callback. This task need to be queued.
     * \param function The function which will be run on remote thread.
     * \return The created task.
     */
-    static Task CreateTask(Delegate<void> function);
+    static Task* CreateTask(Delegate<void> function);
 
     /**
-    * \brief Creates task without calback.
+    * \brief Creates task with callback. This task need to be queued.
     * \param function The function which will be run on remote thread.
     * \param function The function which will be called on main thread after the task is completed.
     * \return The created task.
     */
-    static Task CreateTask(Delegate<void> function, Delegate<bool> callback);
+    static Task* CreateTask(Delegate<void> function, Delegate<bool> callback);
 
+    /**
+     * \brief Creates custom task with optional userData.
+     * \tparam T The custom task structure, must inherit from ITask.
+     * \param userData The optional user data pointer.
+     * \return The created custom task.
+     */
     template <typename T>
-    static Task CreateTask(void* userData = nullptr)
+    static Task* CreateTask(void* userData = nullptr)
     {
         static_assert(std::is_base_of<ITask, T>::value, "T must inherit from ITask");
-        var customTask = static_cast<ITask*>(new T());
+        cvar customTask = static_cast<ITask*>(new T());
         return CreateTask(customTask, userData);
     }
 
+    /**
+    * \brief Creates custom task with optional userData. This task need to be queued.
+    * \tparam T The custom task structure, must inherit from ITask.
+    * \param userData The optional user data pointer.
+    * \return The created custom task.
+    */
     template <typename T>
-    static Task RunTask(void* userData = nullptr)
+    static Task* RunTask(void* userData = nullptr)
     {
         var task = RunTask<T>(userData);
         task.Queue();
@@ -120,7 +132,7 @@ public:
     }
 
 private:
-    static Task CreateTask(ITask* customTask, void* userData);
+    static Task* CreateTask(ITask* customTask, void* userData);
 };
 
 #endif // TASK_H

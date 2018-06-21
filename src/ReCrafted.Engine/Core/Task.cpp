@@ -19,20 +19,19 @@ void Task::Run()
 
     // Unlock
     m_executionLock.UnlockNow();
-
-    delete m_customTask;
 }
 
 void Task::Queue()
 {
+    _ASSERT_(m_queued == false, "Task is already queued!");
+
     // Lock execution
     m_executionLock.LockNow();
 
     // Set queue time
     m_timeQueue = static_cast<float>(Platform::GetMiliseconds());
 
-    _ASSERT_(m_queued == false, "Task is already queued!");
-    TaskManager::QueueTask(*this);
+    TaskManager::QueueTask(this);
 }
 
 void Task::WaitForFinish()
@@ -42,40 +41,36 @@ void Task::WaitForFinish()
 
 void Task::Cancel()
 {
-    if(TaskManager::CancelTask(m_id))
-    {
-        // Delete custom task when everything is done
-        delete m_customTask;
-    }
+    TaskManager::CancelTask(m_id);
 }
 
-Task Task::RunTask(Delegate<void> function)
+Task* Task::RunTask(Delegate<void> function)
 {
-    var task = CreateTask(function, {});
-    task.m_queued = true;
+    cvar task = CreateTask(function, {});
+    task->m_queued = true;
     TaskManager::QueueTask(task);
     return task;
 }
 
-Task Task::RunTask(Delegate<void> function, Delegate<bool> callback)
+Task* Task::RunTask(Delegate<void> function, Delegate<bool> callback)
 {
-    var task = CreateTask(function, callback);
-    task.m_queued = true;
+    cvar task = CreateTask(function, callback);
+    task->m_queued = true;
     TaskManager::QueueTask(task);
     return task;
 }
 
-Task Task::CreateTask(Delegate<void> function)
+Task* Task::CreateTask(Delegate<void> function)
 {
     return TaskManager::CreateTask(function, {});
 }
 
-Task Task::CreateTask(Delegate<void> function, Delegate<bool> callback)
+Task* Task::CreateTask(Delegate<void> function, Delegate<bool> callback)
 {
     return TaskManager::CreateTask(function, callback);
 }
 
-Task Task::CreateTask(ITask* customTask, void* userData)
+Task* Task::CreateTask(ITask* customTask, void* userData)
 {
     return TaskManager::CreateTask(customTask, userData);
 }
