@@ -56,7 +56,7 @@ class Profiler;
 class Display;
 class Time;
 class Input;
-class PhysicsManager;
+class PhysicsEngine;
 class Graphics;
 class UI;
 class EntityPool;

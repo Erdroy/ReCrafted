@@ -21,7 +21,6 @@ project "ReCrafted.Engine"
 		path.join(LIBS_DIR, "mono/inc"),
 		path.join(LIBS_DIR, "freetype/include"),
 		path.join(LIBS_DIR, "fmod/inc"),
-		path.join(LIBS_DIR, "physx34/include"),
 		path.join(LIBS_DIR, "rpmalloc/include"),
 		path.join(LIBS_DIR, "base64/include"),
 		path.join(LIBS_DIR, "json/include"),
@@ -43,7 +42,7 @@ project "ReCrafted.Engine"
 			"call " .. ROOT_DIR .. "/pm.bat PostBuild --skip-shaders --skip-api",
 		}
 	
-	links { "d3d11", "dxguid", "dxgi", "d3dcompiler", "Rpcrt4", "Ultralight", "UltralightCore", "WebCore", "mono", "PxFoundation_x64", "PxTask_x64", "PhysX3_x64", "PhysX3Common_x64", "PhysX3Extensions", "PhysX3CharacterKinematic_x64" }
+	links { "d3d11", "dxguid", "dxgi", "d3dcompiler", "Rpcrt4", "Ultralight", "UltralightCore", "WebCore", "mono"}
 		
 	configuration { "Debug" }
 		defines { "DEBUG", "_ITERATOR_DEBUG_LEVEL=0" }
@@ -61,11 +60,6 @@ project "ReCrafted.Engine"
 		-- set target dir
 		targetdir (path.join(TARGET_DIR, "bin64/"))
 		debugdir (path.join(TARGET_DIR, "bin64/"))
-		
-	--configuration { "x32" }
-	--	-- set target dir
-	--	targetdir (path.join(TARGET_DIR, "bin32/"))
-	--	debugdir (path.join(TARGET_DIR, "bin32/"))
 	
 	configuration { "x64", "vs*"}
 		-- add bgfx lib path - bgfx always contains all needed libs after being compiled
@@ -73,26 +67,10 @@ project "ReCrafted.Engine"
 			path.join(LIBS_DIR, "mono/lib"),
 			path.join(LIBS_DIR, "freetype/x64"),
 			path.join(LIBS_DIR, "fmod/lib"),
-			path.join(LIBS_DIR, "physx34/lib/vc14win64"),
 			path.join(LIBS_DIR, "rpmalloc/lib"),
 			path.join(LIBS_DIR, "ultralight/lib"),
 		}
 		linkoptions { "/ignore:4099" }
-	
-	--configuration { "x32", "vs*"}
-	--	-- add bgfx lib path - bgfx always contains all needed libs after being compiled
-	--	libdirs { 
-	--		path.join(LIBS_DIR, "bgfx/.build/win32_" .. _ACTION .. "/bin/"),
-	--		path.join(LIBS_DIR, "mono/lib"),
-	--		path.join(LIBS_DIR, "freetype/win32"),
-	--		path.join(LIBS_DIR, "fmod/lib"),
-	--	}
-	--	linkoptions { "/ignore:4099" }
-	
-	configuration { "vs*", "Debug"}
-		libdirs { 
-			path.join(LIBS_DIR, "freetype/debug"),
-		}
 	
 	-- TODO: add linux and macosx
 	
