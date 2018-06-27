@@ -14,7 +14,7 @@ void WebUIView::Init(uint width, uint height, bool fullscreen)
     m_width = fullscreen ? Display::GetWidth() : width;
     m_height = fullscreen ? Display::GetHeight() : height;
 
-    m_overlay = WebUIEngine::CreateUIView(this);
+    m_overlay = WebUIEngine::CreateUIView(this, fullscreen);
 }
 
 void WebUIView::Update()
@@ -27,6 +27,8 @@ void WebUIView::Resize(uint width, uint height)
     if (!m_fullscreen) // Cannot resize non-fullscreen webviews
         return;
 
+    cvar overlay = static_cast<Overlay*>(m_overlay);
+    overlay->Resize(width, height);
 }
 
 void WebUIView::Render()
@@ -34,14 +36,30 @@ void WebUIView::Render()
     if (!m_Active)
         return;
 
+    if(m_fullscreen)
+    {
+        // TODO: Bind back buffer
+    }
+
     cvar overlay = static_cast<Overlay*>(m_overlay);
     overlay->Draw();
+
+    if (!m_fullscreen)
+    {
+        // TODO: Blit into back-buffer using created quad
+    }
 }
 
 void WebUIView::OnDestroy()
 {
     cvar overlay = static_cast<Overlay*>(m_overlay);
     delete overlay;
+}
+
+void WebUIView::UpdateSurface(const Vector3& vertex0, const Vector3& vertex1, const Vector3& vertex2,
+    const Vector3& vertex3)
+{
+    // TODO: Build quad
 }
 
 void WebUIView::Navigate(Text& url)

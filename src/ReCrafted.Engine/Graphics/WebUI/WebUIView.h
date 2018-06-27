@@ -30,6 +30,7 @@ private:
     void OnDestroy() override;
 
 public:
+    void UpdateSurface(const Vector3& vertex0, const Vector3& vertex1, const Vector3& vertex2, const Vector3& vertex3);
 
     void Navigate(Text& url);
     void Execute(const char* javaScriptSource);

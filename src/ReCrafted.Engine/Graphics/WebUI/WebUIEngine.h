@@ -29,7 +29,7 @@ public:
     }
 
 public:
-    static void* CreateUIView(WebUIView* view);
+    static void* CreateUIView(WebUIView* view, bool fullscreen);
     static bool IsInitialized();
 };
 

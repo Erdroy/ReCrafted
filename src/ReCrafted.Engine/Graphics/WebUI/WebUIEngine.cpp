@@ -90,9 +90,9 @@ public:
             driver->DrawCommandList();
     }
 
-    void* CreateUIView(WebUIView* view) const
+    void* CreateUIView(WebUIView* view, bool fullscreen) const
     {
-        var overlay = new Overlay(m_renderer.get(), m_driver, view->Width(), view->Height(), 0, 0, 1.0f);
+        cvar overlay = new Overlay(fullscreen, m_renderer.get(), m_driver, view->Width(), view->Height());
         overlay->view()->set_load_listener(overlay);
         return overlay;
     }
@@ -152,12 +152,12 @@ void WebUIEngine::Resize(uint width, uint height)
     m_context->Resize(width, height);
 }
 
-void* WebUIEngine::CreateUIView(WebUIView* view)
+void* WebUIEngine::CreateUIView(WebUIView* view, bool fullscreen)
 {
     if (!IsInitialized())
         return nullptr;
 
-    return m_renderer->CreateUIView(view);
+    return m_renderer->CreateUIView(view, fullscreen);
 }
 
 bool WebUIEngine::IsInitialized()
