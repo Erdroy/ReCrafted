@@ -26,8 +26,7 @@ void WebUIView::Resize(uint width, uint height)
 {
     ASSERT(m_fullscreen);
     
-    cvar overlay = static_cast<Overlay*>(m_overlay);
-    overlay->Resize(width, height);
+    m_overlay->Resize(width, height);
 }
 
 void WebUIView::Render()
@@ -35,8 +34,7 @@ void WebUIView::Render()
     if (!m_Active)
         return;
 
-    cvar overlay = static_cast<Overlay*>(m_overlay);
-    overlay->Draw();
+    m_overlay->Draw();
 
     if (!m_fullscreen)
     {
@@ -46,8 +44,7 @@ void WebUIView::Render()
 
 void WebUIView::OnDestroy()
 {
-    cvar overlay = static_cast<Overlay*>(m_overlay);
-    delete overlay;
+    delete m_overlay;
 }
 
 void WebUIView::UpdateSurface(const Vector3& vertex0, const Vector3& vertex1, const Vector3& vertex2,

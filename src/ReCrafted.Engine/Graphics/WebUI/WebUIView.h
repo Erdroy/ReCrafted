@@ -8,6 +8,7 @@
 // includes
 #include "ReCrafted.h"
 #include "Scripting/Object.h"
+#include "WebUIOverlay.h"
 
 class WebUIView : public Object
 {
@@ -20,7 +21,7 @@ private:
     int m_width = 0;
     int m_height = 0;
     bool m_fullscreen = false;
-    void* m_overlay = nullptr;
+    WebUIOverlay* m_overlay = nullptr;
 
 private:
     void Init(uint width = 0u, uint height = 0u, bool fullscreen = true);

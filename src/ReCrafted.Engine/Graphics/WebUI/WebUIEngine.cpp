@@ -90,12 +90,13 @@ public:
             driver->DrawCommandList();
     }
 
-    void* CreateUIView(WebUIView* view, bool fullscreen) const
+    WebUIOverlay* CreateUIView(WebUIView* view, bool fullscreen) const
     {
         cvar overlay = new Overlay(fullscreen, m_renderer.get(), m_driver, view->Width(), view->Height());
         overlay->view()->set_load_listener(overlay);
         overlay->view()->set_view_listener(overlay);
-        return overlay;
+
+        return static_cast<WebUIOverlay*>(overlay);
     }
 
     bool NeedsViewUpdate() const
@@ -154,7 +155,7 @@ void WebUIEngine::Resize(uint width, uint height)
     D3DRenderer::GetInstance()->Resize(width, height);
 }
 
-void* WebUIEngine::CreateUIView(WebUIView* view, bool fullscreen)
+WebUIOverlay* WebUIEngine::CreateUIView(WebUIView* view, bool fullscreen)
 {
     if (!IsInitialized())
         return nullptr;

@@ -146,7 +146,7 @@ void Overlay::OnDOMReady(ultralight::View* caller)
 void Overlay::OnAddConsoleMessage(ultralight::View* caller, MessageSource source, MessageLevel level,
     const String& message, uint32_t line_number, uint32_t column_number, const String& source_id)
 {
-    OutputDebugStringA((const char*)message.utf8().data());
+    //OutputDebugStringA((const char*)message.utf8().data());
 }
 
 void Overlay::UpdateGeometry() {

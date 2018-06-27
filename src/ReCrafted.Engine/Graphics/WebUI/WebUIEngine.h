@@ -7,6 +7,7 @@
 
 // includes
 #include "ReCrafted.h"
+#include "WebUIOverlay.h"
 
 class WebUIEngine : public Singleton<WebUIEngine>
 {
@@ -30,7 +31,7 @@ public:
     }
 
 public:
-    static void* CreateUIView(WebUIView* view, bool fullscreen);
+    static WebUIOverlay* CreateUIView(WebUIView* view, bool fullscreen);
     static bool IsInitialized();
 };
 
