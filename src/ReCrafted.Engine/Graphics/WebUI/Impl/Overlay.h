@@ -15,7 +15,7 @@ enum MouseButton {
 /**
 * D3D Screen Overlay that wraps a View, useful for UI purposes.
 */
-class Overlay : public LoadListener {
+class Overlay : public LoadListener, public ViewListener {
 private:
     bool m_fullscreen;
     bool m_needsUpdate = true;
@@ -43,6 +43,13 @@ public:
     void OnBeginLoading(ultralight::View* caller) override;
     void OnUpdateHistory(ultralight::View* caller) override;
     void OnDOMReady(ultralight::View* caller) override;
+    void OnAddConsoleMessage(ultralight::View* caller,
+        MessageSource source,
+        MessageLevel level,
+        const String& message,
+        uint32_t line_number,
+        uint32_t column_number,
+        const String& source_id) override;
 
     void KeyDown(WPARAM wparam, LPARAM lparam, bool is_system_key) const;
     void KeyUp(WPARAM wparam, LPARAM lparam, bool is_system_key) const;

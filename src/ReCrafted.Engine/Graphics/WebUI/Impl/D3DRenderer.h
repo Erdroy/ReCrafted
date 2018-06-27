@@ -37,6 +37,7 @@ public:
 
     // Render all renderables.
     void Render(float delta);
+    void AfterRender();
 
     // Add Renderable to be rendered during next Render call
     void AddRenderable(Renderable* renderable);

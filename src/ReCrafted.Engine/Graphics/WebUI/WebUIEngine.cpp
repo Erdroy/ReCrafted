@@ -94,6 +94,7 @@ public:
     {
         cvar overlay = new Overlay(fullscreen, m_renderer.get(), m_driver, view->Width(), view->Height());
         overlay->view()->set_load_listener(overlay);
+        overlay->view()->set_view_listener(overlay);
         return overlay;
     }
 
@@ -108,19 +109,16 @@ public:
     }
 };
 
-D3DRenderer* m_context = nullptr;
 UltralightRenderer* m_renderer = nullptr;
 
 void WebUIEngine::Init()
 {
     // Create D3DRenderer and Ultralight renderer
-    m_context = new D3DRenderer(nullptr, false);
-    m_renderer = UltralightRenderer::Create(m_context);
+    var context = D3DRenderer::GetInstance();
+    m_renderer = UltralightRenderer::Create(context);
 
     // Initialize context
-    m_context->set_scale(1.0);
-    m_context->set_screen_size(Display::GetWidth(), Display::GetHeight());
-    m_context->AddRenderable(m_renderer);
+    context->AddRenderable(m_renderer);
 
     m_initialized = true;
     Logger::Log("WebUIEngine initialized using Ultralight {0} (WebKitCore)", ULTRALIGHT_VERSION);
@@ -132,7 +130,6 @@ void WebUIEngine::OnDispose()
         return;
 
     delete m_renderer;
-    delete m_context;
 }
 
 void WebUIEngine::Render()
@@ -140,8 +137,13 @@ void WebUIEngine::Render()
     if (!IsInitialized())
         return;
 
-    m_context->Render(float(Time::DeltaTime()));
+    D3DRenderer::GetInstance()->Render(float(Time::DeltaTime()));
     m_needsViewUpdate = m_renderer->NeedsViewUpdate();
+}
+
+void WebUIEngine::OnRendered()
+{
+    D3DRenderer::GetInstance()->AfterRender();
 }
 
 void WebUIEngine::Resize(uint width, uint height)
@@ -149,7 +151,7 @@ void WebUIEngine::Resize(uint width, uint height)
     if (!IsInitialized())
         return;
 
-    m_context->Resize(width, height);
+    D3DRenderer::GetInstance()->Resize(width, height);
 }
 
 void* WebUIEngine::CreateUIView(WebUIView* view, bool fullscreen)

@@ -1,9 +1,10 @@
 #include "Overlay.h"
-#include "D3DRenderer.h"
-#include "GPUDriverD3D.h"
+
 #include <Ultralight/Renderer.h>
 #include <Ultralight/platform/Platform.h>
 #include <Ultralight/platform/Config.h>
+
+#include "D3DRenderer.h"
 
 static ultralight::IndexType patternCW[] = { 0, 1, 3, 1, 2, 3 };
 static ultralight::IndexType patternCCW[] = { 0, 3, 1, 1, 3, 2 };
@@ -12,7 +13,7 @@ Overlay::Overlay(bool fullscreen, ultralight::Renderer* renderer, GPUDriver* dri
     m_fullscreen(fullscreen), 
     m_width(width), 
     m_height(height),
-    m_view(renderer->CreateView(width, height, true)), 
+    m_view(renderer->CreateView(width, height, true)),
     m_driver(driver)
 {
     m_texture = driver->NextTextureId();
@@ -140,6 +141,12 @@ void Overlay::OnUpdateHistory(ultralight::View* caller)
 
 void Overlay::OnDOMReady(ultralight::View* caller)
 {
+}
+
+void Overlay::OnAddConsoleMessage(ultralight::View* caller, MessageSource source, MessageLevel level,
+    const String& message, uint32_t line_number, uint32_t column_number, const String& source_id)
+{
+    OutputDebugStringA((const char*)message.utf8().data());
 }
 
 void Overlay::UpdateGeometry() {

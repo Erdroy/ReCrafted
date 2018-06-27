@@ -19,6 +19,7 @@ public:
     void OnDispose() override;
 
     void Render();
+    void OnRendered();
 
 public:
     void Resize(uint width, uint height);

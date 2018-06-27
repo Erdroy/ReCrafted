@@ -55,6 +55,8 @@ void WebUI::Render()
         for (var&& view : m_views)
             view->Render();
     }
+
+    m_engine->OnRendered();
 }
 
 RefPtr<WebUIView> WebUI::CreateView()
