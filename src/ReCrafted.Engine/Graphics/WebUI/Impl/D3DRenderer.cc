@@ -17,11 +17,6 @@ D3DRenderer::~D3DRenderer() {
 void D3DRenderer::Resize(uint16_t width, uint16_t height)
 {
     immediate_context_->OMSetRenderTargets(0, nullptr, nullptr);
-
-    swap_chain_ = nullptr;
-    back_buffer_view_ = nullptr;
-    back_buffer_width_ = width;
-    back_buffer_height_ = height;
 }
 
 bool D3DRenderer::Initialize(HWND hWnd, bool fullscreen, bool sRGB, int samples) {
@@ -35,16 +30,8 @@ bool D3DRenderer::Initialize(HWND hWnd, bool fullscreen, bool sRGB, int samples)
     Renderer::RHIContext context;
     Renderer::GetContext(&context);
 
-    cvar currentWindow = context.windows[1];
-
     device_ = CComPtr<ID3D11Device>(static_cast<ID3D11Device*>(context.device));
     immediate_context_ = CComPtr<ID3D11DeviceContext>(static_cast<ID3D11DeviceContext*>(context.deviceContext));
-
-    swap_chain_ = CComPtr<IDXGISwapChain>(static_cast<IDXGISwapChain*>(currentWindow.swapChain));
-
-    back_buffer_view_ = CComPtr<ID3D11RenderTargetView>(static_cast<ID3D11RenderTargetView*>(currentWindow.backBuffer));
-
-    immediate_context_->OMSetRenderTargets(1, back_buffer_view_.GetAddressOf(), nullptr);
 
     D3D11_RENDER_TARGET_BLEND_DESC rt_blend_desc;
     ZeroMemory(&rt_blend_desc, sizeof(rt_blend_desc));
@@ -95,26 +82,10 @@ bool D3DRenderer::Initialize(HWND hWnd, bool fullscreen, bool sRGB, int samples)
     vp.TopLeftY = 0;
     immediate_context_->RSSetViewports(1, &vp);
 
-    back_buffer_width_ = width;
-    back_buffer_height_ = height;
-
     return true;
 }
 
-void D3DRenderer::OnResize()
-{
-    Renderer::RHIContext context;
-    Renderer::GetContext(&context);
-
-    cvar currentWindow = context.windows[1];
-    swap_chain_ = CComPtr<IDXGISwapChain>(static_cast<IDXGISwapChain*>(currentWindow.swapChain));
-    back_buffer_view_ = CComPtr<ID3D11RenderTargetView>(static_cast<ID3D11RenderTargetView*>(currentWindow.backBuffer));
-}
-
 void D3DRenderer::Render(float delta) {
-
-    if(back_buffer_view_ == nullptr)
-        OnResize();
 
     immediate_context_->OMSetBlendState(blend_state_.Get(), NULL, 0xffffffff);
     immediate_context_->RSSetState(rasterizer_state_.Get());

@@ -47,8 +47,7 @@ public:
     // Inherited from D3DContext:
     virtual ID3D11Device* device() override { assert(device_.Get()); return device_.Get(); }
     virtual ID3D11DeviceContext* immediate_context() override { assert(immediate_context_.Get()); return immediate_context_.Get(); }
-    virtual IDXGISwapChain* swap_chain() override { assert(swap_chain_.Get()); return swap_chain_.Get(); }
-    virtual ID3D11RenderTargetView* render_target_view() override { assert(back_buffer_view_.Get()); return back_buffer_view_.Get(); }
+
     virtual void set_scale(double scale) { scale_ = scale; }
     virtual double scale() const { return scale_; }
     virtual void set_screen_size(uint32_t width, uint32_t height) override { width_ = width; height_ = height; }
@@ -56,19 +55,14 @@ public:
 
 private:
     bool Initialize(HWND hWnd, bool fullscreen, bool sRGB, int samples);
-    void OnResize();
 
     ComPtr<ID3D11Device> device_;
     ComPtr<ID3D11DeviceContext> immediate_context_;
-    ComPtr<IDXGISwapChain> swap_chain_;
-    ComPtr<ID3D11RenderTargetView> back_buffer_view_;
     ComPtr<ID3D11BlendState> blend_state_;
     ComPtr<ID3D11RasterizerState> rasterizer_state_;
     double scale_;
     uint32_t width_;
     uint32_t height_;
-    UINT back_buffer_width_;
-    UINT back_buffer_height_;
     std::vector<Renderable*> renderables_;
 };
 

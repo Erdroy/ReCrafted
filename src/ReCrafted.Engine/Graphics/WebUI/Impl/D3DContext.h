@@ -18,8 +18,6 @@ public:
 
     virtual ID3D11Device* device() = 0;
     virtual ID3D11DeviceContext* immediate_context() = 0;
-    virtual IDXGISwapChain* swap_chain() = 0;
-    virtual ID3D11RenderTargetView* render_target_view() = 0;
 
     // Scale is calculated from monitor DPI, see Application::SetScale
     virtual void set_scale(double scale) = 0;

@@ -211,8 +211,8 @@ namespace ultralight {
         context_->immediate_context()->PSSetShaderResources(2, 1, nullSRV);
 
         if (render_buffer_id == 0) {
-            auto render_target = context_->render_target_view();
-            context_->immediate_context()->OMSetRenderTargets(1, &render_target, nullptr);
+            //auto render_target = context_->render_target_view();
+            //context_->immediate_context()->OMSetRenderTargets(1, &render_target, nullptr);
             return;
         }
 
@@ -230,7 +230,7 @@ namespace ultralight {
         float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
         if (render_buffer_id == 0) {
-            context_->immediate_context()->ClearRenderTargetView(context_->render_target_view(), color);
+            //context_->immediate_context()->ClearRenderTargetView(context_->render_target_view(), color);
             return;
         }
 
