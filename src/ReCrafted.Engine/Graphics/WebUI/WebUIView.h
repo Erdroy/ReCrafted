@@ -39,6 +39,7 @@ public:
 public:
     int Width() const { return m_width; }
     int Height() const { return m_height; }
+    int IsFullscreen() const { return m_fullscreen; }
 
 public:
     PROPERTY(bool, Active) = true;

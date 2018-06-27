@@ -24,9 +24,8 @@ void WebUIView::Update()
 
 void WebUIView::Resize(uint width, uint height)
 {
-    if (!m_fullscreen) // Cannot resize non-fullscreen webviews
-        return;
-
+    ASSERT(m_fullscreen);
+    
     cvar overlay = static_cast<Overlay*>(m_overlay);
     overlay->Resize(width, height);
 }
