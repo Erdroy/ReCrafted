@@ -18,14 +18,10 @@ public:
 
     virtual ID3D11Device* device() = 0;
     virtual ID3D11DeviceContext* immediate_context() = 0;
+    virtual ID3D11RenderTargetView* back_buffer_view() = 0;
 
-    // Scale is calculated from monitor DPI, see Application::SetScale
-    virtual void set_scale(double scale) = 0;
-    virtual double scale() const = 0;
-
-    // This is in virtual units, not actual pixels.
-    virtual void set_screen_size(uint32_t width, uint32_t height) = 0;
-    virtual void screen_size(uint32_t& width, uint32_t& height) = 0;
+    virtual void GetViewportSize(uint32_t& width, uint32_t& height) = 0;
+    virtual void SetViewportSize(int width, int height) = 0;
 };
 
 

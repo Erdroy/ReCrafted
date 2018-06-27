@@ -35,11 +35,6 @@ void WebUIView::Render()
     if (!m_Active)
         return;
 
-    if(m_fullscreen)
-    {
-        // TODO: Bind back buffer
-    }
-
     cvar overlay = static_cast<Overlay*>(m_overlay);
     overlay->Draw();
 

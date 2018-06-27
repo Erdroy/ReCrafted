@@ -211,8 +211,8 @@ namespace ultralight {
         context_->immediate_context()->PSSetShaderResources(2, 1, nullSRV);
 
         if (render_buffer_id == 0) {
-            //auto render_target = context_->render_target_view();
-            //context_->immediate_context()->OMSetRenderTargets(1, &render_target, nullptr);
+            auto render_target = context_->back_buffer_view();
+            context_->immediate_context()->OMSetRenderTargets(1, &render_target, nullptr);
             return;
         }
 
@@ -342,18 +342,6 @@ namespace ultralight {
 
         auto immediate_ctx = context_->immediate_context();
 
-        uint32_t width;
-        uint32_t height;
-        context_->screen_size(width, height);
-
-        D3D11_VIEWPORT vpd = {};
-        vpd.Width = static_cast<float>(width);
-        vpd.Height = static_cast<float>(height);
-        vpd.MinDepth = 0.0f;
-        vpd.MaxDepth = 1.0f;
-
-        immediate_ctx->RSSetViewports(1, &vpd);
-        
         auto& geometry = i->second;
         UINT stride = sizeof(Vertex_2f_4ub_2f_2f_28f);
         UINT offset = 0;
@@ -532,10 +520,10 @@ namespace ultralight {
         auto buffer = GetConstantBuffer();
 
         uint32_t width, height;
-        context_->screen_size(width, height);
+        context_->GetViewportSize(width, height);
 
         Uniforms uniforms;
-        uniforms.State = { 0.0, (float)width, (float)height , (float)context_->scale() };
+        uniforms.State = { 0.0, (float)width, (float)height, 1.0f };
         uniforms.Transform = DirectX::XMMATRIX(state.transform.data);
         uniforms.Scalar4[0] =
         { state.uniform_scalar[0], state.uniform_scalar[1], state.uniform_scalar[2], state.uniform_scalar[3] };

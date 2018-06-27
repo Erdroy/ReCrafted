@@ -5,8 +5,15 @@
 #include "Graphics/Renderer/RHI/RHIContext.h"
 #include <atlcomcli.h>
 
-D3DRenderer::D3DRenderer(HWND hWnd, bool fullscreen, bool sRGB, int samples) {
-    Initialize(hWnd, fullscreen, sRGB, samples);
+ID3D11RenderTargetView* D3DRenderer::GetBackBufferView()
+{
+    Renderer::RHIContext context;
+    Renderer::GetContext(&context);
+    return static_cast<ID3D11RenderTargetView*>(context.windows[1].backBuffer);
+}
+
+D3DRenderer::D3DRenderer() {
+    Initialize();
 }
 
 D3DRenderer::~D3DRenderer() {
@@ -17,16 +24,27 @@ D3DRenderer::~D3DRenderer() {
 void D3DRenderer::Resize(uint16_t width, uint16_t height)
 {
     immediate_context_->OMSetRenderTargets(0, nullptr, nullptr);
+    resize_ = true;
 }
 
-bool D3DRenderer::Initialize(HWND hWnd, bool fullscreen, bool sRGB, int samples) {
-    HRESULT hr = S_OK;
+void D3DRenderer::SetViewportSize(int width, int height)
+{
+    width_ = width;
+    height_ = height;
 
-    RECT rc;
-    ::GetClientRect(hWnd, &rc);
-    UINT width = rc.right - rc.left;
-    UINT height = rc.bottom - rc.top;
+    // Setup the viewport
+    D3D11_VIEWPORT vp;
+    ZeroMemory(&vp, sizeof(vp));
+    vp.Width = (float)width;
+    vp.Height = (float)height;
+    vp.MinDepth = 0.0f;
+    vp.MaxDepth = 1.0f;
+    vp.TopLeftX = 0;
+    vp.TopLeftY = 0;
+    immediate_context_->RSSetViewports(1, &vp);
+}
 
+bool D3DRenderer::Initialize() {
     Renderer::RHIContext context;
     Renderer::GetContext(&context);
 
@@ -70,30 +88,32 @@ bool D3DRenderer::Initialize(HWND hWnd, bool fullscreen, bool sRGB, int samples)
     device()->CreateRasterizerState(&rasterizer_desc, rasterizer_state_.GetAddressOf());
 
     immediate_context_->RSSetState(rasterizer_state_.Get());
-
-    // Setup the viewport
-    D3D11_VIEWPORT vp;
-    ZeroMemory(&vp, sizeof(vp));
-    vp.Width = (float)width;
-    vp.Height = (float)height;
-    vp.MinDepth = 0.0f;
-    vp.MaxDepth = 1.0f;
-    vp.TopLeftX = 0;
-    vp.TopLeftY = 0;
-    immediate_context_->RSSetViewports(1, &vp);
-
+    resize_ = false;
     return true;
 }
 
 void D3DRenderer::Render(float delta) {
-
     immediate_context_->OMSetBlendState(blend_state_.Get(), NULL, 0xffffffff);
     immediate_context_->RSSetState(rasterizer_state_.Get());
 
-    std::for_each(renderables_.begin(), renderables_.end(), [this, delta](auto renderable)
+    if (!m_backBufferView)
+        m_backBufferView = GetBackBufferView();
+
+    SetViewportSize(width_, height_);
+
+    std::for_each(renderables_.begin(), renderables_.end(), [this, delta](Renderable* renderable)
     {
         renderable->Render(this, delta);
     });
+}
+
+void D3DRenderer::AfterRender()
+{
+    if (resize_)
+    {
+        m_backBufferView = nullptr;
+        resize_ = false;
+    }
 }
 
 void D3DRenderer::AddRenderable(Renderable* renderable) {

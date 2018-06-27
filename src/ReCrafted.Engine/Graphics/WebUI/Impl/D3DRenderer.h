@@ -26,8 +26,11 @@ public:
 * renders any active Renderables.
 */
 class D3DRenderer : public D3DContext {
+private:
+    ID3D11RenderTargetView* GetBackBufferView();
+
 public:
-    D3DRenderer(HWND hWnd, bool fullscreen, bool sRGB = true, int samples = 1);
+    D3DRenderer();
     virtual ~D3DRenderer();
 
     void Resize(uint16_t width, uint16_t height);
@@ -45,25 +48,45 @@ public:
     void ClearRenderables();
 
     // Inherited from D3DContext:
-    virtual ID3D11Device* device() override { assert(device_.Get()); return device_.Get(); }
-    virtual ID3D11DeviceContext* immediate_context() override { assert(immediate_context_.Get()); return immediate_context_.Get(); }
+    virtual ID3D11Device* device() override
+    {
+        assert(device_.Get()); 
+        return device_.Get();
+    }
 
-    virtual void set_scale(double scale) { scale_ = scale; }
-    virtual double scale() const { return scale_; }
-    virtual void set_screen_size(uint32_t width, uint32_t height) override { width_ = width; height_ = height; }
-    virtual void screen_size(uint32_t& width, uint32_t& height) override { width = width_; height = height_; }
+    virtual ID3D11DeviceContext* immediate_context() override
+    {
+        assert(immediate_context_.Get()); 
+        return immediate_context_.Get();
+    }
+
+    ID3D11RenderTargetView* back_buffer_view() override
+    {
+        return m_backBufferView;
+    }
+
+    void GetViewportSize(uint32_t& width, uint32_t& height) override { width = width_; height = height_; }
+    void SetViewportSize(int width, int height) override;
+
+public:
+    static D3DRenderer* GetInstance()
+    {
+        static auto instance = new D3DRenderer();
+        return instance;
+    }
 
 private:
-    bool Initialize(HWND hWnd, bool fullscreen, bool sRGB, int samples);
+    bool Initialize();
 
+    ID3D11RenderTargetView* m_backBufferView;
     ComPtr<ID3D11Device> device_;
     ComPtr<ID3D11DeviceContext> immediate_context_;
     ComPtr<ID3D11BlendState> blend_state_;
     ComPtr<ID3D11RasterizerState> rasterizer_state_;
-    double scale_;
     uint32_t width_;
     uint32_t height_;
     std::vector<Renderable*> renderables_;
+    bool resize_;
 };
 
 #endif // D3DRENDERER_H

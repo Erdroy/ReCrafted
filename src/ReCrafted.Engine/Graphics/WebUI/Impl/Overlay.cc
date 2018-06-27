@@ -45,12 +45,13 @@ void Overlay::Resize(uint32_t width, uint32_t height)
 
 void Overlay::Draw() 
 {
-    m_driver->BindRenderBuffer(m_renderBuffer);
+    D3DRenderer::GetInstance()->SetViewportSize(m_width, m_height);
 
+    m_driver->BindRenderBuffer(m_fullscreen ? 0 : m_renderBuffer);
+   
     UpdateGeometry();
-
+    
     m_gpuState.texture_1_id = view()->render_target().texture_id;
-
     m_driver->DrawGeometry(m_geometryId, 6, 0, m_gpuState);
 }
 
