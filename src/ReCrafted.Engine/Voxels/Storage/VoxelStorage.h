@@ -28,7 +28,7 @@ private:
 private:
     FileStream* m_vxhStream = nullptr;
     VoxelStorageHeader* m_vxh = nullptr;
-    spp::sparse_hash_map<uint64_t, RefPtr<VoxelChunkData>> m_voxelChunks; // TODO: move into separate class and make some proper caching
+    spp::sparse_hash_map<uint64_t, RefPtr<VoxelChunkData>> m_voxelChunks;
     Lock m_voxelChunksLock = {};
 
 private:
@@ -37,6 +37,7 @@ private:
 
 public:
     void Init(SpaceObjectSettings* settings);
+    void Update();
     void Dispose() override;
 
 public:

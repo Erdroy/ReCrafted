@@ -40,7 +40,7 @@ void EngineMain::RegisterComponents() const
     m_componentManager->RegisterComponent(Universe::GetInstance());
     m_componentManager->RegisterComponent(DebugDraw::GetInstance());
     m_componentManager->RegisterComponent(UI::GetInstance());
-    //m_componentManager->RegisterComponent(WebUI::GetInstance());
+    m_componentManager->RegisterComponent(WebUI::GetInstance());
 }
 
 void EngineMain::CreateMainWindow()

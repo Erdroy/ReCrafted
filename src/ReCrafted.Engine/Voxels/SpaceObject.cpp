@@ -41,6 +41,9 @@ void SpaceObject::Update()
     m_octree->Update();
     m_octree->UpdateViews(m_views);
 
+    // Update voxel storage
+    m_voxelStorage->Update();
+
     // clear views for this frame
     m_views.Clear();
 }

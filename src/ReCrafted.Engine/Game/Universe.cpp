@@ -6,6 +6,7 @@
 #include "Voxels/SpaceObjectManager.h"
 #include "Voxels/Storage/VoxelStorage.h"
 #include "Voxels/SpaceObjectSettings.h"
+#include "Graphics/DebugDraw.h"
 
 SINGLETON_IMPL(Universe)
 
@@ -16,7 +17,7 @@ void Universe::OnInit()
     // initialize save system
 
     // initialize space object manager
-    SpaceObjectManager::GetInstance()->Init();
+    /*SpaceObjectManager::GetInstance()->Init();
 
     // temporary, replace with World::load("../saves/SaveName", MakeDelegate(Universe::OnWorldLoaded));
     // when saves will be done
@@ -34,19 +35,19 @@ void Universe::OnInit()
     m_testObject1 = SpaceObject::CreateSpaceObject(settings);
 
     // Generate primary data
-    m_testObject1->GeneratePrimary();
+    m_testObject1->GeneratePrimary();*/
 }
 
 void Universe::OnDispose()
 {
     // Shutdown
-    SafeDisposeNN(SpaceObjectManager::GetInstance());
-    SafeDispose(m_testObject1);
+    //SafeDisposeNN(SpaceObjectManager::GetInstance());
+    //SafeDispose(m_testObject1);
 }
 
 void Universe::Update()
 {
-    SpaceObjectManager::GetInstance()->Update();
+    /*SpaceObjectManager::GetInstance()->Update();
 
     if (Input::IsKeyDown(Key_F7))
     {
@@ -65,12 +66,14 @@ void Universe::Update()
         m_testObject1->Modify(VoxelEditMode::Additive, modPosition, 1.5f);
     }
 
+    DebugDraw::SetColor(Color(0, 105, 0, 64));
+
     if (m_viewUpdateEnabled)
     {
         var cameraPosition = Camera::GetMainCamera()->GetPosition();
         m_testObject1->UpdateViewPoint(cameraPosition);
         m_testObject1->Update();
-    }
+    }*/
 }
 
 void Universe::Simulate()
@@ -79,5 +82,5 @@ void Universe::Simulate()
 
 void Universe::Render()
 {
-    m_testObject1->Draw();
+    //m_testObject1->Draw();
 }

@@ -5,13 +5,6 @@
 #ifndef RENDERER_CONFIG_H
 #define RENDERER_CONFIG_H
 
-#ifdef _DEBUG
-#	include <cassert>
-#	define RENDERER_ASSERT(x) assert(x)
-#else
-#	define RENDERER_ASSERT(x)
-#endif
-
 #define RENDERER_YES	1
 #define RENDERER_NO		0
 

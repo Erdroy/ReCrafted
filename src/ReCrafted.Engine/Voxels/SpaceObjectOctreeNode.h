@@ -81,11 +81,6 @@ private:
     SpaceObjectOctreeNode* FindNode(Vector3 position, int size);
 
 public:
-    SpaceObjectOctreeNode()
-    {
-    }
-
-public:
     void UpdateViews(Array<Vector3>& views);
     void Draw();
     void Dispose();

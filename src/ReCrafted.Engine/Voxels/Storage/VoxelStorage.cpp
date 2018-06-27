@@ -12,6 +12,7 @@
 #include "Voxels/SpaceObjectChunk.h"
 #include "Voxels/SpaceObjectSettings.h"
 #include "Voxels/Generator/VoxelGenerator.h"
+#include "Common/Profiler/Profiler.h"
 
 void VoxelStorage::LoadHeader()
 {
@@ -64,13 +65,21 @@ void VoxelStorage::Init(SpaceObjectSettings* settings)
 
     if (settings->generationType == GenerationType::PreGenerated)
     {
-        // TODO: load pregen (VoxelPregen class neded) [*.rcv file]
         Logger::LogError("getVoxelsRow for pregens is not implemented!");
         return;
     }
 
     // load header
     LoadHeader();
+}
+
+void VoxelStorage::Update()
+{
+    Profiler::BeginProfile("SpaceObjectOctree::Update");
+
+
+
+    Profiler::EndProfile();
 }
 
 void VoxelStorage::Dispose()
