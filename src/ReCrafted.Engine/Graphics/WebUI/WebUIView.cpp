@@ -8,10 +8,11 @@
 #include "Graphics/Graphics.h"
 #include "Impl/Overlay.h"
 
-void WebUIView::Init()
+void WebUIView::Init(uint width, uint height, bool fullscreen)
 {
-    m_width = Display::GetWidth();
-    m_height = Display::GetHeight();
+    m_fullscreen = fullscreen;
+    m_width = fullscreen ? Display::GetWidth() : width;
+    m_height = fullscreen ? Display::GetHeight() : height;
 
     m_overlay = WebUIEngine::CreateUIView(this);
 }
@@ -23,11 +24,16 @@ void WebUIView::Update()
 
 void WebUIView::Resize(uint width, uint height)
 {
+    if (!m_fullscreen) // Cannot resize non-fullscreen webviews
+        return;
 
 }
 
 void WebUIView::Render()
 {
+    if (!m_Active)
+        return;
+
     cvar overlay = static_cast<Overlay*>(m_overlay);
     overlay->Draw();
 }

@@ -92,7 +92,7 @@ public:
 
     void* CreateUIView(WebUIView* view) const
     {
-        var overlay = new Overlay(m_renderer.get(), m_driver, view->Width(), view->Height(), view->X(), view->Y(), 1.0f);
+        var overlay = new Overlay(m_renderer.get(), m_driver, view->Width(), view->Height(), 0, 0, 1.0f);
         overlay->view()->set_load_listener(overlay);
         return overlay;
     }

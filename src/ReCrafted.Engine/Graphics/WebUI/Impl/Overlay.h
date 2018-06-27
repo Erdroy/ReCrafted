@@ -59,4 +59,8 @@ protected:
     bool needs_update_ = true;
     uint32_t geometry_id_ = 0;
     GPUState gpu_state_;
+
+private:
+    uint32_t m_texture = 0u;
+    uint32_t m_renderBuffer = 0u;
 };

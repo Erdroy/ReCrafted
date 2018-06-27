@@ -19,28 +19,28 @@ SCRIPTING_API_IMPL()
 private:
     int m_width = 0;
     int m_height = 0;
-    int m_x = 0;
-    int m_y = 0;
-
+    bool m_fullscreen = false;
     void* m_overlay = nullptr;
 
 private:
-    void Init();
+    void Init(uint width = 0u, uint height = 0u, bool fullscreen = true);
     void Update();
     void Resize(uint width, uint height);
     void Render();
     void OnDestroy() override;
 
 public:
-    int Width() const { return m_width; }
-    int Height() const { return m_height; }
-    int X() const { return m_x; }
-    int Y() const { return m_y; }
 
-public:
     void Navigate(Text& url);
     void Execute(const char* javaScriptSource);
     void Bind(const char* bindName, Delegate<void> delegate);
+
+public:
+    int Width() const { return m_width; }
+    int Height() const { return m_height; }
+
+public:
+    PROPERTY(bool, Active) = true;
 };
 
 #endif // WEBUIVIEW_H
