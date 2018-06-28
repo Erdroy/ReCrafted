@@ -84,7 +84,8 @@ void VoxelStorage::Update()
 
 void VoxelStorage::Dispose()
 {
-    m_voxelChunks.clear();
+    m_voxelChunksMap.clear();
+    m_voxelChunks.Clear();
 
     // release all resources
     SafeDisposeNN(m_vxhStream);
@@ -98,8 +99,8 @@ RefPtr<VoxelChunkData> VoxelStorage::CreateChunkData(Vector3& nodePosition, cons
 
     cvar chunkId = SpaceObjectChunk::CalculateChunkId(nodePosition);
 
-    if (m_voxelChunks.contains(chunkId))
-        return m_voxelChunks[chunkId];
+    if (m_voxelChunksMap.contains(chunkId))
+        return m_voxelChunksMap[chunkId];
 
     RefPtr<VoxelChunkData> chunk(new VoxelChunkData());
     chunk->m_size = nodeSize;
@@ -108,7 +109,8 @@ RefPtr<VoxelChunkData> VoxelStorage::CreateChunkData(Vector3& nodePosition, cons
     chunk->m_nodePosition = nodePosition;
     chunk->m_chunkPosition = nodePosition - Vector3::One() * float(nodeSize) * 0.5f;
 
-    m_voxelChunks[chunkId] = chunk;
+    m_voxelChunksMap[chunkId] = chunk;
+    m_voxelChunks.Add(chunk);
 
     return chunk;
 }
@@ -119,10 +121,10 @@ RefPtr<VoxelChunkData> VoxelStorage::GetChunkData(Vector3& nodePosition)
 
     cvar chunkId = SpaceObjectChunk::CalculateChunkId(nodePosition);
 
-    if (!m_voxelChunks.contains(chunkId))
+    if (!m_voxelChunksMap.contains(chunkId))
         return nullptr;
 
-    return m_voxelChunks[chunkId];
+    return m_voxelChunksMap[chunkId];
 }
 
 void VoxelStorage::ReadChunkData(const RefPtr<VoxelChunkData>& chunkData)
@@ -143,17 +145,11 @@ void VoxelStorage::ReadChunkData(const RefPtr<VoxelChunkData>& chunkData)
     cvar lod = chunkData->m_size / SpaceObjectOctreeNode::MinimumNodeSize;
     
     // generate chunk now using CHM
-    cvar hasSurface = spaceObject->GetGenerator()->GenerateChunkData(chunkData->GetData(), chunkPosition, lod, chunkData->m_nodeDepth);
-
-    if (!hasSurface) // TODO: improve chunk data allocation by making delayed data alloc (alloc and copy when there is valid surface)
-        chunkData->DeallocateData();
+    cvar hasSurface = spaceObject->GetGenerator()->GenerateChunkData(chunkData, chunkPosition, lod, chunkData->m_nodeDepth);
 
     // mark as loaded
     chunkData->m_hasSurface = hasSurface;
     chunkData->m_loaded = true;
-
-    // TODO: improve our surface detection by checking for modified chunk data - if there is none, chunkData should be null.
-    // When we want to modify the terrain, we should at first create chunk data.
 }
 
 void VoxelStorage::WriteChunkData(RefPtr<VoxelChunkData> chunkData)
@@ -167,5 +163,6 @@ void VoxelStorage::FreeChunkData(RefPtr<VoxelChunkData> chunkData)
     ScopeLock(m_voxelChunksLock);
 
     chunkData->DeallocateData();
-    m_voxelChunks.erase(chunkData->m_id);
+    m_voxelChunksMap.erase(chunkData->m_id);
+    m_voxelChunks.Remove(chunkData);
 }

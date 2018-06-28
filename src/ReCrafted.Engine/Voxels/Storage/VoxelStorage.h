@@ -28,8 +28,10 @@ private:
 private:
     FileStream* m_vxhStream = nullptr;
     VoxelStorageHeader* m_vxh = nullptr;
-    spp::sparse_hash_map<uint64_t, RefPtr<VoxelChunkData>> m_voxelChunks;
     Lock m_voxelChunksLock = {};
+
+    spp::sparse_hash_map<uint64_t, RefPtr<VoxelChunkData>> m_voxelChunksMap;
+    Array<RefPtr<VoxelChunkData>> m_voxelChunks = {};
 
 private:
     void LoadHeader();
@@ -46,6 +48,11 @@ public:
     void ReadChunkData(const RefPtr<VoxelChunkData>& chunkData);
     void WriteChunkData(RefPtr<VoxelChunkData> chunkData);
     void FreeChunkData(RefPtr<VoxelChunkData> chunkData);
+
+    Array<RefPtr<VoxelChunkData>>& GetChunkArray()
+    {
+        return m_voxelChunks;
+    }
 };
 
 #endif // VOXELSTORAGE_H
