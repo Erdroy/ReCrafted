@@ -70,6 +70,8 @@ void EngineMain::OnSimulate()
 
 void EngineMain::OnUpdate()
 {
+    rpmalloc_thread_collect();
+
     // Update time
     Time::GetInstance()->OnFrame();
 

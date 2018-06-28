@@ -20,6 +20,7 @@ void TaskManager::WorkerFunction()
 
         if (!m_taskExecuteQueue.try_dequeue(task))
         {
+            rpmalloc_thread_collect();
             Platform::Sleep(m_sleepTime);
             continue;
         }
