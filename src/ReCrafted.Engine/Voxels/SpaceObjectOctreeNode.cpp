@@ -8,6 +8,7 @@
 #include "Graphics/Camera.h"
 #include "Utilities/VoxelUtils.h"
 #include "SpaceObject.h"
+#include "Graphics/DebugDraw.h"
 
 #define HAS_LOCAL_NEIGH(id, dir) LocalNeighTable[id] & (1 << dir)
 
@@ -126,6 +127,9 @@ void SpaceObjectOctreeNode::FindIntersecting(Array<SpaceObjectOctreeNode*>& node
     for (var i = 0; i < 8; i++)
     {
         cvar node = m_childrenNodes[i];
+
+        if (node == nullptr)
+            return;
 
         if (BoundingBox::Intersects(node->m_Bounds, box))
         {
@@ -367,11 +371,13 @@ void SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position,
         return;
 
     cvar chunkData = chunk->GetChunkData();
-    cvar voxels = chunkData->GetData();
-    cvar chunkScale = static_cast<float>(chunkData->GetLod());
 
     if (!chunkData->HasData())
-        chunkData->AllocateData();
+        return;
+        //chunkData->AllocateData();
+
+    cvar chunkScale = static_cast<float>(chunkData->GetLod());
+    cvar voxels = chunkData->GetData();
 
     for (var x = 0; x < VoxelChunkData::ChunkDataSize; x++)
     {
