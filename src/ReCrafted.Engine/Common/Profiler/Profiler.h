@@ -102,6 +102,11 @@ private:
 public:
     void EndFrame();
 
+    Font* GetDebugFont() const
+    {
+        return m_debugFont;
+    }
+
 private:
     template <typename T>
     FORCEINLINE static void BeginProfile(const T* name, bool utf8, float timeMed, float timeMax)
