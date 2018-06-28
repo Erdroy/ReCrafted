@@ -127,6 +127,11 @@ void Overlay::MouseWheel(int delta) const
     view()->FireScrollEvent(evt);
 }
 
+void Overlay::Navigate(const std::string& url)
+{
+    view()->LoadURL(url.c_str());
+}
+
 void Overlay::OnFinishLoading(ultralight::View* caller)
 {
 }

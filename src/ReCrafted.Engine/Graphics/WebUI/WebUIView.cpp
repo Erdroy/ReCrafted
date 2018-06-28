@@ -55,10 +55,7 @@ void WebUIView::UpdateSurface(const Vector3& vertex0, const Vector3& vertex1, co
 
 void WebUIView::Navigate(Text& url)
 {
-    cvar overlay = static_cast<Overlay*>(m_overlay);
-
-    var view = overlay->view();
-    view->LoadURL(url.StdStr().c_str());
+    m_overlay->Navigate(url.StdStr());
 }
 
 void WebUIView::Execute(const char* javaScriptSource)

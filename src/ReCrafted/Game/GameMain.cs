@@ -78,10 +78,8 @@ namespace ReCrafted.Game
 
                 // create example webui view
                 _uiView = WebUI.Create();
-                //_uiView.Navigate("about:blank");
-                _uiView.Navigate("https://google.com/");
-                //_uiView.Navigate("file:///D:/ReCrafted/build/assets/ui/menu/menu.html");
-                //_uiView.Navigate("https://evanw.github.io/csg.js/");
+                _uiView.Navigate("file:///ui/default.html");
+                //_uiView.Navigate("file:///ui/menu/menu.html");
 
                 _tests2 = new UITests2();
                 _tests2.Init();

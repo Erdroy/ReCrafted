@@ -56,6 +56,8 @@ public:
     void MouseButtonUp(MouseButton button, int x, int y) const;
     void MouseWheel(int delta) const;
 
+    void Navigate(const std::string& url) override;
+
     ultralight::Ref<View> view() const
     {
         return m_view;

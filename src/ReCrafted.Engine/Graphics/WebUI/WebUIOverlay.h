@@ -13,6 +13,7 @@ public:
 public:
     virtual void Draw() = 0;
     virtual void Resize(uint32_t width, uint32_t height) = 0;
+    virtual void Navigate(const std::string& url) = 0;
 };
 
 #endif // WEBUIOVERLAY_H

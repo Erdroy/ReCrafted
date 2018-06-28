@@ -73,3 +73,10 @@ externalproject "libraries/ReCrafted.Common"
    language "C#"
    filename "ReCrafted.Common"
    
+externalproject "libraries/ReCrafted.UI"
+   location (path.join(ROOT_DIR, "src/libraries/ReCrafted.UI"))
+   uuid "63E577A6-39BB-4326-B2ED-B2B1E76E54A0"
+   kind "SharedLib"
+   language "C#"
+   filename "ReCrafted.UI"
+   
