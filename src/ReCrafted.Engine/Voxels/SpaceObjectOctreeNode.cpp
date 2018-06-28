@@ -373,8 +373,7 @@ void SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position,
     cvar chunkData = chunk->GetChunkData();
 
     if (!chunkData->HasData())
-        return;
-        //chunkData->AllocateData();
+        chunkData->AllocateData();
 
     cvar chunkScale = static_cast<float>(chunkData->GetLod());
     cvar voxels = chunkData->GetData();

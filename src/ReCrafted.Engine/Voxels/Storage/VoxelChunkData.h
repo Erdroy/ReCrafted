@@ -22,13 +22,16 @@ private:
     int m_size = 0;
     bool m_loaded = false;
     bool m_hasSurface = false;
+    bool m_isFilled = false;
     uint64_t m_id = 0u;
     int m_nodeDepth = 0;
     Vector3 m_nodePosition = {};
     Vector3 m_chunkPosition = {};
 
 public:
-    VoxelChunkData() { }
+    VoxelChunkData()
+    {
+    }
 
     ~VoxelChunkData()
     {
@@ -36,14 +39,14 @@ public:
     }
 
 public:
-    void AllocateData(const bool isFilled = false)
+    void AllocateData()
     {
         ASSERT(m_voxelData == nullptr);
 
         cvar size = ChunkDataSize * ChunkDataSize * ChunkDataSize;
         m_voxelData = new sbyte[size];
 
-        memset(m_voxelData, isFilled ? 127 : -127, size);
+        memset(m_voxelData, m_isFilled ? -127 : 127, size);
     }
 
     void DeallocateData()
@@ -79,6 +82,16 @@ public:
     bool IsLoaded() const
     {
         return m_loaded;
+    }
+
+    bool IsFilled() const
+    {
+        return m_isFilled;
+    }
+
+    void IsFilled(bool isFilled)
+    {
+        m_isFilled = isFilled;
     }
 
     bool HasData() const
