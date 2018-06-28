@@ -11,6 +11,7 @@
 class VoxelChunkData
 {
     friend class VoxelStorage;
+    friend class VoxelGenerator;
 
 public:
     static const int ChunkSize = 16; // 16 'cubes' on signle axis
@@ -27,10 +28,7 @@ private:
     Vector3 m_chunkPosition = {};
 
 public:
-    VoxelChunkData()
-    {
-        AllocateData();
-    }
+    VoxelChunkData() { }
 
     ~VoxelChunkData()
     {
@@ -38,12 +36,14 @@ public:
     }
 
 public:
-    void AllocateData()
+    void AllocateData(const bool isFilled = false)
     {
         ASSERT(m_voxelData == nullptr);
 
         cvar size = ChunkDataSize * ChunkDataSize * ChunkDataSize;
         m_voxelData = new sbyte[size];
+
+        memset(m_voxelData, isFilled ? 127 : -127, size);
     }
 
     void DeallocateData()

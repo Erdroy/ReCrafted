@@ -58,8 +58,11 @@ void VoxelGenerator::Dispose()
     SafeDispose(m_bitmap);
 }
 
-bool VoxelGenerator::GenerateChunkData(sbyte* voxelData, const Vector3& position, int lod, int depth)
+bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, const Vector3& position, int lod, int depth)
 {
+    const int voxelDataSize = VoxelChunkData::ChunkDataSize * VoxelChunkData::ChunkDataSize * VoxelChunkData::ChunkDataSize;
+    sbyte voxels[voxelDataSize]; // Well, stack will cry, but game will be still happy
+
     cvar octree = spaceObject->GetOctree();
 
     cvar dataSize = VoxelChunkData::ChunkDataSize;
@@ -89,15 +92,26 @@ bool VoxelGenerator::GenerateChunkData(sbyte* voxelData, const Vector3& position
                     settings->minSurfaceHeight,
                     settings->hillsHeight);
 
+                // Surface checking
                 if(!hasSurface && lastVoxel != value && index > 1)
                     hasSurface = true;
 
                 lastVoxel = value;
 
-                voxelData[index] = value;
+                voxels[index] = value;
             }
         }
     }
+
+    // If this chunk has any surface, then we will need to allocate data and copy the temporary array
+    if(hasSurface)
+    {
+        chunk->AllocateData();
+        cvar chunkData = chunk->GetData();
+        memcpy_s(chunkData, voxelDataSize, voxels, voxelDataSize);
+    }
+
+    // TODO: Check voxel signs, to set if this chunk is under surface or on surface
 
     return hasSurface;
 }

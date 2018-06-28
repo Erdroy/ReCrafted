@@ -10,6 +10,7 @@
 #include "Core/Lock.h"
 #include "Voxels/SpaceObject.h"
 #include "CHMBitmap.h"
+#include "Voxels/Storage/VoxelChunkData.h"
 
 class VoxelGenerator : IDisposable
 {
@@ -39,7 +40,7 @@ public:
     }
 
 public:
-    bool GenerateChunkData(sbyte* voxelData, const Vector3& position, int lod, int depth);
+    bool GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, const Vector3& position, int lod, int depth);
 };
 
 #endif // VOXELGENERATOR_H

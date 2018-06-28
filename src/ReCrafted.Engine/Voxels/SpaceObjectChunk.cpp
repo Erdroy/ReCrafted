@@ -72,6 +72,8 @@ void SpaceObjectChunk::Generate(IVoxelMesher* mesher) // WARNING: this function 
     if(!m_chunkData->HasSurface())
         return;
 
+    ASSERT(m_chunkData->HasData());
+
     Rebuild(mesher);
 }
 
@@ -114,11 +116,11 @@ void SpaceObjectChunk::Upload()
         // Upload new mesh
         m_newMesh->Upload();
 
-        // Swap mesh
-        m_mesh.swap(m_newMesh);
+        // Dispose old mesh
+        SafeDispose(m_mesh);
 
-        // Dispose old mesh (m_newMesh is the old mesh, look: m_mesh.swap() in the line above)
-        SafeDispose(m_newMesh);
+        // Swap mesh (m_newMesh will be nullptr - because m_mesh is nullptr (SafeDispose))
+        m_mesh.swap(m_newMesh);
     }
 }
 
