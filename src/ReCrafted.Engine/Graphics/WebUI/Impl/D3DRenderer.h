@@ -79,7 +79,7 @@ public:
 private:
     bool Initialize();
 
-    ID3D11RenderTargetView* m_backBufferView;
+    ID3D11RenderTargetView* m_backBufferView = nullptr;
     ComPtr<ID3D11Device> device_;
     ComPtr<ID3D11DeviceContext> immediate_context_;
     ComPtr<ID3D11BlendState> blend_state_;

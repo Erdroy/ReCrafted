@@ -212,7 +212,8 @@ namespace ultralight {
 
         if (render_buffer_id == 0) {
             auto render_target = context_->back_buffer_view();
-            context_->immediate_context()->OMSetRenderTargets(1, &render_target, nullptr);
+            if(render_target)
+                context_->immediate_context()->OMSetRenderTargets(1, &render_target, nullptr);
             return;
         }
 
