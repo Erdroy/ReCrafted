@@ -363,12 +363,12 @@ void SpaceObjectOctreeNode::Dispose()
     OnDestroy();
 }
 
-void SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position, float size)
+bool SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position, float size)
 {
     cvar chunk = GetChunk();
 
     if (chunk == nullptr)
-        return;
+        return false;
 
     cvar chunkData = chunk->GetChunkData();
 
@@ -377,6 +377,7 @@ void SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position,
 
     cvar chunkScale = static_cast<float>(chunkData->GetLod());
     cvar voxels = chunkData->GetData();
+    var modified = false;
 
     for (var x = 0; x < VoxelChunkData::ChunkDataSize; x++)
     {
@@ -384,15 +385,18 @@ void SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position,
         {
             for (var z = 0; z < VoxelChunkData::ChunkDataSize; z++)
             {
-                var point = Vector3(float(x), float(y), float(z)) * chunkScale + chunkData->GetChunkPosition();
+                cvar point = Vector3(float(x), float(y), float(z)) * chunkScale + chunkData->GetChunkPosition();
 
                 cvar currentValue = voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)];
                 cvar distance = Vector3::Distance(position, point);
 
                 if (distance <= size + 0.5f)
                 {
-                    var value = size - distance;
+                    cvar value = size - distance;
                     var newValue = VOXEL_FROM_FLOAT(value);
+
+                    if(newValue == currentValue)
+                        continue;
 
                     if (mode == VoxelEditMode::Additive)
                     {
@@ -406,12 +410,15 @@ void SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position,
                         if (newValue > currentValue)
                             voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)] = newValue;
                     }
+
+                    modified = true;
                 }
             }
         }
     }
 
     chunkData->HasSurface(true);
+    return modified;
 }
 
 SpaceObjectOctreeNode* SpaceObjectOctreeNode::GetNeighNode(NodeDirection::_enum direction) const

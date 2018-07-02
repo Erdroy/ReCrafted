@@ -49,9 +49,9 @@ bool Mesh::CanUpload()
 
 void Mesh::ApplyChanges()
 {
-    _ASSERT(m_vertices);
-    _ASSERT(m_vertices_count > 0);
-    _ASSERT(m_indices_count > 0);
+    ASSERT(m_vertices);
+    ASSERT(m_vertices_count > 0);
+    ASSERT(m_indices_count > 0);
 
     ASSERT(m_vertexBufferData == nullptr);
     ASSERT(m_indexBufferData == nullptr);

@@ -12,6 +12,7 @@
 #include "Core/Math/BoundingBox.h"
 #include "Core/Containers/Array.h"
 #include "Storage/VoxelEditMode.h"
+#include <atomic>
 
 struct IVoxelMesher;
 class SpaceObjectOctree;
@@ -51,10 +52,10 @@ private:
     SpaceObjectOctreeNode* m_childrenNodes[8] = {};
     RefPtr<SpaceObjectChunk> m_chunk = nullptr;
 
-    bool m_populated = false;
-    bool m_processing = false;
-    bool m_rebuilding = false;
     bool m_isRoot = false;
+    std::atomic<bool> m_populated = false;
+    std::atomic<bool> m_processing = false;
+    std::atomic<bool> m_rebuilding = false;
 
 private:
     bool HasPopulatedChildren();
@@ -91,7 +92,7 @@ public:
     void Rebuild();
 
 public:
-    void Modify(VoxelEditMode::_enum mode, Vector3& position, float size);
+    bool Modify(VoxelEditMode::_enum mode, Vector3& position, float size);
 
 public:
     SpaceObjectChunk* GetChunk() const

@@ -82,10 +82,11 @@ void SpaceObject::Modify(VoxelEditMode::_enum mode, Vector3& position, float siz
             continue;
 
         // modify this node
-        node->Modify(mode, position, size);
-
-        // queue current node to rebuild
-        node->Rebuild();
+        if(node->Modify(mode, position, size))
+        {
+            // queue current node to rebuild
+            node->Rebuild();
+        }
     }
 }
 
