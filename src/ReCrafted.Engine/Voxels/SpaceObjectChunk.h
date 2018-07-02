@@ -9,6 +9,7 @@
 #include "Core/Math/Vector3.h"
 #include "Core/Lock.h"
 #include "Storage/VoxelChunkData.h"
+#include <atomic>
 
 struct IVoxelMesher;
 class Mesh;
@@ -18,6 +19,14 @@ class SpaceObjectOctreeNode;
 class SpaceObjectChunk
 {
     friend class SpaceObjectManager;
+
+private:
+    typedef enum
+    {
+        None,
+        UploadMesh,
+        ClearMesh
+    } UploadType;
 
 private:
     SpaceObject* spaceObject = nullptr;
@@ -31,10 +40,11 @@ private:
     RefPtr<Mesh> m_mesh = nullptr;
     RefPtr<Mesh> m_newMesh = nullptr;
 
-    Lock m_meshLock = {};
+    Lock m_uploadLock = {};
+    std::atomic<UploadType> m_uploadType = None;
 
 private:
-    uint8_t GetLodBorders();
+    void SetUpload(RefPtr<Mesh> mesh, UploadType uploadType);
 
 public:
     void Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject);
@@ -46,9 +56,9 @@ public:
     void Generate(IVoxelMesher* mesher);
     void Rebuild(IVoxelMesher* mesher);
 
-    bool NeedsUpload() const
+    bool NeedsUpload()
     {
-        return m_newMesh != nullptr;
+        return m_uploadType != None;
     }
 
     RefPtr<VoxelChunkData> GetChunkData() const

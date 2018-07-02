@@ -10,32 +10,14 @@
 #include "Graphics/Graphics.h"
 #include "Storage/VoxelStorage.h"
 
-uint8_t SpaceObjectChunk::GetLodBorders()
+void SpaceObjectChunk::SetUpload(RefPtr<Mesh> mesh, UploadType uploadType)
 {
-    /*uint8_t borders = 0u;
+    // Lock Upload
+    ScopeLock(m_uploadLock);
 
-    if (node->hasNeighLowerLoD(NodeDirection::Front))
-        borders |= BORDER_FRONT;
-
-    if (node->hasNeighLowerLoD(NodeDirection::Back))
-        borders |= BORDER_BACK;
-
-    if (node->hasNeighLowerLoD(NodeDirection::Left))
-        borders |= BORDER_LEFT;
-
-    if (node->hasNeighLowerLoD(NodeDirection::Right))
-        borders |= BORDER_RIGHT;
-
-    if (node->hasNeighLowerLoD(NodeDirection::Top))
-        borders |= BORDER_TOP;
-
-    if (node->hasNeighLowerLoD(NodeDirection::Back))
-        borders |= BORDER_BOTTOM;*/
-
-    // TODO: cull not needed skirts
-
-    //return borders;
-    return 0xFF;
+    // Set upload type to UPLOAD-MESH
+    m_newMesh = mesh;
+    m_uploadType = uploadType;
 }
 
 void SpaceObjectChunk::Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject)
@@ -82,54 +64,76 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
     if (!m_chunkData->IsLoaded() || !m_chunkData->HasSurface())
         return;
 
-    var mesh = Mesh::CreateMesh();
+    ASSERT(m_newMesh == nullptr);
 
-    cvar borders = GetLodBorders();
+    cvar borders = 0xFF; // All borders TODO: Build border mask from node
     cvar voxelData = m_chunkData->GetData();
 
-    mesher->Generate(m_position, m_lod, borders, mesh, voxelData);
+    // Try to generate mesh data
+    mesher->Generate(m_position, m_lod, borders, voxelData);
 
-    if(mesh->GetVertexCount() == 0)
+    // Check if we have any triangles and if don't, 
+    // then we are going to clean everything up, including chunk data.
+    if(!mesher->HasTriangles())
     {
-        SafeDispose(mesh);
-        m_newMesh = nullptr;
+        // Mar chunk data as no-surface, and dealloc it's data if it contains any data
         m_chunkData->HasSurface(false);
+
+        if (m_chunkData->HasData())
+            m_chunkData->DeallocateData();
+
+        // Set upload type to CLEAR-MESH
+        SetUpload(nullptr, ClearMesh);
         return;
     }
 
-    // Apply mesh changes, prepare for upload
-    mesh->ApplyChanges();
+    // We have at least one valid triangle,
+    // so create new mesh now and set upload state.
 
-    ScopeLock(m_meshLock);
+    // Create and apply mesh
+    cvar mesh = Mesh::CreateMesh();
+    mesher->Apply(mesh);
 
-    ASSERT(m_newMesh == nullptr);
-    m_newMesh = mesh;
+    SetUpload(mesh, UploadMesh);
 }
 
 void SpaceObjectChunk::Upload()
 {
-    ScopeLock(m_meshLock); // TODO: Use condition variable
+    ASSERT(IS_MAIN_THREAD());
+    ASSERT(NeedsUpload());
 
-    // upload changes
-    if (m_newMesh && m_newMesh->CanUpload())
+    // Lock Upload
+    ScopeLock(m_uploadLock);
+
+    switch (m_uploadType)
+    {
+    case UploadMesh:
     {
         // Upload new mesh
         m_newMesh->Upload();
 
-        // Dispose old mesh
+        // Dispose old mesh and swap mesh (m_newMesh will be nullptr - because m_mesh is nullptr (SafeDispose))
         SafeDispose(m_mesh);
-
-        // Swap mesh (m_newMesh will be nullptr - because m_mesh is nullptr (SafeDispose))
         m_mesh.swap(m_newMesh);
+        break;
     }
+    case ClearMesh:
+    {
+        SafeDispose(m_mesh);
+        SafeDispose(m_newMesh);
+        break;
+    }
+    default: break;
+    }
+
+    // Clean upload type
+    m_uploadType = None;
 }
 
 void SpaceObjectChunk::Draw()
 {
-    if (!m_mesh)
-        return;
-
-    Graphics::GetInstance()->Draw(m_mesh);
+    if (m_mesh)
+        Graphics::GetInstance()->Draw(m_mesh);
 }
 
 void SpaceObjectChunk::Dispose()
