@@ -59,8 +59,6 @@ public:
     }
 
 private:
-    FORCEINLINE void Clean();
-
     FORCEINLINE void GenerateCell(Cell* cell, int x, int y, int z, sbyte* data) const;
     FORCEINLINE void GenerateCube(Cell* cell, const Vector3& position, const Vector3& offset, float lod, sbyte* data);
     FORCEINLINE void GenerateSkirt(Cell* cell, const Vector3& position, const Vector3& offset, float lod, uint8_t axis,
@@ -71,10 +69,29 @@ private:
 public:
     /**
     * \brief Virtual method for generating a mesh from hermite voxel data.
-    * \param mesh The mesh that will get the new mesh data.
     * \param data The hermite voxel data (in -127 to 127 range).
     */
-    void Generate(const Vector3& position, int lod, uint8_t borders, RefPtr<Mesh>& mesh, sbyte* data) override;
+    void Generate(const Vector3& position, int lod, uint8_t borders, sbyte* data) override;
+
+    /**
+    * \brief Checks if there are any generated triangles.
+    * \return True when there is at least one triangle.
+    */
+    bool HasTriangles() override
+    {
+        return m_indices.Count() >= 3;
+    }
+
+    /**
+    * \brief Uploads all data to a mesh. This also clears the mesher and prepares to next mesh generation.
+    * \param mesh The mesh that will get the new mesh data.
+    */
+    void Apply(const RefPtr<Mesh>& mesh) override;
+
+    /**
+    * \brief Cleans all data used during Generate and Apply functions.
+    */
+    void Clean() override;
 };
 
 #endif // MCMESHER_H

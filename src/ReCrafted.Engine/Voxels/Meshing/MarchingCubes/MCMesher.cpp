@@ -69,18 +69,6 @@ inline float GetVoxel(sbyte* data, const Vector3& point)
     return VOXEL_TO_FLOAT(data[INDEX_3D(int(point.x), int(point.y), int(point.z), VoxelChunkData::ChunkDataSize)]);
 }
 
-void MCMesher::Clean()
-{
-    // cleanup all arrays
-    m_vertices.Clear();
-    m_normals.Clear();
-    m_colors.Clear();
-    m_indices.Clear();
-
-    // NOTE: we do not need to cleanup cells as it is not required, 
-    // because generating new cell overrides old data.
-}
-
 void MCMesher::GenerateCell(Cell* cell, int x, int y, int z, sbyte* data) const
 {
     byte caseIndex = 0;
@@ -261,24 +249,36 @@ void MCMesher::GenerateCells(sbyte* data, const Vector3& position, float lod, ui
     ITERATE_CELLS_END()
 }
 
-void MCMesher::Generate(const Vector3& position, int lod, uint8_t borders, RefPtr<Mesh>& mesh, sbyte* data)
+void MCMesher::Apply(const RefPtr<Mesh>& mesh)
+{
+    mesh->SetVertices(m_vertices.Data(), m_vertices.Count());
+    mesh->SetNormals(m_normals.Data());
+    mesh->SetColors(m_colors.Data());
+    mesh->SetIndices(m_indices.Data(), m_vertices.Count());
+
+    mesh->ApplyChanges();
+
+    Clean();
+}
+
+void MCMesher::Generate(const Vector3& position, int lod, uint8_t borders, sbyte* data)
 {
     cvar lodF = static_cast<float>(lod);
 
     GenerateCells(data, position, lodF, lod > 1 ? borders : 0);
 
     if (m_vertices.Count() < 3 || m_indices.Count() < 3)
-    {
-        // cleanup
         Clean();
-        return;
-    }
+}
 
-    mesh->SetVertices(m_vertices.Data(), m_vertices.Count());
-    mesh->SetNormals(m_normals.Data());
-    mesh->SetColors(m_colors.Data());
-    mesh->SetIndices(m_indices.Data(), m_vertices.Count());
+void MCMesher::Clean()
+{
+    // cleanup all arrays
+    m_vertices.Clear();
+    m_normals.Clear();
+    m_colors.Clear();
+    m_indices.Clear();
 
-    // cleanup
-    Clean();
+    // NOTE: we do not need to cleanup cells as it is not required, 
+    // because generating new cell overrides old data.
 }
