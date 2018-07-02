@@ -70,7 +70,7 @@ struct type##Description { public:
 #ifdef _DEBUG
 #define CHECK_MAIN_THREAD() _ASSERT(std::this_thread::get_id() == g_mainThreadId)
 #else
-#define CHECK_MAIN_THREAD()
+#define CHECK_MAIN_THREAD() true
 #endif
 
 #endif // RENDERER_DEFINES_H

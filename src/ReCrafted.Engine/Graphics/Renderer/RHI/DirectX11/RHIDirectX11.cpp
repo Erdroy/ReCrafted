@@ -637,7 +637,7 @@ namespace Renderer
 
             // create buffer description
             D3D11_BUFFER_DESC desc = {};
-            desc.Usage = command->dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT;
+            desc.Usage = command->dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_IMMUTABLE;
             desc.ByteWidth = command->vertexSize * command->vertexCount;
             desc.StructureByteStride = command->vertexSize;
             desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -700,7 +700,7 @@ namespace Renderer
 
             // create buffer description
             D3D11_BUFFER_DESC desc = {};
-            desc.Usage = command->dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT;
+            desc.Usage = command->dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_IMMUTABLE;
             desc.ByteWidth = bufferSizeBytes * command->indexCount;
             desc.StructureByteStride = bufferSizeBytes;
             desc.BindFlags = D3D11_BIND_INDEX_BUFFER;

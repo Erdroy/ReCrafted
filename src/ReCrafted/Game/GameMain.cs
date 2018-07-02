@@ -47,7 +47,7 @@ namespace ReCrafted.Game
 
                 // create camera
                 var camera = Entity.Create("MainCamera");
-                camera.Position = new Vector3(0.0f, 0.0f, -5.0f);
+                camera.Position = new Vector3(35.0f, 925.0f, 62.0f);
                 camera.AddScript<FreeCameraController>();
 
                 // load game info
