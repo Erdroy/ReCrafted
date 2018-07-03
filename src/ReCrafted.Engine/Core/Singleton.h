@@ -37,7 +37,7 @@ public:
     void Dispose() override
     {
         OnDispose();
-        SafeDelete(m_instance);
+        SafeDeleteNN(m_instance);
     }
 
 public:

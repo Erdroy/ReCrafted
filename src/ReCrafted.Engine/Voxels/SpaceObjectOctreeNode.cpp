@@ -14,43 +14,33 @@
 
 bool SpaceObjectOctreeNode::HasPopulatedChildren()
 {
-    for (rvar node : m_childrenNodes)
+    if (!m_populated)
+        return false;
+
+    for (cvar node : m_childrenNodes)
     {
-        if (node->m_populated)
+        if (node && node->m_populated)
             return true;
     }
 
     return false;
 }
 
-bool SpaceObjectOctreeNode::IsChildrenProcessing() const
+bool SpaceObjectOctreeNode::IsProcessing() const
 {
     if (m_processing)
         return true;
 
-    if (m_populated)
-    {
-        for (auto i = 0; i < 8; i++)
-        {
-            cvar node = m_childrenNodes[i];
+    if (!m_populated)
+        return false;
 
-            if (node->IsChildrenProcessing())
-                return true;
-        }
+    for (cvar node : m_childrenNodes)
+    {
+        if (node && node->IsProcessing())
+            return true;
     }
 
     return false;
-}
-
-void SpaceObjectOctreeNode::MarkProcessing()
-{
-    m_processing = true;
-
-    if (!m_populated)
-        return;
-
-    for (auto i = 0; i < 8; i++)
-        m_childrenNodes[i]->MarkProcessing();
 }
 
 void SpaceObjectOctreeNode::CreateChunk(IVoxelMesher* mesher)
@@ -155,7 +145,7 @@ void SpaceObjectOctreeNode::Populate()
     if (m_Size <= MinimumNodeSize)
         return;
 
-    ASSERT(m_processing == false && m_populated == false);
+    ASSERT(!IsProcessing() && m_populated == false);
 
     m_processing = true;
 
@@ -165,8 +155,7 @@ void SpaceObjectOctreeNode::Populate()
 
 void SpaceObjectOctreeNode::Depopulate()
 {
-    ASSERT(IsChildrenProcessing() == false);
-    ASSERT(m_processing == false);
+    ASSERT(!IsProcessing());
     ASSERT(m_populated == true);
 
     DestroyChildren();
@@ -175,7 +164,7 @@ void SpaceObjectOctreeNode::Depopulate()
 
 void SpaceObjectOctreeNode::Rebuild()
 {
-    if (m_processing || m_rebuilding)
+    if (IsProcessing() || m_rebuilding)
         return;
 
     m_rebuilding = true;
@@ -208,7 +197,7 @@ void SpaceObjectOctreeNode::OnRebuild()
 
 void SpaceObjectOctreeNode::OnDestroy()
 {
-    ASSERT(m_processing == false);
+    ASSERT(!IsProcessing());
 
     // Dispose chunk if exists
     SafeDispose(m_chunk);
@@ -417,7 +406,9 @@ bool SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position,
         }
     }
 
-    chunkData->HasSurface(true);
+    if(modified)
+        chunkData->HasSurface(true);
+
     return modified;
 }
 

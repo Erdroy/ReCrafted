@@ -59,8 +59,7 @@ private:
 
 private:
     bool HasPopulatedChildren();
-    bool IsChildrenProcessing() const;
-    void MarkProcessing();
+    bool IsProcessing() const;
 
     void CreateChunk(IVoxelMesher* mesher);
 

@@ -118,7 +118,7 @@ void SpaceObjectOctree::Dispose()
 {
     for (var i = 0; i < m_rootNodesCount; i++)
     {
-        SafeDispose(m_rootNodes[i]);
+        SafeDisposeNN(m_rootNodes[i]);
         SafeDelete(m_rootNodes[i]);
     }
 
