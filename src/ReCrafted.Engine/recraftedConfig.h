@@ -34,13 +34,6 @@
 #define COMPILE_WITH_WEBUI              RC_ENABLE
 #endif
 
-#ifndef COMPILE_WITH_RPMALLOC
-/**
- * \brief Enables or disables rpmalloc
- */
-#define COMPILE_WITH_RPMALLOC           RC_ENABLE
-#endif
-
 
  // ==== OTHER SETTINGS ====
 

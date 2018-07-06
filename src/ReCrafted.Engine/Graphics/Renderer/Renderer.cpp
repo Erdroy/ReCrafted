@@ -54,8 +54,6 @@ namespace Renderer
     IndexBufferHandle m_quadIB;
 
 #if RENDERER_MEMORY_AUTO_DEALLOC_ENABLE
-    // we don't really want to use our Array<T> type here, 
-    // vector will still use rpmalloc due to overloaded new/delete operators
     std::vector<MemoryAllocation> m_memoryAllocations = {};
     Lock m_memoryAllocationsLock = {};
 #endif
@@ -175,7 +173,7 @@ namespace Renderer
         if (size == 0)
             return nullptr;
 
-        cvar data = rpmalloc(size);
+        cvar data = rc_malloc(size);
         return Allocate(data, std::function<void(void*, void*)>(&FreeRendererMemory), nullptr, lifeTime);
     }
 
@@ -203,7 +201,7 @@ namespace Renderer
 
     void Free(RendererMemory memory)
     {
-        rpfree(static_cast<byte*>(memory));
+        rc_free(static_cast<byte*>(memory));
     }
 
     void QueueFree(RendererMemory memory)

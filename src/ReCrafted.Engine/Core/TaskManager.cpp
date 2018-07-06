@@ -20,7 +20,6 @@ void TaskManager::WorkerFunction()
 
         if (!m_taskExecuteQueue.try_dequeue(task))
         {
-            rpmalloc_thread_collect();
             Platform::Sleep(m_sleepTime);
             continue;
         }
@@ -93,7 +92,6 @@ void TaskManager::OnInit()
     {
         m_workerThreads.Add(new std::thread([this]
         {
-            var thread = RPMallocThread();
             WorkerFunction();
         }));
     }

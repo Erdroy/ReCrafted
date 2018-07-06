@@ -7,9 +7,9 @@
 #include "Core/ByteFormat.h"
 #include "Graphics/UI/UI.h"
 #include "Graphics/Font.h"
+#include "Graphics/Camera.h"
 
 #include <mono/metadata/mono-gc.h>
-#include "Graphics/Camera.h"
 
 SINGLETON_IMPL(Profiler)
 
@@ -95,22 +95,10 @@ void Profiler::DrawDebugScreen()
         Renderer::RenderStatistics renderStats = {};
         Renderer::GetRenderStatistics(&renderStats);
 
-        rpmalloc_global_statistics_t statistics;
-        rpmalloc_global_statistics(&statistics);
-
         float gcUsedSize;
         float gcHeapSize;
         cvar gcUsedSizeUnit = ByteFormat::Format(mono_gc_get_used_size(), &gcUsedSize);
         cvar gcHeapSizeUnit = ByteFormat::Format(mono_gc_get_heap_size(), &gcHeapSize);
-
-        float memStatsCached;
-        float memStatsMapped;
-        float memStatsMappedTotal;
-        float memStatsUnmappedTotal;
-        cvar memStatsCachedUnit = ByteFormat::Format(statistics.cached, &memStatsCached);
-        cvar memStatsMappedUnit = ByteFormat::Format(statistics.mapped, &memStatsMapped);
-        cvar memStatsMappedTotalUnit = ByteFormat::Format(statistics.mapped_total, &memStatsMappedTotal);
-        cvar memStatsUnmappedTotalUnit = ByteFormat::Format(statistics.unmapped_total, &memStatsUnmappedTotal);
 
         cvar camPos = Camera::GetMainCamera()->GetPosition();
         cvar camRot = Camera::GetMainCamera()->GetRotation();
@@ -129,10 +117,10 @@ void Profiler::DrawDebugScreen()
         MakeLineSpace(1);
         
         DrawTextLine(TEXT_CONST("[Unmanaged Memory]"), Color(0xFF0A00FF));
-        DrawTextLine(Text::Format(TEXT_CONST("Cached: {0} {1}"), memStatsCached, ByteFormat::ToString(memStatsCachedUnit)), Color(0xFFFFFFFF));
-        DrawTextLine(Text::Format(TEXT_CONST("Mapped: {0} {1}"), memStatsMapped, ByteFormat::ToString(memStatsMappedUnit)), Color(0xFFFFFFFF));
-        DrawTextLine(Text::Format(TEXT_CONST("Mapped Total: {0} {1}"), memStatsMappedTotal, ByteFormat::ToString(memStatsMappedTotalUnit)), Color(0xFFFFFFFF));
-        DrawTextLine(Text::Format(TEXT_CONST("Unmapped Total: {0} {1}"), memStatsUnmappedTotal, ByteFormat::ToString(memStatsUnmappedTotalUnit)), Color(0xFFFFFFFF));
+        DrawTextLine(Text::Format(TEXT_CONST("Cached: {0} {1}"), 0, ByteFormat::ToString(ByteFormat::B)), Color(0xFFFFFFFF));
+        DrawTextLine(Text::Format(TEXT_CONST("Mapped: {0} {1}"), 0, ByteFormat::ToString(ByteFormat::B)), Color(0xFFFFFFFF));
+        DrawTextLine(Text::Format(TEXT_CONST("Mapped Total: {0} {1}"), 0, ByteFormat::ToString(ByteFormat::B)), Color(0xFFFFFFFF));
+        DrawTextLine(Text::Format(TEXT_CONST("Unmapped Total: {0} {1}"), 0, ByteFormat::ToString(ByteFormat::B)), Color(0xFFFFFFFF));
         MakeLineSpace(1);
 
         DrawTextLine(TEXT_CONST("[Managed Memory]"), Color(0xFF0A00FF));

@@ -4,7 +4,6 @@
 
 #include "RHIDirectX11.h"
 #include "Platform/Platform.h"
-#include "Core/Memory.h"
 
 #if RENDERER_RHI_D3D11
 
@@ -260,8 +259,6 @@ namespace Renderer
         void WorkerThreadInstance::WorkerThread()
         {
             Platform::SetThreadName("Render Thread");
-
-            var threadMemory = RPMallocThread();
 
             // Wait for main thread to signal ready
             WaitForSingleObject(m_workerFrameEvents[threadId], INFINITE);

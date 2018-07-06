@@ -54,7 +54,6 @@ void SpaceObjectManager::WorkerFunction()
     {
         if (!m_loadingQueue.try_dequeue(item))
         {
-            rpmalloc_thread_collect();
             Platform::Sleep(10);
             continue;
         }
@@ -96,7 +95,6 @@ void SpaceObjectManager::Init()
     {
         m_workerThreads.Add(new std::thread([this]
         {
-            var thread = RPMallocThread();
             WorkerFunction();
         }));
     }

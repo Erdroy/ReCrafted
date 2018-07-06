@@ -22,8 +22,6 @@ namespace ultralight {
 
         virtual ~FileSystemWin();
 
-        void CheckThread();
-
         virtual bool FileExists(const String16& path) override;
 
         virtual bool DeleteFile_(const String16& path) override;

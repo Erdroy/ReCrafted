@@ -69,7 +69,7 @@ namespace Renderer
             if (this->size >= size || size == 0)
                 return;
 
-            auto new_cmdlist = static_cast<byte*>(rprealloc(cmdlist, size));
+            auto new_cmdlist = static_cast<byte*>(rc_realloc(cmdlist, size));
 
             // check if the realloc actually reallocated the memory
             _ASSERT(new_cmdlist != nullptr);

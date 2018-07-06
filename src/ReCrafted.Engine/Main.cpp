@@ -1,5 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
+#include "Core/Logger.h"
 #if defined(_WIN32)
 
 // includes
@@ -9,9 +10,7 @@
 #include "Core/GameInfo.h"
 #include "Core/EngineMain.h"
 #include "Platform/Platform.h"
-#include "Graphics/WebUI/WebUIEngine.h"
 
-// platform-specific includes
 #include <Windows.h>
 
 extern "C" {
@@ -28,10 +27,8 @@ int CALLBACK WinMain(
     LPSTR lpCmdLine,
     int nCmdShow)
 {
-    // initialize memory
-    rpmalloc_config_t config = {};
-    //config.enable_huge_pages = 1;
-    rpmalloc_initialize_config(&config);
+    // Initialize memory allocator TODO: This should be called from static constructor, as soon as possible!
+    Memory::Initialize(Memory::AllocatorType::JEMalloc);
 
     // parse arguments
     var arguments = Text(GetCommandLineA());
@@ -39,7 +36,7 @@ int CALLBACK WinMain(
 
     // create engine instance
     var engine = EngineMain();
-
+    
     // initialize engine
     engine.Initialize();
 
@@ -51,9 +48,7 @@ int CALLBACK WinMain(
 
     // Shutdown platform
     Platform::Shutdown();
-
-    rpmalloc_finalize();
-
+    
     return ERROR_SUCCESS;
 }
 #endif

@@ -41,7 +41,6 @@
 #include <algorithm>
 #include <memory>
 #include <strsafe.h>
-#include <rpmalloc.h>
 
 #undef max
 
@@ -209,39 +208,28 @@ namespace ultralight {
 
     FileSystemWin::~FileSystemWin() {}
 
-    void FileSystemWin::CheckThread()
-    {
-        if (!rpmalloc_is_thread_initialized())
-            rpmalloc_thread_initialize();
-    }
-
     bool FileSystemWin::FileExists(const String16& path) {
-        CheckThread();
 
         WIN32_FIND_DATAW findData;
         return getFindData(GetRelative(path).get(), findData);
     }
 
     bool FileSystemWin::DeleteFile_(const String16& path) {
-        CheckThread();
 
         return !!DeleteFileW(GetRelative(path).get());
     }
 
     bool FileSystemWin::DeleteEmptyDirectory(const String16& path) {
-        CheckThread();
 
         return !!RemoveDirectoryW(GetRelative(path).get());
     }
 
     bool FileSystemWin::MoveFile_(const String16& old_path, const String16& new_path) {
-        CheckThread();
 
         return !!::MoveFileEx(GetRelative(old_path).get(), GetRelative(new_path).get(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING);
     }
 
     bool FileSystemWin::GetFileSize(const String16& path, int64_t& result) {
-        CheckThread();
 
         WIN32_FIND_DATAW findData;
         if (!getFindData(GetRelative(path).get(), findData))
@@ -252,7 +240,6 @@ namespace ultralight {
 
     bool FileSystemWin::GetFileMimeType(const String16& path, String16& result)
     {
-        CheckThread();
 
         LPWSTR ext = PathFindExtension(path.data());
         std::wstring mimetype = GetMimeType(ext);
@@ -261,7 +248,6 @@ namespace ultralight {
     }
 
     bool FileSystemWin::GetFileSize(FileHandle handle, int64_t& result) {
-        CheckThread();
 
         BY_HANDLE_FILE_INFORMATION fileInformation;
         if (!::GetFileInformationByHandle((HANDLE)handle, &fileInformation))
@@ -271,7 +257,6 @@ namespace ultralight {
     }
 
     bool FileSystemWin::GetFileModificationTime(const String16& path, time_t& result) {
-        CheckThread();
 
         WIN32_FIND_DATAW findData;
         if (!getFindData(GetRelative(path).get(), findData))
@@ -282,7 +267,6 @@ namespace ultralight {
     }
 
     bool FileSystemWin::GetFileCreationTime(const String16& path, time_t& result) {
-        CheckThread();
 
         WIN32_FIND_DATAW findData;
         if (!getFindData(GetRelative(path).get(), findData))
@@ -293,7 +277,6 @@ namespace ultralight {
     }
 
     MetadataType FileSystemWin::GetMetadataType(const String16& path) {
-        CheckThread();
 
         WIN32_FIND_DATAW findData;
         if (!getFindData(GetRelative(path).get(), findData))
@@ -303,8 +286,6 @@ namespace ultralight {
     }
 
     String16 FileSystemWin::GetPathByAppendingComponent(const String16& path, const String16& component) {
-        CheckThread();
-
         if (path.length() > MAX_PATH)
             return String16();
 
@@ -318,7 +299,6 @@ namespace ultralight {
     }
 
     bool FileSystemWin::CreateDirectory_(const String16& path) {
-        CheckThread();
 
         if (SHCreateDirectoryEx(0, GetRelative(path).get(), 0) != ERROR_SUCCESS) {
             DWORD error = GetLastError();
@@ -332,20 +312,17 @@ namespace ultralight {
     }
 
     String16 FileSystemWin::GetHomeDirectory() {
-        CheckThread();
 
         return String16();
     }
 
     String16 FileSystemWin::GetFilenameFromPath(const String16& path) {
-        CheckThread();
 
         LPTSTR filename = ::PathFindFileName(path.data());
         return String16(filename, wcslen(filename));
     }
 
     String16 FileSystemWin::GetDirectoryNameFromPath(const String16& path) {
-        CheckThread();
 
         Vector<Char16> utf16(path.length());
         memcpy(utf16.data(), path.data(), utf16.size() * sizeof(Char16));
@@ -360,7 +337,6 @@ namespace ultralight {
     }
 
     int32_t FileSystemWin::GetVolumeId(const String16& path) {
-        CheckThread();
 
         HANDLE handle = (HANDLE)OpenFile(path, false);
         if (handle == INVALID_HANDLE_VALUE)
@@ -378,7 +354,6 @@ namespace ultralight {
     }
 
     Vector<String16> FileSystemWin::ListDirectory(const String16& path, const String16& filter) {
-        CheckThread();
 
         Vector<String16> entries;
 
@@ -398,7 +373,6 @@ namespace ultralight {
     }
 
     String16 FileSystemWin::OpenTemporaryFile(const String16& prefix, FileHandle& handle) {
-        CheckThread();
 
         handle = (FileHandle)INVALID_HANDLE_VALUE;
 
@@ -433,7 +407,6 @@ namespace ultralight {
     }
 
     FileHandle FileSystemWin::OpenFile(const String16& path, bool open_for_writing) {
-        CheckThread();
 
         
         DWORD desiredAccess = 0;
@@ -461,7 +434,6 @@ namespace ultralight {
     }
 
     int64_t FileSystemWin::SeekFile(FileHandle handle, int64_t offset, FileSeekOrigin origin) {
-        CheckThread();
 
         DWORD moveMethod = FILE_BEGIN;
 
@@ -486,7 +458,6 @@ namespace ultralight {
     }
 
     int64_t FileSystemWin::WriteToFile(FileHandle handle, const char* data, int64_t length) {
-        CheckThread();
 
         if (handle == (FileHandle)INVALID_HANDLE_VALUE)
             return -1;
@@ -500,7 +471,6 @@ namespace ultralight {
     }
 
     int64_t FileSystemWin::ReadFromFile(FileHandle handle, char* data, int64_t length) {
-        CheckThread();
 
         if (handle == (FileHandle)INVALID_HANDLE_VALUE)
             return -1;
@@ -514,13 +484,11 @@ namespace ultralight {
     }
 
     bool FileSystemWin::CopyFile_(const String16& source, const String16& destination) {
-        CheckThread();
 
         return !!::CopyFile(GetRelative(source).get(), GetRelative(destination).get(), TRUE);
     }
 
     std::unique_ptr<WCHAR[]> FileSystemWin::GetRelative(const String16& path) {
-        CheckThread();
 
 
         std::unique_ptr<WCHAR[]> relPath(new WCHAR[_MAX_PATH]);

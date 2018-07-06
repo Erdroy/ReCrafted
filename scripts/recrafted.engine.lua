@@ -11,12 +11,18 @@ project "ReCrafted.Engine"
 		"StaticRuntime",
 		"NoRTTI",
 	}
-	defines { "_CRT_SECURE_NO_WARNINGS" }
+	defines { "_CRT_SECURE_NO_WARNINGS", "JEMALLOC_EXPORT=", "JEMALLOC_STATIC" }
 	location (OUTPUT_DIR)
 	targetname "ReCrafted"
+	
+	-- add source/header/shader files
+	files {
+		path.join(ROOT_DIR, "src/ReCrafted.Engine/**"),
+	}
 
-	forceinclude { 
-		"src/ReCrafted.Engine/Core/Memory.h" 
+	forceincludes { 
+		"../src/ReCrafted.Engine/Core/Memory.h",
+		"../src/ReCrafted.Engine/Core/Allocator.h" 
 	}
 	
 	-- add include directories
@@ -25,18 +31,15 @@ project "ReCrafted.Engine"
 		path.join(LIBS_DIR, "mono/inc"),
 		path.join(LIBS_DIR, "freetype/include"),
 		path.join(LIBS_DIR, "fmod/inc"),
-		path.join(LIBS_DIR, "rpmalloc/include"),
 		path.join(LIBS_DIR, "base64/include"),
 		path.join(LIBS_DIR, "json/include"),
 		path.join(LIBS_DIR, "tsl/include"),
 		path.join(LIBS_DIR, "sparsepp/include"),
 		path.join(LIBS_DIR, "concurrentqueue/include"),
 		path.join(LIBS_DIR, "ultralight/include"),
-	}
-	
-	-- add source/header/shader files
-	files {
-		path.join(ROOT_DIR, "src/ReCrafted.Engine/**"),
+		path.join(LIBS_DIR, "tbb/include"),
+		path.join(LIBS_DIR, "jemalloc/include"),
+		path.join(LIBS_DIR, "msvc_compat/include"),
 	}
 	
 	-- add onbuild script and multi processor compilation
@@ -52,13 +55,13 @@ project "ReCrafted.Engine"
 		defines { "DEBUG", "_ITERATOR_DEBUG_LEVEL=0" }
 		runtime "Debug"
 		symbols "On"
-		links { "rpmallocd", "freetype28MTd" }
+		links { "jemallocd", "freetype28MTd" }
 
 	configuration { "Release" }
 		defines { "NDEBUG" }
 		flags { "OptimizeSpeed", "No64BitChecks", "NoBufferSecurityCheck" }
 		runtime "Release"
-		links { "rpmalloc", "freetype28MT" }
+		links { "jemalloc", "freetype28MT" }
 
 	configuration { "x64" }
 		-- set target dir
@@ -69,10 +72,11 @@ project "ReCrafted.Engine"
 		-- add bgfx lib path - bgfx always contains all needed libs after being compiled
 		libdirs {
 			path.join(LIBS_DIR, "mono/lib"),
-			path.join(LIBS_DIR, "freetype/x64"),
+			path.join(LIBS_DIR, "freetype/lib"),
 			path.join(LIBS_DIR, "fmod/lib"),
-			path.join(LIBS_DIR, "rpmalloc/lib"),
 			path.join(LIBS_DIR, "ultralight/lib"),
+			path.join(LIBS_DIR, "tbb/lib"),
+			path.join(LIBS_DIR, "jemalloc/lib"),
 		}
 		linkoptions { "/ignore:4099" }
 	

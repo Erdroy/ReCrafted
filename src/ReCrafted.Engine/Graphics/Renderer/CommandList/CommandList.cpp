@@ -76,7 +76,7 @@ namespace Renderer
     void CommandList::Destroy()
     {
         // free the memory
-        delete[] cmdlist;
+        delete[] static_cast<byte*>(cmdlist);
         cmdlist = nullptr;
     }
 }

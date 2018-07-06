@@ -13,7 +13,7 @@ template <class T>
 class Array
 {
 private:
-    std::vector<T, RPAllocator<T>> m_vector;
+    std::vector<T, rc_allocator<T>> m_vector;
     uint32_t m_count = 0u;
 
 public:

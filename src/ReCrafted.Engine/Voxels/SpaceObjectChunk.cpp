@@ -66,7 +66,7 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
 
     ASSERT(m_newMesh == nullptr);
 
-    cvar borders = 0xFF; // All borders TODO: Build border mask from node
+    cvar borders = 0x0; // All borders TODO: Build border mask from node
     cvar voxelData = m_chunkData->GetData();
 
     // Try to generate mesh data

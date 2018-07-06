@@ -13,6 +13,7 @@
 #define USE_FMT
 
 #include "ReCraftedConfig.h"
+#include "Core/Memory.h"
 
 #ifdef USE_FMT
 #include "Core/fmt/format.h"
@@ -24,16 +25,9 @@ typedef unsigned short Char;
 typedef unsigned int Char;
 #endif
 
-#if COMPILE_WITH_RPMALLOC
-#include <rpmalloc.h>
-#define TEXT_ALLOC rpmalloc
-#define TEXT_REALLOC rprealloc
-#define TEXT_FREE rpfree
-#else
-#define TEXT_ALLOC malloc
-#define TEXT_REALLOC realloc
-#define TEXT_FREE free
-#endif
+#define TEXT_ALLOC rc_malloc
+#define TEXT_REALLOC rc_realloc
+#define TEXT_FREE rc_free
 
 /// <summary>
 /// Text structure.
