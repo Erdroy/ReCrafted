@@ -37,8 +37,8 @@ namespace Renderer
             virtual void Frame() = 0;
 
         public:
-            virtual void CreateVertexBuffer(VertexBufferHandle handle, uint vertexCount, uint vertexSize, bool dynamic, RendererMemory* buffer) = 0;
-            virtual void CreateIndexBuffer(IndexBufferHandle handle, uint indexCount, bool is32bit, bool dynamic, RendererMemory* buffer) = 0;
+            virtual void CreateVertexBuffer(VertexBufferHandle handle, uint vertexCount, uint vertexSize, bool dynamic, RendererMemory buffer) = 0;
+            virtual void CreateIndexBuffer(IndexBufferHandle handle, uint indexCount, bool is32bit, bool dynamic, RendererMemory buffer) = 0;
             virtual void CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle, void* windowHandle) = 0;
             virtual void ResizeWindow(WindowHandle window, int width, int height) = 0;
         };

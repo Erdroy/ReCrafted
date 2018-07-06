@@ -119,6 +119,33 @@ void Mesh::ApplyChanges()
     m_indices = nullptr;
 }
 
+void Mesh::UploadNow()
+{
+    ASSERT(m_vertexBufferData != nullptr);
+    ASSERT(m_indexBufferData != nullptr);
+
+    if (RENDERER_CHECK_HANDLE(m_vertexBuffer))
+        Renderer::DestroyVertexBuffer(m_vertexBuffer);
+
+    if (RENDERER_CHECK_HANDLE(m_indexBuffer))
+        Renderer::DestroyIndexBuffer(m_indexBuffer);
+
+    // Create vertex buffer
+    m_vertexBuffer = Renderer::CreateVertexBufferSync(m_vertices_count, m_vertexSize, false, m_vertexBufferData);
+
+    // Create index buffer
+    m_indexBuffer = Renderer::CreateIndexBufferSync(m_indices_count, true, false, m_indexBufferData);
+
+    Renderer::Free(m_vertexBufferData);
+    Renderer::Free(m_indexBufferData);
+
+    m_vertexBufferData = nullptr;
+    m_indexBufferData = nullptr;
+
+    m_uploaded = true;
+    m_hasChanges = false;
+}
+
 void Mesh::Upload()
 {
     ASSERT(m_vertexBufferData != nullptr);

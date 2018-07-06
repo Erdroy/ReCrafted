@@ -121,6 +121,11 @@ public:
     void Upload();
 
     /**
+    * \brief Upload buffers to the GPU synchronously right now.
+    */
+    void UploadNow();
+
+    /**
 	 * \brief Disposes this mesh.
 	 */
     void Dispose() override;

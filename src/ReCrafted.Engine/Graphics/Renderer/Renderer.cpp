@@ -506,7 +506,7 @@ namespace Renderer
         return handle;
     }
 
-    VertexBufferHandle CreateVertexBufferSync(uint vertexCount, uint vertexSize, bool dynamic, RendererMemory* buffer)
+    VertexBufferHandle CreateVertexBufferSync(uint vertexCount, uint vertexSize, bool dynamic, RendererMemory buffer)
     {
         cvar handle = AllocVertexBufferHandle();
         RENDERER_VALIDATE_HANDLE(handle);
@@ -561,7 +561,7 @@ namespace Renderer
         return CreateIndexBuffer(count, nullptr, is32bit, buffer ? true : dynamic);
     }
 
-    IndexBufferHandle CreateIndexBufferSync(uint count, bool is32bit, bool dynamic, RendererMemory* buffer)
+    IndexBufferHandle CreateIndexBufferSync(uint count, bool is32bit, bool dynamic, RendererMemory buffer)
     {
         cvar handle = AllocIndexBufferHandle();
         RENDERER_VALIDATE_HANDLE(handle);

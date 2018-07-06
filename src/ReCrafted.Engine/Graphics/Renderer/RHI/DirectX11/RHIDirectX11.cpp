@@ -1386,7 +1386,7 @@ namespace Renderer
             FrameCount++;
         }
 
-        void RHIDirectX11::CreateVertexBuffer(VertexBufferHandle handle, uint vertexCount, uint vertexSize, bool dynamic, RendererMemory* buffer)
+        void RHIDirectX11::CreateVertexBuffer(VertexBufferHandle handle, uint vertexCount, uint vertexSize, bool dynamic, RendererMemory buffer)
         {
             cvar thread = m_workerThreads[0];
 
@@ -1400,7 +1400,7 @@ namespace Renderer
             thread->Execute_CreateVertexBuffer(&command);
         }
 
-        void RHIDirectX11::CreateIndexBuffer(IndexBufferHandle handle, uint indexCount, bool is32bit, bool dynamic, RendererMemory* buffer)
+        void RHIDirectX11::CreateIndexBuffer(IndexBufferHandle handle, uint indexCount, bool is32bit, bool dynamic, RendererMemory buffer)
         {
             cvar thread = m_workerThreads[0];
 

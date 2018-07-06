@@ -90,9 +90,14 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
     // We have at least one valid triangle,
     // so create new mesh now and set upload state.
 
-    // Create and apply mesh
+    // Create new mesh
     cvar mesh = Mesh::CreateMesh();
+
+    // Apply mesh
     mesher->Apply(mesh);
+
+    // Upload new mesh
+    mesh->UploadNow();
 
     SetUpload(mesh, UploadMesh);
 }
@@ -109,9 +114,6 @@ void SpaceObjectChunk::Upload()
     {
     case UploadMesh:
     {
-        // Upload new mesh
-        m_newMesh->Upload();
-
         // Dispose old mesh and swap mesh (m_newMesh will be nullptr - because m_mesh is nullptr (SafeDispose))
         SafeDispose(m_mesh);
         m_mesh.swap(m_newMesh);
