@@ -1388,6 +1388,34 @@ namespace Renderer
             // Increment frame count
             FrameCount++;
         }
+
+        void RHIDirectX11::CreateVertexBuffer(VertexBufferHandle handle, uint vertexCount, uint vertexSize, bool dynamic, RendererMemory* buffer)
+        {
+            cvar thread = m_workerThreads[0];
+
+            Command_CreateVertexBuffer command = {};
+            command.handle = handle;
+            command.dynamic = dynamic;
+            command.memory = buffer;
+            command.vertexCount = vertexCount;
+            command.vertexSize = vertexSize;
+            
+            thread->Execute_CreateVertexBuffer(&command);
+        }
+
+        void RHIDirectX11::CreateIndexBuffer(IndexBufferHandle handle, uint indexCount, bool is32bit, bool dynamic, RendererMemory* buffer)
+        {
+            cvar thread = m_workerThreads[0];
+
+            Command_CreateIndexBuffer command = {};
+            command.handle = handle;
+            command.dynamic = dynamic;
+            command.memory = buffer;
+            command.indexCount = indexCount;
+            command.indexSize = is32bit ? 32 : 16;
+
+            thread->Execute_CreateIndexBuffer(&command);
+        }
 #pragma endregion
 
 #pragma region RHI interface implementation

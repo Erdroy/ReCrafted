@@ -50,15 +50,21 @@ struct type##Description { public:
     }
 
 #define RENDERER_DEFINE_HANDLE_ALLOCATOR(type, maxval)  \
+    Lock type##lock = {};                               \
 	type type##_table[maxval] = {};                     \
 	type Alloc##type##() {                              \
+        ScopeLock(type##lock);                          \
 		for(auto i = 1; i < maxval; i++) {              \
 			if( type##_table[i].idx == 0u ) {           \
 				type##_table[i].idx = i;                \
 				return type##_table[i]; }               \
 		} return {};                                    \
 	}                                                   \
-	void Free##type##( type value ) { _ASSERT( value.idx != 0u ); type##_table[ value.idx ] = {}; }
+	void Free##type##( type value ) {                   \
+        ScopeLock(type##lock);                          \
+        _ASSERT( value.idx != 0u );                     \
+        type##_table[ value.idx ] = {};                 \
+    }
 
 #define RENDERER_CHECK_HANDLE(handle) handle.idx != 0u
 

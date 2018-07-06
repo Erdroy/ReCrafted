@@ -479,14 +479,14 @@ namespace Renderer
         FreeRenderBufferHandle(handle);
     }
 
-    VertexBufferHandle CreateVertexBuffer(uint count, uint vertexSize, bool dynamic, RendererMemory* buffer)
+    VertexBufferHandle CreateVertexBuffer(uint vertexCount, uint vertexSize, bool dynamic, RendererMemory* buffer)
     {
         CHECK_MAIN_THREAD();
 
         if(buffer != nullptr)
-            *buffer = Allocate(count * vertexSize);
+            *buffer = Allocate(vertexCount * vertexSize);
 
-        return CreateVertexBuffer(count, vertexSize, buffer, buffer ? true : dynamic);
+        return CreateVertexBuffer(vertexCount, vertexSize, buffer, buffer ? true : dynamic);
     }
 
     VertexBufferHandle CreateVertexBuffer(uint vertexCount, uint vertexSize, RendererMemory data, bool dynamic)
@@ -505,6 +505,15 @@ namespace Renderer
 
         g_commandList->WriteCommand(&command);
 
+        return handle;
+    }
+
+    VertexBufferHandle CreateVertexBufferSync(uint vertexCount, uint vertexSize, bool dynamic, RendererMemory* buffer)
+    {
+        cvar handle = AllocVertexBufferHandle();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        m_renderer->CreateVertexBuffer(handle, vertexCount, vertexSize, dynamic, buffer);
         return handle;
     }
 
@@ -552,6 +561,14 @@ namespace Renderer
             *buffer = Allocate(count * (is32bit ? 4u : 2u));
 
         return CreateIndexBuffer(count, nullptr, is32bit, buffer ? true : dynamic);
+    }
+
+    IndexBufferHandle CreateIndexBufferSync(uint count, bool is32bit, bool dynamic, RendererMemory* buffer)
+    {
+        cvar handle = AllocIndexBufferHandle();
+        RENDERER_VALIDATE_HANDLE(handle);
+        m_renderer->CreateIndexBuffer(handle, count, is32bit, dynamic, buffer);
+        return handle;
     }
 
     IndexBufferHandle CreateIndexBuffer(uint indexCount, RendererMemory data, bool is32bit, bool dynamic)

@@ -37,6 +37,8 @@ namespace Renderer
             void Frame() override;
 
         public:
+            void CreateVertexBuffer(VertexBufferHandle handle, uint vertexCount, uint vertexSize, bool dynamic, RendererMemory* buffer) override;
+            void CreateIndexBuffer(IndexBufferHandle handle, uint indexCount, bool is32bit, bool dynamic, RendererMemory* buffer) override;
             void CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle, void* windowHandle) override;
             void ResizeWindow(WindowHandle window, int width, int height) override;
         };
