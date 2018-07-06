@@ -15,6 +15,10 @@ project "ReCrafted.Engine"
 	location (OUTPUT_DIR)
 	targetname "ReCrafted"
 
+	forceinclude { 
+		"src/ReCrafted.Engine/Core/Memory.h" 
+	}
+	
 	-- add include directories
 	includedirs {
 		path.join(ROOT_DIR, "src/ReCrafted.Engine"),
