@@ -108,10 +108,13 @@ namespace Renderer
 
         m_renderFlags = flags;
 
-        _ASSERT(api == RendererAPI::DirectX11);
+        ASSERT(api == RendererAPI::DirectX11);
 
         m_renderer = new RHI::RHIDirectX11();
         m_renderer->Initialize(settings, flags);
+        m_renderer->freeVertexBuffer = (RHI::RHIBase::vbhFreePtr)&FreeVertexBufferHandle;
+        m_renderer->freeIndexBuffer = (RHI::RHIBase::ibhFreePtr)&FreeIndexBufferHandle;
+
         g_commandList = &m_renderer->commandList;
         m_running = true;
 
@@ -147,7 +150,7 @@ namespace Renderer
 
         for (rvar memory : m_memoryAllocations)
         {
-            _ASSERT(memory.memory); // scream at Erdroy when he is way too dumb and frees the memory manually
+            ASSERT(memory.memory); // scream at Erdroy when he is way too dumb and frees the memory manually
 
             if (memory.memory && memory.releaseFunc != nullptr)
             {
@@ -399,7 +402,7 @@ namespace Renderer
 
         // note: frame buffers do not have any render textures
         cvar isFrameBuffer = renderBufferDesc.renderTextures.empty();
-        _ASSERT(isFrameBuffer == false); // Cannot resize Frame Buffer!
+        ASSERT(isFrameBuffer == false); // Cannot resize Frame Buffer!
 
         // resize all textures
         for (rvar texture : renderBufferDesc.renderTextures)
@@ -455,7 +458,7 @@ namespace Renderer
 
         // note: frame buffers do not have any render textures
         cvar isFrameBuffer = renderBufferDesc.renderTextures.empty();
-        _ASSERT(isFrameBuffer == false); // Cannot Destroy Frame Buffer!
+        ASSERT(isFrameBuffer == false); // Cannot Destroy Frame Buffer!
 
         Command_DestroyRenderBuffer command;
         command.handle = handle;
@@ -548,7 +551,7 @@ namespace Renderer
         command.handle = handle;
         g_commandList->WriteCommand(&command);
 
-        FreeVertexBufferHandle(handle);
+        //FreeVertexBufferHandle(handle); This is being called by RHI using 'freeVertexBuffer' function pointer
     }
 
     IndexBufferHandle CreateIndexBuffer(uint count, bool is32bit, bool dynamic, RendererMemory* buffer)
@@ -621,7 +624,7 @@ namespace Renderer
         command.handle = handle;
         g_commandList->WriteCommand(&command);
 
-        FreeIndexBufferHandle(handle);
+        //FreeIndexBufferHandle(handle); This is being called by RHI using 'freeIndexBuffer' function pointer
     }
 
     Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels,
@@ -725,7 +728,7 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
-        _ASSERT(dataSize <= 64u); // float4x4 is the biggest type that we can pass
+        ASSERT(dataSize <= 64u); // float4x4 is the biggest type that we can pass
 
         Command_SetShaderValue command;
         command.shader = handle;

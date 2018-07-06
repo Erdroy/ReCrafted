@@ -24,6 +24,7 @@ private:
     typedef enum
     {
         None,
+        SwapMesh,
         UploadMesh,
         ClearMesh
     } UploadType;

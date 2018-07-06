@@ -6,7 +6,7 @@ namespace Renderer
 {
     void CommandList::Initialize(uint32_t size)
     {
-        _ASSERT(size != 0);
+        ASSERT(size != 0);
 
         cmdlist = static_cast<RendererMemory>(new byte[size]);
         this->size = size;
@@ -14,9 +14,9 @@ namespace Renderer
 
     void CommandList::Assign(uint8_t threadCount, uint32_t* dataBegin, uint32_t* dataEnd, uint32_t* commandCount)
     {
-        _ASSERT(threadCount);
-        _ASSERT(dataBegin);
-        _ASSERT(commandCount);
+        ASSERT(threadCount);
+        ASSERT(dataBegin);
+        ASSERT(commandCount);
 
         //if(m_commandCount < RENDERER_COMMAND_LIST_MIN_CMD_COUNT || threadCount == 1)
         {
@@ -59,7 +59,7 @@ namespace Renderer
 
                 if(thread + 1 >= threadCount)
                 {
-                    _ASSERT(i < m_commandCount);
+                    ASSERT(i < m_commandCount);
                     break;
                 }
 

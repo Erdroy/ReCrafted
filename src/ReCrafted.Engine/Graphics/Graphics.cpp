@@ -140,7 +140,7 @@ void Graphics::Render()
 
 void Graphics::Resize(uint width, uint height)
 {
-    _ASSERT(Camera::m_mainCamera != nullptr);
+    ASSERT(Camera::m_mainCamera != nullptr);
 
     Display::SetWidth(width);
     Display::SetHeight(height);

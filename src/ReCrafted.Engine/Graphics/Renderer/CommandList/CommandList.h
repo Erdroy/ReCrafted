@@ -37,8 +37,8 @@ namespace Renderer
     public:
         RENDERER_FORCEINLINE void Read(void* data, uint32_t* position, uint32_t size) const
         {
-            _ASSERT(*position < this->size);
-            _ASSERT(data != nullptr);
+            ASSERT(*position < this->size);
+            ASSERT(data != nullptr);
 
             cvar ptr = static_cast<byte*>(cmdlist) + *position;
             memcpy_s(data, size, ptr, size);
@@ -72,7 +72,7 @@ namespace Renderer
             auto new_cmdlist = static_cast<byte*>(rc_realloc(cmdlist, size));
 
             // check if the realloc actually reallocated the memory
-            _ASSERT(new_cmdlist != nullptr);
+            ASSERT(new_cmdlist != nullptr);
 
             // everything is ok, so now, just set the command list as the new
             this->size = size;
@@ -81,7 +81,7 @@ namespace Renderer
 
         void Clear()
         {
-            _ASSERT(size > 0);
+            ASSERT(size > 0);
 
 #if RENDERER_COMMAND_LIST_FULL_DISCARD
 			memset(cmdlist, 0, size);

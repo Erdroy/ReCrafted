@@ -6,12 +6,12 @@
 
 void RenderBuffer::Begin()
 {
-    _ASSERT(m_created != true);
+    ASSERT(m_created != true);
 }
 
 void RenderBuffer::End()
 {
-    _ASSERT(m_created != true);
+    ASSERT(m_created != true);
 
     uint width;
     uint height;
@@ -32,7 +32,7 @@ void RenderBuffer::End()
 
 void RenderBuffer::AddTarget(const char* name, Renderer::TextureFormat::_enum format)
 {
-    _ASSERT(m_created != true);
+    ASSERT(m_created != true);
 
     // add texture
     m_textures[m_textureCount] = format;
@@ -41,7 +41,7 @@ void RenderBuffer::AddTarget(const char* name, Renderer::TextureFormat::_enum fo
 
 Renderer::Texture2DHandle RenderBuffer::GetTarget(uint slot)
 {
-    _ASSERT(slot < RENDERER_MAX_RENDER_BUFFER_TARGETS);
+    ASSERT(slot < RENDERER_MAX_RENDER_BUFFER_TARGETS);
 
     var renderBufferDesc = Renderer::GetRenderBufferDescription(m_renderBufferHandle);
     return renderBufferDesc.renderTextures[slot];
@@ -57,7 +57,7 @@ Renderer::Texture2DHandle RenderBuffer::GetDepthBuffer()
 
 void RenderBuffer::Resize(uint width, uint height)
 {
-    _ASSERT(m_created != false);
+    ASSERT(m_created != false);
 
     if (m_width == width && m_height == height)
         return;
@@ -68,7 +68,7 @@ void RenderBuffer::Resize(uint width, uint height)
 
 void RenderBuffer::Bind()
 {
-    _ASSERT(m_created != false);
+    ASSERT(m_created != false);
 
     Renderer::ApplyRenderBuffer(m_renderBufferHandle);
 }

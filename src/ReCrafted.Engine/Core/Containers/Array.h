@@ -49,7 +49,7 @@ public:
 
     FORCEINLINE bool Remove(T item)
     {
-        _ASSERT(m_count > 0u);
+        ASSERT(m_count > 0u);
 
         auto index = std::find(m_vector.begin(), m_vector.end(), item);
 
@@ -65,7 +65,7 @@ public:
 
     FORCEINLINE bool Remove(void* itemPointer)
     {
-        _ASSERT(m_count > 0u);
+        ASSERT(m_count > 0u);
 
         for (auto i = 0u; i < m_count; i ++)
         {
@@ -93,7 +93,7 @@ public:
 
     FORCEINLINE void RemoveAt(int index)
     {
-        _ASSERT(index >= 0 && index < static_cast<int>(m_count));
+        ASSERT(index >= 0 && index < static_cast<int>(m_count));
 
         m_vector.erase(m_vector.begin() + index);
         m_count--;
@@ -184,35 +184,35 @@ public:
 
     FORCEINLINE T& Last()
     {
-        _ASSERT(m_count > 0u);
+        ASSERT(m_count > 0u);
 
         return m_vector[m_count - 1];
     }
 
     FORCEINLINE const T& Last() const
     {
-        _ASSERT(m_count > 0u);
+        ASSERT(m_count > 0u);
 
         return m_vector[m_count - 1];
     }
 
     FORCEINLINE T& First()
     {
-        _ASSERT(m_count > 0u);
+        ASSERT(m_count > 0u);
 
         return m_vector[0];
     }
 
     FORCEINLINE const T& First() const
     {
-        _ASSERT(m_count > 0u);
+        ASSERT(m_count > 0u);
 
         return m_vector[0];
     }
 
     FORCEINLINE T& At(int index)
     {
-        _ASSERT(index >= 0 && index < static_cast<int>(m_count));
+        ASSERT(index >= 0 && index < static_cast<int>(m_count));
 
         return m_vector[index];
     }
@@ -237,13 +237,13 @@ public:
 
     FORCEINLINE T& operator[](int index)
     {
-        //_ASSERT(index >= 0 && index < static_cast<int>(m_count));
+        //ASSERT(index >= 0 && index < static_cast<int>(m_count));
         return m_vector[index];
     }
 
     FORCEINLINE const T& operator[](int index) const
     {
-        //_ASSERT(index >= 0 && index < static_cast<int>(m_count));
+        //ASSERT(index >= 0 && index < static_cast<int>(m_count));
         return m_vector[index];
     }
 };

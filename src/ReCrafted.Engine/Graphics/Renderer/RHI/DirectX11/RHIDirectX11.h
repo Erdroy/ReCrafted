@@ -17,6 +17,9 @@ namespace Renderer
     {
         class RHIDirectX11 : public RHIBase
         {
+        public:
+            static RHIDirectX11* m_instance;
+
         private:
             static void kickFrameEvent();
             static void waitForGPU();
@@ -39,6 +42,9 @@ namespace Renderer
         public:
             void CreateVertexBuffer(VertexBufferHandle handle, uint vertexCount, uint vertexSize, bool dynamic, RendererMemory buffer) override;
             void CreateIndexBuffer(IndexBufferHandle handle, uint indexCount, bool is32bit, bool dynamic, RendererMemory buffer) override;
+            void DestroyVertexBuffer(VertexBufferHandle handle) override;
+            void DestroyIndexBuffer(IndexBufferHandle handle) override;
+            
             void CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle, void* windowHandle) override;
             void ResizeWindow(WindowHandle window, int width, int height) override;
         };

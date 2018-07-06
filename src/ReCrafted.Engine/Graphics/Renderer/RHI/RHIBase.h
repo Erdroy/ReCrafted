@@ -20,8 +20,15 @@ namespace Renderer
         class RHIBase
         {
         public:
+            typedef void*(*vbhFreePtr)(VertexBufferHandle);
+            typedef void*(*ibhFreePtr)(IndexBufferHandle);
+
+        public:
             CommandList commandList = {};
             Event<void> callbacksBeforeRender = {};
+
+            vbhFreePtr freeVertexBuffer = nullptr;
+            ibhFreePtr freeIndexBuffer = nullptr;
 
         public:
             virtual ~RHIBase() = default;
@@ -39,6 +46,9 @@ namespace Renderer
         public:
             virtual void CreateVertexBuffer(VertexBufferHandle handle, uint vertexCount, uint vertexSize, bool dynamic, RendererMemory buffer) = 0;
             virtual void CreateIndexBuffer(IndexBufferHandle handle, uint indexCount, bool is32bit, bool dynamic, RendererMemory buffer) = 0;
+            virtual void DestroyVertexBuffer(VertexBufferHandle handle) = 0;
+            virtual void DestroyIndexBuffer(IndexBufferHandle handle) = 0;
+            
             virtual void CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle, void* windowHandle) = 0;
             virtual void ResizeWindow(WindowHandle window, int width, int height) = 0;
         };

@@ -99,7 +99,7 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
     // Upload new mesh
     mesh->UploadNow();
 
-    SetUpload(mesh, UploadMesh);
+    SetUpload(mesh, SwapMesh);
 }
 
 void SpaceObjectChunk::Upload()
@@ -112,11 +112,15 @@ void SpaceObjectChunk::Upload()
 
     switch (m_uploadType)
     {
-    case UploadMesh:
+    case SwapMesh:
     {
         // Dispose old mesh and swap mesh (m_newMesh will be nullptr - because m_mesh is nullptr (SafeDispose))
         SafeDispose(m_mesh);
         m_mesh.swap(m_newMesh);
+        break;
+    }
+    case UploadMesh:
+    {
         break;
     }
     case ClearMesh:

@@ -39,7 +39,7 @@ namespace Renderer
         public:
             void GetSize(uint* width, uint* height) const
             {
-                _ASSERT(hwnd);
+                ASSERT(hwnd);
 
                 RECT windowRect = {};
                 GetClientRect(hwnd, &windowRect);
@@ -84,6 +84,8 @@ namespace Renderer
             }
         };
 
+        // == static ==
+        RHIDirectX11* RHIDirectX11::m_instance;
 
         // == common ==
         volatile bool m_running;
@@ -251,7 +253,7 @@ namespace Renderer
             }
 
             m_fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-            _ASSERT(m_fenceEvent != nullptr);
+            ASSERT(m_fenceEvent != nullptr);
 
             // we are done with worker thread setup now
         }
@@ -556,8 +558,8 @@ namespace Renderer
             rvar renderBuffer = m_renderBuffers[command->handle.idx];
             cvar swapChain = m_swapChains[command->windowHandle.idx];
 
-            _ASSERT(renderBuffer != nullptr);
-            _ASSERT(swapChain != nullptr);
+            ASSERT(renderBuffer != nullptr);
+            ASSERT(swapChain != nullptr);
 
             cvar bufferCount = m_renderFlags & RenderFlags::TripleBuffered ? FrameBufferCount : 1;
             cvar bufferFormat = m_settings & Settings::BGRAFrameBuffer
@@ -630,7 +632,7 @@ namespace Renderer
         void WorkerThreadInstance::Execute_CreateVertexBuffer(Command_CreateVertexBuffer* command)
         {
             rvar buffer = m_vertexBuffers[command->handle.idx];
-            _ASSERT(buffer == nullptr);
+            ASSERT(buffer == nullptr);
 
             // create buffer description
             D3D11_BUFFER_DESC desc = {};
@@ -653,7 +655,7 @@ namespace Renderer
         void WorkerThreadInstance::Execute_ApplyVertexBuffer(Command_ApplyVertexBuffer* command)
         {
             rvar buffer = m_vertexBuffers[command->handle.idx];
-            _ASSERT(buffer != nullptr);
+            ASSERT(buffer != nullptr);
 
             ID3D11Buffer* buffers[] = {buffer};
 
@@ -666,7 +668,7 @@ namespace Renderer
         void WorkerThreadInstance::Execute_UpdateVertexBuffer(Command_UpdateVertexBuffer* command)
         {
             rvar buffer = m_vertexBuffers[command->handle.idx];
-            _ASSERT(buffer != nullptr);
+            ASSERT(buffer != nullptr);
 
             D3D11_MAPPED_SUBRESOURCE res = {};
             DX_CALL(m_context->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res));
@@ -681,15 +683,17 @@ namespace Renderer
         void WorkerThreadInstance::Execute_DestroyVertexBuffer(Command_DestroyVertexBuffer* command)
         {
             rvar buffer = m_vertexBuffers[command->handle.idx];
-            _ASSERT(buffer != nullptr);
+            ASSERT(buffer != nullptr);
 
             SafeRelease(buffer);
+
+            (*RHIDirectX11::m_instance->freeVertexBuffer)(command->handle);
         }
 
         void WorkerThreadInstance::Execute_CreateIndexBuffer(Command_CreateIndexBuffer* command)
         {
             rvar buffer = m_indexBuffers[command->handle.idx];
-            _ASSERT(buffer.buffer == nullptr);
+            ASSERT(buffer.buffer == nullptr);
 
             buffer.is32bit = command->indexSize == 32;
 
@@ -716,7 +720,7 @@ namespace Renderer
         void WorkerThreadInstance::Execute_ApplyIndexBuffer(Command_ApplyIndexBuffer* command)
         {
             rvar buffer = m_indexBuffers[command->handle.idx];
-            _ASSERT(buffer.buffer != nullptr);
+            ASSERT(buffer.buffer != nullptr);
 
             m_context->IASetIndexBuffer(buffer.buffer, buffer.is32bit ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT,
                                         0u);
@@ -726,7 +730,7 @@ namespace Renderer
         void WorkerThreadInstance::Execute_UpdateIndexBuffer(Command_UpdateIndexBuffer* command)
         {
             rvar buffer = m_indexBuffers[command->handle.idx];
-            _ASSERT(buffer.buffer != nullptr);
+            ASSERT(buffer.buffer != nullptr);
 
             D3D11_MAPPED_SUBRESOURCE res;
             DX_CALL(m_context->Map(buffer.buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res));
@@ -741,26 +745,28 @@ namespace Renderer
         void WorkerThreadInstance::Execute_DestroyIndexBuffer(Command_DestroyIndexBuffer* command)
         {
             rvar buffer = m_indexBuffers[command->handle.idx];
-            _ASSERT(buffer.buffer != nullptr);
+            ASSERT(buffer.buffer != nullptr);
 
             buffer.Dispose();
+
+            (*RHIDirectX11::m_instance->freeIndexBuffer)(command->handle);
         }
 
         void WorkerThreadInstance::Execute_CreateRenderBuffer(Command_CreateRenderBuffer* command)
         {
             rvar buffer = m_renderBuffers[command->handle.idx];
-            _ASSERT(buffer == nullptr);
+            ASSERT(buffer == nullptr);
 
-            _ASSERT(command->texturesCount > 0);
-            _ASSERT(command->width >= 16);
-            _ASSERT(command->height >= 16);
+            ASSERT(command->texturesCount > 0);
+            ASSERT(command->width >= 16);
+            ASSERT(command->height >= 16);
 
             // select rtv's
             std::vector<ID3D11RenderTargetView*> rtvs = {};
             for (var i = 0; i < command->texturesCount; i ++)
             {
                 cvar texture = m_textures[command->renderTargets[i].idx];
-                _ASSERT(texture.rtv != nullptr);
+                ASSERT(texture.rtv != nullptr);
                 rtvs.push_back(texture.rtv);
             }
 
@@ -769,7 +775,7 @@ namespace Renderer
             if (command->createDepthStencil)
             {
                 dsv = m_textures[command->depthTarget.idx].dsv;
-                _ASSERT(dsv != nullptr);
+                ASSERT(dsv != nullptr);
             }
 
             // create render buffer
@@ -780,22 +786,21 @@ namespace Renderer
         void WorkerThreadInstance::Execute_ResizeRenderBuffer(Command_ResizeRenderBuffer* command)
         {
             rvar buffer = m_renderBuffers[command->handle.idx];
-            _ASSERT(buffer != nullptr);
+            ASSERT(buffer != nullptr);
 
-            _ASSERT(command->width >= 16);
-            _ASSERT(command->height >= 16);
+            ASSERT(command->width >= 16);
+            ASSERT(command->height >= 16);
 
             // set size
             buffer->SetSize(command->width, command->height);
 
             // rebind all textures
             // select rtv's
-            // TODO: Set RTVs
             std::vector<ID3D11RenderTargetView*> rtvs = {};
             for (var i = 0u; i < command->texturesCount; i++)
             {
                 cvar texture = m_textures[command->renderTargets[i].idx];
-                _ASSERT(texture.rtv != nullptr);
+                ASSERT(texture.rtv != nullptr);
                 rtvs.push_back(texture.rtv);
             }
             buffer->SetRTVs(rtvs.data());
@@ -807,7 +812,7 @@ namespace Renderer
         void WorkerThreadInstance::Execute_ClearRenderBuffer(Command_ClearRenderBuffer* command)
         {
             rvar buffer = m_renderBuffers[command->handle.idx];
-            _ASSERT(buffer != nullptr);
+            ASSERT(buffer != nullptr);
 
             // TODO: check if we can pass frame index (is it back buffer - render buffer)
 
@@ -817,7 +822,7 @@ namespace Renderer
         void WorkerThreadInstance::Execute_ApplyRenderBuffer(Command_ApplyRenderBuffer* command)
         {
             rvar buffer = m_renderBuffers[command->handle.idx];
-            _ASSERT(buffer != nullptr);
+            ASSERT(buffer != nullptr);
 
             // TODO: check if we can pass frame index (is it back buffer - render buffer)
 
@@ -827,7 +832,7 @@ namespace Renderer
         void WorkerThreadInstance::Execute_DestroyRenderBuffer(Command_DestroyRenderBuffer* command)
         {
             rvar buffer = m_renderBuffers[command->handle.idx];
-            _ASSERT(buffer != nullptr);
+            ASSERT(buffer != nullptr);
 
             SafeRelease(buffer);
         }
@@ -835,7 +840,7 @@ namespace Renderer
         void WorkerThreadInstance::Execute_CreateTexture2D(Command_CreateTexture2D* command)
         {
             rvar texture = m_textures[command->handle.idx];
-            _ASSERT(texture.texture == nullptr);
+            ASSERT(texture.texture == nullptr);
 
             cvar mipLevels = command->mipLevels == 0 ? 1 : command->mipLevels;
             cvar createDepthBuffer = command->textureFormat >= TextureFormat::D16;
@@ -922,8 +927,8 @@ namespace Renderer
         void WorkerThreadInstance::Execute_ApplyTexture2D(Command_ApplyTexture2D* command)
         {
             rvar texture = m_textures[command->handle.idx];
-            _ASSERT(texture.texture != nullptr);
-            _ASSERT(m_currentShader != nullptr);
+            ASSERT(texture.texture != nullptr);
+            ASSERT(m_currentShader != nullptr);
 
             // bind the texture
             m_currentShader->BindResource(m_context, command->slot, texture.srv);
@@ -932,7 +937,7 @@ namespace Renderer
         void WorkerThreadInstance::Execute_ResizeTexture2D(Command_ResizeTexture2D* command)
         {
             rvar texture = m_textures[command->handle.idx];
-            _ASSERT(texture.texture != nullptr);
+            ASSERT(texture.texture != nullptr);
 
             D3D11_TEXTURE2D_DESC textureDesc;
             texture.texture->GetDesc(&textureDesc);
@@ -965,7 +970,7 @@ namespace Renderer
         void WorkerThreadInstance::Execute_DestroyTexture2D(Command_DestroyTexture2D* command)
         {
             rvar texture = m_textures[command->handle.idx];
-            _ASSERT(texture.texture != nullptr);
+            ASSERT(texture.texture != nullptr);
 
             SafeRelease(texture.texture);
         }
@@ -1037,6 +1042,7 @@ namespace Renderer
 
         void RHIDirectX11::Initialize(Settings::_enum settings, RenderFlags::_enum flags)
         {
+            m_instance = this;
             m_settings = settings;
             m_renderFlags = flags;
             m_defaultFlags = flags;
@@ -1044,7 +1050,7 @@ namespace Renderer
 
             if (m_renderFlags & RenderFlags::TripleBuffered)
             {
-                _ASSERT(false); // D3D11 does not support tripple buffering, yet!
+                ASSERT(false); // D3D11 does not support tripple buffering, yet!
                 return;
             }
 
@@ -1154,11 +1160,11 @@ namespace Renderer
 
                 // Create frame done signal event
                 m_workerFrameEvents[i] = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-                _ASSERT(m_workerFrameEvents[i] != nullptr);
+                ASSERT(m_workerFrameEvents[i] != nullptr);
 
                 // Create worker finish signal event
                 m_workerFinishEvents[i] = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-                _ASSERT(m_workerFinishEvents[i] != nullptr);
+                ASSERT(m_workerFinishEvents[i] != nullptr);
 
                 workerInstance->threadId = i;
                 workerInstance->m_commandList = {};
@@ -1412,6 +1418,24 @@ namespace Renderer
             command.indexSize = is32bit ? 32 : 16;
 
             thread->Execute_CreateIndexBuffer(&command);
+        }
+
+        void RHIDirectX11::DestroyVertexBuffer(VertexBufferHandle handle)
+        {
+            cvar thread = m_workerThreads[0];
+
+            Command_DestroyVertexBuffer command = {};
+            command.handle = handle;
+            thread->Execute_DestroyVertexBuffer(&command);
+        }
+
+        void RHIDirectX11::DestroyIndexBuffer(IndexBufferHandle handle)
+        {
+            cvar thread = m_workerThreads[0];
+
+            Command_DestroyIndexBuffer command = {};
+            command.handle = handle;
+            thread->Execute_DestroyIndexBuffer(&command);
         }
 #pragma endregion
 

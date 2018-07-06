@@ -45,7 +45,7 @@ struct type##Description { public:
 #define RENDERER_DEFINE_HANDLE_DESCRIPTOR_TABLE(type, maxval) \
     type##Description type##_desc_table[maxval] = {};\
     type##Description& Get##type##Description(type##Handle handle) {\
-        _ASSERT( handle.idx != 0u );\
+        ASSERT( handle.idx != 0u );\
         return type##_desc_table[handle.idx];\
     }
 
@@ -62,19 +62,19 @@ struct type##Description { public:
 	}                                                   \
 	void Free##type##( type value ) {                   \
         ScopeLock(type##lock);                          \
-        _ASSERT( value.idx != 0u );                     \
+        ASSERT( value.idx != 0u );                     \
         type##_table[ value.idx ] = {};                 \
     }
 
 #define RENDERER_CHECK_HANDLE(handle) handle.idx != 0u
 
 #define RENDERER_VALIDATE_HANDLE(name)\
-        _ASSERT(RENDERER_CHECK_HANDLE(name));
+        ASSERT(RENDERER_CHECK_HANDLE(name));
 
 #define RENDERER_FORCEINLINE __forceinline
 
 #ifdef _DEBUG
-#define CHECK_MAIN_THREAD() _ASSERT(std::this_thread::get_id() == g_mainThreadId)
+#define CHECK_MAIN_THREAD() ASSERT(std::this_thread::get_id() == g_mainThreadId)
 #else
 #define CHECK_MAIN_THREAD() true
 #endif

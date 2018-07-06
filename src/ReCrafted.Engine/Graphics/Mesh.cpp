@@ -124,12 +124,6 @@ void Mesh::UploadNow()
     ASSERT(m_vertexBufferData != nullptr);
     ASSERT(m_indexBufferData != nullptr);
 
-    if (RENDERER_CHECK_HANDLE(m_vertexBuffer))
-        Renderer::DestroyVertexBuffer(m_vertexBuffer);
-
-    if (RENDERER_CHECK_HANDLE(m_indexBuffer))
-        Renderer::DestroyIndexBuffer(m_indexBuffer);
-
     // Create vertex buffer
     m_vertexBuffer = Renderer::CreateVertexBufferSync(m_vertices_count, m_vertexSize, false, m_vertexBufferData);
 
@@ -150,12 +144,6 @@ void Mesh::Upload()
 {
     ASSERT(m_vertexBufferData != nullptr);
     ASSERT(m_indexBufferData != nullptr);
-
-    if (RENDERER_CHECK_HANDLE(m_vertexBuffer))
-        Renderer::DestroyVertexBuffer(m_vertexBuffer);
-
-    if (RENDERER_CHECK_HANDLE(m_indexBuffer))
-        Renderer::DestroyIndexBuffer(m_indexBuffer);
 
     // Create vertex buffer
     m_vertexBuffer = Renderer::CreateVertexBuffer(m_vertices_count, m_vertexSize, m_vertexBufferData);

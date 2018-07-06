@@ -334,7 +334,7 @@ namespace Renderer
 
     void RHIDirectX11_Shader::Bind(ID3D11DeviceContext* context, int passId)
     {
-        _ASSERT(passId < m_passes.size());
+        ASSERT(passId < m_passes.size());
 
         var& pass = m_passes[passId];
         BindPass(context, pass);
@@ -363,16 +363,16 @@ namespace Renderer
 
     void RHIDirectX11_Shader::SetValue(int buffer, int index, void* data, size_t dataSize)
     {
-        _ASSERT(buffer < m_buffers.size());
+        ASSERT(buffer < m_buffers.size());
 
         // Get buffer description
         rvar bufferDesc = m_buffers[buffer];
-        _ASSERT(bufferDesc.m_size >= dataSize);
-        _ASSERT(index < bufferDesc.m_fields.size());
+        ASSERT(bufferDesc.m_size >= dataSize);
+        ASSERT(index < bufferDesc.m_fields.size());
 
         // Get field description
         rvar fieldDesc = bufferDesc.m_fields[index];
-        _ASSERT(fieldDesc.m_size == dataSize);
+        ASSERT(fieldDesc.m_size == dataSize);
 
         // Copy new data
         memcpy(bufferDesc.m_data + fieldDesc.m_offset, data, dataSize);

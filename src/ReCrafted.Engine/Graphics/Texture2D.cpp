@@ -143,7 +143,7 @@ uint Texture2D::GetHeight() const
 
 void Texture2D::Apply()
 {
-    _ASSERT(m_bitmap || m_bits);
+    ASSERT(m_bitmap || m_bits);
 
     cvar pitch = Renderer::TextureFormatInfo[m_textureFormat][0] / 8;
     var size = m_width * m_height * pitch;
