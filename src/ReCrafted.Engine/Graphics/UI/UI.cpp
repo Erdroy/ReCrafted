@@ -115,6 +115,9 @@ void UI::OnDispose()
 
     // Dispose shader
     SafeDispose(m_shader);
+
+    // Release draw cmd array
+    m_drawCmds.Release();
 }
 
 void UI::BeginDraw()

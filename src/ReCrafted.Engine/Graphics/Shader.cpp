@@ -9,7 +9,7 @@
 
 void Shader::Dispose()
 {
-    Logger::LogInfo("Unloading shader '{0}'", m_shaderName);
+    Logger::LogInfo("Unloading shader '{0}'", m_shaderName.StdStr());
     Renderer::DestroyShader(m_shaderHandle);
 }
 
@@ -18,7 +18,7 @@ RefPtr<Shader> Shader::LoadShader(const char* shaderName)
     RefPtr<Shader> shader(new Shader);
 
     Logger::LogInfo("Loading shader {0}", shaderName);
-    strcpy_s(shader->m_shaderName, shaderName);
+    shader->m_shaderName = Text(shaderName);
     shader->m_shaderHandle = Renderer::CreateShader(shaderName);
     return shader;
 }

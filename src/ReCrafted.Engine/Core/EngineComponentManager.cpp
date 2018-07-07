@@ -42,7 +42,7 @@ void EngineComponentManager::Update()
 
 void EngineComponentManager::ReleaseComponent(EngineComponentBase* component)
 {
-    assert(component);
+    ASSERT(component);
 
     // Shutdown and delete component
     component->Shutdown();
@@ -50,7 +50,7 @@ void EngineComponentManager::ReleaseComponent(EngineComponentBase* component)
 
 void EngineComponentManager::RegisterComponent(EngineComponentBase* component)
 {
-    assert(component);
+    ASSERT(component);
 
     ScopeLock(m_componentsLock);
 
@@ -63,7 +63,7 @@ void EngineComponentManager::RegisterComponent(EngineComponentBase* component)
 
 void EngineComponentManager::UnregisterComponent(EngineComponentBase* component)
 {
-    assert(component);
+    ASSERT(component);
 
     ScopeLock(m_componentsLock);
 

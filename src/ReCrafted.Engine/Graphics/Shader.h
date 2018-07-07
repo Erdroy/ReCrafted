@@ -21,7 +21,7 @@ class Shader : IResource
 
 private:
     Renderer::ShaderHandle m_shaderHandle;
-    char m_shaderName[128] = {};
+    Text m_shaderName;
 
 public:
 IRESOURCE_IMPL(Shader)

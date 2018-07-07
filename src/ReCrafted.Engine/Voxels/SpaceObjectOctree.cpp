@@ -44,6 +44,8 @@ void SpaceObjectOctree::GeneratePrimary()
         {
             for (var z = 0; z < rootNodesLength; z++)
             {
+                ASSERT(nodeId < m_rootNodesCount);
+
                 // create root node
                 m_rootNodes[nodeId] = new SpaceObjectOctreeNode();
                 var node = m_rootNodes[nodeId];
