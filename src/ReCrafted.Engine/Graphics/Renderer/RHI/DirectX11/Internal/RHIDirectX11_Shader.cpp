@@ -118,9 +118,6 @@ namespace Renderer
                     if (current.SemanticIndex != element.SemanticIndex)
                         break;
 
-                    if (strcmp(current.SemanticName, element.SemanticName) != 0)
-                        break;
-
                     // we have found the same vertex input layout!
                     // set the input layout and return
                     *pInputLayout = il.inputLayout;
