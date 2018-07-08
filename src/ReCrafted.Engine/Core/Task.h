@@ -7,7 +7,7 @@
 
 // includes
 #include "ReCrafted.h"
-#include "Delegate.h"
+#include "Action.h"
 #include "Lock.h"
 
 struct ITask
@@ -32,8 +32,8 @@ private:
     bool m_queued = false;
     bool m_completed = false;
 
-    Delegate<void> m_function;
-    Delegate<void> m_callback;
+    Action<void> m_function;
+    Action<void> m_callback;
 
     Lock m_executionLock = {};
     ITask* m_customTask = nullptr;
@@ -86,7 +86,7 @@ public:
     * \param function The function which will be run on remote thread.
     * \return The created task.
     */
-    static Task* RunTask(Delegate<void> function);
+    static Task* RunTask(Action<void> function);
 
     /**
     * \brief Creates and runs task with callback.
@@ -94,14 +94,14 @@ public:
     * \param function The function which will be called on main thread after the task is completed.
     * \return The created task.
     */
-    static Task* RunTask(Delegate<void> function, Delegate<void> callback);
+    static Task* RunTask(Action<void> function, Action<void> callback);
 
     /**
     * \brief Creates task without callback. This task need to be queued.
     * \param function The function which will be run on remote thread.
     * \return The created task.
     */
-    static Task* CreateTask(Delegate<void> function);
+    static Task* CreateTask(Action<void> function);
 
     /**
     * \brief Creates task with callback. This task need to be queued.
@@ -109,7 +109,7 @@ public:
     * \param function The function which will be called on main thread after the task is completed.
     * \return The created task.
     */
-    static Task* CreateTask(Delegate<void> function, Delegate<void> callback);
+    static Task* CreateTask(Action<void> function, Action<void> callback);
 
     /**
      * \brief Creates custom task with optional userData.

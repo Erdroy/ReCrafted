@@ -13,6 +13,7 @@
 #include "Graphics/UI/UI.h"
 #include "Graphics/WebUI/WebUI.h"
 #include "DebugDraw.h"
+#include "Core/Action.h"
 
 SINGLETON_IMPL(Graphics)
 
@@ -56,7 +57,7 @@ void Graphics::InitializeRenderer()
     m_frameBuffer = Renderer::GetWindowRenderBuffer(m_window);
 
     // Set renderer callbacks
-    Renderer::AddOnPresentCallback(MakeDelegate(Graphics::OnFramePresent));
+    Renderer::AddOnPresentCallback(Action<void>::New<Graphics, &Graphics::OnFramePresent>(this));
 
     Logger::LogInfo("Graphics initialized");
 }
@@ -288,6 +289,7 @@ void Graphics::RenderUI()
             Profiler::GetInstance()->DrawDebugScreen();
         }
         Profiler::EndProfile();
+
 
         Profiler::BeginProfile("UI Process");
         {

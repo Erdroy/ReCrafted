@@ -47,7 +47,7 @@ void EngineMain::CreateMainWindow()
 {
     m_mainWindow.reset(new ApplicationWindow());
     m_mainWindow->Create();
-    m_mainWindow->SetOnResized(MakeDelegate(EngineMain::OnWindowResized));
+    m_mainWindow->SetOnResized(Action<void>::New<EngineMain, &EngineMain::OnWindowResized>(this));
 
     // Update size
     m_mainWindow->UpdateSizeNow();
@@ -135,9 +135,9 @@ void EngineMain::Run()
     Logger::Log("ReCrafted run");
 
     // set loop callbacks
-    m_updateLoop->SetSimulateCallback(MakeDelegate(EngineMain::OnSimulate));
-    m_updateLoop->SetUpdateCallback(MakeDelegate(EngineMain::OnUpdate));
-    m_updateLoop->SetRenderCallback(MakeDelegate(EngineMain::OnRender));
+    m_updateLoop->SetSimulateCallback(Action<void>::New<EngineMain, &EngineMain::OnSimulate>(this));
+    m_updateLoop->SetUpdateCallback(Action<void>::New<EngineMain, &EngineMain::OnUpdate>(this));
+    m_updateLoop->SetRenderCallback(Action<void>::New<EngineMain, &EngineMain::OnRender>(this));
 
     // start loop
     m_updateLoop->Start();

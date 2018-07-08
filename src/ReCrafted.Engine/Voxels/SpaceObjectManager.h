@@ -7,7 +7,7 @@
 
 // includes
 #include "ReCrafted.h"
-#include "Core/Delegate.h"
+#include "Core/Action.h"
 #include "Core/Containers/Array.h"
 
 #include <thread>
@@ -59,7 +59,7 @@ public:
     /**
      * \brief Enqueues node for generation.
      */
-    static void Enqueue(SpaceObjectOctreeNode* node, ProcessMode::_enum mode, Delegate<void> callback);
+    static void Enqueue(SpaceObjectOctreeNode* node, ProcessMode::_enum mode, Action<void> callback);
 };
 
 #endif // SPACEOBJECTMANAGER_H

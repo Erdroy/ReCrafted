@@ -3,7 +3,7 @@
 #include "SpaceObjectManager.h"
 #include "SpaceObjectOctreeNode.h"
 #include "Core/Lock.h"
-#include "Core/Delegate.h"
+#include "Core/Action.h"
 #include "Core/Logger.h"
 #include "Meshing/MarchingCubes/MCMesher.h"
 #include "Platform/Platform.h"
@@ -16,11 +16,11 @@ ALIGN(8) struct queueItem
 {
     SpaceObjectOctreeNode* node;
     ProcessMode::_enum mode;
-    Delegate<void> callback;
+    Action<void> callback;
 };
 
 moodycamel::ConcurrentQueue<queueItem> m_loadingQueue;
-Array<Delegate<void>> m_callbacks;
+Array<Action<void>> m_callbacks;
 Lock m_calbacksLock;
 
 void SpaceObjectManager::OnDispose()
@@ -113,7 +113,7 @@ void SpaceObjectManager::Update()
     m_calbacksLock.UnlockNow();
 }
 
-void SpaceObjectManager::Enqueue(SpaceObjectOctreeNode* node, ProcessMode::_enum mode, Delegate<void> callback)
+void SpaceObjectManager::Enqueue(SpaceObjectOctreeNode* node, ProcessMode::_enum mode, Action<void> callback)
 {
     var item = queueItem();
     item.node = node;

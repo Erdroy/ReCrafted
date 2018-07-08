@@ -7,7 +7,6 @@
 
 // includes
 #include "ReCrafted.h"
-#include "Core/Delegate.h"
 #include "Core/EngineComponent.h"
 #include "Graphics/Shader.h"
 #include "Graphics/RenderBuffer.h"
@@ -18,7 +17,7 @@
 /**
  * \brief Graphics class.
  */
-class Graphics : public EngineComponent<Graphics>, IDelegateHandler
+class Graphics : public EngineComponent<Graphics>
 {
     friend class EngineMain;
 

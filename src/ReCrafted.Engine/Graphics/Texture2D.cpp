@@ -3,8 +3,6 @@
 #include "Texture2D.h"
 #include "upng/upng.h"
 #include "ReCrafted.h"
-#include "Core/Delegate.h"
-#include <functional>
 
 void Texture2D::Dispose()
 {

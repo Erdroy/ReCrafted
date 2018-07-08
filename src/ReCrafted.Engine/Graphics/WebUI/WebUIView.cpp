@@ -4,7 +4,7 @@
 #include "WebUIEngine.h"
 #include "Common/Text.h"
 #include "Common/Display.h"
-#include "Core/Delegate.h"
+#include "Core/Action.h"
 #include "Graphics/Graphics.h"
 #include "Impl/Overlay.h"
 
@@ -63,6 +63,6 @@ void WebUIView::Execute(const char* javaScriptSource)
 
 }
 
-void WebUIView::Bind(const char* bindName, Delegate<void> delegate)
+void WebUIView::Bind(const char* bindName, Action<void> delegate)
 {
 }

@@ -8,7 +8,6 @@
 #include "../Renderer.hpp"
 #include "../CommandList/CommandList.h"
 
-#include "Core/Delegate.h"
 #include "Core/Event.h"
 
 namespace Renderer

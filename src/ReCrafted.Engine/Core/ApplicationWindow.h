@@ -8,7 +8,7 @@
 // includes
 #include "ReCrafted.h"
 #include "IDisposable.h"
-#include "Core/Delegate.h"
+#include "Core/Action.h"
 #include "Core/Containers/Array.h"
 
 class ApplicationWindow : IDisposable
@@ -18,7 +18,7 @@ private:
 
 private:
     void* m_windowHandle = nullptr;
-    Delegate<void> m_onResized = {};
+    Action<void> m_onResized = {};
 
 private:
 
@@ -30,7 +30,7 @@ public:
     void UpdateSizeNow();
 
 public:
-    void SetOnResized(Delegate<void> callback);
+    void SetOnResized(Action<void> callback);
 
 public:
     static void WindowResize(void* windowHandle);

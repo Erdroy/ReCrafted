@@ -7,7 +7,7 @@
 
 // includes
 #include "ReCrafted.h"
-#include "Delegate.h"
+#include "Action.h"
 #include "Lock.h"
 #include "Containers/Array.h"
 
@@ -15,7 +15,7 @@ template <typename T>
 class Event
 {
 private:
-    Array<Delegate<T>> m_listeners = {};
+    Array<Action<T>> m_listeners = {};
     Lock m_lock = {};
 
 public:
@@ -37,13 +37,13 @@ public:
             listener.Invoke(param);
     }
 
-    void AddListener(Delegate<T> delegate)
+    void AddListener(Action<T> delegate)
     {
         ScopeLock(m_lock);
         m_listeners.Add(delegate);
     }
 
-    void RemoveListener(Delegate<T> delegate)
+    void RemoveListener(Action<T> delegate)
     {
         ScopeLock(m_lock);
         m_listeners.Remove(delegate);

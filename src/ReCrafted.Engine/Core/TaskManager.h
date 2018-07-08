@@ -50,7 +50,7 @@ private:
     static void CleanupTask(Task* task);
     static bool CancelTask(uint taskId);
     static void QueueTask(Task* task);
-    static Task* CreateTask(Delegate<void> function, Delegate<void> callback);
+    static Task* CreateTask(Action<void> function, Action<void> callback);
     static Task* CreateTask(ITask* customTask, void* userData);
 };
 

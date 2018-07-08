@@ -5,9 +5,11 @@
 #include "SpaceObjectChunk.h"
 #include "SpaceObjectManager.h"
 #include "SpaceObjectTables.hpp"
+#include "SpaceObject.h"
+
+#include "Core/Action.h"
 #include "Graphics/Camera.h"
 #include "Utilities/VoxelUtils.h"
-#include "SpaceObject.h"
 #include "Graphics/DebugDraw.h"
 
 #define HAS_LOCAL_NEIGH(id, dir) LocalNeighTable[id] & (1 << dir)
@@ -150,7 +152,7 @@ void SpaceObjectOctreeNode::Populate()
     m_processing = true;
 
     // queue populate job
-    SpaceObjectManager::Enqueue(this, ProcessMode::Populate, MakeDelegate(SpaceObjectOctreeNode::OnPopulate));
+    SpaceObjectManager::Enqueue(this, ProcessMode::Populate, Action<void>::New<SpaceObjectOctreeNode, &SpaceObjectOctreeNode::OnPopulate>(this));
 }
 
 void SpaceObjectOctreeNode::Depopulate()
@@ -170,7 +172,7 @@ void SpaceObjectOctreeNode::Rebuild()
     m_rebuilding = true;
 
     // queue rebuild job
-    SpaceObjectManager::Enqueue(this, ProcessMode::Rebuild, MakeDelegate(SpaceObjectOctreeNode::OnRebuild));
+    SpaceObjectManager::Enqueue(this, ProcessMode::Rebuild, Action<void>::New<SpaceObjectOctreeNode, &SpaceObjectOctreeNode::OnRebuild>(this));
 }
 
 void SpaceObjectOctreeNode::OnCreate()

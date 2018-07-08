@@ -341,7 +341,7 @@ namespace Renderer
         FreeWindowHandle(handle);
     }
 
-    void AddOnPresentCallback(const Delegate<void>& event)
+    void AddOnPresentCallback(const Action<void>& event)
     {
         m_renderer->callbacksBeforeRender.AddListener(event);
     }

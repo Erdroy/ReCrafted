@@ -39,12 +39,6 @@ class EngineMain;
 class EngineComponentBase;
 class EngineComponentManager;
 
-template <typename T = void>
-class Delegate;
-
-template <typename T = void>
-class Event;
-
 struct Vector2;
 struct Vector3;
 struct Vector4;

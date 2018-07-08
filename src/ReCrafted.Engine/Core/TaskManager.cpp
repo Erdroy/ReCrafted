@@ -1,7 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "TaskManager.h"
-#include "Delegate.h"
 #include "Task.h"
 #include "Platform/Platform.h"
 #include "Logger.h"
@@ -147,7 +146,7 @@ void TaskManager::QueueTask(Task* task)
     m_instance->m_taskExecuteQueue.enqueue(task);
 }
 
-Task* TaskManager::CreateTask(Delegate<void> function, Delegate<void> callback)
+Task* TaskManager::CreateTask(Action<void> function, Action<void> callback)
 {
     var task = m_instance->AcquireTask();
 

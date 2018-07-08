@@ -7,7 +7,6 @@
 
 // includes
 #include "ReCrafted.h"
-#include "Core/Delegate.h"
 #include "Core/Math/Vector3.h"
 #include "Core/Math/BoundingBox.h"
 #include "Core/Containers/Array.h"

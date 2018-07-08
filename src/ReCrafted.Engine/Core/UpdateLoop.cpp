@@ -78,7 +78,7 @@ void UpdateLoop::Stop()
     m_running = false;
 }
 
-void UpdateLoop::SetUpdateCallback(Delegate<void> callback)
+void UpdateLoop::SetUpdateCallback(Action<void> callback)
 {
     m_updateCallback = true;
 
@@ -86,7 +86,7 @@ void UpdateLoop::SetUpdateCallback(Delegate<void> callback)
     m_update = callback;
 }
 
-void UpdateLoop::SetSimulateCallback(Delegate<void> callback)
+void UpdateLoop::SetSimulateCallback(Action<void> callback)
 {
     m_simulateCallback = true;
 
@@ -94,7 +94,7 @@ void UpdateLoop::SetSimulateCallback(Delegate<void> callback)
     m_simulate = callback;
 }
 
-void UpdateLoop::SetRenderCallback(Delegate<void> callback)
+void UpdateLoop::SetRenderCallback(Action<void> callback)
 {
     m_renderCallback = true;
 

@@ -63,7 +63,7 @@ void Task::Cancel()
     TaskManager::CancelTask(m_id);
 }
 
-Task* Task::RunTask(Delegate<void> function)
+Task* Task::RunTask(Action<void> function)
 {
     cvar task = CreateTask(function, {});
     task->m_queued = true;
@@ -71,7 +71,7 @@ Task* Task::RunTask(Delegate<void> function)
     return task;
 }
 
-Task* Task::RunTask(Delegate<void> function, Delegate<void> callback)
+Task* Task::RunTask(Action<void> function, Action<void> callback)
 {
     cvar task = CreateTask(function, callback);
     task->m_queued = true;
@@ -79,12 +79,12 @@ Task* Task::RunTask(Delegate<void> function, Delegate<void> callback)
     return task;
 }
 
-Task* Task::CreateTask(Delegate<void> function)
+Task* Task::CreateTask(Action<void> function)
 {
     return TaskManager::CreateTask(function, {});
 }
 
-Task* Task::CreateTask(Delegate<void> function, Delegate<void> callback)
+Task* Task::CreateTask(Action<void> function, Action<void> callback)
 {
     return TaskManager::CreateTask(function, callback);
 }

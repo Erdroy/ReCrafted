@@ -7,6 +7,7 @@
 
 // includes
 #include "ReCrafted.h"
+#include "Core/Action.h"
 #include "Scripting/Object.h"
 #include "WebUIOverlay.h"
 
@@ -35,7 +36,7 @@ public:
 
     void Navigate(Text& url);
     void Execute(const char* javaScriptSource);
-    void Bind(const char* bindName, Delegate<void> delegate);
+    void Bind(const char* bindName, Action<void> delegate);
 
 public:
     int Width() const { return m_width; }

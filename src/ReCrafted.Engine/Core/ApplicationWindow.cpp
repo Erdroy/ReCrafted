@@ -29,7 +29,7 @@ void ApplicationWindow::UpdateSizeNow()
     Platform::GetWindowSize(m_windowHandle, &m_Width, &m_Height);
 }
 
-void ApplicationWindow::SetOnResized(Delegate<void> callback)
+void ApplicationWindow::SetOnResized(Action<void> callback)
 {
     m_onResized = callback;
 }

@@ -6,7 +6,8 @@
 #define UPDATELOOP_H
 
 // includes
-#include "Delegate.h"
+#include "ReCrafted.h"
+#include "Action.h"
 
 /**
  * \brief UpdateLoop class. Implements generic timing logic.
@@ -14,9 +15,9 @@
 class UpdateLoop
 {
 private:
-    Delegate<void> m_simulate;
-    Delegate<void> m_update;
-    Delegate<void> m_render;
+    Action<void> m_simulate;
+    Action<void> m_update;
+    Action<void> m_render;
 
     bool m_running = true;
     double m_simulationAcc = 0.0;
@@ -45,19 +46,19 @@ public:
      * \brief Sets Update callback.
      * \param callback The Update callback delegate.
      */
-    void SetUpdateCallback(Delegate<void> callback);
+    void SetUpdateCallback(Action<void> callback);
 
     /**
     * \brief Sets simulation callback.
     * \param callback The simulation callback delegate.
     */
-    void SetSimulateCallback(Delegate<void> callback);
+    void SetSimulateCallback(Action<void> callback);
 
     /**
     * \brief Sets render callback.
     * \param callback The render callback delegate.
     */
-    void SetRenderCallback(Delegate<void> callback);
+    void SetRenderCallback(Action<void> callback);
 
 public:
 PROPERTY(int, TargetFps) = 60;
