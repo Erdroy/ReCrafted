@@ -13,10 +13,6 @@
 
 SINGLETON_IMPL(Profiler)
 
-Array<Profiler::Profile> Profiler::m_profiles;
-Array<Profiler::Profile*> Profiler::m_profileStack;
-int Profiler::m_profileCount;
-
 Color GetFPSLineColor(int fps)
 {
     var color = Color(0x00FF00FF);

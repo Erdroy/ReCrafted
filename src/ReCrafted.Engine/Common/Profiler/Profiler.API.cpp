@@ -8,8 +8,13 @@ namespace Internal
 {
     void BeginProfile(MonoString* name, float med, float max)
     {
-        var text = MONO_TEXT(name);
-        Profiler::BeginProfile(text, med, max);
+        //var text = MONO_TEXT(name);
+        //Profiler::BeginProfile(text, med, max);
+    }
+
+    void EndProfile()
+    {
+        //Profiler::EndProfile();
     }
 }
 
@@ -39,7 +44,7 @@ void Profiler::InitRuntime()
             API_COMMENT("Ends profiling.");
             API_METHOD(PUBLIC, STATIC, "EndProfile", EXTERN);
             {
-                API_BIND("ReCrafted.API.Common.Profiler::EndProfile", &Profiler::EndProfile);
+                API_BIND("ReCrafted.API.Common.Profiler::EndProfile", &Internal::EndProfile);
             }
             API_METHOD_END();
         }

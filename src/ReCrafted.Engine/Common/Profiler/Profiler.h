@@ -57,11 +57,11 @@ private:
             // Update time
             lastUpdate = currentTime;
             timeBegin = currentTime;
-            depth = m_profileStack.Count();
-            order = m_profileCount;
+            depth = GetInstance()->m_profileStack.Count();
+            order = GetInstance()->m_profileCount;
 
             // increment profile count
-            m_profileCount++;
+            GetInstance()->m_profileCount++;
 
             updated = true;
 
@@ -71,9 +71,9 @@ private:
     };
 
 private:
-    static Array<Profile> m_profiles;
-    static Array<Profile*> m_profileStack;
-    static int m_profileCount;
+    Array<Profile> m_profiles;
+    Array<Profile*> m_profileStack;
+    int m_profileCount;
 
     bool m_drawDebugScreen = false;
     bool m_drawProfiles = false;
@@ -109,9 +109,9 @@ public:
 
 private:
     template <typename T>
-    FORCEINLINE static void BeginProfile(const T* name, bool utf8, float timeMed, float timeMax)
+    void InternalBeginProfile(const T* name, bool utf8, float timeMed, float timeMax)
     {
-        // TODO: Main thread check (debug)
+        ASSERT(IS_MAIN_THREAD());
 
         cvar currentTime = Platform::GetMiliseconds();
 
@@ -120,7 +120,7 @@ private:
 
         if (m_profiles.Count() > 0)
         {
-            for (var&& profile : m_profiles)
+            for (rvar profile : m_profiles)
             {
                 if (utf8)
                 {
@@ -138,7 +138,6 @@ private:
                 }
                 else
                 {
-                    // TODO: UTF-16 string Compare
                     if (Text::Compare(static_cast<const Char*>(profile.name), static_cast<const Char*>((void*)name)))
                     {
                         // Update
@@ -165,30 +164,10 @@ private:
         m_profiles.Add(newProfile);
     }
 
-public:
-    /**
-	 * \brief Begins new profile.
-	 * \param name The name of the new profile. Use `TEXT_CHARS("Text")`.
-	 */
-    FORCEINLINE static void BeginProfile(const Char* name, float timeMed = -1.0f, float timeMax = -1.0f)
+    void InternalEndProfile()
     {
-        BeginProfile(name, false, timeMed, timeMax);
-    }
+        ASSERT(IS_MAIN_THREAD());
 
-    /**
-    * \brief Begins new profile.
-    * \param name The name of the new profile.
-    */
-    FORCEINLINE static void BeginProfile(const char* name, float timeMed = -1.0f, float timeMax = -1.0f)
-    {
-        BeginProfile(name, true, timeMed, timeMax);
-    }
-
-    /**
-    * \brief Ends the current profile.
-    */
-    FORCEINLINE static void EndProfile()
-    {
         if (m_profileStack.Count() == 0)
             return;
 
@@ -221,6 +200,36 @@ public:
 
         // Remove profile
         m_profileStack.RemoveAt(m_profileStack.Count() - 1);
+    }
+
+public:
+    /**
+	 * \brief Begins new profile.
+	 * \param name The name of the new profile. Use `TEXT_CHARS("Text")`.
+	 */
+    FORCEINLINE static void BeginProfile(const Char* name, float timeMed = -1.0f, float timeMax = -1.0f)
+    {
+        cvar instance = GetInstance();
+        instance->InternalBeginProfile(name, false, timeMed, timeMax);
+    }
+
+    /**
+    * \brief Begins new profile.
+    * \param name The name of the new profile.
+    */
+    FORCEINLINE static void BeginProfile(const char* name, float timeMed = -1.0f, float timeMax = -1.0f)
+    {
+        cvar instance = GetInstance();
+        instance->InternalBeginProfile(name, true, timeMed, timeMax);
+    }
+
+    /**
+    * \brief Ends the current profile.
+    */
+    FORCEINLINE static void EndProfile()
+    {
+        cvar instance = GetInstance();
+        instance->InternalEndProfile();
     }
 };
 
