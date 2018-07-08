@@ -55,9 +55,7 @@ void Texture2D::LoadFromFile(const char* filename, uint flags)
     m_bpp = upng::upng_get_bpp(m_bitmap);
     m_flags = flags;
 
-    // done!
-
-    // FreeImage bitmap will be unloaded with in `releaseBits`
+    _ASSERT_(m_bpp == 32, "Unsupported texture format! Texture must have 32bpp!");
 }
 
 void Texture2D::LoadFromMemory(void* data, int width, int height, uint flags)
@@ -67,6 +65,7 @@ void Texture2D::LoadFromMemory(void* data, int width, int height, uint flags)
     m_flags = flags;
 
     m_bits = new byte[width * height * 4];
+    m_bpp = 32;
 
     if (data)
         memcpy(m_bits, data, width * height * 4);

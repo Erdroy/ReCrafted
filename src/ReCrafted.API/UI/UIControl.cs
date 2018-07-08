@@ -130,10 +130,10 @@ namespace ReCrafted.API.UI
             DefaultArrowUp = Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "arrowup.png"), Color.Black);
             DefaultArrowDown = Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "arrowdown.png"), Color.Black);
 
-            DefaultError = Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "error.png"));
-            DefaultWarning = Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "warning.png"));
-            DefaultInfo= Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "info.png"));
-            DefaultQuestion = Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "question.png"));
+            //DefaultError = Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "error.png"));
+            //DefaultWarning = Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "warning.png"));
+            //DefaultInfo= Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "info.png"));
+            //DefaultQuestion = Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "question.png"));
 
             _defaultPanel = UIPanel.Create(new RectangleF(), UILayoutType.Vertical, "Default");
             _defaultPanel.Layout.ForceExpandWidth = false;
