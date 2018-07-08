@@ -458,7 +458,7 @@ namespace Renderer
     /// Adds callback which is called just before presentation of the final frame and also pushing next frame.
     /// Warning: This callback cannot be removed, so, please make sure that it adds only once!
     /// </summary>
-    RENDERER_FUNCTION(void) AddOnPresentCallback(Delegate<void>& event);
+    RENDERER_FUNCTION(void) AddOnPresentCallback(const Delegate<void>& event);
 
     /// <summary>
     /// Creates new render buffer from using texture formats.

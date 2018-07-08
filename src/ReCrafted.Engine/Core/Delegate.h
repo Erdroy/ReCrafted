@@ -19,7 +19,7 @@ template <typename Type>
 class Delegate
 {
 public:
-    typedef void (IDelegateHandler::*delegate_t)(Type*);
+    typedef void (IDelegateHandler::*delegate_t)(Type);
 
 private:
     IDelegateHandler* m_instance = nullptr;
@@ -28,25 +28,26 @@ private:
 public:
     Delegate() = default;
 
-    Delegate(IDelegateHandler* instance, delegate_t delegate) : m_instance(instance), m_delegate(delegate)
+    Delegate(void* instance, delegate_t delegate) : m_delegate(delegate)
     {
+        m_instance = (IDelegateHandler*)instance;
     }
 
 public:
     FORCEINLINE void Invoke() const
     {
-        if (this->m_instance == nullptr)
+        if (m_instance == nullptr)
             return;
 
-        (this->m_instance->*this->m_delegate)(nullptr);
+        (m_instance->*m_delegate)();
     }
 
     FORCEINLINE void Invoke(Type* param) const
     {
-        if (this->m_instance == nullptr)
+        if (m_instance == nullptr)
             return;
 
-        (this->m_instance->*this->m_delegate)(param);
+        (m_instance->*m_delegate)(param);
     }
 
 public:
@@ -62,6 +63,6 @@ public:
     }
 };
 
-#define MakeDelegate(func) Delegate<void>((IDelegateHandler*)this, (Delegate<void>::delegate_t)&func)
+#define MakeDelegate(func) Delegate<void>(this, (Delegate<void>::delegate_t)&func)
 
 #endif // DELEGATE_H

@@ -7,13 +7,13 @@
 
 // includes
 #include "ReCrafted.h"
+#include "Core/Delegate.h"
 #include "Core/EngineComponent.h"
 #include "Graphics/Shader.h"
 #include "Graphics/RenderBuffer.h"
 #include "Graphics/Mesh.h"
 #include "Graphics/RenderStage.h"
 #include "Graphics/Renderer/Renderer.hpp"
-#include "Core/Delegate.h"
 
 /**
  * \brief Graphics class.
@@ -53,7 +53,7 @@ private:
     void OnDispose() override;
     void Update() override;
 
-    void OnFramePresent(void*);
+    void OnFramePresent();
 
     void Render();
     void Resize(uint width, uint height);

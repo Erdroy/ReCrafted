@@ -147,7 +147,7 @@ void TaskManager::QueueTask(Task* task)
     m_instance->m_taskExecuteQueue.enqueue(task);
 }
 
-Task* TaskManager::CreateTask(Delegate<void> function, Delegate<bool> callback)
+Task* TaskManager::CreateTask(Delegate<void> function, Delegate<void> callback)
 {
     var task = m_instance->AcquireTask();
 

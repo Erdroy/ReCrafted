@@ -10,7 +10,7 @@
  */
 struct RenderStage
 {
-    enum _enum
+    enum _enum : byte
     {
         /**
          * \brief The default render stage. Renders solid triangles, to view 1 (GBuffer).

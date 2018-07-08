@@ -33,7 +33,7 @@ private:
     bool m_completed = false;
 
     Delegate<void> m_function;
-    Delegate<bool> m_callback;
+    Delegate<void> m_callback;
 
     Lock m_executionLock = {};
     ITask* m_customTask = nullptr;
@@ -94,7 +94,7 @@ public:
     * \param function The function which will be called on main thread after the task is completed.
     * \return The created task.
     */
-    static Task* RunTask(Delegate<void> function, Delegate<bool> callback);
+    static Task* RunTask(Delegate<void> function, Delegate<void> callback);
 
     /**
     * \brief Creates task without callback. This task need to be queued.
@@ -109,7 +109,7 @@ public:
     * \param function The function which will be called on main thread after the task is completed.
     * \return The created task.
     */
-    static Task* CreateTask(Delegate<void> function, Delegate<bool> callback);
+    static Task* CreateTask(Delegate<void> function, Delegate<void> callback);
 
     /**
      * \brief Creates custom task with optional userData.
