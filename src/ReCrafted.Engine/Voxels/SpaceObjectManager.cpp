@@ -46,7 +46,7 @@ void SpaceObjectManager::WorkerFunction()
     Platform::SetThreadName("SpaceObjectManager Worker");
 
     // create mesher
-    var mesher = MCMesher();
+    cvar mesher = new MCMesher();
 
     // run
     queueItem item;
@@ -62,13 +62,13 @@ void SpaceObjectManager::WorkerFunction()
         switch (item.mode)
         {
         case ProcessMode::Populate:
-            item.node->WorkerPopulate(&mesher);
+            item.node->WorkerPopulate(mesher);
             break;
         case ProcessMode::Depopulate:
-            item.node->WorkerDepopulate(&mesher);
+            item.node->WorkerDepopulate(mesher);
             break;
         case ProcessMode::Rebuild:
-            item.node->WorkerRebuild(&mesher);
+            item.node->WorkerRebuild(mesher);
             break;
         default: ;
         }
@@ -78,6 +78,8 @@ void SpaceObjectManager::WorkerFunction()
         m_callbacks.Add(item.callback);
         m_calbacksLock.UnlockNow();
     }
+
+    delete mesher;
 }
 
 void SpaceObjectManager::Init()

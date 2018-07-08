@@ -51,10 +51,8 @@ void SpaceObjectChunk::Generate(IVoxelMesher* mesher) // WARNING: this function 
     if (!m_chunkData->IsLoaded())
         storage->ReadChunkData(m_chunkData);
 
-    if(!m_chunkData->HasSurface())
+    if(!m_chunkData->HasSurface() || !m_chunkData->HasData())
         return;
-
-    ASSERT(m_chunkData->HasData());
 
     Rebuild(mesher);
 }
@@ -66,7 +64,7 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
 
     ASSERT(m_newMesh == nullptr);
 
-    cvar borders = 0x0; // All borders TODO: Build border mask from node
+    cvar borders = 0xFF; // All borders TODO: Build border mask from node
     cvar voxelData = m_chunkData->GetData();
 
     // Try to generate mesh data
@@ -108,7 +106,7 @@ void SpaceObjectChunk::Upload()
     ASSERT(NeedsUpload());
 
     // Lock Upload
-    ScopeLock(m_uploadLock);
+    //ScopeLock(m_uploadLock);
 
     switch (m_uploadType)
     {
