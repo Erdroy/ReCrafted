@@ -278,7 +278,7 @@ void SpaceObjectOctreeNode::UpdateViews(Array<Vector3>& views)
     if (views.Count() == 0)
     {
         // IF (there is no C's) AND populated: depopulate - otherwise: ignore.
-        if (m_populated)
+        if (m_populated && !IsProcessing())
             Depopulate();
         return;
     }
@@ -319,7 +319,7 @@ void SpaceObjectOctreeNode::UpdateViews(Array<Vector3>& views)
     // IF (all C's are in B-P) AND populated: depopulate - otherwise: go further
     if (!hasXA && !hasXB)
     {
-        if (m_populated)
+        if (m_populated && !IsProcessing())
             Depopulate();
         return;
     }
