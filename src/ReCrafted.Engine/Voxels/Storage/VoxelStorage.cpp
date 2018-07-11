@@ -16,6 +16,9 @@
 
 void VoxelStorage::LoadHeader()
 {
+    // create chunk cache
+    m_chunkCache.reset(new VoxelChunkCache);
+
     // create header if needed
     if (!Platform::FileExists(settings->saveName))
     {
@@ -76,16 +79,14 @@ void VoxelStorage::Init(SpaceObjectSettings* settings)
 void VoxelStorage::Update()
 {
     Profiler::BeginProfile("SpaceObjectOctree::Update");
-
-
-
+    m_chunkCache->Update();
     Profiler::EndProfile();
 }
 
 void VoxelStorage::Dispose()
 {
-    m_voxelChunksMap.clear();
-    m_voxelChunks.Clear();
+    // Dispose chunk cache
+    SafeDispose(m_chunkCache);
 
     // release all resources
     SafeDisposeNN(m_vxhStream);
@@ -95,36 +96,30 @@ void VoxelStorage::Dispose()
 
 RefPtr<VoxelChunkData> VoxelStorage::CreateChunkData(Vector3& nodePosition, const int nodeSize, const int nodeDepth)
 {
-    ScopeLock(m_voxelChunksLock);
-
     cvar chunkId = SpaceObjectChunk::CalculateChunkId(nodePosition);
+    
+    var chunk = m_chunkCache->TryGetChunk(chunkId);
 
-    if (m_voxelChunksMap.contains(chunkId))
-        return m_voxelChunksMap[chunkId];
+    if (chunk)
+        return chunk;
 
-    RefPtr<VoxelChunkData> chunk(new VoxelChunkData());
+    chunk.reset(new VoxelChunkData());
     chunk->m_size = nodeSize;
     chunk->m_id = chunkId;
     chunk->m_nodeDepth = nodeDepth;
     chunk->m_nodePosition = nodePosition;
     chunk->m_chunkPosition = nodePosition - Vector3::One() * float(nodeSize) * 0.5f;
 
-    m_voxelChunksMap[chunkId] = chunk;
-    m_voxelChunks.Add(chunk);
+    // Add chunk to cache
+    m_chunkCache->AddChunk(chunk);
 
     return chunk;
 }
 
 RefPtr<VoxelChunkData> VoxelStorage::GetChunkData(Vector3& nodePosition)
 {
-    ScopeLock(m_voxelChunksLock);
-
     cvar chunkId = SpaceObjectChunk::CalculateChunkId(nodePosition);
-
-    if (!m_voxelChunksMap.contains(chunkId))
-        return nullptr;
-
-    return m_voxelChunksMap[chunkId];
+    return m_chunkCache->TryGetChunk(chunkId);
 }
 
 void VoxelStorage::ReadChunkData(const RefPtr<VoxelChunkData>& chunkData)
@@ -160,9 +155,14 @@ void VoxelStorage::WriteChunkData(RefPtr<VoxelChunkData> chunkData)
 
 void VoxelStorage::FreeChunkData(RefPtr<VoxelChunkData> chunkData)
 {
-    ScopeLock(m_voxelChunksLock);
+    ASSERT(chunkData);
 
-    chunkData->DeallocateData();
-    m_voxelChunksMap.erase(chunkData->m_id);
-    m_voxelChunks.Remove(chunkData);
+    m_chunkCache->RemoveChunk(chunkData);
+}
+
+void VoxelStorage::ReleaseChunkData(RefPtr<VoxelChunkData> chunkData)
+{
+    ASSERT(chunkData);
+
+    m_chunkCache->OnChunkReleased(chunkData);
 }

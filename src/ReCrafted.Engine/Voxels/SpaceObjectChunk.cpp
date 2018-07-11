@@ -24,7 +24,6 @@ void SpaceObjectChunk::Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObjec
 // WARNING: this function is called on WORKER THREAD!
 {
     this->spaceObject = spaceObject;
-    this->node = node;
 
     var storage = spaceObject->GetStorage();
 
@@ -142,8 +141,25 @@ void SpaceObjectChunk::Draw()
 
 void SpaceObjectChunk::Dispose()
 {
+    ASSERT(IS_MAIN_THREAD());
+
     SafeDispose(m_mesh);
     SafeDispose(m_newMesh);
+
+    // Release chunk data - when it has data
+    // Free chunk data - when it has no any data
+    if(m_chunkData->HasSurface() && m_chunkData->HasData())
+    {
+        cvar storage = spaceObject->GetStorage();
+        storage->ReleaseChunkData(m_chunkData); // NOTE: This will not free this chunk data now but later
+        m_chunkData = nullptr;
+    }
+    else
+    {
+        cvar storage = spaceObject->GetStorage();
+        storage->FreeChunkData(m_chunkData);
+        m_chunkData = nullptr;
+    }
 }
 
 uint64_t SpaceObjectChunk::CalculateChunkId(const Vector3& position)

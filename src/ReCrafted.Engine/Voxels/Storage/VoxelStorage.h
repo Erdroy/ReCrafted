@@ -8,11 +8,11 @@
 // includes
 #include "ReCrafted.h"
 
-#include "Core/Lock.h"
 #include "Core/Streams/FileStream.h"
 
 #include "Voxels/SpaceObject.h"
 #include "VoxelChunkData.h"
+#include "VoxelChunkCache.h"
 #include "VoxelStorageHeader.h"
 
 #include <spp.h>
@@ -26,12 +26,10 @@ private:
     SpaceObjectSettings* settings = nullptr;
 
 private:
+    RefPtr<VoxelChunkCache> m_chunkCache = nullptr;
+
     FileStream* m_vxhStream = nullptr;
     VoxelStorageHeader* m_vxh = nullptr;
-    Lock m_voxelChunksLock = {};
-
-    spp::sparse_hash_map<uint64_t, RefPtr<VoxelChunkData>> m_voxelChunksMap;
-    Array<RefPtr<VoxelChunkData>> m_voxelChunks = {};
 
 private:
     void LoadHeader();
@@ -48,11 +46,7 @@ public:
     void ReadChunkData(const RefPtr<VoxelChunkData>& chunkData);
     void WriteChunkData(RefPtr<VoxelChunkData> chunkData);
     void FreeChunkData(RefPtr<VoxelChunkData> chunkData);
-
-    Array<RefPtr<VoxelChunkData>>& GetChunkArray()
-    {
-        return m_voxelChunks;
-    }
+    void ReleaseChunkData(RefPtr<VoxelChunkData> chunkData);
 };
 
 #endif // VOXELSTORAGE_H

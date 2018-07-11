@@ -7,11 +7,13 @@
 
 // includes
 #include "ReCrafted.h"
+#include "Core/Math/Vector3.h"
 
 class VoxelChunkData
 {
     friend class VoxelStorage;
     friend class VoxelGenerator;
+    friend class VoxelChunkCache;
 
 public:
     static const int ChunkSize = 16; // 16 'cubes' on signle axis
@@ -19,19 +21,20 @@ public:
 
 private:
     sbyte* m_voxelData = nullptr;
+    Vector3 m_nodePosition = {};
+    Vector3 m_chunkPosition = {};
+    uint64_t m_id = 0u;
+    int m_nodeDepth = 0;
     int m_size = 0;
     bool m_loaded = false;
     bool m_hasSurface = false;
     bool m_isFilled = false;
-    uint64_t m_id = 0u;
-    int m_nodeDepth = 0;
-    Vector3 m_nodePosition = {};
-    Vector3 m_chunkPosition = {};
+
+    double m_timeCached = 0.0;
+    bool m_cached = false;
 
 public:
-    VoxelChunkData()
-    {
-    }
+    VoxelChunkData() = default;
 
     ~VoxelChunkData()
     {
@@ -54,6 +57,7 @@ public:
         SafeDeleteArray(m_voxelData);
     }
 
+public:
     int GetSize() const
     {
         return m_size;

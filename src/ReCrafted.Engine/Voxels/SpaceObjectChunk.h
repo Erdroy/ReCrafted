@@ -31,7 +31,6 @@ private:
 
 private:
     SpaceObject* spaceObject = nullptr;
-    SpaceObjectOctreeNode* node = nullptr;
 
     int m_lod = 0;
     uint64_t m_id = 0u;
