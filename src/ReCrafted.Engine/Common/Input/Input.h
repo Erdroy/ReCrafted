@@ -174,7 +174,7 @@ public:
     }
 };
 
-enum Keys : byte
+enum Keys
 {
     Key_Mouse0 = 0x0,
     Key_Mouse1 = 0x2,

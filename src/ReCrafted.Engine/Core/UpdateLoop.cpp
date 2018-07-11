@@ -62,12 +62,13 @@ void UpdateLoop::Start()
             m_render.Invoke();
         }
 
+        // end 'Frame' profile
         Profiler::EndProfile();
 
         WaitForTargetFps(lastTime);
         lastTime = currentTime;
 
-        // end 'Frame' profile
+        // end 'Frame Total' profile
         Profiler::EndProfile();
         Profiler::GetInstance()->EndFrame();
     }

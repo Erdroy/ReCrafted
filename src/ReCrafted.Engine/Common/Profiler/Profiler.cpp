@@ -52,7 +52,7 @@ void Profiler::Update()
     m_frames++;
     m_lineOffset = 10.0f;
 
-    if (Time::CurrentTime() - m_lastFPSCountTime > 1.0f)
+    if (Time::CurrentTime() - m_lastFPSCountTime >= 1.0f)
     {
         m_fps = m_frames;
         m_frames = 0;

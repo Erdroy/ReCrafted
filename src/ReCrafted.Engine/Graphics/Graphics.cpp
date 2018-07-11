@@ -132,8 +132,10 @@ void Graphics::Render()
         // render UI
         RenderUI();
 
+        Profiler::BeginProfile("Renderer::Frame");
         // next frame, wait vsync
         Renderer::Frame();
+        Profiler::EndProfile();
     }
     Profiler::EndProfile();
 }
