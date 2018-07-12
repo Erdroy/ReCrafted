@@ -47,6 +47,9 @@ namespace Renderer
             
             void CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle, void* windowHandle) override;
             void ResizeWindow(WindowHandle window, int width, int height) override;
+
+        public:
+            void GetTextureData(Texture2DHandle textureHandle, void* buffer, size_t bufferSize) override;
         };
     }
 }

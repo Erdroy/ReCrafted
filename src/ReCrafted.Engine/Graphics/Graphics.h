@@ -88,6 +88,13 @@ public:
     {
         return m_renderStage;
     }
+
+public:
+    /**
+     * \brief Takes screenshot of the already rendered frame.
+     * \param fileName The file name to output the screenshot.
+     */
+    static void Screenshot(Text fileName);
 };
 
 #endif // GRAPHICS_H

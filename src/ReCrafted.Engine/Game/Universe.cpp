@@ -7,6 +7,10 @@
 #include "Voxels/Storage/VoxelStorage.h"
 #include "Voxels/SpaceObjectSettings.h"
 #include "Graphics/DebugDraw.h"
+#include "Graphics/Graphics.h"
+
+#include <iomanip>
+#include <sstream>
 
 SINGLETON_IMPL(Universe)
 
@@ -73,6 +77,17 @@ void Universe::Update()
         var cameraPosition = Camera::GetMainCamera()->GetPosition();
         m_testObject1->UpdateViewPoint(cameraPosition);
         m_testObject1->Update();
+    }
+
+    if (Input::IsKeyDown(Key_L))
+    {
+        var t = std::time(nullptr);
+        var tm = *std::localtime(&t);
+
+        std::stringstream fileName;
+        fileName << std::put_time(&tm, "../screenshots/recrafted_%d-%m-%Y_%H-%M-%S.png");
+        Graphics::Screenshot(Text(fileName.str().c_str()));
+        Logger::Log("Screenshot saved as {0}", fileName.str());
     }
 }
 

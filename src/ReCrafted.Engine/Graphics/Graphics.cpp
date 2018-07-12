@@ -14,6 +14,7 @@
 #include "Graphics/WebUI/WebUI.h"
 #include "DebugDraw.h"
 #include "Core/Action.h"
+#include "RenderTasks/ScreenshotTask.h"
 
 SINGLETON_IMPL(Graphics)
 
@@ -369,4 +370,19 @@ void Graphics::SetStage(RenderStage::_enum stage)
         Renderer::SetFlag(Renderer::RenderFlags::VSync, false);
     }
     }
+}
+
+void Graphics::Screenshot(Text fileName)
+{
+    // Create texture
+    cvar texture = Renderer::CreateTexture2D(Display::GetWidth(), Display::GetHeight(), 0, Renderer::TextureFormat::RGBA8, Renderer::TextureType::Staging);
+
+    // Capture
+    Renderer::CaptureFrame(texture);
+
+    // Do Screenshot rendertask
+    Renderer::ExecuteTask(new ScreenshotTask(texture, fileName));
+
+    // Delete texture
+    Renderer::DestroyTexture2D(texture);
 }

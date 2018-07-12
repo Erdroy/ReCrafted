@@ -50,6 +50,9 @@ namespace Renderer
             
             virtual void CreateWindowHandle(WindowHandle window, RenderBufferHandle renderBufferHandle, void* windowHandle) = 0;
             virtual void ResizeWindow(WindowHandle window, int width, int height) = 0;
+
+        public:
+            virtual void GetTextureData(Texture2DHandle textureHandle, void* buffer, size_t bufferSize) = 0;
         };
     }
 }

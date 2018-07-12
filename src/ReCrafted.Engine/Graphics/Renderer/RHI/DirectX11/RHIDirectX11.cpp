@@ -1569,6 +1569,26 @@ namespace Renderer
         void RHIDirectX11::ResizeWindow(WindowHandle window, int width, int height)
         {
         }
+
+        void RHIDirectX11::GetTextureData(Texture2DHandle textureHandle, void* buffer, size_t bufferSize)
+        {
+            cvar textureDesc = m_textures[textureHandle.idx];
+            ASSERT(textureDesc.texture != nullptr);
+            
+            cvar formatSize = DXGIFormatGetSize(DGXI_TextureFormats[textureDesc.format][0]);
+            cvar textureSize = textureDesc.width * textureDesc.height * formatSize;
+
+            ASSERT(textureSize == bufferSize);
+
+            cvar texture = textureDesc.texture;
+
+            D3D11_MAPPED_SUBRESOURCE subresource;
+            m_deviceContext->Map(texture, 0, D3D11_MAP_READ, 0, &subresource);
+
+            memcpy(buffer, subresource.pData, bufferSize);
+
+            m_deviceContext->Unmap(texture, 0);
+        }
 #pragma endregion
     }
 }
