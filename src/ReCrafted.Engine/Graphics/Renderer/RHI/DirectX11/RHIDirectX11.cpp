@@ -165,6 +165,9 @@ namespace Renderer
 
         private:
             RHIDirectX11_Shader* m_currentShader = nullptr;
+            RHIDirectX11_RenderBuffer* m_currentRenderBuffer = nullptr;
+            WindowDesc* m_currentWindow = nullptr;
+
             CommandList m_commandList;
 
         public:
@@ -193,6 +196,8 @@ namespace Renderer
             FORCEINLINE void Execute_QueueFree(Command_QueueFree* command);
 
             FORCEINLINE void Execute_ExecuteTask(Command_ExecuteTask* command);
+
+            FORCEINLINE void Execute_CaptureFrame(Command_CaptureFrame* command);
 
             FORCEINLINE void Execute_SetFlag(Command_SetFlag* command);
             FORCEINLINE void Execute_SetFlags(Command_SetFlags* command);
@@ -378,6 +383,8 @@ namespace Renderer
 
             DEFINE_COMMAND_EXECUTOR(ExecuteTask);
 
+            DEFINE_COMMAND_EXECUTOR(CaptureFrame);
+
             DEFINE_COMMAND_EXECUTOR(SetFlag);
             DEFINE_COMMAND_EXECUTOR(SetFlags);
 
@@ -441,6 +448,24 @@ namespace Renderer
 
             // Execute task
             command->task->execute();
+        }
+
+        void WorkerThreadInstance::Execute_CaptureFrame(Command_CaptureFrame* command)
+        {
+            cvar outputTexture = m_textures[command->targetTexture.idx].texture;
+            ASSERT(outputTexture != nullptr);
+
+            cvar renderBuffer = m_renderBuffers[m_currentWindow->renderBuffer.idx];
+            cvar renderTarget = renderBuffer->GetRTVs()[0];
+
+            ASSERT(renderTarget != nullptr);
+
+            ID3D11Resource* backBuffer;
+            renderTarget->GetResource(&backBuffer);
+
+            ASSERT(backBuffer != nullptr);
+
+            m_deviceContext->CopyResource(outputTexture, backBuffer);
         }
 
         void WorkerThreadInstance::Execute_SetFlag(Command_SetFlag* command)
@@ -827,6 +852,8 @@ namespace Renderer
             // TODO: check if we can pass frame index (is it back buffer - render buffer)
 
             buffer->Bind(m_context);
+
+            m_currentRenderBuffer = buffer;
         }
 
         void WorkerThreadInstance::Execute_DestroyRenderBuffer(Command_DestroyRenderBuffer* command)
@@ -1526,6 +1553,9 @@ namespace Renderer
             windowDesc.swapChain = m_swapChain;
 
             m_windows[window.idx] = windowDesc;
+
+            // Set current window TODO: Multi-window support
+            m_workerThreads[0]->m_currentWindow = &m_windows[window.idx];
 
             // Build 'proxy' render buffer
             m_renderBuffers[renderBufferHandle.idx] = RHIDirectX11_RenderBuffer::Create(

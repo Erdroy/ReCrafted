@@ -411,6 +411,14 @@ namespace Renderer
     /// </summary>
     RENDERER_FUNCTION(void) GetRenderStatistics(RenderStatistics* stats);
 
+    /// <summary>
+    /// Captures back buffer to given texture.
+    /// Note: Frame can be only captured into staging texture! 
+    /// Make sure that you created texture with specified TextureType::Staging!
+    /// </summary>
+    /// <param name="handle">The texture which will get the frame contents.</param>
+    RENDERER_FUNCTION(void) CaptureFrame(Texture2DHandle handle);
+
     // ======== RENDERING - BASIC ========
 
     /// <summary>

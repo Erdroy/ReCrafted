@@ -28,6 +28,8 @@ namespace Renderer
 
             ExecuteTask,
 
+            CaptureFrame,
+
             SetFlag,
             SetFlags,
 
@@ -78,6 +80,10 @@ namespace Renderer
 
     Command(ExecuteTask,
         RenderTask* task = nullptr;
+    );
+
+    Command(CaptureFrame,
+        Texture2DHandle targetTexture;
     );
 
     Command(SetFlag,

@@ -243,6 +243,15 @@ namespace Renderer
         m_renderer->GetRenderStatistics(stats);
     }
 
+    void CaptureFrame(Texture2DHandle handle)
+    {
+        CHECK_MAIN_THREAD();
+
+        Command_CaptureFrame command;
+        command.targetTexture = handle;
+        g_commandList->WriteCommand(&command);
+    }
+
     void Frame()
     {
         CHECK_MAIN_THREAD();
