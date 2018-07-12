@@ -855,8 +855,6 @@ namespace Renderer
             textureDesc.MiscFlags = 0;
             textureDesc.SampleDesc.Count = rt ? m_msaaSampleCount : 1;
             textureDesc.SampleDesc.Quality = 0;
-            textureDesc.CPUAccessFlags = 0;
-            textureDesc.Usage = D3D11_USAGE_DEFAULT;
 
             if (createDepthBuffer)
             {
@@ -869,6 +867,18 @@ namespace Renderer
                 textureDesc.BindFlags = rt
                                             ? D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
                                             : D3D11_BIND_SHADER_RESOURCE;
+            }
+
+            if (command->textureType == TextureType::Staging)
+            {
+                textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+                textureDesc.Usage = D3D11_USAGE_STAGING;
+                textureDesc.BindFlags = 0;
+            }
+            else
+            {
+                textureDesc.CPUAccessFlags = 0;
+                textureDesc.Usage = D3D11_USAGE_DEFAULT;
             }
 
             D3D11_SUBRESOURCE_DATA subresData = {};
@@ -898,7 +908,7 @@ namespace Renderer
 
                 DX_CALL(m_device->CreateShaderResourceView(texture.texture, &srvDesc, &texture.srv));
             }
-            else
+            else if(textureDesc.BindFlags != 0)
             {
                 D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
                 srvDesc.Format = DGXI_TextureFormats[command->textureFormat][1];

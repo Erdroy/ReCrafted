@@ -76,6 +76,17 @@ namespace Renderer
 
     RENDERER_ENUM(RendererAPI);
 
+    struct TextureType
+    {
+        enum _enum : char
+        {
+            Default,
+            Staging
+        };
+    };
+
+    RENDERER_ENUM(TextureType);
+
     struct TextureFormat
     {
         enum _enum : char
@@ -614,9 +625,10 @@ namespace Renderer
     /// <param name="textureFormat">The format of the new texture.</param>
     /// <param name="data">Texture data (can be null, then you can upload data by using UpdateTexture2D function)</param>
     /// <param name="dataSize">Data size.</param>
+    /// <param name="textureType">The type of the new texture.</param>
     RENDERER_FUNCTION(Texture2DHandle) CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels,
                                                        TextureFormat::_enum textureFormat, RendererMemory data,
-                                                       size_t dataSize, bool renderTargetFlag = false);
+                                                       size_t dataSize, bool renderTargetFlag = false, TextureType::_enum textureType = TextureType::Default);
 
     /// <summary>
     /// Creates new Texture2D.
@@ -637,8 +649,9 @@ namespace Renderer
     /// <param name="height">The Height of the new texture.</param>
     /// <param name="mipLevels">The amount of mip maps of the new texture.</param>
     /// <param name="textureFormat">The format of the new texture.</param>
+    /// <param name="textureType">The type of the new texture.</param>
     RENDERER_FUNCTION(Texture2DHandle) CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels,
-                                                       TextureFormat::_enum textureFormat);
+                                                       TextureFormat::_enum textureFormat, TextureType::_enum textureType = TextureType::Default);
 
     /// <summary>
     /// Creates new Texture2D.
@@ -646,8 +659,9 @@ namespace Renderer
     /// <param name="width">The Width of the new texture.</param>
     /// <param name="height">The Height of the new texture.</param>
     /// <param name="textureFormat">The format of the new texture.</param>
+    /// <param name="textureType">The type of the new texture.</param>
     RENDERER_FUNCTION(Texture2DHandle) CreateTexture2D(uint16_t width, uint16_t height,
-                                                       TextureFormat::_enum textureFormat);
+                                                       TextureFormat::_enum textureFormat, TextureType::_enum textureType = TextureType::Default);
 
     /// <summary>
     /// Sets given texture as current at given slot.

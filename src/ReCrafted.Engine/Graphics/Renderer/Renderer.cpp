@@ -629,7 +629,7 @@ namespace Renderer
 
     Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels,
                                     TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize,
-                                    bool renderTargetFlag)
+                                    bool renderTargetFlag, TextureType::_enum textureType)
     {
         CHECK_MAIN_THREAD();
 
@@ -647,6 +647,7 @@ namespace Renderer
         command.height = height;
         command.mipLevels = mipLevels;
         command.textureFormat = textureFormat;
+        command.textureType = textureType;
         command.memory = data;
         command.dataSize = dataSize;
         command.renderTarget = renderTargetFlag;
@@ -662,14 +663,14 @@ namespace Renderer
     }
 
     Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels,
-                                    TextureFormat::_enum textureFormat)
+                                    TextureFormat::_enum textureFormat, TextureType::_enum textureType)
     {
-        return CreateTexture2D(width, height, mipLevels, textureFormat, nullptr, 0u);
+        return CreateTexture2D(width, height, mipLevels, textureFormat, nullptr, 0u, false, textureType);
     }
 
-    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat)
+    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat, TextureType::_enum textureType)
     {
-        return CreateTexture2D(width, height, 1u, textureFormat, nullptr, 0u);
+        return CreateTexture2D(width, height, 1u, textureFormat, nullptr, 0u, false, textureType);
     }
 
     void ApplyTexture2D(Texture2DHandle handle, uint8_t slot)

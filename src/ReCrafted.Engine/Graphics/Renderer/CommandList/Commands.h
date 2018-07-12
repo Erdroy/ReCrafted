@@ -221,6 +221,7 @@ namespace Renderer
         uint16_t height;
         uint8_t mipLevels;
         TextureFormat::_enum textureFormat;
+        TextureType::_enum textureType;
         RendererMemory memory;
         size_t dataSize;
         bool renderTarget;
