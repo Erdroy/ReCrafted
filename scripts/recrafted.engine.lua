@@ -18,6 +18,10 @@ project "ReCrafted.Engine"
 	-- add source/header/shader files
 	files {
 		path.join(ROOT_DIR, "src/ReCrafted.Engine/**"),
+		
+		path.join(LIBS_DIR, "lodepng/src/**"),
+		path.join(LIBS_DIR, "fmt/src/**"),
+		path.join(LIBS_DIR, "fastnoise/src/**"),
 	}
 
 	forceincludes { 
@@ -40,6 +44,9 @@ project "ReCrafted.Engine"
 		path.join(LIBS_DIR, "tbb/include"),
 		path.join(LIBS_DIR, "jemalloc/include"),
 		path.join(LIBS_DIR, "msvc_compat/include"),
+		path.join(LIBS_DIR, "lodepng/include"),
+		path.join(LIBS_DIR, "fmt/include"),
+		path.join(LIBS_DIR, "fastnoise/include"),
 	}
 	
 	-- add onbuild script and multi processor compilation

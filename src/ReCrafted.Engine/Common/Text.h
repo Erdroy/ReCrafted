@@ -16,7 +16,7 @@
 #include "Core/Memory.h"
 
 #ifdef USE_FMT
-#include "Core/fmt/format.h"
+#include "fmt/format.h"
 #endif
 
 #ifdef USE_UTF16
