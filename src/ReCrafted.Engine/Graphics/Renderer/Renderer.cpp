@@ -766,6 +766,9 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
 
+        // Set rhi handle
+        task->rhi = m_renderer;
+
         Command_ExecuteTask command;
         command.task = task;
         g_commandList->WriteCommand(&command);

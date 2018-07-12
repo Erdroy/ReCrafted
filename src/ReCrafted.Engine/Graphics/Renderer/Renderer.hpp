@@ -250,6 +250,7 @@ namespace Renderer
     public:
         void* device = nullptr;
         void* context = nullptr;
+        void* rhi = nullptr;
 
     public:
         virtual ~RenderTask() = default;
