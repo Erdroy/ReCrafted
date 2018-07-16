@@ -729,6 +729,7 @@ namespace Renderer
     /// <summary>
     /// Executes given RenderTask on the Render Thread.
     /// Every task has access to device (if D3D) and deferred context.
+    /// After the task is completed, it is deleted using 'delete task;'.
     /// </summary>
     /// <param name="task">The render task pointer.</param>
     RENDERER_FUNCTION(void) ExecuteTask(RenderTask* task);
@@ -739,8 +740,7 @@ namespace Renderer
     /// </summary>
     template<typename T>
     RENDERER_FUNCTION(void) ExecuteTask() {
-        static T task;
-        ExecuteTask(static_cast<RenderTask*>(&task));
+        ExecuteTask(static_cast<RenderTask*>(new T()));
     }
 
     /// <summary>

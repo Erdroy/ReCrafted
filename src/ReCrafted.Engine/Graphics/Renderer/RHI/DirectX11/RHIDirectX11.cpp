@@ -448,6 +448,9 @@ namespace Renderer
 
             // Execute task
             command->task->execute();
+
+            // Delete task
+            delete command->task;
         }
 
         void WorkerThreadInstance::Execute_CaptureFrame(Command_CaptureFrame* command)
