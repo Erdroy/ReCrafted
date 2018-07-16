@@ -495,7 +495,6 @@ namespace Renderer
             // set buffer name
             buffer.m_name = bufferName;
 
-            var fieldOffset = 0u;
             for (rvar fieldData : bufferUniforms)
             {
                 buffer.m_fields.push_back({});
@@ -509,12 +508,31 @@ namespace Renderer
 
                 // set buffer size
                 field.m_size = size;
+            }
 
-                // set field offset
+            // Align fields
+            var padLeft = 16u;
+            var fieldOffset = 0u;
+            for(rvar field : buffer.m_fields)
+            {
+                // Check if we need to match aligment rules
+                if(padLeft < field.m_size)
+                {
+                    // We need to pad to match the 16-byte aligment
+                    fieldOffset += padLeft;
+                    padLeft = 16 - (field.m_size % 16);
+                }
+                else
+                {
+                    // Remove field size from pad offset
+                    padLeft -= field.m_size;
+                }
+
+                // Set field's offset
                 field.m_offset = fieldOffset;
 
-                // add field offset
-                fieldOffset += static_cast<uint>(size);
+                // Add the field size to the field offset
+                fieldOffset += field.m_size;
             }
 
             // field offset is not the size of the buffer
