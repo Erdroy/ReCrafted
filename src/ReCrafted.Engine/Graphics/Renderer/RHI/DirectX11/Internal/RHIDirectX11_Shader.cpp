@@ -511,7 +511,7 @@ namespace Renderer
             }
 
             // Align fields
-            var padLeft = 16u;
+            var padLeft = 0u;
             var fieldOffset = 0u;
             for(rvar field : buffer.m_fields)
             {
