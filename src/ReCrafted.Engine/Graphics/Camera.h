@@ -114,7 +114,7 @@ public:
 public:
 PROPERTY(bool, FreeMovement) = false;
 PROPERTY(float, Fov) = 75.0f;
-PROPERTY(float, FarPlane) = 1000.0f;
+PROPERTY(float, FarPlane) = 10000.0f;
 PROPERTY(float, NearPlane) = 0.02f;
 PROPERTY_REF(Vector3, Position) = {};
 PROPERTY_REF(Vector3, Rotation) = {};

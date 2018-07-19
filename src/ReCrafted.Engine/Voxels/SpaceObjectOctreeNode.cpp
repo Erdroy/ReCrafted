@@ -199,7 +199,7 @@ void SpaceObjectOctreeNode::OnRebuild()
 
 void SpaceObjectOctreeNode::OnDestroy()
 {
-    ASSERT(!IsProcessing());
+    //ASSERT(!IsProcessing());
 
     // Dispose chunk if exists
     SafeDispose(m_chunk);

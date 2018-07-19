@@ -188,7 +188,7 @@ public:
     FORCEINLINE static Matrix CreatePerspectiveFovLH(float xfov, float aspect, float znear, float zfar)
     {
         auto m = Zero();
-        auto yScale = 1.0f / tan(xfov * 0.5f);
+        auto yScale = 1.0f / tanf(xfov * 0.5f);
         auto q = zfar / (zfar - znear);
 
         m.M11 = yScale / aspect;
@@ -242,95 +242,39 @@ public:
         *result = CreateViewLH(position, target, up);
     }
 
+    FORCEINLINE static Matrix Multiply(const Matrix& left, const Matrix& right)
+    {
+        Matrix temp;
+
+        temp.M11 = (left.M11 * right.M11) + (left.M12 * right.M21) + (left.M13 * right.M31) + (left.M14 * right.M41);
+        temp.M12 = (left.M11 * right.M12) + (left.M12 * right.M22) + (left.M13 * right.M32) + (left.M14 * right.M42);
+        temp.M13 = (left.M11 * right.M13) + (left.M12 * right.M23) + (left.M13 * right.M33) + (left.M14 * right.M43);
+        temp.M14 = (left.M11 * right.M14) + (left.M12 * right.M24) + (left.M13 * right.M34) + (left.M14 * right.M44);
+        temp.M21 = (left.M21 * right.M11) + (left.M22 * right.M21) + (left.M23 * right.M31) + (left.M24 * right.M41);
+        temp.M22 = (left.M21 * right.M12) + (left.M22 * right.M22) + (left.M23 * right.M32) + (left.M24 * right.M42);
+        temp.M23 = (left.M21 * right.M13) + (left.M22 * right.M23) + (left.M23 * right.M33) + (left.M24 * right.M43);
+        temp.M24 = (left.M21 * right.M14) + (left.M22 * right.M24) + (left.M23 * right.M34) + (left.M24 * right.M44);
+        temp.M31 = (left.M31 * right.M11) + (left.M32 * right.M21) + (left.M33 * right.M31) + (left.M34 * right.M41);
+        temp.M32 = (left.M31 * right.M12) + (left.M32 * right.M22) + (left.M33 * right.M32) + (left.M34 * right.M42);
+        temp.M33 = (left.M31 * right.M13) + (left.M32 * right.M23) + (left.M33 * right.M33) + (left.M34 * right.M43);
+        temp.M34 = (left.M31 * right.M14) + (left.M32 * right.M24) + (left.M33 * right.M34) + (left.M34 * right.M44);
+        temp.M41 = (left.M41 * right.M11) + (left.M42 * right.M21) + (left.M43 * right.M31) + (left.M44 * right.M41);
+        temp.M42 = (left.M41 * right.M12) + (left.M42 * right.M22) + (left.M43 * right.M32) + (left.M44 * right.M42);
+        temp.M43 = (left.M41 * right.M13) + (left.M42 * right.M23) + (left.M43 * right.M33) + (left.M44 * right.M43);
+        temp.M44 = (left.M41 * right.M14) + (left.M42 * right.M24) + (left.M43 * right.M34) + (left.M44 * right.M44);
+
+        return temp;
+    }
+
 public:
     void Matrix::operator *=(Matrix r)
     {
-        auto resultM00 = M11 * r.M11 + M12 * r.M21 + M13 * r.M31 + M14 * r.M41;
-        auto resultM01 = M11 * r.M12 + M12 * r.M22 + M13 * r.M32 + M14 * r.M42;
-        auto resultM02 = M11 * r.M13 + M12 * r.M23 + M13 * r.M33 + M14 * r.M43;
-        auto resultM03 = M11 * r.M14 + M12 * r.M24 + M13 * r.M34 + M14 * r.M42;
-
-        auto resultM10 = M21 * r.M11 + M22 * r.M21 + M23 * r.M31 + M24 * r.M41;
-        auto resultM11 = M21 * r.M12 + M22 * r.M22 + M23 * r.M32 + M24 * r.M42;
-        auto resultM12 = M21 * r.M13 + M22 * r.M23 + M23 * r.M33 + M24 * r.M43;
-        auto resultM13 = M21 * r.M14 + M22 * r.M24 + M23 * r.M34 + M24 * r.M44;
-
-        auto resultM20 = M31 * r.M11 + M32 * r.M21 + M33 * r.M31 + M34 * r.M41;
-        auto resultM21 = M31 * r.M12 + M32 * r.M22 + M33 * r.M32 + M34 * r.M42;
-        auto resultM22 = M31 * r.M13 + M32 * r.M23 + M33 * r.M33 + M34 * r.M43;
-        auto resultM23 = M31 * r.M14 + M32 * r.M24 + M33 * r.M34 + M34 * r.M44;
-
-        auto resultM30 = M41 * r.M11 + M42 * r.M21 + M43 * r.M31 + M44 * r.M41;
-        auto resultM31 = M41 * r.M12 + M42 * r.M22 + M43 * r.M32 + M44 * r.M42;
-        auto resultM32 = M41 * r.M13 + M42 * r.M23 + M43 * r.M33 + M44 * r.M43;
-        auto resultM33 = M41 * r.M14 + M42 * r.M24 + M43 * r.M34 + M44 * r.M44;
-
-        M11 = resultM00;
-        M12 = resultM01;
-        M13 = resultM02;
-        M14 = resultM03;
-
-        M21 = resultM10;
-        M22 = resultM11;
-        M23 = resultM12;
-        M24 = resultM13;
-
-        M31 = resultM20;
-        M32 = resultM21;
-        M33 = resultM22;
-        M34 = resultM23;
-
-        M41 = resultM30;
-        M42 = resultM31;
-        M43 = resultM32;
-        M44 = resultM33;
+        *this = Multiply(*this, r);
     }
 
     Matrix Matrix::operator*(Matrix r) const
     {
-        auto resultM00 = M11 * r.M11 + M12 * r.M21 + M13 * r.M31 + M14 * r.M41;
-        auto resultM01 = M11 * r.M12 + M12 * r.M22 + M13 * r.M32 + M14 * r.M42;
-        auto resultM02 = M11 * r.M13 + M12 * r.M23 + M13 * r.M33 + M14 * r.M43;
-        auto resultM03 = M11 * r.M14 + M12 * r.M24 + M13 * r.M34 + M14 * r.M42;
-
-        auto resultM10 = M21 * r.M11 + M22 * r.M21 + M23 * r.M31 + M24 * r.M41;
-        auto resultM11 = M21 * r.M12 + M22 * r.M22 + M23 * r.M32 + M24 * r.M42;
-        auto resultM12 = M21 * r.M13 + M22 * r.M23 + M23 * r.M33 + M24 * r.M43;
-        auto resultM13 = M21 * r.M14 + M22 * r.M24 + M23 * r.M34 + M24 * r.M44;
-
-        auto resultM20 = M31 * r.M11 + M32 * r.M21 + M33 * r.M31 + M34 * r.M41;
-        auto resultM21 = M31 * r.M12 + M32 * r.M22 + M33 * r.M32 + M34 * r.M42;
-        auto resultM22 = M31 * r.M13 + M32 * r.M23 + M33 * r.M33 + M34 * r.M43;
-        auto resultM23 = M31 * r.M14 + M32 * r.M24 + M33 * r.M34 + M34 * r.M44;
-
-        auto resultM30 = M41 * r.M11 + M42 * r.M21 + M43 * r.M31 + M44 * r.M41;
-        auto resultM31 = M41 * r.M12 + M42 * r.M22 + M43 * r.M32 + M44 * r.M42;
-        auto resultM32 = M41 * r.M13 + M42 * r.M23 + M43 * r.M33 + M44 * r.M43;
-        auto resultM33 = M41 * r.M14 + M42 * r.M24 + M43 * r.M34 + M44 * r.M44;
-
-
-        auto matrix = Matrix();
-        matrix.M11 = resultM00;
-        matrix.M12 = resultM01;
-        matrix.M13 = resultM02;
-        matrix.M14 = resultM03;
-
-        matrix.M21 = resultM10;
-        matrix.M22 = resultM11;
-        matrix.M23 = resultM12;
-        matrix.M24 = resultM13;
-
-        matrix.M31 = resultM20;
-        matrix.M32 = resultM21;
-        matrix.M33 = resultM22;
-        matrix.M34 = resultM23;
-
-        matrix.M41 = resultM30;
-        matrix.M42 = resultM31;
-        matrix.M43 = resultM32;
-        matrix.M44 = resultM33;
-
-        return matrix;
+        return Multiply(*this, r);;
     }
 
 public:
