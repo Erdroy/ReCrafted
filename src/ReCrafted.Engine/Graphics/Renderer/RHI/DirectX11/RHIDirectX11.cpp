@@ -18,6 +18,8 @@
 #include <json.hpp>
 #include <thread>
 #include <vector>
+#include <string>
+#include <fstream>
 
 namespace Renderer
 {
@@ -628,18 +630,12 @@ namespace Renderer
         {
             cvar shaderIdx = command->shader.idx;
 
-            File file;
-            Platform::OpenFile(&file, command->fileName, OpenMode::OpenRead);
+            std::ifstream input(command->fileName);
+            std::string content((std::istreambuf_iterator<char>(input)), (std::istreambuf_iterator<char>()));
 
-            const var data = new byte[file.FileSize];
-            memset(data, 0, file.FileSize);
-            file.Read(data, file.FileSize);
-
-            var jsonData = json::parse(data);
+            var jsonData = json::parse(content);
             m_shaders[shaderIdx] = RHIDirectX11_Shader::Create(m_device, jsonData);
 
-            delete[] data;
-            file.Close();
         }
 
         void WorkerThreadInstance::Execute_ApplyShader(Command_ApplyShader* command)

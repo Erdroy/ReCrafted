@@ -516,11 +516,15 @@ namespace Renderer
             for(rvar field : buffer.m_fields)
             {
                 // Check if we need to match aligment rules
-                if(padLeft < field.m_size)
+                if (padLeft < field.m_size)
                 {
                     // We need to pad to match the 16-byte aligment
                     fieldOffset += padLeft;
-                    padLeft = 16 - (field.m_size % 16);
+
+                    if (field.m_size % 16 != 0)
+                        padLeft = 16 - (field.m_size % 16);
+                    else
+                        padLeft = 0u;
                 }
                 else
                 {
