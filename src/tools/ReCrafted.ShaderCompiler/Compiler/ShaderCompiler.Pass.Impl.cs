@@ -51,6 +51,22 @@ namespace ReCrafted.ShaderCompiler.Compiler
                                 pass.Profile = ParseSetProfile(functionName, arguments);
                                 break;
                             }
+                            case "SetDefaultCBTargets":
+                            {
+                                var targets = ParseSetDefaultCBTargets(functionName, arguments);
+                                
+                                // Add targets to the default buffer if exists
+                                if (Buffers.Count > 0 && (Buffers.First().Name == "DefaultConstants"))
+                                {
+                                    // Add all targets
+                                    Buffers[0].Targets.AddRange(targets);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Warning: Function SetDefaultCBTargets is defined in pass " + passName.Value + " but there is no DefaultConstant buffer included! Ignoring the results.");
+                                }
+                                break;
+                            }
                             case "SetVertexShader":
                             {
                                 pass.VSFunction = ParseSetShader(functionName, arguments);
@@ -104,6 +120,26 @@ namespace ReCrafted.ShaderCompiler.Compiler
                 throw new Exception("Invalid profile passed (" + argumentValue + ") to the SetProfile function at line " + _parser.CurrentLine + "! Available: 2.0 up to 6.0.");
             
             return profile;
+        }
+
+        private string[] ParseSetDefaultCBTargets(string functionName, IReadOnlyList<Token> arguments)
+        {
+            if (arguments.Count == 0)
+                throw new Exception("Invalid amount of arguments passing to the " + functionName + " at line " + _parser.CurrentLine + ".");
+
+            var targets = new List<string>();
+
+            // Validate and select arguments
+            foreach (var argument in arguments)
+            {
+                // validate profile type
+                if (argument.Type != TokenType.Identifier)
+                    throw new Exception("Invalid profile passed (" + argument + ") to the SetDefaultCBTargets function at line " + _parser.CurrentLine + ". Expected identifier.");
+
+                targets.Add(argument.Value);
+            }
+
+            return targets.ToArray();
         }
 
         private string ParseSetShader(string functionName, IReadOnlyList<Token> arguments)

@@ -46,7 +46,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
                     targets.Add(token.Value);
                 }
 
-                buffer.Targets = targets.ToArray();
+                buffer.Targets.AddRange(targets);
             }
 
             // parse all variables
@@ -88,7 +88,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
             } while (!done);
 
             // add all uniforms
-            buffer.Uniforms = uniforms.ToArray();
+            buffer.Uniforms.AddRange(uniforms);
 
             // add buffer
             Buffers.Add(buffer);
