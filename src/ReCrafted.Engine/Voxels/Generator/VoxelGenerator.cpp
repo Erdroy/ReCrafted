@@ -77,9 +77,7 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
     var hasSurface = false;
     sbyte lastVoxel = 0;
 
-    uint32_t signPos = 0u;
-    uint32_t signNeg = 0u;
-
+    var voxelVolumeSign = 0;
     for (var x = 0; x < dataSize; x++)
     {
         for (var y = 0; y < dataSize; y++)
@@ -100,25 +98,22 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
                     hasSurface = true;
 
                 lastVoxel = value;
-
-                if (value > 0)
-                    signPos++;
-                else
-                    signNeg++;
-
+                voxelVolumeSign += value;
                 voxels[index] = value;
             }
         }
     }
 
     // Check sign count
-    cvar isUnderground = signNeg > signPos;
+    cvar isUnderground = voxelVolumeSign < 0;
     chunk->IsFilled(isUnderground);
 
     // If this chunk has any surface, then we will need to allocate data and copy the temporary array
     if(hasSurface)
     {
-        chunk->AllocateData();
+        if(!chunk->HasData())
+            chunk->AllocateData();
+
         cvar chunkData = chunk->GetData();
         memcpy_s(chunkData, voxelDataSize, voxels, voxelDataSize);
     }

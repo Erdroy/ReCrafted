@@ -69,14 +69,18 @@ inline float GetVoxel(sbyte* data, const Vector3& point)
     return VOXEL_TO_FLOAT(data[INDEX_3D(int(point.x), int(point.y), int(point.z), VoxelChunkData::ChunkDataSize)]);
 }
 
+inline float GetVoxel(sbyte* data, int x, int y, int z)
+{
+    return VOXEL_TO_FLOAT(data[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)]);
+}
+
 void MCMesher::GenerateCell(Cell* cell, int x, int y, int z, sbyte* data) const
 {
     byte caseIndex = 0;
 
     for (auto i = 0; i < 8; i++) // TODO: unroll
     {
-        if (data[INDEX_3D(x + MCCornerDeltasInt[i][0], y + MCCornerDeltasInt[i][1], z + MCCornerDeltasInt[i][2],
-            VoxelChunkData::ChunkDataSize)] > ISO_LEVEL)
+        if (GetVoxel(data, x + MCCornerDeltasInt[i][0], y + MCCornerDeltasInt[i][1], z + MCCornerDeltasInt[i][2]) > ISO_LEVEL)
             caseIndex |= 1 << i;
     }
 

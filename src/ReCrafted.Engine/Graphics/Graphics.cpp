@@ -6,6 +6,7 @@
 #include "Common/Profiler/Profiler.h"
 #include "Common/Input/Input.h"
 #include "Core/Logger.h"
+#include "Core/Action.h"
 #include "Core/Application.h"
 #include "Game/Universe.h"
 #include "Graphics/Camera.h"
@@ -13,7 +14,6 @@
 #include "Graphics/UI/UI.h"
 #include "Graphics/WebUI/WebUI.h"
 #include "DebugDraw.h"
-#include "Core/Action.h"
 #include "RenderTasks/ScreenshotTask.h"
 
 SINGLETON_IMPL(Graphics)
