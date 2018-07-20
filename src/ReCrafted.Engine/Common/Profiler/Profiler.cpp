@@ -8,6 +8,7 @@
 #include "Graphics/UI/UI.h"
 #include "Graphics/Font.h"
 #include "Graphics/Camera.h"
+#include "Graphics/DebugDraw.h"
 
 #include <mono/metadata/mono-gc.h>
 
@@ -98,6 +99,14 @@ void Profiler::DrawDebugScreen()
 
         cvar camPos = Camera::GetMainCamera()->GetPosition();
         cvar camRot = Camera::GetMainCamera()->GetRotation();
+        cvar camDir = Camera::GetMainCamera()->GetForward();
+
+        var lightdir = Vector3(0.1f, -0.2f, 0.1f);
+        lightdir.Normalize();
+
+        var basePos = camPos + camDir * 10.0f;
+        DebugDraw::SetColor(Color(255, 130, 0, 255));
+        DebugDraw::DrawArrow(basePos, basePos + lightdir * 2.0f, 0.5f);
 
         cvar previousDepth = UI::GetDepth();
         UI::SetDepth(9999.0f);
