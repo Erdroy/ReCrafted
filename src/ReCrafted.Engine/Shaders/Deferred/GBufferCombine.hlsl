@@ -5,30 +5,8 @@
 
 #define USE_FULLSCREENQUAD
 #define USE_GBUFFERSAMPLING
+
 #include "../ShaderAPI.hlsli"
-
-[Target(CombinePSMain)]
-cbuffer Data : register(b0)
-{
-    float3 lightDir;
-    float3 cameraPos;
-    float4 viewInfo; // viewInfo x (nearPlane), y (farPlane), z (1.0 / projection[0, 0]), w (1.0 / projection[1, 1])
-};
-
-float3 CalculateLighting(float3 normal) 
-{
-    float3 dir = normalize(lightDir);
-    float nDotL = dot(normal, dir);
-    float3 lightColor = float3(1.0f, 0.95f, 0.9f);
-
-    return lightColor * nDotL + float3(0.35f, 0.35f, 0.35f);
-}
-
-float linearize_depth(in float depth) {
-    float a = viewInfo.y / (viewInfo.y - viewInfo.x);
-    float b = viewInfo.y * viewInfo.x / (viewInfo.x - viewInfo.y);
-    return a + b / depth;
-}
 
 /// <summary>
 /// Pixel Shader Function
@@ -37,25 +15,37 @@ float linearize_depth(in float depth) {
 float4 CombinePSMain(in QuadPS i) : SV_Target0
 {
     GBuffer gbuffer = SampleGBuffer(i.UV);
-    float3 color = gbuffer.Color;
 
-    color *= CalculateLighting(gbuffer.Normal);
+    // Linearize depth
+    const float C = 1.0f;
+    const float FC = 1.0 / log(FarPlane * C + 1);
+    float depth = (exp(gbuffer.Depth * log(FarPlane * C + 1)) - 1) / C;
+    depth /= FarPlane; // Normalize into [0-1] range
 
-    //float3 viewDir = - cameraPos;
-    //float fresnel = pow((1.0f - saturate(dot(normalize(gbuffer.Normal), normalize(viewDir)))), 1.0f);
-    //color *= fresnel; 
-    
-    // reconstruct depth ((exp(depth / FC) - 1.0) / C);
-    //const float C = 1.0f;
-    //const float FC = 1.0 / log(viewInfo.y * C + 1);
-    //color = linearize_depth((exp(gbuffer.Depth / FC) - 1.0) / C);
+    // Clip depth
+    clip(0.99999f - depth);
 
-    return float4(color, 1.0f);
+    // Calculate positions
+    float3 viewPos = GetViewPosition(i.UV, depth);
+    float3 worldPos = GetWorldPosition(i.UV, depth);
+
+    // Add simple directional lighting
+    float3 diffuseColor = gbuffer.Color;
+    float3 ambientLightColor = float3(0.1f, 0.1f, 0.1f);
+    float3 directionalLightColor = float3(1.0f, 1.0f, 1.0f);
+
+    float3 surfaceNormal = DecodeNormal(gbuffer.Normal);
+
+    diffuseColor *= CalculateLightingSimple(surfaceNormal, LightDirection, ambientLightColor, directionalLightColor, 0.4f);
+
+    return float4(diffuseColor, 1.0f);
 }
 
 pass Default
 {
     SetProfile(5.0);
+    SetDefaultCBTargets(CombinePSMain);
+
     SetVertexShader(QuadVSMain);
     SetPixelShader(CombinePSMain);
 }

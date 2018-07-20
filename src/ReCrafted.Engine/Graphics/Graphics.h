@@ -47,6 +47,8 @@ private:
 
     void InitializeRenderer();
 
+    void UpdateDefaultConstants(const Matrix& mvp);
+
 private:
     void OnInit() override;
     void OnDispose() override;

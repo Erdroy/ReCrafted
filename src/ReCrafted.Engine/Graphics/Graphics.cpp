@@ -63,6 +63,40 @@ void Graphics::InitializeRenderer()
     Logger::LogInfo("Graphics initialized");
 }
 
+void Graphics::UpdateDefaultConstants(const Matrix& mvp)
+{
+    // Set MVP matrix
+    m_currentShader->SetValue(0, const_cast<Matrix*>(&mvp));
+
+    // Set inverted view matrix
+    var invView = Camera::GetMainCamera()->GetView();
+    invView.Invert();
+    invView.Transpose();
+    m_currentShader->SetValue(1, &invView);
+
+    // Set view info
+    cvar projection = Camera::GetMainCamera()->GetProjection();
+    Vector4 viewInfo;
+    viewInfo.x = Camera::GetMainCamera()->GetNearPlane();
+    viewInfo.y = Camera::GetMainCamera()->GetFarPlane();
+    viewInfo.z = 1.0f / projection.M11;
+    viewInfo.w = 1.0f / projection.M22;
+
+    m_currentShader->SetValue(2, &viewInfo);
+
+    // Set camera position vector
+    var cameraPosition = Camera::GetMainCamera()->GetPosition();
+    m_currentShader->SetValue(3, &cameraPosition);
+
+    // Set light direction vector
+    var lightdir = Vector3(0.2f, 0.3f, 0.1f);
+    lightdir.Normalize();
+    m_currentShader->SetValue(4, &lightdir);
+
+    // apply shader changes
+    Renderer::ApplyShader(m_currentShader->m_shaderHandle, 0);
+}
+
 void Graphics::OnInit()
 {
     g_rendererInstance = this;
@@ -163,18 +197,8 @@ void Graphics::RenderBegin()
     // set default shader
     SetShader(m_gbufferFillShader);
 
-    // set default matrix
-    rvar mvpMatrix = Camera::GetMainCamera()->GetViewProjection();
-    m_currentShader->SetValue(0, &mvpMatrix);
-
-    var nearPlane = Camera::GetMainCamera()->GetNearPlane();
-    m_currentShader->SetValue(1, &nearPlane);
-
-    var farPlane = Camera::GetMainCamera()->GetFarPlane();
-    m_currentShader->SetValue(2, &farPlane);
-
-    // apply shader changes
-    Renderer::ApplyShader(m_gbufferFillShader->m_shaderHandle, 0);
+    // Update 
+    UpdateDefaultConstants(Camera::GetMainCamera()->GetViewProjection());
 
     if (Input::IsKey(Key_F1))
         Renderer::SetFlag(Renderer::RenderFlags::DrawWireFrame, true);
@@ -220,21 +244,11 @@ void Graphics::RenderEnd()
         return;
     }
 
-    // combine gbuffer
+    // Set shader
+    SetShader(m_gbufferCombine);
 
-    // Update shaders uniforms
-    var lightdir = Vector3(0.39f, 0.9f, 0.13f);
-    lightdir.Normalize();
-    m_gbufferCombine->SetValue(0, &lightdir);
-
-    var cameraPosition = Camera::GetMainCamera()->GetPosition();
-    m_gbufferCombine->SetValue(1, &cameraPosition);
-
-    Vector4 viewInfo = {};
-    viewInfo.x = Camera::GetMainCamera()->GetNearPlane();
-    viewInfo.y = Camera::GetMainCamera()->GetFarPlane();
-
-    m_gbufferCombine->SetValue(2, &viewInfo);
+    // Update 
+    UpdateDefaultConstants(Camera::GetMainCamera()->GetViewProjection());
 
     // blit render textures using gbuffercombine shader
     rvar gbufferDescription = Renderer::GetRenderBufferDescription(m_gbuffer->m_renderBufferHandle);

@@ -4,11 +4,14 @@
 #desc "GBuffer Standard shader used for shading almost every visible object in game"
 
 #define PRESET_SURFACE
+
 #include "../ShaderAPI.hlsli"
 
 pass Default
 {
     SetProfile(5.0);
+    SetDefaultCBTargets(CombinePSMain);
+
     SetVertexShader(SurfaceVSMain);
     SetPixelShader(SurfacePSMain);
 }

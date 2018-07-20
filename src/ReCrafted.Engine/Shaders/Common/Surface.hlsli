@@ -22,7 +22,9 @@ struct SurfacePSInput
     float4 Position : SV_POSITION;
     float3 Normal   : NORMAL;
 
+#ifdef USE_LOGZBUFFER
     float LogZ : TEXCOORD0;
+#endif
 
 #ifdef USE_UV
     float2 UV       : TEXCOORD0;
@@ -54,9 +56,9 @@ void SurfaceVSMain(in SurfaceVSInput i, out SurfacePSInput o)
 
 #ifdef USE_LOGZBUFFER
     const float C = 1.0f;
-    const float FC = 1.0 / log(farPlane * C + 1);
+    const float FC = 1.0 / log(ViewInfo.y * C + 1);
 
-    o.LogZ = log(position.w * C + 1) * FC; 
+    o.LogZ = log(position.z * C + 1) * FC; 
     o.Position.z = o.LogZ * position.w;
 #endif
 }
@@ -72,7 +74,9 @@ void SurfacePSMain(in SurfacePSInput i, out GBufferOutput o)
     o.Normal = float4(i.Normal, 1.0f);
 
 #ifdef USE_LOGZBUFFER
-    o.Depth = i.LogZ;
+    // TODO: Make option to use inv z (1.0f - Z/W) instead of log z,
+    // to allow hardware optimizations.
+    o.Depth = i.LogZ; 
 #endif
 }
 

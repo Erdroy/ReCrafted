@@ -22,7 +22,7 @@ struct QuadPS
 /// </summary>
 void QuadVSMain(in QuadVS i, out QuadPS o) 
 {
-    o.Position = TransformPosition2D(float3(i.Position, 0.0f));
+    o.Position = float4(i.Position, 0.0f, 1.0f);
     o.UV = i.UV;
 }
 #endif // USE_FULLSCREENQUAD
