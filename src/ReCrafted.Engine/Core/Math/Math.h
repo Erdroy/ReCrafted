@@ -11,6 +11,7 @@
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"
+#include "Int3.h"
 
 #define PI 3.14159265358979323846
 
