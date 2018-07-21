@@ -8,6 +8,7 @@
 #include "Platform/Platform.h"
 
 #include "Meshing/MarchingCubes/MCMesher.h"
+#include "Meshing/Transvoxel/TransvoxelMesher.h"
 
 #include <concurrentqueue.h>
 
@@ -48,6 +49,7 @@ void SpaceObjectManager::WorkerFunction()
 
     // create mesher
     cvar mesher = new MCMesher();
+    //cvar mesher = new TransvoxelMesher();
 
     // run
     queueItem item;

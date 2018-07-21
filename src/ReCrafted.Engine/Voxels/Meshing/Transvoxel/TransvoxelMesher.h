@@ -6,18 +6,105 @@
 #define TRANSVOXELMESHER_H
 
 // includes
-#include "../IVoxelMesher.h"
+#include "ReCrafted.h"
 
-class TransvoxelMesher : IVoxelMesher
+#include "Core/Containers/Array.h"
+
+#include "../IVoxelMesher.h"
+#include "../MeshingHelpers.h"
+
+class TransvoxelMesher : public IVoxelMesher
 {
+private: 
+    // Configuration
+    /**
+     * \brief Enables or disables the vertex reuse.
+     */
+    static const bool EnableVertexReuse = true;
+
+    /**
+     * \brief Enables or disables uv channel generation.
+     */
+    static const bool EnableUVChannelGeneration = false;
+
+    /**
+    * \brief Enables or disables color channel generation.
+    */
+    static const bool EnableColorChannelGeneration = true;
+
+    /**
+    * \brief Enables or disables material channel generation.
+    */
+    static const bool EnableMaterialChannelGeneration = false;
+
+    /**
+    * \brief Enables or disables skirt cell generation.
+    */
+    static const bool EnableSkirtCells = false;
+
+    /**
+    * \brief Enables or disables transition cell generation.
+    */
+    static const bool EnableTransitionCells = false;
+
+private:
+    Array<int> m_vertexReuse;
+
+    Array<Vector3> m_vertices;
+    Array<Vector3> m_normals;
+    Array<Vector2> m_uvs;
+    Array<Vector4> m_colors;
+    Array<Vector4> m_materials;
+    Array<uint> m_indices;
+
 public:
-    TransvoxelMesher() = default;
+    TransvoxelMesher() : m_vertexReuse({}), m_vertices({}), m_normals({}), m_uvs({}), m_colors({}), m_materials({}), m_indices({})
+    {
+        // ReSharper disable CppUnreachableCode
+        if (EnableVertexReuse) 
+        {
+            // Reserve space for vertex reuse
+            cvar vertexIndexCacheLength = VoxelChunkData::EnableNormalCorrection ? 19 : 17;
+            m_vertexReuse.Reserve(Math::Pow(vertexIndexCacheLength * 3, 3));
+        }
+
+        // Reserve a bit of space right now.
+        m_vertices.Reserve(16 << 10);
+        m_normals.Reserve(16 << 10);
+
+        if(EnableUVChannelGeneration)
+        {
+            m_uvs.Reserve(16 << 10);
+        }
+
+        if(EnableColorChannelGeneration)
+        {
+            m_colors.Reserve(16 << 10);
+        }
+
+        if(EnableMaterialChannelGeneration)
+        {
+            m_materials.Reserve(16 << 10);
+        }
+
+        m_indices.Reserve(16 << 10);
+
+        // Clear, this will reset the vertex index cache
+        TransvoxelMesher::Clear();
+        // ReSharper restore CppUnreachableCode
+    }
 
     virtual ~TransvoxelMesher() = default;
+
+private:
+    void PolygonizeRegularCell(const Int3& offset);
 
 public:
     /**
     * \brief Virtual method for generating a mesh from hermite voxel data.
+    * \param position The base position of the chunk. TODO: Remove this feature, and update MVP per draw.
+    * \param lod
+    * \param borders
     * \param data The hermite voxel data (in -127 to 127 range).
     */
     void Generate(const Vector3& position, int lod, uint8_t borders, sbyte* data) override;
@@ -28,7 +115,7 @@ public:
     */
     bool HasTriangles() override
     {
-        return false;
+        return m_indices.Count() >= 3;
     }
 
     /**
@@ -40,7 +127,7 @@ public:
     /**
     * \brief Cleans all data used during Generate and Apply functions.
     */
-    void Clean() override;
+    void Clear() override;
 };
 
 #endif // TRANSVOXELMESHER_H
