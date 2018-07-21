@@ -33,6 +33,7 @@ void VoxelChunkCache::Update()
     // Chunks-to-remove queue - NOTE: This function is called only on MAIN-THREAD, 
     // then we can optimize memory usage by using static or member function (Array's memory won't be released)
     static Array<RefPtr<VoxelChunkData>> chunksToRemove = {};
+    static Array<RefPtr<VoxelChunkData>> chunksToReset = {};
 
     Profiler::BeginProfile("VoxelChunkCache::Update");
 
@@ -43,18 +44,30 @@ void VoxelChunkCache::Update()
     for (rvar chunk : m_cachedChunks)
     {
         ASSERT(chunk);
-        ASSERT(chunk->m_cached);
+
+        if(!chunk->m_cached)
+        {
+            chunksToReset.Add(chunk);
+            continue;
+        }
 
         if (currentTime - chunk->m_timeCached > cacheTime)
             chunksToRemove.Add(chunk);
     }
     m_cacheLock.UnlockNow();
 
+    // Reset un-cached chunks
+    for(rvar chunk : chunksToReset)
+    {
+        RemoveChunkFromCache(chunk);
+    }
+
     // Remove chunks
     RemoveChunks(chunksToRemove);
 
-    // Clear queue
+    // Clear queues
     chunksToRemove.Clear();
+    chunksToReset.Clear();
 
     Profiler::EndProfile();
 }

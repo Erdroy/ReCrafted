@@ -31,6 +31,9 @@ void SpaceObjectChunk::Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObjec
     var nodePosition = node->GetPosition();
     m_chunkData = storage->CreateChunkData(nodePosition, node->GetSize(), node->GetDepth());
 
+    // Reset cache
+    m_chunkData->ResetCache();
+
     // calculate chunk position (origin)
     cvar positionOffset = Vector3::One() * static_cast<float>(node->GetSize()) * 0.5f;
     m_position = node->GetPosition() - positionOffset; // lower-left-back corner
@@ -49,6 +52,9 @@ void SpaceObjectChunk::Generate(IVoxelMesher* mesher) // WARNING: this function 
     // try to read chunk data (if not read actually)
     if (!m_chunkData->IsLoaded())
         storage->ReadChunkData(m_chunkData);
+
+    // Reset cache
+    m_chunkData->ResetCache();
 
     if(!m_chunkData->HasSurface() || !m_chunkData->HasData())
         return;
@@ -73,11 +79,8 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
     // then we are going to clean everything up, including chunk data.
     if(!mesher->HasTriangles())
     {
-        // Mar chunk data as no-surface, and dealloc it's data if it contains any data
+        // Mark chunk data as no-surface, and dealloc it's data if it contains any data, NO, DON'T DEALLOC!!! (This is handled by VoxelChunkCache)
         m_chunkData->HasSurface(false);
-
-        if (m_chunkData->HasData())
-            m_chunkData->DeallocateData();
 
         // Set upload type to CLEAR-MESH
         SetUpload(nullptr, ClearMesh);

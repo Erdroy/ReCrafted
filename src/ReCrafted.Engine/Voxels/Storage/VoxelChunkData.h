@@ -112,6 +112,11 @@ public:
     {
         m_hasSurface = value;
     }
+
+    void ResetCache()
+    {
+        m_cached = false;
+    }
 };
 
 #endif // VOXELCHUNKDATA_H
