@@ -24,7 +24,7 @@ namespace Renderer
 
         public:
             CommandList commandList = {};
-            Event<void> callbacksBeforeRender = {};
+            Event<> callbacksBeforeRender = {};
 
             vbhFreePtr freeVertexBuffer = nullptr;
             ibhFreePtr freeIndexBuffer = nullptr;

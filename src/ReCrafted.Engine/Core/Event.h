@@ -11,39 +11,30 @@
 #include "Lock.h"
 #include "Containers/Array.h"
 
-template <typename T>
+template <typename ... TParams>
 class Event
 {
 private:
-    Array<Action<T>> m_listeners = {};
+    Array<Action<void, TParams...>> m_listeners = {};
     Lock m_lock = {};
 
 public:
-    void Invoke()
+    void Invoke(TParams ... params)
     {
         ScopeLock(m_lock);
 
         // invoke all listeners
         for (var&& listener : m_listeners)
-            listener.Invoke();
+            listener.Invoke(params...);
     }
 
-    void Invoke(T* param)
-    {
-        ScopeLock(m_lock);
-
-        // invoke all listeners
-        for (var&& listener : m_listeners)
-            listener.Invoke(param);
-    }
-
-    void AddListener(Action<T> delegate)
+    void AddListener(Action<void, TParams...> delegate)
     {
         ScopeLock(m_lock);
         m_listeners.Add(delegate);
     }
 
-    void RemoveListener(Action<T> delegate)
+    void RemoveListener(Action<void> delegate)
     {
         ScopeLock(m_lock);
         m_listeners.Remove(delegate);
