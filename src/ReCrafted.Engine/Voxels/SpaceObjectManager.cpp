@@ -5,8 +5,9 @@
 #include "Core/Lock.h"
 #include "Core/Action.h"
 #include "Core/Logger.h"
-#include "Meshing/MarchingCubes/MCMesher.h"
 #include "Platform/Platform.h"
+
+#include "Meshing/MarchingCubes/MCMesher.h"
 
 #include <concurrentqueue.h>
 

@@ -1,19 +1,22 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "MCMesher.h"
-#include "Core/Math/Plane.h"
-#include "Graphics/Mesh.h"
-#include "../../Utilities/VoxelUtils.h"
-
 #include "MCTables.hpp"
 #include "MSTables.hpp"
 
-#define ITERATE_CELLS_BEGIN(a, b, c)\
-for (auto a = 0; a < VoxelChunkData::ChunkSize; a++) \
-for (auto b = 0; b < VoxelChunkData::ChunkSize; b++) \
-for (auto c = 0; c < VoxelChunkData::ChunkSize; c++)
+#include "Core/Math/Math.h"
+#include "Core/Math/Plane.h"
+#include "Graphics/Mesh.h"
 
-#define ITERATE_CELLS_END()
+#include "../MeshingHelpers.h"
+#include "../../Utilities/VoxelUtils.h"
+
+#define ITERATE_CELLS_BEGIN(a, b, c)\
+for (auto a = VoxelChunkData::ChunkDataStart; a < VoxelChunkData::ChunkSize; a++) {\
+for (auto b = VoxelChunkData::ChunkDataStart; b < VoxelChunkData::ChunkSize; b++) {\
+for (auto c = VoxelChunkData::ChunkDataStart; c < VoxelChunkData::ChunkSize; c++) {
+
+#define ITERATE_CELLS_END() }}}
 
 #define GET_CELL(_x, _y, _z) m_cells[INDEX_3D(_x, _y, _z, VoxelChunkData::ChunkSize)];
 #define IS_BORDER(_x, _y, _z) _x == 0 || _x == VoxelChunkData::ChunkSize-1 || _y == 0 || _y == VoxelChunkData::ChunkSize-1 || _z == 0 || _z == VoxelChunkData::ChunkSize-1
@@ -28,28 +31,14 @@ for (auto c = 0; c < VoxelChunkData::ChunkSize; c++)
 const int ISO_LEVEL = 0;
 const float S = 1.0f / 256.0f;
 
-// TODO: move operator overrides into Vector3
-Vector3 operator*(const float& lhs, const Vector3& rhs)
+inline float GetVoxel(sbyte* data, const Vector3& point)
 {
-    return {rhs.x * lhs, rhs.y * lhs, rhs.z * lhs};
+    return VOXEL_TO_FLOAT(VoxelChunkData::GetVoxel(data, int(point.x), int(point.y), int(point.z)));
 }
 
-/*Vector3 operator/(const Vector3& lhs, const float& rhs)
+inline float GetVoxel(sbyte* data, int x, int y, int z)
 {
-    return {lhs.x / rhs, lhs.y / rhs, lhs.z / rhs};
-}*/
-
-/**
- * \brief Calculates surface intersection on edge based on two data samples.
- * \param p1 The first point.
- * \param p2 The second point.
- * \param d1 The first point value.
- * \param d2 The second point value.
- * \return The intersection of the given points.
- */
-inline Vector3 GetIntersection(Vector3& p1, Vector3& p2, float d1, float d2)
-{
-    return p1 + -d1 * (p2 - p1) / (d2 - d1);
+    return VOXEL_TO_FLOAT(VoxelChunkData::GetVoxel(data, x, y, z));
 }
 
 inline Vector3 GetEdge(Vector3 offset, sbyte* data, Vector3 cornerA, Vector3 cornerB)
@@ -58,20 +47,10 @@ inline Vector3 GetEdge(Vector3 offset, sbyte* data, Vector3 cornerA, Vector3 cor
     var offsetB = offset + cornerB;
 
     // get data
-    cvar sampleA = VOXEL_TO_FLOAT(data[INDEX_3D(int(offsetA.x), int(offsetA.y), int(offsetA.z), VoxelChunkData::ChunkDataSize)]);
-    cvar sampleB = VOXEL_TO_FLOAT(data[INDEX_3D(int(offsetB.x), int(offsetB.y), int(offsetB.z), VoxelChunkData::ChunkDataSize)]);
+    cvar sampleA = GetVoxel(data, offsetA);
+    cvar sampleB = GetVoxel(data, offsetB);
 
     return GetIntersection(offsetA, offsetB, sampleA, sampleB);
-}
-
-inline float GetVoxel(sbyte* data, const Vector3& point)
-{
-    return VOXEL_TO_FLOAT(data[INDEX_3D(int(point.x), int(point.y), int(point.z), VoxelChunkData::ChunkDataSize)]);
-}
-
-inline float GetVoxel(sbyte* data, int x, int y, int z)
-{
-    return VOXEL_TO_FLOAT(data[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)]);
 }
 
 void MCMesher::GenerateCell(Cell* cell, int x, int y, int z, sbyte* data) const
@@ -202,6 +181,9 @@ void MCMesher::GenerateCells(sbyte* data, const Vector3& position, float lod, ui
     // generate all cells
     ITERATE_CELLS_BEGIN(x, y, z)
     {
+        if (x < 0 || y < 0 || z < 0)
+            continue; // Ignore normal correction (we don't have vertex reuse here)
+
         const var offset = Vector3(float(x), float(y), float(z));
         const var cell = &GET_CELL(x, y, z);
 
@@ -262,7 +244,7 @@ void MCMesher::Apply(const RefPtr<Mesh>& mesh)
 
     mesh->ApplyChanges();
 
-    Clean();
+    Clear();
 }
 
 void MCMesher::Generate(const Vector3& position, int lod, uint8_t borders, sbyte* data)
@@ -272,10 +254,10 @@ void MCMesher::Generate(const Vector3& position, int lod, uint8_t borders, sbyte
     GenerateCells(data, position, lodF, lod > 1 ? borders : 0);
 
     if (m_vertices.Count() < 3 || m_indices.Count() < 3)
-        Clean();
+        Clear();
 }
 
-void MCMesher::Clean()
+void MCMesher::Clear()
 {
     // cleanup all arrays
     m_vertices.Clear();

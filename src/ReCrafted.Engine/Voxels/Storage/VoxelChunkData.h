@@ -8,6 +8,7 @@
 // includes
 #include "ReCrafted.h"
 #include "Core/Math/Vector3.h"
+#include "Voxels/Utilities/VoxelUtils.h"
 
 class VoxelChunkData
 {
@@ -16,8 +17,36 @@ class VoxelChunkData
     friend class VoxelChunkCache;
 
 public:
-    static const int ChunkSize = 16; // 16 'cubes' on signle axis
-    static const int ChunkDataSize = ChunkSize + 1; // 17 corners on signle axis (cubes_count + 1)
+    // Configuration
+    /**
+    * \brief Enables or diables normal correction.
+    */
+    static const bool EnableNormalCorrection = true;
+
+
+public:
+    /**
+    * \brief ChunkSize - 16 'cubes' on signle axis.
+    */
+    static const int ChunkSize = 16;
+
+    /**
+    * \brief ChunkDataLength - 17 corners on signle axis (cubes_count + 1) - [|the normal range| and 16].
+    * or, when NormalCorrection is enabled - 19 corners on signle axis (cubes_count + 3) - [-1, |the normal range|, 16 and 17].
+    */
+    static const int ChunkDataSize = EnableNormalCorrection ? ChunkSize + 3 : ChunkSize + 1;
+
+    /**
+    * \brief ChunkDataLength - 17 corners on signle axis (cubes_count + 1) - [|the normal range| and 16].
+    * or, when NormalCorrection is enabled - 19 corners on signle axis (cubes_count + 3) - [-1, |the normal range|, 16 and 17].
+    */
+    static const int ChunkDataLength = EnableNormalCorrection ? ChunkSize + 2 : ChunkSize + 1;
+
+    /**
+    * \brief The chunk data start.
+    * It is -1 when NormalCorrection is enabled otherwise it is just 0.
+    */
+    static const int ChunkDataStart = EnableNormalCorrection ? -1 : 0;
 
 private:
     sbyte* m_voxelData = nullptr;
@@ -116,6 +145,35 @@ public:
     void ResetCache()
     {
         m_cached = false;
+    }
+
+    FORCEINLINE sbyte GetVoxel(int x, int y, int z) const
+    {
+        return GetVoxel(m_voxelData, x, y, z);
+    }
+
+    FORCEINLINE void SetVoxel(int x, int y, int z, sbyte voxel) const
+    {
+        SetVoxel(m_voxelData, x, y, z, voxel);
+    }
+
+public:
+    FORCEINLINE static sbyte GetVoxel(sbyte* voxelData, int x, int y, int z)
+    {
+        return voxelData[INDEX_3D(
+            x + EnableNormalCorrection,
+            y + EnableNormalCorrection,
+            z + EnableNormalCorrection,
+            ChunkDataSize)];
+    }
+
+    FORCEINLINE static void SetVoxel(sbyte* voxelData, int x, int y, int z, sbyte voxel)
+    {
+        voxelData[INDEX_3D(
+            x + EnableNormalCorrection,
+            y + EnableNormalCorrection,
+            z + EnableNormalCorrection,
+            ChunkDataSize)] = voxel;
     }
 };
 

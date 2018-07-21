@@ -367,18 +367,17 @@ bool SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position,
         chunkData->AllocateData();
 
     cvar chunkScale = static_cast<float>(chunkData->GetLod());
-    cvar voxels = chunkData->GetData();
     var modified = false;
 
-    for (var x = 0; x < VoxelChunkData::ChunkDataSize; x++)
+    for (var x = VoxelChunkData::ChunkDataStart; x < VoxelChunkData::ChunkDataLength; x++)
     {
-        for (var y = 0; y < VoxelChunkData::ChunkDataSize; y++)
+        for (var y = VoxelChunkData::ChunkDataStart; y < VoxelChunkData::ChunkDataLength; y++)
         {
-            for (var z = 0; z < VoxelChunkData::ChunkDataSize; z++)
+            for (var z = VoxelChunkData::ChunkDataStart; z < VoxelChunkData::ChunkDataLength; z++)
             {
                 cvar point = Vector3(float(x), float(y), float(z)) * chunkScale + chunkData->GetChunkPosition();
 
-                cvar currentValue = voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)];
+                cvar currentValue = chunkData->GetVoxel(x, y, z);
                 cvar distance = Vector3::Distance(position, point);
 
                 if (distance <= size + 0.5f)
@@ -394,12 +393,12 @@ bool SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position,
                         newValue = -newValue;
 
                         if (newValue < currentValue)
-                            voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)] = newValue;
+                            chunkData->SetVoxel(x, y, z, newValue);
                     }
                     else
                     {
                         if (newValue > currentValue)
-                            voxels[INDEX_3D(x, y, z, VoxelChunkData::ChunkDataSize)] = newValue;
+                            chunkData->SetVoxel(x, y, z, newValue);
                     }
 
                     modified = true;

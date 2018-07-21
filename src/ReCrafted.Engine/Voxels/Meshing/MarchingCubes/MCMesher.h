@@ -20,9 +20,6 @@
 #define BORDER_TOP		0x10
 #define BORDER_BOTTOM	0x20
 
-struct TransitionCellCache;
-struct RegularCellCache;
-
 class MCMesher : public IVoxelMesher
 {
 private:
@@ -91,7 +88,7 @@ public:
     /**
     * \brief Cleans all data used during Generate and Apply functions.
     */
-    void Clean() override;
+    void Clear() override;
 };
 
 #endif // MCMESHER_H

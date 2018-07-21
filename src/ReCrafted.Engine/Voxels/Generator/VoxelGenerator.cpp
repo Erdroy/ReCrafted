@@ -58,6 +58,15 @@ void VoxelGenerator::Dispose()
     SafeDispose(m_bitmap);
 }
 
+inline void SetVoxel(sbyte* voxelData, int x, int y, int z, sbyte voxel)
+{
+    voxelData[INDEX_3D(
+        x + VoxelChunkData::EnableNormalCorrection,
+        y + VoxelChunkData::EnableNormalCorrection,
+        z + VoxelChunkData::EnableNormalCorrection,
+        VoxelChunkData::ChunkDataSize)] = voxel;
+}
+
 bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, const Vector3& position, int lod, int depth)
 {
     const int voxelDataSize = VoxelChunkData::ChunkDataSize * VoxelChunkData::ChunkDataSize * VoxelChunkData::ChunkDataSize;
@@ -78,14 +87,12 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
     sbyte lastVoxel = 0;
 
     var voxelVolumeSign = 0;
-    for (var x = 0; x < dataSize; x++)
+    for (var x = VoxelChunkData::ChunkDataStart; x < VoxelChunkData::ChunkDataLength; x++)
     {
-        for (var y = 0; y < dataSize; y++)
+        for (var y = VoxelChunkData::ChunkDataStart; y < VoxelChunkData::ChunkDataLength; y++)
         {
-            for (var z = 0; z < dataSize; z++)
+            for (var z = VoxelChunkData::ChunkDataStart; z < VoxelChunkData::ChunkDataLength; z++)
             {
-                cvar index = INDEX_3D(x, y, z, dataSize);
-
                 cvar offset = Vector3(float(x), float(y), float(z));
                 cvar voxelPosition = position + offset * lod_f;
 
@@ -94,12 +101,13 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
                     settings->hillsHeight);
 
                 // Surface checking
-                if(!hasSurface && lastVoxel != value && index > 1)
+                if(!hasSurface && lastVoxel != value && (x > 0 && y > 0 && z > 0))
                     hasSurface = true;
 
                 lastVoxel = value;
                 voxelVolumeSign += value;
-                voxels[index] = value;
+
+                SetVoxel(voxels, x, y, z, value);
             }
         }
     }
