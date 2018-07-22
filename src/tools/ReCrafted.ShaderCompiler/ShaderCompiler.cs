@@ -29,7 +29,7 @@ namespace ReCrafted.ShaderCompiler
             catch (Exception ex)
             {
                 var errorMessage = Options.Current.Verbose ? ex.ToString() : ex.Message;
-                Console.WriteLine("Failed to compile shader.\nError: " + errorMessage);
+                Console.WriteLine("Failed to compile shader.\nError: \n" + errorMessage);
                 return false;
             }
 
