@@ -62,7 +62,7 @@ void Universe::Update()
 
     if (Input::IsKey(Key_Mouse0))
     {
-        m_testObject1->Modify(VoxelEditMode::Subtractive, modPosition, 5.0f);
+        m_testObject1->Modify(VoxelEditMode::Subtractive, modPosition, 1.5f);
     }
 
     if (Input::IsKey(Key_Mouse1))

@@ -8,15 +8,17 @@ SamplerState<LinearClamped> GBufferSampler : register(s0);
 
 Texture2D GBufferT0 : register(t0); // Color
 Texture2D GBufferT1 : register(t1); // Normal
-Texture2D Depth : register(t2); // Depth
+Texture2D GBufferT2 : register(t2); // Light, Emission
+Texture2D Depth : register(t3); // Depth
 
 #define SAMPLE_GBUFFER(tex, uv) tex.Sample(GBufferSampler, uv)
 #endif // USE_GBUFFERSAMPLING
 
 struct GBufferOutput 
 {
-    float4 Color : SV_Target0;
-    float4 Normal : SV_Target1; // rgb, A/Z channel/component is still free
+    float4 Color : SV_Target0; // [RGBA(color)]
+    float4 Normal : SV_Target1; // [RGB(normal), A(FREE)]
+    float4 Light : SV_Target2; // [RGB(light), A(emission)]
 
 #ifdef USE_LOGZBUFFER
     float Depth : SV_Depth;
@@ -25,8 +27,10 @@ struct GBufferOutput
 
 struct GBuffer
 {
-    float3 Color;
+    float4 Color;
     float3 Normal;
+    float3 Light;
+    float Emission;
     float3 ViewPos;
     float3 WorldPos;
     float Depth;
@@ -37,8 +41,12 @@ GBuffer SampleGBuffer(float2 uv)
 {
     GBuffer gbuffer = (GBuffer)0;
 
-    gbuffer.Color = SAMPLE_GBUFFER(GBufferT0, uv).rgb;
-    gbuffer.Normal = SAMPLE_GBUFFER(GBufferT1, uv).rgb;
+    float4 lightEmission = SAMPLE_GBUFFER(GBufferT2, uv).rgba;
+
+    gbuffer.Color = SAMPLE_GBUFFER(GBufferT0, uv).rgba;
+    gbuffer.Normal = DecodeNormal(SAMPLE_GBUFFER(GBufferT1, uv).rgb);
+    gbuffer.Light = lightEmission.rgb;
+    gbuffer.Emission = lightEmission.a;
     gbuffer.Depth = SAMPLE_GBUFFER(Depth, uv).r;
 
     //gbuffer.ViewPos = 0; // TODO: Calculate ViewPos

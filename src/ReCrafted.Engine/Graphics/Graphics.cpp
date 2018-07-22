@@ -24,7 +24,7 @@ void Graphics::LoadInternalShaders()
 {
     Logger::LogInfo("Loading internal shaders");
 
-    m_gbufferFillShader = Shader::LoadShader("../assets/shaders/Standard.shader");
+    m_gbufferFillShader = Shader::LoadShader("../assets/shaders/StandardShader.shader");
     m_gbufferCombine = Shader::LoadShader("../assets/shaders/GBufferCombine.shader");
 }
 
@@ -37,6 +37,7 @@ void Graphics::CreateRenderBuffers()
     m_gbuffer->Begin();
     m_gbuffer->AddTarget("ALBEDO", Renderer::TextureFormat::RGBA8);
     m_gbuffer->AddTarget("[RGB]NORMALS, [A]AmbientOcculusion", Renderer::TextureFormat::RGBA8);
+    m_gbuffer->AddTarget("[RGB]LIGHT, [A]EMISSION", Renderer::TextureFormat::RGBA8);
     m_gbuffer->End();
 }
 
@@ -92,6 +93,10 @@ void Graphics::UpdateDefaultConstants(const Matrix& mvp)
     var lightdir = Vector3(0.2f, 0.3f, 0.1f);
     lightdir.Normalize();
     m_currentShader->SetValue(4, &lightdir);
+
+    // Set light direction vector
+    var ambientLight = Vector3(0.1f, 0.1f, 0.1f);
+    m_currentShader->SetValue(5, &ambientLight);
 
     // apply shader changes
     Renderer::ApplyShader(m_currentShader->m_shaderHandle, 0);
@@ -237,6 +242,14 @@ void Graphics::RenderEnd()
     }
 
     if (Input::IsKey(Key_F4))
+    {
+        Renderer::BlitTexture(m_frameBuffer, m_gbuffer->GetTarget(2));
+        // reset everything
+        m_currentShader = nullptr;
+        return;
+    }
+
+    if (Input::IsKey(Key_F5))
     {
         Renderer::BlitTexture(m_frameBuffer, m_gbuffer->GetDepthBuffer());
         // reset everything

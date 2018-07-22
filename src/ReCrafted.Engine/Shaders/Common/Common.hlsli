@@ -49,6 +49,11 @@ cbuffer DefaultConstants : register(b0)
     /// The directional light direction.
     /// </summary>
     float3 LightDirection;
+
+    /// <summary>
+    /// The ambient light color.
+    /// </summary>
+    float3 AmbientLightColor;
 }
 
 

@@ -3,10 +3,10 @@
 #ifndef LIGHTING_HLSLI
 #define LIGHTING_HLSLI
 
-float3 CalculateLightingSimple(float3 surfaceNormal, float3 lightDirection, float3 ambientLightColor, float3 directionalLightColor, float lightPower)
+float3 CalculateLightingSimple(float3 surfaceNormal, float3 lightDirection, float3 directionalLightColor, float lightPower)
 {
-    float3 NoL = dot(surfaceNormal, lightDirection);
-    return directionalLightColor * NoL * lightPower + ambientLightColor;
+    float3 NoL = saturate(dot(surfaceNormal, lightDirection));
+    return directionalLightColor * lightPower * NoL;
 }
 
 #endif // LIGHTING_HLSLI

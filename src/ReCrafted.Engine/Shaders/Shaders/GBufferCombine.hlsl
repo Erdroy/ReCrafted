@@ -30,13 +30,10 @@ float4 CombinePSMain(in QuadPS i) : SV_Target0
     float3 worldPos = GetWorldPosition(i.UV, depth);
 
     // Add simple directional lighting
-    float3 diffuseColor = gbuffer.Color;
-    float3 ambientLightColor = float3(0.1f, 0.1f, 0.1f);
     float3 directionalLightColor = float3(1.0f, 1.0f, 1.0f);
 
-    float3 surfaceNormal = DecodeNormal(gbuffer.Normal);
-
-    diffuseColor *= CalculateLightingSimple(surfaceNormal, LightDirection, ambientLightColor, directionalLightColor, 1.5f);
+    float3 diffuseColor = gbuffer.Color.rgb * CalculateLightingSimple(gbuffer.Normal, LightDirection, directionalLightColor, 1.5f);
+    diffuseColor += gbuffer.Light.rgb;
 
     return float4(diffuseColor, 1.0f);
 }
