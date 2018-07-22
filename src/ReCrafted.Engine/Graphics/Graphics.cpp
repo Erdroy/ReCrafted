@@ -24,7 +24,7 @@ void Graphics::LoadInternalShaders()
 {
     Logger::LogInfo("Loading internal shaders");
 
-    m_gbufferFillShader = Shader::LoadShader("../assets/shaders/GBufferStandard.shader");
+    m_gbufferFillShader = Shader::LoadShader("../assets/shaders/Standard.shader");
     m_gbufferCombine = Shader::LoadShader("../assets/shaders/GBufferCombine.shader");
 }
 
@@ -329,10 +329,16 @@ void Graphics::OnFramePresent()
     Profiler::EndProfile();
 }
 
-void Graphics::Draw(RefPtr<Mesh>& mesh)
+void Graphics::Draw(RefPtr<Mesh>& mesh, RefPtr<Shader>& shader)
 {
     if (!(RENDERER_CHECK_HANDLE(mesh->m_vertexBuffer)) || !(RENDERER_CHECK_HANDLE(mesh->m_indexBuffer)))
         return;
+
+    if(shader != m_currentShader)
+    {
+        SetShader(shader);
+        UpdateDefaultConstants(Camera::GetMainCamera()->GetViewProjection());
+    }
 
     Renderer::ApplyVertexBuffer(mesh->m_vertexBuffer);
     Renderer::ApplyIndexBuffer(mesh->m_indexBuffer);

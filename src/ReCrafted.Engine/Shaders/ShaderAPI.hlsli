@@ -13,12 +13,10 @@
 #endif // PRESET_SURFACE
 
 // ==== API INCLUDES ====
-#include "../API/Common.hlsli"
-#include "../API/GBuffer.hlsli"
-#include "../API/FullscreenQuad.hlsli"
-
-// ==== COMMON INCLUDES ====
 #include "../Common/Math.hlsli"
+#include "../Common/Common.hlsli"
+#include "../Common/GBuffer.hlsli"
+#include "../Common/FullscreenQuad.hlsli"
 #include "../Common/Lighting.hlsli"
 
 // ==== PRESET INCLUDES ====

@@ -1,10 +1,9 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
-#name "GBuffer Standard"
-#desc "GBuffer Standard shader used for shading almost every visible object in game"
+#name "StandardShader"
+#desc "StandardShader used for shading almost every visible object in game (excluding Terrain, as it has it's own shader)"
 
 #define PRESET_SURFACE
-
 #include "../ShaderAPI.hlsli"
 
 pass Default

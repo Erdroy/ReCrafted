@@ -17,7 +17,7 @@ struct SurfaceVSInput
 #endif // USE_VERTEXCOLOR
 };
 
-struct SurfacePSInput
+struct SurfaceVSOutput
 {
     float4 Position : SV_POSITION;
     float3 Normal   : NORMAL;
@@ -35,11 +35,14 @@ struct SurfacePSInput
 #endif // USE_VERTEXCOLOR
 };
 
+// Add macro for SurfacePSInput
+#define SurfacePSInput SurfaceVSOutput
+
 /// <summary>
 /// Vertex Shader Function
 /// SurfaceVSMain
 /// </summary>
-void SurfaceVSMain(in SurfaceVSInput i, out SurfacePSInput o)
+void SurfaceVSMain(in SurfaceVSInput i, out SurfaceVSOutput o)
 {
     float4 position = TransformPosition(i.Position);
 
