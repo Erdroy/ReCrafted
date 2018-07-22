@@ -64,8 +64,12 @@ public:
         if (EnableVertexReuse) 
         {
             // Reserve space for vertex reuse
-            cvar vertexIndexCacheLength = VoxelChunkData::EnableNormalCorrection ? 19 : 17;
-            m_vertexReuse.Reserve(Math::Pow(vertexIndexCacheLength * 3, 3));
+            cvar vertexReuseSize = Math::Pow(VoxelChunkData::ChunkDataSize * 3, 3);
+            m_vertexReuse.Reserve(vertexReuseSize);
+
+            // Initialize vertex reuse
+            for (var i = 0; i < vertexReuseSize; i++)
+                m_vertexReuse.Add(-1);
         }
 
         // Reserve a bit of space right now.
@@ -89,15 +93,13 @@ public:
 
         m_indices.Reserve(16 << 10);
 
-        // Clear, this will reset the vertex index cache
-        TransvoxelMesher::Clear();
         // ReSharper restore CppUnreachableCode
     }
 
     virtual ~TransvoxelMesher() = default;
 
 private:
-    void PolygonizeRegularCell(const Int3& offset);
+    void PolygonizeRegularCell(const Vector3& position, sbyte* data, float voxelScale, const Int3& voxelOffset, bool normalCorrection);
 
 public:
     /**
