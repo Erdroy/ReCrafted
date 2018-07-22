@@ -6,11 +6,15 @@
 #include "Core/Math/Math.h"
 #include "Storage/VoxelStorage.h"
 #include "Generator/VoxelGenerator.h"
+#include "Graphics/Graphics.h"
 
 void SpaceObject::Init(SpaceObjectSettings& settings)
 {
     // set settings
     m_settings = settings;
+
+    // Load shader
+    m_terrainShader = Shader::LoadShader("../assets/shaders/TerrainShader.shader");
 
     // initialize voxel generator
     m_generator.reset(new VoxelGenerator());
@@ -55,6 +59,7 @@ void SpaceObject::Draw()
 
 void SpaceObject::Dispose()
 {
+    SafeDispose(m_terrainShader);
     SafeDispose(m_octree);
     SafeDispose(m_voxelStorage);
 }

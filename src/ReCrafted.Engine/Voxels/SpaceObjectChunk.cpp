@@ -139,7 +139,7 @@ void SpaceObjectChunk::Upload()
 void SpaceObjectChunk::Draw()
 {
     if (m_mesh)
-        Graphics::GetInstance()->Draw(m_mesh);
+        Graphics::GetInstance()->Draw(m_mesh, spaceObject->m_terrainShader);
 }
 
 void SpaceObjectChunk::Dispose()

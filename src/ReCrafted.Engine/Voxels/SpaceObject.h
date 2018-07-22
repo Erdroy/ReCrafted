@@ -9,10 +9,12 @@
 #include "SpaceObjectOctree.h"
 #include "SpaceObjectSettings.h"
 #include "Storage/VoxelEditMode.h"
+#include "Graphics/Shader.h"
 
 class SpaceObject
 {
     friend class VoxelStorage;
+    friend class SpaceObjectChunk;
     friend class VoxelGenerator;
 
 private:
@@ -23,6 +25,8 @@ private:
     RefPtr<SpaceObjectOctree> m_octree = nullptr;
     RefPtr<VoxelGenerator> m_generator = nullptr;
     RefPtr<VoxelStorage> m_voxelStorage = nullptr;
+
+    RefPtr<Shader> m_terrainShader = nullptr;
 
 private:
     void Init(SpaceObjectSettings& settings);
