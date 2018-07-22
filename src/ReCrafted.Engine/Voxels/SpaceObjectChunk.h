@@ -9,6 +9,7 @@
 #include "Core/Math/Vector3.h"
 #include "Core/Lock.h"
 #include "Storage/VoxelChunkData.h"
+
 #include <atomic>
 
 struct IVoxelMesher;

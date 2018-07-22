@@ -11,6 +11,17 @@
 #include "../MeshingHelpers.h"
 #include "../../Utilities/VoxelUtils.h"
 
+Int3 MSCellCorner[8] = {
+    Int3(0, 0, 0),
+    Int3(1, 0, 0),
+    Int3(1, 1, 0),
+    Int3(0, 1, 0),
+    Int3(0, 0, 1),
+    Int3(1, 0, 1),
+    Int3(1, 1, 1),
+    Int3(0, 1, 1)
+};
+
 #define ITERATE_CELLS_BEGIN(a, b, c)\
 for (auto a = VoxelChunkData::ChunkDataStart; a < VoxelChunkData::ChunkSize; a++) {\
 for (auto b = VoxelChunkData::ChunkDataStart; b < VoxelChunkData::ChunkSize; b++) {\
@@ -49,7 +60,7 @@ void MCMesher::GenerateCell(Cell* cell, const Int3& offset, sbyte* data) const
 
     for (auto i = 0; i < 8; i++) // TODO: unroll
     {
-        if (GetVoxel(data, offset + CellCorner[i]) > ISO_LEVEL)
+        if (GetVoxel(data, offset + MSCellCorner[i]) > ISO_LEVEL)
             caseIndex |= 1 << i;
     }
 

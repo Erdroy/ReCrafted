@@ -8,12 +8,12 @@
 Int3 CellCorner[8] = {
     Int3(0, 0, 0),
     Int3(1, 0, 0),
-    Int3(1, 1, 0),
-    Int3(0, 1, 0),
     Int3(0, 0, 1),
     Int3(1, 0, 1),
-    Int3(1, 1, 1),
-    Int3(0, 1, 1)
+    Int3(0, 1, 0),
+    Int3(1, 1, 0),
+    Int3(0, 1, 1),
+    Int3(1, 1, 1)
 };
 
 #endif // COMMONTABLES_CPP

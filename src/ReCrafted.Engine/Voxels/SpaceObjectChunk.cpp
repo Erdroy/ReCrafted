@@ -4,11 +4,11 @@
 #include "SpaceObjectOctree.h"
 #include "SpaceObjectOctreeNode.h"
 #include "SpaceObject.h"
-#include "Meshing/MarchingCubes/MCMesher.h"
 #include "Graphics/Mesh.h"
 #include "Graphics/Camera.h"
 #include "Graphics/Graphics.h"
 #include "Storage/VoxelStorage.h"
+#include "Meshing/IVoxelMesher.h"
 
 void SpaceObjectChunk::SetUpload(RefPtr<Mesh> mesh, UploadType uploadType)
 {

@@ -31,13 +31,13 @@ public:
     static const int ChunkSize = 16;
 
     /**
-    * \brief ChunkDataLength - 17 corners on signle axis (cubes_count + 1) - [|the normal range| and 16].
+    * \brief ChunkDataLength - 19 'cubes' on signle axis (cubes_count + 1) - [|the normal range| and 16].
     * or, when NormalCorrection is enabled - 19 corners on signle axis (cubes_count + 3) - [-1, |the normal range|, 16 and 17].
     */
     static const int ChunkDataSize = EnableNormalCorrection ? ChunkSize + 3 : ChunkSize + 1;
 
     /**
-    * \brief ChunkDataLength - 17 corners on signle axis (cubes_count + 1) - [|the normal range| and 16].
+    * \brief ChunkDataLength - 17 'cubes' on signle axis (cubes_count + 1) - [|the normal range| and 16].
     * or, when NormalCorrection is enabled - 19 corners on signle axis (cubes_count + 3) - [-1, |the normal range|, 16 and 17].
     */
     static const int ChunkDataLength = EnableNormalCorrection ? ChunkSize + 2 : ChunkSize + 1;

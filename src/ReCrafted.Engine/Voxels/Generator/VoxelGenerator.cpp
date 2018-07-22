@@ -75,13 +75,13 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
     cvar octree = spaceObject->GetOctree();
 
     cvar dataSize = VoxelChunkData::ChunkDataSize;
-    cvar lod_f = static_cast<float>(lod);
+
+    cvar voxelSize = static_cast<float>(lod);
+    cvar lodSize = LoDTable[lod];
+
     cvar chunkPosition = spaceObject->GetPosition();
 
     cvar mipLevel = Math::Clamp(octree->GetMaxDepth() - depth, 0, m_bitmap->GetLoDCount());
-
-    // calculate current voxel size
-    cvar lodSize = LoDTable[lod];
 
     var hasSurface = false;
     sbyte lastVoxel = 0;
@@ -94,7 +94,7 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
             for (var z = VoxelChunkData::ChunkDataStart; z < VoxelChunkData::ChunkDataLength; z++)
             {
                 cvar offset = Vector3(float(x), float(y), float(z));
-                cvar voxelPosition = position + offset * lod_f;
+                cvar voxelPosition = position + offset * voxelSize;
 
                 cvar value = GenerateFromCHM(chunkPosition, voxelPosition, mipLevel, lodSize,
                     settings->minSurfaceHeight,
