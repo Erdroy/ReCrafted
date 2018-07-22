@@ -66,6 +66,11 @@ namespace ReCrafted.ShaderCompiler.Compiler
                                 pass.CSFunction = ParseSetShader(functionName, arguments);
                                 break;
                             }
+                            case "SetGeometryShader":
+                            {
+                                pass.GSFunction = ParseSetShader(functionName, arguments);
+                                break;
+                            }
                             case "BindConstantBuffer":
                             {
                                 var targets = ParseIdentifierList(functionName, arguments);

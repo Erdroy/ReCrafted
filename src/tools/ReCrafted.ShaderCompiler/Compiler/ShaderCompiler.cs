@@ -164,6 +164,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
                 pass.VSByteCode = CompileShader(ref sourceCode, pass.VSFunction, pass.Profile, "vs");
                 pass.PSByteCode = CompileShader(ref sourceCode, pass.PSFunction, pass.Profile, "ps");
                 pass.CSByteCode = CompileShader(ref sourceCode, pass.CSFunction, pass.Profile, "cs");
+                pass.GSByteCode = CompileShader(ref sourceCode, pass.GSFunction, pass.Profile, "gs");
             }
         }
 

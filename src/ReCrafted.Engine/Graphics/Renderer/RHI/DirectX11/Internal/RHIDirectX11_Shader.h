@@ -71,12 +71,16 @@ namespace Renderer
             ID3D11ComputeShader* m_computeShader = nullptr;
             std::vector<Buffer*> m_csBuffers = {};
 
+            std::string m_gsName = {};
+            ID3D11GeometryShader* m_geometryShader = nullptr;
+            std::vector<Buffer*> m_gsBuffers = {};
         public:
             ~Pass()
             {
                 SafeRelease(m_vertexShader);
                 SafeRelease(m_pixelShader);
                 SafeRelease(m_computeShader);
+                SafeRelease(m_geometryShader);
             }
         };
 

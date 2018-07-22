@@ -259,6 +259,8 @@ namespace Renderer
                 }
             }
         }
+        else // Reset if none
+            context->VSSetShader(nullptr, nullptr, 0);
 
         // set pixel shader
         if (pass.m_pixelShader)
@@ -287,6 +289,8 @@ namespace Renderer
                 }
             }
         }
+        else // Reset if none
+            context->PSSetShader(nullptr, nullptr, 0);
 
         // set compute shader
         if (pass.m_computeShader)
@@ -315,6 +319,38 @@ namespace Renderer
                 }
             }
         }
+        else // Reset if none
+            context->CSSetShader(nullptr, nullptr, 0);
+
+        // set geometry shader
+        if (pass.m_geometryShader)
+        {
+            context->GSSetShader(pass.m_geometryShader, nullptr, 0);
+            ADD_APICALL();
+
+            // set constant buffers 
+            if (!pass.m_gsBuffers.empty())
+            {
+                for (rvar buffer : pass.m_gsBuffers)
+                {
+                    ID3D11Buffer* buffers[] = { buffer->m_buffer };
+                    context->GSSetConstantBuffers(buffer->m_index, 1u, buffers);
+                    ADD_APICALL();
+                }
+            }
+            else
+            {
+                // bind all buffers instead
+                for (rvar buffer : m_buffers) // TODO: apply all buffers in single API call
+                {
+                    ID3D11Buffer* buffers[] = { buffer.m_buffer };
+                    context->GSSetConstantBuffers(buffer.m_index, 1u, buffers);
+                    ADD_APICALL();
+                }
+            }
+        }
+        else // Reset if none
+            context->GSSetShader(nullptr, nullptr, 0);
 
         // apply shader changes
         if (m_dirty)
@@ -475,6 +511,17 @@ namespace Renderer
                 // set function name
                 pass.m_csName = passJson["CSFunction"].get<std::string>();
             }
+
+            // try to create geometry shader
+            var gsBC = passJson["GSByteCode"];
+            if (gsBC.is_string())
+            {
+                var byteCode = base64_decode(gsBC.get<std::string>());
+                DX_CALL(device->CreateGeometryShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_geometryShader));
+
+                // set function name
+                pass.m_gsName = passJson["GSFunction"].get<std::string>();
+            }
         }
 
         // Create constant buffers
@@ -579,6 +626,10 @@ namespace Renderer
                     // add CS function target
                     if (name == pass.m_csName)
                         pass.m_csBuffers.push_back(&buffer);
+
+                    // add GS function target
+                    if (name == pass.m_gsName)
+                        pass.m_gsBuffers.push_back(&buffer);
                 }
             }
         }
