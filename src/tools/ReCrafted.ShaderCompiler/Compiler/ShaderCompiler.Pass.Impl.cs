@@ -51,22 +51,6 @@ namespace ReCrafted.ShaderCompiler.Compiler
                                 pass.Profile = ParseSetProfile(functionName, arguments);
                                 break;
                             }
-                            case "SetDefaultCBTargets":
-                            {
-                                var targets = ParseSetDefaultCBTargets(functionName, arguments);
-                                
-                                // Add targets to the default buffer if exists
-                                if (Buffers.Count > 0 && (Buffers.First().Name == "DefaultConstants"))
-                                {
-                                    // Add all targets
-                                    Buffers[0].Targets.AddRange(targets);
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Warning: Function SetDefaultCBTargets is defined in pass " + passName.Value + " but there is no DefaultConstant buffer included! Ignoring the results.");
-                                }
-                                break;
-                            }
                             case "SetVertexShader":
                             {
                                 pass.VSFunction = ParseSetShader(functionName, arguments);
@@ -82,7 +66,42 @@ namespace ReCrafted.ShaderCompiler.Compiler
                                 pass.CSFunction = ParseSetShader(functionName, arguments);
                                 break;
                             }
+                            case "BindConstantBuffer":
+                            {
+                                var targets = ParseIdentifierList(functionName, arguments);
+                                if (targets.Length < 2)
+                                    throw new Exception("Invalid amount of arguments passed to function '" + functionName + "' at line " + _parser.CurrentLine + ".");
 
+                                var bufferName = targets.First();
+
+                                // Find buffer
+                                var buffer = Buffers.FirstOrDefault(x => x.Name == bufferName);
+
+                                if (buffer == null)
+                                    throw new Exception("Constant buffer '" + bufferName + "' not found. Line " + _parser.CurrentLine + ".");
+
+                                // Add all targets
+                                for (var i = 1; i < targets.Length; i++)
+                                    buffer.Targets.Add(targets[i]);
+
+                                break;
+                            }
+                            case "BindDefaultConstantBuffer":
+                            {
+                                var targets = ParseIdentifierList(functionName, arguments);
+
+                                // Add targets to the default buffer if exists
+                                if (Buffers.Count > 0 && (Buffers.First().Name == "DefaultConstants"))
+                                {
+                                    // Add all targets
+                                    Buffers[0].Targets.AddRange(targets);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Warning: Function SetDefaultCBTargets is defined in pass " + passName.Value + " but there is no DefaultConstant buffer included! Ignoring the results.");
+                                }
+                                break;
+                            }
                             default:
                                 throw new Exception("Invalid pass function '" + functionName + "' at line " + _parser.CurrentLine + ".");
                         }
@@ -122,7 +141,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
             return profile;
         }
 
-        private string[] ParseSetDefaultCBTargets(string functionName, IReadOnlyList<Token> arguments)
+        private string[] ParseIdentifierList(string functionName, IReadOnlyList<Token> arguments)
         {
             if (arguments.Count == 0)
                 throw new Exception("Invalid amount of arguments passing to the " + functionName + " at line " + _parser.CurrentLine + ".");
@@ -134,7 +153,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
             {
                 // validate profile type
                 if (argument.Type != TokenType.Identifier)
-                    throw new Exception("Invalid profile passed (" + argument + ") to the SetDefaultCBTargets function at line " + _parser.CurrentLine + ". Expected identifier.");
+                    throw new Exception("Invalid profile passed (" + argument + ") to the function at line " + _parser.CurrentLine + ". Expected identifier.");
 
                 targets.Add(argument.Value);
             }

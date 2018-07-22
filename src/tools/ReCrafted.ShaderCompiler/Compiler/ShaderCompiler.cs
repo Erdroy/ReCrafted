@@ -78,11 +78,9 @@ namespace ReCrafted.ShaderCompiler.Compiler
                 {
                     case TokenType.LeftBracket:
                     {
-                            // only our custom attributes use these brackets
-                            // start ignoring source code right there
-                        _parser.IgnoreSource(true);
-                        HandleAttribute();
-                        _parser.IgnoreSource(false);
+                        //_parser.IgnoreSource(true);
+                        //HandleAttribute();
+                        //_parser.IgnoreSource(false);
                         break;
                     }
 

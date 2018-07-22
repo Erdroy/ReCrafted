@@ -36,16 +36,16 @@ float4 CombinePSMain(in QuadPS i) : SV_Target0
 
     float3 surfaceNormal = DecodeNormal(gbuffer.Normal);
 
-    diffuseColor *= CalculateLightingSimple(surfaceNormal, LightDirection, ambientLightColor, directionalLightColor, 0.4f);
+    diffuseColor *= CalculateLightingSimple(surfaceNormal, LightDirection, ambientLightColor, directionalLightColor, 1.5f);
 
     return float4(diffuseColor, 1.0f);
 }
 
 pass Default
 {
-    SetProfile(5.0);
-    SetDefaultCBTargets(CombinePSMain);
+    BindDefaultConstantBuffer(CombinePSMain);
 
+    SetProfile(5.0);
     SetVertexShader(QuadVSMain);
     SetPixelShader(CombinePSMain);
 }

@@ -9,8 +9,9 @@
 
 pass Default
 {
+    BindDefaultConstantBuffer(SurfaceVSMain, SurfacePSMain);
+   
     SetProfile(5.0);
-    SetDefaultCBTargets(CombinePSMain);
 
     SetVertexShader(SurfaceVSMain);
     SetPixelShader(SurfacePSMain);
