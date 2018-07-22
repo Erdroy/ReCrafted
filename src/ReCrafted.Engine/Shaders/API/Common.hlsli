@@ -7,7 +7,7 @@
 // ==== Macros ====
 
 #define EncodeNormal(n) normalize(n) * 0.5f + 0.5f
-#define DecodeNormal(n) n * 2.0f + 1.0f
+#define DecodeNormal(n) normalize(n * 2.0f - 1.0f)
 
 #define TransformPosition(pos) mul(ViewProjection, float4(pos, 1.0f)) // TODO: Use ModelViewProjection when possible
 
