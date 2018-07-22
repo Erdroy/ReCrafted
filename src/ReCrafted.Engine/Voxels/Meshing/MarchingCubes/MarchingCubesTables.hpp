@@ -7,30 +7,6 @@
 
 #include "Core/Math/Vector3.h"
 
-int MCCornerDeltasInt[8][3] =
-{
-    {0, 0, 0}, // 0
-    {1, 0, 0}, // 1
-    {1, 1, 0}, // 2
-    {0, 1, 0}, // 3
-    {0, 0, 1}, // 4
-    {1, 0, 1}, // 5
-    {1, 1, 1}, // 6
-    {0, 1, 1} // 7
-};
-
-Vector3 MCCornerDeltas[8] =
-{
-    Vector3(0.0f, 0.0f, 0.0f),
-    Vector3(1.0f, 0.0f, 0.0f),
-    Vector3(1.0f, 1.0f, 0.0f),
-    Vector3(0.0f, 1.0f, 0.0f),
-    Vector3(0.0f, 0.0f, 1.0f),
-    Vector3(1.0f, 0.0f, 1.0f),
-    Vector3(1.0f, 1.0f, 1.0f),
-    Vector3(0.0f, 1.0f, 1.0f)
-};
-
 Vector3 MCEdgeOffsets[12][2] = {
     {Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f)},
     {Vector3(1.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f)},

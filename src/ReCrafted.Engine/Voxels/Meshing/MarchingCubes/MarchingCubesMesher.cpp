@@ -1,13 +1,13 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
-#include "MCMesher.h"
-#include "MCTables.hpp"
-#include "MSTables.hpp"
+#include "MarchingCubesMesher.h"
+#include "MarchingCubesTables.hpp"
+#include "MarchingSquaresTables.hpp"
 
-#include "Core/Math/Math.h"
 #include "Core/Math/Plane.h"
 #include "Graphics/Mesh.h"
 
+#include "../CommonTables.hpp"
 #include "../MeshingHelpers.h"
 #include "../../Utilities/VoxelUtils.h"
 
@@ -31,35 +31,25 @@ for (auto c = VoxelChunkData::ChunkDataStart; c < VoxelChunkData::ChunkSize; c++
 const int ISO_LEVEL = 0;
 const float S = 1.0f / 256.0f;
 
-inline float GetVoxel(sbyte* data, const Vector3& point)
-{
-    return VOXEL_TO_FLOAT(VoxelChunkData::GetVoxel(data, int(point.x), int(point.y), int(point.z)));
-}
-
-inline float GetVoxel(sbyte* data, int x, int y, int z)
-{
-    return VOXEL_TO_FLOAT(VoxelChunkData::GetVoxel(data, x, y, z));
-}
-
 inline Vector3 GetEdge(Vector3 offset, sbyte* data, Vector3 cornerA, Vector3 cornerB)
 {
     var offsetA = offset + cornerA;
     var offsetB = offset + cornerB;
 
     // get data
-    cvar sampleA = GetVoxel(data, offsetA);
-    cvar sampleB = GetVoxel(data, offsetB);
+    cvar sampleA = VOXEL_TO_FLOAT(GetVoxel(data, offsetA));
+    cvar sampleB = VOXEL_TO_FLOAT(GetVoxel(data, offsetB));
 
     return GetIntersection(offsetA, offsetB, sampleA, sampleB);
 }
 
-void MCMesher::GenerateCell(Cell* cell, int x, int y, int z, sbyte* data) const
+void MCMesher::GenerateCell(Cell* cell, const Int3& offset, sbyte* data) const
 {
     byte caseIndex = 0;
 
     for (auto i = 0; i < 8; i++) // TODO: unroll
     {
-        if (GetVoxel(data, x + MCCornerDeltasInt[i][0], y + MCCornerDeltasInt[i][1], z + MCCornerDeltasInt[i][2]) > ISO_LEVEL)
+        if (GetVoxel(data, offset + CellCorner[i]) > ISO_LEVEL)
             caseIndex |= 1 << i;
     }
 
@@ -82,14 +72,7 @@ void MCMesher::GenerateCube(Cell* cell, const Vector3& position, const Vector3& 
         if (edge == -1)
             break;
 
-        var offsetA = offset + MCEdgeOffsets[edge][0];
-        var offsetB = offset + MCEdgeOffsets[edge][1];
-
-        // get data
-        cvar sampleA = GetVoxel(data, offsetA);
-        cvar sampleB = GetVoxel(data, offsetB);
-
-        cvar vertexPosition = position + GetIntersection(offsetA, offsetB, sampleA, sampleB) * lod;
+        cvar vertexPosition = position + GetEdge(offset, data, MCEdgeOffsets[edge][0], MCEdgeOffsets[edge][1]) * lod;
 
         // TODO: materials support
         // TODO: vertex cache (with vertex color per material support)
@@ -184,11 +167,12 @@ void MCMesher::GenerateCells(sbyte* data, const Vector3& position, float lod, ui
         if (x < 0 || y < 0 || z < 0)
             continue; // Ignore normal correction (we don't have vertex reuse here)
 
-        const var offset = Vector3(float(x), float(y), float(z));
-        const var cell = &GET_CELL(x, y, z);
+        cvar offset = Vector3(float(x), float(y), float(z));
+        cvar offsetInt3 = Int3(x, y, z);
+        cvar cell = &GET_CELL(x, y, z);
 
         // generate cell data
-        GenerateCell(cell, x, y, z, data);
+        GenerateCell(cell, offsetInt3, data);
 
         // generate cube mesh
         if (!cell->isFullOrEmpty)

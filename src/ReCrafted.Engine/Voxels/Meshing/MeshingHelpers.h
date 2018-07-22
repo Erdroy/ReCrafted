@@ -19,4 +19,19 @@ inline Vector3 GetIntersection(Vector3& positionA, Vector3& positionB, const flo
     return positionA + (positionB - positionA) * -densityA  / (densityB - densityA);
 }
 
+inline sbyte GetVoxel(sbyte* data, const Vector3& point)
+{
+    return (VoxelChunkData::GetVoxel(data, int(point.x), int(point.y), int(point.z)));
+}
+
+inline sbyte GetVoxel(sbyte* data, const Int3& point)
+{
+    return (VoxelChunkData::GetVoxel(data, point.x, point.y, point.z));
+}
+
+inline sbyte GetVoxel(sbyte* data, int x, int y, int z)
+{
+    return (VoxelChunkData::GetVoxel(data, x, y, z));
+}
+
 #endif // MESHINGHELPERS_H

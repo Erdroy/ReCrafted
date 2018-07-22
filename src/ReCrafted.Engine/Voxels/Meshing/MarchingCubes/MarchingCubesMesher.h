@@ -9,9 +9,7 @@
 #include "../IVoxelMesher.h"
 #include "Core/Containers/Array.h"
 #include "Voxels/Storage/VoxelChunkData.h"
-#include "Core/Math/Vector2.h"
-#include "Core/Math/Vector3.h"
-#include "Core/Math/Vector4.h"
+#include "Core/Math/Math.h"
 
 #define BORDER_FRONT	0x01
 #define BORDER_BACK		0x02
@@ -56,10 +54,9 @@ public:
     }
 
 private:
-    FORCEINLINE void GenerateCell(Cell* cell, int x, int y, int z, sbyte* data) const;
+    FORCEINLINE void GenerateCell(Cell* cell, const Int3& offset, sbyte* data) const;
     FORCEINLINE void GenerateCube(Cell* cell, const Vector3& position, const Vector3& offset, float lod, sbyte* data);
-    FORCEINLINE void GenerateSkirt(Cell* cell, const Vector3& position, const Vector3& offset, float lod, uint8_t axis,
-                       sbyte* data);
+    FORCEINLINE void GenerateSkirt(Cell* cell, const Vector3& position, const Vector3& offset, float lod, uint8_t axis, sbyte* data);
 
     FORCEINLINE void GenerateCells(sbyte* data, const Vector3& position, float lod, uint8_t borders);
 

@@ -26,6 +26,76 @@ public:
     Int3(const int x, const int y, const int z) : x(x), y(y), z(z) { }
 
 public:
+
+    void operator -=(const Int3& r)
+    {
+        x -= r.x;
+        y -= r.y;
+        z -= r.z;
+    }
+
+    void operator +=(const Int3& r)
+    {
+        x += r.x;
+        y += r.y;
+        z += r.z;
+    }
+
+    void operator *=(const int value)
+    {
+        x *= value;
+        y *= value;
+        z *= value;
+    }
+
+    void operator /=(const int value)
+    {
+        x /= value;
+        y /= value;
+        z /= value;
+    }
+
+    /// <summary>
+    /// Result = Vector - Vector[r] operator
+    /// </summary>
+    Int3 operator -(const Int3& r) const
+    {
+        return Int3(x - r.x, y - r.y, z - r.z);
+    }
+
+    /// <summary>
+    /// Result = Vector + Vector[r] operator
+    /// </summary>
+    Int3 operator +(const Int3& r) const
+    {
+        return Int3(x + r.x, y + r.y, z + r.z);
+    }
+
+    /// <summary>
+    /// Result = Vector * Vector[r] operator
+    /// </summary>
+    Int3 operator *(const Int3& r) const
+    {
+        return Int3(x * r.x, y * r.y, z * r.z);
+    }
+
+    /// <summary>
+    /// Result = Vector * int operator
+    /// </summary>
+    Int3 operator *(const int r) const
+    {
+        return Int3(x * r, y * r, z * r);
+    }
+
+    /// <summary>
+    /// Result = Vector / int operator
+    /// </summary>
+    Int3 operator /(const int r) const
+    {
+        return Int3(x / r, y / r, z / r);
+    }
+
+public:
     /**
      * \brief X component.
      */
