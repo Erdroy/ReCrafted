@@ -8,13 +8,15 @@
 // includes
 #include "ReCrafted.h"
 #include "Core/Math/Vector3.h"
+#include "Core/Math/Color.h"
 
 byte LocalNeighTable[];
 byte NeighDirTable[][3];
-byte DirIndex[];
 byte NodeDirIds[];
 Vector3 DirectionOffset[];
 Vector3 ChildrenNodeOffsets[];
+
+Color NodeLoDDebugColors[];
 
 int LoDTable[];
 
