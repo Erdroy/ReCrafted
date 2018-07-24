@@ -43,6 +43,9 @@ void Rendering::RenderGeometry()
         renderable->Render(RenderableRenderMode::RenderGeometry);
     }
 
+    // Cleanup
+    m_lastShader = nullptr;
+
     Profiler::EndProfile();
 }
 

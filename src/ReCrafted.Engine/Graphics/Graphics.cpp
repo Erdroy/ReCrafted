@@ -351,10 +351,7 @@ void Graphics::Draw(RefPtr<Mesh>& mesh, RefPtr<Shader>& shader)
         return;
 
     if(shader != m_currentShader)
-    {
         SetShader(shader);
-        UpdateDefaultConstants(Camera::GetMainCamera()->GetViewProjection());
-    }
 
     Draw(mesh);
 }
@@ -371,11 +368,9 @@ void Graphics::Draw(RefPtr<Mesh>& mesh)
 
 void Graphics::SetShader(RefPtr<Shader>& shader)
 {
-    if (m_currentShader != shader)
-    {
-        Renderer::ApplyShader(shader->m_shaderHandle, 0);
-        m_currentShader = shader;
-    }
+    m_currentShader = shader;
+    Renderer::ApplyShader(shader->m_shaderHandle, 0);
+    UpdateDefaultConstants(Camera::GetMainCamera()->GetViewProjection());
 }
 
 void Graphics::SetStage(RenderStage::_enum stage)
