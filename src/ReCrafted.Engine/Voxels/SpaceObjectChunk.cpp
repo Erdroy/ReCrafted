@@ -25,10 +25,13 @@ void SpaceObjectChunk::Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObjec
 {
     this->spaceObject = spaceObject;
 
+    // Set owner
+    owner = node;
+
     var storage = spaceObject->GetStorage();
 
     // create chunk data
-    var nodePosition = node->GetPosition();
+    cvar nodePosition = node->GetPosition();
     m_chunkData = storage->CreateChunkData(nodePosition, node->GetSize(), node->GetDepth());
 
     // Reset cache
@@ -42,7 +45,7 @@ void SpaceObjectChunk::Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObjec
     m_lod = int(node->GetSize() / float(SpaceObjectOctreeNode::MinimumNodeSize));
 
     // calculate id
-    m_id = CalculateChunkId(node->GetPosition());
+    m_id = CalculateChunkId(nodePosition);
 }
 
 void SpaceObjectChunk::Generate(IVoxelMesher* mesher) // WARNING: this function is called on WORKER THREAD!

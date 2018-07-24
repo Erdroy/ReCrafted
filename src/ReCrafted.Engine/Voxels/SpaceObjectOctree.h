@@ -39,8 +39,9 @@ public:
     void GeneratePrimary();
 
 public:
-    SpaceObjectOctreeNode* FindNode(Vector3 position, int size) const;
-    Array<SpaceObjectOctreeNode*> FindIntersecting(BoundingBox& box, bool leafOnly) const;
+    SpaceObjectOctreeNode* FindNode(const Vector3& position, int size) const;
+    SpaceObjectOctreeNode* FindNode(const Vector3& position) const;
+    Array<SpaceObjectOctreeNode*> FindIntersecting(const BoundingBox& box, bool leafOnly) const;
 
 public:
 PROPERTY(int, MaxDepth) = 0;

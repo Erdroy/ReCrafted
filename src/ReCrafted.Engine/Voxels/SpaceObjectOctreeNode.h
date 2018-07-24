@@ -48,6 +48,8 @@ private:
     SpaceObjectOctreeNode* parent = nullptr;
     SpaceObjectOctreeNode* root = nullptr;
 
+    int m_id = 0;
+
     SpaceObjectOctreeNode* m_childrenNodes[8] = {};
     RefPtr<SpaceObjectChunk> m_chunk = nullptr;
 
@@ -60,7 +62,8 @@ private:
     bool HasPopulatedChildren();
     bool IsProcessing() const;
 
-    void CreateChunk(IVoxelMesher* mesher);
+    void CreateChunk();
+    void GenerateChunk(IVoxelMesher* mesher);
 
     void WorkerPopulate(IVoxelMesher* mesher);
     void WorkerDepopulate(IVoxelMesher* mesher);
@@ -75,9 +78,10 @@ private:
     void OnPopulate();
     void OnDepopulate();
 
-    void FindIntersecting(Array<SpaceObjectOctreeNode*>& nodes, BoundingBox& box, const int targetNodeSize = 16);
-    SpaceObjectOctreeNode* GetNeighNode(NodeDirection::_enum direction) const;
-    SpaceObjectOctreeNode* FindNode(Vector3 position, int size);
+    void FindIntersecting(Array<SpaceObjectOctreeNode*>& nodes, const BoundingBox& box, int targetNodeSize = 16);
+    SpaceObjectOctreeNode* FindNeighNode(NodeDirection::_enum direction) const;
+    SpaceObjectOctreeNode* FindNode(const Vector3& position, int size);
+    SpaceObjectOctreeNode* FindNode(const Vector3& position);
 
 public:
     void UpdateViews(Array<Vector3>& views);
@@ -101,8 +105,8 @@ public:
 public:
 PROPERTY(int, Size) = 0;
 PROPERTY(int, Depth) = 0;
-PROPERTY(Vector3, Position) = {}; // NOTE: center position
-PROPERTY(BoundingBox, Bounds) = {};
+PROPERTY_REF(Vector3, Position) = {}; // NOTE: center position
+PROPERTY_REF(BoundingBox, Bounds) = {};
 };
 
 #endif // SPACEOBJECTOCTREENODE_H

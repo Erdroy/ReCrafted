@@ -29,7 +29,8 @@ inline Vector3 GetIntersection(const Vector3& positionA, const Vector3& position
 */
 inline Vector3 GetIntersection(const Int3& positionA, const Int3& positionB, const float densityA, const float densityB)
 {
-    return GetIntersection(Vector3(positionA.x, positionA.y, positionA.z), Vector3(positionB.x, positionB.y, positionB.z), densityA, densityB);
+    return GetIntersection(Vector3(float(positionA.x), float(positionA.y), float(positionA.z)),
+        Vector3(float(positionB.x), float(positionB.y), float(positionB.z)), densityA, densityB);
 }
 
 inline sbyte GetVoxel(sbyte* data, const Vector3& point)

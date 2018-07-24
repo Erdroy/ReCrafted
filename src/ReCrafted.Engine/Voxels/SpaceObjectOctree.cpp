@@ -127,20 +127,33 @@ void SpaceObjectOctree::Dispose()
     delete [] m_rootNodes;
 }
 
-SpaceObjectOctreeNode* SpaceObjectOctree::FindNode(Vector3 position, int size) const
+SpaceObjectOctreeNode* SpaceObjectOctree::FindNode(const Vector3& position, int size) const
 {
     for (var i = 0; i < m_rootNodesCount; i++)
     {
         cvar node = m_rootNodes[i]->FindNode(position, size);
 
-        if (node)
+        if (node && BoundingBox::Contains(node->GetBounds(), position))
             return node;
     }
 
     return nullptr;
 }
 
-Array<SpaceObjectOctreeNode*> SpaceObjectOctree::FindIntersecting(BoundingBox& box, bool leafOnly) const
+SpaceObjectOctreeNode* SpaceObjectOctree::FindNode(const Vector3& position) const
+{
+    for (var i = 0; i < m_rootNodesCount; i++)
+    {
+        cvar node = m_rootNodes[i]->FindNode(position);
+
+        if (node && BoundingBox::Contains(node->GetBounds(), position))
+            return node;
+    }
+
+    return nullptr;
+}
+
+Array<SpaceObjectOctreeNode*> SpaceObjectOctree::FindIntersecting(const BoundingBox& box, bool leafOnly) const
 {
     Array<SpaceObjectOctreeNode*> intersecting = {};
 

@@ -94,7 +94,7 @@ void VoxelStorage::Dispose()
     SafeDelete(m_vxh);
 }
 
-RefPtr<VoxelChunkData> VoxelStorage::CreateChunkData(Vector3& nodePosition, const int nodeSize, const int nodeDepth)
+RefPtr<VoxelChunkData> VoxelStorage::CreateChunkData(const Vector3& nodePosition, const int nodeSize, const int nodeDepth)
 {
     cvar chunkId = SpaceObjectChunk::CalculateChunkId(nodePosition);
     
@@ -116,7 +116,7 @@ RefPtr<VoxelChunkData> VoxelStorage::CreateChunkData(Vector3& nodePosition, cons
     return chunk;
 }
 
-RefPtr<VoxelChunkData> VoxelStorage::GetChunkData(Vector3& nodePosition)
+RefPtr<VoxelChunkData> VoxelStorage::GetChunkData(const Vector3& nodePosition)
 {
     cvar chunkId = SpaceObjectChunk::CalculateChunkId(nodePosition);
     return m_chunkCache->TryGetChunk(chunkId);

@@ -67,7 +67,6 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, sbyte* dat
         cvar indexId = CalculateEdgeVertexId(voxelOffset, edgeCode >> 8);
 
         DEBUG_ASSERT(indexId >= 0);
-        DEBUG_ASSERT(indexId < m_vertexReuse.Size());
 
         if (m_vertexReuse[indexId] == -1)
         {

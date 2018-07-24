@@ -77,7 +77,7 @@ void SpaceObject::Modify(VoxelEditMode::_enum mode, Vector3& position, float siz
     bbSize.y = ceilf(bbSize.y);
     bbSize.z = ceilf(bbSize.z);
 
-    var boundingBox = BoundingBox(position, bbSize);
+    cvar boundingBox = BoundingBox(position, bbSize);
     var nodes = m_octree->FindIntersecting(boundingBox, false); // NOTE: this will give us all type of LoD levels
 
     for (var&& node : nodes)

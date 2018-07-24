@@ -45,13 +45,18 @@ bool SpaceObjectOctreeNode::IsProcessing() const
     return false;
 }
 
-void SpaceObjectOctreeNode::CreateChunk(IVoxelMesher* mesher)
+void SpaceObjectOctreeNode::CreateChunk()
 {
     ASSERT(m_chunk == nullptr);
 
     // create chunk
     m_chunk.reset(new SpaceObjectChunk());
     m_chunk->Init(this, owner->spaceObject);
+}
+
+void SpaceObjectOctreeNode::GenerateChunk(IVoxelMesher* mesher)
+{
+    // Update neighbors
     m_chunk->Generate(mesher);
 }
 
@@ -59,13 +64,16 @@ void SpaceObjectOctreeNode::WorkerPopulate(IVoxelMesher* mesher) // WARNING: thi
 {
     cvar childrenSize = m_Size / 2;
     var boundsSize = Vector3::One() * static_cast<float>(childrenSize);
-    for (auto i = 0; i < 8; i++)
+
+    // Create children nodes
+    for (var i = 0; i < 8; i++)
     {
         auto position = m_Position + ChildrenNodeOffsets[i] * static_cast<float>(childrenSize);
 
         // construct node
         cvar childNode = new SpaceObjectOctreeNode();
         
+        childNode->m_id = i;
         childNode->m_Position = position;
         childNode->m_Size = childrenSize;
         childNode->m_Bounds = BoundingBox(position, boundsSize);
@@ -78,8 +86,7 @@ void SpaceObjectOctreeNode::WorkerPopulate(IVoxelMesher* mesher) // WARNING: thi
         // set node depth
         childNode->SetDepth(GetDepth() + 1);
 
-        // generate chunk
-        childNode->CreateChunk(mesher);
+        // Create node's chunk
 
         m_childrenNodes[i] = childNode;
     }
@@ -413,48 +420,59 @@ bool SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position,
     return modified;
 }
 
-SpaceObjectOctreeNode* SpaceObjectOctreeNode::GetNeighNode(NodeDirection::_enum direction) const
+SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNeighNode(NodeDirection::_enum direction) const
 {
     // calculate target position
-    var targetPosition = m_Position + DirectionOffset[direction] * float(m_Size);
-    var targetLod = m_Size;
-
-    // traverse from root to the same target lod as this node
     for (var i = 0; i < owner->m_rootNodesCount; i++)
-    {
-        var node = owner->m_rootNodes[i]->FindNode(targetPosition, targetLod);;
+    cvar targetPosition = m_Position + DirectionOffset[direction] * float(m_Size);
 
-        if (node)
-            return node;
     }
 
-    return nullptr;
+    return owner->FindNode(targetPosition, m_Size);
 }
 
 SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNode(Vector3 position, int size)
+SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNode(const Vector3& position, int size)
 {
     if (m_Size == size)
     {
         // do not search anymore, because we found the exact node!
+        // Do not search anymore, because we found the exact node!
         return this;
     }
 
-    if (!m_populated)
-    {
-        // uhh, this is lower-lod node, client will not be happy with this, or will be?
-        return this;
-    }
-
-    // NOTE: we don't have to check 'equality' of position because 'size' does this
-    var xSign = position.x > m_Position.x;
-    var ySign = position.y > m_Position.y;
-    var zSign = position.z > m_Position.z;
+    cvar xSign = position.x > m_Position.x;
+    cvar ySign = position.y > m_Position.y;
+    cvar zSign = position.z > m_Position.z;
 
     var caseCode = (zSign ? 1 : 0) | (ySign ? 1 : 0) << 1 | (xSign ? 1 : 0) << 2;
     var childId = NodeDirIds[caseCode];
+    cvar childId = NodeDirIds[caseCode];
 
     var node = m_childrenNodes[childId];
 
-    // go further
+    if (!node)
+        return nullptr;
+
+
+    // Go further
     return node->FindNode(position, size);
 }
+
+SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNode(const Vector3& position)
+{
+    if (m_Position.x == position.x && m_Position.y == position.y && m_Position.z == position.z)
+        return this;
+
+    if (!m_populated)
+        return nullptr;
+
+    for(var node : m_childrenNodes)
+    {
+        if(node)
+        {
+            cvar foundNode = node->FindNode(position);
+
+            if (foundNode)
+                return foundNode;
+        }

@@ -32,6 +32,7 @@ private:
 
 private:
     SpaceObject* spaceObject = nullptr;
+    SpaceObjectOctreeNode* owner = nullptr;
 
     int m_lod = 0;
     uint64_t m_id = 0u;
@@ -65,6 +66,11 @@ public:
     RefPtr<VoxelChunkData> GetChunkData() const
     {
         return m_chunkData;
+    }
+
+    bool HasMesh() const
+    {
+        return m_mesh != nullptr;
     }
 
 public:
