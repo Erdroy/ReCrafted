@@ -49,7 +49,8 @@ public:
 
     FORCEINLINE bool Remove(T item)
     {
-        ASSERT(m_count > 0u);
+        if (m_count == 0u)
+            return true;
 
         auto index = std::find(m_vector.begin(), m_vector.end(), item);
 

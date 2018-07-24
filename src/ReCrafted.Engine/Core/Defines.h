@@ -31,6 +31,14 @@
 
 #define MISSING_CODE(msg) Platform::ReportAssert(TEXT_CONST("MISSING_CODE()"), Text(__FILE__), (unsigned)(__LINE__), Text(msg))
 
+#define DEFINE_ENUM(name) \
+inline constexpr name operator|( name a, name b) {\
+	return a = static_cast< name> ((int)a | (int)b);\
+}\
+inline constexpr name operator&( name a, name b) {\
+	return a = static_cast< name> ((int)a & (int)b);\
+}
+
 #define PROPERTY(type, name)	\
 	public: __inline type Get##name##() {		\
 		return m_##name ;		\

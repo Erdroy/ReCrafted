@@ -27,7 +27,7 @@ public:
     /// </summary>
     /// <param name="center">The center of the BoundingBox.</param>
     /// <param name="size">The size of the BoundingBox.</param>
-    explicit BoundingBox(Vector3& center, Vector3& size)
+    explicit BoundingBox(const Vector3& center, const Vector3& size)
     {
         this->center = center;
         this->size = size;
@@ -101,7 +101,7 @@ public:
     /// <summary>
     /// Check if two BoundingBoxes intersect each other
     /// </summary>
-    FORCEINLINE static bool Intersects(BoundingBox& a, BoundingBox& b)
+    FORCEINLINE static bool Intersects(const BoundingBox& a, const BoundingBox& b)
     {
         cvar amin = a.Minimum();
         cvar bmin = b.Minimum();
@@ -123,7 +123,7 @@ public:
     /// <summary>
     /// Check if two BoundingBoxes intersect each other
     /// </summary>
-    FORCEINLINE static void Intersects(BoundingBox& a, BoundingBox& b, bool* result)
+    FORCEINLINE static void Intersects(const BoundingBox& a, const BoundingBox& b, bool* result)
     {
         *result = Intersects(a, b);
     }
@@ -131,7 +131,7 @@ public:
     /// <summary>
     /// Check if point is within a BoundingBox
     /// </summary>
-    FORCEINLINE static bool Contains(BoundingBox& box, Vector3& point)
+    FORCEINLINE static bool Contains(const BoundingBox& box, const Vector3& point)
     {
         return point.x > box.Left() && point.x < box.Right() && point.y > box.Bottom() && point.y < box.Top() && point.z
             > box.Back() && point.z < box.Front();
@@ -140,7 +140,7 @@ public:
     /// <summary>
     /// Check if point is within a BoundingBox
     /// </summary>
-    FORCEINLINE static void Contains(BoundingBox& box, Vector3& point, bool* result)
+    FORCEINLINE static void Contains(const BoundingBox& box, const Vector3& point, bool* result)
     {
         *result = Contains(box, point);
     }

@@ -14,7 +14,7 @@
 struct BoundingFrustum
 {
 private:
-    static void GetBoxToPlanePVertexNVertex(BoundingBox& box, Vector3& planeNormal, Vector3* p, Vector3* n)
+    static void GetBoxToPlanePVertexNVertex(const BoundingBox& box, const Vector3& planeNormal, Vector3* p, Vector3* n)
     {
         cvar bmin = box.Minimum();
         cvar bmax = box.Maximum();
@@ -81,7 +81,7 @@ public:
     /// </summary>
     /// <param name="box">The bounding box.</param>
     /// <returns>The result, true when contains.</returns>
-    bool Contains(BoundingBox& box)
+    bool Contains(const BoundingBox& box)
     {
         Vector3 p;
         Vector3 n;
@@ -92,17 +92,17 @@ public:
 
             GetBoxToPlanePVertexNVertex(box, plane.normal, &p, &n);
 
-            if (Plane::PlaneIntersectsPoint(plane, p) == Back)
+            if (Plane::PlaneIntersectsPoint(plane, p) == PlaneIntersection::Back)
                 return false;
 
-            if (Plane::PlaneIntersectsPoint(plane, n) == Back)
+            if (Plane::PlaneIntersectsPoint(plane, n) == PlaneIntersection::Back)
                 return true;
         }
 
         return true;
     }
 
-    bool ContainsSphere(Vector3& position, const float radius)
+    bool ContainsSphere(const Vector3& position, const float radius)
     {
         for (var i = 0; i < 6; i++)
         {
