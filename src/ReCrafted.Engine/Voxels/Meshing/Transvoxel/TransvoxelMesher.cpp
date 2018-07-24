@@ -32,12 +32,21 @@ inline int CalculateEdgeVertexId(const Int3& pos, int edgeCode)
 
 void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, sbyte* data, const float voxelScale, const Int3& voxelOffset, const bool normalCorrection)
 {
-    byte caseCode = 0;
-    for (var i = 0; i < 8; i++) // TODO: unroll
+    sbyte corner[8];
+    for(var i = 0; i < 8; i ++)
     {
-        if (GetVoxel(data, voxelOffset + CellCorner[i]) > 0)
-            caseCode |= 1 << i;
+        corner[i] = GetVoxel(data, voxelOffset + CellCorner[i]);
     }
+
+    const byte caseCode =
+          (-corner[0] >> 7 & 0x01)
+        | (-corner[1] >> 6 & 0x02)
+        | (-corner[2] >> 5 & 0x04)
+        | (-corner[3] >> 4 & 0x08)
+        | (-corner[4] >> 3 & 0x10)
+        | (-corner[5] >> 2 & 0x20)
+        | (-corner[6] >> 1 & 0x40)
+        | (-corner[7] & 0x80);
 
     if (caseCode == 0 || caseCode == 255)
         return;
@@ -65,13 +74,7 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, sbyte* dat
             cvar cornerPos0 = voxelOffset + CellCorner[v0];
             cvar cornerPos1 = voxelOffset + CellCorner[v1];
 
-            var cornerPos0Float = Vector3(float(cornerPos0.x), float(cornerPos0.y), float(cornerPos0.z));
-            var cornerPos1Float = Vector3(float(cornerPos1.x), float(cornerPos1.y), float(cornerPos1.z));
-
-            cvar cornerSample0 = GetVoxel(data, cornerPos0);
-            cvar cornerSample1 = GetVoxel(data, cornerPos1);
-
-            cvar intersectionPosition = GetIntersection(cornerPos0Float, cornerPos1Float, cornerSample0, cornerSample1) * voxelScale;
+            cvar intersectionPosition = GetIntersection(cornerPos0, cornerPos1, corner[v0], corner[v1]) * voxelScale;
             cvar vertexPosition = position + intersectionPosition;
 
             m_vertices.Add(vertexPosition); // TODO: Optimize vertex count -> caused by normalCorrection

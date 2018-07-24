@@ -14,9 +14,22 @@
 * \param densityB The second point value.
 * \return The intersection of the given points.
 */
-inline Vector3 GetIntersection(Vector3& positionA, Vector3& positionB, const float densityA, const float densityB)
+inline Vector3 GetIntersection(const Vector3& positionA, const Vector3& positionB, const float densityA, const float densityB)
 {
     return positionA + (positionB - positionA) * -densityA  / (densityB - densityA);
+}
+
+/**
+* \brief Calculates surface intersection on edge based on two data samples.
+* \param positionA The first point.
+* \param positionB The second point.
+* \param densityA The first point value.
+* \param densityB The second point value.
+* \return The intersection of the given points.
+*/
+inline Vector3 GetIntersection(const Int3& positionA, const Int3& positionB, const float densityA, const float densityB)
+{
+    return GetIntersection(Vector3(positionA.x, positionA.y, positionA.z), Vector3(positionB.x, positionB.y, positionB.z), densityA, densityB);
 }
 
 inline sbyte GetVoxel(sbyte* data, const Vector3& point)
