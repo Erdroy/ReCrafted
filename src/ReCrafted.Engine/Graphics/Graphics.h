@@ -13,6 +13,7 @@
 #include "Graphics/Mesh.h"
 #include "Graphics/RenderStage.h"
 #include "Graphics/Renderer/Renderer.hpp"
+#include "Rendering/Rendering.h"
 
 /**
  * \brief Graphics class.
@@ -26,6 +27,8 @@ SCRIPTING_API_IMPL()
 
 private:
     bool m_wireframe = false;
+
+    RefPtr<Rendering> m_rendering = nullptr;
 
     RefPtr<Shader> m_currentShader = nullptr;
 
@@ -62,17 +65,23 @@ private:
 private:
     void RenderBegin();
     void RenderEnd();
-    void RenderWorld();
+
     void RenderDebugDraw();
     void RenderUI();
 
 public:
     /**
-     * \brief Draws given mesh using current shader, view and matrix.
+     * \brief Draws given mesh using given shader.
      * \param mesh The mesh class pointer.
      * \param shader The shader which will be used to draw this mesh.
      */
     void Draw(RefPtr<Mesh>& mesh, RefPtr<Shader>& shader);
+
+    /**
+    * \brief Draws given mesh using current shader.
+    * \param mesh The mesh class pointer.
+    */
+    void Draw(RefPtr<Mesh>& mesh);
 
     /**
      * \brief Sets given shader as current.

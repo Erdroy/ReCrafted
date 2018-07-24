@@ -31,7 +31,6 @@ private:
     void Update() override;
 
     void Simulate();
-    void Render();
 };
 
 #endif // UNIVERSE_H

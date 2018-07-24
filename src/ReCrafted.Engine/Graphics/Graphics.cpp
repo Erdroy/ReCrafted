@@ -58,6 +58,10 @@ void Graphics::InitializeRenderer()
     m_window = Renderer::CreateWindowHandle(Platform::GetCurrentWindow());
     m_frameBuffer = Renderer::GetWindowRenderBuffer(m_window);
 
+    // Initialize rendering
+    m_rendering.reset(new Rendering());
+    m_rendering->Initialize();
+
     // Set renderer callbacks
     Renderer::AddOnPresentCallback(Action<void>::New<Graphics, &Graphics::OnFramePresent>(this));
 
@@ -120,12 +124,15 @@ void Graphics::OnDispose()
 {
     Logger::LogInfo("Unloading rendering pipeline");
 
-    m_gbuffer->Dispose();
+    // Dispose rendering
+    SafeDispose(m_rendering);
+
+    SafeDispose(m_gbuffer);
     Logger::LogInfo("Unloaded render buffers");
 
     // Dispose shaders
-    m_gbufferFillShader->Dispose();
-    m_gbufferCombine->Dispose();
+    SafeDispose(m_gbufferFillShader);
+    SafeDispose(m_gbufferCombine);
     Logger::LogInfo("Unloaded render shaders");
 
     // check resource leaks
@@ -161,15 +168,21 @@ void Graphics::Render()
         // begin rendering
         RenderBegin();
         {
-            // render world
-            RenderWorld();
+            // Render geometry
+            m_rendering->RenderGeometry();
+
+            // Render shadows
+            m_rendering->RenderShadows();
         }
         RenderEnd(); // end rendering
 
-        // render debug draw
+        // Render post processing
+        m_rendering->RenderPostProcessing();
+
+        // Render debug draw
         RenderDebugDraw();
 
-        // render UI
+        // Render UI
         RenderUI();
 
         Profiler::BeginProfile("Renderer::Frame");
@@ -281,16 +294,6 @@ void Graphics::RenderEnd()
     m_currentShader = nullptr;
 }
 
-void Graphics::RenderWorld()
-{
-    Profiler::BeginProfile("Render World");
-    {
-        // render universe
-        Universe::GetInstance()->Render();
-    }
-    Profiler::EndProfile();
-}
-
 void Graphics::RenderDebugDraw()
 {
     Profiler::BeginProfile("Render Debug");
@@ -352,6 +355,13 @@ void Graphics::Draw(RefPtr<Mesh>& mesh, RefPtr<Shader>& shader)
         SetShader(shader);
         UpdateDefaultConstants(Camera::GetMainCamera()->GetViewProjection());
     }
+
+    Draw(mesh);
+}
+
+void Graphics::Draw(RefPtr<Mesh>& mesh)
+{
+    ASSERT(m_currentShader);
 
     Renderer::ApplyVertexBuffer(mesh->m_vertexBuffer);
     Renderer::ApplyIndexBuffer(mesh->m_indexBuffer);

@@ -94,8 +94,3 @@ void Universe::Update()
 void Universe::Simulate()
 {
 }
-
-void Universe::Render()
-{
-    m_testObject1->Draw();
-}
