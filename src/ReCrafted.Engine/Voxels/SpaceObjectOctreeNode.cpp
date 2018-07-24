@@ -212,10 +212,16 @@ void SpaceObjectOctreeNode::OnRebuild()
     // Upload chunk if needed
     if (m_chunk && m_chunk->NeedsUpload())
     {
+        cvar hasMesh = m_chunk->HasMesh();
+
         m_chunk->Upload();
 
+        // Add this chunk to rendering, as it got new mesh (if we are not populated)
+        if (!hasMesh && m_chunk->HasMesh() && !m_populated)
+            Rendering::AddRenderable(m_chunk.get());
+
         // Try to remove this chunk from rendering
-        if(!m_chunk->HasMesh())
+        if(hasMesh && !m_chunk->HasMesh())
             Rendering::RemoveRenderable(m_chunk.get());
     }
 }
