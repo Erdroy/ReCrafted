@@ -101,7 +101,7 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
                     settings->hillsHeight);
 
                 // Surface checking
-                if(!hasSurface && lastVoxel != value && (x > 0 && y > 0 && z > 0))
+                if(!hasSurface && lastVoxel != value)
                     hasSurface = true;
 
                 lastVoxel = value;
