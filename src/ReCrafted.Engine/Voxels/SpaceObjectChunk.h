@@ -9,6 +9,9 @@
 #include "Core/Math/Vector3.h"
 #include "Core/Lock.h"
 #include "Storage/VoxelChunkData.h"
+#include "SpaceObject.h"
+
+#include "Graphics/Rendering/RenderableBase.h"
 
 #include <atomic>
 
@@ -17,7 +20,7 @@ class Mesh;
 class SpaceObject;
 class SpaceObjectOctreeNode;
 
-class SpaceObjectChunk
+class SpaceObjectChunk : public RenderableBase
 {
     friend class SpaceObjectManager;
 
@@ -51,14 +54,37 @@ private:
 public:
     void Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject);
     void Upload();
-    void Draw();
     void Dispose();
 
 public:
     void Generate(IVoxelMesher* mesher);
     void Rebuild(IVoxelMesher* mesher);
 
-    bool NeedsUpload()
+public:
+    void Render(RenderableRenderMode renderMode) override;
+
+    RefPtr<Shader> GetShader() const override
+    {
+        return spaceObject->m_terrainShader;
+    }
+
+    Vector3& GetPosition() override
+    {
+        return m_position;
+    }
+
+    BoundingBox& GetBounds() override
+    {
+        return owner->GetBounds();
+    }
+
+    RenderableRenderMode GetRenderMode() override
+    {
+        return RenderableRenderMode::RenderGeometry /*| RenderableRenderMode::RenderShadows*/;
+    }
+
+public:
+    bool NeedsUpload() const
     {
         return m_uploadType != None;
     }

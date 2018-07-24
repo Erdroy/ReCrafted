@@ -52,11 +52,6 @@ void SpaceObject::Update()
     m_views.Clear();
 }
 
-void SpaceObject::Draw()
-{
-    m_octree->Draw();
-}
-
 void SpaceObject::Dispose()
 {
     SafeDispose(m_terrainShader);

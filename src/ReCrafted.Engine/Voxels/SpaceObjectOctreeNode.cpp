@@ -11,6 +11,7 @@
 #include "Graphics/Camera.h"
 #include "Utilities/VoxelUtils.h"
 #include "Graphics/DebugDraw.h"
+#include "Graphics/Rendering/Rendering.h"
 
 #define HAS_LOCAL_NEIGH(id, dir) LocalNeighTable[id] & (1 << dir)
 
@@ -68,12 +69,13 @@ void SpaceObjectOctreeNode::WorkerPopulate(IVoxelMesher* mesher) // WARNING: thi
     // Create children nodes
     for (var i = 0; i < 8; i++)
     {
-        auto position = m_Position + ChildrenNodeOffsets[i] * static_cast<float>(childrenSize);
+        cvar position = m_Position + ChildrenNodeOffsets[i] * static_cast<float>(childrenSize);
 
         // construct node
         cvar childNode = new SpaceObjectOctreeNode();
         
         childNode->m_id = i;
+
         childNode->m_Position = position;
         childNode->m_Size = childrenSize;
         childNode->m_Bounds = BoundingBox(position, boundsSize);
@@ -87,6 +89,8 @@ void SpaceObjectOctreeNode::WorkerPopulate(IVoxelMesher* mesher) // WARNING: thi
         childNode->SetDepth(GetDepth() + 1);
 
         // Create node's chunk
+        childNode->CreateChunk(); 
+        childNode->GenerateChunk(mesher);
 
         m_childrenNodes[i] = childNode;
     }
@@ -119,7 +123,7 @@ void SpaceObjectOctreeNode::DestroyChildren()
     }
 }
 
-void SpaceObjectOctreeNode::FindIntersecting(Array<SpaceObjectOctreeNode*>& nodes, BoundingBox& box,
+void SpaceObjectOctreeNode::FindIntersecting(Array<SpaceObjectOctreeNode*>& nodes, const BoundingBox& box,
                                              const int targetNodeSize)
 {
     // iterate all children nodes
@@ -130,7 +134,7 @@ void SpaceObjectOctreeNode::FindIntersecting(Array<SpaceObjectOctreeNode*>& node
         if (node == nullptr)
             return;
 
-        if (BoundingBox::Intersects(node->m_Bounds, box))
+        if (BoundingBox::Intersects(node->GetBounds(), box))
         {
             if (targetNodeSize == 0)
             {
@@ -190,7 +194,13 @@ void SpaceObjectOctreeNode::OnCreate()
 
     // Upload chunk if needed
     if (m_chunk && m_chunk->NeedsUpload())
+    {
         m_chunk->Upload();
+    }
+
+    // Add this chunk to rendering
+    if (m_chunk->HasMesh())
+        Rendering::AddRenderable(m_chunk.get());
 }
 
 void SpaceObjectOctreeNode::OnRebuild()
@@ -201,12 +211,22 @@ void SpaceObjectOctreeNode::OnRebuild()
 
     // Upload chunk if needed
     if (m_chunk && m_chunk->NeedsUpload())
+    {
         m_chunk->Upload();
+
+        // Try to remove this chunk from rendering
+        if(!m_chunk->HasMesh())
+            Rendering::RemoveRenderable(m_chunk.get());
+    }
 }
 
 void SpaceObjectOctreeNode::OnDestroy()
 {
     //ASSERT(!IsProcessing());
+
+    // Try to remove this chunk from rendering
+    if (m_chunk && m_chunk->HasMesh())
+        Rendering::RemoveRenderable(m_chunk.get());
 
     // Dispose chunk if exists
     SafeDispose(m_chunk);
@@ -227,6 +247,10 @@ void SpaceObjectOctreeNode::OnPopulate()
         cvar node = m_childrenNodes[i];
         node->OnCreate();
     }
+
+    // Try to remove this chunk from rendering
+    if(m_chunk && m_chunk->HasMesh())
+        Rendering::RemoveRenderable(m_chunk.get());
 }
 
 void SpaceObjectOctreeNode::OnDepopulate()
@@ -336,26 +360,6 @@ void SpaceObjectOctreeNode::UpdateViews(Array<Vector3>& views)
         Depopulate();
 }
 
-void SpaceObjectOctreeNode::Draw()
-{
-    if (!Camera::GetMainCamera()->GetBoundingFrustum().Contains(m_Bounds))
-        return;
-
-    if (m_chunk && !m_populated)
-    {
-        m_chunk->Draw();
-        return;
-    }
-
-    if (!m_populated)
-        return;
-
-    for (rvar node : m_childrenNodes)
-    {
-        node->Draw();
-    }
-}
-
 void SpaceObjectOctreeNode::Dispose()
 {
     OnDestroy();
@@ -423,20 +427,15 @@ bool SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position,
 SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNeighNode(NodeDirection::_enum direction) const
 {
     // calculate target position
-    for (var i = 0; i < owner->m_rootNodesCount; i++)
     cvar targetPosition = m_Position + DirectionOffset[direction] * float(m_Size);
-
-    }
 
     return owner->FindNode(targetPosition, m_Size);
 }
 
-SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNode(Vector3 position, int size)
 SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNode(const Vector3& position, int size)
 {
     if (m_Size == size)
     {
-        // do not search anymore, because we found the exact node!
         // Do not search anymore, because we found the exact node!
         return this;
     }
@@ -445,8 +444,7 @@ SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNode(const Vector3& position, 
     cvar ySign = position.y > m_Position.y;
     cvar zSign = position.z > m_Position.z;
 
-    var caseCode = (zSign ? 1 : 0) | (ySign ? 1 : 0) << 1 | (xSign ? 1 : 0) << 2;
-    var childId = NodeDirIds[caseCode];
+    cvar caseCode = (zSign ? 1 : 0) | (ySign ? 1 : 0) << 1 | (xSign ? 1 : 0) << 2;
     cvar childId = NodeDirIds[caseCode];
 
     var node = m_childrenNodes[childId];
@@ -454,6 +452,8 @@ SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNode(const Vector3& position, 
     if (!node)
         return nullptr;
 
+    if(!node->m_populated)
+        return node;
 
     // Go further
     return node->FindNode(position, size);
@@ -476,3 +476,7 @@ SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNode(const Vector3& position)
             if (foundNode)
                 return foundNode;
         }
+    }
+
+    return nullptr;
+}

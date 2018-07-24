@@ -139,12 +139,6 @@ void SpaceObjectChunk::Upload()
     m_uploadType = None;
 }
 
-void SpaceObjectChunk::Draw()
-{
-    if (m_mesh)
-        Graphics::GetInstance()->Draw(m_mesh, spaceObject->m_terrainShader);
-}
-
 void SpaceObjectChunk::Dispose()
 {
     ASSERT(IS_MAIN_THREAD());
@@ -166,6 +160,13 @@ void SpaceObjectChunk::Dispose()
         storage->FreeChunkData(m_chunkData);
         m_chunkData = nullptr;
     }
+}
+
+void SpaceObjectChunk::Render(RenderableRenderMode renderMode)
+{
+    ASSERT(m_mesh);
+
+    Graphics::GetInstance()->Draw(m_mesh);
 }
 
 uint64_t SpaceObjectChunk::CalculateChunkId(const Vector3& position)

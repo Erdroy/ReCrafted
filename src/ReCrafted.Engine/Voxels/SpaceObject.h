@@ -34,7 +34,6 @@ private:
 public:
     void GeneratePrimary();
     void Update();
-    void Draw();
     void Dispose();
 
 public:

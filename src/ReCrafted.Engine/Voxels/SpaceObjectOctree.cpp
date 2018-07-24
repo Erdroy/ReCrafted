@@ -97,17 +97,6 @@ void SpaceObjectOctree::Update()
 {
 }
 
-void SpaceObjectOctree::Draw()
-{
-    Profiler::BeginProfile("SpaceObjectOctree::draw");
-
-    Graphics::GetInstance()->SetStage(RenderStage::Default);
-
-    for (var i = 0; i < m_rootNodesCount; i++)
-        m_rootNodes[i]->Draw();
-    Profiler::EndProfile();
-}
-
 void SpaceObjectOctree::UpdateViews(Array<Vector3>& views)
 {
     Profiler::BeginProfile("SpaceObjectOctree::updateViews");

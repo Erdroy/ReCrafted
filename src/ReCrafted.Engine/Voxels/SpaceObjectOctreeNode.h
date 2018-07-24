@@ -85,7 +85,6 @@ private:
 
 public:
     void UpdateViews(Array<Vector3>& views);
-    void Draw();
     void Dispose();
 
 public:
