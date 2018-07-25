@@ -64,6 +64,15 @@ public:
 	 */
     void Dispose() override;
 
+    /**
+     * \brief Gets the shader handle.
+     * \return The shader handle.
+     */
+    Renderer::ShaderHandle GetHandle() const
+    {
+        return m_shaderHandle;
+    }
+
 public:
     /**
 	 * \brief Loads shader by name.

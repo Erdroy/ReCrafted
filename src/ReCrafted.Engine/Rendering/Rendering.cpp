@@ -70,6 +70,8 @@ void Rendering::RenderPostProcessing()
 
 void Rendering::AddRenderable(RenderableBase* renderable)
 {
+    ASSERT(renderable != nullptr);
+    ASSERT(IS_MAIN_THREAD());
     ASSERT(renderable->GetRenderMode() != RenderableRenderMode::None);
 
     cvar renderMode = renderable->GetRenderMode();
@@ -93,6 +95,8 @@ void Rendering::AddRenderable(RenderableBase* renderable)
 
 void Rendering::RemoveRenderable(RenderableBase* renderable)
 {
+    ASSERT(renderable != nullptr);
+    ASSERT(IS_MAIN_THREAD());
     ASSERT(renderable->GetRenderMode() != RenderableRenderMode::None);
 
     cvar renderMode = renderable->GetRenderMode();
@@ -106,5 +110,16 @@ void Rendering::RemoveRenderable(RenderableBase* renderable)
 
 void Rendering::RegisterPostProcessing(PostProcessBase* postProcess)
 {
+    ASSERT(postProcess != nullptr);
+    ASSERT(IS_MAIN_THREAD());
+
     m_instance->m_postProcessList.Add(postProcess);
+}
+
+void Rendering::UnregisterPostProcessing(PostProcessBase* postProcess)
+{
+    ASSERT(postProcess != nullptr);
+    ASSERT(IS_MAIN_THREAD());
+
+    m_instance->m_postProcessList.Remove(postProcess);
 }

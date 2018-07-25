@@ -11,7 +11,7 @@
 #include "Graphics/Camera.h"
 #include "Utilities/VoxelUtils.h"
 #include "Graphics/DebugDraw.h"
-#include "Graphics/Rendering/Rendering.h"
+#include "Rendering/Rendering.h"
 
 #define HAS_LOCAL_NEIGH(id, dir) LocalNeighTable[id] & (1 << dir)
 

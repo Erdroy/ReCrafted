@@ -8,10 +8,10 @@
 // includes
 #include "Core/Math/Vector3.h"
 #include "Core/Lock.h"
+#include "Rendering/RenderableBase.h"
+
 #include "Storage/VoxelChunkData.h"
 #include "SpaceObject.h"
-
-#include "Graphics/Rendering/RenderableBase.h"
 
 #include <atomic>
 
