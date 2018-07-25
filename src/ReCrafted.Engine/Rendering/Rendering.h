@@ -25,7 +25,7 @@ private:
 
 private:
     RenderList m_geometryList = {};
-    RenderList m_shadowList = {};
+    RenderList m_shadowGeometryList = {};
 
     Array<PostProcessBase*> m_postProcessList = {};
 
@@ -85,6 +85,24 @@ public:
     * \param postProcess The post processing effect instance.
     */
     static void UnregisterPostProcessing(PostProcessBase* postProcess);
+
+    /**
+     * \brief Gets the amount of geometry renderables in the current list.
+     * \return The amount of geometry renderables.
+     */
+    static int GetRenderableGeometryCount()
+    {
+        return m_instance->m_geometryList.Count();
+    }
+
+    /**
+    * \brief Gets the amount of shadow geometry renderables in the current list.
+    * \return The amount of shadow geometry renderables.
+    */
+    static int GetRenderableShadowGeometryCount()
+    {
+        return m_instance->m_shadowGeometryList.Count();
+    }
 };
 
 #endif // RENDERING_H

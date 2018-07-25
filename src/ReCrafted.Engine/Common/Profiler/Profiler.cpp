@@ -11,6 +11,7 @@
 #include "Graphics/DebugDraw.h"
 
 #include <mono/metadata/mono-gc.h>
+#include "Rendering/Rendering.h"
 
 SINGLETON_IMPL(Profiler)
 
@@ -136,6 +137,9 @@ void Profiler::DrawDebugScreen()
         DrawTextLine(TEXT_CONST("[Render Statistics]"), Color(0xFF0A00FF));
         MakeLineSpace(1);
 
+        DrawTextLine(Text::Format(TEXT_CONST("Render Objects: {0}"), Rendering::GetRenderableGeometryCount()), Color(0xFFFFFFFF));
+        DrawTextLine(Text::Format(TEXT_CONST("Shadow Casters: {0}"), Rendering::GetRenderableShadowGeometryCount()), Color(0xFFFFFFFF));
+        MakeLineSpace(1);
         DrawTextLine(Text::Format(TEXT_CONST("API Calls: {0}"), renderStats.apiCallCount), Color(0xFFFFFFFF));
         DrawTextLine(Text::Format(TEXT_CONST("Draw Calls: {0}"), renderStats.drawCallCount), Color(0xFFFFFFFF));
         DrawTextLine(Text::Format(TEXT_CONST("Frame Commands: {0}"), renderStats.commandCount), Color(0xFFFFFFFF));

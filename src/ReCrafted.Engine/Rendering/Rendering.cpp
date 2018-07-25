@@ -53,7 +53,7 @@ void Rendering::RenderShadows()
 {
     Profiler::BeginProfile("Render Shadows");
 
-    for (var renderable : m_shadowList)
+    for (var renderable : m_shadowGeometryList)
         renderable->Render(RenderableRenderMode::RenderShadows);
 
     Profiler::EndProfile();
@@ -86,10 +86,10 @@ void Rendering::AddRenderable(RenderableBase* renderable)
 
     if ((renderMode & RenderableRenderMode::RenderShadows) == RenderableRenderMode::RenderShadows)
     {
-        ASSERT(m_instance->m_shadowList.Contains(renderable) == false);
+        ASSERT(m_instance->m_shadowGeometryList.Contains(renderable) == false);
 
-        m_instance->m_shadowList.Add(renderable);
-        SortRenderList(m_instance->m_shadowList);
+        m_instance->m_shadowGeometryList.Add(renderable);
+        SortRenderList(m_instance->m_shadowGeometryList);
     }
 }
 
@@ -105,7 +105,7 @@ void Rendering::RemoveRenderable(RenderableBase* renderable)
         m_instance->m_geometryList.Remove(renderable);
 
     if ((renderMode & RenderableRenderMode::RenderShadows) == RenderableRenderMode::RenderShadows)
-        m_instance->m_shadowList.Remove(renderable);
+        m_instance->m_shadowGeometryList.Remove(renderable);
 }
 
 void Rendering::RegisterPostProcessing(PostProcessBase* postProcess)
