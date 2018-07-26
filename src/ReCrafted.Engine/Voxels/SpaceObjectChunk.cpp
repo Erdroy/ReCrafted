@@ -9,6 +9,8 @@
 #include "Graphics/Graphics.h"
 #include "Storage/VoxelStorage.h"
 #include "Meshing/IVoxelMesher.h"
+#include "Graphics/DebugDraw.h"
+#include "SpaceObjectTables.hpp"
 
 void SpaceObjectChunk::SetUpload(RefPtr<Mesh> mesh, UploadType uploadType)
 {
@@ -165,6 +167,8 @@ void SpaceObjectChunk::Dispose()
 void SpaceObjectChunk::Render(RenderableRenderMode renderMode)
 {
     ASSERT(m_mesh);
+
+    owner->DrawDebug();
 
     Graphics::GetInstance()->Draw(m_mesh);
 }

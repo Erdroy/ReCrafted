@@ -50,6 +50,7 @@ private:
 
     int m_id = 0;
 
+    SpaceObjectOctreeNode* m_neighborNodes[6] = {};
     SpaceObjectOctreeNode* m_childrenNodes[8] = {};
     RefPtr<SpaceObjectChunk> m_chunk = nullptr;
 
@@ -61,6 +62,8 @@ private:
 private:
     bool HasPopulatedChildren();
     bool IsProcessing() const;
+
+    void UpdateNeighborNodes();
 
     void CreateChunk();
     void GenerateChunk(IVoxelMesher* mesher);
@@ -86,6 +89,7 @@ private:
 public:
     void UpdateViews(Array<Vector3>& views);
     void Dispose();
+    void DrawDebug();
 
 public:
     void Populate();

@@ -9,9 +9,9 @@
 
 #include "Core/Action.h"
 #include "Graphics/Camera.h"
-#include "Utilities/VoxelUtils.h"
 #include "Graphics/DebugDraw.h"
 #include "Rendering/Rendering.h"
+#include "Utilities/VoxelUtils.h"
 
 #define HAS_LOCAL_NEIGH(id, dir) LocalNeighTable[id] & (1 << dir)
 
@@ -46,6 +46,16 @@ bool SpaceObjectOctreeNode::IsProcessing() const
     return false;
 }
 
+void SpaceObjectOctreeNode::UpdateNeighborNodes()
+{
+    m_neighborNodes[NodeDirection::Front] = FindNeighNode(NodeDirection::Front);
+    m_neighborNodes[NodeDirection::Back] = FindNeighNode(NodeDirection::Back);
+    m_neighborNodes[NodeDirection::Left] = FindNeighNode(NodeDirection::Left);
+    m_neighborNodes[NodeDirection::Right] = FindNeighNode(NodeDirection::Right);
+    m_neighborNodes[NodeDirection::Top] = FindNeighNode(NodeDirection::Top);
+    m_neighborNodes[NodeDirection::Bottom] = FindNeighNode(NodeDirection::Bottom);
+}
+
 void SpaceObjectOctreeNode::CreateChunk()
 {
     ASSERT(m_chunk == nullptr);
@@ -58,13 +68,15 @@ void SpaceObjectOctreeNode::CreateChunk()
 void SpaceObjectOctreeNode::GenerateChunk(IVoxelMesher* mesher)
 {
     // Update neighbors
+    UpdateNeighborNodes();
+
     m_chunk->Generate(mesher);
 }
 
 void SpaceObjectOctreeNode::WorkerPopulate(IVoxelMesher* mesher) // WARNING: this function is called on WORKER THREAD!
 {
     cvar childrenSize = m_Size / 2;
-    var boundsSize = Vector3::One() * static_cast<float>(childrenSize);
+    cvar boundsSize = Vector3::One() * static_cast<float>(childrenSize);
 
     // Create children nodes
     for (var i = 0; i < 8; i++)
@@ -90,9 +102,13 @@ void SpaceObjectOctreeNode::WorkerPopulate(IVoxelMesher* mesher) // WARNING: thi
 
         // Create node's chunk
         childNode->CreateChunk(); 
-        childNode->GenerateChunk(mesher);
 
         m_childrenNodes[i] = childNode;
+    }
+
+    for(var i = 0; i < 8; i ++)
+    {
+        m_childrenNodes[i]->GenerateChunk(mesher);
     }
 }
 
@@ -371,6 +387,34 @@ void SpaceObjectOctreeNode::Dispose()
     OnDestroy();
 }
 
+void SpaceObjectOctreeNode::DrawDebug()
+{
+    DebugDraw::SetColor(NodeLoDDebugColors[m_Depth]);
+    DebugDraw::DrawWireBox(m_Bounds);
+
+    static const Color LinkColors[6] = {
+        Color(0xFF000060), // Front
+        Color(0x00FF0060), // Back
+        Color(0x00000000), // Left
+        Color(0x00000000), // Right
+        Color(0x00000000), // Top
+        Color(0x00000000), // Bottom
+    };
+
+    var id = -1;
+    for(var neigh : m_neighborNodes)
+    {
+        id++;
+
+        if (!neigh)
+            continue;
+
+        DebugDraw::SetColor(LinkColors[id]);
+        DebugDraw::DrawLine(m_Position, neigh->m_Position);
+
+    }
+}
+
 bool SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position, float size)
 {
     cvar chunk = GetChunk();
@@ -435,18 +479,30 @@ SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNeighNode(NodeDirection::_enum
     // calculate target position
     cvar targetPosition = m_Position + DirectionOffset[direction] * float(m_Size);
 
+    if(HAS_LOCAL_NEIGH(m_id, direction))
+    {
+    }
+
     return owner->FindNode(targetPosition, m_Size);
 }
 
 SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNode(const Vector3& position, int size)
 {
+    // Check if this is the node that we are looking for
     if (m_Size == size)
-    {
-        // Do not search anymore, because we found the exact node!
         return this;
+
+    if (m_populated) {
+        for (var children : m_childrenNodes)
+        {
+            if (children && BoundingBox::Contains(children->GetBounds(), position))
+                return children->FindNode(position, size);
+        }
     }
 
-    cvar xSign = position.x > m_Position.x;
+    return this;
+
+    /*cvar xSign = position.x > m_Position.x;
     cvar ySign = position.y > m_Position.y;
     cvar zSign = position.z > m_Position.z;
 
@@ -456,13 +512,10 @@ SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNode(const Vector3& position, 
     var node = m_childrenNodes[childId];
 
     if (!node)
-        return nullptr;
-
-    if(!node->m_populated)
-        return node;
+        return this;
 
     // Go further
-    return node->FindNode(position, size);
+    return node->FindNode(position, size);*/
 }
 
 SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNode(const Vector3& position)

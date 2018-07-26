@@ -120,10 +120,13 @@ SpaceObjectOctreeNode* SpaceObjectOctree::FindNode(const Vector3& position, int 
 {
     for (var i = 0; i < m_rootNodesCount; i++)
     {
-        cvar node = m_rootNodes[i]->FindNode(position, size);
+        if(BoundingBox::Contains(m_rootNodes[i]->GetBounds(), position))
+        {
+            cvar node = m_rootNodes[i]->FindNode(position, size);
 
-        if (node && BoundingBox::Contains(node->GetBounds(), position))
-            return node;
+            if (node)
+                return node;
+        }
     }
 
     return nullptr;
@@ -133,10 +136,13 @@ SpaceObjectOctreeNode* SpaceObjectOctree::FindNode(const Vector3& position) cons
 {
     for (var i = 0; i < m_rootNodesCount; i++)
     {
-        cvar node = m_rootNodes[i]->FindNode(position);
+        if (BoundingBox::Contains(m_rootNodes[i]->GetBounds(), position))
+        {
+            cvar node = m_rootNodes[i]->FindNode(position);
 
-        if (node && BoundingBox::Contains(node->GetBounds(), position))
-            return node;
+            if (node)
+                return node;
+        }
     }
 
     return nullptr;

@@ -202,6 +202,15 @@ public:
     static void DrawLine(const Vector3& start, const Vector3& end);
 
     /**
+    * \brief Draws box using given bounds.
+    * \param bounds The box bounds.
+    */
+    static void DrawBox(const BoundingBox& bounds)
+    {
+        DrawBox(bounds.center, bounds.size);
+    }
+
+    /**
      * \brief Draws box using given position (center) and size.
      * \param center The center position.
      * \param size The size of the box.
@@ -214,6 +223,15 @@ public:
     * \param size The size of the box.
     */
     static void DrawWireBox(const Vector3& center, const Vector3& size);
+
+    /**
+    * \brief Draws wire box using given bounds.
+    * \param bounds The box bounds.
+    */
+    static void DrawWireBox(const BoundingBox& bounds)
+    {
+        DrawWireBox(bounds.center, bounds.size);
+    }
 
     /**
      * \brief Draws given frustum as lines between every corner.
