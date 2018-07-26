@@ -79,8 +79,9 @@ private:
     bool m_drawProfiles = false;
     Font* m_debugFont = nullptr;
     float m_lineOffset = 0.0f;
+    float m_maxLineLength = 0;
     float m_horiOffset = 10.0f;
-    float m_lastFPSCountTime = 0;
+    float m_lastFPSCountTime = 0.0f;
     int m_frames = 0;
     int m_fps = 0;
 
@@ -111,6 +112,7 @@ private:
     template <typename T>
     void InternalBeginProfile(const T* name, bool utf8, float timeMed, float timeMax)
     {
+        ASSERT(this);
         ASSERT(IS_MAIN_THREAD());
 
         cvar currentTime = Platform::GetMiliseconds();
@@ -166,6 +168,7 @@ private:
 
     void InternalEndProfile()
     {
+        ASSERT(this);
         ASSERT(IS_MAIN_THREAD());
 
         if (m_profileStack.Count() == 0)

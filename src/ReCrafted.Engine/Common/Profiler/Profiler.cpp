@@ -70,6 +70,10 @@ void Profiler::Update()
 
 void Profiler::DrawTextLine(Text text, Color color)
 {
+    cvar measure = m_debugFont->MeasureText(text);
+
+    m_maxLineLength = std::max(m_maxLineLength, measure.x);
+
     UI::SetColor(color);
     UI::DrawText(m_debugFont, text, Vector2(m_horiOffset, m_lineOffset));
     m_lineOffset += static_cast<float>(m_debugFont->GetSize());
@@ -113,6 +117,9 @@ void Profiler::DrawDebugScreen()
         UI::SetDepth(9999.0f);
         m_horiOffset = 10.0f;
 
+        var startY = m_lineOffset;
+        var startX = m_horiOffset;
+
         DrawTextLine(TEXT_CONST("Statistics [press F9 to hide, press P to show/hide profiles]"), Color(0xFF0A00FF));
         MakeLineSpace(3);
 
@@ -153,6 +160,11 @@ void Profiler::DrawDebugScreen()
         DrawTextLine(Text::Format(TEXT_CONST("Flags: {0}"), renderStats.flags), Color(0xFFFFFFFF));
         MakeLineSpace(2);
 
+        UI::SetDepth(9900.0f);
+        UI::SetColor(Color(15, 15, 15, 80));
+        UI::DrawBox(Rectf(0.0f, 0.0f, m_maxLineLength + startX + 10.0f, m_lineOffset + startY + 10.0f));
+
+        UI::SetDepth(9999.0f);
         if(m_drawProfiles)
         {
             m_horiOffset = 400.0f;
@@ -201,8 +213,6 @@ void Profiler::DrawDebugScreen()
                 entry.updated = false;
             }
         }
-
-        UI::SetDepth(previousDepth);
     }
     EndProfile();
 }
