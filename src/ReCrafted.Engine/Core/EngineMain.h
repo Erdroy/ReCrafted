@@ -9,6 +9,7 @@
 #include "ReCrafted.h"
 #include "ApplicationBase.h"
 #include "ApplicationWindow.h"
+#include "Event.h"
 
 /**
  * \brief EngineMain class.
@@ -60,6 +61,9 @@ public:
     {
         return m_instance;
     }
+
+public:
+    Event<uint, uint> OnMainWindowResize = {};
 };
 
 #endif // ENGINEMAIN_H

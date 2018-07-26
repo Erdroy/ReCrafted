@@ -95,6 +95,9 @@ void EngineMain::OnWindowResized()
 {
     // resize now
     Graphics::GetInstance()->Resize(m_mainWindow->GetWidth(), m_mainWindow->GetHeight());
+
+    // Invoke resize event
+    OnMainWindowResize.Invoke(m_mainWindow->GetWidth(), m_mainWindow->GetHeight());
 }
 
 void EngineMain::Initialize()
