@@ -231,6 +231,7 @@ namespace Renderer
 
             FORCEINLINE void Execute_CreateTexture2D(Command_CreateTexture2D* command);
             FORCEINLINE void Execute_ApplyTexture2D(Command_ApplyTexture2D* command);
+            FORCEINLINE void Execute_ApplyRenderTexture2D(Command_ApplyRenderTexture2D* command);
             FORCEINLINE void Execute_ResizeTexture2D(Command_ResizeTexture2D* command);
             FORCEINLINE void Execute_DestroyTexture2D(Command_DestroyTexture2D* command);
         };
@@ -417,6 +418,7 @@ namespace Renderer
 
             DEFINE_COMMAND_EXECUTOR(CreateTexture2D);
             DEFINE_COMMAND_EXECUTOR(ApplyTexture2D);
+            DEFINE_COMMAND_EXECUTOR(ApplyRenderTexture2D);
             DEFINE_COMMAND_EXECUTOR(ResizeTexture2D);
             DEFINE_COMMAND_EXECUTOR(DestroyTexture2D);
 
@@ -637,7 +639,7 @@ namespace Renderer
             m_shaders[shaderIdx] = RHIDirectX11_Shader::Create(m_device, jsonData);
 
         }
-
+        
         void WorkerThreadInstance::Execute_ApplyShader(Command_ApplyShader* command)
         {
             var shaderIdx = command->shader.idx;
@@ -968,6 +970,17 @@ namespace Renderer
 
             // bind the texture
             m_currentShader->BindResource(m_context, command->slot, texture.srv);
+        }
+
+        void WorkerThreadInstance::Execute_ApplyRenderTexture2D(Command_ApplyRenderTexture2D* command)
+        {
+            rvar texture = m_textures[command->handle.idx];
+            ASSERT(texture.texture != nullptr);
+            ASSERT(texture.rtv != nullptr);
+            ASSERT(m_currentShader != nullptr);
+
+            m_deviceContext->OMSetRenderTargets(1, &texture.rtv, nullptr);
+            ADD_APICALL();
         }
 
         void WorkerThreadInstance::Execute_ResizeTexture2D(Command_ResizeTexture2D* command)

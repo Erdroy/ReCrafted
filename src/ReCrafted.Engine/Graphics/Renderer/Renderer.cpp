@@ -693,6 +693,17 @@ namespace Renderer
         g_commandList->WriteCommand(&command);
     }
 
+    void ApplyRenderTexture2D(Texture2DHandle handle, uint8_t slot)
+    {
+        CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_ApplyRenderTexture2D command;
+        command.handle = handle;
+        command.slot = slot;
+        g_commandList->WriteCommand(&command);
+    }
+
     void ResizeTexture2D(Texture2DHandle handle, uint16_t width, uint16_t height)
     {
         CHECK_MAIN_THREAD();

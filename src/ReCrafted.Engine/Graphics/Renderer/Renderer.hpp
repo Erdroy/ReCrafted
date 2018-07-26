@@ -501,6 +501,7 @@ namespace Renderer
 
     /// <summary>
     /// Sets given render buffer as current render target.
+    /// Warning: This should be called AFTER ApplyShader.
     /// </summary>
     /// <param name="handle">The render buffer to be set.</param>
     RENDERER_FUNCTION(void) ApplyRenderBuffer(RenderBufferHandle handle);
@@ -674,10 +675,18 @@ namespace Renderer
 
     /// <summary>
     /// Sets given texture as current at given slot.
+    /// Warning: This should be called AFTER ApplyShader.
     /// </summary>
     /// <param name="handle">The texture handle.</param>
     /// <param name="slot">The texture target slot.</param>
     RENDERER_FUNCTION(void) ApplyTexture2D(Texture2DHandle handle, uint8_t slot);
+
+    /// <summary>
+    /// Sets given render texture as current at given slot.
+    /// </summary>
+    /// <param name="handle">The render texture handle.</param>
+    /// <param name="slot">The texture target slot.</param>
+    RENDERER_FUNCTION(void) ApplyRenderTexture2D(Texture2DHandle handle, uint8_t slot);
 
     /// <summary>
     /// Resizes given texture2d.
@@ -713,6 +722,7 @@ namespace Renderer
     /// <summary>
     /// Sets given shader pass as current.
     /// Updates all uniforms in shader program. Please make sure that you SetShaderValue before calling this.
+    /// Warning: This clears all current applied RenderTextures and RenderBuffers!
     /// </summary>
     /// <param name="handle">The shader handle.</param>
     /// <param name="passId">The shader pass index.</param>
