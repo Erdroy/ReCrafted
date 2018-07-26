@@ -39,6 +39,8 @@ void Graphics::CreateRenderBuffers()
     m_gbuffer->AddTarget("[RGB]NORMALS, [A]AmbientOcculusion", Renderer::TextureFormat::RGBA8);
     m_gbuffer->AddTarget("[RGB]LIGHT, [A]EMISSION", Renderer::TextureFormat::RGBA8);
     m_gbuffer->End();
+
+    m_frameTexture = Renderer::CreateTexture2D(Display::GetWidth(), Display::GetHeight(), 0, Renderer::TextureFormat::RGBA8, nullptr, 0u, true);
 }
 
 void Graphics::InitializeRenderer()
@@ -66,6 +68,12 @@ void Graphics::InitializeRenderer()
     Renderer::AddOnPresentCallback(Action<void>::New<Graphics, &Graphics::OnFramePresent>(this));
 
     Logger::LogInfo("Graphics initialized");
+}
+
+void Graphics::InitializePostProcessing()
+{
+    m_vignette.reset(new PPVignette);
+    Rendering::RegisterPostProcessing(m_vignette.get());
 }
 
 void Graphics::UpdateDefaultConstants(const Matrix& mvp)
@@ -106,6 +114,12 @@ void Graphics::UpdateDefaultConstants(const Matrix& mvp)
     Renderer::ApplyShader(m_currentShader->m_shaderHandle, 0);
 }
 
+void Graphics::BlitFrameBuffer()
+{
+    // blit into framebuffer
+    Renderer::BlitTexture(m_frameBuffer, m_frameTexture);
+}
+
 void Graphics::OnInit()
 {
     g_rendererInstance = this;
@@ -118,6 +132,9 @@ void Graphics::OnInit()
 
     // load all shaders
     LoadInternalShaders();
+
+    // Initialize post processing
+    InitializePostProcessing();
 }
 
 void Graphics::OnDispose()
@@ -177,13 +194,16 @@ void Graphics::Render()
         RenderEnd(); // end rendering
 
         // Render post processing
-        m_rendering->RenderPostProcessing();
+        //m_rendering->RenderPostProcessing(m_frameBuffer, m_gbuffer->GetDepthBuffer());
 
         // Render debug draw
         RenderDebugDraw();
 
         // Render UI
         RenderUI();
+
+        // Blit into framebuffer
+        //BlitFrameBuffer();
 
         Profiler::BeginProfile("Renderer::Frame");
         // next frame, wait vsync
@@ -205,6 +225,12 @@ void Graphics::Resize(uint width, uint height)
 
     m_gbuffer->Resize(width, height);
     Renderer::ResizeWindow(m_window, width, height);
+
+    if(RENDERER_CHECK_HANDLE(m_frameTexture))
+    {
+        Renderer::DestroyTexture2D(m_frameTexture);
+        m_frameTexture = Renderer::CreateTexture2D(width, height, 0, Renderer::TextureFormat::RGBA8, nullptr, 0u, true);
+    }
 }
 
 void Graphics::RenderBegin()
@@ -284,10 +310,10 @@ void Graphics::RenderEnd()
     renderTargets.push_back(m_gbuffer->GetDepthBuffer());
 
     Renderer::BlitTextures(
-        m_gbufferCombine->m_shaderHandle,
         m_frameBuffer,
         renderTargets.data(),
-        static_cast<uint8_t>(renderTargets.size())
+        static_cast<uint8_t>(renderTargets.size()),
+        m_gbufferCombine->m_shaderHandle
     );
 
     // reset everything

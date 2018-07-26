@@ -14,6 +14,7 @@
 #include "Graphics/RenderStage.h"
 #include "Graphics/Renderer/Renderer.hpp"
 #include "Rendering/Rendering.h"
+#include "Rendering/PostProcessing/PPVignette.h"
 
 /**
  * \brief Graphics class.
@@ -36,9 +37,12 @@ private:
     RefPtr<Shader> m_gbufferFillShader = nullptr;
     RefPtr<Shader> m_gbufferCombine = nullptr;
 
+    RefPtr<PPVignette> m_vignette = nullptr;
+
     RenderStage::_enum m_renderStage = RenderStage::Default;
 
     Renderer::WindowHandle m_window = {};
+    Renderer::Texture2DHandle m_frameTexture = {};
     Renderer::RenderBufferHandle m_frameBuffer = {};
 
 public:
@@ -49,8 +53,11 @@ private:
     void CreateRenderBuffers();
 
     void InitializeRenderer();
+    void InitializePostProcessing();
 
     void UpdateDefaultConstants(const Matrix& mvp);
+
+    void BlitFrameBuffer();
 
 private:
     void OnInit() override;

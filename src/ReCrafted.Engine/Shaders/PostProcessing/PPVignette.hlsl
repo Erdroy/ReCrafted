@@ -6,7 +6,14 @@
 #define PRESET_POSTPROCESSING
 #include "../ShaderAPI.hlsli"
 
-float4 PostProcessMain(in float4 color, in float depth)
+float4 PostProcessMain(in float4 color, in float2 uv, in float depth)
 {
-    return float4(1.0f, 0.0f, 0.0f, 1.0f);
+    float alpha = color.a;
+
+    // Apply Vignetting
+    float2 distance = uv - 0.5f;
+    distance.x = 0.5f - dot(distance, distance);
+    color *= pow(abs(distance.x), 0.2f);
+
+    return float4(color.rgb, alpha);
 }

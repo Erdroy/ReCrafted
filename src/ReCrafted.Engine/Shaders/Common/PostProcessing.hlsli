@@ -19,7 +19,7 @@ struct VSOutput
     float2 TexCoord : TEXCOORD;
 };
 
-float4 PostProcessMain(in float4 color, in float depth);
+float4 PostProcessMain(in float4 color, in float2 uv, in float depth);
 
 /// <summary>
 /// Vertex Shader Function
@@ -40,7 +40,7 @@ float4 PPPSMain(in VSOutput input) : SV_Target0
     float4 color = T0.Sample(Sampler, input.TexCoord).rgba;
     float depth = T1.Sample(Sampler, input.TexCoord).r;
 
-    return PostProcessMain(color, depth);
+    return PostProcessMain(color, input.TexCoord, depth);
 }
 
 pass Default
