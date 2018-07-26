@@ -58,14 +58,18 @@ void EngineMain::CreateMainWindow()
 
 void EngineMain::OnSimulate()
 {
-    // Update fixed time
-    Time::m_instance->m_fixedTime = static_cast<float>(static_cast<double>(Time::m_instance->m_fixedTime) + Time::
-        m_instance->m_fixedDeltaTime);
+    Profiler::BeginProfile("Simulate");
+    {
+        // Update fixed time
+        Time::m_instance->m_fixedTime = static_cast<float>(static_cast<double>(Time::m_instance->m_fixedTime) + Time::
+            m_instance->m_fixedDeltaTime);
 
-    // Simulate
-    PhysicsEngine::GetInstance()->Simulate();
-    Universe::GetInstance()->Simulate();
-    Application::GetInstance()->Simulate();
+        // Simulate
+        PhysicsEngine::GetInstance()->Simulate();
+        Universe::GetInstance()->Simulate();
+        Application::GetInstance()->Simulate();
+    }
+    Profiler::EndProfile();
 }
 
 void EngineMain::OnUpdate()
@@ -73,8 +77,12 @@ void EngineMain::OnUpdate()
     // Update time
     Time::GetInstance()->OnFrame();
 
-    // Update input
-    Input::GetInstance()->UpdateInput();
+    Profiler::BeginProfile("Process Input");
+    {
+        // Update input
+        Input::GetInstance()->UpdateInput();
+    }
+    Profiler::EndProfile();
 
     // clear keyboard buffer
     KeyboardBuffer::Clear();
@@ -82,8 +90,12 @@ void EngineMain::OnUpdate()
     // run platform events
     Platform::RunEvents();
 
-    // Update all components
-    m_componentManager->Update();
+    Profiler::BeginProfile("Update");
+    {
+        // Update all components
+        m_componentManager->Update();
+    }
+    Profiler::EndProfile();
 }
 
 void EngineMain::OnRender()

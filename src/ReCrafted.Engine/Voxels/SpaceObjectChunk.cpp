@@ -168,7 +168,7 @@ void SpaceObjectChunk::Render(RenderableRenderMode renderMode)
 {
     ASSERT(m_mesh);
 
-    owner->DrawDebug();
+    //owner->DrawDebug();
 
     Graphics::GetInstance()->Draw(m_mesh);
 }

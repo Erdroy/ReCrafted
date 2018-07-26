@@ -120,6 +120,9 @@ SpaceObjectOctreeNode* SpaceObjectOctree::FindNode(const Vector3& position, int 
 {
     for (var i = 0; i < m_rootNodesCount; i++)
     {
+        if (!m_rootNodes[i])
+            continue;
+
         if(BoundingBox::Contains(m_rootNodes[i]->GetBounds(), position))
         {
             cvar node = m_rootNodes[i]->FindNode(position, size);

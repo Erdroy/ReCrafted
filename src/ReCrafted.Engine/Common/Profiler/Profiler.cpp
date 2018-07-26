@@ -183,8 +183,8 @@ void Profiler::DrawDebugScreen()
                 rvar entry = m_profiles.At(i);
                 cvar depthOffset = entry.depth * 15.0f;
 
-                if (!entry.updated)
-                    continue;
+                //if (!entry.updated)
+                //    continue;
 
                 Color color;
                 if (entry.timeAvg > entry.timeoutMax && entry.timeoutMax >= 0.0f)
