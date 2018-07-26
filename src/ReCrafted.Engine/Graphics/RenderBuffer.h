@@ -57,6 +57,11 @@ public:
 
     Renderer::Texture2DHandle GetDepthBuffer();
 
+    Renderer::RenderBufferHandle GetHandle() const
+    {
+        return m_renderBufferHandle;
+    }
+
     /// <summary>
     /// Resize the render buffer.
     /// </summary>

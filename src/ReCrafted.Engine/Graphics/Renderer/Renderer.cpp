@@ -829,18 +829,98 @@ namespace Renderer
 
         // done.
     }
-
-    void BlitTextures(ShaderHandle customShader, RenderBufferHandle destination, Texture2DHandle* sources,
-                      uint8_t sourceCount, uint8_t baseSlot)
+    
+    void BlitTexture(Texture2DHandle destination, Texture2DHandle source, ShaderHandle customShader)
     {
-        // bind custom shader
-        ApplyShader(customShader, 0);
+        if (RENDERER_CHECK_HANDLE(customShader))
+        {
+            // bind custom shader
+            ApplyShader(customShader, 0);
+        }
+        else
+        {
+            // bind shader
+            ApplyShader(m_blitShader, 0);
+        }
+
+        // bind render texture
+        ApplyRenderTexture2D(destination, 0u);
+
+        // bind texture
+        ApplyTexture2D(source, 0u);
+
+        // apply vertex and index buffer
+        ApplyVertexBuffer(m_quadVB);
+        ApplyIndexBuffer(m_quadIB);
+
+        // disable depth test
+        cvar depthTest = GetFlag(RenderFlags::DepthTest);
+        SetFlag(RenderFlags::DepthTest, false);
+
+        // draw the quad
+        DrawIndexed(6);
+
+        // re-enable depth-test when needed
+        SetFlag(RenderFlags::DepthTest, depthTest);
+
+        // done.
+    }
+
+    void BlitTextures(RenderBufferHandle destination, Texture2DHandle* sources,
+                      uint8_t sourceCount, ShaderHandle customShader, uint8_t baseSlot)
+    {
+        if (RENDERER_CHECK_HANDLE(customShader))
+        {
+            // bind custom shader
+            ApplyShader(customShader, 0);
+        }
+        else
+        {
+            // bind shader
+            ApplyShader(m_blitShader, 0);
+        }
 
         // bind render target
         ApplyRenderBuffer(destination);
 
         // bind textures
         for (var i = 0u; i < sourceCount; i ++)
+            ApplyTexture2D(sources[i], baseSlot + i);
+
+        // apply vertex and index buffer
+        ApplyVertexBuffer(m_quadVB);
+        ApplyIndexBuffer(m_quadIB);
+
+        // disable depth test
+        cvar depthTest = GetFlag(RenderFlags::DepthTest);
+        SetFlag(RenderFlags::DepthTest, false);
+
+        // draw the quad
+        DrawIndexed(6);
+
+        // re-enable depth-test when needed
+        SetFlag(RenderFlags::DepthTest, depthTest);
+    }
+
+    void BlitTextures(Texture2DHandle destination, Texture2DHandle* sources,
+        uint8_t sourceCount, ShaderHandle customShader, uint8_t baseSlot)
+    {
+        if (RENDERER_CHECK_HANDLE(customShader))
+        {
+            // bind custom shader
+            ApplyShader(customShader, 0);
+        }
+        else
+        {
+            // bind shader
+            ApplyShader(m_blitShader, 0);
+        }
+
+        // bind render target
+        ApplyRenderTexture2D(destination, 0u);
+
+        // bind textures
+        for (var i = 0u; i < sourceCount; i++)
             ApplyTexture2D(sources[i], baseSlot + i);
 
         // apply vertex and index buffer

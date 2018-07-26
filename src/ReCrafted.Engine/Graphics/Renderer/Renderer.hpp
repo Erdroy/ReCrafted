@@ -764,15 +764,31 @@ namespace Renderer
                                         ShaderHandle customShader = {});
 
     /// <summary>
+    /// Draws render texture to destination texture.
+    /// </summary>
+    /// <param name="destination">The destination texture.</param>
+    /// <param name="source">The source texture handle.</param>
+    /// <param name="customShader">The custom shader.</param>
+    RENDERER_FUNCTION(void) BlitTexture(Texture2DHandle destination, Texture2DHandle source, ShaderHandle customShader = {});
+
+    /// <summary>
     /// Draws render textures to the render buffer using custom shader.
     /// Note: This will change current render buffer binding etc.
     /// </summary>
-    /// <param name="customShader">The custom shader.</param>
     /// <param name="destination">The destination render buffer.</param>
     /// <param name="sources">The source textures handles.</param>
+    /// <param name="customShader">The custom shader.</param>
     /// <param name="sourceCount">The amout of the source textures.</param>
-    RENDERER_FUNCTION(void) BlitTextures(ShaderHandle customShader, RenderBufferHandle destination,
-                                         Texture2DHandle* sources, uint8_t sourceCount, uint8_t baseSlot = 0u);
+    RENDERER_FUNCTION(void) BlitTextures(RenderBufferHandle destination, Texture2DHandle* sources, uint8_t sourceCount, ShaderHandle customShader, uint8_t baseSlot = 0u);
+
+    /// <summary>
+    /// Draws render textures to the render texture using custom shader.
+    /// </summary>
+    /// <param name="destination">The destination render texture.</param>
+    /// <param name="sources">The source textures handles.</param>
+    /// <param name="customShader">The custom shader.</param>
+    /// <param name="sourceCount">The amout of the source textures.</param>
+    RENDERER_FUNCTION(void) BlitTextures(Texture2DHandle destination, Texture2DHandle* sources, uint8_t sourceCount, ShaderHandle customShader, uint8_t baseSlot = 0u);
 }
 
 #endif // RENDERER_H
