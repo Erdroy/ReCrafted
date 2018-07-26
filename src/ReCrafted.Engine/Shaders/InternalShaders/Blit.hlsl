@@ -34,7 +34,6 @@ void BlitVSMain(in VSInput i, out VSOutput o)
 /// </summary>
 void BlitPSMain(in VSOutput input, out float4 color : SV_Target0)
 {
-	//color = float4(input.TexCoord, 0.0f, 1.0f);
     color = Texture.Sample(Sampler, input.TexCoord);
 }
 

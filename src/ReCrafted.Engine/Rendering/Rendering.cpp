@@ -5,6 +5,9 @@
 #include "Common/Profiler/Profiler.h"
 #include "Graphics/Graphics.h"
 #include "Graphics/Camera.h"
+#include "PostProcessing/PostProcessingBase.h"
+#include "Core/EngineMain.h"
+#include "Common/Display.h"
 
 Rendering* Rendering::m_instance;
 
@@ -13,14 +16,44 @@ void Rendering::SortRenderList(const RenderList& list)
     // TODO: Sort render list
 }
 
+void Rendering::OnResize(uint width, uint height)
+{
+    DestroyPostProcessingBuffers();
+    CreatePostProcessingBuffers(width, height);
+}
+
+void Rendering::CreatePostProcessingBuffers(uint width, uint height)
+{
+    // Create render textures
+    m_buffer0 = Renderer::CreateTexture2D(width, height, 0, Renderer::TextureFormat::RGBA8, nullptr, 0u, true);
+    m_buffer1 = Renderer::CreateTexture2D(width, height, 0, Renderer::TextureFormat::RGBA8, nullptr, 0u, true);
+}
+
+void Rendering::DestroyPostProcessingBuffers()
+{
+    // Dispose render textures
+    if (RENDERER_CHECK_HANDLE(m_buffer0))
+        Renderer::DestroyTexture2D(m_buffer0);
+
+    if (RENDERER_CHECK_HANDLE(m_buffer1))
+        Renderer::DestroyTexture2D(m_buffer1);
+}
+
 void Rendering::Initialize()
 {
     m_instance = this;
 
+    // Add resize callback
+    cvar onResize = Action<void, uint, uint>::New<Rendering, &Rendering::OnResize>(this);
+    EngineMain::GetInstance()->OnMainWindowResize.AddListener(onResize);
+
+    // Create buffers
+    CreatePostProcessingBuffers(Display::GetWidth(), Display::GetHeight());
 }
 
 void Rendering::Dispose()
 {
+    DestroyPostProcessingBuffers();
 }
 
 void Rendering::RenderGeometry()
@@ -59,13 +92,38 @@ void Rendering::RenderShadows()
     Profiler::EndProfile();
 }
 
-void Rendering::RenderPostProcessing()
+void Rendering::RenderPostProcessing(const Renderer::RenderBufferHandle& renderBuffer, const Renderer::Texture2DHandle& depthTexture)
 {
-    //Profiler::BeginProfile("Render PostProcess");
+    Profiler::BeginProfile("Render PostProcessing");
 
-    // TODO: Implement post processing
+    var sourceTexture = m_buffer0;
+    var destinationTexture = m_buffer1;
 
-    //Profiler::EndProfile();
+    for(var i = 0u; i < m_postProcessingList.Count(); i ++)
+    {
+        cvar currentPP = m_postProcessingList[i];
+        cvar currentPPShader = currentPP->GetShader();
+
+        // Render
+        currentPP->Render();
+
+        // Blit
+        Renderer::BlitTexture(destinationTexture, sourceTexture, currentPPShader->GetHandle());
+
+        // Reset source texture after the post processing is done
+        if(i == 0)
+            sourceTexture = m_buffer0;
+
+        // Swap render textures
+        std::swap(sourceTexture, destinationTexture);
+    }
+
+    // The 'destinationTexture' is now the buffer that contains the latest content
+
+    // Blit 'destinationTexture' to back buffer
+    Renderer::BlitTexture(renderBuffer, destinationTexture);
+
+    Profiler::EndProfile();
 }
 
 void Rendering::AddRenderable(RenderableBase* renderable)
@@ -108,18 +166,19 @@ void Rendering::RemoveRenderable(RenderableBase* renderable)
         m_instance->m_shadowGeometryList.Remove(renderable);
 }
 
-void Rendering::RegisterPostProcessing(PostProcessBase* postProcess)
+void Rendering::RegisterPostProcessing(PostProcessingBase* postProcess)
 {
     ASSERT(postProcess != nullptr);
     ASSERT(IS_MAIN_THREAD());
 
-    m_instance->m_postProcessList.Add(postProcess);
+    postProcess->OnInitialize();
+    m_instance->m_postProcessingList.Add(postProcess);
 }
 
-void Rendering::UnregisterPostProcessing(PostProcessBase* postProcess)
+void Rendering::UnregisterPostProcessing(PostProcessingBase* postProcess)
 {
     ASSERT(postProcess != nullptr);
     ASSERT(IS_MAIN_THREAD());
 
-    m_instance->m_postProcessList.Remove(postProcess);
+    m_instance->m_postProcessingList.Remove(postProcess);
 }

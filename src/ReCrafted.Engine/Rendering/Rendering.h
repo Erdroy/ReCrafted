@@ -9,9 +9,10 @@
 #include "ReCrafted.h"
 #include "Core/Containers/Array.h"
 #include "Graphics/Shader.h"
+#include "Graphics/RenderBuffer.h"
 
 class RenderableBase;
-class PostProcessBase;
+class PostProcessingBase;
 
 typedef Array<RenderableBase*> RenderList;
 
@@ -26,13 +27,21 @@ private:
 private:
     RenderList m_geometryList = {};
     RenderList m_shadowGeometryList = {};
+    Array<PostProcessingBase*> m_postProcessingList = {};
 
-    Array<PostProcessBase*> m_postProcessList = {};
+    Renderer::Texture2DHandle m_buffer0 = {};
+    Renderer::Texture2DHandle m_buffer1 = {};
 
     RefPtr<Shader> m_lastShader = nullptr;
 
 private:
     static void SortRenderList(const RenderList& list);
+
+private:
+    void OnResize(uint width, uint height);
+
+    void CreatePostProcessingBuffers(uint width, uint height);
+    void DestroyPostProcessingBuffers();
 
 public:
     /**
@@ -59,7 +68,7 @@ public:
     /**
      * \brief Renders all post processing effects.
      */
-    void RenderPostProcessing();
+    void RenderPostProcessing(const Renderer::RenderBufferHandle& renderBuffer, const Renderer::Texture2DHandle& depthTexture);
 
 public:
     /**
@@ -78,13 +87,13 @@ public:
      * \brief Registers post processing effect instance.
      * \param postProcess The post processing effect instance.
      */
-    static void RegisterPostProcessing(PostProcessBase* postProcess);
+    static void RegisterPostProcessing(PostProcessingBase* postProcess);
 
     /**
     * \brief Unregisters post processing effect instance.
     * \param postProcess The post processing effect instance.
     */
-    static void UnregisterPostProcessing(PostProcessBase* postProcess);
+    static void UnregisterPostProcessing(PostProcessingBase* postProcess);
 
     /**
      * \brief Gets the amount of geometry renderables in the current list.

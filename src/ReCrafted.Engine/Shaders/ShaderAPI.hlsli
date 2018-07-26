@@ -23,5 +23,8 @@
 #ifdef PRESET_SURFACE
 #include "../Common/Surface.hlsli"
 #endif
+#ifdef PRESET_POSTPROCESSING
+#include "../Common/PostProcessing.hlsli"
+#endif
 
 #endif // SHADERAPI_HLSLI
