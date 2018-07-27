@@ -682,13 +682,6 @@ namespace Renderer
     RENDERER_FUNCTION(void) ApplyTexture2D(Texture2DHandle handle, uint8_t slot);
 
     /// <summary>
-    /// Sets given render texture as current at given slot.
-    /// </summary>
-    /// <param name="handle">The render texture handle.</param>
-    /// <param name="slot">The texture target slot.</param>
-    RENDERER_FUNCTION(void) ApplyRenderTexture2D(Texture2DHandle handle, uint8_t slot);
-
-    /// <summary>
     /// Resizes given texture2d.
     /// </summary>
     /// <param name="width">The new width of the texture2d.</param>
@@ -700,6 +693,35 @@ namespace Renderer
     /// </summary>
     /// <param name="handle">The texture handle.</param>
     RENDERER_FUNCTION(void) DestroyTexture2D(Texture2DHandle handle);
+    
+    /// <summary>
+    /// Creates new render texture.
+    /// </summary>
+    /// <param name="width">The Width of the new texture.</param>
+    /// <param name="height">The Height of the new texture.</param>
+    /// <param name="textureFormat">The format of the new texture.</param>
+    /// <param name="textureType">The type of the new texture.</param>
+    RENDERER_FUNCTION(Texture2DHandle) CreateRenderTexture(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat, TextureType::_enum textureType = TextureType::Default);
+
+    /// <summary>
+    /// Sets given render texture as current at given slot.
+    /// </summary>
+    /// <param name="handle">The render texture handle.</param>
+    /// <param name="slot">The texture target slot.</param>
+    RENDERER_FUNCTION(void) ApplyRenderTexture(Texture2DHandle handle, uint8_t slot);
+
+    /// <summary>
+    /// Clears given render buffer.
+    /// </summary>
+    /// <param name="handle">The render buffer handle.</param>
+    /// <param name="color">The color which will be used to clear the render buffer.</param>
+    RENDERER_FUNCTION(void) ClearRenderTexture(Texture2DHandle handle, Color color);
+
+    /// <summary>
+    /// Destroys given render texture.
+    /// </summary>
+    /// <param name="handle">The render texture handle.</param>
+    RENDERER_FUNCTION(void) DestroyRenderTexture(Texture2DHandle handle);
 
     /// <summary>
     /// Loads shader and creates it's shader handle.

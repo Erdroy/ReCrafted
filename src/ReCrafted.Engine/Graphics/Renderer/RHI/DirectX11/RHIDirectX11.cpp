@@ -71,7 +71,7 @@ namespace Renderer
             ID3D11ShaderResourceView* srv = nullptr;
             ID3D11RenderTargetView* rtv = nullptr;
             ID3D11DepthStencilView* dsv = nullptr;
-
+            
             uint16_t width = 0u;
             uint16_t height = 0u;
             TextureFormat::_enum format = TextureFormat::Unknown;
@@ -231,9 +231,11 @@ namespace Renderer
 
             FORCEINLINE void Execute_CreateTexture2D(Command_CreateTexture2D* command);
             FORCEINLINE void Execute_ApplyTexture2D(Command_ApplyTexture2D* command);
-            FORCEINLINE void Execute_ApplyRenderTexture2D(Command_ApplyRenderTexture2D* command);
             FORCEINLINE void Execute_ResizeTexture2D(Command_ResizeTexture2D* command);
             FORCEINLINE void Execute_DestroyTexture2D(Command_DestroyTexture2D* command);
+
+            FORCEINLINE void Execute_ApplyRenderTexture2D(Command_ApplyRenderTexture2D* command);
+            FORCEINLINE void Execute_ClearRenderTexture2D(Command_ClearRenderTexture2D* command);
         };
 
         void WorkerThreadInstance::WaitForPreviousFrame()
@@ -418,9 +420,11 @@ namespace Renderer
 
             DEFINE_COMMAND_EXECUTOR(CreateTexture2D);
             DEFINE_COMMAND_EXECUTOR(ApplyTexture2D);
-            DEFINE_COMMAND_EXECUTOR(ApplyRenderTexture2D);
             DEFINE_COMMAND_EXECUTOR(ResizeTexture2D);
             DEFINE_COMMAND_EXECUTOR(DestroyTexture2D);
+
+            DEFINE_COMMAND_EXECUTOR(ApplyRenderTexture2D);
+            DEFINE_COMMAND_EXECUTOR(ClearRenderTexture2D);
 
             case CommandHeader::Unknown:
             case CommandHeader::Count:
@@ -644,6 +648,7 @@ namespace Renderer
         {
             var shaderIdx = command->shader.idx;
             var shader = m_shaders[shaderIdx];
+
             shader->Bind(m_context, command->passId);
 
             m_currentShader = shader;
@@ -972,17 +977,6 @@ namespace Renderer
             m_currentShader->BindResource(m_context, command->slot, texture.srv);
         }
 
-        void WorkerThreadInstance::Execute_ApplyRenderTexture2D(Command_ApplyRenderTexture2D* command)
-        {
-            rvar texture = m_textures[command->handle.idx];
-            ASSERT(texture.texture != nullptr);
-            ASSERT(texture.rtv != nullptr);
-            ASSERT(m_currentShader != nullptr);
-
-            m_context->OMSetRenderTargets(1u, &texture.rtv, nullptr);
-            ADD_APICALL();
-        }
-
         void WorkerThreadInstance::Execute_ResizeTexture2D(Command_ResizeTexture2D* command)
         {
             rvar texture = m_textures[command->handle.idx];
@@ -990,6 +984,7 @@ namespace Renderer
 
             D3D11_TEXTURE2D_DESC textureDesc;
             texture.texture->GetDesc(&textureDesc);
+            ADD_APICALL();
 
             // check if this texture has RTV, if so, this is a render target texture
             cvar isRenderTarget = texture.rtv != nullptr;
@@ -1022,6 +1017,25 @@ namespace Renderer
             ASSERT(texture.texture != nullptr);
 
             SafeRelease(texture.texture);
+        }
+
+        void WorkerThreadInstance::Execute_ApplyRenderTexture2D(Command_ApplyRenderTexture2D* command)
+        {
+            rvar texture = m_textures[command->handle.idx];
+            ASSERT(texture.texture != nullptr);
+            ASSERT(texture.rtv != nullptr);
+
+            m_context->OMSetRenderTargets(1u, &texture.rtv, nullptr);
+            ADD_APICALL();
+        }
+
+        void WorkerThreadInstance::Execute_ClearRenderTexture2D(Command_ClearRenderTexture2D* command)
+        {
+            rvar texture = m_textures[command->handle.idx];
+            ASSERT(texture.rtv != nullptr);
+
+            m_context->ClearRenderTargetView(texture.rtv, reinterpret_cast<float*>(&command->color));
+            ADD_APICALL();
         }
 
 #pragma endregion

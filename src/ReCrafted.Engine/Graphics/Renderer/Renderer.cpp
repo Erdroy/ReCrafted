@@ -693,17 +693,6 @@ namespace Renderer
         g_commandList->WriteCommand(&command);
     }
 
-    void ApplyRenderTexture2D(Texture2DHandle handle, uint8_t slot)
-    {
-        CHECK_MAIN_THREAD();
-        RENDERER_VALIDATE_HANDLE(handle);
-
-        Command_ApplyRenderTexture2D command;
-        command.handle = handle;
-        command.slot = slot;
-        g_commandList->WriteCommand(&command);
-    }
-
     void ResizeTexture2D(Texture2DHandle handle, uint16_t width, uint16_t height)
     {
         CHECK_MAIN_THREAD();
@@ -726,6 +715,38 @@ namespace Renderer
         g_commandList->WriteCommand(&command);
 
         FreeTexture2DHandle(handle);
+    }
+
+    Texture2DHandle CreateRenderTexture(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat, TextureType::_enum textureType)
+    {
+        return CreateTexture2D(width, height, 0u, textureFormat, nullptr, 0u, true, textureType);
+    }
+
+    void ApplyRenderTexture(Texture2DHandle handle, uint8_t slot)
+    {
+        CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_ApplyRenderTexture2D command;
+        command.handle = handle;
+        command.slot = slot;
+        g_commandList->WriteCommand(&command);
+    }
+
+    void ClearRenderTexture(Texture2DHandle handle, Color color)
+    {
+        CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_ClearRenderTexture2D command;
+        command.handle = handle;
+        command.color = color;
+        g_commandList->WriteCommand(&command);
+    }
+
+    void DestroyRenderTexture(Texture2DHandle handle)
+    {
+        DestroyTexture2D(handle);
     }
 
     ShaderHandle CreateShader(const char* fileName)
@@ -796,6 +817,8 @@ namespace Renderer
 
     void BlitTexture(RenderBufferHandle destination, Texture2DHandle source, ShaderHandle customShader)
     {
+        CHECK_MAIN_THREAD();
+
         if (RENDERER_CHECK_HANDLE(customShader))
         {
             // bind custom shader
@@ -832,6 +855,8 @@ namespace Renderer
     
     void BlitTexture(Texture2DHandle destination, Texture2DHandle source, ShaderHandle customShader)
     {
+        CHECK_MAIN_THREAD();
+
         if (RENDERER_CHECK_HANDLE(customShader))
         {
             // bind custom shader
@@ -844,7 +869,7 @@ namespace Renderer
         }
 
         // bind render texture
-        ApplyRenderTexture2D(destination, 0u);
+        ApplyRenderTexture(destination, 0u);
 
         // bind texture
         ApplyTexture2D(source, 0u);
@@ -869,6 +894,8 @@ namespace Renderer
     void BlitTextures(RenderBufferHandle destination, Texture2DHandle* sources,
                       uint8_t sourceCount, ShaderHandle customShader, uint8_t baseSlot)
     {
+        CHECK_MAIN_THREAD();
+
         if (RENDERER_CHECK_HANDLE(customShader))
         {
             // bind custom shader
@@ -905,6 +932,8 @@ namespace Renderer
     void BlitTextures(Texture2DHandle destination, Texture2DHandle* sources,
         uint8_t sourceCount, ShaderHandle customShader, uint8_t baseSlot)
     {
+        CHECK_MAIN_THREAD();
+
         if (RENDERER_CHECK_HANDLE(customShader))
         {
             // bind custom shader
@@ -917,7 +946,7 @@ namespace Renderer
         }
 
         // bind render target
-        ApplyRenderTexture2D(destination, 0u);
+        ApplyRenderTexture(destination, 0u);
 
         // bind textures
         for (var i = 0u; i < sourceCount; i++)
