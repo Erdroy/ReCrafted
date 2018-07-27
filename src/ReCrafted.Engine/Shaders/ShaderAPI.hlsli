@@ -12,6 +12,10 @@
 #define USE_VERTEXCOLOR
 #endif // PRESET_SURFACE
 
+// Preset: POSTPROCESSING (PPs)
+#ifdef PRESET_POSTPROCESSING
+#endif
+
 // ==== API INCLUDES ====
 #include "../Common/Math.hlsli"
 #include "../Common/Common.hlsli"

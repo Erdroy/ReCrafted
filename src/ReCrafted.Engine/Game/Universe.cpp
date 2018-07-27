@@ -62,12 +62,12 @@ void Universe::Update()
 
     if (Input::IsKey(Key_Mouse0))
     {
-        m_testObject1->Modify(VoxelEditMode::Subtractive, modPosition, 1.5f);
+        m_testObject1->Modify(VoxelEditMode::Subtractive, modPosition, 2.5f);
     }
 
     if (Input::IsKey(Key_Mouse1))
     {
-        m_testObject1->Modify(VoxelEditMode::Additive, modPosition, 1.5f);
+        m_testObject1->Modify(VoxelEditMode::Additive, modPosition, 2.5f);
     }
 
     DebugDraw::SetColor(Color(0, 105, 0, 64));

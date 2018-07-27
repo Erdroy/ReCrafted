@@ -25,8 +25,8 @@ void Rendering::OnResize(uint width, uint height)
 void Rendering::CreatePostProcessingBuffers(uint width, uint height)
 {
     // Create render textures
-    m_buffer0 = Renderer::CreateTexture2D(width, height, 0, Renderer::TextureFormat::RGBA8, nullptr, 0u, true);
-    m_buffer1 = Renderer::CreateTexture2D(width, height, 0, Renderer::TextureFormat::RGBA8, nullptr, 0u, true);
+    m_buffer0 = Renderer::CreateRenderTexture(width, height, Renderer::TextureFormat::RGBA8);
+    m_buffer1 = Renderer::CreateRenderTexture(width, height, Renderer::TextureFormat::RGBA8);
 }
 
 void Rendering::DestroyPostProcessingBuffers()
@@ -92,11 +92,11 @@ void Rendering::RenderShadows()
     Profiler::EndProfile();
 }
 
-void Rendering::RenderPostProcessing(const Renderer::RenderBufferHandle& renderBuffer, const Renderer::Texture2DHandle& depthTexture)
+void Rendering::RenderPostProcessing(const Renderer::Texture2DHandle& frameTexture, const Renderer::Texture2DHandle& depthTexture)
 {
     Profiler::BeginProfile("Render PostProcessing");
 
-    var sourceTexture = m_buffer0;
+    var sourceTexture = frameTexture;
     var destinationTexture = m_buffer1;
 
     for(var i = 0u; i < m_postProcessingList.Count(); i ++)
@@ -118,10 +118,10 @@ void Rendering::RenderPostProcessing(const Renderer::RenderBufferHandle& renderB
         std::swap(sourceTexture, destinationTexture);
     }
 
-    // The 'destinationTexture' is now the buffer that contains the latest content
+    // The 'sourceTexture' is now the buffer that contains the latest content
 
-    // Blit 'destinationTexture' to back buffer
-    Renderer::BlitTexture(renderBuffer, destinationTexture);
+    // Blit 'sourceTexture' to back buffer
+    Renderer::BlitTexture(frameTexture, sourceTexture);
 
     Profiler::EndProfile();
 }

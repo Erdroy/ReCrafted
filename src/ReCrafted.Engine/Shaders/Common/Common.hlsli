@@ -41,6 +41,12 @@ cbuffer DefaultConstants : register(b0)
     float4 ViewInfo;
 
     /// <summary>
+    /// X (Screen width in pixels)
+    /// Y (Screen height in pixels)
+    /// </summary>
+    float2 ScreenInfo;
+
+    /// <summary>
     /// The camera position (also view position in world space).
     /// </summary>
     float3 CameraPosition;
@@ -54,8 +60,7 @@ cbuffer DefaultConstants : register(b0)
     /// The ambient light color.
     /// </summary>
     float3 AmbientLightColor;
-}
-
+};
 
 // ==== Functions ====
 

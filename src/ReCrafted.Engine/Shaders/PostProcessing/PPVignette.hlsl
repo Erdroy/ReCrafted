@@ -17,3 +17,10 @@ float4 PostProcessMain(in float4 color, in float2 uv, in float depth)
 
     return float4(color.rgb, alpha);
 }
+
+pass Default
+{
+    SetProfile(5.0);
+    SetVertexShader(PostProcessingVSMain);
+    SetPixelShader(PostProcessingPSMain);
+}

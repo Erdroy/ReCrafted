@@ -40,7 +40,7 @@ void Graphics::CreateRenderBuffers()
     m_gbuffer->AddTarget("[RGB]LIGHT, [A]EMISSION", Renderer::TextureFormat::RGBA8);
     m_gbuffer->End();
 
-    m_frameTexture = Renderer::CreateTexture2D(Display::GetWidth(), Display::GetHeight(), 0, Renderer::TextureFormat::RGBA8, nullptr, 0u, true);
+    m_frameTexture = Renderer::CreateRenderTexture(Display::GetWidth(), Display::GetHeight(), Renderer::TextureFormat::RGBA8);
 }
 
 void Graphics::InitializeRenderer()
@@ -97,18 +97,25 @@ void Graphics::UpdateDefaultConstants(const Matrix& mvp)
 
     m_currentShader->SetValue(2, &viewInfo);
 
+    // Set screen info
+    Vector2 screenInfo;
+    viewInfo.x = static_cast<float>(Display::GetWidth());
+    viewInfo.y = static_cast<float>(Display::GetHeight());
+
+    m_currentShader->SetValue(3, &screenInfo);
+
     // Set camera position vector
     var cameraPosition = Camera::GetMainCamera()->GetPosition();
-    m_currentShader->SetValue(3, &cameraPosition);
+    m_currentShader->SetValue(4, &cameraPosition);
 
     // Set light direction vector
     var lightdir = Vector3(0.2f, 0.3f, 0.1f);
     lightdir.Normalize();
-    m_currentShader->SetValue(4, &lightdir);
+    m_currentShader->SetValue(5, &lightdir);
 
     // Set light direction vector
     var ambientLight = Vector3(0.1f, 0.1f, 0.1f);
-    m_currentShader->SetValue(5, &ambientLight);
+    m_currentShader->SetValue(6, &ambientLight);
 
     // apply shader changes
     Renderer::ApplyShader(m_currentShader->m_shaderHandle, 0);
@@ -177,7 +184,7 @@ void Graphics::Render()
         Renderer::ApplyWindow(m_window);
         Renderer::ApplyRenderBuffer(renderBuffer);
         Renderer::ClearRenderBuffer(renderBuffer, clearColor);
-        Renderer::ClearRenderBuffer(m_frameBuffer, clearColor);
+        Renderer::ClearRenderTexture(m_frameTexture, clearColor);
 
         // set default render stage
         SetStage(RenderStage::Default);
@@ -194,7 +201,7 @@ void Graphics::Render()
         RenderEnd(); // end rendering
 
         // Render post processing
-        //m_rendering->RenderPostProcessing(m_frameBuffer, m_gbuffer->GetDepthBuffer());
+        m_rendering->RenderPostProcessing(m_frameTexture, m_gbuffer->GetDepthBuffer());
 
         // Render debug draw
         RenderDebugDraw();
@@ -203,7 +210,7 @@ void Graphics::Render()
         RenderUI();
 
         // Blit into framebuffer
-        //BlitFrameBuffer();
+        BlitFrameBuffer();
 
         Profiler::BeginProfile("Renderer::Frame");
         // next frame, wait vsync
@@ -258,7 +265,7 @@ void Graphics::RenderEnd()
     if (Input::IsKey(Key_F1))
     {
         Renderer::SetFlag(Renderer::RenderFlags::DrawWireFrame, false);
-        Renderer::BlitTexture(m_frameBuffer, m_gbuffer->GetTarget(0));
+        Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetTarget(0));
         // reset everything
         m_currentShader = nullptr;
         return;
@@ -266,7 +273,7 @@ void Graphics::RenderEnd()
 
     if (Input::IsKey(Key_F2))
     {
-        Renderer::BlitTexture(m_frameBuffer, m_gbuffer->GetTarget(0));
+        Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetTarget(0));
         // reset everything
         m_currentShader = nullptr;
         return;
@@ -274,7 +281,7 @@ void Graphics::RenderEnd()
 
     if (Input::IsKey(Key_F3))
     {
-        Renderer::BlitTexture(m_frameBuffer, m_gbuffer->GetTarget(1));
+        Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetTarget(1));
         // reset everything
         m_currentShader = nullptr;
         return;
@@ -282,7 +289,7 @@ void Graphics::RenderEnd()
 
     if (Input::IsKey(Key_F4))
     {
-        Renderer::BlitTexture(m_frameBuffer, m_gbuffer->GetTarget(2));
+        Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetTarget(2));
         // reset everything
         m_currentShader = nullptr;
         return;
@@ -290,7 +297,7 @@ void Graphics::RenderEnd()
 
     if (Input::IsKey(Key_F5))
     {
-        Renderer::BlitTexture(m_frameBuffer, m_gbuffer->GetDepthBuffer());
+        Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetDepthBuffer());
         // reset everything
         m_currentShader = nullptr;
         return;
@@ -310,7 +317,7 @@ void Graphics::RenderEnd()
     renderTargets.push_back(m_gbuffer->GetDepthBuffer());
 
     Renderer::BlitTextures(
-        m_frameBuffer,
+        m_frameTexture,
         renderTargets.data(),
         static_cast<uint8_t>(renderTargets.size()),
         m_gbufferCombine->m_shaderHandle

@@ -25,7 +25,7 @@ float4 PostProcessMain(in float4 color, in float2 uv, in float depth);
 /// Vertex Shader Function
 /// BlitVSMain
 /// </summary>
-void PPVSMain(in VSInput i, out VSOutput o)
+void PostProcessingVSMain(in VSInput i, out VSOutput o)
 {
     o.Position = float4(i.Position, 0.0f, 1.0f);
     o.TexCoord = i.TexCoord;
@@ -35,19 +35,12 @@ void PPVSMain(in VSInput i, out VSOutput o)
 /// Pixel Shader Function
 /// BlitPSMain
 /// </summary>
-float4 PPPSMain(in VSOutput input) : SV_Target0
+float4 PostProcessingPSMain(in VSOutput input) : SV_Target0
 {
     float4 color = T0.Sample(Sampler, input.TexCoord).rgba;
     float depth = T1.Sample(Sampler, input.TexCoord).r;
 
     return PostProcessMain(color, input.TexCoord, depth);
-}
-
-pass Default
-{
-    SetProfile(5.0);
-    SetVertexShader(PPVSMain);
-    SetPixelShader(PPPSMain);
 }
 
 #endif // POSTPROCESSING_HLSLI
