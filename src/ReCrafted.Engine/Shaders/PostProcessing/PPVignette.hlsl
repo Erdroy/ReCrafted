@@ -6,16 +6,19 @@
 #define PRESET_POSTPROCESSING
 #include "../ShaderAPI.hlsli"
 
+#define VIGNETTE_RADIUS 1.45f
+#define VIGNETTE_SOFTNESS 0.7f
+#define VIGNETTE_OPACITY 0.5f
+
 float4 PostProcessMain(in float4 color, in float2 uv, in float depth)
 {
-    float alpha = color.a;
-
     // Apply Vignetting
-    float2 distance = uv - 0.5f;
-    distance.x = 0.5f - dot(distance, distance);
-    color *= pow(abs(distance.x), 0.2f);
+    float2 position = uv - float2(0.5f, 0.5f);
+    float len = length(position) * 2.0f;
+    float vignette = smoothstep(VIGNETTE_RADIUS, VIGNETTE_RADIUS - VIGNETTE_SOFTNESS, len);
+    color.rgb = lerp(color.rgb, color.rgb * vignette, VIGNETTE_OPACITY);
 
-    return float4(color.rgb, alpha);
+    return color;
 }
 
 pass Default

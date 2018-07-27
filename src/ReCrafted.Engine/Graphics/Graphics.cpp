@@ -97,12 +97,12 @@ void Graphics::UpdateDefaultConstants(const Matrix& mvp)
 
     m_currentShader->SetValue(2, &viewInfo);
 
-    // Set screen info
-    Vector2 screenInfo;
-    viewInfo.x = static_cast<float>(Display::GetWidth());
-    viewInfo.y = static_cast<float>(Display::GetHeight());
+    // Set screen size
+    Vector2 screenSize;
+    screenSize.x = static_cast<float>(Display::GetWidth());
+    screenSize.y = static_cast<float>(Display::GetHeight());
 
-    m_currentShader->SetValue(3, &screenInfo);
+    m_currentShader->SetValue(3, &screenSize);
 
     // Set camera position vector
     var cameraPosition = Camera::GetMainCamera()->GetPosition();
@@ -378,7 +378,7 @@ void Graphics::OnFramePresent()
     Profiler::EndProfile();
 }
 
-void Graphics::Draw(RefPtr<Mesh>& mesh, RefPtr<Shader>& shader)
+void Graphics::Draw(const RefPtr<Mesh>& mesh, const RefPtr<Shader>& shader)
 {
     if (!(RENDERER_CHECK_HANDLE(mesh->m_vertexBuffer)) || !(RENDERER_CHECK_HANDLE(mesh->m_indexBuffer)))
         return;
@@ -389,7 +389,7 @@ void Graphics::Draw(RefPtr<Mesh>& mesh, RefPtr<Shader>& shader)
     Draw(mesh);
 }
 
-void Graphics::Draw(RefPtr<Mesh>& mesh)
+void Graphics::Draw(const RefPtr<Mesh>& mesh)
 {
     ASSERT(m_currentShader);
 
@@ -399,7 +399,7 @@ void Graphics::Draw(RefPtr<Mesh>& mesh)
     Renderer::DrawIndexed(mesh->m_indices_count);
 }
 
-void Graphics::SetShader(RefPtr<Shader>& shader)
+void Graphics::SetShader(const RefPtr<Shader>& shader)
 {
     m_currentShader = shader;
     Renderer::ApplyShader(shader->m_shaderHandle, 0);

@@ -44,7 +44,7 @@ cbuffer DefaultConstants : register(b0)
     /// X (Screen width in pixels)
     /// Y (Screen height in pixels)
     /// </summary>
-    float2 ScreenInfo;
+    float2 ScreenSize;
 
     /// <summary>
     /// The camera position (also view position in world space).

@@ -82,18 +82,18 @@ public:
      * \param mesh The mesh class pointer.
      * \param shader The shader which will be used to draw this mesh.
      */
-    void Draw(RefPtr<Mesh>& mesh, RefPtr<Shader>& shader);
+    void Draw(const RefPtr<Mesh>& mesh, const RefPtr<Shader>& shader);
 
     /**
     * \brief Draws given mesh using current shader.
     * \param mesh The mesh class pointer.
     */
-    void Draw(RefPtr<Mesh>& mesh);
+    void Draw(const RefPtr<Mesh>& mesh);
 
     /**
      * \brief Sets given shader as current.
      */
-    void SetShader(RefPtr<Shader>& shader);
+    void SetShader(const RefPtr<Shader>& shader);
 
     /**
     * \brief Sets given stage as current.

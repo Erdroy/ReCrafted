@@ -60,8 +60,8 @@ byte CHMBitmap::Sample(CHMFace::_enum faceType, float u, float v, int lod) const
     cvar x = float(u * mip.Width);
     cvar y = float(v * mip.Height);
 
-    cvar needFlipX = px + 1 == mip.Width; // x + 1 == Width: sample mip going right
-    cvar needFlipY = py + 1 == mip.Height; // y + 1 == Height-1: sample mip going down (warning: we need to properly swap axis!)
+    cvar needFlipX = px + 1 >= mip.Width; // x + 1 == Width: sample mip going right
+    cvar needFlipY = py + 1 >= mip.Height; // y + 1 == Height-1: sample mip going down (warning: we need to properly swap axis!)
 
     byte texel0 = 0u;
     byte texel1 = 0u;

@@ -104,6 +104,8 @@ void Rendering::RenderPostProcessing(const Renderer::Texture2DHandle& frameTextu
         cvar currentPP = m_postProcessingList[i];
         cvar currentPPShader = currentPP->GetShader();
 
+        Graphics::GetInstance()->SetShader(currentPPShader);
+
         // Render
         currentPP->Render();
 
