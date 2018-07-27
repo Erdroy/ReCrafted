@@ -979,7 +979,7 @@ namespace Renderer
             ASSERT(texture.rtv != nullptr);
             ASSERT(m_currentShader != nullptr);
 
-            m_deviceContext->OMSetRenderTargets(1, &texture.rtv, nullptr);
+            m_context->OMSetRenderTargets(1u, &texture.rtv, nullptr);
             ADD_APICALL();
         }
 
