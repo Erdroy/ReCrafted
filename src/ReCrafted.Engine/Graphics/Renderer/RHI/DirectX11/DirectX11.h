@@ -20,7 +20,6 @@
 #define ADD_DRAWCALL() RHI::m_drawCalls++
 
 #define DX_CALL(x) ASSERT(SUCCEEDED(x)); ADD_APICALL()
-// TODO: Add d3d11 error message to dx call
 
 inline uint32_t HLSLFixBufferSize(uint32_t size)
 {

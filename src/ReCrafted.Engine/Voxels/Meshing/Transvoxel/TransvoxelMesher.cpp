@@ -156,8 +156,6 @@ void TransvoxelMesher::Generate(const Vector3& position, int lod, uint8_t border
         // Normalize the normal to be a normal normal.
         normal.Normalize();
     }
-
-    // TODO: Calculate UV's
 }
 
 void TransvoxelMesher::Apply(const RefPtr<Mesh>& mesh)
