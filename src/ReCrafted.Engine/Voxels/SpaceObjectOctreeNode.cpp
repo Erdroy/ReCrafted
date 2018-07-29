@@ -393,12 +393,12 @@ void SpaceObjectOctreeNode::DrawDebug()
     DebugDraw::DrawWireBox(m_Bounds);
 
     static const Color LinkColors[6] = {
-        Color(0xFF000060), // Front
-        Color(0x00FF0060), // Back
-        Color(0x00000000), // Left
-        Color(0x00000000), // Right
-        Color(0x00000000), // Top
-        Color(0x00000000), // Bottom
+        Color(0xFF0000FF), // Front
+        Color(0x0000FFFF), // Back
+        Color(0x00FF00FF), // Left
+        Color(0x00AA00FF), // Right
+        Color(0xFFFFFFFF), // Top
+        Color(0xAAAAAAFF), // Bottom
     };
 
     var id = -1;
@@ -410,7 +410,7 @@ void SpaceObjectOctreeNode::DrawDebug()
             continue;
 
         DebugDraw::SetColor(LinkColors[id]);
-        DebugDraw::DrawLine(m_Position, neigh->m_Position);
+        DebugDraw::DrawArrow(m_Position, neigh->m_Position, 1.0f);
 
     }
 }
@@ -492,30 +492,29 @@ SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNode(const Vector3& position, 
     if (m_Size == size)
         return this;
 
-    if (m_populated) {
-        for (var children : m_childrenNodes)
-        {
-            if (children && BoundingBox::Contains(children->GetBounds(), position))
-                return children->FindNode(position, size);
-        }
-    }
-
-    return this;
-
-    /*cvar xSign = position.x > m_Position.x;
+    cvar xSign = position.x > m_Position.x;
     cvar ySign = position.y > m_Position.y;
     cvar zSign = position.z > m_Position.z;
 
-    cvar caseCode = (zSign ? 1 : 0) | (ySign ? 1 : 0) << 1 | (xSign ? 1 : 0) << 2;
+    // Build case code
+    var caseCode = 0;
+    caseCode |= zSign << 0;
+    caseCode |= ySign << 1;
+    caseCode |= xSign << 2;
+
+    // Select children id from caseCode and lookup table 
+    // TODO: this can be optimized, lookup table is not really required, but we need to get the case code right.
     cvar childId = NodeDirIds[caseCode];
 
-    var node = m_childrenNodes[childId];
+    // Select node and process
+    var node = m_childrenNodes[childId]; // For non-populated nodes, this array IS initialized, but contains nullptrs.
 
+    // Children node is not populated, so, just return current node.
     if (!node)
         return this;
 
     // Go further
-    return node->FindNode(position, size);*/
+    return node->FindNode(position, size);
 }
 
 SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNode(const Vector3& position)
