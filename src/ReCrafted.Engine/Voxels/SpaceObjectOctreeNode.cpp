@@ -478,11 +478,6 @@ SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNeighNode(NodeDirection::_enum
 {
     // calculate target position
     cvar targetPosition = m_Position + DirectionOffset[direction] * float(m_Size);
-
-    if(HAS_LOCAL_NEIGH(m_id, direction))
-    {
-    }
-
     return owner->FindNode(targetPosition, m_Size);
 }
 

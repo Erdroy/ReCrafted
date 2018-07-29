@@ -6,7 +6,7 @@
 
 Array<Text> GameInfo::cliArguments;
 
-bool GameInfo::ContainsArgument(Text& text)
+bool GameInfo::ContainsArgument(const Text& text)
 {
     for (auto i = 0u; i < cliArguments.Size(); i ++)
     {
@@ -17,7 +17,7 @@ bool GameInfo::ContainsArgument(Text& text)
     return false;
 }
 
-void GameInfo::ParseArguments(Text& text)
+void GameInfo::ParseArguments(const Text& text)
 {
     auto length = text.Length();
     auto isString = false;

@@ -16,12 +16,12 @@ public:
     /// <summary>
     /// Checks if specified argument is present.
     /// </summary>
-    static bool ContainsArgument(Text& text);
+    static bool ContainsArgument(const Text& text);
 
     /// <summary>
     /// Parses argument string and adds to the cliArguments array.
     /// </summary>
-    static void ParseArguments(Text& text);
+    static void ParseArguments(const Text& text);
 
 public:
     /// <summary>

@@ -6,9 +6,9 @@
 
 RefPtr<Domain> Domain::Root;
 
-const char* jit_options[] = {
+const char* jit_options[] = { 
     "--soft-breakpoints",
-    "--debugger-agent=transport=dt_socket,address=127.0.0.1:55000"
+    "--debugger-agent=transport=dt_socket,address=127.0.0.1:55000,embedding=1,server=y,suspend=y,timeout=30000"
 };
 
 const char* rootDomainName = "ReCrafted";
@@ -72,12 +72,15 @@ RefPtr<Domain> Domain::CreateRoot()
 
     mono_set_dirs("../mono/lib", "../mono/etc");
 
-    if (GameInfo::ContainsArgument(TEXT("-debug")) && !GameInfo::ContainsArgument(TEXT("-nodebug")))
+    cvar debug = GameInfo::ContainsArgument(TEXT_CONST("-debug"));
+
+    if(debug)
     {
-        mono_jit_parse_options(2, const_cast<char**>(jit_options));
+        mono_debug_init(MONO_DEBUG_FORMAT_MONO);
+        mono_jit_parse_options(3, const_cast<char**>(jit_options));
     }
 
-    auto domain = mono_jit_init_version(rootDomainName, runtimeVersion);
+    cvar domain = mono_jit_init_version(rootDomainName, runtimeVersion);
 
     if (!domain)
     {
@@ -86,10 +89,9 @@ RefPtr<Domain> Domain::CreateRoot()
         return nullptr;
     }
 
-    if (!GameInfo::ContainsArgument(TEXT("-nodebug")))
+    if (debug)
     {
-        mono_debug_init(MONO_DEBUG_FORMAT_MONO);
-        mono_debug_domain_create(domain);
+        //mono_debug_domain_create(domain);
     }
 
     // create instance

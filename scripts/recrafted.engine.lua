@@ -59,12 +59,14 @@ project "ReCrafted.Engine"
 	links { "d3d11", "dxguid", "dxgi", "d3dcompiler", "Rpcrt4", "Ultralight", "UltralightCore", "WebCore", "mono"}
 		
 	configuration { "Debug" }
+		debugargs { "-debug" }
 		defines { "DEBUG", "_ITERATOR_DEBUG_LEVEL=0" }
 		runtime "Debug"
 		symbols "On"
 		links { "jemallocd", "freetype28MTd" }
 
 	configuration { "Release" }
+		debugargs { "-debug" }
 		defines { "NDEBUG" }
 		flags { "OptimizeSpeed", "No64BitChecks", "NoBufferSecurityCheck" }
 		runtime "Release"
