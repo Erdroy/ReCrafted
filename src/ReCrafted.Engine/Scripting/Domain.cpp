@@ -8,7 +8,7 @@ RefPtr<Domain> Domain::Root;
 
 const char* jit_options[] = { 
     "--soft-breakpoints",
-    "--debugger-agent=transport=dt_socket,address=127.0.0.1:55000,embedding=1,server=y,suspend=y,timeout=30000"
+    "--debugger-agent=transport=dt_socket,address=127.0.0.1:55000,embedding=1,server=y,suspend=n,timeout=30000"
 };
 
 const char* rootDomainName = "ReCrafted";
