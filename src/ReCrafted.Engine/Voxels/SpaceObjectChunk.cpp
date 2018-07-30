@@ -137,13 +137,13 @@ void SpaceObjectChunk::Upload()
     ASSERT(NeedsUpload());
 
     // Lock Upload
-    //ScopeLock(m_uploadLock);
-
+    
     switch (m_uploadType)
     {
     case SwapMesh:
     {
         // Dispose old mesh and swap mesh (m_newMesh will be nullptr - because m_mesh is nullptr (SafeDispose))
+        ScopeLock(m_uploadLock);
         SafeDispose(m_mesh);
         m_mesh.swap(m_newMesh);
         break;
@@ -154,6 +154,7 @@ void SpaceObjectChunk::Upload()
     }
     case ClearMesh:
     {
+        ScopeLock(m_uploadLock);
         SafeDispose(m_mesh);
         SafeDispose(m_newMesh);
         break;
