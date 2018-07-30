@@ -72,7 +72,6 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
     if (!m_chunkData->IsLoaded() || !m_chunkData->HasSurface())
         return;
 
-    ASSERT(m_newMesh == nullptr);
     var borders = 0x0;
 
     var neigh = owner->GetNeighbor(NodeDirection::Front);
