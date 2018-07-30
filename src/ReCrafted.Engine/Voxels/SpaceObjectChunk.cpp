@@ -73,8 +73,32 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
         return;
 
     ASSERT(m_newMesh == nullptr);
+    var borders = 0x0;
 
-    cvar borders = 0xFF; // All borders TODO: Build border mask from node
+    var neigh = owner->GetNeighbor(NodeDirection::Front);
+    if (neigh && neigh->HasChildren())
+        borders |= 1 << 0;
+
+    neigh = owner->GetNeighbor(NodeDirection::Back);
+    if (neigh && neigh->HasChildren())
+        borders |= 1 << 1;
+
+    neigh = owner->GetNeighbor(NodeDirection::Left);
+    if (neigh && neigh->HasChildren())
+        borders |= 1 << 2;
+
+    neigh = owner->GetNeighbor(NodeDirection::Right);
+    if (neigh && neigh->HasChildren())
+        borders |= 1 << 3;
+
+    neigh = owner->GetNeighbor(NodeDirection::Top);
+    if (neigh && neigh->HasChildren())
+        borders |= 1 << 4;
+
+    neigh = owner->GetNeighbor(NodeDirection::Bottom);
+    if (neigh && neigh->HasChildren())
+        borders |= 1 << 5;
+    
     cvar voxelData = m_chunkData->GetData();
 
     // Try to generate mesh data
