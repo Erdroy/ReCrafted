@@ -11,6 +11,7 @@
 #include "Core/Math/Vector3.h"
 #include "Core/Math/BoundingBox.h"
 #include "Core/Containers/Array.h"
+#include "Core/Lock.h"
 
 class SpaceObject;
 
@@ -26,8 +27,15 @@ class SpaceObjectOctree
 private:
     SpaceObject* spaceObject = nullptr;
 
-    int m_rootNodesCount = 1;
     SpaceObjectOctreeNode** m_rootNodes = nullptr;
+    int m_rootNodesCount = 1;
+
+    Lock m_nodesLock = {};
+    Array<SpaceObjectOctreeNode*> m_nodes = {};
+
+private:
+    void RegisterNode(SpaceObjectOctreeNode* node);
+    void UnregisterNode(SpaceObjectOctreeNode* node);
 
 public:
     void Update();

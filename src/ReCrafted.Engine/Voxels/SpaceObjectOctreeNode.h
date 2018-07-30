@@ -48,16 +48,16 @@ private:
     SpaceObjectOctreeNode* parent = nullptr;
     SpaceObjectOctreeNode* root = nullptr;
 
-    int m_id = 0;
-
     SpaceObjectOctreeNode* m_neighborNodes[6] = {};
     SpaceObjectOctreeNode* m_childrenNodes[8] = {};
-    RefPtr<SpaceObjectChunk> m_chunk = nullptr;
 
+    int m_id = 0;
     bool m_isRoot = false;
     std::atomic<bool> m_populated = false;
     std::atomic<bool> m_processing = false;
-    std::atomic<bool> m_rebuilding = false;
+    std::atomic<bool> m_forceRebuild = false;
+
+    RefPtr<SpaceObjectChunk> m_chunk = nullptr;
 
 private:
     bool HasPopulatedChildren();
@@ -87,9 +87,19 @@ private:
     SpaceObjectOctreeNode* FindNode(const Vector3& position);
 
 public:
-    void UpdateViews(Array<Vector3>& views);
+    void Initialize();
     void Dispose();
     void DrawDebug();
+    void UpdateViews(Array<Vector3>& views);
+        
+    FORCEINLINE void Update()
+    {
+        if(m_forceRebuild)
+        {
+            Rebuild();
+            m_forceRebuild = false;
+        }
+    }
 
 public:
     void Populate();
@@ -100,9 +110,34 @@ public:
     bool Modify(VoxelEditMode::_enum mode, Vector3& position, float size);
 
 public:
-    SpaceObjectChunk* GetChunk() const
+    RefPtr<SpaceObjectChunk> GetChunk() const
     {
-        return m_chunk.get();
+        return m_chunk;
+    }
+
+    SpaceObjectOctreeNode* GetNeighbor(const NodeDirection::_enum direction) const
+    {
+        return m_neighborNodes[direction];
+    }
+
+    SpaceObjectOctreeNode* GetChildren(const int childrenId) const
+    {
+        ASSERT(childrenId >= 0 && childrenId < 8);
+
+        if (!m_populated)
+            return nullptr;
+
+        return m_childrenNodes[childrenId];
+    }
+
+    bool HasChildren() const
+    {
+        return m_childrenNodes[0] != nullptr;
+    }
+
+    bool IsPopulated() const
+    {
+        return m_populated;
     }
 
 public:

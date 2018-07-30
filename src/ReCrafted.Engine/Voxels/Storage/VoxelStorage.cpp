@@ -78,7 +78,7 @@ void VoxelStorage::Init(SpaceObjectSettings* settings)
 
 void VoxelStorage::Update()
 {
-    Profiler::BeginProfile("SpaceObjectOctree::Update");
+    Profiler::BeginProfile("VoxelStorage::Update");
     m_chunkCache->Update();
     Profiler::EndProfile();
 }

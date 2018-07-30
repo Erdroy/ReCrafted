@@ -93,15 +93,41 @@ void SpaceObjectOctree::GeneratePrimary()
     SetMaxDepth(maxDepth);
 }
 
+void SpaceObjectOctree::RegisterNode(SpaceObjectOctreeNode* node)
+{
+    ASSERT(node);
+
+    ScopeLock(m_nodesLock);
+    m_nodes.Add(node);
+}
+
+void SpaceObjectOctree::UnregisterNode(SpaceObjectOctreeNode* node)
+{
+    ASSERT(node);
+
+    ScopeLock(m_nodesLock);
+    m_nodes.Add(node);
+}
+
 void SpaceObjectOctree::Update()
 {
+    Profiler::BeginProfile("SpaceObjectOctree::Update");
+    ScopeLock(m_nodesLock);
+    for(var node : m_nodes)
+    {
+        // Warning: Update function is FORCEINLINE
+
+        //node->Update();
+    }
+    Profiler::EndProfile();
 }
 
 void SpaceObjectOctree::UpdateViews(Array<Vector3>& views)
 {
-    Profiler::BeginProfile("SpaceObjectOctree::updateViews");
+    Profiler::BeginProfile("SpaceObjectOctree::UpdateViews");
     for (var i = 0; i < m_rootNodesCount; i++)
         m_rootNodes[i]->UpdateViews(views);
+
     Profiler::EndProfile();
 }
 

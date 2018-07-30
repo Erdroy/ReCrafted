@@ -22,7 +22,10 @@ bool SpaceObjectOctreeNode::HasPopulatedChildren()
 
     for (cvar node : m_childrenNodes)
     {
-        if (node && node->m_populated)
+        if (!node)
+            continue;
+
+        if (node->m_populated)
             return true;
     }
 
@@ -39,7 +42,10 @@ bool SpaceObjectOctreeNode::IsProcessing() const
 
     for (cvar node : m_childrenNodes)
     {
-        if (node && node->IsProcessing())
+        if (!node)
+            continue;
+
+        if (node->IsProcessing())
             return true;
     }
 
@@ -83,32 +89,46 @@ void SpaceObjectOctreeNode::WorkerPopulate(IVoxelMesher* mesher) // WARNING: thi
     {
         cvar position = m_Position + ChildrenNodeOffsets[i] * static_cast<float>(childrenSize);
 
-        // construct node
-        cvar childNode = new SpaceObjectOctreeNode();
+        // Construct node
+        cvar node = new SpaceObjectOctreeNode();
         
-        childNode->m_id = i;
+        node->m_id = i;
 
-        childNode->m_Position = position;
-        childNode->m_Size = childrenSize;
-        childNode->m_Bounds = BoundingBox(position, boundsSize);
+        node->m_Position = position;
+        node->m_Size = childrenSize;
+        node->m_Bounds = BoundingBox(position, boundsSize);
 
-        // set owner, parent and root
-        childNode->owner = owner;
-        childNode->parent = this;
-        childNode->root = root;
+        // Set owner, parent and root
+        node->owner = owner;
+        node->parent = this;
+        node->root = root;
 
-        // set node depth
-        childNode->SetDepth(GetDepth() + 1);
+        // Set node depth
+        node->SetDepth(GetDepth() + 1);
 
         // Create node's chunk
-        childNode->CreateChunk(); 
+        node->CreateChunk(); 
 
-        m_childrenNodes[i] = childNode;
+        // Initialize node
+        node->Initialize();
+
+        // Set node in children array
+        m_childrenNodes[i] = node;
     }
 
-    for(var i = 0; i < 8; i ++)
+    // Generate chunks
+    for (var node : m_childrenNodes)
+        node->GenerateChunk(mesher);
+
+    // Force rebuild neighbor meshes
+    UpdateNeighborNodes();
+
+    for(var node : m_neighborNodes)
     {
-        m_childrenNodes[i]->GenerateChunk(mesher);
+        if (!node)
+            continue;
+
+        node->m_forceRebuild = true;
     }
 }
 
@@ -118,7 +138,10 @@ void SpaceObjectOctreeNode::WorkerDepopulate(IVoxelMesher* mesher) // WARNING: t
 
 void SpaceObjectOctreeNode::WorkerRebuild(IVoxelMesher* mesher) // WARNING: this function is called on WORKER THREAD!
 {
-    // rebuild chunks mesh
+    // Update neighbors
+    UpdateNeighborNodes();
+
+    // Rebuild chunk
     m_chunk->Rebuild(mesher);
 }
 
@@ -143,10 +166,8 @@ void SpaceObjectOctreeNode::FindIntersecting(Array<SpaceObjectOctreeNode*>& node
                                              const int targetNodeSize)
 {
     // iterate all children nodes
-    for (var i = 0; i < 8; i++)
+    for (var node : m_childrenNodes)
     {
-        cvar node = m_childrenNodes[i];
-
         if (node == nullptr)
             return;
 
@@ -189,14 +210,13 @@ void SpaceObjectOctreeNode::Depopulate()
 
     DestroyChildren();
     OnDepopulate();
+    OnCreate();
 }
 
 void SpaceObjectOctreeNode::Rebuild()
 {
-    if (IsProcessing() || m_rebuilding)
+    if (IsProcessing())
         return;
-
-    m_rebuilding = true;
 
     // queue rebuild job
     SpaceObjectManager::Enqueue(this, ProcessMode::Rebuild, Action<void>::New<SpaceObjectOctreeNode, &SpaceObjectOctreeNode::OnRebuild>(this));
@@ -204,10 +224,6 @@ void SpaceObjectOctreeNode::Rebuild()
 
 void SpaceObjectOctreeNode::OnCreate()
 {
-    //ASSERT(m_chunk != nullptr);
-
-    m_processing = false;
-
     // Upload chunk if needed
     if (m_chunk && m_chunk->NeedsUpload())
     {
@@ -222,8 +238,6 @@ void SpaceObjectOctreeNode::OnCreate()
 void SpaceObjectOctreeNode::OnRebuild()
 {
     ASSERT(m_chunk != nullptr);
-
-    m_rebuilding = false;
 
     // Upload chunk if needed
     if (m_chunk && m_chunk->NeedsUpload())
@@ -279,8 +293,48 @@ void SpaceObjectOctreeNode::OnDepopulate()
 {
     m_populated = false;
     m_processing = false;
+}
 
-    OnCreate();
+void SpaceObjectOctreeNode::Initialize()
+{
+    // Current bode has been created just now, so register this node.
+    owner->RegisterNode(this);
+}
+
+void SpaceObjectOctreeNode::Dispose()
+{
+    OnDestroy();
+
+    // Unregister this node, as it is going to be deleted.
+    owner->UnregisterNode(this);
+}
+
+void SpaceObjectOctreeNode::DrawDebug()
+{
+    DebugDraw::SetColor(NodeLoDDebugColors[m_Depth]);
+    DebugDraw::DrawWireBox(m_Bounds);
+
+    static const Color LinkColors[6] = {
+        Color(0xFF0000FF), // Front
+        Color(0x0000FFFF), // Back
+        Color(0x00FF00FF), // Left
+        Color(0x00AA00FF), // Right
+        Color(0xFFFFFFFF), // Top
+        Color(0xAAAAAAFF), // Bottom
+    };
+
+    var id = -1;
+    for(var neigh : m_neighborNodes)
+    {
+        id++;
+
+        if (!neigh)
+            continue;
+
+        DebugDraw::SetColor(LinkColors[id]);
+        DebugDraw::DrawArrow(m_Position, neigh->m_Position, 1.0f);
+
+    }
 }
 
 void SpaceObjectOctreeNode::UpdateViews(Array<Vector3>& views)
@@ -380,39 +434,6 @@ void SpaceObjectOctreeNode::UpdateViews(Array<Vector3>& views)
     // IF (there is no C's) AND populated: depopulate - otherwise: ignore.
     if (m_populated && views.Count() == 0)
         Depopulate();
-}
-
-void SpaceObjectOctreeNode::Dispose()
-{
-    OnDestroy();
-}
-
-void SpaceObjectOctreeNode::DrawDebug()
-{
-    DebugDraw::SetColor(NodeLoDDebugColors[m_Depth]);
-    DebugDraw::DrawWireBox(m_Bounds);
-
-    static const Color LinkColors[6] = {
-        Color(0xFF0000FF), // Front
-        Color(0x0000FFFF), // Back
-        Color(0x00FF00FF), // Left
-        Color(0x00AA00FF), // Right
-        Color(0xFFFFFFFF), // Top
-        Color(0xAAAAAAFF), // Bottom
-    };
-
-    var id = -1;
-    for(var neigh : m_neighborNodes)
-    {
-        id++;
-
-        if (!neigh)
-            continue;
-
-        DebugDraw::SetColor(LinkColors[id]);
-        DebugDraw::DrawArrow(m_Position, neigh->m_Position, 1.0f);
-
-    }
 }
 
 bool SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position, float size)
