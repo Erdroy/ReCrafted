@@ -42,25 +42,25 @@ for (auto c = VoxelChunkData::ChunkDataStart; c < VoxelChunkData::ChunkSize; c++
 const int ISO_LEVEL = 0;
 const float S = 1.0f / 256.0f;
 
-inline Vector3 GetEdge(Vector3 offset, sbyte* data, Vector3 cornerA, Vector3 cornerB)
+inline Vector3 GetEdge(Vector3 offset, Voxel* data, Vector3 cornerA, Vector3 cornerB)
 {
     var offsetA = offset + cornerA;
     var offsetB = offset + cornerB;
 
     // get data
-    cvar sampleA = VOXEL_TO_FLOAT(GetVoxel(data, offsetA));
-    cvar sampleB = VOXEL_TO_FLOAT(GetVoxel(data, offsetB));
+    cvar sampleA = VOXEL_TO_FLOAT(GetVoxel(data, offsetA).value);
+    cvar sampleB = VOXEL_TO_FLOAT(GetVoxel(data, offsetB).value);
 
     return GetIntersection(offsetA, offsetB, sampleA, sampleB);
 }
 
-void MCMesher::GenerateCell(Cell* cell, const Int3& offset, sbyte* data) const
+void MCMesher::GenerateCell(Cell* cell, const Int3& offset, Voxel* data) const
 {
     byte caseIndex = 0;
 
     for (auto i = 0; i < 8; i++) // TODO: unroll
     {
-        if (GetVoxel(data, offset + MSCellCorner[i]) > ISO_LEVEL)
+        if (GetVoxel(data, offset + MSCellCorner[i]).value > ISO_LEVEL)
             caseIndex |= 1 << i;
     }
 
@@ -68,7 +68,7 @@ void MCMesher::GenerateCell(Cell* cell, const Int3& offset, sbyte* data) const
     cell->caseIndex = caseIndex;
 }
 
-void MCMesher::GenerateCube(Cell* cell, const Vector3& position, const Vector3& offset, float lod, sbyte* data)
+void MCMesher::GenerateCube(Cell* cell, const Vector3& position, const Vector3& offset, float lod, Voxel* data)
 {
     // this function is called when this cell is not full and/or empty
 
@@ -129,8 +129,7 @@ void MCMesher::GenerateCube(Cell* cell, const Vector3& position, const Vector3& 
     cell->vertexNormal.Normalize();
 }
 
-void MCMesher::GenerateSkirt(Cell* cell, const Vector3& position, const Vector3& offset, float lod, uint8_t axis,
-                             sbyte* data)
+void MCMesher::GenerateSkirt(Cell* cell, const Vector3& position, const Vector3& offset, float lod, uint8_t axis, Voxel* data)
 {
     cvar corners = MSCornerOffsets[axis];
 
@@ -139,7 +138,7 @@ void MCMesher::GenerateSkirt(Cell* cell, const Vector3& position, const Vector3&
 
     for (auto i = 0; i < 4; i++) // TODO: unroll
     {
-        if (GetVoxel(data, offset + corners[i]) < ISO_LEVEL)
+        if (GetVoxel(data, offset + corners[i]).value < ISO_LEVEL)
             caseIndex |= 1 << i;
     }
 
@@ -170,7 +169,7 @@ void MCMesher::GenerateSkirt(Cell* cell, const Vector3& position, const Vector3&
     }
 }
 
-void MCMesher::GenerateCells(sbyte* data, const Vector3& position, float lod, uint8_t borders)
+void MCMesher::GenerateCells(Voxel* data, const Vector3& position, float lod, uint8_t borders)
 {
     // generate all cells
     ITERATE_CELLS_BEGIN(x, y, z)
@@ -246,7 +245,7 @@ void MCMesher::Apply(const RefPtr<Mesh>& mesh)
     Clear();
 }
 
-void MCMesher::Generate(const Vector3& position, int lod, uint8_t borders, sbyte* data)
+void MCMesher::Generate(const Vector3& position, int lod, uint8_t borders, Voxel* data)
 {
     cvar lodF = static_cast<float>(lod);
 

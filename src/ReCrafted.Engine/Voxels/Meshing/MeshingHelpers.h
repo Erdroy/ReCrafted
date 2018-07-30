@@ -1,3 +1,5 @@
+// ReCrafted (c) 2016-2018 Always Too Late
+
 #pragma once
 
 #ifndef MESHINGHELPERS_H
@@ -33,17 +35,17 @@ inline Vector3 GetIntersection(const Int3& positionA, const Int3& positionB, con
         Vector3(float(positionB.x), float(positionB.y), float(positionB.z)), densityA, densityB);
 }
 
-inline sbyte GetVoxel(sbyte* data, const Vector3& point)
+inline Voxel GetVoxel(Voxel* data, const Vector3& point)
 {
     return (VoxelChunkData::GetVoxel(data, int(point.x), int(point.y), int(point.z)));
 }
 
-inline sbyte GetVoxel(sbyte* data, const Int3& point)
+inline Voxel GetVoxel(Voxel* data, const Int3& point)
 {
     return (VoxelChunkData::GetVoxel(data, point.x, point.y, point.z));
 }
 
-inline sbyte GetVoxel(sbyte* data, int x, int y, int z)
+inline Voxel GetVoxel(Voxel* data, int x, int y, int z)
 {
     return (VoxelChunkData::GetVoxel(data, x, y, z));
 }

@@ -47,18 +47,18 @@ public:
     }
 
 private:
-    FORCEINLINE void GenerateCell(Cell* cell, const Int3& offset, sbyte* data) const;
-    FORCEINLINE void GenerateCube(Cell* cell, const Vector3& position, const Vector3& offset, float lod, sbyte* data);
-    FORCEINLINE void GenerateSkirt(Cell* cell, const Vector3& position, const Vector3& offset, float lod, uint8_t axis, sbyte* data);
+    FORCEINLINE void GenerateCell(Cell* cell, const Int3& offset, Voxel* data) const;
+    FORCEINLINE void GenerateCube(Cell* cell, const Vector3& position, const Vector3& offset, float lod, Voxel* data);
+    FORCEINLINE void GenerateSkirt(Cell* cell, const Vector3& position, const Vector3& offset, float lod, uint8_t axis, Voxel* data);
 
-    FORCEINLINE void GenerateCells(sbyte* data, const Vector3& position, float lod, uint8_t borders);
+    FORCEINLINE void GenerateCells(Voxel* data, const Vector3& position, float lod, uint8_t borders);
 
 public:
     /**
     * \brief Virtual method for generating a mesh from hermite voxel data.
     * \param data The hermite voxel data (in -127 to 127 range).
     */
-    void Generate(const Vector3& position, int lod, uint8_t borders, sbyte* data) override;
+    void Generate(const Vector3& position, int lod, uint8_t borders, Voxel* data) override;
 
     /**
     * \brief Checks if there are any generated triangles.

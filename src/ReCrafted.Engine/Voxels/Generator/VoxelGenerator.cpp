@@ -9,11 +9,11 @@
 #include "Voxels/Storage/VoxelChunkData.h"
 #include "Voxels/Utilities/VoxelUtils.h"
 
-sbyte VoxelGenerator::GenerateFromCHM(const Vector3& origin, const Vector3& position,
+Voxel VoxelGenerator::GenerateFromCHM(const Vector3& origin, const Vector3& position,
     const int mipLevel, const int lodSize, const int radius, const int height) const
 {
     if (position.LengthSqr() == 0)
-        return 0;
+        return Voxel::Default;
 
     // Get sphere face
     cvar sphereFace = CHMHelpers::GetFace(position);
@@ -34,7 +34,7 @@ sbyte VoxelGenerator::GenerateFromCHM(const Vector3& origin, const Vector3& posi
     cvar voxelValue = (sphereHeight - terrainHeight) / lodSize;
 
     // convert voxel value to voxel
-    return VOXEL_FROM_FLOAT(voxelValue);
+    return Voxel::Create(voxelValue); // TODO: Read material id from CHM
 }
 
 void VoxelGenerator::Init(SpaceObjectSettings* settings)
@@ -58,7 +58,7 @@ void VoxelGenerator::Dispose()
     SafeDispose(m_bitmap);
 }
 
-inline void SetVoxel(sbyte* voxelData, int x, int y, int z, sbyte voxel)
+inline void SetVoxel(Voxel* voxelData, int x, int y, int z, Voxel voxel)
 {
     voxelData[INDEX_3D(
         x + VoxelChunkData::EnableNormalCorrection,
@@ -69,8 +69,8 @@ inline void SetVoxel(sbyte* voxelData, int x, int y, int z, sbyte voxel)
 
 bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, const Vector3& position, int lod, int depth)
 {
-    const int voxelDataSize = VoxelChunkData::ChunkDataSize * VoxelChunkData::ChunkDataSize * VoxelChunkData::ChunkDataSize;
-    sbyte voxels[voxelDataSize]; // Well, stack will cry, but game will be still happy
+    const int voxelCount = VoxelChunkData::ChunkDataSize * VoxelChunkData::ChunkDataSize * VoxelChunkData::ChunkDataSize;
+    Voxel voxels[voxelCount]; // Well, stack will cry, but game will be still happy
 
     cvar octree = spaceObject->GetOctree();
 
@@ -101,11 +101,11 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
                     settings->hillsHeight);
 
                 // Surface checking
-                if(!hasSurface && lastVoxel != value)
+                if(!hasSurface && lastVoxel != value.value)
                     hasSurface = true;
 
-                lastVoxel = value;
-                voxelVolumeSign += value;
+                lastVoxel = value.value;
+                voxelVolumeSign += value.value;
 
                 SetVoxel(voxels, x, y, z, value);
             }
@@ -123,7 +123,8 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
             chunk->AllocateData();
 
         cvar chunkData = chunk->GetData();
-        memcpy_s(chunkData, voxelDataSize, voxels, voxelDataSize);
+        cvar chunkDataSize = voxelCount * sizeof(Voxel);
+        memcpy_s(chunkData, chunkDataSize, voxels, chunkDataSize);
     }
 
     return hasSurface;

@@ -9,6 +9,7 @@
 #include "ReCrafted.h"
 #include "Core/Math/Vector3.h"
 #include "Voxels/Utilities/VoxelUtils.h"
+#include "Voxels/Voxel.h"
 
 class VoxelChunkData
 {
@@ -49,7 +50,7 @@ public:
     static const int ChunkDataStart = EnableNormalCorrection ? -1 : 0;
 
 private:
-    sbyte* m_voxelData = nullptr;
+    Voxel* m_voxelData = nullptr;
     Vector3 m_nodePosition = {};
     Vector3 m_chunkPosition = {};
     uint64_t m_id = 0u;
@@ -76,9 +77,19 @@ public:
         ASSERT(m_voxelData == nullptr);
 
         cvar size = ChunkDataSize * ChunkDataSize * ChunkDataSize;
-        m_voxelData = new sbyte[size];
+        m_voxelData = new Voxel[size];
 
-        memset(m_voxelData, m_isFilled ? -127 : 127, size);
+        if (m_isFilled) 
+        {
+            for (var i = 0; i < size; i++)
+                m_voxelData[i] = Voxel::Full;
+        }
+        else
+        {
+            for (var i = 0; i < size; i++)
+                m_voxelData[i] = Voxel::Empty;
+        }
+        //memset(m_voxelData, m_isFilled ? -0x00FF : 0x00FF, size * sizeof(Voxel));
     }
 
     void DeallocateData()
@@ -97,7 +108,7 @@ public:
         return m_size / ChunkSize;
     }
 
-    sbyte* GetData() const
+    Voxel* GetData() const
     {
         return m_voxelData;
     }
@@ -147,18 +158,18 @@ public:
         m_cached = false;
     }
 
-    FORCEINLINE sbyte GetVoxel(int x, int y, int z) const
+    FORCEINLINE Voxel GetVoxel(int x, int y, int z) const
     {
         return GetVoxel(m_voxelData, x, y, z);
     }
 
-    FORCEINLINE void SetVoxel(int x, int y, int z, sbyte voxel) const
+    FORCEINLINE void SetVoxel(int x, int y, int z, Voxel voxel) const
     {
         SetVoxel(m_voxelData, x, y, z, voxel);
     }
 
 public:
-    FORCEINLINE static sbyte GetVoxel(sbyte* voxelData, int x, int y, int z)
+    FORCEINLINE static Voxel GetVoxel(Voxel* voxelData, int x, int y, int z)
     {
         return voxelData[INDEX_3D(
             x + EnableNormalCorrection,
@@ -167,7 +178,7 @@ public:
             ChunkDataSize)];
     }
 
-    FORCEINLINE static void SetVoxel(sbyte* voxelData, int x, int y, int z, sbyte voxel)
+    FORCEINLINE static void SetVoxel(Voxel* voxelData, int x, int y, int z, Voxel voxel)
     {
         voxelData[INDEX_3D(
             x + EnableNormalCorrection,

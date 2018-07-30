@@ -22,7 +22,7 @@ public:
      * \brief Virtual method for generating a mesh from hermite voxel data.
      * \param data The hermite voxel data (in -127 to 127 range).
      */
-    virtual void Generate(const Vector3& position, int lod, uint8_t borders, sbyte* data) = 0;
+    virtual void Generate(const Vector3& position, int lod, uint8_t borders, Voxel* data) = 0;
 
     /**
      * \brief Checks if there are any generated triangles.

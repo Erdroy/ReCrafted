@@ -465,21 +465,21 @@ bool SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position,
                 if (distance <= size + 0.5f)
                 {
                     cvar value = size - distance;
-                    var newValue = VOXEL_FROM_FLOAT(value);
+                    var newValue = Voxel::Create(value);
 
                     if(newValue == currentValue)
                         continue;
 
                     if (mode == VoxelEditMode::Additive)
                     {
-                        newValue = -newValue;
+                        newValue.value = -newValue.value;
 
-                        if (newValue < currentValue)
+                        if (newValue.value < currentValue.value)
                             chunkData->SetVoxel(x, y, z, newValue);
                     }
                     else
                     {
-                        if (newValue > currentValue)
+                        if (newValue.value > currentValue.value)
                             chunkData->SetVoxel(x, y, z, newValue);
                     }
 

@@ -99,7 +99,7 @@ public:
     virtual ~TransvoxelMesher() = default;
 
 private:
-    void PolygonizeRegularCell(const Vector3& position, sbyte* data, float voxelScale, const Int3& voxelOffset, bool normalCorrection);
+    void PolygonizeRegularCell(const Vector3& position, Voxel* data, float voxelScale, const Int3& voxelOffset, bool normalCorrection);
 
 public:
     /**
@@ -109,7 +109,7 @@ public:
     * \param borders
     * \param data The hermite voxel data (in -127 to 127 range).
     */
-    void Generate(const Vector3& position, int lod, uint8_t borders, sbyte* data) override;
+    void Generate(const Vector3& position, int lod, uint8_t borders, Voxel* data) override;
 
     /**
     * \brief Checks if there are any generated triangles.

@@ -30,12 +30,12 @@ inline int CalculateEdgeVertexId(const Int3& pos, int edgeCode)
     return CalculateVertexId(pos - Int3(diffX, diffY, diffZ)) + (edge - 1);
 }
 
-void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, sbyte* data, const float voxelScale, const Int3& voxelOffset, const bool normalCorrection)
+void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* data, const float voxelScale, const Int3& voxelOffset, const bool normalCorrection)
 {
     sbyte corner[8];
     for(var i = 0; i < 8; i ++)
     {
-        corner[i] = GetVoxel(data, voxelOffset + CellCorner[i]);
+        corner[i] = GetVoxel(data, voxelOffset + CellCorner[i]).value;
     }
 
     const byte caseCode =
@@ -128,7 +128,7 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, sbyte* dat
 
 }
 
-void TransvoxelMesher::Generate(const Vector3& position, int lod, uint8_t borders, sbyte* data)
+void TransvoxelMesher::Generate(const Vector3& position, int lod, uint8_t borders, Voxel* data)
 {
     // ReSharper disable once CppUnreachableCode
     cvar voxelScale = static_cast<float>(lod);

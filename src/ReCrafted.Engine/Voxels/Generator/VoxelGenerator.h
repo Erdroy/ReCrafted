@@ -25,7 +25,7 @@ private:
     bool m_loaded = false;
 
 private:
-    FORCEINLINE sbyte GenerateFromCHM(const Vector3& origin, const Vector3& position, int mipLevel, int lodSize, int radius, int height) const;
+    FORCEINLINE Voxel GenerateFromCHM(const Vector3& origin, const Vector3& position, int mipLevel, int lodSize, int radius, int height) const;
 
 public:
     void Init(SpaceObjectSettings* settings);
