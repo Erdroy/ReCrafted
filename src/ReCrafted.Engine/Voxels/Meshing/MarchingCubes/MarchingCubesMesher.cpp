@@ -191,36 +191,40 @@ void MCMesher::GenerateCells(sbyte* data, const Vector3& position, float lod, ui
             GenerateCube(cell, position, offset, lod, data);
 
             // generate skirt for this cell
-            if (borders > 0)
+            if (borders > 0 && lod > 0)
             {
-                // TODO: check if skirt can be generated (if `borders` has the axis flag)
                 // AXIS_FRONT
-                if (z == VoxelChunkData::ChunkSize - 1 && (borders & BORDER_FRONT) != 0)
+                if (z == VoxelChunkData::ChunkSize - 1 && borders & 1 << AXIS_FRONT)
                 {
                     GenerateSkirt(cell, position, offset, lod, AXIS_FRONT, data);
                 }
+
                 // AXIS_BACK
-                if (z == 0 && (borders & BORDER_BACK) != 0)
+                if (z == 0 && borders & 1 << AXIS_BACK)
                 {
                     GenerateSkirt(cell, position, offset, lod, AXIS_BACK, data);
                 }
-                // AXIS_BACK
-                if (x == 0 && (borders & BORDER_LEFT) != 0)
+
+                // AXIS_LEFT
+                if (x == 0 && borders & 1 << AXIS_LEFT)
                 {
                     GenerateSkirt(cell, position, offset, lod, AXIS_LEFT, data);
                 }
+
                 // AXIS_RIGHT
-                if (x == VoxelChunkData::ChunkSize - 1 && (borders & BORDER_RIGHT) != 0)
+                if (x == VoxelChunkData::ChunkSize - 1 && borders & 1 << AXIS_RIGHT)
                 {
                     GenerateSkirt(cell, position, offset, lod, AXIS_RIGHT, data);
                 }
+
                 // AXIS_TOP
-                if (y == VoxelChunkData::ChunkSize - 1 && (borders & BORDER_TOP) != 0)
+                if (y == VoxelChunkData::ChunkSize - 1 && borders & 1 << AXIS_TOP)
                 {
                     GenerateSkirt(cell, position, offset, lod, AXIS_TOP, data);
                 }
+
                 // AXIS_BOTTOM
-                if (y == 0 && (borders & BORDER_BOTTOM) != 0)
+                if (y == 0 && borders & 1 << AXIS_BOTTOM)
                 {
                     GenerateSkirt(cell, position, offset, lod, AXIS_BOTTOM, data);
                 }

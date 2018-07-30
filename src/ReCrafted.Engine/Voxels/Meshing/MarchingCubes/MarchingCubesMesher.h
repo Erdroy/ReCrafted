@@ -11,13 +11,6 @@
 #include "Voxels/Storage/VoxelChunkData.h"
 #include "Core/Math/Math.h"
 
-#define BORDER_FRONT	0x01
-#define BORDER_BACK		0x02
-#define BORDER_LEFT		0x04
-#define BORDER_RIGHT	0x08
-#define BORDER_TOP		0x10
-#define BORDER_BOTTOM	0x20
-
 class MCMesher : public IVoxelMesher
 {
 private:
