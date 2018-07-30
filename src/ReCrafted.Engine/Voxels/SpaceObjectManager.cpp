@@ -48,8 +48,8 @@ void SpaceObjectManager::WorkerFunction()
     Platform::SetThreadName("SpaceObjectManager Worker");
 
     // create mesher
-    cvar mesher = new MCMesher();
-    //cvar mesher = new TransvoxelMesher();
+    //cvar mesher = new MCMesher();
+    cvar mesher = new TransvoxelMesher();
 
     // run
     queueItem item;
