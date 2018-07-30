@@ -13,6 +13,10 @@ void SpaceObject::Init(SpaceObjectSettings& settings)
     // set settings
     m_settings = settings;
 
+    // Set debug names
+    m_debugName = Text::Format(TEXT_CONST("SpaceObject {0}"), settings.name).StdStr();
+    m_updateProfileName = Text::Format(TEXT_CONST("SpaceObject({0})::Update"), settings.name).StdStr();
+
     // Load shader
     m_terrainShader = Shader::LoadShader("../assets/shaders/TerrainShader.shader");
 
@@ -42,14 +46,18 @@ void SpaceObject::GeneratePrimary()
 
 void SpaceObject::Update()
 {
-    m_octree->Update();
-    m_octree->UpdateViews(m_views);
+    Profiler::BeginProfile(m_updateProfileName.c_str());
+    {
+        m_octree->Update();
+        m_octree->UpdateViews(m_views);
 
-    // Update voxel storage
-    m_voxelStorage->Update();
+        // Update voxel storage
+        m_voxelStorage->Update();
 
-    // clear views for this frame
-    m_views.Clear();
+        // clear views for this frame
+        m_views.Clear();
+    }
+    Profiler::EndProfile();
 }
 
 void SpaceObject::Dispose()

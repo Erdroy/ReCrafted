@@ -28,6 +28,9 @@ private:
 
     RefPtr<Shader> m_terrainShader = nullptr;
 
+    std::string m_debugName;
+    std::string m_updateProfileName;
+
 private:
     void Init(SpaceObjectSettings& settings);
 
