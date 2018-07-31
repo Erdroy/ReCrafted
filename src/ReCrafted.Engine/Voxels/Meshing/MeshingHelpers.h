@@ -35,19 +35,39 @@ inline Vector3 GetIntersection(const Int3& positionA, const Int3& positionB, con
         Vector3(float(positionB.x), float(positionB.y), float(positionB.z)), densityA, densityB);
 }
 
+/**
+ * \brief Gets voxel from given data based on given point.
+ * \param data The voxel data.
+ * \param point The voxel point.
+ * \return The voxel from data.
+ */
 inline Voxel GetVoxel(Voxel* data, const Vector3& point)
 {
-    return (VoxelChunkData::GetVoxel(data, int(point.x), int(point.y), int(point.z)));
+    return VoxelChunkData::GetVoxel(data, int(point.x), int(point.y), int(point.z));
 }
 
+/**
+* \brief Gets voxel from given data based on given point.
+* \param data The voxel data.
+* \param point The voxel point.
+* \return The voxel from data.
+*/
 inline Voxel GetVoxel(Voxel* data, const Int3& point)
 {
-    return (VoxelChunkData::GetVoxel(data, point.x, point.y, point.z));
+    return VoxelChunkData::GetVoxel(data, point.x, point.y, point.z);
 }
 
-inline Voxel GetVoxel(Voxel* data, int x, int y, int z)
+/**
+* \brief Gets voxel from given data based on given point.
+* \param data The voxel data.
+* \param x The voxel point X component.
+* \param y The voxel point Y component.
+* \param z The voxel point Z component.
+* \return The voxel from data.
+*/
+inline Voxel GetVoxel(Voxel* data, const int x, const int y, const int z)
 {
-    return (VoxelChunkData::GetVoxel(data, x, y, z));
+    return VoxelChunkData::GetVoxel(data, x, y, z);
 }
 
 #endif // MESHINGHELPERS_H

@@ -3,9 +3,11 @@
 #include "TransvoxelMesher.h"
 #include "TransvoxelTables.hpp"
 
-#include "Graphics/Mesh.h"
-
 #include "../CommonTables.hpp"
+#include "../MeshingHelpers.h"
+#include "../MaterialHelpers.h"
+
+#include "Graphics/Mesh.h"
 
 inline int CalculateVertexId(const Int3& pos)
 {
@@ -32,21 +34,21 @@ inline int CalculateEdgeVertexId(const Int3& pos, int edgeCode)
 
 void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* data, const float voxelScale, const Int3& voxelOffset, const bool normalCorrection)
 {
-    sbyte corner[8];
+    Voxel corner[8];
     for(var i = 0; i < 8; i ++)
     {
-        corner[i] = GetVoxel(data, voxelOffset + CellCorner[i]).value;
+        corner[i] = GetVoxel(data, voxelOffset + CellCorner[i]);
     }
 
     const byte caseCode =
-          (-corner[0] >> 7 & 0x01)
-        | (-corner[1] >> 6 & 0x02)
-        | (-corner[2] >> 5 & 0x04)
-        | (-corner[3] >> 4 & 0x08)
-        | (-corner[4] >> 3 & 0x10)
-        | (-corner[5] >> 2 & 0x20)
-        | (-corner[6] >> 1 & 0x40)
-        | (-corner[7] & 0x80);
+          (-corner[0].value >> 7 & 0x01)
+        | (-corner[1].value >> 6 & 0x02)
+        | (-corner[2].value >> 5 & 0x04)
+        | (-corner[3].value >> 4 & 0x08)
+        | (-corner[4].value >> 3 & 0x10)
+        | (-corner[5].value >> 2 & 0x20)
+        | (-corner[6].value >> 1 & 0x40)
+        | (-corner[7].value & 0x80);
 
     if (caseCode == 0 || caseCode == 255)
         return;
@@ -73,12 +75,19 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
             cvar cornerPos0 = voxelOffset + CellCorner[v0];
             cvar cornerPos1 = voxelOffset + CellCorner[v1];
 
-            cvar intersectionPosition = GetIntersection(cornerPos0, cornerPos1, corner[v0], corner[v1]) * voxelScale;
+            cvar intersectionPosition = GetIntersection(cornerPos0, cornerPos1, corner[v0].value, corner[v1].value) * voxelScale;
             cvar vertexPosition = position + intersectionPosition;
+            
+            // Select material
+            cvar material = SelectMaterial(corner[v0], corner[v1]);
 
             m_vertices.Add(vertexPosition); // TODO: Optimize vertex count -> caused by normalCorrection
             m_normals.Add(Vector3::Zero());
-            m_colors.Add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
+
+            if(material == 0)
+                m_colors.Add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
+            else
+                m_colors.Add(Vector4(0.45f, 0.45f, 0.35f, 1.0f));
 
             cvar index = m_vertices.Count() - 1;
 

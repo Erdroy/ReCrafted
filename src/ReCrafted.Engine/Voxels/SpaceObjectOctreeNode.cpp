@@ -473,12 +473,15 @@ bool SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position,
                     if (mode == VoxelEditMode::Additive)
                     {
                         newValue.value = -newValue.value;
+                        newValue.material = 1u;
 
                         if (newValue.value < currentValue.value)
                             chunkData->SetVoxel(x, y, z, newValue);
                     }
                     else
                     {
+                        newValue.material = currentValue.material;
+
                         if (newValue.value > currentValue.value)
                             chunkData->SetVoxel(x, y, z, newValue);
                     }

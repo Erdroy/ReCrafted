@@ -11,7 +11,6 @@
 #include "Core/Containers/Array.h"
 
 #include "../IVoxelMesher.h"
-#include "../MeshingHelpers.h"
 
 class TransvoxelMesher : public IVoxelMesher
 {
