@@ -6,6 +6,7 @@
 #define MESHINGHELPERS_H
 
 // includes
+#include "ReCrafted.h"
 #include "Core/Math/Math.h"
 
 /**

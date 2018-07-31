@@ -11,6 +11,16 @@
 #include "Core/Math/Math.h"
 
 /**
+ * \brief The voxel value type.
+ */
+typedef sbyte VoxelValue_t;
+
+/**
+ * \brief The voxel material type.
+ */
+typedef uint8_t VoxelMaterial_t;
+
+/**
 * \brief Voxel structure.
 */
 ALIGN(1) struct Voxel
@@ -19,12 +29,12 @@ public:
     /**
     * \brief The voxel value.
     */
-    sbyte value;
+    VoxelValue_t value;
 
     /**
     * \brief The voxel material id.
     */
-    uint8_t material;
+    VoxelMaterial_t material;
 
 public:
     /**
@@ -33,7 +43,7 @@ public:
      * \param material The voxel material.
      * \return The created voxel.
      */
-    static Voxel Create(const sbyte value, const uint8_t material)
+    static Voxel Create(const VoxelValue_t value, const VoxelMaterial_t material)
     {
         return Voxel{ value, material };
     }
@@ -44,7 +54,7 @@ public:
     * \param material The voxel material.
     * \return The created voxel.
     */
-    static Voxel Create(const float value, const uint8_t material)
+    static Voxel Create(const float value, const VoxelMaterial_t material)
     {
         return Create(VOXEL_FROM_FLOAT(value), material);
     }
@@ -54,7 +64,7 @@ public:
     * \param value The voxel value.
     * \return The created voxel.
     */
-    static Voxel Create(const sbyte value)
+    static Voxel Create(const VoxelValue_t value)
     {
         return Voxel{ value, 0u };
     }
@@ -79,12 +89,12 @@ public:
     /**
     * \brief The full voxel value (-127).
     */
-    static const sbyte FullValue;
+    static const VoxelValue_t FullValue;
 
     /**
     * \brief The empty voxel value (127).
     */
-    static const sbyte EmptyValue;
+    static const VoxelValue_t EmptyValue;
 
     /**
      * \brief Default voxel with [value=0] and [material=0].

@@ -11,6 +11,7 @@ struct TerrainVSInput
     float3 Position : POSITION;
     float3 Normal   : NORMAL;
     float4 Color    : COLOR0;
+    uint2 Materials : TEXCOORD0;
 };
 
 struct TerrainVSOutput
@@ -19,9 +20,10 @@ struct TerrainVSOutput
     float3 LocalPosition : WS_POSITION;
     float3 Normal   : NORMAL;
     float4 Color    : COLOR0;
+    uint2 Materials : TEXCOORD0;
 
 #ifdef USE_LOGZBUFFER
-    float LogZ : TEXCOORD0;
+    float LogZ : TEXCOORD1;
 #endif
 };
 
@@ -39,6 +41,7 @@ void TerrainVSMain(in TerrainVSInput i, out TerrainVSOutput o)
     o.LocalPosition = i.Position;
     o.Normal = i.Normal;
     o.Color = i.Color;
+    o.Materials = i.Materials;
 
     // TODO: Vertex lighting
 
@@ -65,6 +68,7 @@ void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<Terra
     output.Position = input[0].Position;
     output.LocalPosition = input[0].LocalPosition;
     output.Color = input[0].Color;
+    output.Materials = input[0].Materials;
 #ifdef USE_LOGZBUFFER
     output.LogZ = input[0].LogZ;
 #endif
@@ -74,6 +78,7 @@ void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<Terra
     output.Position = input[1].Position;
     output.LocalPosition = input[1].LocalPosition;
     output.Color = input[1].Color;
+    output.Materials = input[1].Materials;
 #ifdef USE_LOGZBUFFER
     output.LogZ = input[1].LogZ;
 #endif
@@ -83,6 +88,7 @@ void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<Terra
     output.Position = input[2].Position;
     output.LocalPosition = input[2].LocalPosition;
     output.Color = input[2].Color;
+    output.Materials = input[2].Materials;
 #ifdef USE_LOGZBUFFER
     output.LogZ = input[2].LogZ;
 #endif
@@ -98,8 +104,8 @@ void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<Terra
 void TerrainPSMain(in TerrainPSInput i, out GBufferOutput o)
 {
     // Blending factor of triplanar mapping
-    /*float3 bf = normalize(abs(i.Normal));
-    bf /= dot(bf, (float3)1);
+    float3 blend = pow(i.Normal.xyz, 4);
+    blend /= dot(blend, float3(1, 1, 1));
 
     // Triplanar mapping
     float2 tx = i.LocalPosition.yz * 1.0f;
@@ -108,9 +114,9 @@ void TerrainPSMain(in TerrainPSInput i, out GBufferOutput o)
 
     float3 colorA = float3(1.0f, 0.0f, 0.0f);
     float3 colorB = float3(0.0f, 1.0f, 0.0f);
-    float3 colorC = float3(0.0f, 0.0f, 1.0f);*/
+    float3 colorC = float3(0.0f, 0.0f, 1.0f);
 
-    //o.Color = float4((colorA * bf.x) + (colorB * bf.y) + (colorC * bf.z), 1.0f);
+    //o.Color = float4((colorA * blend.x) + (colorB * blend.y) + (colorC * blend.z), 1.0f);
 
     o.Color = i.Color;
 

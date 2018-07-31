@@ -56,6 +56,12 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
     cvar cellClass = RegularCellClass[caseCode];
     cvar cellData = RegularCellData[cellClass];
 
+    // Build materials for this cell
+    uint64_t materials;
+
+    if (EnableMaterialChannelGeneration)
+        materials = CalculateCellMaterials(corner);
+
     uint indices[12] = {};
 
     cvar vertexCount = cellData.GetVertexCount();
@@ -78,16 +84,14 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
             cvar intersectionPosition = GetIntersection(cornerPos0, cornerPos1, corner[v0].value, corner[v1].value) * voxelScale;
             cvar vertexPosition = position + intersectionPosition;
             
-            // Select material
-            cvar material = SelectMaterial(corner[v0], corner[v1]);
-
             m_vertices.Add(vertexPosition); // TODO: Optimize vertex count -> caused by normalCorrection
             m_normals.Add(Vector3::Zero());
 
-            if(material == 0)
+            if(EnableColorChannelGeneration)
                 m_colors.Add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
-            else
-                m_colors.Add(Vector4(0.45f, 0.45f, 0.35f, 1.0f));
+
+            if(EnableMaterialChannelGeneration)
+                m_materials.Add(materials);
 
             cvar index = m_vertices.Count() - 1;
 
@@ -173,11 +177,6 @@ void TransvoxelMesher::Apply(const RefPtr<Mesh>& mesh)
     mesh->SetVertices(m_vertices.Data(), m_vertices.Count());
     mesh->SetNormals(m_normals.Data());
 
-    if(EnableUVChannelGeneration)
-    {
-        mesh->SetUVs(m_uvs.Data());
-    }
-
     if(EnableColorChannelGeneration)
     {
         mesh->SetColors(m_colors.Data());
@@ -185,7 +184,7 @@ void TransvoxelMesher::Apply(const RefPtr<Mesh>& mesh)
 
     if (EnableMaterialChannelGeneration)
     {
-        //mesh->SetColors(m_materials.Data(), 1);
+        mesh->SetCustom(m_materials.Data(), sizeof(uint64_t));
     }
 
     mesh->SetIndices(m_indices.Data(), m_indices.Count());
@@ -201,7 +200,6 @@ void TransvoxelMesher::Clear()
     // cleanup all arrays
     m_vertices.Clear();
     m_normals.Clear();
-    m_uvs.Clear();
     m_colors.Clear();
     m_materials.Clear();
     m_indices.Clear();

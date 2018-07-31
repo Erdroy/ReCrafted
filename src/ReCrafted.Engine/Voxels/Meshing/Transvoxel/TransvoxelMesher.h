@@ -22,11 +22,6 @@ private:
     static const bool EnableVertexReuse = true;
 
     /**
-     * \brief Enables or disables uv channel generation.
-     */
-    static const bool EnableUVChannelGeneration = false;
-
-    /**
     * \brief Enables or disables color channel generation.
     */
     static const bool EnableColorChannelGeneration = true;
@@ -34,7 +29,7 @@ private:
     /**
     * \brief Enables or disables material channel generation.
     */
-    static const bool EnableMaterialChannelGeneration = false;
+    static const bool EnableMaterialChannelGeneration = true;
 
     /**
     * \brief Enables or disables skirt cell generation.
@@ -51,13 +46,12 @@ private:
 
     Array<Vector3> m_vertices;
     Array<Vector3> m_normals;
-    Array<Vector2> m_uvs;
     Array<Vector4> m_colors;
-    Array<Vector4> m_materials;
+    Array<uint64_t> m_materials;
     Array<uint> m_indices;
 
 public:
-    TransvoxelMesher() : m_vertexReuse({}), m_vertices({}), m_normals({}), m_uvs({}), m_colors({}), m_materials({}), m_indices({})
+    TransvoxelMesher() : m_vertexReuse({}), m_vertices({}), m_normals({}),  m_colors({}), m_materials({}), m_indices({})
     {
         // ReSharper disable CppUnreachableCode
         if (EnableVertexReuse) 
@@ -74,11 +68,6 @@ public:
         // Reserve a bit of space right now.
         m_vertices.Reserve(16 << 10);
         m_normals.Reserve(16 << 10);
-
-        if(EnableUVChannelGeneration)
-        {
-            m_uvs.Reserve(16 << 10);
-        }
 
         if(EnableColorChannelGeneration)
         {
