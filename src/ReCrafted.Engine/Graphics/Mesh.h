@@ -33,6 +33,9 @@ private:
     Vector4* m_colors = nullptr;
     uint* m_indices = nullptr;
 
+    void* m_customPtr = nullptr;
+    uint m_customStride = 0u;
+
     bool m_uploaded = false;
     bool m_hasChanges = false;
 
@@ -87,6 +90,8 @@ public:
     * after setting all data you need.
     */
     void SetColors(Vector4* colors);
+
+    void SetCustom(void* ptr, uint customStride);
 
     /**
     * \brief Set colors for this mesh.

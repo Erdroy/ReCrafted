@@ -31,6 +31,12 @@ void Mesh::SetColors(Vector4* colors)
     m_colors_count = m_vertices_count;
 }
 
+void Mesh::SetCustom(void* ptr, uint customStride)
+{
+    m_customPtr = ptr;
+    m_customStride = customStride;
+}
+
 void Mesh::SetIndices(uint* indices, uint count)
 {
     m_indices = indices;
@@ -66,6 +72,9 @@ void Mesh::ApplyChanges()
     if (m_colors)
         m_vertexSize += sizeof(Vector4);
 
+    if (m_customPtr)
+        m_vertexSize += m_customStride;
+
     // allocate memory for vertex buffer
     m_vertexBufferData = Renderer::Allocate(m_vertices_count * m_vertexSize, 0);
     var memoryPtr = reinterpret_cast<byte*>(m_vertexBufferData);
@@ -96,6 +105,13 @@ void Mesh::ApplyChanges()
             memcpy(memoryPtr + offset + dataOffset, &m_colors[i], sizeof(float) * 4);
             dataOffset += 4 * sizeof(float);
         }
+
+        if(m_customPtr)
+        {
+            cvar customArr = static_cast<uint64_t*>(m_customPtr);
+            memcpy(memoryPtr + offset + dataOffset, &customArr[i], m_customStride);
+            dataOffset += m_customStride;
+        }
     }
 
     // allocate memory for index buffer
@@ -116,6 +132,7 @@ void Mesh::ApplyChanges()
     m_uvs = nullptr;
     m_normals = nullptr;
     m_colors = nullptr;
+    m_customPtr = nullptr;
     m_indices = nullptr;
 }
 
