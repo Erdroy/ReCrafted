@@ -64,6 +64,9 @@ void Graphics::InitializeRenderer()
     m_rendering.reset(new Rendering());
     m_rendering->Initialize();
 
+    for(var i = 0; i < 16; i ++)
+        m_currentTextures.Add(nullptr);
+
     // Set renderer callbacks
     Renderer::AddOnPresentCallback(Action<void>::New<Graphics, &Graphics::OnFramePresent>(this));
 
@@ -254,6 +257,12 @@ void Graphics::RenderBegin()
     if (Input::IsKey(Key_F1))
         Renderer::SetFlag(Renderer::RenderFlags::DrawWireFrame, true);
 
+    // Clean texture cache
+    for(var i = 0u; i < m_currentTextures.Count(); i ++)
+    {
+        m_currentTextures[i] = nullptr;
+    }
+
     // bind gbuffer
     m_gbuffer->Bind();
 }
@@ -440,6 +449,15 @@ void Graphics::SetStage(RenderStage::_enum stage)
         Renderer::SetFlags(Renderer::RenderFlags::_enum(Renderer::RenderFlags::Default));
         Renderer::SetFlag(Renderer::RenderFlags::VSync, false);
     }
+    }
+}
+
+void Graphics::SetTexture(uint slot, const RefPtr<Texture2D>& texture2d)
+{
+    if(m_currentTextures[slot] != texture2d)
+    {
+        Renderer::ApplyTexture2D(texture2d->GetHandle(), slot);
+        m_currentTextures[slot] = texture2d;
     }
 }
 

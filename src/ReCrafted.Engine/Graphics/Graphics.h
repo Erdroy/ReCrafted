@@ -30,8 +30,9 @@ private:
     bool m_wireframe = false;
 
     RefPtr<Rendering> m_rendering = nullptr;
-
     RefPtr<Shader> m_currentShader = nullptr;
+
+    Array<RefPtr<Texture2D>> m_currentTextures = {};
 
     RefPtr<RenderBuffer> m_gbuffer = nullptr;
     RefPtr<Shader> m_gbufferFillShader = nullptr;
@@ -99,6 +100,13 @@ public:
     * \brief Sets given stage as current.
     */
     void SetStage(RenderStage::_enum stage);
+
+    /**
+     * \brief Sets given texture at given slot.
+     * \param slot The shader slot.
+     * \param texture2d The texture.
+     */
+    void SetTexture(uint slot, const RefPtr<Texture2D>& texture2d);
 
     /**
     * \brief Gets current set render stage.
