@@ -32,7 +32,7 @@ inline int CalculateEdgeVertexId(const Int3& pos, int edgeCode)
     return CalculateVertexId(pos - Int3(diffX, diffY, diffZ)) + (edge - 1);
 }
 
-void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* data, const float voxelScale, const Int3& voxelOffset, const bool normalCorrection)
+void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* data, const float voxelScale, const int lod, const Int3& voxelOffset, const bool normalCorrection)
 {
     Voxel corner[8];
     for(var i = 0; i < 8; i ++)
@@ -60,7 +60,7 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
     uint64_t materials;
 
     if (EnableMaterialChannelGeneration)
-        materials = CalculateCellMaterials(corner);
+        materials = CalculateCellMaterialsLoD(corner, lod);
 
     uint indices[12] = {};
 
@@ -88,7 +88,7 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
             m_normals.Add(Vector3::Zero());
 
             if(EnableColorChannelGeneration)
-                m_colors.Add(Vector4(0.35f, 0.35f, 0.35f, 1.0f));
+                m_colors.Add(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
 
             if(EnableMaterialChannelGeneration)
                 m_materials.Add(materials);
@@ -156,19 +156,16 @@ void TransvoxelMesher::Generate(const Vector3& position, int lod, uint8_t border
 
                 cvar normalCorrection = x < 0 || y < 0 || z < 0 || x >= 16 || y >= 16 || z >= 16;
 
-                PolygonizeRegularCell(position, data, voxelScale, voxelOffset, normalCorrection);
+                PolygonizeRegularCell(position, data, voxelScale, lod, voxelOffset, normalCorrection);
 
                 // TODO: Transition cell implementation
             }
         }
     }
 
+    // Normalize the normal to be a normal normal.
     for (rvar normal : m_normals)
-    {
-
-        // Normalize the normal to be a normal normal.
         normal.Normalize();
-    }
 }
 
 void TransvoxelMesher::Apply(const RefPtr<Mesh>& mesh)

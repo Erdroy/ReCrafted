@@ -458,14 +458,13 @@ bool SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position,
             for (var z = VoxelChunkData::ChunkDataStart; z < VoxelChunkData::ChunkDataLength; z++)
             {
                 cvar point = Vector3(float(x), float(y), float(z)) * chunkScale + chunkData->GetChunkPosition();
-
-                cvar currentValue = chunkData->GetVoxel(x, y, z);
                 cvar distance = Vector3::Distance(position, point);
+                cvar currentValue = chunkData->GetVoxel(x, y, z);
 
                 if (distance <= size + 0.5f)
                 {
                     cvar value = size - distance;
-                    var newValue = Voxel::Create(value);
+                    var newValue = Voxel::Create(value, 1u);
 
                     if(newValue == currentValue)
                         continue;
@@ -473,7 +472,6 @@ bool SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position,
                     if (mode == VoxelEditMode::Additive)
                     {
                         newValue.value = -newValue.value;
-                        newValue.material = 1u;
 
                         if (newValue.value < currentValue.value)
                             chunkData->SetVoxel(x, y, z, newValue);

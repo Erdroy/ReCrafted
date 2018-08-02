@@ -32,7 +32,7 @@ float4 CombinePSMain(in QuadPS i) : SV_Target0
     // Add simple directional lighting
     float3 directionalLightColor = float3(1.0f, 1.0f, 1.0f);
 
-    float3 diffuseColor = gbuffer.Color.rgb * CalculateLightingSimple(gbuffer.Normal, LightDirection, directionalLightColor, 1.5f);
+    float3 diffuseColor = gbuffer.Color.rgb * CalculateLightingSimple(gbuffer.Normal, LightDirection, directionalLightColor, 1.0f);
     diffuseColor += gbuffer.Light.rgb;
 
     return float4(diffuseColor, 1.0f);

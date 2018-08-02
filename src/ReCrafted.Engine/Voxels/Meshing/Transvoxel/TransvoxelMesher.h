@@ -87,7 +87,7 @@ public:
     virtual ~TransvoxelMesher() = default;
 
 private:
-    void PolygonizeRegularCell(const Vector3& position, Voxel* data, float voxelScale, const Int3& voxelOffset, bool normalCorrection);
+    void PolygonizeRegularCell(const Vector3& position, Voxel* data, float voxelScale, int lod, const Int3& voxelOffset, bool normalCorrection);
 
 public:
     /**
