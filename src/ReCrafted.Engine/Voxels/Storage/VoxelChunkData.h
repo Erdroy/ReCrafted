@@ -79,17 +79,8 @@ public:
         cvar size = ChunkDataSize * ChunkDataSize * ChunkDataSize;
         m_voxelData = new Voxel[size];
 
-        if (m_isFilled) 
-        {
-            for (var i = 0; i < size; i++)
-                m_voxelData[i] = Voxel::Full;
-        }
-        else
-        {
-            for (var i = 0; i < size; i++)
-                m_voxelData[i] = Voxel::Empty;
-        }
-        //memset(m_voxelData, m_isFilled ? -0x00FF : 0x00FF, size * sizeof(Voxel));
+        var fill = m_isFilled ? Voxel::Full : Voxel::Empty;
+        memset(m_voxelData, *reinterpret_cast<uint32_t*>(&fill), size * sizeof(Voxel));
     }
 
     void DeallocateData()
