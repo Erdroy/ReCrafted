@@ -11,6 +11,8 @@
 #include "Core/Containers/Array.h"
 
 #include "../IVoxelMesher.h"
+#include "../MeshingHelpers.h"
+#include "../MaterialHelpers.h"
 
 class TransvoxelMesher : public IVoxelMesher
 {
@@ -47,8 +49,10 @@ private:
     Array<Vector3> m_vertices;
     Array<Vector3> m_normals;
     Array<Vector4> m_colors;
-    Array<uint64_t> m_materials;
+    Array<VertexMaterial_t> m_materials;
     Array<uint> m_indices;
+
+    IVoxelMaterialMap* m_currentMaterialMap = nullptr;
 
 public:
     TransvoxelMesher() : m_vertexReuse({}), m_vertices({}), m_normals({}),  m_colors({}), m_materials({}), m_indices({})
@@ -92,12 +96,13 @@ private:
 public:
     /**
     * \brief Virtual method for generating a mesh from hermite voxel data.
-    * \param position The base position of the chunk. TODO: Remove this feature, and update MVP per draw.
-    * \param lod
-    * \param borders
+    * \param materialMap The material map pointer.
+    * \param position The position of current procesed chunk.
+    * \param lod The current procesed chunk lod.
+    * \param borders Border set for current procesed chunk.
     * \param data The hermite voxel data (in -127 to 127 range).
     */
-    void Generate(const Vector3& position, int lod, uint8_t borders, Voxel* data) override;
+    void Generate(IVoxelMaterialMap* materialMap, const Vector3& position, int lod, uint8_t borders, Voxel* data) override;
 
     /**
     * \brief Checks if there are any generated triangles.

@@ -22,19 +22,19 @@ Voxel VoxelGenerator::GenerateFromCHM(const Vector3& origin, const Vector3& posi
     cvar texcoord = CHMHelpers::GetTexcoord(sphereFace, position);
 
     // Sample CHM
-    cvar voxel = m_bitmap->Sample(static_cast<CHMFace::_enum>(sphereFace), texcoord.x, texcoord.y, mipLevel) / 255.0f;
+    cvar sample = m_bitmap->Sample(static_cast<CHMFace::_enum>(sphereFace), texcoord.x, texcoord.y, mipLevel) / 255.0f;
 
     // the terrain height (over planet, sphere is the base)
-    cvar terrainHeight = radius + voxel * height;
+    cvar terrainHeight = radius + sample * height;
 
     // the height over sphere
-    cvar sphereHeight = (position - origin).Length();
+    cvar currentHeight = (position - origin).Length();
 
     // calculate voxel value
-    cvar voxelValue = (sphereHeight - terrainHeight) / lodSize;
+    cvar voxelValue = (currentHeight - terrainHeight) / lodSize;
 
     // convert voxel value to voxel
-    return Voxel::Create(voxelValue); // TODO: Read material id from CHM
+    return Voxel::Create(voxelValue, 0u, 128u); // TODO: Read material id from CHM
 }
 
 void VoxelGenerator::Init(SpaceObjectSettings* settings)
@@ -85,6 +85,10 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
 
     var hasSurface = false;
     sbyte lastVoxel = 0;
+
+    // Temporary TODO: Generate proper materials
+    cvar defaultMaterial = MaterialSet_t{ { 1, 1, 1 }, { 1, 1, 1 }, {0, 0} };
+    chunk->AddMaterial(defaultMaterial);
 
     var voxelVolumeSign = 0;
     for (var x = VoxelChunkData::ChunkDataStart; x < VoxelChunkData::ChunkDataLength; x++)

@@ -101,7 +101,7 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
     cvar voxelData = m_chunkData->GetData();
 
     // Try to generate mesh data
-    mesher->Generate(m_position, m_lod, borders, voxelData);
+    mesher->Generate(static_cast<IVoxelMaterialMap*>(m_chunkData.get()), m_position, m_lod, borders, voxelData);
 
     // Check if we have any triangles and if don't, 
     // then we are going to clean everything up, including chunk data.

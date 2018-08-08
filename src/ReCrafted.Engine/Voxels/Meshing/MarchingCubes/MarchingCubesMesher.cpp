@@ -245,7 +245,7 @@ void MCMesher::Apply(const RefPtr<Mesh>& mesh)
     Clear();
 }
 
-void MCMesher::Generate(const Vector3& position, int lod, uint8_t borders, Voxel* data)
+void MCMesher::Generate(IVoxelMaterialMap* materialMap, const Vector3& position, int lod, uint8_t borders, Voxel* data)
 {
     cvar lodF = static_cast<float>(lod);
 

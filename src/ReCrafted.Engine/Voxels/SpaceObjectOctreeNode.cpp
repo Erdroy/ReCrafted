@@ -464,17 +464,17 @@ bool SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position,
                 if (distance <= size + 0.5f)
                 {
                     cvar value = size - distance;
-                    var newValue = Voxel::Create(value, 1u);
-
-                    if(newValue == currentValue)
-                        continue;
+                    var newValue = Voxel::Create(value, 2u, 0u);
 
                     if (mode == VoxelEditMode::Additive)
                     {
                         newValue.value = -newValue.value;
 
+                        // Do not set value, when it is higher
                         if (newValue.value < currentValue.value)
                             chunkData->SetVoxel(x, y, z, newValue);
+
+                        // TODO: Apply proper blend value
                     }
                     else
                     {

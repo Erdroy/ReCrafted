@@ -12,6 +12,7 @@
 
 #include "Storage/VoxelChunkData.h"
 #include "SpaceObject.h"
+#include "VoxelMaterialMap.h"
 
 #include <atomic>
 
