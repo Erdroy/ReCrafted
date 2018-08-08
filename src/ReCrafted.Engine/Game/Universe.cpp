@@ -33,7 +33,7 @@ void Universe::OnInit()
     settings.position = Vector3::Zero();
     settings.minSurfaceHeight = 900;
     settings.maxSurfaceHeight = settings.minSurfaceHeight + 120; // will round up to 1024 * 2
-    settings.hillsHeight = 40;
+    settings.hillsHeight = 70;
     settings.rootOctreeDepth = 3; // 2 subdivisions (chunk size will be 512)
 
     m_testObject1 = SpaceObject::CreateSpaceObject(settings);
