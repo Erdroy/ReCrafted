@@ -51,6 +51,10 @@ namespace Renderer
             D3D11_SIGNATURE_PARAMETER_DESC paramDesc;
             DX_CALL(pVertexShaderReflection->GetInputParameterDesc(i, &paramDesc));
 
+            // Skip all SV_*
+            if (paramDesc.SystemValueType != D3D_NAME_UNDEFINED)
+                continue;
+
             // fill out input element desc
             D3D11_INPUT_ELEMENT_DESC elementDesc;
             elementDesc.SemanticName = paramDesc.SemanticName;
