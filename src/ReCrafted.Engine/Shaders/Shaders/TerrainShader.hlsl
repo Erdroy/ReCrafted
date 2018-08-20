@@ -25,6 +25,7 @@ struct TerrainVSOutput
     float3 LocalPosition : WS_POSITION;
     float3 Normal   : NORMAL0;
     float3 FlatNormal : NORMAL1;
+    float3 FixedNormal : NORMAL2;
     float4 Color    : COLOR0;
     uint2 Materials : TEXCOORD0;
     float Blend : TEXCOORD1;
@@ -48,11 +49,10 @@ void TerrainVSMain(in TerrainVSInput i, out TerrainVSOutput o)
     o.LocalPosition = i.Position;
     o.Normal = i.Normal;
     o.FlatNormal = (float3)0;
+    o.FixedNormal = (float3)0;
     o.Color = i.Color;
     o.Materials = i.Materials;
     o.Blend = ((i.Materials[0] >> 8) & 0xFF) / 255.f;
-
-    // TODO: Vertex lighting
 
 #ifdef USE_LOGZBUFFER
     const float C = 1.0f;
@@ -63,20 +63,45 @@ void TerrainVSMain(in TerrainVSInput i, out TerrainVSOutput o)
 #endif
 }
 
+float3 Triplanar_CalculateYFixedNormal(float3 origin, float3 position, float3 normal)
+{
+    const float upSign = position.y < origin.y ? -1.0f : 1.0f;
+    const float3 pointNormal = normalize(position - origin);
+    const float3 baseYNormal = float3(0.0f, upSign, 0.0f);
+
+    // Calculate angle
+    float3 surfaceUpCross = cross(pointNormal, baseYNormal);
+    float angle = asin(length(surfaceUpCross));
+
+    // Calculate angle axis rotation matrix
+    float3x3 rotationMatrix = rotateAngleAxis(angle, normalize(surfaceUpCross));
+
+    // Rotate normal around [SurfaceNormal x YpNormal]
+    float3 fixedNormal = mul(rotationMatrix, normal);
+
+    // Inverse Y when we are under the origin
+    fixedNormal.y *= upSign;
+
+    // Return normal
+    return fixedNormal;
+}
+
 [maxvertexcount(3)]
 void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<TerrainPSInput> OutputStream)
 {
+    const float3 sphereOrigin = float3(0.0f, 0.0f, 0.0f);
+
     TerrainPSInput output;
     
     // Calculate output normal for all vertices
     output.FlatNormal = normalize(input[0].Normal + input[1].Normal + input[2].Normal);
-
-    // TODO: Calculate flat lighting
+    output.FlatNormal = normalize(input[0].Normal + input[1].Normal + input[2].Normal);
 
     // Add 1st triangle
     output.Position = input[0].Position;
     output.LocalPosition = input[0].LocalPosition;
     output.Normal = input[0].Normal;
+    output.FixedNormal = Triplanar_CalculateYFixedNormal(sphereOrigin, output.LocalPosition, output.Normal);
     output.Color = input[0].Color;
     output.Materials = input[0].Materials;
     output.Blend = input[0].Blend;
@@ -89,6 +114,7 @@ void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<Terra
     output.Position = input[1].Position;
     output.LocalPosition = input[1].LocalPosition;
     output.Normal = input[1].Normal;
+    output.FixedNormal = Triplanar_CalculateYFixedNormal(sphereOrigin, output.LocalPosition, output.Normal);
     output.Color = input[1].Color;
     output.Materials = input[1].Materials;
     output.Blend = input[0].Blend;
@@ -101,6 +127,7 @@ void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<Terra
     output.Position = input[2].Position;
     output.LocalPosition = input[2].LocalPosition;
     output.Normal = input[2].Normal;
+    output.FixedNormal = Triplanar_CalculateYFixedNormal(sphereOrigin, output.LocalPosition, output.Normal);
     output.Color = input[2].Color;
     output.Materials = input[2].Materials;
     output.Blend = input[0].Blend;
@@ -135,20 +162,17 @@ float3 TmpGetMatColor(in uint matId)
 /// </summary>
 void TerrainPSMain(in TerrainPSInput i, out GBufferOutput o)
 {
-    const float3 normal = normalize(i.Normal);
-
+    const float3 position = i.LocalPosition;
+    const float3 triplanarNormal = normalize(i.FixedNormal);
+  
     // Blending factor of triplanar mapping
-    float3 blend = pow(i.Normal.xyz, 4); // TODO: Improve blend function
+    float3 blend = pow(triplanarNormal.xyz, 16); // TODO: Improve blend function
     blend /= dot(blend, float3(1, 1, 1));
 
     // Triplanar mapping
-    float2 tx = i.LocalPosition.yz * 1.0f;
-    float2 ty = i.LocalPosition.zx * 1.0f;
-    float2 tz = i.LocalPosition.xy * 1.0f;
-
-    float3 colorA = float3(1.0f, 0.0f, 0.0f);
-    float3 colorB = float3(0.0f, 1.0f, 0.0f);
-    float3 colorC = float3(0.0f, 0.0f, 1.0f);
+    float2 tx = position.yz * 1.0f;
+    float2 ty = position.zx * 1.0f;
+    float2 tz = position.xy * 1.0f;
 
     // Txz, Uxz
     float2 material1 = float2(i.Materials[0] >> 24, (i.Materials[0] >> 16) & 0xFF);
@@ -156,7 +180,7 @@ void TerrainPSMain(in TerrainPSInput i, out GBufferOutput o)
     // Tpy, Tny, Upy, Uny
     float4 material2 = float4(i.Materials[1] >> 24, (i.Materials[1] >> 16) & 0xFF, (i.Materials[1] >> 8) & 0xFF, (i.Materials[1]) & 0xFF);
 
-    float3 flip = float3(normal.x < 0.0, normal.y < 0.0, normal.z >= 0.0);
+    float3 flip = float3(triplanarNormal.x < 0.0, triplanarNormal.y < 0.0, triplanarNormal.z >= 0.0);
     float2 zindex = lerp(material2.xz, material2.yw, flip.y);
 
     float3 cx0 = TmpGetMatColor(material1.x);
