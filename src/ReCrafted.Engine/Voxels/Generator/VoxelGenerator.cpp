@@ -87,7 +87,7 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
     sbyte lastVoxel = 0;
 
     // Temporary TODO: Generate proper materials
-    cvar defaultMaterial = MaterialSet_t{ { 1, 1, 1 }, { 1, 1, 1 }, {0, 0} };
+    cvar defaultMaterial = MaterialSet_t{ { 1, 2, 1 }, { 1, 2, 1 }, {0, 0} };
     chunk->AddMaterial(defaultMaterial);
 
     var voxelVolumeSign = 0;

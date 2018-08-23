@@ -95,7 +95,8 @@ void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<Terra
     
     // Calculate output normal for all vertices
     output.FlatNormal = normalize(input[0].Normal + input[1].Normal + input[2].Normal);
-    output.FlatNormal = normalize(input[0].Normal + input[1].Normal + input[2].Normal);
+    output.Blend = input[0].Blend;
+    output.Materials = input[0].Materials;
 
     // Add 1st triangle
     output.Position = input[0].Position;
@@ -103,8 +104,6 @@ void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<Terra
     output.Normal = input[0].Normal;
     output.FixedNormal = Triplanar_CalculateYFixedNormal(sphereOrigin, output.LocalPosition, output.Normal);
     output.Color = input[0].Color;
-    output.Materials = input[0].Materials;
-    output.Blend = input[0].Blend;
 #ifdef USE_LOGZBUFFER
     output.LogZ = input[0].LogZ;
 #endif
@@ -116,8 +115,6 @@ void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<Terra
     output.Normal = input[1].Normal;
     output.FixedNormal = Triplanar_CalculateYFixedNormal(sphereOrigin, output.LocalPosition, output.Normal);
     output.Color = input[1].Color;
-    output.Materials = input[1].Materials;
-    output.Blend = input[0].Blend;
 #ifdef USE_LOGZBUFFER
     output.LogZ = input[1].LogZ;
 #endif
@@ -129,8 +126,6 @@ void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<Terra
     output.Normal = input[2].Normal;
     output.FixedNormal = Triplanar_CalculateYFixedNormal(sphereOrigin, output.LocalPosition, output.Normal);
     output.Color = input[2].Color;
-    output.Materials = input[2].Materials;
-    output.Blend = input[0].Blend;
 #ifdef USE_LOGZBUFFER
     output.LogZ = input[2].LogZ;
 #endif
@@ -148,11 +143,8 @@ float3 TmpGetMatColor(in uint matId)
     case 2:
         return float3(80 / 255.0f, 145 / 255.0f, 30 / 255.0f);
 
-    case 255:
-        return float3(1.0f, 0.0f, 0.0f);
-
     default:
-        return float3(0.1f, 0.0f, 0.1f);
+        return float3(1.0f, 0.0f, 0.0f);
     }
 }
 
@@ -166,7 +158,7 @@ void TerrainPSMain(in TerrainPSInput i, out GBufferOutput o)
     const float3 triplanarNormal = normalize(i.FixedNormal);
   
     // Blending factor of triplanar mapping
-    float3 blend = pow(triplanarNormal.xyz, 16); // TODO: Improve blend function
+    float3 blend = pow(triplanarNormal.xyz, 8); // TODO: Improve blend function
     blend /= dot(blend, float3(1, 1, 1));
 
     // Triplanar mapping
