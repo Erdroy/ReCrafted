@@ -75,7 +75,7 @@ void SpaceObject::UpdateViewPoint(Vector3& view)
 
 void SpaceObject::Modify(VoxelEditMode::_enum mode, Vector3& position, float size)
 {
-    var bbSize = Vector3(size, size, size) * 2.0f;
+    var bbSize = Vector3(size, size, size) * 2.5f;
     bbSize.x = ceilf(bbSize.x);
     bbSize.y = ceilf(bbSize.y);
     bbSize.z = ceilf(bbSize.z);
