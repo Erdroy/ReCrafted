@@ -56,6 +56,15 @@ inline float GetInterpolant(const float densityA, const float densityB)
 */
 inline Vector3 GetIntersection(const Vector3& positionA, const Vector3& positionB, const float densityA, const float densityB)
 {
+    if (std::abs(densityA) < 0.00001f)
+        return positionA;
+
+    if (std::abs(densityB) < 0.00001f)
+        return positionB;
+
+    if (std::abs(densityA - densityB) < 0.00001f)
+        return positionA;
+
     return positionA + (positionB - positionA) * GetInterpolant(densityA, densityB);
 }
 
