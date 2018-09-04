@@ -42,6 +42,9 @@ inline VertexMaterial_t SetupMaterial(IVoxelMaterialMap* materialMap, const Voxe
 */
 inline VertexMaterial_t CalculateMaterials(IVoxelMaterialMap* materialMap, const int lod, const Voxel& voxelA, const Voxel& voxelB)
 {
+    if (voxelA.material == voxelB.material)
+        return SetupMaterial(materialMap, voxelA);
+
     cvar minimalVoxel = GetMinimalVoxel(voxelA, voxelB);
     return SetupMaterial(materialMap, minimalVoxel);
 }

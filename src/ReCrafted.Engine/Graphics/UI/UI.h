@@ -158,7 +158,7 @@ public:
     /// <param name="font">The font which will be used for drawing.</param>
     /// <param name="text">The text to be drawn.</param>
     /// <param name="position">The point in pixels where the text will be drawn on the screen.</param>
-    static void DrawText(Font* font, Text& text, Vector2 position);
+    static void DrawText(Font* font, const Text& text, Vector2 position);
 
     /// <summary>
     /// Draws text on the screen.

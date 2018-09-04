@@ -24,11 +24,21 @@ public:
     VoxelTextureId_t Tpy;
 
 public:
-    uint64_t GetHash()
+    uint64_t GetHash() const
     {
-        return *reinterpret_cast<uint64_t*>(this);
+        return *reinterpret_cast<const uint64_t*>(this);
     }
 } VertexMaterial_t;
+
+inline bool operator==(const VertexMaterial_t& lhs, const VertexMaterial_t& rhs)
+{
+    return lhs.GetHash() == rhs.GetHash();
+}
+
+inline bool operator!=(const VertexMaterial_t& lhs, const VertexMaterial_t& rhs)
+{
+    return lhs.GetHash() != rhs.GetHash();
+}
 
 inline uint64_t VertexMaterialToUInt64(VertexMaterial_t* material)
 {
@@ -134,9 +144,6 @@ inline Voxel GetMinimalCorner(const Voxel* corners)
         {
             minimalCorner = corners[i];
             minimalCornerIndex = i;
-
-            if(minimalCorner.value == Voxel::FullValue)
-                return corners[minimalCornerIndex];
         }
     }
 

@@ -269,7 +269,7 @@ void UI::DrawBox(Rectf rect)
     m_instance->InternalDrawBox(rect);
 }
 
-void UI::DrawText(Font* font, Text& text, Vector2 position)
+void UI::DrawText(Font* font, const Text& text, Vector2 position)
 {
     DrawText(font, text.Data(), text.Length(), position);
 }

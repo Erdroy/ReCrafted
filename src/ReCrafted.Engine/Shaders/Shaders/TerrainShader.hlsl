@@ -95,37 +95,41 @@ void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<Terra
     
     // Calculate output normal for all vertices
     output.FlatNormal = normalize(input[0].Normal + input[1].Normal + input[2].Normal);
-    output.Blend = input[0].Blend;
-    output.Materials = input[0].Materials;
 
-    // Add 1st triangle
+    // Add 1st vertex
     output.Position = input[0].Position;
     output.LocalPosition = input[0].LocalPosition;
     output.Normal = input[0].Normal;
     output.FixedNormal = Triplanar_CalculateYFixedNormal(sphereOrigin, output.LocalPosition, output.Normal);
     output.Color = input[0].Color;
+    output.Materials = input[0].Materials;
+    output.Blend = input[0].Blend;
 #ifdef USE_LOGZBUFFER
     output.LogZ = input[0].LogZ;
 #endif
     OutputStream.Append(output);
 
-    // Add 2nd triangle
+    // Add 2nd vertex
     output.Position = input[1].Position;
     output.LocalPosition = input[1].LocalPosition;
     output.Normal = input[1].Normal;
     output.FixedNormal = Triplanar_CalculateYFixedNormal(sphereOrigin, output.LocalPosition, output.Normal);
     output.Color = input[1].Color;
+    output.Materials = input[1].Materials;
+    output.Blend = input[1].Blend;
 #ifdef USE_LOGZBUFFER
     output.LogZ = input[1].LogZ;
 #endif
     OutputStream.Append(output);
 
-    // Add 3rd triangle
+    // Add 3rd vertex
     output.Position = input[2].Position;
     output.LocalPosition = input[2].LocalPosition;
     output.Normal = input[2].Normal;
     output.FixedNormal = Triplanar_CalculateYFixedNormal(sphereOrigin, output.LocalPosition, output.Normal);
     output.Color = input[2].Color;
+    output.Materials = input[2].Materials;
+    output.Blend = input[2].Blend;
 #ifdef USE_LOGZBUFFER
     output.LogZ = input[2].LogZ;
 #endif
@@ -142,9 +146,11 @@ float3 TmpGetMatColor(in uint matId)
         return float3(0.35f, 0.35f, 0.35f);
     case 2:
         return float3(80 / 255.0f, 145 / 255.0f, 30 / 255.0f);
+    case 3:
+        return float3(100 / 255.0f, 80 / 255.0f, 30 / 255.0f);
 
     default:
-        return float3(1.0f, 0.0f, 0.0f);
+        return float3(0.25f, 0.0f, 0.0f);
     }
 }
 
@@ -183,14 +189,20 @@ void TerrainPSMain(in TerrainPSInput i, out GBufferOutput o)
     float3 cz1 = TmpGetMatColor(material1.y);
     float3 cy1 = TmpGetMatColor(zindex.y);
 
-    float3 albedo = lerp((blend.x * cx0 + blend.y * cy0 + blend.z * cz0), (blend.x * cx1 + blend.y * cy1 + blend.z * cz1), i.Blend);
+    float3 material1color = blend.x * cx0 + blend.y * cy0 + blend.z * cz0;
+    float3 material2color = blend.x * cx1 + blend.y * cy1 + blend.z * cz1;
 
-    o.Color = float4(albedo, 1.0f);
+    float3 color = lerp(material1color, material2color, i.Blend);
 
-    o.Normal = EncodeNormal(float4(i.FlatNormal, 1.0f));
+    //o.Color = i.Color;
+    o.Color = float4(color, 1.0f) * i.Color;
+
+    o.Normal = EncodeNormal(float4(i.FlatNormal, 1.0f)); // Flat shading
+    //o.Normal = EncodeNormal(float4(i.Normal, 1.0f)); // Smooth shading
 
     // Set Light as simple ambient light
     o.Light = float4(o.Color.rgb * AmbientLightColor, 0.0f);
+    //o.Light = float4(1.0f - i.Blend, 1.0f - i.Blend, 1.0f - i.Blend, 1.0f) * 0.5f;
 
 #ifdef USE_LOGZBUFFER
     // TODO: Make option to use inv z (1.0f - Z/W) instead of log z,

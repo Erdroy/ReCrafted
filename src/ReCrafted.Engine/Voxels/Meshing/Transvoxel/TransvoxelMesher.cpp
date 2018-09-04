@@ -30,30 +30,25 @@ inline int CalculateEdgeVertexId(const Int3& pos, int edgeCode)
     return CalculateVertexId(pos - Int3(diffX, diffY, diffZ)) + (edge - 1);
 }
 
-bool operator==(VertexMaterial_t& lhs, VertexMaterial_t& rhs)
-{
-    return lhs.GetHash() == rhs.GetHash();
-}
-
 void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* data, const float voxelScale, const int lod, const Int3& voxelOffset, const bool normalCorrection)
 {
-    Voxel corner[8];
+    Voxel corners[8];
     for(var i = 0; i < 8; i ++)
     {
-        corner[i] = GetVoxel(data, voxelOffset + CellCorner[i]);
+        corners[i] = GetVoxel(data, voxelOffset + CellCorner[i]);
     }
 
     const byte caseCode =
-          (-corner[0].value >> 7 & 0x01)
-        | (-corner[1].value >> 6 & 0x02)
-        | (-corner[2].value >> 5 & 0x04)
-        | (-corner[3].value >> 4 & 0x08)
-        | (-corner[4].value >> 3 & 0x10)
-        | (-corner[5].value >> 2 & 0x20)
-        | (-corner[6].value >> 1 & 0x40)
-        | (-corner[7].value & 0x80);
+          (-corners[0].value >> 7 & 0x01)
+        | (-corners[1].value >> 6 & 0x02)
+        | (-corners[2].value >> 5 & 0x04)
+        | (-corners[3].value >> 4 & 0x08)
+        | (-corners[4].value >> 3 & 0x10)
+        | (-corners[5].value >> 2 & 0x20)
+        | (-corners[6].value >> 1 & 0x40)
+        | (-corners[7].value & 0x80);
 
-    if((caseCode ^ ((-corner[7].value >> 7) & 0xFF)) == 0)
+    if((caseCode ^ ((-corners[7].value >> 7) & 0xFF)) == 0)
         return;
 
     cvar cellClass = RegularCellClass[caseCode];
@@ -61,9 +56,14 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
 
     uint indices[12] = {};
 
+    var vertexMaterial = SetupMaterial(m_currentMaterialMap, GetMinimalCorner(corners));
+    var originalBlend = vertexMaterial.Blend;
+
     cvar vertexCount = cellData.GetVertexCount();
     for(var i = 0; i < vertexCount; i ++)
     {
+        vertexMaterial.Blend = originalBlend;
+
         cvar edgeCode = RegularVertexData[caseCode][i];
 
         cvar v0 = edgeCode & 0x0F;
@@ -79,26 +79,33 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
         cvar cornerPos0 = voxelOffset + CellCorner[v0];
         cvar cornerPos1 = voxelOffset + CellCorner[v1];
 
-        cvar intersectionPosition = GetIntersection(cornerPos0, cornerPos1, corner[v0].value, corner[v1].value) * voxelScale;
+        cvar intersectionPosition = GetIntersection(cornerPos0, cornerPos1, corners[v0].value, corners[v1].value) * voxelScale;
         cvar vertexPosition = position + intersectionPosition;
 
-        var vertexMaterial = CalculateMaterials(m_currentMaterialMap, lod, corner[v0], corner[v1]);
+        var createVertex = true;
+        var duplicatedVertex = false;
 
-        var forceCreateVertex = true;
-        if(reuseVertex)
+        if (reuseVertex)
         {
-            var reuseMaterial = m_materials[resuseIndex];
-
-            if(reuseMaterial == vertexMaterial)
-                forceCreateVertex = false;
+            cvar reuseMaterial = m_materials[resuseIndex];
+            if (reuseMaterial == vertexMaterial) 
+            {
+                indices[i] = m_vertexReuse[indexId];
+                DEBUG_ASSERT(indices[i] < m_vertices.Count());
+                createVertex = false;
+            }
+            else
+            {
+                duplicatedVertex = true;
+            }
         }
 
-        if (reuseVertex && !forceCreateVertex)
+        if (duplicatedVertex)
         {
-            indices[i] = m_vertexReuse[indexId];
-            DEBUG_ASSERT(indices[i] < m_vertices.Count());
+            m_materials[m_vertexReuse[indexId]].Blend = 0u;
         }
-        else
+        
+        if(createVertex)
         {
             cvar index = m_vertices.Count();
             m_vertices.Add(vertexPosition); // TODO: Optimize vertex count -> caused by normalCorrection

@@ -26,14 +26,14 @@ public:
     uint8_t Reserved[2];
 
 public:
-    uint64_t GetHash()
+    uint64_t GetHash() const
     {
         return *reinterpret_cast<uint64_t*>((void*)this);
     }
 
 } MaterialSet_t;
 
-inline bool operator==(MaterialSet_t& lhs, MaterialSet_t& rhs)
+inline bool operator==(const MaterialSet_t& lhs, const MaterialSet_t& rhs)
 {
     return lhs.GetHash() == rhs.GetHash();
 }

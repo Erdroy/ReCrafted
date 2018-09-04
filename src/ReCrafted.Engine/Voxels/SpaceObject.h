@@ -49,11 +49,12 @@ public:
 
     /**
      * \brief Modifies this voxel space object, using given method.
+     * \param material The voxel material that will be applied on every voxel.
      * \param mode The edit mode.
      * \param position The edit position.
      * \param size The edit size.
      */
-    void Modify(VoxelEditMode::_enum mode, Vector3& position, float size);
+    void Modify(VoxelMaterial_t material, VoxelEditMode::_enum mode, const Vector3& position, float size);
 
     /**
 	 * \brief Gets space object settings reference.

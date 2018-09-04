@@ -22,6 +22,8 @@ private:
 private:
     RefPtr<SpaceObject> m_testObject1 = nullptr;
 
+    VoxelMaterial_t m_selectedMaterial = 1u;
+
 public:
     virtual ~Universe() = default;
 
@@ -31,6 +33,7 @@ private:
     void Update() override;
 
     void Simulate();
+    void RenderUI();
 };
 
 #endif // UNIVERSE_H

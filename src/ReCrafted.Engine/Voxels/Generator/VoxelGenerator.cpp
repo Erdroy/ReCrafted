@@ -29,12 +29,18 @@ Voxel VoxelGenerator::GenerateFromCHM(const Vector3& origin, const Vector3& posi
 
     // the height over sphere
     cvar currentHeight = (position - origin).Length();
+    cvar heightDiff = currentHeight - terrainHeight;
 
     // calculate voxel value
-    cvar voxelValue = (currentHeight - terrainHeight) / lodSize;
+    cvar voxelValue = (heightDiff) / lodSize;
+
+    var voxel = Voxel::Create(voxelValue, 0u, 255u);
+
+    //if (voxel.value == Voxel::FullValue)
+    //    voxel.material = 1u;
 
     // convert voxel value to voxel
-    return Voxel::Create(voxelValue, 0u, 128u); // TODO: Read material id from CHM
+    return voxel; // TODO: Read material id from CHM
 }
 
 void VoxelGenerator::Init(SpaceObjectSettings* settings)
@@ -74,8 +80,6 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
 
     cvar octree = spaceObject->GetOctree();
 
-    cvar dataSize = VoxelChunkData::ChunkDataSize;
-
     cvar voxelSize = static_cast<float>(lod);
     cvar lodSize = LoDTable[lod];
 
@@ -87,8 +91,10 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
     sbyte lastVoxel = 0;
 
     // Temporary TODO: Generate proper materials
-    cvar defaultMaterial = MaterialSet_t{ { 1, 2, 1 }, { 1, 2, 1 }, {0, 0} };
-    chunk->AddMaterial(defaultMaterial);
+    chunk->AddMaterial(MaterialSet_t{ { 1, 2, 1 },{ 1, 2, 1 }, 0, 0 });
+    chunk->AddMaterial(MaterialSet_t{ { 1, 1, 1 },{ 1, 2, 1 }, 0, 0 }); // 1
+    chunk->AddMaterial(MaterialSet_t{ { 2, 2, 2 },{ 1, 2, 1 }, 0, 0 }); // 2
+    chunk->AddMaterial(MaterialSet_t{ { 3, 3, 3 },{ 1, 2, 1 }, 0, 0 }); // 3
 
     var voxelVolumeSign = 0;
     for (var x = VoxelChunkData::ChunkDataStart; x < VoxelChunkData::ChunkDataLength; x++)

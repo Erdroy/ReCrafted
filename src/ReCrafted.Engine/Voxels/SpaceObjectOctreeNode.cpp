@@ -436,7 +436,7 @@ void SpaceObjectOctreeNode::UpdateViews(Array<Vector3>& views)
         Depopulate();
 }
 
-bool SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position, float size)
+bool SpaceObjectOctreeNode::Modify(const VoxelMaterial_t material, const VoxelEditMode::_enum mode, const Vector3& position, float size)
 {
     cvar chunk = GetChunk();
 
@@ -449,7 +449,7 @@ bool SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position,
         chunkData->AllocateData();
 
     cvar chunkScale = static_cast<float>(chunkData->GetLod());
-    var modified = false;
+    var modified = true;
 
     for (var x = VoxelChunkData::ChunkDataStart; x < VoxelChunkData::ChunkDataLength; x++)
     {
@@ -464,24 +464,33 @@ bool SpaceObjectOctreeNode::Modify(VoxelEditMode::_enum mode, Vector3& position,
                 if (distance <= size + 0.5f)
                 {
                     cvar value = size - distance;
-                    var newValue = Voxel::Create(value, 2u, 0u);
-
                     if (mode == VoxelEditMode::Additive)
                     {
-                        newValue.value = -newValue.value;
+                        var newValue = Voxel::Create(-value, material, 0u);
 
-                        // Do not set value, when it is higher
-                        if (newValue.value < currentValue.value)
+                        if (newValue.value <= currentValue.value)
+                        {
                             chunkData->SetVoxel(x, y, z, newValue);
-
-                        // TODO: Apply proper blend value
+                        }
+                        else if(currentValue.material != newValue.material)
+                        {
+                            newValue.value = currentValue.value;
+                            chunkData->SetVoxel(x, y, z, newValue);
+                        }
                     }
                     else
                     {
-                        newValue.material = currentValue.material;
+                        var newValue = Voxel::Create(value, material, 0u);
 
-                        if (newValue.value > currentValue.value)
+                        if (newValue.value >= currentValue.value)
+                        {
                             chunkData->SetVoxel(x, y, z, newValue);
+                        }
+                        else
+                        {
+                            newValue.value = currentValue.value;
+                            chunkData->SetVoxel(x, y, z, newValue);
+                        }
                     }
 
                     modified = true;

@@ -360,6 +360,9 @@ void Graphics::RenderUI()
             // render application UI
             Application::GetInstance()->RenderUI();
 
+            // render universe UI
+            Universe::GetInstance()->RenderUI();
+
             // draw profiler debug screen
             Profiler::GetInstance()->DrawDebugScreen();
         }

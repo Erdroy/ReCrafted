@@ -12,6 +12,7 @@
 #include "Core/Containers/Array.h"
 #include "Storage/VoxelEditMode.h"
 #include <atomic>
+#include "Voxel.h"
 
 struct IVoxelMesher;
 class SpaceObjectOctree;
@@ -107,7 +108,7 @@ public:
     void Rebuild();
 
 public:
-    bool Modify(VoxelEditMode::_enum mode, Vector3& position, float size);
+    bool Modify(VoxelMaterial_t material, VoxelEditMode::_enum mode, const Vector3& position, float size);
 
 public:
     RefPtr<SpaceObjectChunk> GetChunk() const
