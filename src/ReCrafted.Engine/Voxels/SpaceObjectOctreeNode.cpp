@@ -464,7 +464,11 @@ bool SpaceObjectOctreeNode::Modify(const VoxelMaterial_t material, const VoxelEd
                 if (distance <= size + 0.5f)
                 {
                     cvar value = size - distance;
-                    if (mode == VoxelEditMode::Additive)
+                    if(mode == VoxelEditMode::MaterialPaint)
+                    {
+                        chunkData->SetVoxel(x, y, z, Voxel::Create(currentValue.value, material, 0u));
+                    }
+                    else if (mode == VoxelEditMode::Additive)
                     {
                         var newValue = Voxel::Create(-value, material, 0u);
 

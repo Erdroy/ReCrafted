@@ -10,7 +10,8 @@ struct VoxelEditMode
     enum _enum
     {
         Additive,
-        Subtractive
+        Subtractive,
+        MaterialPaint
     };
 };
 

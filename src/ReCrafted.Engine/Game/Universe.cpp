@@ -79,6 +79,11 @@ void Universe::Update()
         m_testObject1->Modify(m_selectedMaterial, VoxelEditMode::Additive, modPosition, 2.5f);
     }
 
+    if (Input::IsKey(Key_Mouse2))
+    {
+        m_testObject1->Modify(m_selectedMaterial, VoxelEditMode::MaterialPaint, modPosition, 2.5f);
+    }
+
     DebugDraw::SetColor(Color(0, 105, 0, 64));
 
     if (m_viewUpdateEnabled)
