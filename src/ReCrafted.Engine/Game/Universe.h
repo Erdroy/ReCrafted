@@ -23,6 +23,7 @@ private:
     RefPtr<SpaceObject> m_testObject1 = nullptr;
 
     VoxelMaterial_t m_selectedMaterial = 1u;
+    VoxelBlend_t m_selectedLayer = 0u;
 
 public:
     virtual ~Universe() = default;

@@ -54,7 +54,7 @@ public:
      * \param position The edit position.
      * \param size The edit size.
      */
-    void Modify(VoxelMaterial_t material, VoxelEditMode::_enum mode, const Vector3& position, float size);
+    void Modify(VoxelBlend_t layer, VoxelMaterial_t material, VoxelEditMode::_enum mode, const Vector3& position, float size);
 
     /**
 	 * \brief Gets space object settings reference.

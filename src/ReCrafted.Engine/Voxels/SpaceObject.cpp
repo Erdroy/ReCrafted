@@ -73,7 +73,7 @@ void SpaceObject::UpdateViewPoint(Vector3& view)
     m_views.Add(view);
 }
 
-void SpaceObject::Modify(const VoxelMaterial_t material, const VoxelEditMode::_enum mode, const Vector3& position, float size)
+void SpaceObject::Modify(const VoxelBlend_t layer, const VoxelMaterial_t material, const VoxelEditMode::_enum mode, const Vector3& position, float size)
 {
     var bbSize = Vector3(size, size, size) * 2.5f;
     bbSize.x = ceilf(bbSize.x);
@@ -90,7 +90,7 @@ void SpaceObject::Modify(const VoxelMaterial_t material, const VoxelEditMode::_e
             continue;
 
         // modify this node
-        if(node->Modify(material, mode, position, size))
+        if(node->Modify(layer, material, mode, position, size))
         {
             // queue current node to rebuild
             node->Rebuild();

@@ -69,19 +69,24 @@ void Universe::Update()
     if (Input::IsKeyDown(Key_Alpha3))
         m_selectedMaterial = 3u;
 
+    if (Input::IsKeyDown(Key_Alpha4))
+        m_selectedLayer = 0u;
+    if (Input::IsKeyDown(Key_Alpha5))
+        m_selectedLayer = 1u;
+
     if (Input::IsKey(Key_Mouse0))
     {
-        m_testObject1->Modify(0u, VoxelEditMode::Subtractive, modPosition, 2.5f);
+        m_testObject1->Modify(m_selectedLayer, 0u, VoxelEditMode::Subtractive, modPosition, 2.5f);
     }
 
     if (Input::IsKey(Key_Mouse1))
     {
-        m_testObject1->Modify(m_selectedMaterial, VoxelEditMode::Additive, modPosition, 2.5f);
+        m_testObject1->Modify(m_selectedLayer, m_selectedMaterial, VoxelEditMode::Additive, modPosition, 2.5f);
     }
 
     if (Input::IsKey(Key_Mouse2))
     {
-        m_testObject1->Modify(m_selectedMaterial, VoxelEditMode::MaterialPaint, modPosition, 2.5f);
+        m_testObject1->Modify(m_selectedLayer, m_selectedMaterial, VoxelEditMode::MaterialPaint, modPosition, 2.5f);
     }
 
     DebugDraw::SetColor(Color(0, 105, 0, 64));
@@ -123,4 +128,6 @@ void Universe::RenderUI()
         UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Dirt"), Vector2(10.0f, 10.0f));
         break;
     }
+
+    UI::DrawText(Profiler::GetInstance()->GetDebugFont(), Text::Format(TEXT_CONST("Selected layer: {0}"), m_selectedLayer), Vector2(10.0f, 30.0f));
 }
