@@ -56,14 +56,11 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
 
     uint indices[12] = {};
 
-    var vertexMaterial = SetupMaterial(m_currentMaterialMap, GetMinimalCorner(corners));
-    var originalBlend = vertexMaterial.Blend;
+    cvar vertexMaterial = SetupMaterial(m_currentMaterialMap, GetMinimalCorner(corners));
 
     cvar vertexCount = cellData.GetVertexCount();
     for(var i = 0; i < vertexCount; i ++)
     {
-        vertexMaterial.Blend = originalBlend;
-
         cvar edgeCode = RegularVertexData[caseCode][i];
 
         cvar v0 = edgeCode & 0x0F;
@@ -73,8 +70,8 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
 
         DEBUG_ASSERT(indexId >= 0);
 
-        cvar resuseIndex = m_vertexReuse[indexId];
-        cvar reuseVertex = resuseIndex > -1;
+        cvar reuseIndex = m_vertexReuse[indexId];
+        cvar reuseVertex = reuseIndex > -1;
 
         cvar cornerPos0 = voxelOffset + CellCorner[v0];
         cvar cornerPos1 = voxelOffset + CellCorner[v1];
@@ -83,11 +80,12 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
         cvar vertexPosition = position + intersectionPosition;
 
         var createVertex = true;
-        var duplicatedVertex = false;
+        var materialTransition = false;
 
         if (reuseVertex)
         {
-            cvar reuseMaterial = m_materials[resuseIndex];
+            cvar reuseMaterial = m_materials[reuseIndex];
+            
             if (reuseMaterial == vertexMaterial) 
             {
                 indices[i] = m_vertexReuse[indexId];
@@ -96,26 +94,40 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
             }
             else
             {
-                duplicatedVertex = true;
+                materialTransition = true;
             }
         }
 
-        if (duplicatedVertex)
+        if(materialTransition)
         {
-            m_materials[m_vertexReuse[indexId]].Blend = 0u;
+            //cvar id = m_vertexReuse[indexId];
+            //m_materials[id].Blend = vertexMaterial.Blend;
+            //m_colors[id] = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
         }
-        
+
         if(createVertex)
         {
             cvar index = m_vertices.Count();
-            m_vertices.Add(vertexPosition); // TODO: Optimize vertex count -> caused by normalCorrection
+            m_vertices.Add(vertexPosition);
             m_normals.Add(Vector3::Zero());
 
             if (EnableColorChannelGeneration)
                 m_colors.Add(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
 
             if (EnableMaterialChannelGeneration)
-                m_materials.Add(vertexMaterial);
+            {
+                var material = vertexMaterial;
+
+                if(materialTransition)
+                {
+                    cvar id = m_vertexReuse[indexId];
+                    cvar blend = m_materials[id].Blend;
+
+                    material.Blend = blend;
+                }
+
+                m_materials.Add(material);
+            }
 
             indices[i] = index;
             m_vertexReuse[indexId] = index;
