@@ -219,8 +219,9 @@ void TransvoxelMesher::Clear()
 {
     m_triangleCount = 0u;
 
-    // Clear all sections
+    // Clear only used sections
+    for (var i = 0; i <= m_currentSection; i ++)
+        m_meshSections[i].Clear();
+
     m_currentSection = 0;
-    for (rvar section : m_meshSections)
-        section.Clear();
 }

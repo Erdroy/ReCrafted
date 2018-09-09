@@ -70,10 +70,16 @@ private:
             }
 
             // Reserve a bit of space right now.
-            vertices.Reserve(16 << 10);
-            normals.Reserve(16 << 10);
-            materials.Reserve(16 << 10);
-            indices.Reserve(16 << 10);
+            vertices.Reserve(4096);
+            normals.Reserve(4096);
+            materials.Reserve(4096);
+            indices.Reserve(4096);
+        }
+
+    public:
+        void AddTriangle()
+        {
+            
         }
 
     public:
