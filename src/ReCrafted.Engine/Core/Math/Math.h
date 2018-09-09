@@ -129,6 +129,9 @@ public:
 
         return numToRound + multiple - remainder;
     }
+
+public:
+    const static float Epsilon;
 };
 
 #endif // MATH_H
