@@ -16,11 +16,6 @@
 typedef sbyte VoxelValue_t;
 
 /**
-* \brief The voxel material material blending type.
-*/
-typedef uint8_t VoxelBlend_t;
-
-/**
 * \brief The voxel material type.
 * This is the identificator of voxel material set.
 */
@@ -38,41 +33,12 @@ public:
     VoxelValue_t value;
 
     /**
-    * \brief The voxel material blending id.
-    */
-    VoxelBlend_t blend;
-
-    /**
     * \brief The voxel material id.
     * This id can be used to get MaterialSet_t from IVoxelMaterialMap::GetMaterial(...).
     */
     VoxelMaterial_t material;
 
 public:
-    /**
-    * \brief Creates voxel from value and material.
-    * \param value The voxel value.
-    * \param material The voxel material.
-    * \param blend The voxel blend value.
-    * \return The created voxel.
-    */
-    static Voxel Create(const VoxelValue_t value, const VoxelMaterial_t material, const VoxelBlend_t blend)
-    {
-        return Voxel{ value, blend, material };
-    }
-
-    /**
-    * \brief Creates voxel from value and material.
-    * \param value The voxel float value.
-    * \param material The voxel material.
-    * \param blend The voxel blend value.
-    * \return The created voxel.
-    */
-    static Voxel Create(const float value, const VoxelMaterial_t material, const VoxelBlend_t blend)
-    {
-        return Create(VOXEL_FROM_FLOAT(value), material, blend);
-    }
-
     /**
      * \brief Creates voxel from value and material.
      * \param value The voxel value.
@@ -81,7 +47,7 @@ public:
      */
     static Voxel Create(const VoxelValue_t value, const VoxelMaterial_t material)
     {
-        return Voxel{ value, 128u, material };
+        return Voxel{ value, material };
     }
 
     /**
@@ -92,7 +58,7 @@ public:
     */
     static Voxel Create(const float value, const VoxelMaterial_t material)
     {
-        return Create(VOXEL_FROM_FLOAT(value), material, 128u);
+        return Create(VOXEL_FROM_FLOAT(value), material);
     }
 
     /**
@@ -102,7 +68,7 @@ public:
     */
     static Voxel Create(const VoxelValue_t value)
     {
-        return Voxel{ value, 128u, 0u };
+        return Voxel{ value, 0u };
     }
 
     /**
@@ -112,7 +78,7 @@ public:
     */
     static Voxel Create(const float value)
     {
-        return Voxel{ VOXEL_FROM_FLOAT(value), 128u, value < 0 ? 255u : EmptyMaterial };
+        return Voxel{ VOXEL_FROM_FLOAT(value), value < 0 ? 255u : EmptyMaterial };
     }
 
 public:

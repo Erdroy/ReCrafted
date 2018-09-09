@@ -13,22 +13,28 @@ SamplerState<LinearWrap> Sampler : register(s0);
 
 struct TerrainVSInput
 {
-    float3 Position : POSITION;
-    float3 Normal   : NORMAL;
-    float4 Color    : COLOR0;
-    uint2 Materials : TEXCOORD0;
+    float3 Position     : POSITION;
+    float3 Normal       : NORMAL;
+
+    float4 Materials0   : COLOR0;
+    //float4 Materials1   : COLOR1;
+    //float4 Materials2   : COLOR2;
+    //float4 Materials3   : COLOR3;
 };
 
 struct TerrainVSOutput
 {
-    float4 Position : SV_POSITION;
-    float3 LocalPosition : WS_POSITION;
-    float3 Normal   : NORMAL0;
-    float3 FlatNormal : NORMAL1;
-    float3 FixedNormal : NORMAL2;
-    float4 Color    : COLOR0;
-    uint2 Materials : TEXCOORD0;
-    float Blend : TEXCOORD1;
+    float4 Position         : SV_POSITION;
+    float3 LocalPosition    : WS_POSITION;
+
+    float3 Normal           : NORMAL0;
+    float3 FlatNormal       : NORMAL1;
+    float3 FixedNormal      : NORMAL2;
+
+    float4 Materials0       : COLOR0;
+    float4 Materials1       : COLOR1;
+    float4 Materials2       : COLOR2;
+    float4 Materials3       : COLOR3;
 
 #ifdef USE_LOGZBUFFER
     float LogZ : TEXCOORD2;
@@ -50,9 +56,10 @@ void TerrainVSMain(in TerrainVSInput i, out TerrainVSOutput o)
     o.Normal = i.Normal;
     o.FlatNormal = (float3)0;
     o.FixedNormal = (float3)0;
-    o.Color = i.Color;
-    o.Materials = i.Materials;
-    o.Blend = ((i.Materials[0] >> 8) & 0xFF) / 255.f;
+    o.Materials0 = i.Materials0;
+    o.Materials1 = i.Materials0;
+    o.Materials2 = i.Materials0;
+    o.Materials3 = i.Materials0;
 
 #ifdef USE_LOGZBUFFER
     const float C = 1.0f;
@@ -101,9 +108,10 @@ void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<Terra
     output.LocalPosition = input[0].LocalPosition;
     output.Normal = input[0].Normal;
     output.FixedNormal = Triplanar_CalculateYFixedNormal(sphereOrigin, output.LocalPosition, output.Normal);
-    output.Color = input[0].Color;
-    output.Materials = input[0].Materials;
-    output.Blend = input[0].Blend;
+    output.Materials0 = input[0].Materials0;
+    output.Materials1 = input[0].Materials1;
+    output.Materials2 = input[0].Materials2;
+    output.Materials3 = input[0].Materials3;
 #ifdef USE_LOGZBUFFER
     output.LogZ = input[0].LogZ;
 #endif
@@ -114,9 +122,10 @@ void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<Terra
     output.LocalPosition = input[1].LocalPosition;
     output.Normal = input[1].Normal;
     output.FixedNormal = Triplanar_CalculateYFixedNormal(sphereOrigin, output.LocalPosition, output.Normal);
-    output.Color = input[1].Color;
-    output.Materials = input[1].Materials;
-    output.Blend = input[1].Blend;
+    output.Materials0 = input[1].Materials0;
+    output.Materials1 = input[1].Materials1;
+    output.Materials2 = input[1].Materials2;
+    output.Materials3 = input[1].Materials3;
 #ifdef USE_LOGZBUFFER
     output.LogZ = input[1].LogZ;
 #endif
@@ -127,9 +136,10 @@ void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<Terra
     output.LocalPosition = input[2].LocalPosition;
     output.Normal = input[2].Normal;
     output.FixedNormal = Triplanar_CalculateYFixedNormal(sphereOrigin, output.LocalPosition, output.Normal);
-    output.Color = input[2].Color;
-    output.Materials = input[2].Materials;
-    output.Blend = input[2].Blend;
+    output.Materials0 = input[2].Materials0;
+    output.Materials1 = input[2].Materials1;
+    output.Materials2 = input[2].Materials2;
+    output.Materials3 = input[2].Materials3;
 #ifdef USE_LOGZBUFFER
     output.LogZ = input[2].LogZ;
 #endif
@@ -142,12 +152,14 @@ float3 TmpGetMatColor(in uint matId)
 {
     switch (matId)
     {
-    case 1:
+    case 0:
         return float3(0.35f, 0.35f, 0.35f);
-    case 2:
+    case 1:
         return float3(80 / 255.0f, 145 / 255.0f, 30 / 255.0f);
-    case 3:
+    case 2:
         return float3(100 / 255.0f, 80 / 255.0f, 30 / 255.0f);
+    case 3:
+        return float3(0.15f, 0.15f, 0.17f);
 
     default:
         return float3(0.25f, 0.0f, 0.0f);
@@ -172,30 +184,18 @@ void TerrainPSMain(in TerrainPSInput i, out GBufferOutput o)
     float2 ty = position.zx * 1.0f;
     float2 tz = position.xy * 1.0f;
 
-    // Txz, Uxz
-    float2 material1 = float2(i.Materials[0] >> 24, (i.Materials[0] >> 16) & 0xFF);
+    float mat0 = i.Materials0.r;
+    float mat1 = i.Materials0.g;
+    float mat2 = i.Materials0.b;
+    float mat3 = i.Materials0.a;
 
-    // Tpy, Tny, Upy, Uny
-    float4 material2 = float4(i.Materials[1] >> 24, (i.Materials[1] >> 16) & 0xFF, (i.Materials[1] >> 8) & 0xFF, (i.Materials[1]) & 0xFF);
+    float3 color = 
+        TmpGetMatColor(0) * mat0 + 
+        (TmpGetMatColor(0) * blend.z + TmpGetMatColor(0) * blend.x + TmpGetMatColor(1) * blend.y) * mat1 +
+        TmpGetMatColor(2) * mat2 + 
+        TmpGetMatColor(3) * mat3;
 
-    float3 flip = float3(triplanarNormal.x < 0.0, triplanarNormal.y < 0.0, triplanarNormal.z >= 0.0);
-    float2 zindex = lerp(material2.xz, material2.yw, flip.y);
-
-    float3 cx0 = TmpGetMatColor(material1.x);
-    float3 cz0 = TmpGetMatColor(material1.x);
-    float3 cy0 = TmpGetMatColor(zindex.x);
-
-    float3 cx1 = TmpGetMatColor(material1.y);
-    float3 cz1 = TmpGetMatColor(material1.y);
-    float3 cy1 = TmpGetMatColor(zindex.y);
-
-    float3 material1color = blend.x * cx0 + blend.y * cy0 + blend.z * cz0;
-    float3 material2color = blend.x * cx1 + blend.y * cy1 + blend.z * cz1;
-
-    float3 color = lerp(material1color, material2color, i.Blend);
-
-    //o.Color = i.Color;
-    o.Color = float4(color, 1.0f) * i.Color;
+    o.Color = float4(color, 1.0f);
 
     o.Normal = EncodeNormal(float4(i.FlatNormal, 1.0f)); // Flat shading
     //o.Normal = EncodeNormal(float4(i.Normal, 1.0f)); // Smooth shading

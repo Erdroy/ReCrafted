@@ -9,10 +9,9 @@
 #include "Core/Math/Vector3.h"
 #include "Core/Lock.h"
 #include "Rendering/RenderableBase.h"
-
 #include "Storage/VoxelChunkData.h"
 #include "SpaceObject.h"
-#include "VoxelMaterialMap.h"
+#include "VoxelChunkMesh.h"
 
 #include <atomic>
 
@@ -42,15 +41,16 @@ private:
     uint64_t m_id = 0u;
     Vector3 m_position = {};
 
-    RefPtr<VoxelChunkData> m_chunkData = {};
-    RefPtr<Mesh> m_mesh = nullptr;
-    RefPtr<Mesh> m_newMesh = nullptr;
+    RefPtr<VoxelChunkData> m_chunkData = nullptr;
+
+    RefPtr<VoxelChunkMesh> m_mesh = nullptr;
+    RefPtr<VoxelChunkMesh> m_newMesh = nullptr;
 
     Lock m_uploadLock = {};
     std::atomic<UploadType> m_uploadType = None;
 
 private:
-    void SetUpload(RefPtr<Mesh> mesh, UploadType uploadType);
+    void SetUpload(const RefPtr<VoxelChunkMesh>& mesh, UploadType uploadType);
 
 public:
     void Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject);

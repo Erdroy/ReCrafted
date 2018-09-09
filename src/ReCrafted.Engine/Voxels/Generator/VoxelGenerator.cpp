@@ -34,10 +34,10 @@ Voxel VoxelGenerator::GenerateFromCHM(const Vector3& origin, const Vector3& posi
     // calculate voxel value
     cvar voxelValue = (heightDiff) / lodSize;
 
-    var voxel = Voxel::Create(voxelValue, 0u, 255u);
+    var voxel = Voxel::Create(voxelValue, 0u);
 
-    //if (voxel.value == Voxel::FullValue)
-    //    voxel.material = 1u;
+    if (fabs(heightDiff) <= lodSize)
+        voxel.material = 1u;
 
     // convert voxel value to voxel
     return voxel; // TODO: Read material id from CHM
@@ -89,12 +89,6 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
 
     var hasSurface = false;
     sbyte lastVoxel = 0;
-
-    // Temporary TODO: Generate proper materials
-    chunk->AddMaterial(MaterialSet_t{ { 1, 2, 1 },{ 1, 2, 1 }, 0, 0 });
-    chunk->AddMaterial(MaterialSet_t{ { 1, 1, 1 },{ 1, 2, 1 }, 0, 0 }); // 1
-    chunk->AddMaterial(MaterialSet_t{ { 2, 2, 2 },{ 1, 2, 1 }, 0, 0 }); // 2
-    chunk->AddMaterial(MaterialSet_t{ { 3, 3, 3 },{ 1, 2, 1 }, 0, 0 }); // 3
 
     var voxelVolumeSign = 0;
     for (var x = VoxelChunkData::ChunkDataStart; x < VoxelChunkData::ChunkDataLength; x++)

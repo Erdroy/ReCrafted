@@ -10,9 +10,8 @@
 #include "Core/Math/Vector3.h"
 #include "Voxels/Utilities/VoxelUtils.h"
 #include "Voxels/Voxel.h"
-#include "Voxels/VoxelMaterialMap.h"
 
-class VoxelChunkData : public IVoxelMaterialMap
+class VoxelChunkData
 {
     friend class VoxelStorage;
     friend class VoxelGenerator;
@@ -52,7 +51,6 @@ public:
 
 private:
     Voxel* m_voxelData = nullptr;
-    Array<MaterialSet_t> m_materials = {};
     Vector3 m_nodePosition = {};
     Vector3 m_chunkPosition = {};
     uint64_t m_id = 0u;
@@ -71,7 +69,6 @@ public:
     ~VoxelChunkData()
     {
         DeallocateData();
-        m_materials.Release();
     }
 
 public:
@@ -89,41 +86,6 @@ public:
     void DeallocateData()
     {
         SafeDeleteArray(m_voxelData);
-    }
-
-public:
-    bool FindMaterial(MaterialSet_t& material, VoxelMaterial_t* voxelMaterial) override
-    {
-        for(var i = 0u; i < m_materials.Count(); i ++)
-        {
-            var currentSet = m_materials[i];
-
-            if (currentSet == material)
-            {
-                *voxelMaterial = i;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    VoxelMaterial_t AddMaterial(const MaterialSet_t& material) override
-    {
-        // Check if we already have this material
-        VoxelMaterial_t voxelMaterial;
-        cvar materialFound = FindMaterial(const_cast<MaterialSet_t&>(material), &voxelMaterial);
-        if (materialFound)
-            return voxelMaterial;
-
-        // Add new material
-        m_materials.Add(material);
-        return m_materials.Count() - 1;
-    }
-
-    MaterialSet_t* GetMaterial(VoxelMaterial_t material) override
-    {
-        return &m_materials[material];
     }
 
 public:

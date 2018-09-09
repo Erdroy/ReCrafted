@@ -12,16 +12,6 @@
 #include "Graphics/DebugDraw.h"
 #include "SpaceObjectTables.hpp"
 
-void SpaceObjectChunk::SetUpload(RefPtr<Mesh> mesh, UploadType uploadType)
-{
-    // Lock Upload
-    ScopeLock(m_uploadLock);
-
-    // Set upload type to UPLOAD-MESH
-    m_newMesh = mesh;
-    m_uploadType = uploadType;
-}
-
 void SpaceObjectChunk::Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject)
 // WARNING: this function is called on WORKER THREAD!
 {
@@ -101,7 +91,7 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
     cvar voxelData = m_chunkData->GetData();
 
     // Try to generate mesh data
-    mesher->Generate(static_cast<IVoxelMaterialMap*>(m_chunkData.get()), m_position, m_lod, borders, voxelData);
+    mesher->Generate(m_position, m_lod, borders, voxelData);
 
     // Check if we have any triangles and if don't, 
     // then we are going to clean everything up, including chunk data.
@@ -111,7 +101,7 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
         m_chunkData->HasSurface(false);
 
         // Set upload type to CLEAR-MESH
-        SetUpload(nullptr, ClearMesh);
+        SetUpload({}, ClearMesh);
         return;
     }
 
@@ -119,7 +109,8 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
     // so create new mesh now and set upload state.
 
     // Create new mesh
-    cvar mesh = Mesh::CreateMesh();
+    RefPtr<VoxelChunkMesh> mesh;
+    mesh.reset(new VoxelChunkMesh);
 
     // Apply mesh
     mesher->Apply(mesh);
@@ -128,6 +119,16 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
     mesh->UploadNow();
 
     SetUpload(mesh, SwapMesh);
+}
+
+void SpaceObjectChunk::SetUpload(const RefPtr<VoxelChunkMesh>& mesh, const UploadType uploadType)
+{
+    // Lock Upload
+    ScopeLock(m_uploadLock);
+
+    // Set upload type to UPLOAD-MESH
+    m_newMesh = mesh;
+    m_uploadType = uploadType;
 }
 
 void SpaceObjectChunk::Upload()
@@ -193,7 +194,9 @@ void SpaceObjectChunk::Render(RenderableRenderMode renderMode)
     ASSERT(m_mesh);
 
     //owner->DrawDebug();
-    Graphics::GetInstance()->Draw(m_mesh);
+
+    // Draw chunk mesh
+    m_mesh->Draw();
 }
 
 uint64_t SpaceObjectChunk::CalculateChunkId(const Vector3& position)

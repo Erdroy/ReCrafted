@@ -1,5 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
+#if 0
 #include "MarchingCubesMesher.h"
 #include "MarchingCubesTables.hpp"
 #include "MarchingSquaresTables.hpp"
@@ -245,7 +246,7 @@ void MCMesher::Apply(const RefPtr<Mesh>& mesh)
     Clear();
 }
 
-void MCMesher::Generate(IVoxelMaterialMap* materialMap, const Vector3& position, int lod, uint8_t borders, Voxel* data)
+void MCMesher::Generate(const Vector3& position, int lod, uint8_t borders, Voxel* data)
 {
     cvar lodF = static_cast<float>(lod);
 
@@ -266,3 +267,4 @@ void MCMesher::Clear()
     // NOTE: we do not need to cleanup cells as it is not required, 
     // because generating new cell overrides old data.
 }
+#endif

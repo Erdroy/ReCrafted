@@ -2,6 +2,7 @@
 
 #pragma once
 
+#if 0
 #ifndef MCMESHER_H
 #define MCMESHER_H
 
@@ -58,7 +59,7 @@ public:
     * \brief Virtual method for generating a mesh from hermite voxel data.
     * \param data The hermite voxel data (in -127 to 127 range).
     */
-    void Generate(IVoxelMaterialMap* materialMap, const Vector3& position, int lod, uint8_t borders, Voxel* data) override;
+    void Generate(const Vector3& position, int lod, uint8_t borders, Voxel* data) override;
 
     /**
     * \brief Checks if there are any generated triangles.
@@ -82,3 +83,4 @@ public:
 };
 
 #endif // MCMESHER_H
+#endif

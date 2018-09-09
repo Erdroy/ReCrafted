@@ -20,13 +20,12 @@ struct IVoxelMesher
 public:
     /**
     * \brief Virtual method for generating a mesh from hermite voxel data.
-    * \param materialMap The material map pointer.
     * \param position The position of current procesed chunk.
     * \param lod The current procesed chunk lod.
     * \param borders Border set for current procesed chunk.
     * \param data The hermite voxel data (in -127 to 127 range).
     */
-    virtual void Generate(IVoxelMaterialMap* materialMap, const Vector3& position, int lod, uint8_t borders, Voxel* data) = 0;
+    virtual void Generate(const Vector3& position, int lod, uint8_t borders, Voxel* data) = 0;
 
     /**
      * \brief Checks if there are any generated triangles.
@@ -38,7 +37,7 @@ public:
      * \brief Uploads all data to a mesh. This also clears the mesher and prepares to next mesh generation.
      * \param mesh The mesh that will get the new mesh data.
      */
-    virtual void Apply(const RefPtr<Mesh>& mesh) = 0;
+    virtual void Apply(const RefPtr<VoxelChunkMesh>& mesh) = 0;
 
     /**
      * \brief Cleans all data used during Generate and Apply functions.

@@ -56,8 +56,6 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
 
     uint indices[12] = {};
 
-    cvar vertexMaterial = SetupMaterial(m_currentMaterialMap, GetMinimalCorner(corners));
-
     cvar vertexCount = cellData.GetVertexCount();
     for(var i = 0; i < vertexCount; i ++)
     {
@@ -70,73 +68,55 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
 
         DEBUG_ASSERT(indexId >= 0);
 
-        cvar reuseIndex = m_vertexReuse[indexId];
-        cvar reuseVertex = reuseIndex > -1;
-
         cvar cornerPos0 = voxelOffset + CellCorner[v0];
         cvar cornerPos1 = voxelOffset + CellCorner[v1];
 
-        cvar intersectionPosition = GetIntersection(cornerPos0, cornerPos1, corners[v0].value, corners[v1].value) * voxelScale;
-        cvar vertexPosition = position + intersectionPosition;
+        cvar voxelA = corners[v0];
+        cvar voxelB = corners[v1];
 
-        var createVertex = true;
-        var materialTransition = false;
+        cvar intersectionPosition = GetIntersection(cornerPos0, cornerPos1, voxelA.value, voxelB.value) * voxelScale;
+        cvar vertexPosition = position + intersectionPosition;
+        cvar voxelMaterial = GetVoxelMaterial(voxelA, voxelB);
+        cvar vertexMaterial = EncodeMaterial(voxelMaterial);
+
+        // If material set size is 16 and we don't have this voxel material in our section, create new section.
+        rvar section = GetSection();
+        /*cvar materialPresent = section.HasMaterial(voxelMaterial);
+        var newSection = false;
+
+        if(!materialPresent && section.MaterialsFull())
+        {
+            section = CreateSection();
+            newSection = true;
+        }*/
+
+        cvar reuseIndex = section.vertexReuse[indexId];
+        cvar reuseVertex = reuseIndex > -1;
 
         if (reuseVertex)
         {
-            cvar reuseMaterial = m_materials[reuseIndex];
-            
-            if (reuseMaterial == vertexMaterial) 
-            {
-                indices[i] = m_vertexReuse[indexId];
-                DEBUG_ASSERT(indices[i] < m_vertices.Count());
-                createVertex = false;
-            }
-            else
-            {
-                materialTransition = true;
-            }
+            indices[i] = section.vertexReuse[indexId];
+            DEBUG_ASSERT(indices[i] < m_vertices.Count());
+            continue;
         }
 
-        if(materialTransition)
-        {
-            //cvar id = m_vertexReuse[indexId];
-            //m_materials[id].Blend = vertexMaterial.Blend;
-            //m_colors[id] = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-        }
+        cvar index = section.vertices.Count();
+        section.vertices.Add(vertexPosition);
+        section.normals.Add(Vector3::Zero());
+        section.materials.Add(vertexMaterial);
 
-        if(createVertex)
-        {
-            cvar index = m_vertices.Count();
-            m_vertices.Add(vertexPosition);
-            m_normals.Add(Vector3::Zero());
+        //if(!materialPresent)
+        //    section.materialSet.Add(voxelMaterial);
 
-            if (EnableColorChannelGeneration)
-                m_colors.Add(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-
-            if (EnableMaterialChannelGeneration)
-            {
-                var material = vertexMaterial;
-
-                if(materialTransition)
-                {
-                    cvar id = m_vertexReuse[indexId];
-                    cvar blend = m_materials[id].Blend;
-
-                    material.Blend = blend;
-                }
-
-                m_materials.Add(material);
-            }
-
-            indices[i] = index;
-            m_vertexReuse[indexId] = index;
-        }
+        indices[i] = index;
+        section.vertexReuse[indexId] = index;
     }
 
     cvar indexCount = cellData.GetTriangleCount() * 3;
     for (var i = 0; i < indexCount; i += 3)
     {
+        rvar section = GetSection();
+
         cvar vertexIndex0 = indices[cellData.vertexIndex[i + 0]];
         cvar vertexIndex1 = indices[cellData.vertexIndex[i + 1]];
         cvar vertexIndex2 = indices[cellData.vertexIndex[i + 2]];
@@ -145,35 +125,39 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
         DEBUG_ASSERT(vertexIndex1 < m_vertices.Count());
         DEBUG_ASSERT(vertexIndex2 < m_vertices.Count());
 
-        cvar vertex0 = m_vertices[vertexIndex0];
-        cvar vertex1 = m_vertices[vertexIndex1];
-        cvar vertex2 = m_vertices[vertexIndex2];
+        cvar vertex0 = section.vertices[vertexIndex0];
+        cvar vertex1 = section.vertices[vertexIndex1];
+        cvar vertex2 = section.vertices[vertexIndex2];
 
-        if (Vector3::Dot(vertex0, vertex1) < FLT_EPSILON || 
-            Vector3::Dot(vertex1, vertex2) < FLT_EPSILON || 
-            Vector3::Dot(vertex2, vertex0) < FLT_EPSILON)
+        if (Vector3::Dot(vertex0, vertex1) < Math::Epsilon || 
+            Vector3::Dot(vertex1, vertex2) < Math::Epsilon ||
+            Vector3::Dot(vertex2, vertex0) < Math::Epsilon)
             continue; // zero-space triangle
 
         cvar normal = Vector3::Cross(vertex1 - vertex0, vertex2 - vertex0);
 
-        m_normals[vertexIndex0] += normal;
-        m_normals[vertexIndex1] += normal;
-        m_normals[vertexIndex2] += normal;
+        section.normals[vertexIndex0] += normal;
+        section.normals[vertexIndex1] += normal;
+        section.normals[vertexIndex2] += normal;
+
+        section.normals[vertexIndex0] *= 0.5f;
+        section.normals[vertexIndex1] *= 0.5f;
+        section.normals[vertexIndex2] *= 0.5f;
         
         if (!normalCorrection)
         {
-            m_indices.Add(vertexIndex0);
-            m_indices.Add(vertexIndex1);
-            m_indices.Add(vertexIndex2);
+            section.indices.Add(vertexIndex0);
+            section.indices.Add(vertexIndex1);
+            section.indices.Add(vertexIndex2);
         }
-    }
 
+        // Add to triangle count
+        m_triangleCount += 3;
+    }
 }
 
-void TransvoxelMesher::Generate(IVoxelMaterialMap* materialMap, const Vector3& position, int lod, uint8_t borders, Voxel* data)
+void TransvoxelMesher::Generate(const Vector3& position, int lod, uint8_t borders, Voxel* data)
 {
-    m_currentMaterialMap = materialMap;
-
     // ReSharper disable once CppUnreachableCode
     cvar voxelScale = static_cast<float>(lod);
 
@@ -194,49 +178,49 @@ void TransvoxelMesher::Generate(IVoxelMaterialMap* materialMap, const Vector3& p
         }
     }
 
-    // Normalize the normal to be a normal normal.
-    for (rvar normal : m_normals)
-        normal.Normalize();
+    for(var i = 0; i <= m_currentSection; i ++)
+    {
+        rvar section = m_meshSections[i];
+
+        // Normalize the normals to be a normal normals.
+        for (rvar normal : section.normals)
+            normal.Normalize();
+    }
 }
 
-void TransvoxelMesher::Apply(const RefPtr<Mesh>& mesh)
+void TransvoxelMesher::Apply(const RefPtr<VoxelChunkMesh>& chunkMesh)
 {
-    // ReSharper disable CppUnreachableCode
-    mesh->SetVertices(m_vertices.Data(), m_vertices.Count());
-    mesh->SetNormals(m_normals.Data());
+    // Create section mesh
+    cvar mesh = Mesh::CreateMesh();
 
-    if(EnableColorChannelGeneration)
-    {
-        mesh->SetColors(m_colors.Data());
-    }
+    var chunkSection = VoxelChunkMesh::MeshSection();
+    chunkSection.mesh = mesh;
 
-    if (EnableMaterialChannelGeneration)
-    {
-        mesh->SetCustom(m_materials.Data(), sizeof(uint64_t));
-    }
+    var meshSection = GetSection();
+    for(var material : meshSection.materialSet)
+        chunkSection.materialSet.Add(material);
 
-    mesh->SetIndices(m_indices.Data(), m_indices.Count());
+    if (meshSection.indices.Count() == 0)
+        return;
 
+    mesh->SetVertices(meshSection.vertices.Data(), meshSection.vertices.Count());
+    mesh->SetNormals(meshSection.normals.Data());
+    mesh->AddCustomData(meshSection.materials.Data(), sizeof(Vector4));
+    mesh->SetIndices(meshSection.indices.Data(), meshSection.indices.Count());
     mesh->ApplyChanges();
 
+    // Add mesh section
+    chunkMesh->AddSection(chunkSection);
+
     Clear();
-    // ReSharper restore CppUnreachableCode
 }
 
 void TransvoxelMesher::Clear()
 {
-    // cleanup all arrays
-    m_vertices.Clear();
-    m_normals.Clear();
-    m_colors.Clear();
-    m_materials.Clear();
-    m_indices.Clear();
+    m_triangleCount = 0u;
 
-
-    if (EnableVertexReuse) 
-    {
-        // Clean vertex reuse array
-        for (var i = 0u; i < m_vertexReuse.Count(); i++)
-            m_vertexReuse[i] = -1;
-    }
+    // Clear all sections
+    m_currentSection = 0;
+    for (rvar section : m_meshSections)
+        section.Clear();
 }

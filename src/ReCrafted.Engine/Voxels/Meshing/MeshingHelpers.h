@@ -9,42 +9,6 @@
 #include "ReCrafted.h"
 #include "Core/Math/Math.h"
 
-typedef struct {
-public:
-    uint8_t Reserved;
-    VoxelBlend_t Blend;
-
-    VoxelTextureId_t Uxz;
-    VoxelTextureId_t Txz;
-
-    VoxelTextureId_t Uny;
-    VoxelTextureId_t Upy;
-
-    VoxelTextureId_t Tny;
-    VoxelTextureId_t Tpy;
-
-public:
-    uint64_t GetHash() const
-    {
-        return *reinterpret_cast<const uint64_t*>(this);
-    }
-} VertexMaterial_t;
-
-inline bool operator==(const VertexMaterial_t& lhs, const VertexMaterial_t& rhs)
-{
-    return lhs.GetHash() == rhs.GetHash();
-}
-
-inline bool operator!=(const VertexMaterial_t& lhs, const VertexMaterial_t& rhs)
-{
-    return lhs.GetHash() != rhs.GetHash();
-}
-
-inline uint64_t VertexMaterialToUInt64(VertexMaterial_t* material)
-{
-    return *reinterpret_cast<uint64_t*>(material);
-}
-
 /**
  * \brief Calculates interpolant value based on two density values.
 * \param densityA The first density value.

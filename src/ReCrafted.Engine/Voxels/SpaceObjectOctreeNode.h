@@ -108,7 +108,7 @@ public:
     void Rebuild();
 
 public:
-    bool Modify(const VoxelBlend_t layer, VoxelMaterial_t material, VoxelEditMode::_enum mode, const Vector3& position, float size);
+    bool Modify(VoxelMaterial_t material, VoxelEditMode::_enum mode, const Vector3& position, float size);
 
 public:
     RefPtr<SpaceObjectChunk> GetChunk() const

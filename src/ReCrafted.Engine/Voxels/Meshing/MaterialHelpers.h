@@ -8,45 +8,26 @@
 // includes
 #include "ReCrafted.h"
 
-/**
-* \brief Setups material from given voxel.
-* \param materialMap The material map instance.
-* \param voxel The voxel that contain material information.
-* \return The resulting vertex material.
-*/
-inline VertexMaterial_t SetupMaterial(IVoxelMaterialMap* materialMap, const Voxel& voxel)
+inline VoxelMaterial_t GetVoxelMaterial(const Voxel& voxelA, const Voxel& voxelB)
 {
-    cvar matSet = materialMap->GetMaterial(voxel.material);
-
-    VertexMaterial_t material = {};
-    material.Blend = voxel.blend;
-
-    material.Tny = matSet->MaterialIdsA[0];
-    material.Tpy = matSet->MaterialIdsA[1];
-    material.Txz = matSet->MaterialIdsA[2];
-
-    material.Uny = matSet->MaterialIdsB[0];
-    material.Upy = matSet->MaterialIdsB[1];
-    material.Uxz = matSet->MaterialIdsB[2];
-
-    return material;
+    return GetMinimalVoxel(voxelA, voxelB).material;
 }
 
-/**
-* \brief Calculates materials from two given voxels.
-* \param materialMap The material map pointer.
-* \param lod The level of detail.
-* \param voxelA The first voxel.
-* \param voxelB The second voxel.
-* \return The resulting vertex material.
-*/
-inline VertexMaterial_t CalculateMaterials(IVoxelMaterialMap* materialMap, const int lod, const Voxel& voxelA, const Voxel& voxelB)
+inline Vector4 EncodeMaterial(const VoxelMaterial_t& material)
 {
-    if (voxelA.material == voxelB.material)
-        return SetupMaterial(materialMap, voxelA);
-
-    cvar minimalVoxel = GetMinimalVoxel(voxelA, voxelB);
-    return SetupMaterial(materialMap, minimalVoxel);
+    switch (material)
+    {
+    case 0:
+        return { 1.0f, 0.0f, 0.0f, 0.0f };
+    case 1:
+        return { 0.0f, 1.0f, 0.0f, 0.0f };
+    case 2:
+        return { 0.0f, 0.0f, 1.0f, 0.0f };
+    case 3:
+        return { 0.0f, 0.0f, 0.0f, 1.0f };
+    default:
+        return { 0.0f, 0.0f, 0.0f, 0.0f };
+    }
 }
 
 #endif // MATERIALHELPERS_H

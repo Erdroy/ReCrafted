@@ -2,17 +2,17 @@
 
 #include "Universe.h"
 #include "Common/Input/Input.h"
+#include "Common/Profiler/Profiler.h"
 #include "Graphics/Camera.h"
+#include "Graphics/DebugDraw.h"
+#include "Graphics/Graphics.h"
+#include "Graphics/UI/UI.h"
 #include "Voxels/SpaceObjectManager.h"
 #include "Voxels/Storage/VoxelStorage.h"
 #include "Voxels/SpaceObjectSettings.h"
-#include "Graphics/DebugDraw.h"
-#include "Graphics/Graphics.h"
 
 #include <iomanip>
 #include <sstream>
-#include "Graphics/UI/UI.h"
-#include "Common/Profiler/Profiler.h"
 
 SINGLETON_IMPL(Universe)
 
@@ -63,30 +63,27 @@ void Universe::Update()
     var modPosition = Camera::GetMainCamera()->GetPosition() + Camera::GetMainCamera()->GetForward() * 5.0f;
 
     if (Input::IsKeyDown(Key_Alpha1))
-        m_selectedMaterial = 1u;
+        m_selectedMaterial = 0u;
     if (Input::IsKeyDown(Key_Alpha2))
-        m_selectedMaterial = 2u;
+        m_selectedMaterial = 1u;
     if (Input::IsKeyDown(Key_Alpha3))
-        m_selectedMaterial = 3u;
-
+        m_selectedMaterial = 2u;
     if (Input::IsKeyDown(Key_Alpha4))
-        m_selectedLayer = 0u;
-    if (Input::IsKeyDown(Key_Alpha5))
-        m_selectedLayer = 1u;
+        m_selectedMaterial = 3u;
 
     if (Input::IsKey(Key_Mouse0))
     {
-        m_testObject1->Modify(m_selectedLayer, 0u, VoxelEditMode::Subtractive, modPosition, 2.5f);
+        m_testObject1->Modify(0u, VoxelEditMode::Subtractive, modPosition, 2.5f);
     }
 
     if (Input::IsKey(Key_Mouse1))
     {
-        m_testObject1->Modify(m_selectedLayer, m_selectedMaterial, VoxelEditMode::Additive, modPosition, 2.5f);
+        m_testObject1->Modify(m_selectedMaterial, VoxelEditMode::Additive, modPosition, 2.5f);
     }
 
     if (Input::IsKey(Key_Mouse2))
     {
-        m_testObject1->Modify(m_selectedLayer, m_selectedMaterial, VoxelEditMode::MaterialPaint, modPosition, 2.5f);
+        m_testObject1->Modify(m_selectedMaterial, VoxelEditMode::MaterialPaint, modPosition, 2.5f);
     }
 
     DebugDraw::SetColor(Color(0, 105, 0, 64));
@@ -118,16 +115,17 @@ void Universe::RenderUI()
 {
     switch(m_selectedMaterial)
     {
-    case 1u:
+    case 0u:
         UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Rock"), Vector2(10.0f, 10.0f));
         break;
-    case 2u:
+    case 1u:
         UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Grass"), Vector2(10.0f, 10.0f));
         break;
-    case 3u:
+    case 2u:
         UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Dirt"), Vector2(10.0f, 10.0f));
         break;
+    case 3u:
+        UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Asphalt"), Vector2(10.0f, 10.0f));
+        break;
     }
-
-    UI::DrawText(Profiler::GetInstance()->GetDebugFont(), Text::Format(TEXT_CONST("Selected layer: {0}"), m_selectedLayer), Vector2(10.0f, 30.0f));
 }

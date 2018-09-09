@@ -436,7 +436,7 @@ void SpaceObjectOctreeNode::UpdateViews(Array<Vector3>& views)
         Depopulate();
 }
 
-bool SpaceObjectOctreeNode::Modify(const VoxelBlend_t layer, const VoxelMaterial_t material, const VoxelEditMode::_enum mode, const Vector3& position, float size)
+bool SpaceObjectOctreeNode::Modify(const VoxelMaterial_t material, const VoxelEditMode::_enum mode, const Vector3& position, float size)
 {
     cvar chunk = GetChunk();
 
@@ -450,8 +450,6 @@ bool SpaceObjectOctreeNode::Modify(const VoxelBlend_t layer, const VoxelMaterial
 
     cvar chunkScale = static_cast<float>(chunkData->GetLod());
     var modified = true;
-
-    cvar blend = layer == 0 ? 0u : 255u;
 
     for (var x = VoxelChunkData::ChunkDataStart; x < VoxelChunkData::ChunkDataLength; x++)
     {
@@ -468,14 +466,14 @@ bool SpaceObjectOctreeNode::Modify(const VoxelBlend_t layer, const VoxelMaterial
                     cvar value = size - distance;
                     if(mode == VoxelEditMode::MaterialPaint)
                     {
-                        chunkData->SetVoxel(x, y, z, Voxel::Create(currentValue.value, material, blend));
+                        chunkData->SetVoxel(x, y, z, Voxel::Create(currentValue.value, material));
                         modified = true;
                         continue;
                     }
                     
                     if (mode == VoxelEditMode::Additive)
                     {
-                        var newValue = Voxel::Create(-value, material, blend);
+                        var newValue = Voxel::Create(-value, material);
 
                         if (newValue.value <= currentValue.value)
                         {
@@ -492,7 +490,7 @@ bool SpaceObjectOctreeNode::Modify(const VoxelBlend_t layer, const VoxelMaterial
                     
                     if(mode == VoxelEditMode::Subtractive)
                     {
-                        var newValue = Voxel::Create(value, material, 0u);
+                        var newValue = Voxel::Create(value, currentValue.material);
 
                         if (newValue.value >= currentValue.value)
                         {
