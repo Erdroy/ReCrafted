@@ -21,6 +21,13 @@ class Mesh : IResource
     friend class Graphics;
 
 private:
+    struct CustomDataType
+    {
+        size_t dataWidth;
+        uint8_t* dataPtr;
+    };
+
+private:
     Renderer::RendererMemory m_vertexBufferData = {};
     Renderer::RendererMemory m_indexBufferData = {};
 
@@ -33,8 +40,7 @@ private:
     Vector4* m_colors = nullptr;
     uint* m_indices = nullptr;
 
-    void* m_customPtr = nullptr;
-    uint m_customStride = 0u;
+    Array<CustomDataType> m_customData;
 
     bool m_uploaded = false;
     bool m_hasChanges = false;
@@ -91,7 +97,12 @@ public:
     */
     void SetColors(Vector4* colors);
 
-    void SetCustom(void* ptr, uint customStride);
+    /**
+     * \brief Adds custom data to the mesh. Should contain the same amount of elements as vertices.
+     * \param ptr Custom data pointer.
+     * \param customStride The custom data pointer type size / data stride.
+     */
+    void AddCustomData(void* ptr, size_t customStride);
 
     /**
     * \brief Set colors for this mesh.

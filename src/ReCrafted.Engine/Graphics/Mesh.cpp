@@ -31,10 +31,9 @@ void Mesh::SetColors(Vector4* colors)
     m_colors_count = m_vertices_count;
 }
 
-void Mesh::SetCustom(void* ptr, uint customStride)
+void Mesh::AddCustomData(void* ptr, const size_t customStride)
 {
-    m_customPtr = ptr;
-    m_customStride = customStride;
+    m_customData.Add(CustomDataType{ customStride, static_cast<uint8_t*>(ptr) });
 }
 
 void Mesh::SetIndices(uint* indices, uint count)
@@ -72,8 +71,11 @@ void Mesh::ApplyChanges()
     if (m_colors)
         m_vertexSize += sizeof(Vector4);
 
-    if (m_customPtr)
-        m_vertexSize += m_customStride;
+    if (m_customData.Count() > 0)
+    {
+        for (rvar dataType : m_customData)
+            m_vertexSize += dataType.dataWidth;
+    }
 
     // allocate memory for vertex buffer
     m_vertexBufferData = Renderer::Allocate(m_vertices_count * m_vertexSize, 0);
@@ -85,32 +87,44 @@ void Mesh::ApplyChanges()
         cvar offset = i * m_vertexSize;
         var dataOffset = 0u;
 
+        // Copy positions
         var vertice = m_vertices[i];
-
         memcpy(memoryPtr + offset + dataOffset, &vertice, sizeof(float) * 3);
         dataOffset += 3 * sizeof(float);
 
+        // Copy normals
         if (m_normals)
         {
             memcpy(memoryPtr + offset + dataOffset, &m_normals[i], sizeof(float) * 3);
             dataOffset += 3 * sizeof(float);
         }
+
+        // Copy uvs
         if (m_uvs)
         {
             memcpy(memoryPtr + offset + dataOffset, &m_uvs[i], sizeof(float) * 2);
             dataOffset += 2 * sizeof(float);
         }
+
+        // Copy colors
         if (m_colors)
         {
             memcpy(memoryPtr + offset + dataOffset, &m_colors[i], sizeof(float) * 4);
             dataOffset += 4 * sizeof(float);
         }
 
-        if(m_customPtr)
+        // Copy custom data
+        if (m_customData.Count() > 0)
         {
-            cvar customArr = static_cast<uint64_t*>(m_customPtr);
-            memcpy(memoryPtr + offset + dataOffset, &customArr[i], m_customStride);
-            dataOffset += m_customStride;
+            for (rvar type : m_customData)
+            {
+                memcpy(memoryPtr + offset + dataOffset, type.dataPtr, type.dataWidth);
+
+                // Add offset to the data pointer.
+                // This allows us to use the dataPtr pointer as an array, like every other default type.
+                type.dataPtr += type.dataWidth;
+                dataOffset += type.dataWidth;
+            }
         }
     }
 
@@ -132,8 +146,9 @@ void Mesh::ApplyChanges()
     m_uvs = nullptr;
     m_normals = nullptr;
     m_colors = nullptr;
-    m_customPtr = nullptr;
     m_indices = nullptr;
+
+    m_customData.Clear();
 }
 
 void Mesh::UploadNow()
@@ -198,6 +213,8 @@ void Mesh::Dispose()
     m_normals = nullptr;
     m_colors = nullptr;
     m_indices = nullptr;
+
+    m_customData.Clear();
 
     m_vertices_count = 0u;
     m_uvs_count = 0u;
