@@ -68,7 +68,7 @@ public:
     /**
      * \brief Renders all post processing effects.
      */
-    void RenderPostProcessing(const Renderer::Texture2DHandle& frameTexture, const Renderer::Texture2DHandle& depthTexture);
+    void RenderPostProcessing(const Renderer::Texture2DHandle& frameTexture, const Renderer::Texture2DHandle& normalsTexture, const Renderer::Texture2DHandle& depthTexture);
 
 public:
     /**

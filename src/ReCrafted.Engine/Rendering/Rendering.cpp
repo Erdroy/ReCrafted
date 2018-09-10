@@ -92,12 +92,15 @@ void Rendering::RenderShadows()
     Profiler::EndProfile();
 }
 
-void Rendering::RenderPostProcessing(const Renderer::Texture2DHandle& frameTexture, const Renderer::Texture2DHandle& depthTexture)
+void Rendering::RenderPostProcessing(const Renderer::Texture2DHandle& frameTexture, const Renderer::Texture2DHandle& normalsTexture, const Renderer::Texture2DHandle& depthTexture)
 {
     Profiler::BeginProfile("Render PostProcessing");
 
     var sourceTexture = frameTexture;
     var destinationTexture = m_buffer1;
+
+    Renderer::ClearRenderTexture(m_buffer0, Renderer::Color(0.0f, 0.0f, 0.0f, 1.0f));
+    Renderer::ClearRenderTexture(m_buffer1, Renderer::Color(0.0f, 0.0f, 0.0f, 1.0f));
 
     for(var i = 0u; i < m_postProcessingList.Count(); i ++)
     {
@@ -109,8 +112,10 @@ void Rendering::RenderPostProcessing(const Renderer::Texture2DHandle& frameTextu
         // Render
         currentPP->Render();
 
+        Renderer::Texture2DHandle textures[3] = { sourceTexture, normalsTexture, depthTexture };
+
         // Blit
-        Renderer::BlitTexture(destinationTexture, sourceTexture, currentPPShader->GetHandle());
+        Renderer::BlitTextures(destinationTexture, textures, 3, currentPPShader->GetHandle());
 
         // Reset source texture after the post processing is done
         if(i == 0)

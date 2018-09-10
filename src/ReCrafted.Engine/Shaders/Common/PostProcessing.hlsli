@@ -3,8 +3,9 @@
 #ifndef POSTPROCESSING_HLSLI
 #define POSTPROCESSING_HLSLI
 
-Texture2D T0 : register(t0);
-Texture2D T1 : register(t0);
+Texture2D Color : register(t0);
+Texture2D Normals : register(t1);
+Texture2D Depth : register(t2);
 SamplerState<LinearClamped> Sampler : register(s0);
 
 struct VSInput
@@ -37,8 +38,11 @@ void PostProcessingVSMain(in VSInput i, out VSOutput o)
 /// </summary>
 float4 PostProcessingPSMain(in VSOutput input) : SV_Target0
 {
-    float4 color = T0.Sample(Sampler, input.TexCoord).rgba;
-    float depth = T1.Sample(Sampler, input.TexCoord).r;
+    float4 color = Color.Sample(Sampler, input.TexCoord).rgba;
+    float depth = Depth.Sample(Sampler, input.TexCoord).r;
+
+    // Clip depth
+    clip(0.99999f - depth);
 
     return PostProcessMain(color, input.TexCoord, depth);
 }

@@ -15,6 +15,8 @@
 #include "Graphics/WebUI/WebUI.h"
 #include "DebugDraw.h"
 #include "RenderTasks/ScreenshotTask.h"
+#include "Rendering/PostProcessing/PPVignette.h"
+#include "Rendering/PostProcessing/PPSSAO.h"
 
 SINGLETON_IMPL(Graphics)
 
@@ -76,7 +78,9 @@ void Graphics::InitializeRenderer()
 void Graphics::InitializePostProcessing()
 {
     m_vignette.reset(new PPVignette);
+    m_ssao.reset(new PPSSAO);
     Rendering::RegisterPostProcessing(m_vignette.get());
+    //Rendering::RegisterPostProcessing(m_ssao.get());
 }
 
 void Graphics::UpdateDefaultConstants(const Matrix& mvp)
@@ -204,7 +208,7 @@ void Graphics::Render()
         RenderEnd(); // end rendering
 
         // Render post processing
-        m_rendering->RenderPostProcessing(m_frameTexture, m_gbuffer->GetDepthBuffer());
+        m_rendering->RenderPostProcessing(m_frameTexture, m_gbuffer->GetTarget(1), m_gbuffer->GetDepthBuffer());
 
         // Render debug draw
         RenderDebugDraw();

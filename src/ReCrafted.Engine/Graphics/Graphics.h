@@ -15,6 +15,7 @@
 #include "Graphics/Renderer/Renderer.hpp"
 #include "Rendering/Rendering.h"
 #include "Rendering/PostProcessing/PPVignette.h"
+#include "Rendering/PostProcessing/PPSSAO.h"
 
 /**
  * \brief Graphics class.
@@ -39,6 +40,7 @@ private:
     RefPtr<Shader> m_gbufferCombine = nullptr;
 
     RefPtr<PPVignette> m_vignette = nullptr;
+    RefPtr<PPSSAO> m_ssao = nullptr;
 
     RenderStage::_enum m_renderStage = RenderStage::Default;
 
