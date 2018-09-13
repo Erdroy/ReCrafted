@@ -9,13 +9,13 @@
 #include "Common/Profiler/Profiler.h"
 #include "Common/Input/Input.h"
 #include "Common/Input/KeyboardBuffer.h"
-#include "Graphics/UI/UI.h"
+#include "UI/UI.h"
 #include "Graphics/Camera.h"
 #include "Graphics/Font.h"
 #include "Script.h"
 #include "Core/Application.h"
-#include "Graphics/WebUI/WebUI.h"
-#include "Graphics/WebUI/WebUIView.h"
+#include "WebUI/WebUI.h"
+#include "WebUI/WebUIView.h"
 #include "Graphics/DebugDraw.h"
 
 void Bindings::Bind()

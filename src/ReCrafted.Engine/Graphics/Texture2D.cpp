@@ -1,7 +1,7 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Texture2D.h"
-#include "upng/upng.h"
+#include "upng.h"
 #include "ReCrafted.h"
 
 void Texture2D::Dispose()

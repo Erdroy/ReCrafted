@@ -1,8 +1,8 @@
 #include "D3DRenderer.h"
 #include <iostream>
 #include <algorithm>
-#include "Graphics/Renderer/Renderer.hpp"
-#include "Graphics/Renderer/RHI/RHIContext.h"
+#include "Renderer/Renderer.hpp"
+#include "Renderer/RHI/RHIContext.h"
 #include <atlcomcli.h>
 
 ID3D11RenderTargetView* D3DRenderer::GetBackBufferView()

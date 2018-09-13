@@ -8,7 +8,7 @@
 // includes
 #include "ReCrafted.h"
 
-#include "Graphics/Renderer/Renderer.hpp"
+#include "Renderer/Renderer.hpp"
 
 #define RENDERVIEW_BACKBUFFER 0
 #define RENDERVIEW_GBUFFER 1

@@ -5,7 +5,7 @@
 #include "Common/Input/Input.h"
 #include "Core/Logger.h"
 #include "Core/ByteFormat.h"
-#include "Graphics/UI/UI.h"
+#include "UI/UI.h"
 #include "Graphics/Font.h"
 #include "Graphics/Camera.h"
 #include "Graphics/DebugDraw.h"

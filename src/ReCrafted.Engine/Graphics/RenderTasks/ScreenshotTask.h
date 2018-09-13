@@ -6,8 +6,8 @@
 #define SCREENSHOTTASK_H
 
 // includes
-#include "Graphics/Renderer/Renderer.hpp"
-#include "Graphics/Renderer/RHI/RHIBase.h"
+#include "Renderer/Renderer.hpp"
+#include "Renderer/RHI/RHIBase.h"
 #include "lodepng.h"
 
 struct ScreenshotTask : Renderer::RenderTask

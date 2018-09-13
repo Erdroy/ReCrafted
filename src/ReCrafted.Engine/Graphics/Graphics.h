@@ -12,7 +12,7 @@
 #include "Graphics/RenderBuffer.h"
 #include "Graphics/Mesh.h"
 #include "Graphics/RenderStage.h"
-#include "Graphics/Renderer/Renderer.hpp"
+#include "Renderer/Renderer.hpp"
 #include "Rendering/Rendering.h"
 #include "Rendering/PostProcessing/PPVignette.h"
 #include "Rendering/PostProcessing/PPSSAO.h"

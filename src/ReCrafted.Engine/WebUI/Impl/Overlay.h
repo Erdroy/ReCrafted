@@ -4,7 +4,7 @@
 #include <Ultralight/platform/GPUDriver.h>
 #include <vector>
 
-#include "Graphics/WebUI/WebUIOverlay.h"
+#include "WebUI/WebUIOverlay.h"
 
 using namespace ultralight;
 
