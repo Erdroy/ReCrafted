@@ -136,7 +136,7 @@ public:
     /**
 	 * \brief Apply, all pixel operations will be unavailable after calling this method.
 	 */
-    void Apply();
+    void Apply(bool generateMips = false);
 
 public:
     Renderer::Texture2DHandle GetHandle() const

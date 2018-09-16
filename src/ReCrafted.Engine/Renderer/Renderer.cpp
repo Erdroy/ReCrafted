@@ -638,7 +638,7 @@ namespace Renderer
 
     Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels,
                                     TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize,
-                                    bool renderTargetFlag, TextureType::_enum textureType)
+                                    bool renderTargetFlag, bool generateMips, TextureType::_enum textureType)
     {
         CHECK_MAIN_THREAD();
 
@@ -659,6 +659,7 @@ namespace Renderer
         command.textureType = textureType;
         command.memory = data;
         command.dataSize = dataSize;
+        command.generateMips = generateMips;
         command.renderTarget = renderTargetFlag;
         g_commandList->WriteCommand(&command);
 

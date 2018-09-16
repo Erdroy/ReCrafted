@@ -233,6 +233,7 @@ namespace Renderer
         TextureType::_enum textureType;
         RendererMemory memory;
         size_t dataSize;
+        bool generateMips;
         bool renderTarget;
     );
 

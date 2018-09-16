@@ -884,10 +884,9 @@ namespace Renderer
             textureDesc.ArraySize = 1;
             textureDesc.Width = command->width;
             textureDesc.Height = command->height;
-            textureDesc.MipLevels = mipLevels;
-            textureDesc.MiscFlags = 0;
+            textureDesc.MipLevels = command->generateMips ? 0 : mipLevels;
+            textureDesc.MiscFlags = command->generateMips ? D3D11_RESOURCE_MISC_GENERATE_MIPS : 0;
             textureDesc.SampleDesc.Count = rt ? m_msaaSampleCount : 1;
-            textureDesc.SampleDesc.Quality = 0;
 
             if (createDepthBuffer)
             {
@@ -897,9 +896,8 @@ namespace Renderer
             else
             {
                 textureDesc.Format = DGXI_TextureFormats[command->textureFormat][0];
-                textureDesc.BindFlags = rt
-                                            ? D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-                                            : D3D11_BIND_SHADER_RESOURCE;
+                textureDesc.BindFlags = rt || command->generateMips ? 
+                    D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE : D3D11_BIND_SHADER_RESOURCE;
             }
 
             if (command->textureType == TextureType::Staging)
@@ -914,12 +912,13 @@ namespace Renderer
                 textureDesc.Usage = D3D11_USAGE_DEFAULT;
             }
 
-            D3D11_SUBRESOURCE_DATA subresData = {};
-            subresData.pSysMem = command->memory;
-            subresData.SysMemPitch = command->width * (TextureFormatInfo[command->textureFormat][0] / 8);
-            subresData.SysMemSlicePitch = 0;
+            DX_CALL(m_device->CreateTexture2D(&textureDesc, nullptr, &texture.texture));
 
-            DX_CALL(m_device->CreateTexture2D(&textureDesc, command->memory ? &subresData : nullptr, &texture.texture));
+            if(command->memory)
+            {
+                cvar rowPitch = command->width * (TextureFormatInfo[command->textureFormat][0] / 8);
+                m_context->UpdateSubresource(texture.texture, 0, nullptr, command->memory, rowPitch, 0);
+            }
 
             if (createDepthBuffer)
             {
@@ -946,10 +945,15 @@ namespace Renderer
                 D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
                 srvDesc.Format = DGXI_TextureFormats[command->textureFormat][1];
                 srvDesc.ViewDimension = m_msaaSampleCount > 1 ? D3D11_SRV_DIMENSION_TEXTURE2DMS : D3D11_SRV_DIMENSION_TEXTURE2D;
-                srvDesc.Texture2D.MipLevels = mipLevels;
+                srvDesc.Texture2D.MipLevels = -1;
                 srvDesc.Texture2D.MostDetailedMip = 0;
 
                 DX_CALL(m_device->CreateShaderResourceView(texture.texture, &srvDesc, &texture.srv));
+
+                if(command->generateMips)
+                {
+                    m_context->GenerateMips(texture.srv);
+                }
 
                 if (command->renderTarget)
                 {

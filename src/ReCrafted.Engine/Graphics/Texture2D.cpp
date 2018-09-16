@@ -138,7 +138,7 @@ uint Texture2D::GetHeight() const
     return m_height;
 }
 
-void Texture2D::Apply()
+void Texture2D::Apply(bool generateMips)
 {
     ASSERT(m_bitmap || m_bits);
 
@@ -163,8 +163,12 @@ void Texture2D::Apply()
     else
         memory = Renderer::Allocate(m_bits, std::function<void(void*, void*)>(&Texture2D::ReleaseData));
 
-    cvar mipCount = uint8_t(m_mips + 1);
-    m_textureHandle = Renderer::CreateTexture2D(uint16_t(m_width), uint16_t(m_height), mipCount, m_textureFormat, memory, size);
+    var mipCount = uint8_t(m_mips + 1);
+
+    if (generateMips)
+        mipCount = 7u;
+
+    m_textureHandle = Renderer::CreateTexture2D(uint16_t(m_width), uint16_t(m_height), mipCount, m_textureFormat, memory, size, false, generateMips);
     m_bits = nullptr;
 }
 

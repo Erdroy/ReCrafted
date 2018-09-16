@@ -27,22 +27,22 @@ void SpaceObject::Init(SpaceObjectSettings& settings)
     // Load sample textures
     var texture = Texture2D::CreateTexture(Renderer::TextureFormat::RGBA8);
     texture->LoadFromFile("../assets/textures/voxel/rock.png");
-    texture->Apply();
+    texture->Apply(true);
     m_textures.Add(texture); 
     
     texture = Texture2D::CreateTexture(Renderer::TextureFormat::RGBA8);
     texture->LoadFromFile("../assets/textures/voxel/grass.png");
-    texture->Apply();
+    texture->Apply(true);
     m_textures.Add(texture);
 
     texture = Texture2D::CreateTexture(Renderer::TextureFormat::RGBA8);
     texture->LoadFromFile("../assets/textures/voxel/soil.png");
-    texture->Apply();
+    texture->Apply(true);
     m_textures.Add(texture);
 
     texture = Texture2D::CreateTexture(Renderer::TextureFormat::RGBA8);
     texture->LoadFromFile("../assets/textures/voxel/clay.png");
-    texture->Apply();
+    texture->Apply(true);
     m_textures.Add(texture);
 
 
