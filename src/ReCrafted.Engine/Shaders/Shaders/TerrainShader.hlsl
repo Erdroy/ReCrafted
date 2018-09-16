@@ -3,7 +3,7 @@
 #name "TerrainShader"
 #desc "Terrain Shader - Used for drawing planetary terrain. Implements own GeometryShader which adds more LowPoly effect."
 
-#define USE_LOGZBUFFER
+//#define USE_LOGZBUFFER
 #include "../ShaderAPI.hlsli"
 
 Texture2D m_texture0 : register(t0);
@@ -164,9 +164,9 @@ void TerrainPSMain(in TerrainPSInput i, out GBufferOutput o)
     blend /= dot(blend, float3(1, 1, 1));
 
     // Triplanar mapping
-    float2 tx = position.yz * 0.1f;
-    float2 ty = position.zx * 0.1f;
-    float2 tz = position.xy * 0.1f;
+    float2 tx = position.yz * 0.25f;
+    float2 ty = position.zx * 0.25f;
+    float2 tz = position.xy * 0.25f;
 
     float mat0 = i.Materials0.r;
     float mat1 = i.Materials0.g;
