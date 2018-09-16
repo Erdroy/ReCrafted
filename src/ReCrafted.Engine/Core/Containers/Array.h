@@ -105,17 +105,18 @@ public:
         m_vector.reserve(size);
     }
 
+    FORCEINLINE void Resize(uint32_t size)
+    {
+        m_vector.resize(size);
+        m_count = size;
+    }
+
     /**
     * \brief Note: Using this, assumes that the T has comparsion operator overloaded (if class/struct)
     */
-    FORCEINLINE bool Contains(T item)
+    FORCEINLINE bool Contains(T item) const
     {
-        if (std::find(m_vector.begin(), m_vector.end(), item) != m_vector.end())
-        {
-            return true;
-        }
-
-        return false;
+        return static_cast<bool>(std::find(m_vector.begin(), m_vector.end(), item) != m_vector.end());
     }
 
     /**
@@ -156,6 +157,11 @@ public:
     FORCEINLINE uint32_t Count() const
     {
         return m_count;
+    }
+
+    FORCEINLINE bool Empty() const
+    {
+        return m_vector.empty();
     }
 
     FORCEINLINE uint32_t Size() const
