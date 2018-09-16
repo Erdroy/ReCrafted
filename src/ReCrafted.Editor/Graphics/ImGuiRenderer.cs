@@ -1,25 +1,25 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
+using ImGuiNET;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Numerics;
 using System.Reflection;
-using ImGuiNET;
+using System.IO;
 using Veldrid;
 
 namespace ReCrafted.Editor.Graphics
 {
     /// <summary>
-    /// A modified version of Veldrid.ImGui's ImGuiRenderer.
-    /// Manages input for ImGui and handles rendering ImGui's DrawLists with Veldrid.
+    /// Can render draw lists produced by ImGui.
+    /// Also provides functions for updating ImGui input.
     /// </summary>
-    public class ImGuiController : IDisposable
+    public class ImGuiRenderer : IDisposable
     {
         private GraphicsDevice _gd;
-        private bool _frameBegun;
+        private readonly Assembly _assembly;
 
-        // Veldrid objects
+        // Device objects
         private DeviceBuffer _vertexBuffer;
         private DeviceBuffer _indexBuffer;
         private DeviceBuffer _projMatrixBuffer;
@@ -32,7 +32,6 @@ namespace ReCrafted.Editor.Graphics
         private Pipeline _pipeline;
         private ResourceSet _mainResourceSet;
         private ResourceSet _fontTextureResourceSet;
-
         private IntPtr _fontAtlasID = (IntPtr)1;
         private bool _controlDown;
         private bool _shiftDown;
@@ -50,13 +49,15 @@ namespace ReCrafted.Editor.Graphics
         private readonly Dictionary<IntPtr, ResourceSetInfo> _viewsById = new Dictionary<IntPtr, ResourceSetInfo>();
         private readonly List<IDisposable> _ownedResources = new List<IDisposable>();
         private int _lastAssignedID = 100;
+        private bool _frameBegun;
 
         /// <summary>
         /// Constructs a new ImGuiRenderer.
         /// </summary>
-        public ImGuiController(GraphicsDevice gd, OutputDescription outputDescription, int width, int height)
+        public ImGuiRenderer(GraphicsDevice gd, OutputDescription outputDescription, int width, int height)
         {
             _gd = gd;
+            _assembly = typeof(ImGuiRenderer).GetTypeInfo().Assembly;
             _windowWidth = width;
             _windowHeight = height;
 
@@ -117,11 +118,15 @@ namespace ReCrafted.Editor.Graphics
             GraphicsPipelineDescription pd = new GraphicsPipelineDescription(
                 BlendStateDescription.SingleAlphaBlend,
                 new DepthStencilStateDescription(false, false, ComparisonKind.Always),
-                new RasterizerStateDescription(FaceCullMode.None, PolygonFillMode.Solid, FrontFace.Clockwise, false, true),
+                new RasterizerStateDescription(FaceCullMode.None, PolygonFillMode.Solid, FrontFace.Clockwise, true, true),
                 PrimitiveTopology.TriangleList,
-                new ShaderSetDescription(vertexLayouts, new[] { _vertexShader, _fragmentShader }),
+                new ShaderSetDescription(
+                    vertexLayouts,
+                    new[] { _vertexShader, _fragmentShader },
+                    new[] { new SpecializationConstant(0, gd.IsClipSpaceYInverted) }),
                 new ResourceLayout[] { _layout, _textureLayout },
-                outputDescription);
+                outputDescription,
+                ResourceBindingModel.Default);
             _pipeline = factory.CreateGraphicsPipeline(ref pd);
 
             _mainResourceSet = factory.CreateResourceSet(new ResourceSetDescription(_layout,
@@ -213,6 +218,11 @@ namespace ReCrafted.Editor.Graphics
                         string resourceName = name + ".glsl";
                         return GetEmbeddedResourceBytes(resourceName);
                     }
+                case GraphicsBackend.OpenGLES:
+                    {
+                        string resourceName = name + ".glsles";
+                        return GetEmbeddedResourceBytes(resourceName);
+                    }
                 case GraphicsBackend.Vulkan:
                     {
                         string resourceName = name + ".spv";
@@ -228,10 +238,17 @@ namespace ReCrafted.Editor.Graphics
             }
         }
 
+        private string GetEmbeddedResourceText(string resourceName)
+        {
+            using (StreamReader sr = new StreamReader(_assembly.GetManifestResourceStream(resourceName)))
+            {
+                return sr.ReadToEnd();
+            }
+        }
+
         private byte[] GetEmbeddedResourceBytes(string resourceName)
         {
-            Assembly assembly = typeof(ImGuiController).Assembly;
-            using (Stream s = assembly.GetManifestResourceStream(resourceName))
+            using (Stream s = _assembly.GetManifestResourceStream(resourceName))
             {
                 byte[] ret = new byte[s.Length];
                 s.Read(ret, 0, (int)s.Length);
@@ -278,9 +295,6 @@ namespace ReCrafted.Editor.Graphics
 
         /// <summary>
         /// Renders the ImGui draw list data.
-        /// This method requires a <see cref="GraphicsDevice"/> because it may create new DeviceBuffers if the size of vertex
-        /// or index data has increased beyond the capacity of the existing buffers.
-        /// A <see cref="CommandList"/> is needed to submit drawing and resource update commands.
         /// </summary>
         public unsafe void Render(GraphicsDevice gd, CommandList cl)
         {
@@ -440,7 +454,7 @@ namespace ReCrafted.Editor.Graphics
 
             // Setup orthographic projection matrix into our constant buffer
             {
-                IO io = ImGui.GetIO();
+                var io = ImGui.GetIO();
 
                 Matrix4x4 mvp = Matrix4x4.CreateOrthographicOffCenter(
                     0f,

@@ -2,8 +2,8 @@
 
 using ReCrafted.Editor.Common;
 using ReCrafted.Editor.Content;
-using ReCrafted.Editor.Panels;
 using ReCrafted.Editor.Graphics;
+using ReCrafted.Editor.Panels;
 using Veldrid;
 using Veldrid.Sdl2;
 using Veldrid.StartupUtilities;
@@ -16,7 +16,7 @@ namespace ReCrafted.Editor.Core
     public class EditorApplication : ApplicationBase
     {
         private CommandList _commandList;
-        private ImGuiController _guiController;
+        private ImGuiRenderer _guiController;
 
         private MainPanel _mainPanel;
         private ContentPanel _contentPanel;
@@ -56,7 +56,7 @@ namespace ReCrafted.Editor.Core
             _commandList = GraphicsDevice.ResourceFactory.CreateCommandList();
 
             // Create GUI controller
-            _guiController = new ImGuiController(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription, Window.Width, Window.Height);
+            _guiController = new ImGuiRenderer(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription, Window.Width, Window.Height);
 
             // Create main editor panel
             _mainPanel = new MainPanel();

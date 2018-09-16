@@ -47,7 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ImGui.NET, Version=0.4.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ImGui.NET.0.4.7\lib\netstandard1.1\ImGui.NET.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\ImGuiNET\ImGui.NET.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.DotNet.PlatformAbstractions, Version=2.0.3.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.DotNet.PlatformAbstractions.2.0.3\lib\net45\Microsoft.DotNet.PlatformAbstractions.dll</HintPath>
@@ -179,9 +180,6 @@
     <Reference Include="Veldrid, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Veldrid.4.4.0\lib\netstandard2.0\Veldrid.dll</HintPath>
     </Reference>
-    <Reference Include="Veldrid.ImGui, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Veldrid.ImGui.4.4.0\lib\netstandard2.0\Veldrid.ImGui.dll</HintPath>
-    </Reference>
     <Reference Include="Veldrid.MetalBindings, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Veldrid.MetalBindings.4.4.0\lib\netstandard2.0\Veldrid.MetalBindings.dll</HintPath>
     </Reference>
@@ -207,11 +205,11 @@
     <Compile Include="Content\ContentManager.cs" />
     <Compile Include="Content\IAsset.cs" />
     <Compile Include="Content\Importers\TextureImporter.cs" />
+    <Compile Include="Graphics\ImGuiRenderer.cs" />
     <Compile Include="Panels\ContentPanel.cs" />
     <Compile Include="Panels\MainPanel.cs" />
     <Compile Include="Core\ApplicationBase.cs" />
     <Compile Include="Core\EditorApplication.cs" />
-    <Compile Include="Graphics\ImGuiController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Panels\IPanel.cs" />
@@ -244,5 +242,6 @@
       <Name>ReCrafted.Common</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

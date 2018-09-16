@@ -1,5 +1,6 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
+using System.Numerics;
 using ImGuiNET;
 
 namespace ReCrafted.Editor.Panels
