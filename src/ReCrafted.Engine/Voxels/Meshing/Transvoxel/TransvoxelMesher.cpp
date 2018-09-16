@@ -90,10 +90,8 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
             newSection = true;
         }*/
 
-        cvar reuseIndex = section.vertexReuse[indexId];
-        cvar reuseVertex = reuseIndex > -1;
-
-        if (reuseVertex)
+        // Check if we already have this vertex
+        if (section.vertexReuseMap[indexId])
         {
             indices[i] = section.vertexReuse[indexId];
             DEBUG_ASSERT(indices[i] < m_vertices.Count());
@@ -110,6 +108,9 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
 
         indices[i] = index;
         section.vertexReuse[indexId] = index;
+
+        // Set reuse
+        section.vertexReuseMap.set(indexId);
     }
 
     cvar indexCount = cellData.GetTriangleCount() * 3;
@@ -222,6 +223,9 @@ void TransvoxelMesher::Clear()
     // Clear only used sections
     for (var i = 0; i <= m_currentSection; i ++)
         m_meshSections[i].Clear();
+
+    // Reset vertex map
+    m_vertexMap.reset();
 
     m_currentSection = 0;
 }

@@ -13,6 +13,7 @@
 #include "../IVoxelMesher.h"
 #include "../MeshingHelpers.h"
 #include "../MaterialHelpers.h"
+#include <bitset>
 
 class TransvoxelMesher : public IVoxelMesher
 {
@@ -27,26 +28,18 @@ private:
     */
     static const int MaxSections = 8;
 
-    // Configuration
-    /**
-     * \brief Enables or disables the vertex reuse.
-     */
-    static const bool EnableVertexReuse = true;
-
-    /**
-    * \brief Enables or disables skirt cell generation.
-    */
-    static const bool EnableSkirtCells = false;
-
     /**
     * \brief Enables or disables transition cell generation.
     */
     static const bool EnableTransitionCells = false;
 
+    static const int VertexReuseEntriesCount = (VoxelChunkData::ChunkDataSize * 3) * (VoxelChunkData::ChunkDataSize * 3) * (VoxelChunkData::ChunkDataSize * 3);
+
 private:
     struct MeshSection
     {
     public:
+        std::bitset<VertexReuseEntriesCount> vertexReuseMap;
         Array<int> vertexReuse;
         Array<Vector3> vertices;
         Array<Vector3> normals;
@@ -57,23 +50,22 @@ private:
 
     public:
         MeshSection() : vertexReuse({}), vertices({}), normals({}), colors({}), materials({}), indices({})
-        {
-            if (EnableVertexReuse)
-            {
-                // Reserve space for vertex reuse
-                cvar vertexReuseSize = Math::Pow(VoxelChunkData::ChunkDataSize * 3, 3);
-                vertexReuse.Reserve(vertexReuseSize);
+        {  
+            // Reserve space for vertex reuse
+            vertexReuse.Reserve(VertexReuseEntriesCount);
 
-                // Initialize vertex reuse
-                for (var i = 0; i < vertexReuseSize; i++)
-                    vertexReuse.Add(-1);
-            }
+            // Initialize vertex reuse
+            for (var i = 0; i < VertexReuseEntriesCount; i++)
+                vertexReuse.Add(-1);
 
             // Reserve a bit of space right now.
             vertices.Reserve(4096);
             normals.Reserve(4096);
             materials.Reserve(4096);
             indices.Reserve(4096);
+
+            // Reset reuse map
+            vertexReuseMap.reset();
         }
 
     public:
@@ -104,13 +96,6 @@ private:
 
         void Clear()
         {
-            // Clean vertex reuse array if reuse is enabled
-            if (EnableVertexReuse)
-            {
-                for (var i = 0u; i < vertexReuse.Count(); i++)
-                    vertexReuse[i] = -1;
-            }
-
             // Clear all arrays
             vertices.Clear();
             normals.Clear();
@@ -118,6 +103,9 @@ private:
             materials.Clear();
             indices.Clear();
             materialSet.Clear();
+
+            // Reset reuse map
+            vertexReuseMap.reset();
         }
     };
 
@@ -125,6 +113,9 @@ private:
     uint32_t m_triangleCount;
     int m_currentSection;
     Array<MeshSection> m_meshSections;
+
+    Array<VertexInfo> m_vertexInfo;
+    std::bitset<VertexReuseEntriesCount> m_vertexMap;
 
 public:
     TransvoxelMesher()
@@ -134,6 +125,13 @@ public:
 
         for (var i = 0; i < MaxSections; i++)
             m_meshSections.Add(MeshSection());
+
+        // Initialize vertex info array
+        // Reserve space for vertex info array
+        m_vertexInfo.Reserve(VertexReuseEntriesCount);
+
+        // Reset vertex map
+        m_vertexMap.reset();
     }
 
     virtual ~TransvoxelMesher() = default;
