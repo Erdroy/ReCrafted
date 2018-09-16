@@ -1,9 +1,9 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
 using System;
-using ReCrafted.VoxelEditor.Core;
+using ReCrafted.Editor.Core;
 
-namespace ReCrafted.VoxelEditor
+namespace ReCrafted.Editor
 {
     internal static class Program
     {
@@ -13,7 +13,7 @@ namespace ReCrafted.VoxelEditor
         [STAThread]
         private static void Main()
         {
-            using (var app = new VoxelEditorApp())
+            using (var app = new EditorApplication())
             {
                 app.Run();
             }

@@ -17,26 +17,26 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\build\bin64\</OutputPath>
+    <OutputPath>..\..\build\game\bin64\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <StartAction>Program</StartAction>
-    <StartProgram>D:\ReCrafted\build\bin64\ReCrafted.exe</StartProgram>
-    <StartWorkingDirectory>..\..\build\bin64\</StartWorkingDirectory>
+    <StartProgram>D:\ReCrafted\build\game\bin64\ReCrafted.exe</StartProgram>
+    <StartWorkingDirectory>..\..\build\game\bin64\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\build\bin64\</OutputPath>
+    <OutputPath>..\..\build\game\bin64\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <StartAction>Program</StartAction>
-    <StartProgram>D:\ReCrafted\build\bin64\ReCrafted.exe</StartProgram>
-    <StartWorkingDirectory>..\..\build\bin64\</StartWorkingDirectory>
+    <StartProgram>D:\ReCrafted\build\game\bin64\ReCrafted.exe</StartProgram>
+    <StartWorkingDirectory>..\..\build\game\bin64\</StartWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -62,7 +62,6 @@
     <Compile Include="Game\Super\SuperConsole.cs" />
     <Compile Include="Game\Super\SuperDefaults.cs" />
     <Compile Include="Game\UITests.cs" />
-    <Compile Include="Game\UITests2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -72,10 +71,6 @@
     <ProjectReference Include="..\libraries\ReCrafted.Common\ReCrafted.Common.csproj">
       <Project>{d97fb88e-ee48-48f0-80d8-0a79e1b630ef}</Project>
       <Name>ReCrafted.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\libraries\ReCrafted.UI\ReCrafted.UI.csproj">
-      <Project>{63e577a6-39bb-4326-b2ed-b2b1e76e54a0}</Project>
-      <Name>ReCrafted.UI</Name>
     </ProjectReference>
     <ProjectReference Include="..\ReCrafted.API\ReCrafted.API.csproj">
       <Project>{9d637328-3340-4344-b0ad-710749c1ad08}</Project>

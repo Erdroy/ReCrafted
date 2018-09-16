@@ -1,6 +1,6 @@
 ROOT_DIR = path.getabsolute(".")
 OUTPUT_DIR = path.join(ROOT_DIR, ".projects/", _ACTION)
-TARGET_DIR = path.join(ROOT_DIR, "build/")
+TARGET_DIR = path.join(ROOT_DIR, "build/game/")
 LIBS_DIR = path.join(ROOT_DIR, "lib/")
 
 -- generate solution

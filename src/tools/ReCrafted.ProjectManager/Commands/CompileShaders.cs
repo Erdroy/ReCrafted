@@ -38,7 +38,7 @@ namespace ReCrafted.ProjectManager.Commands
             foreach (var shaderFile in shaders)
             {
                 var shaderFileName = shaderFile.Remove(0, shadersDirectory.Length);
-                var shaderFileOutput = Path.Combine(Program.RootDirectory, "build\\assets\\shaders", Path.GetFileNameWithoutExtension(shaderFileName) + ".shader");
+                var shaderFileOutput = Path.Combine(Program.RootDirectory, "build\\game\\assets\\shaders", Path.GetFileNameWithoutExtension(shaderFileName) + ".shader");
                 var path = Path.GetDirectoryName(shaderFileOutput);
 
                 if (!Directory.Exists(path))

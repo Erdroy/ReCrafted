@@ -2,7 +2,7 @@
 
 using System;
 
-namespace ReCrafted.VoxelEditor.Core
+namespace ReCrafted.Editor.Core
 {
     /// <summary>
     /// Application base class.

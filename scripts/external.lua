@@ -10,12 +10,12 @@ externalproject "ReCrafted.API"
    kind "SharedLib"
    language "C#"
    
-externalproject "editor/ReCrafted.VoxelEditor"
-   location (path.join(ROOT_DIR, "src/ReCrafted.VoxelEditor"))
+externalproject "editor/ReCrafted.Editor"
+   location (path.join(ROOT_DIR, "src/ReCrafted.Editor"))
    uuid "F42BA546-F379-4D44-B404-A096EF0FC363"
    kind "WindowedApp"
    language "C#"
-   filename "ReCrafted.VoxelEditor"
+   filename "ReCrafted.Editor"
    
 externalproject "tools/ReCrafted.ProjectManager"
    location (path.join(ROOT_DIR, "src/tools/ReCrafted.ProjectManager"))
@@ -73,10 +73,4 @@ externalproject "libraries/ReCrafted.Common"
    language "C#"
    filename "ReCrafted.Common"
    
-externalproject "libraries/ReCrafted.UI"
-   location (path.join(ROOT_DIR, "src/libraries/ReCrafted.UI"))
-   uuid "63E577A6-39BB-4326-B2ED-B2B1E76E54A0"
-   kind "SharedLib"
-   language "C#"
-   filename "ReCrafted.UI"
    

@@ -22,9 +22,7 @@ namespace ReCrafted.Game
 
         // build number control
         private UIText _buildNumberText;
-
-        private UITests2 _tests2;
-
+        
         private WebUIView _uiView;
 
         // initialize
@@ -80,9 +78,6 @@ namespace ReCrafted.Game
                 _uiView = WebUI.Create();
                 _uiView.Navigate("file:///ui/default.html");
                 //_uiView.Navigate("file:///ui/menu/menu.html");
-
-                _tests2 = new UITests2();
-                _tests2.Init();
             }
             catch (Exception exception)
             {
@@ -95,8 +90,6 @@ namespace ReCrafted.Game
         {
             try
             {
-                _tests2.Update();
-
                 _crosshairBox.Region =
                     new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
                 _buildNumberText.Position = new Vector2(20.0f, Display.Height - 20.0f);
