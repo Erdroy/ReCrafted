@@ -945,7 +945,7 @@ namespace Renderer
                 D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
                 srvDesc.Format = DGXI_TextureFormats[command->textureFormat][1];
                 srvDesc.ViewDimension = m_msaaSampleCount > 1 ? D3D11_SRV_DIMENSION_TEXTURE2DMS : D3D11_SRV_DIMENSION_TEXTURE2D;
-                srvDesc.Texture2D.MipLevels = -1;
+                srvDesc.Texture2D.MipLevels = command->generateMips ? -1 : mipLevels;
                 srvDesc.Texture2D.MostDetailedMip = 0;
 
                 DX_CALL(m_device->CreateShaderResourceView(texture.texture, &srvDesc, &texture.srv));
