@@ -12,16 +12,21 @@
 struct VertexInfo
 {
 public:
+    uint vertexId = 0u;
     Vector3 vertexPosition = {};
     Vector3 vertexNormal = {};
     VoxelMaterial_t voxelMaterial = 0u;
+
+    uint normalUses = 0u;
 
 public:
     VertexInfo() = default;
 
     VertexInfo(
+        const uint vertexId,
         const Vector3& vertexPosition,
         const VoxelMaterial_t& voxelMaterial) : 
+    vertexId(vertexId),
     vertexPosition(vertexPosition),
     vertexNormal({}),
     voxelMaterial(voxelMaterial) { }

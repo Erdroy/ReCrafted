@@ -122,10 +122,10 @@ void Universe::RenderUI()
         UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Grass"), Vector2(10.0f, 10.0f));
         break;
     case 2u:
-        UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Dirt"), Vector2(10.0f, 10.0f));
+        UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Soil"), Vector2(10.0f, 10.0f));
         break;
     case 3u:
-        UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Asphalt"), Vector2(10.0f, 10.0f));
+        UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Clay"), Vector2(10.0f, 10.0f));
         break;
     }
 }

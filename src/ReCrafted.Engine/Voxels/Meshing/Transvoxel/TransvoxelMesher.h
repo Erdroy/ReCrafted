@@ -16,7 +16,6 @@
 #include "../CommonTables.hpp"
 
 #include <bitset>
-#include <set>
 
 class TransvoxelMesher : public IVoxelMesher
 {
@@ -44,23 +43,42 @@ private:
     public:
         std::bitset<VertexReuseEntriesCount> vertexReuseMap;
         Array<int> vertexReuse;
+
+        Array<uint> vertexIds;
         Array<Vector3> vertices;
         Array<Vector3> normals;
         Array<Vector4> colors;
-        Array<Vector4> materials;
+        Array<Vector4> materialsA;
+        Array<Vector4> materialsB;
+        Array<Vector4> materialsC;
+        Array<Vector4> materialsD;
         Array<uint> indices;
         Array<VoxelMaterial_t> materialSet;
 
     public:
-        MeshSection() : vertexReuse({}), vertices({}), normals({}), colors({}), materials({}), indices({})
+        MeshSection() : 
+            vertexReuse({}), 
+            vertexIds({}),
+            vertices({}), 
+            normals({}), 
+            colors({}), 
+            materialsA({}), 
+            materialsB({}),
+            materialsC({}),
+            materialsD({}), 
+            indices({})
         {  
             // Initialize vertex reuse
             vertexReuse.Resize(VertexReuseEntriesCount);
 
             // Reserve a bit of space right now.
+            vertexIds.Reserve(4096);
             vertices.Reserve(4096);
             normals.Reserve(4096);
-            materials.Reserve(4096);
+            materialsA.Reserve(4096);
+            materialsB.Reserve(4096);
+            materialsC.Reserve(4096);
+            materialsD.Reserve(4096);
             indices.Reserve(4096);
 
             // Reset reuse map
@@ -68,16 +86,64 @@ private:
         }
 
     public:
-        void AddVertex(const VertexInfo& vertexInfo)
+        void AddVertex(const VertexInfo& vertexInfo, bool normalCorrection)
         {
-            vertices.Add(vertexInfo.vertexPosition);
-            normals.Add(vertexInfo.vertexNormal);
-            materials.Add(EncodeMaterial(materialSet, vertexInfo.voxelMaterial));
-            indices.Add(vertices.Count() - 1);
+            var index = vertices.Count();
+
+            if(!vertexReuseMap.test(vertexInfo.vertexId))
+            {
+                vertexIds.Add(vertexInfo.vertexId);
+                vertices.Add(vertexInfo.vertexPosition);
+                normals.Add(vertexInfo.vertexNormal);
+            }
+            else
+            {
+                index = vertexInfo.vertexId;
+            }
+
+            // Encode material
+            int materialChannel;
+            cvar material = EncodeMaterial(materialSet, vertexInfo.voxelMaterial, &materialChannel);
+
+            // Write material
+            switch(materialChannel)
+            {
+            case 0:
+                materialsA.Add(material);
+                materialsB.Add(Vector4::Zero());
+                materialsC.Add(Vector4::Zero());
+                materialsD.Add(Vector4::Zero());
+                break;
+            case 1:
+                materialsA.Add(Vector4::Zero());
+                materialsB.Add(material);
+                materialsC.Add(Vector4::Zero());
+                materialsD.Add(Vector4::Zero());
+                break;
+            case 2:
+                materialsA.Add(Vector4::Zero());
+                materialsB.Add(Vector4::Zero());
+                materialsC.Add(material);
+                materialsD.Add(Vector4::Zero());
+                break;
+            case 3:
+                materialsA.Add(Vector4::Zero());
+                materialsB.Add(Vector4::Zero());
+                materialsC.Add(Vector4::Zero());
+                materialsD.Add(material);
+                break;
+            }
+
+            // Add index when this is not normal correction vertex
+            if (!normalCorrection)
+                indices.Add(index);
         }
 
         void AddMaterial(const VoxelMaterial_t material)
         {
+            if (HasMaterial(material))
+                return;
+
             materialSet.Add(material);
         }
 
@@ -102,9 +168,9 @@ private:
             // Calculate needed space
             var neededEntries = 0u;
 
-            if (!HasMaterial(materialB))
             if (!HasMaterial(materialA))
                 neededEntries++;
+            if (!HasMaterial(materialB))
                 neededEntries++;
             if (!HasMaterial(materialC))
                 neededEntries++;
@@ -138,10 +204,14 @@ private:
         void Clear()
         {
             // Clear all arrays
+            vertexIds.Clear();
             vertices.Clear();
             normals.Clear();
             colors.Clear();
-            materials.Clear();
+            materialsA.Clear();
+            materialsB.Clear();
+            materialsC.Clear();
+            materialsD.Clear();
             indices.Clear();
 
             // Clear material set
@@ -188,9 +258,10 @@ private:
     MeshSection* FindSection(VoxelMaterial_t material);
     MeshSection* FindSection(VoxelMaterial_t materialA, VoxelMaterial_t materialB, VoxelMaterial_t materialC);
     MeshSection* PushSection(VoxelMaterial_t materialA, VoxelMaterial_t materialB, VoxelMaterial_t materialC);
+    MeshSection* FindOrPushSection(VoxelMaterial_t materialA, VoxelMaterial_t materialB, VoxelMaterial_t materialC);
     MeshSection* CreateSection();
 
-    void AddTriangle(const VertexInfo& vertexInfoA, const VertexInfo& vertexInfoB, const VertexInfo& vertexInfoC);
+    void AddTriangle(const VertexInfo& vertexInfoA, const VertexInfo& vertexInfoB, const VertexInfo& vertexInfoC, bool normalCorrection);
 
 private:
     void PolygonizeRegularCell(const Vector3& position, Voxel* data, float voxelScale, int lod, const Int3& voxelOffset, bool normalCorrection);
@@ -216,9 +287,9 @@ public:
 
     /**
     * \brief Uploads all data to a mesh. This also clears the mesher and prepares to next mesh generation.
-    * \param mesh The mesh that will get the new mesh data.
+    * \param chunkMesh The mesh that will get the new mesh data.
     */
-    void Apply(const RefPtr<VoxelChunkMesh>& mesh) override;
+    void Apply(const RefPtr<VoxelChunkMesh>& chunkMesh) override;
 
     /**
     * \brief Cleans all data used during Generate and Apply functions.

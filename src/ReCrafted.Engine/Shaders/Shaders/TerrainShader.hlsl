@@ -8,6 +8,8 @@
 
 Texture2D m_texture0 : register(t0);
 Texture2D m_texture1 : register(t1);
+Texture2D m_texture2 : register(t2);
+Texture2D m_texture3 : register(t3);
 
 SamplerState<LinearWrap> Sampler : register(s0);
 
@@ -17,9 +19,9 @@ struct TerrainVSInput
     float3 Normal       : NORMAL;
 
     float4 Materials0   : COLOR0;
-    //float4 Materials1   : COLOR1;
-    //float4 Materials2   : COLOR2;
-    //float4 Materials3   : COLOR3;
+    float4 Materials1   : COLOR1;
+    float4 Materials2   : COLOR2;
+    float4 Materials3   : COLOR3;
 };
 
 struct TerrainVSOutput
@@ -57,9 +59,9 @@ void TerrainVSMain(in TerrainVSInput i, out TerrainVSOutput o)
     o.FlatNormal = (float3)0;
     o.FixedNormal = (float3)0;
     o.Materials0 = i.Materials0;
-    o.Materials1 = i.Materials0;
-    o.Materials2 = i.Materials0;
-    o.Materials3 = i.Materials0;
+    o.Materials1 = i.Materials1;
+    o.Materials2 = i.Materials2;
+    o.Materials3 = i.Materials3;
 
 #ifdef USE_LOGZBUFFER
     const float C = 1.0f;
@@ -148,24 +150,6 @@ void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<Terra
     OutputStream.RestartStrip();
 }
 
-float3 TmpGetMatColor(in uint matId) 
-{
-    switch (matId)
-    {
-    case 0:
-        return float3(0.35f, 0.35f, 0.35f);
-    case 1:
-        return float3(80 / 255.0f, 145 / 255.0f, 30 / 255.0f);
-    case 2:
-        return float3(100 / 255.0f, 80 / 255.0f, 30 / 255.0f);
-    case 3:
-        return float3(0.15f, 0.15f, 0.17f);
-
-    default:
-        return float3(0.25f, 0.0f, 0.0f);
-    }
-}
-
 /// <summary>
 /// Pixel Shader Function
 /// TerrainPSMain
@@ -180,29 +164,33 @@ void TerrainPSMain(in TerrainPSInput i, out GBufferOutput o)
     blend /= dot(blend, float3(1, 1, 1));
 
     // Triplanar mapping
-    float2 tx = position.yz * 1.0f;
-    float2 ty = position.zx * 1.0f;
-    float2 tz = position.xy * 1.0f;
+    float2 tx = position.yz * 0.1f;
+    float2 ty = position.zx * 0.1f;
+    float2 tz = position.xy * 0.1f;
 
     float mat0 = i.Materials0.r;
     float mat1 = i.Materials0.g;
     float mat2 = i.Materials0.b;
     float mat3 = i.Materials0.a;
 
-    float3 color = 
-        TmpGetMatColor(0) * mat0 + 
-        (TmpGetMatColor(0) * blend.z + TmpGetMatColor(0) * blend.x + TmpGetMatColor(1) * blend.y) * mat1 +
-        TmpGetMatColor(2) * mat2 + 
-        TmpGetMatColor(3) * mat3;
+    float3 materialA = (m_texture0.Sample(Sampler, tx).rgb * blend.x + m_texture0.Sample(Sampler, ty).rgb * blend.y + m_texture0.Sample(Sampler, tz).rgb * blend.z);
+    float3 materialB = (m_texture1.Sample(Sampler, tx).rgb * blend.x + m_texture1.Sample(Sampler, ty).rgb * blend.y + m_texture1.Sample(Sampler, tz).rgb * blend.z);
+    float3 materialC = (m_texture2.Sample(Sampler, tx).rgb * blend.x + m_texture2.Sample(Sampler, ty).rgb * blend.y + m_texture2.Sample(Sampler, tz).rgb * blend.z);
+    float3 materialD = (m_texture3.Sample(Sampler, tx).rgb * blend.x + m_texture3.Sample(Sampler, ty).rgb * blend.y + m_texture3.Sample(Sampler, tz).rgb * blend.z);
+
+    float3 color = float3(0.0f, 0.0f, 0.0f);
+    color += materialA * mat0;
+    color += materialB * mat1;
+    color += materialC * mat2;
+    color += materialD * mat3;
 
     o.Color = float4(color, 1.0f);
 
-    o.Normal = EncodeNormal(float4(i.FlatNormal, 1.0f)); // Flat shading
-    //o.Normal = EncodeNormal(float4(i.Normal, 1.0f)); // Smooth shading
+    //o.Normal = EncodeNormal(float4(i.FlatNormal, 1.0f)); // Flat shading
+    o.Normal = EncodeNormal(float4(i.Normal, 1.0f)); // Smooth shading
 
     // Set Light as simple ambient light
     o.Light = float4(o.Color.rgb * AmbientLightColor, 0.0f);
-    //o.Light = float4(1.0f - i.Blend, 1.0f - i.Blend, 1.0f - i.Blend, 1.0f) * 0.5f;
 
 #ifdef USE_LOGZBUFFER
     // TODO: Make option to use inv z (1.0f - Z/W) instead of log z,
@@ -211,7 +199,7 @@ void TerrainPSMain(in TerrainPSInput i, out GBufferOutput o)
 #endif
 }
 
-pass Default 
+pass Default
 {
     BindDefaultConstantBuffer(SurfaceVSMain, SurfacePSMain);
 

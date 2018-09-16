@@ -56,6 +56,19 @@ TransvoxelMesher::MeshSection* TransvoxelMesher::PushSection(
     return section;
 }
 
+TransvoxelMesher::MeshSection* TransvoxelMesher::FindOrPushSection(
+    const VoxelMaterial_t materialA,
+    const VoxelMaterial_t materialB,
+    const VoxelMaterial_t materialC)
+{
+    var meshSection = FindSection(materialA, materialB, materialC);
+
+    if (!meshSection)
+        meshSection = PushSection(materialA, materialB, materialC);
+
+    return meshSection;
+}
+
 TransvoxelMesher::MeshSection* TransvoxelMesher::CreateSection()
 {
     m_currentSection++;
@@ -63,19 +76,16 @@ TransvoxelMesher::MeshSection* TransvoxelMesher::CreateSection()
     return &GetSection();
 }
 
-void TransvoxelMesher::AddTriangle(const VertexInfo& vertexInfoA, const VertexInfo& vertexInfoB, const VertexInfo& vertexInfoC)
+void TransvoxelMesher::AddTriangle(const VertexInfo& vertexInfoA, const VertexInfo& vertexInfoB, const VertexInfo& vertexInfoC, const bool normalCorrection)
 {
-    var meshSection = FindSection(vertexInfoA.voxelMaterial, vertexInfoB.voxelMaterial, vertexInfoC.voxelMaterial);
-
-    if (!meshSection)
-        meshSection = PushSection(vertexInfoA.voxelMaterial, vertexInfoB.voxelMaterial, vertexInfoC.voxelMaterial);
+    var meshSection = FindOrPushSection(vertexInfoA.voxelMaterial, vertexInfoB.voxelMaterial, vertexInfoC.voxelMaterial);
 
     ASSERT(meshSection != nullptr);
 
     // Add data to the section
-    meshSection->AddVertex(vertexInfoA);
-    meshSection->AddVertex(vertexInfoB);
-    meshSection->AddVertex(vertexInfoC);
+    meshSection->AddVertex(vertexInfoA, normalCorrection);
+    meshSection->AddVertex(vertexInfoB, normalCorrection);
+    meshSection->AddVertex(vertexInfoC, normalCorrection);
 }
 
 void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* data, const float voxelScale, const int lod, const Int3& voxelOffset, const bool normalCorrection)
@@ -115,6 +125,14 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
         cvar vertexId = CalculateEdgeVertexId(voxelOffset, edgeCode >> 8);
         DEBUG_ASSERT(vertexId >= 0);
 
+        // Skip vertex calculation if already calculated
+        if(m_vertexInfoMap[vertexId])
+        {
+            indices[i] = vertexId;
+            continue;
+        }
+
+        // Calculate vertex
         cvar voxelA = corners[v0];
         cvar voxelB = corners[v1];
 
@@ -122,9 +140,10 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
         cvar vertexPosition = position + intersectionPosition;
         cvar voxelMaterial = GetVoxelMaterial(voxelA, voxelB);
         
-        cvar vertexInfo = VertexInfo(vertexPosition, voxelMaterial);
+        cvar vertexInfo = VertexInfo(vertexId, vertexPosition, voxelMaterial);
         m_vertexInfo[vertexId] = vertexInfo;
         indices[i] = vertexId;
+        m_vertexInfoMap.set(vertexId);
     }
 
     cvar indexCount = cellData.GetTriangleCount() * 3;
@@ -154,12 +173,12 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
         vertexInfoB.vertexNormal += normal;
         vertexInfoC.vertexNormal += normal;
 
-        vertexInfoA.vertexNormal *= 0.5f;
-        vertexInfoB.vertexNormal *= 0.5f;
-        vertexInfoC.vertexNormal *= 0.5f;
+        vertexInfoA.normalUses += 1;
+        vertexInfoB.normalUses += 1;
+        vertexInfoC.normalUses += 1;
 
         // Add triangle
-        AddTriangle(vertexInfoA, vertexInfoB, vertexInfoC);
+        AddTriangle(vertexInfoA, vertexInfoB, vertexInfoC, normalCorrection);
 
         // Increment triangle count
         m_triangleCount++;
@@ -188,13 +207,21 @@ void TransvoxelMesher::Generate(const Vector3& position, int lod, uint8_t border
         }
     }
 
-    for(var i = 0; i <= m_currentSection; i ++)
+    // Apply normals
+    for(rvar section : m_meshSections)
     {
-        rvar section = m_meshSections[i];
-
         // Normalize the normals to be a normal normals.
+        var j = 0;
         for (rvar normal : section.normals)
+        {
+            cvar vertexId = section.vertexIds[j];
+            cvar vertexInfo = m_vertexInfo[vertexId];
+
+            normal = vertexInfo.vertexNormal / static_cast<float>(vertexInfo.normalUses);
             normal.Normalize();
+
+            j++;
+        }
     }
 }
 
@@ -215,7 +242,10 @@ void TransvoxelMesher::Apply(const RefPtr<VoxelChunkMesh>& chunkMesh)
 
     mesh->SetVertices(meshSection.vertices.Data(), meshSection.vertices.Count());
     mesh->SetNormals(meshSection.normals.Data());
-    mesh->AddCustomData(meshSection.materials.Data(), sizeof(Vector4));
+    mesh->AddCustomData(meshSection.materialsA.Data(), sizeof(Vector4));
+    mesh->AddCustomData(meshSection.materialsB.Data(), sizeof(Vector4));
+    mesh->AddCustomData(meshSection.materialsC.Data(), sizeof(Vector4));
+    mesh->AddCustomData(meshSection.materialsD.Data(), sizeof(Vector4));
     mesh->SetIndices(meshSection.indices.Data(), meshSection.indices.Count());
     mesh->ApplyChanges();
 

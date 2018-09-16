@@ -35,9 +35,9 @@ public:
 
     /**
      * \brief Uploads all data to a mesh. This also clears the mesher and prepares to next mesh generation.
-     * \param mesh The mesh that will get the new mesh data.
+     * \param chunkMesh The mesh that will get the new mesh data.
      */
-    virtual void Apply(const RefPtr<VoxelChunkMesh>& mesh) = 0;
+    virtual void Apply(const RefPtr<VoxelChunkMesh>& chunkMesh) = 0;
 
     /**
      * \brief Cleans all data used during Generate and Apply functions.

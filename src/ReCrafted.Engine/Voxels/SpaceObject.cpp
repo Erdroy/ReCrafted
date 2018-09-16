@@ -8,8 +8,12 @@
 #include "Generator/VoxelGenerator.h"
 #include "Graphics/Graphics.h"
 
+SpaceObject* SpaceObject::current;
+
 void SpaceObject::Init(SpaceObjectSettings& settings)
 {
+    current = this;
+
     // set settings
     m_settings = settings;
 
@@ -19,6 +23,28 @@ void SpaceObject::Init(SpaceObjectSettings& settings)
 
     // Load shader
     m_terrainShader = Shader::LoadShader("../assets/shaders/TerrainShader.shader");
+
+    // Load sample textures
+    var texture = Texture2D::CreateTexture(Renderer::TextureFormat::RGBA8);
+    texture->LoadFromFile("../assets/textures/voxel/rock.png");
+    texture->Apply();
+    m_textures.Add(texture); 
+    
+    texture = Texture2D::CreateTexture(Renderer::TextureFormat::RGBA8);
+    texture->LoadFromFile("../assets/textures/voxel/grass.png");
+    texture->Apply();
+    m_textures.Add(texture);
+
+    texture = Texture2D::CreateTexture(Renderer::TextureFormat::RGBA8);
+    texture->LoadFromFile("../assets/textures/voxel/soil.png");
+    texture->Apply();
+    m_textures.Add(texture);
+
+    texture = Texture2D::CreateTexture(Renderer::TextureFormat::RGBA8);
+    texture->LoadFromFile("../assets/textures/voxel/clay.png");
+    texture->Apply();
+    m_textures.Add(texture);
+
 
     // initialize voxel generator
     m_generator.reset(new VoxelGenerator());

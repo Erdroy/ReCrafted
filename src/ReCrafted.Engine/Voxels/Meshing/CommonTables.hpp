@@ -9,5 +9,6 @@
 #include "Core/Math/Math.h"
 
 Int3 CellCorner[];
+Vector4 EncodedMaterials[];
 
 #endif // COMMONTABLES_HPP

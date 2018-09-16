@@ -16,4 +16,26 @@ Int3 CellCorner[8] = {
     Int3(1, 1, 1)
 };
 
+Vector4 EncodedMaterials[16] = {
+    Vector4(1.0f, 0.0f, 0.0f, 0.0f),
+    Vector4(0.0f, 1.0f, 0.0f, 0.0f),
+    Vector4(0.0f, 0.0f, 1.0f, 0.0f),
+    Vector4(0.0f, 0.0f, 0.0f, 1.0f),
+
+    Vector4(1.0f, 0.0f, 0.0f, 0.0f),
+    Vector4(0.0f, 1.0f, 0.0f, 0.0f),
+    Vector4(0.0f, 0.0f, 1.0f, 0.0f),
+    Vector4(0.0f, 0.0f, 0.0f, 1.0f),
+
+    Vector4(1.0f, 0.0f, 0.0f, 0.0f),
+    Vector4(0.0f, 1.0f, 0.0f, 0.0f),
+    Vector4(0.0f, 0.0f, 1.0f, 0.0f),
+    Vector4(0.0f, 0.0f, 0.0f, 1.0f),
+
+    Vector4(1.0f, 0.0f, 0.0f, 0.0f),
+    Vector4(0.0f, 1.0f, 0.0f, 0.0f),
+    Vector4(0.0f, 0.0f, 1.0f, 0.0f),
+    Vector4(0.0f, 0.0f, 0.0f, 1.0f)
+};
+
 #endif // COMMONTABLES_CPP

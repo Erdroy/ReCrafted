@@ -17,6 +17,10 @@ class SpaceObject
     friend class SpaceObjectChunk;
     friend class VoxelGenerator;
 
+public:
+    static SpaceObject* current;
+    Array<RefPtr<Texture2D>> m_textures = {};
+
 private:
     SpaceObjectSettings m_settings = {};
 

@@ -75,7 +75,12 @@ public:
         {
             DEBUG_ASSERT(section.mesh != nullptr);
 
-            // TODO: Bind material textures
+            var slot = 0;
+            for(var material : section.materialSet)
+            {
+                Graphics::GetInstance()->SetTexture(slot, SpaceObject::current->m_textures[material]);
+                slot++;
+            }
 
             // Draw mesh
             Graphics::GetInstance()->Draw(section.mesh);
