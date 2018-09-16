@@ -9,6 +9,47 @@
 #include "ReCrafted.h"
 #include "Core/Math/Math.h"
 
+struct VertexInfo
+{
+public:
+    Vector3 vertexPosition = {};
+    Vector3 vertexNormal = {};
+    VoxelMaterial_t voxelMaterial = 0u;
+
+public:
+    VertexInfo() = default;
+
+    VertexInfo(
+        const Vector3& vertexPosition,
+        const VoxelMaterial_t& voxelMaterial) : 
+    vertexPosition(vertexPosition),
+    vertexNormal({}),
+    voxelMaterial(voxelMaterial) { }
+};
+
+inline int CalculateVertexId(const Int3& position)
+{
+    return (position.x + 2) * 3 * (VoxelChunkData::ChunkDataSize * 3) * (VoxelChunkData::ChunkDataSize * 3) +
+        (position.y + 2) * 3 * (VoxelChunkData::ChunkDataSize * 3) +
+        (position.z + 2) * 3;
+}
+
+inline int CalculateEdgeVertexId(const Int3& pos, const int edgeCode)
+{
+    cvar edge = edgeCode & 0x0F;
+    cvar owner = (edgeCode & 0xF0) >> 4;
+
+    cvar diffX = owner % 2;
+    cvar diffY = (owner >> 2) % 2;
+    cvar diffZ = (owner >> 1) % 2;
+
+    DEBUG_ASSERT((diffX == 0) || (diffX == 1));
+    DEBUG_ASSERT((diffY == 0) || (diffY == 1));
+    DEBUG_ASSERT((diffZ == 0) || (diffZ == 1));
+
+    return CalculateVertexId(pos - Int3(diffX, diffY, diffZ)) + (edge - 1);
+}
+
 /**
  * \brief Calculates interpolant value based on two density values.
 * \param densityA The first density value.

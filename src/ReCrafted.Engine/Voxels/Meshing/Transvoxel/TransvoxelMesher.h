@@ -13,7 +13,10 @@
 #include "../IVoxelMesher.h"
 #include "../MeshingHelpers.h"
 #include "../MaterialHelpers.h"
+#include "../CommonTables.hpp"
+
 #include <bitset>
+#include <set>
 
 class TransvoxelMesher : public IVoxelMesher
 {
@@ -51,12 +54,8 @@ private:
     public:
         MeshSection() : vertexReuse({}), vertices({}), normals({}), colors({}), materials({}), indices({})
         {  
-            // Reserve space for vertex reuse
-            vertexReuse.Reserve(VertexReuseEntriesCount);
-
             // Initialize vertex reuse
-            for (var i = 0; i < VertexReuseEntriesCount; i++)
-                vertexReuse.Add(-1);
+            vertexReuse.Resize(VertexReuseEntriesCount);
 
             // Reserve a bit of space right now.
             vertices.Reserve(4096);
@@ -69,15 +68,22 @@ private:
         }
 
     public:
-        void AddTriangle()
+        void AddVertex(const VertexInfo& vertexInfo)
         {
-            
+            vertices.Add(vertexInfo.vertexPosition);
+            normals.Add(vertexInfo.vertexNormal);
+            materials.Add(EncodeMaterial(materialSet, vertexInfo.voxelMaterial));
+            indices.Add(vertices.Count() - 1);
         }
 
-    public:
+        void AddMaterial(const VoxelMaterial_t material)
+        {
+            materialSet.Add(material);
+        }
+
         bool MaterialsEmpty() const
         {
-            return materialSet.Count() == 0u;
+            return materialSet.Empty();
         }
 
         bool MaterialsFull() const
@@ -85,13 +91,48 @@ private:
             return materialSet.Count() == MaxMaterialsPerSection;
         }
 
+        bool CanFit(const VoxelMaterial_t materialA, const VoxelMaterial_t materialB, const VoxelMaterial_t materialC) const
+        {
+            if (MaterialsEmpty())
+                return true;
+
+            if (MaterialsFull())
+                return false;
+
+            // Calculate needed space
+            var neededEntries = 0u;
+
+            if (!HasMaterial(materialB))
+            if (!HasMaterial(materialA))
+                neededEntries++;
+                neededEntries++;
+            if (!HasMaterial(materialC))
+                neededEntries++;
+
+            return MaxMaterialsPerSection - materialSet.Count() >= neededEntries;
+        }
+
         /**
         * \brief Returns true when this material set already contains given material.
         * \param material The material.
         */
-        bool HasMaterial(const VoxelMaterial_t material)
+        bool HasMaterial(const VoxelMaterial_t material) const
         {
             return materialSet.Contains(material);
+        }
+
+        /**
+        * \brief Returns true when this material set already contains given material.
+        * \param materialA The first material.
+        * \param materialB The second material.
+        * \param materialC The third material.
+        */
+        bool HasMaterials(const VoxelMaterial_t materialA, const VoxelMaterial_t materialB, const VoxelMaterial_t materialC) const
+        {
+            if (materialA == materialB && materialB == materialC)
+                return HasMaterial(materialA);
+
+            return HasMaterial(materialA) && HasMaterial(materialB) && HasMaterial(materialC);
         }
 
         void Clear()
@@ -102,6 +143,8 @@ private:
             colors.Clear();
             materials.Clear();
             indices.Clear();
+
+            // Clear material set
             materialSet.Clear();
 
             // Reset reuse map
@@ -115,7 +158,7 @@ private:
     Array<MeshSection> m_meshSections;
 
     Array<VertexInfo> m_vertexInfo;
-    std::bitset<VertexReuseEntriesCount> m_vertexMap;
+    std::bitset<VertexReuseEntriesCount> m_vertexInfoMap;
 
 public:
     TransvoxelMesher()
@@ -128,28 +171,29 @@ public:
 
         // Initialize vertex info array
         // Reserve space for vertex info array
-        m_vertexInfo.Reserve(VertexReuseEntriesCount);
+        m_vertexInfo.Resize(VertexReuseEntriesCount);
 
         // Reset vertex map
-        m_vertexMap.reset();
+        m_vertexInfoMap.reset();
     }
 
     virtual ~TransvoxelMesher() = default;
 
 private:
-    void PolygonizeRegularCell(const Vector3& position, Voxel* data, float voxelScale, int lod, const Int3& voxelOffset, bool normalCorrection);
-
-    MeshSection& GetSection()
+    MeshSection & GetSection()
     {
         return m_meshSections[m_currentSection];
     }
 
-    MeshSection& CreateSection()
-    {
-        m_currentSection++;
-        ASSERT(m_currentSection < MaxSections); // TODO: Handle error
-        return GetSection();
-    }
+    MeshSection* FindSection(VoxelMaterial_t material);
+    MeshSection* FindSection(VoxelMaterial_t materialA, VoxelMaterial_t materialB, VoxelMaterial_t materialC);
+    MeshSection* PushSection(VoxelMaterial_t materialA, VoxelMaterial_t materialB, VoxelMaterial_t materialC);
+    MeshSection* CreateSection();
+
+    void AddTriangle(const VertexInfo& vertexInfoA, const VertexInfo& vertexInfoB, const VertexInfo& vertexInfoC);
+
+private:
+    void PolygonizeRegularCell(const Vector3& position, Voxel* data, float voxelScale, int lod, const Int3& voxelOffset, bool normalCorrection);
 
 public:
     /**
@@ -167,7 +211,7 @@ public:
     */
     bool HasTriangles() override
     {
-        return m_triangleCount >= 3u;
+        return m_triangleCount > 0u;
     }
 
     /**

@@ -3,31 +3,79 @@
 #include "TransvoxelMesher.h"
 #include "TransvoxelTables.hpp"
 
-#include "../CommonTables.hpp"
-
 #include "Graphics/Mesh.h"
 
-inline int CalculateVertexId(const Int3& pos)
+TransvoxelMesher::MeshSection* TransvoxelMesher::FindSection(const VoxelMaterial_t material)
 {
-    return (pos.x + 2) * 3 * (VoxelChunkData::ChunkDataSize * 3) * (VoxelChunkData::ChunkDataSize * 3) +
-           (pos.y + 2) * 3 * (VoxelChunkData::ChunkDataSize * 3) +
-           (pos.z + 2) * 3;
+    for (rvar section : m_meshSections)
+    {
+        if (section.HasMaterial(material))
+            return &section;
+    }
+
+    return nullptr;
 }
 
-inline int CalculateEdgeVertexId(const Int3& pos, int edgeCode)
+TransvoxelMesher::MeshSection* TransvoxelMesher::FindSection(
+    const VoxelMaterial_t materialA,
+    const VoxelMaterial_t materialB,
+    const VoxelMaterial_t materialC)
 {
-    cvar edge = edgeCode & 0x0F;
-    cvar owner = (edgeCode & 0xF0) >> 4;
+    for (rvar section : m_meshSections)
+    {
+        if (section.HasMaterials(materialA, materialB, materialC))
+            return &section;
+    }
 
-    cvar diffX = owner % 2;
-    cvar diffY = (owner >> 2) % 2;
-    cvar diffZ = (owner >> 1) % 2;
+    return nullptr;
+}
 
-    DEBUG_ASSERT((diffX == 0) || (diffX == 1));
-    DEBUG_ASSERT((diffY == 0) || (diffY == 1));
-    DEBUG_ASSERT((diffZ == 0) || (diffZ == 1));
+TransvoxelMesher::MeshSection* TransvoxelMesher::PushSection(
+    const VoxelMaterial_t materialA,
+    const VoxelMaterial_t materialB, 
+    const VoxelMaterial_t materialC)
+{
+    for (var i = m_currentSection; i < MaxSections; i++)
+    {
+        rvar section = m_meshSections[i];
 
-    return CalculateVertexId(pos - Int3(diffX, diffY, diffZ)) + (edge - 1);
+        if (section.CanFit(materialA, materialB, materialC))
+        {
+            section.AddMaterial(materialA);
+            section.AddMaterial(materialB);
+            section.AddMaterial(materialC);
+            return &section;
+        }
+    }
+
+    var section = CreateSection();
+    section->AddMaterial(materialA);
+    section->AddMaterial(materialB);
+    section->AddMaterial(materialC);
+
+    return section;
+}
+
+TransvoxelMesher::MeshSection* TransvoxelMesher::CreateSection()
+{
+    m_currentSection++;
+    ASSERT(m_currentSection < MaxSections); // TODO: Handle error
+    return &GetSection();
+}
+
+void TransvoxelMesher::AddTriangle(const VertexInfo& vertexInfoA, const VertexInfo& vertexInfoB, const VertexInfo& vertexInfoC)
+{
+    var meshSection = FindSection(vertexInfoA.voxelMaterial, vertexInfoB.voxelMaterial, vertexInfoC.voxelMaterial);
+
+    if (!meshSection)
+        meshSection = PushSection(vertexInfoA.voxelMaterial, vertexInfoB.voxelMaterial, vertexInfoC.voxelMaterial);
+
+    ASSERT(meshSection != nullptr);
+
+    // Add data to the section
+    meshSection->AddVertex(vertexInfoA);
+    meshSection->AddVertex(vertexInfoB);
+    meshSection->AddVertex(vertexInfoC);
 }
 
 void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* data, const float voxelScale, const int lod, const Int3& voxelOffset, const bool normalCorrection)
@@ -64,96 +112,57 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
         cvar v0 = edgeCode & 0x0F;
         cvar v1 = (edgeCode & 0xF0) >> 4;
 
-        cvar indexId = CalculateEdgeVertexId(voxelOffset, edgeCode >> 8);
-
-        DEBUG_ASSERT(indexId >= 0);
-
-        cvar cornerPos0 = voxelOffset + CellCorner[v0];
-        cvar cornerPos1 = voxelOffset + CellCorner[v1];
+        cvar vertexId = CalculateEdgeVertexId(voxelOffset, edgeCode >> 8);
+        DEBUG_ASSERT(vertexId >= 0);
 
         cvar voxelA = corners[v0];
         cvar voxelB = corners[v1];
 
-        cvar intersectionPosition = GetIntersection(cornerPos0, cornerPos1, voxelA.value, voxelB.value) * voxelScale;
+        cvar intersectionPosition = GetIntersection(voxelOffset + CellCorner[v0], voxelOffset + CellCorner[v1], voxelA.value, voxelB.value) * voxelScale;
         cvar vertexPosition = position + intersectionPosition;
         cvar voxelMaterial = GetVoxelMaterial(voxelA, voxelB);
-        cvar vertexMaterial = EncodeMaterial(voxelMaterial);
-
-        // If material set size is 16 and we don't have this voxel material in our section, create new section.
-        rvar section = GetSection();
-        /*cvar materialPresent = section.HasMaterial(voxelMaterial);
-        var newSection = false;
-
-        if(!materialPresent && section.MaterialsFull())
-        {
-            section = CreateSection();
-            newSection = true;
-        }*/
-
-        // Check if we already have this vertex
-        if (section.vertexReuseMap[indexId])
-        {
-            indices[i] = section.vertexReuse[indexId];
-            DEBUG_ASSERT(indices[i] < m_vertices.Count());
-            continue;
-        }
-
-        cvar index = section.vertices.Count();
-        section.vertices.Add(vertexPosition);
-        section.normals.Add(Vector3::Zero());
-        section.materials.Add(vertexMaterial);
-
-        //if(!materialPresent)
-        //    section.materialSet.Add(voxelMaterial);
-
-        indices[i] = index;
-        section.vertexReuse[indexId] = index;
-
-        // Set reuse
-        section.vertexReuseMap.set(indexId);
+        
+        cvar vertexInfo = VertexInfo(vertexPosition, voxelMaterial);
+        m_vertexInfo[vertexId] = vertexInfo;
+        indices[i] = vertexId;
     }
 
     cvar indexCount = cellData.GetTriangleCount() * 3;
     for (var i = 0; i < indexCount; i += 3)
     {
-        rvar section = GetSection();
+        cvar vertexId0 = indices[cellData.vertexIndex[i + 0]];
+        cvar vertexId1 = indices[cellData.vertexIndex[i + 1]];
+        cvar vertexId2 = indices[cellData.vertexIndex[i + 2]];
 
-        cvar vertexIndex0 = indices[cellData.vertexIndex[i + 0]];
-        cvar vertexIndex1 = indices[cellData.vertexIndex[i + 1]];
-        cvar vertexIndex2 = indices[cellData.vertexIndex[i + 2]];
+        rvar vertexInfoA = m_vertexInfo[vertexId0];
+        rvar vertexInfoB = m_vertexInfo[vertexId1];
+        rvar vertexInfoC = m_vertexInfo[vertexId2];
 
-        DEBUG_ASSERT(vertexIndex0 < m_vertices.Count());
-        DEBUG_ASSERT(vertexIndex1 < m_vertices.Count());
-        DEBUG_ASSERT(vertexIndex2 < m_vertices.Count());
+        cvar vertexPosition0 = vertexInfoA.vertexPosition;
+        cvar vertexPosition1 = vertexInfoB.vertexPosition;
+        cvar vertexPosition2 = vertexInfoC.vertexPosition;
 
-        cvar vertex0 = section.vertices[vertexIndex0];
-        cvar vertex1 = section.vertices[vertexIndex1];
-        cvar vertex2 = section.vertices[vertexIndex2];
-
-        if (Vector3::Dot(vertex0, vertex1) < Math::Epsilon || 
-            Vector3::Dot(vertex1, vertex2) < Math::Epsilon ||
-            Vector3::Dot(vertex2, vertex0) < Math::Epsilon)
+        if (Vector3::Dot(vertexPosition0, vertexPosition1) < Math::Epsilon ||
+            Vector3::Dot(vertexPosition1, vertexPosition2) < Math::Epsilon ||
+            Vector3::Dot(vertexPosition2, vertexPosition0) < Math::Epsilon)
             continue; // zero-space triangle
 
-        cvar normal = Vector3::Cross(vertex1 - vertex0, vertex2 - vertex0);
+        cvar normal = Vector3::Cross(vertexPosition1 - vertexPosition0, vertexPosition2 - vertexPosition0);
 
-        section.normals[vertexIndex0] += normal;
-        section.normals[vertexIndex1] += normal;
-        section.normals[vertexIndex2] += normal;
+        // Calculate normals
+        vertexInfoA.vertexNormal += normal;
+        vertexInfoB.vertexNormal += normal;
+        vertexInfoC.vertexNormal += normal;
 
-        section.normals[vertexIndex0] *= 0.5f;
-        section.normals[vertexIndex1] *= 0.5f;
-        section.normals[vertexIndex2] *= 0.5f;
-        
-        if (!normalCorrection)
-        {
-            section.indices.Add(vertexIndex0);
-            section.indices.Add(vertexIndex1);
-            section.indices.Add(vertexIndex2);
-        }
+        vertexInfoA.vertexNormal *= 0.5f;
+        vertexInfoB.vertexNormal *= 0.5f;
+        vertexInfoC.vertexNormal *= 0.5f;
 
-        // Add to triangle count
-        m_triangleCount += 3;
+        // Add triangle
+        AddTriangle(vertexInfoA, vertexInfoB, vertexInfoC);
+
+        // Increment triangle count
+        m_triangleCount++;
     }
 }
 
@@ -224,8 +233,9 @@ void TransvoxelMesher::Clear()
     for (var i = 0; i <= m_currentSection; i ++)
         m_meshSections[i].Clear();
 
-    // Reset vertex map
-    m_vertexMap.reset();
+    // Reset vertex info
+    m_vertexInfo.Clear();
+    m_vertexInfoMap.reset();
 
     m_currentSection = 0;
 }
