@@ -880,7 +880,7 @@ namespace Renderer
 
             cvar rt = command->renderTarget || createDepthBuffer;
 
-            D3D11_TEXTURE2D_DESC textureDesc;
+            D3D11_TEXTURE2D_DESC textureDesc = {};
             textureDesc.ArraySize = 1;
             textureDesc.Width = command->width;
             textureDesc.Height = command->height;

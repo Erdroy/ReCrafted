@@ -75,8 +75,8 @@ void TerrainVSMain(in TerrainVSInput i, out TerrainVSOutput o)
 float3 Triplanar_CalculateYFixedNormal(float3 origin, float3 position, float3 normal)
 {
     const float upSign = position.y < origin.y ? -1.0f : 1.0f;
-    const float3 pointNormal = normalize(position - origin);
     const float3 baseYNormal = float3(0.0f, upSign, 0.0f);
+    const float3 pointNormal = normalize(position - origin);
 
     // Calculate angle
     float3 surfaceUpCross = cross(pointNormal, baseYNormal);
@@ -167,6 +167,8 @@ void TerrainPSMain(in TerrainPSInput i, out GBufferOutput o)
     float2 tx = position.yz * 0.25f;
     float2 ty = position.zx * 0.25f;
     float2 tz = position.xy * 0.25f;
+
+    // TODO: Rotate UV (tx, ty, tz)
 
     float mat0 = i.Materials0.r;
     float mat1 = i.Materials0.g;
