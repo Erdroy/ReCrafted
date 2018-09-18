@@ -384,14 +384,14 @@ void Graphics::RenderUI()
 
 void Graphics::OnFramePresent()
 {
-    Profiler::BeginProfile("Render WebUI");
+    /*Profiler::BeginProfile("Render WebUI");
     {
         // set WebUI state
         SetStage(RenderStage::DrawWebUI);
 
         WebUI::GetInstance()->Render();
     }
-    Profiler::EndProfile();
+    Profiler::EndProfile();*/
 }
 
 void Graphics::Draw(const RefPtr<Mesh>& mesh, const RefPtr<Shader>& shader)
