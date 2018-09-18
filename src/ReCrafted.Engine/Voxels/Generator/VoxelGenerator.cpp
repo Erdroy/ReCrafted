@@ -36,7 +36,12 @@ Voxel VoxelGenerator::GenerateFromCHM(const Vector3& origin, const Vector3& posi
 
     var voxel = Voxel::Create(voxelValue, 0u);
 
-    if (fabs(heightDiff) <= lodSize * 1.25f)
+    cvar surfaceLevel = fabs(heightDiff);
+
+    if (surfaceLevel <= lodSize * 4.0f)
+        voxel.material = 2u;
+
+    if (surfaceLevel <= lodSize * 1.25f)
         voxel.material = 1u;
 
     // convert voxel value to voxel
