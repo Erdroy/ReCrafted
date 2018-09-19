@@ -1,8 +1,10 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
+using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Numerics;
 using ImGuiNET;
+using ReCrafted.Editor.Content.Importers;
 using ReCrafted.Editor.Core;
 
 namespace ReCrafted.Editor.Panels
@@ -49,6 +51,23 @@ namespace ReCrafted.Editor.Panels
 
                 if (ImGui.BeginMenu("Tools"))
                 {
+                    if (ImGui.MenuItem("Import asset"))
+                    {
+                        using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
+                        {
+                            openFileDialog1.InitialDirectory = "c:\\";
+                            openFileDialog1.Filter = "png files (*.png)|*.png|All files (*.*)|*.*";
+                            openFileDialog1.FilterIndex = 2;
+                            openFileDialog1.RestoreDirectory = true;
+
+                            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                            {
+                                var ci = new TextureImporter();
+                                ci.ImportAsset(openFileDialog1.FileName);
+                            }
+                        }
+                    }
+
                     ImGui.EndMenu();
                 }
 

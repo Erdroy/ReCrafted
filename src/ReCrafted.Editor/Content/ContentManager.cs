@@ -8,7 +8,7 @@ namespace ReCrafted.Editor.Content
 {
     public class ContentManager : IDisposable
     {
-        private const string AssetsDirectory = "../../game/content";
+        private const string ContentDirectory = "../content";
 
         private string _contentDir;
 
@@ -19,9 +19,11 @@ namespace ReCrafted.Editor.Content
 
         public void Initialize()
         {
-            _contentDir = Path.Combine(Environment.CurrentDirectory, AssetsDirectory);
+            _contentDir = Path.Combine(Environment.CurrentDirectory, ContentDirectory);
             if(!Directory.Exists(_contentDir))
                 throw new Exception("Game content directory is missing!");
+
+
         }
 
         public void Update()

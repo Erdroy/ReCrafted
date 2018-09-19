@@ -8,6 +8,7 @@ namespace ReCrafted.Editor.Content
 
         Texture,
         Model,
+        Json,
 
         Planet,
         Asteroid

@@ -2,10 +2,10 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
-    <StartWorkingDirectory>D:\ReCrafted\build\editor\bin64</StartWorkingDirectory>
+    <StartWorkingDirectory>D:\ReCrafted\build\editor64</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
-    <StartWorkingDirectory>D:\ReCrafted\build\editor\bin64</StartWorkingDirectory>
+    <StartWorkingDirectory>D:\ReCrafted\build\editor64</StartWorkingDirectory>
   </PropertyGroup>
 </Project>
