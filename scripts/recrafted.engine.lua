@@ -49,6 +49,8 @@ project "ReCrafted.Engine"
 		path.join(LIBS_DIR, "fmt/include"),
 		path.join(LIBS_DIR, "fastnoise/include"),
 		path.join(LIBS_DIR, "upng/include"),
+		path.join(LIBS_DIR, "directxtex/include"),
+		path.join(LIBS_DIR, "physx/include"),
 	}
 	
 	-- add onbuild script and multi processor compilation
@@ -65,14 +67,14 @@ project "ReCrafted.Engine"
 		defines { "DEBUG", "_ITERATOR_DEBUG_LEVEL=0" }
 		runtime "Debug"
 		symbols "On"
-		links { "jemallocd", "freetype28MTd" }
+		links { "jemallocd", "DirectXTexd", "freetype28MTd", "PxFoundationDEBUG_x64", "PhysX3CommonDEBUG_x64", "SceneQueryDEBUG", "PhysX3DEBUG_x64", "PhysX3CookingDEBUG_x64", "PhysX3ExtensionsDEBUG", "PhysX3VehicleDEBUG" }
 
 	configuration { "Release" }
 		debugargs { "-debug" }
 		defines { "NDEBUG" }
 		flags { "OptimizeSpeed", "No64BitChecks", "NoBufferSecurityCheck" }
 		runtime "Release"
-		links { "jemalloc", "freetype28MT" }
+		links { "jemalloc", "DirectXTex", "freetype28MT", "PxFoundation_x64", "PhysX3Common_x64", "SceneQuery", "PhysX3_x64", "PhysX3Cooking_x64", "PhysX3Extensions", "PhysX3Vehicle" }
 
 	configuration { "x64" }
 		-- set target dir
@@ -88,6 +90,8 @@ project "ReCrafted.Engine"
 			path.join(LIBS_DIR, "ultralight/lib"),
 			path.join(LIBS_DIR, "tbb/lib"),
 			path.join(LIBS_DIR, "jemalloc/lib"),
+			path.join(LIBS_DIR, "directxtex/lib"),
+			path.join(LIBS_DIR, "physx/lib")
 		}
 		linkoptions { "/ignore:4099" }
 	
