@@ -4,6 +4,7 @@
 #include "Core/Logger.h"
 
 #include "Impl/PhysXEngine.h"
+#include "Common/Profiler/Profiler.h"
 
 SINGLETON_IMPL(PhysicsManager)
 
@@ -24,10 +25,14 @@ void PhysicsManager::OnDispose()
 
 void PhysicsManager::Update()
 {
+    Profiler::BeginProfile("PhysicsManager::Update()");
     m_engine->Update();
+    Profiler::EndProfile();
 }
 
 void PhysicsManager::Simulate()
 {
+    //Profiler::BeginProfile("PhysicsManager::Simulate()");
     m_engine->Simulate();
+    //Profiler::EndProfile();
 }

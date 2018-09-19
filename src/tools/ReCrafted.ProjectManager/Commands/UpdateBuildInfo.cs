@@ -37,7 +37,7 @@ namespace ReCrafted.ProjectManager.Commands
             // ... and now save the modified file
             buildInfo.ToFile(Program.BuildInfoFile, Formatting.Indented);
 
-            // sum all build counts and export it to .\build\game\assets\gameinfo.json
+            // sum all build counts and export it to .\build\assets\gameinfo.json
             var gameInfo = new GameInfo
             {
                 BuildAuthor = developerInfo.Username,
