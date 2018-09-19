@@ -17,7 +17,7 @@
 #include "Graphics/DebugDraw.h"
 #include "UI/UI.h"
 #include "WebUI/WebUI.h"
-#include "Physics/PhysicsEngine.h"
+#include "Physics/PhysicsManager.h"
 #include "Platform/Platform.h"
 #include "Scene/SceneManager.h"
 #include "Scripting/ScriptingEngine.h"
@@ -34,7 +34,7 @@ void EngineMain::RegisterComponents() const
     m_componentManager->RegisterComponent(Profiler::GetInstance());
     m_componentManager->RegisterComponent(Time::GetInstance());
     m_componentManager->RegisterComponent(Input::GetInstance());
-    m_componentManager->RegisterComponent(PhysicsEngine::GetInstance());
+    m_componentManager->RegisterComponent(PhysicsManager::GetInstance());
     m_componentManager->RegisterComponent(EntityPool::GetInstance());
     m_componentManager->RegisterComponent(SceneManager::GetInstance());
     m_componentManager->RegisterComponent(Universe::GetInstance());
@@ -65,7 +65,7 @@ void EngineMain::OnSimulate()
             m_instance->m_fixedDeltaTime);
 
         // Simulate
-        PhysicsEngine::GetInstance()->Simulate();
+        PhysicsManager::GetInstance()->Simulate();
         Universe::GetInstance()->Simulate();
         Application::GetInstance()->Simulate();
     }

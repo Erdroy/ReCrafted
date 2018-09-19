@@ -8,6 +8,7 @@
 // includes
 #include "Voxels/SpaceObject.h"
 #include "Core/EngineComponent.h"
+#include "Physics/IPhysicsScene.h"
 
 /**
  * \brief Universe class - main class for whole game world.
@@ -21,6 +22,7 @@ private:
 
 private:
     RefPtr<SpaceObject> m_testObject1 = nullptr;
+    RefPtr<IPhysicsScene> m_physicsScene = nullptr;
 
     VoxelMaterial_t m_selectedMaterial = 1u;
 
