@@ -1,8 +1,8 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -13,44 +13,76 @@ namespace ReCrafted.Editor.Content
         private JsonWriter _currentWriter;
         private JObject _currentReaderObject;
 
-        public void Serialize(FileStream stream, Formatting formatting = Formatting.None)
+        internal void SerializeToFile(string fileName, Formatting formatting = Formatting.None)
         {
-            var sw = new StreamWriter(stream);
-            
-            // Write JSON
-            using (var jsonWriter = new JsonTextWriter(sw))
+            using (var fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write))
             {
-                jsonWriter.CloseOutput = false;
-                
-                _currentWriter = jsonWriter;
-                jsonWriter.Formatting = formatting;
+                using (var sw = new StreamWriter(fileStream))
+                {
+                    // Make space for json length
+                    fileStream.Position = 2;
 
-                jsonWriter.WriteStartObject();
+                    // Serialize JSON
+                    using (var jsonWriter = new JsonTextWriter(sw))
+                    {
+                        jsonWriter.CloseOutput = false;
+                        jsonWriter.AutoCompleteOnClose = true;
 
-                SerializeInternal();
-                OnSerialize();
+                        _currentWriter = jsonWriter;
+                        jsonWriter.Formatting = formatting;
 
-                jsonWriter.WriteEndObject();
+                        jsonWriter.WriteStartObject();
+
+                        SerializeInternal();
+                        OnSerialize();
+
+                        jsonWriter.WriteEndObject();
+
+                    }
+
+                }
             }
 
-            // Write Binary
-            if (HasBinaryData)
+            // Finish writing
+            using (var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Write))
             {
-                using (var bw = new BinaryWriter(stream))
+                // Write JSON length
+                var length = fileStream.Length - 2;
+                var lengthBytes = BitConverter.GetBytes((ushort)length);
+                fileStream.Position = 0;
+                fileStream.Write(lengthBytes, 0, lengthBytes.Length);
+
+
+                // Write Binary
+                if (HasBinaryData)
                 {
-                    OnSerializeBinary(bw);
+                    // Set to the end
+                    fileStream.Seek(0, SeekOrigin.End);
+
+                    using (var bw = new BinaryWriter(fileStream))
+                    {
+                        OnSerializeBinary(bw);
+                    }
                 }
             }
         }
 
-        public void Deserialize(FileStream stream)
+        internal void DeserializeFromFile(string fileName)
         {
             // Read JSON
-            using (var sr = new StreamReader(stream))
+            using (var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
             {
-                using (var jsonReader = new JsonTextReader(sr))
+                // Read length
+                var lengthBytes = new[] { (byte)fileStream.ReadByte(), (byte)fileStream.ReadByte() };
+                var jsonLength = BitConverter.ToUInt16(lengthBytes, 0);
+
+                var jsonString = new StringBuilder();
+                using (var binaryReader = new BinaryReader(fileStream))
                 {
-                    _currentReaderObject = JObject.Load(jsonReader, new JsonLoadSettings
+                    var jsonBytes = binaryReader.ReadBytes(jsonLength);
+                    jsonString.Append(Encoding.UTF8.GetString(jsonBytes));
+
+                    _currentReaderObject = JObject.Parse(jsonString.ToString(), new JsonLoadSettings
                     {
                         CommentHandling = CommentHandling.Ignore,
                         LineInfoHandling = LineInfoHandling.Ignore
@@ -58,15 +90,12 @@ namespace ReCrafted.Editor.Content
 
                     DeserializeInternal();
                     OnDeserialize();
-                }
-            }
 
-            // Read Binary
-            if (HasBinaryData)
-            {
-                using (var br = new BinaryReader(stream))
-                {
-                    OnDeserializeBinary(br);
+                    // Read binary
+                    if (HasBinaryData)
+                    {
+                        OnDeserializeBinary(binaryReader);
+                    }
                 }
             }
         }

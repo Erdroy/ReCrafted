@@ -1,6 +1,5 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
-using System.IO;
 using ReCrafted.Editor.Content.Assets;
 
 namespace ReCrafted.Editor.Content.Importers
@@ -9,14 +8,13 @@ namespace ReCrafted.Editor.Content.Importers
     {
         public override AssetBase ImportAsset(string assetPath)
         {
-            var asset = new TextureAsset();
+            var asset1 = new TextureAsset();
+            asset1.SerializeToFile("test.rcasset");
 
-            using (var fs = new FileStream("test.rcasset", FileMode.Create, FileAccess.Write))
-            {
-                asset.Serialize(fs);
-            }
+            var asset2 = new TextureAsset();
+            asset2.DeserializeFromFile("test.rcasset");
 
-            return asset;
+            return asset2;
         }
 
         public override string[] SupportedExtensions => new []{
