@@ -32,7 +32,7 @@ void PhysXScene::Update()
 
 void PhysXScene::Simulate()
 {
-    m_scene->simulate(Time::FixedDeltaTime());
+    m_scene->simulate(static_cast<PxReal>(Time::FixedDeltaTime()));
     m_scene->fetchResults(true);
 }
 

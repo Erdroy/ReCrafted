@@ -3,7 +3,7 @@
 #include "PhysicsManager.h"
 #include "Core/Logger.h"
 
-#include "Impl/PhysXEngine.h"
+#include "PhysX/PhysXEngine.h"
 #include "Common/Profiler/Profiler.h"
 
 SINGLETON_IMPL(PhysicsManager)
