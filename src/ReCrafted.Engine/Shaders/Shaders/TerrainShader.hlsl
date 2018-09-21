@@ -30,8 +30,7 @@ struct TerrainVSOutput
     float3 LocalPosition    : WS_POSITION;
 
     float3 Normal           : NORMAL0;
-    float3 FlatNormal       : NORMAL1;
-    float3 FixedNormal      : NORMAL2;
+    float3 FixedNormal      : NORMAL1;
 
     float4 Materials0       : COLOR0;
     float4 Materials1       : COLOR1;
@@ -56,7 +55,6 @@ void TerrainVSMain(in TerrainVSInput i, out TerrainVSOutput o)
     o.Position = position;
     o.LocalPosition = i.Position;
     o.Normal = i.Normal;
-    o.FlatNormal = (float3)0;
     o.FixedNormal = (float3)0;
     o.Materials0 = i.Materials0;
     o.Materials1 = i.Materials1;
@@ -72,7 +70,7 @@ void TerrainVSMain(in TerrainVSInput i, out TerrainVSOutput o)
 #endif
 }
 
-float3 Triplanar_CalculateYFixedNormal(float3 origin, float3 position, float3 normal)
+float3 Triplanar_CalculateYFixedNormal(float3 origin, inout float3 position, float3 normal)
 {
     const float upSign = position.y < origin.y ? -1.0f : 1.0f;
     const float3 baseYNormal = float3(0.0f, upSign, 0.0f);
@@ -95,6 +93,29 @@ float3 Triplanar_CalculateYFixedNormal(float3 origin, float3 position, float3 no
     return fixedNormal;
 }
 
+float hash(float3 p)  // replace this by something better
+{
+    p = frac(p*0.3183099 + .1);
+    p *= 17.0;
+    return frac(p.x*p.y*p.z*(p.x + p.y + p.z));
+}
+
+float noise(in float3 x)
+{
+    float3 p = floor(x);
+    float3 f = frac(x);
+    f = f * f*(3.0 - 2.0*f);
+
+    return lerp(lerp(lerp(hash(p + float3(0, 0, 0)),
+        hash(p + float3(1, 0, 0)), f.x),
+        lerp(hash(p + float3(0, 1, 0)),
+            hash(p + float3(1, 1, 0)), f.x), f.y),
+        lerp(lerp(hash(p + float3(0, 0, 1)),
+            hash(p + float3(1, 0, 1)), f.x),
+            lerp(hash(p + float3(0, 1, 1)),
+                hash(p + float3(1, 1, 1)), f.x), f.y), f.z);
+}
+
 [maxvertexcount(3)]
 void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<TerrainPSInput> OutputStream)
 {
@@ -102,9 +123,6 @@ void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<Terra
 
     TerrainPSInput output;
     
-    // Calculate output normal for all vertices
-    output.FlatNormal = normalize(input[0].Normal + input[1].Normal + input[2].Normal);
-
     // Add 1st vertex
     output.Position = input[0].Position;
     output.LocalPosition = input[0].LocalPosition;
@@ -157,16 +175,16 @@ void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<Terra
 void TerrainPSMain(in TerrainPSInput i, out GBufferOutput o)
 {
     const float3 position = i.LocalPosition;
-    const float3 triplanarNormal = normalize(i.FixedNormal);
+    const float3 triplanarNormal = normalize(i.Normal);
   
     // Blending factor of triplanar mapping
     float3 blend = pow(triplanarNormal.xyz, 8); // TODO: Improve blend function
     blend /= dot(blend, float3(1, 1, 1));
 
     // Triplanar mapping
-    float2 tx = position.yz * 0.25f;
-    float2 ty = position.zx * 0.25f;
-    float2 tz = position.xy * 0.25f;
+    float2 tx = position.zy * 0.5f;
+    float2 ty = position.xz * 0.5f;
+    float2 tz = position.xy * 0.5f;
 
     // TODO: Rotate UV (tx, ty, tz)
 
@@ -186,10 +204,11 @@ void TerrainPSMain(in TerrainPSInput i, out GBufferOutput o)
     color += materialC * mat2;
     color += materialD * mat3;
 
+    //color -= color * float3(1.0f, 0.5f, 0.0f) * saturate(noise(position * 0.5f) * 0.25f);
+
     o.Color = float4(color, 1.0f);
 
-    //o.Normal = EncodeNormal(float4(i.FlatNormal, 1.0f)); // Flat shading
-    o.Normal = EncodeNormal(float4(i.Normal, 1.0f)); // Smooth shading
+    o.Normal = EncodeNormal(float4(i.Normal, 1.0f));
 
     // Set Light as simple ambient light
     o.Light = float4(o.Color.rgb * AmbientLightColor, 0.0f);
