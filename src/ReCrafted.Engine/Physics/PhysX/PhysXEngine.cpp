@@ -54,8 +54,10 @@ void PhysXEngine::Initialize()
     m_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_foundation, m_tolerance_scale, false, nullptr);
     _ASSERT_(m_physics, "Failed to create PhysX physics!");
 
+#ifndef _DEBUG
     // Initialize px extensions
     PxInitExtensions(*m_physics, nullptr);
+#endif
 
     // Initialize px cooking, this will be needed for ship colliders cooking etc.
     PxCookingParams cookingParams(m_tolerance_scale);

@@ -7,10 +7,8 @@
 
 // includes
 #include "Physics/IPhysicsEngine.h"
+#include "PhysX.h"
 #include "PhysXScene.h"
-
-#include <PxPhysicsAPI.h>
-using namespace physx;
 
 class PhysXEngine : public IPhysicsEngine
 {
