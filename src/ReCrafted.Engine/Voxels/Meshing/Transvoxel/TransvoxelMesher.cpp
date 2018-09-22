@@ -264,7 +264,7 @@ void TransvoxelMesher::Clear()
         m_meshSections[i].Clear();
 
     // Reset vertex info
-    m_vertexInfo.Clear();
+    //m_vertexInfo.Clear();
     m_vertexInfoMap.reset();
 
     m_currentSection = 0;
