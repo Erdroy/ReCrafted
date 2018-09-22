@@ -4,8 +4,9 @@ namespace ReCrafted.Editor.Content
 {
     public abstract class AssetImporterBase
     {
-        public abstract AssetBase ImportAsset(string assetPath);
+        public abstract AssetBase ImportAsset(string inputFile, string outputFile);
 
+        public abstract AssetType SupportedAssetType { get; }
         public abstract string[] SupportedExtensions { get; }
     }
 }

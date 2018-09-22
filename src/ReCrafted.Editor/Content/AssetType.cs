@@ -2,13 +2,12 @@
 
 namespace ReCrafted.Editor.Content
 {
-    public enum AssetType
+    public enum AssetType : byte
     {
         Unknown,
 
         Texture,
         Model,
-        Json,
 
         Planet,
         Asteroid

@@ -63,7 +63,7 @@ namespace ReCrafted.Editor.Panels
                             if (openFileDialog1.ShowDialog() == DialogResult.OK)
                             {
                                 var ci = new TextureImporter();
-                                ci.ImportAsset(openFileDialog1.FileName);
+                                ci.ImportAsset(openFileDialog1.FileName, "Texture.rcasset");
                             }
                         }
                     }

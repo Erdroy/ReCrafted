@@ -1,29 +1,18 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
 using System.IO;
+using DirectXTexNet;
 
 namespace ReCrafted.Editor.Content.Assets
 {
     public class TextureAsset : AssetBase
     {
-        protected override void OnSerialize()
+        protected override void OnSerialize(ushort version, BinaryWriter writer)
         {
-            SerializeField("Test", Test);
         }
 
-        protected override void OnDeserialize()
+        protected override void OnDeserialize(ushort version, BinaryReader reader)
         {
-            Test = DeserializeField<bool>("Test", true);
-        }
-
-        protected override void OnSerializeBinary(BinaryWriter writer)
-        {
-            writer.Write("Hello, World!");
-        }
-
-        protected override void OnDeserializeBinary(BinaryReader reader)
-        {
-            var footprint = reader.ReadString();
         }
 
         public override void Unload()
@@ -31,9 +20,12 @@ namespace ReCrafted.Editor.Content.Assets
             
         }
 
-        public bool Test { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public int Length { get; set; }
 
-        public override bool HasBinaryData => true;
+        public DXGI_FORMAT Format { get; set; }
+        
         public override AssetType AssetType => AssetType.Texture;
     }
 }

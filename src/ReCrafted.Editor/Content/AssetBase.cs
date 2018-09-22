@@ -3,139 +3,79 @@
 using System;
 using System.IO;
 using System.Text;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ReCrafted.Editor.Content
 {
+    /// <summary>
+    /// AssetBase class. Base class for all ReCrafted assets.
+    /// </summary>
     public abstract class AssetBase : IAsset
     {
-        private JsonWriter _currentWriter;
-        private JObject _currentReaderObject;
+        private static readonly byte[] AssetMagic = Encoding.ASCII.GetBytes("RCA");
+        private const ushort AssetVersion = 1;
 
-        internal void SerializeToFile(string fileName, Formatting formatting = Formatting.None)
+        /// <summary>
+        /// Called when this asset needs serialization.
+        /// </summary>
+        /// <param name="version">The current asset version.</param>
+        /// <param name="writer">The writer stream.</param>
+        protected virtual void OnSerialize(ushort version, BinaryWriter writer) { }
+
+        /// <summary>
+        /// Called when this asset needs deserialization.
+        /// </summary>
+        /// <param name="version">The current asset version.</param>
+        /// <param name="reader">The reader stream.</param>
+        protected virtual void OnDeserialize(ushort version, BinaryReader reader) { }
+
+        private void InternalSerialize(BinaryWriter writer)
         {
-            using (var fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+            writer.Write(AssetMagic); // Always 3 bytes!
+            writer.Write(AssetVersion);
+            writer.Write((byte)AssetType);
+        }
+
+        private ushort InternalDeserialize(BinaryReader reader)
+        {
+            var magic = reader.ReadBytes(AssetMagic.Length);
+            if (magic != AssetMagic)
+                throw new Exception("This is not a valid ReCrafted asset!");
+
+            var version = reader.ReadUInt16();
+            var assetType = reader.ReadByte();
+
+            if (assetType != (byte)AssetType)
+                throw new Exception($"Invalid asset importer used. Using importer of {AssetType} to import {(AssetType)assetType}.");
+
+            return version;
+        }
+
+        internal void Serialize(Stream stream)
+        {
+            using (var binaryWriter = new BinaryWriter(stream))
             {
-                using (var sw = new StreamWriter(fileStream))
-                {
-                    // Make space for json length
-                    fileStream.Position = 2;
-
-                    // Serialize JSON
-                    using (var jsonWriter = new JsonTextWriter(sw))
-                    {
-                        jsonWriter.CloseOutput = false;
-                        jsonWriter.AutoCompleteOnClose = true;
-
-                        _currentWriter = jsonWriter;
-                        jsonWriter.Formatting = formatting;
-
-                        jsonWriter.WriteStartObject();
-
-                        SerializeInternal();
-                        OnSerialize();
-
-                        jsonWriter.WriteEndObject();
-
-                    }
-
-                }
-            }
-
-            // Finish writing
-            using (var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Write))
-            {
-                // Write JSON length
-                var length = fileStream.Length - 2;
-                var lengthBytes = BitConverter.GetBytes((ushort)length);
-                fileStream.Position = 0;
-                fileStream.Write(lengthBytes, 0, lengthBytes.Length);
-
-
-                // Write Binary
-                if (HasBinaryData)
-                {
-                    // Set to the end
-                    fileStream.Seek(0, SeekOrigin.End);
-
-                    using (var bw = new BinaryWriter(fileStream))
-                    {
-                        OnSerializeBinary(bw);
-                    }
-                }
+                InternalSerialize(binaryWriter);
+                OnSerialize(AssetVersion, binaryWriter);
             }
         }
 
-        internal void DeserializeFromFile(string fileName)
+        internal void Deserialize(Stream stream)
         {
-            // Read JSON
-            using (var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            using (var binaryReader = new BinaryReader(stream))
             {
-                // Read length
-                var lengthBytes = new[] { (byte)fileStream.ReadByte(), (byte)fileStream.ReadByte() };
-                var jsonLength = BitConverter.ToUInt16(lengthBytes, 0);
-
-                var jsonString = new StringBuilder();
-                using (var binaryReader = new BinaryReader(fileStream))
-                {
-                    var jsonBytes = binaryReader.ReadBytes(jsonLength);
-                    jsonString.Append(Encoding.UTF8.GetString(jsonBytes));
-
-                    _currentReaderObject = JObject.Parse(jsonString.ToString(), new JsonLoadSettings
-                    {
-                        CommentHandling = CommentHandling.Ignore,
-                        LineInfoHandling = LineInfoHandling.Ignore
-                    });
-
-                    DeserializeInternal();
-                    OnDeserialize();
-
-                    // Read binary
-                    if (HasBinaryData)
-                    {
-                        OnDeserializeBinary(binaryReader);
-                    }
-                }
+                var version = InternalDeserialize(binaryReader);
+                OnDeserialize(version, binaryReader);
             }
         }
-
-        protected virtual void OnSerialize() { }
-
-        protected virtual void OnDeserialize() { }
-
-        protected virtual void OnSerializeBinary(BinaryWriter writer) { }
-
-        protected virtual void OnDeserializeBinary(BinaryReader reader)  { }
-
-        protected void SerializeField<T>(string name, T value)
-        {
-            _currentWriter.WritePropertyName(name);
-            _currentWriter.WriteValue(value);
-        }
-
-        protected T DeserializeField<T>(string name, T defaultValue = default(T))
-        {
-            if (!_currentReaderObject.TryGetValue(name, out var value))
-                return defaultValue;
-
-            return value.Value<T>();
-        }
-
-        private void SerializeInternal()
-        {
-            SerializeField("Guid", Guid.NewGuid()); // Temporary
-            SerializeField("Type", AssetType.ToString());
-        }
-
-        private void DeserializeInternal()
-        {
-
-        }
-
+        
+        /// <summary>
+        /// Unloads this asset.
+        /// </summary>
         public abstract void Unload();
-
-        public abstract bool HasBinaryData { get; }
+        
+        /// <summary>
+        /// Type of this asset.
+        /// </summary>
         public abstract AssetType AssetType { get; }
     }
 }
