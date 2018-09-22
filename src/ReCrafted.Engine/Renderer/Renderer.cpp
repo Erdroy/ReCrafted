@@ -675,12 +675,12 @@ namespace Renderer
     Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels,
                                     TextureFormat::_enum textureFormat, TextureType::_enum textureType)
     {
-        return CreateTexture2D(width, height, mipLevels, textureFormat, nullptr, 0u, false, textureType);
+        return CreateTexture2D(width, height, mipLevels, textureFormat, nullptr, 0u, false, false, textureType);
     }
 
     Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat, TextureType::_enum textureType)
     {
-        return CreateTexture2D(width, height, 1u, textureFormat, nullptr, 0u, false, textureType);
+        return CreateTexture2D(width, height, 1u, textureFormat, nullptr, 0u, false, false, textureType);
     }
 
     void ApplyTexture2D(Texture2DHandle handle, uint8_t slot)
@@ -720,7 +720,7 @@ namespace Renderer
 
     Texture2DHandle CreateRenderTexture(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat, TextureType::_enum textureType)
     {
-        return CreateTexture2D(width, height, 0u, textureFormat, nullptr, 0u, true, textureType);
+        return CreateTexture2D(width, height, 0u, textureFormat, nullptr, 0u, true, false, textureType);
     }
 
     void ApplyRenderTexture(Texture2DHandle handle, uint8_t slot)
