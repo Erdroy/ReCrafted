@@ -9,6 +9,9 @@ namespace ReCrafted.Editor.Content.Assets
     {
         protected override void OnSerialize(ushort version, BinaryWriter writer)
         {
+            writer.Write((ushort)Width);
+            writer.Write((ushort)Height);
+            writer.Write((uint)Format);
         }
 
         protected override void OnDeserialize(ushort version, BinaryReader reader)
@@ -20,10 +23,10 @@ namespace ReCrafted.Editor.Content.Assets
             
         }
 
+        public int MipCount { get; set; }
+
         public int Width { get; set; }
         public int Height { get; set; }
-        public int Length { get; set; }
-
         public DXGI_FORMAT Format { get; set; }
         
         public override AssetType AssetType => AssetType.Texture;
