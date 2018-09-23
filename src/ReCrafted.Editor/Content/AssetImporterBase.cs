@@ -2,9 +2,9 @@
 
 namespace ReCrafted.Editor.Content
 {
-    public abstract class AssetImporterBase
+    public abstract class AssetImporterBase<T> where T : IImportSettings
     {
-        public abstract AssetBase ImportAsset(string inputFile, string outputFile);
+        public abstract AssetBase ImportAsset(string inputFile, string outputFile, T settings);
 
         public abstract AssetType SupportedAssetType { get; }
         public abstract string[] SupportedExtensions { get; }

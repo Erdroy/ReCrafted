@@ -214,6 +214,8 @@
     <Compile Include="Content\ContentManager.cs" />
     <Compile Include="Content\IAsset.cs" />
     <Compile Include="Content\Importers\TextureImporter.cs" />
+    <Compile Include="Content\IImportSettings.cs" />
+    <Compile Include="Content\Importers\TextureImportSettings.cs" />
     <Compile Include="Graphics\ImGuiRenderer.cs" />
     <Compile Include="Panels\ContentPanel.cs" />
     <Compile Include="Panels\MainPanel.cs" />
@@ -223,6 +225,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Panels\IPanel.cs" />
     <Compile Include="Panels\PanelBase.cs" />
+    <Compile Include="Utilities\MathUtils.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

@@ -2,7 +2,6 @@
 
 using System;
 using System.IO;
-using ReCrafted.Editor.Content.Importers;
 
 namespace ReCrafted.Editor.Content
 {
@@ -50,11 +49,7 @@ namespace ReCrafted.Editor.Content
             // Find asset with given name
 
         }
-
-        public AssetImporterBase[] Importers = {
-            new TextureImporter()
-        };
-
+        
         public static ContentManager Instance { get; private set; }
     }
 }

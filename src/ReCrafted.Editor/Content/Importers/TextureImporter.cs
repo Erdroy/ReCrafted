@@ -1,14 +1,16 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
+using System;
 using System.IO;
 using DirectXTexNet;
 using ReCrafted.Editor.Content.Assets;
+using ReCrafted.Editor.Utilities;
 
 namespace ReCrafted.Editor.Content.Importers
 {
-    public class TextureImporter : AssetImporterBase
+    public class TextureImporter : AssetImporterBase<TextureImportSettings>
     {
-        public override AssetBase ImportAsset(string inputFile, string outputFile)
+        public override AssetBase ImportAsset(string inputFile, string outputFile, TextureImportSettings settings)
         {
             var image = LoadImage(inputFile);
 
