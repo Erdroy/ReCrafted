@@ -8,9 +8,14 @@ using ReCrafted.Editor.Utilities;
 
 namespace ReCrafted.Editor.Content.Importers
 {
-    public class TextureImporter : AssetImporterBase<TextureImportSettings>
+    public class TextureImporter : AssetImporterBase<TextureImporter.Settings>
     {
-        public override AssetBase ImportAsset(string inputFile, string outputFile, TextureImportSettings settings)
+        public class Settings : IImportSettings
+        {
+            public bool GenerateMipMaps { get; set; } = true;
+        }
+
+        public override AssetBase ImportAsset(string inputFile, string outputFile, Settings settings)
         {
             var image = LoadImage(inputFile);
             var baseImage = image.GetImage(0);

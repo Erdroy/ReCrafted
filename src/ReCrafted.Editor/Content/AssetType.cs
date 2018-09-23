@@ -10,6 +10,8 @@ namespace ReCrafted.Editor.Content
         Model,
 
         Planet,
-        Asteroid
+        Asteroid,
+
+        Test
     }
 }

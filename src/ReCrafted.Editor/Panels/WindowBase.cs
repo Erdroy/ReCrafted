@@ -2,7 +2,7 @@
 
 namespace ReCrafted.Editor.Panels
 {
-    public abstract class PanelBase : IPanel
+    public abstract class WindowBase
     {
         public abstract void Initialize();
         public abstract void Update();

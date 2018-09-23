@@ -4,7 +4,7 @@ using ImGuiNET;
 
 namespace ReCrafted.Editor.Panels
 {
-    public class ContentPanel : PanelBase
+    public class ContentPanel : WindowBase
     {
         public override void Initialize()
         {
@@ -17,13 +17,29 @@ namespace ReCrafted.Editor.Panels
 
         public override void Render()
         {
-            ImGui.BeginWindow("Content");
+            if (ImGui.BeginMenuBar())
+            {
+               /* if (ImGui.BeginMenu("Test1"))
+                {
+                    ImGui.EndMenu();
+                }
+                if (ImGui.BeginMenu("Test2"))
+                {
+                    ImGui.EndMenu();
+                }
+                if (ImGui.BeginMenu("Test3"))
+                {
+                    ImGui.EndMenu();
+                }*/
+                ImGui.EndMenuBar();
+            }
             
-            ImGui.EndWindow();
         }
 
         public override void Dispose()
         {
         }
+
+        public override string WindowName => "Content";
     }
 }

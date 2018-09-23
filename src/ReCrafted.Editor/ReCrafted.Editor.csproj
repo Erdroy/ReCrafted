@@ -209,6 +209,7 @@
     <Compile Include="Common\Time.cs" />
     <Compile Include="Content\AssetBase.cs" />
     <Compile Include="Content\AssetImporterBase.cs" />
+    <Compile Include="Content\Assets\TestAsset.cs" />
     <Compile Include="Content\Assets\TextureAsset.cs" />
     <Compile Include="Content\AssetType.cs" />
     <Compile Include="Content\ContentManager.cs" />
@@ -218,13 +219,12 @@
     <Compile Include="Content\Importers\TextureImportSettings.cs" />
     <Compile Include="Graphics\ImGuiRenderer.cs" />
     <Compile Include="Panels\ContentPanel.cs" />
-    <Compile Include="Panels\MainPanel.cs" />
+    <Compile Include="Panels\MainWindow.cs" />
     <Compile Include="Core\ApplicationBase.cs" />
     <Compile Include="Core\EditorApplication.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Panels\IPanel.cs" />
-    <Compile Include="Panels\PanelBase.cs" />
+    <Compile Include="Panels\WindowBase.cs" />
     <Compile Include="Utilities\MathUtils.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

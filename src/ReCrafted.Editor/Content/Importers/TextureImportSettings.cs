@@ -2,8 +2,4 @@
 
 namespace ReCrafted.Editor.Content.Importers
 {
-    public class TextureImportSettings : IImportSettings
-    {
-        public bool GenerateMipMaps { get; set; } = true;
-    }
 }

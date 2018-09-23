@@ -18,7 +18,7 @@ namespace ReCrafted.Editor.Core
         private CommandList _commandList;
         private ImGuiRenderer _guiController;
 
-        private MainPanel _mainPanel;
+        private MainWindow _mainWindow;
         private ContentPanel _contentPanel;
 
         private ContentManager _contentManager;
@@ -59,12 +59,12 @@ namespace ReCrafted.Editor.Core
             _guiController = new ImGuiRenderer(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription, Window.Width, Window.Height);
 
             // Create main editor panel
-            _mainPanel = new MainPanel();
-            _mainPanel.Initialize();
+            _mainWindow = new MainWindow();
+            _mainWindow.Initialize();
 
             _contentPanel = new ContentPanel();
             _contentPanel.Initialize();
-            _mainPanel.ChildrenPanels.Add(_contentPanel);
+            _mainWindow.Children.Add(_contentPanel);
 
             _contentManager = new ContentManager();
             _contentManager.Initialize();
@@ -75,7 +75,7 @@ namespace ReCrafted.Editor.Core
             GraphicsDevice.WaitForIdle();
 
             _contentManager.Dispose();
-            _mainPanel.Dispose();
+            _mainWindow.Dispose();
             _guiController.Dispose();
             _commandList.Dispose();
             GraphicsDevice.Dispose();
@@ -98,7 +98,7 @@ namespace ReCrafted.Editor.Core
             _guiController.Update(Time.DeltaTime, inputSnapshot);
 
             // Update main panel
-            _mainPanel.Update();
+            _mainWindow.Update();
 
             // Begin rendering
             _commandList.Begin();
@@ -106,7 +106,7 @@ namespace ReCrafted.Editor.Core
             _commandList.ClearColorTarget(0, new RgbaFloat(0.15f, 0.15f, 0.15f, 1.0f));
 
             // Render main panel
-            _mainPanel.Render();
+            _mainWindow.Render();
 
             // Render ImGui
             _guiController.Render(GraphicsDevice, _commandList);
