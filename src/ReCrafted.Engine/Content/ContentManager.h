@@ -9,9 +9,31 @@
 #include "ReCrafted.h"
 #include "Core/EngineComponent.h"
 #include "AssetBase.h"
+#include "Core/Action.h"
+#include "Core/TaskManager.h"
 
 class ContentManager : public EngineComponent<ContentManager>
 {
+private:
+    struct AssetLoadTask : ITask
+    {
+    public:
+        void Execute(void* userData) override
+        {
+            cvar result = GetInstance()->LoadAsset(asset, file.c_str());
+        }
+
+        void Finish() override
+        {
+            callback.Invoke(asset);
+        }
+
+    public:
+        std::string file;
+        AssetBase* asset;
+        Action<void, AssetBase*> callback;
+    };
+
 private:
     friend class EngineMain;
 
@@ -57,6 +79,19 @@ public:
         if (LoadAsset(asset, assetFile))
             return nullptr;
         return asset;
+    }
+
+    template<class TAsset>
+    void LoadAsset(const char* assetFile, const Action<void, AssetBase*>& onLoad)
+    {
+        cvar asset = CreateAsset<TAsset>();
+
+        // Create and queue task
+        var customTask = new AssetLoadTask();
+        customTask->file = assetFile;
+        customTask->asset = asset;
+        customTask->callback = onLoad;
+        Task::CreateTask(customTask)->Queue();
     }
 };
 
