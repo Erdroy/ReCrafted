@@ -123,7 +123,7 @@ public:
     {
         static_assert(std::is_base_of<ITask, T>::value, "T must inherit from ITask");
         cvar customTask = static_cast<ITask*>(new T());
-        return CreateTask(customTask, userData);
+        return InternalCreateTask(customTask, userData);
     }
 
     /**
@@ -140,7 +140,19 @@ public:
         return task;
     }
 
-    static Task* CreateTask(ITask* customTask, void* userData);
+    /**
+    * \brief Creates custom task with optional userData. This task need to be queued.
+    * \param customTask The custom task pointer.
+    * \param userData The optional user data pointer.
+    * \return The created custom task.
+    */
+    static Task* CreateTask(ITask* customTask, void* userData = nullptr)
+    {
+        return InternalCreateTask(customTask, userData);
+    }
+
+private:
+    static Task* InternalCreateTask(ITask* customTask, void* userData);
 };
 
 #endif // TASK_H

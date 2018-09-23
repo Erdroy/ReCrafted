@@ -89,7 +89,7 @@ Task* Task::CreateTask(Action<void> function, Action<void> callback)
     return TaskManager::CreateTask(function, callback);
 }
 
-Task* Task::CreateTask(ITask* customTask, void* userData)
+Task* Task::InternalCreateTask(ITask* customTask, void* userData)
 {
     ASSERT(customTask != nullptr);
 
