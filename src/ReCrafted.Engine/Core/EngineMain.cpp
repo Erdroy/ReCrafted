@@ -12,6 +12,7 @@
 #include "Core/Application.h"
 #include "Core/Logger.h"
 #include "Core/UpdateLoop.h"
+#include "Content/ContentManager.h"
 #include "Game/Universe.h"
 #include "Graphics/Graphics.h"
 #include "Graphics/DebugDraw.h"
@@ -31,6 +32,7 @@ void EngineMain::RegisterComponents() const
     m_componentManager->RegisterComponent(TaskManager::GetInstance());
     m_componentManager->RegisterComponent(Graphics::GetInstance());
     m_componentManager->RegisterComponent(Application::GetInstance());
+    m_componentManager->RegisterComponent(ContentManager::GetInstance());
     m_componentManager->RegisterComponent(Profiler::GetInstance());
     m_componentManager->RegisterComponent(Time::GetInstance());
     m_componentManager->RegisterComponent(Input::GetInstance());
