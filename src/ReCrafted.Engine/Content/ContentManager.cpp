@@ -9,21 +9,34 @@ SINGLETON_IMPL(ContentManager)
 
 void ContentManager::OnInit()
 {
-    cvar asset = LoadAsset<TestAsset>(TEXT_CONST("testasset"));
-
 }
 
 void ContentManager::OnDispose()
 {
+    // Release all assets
+    for(rvar asset : m_assets)
+        ReleaseAsset(asset);
+
+    m_assets.Clear();
+    m_assetMap.clear();
 }
 
 void ContentManager::Update()
 {
 }
 
+void ContentManager::PreFrame()
+{
+    // TODO: Unload assets
+}
+
 void ContentManager::RegisterAsset(AssetBase* asset)
 {
-    // TODO: Asset management
+    // Check main thread
+    ASSERT(Platform::GetMainThreadId() == std::this_thread::get_id());
+
+    m_assetMap[asset->GetAssetGuid()] = asset;
+    m_assets.Add(asset);
 }
 
 bool ContentManager::LoadAsset(AssetBase* asset, const char* name) const
@@ -51,8 +64,27 @@ bool ContentManager::LoadAsset(AssetBase* asset, const char* name) const
 
     // Deserialize asset
     asset->Deserialize(binaryStream);
-
+    
     // Dispose file stream
     fileStream.Dispose();
     return false;
+}
+
+void ContentManager::ReleaseAsset(AssetBase* asset)
+{
+    ASSERT(asset);
+
+    m_assets.Remove(asset);
+    m_assetMap.erase(asset->GetAssetGuid());
+
+    asset->OnUnload();
+
+    // Delete asset
+    delete asset;
+}
+
+void ContentManager::UnloadAsset(AssetBase* asset)
+{
+    // Queue for asset unloading
+    m_instance->m_unloadQueue.enqueue(asset);
 }

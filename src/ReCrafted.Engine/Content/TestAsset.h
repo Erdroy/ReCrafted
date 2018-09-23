@@ -21,7 +21,7 @@ protected:
     void OnDeserialize(uint16_t version, BinaryStream& stream) override
     {
         cvar num = stream.ReadUInt64();
-
+        
     }
 
     void OnUnload() override

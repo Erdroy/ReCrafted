@@ -1,6 +1,7 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "AssetBase.h"
+#include "ContentManager.h"
 
 AssetBase::~AssetBase()
 {
@@ -14,6 +15,8 @@ AssetBase::~AssetBase()
 void AssetBase::Deserialize(BinaryStream& stream)
 {
     ASSERT(stream.IsOpen());
+
+    // TODO: Check if this is JSON asset, if so, check AssetType field and forward to proper deserialization function
 
     ASSERT(stream.ReadByte() == 'R');
     ASSERT(stream.ReadByte() == 'C');
@@ -29,7 +32,9 @@ void AssetBase::Deserialize(BinaryStream& stream)
 
 void AssetBase::Unload()
 {
-    OnUnload();
-
-    m_unloaded = true;
+    if(!m_unloaded)
+    {
+        ContentManager::GetInstance()->UnloadAsset(this);
+        m_unloaded = true;
+    }
 }

@@ -102,6 +102,8 @@ void EngineMain::OnUpdate()
 
 void EngineMain::OnRender()
 {
+    ContentManager::GetInstance()->PreFrame();
+
     Graphics::GetInstance()->Render();
 }
 
