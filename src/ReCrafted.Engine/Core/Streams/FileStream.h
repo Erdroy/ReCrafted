@@ -22,7 +22,11 @@ public:
     */
     explicit FileStream(const char* fileName, const OpenMode::_enum openMode)
     {
-        Platform::OpenFile(&m_file, fileName, openMode);
+        if(Platform::FileExists(fileName))
+        {
+            Platform::OpenFile(&m_file, fileName, openMode);
+            m_open = true;
+        }
     }
 
 public:
@@ -62,7 +66,7 @@ public:
         // calculate the size of buffer with offset and
         // check if we can read to the buffer anything after the offset being applied
         cvar outputOffsetSize = bufferSize - offset;
-        assert(outputOffsetSize > 0);
+        ASSERT(outputOffsetSize >= 0);
 
         // read from the file
         m_file.Read(buffer, count, offset);
@@ -83,7 +87,7 @@ public:
         // calculate the size of buffer with offset and
         // check if we can write to the buffer anything after the offset being applied
         cvar outputOffsetSize = bufferSize - offset;
-        assert(outputOffsetSize > 0);
+        ASSERT(outputOffsetSize >= 0);
 
         // seek position
         m_file.Seek(static_cast<long>(offset));

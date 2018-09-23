@@ -44,6 +44,7 @@ public:
      */
     explicit BinaryStream(Stream& stream): m_stream(stream)
     {
+        m_open = stream.IsOpen();
     }
 
 public:

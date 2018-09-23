@@ -286,7 +286,7 @@ void Platform::OpenFile(File* file, const char* fileName, OpenMode::_enum fileOp
     file->m_file = fopen(fileName, openMode);
 
     // file not found
-    assert(file->m_file != nullptr);
+    ASSERT(file->m_file != nullptr);
 
     cvar filep = static_cast<FILE*>(file->m_file);
 
