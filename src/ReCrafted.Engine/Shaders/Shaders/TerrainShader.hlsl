@@ -193,18 +193,21 @@ void TerrainPSMain(in TerrainPSInput i, out GBufferOutput o)
     float mat2 = i.Materials0.b;
     float mat3 = i.Materials0.a;
 
-    float3 materialA = (m_texture0.Sample(Sampler, tx).rgb * blend.x + m_texture0.Sample(Sampler, ty).rgb * blend.y + m_texture0.Sample(Sampler, tz).rgb * blend.z);
-    float3 materialB = (m_texture1.Sample(Sampler, tx).rgb * blend.x + m_texture1.Sample(Sampler, ty).rgb * blend.y + m_texture1.Sample(Sampler, tz).rgb * blend.z);
-    float3 materialC = (m_texture2.Sample(Sampler, tx).rgb * blend.x + m_texture2.Sample(Sampler, ty).rgb * blend.y + m_texture2.Sample(Sampler, tz).rgb * blend.z);
-    float3 materialD = (m_texture3.Sample(Sampler, tx).rgb * blend.x + m_texture3.Sample(Sampler, ty).rgb * blend.y + m_texture3.Sample(Sampler, tz).rgb * blend.z);
-
     float3 color = float3(0.0f, 0.0f, 0.0f);
-    color += materialA * mat0;
-    color += materialB * mat1;
-    color += materialC * mat2;
-    color += materialD * mat3;
 
-    //color -= color * float3(1.0f, 0.5f, 0.0f) * saturate(noise(position * 0.5f) * 0.25f);
+    if(mat0 > 0.01f)
+        color += (m_texture0.Sample(Sampler, tx).rgb * blend.x + m_texture0.Sample(Sampler, ty).rgb * blend.y + m_texture0.Sample(Sampler, tz).rgb * blend.z) * mat0;
+
+    if (mat1 > 0.01f)
+        color += (m_texture1.Sample(Sampler, tx).rgb * blend.x + m_texture1.Sample(Sampler, ty).rgb * blend.y + m_texture1.Sample(Sampler, tz).rgb * blend.z) * mat1;
+
+    if (mat2 > 0.01f)
+        color += (m_texture2.Sample(Sampler, tx).rgb * blend.x + m_texture2.Sample(Sampler, ty).rgb * blend.y + m_texture2.Sample(Sampler, tz).rgb * blend.z) * mat2;
+
+    if (mat3 > 0.01f)
+        color += (m_texture3.Sample(Sampler, tx).rgb * blend.x + m_texture3.Sample(Sampler, ty).rgb * blend.y + m_texture3.Sample(Sampler, tz).rgb * blend.z) * mat3;
+
+    //color -= color * saturate(noise(position * 0.5f) * 0.25f);
 
     o.Color = float4(color, 1.0f);
 
