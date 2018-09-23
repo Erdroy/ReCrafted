@@ -27,7 +27,7 @@ private:
 
 private:
     void RegisterAsset(AssetBase* asset);
-    void LoadAsset(AssetBase* asset, const Text& assetFile);
+    bool LoadAsset(AssetBase* asset, const Text& name) const;
 
 public:
     /**
@@ -47,14 +47,15 @@ public:
     /**
      * \brief Loads asset of specified type from given file.
      * \tparam TAsset The asset class type.
-     * \param assetFile The asset file.
+     * \param assetFile The asset file, relative to '../content/', file extension is not needed.
      * \return The created file or nullptr when failed.
      */
     template<class TAsset>
     TAsset* LoadAsset(const Text& assetFile)
     {
         cvar asset = CreateAsset<TAsset>();
-        LoadAsset(asset, assetFile);
+        if(LoadAsset(asset, assetFile))
+            return nullptr;
         return asset;
     }
 };
