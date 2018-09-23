@@ -29,6 +29,26 @@ public:
 
         return Text(buffer);
     }
+
+public:
+    bool operator ==(const Guid& rhs) const
+    {
+        return value.data1 == rhs.value.data1
+        && value.data2 == rhs.value.data2
+        && value.data3 == rhs.value.data3
+        && strcmp(value.data4, rhs.value.data4) == 0;
+    }
 };
+
+namespace std {
+    template<> struct hash<Guid>
+    {
+        size_t operator()(const Guid& guid) const noexcept {
+            const std::uint64_t* p = reinterpret_cast<const std::uint64_t*>(&guid);
+            std::hash<std::uint64_t> hash;
+            return hash(p[0]) ^ hash(p[1]);
+        }
+    };
+}
 
 #endif // GUID_H
