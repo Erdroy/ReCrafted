@@ -22,8 +22,12 @@ namespace ReCrafted.Editor.Panels
 
         public override void Update()
         {
-            foreach(var child in ChildrenPanels)
+            foreach (var child in ChildrenPanels)
+            {
+                ImGui.BeginWindow(child.WindowName, WindowFlags.MenuBar);
                 child.Update();
+                ImGui.EndWindow();
+            }
         }
 
         public override void Render()
@@ -90,6 +94,8 @@ namespace ReCrafted.Editor.Panels
             foreach (var child in ChildrenPanels)
                 child.Dispose();
         }
+
+        public override string WindowName => "MainWindow";
 
         public List<PanelBase> ChildrenPanels { get; } = new List<PanelBase>();
 

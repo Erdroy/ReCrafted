@@ -8,5 +8,7 @@ namespace ReCrafted.Editor.Panels
         public abstract void Update();
         public abstract void Render();
         public abstract void Dispose();
+
+        public abstract string WindowName { get; }
     }
 }
