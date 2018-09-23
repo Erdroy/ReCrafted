@@ -46,7 +46,11 @@ Task* TaskManager::AcquireTask()
 void TaskManager::ReleaseTask(Task* task)
 {
     // Invoke callback
-    task->m_callback.Invoke();
+    if(task->m_callback.IsValid())
+        task->m_callback.Invoke();
+
+    if (task->m_customTask)
+        task->m_customTask->Finish();
 
     // Release 'Continue' task
     if (task->m_continueWith)

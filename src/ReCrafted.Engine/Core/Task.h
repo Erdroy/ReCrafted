@@ -16,6 +16,7 @@ public:
     virtual ~ITask() = default;
 
     virtual void Execute(void* userData) = 0;
+    virtual void Finish() {}
 };
 
 struct Task
@@ -139,7 +140,6 @@ public:
         return task;
     }
 
-private:
     static Task* CreateTask(ITask* customTask, void* userData);
 };
 
