@@ -27,7 +27,7 @@ private:
 
 private:
     void RegisterAsset(AssetBase* asset);
-    bool LoadAsset(AssetBase* asset, const Text& name) const;
+    bool LoadAsset(AssetBase* asset, const char* name) const;
 
 public:
     /**
@@ -51,10 +51,10 @@ public:
      * \return The created file or nullptr when failed.
      */
     template<class TAsset>
-    TAsset* LoadAsset(const Text& assetFile)
+    TAsset* LoadAsset(const char* assetFile)
     {
         cvar asset = CreateAsset<TAsset>();
-        if(LoadAsset(asset, assetFile))
+        if (LoadAsset(asset, assetFile))
             return nullptr;
         return asset;
     }

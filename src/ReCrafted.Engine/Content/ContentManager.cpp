@@ -26,10 +26,10 @@ void ContentManager::RegisterAsset(AssetBase* asset)
     // TODO: Asset management
 }
 
-bool ContentManager::LoadAsset(AssetBase* asset, const Text& name) const
+bool ContentManager::LoadAsset(AssetBase* asset, const char* name) const
 {
     // Build file name
-    cvar assetName = name.StdStr();
+    cvar assetName = std::string(name);
     cvar assetFile = "../content/" + assetName + ".rcasset";
 
     // Check if file exists
