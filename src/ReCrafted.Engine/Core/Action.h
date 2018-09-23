@@ -98,6 +98,12 @@ public:
     }
 
 public:
+    bool IsValid()
+    {
+        return m_free_function || (m_proxy_function && m_proxy_instance);
+    }
+
+public:
     template<typename TBase, TReturn(TBase::*Function)(TArgs...)>
     static Action<TReturn, TArgs...> New(TBase* instance)
     {
