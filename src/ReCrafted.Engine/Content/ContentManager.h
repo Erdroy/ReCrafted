@@ -8,9 +8,11 @@
 // includes
 #include "ReCrafted.h"
 #include "Core/EngineComponent.h"
-#include "AssetBase.h"
 #include "Core/Action.h"
 #include "Core/TaskManager.h"
+
+#include "Asset.h"
+
 #include <spp.h>
 
 class ContentManager : public EngineComponent<ContentManager>
@@ -27,7 +29,7 @@ private:
             if(GetInstance()->LoadAsset(asset, file.c_str()))
             {
                 // Unload asset and reset
-                GetInstance()->UnloadAsset(asset);
+                UnloadAsset(asset);
                 asset = nullptr;
             }
         }
@@ -41,14 +43,14 @@ private:
 
     public:
         std::string file = nullptr;
-        AssetBase* asset = nullptr;
-        Action<void, AssetBase*> callback = nullptr;
+        Asset* asset = nullptr;
+        Action<void, Asset*> callback = nullptr;
     };
 
 private:
-    Array<AssetBase*> m_assets;
-    spp::sparse_hash_map<Guid, AssetBase*> m_assetMap;
-    moodycamel::ConcurrentQueue<AssetBase*> m_unloadQueue;
+    Array<Asset*> m_assets;
+    spp::sparse_hash_map<Guid, Asset*> m_assetMap;
+    moodycamel::ConcurrentQueue<Asset*> m_unloadQueue;
 
 public:
     virtual ~ContentManager() = default;
@@ -60,9 +62,9 @@ private:
     void PreFrame();
 
 private:
-    void RegisterAsset(AssetBase* asset);
-    bool LoadAsset(AssetBase* asset, const char* name) const;
-    void ReleaseAsset(AssetBase* asset);
+    void RegisterAsset(Asset* asset);
+    bool LoadAsset(Asset* asset, const char* name) const;
+    void ReleaseAsset(Asset* asset);
 
 public:
     /**
@@ -98,7 +100,7 @@ public:
      * \brief Unloads given asset.
      * \param asset The asset that will be unloaded.
      */
-    static void UnloadAsset(AssetBase* asset);
+    static void UnloadAsset(Asset* asset);
 
     /**
      * \brief Loads asset of specified type from given file.
@@ -129,7 +131,7 @@ public:
      * the asset has been loaded on the main thread, the first paramater is a pointer to the asset object.
      */
     template<class TAsset>
-    static void LoadAsset(const char* assetFile, const Action<void, AssetBase*>& onLoad)
+    static void LoadAsset(const char* assetFile, const Action<void, Asset*>& onLoad)
     {
         cvar asset = new TAsset();
 

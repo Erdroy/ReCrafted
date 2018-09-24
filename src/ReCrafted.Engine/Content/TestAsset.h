@@ -7,20 +7,20 @@
 
 // includes
 #include "ReCrafted.h"
-#include "AssetBase.h"
+#include "BinaryAsset.h"
+#include "JsonAsset.h"
 
-class TestAsset : public AssetBase
+class TestAsset : public JsonAsset
 {
-public:
-    ~TestAsset() override
-    {
-        AssetBase::~AssetBase();
-    }
-
 protected:
-    void OnDeserialize(uint16_t version, BinaryStream& stream) override
+    /*void OnDeserializeBinary(uint16_t version, BinaryStream& stream) override
     {
         cvar num = stream.ReadUInt64();
+        
+    }
+    */
+    void OnDeserializeJson(uint16_t version, const json& json) override
+    {
         
     }
 

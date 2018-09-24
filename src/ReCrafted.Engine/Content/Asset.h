@@ -2,16 +2,20 @@
 
 #pragma once
 
-#ifndef ASSETBASE_H
-#define ASSETBASE_H
+#ifndef ASSET_H
+#define ASSET_H
 
 // includes
 #include "ReCrafted.h"
 #include "Core/Streams/BinaryStream.h"
 
+#include "AssetBaseType.h"
 #include "AssetType.h"
 
-class AssetBase
+#include <json.hpp>
+using namespace nlohmann;
+
+class Asset
 {
     friend class ContentManager;
 
@@ -19,23 +23,26 @@ private:
     bool m_unloaded = false;
 
 public:
-    AssetBase() = default;
-    virtual ~AssetBase();
+    Asset() = default;
+    virtual ~Asset();
 
 public:
     void Deserialize(BinaryStream& stream);
+    void Deserialize(const json& json, const std::string& content);
     void Unload();
 
 protected:
     virtual void OnInitialize() {}
-    virtual void OnDeserialize(uint16_t version, BinaryStream& stream) = 0;
+    virtual void OnDeserializeBinary(uint16_t version, BinaryStream& stream) { }
+    virtual void OnDeserializeJson(uint16_t version, const json& json) { }
     virtual void OnUnload() = 0;
 
 public:
+    FORCEINLINE virtual AssetBaseType GetAssetBaseType() = 0;
     FORCEINLINE virtual AssetType GetAssetType() = 0;
 
 public:
     PROPERTY(Guid, AssetGuid) = {};
 };
 
-#endif // ASSETBASE_H
+#endif // ASSET_H

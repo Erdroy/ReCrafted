@@ -1,9 +1,9 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
-#include "AssetBase.h"
+#include "Asset.h"
 #include "ContentManager.h"
 
-AssetBase::~AssetBase()
+Asset::~Asset()
 {
     if(!m_unloaded)
     {
@@ -12,11 +12,9 @@ AssetBase::~AssetBase()
     }
 }
 
-void AssetBase::Deserialize(BinaryStream& stream)
+void Asset::Deserialize(BinaryStream& stream)
 {
     ASSERT(stream.IsOpen());
-
-    // TODO: Check if this is JSON asset, if so, check AssetType field and forward to proper deserialization function
 
     ASSERT(stream.ReadByte() == 'R');
     ASSERT(stream.ReadByte() == 'C');
@@ -27,14 +25,27 @@ void AssetBase::Deserialize(BinaryStream& stream)
 
     ASSERT(assetType == GetAssetType());
 
-    OnDeserialize(version, stream);
+    OnDeserializeBinary(version, stream);
 }
 
-void AssetBase::Unload()
+void Asset::Deserialize(const json& json, const std::string& content)
+{
+    // Read AssetVersion
+    cvar assetVersion = json["AssetVersion"].get<uint16_t>();
+    
+    // Read AssetType
+    cvar assetType = static_cast<AssetType>(json["AssetType"].get<byte>());
+
+    ASSERT(assetType == GetAssetType());
+
+    OnDeserializeJson(assetVersion, json);
+}
+
+void Asset::Unload()
 {
     if(!m_unloaded)
     {
-        ContentManager::GetInstance()->UnloadAsset(this);
+        ContentManager::UnloadAsset(this);
         m_unloaded = true;
     }
 }

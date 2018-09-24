@@ -5,6 +5,9 @@
 #include "Core/Streams/FileStream.h"
 #include "Core/Logger.h"
 
+#include <string>
+#include <fstream>
+
 SINGLETON_IMPL(ContentManager)
 
 void ContentManager::OnInit()
@@ -30,7 +33,7 @@ void ContentManager::PreFrame()
     // TODO: Unload assets
 }
 
-void ContentManager::RegisterAsset(AssetBase* asset)
+void ContentManager::RegisterAsset(Asset* asset)
 {
     // Check main thread
     ASSERT(Platform::GetMainThreadId() == std::this_thread::get_id());
@@ -39,7 +42,7 @@ void ContentManager::RegisterAsset(AssetBase* asset)
     m_assets.Add(asset);
 }
 
-bool ContentManager::LoadAsset(AssetBase* asset, const char* name) const
+bool ContentManager::LoadAsset(Asset* asset, const char* name) const
 {
     // Build file name
     cvar assetName = std::string(name);
@@ -56,21 +59,46 @@ bool ContentManager::LoadAsset(AssetBase* asset, const char* name) const
     Logger::Log("Loading asset '{0}'", assetName.c_str());
 #endif
 
-    // Open streams
-    var fileStream = FileStream(assetFile.c_str(), OpenMode::OpenRead);
-    var binaryStream = BinaryStream(fileStream);
+    cvar assetBaseType = asset->GetAssetBaseType();
+    switch (assetBaseType)
+    {
+    case AssetBaseType::Binary:
+    {
+        // Open streams
+        var fileStream = FileStream(assetFile.c_str(), OpenMode::OpenRead);
+        var binaryStream = BinaryStream(fileStream);
 
-    ASSERT(fileStream.IsOpen());
+        ASSERT(fileStream.IsOpen());
 
-    // Deserialize asset
-    asset->Deserialize(binaryStream);
-    
-    // Dispose file stream
-    fileStream.Dispose();
+        // Deserialize asset
+        asset->Deserialize(binaryStream);
+
+        // Dispose file stream
+        fileStream.Dispose();
+        break;
+    }
+    case AssetBaseType::Json:
+    {
+        // Load and parse Json data
+        std::ifstream input(assetFile);
+        const std::string content((std::istreambuf_iterator<char>(input)), (std::istreambuf_iterator<char>()));
+        cvar jsonData = nlohmann::json::parse(content);
+
+        // Deserialize asset
+        asset->Deserialize(jsonData, content);
+        break;
+    }
+    default:
+    {
+        Logger::LogError("Invalid asset base type {0} for asset {1}", static_cast<int>(assetBaseType), name);
+        return true;
+    }
+    }
+
     return false;
 }
 
-void ContentManager::ReleaseAsset(AssetBase* asset)
+void ContentManager::ReleaseAsset(Asset* asset)
 {
     ASSERT(asset);
 
@@ -83,7 +111,7 @@ void ContentManager::ReleaseAsset(AssetBase* asset)
     delete asset;
 }
 
-void ContentManager::UnloadAsset(AssetBase* asset)
+void ContentManager::UnloadAsset(Asset* asset)
 {
     // Queue for asset unloading
     m_instance->m_unloadQueue.enqueue(asset);
