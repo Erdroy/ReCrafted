@@ -1,21 +1,15 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
-using System;
-using System.IO;
-
 namespace ReCrafted.Editor.Content.Assets
 {
-    public class TestAsset : AssetBase
+    public class TestAsset : JsonAsset
     {
-        protected override void OnSerialize(ushort version, BinaryWriter writer)
+        protected override void OnSerializeJson(ushort version)
         {
-            writer.Write(0xFFAAFFAAUL);
         }
 
-        protected override void OnDeserialize(ushort version, BinaryReader reader)
+        protected override void OnDeserializeJson(ushort version)
         {
-            if(reader.ReadUInt64() != 0xFFAAFFAAUL)
-                throw new Exception("ERROR - Not a TestAsset!");
         }
 
         public override void Unload()

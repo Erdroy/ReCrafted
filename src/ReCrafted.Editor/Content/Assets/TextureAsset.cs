@@ -5,16 +5,13 @@ using DirectXTexNet;
 
 namespace ReCrafted.Editor.Content.Assets
 {
-    public class TextureAsset : AssetBase
+    public class TextureAsset : BinaryAsset
     {
-        protected override void OnSerialize(ushort version, BinaryWriter writer)
+        protected override void OnSerializeBinary(ushort version, BinaryWriter writer)
         {
-            writer.Write((ushort)Width);
-            writer.Write((ushort)Height);
-            writer.Write((uint)Format);
         }
 
-        protected override void OnDeserialize(ushort version, BinaryReader reader)
+        protected override void OnDeserializeBinary(ushort version, BinaryReader reader)
         {
         }
 

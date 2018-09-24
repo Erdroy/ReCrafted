@@ -34,20 +34,30 @@ namespace ReCrafted.Editor.Content
         {
         }
 
-        public void MountAssetDirectory(string assetDirectory)
+        /// <summary>
+        /// Loads given asset file.
+        /// </summary>
+        /// <typeparam name="TAsset">The target asset type.</typeparam>
+        /// <param name="assetName">The asset name. Relative to '../content/, without extension.</param>
+        /// <returns>The loaded asset.</returns>
+        public static TAsset Load<TAsset>(string assetName) where TAsset : Asset, new()
         {
-
-        }
-        
-        public void MountAssets()
-        {
-
-        }
-
-        public static void Load(string assetName)
-        {
+            // Build asset file path
+            var assetFile = Path.Combine(ContentDirectory, assetName);
+            if (!assetName.EndsWith(".rcasset"))
+                assetFile += ".rcasset";
+            
             // Find asset with given name
+            if (!File.Exists(assetFile))
+                throw new Exception($"Could not find file for asset '{assetName}' ({assetFile}).");
 
+            using (var fs = new FileStream(assetFile, FileMode.Open, FileAccess.Read))
+            {
+                var asset = new TAsset();
+                asset.Deserialize(fs);
+                asset.Initialize();
+                return asset;
+            }
         }
         
         public static ContentManager Instance { get; private set; }

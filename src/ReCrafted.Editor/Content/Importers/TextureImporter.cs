@@ -15,7 +15,7 @@ namespace ReCrafted.Editor.Content.Importers
             public bool GenerateMipMaps { get; set; } = true;
         }
 
-        public override AssetBase ImportAsset(string inputFile, string outputFile, Settings settings)
+        public override Asset ImportAsset(string inputFile, string outputFile, Settings settings)
         {
             var image = LoadImage(inputFile);
             var baseImage = image.GetImage(0);

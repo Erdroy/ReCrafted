@@ -207,16 +207,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Time.cs" />
-    <Compile Include="Content\AssetBase.cs" />
+    <Compile Include="Content\Asset.cs" />
+    <Compile Include="Content\AssetBaseType.cs" />
     <Compile Include="Content\AssetImporterBase.cs" />
     <Compile Include="Content\Assets\TestAsset.cs" />
     <Compile Include="Content\Assets\TextureAsset.cs" />
     <Compile Include="Content\AssetType.cs" />
+    <Compile Include="Content\BinaryAsset.cs" />
     <Compile Include="Content\ContentManager.cs" />
     <Compile Include="Content\IAsset.cs" />
     <Compile Include="Content\Importers\TextureImporter.cs" />
     <Compile Include="Content\IImportSettings.cs" />
     <Compile Include="Content\Importers\TextureImportSettings.cs" />
+    <Compile Include="Content\JsonAsset.cs" />
     <Compile Include="Graphics\ImGuiRenderer.cs" />
     <Compile Include="Panels\ContentPanel.cs" />
     <Compile Include="Panels\MainWindow.cs" />
