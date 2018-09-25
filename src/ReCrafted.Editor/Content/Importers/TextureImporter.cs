@@ -9,7 +9,7 @@ using ReCrafted.Editor.Utilities;
 
 namespace ReCrafted.Editor.Content.Importers
 {
-    public class TextureImporter : AssetImporterBase<TextureImporter.Settings>
+    public class TextureImporter : AssetImporterBase<TextureImporter, TextureImporter.Settings>
     {
         public class Settings : IImportSettings
         {
