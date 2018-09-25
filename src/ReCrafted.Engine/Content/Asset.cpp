@@ -22,6 +22,7 @@ void Asset::Deserialize(BinaryStream& stream)
 
     cvar version = stream.ReadUInt16();
     cvar assetType = static_cast<AssetType>(stream.ReadByte());
+    stream.ReadBytes(reinterpret_cast<char*>(&m_AssetGuid.value), sizeof(Guid::_value));
 
     ASSERT(assetType == GetAssetType());
 
@@ -35,6 +36,8 @@ void Asset::Deserialize(const json& json, const std::string& content)
     
     // Read AssetType
     cvar assetType = static_cast<AssetType>(json["AssetType"].get<byte>());
+    cvar guidString = json["AssetGuid"].get<std::string>();
+    SetAssetGuid(Guid::Parse(guidString));
 
     ASSERT(assetType == GetAssetType());
 
