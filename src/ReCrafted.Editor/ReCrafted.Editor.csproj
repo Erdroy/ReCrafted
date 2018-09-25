@@ -221,13 +221,13 @@
     <Compile Include="Content\Importers\TextureImportSettings.cs" />
     <Compile Include="Content\JsonAsset.cs" />
     <Compile Include="Graphics\ImGuiRenderer.cs" />
-    <Compile Include="Panels\ContentPanel.cs" />
-    <Compile Include="Panels\MainWindow.cs" />
+    <Compile Include="Windows\ContentWindow.cs" />
+    <Compile Include="Windows\MainWindow.cs" />
     <Compile Include="Core\ApplicationBase.cs" />
     <Compile Include="Core\EditorApplication.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Panels\WindowBase.cs" />
+    <Compile Include="Windows\WindowBase.cs" />
     <Compile Include="Utilities\MathUtils.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

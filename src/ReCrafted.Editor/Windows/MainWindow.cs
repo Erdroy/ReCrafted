@@ -1,15 +1,14 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
+using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using System.IO;
 using System.Numerics;
 using ImGuiNET;
-using ReCrafted.Editor.Content.Assets;
 using ReCrafted.Editor.Content.Importers;
 using ReCrafted.Editor.Core;
 
-namespace ReCrafted.Editor.Panels
+namespace ReCrafted.Editor.Windows
 {
     public class MainWindow : WindowBase
     {
@@ -57,29 +56,19 @@ namespace ReCrafted.Editor.Panels
 
                 if (ImGui.BeginMenu("Tools"))
                 {
-                    if (ImGui.MenuItem("Save test asset"))
-                    {
-                        using (var fs = new FileStream("../content/testasset.rcasset", FileMode.Create, FileAccess.Write))
-                        {
-                            var testAsset = new TestAsset();
-                            testAsset.Serialize(fs);
-                            testAsset.Unload();
-                        }
-                    }
-
                     if (ImGui.MenuItem("Import asset"))
                     {
-                        using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
+                        using (var openFileDialog = new OpenFileDialog())
                         {
-                            openFileDialog1.InitialDirectory = "c:\\";
-                            openFileDialog1.Filter = "png files (*.png)|*.png|All files (*.*)|*.*";
-                            openFileDialog1.FilterIndex = 2;
-                            openFileDialog1.RestoreDirectory = true;
+                            openFileDialog.InitialDirectory = Environment.CurrentDirectory;
+                            openFileDialog.Filter = @"png files (*.png)|*.png|All files (*.*)|*.*";
+                            openFileDialog.FilterIndex = 2;
+                            openFileDialog.RestoreDirectory = true;
 
-                            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                            if (openFileDialog.ShowDialog() == DialogResult.OK)
                             {
                                 var ci = new TextureImporter();
-                                ci.ImportAsset(openFileDialog1.FileName, "Texture.rcasset", new TextureImporter.Settings
+                                ci.ImportAsset(openFileDialog.FileName, "../content/TestTexture.rcasset", new TextureImporter.Settings
                                 {
                                     GenerateMipMaps = true
                                 });

@@ -2,9 +2,9 @@
 
 using ImGuiNET;
 
-namespace ReCrafted.Editor.Panels
+namespace ReCrafted.Editor.Windows
 {
-    public class ContentPanel : WindowBase
+    public class ContentWindow : WindowBase
     {
         public override void Initialize()
         {
@@ -19,7 +19,7 @@ namespace ReCrafted.Editor.Panels
         {
             if (ImGui.BeginMenuBar())
             {
-               /* if (ImGui.BeginMenu("Test1"))
+                if (ImGui.BeginMenu("Test1"))
                 {
                     ImGui.EndMenu();
                 }
@@ -30,7 +30,7 @@ namespace ReCrafted.Editor.Panels
                 if (ImGui.BeginMenu("Test3"))
                 {
                     ImGui.EndMenu();
-                }*/
+                }
                 ImGui.EndMenuBar();
             }
             

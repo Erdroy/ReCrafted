@@ -1,6 +1,6 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
-namespace ReCrafted.Editor.Panels
+namespace ReCrafted.Editor.Windows
 {
     public abstract class WindowBase
     {

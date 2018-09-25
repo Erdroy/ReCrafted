@@ -3,7 +3,7 @@
 using ReCrafted.Editor.Common;
 using ReCrafted.Editor.Content;
 using ReCrafted.Editor.Graphics;
-using ReCrafted.Editor.Panels;
+using ReCrafted.Editor.Windows;
 using Veldrid;
 using Veldrid.Sdl2;
 using Veldrid.StartupUtilities;
@@ -19,7 +19,7 @@ namespace ReCrafted.Editor.Core
         private ImGuiRenderer _guiController;
 
         private MainWindow _mainWindow;
-        private ContentPanel _contentPanel;
+        private ContentWindow _contentPanel;
 
         private ContentManager _contentManager;
 
@@ -62,7 +62,7 @@ namespace ReCrafted.Editor.Core
             _mainWindow = new MainWindow();
             _mainWindow.Initialize();
 
-            _contentPanel = new ContentPanel();
+            _contentPanel = new ContentWindow();
             _contentPanel.Initialize();
             _mainWindow.Children.Add(_contentPanel);
 
