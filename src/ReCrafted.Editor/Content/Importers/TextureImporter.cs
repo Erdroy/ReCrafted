@@ -13,12 +13,26 @@ namespace ReCrafted.Editor.Content.Importers
     {
         public class Settings : IImportSettings
         {
-            public bool GenerateMipMaps { get; set; } = true;
+            public TEX_COMPRESS_FLAGS CompressionFlags = TEX_COMPRESS_FLAGS.BC7_QUICK;
+            public DXGI_FORMAT CompressionFormat = DXGI_FORMAT.BC7_UNORM;
+            public bool Compress = false;
+            public bool GenerateMipMaps = true;
         }
 
         public override Asset ImportAsset(string inputFile, string outputFile, Settings settings)
         {
             var image = LoadImage(inputFile);
+
+            if (settings.Compress)
+            {
+                // Threshold is 0.5, because it is being used only by BC1. Maybe expose if needed
+                var compressedImage = image.Compress(settings.CompressionFormat, settings.CompressionFlags, 0.5f);
+                
+                // Set image
+                image.Dispose();
+                image = compressedImage;
+            }
+
             var baseImage = image.GetImage(0);
             var mipCount = image.GetImageCount();
 
