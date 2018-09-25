@@ -73,10 +73,16 @@ public:
      * \return The created asset.
      */
     template<class TAsset>
-    static TAsset* CreateAsset()
+    static TAsset* CreateAsset(bool registerNow = true)
     {
         cvar asset = new TAsset();
         asset->SetAssetGuid(Platform::NewGuid());
+
+        if(registerNow)
+        {
+            m_instance->RegisterAsset(asset);
+        }
+
         return asset;
     }
 
@@ -111,7 +117,7 @@ public:
     template<class TAsset>
     static TAsset* LoadAsset(const char* assetFile)
     {
-        cvar asset = new TAsset();
+        cvar asset = CreateAsset<TAsset>(false);
         if (m_instance->LoadAsset(asset, assetFile))
         {
             delete asset;
@@ -133,7 +139,7 @@ public:
     template<class TAsset>
     static void LoadAsset(const char* assetFile, const Action<void, Asset*>& onLoad)
     {
-        cvar asset = new TAsset();
+        cvar asset = CreateAsset<TAsset>(false);
 
         // Create and queue task
         var customTask = new AssetLoadTask();

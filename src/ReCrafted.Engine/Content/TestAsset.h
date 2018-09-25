@@ -13,12 +13,6 @@
 class TestAsset : public JsonAsset
 {
 protected:
-    /*void OnDeserializeBinary(uint16_t version, BinaryStream& stream) override
-    {
-        cvar num = stream.ReadUInt64();
-        
-    }
-    */
     void OnDeserializeJson(uint16_t version, const json& json) override
     {
         
