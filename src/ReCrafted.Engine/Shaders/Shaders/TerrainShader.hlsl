@@ -30,7 +30,6 @@ struct TerrainVSOutput
     float3 LocalPosition    : WS_POSITION;
 
     float3 Normal           : NORMAL0;
-    float3 FixedNormal      : NORMAL1;
 
     float4 Materials0       : COLOR0;
     float4 Materials1       : COLOR1;
@@ -55,7 +54,6 @@ void TerrainVSMain(in TerrainVSInput i, out TerrainVSOutput o)
     o.Position = position;
     o.LocalPosition = i.Position;
     o.Normal = i.Normal;
-    o.FixedNormal = (float3)0;
     o.Materials0 = i.Materials0;
     o.Materials1 = i.Materials1;
     o.Materials2 = i.Materials2;
@@ -68,104 +66,6 @@ void TerrainVSMain(in TerrainVSInput i, out TerrainVSOutput o)
     o.LogZ = log(position.z * C + 1) * FC;
     o.Position.z = o.LogZ * position.w;
 #endif
-}
-
-float3 Triplanar_CalculateYFixedNormal(float3 origin, inout float3 position, float3 normal)
-{
-    const float upSign = position.y < origin.y ? -1.0f : 1.0f;
-    const float3 baseYNormal = float3(0.0f, upSign, 0.0f);
-    const float3 pointNormal = normalize(position - origin);
-
-    // Calculate angle
-    float3 surfaceUpCross = cross(pointNormal, baseYNormal);
-    float angle = asin(length(surfaceUpCross));
-
-    // Calculate angle axis rotation matrix
-    float3x3 rotationMatrix = rotateAngleAxis(angle, normalize(surfaceUpCross));
-
-    // Rotate normal around [SurfaceNormal x YpNormal]
-    float3 fixedNormal = mul(rotationMatrix, normal);
-
-    // Inverse Y when we are under the origin
-    fixedNormal.y *= upSign;
-
-    // Return normal
-    return fixedNormal;
-}
-
-float hash(float3 p)  // replace this by something better
-{
-    p = frac(p*0.3183099 + .1);
-    p *= 17.0;
-    return frac(p.x*p.y*p.z*(p.x + p.y + p.z));
-}
-
-float noise(in float3 x)
-{
-    float3 p = floor(x);
-    float3 f = frac(x);
-    f = f * f*(3.0 - 2.0*f);
-
-    return lerp(lerp(lerp(hash(p + float3(0, 0, 0)),
-        hash(p + float3(1, 0, 0)), f.x),
-        lerp(hash(p + float3(0, 1, 0)),
-            hash(p + float3(1, 1, 0)), f.x), f.y),
-        lerp(lerp(hash(p + float3(0, 0, 1)),
-            hash(p + float3(1, 0, 1)), f.x),
-            lerp(hash(p + float3(0, 1, 1)),
-                hash(p + float3(1, 1, 1)), f.x), f.y), f.z);
-}
-
-[maxvertexcount(3)]
-void TerrainGSMain(triangle TerrainVSOutput input[3], inout TriangleStream<TerrainPSInput> OutputStream)
-{
-    const float3 sphereOrigin = float3(0.0f, 0.0f, 0.0f);
-
-    TerrainPSInput output;
-    
-    // Add 1st vertex
-    output.Position = input[0].Position;
-    output.LocalPosition = input[0].LocalPosition;
-    output.Normal = input[0].Normal;
-    output.FixedNormal = Triplanar_CalculateYFixedNormal(sphereOrigin, output.LocalPosition, output.Normal);
-    output.Materials0 = input[0].Materials0;
-    output.Materials1 = input[0].Materials1;
-    output.Materials2 = input[0].Materials2;
-    output.Materials3 = input[0].Materials3;
-#ifdef USE_LOGZBUFFER
-    output.LogZ = input[0].LogZ;
-#endif
-    OutputStream.Append(output);
-
-    // Add 2nd vertex
-    output.Position = input[1].Position;
-    output.LocalPosition = input[1].LocalPosition;
-    output.Normal = input[1].Normal;
-    output.FixedNormal = Triplanar_CalculateYFixedNormal(sphereOrigin, output.LocalPosition, output.Normal);
-    output.Materials0 = input[1].Materials0;
-    output.Materials1 = input[1].Materials1;
-    output.Materials2 = input[1].Materials2;
-    output.Materials3 = input[1].Materials3;
-#ifdef USE_LOGZBUFFER
-    output.LogZ = input[1].LogZ;
-#endif
-    OutputStream.Append(output);
-
-    // Add 3rd vertex
-    output.Position = input[2].Position;
-    output.LocalPosition = input[2].LocalPosition;
-    output.Normal = input[2].Normal;
-    output.FixedNormal = Triplanar_CalculateYFixedNormal(sphereOrigin, output.LocalPosition, output.Normal);
-    output.Materials0 = input[2].Materials0;
-    output.Materials1 = input[2].Materials1;
-    output.Materials2 = input[2].Materials2;
-    output.Materials3 = input[2].Materials3;
-#ifdef USE_LOGZBUFFER
-    output.LogZ = input[2].LogZ;
-#endif
-    OutputStream.Append(output);
-
-    OutputStream.RestartStrip();
 }
 
 /// <summary>
@@ -186,8 +86,6 @@ void TerrainPSMain(in TerrainPSInput i, out GBufferOutput o)
     float2 ty = position.xz * 0.5f;
     float2 tz = position.xy * 0.5f;
 
-    // TODO: Rotate UV (tx, ty, tz)
-
     float mat0 = i.Materials0.r;
     float mat1 = i.Materials0.g;
     float mat2 = i.Materials0.b;
@@ -195,19 +93,25 @@ void TerrainPSMain(in TerrainPSInput i, out GBufferOutput o)
 
     float3 color = float3(0.0f, 0.0f, 0.0f);
 
-    if(mat0 > 0.01f)
+    if (mat0 > 0.01f) 
+    {
         color += (m_texture0.Sample(Sampler, tx).rgb * blend.x + m_texture0.Sample(Sampler, ty).rgb * blend.y + m_texture0.Sample(Sampler, tz).rgb * blend.z) * mat0;
+    }
 
-    if (mat1 > 0.01f)
+    if (mat1 > 0.01f) 
+    {
         color += (m_texture1.Sample(Sampler, tx).rgb * blend.x + m_texture1.Sample(Sampler, ty).rgb * blend.y + m_texture1.Sample(Sampler, tz).rgb * blend.z) * mat1;
+    }
 
-    if (mat2 > 0.01f)
+    if (mat2 > 0.01f) 
+    {
         color += (m_texture2.Sample(Sampler, tx).rgb * blend.x + m_texture2.Sample(Sampler, ty).rgb * blend.y + m_texture2.Sample(Sampler, tz).rgb * blend.z) * mat2;
+    }
 
     if (mat3 > 0.01f)
+    {
         color += (m_texture3.Sample(Sampler, tx).rgb * blend.x + m_texture3.Sample(Sampler, ty).rgb * blend.y + m_texture3.Sample(Sampler, tz).rgb * blend.z) * mat3;
-
-    //color -= color * saturate(noise(position * 0.5f) * 0.25f);
+    }
 
     o.Color = float4(color, 1.0f);
 
@@ -229,6 +133,5 @@ pass Default
 
     SetProfile(5.0);
     SetVertexShader(TerrainVSMain);
-    SetGeometryShader(TerrainGSMain);
     SetPixelShader(TerrainPSMain);
 }
