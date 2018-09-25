@@ -51,14 +51,11 @@ namespace ReCrafted.Editor.Content.Importers
                 mipCount = mipMaps.GetImageCount();
             }
 
-            var asset = new TextureAsset
-            {
-                Format = baseImage.Format,
-                Width = baseImage.Width,
-                Height = baseImage.Height,
-                MipCount = mipCount,
-                Mips = new TextureAsset.Mip[mipCount]
-            };
+            // Create asset
+            var asset = ContentManager.CreateAsset<TextureAsset>();
+            asset.Format = baseImage.Format;
+            asset.MipCount = mipCount;
+            asset.Mips = new TextureAsset.Mip[mipCount];
 
             // Set texture mip maps
             for (var i = 0; i < mipCount; i++)
@@ -68,6 +65,7 @@ namespace ReCrafted.Editor.Content.Importers
                 {
                     Width = img.Width,
                     Height = img.Height,
+                    Pitch = (int)img.RowPitch,
                     Size = (int)img.SlicePitch // Slice pitch is size of single slice, so whole single mip
                 };
 
@@ -80,6 +78,8 @@ namespace ReCrafted.Editor.Content.Importers
             {
                 asset.Serialize(fs);
             }
+
+            // TODO: Generate preview icon
 
             // Dispose image
             image.Dispose();

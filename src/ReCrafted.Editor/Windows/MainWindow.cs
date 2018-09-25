@@ -3,8 +3,11 @@
 using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.IO;
 using System.Numerics;
 using ImGuiNET;
+using ReCrafted.Editor.Content;
+using ReCrafted.Editor.Content.Assets;
 using ReCrafted.Editor.Content.Importers;
 using ReCrafted.Editor.Core;
 
@@ -67,13 +70,30 @@ namespace ReCrafted.Editor.Windows
 
                             if (openFileDialog.ShowDialog() == DialogResult.OK)
                             {
-                                var ci = new TextureImporter();
-                                ci.ImportAsset(openFileDialog.FileName, "../content/TestTexture.rcasset", new TextureImporter.Settings
+                                TextureImporter.Instance.ImportAsset(openFileDialog.FileName, "../content/TestTexture.rcasset", new TextureImporter.Settings
                                 {
                                     GenerateMipMaps = true
                                 });
                             }
                         }
+                    }
+
+                    if (ImGui.MenuItem("Create json asset"))
+                    {
+                        var asset = ContentManager.CreateAsset<TestAsset>();
+                        
+                        using (var fs = new FileStream("../content/jsonasset.rcasset", FileMode.Create,
+                            FileAccess.Write))
+                        {
+                            asset.Serialize(fs);
+                        }
+
+                        asset.Unload();
+                    }
+
+                    if (ImGui.MenuItem("Load asset"))
+                    {
+                        var asset = ContentManager.Load<TextureAsset>("../content/TestTexture.rcasset");
                     }
 
                     ImGui.EndMenu();
