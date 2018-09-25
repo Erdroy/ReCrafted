@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using DirectXTexNet;
 using ReCrafted.Editor.Content.Assets;
 using ReCrafted.Editor.Utilities;
@@ -20,20 +21,13 @@ namespace ReCrafted.Editor.Content.Importers
             var image = LoadImage(inputFile);
             var baseImage = image.GetImage(0);
             var mipCount = image.GetImageCount();
-            
-            var asset = new TextureAsset
-            {
-                Format = baseImage.Format,
-                Width = baseImage.Width,
-                Height = baseImage.Height
-            };
 
             if (mipCount == 1 && settings.GenerateMipMaps)
             {
                 if (!MathUtils.IsPowerOf2(baseImage.Width) || !MathUtils.IsPowerOf2(baseImage.Height))
                     throw new Exception($"Cannot generate mip maps for texture '{inputFile}', because it's width or height is not within power of 2!");
 
-                //  Generate mip maps
+                // Generate mip maps
                 var mipMaps = image.GenerateMipMaps(0, 0);
 
                 // Set image 
@@ -41,6 +35,30 @@ namespace ReCrafted.Editor.Content.Importers
                 image = mipMaps;
 
                 mipCount = mipMaps.GetImageCount();
+            }
+
+            var asset = new TextureAsset
+            {
+                Format = baseImage.Format,
+                Width = baseImage.Width,
+                Height = baseImage.Height,
+                MipCount = mipCount,
+                Mips = new TextureAsset.Mip[mipCount]
+            };
+
+            // Set texture mip maps
+            for (var i = 0; i < mipCount; i++)
+            {
+                var img = image.GetImage(i);
+                var mip = asset.Mips[i] = new TextureAsset.Mip
+                {
+                    Width = img.Width,
+                    Height = img.Height,
+                    Size = (int)img.SlicePitch // Slice pitch is size of single slice, so whole single mip
+                };
+
+                mip.Data = new byte[mip.Size];
+                Marshal.Copy(img.Pixels, mip.Data, 0, mip.Size);
             }
 
             // Serialize asset
