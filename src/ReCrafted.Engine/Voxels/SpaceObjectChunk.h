@@ -14,6 +14,7 @@
 #include "VoxelChunkMesh.h"
 
 #include <atomic>
+#include <concurrentqueue.h>
 
 struct IVoxelMesher;
 class Mesh;
@@ -45,6 +46,8 @@ private:
 
     RefPtr<VoxelChunkMesh> m_mesh = nullptr;
     RefPtr<VoxelChunkMesh> m_newMesh = nullptr;
+
+    moodycamel::ConcurrentQueue<RefPtr<VoxelChunkMesh>> m_disposeQueue;
 
     Lock m_uploadLock = {};
     std::atomic<UploadType> m_uploadType = None;

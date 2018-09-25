@@ -126,6 +126,12 @@ void SpaceObjectChunk::SetUpload(const RefPtr<VoxelChunkMesh>& mesh, const Uploa
     // Lock Upload
     ScopeLock(m_uploadLock);
 
+    if(m_newMesh)
+    {
+        // Queue for dispose
+        m_disposeQueue.enqueue(m_newMesh);
+    }
+
     // Set upload type to UPLOAD-MESH
     m_newMesh = mesh;
     m_uploadType = uploadType;
@@ -136,7 +142,13 @@ void SpaceObjectChunk::Upload()
     ASSERT(IS_MAIN_THREAD());
     ASSERT(NeedsUpload());
 
-    // Lock Upload
+    // Dispose all queued meshes
+    RefPtr<VoxelChunkMesh> meshToDispose;
+    while(m_disposeQueue.try_dequeue(meshToDispose))
+    {
+        SafeDispose(meshToDispose);
+        meshToDispose.reset();
+    }
     
     switch (m_uploadType)
     {
