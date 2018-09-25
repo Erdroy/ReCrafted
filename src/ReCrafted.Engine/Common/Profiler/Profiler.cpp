@@ -9,7 +9,7 @@
 #include "Graphics/Font.h"
 #include "Graphics/Camera.h"
 #include "Graphics/DebugDraw.h"
-#include "Rendering/Rendering.h"
+#include "Graphics/Rendering/Rendering.h"
 
 #include <mono/metadata/mono-gc.h>
 

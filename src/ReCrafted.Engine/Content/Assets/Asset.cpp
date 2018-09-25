@@ -1,7 +1,7 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Asset.h"
-#include "ContentManager.h"
+#include "../ContentManager.h"
 
 Asset::~Asset()
 {

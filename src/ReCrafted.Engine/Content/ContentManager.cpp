@@ -1,7 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "ContentManager.h"
-#include "TestAsset.h"
 #include "Core/Streams/FileStream.h"
 #include "Core/Logger.h"
 

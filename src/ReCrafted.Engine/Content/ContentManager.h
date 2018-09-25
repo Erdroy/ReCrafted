@@ -11,7 +11,7 @@
 #include "Core/Action.h"
 #include "Core/TaskManager.h"
 
-#include "Asset.h"
+#include "Assets/Asset.h"
 
 #include <spp.h>
 
