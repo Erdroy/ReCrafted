@@ -76,6 +76,7 @@ namespace ReCrafted.Editor.Content
             writer.Write(AssetMagic); // Always 3 bytes!
             writer.Write(AssetVersion);
             writer.Write((byte)AssetType);
+            writer.Write(AssetGuid.ToByteArray());
         }
 
         private ushort InternalDeserialize(BinaryReader reader)
@@ -86,6 +87,7 @@ namespace ReCrafted.Editor.Content
 
             var version = reader.ReadUInt16();
             var assetType = reader.ReadByte();
+            AssetGuid = new Guid(reader.ReadBytes(Guid.Empty.ToByteArray().Length));
 
             if (assetType != (byte)AssetType)
                 throw new Exception($"Invalid asset importer used. Using importer of {AssetType} asset to import {(AssetType)assetType} asset.");
@@ -97,12 +99,14 @@ namespace ReCrafted.Editor.Content
         {
             SerializeField("AssetVersion", AssetVersion);
             SerializeField("AssetType", (byte)AssetType);
+            SerializeField("AssetGuid", AssetGuid);
         }
 
         private ushort InternalDeserializeJson()
         {
             var version = DeserializeField("AssetVersion", ushort.MaxValue);
             var assetType = DeserializeField<byte>("AssetType", byte.MaxValue);
+            AssetGuid = Guid.Parse(DeserializeField<string>("AssetGuid"));
 
             if (assetType != (byte)AssetType)
                 throw new Exception($"Invalid asset importer used. Using importer of {AssetType} to import {(AssetType)assetType}.");
@@ -133,8 +137,13 @@ namespace ReCrafted.Editor.Content
                         using (var jw = new JsonTextWriter(sw))
                         {
                             _currentWriter = jw;
+
+                            jw.WriteStartObject();
+
                             InternalSerializeJson();
                             OnSerializeJson(AssetVersion);
+
+                            jw.WriteEndObject();
                         }
                     }
 
@@ -179,11 +188,15 @@ namespace ReCrafted.Editor.Content
             }
         }
 
-        protected abstract AssetBaseType AssetBaseType { get; }
+        /// <summary>
+        /// Guid of this asset.
+        /// </summary>
+        public Guid AssetGuid { get; set; }
 
         /// <summary>
         /// Type of this asset.
         /// </summary>
         public abstract AssetType AssetType { get; }
+        protected abstract AssetBaseType AssetBaseType { get; }
     }
 }
