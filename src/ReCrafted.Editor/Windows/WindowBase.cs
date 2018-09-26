@@ -1,5 +1,7 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
+using ImGuiNET;
+
 namespace ReCrafted.Editor.Windows
 {
     public abstract class WindowBase
@@ -10,5 +12,6 @@ namespace ReCrafted.Editor.Windows
         public abstract void Dispose();
 
         public abstract string WindowName { get; }
+        public virtual WindowFlags WindowSettings => WindowFlags.NoCollapse;
     }
 }

@@ -51,19 +51,21 @@ namespace ReCrafted.Editor.Windows
         {
             foreach (var child in Children)
             {
-                ImGui.BeginWindow(child.WindowName, WindowFlags.MenuBar);
                 child.Update();
-                ImGui.EndWindow();
             }
         }
-
+        
         public override void Render()
         {
+            ImGui.PushStyleVar(StyleVar.PopupBorderSize, 0.0f);
+
             var opened = true;
-            ImGui.SetNextWindowPos(new Vector2(0.0f, 0.0f), Condition.Always, Vector2.Zero);
-            ImGui.BeginWindow("Main", ref opened, new Vector2(EditorApplication.Current.Window.Width, EditorApplication.Current.Window.Height), 
-                0.0f, WindowFlags.NoResize | WindowFlags.NoInputs | WindowFlags.NoMove | WindowFlags.NoTitleBar | WindowFlags.NoScrollbar);
-            
+            ImGui.BeginWindow("Main", ref opened,
+                new Vector2(EditorApplication.Current.Window.Width, EditorApplication.Current.Window.Height),
+                0.0f,
+                WindowFlags.NoResize | WindowFlags.NoInputs | WindowFlags.NoMove | WindowFlags.NoTitleBar |
+                WindowFlags.NoScrollbar);
+
             if (ImGui.BeginMainMenuBar())
             {
                 if (ImGui.BeginMenu("File"))
@@ -72,6 +74,7 @@ namespace ReCrafted.Editor.Windows
                     {
                         ApplicationBase.Current.Shutdown();
                     }
+
                     ImGui.EndMenu();
                 }
 
@@ -93,10 +96,11 @@ namespace ReCrafted.Editor.Windows
 
                             if (openFileDialog.ShowDialog() == DialogResult.OK)
                             {
-                                TextureImporter.Instance.ImportAsset(openFileDialog.FileName, "../content/TestTexture.rcasset", new TextureImporter.Settings
-                                {
-                                    GenerateMipMaps = true
-                                });
+                                TextureImporter.Instance.ImportAsset(openFileDialog.FileName,
+                                    "../content/TestTexture.rcasset", new TextureImporter.Settings
+                                    {
+                                        GenerateMipMaps = true
+                                    });
                             }
                         }
                     }
@@ -104,7 +108,7 @@ namespace ReCrafted.Editor.Windows
                     if (ImGui.MenuItem("Create json asset"))
                     {
                         var asset = ContentManager.CreateAsset<TestAsset>();
-                        
+
                         using (var fs = new FileStream("../content/jsonasset.rcasset", FileMode.Create,
                             FileAccess.Write))
                         {
@@ -129,9 +133,15 @@ namespace ReCrafted.Editor.Windows
 
                 ImGui.EndMainMenuBar();
             }
-            
+
             foreach (var child in Children)
-                child.Render();
+            {
+                if (ImGui.BeginWindow(child.WindowName, child.WindowSettings))
+                {
+                    child.Render();
+                    ImGui.EndWindow();
+                }
+            }
 
             ImGui.EndWindow();
         }

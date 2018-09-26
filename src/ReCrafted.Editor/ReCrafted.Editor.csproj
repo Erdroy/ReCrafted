@@ -221,6 +221,7 @@
     <Compile Include="Content\Importers\TextureImportSettings.cs" />
     <Compile Include="Content\JsonAsset.cs" />
     <Compile Include="Graphics\ImGuiRenderer.cs" />
+    <Compile Include="Utilities\PathUtils.cs" />
     <Compile Include="Windows\ContentWindow.cs" />
     <Compile Include="Windows\MainWindow.cs" />
     <Compile Include="Core\ApplicationBase.cs" />

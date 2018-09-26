@@ -103,7 +103,7 @@ namespace ReCrafted.Editor.Core
             // Begin rendering
             _commandList.Begin();
             _commandList.SetFramebuffer(GraphicsDevice.MainSwapchain.Framebuffer);
-            _commandList.ClearColorTarget(0, new RgbaFloat(0.15f, 0.15f, 0.15f, 1.0f));
+            _commandList.ClearColorTarget(0, new RgbaFloat(0.12f, 0.12f, 0.12f, 1.0f));
 
             // Render main panel
             _mainWindow.Render();
