@@ -22,6 +22,29 @@ namespace ReCrafted.Editor.Windows
 
         public override void Initialize()
         {
+            // Setup style
+            var style = ImGui.GetStyle();
+
+            style.WindowRounding = 3.0f;
+            style.ScrollbarRounding = 2.0f;
+
+            style.SetColor(ColorTarget.TitleBg, new Vector4(0.25f, 0.25f, 0.25f, 1.0f));
+            style.SetColor(ColorTarget.TitleBgCollapsed, new Vector4(0.28f, 0.28f, 0.28f, 1.0f));
+            style.SetColor(ColorTarget.TitleBgActive, new Vector4(0.28f, 0.28f, 0.28f, 1.0f));
+            style.SetColor(ColorTarget.WindowBg, new Vector4(0.15f, 0.15f, 0.15f, 1.0f));
+
+            style.SetColor(ColorTarget.PopupBg, new Vector4(0.10f, 0.10f, 0.10f, 1.0f));
+
+            style.SetColor(ColorTarget.MenuBarBg, new Vector4(0.20f, 0.20f, 0.20f, 1.0f));
+            style.SetColor(ColorTarget.Header, new Vector4(0.28f, 0.28f, 0.28f, 1.0f));
+            style.SetColor(ColorTarget.HeaderActive, new Vector4(0.28f, 0.28f, 0.28f, 1.0f));
+            style.SetColor(ColorTarget.HeaderHovered, new Vector4(0.25f, 0.25f, 0.25f, 1.0f));
+
+            style.SetColor(ColorTarget.ScrollbarBg, new Vector4(0.18f, 0.18f, 0.18f, 1.0f));
+            style.SetColor(ColorTarget.ScrollbarGrab, new Vector4(0.25f, 0.25f, 0.25f, 1.0f));
+            style.SetColor(ColorTarget.ScrollbarGrabActive, new Vector4(0.28f, 0.28f, 0.28f, 1.0f));
+            style.SetColor(ColorTarget.ScrollbarGrabHovered, new Vector4(0.28f, 0.28f, 0.28f, 1.0f));
+            
         }
 
         public override void Update()
