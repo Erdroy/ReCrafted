@@ -1,14 +1,11 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
-using System;
-using System.Windows.Forms;
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 using ImGuiNET;
 using ReCrafted.Editor.Content;
 using ReCrafted.Editor.Content.Assets;
-using ReCrafted.Editor.Content.Importers;
 using ReCrafted.Editor.Core;
 
 namespace ReCrafted.Editor.Windows
@@ -32,6 +29,7 @@ namespace ReCrafted.Editor.Windows
             style.SetColor(ColorTarget.TitleBgCollapsed, new Vector4(0.28f, 0.28f, 0.28f, 1.0f));
             style.SetColor(ColorTarget.TitleBgActive, new Vector4(0.28f, 0.28f, 0.28f, 1.0f));
             style.SetColor(ColorTarget.WindowBg, new Vector4(0.15f, 0.15f, 0.15f, 1.0f));
+            style.SetColor(ColorTarget.Border, new Vector4(0.10f, 0.10f, 0.10f, 1.0f));
 
             style.SetColor(ColorTarget.PopupBg, new Vector4(0.10f, 0.10f, 0.10f, 1.0f));
 
@@ -85,27 +83,7 @@ namespace ReCrafted.Editor.Windows
 
                 if (ImGui.BeginMenu("Tools"))
                 {
-                    if (ImGui.MenuItem("Import asset"))
-                    {
-                        using (var openFileDialog = new OpenFileDialog())
-                        {
-                            openFileDialog.InitialDirectory = Environment.CurrentDirectory;
-                            openFileDialog.Filter = @"png files (*.png)|*.png|All files (*.*)|*.*";
-                            openFileDialog.FilterIndex = 2;
-                            openFileDialog.RestoreDirectory = true;
-
-                            if (openFileDialog.ShowDialog() == DialogResult.OK)
-                            {
-                                TextureImporter.Instance.ImportAsset(openFileDialog.FileName,
-                                    "../content/TestTexture.rcasset", new TextureImporter.Settings
-                                    {
-                                        GenerateMipMaps = true
-                                    });
-                            }
-                        }
-                    }
-
-                    if (ImGui.MenuItem("Create json asset"))
+                    if (ImGui.MenuItem("Test - Create json asset"))
                     {
                         var asset = ContentManager.CreateAsset<TestAsset>();
 
@@ -118,7 +96,7 @@ namespace ReCrafted.Editor.Windows
                         asset.Unload();
                     }
 
-                    if (ImGui.MenuItem("Load asset"))
+                    if (ImGui.MenuItem("Test - Load asset"))
                     {
                         var asset = ContentManager.Load<TextureAsset>("../content/TestTexture.rcasset");
                     }
@@ -134,6 +112,8 @@ namespace ReCrafted.Editor.Windows
                 ImGui.EndMainMenuBar();
             }
 
+            ImGui.PushStyleVar(StyleVar.WindowBorderSize, 1.0f);
+
             foreach (var child in Children)
             {
                 if (ImGui.BeginWindow(child.WindowName, child.WindowSettings))
@@ -142,6 +122,8 @@ namespace ReCrafted.Editor.Windows
                     ImGui.EndWindow();
                 }
             }
+
+            ImGui.PopStyleVar();
 
             ImGui.EndWindow();
         }

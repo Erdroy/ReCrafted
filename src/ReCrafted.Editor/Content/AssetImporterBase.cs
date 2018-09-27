@@ -2,12 +2,12 @@
 
 namespace ReCrafted.Editor.Content
 {
-    public abstract class AssetImporterBase<TImporter, TImporterSettings> 
+    public abstract class AssetImporterBase<TImporter, TImporterSettings> : IAssetImporter
         where TImporter : new()
         where TImporterSettings : IImportSettings
     {
         public abstract Asset ImportAsset(string inputFile, string outputFile, TImporterSettings settings);
-
+        
         public abstract AssetType SupportedAssetType { get; }
         public abstract string[] SupportedExtensions { get; }
 
@@ -22,5 +22,11 @@ namespace ReCrafted.Editor.Content
                 return _instance;
             }
         }
+    }
+
+    public interface IAssetImporter
+    {
+        AssetType SupportedAssetType { get; }
+        string[] SupportedExtensions { get; }
     }
 }
