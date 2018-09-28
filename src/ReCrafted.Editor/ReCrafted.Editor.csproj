@@ -223,6 +223,12 @@
     <Compile Include="Graphics\ImGuiRenderer.cs" />
     <Compile Include="Utilities\PathUtils.cs" />
     <Compile Include="Windows\ContentWindow.cs" />
+    <Compile Include="Windows\Docking\DockDirection.cs" />
+    <Compile Include="Windows\Docking\DockSplitter.cs" />
+    <Compile Include="Windows\Docking\DockType.cs" />
+    <Compile Include="Windows\Docking\DockPanelBase.cs" />
+    <Compile Include="Windows\Docking\DockPane.cs" />
+    <Compile Include="Windows\Docking\IDockHandler.cs" />
     <Compile Include="Windows\Graph\GraphWindowBase.cs" />
     <Compile Include="Windows\MainWindow.cs" />
     <Compile Include="Core\ApplicationBase.cs" />

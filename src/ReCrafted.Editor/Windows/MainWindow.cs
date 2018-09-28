@@ -1,12 +1,14 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Numerics;
 using ImGuiNET;
 using ReCrafted.Editor.Content;
 using ReCrafted.Editor.Content.Assets;
 using ReCrafted.Editor.Core;
+using ReCrafted.Editor.Windows.Docking;
 
 namespace ReCrafted.Editor.Windows
 {
@@ -42,7 +44,31 @@ namespace ReCrafted.Editor.Windows
             style.SetColor(ColorTarget.ScrollbarGrab, new Vector4(0.25f, 0.25f, 0.25f, 1.0f));
             style.SetColor(ColorTarget.ScrollbarGrabActive, new Vector4(0.28f, 0.28f, 0.28f, 1.0f));
             style.SetColor(ColorTarget.ScrollbarGrabHovered, new Vector4(0.28f, 0.28f, 0.28f, 1.0f));
+
+            // Setup docking
+            DockPane = new DockPane();
+            DockPane.Resize(new Rectangle(0, 0,
+                EditorApplication.Current.Window.Width,
+                EditorApplication.Current.Window.Height));
             
+            var s1 = DockPane.Dock(new DockPanelBase(), DockType.Fill, DockDirection.Right);
+
+            var s2 = s1.Dock(new DockPanelBase(), DockType.Horizontal, DockDirection.Down);
+            
+            var s3 = s2.Dock(new DockPanelBase(), DockType.Vertical, DockDirection.Right);
+            
+            s3.Dock(new DockPanelBase(), DockType.Vertical, DockDirection.Left);
+
+            // Setup events
+            EditorApplication.Current.Window.Resized += MainWindowResized;
+        }
+
+        private void MainWindowResized()
+        {
+            // Resize dock pane
+            DockPane.Resize(new Rectangle(0, 0,
+                EditorApplication.Current.Window.Width,
+                EditorApplication.Current.Window.Height));
         }
 
         public override void Update()
@@ -64,6 +90,8 @@ namespace ReCrafted.Editor.Windows
                 WindowFlags.NoResize | WindowFlags.NoInputs | WindowFlags.NoMove | WindowFlags.NoTitleBar |
                 WindowFlags.NoScrollbar);
 
+            DockPane.DebugDraw();
+            
             if (ImGui.BeginMainMenuBar())
             {
                 if (ImGui.BeginMenu("File"))
@@ -133,6 +161,8 @@ namespace ReCrafted.Editor.Windows
             foreach (var child in Children)
                 child.Dispose();
         }
+
+        public DockPane DockPane { get; private set; }
 
         public override string WindowName => "MainWindow";
 
