@@ -20,6 +20,9 @@ public:
 public:
     void OnInit() override;
     void OnDispose() override;
+
+public:
+    static void AttachCurrentThread();
 };
 
 #endif // SCRIPTINGENGINE_H

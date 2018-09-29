@@ -5,6 +5,8 @@
 #include "Domain.h"
 #include "Platform/Platform.h"
 
+#include <mono/metadata/threads.h>
+
 SINGLETON_IMPL(ScriptingEngine)
 
 void ScriptingEngine::OnInit()
@@ -34,4 +36,9 @@ void ScriptingEngine::OnDispose()
 
     // Shutdown scripting engine
     m_domain->Cleanup();
+}
+
+void ScriptingEngine::AttachCurrentThread()
+{
+    mono_thread_attach(m_instance->m_domain->GetMono());
 }
