@@ -1,5 +1,6 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -12,19 +13,20 @@ using ReCrafted.Editor.Windows.Docking;
 
 namespace ReCrafted.Editor.Windows
 {
-    public class MainWindow : WindowBase
+    public class MainWindow : IWindow, IDisposable
     {
+        private static int _lastWindowId = 1;
+
         public MainWindow()
         {
             Instance = this;
         }
 
-        public override void Initialize()
+        public void Initialize()
         {
             // Setup style
             var style = ImGui.GetStyle();
 
-            style.WindowRounding = 3.0f;
             style.ScrollbarRounding = 2.0f;
 
             style.SetColor(ColorTarget.TitleBg, new Vector4(0.25f, 0.25f, 0.25f, 1.0f));
@@ -47,31 +49,19 @@ namespace ReCrafted.Editor.Windows
 
             // Setup docking
             DockPane = new DockPane();
-            DockPane.Resize(new Rectangle(0, 0,
-                EditorApplication.Current.Window.Width,
-                EditorApplication.Current.Window.Height));
+            DockPane.Resize(WindowRect);
             
-            var s1 = DockPane.Dock(new DockPanelBase(), DockType.Fill, DockDirection.Right);
-
-            var s2 = s1.Dock(new DockPanelBase(), DockType.Horizontal, DockDirection.Down);
-            
-            var s3 = s2.Dock(new DockPanelBase(), DockType.Vertical, DockDirection.Right);
-            
-            s3.Dock(new DockPanelBase(), DockType.Vertical, DockDirection.Left);
-
             // Setup events
-            EditorApplication.Current.Window.Resized += MainWindowResized;
+            EditorApplication.Current.SdlWindow.Resized += MainWindowResized;
         }
 
         private void MainWindowResized()
         {
             // Resize dock pane
-            DockPane.Resize(new Rectangle(0, 0,
-                EditorApplication.Current.Window.Width,
-                EditorApplication.Current.Window.Height));
+            DockPane.Resize(WindowRect);
         }
 
-        public override void Update()
+        public void Update()
         {
             foreach (var child in Children)
             {
@@ -79,18 +69,14 @@ namespace ReCrafted.Editor.Windows
             }
         }
         
-        public override void Render()
+        public void Render()
         {
             ImGui.PushStyleVar(StyleVar.PopupBorderSize, 0.0f);
 
             var opened = true;
-            ImGui.BeginWindow("Main", ref opened,
-                new Vector2(EditorApplication.Current.Window.Width, EditorApplication.Current.Window.Height),
-                0.0f,
-                WindowFlags.NoResize | WindowFlags.NoInputs | WindowFlags.NoMove | WindowFlags.NoTitleBar |
-                WindowFlags.NoScrollbar);
+            var windowRect = WindowRect;
 
-            DockPane.DebugDraw();
+            ImGui.BeginWindow("Main", ref opened, new Vector2(windowRect.Width, windowRect.Height), 0.0f, WindowSettings);
             
             if (ImGui.BeginMainMenuBar())
             {
@@ -139,16 +125,11 @@ namespace ReCrafted.Editor.Windows
 
                 ImGui.EndMainMenuBar();
             }
-
-            ImGui.PushStyleVar(StyleVar.WindowBorderSize, 1.0f);
-
+            
+            // Render children windows
             foreach (var child in Children)
             {
-                if (ImGui.BeginWindow(child.WindowName, child.WindowSettings))
-                {
-                    child.Render();
-                    ImGui.EndWindow();
-                }
+                child.Render();
             }
 
             ImGui.PopStyleVar();
@@ -156,17 +137,34 @@ namespace ReCrafted.Editor.Windows
             ImGui.EndWindow();
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
             foreach (var child in Children)
                 child.Dispose();
         }
 
+        public int WindowId => 0;
+
+        public T AddChildren<T>() where T : DockableWindow, new()
+        {
+            var window = new T
+            {
+                WindowId = _lastWindowId++
+            };
+
+            window.Initialize();
+            Children.Add(window);
+            return window;
+        }
+        
+        public Rectangle WindowRect => new Rectangle(0, 20,
+            EditorApplication.Current.SdlWindow.Width,
+            EditorApplication.Current.SdlWindow.Height - 20);
+
+        public string WindowName => "MainWindow";
+        public WindowFlags WindowSettings => WindowFlags.NoResize | WindowFlags.NoInputs | WindowFlags.NoMove | WindowFlags.NoTitleBar | WindowFlags.NoScrollbar;
         public DockPane DockPane { get; private set; }
-
-        public override string WindowName => "MainWindow";
-
-        public List<WindowBase> Children { get; } = new List<WindowBase>();
+        public List<DockableWindow> Children { get; } = new List<DockableWindow>();
 
         public static MainWindow Instance { get; private set; }
     }

@@ -5,7 +5,7 @@ using ImGuiNET;
 
 namespace ReCrafted.Editor.Windows.Graph
 {
-    public class GraphWindowBase : WindowBase
+    public class GraphWindowBase : DockableWindow
     {
         private DrawList _drawList;
 
@@ -17,7 +17,7 @@ namespace ReCrafted.Editor.Windows.Graph
         {
         }
 
-        public override void Render()
+        public override void OnRender()
         {
             _drawList = ImGui.GetWindowDrawList();
             

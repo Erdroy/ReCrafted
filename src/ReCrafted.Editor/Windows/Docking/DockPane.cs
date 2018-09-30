@@ -12,33 +12,20 @@ namespace ReCrafted.Editor.Windows.Docking
             Rect = rect;
             Root?.Resize(rect);
         }
-
-        public override void DebugDraw()
+        
+        public DockPanelBase Dock(DockPanelBase other)
         {
-            Root.DebugDraw();
+            // Dock to fill
+            Debug.Assert(Root == null);
+            Root = new DockSplitter(this, other);
+            return other;
         }
 
         public override DockPanelBase Dock(DockPanelBase other, DockType dockType, DockDirection dockDirection, float sizeMul = 0.5f)
         {
-            var splitter = Root as DockSplitter;
-
-            switch (dockType)
-            {
-                case DockType.Fill:
-                    Debug.Assert(Root == null);
-                    Root = new DockSplitter(this, other);
-                    break;
-                case DockType.Horizontal:
-                    if (splitter != null)
-                    {
-                        
-                    }
-                    break;
-                case DockType.Vertical:
-                    break;
-            }
-
-            return Root;
+            // TODO: Docking implementation
+            Debug.Assert(false);
+            return null;
         }
         
         public DockPanelBase Root { get; private set; }

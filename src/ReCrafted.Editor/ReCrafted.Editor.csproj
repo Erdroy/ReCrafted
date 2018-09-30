@@ -223,19 +223,21 @@
     <Compile Include="Graphics\ImGuiRenderer.cs" />
     <Compile Include="Utilities\PathUtils.cs" />
     <Compile Include="Windows\ContentWindow.cs" />
+    <Compile Include="Windows\DockableWindow.cs" />
     <Compile Include="Windows\Docking\DockDirection.cs" />
     <Compile Include="Windows\Docking\DockSplitter.cs" />
     <Compile Include="Windows\Docking\DockType.cs" />
     <Compile Include="Windows\Docking\DockPanelBase.cs" />
     <Compile Include="Windows\Docking\DockPane.cs" />
+    <Compile Include="Windows\Docking\IDockable.cs" />
     <Compile Include="Windows\Docking\IDockHandler.cs" />
     <Compile Include="Windows\Graph\GraphWindowBase.cs" />
+    <Compile Include="Windows\IWindow.cs" />
     <Compile Include="Windows\MainWindow.cs" />
     <Compile Include="Core\ApplicationBase.cs" />
     <Compile Include="Core\EditorApplication.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Windows\WindowBase.cs" />
     <Compile Include="Utilities\MathUtils.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

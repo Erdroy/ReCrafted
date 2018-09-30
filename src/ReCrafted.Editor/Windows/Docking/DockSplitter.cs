@@ -37,12 +37,6 @@ namespace ReCrafted.Editor.Windows.Docking
             Divide(Size);
         }
 
-        public override void DebugDraw()
-        {
-            ChildA?.DebugDraw();
-            ChildB?.DebugDraw();
-        }
-
         public void Divide(float size)
         {
             var targetRect = Rect;

@@ -1,9 +1,12 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
+using System.Collections.Generic;
+using ImGuiNET;
 using ReCrafted.Editor.Common;
 using ReCrafted.Editor.Content;
 using ReCrafted.Editor.Graphics;
 using ReCrafted.Editor.Windows;
+using ReCrafted.Editor.Windows.Docking;
 using ReCrafted.Editor.Windows.Graph;
 using Veldrid;
 using Veldrid.Sdl2;
@@ -16,11 +19,10 @@ namespace ReCrafted.Editor.Core
     /// </summary>
     public class EditorApplication : ApplicationBase
     {
+        private readonly List<IWindow> _applicationWindows = new List<IWindow>();
+
         private CommandList _commandList;
         private ImGuiRenderer _guiController;
-
-        private MainWindow _mainWindow;
-
         private ContentManager _contentManager;
 
         public EditorApplication()
@@ -30,7 +32,7 @@ namespace ReCrafted.Editor.Core
 
         protected override void OnInit()
         {
-            Window = VeldridStartup.CreateWindow(new WindowCreateInfo
+            SdlWindow = VeldridStartup.CreateWindow(new WindowCreateInfo
             {
                 WindowWidth = 1280,
                 WindowHeight = 720,
@@ -39,14 +41,14 @@ namespace ReCrafted.Editor.Core
             });
 
             // Shutdown on window close
-            Window.Closing += Shutdown;
+            SdlWindow.Closing += Shutdown;
 
-            GraphicsDevice = VeldridStartup.CreateGraphicsDevice(Window, new GraphicsDeviceOptions(true, null, true));
+            GraphicsDevice = VeldridStartup.CreateGraphicsDevice(SdlWindow, new GraphicsDeviceOptions(true, null, true));
             
-            Window.Resized += () =>
+            SdlWindow.Resized += () =>
             {
-                GraphicsDevice.MainSwapchain.Resize((uint)Window.Width, (uint)Window.Height);
-                _guiController.WindowResized(Window.Width, Window.Height);
+                GraphicsDevice.MainSwapchain.Resize((uint)SdlWindow.Width, (uint)SdlWindow.Height);
+                _guiController.WindowResized(SdlWindow.Width, SdlWindow.Height);
             };
         }
 
@@ -56,15 +58,17 @@ namespace ReCrafted.Editor.Core
             _commandList = GraphicsDevice.ResourceFactory.CreateCommandList();
 
             // Create GUI controller
-            _guiController = new ImGuiRenderer(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription, Window.Width, Window.Height);
+            _guiController = new ImGuiRenderer(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription, SdlWindow.Width, SdlWindow.Height);
 
             // Create main editor panel
-            _mainWindow = new MainWindow();
-            _mainWindow.Initialize();
-
-            var content = new ContentWindow();
-            content.Initialize();
-            _mainWindow.Children.Add(content);
+            MainWindow = new MainWindow();
+            MainWindow.Initialize();
+            _applicationWindows.Add(MainWindow);
+            
+            // Create content window
+            var content = MainWindow.DockPane.Dock(MainWindow.AddChildren<ContentWindow>());
+            var graph = content.Dock(MainWindow.AddChildren<GraphWindowBase>(), DockType.Horizontal, DockDirection.Up);
+            graph.Dock(MainWindow.AddChildren<ContentWindow>(), DockType.Vertical, DockDirection.Left);
             
             //var graph = new GraphWindowBase();
             //graph.Initialize();
@@ -78,8 +82,10 @@ namespace ReCrafted.Editor.Core
         {
             GraphicsDevice.WaitForIdle();
 
+            foreach(var window in _applicationWindows)
+                window?.Dispose();
+
             _contentManager.Dispose();
-            _mainWindow.Dispose();
             _guiController.Dispose();
             _commandList.Dispose();
             GraphicsDevice.Dispose();
@@ -88,9 +94,9 @@ namespace ReCrafted.Editor.Core
         protected override void OnUpdate()
         {
             // Pump window events
-            var inputSnapshot = Window.PumpEvents();
+            var inputSnapshot = SdlWindow.PumpEvents();
 
-            if (!Window.Exists)
+            if (!SdlWindow.Exists)
             {
                 Shutdown();
                 return;
@@ -101,16 +107,22 @@ namespace ReCrafted.Editor.Core
             // Update gui
             _guiController.Update(Time.DeltaTime, inputSnapshot);
 
-            // Update main panel
-            _mainWindow.Update();
+            // Update windows
+            foreach (var window in _applicationWindows)
+            {
+                window.Update();
+            }
 
             // Begin rendering
             _commandList.Begin();
             _commandList.SetFramebuffer(GraphicsDevice.MainSwapchain.Framebuffer);
             _commandList.ClearColorTarget(0, new RgbaFloat(0.12f, 0.12f, 0.12f, 1.0f));
 
-            // Render main panel
-            _mainWindow.Render();
+            // Render windows
+            foreach (var window in _applicationWindows)
+            {
+                window.Render();
+            }
 
             // Render ImGui
             _guiController.Render(GraphicsDevice, _commandList);
@@ -122,8 +134,8 @@ namespace ReCrafted.Editor.Core
         }
 
         public GraphicsDevice GraphicsDevice { get; private set; }
-
-        public Sdl2Window Window { get; private set; }
+        public MainWindow MainWindow { get; private set; }
+        public Sdl2Window SdlWindow { get; private set; }
 
         /// <summary>
         /// The current voxel editor application instance.

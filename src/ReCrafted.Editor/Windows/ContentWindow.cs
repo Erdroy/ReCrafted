@@ -9,7 +9,7 @@ using ReCrafted.Editor.Utilities;
 
 namespace ReCrafted.Editor.Windows
 {
-    public class ContentWindow : WindowBase
+    public class ContentWindow : DockableWindow
     {
         private string _baseContentPath;
 
@@ -27,7 +27,7 @@ namespace ReCrafted.Editor.Windows
         {
         }
 
-        public override void Render()
+        public override void OnRender()
         {
             if (ImGui.BeginMenuBar())
             {

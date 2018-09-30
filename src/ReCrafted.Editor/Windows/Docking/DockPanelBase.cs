@@ -3,11 +3,10 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.Numerics;
 
 namespace ReCrafted.Editor.Windows.Docking
 {
-    public class DockPanelBase : IDockHandler
+    public class DockPanelBase : IDockHandler, IDockable
     {
         public void Resize(Rectangle rect)
         {
@@ -16,15 +15,11 @@ namespace ReCrafted.Editor.Windows.Docking
         }
 
         protected virtual void OnResize() { }
-
-        public virtual void DebugDraw()
-        {
-            var drawList = ImGuiNET.ImGui.GetOverlayDrawList();
-            drawList.AddRect(new Vector2(Rect.X, Rect.Y), new Vector2(Rect.X + Rect.Width, Rect.Y + Rect.Height), 0xFFFFFFFF, 0.0f, -1, 1.0f);
-        }
-
+        
         public virtual DockPanelBase Dock(DockPanelBase other, DockType dockType, DockDirection dockDirection, float sizeMul = 0.5f)
         {
+            Debug.Assert(dockDirection != DockDirection.None);
+
             if (!(this is DockSplitter))
             {
                 Debug.Assert(Parent is DockSplitter);
