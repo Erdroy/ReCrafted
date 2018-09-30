@@ -1,4 +1,9 @@
 *.tmp
+*.vcxproj
+*.user
+*.filters
+*.sln
+*.DotSettings
 
 developer.json
 
@@ -14,3 +19,6 @@ obj/
 lib/
 docfx_project/
 packages/
+
+Debug/
+Release/

@@ -26,8 +26,8 @@ project "ReCrafted.Engine"
 	}
 
 	forceincludes { 
-		"../src/ReCrafted.Engine/Core/Memory.h",
-		"../src/ReCrafted.Engine/Core/Allocator.h" 
+		path.join(ROOT_DIR, "Core/Memory.h"),
+		path.join(ROOT_DIR, "Core/Allocator.h")
 	}
 	
 	-- add include directories
