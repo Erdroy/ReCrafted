@@ -30,7 +30,12 @@ namespace ReCrafted.Editor.Windows.Docking
             Debug.Assert(false);
             return null;
         }
-        
+
+        public void RecalculateLayout()
+        {
+            Root.Resize(Rect);
+        }
+
         public DockPanelBase Root { get; private set; }
     }
 }

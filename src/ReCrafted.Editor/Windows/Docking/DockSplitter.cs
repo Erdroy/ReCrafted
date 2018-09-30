@@ -96,7 +96,7 @@ namespace ReCrafted.Editor.Windows.Docking
         internal void Undock(DockPanelBase panel)
         {
             Debug.Assert(ChildA == panel || ChildB == panel);
-
+            
             var parentSplitter = (DockSplitter)Parent;
 
             if (ChildA == this)

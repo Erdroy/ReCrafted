@@ -77,8 +77,7 @@ namespace ReCrafted.Editor.Core
             graph.Dock(secondContentWindow, DockType.Vertical, DockDirection.Left);
 
             // Add console window
-            var console = MainWindow.AddChildren<ConsoleWindow>();
-            console.Focus();
+            MainWindow.AddChildren<ConsoleWindow>();
 
             // Initialize time
             Time.Init();

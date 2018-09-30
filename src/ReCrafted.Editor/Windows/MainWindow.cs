@@ -162,6 +162,7 @@ namespace ReCrafted.Editor.Windows
             };
 
             window.Initialize();
+            window.Focus();
             Children.Add(window);
             return window;
         }

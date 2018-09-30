@@ -107,6 +107,7 @@ namespace ReCrafted.Editor.Windows.Docking
             var splitter = (DockSplitter)Parent;
             splitter.Undock(this);
             OnUndock();
+            Parent = null;
         }
 
         /// <summary>
