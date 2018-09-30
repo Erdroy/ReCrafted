@@ -43,8 +43,6 @@ namespace ReCrafted.Editor.Windows
                 _focus = false;
             }
 
-            // TODO: Docking/Undocking implementation 
-
             if (!Floating)
             {
                 RenderDocked();
@@ -71,8 +69,9 @@ namespace ReCrafted.Editor.Windows
             ImGui.SetNextWindowPos(new Vector2(Rect.X, Rect.Y), Condition.Always);
             ImGui.SetNextWindowSize(new Vector2(Rect.Width, Rect.Height), Condition.Always);
             
-            if (ImGui.BeginWindow($"{WindowName}###{WindowId}", WindowSettings | WindowFlags.NoMove | WindowFlags.NoResize | WindowFlags.NoCollapse | WindowFlags.NoBringToFrontOnFocus))
+            if (ImGui.BeginWindow($"{WindowName}###{WindowId}", WindowSettings | WindowFlags.NoResize | WindowFlags.NoCollapse | WindowFlags.NoBringToFrontOnFocus))
             {
+                ProcessDocking();
                 OnRender();
                 ImGui.EndWindow();
             }
@@ -87,11 +86,27 @@ namespace ReCrafted.Editor.Windows
 
             if (ImGui.BeginWindow($"{WindowName}###{WindowId}", WindowSettings | WindowFlags.NoCollapse))
             {
+                ProcessDocking();
                 OnRender();
                 ImGui.EndWindow();
             }
 
             ImGui.PopStyleVar(2);
+        }
+
+        private void ProcessDocking()
+        {
+            if (ImGui.IsLastItemActive() && ImGui.IsMouseDragging(0, 20.0f))
+            {
+                if (!Floating)
+                {
+                    Undock();
+                }
+                else
+                {
+                    // TODO: Docking implementation
+                }
+            }
         }
 
         public bool Floating { get; set; } = true;

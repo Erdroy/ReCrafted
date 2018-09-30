@@ -99,7 +99,7 @@ namespace ReCrafted.Editor.Windows.Docking
             
             var parentSplitter = (DockSplitter)Parent;
 
-            if (ChildA == this)
+            if (ChildA == panel)
             {
                 // Return ChildB to the Parent of the splitter
                 if (parentSplitter.ChildA == this)
@@ -107,7 +107,7 @@ namespace ReCrafted.Editor.Windows.Docking
                 else
                     parentSplitter.ChildB = ChildB;
 
-                ChildB.Resize(Rect);
+                ChildB.Rect = Rect;
             }
             else
             {
@@ -117,8 +117,10 @@ namespace ReCrafted.Editor.Windows.Docking
                 else
                     parentSplitter.ChildA = ChildA;
 
-                ChildA.Resize(Rect);
+                ChildA.Rect = Rect;
             }
+            
+            MainWindow.Instance.DockPane.RecalculateLayout();
         }
 
         /// <summary>
