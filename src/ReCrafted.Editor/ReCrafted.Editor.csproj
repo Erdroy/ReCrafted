@@ -206,6 +206,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Logger.cs" />
     <Compile Include="Common\Time.cs" />
     <Compile Include="Content\Asset.cs" />
     <Compile Include="Content\AssetBaseType.cs" />
@@ -222,6 +223,7 @@
     <Compile Include="Content\JsonAsset.cs" />
     <Compile Include="Graphics\ImGuiRenderer.cs" />
     <Compile Include="Utilities\PathUtils.cs" />
+    <Compile Include="Windows\ConsoleWindow.cs" />
     <Compile Include="Windows\Content\ContentWindow.cs" />
     <Compile Include="Windows\DockableWindow.cs" />
     <Compile Include="Windows\Docking\DockDirection.cs" />
