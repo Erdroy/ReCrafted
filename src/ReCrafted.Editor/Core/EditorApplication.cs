@@ -75,6 +75,9 @@ namespace ReCrafted.Editor.Core
             
             _contentManager = new ContentManager();
             _contentManager.Initialize();
+
+            // Initialize time
+            Time.Init();
         }
 
         protected override void OnUnload()

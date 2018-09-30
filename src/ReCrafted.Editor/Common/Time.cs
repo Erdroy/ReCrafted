@@ -18,8 +18,10 @@ namespace ReCrafted.Editor.Common
         {
             var current = DateTime.Now;
             var diff = current - _lastUpdate;
+            var diffTotal = current - _initTime;
+
             DeltaTime = (float)diff.TotalSeconds;
-            CurrentTime = (float)(current - _initTime).TotalSeconds;
+            CurrentTime = (float)diffTotal.TotalSeconds;
             _lastUpdate = current;
         }
 
