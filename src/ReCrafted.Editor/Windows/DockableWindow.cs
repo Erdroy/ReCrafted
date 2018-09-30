@@ -10,9 +10,24 @@ namespace ReCrafted.Editor.Windows
     public abstract class DockableWindow : DockPanelBase, IWindow
     {
         public abstract void Initialize();
-        public abstract void Update();
+        public abstract void OnUpdate();
         public abstract void OnRender();
         public abstract void Dispose();
+
+        protected override void OnDock()
+        {
+            Floating = false;
+        }
+
+        protected override void OnUndock()
+        {
+            Floating = true;
+        }
+
+        public void Update()
+        {
+
+        }
 
         public void Render()
         {
@@ -34,7 +49,7 @@ namespace ReCrafted.Editor.Windows
             ImGui.SetNextWindowPos(new Vector2(Rect.X, Rect.Y), Condition.Always);
             ImGui.SetNextWindowSize(new Vector2(Rect.Width, Rect.Height), Condition.Always);
             
-            if (ImGui.BeginWindow($"{WindowName}###{WindowId}", WindowSettings | WindowFlags.NoMove | WindowFlags.NoResize | WindowFlags.NoCollapse))
+            if (ImGui.BeginWindow($"{WindowName}###{WindowId}", WindowSettings | WindowFlags.NoMove | WindowFlags.NoResize | WindowFlags.NoCollapse | WindowFlags.NoBringToFrontOnFocus))
             {
                 OnRender();
                 ImGui.EndWindow();
@@ -57,7 +72,7 @@ namespace ReCrafted.Editor.Windows
             ImGui.PopStyleVar(2);
         }
 
-        public bool Floating { get; set; } = false;
+        public bool Floating { get; set; }
         public int WindowId { get; internal set; }
         public Rectangle WindowRect => Rect;
         public abstract string WindowName { get; }

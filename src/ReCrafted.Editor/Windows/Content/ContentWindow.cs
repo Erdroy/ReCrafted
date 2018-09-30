@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using ImGuiNET;
 using ReCrafted.Editor.Utilities;
 
-namespace ReCrafted.Editor.Windows
+namespace ReCrafted.Editor.Windows.Content
 {
     public class ContentWindow : DockableWindow
     {
@@ -23,7 +23,7 @@ namespace ReCrafted.Editor.Windows
             Refresh();
         }
 
-        public override void Update()
+        public override void OnUpdate()
         {
         }
 

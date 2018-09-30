@@ -1,5 +1,6 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
+using System.Diagnostics;
 using System.Drawing;
 
 namespace ReCrafted.Editor.Windows.Docking
@@ -37,8 +38,18 @@ namespace ReCrafted.Editor.Windows.Docking
             Divide(Size);
         }
 
-        public void Divide(float size)
+        /// <summary>
+        /// Resizes this splitter to given size.
+        /// </summary>
+        /// <param name="size">The size percentage of this splitter. Must be in range [0.1-0.9].</param>
+        internal void Divide(float size)
         {
+            // Clamp
+            if (size < 0.1f)
+                size = 0.1f;
+            if (size > 0.9f)
+                size = 0.9f;
+
             var targetRect = Rect;
 
             switch (DockType)
@@ -77,9 +88,57 @@ namespace ReCrafted.Editor.Windows.Docking
             Size = size;
         }
 
+        /// <summary>
+        /// Undocks given panel from this splitter. 
+        /// Make sure that given panels is a level-0 child of this splitter. 
+        /// </summary>
+        /// <param name="panel">The children panel of this splitter to be undocked.</param>
+        internal void Undock(DockPanelBase panel)
+        {
+            Debug.Assert(ChildA == panel || ChildB == panel);
+
+            var parentSplitter = (DockSplitter)Parent;
+
+            if (ChildA == this)
+            {
+                // Return ChildB to the Parent of the splitter
+                if (parentSplitter.ChildA == this)
+                    parentSplitter.ChildA = ChildB;
+                else
+                    parentSplitter.ChildB = ChildB;
+
+                ChildB.Resize(Rect);
+            }
+            else
+            {
+                // Return ChildA to the Parent of the splitter
+                if (parentSplitter.ChildB == this)
+                    parentSplitter.ChildB = ChildA;
+                else
+                    parentSplitter.ChildA = ChildA;
+
+                ChildA.Resize(Rect);
+            }
+        }
+
+        /// <summary>
+        /// The size percentage of this splitter. Must be in range [0.1-0.9].
+        /// </summary>
         public float Size { get; private set; }
+        
+        /// <summary>
+        /// The type of docking in this splitter.
+        /// </summary>
         public DockType DockType { get; internal set; }
+
+        /// <summary>
+        /// The first children in this splitter.
+        /// </summary>
         public DockPanelBase ChildA { get; internal set; }
+
+        /// <summary>
+        /// The second children in this splitter. (Can be null!)
+        /// </summary>
         public DockPanelBase ChildB { get; internal set; }
     }
 }

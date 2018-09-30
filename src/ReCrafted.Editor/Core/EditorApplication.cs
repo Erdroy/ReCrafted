@@ -6,6 +6,7 @@ using ReCrafted.Editor.Common;
 using ReCrafted.Editor.Content;
 using ReCrafted.Editor.Graphics;
 using ReCrafted.Editor.Windows;
+using ReCrafted.Editor.Windows.Content;
 using ReCrafted.Editor.Windows.Docking;
 using ReCrafted.Editor.Windows.Graph;
 using Veldrid;
@@ -68,12 +69,10 @@ namespace ReCrafted.Editor.Core
             // Create content window
             var content = MainWindow.DockPane.Dock(MainWindow.AddChildren<ContentWindow>());
             var graph = content.Dock(MainWindow.AddChildren<GraphWindowBase>(), DockType.Horizontal, DockDirection.Up);
-            graph.Dock(MainWindow.AddChildren<ContentWindow>(), DockType.Vertical, DockDirection.Left);
-            
-            //var graph = new GraphWindowBase();
-            //graph.Initialize();
-            //_mainWindow.Children.Add(graph);
 
+            var secondContentWindow = MainWindow.AddChildren<ContentWindow>();
+            graph.Dock(secondContentWindow, DockType.Vertical, DockDirection.Left);
+            
             _contentManager = new ContentManager();
             _contentManager.Initialize();
         }

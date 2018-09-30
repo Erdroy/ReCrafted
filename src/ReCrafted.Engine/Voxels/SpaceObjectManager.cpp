@@ -11,6 +11,7 @@
 #include "Meshing/Transvoxel/TransvoxelMesher.h"
 
 #include <concurrentqueue.h>
+#include "Scripting/ScriptingEngine.h"
 
 SINGLETON_IMPL(SpaceObjectManager)
 
@@ -46,6 +47,11 @@ void SpaceObjectManager::OnDispose()
 void SpaceObjectManager::WorkerFunction()
 {
     Platform::SetThreadName("SpaceObjectManager Worker");
+
+    // Attach this thread to mono
+    ScriptingEngine::AttachCurrentThread();
+
+    Logger::Log("SpaceObjectManager thread startup");
 
     // create mesher
     //cvar mesher = new MCMesher();

@@ -15,12 +15,22 @@ namespace ReCrafted.Editor.Windows.Docking
         }
 
         protected virtual void OnResize() { }
-        
+        protected virtual void OnDock() { }
+        protected virtual void OnUndock() { }
+
+        /// <summary>
+        /// Docks given panel to this panel using specified docking type, size and direction.
+        /// </summary>
+        /// <param name="other">The panel that will be docked.</param>
+        /// <param name="dockType">The dock type.</param>
+        /// <param name="dockDirection">The dock direction.</param>
+        /// <param name="sizeMul">The size percentage multiplier. Must be in range [0.1-0.9].</param>
+        /// <returns>The docked panel (other).</returns>
         public virtual DockPanelBase Dock(DockPanelBase other, DockType dockType, DockDirection dockDirection, float sizeMul = 0.5f)
         {
             Debug.Assert(dockDirection != DockDirection.None);
 
-            if (!(this is DockSplitter))
+            if (!(this is DockSplitter)) // TODO: Refactor
             {
                 Debug.Assert(Parent is DockSplitter);
                 var parentSplitter = (DockSplitter) Parent;
@@ -42,6 +52,7 @@ namespace ReCrafted.Editor.Windows.Docking
                     parentSplitter.ChildB = splitter;
                 }
 
+                other.OnDock();
                 return other;
             }
             else
@@ -79,12 +90,32 @@ namespace ReCrafted.Editor.Windows.Docking
                         throw new ArgumentOutOfRangeException();
                 }
 
+                other.OnDock();
                 return other;
             }
         }
 
+        /// <summary>
+        /// Undocks this panel from panel. Possibly makes the window floating.
+        /// </summary>
+        public void Undock()
+        {
+            Debug.Assert(!(this is DockSplitter));
+            Debug.Assert(Parent is DockSplitter);
+
+            var splitter = (DockSplitter)Parent;
+            splitter.Undock(this);
+            OnUndock();
+        }
+
+        /// <summary>
+        /// The size of this panel. Also the position and size of window.
+        /// </summary>
         public Rectangle Rect { get; set; }
-        
+ 
+        /// <summary>
+        /// The parent panel.
+        /// </summary>
         public DockPanelBase Parent { get; set; }
     }
 }

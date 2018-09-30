@@ -92,6 +92,14 @@ namespace ReCrafted.Editor.Windows
 
                 if (ImGui.BeginMenu("Edit"))
                 {
+                    if (ImGui.MenuItem("Undo"))
+                    {
+                    }
+
+                    if (ImGui.MenuItem("Redo"))
+                    {
+                    }
+
                     ImGui.EndMenu();
                 }
 
