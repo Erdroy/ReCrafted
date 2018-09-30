@@ -28,6 +28,7 @@ namespace ReCrafted.Editor.Windows
             var style = ImGui.GetStyle();
 
             style.ScrollbarRounding = 2.0f;
+            style.WindowPadding = new Vector2(4.0f, 4.0f);
 
             style.SetColor(ColorTarget.TitleBg, new Vector4(0.25f, 0.25f, 0.25f, 1.0f));
             style.SetColor(ColorTarget.TitleBgCollapsed, new Vector4(0.28f, 0.28f, 0.28f, 1.0f));

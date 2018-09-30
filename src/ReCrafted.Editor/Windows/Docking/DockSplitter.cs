@@ -15,7 +15,7 @@ namespace ReCrafted.Editor.Windows.Docking
             Size = size;
 
             ChildA.Parent = this;
-
+            
             Divide(size);
         }
 

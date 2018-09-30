@@ -9,12 +9,15 @@ namespace ReCrafted.Editor.Windows
 {
     public abstract class DockableWindow : DockPanelBase, IWindow
     {
+        private bool _focus;
+
         public abstract void Initialize();
-        public abstract void OnUpdate();
-        public abstract void OnRender();
         public abstract void Dispose();
 
-        protected override void OnDock()
+        public virtual void OnUpdate() { }
+        public virtual void OnRender() { }
+
+        protected internal override void OnDock()
         {
             Floating = false;
         }
@@ -24,13 +27,24 @@ namespace ReCrafted.Editor.Windows
             Floating = true;
         }
 
+        protected virtual void OnFocus() { }
+
         public void Update()
         {
-
+            OnUpdate();
         }
 
         public void Render()
         {
+            if (_focus)
+            {
+                ImGui.SetNextWindowFocus();
+                OnFocus();
+                _focus = false;
+            }
+
+            // TODO: Docking/Undocking implementation 
+
             if (!Floating)
             {
                 RenderDocked();
@@ -39,6 +53,14 @@ namespace ReCrafted.Editor.Windows
             {
                 RenderFloating();
             }
+        }
+
+        /// <summary>
+        /// Sets focus for this window.
+        /// </summary>
+        public void Focus()
+        {
+            _focus = true;
         }
 
         private void RenderDocked()
@@ -62,7 +84,7 @@ namespace ReCrafted.Editor.Windows
         {
             ImGui.PushStyleVar(StyleVar.WindowBorderSize, 1.0f);
             ImGui.PushStyleVar(StyleVar.WindowRounding, 3.0f);
-            
+
             if (ImGui.BeginWindow($"{WindowName}###{WindowId}", WindowSettings | WindowFlags.NoCollapse))
             {
                 OnRender();
@@ -72,7 +94,7 @@ namespace ReCrafted.Editor.Windows
             ImGui.PopStyleVar(2);
         }
 
-        public bool Floating { get; set; }
+        public bool Floating { get; set; } = true;
         public int WindowId { get; internal set; }
         public Rectangle WindowRect => Rect;
         public abstract string WindowName { get; }

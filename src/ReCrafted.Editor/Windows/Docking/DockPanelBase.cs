@@ -15,7 +15,7 @@ namespace ReCrafted.Editor.Windows.Docking
         }
 
         protected virtual void OnResize() { }
-        protected virtual void OnDock() { }
+        protected internal virtual void OnDock() { }
         protected virtual void OnUndock() { }
 
         /// <summary>
@@ -29,6 +29,7 @@ namespace ReCrafted.Editor.Windows.Docking
         public virtual DockPanelBase Dock(DockPanelBase other, DockType dockType, DockDirection dockDirection, float sizeMul = 0.5f)
         {
             Debug.Assert(dockDirection != DockDirection.None);
+            Debug.Assert(other.CanBeDocked);
 
             if (!(this is DockSplitter)) // TODO: Refactor
             {
@@ -117,5 +118,10 @@ namespace ReCrafted.Editor.Windows.Docking
         /// The parent panel.
         /// </summary>
         public DockPanelBase Parent { get; set; }
+
+        /// <summary>
+        /// The state of this panel that makes it unable to dock when false.
+        /// </summary>
+        public virtual bool CanBeDocked { get; set; } = true;
     }
 }

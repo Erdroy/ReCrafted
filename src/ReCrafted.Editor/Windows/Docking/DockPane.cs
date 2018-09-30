@@ -17,13 +17,16 @@ namespace ReCrafted.Editor.Windows.Docking
         {
             // Dock to fill
             Debug.Assert(Root == null);
+            Debug.Assert(other.CanBeDocked);
             Root = new DockSplitter(this, other);
+            other.OnDock();
             return other;
         }
 
         public override DockPanelBase Dock(DockPanelBase other, DockType dockType, DockDirection dockDirection, float sizeMul = 0.5f)
         {
             // TODO: Docking implementation
+            Debug.Assert(other.CanBeDocked);
             Debug.Assert(false);
             return null;
         }

@@ -1,7 +1,6 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
 using System.Collections.Generic;
-using ImGuiNET;
 using ReCrafted.Editor.Common;
 using ReCrafted.Editor.Content;
 using ReCrafted.Editor.Graphics;
@@ -60,6 +59,10 @@ namespace ReCrafted.Editor.Core
 
             // Create GUI controller
             _guiController = new ImGuiRenderer(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription, SdlWindow.Width, SdlWindow.Height);
+            
+            // Create content manager
+            _contentManager = new ContentManager();
+            _contentManager.Initialize();
 
             // Create main editor panel
             MainWindow = new MainWindow();
@@ -72,9 +75,6 @@ namespace ReCrafted.Editor.Core
 
             var secondContentWindow = MainWindow.AddChildren<ContentWindow>();
             graph.Dock(secondContentWindow, DockType.Vertical, DockDirection.Left);
-            
-            _contentManager = new ContentManager();
-            _contentManager.Initialize();
 
             // Initialize time
             Time.Init();
