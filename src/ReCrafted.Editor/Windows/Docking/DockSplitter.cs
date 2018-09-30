@@ -2,6 +2,7 @@
 
 using System.Diagnostics;
 using System.Drawing;
+using System.Numerics;
 
 namespace ReCrafted.Editor.Windows.Docking
 {
@@ -96,31 +97,62 @@ namespace ReCrafted.Editor.Windows.Docking
         internal void Undock(DockPanelBase panel)
         {
             Debug.Assert(ChildA == panel || ChildB == panel);
-            
+            Debug.Assert(Parent is DockSplitter);
+
             var parentSplitter = (DockSplitter)Parent;
 
             if (ChildA == panel)
             {
-                // Return ChildB to the Parent of the splitter
+                // Return ChildB to the Parent of this splitter
                 if (parentSplitter.ChildA == this)
                     parentSplitter.ChildA = ChildB;
                 else
                     parentSplitter.ChildB = ChildB;
 
-                ChildB.Rect = Rect;
+                ChildB.Parent = parentSplitter;
             }
-            else
+
+            if (ChildB == panel)
             {
-                // Return ChildA to the Parent of the splitter
+                // Return ChildA to the Parent of this splitter
                 if (parentSplitter.ChildB == this)
                     parentSplitter.ChildB = ChildA;
                 else
                     parentSplitter.ChildA = ChildA;
 
-                ChildA.Rect = Rect;
+                ChildA.Parent = parentSplitter;
             }
             
             MainWindow.Instance.DockPane.RecalculateLayout();
+        }
+
+        /// <summary>
+        /// Checks if given position is inside this panel.
+        /// </summary>
+        /// <param name="pos">The position.</param>
+        /// <returns>This object is returned when it is intersecting or null, otherwise.</returns>
+        public override DockPanelBase FindIntersecting(Vector2 pos)
+        {
+            var a = ChildA?.FindIntersecting(pos);
+            var b = ChildB?.FindIntersecting(pos);
+
+            if (a != null)
+            {
+                if (a is DockSplitter)
+                    return (a as DockSplitter).FindIntersecting(pos);
+
+                return a;
+            }
+
+            if(b != null)
+            {
+                if (b is DockSplitter)
+                    return (b as DockSplitter).FindIntersecting(pos);
+
+                return b;
+            }
+
+            return null;
         }
 
         /// <summary>

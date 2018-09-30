@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Numerics;
 
 namespace ReCrafted.Editor.Windows.Docking
 {
@@ -108,6 +109,16 @@ namespace ReCrafted.Editor.Windows.Docking
             splitter.Undock(this);
             OnUndock();
             Parent = null;
+        }
+
+        /// <summary>
+        /// Checks if given position is inside this panel.
+        /// </summary>
+        /// <param name="pos">The position.</param>
+        /// <returns>This object is returned when it is intersecting or null, otherwise.</returns>
+        public virtual DockPanelBase FindIntersecting(Vector2 pos)
+        {
+            return Rect.IntersectsWith(new Rectangle((int)pos.X, (int)pos.Y, 1, 1)) ? this : null;
         }
 
         /// <summary>

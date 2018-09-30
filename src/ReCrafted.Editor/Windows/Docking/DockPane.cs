@@ -2,6 +2,7 @@
 
 using System.Diagnostics;
 using System.Drawing;
+using System.Numerics;
 
 namespace ReCrafted.Editor.Windows.Docking
 {
@@ -34,6 +35,16 @@ namespace ReCrafted.Editor.Windows.Docking
         public void RecalculateLayout()
         {
             Root.Resize(Rect);
+        }
+        
+        /// <summary>
+        /// Checks if given position is inside this panel.
+        /// </summary>
+        /// <param name="pos">The position.</param>
+        /// <returns>This object is returned when it is intersecting or null, otherwise.</returns>
+        public override DockPanelBase FindIntersecting(Vector2 pos)
+        {
+            return Root.FindIntersecting(pos);
         }
 
         public DockPanelBase Root { get; private set; }
