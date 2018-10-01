@@ -111,13 +111,7 @@ namespace ReCrafted.Editor.Core
 
             // Update gui
             _guiController.Update(Time.DeltaTime, inputSnapshot);
-
-            // Update windows
-            foreach (var window in _applicationWindows)
-            {
-                window.Update();
-            }
-
+            
             // Begin rendering
             _commandList.Begin();
             _commandList.SetFramebuffer(GraphicsDevice.MainSwapchain.Framebuffer);

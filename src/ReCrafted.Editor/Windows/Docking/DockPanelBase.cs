@@ -9,15 +9,17 @@ namespace ReCrafted.Editor.Windows.Docking
 {
     public class DockPanelBase : IDockHandler, IDockable
     {
+        protected virtual void OnResize() { }
+        protected internal virtual void OnDock() { }
+        protected virtual void OnUndock() { }
+
         public void Resize(Rectangle rect)
         {
             Rect = rect;
             OnResize();
         }
 
-        protected virtual void OnResize() { }
-        protected internal virtual void OnDock() { }
-        protected virtual void OnUndock() { }
+        public virtual void Update() { }
 
         /// <summary>
         /// Docks given panel to this panel using specified docking type, size and direction.
@@ -38,8 +40,7 @@ namespace ReCrafted.Editor.Windows.Docking
             {
                 Debug.Assert(Parent is DockSplitter);
                 var parentSplitter = (DockSplitter) Parent;
-
-
+                
                 if (parentSplitter.ChildA == this)
                 {
                     var p1 = dockDirection == DockDirection.Left ? other : parentSplitter.ChildA;

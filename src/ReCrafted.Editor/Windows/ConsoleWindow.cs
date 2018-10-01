@@ -33,11 +33,7 @@ namespace ReCrafted.Editor.Windows
         {
             Logger.Instance.LogWritten -= AddLog;
         }
-
-        public override void OnUpdate()
-        {
-        }
-
+        
         public override void OnRender()
         {
             ImGui.PushStyleColor(ColorTarget.Button, new Vector4(0.40f, 0.40f, 0.40f, 0.25f));

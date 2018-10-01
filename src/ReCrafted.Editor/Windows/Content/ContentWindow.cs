@@ -22,11 +22,7 @@ namespace ReCrafted.Editor.Windows.Content
             CurrentDirectory = _baseContentPath;
             Refresh();
         }
-
-        public override void OnUpdate()
-        {
-        }
-
+        
         public override void OnRender()
         {
             if (ImGui.BeginMenuBar())

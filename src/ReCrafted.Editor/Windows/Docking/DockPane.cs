@@ -3,6 +3,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
+using ImGuiNET;
 
 namespace ReCrafted.Editor.Windows.Docking
 {
@@ -13,7 +14,15 @@ namespace ReCrafted.Editor.Windows.Docking
             Rect = rect;
             Root?.Resize(rect);
         }
-        
+
+        public override void Update()
+        {
+            if(ImGui.IsMouseReleased(0))
+                DockSplitter.IsAnySplitterDragging = false;
+
+            Root?.Update();
+        }
+
         public DockPanelBase Dock(DockPanelBase other)
         {
             // Dock to fill
@@ -34,7 +43,7 @@ namespace ReCrafted.Editor.Windows.Docking
 
         public void RecalculateLayout()
         {
-            Root.Resize(Rect);
+            Root?.Resize(Rect);
         }
         
         /// <summary>

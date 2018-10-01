@@ -8,7 +8,6 @@ namespace ReCrafted.Editor.Windows
     public interface IWindow
     {
         void Initialize();
-        void Update();
         void Render();
         void Dispose();
 

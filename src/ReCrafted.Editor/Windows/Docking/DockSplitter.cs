@@ -3,11 +3,14 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
+using ImGuiNET;
 
 namespace ReCrafted.Editor.Windows.Docking
 {
     public class DockSplitter : DockPanelBase
     {
+        private bool _isMoving;
+
         public DockSplitter(DockPanelBase parent, DockPanelBase a, float size = 0.5f)
         {
             Parent = parent;
@@ -37,6 +40,71 @@ namespace ReCrafted.Editor.Windows.Docking
         protected override void OnResize()
         {
             Divide(Size);
+        }
+
+        public override void Update()
+        {
+            if (_isMoving && ImGui.IsMouseReleased(0))
+                _isMoving = false;
+
+            // TODO: Splitter move implementation
+            var mousePos = ImGui.GetMousePos();
+            if (ChildA != null && ChildB != null)
+            {
+                switch (DockType)
+                {
+                    case DockType.Horizontal:
+                        {
+                            var rect = new Rectangle(ChildB.Rect.X, ChildB.Rect.Y - 2, ChildB.Rect.Width, 5);
+
+                            if (rect.Contains((int)mousePos.X, (int)mousePos.Y))
+                            {
+                                var drawList = ImGui.GetOverlayDrawList();
+                                drawList.AddLine(new Vector2(ChildB.Rect.X, ChildB.Rect.Y), new Vector2(ChildB.Rect.Right, ChildB.Rect.Y), 0xA0151515, 5.0f);
+                                if (ImGui.IsMouseDragging(0, 0.0f))
+                                {
+                                    _isMoving = true;
+                                    IsAnySplitterDragging = true;
+                                }
+                            }
+                            break;
+                        }
+                    case DockType.Vertical:
+                        {
+                            var rect = new Rectangle(ChildB.Rect.X - 2, ChildB.Rect.Y, 5, ChildB.Rect.Height);
+
+                            if (rect.Contains((int)mousePos.X, (int)mousePos.Y))
+                            {
+                                var drawList = ImGui.GetOverlayDrawList();
+                                drawList.AddLine(new Vector2(ChildB.Rect.X, ChildB.Rect.Y), new Vector2(ChildB.Rect.X, ChildB.Rect.Bottom), 0xA0151515, 5.0f);
+                                if (ImGui.IsMouseDragging(0, 0.0f))
+                                {
+                                    _isMoving = true;
+                                    IsAnySplitterDragging = true;
+                                }
+                            }
+                            break;
+                        }
+                }
+
+                if (_isMoving)
+                {
+                    switch (DockType)
+                    {
+                        case DockType.Horizontal:
+                            Size = (Rect.Top + mousePos.Y) / Rect.Bottom;
+                            break;
+                        case DockType.Vertical:
+                            Size = (Rect.Left + mousePos.X) / Rect.Right;
+                            break;
+                    }
+
+                    Divide(Size);
+                }
+            }
+
+            ChildA?.Update();
+            ChildB?.Update();
         }
 
         /// <summary>
@@ -174,5 +242,7 @@ namespace ReCrafted.Editor.Windows.Docking
         /// The second children in this splitter. (Can be null!)
         /// </summary>
         public DockPanelBase ChildB { get; internal set; }
+
+        public static bool IsAnySplitterDragging { get; set; }
     }
 }

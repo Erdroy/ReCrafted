@@ -62,14 +62,6 @@ namespace ReCrafted.Editor.Windows
             // Resize dock pane
             DockPane.Resize(WindowRect);
         }
-
-        public void Update()
-        {
-            foreach (var child in Children)
-            {
-                child.Update();
-            }
-        }
         
         public void Render()
         {
@@ -79,6 +71,9 @@ namespace ReCrafted.Editor.Windows
             var windowRect = WindowRect;
 
             ImGui.BeginWindow("Main", ref opened, new Vector2(windowRect.Width, windowRect.Height), 0.0f, WindowSettings);
+
+            // Update DockPane
+            DockPane.Update();
             
             if (ImGui.BeginMainMenuBar())
             {
@@ -123,6 +118,7 @@ namespace ReCrafted.Editor.Windows
                     if (ImGui.MenuItem("Test - Load asset"))
                     {
                         var asset = ContentManager.Load<TextureAsset>("../content/TestTexture.rcasset");
+                        asset.Unload();
                     }
 
                     ImGui.EndMenu();

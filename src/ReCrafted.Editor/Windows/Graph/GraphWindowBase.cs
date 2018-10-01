@@ -12,11 +12,7 @@ namespace ReCrafted.Editor.Windows.Graph
         public override void Initialize()
         {
         }
-
-        public override void OnUpdate()
-        {
-        }
-
+        
         public override void OnRender()
         {
             _drawList = ImGui.GetWindowDrawList();

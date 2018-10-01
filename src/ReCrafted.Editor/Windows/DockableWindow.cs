@@ -18,7 +18,6 @@ namespace ReCrafted.Editor.Windows
         public abstract void Initialize();
         public abstract void Dispose();
         
-        public virtual void OnUpdate() { }
         public virtual void OnRender() { }
         public virtual void OnOpen() { }
         public virtual void OnHide() { }
@@ -55,12 +54,7 @@ namespace ReCrafted.Editor.Windows
             WindowVisible = false;
             Dispose();
         }
-
-        public void Update()
-        {
-            OnUpdate();
-        }
-
+        
         public void Render()
         {
             if (_focus)
@@ -123,6 +117,9 @@ namespace ReCrafted.Editor.Windows
 
         private void ProcessDocking()
         {
+            if (DockSplitter.IsAnySplitterDragging)
+                return;
+
             if (Floating)
             {
                 if (_dockTarget != null && ImGui.IsMouseReleased(0))
