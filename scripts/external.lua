@@ -10,7 +10,7 @@ externalproject "ReCrafted.API"
    kind "SharedLib"
    language "C#"
    
-externalproject "editor/ReCrafted.Editor"
+externalproject "ReCrafted.Editor"
    location (path.join(ROOT_DIR, "src/ReCrafted.Editor"))
    uuid "F42BA546-F379-4D44-B404-A096EF0FC363"
    kind "WindowedApp"
