@@ -26,7 +26,7 @@ public:
 public:
     virtual void Render(RenderableRenderMode renderMode) = 0;
     
-    virtual RefPtr<Shader> GetShader() const = 0;
+    virtual Shader* GetShader() const = 0;
     virtual Vector3& GetPosition() = 0;
     virtual BoundingBox& GetBounds() = 0;
 

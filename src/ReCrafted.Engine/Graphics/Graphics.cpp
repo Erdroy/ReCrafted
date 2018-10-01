@@ -17,6 +17,7 @@
 #include "RenderTasks/ScreenshotTask.h"
 #include "Rendering/PostProcessing/PPVignette.h"
 #include "Rendering/PostProcessing/PPSSAO.h"
+#include "Content/ContentManager.h"
 
 SINGLETON_IMPL(Graphics)
 
@@ -26,8 +27,8 @@ void Graphics::LoadInternalShaders()
 {
     Logger::LogInfo("Loading internal shaders");
 
-    m_gbufferFillShader = Shader::LoadShader("../assets/shaders/StandardShader.shader");
-    m_gbufferCombine = Shader::LoadShader("../assets/shaders/GBufferCombine.shader");
+    m_gbufferFillShader = ContentManager::LoadAsset<Shader>("Shaders/StandardShader");
+    m_gbufferCombine = ContentManager::LoadAsset<Shader>("Shaders/GBufferCombine");
 }
 
 void Graphics::CreateRenderBuffers()
@@ -162,8 +163,8 @@ void Graphics::OnDispose()
     Logger::LogInfo("Unloaded render buffers");
 
     // Dispose shaders
-    SafeDispose(m_gbufferFillShader);
-    SafeDispose(m_gbufferCombine);
+    m_gbufferFillShader->Unload();
+    m_gbufferCombine->Unload();
     Logger::LogInfo("Unloaded render shaders");
 
     // check resource leaks
@@ -394,7 +395,7 @@ void Graphics::OnFramePresent()
     Profiler::EndProfile();*/
 }
 
-void Graphics::Draw(const RefPtr<Mesh>& mesh, const RefPtr<Shader>& shader)
+void Graphics::Draw(const RefPtr<Mesh>& mesh, Shader* shader)
 {
     if (!(RENDERER_CHECK_HANDLE(mesh->m_vertexBuffer)) || !(RENDERER_CHECK_HANDLE(mesh->m_indexBuffer)))
         return;
@@ -416,6 +417,11 @@ void Graphics::Draw(const RefPtr<Mesh>& mesh)
 }
 
 void Graphics::SetShader(const RefPtr<Shader>& shader)
+{
+    SetShader(shader.get());
+}
+
+void Graphics::SetShader(Shader* shader)
 {
     m_currentShader = shader;
     Renderer::ApplyShader(shader->m_shaderHandle, 0);

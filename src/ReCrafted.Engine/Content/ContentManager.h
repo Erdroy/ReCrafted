@@ -117,8 +117,13 @@ public:
     template<class TAsset>
     static TAsset* LoadAsset(const char* assetFile)
     {
+        // Build file name
+        cvar assetName = std::string(assetFile);
+        cvar file = "../content/" + assetName + ".rcasset";
+
         cvar asset = CreateAsset<TAsset>(false);
-        if (m_instance->LoadAsset(asset, assetFile))
+        asset->OnLoadBegin(file);
+        if (m_instance->LoadAsset(asset, file.c_str()))
         {
             delete asset;
             return nullptr;
@@ -139,11 +144,16 @@ public:
     template<class TAsset>
     static void LoadAsset(const char* assetFile, const Action<void, Asset*>& onLoad)
     {
+        // Build file name
+        cvar assetName = std::string(assetFile);
+        cvar file = "../content/" + assetName + ".rcasset";
+
         cvar asset = CreateAsset<TAsset>(false);
+        asset->OnLoadBegin(file);
 
         // Create and queue task
         var customTask = new AssetLoadTask();
-        customTask->file = assetFile;
+        customTask->file = file;
         customTask->asset = asset;
         customTask->callback = onLoad;
         Task::CreateTask(customTask)->Queue();

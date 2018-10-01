@@ -32,7 +32,7 @@ private:
     Renderer::Texture2DHandle m_buffer0 = {};
     Renderer::Texture2DHandle m_buffer1 = {};
 
-    RefPtr<Shader> m_lastShader = nullptr;
+    Shader* m_lastShader = nullptr;
 
 private:
     static void SortRenderList(const RenderList& list);

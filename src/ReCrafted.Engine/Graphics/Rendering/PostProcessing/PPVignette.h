@@ -10,7 +10,7 @@
 class PPVignette : public PostProcessingBase
 {
 private:
-    RefPtr<Shader> m_shader = nullptr;
+    Shader* m_shader = nullptr;
 
 protected:
     void OnInitialize() override;
@@ -18,7 +18,7 @@ protected:
     void Dispose() override; 
     
 private:
-    RefPtr<Shader> GetShader() const override;
+    Shader* GetShader() const override;
 };
 
 #endif // PPVIGNETTE_H

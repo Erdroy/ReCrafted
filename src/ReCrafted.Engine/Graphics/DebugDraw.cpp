@@ -88,7 +88,7 @@ namespace DebugMesh
 
 void DebugDraw::OnInit()
 {
-    m_debugShader = Renderer::CreateShader("../assets/shaders/Debug.shader");
+    m_debugShader = Renderer::CreateShader("../content/Shaders/Debug.rcasset");
 
     m_linesVB = Renderer::CreateVertexBuffer(Batch::maxPointsPerBatch, sizeof(Point), true);
     m_trianglesVB = Renderer::CreateVertexBuffer(Batch::maxVerticesPerBatch, sizeof(Vertex), true);

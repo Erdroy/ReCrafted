@@ -119,7 +119,7 @@ namespace Renderer
         m_running = true;
 
         // load shaders
-        m_blitShader = CreateShader("../assets/shaders/Blit.shader");
+        m_blitShader = CreateShader("../content/Shaders/Blit.rcasset");
 
         // create quad mesh
         static float quadVertices[16] = {

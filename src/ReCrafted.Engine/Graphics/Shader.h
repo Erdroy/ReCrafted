@@ -11,10 +11,12 @@
 #include "Texture2D.h"
 #include "Renderer/Renderer.hpp"
 
+#include "Content/Assets/JsonAsset.h"
+
 /**
  * \brief Shader class.
  */
-class Shader : IResource
+class Shader : public JsonAsset
 {
     friend class Graphics;
     friend class UI;
@@ -24,7 +26,15 @@ private:
     Text m_shaderName;
 
 public:
-IRESOURCE_IMPL(Shader)
+    void OnInitialize() override;
+    void OnLoadBegin(const std::string& fileName) override;
+    void OnDeserializeJson(uint16_t version, const json& json) override;
+    void OnUnload() override;
+
+    AssetType GetAssetType() override
+    {
+        return AssetType::Shader;
+    }
 
 public:
     /**
@@ -60,11 +70,6 @@ public:
     }
 
     /**
-	 * \brief Disposes this shader.
-	 */
-    void Dispose() override;
-
-    /**
      * \brief Gets the shader handle.
      * \return The shader handle.
      */
@@ -72,14 +77,6 @@ public:
     {
         return m_shaderHandle;
     }
-
-public:
-    /**
-	 * \brief Loads shader by name.
-	 * \param shaderName The shader name, eg.: GBufferStandard etc.
-	 * \return The loaded shader, or nullptr when file not found.
-	 */
-    static RefPtr<Shader> LoadShader(const char* shaderName);
 };
 
 #endif // SHADER_H

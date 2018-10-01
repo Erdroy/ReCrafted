@@ -7,6 +7,7 @@
 #include "Storage/VoxelStorage.h"
 #include "Generator/VoxelGenerator.h"
 #include "Graphics/Graphics.h"
+#include "Content/ContentManager.h"
 
 SpaceObject* SpaceObject::current;
 
@@ -22,7 +23,7 @@ void SpaceObject::Init(SpaceObjectSettings& settings)
     m_updateProfileName = Text::Format(TEXT_CONST("SpaceObject({0})::Update"), settings.name).StdStr();
 
     // Load shader
-    m_terrainShader = Shader::LoadShader("../assets/shaders/TerrainShader.shader");
+    m_terrainShader = ContentManager::LoadAsset<Shader>("Shaders/TerrainShader");
 
     // Load sample textures
     var texture = Texture2D::CreateTexture(Renderer::TextureFormat::RGBA8);
@@ -88,7 +89,7 @@ void SpaceObject::Update()
 
 void SpaceObject::Dispose()
 {
-    SafeDispose(m_terrainShader);
+    m_terrainShader->Unload();
     SafeDispose(m_octree);
     SafeDispose(m_voxelStorage);
 }

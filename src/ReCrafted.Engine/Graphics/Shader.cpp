@@ -1,24 +1,26 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Shader.h"
-#include "../Platform/Platform.h"
-
-#include "Core/Logger.h"
 
 #include <json.hpp>
 
-void Shader::Dispose()
+void Shader::OnInitialize()
+{
+    m_shaderHandle = Renderer::CreateShader(m_shaderName.StdStr().c_str());
+}
+
+void Shader::OnLoadBegin(const std::string& fileName)
+{
+    m_shaderName = Text(fileName.c_str());
+}
+
+void Shader::OnDeserializeJson(uint16_t version, const json& json)
+{
+
+}
+
+void Shader::OnUnload()
 {
     Logger::LogInfo("Unloading shader '{0}'", m_shaderName.StdStr());
     Renderer::DestroyShader(m_shaderHandle);
-}
-
-RefPtr<Shader> Shader::LoadShader(const char* shaderName)
-{
-    RefPtr<Shader> shader(new Shader);
-
-    Logger::LogInfo("Loading shader {0}", shaderName);
-    shader->m_shaderName = Text(shaderName);
-    shader->m_shaderHandle = Renderer::CreateShader(shaderName);
-    return shader;
 }

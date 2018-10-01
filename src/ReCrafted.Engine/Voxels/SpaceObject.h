@@ -30,7 +30,7 @@ private:
     RefPtr<VoxelGenerator> m_generator = nullptr;
     RefPtr<VoxelStorage> m_voxelStorage = nullptr;
 
-    RefPtr<Shader> m_terrainShader = nullptr;
+    Shader* m_terrainShader = nullptr;
 
     std::string m_debugName;
     std::string m_updateProfileName;

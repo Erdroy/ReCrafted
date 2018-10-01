@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <tuple>
+#include "Content/ContentManager.h"
 
 SINGLETON_IMPL(UI)
 
@@ -97,7 +98,7 @@ void UI::OnInit()
     m_indexBuffer = Renderer::CreateIndexBuffer(m_maxIndexCount, false, true);
 
     // load shader
-    m_shader = Shader::LoadShader("../assets/shaders/UIDefault.shader");
+    m_shader = ContentManager::LoadAsset<Shader>("Shaders/UIDefault");
 
     // allocate draw command for first upload (it's 1/4 of max vertex count as there is 4 vertexes per command)
     m_drawCmds = Array<drawcmd>();
@@ -113,8 +114,8 @@ void UI::OnDispose()
     Renderer::Free(m_vertexBufferData);
     Renderer::Free(m_indexBufferData);
 
-    // Dispose shader
-    SafeDispose(m_shader);
+    // Unload shader
+    m_shader->Unload();
 
     // Release draw cmd array
     m_drawCmds.Release();

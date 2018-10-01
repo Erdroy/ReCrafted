@@ -32,7 +32,6 @@ void EngineMain::RegisterComponents() const
     m_componentManager->RegisterComponent(TaskManager::GetInstance());
     m_componentManager->RegisterComponent(Graphics::GetInstance());
     m_componentManager->RegisterComponent(Application::GetInstance());
-    m_componentManager->RegisterComponent(ContentManager::GetInstance());
     m_componentManager->RegisterComponent(Profiler::GetInstance());
     m_componentManager->RegisterComponent(Time::GetInstance());
     m_componentManager->RegisterComponent(Input::GetInstance());
@@ -129,6 +128,7 @@ void EngineMain::Initialize()
     // initialize basic pre-log components
     m_componentManager->RegisterComponent(ScriptingEngine::GetInstance());
     m_componentManager->RegisterComponent(Logger::GetInstance());
+    m_componentManager->RegisterComponent(ContentManager::GetInstance());
 
     // Say something, as now we have scripting and logger initialized, 
     // so we can scream around.
@@ -169,6 +169,9 @@ void EngineMain::Shutdown()
 
     // Dispose window (using Ref<> - no need to delete)
     SafeDispose(m_mainWindow);
+
+    // Release content manager
+    m_componentManager->UnregisterComponent(ContentManager::GetInstance());
 
     // Dispose component manager at the very end
     SafeDispose(m_componentManager);

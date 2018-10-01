@@ -31,13 +31,13 @@ private:
     bool m_wireframe = false;
 
     RefPtr<Rendering> m_rendering = nullptr;
-    RefPtr<Shader> m_currentShader = nullptr;
+    Shader* m_currentShader = nullptr;
 
     Array<RefPtr<Texture2D>> m_currentTextures = {};
 
     RefPtr<RenderBuffer> m_gbuffer = nullptr;
-    RefPtr<Shader> m_gbufferFillShader = nullptr;
-    RefPtr<Shader> m_gbufferCombine = nullptr;
+    Shader* m_gbufferFillShader = nullptr;
+    Shader* m_gbufferCombine = nullptr;
 
     RefPtr<PPVignette> m_vignette = nullptr;
     RefPtr<PPSSAO> m_ssao = nullptr;
@@ -85,7 +85,7 @@ public:
      * \param mesh The mesh class pointer.
      * \param shader The shader which will be used to draw this mesh.
      */
-    void Draw(const RefPtr<Mesh>& mesh, const RefPtr<Shader>& shader);
+    void Draw(const RefPtr<Mesh>& mesh, Shader* shader);
 
     /**
     * \brief Draws given mesh using current shader.
@@ -97,6 +97,11 @@ public:
      * \brief Sets given shader as current.
      */
     void SetShader(const RefPtr<Shader>& shader);
+
+    /**
+     * \brief Sets given shader as current.
+     */
+    void SetShader(Shader* shader);
 
     /**
     * \brief Sets given stage as current.

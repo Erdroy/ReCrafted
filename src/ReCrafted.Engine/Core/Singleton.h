@@ -36,6 +36,9 @@ private:
 public:
     void Dispose() override
     {
+        if (!m_instance)
+            return;
+
         OnDispose();
         delete m_instance;
     }

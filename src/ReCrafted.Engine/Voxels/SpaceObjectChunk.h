@@ -68,7 +68,7 @@ public:
 public:
     void Render(RenderableRenderMode renderMode) override;
 
-    RefPtr<Shader> GetShader() const override
+    Shader* GetShader() const override
     {
         return spaceObject->m_terrainShader;
     }

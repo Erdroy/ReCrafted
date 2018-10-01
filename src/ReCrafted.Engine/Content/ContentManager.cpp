@@ -15,9 +15,16 @@ void ContentManager::OnInit()
 
 void ContentManager::OnDispose()
 {
+    // copy array
+    Array<Asset*> assets{};
+    assets.Copy(m_assets);
+
     // Release all assets
-    for(rvar asset : m_assets)
-        ReleaseAsset(asset);
+    for(rvar asset : assets)
+    {
+        if(asset)
+            ReleaseAsset(asset);
+    }
 
     m_assets.Clear();
     m_assetMap.clear();
@@ -43,19 +50,15 @@ void ContentManager::RegisterAsset(Asset* asset)
 
 bool ContentManager::LoadAsset(Asset* asset, const char* name) const
 {
-    // Build file name
-    cvar assetName = std::string(name);
-    cvar assetFile = "../content/" + assetName + ".rcasset";
-
     // Check if file exists
-    if(!Platform::FileExists(assetFile.c_str()))
+    if(!Platform::FileExists(name))
     {
-        Logger::LogError("Failed to load asset '{0}'. File '{1}' not found.", assetName.c_str(), assetFile.c_str());
+        Logger::LogError("Failed to load asset. File '{1}' not found.", name);
         return true;
     }
 
 #ifdef _DEBUG
-    Logger::Log("Loading asset '{0}'", assetName.c_str());
+    Logger::Log("Loading asset '{0}'", name);
 #endif
 
     cvar assetBaseType = asset->GetAssetBaseType();
@@ -64,7 +67,7 @@ bool ContentManager::LoadAsset(Asset* asset, const char* name) const
     case AssetBaseType::Binary:
     {
         // Open streams
-        var fileStream = FileStream(assetFile.c_str(), OpenMode::OpenRead);
+        var fileStream = FileStream(name, OpenMode::OpenRead);
         var binaryStream = BinaryStream(fileStream);
 
         ASSERT(fileStream.IsOpen());
@@ -79,7 +82,7 @@ bool ContentManager::LoadAsset(Asset* asset, const char* name) const
     case AssetBaseType::Json:
     {
         // Load and parse Json data
-        std::ifstream input(assetFile);
+        std::ifstream input(name);
         const std::string content((std::istreambuf_iterator<char>(input)), (std::istreambuf_iterator<char>()));
         cvar jsonData = nlohmann::json::parse(content);
 

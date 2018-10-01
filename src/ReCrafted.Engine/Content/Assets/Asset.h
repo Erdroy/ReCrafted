@@ -33,6 +33,7 @@ public:
 
 protected:
     virtual void OnInitialize() {}
+    virtual void OnLoadBegin(const std::string& fileName) {}
     virtual void OnDeserializeBinary(uint16_t version, BinaryStream& stream) { }
     virtual void OnDeserializeJson(uint16_t version, const json& json) { }
     virtual void OnUnload() = 0;

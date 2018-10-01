@@ -18,7 +18,7 @@ private:
     virtual void Render() = 0;
 
 public:
-    virtual RefPtr<Shader> GetShader() const = 0;
+    virtual Shader* GetShader() const = 0;
 };
 
 #endif // POSTPROCESSINGBASE_H
