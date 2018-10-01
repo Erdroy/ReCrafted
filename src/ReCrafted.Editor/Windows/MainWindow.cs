@@ -65,6 +65,12 @@ namespace ReCrafted.Editor.Windows
         
         public void Render()
         {
+            if (ImGui.IsMouseReleased(0))
+            {
+                DockSplitter.IsAnySplitterDragging = false;
+                DockableWindow.IsAnyWindowDragging = false;
+            }
+
             ImGui.PushStyleVar(StyleVar.PopupBorderSize, 0.0f);
 
             var opened = true;

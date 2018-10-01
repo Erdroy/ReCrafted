@@ -3,7 +3,6 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
-using ImGuiNET;
 
 namespace ReCrafted.Editor.Windows.Docking
 {
@@ -17,9 +16,6 @@ namespace ReCrafted.Editor.Windows.Docking
 
         public override void Update()
         {
-            if(ImGui.IsMouseReleased(0))
-                DockSplitter.IsAnySplitterDragging = false;
-
             Root?.Update();
         }
 

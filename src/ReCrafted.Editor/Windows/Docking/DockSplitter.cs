@@ -44,13 +44,26 @@ namespace ReCrafted.Editor.Windows.Docking
 
         public override void Update()
         {
-            if (_isMoving && ImGui.IsMouseReleased(0))
-                _isMoving = false;
+            // Do not resize when some window is being dragged
+            if (DockableWindow.IsAnyWindowDragging )
+                return;
 
-            // TODO: Splitter move implementation
-            var mousePos = ImGui.GetMousePos();
+            ChildA?.Update();
+            ChildB?.Update();
+
+            // Do not resize when other splitter is being resized (_isMoving is false and IsAnySplitterDragging is true)
+            if (!_isMoving && IsAnySplitterDragging)
+                return;
+
+            if (_isMoving && ImGui.IsMouseReleased(0))
+            {
+                _isMoving = false;
+                return;
+            }
+            
             if (ChildA != null && ChildB != null)
             {
+                var mousePos = ImGui.GetMousePos();
                 switch (DockType)
                 {
                     case DockType.Horizontal:
@@ -102,9 +115,6 @@ namespace ReCrafted.Editor.Windows.Docking
                     Divide(Size);
                 }
             }
-
-            ChildA?.Update();
-            ChildB?.Update();
         }
 
         /// <summary>

@@ -122,11 +122,17 @@ namespace ReCrafted.Editor.Windows
 
             if (Floating)
             {
+                if (ImGui.IsLastItemActive() && ImGui.IsMouseDragging(0, 0.0f))
+                {
+                    IsAnyWindowDragging = true;
+                }
+
                 if (_dockTarget != null && ImGui.IsMouseReleased(0))
                 {
                     _dockTarget.Dock(this, _dockType, _dockDirection, 0.30f);
                     MainWindow.Instance.DockPane.RecalculateLayout();
                     _dockTarget = null;
+                    IsAnyWindowDragging = false;
                     return;
                 }
             }
@@ -135,6 +141,7 @@ namespace ReCrafted.Editor.Windows
             {
                 if (!Floating && ImGui.IsMouseDragging(0, 20.0f))
                 {
+                    IsAnyWindowDragging = true;
                     Undock();
                     MainWindow.Instance.DockPane.RecalculateLayout();
                 }
@@ -152,5 +159,7 @@ namespace ReCrafted.Editor.Windows
         public Rectangle WindowRect => Rect;
         public abstract string WindowName { get; }
         public virtual WindowFlags WindowSettings => WindowFlags.Default;
+
+        public static bool IsAnyWindowDragging { get; set; }
     }
 }
