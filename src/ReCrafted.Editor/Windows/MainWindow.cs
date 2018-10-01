@@ -2,15 +2,21 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using ImGuiNET;
+using Newtonsoft.Json;
+using ReCrafted.Editor.Common;
 using ReCrafted.Editor.Content;
 using ReCrafted.Editor.Content.Assets;
 using ReCrafted.Editor.Core;
+using ReCrafted.Editor.Windows.Content;
 using ReCrafted.Editor.Windows.Docking;
+using ReCrafted.Editor.Windows.Graph;
+using ReCrafted.Editor.Windows.Layout;
 
 namespace ReCrafted.Editor.Windows
 {
@@ -81,6 +87,7 @@ namespace ReCrafted.Editor.Windows
             // Update DockPane
             DockPane.Update();
             
+            // TODO: Refactor main menu
             if (ImGui.BeginMainMenuBar())
             {
                 if (ImGui.BeginMenu("File"))
@@ -101,6 +108,40 @@ namespace ReCrafted.Editor.Windows
 
                     if (ImGui.MenuItem("Redo"))
                     {
+                    }
+
+                    ImGui.EndMenu();
+                }
+
+                if (ImGui.BeginMenu("View"))
+                {
+                    if (ImGui.MenuItem("Console Window"))
+                    {
+                    }
+
+                    if (ImGui.MenuItem("Content Window"))
+                    {
+                    }
+
+                    if (ImGui.MenuItem("Voxel Editor Window"))
+                    {
+                    }
+
+                    ImGui.Separator();
+
+                    if (ImGui.MenuItem("Save layout"))
+                    {
+                        SaveLayout();
+                    }
+
+                    if (ImGui.MenuItem("Load layout"))
+                    {
+                        LoadLayout();
+                    }
+
+                    if (ImGui.MenuItem("Reset layout"))
+                    {
+                        ResetLayout();
                     }
 
                     ImGui.EndMenu();
@@ -132,6 +173,15 @@ namespace ReCrafted.Editor.Windows
 
                 if (ImGui.BeginMenu("Help"))
                 {
+                    if (ImGui.MenuItem("Open Homepage"))
+                        Process.Start("https://recraftedgame.com/");
+
+                    if (ImGui.MenuItem("Open Documentation"))
+                        Process.Start("https://editor.recraftedgame.com/docs/");
+
+                    if (ImGui.MenuItem("Report Issue"))
+                        Process.Start("https://editor.recraftedgame.com/bug-report/");
+
                     ImGui.EndMenu();
                 }
 
@@ -160,6 +210,45 @@ namespace ReCrafted.Editor.Windows
             ImGui.EndWindow();
         }
 
+        public void SaveLayout()
+        {
+            // Serialize layout
+            var layout = SerializeLayout();
+
+            // Write layout info
+            var json = JsonConvert.SerializeObject(layout, Formatting.Indented);
+            File.WriteAllText("layout.json", json);
+        }
+
+        public void LoadLayout()
+        {
+            // Read layout info
+            var json = File.ReadAllText("layout.json");
+            var layout = JsonConvert.DeserializeObject<LayoutDescription>(json);
+
+            // Deserialize layout
+            DeserializeLayout(layout);
+        }
+
+        public void ResetLayout()
+        {
+            Children.Clear();
+            DockPane.Root = null;
+            
+            // Create content window
+            var content = DockPane.Dock(AddChildren<ContentWindow>());
+            var graph = content.Dock(AddChildren<GraphWindowBase>(), DockType.Horizontal, DockDirection.Up);
+
+            var secondContentWindow = AddChildren<ContentWindow>();
+            graph.Dock(secondContentWindow, DockType.Vertical, DockDirection.Left);
+
+            // Add console window
+            AddChildren<ConsoleWindow>();
+
+            // Recalculate layout
+            DockPane.RecalculateLayout();
+        }
+
         public void Dispose()
         {
             foreach (var child in Children)
@@ -183,6 +272,136 @@ namespace ReCrafted.Editor.Windows
             throw new NotImplementedException();
         }
 
+        public LayoutDescription SerializeLayout()
+        {
+            var layout = new LayoutDescription
+            {
+                Windows = new LayoutDescription.Window[Children.Count]
+            };
+
+            // Write all windows
+            for (var i = 0; i < Children.Count; i++)
+            {
+                var window = Children[i];
+                
+                layout.Windows[i] = new LayoutDescription.Window
+                {
+                    Id = window.WindowId,
+                    Type = window.GetType().FullName,
+                    Floating = window.Floating,
+                    X = window.Rect.X,
+                    Y = window.Rect.Y,
+                    Width = window.Rect.Width,
+                    Height = window.Rect.Height,
+                };
+            }
+
+            if (DockPane.Root != null)
+            {
+                // Root always contains only ChildA
+                var root = layout.Layout = new LayoutDescription.LayoutInfo
+                {
+                    DockType = DockType.Fill,
+                    DockSize = 0.5f
+                };
+
+                var rootSplitter = (DockSplitter) DockPane.Root;
+
+                if (rootSplitter.ChildA is DockSplitter)
+                {
+                    // Iterate
+                    BuildLayoutInfo((DockSplitter)rootSplitter.ChildA, root);
+                }
+            }
+
+            return layout;
+        }
+
+        private void BuildLayoutInfo(DockSplitter splitter, LayoutDescription.LayoutInfo parent)
+        {
+            var currentLayout = parent.ChildrenA = new LayoutDescription.LayoutInfo
+            {
+                DockType = splitter.DockType,
+                DockSize = splitter.Size
+            };
+
+            var current = parent.ChildrenA;
+
+            if (splitter.ChildA != null)
+            {
+                if (splitter.ChildA is DockSplitter)
+                {
+                    BuildLayoutInfo((DockSplitter) splitter.ChildA, currentLayout);
+                }
+                else
+                {
+                    var window = (IWindow) splitter.ChildA;
+                    current.WindowAId = window.WindowId;
+                }
+            }
+
+            if (splitter.ChildB != null)
+            {
+                if (splitter.ChildB is DockSplitter)
+                {
+                    BuildLayoutInfo((DockSplitter)splitter.ChildB, currentLayout);
+                }
+                else
+                {
+                    var window = (IWindow)splitter.ChildB;
+                    current.WindowBId = window.WindowId;
+                }
+            }
+        }
+
+        public void DeserializeLayout(LayoutDescription layout)
+        {
+            // Clear
+            Children.Clear();
+            DockPane.Root = null;
+
+            if (layout.Windows == null)
+                return;
+
+            // Create windows
+            foreach (var windowDesc in layout.Windows)
+            {
+                var windowType = Type.GetType(windowDesc.Type);
+
+                if (windowType == null)
+                {
+                    Logger.LogError($"Failed to deserialize whole layout. Missing window type: '{windowDesc.Type}'!");
+                    continue;
+                }
+
+                // Create window instance and setup it's values
+                var window = (DockableWindow)Activator.CreateInstance(windowType);
+                window.Floating = true;
+                window.Rect = new Rectangle(windowDesc.X, windowDesc.Y, windowDesc.Width, windowDesc.Height);
+                window.WindowId = windowDesc.Id;
+
+                // Initialize
+                window.Initialize();
+                window.Open();
+                window.Focus();
+                Children.Add(window);
+            }
+            
+            // Apply layout
+            var root = layout.Layout;
+            if (root != null)
+            {
+                // TODO: Finish
+                if (root.DockType == DockType.Fill)
+                {
+                    var wndBId = root.ChildrenA.WindowBId;
+                    DockPane.Dock(Children.First(x => x.WindowId == wndBId));
+                }
+            }
+
+            DockPane.RecalculateLayout();
+        }
+        
         public T GetOrAddChildren<T>() where T : DockableWindow, new()
         {
             var found = Children.First(x => x is T);
@@ -220,7 +439,7 @@ namespace ReCrafted.Editor.Windows
         public int WindowId => 0;
         public Rectangle WindowRect => new Rectangle(0, 20, EditorApplication.Current.SdlWindow.Width, EditorApplication.Current.SdlWindow.Height - 20);
         public string WindowName => "MainWindow";
-        public WindowFlags WindowSettings => WindowFlags.NoResize | WindowFlags.NoInputs | WindowFlags.NoMove | WindowFlags.NoTitleBar | WindowFlags.NoScrollbar;
+        public WindowFlags WindowSettings => WindowFlags.NoResize | WindowFlags.NoInputs | WindowFlags.NoMove | WindowFlags.NoTitleBar | WindowFlags.NoScrollbar | WindowFlags.NoSavedSettings;
 
         public DockPane DockPane { get; private set; }
         public List<DockableWindow> Children { get; } = new List<DockableWindow>();

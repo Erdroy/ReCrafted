@@ -69,16 +69,6 @@ namespace ReCrafted.Editor.Core
             MainWindow.Initialize();
             _applicationWindows.Add(MainWindow);
             
-            // Create content window
-            var content = MainWindow.DockPane.Dock(MainWindow.AddChildren<ContentWindow>());
-            var graph = content.Dock(MainWindow.AddChildren<GraphWindowBase>(), DockType.Horizontal, DockDirection.Up);
-
-            var secondContentWindow = MainWindow.AddChildren<ContentWindow>();
-            graph.Dock(secondContentWindow, DockType.Vertical, DockDirection.Left);
-
-            // Add console window
-            MainWindow.AddChildren<ConsoleWindow>();
-
             // Initialize time
             Time.Init();
         }
@@ -115,7 +105,7 @@ namespace ReCrafted.Editor.Core
             // Begin rendering
             _commandList.Begin();
             _commandList.SetFramebuffer(GraphicsDevice.MainSwapchain.Framebuffer);
-            _commandList.ClearColorTarget(0, new RgbaFloat(0.12f, 0.12f, 0.12f, 1.0f));
+            _commandList.ClearColorTarget(0, new RgbaFloat(0.10f, 0.10f, 0.10f, 1.0f));
 
             // Render windows
             foreach (var window in _applicationWindows)

@@ -1,5 +1,6 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
@@ -31,17 +32,14 @@ namespace ReCrafted.Editor.Windows.Docking
 
         public override DockPanelBase Dock(DockPanelBase other, DockType dockType, DockDirection dockDirection, float sizeMul = 0.5f)
         {
-            // TODO: Docking implementation
-            Debug.Assert(other.CanBeDocked);
-            Debug.Assert(false);
-            return null;
+            throw new NotImplementedException();
         }
 
         public void RecalculateLayout()
         {
             Root?.Resize(Rect);
         }
-        
+
         /// <summary>
         /// Checks if given position is inside this panel.
         /// </summary>
@@ -52,6 +50,6 @@ namespace ReCrafted.Editor.Windows.Docking
             return Root.FindIntersecting(pos);
         }
 
-        public DockPanelBase Root { get; private set; }
+        public DockPanelBase Root { get; set; }
     }
 }

@@ -84,8 +84,8 @@ namespace ReCrafted.Editor.Windows
 
         private void RenderDocked()
         {
-            ImGui.PushStyleVar(StyleVar.WindowBorderSize, 1.0f);
-            ImGui.PushStyleVar(StyleVar.WindowRounding, 0.0f);
+            ImGui.PushStyleVar(StyleVar.WindowBorderSize, 3.0f);
+            ImGui.PushStyleVar(StyleVar.WindowRounding, 3.0f);
 
             ImGui.SetNextWindowPos(new Vector2(Rect.X, Rect.Y), Condition.Always);
             ImGui.SetNextWindowSize(new Vector2(Rect.Width, Rect.Height), Condition.Always);
@@ -107,8 +107,13 @@ namespace ReCrafted.Editor.Windows
 
             if (ImGui.BeginWindow($"{WindowName}###{WindowId}", WindowSettings | WindowFlags.NoCollapse))
             {
+                var wndPos = ImGui.GetWindowPosition();
+                var wndSize = ImGui.GetWindowSize();
+                Rect = new Rectangle((int)wndPos.X, (int)wndPos.Y, (int)wndSize.X, (int)wndSize.Y);
+
                 ProcessDocking();
                 OnRender();
+
                 ImGui.EndWindow();
             }
 
@@ -158,7 +163,7 @@ namespace ReCrafted.Editor.Windows
         public int WindowId { get; internal set; }
         public Rectangle WindowRect => Rect;
         public abstract string WindowName { get; }
-        public virtual WindowFlags WindowSettings => WindowFlags.Default;
+        public virtual WindowFlags WindowSettings => WindowFlags.Default | WindowFlags.NoSavedSettings;
 
         public static bool IsAnyWindowDragging { get; set; }
     }

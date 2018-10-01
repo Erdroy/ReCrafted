@@ -236,6 +236,7 @@
     <Compile Include="Windows\Docking\IDockHandler.cs" />
     <Compile Include="Windows\Graph\GraphWindowBase.cs" />
     <Compile Include="Windows\IWindow.cs" />
+    <Compile Include="Windows\Layout\LayoutDescription.cs" />
     <Compile Include="Windows\MainWindow.cs" />
     <Compile Include="Core\ApplicationBase.cs" />
     <Compile Include="Core\EditorApplication.cs" />
