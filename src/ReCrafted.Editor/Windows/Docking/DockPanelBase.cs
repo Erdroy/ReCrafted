@@ -32,17 +32,20 @@ namespace ReCrafted.Editor.Windows.Docking
             Debug.Assert(dockDirection != DockDirection.None);
             Debug.Assert(other.CanBeDocked);
 
+            var size = dockDirection == DockDirection.Left ? sizeMul : 1.0f - sizeMul;
+
             if (!(this is DockSplitter)) // TODO: Refactor
             {
                 Debug.Assert(Parent is DockSplitter);
                 var parentSplitter = (DockSplitter) Parent;
+
 
                 if (parentSplitter.ChildA == this)
                 {
                     var p1 = dockDirection == DockDirection.Left ? other : parentSplitter.ChildA;
                     var p2 = dockDirection == DockDirection.Left ? parentSplitter.ChildA : other;
 
-                    var splitter = new DockSplitter(parentSplitter, p1, p2, dockType, sizeMul);
+                    var splitter = new DockSplitter(parentSplitter, p1, p2, dockType, size);
                     parentSplitter.ChildA = splitter;
                 }
                 else
@@ -50,7 +53,7 @@ namespace ReCrafted.Editor.Windows.Docking
                     var p1 = dockDirection == DockDirection.Left ? other : parentSplitter.ChildB;
                     var p2 = dockDirection == DockDirection.Left ? parentSplitter.ChildB : other;
 
-                    var splitter = new DockSplitter(parentSplitter, p1, p2, dockType, sizeMul);
+                    var splitter = new DockSplitter(parentSplitter, p1, p2, dockType, size);
                     parentSplitter.ChildB = splitter;
                 }
 
@@ -81,11 +84,11 @@ namespace ReCrafted.Editor.Windows.Docking
                     case DockType.Vertical:
                         if (dockDirection == DockDirection.Left)
                         {
-                            splitter.ChildA.Dock(other, dockType, dockDirection, sizeMul);
+                            splitter.ChildA.Dock(other, dockType, dockDirection, size);
                         }
                         else
                         {
-                            splitter.ChildB.Dock(other, dockType, dockDirection, sizeMul);
+                            splitter.ChildB.Dock(other, dockType, dockDirection, size);
                         }
                         break;
                     default:
