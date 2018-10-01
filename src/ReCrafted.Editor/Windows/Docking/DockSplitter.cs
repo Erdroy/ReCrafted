@@ -92,10 +92,10 @@ namespace ReCrafted.Editor.Windows.Docking
                     switch (DockType)
                     {
                         case DockType.Horizontal:
-                            Size = (Rect.Top + mousePos.Y) / Rect.Bottom;
+                            Size = (mousePos.Y - Rect.Top) / (Rect.Bottom - Rect.Top);
                             break;
                         case DockType.Vertical:
-                            Size = (Rect.Left + mousePos.X) / Rect.Right;
+                            Size = (mousePos.X - Rect.Left) / (Rect.Right - Rect.Left);
                             break;
                     }
 
