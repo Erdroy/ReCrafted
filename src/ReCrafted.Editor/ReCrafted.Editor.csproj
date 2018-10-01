@@ -227,6 +227,7 @@
     <Compile Include="Windows\Content\ContentWindow.cs" />
     <Compile Include="Windows\DockableWindow.cs" />
     <Compile Include="Windows\Docking\DockDirection.cs" />
+    <Compile Include="Windows\Docking\DockingHelpers.cs" />
     <Compile Include="Windows\Docking\DockSplitter.cs" />
     <Compile Include="Windows\Docking\DockType.cs" />
     <Compile Include="Windows\Docking\DockPanelBase.cs" />

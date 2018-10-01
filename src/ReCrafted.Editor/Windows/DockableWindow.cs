@@ -11,7 +11,10 @@ namespace ReCrafted.Editor.Windows
     public abstract class DockableWindow : DockPanelBase, IWindow
     {
         private bool _focus;
-        private bool _beenActiveAndDragging;
+
+        private DockType _dockType;
+        private DockDirection _dockDirection;
+        private DockPanelBase _dockTarget;
 
         public abstract void Initialize();
         public abstract void Dispose();
@@ -98,86 +101,31 @@ namespace ReCrafted.Editor.Windows
 
         private void ProcessDocking()
         {
-            if (ImGui.IsLastItemActive() || _beenActiveAndDragging)
+            if (Floating)
+            {
+                if (_dockTarget != null && ImGui.IsMouseReleased(0))
+                {
+                    _dockTarget.Dock(this, _dockType, _dockDirection, 0.30f);
+                    MainWindow.Instance.DockPane.RecalculateLayout();
+                    _dockTarget = null;
+                    return;
+                }
+            }
+
+            if (ImGui.IsLastItemActive())
             {
                 if (!Floating && ImGui.IsMouseDragging(0, 20.0f))
                 {
                     Undock();
-                    _beenActiveAndDragging = false;
                     MainWindow.Instance.DockPane.RecalculateLayout();
                 }
                 else if(Floating)
                 {
-                    TryDock();
+                    _dockTarget = DockingHelpers.TryFindDockTarget(ref _dockType, ref _dockDirection);
                 }
             }
         }
-
-        private void TryDock()
-        {
-            var mousePos = ImGui.GetMousePos();
-
-            // Try to find drop surface
-            var panel = MainWindow.Instance.DockPane.FindIntersecting(mousePos);
-
-            // Check if panel exists or it's parent is null
-            // When panels parent is null, it is the ROOT!
-            if (panel?.Parent == null)
-                return;
-
-            Debug.Assert(!(panel is DockSplitter));
-
-            var drawList = ImGui.GetOverlayDrawList();
-            var rect = panel.Rect;
-
-            var center = new Vector2(rect.X, rect.Y) + new Vector2(rect.Width, rect.Height) * 0.5f;
-            
-            var innerWidth = (int)(rect.Width * 0.25f);
-            var innerHeight = (int)(rect.Height * 0.35f);
-            
-            // Check left
-            var left = new Rectangle(rect.Left, rect.Top, innerWidth, rect.Height);
-            if (left.Contains((int)mousePos.X, (int)mousePos.Y))
-            {
-                drawList.AddRectFilled(
-                    new Vector2(left.Left, left.Top),
-                    new Vector2(left.Right, left.Bottom),
-                    0x4FFF6900, 0.0f);
-            }
-
-            // Check right
-            var right = new Rectangle(rect.Right - innerWidth, rect.Top, innerWidth, rect.Height);
-            if (right.Contains((int)mousePos.X, (int)mousePos.Y))
-            {
-                drawList.AddRectFilled(
-                    new Vector2(right.Left, right.Top),
-                    new Vector2(right.Right, right.Bottom),
-                    0x4FFF6900, 0.0f);
-            }
-
-            // Check bottom
-            var bottom = new Rectangle(rect.Left + innerWidth, rect.Bottom - innerHeight, 
-                rect.Width - innerWidth * 2, innerHeight);
-            if (bottom.Contains((int)mousePos.X, (int)mousePos.Y))
-            {
-                drawList.AddRectFilled(
-                    new Vector2(rect.Left, rect.Bottom - innerHeight),
-                    new Vector2(rect.Right, rect.Bottom),
-                    0x4FFF6900, 0.0f);
-            }
-
-            if (_beenActiveAndDragging && ImGui.IsMouseReleased(0))
-            {
-                panel.Dock(this, DockType.Vertical, DockDirection.Right);
-                MainWindow.Instance.DockPane.RecalculateLayout();
-                _beenActiveAndDragging = false; // TODO: Fix
-            }
-            else
-            {
-                _beenActiveAndDragging = true;
-            }
-        }
-
+        
         public bool Floating { get; set; } = true;
         public int WindowId { get; internal set; }
         public Rectangle WindowRect => Rect;
