@@ -42,3 +42,8 @@ void ScriptingEngine::AttachCurrentThread()
 {
     mono_thread_attach(m_instance->m_domain->GetMono());
 }
+
+void ScriptingEngine::DetachCurrentThread()
+{
+    mono_thread_detach(mono_thread_current());
+}

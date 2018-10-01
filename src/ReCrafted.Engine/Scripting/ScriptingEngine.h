@@ -23,6 +23,7 @@ public:
 
 public:
     static void AttachCurrentThread();
+    static void DetachCurrentThread();
 };
 
 #endif // SCRIPTINGENGINE_H

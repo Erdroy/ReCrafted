@@ -5,12 +5,16 @@
 #include "Platform/Platform.h"
 #include "Logger.h"
 #include "Common/Profiler/Profiler.h"
+#include "Scripting/ScriptingEngine.h"
 
 SINGLETON_IMPL(TaskManager)
 
 void TaskManager::WorkerFunction()
 {
     Platform::SetThreadName("TaskManager Worker");
+    ScriptingEngine::AttachCurrentThread();
+
+    Logger::Log("TaskManager thread startup");
 
     Task* task;
     while (m_running)
@@ -29,6 +33,8 @@ void TaskManager::WorkerFunction()
         // queue task for release
         m_taskReleaseQueue.enqueue(task);
     }
+
+    ScriptingEngine::DetachCurrentThread();
 }
 
 Task* TaskManager::AcquireTask()

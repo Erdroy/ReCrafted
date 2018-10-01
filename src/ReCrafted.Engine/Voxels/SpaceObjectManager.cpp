@@ -54,7 +54,6 @@ void SpaceObjectManager::WorkerFunction()
     Logger::Log("SpaceObjectManager thread startup");
 
     // create mesher
-    //cvar mesher = new MCMesher();
     cvar mesher = new TransvoxelMesher();
 
     // run
@@ -88,6 +87,7 @@ void SpaceObjectManager::WorkerFunction()
         m_calbacksLock.UnlockNow();
     }
 
+    ScriptingEngine::DetachCurrentThread();
     delete mesher;
 }
 
