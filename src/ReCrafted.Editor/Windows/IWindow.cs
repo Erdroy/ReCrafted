@@ -12,6 +12,12 @@ namespace ReCrafted.Editor.Windows
         void Render();
         void Dispose();
 
+        void Open();
+        void Hide();
+        void Close();
+        
+        bool WindowClosed { get; }
+        bool WindowVisible { get; }
         int WindowId { get; }
         Rectangle WindowRect { get; }
         string WindowName { get; }

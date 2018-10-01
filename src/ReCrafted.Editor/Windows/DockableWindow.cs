@@ -17,9 +17,12 @@ namespace ReCrafted.Editor.Windows
 
         public abstract void Initialize();
         public abstract void Dispose();
-
+        
         public virtual void OnUpdate() { }
         public virtual void OnRender() { }
+        public virtual void OnOpen() { }
+        public virtual void OnHide() { }
+        public virtual void OnClose() { }
 
         protected internal override void OnDock()
         {
@@ -32,6 +35,26 @@ namespace ReCrafted.Editor.Windows
         }
 
         protected virtual void OnFocus() { }
+
+        public void Open()
+        {
+            OnOpen();
+            WindowVisible = true;
+        }
+
+        public void Hide()
+        {
+            OnHide();
+            WindowVisible = false;
+        }
+
+        public void Close()
+        {
+            OnClose();
+            WindowClosed = true;
+            WindowVisible = false;
+            Dispose();
+        }
 
         public void Update()
         {
@@ -124,8 +147,10 @@ namespace ReCrafted.Editor.Windows
                 }
             }
         }
-        
+
         public bool Floating { get; set; } = true;
+        public bool WindowClosed { get; private set; }
+        public bool WindowVisible { get; private set; }
         public int WindowId { get; internal set; }
         public Rectangle WindowRect => Rect;
         public abstract string WindowName { get; }

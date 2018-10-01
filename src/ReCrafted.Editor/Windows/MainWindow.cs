@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using ImGuiNET;
 using ReCrafted.Editor.Content;
@@ -135,11 +136,22 @@ namespace ReCrafted.Editor.Windows
                 ImGui.EndMainMenuBar();
             }
             
+            var childrenToRemove = new List<DockableWindow>();
+
             // Render children windows
             foreach (var child in Children)
             {
-                child.Render();
+                if(child.WindowVisible)
+                    child.Render();
+
+                if(WindowClosed)
+                    childrenToRemove.Add(child);
             }
+
+            // Remove children windows when needed
+            foreach (var child in childrenToRemove)
+                Children.Remove(child);
+            childrenToRemove.Clear();
 
             ImGui.PopStyleVar();
 
@@ -149,10 +161,43 @@ namespace ReCrafted.Editor.Windows
         public void Dispose()
         {
             foreach (var child in Children)
+            {
                 child.Dispose();
+            }
         }
 
-        public int WindowId => 0;
+        public void Open()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Hide()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Close()
+        {
+            throw new NotImplementedException();
+        }
+
+        public T GetOrAddChildren<T>() where T : DockableWindow, new()
+        {
+            var found = Children.First(x => x is T);
+            if (found != null)
+                return (T)found;
+
+            var window = new T
+            {
+                WindowId = _lastWindowId++
+            };
+
+            window.Initialize();
+            window.Open();
+            window.Focus();
+            Children.Add(window);
+            return window;
+        }
 
         public T AddChildren<T>() where T : DockableWindow, new()
         {
@@ -162,17 +207,19 @@ namespace ReCrafted.Editor.Windows
             };
 
             window.Initialize();
+            window.Open();
             window.Focus();
             Children.Add(window);
             return window;
         }
-        
-        public Rectangle WindowRect => new Rectangle(0, 20,
-            EditorApplication.Current.SdlWindow.Width,
-            EditorApplication.Current.SdlWindow.Height - 20);
 
+        public bool WindowClosed { get; } = false;
+        public bool WindowVisible { get; } = true;
+        public int WindowId => 0;
+        public Rectangle WindowRect => new Rectangle(0, 20, EditorApplication.Current.SdlWindow.Width, EditorApplication.Current.SdlWindow.Height - 20);
         public string WindowName => "MainWindow";
         public WindowFlags WindowSettings => WindowFlags.NoResize | WindowFlags.NoInputs | WindowFlags.NoMove | WindowFlags.NoTitleBar | WindowFlags.NoScrollbar;
+
         public DockPane DockPane { get; private set; }
         public List<DockableWindow> Children { get; } = new List<DockableWindow>();
 
