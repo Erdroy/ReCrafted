@@ -11,6 +11,7 @@ enum class AssetType : byte
 
     Texture,
     Model,
+    Shader,
 
     Planet,
     Asteroid,

@@ -34,7 +34,7 @@ namespace ReCrafted.Editor.Windows.Docking
             var dockType = DockType.None;
             var dockDir = DockDirection.None;
 
-            // Check top
+            // Check top // TODO: Docking on top
             /*var top = new Rectangle(rect.Left, rect.Top, rect.Width, 20);
             if (dockType == DockType.None && top.Contains((int)mousePos.X, (int)mousePos.Y))
             {

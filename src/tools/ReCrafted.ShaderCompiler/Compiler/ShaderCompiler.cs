@@ -132,7 +132,17 @@ namespace ReCrafted.ShaderCompiler.Compiler
                 Passes = Passes.ToArray(),
                 UniformBuffers = Buffers.ToArray()
             };
-
+            
+            // Read guid
+            if (File.Exists(_outputFile))
+            {
+                desc.AssetGuid = JsonConvert.DeserializeObject<ShaderDescription>(_outputFile).AssetGuid;
+            }
+            else
+            {
+                desc.AssetGuid = Guid.NewGuid().ToString("D");
+            }
+            
             // serialize shader desc into json string
             var jsonData = JsonConvert.SerializeObject(desc, Options.Current.CuteJson ? Formatting.Indented : Formatting.None);
 

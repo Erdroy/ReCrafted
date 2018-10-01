@@ -7,6 +7,10 @@ namespace ReCrafted.ShaderCompiler.Description
     [Serializable]
     public class ShaderDescription
     {
+        public int AssetVersion { get; } = 1;
+        public int AssetType { get; } = 3;
+        public string AssetGuid { get; set; }
+
         public string Name { get; set; }
         public string Description { get; set; }
         public string[] SamplerStates { get; set; }
