@@ -222,7 +222,8 @@ namespace ReCrafted.Editor.Windows
 
         public void LoadLayout()
         {
-            // TODO: Close and Dispose all windows
+            // Clear layout before loading
+            ClearLayout();
 
             // Read layout info
             var json = File.ReadAllText("layout.json");
@@ -234,10 +235,9 @@ namespace ReCrafted.Editor.Windows
 
         public void ResetLayout()
         {
-            // TODO: Close and Dispose all windows
-            Children.Clear();
-            DockPane.Root = null;
-            
+            // Clear layout before reset
+            ClearLayout();
+
             // Create content window
             var content = DockPane.Dock(AddChildren<ContentWindow>());
             var graph = content.Dock(AddChildren<GraphWindowBase>(), DockType.Horizontal, DockDirection.Up);
@@ -248,6 +248,18 @@ namespace ReCrafted.Editor.Windows
 
             // Recalculate layout
             DockPane.RecalculateLayout();
+        }
+
+        public void ClearLayout()
+        {
+            foreach (var window in Children)
+            {
+                window.Close();
+                window.Dispose();
+            }
+
+            Children.Clear();
+            DockPane.Root = null;
         }
 
         public void Dispose()
