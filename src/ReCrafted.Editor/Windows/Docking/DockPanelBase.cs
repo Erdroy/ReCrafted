@@ -34,7 +34,7 @@ namespace ReCrafted.Editor.Windows.Docking
             Debug.Assert(dockDirection != DockDirection.None);
             Debug.Assert(other.CanBeDocked);
 
-            var size = dockDirection == DockDirection.Left ? sizeMul : 1.0f - sizeMul;
+            var size = sizeMul;//dockDirection == DockDirection.Left ? sizeMul : 1.0f - sizeMul;
 
             if (!(this is DockSplitter)) // TODO: Refactor
             {

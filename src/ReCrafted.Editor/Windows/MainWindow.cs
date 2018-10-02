@@ -241,7 +241,8 @@ namespace ReCrafted.Editor.Windows
             // Create content window
             var content = DockPane.Dock(AddChildren<ContentWindow>());
             var console = content.Dock(AddChildren<ConsoleWindow>(), DockType.Horizontal, DockDirection.Up);
-            console.Dock(AddChildren<GraphWindowBase>(), DockType.Vertical, DockDirection.Right, 0.75f);
+            console.Dock(AddChildren<GraphWindowBase>(), DockType.Vertical, DockDirection.Right, 0.30f);
+            AddChildren<ConsoleWindow>();
 
             // Recalculate layout
             DockPane.RecalculateLayout();
@@ -365,17 +366,17 @@ namespace ReCrafted.Editor.Windows
             }
         }
 
-        public void DeserializeLayout(LayoutDescription layout)
+        public void DeserializeLayout(LayoutDescription layoutDesc)
         {
             // Clear
             Children.Clear();
             DockPane.Root = null;
 
-            if (layout.Windows == null)
+            if (layoutDesc.Windows == null)
                 return;
 
             // Create windows
-            foreach (var windowDesc in layout.Windows)
+            foreach (var windowDesc in layoutDesc.Windows)
             {
                 var windowType = Type.GetType(windowDesc.Type);
 
@@ -402,36 +403,47 @@ namespace ReCrafted.Editor.Windows
             }
             
             // Apply layout
-            var parentLayout = layout.Layout;
+            var parentLayout = layoutDesc.Layout;
             if (parentLayout != null)
             {
                 Debug.Assert(parentLayout.DockType == DockType.Fill);
-                
-                // Dock root window
-                var panel = DockPane.Dock(Children.First(x => x.WindowId == parentLayout.Children.WindowBId));
-                DockPane.RecalculateLayout();
+
                 parentLayout = parentLayout.Children;
 
+                // Dock root window
+                var invert = parentLayout.WindowBId != 0;
+                var rootWindowId = invert ? parentLayout.WindowBId : parentLayout.WindowAId;
+                var panel = DockPane.Dock(Children.First(x => x.WindowId == rootWindowId));
+
+                var layout = parentLayout.Children;
+
                 // Totally temporary, but works.
-                while (panel != null)
+                while (parentLayout != null && panel != null)
                 {
-                    if (parentLayout.Children != null)
+                    if (layout.Children != null)
                     {
-                        var windowB = Children.FirstOrDefault(x => x.WindowId == parentLayout.WindowBId);
-                        panel = panel.Dock(windowB, parentLayout.DockType, DockDirection.Right, parentLayout.DockSize);
-                        DockPane.RecalculateLayout();
-                        parentLayout = parentLayout.Children;
+                        var windowA = Children.FirstOrDefault(x => x.WindowId == layout.WindowAId || x.WindowId == layout.WindowBId);
+                        
+                        panel = panel.Dock(windowA, parentLayout.DockType, invert ? DockDirection.Left : DockDirection.Right, parentLayout.DockSize);
+                        parentLayout = layout;
+                        layout = parentLayout.Children;
                     }
                     else
                     {
-                        var windowA = Children.FirstOrDefault(x => x.WindowId == parentLayout.WindowAId);
-                        Children.Remove(windowA);
-                        //panel = panel.Dock(windowA, parentLayout.DockType, DockDirection.Right, parentLayout.DockSize);
+                        invert = parentLayout.WindowBId != 0;
 
-                        //var windowB = Children.FirstOrDefault(x => x.WindowId == parentLayout.WindowBId);
-                        //panel.Dock(windowB, parentLayout.DockType, DockDirection.Right, parentLayout.DockSize);
+                        // Dock primary window to parent
+                        var windowA = Children.FirstOrDefault(x => x.WindowId == layout.WindowAId);
+                        panel = panel.Dock(windowA, parentLayout.DockType, invert ? DockDirection.Left : DockDirection.Right, parentLayout.DockSize);
 
-                        panel = null;
+                        invert = layout.WindowBId != 0;
+
+                        // Dock second window to the last docked window
+                        var windowB = Children.FirstOrDefault(x => x.WindowId == layout.WindowBId);
+                        panel.Dock(windowB, layout.DockType, invert ? DockDirection.Right : DockDirection.Left, layout.DockSize);
+
+                        // And we are done.
+                        break;
                     }
                 }
             }
