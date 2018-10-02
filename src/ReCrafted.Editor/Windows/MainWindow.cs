@@ -222,6 +222,8 @@ namespace ReCrafted.Editor.Windows
 
         public void LoadLayout()
         {
+            // TODO: Close and Dispose all windows
+
             // Read layout info
             var json = File.ReadAllText("layout.json");
             var layout = JsonConvert.DeserializeObject<LayoutDescription>(json);
@@ -232,18 +234,17 @@ namespace ReCrafted.Editor.Windows
 
         public void ResetLayout()
         {
+            // TODO: Close and Dispose all windows
             Children.Clear();
             DockPane.Root = null;
             
             // Create content window
             var content = DockPane.Dock(AddChildren<ContentWindow>());
             var graph = content.Dock(AddChildren<GraphWindowBase>(), DockType.Horizontal, DockDirection.Up);
-
-            var secondContentWindow = AddChildren<ContentWindow>();
-            graph.Dock(secondContentWindow, DockType.Vertical, DockDirection.Left);
+            var content2 = graph.Dock(AddChildren<ContentWindow>(), DockType.Vertical, DockDirection.Left);
 
             // Add console window
-            AddChildren<ConsoleWindow>();
+            content2.Dock(AddChildren<ConsoleWindow>(), DockType.Vertical, DockDirection.Left);
 
             // Recalculate layout
             DockPane.RecalculateLayout();
@@ -253,6 +254,7 @@ namespace ReCrafted.Editor.Windows
         {
             foreach (var child in Children)
             {
+                child.Close();
                 child.Dispose();
             }
         }
@@ -319,13 +321,13 @@ namespace ReCrafted.Editor.Windows
 
         private void BuildLayoutInfo(DockSplitter splitter, LayoutDescription.LayoutInfo parent)
         {
-            var currentLayout = parent.ChildrenA = new LayoutDescription.LayoutInfo
+            var currentLayout = parent.Children = new LayoutDescription.LayoutInfo
             {
                 DockType = splitter.DockType,
                 DockSize = splitter.Size
             };
 
-            var current = parent.ChildrenA;
+            var current = parent.Children;
 
             if (splitter.ChildA != null)
             {
@@ -376,9 +378,12 @@ namespace ReCrafted.Editor.Windows
 
                 // Create window instance and setup it's values
                 var window = (DockableWindow)Activator.CreateInstance(windowType);
-                window.Floating = true;
-                window.Rect = new Rectangle(windowDesc.X, windowDesc.Y, windowDesc.Width, windowDesc.Height);
+
+                window.Floating = windowDesc.Floating;
                 window.WindowId = windowDesc.Id;
+
+                if (windowDesc.Floating)
+                    window.Rect = new Rectangle(windowDesc.X, windowDesc.Y, windowDesc.Width, windowDesc.Height);
 
                 // Initialize
                 window.Initialize();
@@ -388,14 +393,37 @@ namespace ReCrafted.Editor.Windows
             }
             
             // Apply layout
-            var root = layout.Layout;
-            if (root != null)
+            var parentLayout = layout.Layout;
+            if (parentLayout != null)
             {
-                // TODO: Finish
-                if (root.DockType == DockType.Fill)
+                Debug.Assert(parentLayout.DockType == DockType.Fill);
+                
+                // Dock root window
+                var panel = DockPane.Dock(Children.First(x => x.WindowId == parentLayout.Children.WindowBId));
+                DockPane.RecalculateLayout();
+                parentLayout = parentLayout.Children;
+
+                // Totally temporary, but works.
+                while (panel != null)
                 {
-                    var wndBId = root.ChildrenA.WindowBId;
-                    DockPane.Dock(Children.First(x => x.WindowId == wndBId));
+                    if (parentLayout.Children != null)
+                    {
+                        var windowB = Children.FirstOrDefault(x => x.WindowId == parentLayout.WindowBId);
+                        panel = panel.Dock(windowB, parentLayout.DockType, DockDirection.Right, parentLayout.DockSize);
+                        DockPane.RecalculateLayout();
+                        parentLayout = parentLayout.Children;
+                    }
+                    else
+                    {
+                        var windowA = Children.FirstOrDefault(x => x.WindowId == parentLayout.WindowAId);
+                        Children.Remove(windowA);
+                        //panel = panel.Dock(windowA, parentLayout.DockType, DockDirection.Right, parentLayout.DockSize);
+
+                        //var windowB = Children.FirstOrDefault(x => x.WindowId == parentLayout.WindowBId);
+                        //panel.Dock(windowB, parentLayout.DockType, DockDirection.Right, parentLayout.DockSize);
+
+                        panel = null;
+                    }
                 }
             }
 

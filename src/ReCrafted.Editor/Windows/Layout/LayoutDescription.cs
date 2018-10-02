@@ -20,14 +20,12 @@ namespace ReCrafted.Editor.Windows.Layout
         public class LayoutInfo
         {
             public DockType DockType { get; set; }
+            public float DockSize { get; set; }
 
             public int WindowAId { get; set; }
             public int WindowBId { get; set; }
 
-            public LayoutInfo ChildrenA { get; set; }
-            public LayoutInfo ChildrenB { get; set; }
-
-            public float DockSize { get; set; }
+            public LayoutInfo Children { get; set; }
         }
 
         public Window[] Windows;
