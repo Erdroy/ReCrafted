@@ -240,11 +240,8 @@ namespace ReCrafted.Editor.Windows
 
             // Create content window
             var content = DockPane.Dock(AddChildren<ContentWindow>());
-            var graph = content.Dock(AddChildren<GraphWindowBase>(), DockType.Horizontal, DockDirection.Up);
-            var content2 = graph.Dock(AddChildren<ContentWindow>(), DockType.Vertical, DockDirection.Left);
-
-            // Add console window
-            content2.Dock(AddChildren<ConsoleWindow>(), DockType.Vertical, DockDirection.Left);
+            var console = content.Dock(AddChildren<ConsoleWindow>(), DockType.Horizontal, DockDirection.Up);
+            console.Dock(AddChildren<GraphWindowBase>(), DockType.Vertical, DockDirection.Right, 0.75f);
 
             // Recalculate layout
             DockPane.RecalculateLayout();
