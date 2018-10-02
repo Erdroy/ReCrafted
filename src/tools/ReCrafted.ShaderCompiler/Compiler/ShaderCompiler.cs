@@ -136,7 +136,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
             // Read guid
             if (File.Exists(_outputFile))
             {
-                desc.AssetGuid = JsonConvert.DeserializeObject<ShaderDescription>(_outputFile).AssetGuid;
+                desc.AssetGuid = JsonConvert.DeserializeObject<ShaderDescription>(File.ReadAllText(_outputFile)).AssetGuid;
             }
             else
             {
