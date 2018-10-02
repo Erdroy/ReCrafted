@@ -14,6 +14,8 @@
 #define NearPlane ViewInfo.x
 #define FarPlane ViewInfo.y
 
+#define texture2d Texture2D
+
 // ==== Constant Buffers ====
 
 /// <summary>

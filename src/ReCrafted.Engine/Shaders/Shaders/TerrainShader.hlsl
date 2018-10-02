@@ -5,6 +5,7 @@
 
 //#define USE_LOGZBUFFER
 #include "../ShaderAPI.hlsli"
+#include "../Common/TriplanarMapping.hlsli"
 
 Texture2D m_texture0 : register(t0);
 Texture2D m_texture1 : register(t1);
@@ -74,50 +75,43 @@ void TerrainVSMain(in TerrainVSInput i, out TerrainVSOutput o)
 /// </summary>
 void TerrainPSMain(in TerrainPSInput i, out GBufferOutput o)
 {
-    const float3 position = i.LocalPosition;
-    const float3 triplanarNormal = normalize(i.Normal);
+#define AddTextureBlending(tex, mat, scale) \
+    if (mat > 0.01f) color += TriplanarSample(tex, Sampler, coords, blendWeights, scale) * mat
+
+    // Calculate coords of triplanar mapping
+    const float3 coords = TriplanarCoords(i.LocalPosition);
   
-    // Blending factor of triplanar mapping
-    float3 blend = pow(triplanarNormal.xyz, 8); // TODO: Improve blend function
-    blend /= dot(blend, float3(1, 1, 1));
-
-    // Triplanar mapping
-    float2 tx = position.zy * 0.5f;
-    float2 ty = position.xz * 0.5f;
-    float2 tz = position.xy * 0.5f;
-
-    float mat0 = i.Materials0.r;
-    float mat1 = i.Materials0.g;
-    float mat2 = i.Materials0.b;
-    float mat3 = i.Materials0.a;
+    // Calculate blending weights of triplanar mapping
+    const float3 blendWeights = TriplanarWeights(i.Normal.xyz);
 
     float3 color = float3(0.0f, 0.0f, 0.0f);
 
-    if (mat0 > 0.01f) 
-    {
-        color += (m_texture0.Sample(Sampler, tx).rgb * blend.x + m_texture0.Sample(Sampler, ty).rgb * blend.y + m_texture0.Sample(Sampler, tz).rgb * blend.z) * mat0;
-    }
+    // TODO: Texture array
 
-    if (mat1 > 0.01f) 
-    {
-        color += (m_texture1.Sample(Sampler, tx).rgb * blend.x + m_texture1.Sample(Sampler, ty).rgb * blend.y + m_texture1.Sample(Sampler, tz).rgb * blend.z) * mat1;
-    }
+    AddTextureBlending(m_texture0, i.Materials0.r, 0.5f);
+    AddTextureBlending(m_texture1, i.Materials0.g, 0.5f);
+    AddTextureBlending(m_texture2, i.Materials0.b, 0.5f);
+    AddTextureBlending(m_texture3, i.Materials0.a, 0.5f);
 
-    if (mat2 > 0.01f) 
-    {
-        color += (m_texture2.Sample(Sampler, tx).rgb * blend.x + m_texture2.Sample(Sampler, ty).rgb * blend.y + m_texture2.Sample(Sampler, tz).rgb * blend.z) * mat2;
-    }
+    /*AddTextureBlending(m_texture0, i.Materials1.r, 0.5f);
+    AddTextureBlending(m_texture1, i.Materials1.g, 0.5f);
+    AddTextureBlending(m_texture2, i.Materials1.b, 0.5f);
+    AddTextureBlending(m_texture3, i.Materials1.a, 0.5f);
 
-    if (mat3 > 0.01f)
-    {
-        color += (m_texture3.Sample(Sampler, tx).rgb * blend.x + m_texture3.Sample(Sampler, ty).rgb * blend.y + m_texture3.Sample(Sampler, tz).rgb * blend.z) * mat3;
-    }
+    AddTextureBlending(m_texture0, i.Materials2.r, 0.5f);
+    AddTextureBlending(m_texture1, i.Materials2.g, 0.5f);
+    AddTextureBlending(m_texture2, i.Materials2.b, 0.5f);
+    AddTextureBlending(m_texture3, i.Materials2.a, 0.5f);
 
+    AddTextureBlending(m_texture0, i.Materials3.r, 0.5f);
+    AddTextureBlending(m_texture1, i.Materials3.g, 0.5f);
+    AddTextureBlending(m_texture2, i.Materials3.b, 0.5f);
+    AddTextureBlending(m_texture3, i.Materials3.a, 0.5f);*/
+
+
+    // Setup output
     o.Color = float4(color, 1.0f);
-
     o.Normal = EncodeNormal(float4(i.Normal, 1.0f));
-
-    // Set Light as simple ambient light
     o.Light = float4(o.Color.rgb * AmbientLightColor, 0.0f);
 
 #ifdef USE_LOGZBUFFER
