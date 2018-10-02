@@ -93,7 +93,7 @@ void TaskManager::CleanupTask(Task* task)
 void TaskManager::OnInit()
 {
     // run threads
-    cvar maxThreads = Platform::CpuCount();
+    cvar maxThreads = Platform::CpuCount() - 1;
 
     Logger::LogInfo("Starting TaskManager workers.");
     m_running = true;

@@ -98,7 +98,7 @@ void SpaceObjectManager::Init()
     m_running = true;
 
     // run threads
-    cvar maxThreads = Platform::CpuCount();
+    cvar maxThreads = Platform::CpuCount() - 1;
 
     Logger::LogInfo("Starting {0} SpaceObjectManager workers.", maxThreads);
 
