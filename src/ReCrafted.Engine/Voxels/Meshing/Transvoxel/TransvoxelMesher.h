@@ -101,37 +101,47 @@ private:
                 index = vertexInfo.vertexId;
             }
 
-            // Encode material
-            int materialChannel;
-            cvar material = EncodeMaterial(materialSet, vertexInfo.voxelMaterial, &materialChannel);
-
-            // Write material
-            switch(materialChannel)
+            if(materialSet.Size() == 1)
             {
-            case 0:
-                materialsA.Add(material);
+                materialsA.Add(EncodedMaterials[0]);
                 materialsB.Add(Vector4::Zero());
                 materialsC.Add(Vector4::Zero());
                 materialsD.Add(Vector4::Zero());
-                break;
-            case 1:
-                materialsA.Add(Vector4::Zero());
-                materialsB.Add(material);
-                materialsC.Add(Vector4::Zero());
-                materialsD.Add(Vector4::Zero());
-                break;
-            case 2:
-                materialsA.Add(Vector4::Zero());
-                materialsB.Add(Vector4::Zero());
-                materialsC.Add(material);
-                materialsD.Add(Vector4::Zero());
-                break;
-            case 3:
-                materialsA.Add(Vector4::Zero());
-                materialsB.Add(Vector4::Zero());
-                materialsC.Add(Vector4::Zero());
-                materialsD.Add(material);
-                break;
+            }
+            else
+            {
+                // Encode material
+                int materialChannel;
+                cvar material = EncodeMaterial(materialSet, vertexInfo.voxelMaterial, &materialChannel);
+
+                // Write material
+                switch (materialChannel)
+                {
+                case 0:
+                    materialsA.Add(material);
+                    materialsB.Add(Vector4::Zero());
+                    materialsC.Add(Vector4::Zero());
+                    materialsD.Add(Vector4::Zero());
+                    break;
+                case 1:
+                    materialsA.Add(Vector4::Zero());
+                    materialsB.Add(material);
+                    materialsC.Add(Vector4::Zero());
+                    materialsD.Add(Vector4::Zero());
+                    break;
+                case 2:
+                    materialsA.Add(Vector4::Zero());
+                    materialsB.Add(Vector4::Zero());
+                    materialsC.Add(material);
+                    materialsD.Add(Vector4::Zero());
+                    break;
+                case 3:
+                    materialsA.Add(Vector4::Zero());
+                    materialsB.Add(Vector4::Zero());
+                    materialsC.Add(Vector4::Zero());
+                    materialsD.Add(material);
+                    break;
+                }
             }
 
             // Add index when this is not normal correction vertex

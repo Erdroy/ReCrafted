@@ -41,7 +41,7 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
         DEBUG_ASSERT(vertexId >= 0);
 
         // Skip vertex calculation if already calculated
-        if (m_vertexInfoMap[vertexId])
+        if (m_vertexInfoMap.test(vertexId))
         {
             indices[i] = vertexId;
             continue;

@@ -18,6 +18,16 @@ TransvoxelMesher::MeshSection* TransvoxelMesher::FindSection(
     const VoxelMaterial_t materialB,
     const VoxelMaterial_t materialC)
 {
+    if(m_meshSections.Size() == 0)
+        return nullptr;
+
+    if (m_meshSections.Size() == 1)
+    {
+        if (m_meshSections[0].HasMaterials(materialA, materialB, materialC))
+            return &m_meshSections[0];
+    }
+
+
     for (rvar section : m_meshSections)
     {
         if (section.HasMaterials(materialA, materialB, materialC))
@@ -69,7 +79,7 @@ TransvoxelMesher::MeshSection* TransvoxelMesher::FindOrPushSection(
 TransvoxelMesher::MeshSection* TransvoxelMesher::CreateSection()
 {
     m_currentSection++;
-    ASSERT(m_currentSection < MaxSections); // TODO: Handle error
+    DEBUG_ASSERT(m_currentSection < MaxSections); // TODO: Handle error
     return &GetSection();
 }
 
@@ -77,7 +87,7 @@ void TransvoxelMesher::AddTriangle(const VertexInfo& vertexInfoA, const VertexIn
 {
     var meshSection = FindOrPushSection(vertexInfoA.voxelMaterial, vertexInfoB.voxelMaterial, vertexInfoC.voxelMaterial);
 
-    ASSERT(meshSection != nullptr);
+    DEBUG_ASSERT(meshSection != nullptr);
 
     // Add data to the section
     meshSection->AddVertex(vertexInfoA, normalCorrection);
