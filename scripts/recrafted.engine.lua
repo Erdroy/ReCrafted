@@ -57,7 +57,7 @@ project "ReCrafted.Engine"
 	configuration { "vs*"}
 		buildoptions { "/MP" }
 		postbuildcommands {
-			"call " .. ROOT_DIR .. "/pm.bat PostBuild --skip-shaders --skip-api",
+			"call " .. ROOT_DIR .. "/pm.bat PostBuild",
 		}
 	
 	links { "d3d11", "dxguid", "dxgi", "d3dcompiler", "Rpcrt4", "Ultralight", "UltralightCore", "WebCore", "mono"}
