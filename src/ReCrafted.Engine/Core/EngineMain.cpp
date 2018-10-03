@@ -23,6 +23,7 @@
 #include "Scene/SceneManager.h"
 #include "Scripting/ScriptingEngine.h"
 #include "TaskManager.h"
+#include "Voxels/VoxelMaterialManager.h"
 
 EngineMain* EngineMain::m_instance;
 
@@ -37,6 +38,7 @@ void EngineMain::RegisterComponents() const
     m_componentManager->RegisterComponent(Input::GetInstance());
     m_componentManager->RegisterComponent(PhysicsManager::GetInstance());
     m_componentManager->RegisterComponent(EntityPool::GetInstance());
+    m_componentManager->RegisterComponent(VoxelMaterialManager::GetInstance());
     m_componentManager->RegisterComponent(SceneManager::GetInstance());
     m_componentManager->RegisterComponent(Universe::GetInstance());
     m_componentManager->RegisterComponent(DebugDraw::GetInstance());

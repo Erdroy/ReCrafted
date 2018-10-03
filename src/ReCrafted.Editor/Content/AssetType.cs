@@ -10,5 +10,7 @@ namespace ReCrafted.Editor.Content
         Model,
         Shader,
 
+        VoxelMaterial,
+        
     }
 }

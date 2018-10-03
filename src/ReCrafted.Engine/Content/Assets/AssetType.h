@@ -13,6 +13,7 @@ enum class AssetType : byte
     Model,
     Shader,
 
+    VoxelMaterial,
 
     Count
 };

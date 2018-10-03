@@ -17,9 +17,15 @@ typedef sbyte VoxelValue_t;
 
 /**
 * \brief The voxel material type.
-* This is the identificator of voxel material set.
+* This is the identificator of the voxel material set.
 */
 typedef uint16_t VoxelMaterial_t;
+
+/**
+* \brief The voxel hardness level.
+* This is the hardness level of the voxel material.
+*/
+typedef sbyte VoxelHardness_t;
 
 /**
 * \brief Voxel structure.
