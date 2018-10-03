@@ -13,10 +13,6 @@ enum class AssetType : byte
     Model,
     Shader,
 
-    Planet,
-    Asteroid,
-
-    Test,
 
     Count
 };

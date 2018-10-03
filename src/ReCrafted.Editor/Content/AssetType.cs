@@ -10,9 +10,5 @@ namespace ReCrafted.Editor.Content
         Model,
         Shader,
 
-        Planet,
-        Asteroid,
-
-        Test
     }
 }

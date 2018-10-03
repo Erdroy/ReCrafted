@@ -149,19 +149,6 @@ namespace ReCrafted.Editor.Windows
 
                 if (ImGui.BeginMenu("Tools"))
                 {
-                    if (ImGui.MenuItem("Test - Create json asset"))
-                    {
-                        var asset = ContentManager.CreateAsset<TestAsset>();
-
-                        using (var fs = new FileStream("../content/jsonasset.rcasset", FileMode.Create,
-                            FileAccess.Write))
-                        {
-                            asset.Serialize(fs);
-                        }
-
-                        asset.Unload();
-                    }
-
                     if (ImGui.MenuItem("Test - Load asset"))
                     {
                         var asset = ContentManager.Load<TextureAsset>("../content/TestTexture.rcasset");
