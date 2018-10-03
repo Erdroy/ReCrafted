@@ -694,6 +694,26 @@ namespace Renderer
         g_commandList->WriteCommand(&command);
     }
 
+    void ApplyTextureArray2D(Texture2DHandle* handles, uint8_t slot, uint8_t textureCount)
+    {
+        CHECK_MAIN_THREAD();
+        ASSERT(textureCount > 0);
+        ASSERT(textureCount <= 32);
+
+        Command_ApplyTextureArray2D command;
+
+        for(auto i = 0; i < textureCount; i ++)
+        {
+            const auto handle = handles[i];
+            RENDERER_VALIDATE_HANDLE(handle);
+            command.handles[i] = handle;
+        }
+
+        command.textureCount = textureCount;
+        command.slot = slot;
+        g_commandList->WriteCommand(&command);
+    }
+
     void ResizeTexture2D(Texture2DHandle handle, uint16_t width, uint16_t height)
     {
         CHECK_MAIN_THREAD();

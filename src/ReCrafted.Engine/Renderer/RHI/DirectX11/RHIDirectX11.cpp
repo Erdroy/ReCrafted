@@ -231,6 +231,7 @@ namespace Renderer
 
             FORCEINLINE void Execute_CreateTexture2D(Command_CreateTexture2D* command);
             FORCEINLINE void Execute_ApplyTexture2D(Command_ApplyTexture2D* command);
+            FORCEINLINE void Execute_ApplyTextureArray2D(Command_ApplyTextureArray2D* command);
             FORCEINLINE void Execute_ResizeTexture2D(Command_ResizeTexture2D* command);
             FORCEINLINE void Execute_DestroyTexture2D(Command_DestroyTexture2D* command);
 
@@ -420,6 +421,7 @@ namespace Renderer
 
             DEFINE_COMMAND_EXECUTOR(CreateTexture2D);
             DEFINE_COMMAND_EXECUTOR(ApplyTexture2D);
+            DEFINE_COMMAND_EXECUTOR(ApplyTextureArray2D);
             DEFINE_COMMAND_EXECUTOR(ResizeTexture2D);
             DEFINE_COMMAND_EXECUTOR(DestroyTexture2D);
 
@@ -979,6 +981,24 @@ namespace Renderer
 
             // bind the texture
             m_currentShader->BindResource(m_context, command->slot, texture.srv);
+        }
+
+        void WorkerThreadInstance::Execute_ApplyTextureArray2D(Command_ApplyTextureArray2D* command)
+        {
+            ASSERT(command->textureCount > 0);
+
+            ID3D11ShaderResourceView* resources[32];
+            for(var i = 0u; i < command->textureCount; i ++)
+            {
+                rvar texture = m_textures[command->handles[i].idx];
+                ASSERT(texture.texture != nullptr);
+                ASSERT(m_currentShader != nullptr);
+
+                resources[i] = texture.srv;
+            }
+
+            // bind the textures
+            m_currentShader->BindResources(m_context, command->slot, resources, command->textureCount);
         }
 
         void WorkerThreadInstance::Execute_ResizeTexture2D(Command_ResizeTexture2D* command)

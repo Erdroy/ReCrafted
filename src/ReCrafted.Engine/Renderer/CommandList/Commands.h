@@ -59,6 +59,7 @@ namespace Renderer
 
             CreateTexture2D,
             ApplyTexture2D,
+            ApplyTextureArray2D,
             UpdateTexture2D,
             ResizeTexture2D,
             DestroyTexture2D,
@@ -239,6 +240,12 @@ namespace Renderer
 
     Command(ApplyTexture2D,
         Texture2DHandle handle;
+        uint8_t slot;
+    );
+
+    Command(ApplyTextureArray2D,
+        Texture2DHandle handles[32];
+        uint8_t textureCount;
         uint8_t slot;
     );
 

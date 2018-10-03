@@ -106,6 +106,7 @@ namespace Renderer
         void Bind(ID3D11DeviceContext* context, std::string passName);
 
         void BindResource(ID3D11DeviceContext* context, uint8_t slot, ID3D11ShaderResourceView* srv);
+        void BindResources(ID3D11DeviceContext* context, uint8_t slot, ID3D11ShaderResourceView** srvs, uint8_t srvCount);
         //void BindResource(ID3D11DeviceContext* context, std::string name, ID3D11ShaderResourceView* srv);
 
         //void BindBuffer(ID3D11DeviceContext* context, uint8_t slot, ID3D11Buffer* buffer);

@@ -398,6 +398,14 @@ namespace Renderer
         ADD_APICALL();
     }
 
+    void RHIDirectX11_Shader::BindResources(ID3D11DeviceContext* context, uint8_t slot, ID3D11ShaderResourceView** srvs,
+        uint8_t srvCount)
+    {
+        // apply shader resource (PixelShader only)
+        context->PSSetShaderResources(slot, srvCount, srvs);
+        ADD_APICALL();
+    }
+
     void RHIDirectX11_Shader::SetValue(int buffer, int index, void* data, size_t dataSize)
     {
         ASSERT(buffer < m_buffers.size());
