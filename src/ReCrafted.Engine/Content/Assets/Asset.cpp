@@ -27,6 +27,7 @@ void Asset::Deserialize(BinaryStream& stream)
     ASSERT(assetType == GetAssetType());
 
     OnDeserializeBinary(version, stream);
+    OnLoadEnd();
 }
 
 void Asset::Deserialize(const json& json, const std::string& content)
@@ -42,6 +43,7 @@ void Asset::Deserialize(const json& json, const std::string& content)
     ASSERT(assetType == GetAssetType());
 
     OnDeserializeJson(assetVersion, json);
+    OnLoadEnd();
 }
 
 void Asset::Unload()
