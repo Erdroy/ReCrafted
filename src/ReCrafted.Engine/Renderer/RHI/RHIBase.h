@@ -52,7 +52,8 @@ namespace Renderer
             virtual void ResizeWindow(WindowHandle window, int width, int height) = 0;
 
         public:
-            virtual void GetTextureData(Texture2DHandle textureHandle, void* buffer, size_t bufferSize) = 0;
+            virtual void UpdateTextureSubresource(Texture2DHandle textureHandle, void* data, size_t dataSize, uint8_t subresourceId) = 0;
+            virtual void GetTextureSubresource(Texture2DHandle textureHandle, void* buffer, size_t bufferSize, uint8_t subresourceId) = 0;
         };
     }
 }

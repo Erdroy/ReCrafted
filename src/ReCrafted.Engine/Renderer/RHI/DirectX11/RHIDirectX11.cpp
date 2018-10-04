@@ -1620,7 +1620,20 @@ namespace Renderer
         {
         }
 
-        void RHIDirectX11::GetTextureData(Texture2DHandle textureHandle, void* buffer, size_t bufferSize)
+        void RHIDirectX11::UpdateTextureSubresource(Texture2DHandle textureHandle, void* data, size_t dataSize, uint8_t subresourceId)
+        {
+            cvar textureDesc = m_textures[textureHandle.idx];
+            ASSERT(textureDesc.texture != nullptr);
+
+            // Calculate subresource pitch
+            cvar width = max(1, textureDesc.width >> subresourceId);
+            cvar formatSize = DXGIFormatGetSize(DGXI_TextureFormats[textureDesc.format][0]);
+            cvar pitch = width * formatSize; // TODO: Fix pitch for non power of 2 texture sizes
+
+            m_deviceContext->UpdateSubresource(textureDesc.texture, subresourceId, nullptr, data, pitch, dataSize);
+        }
+
+        void RHIDirectX11::GetTextureSubresource(Texture2DHandle textureHandle, void* buffer, size_t bufferSize, uint8_t subresourceId)
         {
             cvar textureDesc = m_textures[textureHandle.idx];
             ASSERT(textureDesc.texture != nullptr);

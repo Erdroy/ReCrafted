@@ -28,7 +28,7 @@ public:
         cvar buffer = new byte[bufferSize];
 
         // Get texture data
-        static_cast<Renderer::RHI::RHIBase*>(rhi)->GetTextureData(m_frameTexture, buffer, bufferSize);
+        static_cast<Renderer::RHI::RHIBase*>(rhi)->GetTextureSubresource(m_frameTexture, buffer, bufferSize, 0u);
 
         lodepng::encode(m_outputFile.StdStr(), buffer, width, height, LCT_RGBA);
 
