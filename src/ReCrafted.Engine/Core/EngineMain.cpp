@@ -24,6 +24,7 @@
 #include "Scripting/ScriptingEngine.h"
 #include "TaskManager.h"
 #include "Voxels/VoxelMaterialManager.h"
+#include "Audio/AudioManager.h"
 
 EngineMain* EngineMain::m_instance;
 
@@ -37,6 +38,7 @@ void EngineMain::RegisterComponents() const
     m_componentManager->RegisterComponent(Time::GetInstance());
     m_componentManager->RegisterComponent(Input::GetInstance());
     m_componentManager->RegisterComponent(PhysicsManager::GetInstance());
+    m_componentManager->RegisterComponent(AudioManager::GetInstance());
     m_componentManager->RegisterComponent(EntityPool::GetInstance());
     m_componentManager->RegisterComponent(VoxelMaterialManager::GetInstance());
     m_componentManager->RegisterComponent(SceneManager::GetInstance());
