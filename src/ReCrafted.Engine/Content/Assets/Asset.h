@@ -20,6 +20,7 @@ class Asset
     friend class ContentManager;
 
 private:
+    bool m_virtual = false;
     bool m_unloaded = false;
 
 public:
@@ -42,6 +43,16 @@ protected:
 public:
     FORCEINLINE virtual AssetBaseType GetAssetBaseType() = 0;
     FORCEINLINE virtual AssetType GetAssetType() = 0;
+
+    /**
+     * \brief Gets asset virtual flag state.
+     * \return True when this asset has been created using CreateVirtualAsset function.
+     * This means that this asset was never loaded, and has no any representation in content.
+     */
+    bool IsVirtual() const
+    {
+        return m_virtual;
+    }
 
 public:
     PROPERTY(Guid, AssetGuid) = {};

@@ -66,6 +66,18 @@ private:
     bool LoadAsset(Asset* asset, const char* name) const;
     void ReleaseAsset(Asset* asset);
 
+    /**
+     * \brief Creates empty virtual asset of given type.
+     * \tparam TAsset The target asset class type.
+     * \return The created asset.
+     */
+    template<class TAsset>
+    static TAsset* InternalCreateAsset()
+    {
+        cvar asset = new TAsset();
+        return asset;
+    }
+
 public:
     /**
      * \brief Creates empty virtual asset of given type.
@@ -73,16 +85,11 @@ public:
      * \return The created asset.
      */
     template<class TAsset>
-    static TAsset* CreateAsset(bool registerNow = true)
+    static TAsset* CreateVirtualAsset()
     {
-        cvar asset = new TAsset();
+        cvar asset = InternalCreateAsset<TAsset>();
         asset->SetAssetGuid(Platform::NewGuid());
-
-        if(registerNow)
-        {
-            m_instance->RegisterAsset(asset);
-        }
-
+        m_instance->RegisterAsset(asset);
         return asset;
     }
 
@@ -121,7 +128,7 @@ public:
         cvar assetName = std::string(assetFile);
         cvar file = "../content/" + assetName + ".rcasset";
 
-        cvar asset = CreateAsset<TAsset>(false);
+        cvar asset = InternalCreateAsset<TAsset>();
         asset->OnLoadBegin(file);
         if (m_instance->LoadAsset(asset, file.c_str()))
         {
@@ -129,6 +136,10 @@ public:
             return nullptr;
         }
 
+        // Set asset as loaded and non-virtual
+        asset->m_loaded = true;
+
+        // Register and initialize asset
         m_instance->RegisterAsset(asset);
         asset->OnInitialize();
         return asset;
@@ -148,7 +159,7 @@ public:
         cvar assetName = std::string(assetFile);
         cvar file = "../content/" + assetName + ".rcasset";
 
-        cvar asset = CreateAsset<TAsset>(false);
+        cvar asset = InternalCreateAsset<TAsset>();
         asset->OnLoadBegin(file);
 
         // Create and queue task
