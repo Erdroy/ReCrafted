@@ -88,6 +88,7 @@ public:
     static TAsset* CreateVirtualAsset()
     {
         cvar asset = InternalCreateAsset<TAsset>();
+        asset->m_virtual = true;
         asset->SetAssetGuid(Platform::NewGuid());
         m_instance->RegisterAsset(asset);
         return asset;

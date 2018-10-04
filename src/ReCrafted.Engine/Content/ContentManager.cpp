@@ -44,6 +44,9 @@ void ContentManager::RegisterAsset(Asset* asset)
     // Check main thread
     ASSERT(Platform::GetMainThreadId() == std::this_thread::get_id());
 
+    // Set asset as registered
+    asset->m_registered = true;
+
     m_assetMap[asset->GetAssetGuid()] = asset;
     m_assets.Add(asset);
 }

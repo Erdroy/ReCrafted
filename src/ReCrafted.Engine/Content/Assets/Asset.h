@@ -21,6 +21,8 @@ class Asset
 
 private:
     bool m_virtual = false;
+    bool m_registered = false;
+    bool m_loaded = false;
     bool m_unloaded = false;
 
 public:
@@ -52,6 +54,15 @@ public:
     bool IsVirtual() const
     {
         return m_virtual;
+    }
+
+    /**
+     * \brief Gets the asset load flag state.
+     * \return True when this asset has been loaded or it is virtual asset.
+     */
+    bool IsLoaded() const
+    {
+        return m_loaded || IsVirtual();
     }
 
 public:
