@@ -58,6 +58,7 @@ namespace ReCrafted.Editor.Content.Importers
             asset.Mips = new TextureAsset.Mip[mipCount];
 
             // Set texture mip maps
+            var textureSize = 0u;
             for (var i = 0; i < mipCount; i++)
             {
                 var img = image.GetImage(i);
@@ -69,9 +70,14 @@ namespace ReCrafted.Editor.Content.Importers
                     Size = (int)img.SlicePitch // Slice pitch is size of single slice, so whole single mip
                 };
 
+                textureSize += (uint)img.SlicePitch;
+
                 mip.Data = new byte[mip.Size];
                 Marshal.Copy(img.Pixels, mip.Data, 0, mip.Size);
             }
+
+            // Total size
+            asset.TotalSize = textureSize;
 
             // Serialize asset
             using (var fs = new FileStream(outputFile, FileMode.Create, FileAccess.Write))

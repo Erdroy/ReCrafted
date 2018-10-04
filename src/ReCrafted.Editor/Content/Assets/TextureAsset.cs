@@ -82,6 +82,7 @@ namespace ReCrafted.Editor.Content.Assets
             Debug.Assert(MipCount > 0);
 
             // Write texture header
+            writer.Write((uint)TotalSize);
             writer.Write((ushort)Format);
             writer.Write((byte)MipCount);
             
@@ -103,6 +104,7 @@ namespace ReCrafted.Editor.Content.Assets
 
         protected override void OnDeserializeBinary(ushort version, BinaryReader reader)
         {
+            TotalSize = reader.ReadUInt32();
             Format = (DXGI_FORMAT)reader.ReadUInt16();
             MipCount = reader.ReadByte();
 
@@ -137,8 +139,11 @@ namespace ReCrafted.Editor.Content.Assets
         public Mip[] Mips { get; set; }
         public DXGI_FORMAT Format { get; set; }
         public int MipCount { get; set; }
+        public uint TotalSize { get; set; }
+
         public int Width => Mips[0].Width;
         public int Height => Mips[0].Height;
+        public override AssetType AssetType => AssetType.Texture;
 
         public Texture Texture { get; private set; }
         public TextureView TextureView { get; private set; }
@@ -219,7 +224,5 @@ namespace ReCrafted.Editor.Content.Assets
                 }
             }
         }
-
-        public override AssetType AssetType => AssetType.Texture;
     }
 }
