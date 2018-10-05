@@ -229,6 +229,7 @@ namespace Renderer
         Texture2DHandle handle;
         uint16_t width;
         uint16_t height;
+        uint16_t pitch;
         uint8_t mipLevels;
         TextureFormat::_enum textureFormat;
         TextureType::_enum textureType;

@@ -254,15 +254,15 @@ namespace Renderer
         {32}, // D32
         {32}, // D32F
 
-        {0}, // BC1
-        {0}, // BC2
-        {0}, // BC3
-        {0}, // BC4
-        {0}, // BC5
-        {0}, // BC6HUF16
-        {0}, // BC6HSF16
-        {0}, // BC7U
-        {0}, // BC7UsRGB
+        {4}, // BC1
+        {8}, // BC2
+        {8}, // BC3
+        {4}, // BC4
+        {8}, // BC5
+        {8}, // BC6HUF16
+        {8}, // BC6HSF16
+        {8}, // BC7U
+        {8}, // BC7UsRGB
     };
 
     struct RenderTask

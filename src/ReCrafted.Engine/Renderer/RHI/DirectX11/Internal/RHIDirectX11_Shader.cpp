@@ -106,6 +106,9 @@ namespace Renderer
             *stride += DXGIFormatGetSize(elementDesc.Format);
         }
 
+        // Convert to byte-size
+        *stride /= 8;
+
         // try to find cached input layout
         for (rvar il : m_inputLayouts)
         {

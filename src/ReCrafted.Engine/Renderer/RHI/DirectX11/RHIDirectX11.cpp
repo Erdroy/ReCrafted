@@ -74,6 +74,7 @@ namespace Renderer
             
             uint16_t width = 0u;
             uint16_t height = 0u;
+            uint16_t pitch = 0u;
             TextureFormat::_enum format = TextureFormat::Unknown;
 
         public:
@@ -918,7 +919,22 @@ namespace Renderer
 
             if(command->memory)
             {
-                cvar rowPitch = command->width * (TextureFormatInfo[command->textureFormat][0] / 8);
+                // Select texture row pitch
+                var rowPitch = 0;
+                if(command->pitch > 0)
+                {
+                    rowPitch = command->pitch;
+                }
+                else
+                {
+                    rowPitch = command->width * (TextureFormatInfo[command->textureFormat][0] / 8);
+                }
+
+                ASSERT(rowPitch > 0);
+
+                // set texture pitch
+                texture.pitch = rowPitch;
+
                 m_context->UpdateSubresource(texture.texture, 0, nullptr, command->memory, rowPitch, 0);
             }
 
@@ -1627,8 +1643,17 @@ namespace Renderer
 
             // Calculate subresource pitch
             cvar width = max(1, textureDesc.width >> subresourceId);
-            cvar formatSize = DXGIFormatGetSize(DGXI_TextureFormats[textureDesc.format][0]);
-            cvar pitch = width * formatSize; // TODO: Fix pitch for non power of 2 texture sizes
+
+            var pitch = 0;
+            if(textureDesc.pitch > 0)
+            {
+                pitch = textureDesc.pitch;
+            }
+            else
+            {
+                cvar formatSize = DXGIFormatGetSize(DGXI_TextureFormats[textureDesc.format][0]);
+                pitch = width * formatSize / 8;
+            }
 
             m_deviceContext->UpdateSubresource(textureDesc.texture, subresourceId, nullptr, data, pitch, dataSize);
         }
@@ -1637,9 +1662,18 @@ namespace Renderer
         {
             cvar textureDesc = m_textures[textureHandle.idx];
             ASSERT(textureDesc.texture != nullptr);
-            
-            cvar formatSize = DXGIFormatGetSize(DGXI_TextureFormats[textureDesc.format][0]);
-            cvar textureSize = textureDesc.width * textureDesc.height * formatSize;
+
+            var pitch = 0;
+            if (textureDesc.pitch > 0)
+            {
+                pitch = textureDesc.pitch;
+            }
+            else
+            {
+                cvar formatSize = DXGIFormatGetSize(DGXI_TextureFormats[textureDesc.format][0]);
+                pitch = textureDesc.width * formatSize / 8;
+            }
+            cvar textureSize = textureDesc.height * pitch;
 
             ASSERT(textureSize == bufferSize);
 
