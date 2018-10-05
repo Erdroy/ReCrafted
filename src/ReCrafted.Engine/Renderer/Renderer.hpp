@@ -164,6 +164,17 @@ namespace Renderer
             D32,
             D32F,
 
+            // Compressed formats
+            BC1U,
+            BC2U,
+            BC3U,
+            BC4U,
+            BC5U,
+            BC6HUF16,
+            BC6HSF16,
+            BC7U,
+            BC7UsRGB,
+
             Count,
         };
     };
@@ -243,6 +254,15 @@ namespace Renderer
         {32}, // D32
         {32}, // D32F
 
+        {0}, // BC1
+        {0}, // BC2
+        {0}, // BC3
+        {0}, // BC4
+        {0}, // BC5
+        {0}, // BC6HUF16
+        {0}, // BC6HSF16
+        {0}, // BC7U
+        {0}, // BC7UsRGB
     };
 
     struct RenderTask
