@@ -520,7 +520,7 @@ namespace Renderer
         for (var i = 0; i < texturesCount && i < RENDERER_MAX_RENDER_BUFFER_TARGETS; i ++)
         {
             cvar textureFormat = textures[i];
-            cvar texture = CreateTexture2D(width, height, 1, textureFormat, nullptr, 0u, true);
+            cvar texture = CreateTexture2D(width, height, 0u, 1, textureFormat, nullptr, 0u, true);
 
             RENDERER_VALIDATE_HANDLE(texture);
 
@@ -533,7 +533,7 @@ namespace Renderer
         // create depth buffer
         if (depthFormat != TextureFormat::Unknown)
         {
-            cvar texture = CreateTexture2D(width, height, 1, depthFormat, nullptr, 0u, true);
+            cvar texture = CreateTexture2D(width, height, 0u, 1, depthFormat, nullptr, 0u, true);
 
             RENDERER_VALIDATE_HANDLE(texture);
 
@@ -780,7 +780,7 @@ namespace Renderer
         //FreeIndexBufferHandle(handle); This is being called by RHI using 'freeIndexBuffer' function pointer
     }
 
-    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels,
+    Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, uint16_t pitch, uint8_t mipLevels,
                                     TextureFormat::_enum textureFormat, RendererMemory data, size_t dataSize,
                                     bool renderTargetFlag, bool generateMips, TextureType::_enum textureType)
     {
@@ -798,6 +798,7 @@ namespace Renderer
         command.handle = handle;
         command.width = width;
         command.height = height;
+        command.pitch = pitch;
         command.mipLevels = mipLevels;
         command.textureFormat = textureFormat;
         command.textureType = textureType;
@@ -813,18 +814,18 @@ namespace Renderer
     Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat,
                                     RendererMemory data, size_t dataSize)
     {
-        return CreateTexture2D(width, height, 1u, textureFormat, data, dataSize);
+        return CreateTexture2D(width, height, 0u, 1u, textureFormat, data, dataSize);
     }
 
     Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, uint8_t mipLevels,
                                     TextureFormat::_enum textureFormat, TextureType::_enum textureType)
     {
-        return CreateTexture2D(width, height, mipLevels, textureFormat, nullptr, 0u, false, false, textureType);
+        return CreateTexture2D(width, height, 0u, mipLevels, textureFormat, nullptr, 0u, false, false, textureType);
     }
 
     Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat, TextureType::_enum textureType)
     {
-        return CreateTexture2D(width, height, 1u, textureFormat, nullptr, 0u, false, false, textureType);
+        return CreateTexture2D(width, height, 0u, 1u, textureFormat, nullptr, 0u, false, false, textureType);
     }
 
     void ApplyTexture2D(Texture2DHandle handle, uint8_t slot)
@@ -884,7 +885,7 @@ namespace Renderer
 
     Texture2DHandle CreateRenderTexture(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat, TextureType::_enum textureType)
     {
-        return CreateTexture2D(width, height, 0u, textureFormat, nullptr, 0u, true, false, textureType);
+        return CreateTexture2D(width, height, 0u, 0u, textureFormat, nullptr, 0u, true, false, textureType);
     }
 
     void ApplyRenderTexture(Texture2DHandle handle, uint8_t slot)

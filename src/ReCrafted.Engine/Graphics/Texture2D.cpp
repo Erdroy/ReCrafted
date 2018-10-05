@@ -168,7 +168,7 @@ void Texture2D::Apply(bool generateMips)
     if (generateMips)
         mipCount = 7u;
 
-    m_textureHandle = Renderer::CreateTexture2D(uint16_t(m_width), uint16_t(m_height), mipCount, m_textureFormat, memory, size, false, generateMips);
+    m_textureHandle = Renderer::CreateTexture2D(uint16_t(m_width), uint16_t(m_height), 0u, mipCount, m_textureFormat, memory, size, false, generateMips);
     m_bits = nullptr;
 }
 

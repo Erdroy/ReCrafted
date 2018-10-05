@@ -244,7 +244,7 @@ void Graphics::Resize(uint width, uint height)
     if(RENDERER_CHECK_HANDLE(m_frameTexture))
     {
         Renderer::DestroyTexture2D(m_frameTexture);
-        m_frameTexture = Renderer::CreateTexture2D(width, height, 0, Renderer::TextureFormat::RGBA8, nullptr, 0u, true);
+        m_frameTexture = Renderer::CreateTexture2D(width, height, 0, 0, Renderer::TextureFormat::RGBA8, nullptr, 0u, true);
     }
 }
 

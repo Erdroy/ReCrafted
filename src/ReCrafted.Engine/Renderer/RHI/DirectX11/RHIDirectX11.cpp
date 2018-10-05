@@ -1655,7 +1655,7 @@ namespace Renderer
                 pitch = width * formatSize / 8;
             }
 
-            m_deviceContext->UpdateSubresource(textureDesc.texture, subresourceId, nullptr, data, pitch, dataSize);
+            m_deviceContext->UpdateSubresource(textureDesc.texture, subresourceId, nullptr, data, pitch, static_cast<uint>(dataSize));
         }
 
         void RHIDirectX11::GetTextureSubresource(Texture2DHandle textureHandle, void* buffer, size_t bufferSize, uint8_t subresourceId)
