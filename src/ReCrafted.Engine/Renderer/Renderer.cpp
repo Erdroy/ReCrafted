@@ -171,6 +171,150 @@ namespace Renderer
         m_renderer->GetContext(context);
     }
 
+    TextureFormat::_enum DXGIFormatToTextureFormat(uint16_t dxgiFormat)
+    {
+        switch(dxgiFormat)
+        {
+        case 0:
+            return TextureFormat::Unknown;
+
+            // Color formats
+        case 66: // DXGI_FORMAT_R1_UNORM
+            return TextureFormat::R1;
+        case 65: // DXGI_FORMAT_A8_UNORM
+            return TextureFormat::A8;
+
+        case 61: // DXGI_FORMAT_R8_UNORM
+            return TextureFormat::R8;
+        case 64: // DXGI_FORMAT_R8_SINT
+            return TextureFormat::R8I;
+        case 62: // DXGI_FORMAT_R8_UINT
+            return TextureFormat::R8U;
+        case 63: // DXGI_FORMAT_R8_SNORM
+            return TextureFormat::R8S;
+
+        case 56: // DXGI_FORMAT_R16_UNORM
+            return TextureFormat::R16;
+        case 59: // DXGI_FORMAT_R16_SINT
+            return TextureFormat::R16I;
+        case 57: // DXGI_FORMAT_R16_UINT
+            return TextureFormat::R16U;
+        case 54: // DXGI_FORMAT_R16_FLOAT
+            return TextureFormat::R16F;
+        case 58: // DXGI_FORMAT_R16_SNORM
+            return TextureFormat::R16S;
+
+        case 43: // DXGI_FORMAT_R32_SINT
+            return TextureFormat::R32I;
+        case 42: // DXGI_FORMAT_R32_UINT
+            return TextureFormat::R32U;
+        case 41: // DXGI_FORMAT_R32_FLOAT
+            return TextureFormat::R32F;
+
+        case 49: // DXGI_FORMAT_R8G8_UNORM
+            return TextureFormat::RG8;
+        case 52: // DXGI_FORMAT_R8G8_SINT
+            return TextureFormat::RG8I;
+        case 50: // DXGI_FORMAT_R8G8_UINT
+            return TextureFormat::RG8U;
+        case 51: // DXGI_FORMAT_R8G8_SNORM
+            return TextureFormat::RG8S;
+
+        case 35: // DXGI_FORMAT_R16G16_UNORM
+            return TextureFormat::RG16;
+        case 38: // DXGI_FORMAT_R16G16_SINT
+            return TextureFormat::RG16I;
+        case 36: // DXGI_FORMAT_R16G16_UINT
+            return TextureFormat::RG16U;
+        case 34: // DXGI_FORMAT_R16G16_FLOAT
+            return TextureFormat::RG16F;
+        case 37: // DXGI_FORMAT_R16G16_SNORM
+            return TextureFormat::RG16S;
+
+        case 18: // DXGI_FORMAT_R32G32_SINT
+            return TextureFormat::RG32I;
+        case 17: // DXGI_FORMAT_R32G32_UINT
+            return TextureFormat::RG32U;
+        case 16: // DXGI_FORMAT_R32G32_FLOAT
+            return TextureFormat::RG32F;
+
+        case 87: // DXGI_FORMAT_B8G8R8A8_UNORM
+            return TextureFormat::BGRA8;
+        case 91: // DXGI_FORMAT_B8G8R8A8_UNORM_SRGB
+            return TextureFormat::BGRA8;
+
+        case 28: // DXGI_FORMAT_R8G8B8A8_UNORM
+            return TextureFormat::RGBA8;
+        case 32: // DXGI_FORMAT_R8G8B8A8_SINT
+            return TextureFormat::RGBA8I;
+        case 30: // DXGI_FORMAT_R8G8B8A8_UINT
+            return TextureFormat::RGBA8U;
+        case 31: // DXGI_FORMAT_R8G8B8A8_SNORM
+            return TextureFormat::RGBA8S;
+        case 29: // DXGI_FORMAT_R8G8B8A8_UNORM_SRGB
+            return TextureFormat::RGBA8sRGB;
+
+        case 11: // DXGI_FORMAT_R16G16B16A16_UNORM
+            return TextureFormat::RGBA16;
+        case 14: // DXGI_FORMAT_R16G16B16A16_SINT
+            return TextureFormat::RGBA16I;
+        case 12: // DXGI_FORMAT_R16G16B16A16_UINT
+            return TextureFormat::RGBA16U;
+        case 10: // DXGI_FORMAT_R16G16B16A16_FLOAT
+            return TextureFormat::RGBA16F;
+        case 13: // DXGI_FORMAT_R16G16B16A16_SNORM
+            return TextureFormat::RGBA16S;
+
+        case 4: // DXGI_FORMAT_R32G32B32A32_SINT
+            return TextureFormat::RGBA32I;
+        case 3: // DXGI_FORMAT_R32G32B32A32_UINT
+            return TextureFormat::RGBA32U;
+        case 2: // DXGI_FORMAT_R32G32B32A32_FLOAT
+            return TextureFormat::RGBA32F;
+
+        case 85: // DXGI_FORMAT_B5G6R5_UNORM
+            return TextureFormat::B5G6R5;
+        case 115: // DXGI_FORMAT_B4G4R4A4_UNORM
+            return TextureFormat::BGRA4;
+        case 86: // DXGI_FORMAT_B5G5R5A1_UNORM
+            return TextureFormat::BGR5A1;
+        case 24: // DXGI_FORMAT_R10G10B10A2_UNORM
+            return TextureFormat::RGB10A2;
+        case 26: // DXGI_FORMAT_R11G11B10_FLOAT
+            return TextureFormat::R11G11B10F;
+
+            // Depth formats
+        case 55: // DXGI_FORMAT_D16_UNORM
+            return TextureFormat::D16;
+        case 45: // DXGI_FORMAT_D24_UNORM_S8_UINT
+            return TextureFormat::D24S8;
+        case 40: // DXGI_FORMAT_D32_FLOAT
+            return TextureFormat::D32F;
+
+            // Compressed formats
+        case 71: // DXGI_FORMAT_BC1_UNORM
+            return TextureFormat::BC1U;
+        case 74: // DXGI_FORMAT_BC2_UNORM
+            return TextureFormat::BC2U;
+        case 77: // DXGI_FORMAT_BC3_UNORM
+            return TextureFormat::BC3U;
+        case 80: // DXGI_FORMAT_BC4_UNORM
+            return TextureFormat::BC4U;
+        case 83: // DXGI_FORMAT_BC5_UNORM
+            return TextureFormat::BC5U;
+        case 95: // DXGI_FORMAT_BC6H_UF16
+            return TextureFormat::BC6HUF16;
+        case 96: // DXGI_FORMAT_BC6H_SF16
+            return TextureFormat::BC6HSF16;
+        case 98: // DXGI_FORMAT_BC7_UNORM
+            return TextureFormat::BC7U;
+        case 99: // DXGI_FORMAT_BC7_UNORM_SRGB
+            return TextureFormat::BC7UsRGB;
+        default:
+            return TextureFormat::Unknown;
+        }
+    }
+
     RendererMemory Allocate(const size_t size, uint lifeTime)
     {
         if (size == 0)

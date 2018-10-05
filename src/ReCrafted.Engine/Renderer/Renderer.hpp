@@ -127,17 +127,14 @@ namespace Renderer
             RG32U,
             RG32F,
 
-            RGB8,
-            RGB8I,
-            RGB8U,
-            RGB8S,
-
             BGRA8,
+            BGRA8sRGB,
 
             RGBA8,
             RGBA8I,
             RGBA8U,
             RGBA8S,
+            RGBA8sRGB,
 
             RGBA16,
             RGBA16I,
@@ -149,19 +146,15 @@ namespace Renderer
             RGBA32U,
             RGBA32F,
 
-            R5G6B5,
-            RGBA4,
-            RGB5A1,
+            B5G6R5,
+            BGRA4,
+            BGR5A1,
             RGB10A2,
             R11G11B10F,
 
             // Depth formats
             D16,
-            D16F,
-            D24,
-            D24F,
             D24S8,
-            D32,
             D32F,
 
             // Compressed formats
@@ -218,17 +211,14 @@ namespace Renderer
         {64}, // RG32U
         {64}, // RG32F
 
-        {24}, // RGB8
-        {24}, // RGB8I
-        {24}, // RGB8U
-        {24}, // RGB8S
-
         {32}, // BGRA8
+        {32}, // BGRA8sRGB
 
         {32}, // RGBA8
         {32}, // RGBA8I
         {32}, // RGBA8U
         {32}, // RGBA8S
+        {32}, // RGBA8sRGB
 
         {64}, // RGBA16
         {64}, // RGBA16I
@@ -247,11 +237,7 @@ namespace Renderer
         {32}, // RG11B10F
 
         {16}, // D16
-        {16}, // D16F
-        {24}, // D24
-        {24}, // D24F
         {32}, // D24S8
-        {32}, // D32
         {32}, // D32F
 
         {4}, // BC1
@@ -368,6 +354,8 @@ namespace Renderer
     /// Gets the current renderer context data.
     /// </summary>
     RENDERER_FUNCTION(void) GetContext(RHIContext* context);
+
+    RENDERER_FUNCTION(TextureFormat::_enum) DXGIFormatToTextureFormat(uint16_t dxgiFormat);
 
     /// <summary>
     /// Allocates given amount of memory.
