@@ -938,7 +938,31 @@ namespace Renderer
                 // set texture pitch
                 texture.pitch = rowPitch;
 
-                m_context->UpdateSubresource(texture.texture, 0, nullptr, command->memory, rowPitch, 0);
+                if(command->generateMips)
+                {
+                    // Upload only first mip
+                    m_context->UpdateSubresource(texture.texture, 0, nullptr, command->memory, rowPitch, 0);
+                }
+                else
+                {
+                    cvar pixelSize = TextureFormatInfo[command->textureFormat][0] / 8;
+                    var memory = static_cast<uint8_t*>(command->memory);
+
+                    // Upload all mips
+                    for (var mipId = 0; mipId < command->mipLevels; mipId++)
+                    {
+                        cvar width = command->width >> mipId;
+                        cvar height = command->height >> mipId;
+                        cvar pitch = max(rowPitch >> mipId, 16);
+                        cvar size = max(width * height * pixelSize, 16);
+
+                        // Update mip
+                        m_context->UpdateSubresource(texture.texture, mipId, nullptr, memory, pitch, 0);
+                        
+                        // Adjust memory pointer
+                        memory += size;
+                    }
+                }
             }
 
             if (createDepthBuffer)
