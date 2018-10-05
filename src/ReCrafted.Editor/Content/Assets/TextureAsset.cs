@@ -143,7 +143,7 @@ namespace ReCrafted.Editor.Content.Assets
 
         public int Width => Mips[0].Width;
         public int Height => Mips[0].Height;
-        public override AssetType AssetType => AssetType.Texture;
+        public override AssetType AssetType => AssetType.Texture2D;
 
         public Texture Texture { get; private set; }
         public TextureView TextureView { get; private set; }

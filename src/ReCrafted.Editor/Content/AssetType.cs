@@ -6,7 +6,7 @@ namespace ReCrafted.Editor.Content
     {
         Unknown,
 
-        Texture,
+        Texture2D,
         Model,
         Shader,
 

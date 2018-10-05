@@ -9,7 +9,7 @@ enum class AssetType : byte
 {
     Unknown,
 
-    Texture,
+    Texture2D,
     Model,
     Shader,
 

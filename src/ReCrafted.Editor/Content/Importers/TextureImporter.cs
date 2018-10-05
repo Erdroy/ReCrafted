@@ -117,7 +117,7 @@ namespace ReCrafted.Editor.Content.Importers
             return null;
         }
 
-        public override AssetType SupportedAssetType => AssetType.Texture;
+        public override AssetType SupportedAssetType => AssetType.Texture2D;
 
         public override string[] SupportedExtensions => new []{
             "bmp", "jpg", "png", "tga", "hdr", "dds"
