@@ -879,7 +879,10 @@ namespace Renderer
             ASSERT(texture.texture == nullptr);
 
             cvar mipLevels = command->mipLevels == 0 ? 1 : command->mipLevels;
-            cvar createDepthBuffer = command->textureFormat >= TextureFormat::D16;
+            cvar createDepthBuffer = 
+                command->textureFormat == TextureFormat::D16 ||
+                command->textureFormat == TextureFormat::D24S8 ||
+                command->textureFormat == TextureFormat::D32F;
 
             cvar rt = command->renderTarget || createDepthBuffer;
 
