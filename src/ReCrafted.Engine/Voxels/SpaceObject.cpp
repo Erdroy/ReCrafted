@@ -25,27 +25,13 @@ void SpaceObject::Init(SpaceObjectSettings& settings)
     // Load shader
     m_terrainShader = ContentManager::LoadAsset<Shader>("Shaders/TerrainShader");
 
-    // Load sample textures
-    var texture = Texture2D::CreateTexture(Renderer::TextureFormat::RGBA8);
-    texture->LoadFromFile("../assets/textures/voxel/rock.png");
-    texture->Apply(true);
-    m_textures.Add(texture); 
-    
-    texture = Texture2D::CreateTexture(Renderer::TextureFormat::RGBA8);
-    texture->LoadFromFile("../assets/textures/voxel/grass.png");
-    texture->Apply(true);
-    m_textures.Add(texture);
-
-    texture = Texture2D::CreateTexture(Renderer::TextureFormat::RGBA8);
-    texture->LoadFromFile("../assets/textures/voxel/soil.png");
-    texture->Apply(true);
-    m_textures.Add(texture);
-
-    texture = Texture2D::CreateTexture(Renderer::TextureFormat::RGBA8);
-    texture->LoadFromFile("../assets/textures/voxel/clay.png");
-    texture->Apply(true);
-    m_textures.Add(texture);
-
+    // Load sample textures TODO: Use async loading
+    m_textures.Add(ContentManager::LoadAsset<Texture>("Textures/Voxel/Rock")); 
+    m_textures.Add(ContentManager::LoadAsset<Texture>("Textures/Voxel/Grass"));
+    m_textures.Add(ContentManager::LoadAsset<Texture>("Textures/Voxel/Soil"));
+    m_textures.Add(ContentManager::LoadAsset<Texture>("Textures/Voxel/Clay"));
+    m_textures.Add(ContentManager::LoadAsset<Texture>("Textures/Voxel/Rock1"));
+    m_textures.Add(ContentManager::LoadAsset<Texture>("Textures/Voxel/Rock2"));
 
     // initialize voxel generator
     m_generator.reset(new VoxelGenerator());

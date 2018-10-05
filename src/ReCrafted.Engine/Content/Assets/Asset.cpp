@@ -3,6 +3,11 @@
 #include "Asset.h"
 #include "../ContentManager.h"
 
+void Asset::OnDestroy()
+{
+    Unload();
+}
+
 Asset::~Asset()
 {
     if(!m_unloaded)

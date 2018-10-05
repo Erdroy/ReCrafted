@@ -6,7 +6,7 @@
 #define ATLAS_H
 
 // includes
-#include "Texture2D.h"
+#include "Texture.h"
 #include "Core/Math/Rect.h"
 #include "Core/Containers/Array.h"
 
@@ -15,7 +15,7 @@ struct Text;
 /**
  * \brief Atlas class.
  */
-class Atlas : public IResource
+class Atlas
 {
 public:
     struct Element
@@ -25,11 +25,8 @@ public:
     };
 
 private:
-    RefPtr<Texture2D> m_texture = nullptr;
+    Texture* m_texture = nullptr;
     Array<Element> m_elements = {};
-
-private:
-IRESOURCE_IMPL(Atlas)
 
 public:
     /**
@@ -43,12 +40,7 @@ public:
 	 * \brief Gets texture of this atlas.
 	 * \return The texture pointer.
 	 */
-    RefPtr<Texture2D> GetTexture() const;
-
-    /**
-	 * \brief Disposes this atlas.
-	 */
-    void Dispose() override;
+    Texture* GetTexture() const;
 
 public:
     /**

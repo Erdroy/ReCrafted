@@ -102,7 +102,7 @@ public:
 public:
     // internal
     FORCEINLINE void InternalDrawBox(Rectf rect);
-    FORCEINLINE void InternalDrawBoxTextured(Texture2D* texture, Rectf rect, Rectf uvs);
+    FORCEINLINE void InternalDrawBoxTextured(Texture* texture, Rectf rect, Rectf uvs);
     FORCEINLINE void PushDrawCmd(drawcmd* cmd, int index);
 
 private:
@@ -185,7 +185,7 @@ public:
     /// <param name="texture">The texture which will drawn.</param>
     /// <param name="pos">The screen position (in pixels) where the texture will be drawn.</param>
     /// <param name="pos">The texture uvs.</param>
-    static void DrawTexture(Texture2D* texture, Rectf rect, Rectf uvs);
+    static void DrawTexture(Texture* texture, Rectf rect, Rectf uvs);
 };
 
 #endif // UI_H

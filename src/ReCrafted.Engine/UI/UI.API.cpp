@@ -5,7 +5,7 @@
 
 namespace Internal
 {
-    void drawTex2d(Texture2D* texture, Rectf* rect, Rectf* uvs)
+    void drawTex2d(Texture* texture, Rectf* rect, Rectf* uvs)
     {
         if (texture == nullptr)
             return;

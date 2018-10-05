@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Numerics;
 using System.Windows.Forms;
+using DirectXTexNet;
 using ImGuiNET;
 using ReCrafted.Editor.Content.Importers;
 using ReCrafted.Editor.Utilities;
@@ -79,13 +80,19 @@ namespace ReCrafted.Editor.Windows.Content
                 case ".dds":
                 case ".hdr":
                 {
-                    // Open texture importer window
+                    // TODO: Open texture importer window
+
+                    var compressResult = MessageBox.Show("Compress this texture?", "Texture import.", MessageBoxButtons.YesNo);
+                    var mipMapsResult = MessageBox.Show("Generate mip maps?", "Texture import.", MessageBoxButtons.YesNo);
 
                     // Temporary, import the texture
                     var outputFileName = "../content/" + Path.GetFileNameWithoutExtension(fileName) + ".rcasset";
                     TextureImporter.Instance.ImportAsset(fileName, outputFileName, new TextureImporter.Settings
                     {
-                        GenerateMipMaps = true
+                        GenerateMipMaps = mipMapsResult == DialogResult.Yes,
+                        Compress = compressResult == DialogResult.Yes,
+                        CompressionFlags = TEX_COMPRESS_FLAGS.PARALLEL,
+                        CompressionFormat = DXGI_FORMAT.BC7_UNORM
                     });
 
                     break;

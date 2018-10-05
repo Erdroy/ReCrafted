@@ -68,6 +68,26 @@ public:
     /// WARNING: Only for API objects!
     /// Setting `initializeNativePtr` to false, can instantiate every non-static class.
     /// </summary>
+    template <class TType>
+    static RefPtr<TType> CreateAssetInstance(const char* ns, const char* className, RefPtr<Assembly> assembly = nullptr,
+        bool initializeNativePtr = true)
+    {
+        RefPtr<TType> object(ContentManager::CreateVirtualAsset<TType>());
+
+        if (assembly == nullptr)
+            assembly = Assembly::API;
+
+        auto cls = assembly->FindClass(ns, className);
+        auto objectPtr = static_cast<RefPtr<Object>>(object);
+        Create(objectPtr, Domain::Root->GetMono(), cls->m_class, initializeNativePtr);
+        return object;
+    }
+
+    /// <summary>
+    /// Creates instance of API class.
+    /// WARNING: Only for API objects!
+    /// Setting `initializeNativePtr` to false, can instantiate every non-static class.
+    /// </summary>
     template <class T>
     static RefPtr<T> CreateInstance(const char* ns, const char* className, RefPtr<Assembly> assembly = nullptr,
                                  bool initializeNativePtr = true)

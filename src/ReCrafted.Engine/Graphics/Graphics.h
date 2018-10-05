@@ -33,7 +33,7 @@ private:
     RefPtr<Rendering> m_rendering = nullptr;
     Shader* m_currentShader = nullptr;
 
-    Array<RefPtr<Texture2D>> m_currentTextures = {};
+    Array<Texture*> m_currentTextures = {};
 
     RefPtr<RenderBuffer> m_gbuffer = nullptr;
     Shader* m_gbufferFillShader = nullptr;
@@ -113,7 +113,7 @@ public:
      * \param slot The shader slot.
      * \param texture2d The texture.
      */
-    void SetTexture(uint slot, const RefPtr<Texture2D>& texture2d);
+    void SetTexture(uint slot, Texture* texture2d);
 
     /**
     * \brief Gets current set render stage.

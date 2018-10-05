@@ -8,14 +8,14 @@ namespace ReCrafted.API.Graphics
     /// <summary>
     ///	Texture2D class.
     /// </summary>
-    public partial class Texture2D
+    public partial class Texture
     {
         /// <summary>
         /// Creates new Texture2D from PNG file.
         /// </summary>
         /// <param name="fileName">The PNG file path.</param>
         /// <exception cref="ReCraftedException">Exception is thrown when the target PNG file was unable to load.</exception>
-        public static Texture2D Create(string fileName)
+        public static Texture Create(string fileName)
         {
             var texture = Create();
             texture.LoadFromFile(fileName);

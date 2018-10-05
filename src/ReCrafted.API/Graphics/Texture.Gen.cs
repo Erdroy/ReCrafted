@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 05/25/2018 19:14:55 Source: 'Texture2D.API.cpp' Target: 'Graphics/Texture2D.Gen.cs'
+// Generated: 10/05/2018 17:53:16 Source: 'Texture.API.cpp' Target: 'Graphics/Texture.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -8,11 +8,11 @@ using System.Runtime.CompilerServices;
 namespace ReCrafted.API.Graphics 
 {
 	/// <summary>
-	///	Texture2D class.
+	///	Texture class.
 	/// </summary>
-	public partial class Texture2D : Object
+	public partial class Texture : Object
 	{
-        internal Texture2D() {}
+        internal Texture() {}
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void InternalLoadFile(IntPtr nativePtr, string fileName);
@@ -21,10 +21,10 @@ namespace ReCrafted.API.Graphics
 		internal static extern void InternalApply(IntPtr nativePtr);
 
 		/// <summary>
-		///	Creates new Texture2D
+		///	Creates new Texture
 		/// </summary>
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		public static extern Texture2D Create();
+		public static extern Texture Create();
 
 		/// <summary>
 		///	Returns texture's width

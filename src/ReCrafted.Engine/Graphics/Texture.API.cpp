@@ -1,12 +1,13 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
-#include "Texture2D.h"
+#include "Texture.h"
 #include "Scripting/Mono.h"
 #include "Scripting/Bindings.h"
+#include "Content/ContentManager.h"
 
 namespace Internal
 {
-    int getWidth(Texture2D* texture)
+    int getWidth(Texture* texture)
     {
         if (!texture) return 0;
 
@@ -15,7 +16,7 @@ namespace Internal
         return width;
     }
 
-    int getHeight(Texture2D* texture)
+    int getHeight(Texture* texture)
     {
         if (!texture) return 0;
 
@@ -24,47 +25,47 @@ namespace Internal
         return height;
     }
 
-    void apply(Texture2D* texture)
+    void apply(Texture* texture)
     {
         if (!texture) return;
 
         texture->Apply();
     }
 
-    void loadFile(Texture2D* texture, MonoString* string)
+    void loadFile(Texture* texture, MonoString* string)
     {
         if (!texture) return;
 
         // convert monostring to ansi string
         MONO_ANSI_ERR();
-        auto str = MONO_ANSI(string);
+        cvar str = MONO_ANSI(string);
 
         // load from file
-        texture->LoadFromFile(str);
+        texture->InitializeFromFile(str);
 
         // free ansi string
         MONO_ANSI_FREE(str);
     }
 
-    MonoObject* createTexture2D()
+    MonoObject* createTexture()
     {
-        cvar texture = Object::CreateInstance<Texture2D>("ReCrafted.API.Graphics", "Texture2D");
+        cvar texture = Object::CreateAssetInstance<Texture>("ReCrafted.API.Graphics", "Texture");
         return texture->GetManagedPtr();
     }
 }
 
-void Texture2D::InitRuntime()
+void Texture::InitRuntime()
 {
     // create type binding
 
-    API_FILE("Graphics/Texture2D.Gen.cs");
+    API_FILE("Graphics/Texture.Gen.cs");
     {
-        API_COMMENT("Texture2D class.");
-        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Texture2D", "Object", PARTIAL, NOCONSTRUCTOR);
+        API_COMMENT("Texture class.");
+        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Texture", "Object", PARTIAL, NOCONSTRUCTOR);
         {
             API_METHOD(INTERNAL, STATIC, "InternalLoadFile", EXTERN);
             {
-                API_BIND("ReCrafted.API.Graphics.Texture2D::InternalLoadFile", &Internal::loadFile);
+                API_BIND("ReCrafted.API.Graphics.Texture::InternalLoadFile", &Internal::loadFile);
 
                 API_PARAM("IntPtr", "nativePtr");
                 API_PARAM("string", "fileName");
@@ -73,32 +74,32 @@ void Texture2D::InitRuntime()
 
             API_METHOD(INTERNAL, STATIC, "InternalApply", EXTERN);
             {
-                API_BIND("ReCrafted.API.Graphics.Texture2D::InternalApply", &Internal::apply);
+                API_BIND("ReCrafted.API.Graphics.Texture::InternalApply", &Internal::apply);
 
                 API_PARAM("IntPtr", "nativePtr");
             }
             API_METHOD_END();
 
-            API_COMMENT("Creates new Texture2D");
+            API_COMMENT("Creates new Texture");
             API_METHOD(PUBLIC, STATIC, "Create", EXTERN);
             {
-                API_BIND("ReCrafted.API.Graphics.Texture2D::Create", &Internal::createTexture2D);
+                API_BIND("ReCrafted.API.Graphics.Texture::Create", &Internal::createTexture);
 
-                API_RETURN("Texture2D");
+                API_RETURN("Texture");
             }
             API_METHOD_END();
 
             API_COMMENT("Returns texture's width");
             API_PROPERTY(PUBLIC, REGULAR, "int", "Width", GET);
             {
-                API_BIND("ReCrafted.API.Graphics.Texture2D::Internal_Width_Get", &Internal::getWidth);
+                API_BIND("ReCrafted.API.Graphics.Texture::Internal_Width_Get", &Internal::getWidth);
             }
             API_PROPERTY_END();
 
             API_COMMENT("Returns texture's height");
             API_PROPERTY(PUBLIC, REGULAR, "int", "Height", GET);
             {
-                API_BIND("ReCrafted.API.Graphics.Texture2D::Internal_Height_Get", &Internal::getHeight);
+                API_BIND("ReCrafted.API.Graphics.Texture::Internal_Height_Get", &Internal::getHeight);
             }
             API_PROPERTY_END();
         }

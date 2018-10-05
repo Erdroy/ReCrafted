@@ -10,12 +10,11 @@
 #include "Core/Math/Rect.h"
 #include "Core/Math/Rectf.h"
 #include "Common/Text.h"
+#include "Texture.h"
 #include "IResource.h"
 
 #include <vector>
 #include <Scripting/Object.h>
-
-class Texture2D;
 
 /**
  * \brief Font class.
@@ -46,7 +45,7 @@ private:
     uint m_charmapWidth = 512;
     uint m_charmapHeight = 512;
 
-    Array<RefPtr<Texture2D>> m_textures = {};
+    Array<Texture*> m_textures = {};
 
     Glyph* m_glyphs = nullptr;
     Glyph m_nullGlyph = {};
@@ -108,7 +107,7 @@ public:
      * \param id The texture id.
      * \return The texture.
      */
-    FORCEINLINE RefPtr<Texture2D> GetTexture(int id) const
+    FORCEINLINE Texture* GetTexture(int id) const
     {
         return m_textures[id];
     }

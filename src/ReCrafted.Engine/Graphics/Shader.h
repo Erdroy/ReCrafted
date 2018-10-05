@@ -8,7 +8,7 @@
 // includes
 #include "ReCrafted.h"
 #include "Core/Types.h"
-#include "Texture2D.h"
+#include "Texture.h"
 #include "Renderer/Renderer.hpp"
 
 #include "Content/Assets/JsonAsset.h"
@@ -54,9 +54,9 @@ public:
 	 * \param slot The texture slot, starts at 0.
 	 * \param texture The texture.
 	 */
-    void SetTexture(int slot, RefPtr<Texture2D> texture)
+    void SetTexture(int slot, Texture* texture)
     {
-        Renderer::ApplyTexture2D(texture->m_textureHandle, slot);
+        Renderer::ApplyTexture2D(texture->GetHandle(), slot);
     }
 
     /**

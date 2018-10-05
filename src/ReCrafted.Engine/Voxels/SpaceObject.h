@@ -19,7 +19,7 @@ class SpaceObject
 
 public:
     static SpaceObject* current;
-    Array<RefPtr<Texture2D>> m_textures = {};
+    Array<Texture*> m_textures = {};
 
 private:
     SpaceObjectSettings m_settings = {};

@@ -1,6 +1,7 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Shader.h"
+#include "Core/Logger.h"
 
 #include <json.hpp>
 

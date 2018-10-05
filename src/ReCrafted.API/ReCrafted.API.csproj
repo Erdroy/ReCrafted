@@ -72,8 +72,8 @@
     <Compile Include="Graphics\Font.Gen.cs" />
     <Compile Include="Graphics\Graphics.Gen.cs" />
     <Compile Include="Graphics\Sprite.cs" />
-    <Compile Include="Graphics\Texture2D.cs" />
-    <Compile Include="Graphics\Texture2D.Gen.cs" />
+    <Compile Include="Graphics\Texture.cs" />
+    <Compile Include="Graphics\Texture.Gen.cs" />
     <Compile Include="Graphics\WebUI.Gen.cs" />
     <Compile Include="Graphics\WebUIView.Gen.cs" />
     <Compile Include="Mathematics\AngleSingle.cs" />

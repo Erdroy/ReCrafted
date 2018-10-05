@@ -465,9 +465,9 @@ void Graphics::SetStage(RenderStage::_enum stage)
     }
 }
 
-void Graphics::SetTexture(uint slot, const RefPtr<Texture2D>& texture2d)
+void Graphics::SetTexture(uint slot, Texture* texture2d)
 {
-    if(m_currentTextures[slot] != texture2d)
+    if (m_currentTextures[slot] != texture2d)
     {
         Renderer::ApplyTexture2D(texture2d->GetHandle(), slot);
         m_currentTextures[slot] = texture2d;

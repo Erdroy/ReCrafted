@@ -61,6 +61,9 @@ namespace ReCrafted.Editor.Windows
             
             // Setup events
             EditorApplication.Current.SdlWindow.Resized += MainWindowResized;
+
+            // Reset layout
+            ResetLayout();
         }
 
         private void MainWindowResized()
@@ -229,7 +232,7 @@ namespace ReCrafted.Editor.Windows
             var content = DockPane.Dock(AddChildren<ContentWindow>());
             var console = content.Dock(AddChildren<ConsoleWindow>(), DockType.Horizontal, DockDirection.Up);
             console.Dock(AddChildren<GraphWindowBase>(), DockType.Vertical, DockDirection.Right, 0.30f);
-            AddChildren<ConsoleWindow>();
+            //AddChildren<ConsoleWindow>();
 
             // Recalculate layout
             DockPane.RecalculateLayout();

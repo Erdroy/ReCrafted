@@ -8,6 +8,7 @@
 // includes
 #include "ReCrafted.h"
 #include "Core/Streams/BinaryStream.h"
+#include "Scripting/Object.h"
 
 #include "AssetBaseType.h"
 #include "AssetType.h"
@@ -15,7 +16,7 @@
 #include <json.hpp>
 using namespace nlohmann;
 
-class Asset
+class Asset : public Object
 {
     friend class ContentManager;
 
@@ -25,14 +26,16 @@ private:
     bool m_loaded = false;
     bool m_unloaded = false;
 
+private:
+    void OnDestroy() override;
+
 public:
     Asset() = default;
     virtual ~Asset();
 
-public:
+protected:
     void Deserialize(BinaryStream& stream);
     void Deserialize(const json& json, const std::string& content);
-    void Unload();
 
 protected:
     virtual void OnInitialize() {}
@@ -42,10 +45,17 @@ protected:
     virtual void OnDeserializeJson(uint16_t version, const json& json) { }
     virtual void OnUnload() = 0;
 
-public:
+protected:
     FORCEINLINE virtual AssetBaseType GetAssetBaseType() = 0;
     FORCEINLINE virtual AssetType GetAssetType() = 0;
 
+public:
+    /**
+     * \brief Unloads the asset.
+     */
+    void Unload();
+
+public:
     /**
      * \brief Gets asset virtual flag state.
      * \return True when this asset has been created using CreateVirtualAsset function.

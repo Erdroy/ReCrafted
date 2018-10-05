@@ -6,12 +6,6 @@
 
 #include <json.hpp>
 
-void Atlas::Dispose()
-{
-    // Dispose texture
-    m_texture = nullptr;
-}
-
 Rect Atlas::GetRect(const char* name)
 {
     for (auto i = 0u; i < m_elements.Size(); i ++)
@@ -25,7 +19,7 @@ Rect Atlas::GetRect(const char* name)
     return {};
 }
 
-RefPtr<Texture2D> Atlas::GetTexture() const
+Texture* Atlas::GetTexture() const
 {
     return m_texture;
 }
@@ -77,12 +71,12 @@ RefPtr<Atlas> Atlas::Load(Text& fileName)
         }
 
         // load texture
-        auto texture = Texture2D::CreateTexture(Renderer::TextureFormat::RGBA8);
-        texture->LoadFromFile(pngName);
-        texture->Apply();
+        //auto texture = Texture2D::CreateTexture(Renderer::TextureFormat::RGBA8);
+        //texture->LoadFromFile(pngName);
+        //texture->Apply();
 
         // set loaded texture
-        atlas->m_texture = texture;
+        //atlas->m_texture = texture;
 
         // free data
         delete[] data;

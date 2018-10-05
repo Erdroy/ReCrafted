@@ -5,7 +5,7 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "UI/UI.h"
-#include "Graphics/Texture2D.h"
+#include "Graphics/Texture.h"
 #include "Core/Logger.h"
 #include "Core/Math/Math.h"
 #include "Core/Math/FastRectanglePack.h"
@@ -15,6 +15,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include <freetype/ftglyph.h>
+#include "Content/ContentManager.h"
 
 struct PreFontGlyph
 {
@@ -247,7 +248,7 @@ void Font::LoadFont(Text& fontFile, int size, bool managed)
 
     auto charmapId = 0;
 
-    auto textures = Array<RefPtr<Texture2D>>();
+    auto textures = Array<Texture*>();
 
     while (glyphsLeft.Size() > 0u)
     {
@@ -299,8 +300,8 @@ void Font::LoadFont(Text& fontFile, int size, bool managed)
         }
 
         // create texture
-        auto texture = Texture2D::CreateTexture(Renderer::TextureFormat::RGBA8);
-        texture->LoadFromMemory(newbitsPtr, charmapWidth, charmapHeight);
+        auto texture = ContentManager::CreateVirtualAsset<Texture>();
+        texture->InitializeFromMemory(newbitsPtr, charmapWidth * charmapHeight * 4, charmapWidth, charmapHeight, 1, Renderer::TextureFormat::RGBA8);
         texture->Apply();
         textures.Add(texture);
 

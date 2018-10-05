@@ -953,8 +953,8 @@ namespace Renderer
                     {
                         cvar width = command->width >> mipId;
                         cvar height = command->height >> mipId;
-                        cvar pitch = max(rowPitch >> mipId, 16);
-                        cvar size = max(width * height * pixelSize, 16);
+                        cvar pitch = max(rowPitch >> mipId, pixelSize);
+                        cvar size = max(width * height * pixelSize, pixelSize);
 
                         // Update mip
                         m_context->UpdateSubresource(texture.texture, mipId, nullptr, memory, pitch, 0);

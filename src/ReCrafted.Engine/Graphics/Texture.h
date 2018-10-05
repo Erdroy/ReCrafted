@@ -9,9 +9,13 @@
 #include "ReCrafted.h"
 #include "Content/Assets/BinaryAsset.h"
 #include "Renderer/Renderer.hpp"
+#include "Scripting/Object.h"
 
 class Texture : public BinaryAsset
 {
+private:
+    SCRIPTING_API_IMPL()
+
 private:
     Renderer::Texture2DHandle m_textureHandle;
     Renderer::RendererMemory m_textureMemory = nullptr;
@@ -60,6 +64,15 @@ public:
                               Renderer::TextureFormat::_enum textureFormat);
 
     /**
+     * \brief Initializes this texture from given file.
+     * \param fileName The file which will be loaded as texture.
+     * 
+     * \note Only PNG RGBA8 format is supported! 
+     * Requires Apply call.
+     */
+    void InitializeFromFile(const char* fileName);
+
+    /**
      * \brief Get pixel at given position.
      * \param x The x coord.
      * \param y The y coord.
@@ -90,17 +103,17 @@ public:
     void SetPixel(int x, int y, uint pixel) const;
 
     /**
-    * \brief Sets pixel at given position.
-    * \param x The x coord.
-    * \param y The y coord.
-    * \param r R channel value.
-    * \param g G channel value.
-    * \param b B channel value.
-    * \param a A channel value.
-    * 
-     * \note Available only before Apply call, when format is RGBA8 
+     * \brief Sets pixel at given position.
+     * \param x The x coord.
+     * \param y The y coord.
+     * \param r R channel value.
+     * \param g G channel value.
+     * \param b B channel value.
+     * \param a A channel value.
+     *
+     * \note Available only before Apply call, when format is RGBA8
      * and has been initialized (Texture::Initialize(...)).
-    */
+     */
     void SetPixel(int x, int y, byte r, byte g, byte b, byte a) const;
 
     /**
@@ -122,6 +135,24 @@ public:
     void Apply(bool generateMips = false);
 
 public:
+    /**
+     * \brief Gets the width of this texture.
+     * \return The width of this texture.
+     */
+    uint GetWidth() const
+    {
+        return m_width;
+    }
+
+    /**
+    * \brief Gets the height of this texture.
+    * \return The height of this texture.
+    */
+    uint GetHeight() const
+    {
+        return m_height;
+    }
+
     /**
      * \brief Gets handle of this texture.
      * \return G

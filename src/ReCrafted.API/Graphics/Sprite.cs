@@ -134,7 +134,7 @@ namespace ReCrafted.API.Graphics
         /// <returns>Created instance of sprite.</returns>
         public static Sprite Create(string texturePath)
         {
-            return Create(Texture2D.Create(texturePath), Color.White);
+            return Create(API.Graphics.Texture.Create(texturePath), Color.White);
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace ReCrafted.API.Graphics
         /// <returns>Created instance of sprite.</returns>
         public static Sprite Create(string texturePath, Color color)
         {
-            return Create(Texture2D.Create(texturePath), color);
+            return Create(API.Graphics.Texture.Create(texturePath), color);
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace ReCrafted.API.Graphics
         /// </summary>
         /// <param name="texture">Texture of sprite.</param>
         /// <returns>Created instance of sprite.</returns>
-        public static Sprite Create(Texture2D texture)
+        public static Sprite Create(Texture texture)
         {
             return Create(texture, Color.White);
         }
@@ -164,7 +164,7 @@ namespace ReCrafted.API.Graphics
         /// <param name="texture">Texture of sprite.</param>
         /// <param name="color">Color of sprite.</param>
         /// <returns>Created instance of sprite.</returns>
-        public static Sprite Create(Texture2D texture, Color color)
+        public static Sprite Create(Texture texture, Color color)
         {
             var sprite = new Sprite
             {
@@ -188,7 +188,7 @@ namespace ReCrafted.API.Graphics
         /// <summary>
         /// Texture of sprite.
         /// </summary>
-        public Texture2D Texture { get; set; }
+        public Texture Texture { get; set; }
 
         /// <summary>
         /// Default color of sprite.

@@ -82,7 +82,7 @@ namespace ReCrafted.API.Graphics
         {
             fileName = Path.GetDirectoryName(fileName) + "/" + Path.GetFileNameWithoutExtension(fileName);
             
-            var atlasTexture = Texture2D.Create(fileName + ".png"); // TODO: We need to embed the texture file name into JSON
+            var atlasTexture = API.Graphics.Texture.Create(fileName + ".png"); // TODO: We need to embed the texture file name into JSON
             var elements = JsonConvert.DeserializeObject<AtlasElement[]>(File.ReadAllText(fileName + ".json"));
 
             var atlasWidth = atlasTexture.Width;
@@ -105,6 +105,6 @@ namespace ReCrafted.API.Graphics
         /// <summary>
         /// The texture of this atlas.
         /// </summary>
-        public Texture2D Texture { get; private set; }
+        public Texture Texture { get; private set; }
     }
 }

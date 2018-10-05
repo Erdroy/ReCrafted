@@ -2,6 +2,8 @@
 
 #include "Texture.h"
 
+#include <upng.h>
+
 void Texture::OnInitialize()
 {
     Apply();
@@ -103,6 +105,24 @@ void Texture::InitializeFromMemory(uint8_t* data, const size_t dataSize, const u
     memcpy(m_textureMemory, data, dataSize);
 }
 
+void Texture::InitializeFromFile(const char* fileName)
+{
+    cvar bitmap = upng::upng_new_from_file(fileName);
+
+    ASSERT(bitmap);
+    ASSERT(upng::upng_decode(bitmap) == UPNG_EOK);
+
+    cvar bits = const_cast<byte*>(upng::upng_get_buffer(bitmap));
+    cvar width = upng::upng_get_width(bitmap);
+    cvar height = upng::upng_get_height(bitmap);
+    cvar bpp = upng::upng_get_bpp(bitmap);
+    cvar size = upng::upng_get_size(bitmap);
+
+    _ASSERT_(bpp == 32, "Unsupported texture format! Texture must have 32bpp!");
+
+    InitializeFromMemory(bits, size, width, height, 1, Renderer::TextureFormat::RGBA8);
+}
+
 
 uint Texture::GetPixel(const int x, const int y) const
 {
@@ -172,6 +192,7 @@ void Texture::SetPixels(const int x, const int y, const int width, const int hei
 
 void Texture::Apply(const bool generateMips)
 {
+    ASSERT(m_applied == false);
     ASSERT(m_textureMemory);
     ASSERT(m_width > 0);
     ASSERT(m_height > 0);

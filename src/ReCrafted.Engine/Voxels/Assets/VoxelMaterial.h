@@ -7,7 +7,7 @@
 
 // includes
 #include "Content/Assets/JsonAsset.h"
-#include "Graphics/Texture2D.h"
+#include "Graphics/Texture.h"
 #include "Voxels/Voxel.h"
 #include "Voxels/VoxelMaterialManager.h"
 
@@ -17,7 +17,7 @@ private:
     std::string m_voxelName = nullptr;
     VoxelMaterial_t m_voxelMaterial = 0u;
     VoxelHardness_t m_voxelHardness = 0u;
-    Texture2D* m_voxelTexture = nullptr;
+    Texture* m_voxelTexture = nullptr;
 
     std::string m_textureAsset = nullptr;
 
@@ -69,7 +69,7 @@ public:
         return m_voxelHardness;
     }
 
-    Texture2D* GetTexture() const
+    Texture* GetTexture() const
     {
         return m_voxelTexture;
     }

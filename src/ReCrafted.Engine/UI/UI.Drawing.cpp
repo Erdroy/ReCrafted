@@ -71,7 +71,7 @@ FORCEINLINE void drawTextBase(UI* instance, Font* font, T* characters, int chara
             currentY -= glyph.horizontalBearingY;
 
             instance->InternalDrawBoxTextured(
-                texture.get(),
+                texture,
                 Rectf(currentX, currentY, float(glyphRect.width), float(glyphRect.height)),
                 Rectf(glyphRect.x / atlasWidth, (glyphRect.y + glyphRect.height) / atlasHeight,
                       glyphRect.width / atlasWidth, -glyphRect.height / atlasHeight));
@@ -228,7 +228,7 @@ void UI::InternalDrawBox(Rectf rect)
     BOX_VERTICES_FINALIZE(0);
 }
 
-void UI::InternalDrawBoxTextured(Texture2D* texture, Rectf rect, Rectf uvs)
+void UI::InternalDrawBoxTextured(Texture* texture, Rectf rect, Rectf uvs)
 {
     cvar textureHandle = texture->GetHandle().idx;
 
@@ -284,7 +284,7 @@ void UI::DrawText(Font* font, const char* characters, int characterCount, Vector
     drawTextBase(m_instance, font, characters, characterCount, position);
 }
 
-void UI::DrawTexture(Texture2D* texture, Rectf rect, Rectf uvs)
+void UI::DrawTexture(Texture* texture, Rectf rect, Rectf uvs)
 {
     rect.width -= rect.x;
     rect.height -= rect.y;

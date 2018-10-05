@@ -31,7 +31,7 @@ void Bindings::Bind()
     WebUI::InitRuntime();
     WebUIView::InitRuntime();
     Camera::InitRuntime();
-    Texture2D::InitRuntime();
+    Texture::InitRuntime();
     DebugDraw::InitRuntime();
     Font::InitRuntime();
     Entity::InitRuntime();
