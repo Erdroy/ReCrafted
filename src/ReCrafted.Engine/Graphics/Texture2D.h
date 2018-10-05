@@ -143,6 +143,10 @@ public:
     {
         return m_textureHandle;
     }
+    void SetHandle(Renderer::Texture2DHandle handle)
+    {
+        m_textureHandle = handle;
+    }
 
 public:
     /**

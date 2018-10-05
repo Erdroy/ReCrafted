@@ -69,8 +69,8 @@ namespace ReCrafted.Editor.Content.Importers
                     Pitch = (int)img.RowPitch,
                     Size = (int)img.SlicePitch // Slice pitch is size of single slice, so whole single mip
                 };
-
-                textureSize += (uint)img.SlicePitch;
+                
+                textureSize += (uint)mip.Size;
 
                 mip.Data = new byte[mip.Size];
                 Marshal.Copy(img.Pixels, mip.Data, 0, mip.Size);

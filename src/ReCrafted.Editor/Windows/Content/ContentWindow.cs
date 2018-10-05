@@ -5,6 +5,7 @@ using System.IO;
 using System.Numerics;
 using System.Windows.Forms;
 using ImGuiNET;
+using ReCrafted.Editor.Content.Importers;
 using ReCrafted.Editor.Utilities;
 
 namespace ReCrafted.Editor.Windows.Content
@@ -71,14 +72,22 @@ namespace ReCrafted.Editor.Windows.Content
         {
             switch (Path.GetExtension(fileName))
             {
-                case "bmp":
-                case "jpg":
-                case "png":
-                case "tga":
-                case "dds":
-                case "hdr":
+                case ".bmp":
+                case ".jpg":
+                case ".png":
+                case ".tga":
+                case ".dds":
+                case ".hdr":
                 {
                     // Open texture importer window
+
+                    // Temporary, import the texture
+                    var outputFileName = "../content/" + Path.GetFileNameWithoutExtension(fileName) + ".rcasset";
+                    TextureImporter.Instance.ImportAsset(fileName, outputFileName, new TextureImporter.Settings
+                    {
+                        GenerateMipMaps = true
+                    });
+
                     break;
                 }
                 // TODO: Add more import options
