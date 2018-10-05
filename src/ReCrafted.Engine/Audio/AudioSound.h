@@ -11,7 +11,7 @@
 
 class AudioSound : public BinaryAsset
 {
-public:
+protected:
     void OnInitialize() override;
     void OnUnload() override;
     void OnDeserializeBinary(uint16_t version, BinaryStream& stream) override;

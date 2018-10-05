@@ -87,11 +87,11 @@ public:
     template<class TAsset>
     static TAsset* CreateVirtualAsset()
     {
-        cvar asset = InternalCreateAsset<TAsset>();
+        cvar asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
         asset->m_virtual = true;
         asset->SetAssetGuid(Platform::NewGuid());
         m_instance->RegisterAsset(asset);
-        return asset;
+        return static_cast<TAsset*>(asset);
     }
 
     /**
@@ -129,7 +129,7 @@ public:
         cvar assetName = std::string(assetFile);
         cvar file = "../content/" + assetName + ".rcasset";
 
-        cvar asset = InternalCreateAsset<TAsset>();
+        cvar asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
         asset->OnLoadBegin(file);
         if (m_instance->LoadAsset(asset, file.c_str()))
         {
@@ -143,7 +143,7 @@ public:
         // Register and initialize asset
         m_instance->RegisterAsset(asset);
         asset->OnInitialize();
-        return asset;
+        return static_cast<TAsset*>(asset);
     }
 
     /**
@@ -160,7 +160,7 @@ public:
         cvar assetName = std::string(assetFile);
         cvar file = "../content/" + assetName + ".rcasset";
 
-        cvar asset = InternalCreateAsset<TAsset>();
+        cvar asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
         asset->OnLoadBegin(file);
 
         // Create and queue task

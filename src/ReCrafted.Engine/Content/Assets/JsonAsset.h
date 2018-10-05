@@ -9,7 +9,7 @@
 
 class JsonAsset : public Asset
 {
-public:
+protected:
     virtual void OnDeserializeJson(uint16_t version, const json& json) override = 0;
 
     AssetBaseType GetAssetBaseType() override

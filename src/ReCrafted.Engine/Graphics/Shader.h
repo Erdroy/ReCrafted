@@ -25,7 +25,7 @@ private:
     Renderer::ShaderHandle m_shaderHandle;
     Text m_shaderName;
 
-public:
+protected:
     void OnInitialize() override;
     void OnLoadBegin(const std::string& fileName) override;
     void OnDeserializeJson(uint16_t version, const json& json) override;

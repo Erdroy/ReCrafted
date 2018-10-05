@@ -9,7 +9,7 @@
 
 class BinaryAsset : public Asset
 {
-public:
+protected:
     virtual void OnDeserializeBinary(uint16_t version, BinaryStream& stream) override = 0;
 
     AssetBaseType GetAssetBaseType() override
