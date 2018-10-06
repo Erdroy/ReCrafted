@@ -744,6 +744,24 @@ namespace Renderer
     /// <param name="height">The new height of the texture2d.</param>
     RENDERER_FUNCTION(void) ResizeTexture2D(Texture2DHandle handle, uint16_t width, uint16_t height);
 
+    /**
+     * \brief Updates given texture subresource.
+     * \param handle The texture handle.
+     * \param data The new subresource data.
+     * \param dataSize The new subresource data size.
+     * \param subresourceId The subresource id.
+     */
+    RENDERER_FUNCTION(void) UpdateTextureSubresource(Texture2DHandle handle, RendererMemory data, size_t dataSize, uint8_t subresourceId = 0);
+
+    /**
+     * \brief Updates given texture subresource synchronously.
+     * \param handle The texture handle.
+     * \param data The new subresource data.
+     * \param dataSize The new subresource data size.
+     * \param subresourceId The subresource id.
+     */
+    RENDERER_FUNCTION(void) UpdateTextureSubresourceSync(Texture2DHandle handle, RendererMemory data, size_t dataSize, uint8_t subresourceId = 0);
+
     /// <summary>
     /// Destroys given texture.
     /// </summary>

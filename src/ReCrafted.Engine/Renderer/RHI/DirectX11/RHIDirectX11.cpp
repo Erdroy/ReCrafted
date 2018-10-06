@@ -235,6 +235,7 @@ namespace Renderer
             FORCEINLINE void Execute_ApplyTexture2D(Command_ApplyTexture2D* command);
             FORCEINLINE void Execute_ApplyTextureArray2D(Command_ApplyTextureArray2D* command);
             FORCEINLINE void Execute_ResizeTexture2D(Command_ResizeTexture2D* command);
+            FORCEINLINE void Execute_UpdateTexture2D(Command_UpdateTexture2D* command);
             FORCEINLINE void Execute_DestroyTexture2D(Command_DestroyTexture2D* command);
 
             FORCEINLINE void Execute_ApplyRenderTexture2D(Command_ApplyRenderTexture2D* command);
@@ -429,6 +430,7 @@ namespace Renderer
             DEFINE_COMMAND_EXECUTOR(ApplyTexture2D);
             DEFINE_COMMAND_EXECUTOR(ApplyTextureArray2D);
             DEFINE_COMMAND_EXECUTOR(ResizeTexture2D);
+            DEFINE_COMMAND_EXECUTOR(UpdateTexture2D);
             DEFINE_COMMAND_EXECUTOR(DestroyTexture2D);
 
             DEFINE_COMMAND_EXECUTOR(ApplyRenderTexture2D);
@@ -1079,6 +1081,11 @@ namespace Renderer
             Execute_CreateTexture2D(&fakeCommand);
         }
 
+        void WorkerThreadInstance::Execute_UpdateTexture2D(Command_UpdateTexture2D* command)
+        {
+            RHIDirectX11::m_instance->UpdateTextureSubresource(command->handle, command->data, command->dataSize, command->subresourceId);
+        }
+
         void WorkerThreadInstance::Execute_DestroyTexture2D(Command_DestroyTexture2D* command)
         {
             rvar texture = m_textures[command->handle.idx];
@@ -1664,24 +1671,18 @@ namespace Renderer
         {
         }
 
-        void RHIDirectX11::UpdateTextureSubresource(Texture2DHandle textureHandle, void* data, size_t dataSize, uint8_t subresourceId)
+        void RHIDirectX11::UpdateTextureSubresource(const Texture2DHandle textureHandle, void* data, size_t dataSize, uint8_t subresourceId)
         {
             cvar textureDesc = m_textures[textureHandle.idx];
             ASSERT(textureDesc.texture != nullptr);
 
-            // Calculate subresource pitch
-            cvar width = max(1, textureDesc.width >> subresourceId);
+            cvar dxgiFormat = DGXI_TextureFormats[textureDesc.format][0];
 
-            var pitch = 0;
-            if(textureDesc.pitch > 0)
-            {
-                pitch = textureDesc.pitch;
-            }
-            else
-            {
-                cvar formatSize = DXGIFormatGetSize(DGXI_TextureFormats[textureDesc.format][0]);
-                pitch = width * formatSize / 8;
-            }
+            // Calculate subresource pitch
+            size_t size;
+            size_t pitch;
+            size_t rows;
+            DXGICalculateSurfaceInfo(textureDesc.width >> subresourceId, textureDesc.height >> subresourceId, dxgiFormat, &size, &pitch, &rows);
 
             m_deviceContext->UpdateSubresource(textureDesc.texture, subresourceId, nullptr, data, pitch, static_cast<uint>(dataSize));
         }

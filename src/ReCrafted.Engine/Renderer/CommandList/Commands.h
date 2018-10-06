@@ -256,6 +256,13 @@ namespace Renderer
         uint16_t height;
     );
 
+    Command(UpdateTexture2D,
+        Texture2DHandle handle;
+        RendererMemory data;
+        size_t dataSize;
+        uint8_t subresourceId;
+    );
+
     Command(DestroyTexture2D,
         Texture2DHandle handle;
     );
