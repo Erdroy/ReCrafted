@@ -26,6 +26,9 @@ private:
     bool m_loaded = false;
     bool m_unloaded = false;
 
+    std::string m_assetName = {};
+    std::string m_assetFile = {};
+
 private:
     void OnDestroy() override;
 
@@ -56,6 +59,24 @@ public:
     void Unload();
 
 public:
+    /**
+     * \brief Gets the original asset name.
+     * \return The asset name.
+     */
+    const char* AssetName() const
+    {
+        return m_assetName.c_str();
+    }
+
+    /**
+     * \brief Gets source asset file.
+     * \return The asset file that has been used to load this asset.
+     */
+    const char* AssetFile() const
+    {
+        return m_assetFile.c_str();
+    }
+
     /**
      * \brief Gets asset virtual flag state.
      * \return True when this asset has been created using CreateVirtualAsset function.

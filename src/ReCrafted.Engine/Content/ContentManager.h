@@ -130,7 +130,13 @@ public:
         cvar file = "../content/" + assetName + ".rcasset";
 
         cvar asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
+
+        // Set asset name and file name
+        asset->m_assetName = assetFile;
+        asset->m_assetFile = file;
+
         asset->OnLoadBegin(file);
+
         if (m_instance->LoadAsset(asset, file.c_str()))
         {
             delete asset;
@@ -161,6 +167,11 @@ public:
         cvar file = "../content/" + assetName + ".rcasset";
 
         cvar asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
+
+        // Set asset name and file name
+        asset->m_assetName = assetFile;
+        asset->m_assetFile = file;
+
         asset->OnLoadBegin(file);
 
         // Create and queue task
