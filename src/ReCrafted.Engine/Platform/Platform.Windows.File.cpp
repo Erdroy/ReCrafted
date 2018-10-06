@@ -30,7 +30,7 @@ void File::Read(void* buffer, size_t length, size_t offset) const
     }
 
     // read
-    fread(buffer, length, 1, file);
+    fread(buffer, 1, length, file);
 }
 
 void File::Read(void* buffer) const

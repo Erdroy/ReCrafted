@@ -269,16 +269,16 @@ void Platform::OpenFile(File* file, const char* fileName, OpenMode::_enum fileOp
     switch (fileOpenMode)
     {
     case OpenMode::OpenRead:
-        openMode = "r";
+        openMode = "rb";
         break;
     case OpenMode::OpenWrite:
-        openMode = "w";
+        openMode = "wb";
         break;
     case OpenMode::OpenAppend:
-        openMode = "w+";
+        openMode = "wb+";
         break;
     case OpenMode::OpenReadWrite:
-        openMode = "r+";
+        openMode = "rb+";
         break;
     default: break;
     }
