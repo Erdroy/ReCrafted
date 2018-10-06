@@ -315,6 +315,88 @@ namespace Renderer
         }
     }
 
+    void CalculateTextureInfo(const uint16_t width, const uint16_t height, const TextureFormat::_enum format, size_t* size, size_t* rowPitch, size_t* rowCount)
+    {
+        auto bcn = false;
+        size_t bpe = 0;
+
+        switch (format)
+        {
+        case TextureFormat::BC1U:
+        case TextureFormat::BC4U:
+            bcn = true;
+            bpe = 8;
+            break;
+
+        case TextureFormat::BC2U:
+        case TextureFormat::BC3U:
+        case TextureFormat::BC5U:
+        case TextureFormat::BC6HSF16:
+        case TextureFormat::BC6HUF16:
+        case TextureFormat::BC7U:
+        case TextureFormat::BC7UsRGB:
+            bcn = true;
+            bpe = 16;
+            break;
+
+        default:
+            break;
+        }
+
+        uint64_t numBytes;
+        uint64_t rowBytes;
+        uint64_t numRows;
+
+        if (bcn)
+        {
+            uint64_t numBlocksWide = 0;
+            if (width > 0)
+            {
+                numBlocksWide = std::max<uint64_t>(1u, (uint64_t(width) + 3u) / 4u);
+            }
+            uint64_t numBlocksHigh = 0;
+            if (height > 0)
+            {
+                numBlocksHigh = std::max<uint64_t>(1u, (uint64_t(height) + 3u) / 4u);
+            }
+            rowBytes = numBlocksWide * bpe;
+            numRows = numBlocksHigh;
+            numBytes = rowBytes * numBlocksHigh;
+        }
+        else
+        {
+            const auto bpp = static_cast<size_t>(TextureFormatInfo[format][0]);
+            ASSERT(bpp > 0);
+
+            rowBytes = (uint64_t(width) * bpp + 7u) / 8u; // round up to nearest byte
+            numRows = uint64_t(height);
+            numBytes = rowBytes * height;
+        }
+
+        if (size)
+            *size = numBytes;
+
+        if (rowPitch)
+            *rowPitch = rowBytes;
+
+        if (rowCount)
+            *rowCount = numRows;
+    }
+
+    size_t CalculateTextureRowPitch(const uint16_t width, const uint16_t height, const TextureFormat::_enum format)
+    {
+        size_t pitch;
+        CalculateTextureInfo(width, height, format, nullptr, &pitch, nullptr);
+        return pitch;
+    }
+
+    size_t CalculateTextureSize(const uint16_t width, const uint16_t height, const TextureFormat::_enum format)
+    {
+        size_t size;
+        CalculateTextureInfo(width, height, format, &size, nullptr, nullptr);
+        return size;
+    }
+
     RendererMemory Allocate(const size_t size, uint lifeTime)
     {
         if (size == 0)
@@ -324,7 +406,7 @@ namespace Renderer
         return Allocate(data, std::function<void(void*, void*)>(&FreeRendererMemory), nullptr, lifeTime);
     }
 
-    RendererMemory Allocate(void* data, std::function<void(void*, void*)> releaseFunc, void* userData, uint lifeTime)
+    RendererMemory Allocate(void* data, std::function<void(void*, void*)> releaseFunc, void* userData, const uint lifeTime)
     {
         if (data == nullptr)
             return nullptr;
@@ -869,6 +951,25 @@ namespace Renderer
         command.width = width;
         command.height = height;
         g_commandList->WriteCommand(&command);
+    }
+
+    void UpdateTextureSubresource(Texture2DHandle handle, RendererMemory data, size_t dataSize, uint8_t subresourceId)
+    {
+        CHECK_MAIN_THREAD();
+        RENDERER_VALIDATE_HANDLE(handle);
+
+        Command_UpdateTexture2D command;
+        command.handle = handle;
+        command.data = data;
+        command.dataSize = dataSize;
+        command.subresourceId = subresourceId;
+        g_commandList->WriteCommand(&command);
+    }
+
+    void UpdateTextureSubresourceSync(const Texture2DHandle handle, const RendererMemory data, const size_t dataSize, const uint8_t subresourceId)
+    {
+        CHECK_MAIN_THREAD();
+        m_renderer->UpdateTextureSubresource(handle, data, dataSize, subresourceId);
     }
 
     void DestroyTexture2D(Texture2DHandle handle)

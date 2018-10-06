@@ -355,7 +355,41 @@ namespace Renderer
     /// </summary>
     RENDERER_FUNCTION(void) GetContext(RHIContext* context);
 
+    /**
+     * \brief Converts DXGI format to TextureFormat.
+     * \param dxgiFormat The DXGI format.
+     * \return The converted TextureFormat.
+     */
     RENDERER_FUNCTION(TextureFormat::_enum) DXGIFormatToTextureFormat(uint16_t dxgiFormat);
+
+    /**
+     * \brief Calculates texture info from given width, height and format.
+     * \param width The texture width.
+     * \param height The texture height.
+     * \param format The texture format.
+     * \param size The output size. Can be null.
+     * \param rowPitch The row pitch size. Can be null.
+     * \param rowCount The row count. Can be null.
+     */
+    RENDERER_FUNCTION(void) CalculateTextureInfo(uint16_t width, uint16_t height, TextureFormat::_enum format, size_t* size, size_t* rowPitch, size_t* rowCount);
+    
+    /**
+     * \brief Calculates texture row pitch.
+     * \param width The texture width.
+     * \param height The texture height.
+     * \param format The texture format.
+     * \return The row pitch.
+     */
+    RENDERER_FUNCTION(size_t) CalculateTextureRowPitch(uint16_t width, uint16_t height, TextureFormat::_enum format);
+
+    /**
+     * \brief Calculates texture size.
+     * \param width The texture width.
+     * \param height The texture height.
+     * \param format The texture format.
+     * \return The texture size.
+     */
+    RENDERER_FUNCTION(size_t) CalculateTextureSize(uint16_t width, uint16_t height, TextureFormat::_enum format);
 
     /// <summary>
     /// Allocates given amount of memory.
