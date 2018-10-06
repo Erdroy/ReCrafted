@@ -8,11 +8,10 @@
 
 File::~File()
 {
-    if (!AutoClose)
-        return;
-
-    if (m_file)
+    if (m_file && AutoClose)
+    {
         Close();
+    }
 }
 
 void File::Seek(long position) const
@@ -24,6 +23,8 @@ void File::Seek(long position) const
 
 void File::Read(void* buffer, size_t length, size_t offset) const
 {
+    ASSERT(m_file);
+
     auto file = static_cast<FILE*>(m_file);
 
     if (offset > 0)

@@ -23,11 +23,9 @@ public:
     */
     explicit FileStream(const char* fileName, const OpenMode::_enum openMode)
     {
-        if(Platform::FileExists(fileName))
-        {
-            Platform::OpenFile(&m_file, fileName, openMode);
-            m_open = true;
-        }
+        Platform::OpenFile(&m_file, fileName, openMode);
+        m_open = true;
+        m_autoClose = true;
     }
 
     /**
