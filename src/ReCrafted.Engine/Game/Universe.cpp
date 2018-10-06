@@ -76,6 +76,10 @@ void Universe::Update()
         m_selectedMaterial = 2u;
     if (Input::IsKeyDown(Key_Alpha4))
         m_selectedMaterial = 3u;
+    if (Input::IsKeyDown(Key_Alpha5))
+        m_selectedMaterial = 4u;
+    if (Input::IsKeyDown(Key_Alpha6))
+        m_selectedMaterial = 5u;
 
     if (Input::IsKey(Key_Mouse0))
     {
@@ -132,6 +136,12 @@ void Universe::RenderUI()
         break;
     case 3u:
         UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Clay"), Vector2(10.0f, 10.0f));
+        break;
+    case 4u:
+        UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Rock1"), Vector2(10.0f, 10.0f));
+        break;
+    case 5u:
+        UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Rock2"), Vector2(10.0f, 10.0f));
         break;
     }
 }
