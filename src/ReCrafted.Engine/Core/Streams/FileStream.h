@@ -13,6 +13,7 @@ class FileStream : public Stream
 {
 private:
     File m_file = {};
+    bool m_autoClose = true;
 
 public:
     /**
@@ -27,6 +28,19 @@ public:
             Platform::OpenFile(&m_file, fileName, openMode);
             m_open = true;
         }
+    }
+
+    /**
+     * \brief Opens FileStream from given file.
+     * \param file The file handle.
+     * 
+     * \note When this stream closes, only file flush will be called. 
+     * You need to manually call file.Close()
+     */
+    explicit FileStream(const File& file) : m_file(file)
+    {
+        m_open = true;
+        m_autoClose = false;
     }
 
 public:
@@ -111,7 +125,9 @@ protected:
     void Close() const override
     {
         m_file.Flush();
-        m_file.Close();
+
+        if(m_autoClose)
+            m_file.Close();
     }
 };
 

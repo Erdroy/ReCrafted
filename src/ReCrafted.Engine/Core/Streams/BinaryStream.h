@@ -237,6 +237,25 @@ public:
         m_position = 0u;
     }
 
+public:
+    /**
+     * \brief Gets the read/write position.
+     * \return The read/write position.
+     */
+    size_t Position() const
+    {
+        return m_position;
+    }
+
+    /**
+     * \brief Sets the read/write position.
+     * \return The read/write position.
+     */
+    void Position(const size_t position)
+    {
+        m_position = position;
+    }
+
 protected:
     /**
     * \brief Closes the stream.
