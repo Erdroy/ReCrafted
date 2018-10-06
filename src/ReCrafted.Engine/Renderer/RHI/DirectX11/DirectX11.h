@@ -9,6 +9,7 @@
 #include <dxgi.h>
 #include <d3dcompiler.h>
 #include <atlbase.h>
+#include <algorithm>
 #include <cstdint>
 
 #include "Core/Assert.h"
@@ -170,6 +171,109 @@ inline uint32_t DXGIFormatGetSize(DXGI_FORMAT format)
     default:
         return 0;
     }
+}
+
+inline void DXGICalculateSurfaceInfo(const uint16_t width, const uint16_t height, const DXGI_FORMAT format, size_t* size, size_t* outRowPitch, size_t* outNumRows)
+{
+    // source: https://github.com/Microsoft/DirectXTex/blob/master/DDSTextureLoader/DDSTextureLoader.cpp#L409
+
+    auto bcn = false;
+    auto packed = false;
+    size_t bpe = 0;
+
+    switch (format)
+    {
+    case DXGI_FORMAT_BC1_TYPELESS:
+    case DXGI_FORMAT_BC1_UNORM:
+    case DXGI_FORMAT_BC1_UNORM_SRGB:
+    case DXGI_FORMAT_BC4_TYPELESS:
+    case DXGI_FORMAT_BC4_UNORM:
+    case DXGI_FORMAT_BC4_SNORM:
+        bcn = true;
+        bpe = 8;
+        break;
+
+    case DXGI_FORMAT_BC2_TYPELESS:
+    case DXGI_FORMAT_BC2_UNORM:
+    case DXGI_FORMAT_BC2_UNORM_SRGB:
+    case DXGI_FORMAT_BC3_TYPELESS:
+    case DXGI_FORMAT_BC3_UNORM:
+    case DXGI_FORMAT_BC3_UNORM_SRGB:
+    case DXGI_FORMAT_BC5_TYPELESS:
+    case DXGI_FORMAT_BC5_UNORM:
+    case DXGI_FORMAT_BC5_SNORM:
+    case DXGI_FORMAT_BC6H_TYPELESS:
+    case DXGI_FORMAT_BC6H_UF16:
+    case DXGI_FORMAT_BC6H_SF16:
+    case DXGI_FORMAT_BC7_TYPELESS:
+    case DXGI_FORMAT_BC7_UNORM:
+    case DXGI_FORMAT_BC7_UNORM_SRGB:
+        bcn = true;
+        bpe = 16;
+        break;
+
+    case DXGI_FORMAT_R8G8_B8G8_UNORM:
+    case DXGI_FORMAT_G8R8_G8B8_UNORM:
+    case DXGI_FORMAT_YUY2:
+        packed = true;
+        bpe = 4;
+        break;
+
+    case DXGI_FORMAT_Y210:
+    case DXGI_FORMAT_Y216:
+        packed = true;
+        bpe = 8;
+        break;
+
+    default:
+        break;
+    }
+
+    uint64_t numBytes;
+    uint64_t rowBytes;
+    uint64_t numRows;
+
+    if (bcn)
+    {
+        uint64_t numBlocksWide = 0;
+        if (width > 0)
+        {
+            numBlocksWide = std::max<uint64_t>(1u, (uint64_t(width) + 3u) / 4u);
+        }
+        uint64_t numBlocksHigh = 0;
+        if (height > 0)
+        {
+            numBlocksHigh = std::max<uint64_t>(1u, (uint64_t(height) + 3u) / 4u);
+        }
+        rowBytes = numBlocksWide * bpe;
+        numRows = numBlocksHigh;
+        numBytes = rowBytes * numBlocksHigh;
+    }
+    else if (packed)
+    {
+        rowBytes = ((uint64_t(width) + 1u) >> 1) * bpe;
+        numRows = uint64_t(height);
+        numBytes = rowBytes * height;
+    }
+    else
+    {
+        const size_t bpp = DXGIFormatGetSize(format);
+        ASSERT(bpp > 0);
+
+        rowBytes = (uint64_t(width) * bpp + 7u) / 8u; // round up to nearest byte
+        numRows = uint64_t(height);
+        numBytes = rowBytes * height;
+    }
+
+    // Setup output
+    if (size)
+        *size = static_cast<size_t>(numBytes);
+
+    if (outRowPitch)
+        *outRowPitch = static_cast<size_t>(rowBytes);
+
+    if (outNumRows)
+        *outNumRows = static_cast<size_t>(numRows);
 }
 
 static const DXGI_FORMAT DGXI_TextureFormats[][3] =
