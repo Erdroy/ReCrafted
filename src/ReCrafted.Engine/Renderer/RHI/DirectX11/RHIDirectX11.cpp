@@ -4,6 +4,7 @@
 
 #include "RHIDirectX11.h"
 #include "Platform/Platform.h"
+#include "Scripting/ScriptingEngine.h"
 
 #if RENDERER_RHI_D3D11
 
@@ -274,6 +275,8 @@ namespace Renderer
         {
             Platform::SetThreadName("Render Thread");
 
+            ScriptingEngine::AttachCurrentThread();
+
             // Wait for main thread to signal ready
             WaitForSingleObject(m_workerFrameEvents[threadId], INFINITE);
 
@@ -290,6 +293,8 @@ namespace Renderer
 
                 frameCount++;
             }
+
+            ScriptingEngine::DetachCurrentThread();
         }
 
         void WorkerThreadInstance::ResetFlags()
