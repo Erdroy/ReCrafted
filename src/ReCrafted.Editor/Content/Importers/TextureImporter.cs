@@ -26,11 +26,11 @@ namespace ReCrafted.Editor.Content.Importers
             if (settings.Compress)
             {
                 // Threshold is 0.5, because it is being used only by BC1. Maybe expose if needed
-                image = image.Compress(settings.CompressionFormat, settings.CompressionFlags, 0.5f);
+                var compressedImage = image.Compress(settings.CompressionFormat, settings.CompressionFlags, 0.5f);
                 
                 // Set image
-                //image.Dispose();
-                //image = compressedImage;
+                image.Dispose();
+                image = compressedImage;
             }
 
             var baseImage = image.GetImage(0);
@@ -42,14 +42,15 @@ namespace ReCrafted.Editor.Content.Importers
                     throw new Exception($"Cannot generate mip maps for texture '{inputFile}', because it's width or height is not within power of 2!");
 
                 // Generate mip maps
-                image = image.GenerateMipMaps(TEX_FILTER_FLAGS.FANT, 0);
+                var mipMaps = image.GenerateMipMaps(TEX_FILTER_FLAGS.FANT, 0);
 
                 // Set image 
-                //image.Dispose();
-                //image = mipMaps;
+                image.Dispose();
+                image = mipMaps;
 
                 mipCount = image.GetImageCount();
             }
+
 
             // Create asset
             var asset = ContentManager.CreateAsset<TextureAsset>();
@@ -62,6 +63,7 @@ namespace ReCrafted.Editor.Content.Importers
             for (var i = 0; i < mipCount; i++)
             {
                 var img = image.GetImage(i);
+                
                 var mip = asset.Mips[i] = new TextureAsset.Mip
                 {
                     Width = img.Width,

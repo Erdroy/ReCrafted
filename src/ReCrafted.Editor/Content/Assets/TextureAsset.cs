@@ -98,7 +98,7 @@ namespace ReCrafted.Editor.Content.Assets
                 writer.Write((ushort)mip.Height);
                 writer.Write((ushort)mip.Pitch);
                 writer.Write(mip.Size);
-                writer.Write(mip.Data);
+                writer.Write(mip.Data, 0, mip.Size);
             }
         }
 

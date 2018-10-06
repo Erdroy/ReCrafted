@@ -945,16 +945,18 @@ namespace Renderer
                 }
                 else
                 {
+                    // TODO: This should be done a lot better. But for now it is totally ok.
                     cvar pixelSize = TextureFormatInfo[command->textureFormat][0] / 8;
-                    var memory = static_cast<uint8_t*>(command->memory);
+                    cvar minimalSize = command->textureFormat >= TextureFormat::BC1U ? 16 : pixelSize;
 
+                    var memory = static_cast<uint8_t*>(command->memory);
                     // Upload all mips
                     for (var mipId = 0; mipId < command->mipLevels; mipId++)
                     {
                         cvar width = command->width >> mipId;
                         cvar height = command->height >> mipId;
                         cvar pitch = max(rowPitch >> mipId, pixelSize);
-                        cvar size = max(width * height * pixelSize, pixelSize);
+                        cvar size = max(width * height * pixelSize, minimalSize);
 
                         // Update mip
                         m_context->UpdateSubresource(texture.texture, mipId, nullptr, memory, pitch, 0);

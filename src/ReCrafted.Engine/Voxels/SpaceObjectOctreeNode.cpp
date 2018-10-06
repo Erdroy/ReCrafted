@@ -237,7 +237,8 @@ void SpaceObjectOctreeNode::OnCreate()
 
 void SpaceObjectOctreeNode::OnRebuild()
 {
-    ASSERT(m_chunk != nullptr);
+    if (!m_chunk)
+        return;
 
     // Upload chunk if needed
     if (m_chunk && m_chunk->NeedsUpload())
