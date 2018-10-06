@@ -31,6 +31,9 @@ void Asset::Deserialize(BinaryStream& stream)
 
     ASSERT(assetType == GetAssetType());
 
+    // Check read position
+    ASSERT(stream.Position() == AssetHeaderSize);
+
     OnDeserializeBinary(version, stream);
     OnLoadEnd();
 }
@@ -53,6 +56,11 @@ void Asset::Deserialize(const json& json, const std::string& content)
 
 void Asset::Unload()
 {
+    if(!m_virtual && !m_loaded)
+    {
+        _ASSERT_(false, "Asset is still loading. Cannot unload now!");
+    }
+
     if(!m_unloaded)
     {
         ContentManager::UnloadAsset(this);

@@ -8,6 +8,9 @@
 
 File::~File()
 {
+    if (!AutoClose)
+        return;
+
     if (m_file)
         Close();
 }

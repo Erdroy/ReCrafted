@@ -37,6 +37,8 @@ private:
         void Finish() override
         {
             GetInstance()->RegisterAsset(asset);
+            // Set asset as loaded and non-virtual
+            asset->m_loaded = true;
             asset->OnInitialize();
             callback.Invoke(asset);
         }

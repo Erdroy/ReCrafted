@@ -20,6 +20,13 @@ class Asset : public Object
 {
     friend class ContentManager;
 
+public:
+    static const size_t AssetHeaderSize = 
+        3 * sizeof(uint8_t) +   // RCA
+        sizeof(uint16_t) +      // Version
+        sizeof(uint8_t) +       // Type
+        sizeof(Guid::_value);   // Guid
+
 private:
     bool m_virtual = false;
     bool m_registered = false;

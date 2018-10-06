@@ -33,6 +33,7 @@ private:
 public:
     char FileName[PATHLENGTH];
     size_t FileSize = 0u;
+    bool AutoClose = true;
 
     ~File();
 
