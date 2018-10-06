@@ -236,6 +236,7 @@ namespace Renderer
             FORCEINLINE void Execute_ApplyTextureArray2D(Command_ApplyTextureArray2D* command);
             FORCEINLINE void Execute_ResizeTexture2D(Command_ResizeTexture2D* command);
             FORCEINLINE void Execute_UpdateTexture2D(Command_UpdateTexture2D* command);
+            FORCEINLINE void Execute_UpdateViewTexture2D(Command_UpdateViewTexture2D* command);
             FORCEINLINE void Execute_DestroyTexture2D(Command_DestroyTexture2D* command);
 
             FORCEINLINE void Execute_ApplyRenderTexture2D(Command_ApplyRenderTexture2D* command);
@@ -431,6 +432,7 @@ namespace Renderer
             DEFINE_COMMAND_EXECUTOR(ApplyTextureArray2D);
             DEFINE_COMMAND_EXECUTOR(ResizeTexture2D);
             DEFINE_COMMAND_EXECUTOR(UpdateTexture2D);
+            DEFINE_COMMAND_EXECUTOR(UpdateViewTexture2D);
             DEFINE_COMMAND_EXECUTOR(DestroyTexture2D);
 
             DEFINE_COMMAND_EXECUTOR(ApplyRenderTexture2D);
@@ -1086,12 +1088,32 @@ namespace Renderer
             RHIDirectX11::m_instance->UpdateTextureSubresource(command->handle, command->data, command->dataSize, command->subresourceId);
         }
 
+        void WorkerThreadInstance::Execute_UpdateViewTexture2D(Command_UpdateViewTexture2D* command)
+        {
+            rvar texture = m_textures[command->handle.idx];
+            ASSERT(texture.texture != nullptr);
+
+            // Release previous srv
+            SafeRelease(texture.srv);
+
+            // TODO: Check if this texture view is bound... if so, unbind
+
+            D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+            srvDesc.Format = DGXI_TextureFormats[texture.format][1];
+            srvDesc.ViewDimension = m_msaaSampleCount > 1 ? D3D11_SRV_DIMENSION_TEXTURE2DMS : D3D11_SRV_DIMENSION_TEXTURE2D;
+            srvDesc.Texture2D.MipLevels = command->mipLevels;
+            srvDesc.Texture2D.MostDetailedMip = command->mostDetailedMip;
+
+            DX_CALL(m_device->CreateShaderResourceView(texture.texture, &srvDesc, &texture.srv));
+        }
+
         void WorkerThreadInstance::Execute_DestroyTexture2D(Command_DestroyTexture2D* command)
         {
             rvar texture = m_textures[command->handle.idx];
             ASSERT(texture.texture != nullptr);
 
-            SafeRelease(texture.texture);
+            // Destroy the texture
+            texture.Dispose();
         }
 
         void WorkerThreadInstance::Execute_ApplyRenderTexture2D(Command_ApplyRenderTexture2D* command)

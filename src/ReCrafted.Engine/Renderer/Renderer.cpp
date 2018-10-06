@@ -972,6 +972,17 @@ namespace Renderer
         m_renderer->UpdateTextureSubresource(handle, data, dataSize, subresourceId);
     }
 
+    void UpdateTextureView(Texture2DHandle handle, uint8_t mostDetailedMip, uint8_t mipLevels)
+    {
+        CHECK_MAIN_THREAD();
+
+        Command_UpdateViewTexture2D command;
+        command.handle = handle;
+        command.mostDetailedMip = mostDetailedMip;
+        command.mipLevels = mipLevels;
+        g_commandList->WriteCommand(&command);
+    }
+
     void DestroyTexture2D(Texture2DHandle handle)
     {
         CHECK_MAIN_THREAD();

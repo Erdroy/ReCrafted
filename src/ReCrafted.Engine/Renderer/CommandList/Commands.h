@@ -61,6 +61,7 @@ namespace Renderer
             ApplyTexture2D,
             ApplyTextureArray2D,
             UpdateTexture2D,
+            UpdateViewTexture2D,
             ResizeTexture2D,
             DestroyTexture2D,
 
@@ -254,6 +255,12 @@ namespace Renderer
         Texture2DHandle handle;
         uint16_t width;
         uint16_t height;
+    );
+
+    Command(UpdateViewTexture2D,
+        Texture2DHandle handle;
+        uint8_t mostDetailedMip;
+        uint8_t mipLevels;
     );
 
     Command(UpdateTexture2D,

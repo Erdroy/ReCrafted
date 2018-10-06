@@ -762,6 +762,14 @@ namespace Renderer
      */
     RENDERER_FUNCTION(void) UpdateTextureSubresourceSync(Texture2DHandle handle, RendererMemory data, size_t dataSize, uint8_t subresourceId = 0);
 
+    /**
+     * \brief Updates view info (mip map info) of given texture.
+     * \param handle The texture handle.
+     * \param mostDetailedMip The most detailed mip, that must be higher or equal to 0 and less than mipLevels.
+     * \param mipLevels The mip level count. Must be higher than 0.
+     */
+    RENDERER_FUNCTION(void) UpdateTextureView(Texture2DHandle handle, uint8_t mostDetailedMip, uint8_t mipLevels);
+
     /// <summary>
     /// Destroys given texture.
     /// </summary>
