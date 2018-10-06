@@ -10,6 +10,7 @@
 #include "Common/Input/KeyboardBuffer.h"
 #include "Common/EntityPool.h"
 #include "Core/Application.h"
+#include "Core/Dispatcher.h"
 #include "Core/Logger.h"
 #include "Core/UpdateLoop.h"
 #include "Content/ContentManager.h"
@@ -133,6 +134,7 @@ void EngineMain::Initialize()
     m_componentManager->RegisterComponent(ScriptingEngine::GetInstance());
     m_componentManager->RegisterComponent(Logger::GetInstance());
     m_componentManager->RegisterComponent(ContentManager::GetInstance());
+    m_componentManager->RegisterComponent(Dispatcher::GetInstance());
 
     // Say something, as now we have scripting and logger initialized, 
     // so we can scream around.

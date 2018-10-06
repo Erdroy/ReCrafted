@@ -134,7 +134,7 @@ void TaskManager::OnLoad()
 
 void TaskManager::Update()
 {
-    Profiler::BeginProfile("TaskManager dispatch");
+    Profiler::BeginProfile("TaskManager::Dispatch");
 
     Task* task;
     while(m_taskReleaseQueue.try_dequeue(task))
