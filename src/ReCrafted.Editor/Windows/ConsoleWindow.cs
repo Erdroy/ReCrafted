@@ -39,7 +39,15 @@ namespace ReCrafted.Editor.Windows
             ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(0.40f, 0.40f, 0.40f, 0.25f));
             ImGui.PushStyleColor(ImGuiCol.ButtonActive, new Vector4(0.40f, 0.40f, 0.40f, 0.38f));
             ImGui.PushStyleColor(ImGuiCol.ButtonHovered, new Vector4(0.40f, 0.40f, 0.40f, 0.42f));
-            
+
+            ImGui.PushStyleColor(ImGuiCol.FrameBg, new Vector4(0.40f, 0.40f, 0.40f, 0.25f));
+            ImGui.PushStyleColor(ImGuiCol.FrameBgActive, new Vector4(0.40f, 0.40f, 0.40f, 0.38f));
+            ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, new Vector4(0.40f, 0.40f, 0.40f, 0.42f));
+
+            ImGui.PushStyleColor(ImGuiCol.CheckMark, new Vector4(0.6f, 0.6f, 0.6f, 1.0f));
+
+            ImGui.PushStyleColor(ImGuiCol.ChildBg, new Vector4(0.40f, 0.40f, 0.40f, 0.25f));
+
             if (ImGui.Button("Clear"))
                 Clear();
 
@@ -52,7 +60,6 @@ namespace ReCrafted.Editor.Windows
             ImGui.SameLine();
             ImGui.Checkbox("Show Errors", ref ShowErrors);
 
-            ImGui.PushStyleColor(ImGuiCol.ChildBg, new Vector4(0.40f, 0.40f, 0.40f, 0.25f));
             ImGui.BeginChild("##scrolling", new Vector2(0.0f, 0.0f), false, ImGuiWindowFlags.HorizontalScrollbar | ImGuiWindowFlags.AlwaysUseWindowPadding);
             {
                 foreach (var log in _logs)
@@ -67,7 +74,7 @@ namespace ReCrafted.Editor.Windows
                 }
             }
             ImGui.EndChild();
-            ImGui.PopStyleColor(4);
+            ImGui.PopStyleColor(8);
         }
 
         public void Clear()

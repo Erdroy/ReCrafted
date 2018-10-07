@@ -81,6 +81,9 @@ namespace ReCrafted.Editor.Windows
                 DockableWindow.IsAnyWindowDragging = false;
             }
 
+            //ImGui.SetNextWindowFocus();
+            //ImGui.ShowMetricsWindow();
+
             ImGui.PushStyleVar(ImGuiStyleVar.PopupBorderSize, 0.0f);
 
             var opened = true;

@@ -111,7 +111,7 @@ namespace ReCrafted.Editor.Windows.Content
 
             ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(0.1f, 0.1f, 0.1f, 0.25f));
             ImGui.PushStyleColor(ImGuiCol.ButtonActive, new Vector4(0.1f, 0.1f, 0.1f, 0.38f));
-            ImGui.PushStyleColor(ImGuiCol.ButtonHovered, new Vector4(0.1f, 0.1f, 0.1f, 0.42f));
+            ImGui.PushStyleColor(ImGuiCol.ButtonHovered, new Vector4(1.0f, 0.1f, 0.1f, 0.42f));
 
             ImGui.BeginGroup();
             {
