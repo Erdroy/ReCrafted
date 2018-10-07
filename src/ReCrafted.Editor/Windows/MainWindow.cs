@@ -37,23 +37,24 @@ namespace ReCrafted.Editor.Windows
             style.ScrollbarRounding = 2.0f;
             style.WindowPadding = new Vector2(4.0f, 4.0f);
 
-            style.SetColor(ColorTarget.TitleBg, new Vector4(0.25f, 0.25f, 0.25f, 1.0f));
-            style.SetColor(ColorTarget.TitleBgCollapsed, new Vector4(0.28f, 0.28f, 0.28f, 1.0f));
-            style.SetColor(ColorTarget.TitleBgActive, new Vector4(0.28f, 0.28f, 0.28f, 1.0f));
-            style.SetColor(ColorTarget.WindowBg, new Vector4(0.15f, 0.15f, 0.15f, 1.0f));
-            style.SetColor(ColorTarget.Border, new Vector4(0.10f, 0.10f, 0.10f, 1.0f));
+            style.Colors[(int)ImGuiCol.TitleBg] = new Vector4(0.25f, 0.25f, 0.25f, 1.0f);
+            style.Colors[(int)ImGuiCol.TitleBgCollapsed] = new Vector4(0.28f, 0.28f, 0.28f, 1.0f);
+            style.Colors[(int)ImGuiCol.TitleBgActive] = new Vector4(0.28f, 0.28f, 0.28f, 1.0f);
+            style.Colors[(int)ImGuiCol.WindowBg] = new Vector4(0.15f, 0.15f, 0.15f, 1.0f);
+            style.Colors[(int)ImGuiCol.Border] = new Vector4(0.10f, 0.10f, 0.10f, 1.0f);
 
-            style.SetColor(ColorTarget.PopupBg, new Vector4(0.10f, 0.10f, 0.10f, 1.0f));
+            style.Colors[(int)ImGuiCol.PopupBg] = new Vector4(0.10f, 0.10f, 0.10f, 1.0f);
+            style.Colors[(int)ImGuiCol.Button] = new Vector4(0.10f, 0.10f, 0.10f, 1.0f);
 
-            style.SetColor(ColorTarget.MenuBarBg, new Vector4(0.20f, 0.20f, 0.20f, 1.0f));
-            style.SetColor(ColorTarget.Header, new Vector4(0.28f, 0.28f, 0.28f, 1.0f));
-            style.SetColor(ColorTarget.HeaderActive, new Vector4(0.28f, 0.28f, 0.28f, 1.0f));
-            style.SetColor(ColorTarget.HeaderHovered, new Vector4(0.25f, 0.25f, 0.25f, 1.0f));
+            style.Colors[(int)ImGuiCol.MenuBarBg] = new Vector4(0.20f, 0.20f, 0.20f, 1.0f);
+            style.Colors[(int)ImGuiCol.Header] = new Vector4(0.28f, 0.28f, 0.28f, 1.0f);
+            style.Colors[(int)ImGuiCol.HeaderActive] = new Vector4(0.28f, 0.28f, 0.28f, 1.0f);
+            style.Colors[(int)ImGuiCol.HeaderHovered] = new Vector4(0.25f, 0.25f, 0.25f, 1.0f);
 
-            style.SetColor(ColorTarget.ScrollbarBg, new Vector4(0.18f, 0.18f, 0.18f, 1.0f));
-            style.SetColor(ColorTarget.ScrollbarGrab, new Vector4(0.25f, 0.25f, 0.25f, 1.0f));
-            style.SetColor(ColorTarget.ScrollbarGrabActive, new Vector4(0.28f, 0.28f, 0.28f, 1.0f));
-            style.SetColor(ColorTarget.ScrollbarGrabHovered, new Vector4(0.28f, 0.28f, 0.28f, 1.0f));
+            style.Colors[(int)ImGuiCol.ScrollbarBg] = new Vector4(0.18f, 0.18f, 0.18f, 1.0f);
+            style.Colors[(int)ImGuiCol.ScrollbarGrab] = new Vector4(0.25f, 0.25f, 0.25f, 1.0f);
+            style.Colors[(int)ImGuiCol.ScrollbarGrabActive] = new Vector4(0.28f, 0.28f, 0.28f, 1.0f);
+            style.Colors[(int)ImGuiCol.ScrollbarGrabHovered] = new Vector4(0.28f, 0.28f, 0.28f, 1.0f);
 
             // Setup docking
             DockPane = new DockPane();
@@ -80,12 +81,12 @@ namespace ReCrafted.Editor.Windows
                 DockableWindow.IsAnyWindowDragging = false;
             }
 
-            ImGui.PushStyleVar(StyleVar.PopupBorderSize, 0.0f);
+            ImGui.PushStyleVar(ImGuiStyleVar.PopupBorderSize, 0.0f);
 
             var opened = true;
-            var windowRect = WindowRect;
-
-            ImGui.BeginWindow("Main", ref opened, new Vector2(windowRect.Width, windowRect.Height), 0.0f, WindowSettings);
+            ImGui.SetNextWindowPos(new Vector2(0.0f, 0.0f));
+            ImGui.SetNextWindowSize(new Vector2(WindowRect.Width, WindowRect.Height));
+            ImGui.Begin("Test", ref opened, WindowSettings);
 
             // Update DockPane
             DockPane.Update();
@@ -197,7 +198,7 @@ namespace ReCrafted.Editor.Windows
 
             ImGui.PopStyleVar();
 
-            ImGui.EndWindow();
+            ImGui.End();
         }
 
         public void SaveLayout()
@@ -478,7 +479,14 @@ namespace ReCrafted.Editor.Windows
         public int WindowId => 0;
         public Rectangle WindowRect => new Rectangle(0, 20, EditorApplication.Current.SdlWindow.Width, EditorApplication.Current.SdlWindow.Height - 20);
         public string WindowName => "MainWindow";
-        public WindowFlags WindowSettings => WindowFlags.NoResize | WindowFlags.NoInputs | WindowFlags.NoMove | WindowFlags.NoTitleBar | WindowFlags.NoScrollbar | WindowFlags.NoSavedSettings;
+        public ImGuiWindowFlags WindowSettings => 
+            ImGuiWindowFlags.NoResize | 
+            ImGuiWindowFlags.NoInputs | 
+            ImGuiWindowFlags.NoMove | 
+            ImGuiWindowFlags.NoTitleBar | 
+            ImGuiWindowFlags.NoScrollbar | 
+            ImGuiWindowFlags.NoSavedSettings | 
+            ImGuiWindowFlags.NoBringToFrontOnFocus;
 
         public DockPane DockPane { get; private set; }
         public List<DockableWindow> Children { get; } = new List<DockableWindow>();

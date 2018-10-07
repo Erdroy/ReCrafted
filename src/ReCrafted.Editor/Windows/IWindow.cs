@@ -20,6 +20,6 @@ namespace ReCrafted.Editor.Windows
         int WindowId { get; }
         Rectangle WindowRect { get; }
         string WindowName { get; }
-        WindowFlags WindowSettings { get; }
+        ImGuiWindowFlags WindowSettings { get; }
     }
 }

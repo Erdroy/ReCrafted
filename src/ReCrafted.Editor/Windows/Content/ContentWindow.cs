@@ -109,15 +109,35 @@ namespace ReCrafted.Editor.Windows.Content
             ImGui.Columns(2, "##content_splitter", false);
             ImGui.SetColumnWidth(0, 150.0f);
 
-            ImGui.PushStyleColor(ColorTarget.Button, new Vector4(0.1f, 0.1f, 0.1f, 0.25f));
-            ImGui.PushStyleColor(ColorTarget.ButtonActive, new Vector4(0.1f, 0.1f, 0.1f, 0.38f));
-            ImGui.PushStyleColor(ColorTarget.ButtonHovered, new Vector4(0.1f, 0.1f, 0.1f, 0.42f));
+            ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(0.1f, 0.1f, 0.1f, 0.25f));
+            ImGui.PushStyleColor(ImGuiCol.ButtonActive, new Vector4(0.1f, 0.1f, 0.1f, 0.38f));
+            ImGui.PushStyleColor(ImGuiCol.ButtonHovered, new Vector4(0.1f, 0.1f, 0.1f, 0.42f));
 
             ImGui.BeginGroup();
             {
                 // TODO: Directory tree
 
-                ImGui.SmallButton("...");
+                if (ImGui.TreeNodeEx("Content"))
+                {
+                    foreach (var dir in _directories)
+                    {
+                        var dirName = Path.GetFileNameWithoutExtension(dir);
+
+                        if (ImGui.TreeNode(dirName))
+                        {
+                            if (ImGui.IsItemActive() && ImGui.IsMouseDoubleClicked(0))
+                            {
+                                Navigate(dir);
+                            }
+
+                            ImGui.TreePop();
+                        }
+                    }
+
+                    ImGui.TreePop();
+                }
+
+                /*ImGui.SmallButton("...");
 
                 if (ImGui.IsLastItemActive() && ImGui.IsMouseClicked(0))
                 {
@@ -132,7 +152,7 @@ namespace ReCrafted.Editor.Windows.Content
                     {
                         Navigate(dir);
                     }
-                }
+                }*/
             }
             ImGui.EndGroup();
             
@@ -152,7 +172,7 @@ namespace ReCrafted.Editor.Windows.Content
 
                     ImGui.Button(fileName, new Vector2(64.0f, 64.0f));
 
-                    if (ImGui.IsLastItemActive() && ImGui.IsMouseClicked(0))
+                    if (ImGui.IsItemActive() && ImGui.IsMouseClicked(0))
                     {
                         Navigate(directory);
                     }
@@ -198,6 +218,6 @@ namespace ReCrafted.Editor.Windows.Content
         public string CurrentDirectory { get; private set; }
 
         public override string WindowName => "Content";
-        public override WindowFlags WindowSettings => WindowFlags.NoCollapse | WindowFlags.MenuBar;
+        public override ImGuiWindowFlags WindowSettings => ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.MenuBar;
     }
 }

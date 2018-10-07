@@ -84,17 +84,18 @@ namespace ReCrafted.Editor.Windows
 
         private void RenderDocked()
         {
-            ImGui.PushStyleVar(StyleVar.WindowBorderSize, 3.0f);
-            ImGui.PushStyleVar(StyleVar.WindowRounding, 3.0f);
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 3.0f);
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 3.0f);
 
-            ImGui.SetNextWindowPos(new Vector2(Rect.X, Rect.Y), Condition.Always);
-            ImGui.SetNextWindowSize(new Vector2(Rect.Width, Rect.Height), Condition.Always);
-            
-            if (ImGui.BeginWindow($"{WindowName}###{WindowId}", WindowSettings | WindowFlags.NoResize | WindowFlags.NoCollapse | WindowFlags.NoBringToFrontOnFocus))
+            ImGui.SetNextWindowPos(new Vector2(Rect.X, Rect.Y), ImGuiCond.Always);
+            ImGui.SetNextWindowSize(new Vector2(Rect.Width, Rect.Height), ImGuiCond.Always);
+
+            var open = true;
+            if (ImGui.Begin($"{WindowName}###{WindowId}", ref open, WindowSettings | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse))
             {
                 ProcessDocking();
                 OnRender();
-                ImGui.EndWindow();
+                ImGui.End();
             }
 
             ImGui.PopStyleVar(2);
@@ -102,19 +103,20 @@ namespace ReCrafted.Editor.Windows
 
         private void RenderFloating()
         {
-            ImGui.PushStyleVar(StyleVar.WindowBorderSize, 1.0f);
-            ImGui.PushStyleVar(StyleVar.WindowRounding, 3.0f);
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 1.0f);
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 3.0f);
 
-            if (ImGui.BeginWindow($"{WindowName}###{WindowId}", WindowSettings | WindowFlags.NoCollapse))
+            var open = true;
+            if (ImGui.Begin($"{WindowName}###{WindowId}", ref open, WindowSettings | ImGuiWindowFlags.NoCollapse))
             {
-                var wndPos = ImGui.GetWindowPosition();
+                var wndPos = ImGui.GetWindowPos();
                 var wndSize = ImGui.GetWindowSize();
                 Rect = new Rectangle((int)wndPos.X, (int)wndPos.Y, (int)wndSize.X, (int)wndSize.Y);
 
                 ProcessDocking();
                 OnRender();
 
-                ImGui.EndWindow();
+                ImGui.End();
             }
 
             ImGui.PopStyleVar(2);
@@ -127,7 +129,7 @@ namespace ReCrafted.Editor.Windows
 
             if (Floating)
             {
-                if (ImGui.IsLastItemActive() && ImGui.IsMouseDragging(0, 0.0f))
+                if (ImGui.IsItemActive() && ImGui.IsMouseDragging(0, 0.0f))
                 {
                     IsAnyWindowDragging = true;
                 }
@@ -142,7 +144,7 @@ namespace ReCrafted.Editor.Windows
                 }
             }
 
-            if (ImGui.IsLastItemActive())
+            if (ImGui.IsItemActive())
             {
                 if (!Floating && ImGui.IsMouseDragging(0, 20.0f))
                 {
@@ -163,7 +165,7 @@ namespace ReCrafted.Editor.Windows
         public int WindowId { get; internal set; }
         public Rectangle WindowRect => Rect;
         public abstract string WindowName { get; }
-        public virtual WindowFlags WindowSettings => WindowFlags.Default | WindowFlags.NoSavedSettings;
+        public virtual ImGuiWindowFlags WindowSettings => ImGuiWindowFlags.NoSavedSettings;
 
         public static bool IsAnyWindowDragging { get; set; }
     }
