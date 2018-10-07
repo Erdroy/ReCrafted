@@ -156,12 +156,6 @@ namespace ReCrafted.Editor.Windows
 
                 if (ImGui.BeginMenu("Tools"))
                 {
-                    if (ImGui.MenuItem("Test - Load asset"))
-                    {
-                        var asset = ContentManager.Load<TextureAsset>("../content/TestTexture.rcasset");
-                        asset.Unload();
-                    }
-
                     ImGui.EndMenu();
                 }
 

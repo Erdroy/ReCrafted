@@ -17,6 +17,8 @@ namespace ReCrafted.Editor.Graphics
     /// </summary>
     public class ImGuiRenderer : IDisposable
     {
+        private static ImGuiRenderer _instance;
+
         private GraphicsDevice _gd;
         private bool _frameBegun;
 
@@ -58,6 +60,8 @@ namespace ReCrafted.Editor.Graphics
         /// </summary>
         public ImGuiRenderer(GraphicsDevice gd, OutputDescription outputDescription, int width, int height)
         {
+            _instance = this;
+
             _gd = gd;
             _windowWidth = width;
             _windowHeight = height;
@@ -134,6 +138,24 @@ namespace ReCrafted.Editor.Graphics
                 gd.PointSampler));
 
             _fontTextureResourceSet = factory.CreateResourceSet(new ResourceSetDescription(_textureLayout, _fontTextureView));
+        }
+
+        /// <summary>
+        /// Gets or creates a handle for a texture to be drawn with ImGui.
+        /// Pass the returned handle to Image() or ImageButton().
+        /// </summary>
+        public IntPtr GetOrCreateImGuiBinding(TextureView textureView)
+        {
+            return GetOrCreateImGuiBinding(_gd.ResourceFactory, textureView);
+        }
+
+        /// <summary>
+        /// Gets or creates a handle for a texture to be drawn with ImGui.
+        /// Pass the returned handle to Image() or ImageButton().
+        /// </summary>
+        public IntPtr GetOrCreateImGuiBinding(Texture texture)
+        {
+            return GetOrCreateImGuiBinding(_gd.ResourceFactory, texture);
         }
 
         /// <summary>
@@ -545,5 +567,7 @@ namespace ReCrafted.Editor.Graphics
                 ResourceSet = resourceSet;
             }
         }
+
+        public static ImGuiRenderer Instance => _instance;
     }
 }
