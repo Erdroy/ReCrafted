@@ -10,9 +10,55 @@
 #include "Content/Assets/BinaryAsset.h"
 #include "Renderer/Renderer.hpp"
 #include "Scripting/Object.h"
+#include "Core/Task.h"
+#include "Core/Streams/FileStream.h"
 
 class Texture : public BinaryAsset
 {
+public:
+    static const size_t TextureHeaderSize = sizeof(uint32_t) + sizeof(uint16_t) + sizeof(uint8_t);
+    static const size_t MipHeaderSize = sizeof(uint16_t) + sizeof(uint16_t) + sizeof(uint16_t) + sizeof(int32_t);
+
+private:
+    struct LoadTextureMipTask : ITask
+    {
+    public:
+        Texture* texture = nullptr;
+        int mipLevel = 0;
+        int mipCount = 0;
+        File file = {};
+
+        Renderer::RendererMemory m_mipData = nullptr;
+        size_t m_mipDataSize = 0u;
+
+    public:
+        void Execute(void* userData) override;
+        void Finish() override;
+    };
+
+    struct TextureInfo
+    {
+    public:
+        size_t size = 0u;
+        uint16_t format = 0u;
+        uint8_t mips = 0u;
+
+    public:
+        static TextureInfo ReadTextureInfo(BinaryStream& stream);
+    };
+
+    struct MipInfo
+    {
+    public:
+        uint16_t width = 0u;
+        uint16_t height = 0u;
+        uint16_t pitch = 0u;
+        size_t size= 0u;
+
+    public:
+        static MipInfo ReadMipInfo(BinaryStream& stream);
+    };
+
 private:
     SCRIPTING_API_IMPL()
 
@@ -28,7 +74,15 @@ private:
     uint16_t m_pitch = 0u;
     uint8_t m_mips = 0u;
 
+    bool m_lazyLoading = false;
     bool m_applied = false;
+
+private:
+    size_t CalculateMipSize(uint8_t mipId) const;
+    size_t CalculateMipOffset(uint8_t mipId) const;
+
+    void LoadTexture(BinaryStream& stream);
+    void LazyLoadTexture(const TextureInfo& textureInfo, File& file, BinaryStream& stream);
 
 protected:
     void OnInitialize() override;
@@ -151,6 +205,15 @@ public:
     uint GetHeight() const
     {
         return m_height;
+    }
+
+    /**
+     * \brief Check if this texture is 3D or 2D.
+     * \return True, when this texture is 3D texture.
+     */
+    bool Is3D() const
+    {
+        return false;
     }
 
     /**

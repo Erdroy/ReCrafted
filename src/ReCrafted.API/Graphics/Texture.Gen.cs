@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 10/05/2018 17:53:16 Source: 'Texture.API.cpp' Target: 'Graphics/Texture.Gen.cs'
+// Generated: 10/06/2018 16:43:20 Source: 'Texture.API.cpp' Target: 'Graphics/Texture.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
