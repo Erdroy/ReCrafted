@@ -69,7 +69,10 @@ namespace ReCrafted.Editor.Graphics
             IntPtr context = ImGui.CreateContext();
             ImGui.SetCurrentContext(context);
 
-            ImGui.GetIO().Fonts.AddFontDefault();
+            // Load default font
+            var io = ImGui.GetIO();
+            var newFont = io.Fonts.AddFontFromFileTTF("../assets/fonts/Lato-Regular.ttf", 14.0f);
+            io.Fonts.AddFontDefault(newFont.ConfigData);
 
             CreateDeviceResources(gd, outputDescription);
             SetKeyMappings();
