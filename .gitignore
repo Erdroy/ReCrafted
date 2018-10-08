@@ -11,6 +11,8 @@ tools/*.pdb
 tools/*.config
 tools/*.xml
 
+/assets/
+
 .projects/
 .vs/
 build/

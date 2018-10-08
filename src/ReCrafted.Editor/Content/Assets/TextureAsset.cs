@@ -42,10 +42,13 @@ namespace ReCrafted.Editor.Content.Assets
 
             for (var i = 0u; i < MipCount; i++)
             {
-                gd.UpdateTexture(Texture, Mips[i].Data, 0, 0, 0, (uint)Width, (uint)Height, 0, i, 0);
+                gd.UpdateTexture(Texture, Mips[i].Data, 0, 0, 0, (uint)Width, (uint)Height, 1, i, 0);
             }
 
             TextureView = gd.ResourceFactory.CreateTextureView(Texture);
+
+            Texture.Name = AssetType.ToString();
+            TextureView.Name = AssetType.ToString();
         }
 
         public override void Unload()

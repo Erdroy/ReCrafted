@@ -103,7 +103,7 @@ namespace ReCrafted.Editor.Content.Importers
                 case ".bmp":
                 case ".jpg":
                 case ".png":
-                    return TexHelper.Instance.LoadFromWICFile(file, WIC_FLAGS.NONE);
+                    return TexHelper.Instance.LoadFromWICFile(file, WIC_FLAGS.IGNORE_SRGB);
 
                 case ".tga":
                     return TexHelper.Instance.LoadFromTGAFile(file);

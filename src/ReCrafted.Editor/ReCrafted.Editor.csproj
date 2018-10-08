@@ -220,6 +220,7 @@
     <Compile Include="Content\Importers\TextureImporter.cs" />
     <Compile Include="Content\IImportSettings.cs" />
     <Compile Include="Content\JsonAsset.cs" />
+    <Compile Include="Content\Previews\PreviewsCache.cs" />
     <Compile Include="Graphics\ImGuiRenderer.cs" />
     <Compile Include="Utilities\FileSystem.cs" />
     <Compile Include="Utilities\PathUtils.cs" />
@@ -274,9 +275,7 @@
       <Name>ReCrafted.Common</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Content\Previews\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\DirectXTexNet.1.0.0-rc2\build\DirectXTexNet.targets" Condition="Exists('..\..\packages\DirectXTexNet.1.0.0-rc2\build\DirectXTexNet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

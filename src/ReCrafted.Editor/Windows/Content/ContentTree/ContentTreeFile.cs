@@ -2,6 +2,7 @@
 
 using System.IO;
 using ReCrafted.Editor.Content.Assets;
+using ReCrafted.Editor.Content.Previews;
 using ReCrafted.Editor.Utilities;
 
 namespace ReCrafted.Editor.Windows.Content.ContentTree
@@ -13,6 +14,8 @@ namespace ReCrafted.Editor.Windows.Content.ContentTree
             Parent = parent;
             Name = Path.GetFileNameWithoutExtension(fullName);
             FullName = fullName;
+
+            RefreshPreview();
         }
 
         internal ContentTreeFile(ContentTreeNode parent, string name, string fullName)
@@ -20,6 +23,8 @@ namespace ReCrafted.Editor.Windows.Content.ContentTree
             Parent = parent;
             Name = name;
             FullName = fullName;
+
+            RefreshPreview();
         }
 
         public void Delete()
@@ -30,7 +35,7 @@ namespace ReCrafted.Editor.Windows.Content.ContentTree
 
         public void RefreshPreview()
         {
-
+            Preview = PreviewsCache.Instance.GetPreview(FullName);
         }
 
         public void LoadPreview()
@@ -45,7 +50,7 @@ namespace ReCrafted.Editor.Windows.Content.ContentTree
 
         public string Name { get; }
         public string FullName { get; }
-        public TextureAsset Preview { get; }
+        public TextureAsset Preview { get; private set; }
 
         public ContentTreeNode Parent { get; }
     }

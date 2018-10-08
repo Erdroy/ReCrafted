@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using ReCrafted.Editor.Common;
 using ReCrafted.Editor.Content;
+using ReCrafted.Editor.Content.Previews;
 using ReCrafted.Editor.Graphics;
 using ReCrafted.Editor.Windows;
 using Veldrid;
@@ -21,6 +22,7 @@ namespace ReCrafted.Editor.Core
         private CommandList _commandList;
         private ImGuiRenderer _guiController;
         private ContentManager _contentManager;
+        private PreviewsCache _previewsCache;
 
         public EditorApplication()
         {
@@ -61,6 +63,10 @@ namespace ReCrafted.Editor.Core
             _contentManager = new ContentManager();
             _contentManager.Initialize();
 
+            // Create preview cache
+            _previewsCache = new PreviewsCache();
+            _previewsCache.Initialize();
+
             // Create main editor panel
             MainWindow = new MainWindow();
             MainWindow.Initialize();
@@ -77,10 +83,11 @@ namespace ReCrafted.Editor.Core
             foreach(var window in _applicationWindows)
                 window?.Dispose();
 
-            _contentManager.Dispose();
-            _guiController.Dispose();
-            _commandList.Dispose();
-            GraphicsDevice.Dispose();
+            _previewsCache?.Dispose();
+            _contentManager?.Dispose();
+            _guiController?.Dispose();
+            _commandList?.Dispose();
+            GraphicsDevice?.Dispose();
         }
 
         protected override void OnUpdate()
