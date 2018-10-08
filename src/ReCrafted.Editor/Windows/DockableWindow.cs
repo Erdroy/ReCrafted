@@ -133,7 +133,7 @@ namespace ReCrafted.Editor.Windows
                 {
                     IsAnyWindowDragging = true;
                 }
-
+                
                 if (_dockTarget != null && ImGui.IsMouseReleased(0))
                 {
                     _dockTarget.Dock(this, _dockType, _dockDirection, 0.30f);
@@ -143,7 +143,7 @@ namespace ReCrafted.Editor.Windows
                     return;
                 }
             }
-
+            
             if (ImGui.IsItemActive())
             {
                 if (!Floating && ImGui.IsMouseDragging(0, 20.0f))
@@ -168,5 +168,6 @@ namespace ReCrafted.Editor.Windows
         public virtual ImGuiWindowFlags WindowSettings => ImGuiWindowFlags.NoSavedSettings;
 
         public static bool IsAnyWindowDragging { get; set; }
+        public static bool IsAnyWindowResizing { get; set; }
     }
 }

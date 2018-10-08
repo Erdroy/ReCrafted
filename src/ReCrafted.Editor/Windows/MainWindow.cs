@@ -10,8 +10,6 @@ using System.Numerics;
 using ImGuiNET;
 using Newtonsoft.Json;
 using ReCrafted.Editor.Common;
-using ReCrafted.Editor.Content;
-using ReCrafted.Editor.Content.Assets;
 using ReCrafted.Editor.Core;
 using ReCrafted.Editor.Windows.Content;
 using ReCrafted.Editor.Windows.Docking;
@@ -33,7 +31,7 @@ namespace ReCrafted.Editor.Windows
         {
             // Setup style
             var style = ImGui.GetStyle();
-
+            
             style.ScrollbarRounding = 2.0f;
             style.WindowPadding = new Vector2(4.0f, 4.0f);
 
@@ -55,11 +53,11 @@ namespace ReCrafted.Editor.Windows
             style.Colors[(int)ImGuiCol.ScrollbarGrab] = new Vector4(0.25f, 0.25f, 0.25f, 1.0f);
             style.Colors[(int)ImGuiCol.ScrollbarGrabActive] = new Vector4(0.28f, 0.28f, 0.28f, 1.0f);
             style.Colors[(int)ImGuiCol.ScrollbarGrabHovered] = new Vector4(0.28f, 0.28f, 0.28f, 1.0f);
-
+            
             // Setup docking
             DockPane = new DockPane();
             DockPane.Resize(WindowRect);
-            
+
             // Setup events
             EditorApplication.Current.SdlWindow.Resized += MainWindowResized;
 
@@ -79,6 +77,7 @@ namespace ReCrafted.Editor.Windows
             {
                 DockSplitter.IsAnySplitterDragging = false;
                 DockableWindow.IsAnyWindowDragging = false;
+                DockableWindow.IsAnyWindowResizing = false;
             }
 
             //ImGui.SetNextWindowFocus();

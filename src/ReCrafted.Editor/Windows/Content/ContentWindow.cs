@@ -1,6 +1,7 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Numerics;
 using System.Windows.Forms;
@@ -17,6 +18,9 @@ namespace ReCrafted.Editor.Windows.Content
     {
         private string _baseContentPath;
         private bool _firstDraw = true;
+
+        private ContentTreeNode _contextDirectory = null;
+        private ContentTreeFile _contextFile = null;
 
         public override void Initialize()
         {
@@ -64,6 +68,7 @@ namespace ReCrafted.Editor.Windows.Content
                 }
                 ImGui.EndMenuBar();
             }
+
             
             DrawContent();
         }
@@ -89,7 +94,7 @@ namespace ReCrafted.Editor.Windows.Content
                     var mipMapsResult = MessageBox.Show("Generate mip maps?", "Texture import.", MessageBoxButtons.YesNo);
 
                     // Temporary, import the texture
-                    var outputFileName = "../content/" + Path.GetFileNameWithoutExtension(fileName) + ".rcasset";
+                    var outputFileName = Path.Combine(CurrentNode.Path, Path.GetFileNameWithoutExtension(fileName) + ".rcasset");
                     TextureImporter.Instance.ImportAsset(fileName, outputFileName, new TextureImporter.Settings
                     {
                         GenerateMipMaps = mipMapsResult == DialogResult.Yes,
@@ -106,11 +111,53 @@ namespace ReCrafted.Editor.Windows.Content
                     break;
             }
         }
-        
+
         private void DrawContent()
         {
-            ImGui.Columns(2, "##content_splitter", true);
+            const string dirContextMenuId = "##content_popup_dir";
+            const string fileContextMenuId = "##content_popup_file";
+            
+            // Push directory context menu
+            if (ImGui.BeginPopup(dirContextMenuId))
+            {
+                Debug.Assert(_contextDirectory != null);
 
+                if (ImGui.Selectable("Refresh"))
+                {
+                    _contextDirectory.Refresh();
+                }
+                if (ImGui.Selectable("Navigate"))
+                {
+                    Navigate(_contextDirectory);
+                }
+                ImGui.Separator();
+                if (ImGui.Selectable("Delete"))
+                {
+                    _contextDirectory.Delete();
+                    CurrentNode = _contextDirectory.Parent;
+                }
+                ImGui.EndPopup();
+            }
+
+            // Push file context menu
+            if (ImGui.BeginPopup(fileContextMenuId))
+            {
+                Debug.Assert(_contextFile != null);
+
+                if (ImGui.Selectable("Refresh Icon"))
+                {
+                    _contextFile.RefreshPreview();
+                }
+                ImGui.Separator();
+                if (ImGui.Selectable("Delete"))
+                {
+                    _contextFile.Delete();
+                }
+                ImGui.EndPopup();
+            }
+
+            ImGui.Columns(2, "##content_splitter", true);
+            
             if (_firstDraw)
             {
                 ImGui.SetColumnWidth(0, 250.0f);
@@ -123,8 +170,20 @@ namespace ReCrafted.Editor.Windows.Content
 
             ImGui.BeginGroup();
             {
+                var openContextMenu = false;
+
                 // Render the directory
-                RootNode.Render();
+                RootNode.Render(directory =>
+                {
+                    openContextMenu = true;
+                       _contextDirectory = directory;
+                });
+
+                // Open context menu when needed
+                if (openContextMenu)
+                {
+                    ImGui.OpenPopup(dirContextMenuId);
+                }
             }
             ImGui.EndGroup();
             
@@ -142,10 +201,16 @@ namespace ReCrafted.Editor.Windows.Content
                 {
                     ImGui.Button(directory.Name, new Vector2(64.0f, 64.0f));
 
-                    if (ImGui.IsItemActive() && ImGui.IsMouseClicked(0))
+                    // Open context menu
+                    if (ImGui.IsItemClicked(1))
                     {
-                        Navigate(directory);
+                        _contextDirectory = directory;
+                        ImGui.OpenPopup(dirContextMenuId);
                     }
+
+                    // Navigate
+                    if (ImGui.IsItemActive() && ImGui.IsMouseClicked(0))
+                        Navigate(directory);
 
                     if (id % itemsPerLine != 0)
                         ImGui.SameLine();
@@ -159,12 +224,26 @@ namespace ReCrafted.Editor.Windows.Content
                 {
                     ImGui.Button(file.Name, new Vector2(64.0f, 64.0f));
 
+                    // Open context menu
+                    if (ImGui.IsItemClicked(1))
+                    {
+                        _contextFile = file;
+                        ImGui.OpenPopup(fileContextMenuId);
+                    }
+
                     if (id % itemsPerLine != 0)
                         ImGui.SameLine();
 
                     // TODO: Item preview
 
                     id++;
+                }
+
+                // Open context menu when content surface gets click
+                if (!ImGui.IsAnyItemActive() && ImGui.IsMouseClicked(1))
+                {
+                    _contextDirectory = CurrentNode;
+                    ImGui.OpenPopup(dirContextMenuId);
                 }
             }
             ImGui.EndGroup();

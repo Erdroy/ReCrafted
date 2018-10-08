@@ -1,5 +1,6 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
+using System;
 using ImGuiNET;
 
 namespace ReCrafted.Editor.Windows.Content.ContentTree
@@ -17,7 +18,7 @@ namespace ReCrafted.Editor.Windows.Content.ContentTree
         /// <summary>
         /// Renders this node tree.
         /// </summary>
-        internal void Render()
+        internal void Render(Action<ContentTreeNode> onContextMenuOpen = null)
         {
             // Setup flags
             var flags = SubDirectories.Count == 0 ? ImGuiTreeNodeFlags.Leaf : ImGuiTreeNodeFlags.None | ImGuiTreeNodeFlags.OpenOnArrow;
@@ -40,6 +41,14 @@ namespace ReCrafted.Editor.Windows.Content.ContentTree
             // Render tree node
             var result = ImGui.TreeNodeEx(Name, flags);
             var noPop = false;
+
+            // Context menu handling
+            if (ImGui.IsItemClicked(1))
+            {
+                onContextMenuOpen?.Invoke(this);
+            }
+
+            // Navigation handling
             if (ImGui.IsItemClicked() && ImGui.IsMouseDoubleClicked(0))
             {
                 // Navigate to this node in the current ContentWindow.
@@ -67,7 +76,7 @@ namespace ReCrafted.Editor.Windows.Content.ContentTree
                 // Render all sub directories
                 foreach (var subDir in SubDirectories)
                 {
-                    subDir.Render();
+                    subDir.Render(onContextMenuOpen);
                 }
 
                 // Pop the node only when TreeNode has been opened by it's API

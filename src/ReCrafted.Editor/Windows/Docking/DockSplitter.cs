@@ -44,8 +44,8 @@ namespace ReCrafted.Editor.Windows.Docking
 
         public override void Update()
         {
-            // Do not resize when some window is being dragged
-            if (DockableWindow.IsAnyWindowDragging )
+            // Do not resize when some window is being dragged or resized
+            if (DockableWindow.IsAnyWindowDragging || DockableWindow.IsAnyWindowResizing)
                 return;
 
             ChildA?.Update();

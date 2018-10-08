@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using ReCrafted.Editor.Common;
+using ReCrafted.Editor.Utilities;
 
 namespace ReCrafted.Editor.Windows.Content.ContentTree
 {
@@ -49,7 +50,13 @@ namespace ReCrafted.Editor.Windows.Content.ContentTree
         /// </summary>
         public void Delete()
         {
-            throw new NotImplementedException();
+            if (IsRoot)
+                return;
+
+            Debug.Assert(Parent != null);
+
+            FileSystem.MoveToRecycleBin(Path);
+            Parent.Refresh();
         }
 
         /// <summary>
@@ -107,7 +114,7 @@ namespace ReCrafted.Editor.Windows.Content.ContentTree
                 }
 
                 // Add the file
-                var fileNode = new ContentTreeFile(fileName, file);
+                var fileNode = new ContentTreeFile(this, fileName, file);
                 _files.Add(fileNode);
 
                 // Generate or load asset preview
