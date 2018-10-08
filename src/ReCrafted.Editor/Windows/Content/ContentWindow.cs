@@ -7,7 +7,6 @@ using System.Numerics;
 using System.Windows.Forms;
 using DirectXTexNet;
 using ImGuiNET;
-using ReCrafted.Editor.Common;
 using ReCrafted.Editor.Content.Importers;
 using ReCrafted.Editor.Utilities;
 using ReCrafted.Editor.Windows.Content.ContentTree;
@@ -19,8 +18,8 @@ namespace ReCrafted.Editor.Windows.Content
         private string _baseContentPath;
         private bool _firstDraw = true;
 
-        private ContentTreeNode _contextDirectory = null;
-        private ContentTreeFile _contextFile = null;
+        private ContentTreeNode _contextDirectory;
+        private ContentTreeFile _contextFile;
 
         public override void Initialize()
         {
@@ -34,6 +33,17 @@ namespace ReCrafted.Editor.Windows.Content
             // Set this content window as current
             Current = this;
             
+            DrawMenuBar();
+            DrawContextMenus();
+            DrawContent();
+        }
+
+        public override void Dispose()
+        {
+        }
+
+        private void DrawMenuBar()
+        {
             if (ImGui.BeginMenuBar())
             {
                 if (ImGui.BeginMenu("Create"))
@@ -68,55 +78,13 @@ namespace ReCrafted.Editor.Windows.Content
                 }
                 ImGui.EndMenuBar();
             }
-
-            
-            DrawContent();
         }
 
-        public override void Dispose()
-        {
-        }
-
-        public void TryImport(string fileName)
-        {
-            switch (Path.GetExtension(fileName))
-            {
-                case ".bmp":
-                case ".jpg":
-                case ".png":
-                case ".tga":
-                case ".dds":
-                case ".hdr":
-                {
-                    // TODO: Open texture importer window
-
-                    var compressResult = MessageBox.Show("Compress this texture?", "Texture import.", MessageBoxButtons.YesNo);
-                    var mipMapsResult = MessageBox.Show("Generate mip maps?", "Texture import.", MessageBoxButtons.YesNo);
-
-                    // Temporary, import the texture
-                    var outputFileName = Path.Combine(CurrentNode.Path, Path.GetFileNameWithoutExtension(fileName) + ".rcasset");
-                    TextureImporter.Instance.ImportAsset(fileName, outputFileName, new TextureImporter.Settings
-                    {
-                        GenerateMipMaps = mipMapsResult == DialogResult.Yes,
-                        Compress = compressResult == DialogResult.Yes,
-                        CompressionFlags = TEX_COMPRESS_FLAGS.PARALLEL,
-                        CompressionFormat = DXGI_FORMAT.BC7_UNORM
-                    });
-
-                    break;
-                }
-                // TODO: Add more import options
-                default:
-                    // TODO: Add log
-                    break;
-            }
-        }
-
-        private void DrawContent()
+        private void DrawContextMenus()
         {
             const string dirContextMenuId = "##content_popup_dir";
             const string fileContextMenuId = "##content_popup_file";
-            
+
             // Push directory context menu
             if (ImGui.BeginPopup(dirContextMenuId))
             {
@@ -155,7 +123,13 @@ namespace ReCrafted.Editor.Windows.Content
                 }
                 ImGui.EndPopup();
             }
+        }
 
+        private void DrawContent()
+        {
+            const string dirContextMenuId = "##content_popup_dir";
+            const string fileContextMenuId = "##content_popup_file";
+            
             ImGui.Columns(2, "##content_splitter", true);
             
             if (_firstDraw)
@@ -176,7 +150,7 @@ namespace ReCrafted.Editor.Windows.Content
                 RootNode.Render(directory =>
                 {
                     openContextMenu = true;
-                       _contextDirectory = directory;
+                    _contextDirectory = directory;
                 });
 
                 // Open context menu when needed
@@ -240,7 +214,7 @@ namespace ReCrafted.Editor.Windows.Content
                 }
 
                 // Open context menu when content surface gets click
-                if (!ImGui.IsAnyItemActive() && ImGui.IsMouseClicked(1))
+                if (!ImGui.IsAnyItemHovered() && ImGui.IsMouseClicked(1))
                 {
                     _contextDirectory = CurrentNode;
                     ImGui.OpenPopup(dirContextMenuId);
@@ -249,6 +223,41 @@ namespace ReCrafted.Editor.Windows.Content
             ImGui.EndGroup();
 
             ImGui.PopStyleColor(3);
+        }
+
+        public void TryImport(string fileName)
+        {
+            switch (Path.GetExtension(fileName))
+            {
+                case ".bmp":
+                case ".jpg":
+                case ".png":
+                case ".tga":
+                case ".dds":
+                case ".hdr":
+                {
+                    // TODO: Open texture importer window
+
+                    var compressResult = MessageBox.Show("Compress this texture?", "Texture import.", MessageBoxButtons.YesNo);
+                    var mipMapsResult = MessageBox.Show("Generate mip maps?", "Texture import.", MessageBoxButtons.YesNo);
+
+                    // Temporary, import the texture
+                    var outputFileName = Path.Combine(CurrentNode.Path, Path.GetFileNameWithoutExtension(fileName) + ".rcasset");
+                    TextureImporter.Instance.ImportAsset(fileName, outputFileName, new TextureImporter.Settings
+                    {
+                        GenerateMipMaps = mipMapsResult == DialogResult.Yes,
+                        Compress = compressResult == DialogResult.Yes,
+                        CompressionFlags = TEX_COMPRESS_FLAGS.PARALLEL,
+                        CompressionFormat = DXGI_FORMAT.BC7_UNORM
+                    });
+
+                    break;
+                }
+                // TODO: Add more import options
+                default:
+                    // TODO: Add log
+                    break;
+            }
         }
 
         public void Navigate(ContentTreeNode node)

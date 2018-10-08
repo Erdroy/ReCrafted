@@ -219,7 +219,6 @@
     <Compile Include="Content\IAsset.cs" />
     <Compile Include="Content\Importers\TextureImporter.cs" />
     <Compile Include="Content\IImportSettings.cs" />
-    <Compile Include="Content\Importers\TextureImportSettings.cs" />
     <Compile Include="Content\JsonAsset.cs" />
     <Compile Include="Graphics\ImGuiRenderer.cs" />
     <Compile Include="Utilities\FileSystem.cs" />
