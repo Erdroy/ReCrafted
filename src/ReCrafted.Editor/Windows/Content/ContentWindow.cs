@@ -6,27 +6,30 @@ using System.Numerics;
 using System.Windows.Forms;
 using DirectXTexNet;
 using ImGuiNET;
+using ReCrafted.Editor.Common;
 using ReCrafted.Editor.Content.Importers;
 using ReCrafted.Editor.Utilities;
+using ReCrafted.Editor.Windows.Content.ContentTree;
 
 namespace ReCrafted.Editor.Windows.Content
 {
     public class ContentWindow : DockableWindow
     {
         private string _baseContentPath;
-
-        private string[] _directories;
-        private string[] _files;
+        private bool _firstDraw = true;
 
         public override void Initialize()
         {
+            Current = this;
             _baseContentPath = PathUtils.NormalizePath(Path.Combine(Environment.CurrentDirectory, "../content"));
-            CurrentDirectory = _baseContentPath;
             Refresh();
         }
         
         public override void OnRender()
         {
+            // Set this content window as current
+            Current = this;
+            
             if (ImGui.BeginMenuBar())
             {
                 if (ImGui.BeginMenu("Create"))
@@ -103,56 +106,25 @@ namespace ReCrafted.Editor.Windows.Content
                     break;
             }
         }
-
+        
         private void DrawContent()
         {
-            ImGui.Columns(2, "##content_splitter", false);
-            ImGui.SetColumnWidth(0, 150.0f);
+            ImGui.Columns(2, "##content_splitter", true);
 
+            if (_firstDraw)
+            {
+                ImGui.SetColumnWidth(0, 250.0f);
+                _firstDraw = false;
+            }
+            
             ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(0.1f, 0.1f, 0.1f, 0.25f));
             ImGui.PushStyleColor(ImGuiCol.ButtonActive, new Vector4(0.1f, 0.1f, 0.1f, 0.38f));
             ImGui.PushStyleColor(ImGuiCol.ButtonHovered, new Vector4(1.0f, 0.1f, 0.1f, 0.42f));
 
             ImGui.BeginGroup();
             {
-                // TODO: Directory tree
-
-                if (ImGui.TreeNodeEx("Content"))
-                {
-                    foreach (var dir in _directories)
-                    {
-                        var dirName = Path.GetFileNameWithoutExtension(dir);
-
-                        if (ImGui.TreeNode(dirName))
-                        {
-                            if (ImGui.IsItemActive() && ImGui.IsMouseDoubleClicked(0))
-                            {
-                                Navigate(dir);
-                            }
-
-                            ImGui.TreePop();
-                        }
-                    }
-
-                    ImGui.TreePop();
-                }
-
-                /*ImGui.SmallButton("...");
-
-                if (ImGui.IsLastItemActive() && ImGui.IsMouseClicked(0))
-                {
-                    Navigate(PathUtils.NormalizePath(Path.Combine(CurrentDirectory, "../")));
-                }
-
-                foreach (var dir in _directories)
-                {
-                    ImGui.Button(Path.GetFileNameWithoutExtension(dir));
-
-                    if (ImGui.IsLastItemActive() && ImGui.IsMouseClicked(0))
-                    {
-                        Navigate(dir);
-                    }
-                }*/
+                // Render the directory
+                RootNode.Render();
             }
             ImGui.EndGroup();
             
@@ -166,11 +138,9 @@ namespace ReCrafted.Editor.Windows.Content
                     itemsPerLine = 1;
                 
                 var id = 1;
-                foreach (var directory in _directories)
+                foreach (var directory in CurrentNode.SubDirectories)
                 {
-                    var fileName = Path.GetFileNameWithoutExtension(directory);
-
-                    ImGui.Button(fileName, new Vector2(64.0f, 64.0f));
+                    ImGui.Button(directory.Name, new Vector2(64.0f, 64.0f));
 
                     if (ImGui.IsItemActive() && ImGui.IsMouseClicked(0))
                     {
@@ -180,17 +150,19 @@ namespace ReCrafted.Editor.Windows.Content
                     if (id % itemsPerLine != 0)
                         ImGui.SameLine();
 
+                    // TODO: Directory icon
+
                     id++;
                 }
 
-                foreach (var file in _files)
+                foreach (var file in CurrentNode.Files)
                 {
-                    var fileName = Path.GetFileNameWithoutExtension(file);
-
-                    ImGui.Button(fileName, new Vector2(64.0f, 64.0f));
+                    ImGui.Button(file.Name, new Vector2(64.0f, 64.0f));
 
                     if (id % itemsPerLine != 0)
                         ImGui.SameLine();
+
+                    // TODO: Item preview
 
                     id++;
                 }
@@ -200,24 +172,29 @@ namespace ReCrafted.Editor.Windows.Content
             ImGui.PopStyleColor(3);
         }
 
+        public void Navigate(ContentTreeNode node)
+        {
+            CurrentNode = node;
+        }
+
         public void Refresh()
         {
-            _directories = Directory.GetDirectories(CurrentDirectory);
-            _files = Directory.GetFiles(CurrentDirectory);
+            // Create root node
+            RootNode = new ContentTreeNode(null, _baseContentPath, "Content");
+            RootNode.Refresh();
 
+            // Set root as current
+            CurrentNode = RootNode;
 
+            // TODO: Load which nodes have been opened last time
         }
-
-        public void Navigate(string directoryPath)
-        {
-            // TODO: Validate dir path
-            CurrentDirectory = directoryPath;
-            Refresh();
-        }
-
-        public string CurrentDirectory { get; private set; }
+        
+        public ContentTreeNode RootNode { get; private set; }
+        public ContentTreeNode CurrentNode { get; private set; }
 
         public override string WindowName => "Content";
         public override ImGuiWindowFlags WindowSettings => ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.MenuBar;
+
+        public static ContentWindow Current { get; private set; }
     }
 }
