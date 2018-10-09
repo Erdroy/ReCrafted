@@ -2,12 +2,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ReCrafted.Editor.Content.Assets;
+using ReCrafted.Editor.Content.Previews.Generators;
 
 namespace ReCrafted.Editor.Content.Previews
 {
     public class PreviewsCache : IDisposable
     {
+        public const int DefaultSize = 128;
+
         private readonly Dictionary<Guid, TextureAsset> _cache = new Dictionary<Guid, TextureAsset>();
 
         private TextureAsset _folderPreview;
@@ -18,6 +22,9 @@ namespace ReCrafted.Editor.Content.Previews
         {
             Instance = this;
 
+            // Initialize generators
+            TexturePreviewGenerator.Instance.Initialize();
+
             _folderPreview = ContentManager.Load<TextureAsset>("Editor/Previews/Folder");
             _defaultAssetPreview = ContentManager.Load<TextureAsset>("Editor/Previews/Default");
             _unknownAssetPreview = ContentManager.Load<TextureAsset>("Editor/Previews/Unknown");
@@ -25,13 +32,23 @@ namespace ReCrafted.Editor.Content.Previews
 
         public void Dispose()
         {
+            // Shutdown generators
+            TexturePreviewGenerator.Instance.Shutdown();
+
+            _folderPreview.Unload();
             _defaultAssetPreview.Unload();
             _unknownAssetPreview.Unload();
         }
 
-        public static void GeneratePreview(Asset asset, Action<TextureAsset> onFinish)
+        public TextureAsset GeneratePreview(Asset asset)
         {
-
+            switch (asset)
+            {
+                case TextureAsset texture:
+                    return TexturePreviewGenerator.Instance.Generate(texture);
+                default:
+                    return _unknownAssetPreview;
+            }
         }
 
         public TextureAsset GetFolderPreview()
@@ -46,6 +63,10 @@ namespace ReCrafted.Editor.Content.Previews
 
         public TextureAsset GetPreview(string fileName)
         {
+            // TODO: Read asset header
+            // TODO: Load asset if not already loaded
+            // TODO: Generate preview
+            // TODO: Unload asset if loaded previously
             return _unknownAssetPreview;
         }
 
@@ -59,7 +80,7 @@ namespace ReCrafted.Editor.Content.Previews
                 return _cache[asset.AssetGuid];
             }
 
-            return _defaultAssetPreview;
+            return GeneratePreview(asset);
         }
 
         public static PreviewsCache Instance { get; private set; }

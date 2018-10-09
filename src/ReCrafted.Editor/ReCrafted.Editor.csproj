@@ -220,7 +220,10 @@
     <Compile Include="Content\Importers\TextureImporter.cs" />
     <Compile Include="Content\IImportSettings.cs" />
     <Compile Include="Content\JsonAsset.cs" />
+    <Compile Include="Content\Previews\Generators\TexturePreviewGenerator.cs" />
+    <Compile Include="Content\Previews\IPreviewGenerator.cs" />
     <Compile Include="Content\Previews\PreviewsCache.cs" />
+    <Compile Include="Core\Singleton.cs" />
     <Compile Include="Graphics\ImGuiRenderer.cs" />
     <Compile Include="Utilities\FileSystem.cs" />
     <Compile Include="Utilities\PathUtils.cs" />

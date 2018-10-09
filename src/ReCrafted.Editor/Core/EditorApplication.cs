@@ -12,6 +12,7 @@ using Veldrid.StartupUtilities;
 
 namespace ReCrafted.Editor.Core
 {
+    /// <inheritdoc />
     /// <summary>
     /// Main voxel editor class.
     /// </summary>

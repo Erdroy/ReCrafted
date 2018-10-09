@@ -91,7 +91,7 @@ RefPtr<Domain> Domain::CreateRoot()
 
     if (debug)
     {
-        //mono_debug_domain_create(domain);
+        mono_debug_domain_create(domain);
     }
 
     // create instance
