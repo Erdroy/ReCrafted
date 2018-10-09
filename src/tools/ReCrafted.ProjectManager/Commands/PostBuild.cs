@@ -21,11 +21,11 @@ namespace ReCrafted.ProjectManager.Commands
             Program.RunCommand("UpdateBuildInfo");
 
             var info = ProjectBuildInfo.FromFile(Program.BuildInfoFile);
-            var buildNumber = info.BuildCounts.Sum(x => x.Value);
+            var buildNumber = info.Info.Sum(x => x.Value.BuildCount);
 
             // print some cool data
             Console.WriteLine($"==== Build done! Current build number ({info.BuildName}): {buildNumber}, " +
-                              $"build time: {info.LastBuild.ToShortDateString()} {info.LastBuild.ToShortTimeString()} ====");
+                              $"build time: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()} ====");
             Environment.Exit(0);
         }
     }

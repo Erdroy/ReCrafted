@@ -29,10 +29,10 @@ namespace ReCrafted.ProjectManager.Commands
             var buildInfo = ProjectBuildInfo.FromFile(Program.BuildInfoFile);
 
             // increment build count for current developer
-            buildInfo.BuildCounts[developerInfo.Username] = buildInfo.BuildCounts[developerInfo.Username] + 1;
+            buildInfo.Info[developerInfo.Username].BuildCount = buildInfo.Info[developerInfo.Username].BuildCount + 1;
 
             // set latest build info
-            buildInfo.LastBuild = DateTime.Now;
+            var date = buildInfo.Info[developerInfo.Username].BuildDate = DateTime.Now;
 
             // ... and now save the modified file
             buildInfo.ToFile(Program.BuildInfoFile, Formatting.Indented);
@@ -42,8 +42,8 @@ namespace ReCrafted.ProjectManager.Commands
             {
                 BuildAuthor = developerInfo.Username,
                 BuildName = buildInfo.BuildName,
-                BuildNumber = buildInfo.BuildCounts.Sum(x => x.Value),
-                BuildTime = buildInfo.LastBuild
+                BuildNumber = buildInfo.Info.Sum(x => x.Value.BuildCount),
+                BuildTime = date
             };
 
             // save now

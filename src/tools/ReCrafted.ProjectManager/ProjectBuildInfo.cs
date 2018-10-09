@@ -8,8 +8,13 @@ namespace ReCrafted.ProjectManager
 {
     public class ProjectBuildInfo : JsonTemplate<ProjectBuildInfo>
     {
-        public Dictionary<string, int> BuildCounts { get; set; }
-        public DateTime LastBuild { get; set; }
+        public class UserBuildInfo
+        {
+            public int BuildCount { get; set; }
+            public DateTime BuildDate { get; set; }
+        }
+
+        public Dictionary<string, UserBuildInfo> Info { get; set; }
         public string BuildName { get; set; }
     }
 }

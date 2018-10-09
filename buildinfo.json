@@ -1,9 +1,17 @@
 {
-  "BuildCounts": {
-    "Erdroy": 27888,
-    "Maturas": 115,
-    "Demon": 1887
+  "Info": {
+    "Erdroy": {
+      "BuildCount": 27892,
+      "BuildDate": "2018-10-09T21:49:12.80133+02:00"
+    },
+    "Maturas": {
+      "BuildCount": 115,
+      "BuildDate": "2018-10-09T21:48:46.7808319+02:00"
+    },
+    "Demon": {
+      "BuildCount": 1887,
+      "BuildDate": "2018-10-09T21:48:46.7808319+02:00"
+    }
   },
-  "LastBuild": "2018-10-09T21:03:44.8877335+02:00",
   "BuildName": "in-dev 1.0 (developy)"
 }
