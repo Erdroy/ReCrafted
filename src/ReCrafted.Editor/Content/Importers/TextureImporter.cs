@@ -1,11 +1,9 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
-using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using DirectXTexNet;
 using ReCrafted.Editor.Content.Assets;
-using ReCrafted.Editor.Utilities;
 
 namespace ReCrafted.Editor.Content.Importers
 {
@@ -13,7 +11,7 @@ namespace ReCrafted.Editor.Content.Importers
     {
         public class Settings : IImportSettings
         {
-            public TEX_COMPRESS_FLAGS CompressionFlags = TEX_COMPRESS_FLAGS.BC7_QUICK;
+            public TEX_COMPRESS_FLAGS CompressionFlags = TEX_COMPRESS_FLAGS.BC7_QUICK | TEX_COMPRESS_FLAGS.PARALLEL;
             public DXGI_FORMAT CompressionFormat = DXGI_FORMAT.BC7_UNORM;
             public bool Compress = false;
             public bool GenerateMipMaps = true;
@@ -22,6 +20,19 @@ namespace ReCrafted.Editor.Content.Importers
         public override Asset ImportAsset(string inputFile, string outputFile, Settings settings)
         {
             var image = LoadImage(inputFile);
+            var mipCount = image.GetImageCount();
+
+            if (mipCount == 1 && settings.GenerateMipMaps)
+            {
+                // Generate mip maps
+                var mipMaps = image.GenerateMipMaps(TEX_FILTER_FLAGS.DEFAULT, 0);
+
+                // Set image 
+                image.Dispose();
+                image = mipMaps;
+
+                mipCount = image.GetImageCount();
+            }
 
             if (settings.Compress)
             {
@@ -33,28 +44,12 @@ namespace ReCrafted.Editor.Content.Importers
                 image = compressedImage;
             }
 
-            var baseImage = image.GetImage(0);
-            var mipCount = image.GetImageCount();
-
-            if (mipCount == 1 && settings.GenerateMipMaps)
-            {
-                if (!MathUtils.IsPowerOf2(baseImage.Width) || !MathUtils.IsPowerOf2(baseImage.Height))
-                    throw new Exception($"Cannot generate mip maps for texture '{inputFile}', because it's width or height is not within power of 2!");
-
-                // Generate mip maps
-                var mipMaps = image.GenerateMipMaps(TEX_FILTER_FLAGS.FANT, 0);
-
-                // Set image 
-                image.Dispose();
-                image = mipMaps;
-
-                mipCount = image.GetImageCount();
-            }
-
+            // Get first mip map
+            var mip0 = image.GetImage(0);
 
             // Create asset
             var asset = ContentManager.CreateAsset<TextureAsset>();
-            asset.Format = baseImage.Format;
+            asset.Format = mip0.Format;
             asset.MipCount = mipCount;
             asset.Mips = new TextureAsset.Mip[mipCount];
 
