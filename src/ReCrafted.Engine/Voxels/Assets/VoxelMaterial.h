@@ -10,26 +10,48 @@
 #include "Graphics/Texture.h"
 #include "Voxels/Voxel.h"
 #include "Voxels/VoxelMaterialManager.h"
+#include "Content/ContentManager.h"
 
 class VoxelMaterial : public JsonAsset
 {
+public:
+    enum class VoxelMaterialType
+    {
+        ColorBlend,
+        NormalSmoothnessMetallic,
+        ColorBlendFar,
+        NormalSmoothnessMetallicFar
+    };
+
 private:
     std::string m_voxelName = nullptr;
+
     VoxelMaterial_t m_voxelMaterial = 0u;
     VoxelHardness_t m_voxelHardness = 0u;
-    Texture* m_voxelTexture = nullptr;
 
-    std::string m_textureAsset = nullptr;
+    Texture* m_voxelTextureCB = nullptr;
+    Texture* m_voxelTextureNSM = nullptr;
+    Texture* m_voxelTextureCBFar = nullptr;
+    Texture* m_voxelTextureNSMFar = nullptr;
+
+    std::string m_textureAssetCB = nullptr;
+    std::string m_textureAssetNSM = nullptr;
+    std::string m_textureAssetCBFar = nullptr;
+    std::string m_textureAssetNSMFar = nullptr;
+
+    bool m_hasFarTextures = false;
+    bool m_hasNormalTexture = false;
 
 protected:
-    void OnInitialize() override
-    {
-        
-    }
-
     void OnLoadEnd() override
     {
-        // TODO: load texture
+        // TODO: Validate texture names
+
+        // Load textures
+        m_voxelTextureCB = ContentManager::LoadAsset<Texture>(m_textureAssetCB.c_str());
+        m_voxelTextureNSM = ContentManager::LoadAsset<Texture>(m_textureAssetNSM.c_str());
+        m_voxelTextureCBFar = ContentManager::LoadAsset<Texture>(m_textureAssetCBFar.c_str());
+        m_voxelTextureNSMFar = ContentManager::LoadAsset<Texture>(m_textureAssetNSMFar.c_str());
 
         // Register this material
         VoxelMaterialManager::GetInstance()->RegisterMaterial(this);
@@ -37,15 +59,44 @@ protected:
 
     void OnUnload() override
     {
+        ContentManager::UnloadAssetSafe(m_voxelTextureCB);
+        ContentManager::UnloadAssetSafe(m_voxelTextureNSM);
+        ContentManager::UnloadAssetSafe(m_voxelTextureCBFar);
+        ContentManager::UnloadAssetSafe(m_voxelTextureNSMFar);
+
         VoxelMaterialManager::GetInstance()->UnregisterMaterial(this);
     }
     
     void OnDeserializeJson(uint16_t version, const json& json) override
     {
+        m_voxelName = json["VoxelName"].get<std::string>();
         m_voxelMaterial = json["VoxelMaterial"].get<VoxelMaterial_t>();
         m_voxelHardness = json["VoxelHardness"].get<VoxelHardness_t>();
-        m_textureAsset = json["VoxelTexture"].get<std::string>();
-        m_voxelName = json["VoxelName"].get<std::string>();
+
+        ASSERT(json["VoxelTexture_CB"].is_null() == false);
+
+        // Load all texture names
+        m_textureAssetCB = json["VoxelTexture_CB"].get<std::string>();
+
+        if(!json["VoxelTexture_NSM"].is_null())
+        {
+            m_textureAssetNSM = json["VoxelTexture_NSM"].get<std::string>();
+            m_hasNormalTexture = true;
+        }
+
+        if ( !json["VoxelTexture_CB_Far"].is_null())
+        {
+            m_textureAssetCBFar = json["VoxelTexture_CB_Far"].get<std::string>();
+            m_hasFarTextures = true;
+        }
+
+        if(m_hasNormalTexture && m_hasFarTextures)
+        {
+            _ASSERT_(json["VoxelTexture_NSM_Far"].is_null(), 
+                "When standard normal texture is provided and CB far texture, the NSM texture is also required!");
+
+            m_textureAssetNSMFar = json["VoxelTexture_NSM_Far"].get<std::string>();
+        }
     }
 
     AssetType GetAssetType() override
@@ -69,9 +120,31 @@ public:
         return m_voxelHardness;
     }
 
-    Texture* GetTexture() const
+    bool HasNormalTextures() const
     {
-        return m_voxelTexture;
+        return m_hasNormalTexture;
+    }
+
+    bool HasFarTextures() const
+    {
+        return m_hasFarTextures;
+    }
+
+    Texture* GetTexture(const VoxelMaterialType type) const
+    {
+        switch(type)
+        {
+        case VoxelMaterialType::ColorBlend: 
+            return m_voxelTextureCB;
+        case VoxelMaterialType::NormalSmoothnessMetallic:
+            return m_voxelTextureNSM;
+        case VoxelMaterialType::ColorBlendFar:
+            return m_voxelTextureCBFar;
+        case VoxelMaterialType::NormalSmoothnessMetallicFar:
+            return m_voxelTextureNSMFar;
+        default:
+            return nullptr;
+        }
     }
 };
 
