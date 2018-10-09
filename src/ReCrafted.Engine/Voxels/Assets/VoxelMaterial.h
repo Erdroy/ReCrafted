@@ -45,8 +45,6 @@ private:
 protected:
     void OnLoadEnd() override
     {
-        // TODO: Validate texture names
-
         // Load textures
         m_voxelTextureCB = ContentManager::LoadAsset<Texture>(m_textureAssetCB.c_str());
         m_voxelTextureNSM = ContentManager::LoadAsset<Texture>(m_textureAssetNSM.c_str());

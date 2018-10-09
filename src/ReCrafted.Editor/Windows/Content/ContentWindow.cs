@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Windows.Forms;
 using DirectXTexNet;
 using ImGuiNET;
+using ReCrafted.Editor.Content;
 using ReCrafted.Editor.Content.Assets;
 using ReCrafted.Editor.Content.Importers;
 using ReCrafted.Editor.Content.Previews;
@@ -51,7 +52,15 @@ namespace ReCrafted.Editor.Windows.Content
             {
                 if (ImGui.BeginMenu("Create"))
                 {
-                    if (ImGui.MenuItem("Voxel Material")) { }
+                    if (ImGui.MenuItem("Voxel Material"))
+                    {
+                        var asset = ContentManager.CreateAsset<VoxelMaterialAsset>();
+
+                        using (var fs = new FileStream(Path.Combine(CurrentNode.Path, "NewVoxelMaterial.rcasset"), FileMode.Create, FileAccess.Write))
+                        {
+                            asset.Serialize(fs);
+                        }
+                    }
                     ImGui.EndMenu();
                 }
 

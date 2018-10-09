@@ -18,7 +18,7 @@ namespace ReCrafted.Editor.Content.Assets
 
         protected override void OnDeserializeJson(ushort version)
         {
-            VoxelName = DeserializeField("VoxelName", "UNKNOWN-VOXEL");
+            VoxelName = DeserializeField("VoxelName", "Unknown");
             VoxelMaterial = DeserializeField<ushort>("VoxelMaterial");
             VoxelHardness = DeserializeField<byte>("VoxelHardness");
 

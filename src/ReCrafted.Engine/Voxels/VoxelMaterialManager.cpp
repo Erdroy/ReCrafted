@@ -7,6 +7,7 @@ SINGLETON_IMPL(VoxelMaterialManager)
 
 void VoxelMaterialManager::OnInit()
 {
+    // TODO: Read all material assets and build lookup
 }
 
 void VoxelMaterialManager::OnDispose()
@@ -54,7 +55,10 @@ VoxelMaterial* VoxelMaterialManager::GetMaterial(const VoxelMaterial_t id)
     ScopeLock(lock);
 
     if (!m_instance->m_materials.contains(id))
+    {
+        // TODO: Load material asset
         return nullptr;
+    }
 
     return m_instance->m_materials[id];
 }
