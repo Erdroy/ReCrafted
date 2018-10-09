@@ -113,6 +113,20 @@ public:
     }
 
     /**
+     * \brief Safely unloads given asset and clears it's pointer.
+     * \param asset The asset that will be unloaded.
+     */
+    template<class TAsset>
+    FORCEINLINE static void UnloadAssetSafe(TAsset*& asset)
+    {
+        if (asset)
+        {
+            asset->Unload();
+            asset = nullptr;
+        }
+    }
+
+    /**
      * \brief Unloads given asset.
      * \param asset The asset that will be unloaded.
      */
