@@ -7,8 +7,10 @@
 
 // includes
 #include "ReCrafted.h"
-#include "Common/Entities/System.h"
+#include "Common/EntityComponentSystem.h"
+#include "Common/TransformComponent.h"
 #include "IAudioEngine.h"
+#include "AudioSoundComponent.h"
 
 class AudioSystem : public System
 {
@@ -20,6 +22,13 @@ public:
 
 private:
     static IAudioEngine* m_engine;
+
+public:
+    AudioSystem()
+    {
+        RequireComponent<TransformComponent>();
+        RequireComponent<AudioSoundComponent>();
+    }
 
 public:
     void Initialize() override;

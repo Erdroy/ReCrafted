@@ -7,8 +7,7 @@
 
 // includes
 #include "ReCrafted.h"
-#include "Entity.h"
-#include "World.h"
+#include "Common/EntityComponentSystem.h"
 #include "Core/EngineComponent.h"
 
 class MainWorld : public EngineComponent<MainWorld>

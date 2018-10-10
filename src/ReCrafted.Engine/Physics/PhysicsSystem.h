@@ -7,13 +7,19 @@
 
 // includes
 #include "ReCrafted.h"
-#include "Common/Entities/System.h"
+#include "Common/EntityComponentSystem.h"
 #include "IPhysicsEngine.h"
 
 class PhysicsSystem : public System
 {
 private:
     static RefPtr<IPhysicsEngine> m_engine;
+
+public:
+    PhysicsSystem()
+    {
+        RequireComponent<TransformComponent>();
+    }
 
 public:
     void Initialize() override;

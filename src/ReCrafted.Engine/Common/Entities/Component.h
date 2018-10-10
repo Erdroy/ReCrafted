@@ -7,7 +7,7 @@
 
 #include "ClassTypeId.h"
 
-class Component
+struct Component
 {
 public:
     virtual ~Component() = default;
