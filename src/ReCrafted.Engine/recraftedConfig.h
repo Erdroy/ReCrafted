@@ -60,4 +60,21 @@
 #define ASSERT_FAIL_EXCEPTION           RC_ENABLE
 #endif
 
+
+// ==== ECS SETTINGS ====
+
+#ifndef ECS_MAX_SYSTEMS
+/**
+ * \brief The maximum amount of ECS systems.
+ */
+#define ECS_MAX_SYSTEMS 64
+#endif
+
+#ifndef ECS_MAX_COMPONENTS
+ /**
+  * \brief The maximum amount of ECS components.
+  */
+#define ECS_MAX_COMPONENTS 128
+#endif
+
 #endif // RECRAFTEDCONFIG_H
