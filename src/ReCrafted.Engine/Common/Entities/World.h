@@ -78,6 +78,9 @@ public:
 
         m_activeSystems.emplace_back(system);
 
+        // Initialize system
+        system->Initialize();
+
         return *system;
     }
 
@@ -91,6 +94,9 @@ public:
 
         if (system)
         {
+            // Shutdown system
+            system->Shutdown();
+
             m_systems[systemId] = nullptr;
 
             delete system;
