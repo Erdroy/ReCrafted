@@ -11,6 +11,7 @@
 #include "Core/EngineComponent.h"
 #include "Audio/AudioSystem.h"
 #include "Physics/PhysicsSystem.h"
+#include "Scripting/ScriptingSystem.h"
 
 class MainWorld : public EngineComponent<MainWorld>
 {
@@ -19,6 +20,7 @@ private:
 
     AudioSystem* m_audioSystem = nullptr;
     PhysicsSystem* m_physicsSystem = nullptr;
+    ScriptingSystem* m_scriptingSystem = nullptr;
 
 public:
     void OnInit() override;

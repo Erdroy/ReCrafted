@@ -12,5 +12,6 @@
 
 // Default components
 #include "Common/TransformComponent.h"
+#include "Scripting/ScriptingComponent.h"
 
 #endif // ENTITYCOMPONENTSYSTEM_H

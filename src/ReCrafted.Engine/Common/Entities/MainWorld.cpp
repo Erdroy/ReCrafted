@@ -12,6 +12,7 @@ void MainWorld::OnInit()
     // Register default systems
     m_audioSystem = &m_world->AddSystem<AudioSystem>();
     m_physicsSystem = &m_world->AddSystem<PhysicsSystem>();
+    m_scriptingSystem = &m_world->AddSystem<ScriptingSystem>();
 }
 
 void MainWorld::OnDispose()
@@ -30,4 +31,5 @@ void MainWorld::Update()
 void MainWorld::Simulate()
 {
     m_physicsSystem->Simulate();
+    m_scriptingSystem->Simulate();
 }
