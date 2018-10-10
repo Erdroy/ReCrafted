@@ -8,7 +8,7 @@
 // includes
 #include "ReCrafted.h"
 #include "Common/EntityComponentSystem.h"
-#include "Common/TransformComponent.h"
+
 #include "IAudioEngine.h"
 #include "AudioSoundComponent.h"
 

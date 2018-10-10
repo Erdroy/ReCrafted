@@ -26,6 +26,9 @@ void PhysicsSystem::Update()
 {
     Profiler::BeginProfile(__FUNCTION__);
     m_engine->Update();
+
+
+
     Profiler::EndProfile();
 }
 
@@ -33,5 +36,8 @@ void PhysicsSystem::Simulate()
 {
     //Profiler::BeginProfile("PhysicsSystem::Simulate");
     m_engine->Simulate();
+
+
+
     //Profiler::EndProfile();
 }

@@ -29,5 +29,8 @@ void AudioSystem::Update()
     Profiler::BeginProfile(__FUNCTION__);
     // Update audio engine
     m_engine->Update();
+
+
+
     Profiler::EndProfile();
 }

@@ -2,8 +2,6 @@
 
 #include "MainWorld.h"
 #include "Common/Profiler/Profiler.h"
-#include "Audio/AudioSystem.h"
-#include "Physics/PhysicsSystem.h"
 
 SINGLETON_IMPL(MainWorld)
 
@@ -12,8 +10,8 @@ void MainWorld::OnInit()
     m_world.reset(new World());
 
     // Register default systems
-    m_world->AddSystem<AudioSystem>();
-    m_world->AddSystem<PhysicsSystem>();
+    m_audioSystem = &m_world->AddSystem<AudioSystem>();
+    m_physicsSystem = &m_world->AddSystem<PhysicsSystem>();
 }
 
 void MainWorld::OnDispose()
@@ -31,5 +29,5 @@ void MainWorld::Update()
 
 void MainWorld::Simulate()
 {
-
+    m_physicsSystem->Simulate();
 }
