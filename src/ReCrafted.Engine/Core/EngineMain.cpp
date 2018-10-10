@@ -9,6 +9,7 @@
 #include "Common/Input/Input.h"
 #include "Common/Input/KeyboardBuffer.h"
 #include "Common/EntityPool.h"
+#include "Common/Entities/MainWorld.h"
 #include "Core/Application.h"
 #include "Core/Dispatcher.h"
 #include "Core/Logger.h"
@@ -19,13 +20,11 @@
 #include "Graphics/DebugDraw.h"
 #include "UI/UI.h"
 #include "WebUI/WebUI.h"
-#include "Physics/PhysicsManager.h"
 #include "Platform/Platform.h"
 #include "Scene/SceneManager.h"
 #include "Scripting/ScriptingEngine.h"
 #include "TaskManager.h"
 #include "Voxels/VoxelMaterialManager.h"
-#include "Audio/AudioManager.h"
 
 EngineMain* EngineMain::m_instance;
 
@@ -38,11 +37,10 @@ void EngineMain::RegisterComponents() const
     m_componentManager->RegisterComponent(Profiler::GetInstance());
     m_componentManager->RegisterComponent(Time::GetInstance());
     m_componentManager->RegisterComponent(Input::GetInstance());
-    m_componentManager->RegisterComponent(PhysicsManager::GetInstance());
-    m_componentManager->RegisterComponent(AudioManager::GetInstance());
     m_componentManager->RegisterComponent(EntityPool::GetInstance());
     m_componentManager->RegisterComponent(VoxelMaterialManager::GetInstance());
     m_componentManager->RegisterComponent(SceneManager::GetInstance());
+    m_componentManager->RegisterComponent(MainWorld::GetInstance());
     m_componentManager->RegisterComponent(Universe::GetInstance());
     m_componentManager->RegisterComponent(DebugDraw::GetInstance());
     m_componentManager->RegisterComponent(UI::GetInstance());
@@ -71,7 +69,7 @@ void EngineMain::OnSimulate()
             m_instance->m_fixedDeltaTime);
 
         // Simulate
-        PhysicsManager::GetInstance()->Simulate();
+        MainWorld::GetInstance()->Simulate();
         Universe::GetInstance()->Simulate();
         Application::GetInstance()->Simulate();
     }

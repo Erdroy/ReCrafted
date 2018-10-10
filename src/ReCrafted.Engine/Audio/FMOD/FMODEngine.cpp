@@ -1,7 +1,7 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "FMODEngine.h"
-#include "Audio/AudioManager.h"
+#include "Audio/AudioSystem.h"
 #include "Core/Logger.h"
 
 SINGLETON_IMPL(FMODEngine)
@@ -18,7 +18,7 @@ void FMODEngine::Initialize()
     ASSERT(FMOD::System_Create(&m_system) == FMOD_OK);
 
     // Initialize system
-    ASSERT(m_system->init(AudioManager::MaxChannels, FMOD_INIT_NORMAL, nullptr) == FMOD_OK);
+    ASSERT(m_system->init(AudioSystem::MaxChannels, FMOD_INIT_NORMAL, nullptr) == FMOD_OK);
 }
 
 void FMODEngine::Update()

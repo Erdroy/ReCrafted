@@ -6,7 +6,7 @@
 #include "Graphics/Camera.h"
 #include "Graphics/DebugDraw.h"
 #include "Graphics/Graphics.h"
-#include "Physics/PhysicsManager.h"
+#include "Physics/PhysicsSystem.h"
 #include "UI/UI.h"
 #include "Voxels/SpaceObjectManager.h"
 #include "Voxels/Storage/VoxelStorage.h"
@@ -45,12 +45,12 @@ void Universe::OnInit()
     m_testObject1->GeneratePrimary();
 
     // Create physics scene
-    m_physicsScene = PhysicsManager::Physics()->CreateScene();
+    m_physicsScene = PhysicsSystem::Physics()->CreateScene();
 }
 
 void Universe::OnDispose()
 {
-    PhysicsManager::Physics()->DestroyScene(m_physicsScene);
+    PhysicsSystem::Physics()->DestroyScene(m_physicsScene);
 
     // Shutdown
     SafeDisposeNN(SpaceObjectManager::GetInstance());
