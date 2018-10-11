@@ -70,11 +70,25 @@
 #define ECS_MAX_SYSTEMS 64
 #endif
 
+#ifndef ECS_MAX_NATIVE_SYSTEMS
+ /**
+  * \brief The maximum amount of native ECS systems. The rest will be available for .NET.
+  */
+#define ECS_MAX_NATIVE_SYSTEMS 32
+#endif
+
 #ifndef ECS_MAX_COMPONENTS
  /**
   * \brief The maximum amount of ECS components.
   */
 #define ECS_MAX_COMPONENTS 128
+#endif
+
+#ifndef ECS_MAX_NATIVE_COMPONENTS
+  /**
+   * \brief The maximum amount of native ECS components. The rest will be available for .NET.
+   */
+#define ECS_MAX_NATIVE_COMPONENTS 32
 #endif
 
 #endif // RECRAFTEDCONFIG_H
