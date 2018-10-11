@@ -94,6 +94,8 @@ void Texture::InitializeFromFile(const char* fileName)
     _ASSERT_(bpp == 32, "Unsupported texture format! Texture must have 32bpp!");
 
     InitializeFromMemory(bits, size, width, height, 1, Renderer::TextureFormat::RGBA8);
+
+    upng::upng_free(bitmap);
 }
 
 
