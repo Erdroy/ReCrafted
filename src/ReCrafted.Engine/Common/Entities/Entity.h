@@ -17,6 +17,9 @@ private:
     EntityId m_id = 0u;
     World* m_world;
 
+private:
+    SCRIPTING_API_IMPL();
+
 public:
     Entity(const EntityId id, World* world) : m_id(id), m_world(world)
     {

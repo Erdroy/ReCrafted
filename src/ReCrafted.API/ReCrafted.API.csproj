@@ -53,13 +53,12 @@
     <Compile Include="Common\Clipboard.cs" />
     <Compile Include="Common\Components\TransformComponent.cs" />
     <Compile Include="Common\Display.Gen.cs" />
+    <Compile Include="Common\Entities\Entity.Gen.cs" />
     <Compile Include="Common\Entities\IComponent.cs" />
     <Compile Include="Common\Entities\System.cs" />
     <Compile Include="Common\Entities\System.Gen.cs" />
     <Compile Include="Common\Entities\World.cs" />
     <Compile Include="Common\Entities\World.Gen.cs" />
-    <Compile Include="Common\Entity.cs" />
-    <Compile Include="Common\Entity.Gen.cs" />
     <Compile Include="Common\Input.Gen.cs" />
     <Compile Include="Common\KeyboardBuffer.Gen.cs" />
     <Compile Include="Common\Profiler.Gen.cs" />

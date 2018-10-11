@@ -27,6 +27,6 @@ namespace ReCrafted.API.Common
         /// <summary>
         /// The instance of the entity that owns this script.
         /// </summary>
-        public Entity Entity { get; internal set; }
+        //public Entity Entity { get; internal set; }
     }
 }

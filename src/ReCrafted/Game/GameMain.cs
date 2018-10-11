@@ -44,6 +44,12 @@ namespace ReCrafted.Game
         
         private WebUIView _uiView;
 
+        private FreeCameraController _camera;
+
+        private SuperConsole _console;
+        private PauseMenu _pauseMenu;
+        private Messenger _messenger;
+
         // initialize
         protected override void Initialize()
         {
@@ -63,9 +69,11 @@ namespace ReCrafted.Game
                 Cursor.Lock = true;
 
                 // create camera
-                var camera = Entity.Create("MainCamera");
-                camera.Position = new Vector3(35.0f, 925.0f, 62.0f);
-                camera.AddScript<FreeCameraController>();
+                _camera = new FreeCameraController
+                {
+                    Position = new Vector3(35.0f, 925.0f, 62.0f)
+                };
+                _camera.Initialize();
 
                 // load game info
                 GameInfo.FromFile(Assets.ResolveAssetFilePath("gameinfo.json"));
@@ -87,11 +95,10 @@ namespace ReCrafted.Game
 
                 // initialize default scripts
                 // pause Menu
-                var mainEntity = Entity.Create("MainEntity");
-                // mainEntity.AddScript<UITests>();
-                mainEntity.AddScript<SuperConsole>();
-                mainEntity.AddScript<PauseMenu>();
-                mainEntity.AddScript<Messenger>();
+
+                _console = new SuperConsole();
+                _pauseMenu = new PauseMenu();
+                _messenger = new Messenger();
 
                 // create example webui view
                 _uiView = WebUI.Create();
@@ -113,6 +120,8 @@ namespace ReCrafted.Game
         {
             try
             {
+                _camera.Update();
+
                 _crosshairBox.Region =
                     new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
                 _buildNumberText.Position = new Vector2(20.0f, Display.Height - 20.0f);
@@ -163,7 +172,7 @@ namespace ReCrafted.Game
                             Messenger.ShowCenterMessage(button.ToString() + "!", "ClickEvent!", 4f, null);
                         }, MessageType.Error, MessageButtons.OkNoCancel);
                 }
-
+                
                 DebugDraw.Color = new Color(0, 105, 0, 64);
                 DebugDraw.DrawBox(Vector3.Zero, Vector3.One);
                 DebugDraw.Color = new Color(0, 105, 0, 255);

@@ -2,8 +2,6 @@
 
 #include "Script.h"
 
-#include "Common/Entity.h"
-
 void Script::Dispose()
 {
     m_onUpdate = nullptr;

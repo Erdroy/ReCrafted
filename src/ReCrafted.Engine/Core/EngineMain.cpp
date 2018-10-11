@@ -8,7 +8,6 @@
 #include "Common/Profiler/Profiler.h"
 #include "Common/Input/Input.h"
 #include "Common/Input/KeyboardBuffer.h"
-#include "Common/EntityPool.h"
 #include "Common/Entities/MainWorld.h"
 #include "Core/Application.h"
 #include "Core/Dispatcher.h"
@@ -37,7 +36,6 @@ void EngineMain::RegisterComponents() const
     m_componentManager->RegisterComponent(Profiler::GetInstance());
     m_componentManager->RegisterComponent(Time::GetInstance());
     m_componentManager->RegisterComponent(Input::GetInstance());
-    m_componentManager->RegisterComponent(EntityPool::GetInstance());
     m_componentManager->RegisterComponent(VoxelMaterialManager::GetInstance());
     m_componentManager->RegisterComponent(SceneManager::GetInstance());
     m_componentManager->RegisterComponent(MainWorld::GetInstance());

@@ -10,20 +10,20 @@ using ReCrafted.API.UI;
 
 namespace ReCrafted.Game
 {
-    public class FreeCameraController : Script
+    public class FreeCameraController
     {
         private readonly List<Vector2> _deltaBuffer = new List<Vector2>();
         private Vector2 _lastDelta = Vector2.Zero;
 
-        protected internal override void OnCreate()
+        public void Initialize()
         {
             Camera = Camera.Create();
             Camera.SetAsCurrent();
-            Camera.Position = Entity.Position;
+            Camera.Position = Position;
             Camera.FarPlane = 10000.0f;
         }
 
-        protected override void OnUpdate()
+        public void Update()
         {
             if (UIControl.FocusedControl != null)
                 return;
@@ -32,7 +32,7 @@ namespace ReCrafted.Game
             UpdateMovement();
 
             // Update Camera position
-            Camera.Position = Vector3.Lerp(Camera.Position, Entity.Position, CameraSmoothing * (float)Time.DeltaTime);
+            Camera.Position = Vector3.Lerp(Camera.Position, Position, CameraSmoothing * (float)Time.DeltaTime);
         }
 
         private void UpdateLook()
@@ -99,8 +99,10 @@ namespace ReCrafted.Game
             direction.Normalize();
             direction *= currentSpeed;
 
-            Entity.Position += direction * (float)Time.DeltaTime;
+            Position += direction * (float)Time.DeltaTime;
         }
+
+        public Vector3 Position { get; set; }
 
         public bool MouseFiltering { get; set; } = true;
 
