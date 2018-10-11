@@ -25,6 +25,11 @@ private:
     Filter m_filter = {};
     std::vector<Entity> m_activeEntities = {};
 
+private:
+    RefPtr<Method> m_init_method = nullptr;
+    RefPtr<Method> m_shutdown_method = nullptr;
+    RefPtr<Method> m_update_method = nullptr;
+
 public:
     System() = default;
     virtual ~System() = default;
@@ -34,21 +39,51 @@ public:
     void RequireComponent()
     {
         static_assert(std::is_base_of<Component, TRequire>(), "TRequire must inherit from Component!");
-        m_filter.Require(GetComponentId<TRequire>());
+        RequireComponent(GetComponentId<TRequire>());
+    }
+
+    void RequireComponent(const TypeId componentTypeId)
+    {
+        m_filter.Require(componentTypeId);
     }
 
     template<typename TExclude>
     void ExcludeComponent()
     {
         static_assert(std::is_base_of<Component, TExclude>(), "TExclude must inherit from Component!");
-        m_filter.Exclude(GetComponentId<TExclude>());
+        ExcludeComponent(GetComponentId<TExclude>());
+    }
+
+    void ExcludeComponent(const TypeId componentTypeId)
+    {
+        m_filter.Require(componentTypeId);
     }
 
 public:
-    virtual void Initialize() {}
-    virtual void Shutdown() {}
+    virtual void Initialize()
+    {
+        if(GetManagedPtr() != nullptr)
+        {
+            m_init_method = FindMethod("ReCrafted.API.Common.System::Initialize");
+            m_shutdown_method = FindMethod("ReCrafted.API.Common.System::Simulate");
+            m_update_method = FindMethod("ReCrafted.API.Common.System::Update");
+        }
+        
+        if(m_init_method)
+            m_init_method->Invoke();
 
-    virtual void Update() {}
+    }
+    virtual void Shutdown()
+    {
+        if (m_shutdown_method)
+            m_shutdown_method->Invoke();
+    }
+
+    virtual void Update()
+    {
+        if (m_update_method)
+            m_update_method->Invoke();
+    }
 
     virtual void OnEntityAdded(const Entity& entity) {}
     virtual void OnEntityRemoved(const Entity& entity) {}

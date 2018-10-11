@@ -14,6 +14,22 @@ namespace Internal
 
         return Object::Create(systemObject, Domain::Root->GetMono(), systemClass, true);
     }
+
+    void RequireComponent(System* system, const uint16_t componentTypeId, const bool nativeComponentId)
+    {
+        cvar typeId = nativeComponentId ? componentTypeId : ECS_MAX_NATIVE_COMPONENTS + componentTypeId;
+        ASSERT(typeId < ECS_MAX_COMPONENTS);
+        
+        system->RequireComponent(typeId);
+    }
+
+    void ExcludeComponent(System* system, const uint16_t componentTypeId, const bool nativeComponentId)
+    {
+        cvar typeId = nativeComponentId ? componentTypeId : ECS_MAX_NATIVE_COMPONENTS + componentTypeId;
+        ASSERT(typeId < ECS_MAX_COMPONENTS);
+
+        system->ExcludeComponent(typeId);
+    }
 }
 
 void System::InitRuntime()
@@ -35,9 +51,29 @@ void System::InitRuntime()
             }
             API_METHOD_END();
 
-            API_COMMENT("Updates this System");
-            API_METHOD(PUBLIC, ABSTRACT, "Update");
+            API_COMMENT("Updates this System. This is called by world.");
+            API_METHOD(PROTECTED, ABSTRACT, "Update");
             {
+            }
+            API_METHOD_END();
+
+            API_METHOD(PRIVATE, STATIC, "RequireComponent", EXTERN);
+            {
+                API_BIND("ReCrafted.API.Common.Entities.System::RequireComponent", &Internal::RequireComponent);
+
+                API_PARAM("IntPtr", "systemNativePtr");
+                API_PARAM("ushort", "componentTypeId");
+                API_PARAM("bool", "nativeComponentId");
+            }
+            API_METHOD_END();
+
+            API_METHOD(PRIVATE, STATIC, "ExcludeComponent", EXTERN);
+            {
+                API_BIND("ReCrafted.API.Common.Entities.System::ExcludeComponent", &Internal::ExcludeComponent);
+
+                API_PARAM("IntPtr", "systemNativePtr");
+                API_PARAM("ushort", "componentTypeId");
+                API_PARAM("bool", "nativeComponentId");
             }
             API_METHOD_END();
 

@@ -11,5 +11,6 @@ namespace ReCrafted.API.Common.Components
         public Vector3 Rotation;
 
         public ushort ComponentTypeId => 0;
+        public bool IsNativeComponent => true;
     }
 }

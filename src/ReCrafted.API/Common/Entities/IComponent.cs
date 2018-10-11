@@ -8,5 +8,6 @@ namespace ReCrafted.API.Common.Entities
     public interface IComponent
     {
         ushort ComponentTypeId { get; }
+        bool IsNativeComponent { get; }
     }
 }

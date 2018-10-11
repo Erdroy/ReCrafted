@@ -13,6 +13,22 @@ namespace Internal
         world->AddSystem(system, typeId);
     }
 
+    void RemoveSystem(World* world, const uint16_t systemTypeId)
+    {
+        cvar typeId = ECS_MAX_NATIVE_SYSTEMS + systemTypeId;
+        ASSERT(typeId < ECS_MAX_SYSTEMS);
+
+        world->RemoveSystem(typeId);
+    }
+
+    bool HasSystem(World* world, const uint16_t systemTypeId)
+    {
+        cvar typeId = ECS_MAX_NATIVE_SYSTEMS + systemTypeId;
+        ASSERT(typeId < ECS_MAX_SYSTEMS);
+
+        return world->HasSystem(typeId);
+    }
+
     MonoObject* CreateWorld(MonoString* name)
     {
         cvar world = Object::CreateInstance<World>("ReCrafted.API.Common", "Entity");
@@ -49,6 +65,27 @@ void World::InitRuntime()
                 API_PARAM("ushort", "systemId");
             }
             API_METHOD_END();
+
+            API_METHOD(PRIVATE, STATIC, "RemoveSystem", EXTERN);
+            {
+                API_BIND("ReCrafted.API.Common.Entities.World::RemoveSystem", &Internal::RemoveSystem);
+
+                API_PARAM("IntPtr", "worldNativePtr");
+                API_PARAM("ushort", "systemId");
+            }
+            API_METHOD_END();
+
+            API_METHOD(PRIVATE, STATIC, "HasSystem", EXTERN);
+            {
+                API_BIND("ReCrafted.API.Common.Entities.World::HasSystem", &Internal::HasSystem);
+
+                API_PARAM("IntPtr", "worldNativePtr");
+                API_PARAM("ushort", "systemId");
+
+                API_RETURN("bool");
+            }
+            API_METHOD_END();
+
 
             API_COMMENT("Creates new World");
             API_METHOD(PUBLIC, STATIC, "Create", EXTERN);

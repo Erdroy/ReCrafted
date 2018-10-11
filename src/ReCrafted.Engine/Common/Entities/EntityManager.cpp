@@ -76,7 +76,7 @@ void EntityManager::Update()
             // Fast system lookup by component id
             if(filter.MatchAll(entityDesc.componentTypes))
             {
-                auto entity = Entity(entityId, m_world);
+                auto entity = MakeEntity(entityId);
                 system->m_activeEntities.emplace_back(entity);
                 system->OnEntityAdded(entity);
 
@@ -95,7 +95,7 @@ void EntityManager::Update()
         for(auto& system : entity.systems)
         {
             // Call entity removed event
-            system->OnEntityRemoved(Entity(entityId, m_world));
+            system->OnEntityRemoved(MakeEntity(entityId));
         }
 
         // Clear systems
@@ -111,7 +111,7 @@ void EntityManager::Update()
         for (auto& system : entity.systems)
         {
             // Call entity removed event
-            system->OnEntityRemoved(Entity(entityId, m_world));
+            system->OnEntityRemoved(MakeEntity(entityId));
         }
 
         // Cleanup entity

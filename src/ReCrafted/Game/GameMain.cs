@@ -3,6 +3,7 @@
 using System;
 using ReCrafted.API;
 using ReCrafted.API.Common;
+using ReCrafted.API.Common.Components;
 using ReCrafted.API.Common.Entities;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
@@ -17,13 +18,17 @@ using ReCrafted.Game.Super;
 
 namespace ReCrafted.Game
 {
-    using System = ReCrafted.API.Common.Entities.System;
+    using System = API.Common.Entities.System;
 
     internal class GameSystem : System
     {
-        public override void Update()
+        protected override void Initialize()
         {
+            RequireComponent<TransformComponent>();
+        }
 
+        protected override void Update()
+        {
         }
 
         public override ushort SystemTypeId => 0;
@@ -94,7 +99,7 @@ namespace ReCrafted.Game
                 //_uiView.Navigate("file:///ui/menu/menu.html");
 
                 var mainWorld = World.GetMainWorld();
-                mainWorld.AddSystem(System.Create<GameSystem>());
+                mainWorld.AddSystem<GameSystem>();
 
             }
             catch (Exception exception)

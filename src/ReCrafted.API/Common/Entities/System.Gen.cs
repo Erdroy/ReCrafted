@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 10/11/2018 14:50:44 Source: 'System.API.cpp' Target: 'Common/Entities/System.Gen.cs'
+// Generated: 10/11/2018 16:30:47 Source: 'System.API.cpp' Target: 'Common/Entities/System.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -29,9 +29,15 @@ namespace ReCrafted.API.Common.Entities
 		}
 
 		/// <summary>
-		///	Updates this System
+		///	Updates this System. This is called by world.
 		/// </summary>
-		public abstract void Update();
+		protected abstract void Update();
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		private static extern void RequireComponent(IntPtr systemNativePtr, ushort componentTypeId, bool nativeComponentId);
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		private static extern void ExcludeComponent(IntPtr systemNativePtr, ushort componentTypeId, bool nativeComponentId);
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		private static extern System Create(IntPtr systemType);
