@@ -133,7 +133,7 @@ public:
     }
 
 public:
-    static void Create(RefPtr<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject);
+    static MonoObject* Create(const RefPtr<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject);
     static void InitializeInstance(RefPtr<Object>& object, MonoObject* instance);
     static void RegisterObject(RefPtr<Object> object);
     static void Destroy(Object* object);

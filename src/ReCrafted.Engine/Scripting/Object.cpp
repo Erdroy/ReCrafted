@@ -69,27 +69,32 @@ RefPtr<Method> Object::FindStaticMethod(const char* methodName)
     return method;
 }
 
-void Object::Create(RefPtr<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject)
+MonoObject* Object::Create(const RefPtr<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject)
 {
-    auto instance = mono_object_new(domain, monoClass);
-    mono_runtime_object_init(instance);
+    cvar objectInstance = mono_object_new(domain, monoClass);
+
+    ASSERT(objectInstance);
+
+    mono_runtime_object_init(objectInstance);
 
     // get garbage collector handle, and mark it pinned
-    auto gch = mono_gchandle_new(instance, true);
+    auto gch = mono_gchandle_new(objectInstance, true);
 
     object->m_gchandle = gch;
-    object->m_object = instance;
+    object->m_object = objectInstance;
     object->m_class = monoClass;
 
     if (isObject)
     {
         // set native pointer
         auto testField = object->FindField("NativePtr");
-        testField->SetValue(&object);
+        testField->SetValue((void*)&object);
 
         // register object
         RegisterObject(object);
     }
+
+    return objectInstance;
 }
 
 void Object::InitializeInstance(RefPtr<Object>& object, MonoObject* instance)
