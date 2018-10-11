@@ -31,6 +31,15 @@ public:
         static const auto typeId = m_lastTypeId++;
         return typeId;
     }
+
+    /**
+     * \brief Gets amount of registered types.
+     * \return The amount of types.
+     */
+    static uint16_t GetTypeCount()
+    {
+        return m_lastTypeId + 1;
+    }
 };
 
 template <typename TBase>
