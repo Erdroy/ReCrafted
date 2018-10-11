@@ -73,15 +73,26 @@ public:
     {
         static_assert(std::is_base_of<System, TSystem>(), "TSystem must inherit from System!");
         auto system = new TSystem();
+        system->m_world = this;
+
         auto systemId = ClassTypeId<System>::GetTypeId<TSystem>();
+
+        _ASSERT_(systemId < ECS_MAX_NATIVE_SYSTEMS, "Native ECS system id overflow!");
+
+        AddSystem(system, systemId);
+
+        return *system;
+    }
+
+    void AddSystem(System* system, const TypeId systemId)
+    {
+        system->m_world = this;
         m_systems[systemId] = system;
 
         m_activeSystems.emplace_back(system);
 
         // Initialize system
         system->Initialize();
-
-        return *system;
     }
 
     template<typename TSystem>
@@ -90,6 +101,9 @@ public:
         static_assert(std::is_base_of<System, TSystem>(), "TSystem must inherit from System!");
 
         auto systemId = ClassTypeId<System>::GetTypeId<TSystem>();
+
+        _ASSERT_(systemId < ECS_MAX_NATIVE_SYSTEMS, "Native ECS system id overflow!");
+
         auto system = m_systems[systemId];
 
         if (system)
@@ -103,15 +117,41 @@ public:
         }
     }
 
+    void RemoveSystem(const TypeId systemId, const bool deleteSystem = true)
+    {
+        auto system = m_systems[systemId];
+
+        if (system)
+        {
+            // Shutdown system
+            system->Shutdown();
+
+            m_systems[systemId] = nullptr;
+
+            if(deleteSystem)
+            {
+                delete system;
+            }
+        }
+    }
+
     template<typename TSystem>
     bool HasSystem()
     {
         static_assert(std::is_base_of<System, TSystem>(), "TSystem must inherit from System!");
 
         auto systemId = ClassTypeId<System>::GetTypeId<TSystem>();
+
+        _ASSERT_(systemId < ECS_MAX_NATIVE_SYSTEMS, "Native ECS system id overflow!");
+
         auto system = m_systems[systemId];
 
         return system != nullptr;
+    }
+
+    bool HasSystem(const TypeId systemId)
+    {
+        return m_systems[systemId] != nullptr;
     }
 };
 

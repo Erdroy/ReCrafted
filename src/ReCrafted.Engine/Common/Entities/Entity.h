@@ -51,8 +51,12 @@ public:
         // Create component instance
         auto component = new T();
 
+        auto componentId = GetComponentId<T>();
+
+        _ASSERT_(componentId < ECS_MAX_NATIVE_COMPONENTS, "Native ECS component id overflow!");
+
         // Add component
-        m_world->AddEntityComponent(m_id, component, GetComponentId<T>());
+        m_world->AddEntityComponent(m_id, component, componentId);
 
         return *component;
     }
@@ -65,8 +69,12 @@ public:
         // Create component instance
         auto component = new T{ std::forward<TArgs>(args)... };
 
+        auto componentId = GetComponentId<T>();
+
+        _ASSERT_(componentId < ECS_MAX_NATIVE_COMPONENTS, "Native ECS component id overflow!");
+
         // Add component
-        m_world->AddEntityComponent(m_id, component, GetComponentId<T>());
+        m_world->AddEntityComponent(m_id, component, componentId);
 
         return *component;
     }

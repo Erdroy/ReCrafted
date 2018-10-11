@@ -42,7 +42,7 @@ public:
     virtual void Initialize() {}
     virtual void Shutdown() {}
 
-    virtual void Update() = 0;
+    virtual void Update() {}
 
     virtual void OnEntityAdded(const Entity& entity) {}
     virtual void OnEntityRemoved(const Entity& entity) {}
