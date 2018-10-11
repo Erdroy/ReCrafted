@@ -3,6 +3,7 @@
 using System;
 using ReCrafted.API;
 using ReCrafted.API.Common;
+using ReCrafted.API.Common.Entities;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
@@ -13,8 +14,21 @@ using ReCrafted.Game.Core;
 using ReCrafted.Game.Interface;
 using ReCrafted.Game.Super;
 
+
 namespace ReCrafted.Game
 {
+    using System = ReCrafted.API.Common.Entities.System;
+
+    internal class GameSystem : System
+    {
+        public override void Update()
+        {
+
+        }
+
+        public override ushort SystemTypeId => 0;
+    }
+
     internal class GameMain : Application
     {
         // cross hair control
@@ -78,6 +92,10 @@ namespace ReCrafted.Game
                 _uiView = WebUI.Create();
                 _uiView.Navigate("file:///ui/default.html");
                 //_uiView.Navigate("file:///ui/menu/menu.html");
+
+                var mainWorld = World.GetMainWorld();
+                mainWorld.AddSystem(System.Create<GameSystem>());
+
             }
             catch (Exception exception)
             {

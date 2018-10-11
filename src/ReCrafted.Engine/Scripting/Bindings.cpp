@@ -6,6 +6,8 @@
 #include "Common/Display.h"
 #include "Common/Time.h"
 #include "Common/Entity.h"
+#include "Common/Entities/System.h"
+#include "Common/Entities/World.h"
 #include "Common/Profiler/Profiler.h"
 #include "Common/Input/Input.h"
 #include "Common/Input/KeyboardBuffer.h"
@@ -28,6 +30,8 @@ void Bindings::Bind()
     Time::InitRuntime();
     Display::InitRuntime();
     UI::InitRuntime();
+    System::InitRuntime();
+    World::InitRuntime();
     WebUI::InitRuntime();
     WebUIView::InitRuntime();
     Camera::InitRuntime();

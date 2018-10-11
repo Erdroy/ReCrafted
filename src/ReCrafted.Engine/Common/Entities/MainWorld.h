@@ -28,6 +28,13 @@ public:
 
     void Update() override;
     void Simulate();
+
+public:
+    static const RefPtr<World>& GetWorld()
+    {
+        ASSERT(m_instance);
+        return m_instance->m_world;
+    }
 };
 
 #endif // MAINWORLD_H

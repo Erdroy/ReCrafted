@@ -30,7 +30,7 @@ void SpaceObjectChunk::Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObjec
     m_chunkData->ResetCache();
 
     // calculate chunk position (origin)
-    cvar positionOffset = Vector3::One() * static_cast<float>(node->GetSize()) * 0.5f;
+    cvar positionOffset = Vector3::One() * (node->GetSize() * 0.5f);
     m_position = node->GetPosition() - positionOffset; // lower-left-back corner
 
     // calculate lod

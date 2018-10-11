@@ -7,7 +7,7 @@ SINGLETON_IMPL(MainWorld)
 
 void MainWorld::OnInit()
 {
-    m_world.reset(new World());
+    m_world = Object::CreateInstance<World>("ReCrafted.API.Common.Entities", "World");
 
     // Register default systems
     m_audioSystem = &m_world->AddSystem<AudioSystem>();

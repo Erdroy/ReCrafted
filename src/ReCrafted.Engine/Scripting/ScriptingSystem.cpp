@@ -24,6 +24,9 @@ void ScriptingSystem::Update()
 
         for(auto& script : scriptingComponent.scripts)
         {
+            if(!script)
+                continue;
+
             script->Update();
         }
     }

@@ -6,14 +6,19 @@
 #include "Component.h"
 #include "System.h"
 #include "EntityId.h"
+#include "Scripting/Script.h"
+#include "Scripting/Object.h"
 
 class EntityManager;
 class EntityComponents;
 
-class World
+class World : public Object
 {
     friend class Entity;
     friend class EntityManager;
+
+private:
+    SCRIPTING_API_IMPL()
 
 private:
     EntityManager* m_entityManager;

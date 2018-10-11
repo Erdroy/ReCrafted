@@ -14,6 +14,7 @@
 
 #include <iomanip>
 #include <sstream>
+#include "Common/Entities/MainWorld.h"
 
 SINGLETON_IMPL(Universe)
 
@@ -22,7 +23,7 @@ bool m_viewUpdateEnabled = true;
 void Universe::OnInit()
 {
     // initialize save system
-
+    
     // initialize space object manager
     SpaceObjectManager::GetInstance()->Init();
 
@@ -46,6 +47,14 @@ void Universe::OnInit()
 
     // Create physics scene
     m_physicsScene = PhysicsSystem::Physics()->CreateScene();
+
+    var world = MainWorld::GetWorld();
+    var testEntity = world->CreateEntity();
+    //testEntity.AddComponent<TransformComponent>();
+    //testEntity.AddComponent<AudioSoundComponent>();
+    testEntity.AddComponent<ScriptingComponent>();
+
+    testEntity.Activate();
 }
 
 void Universe::OnDispose()

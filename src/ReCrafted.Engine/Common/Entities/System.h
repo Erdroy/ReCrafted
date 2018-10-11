@@ -7,12 +7,18 @@
 
 #include "EntityManager.h"
 #include "Filter.h"
+#include "Scripting/Script.h"
+#include "Scripting/Object.h"
 
 class World;
 
-class System
+class System : public Object
 {
     friend class EntityManager;
+    friend class World;
+
+private:
+    SCRIPTING_API_IMPL()
 
 private:
     World* m_world = nullptr;
