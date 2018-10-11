@@ -17,6 +17,7 @@ class ScriptingSystem : public System
 public:
     ScriptingSystem()
     {
+        RequireComponent<TransformComponent>();
         RequireComponent<ScriptingComponent>();
     }
 

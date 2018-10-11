@@ -16,20 +16,16 @@ struct Filter
 private:
     ComponentTypeList m_requires = {};
     ComponentTypeList m_exludes = {};
-    unsigned long long m_reqULL = 0u;
-    unsigned long long m_exlULL = 0u;
 
 public:
     void Require(const TypeId type)
     {
         m_requires.set(type);
-        m_reqULL = m_requires.to_ullong();
     }
 
     void Exclude(const TypeId type)
     {
         m_exludes.set(type);
-        m_exlULL = m_exludes.to_ullong();
     }
 
     bool Test(const TypeId type) const
@@ -39,8 +35,14 @@ public:
 
     bool MatchAll(const ComponentTypeList& typeList) const
     {
-        const auto typeList_ull = typeList.to_ullong();
-        return (m_reqULL & typeList_ull) == m_reqULL && (m_exlULL & typeList_ull) == 0;
+        const auto passExclude = (m_exludes & typeList).none();
+
+        if (!passExclude)
+            return false;
+
+        const auto passRequire = (m_requires & typeList) == m_requires;
+
+        return passRequire && passExclude;
     }
 
     void Remove(const TypeId type)
