@@ -145,16 +145,8 @@ namespace ReCrafted.APIBuilder.Tags
             {
                 if (IsPartial && parameters.Length == 5)
                     return;
-
-                var basename = APIBuilderUtils.GetStringValue(parameters[4]);
-
-                if (string.IsNullOrEmpty(basename))
-                {
-                    Console.WriteLine($"Invalid API_CLASS base class name at line {APIBuilder.LineNumber}");
-                    return;
-                }
-
-                BaseName = basename;
+                
+                BaseName = APIBuilderUtils.GetStringValue(parameters[4]);
             }
         }
     }
