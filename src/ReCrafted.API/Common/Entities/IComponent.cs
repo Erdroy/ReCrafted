@@ -7,6 +7,6 @@ namespace ReCrafted.API.Common.Entities
     /// </summary>
     public interface IComponent
     {
-        uint ComponentTypeId { get; }
+        ushort ComponentTypeId { get; }
     }
 }

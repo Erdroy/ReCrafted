@@ -10,6 +10,6 @@ namespace ReCrafted.API.Common.Components
         public Vector3 Position;
         public Vector3 Rotation;
 
-        public uint ComponentTypeId => 0u;
+        public ushort ComponentTypeId => 0;
     }
 }
