@@ -4,12 +4,14 @@
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="D:\ReCrafted\src\ReCrafted.API\Core\Application.Gen.cs" line="34" column="1" />
+      <Breakpoint file="D:\ReCrafted\src\ReCrafted\Game\GameMain.cs" line="50" column="1" />
+      <Breakpoint file="D:\ReCrafted\src\ReCrafted\Game\GameMain.cs" line="115" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.ItemProperties.ReCrafted PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Game\GameMain.cs">
     <Files>
-      <File FileName="Game\GameMain.cs" Line="97" Column="50" />
+      <File FileName="Game\GameMain.cs" Line="120" Column="22" />
       <File FileName="..\ReCrafted.API\Scene\SceneManager.Gen.cs" Line="1" Column="1" />
       <File FileName="..\ReCrafted.API\Core\Application.Gen.cs" Line="1" Column="1" />
     </Files>
