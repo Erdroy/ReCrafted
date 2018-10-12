@@ -40,6 +40,8 @@
 #define PARTIAL
 #define EXTERN
 
+#define UNSAFE
+
 #define NOCONSTRUCTOR
 #define NOPROXY
 

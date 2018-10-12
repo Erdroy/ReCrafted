@@ -14,7 +14,7 @@ class EntityComponents;
 
 class World : public Object
 {
-    friend class Entity;
+    friend struct Entity;
     friend class EntityManager;
 
 private:

@@ -10,7 +10,7 @@
 #include "Core/Defines.h"
 #include "Method.h"
 
-class Entity;
+struct Entity;
 
 class Script : public Object
 {

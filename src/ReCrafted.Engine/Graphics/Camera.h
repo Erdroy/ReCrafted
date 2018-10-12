@@ -11,8 +11,6 @@
 #include "Core/Math/BoundingFrustum.h"
 #include "Scripting/Object.h"
 
-class Entity;
-
 /// <summary>
 /// Camera class.
 /// </summary>

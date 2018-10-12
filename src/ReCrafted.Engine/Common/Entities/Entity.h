@@ -11,7 +11,7 @@
 
 #include <type_traits>
 
-class Entity
+struct Entity
 {
 private:
     EntityId m_id = 0u;
@@ -141,5 +141,7 @@ public:
         return m_world;
     }
 };
+
+static_assert(sizeof(Entity) == 16, "Invalid Entity stucture size! .NET binding may be invalid!");
 
 #endif // ENTITY_H

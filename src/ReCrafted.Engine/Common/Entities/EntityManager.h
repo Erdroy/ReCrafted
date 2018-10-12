@@ -14,7 +14,7 @@
 
 class World;
 class System;
-class Entity;
+struct Entity;
 
 class EntityManager
 {
