@@ -36,12 +36,12 @@ namespace ReCrafted.API.Common.Entities
         /// Warning: Only valid in Update function.
         /// </summary>
         /// <returns>The entity enumerator.</returns>
-        protected EntityEnumerator GetEntities()
+        protected EntityEnumerable GetEntities()
         {
             unsafe
             {
                 var ptrEntity = GetEntities(NativePtr, out var numEntity);
-                return new EntityEnumerator(ptrEntity, numEntity);
+                return new EntityEnumerable(ptrEntity, numEntity);
             }
         }
 

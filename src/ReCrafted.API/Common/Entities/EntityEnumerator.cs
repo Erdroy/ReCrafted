@@ -1,6 +1,7 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
 using System.Collections;
+using System.Collections.Generic;
 
 namespace ReCrafted.API.Common.Entities
 {
@@ -8,10 +9,10 @@ namespace ReCrafted.API.Common.Entities
     /// <summary>
     /// EntityEnumerator implementation. Implements iteration over native Entity* list.
     /// </summary>
-    public class EntityEnumerator : IEnumerator
+    public class EntityEnumerator : IEnumerator<Entity>
     {
-        private readonly unsafe Entity* _ptrEntity;
-        private readonly int _numEntity;
+        private unsafe Entity* _ptrEntity;
+        private int _numEntity;
 
         private int _position;
         
@@ -39,18 +40,31 @@ namespace ReCrafted.API.Common.Entities
         }
 
         /// <inheritdoc />
+        public void Dispose()
+        {
+            unsafe
+            {
+                _ptrEntity = null;
+                _numEntity = 0;
+            }
+
+            Reset();
+        }
+
+        /// <inheritdoc />
         object IEnumerator.Current => Current;
 
+        /// <inheritdoc />
         /// <summary>
         /// Reference to the current Entity instance.
         /// </summary>
-        public ref Entity Current
+        public Entity Current
         {
             get
             {
                 unsafe
                 {
-                    return ref _ptrEntity[_position];
+                    return _ptrEntity[_position];
                 }
             }
         }

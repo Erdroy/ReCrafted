@@ -54,6 +54,7 @@
     <Compile Include="Common\Components\TransformComponent.cs" />
     <Compile Include="Common\Display.Gen.cs" />
     <Compile Include="Common\Entities\Entity.cs" />
+    <Compile Include="Common\Entities\EntityEnumerable.cs" />
     <Compile Include="Common\Entities\EntityEnumerator.cs" />
     <Compile Include="Common\Entities\EntityInternals.Gen.cs" />
     <Compile Include="Common\Entities\IComponent.cs" />
