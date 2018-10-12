@@ -30,6 +30,14 @@ namespace Internal
 
         system->ExcludeComponent(typeId);
     }
+
+    Entity* GetEntities(System* system, int* numEntities)
+    {
+        rvar entities = system->GetEntities();
+
+        *numEntities = static_cast<int>(entities.size());
+        return const_cast<Entity*>(entities.data());
+    }
 }
 
 void System::InitRuntime()
@@ -54,6 +62,16 @@ void System::InitRuntime()
             API_COMMENT("Updates this System. This is called by world.");
             API_METHOD(PROTECTED, ABSTRACT, "Update");
             {
+            }
+            API_METHOD_END();
+
+            API_METHOD(PRIVATE, STATIC, "GetEntities", EXTERN, UNSAFE);
+            {
+                API_BIND("ReCrafted.API.Common.Entities.System::GetEntities", &Internal::GetEntities);
+
+                API_PARAM("IntPtr", "systemNativePtr");
+                API_PARAM("int", "numEntities", OUT);
+                API_RETURN("Entity*");
             }
             API_METHOD_END();
 

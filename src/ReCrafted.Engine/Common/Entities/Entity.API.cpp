@@ -4,10 +4,9 @@
 
 void Entity::InitRuntime()
 {
-    API_FILE("Common/Entities/Entity.Gen.cs")
+    API_FILE("Common/Entities/EntityInternals.Gen.cs")
     {
-        API_COMMENT("ECS Entity class.");
-        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Common.Entities", "Entity", "", PARTIAL, NOCONSTRUCTOR);
+        API_CLASS(INTERNAL, STATIC, "ReCrafted.API.Common.Entities", "EntityInternals");
         {
         }
         API_CLASS_END();
