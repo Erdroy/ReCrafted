@@ -22,6 +22,8 @@ namespace ReCrafted.APIBuilder.Tags
 
         public bool IsExtern { get; set; }
 
+        public bool IsUnsafe { get; set; }
+
         public bool NoProxy { get; set; }
 
         public List<APITagParam> Parameters = new List<APITagParam>();
@@ -77,9 +79,10 @@ namespace ReCrafted.APIBuilder.Tags
             // API_METHOD(PUBLIC, STATIC, "Write");
 
             IsExtern = parameters.Contains("EXTERN");
+            IsUnsafe = parameters.Contains("UNSAFE");
             NoProxy = parameters.Contains("NOPROXY");
 
-            if (parameters.Length != 3 && parameters.Length != 4 && parameters.Length != 5)
+            if (parameters.Length < 3 || parameters.Length > 6)
             {
                 Console.WriteLine($"Invalid API_METHOD token definition at line {APIBuilder.LineNumber}");
                 return;

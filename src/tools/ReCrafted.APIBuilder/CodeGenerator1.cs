@@ -25,8 +25,8 @@ namespace ReCrafted.APIBuilder
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("// ReCrafted (c) 2016-2018 Always Too Late\r\n// WARNING: Auto-generated file, all ch" +
-                    "anges will be lost when the API code will be regenerated!\r\n// Generated: ");
+            this.Write("// ReCrafted (c) 2016-2018 Always Too Late\r\n// WARNING: Auto-generated file, all " +
+                    "changes will be lost when the API code will be regenerated!\r\n// Generated: ");
             
             #line 5 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(DateTime.Now));
@@ -192,6 +192,7 @@ foreach (var methodDesc in classDesc.Methods)
 	var methodModifier = methodDesc.GetModifier();
 	var methodName = methodDesc.Name;
 	var methodExtern = methodDesc.IsExtern ? "extern " : "";
+	var methodUnsafe = methodDesc.IsUnsafe ? "unsafe " : "";
 	var methodReturn = string.IsNullOrEmpty(methodDesc.ReturnType) ? "void" : methodDesc.ReturnType;
 	var methodParams = "";
     var methodParamsCall = "";
@@ -216,7 +217,7 @@ foreach (var methodDesc in classDesc.Methods)
             #line default
             #line hidden
             
-            #line 79 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 80 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
 	if(!string.IsNullOrEmpty(methodDesc.Comment))
 	{
@@ -226,14 +227,14 @@ foreach (var methodDesc in classDesc.Methods)
             #line hidden
             this.Write("\t\t/// <summary>\r\n\t\t///\t");
             
-            #line 84 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 85 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodDesc.Comment));
             
             #line default
             #line hidden
             this.Write("\r\n\t\t/// </summary>\r\n");
             
-            #line 86 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 87 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
 	}
     if (methodDesc.IsExtern && methodDesc.Modifier != APIParameters.Static) { 
@@ -245,109 +246,135 @@ foreach (var methodDesc in classDesc.Methods)
             #line hidden
             this.Write("\t\t");
             
-            #line 92 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 93 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodAccess));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 92 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 93 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodModifier));
             
             #line default
             #line hidden
             
-            #line 92 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 93 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(methodUnsafe));
+            
+            #line default
+            #line hidden
+            
+            #line 93 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodReturn));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 92 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 93 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodName));
             
             #line default
             #line hidden
             this.Write("(");
             
-            #line 92 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 93 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodParams));
             
             #line default
             #line hidden
-            this.Write(")\r\n\t\t{\r\n\t\t\tInternal_");
+            this.Write(")\r\n\t\t{\r\n\t\t\t");
             
-            #line 94 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 95 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+if (methodReturn != "void") {
+            
+            #line default
+            #line hidden
+            this.Write("return ");
+            
+            #line 95 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+ }
+            
+            #line default
+            #line hidden
+            this.Write("Internal_");
+            
+            #line 95 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodName));
             
             #line default
             #line hidden
             this.Write("(NativePtr");
             
-            #line 94 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 95 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 if(methodDesc.Parameters.Count > 0){
             
             #line default
             #line hidden
             this.Write(", ");
             
-            #line 94 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 95 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodParamsCall));
             
             #line default
             #line hidden
             
-            #line 94 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 95 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 }
             
             #line default
             #line hidden
             this.Write(");\r\n\t\t}\r\n        \r\n        ");
             
-            #line 97 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 98 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 }
             
             #line default
             #line hidden
             this.Write("\t\t[MethodImpl(MethodImplOptions.InternalCall)]\r\n\t\tinternal static extern ");
             
-            #line 99 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 100 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(methodUnsafe));
+            
+            #line default
+            #line hidden
+            
+            #line 100 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodReturn));
             
             #line default
             #line hidden
             this.Write(" Internal_");
             
-            #line 99 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 100 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodName));
             
             #line default
             #line hidden
             this.Write("(IntPtr nativePtr");
             
-            #line 99 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 100 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 if(methodDesc.Parameters.Count > 0){
             
             #line default
             #line hidden
             this.Write(", ");
             
-            #line 99 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 100 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodParams));
             
             #line default
             #line hidden
             
-            #line 99 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 100 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 }
             
             #line default
             #line hidden
             this.Write(");\r\n\t\t");
             
-            #line 100 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 101 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
     }
     else
@@ -360,7 +387,7 @@ if(methodDesc.Parameters.Count > 0){
             #line hidden
             this.Write("\t\t[MethodImpl(MethodImplOptions.InternalCall)]\r\n");
             
-            #line 108 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 109 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
 		}
 
@@ -369,60 +396,66 @@ if(methodDesc.Parameters.Count > 0){
             #line hidden
             this.Write("\t\t");
             
-            #line 111 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 112 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodAccess));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 111 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 112 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodModifier));
             
             #line default
             #line hidden
             
-            #line 111 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 112 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodExtern));
             
             #line default
             #line hidden
             
-            #line 111 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 112 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(methodUnsafe));
+            
+            #line default
+            #line hidden
+            
+            #line 112 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodReturn));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 111 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 112 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodName));
             
             #line default
             #line hidden
             this.Write("(");
             
-            #line 111 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 112 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodParams));
             
             #line default
             #line hidden
             this.Write(")");
             
-            #line 111 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 112 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 if(methodDesc.IsExtern || methodDesc.Modifier == APIParameters.Abstract){
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 112 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 113 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 }
             
             #line default
             #line hidden
             
-            #line 113 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 114 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
 		if(!methodDesc.IsExtern && methodDesc.Modifier != APIParameters.Abstract)
 		{
@@ -432,7 +465,7 @@ if(methodDesc.IsExtern || methodDesc.Modifier == APIParameters.Abstract){
             #line hidden
             this.Write("\r\n\t\t{\r\n");
             
-            #line 119 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 120 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
 			foreach(var codeLine in methodDesc.CodeLines)
 			{
@@ -442,14 +475,14 @@ if(methodDesc.IsExtern || methodDesc.Modifier == APIParameters.Abstract){
             #line hidden
             this.Write("\t\t\t");
             
-            #line 123 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 124 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(codeLine));
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 124 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 125 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
 			}
 
@@ -458,7 +491,7 @@ if(methodDesc.IsExtern || methodDesc.Modifier == APIParameters.Abstract){
             #line hidden
             this.Write("\t\t}\r\n");
             
-            #line 128 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 129 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
 		} 
     }
@@ -468,7 +501,7 @@ if(methodDesc.IsExtern || methodDesc.Modifier == APIParameters.Abstract){
             #line hidden
             this.Write("\r\n");
             
-            #line 133 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 134 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
 }
 // ---------- METHOD END ----------
@@ -477,7 +510,7 @@ if(methodDesc.IsExtern || methodDesc.Modifier == APIParameters.Abstract){
             #line default
             #line hidden
             
-            #line 137 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 138 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
 //  ---------- PROPERTY ----------
 
@@ -492,41 +525,41 @@ if(methodDesc.IsExtern || methodDesc.Modifier == APIParameters.Abstract){
             #line hidden
             this.Write("\t\t/// <summary>\r\n\t\t///\t");
             
-            #line 147 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 148 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.Comment));
             
             #line default
             #line hidden
             this.Write("\r\n\t\t/// </summary>\r\n\t\t");
             
-            #line 149 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 150 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.GetAccess()));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 149 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 150 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.GetModifier()));
             
             #line default
             #line hidden
             
-            #line 149 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 150 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.Type));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 149 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 150 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.Name));
             
             #line default
             #line hidden
             this.Write(" \r\n\t\t{\r\n\t\t\tget\r\n\t\t\t{\r\n");
             
-            #line 153 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 154 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
             if (propertyDesc.ByRef)
             {
@@ -536,35 +569,35 @@ if(methodDesc.IsExtern || methodDesc.Modifier == APIParameters.Abstract){
             #line hidden
             this.Write("\t\t\t\t");
             
-            #line 157 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 158 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.Type));
             
             #line default
             #line hidden
             this.Write(" result;\r\n\t\t\t\tInternal_");
             
-            #line 158 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 159 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.Name));
             
             #line default
             #line hidden
             this.Write("_Get(");
             
-            #line 158 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 159 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 if (propertyDesc.Modifier != APIParameters.Static) { 
             
             #line default
             #line hidden
             this.Write("NativePtr, ");
             
-            #line 158 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 159 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 }
             
             #line default
             #line hidden
             this.Write("out result);\r\n\t\t\t\treturn result;\r\n");
             
-            #line 160 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 161 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
             }
             else
@@ -575,28 +608,28 @@ if (propertyDesc.Modifier != APIParameters.Static) {
             #line hidden
             this.Write("\t\t\t\treturn Internal_");
             
-            #line 165 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 166 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.Name));
             
             #line default
             #line hidden
             this.Write("_Get(");
             
-            #line 165 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 166 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 if (propertyDesc.Modifier != APIParameters.Static) { 
             
             #line default
             #line hidden
             this.Write("NativePtr");
             
-            #line 165 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 166 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 }
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 166 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 167 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
             }
 
@@ -605,7 +638,7 @@ if (propertyDesc.Modifier != APIParameters.Static) {
             #line hidden
             this.Write("\t\t\t}\r\n");
             
-            #line 170 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 171 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
 			if(!propertyDesc.GetOnly)
 			{
@@ -615,7 +648,7 @@ if (propertyDesc.Modifier != APIParameters.Static) {
             #line hidden
             this.Write("\t\t\tset\r\n\t\t\t{\r\n");
             
-            #line 176 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 177 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
 				if (propertyDesc.ByRef)
 				{
@@ -625,28 +658,28 @@ if (propertyDesc.Modifier != APIParameters.Static) {
             #line hidden
             this.Write("\t\t\t\tInternal_");
             
-            #line 180 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 181 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.Name));
             
             #line default
             #line hidden
             this.Write("_Set(");
             
-            #line 180 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 181 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 if (propertyDesc.Modifier != APIParameters.Static) { 
             
             #line default
             #line hidden
             this.Write("NativePtr, ");
             
-            #line 180 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 181 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 }
             
             #line default
             #line hidden
             this.Write("ref value);\r\n");
             
-            #line 181 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 182 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
 				}
 				else
@@ -657,28 +690,28 @@ if (propertyDesc.Modifier != APIParameters.Static) {
             #line hidden
             this.Write("\t\t\t\tInternal_");
             
-            #line 186 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 187 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.Name));
             
             #line default
             #line hidden
             this.Write("_Set(");
             
-            #line 186 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 187 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 if (propertyDesc.Modifier != APIParameters.Static) { 
             
             #line default
             #line hidden
             this.Write("NativePtr, ");
             
-            #line 186 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 187 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 }
             
             #line default
             #line hidden
             this.Write("value);\r\n");
             
-            #line 187 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 188 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
 				}
 
@@ -687,7 +720,7 @@ if (propertyDesc.Modifier != APIParameters.Static) {
             #line hidden
             this.Write("\t\t\t}\r\n");
             
-            #line 191 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 192 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
 			}
 
@@ -696,7 +729,7 @@ if (propertyDesc.Modifier != APIParameters.Static) {
             #line hidden
             this.Write("\t\t}\r\n\r\n");
             
-            #line 196 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 197 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
         }
     }
@@ -734,28 +767,28 @@ if (propertyDesc.Modifier != APIParameters.Static) {
             #line hidden
             this.Write("\t\t[MethodImpl(MethodImplOptions.InternalCall)]\r\n\t\tinternal static extern ");
             
-            #line 229 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 230 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(getReturn));
             
             #line default
             #line hidden
             this.Write(" Internal_");
             
-            #line 229 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 230 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.Name));
             
             #line default
             #line hidden
             this.Write("_Get(");
             
-            #line 229 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 230 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(getParams));
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 230 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 231 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
         }
         else
@@ -767,42 +800,42 @@ if (propertyDesc.Modifier != APIParameters.Static) {
             this.Write("\t\t[MethodImpl(MethodImplOptions.InternalCall)]\r\n\t\tinternal static extern void Int" +
                     "ernal_");
             
-            #line 236 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 237 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.Name));
             
             #line default
             #line hidden
             this.Write("_Set(");
             
-            #line 236 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 237 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(setParams));
             
             #line default
             #line hidden
             this.Write(");\r\n\t\t[MethodImpl(MethodImplOptions.InternalCall)]\r\n\t\tinternal static extern ");
             
-            #line 238 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 239 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(getReturn));
             
             #line default
             #line hidden
             this.Write(" Internal_");
             
-            #line 238 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 239 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(propertyDesc.Name));
             
             #line default
             #line hidden
             this.Write("_Get(");
             
-            #line 238 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 239 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(getParams));
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 239 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 240 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
         }
     }
@@ -813,14 +846,14 @@ if (propertyDesc.Modifier != APIParameters.Static) {
             #line hidden
             this.Write("\t}\r\n");
             
-            #line 245 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 246 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
  // ---------- CLASS END ---------- 
             
             #line default
             #line hidden
             this.Write("}\r\n");
             
-            #line 247 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
+            #line 248 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
 
 }
 
