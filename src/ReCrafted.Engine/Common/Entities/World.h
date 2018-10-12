@@ -158,6 +158,12 @@ public:
     {
         return m_systems[systemId] != nullptr;
     }
+
+public:
+    EntityManager* GetEntityManager() const
+    {
+        return m_entityManager;
+    }
 };
 
 #endif // WORLD_H

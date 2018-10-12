@@ -15,7 +15,6 @@ using ReCrafted.Game.Core;
 using ReCrafted.Game.Interface;
 using ReCrafted.Game.Super;
 
-
 namespace ReCrafted.Game
 {
     using System = API.Common.Entities.System;
@@ -29,6 +28,12 @@ namespace ReCrafted.Game
 
         protected override void Update()
         {
+            var entities = GetEntities();
+
+            foreach (var entity in entities)
+            {
+                
+            }
         }
 
         public override ushort SystemTypeId => 0;
@@ -108,6 +113,14 @@ namespace ReCrafted.Game
                 var mainWorld = World.GetMainWorld();
                 mainWorld.AddSystem<GameSystem>();
 
+                var entity = mainWorld.CreateEntity();
+
+                entity.AddComponent<TransformComponent>();
+                entity.RemoveComponent<TransformComponent>();
+                entity.Activate();
+                entity.CleanComponents();
+                entity.Deactivate();
+                entity.Destroy();
             }
             catch (Exception exception)
             {

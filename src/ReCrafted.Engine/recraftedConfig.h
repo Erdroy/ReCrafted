@@ -91,4 +91,11 @@
 #define ECS_MAX_NATIVE_COMPONENTS 32
 #endif
 
+#ifndef ECS_MAX_COMPONENT_SIZE
+   /**
+    * \brief The maximum size of an ECS component.
+    */
+#define ECS_MAX_COMPONENT_SIZE 512
+#endif
+
 #endif // RECRAFTEDCONFIG_H

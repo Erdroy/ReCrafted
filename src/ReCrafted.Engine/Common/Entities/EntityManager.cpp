@@ -175,10 +175,10 @@ void EntityManager::Clear(EntityId entityId)
 
 bool EntityManager::IsEntityValid(const Entity& entity) const
 {
-    return true;
+    return IsEntityValid(entity.GetId());
 }
 
 bool EntityManager::IsEntityActive(const Entity& entity) const
 {
-    return m_entities[entity.GetId()].active;
+    return IsEntityActive(entity.GetId());
 }

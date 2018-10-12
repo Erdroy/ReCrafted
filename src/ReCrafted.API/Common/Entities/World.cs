@@ -33,5 +33,15 @@ namespace ReCrafted.API.Common.Entities
         {
             return HasSystem(NativePtr, new TSystem().SystemTypeId);
         }
+
+        /// <summary>
+        /// Creates new Entity.
+        /// To release this Entity, call 'entity.Destroy'.
+        /// </summary>
+        /// <returns>The created entity.</returns>
+        public Entity CreateEntity()
+        {
+            return EntityInternals.CreateEntity(NativePtr);
+        }
     }
 }

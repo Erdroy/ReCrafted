@@ -7,12 +7,7 @@
 
 #include "ClassTypeId.h"
 
-struct Component
-{
-public:
-    virtual ~Component() = default;
-
-};
+struct Component { };
 
 template<typename T>
 TypeId GetComponentId()

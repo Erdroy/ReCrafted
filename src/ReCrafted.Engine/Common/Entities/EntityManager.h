@@ -114,6 +114,16 @@ public:
         m_entities[entityId].componentTypes[componentId] = false;
     }
 
+    bool IsEntityValid(const EntityId entity) const
+    {
+        return true;
+    }
+
+    bool IsEntityActive(const EntityId entity) const
+    {
+        return m_entities[entity].active;
+    }
+
     bool IsEntityValid(const Entity& entity) const;
     bool IsEntityActive(const Entity& entity) const;
 };

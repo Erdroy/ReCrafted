@@ -9,15 +9,83 @@ namespace ReCrafted.API.Common.Entities
     public struct Entity
     {
         [FieldOffset(0)]
-        public uint EntityId;
+        private readonly uint EntityId;
 
         [FieldOffset(8)]
-        public IntPtr WorldPtr;
+        private readonly IntPtr WorldPtr;
 
         internal Entity(uint id, IntPtr worldPtr)
         {
             EntityId = id;
             WorldPtr = worldPtr;
+        }
+
+        public void AddComponent<TComponent>() where TComponent : IComponent, new()
+        {
+            AddComponent(new TComponent());
+        }
+
+        public void AddComponent<TComponent>(TComponent component) where TComponent : IComponent, new()
+        {
+            var componentHandle = GCHandle.Alloc(component, GCHandleType.Pinned);
+
+            var componentPtr = componentHandle.AddrOfPinnedObject();
+            var componentSize = (uint)Marshal.SizeOf<TComponent>();
+
+            EntityInternals.AddEntityComponent(WorldPtr, EntityId, componentPtr, componentSize, component.ComponentTypeId, component.IsNativeComponent);
+
+            componentHandle.Free();
+        }
+
+        public ref TComponent GetComponent<TComponent>() where TComponent : IComponent, new()
+        {
+            var componentPrototype = new TComponent();
+            var componentId = componentPrototype.ComponentTypeId;
+            var nativeComponentId = componentPrototype.IsNativeComponent;
+
+            var nativeComponent = EntityInternals.GetEntityComponent(WorldPtr, EntityId, componentId, nativeComponentId);
+            
+            throw new NotImplementedException();
+        }
+
+        public void RemoveComponent<TComponent>() where TComponent : IComponent, new()
+        {
+            var componentPrototype = new TComponent();
+            var componentId = componentPrototype.ComponentTypeId;
+            var nativeComponentId = componentPrototype.IsNativeComponent;
+            EntityInternals.RemoveEntityComponent(WorldPtr, EntityId, componentId, nativeComponentId);
+        }
+
+        /// <summary>
+        /// Removes all components from this entity.
+        /// </summary>
+        public void CleanComponents()
+        {
+            EntityInternals.CleanEntity(WorldPtr, EntityId);
+        }
+
+        /// <summary>
+        /// Activates this entity.
+        /// </summary>
+        public void Activate()
+        {
+            EntityInternals.ActivateEntity(WorldPtr, EntityId);
+        }
+
+        /// <summary>
+        /// Deactivates this entity.
+        /// </summary>
+        public void Deactivate()
+        {
+            EntityInternals.DeactivateEntity(WorldPtr, EntityId);
+        }
+
+        /// <summary>
+        /// Destroys this entity.
+        /// </summary>
+        public void Destroy()
+        {
+            EntityInternals.DestroyEntity(WorldPtr, EntityId);
         }
     }
 }
