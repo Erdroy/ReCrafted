@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 10/11/2018 16:24:41 Source: 'World.API.cpp' Target: 'Common/Entities/World.Gen.cs'
+// Generated: 10/13/2018 13:03:31 Source: 'World.API.cpp' Target: 'Common/Entities/World.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -22,7 +22,7 @@ namespace ReCrafted.API.Common.Entities
 			Internal_Update(NativePtr);
 		}
         
-        		[MethodImpl(MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_Update(IntPtr nativePtr);
 		
 		[MethodImpl(MethodImplOptions.InternalCall)]

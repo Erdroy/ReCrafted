@@ -6,6 +6,12 @@
 
 namespace Internal
 {
+    void Update(World* world)
+    {
+        ASSERT(world);
+        world->Update();
+    }
+
     void AddSystem(World* world, System* system, const uint16_t systemTypeId)
     {
         cvar typeId = ECS_MAX_NATIVE_SYSTEMS + systemTypeId;
@@ -53,6 +59,7 @@ void World::InitRuntime()
             API_COMMENT("Updates this World");
             API_METHOD(PUBLIC, REGULAR, "Update", EXTERN);
             {
+                API_BIND("ReCrafted.API.Common.Entities.World::Internal_Update", &Internal::Update);
             }
             API_METHOD_END();
 
