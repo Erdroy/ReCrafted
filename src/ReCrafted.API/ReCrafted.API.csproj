@@ -56,6 +56,7 @@
     <Compile Include="Common\Clipboard.cs" />
     <Compile Include="Common\Components\TransformComponent.cs" />
     <Compile Include="Common\Display.Gen.cs" />
+    <Compile Include="Common\Entities\ComponentHandle.cs" />
     <Compile Include="Common\Entities\Entity.cs" />
     <Compile Include="Common\Entities\EntityEnumerable.cs" />
     <Compile Include="Common\Entities\EntityEnumerator.cs" />

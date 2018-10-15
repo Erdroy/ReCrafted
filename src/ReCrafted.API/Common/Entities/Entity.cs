@@ -36,16 +36,15 @@ namespace ReCrafted.API.Common.Entities
 
             componentHandle.Free();
         }
-
-        public ref TComponent GetComponent<TComponent>() where TComponent : IComponent, new()
+        
+        public void GetComponent<TComponent>(ref ComponentHandle<TComponent> handle) where TComponent : IComponent, new()
         {
             var componentPrototype = new TComponent();
             var componentId = componentPrototype.ComponentTypeId;
             var nativeComponentId = componentPrototype.IsNativeComponent;
 
-            var nativeComponent = EntityInternals.GetEntityComponent(WorldPtr, EntityId, componentId, nativeComponentId);
-            
-            throw new NotImplementedException();
+            // Download component data
+            EntityInternals.GetEntityComponent(WorldPtr, EntityId, componentId, nativeComponentId, handle.DataPointer, handle.DataSize);
         }
 
         public void RemoveComponent<TComponent>() where TComponent : IComponent, new()

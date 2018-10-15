@@ -29,7 +29,7 @@ namespace Internal
         manager->AddEntityComponent(entityId, component, typeId);
     }
 
-    Component* GetComponent(World* world, const EntityId entityId, const TypeId componentId, const bool nativeComponentId)
+    void GetComponent(World* world, const EntityId entityId, const TypeId componentId, const bool nativeComponentId, uint8_t* dataPtr, uint32_t dataSize)
     {
         ASSERT(world);
 
@@ -39,7 +39,9 @@ namespace Internal
         cvar manager = world->GetEntityManager();
         ASSERT(manager->IsEntityValid(entityId));
         
-        return &manager->GetEntityComponent(entityId, typeId);
+        cvar component = &manager->GetEntityComponent(entityId, typeId);
+
+        // TODO
     }
 
     void RemoveComponent(World* world, const EntityId entityId, const TypeId componentId, const bool nativeComponentId)
@@ -119,8 +121,9 @@ void Entity::InitRuntime()
                 API_PARAM("uint", "entityId");
                 API_PARAM("ushort", "componentId");
                 API_PARAM("bool", "nativeComponentId");
+                API_PARAM("IntPtr", "managedDataPtr");
+                API_PARAM("uint", "componentSize");
 
-                API_RETURN("IntPtr");
             }
             API_METHOD_END();
 

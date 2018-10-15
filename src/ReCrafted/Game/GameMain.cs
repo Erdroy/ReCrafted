@@ -18,7 +18,7 @@ using ReCrafted.Game.Super;
 namespace ReCrafted.Game
 {
     using System = API.Common.Entities.System;
-
+    
     internal class GameSystem : System
     {
         protected override void Initialize()
@@ -26,13 +26,25 @@ namespace ReCrafted.Game
             RequireComponent<TransformComponent>();
         }
 
+        public void UpdateNow()
+        {
+            Update();
+        }
+
         protected override void Update()
         {
             var entities = GetEntities();
 
+            var transform = new ComponentHandle<TransformComponent>();
+
             foreach (var entity in entities)
             {
+                entity.GetComponent(ref transform);
+
+                //var newPosition = transform.Data.Position + Vector3.Right;
                 
+                // Upload changed data
+               // transform.SetData(ref newPosition, 0);
             }
         }
 
@@ -54,6 +66,8 @@ namespace ReCrafted.Game
         private SuperConsole _console;
         private PauseMenu _pauseMenu;
         private Messenger _messenger;
+
+        private GameSystem _gs;
 
         // initialize
         protected override void Initialize()
@@ -111,16 +125,42 @@ namespace ReCrafted.Game
                 //_uiView.Navigate("file:///ui/menu/menu.html");
 
                 var mainWorld = World.GetMainWorld();
-                mainWorld.AddSystem<GameSystem>();
+                /*
+                _gs = mainWorld.AddSystem<GameSystem>();
 
-                var entity = mainWorld.CreateEntity();
+                var rand = new Random();
 
-                entity.AddComponent<TransformComponent>();
-                entity.RemoveComponent<TransformComponent>();
-                entity.Activate();
-                entity.CleanComponents();
-                entity.Deactivate();
-                entity.Destroy();
+                for (var i = 0; i < 1000; i ++)
+                {
+                    var r1 = (float)rand.NextDouble();
+                    var r2 = (float)rand.NextDouble();
+                    var r3 = (float)rand.NextDouble();
+
+                    var entity = mainWorld.CreateEntity();
+                    entity.AddComponent(new TransformComponent
+                    {
+                        Position = new Vector3(r1, r2, r3)
+                    });
+
+                    entity.Activate();
+
+                    if(i < 10)
+                        entity.Destroy();
+                }
+
+                mainWorld.Update();
+
+                var startU = DateTime.Now;
+                for (var i = 0; i < 1000; i++)
+                {
+                    _gs.UpdateNow();
+                }
+                var endU = DateTime.Now;
+                var diff = endU - startU;
+
+                Logger.Log("Time: " + diff.TotalMilliseconds);
+                Logger.Log("Avg. update time : " + (diff.TotalMilliseconds / 1000.0));
+                Logger.Log("Avg. entity time : " + (diff.TotalMilliseconds / 1000.0 / 1000.0));*/
             }
             catch (Exception exception)
             {
