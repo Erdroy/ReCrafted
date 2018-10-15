@@ -25,6 +25,7 @@
     <StartAction>Program</StartAction>
     <StartProgram>D:\ReCrafted\build\game\bin64\ReCrafted.exe</StartProgram>
     <StartWorkingDirectory>..\..\build\game\bin64\</StartWorkingDirectory>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,6 +38,7 @@
     <StartAction>Program</StartAction>
     <StartProgram>D:\ReCrafted\build\game\bin64\ReCrafted.exe</StartProgram>
     <StartWorkingDirectory>..\..\build\game\bin64\</StartWorkingDirectory>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">

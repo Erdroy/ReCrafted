@@ -31,20 +31,24 @@ namespace ReCrafted.Game
             Update();
         }
 
-        protected override void Update()
+        protected override unsafe void Update()
         {
             var entities = GetEntities();
 
-            var transform = new ComponentHandle<TransformComponent>();
+            var componentPrototype = new TransformComponent();
+            var componentId = componentPrototype.ComponentTypeId;
+            var isNativeComponent = componentPrototype.IsNativeComponent;
 
             foreach (var entity in entities)
             {
-                entity.GetComponent(ref transform);
+                var transform = (TransformComponent*)entity.GetComponent(componentId, isNativeComponent);
+
+                transform->Position += Vector3.ForwardLH;
 
                 //var newPosition = transform.Data.Position + Vector3.Right;
-                
+
                 // Upload changed data
-               // transform.SetData(ref newPosition, 0);
+                // transform.SetData(ref newPosition, 0);
             }
         }
 
@@ -125,12 +129,12 @@ namespace ReCrafted.Game
                 //_uiView.Navigate("file:///ui/menu/menu.html");
 
                 var mainWorld = World.GetMainWorld();
-                /*
+                
                 _gs = mainWorld.AddSystem<GameSystem>();
 
                 var rand = new Random();
 
-                for (var i = 0; i < 1000; i ++)
+                for (var i = 0; i < 100000; i ++)
                 {
                     var r1 = (float)rand.NextDouble();
                     var r2 = (float)rand.NextDouble();
@@ -160,7 +164,7 @@ namespace ReCrafted.Game
 
                 Logger.Log("Time: " + diff.TotalMilliseconds);
                 Logger.Log("Avg. update time : " + (diff.TotalMilliseconds / 1000.0));
-                Logger.Log("Avg. entity time : " + (diff.TotalMilliseconds / 1000.0 / 1000.0));*/
+                Logger.Log("Avg. entity time : " + (diff.TotalMilliseconds / 1000.0 / 1000.0));
             }
             catch (Exception exception)
             {

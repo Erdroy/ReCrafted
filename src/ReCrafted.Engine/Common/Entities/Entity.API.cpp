@@ -29,7 +29,7 @@ namespace Internal
         manager->AddEntityComponent(entityId, component, typeId);
     }
 
-    void GetComponent(World* world, const EntityId entityId, const TypeId componentId, const bool nativeComponentId, uint8_t* dataPtr, uint32_t dataSize)
+    Component* GetComponent(World* world, const EntityId entityId, const TypeId componentId, const bool nativeComponentId)
     {
         ASSERT(world);
 
@@ -39,9 +39,7 @@ namespace Internal
         cvar manager = world->GetEntityManager();
         ASSERT(manager->IsEntityValid(entityId));
         
-        cvar component = &manager->GetEntityComponent(entityId, typeId);
-
-        // TODO
+        return &manager->GetEntityComponent(entityId, typeId);
     }
 
     void RemoveComponent(World* world, const EntityId entityId, const TypeId componentId, const bool nativeComponentId)
@@ -114,15 +112,15 @@ void Entity::InitRuntime()
             }
             API_METHOD_END();
 
-            API_METHOD(PUBLIC, STATIC, "GetEntityComponent", EXTERN);
+            API_METHOD(PUBLIC, STATIC, "GetEntityComponent", EXTERN, UNSAFE);
             {
                 API_BIND("ReCrafted.API.Common.Entities.EntityInternals::GetEntityComponent", &Internal::GetComponent);
                 API_PARAM("IntPtr", "world");
                 API_PARAM("uint", "entityId");
                 API_PARAM("ushort", "componentId");
                 API_PARAM("bool", "nativeComponentId");
-                API_PARAM("IntPtr", "managedDataPtr");
-                API_PARAM("uint", "componentSize");
+
+                API_RETURN("ComponentData*")
 
             }
             API_METHOD_END();

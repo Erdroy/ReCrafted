@@ -10,4 +10,6 @@ namespace ReCrafted.API.Common.Entities
         ushort ComponentTypeId { get; }
         bool IsNativeComponent { get; }
     }
+
+    public struct ComponentData { }
 }

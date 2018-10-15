@@ -60,7 +60,7 @@ void System::InitRuntime()
             API_METHOD_END();
 
             API_COMMENT("Updates this System. This is called by world.");
-            API_METHOD(PROTECTED, ABSTRACT, "Update");
+            API_METHOD(PROTECTED, ABSTRACT, "Update", UNSAFE);
             {
             }
             API_METHOD_END();

@@ -37,14 +37,10 @@ namespace ReCrafted.API.Common.Entities
             componentHandle.Free();
         }
         
-        public void GetComponent<TComponent>(ref ComponentHandle<TComponent> handle) where TComponent : IComponent, new()
+        public unsafe ComponentData* GetComponent(ushort componentId, bool isNativeComponent)
         {
-            var componentPrototype = new TComponent();
-            var componentId = componentPrototype.ComponentTypeId;
-            var nativeComponentId = componentPrototype.IsNativeComponent;
-
             // Download component data
-            EntityInternals.GetEntityComponent(WorldPtr, EntityId, componentId, nativeComponentId, handle.DataPointer, handle.DataSize);
+            return EntityInternals.GetEntityComponent(WorldPtr, EntityId, componentId, isNativeComponent);
         }
 
         public void RemoveComponent<TComponent>() where TComponent : IComponent, new()
