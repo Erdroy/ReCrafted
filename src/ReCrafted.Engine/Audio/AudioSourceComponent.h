@@ -2,15 +2,15 @@
 
 #pragma once
 
-#ifndef AUDIOSOUNDCOMPONENT_H
-#define AUDIOSOUNDCOMPONENT_H
+#ifndef AUDIOSOURCECOMPONENT_H
+#define AUDIOSOURCECOMPONENT_H
 
 #include "Common/Entities/Component.h"
 #include "AudioSound.h"
 
-struct AudioSoundComponent : Component
+struct AudioSourceComponent : Component
 {
     AudioSound* sound;
 };
 
-#endif // AUDIOSOUNDCOMPONENT_H
+#endif // AUDIOSOURCECOMPONENT_H

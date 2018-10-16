@@ -10,7 +10,7 @@
 #include "Common/EntityComponentSystem.h"
 
 #include "IAudioEngine.h"
-#include "AudioSoundComponent.h"
+#include "AudioSourceComponent.h"
 
 class AudioSystem : public ComponentSystem
 {
@@ -27,7 +27,7 @@ public:
     AudioSystem()
     {
         RequireComponent<TransformComponent>();
-        RequireComponent<AudioSoundComponent>();
+        RequireComponent<AudioSourceComponent>();
     }
 
 public:
