@@ -17,36 +17,6 @@ using ReCrafted.Game.Super;
 
 namespace ReCrafted.Game
 {
-    internal class GameSystem : ComponentSystem
-    {
-        protected override void Initialize()
-        {
-            RequireComponent<TransformComponent>();
-        }
-
-        public void UpdateNow()
-        {
-            Update();
-        }
-
-        protected override void Update()
-        {
-            var entities = GetEntities();
-
-            var transformHandle = new ComponentDescriptor<TransformComponent>();
-            
-            foreach (var entity in entities)
-            {
-                ref var transform = ref entity.GetComponent(ref transformHandle);
-                
-                transform.Position += Vector3.ForwardLH;
-            }
-
-        }
-
-        public override ushort SystemTypeId => 0;
-    }
-
     internal class GameMain : Application
     {
         // cross hair control
@@ -62,8 +32,6 @@ namespace ReCrafted.Game
         private SuperConsole _console;
         private PauseMenu _pauseMenu;
         private Messenger _messenger;
-
-        private GameSystem _gs;
 
         // initialize
         protected override void Initialize()
@@ -119,44 +87,7 @@ namespace ReCrafted.Game
                 _uiView = WebUI.Create();
                 _uiView.Navigate("file:///ui/default.html");
                 //_uiView.Navigate("file:///ui/menu/menu.html");
-
-                var mainWorld = World.GetMainWorld();
                 
-                _gs = mainWorld.AddSystem<GameSystem>();
-
-                var rand = new Random();
-
-                for (var i = 0; i < 10; i ++)
-                {
-                    var r1 = (float)rand.NextDouble();
-                    var r2 = (float)rand.NextDouble();
-                    var r3 = (float)rand.NextDouble();
-
-                    var entity = mainWorld.CreateEntity();
-                    entity.AddComponent(new TransformComponent
-                    {
-                        Position = new Vector3(r1, r2, r3)
-                    });
-
-                    entity.Activate();
-
-                    if(i < 10)
-                        entity.Destroy();
-                }
-
-                mainWorld.Update();
-
-                var startU = DateTime.Now;
-                for (var i = 0; i < 10; i++)
-                {
-                    _gs.UpdateNow();
-                }
-                var endU = DateTime.Now;
-                var diff = endU - startU;
-
-                Logger.Log("Time: " + diff.TotalMilliseconds);
-                Logger.Log("Avg. update time : " + (diff.TotalMilliseconds / 100.0));
-                Logger.Log("Avg. entity time : " + (diff.TotalMilliseconds / 100.0 / 100.0));
             }
             catch (Exception exception)
             {
