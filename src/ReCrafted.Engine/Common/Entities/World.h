@@ -6,7 +6,7 @@
 #include "Component.h"
 #include "ComponentSystem.h"
 #include "EntityId.h"
-#include "Scripting/Script.h"
+#include "Scripting/Method.h"
 #include "Scripting/Object.h"
 
 class EntityManager;

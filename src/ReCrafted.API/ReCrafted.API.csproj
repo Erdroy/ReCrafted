@@ -70,8 +70,6 @@
     <Compile Include="Common\Input.Gen.cs" />
     <Compile Include="Common\KeyboardBuffer.Gen.cs" />
     <Compile Include="Common\Profiler.Gen.cs" />
-    <Compile Include="Common\Script.cs" />
-    <Compile Include="Common\Script.Gen.cs" />
     <Compile Include="Common\Time.Gen.cs" />
     <Compile Include="Core\Application.Gen.cs" />
     <Compile Include="Core\Cursor.cs" />

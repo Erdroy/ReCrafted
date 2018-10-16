@@ -47,17 +47,6 @@ void Universe::OnInit()
 
     // Create physics scene
     m_physicsScene = PhysicsSystem::Physics()->CreateScene();
-
-    var world = MainWorld::GetWorld();
-
-    var testEntity = world->CreateEntity();
-    testEntity.AddComponent<TransformComponent>();
-    testEntity.Activate();
-
-    testEntity = world->CreateEntity();
-    testEntity.AddComponent<TransformComponent>();
-    testEntity.AddComponent<ScriptingComponent>();
-    testEntity.Activate();
 }
 
 void Universe::OnDispose()

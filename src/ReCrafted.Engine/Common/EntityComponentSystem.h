@@ -12,7 +12,6 @@
 
 // Default components
 #include "Common/TransformComponent.h"
-#include "Scripting/ScriptingComponent.h"
 #include "Audio/AudioSourceComponent.h"
 
 #include <cassert>
@@ -29,8 +28,7 @@ public:
         // use our ASSERT etc.
 
         /* 00 */ assert(GetComponentId<TransformComponent>() == 0);
-        /* 01 */ assert(GetComponentId<ScriptingComponent>() == 1);
-        /* 02 */ assert(GetComponentId<AudioSourceComponent>() == 2);
+        /* 01 */ assert(GetComponentId<AudioSourceComponent>() == 1);
     }
 };
 

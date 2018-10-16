@@ -7,7 +7,7 @@
 
 #include "EntityManager.h"
 #include "Filter.h"
-#include "Scripting/Script.h"
+#include "Scripting/Method.h"
 #include "Scripting/Object.h"
 
 class World;

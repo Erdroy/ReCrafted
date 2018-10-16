@@ -26,10 +26,6 @@ namespace ReCrafted.Game
 
         private FreeCameraController _camera;
 
-        private SuperConsole _console;
-        private PauseMenu _pauseMenu;
-        private Messenger _messenger;
-
         // initialize
         protected override void Initialize()
         {
@@ -73,12 +69,10 @@ namespace ReCrafted.Game
                 _buildNumberText.Text =
                     "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber;
 
-                // initialize default game systems
-                // pause Menu
-
-                _console = GameSystem.AddGameSystem<SuperConsole>();
-                _pauseMenu = GameSystem.AddGameSystem<PauseMenu>();
-                _messenger = GameSystem.AddGameSystem<Messenger>();
+                // Initialize default game systems
+                GameSystem.AddGameSystem<SuperConsole>();
+                GameSystem.AddGameSystem<PauseMenu>();
+                GameSystem.AddGameSystem<Messenger>();
 
                 // create example webui view
                 _uiView = WebUI.Create();
