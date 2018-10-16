@@ -8,6 +8,9 @@ namespace ReCrafted.API.Core
     /// <summary>
     /// GameSystem class. Implements game system functionality.
     /// </summary>
+    /// <remarks>
+    /// GameSystem is different from ComponentSystem, as it has no support for Entities.
+    /// </remarks>
     public class GameSystem : IDisposable
     {
         internal static List<GameSystem> GameSystems = new List<GameSystem>();
