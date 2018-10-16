@@ -24,7 +24,7 @@ public:
     };
 
 private:
-    std::string m_voxelName = nullptr;
+    std::string m_voxelName;
 
     VoxelMaterial_t m_voxelMaterial = 0u;
     VoxelHardness_t m_voxelHardness = 0u;
@@ -34,10 +34,10 @@ private:
     Texture* m_voxelTextureCBFar = nullptr;
     Texture* m_voxelTextureNSMFar = nullptr;
 
-    std::string m_textureAssetCB = nullptr;
-    std::string m_textureAssetNSM = nullptr;
-    std::string m_textureAssetCBFar = nullptr;
-    std::string m_textureAssetNSMFar = nullptr;
+    std::string m_textureAssetCB;
+    std::string m_textureAssetNSM;
+    std::string m_textureAssetCBFar;
+    std::string m_textureAssetNSMFar;
 
     bool m_hasFarTextures = false;
     bool m_hasNormalTexture = false;
@@ -47,12 +47,15 @@ protected:
     {
         // Load textures
         m_voxelTextureCB = ContentManager::LoadAsset<Texture>(m_textureAssetCB.c_str());
-        m_voxelTextureNSM = ContentManager::LoadAsset<Texture>(m_textureAssetNSM.c_str());
-        m_voxelTextureCBFar = ContentManager::LoadAsset<Texture>(m_textureAssetCBFar.c_str());
-        m_voxelTextureNSMFar = ContentManager::LoadAsset<Texture>(m_textureAssetNSMFar.c_str());
+        
+        if(m_hasNormalTexture)
+            m_voxelTextureNSM = ContentManager::LoadAsset<Texture>(m_textureAssetNSM.c_str());
+        
+        if(m_hasFarTextures)
+            m_voxelTextureCBFar = ContentManager::LoadAsset<Texture>(m_textureAssetCBFar.c_str());
 
-        // Register this material
-        VoxelMaterialManager::GetInstance()->RegisterMaterial(this);
+        if(m_hasNormalTexture && m_hasFarTextures)
+            m_voxelTextureNSMFar = ContentManager::LoadAsset<Texture>(m_textureAssetNSMFar.c_str());
     }
 
     void OnUnload() override
@@ -62,6 +65,7 @@ protected:
         ContentManager::UnloadAssetSafe(m_voxelTextureCBFar);
         ContentManager::UnloadAssetSafe(m_voxelTextureNSMFar);
 
+        // Try to unregister this material
         VoxelMaterialManager::GetInstance()->UnregisterMaterial(this);
     }
     
@@ -82,7 +86,7 @@ protected:
             m_hasNormalTexture = true;
         }
 
-        if ( !json["VoxelTexture_CB_Far"].is_null())
+        if (!json["VoxelTexture_CB_Far"].is_null())
         {
             m_textureAssetCBFar = json["VoxelTexture_CB_Far"].get<std::string>();
             m_hasFarTextures = true;
