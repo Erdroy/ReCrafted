@@ -62,8 +62,7 @@
     <Compile Include="Common\Entities\EntityEnumerable.cs" />
     <Compile Include="Common\Entities\EntityEnumerator.cs" />
     <Compile Include="Common\Entities\EntityInternals.Gen.cs" />
-    <Compile Include="Common\Entities\IComponent.cs" />
-    <Compile Include="Common\Entities\IComponentDescriptor.cs" />
+    <Compile Include="Common\Entities\Component.cs" />
     <Compile Include="Common\Entities\ComponentSystem.cs" />
     <Compile Include="Common\Entities\ComponentSystem.Gen.cs" />
     <Compile Include="Common\Entities\World.cs" />

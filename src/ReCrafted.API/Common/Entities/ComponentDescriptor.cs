@@ -36,7 +36,7 @@ namespace ReCrafted.API.Common.Entities
         /// <summary>
         /// The described component id.
         /// </summary>
-        public ushort ComponentId => _prototype.ComponentTypeId;
+        public ushort ComponentTypeId => _prototype.ComponentTypeId;
         
         /// <summary>
         /// True when described component is flagged as native.

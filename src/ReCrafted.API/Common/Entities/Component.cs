@@ -11,5 +11,14 @@ namespace ReCrafted.API.Common.Entities
         bool IsNativeComponent { get; }
     }
 
+    /// <summary>
+    /// ECS component descriptor interface.
+    /// </summary>
+    public interface IComponentDescriptor : IComponent { }
+
+    /// <summary>
+    /// Empty ECS component data structure.
+    /// Used for getting native component data pointer in EntityInternals.
+    /// </summary>
     public struct ComponentData { }
 }

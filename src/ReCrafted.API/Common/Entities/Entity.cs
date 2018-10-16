@@ -55,7 +55,7 @@ namespace ReCrafted.API.Common.Entities
         public unsafe ref TComponent GetComponent<TComponent>(ref ComponentDescriptor<TComponent> descriptor) where TComponent : IComponent, new()
         {
             // Get entity component data pointer.
-            var nativePointer = EntityInternals.GetEntityComponent(WorldPtr, EntityId, descriptor.ComponentId, descriptor.IsNativeComponent);
+            var nativePointer = EntityInternals.GetEntityComponent(WorldPtr, EntityId, descriptor.ComponentTypeId, descriptor.IsNativeComponent);
             
             // Get reference to the pointer.
             return ref descriptor.GetRef(nativePointer);
