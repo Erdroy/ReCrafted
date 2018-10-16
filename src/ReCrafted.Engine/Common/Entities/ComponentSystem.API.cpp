@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
-#include "System.h"
+#include "ComponentSystem.h"
 #include "Common/EntityComponentSystem.h"
 
 namespace Internal
@@ -10,12 +10,12 @@ namespace Internal
         cvar systemClass = mono_class_from_mono_type(type);
 
         RefPtr<Object> systemObject;
-        systemObject.reset(new System);
+        systemObject.reset(new ComponentSystem);
 
         return Object::Create(systemObject, Domain::Root->GetMono(), systemClass, true);
     }
 
-    void RequireComponent(System* system, const uint16_t componentTypeId, const bool nativeComponentId)
+    void RequireComponent(ComponentSystem* system, const uint16_t componentTypeId, const bool nativeComponentId)
     {
         cvar typeId = nativeComponentId ? componentTypeId : ECS_MAX_NATIVE_COMPONENTS + componentTypeId;
         ASSERT(typeId < ECS_MAX_COMPONENTS);
@@ -23,7 +23,7 @@ namespace Internal
         system->RequireComponent(typeId);
     }
 
-    void ExcludeComponent(System* system, const uint16_t componentTypeId, const bool nativeComponentId)
+    void ExcludeComponent(ComponentSystem* system, const uint16_t componentTypeId, const bool nativeComponentId)
     {
         cvar typeId = nativeComponentId ? componentTypeId : ECS_MAX_NATIVE_COMPONENTS + componentTypeId;
         ASSERT(typeId < ECS_MAX_COMPONENTS);
@@ -31,7 +31,7 @@ namespace Internal
         system->ExcludeComponent(typeId);
     }
 
-    Entity* GetEntities(System* system, int* numEntities)
+    Entity* GetEntities(ComponentSystem* system, int* numEntities)
     {
         rvar entities = system->GetEntities();
 
@@ -40,12 +40,12 @@ namespace Internal
     }
 }
 
-void System::InitRuntime()
+void ComponentSystem::InitRuntime()
 {
-    API_FILE("Common/Entities/System.Gen.cs")
+    API_FILE("Common/Entities/ComponentSystem.Gen.cs")
     {
-        API_COMMENT("ECS System class.");
-        API_CLASS(PUBLIC, ABSTRACT, "ReCrafted.API.Common.Entities", "System", "Object", PARTIAL, NOCONSTRUCTOR);
+        API_COMMENT("ECS ComponentSystem class.");
+        API_CLASS(PUBLIC, ABSTRACT, "ReCrafted.API.Common.Entities", "ComponentSystem", "Object", PARTIAL, NOCONSTRUCTOR);
         {
             API_COMMENT("Called when this System is being initialized.");
             API_METHOD(PROTECTED, VIRTUAL, "Initialize");
@@ -101,7 +101,7 @@ void System::InitRuntime()
 
                 API_PARAM("IntPtr", "systemType");
 
-                API_RETURN("System");
+                API_RETURN("ComponentSystem");
             }
             API_METHOD_END();
         }

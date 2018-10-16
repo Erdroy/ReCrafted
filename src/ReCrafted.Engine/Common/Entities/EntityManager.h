@@ -13,7 +13,7 @@
 #include <vector>
 
 class World;
-class System;
+class ComponentSystem;
 struct Entity;
 
 class EntityManager
@@ -31,7 +31,7 @@ private:
         bool active;
         ComponentTypeList componentTypes;
         ComponentArray components;
-        std::vector<System*> systems;
+        std::vector<ComponentSystem*> systems;
 
     public:
         EntityDesc() : active(false), componentTypes({}), components({}), systems({}) {}

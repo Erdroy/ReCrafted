@@ -4,7 +4,7 @@
 #define WORLD_H
 
 #include "Component.h"
-#include "System.h"
+#include "ComponentSystem.h"
 #include "EntityId.h"
 #include "Scripting/Script.h"
 #include "Scripting/Object.h"
@@ -22,8 +22,8 @@ private:
 
 private:
     EntityManager* m_entityManager;
-    std::array<System*, ECS_MAX_SYSTEMS> m_systems{};
-    std::vector<System*> m_activeSystems{};
+    std::array<ComponentSystem*, ECS_MAX_SYSTEMS> m_systems{};
+    std::vector<ComponentSystem*> m_activeSystems{};
 
 public:
     World();
@@ -76,11 +76,11 @@ public:
     template<typename TSystem>
     TSystem& AddSystem()
     {
-        static_assert(std::is_base_of<System, TSystem>(), "TSystem must inherit from System!");
+        static_assert(std::is_base_of<ComponentSystem, TSystem>(), "TSystem must inherit from System!");
         auto system = new TSystem();
         system->m_world = this;
 
-        auto systemId = ClassTypeId<System>::GetTypeId<TSystem>();
+        auto systemId = ClassTypeId<ComponentSystem>::GetTypeId<TSystem>();
 
         _ASSERT_(systemId < ECS_MAX_NATIVE_SYSTEMS, "Native ECS system id overflow!");
 
@@ -89,7 +89,7 @@ public:
         return *system;
     }
 
-    void AddSystem(System* system, const TypeId systemId)
+    void AddSystem(ComponentSystem* system, const TypeId systemId)
     {
         system->m_world = this;
         m_systems[systemId] = system;
@@ -103,9 +103,9 @@ public:
     template<typename TSystem>
     void RemoveSystem()
     {
-        static_assert(std::is_base_of<System, TSystem>(), "TSystem must inherit from System!");
+        static_assert(std::is_base_of<ComponentSystem, TSystem>(), "TSystem must inherit from System!");
 
-        auto systemId = ClassTypeId<System>::GetTypeId<TSystem>();
+        auto systemId = ClassTypeId<ComponentSystem>::GetTypeId<TSystem>();
 
         _ASSERT_(systemId < ECS_MAX_NATIVE_SYSTEMS, "Native ECS system id overflow!");
 
@@ -143,9 +143,9 @@ public:
     template<typename TSystem>
     bool HasSystem()
     {
-        static_assert(std::is_base_of<System, TSystem>(), "TSystem must inherit from System!");
+        static_assert(std::is_base_of<ComponentSystem, TSystem>(), "TSystem must inherit from System!");
 
-        auto systemId = ClassTypeId<System>::GetTypeId<TSystem>();
+        auto systemId = ClassTypeId<ComponentSystem>::GetTypeId<TSystem>();
 
         _ASSERT_(systemId < ECS_MAX_NATIVE_SYSTEMS, "Native ECS system id overflow!");
 

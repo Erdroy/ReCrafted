@@ -2,7 +2,7 @@
 
 namespace ReCrafted.API.Common.Entities
 {
-    public partial class System
+    public partial class ComponentSystem
     {
         /// <summary>
         /// Adds the given component type as required.
@@ -50,7 +50,7 @@ namespace ReCrafted.API.Common.Entities
         /// </summary>
         /// <typeparam name="T">The system type that will be used.</typeparam>
         /// <returns>The created system of given type '<see cref="T"/>'.</returns>
-        public static T Create<T>() where T : System, new()
+        public static T Create<T>() where T : ComponentSystem, new()
         {
             return (T) Create(typeof(T).TypeHandle.Value);
         }

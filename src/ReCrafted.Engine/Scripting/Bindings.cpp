@@ -5,7 +5,7 @@
 
 #include "Common/Display.h"
 #include "Common/Time.h"
-#include "Common/Entities/System.h"
+#include "Common/Entities/ComponentSystem.h"
 #include "Common/Entities/World.h"
 #include "Common/Entities/Entity.h"
 #include "Common/Profiler/Profiler.h"
@@ -30,7 +30,7 @@ void Bindings::Bind()
     Time::InitRuntime();
     Display::InitRuntime();
     UI::InitRuntime();
-    System::InitRuntime();
+    ComponentSystem::InitRuntime();
     Entity::InitRuntime();
     World::InitRuntime();
     WebUI::InitRuntime();

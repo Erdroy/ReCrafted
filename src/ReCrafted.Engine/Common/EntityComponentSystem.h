@@ -6,7 +6,7 @@
 #define ENTITYCOMPONENTSYSTEM_H
 
 // Base headers
-#include "Common/Entities/System.h"
+#include "Common/Entities/ComponentSystem.h"
 #include "Common/Entities/World.h"
 #include "Common/Entities/Entity.h"
 

@@ -12,7 +12,7 @@
 /**
  * \brief ScriptingSystem System. Provides hybridized ECS scripting.
  */
-class ScriptingSystem : public System
+class ScriptingSystem : public ComponentSystem
 {
 public:
     ScriptingSystem()

@@ -64,8 +64,8 @@
     <Compile Include="Common\Entities\EntityInternals.Gen.cs" />
     <Compile Include="Common\Entities\IComponent.cs" />
     <Compile Include="Common\Entities\IComponentDescriptor.cs" />
-    <Compile Include="Common\Entities\System.cs" />
-    <Compile Include="Common\Entities\System.Gen.cs" />
+    <Compile Include="Common\Entities\ComponentSystem.cs" />
+    <Compile Include="Common\Entities\ComponentSystem.Gen.cs" />
     <Compile Include="Common\Entities\World.cs" />
     <Compile Include="Common\Entities\World.Gen.cs" />
     <Compile Include="Common\Input.Gen.cs" />

@@ -10,7 +10,7 @@
 #include "Common/EntityComponentSystem.h"
 #include "IPhysicsEngine.h"
 
-class PhysicsSystem : public System
+class PhysicsSystem : public ComponentSystem
 {
 private:
     static RefPtr<IPhysicsEngine> m_engine;

@@ -12,7 +12,7 @@
 
 class World;
 
-class System : public Object
+class ComponentSystem : public Object
 {
     friend class EntityManager;
     friend class World;
@@ -31,8 +31,8 @@ private:
     RefPtr<Method> m_update_method = nullptr;
 
 public:
-    System() = default;
-    virtual ~System() = default;
+    ComponentSystem() = default;
+    virtual ~ComponentSystem() = default;
 
 public:
     template<typename TRequire>

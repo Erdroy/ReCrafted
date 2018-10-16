@@ -10,9 +10,9 @@ namespace ReCrafted.API.Common.Entities
 	/// <summary>
 	///	ECS System class.
 	/// </summary>
-	public abstract partial class System : Object
+	public abstract partial class ComponentSystem : Object
 	{
-        internal System() {}
+        internal ComponentSystem() {}
 
 		/// <summary>
 		///	Called when this System is being initialized.
@@ -43,7 +43,7 @@ namespace ReCrafted.API.Common.Entities
 		private static extern void ExcludeComponent(IntPtr systemNativePtr, ushort componentTypeId, bool nativeComponentId);
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		private static extern System Create(IntPtr systemType);
+		private static extern ComponentSystem Create(IntPtr systemType);
 
 	}
 }

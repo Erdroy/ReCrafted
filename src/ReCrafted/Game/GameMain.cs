@@ -17,9 +17,7 @@ using ReCrafted.Game.Super;
 
 namespace ReCrafted.Game
 {
-    using System = API.Common.Entities.System;
-    
-    internal class GameSystem : System
+    internal class GameSystem : ComponentSystem
     {
         protected override void Initialize()
         {

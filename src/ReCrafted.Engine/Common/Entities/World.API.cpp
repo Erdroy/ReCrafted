@@ -12,7 +12,7 @@ namespace Internal
         world->Update();
     }
 
-    void AddSystem(World* world, System* system, const uint16_t systemTypeId)
+    void AddSystem(World* world, ComponentSystem* system, const uint16_t systemTypeId)
     {
         cvar typeId = ECS_MAX_NATIVE_SYSTEMS + systemTypeId;
         ASSERT(typeId < ECS_MAX_SYSTEMS);

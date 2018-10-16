@@ -12,7 +12,7 @@
 #include "IAudioEngine.h"
 #include "AudioSoundComponent.h"
 
-class AudioSystem : public System
+class AudioSystem : public ComponentSystem
 {
 public:
     /**

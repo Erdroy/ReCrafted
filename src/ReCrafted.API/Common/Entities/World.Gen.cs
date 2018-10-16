@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 10/13/2018 13:03:31 Source: 'World.API.cpp' Target: 'Common/Entities/World.Gen.cs'
+// Generated: 10/16/2018 20:31:54 Source: 'World.API.cpp' Target: 'Common/Entities/World.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;

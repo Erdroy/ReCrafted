@@ -8,9 +8,9 @@ namespace ReCrafted.API.Common.Entities
         /// Adds given system to this world.
         /// </summary>
         /// <typeparam name="TSystem">The system type.</typeparam>
-        public TSystem AddSystem<TSystem>() where TSystem : System, new()
+        public TSystem AddSystem<TSystem>() where TSystem : ComponentSystem, new()
         {
-            var system = System.Create<TSystem>();
+            var system = ComponentSystem.Create<TSystem>();
             AddSystem(NativePtr, system.NativePtr, system.SystemTypeId);
             return system;
         }
@@ -18,10 +18,10 @@ namespace ReCrafted.API.Common.Entities
         /// <summary>
         /// Removes given system from this world.
         /// </summary>
-        /// <param name="system">The system instance that will be removed from this world.</param>
-        public void RemoveSystem(System system)
+        /// <param name="componentSystem">The system instance that will be removed from this world.</param>
+        public void RemoveSystem(ComponentSystem componentSystem)
         {
-            RemoveSystem(NativePtr, system.SystemTypeId);
+            RemoveSystem(NativePtr, componentSystem.SystemTypeId);
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace ReCrafted.API.Common.Entities
         /// </summary>
         /// <typeparam name="TSystem">The system type.</typeparam>
         /// <returns>True when added.</returns>
-        public bool HasSystem<TSystem>() where TSystem : System, new()
+        public bool HasSystem<TSystem>() where TSystem : ComponentSystem, new()
         {
             return HasSystem(NativePtr, new TSystem().SystemTypeId);
         }

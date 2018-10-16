@@ -3,7 +3,7 @@
 #include "EntityManager.h"
 #include "Entity.h"
 #include "World.h"
-#include "System.h"
+#include "ComponentSystem.h"
 
 EntityManager::~EntityManager()
 {
