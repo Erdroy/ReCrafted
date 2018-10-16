@@ -12,7 +12,6 @@ const char* jit_options[] = {
 };
 
 const char* rootDomainName = "ReCrafted";
-const char* runtimeVersion = "v4.0.30319";
 
 RefPtr<Assembly> Domain::LoadAssembly(const char* fileName)
 {
@@ -80,12 +79,11 @@ RefPtr<Domain> Domain::CreateRoot()
         mono_jit_parse_options(3, const_cast<char**>(jit_options));
     }
 
-    cvar domain = mono_jit_init_version(rootDomainName, runtimeVersion);
+    cvar domain = mono_jit_init(rootDomainName);
 
     if (!domain)
     {
-        Logger::LogException("Failed to create root domain! Domain Name: {0} Runtime Version: {1}", rootDomainName,
-                             runtimeVersion);
+        Logger::LogException("Failed to create root domain! Domain Name: {0}", rootDomainName);
         return nullptr;
     }
 
