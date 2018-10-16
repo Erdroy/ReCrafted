@@ -3,15 +3,12 @@
 using System;
 using ReCrafted.API;
 using ReCrafted.API.Common;
-using ReCrafted.API.Common.Components;
-using ReCrafted.API.Common.Entities;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
 using ReCrafted.API.UI.Controls;
 using ReCrafted.Common;
-using ReCrafted.Game.Core;
 using ReCrafted.Game.Interface;
 using ReCrafted.Game.Super;
 
@@ -76,12 +73,12 @@ namespace ReCrafted.Game
                 _buildNumberText.Text =
                     "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber;
 
-                // initialize default scripts
+                // initialize default game systems
                 // pause Menu
 
-                _console = new SuperConsole();
-                _pauseMenu = new PauseMenu();
-                _messenger = new Messenger();
+                _console = GameSystem.AddGameSystem<SuperConsole>();
+                _pauseMenu = GameSystem.AddGameSystem<PauseMenu>();
+                _messenger = GameSystem.AddGameSystem<Messenger>();
 
                 // create example webui view
                 _uiView = WebUI.Create();
@@ -101,6 +98,9 @@ namespace ReCrafted.Game
             try
             {
                 _camera.Update();
+
+                // Update game systems
+                GameSystem.UpdateAll();
 
                 _crosshairBox.Region =
                     new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);

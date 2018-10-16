@@ -1,9 +1,8 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
 using System;
-using ReCrafted.API.Core;
 
-namespace ReCrafted.Game.Core
+namespace ReCrafted.API.Core
 {
     internal static class Exceptions
     {

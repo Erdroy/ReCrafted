@@ -75,6 +75,8 @@
     <Compile Include="Common\Time.Gen.cs" />
     <Compile Include="Core\Application.Gen.cs" />
     <Compile Include="Core\Cursor.cs" />
+    <Compile Include="Core\Exceptions.cs" />
+    <Compile Include="Core\GameSystem.cs" />
     <Compile Include="Core\Keys.cs" />
     <Compile Include="Core\Logger.cs" />
     <Compile Include="Core\LogLevel.cs" />

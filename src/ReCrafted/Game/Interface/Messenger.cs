@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ReCrafted.API.Common;
+using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
 using ReCrafted.API.UI.Controls;
@@ -65,7 +66,7 @@ namespace ReCrafted.Game.Interface
     /// <summary>
     /// UI Messenger class.
     /// </summary>
-    public class Messenger : Script
+    public class Messenger : GameSystem
     {
         /// <summary>
         /// Messanger queue item.
@@ -163,7 +164,7 @@ namespace ReCrafted.Game.Interface
         public Color CenterMessageColor = new Color(0.8f, 0.8f, 0.8f, 1f);
 
         // on create
-        protected internal override void OnCreate()
+        protected override void OnCreate()
         {
             _instance = this;
 

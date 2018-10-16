@@ -12,7 +12,7 @@ namespace ReCrafted.Game.Super
     /// <summary>
     /// In-Game console UI class.
     /// </summary>
-    public class SuperConsole : Script
+    public class SuperConsole : GameSystem
     {
         /// <summary>
         /// Static instance for quick access
@@ -40,7 +40,7 @@ namespace ReCrafted.Game.Super
         public UITextField Input;
 
         // on create
-        protected internal override void OnCreate()
+        protected override void OnCreate()
         {
             Instance = this;
 

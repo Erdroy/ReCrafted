@@ -1,6 +1,7 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
 using ReCrafted.API.Common;
+using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.UI;
 using ReCrafted.API.UI.Controls;
@@ -10,7 +11,7 @@ namespace ReCrafted.Game.Interface
     /// <summary>
     /// PauseMenu UI class.
     /// </summary>
-    public class PauseMenu : Script
+    public class PauseMenu : GameSystem
     {
         /// <summary>
         /// Static instance for quick access
@@ -58,7 +59,7 @@ namespace ReCrafted.Game.Interface
         public UIButton Exit;
 
         // on create
-        protected internal override void OnCreate()
+        protected override void OnCreate()
         {
             Instance = this;
 

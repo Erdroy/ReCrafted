@@ -20,6 +20,7 @@ void ScriptingSystem::Update()
 
     for(auto& entity : entities)
     {
+        auto& transformComponent = entity.GetComponent<TransformComponent>();
         auto& scriptingComponent = entity.GetComponent<ScriptingComponent>();
 
         for(auto& script : scriptingComponent.scripts)
