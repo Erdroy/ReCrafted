@@ -10,6 +10,8 @@
 #include "Graphics/Mesh.h"
 #include "Graphics/Graphics.h"
 #include "Voxel.h"
+#include "VoxelMaterialManager.h"
+#include "Assets/VoxelMaterial.h"
 
 class VoxelChunkMesh : IDisposable
 {
@@ -78,7 +80,9 @@ public:
             var slot = 0;
             for(var material : section.materialSet)
             {
-                Graphics::GetInstance()->SetTexture(slot, SpaceObject::current->m_textures[material]);
+                cvar colorNearTexture = VoxelMaterialManager::GetMaterial(material)->GetTexture(VoxelMaterial::VoxelMaterialType::ColorBlend);
+
+                Graphics::GetInstance()->SetTexture(slot, colorNearTexture);
                 slot++;
             }
 

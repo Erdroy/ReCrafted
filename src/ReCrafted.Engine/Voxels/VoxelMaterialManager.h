@@ -23,7 +23,10 @@ private:
 
 private:
     spp::sparse_hash_map<VoxelMaterial_t, VoxelMaterial*> m_materials;
+    std::vector<VoxelMaterial*> m_allMaterials;
     Lock m_materialLock;
+
+    VoxelMaterial* m_defaultMaterial = nullptr;
 
 public:
     virtual ~VoxelMaterialManager() = default;
@@ -38,6 +41,8 @@ private:
     void UnregisterMaterial(VoxelMaterial* voxelMaterial);
 
 public:
+    static void SetDefaultMaterial(VoxelMaterial* material);
+    static void AddMaterial(VoxelMaterial* material);
     static VoxelMaterial* GetMaterial(VoxelMaterial_t id);
 };
 

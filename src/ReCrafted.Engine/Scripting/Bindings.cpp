@@ -18,6 +18,7 @@
 #include "WebUI/WebUI.h"
 #include "WebUI/WebUIView.h"
 #include "Graphics/DebugDraw.h"
+#include "Voxels/VoxelMaterialManager.h"
 
 void Bindings::Bind()
 {
@@ -40,6 +41,8 @@ void Bindings::Bind()
     Font::InitRuntime();
     Profiler::InitRuntime();
     KeyboardBuffer::InitRuntime();
+
+    VoxelMaterialManager::InitRuntime();
 }
 
 void Bindings::Shutdown()
