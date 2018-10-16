@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 10/15/2018 19:36:19 Source: 'System.API.cpp' Target: 'Common/Entities/System.Gen.cs'
+// Generated: 10/16/2018 19:58:59 Source: 'System.API.cpp' Target: 'Common/Entities/System.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -31,7 +31,7 @@ namespace ReCrafted.API.Common.Entities
 		/// <summary>
 		///	Updates this System. This is called by world.
 		/// </summary>
-		protected abstract unsafe void Update();
+		protected abstract void Update();
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		private static extern unsafe Entity* GetEntities(IntPtr systemNativePtr, out int numEntities);

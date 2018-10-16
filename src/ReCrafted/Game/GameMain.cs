@@ -31,25 +31,19 @@ namespace ReCrafted.Game
             Update();
         }
 
-        protected override unsafe void Update()
+        protected override void Update()
         {
             var entities = GetEntities();
 
-            var componentPrototype = new TransformComponent();
-            var componentId = componentPrototype.ComponentTypeId;
-            var isNativeComponent = componentPrototype.IsNativeComponent;
-
+            var transformHandle = new ComponentDescriptor<TransformComponent>();
+            
             foreach (var entity in entities)
             {
-                var transform = (TransformComponent*)entity.GetComponent(componentId, isNativeComponent);
-
-                transform->Position += Vector3.ForwardLH;
-
-                //var newPosition = transform.Data.Position + Vector3.Right;
-
-                // Upload changed data
-                // transform.SetData(ref newPosition, 0);
+                ref var transform = ref entity.GetComponent(ref transformHandle);
+                
+                transform.Position += Vector3.ForwardLH;
             }
+
         }
 
         public override ushort SystemTypeId => 0;
@@ -134,7 +128,7 @@ namespace ReCrafted.Game
 
                 var rand = new Random();
 
-                for (var i = 0; i < 100000; i ++)
+                for (var i = 0; i < 10; i ++)
                 {
                     var r1 = (float)rand.NextDouble();
                     var r2 = (float)rand.NextDouble();
@@ -155,7 +149,7 @@ namespace ReCrafted.Game
                 mainWorld.Update();
 
                 var startU = DateTime.Now;
-                for (var i = 0; i < 1000; i++)
+                for (var i = 0; i < 10; i++)
                 {
                     _gs.UpdateNow();
                 }
@@ -163,8 +157,8 @@ namespace ReCrafted.Game
                 var diff = endU - startU;
 
                 Logger.Log("Time: " + diff.TotalMilliseconds);
-                Logger.Log("Avg. update time : " + (diff.TotalMilliseconds / 1000.0));
-                Logger.Log("Avg. entity time : " + (diff.TotalMilliseconds / 1000.0 / 1000.0));
+                Logger.Log("Avg. update time : " + (diff.TotalMilliseconds / 100.0));
+                Logger.Log("Avg. entity time : " + (diff.TotalMilliseconds / 100.0 / 100.0));
             }
             catch (Exception exception)
             {

@@ -5,6 +5,10 @@ using System.Collections.Generic;
 
 namespace ReCrafted.API.Common.Entities
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// ECS Entity Enumerable.
+    /// </summary>
     public class EntityEnumerable : IEnumerable<Entity>
     {
         private readonly unsafe Entity* _ptrEntity;
@@ -19,11 +23,13 @@ namespace ReCrafted.API.Common.Entities
             _numEntity = entitiesNum;
         }
 
+        /// <inheritdoc />
         public unsafe IEnumerator<Entity> GetEnumerator()
         {
             return new EntityEnumerator(_ptrEntity, _numEntity);
         }
 
+        /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();

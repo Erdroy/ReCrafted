@@ -39,10 +39,11 @@
       <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Deployment" />
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.4.4.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -56,12 +57,13 @@
     <Compile Include="Common\Clipboard.cs" />
     <Compile Include="Common\Components\TransformComponent.cs" />
     <Compile Include="Common\Display.Gen.cs" />
-    <Compile Include="Common\Entities\ComponentHandle.cs" />
+    <Compile Include="Common\Entities\ComponentDescriptor.cs" />
     <Compile Include="Common\Entities\Entity.cs" />
     <Compile Include="Common\Entities\EntityEnumerable.cs" />
     <Compile Include="Common\Entities\EntityEnumerator.cs" />
     <Compile Include="Common\Entities\EntityInternals.Gen.cs" />
     <Compile Include="Common\Entities\IComponent.cs" />
+    <Compile Include="Common\Entities\IComponentDescriptor.cs" />
     <Compile Include="Common\Entities\System.cs" />
     <Compile Include="Common\Entities\System.Gen.cs" />
     <Compile Include="Common\Entities\World.cs" />

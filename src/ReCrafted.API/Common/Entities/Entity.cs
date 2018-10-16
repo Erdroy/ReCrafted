@@ -1,10 +1,14 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace ReCrafted.API.Common.Entities
 {
+    /// <summary>
+    /// ECS Entity structure.
+    /// </summary>
     [StructLayout(LayoutKind.Explicit, Size = 16)]
     public struct Entity
     {
@@ -20,11 +24,21 @@ namespace ReCrafted.API.Common.Entities
             WorldPtr = worldPtr;
         }
 
+        /// <summary>
+        /// Adds component of given type to this entity.
+        /// </summary>
+        /// <typeparam name="TComponent">The component type which will be removed.</typeparam>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddComponent<TComponent>() where TComponent : IComponent, new()
         {
             AddComponent(new TComponent());
         }
-
+        
+        /// <summary>
+        /// Adds given component to this entity.
+        /// </summary>
+        /// <param name="component">The component instance.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddComponent<TComponent>(TComponent component) where TComponent : IComponent, new()
         {
             var componentHandle = GCHandle.Alloc(component, GCHandleType.Pinned);
@@ -37,12 +51,21 @@ namespace ReCrafted.API.Common.Entities
             componentHandle.Free();
         }
         
-        public unsafe ComponentData* GetComponent(ushort componentId, bool isNativeComponent)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe ref TComponent GetComponent<TComponent>(ref ComponentDescriptor<TComponent> descriptor) where TComponent : IComponent, new()
         {
-            // Download component data
-            return EntityInternals.GetEntityComponent(WorldPtr, EntityId, componentId, isNativeComponent);
+            // Get entity component data pointer.
+            var nativePointer = EntityInternals.GetEntityComponent(WorldPtr, EntityId, descriptor.ComponentId, descriptor.IsNativeComponent);
+            
+            // Get reference to the pointer.
+            return ref descriptor.GetRef(nativePointer);
         }
 
+        /// <summary>
+        /// Removes component of given type from this entity.
+        /// </summary>
+        /// <typeparam name="TComponent">The component type which will be removed.</typeparam>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RemoveComponent<TComponent>() where TComponent : IComponent, new()
         {
             var componentPrototype = new TComponent();
@@ -54,6 +77,7 @@ namespace ReCrafted.API.Common.Entities
         /// <summary>
         /// Removes all components from this entity.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CleanComponents()
         {
             EntityInternals.CleanEntity(WorldPtr, EntityId);
@@ -62,6 +86,7 @@ namespace ReCrafted.API.Common.Entities
         /// <summary>
         /// Activates this entity.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Activate()
         {
             EntityInternals.ActivateEntity(WorldPtr, EntityId);
@@ -70,6 +95,7 @@ namespace ReCrafted.API.Common.Entities
         /// <summary>
         /// Deactivates this entity.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Deactivate()
         {
             EntityInternals.DeactivateEntity(WorldPtr, EntityId);
@@ -78,6 +104,7 @@ namespace ReCrafted.API.Common.Entities
         /// <summary>
         /// Destroys this entity.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Destroy()
         {
             EntityInternals.DestroyEntity(WorldPtr, EntityId);
