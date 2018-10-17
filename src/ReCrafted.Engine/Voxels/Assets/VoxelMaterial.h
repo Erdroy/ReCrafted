@@ -14,6 +14,9 @@
 
 class VoxelMaterial : public JsonAsset
 {
+private:
+    SCRIPTING_API_IMPL();
+
 public:
     enum class VoxelMaterialType
     {

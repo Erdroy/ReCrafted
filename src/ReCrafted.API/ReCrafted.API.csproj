@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets.cs" />
+    <Compile Include="Audio\AudioSound.Gen.cs" />
     <Compile Include="Common\Clipboard.cs" />
     <Compile Include="Common\Components\TransformComponent.cs" />
     <Compile Include="Common\Display.Gen.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Graphics\Font.cs" />
     <Compile Include="Graphics\Font.Gen.cs" />
     <Compile Include="Graphics\Graphics.Gen.cs" />
+    <Compile Include="Graphics\Shader.Gen.cs" />
     <Compile Include="Graphics\Sprite.cs" />
     <Compile Include="Graphics\Texture.cs" />
     <Compile Include="Graphics\Texture.Gen.cs" />
@@ -141,6 +143,7 @@
     <Compile Include="UI\UIPanel.cs" />
     <Compile Include="UI\UISelectableText.cs" />
     <Compile Include="Utils\TextWrapper.cs" />
+    <Compile Include="Voxels\VoxelMaterial.Gen.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

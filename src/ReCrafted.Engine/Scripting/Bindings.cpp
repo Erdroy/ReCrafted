@@ -19,6 +19,8 @@
 #include "WebUI/WebUIView.h"
 #include "Graphics/DebugDraw.h"
 #include "Voxels/VoxelMaterialManager.h"
+#include "Audio/AudioSound.h"
+#include "Voxels/Assets/VoxelMaterial.h"
 
 static spp::sparse_hash_map<std::string, Action<Object*>> g_objectMap;
 
@@ -29,25 +31,44 @@ void Bindings::Bind()
 
     Object::InitRuntime();
 
+    // == Engine components ==
     Application::InitRuntime();
-
     Input::InitRuntime();
     Time::InitRuntime();
     Display::InitRuntime();
     UI::InitRuntime();
-    ComponentSystem::InitRuntime();
-    Entity::InitRuntime();
-    World::InitRuntime();
-    WebUI::InitRuntime();
-    WebUIView::InitRuntime();
-    Camera::InitRuntime();
-    Texture::InitRuntime();
     DebugDraw::InitRuntime();
     Font::InitRuntime();
     Profiler::InitRuntime();
     KeyboardBuffer::InitRuntime();
 
+
+    // == ECS ==
+    ComponentSystem::InitRuntime();
+    Entity::InitRuntime();
+    World::InitRuntime();
+
+
+    // == WebUI ==
+    WebUI::InitRuntime();
+    WebUIView::InitRuntime();
+
+
+    // == Voxels ==
     VoxelMaterialManager::InitRuntime();
+
+
+    // == Spawnable objects ==
+    Camera::InitRuntime();
+
+
+    // == Assets ==
+    Texture::InitRuntime();
+    VoxelMaterial::InitRuntime();
+    AudioSound::InitRuntime();
+    Shader::InitRuntime();
+
+
 }
 
 void Bindings::Shutdown()

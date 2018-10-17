@@ -22,6 +22,9 @@ class Shader : public JsonAsset
     friend class UI;
 
 private:
+    SCRIPTING_API_IMPL()
+
+private:
     Renderer::ShaderHandle m_shaderHandle;
     Text m_shaderName;
 

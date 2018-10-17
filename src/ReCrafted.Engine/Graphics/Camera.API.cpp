@@ -167,11 +167,13 @@ namespace Internal
     {
         return Object::CreateInstance<Camera>("ReCrafted.API.Graphics", "Camera")->GetManagedPtr();
     }
+
+    API_DEFINE_OBJECT_CREATOR("ReCrafted.API.Graphics", "Camera", Camera)
 }
 
 void Camera::InitRuntime()
 {
-    // create type binding
+    API_REGISTER_OBJECT("ReCrafted.API.Graphics.Camera", &Internal::CreateCamera);
 
     API_FILE("Graphics/Camera.Gen.cs");
     {

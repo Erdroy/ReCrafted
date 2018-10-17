@@ -11,10 +11,21 @@
 
 class AudioSound : public BinaryAsset
 {
+private:
+    SCRIPTING_API_IMPL();
+
+public:
+    AudioSound() = default;
+
 protected:
     void OnInitialize() override;
     void OnUnload() override;
     void OnDeserializeBinary(uint16_t version, BinaryStream& stream) override;
+
+    AssetType GetAssetType() override
+    {
+        return AssetType::Unknown;
+    }
 };
 
 #endif // AUDIOSOUND_H

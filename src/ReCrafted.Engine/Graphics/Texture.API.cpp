@@ -52,11 +52,13 @@ namespace Internal
         cvar texture = Object::CreateAssetInstance<Texture>("ReCrafted.API.Graphics", "Texture");
         return texture->GetManagedPtr();
     }
+
+    API_DEFINE_OBJECT_CREATOR("ReCrafted.API.Graphics", "Texture", Texture)
 }
 
 void Texture::InitRuntime()
 {
-    // create type binding
+    API_REGISTER_OBJECT("ReCrafted.API.Graphics.Texture", &Internal::CreateTexture);
 
     API_FILE("Graphics/Texture.Gen.cs");
     {
