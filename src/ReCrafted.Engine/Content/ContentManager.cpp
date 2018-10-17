@@ -116,8 +116,51 @@ void ContentManager::ReleaseAsset(Asset* asset)
     delete asset;
 }
 
+Asset* ContentManager::LoadAssetSync(Asset* asset, const std::string& assetFile, const std::string& file)
+{
+    // Set asset name and file name
+    asset->m_assetName = assetFile;
+    asset->m_assetFile = file;
+
+    asset->OnLoadBegin(file);
+
+    if (m_instance->LoadAsset(asset, file.c_str()))
+    {
+        delete asset;
+        return nullptr;
+    }
+
+    // Set asset as loaded and non-virtual
+    asset->m_loaded = true;
+
+    // Register and initialize asset
+    m_instance->RegisterAsset(asset);
+    asset->OnInitialize();
+
+    return asset;
+}
+
+void ContentManager::LoadAssetAsync(Asset* asset, const std::string& assetFile, const std::string& file,
+    const Action<void, Asset*>& onLoad)
+{
+    // Set asset name and file name
+    asset->m_assetName = assetFile;
+    asset->m_assetFile = file;
+
+    asset->OnLoadBegin(file);
+
+    // Create and queue task
+    var customTask = new AssetLoadTask();
+    customTask->file = file;
+    customTask->asset = asset;
+    customTask->callback = onLoad;
+    Task::CreateTask(customTask)->Queue();
+}
+
 void ContentManager::UnloadAsset(Asset* asset)
 {
+    ASSERT(m_instance);
+
     // Queue for asset unloading
     m_instance->m_unloadQueue.enqueue(asset);
 }

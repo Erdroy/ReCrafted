@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 10/17/2018 16:59:53 Source: 'Camera.API.cpp' Target: 'Graphics/Camera.Gen.cs'
+// Generated: 10/17/2018 17:39:44 Source: 'Camera.API.cpp' Target: 'Graphics/Camera.Gen.cs'
 
 using ReCrafted.API.Mathematics;
 using System;

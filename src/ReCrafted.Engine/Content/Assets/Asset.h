@@ -20,6 +20,9 @@ class Asset : public Object
 {
     friend class ContentManager;
 
+private:
+    SCRIPTING_API_IMPL();
+
 public:
     static const size_t AssetHeaderSize = 
         3 * sizeof(uint8_t) +   // RCA

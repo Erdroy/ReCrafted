@@ -21,6 +21,9 @@ private:
     friend class EngineMain;
 
 private:
+    SCRIPTING_API_IMPL();
+
+private:
     struct AssetLoadTask : ITask
     {
     public:
@@ -79,6 +82,10 @@ private:
         cvar asset = new TAsset();
         return asset;
     }
+
+private:
+    static Asset* LoadAssetSync(Asset* asset, const std::string& assetFile, const std::string& file);
+    static void LoadAssetAsync(Asset* asset, const std::string& assetFile, const std::string& file, const Action<void, Asset*>& onLoad);
 
 public:
     /**
@@ -144,28 +151,8 @@ public:
         // Build file name
         cvar assetName = std::string(assetFile);
         cvar file = "../content/" + assetName + ".rcasset";
-
         cvar asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
-
-        // Set asset name and file name
-        asset->m_assetName = assetFile;
-        asset->m_assetFile = file;
-
-        asset->OnLoadBegin(file);
-
-        if (m_instance->LoadAsset(asset, file.c_str()))
-        {
-            delete asset;
-            return nullptr;
-        }
-
-        // Set asset as loaded and non-virtual
-        asset->m_loaded = true;
-
-        // Register and initialize asset
-        m_instance->RegisterAsset(asset);
-        asset->OnInitialize();
-        return static_cast<TAsset*>(asset);
+        return static_cast<TAsset*>(LoadAssetSync(asset, assetFile, file));
     }
 
     /**
@@ -183,19 +170,12 @@ public:
         cvar file = "../content/" + assetName + ".rcasset";
 
         cvar asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
+        LoadAssetAsync(asset, assetFile, file, onLoad);
+    }
 
-        // Set asset name and file name
-        asset->m_assetName = assetFile;
-        asset->m_assetFile = file;
-
-        asset->OnLoadBegin(file);
-
-        // Create and queue task
-        var customTask = new AssetLoadTask();
-        customTask->file = file;
-        customTask->asset = asset;
-        customTask->callback = onLoad;
-        Task::CreateTask(customTask)->Queue();
+    static void InternalLoadAsset(Asset* asset, const char* assetFile)
+    {
+        
     }
 };
 
