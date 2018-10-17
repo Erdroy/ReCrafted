@@ -14,8 +14,10 @@ void VoxelMaterial::InitRuntime()
 
     API_FILE("Voxels/VoxelMaterial.Gen.cs");
     {
+        API_USING("ReCrafted.API.Content");
+
         API_COMMENT("VoxelMaterial class.");
-        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Voxels", "VoxelMaterial", "Object", PARTIAL, NOCONSTRUCTOR);
+        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Voxels", "VoxelMaterial", "Asset", PARTIAL, NOCONSTRUCTOR);
         {
         }
         API_CLASS_END();

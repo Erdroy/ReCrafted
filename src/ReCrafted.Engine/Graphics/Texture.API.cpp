@@ -62,8 +62,10 @@ void Texture::InitRuntime()
 
     API_FILE("Graphics/Texture.Gen.cs");
     {
+        API_USING("ReCrafted.API.Content");
+
         API_COMMENT("Texture class.");
-        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Texture", "Object", PARTIAL, NOCONSTRUCTOR);
+        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Texture", "Asset", PARTIAL, NOCONSTRUCTOR);
         {
             API_METHOD(INTERNAL, STATIC, "InternalLoadFile", EXTERN);
             {

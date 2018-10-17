@@ -14,8 +14,10 @@ void Shader::InitRuntime()
 
     API_FILE("Graphics/Shader.Gen.cs");
     {
+        API_USING("ReCrafted.API.Content");
+
         API_COMMENT("Shader class.");
-        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Shader", "Object", PARTIAL, NOCONSTRUCTOR);
+        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "Shader", "Asset", PARTIAL, NOCONSTRUCTOR);
         {
         }
         API_CLASS_END();

@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 10/17/2018 17:36:50 Source: 'Content.API.cpp' Target: 'Content/ContentManagerInternals.Gen.cs'
+// Generated: 10/17/2018 18:05:21 Source: 'Content.API.cpp' Target: 'Content/ContentManagerInternals.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;

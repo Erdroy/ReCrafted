@@ -113,7 +113,7 @@ void ContentManager::ReleaseAsset(Asset* asset)
     asset->OnUnload();
 
     // Delete asset
-    delete asset;
+    Object::Destroy(asset);
 }
 
 Asset* ContentManager::LoadAssetSync(Asset* asset, const std::string& assetFile, const std::string& file)
@@ -126,7 +126,7 @@ Asset* ContentManager::LoadAssetSync(Asset* asset, const std::string& assetFile,
 
     if (m_instance->LoadAsset(asset, file.c_str()))
     {
-        delete asset;
+        Object::Destroy(asset);
         return nullptr;
     }
 

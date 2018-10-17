@@ -61,6 +61,8 @@ void Bindings::Bind()
     // == Spawnable objects ==
     Camera::InitRuntime();
 
+    // == Content ==
+    ContentManager::InitRuntime();
 
     // == Assets ==
     Texture::InitRuntime();

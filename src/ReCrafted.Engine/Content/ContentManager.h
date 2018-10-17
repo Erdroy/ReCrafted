@@ -71,6 +71,13 @@ private:
     bool LoadAsset(Asset* asset, const char* name) const;
     void ReleaseAsset(Asset* asset);
 
+private:
+    static std::string GetAssetFile(const char* assetFile)
+    {
+        cvar assetName = std::string(assetFile);
+        return "../content/" + assetName + ".rcasset";
+    }
+
     /**
      * \brief Creates empty virtual asset of given type.
      * \tparam TAsset The target asset class type.
@@ -83,9 +90,18 @@ private:
         return asset;
     }
 
-private:
     static Asset* LoadAssetSync(Asset* asset, const std::string& assetFile, const std::string& file);
     static void LoadAssetAsync(Asset* asset, const std::string& assetFile, const std::string& file, const Action<void, Asset*>& onLoad);
+
+public:
+    static void InternalLoadAssetSync(Asset* asset, const char* assetFile)
+    {
+        // Build file name
+        cvar file = GetAssetFile(assetFile);
+
+        // Load asset sync
+        LoadAssetSync(asset, assetFile, file);
+    }
 
 public:
     /**
@@ -149,8 +165,8 @@ public:
     static TAsset* LoadAsset(const char* assetFile)
     {
         // Build file name
-        cvar assetName = std::string(assetFile);
-        cvar file = "../content/" + assetName + ".rcasset";
+        cvar file = GetAssetFile(assetFile);
+
         cvar asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
         return static_cast<TAsset*>(LoadAssetSync(asset, assetFile, file));
     }
@@ -166,16 +182,10 @@ public:
     static void LoadAsset(const char* assetFile, const Action<void, Asset*>& onLoad)
     {
         // Build file name
-        cvar assetName = std::string(assetFile);
-        cvar file = "../content/" + assetName + ".rcasset";
+        cvar file = GetAssetFile(assetFile);
 
         cvar asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
         LoadAssetAsync(asset, assetFile, file, onLoad);
-    }
-
-    static void InternalLoadAsset(Asset* asset, const char* assetFile)
-    {
-        
     }
 };
 

@@ -14,8 +14,10 @@ void AudioSound::InitRuntime()
 
     API_FILE("Audio/AudioSound.Gen.cs");
     {
+        API_USING("ReCrafted.API.Content");
+
         API_COMMENT("AudioSound class.");
-        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Audio", "AudioSound", "Object", PARTIAL, NOCONSTRUCTOR);
+        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Audio", "AudioSound", "Asset", PARTIAL, NOCONSTRUCTOR);
         {
         }
         API_CLASS_END();

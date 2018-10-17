@@ -12,7 +12,8 @@ namespace Internal
         MONO_ANSI_ERR();
         cvar assetFile = MONO_ANSI(string);
 
-        // TODO: Load asset
+        // Load asset
+        ContentManager::InternalLoadAssetSync(asset, assetFile);
 
         // free ansi string
         MONO_ANSI_FREE(assetFile);
@@ -26,6 +27,7 @@ namespace Internal
         MONO_ANSI_ERR();
         cvar assetFile = MONO_ANSI(string);
 
+        // TODO: Create action from delegate (how?)
         // TODO: Load asset async
 
         // free ansi string
@@ -44,14 +46,14 @@ void ContentManager::InitRuntime()
         {
             API_METHOD(PUBLIC, STATIC, "UnloadAsset", EXTERN);
             {
-                API_BIND("ReCrafted.API.Content.ContentManager::UnloadAsset", &ContentManager::UnloadAsset);
+                API_BIND("ReCrafted.API.Content.ContentManagerInternals::UnloadAsset", &ContentManager::UnloadAsset);
                 API_PARAM("IntPtr", "assetNativePtr");
             }
             API_METHOD_END();
 
             API_METHOD(PUBLIC, STATIC, "LoadAsset", EXTERN);
             {
-                API_BIND("ReCrafted.API.Content.ContentManager::LoadAsset", &Internal::LoadAsset);
+                API_BIND("ReCrafted.API.Content.ContentManagerInternals::LoadAsset", &Internal::LoadAsset);
                 API_PARAM("IntPtr", "assetNativePtr");
                 API_PARAM("string", "assetFile");
 
@@ -61,7 +63,7 @@ void ContentManager::InitRuntime()
 
             API_METHOD(PUBLIC, STATIC, "LoadAssetAsync", EXTERN);
             {
-                API_BIND("ReCrafted.API.Content.ContentManager::LoadAssetAsync", &Internal::LoadAssetAsync);
+                API_BIND("ReCrafted.API.Content.ContentManagerInternals::LoadAssetAsync", &Internal::LoadAssetAsync);
                 API_PARAM("IntPtr", "assetNativePtr");
                 API_PARAM("string", "assetFile");
                 API_PARAM("Action<Asset>", "onLoad");
