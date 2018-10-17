@@ -15,6 +15,12 @@
 #define MONO_STRING_FROM_TEXT(x) mono_string_new(mono_domain_get(), x.StdStr().c_str())
 #define TEXT_FROM_MONO_STRING(x) Text(MONO_TEXT(x))
 
+#define API_REGISTER_OBJECT(fullName, createFunction) Bindings::RegisterObject(fullName, Action<Object*>::New(createFunction));
+#define API_DEFINE_OBJECT_CREATOR(objectNamespace, objectName, objectType) \
+        Object* Create##objectType() {\
+            return Object::CreateInstance<objectType>(objectNamespace, objectName).get();\
+        }
+
 #define API_BIND(name, method) mono_add_internal_call(name, method)
 
 // API

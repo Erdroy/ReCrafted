@@ -1,6 +1,7 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
 using System;
+using ReCrafted.API.Core;
 
 namespace ReCrafted.API
 {
@@ -31,6 +32,21 @@ namespace ReCrafted.API
                 // object was finalized
                 InternalObjectFinalized(NativePtr);
             }
+        }
+
+        /// <summary>
+        /// Creates managed Object of given type with it's unmanaged corresponsive type.
+        /// </summary>
+        /// <typeparam name="TType">The type of Object to be created.</typeparam>
+        /// <returns>The created Object.</returns>
+        public static TType New<TType>() where TType : Object
+        {
+            // Do not allow to create raw Object files.
+            if (typeof(TType) == typeof(Object))
+                throw new ReCraftedException("Cannot create instance of raw Object type!");
+
+            // Create managed and unmanaged object
+            return (TType)InternalNew(typeof(TType).TypeHandle.Value);
         }
 
         /// <summary>

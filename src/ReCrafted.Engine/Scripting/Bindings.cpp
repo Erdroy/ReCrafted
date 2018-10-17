@@ -20,8 +20,13 @@
 #include "Graphics/DebugDraw.h"
 #include "Voxels/VoxelMaterialManager.h"
 
+static spp::sparse_hash_map<std::string, Action<Object*>> g_objectMap;
+
 void Bindings::Bind()
 {
+    g_objectMap = {};
+    g_objectMap.clear();
+
     Object::InitRuntime();
 
     Application::InitRuntime();
@@ -47,4 +52,19 @@ void Bindings::Bind()
 
 void Bindings::Shutdown()
 {
+}
+
+void Bindings::RegisterObject(const char* fullName, const Action<Object*>& createFunction)
+{
+    g_objectMap.insert(std::make_pair(fullName, createFunction));
+}
+
+Action<Object*>* Bindings::GetObjectCreator(const char* fullName)
+{
+    cvar it = g_objectMap.find(fullName);
+
+    if (it == g_objectMap.end())
+        return nullptr;
+
+    return &it->second;
 }
