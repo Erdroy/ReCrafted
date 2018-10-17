@@ -60,6 +60,7 @@
     <Compile Include="Tags\APITagFileEnd.cs" />
     <Compile Include="Tags\APITagFile.cs" />
     <Compile Include="Tags\APITagComment.cs" />
+    <Compile Include="Tags\APITagNull.cs" />
     <Compile Include="Tags\APITagPropertyEnd.cs" />
     <Compile Include="Tags\APITagProperty.cs" />
     <Compile Include="Tags\APITagMethodEnd.cs" />

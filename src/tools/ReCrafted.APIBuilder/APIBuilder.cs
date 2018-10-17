@@ -29,6 +29,10 @@ namespace ReCrafted.APIBuilder
             { "API_CODE", typeof(APITagCode) },
             { "API_PARAM", typeof(APITagParam) },
             { "API_RETURN", typeof(APITagReturn) },
+
+            { "API_BIND", typeof(APITagNull) },
+            { "API_DEFINE_OBJECT_CREATOR", typeof(APITagNull) },
+            { "API_REGISTER_OBJECT", typeof(APITagNull) }
         };
         
         public static List<APITagFile> Files = new List<APITagFile>();
@@ -86,7 +90,7 @@ namespace ReCrafted.APIBuilder
                 var line = lineSource.Trim();
                 LineText = line;
                 
-                if (!line.StartsWith("API_") || line.StartsWith("API_BIND"))
+                if (!line.StartsWith("API_"))
                     continue;
 
                 try
@@ -101,6 +105,10 @@ namespace ReCrafted.APIBuilder
                     }
 
                     var tag = _apiTags[token];
+
+                    if (tag == typeof(APITagNull))
+                        continue;
+
                     var parameters = APIBuilderUtils.GetParameters(line);
 
                     var inst = (APITag)Activator.CreateInstance(tag);
