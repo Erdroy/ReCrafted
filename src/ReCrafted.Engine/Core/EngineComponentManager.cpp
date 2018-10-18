@@ -35,9 +35,27 @@ void EngineComponentManager::Update()
 {
     ScopeLock(m_componentsLock);
 
-    // call OnLoad in all components
-    for (var&& component : m_components)
+    // call Update in all components
+    for (rvar component : m_components)
         component->Update();
+}
+
+void EngineComponentManager::LateUpdate()
+{
+    ScopeLock(m_componentsLock);
+
+    // call LateUpdate in all components
+    for (rvar component : m_components)
+        component->LateUpdate();
+}
+
+void EngineComponentManager::FrameFinished()
+{
+    ScopeLock(m_componentsLock);
+
+    // call OnFrameFinished in all components
+    for (rvar component : m_components)
+        component->OnFrameFinished();
 }
 
 void EngineComponentManager::ReleaseComponent(EngineComponentBase* component)

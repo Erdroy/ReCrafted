@@ -98,13 +98,26 @@ void EngineMain::OnUpdate()
         m_componentManager->Update();
     }
     Profiler::EndProfile();
+
+    Profiler::BeginProfile("LateUpdate");
+    {
+        // Update all components
+        m_componentManager->LateUpdate();
+    }
+    Profiler::EndProfile();
 }
 
 void EngineMain::OnRender()
 {
-    ContentManager::GetInstance()->PreFrame();
-
     Graphics::GetInstance()->Render();
+
+    // Frame is finished
+    Profiler::BeginProfile("FrameFinished");
+    {
+        // Call component
+        m_componentManager->FrameFinished();
+    }
+    Profiler::EndProfile();
 }
 
 void EngineMain::OnWindowResized()

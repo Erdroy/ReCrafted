@@ -28,6 +28,8 @@ private:
     void OnLoad();
     void OnDispose() override;
     void Update();
+    void LateUpdate();
+    void FrameFinished();
 
 private:
     void ReleaseComponent(EngineComponentBase* component);
