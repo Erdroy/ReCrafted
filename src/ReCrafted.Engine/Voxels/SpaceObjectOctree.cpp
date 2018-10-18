@@ -70,12 +70,15 @@ void SpaceObjectOctree::GeneratePrimary()
                 
                 node->SetDepth(0); // Set 0 as first node depth
 
-                // populate node
-                node->Populate();
-
                 nodeId++;
             }
         }
+    }
+
+    for(var i = 0; i < m_rootNodesCount; i ++)
+    {
+        // populate node
+        m_rootNodes[i]->Populate();
     }
 
     // Calculate max depth

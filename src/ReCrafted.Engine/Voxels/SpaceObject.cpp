@@ -9,12 +9,8 @@
 #include "Graphics/Graphics.h"
 #include "Content/ContentManager.h"
 
-SpaceObject* SpaceObject::current;
-
 void SpaceObject::Init(SpaceObjectSettings& settings)
 {
-    current = this;
-
     // set settings
     m_settings = settings;
 
@@ -24,14 +20,6 @@ void SpaceObject::Init(SpaceObjectSettings& settings)
 
     // Load shader
     m_terrainShader = ContentManager::LoadAsset<Shader>("Shaders/TerrainShader");
-
-    // Load sample textures TODO: Use async loading
-    m_textures.Add(ContentManager::LoadAsset<Texture>("Textures/Voxel/Rock")); 
-    m_textures.Add(ContentManager::LoadAsset<Texture>("Textures/Voxel/Grass"));
-    m_textures.Add(ContentManager::LoadAsset<Texture>("Textures/Voxel/Soil"));
-    m_textures.Add(ContentManager::LoadAsset<Texture>("Textures/Voxel/Clay"));
-    m_textures.Add(ContentManager::LoadAsset<Texture>("Textures/Voxel/Rock1"));
-    m_textures.Add(ContentManager::LoadAsset<Texture>("Textures/Voxel/Rock2"));
 
     // initialize voxel generator
     m_generator.reset(new VoxelGenerator());

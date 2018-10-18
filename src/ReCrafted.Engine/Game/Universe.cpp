@@ -60,6 +60,8 @@ void Universe::OnDispose()
 
 void Universe::Update()
 {
+    ASSERT(Camera::GetMainCamera());
+
     SpaceObjectManager::GetInstance()->Update();
 
     if (Input::IsKeyDown(Key_F7))
