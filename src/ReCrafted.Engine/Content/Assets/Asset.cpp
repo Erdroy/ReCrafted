@@ -10,11 +10,7 @@ void Asset::OnDestroy()
 
 Asset::~Asset()
 {
-    if(!m_unloaded)
-    {
-        // Unload the asset when object is deleted
-        Unload();
-    }
+    Unload();
 }
 
 void Asset::Deserialize(BinaryStream& stream)
@@ -35,7 +31,6 @@ void Asset::Deserialize(BinaryStream& stream)
     ASSERT(stream.Position() == AssetHeaderSize);
 
     OnDeserializeBinary(version, stream);
-    OnLoadEnd();
 }
 
 void Asset::Deserialize(const json& json, const std::string& content)
@@ -51,19 +46,19 @@ void Asset::Deserialize(const json& json, const std::string& content)
     ASSERT(assetType == GetAssetType());
 
     OnDeserializeJson(assetVersion, json);
-    OnLoadEnd();
+}
+
+void Asset::OnLoadEnd()
+{
+    // Unload if needed
+    if (m_unload)
+        Unload();
 }
 
 void Asset::Unload()
 {
-    if(!m_virtual && !m_loaded)
-    {
-        _ASSERT_(false, "Asset is still loading. Cannot unload now!");
-    }
-
     if(!m_unloaded)
     {
         ContentManager::UnloadAsset(this);
-        m_unloaded = true;
     }
 }

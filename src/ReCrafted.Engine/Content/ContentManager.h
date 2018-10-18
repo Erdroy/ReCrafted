@@ -40,7 +40,13 @@ private:
 
         void Finish() override
         {
+            if (!asset)
+                return;
+
             GetInstance()->RegisterAsset(asset);
+
+            asset->OnLoadEnd();
+
             // Set asset as loaded and non-virtual
             asset->m_loaded = true;
             asset->OnInitialize();
@@ -65,7 +71,10 @@ private:
     void OnInit() override;
     void OnDispose() override;
     void Update() override;
-    void PreFrame();
+    void OnFrameFinished() override;
+
+private:
+    void UnloadAssets();
 
 private:
     void RegisterAsset(Asset* asset);

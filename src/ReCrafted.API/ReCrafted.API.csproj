@@ -72,6 +72,7 @@
     <Compile Include="Common\KeyboardBuffer.Gen.cs" />
     <Compile Include="Common\Profiler.Gen.cs" />
     <Compile Include="Common\Time.Gen.cs" />
+    <Compile Include="Content\Asset.cs" />
     <Compile Include="Content\Asset.Gen.cs" />
     <Compile Include="Content\ContentManager.cs" />
     <Compile Include="Content\ContentManagerInternals.Gen.cs" />

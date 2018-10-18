@@ -3,6 +3,7 @@
 using System;
 using ReCrafted.API;
 using ReCrafted.API.Common;
+using ReCrafted.API.Content;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
@@ -78,7 +79,9 @@ namespace ReCrafted.Game
                 _uiView = WebUI.Create();
                 _uiView.Navigate("file:///ui/default.html");
                 //_uiView.Navigate("file:///ui/menu/menu.html");
-                
+
+                var testTexture = ContentManager.LoadAsset<Texture>("Textures/Default");
+                testTexture.Unload();
             }
             catch (Exception exception)
             {

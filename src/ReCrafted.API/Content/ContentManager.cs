@@ -29,11 +29,5 @@ namespace ReCrafted.API.Content
             // Load asset async
             ContentManagerInternals.LoadAssetAsync(assetObject.NativePtr, assetFile, onLoad);
         }
-
-        public static void UnloadAsset<TAsset>(TAsset asset) where TAsset : Asset
-        {
-            Debug.Assert(asset);
-            ContentManagerInternals.UnloadAsset(asset.NativePtr);
-        }
     }
 }

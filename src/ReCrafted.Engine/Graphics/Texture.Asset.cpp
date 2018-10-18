@@ -1,6 +1,7 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Texture.h"
+#include "Core/Logger.h"
 
 
 void Texture::LoadTextureMipTask::Execute(void* userData)
@@ -36,6 +37,20 @@ void Texture::LoadTextureMipTask::Finish()
     Renderer::UpdateTextureView(texture->GetHandle(), mipLevel, mipCount - mipLevel);
     Renderer::QueueFree(m_mipData);
 
+    // Check if we must cancel loading, due to the texture is being unloaded
+    if (texture->m_unload)
+    {
+        // Close file
+        file.Close();
+
+        // Finish loading
+        texture->m_lazyLoading = false;
+
+        // Unload the texture.
+        texture->Unload();
+        return;
+    }
+
     // Check if we have any mips left
     if (mipLevel > 0)
     {
@@ -55,6 +70,13 @@ void Texture::LoadTextureMipTask::Finish()
     {
         // Close file
         file.Close();
+
+        // Finish loading
+        texture->m_lazyLoading = false;
+
+#ifdef _DEBUG
+        Logger::Log("Texture asset '{0}' finished loading.", texture->AssetFile());
+#endif
     }
 }
 

@@ -100,6 +100,11 @@ protected:
         return false; // False, because texture has it's own task-based lazy loading
     }
 
+    bool IsLoaded() const override
+    {
+        return (m_loaded && !m_lazyLoading) || IsVirtual();
+    }
+
 public:
     /**
      * \brief Initializes this texture and allocates memory using texture format RGBA8.

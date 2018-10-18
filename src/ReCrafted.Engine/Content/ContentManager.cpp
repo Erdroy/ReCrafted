@@ -6,6 +6,7 @@
 
 #include <string>
 #include <fstream>
+#include "Common/Profiler/Profiler.h"
 
 SINGLETON_IMPL(ContentManager)
 
@@ -34,9 +35,30 @@ void ContentManager::Update()
 {
 }
 
-void ContentManager::PreFrame()
+void ContentManager::OnFrameFinished()
 {
-    // TODO: Unload assets
+    UnloadAssets();
+}
+
+void ContentManager::UnloadAssets()
+{
+    Profiler::BeginProfile(__FUNCTION__);
+
+    // Unload all assets that are queued for unload
+    Asset* asset;
+    while (m_unloadQueue.try_dequeue(asset))
+    {
+        if (asset == nullptr)
+            continue;
+
+#ifdef _DEBUG
+        Logger::Log("Unloading asset '{0}'", asset->AssetFile());
+#endif
+
+        ReleaseAsset(asset);
+    }
+
+    Profiler::EndProfile();
 }
 
 void ContentManager::RegisterAsset(Asset* asset)
@@ -107,6 +129,9 @@ void ContentManager::ReleaseAsset(Asset* asset)
 {
     ASSERT(asset);
 
+    asset->m_loaded = false;
+    asset->m_unloaded = true;
+
     m_assets.Remove(asset);
     m_assetMap.erase(asset->GetAssetGuid());
 
@@ -137,6 +162,8 @@ Asset* ContentManager::LoadAssetSync(Asset* asset, const std::string& assetFile,
     m_instance->RegisterAsset(asset);
     asset->OnInitialize();
 
+    asset->OnLoadEnd();
+
     return asset;
 }
 
@@ -160,6 +187,15 @@ void ContentManager::LoadAssetAsync(Asset* asset, const std::string& assetFile, 
 void ContentManager::UnloadAsset(Asset* asset)
 {
     ASSERT(m_instance);
+
+    if(!asset->IsLoaded())
+    {
+        // Set asset unload flag
+        // This flag should be used for every asset that implement own async loading.
+        // Look: Texture::LoadTextureMipTask::Finish
+        //asset->m_unload = true;
+        return;
+    }
 
     // Queue for asset unloading
     m_instance->m_unloadQueue.enqueue(asset);

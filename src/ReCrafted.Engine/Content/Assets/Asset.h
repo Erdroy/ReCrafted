@@ -30,11 +30,12 @@ public:
         sizeof(uint8_t) +       // Type
         sizeof(Guid::_value);   // Guid
 
-private:
+protected:
     bool m_virtual = false;
     bool m_registered = false;
     bool m_loaded = false;
     bool m_unloaded = false;
+    bool m_unload = false;
 
     std::string m_assetName = {};
     std::string m_assetFile = {};
@@ -51,9 +52,24 @@ protected:
     void Deserialize(const json& json, const std::string& content);
 
 protected:
+    /**
+     * \brief Called on main thread after the asset has been successfully loaded.
+     */
     virtual void OnInitialize() {}
+
+    /**
+     * \brief Called on main thread when the asset is starting to load.
+     * \param fileName The filename.
+     */
     virtual void OnLoadBegin(const std::string& fileName) {}
-    virtual void OnLoadEnd() {}
+
+    /**
+     * \brief Similar to OnLoadEnd. Called on main thread after the asset has been successfully loaded.
+     * \note After overriding this function, you should call
+     * `Asset::OnLoadEnd()` at the end of your custom implementation.
+     */
+    virtual void OnLoadEnd();
+
     virtual void OnDeserializeBinary(uint16_t version, BinaryStream& stream) { }
     virtual void OnDeserializeJson(uint16_t version, const json& json) { }
     virtual void OnUnload() = 0;
@@ -105,7 +121,7 @@ public:
      * \brief Gets the asset load flag state.
      * \return True when this asset has been loaded or it is virtual asset.
      */
-    bool IsLoaded() const
+    virtual bool IsLoaded() const
     {
         return m_loaded || IsVirtual();
     }

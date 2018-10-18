@@ -6,7 +6,7 @@
 
 namespace Internal
 {
-    Asset* LoadAsset(Asset* asset, MonoString* string)
+    MonoObject* LoadAsset(Asset* asset, MonoString* string)
     {
         // convert monostring to ansi string
         MONO_ANSI_ERR();
@@ -18,7 +18,7 @@ namespace Internal
         // free ansi string
         MONO_ANSI_FREE(assetFile);
 
-        return asset;
+        return asset->GetManagedPtr();
     }
 
     void LoadAssetAsync(Asset* asset, MonoString* string, MonoObject* onLoadDelegate)
