@@ -25,6 +25,8 @@ private:
     FunctionSignatureProxy m_proxy_function = nullptr;
     InstancePtr m_proxy_instance = nullptr;
 
+    std::function<TReturn(TArgs...)> m_stdfunc = nullptr;
+
 public:
     Action();
 
@@ -38,6 +40,11 @@ public:
     Action(FunctionSignature function)
     {
         m_free_function = function;
+    }
+
+    Action(std::function<TReturn(TArgs...)> stdFunc)
+    {
+        m_stdfunc = stdFunc;
     }
 
     ~Action();
@@ -62,6 +69,11 @@ public:
             return m_proxy_function(m_proxy_instance, args...);
         }
 
+        if(m_stdfunc)
+        {
+            return m_stdfunc(args...);
+        }
+
         DEBUG_ASSERT(m_free_function);
         return m_free_function(args...);
     }
@@ -75,6 +87,11 @@ public:
             return m_proxy_function(m_proxy_instance, args...);
         }
 
+        if (m_stdfunc)
+        {
+            return m_stdfunc(args...);
+        }
+
         DEBUG_ASSERT(m_free_function);
         return m_free_function(args...);
     }
@@ -82,6 +99,7 @@ public:
     bool operator ==(const Action<TReturn, TArgs...>& other)
     {
         return m_free_function == other.m_free_function
+            && m_stdfunc == other.m_stdfunc
             && m_proxy_instance == other.m_proxy_instance
             && m_proxy_function == other.m_proxy_function;
     }
@@ -94,6 +112,7 @@ public:
         m_free_function = other.m_free_function;
         m_proxy_instance = other.m_proxy_instance;
         m_proxy_function = other.m_proxy_function;
+        m_stdfunc = other.m_stdfunc;
         return *this;
     }
 
