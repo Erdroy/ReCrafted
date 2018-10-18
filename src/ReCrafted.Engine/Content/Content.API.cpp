@@ -18,22 +18,27 @@ namespace Internal
         // free ansi string
         MONO_ANSI_FREE(assetFile);
 
-        return nullptr;
+        return asset;
     }
 
-    Asset* LoadAssetAsync(Asset* asset, MonoString* string, MonoDelegate* delegate)
+    void LoadAssetAsync(Asset* asset, MonoString* string, MonoObject* onLoadDelegate)
     {
         // convert monostring to ansi string
         MONO_ANSI_ERR();
         cvar assetFile = MONO_ANSI(string);
 
-        // TODO: Create action from delegate (how?)
-        // TODO: Load asset async
+        // Create asset async loading callback proxy
+        cvar callbackProxy = [onLoadDelegate](Asset* asset)
+        {
+            var param = asset->GetManagedPtr();
+            mono_runtime_delegate_invoke(onLoadDelegate, reinterpret_cast<void**>(&param), nullptr);
+        };
+
+        // Load asset
+        ContentManager::InternalLoadAssetAsync(asset, assetFile, Action<void, Asset*>(callbackProxy));
 
         // free ansi string
         MONO_ANSI_FREE(assetFile);
-
-        return nullptr;
     }
 }
 
@@ -66,9 +71,7 @@ void ContentManager::InitRuntime()
                 API_BIND("ReCrafted.API.Content.ContentManagerInternals::LoadAssetAsync", &Internal::LoadAssetAsync);
                 API_PARAM("IntPtr", "assetNativePtr");
                 API_PARAM("string", "assetFile");
-                API_PARAM("Action<Asset>", "onLoad");
-
-                API_RETURN("Asset");
+                API_PARAM("AssetLoadCallback", "onLoad");
             }
             API_METHOD_END();
         }

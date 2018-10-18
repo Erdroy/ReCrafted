@@ -10,6 +10,7 @@
 #include "Core/EngineComponent.h"
 #include "Core/Action.h"
 #include "Core/TaskManager.h"
+#include "Core/Logger.h"
 
 #include "Assets/Asset.h"
 
@@ -78,6 +79,10 @@ private:
         return "../content/" + assetName + ".rcasset";
     }
 
+    static Asset* LoadAssetSync(Asset* asset, const std::string& assetFile, const std::string& file);
+    static void LoadAssetAsync(Asset* asset, const std::string& assetFile, const std::string& file, const Action<void, Asset*>& onLoad);
+
+public:
     /**
      * \brief Creates empty virtual asset of given type.
      * \tparam TAsset The target asset class type.
@@ -90,10 +95,6 @@ private:
         return asset;
     }
 
-    static Asset* LoadAssetSync(Asset* asset, const std::string& assetFile, const std::string& file);
-    static void LoadAssetAsync(Asset* asset, const std::string& assetFile, const std::string& file, const Action<void, Asset*>& onLoad);
-
-public:
     static void InternalLoadAssetSync(Asset* asset, const char* assetFile)
     {
         // Build file name
@@ -101,6 +102,15 @@ public:
 
         // Load asset sync
         LoadAssetSync(asset, assetFile, file);
+    }
+
+    static void InternalLoadAssetAsync(Asset* asset, const char* assetFile, const  Action<void, Asset*>& onLoad)
+    {
+        // Build file name
+        cvar file = GetAssetFile(assetFile);
+
+        // Load asset sync
+        LoadAssetAsync(asset, assetFile, file, onLoad);
     }
 
 public:

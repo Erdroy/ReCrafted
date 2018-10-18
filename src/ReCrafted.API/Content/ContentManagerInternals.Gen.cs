@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 10/17/2018 18:05:21 Source: 'Content.API.cpp' Target: 'Content/ContentManagerInternals.Gen.cs'
+// Generated: 10/18/2018 12:48:21 Source: 'Content.API.cpp' Target: 'Content/ContentManagerInternals.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -19,7 +19,7 @@ namespace ReCrafted.API.Content
 		public static extern Asset LoadAsset(IntPtr assetNativePtr, string assetFile);
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		public static extern Asset LoadAssetAsync(IntPtr assetNativePtr, string assetFile, Action<Asset> onLoad);
+		public static extern void LoadAssetAsync(IntPtr assetNativePtr, string assetFile, AssetLoadCallback onLoad);
 
 	}
 }
