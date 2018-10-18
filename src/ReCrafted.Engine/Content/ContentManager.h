@@ -47,7 +47,7 @@ private:
         }
 
     public:
-        std::string file = nullptr;
+        std::string file;
         Asset* asset = nullptr;
         Action<void, Asset*> callback = nullptr;
     };
@@ -183,9 +183,21 @@ public:
     {
         // Build file name
         cvar file = GetAssetFile(assetFile);
-
         cvar asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
-        LoadAssetAsync(asset, assetFile, file, onLoad);
+
+        if(asset->CanLoadAsync())
+        {
+            LoadAssetAsync(asset, assetFile, file, onLoad);
+        }
+        else
+        {
+            // Write warning
+            Logger::LogWarning("Asset {0} should not be loaded as async.", assetFile);
+
+            // Load asset synchronously
+            LoadAssetSync(asset, assetFile, file);
+            const_cast<Action<void, Asset*>&>(onLoad).Invoke(asset);
+        }
     }
 };
 

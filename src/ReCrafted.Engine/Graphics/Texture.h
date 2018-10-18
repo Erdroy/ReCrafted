@@ -95,6 +95,11 @@ protected:
         return AssetType::Texture2D;
     }
 
+    bool CanLoadAsync() override
+    {
+        return false; // False, because texture has it's own task-based lazy loading
+    }
+
 public:
     /**
      * \brief Initializes this texture and allocates memory using texture format RGBA8.

@@ -39,6 +39,11 @@ protected:
         return AssetType::Shader;
     }
 
+    bool CanLoadAsync() override
+    {
+        return false; // Just because we are not going to use shader JSON directly, but renderer will do it
+    }
+
 public:
     /**
 	 * \brief Sets value of given type and value to a given slot.

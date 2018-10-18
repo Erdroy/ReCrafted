@@ -61,6 +61,10 @@ protected:
 protected:
     FORCEINLINE virtual AssetBaseType GetAssetBaseType() = 0;
     FORCEINLINE virtual AssetType GetAssetType() = 0;
+    FORCEINLINE virtual bool CanLoadAsync()
+    {
+        return true;
+    }
 
 public:
     /**
