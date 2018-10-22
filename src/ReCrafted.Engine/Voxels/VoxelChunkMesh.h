@@ -29,6 +29,50 @@ public:
          * Contains max 16 voxel materials.
          */
         Array<VoxelMaterial_t> materialSet = {};
+
+        /**
+         * \brief Contains all textures that this mesh section use.
+         */
+        struct
+        {
+            Array<Renderer::Texture2DHandle> cbNear = {};
+            Array<Renderer::Texture2DHandle> cbFar = {};
+            Array<Renderer::Texture2DHandle> nsmNear = {};
+            Array<Renderer::Texture2DHandle> nsmFar = {};
+        } textures;
+
+    public:
+        void RebuildTextures()
+        {
+            textures.cbNear.Clear();
+            textures.cbFar.Clear();
+            textures.nsmNear.Clear();
+            textures.nsmFar.Clear();
+
+            for (rvar material : materialSet)
+            {
+                cvar cb_near = VoxelMaterialManager::GetMaterial(material)->GetTexture(VoxelMaterial::VoxelMaterialType::ColorBlend);
+                cvar cb_far = VoxelMaterialManager::GetMaterial(material)->GetTexture(VoxelMaterial::VoxelMaterialType::ColorBlendFar);
+                cvar nsm_near = VoxelMaterialManager::GetMaterial(material)->GetTexture(VoxelMaterial::VoxelMaterialType::NormalSmoothnessMetallic);
+                cvar nsm_far = VoxelMaterialManager::GetMaterial(material)->GetTexture(VoxelMaterial::VoxelMaterialType::NormalSmoothnessMetallicFar);
+
+                if (!cb_near)
+                    break;
+
+                textures.cbNear.Add(cb_near->GetHandle());
+
+                // TODO: Bind default textures if none found (or use near)
+
+                if(cb_far)
+                    textures.cbFar.Add(cb_far->GetHandle());
+
+                if(nsm_near)
+                    textures.nsmNear.Add(nsm_near->GetHandle());
+
+                if(nsm_far)
+                    textures.nsmFar.Add(nsm_far->GetHandle());
+            }
+        }
     };
 
 private:
@@ -39,8 +83,12 @@ public:
      * \brief Adds new mesh section to this chunk mesh.
      * \param section The new mesh section.
      */
-    void AddSection(const MeshSection& section)
+    void AddSection(MeshSection& section)
     {
+        // Build texture array
+        section.RebuildTextures();
+
+        // Add to array
         m_meshSections.Add(section);
     }
 
@@ -77,14 +125,8 @@ public:
         {
             DEBUG_ASSERT(section.mesh != nullptr);
 
-            var slot = 0;
-            for(var material : section.materialSet)
-            {
-                cvar colorNearTexture = VoxelMaterialManager::GetMaterial(material)->GetTexture(VoxelMaterial::VoxelMaterialType::ColorBlend);
-
-                Graphics::GetInstance()->SetTexture(slot, colorNearTexture);
-                slot++;
-            }
+            // Set 'ColorBlend-Near' textures
+            Graphics::GetInstance()->SetTextureArray(0, section.textures.cbNear.Data(), section.textures.cbNear.Count());
 
             // Draw mesh
             Graphics::GetInstance()->Draw(section.mesh);
