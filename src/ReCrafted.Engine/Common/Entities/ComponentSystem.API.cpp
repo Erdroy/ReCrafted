@@ -9,10 +9,7 @@ namespace Internal
     {
         cvar systemClass = mono_class_from_mono_type(type);
 
-        RefPtr<Object> systemObject;
-        systemObject.reset(new ComponentSystem);
-
-        return Object::Create(systemObject, Domain::Root->GetMono(), systemClass, true);
+        return Object::Create(new ComponentSystem(), Domain::Root->GetMono(), systemClass, true);
     }
 
     void RequireComponent(ComponentSystem* system, const uint16_t componentTypeId, const bool nativeComponentId)

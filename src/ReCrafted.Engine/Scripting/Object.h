@@ -27,7 +27,7 @@ private:
 SCRIPTING_API_IMPL()
 
 private:
-    static Array<RefPtr<Object>> m_objects;
+    static Array<Object*> m_objects;
 
 private:
     MonoObject* m_object = nullptr;
@@ -69,17 +69,16 @@ public:
     /// Setting `initializeNativePtr` to false, can instantiate every non-static class.
     /// </summary>
     template <class TType>
-    static RefPtr<TType> CreateAssetInstance(const char* ns, const char* className, RefPtr<Assembly> assembly = nullptr,
+    static TType* CreateAssetInstance(const char* ns, const char* className, RefPtr<Assembly> assembly = nullptr,
         bool initializeNativePtr = true)
     {
-        RefPtr<TType> object(ContentManager::CreateVirtualAsset<TType>());
+        cvar object = ContentManager::CreateVirtualAsset<TType>();
 
         if (assembly == nullptr)
             assembly = Assembly::API;
 
         auto cls = assembly->FindClass(ns, className);
-        auto objectPtr = static_cast<RefPtr<Object>>(object);
-        Create(objectPtr, Domain::Root->GetMono(), cls->m_class, initializeNativePtr);
+        Create(object, Domain::Root->GetMono(), cls->m_class, initializeNativePtr);
         return object;
     }
 
@@ -89,17 +88,16 @@ public:
     /// Setting `initializeNativePtr` to false, can instantiate every non-static class.
     /// </summary>
     template <class T>
-    static RefPtr<T> CreateInstance(const char* ns, const char* className, RefPtr<Assembly> assembly = nullptr,
+    static T* CreateInstance(const char* ns, const char* className, RefPtr<Assembly> assembly = nullptr,
                                  bool initializeNativePtr = true)
     {
-        RefPtr<T> object(new T);
+        cvar object = new T();
 
         if (assembly == nullptr)
             assembly = Assembly::API;
 
         auto cls = assembly->FindClass(ns, className);
-        auto objectPtr = static_cast<RefPtr<Object>>(object);
-        Create(objectPtr, Domain::Root->GetMono(), cls->m_class, initializeNativePtr);
+        Create(object, Domain::Root->GetMono(), cls->m_class, initializeNativePtr);
         return object;
     }
 
@@ -133,17 +131,12 @@ public:
     }
 
 public:
-    static MonoObject* Create(const RefPtr<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject);
-    static void InitializeInstance(RefPtr<Object>& object, MonoObject* instance);
-    static void RegisterObject(RefPtr<Object> object);
+    static MonoObject* Create(Object* object, MonoDomain* domain, MonoClass* monoClass, bool isObject);
+    static void InitializeInstance(Object* object, MonoObject* instance);
+    static void RegisterObject(Object* object);
     static void Destroy(Object* object);
     static void DestroyAll();
     static void Finalize(Object* object);
-
-    FORCEINLINE static void Destroy(RefPtr<Object> object)
-    {
-        Destroy(object.get());
-    }
 };
 
 #endif // OBJECT_H

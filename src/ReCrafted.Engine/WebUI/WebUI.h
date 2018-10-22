@@ -34,7 +34,7 @@ public:
     virtual ~WebUI() = default;
 
 public:
-    RefPtr<WebUIView> CreateView();
+    WebUIView* CreateView();
 };
 
 #endif // WEBUI_H

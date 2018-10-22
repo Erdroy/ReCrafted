@@ -22,7 +22,7 @@ private:
 SCRIPTING_API_IMPL()
 
 private:
-    RefPtr<Object> m_gamemain = nullptr;
+    Object* m_gamemain = nullptr;
     RefPtr<Method> m_init_method = nullptr;
     RefPtr<Method> m_update_method = nullptr;
     RefPtr<Method> m_simulate_method = nullptr;

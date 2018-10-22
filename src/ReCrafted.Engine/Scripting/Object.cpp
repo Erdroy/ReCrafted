@@ -7,7 +7,7 @@
 #include "Method.h"
 #include "Field.h"
 
-Array<RefPtr<Object>> Object::m_objects;
+Array<Object*> Object::m_objects;
 
 RefPtr<Method> Object::FindMethod(const char* methodName) const
 {
@@ -69,7 +69,7 @@ RefPtr<Method> Object::FindStaticMethod(const char* methodName)
     return method;
 }
 
-MonoObject* Object::Create(const RefPtr<Object>& object, MonoDomain* domain, MonoClass* monoClass, bool isObject)
+MonoObject* Object::Create(Object* object, MonoDomain* domain, MonoClass* monoClass, bool isObject)
 {
     cvar objectInstance = mono_object_new(domain, monoClass);
 
@@ -97,7 +97,7 @@ MonoObject* Object::Create(const RefPtr<Object>& object, MonoDomain* domain, Mon
     return objectInstance;
 }
 
-void Object::InitializeInstance(RefPtr<Object>& object, MonoObject* instance)
+void Object::InitializeInstance(Object* object, MonoObject* instance)
 {
     mono_runtime_object_init(instance);
 
@@ -116,7 +116,7 @@ void Object::InitializeInstance(RefPtr<Object>& object, MonoObject* instance)
     RegisterObject(object);
 }
 
-void Object::RegisterObject(RefPtr<Object> object)
+void Object::RegisterObject(Object* object)
 {
     m_objects.Add(object);
 }

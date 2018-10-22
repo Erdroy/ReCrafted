@@ -15,7 +15,7 @@
 class MainWorld : public EngineComponent<MainWorld>
 {
 private:
-    RefPtr<World> m_world = nullptr;
+    World* m_world = nullptr;
 
     AudioSystem* m_audioSystem = nullptr;
     PhysicsSystem* m_physicsSystem = nullptr;
@@ -28,7 +28,7 @@ public:
     void Simulate();
 
 public:
-    static const RefPtr<World>& GetWorld()
+    static const World* GetWorld()
     {
         ASSERT(m_instance);
         return m_instance->m_world;

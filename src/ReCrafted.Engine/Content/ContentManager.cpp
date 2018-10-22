@@ -193,7 +193,7 @@ void ContentManager::UnloadAsset(Asset* asset)
         // Set asset unload flag
         // This flag should be used for every asset that implement own async loading.
         // Look: Texture::LoadTextureMipTask::Finish
-        //asset->m_unload = true;
+        asset->m_unload = true;
         return;
     }
 

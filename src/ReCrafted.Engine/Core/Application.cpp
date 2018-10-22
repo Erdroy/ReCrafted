@@ -24,6 +24,7 @@ void Application::OnInit()
 void Application::OnDispose()
 {
     m_shutdown_method->Invoke();
+    Object::Destroy(m_gamemain);
 }
 
 void Application::OnLoad()

@@ -17,7 +17,7 @@ void MainWorld::OnInit()
 void MainWorld::OnDispose()
 {
     m_world->Clear();
-    m_world.reset();
+    Object::Destroy(m_world);
 }
 
 void MainWorld::Update()

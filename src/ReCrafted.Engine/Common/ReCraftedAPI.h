@@ -18,7 +18,7 @@
 #define API_REGISTER_OBJECT(fullName, createFunction) Bindings::RegisterObject(fullName, Action<Object*>::New(createFunction));
 #define API_DEFINE_OBJECT_CREATOR(objectNamespace, objectName, objectType) \
         Object* Create##objectType() {\
-            return Object::CreateInstance<objectType>(objectNamespace, objectName).get();\
+            return Object::CreateInstance<objectType>(objectNamespace, objectName);\
         }
 
 #define API_BIND(name, method) mono_add_internal_call(name, method)

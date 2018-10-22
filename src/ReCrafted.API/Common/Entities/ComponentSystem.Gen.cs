@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 10/16/2018 19:58:59 Source: 'System.API.cpp' Target: 'Common/Entities/System.Gen.cs'
+// Generated: 10/22/2018 14:33:01 Source: 'ComponentSystem.API.cpp' Target: 'Common/Entities/ComponentSystem.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 namespace ReCrafted.API.Common.Entities 
 {
 	/// <summary>
-	///	ECS System class.
+	///	ECS ComponentSystem class.
 	/// </summary>
 	public abstract partial class ComponentSystem : Object
 	{
