@@ -116,6 +116,28 @@ public:
     void SetTexture(uint slot, Texture* texture2d);
 
     /**
+     * \brief Sets given texture at given slot.
+     * \param slot The shader slot.
+     * \param textureArray The textures array.
+     * \param textureCount The texture count.
+     * 
+     * \note Texture arrays do not support batching, 
+     * so each call to set texture array will be executed on the GPU.
+     */
+    void SetTextureArray(uint slot, Texture** textureArray, uint8_t textureCount);
+
+    /**
+     * \brief Sets given texture at given slot.
+     * \param slot The shader slot.
+     * \param textureArray The textures array.
+     * \param textureCount The texture count.
+     *
+     * \note Texture arrays do not support batching,
+     * so each call to set texture array will be executed on the GPU.
+     */
+    void SetTextureArray(uint slot, Renderer::Texture2DHandle* textureArray, uint8_t textureCount);
+
+    /**
     * \brief Gets current set render stage.
     */
     RenderStage::_enum GetStage() const

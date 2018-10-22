@@ -470,6 +470,27 @@ void Graphics::SetTexture(uint slot, Texture* texture2d)
     }
 }
 
+void Graphics::SetTextureArray(uint slot, Texture** textureArray, uint8_t textureCount)
+{
+    // Copy textures
+    Renderer::Texture2DHandle textures[32]; // Max 32 textures per array
+    
+    for(var i = 0u; i < textureCount; i++)
+    {
+        cvar texture = textureArray[i];
+
+        if(texture)
+            textures[i] = texture->GetHandle();
+    }
+
+    SetTextureArray(slot, textures, textureCount);
+}
+
+void Graphics::SetTextureArray(uint slot, Renderer::Texture2DHandle* textureArray, uint8_t textureCount)
+{
+    Renderer::ApplyTextureArray2D(textureArray, slot, textureCount);
+}
+
 void Graphics::Screenshot(Text fileName)
 {
     // Create texture
