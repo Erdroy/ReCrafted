@@ -8,7 +8,7 @@
 // includes
 #include "Core/Types.h"
 #include "Core/Math/Math.h"
-#include "IResource.h"
+#include "Core/Containers/Array.h"
 #include "Renderer/Renderer.hpp"
 
 struct Vector4;
@@ -16,7 +16,7 @@ struct Vector4;
 /**
  * \brief Mesh class.
  */
-class Mesh : IResource
+class Mesh : IDisposable
 {
     friend class Graphics;
 
@@ -52,9 +52,6 @@ private:
     uint m_normals_count = 0u;
     uint m_colors_count = 0u;
     uint m_indices_count = 0u;
-
-public:
-IRESOURCE_IMPL(Mesh)
 
 private:
     void Init();
@@ -142,8 +139,8 @@ public:
     void UploadNow();
 
     /**
-	 * \brief Disposes this mesh.
-	 */
+     * \brief Disposes this mesh.
+     */
     void Dispose() override;
 
 public:

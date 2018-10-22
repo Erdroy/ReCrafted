@@ -167,10 +167,6 @@ void Graphics::OnDispose()
     m_gbufferCombine->Unload();
     Logger::LogInfo("Unloaded render shaders");
 
-    // check resource leaks
-    Logger::LogInfo("Checking for resource leaks");
-    IResource::CheckLeaks();
-
     // Shutdown renderer
     Renderer::Shutdown();
 

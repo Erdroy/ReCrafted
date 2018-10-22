@@ -122,6 +122,13 @@ public:
         LoadAssetAsync(asset, assetFile, file, onLoad);
     }
 
+    static void InternalInitVirtualAsset(Asset* asset)
+    {
+        asset->m_virtual = true;
+        asset->SetAssetGuid(Platform::NewGuid());
+        m_instance->RegisterAsset(asset);
+    }
+
 public:
     /**
      * \brief Creates empty virtual asset of given type.
@@ -132,9 +139,7 @@ public:
     static TAsset* CreateVirtualAsset()
     {
         cvar asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
-        asset->m_virtual = true;
-        asset->SetAssetGuid(Platform::NewGuid());
-        m_instance->RegisterAsset(asset);
+        InternalInitVirtualAsset(asset);
         return static_cast<TAsset*>(asset);
     }
 

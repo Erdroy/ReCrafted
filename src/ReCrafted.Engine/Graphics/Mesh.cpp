@@ -201,7 +201,7 @@ void Mesh::Dispose()
     if (RENDERER_CHECK_HANDLE(m_indexBuffer))
         Renderer::DestroyIndexBuffer(m_indexBuffer);
 
-    if(m_vertexBufferData)
+    if (m_vertexBufferData)
         Renderer::Free(m_vertexBufferData);
 
     if (m_indexBufferData)

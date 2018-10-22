@@ -6,6 +6,12 @@
 
 namespace Internal
 {
+    MonoObject* CreateVirtual(Asset* asset)
+    {
+        ContentManager::InternalInitVirtualAsset(asset);
+        return asset->GetManagedPtr();
+    }
+
     MonoObject* LoadAsset(Asset* asset, MonoString* string)
     {
         // convert monostring to ansi string
@@ -53,6 +59,15 @@ void ContentManager::InitRuntime()
             {
                 API_BIND("ReCrafted.API.Content.ContentManagerInternals::UnloadAsset", &ContentManager::UnloadAsset);
                 API_PARAM("IntPtr", "assetNativePtr");
+            }
+            API_METHOD_END();
+
+            API_METHOD(PUBLIC, STATIC, "CreateVirtual", EXTERN);
+            {
+                API_BIND("ReCrafted.API.Content.ContentManagerInternals::CreateVirtual", &Internal::CreateVirtual);
+                API_PARAM("IntPtr", "assetNativePtr");
+
+                API_RETURN("Asset");
             }
             API_METHOD_END();
 

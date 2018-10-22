@@ -1,6 +1,7 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
 using System.IO;
+using ReCrafted.API.Content;
 using ReCrafted.API.Core;
 
 namespace ReCrafted.API.Graphics
@@ -17,7 +18,7 @@ namespace ReCrafted.API.Graphics
         /// <exception cref="ReCraftedException">Exception is thrown when the target PNG file was unable to load.</exception>
         public static Texture Create(string fileName)
         {
-            var texture = Create();
+            var texture = ContentManager.CreateVirtualAsset<Texture>();
             texture.LoadFromFile(fileName);
             texture.Apply();
             return texture;

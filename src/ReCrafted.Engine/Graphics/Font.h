@@ -19,7 +19,7 @@
 /**
  * \brief Font class.
  */
-class Font : public Object, IResource
+class Font : public Object
 {
     friend class UI;
 
@@ -53,8 +53,12 @@ private:
 
     float m_lineHeigh = 1.0f; // actually multiplier
 
-public:
-IRESOURCE_IMPL(Font)
+private:
+    void OnDestroy() override
+    {
+        if (m_glyphs)
+            delete[] m_glyphs;
+    }
 
 public:
     /**
@@ -66,15 +70,6 @@ public:
         m_glyphCount = glyphCount;
         m_glyphs = new Glyph[glyphCount];
         memset(m_glyphs, 0, glyphCount * sizeof Glyph);
-    }
-
-    /**
-     * \brief Disposes this font.
-     */
-    void Dispose() override
-    {
-        if (m_glyphs)
-            delete[] m_glyphs;
     }
 
     /**

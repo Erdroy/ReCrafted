@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 10/17/2018 17:53:58 Source: 'Texture.API.cpp' Target: 'Graphics/Texture.Gen.cs'
+// Generated: 10/22/2018 14:51:47 Source: 'Texture.API.cpp' Target: 'Graphics/Texture.Gen.cs'
 
 using ReCrafted.API.Content;
 using System;
@@ -20,12 +20,6 @@ namespace ReCrafted.API.Graphics
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void InternalApply(IntPtr nativePtr);
-
-		/// <summary>
-		///	Creates new Texture
-		/// </summary>
-		[MethodImpl(MethodImplOptions.InternalCall)]
-		public static extern Texture Create();
 
 		/// <summary>
 		///	Returns texture's width

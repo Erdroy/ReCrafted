@@ -7,7 +7,7 @@
 
 // includes
 #include "ReCrafted.h"
-#include "Graphics/IResource.h"
+#include "Core/Containers/Array.h"
 
 struct CHMFace
 {
@@ -22,7 +22,7 @@ struct CHMFace
     };
 };
 
-class CHMBitmap : IResource
+class CHMBitmap : IDisposable
 {
 private:
     struct FaceBitmap : IDisposable

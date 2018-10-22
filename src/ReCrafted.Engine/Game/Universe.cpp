@@ -3,6 +3,8 @@
 #include "Universe.h"
 #include "Common/Input/Input.h"
 #include "Common/Profiler/Profiler.h"
+#include "Common/Entities/MainWorld.h"
+#include "Core/Logger.h"
 #include "Graphics/Camera.h"
 #include "Graphics/DebugDraw.h"
 #include "Graphics/Graphics.h"
@@ -14,7 +16,6 @@
 
 #include <iomanip>
 #include <sstream>
-#include "Common/Entities/MainWorld.h"
 
 SINGLETON_IMPL(Universe)
 

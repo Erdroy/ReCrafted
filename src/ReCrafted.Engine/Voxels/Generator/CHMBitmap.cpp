@@ -2,7 +2,6 @@
 
 #include "CHMBitmap.h"
 
-#include "Graphics/IResource.h"
 #include "Core/Streams/Stream.h"
 #include "Core/Streams/FileStream.h"
 #include "Core/Streams/BinaryStream.h"

@@ -47,12 +47,6 @@ namespace Internal
         MONO_ANSI_FREE(str);
     }
 
-    MonoObject* createTexture()
-    {
-        cvar texture = Object::CreateAssetInstance<Texture>("ReCrafted.API.Graphics", "Texture");
-        return texture->GetManagedPtr();
-    }
-
     API_DEFINE_OBJECT_CREATOR("ReCrafted.API.Graphics", "Texture", Texture)
 }
 
@@ -81,15 +75,6 @@ void Texture::InitRuntime()
                 API_BIND("ReCrafted.API.Graphics.Texture::InternalApply", &Internal::apply);
 
                 API_PARAM("IntPtr", "nativePtr");
-            }
-            API_METHOD_END();
-
-            API_COMMENT("Creates new Texture");
-            API_METHOD(PUBLIC, STATIC, "Create", EXTERN);
-            {
-                API_BIND("ReCrafted.API.Graphics.Texture::Create", &Internal::createTexture);
-
-                API_RETURN("Texture");
             }
             API_METHOD_END();
 

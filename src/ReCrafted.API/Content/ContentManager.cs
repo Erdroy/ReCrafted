@@ -8,6 +8,17 @@ namespace ReCrafted.API.Content
 
     public static class ContentManager
     {
+        public static TAsset CreateVirtualAsset<TAsset>() where TAsset : Asset
+        {
+            // Create asset object
+            var assetObject = Object.New<TAsset>();
+
+            // Create virtual asset
+            ContentManagerInternals.CreateVirtual(assetObject.NativePtr);
+
+            return assetObject;
+        }
+        
         public static TAsset LoadAsset<TAsset>(string assetFile) where TAsset : Asset
         {
             Debug.Assert(!string.IsNullOrEmpty(assetFile));
