@@ -105,5 +105,11 @@ public:
     }
 };
 
+template<typename T>
+TypeId GetComponentSystemId()
+{
+    static_assert(std::is_base_of<ComponentSystem, T>(), "T must inherit from ComponentSystem!");
+    return ClassTypeId<ComponentSystem>::GetTypeId<T>();
+}
 
 #endif // SYSTEM_H

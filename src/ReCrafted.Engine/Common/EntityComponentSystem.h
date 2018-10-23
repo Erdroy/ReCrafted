@@ -13,6 +13,8 @@
 // Default components
 #include "Common/TransformComponent.h"
 #include "Audio/AudioSourceComponent.h"
+#include "Physics/Components/PhysicsBodyComponent.h"
+#include "Physics/Components/PhysicsShapeComponent.h"
 
 #include <cassert>
 
@@ -27,8 +29,10 @@ public:
         // NOTE: None of the engine components aren't initialized, so we cannot
         // use our ASSERT etc.
 
-        /* 00 */ assert(GetComponentId<TransformComponent>() == 0);
-        /* 01 */ assert(GetComponentId<AudioSourceComponent>() == 1);
+        /* 00 */ assert(GetComponentId<TransformComponent>()        == 0);
+        /* 01 */ assert(GetComponentId<AudioSourceComponent>()      == 1);
+        /* 02 */ assert(GetComponentId<PhysicsBodyComponent>()      == 2);
+        /* 03 */ assert(GetComponentId<PhysicsBodyComponent>()      == 3);
     }
 };
 

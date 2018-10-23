@@ -11,7 +11,6 @@
 #include "Core/Math/Rectf.h"
 #include "Common/Text.h"
 #include "Texture.h"
-#include "IResource.h"
 
 #include <vector>
 #include <Scripting/Object.h>
