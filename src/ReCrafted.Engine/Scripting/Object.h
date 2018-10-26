@@ -63,11 +63,11 @@ public:
 public:
     static RefPtr<Method> FindStaticMethod(const char* methodName);
 
-    /// <summary>
-    /// Creates instance of API class.
-    /// WARNING: Only for API objects!
-    /// Setting `initializeNativePtr` to false, can instantiate every non-static class.
-    /// </summary>
+    /**
+     * \brief Creates instance of API class.
+     * \note Only for API objects!
+     * Setting `initializeNativePtr` to false, can instantiate every non-static class.
+     */
     template <class TType>
     static TType* CreateAssetInstance(const char* ns, const char* className, RefPtr<Assembly> assembly = nullptr,
         bool initializeNativePtr = true)
@@ -81,12 +81,12 @@ public:
         Create(object, Domain::Root->GetMono(), cls->m_class, initializeNativePtr);
         return object;
     }
-
-    /// <summary>
-    /// Creates instance of API class.
-    /// WARNING: Only for API objects!
-    /// Setting `initializeNativePtr` to false, can instantiate every non-static class.
-    /// </summary>
+    
+    /**
+     * \brief Creates instance of API class.
+     * \note Only for API objects! 
+     * Setting `initializeNativePtr` to false, can instantiate every non-static class.
+     */
     template <class T>
     static T* CreateInstance(const char* ns, const char* className, RefPtr<Assembly> assembly = nullptr,
                                  bool initializeNativePtr = true)
@@ -101,33 +101,31 @@ public:
         return object;
     }
 
-    /// <summary>
-    /// Creates instance of API class.
-    /// WARNING: Only for API objects!
-    /// Setting `initializeNativePtr` to false, can instantiate every non-static class.
-    /// </summary>
+    /**
+     * \brief Creates instance of API class.
+     * \note Only for API objects! 
+     * Setting `initializeNativePtr` to false, can instantiate every non-static class.
+     */
     template <class T>
-    static void CreateInstance(RefPtr<T> object, const char* ns, const char* className, RefPtr<Assembly> assembly = nullptr,
+    static void CreateInstance(T* object, const char* ns, const char* className, RefPtr<Assembly> assembly = nullptr,
                                bool initializeNativePtr = true)
     {
         if (assembly == nullptr)
             assembly = Assembly::API;
 
         auto cls = assembly->FindClass(ns, className);
-        auto objectPtr = static_cast<RefPtr<Object>>(object);
-        Create(objectPtr, Domain::Root->GetMono(), cls->m_class, initializeNativePtr);
+        Create(object, Domain::Root->GetMono(), cls->m_class, initializeNativePtr);
     }
 
     /**
      * \brief Initializes an instance of given object.
      * \param object The object to be initialized.
-     * \param instance The instance to be initialized. 
+     * \param instance The instance to be initialized.
      */
     template <class T>
-    static void InitializeInstance(RefPtr<T> object, MonoObject* instance)
+    static void InitializeInstanceType(T* object, MonoObject* instance)
     {
-        auto objectPtr = static_cast<RefPtr<Object>>(object);
-        InitializeInstance(objectPtr, instance);
+        InitializeInstance(object, instance);
     }
 
 public:

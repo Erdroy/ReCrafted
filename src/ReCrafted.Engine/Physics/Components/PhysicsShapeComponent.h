@@ -9,7 +9,11 @@
 
 struct PhysicsShapeComponent : Component
 {
+public:
 
+
+private:
+    void* shape = nullptr;
 };
 
 #endif // PHYSICSSHAPECOMPONENT_H

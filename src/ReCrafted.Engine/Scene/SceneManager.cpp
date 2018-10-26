@@ -6,6 +6,7 @@ SINGLETON_IMPL(SceneManager)
 
 void SceneManager::OnInit()
 {
+
 }
 
 void SceneManager::OnDispose()

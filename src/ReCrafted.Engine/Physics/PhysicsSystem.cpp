@@ -41,3 +41,20 @@ void PhysicsSystem::Simulate()
 
     //Profiler::EndProfile();
 }
+
+void PhysicsSystem::OnEntityAdded(const Entity& entity)
+{
+    rvar transform = entity.GetComponent<TransformComponent>();
+    rvar body = entity.GetComponent<PhysicsBodyComponent>();
+    rvar shape = entity.GetComponent<PhysicsShapeComponent>();
+
+    // TODO: Initialize native PhysicsEngine data for entity components
+}
+
+void PhysicsSystem::OnEntityRemoved(const Entity& entity)
+{
+    rvar body = entity.GetComponent<PhysicsBodyComponent>();
+    rvar shape = entity.GetComponent<PhysicsShapeComponent>();
+
+    // TODO: Release native PhysicsEngine data from entity components
+}

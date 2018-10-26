@@ -30,6 +30,9 @@ public:
     void Update() override;
     void Simulate();
 
+    void OnEntityAdded(const Entity& entity) override;
+    void OnEntityRemoved(const Entity& entity) override;
+
 public:
     static IPhysicsEngine* Physics()
     {

@@ -9,7 +9,11 @@
 
 struct PhysicsBodyComponent : Component
 {
+public:
     bool dynamic = true;
+
+private:
+    void* actor = nullptr;
 };
 
 #endif // PHYSICSBODYCOMPONENT_H

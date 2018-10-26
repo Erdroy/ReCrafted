@@ -7,6 +7,7 @@
 
 // includes
 #include "ReCrafted.h"
+#include "Common/Actor.h"
 #include "Core/EngineComponent.h"
 
 class SceneManager : public EngineComponent<SceneManager>
@@ -15,6 +16,9 @@ class SceneManager : public EngineComponent<SceneManager>
 
 private:
 SCRIPTING_API_IMPL()
+
+private:
+    Array<Actor*> m_actors;
 
 public:
     virtual ~SceneManager() = default;
