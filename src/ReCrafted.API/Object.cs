@@ -35,6 +35,14 @@ namespace ReCrafted.API
         }
 
         /// <summary>
+        /// Destroys this object.
+        /// </summary>
+        public void Destroy()
+        {
+            Destroy(this);
+        }
+
+        /// <summary>
         /// Creates managed Object of given type with it's unmanaged corresponsive type.
         /// </summary>
         /// <typeparam name="TType">The type of Object to be created.</typeparam>

@@ -69,6 +69,11 @@ RefPtr<Method> Object::FindStaticMethod(const char* methodName)
     return method;
 }
 
+bool Object::IsObjectInitialized(Object* object)
+{
+    return object->m_object && object->m_class;
+}
+
 MonoObject* Object::Create(Object* object, MonoDomain* domain, MonoClass* monoClass, bool isObject)
 {
     cvar objectInstance = mono_object_new(domain, monoClass);
@@ -123,6 +128,7 @@ void Object::RegisterObject(Object* object)
 
 void Object::Destroy(Object* object)
 {
+    // Call on destroy event
     object->OnDestroy();
 
     // free garbage collector handle
@@ -131,6 +137,11 @@ void Object::Destroy(Object* object)
 
     // unregister
     m_objects.Remove(object);
+
+    // Reset object's managed data
+    object->m_gchandle = 0u;
+    object->m_object = nullptr;
+    object->m_class = nullptr;
 }
 
 void Object::DestroyAll()

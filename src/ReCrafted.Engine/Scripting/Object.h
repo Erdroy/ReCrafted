@@ -129,6 +129,7 @@ public:
     }
 
 public:
+    static bool IsObjectInitialized(Object* object);
     static MonoObject* Create(Object* object, MonoDomain* domain, MonoClass* monoClass, bool isObject);
     static void InitializeInstance(Object* object, MonoObject* instance);
     static void RegisterObject(Object* object);
