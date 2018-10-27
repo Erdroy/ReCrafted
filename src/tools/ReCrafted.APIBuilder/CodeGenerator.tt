@@ -150,11 +150,13 @@ foreach (var methodDesc in classDesc.Methods)
     foreach (var propertyDesc in classDesc.Properties)
     {
         if (!string.IsNullOrEmpty(propertyDesc.Comment))
-        {
+	    {
 #>
 		/// <summary>
-		///	<#=propertyDesc.Comment #>
+		///	<#=propertyDesc.Comment#>
 		/// </summary>
+<#
+	    }#>
 		<#=propertyDesc.GetAccess()#> <#=propertyDesc.GetModifier()#><#=propertyDesc.Type#> <#=propertyDesc.Name#> 
 		{
 			get
@@ -203,7 +205,6 @@ foreach (var methodDesc in classDesc.Methods)
 		}
 
 <#
-        }
     }
 
     // define get/set methods
