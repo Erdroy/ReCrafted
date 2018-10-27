@@ -34,6 +34,7 @@ void GameObject::Cleanup()
 
     SetActive(false);
 
+    m_firstFrame = true;
     m_parent = nullptr;
     m_root = nullptr;
 }
@@ -72,9 +73,84 @@ void GameObject::OnParentChangeActive(const bool active)
         m_entity.Deactivate();
 }
 
+void GameObject::Start()
+{
+    for (rvar script : m_scripts)
+    {
+        if (script->GetEnabled())
+            script->Start();
+    }
+}
+
+void GameObject::Update()
+{
+    if (m_firstFrame)
+    {
+        Start();
+        m_firstFrame = false;
+    }
+
+    for(rvar script : m_scripts)
+    {
+        if(script->GetEnabled())
+            script->Update();
+    }
+
+    for (rvar child : m_children)
+    {
+        if (child->IsActive())
+            child->Update();
+    }
+}
+
+void GameObject::LateUpdate()
+{
+    for (rvar script : m_scripts)
+    {
+        if (script->GetEnabled())
+            script->LateUpdate();
+    }
+
+    for (rvar child : m_children)
+    {
+        if (child->IsActive())
+            child->Update();
+    }
+}
+
+void GameObject::Simulate()
+{
+    for (rvar script : m_scripts)
+    {
+        if (script->GetEnabled())
+            script->Simulate();
+    }
+
+    for (rvar child : m_children)
+    {
+        if(child->IsActive())
+            child->Update();
+    }
+}
+
 GameObject::GameObject()
 {
     SetupEntity();
+}
+
+GameObject::~GameObject()
+{
+    // Note: This is being only called by GameObjectPool when the game exits.
+
+    // Destroy managed instance of this gameObject if it is initialized
+    if (IsObjectInitialized(this))
+    {
+        Destroy(this);
+    }
+
+    // Destroy entity
+    m_entity.Destroy();
+    m_entity = Entity::Empty();
 }
 
 void GameObject::AddChildren(GameObject* gameObject, const bool resetPosition, const bool resetRotation)

@@ -9,6 +9,7 @@
 #include "Common/Entities/Entity.h"
 #include "Core/Containers/Array.h"
 #include "Scripting/Object.h"
+#include "Scripting/Script.h"
 
 #include "TransformComponent.h"
 
@@ -35,6 +36,8 @@ private:
 
     bool m_active = true;
 
+    bool m_firstFrame = true;
+
 private:
     void SetupEntity();
     void Cleanup();
@@ -42,23 +45,14 @@ private:
     void OnParentChangeActive(bool active);
 
 private:
+    void Start();
+    void Update();
+    void LateUpdate();
+    void Simulate();
+
+private:
     GameObject();
-
-public:
-    ~GameObject()
-    {
-        // Note: This is being only called by GameObjectPool when the game exits.
-
-        // Destroy managed instance of this gameObject if it is initialized
-        if(IsObjectInitialized(this))
-        {
-            Destroy(this);
-        }
-
-        // Destroy entity
-        m_entity.Destroy();
-        m_entity = Entity::Empty();
-    }
+    ~GameObject();
 
 public:
     /**

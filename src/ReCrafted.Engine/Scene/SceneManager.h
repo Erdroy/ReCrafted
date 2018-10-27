@@ -29,6 +29,8 @@ private:
 
 private:
     void Update() override;
+    void LateUpdate() override;
+    void Simulate();
 };
 
 #endif // SCENEMANAGER_H

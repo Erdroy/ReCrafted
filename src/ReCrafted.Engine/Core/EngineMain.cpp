@@ -70,6 +70,7 @@ void EngineMain::OnSimulate()
 
         // Simulate
         MainWorld::GetInstance()->Simulate();
+        SceneManager::GetInstance()->Simulate();
         Universe::GetInstance()->Simulate();
         Application::GetInstance()->Simulate();
     }
