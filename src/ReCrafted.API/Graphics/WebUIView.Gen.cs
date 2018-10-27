@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 05/25/2018 19:14:55 Source: 'WebUIView.API.cpp' Target: 'Graphics/WebUIView.Gen.cs'
+// Generated: 10/26/2018 22:37:46 Source: 'WebUIView.API.cpp' Target: 'Graphics/WebUIView.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -22,7 +22,7 @@ namespace ReCrafted.API.Graphics
 			Internal_Navigate(NativePtr, url);
 		}
         
-        		[MethodImpl(MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_Navigate(IntPtr nativePtr, string url);
 		
 		/// <summary>
@@ -33,7 +33,7 @@ namespace ReCrafted.API.Graphics
 			Internal_ExecuteJS(NativePtr, javaScript);
 		}
         
-        		[MethodImpl(MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_ExecuteJS(IntPtr nativePtr, string javaScript);
 		
 	}

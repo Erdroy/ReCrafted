@@ -2,7 +2,7 @@
 
 namespace ReCrafted.API.Common
 {
-    public partial class Actor
+    public partial class GameObject
     {
     }
 }

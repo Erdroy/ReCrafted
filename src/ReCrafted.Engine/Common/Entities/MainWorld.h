@@ -28,7 +28,7 @@ public:
     void Simulate();
 
 public:
-    static const World* GetWorld()
+    static World* GetWorld()
     {
         ASSERT(m_instance);
         return m_instance->m_world;

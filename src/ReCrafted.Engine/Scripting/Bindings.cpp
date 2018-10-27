@@ -5,6 +5,7 @@
 
 #include "Common/Display.h"
 #include "Common/Time.h"
+#include "Common/GameObject.h"
 #include "Common/Entities/ComponentSystem.h"
 #include "Common/Entities/World.h"
 #include "Common/Entities/Entity.h"
@@ -43,6 +44,10 @@ void Bindings::Bind()
     KeyboardBuffer::InitRuntime();
 
 
+    // == GameObjects ==
+    GameObject::InitRuntime();
+
+
     // == ECS ==
     ComponentSystem::InitRuntime();
     Entity::InitRuntime();
@@ -61,8 +66,10 @@ void Bindings::Bind()
     // == Spawnable objects ==
     Camera::InitRuntime();
 
+
     // == Content ==
     ContentManager::InitRuntime();
+
 
     // == Assets ==
     Texture::InitRuntime();

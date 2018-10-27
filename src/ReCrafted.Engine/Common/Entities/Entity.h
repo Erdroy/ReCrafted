@@ -21,9 +21,8 @@ private:
     SCRIPTING_API_IMPL();
 
 public:
-    Entity(const EntityId id, World* world) : m_id(id), m_world(world)
-    {
-    }
+    Entity() : m_world(nullptr) { }
+    Entity(const EntityId id, World* world) : m_id(id), m_world(world) { }
 
 public:
     void Activate()
@@ -123,11 +122,17 @@ public:
 
     bool IsValid() const
     {
+        if (!m_world)
+            return false;
+
         return m_world->IsEntityValid(*this);
     }
 
     bool IsActive() const
     {
+        if (!m_world)
+            return false;
+
         return m_world->IsEntityActive(*this);
     }
 
@@ -139,6 +144,12 @@ public:
     World* GetWorld() const
     {
         return m_world;
+    }
+
+public:
+    static Entity Empty()
+    {
+        return {};
     }
 };
 

@@ -61,21 +61,21 @@
 #endif
 
 
-// ==== ACTOR POOL SETTINGS ====
+// ==== GAMEOBJECT POOL SETTINGS ====
 
-#ifndef ACTOR_POOL_INITIAL_ACTOR_COUNT
+#ifndef GAMEOBJECT_POOL_INITIAL_COUNT
  /**
-  * \brief The initial amount of free actors in the pool.
+  * \brief The initial amount of free game objects in the pool.
   */
-#define ACTOR_POOL_INITIAL_ACTOR_COUNT 1024
+#define GAMEOBJECT_POOL_INITIAL_COUNT 1024
 #endif
 
-#ifndef ACTOR_POOL_INCREMENT_ACTOR_COUNT
+#ifndef GAMEOBJECT_POOL_INCREMENT_COUNT
   /**
-   * \brief The increment amount of actors. This much actors are spawned,
-   *  when no free actors are present and we're trying to spawn new one.
+   * \brief The increment amount of game objects. This much game objects are spawned,
+   *  when no free game objects are present and we're trying to spawn new one.
    */
-#define ACTOR_POOL_INCREMENT_ACTOR_COUNT 16
+#define GAMEOBJECT_POOL_INCREMENT_COUNT 16
 #endif
 
 // ==== ECS SETTINGS ====
