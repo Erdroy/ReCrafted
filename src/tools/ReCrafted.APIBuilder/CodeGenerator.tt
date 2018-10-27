@@ -101,9 +101,12 @@ foreach (var methodDesc in classDesc.Methods)
 			<#if (methodReturn != "void") {#>return <# }#>Internal_<#=methodName#>(NativePtr<#if(methodDesc.Parameters.Count > 0){#>, <#=methodParamsCall#><#}#>);
 		}
         
-        <#}#>[MethodImpl(MethodImplOptions.InternalCall)]
+<#
+        }
+#>
+        [MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern <#=methodUnsafe#><#=methodReturn#> Internal_<#=methodName#>(IntPtr nativePtr<#if(methodDesc.Parameters.Count > 0){#>, <#=methodParams#><#}#>);
-		<#
+<#
     }
     else
     {
