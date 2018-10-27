@@ -10,7 +10,9 @@ void GameObjectPool::AllocateGameObjects(const size_t numGameObjects)
 {
     for(var i = 0u; i < numGameObjects; i ++)
     {
-        var gameObject = Object::CreateInstance<GameObject>("ReCrafted.API.Common", "GameObject");
+        //var gameObject = Object::CreateInstance<GameObject>("ReCrafted.API.Common", "GameObject");
+
+        var gameObject = new GameObject();
         m_freeGameObjects.enqueue(gameObject);
         m_gameObjects.Add(gameObject);
     }
@@ -19,8 +21,7 @@ void GameObjectPool::AllocateGameObjects(const size_t numGameObjects)
 void GameObjectPool::CleanupGameObject(GameObject* gameObject)
 {
     ASSERT(gameObject);
-
-    // TODO: Cleanup gameObject
+    gameObject->Cleanup();
 }
 
 void GameObjectPool::OnInit()
@@ -46,7 +47,6 @@ void GameObjectPool::Update()
 
 void GameObjectPool::LateUpdate()
 {
-    // TODO: Activate/Deactivate game objects etc.
 }
 
 void GameObjectPool::OnFrameFinished()
@@ -74,19 +74,27 @@ void GameObjectPool::UpdateGameObjectPool()
 GameObject* GameObjectPool::AcquireGameObject()
 {
     GameObject* gameObject;
-    if (m_instance->m_freeGameObjects.try_dequeue(gameObject))
-        return gameObject;
-    
-    // Allocate gameObject
-    m_instance->AllocateGameObjects(GAMEOBJECT_POOL_INCREMENT_COUNT);
+    if (!m_instance->m_freeGameObjects.try_dequeue(gameObject))
+    { 
+        // Allocate gameObject
+        m_instance->AllocateGameObjects(GAMEOBJECT_POOL_INCREMENT_COUNT);
 
-    // Shis should never fail
-    ASSERT(m_instance->m_freeGameObjects.try_dequeue(gameObject));
+        // Shis should never fail
+        ASSERT(m_instance->m_freeGameObjects.try_dequeue(gameObject));
+
+        ASSERT(Object::IsObjectInitialized(gameObject) == false);
+    }
+    
+    // Create managed instance
+    Object::CreateInstance(gameObject, "ReCrafted.API.Common", "GameObject");
+
     return gameObject;
 }
 
 void GameObjectPool::ReleaseGameObject(GameObject* gameObject)
 {
+    ASSERT(Object::IsObjectInitialized(gameObject));
+
     // Enqueue gameObject
     m_instance->m_releaseGameObjects.enqueue(gameObject);
 }

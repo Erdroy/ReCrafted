@@ -26,17 +26,20 @@ private:
     GameObject* m_root = nullptr;
     GameObject* m_parent = nullptr;
 
+    TransformComponent* m_transform = nullptr;
+
     Array<GameObject*> m_children = {};
     Array<Component*> m_components = {};
     Array<Script*> m_scripts = {};
-
     Entity m_entity = {};
 
     bool m_active = true;
 
 private:
     void SetupEntity();
+    void Cleanup();
     void OnDestroy() override;
+    void OnParentChangeActive(bool active);
 
 private:
     GameObject();
@@ -44,76 +47,76 @@ private:
 public:
     ~GameObject()
     {
+        // Note: This is being only called by GameObjectPool when the game exits.
+
+        // Destroy managed instance of this gameObject if it is initialized
+        if(IsObjectInitialized(this))
+        {
+            Destroy(this);
+        }
+
         // Destroy entity
         m_entity.Destroy();
         m_entity = Entity::Empty();
-
-        // Destroy this gameObject
-        Destroy(this);
     }
 
 public:
-    void AddChildren(GameObject* children, bool resetPosition = false, bool resetRotation = false);
-    void RemoveChildren(GameObject* children);
+    /**
+     * \brief Sets given game object as children of this game object.
+     * \param gameObject The game object that will be children.
+     * \param resetPosition Should game object reset it's own local position to [0,0,0]?
+     * \param resetRotation Should game object reset it's own local rotation to rotation of this game object?
+     */
+    void AddChildren(GameObject* gameObject, bool resetPosition = false, bool resetRotation = false);
+
+    /**
+     * \brief Removes given game object from being a children of this game object.
+     * \param gameObject The game object that will be alone, now.
+     */
+    void RemoveChildren(GameObject* gameObject);
+
+    /**
+     * \brief Sets active state of this game object.
+     * \param active The new active state.
+     */
     void SetActive(bool active);
 
+    /**
+     * \brief Gets game object active state.
+     * \return True when active.
+     */
+    bool IsActive() const;
+
 public:
-    TransformComponent* GetTransform() const
-    {
-        ASSERT(m_components.Count() != 0u);
-        return static_cast<TransformComponent*>(m_components[0]);
-    }
+    /**
+     * \brief Gets pointer to transform (ECS component) of this game object.
+     * \return The transform pointer.
+     */
+    TransformComponent* GetTransform() const;
 
-    void SetPosition(const Vector3& position)
-    {
-        // Update relative children position to this gameObject
-        for(rvar child : m_children)
-            child->SetPosition(child->GetPosition() + (position - GetPosition()));
+    /**
+     * \brief Sets the position of this game object and updates all children
+     *  to match it's relative local position.
+     * \param position The new position of this game object.
+     */
+    void SetPosition(const Vector3& position);
 
-        // Set position
-        SetPosition(position);
-    }
+    /**
+     * \brief Gets position of this game object.
+     */
+    const Vector3& GetPosition() const;
 
-    const Vector3& GetPosition() const
-    {
-        return {};
-    }
+    /**
+     * \brief Sets rotation of this game objectand updates all children
+     *  to match it's relative local rotation.
+     * \param rotation The new rotation of this game object.
+     */
+    void SetRotation(const Vector3& rotation);
 
-    void SetRotation(const Vector3& rotation)
-    {
-    }
-
-    const Vector3& GetRotation() const
-    {
-        return {};
-    }
-
-    void SetForward(const Vector3& forward)
-    {
-    }
-
-    const Vector3& GetForward() const
-    {
-        return {};
-    }
-
-    void SetRight(const Vector3& right)
-    {
-    }
-
-    const Vector3& GetRight() const
-    {
-        return {};
-    }
-
-    void SetUp(const Vector3& up)
-    {
-    }
-
-    const Vector3& GetUp() const
-    {
-        return {};
-    }
+    /**
+     * \brief Gets rotation of this game object.
+     */
+    const Vector3& GetRotation() const;
 };
 
 #endif // GAMEOBJECT_H
