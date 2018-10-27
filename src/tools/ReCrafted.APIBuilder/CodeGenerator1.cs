@@ -340,7 +340,7 @@ if(methodDesc.Parameters.Count > 0){
             
             #line default
             #line hidden
-            this.Write("        [MethodImpl(MethodImplOptions.InternalCall)]\r\n\t\tinternal static extern ");
+            this.Write("\t\t[MethodImpl(MethodImplOptions.InternalCall)]\r\n\t\tinternal static extern ");
             
             #line 108 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(methodUnsafe));
