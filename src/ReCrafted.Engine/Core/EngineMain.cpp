@@ -38,9 +38,9 @@ void EngineMain::RegisterComponents() const
     m_componentManager->RegisterComponent(Time::GetInstance());
     m_componentManager->RegisterComponent(Input::GetInstance());
     m_componentManager->RegisterComponent(VoxelMaterialManager::GetInstance());
+    m_componentManager->RegisterComponent(MainWorld::GetInstance());
     m_componentManager->RegisterComponent(GameObjectPool::GetInstance());
     m_componentManager->RegisterComponent(SceneManager::GetInstance());
-    m_componentManager->RegisterComponent(MainWorld::GetInstance());
     m_componentManager->RegisterComponent(Universe::GetInstance());
     m_componentManager->RegisterComponent(DebugDraw::GetInstance());
     m_componentManager->RegisterComponent(UI::GetInstance());
