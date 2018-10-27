@@ -25,11 +25,8 @@ private:
     RefPtr<Method> m_simulate = nullptr;
     RefPtr<Method> m_onDestroy = nullptr;
 
-public:
-    Script();
-
 private:
-    void Awake() const;
+    void Awake();
     void Start() const;
     void Update() const;
     void LateUpdate() const;

@@ -12,9 +12,20 @@ using ReCrafted.API.UI.Controls;
 using ReCrafted.Common;
 using ReCrafted.Game.Interface;
 using ReCrafted.Game.Super;
+using Object = ReCrafted.API.Object;
 
 namespace ReCrafted.Game
 {
+    public class TestScript : Script
+    {
+        private void Update()
+        {
+            Logger.Log("TestScript::Update");
+
+            GameObject.Destroy();
+        }
+    }
+
     internal class GameMain : Application
     {
         // cross hair control
@@ -82,6 +93,9 @@ namespace ReCrafted.Game
 
                 var testTexture = ContentManager.LoadAsset<Texture>("Textures/Default");
                 testTexture.Unload();
+                
+                var gameObject = Object.New<GameObject>();
+                gameObject.AddScript<TestScript>();
             }
             catch (Exception exception)
             {

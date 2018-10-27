@@ -23,7 +23,7 @@
 #include "Audio/AudioSound.h"
 #include "Voxels/Assets/VoxelMaterial.h"
 
-static spp::sparse_hash_map<std::string, Action<Object*>> g_objectMap;
+static spp::sparse_hash_map<std::string, Action<Object*, bool>> g_objectMap;
 
 void Bindings::Bind()
 {
@@ -46,6 +46,7 @@ void Bindings::Bind()
 
     // == GameObjects ==
     GameObject::InitRuntime();
+    Script::InitRuntime();
 
 
     // == ECS ==
@@ -84,12 +85,12 @@ void Bindings::Shutdown()
 {
 }
 
-void Bindings::RegisterObject(const char* fullName, const Action<Object*>& createFunction)
+void Bindings::RegisterObject(const char* fullName, const Action<Object*, bool>& createFunction)
 {
     g_objectMap.insert(std::make_pair(fullName, createFunction));
 }
 
-Action<Object*>* Bindings::GetObjectCreator(const char* fullName)
+Action<Object*, bool>* Bindings::GetObjectCreator(const char* fullName)
 {
     cvar it = g_objectMap.find(fullName);
 

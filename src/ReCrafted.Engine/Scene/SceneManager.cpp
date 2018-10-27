@@ -19,7 +19,10 @@ void SceneManager::Update()
     Profiler::BeginProfile(__FUNCTION__);
 
     for(var gameObject : m_gameObjects)
-        gameObject->Update();
+    {
+        if (gameObject->IsActive())
+            gameObject->Update();
+    }
 
     Profiler::EndProfile();
 }
@@ -29,7 +32,10 @@ void SceneManager::LateUpdate()
     Profiler::BeginProfile(__FUNCTION__);
 
     for (var gameObject : m_gameObjects)
-        gameObject->LateUpdate();
+    {
+        if(gameObject->IsActive())
+            gameObject->LateUpdate();
+    }
 
     Profiler::EndProfile();
 }
@@ -39,7 +45,20 @@ void SceneManager::Simulate()
     //Profiler::BeginProfile(__FUNCTION__);
 
     for (var gameObject : m_gameObjects)
-        gameObject->Simulate();
+    {
+        if (gameObject->IsActive())
+            gameObject->Simulate();
+    }
 
     //Profiler::EndProfile();
+}
+
+void SceneManager::AddGameObject(GameObject* gameObject)
+{
+    m_gameObjects.Add(gameObject);
+}
+
+void SceneManager::RemoveGameObject(GameObject* gameObject)
+{
+    m_gameObjects.Remove(gameObject);
 }

@@ -24,7 +24,26 @@ namespace Internal
         _ASSERT_(objectCreator, "Object creator for this type is not implemented!");
 
         // Create object
-        cvar nativeObject = objectCreator->Invoke();
+        cvar nativeObject = objectCreator->Invoke(true);
+
+        // Return managed pointer
+        return nativeObject->GetManagedPtr();
+    }
+
+    MonoObject* CreateNewGeneric(MonoType* baseType, MonoObject* object)
+    {
+        cvar objectFullName = mono_type_full_name(baseType);
+
+        // Get object creator
+        cvar objectCreator = Bindings::GetObjectCreator(objectFullName);
+
+        _ASSERT_(objectCreator, "Object creator for this type is not implemented!");
+
+        // Create object
+        cvar nativeObject = objectCreator->Invoke(false);
+
+        // Setup generic object
+        Object::InitializeInstance(nativeObject, object);
 
         // Return managed pointer
         return nativeObject->GetManagedPtr();
@@ -46,6 +65,16 @@ void Object::InitRuntime()
                 
                 API_PARAM("IntPtr", "managedType");
                 
+                API_RETURN("Object");
+            }
+
+            API_METHOD(INTERNAL, STATIC, "InternalNewGeneric", EXTERN);
+            {
+                API_BIND("ReCrafted.API.Object::InternalNewGeneric", &Internal::CreateNewGeneric);
+
+                API_PARAM("IntPtr", "baseType");
+                API_PARAM("object", "genericObject");
+
                 API_RETURN("Object");
             }
 

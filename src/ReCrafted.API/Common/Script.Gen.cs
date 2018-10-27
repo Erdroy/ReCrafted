@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 10/27/2018 14:21:55 Source: 'Script.API.cpp' Target: 'Common/Script.Gen.cs'
+// Generated: 10/27/2018 14:56:04 Source: 'Script.API.cpp' Target: 'Common/Script.Gen.cs'
 
 using ReCrafted.API.Common.Components;
 using System;

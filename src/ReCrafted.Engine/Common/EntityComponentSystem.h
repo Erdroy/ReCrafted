@@ -32,7 +32,7 @@ public:
         /* 00 */ assert(GetComponentId<TransformComponent>()        == 0);
         /* 01 */ assert(GetComponentId<AudioSourceComponent>()      == 1);
         /* 02 */ assert(GetComponentId<PhysicsBodyComponent>()      == 2);
-        /* 03 */ assert(GetComponentId<PhysicsBodyComponent>()      == 3);
+        /* 03 */ assert(GetComponentId<PhysicsShapeComponent>()     == 3);
     }
 };
 

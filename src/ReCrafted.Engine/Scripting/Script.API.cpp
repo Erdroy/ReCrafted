@@ -27,7 +27,7 @@ namespace Internal
 
 void Script::InitRuntime()
 {
-    API_REGISTER_OBJECT("ReCrafted.API.Object.Common", &Internal::CreateScript);
+    API_REGISTER_OBJECT("ReCrafted.API.Common.Script", &Internal::CreateScript);
 
     API_FILE("Common/Script.Gen.cs");
     {

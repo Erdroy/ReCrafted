@@ -41,6 +41,7 @@ private:
 private:
     void SetupEntity();
     void Cleanup();
+    void OnAcquire();
     void OnDestroy() override;
     void OnParentChangeActive(bool active);
 
@@ -68,6 +69,18 @@ public:
      * \param gameObject The game object that will be alone, now.
      */
     void RemoveChildren(GameObject* gameObject);
+
+    /**
+     * \brief Adds given script to this game object.
+     * \param script The script.
+     */
+    void AddScript(Script* script);
+    
+    /**
+     * \brief Removes given script.
+     * \param script The script.
+     */
+    void RemoveScript(Script* script);
 
     /**
      * \brief Sets active state of this game object.
@@ -111,6 +124,13 @@ public:
      * \brief Gets rotation of this game object.
      */
     const Vector3& GetRotation() const;
+
+public:
+    /**
+     * \brief Creates new game object.
+     * \return The newly created game object, just for you.
+     */
+    static GameObject* Create();
 };
 
 #endif // GAMEOBJECT_H

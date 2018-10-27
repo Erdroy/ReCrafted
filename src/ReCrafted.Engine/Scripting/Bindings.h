@@ -16,8 +16,8 @@ public:
     static void Shutdown();
 
 public:
-    static void RegisterObject(const char* fullName, const Action<Object*>& createFunction);
-    static Action<Object*>* GetObjectCreator(const char* fullName);
+    static void RegisterObject(const char* fullName, const Action<Object*, bool>& createFunction);
+    static Action<Object*, bool>* GetObjectCreator(const char* fullName);
 };
 
 #endif // BINDINGS_H

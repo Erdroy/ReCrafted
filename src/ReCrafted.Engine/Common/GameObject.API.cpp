@@ -6,14 +6,31 @@
 
 namespace Internal
 {
+    void AddScript(GameObject* gameObject, Script* script)
+    {
+        DEBUG_ASSERT(gameObject);
+        DEBUG_ASSERT(script);
+        DEBUG_ASSERT(script->GetGameObject() == nullptr);
+
+        gameObject->AddScript(script);
+    }
+
+    void RemoveScript(GameObject* gameObject, Script* script)
+    {
+        DEBUG_ASSERT(gameObject);
+        DEBUG_ASSERT(script);
+
+        gameObject->RemoveScript(script);
+    }
+
     TransformComponent* GetTransform(GameObject* gameObject)
     {
         return gameObject->GetTransform();
     }
 
-    Object* CreateGameObject()
+    Object* CreateGameObject(bool createManagedInstance)
     {
-        return GameObjectPool::AcquireGameObject();
+        return GameObject::Create();
     }
 }
 
@@ -33,7 +50,21 @@ void GameObject::InitRuntime()
                 API_BIND("ReCrafted.API.Common.GameObject::GetTransform", &Internal::GetTransform);
                 API_RETURN("TransformComponent*");
             }
+            API_METHOD_END();
 
+            API_METHOD(INTERNAL, REGULAR, "AddScript", NOPROXY, EXTERN);
+            {
+                API_BIND("ReCrafted.API.Common.GameObject::Internal_AddScript", &Internal::AddScript);
+                API_PARAM("IntPtr", "nativeScriptPtr");
+            }
+            API_METHOD_END();
+
+            API_METHOD(INTERNAL, REGULAR, "RemoveScript", NOPROXY, EXTERN);
+            {
+                API_BIND("ReCrafted.API.Common.GameObject::Internal_RemoveScript", &Internal::RemoveScript);
+                API_PARAM("IntPtr", "nativeScriptPtr");
+            }
+            API_METHOD_END();
         }
         API_CLASS_END();
     }

@@ -9,6 +9,20 @@ namespace ReCrafted.API.Common
     {
         private GameObject() { }
         
+        public TScript AddScript<TScript>() where TScript : Script, new()
+        {
+            var script = (TScript)NewGeneric<Script>(new TScript());
+
+            Internal_AddScript(NativePtr, script.NativePtr);
+
+            return script;
+        }
+
+        public void RemoveScript<TScript>(TScript script) where TScript : Script
+        {
+            Internal_RemoveScript(NativePtr, script.NativePtr);
+        }
+
         /// <summary>
         /// Contains the reference to transform owned by this game object.
         /// </summary>

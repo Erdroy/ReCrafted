@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "GameObjectPool.h"
 #include "Entities/MainWorld.h"
+#include "Scene/SceneManager.h"
 
 void GameObject::SetupEntity()
 {
@@ -23,7 +24,7 @@ void GameObject::Cleanup()
     // Remove all scripts
     for(crvar script : m_scripts)
     {
-        // TODO: Remove scripts
+        RemoveScript(script);
     }
 
     // Remove all components (beside transform)
@@ -39,8 +40,23 @@ void GameObject::Cleanup()
     m_root = nullptr;
 }
 
+void GameObject::OnAcquire()
+{
+    // Add to scene
+    SceneManager::GetInstance()->AddGameObject(this);
+}
+
 void GameObject::OnDestroy()
 {
+    // We need to unbind the managed object, because we don't want to get 
+    // finalized being called on us, because it will also remove our 
+    // unmanaged instance. And we don't want this, because we are assigning 
+    // managed instances dynamically (when game object is acquired).
+    UnbindManaged(this);
+
+    // Remove from scene
+    SceneManager::GetInstance()->RemoveGameObject(this);
+
     // Destroy children game objects
     for (rvar gameObject : m_children)
     {
@@ -163,6 +179,9 @@ void GameObject::AddChildren(GameObject* gameObject, const bool resetPosition, c
 
     m_children.Add(gameObject);
 
+    // Remove children from scene
+    SceneManager::GetInstance()->RemoveGameObject(gameObject);
+
     if (resetPosition)
         gameObject->SetPosition(GetPosition());
 
@@ -190,6 +209,23 @@ void GameObject::RemoveChildren(GameObject* gameObject)
 
     gameObject->m_root = nullptr;
     gameObject->m_parent = nullptr;
+}
+
+void GameObject::AddScript(Script* script)
+{
+    script->Awake();
+    script->SetGameObject(this);
+    m_scripts.Add(script);
+}
+
+void GameObject::RemoveScript(Script* script)
+{
+    script->OnDestroy();
+    script->SetGameObject(nullptr);
+    m_scripts.Remove(script); 
+    
+    // Destroy script
+    Destroy(script);
 }
 
 void GameObject::SetActive(const bool active)
@@ -254,4 +290,11 @@ const Vector3& GameObject::GetRotation() const
 {
     DEBUG_ASSERT(m_transform);
     return m_transform->rotation;
+}
+
+GameObject* GameObject::Create()
+{
+    cvar gameObject = GameObjectPool::AcquireGameObject();
+    gameObject->OnAcquire();
+    return gameObject;
 }

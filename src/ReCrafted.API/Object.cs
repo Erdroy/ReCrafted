@@ -58,6 +58,21 @@ namespace ReCrafted.API
         }
 
         /// <summary>
+        /// Creates generic managed Object of given type with it's unmanaged corresponsive type.
+        /// </summary>
+        /// <typeparam name="TType">The type of Object to be created.</typeparam>
+        /// <returns>The created Object.</returns>
+        public static TType NewGeneric<TType>(Object instance) where TType : Object
+        {
+            // Do not allow to create raw Object files.
+            if (typeof(TType) == typeof(Object))
+                throw new ReCraftedException("Cannot create instance of raw Object type!");
+
+            // Create managed and unmanaged object
+            return (TType)InternalNewGeneric(typeof(TType).TypeHandle.Value, instance);
+        }
+
+        /// <summary>
         /// Destroy the given object.
         /// </summary>
         /// <param name="obj">The object instance which will be destroyed.</param>

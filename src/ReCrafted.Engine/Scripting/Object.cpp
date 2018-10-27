@@ -144,6 +144,23 @@ void Object::Destroy(Object* object)
     object->m_class = nullptr;
 }
 
+void Object::Release(Object* object)
+{
+    ASSERT(object);
+    ASSERT(IsObjectInitialized(object));
+
+    // free garbage collector handle
+    mono_gchandle_free(object->m_gchandle);
+    object->m_gchandle = 0u;
+}
+
+void Object::UnbindManaged(Object* object)
+{
+    // set native pointer
+    cvar nativePtr = object->FindField("NativePtr");
+    nativePtr->SetValue(nullptr);
+}
+
 void Object::DestroyAll()
 {
     for (auto i = 0u; i < m_objects.Size(); i ++)
@@ -164,9 +181,12 @@ void Object::Finalize(Object* object)
     if (m_objects.Count() > 0u && m_objects.Remove(object))
     {
         object->OnDestroy();
-        Logger::LogWarning("Object was finalized, but not destroyed at first!");
+        Logger::LogWarning("Object got finalized, but not destroyed at first!");
     }
 
     // cleanup
     object->m_object = nullptr;
+
+    // Delete unmanaged object
+    delete object;
 }

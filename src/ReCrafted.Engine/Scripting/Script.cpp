@@ -3,18 +3,15 @@
 #include "Script.h"
 #include "Method.h"
 
-Script::Script()
+void Script::Awake()
 {
-    m_awake = FindMethod("Awake");
-    m_start = FindMethod("Start");
-    m_update = FindMethod("Update");
-    m_lateUpdate = FindMethod("LateUpdate");
-    m_simulate = FindMethod("Simulate");
-    m_onDestroy = FindMethod("OnDestroy");
-}
+    m_awake = FindMethod("ReCrafted.API.Common.Script::Awake");
+    m_start = FindMethod("ReCrafted.API.Common.Script::Start");
+    m_update = FindMethod("ReCrafted.API.Common.Script::Update");
+    m_lateUpdate = FindMethod("ReCrafted.API.Common.Script::LateUpdate");
+    m_simulate = FindMethod("ReCrafted.API.Common.Script::Simulate");
+    m_onDestroy = FindMethod("ReCrafted.API.Common.Script::OnDestroy");
 
-void Script::Awake() const
-{
     if (m_awake)
         m_awake->Invoke();
 }

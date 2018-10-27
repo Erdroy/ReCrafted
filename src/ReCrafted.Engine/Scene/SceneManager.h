@@ -31,6 +31,10 @@ private:
     void Update() override;
     void LateUpdate() override;
     void Simulate();
+
+public:
+    void AddGameObject(GameObject* gameObject);
+    void RemoveGameObject(GameObject* gameObject);
 };
 
 #endif // SCENEMANAGER_H

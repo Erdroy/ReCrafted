@@ -35,7 +35,7 @@ void GameObjectPool::OnInit()
 void GameObjectPool::OnDispose()
 {
     // Cleanup
-    for(rvar gameObject : m_gameObjects)
+    for (rvar gameObject : m_gameObjects)
         delete gameObject;
 
     m_gameObjects.Clear();

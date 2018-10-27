@@ -134,6 +134,8 @@ public:
     static void InitializeInstance(Object* object, MonoObject* instance);
     static void RegisterObject(Object* object);
     static void Destroy(Object* object);
+    static void Release(Object* object);
+    static void UnbindManaged(Object* object);
     static void DestroyAll();
     static void Finalize(Object* object);
 };
