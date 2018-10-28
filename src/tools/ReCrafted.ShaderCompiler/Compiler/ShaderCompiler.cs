@@ -191,7 +191,7 @@ namespace ReCrafted.ShaderCompiler.Compiler
             }
             if (!string.IsNullOrEmpty(result.Message))
             {
-                Console.WriteLine(result.Message + " Error Code: " + result.ResultCode);
+                Console.WriteLine(result.Message);
             }
 
             var byteCode = result.Bytecode;
