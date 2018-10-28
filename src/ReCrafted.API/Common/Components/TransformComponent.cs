@@ -27,5 +27,16 @@ namespace ReCrafted.API.Common.Components
         public ushort ComponentTypeId => 0;
         public bool IsNativeComponent => true;
         public uint SizeInBytes => 24;
+
+        private static ComponentDescriptor<TransformComponent> _descriptor;
+        public static ref ComponentDescriptor<TransformComponent> Descriptor
+        {
+            get
+            {
+                if (_descriptor == null)
+                    _descriptor = new ComponentDescriptor<TransformComponent>();
+                return ref _descriptor;
+            }
+        }
     }
 }
