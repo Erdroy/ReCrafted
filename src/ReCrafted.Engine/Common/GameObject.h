@@ -94,6 +94,15 @@ public:
      */
     bool IsActive() const;
 
+    /**
+     * \brief Returns array containing all children game objects.
+     * \return The array of children game objects.
+     */
+    const Array<GameObject*>& Children() const
+    {
+        return m_children;
+    }
+
 public:
     /**
      * \brief Gets pointer to transform (ECS component) of this game object.

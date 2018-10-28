@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 10/27/2018 15:17:40 Source: 'GameObject.API.cpp' Target: 'Common/GameObject.Gen.cs'
+// Generated: 10/28/2018 14:08:06 Source: 'GameObject.API.cpp' Target: 'Common/GameObject.Gen.cs'
 
 using ReCrafted.API.Common.Components;
 using System;
@@ -18,6 +18,18 @@ namespace ReCrafted.API.Common
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_RemoveScript(IntPtr nativePtr, IntPtr nativeScriptPtr);
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_AddChildren(IntPtr nativePtr, IntPtr gameObjectPtr);
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_RemoveChildren(IntPtr nativePtr, IntPtr gameObjectPtr);
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern int Internal_GetChildCount(IntPtr nativePtr);
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern GameObject Internal_GetChild(IntPtr nativePtr, int index);
 
 	}
 }
