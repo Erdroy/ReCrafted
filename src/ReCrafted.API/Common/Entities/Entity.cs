@@ -109,5 +109,14 @@ namespace ReCrafted.API.Common.Entities
         {
             EntityInternals.DestroyEntity(WorldPtr, EntityId);
         }
+
+        /// <summary>
+        /// Returns true when this Entity has not been initialized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Empty()
+        {
+            return EntityId == 0u && WorldPtr == IntPtr.Zero;
+        }
     }
 }
