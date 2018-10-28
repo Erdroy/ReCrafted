@@ -9,6 +9,7 @@ namespace ReCrafted.API.Common.Entities
     {
         ushort ComponentTypeId { get; }
         bool IsNativeComponent { get; }
+        uint SizeInBytes { get; }
     }
 
     /// <summary>

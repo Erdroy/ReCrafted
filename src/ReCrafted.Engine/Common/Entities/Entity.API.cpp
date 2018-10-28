@@ -100,12 +100,12 @@ void Entity::InitRuntime()
             }
             API_METHOD_END();
 
-            API_METHOD(PUBLIC, STATIC, "AddEntityComponent", EXTERN);
+            API_METHOD(PUBLIC, STATIC, "AddEntityComponent", UNSAFE, EXTERN);
             {
                 API_BIND("ReCrafted.API.Common.Entities.EntityInternals::AddEntityComponent", &Internal::AddComponent);
                 API_PARAM("IntPtr", "world");
                 API_PARAM("uint", "entityId");
-                API_PARAM("IntPtr", "componentData");
+                API_PARAM("void*", "componentData");
                 API_PARAM("uint", "componentSize");
                 API_PARAM("ushort", "componentId");
                 API_PARAM("bool", "nativeComponentId");

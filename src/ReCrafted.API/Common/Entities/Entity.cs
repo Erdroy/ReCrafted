@@ -39,18 +39,18 @@ namespace ReCrafted.API.Common.Entities
         /// </summary>
         /// <param name="component">The component instance.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AddComponent<TComponent>(TComponent component) where TComponent : IComponent, new()
+        public unsafe void AddComponent<TComponent>(TComponent component) where TComponent : IComponent, new()
         {
-            var componentHandle = GCHandle.Alloc(component, GCHandleType.Pinned);
-
-            var componentPtr = componentHandle.AddrOfPinnedObject();
-            var componentSize = (uint)Marshal.SizeOf<TComponent>();
-
-            EntityInternals.AddEntityComponent(WorldPtr, EntityId, componentPtr, componentSize, component.ComponentTypeId, component.IsNativeComponent);
-
-            componentHandle.Free();
+            var componentPtr = Unsafe.AsPointer(ref component);
+            EntityInternals.AddEntityComponent(WorldPtr, EntityId, componentPtr, component.SizeInBytes, component.ComponentTypeId, component.IsNativeComponent);
         }
-        
+
+        /// <summary>
+        /// Gets component of given type from this entity.
+        /// </summary>
+        /// <typeparam name="TComponent">The component type.</typeparam>
+        /// <param name="descriptor">The component descriptor.</param>
+        /// <returns>The reference to component.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe ref TComponent GetComponent<TComponent>(ref ComponentDescriptor<TComponent> descriptor) where TComponent : IComponent, new()
         {

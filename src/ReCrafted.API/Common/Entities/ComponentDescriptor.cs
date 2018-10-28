@@ -42,5 +42,10 @@ namespace ReCrafted.API.Common.Entities
         /// True when described component is flagged as native.
         /// </summary>
         public bool IsNativeComponent => _prototype.IsNativeComponent;
+
+        /// <summary>
+        /// True when described component is flagged as native.
+        /// </summary>
+        public uint SizeInBytes => _prototype.SizeInBytes;
     }
 }

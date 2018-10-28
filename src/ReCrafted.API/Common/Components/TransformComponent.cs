@@ -26,5 +26,6 @@ namespace ReCrafted.API.Common.Components
 
         public ushort ComponentTypeId => 0;
         public bool IsNativeComponent => true;
+        public uint SizeInBytes => 24;
     }
 }
