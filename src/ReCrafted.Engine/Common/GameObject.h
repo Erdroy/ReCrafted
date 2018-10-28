@@ -103,6 +103,14 @@ public:
         return m_children;
     }
 
+    /**
+     * \brief Gets entity reference of this game object.
+     * \return The ECS entity owned by this game object.
+     */
+    const Entity& GetEntity() const
+    {
+        return m_entity;
+    }
 public:
     /**
      * \brief Gets pointer to transform (ECS component) of this game object.

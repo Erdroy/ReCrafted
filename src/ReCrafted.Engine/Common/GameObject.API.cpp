@@ -6,6 +6,11 @@
 
 namespace Internal
 {
+    EntityId GetEntityId(GameObject* gameObject)
+    {
+        return gameObject->GetEntity().GetId();
+    }
+
     MonoObject* GetChild(GameObject* gameObject, const int index)
     {
         ASSERT(gameObject);
@@ -85,7 +90,7 @@ void GameObject::InitRuntime()
         {
             API_METHOD(INTERNAL, REGULAR, "GetTransform", UNSAFE, NOPROXY, EXTERN);
             {
-                API_BIND("ReCrafted.API.Common.GameObject::GetTransform", &Internal::GetTransform);
+                API_BIND("ReCrafted.API.Common.GameObject::Internal_GetTransform", &Internal::GetTransform);
                 API_RETURN("TransformComponent*");
             }
             API_METHOD_END();
@@ -130,6 +135,13 @@ void GameObject::InitRuntime()
                 API_BIND("ReCrafted.API.Common.GameObject::Internal_GetChild", &Internal::GetChild);
                 API_PARAM("int", "index")
                 API_RETURN("GameObject")
+            }
+            API_METHOD_END();
+
+            API_METHOD(INTERNAL, REGULAR, "GetEntityId", NOPROXY, EXTERN);
+            {
+                API_BIND("ReCrafted.API.Common.GameObject::Internal_GetEntityId", &Internal::GetEntityId);
+                API_RETURN("uint")
             }
             API_METHOD_END();
         }

@@ -2,13 +2,79 @@
 
 using System.Runtime.CompilerServices;
 using ReCrafted.API.Common.Components;
+using ReCrafted.API.Common.Entities;
+using ReCrafted.API.Core;
 
 namespace ReCrafted.API.Common
 {
     public partial class GameObject
     {
+        private Entity _entity;
+
         private GameObject() { }
-        
+
+        private void InitializeEntity()
+        {
+            _entity = new Entity(Internal_GetEntityId(NativePtr), World.GetMainWorld().NativePtr);
+        }
+
+        /// <summary>
+        /// Adds given component to entity owned by this game object.
+        /// </summary>
+        /// <param name="component">The component instance.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AddComponent<TComponent>(TComponent component) where TComponent : IComponent, new()
+        {
+            if (component is TransformComponent)
+                throw new ReCraftedException("TransformComponent is automatically added to the game object so, " +
+                                             "there is no need to add it manually.");
+
+            if (_entity.Empty())
+                InitializeEntity();
+
+            _entity.AddComponent(component);
+        }
+
+        /// <summary>
+        /// Gets component of given type from entity owned by this game object.
+        /// </summary>
+        /// <typeparam name="TComponent">The component type.</typeparam>
+        /// <param name="descriptor">The component descriptor.</param>
+        /// <returns>The reference to component.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref TComponent GetComponent<TComponent>(ref ComponentDescriptor<TComponent> descriptor) where TComponent : IComponent, new()
+        {
+            if (_entity.Empty())
+                InitializeEntity();
+
+            return ref _entity.GetComponent(ref descriptor);
+        }
+
+        /// <summary>
+        /// Removes component of given type from entity owned by this game object.
+        /// </summary>
+        /// <typeparam name="TComponent">The component type which will be removed.</typeparam>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void RemoveComponent<TComponent>() where TComponent : IComponent, new()
+        {
+            if (_entity.Empty())
+                InitializeEntity();
+
+            _entity.RemoveComponent<TComponent>();
+        }
+
+        /// <summary>
+        /// Removes all components from entity owned by this game object.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void CleanComponents()
+        {
+            if (_entity.Empty())
+                InitializeEntity();
+
+            _entity.CleanComponents();
+        }
+
         /// <summary>
         /// Adds new script by given type <see cref="TScript"/>.
         /// </summary>
