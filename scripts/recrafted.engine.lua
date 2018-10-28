@@ -60,7 +60,7 @@ project "ReCrafted.Engine"
 			"call " .. ROOT_DIR .. "/pm.bat PostBuild",
 		}
 	
-	links { "d3d11", "dxguid", "dxgi", "d3dcompiler", "Rpcrt4", "Ultralight", "UltralightCore", "WebCore", "mono-2.0-sgen", "fmod64_vc" }
+	links { "d3d11", "dxguid", "dxgi", "d3dcompiler", "Rpcrt4", "Ultralight", "UltralightCore", "mono-2.0-sgen", "fmod64_vc" }
 		
 	configuration { "Debug" }
 		debugargs { "-debug" }

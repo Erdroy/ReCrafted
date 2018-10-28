@@ -24,6 +24,8 @@ namespace ReCrafted.Game
         
         private FreeCameraController _camera;
 
+        private WebUIView _webView;
+
         // initialize
         protected override void Initialize()
         {
@@ -71,6 +73,9 @@ namespace ReCrafted.Game
                 GameSystem.AddGameSystem<SuperConsole>();
                 GameSystem.AddGameSystem<PauseMenu>();
                 GameSystem.AddGameSystem<Messenger>();
+
+                _webView = WebUI.Create();
+                _webView.Navigate("https://google.com/");
             }
             catch (Exception exception)
             {

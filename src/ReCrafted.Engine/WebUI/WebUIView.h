@@ -10,6 +10,8 @@
 #include "Core/Action.h"
 #include "Scripting/Object.h"
 
+#include "WebUIOverlay.h"
+
 class WebUIView : public Object
 {
     friend class WebUI;
@@ -21,6 +23,7 @@ private:
     int m_width = 0;
     int m_height = 0;
     bool m_fullscreen = false;
+    WebUIOverlay* m_overlay = nullptr;
 
 private:
     void Init(uint width = 0u, uint height = 0u, bool fullscreen = true);

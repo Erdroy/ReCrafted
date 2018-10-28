@@ -71,7 +71,7 @@ void Graphics::InitializeRenderer()
         m_currentTextures.Add(nullptr);
 
     // Set renderer callbacks
-    Renderer::AddOnPresentCallback(Action<void>::New<Graphics, &Graphics::OnFramePresent>(this));
+    //Renderer::AddOnPresentCallback(Action<void>::New<Graphics, &Graphics::OnFramePresent>(this));
 
     Logger::LogInfo("Graphics initialized");
 }
@@ -212,6 +212,9 @@ void Graphics::Render()
 
         // Render UI
         RenderUI();
+
+        // Render WebUI
+        RenderWebUI();
 
         // Blit into framebuffer
         BlitFrameBuffer();
@@ -379,16 +382,16 @@ void Graphics::RenderUI()
     Profiler::EndProfile();
 }
 
-void Graphics::OnFramePresent()
+void Graphics::RenderWebUI()
 {
-    /*Profiler::BeginProfile("Render WebUI");
+    Profiler::BeginProfile("Render WebUI");
     {
         // set WebUI state
         SetStage(RenderStage::DrawWebUI);
 
         WebUI::GetInstance()->Render();
     }
-    Profiler::EndProfile();*/
+    Profiler::EndProfile();
 }
 
 void Graphics::Draw(const RefPtr<Mesh>& mesh, Shader* shader)

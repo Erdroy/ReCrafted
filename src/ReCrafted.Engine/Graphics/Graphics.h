@@ -67,7 +67,7 @@ private:
     void OnDispose() override;
     void Update() override;
 
-    void OnFramePresent();
+    void RenderWebUI();
 
     void Render();
     void Resize(uint width, uint height);

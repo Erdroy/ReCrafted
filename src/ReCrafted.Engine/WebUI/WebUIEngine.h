@@ -8,12 +8,19 @@
 // includes
 #include "ReCrafted.h"
 #include "WebUIOverlay.h"
+#include "WebUIView.h"
+
+class WebUIGPUDriver;
+class WebUIRenderer;
 
 class WebUIEngine : public Singleton<WebUIEngine>
 {
 private:
     bool m_initialized = false;
     bool m_needsViewUpdate = false;
+
+    WebUIGPUDriver* m_gpuDriver = nullptr;
+    WebUIRenderer* m_renderer = nullptr;
 
 public:
     void Init();
