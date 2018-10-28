@@ -4,12 +4,15 @@
 #include "WebUIView.h"
 #include "WebUIEngine.h"
 #include "Core/Logger.h"
+#include "Content/ContentManager.h"
 
 SINGLETON_IMPL(WebUI)
 
 void WebUI::OnInit()
 {
     Logger::Log("WebUI is being initialized...");
+
+    m_shader = ContentManager::LoadAsset<Shader>("Shaders/WebUI");
 
     m_engine = WebUIEngine::GetInstance();
     m_engine->Init();

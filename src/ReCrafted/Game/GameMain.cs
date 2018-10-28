@@ -22,8 +22,6 @@ namespace ReCrafted.Game
         // build number control
         private UIText _buildNumberText;
         
-        private WebUIView _uiView;
-
         private FreeCameraController _camera;
 
         // initialize
@@ -73,11 +71,6 @@ namespace ReCrafted.Game
                 GameSystem.AddGameSystem<SuperConsole>();
                 GameSystem.AddGameSystem<PauseMenu>();
                 GameSystem.AddGameSystem<Messenger>();
-
-                // create example webui view
-                _uiView = WebUI.Create();
-                _uiView.Navigate("file:///ui/default.html");
-                //_uiView.Navigate("file:///ui/menu/menu.html");
             }
             catch (Exception exception)
             {

@@ -564,12 +564,13 @@ namespace Renderer
 
                 cvar name = fieldData["Name"].get<std::string>();
                 cvar size = fieldData["Size"].get<int>();
+                cvar length = fieldData["Length"].get<int>();
 
                 // set buffer name
                 field.m_name = name;
 
                 // set buffer size
-                field.m_size = size;
+                field.m_size = size * length;
             }
 
             // Align fields

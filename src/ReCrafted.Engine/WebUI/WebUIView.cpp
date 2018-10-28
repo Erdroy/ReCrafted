@@ -6,7 +6,6 @@
 #include "Common/Display.h"
 #include "Core/Action.h"
 #include "Graphics/Graphics.h"
-#include "Impl/Overlay.h"
 
 void WebUIView::Init(uint width, uint height, bool fullscreen)
 {
@@ -14,7 +13,7 @@ void WebUIView::Init(uint width, uint height, bool fullscreen)
     m_width = fullscreen ? Display::GetWidth() : width;
     m_height = fullscreen ? Display::GetHeight() : height;
 
-    m_overlay = WebUIEngine::CreateUIView(this, fullscreen);
+    //m_overlay = WebUIEngine::CreateUIView(this, fullscreen);
 }
 
 void WebUIView::Update()
@@ -26,7 +25,7 @@ void WebUIView::Resize(uint width, uint height)
 {
     ASSERT(m_fullscreen);
     
-    m_overlay->Resize(width, height);
+    //m_overlay->Resize(width, height);
 }
 
 void WebUIView::Render()
@@ -34,7 +33,7 @@ void WebUIView::Render()
     if (!m_Active)
         return;
 
-    m_overlay->Draw();
+    //m_overlay->Draw();
 
     if (!m_fullscreen)
     {
@@ -44,7 +43,7 @@ void WebUIView::Render()
 
 void WebUIView::OnDestroy()
 {
-    delete m_overlay;
+    //delete m_overlay;
 }
 
 void WebUIView::UpdateSurface(const Vector3& vertex0, const Vector3& vertex1, const Vector3& vertex2,
@@ -55,7 +54,7 @@ void WebUIView::UpdateSurface(const Vector3& vertex0, const Vector3& vertex1, co
 
 void WebUIView::Navigate(Text& url)
 {
-    m_overlay->Navigate(url.StdStr());
+    //m_overlay->Navigate(url.StdStr());
 }
 
 void WebUIView::Execute(const char* javaScriptSource)

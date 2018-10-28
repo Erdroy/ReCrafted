@@ -9,6 +9,7 @@
 #include "ReCrafted.h"
 #include "Core/EngineComponent.h"
 #include "Core/Containers/Array.h"
+#include "Graphics/Shader.h"
 
 class WebUI : public EngineComponent<WebUI>
 {
@@ -21,6 +22,8 @@ SCRIPTING_API_IMPL()
 private:
     Array<RefPtr<WebUIView>> m_views = {};
     WebUIEngine* m_engine = nullptr;
+
+    Shader* m_shader = nullptr;
 
 private:
     void OnInit() override;
