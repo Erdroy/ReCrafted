@@ -185,8 +185,14 @@ namespace ReCrafted.ShaderCompiler.Compiler
 
             var result = ShaderBytecode.Compile(sourceCode, entryPoint, shaderPrefix + "_" + profile + "_0");
 
-            if(result.HasErrors || !string.IsNullOrEmpty(result.Message))
+            if (result.HasErrors)
+            {
                 throw new Exception(result.Message + " Error Code: " + result.ResultCode);
+            }
+            if (!string.IsNullOrEmpty(result.Message))
+            {
+                Console.WriteLine(result.Message + " Error Code: " + result.ResultCode);
+            }
 
             var byteCode = result.Bytecode;
 

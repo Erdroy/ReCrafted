@@ -9,7 +9,7 @@ namespace ReCrafted.ShaderCompiler.Description
     {
         public string Name { get; set; }
         public int Size { get; set; }
-
+        public int Length { get; set; } = 1;
         public int Index { get; set; }
     }
 }

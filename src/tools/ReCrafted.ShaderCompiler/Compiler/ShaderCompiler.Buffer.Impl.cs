@@ -73,11 +73,31 @@ namespace ReCrafted.ShaderCompiler.Compiler
                             Size = uniformSize,
                             Index = uniformIndex
                         };
+                        
+                        // and for the end, expect semicolon at the end
+                        token = _parser.ExpectTokens(new [] { TokenType.SemiColon, TokenType.LeftBracket });
+
+                        // Parse array length
+                        if (token.Type == TokenType.LeftBracket)
+                        {
+                            var arrayLength = _parser.ExpectToken(TokenType.Number);
+
+                            // Parse array length
+                            if (int.TryParse(arrayLength.Value, out var num))
+                            {
+                                uniform.Length = num;
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Invalid uniform field array length specified at line {_parser.CurrentLine}! Defaulting to 1.");
+                                uniform.Length = 1;
+                            }
+
+                            _parser.ExpectToken(TokenType.RightBracket);
+                            _parser.ExpectToken(TokenType.SemiColon);
+                        }
 
                         uniforms.Add(uniform);
-
-                        // and for the end, expect semicolon at the end
-                        _parser.ExpectToken(TokenType.SemiColon);
                         uniformIndex++;
                         break;
                     case TokenType.RightCurlyBrace:
