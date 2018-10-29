@@ -9,6 +9,7 @@
 #include "RendererDefines.h"
 #include "RendererConfig.h"
 #include "Core/Action.h"
+#include "HandlePool.h"
 
 namespace Renderer
 {
@@ -310,9 +311,7 @@ namespace Renderer
 
     // ======== OBJECT HANDLE DEFINES ========
     RENDERER_DEFINE_HANDLE(VertexBuffer);
-
     RENDERER_DEFINE_HANDLE(IndexBuffer);
-
     RENDERER_DEFINE_HANDLE(Shader);
 
     RENDERER_DEFINE_HANDLE_WITH_DESCRIPTOR(Texture2D);
@@ -327,6 +326,14 @@ namespace Renderer
     RENDERER_DEFINE_HANDLE_WITH_DESCRIPTOR(Window)
         RenderBufferHandle renderBuffer = {};
     RENDERER_DEFINE_HANDLE_WITH_DESCRIPTOR_END();
+
+    // ==== HANDLE DEFINITIONS ====
+    typedef HandlePool<WindowHandle,        WindowDescription           > WindowHandlePool;
+    typedef HandlePool<RenderBufferHandle,  RenderBufferDescription     > RenderBufferHandlePool;
+    typedef HandlePool<Texture2DHandle,     Texture2DDescription        > Texture2DHandlePool;
+    typedef HandlePool<ShaderHandle,        EmptyDescription            > ShaderHandlePool;
+    typedef HandlePool<VertexBufferHandle,  EmptyDescription            > VertexBufferHandlePool;
+    typedef HandlePool<IndexBufferHandle,   EmptyDescription            > IndexBufferHandlePool;
 
     // ======== COMMON ========
 

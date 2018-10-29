@@ -2,6 +2,7 @@
 
 #include "Renderer.hpp"
 #include "RendererConfig.h"
+
 #include "Core/Lock.h"
 #include "RHI/RHIBase.h"
 #include "RHI/DirectX12/RHIDirectX12.h"
@@ -24,20 +25,6 @@ namespace Renderer
         void* memory = nullptr;
         std::function<void(void*, void*)> releaseFunc = {};
     };
-
-    // ==== HANDLE DEFINITIONS ====
-    RENDERER_DEFINE_HANDLE_ALLOCATOR(WindowHandle, RENDERER_MAX_WINDOWS);
-    RENDERER_DEFINE_HANDLE_DESCRIPTOR_TABLE(Window, RENDERER_MAX_WINDOWS);
-
-    RENDERER_DEFINE_HANDLE_ALLOCATOR(RenderBufferHandle, RENDERER_MAX_RENDER_BUFFERS);
-    RENDERER_DEFINE_HANDLE_DESCRIPTOR_TABLE(RenderBuffer, RENDERER_MAX_RENDER_BUFFERS);
-
-    RENDERER_DEFINE_HANDLE_ALLOCATOR(Texture2DHandle, RENDERER_MAX_TEXTURES2D);
-    RENDERER_DEFINE_HANDLE_DESCRIPTOR_TABLE(Texture2D, RENDERER_MAX_TEXTURES2D);
-
-    RENDERER_DEFINE_HANDLE_ALLOCATOR(ShaderHandle, RENDERER_MAX_SHADER_PROGRAMS);
-    RENDERER_DEFINE_HANDLE_ALLOCATOR(VertexBufferHandle, RENDERER_MAX_VERTEX_BUFFERS);
-    RENDERER_DEFINE_HANDLE_ALLOCATOR(IndexBufferHandle, RENDERER_MAX_INDEX_BUFFERS);
 
     static std::thread::id g_mainThreadId = {};
     static CommandList* g_commandList;
@@ -66,8 +53,6 @@ namespace Renderer
     void UpdateMemory()
     {
 #if RENDERER_MEMORY_AUTO_DEALLOC_ENABLE
-        // we don't need any lock's here as everything happens on the main thread.
-
         ScopeLock(m_memoryAllocationsLock);
 
         // deallocate memory that is out of life time
@@ -103,6 +88,14 @@ namespace Renderer
 
     void Initialize(RendererAPI::_enum api, Settings::_enum settings, RenderFlags::_enum flags)
     {
+        // Initialize handle allocators
+        WindowHandlePool::Instance()->Initialize(RENDERER_MAX_WINDOWS, false);
+        RenderBufferHandlePool::Instance()->Initialize(RENDERER_MAX_RENDER_BUFFERS, false);
+        Texture2DHandlePool::Instance()->Initialize(RENDERER_MAX_TEXTURES2D, false);
+        ShaderHandlePool::Instance()->Initialize(RENDERER_MAX_SHADER_PROGRAMS, false);
+        VertexBufferHandlePool::Instance()->Initialize(RENDERER_MAX_VERTEX_BUFFERS, false);
+        IndexBufferHandlePool::Instance()->Initialize(RENDERER_MAX_INDEX_BUFFERS, false);
+
         // get main thread index
         g_mainThreadId = std::this_thread::get_id();
 
@@ -112,8 +105,6 @@ namespace Renderer
 
         m_renderer = new RHI::RHIDirectX11();
         m_renderer->Initialize(settings, flags);
-        m_renderer->freeVertexBuffer = (RHI::RHIBase::vbhFreePtr)&FreeVertexBufferHandle;
-        m_renderer->freeIndexBuffer = (RHI::RHIBase::ibhFreePtr)&FreeIndexBufferHandle;
 
         g_commandList = &m_renderer->commandList;
         m_running = true;
@@ -511,15 +502,15 @@ namespace Renderer
         CHECK_MAIN_THREAD();
 
         // Create output
-        cvar handle = AllocWindowHandle();
-        cvar renderBuffer = AllocRenderBufferHandle();
+        cvar handle = WindowHandlePool::AllocateHandle();
+        cvar renderBuffer = RenderBufferHandlePool::AllocateHandle();
 
         RENDERER_VALIDATE_HANDLE(handle);
         RENDERER_VALIDATE_HANDLE(renderBuffer);
 
         m_renderer->CreateWindowHandle(handle, renderBuffer, windowHandle);
 
-        rvar desc = GetWindowDescription(handle);
+        rvar desc = WindowHandlePool::GetHandleDescription(handle);
         desc.renderBuffer = renderBuffer;
 
         return handle;
@@ -559,7 +550,7 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
-        rvar desc = GetWindowDescription(handle);
+        rvar desc = WindowHandlePool::GetHandleDescription(handle);
 
         return desc.renderBuffer;
     }
@@ -573,7 +564,7 @@ namespace Renderer
         command.window = handle;
         g_commandList->WriteCommand(&command);
 
-        FreeWindowHandle(handle);
+        WindowHandlePool::FreeHandle(handle);
     }
 
     void AddOnPresentCallback(const Action<void>& event)
@@ -586,7 +577,7 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
 
-        cvar handle = AllocRenderBufferHandle();
+        cvar handle = RenderBufferHandlePool::AllocateHandle();
         RENDERER_VALIDATE_HANDLE(handle);
 
         Command_CreateRenderBuffer command;
@@ -596,7 +587,7 @@ namespace Renderer
         command.createDepthStencil = depthFormat != TextureFormat::Unknown;
         command.texturesCount = texturesCount;
 
-        rvar renderBufferDesc = GetRenderBufferDescription(handle);
+        rvar renderBufferDesc = RenderBufferHandlePool::GetHandleDescription(handle);
 
         // copy texture formats
         for (var i = 0; i < texturesCount && i < RENDERER_MAX_RENDER_BUFFER_TARGETS; i ++)
@@ -627,13 +618,12 @@ namespace Renderer
 
         g_commandList->WriteCommand(&command);
 
-        // return fresh handle (as the current 'cvar handle' doesn't have render textures)
-        return RenderBufferHandle_table[handle.idx];
+        return handle;
     }
 
     void ResizeRenderBuffer(RenderBufferHandle handle, uint16_t width, uint16_t height)
     {
-        rvar renderBufferDesc = GetRenderBufferDescription(handle);
+        rvar renderBufferDesc = RenderBufferHandlePool::GetHandleDescription(handle);
 
         // note: frame buffers do not have any render textures
         cvar isFrameBuffer = renderBufferDesc.renderTextures.empty();
@@ -689,7 +679,7 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
-        rvar renderBufferDesc = GetRenderBufferDescription(handle);
+        rvar renderBufferDesc = RenderBufferHandlePool::GetHandleDescription(handle);
 
         // note: frame buffers do not have any render textures
         cvar isFrameBuffer = renderBufferDesc.renderTextures.empty();
@@ -712,7 +702,7 @@ namespace Renderer
             DestroyTexture2D(renderBufferDesc.depthBuffer);
 
         // free render buffer handle
-        FreeRenderBufferHandle(handle);
+        RenderBufferHandlePool::FreeHandle(handle);
     }
 
     VertexBufferHandle CreateVertexBuffer(uint vertexCount, uint vertexSize, bool dynamic, RendererMemory* buffer)
@@ -729,7 +719,7 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
 
-        cvar handle = AllocVertexBufferHandle();
+        cvar handle = VertexBufferHandlePool::AllocateHandle();
         RENDERER_VALIDATE_HANDLE(handle);
 
         Command_CreateVertexBuffer command;
@@ -746,7 +736,7 @@ namespace Renderer
 
     VertexBufferHandle CreateVertexBufferSync(uint vertexCount, uint vertexSize, bool dynamic, RendererMemory buffer)
     {
-        cvar handle = AllocVertexBufferHandle();
+        cvar handle = VertexBufferHandlePool::AllocateHandle();
         RENDERER_VALIDATE_HANDLE(handle);
 
         m_renderer->CreateVertexBuffer(handle, vertexCount, vertexSize, dynamic, buffer);
@@ -801,7 +791,7 @@ namespace Renderer
 
     IndexBufferHandle CreateIndexBufferSync(uint count, bool is32bit, bool dynamic, RendererMemory buffer)
     {
-        cvar handle = AllocIndexBufferHandle();
+        cvar handle = IndexBufferHandlePool::AllocateHandle();
         RENDERER_VALIDATE_HANDLE(handle);
         m_renderer->CreateIndexBuffer(handle, count, is32bit, dynamic, buffer);
         return handle;
@@ -811,7 +801,7 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
 
-        cvar handle = AllocIndexBufferHandle();
+        cvar handle = IndexBufferHandlePool::AllocateHandle();
         RENDERER_VALIDATE_HANDLE(handle);
 
         Command_CreateIndexBuffer command;
@@ -868,11 +858,11 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
 
-        cvar handle = AllocTexture2DHandle();
+        cvar handle = Texture2DHandlePool::AllocateHandle();
         RENDERER_VALIDATE_HANDLE(handle);
 
         // set texture format
-        rvar renderBufferDesc = GetTexture2DDescription(handle);
+        rvar renderBufferDesc = Texture2DHandlePool::GetHandleDescription(handle);
         renderBufferDesc.textureFormat = textureFormat;
 
         // create texture2d command
@@ -890,7 +880,7 @@ namespace Renderer
         command.renderTarget = renderTargetFlag;
         g_commandList->WriteCommand(&command);
 
-        return Texture2DHandle_table[handle.idx];
+        return handle;
     }
 
     Texture2DHandle CreateTexture2D(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat,
@@ -992,7 +982,7 @@ namespace Renderer
         command.handle = handle;
         g_commandList->WriteCommand(&command);
 
-        FreeTexture2DHandle(handle);
+        Texture2DHandlePool::FreeHandle(handle);
     }
 
     Texture2DHandle CreateRenderTexture(uint16_t width, uint16_t height, TextureFormat::_enum textureFormat, TextureType::_enum textureType)
@@ -1031,7 +1021,7 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
 
-        cvar handle = AllocShaderHandle();
+        cvar handle = ShaderHandlePool::AllocateHandle();
         RENDERER_VALIDATE_HANDLE(handle);
 
         Command_CreateShader command;
@@ -1078,7 +1068,7 @@ namespace Renderer
         command.shader = handle;
         g_commandList->WriteCommand(&command);
 
-        FreeShaderHandle(handle);
+        ShaderHandlePool::FreeHandle(handle);
     }
 
     void ExecuteTask(RenderTask* task)

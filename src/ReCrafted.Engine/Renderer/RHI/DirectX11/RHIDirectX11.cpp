@@ -376,9 +376,9 @@ namespace Renderer
 
                     SafeRelease(m_swapChains[idx]);
 
-                    var windowDesc = GetWindowDescription(command.window);
+                    cvar windowDesc = WindowHandlePool::GetHandleDescription(command.window);
+                    cvar renderBufferIdx = windowDesc.renderBuffer.idx;
 
-                    var renderBufferIdx = windowDesc.renderBuffer.idx;
                     SafeRelease(m_renderBuffers[renderBufferIdx]);
 
                     break;
@@ -730,7 +730,7 @@ namespace Renderer
 
             SafeRelease(buffer);
 
-            (*RHIDirectX11::m_instance->freeVertexBuffer)(command->handle);
+            VertexBufferHandlePool::FreeHandle(command->handle);
         }
 
         void WorkerThreadInstance::Execute_CreateIndexBuffer(Command_CreateIndexBuffer* command)
@@ -792,7 +792,7 @@ namespace Renderer
 
             buffer.Dispose();
 
-            (*RHIDirectX11::m_instance->freeIndexBuffer)(command->handle);
+            IndexBufferHandlePool::FreeHandle(command->handle);
         }
 
         void WorkerThreadInstance::Execute_CreateRenderBuffer(Command_CreateRenderBuffer* command)

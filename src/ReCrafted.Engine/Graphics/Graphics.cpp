@@ -323,7 +323,7 @@ void Graphics::RenderEnd()
     UpdateDefaultConstants(Camera::GetMainCamera()->GetViewProjection());
 
     // blit render textures using gbuffercombine shader
-    rvar gbufferDescription = Renderer::GetRenderBufferDescription(m_gbuffer->m_renderBufferHandle);
+    rvar gbufferDescription = Renderer::RenderBufferHandlePool::GetHandleDescription(m_gbuffer->m_renderBufferHandle);
 
     // Build render target list (Color, Normal, Depth)
     var renderTargets = std::vector<Renderer::Texture2DHandle>(gbufferDescription.renderTextures);

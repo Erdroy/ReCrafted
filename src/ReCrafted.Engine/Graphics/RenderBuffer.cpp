@@ -43,13 +43,13 @@ Renderer::Texture2DHandle RenderBuffer::GetTarget(uint slot)
 {
     ASSERT(slot < RENDERER_MAX_RENDER_BUFFER_TARGETS);
 
-    rvar renderBufferDesc = Renderer::GetRenderBufferDescription(m_renderBufferHandle);
+    rvar renderBufferDesc = Renderer::RenderBufferHandlePool::GetHandleDescription(m_renderBufferHandle);
     return renderBufferDesc.renderTextures[slot];
 }
 
 Renderer::Texture2DHandle RenderBuffer::GetDepthBuffer()
 {
-    rvar renderBufferDesc = Renderer::GetRenderBufferDescription(m_renderBufferHandle);
+    rvar renderBufferDesc = Renderer::RenderBufferHandlePool::GetHandleDescription(m_renderBufferHandle);
     ASSERT(RENDERER_CHECK_HANDLE(renderBufferDesc.depthBuffer));
 
     return renderBufferDesc.depthBuffer;

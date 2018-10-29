@@ -26,9 +26,6 @@ namespace Renderer
             CommandList commandList = {};
             Event<> callbacksBeforeRender = {};
 
-            vbhFreePtr freeVertexBuffer = nullptr;
-            ibhFreePtr freeIndexBuffer = nullptr;
-
         public:
             virtual ~RHIBase() = default;
 
