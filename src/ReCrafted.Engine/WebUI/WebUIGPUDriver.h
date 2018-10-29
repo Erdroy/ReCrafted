@@ -5,13 +5,20 @@
 #ifndef WEBUIGPUDRIVER_H
 #define WEBUIGPUDRIVER_H
 
+#include "Graphics/Shader.h"
+
 #include <Ultralight/platform/GPUDriver.h>
 
 class WebUIGPUDriver : public ultralight::GPUDriver
 {
 private:
+    Shader* m_shader = nullptr;
+    std::vector<ultralight::Command> m_commandList;
 
 public:
+    WebUIGPUDriver();
+    ~WebUIGPUDriver();
+
     void BeginSynchronize() override;
     void EndSynchronize() override;
     
