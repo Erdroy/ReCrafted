@@ -431,6 +431,23 @@ namespace Renderer
         m_dirty = true;
     }
 
+    void RHIDirectX11_Shader::SetValues(int buffer, void* data, size_t dataSize, size_t dataOffset)
+    {
+        ASSERT(buffer < m_buffers.size());
+
+        // Get buffer description
+        rvar bufferDesc = m_buffers[buffer];
+        ASSERT(bufferDesc.m_size >= dataSize);
+
+        // Copy new data
+        memcpy(bufferDesc.m_data + dataOffset, data, dataSize);
+
+        // Set dirty flag
+        bufferDesc.m_dirty = true;
+
+        m_dirty = true;
+    }
+
     void RHIDirectX11_Shader::ApplyChanges(ID3D11DeviceContext* context)
     {
         for (rvar buffer : m_buffers)

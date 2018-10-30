@@ -70,6 +70,7 @@ namespace Renderer
             
             CreateShader,
             SetShaderValue,
+            SetShaderValues,
             ApplyShader,
             DestroyShader,
 
@@ -174,6 +175,14 @@ namespace Renderer
         uint8_t bufferId;
         uint8_t fieldId;
         uint8_t dataSize;
+    );
+
+    Command(SetShaderValues,
+        ShaderHandle shader;
+        uint8_t bufferId;
+        RendererMemory memory;
+        size_t memorySize;
+        size_t memoryOffset;
     );
 
     Command(DestroyShader,

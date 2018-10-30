@@ -116,6 +116,7 @@ namespace Renderer
         //void BindBlendState(ID3D11DeviceContext* context, std::string name, ID3D11BlendState* state);
 
         void SetValue(int buffer, int index, void* data, size_t dataSize);
+        void SetValues(int buffer, void* data, size_t dataSize, size_t dataOffset);
 
         void ApplyChanges(ID3D11DeviceContext* context);
 

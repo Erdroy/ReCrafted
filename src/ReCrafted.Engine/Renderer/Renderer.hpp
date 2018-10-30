@@ -830,6 +830,16 @@ namespace Renderer
     /// <param name="dataSize">The data size.</param>
     RENDERER_FUNCTION(void) SetShaderValue(ShaderHandle handle, int bufferId, int fieldId, void* data, size_t dataSize);
 
+    /**
+     * \brief Sets shader values of a specified buffer.
+     * \param handle The shader which will get new values.
+     * \param bufferId The buffer id.
+     * \param data The data pointer.
+     * \param dataSize The data size.
+     * \param dataOffset The data offset.
+     */
+    RENDERER_FUNCTION(void) SetShaderValues(ShaderHandle handle, int bufferId, RendererMemory data, size_t dataSize, size_t dataOffset = 0u);
+
     /// <summary>
     /// Sets given shader pass as current.
     /// Updates all uniforms in shader program. Please make sure that you SetShaderValue before calling this.

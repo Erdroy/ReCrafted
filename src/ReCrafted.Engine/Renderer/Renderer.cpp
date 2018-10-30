@@ -1049,6 +1049,20 @@ namespace Renderer
         g_commandList->Write(data, static_cast<uint32_t>(dataSize));
     }
 
+    void SetShaderValues(const ShaderHandle handle, const int bufferId, RendererMemory data,
+                         const size_t dataSize, const size_t dataOffset)
+    {
+        Command_SetShaderValues command;
+        command.shader = handle;
+        command.bufferId = static_cast<uint8_t>(bufferId);
+        command.memory = data;
+        command.memorySize = dataSize;
+        command.memoryOffset = dataOffset;
+
+        g_commandList->WriteCommand(&command);
+        g_commandList->Write(data, static_cast<uint32_t>(dataSize));
+    }
+
     void ApplyShader(ShaderHandle handle, int passId)
     {
         CHECK_MAIN_THREAD();
