@@ -23,8 +23,6 @@ float Scalar(int i) { if (i < 4) return Scalar4[0][i]; else return Scalar4[1][i 
 Texture2D texture0 : register(t0);
 SamplerState<LinearClamped> sampler0 : register(s0);
 
-float OutColor;
-
 float2 ScreenToDeviceCoords(float2 screen_coord) {
   screen_coord *= 2.0 / float2(ScreenWidth(), -ScreenHeight());
   screen_coord += float2(-1.0, 1.0);
@@ -52,7 +50,7 @@ VS_OUTPUT VS(float2 Position : POSITION,
              float2 TexCoord : TEXCOORD0,
              float2 ObjCoord : TEXCOORD1,
              float4 Data0    : COLOR1,
-			       float4 Data1    : COLOR2,
+			 float4 Data1    : COLOR2,
              float4 Data2    : COLOR3,
              float4 Data3    : COLOR4,
              float4 Data4    : COLOR5,
@@ -588,6 +586,9 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 pass Default
 {
+    BindConstantBuffer(Uniforms, VS);
+    BindConstantBuffer(Uniforms, PS);
+
 	SetProfile(5.0);
 	SetVertexShader(VS);
 	SetPixelShader(PS);
