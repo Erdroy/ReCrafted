@@ -25,6 +25,17 @@ PhysXScene::PhysXScene(PxPhysics* physics, PxCpuDispatcher* cpuDispatcher, const
 
     // Create scene, finally.
     m_scene = m_physics->createScene(sceneDesc);
+    ASSERT(m_scene);
+
+    // Create scratch memory for this scene
+    m_scrathMemory = _aligned_malloc(PhysXStepper::SCRATCH_BLOCK_SIZE, 16);
+    ASSERT(m_scrathMemory);
+}
+
+PhysXScene::~PhysXScene()
+{
+    _aligned_free(m_scrathMemory);
+    m_scrathMemory = nullptr;
 }
 
 void PhysXScene::Update()
@@ -33,8 +44,12 @@ void PhysXScene::Update()
 
 void PhysXScene::Simulate()
 {
-    m_scene->simulate(static_cast<PxReal>(Time::FixedDeltaTime()));
-    m_scene->fetchResults(true);
+    cvar advanceResult = PhysXStepper::GetInstance()->advance(m_scene, Time::CurrentFixedTime(), m_scrathMemory, PhysXStepper::SCRATCH_BLOCK_SIZE);
+
+    if(!advanceResult)
+        return;
+
+    PhysXStepper::GetInstance()->renderDone(); // TODO: Use Renderer::SetFrameFinish event
 }
 
 void PhysXScene::Shutdown()

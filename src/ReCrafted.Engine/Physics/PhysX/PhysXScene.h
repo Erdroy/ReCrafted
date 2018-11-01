@@ -9,6 +9,7 @@
 #include "ReCrafted.h"
 #include "Physics/IPhysicsScene.h"
 #include "PhysX.h"
+#include "PhysXStepper.h"
 
 class PhysXScene : public IPhysicsScene
 {
@@ -17,9 +18,11 @@ class PhysXScene : public IPhysicsScene
 private:
     PxPhysics* m_physics = nullptr;
     PxScene* m_scene = nullptr;
+    void* m_scrathMemory = nullptr;
 
 public:
     PhysXScene(PxPhysics* physics, PxCpuDispatcher* cpuDispatcher, const PxTolerancesScale& toleranceScale);
+    ~PhysXScene();
 
 protected:
     void Update() override;
