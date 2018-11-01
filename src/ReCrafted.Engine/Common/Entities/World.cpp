@@ -38,6 +38,10 @@ void World::Update(const bool updateSystems)
 
 void World::Clear()
 {
+    // Update last time the world, this is needed 
+    // to properly call all OnEntityRemoved events etc.
+    Update();
+
     // Delete all systems and clear hash map
     for (auto& system : m_systems)
     {
