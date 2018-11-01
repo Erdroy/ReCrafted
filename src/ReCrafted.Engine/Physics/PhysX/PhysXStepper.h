@@ -66,33 +66,36 @@ private:
     StepperTaskSimulate	m_simulateTask;
     StepperTask m_completion0;
     StepperTask m_completion1;
+
     PxScene* m_scene = nullptr;
     shdfnd::Sync* m_sync = nullptr;
 
-    PxU32 m_currentSubStep;
-    PxU32 m_subStepCount;
-    PxReal m_subStepSize{};
     void* m_scratchBlock = nullptr;
-    PxU32 m_scratchBlockSize{};
+    PxU32 m_scratchBlockSize = 0;
 
-    PxReal mAccumulator{};
-    PxReal mFixedSubStepSize = 1.0f / 60.0f;
-    PxU32 mMaxSubSteps = 1;
+    PxU32 m_currentSubStep = 0;
+    PxU32 m_subStepCount = 0;
+    PxReal m_subStepSize = 0.0f;
+    PxU32 m_maxSubSteps = 1;
+    PxReal m_fixedSubStepSize = 1.0f / 60.0f;
+    PxReal m_accumulator = 0.0f;
 
 public:
     PhysXStepper();
     ~PhysXStepper() = default;
 
 public:
+    void Initialize(float subStepDelta, int maxSubSteps = 1);
     void OnDispose() override;
 
-    void substepStrategy(PxReal stepSize, PxU32& substepCount, PxReal& substepSize);
-    void substep(StepperTask& completionTask);
-    bool advance(PxScene* scene, PxReal dt, void* scratchBlock, PxU32 scratchBlockSize);
-    void substepDone(StepperTask* ownerTask);
-    void renderDone();
-    void simulate(PxBaseTask* ownerTask);
-    void wait(PxScene* scene);
+    void SubstepStrategy(PxReal stepSize, PxU32& substepCount, PxReal& substepSize);
+    void Substep(StepperTask& completionTask);
+    bool Advance(PxScene* scene, PxReal dt, void* scratchBlock, PxU32 scratchBlockSize);
+    void SubstepDone(StepperTask* ownerTask);
+    void RenderDone();
+    void Simulate(PxBaseTask* ownerTask);
+    void Reset();
+    void Wait(PxScene* scene) const;
 
 public:
     PxReal getSubStepSize() const;

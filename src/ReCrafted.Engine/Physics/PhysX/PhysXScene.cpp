@@ -10,7 +10,7 @@ PhysXScene::PhysXScene(PxPhysics* physics, PxCpuDispatcher* cpuDispatcher, const
 
     // Create scene description
     PxSceneDesc sceneDesc(toleranceScale);
-    sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f); // No default gravity! We're in space!
+    sceneDesc.gravity = PxVec3(0.0f, 0.0f, 0.0f); // No default gravity! We're in space!
     sceneDesc.bounceThresholdVelocity = 1.0f; // TODO: Tweak this value!
     sceneDesc.filterShader = PxDefaultSimulationFilterShader;
     // sceneDesc.simulationEventCallback TODO: Handle simulation events!
@@ -30,6 +30,9 @@ PhysXScene::PhysXScene(PxPhysics* physics, PxCpuDispatcher* cpuDispatcher, const
     // Create scratch memory for this scene
     m_scrathMemory = _aligned_malloc(PhysXStepper::SCRATCH_BLOCK_SIZE, 16);
     ASSERT(m_scrathMemory);
+
+    // Initialize substepping
+    PhysXStepper::GetInstance()->Initialize(float(Time::FixedDeltaTime()) * 0.25f, 4);
 }
 
 PhysXScene::~PhysXScene()
@@ -44,12 +47,13 @@ void PhysXScene::Update()
 
 void PhysXScene::Simulate()
 {
-    cvar advanceResult = PhysXStepper::GetInstance()->advance(m_scene, Time::CurrentFixedTime(), m_scrathMemory, PhysXStepper::SCRATCH_BLOCK_SIZE);
+    cvar advanceResult = PhysXStepper::GetInstance()->Advance(m_scene, static_cast<PxReal>(Time::FixedDeltaTime()), m_scrathMemory, PhysXStepper::SCRATCH_BLOCK_SIZE);
 
     if(!advanceResult)
         return;
 
-    PhysXStepper::GetInstance()->renderDone(); // TODO: Use Renderer::SetFrameFinish event
+    PhysXStepper::GetInstance()->RenderDone(); // TODO: Use Renderer::SetFrameFinish event
+    PhysXStepper::GetInstance()->Wait(m_scene);
 }
 
 void PhysXScene::Shutdown()

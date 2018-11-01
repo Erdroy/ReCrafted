@@ -6,13 +6,13 @@ SINGLETON_IMPL(PhysXStepper)
 
 void StepperTask::run()
 {
-    m_stepper->substepDone(this);
+    m_stepper->SubstepDone(this);
     release();
 }
 
 void StepperTaskSimulate::run()
 {
-    m_stepper->simulate(mCont);
+    m_stepper->Simulate(mCont);
     //m_stepper->getSample().onSubstepStart(m_stepper->getSubStepSize());
 }
 
@@ -33,27 +33,23 @@ PxReal PhysXStepper::getSubStepSize() const
     return m_subStepSize;
 }
 
+void PhysXStepper::Initialize(const float subStepDelta, const int maxSubSteps)
+{
+    m_fixedSubStepSize = subStepDelta;
+    m_maxSubSteps = maxSubSteps;
+}
+
 void PhysXStepper::OnDispose()
 {
     delete m_sync;
 }
 
-void PhysXStepper::substep(StepperTask& completionTask)
-{
-    // setup any tasks that should run in parallel to simulate()
-    //mSample->onSubstepSetup(m_subStepSize, &completionTask);
-
-    // step
-    m_simulateTask.setContinuation(&completionTask);
-    m_simulateTask.removeReference();
-}
-
-bool PhysXStepper::advance(PxScene* scene, const PxReal dt, void* scratchBlock, PxU32 scratchBlockSize)
+bool PhysXStepper::Advance(PxScene* scene, const PxReal dt, void* scratchBlock, PxU32 scratchBlockSize)
 {
     m_scratchBlock = scratchBlock;
     m_scratchBlockSize = scratchBlockSize;
 
-    substepStrategy(dt, m_subStepCount, m_subStepSize);
+    SubstepStrategy(dt, m_subStepCount, m_subStepSize);
 
     if (m_subStepCount == 0)
         return false;
@@ -67,20 +63,43 @@ bool PhysXStepper::advance(PxScene* scene, const PxReal dt, void* scratchBlock, 
     m_completion0.setContinuation(*m_scene->getTaskManager(), nullptr);
 
     // take first substep
-    substep(m_completion0);
+    Substep(m_completion0);
     m_firstCompletionPending = true;
 
     return true;
 }
 
-void PhysXStepper::substepDone(StepperTask* ownerTask)
+void PhysXStepper::RenderDone()
+{
+    if (m_firstCompletionPending)
+    {
+        m_completion0.removeReference();
+        m_firstCompletionPending = false;
+    }
+}
+
+void PhysXStepper::Simulate(physx::PxBaseTask* ownerTask)
+{
+    PxSceneWriteLock writeLock(*m_scene);
+    m_scene->simulate(m_subStepSize, ownerTask, m_scratchBlock, m_scratchBlockSize);
+}
+
+void PhysXStepper::Substep(StepperTask& completionTask)
+{
+    // setup any tasks that should run in parallel to simulate()
+    //mSample->onSubstepSetup(m_subStepSize, &completionTask);
+
+    // step
+    m_simulateTask.setContinuation(&completionTask);
+    m_simulateTask.removeReference();
+}
+
+void PhysXStepper::SubstepDone(StepperTask* ownerTask)
 {
     //mSample->onSubstepPreFetchResult();
 
-    {
-        PxSceneWriteLock writeLock(*m_scene);
-        m_scene->fetchResults(true);
-    }
+    PxSceneWriteLock writeLock(*m_scene);
+    m_scene->fetchResults(true);
 
     //mSample->onSubstep(m_subStepSize);
 
@@ -94,49 +113,39 @@ void PhysXStepper::substepDone(StepperTask* ownerTask)
         s.setContinuation(*m_scene->getTaskManager(), nullptr);
         m_currentSubStep++;
 
-        substep(s);
+        Substep(s);
 
         // after the first substep, completions run freely
         s.removeReference();
     }
 }
 
-void PhysXStepper::renderDone()
+void PhysXStepper::SubstepStrategy(const PxReal stepSize, PxU32& substepCount, PxReal& substepSize)
 {
-    if (m_firstCompletionPending)
-    {
-        m_completion0.removeReference();
-        m_firstCompletionPending = false;
-    }
-}
+    if (m_accumulator > m_fixedSubStepSize)
+        m_accumulator = 0.0f;
 
-void PhysXStepper::simulate(physx::PxBaseTask* ownerTask)
-{
-    PxSceneWriteLock writeLock(*m_scene);
-    m_scene->simulate(m_subStepSize, ownerTask, m_scratchBlock, m_scratchBlockSize);
-}
-
-void PhysXStepper::wait(PxScene* scene)
-{
-    if (m_subStepCount && m_sync)
-        m_sync->wait();
-}
-
-void PhysXStepper::substepStrategy(const PxReal stepSize, PxU32& substepCount, PxReal& substepSize)
-{
-    if (mAccumulator > mFixedSubStepSize)
-        mAccumulator = 0.0f;
-
-    // Don't step less than the step size, just accumulate
-    mAccumulator += stepSize;
-    if (mAccumulator < mFixedSubStepSize)
+    // don't step less than the step size, just accumulate
+    m_accumulator += stepSize;
+    if (m_accumulator < m_fixedSubStepSize)
     {
         substepCount = 0;
         return;
     }
 
-    substepSize = mFixedSubStepSize;
-    substepCount = PxMin(PxU32(mAccumulator / mFixedSubStepSize), mMaxSubSteps);
+    substepSize = m_fixedSubStepSize;
+    substepCount = PxMin(PxU32(m_accumulator / m_fixedSubStepSize), m_maxSubSteps);
 
-    mAccumulator -= PxReal(substepCount) * substepSize;
+    m_accumulator -= PxReal(substepCount)*substepSize;
+}
+
+void PhysXStepper::Reset()
+{
+    m_accumulator = 0.0f;
+}
+
+void PhysXStepper::Wait(PxScene* scene) const
+{
+    if (m_subStepCount && m_sync)
+        m_sync->wait();
 }
