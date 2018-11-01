@@ -155,11 +155,15 @@ Entity EntityManager::Acquire()
 
 void EntityManager::Activate(EntityId entityId)
 {
+    ASSERT(IsEntityActive(entityId) == false);
+
     m_tempActivate.emplace_back(entityId);
 }
 
 void EntityManager::Deactivate(EntityId entityId)
 {
+    ASSERT(IsEntityActive(entityId) == true);
+
     m_tempDeactivate.emplace_back(entityId);
 }
 

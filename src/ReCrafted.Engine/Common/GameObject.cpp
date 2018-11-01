@@ -63,8 +63,11 @@ void GameObject::OnDestroy()
         Destroy(gameObject);
     }
 
-    // Deactivate entity
-    m_entity.Deactivate();
+    // Deactivate entity if active
+    if(m_entity.IsActive())
+    {
+        m_entity.Deactivate();
+    }
 
     // Release this gameObject
     GameObjectPool::ReleaseGameObject(this);
