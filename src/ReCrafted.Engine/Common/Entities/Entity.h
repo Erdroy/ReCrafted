@@ -30,6 +30,11 @@ public:
         m_world->ActivateEntity(*this);
     }
 
+    void ActivateNow()
+    {
+        m_world->ActivateEntityNow(*this);
+    }
+
     void Deactivate()
     {
         m_world->DeactivateEntity(*this);
@@ -43,6 +48,11 @@ public:
     void Destroy()
     {
         m_world->DestroyEntity(*this);
+    }
+
+    void Refresh()
+    {
+        m_world->RefreshEntity(*this);
     }
 
     template<typename T>

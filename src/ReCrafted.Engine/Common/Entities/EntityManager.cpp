@@ -5,6 +5,11 @@
 #include "World.h"
 #include "ComponentSystem.h"
 
+bool EntityManager::EntityDesc::HasSystem(ComponentSystem* system)
+{
+    return std::find(systems.begin(), systems.end(), system) != systems.end();
+}
+
 EntityManager::~EntityManager()
 {
 }
@@ -62,63 +67,19 @@ void EntityManager::Update()
     // Activate entities
     for (auto& entityId : m_tempActivate)
     {
-        auto& entityDesc = m_entities[entityId];
-        entityDesc.active = true;
-
-        // Activate in all matching systems (add to System::m_activeEntities and call OnEntityAdded event)
-        for(auto& system : m_world->m_activeSystems)
-        {
-            if (!system)
-                continue;
-
-            const auto filter = system->GetFilter();
-
-            // Fast system lookup by component id
-            if(filter.MatchAll(entityDesc.componentTypes))
-            {
-                auto entity = MakeEntity(entityId);
-                system->m_activeEntities.emplace_back(entity);
-                system->OnEntityAdded(entity);
-
-                // Add system to the entity
-                entityDesc.systems.emplace_back(system);
-            }
-        }
+        ActivateNow(entityId);
     }
 
     // Deactivate entities
     for (auto& entityId : m_tempDeactivate)
     {
-        auto& entity = m_entities[entityId];
-        entity.active = false;
-
-        for(auto& system : entity.systems)
-        {
-            // Call entity removed event
-            system->OnEntityRemoved(MakeEntity(entityId));
-        }
-
-        // Clear systems
-        entity.systems.clear();
+        DeactivateNow(entityId);
     }
 
     // Free entities
     for(auto entityId : m_tempFree)
     {
-        auto& entity = m_entities[entityId];
-
-        // Remove from all matching systems
-        for (auto& system : entity.systems)
-        {
-            // Call entity removed event
-            system->OnEntityRemoved(MakeEntity(entityId));
-        }
-
-        // Cleanup entity
-        entity.Clear();
-
-        // Free entity
-        m_freeEntities.emplace_back(entityId);
+        ReleaseNow(entityId);
     }
 
     // Clear entities
@@ -155,16 +116,57 @@ Entity EntityManager::Acquire()
 
 void EntityManager::Activate(EntityId entityId)
 {
-    ASSERT(IsEntityActive(entityId) == false);
+    _ASSERT_(IsEntityActive(entityId) == false, "Only nonactive entity can be activated!");
 
     m_tempActivate.emplace_back(entityId);
 }
 
+void EntityManager::ActivateNow(const EntityId entityId)
+{
+    auto& entityDesc = m_entities[entityId];
+    entityDesc.active = true;
+
+    // Activate in all matching systems (add to System::m_activeEntities and call OnEntityAdded event)
+    for (auto& system : m_world->m_activeSystems)
+    {
+        if (!system)
+            continue;
+
+        const auto filter = system->GetFilter();
+
+        // Fast system lookup by component id
+        if (filter.MatchAll(entityDesc.componentTypes))
+        {
+            auto entity = MakeEntity(entityId);
+            system->m_activeEntities.emplace_back(entity);
+            system->OnEntityAdded(entity);
+
+            // Add system to the entity
+            entityDesc.systems.emplace_back(system);
+        }
+    }
+}
+
 void EntityManager::Deactivate(EntityId entityId)
 {
-    ASSERT(IsEntityActive(entityId) == true);
+    _ASSERT_(IsEntityActive(entityId) == true, "Only active entity can be deactivated!");
 
     m_tempDeactivate.emplace_back(entityId);
+}
+
+void EntityManager::DeactivateNow(const EntityId entityId)
+{
+    auto& entity = m_entities[entityId];
+    entity.active = false;
+
+    for (auto& system : entity.systems)
+    {
+        // Call entity removed event
+        system->OnEntityRemoved(MakeEntity(entityId));
+    }
+
+    // Clear systems
+    entity.systems.clear();
 }
 
 void EntityManager::Release(EntityId entityId)
@@ -172,9 +174,79 @@ void EntityManager::Release(EntityId entityId)
     m_tempFree.emplace_back(entityId);
 }
 
+void EntityManager::ReleaseNow(const EntityId entityId)
+{
+    auto& entity = m_entities[entityId];
+
+    // Remove from all matching systems
+    for (auto& system : entity.systems)
+    {
+        // Call entity removed event
+        system->OnEntityRemoved(MakeEntity(entityId));
+    }
+
+    // Cleanup entity
+    entity.Clear();
+
+    // Free entity
+    m_freeEntities.emplace_back(entityId);
+}
+
 void EntityManager::Clear(EntityId entityId)
 {
     m_tempClear.emplace_back(entityId);
+}
+
+void EntityManager::Refresh(EntityId entityId)
+{
+    _ASSERT_(IsEntityActive(entityId) == true, "Only active entity can be refreshed!");
+   
+    // List new systems
+    // List removed systems
+    auto& entityDesc = m_entities[entityId];
+
+    for (auto& system : m_world->m_activeSystems)
+    {
+        if (!system)
+            continue;
+
+        cvar hasSystem = entityDesc.HasSystem(system);
+        cvar matchFilter = system->GetFilter().MatchAll(entityDesc.componentTypes);
+
+        if (matchFilter && !hasSystem)
+        {
+            auto entity = MakeEntity(entityId);
+            system->OnEntityAdded(entity);
+
+            // Add entity to the system
+            system->m_activeEntities.emplace_back(entity);
+
+            // Add system to the entity
+            entityDesc.systems.emplace_back(system);
+        }
+
+        if (!matchFilter && hasSystem)
+        {
+            // Call entity removed event
+            system->OnEntityRemoved(MakeEntity(entityId));
+
+            // Remove entity from the system
+            auto& vec = system->m_activeEntities;
+            vec.erase(std::remove_if(vec.begin(), vec.end(), [entityId](const Entity& entity)
+            {
+                return entity.GetId() == entityId;
+            }), vec.end());
+
+            // Remove system from the entity
+            auto& sys = entityDesc.systems;
+            sys.erase(std::remove_if(sys.begin(), sys.end(), [system](const ComponentSystem* sys)
+            {
+                return system == sys;
+            }), sys.end());
+        }
+    }
+
+    // Call OnEntityAdded and OnEntityRemoved for all systems that are listed
 }
 
 bool EntityManager::IsEntityValid(const Entity& entity) const

@@ -58,9 +58,11 @@ public:
     Entity CreateEntity();
 
     void ActivateEntity(Entity& entity);
+    void ActivateEntityNow(Entity& entity);
     void DeactivateEntity(Entity& entity);
     void DestroyEntity(Entity& entity);
     void ClearEntity(Entity& entity);
+    void RefreshEntity(Entity& entity);
 
     bool IsEntityValid(const Entity& entity) const
     {

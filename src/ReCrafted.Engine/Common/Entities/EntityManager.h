@@ -37,6 +37,8 @@ private:
         EntityDesc() : active(false), componentTypes({}), components({}), systems({}) {}
 
     public:
+        bool HasSystem(ComponentSystem* system);
+
         void Clear()
         {
             active = false;
@@ -80,9 +82,13 @@ public:
 
     Entity Acquire();
     void Activate(EntityId entityId);
+    void ActivateNow(EntityId entityId);
     void Deactivate(EntityId entityId);
+    void DeactivateNow(EntityId entityId);
     void Release(EntityId entityId);
+    void ReleaseNow(EntityId entityId);
     void Clear(EntityId entityId);
+    void Refresh(EntityId entityId);
 
     void AddEntityComponent(const EntityId entityId, Component* component, const TypeId componentId)
     {

@@ -62,6 +62,11 @@ void World::ActivateEntity(Entity& entity)
     m_entityManager->Activate(entity.GetId());
 }
 
+void World::ActivateEntityNow(Entity& entity)
+{
+    m_entityManager->ActivateNow(entity.GetId());
+}
+
 void World::DeactivateEntity(Entity& entity)
 {
     m_entityManager->Deactivate(entity.GetId());
@@ -70,4 +75,9 @@ void World::DeactivateEntity(Entity& entity)
 void World::ClearEntity(Entity& entity)
 {
     m_entityManager->Clear(entity.GetId());
+}
+
+void World::RefreshEntity(Entity& entity)
+{
+    m_entityManager->Refresh(entity.GetId());
 }
