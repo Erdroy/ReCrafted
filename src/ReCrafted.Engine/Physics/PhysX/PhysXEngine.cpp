@@ -53,7 +53,7 @@ void PhysXEngine::Initialize()
     _ASSERT_(m_foundation, "Failed to create PhysX foundation!");
 
     // Create px physics
-    m_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_foundation, m_tolerance_scale, false, nullptr);
+    m_physics = PxCreateBasePhysics(PX_PHYSICS_VERSION, *m_foundation, m_tolerance_scale, false, nullptr);
     _ASSERT_(m_physics, "Failed to create PhysX physics!");
 
 #ifndef _DEBUG
