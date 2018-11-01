@@ -36,6 +36,7 @@ private:
 
     bool m_active = true;
 
+    bool m_dirtyComponents = false;
     bool m_firstFrame = true;
 
 private:
@@ -56,6 +57,52 @@ private:
     ~GameObject();
 
 public:
+    template<typename T>
+    T& AddComponent()
+    {
+        m_dirtyComponents = true;
+        return m_entity.AddComponent<T>();
+    }
+
+    template<typename T, typename ... TArgs>
+    T& AddComponent(TArgs&& ... args)
+    {
+        m_dirtyComponents = true;
+        return m_entity.AddComponent<T, TArgs...>(std::forward<TArgs>(args)...);
+    }
+
+    template<typename T>
+    T& GetComponent() const
+    {
+        return m_entity.GetComponent<T>();
+    }
+
+    template<typename T>
+    void RemoveComponent()
+    {
+        m_dirtyComponents = true;
+        m_entity.RemoveComponent<T>();
+    }
+
+    template<typename T>
+    void RemoveComponent(T* componentPtr)
+    {
+        m_dirtyComponents = true;
+        m_entity.RemoveComponent(componentPtr);
+    }
+
+    template<typename T>
+    bool HasComponent()
+    {
+        return m_entity.HasComponent<T>();
+    }
+
+    template<typename T>
+    bool HasComponent(T* componentPtr)
+    {
+        return m_entity.HasComponent(componentPtr);
+    }
+
     /**
      * \brief Sets given game object as children of this game object.
      * \param gameObject The game object that will be children.

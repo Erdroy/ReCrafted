@@ -135,6 +135,20 @@ void GameObject::LateUpdate()
         if (child->IsActive())
             child->Update();
     }
+
+    if (m_dirtyComponents)
+    {
+        if(m_entity.IsActive())
+        {
+            m_entity.Refresh();
+        }
+        else
+        {
+            m_entity.ActivateNow();
+        }
+
+        m_dirtyComponents = false;
+    }
 }
 
 void GameObject::Simulate()
