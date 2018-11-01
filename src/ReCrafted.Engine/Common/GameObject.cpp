@@ -103,6 +103,20 @@ void GameObject::Start()
 
 void GameObject::Update()
 {
+    if (m_dirtyComponents)
+    {
+        if (m_entity.IsActive())
+        {
+            m_entity.Refresh();
+        }
+        else
+        {
+            m_entity.ActivateNow();
+        }
+
+        m_dirtyComponents = false;
+    }
+
     if (m_firstFrame)
     {
         Start();
@@ -134,20 +148,6 @@ void GameObject::LateUpdate()
     {
         if (child->IsActive())
             child->Update();
-    }
-
-    if (m_dirtyComponents)
-    {
-        if(m_entity.IsActive())
-        {
-            m_entity.Refresh();
-        }
-        else
-        {
-            m_entity.ActivateNow();
-        }
-
-        m_dirtyComponents = false;
     }
 }
 
@@ -258,9 +258,15 @@ void GameObject::SetActive(const bool active)
 
     // Activate or deactivate ECS entity
     if (active)
-        m_entity.Activate();
+    {
+        if(!m_entity.IsActive())
+            m_entity.Activate();
+    }
     else
-        m_entity.Deactivate();
+    {
+        if (m_entity.IsActive())
+            m_entity.Deactivate();
+    }
 }
 
 bool GameObject::IsActive() const

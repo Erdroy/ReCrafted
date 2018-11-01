@@ -27,7 +27,16 @@ void PhysicsSystem::Update()
     Profiler::BeginProfile(__FUNCTION__);
     m_engine->Update();
 
+    for (rvar entity : GetEntities())
+    {
+        rvar transform = entity.GetComponent<TransformComponent>();
+        crvar body = entity.GetComponent<PhysicsBodyComponent>();
 
+        cvar position = body.physicsActor->GetPosition();
+        transform.position = position;
+
+        // TODO: Interpolation/Extrapolation etc.
+    }
 
     Profiler::EndProfile();
 }
@@ -36,9 +45,6 @@ void PhysicsSystem::Simulate()
 {
     //Profiler::BeginProfile("PhysicsSystem::Simulate");
     m_engine->Simulate();
-
-
-
     //Profiler::EndProfile();
 }
 
@@ -48,13 +54,24 @@ void PhysicsSystem::OnEntityAdded(const Entity& entity)
     rvar body = entity.GetComponent<PhysicsBodyComponent>();
     rvar shape = entity.GetComponent<PhysicsShapeComponent>();
 
-    // TODO: Initialize native PhysicsEngine data for entity components
+    ASSERT(body.physicsScene);
+
+    body.physicsActor = m_engine->CreateActor(transform, body);
+    shape.physicsShape = m_engine->CreateShape(transform, shape);
+
+    // Attach shape
+    body.physicsActor->AttachShape(shape.physicsShape);
+
+    // Attach to scene
+    body.physicsScene->AttachActor(body.physicsActor);
+
+    // TODO: Use clustering to attach to proper cluster
 }
 
 void PhysicsSystem::OnEntityRemoved(const Entity& entity)
 {
     rvar body = entity.GetComponent<PhysicsBodyComponent>();
-    rvar shape = entity.GetComponent<PhysicsShapeComponent>();
 
-    // TODO: Release native PhysicsEngine data from entity components
+    if(body.physicsActor)
+        m_engine->ReleaseActor(body.physicsActor);
 }

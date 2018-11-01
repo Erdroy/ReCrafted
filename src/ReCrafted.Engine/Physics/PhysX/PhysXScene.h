@@ -6,6 +6,7 @@
 #define PHYSXSCENE_H
 
 // includes
+#include "ReCrafted.h"
 #include "Physics/IPhysicsScene.h"
 #include "PhysX.h"
 
@@ -24,6 +25,10 @@ protected:
     void Update() override;
     void Simulate() override;
     void Shutdown() override;
+
+public:
+    void AttachActor(IPhysicsActor* actor) override;
+    void DetachActor(IPhysicsActor* actor) override;
 };
 
 #endif // PHYSXSCENE_H

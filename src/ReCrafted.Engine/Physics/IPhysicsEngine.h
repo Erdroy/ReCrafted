@@ -9,6 +9,12 @@
 #include "ReCrafted.h"
 #include "IPhysicsScene.h"
 
+class IPhysicsShape;
+class IPhysicsActor;
+struct TransformComponent;
+struct PhysicsBodyComponent;
+struct PhysicsShapeComponent;
+
 class IPhysicsEngine
 {
 public:
@@ -21,6 +27,12 @@ public:
     virtual void Shutdown() = 0;
 
 public:
+    virtual IPhysicsActor* CreateActor(const TransformComponent& transform, PhysicsBodyComponent& body) = 0;
+    virtual void ReleaseActor(IPhysicsActor* actor) = 0;
+
+    virtual IPhysicsShape* CreateShape(const TransformComponent& transform, const PhysicsShapeComponent& shape) = 0;
+    virtual void ReleaseShape(IPhysicsShape* shape) = 0;
+
     virtual RefPtr<IPhysicsScene> CreateScene() = 0;
     virtual void DestroyScene(RefPtr<IPhysicsScene>& scene) = 0;
 };

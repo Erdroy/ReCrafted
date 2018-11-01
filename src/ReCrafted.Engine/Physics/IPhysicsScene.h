@@ -8,6 +8,8 @@
 // includes
 #include "ReCrafted.h"
 
+class IPhysicsActor;
+
 class IPhysicsScene
 {
 public:
@@ -17,6 +19,10 @@ protected:
     virtual void Update() = 0;
     virtual void Simulate() = 0;
     virtual void Shutdown() = 0;
+
+public:
+    virtual void AttachActor(IPhysicsActor* actor) = 0;
+    virtual void DetachActor(IPhysicsActor* actor) = 0;
 };
 
 #endif // IPHYSICSSCENE_H

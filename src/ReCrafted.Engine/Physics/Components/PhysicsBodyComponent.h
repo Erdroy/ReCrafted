@@ -7,13 +7,32 @@
 
 #include "Common/Entities/Component.h"
 
+class IPhysicsActor;
+class IPhysicsScene;
+
 struct PhysicsBodyComponent : Component
 {
-public:
-    bool dynamic = true;
+    enum Type : uint8_t
+    {
+        Dynamic,
+        Static
+    };
 
-private:
-    void* actor = nullptr;
+public:
+    PhysicsBodyComponent() = default;
+
+    explicit PhysicsBodyComponent(IPhysicsScene* scene, const Type type) :
+        physicsScene(scene), type(type)
+    {
+        
+    }
+
+public:
+    IPhysicsScene* physicsScene = nullptr;
+    IPhysicsActor* physicsActor = nullptr;
+
+public:
+    Type type = Dynamic;
 };
 
 #endif // PHYSICSBODYCOMPONENT_H

@@ -3,7 +3,9 @@
 #include "PhysXEngine.h"
 #include "Core/Logger.h"
 
-#include "PhysXScene.h"
+#include "Common/TransformComponent.h"
+#include "Physics/Components/PhysicsBodyComponent.h"
+#include "Physics/Components/PhysicsShapeComponent.h"
 
 #include <algorithm>
 
@@ -13,14 +15,14 @@ public:
 
     void* allocate(size_t size, const char* typeName, const char* filename, int line) override
     {
-        const auto ptr = malloc(size);
+        const auto ptr = rc_malloc(size);
         PX_ASSERT((reinterpret_cast<size_t>(ptr) & 15) == 0);
         return ptr;
     }
 
     void deallocate(void* ptr) override
     {
-        free(ptr);
+        rc_free(ptr);
     }
 };
 
@@ -42,9 +44,9 @@ void PhysXEngine::Initialize()
     Logger::Log(Text::Format(TEXT_CONST("Initializing PhysX {0}.{1}.{2}"), PX_PHYSICS_VERSION_MAJOR, PX_PHYSICS_VERSION_MINOR, PX_PHYSICS_VERSION_BUGFIX).StdStr().c_str());
 
     // Initialize tolerance scale TODO: Tweak these values
-    m_tolerance_scale.length = 100.0f;
+    m_tolerance_scale.length = 1.0f;
     m_tolerance_scale.mass = 1000.0f;
-    m_tolerance_scale.speed = 500.0f; // 500 meters per second
+    m_tolerance_scale.speed = 10.0f; // 100 meters per second
 
     // Craete px foundation
     m_foundation = PxCreateFoundation(PX_FOUNDATION_VERSION, allocator, logger);
@@ -64,11 +66,13 @@ void PhysXEngine::Initialize()
     cookingParams.meshWeldTolerance = 1.0f / 16.0f; // 1/16 mm tolerance
     cookingParams.meshPreprocessParams = PxMeshPreprocessingFlags(PxMeshPreprocessingFlag::eWELD_VERTICES);
     cookingParams.targetPlatform = PxPlatform::ePC;
-    cookingParams.meshCookingHint = PxMeshCookingHint::eSIM_PERFORMANCE;
+    cookingParams.midphaseDesc = PxMeshMidPhase::eBVH34;
     m_cooking = PxCreateCooking(PX_PHYSICS_VERSION, *m_foundation, cookingParams);
 
     // Initialize dispatchers
-    m_cpuDispatcher = PxDefaultCpuDispatcherCreate(std::min(4u, std::thread::hardware_concurrency())); // Max. 4 threads for physics TODO: Game settings
+    m_cpuDispatcher = PxDefaultCpuDispatcherCreate(std::min(4u, std::thread::hardware_concurrency() - 1)); // Max. 4 threads for physics TODO: Game settings
+
+    m_defaultMaterial = m_physics->createMaterial(0.7f, 0.7f, 0.25f);
 
     // TODO: Optional CUDA support
 }
@@ -105,6 +109,83 @@ void PhysXEngine::Shutdown()
     m_cooking->release();
     m_physics->release();
     m_foundation->release();
+}
+
+IPhysicsActor* PhysXEngine::CreateActor(const TransformComponent& transform, PhysicsBodyComponent& body)
+{
+    rvar position = transform.position;
+    rvar rotation = transform.rotation; // TODO: Set pxTransform rotation when we will have our new math
+
+    cvar pxTransform = PxTransform(position.x, position.y, position.z);
+
+    PxRigidActor* pxActor;
+    if (body.type == PhysicsBodyComponent::Dynamic)
+        pxActor = m_physics->createRigidDynamic(pxTransform);
+    else
+        pxActor = m_physics->createRigidStatic(pxTransform);
+
+    pxActor->setActorFlag(PxActorFlag::eVISUALIZATION, false);
+
+    // Return new PhysX Actor Impl.
+    return new PhysXActor(pxActor);
+}
+
+void PhysXEngine::ReleaseActor(IPhysicsActor* actor)
+{
+    ASSERT(actor);
+
+    var physxActor = static_cast<PhysXActor*>(actor);
+    
+    if(physxActor->actor)
+        physxActor->actor->release();
+
+    delete actor;
+}
+
+IPhysicsShape* PhysXEngine::CreateShape(const TransformComponent& transform, const PhysicsShapeComponent& shape)
+{
+    rvar extents = shape.extents;
+
+    PxShape* pxShape = nullptr;
+    switch (shape.type)
+    {
+    case PhysicsShapeComponent::Box:
+    {
+        pxShape = m_physics->createShape(PxBoxGeometry(extents.x, extents.y, extents.z), *m_defaultMaterial);
+        break;
+    }
+    case PhysicsShapeComponent::Sphere:
+    {
+        pxShape = m_physics->createShape(PxSphereGeometry(shape.radius), *m_defaultMaterial);
+        break;
+    }
+    case PhysicsShapeComponent::TriangleMesh:
+    {
+        ASSERT(false);
+        break;
+    }
+    default:
+        break;
+    }
+
+    ASSERT(pxShape);
+
+    pxShape->setLocalPose(PxTransform(0.0f, 0.0f, 0.0f));
+
+    // Return new PhysX Shape Impl.
+    return new PhysXShape(pxShape);
+}
+
+void PhysXEngine::ReleaseShape(IPhysicsShape* shape)
+{
+    ASSERT(shape);
+
+    var physxShape = static_cast<PhysXShape*>(shape);
+
+    if (physxShape->shape)
+        physxShape->shape->release();
+
+    delete shape;
 }
 
 RefPtr<IPhysicsScene> PhysXEngine::CreateScene()

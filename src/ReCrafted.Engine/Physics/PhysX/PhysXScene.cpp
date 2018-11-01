@@ -2,6 +2,7 @@
 
 #include "PhysXScene.h"
 #include "Common/Time.h"
+#include "PhysXActor.h"
 
 PhysXScene::PhysXScene(PxPhysics* physics, PxCpuDispatcher* cpuDispatcher, const PxTolerancesScale& toleranceScale)
 {
@@ -9,7 +10,7 @@ PhysXScene::PhysXScene(PxPhysics* physics, PxCpuDispatcher* cpuDispatcher, const
 
     // Create scene description
     PxSceneDesc sceneDesc(toleranceScale);
-    sceneDesc.gravity = PxVec3(); // No default gravity! We're in space!
+    sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f); // No default gravity! We're in space!
     sceneDesc.bounceThresholdVelocity = 1.0f; // TODO: Tweak this value!
     sceneDesc.filterShader = PxDefaultSimulationFilterShader;
     // sceneDesc.simulationEventCallback TODO: Handle simulation events!
@@ -40,4 +41,22 @@ void PhysXScene::Shutdown()
 {
     m_physics = nullptr;
     m_scene->release();
+}
+
+void PhysXScene::AttachActor(IPhysicsActor* actor)
+{
+    ASSERT(actor);
+
+    cvar physxActor = static_cast<PhysXActor*>(actor);
+
+    m_scene->addActor(*physxActor->actor);
+}
+
+void PhysXScene::DetachActor(IPhysicsActor* actor)
+{
+    ASSERT(actor);
+
+    cvar physxActor = static_cast<PhysXActor*>(actor);
+
+    m_scene->removeActor(*physxActor->actor);
 }

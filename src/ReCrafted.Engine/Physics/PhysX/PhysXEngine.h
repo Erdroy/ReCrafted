@@ -6,9 +6,13 @@
 #define PHYSXENGINE_H
 
 // includes
+#include "ReCrafted.h"
 #include "Physics/IPhysicsEngine.h"
+
 #include "PhysX.h"
 #include "PhysXScene.h"
+#include "PhysXActor.h"
+#include "PhysXShape.h"
 
 class PhysXEngine : public IPhysicsEngine
 {
@@ -17,6 +21,8 @@ private:
     PxPhysics* m_physics = nullptr;
     PxCooking* m_cooking = nullptr;
     PxDefaultCpuDispatcher* m_cpuDispatcher = nullptr;
+
+    PxMaterial* m_defaultMaterial = nullptr;
 
     PxTolerancesScale m_tolerance_scale = {};
 
@@ -29,6 +35,12 @@ public:
     void Shutdown() override;
 
 public:
+    IPhysicsActor* CreateActor(const TransformComponent& transform, PhysicsBodyComponent& body) override;
+    void ReleaseActor(IPhysicsActor* actor) override;
+
+    IPhysicsShape* CreateShape(const TransformComponent& transform, const PhysicsShapeComponent& shape) override;
+    void ReleaseShape(IPhysicsShape* shape) override;
+
     RefPtr<IPhysicsScene> CreateScene() override;
     void DestroyScene(RefPtr<IPhysicsScene>& scene) override;
 };
