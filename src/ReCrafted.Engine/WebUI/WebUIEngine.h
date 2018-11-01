@@ -26,16 +26,12 @@ public:
     void Init();
     void OnDispose() override;
 
+    void Update();
     void Render();
-    void OnRendered();
 
 public:
     void Resize(uint width, uint height);
-
-    bool NeedsViewsUpdate() const
-    {
-        return m_needsViewUpdate;
-    }
+    bool NeedsViewsUpdate() const;
 
 public:
     static WebUIOverlay* CreateUIView(WebUIView* view, bool fullscreen);

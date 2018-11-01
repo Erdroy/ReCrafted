@@ -13,15 +13,21 @@ WebUIRenderer::~WebUIRenderer()
 {
 }
 
-void WebUIRenderer::Render(float delta)
+void WebUIRenderer::Update()
 {
     m_renderer->Update();
+}
+
+void WebUIRenderer::Render()
+{
     m_renderer->Render();
 
     m_needsViewUpdate = m_driver->HasCommandsPending();
 
     if (m_needsViewUpdate)
+    {
         m_driver->DrawCommandList();
+    }
 }
 
 void WebUIRenderer::Resize(uint16_t width, uint16_t height)

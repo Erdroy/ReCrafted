@@ -13,6 +13,22 @@ struct GemetryDescription
 
 typedef HandlePool<GeometryHandle, GemetryDescription> GeometryPool;
 
+void WebUIGPUDriver::UpdateUniforms(const ultralight::GPUState& state)
+{
+    // TODO: Optimize!!!(!)
+
+    m_uniforms.State = Vector4(0.0f, 1920.0f, 1080.0f, 1.0f); // TODO: Get viewport size
+    m_uniforms.ClipSize = state.clip_size;
+
+    memcpy(&m_uniforms.Transform, &state.transform, sizeof(Matrix));
+    memcpy(&m_uniforms.Scalar4, &state.uniform_scalar, sizeof(state.uniform_scalar));
+    memcpy(&m_uniforms.Vector, &state.uniform_vector, sizeof(state.uniform_vector));
+    memcpy(&m_uniforms.Clip, &state.clip, sizeof(state.clip));
+
+    // Upload
+    Renderer::SetShaderValues(m_shader->GetHandle(), 0, &m_uniforms, sizeof(GPUUniforms));
+}
+
 WebUIGPUDriver::WebUIGPUDriver()
 {
     GeometryPool::Instance()->Initialize(512, true);
@@ -94,15 +110,15 @@ void WebUIGPUDriver::CreateGeometry(const uint32_t geometry_id, const ultralight
     handle.idx = geometry_id;
     rvar desc = GeometryPool::GetHandleDescription(handle);
 
-    cvar vertexSize = sizeof(ultralight::Vertex_2f_4ub_2f_2f_28f);
+    cvar vertexSize = static_cast<uint>(sizeof(ultralight::Vertex_2f_4ub_2f_2f_28f));
     cvar vertexCount = vertices.size / vertexSize;
 
-    cvar indexCount = indices.size / sizeof(*indices.data);
+    cvar indexCount = indices.size / 2u;
 
     desc.vertexBuffer = Renderer::CreateVertexBuffer(vertexCount, vertexSize, true);
-    Renderer::UpdateVertexBuffer(desc.vertexBuffer, vertices.data, vertexSize, 0u);
+    desc.indexBuffer = Renderer::CreateIndexBuffer(static_cast<uint>(indexCount), true, true);
 
-    desc.indexBuffer = Renderer::CreateIndexBuffer(indexCount, false, true);
+    Renderer::UpdateVertexBuffer(desc.vertexBuffer, vertices.data, vertices.size, 0);
     Renderer::UpdateIndexBuffer(desc.indexBuffer, indices.data, indices.size, 0);
 }
 
@@ -113,10 +129,7 @@ void WebUIGPUDriver::UpdateGeometry(const uint32_t geometry_id, const ultralight
     handle.idx = geometry_id;
     rvar desc = GeometryPool::GetHandleDescription(handle);
 
-    cvar vertexSize = sizeof(ultralight::Vertex_2f_4ub_2f_2f_28f);
-    cvar vertexCount = vertices.size / vertexSize;
-
-    Renderer::UpdateVertexBuffer(desc.vertexBuffer, vertices.data, vertexSize, 0u);
+    Renderer::UpdateVertexBuffer(desc.vertexBuffer, vertices.data, vertices.size, 0);
     Renderer::UpdateIndexBuffer(desc.indexBuffer, indices.data, indices.size, 0);
 }
 
@@ -127,13 +140,16 @@ void WebUIGPUDriver::DrawGeometry(const uint32_t geometry_id, const uint32_t ind
     handle.idx = geometry_id;
     rvar desc = GeometryPool::GetHandleDescription(handle);
 
-    /*m_shader->SetTexture(0, )
-    m_shader->SetValue()*/
-
-    // TODO: Apply GPUState
+    // Update uniforms
+    UpdateUniforms(state);
 
     // Apply shader
     Renderer::ApplyShader(m_shader->GetHandle(), 0);
+
+    if (state.texture_1_id)
+        BindTexture(0, state.texture_1_id);
+
+    // TODO: Set render buffer
 
     // Draw
     Renderer::ApplyVertexBuffer(desc.vertexBuffer);
@@ -172,9 +188,9 @@ void WebUIGPUDriver::DrawCommandList()
         return;
 
     for (auto& cmd : m_commandList) {
-        if (cmd.command_type == ultralight::kCommandType_DrawGeometry)
+        if (cmd.command_type == static_cast<uint8_t>(ultralight::kCommandType_DrawGeometry))
             DrawGeometry(cmd.geometry_id, cmd.indices_count, cmd.indices_offset, cmd.gpu_state);
-        else if (cmd.command_type == ultralight::kCommandType_ClearRenderBuffer)
+        else if (cmd.command_type == static_cast<uint8_t>(ultralight::kCommandType_ClearRenderBuffer))
             ClearRenderBuffer(cmd.gpu_state.render_buffer_id);
     }
 

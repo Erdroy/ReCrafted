@@ -64,19 +64,17 @@ void WebUIEngine::OnDispose()
     delete m_renderer;
 }
 
+void WebUIEngine::Update()
+{
+    m_renderer->Update();
+}
+
 void WebUIEngine::Render()
 {
     if (!IsInitialized())
         return;
 
-    m_renderer->Render(float(Time::DeltaTime()));
-
-    //m_needsViewUpdate = m_renderer->NeedsViewUpdate();
-}
-
-void WebUIEngine::OnRendered()
-{
-    //D3DRenderer::GetInstance()->AfterRender();
+    m_renderer->Render();
 }
 
 void WebUIEngine::Resize(uint width, uint height)
@@ -87,14 +85,19 @@ void WebUIEngine::Resize(uint width, uint height)
     m_renderer->Resize(width, height);
 }
 
+bool WebUIEngine::NeedsViewsUpdate() const
+{
+    return m_renderer->NeedsViewsUpdate();
+}
+
 WebUIOverlay* WebUIEngine::CreateUIView(WebUIView* view, const bool fullscreen)
 {
     if (!IsInitialized())
         return nullptr;
 
     cvar overlay = new Overlay(fullscreen, m_ultralightRenderer.get(), m_instance->m_gpuDriver, view->Width(), view->Height());
-    //overlay->view()->set_load_listener(overlay);
-    //overlay->view()->set_view_listener(overlay);
+    overlay->view()->set_load_listener(overlay);
+    overlay->view()->set_view_listener(overlay);
 
     return static_cast<WebUIOverlay*>(overlay);
 }

@@ -6,6 +6,7 @@
 #include "Common/Display.h"
 #include "Core/Action.h"
 #include "Graphics/Graphics.h"
+#include "Common/Profiler/Profiler.h"
 
 void WebUIView::Init(uint width, uint height, bool fullscreen)
 {
@@ -14,11 +15,6 @@ void WebUIView::Init(uint width, uint height, bool fullscreen)
     m_height = fullscreen ? Display::GetHeight() : height;
 
     m_overlay = WebUIEngine::CreateUIView(this, fullscreen);
-}
-
-void WebUIView::Update()
-{
-
 }
 
 void WebUIView::Resize(uint width, uint height)
@@ -30,6 +26,7 @@ void WebUIView::Resize(uint width, uint height)
 
 void WebUIView::Render()
 {
+    Profiler::BeginProfile(__FUNCTION__);
     if (!m_Active)
         return;
 
@@ -39,6 +36,7 @@ void WebUIView::Render()
     {
         // TODO: Blit into back-buffer using created quad
     }
+    Profiler::EndProfile();
 }
 
 void WebUIView::OnDestroy()

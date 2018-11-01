@@ -5,20 +5,37 @@
 #ifndef WEBUIGPUDRIVER_H
 #define WEBUIGPUDRIVER_H
 
+#include "ReCrafted.h"
+#include "Core/Math/Math.h"
 #include "Graphics/Shader.h"
 
 #include <Ultralight/platform/GPUDriver.h>
 
 class WebUIGPUDriver : public ultralight::GPUDriver
 {
+    struct GPUUniforms {
+        Vector4 State{};
+        Matrix Transform{};
+        Vector4 Scalar4[2];
+        Vector4 Vector[8];
+        uint32_t ClipSize{};
+        Matrix Clip[8];
+    };
+
 private:
     Shader* m_shader = nullptr;
     std::vector<ultralight::Command> m_commandList;
+
+    GPUUniforms m_uniforms = {};
+
+private:
+    void UpdateUniforms(const ultralight::GPUState& state);
 
 public:
     WebUIGPUDriver();
     ~WebUIGPUDriver();
 
+public:
     void BeginSynchronize() override;
     void EndSynchronize() override;
     

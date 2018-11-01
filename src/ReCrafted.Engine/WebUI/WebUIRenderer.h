@@ -22,9 +22,15 @@ public:
     ~WebUIRenderer();
 
 public:
-    void Render(float delta);
+    void Update();
+    void Render();
     void Resize(uint16_t width, uint16_t height);
 
+public:
+    bool NeedsViewsUpdate() const
+    {
+        return m_needsViewUpdate;
+    }
 };
 
 #endif // WEBUIRENDERER_H

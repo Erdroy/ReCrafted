@@ -5,14 +5,13 @@
 #include "WebUIEngine.h"
 #include "Core/Logger.h"
 #include "Content/ContentManager.h"
+#include "Common/Profiler/Profiler.h"
 
 SINGLETON_IMPL(WebUI)
 
 void WebUI::OnInit()
 {
     Logger::Log("WebUI is being initialized...");
-
-    m_shader = ContentManager::LoadAsset<Shader>("Shaders/WebUI");
 
     m_engine = WebUIEngine::GetInstance();
     m_engine->Init();
@@ -45,26 +44,31 @@ void WebUI::Resize(uint width, uint height)
 
 void WebUI::Update()
 {
-    for (var&& view : m_views)
-        view->Update();
+    Profiler::BeginProfile(__FUNCTION__);
+    
+    m_engine->Update();
+
+    Profiler::EndProfile();
 }
 
 void WebUI::Render()
 {
+    Profiler::BeginProfile(__FUNCTION__);
+
     m_engine->Render();
 
-    //if (m_engine->NeedsViewsUpdate())
+    //if(m_engine->NeedsViewsUpdate())
     {
         for (var&& view : m_views)
             view->Render();
     }
 
-    m_engine->OnRendered();
+    Profiler::EndProfile();
 }
 
 WebUIView* WebUI::CreateView()
 {
-    if (!m_engine->IsInitialized())
+    if (!WebUIEngine::IsInitialized())
         return nullptr;
 
     var view = Object::CreateInstance<WebUIView>("ReCrafted.API.Graphics", "WebUIView");

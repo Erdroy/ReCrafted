@@ -138,6 +138,15 @@ public:
     void SetTextureArray(uint slot, Renderer::Texture2DHandle* textureArray, uint8_t textureCount);
 
     /**
+     * \brief Gets current frame buffer handle.
+     * \return The current frame buffer handle.
+     */
+    const Renderer::RenderBufferHandle& GetFrameBuffer() const
+    {
+        return m_frameBuffer;
+    }
+
+    /**
     * \brief Gets current set render stage.
     */
     RenderStage::_enum GetStage() const

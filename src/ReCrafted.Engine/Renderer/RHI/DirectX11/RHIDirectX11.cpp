@@ -394,13 +394,13 @@ namespace Renderer
                     break;
                 }
             case CommandHeader::SetShaderValues:
-            {
-                cvar command = m_commandList.ReadCommand<Command_SetShaderValues>(position);
+                {
+                    cvar command = m_commandList.ReadCommand<Command_SetShaderValues>(position);
 
-                rvar shader = m_shaders[command.shader.idx];
-                shader->SetValues(command.bufferId, command.memory, command.memorySize, command.memoryOffset);
-                break;
-            }
+                    rvar shader = m_shaders[command.shader.idx];
+                    shader->SetValues(command.bufferId, command.memory, command.memorySize, command.memoryOffset);
+                    break;
+                }
             DEFINE_COMMAND_EXECUTOR(QueueFree);
 
             DEFINE_COMMAND_EXECUTOR(ExecuteTask);

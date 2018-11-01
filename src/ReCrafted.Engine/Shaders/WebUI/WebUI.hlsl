@@ -556,6 +556,8 @@ void applyClip(VS_OUTPUT input, inout float4 outColor) {
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
+    return float4(1.0f, 0.0f, 1.0f, 1.0f);
+
   const uint FillType_Solid = 0u;
   const uint FillType_Image = 1u;
   const uint FillType_Pattern_Image = 2u;

@@ -15,6 +15,7 @@ class WebUI : public EngineComponent<WebUI>
 {
     friend class Graphics;
     friend class EngineMain;
+    friend class WebUIRenderer;
 
 private:
 SCRIPTING_API_IMPL()
@@ -22,8 +23,6 @@ SCRIPTING_API_IMPL()
 private:
     Array<RefPtr<WebUIView>> m_views = {};
     WebUIEngine* m_engine = nullptr;
-
-    Shader* m_shader = nullptr;
 
 private:
     void OnInit() override;
