@@ -156,10 +156,10 @@ template<typename T>
 const Vector3Base<T> Vector3Base<T>::Right(1, 0, 0);
 
 template<typename T>
-const Vector3Base<T> Vector3Base<T>::Forward(-1, 0, 1);
+const Vector3Base<T> Vector3Base<T>::Forward(0, 0, 1);
 
 template<typename T>
-const Vector3Base<T> Vector3Base<T>::Back(1, 0, -1);
+const Vector3Base<T> Vector3Base<T>::Back(0, 0, -1);
 
 template<typename T>
 const Vector3Base<T> Vector3Base<T>::One(1);

@@ -166,10 +166,10 @@ template<typename T>
 const Vector4Base<T> Vector4Base<T>::Right(1, 0, 0, 0);
 
 template<typename T>
-const Vector4Base<T> Vector4Base<T>::Forward(-1, 0, 1, 0);
+const Vector4Base<T> Vector4Base<T>::Forward(0, 0, 1, 0);
 
 template<typename T>
-const Vector4Base<T> Vector4Base<T>::Back(1, 0, -1, 0);
+const Vector4Base<T> Vector4Base<T>::Back(0, 0, -1, 0);
 
 template<typename T>
 const Vector4Base<T> Vector4Base<T>::One(1);
