@@ -190,9 +190,6 @@ void Graphics::Render()
         Renderer::ClearRenderBuffer(renderBuffer, clearColor);
         Renderer::ClearRenderTexture(m_frameTexture, clearColor);
 
-        // set default render stage
-        SetStage(RenderStage::Default);
-
         // begin rendering
         RenderBegin();
         {
@@ -203,21 +200,24 @@ void Graphics::Render()
             m_rendering->RenderShadows();
         }
         RenderEnd(); // end rendering
-
+        
         // Render post processing
         m_rendering->RenderPostProcessing(m_frameTexture, m_gbuffer->GetTarget(1), m_gbuffer->GetDepthBuffer());
+
+        // Blit into framebuffer
+        BlitFrameBuffer();
+
+        // Set frame buffer as current
+        Renderer::ApplyRenderBuffer(m_frameBuffer);
 
         // Render debug draw
         RenderDebugDraw();
 
+        // Render WebUI
+        //RenderWebUI();
+
         // Render UI
         RenderUI();
-
-        // Render WebUI
-        RenderWebUI();
-
-        // Blit into framebuffer
-        BlitFrameBuffer();
 
         Profiler::BeginProfile("Renderer::Frame");
         // next frame, wait vsync
@@ -249,6 +249,9 @@ void Graphics::Resize(uint width, uint height)
 
 void Graphics::RenderBegin()
 {
+    // set default render stage
+    SetStage(RenderStage::Default);
+
     // Update main camera
     Camera::m_mainCamera->Update();
 
@@ -387,7 +390,7 @@ void Graphics::RenderWebUI()
     Profiler::BeginProfile("Render WebUI");
     {
         // set WebUI state
-        SetStage(RenderStage::DrawWebUI);
+        SetStage(RenderStage::DrawUI);
 
         WebUI::GetInstance()->Render();
     }
