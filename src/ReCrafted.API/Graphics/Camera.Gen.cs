@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 10/17/2018 17:39:44 Source: 'Camera.API.cpp' Target: 'Graphics/Camera.Gen.cs'
+// Generated: 11/05/2018 18:04:42 Source: 'Camera.API.cpp' Target: 'Graphics/Camera.Gen.cs'
 
 using ReCrafted.API.Mathematics;
 using System;
@@ -29,9 +29,9 @@ namespace ReCrafted.API.Graphics
 			Internal_SetAsCurrent(NativePtr);
 		}
         
-        [MethodImpl(MethodImplOptions.InternalCall)]
+		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_SetAsCurrent(IntPtr nativePtr);
-		
+
 		/// <summary>
 		///	Camera's Field of view.
 		/// </summary>
@@ -67,11 +67,11 @@ namespace ReCrafted.API.Graphics
 		/// <summary>
 		///	Camera's rotation.
 		/// </summary>
-		public Vector3 Rotation 
+		public Quaternion Rotation 
 		{
 			get
 			{
-				Vector3 result;
+				Quaternion result;
 				Internal_Rotation_Get(NativePtr, out result);
 				return result;
 			}
@@ -198,9 +198,9 @@ namespace ReCrafted.API.Graphics
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_Position_Get(IntPtr nativePtr, out Vector3 result);
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern void Internal_Rotation_Set(IntPtr nativePtr, ref Vector3 value);
+		internal static extern void Internal_Rotation_Set(IntPtr nativePtr, ref Quaternion value);
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern void Internal_Rotation_Get(IntPtr nativePtr, out Vector3 result);
+		internal static extern void Internal_Rotation_Get(IntPtr nativePtr, out Quaternion result);
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_GetBoundingFrustum_Get(IntPtr nativePtr, out BoundingFrustum result);
 		[MethodImpl(MethodImplOptions.InternalCall)]

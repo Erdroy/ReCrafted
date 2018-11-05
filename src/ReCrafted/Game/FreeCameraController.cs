@@ -14,6 +14,7 @@ namespace ReCrafted.Game
     {
         private readonly List<Vector2> _deltaBuffer = new List<Vector2>();
         private Vector2 _lastDelta = Vector2.Zero;
+        private Vector3 _currentRotation = Vector3.Zero;
 
         public void Initialize()
         {
@@ -41,9 +42,6 @@ namespace ReCrafted.Game
                 return;
 
             var cursorDelta = Input.CursorDelta;
-
-            // Negate
-            cursorDelta *= -Vector2.One;
             
             if (MouseFiltering)
             {
@@ -66,9 +64,32 @@ namespace ReCrafted.Game
                 _lastDelta = tmp;
             }
 
-            var rotation = Camera.Rotation + new Vector3(cursorDelta.X / 10.0f, cursorDelta.Y / 10.0f, 0.0f);
+            var rotation = _currentRotation + new Vector3(cursorDelta.X / 10.0f, cursorDelta.Y / 10.0f, 0.0f);
             rotation.Y = MathUtil.Clamp(rotation.Y, -89.9f, 89.9f);
-            Camera.Rotation = rotation;
+            _currentRotation = rotation;
+
+            var cameraRotation = Quaternion.RotationAxis(Vector3.Up, MathUtil.DegreesToRadians(_currentRotation.X)) *
+                                 Quaternion.RotationAxis(Vector3.Right, MathUtil.DegreesToRadians(_currentRotation.Y));
+
+            cameraRotation.Normalize();
+
+            var up = Vector3.Normalize(Camera.Position);
+            var forward = Vector3.Cross(Camera.Right, up);
+            var right = Vector3.Cross(up, forward);
+            
+            DebugDraw.Color = Color.Red;
+            DebugDraw.DrawArrow(Camera.Position + Camera.Forward * 4.0f, Camera.Position + up + Camera.Forward * 4.0f, 0.25f);
+            DebugDraw.Color = Color.Green;
+            DebugDraw.DrawArrow(Camera.Position + Camera.Forward * 4.0f, Camera.Position + forward + Camera.Forward * 4.0f, 0.25f);
+            DebugDraw.Color = Color.Blue;
+            DebugDraw.DrawArrow(Camera.Position + Camera.Forward * 4.0f, Camera.Position + right + Camera.Forward * 4.0f, 0.25f);
+
+           // DebugDraw.Color = Color.Yellow;
+            //DebugDraw.DrawArrow(Camera.Position + Camera.Forward * 4.0f, Camera.Position + lookAt.Axis + Camera.Forward * 4.0f, 0.25f);
+
+            // TODO: Make cameraRotation relative to up vector
+
+            Camera.Rotation = cameraRotation;
         }
 
         private void UpdateMovement()

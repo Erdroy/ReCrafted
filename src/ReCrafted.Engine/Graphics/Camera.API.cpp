@@ -56,7 +56,7 @@ namespace Internal
         *pos = camera->GetPosition();
     }
 
-    void setRot(Camera* camera, Vector3* rot)
+    void setRot(Camera* camera, Quaternion* rot)
     {
         if (!camera)
             return;
@@ -64,7 +64,7 @@ namespace Internal
         camera->SetRotation(*rot);
     }
 
-    void getRot(Camera* camera, Vector3* rot)
+    void getRot(Camera* camera, Quaternion* rot)
     {
         if (!camera)
             return;
@@ -215,7 +215,7 @@ void Camera::InitRuntime()
             API_PROPERTY_END();
 
             API_COMMENT("Camera's rotation.");
-            API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Rotation", GETSET, BY_REF);
+            API_PROPERTY(PUBLIC, REGULAR, "Quaternion", "Rotation", GETSET, BY_REF);
             {
                 API_BIND("ReCrafted.API.Graphics.Camera::Internal_Rotation_Get", &Internal::getRot);
                 API_BIND("ReCrafted.API.Graphics.Camera::Internal_Rotation_Set", &Internal::setRot);
