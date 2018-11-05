@@ -6,6 +6,7 @@
 #define BOUNDINGFRUSTUM_H
 
 // includes
+#include "ReCrafted.h"
 #include "Plane.h"
 #include "BoundingBox.h"
 
@@ -118,40 +119,40 @@ public:
     void SetPlanes(const Matrix& matrix)
     {
         // Left plane
-        planeLeft.normal.x = matrix.M14 + matrix.M11;
-        planeLeft.normal.y = matrix.M24 + matrix.M21;
-        planeLeft.normal.z = matrix.M34 + matrix.M31;
-        planeLeft.distance = matrix.M44 + matrix.M41;
+        planeLeft.normal.x = matrix.m14 + matrix.m11;
+        planeLeft.normal.y = matrix.m24 + matrix.m21;
+        planeLeft.normal.z = matrix.m34 + matrix.m31;
+        planeLeft.distance = matrix.m44 + matrix.m41;
 
         // Right plane
-        planeRight.normal.x = matrix.M14 - matrix.M11;
-        planeRight.normal.y = matrix.M24 - matrix.M21;
-        planeRight.normal.z = matrix.M34 - matrix.M31;
-        planeRight.distance = matrix.M44 - matrix.M41;
+        planeRight.normal.x = matrix.m14 - matrix.m11;
+        planeRight.normal.y = matrix.m24 - matrix.m21;
+        planeRight.normal.z = matrix.m34 - matrix.m31;
+        planeRight.distance = matrix.m44 - matrix.m41;
 
         // Top plane
-        planeTop.normal.x = matrix.M14 - matrix.M12;
-        planeTop.normal.y = matrix.M24 - matrix.M22;
-        planeTop.normal.z = matrix.M34 - matrix.M32;
-        planeTop.distance = matrix.M44 - matrix.M42;
+        planeTop.normal.x = matrix.m14 - matrix.m12;
+        planeTop.normal.y = matrix.m24 - matrix.m22;
+        planeTop.normal.z = matrix.m34 - matrix.m32;
+        planeTop.distance = matrix.m44 - matrix.m42;
 
         // Bottom plane
-        planeBottom.normal.x = matrix.M14 + matrix.M12;
-        planeBottom.normal.y = matrix.M24 + matrix.M22;
-        planeBottom.normal.z = matrix.M34 + matrix.M32;
-        planeBottom.distance = matrix.M44 + matrix.M42;
+        planeBottom.normal.x = matrix.m14 + matrix.m12;
+        planeBottom.normal.y = matrix.m24 + matrix.m22;
+        planeBottom.normal.z = matrix.m34 + matrix.m32;
+        planeBottom.distance = matrix.m44 + matrix.m42;
 
         // Near plane
-        planeNear.normal.x = matrix.M13;
-        planeNear.normal.y = matrix.M23;
-        planeNear.normal.z = matrix.M33;
-        planeNear.distance = matrix.M43;
+        planeNear.normal.x = matrix.m13;
+        planeNear.normal.y = matrix.m23;
+        planeNear.normal.z = matrix.m33;
+        planeNear.distance = matrix.m43;
 
         // Far plane
-        planeFar.normal.x = matrix.M14 - matrix.M13;
-        planeFar.normal.y = matrix.M24 - matrix.M23;
-        planeFar.normal.z = matrix.M34 - matrix.M33;
-        planeFar.distance = matrix.M44 - matrix.M43;
+        planeFar.normal.x = matrix.m14 - matrix.m13;
+        planeFar.normal.y = matrix.m24 - matrix.m23;
+        planeFar.normal.z = matrix.m34 - matrix.m33;
+        planeFar.distance = matrix.m44 - matrix.m43;
     }
 
     Array<Vector3> GetCorners() const

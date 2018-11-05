@@ -82,7 +82,7 @@ void SpaceObjectOctreeNode::GenerateChunk(IVoxelMesher* mesher)
 void SpaceObjectOctreeNode::WorkerPopulate(IVoxelMesher* mesher) // WARNING: this function is called on WORKER THREAD!
 {
     cvar childrenSize = m_Size / 2;
-    cvar boundsSize = Vector3::One() * static_cast<float>(childrenSize);
+    cvar boundsSize = Vector3::One * static_cast<float>(childrenSize);
 
     // Create children nodes
     for (var i = 0; i < 8; i++)

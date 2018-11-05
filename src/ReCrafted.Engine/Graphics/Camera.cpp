@@ -10,8 +10,8 @@ Camera* Camera::m_mainCamera;
 
 void Camera::UpdateRotation()
 {
-    auto yaw = Math::DegreeToRadian(-m_Rotation.y);
-    auto pitch = Math::DegreeToRadian(-m_Rotation.x);
+    auto yaw = Math::DegreeToRadian * -m_Rotation.y;
+    auto pitch = Math::DegreeToRadian * -m_Rotation.x;
     auto roll = 0.0f;
 
     auto yawOver2 = yaw * 0.5;
@@ -54,6 +54,8 @@ void Camera::UpdateRotation()
         (single7 - single10) * axis.x + (single8 + single9) * axis.y + (1.0f - (single3 + single4)) * axis.z
     );
 
+    m_Forward.Normalize();
+
     // calculate right
     axis = Vector3(1.0f, 0.0f, 0.0f);
     m_Right = Vector3(
@@ -61,6 +63,7 @@ void Camera::UpdateRotation()
         (single6 + single11) * axis.x + (1.0f - (single3 + single5)) * axis.y + (single8 - single9) * axis.z,
         (single7 - single10) * axis.x + (single8 + single9) * axis.y + (1.0f - (single3 + single4)) * axis.z
     );
+    m_Right.Normalize();
 
     // calculate up
     m_Up = Vector3::Cross(m_Forward, m_Right);
@@ -75,11 +78,10 @@ void Camera::Update()
     m_lookAt = m_Position + m_Forward;
 
     // create view matrix
-    Matrix::CreateViewLH(m_Position, m_lookAt, m_Up, &m_view);
+    m_view = Matrix::CreateLookAt(m_Position, m_lookAt, m_Up);
 
     // create projection matrix
-    Matrix::CreatePerspectiveFovLH(Math::DegreeToRadian(m_Fov), Display::GetAspectRatio(), m_NearPlane, m_FarPlane,
-                                   &m_projection);
+    m_projection = Matrix::CreatePerspective(Math::DegreeToRadian * m_Fov, Display::GetAspectRatio(), m_NearPlane, m_FarPlane);
 
     // create view projection matrix
     m_ViewProjection = m_view * m_projection;

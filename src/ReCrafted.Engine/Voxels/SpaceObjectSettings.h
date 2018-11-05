@@ -6,7 +6,7 @@
 #define SPACEOBJECTSETTINGS_H
 
 // includes
-#include "Core/Math/Vector3.h"
+#include "ReCrafted.h"
 
 /**
 * \brief SpaceObjectSettings GenerationType enum.

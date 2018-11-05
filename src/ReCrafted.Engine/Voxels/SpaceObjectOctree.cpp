@@ -14,7 +14,7 @@ void SpaceObjectOctree::GeneratePrimary()
     cvar objectSize = Math::RoundUpToPow2(static_cast<int>(radius * 2)); // diameter rounded up to power of 2
 
     // calculate bounds size
-    var size = Vector3::One() * static_cast<float>(objectSize);
+    var size = Vector3::One * static_cast<float>(objectSize);
 
     // build bounds
     m_Bounds = BoundingBox(settings.position, size);
@@ -30,7 +30,7 @@ void SpaceObjectOctree::GeneratePrimary()
     cvar rootNodePositionOffset = Vector3(rootNodeOffset, rootNodeOffset, rootNodeOffset);
 
     // Calculate bounding box size
-    var boundsSize = Vector3::One() * static_cast<float>(rootNodeSize);
+    var boundsSize = Vector3::One * static_cast<float>(rootNodeSize);
 
     // calculate the count of root nodes
     m_rootNodesCount = Math::Pow(rootNodesLength, 3);

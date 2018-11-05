@@ -6,7 +6,7 @@
 #define PLANE_H
 
 // includes
-#include "Vector3.h"
+#include "ReCrafted.h"
 #include "Math.h"
 
 enum PlaneIntersection
@@ -92,7 +92,7 @@ public:
     /// </summary>
     FORCEINLINE void Normalize()
     {
-        auto magnitude = 1.0f / static_cast<float>(Math::SqrtF(
+        auto magnitude = 1.0f / static_cast<float>(Math::Sqrt(
             (normal.x * normal.x) + (normal.y * normal.y) + (normal.z * normal.z)));
 
         normal.x *= magnitude;
@@ -110,8 +110,7 @@ public:
     /// <returns>Whether the two objects intersected.</returns>
     FORCEINLINE static PlaneIntersection PlaneIntersectsPoint(Plane& plane, Vector3& point)
     {
-        float distance;
-        Vector3::Dot(plane.normal, point, &distance);
+        auto distance = Vector3::Dot(plane.normal, point);
         distance += plane.distance;
 
         if (distance > 0.0f)
@@ -127,7 +126,7 @@ public:
     /// <summary>
     /// The normal vector of the plane.
     /// </summary>
-    Vector3 normal = {};
+    Vector3 normal = Vector3::Zero;
 
     /// <summary>
     /// The distance of the plane along its normal from the origin.

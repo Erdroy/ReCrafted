@@ -108,7 +108,7 @@ RefPtr<VoxelChunkData> VoxelStorage::CreateChunkData(const Vector3& nodePosition
     chunk->m_id = chunkId;
     chunk->m_nodeDepth = nodeDepth;
     chunk->m_nodePosition = nodePosition;
-    chunk->m_chunkPosition = nodePosition - Vector3::One() * float(nodeSize) * 0.5f;
+    chunk->m_chunkPosition = nodePosition - Vector3::One * float(nodeSize) * 0.5f;
 
     // Add chunk to cache
     m_chunkCache->AddChunk(chunk);
@@ -135,7 +135,7 @@ void VoxelStorage::ReadChunkData(const RefPtr<VoxelChunkData>& chunkData)
 
     cvar nodePosition = chunkData->m_nodePosition;
     cvar nodeSize = chunkData->m_size;
-    cvar positionOffset = Vector3::One() * float(nodeSize) * 0.5f;
+    cvar positionOffset = Vector3::One * float(nodeSize) * 0.5f;
     cvar chunkPosition = nodePosition - positionOffset; // lower-left-back corner
     cvar lod = chunkData->m_size / SpaceObjectOctreeNode::MinimumNodeSize;
     

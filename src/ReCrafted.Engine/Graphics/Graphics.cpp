@@ -100,8 +100,8 @@ void Graphics::UpdateDefaultConstants(const Matrix& mvp)
     Vector4 viewInfo;
     viewInfo.x = Camera::GetMainCamera()->GetNearPlane();
     viewInfo.y = Camera::GetMainCamera()->GetFarPlane();
-    viewInfo.z = 1.0f / projection.M11;
-    viewInfo.w = 1.0f / projection.M22;
+    viewInfo.z = 1.0f / projection.m11;
+    viewInfo.w = 1.0f / projection.m22;
 
     m_currentShader->SetValue(2, &viewInfo);
 

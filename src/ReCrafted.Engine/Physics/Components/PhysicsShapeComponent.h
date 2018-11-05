@@ -20,7 +20,7 @@ struct PhysicsShapeComponent : Component
 
 public:
     PhysicsShapeComponent() = default;
-    explicit PhysicsShapeComponent(const Type type, const Vector3 extents = Vector3::One(), const float radius = 1.0f) :
+    explicit PhysicsShapeComponent(const Type type, const Vector3 extents = Vector3::One, const float radius = 1.0f) :
         type(type), extents(extents), radius(radius)
     {
         
@@ -31,7 +31,7 @@ public:
 
 public:
     Type type = Box;
-    Vector3 extents = Vector3::One();
+    Vector3 extents = Vector3::One;
     float radius = 1.0f;
 };
 

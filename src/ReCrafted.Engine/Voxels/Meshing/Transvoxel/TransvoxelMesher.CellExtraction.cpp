@@ -76,9 +76,9 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
         cvar vertexPosition1 = vertexInfoB.vertexPosition;
         cvar vertexPosition2 = vertexInfoC.vertexPosition;
 
-        if (Vector3::Dot(vertexPosition0, vertexPosition1) < Math::Epsilon ||
-            Vector3::Dot(vertexPosition1, vertexPosition2) < Math::Epsilon ||
-            Vector3::Dot(vertexPosition2, vertexPosition0) < Math::Epsilon)
+        if (Vector3::Dot(vertexPosition0, vertexPosition1) < Math::ZeroTolerance ||
+            Vector3::Dot(vertexPosition1, vertexPosition2) < Math::ZeroTolerance ||
+            Vector3::Dot(vertexPosition2, vertexPosition0) < Math::ZeroTolerance)
             continue; // zero-space triangle
 
         cvar normal = Vector3::Cross(vertexPosition1 - vertexPosition0, vertexPosition2 - vertexPosition0);

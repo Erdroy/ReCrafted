@@ -6,7 +6,6 @@
 #define TRANSFORMCOMPONENT_H
 
 #include "Common/Entities/Component.h"
-#include "Core/Math/Vector3.h"
 
 struct TransformComponent : Component
 {

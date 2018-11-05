@@ -7,11 +7,8 @@
 
 // includes
 #include "Core/Types.h"
-#include "Core/Math/Math.h"
 #include "Core/Containers/Array.h"
 #include "Renderer/Renderer.hpp"
-
-struct Vector4;
 
 /**
  * \brief Mesh class.

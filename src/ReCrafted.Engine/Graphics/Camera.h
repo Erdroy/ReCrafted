@@ -6,8 +6,7 @@
 #define CAMERA_H
 
 // includes
-#include "Core/Defines.h"
-#include "Core/Math/Math.h"
+#include "ReCrafted.h"
 #include "Core/Math/BoundingFrustum.h"
 #include "Scripting/Object.h"
 
@@ -40,9 +39,9 @@ public:
     /// </summary>
     Camera()
     {
-        m_Forward = Vector3::Forward();
-        m_Right = Vector3::Right();
-        m_Up = Vector3::Up();
+        m_Forward = Vector3::Forward;
+        m_Right = Vector3::Right;
+        m_Up = Vector3::Up;
 
         // initialize
         Update();

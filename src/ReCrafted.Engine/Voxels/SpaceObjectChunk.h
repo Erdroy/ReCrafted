@@ -6,7 +6,7 @@
 #define SPACEOBJECTCHUNK_H
 
 // includes
-#include "Core/Math/Vector3.h"
+#include "ReCrafted.h"
 #include "Core/Lock.h"
 #include "Graphics/Rendering/RenderableBase.h"
 

@@ -35,7 +35,7 @@ void Universe::OnInit()
     settings.fileName = "../assets/voxeldata/moon.chm";
     settings.saveName = "../saves/dev/voxelstorage/moon.vxh";
     settings.generationType = GenerationType::CubeHeightMap;
-    settings.position = Vector3::Zero();
+    settings.position = Vector3::Zero;
     settings.minSurfaceHeight = 900;
     settings.maxSurfaceHeight = settings.minSurfaceHeight + 120; // will round up to 1024 * 2
     settings.hillsHeight = 70;

@@ -184,8 +184,8 @@ private:
         // Update total time
         profile->timeTotal += static_cast<float>(time);
 
-        profile->timeMin = Math::MinF(float(time), profile->timeMin);
-        profile->timeMax = Math::MaxF(float(time), profile->timeMax);
+        profile->timeMin = Math::Min(float(time), profile->timeMin);
+        profile->timeMax = Math::Max(float(time), profile->timeMax);
 
         // Update every second
         if (currentTime - profile->lastAvgUpdate >= 1000.0f)

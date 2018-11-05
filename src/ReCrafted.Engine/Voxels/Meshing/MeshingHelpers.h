@@ -7,7 +7,7 @@
 
 // includes
 #include "ReCrafted.h"
-#include "Core/Math/Math.h"
+#include "Core/Math/Int3.h"
 
 struct VertexInfo
 {

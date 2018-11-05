@@ -104,9 +104,9 @@ private:
             if(materialSet.Size() == 1)
             {
                 materialsA.Add(EncodedMaterials[0]);
-                materialsB.Add(Vector4::Zero());
-                materialsC.Add(Vector4::Zero());
-                materialsD.Add(Vector4::Zero());
+                materialsB.Add(Vector4::Zero);
+                materialsC.Add(Vector4::Zero);
+                materialsD.Add(Vector4::Zero);
             }
             else
             {
@@ -119,26 +119,26 @@ private:
                 {
                 case 0:
                     materialsA.Add(material);
-                    materialsB.Add(Vector4::Zero());
-                    materialsC.Add(Vector4::Zero());
-                    materialsD.Add(Vector4::Zero());
+                    materialsB.Add(Vector4::Zero);
+                    materialsC.Add(Vector4::Zero);
+                    materialsD.Add(Vector4::Zero);
                     break;
                 case 1:
-                    materialsA.Add(Vector4::Zero());
+                    materialsA.Add(Vector4::Zero);
                     materialsB.Add(material);
-                    materialsC.Add(Vector4::Zero());
-                    materialsD.Add(Vector4::Zero());
+                    materialsC.Add(Vector4::Zero);
+                    materialsD.Add(Vector4::Zero);
                     break;
                 case 2:
-                    materialsA.Add(Vector4::Zero());
-                    materialsB.Add(Vector4::Zero());
+                    materialsA.Add(Vector4::Zero);
+                    materialsB.Add(Vector4::Zero);
                     materialsC.Add(material);
-                    materialsD.Add(Vector4::Zero());
+                    materialsD.Add(Vector4::Zero);
                     break;
                 case 3:
-                    materialsA.Add(Vector4::Zero());
-                    materialsB.Add(Vector4::Zero());
-                    materialsC.Add(Vector4::Zero());
+                    materialsA.Add(Vector4::Zero);
+                    materialsB.Add(Vector4::Zero);
+                    materialsC.Add(Vector4::Zero);
                     materialsD.Add(material);
                     break;
                 }

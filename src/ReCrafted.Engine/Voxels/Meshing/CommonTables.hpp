@@ -6,7 +6,8 @@
 #define COMMONTABLES_HPP
 
 // includes
-#include "Core/Math/Math.h"
+#include "ReCrafted.h"
+#include "Core/Math/Int3.h"
 
 Int3 CellCorner[];
 Vector4 EncodedMaterials[];

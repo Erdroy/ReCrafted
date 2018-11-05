@@ -7,7 +7,6 @@
 
 // includes
 #include "ReCrafted.h"
-#include "Core/Math/Vector3.h"
 #include "Voxels/Utilities/VoxelUtils.h"
 #include "Voxels/Voxel.h"
 

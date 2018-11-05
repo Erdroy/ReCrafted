@@ -1,107 +1,140 @@
-// ReCrafted (c) 2016-2018 Always Too Late
+// VectorMath (c) 2018 Damian 'Erdroy' Korczowski
+
 #pragma once
 
 #ifndef MATH_H
 #define MATH_H
 
-// includes
-#include <cmath>
-
-#include "Matrix.h"
-#include "Vector2.h"
-#include "Vector3.h"
-#include "Vector4.h"
-#include "Int3.h"
-
-#define PI 3.14159265358979323846
-
-namespace internal
-{
-    const float degtorad = float(PI / 180.0f);
-    const float radtodeg = float(180.0f / PI);
-}
+#include "Config.h"
 
 class Math
 {
 public:
-    template <class T>
-    FORCEINLINE static T Clamp(T v, T min, T max)
+    template<typename TValue>
+    static TValue Clamp(TValue value, TValue min, TValue max)
     {
-        if (v < min)
-            return min;
-
-        if (v > max)
-            return max;
-
-        return v;
+        return value < min ? min : 
+               value > max ? max : value;
     }
 
-    FORCEINLINE static int Pow(int x, int n)
-    {
-        return static_cast<int>(::pow(static_cast<float>(x), n));
-    }
-
-    FORCEINLINE static float PowF(float x, int n)
-    {
-        return ::pow(x, n);
-    }
-
-    FORCEINLINE static int Sign(int x)
-    {
-        return x < 0 ? -1 : 1;
-    }
-
-    FORCEINLINE static float SignF(float x)
-    {
-        return x < 0.0f ? -1.0f : 1.0f;
-    }
-
-    FORCEINLINE static int SignF0(float x)
-    {
-        return x > 0 ? 1 : x < 0 ? -1 : 0;
-    }
-
-    FORCEINLINE static float MinF(float a, float b)
+    template<typename TValue>
+    static TValue Min(TValue a, TValue b)
     {
         return a < b ? a : b;
     }
 
-    FORCEINLINE static float MaxF(float a, float b)
+    template<typename TValue>
+    static TValue Max(TValue a, TValue b)
     {
         return a > b ? a : b;
     }
 
-    FORCEINLINE static float SqrtF(float x)
+    template<typename TValue>
+    static TValue Min(TValue a, TValue b, TValue c)
     {
-        return sqrt(x);
+        return Min(Min(a, b), Min(b, c));
     }
 
-    FORCEINLINE static float TanF(float x)
+    template<typename TValue>
+    static TValue Max(TValue a, TValue b, TValue c)
     {
-        return tan(x);
+        return Max(Max(a, b), Max(b, c));
     }
 
-    FORCEINLINE static float Cos(float x)
+    template<typename TValue>
+    static TValue Abs(TValue value)
     {
-        return cos(x); // TODO: optimize cos
+        return value >= 0 ? value : -value;
     }
 
-    FORCEINLINE static float Sin(float x)
+    template<typename TBase, typename TExponent>
+    static TBase Pow(TBase base, TExponent exponent)
     {
-        return sin(x); // TODO: optimize sin
+        return static_cast<TBase>(std::pow(base, exponent));
     }
 
-    FORCEINLINE static float DegreeToRadian(float degree)
+    template<typename TValue>
+    static TValue Sqrt(TValue value)
     {
-        return degree * internal::degtorad;
+        return std::sqrt(value);
     }
 
-    FORCEINLINE static float RadianToDegree(float radiand)
+    template<typename TValue>
+    static TValue Acos(TValue value)
     {
-        return radiand * internal::radtodeg;
+        return std::acos(value);
     }
 
-    FORCEINLINE static unsigned long RoundUpToPow2(unsigned long v)
+    template<typename TValue>
+    static TValue Asin(TValue value)
+    {
+        return std::asin(value);
+    }
+
+    template<typename TValue>
+    static TValue Cos(TValue value)
+    {
+        return std::cos(value);
+    }
+
+    template<typename TValue>
+    static TValue Sin(TValue value)
+    {
+        return std::sin(value);
+    }
+
+    template<typename TValue>
+    static TValue Tan(TValue value)
+    {
+        return std::tan(value);
+    }
+
+    template<typename TValue>
+    static TValue Atan(TValue value)
+    {
+        return std::atan(value);
+    }
+
+    template<typename TValue>
+    static TValue SmoothStep(TValue value)
+    {
+        return (value <= 0) ? 0
+             : (value >= 1) ? 1
+             : value * value * (3 - (2 * value));
+    }
+
+    template<typename TValue>
+    static TValue SmootherStep(TValue value)
+    {
+        return (value <= 0) ? 0
+             : (value >= 1) ? 1
+             : value * value * value * (value * ((value * 6) - 15) + 10);
+    }
+
+    template<typename TBase, typename TAmount>
+    static TBase Lerp(TBase from, TBase to, TAmount amount)
+    {
+        return from + (to - from) * amount;
+    }
+
+    template<typename TValue>
+    static int Sign(TValue value)
+    {
+        return value < 0 ? -1 : 1;
+    }
+
+    template<typename TValue>
+    static bool IsOne(TValue value)
+    {
+        return IsZero(value - 1);
+    }
+
+    static bool IsZero(const int a)
+    {
+        return a == 0;
+    }
+
+    static unsigned long RoundUpToPow2(unsigned long v)
     {
         v--;
         v |= v >> 1;
@@ -114,7 +147,7 @@ public:
         return v;
     }
 
-    FORCEINLINE static int RoundUp(int numToRound, int multiple)
+    static int RoundUp(const int numToRound, const int multiple)
     {
         // source: http://stackoverflow.com/questions/3407012/c-rounding-up-to-the-nearest-multiple-of-a-number
 
@@ -122,7 +155,7 @@ public:
         if (numToRound < 0 && -numToRound < multiple)
             return 0;
 
-        auto remainder = numToRound % multiple;
+        const auto remainder = numToRound % multiple;
 
         if (remainder == 0)
             return numToRound;
@@ -130,8 +163,25 @@ public:
         return numToRound + multiple - remainder;
     }
 
+    static bool IsZero(const float a)
+    {
+        return Abs(a) < FLT_EPSILON;
+    }
+
+    static bool IsZero(const double a)
+    {
+        return Abs(a) < DBL_EPSILON;
+    }
+
 public:
-    const static float Epsilon;
+    static const float ZeroTolerance;
+    static const float Pi;
+    static const float TwoPi;
+    static const float PiOverTwo;
+    static const float PiOverFour;
+
+    static const float DegreeToRadian;
+    static const float RadianToDegree;
 };
 
 #endif // MATH_H

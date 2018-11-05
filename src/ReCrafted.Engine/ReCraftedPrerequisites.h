@@ -39,11 +39,6 @@ class EngineMain;
 class EngineComponentBase;
 class EngineComponentManager;
 
-struct Vector2;
-struct Vector3;
-struct Vector4;
-struct Matrix;
-
 struct Text;
 
 class Profiler;

@@ -7,7 +7,6 @@
 
 // includes
 #include "ReCrafted.h"
-#include "Vector2.h"
 
 struct Rect
 {

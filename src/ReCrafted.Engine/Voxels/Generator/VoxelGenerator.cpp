@@ -12,7 +12,7 @@
 Voxel VoxelGenerator::GenerateFromCHM(const Vector3& origin, const Vector3& position,
     const int mipLevel, const int lodSize, const int radius, const int height) const
 {
-    if (position.LengthSqr() == 0)
+    if (position.LengthSquared() == 0)
         return Voxel::Default;
 
     // Get sphere face

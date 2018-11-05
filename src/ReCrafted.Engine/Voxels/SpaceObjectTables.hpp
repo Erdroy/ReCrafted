@@ -7,7 +7,6 @@
 
 // includes
 #include "ReCrafted.h"
-#include "Core/Math/Vector3.h"
 #include "Core/Math/Color.h"
 
 byte LocalNeighTable[];

@@ -4,7 +4,7 @@
 #define SPACEOBJECT_H
 
 // includes
-#include "Core/Math/Vector3.h"
+#include "ReCrafted.h"
 #include "SpaceObject.h"
 #include "SpaceObjectOctree.h"
 #include "SpaceObjectSettings.h"
@@ -101,7 +101,7 @@ public:
     static RefPtr<SpaceObject> CreateSpaceObject(SpaceObjectSettings& settings);
 
 public:
-PROPERTY(Vector3, Position) = {};
+PROPERTY(Vector3, Position) = Vector3::Zero;
 };
 
 #endif // SPACEOBJECT_H

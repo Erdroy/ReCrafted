@@ -7,7 +7,6 @@
 
 // includes
 #include "ReCrafted.h"
-#include "Vector3.h"
 
 struct BoundingBox
 {
@@ -18,8 +17,8 @@ public:
     /// </summary>
     BoundingBox()
     {
-        center = Vector3::Zero();
-        size = Vector3::Zero();
+        center = Vector3::Zero;
+        size = Vector3::Zero;
     }
 
     /// <summary>
