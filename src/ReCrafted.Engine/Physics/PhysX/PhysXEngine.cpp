@@ -52,13 +52,21 @@ void PhysXEngine::Initialize()
     m_foundation = PxCreateFoundation(PX_FOUNDATION_VERSION, allocator, logger);
     _ASSERT_(m_foundation, "Failed to create PhysX foundation!");
 
+#ifdef DEBUG
+    m_pvd = PxCreatePvd(*m_foundation);
+    const auto transport = PxDefaultPvdSocketTransportCreate("localhost", 5425, 5000);
+
+    if(transport && m_pvd->connect(*transport, PxPvdInstrumentationFlag::eDEBUG))
+        Logger::Log("Connected to nVidia PhysX Visual Debugger");
+#endif
+
     // Create px physics
-    m_physics = PxCreateBasePhysics(PX_PHYSICS_VERSION, *m_foundation, m_tolerance_scale, false, nullptr);
+    m_physics = PxCreateBasePhysics(PX_PHYSICS_VERSION, *m_foundation, m_tolerance_scale, true, m_pvd);
     _ASSERT_(m_physics, "Failed to create PhysX physics!");
 
 #ifndef _DEBUG
     // Initialize px extensions
-    PxInitExtensions(*m_physics, nullptr);
+    PxInitExtensions(*m_physics, m_pvd);
 #endif
 
     // Initialize px cooking, this will be needed for ship colliders cooking etc.
@@ -106,7 +114,8 @@ void PhysXEngine::Shutdown()
     }
 
     m_scenes.clear();
-
+    
+    m_pvd->release();
     m_cpuDispatcher->release();
     m_cooking->release();
     m_physics->release();
@@ -167,21 +176,24 @@ IPhysicsShape* PhysXEngine::CreateShape(const TransformComponent& transform, con
         PxTriangleMeshDesc meshDescription;
         meshDescription.setToDefault();
 
-        meshDescription.points.data = &shape.points[0];
+        meshDescription.points.data = shape.points;
         meshDescription.points.count = shape.pointCount;
         meshDescription.points.stride = sizeof(Vector3);
 
-        meshDescription.triangles.data = &shape.triangles[0];
+        meshDescription.triangles.data = shape.triangles;
         meshDescription.triangles.count = shape.triangleCount;
         meshDescription.triangles.stride = 3 * sizeof(uint32_t);
 
         ASSERT(meshDescription.isValid());
-        ASSERT(m_cooking->validateTriangleMesh(meshDescription));
+        //ASSERT(m_cooking->validateTriangleMesh(meshDescription));
 
         // Cook
         PxDefaultMemoryOutputStream writeBuffer(shdfnd::getAllocator());
 
         cvar result = m_cooking->cookTriangleMesh(meshDescription, writeBuffer);
+
+        if (!result)
+            return nullptr;
 
         ASSERT(result != false);
 

@@ -18,6 +18,7 @@ class PhysXEngine : public IPhysicsEngine
 {
 private:
     PxFoundation* m_foundation = nullptr;
+    PxPvd* m_pvd = nullptr;
     PxPhysics* m_physics = nullptr;
     PxCooking* m_cooking = nullptr;
     PxDefaultCpuDispatcher* m_cpuDispatcher = nullptr;
