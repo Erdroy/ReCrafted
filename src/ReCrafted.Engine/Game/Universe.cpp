@@ -84,9 +84,11 @@ void Universe::Update()
 
     for (rvar box : m_projectiles)
     {
+        DebugDraw::SetMatrix(Matrix::CreateRotation(box->GetRotation()) * Matrix::CreateTranslation(box->GetPosition()));
         DebugDraw::SetColor(Color(255, 110, 0, 255));
-        DebugDraw::DrawWireBox(box->GetTransform()->position, Vector3::One);
+        DebugDraw::DrawBox(Vector3::Zero, Vector3::One);
     }
+    DebugDraw::SetMatrix(Matrix::Identity);
 
     var modPosition = Camera::GetMainCamera()->GetPosition() + Camera::GetMainCamera()->GetForward() * 5.0f;
 
@@ -115,7 +117,7 @@ void Universe::Update()
 
     if (Input::IsKey(Key_Mouse2))
     {
-        m_testObject1->Modify(m_selectedMaterial, VoxelEditMode::MaterialPaint, modPosition, 2.5f);
+        m_testObject1->Modify(m_selectedMaterial, VoxelEditMode::MaterialPaint, modPosition, 1.0f);
     }
 
     DebugDraw::SetColor(Color(0, 105, 0, 64));

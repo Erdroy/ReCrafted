@@ -141,6 +141,9 @@ void SpaceObjectChunk::RebuildCollision()
         // Create actor
         m_physicsActor = physics->CreateActor(transform, body);
 
+        // Attach actor
+        Universe::GetPhysicsScene()->AttachActor(m_physicsActor);
+
         ASSERT(m_physicsActor);
     }
 
@@ -171,7 +174,8 @@ void SpaceObjectChunk::RebuildCollision()
 
         cvar physicsShape = physics->CreateShape(transform, shape);
        
-        ASSERT(physicsShape);
+        if (!physicsShape)
+            continue;
 
         // Attach and add shape to list
         m_physicsActor->AttachShape(physicsShape);
@@ -195,6 +199,7 @@ void SpaceObjectChunk::ReleaseCollision()
     m_physicsShapes.Clear();
 
     // Release actor
+    Universe::GetPhysicsScene()->DetachActor(m_physicsActor);
     PhysicsSystem::Physics()->ReleaseActor(m_physicsActor);
     m_physicsActor = nullptr;
 }
@@ -263,9 +268,6 @@ void SpaceObjectChunk::Dispose()
     SafeDispose(m_mesh);
     SafeDispose(m_newMesh);
 
-    // Release collision
-    ReleaseCollision();
-
     // Release chunk data - when it has data
     // Free chunk data - when it has no any data
     if(m_chunkData->HasSurface() && m_chunkData->HasData())
@@ -287,6 +289,9 @@ void SpaceObjectChunk::Render(RenderableRenderMode renderMode)
     ASSERT(m_mesh);
 
     //owner->DrawDebug();
+
+    if(!m_physicsShapes.Empty())
+        DebugDraw::DrawBox(m_position, Vector3::One);
 
     // Draw chunk mesh
     m_mesh->Draw();

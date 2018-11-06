@@ -71,8 +71,8 @@ void PhysXEngine::Initialize()
 
     // Initialize px cooking, this will be needed for ship colliders cooking etc.
     PxCookingParams cookingParams(m_tolerance_scale);
-    cookingParams.meshWeldTolerance = 1.0f / 16.0f; // 1/16 mm tolerance
-    cookingParams.meshPreprocessParams = PxMeshPreprocessingFlags(PxMeshPreprocessingFlag::eFORCE_32BIT_INDICES | PxMeshPreprocessingFlag::eWELD_VERTICES);
+    cookingParams.meshWeldTolerance = 0.01f; // 10 mm tolerance
+    cookingParams.meshPreprocessParams = PxMeshPreprocessingFlags(PxMeshPreprocessingFlag::eWELD_VERTICES | PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH);
     cookingParams.meshCookingHint = PxMeshCookingHint::eCOOKING_PERFORMANCE;
     cookingParams.targetPlatform = PxPlatform::ePC;
     cookingParams.midphaseDesc = PxMeshMidPhase::eBVH34;
@@ -135,8 +135,6 @@ IPhysicsActor* PhysXEngine::CreateActor(const TransformComponent& transform, Phy
     else
         pxActor = m_physics->createRigidStatic(pxTransform);
 
-    pxActor->setActorFlag(PxActorFlag::eVISUALIZATION, false);
-
     // Return new PhysX Actor Impl.
     return new PhysXActor(pxActor);
 }
@@ -185,7 +183,6 @@ IPhysicsShape* PhysXEngine::CreateShape(const TransformComponent& transform, con
         meshDescription.triangles.stride = 3 * sizeof(uint32_t);
 
         ASSERT(meshDescription.isValid());
-        //ASSERT(m_cooking->validateTriangleMesh(meshDescription));
 
         // Cook
         PxDefaultMemoryOutputStream writeBuffer(shdfnd::getAllocator());

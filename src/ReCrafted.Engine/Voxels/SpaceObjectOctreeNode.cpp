@@ -263,9 +263,12 @@ void SpaceObjectOctreeNode::OnDestroy()
 {
     //ASSERT(!IsProcessing());
 
-    // Try to remove this chunk from rendering
+    // Try to remove this chunk from rendering and physics
     if (m_chunk && m_chunk->HasMesh())
+    {
+        m_chunk->ReleaseCollision();
         Rendering::RemoveRenderable(m_chunk.get());
+    }
 
     // Dispose chunk if exists
     SafeDispose(m_chunk);
@@ -287,9 +290,12 @@ void SpaceObjectOctreeNode::OnPopulate()
         node->OnCreate();
     }
 
-    // Try to remove this chunk from rendering
+    // Try to remove this chunk from rendering and physics
     if(m_chunk && m_chunk->HasMesh())
+    {
+        m_chunk->ReleaseCollision();
         Rendering::RemoveRenderable(m_chunk.get());
+    }
 }
 
 void SpaceObjectOctreeNode::OnDepopulate()
