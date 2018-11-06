@@ -301,7 +301,7 @@ const Vector3& GameObject::GetPosition() const
     return m_transform->position;
 }
 
-void GameObject::SetRotation(const Vector3& rotation)
+void GameObject::SetRotation(const Quaternion& rotation)
 {
     // TODO: Update relative children rotation to this gameObject
 
@@ -309,7 +309,7 @@ void GameObject::SetRotation(const Vector3& rotation)
     m_transform->rotation = rotation;
 }
 
-const Vector3& GameObject::GetRotation() const
+const Quaternion& GameObject::GetRotation() const
 {
     DEBUG_ASSERT(m_transform);
     return m_transform->rotation;

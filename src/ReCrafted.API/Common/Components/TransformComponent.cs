@@ -22,11 +22,11 @@ namespace ReCrafted.API.Common.Components
         /// The transform's rotation.
         /// </summary>
         [FieldOffset(12)]
-        public Vector3 Rotation;
+        public Quaternion Rotation;
 
         public ushort ComponentTypeId => 0;
         public bool IsNativeComponent => true;
-        public uint SizeInBytes => 24;
+        public uint SizeInBytes => 28;
 
         private static ComponentDescriptor<TransformComponent> _descriptor;
         public static ref ComponentDescriptor<TransformComponent> Descriptor

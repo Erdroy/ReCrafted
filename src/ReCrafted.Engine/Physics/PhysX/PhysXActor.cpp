@@ -21,7 +21,10 @@ void PhysXActor::DetachShape(IPhysicsShape* shape)
 
 void PhysXActor::SetPosition(const Vector3& position)
 {
+}
 
+void PhysXActor::SetRotation(const Quaternion& position)
+{
 }
 
 Vector3 PhysXActor::GetPosition()
@@ -32,10 +35,10 @@ Vector3 PhysXActor::GetPosition()
     return {pos.x, pos.y, pos.z};
 }
 
-Vector3 PhysXActor::GetRotation()
+Quaternion PhysXActor::GetRotation()
 {
     var pose = actor->getGlobalPose();
     rvar rot = pose.q;
 
-    return { rot.x, rot.y, rot.z};
+    return { rot.x, rot.y, rot.z, rot.w };
 }

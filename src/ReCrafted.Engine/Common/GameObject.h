@@ -182,12 +182,12 @@ public:
      *  to match it's relative local rotation.
      * \param rotation The new rotation of this game object.
      */
-    void SetRotation(const Vector3& rotation);
+    void SetRotation(const Quaternion& rotation);
 
     /**
      * \brief Gets rotation of this game object.
      */
-    const Vector3& GetRotation() const;
+    const Quaternion& GetRotation() const;
 
 public:
     /**

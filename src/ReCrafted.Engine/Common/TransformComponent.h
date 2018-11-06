@@ -10,7 +10,7 @@
 struct TransformComponent : Component
 {
     Vector3 position;
-    Vector3 rotation;
+    Quaternion rotation;
 };
 
 #endif // TRANSFORMCOMPONENT_H

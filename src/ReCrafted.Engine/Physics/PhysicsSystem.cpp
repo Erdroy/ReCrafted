@@ -34,6 +34,7 @@ void PhysicsSystem::Update()
 
         cvar position = body.physicsActor->GetPosition();
         transform.position = position;
+        transform.rotation = body.physicsActor->GetRotation();
 
         // TODO: Interpolation/Extrapolation etc.
     }

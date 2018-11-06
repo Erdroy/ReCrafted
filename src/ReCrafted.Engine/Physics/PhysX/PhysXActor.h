@@ -25,9 +25,10 @@ public:
     void DetachShape(IPhysicsShape* shape) override;
 
     void SetPosition(const Vector3& position) override;
+    void SetRotation(const Quaternion& position) override;
 
     Vector3 GetPosition() override;
-    Vector3 GetRotation() override;
+    Quaternion GetRotation() override;
 };
 
 #endif // PHYSXACTOR_H
