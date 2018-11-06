@@ -69,6 +69,7 @@ public:
     static Vector2Base<T> Abs(const Vector2Base<T>& a);
     static Vector2Base<T> Lerp(const Vector2Base<T>& from, const Vector2Base<T>& to, T amount);
     static Vector2Base<T> Transform(const Vector2Base<T>& a, const Quaternion& rotation);
+    static Vector2Base<T> Transform(const Vector2Base<T>& a, const MatrixBase<T, 4, 4>& matrix);
 
     static T Dot(const Vector2Base<T>& a, const Vector2Base<T>& b);
     static T Length(const Vector2Base<T>& a);
@@ -264,6 +265,14 @@ Vector2Base<T> Vector2Base<T>::Transform(const Vector2Base<T>& a, const Quaterni
         (a.x * (T(1) - yy - zz)) + (a.y * (xy - wz)), 
         (a.x * (xy + wz)) + (a.y * (T(1) - xx - zz))
     );
+}
+
+template <typename T>
+Vector2Base<T> Vector2Base<T>::Transform(const Vector2Base<T>& a, const MatrixBase<T, 4, 4>& matrix)
+{
+    return Vector2Base<T>(
+        (a.x * matrix.m11) + (a.y * matrix.m21) + matrix.m41,
+        (a.x * matrix.m12) + (a.y * matrix.m22) + matrix.m42);
 }
 
 template <typename T>

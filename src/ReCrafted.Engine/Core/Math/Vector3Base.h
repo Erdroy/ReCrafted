@@ -75,6 +75,7 @@ public:
     static Vector3Base<T> Lerp(const Vector3Base<T>& from, const Vector3Base<T>& to, T amount);
     static Vector3Base<T> Cross(const Vector3Base<T>& a, const Vector3Base<T>& b);
     static Vector3Base<T> Transform(const Vector3Base<T>& a, const Quaternion& rotation);
+    static Vector3Base<T> Transform(const Vector3Base<T>& a, const MatrixBase<T, 4, 4>& matrix);
 
     static T Dot(const Vector3Base<T>& a, const Vector3Base<T>& b);
     static T Length(const Vector3Base<T>& a);
@@ -293,6 +294,15 @@ Vector3Base<T> Vector3Base<T>::Transform(const Vector3Base<T>& a, const Quaterni
         ((a.x * (xy + wz)) + (a.y * ((T(1) - xx) - zz))) + (a.z * (yz - wx)),
         ((a.x * (xz - wy)) + (a.y * (yz + wx))) + (a.z * ((T(1) - xx) - yy))
     );
+}
+
+template <typename T>
+Vector3Base<T> Vector3Base<T>::Transform(const Vector3Base<T>& a, const MatrixBase<T, 4, 4>& matrix)
+{
+    return Vector3Base<T>(
+        (a.x * matrix.m11) + (a.y * matrix.m21) + (a.z * matrix.m31) + matrix.m41,
+        (a.x * matrix.m12) + (a.y * matrix.m22) + (a.z * matrix.m32) + matrix.m42,
+        (a.x * matrix.m13) + (a.y * matrix.m23) + (a.z * matrix.m33) + matrix.m43);
 }
 
 template <typename T>
