@@ -72,21 +72,7 @@ namespace ReCrafted.Game
                                  Quaternion.RotationAxis(Vector3.Right, MathUtil.DegreesToRadians(_currentRotation.Y));
 
             cameraRotation.Normalize();
-
-            var up = Vector3.Normalize(Camera.Position);
-            var forward = Vector3.Cross(Camera.Right, up);
-            var right = Vector3.Cross(up, forward);
             
-            DebugDraw.Color = Color.Red;
-            DebugDraw.DrawArrow(Camera.Position + Camera.Forward * 4.0f, Camera.Position + up + Camera.Forward * 4.0f, 0.25f);
-            DebugDraw.Color = Color.Green;
-            DebugDraw.DrawArrow(Camera.Position + Camera.Forward * 4.0f, Camera.Position + forward + Camera.Forward * 4.0f, 0.25f);
-            DebugDraw.Color = Color.Blue;
-            DebugDraw.DrawArrow(Camera.Position + Camera.Forward * 4.0f, Camera.Position + right + Camera.Forward * 4.0f, 0.25f);
-
-           // DebugDraw.Color = Color.Yellow;
-            //DebugDraw.DrawArrow(Camera.Position + Camera.Forward * 4.0f, Camera.Position + lookAt.Axis + Camera.Forward * 4.0f, 0.25f);
-
             // TODO: Make cameraRotation relative to up vector
 
             Camera.Rotation = cameraRotation;
