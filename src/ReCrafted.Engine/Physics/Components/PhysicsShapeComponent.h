@@ -15,6 +15,10 @@ struct PhysicsShapeComponent : Component
     {
         Box,
         Sphere,
+
+        /*
+         * TriangleMesh type needs to the point and triangle data to be filled.
+         */
         TriangleMesh
     };
 
@@ -33,6 +37,11 @@ public:
     Type type = Box;
     Vector3 extents = Vector3::One;
     float radius = 1.0f;
+
+    size_t pointCount = 0u;
+    size_t triangleCount = 0u;
+    Vector3* points = nullptr;
+    uint32_t* triangles = nullptr;
 };
 
 #endif // PHYSICSSHAPECOMPONENT_H

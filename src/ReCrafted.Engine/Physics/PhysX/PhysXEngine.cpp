@@ -64,9 +64,11 @@ void PhysXEngine::Initialize()
     // Initialize px cooking, this will be needed for ship colliders cooking etc.
     PxCookingParams cookingParams(m_tolerance_scale);
     cookingParams.meshWeldTolerance = 1.0f / 16.0f; // 1/16 mm tolerance
-    cookingParams.meshPreprocessParams = PxMeshPreprocessingFlags(PxMeshPreprocessingFlag::eWELD_VERTICES);
+    cookingParams.meshPreprocessParams = PxMeshPreprocessingFlags(PxMeshPreprocessingFlag::eFORCE_32BIT_INDICES | PxMeshPreprocessingFlag::eWELD_VERTICES);
+    cookingParams.meshCookingHint = PxMeshCookingHint::eCOOKING_PERFORMANCE;
     cookingParams.targetPlatform = PxPlatform::ePC;
     cookingParams.midphaseDesc = PxMeshMidPhase::eBVH34;
+
     m_cooking = PxCreateCooking(PX_PHYSICS_VERSION, *m_foundation, cookingParams);
 
     // Initialize dispatchers
@@ -161,7 +163,33 @@ IPhysicsShape* PhysXEngine::CreateShape(const TransformComponent& transform, con
     }
     case PhysicsShapeComponent::TriangleMesh:
     {
-        ASSERT(false);
+        // Create triangle mesh description
+        PxTriangleMeshDesc meshDescription;
+        meshDescription.setToDefault();
+
+        meshDescription.points.data = &shape.points[0];
+        meshDescription.points.count = shape.pointCount;
+        meshDescription.points.stride = sizeof(Vector3);
+
+        meshDescription.triangles.data = &shape.triangles[0];
+        meshDescription.triangles.count = shape.triangleCount;
+        meshDescription.triangles.stride = 3 * sizeof(uint32_t);
+
+        ASSERT(meshDescription.isValid());
+        ASSERT(m_cooking->validateTriangleMesh(meshDescription));
+
+        // Cook
+        PxDefaultMemoryOutputStream writeBuffer(shdfnd::getAllocator());
+
+        cvar result = m_cooking->cookTriangleMesh(meshDescription, writeBuffer);
+
+        ASSERT(result != false);
+
+        PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
+        cvar triangleMesh = m_physics->createTriangleMesh(readBuffer);
+
+        // Create shape
+        pxShape = m_physics->createShape(PxTriangleMeshGeometry(triangleMesh), *m_defaultMaterial);
         break;
     }
     default:

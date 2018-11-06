@@ -32,8 +32,7 @@ void PhysicsSystem::Update()
         rvar transform = entity.GetComponent<TransformComponent>();
         crvar body = entity.GetComponent<PhysicsBodyComponent>();
 
-        cvar position = body.physicsActor->GetPosition();
-        transform.position = position;
+        transform.position = body.physicsActor->GetPosition();
         transform.rotation = body.physicsActor->GetRotation();
 
         // TODO: Interpolation/Extrapolation etc.
