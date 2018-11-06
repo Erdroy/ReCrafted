@@ -228,6 +228,7 @@ void SpaceObjectOctreeNode::OnCreate()
     if (m_chunk && m_chunk->NeedsUpload())
     {
         m_chunk->Upload();
+        m_chunk->RebuildCollision();
     }
 
     // Add this chunk to rendering
@@ -246,6 +247,7 @@ void SpaceObjectOctreeNode::OnRebuild()
         cvar hasMesh = m_chunk->HasMesh();
 
         m_chunk->Upload();
+        m_chunk->RebuildCollision();
 
         // Add this chunk to rendering, as it got new mesh (if we are not populated)
         if (!hasMesh && m_chunk->HasMesh() && !m_populated)

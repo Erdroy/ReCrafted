@@ -70,6 +70,24 @@ void Universe::Update()
         m_viewUpdateEnabled = !m_viewUpdateEnabled;
     }
 
+    if(Input::IsKeyDown(Key_F))
+    {
+        var projectile = GameObject::Create();
+
+        projectile->AddComponent<PhysicsBodyComponent>(m_physicsScene.get(), PhysicsBodyComponent::Dynamic);
+        projectile->AddComponent<PhysicsShapeComponent>(PhysicsShapeComponent::Box, Vector3::One * 0.5f);
+
+        projectile->SetPosition(Camera::GetMainCamera()->GetPosition());
+
+        m_projectiles.Add(projectile);
+    }
+
+    for (rvar box : m_projectiles)
+    {
+        DebugDraw::SetColor(Color(255, 110, 0, 255));
+        DebugDraw::DrawWireBox(box->GetTransform()->position, Vector3::One);
+    }
+
     var modPosition = Camera::GetMainCamera()->GetPosition() + Camera::GetMainCamera()->GetForward() * 5.0f;
 
     if (Input::IsKeyDown(Key_Alpha1))

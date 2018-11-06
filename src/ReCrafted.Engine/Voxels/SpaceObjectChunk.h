@@ -16,6 +16,8 @@
 
 #include <atomic>
 #include <concurrentqueue.h>
+#include "Physics/IPhysicsActor.h"
+#include "Physics/IPhysicsEngine.h"
 
 struct IVoxelMesher;
 class Mesh;
@@ -53,6 +55,9 @@ private:
     Lock m_uploadLock = {};
     std::atomic<UploadType> m_uploadType = None;
 
+    IPhysicsActor* m_physicsActor = nullptr;
+    Array<IPhysicsShape*> m_physicsShapes = {};
+
 private:
     void SetUpload(const RefPtr<VoxelChunkMesh>& mesh, UploadType uploadType);
 
@@ -64,6 +69,10 @@ public:
 public:
     void Generate(IVoxelMesher* mesher);
     void Rebuild(IVoxelMesher* mesher);
+
+public:
+    void RebuildCollision();
+    void ReleaseCollision();
 
 public:
     void Render(RenderableRenderMode renderMode) override;

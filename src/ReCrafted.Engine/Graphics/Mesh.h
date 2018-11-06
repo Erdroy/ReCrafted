@@ -64,6 +64,16 @@ public:
 	 */
     void SetVertices(Vector3* vertices, uint count);
 
+    Vector3* GetVertices()
+    {
+        return m_vertices;
+    }
+
+    size_t GetVertexCount() const
+    {
+        return static_cast<size_t>(m_vertices_count);
+    }
+
     /**
     * \brief Set uvs for this mesh.
     * \param uvs pointer.
@@ -72,6 +82,11 @@ public:
     * after setting all data you need.
     */
     void SetUVs(Vector2* uvs);
+
+    Vector2* GetUVs()
+    {
+        return m_uvs;
+    }
 
     /**
     * \brief Set normals for this mesh.
@@ -82,6 +97,11 @@ public:
     */
     void SetNormals(Vector3* normals);
 
+    Vector3* GetNormals()
+    {
+        return m_normals;
+    }
+
     /**
     * \brief Set colors for this mesh.
     * \param colors pointer.
@@ -90,6 +110,11 @@ public:
     * after setting all data you need.
     */
     void SetColors(Vector4* colors);
+
+    Vector4* GetColors()
+    {
+        return m_colors;
+    }
 
     /**
      * \brief Adds custom data to the mesh. Should contain the same amount of elements as vertices.
@@ -107,6 +132,16 @@ public:
     * after setting all data you need.
     */
     void SetIndices(uint* indices, uint count);
+
+    uint* GetIndices() const
+    {
+        return m_indices;
+    }
+
+    size_t GetIndexCount() const
+    {
+        return static_cast<size_t>(m_indices_count);
+    }
 
     /**
 	 * \brief Indicates the upload state of this mesh.
@@ -139,12 +174,6 @@ public:
      * \brief Disposes this mesh.
      */
     void Dispose() override;
-
-public:
-    int GetVertexCount() const
-    {
-        return m_vertices_count;
-    }
 
 public:
     /**

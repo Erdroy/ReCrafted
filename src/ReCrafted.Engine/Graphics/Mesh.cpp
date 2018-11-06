@@ -9,26 +9,42 @@ void Mesh::Init()
 
 void Mesh::SetVertices(Vector3* vertices, uint count)
 {
-    m_vertices = vertices;
+    // Setup and allocate data
+    m_vertices = new Vector3[count];
     m_vertices_count = count;
+
+    // Copy data
+    memcpy(static_cast<void*>(m_vertices), reinterpret_cast<uint8_t*>(vertices), count * sizeof(Vector3));
 }
 
 void Mesh::SetUVs(Vector2* uvs)
 {
-    m_uvs = uvs;
+    // Setup and allocate data
+    m_uvs = new Vector2[m_vertices_count];
     m_uvs_count = m_vertices_count;
+
+    // Copy data
+    memcpy(static_cast<void*>(m_uvs), reinterpret_cast<uint8_t*>(uvs), m_vertices_count * sizeof(Vector2));
 }
 
 void Mesh::SetNormals(Vector3* normals)
 {
-    m_normals = normals;
+    // Setup and allocate data
+    m_normals = new Vector3[m_vertices_count];
     m_normals_count = m_vertices_count;
+
+    // Copy data
+    memcpy(static_cast<void*>(m_normals), reinterpret_cast<uint8_t*>(normals), m_vertices_count * sizeof(Vector3));
 }
 
 void Mesh::SetColors(Vector4* colors)
 {
-    m_colors = colors;
+    // Setup and allocate data
+    m_colors = new Vector4[m_vertices_count];
     m_colors_count = m_vertices_count;
+
+    // Copy data
+    memcpy(static_cast<void*>(m_colors), reinterpret_cast<uint8_t*>(colors), m_vertices_count * sizeof(Vector4));
 }
 
 void Mesh::AddCustomData(void* ptr, const size_t customStride)
@@ -38,8 +54,12 @@ void Mesh::AddCustomData(void* ptr, const size_t customStride)
 
 void Mesh::SetIndices(uint* indices, uint count)
 {
-    m_indices = indices;
+    // Setup and allocate data
+    m_indices = new uint[m_vertices_count];
     m_indices_count = count;
+
+    // Copy data
+    memcpy(static_cast<void*>(m_indices), indices, count * sizeof(uint));
 }
 
 bool Mesh::IsUploaded() const
@@ -142,12 +162,6 @@ void Mesh::ApplyChanges()
     m_uploaded = false;
     m_hasChanges = true;
 
-    m_vertices = nullptr;
-    m_uvs = nullptr;
-    m_normals = nullptr;
-    m_colors = nullptr;
-    m_indices = nullptr;
-
     m_customData.Clear();
 }
 
@@ -206,6 +220,13 @@ void Mesh::Dispose()
 
     if (m_indexBufferData)
         Renderer::Free(m_indexBufferData);
+
+    // delete data
+    delete[] m_vertices;
+    delete[] m_uvs;
+    delete[] m_normals;
+    delete[] m_colors;
+    delete[] m_indices;
 
     // clean
     m_vertices = nullptr;

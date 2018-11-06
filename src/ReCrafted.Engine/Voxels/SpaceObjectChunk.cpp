@@ -11,6 +11,8 @@
 #include "Meshing/IVoxelMesher.h"
 #include "Graphics/DebugDraw.h"
 #include "SpaceObjectTables.hpp"
+#include "Physics/PhysicsSystem.h"
+#include "Game/Universe.h"
 
 void SpaceObjectChunk::Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject)
 // WARNING: this function is called on WORKER THREAD!
@@ -121,6 +123,82 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
     SetUpload(mesh, SwapMesh);
 }
 
+void SpaceObjectChunk::RebuildCollision()
+{
+    // Skip if mesh is empty
+    if (m_mesh == nullptr || m_mesh->Empty())
+        return;
+
+    cvar physics = PhysicsSystem::Physics();
+    cvar transform = TransformComponent();
+
+    // Create actor if needed
+    if(!m_physicsActor)
+    {
+        // Setup actor body component
+        var body = PhysicsBodyComponent(Universe::GetPhysicsScene().get(), PhysicsBodyComponent::Static);
+
+        // Create actor
+        m_physicsActor = physics->CreateActor(transform, body);
+
+        ASSERT(m_physicsActor);
+    }
+
+    // Release old shape
+    if(!m_physicsShapes.Empty())
+    {
+        for(rvar shape : m_physicsShapes)
+        {
+            // Detach shape
+            m_physicsActor->DetachShape(shape);
+
+            // Release shape
+            PhysicsSystem::Physics()->ReleaseShape(shape);
+        }
+        m_physicsShapes.Clear();
+    }
+
+    for(rvar section : m_mesh->GetSections())
+    {
+        var shape = PhysicsShapeComponent(PhysicsShapeComponent::TriangleMesh);
+
+        // Setup shape data
+        shape.points = section.mesh->GetVertices();
+        shape.pointCount = section.mesh->GetVertexCount();
+
+        shape.triangles = section.mesh->GetIndices();
+        shape.triangleCount = section.mesh->GetIndexCount() / 3;
+
+        cvar physicsShape = physics->CreateShape(transform, shape);
+       
+        ASSERT(physicsShape);
+
+        // Attach and add shape to list
+        m_physicsActor->AttachShape(physicsShape);
+        m_physicsShapes.Add(physicsShape);
+    }
+}
+
+void SpaceObjectChunk::ReleaseCollision()
+{
+    if (!m_physicsActor)
+        return;
+    
+    for (rvar shape : m_physicsShapes)
+    {
+        // Detach shape
+        m_physicsActor->DetachShape(shape);
+
+        // Release shape
+        PhysicsSystem::Physics()->ReleaseShape(shape);
+    }
+    m_physicsShapes.Clear();
+
+    // Release actor
+    PhysicsSystem::Physics()->ReleaseActor(m_physicsActor);
+    m_physicsActor = nullptr;
+}
+
 void SpaceObjectChunk::SetUpload(const RefPtr<VoxelChunkMesh>& mesh, const UploadType uploadType)
 {
     // Lock Upload
@@ -184,6 +262,9 @@ void SpaceObjectChunk::Dispose()
 
     SafeDispose(m_mesh);
     SafeDispose(m_newMesh);
+
+    // Release collision
+    ReleaseCollision();
 
     // Release chunk data - when it has data
     // Free chunk data - when it has no any data

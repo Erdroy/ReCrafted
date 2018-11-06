@@ -119,7 +119,7 @@ IPhysicsActor* PhysXEngine::CreateActor(const TransformComponent& transform, Phy
     rvar rotation = transform.rotation; // TODO: Set pxTransform rotation when we will have our new math
 
     cvar pxTransform = PxTransform(position.x, position.y, position.z);
-
+    
     PxRigidActor* pxActor;
     if (body.type == PhysicsBodyComponent::Dynamic)
         pxActor = m_physics->createRigidDynamic(pxTransform);

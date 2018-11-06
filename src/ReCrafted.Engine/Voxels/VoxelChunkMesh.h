@@ -148,6 +148,11 @@ public:
     }
 
 public:
+    const Array<MeshSection>& GetSections() const
+    {
+        return m_meshSections;
+    }
+
     /**
      * \brief Returns true when empty (no sections present).
      */
