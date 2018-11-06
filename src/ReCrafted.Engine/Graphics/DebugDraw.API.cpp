@@ -16,6 +16,16 @@ namespace Internal
         DebugDraw::SetColor(*color);
     }
 
+    void getMatrix(Matrix* color)
+    {
+        *color = DebugDraw::GetMatrix();
+    }
+
+    void setMatrix(Matrix* color)
+    {
+        DebugDraw::SetMatrix(*color);
+    }
+
     void drawLine(Vector3 start, Vector3 end)
     {
         DebugDraw::DrawLine(start, end);
@@ -108,6 +118,13 @@ void DebugDraw::InitRuntime()
             {
                 API_BIND("ReCrafted.API.Graphics.DebugDraw::Internal_Color_Get", &Internal::getColor);
                 API_BIND("ReCrafted.API.Graphics.DebugDraw::Internal_Color_Set", &Internal::setColor);
+            }
+            API_PROPERTY_END();
+            API_COMMENT("Gets/Sets transformation Matrix.");
+            API_PROPERTY(PUBLIC, STATIC, "Matrix", "Matrix", GETSET, BY_REF);
+            {
+                API_BIND("ReCrafted.API.Graphics.DebugDraw::Internal_Matrix_Get", &Internal::getMatrix);
+                API_BIND("ReCrafted.API.Graphics.DebugDraw::Internal_Matrix_Set", &Internal::setMatrix);
             }
             API_PROPERTY_END();
         }

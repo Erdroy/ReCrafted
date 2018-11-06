@@ -145,6 +145,7 @@ private:
     Array<Batch> m_batches;
     Batch* m_currentBatch;
     Vector4 m_currentColor;
+    Matrix m_matrix;
 
     Renderer::ShaderHandle m_debugShader = {};
     Renderer::VertexBufferHandle m_linesVB = {};
@@ -170,6 +171,8 @@ private:
     void Render();
     void OnDispose() override;
 
+    void TransformPoint(Vector3& point);
+
     FORCEINLINE void InternalDrawLine(const Vector3& start, const Vector3& end);
 
     Batch* GetBatch();
@@ -185,6 +188,17 @@ public:
     * \brief Gets current debug draw render color.
     */
     static Color GetColor();
+
+    /**
+     * \brief Sets matrix that will be used for vertex transformation.
+     * \param matrix The matrix.
+     */
+    static void SetMatrix(const Matrix& matrix);
+
+    /**
+    * \brief Gets current debug draw render transformation matrix.
+    */
+    static Matrix& GetMatrix();
 
     /**
      * \brief Draws arrow at the end point with line.

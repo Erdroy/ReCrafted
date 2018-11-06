@@ -194,14 +194,28 @@ void DebugDraw::OnDispose()
     Renderer::DestroyShader(m_debugShader);
 }
 
+void DebugDraw::TransformPoint(Vector3& point)
+{
+    if (m_matrix.IsIdentity())
+        return;
+
+    point = Vector3::Transform(point, m_matrix);
+}
+
 void DebugDraw::InternalDrawLine(const Vector3& start, const Vector3& end)
 {
     // Add new line to the current batch
     var batch = GetBatch();
     rvar lineList = batch->GetLineList();
 
-    lineList.Add(Point{ start, m_currentColor });
-    lineList.Add(Point{ end, m_currentColor });
+    var point1 = start;
+    var point2 = end;
+    
+    m_instance->TransformPoint(point1);
+    m_instance->TransformPoint(point2);
+
+    lineList.Add(Point{ point1, m_currentColor });
+    lineList.Add(Point{ point2, m_currentColor });
 }
 
 DebugDraw::Batch* DebugDraw::GetBatch()
@@ -245,6 +259,16 @@ Color DebugDraw::GetColor()
     return Color::FromVector4(m_instance->m_currentColor);
 }
 
+void DebugDraw::SetMatrix(const Matrix& matrix)
+{
+    m_instance->m_matrix = matrix;
+}
+
+Matrix& DebugDraw::GetMatrix()
+{
+    return m_instance->m_matrix;
+}
+
 void DebugDraw::DrawArrow(const Vector3& start, const Vector3& end, float arrowSize)
 {
     var direction = Vector3::Normalize(end - start);
@@ -281,7 +305,10 @@ void DebugDraw::DrawBox(const Vector3& center, const Vector3& size)
 
     for (cvar vertexOffset : DebugMesh::m_cubeVertices)
     {
-        cvar point = center + vertexOffset * halfSize;
+        var point = center + vertexOffset * halfSize;
+
+        m_instance->TransformPoint(point);
+
         vertexList.Add({ point, m_instance->m_currentColor });
     }
 
