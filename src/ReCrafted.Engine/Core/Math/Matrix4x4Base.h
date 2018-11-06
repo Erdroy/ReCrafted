@@ -328,7 +328,7 @@ Vector3Base<T> Matrix4x4Base<T>::Translation()
 template <typename T>
 Vector3Base<T> Matrix4x4Base<T>::Scale()
 {
-    VectorBase<T, 3> scale;
+    Vector3Base<T> scale;
     scale.x = Math::Sqrt((m11 * m11) + (m12 * m12) + (m13 * m13));
     scale.y = Math::Sqrt((m21 * m21) + (m22 * m22) + (m23 * m23));
     scale.z = Math::Sqrt((m31 * m31) + (m32 * m32) + (m33 * m33));
@@ -347,9 +347,9 @@ template <typename T>
 void Matrix4x4Base<T>::ComposeTransform(const VectorBase<T, 3>& translation, const Quaternion& rotation,
     const VectorBase<T, 3>& scale)
 {
-    auto matrix = Matrix4x4Base<T>::Translation(translation);
+    auto matrix = Matrix4x4Base<T>::Scale(scale);
     matrix *= Matrix4x4Base<T>::CreateRotation(rotation);
-    matrix *= Matrix4x4Base<T>::Scale(scale);
+    matrix *= Matrix4x4Base<T>::Translation(translation);
 
     *this = matrix;
 }
@@ -670,7 +670,7 @@ template <typename T>
 Matrix4x4Base<T> Matrix4x4Base<T>::CreateTransform(const VectorBase<T, 3>& translation, const Quaternion& rotation,
     const VectorBase<T, 3>& scaling)
 {
-    return Matrix4x4Base<T>::CreateTranslation(translation) * Matrix4x4Base<T>::CreateRotation(rotation) * Matrix4x4Base<T>::CreateScaling(scaling);
+    return Matrix4x4Base<T>::CreateScaling(scaling) * Matrix4x4Base<T>::CreateRotation(rotation) * Matrix4x4Base<T>::CreateTranslation(translation);
 }
 
 template <typename T>

@@ -3,7 +3,7 @@
 #include "DebugDraw.h"
 #include "Graphics.h"
 #include "Camera.h"
-#include "Core/Streams/FileStream.h"
+#include "Common/Profiler/Profiler.h"
 
 SINGLETON_IMPL(DebugDraw)
 
@@ -93,6 +93,8 @@ void DebugDraw::OnInit()
     m_linesVB = Renderer::CreateVertexBuffer(Batch::maxPointsPerBatch, sizeof(Point), true);
     m_trianglesVB = Renderer::CreateVertexBuffer(Batch::maxVerticesPerBatch, sizeof(Vertex), true);
     m_trianglesIB = Renderer::CreateIndexBuffer(Batch::maxIndicesPerBatch, nullptr, true, true);
+
+    SetMatrix(Matrix::Identity);
 }
 
 void DebugDraw::RenderLines(Batch& batch)
@@ -164,6 +166,8 @@ void DebugDraw::RenderTriangles(Batch& batch)
 
 void DebugDraw::Render()
 {
+    Profiler::BeginProfile(__FUNCTION__);
+
     // Set shader values
     rvar mvpMatrix = Camera::GetMainCamera()->GetViewProjection();
     Renderer::SetShaderValue(m_debugShader, 0, 0, &mvpMatrix, sizeof(Matrix));
@@ -181,6 +185,11 @@ void DebugDraw::Render()
 
     // We don't want to remove batches, but only reset to the first one
     m_currentBatch = &m_batches.First();
+
+    // Reset matrix
+    SetMatrix(Matrix::Identity);
+
+    Profiler::EndProfile();
 }
 
 void DebugDraw::OnDispose()
