@@ -187,12 +187,7 @@ IPhysicsShape* PhysXEngine::CreateShape(const TransformComponent& transform, con
         // Cook
         PxDefaultMemoryOutputStream writeBuffer(shdfnd::getAllocator());
 
-        cvar result = m_cooking->cookTriangleMesh(meshDescription, writeBuffer);
-
-        if (!result)
-            return nullptr;
-
-        ASSERT(result != false);
+        ASSERT(m_cooking->cookTriangleMesh(meshDescription, writeBuffer));
 
         PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
         cvar triangleMesh = m_physics->createTriangleMesh(readBuffer);
