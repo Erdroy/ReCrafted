@@ -52,11 +52,11 @@ void Universe::OnInit()
 
 void Universe::OnDispose()
 {
-    PhysicsSystem::Physics()->DestroyScene(m_physicsScene);
-
     // Shutdown
     SafeDisposeNN(SpaceObjectManager::GetInstance());
     SafeDispose(m_testObject1);
+
+    PhysicsSystem::Physics()->DestroyScene(m_physicsScene);
 }
 
 void Universe::Update()
