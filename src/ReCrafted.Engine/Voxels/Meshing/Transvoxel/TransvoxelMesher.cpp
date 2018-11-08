@@ -45,7 +45,7 @@ void TransvoxelMesher::Generate(const Vector3& position, int lod, uint8_t border
     }
 }
 
-void TransvoxelMesher::Apply(const RefPtr<VoxelChunkMesh>& chunkMesh)
+void TransvoxelMesher::Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, RefPtr<VoxelChunkCollsion>& chunkCollision)
 {
     // Create section mesh
     cvar mesh = Mesh::CreateMesh();
@@ -72,6 +72,14 @@ void TransvoxelMesher::Apply(const RefPtr<VoxelChunkMesh>& chunkMesh)
     // Add mesh section
     chunkMesh->AddSection(chunkSection);
 
+    if(chunkCollision)
+    {
+        // Apply collision
+        chunkCollision->BuildCollision(m_shapeCooker, 
+            m_collisionVertices.Data(), m_collisionVertices.Count(), 
+            m_collisionIndices.Data(), m_collisionIndices.Count());
+    }
+    
     Clear();
 }
 
@@ -86,6 +94,9 @@ void TransvoxelMesher::Clear()
     // Reset vertex info
     //m_vertexInfo.Clear();
     m_vertexInfoMap.reset();
+
+    m_collisionVertices.Clear();
+    m_collisionIndices.Clear();
 
     m_currentSection = 0;
 }

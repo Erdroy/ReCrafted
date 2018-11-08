@@ -240,6 +240,9 @@ private:
     Array<VertexInfo> m_vertexInfo;
     std::bitset<VertexReuseEntriesCount> m_vertexInfoMap;
 
+    Array<Vector3> m_collisionVertices;
+    Array<uint> m_collisionIndices;
+
 public:
     TransvoxelMesher()
     {
@@ -255,6 +258,10 @@ public:
 
         // Reset vertex map
         m_vertexInfoMap.reset();
+
+        // Reserve some space for collision data
+        m_collisionVertices.Reserve(4096);
+        m_collisionIndices.Reserve(4096);
     }
 
     virtual ~TransvoxelMesher() = default;
@@ -299,7 +306,7 @@ public:
     * \brief Uploads all data to a mesh. This also clears the mesher and prepares to next mesh generation.
     * \param chunkMesh The mesh that will get the new mesh data.
     */
-    void Apply(const RefPtr<VoxelChunkMesh>& chunkMesh) override;
+    void Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, RefPtr<VoxelChunkCollsion>& chunkCollision) override;
 
     /**
     * \brief Cleans all data used during Generate and Apply functions.

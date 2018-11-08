@@ -28,6 +28,7 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
     cvar cellData = RegularCellData[cellClass];
 
     uint indices[12] = {};
+    uint collisionIndices[12] = {};
 
     cvar vertexCount = cellData.GetVertexCount();
     for (var i = 0; i < vertexCount; i++)
@@ -55,10 +56,15 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
         cvar vertexPosition = position + intersectionPosition;
         cvar voxelMaterial = GetVoxelMaterial(voxelA, voxelB);
 
+        // Add mesh vertex
         cvar vertexInfo = VertexInfo(vertexId, vertexPosition, voxelMaterial);
         m_vertexInfo[vertexId] = vertexInfo;
         indices[i] = vertexId;
         m_vertexInfoMap.set(vertexId);
+
+        // Add collision vertex
+        collisionIndices[i] = m_collisionVertices.Count();
+        m_collisionVertices.Add(vertexPosition);
     }
 
     cvar indexCount = cellData.GetTriangleCount() * 3;
@@ -92,8 +98,13 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
         vertexInfoB.normalUses += 1;
         vertexInfoC.normalUses += 1;
 
-        // Add triangle
+        // Add mesh triangle
         AddTriangle(vertexInfoA, vertexInfoB, vertexInfoC, normalCorrection);
+
+        // Add collision triangle
+        m_collisionIndices.Add(collisionIndices[cellData.vertexIndex[i + 0]]);
+        m_collisionIndices.Add(collisionIndices[cellData.vertexIndex[i + 1]]);
+        m_collisionIndices.Add(collisionIndices[cellData.vertexIndex[i + 2]]);
 
         // Increment triangle count
         m_triangleCount++;

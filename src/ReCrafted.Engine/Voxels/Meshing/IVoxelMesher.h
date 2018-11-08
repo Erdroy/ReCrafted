@@ -17,6 +17,19 @@ class Mesh;
  */
 struct IVoxelMesher
 {
+protected:
+    IPhysicsShapeCooker* m_shapeCooker = nullptr;
+
+public:
+    /**
+     * \brief Initializes this mesher
+     * \param shapeCooker The hape cooker that will be used by this mesher.
+     */
+    void Initialize(IPhysicsShapeCooker* shapeCooker)
+    {
+        m_shapeCooker = shapeCooker;
+    }
+
 public:
     /**
     * \brief Virtual method for generating a mesh from hermite voxel data.
@@ -36,8 +49,9 @@ public:
     /**
      * \brief Uploads all data to a mesh. This also clears the mesher and prepares to next mesh generation.
      * \param chunkMesh The mesh that will get the new mesh data.
+     * \param chunkCollision The collision that will get the new collision data.
      */
-    virtual void Apply(const RefPtr<VoxelChunkMesh>& chunkMesh) = 0;
+    virtual void Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, RefPtr<VoxelChunkCollsion>& chunkCollision) = 0;
 
     /**
      * \brief Cleans all data used during Generate and Apply functions.
