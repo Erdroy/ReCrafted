@@ -8,12 +8,10 @@
 #include "SpaceObject.h"
 
 #include "Core/Action.h"
-#include "Graphics/Camera.h"
 #include "Graphics/DebugDraw.h"
 #include "Graphics/Rendering/Rendering.h"
-#include "Utilities/VoxelUtils.h"
 
-#define HAS_LOCAL_NEIGH(id, dir) LocalNeighTable[id] & (1 << dir)
+#define HAS_LOCAL_NEIGH(id, dir) LocalNeighTable[id] & (1 << (dir))
 
 bool SpaceObjectOctreeNode::HasPopulatedChildren()
 {
@@ -415,7 +413,7 @@ void SpaceObjectOctreeNode::UpdateViews(Array<Vector3>& views)
     // IF (there is no C's) AND populated: depopulate - otherwise: ignore.
 
     // fast exit
-    if (views.Count() == 0)
+    if (views.Empty())
     {
         // IF (there is no C's) AND populated: depopulate - otherwise: ignore.
         if (m_populated && !IsProcessing())
@@ -572,7 +570,6 @@ SpaceObjectOctreeNode* SpaceObjectOctreeNode::FindNode(const Vector3& position, 
     caseCode |= xSign << 2;
 
     // Select children id from caseCode and lookup table 
-    // TODO: this can be optimized, lookup table is not really required, but we need to get the case code right.
     cvar childId = NodeDirIds[caseCode];
 
     // Select node and process

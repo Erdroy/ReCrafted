@@ -6,14 +6,14 @@
 #define VOXELCHUNKMESH_H
 
 // includes
-#include "ReCraftedPrerequisites.h"
+#include "ReCrafted.h"
 #include "Graphics/Mesh.h"
 #include "Graphics/Graphics.h"
 #include "Voxel.h"
 #include "VoxelMaterialManager.h"
 #include "Assets/VoxelMaterial.h"
 
-class VoxelChunkMesh : IDisposable
+class VoxelChunkMesh : public IDisposable
 {
 public:
     struct MeshSection

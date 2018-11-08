@@ -70,7 +70,7 @@ public:
     void Generate(IVoxelMesher* mesher);
     void Rebuild(IVoxelMesher* mesher);
 
-public:
+public: /* Physics */
     void InitializePhysics();
     void ShutdownPhysics();
     void BuildCollision();
@@ -82,7 +82,7 @@ public:
         return !m_physicsShapes.Empty();
     }
 
-public:
+public: /* RenderableBase */
     void Render(RenderableRenderMode renderMode) override;
 
     Shader* GetShader() const override

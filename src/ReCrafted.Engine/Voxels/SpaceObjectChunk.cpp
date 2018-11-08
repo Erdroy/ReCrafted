@@ -59,7 +59,7 @@ void SpaceObjectChunk::Generate(IVoxelMesher* mesher) // WARNING: this function 
     Rebuild(mesher);
 }
 
-void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
+void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher) // WARNING: this function is called on WORKER THREAD!
 {
     if (!m_chunkData->IsLoaded() || !m_chunkData->HasSurface())
         return;
