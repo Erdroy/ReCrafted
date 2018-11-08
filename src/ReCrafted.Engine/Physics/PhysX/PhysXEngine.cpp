@@ -9,6 +9,10 @@
 
 #include <algorithm>
 
+PxPhysics* GPxPhysX;
+PxFoundation* GPxFoundation;
+PxTolerancesScale GPxTolerances;
+
 class PhysXAllocator : public PxAllocatorCallback
 {
 public:
@@ -44,12 +48,13 @@ void PhysXEngine::Initialize()
     Logger::Log(Text::Format(TEXT_CONST("Initializing PhysX {0}.{1}.{2}"), PX_PHYSICS_VERSION_MAJOR, PX_PHYSICS_VERSION_MINOR, PX_PHYSICS_VERSION_BUGFIX).StdStr().c_str());
 
     // Initialize tolerance scale TODO: Tweak these values
-    m_tolerance_scale.length = 1.0f;
-    m_tolerance_scale.mass = 1000.0f;
-    m_tolerance_scale.speed = 10.0f; // 100 meters per second
+    GPxTolerances = {};
+    GPxTolerances.length = 1.0f;
+    GPxTolerances.mass = 1000.0f;
+    GPxTolerances.speed = 10.0f; // 100 meters per second
 
     // Craete px foundation
-    m_foundation = PxCreateFoundation(PX_FOUNDATION_VERSION, allocator, logger);
+    GPxFoundation = m_foundation = PxCreateFoundation(PX_FOUNDATION_VERSION, allocator, logger);
     _ASSERT_(m_foundation, "Failed to create PhysX foundation!");
 
 #ifdef DEBUG
@@ -61,7 +66,7 @@ void PhysXEngine::Initialize()
 #endif
 
     // Create px physics
-    m_physics = PxCreateBasePhysics(PX_PHYSICS_VERSION, *m_foundation, m_tolerance_scale, true, m_pvd);
+    GPxPhysX = m_physics = PxCreateBasePhysics(PX_PHYSICS_VERSION, *m_foundation, GPxTolerances, true, m_pvd);
     _ASSERT_(m_physics, "Failed to create PhysX physics!");
 
 #ifndef _DEBUG
@@ -69,15 +74,9 @@ void PhysXEngine::Initialize()
     PxInitExtensions(*m_physics, m_pvd);
 #endif
 
-    // Initialize px cooking, this will be needed for ship colliders cooking etc.
-    PxCookingParams cookingParams(m_tolerance_scale);
-    cookingParams.meshWeldTolerance = 0.01f; // 10 mm tolerance
-    cookingParams.meshPreprocessParams = PxMeshPreprocessingFlags(PxMeshPreprocessingFlag::eWELD_VERTICES);
-    cookingParams.meshCookingHint = PxMeshCookingHint::eCOOKING_PERFORMANCE;
-    cookingParams.targetPlatform = PxPlatform::ePC;
-    cookingParams.midphaseDesc = PxMeshMidPhase::eBVH34;
-
-    m_cooking = PxCreateCooking(PX_PHYSICS_VERSION, *m_foundation, cookingParams);
+    // Create default cooker
+    m_shapeCooker = new PhysXShapeCooker();
+    m_shapeCooker->Initialize({});
 
     // Initialize dispatchers
     m_cpuDispatcher = PxDefaultCpuDispatcherCreate(std::min(4u, std::thread::hardware_concurrency() - 1)); // Max. 4 threads for physics TODO: Game settings
@@ -115,9 +114,10 @@ void PhysXEngine::Shutdown()
 
     m_scenes.clear();
     
+    m_shapeCooker->Shutdown();
+
     m_pvd->release();
     m_cpuDispatcher->release();
-    m_cooking->release();
     m_physics->release();
     m_foundation->release();
 }
@@ -170,28 +170,13 @@ IPhysicsShape* PhysXEngine::CreateShape(const TransformComponent& transform, con
     }
     case PhysicsShapeComponent::TriangleMesh:
     {
-        // Create triangle mesh description
-        PxTriangleMeshDesc meshDescription;
-        meshDescription.setToDefault();
+        ASSERT(shape.shapePointer);
 
-        meshDescription.points.data = shape.points;
-        meshDescription.points.count = shape.pointCount;
-        meshDescription.points.stride = sizeof(Vector3);
-
-        meshDescription.triangles.data = shape.triangles;
-        meshDescription.triangles.count = shape.triangleCount;
-        meshDescription.triangles.stride = 3 * sizeof(uint32_t);
-
-        ASSERT(meshDescription.isValid());
-
-        // Cook
-        cvar triangleMesh = m_cooking->createTriangleMesh(meshDescription, m_physics->getPhysicsInsertionCallback());
-
-        // Make sure that we've got valid triangle mesh
-        ASSERT(triangleMesh);
+        cvar pxTriangleMesh = static_cast<PxTriangleMesh*>(shape.shapePointer);
 
         // Create shape
-        pxShape = m_physics->createShape(PxTriangleMeshGeometry(triangleMesh, PxMeshScale(), PxMeshGeometryFlag::eDOUBLE_SIDED), *m_defaultMaterial);
+        pxShape = m_physics->createShape(PxTriangleMeshGeometry(pxTriangleMesh,
+            PxMeshScale(), PxMeshGeometryFlag::eDOUBLE_SIDED), *m_defaultMaterial);
         break;
     }
     default:
@@ -221,7 +206,7 @@ void PhysXEngine::ReleaseShape(IPhysicsShape* shape)
 RefPtr<IPhysicsScene> PhysXEngine::CreateScene()
 {
     // Create scene and return
-    const auto pxScene = new PhysXScene(m_physics, m_cpuDispatcher, m_tolerance_scale);
+    const auto pxScene = new PhysXScene(m_physics, m_cpuDispatcher, GPxTolerances);
     RefPtr<IPhysicsScene> physicsScene(pxScene);
 
     // Add scene

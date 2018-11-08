@@ -13,6 +13,7 @@
 #include "PhysXScene.h"
 #include "PhysXActor.h"
 #include "PhysXShape.h"
+#include "PhysXShapeCooker.h"
 
 class PhysXEngine : public IPhysicsEngine
 {
@@ -20,12 +21,11 @@ private:
     PxFoundation* m_foundation = nullptr;
     PxPvd* m_pvd = nullptr;
     PxPhysics* m_physics = nullptr;
-    PxCooking* m_cooking = nullptr;
     PxDefaultCpuDispatcher* m_cpuDispatcher = nullptr;
 
     PxMaterial* m_defaultMaterial = nullptr;
 
-    PxTolerancesScale m_tolerance_scale = {};
+    PhysXShapeCooker* m_shapeCooker = nullptr;
 
     std::vector<PhysXScene*> m_scenes = {};
 

@@ -38,10 +38,7 @@ public:
     Vector3 extents = Vector3::One;
     float radius = 1.0f;
 
-    size_t pointCount = 0u;
-    size_t triangleCount = 0u;
-    Vector3* points = nullptr;
-    uint32_t* triangles = nullptr;
+    void* shapePointer = nullptr;
 };
 
 #endif // PHYSICSSHAPECOMPONENT_H
