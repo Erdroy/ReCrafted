@@ -72,7 +72,7 @@ void PhysXEngine::Initialize()
     // Initialize px cooking, this will be needed for ship colliders cooking etc.
     PxCookingParams cookingParams(m_tolerance_scale);
     cookingParams.meshWeldTolerance = 0.01f; // 10 mm tolerance
-    cookingParams.meshPreprocessParams = PxMeshPreprocessingFlags(PxMeshPreprocessingFlag::eWELD_VERTICES | PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH);
+    cookingParams.meshPreprocessParams = PxMeshPreprocessingFlags(PxMeshPreprocessingFlag::eWELD_VERTICES);
     cookingParams.meshCookingHint = PxMeshCookingHint::eCOOKING_PERFORMANCE;
     cookingParams.targetPlatform = PxPlatform::ePC;
     cookingParams.midphaseDesc = PxMeshMidPhase::eBVH34;
@@ -185,15 +185,13 @@ IPhysicsShape* PhysXEngine::CreateShape(const TransformComponent& transform, con
         ASSERT(meshDescription.isValid());
 
         // Cook
-        PxDefaultMemoryOutputStream writeBuffer(shdfnd::getAllocator());
+        cvar triangleMesh = m_cooking->createTriangleMesh(meshDescription, m_physics->getPhysicsInsertionCallback());
 
-        ASSERT(m_cooking->cookTriangleMesh(meshDescription, writeBuffer));
-
-        PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
-        cvar triangleMesh = m_physics->createTriangleMesh(readBuffer);
+        // Make sure that we've got valid triangle mesh
+        ASSERT(triangleMesh);
 
         // Create shape
-        pxShape = m_physics->createShape(PxTriangleMeshGeometry(triangleMesh), *m_defaultMaterial);
+        pxShape = m_physics->createShape(PxTriangleMeshGeometry(triangleMesh, PxMeshScale(), PxMeshGeometryFlag::eDOUBLE_SIDED), *m_defaultMaterial);
         break;
     }
     default:
