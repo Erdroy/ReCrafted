@@ -305,6 +305,15 @@ public:
     * \brief Cleans all data used during Generate and Apply functions.
     */
     void Clear() override;
+
+public:
+    /**
+     * \brief Gets the name of mesher algorithm.
+     */
+    const char* GetName() override
+    {
+        return "Transvoxel";
+    }
 };
 
 #endif // TRANSVOXELMESHER_H

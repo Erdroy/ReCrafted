@@ -43,6 +43,12 @@ public:
      * \brief Cleans all data used during Generate and Apply functions.
      */
     virtual void Clear() = 0;
+
+public:
+    /**
+     * \brief Gets the name of mesher algorithm.  
+     */
+    virtual const char* GetName() = 0;
 };
 
 #endif // IMESHER_H
