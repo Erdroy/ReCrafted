@@ -36,6 +36,9 @@ public:
     void Shutdown() override;
 
 public:
+    IPhysicsShapeCooker* CreateCooker() override;
+    void ReleaseCooker(IPhysicsShapeCooker* cooker) override;
+
     IPhysicsActor* CreateActor(const TransformComponent& transform, PhysicsBodyComponent& body) override;
     void ReleaseActor(IPhysicsActor* actor) override;
 

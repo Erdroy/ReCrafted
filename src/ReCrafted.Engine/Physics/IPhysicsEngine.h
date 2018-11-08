@@ -8,6 +8,7 @@
 // includes
 #include "ReCrafted.h"
 #include "IPhysicsScene.h"
+#include "IPhysicsShapeCooker.h"
 
 class IPhysicsShape;
 class IPhysicsActor;
@@ -27,6 +28,9 @@ public:
     virtual void Shutdown() = 0;
 
 public:
+    virtual IPhysicsShapeCooker* CreateCooker() = 0;
+    virtual void ReleaseCooker(IPhysicsShapeCooker* cooker) = 0;
+
     virtual IPhysicsActor* CreateActor(const TransformComponent& transform, PhysicsBodyComponent& body) = 0;
     virtual void ReleaseActor(IPhysicsActor* actor) = 0;
 

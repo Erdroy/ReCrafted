@@ -122,6 +122,18 @@ void PhysXEngine::Shutdown()
     m_foundation->release();
 }
 
+IPhysicsShapeCooker* PhysXEngine::CreateCooker()
+{
+    return new PhysXShapeCooker();
+}
+
+void PhysXEngine::ReleaseCooker(IPhysicsShapeCooker* cooker)
+{
+    ASSERT(cooker);
+    cooker->Shutdown();
+    delete cooker;
+}
+
 IPhysicsActor* PhysXEngine::CreateActor(const TransformComponent& transform, PhysicsBodyComponent& body)
 {
     rvar position = transform.position;

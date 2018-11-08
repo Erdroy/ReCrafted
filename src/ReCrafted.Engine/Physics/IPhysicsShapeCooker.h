@@ -29,6 +29,9 @@ public:
 public:
     virtual void* CookConvexHullMesh(Vector3* vertices, size_t vertexCount, uint32_t* indices, size_t indexCount) const = 0;
     virtual void* CookTriangleMesh(Vector3* vertices, size_t vertexCount, uint32_t* indices, size_t indexCount) const = 0;
+
+    virtual void ReleaseConvexMeshMesh(void* triangleMesh) const = 0;
+    virtual void ReleaseTriangleMesh(void* triangleMesh) const = 0;
 };
 
 #endif // IPHYSICSSHAPECOOKER_H

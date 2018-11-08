@@ -66,3 +66,14 @@ void* PhysXShapeCooker::CookTriangleMesh(Vector3* vertices, size_t vertexCount, 
 
     return triangleMesh;
 }
+
+void PhysXShapeCooker::ReleaseConvexMeshMesh(void* triangleMesh) const
+{
+    // TODO: Release convex hull mesh
+}
+
+void PhysXShapeCooker::ReleaseTriangleMesh(void* triangleMesh) const
+{
+    cvar pxMesh = static_cast<PxTriangleMesh*>(triangleMesh);
+    pxMesh->release();
+}
