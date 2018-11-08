@@ -56,7 +56,7 @@ private:
 
     const uint m_vertexSize = sizeof(vertex);
     const uint m_indexSize = sizeof(uint16_t);
-    const uint m_vertexBufferSize = m_vertexSize * m_maxVertexCount * sizeof vertex;
+    const uint m_vertexBufferSize = m_maxVertexCount * sizeof vertex;
     const uint m_indexBufferSize = m_maxIndexCount * sizeof uint16_t;
 
 private:
