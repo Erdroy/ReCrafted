@@ -1,16 +1,11 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "SpaceObjectChunk.h"
-#include "SpaceObjectOctree.h"
 #include "SpaceObjectOctreeNode.h"
 #include "SpaceObject.h"
-#include "Graphics/Mesh.h"
 #include "Graphics/Camera.h"
-#include "Graphics/Graphics.h"
 #include "Storage/VoxelStorage.h"
 #include "Meshing/IVoxelMesher.h"
-#include "Graphics/DebugDraw.h"
-#include "SpaceObjectTables.hpp"
 #include "Physics/PhysicsSystem.h"
 #include "Game/Universe.h"
 
@@ -103,7 +98,7 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher) // WARNING: this function i
         m_chunkData->HasSurface(false);
 
         // Set upload type to CLEAR-MESH
-        SetUpload({}, ClearMesh);
+        SetUpload(nullptr, nullptr, ClearMesh);
         return;
     }
 
@@ -114,13 +109,17 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher) // WARNING: this function i
     RefPtr<VoxelChunkMesh> mesh;
     mesh.reset(new VoxelChunkMesh);
 
-    // Apply mesh
-    mesher->Apply(mesh);
+    // Create new collision
+    RefPtr<VoxelChunkCollsion> collision;
+    collision.reset(new VoxelChunkCollsion);
+
+    // Apply mesh and collision
+    mesher->Apply(mesh, collision);
 
     // Upload new mesh
     mesh->UploadNow();
 
-    SetUpload(mesh, SwapMesh);
+    SetUpload(mesh, collision, SwapMesh);
 }
 
 void SpaceObjectChunk::InitializePhysics()
@@ -149,85 +148,40 @@ void SpaceObjectChunk::ShutdownPhysics()
     if (!m_physicsActor)
         return;
 
-    // Release collision
-    ReleaseCollision();
-
     // Release actor
     Universe::GetPhysicsScene()->DetachActor(m_physicsActor);
     PhysicsSystem::Physics()->ReleaseActor(m_physicsActor);
     m_physicsActor = nullptr;
 }
 
-void SpaceObjectChunk::BuildCollision()
+void SpaceObjectChunk::AttachCollision()
 {
-    cvar physics = PhysicsSystem::Physics();
-    cvar transform = TransformComponent();
+    ASSERT(m_physicsActor);
+    m_collision->AttachCollision(m_physicsActor);
+}
 
-    // Build collision
-    for (rvar section : m_mesh->GetSections())
+void SpaceObjectChunk::DetachCollision()
+{
+    if (m_collision)
     {
-        var shape = PhysicsShapeComponent(PhysicsShapeComponent::TriangleMesh);
-
-        // Setup shape data
-        shape.points = section.mesh->GetVertices();
-        shape.pointCount = section.mesh->GetVertexCount();
-
-        shape.triangles = section.mesh->GetIndices();
-        shape.triangleCount = section.mesh->GetIndexCount() / 3;
-
-        cvar physicsShape = physics->CreateShape(transform, shape);
-
-        if (!physicsShape)
-            continue;
-
-        // Attach and add shape to list
-        m_physicsActor->AttachShape(physicsShape);
-        m_physicsShapes.Add(physicsShape);
+        m_collision->DetachCollision();
     }
 }
 
-void SpaceObjectChunk::RebuildCollision()
-{
-    // Skip if mesh is empty
-    if (m_mesh == nullptr || m_mesh->Empty())
-        return;
-
-    // Initialize physics
-    InitializePhysics();
-
-    // Release old collision
-    ReleaseCollision();
-
-    // Build new collision
-    BuildCollision();
-}
-
-void SpaceObjectChunk::ReleaseCollision()
-{
-    for (rvar shape : m_physicsShapes)
-    {
-        // Detach shape
-        m_physicsActor->DetachShape(shape);
-
-        // Release shape
-        PhysicsSystem::Physics()->ReleaseShape(shape);
-    }
-    m_physicsShapes.Clear();
-}
-
-void SpaceObjectChunk::SetUpload(const RefPtr<VoxelChunkMesh>& mesh, const UploadType uploadType)
+void SpaceObjectChunk::SetUpload(const RefPtr<VoxelChunkMesh>& mesh, const RefPtr<VoxelChunkCollsion>& collision, const UploadType uploadType)
 {
     // Lock Upload
     ScopeLock(m_uploadLock);
 
-    if(m_newMesh)
+    if(m_newMesh || m_newCollision)
     {
         // Queue for dispose
-        m_disposeQueue.enqueue(m_newMesh);
+        m_disposeQueue.enqueue(std::make_pair(m_newMesh, m_newCollision));
     }
 
     // Set upload type to UPLOAD-MESH
     m_newMesh = mesh;
+    m_newCollision = collision;
     m_uploadType = uploadType;
 }
 
@@ -237,11 +191,20 @@ void SpaceObjectChunk::Upload()
     ASSERT(NeedsUpload());
 
     // Dispose all queued meshes
-    RefPtr<VoxelChunkMesh> meshToDispose;
-    while(m_disposeQueue.try_dequeue(meshToDispose))
+    std::pair<RefPtr<VoxelChunkMesh>, RefPtr<VoxelChunkCollsion>> toDispose;
+    while(m_disposeQueue.try_dequeue(toDispose))
     {
-        SafeDispose(meshToDispose);
-        meshToDispose.reset();
+        if(toDispose.first)
+        {
+            SafeDispose(toDispose.first);
+            toDispose.first.reset();
+        }
+
+        if (toDispose.second)
+        {
+            SafeDispose(toDispose.second);
+            toDispose.second.reset();
+        }
     }
     
     switch (m_uploadType)
@@ -250,8 +213,12 @@ void SpaceObjectChunk::Upload()
     {
         // Dispose old mesh and swap mesh (m_newMesh will be nullptr - because m_mesh is nullptr (SafeDispose))
         ScopeLock(m_uploadLock);
+
         SafeDispose(m_mesh);
         m_mesh.swap(m_newMesh);
+
+        SafeDispose(m_collision);
+        m_collision.swap(m_newCollision);
         break;
     }
     case UploadMesh:
@@ -261,8 +228,12 @@ void SpaceObjectChunk::Upload()
     case ClearMesh:
     {
         ScopeLock(m_uploadLock);
+
         SafeDispose(m_mesh);
         SafeDispose(m_newMesh);
+
+        SafeDispose(m_collision);
+        SafeDispose(m_newCollision);
         break;
     }
     default: break;
@@ -279,8 +250,11 @@ void SpaceObjectChunk::Dispose()
     SafeDispose(m_mesh);
     SafeDispose(m_newMesh);
 
+    SafeDispose(m_collision);
+    SafeDispose(m_newCollision);
+
     // Shutdown physics
-    ReleaseCollision();
+    ShutdownPhysics();
 
     // Release chunk data - when it has data
     // Free chunk data - when it has no any data
@@ -296,6 +270,14 @@ void SpaceObjectChunk::Dispose()
         storage->FreeChunkData(m_chunkData);
         m_chunkData = nullptr;
     }
+}
+
+void SpaceObjectChunk::OnRenderAttach()
+{
+}
+
+void SpaceObjectChunk::OnRenderDetach()
+{
 }
 
 void SpaceObjectChunk::Render(RenderableRenderMode renderMode)

@@ -228,16 +228,27 @@ void SpaceObjectOctreeNode::OnCreate()
 {
     ASSERT(IS_MAIN_THREAD());
 
+    // Initialize physics
+    m_chunk->InitializePhysics();
+
     // Upload chunk if needed
     if (m_chunk && m_chunk->NeedsUpload())
     {
         m_chunk->Upload();
-        m_chunk->RebuildCollision();
+    }
+
+    // Attach chunk collision
+    if(m_chunk->HasCollision())
+    {
+        m_chunk->AttachCollision();
     }
 
     // Add this chunk to rendering
     if (m_chunk->HasMesh())
+    {
         Rendering::AddRenderable(m_chunk.get());
+        m_chunk->OnRenderAttach();
+    }
 }
 
 void SpaceObjectOctreeNode::OnRebuild()
@@ -254,16 +265,25 @@ void SpaceObjectOctreeNode::OnRebuild()
 
         m_chunk->Upload();
 
-        if(!m_populated)
-            m_chunk->RebuildCollision();
+        // Attach collision only when this is not a populated node
+        if(!m_populated && m_chunk->HasCollision())
+        {
+            m_chunk->AttachCollision();
+        }
 
         // Add this chunk to rendering, as it got new mesh (if we are not populated)
         if (!hasMesh && m_chunk->HasMesh() && !m_populated)
+        {
             Rendering::AddRenderable(m_chunk.get());
+            m_chunk->OnRenderAttach();
+        }
 
         // Try to remove this chunk from rendering
         if(hasMesh && !m_chunk->HasMesh())
+        {
             Rendering::RemoveRenderable(m_chunk.get());
+            m_chunk->OnRenderDetach();
+        }
     }
 }
 
@@ -281,9 +301,9 @@ void SpaceObjectOctreeNode::OnDestroy()
         if (m_chunk->HasMesh())
         {
             Rendering::RemoveRenderable(m_chunk.get());
+            m_chunk->OnRenderDetach();
         }
     }
-
 
     // Dispose chunk if exists
     SafeDispose(m_chunk);
@@ -307,11 +327,16 @@ void SpaceObjectOctreeNode::OnPopulate()
         node->OnCreate();
     }
 
-    // Try to remove this chunk from rendering and physics
-    if(m_chunk && m_chunk->HasMesh())
+    if (m_chunk)
     {
-        m_chunk->ReleaseCollision();
-        Rendering::RemoveRenderable(m_chunk.get());
+        m_chunk->DetachCollision();
+
+        // Try to remove this chunk from rendering and physics
+        if (m_chunk->HasMesh())
+        {
+            Rendering::RemoveRenderable(m_chunk.get());
+            m_chunk->OnRenderDetach();
+        }
     }
 }
 
@@ -319,8 +344,8 @@ void SpaceObjectOctreeNode::OnDepopulate()
 {
     ASSERT(IS_MAIN_THREAD());
 
-    // Rebuild collision
-    m_chunk->RebuildCollision();
+    if (m_chunk->HasCollision())
+        m_chunk->AttachCollision();
 
     m_populated = false;
     m_processing = false;
@@ -342,9 +367,16 @@ void SpaceObjectOctreeNode::Dispose()
 
 void SpaceObjectOctreeNode::DrawDebug()
 {
-    DebugDraw::SetColor(NodeLoDDebugColors[m_Depth]);
-    DebugDraw::DrawWireBox(m_Bounds);
+    if(IsProcessing())
+        return;
 
+    if (m_chunk)
+    {
+        DebugDraw::SetColor(NodeLoDDebugColors[m_Depth]);
+        DebugDraw::DrawBox(m_Bounds);
+    }
+
+    /*
     static const Color LinkColors[6] = {
         Color(0xFF0000FF), // Front
         Color(0x0000FFFF), // Back
@@ -365,7 +397,7 @@ void SpaceObjectOctreeNode::DrawDebug()
         DebugDraw::SetColor(LinkColors[id]);
         DebugDraw::DrawArrow(m_Position, neigh->m_Position, 1.0f);
 
-    }
+    }*/
 }
 
 void SpaceObjectOctreeNode::UpdateViews(Array<Vector3>& views)

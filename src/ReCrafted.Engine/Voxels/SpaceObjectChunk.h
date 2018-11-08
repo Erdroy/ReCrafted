@@ -13,11 +13,10 @@
 #include "Storage/VoxelChunkData.h"
 #include "SpaceObject.h"
 #include "VoxelChunkMesh.h"
+#include "VoxelChunkCollision.h"
 
 #include <atomic>
 #include <concurrentqueue.h>
-#include "Physics/IPhysicsActor.h"
-#include "Physics/IPhysicsEngine.h"
 
 struct IVoxelMesher;
 class Mesh;
@@ -50,16 +49,18 @@ private:
     RefPtr<VoxelChunkMesh> m_mesh = nullptr;
     RefPtr<VoxelChunkMesh> m_newMesh = nullptr;
 
-    moodycamel::ConcurrentQueue<RefPtr<VoxelChunkMesh>> m_disposeQueue;
+    RefPtr<VoxelChunkCollsion> m_collision = nullptr;
+    RefPtr<VoxelChunkCollsion> m_newCollision = nullptr;
+
+    moodycamel::ConcurrentQueue<std::pair<RefPtr<VoxelChunkMesh>, RefPtr<VoxelChunkCollsion>>> m_disposeQueue;
 
     Lock m_uploadLock = {};
     std::atomic<UploadType> m_uploadType = None;
 
     IPhysicsActor* m_physicsActor = nullptr;
-    Array<IPhysicsShape*> m_physicsShapes = {};
 
 private:
-    void SetUpload(const RefPtr<VoxelChunkMesh>& mesh, UploadType uploadType);
+    void SetUpload(const RefPtr<VoxelChunkMesh>& mesh, const RefPtr<VoxelChunkCollsion>& collision, UploadType uploadType);
 
 public:
     void Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject);
@@ -67,20 +68,31 @@ public:
     void Dispose();
 
 public:
+    /**
+     * \brief Called by owner node when this chunk should be attached for render.
+     */
+    void OnRenderAttach();
+
+    /**
+     * \brief Called by owner node when this chunk should be detached from render.
+     */
+    void OnRenderDetach();
+
+public: /* Worker */
     void Generate(IVoxelMesher* mesher);
     void Rebuild(IVoxelMesher* mesher);
 
 public: /* Physics */
     void InitializePhysics();
     void ShutdownPhysics();
-    void BuildCollision();
-    void RebuildCollision();
-    void ReleaseCollision();
 
-    bool HasCollision() const
+    void AttachCollision();
+    void DetachCollision();
+
+    /*bool HasCollision() const
     {
         return !m_physicsShapes.Empty();
-    }
+    }*/
 
 public: /* RenderableBase */
     void Render(RenderableRenderMode renderMode) override;
@@ -118,7 +130,12 @@ public:
 
     bool HasMesh() const
     {
-        return m_mesh != nullptr;
+        return m_mesh != nullptr && m_mesh->IsValid();
+    }
+
+    bool HasCollision() const
+    {
+        return m_collision != nullptr && m_collision->IsValid();
     }
 
 public:

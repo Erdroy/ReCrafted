@@ -12,6 +12,7 @@
 
 #include <concurrentqueue.h>
 #include "Scripting/ScriptingEngine.h"
+#include "Physics/PhysicsSystem.h"
 
 SINGLETON_IMPL(SpaceObjectManager)
 
@@ -53,10 +54,17 @@ void SpaceObjectManager::WorkerFunction()
 
     Logger::Log("SpaceObjectManager thread startup");
 
-    // create mesher
-    cvar mesher = new TransvoxelMesher();
+    // Create shape cooker
+    Logger::Log("Creating Physics Shape Cooker");
+    cvar shapeCooker = PhysicsSystem::Physics()->CreateCooker();
+    shapeCooker->Initialize({});
 
-    // run
+    // Create mesher
+    cvar mesher = new TransvoxelMesher();
+    Logger::Log("Using {0} as planet chunk mesher.", mesher->GetName());
+    mesher->Initialize(shapeCooker);
+
+    // Run
     queueItem item;
     while (m_running)
     {
@@ -66,7 +74,7 @@ void SpaceObjectManager::WorkerFunction()
             continue;
         }
 
-        // populate or depopulate the queued node
+        // Populate or depopulate the queued node
         switch (item.mode)
         {
         case ProcessMode::Populate:
@@ -88,6 +96,7 @@ void SpaceObjectManager::WorkerFunction()
     }
 
     ScriptingEngine::DetachCurrentThread();
+    PhysicsSystem::Physics()->ReleaseCooker(shapeCooker);
     delete mesher;
 }
 
@@ -109,8 +118,6 @@ void SpaceObjectManager::Init()
             WorkerFunction();
         }));
     }
-
-    Logger::LogInfo("SpaceObjectManager workers started.");
 }
 
 void SpaceObjectManager::Update()

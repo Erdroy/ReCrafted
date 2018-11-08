@@ -148,6 +148,11 @@ public:
     }
 
 public:
+    bool IsValid() const
+    {
+        return !m_meshSections.Empty();
+    }
+
     const Array<MeshSection>& GetSections() const
     {
         return m_meshSections;
