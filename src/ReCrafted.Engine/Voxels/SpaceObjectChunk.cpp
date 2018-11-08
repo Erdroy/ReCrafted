@@ -123,45 +123,48 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher)
     SetUpload(mesh, SwapMesh);
 }
 
-void SpaceObjectChunk::RebuildCollision()
+void SpaceObjectChunk::InitializePhysics()
 {
-    // Skip if mesh is empty
-    if (m_mesh == nullptr || m_mesh->Empty())
+    if (m_physicsActor)
         return;
 
     cvar physics = PhysicsSystem::Physics();
     cvar transform = TransformComponent();
 
-    // Create actor if needed
-    if(!m_physicsActor)
-    {
-        // Setup actor body component
-        var body = PhysicsBodyComponent(Universe::GetPhysicsScene().get(), PhysicsBodyComponent::Static);
+    // Setup actor body component
+    var body = PhysicsBodyComponent(Universe::GetPhysicsScene().get(), PhysicsBodyComponent::Static);
 
-        // Create actor
-        m_physicsActor = physics->CreateActor(transform, body);
+    // Create actor
+    m_physicsActor = physics->CreateActor(transform, body);
 
-        // Attach actor
-        Universe::GetPhysicsScene()->AttachActor(m_physicsActor);
+    // Attach actor
+    Universe::GetPhysicsScene()->AttachActor(m_physicsActor);
 
-        ASSERT(m_physicsActor);
-    }
+    ASSERT(m_physicsActor);
+}
 
-    // Release old shape
-    if(!m_physicsShapes.Empty())
-    {
-        for(rvar shape : m_physicsShapes)
-        {
-            // Detach shape
-            m_physicsActor->DetachShape(shape);
+void SpaceObjectChunk::ShutdownPhysics()
+{
+    // Do not shutdown physics if there is no physics actor
+    if (!m_physicsActor)
+        return;
 
-            // Release shape
-            PhysicsSystem::Physics()->ReleaseShape(shape);
-        }
-        m_physicsShapes.Clear();
-    }
+    // Release collision
+    ReleaseCollision();
 
-    for(rvar section : m_mesh->GetSections())
+    // Release actor
+    Universe::GetPhysicsScene()->DetachActor(m_physicsActor);
+    PhysicsSystem::Physics()->ReleaseActor(m_physicsActor);
+    m_physicsActor = nullptr;
+}
+
+void SpaceObjectChunk::BuildCollision()
+{
+    cvar physics = PhysicsSystem::Physics();
+    cvar transform = TransformComponent();
+
+    // Build collision
+    for (rvar section : m_mesh->GetSections())
     {
         var shape = PhysicsShapeComponent(PhysicsShapeComponent::TriangleMesh);
 
@@ -173,7 +176,7 @@ void SpaceObjectChunk::RebuildCollision()
         shape.triangleCount = section.mesh->GetIndexCount() / 3;
 
         cvar physicsShape = physics->CreateShape(transform, shape);
-       
+
         if (!physicsShape)
             continue;
 
@@ -183,11 +186,24 @@ void SpaceObjectChunk::RebuildCollision()
     }
 }
 
+void SpaceObjectChunk::RebuildCollision()
+{
+    // Skip if mesh is empty
+    if (m_mesh == nullptr || m_mesh->Empty())
+        return;
+
+    // Initialize physics
+    InitializePhysics();
+
+    // Release old collision
+    ReleaseCollision();
+
+    // Build new collision
+    BuildCollision();
+}
+
 void SpaceObjectChunk::ReleaseCollision()
 {
-    if (!m_physicsActor)
-        return;
-    
     for (rvar shape : m_physicsShapes)
     {
         // Detach shape
@@ -197,11 +213,6 @@ void SpaceObjectChunk::ReleaseCollision()
         PhysicsSystem::Physics()->ReleaseShape(shape);
     }
     m_physicsShapes.Clear();
-
-    // Release actor
-    Universe::GetPhysicsScene()->DetachActor(m_physicsActor);
-    PhysicsSystem::Physics()->ReleaseActor(m_physicsActor);
-    m_physicsActor = nullptr;
 }
 
 void SpaceObjectChunk::SetUpload(const RefPtr<VoxelChunkMesh>& mesh, const UploadType uploadType)
@@ -268,6 +279,9 @@ void SpaceObjectChunk::Dispose()
     SafeDispose(m_mesh);
     SafeDispose(m_newMesh);
 
+    // Shutdown physics
+    ReleaseCollision();
+
     // Release chunk data - when it has data
     // Free chunk data - when it has no any data
     if(m_chunkData->HasSurface() && m_chunkData->HasData())
@@ -287,11 +301,6 @@ void SpaceObjectChunk::Dispose()
 void SpaceObjectChunk::Render(RenderableRenderMode renderMode)
 {
     ASSERT(m_mesh);
-
-    //owner->DrawDebug();
-
-    if(!m_physicsShapes.Empty())
-        DebugDraw::DrawBox(m_position, Vector3::One);
 
     // Draw chunk mesh
     m_mesh->Draw();

@@ -71,8 +71,16 @@ public:
     void Rebuild(IVoxelMesher* mesher);
 
 public:
+    void InitializePhysics();
+    void ShutdownPhysics();
+    void BuildCollision();
     void RebuildCollision();
     void ReleaseCollision();
+
+    bool HasCollision() const
+    {
+        return !m_physicsShapes.Empty();
+    }
 
 public:
     void Render(RenderableRenderMode renderMode) override;
