@@ -39,12 +39,14 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
         cvar v1 = (edgeCode & 0xF0) >> 4;
 
         cvar vertexId = CalculateEdgeVertexId(voxelOffset, edgeCode >> 8);
+        cvar collisionVertexId = m_collisionVertices.Count();
         DEBUG_ASSERT(vertexId >= 0);
 
         // Skip vertex calculation if already calculated
         if (m_vertexInfoMap.test(vertexId))
         {
             indices[i] = vertexId;
+            collisionIndices[i] = m_vertexInfo[vertexId].collisionVertexId;
             continue;
         }
 
@@ -57,13 +59,13 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
         cvar voxelMaterial = GetVoxelMaterial(voxelA, voxelB);
 
         // Add mesh vertex
-        cvar vertexInfo = VertexInfo(vertexId, vertexPosition, voxelMaterial);
+        cvar vertexInfo = VertexInfo(vertexId, collisionVertexId, vertexPosition, voxelMaterial);
         m_vertexInfo[vertexId] = vertexInfo;
         indices[i] = vertexId;
         m_vertexInfoMap.set(vertexId);
 
         // Add collision vertex
-        collisionIndices[i] = m_collisionVertices.Count();
+        collisionIndices[i] = collisionVertexId;
         m_collisionVertices.Add(vertexPosition);
     }
 
@@ -101,10 +103,13 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
         // Add mesh triangle
         AddTriangle(vertexInfoA, vertexInfoB, vertexInfoC, normalCorrection);
 
-        // Add collision triangle
-        m_collisionIndices.Add(collisionIndices[cellData.vertexIndex[i + 0]]);
-        m_collisionIndices.Add(collisionIndices[cellData.vertexIndex[i + 1]]);
-        m_collisionIndices.Add(collisionIndices[cellData.vertexIndex[i + 2]]);
+        if (!normalCorrection)
+        {
+            // Add collision triangle
+            m_collisionIndices.Add(collisionIndices[cellData.vertexIndex[i + 0]]);
+            m_collisionIndices.Add(collisionIndices[cellData.vertexIndex[i + 1]]);
+            m_collisionIndices.Add(collisionIndices[cellData.vertexIndex[i + 2]]);
+        }
 
         // Increment triangle count
         m_triangleCount++;

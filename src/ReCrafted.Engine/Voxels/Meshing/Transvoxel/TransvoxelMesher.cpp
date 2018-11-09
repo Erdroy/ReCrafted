@@ -72,7 +72,7 @@ void TransvoxelMesher::Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, RefPtr<Vox
     // Add mesh section
     chunkMesh->AddSection(chunkSection);
 
-    if(chunkCollision)
+    if(chunkCollision && m_collisionIndices.Count() >= 3)
     {
         // Apply collision
         chunkCollision->BuildCollision(m_shapeCooker, 

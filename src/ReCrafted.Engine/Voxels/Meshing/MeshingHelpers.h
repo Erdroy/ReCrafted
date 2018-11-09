@@ -13,6 +13,9 @@ struct VertexInfo
 {
 public:
     uint vertexId = 0u;
+
+    uint collisionVertexId = 0u;
+
     Vector3 vertexPosition = {};
     Vector3 vertexNormal = {};
     VoxelMaterial_t voxelMaterial = 0u;
@@ -24,9 +27,11 @@ public:
 
     VertexInfo(
         const uint vertexId,
+        const uint collisionVertexId,
         const Vector3& vertexPosition,
         const VoxelMaterial_t& voxelMaterial) : 
     vertexId(vertexId),
+    collisionVertexId(collisionVertexId),
     vertexPosition(vertexPosition),
     vertexNormal({}),
     voxelMaterial(voxelMaterial) { }
