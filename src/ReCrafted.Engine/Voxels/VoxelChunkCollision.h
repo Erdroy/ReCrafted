@@ -21,9 +21,10 @@ private:
     IPhysicsShapeCooker* m_cooker = nullptr;
 
     void* m_triangleMesh = nullptr;
+    void* m_convexHullMesh = nullptr;
 
 public:
-    void BuildCollision(IPhysicsShapeCooker* cooker, Vector3* vertices, size_t vertexCount, uint32_t* indices, size_t indexCount);
+    void BuildCollision(IPhysicsShapeCooker* cooker, float voxelScale, Vector3* vertices, size_t vertexCount, uint32_t* indices, size_t indexCount);
     void AttachCollision(IPhysicsActor* actor);
     void DetachCollision();
 
@@ -35,7 +36,7 @@ public:
 
     bool IsValid() const
     {
-        return m_triangleMesh || m_physicsShape;
+        return m_triangleMesh || m_convexHullMesh || m_physicsShape;
     }
 
 public:

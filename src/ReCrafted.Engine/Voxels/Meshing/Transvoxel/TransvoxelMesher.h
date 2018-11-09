@@ -235,6 +235,7 @@ private:
 private:
     uint32_t m_triangleCount;
     int m_currentSection;
+    float m_currentVoxelScale;
     Array<MeshSection> m_meshSections;
 
     Array<VertexInfo> m_vertexInfo;

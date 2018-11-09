@@ -7,8 +7,11 @@
 
 void TransvoxelMesher::Generate(const Vector3& position, int lod, uint8_t borders, Voxel* data)
 {
+
     // ReSharper disable once CppUnreachableCode
     cvar voxelScale = static_cast<float>(lod);
+
+    m_currentVoxelScale = voxelScale;
 
     for(var x = VoxelChunkData::ChunkDataStart; x < VoxelChunkData::ChunkDataLength - 1; x ++)
     {
@@ -75,7 +78,7 @@ void TransvoxelMesher::Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, RefPtr<Vox
     if(chunkCollision && m_collisionIndices.Count() >= 3)
     {
         // Apply collision
-        chunkCollision->BuildCollision(m_shapeCooker, 
+        chunkCollision->BuildCollision(m_shapeCooker, m_currentVoxelScale,
             m_collisionVertices.Data(), m_collisionVertices.Count(), 
             m_collisionIndices.Data(), m_collisionIndices.Count());
     }

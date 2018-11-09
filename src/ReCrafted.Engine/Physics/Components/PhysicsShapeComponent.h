@@ -19,7 +19,9 @@ struct PhysicsShapeComponent : Component
         /*
          * TriangleMesh type needs to the point and triangle data to be filled.
          */
-        TriangleMesh
+        TriangleMesh,
+
+        ConvexHull
     };
 
 public:
