@@ -228,8 +228,15 @@ void SpaceObjectOctreeNode::OnCreate()
 {
     ASSERT(IS_MAIN_THREAD());
 
-    // Initialize physics
-    m_chunk->InitializePhysics();
+    // Call chunk on create
+    if(!m_chunkInitialized)
+    {
+        // This `m_chunkInitialized` flag is necerassy because somethimes the OnCreate function is called one more time
+        // for example, when this node is depopulated (look: `Depopulate` function) and becomes leaf and visible.
+        // So we don't really want to call the OnCreate function second time, because it will cause physics issues etc.
+        m_chunk->OnCreate();
+        m_chunkInitialized = true;
+    }
 
     // Upload chunk if needed
     if (m_chunk && m_chunk->NeedsUpload())
@@ -294,19 +301,17 @@ void SpaceObjectOctreeNode::OnDestroy()
 
     if(m_chunk)
     {
-        // Shutdown chunk physics
-        m_chunk->ShutdownPhysics();
-
         // Try to remove this chunk from rendering and physics
         if (m_chunk->HasMesh())
         {
             Rendering::RemoveRenderable(m_chunk.get());
             m_chunk->OnRenderDetach();
         }
-    }
 
-    // Dispose chunk if exists
-    SafeDispose(m_chunk);
+        // Dispose chunk
+        m_chunk->OnDestroy();
+        m_chunk.reset();
+    }
 
     if (!m_populated)
         return;
@@ -329,7 +334,10 @@ void SpaceObjectOctreeNode::OnPopulate()
 
     if (m_chunk)
     {
-        m_chunk->DetachCollision();
+        if(m_chunk->HasCollision())
+        {
+            m_chunk->DetachCollision();
+        }
 
         // Try to remove this chunk from rendering and physics
         if (m_chunk->HasMesh())
@@ -343,9 +351,6 @@ void SpaceObjectOctreeNode::OnPopulate()
 void SpaceObjectOctreeNode::OnDepopulate()
 {
     ASSERT(IS_MAIN_THREAD());
-
-    if (m_chunk->HasCollision())
-        m_chunk->AttachCollision();
 
     m_populated = false;
     m_processing = false;

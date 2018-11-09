@@ -9,8 +9,7 @@
 #include "Physics/PhysicsSystem.h"
 #include "Game/Universe.h"
 
-void SpaceObjectChunk::Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject)
-// WARNING: this function is called on WORKER THREAD!
+void SpaceObjectChunk::Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject) // WARNING: this function is called on WORKER THREAD!
 {
     this->spaceObject = spaceObject;
 
@@ -124,8 +123,8 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher) // WARNING: this function i
 
 void SpaceObjectChunk::InitializePhysics()
 {
-    if (m_physicsActor)
-        return;
+    ASSERT(m_physicsActor == nullptr);
+    ASSERT(IS_MAIN_THREAD());
 
     cvar physics = PhysicsSystem::Physics();
     cvar transform = TransformComponent();
@@ -144,6 +143,8 @@ void SpaceObjectChunk::InitializePhysics()
 
 void SpaceObjectChunk::ShutdownPhysics()
 {
+    ASSERT(IS_MAIN_THREAD());
+
     // Do not shutdown physics if there is no physics actor
     if (!m_physicsActor)
         return;
@@ -154,18 +155,22 @@ void SpaceObjectChunk::ShutdownPhysics()
     m_physicsActor = nullptr;
 }
 
-void SpaceObjectChunk::AttachCollision()
+void SpaceObjectChunk::AttachCollision() const
 {
+    ASSERT(IS_MAIN_THREAD());
     ASSERT(m_physicsActor);
+    ASSERT(m_collision->IsAttached() == false);
+
     m_collision->AttachCollision(m_physicsActor);
 }
 
-void SpaceObjectChunk::DetachCollision()
+void SpaceObjectChunk::DetachCollision() const
 {
-    if (m_collision)
-    {
-        m_collision->DetachCollision();
-    }
+    ASSERT(IS_MAIN_THREAD());
+    ASSERT(m_collision);
+    ASSERT(m_collision->IsAttached() == true);
+
+    m_collision->DetachCollision();
 }
 
 void SpaceObjectChunk::SetUpload(const RefPtr<VoxelChunkMesh>& mesh, const RefPtr<VoxelChunkCollsion>& collision, const UploadType uploadType)
@@ -195,16 +200,10 @@ void SpaceObjectChunk::Upload()
     while(m_disposeQueue.try_dequeue(toDispose))
     {
         if(toDispose.first)
-        {
             SafeDispose(toDispose.first);
-            toDispose.first.reset();
-        }
 
         if (toDispose.second)
-        {
             SafeDispose(toDispose.second);
-            toDispose.second.reset();
-        }
     }
     
     switch (m_uploadType)
@@ -243,9 +242,17 @@ void SpaceObjectChunk::Upload()
     m_uploadType = None;
 }
 
-void SpaceObjectChunk::Dispose()
+void SpaceObjectChunk::OnCreate()
 {
-    ASSERT(IS_MAIN_THREAD());
+    ASSERT(IS_MAIN_THREAD()); // Always called on main thread
+
+    // Initialize physics
+    InitializePhysics();
+}
+
+void SpaceObjectChunk::OnDestroy()
+{
+    ASSERT(IS_MAIN_THREAD()); // Always called on main thread
 
     SafeDispose(m_mesh);
     SafeDispose(m_newMesh);
@@ -258,7 +265,7 @@ void SpaceObjectChunk::Dispose()
 
     // Release chunk data - when it has data
     // Free chunk data - when it has no any data
-    if(m_chunkData->HasSurface() && m_chunkData->HasData())
+    if (m_chunkData->HasSurface() && m_chunkData->HasData())
     {
         cvar storage = spaceObject->GetStorage();
         storage->ReleaseChunkData(m_chunkData); // NOTE: This will not free this chunk data now but later
@@ -270,6 +277,7 @@ void SpaceObjectChunk::Dispose()
         storage->FreeChunkData(m_chunkData);
         m_chunkData = nullptr;
     }
+
 }
 
 void SpaceObjectChunk::OnRenderAttach()

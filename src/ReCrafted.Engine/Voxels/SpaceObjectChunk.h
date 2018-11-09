@@ -65,9 +65,22 @@ private:
 public:
     void Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject);
     void Upload();
-    void Dispose();
 
-public:
+public: /* Node events */
+    /**
+     * \brief Called by owner node when this chunk has been created.
+     * 
+     * \note Always called from MainThread. May introduce 1-frame lag.
+     */
+    void OnCreate();
+
+    /**
+     * \brief Called by owner node when this chunk is being destroyed.
+     *
+     * \note Always called from MainThread. May introduce 1-frame lag.
+     */
+    void OnDestroy();
+
     /**
      * \brief Called by owner node when this chunk should be attached for render.
      */
@@ -82,17 +95,13 @@ public: /* Worker */
     void Generate(IVoxelMesher* mesher);
     void Rebuild(IVoxelMesher* mesher);
 
-public: /* Physics */
+private: /* Physics */
     void InitializePhysics();
     void ShutdownPhysics();
 
-    void AttachCollision();
-    void DetachCollision();
-
-    /*bool HasCollision() const
-    {
-        return !m_physicsShapes.Empty();
-    }*/
+public: /* Physics */
+    void AttachCollision() const;
+    void DetachCollision() const;
 
 public: /* RenderableBase */
     void Render(RenderableRenderMode renderMode) override;
@@ -117,7 +126,7 @@ public: /* RenderableBase */
         return RenderableRenderMode::RenderGeometry /*| RenderableRenderMode::RenderShadows*/;
     }
 
-public:
+public: /* Common */
     bool NeedsUpload() const
     {
         return m_uploadType != None;
@@ -131,6 +140,11 @@ public:
     bool HasMesh() const
     {
         return m_mesh != nullptr && m_mesh->IsValid();
+    }
+
+    bool HasActiveCollision() const
+    {
+        return HasCollision() && m_collision->IsAttached();
     }
 
     bool HasCollision() const

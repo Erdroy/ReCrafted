@@ -52,6 +52,7 @@ private:
     SpaceObjectOctreeNode* m_childrenNodes[8] = {};
 
     int m_id = 0;
+    bool m_chunkInitialized = false;
     bool m_isRoot = false;
     std::atomic<bool> m_populated = false;
     std::atomic<bool> m_processing = false;

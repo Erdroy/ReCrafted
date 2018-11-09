@@ -29,7 +29,7 @@ void VoxelChunkCollsion::AttachCollision(IPhysicsActor* actor)
         ASSERT(physicsShape);
 
         m_physicsShape = physicsShape;
-        m_triangleMesh = nullptr;
+        m_triangleMesh = nullptr; // triangle mesh will be disposed when the created shape is being released
     }
 
     ASSERT(m_physicsShape);
@@ -41,10 +41,10 @@ void VoxelChunkCollsion::AttachCollision(IPhysicsActor* actor)
 void VoxelChunkCollsion::DetachCollision()
 {
     ASSERT(IS_MAIN_THREAD());
+    ASSERT(m_physicsActor);
+    ASSERT(m_physicsShape);
 
-    if(m_physicsActor && m_physicsShape)
-        m_physicsActor->DetachShape(m_physicsShape);
-
+    m_physicsActor->DetachShape(m_physicsShape);
     m_physicsActor = nullptr;
 }
 
