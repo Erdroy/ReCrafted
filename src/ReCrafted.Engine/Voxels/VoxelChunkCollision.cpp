@@ -40,7 +40,10 @@ void VoxelChunkCollsion::AttachCollision(IPhysicsActor* actor)
         ASSERT(physicsShape);
 
         m_physicsShape = physicsShape;
-        m_triangleMesh = nullptr; // triangle mesh will be disposed when the created shape is being released
+
+        // Cleanup and free temporary memory
+        m_cooker->ReleaseTriangleMesh(m_triangleMesh);
+        m_triangleMesh = nullptr;
     }
     
     if(m_convexHullMesh)
@@ -58,7 +61,10 @@ void VoxelChunkCollsion::AttachCollision(IPhysicsActor* actor)
         ASSERT(physicsShape);
 
         m_physicsShape = physicsShape;
-        m_convexHullMesh = nullptr; // triangle mesh will be disposed when the created shape is being released
+
+        // Cleanup and free temporary memory
+        m_cooker->ReleaseConvexMeshMesh(m_convexHullMesh);
+        m_convexHullMesh = nullptr;
     }
 
     ASSERT(m_physicsShape);
