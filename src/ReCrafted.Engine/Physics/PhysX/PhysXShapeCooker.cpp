@@ -58,13 +58,8 @@ void* PhysXShapeCooker::CookTriangleMesh(Vector3* vertices, size_t vertexCount, 
 
     ASSERT(meshDescription.isValid());
 
-    // Cook
-    cvar triangleMesh = m_cooking->createTriangleMesh(meshDescription, GPxPhysX->getPhysicsInsertionCallback());
-
-    // Make sure that we've got valid triangle mesh
-    ASSERT(triangleMesh);
-
-    return triangleMesh;
+    // Cook and return (note: in some cases the resulting triangle mesh can be null!)
+    return m_cooking->createTriangleMesh(meshDescription, GPxPhysX->getPhysicsInsertionCallback());
 }
 
 void PhysXShapeCooker::ReleaseConvexMeshMesh(void* triangleMesh) const

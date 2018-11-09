@@ -2,11 +2,15 @@
 
 #include "VoxelChunkCollision.h"
 #include "Physics/PhysicsSystem.h"
+#include "Core/Logger.h"
 
 void VoxelChunkCollsion::BuildCollision(IPhysicsShapeCooker* cooker, Vector3* vertices, size_t vertexCount, uint32_t* indices, size_t indexCount)
 {
     m_cooker = cooker;
     m_triangleMesh = cooker->CookTriangleMesh(vertices, vertexCount, indices, indexCount);
+
+    if(!m_triangleMesh)
+        Logger::LogWarning("Couldn't cook triangle mesh collider for {0} vertices and {1} indices!", vertexCount, indexCount);
 }
 
 void VoxelChunkCollsion::AttachCollision(IPhysicsActor* actor)
