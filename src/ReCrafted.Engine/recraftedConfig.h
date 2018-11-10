@@ -78,6 +78,24 @@
 #define GAMEOBJECT_POOL_INCREMENT_COUNT 16
 #endif
 
+
+// ==== ACTOR SYSTEM SETTINGS ====
+
+#ifndef ACTOR_POOL_INITIAL_COUNT
+ /**
+  * \brief The initial amount of free actors in the pool.
+  */
+#define ACTOR_POOL_INITIAL_COUNT 128
+#endif
+
+#ifndef ACTOR_POOL_INCREMENT_COUNT
+  /**
+   * \brief The increment amount of actors. This much actors are spawned,
+   *  when no free actors are present and we're trying to spawn new ones.
+   */
+#define ACTOR_POOL_INCREMENT_COUNT 16
+#endif
+
 // ==== ECS SETTINGS ====
 
 #ifndef ECS_MAX_SYSTEMS

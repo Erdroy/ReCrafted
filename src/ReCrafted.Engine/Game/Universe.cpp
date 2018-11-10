@@ -1,6 +1,7 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Universe.h"
+#include "Common/EmptyActor.h"
 #include "Common/Input/Input.h"
 #include "Common/Profiler/Profiler.h"
 #include "Common/Entities/MainWorld.h"
@@ -48,6 +49,8 @@ void Universe::OnInit()
 
     // Create physics scene
     m_physicsScene = PhysicsSystem::Physics()->CreateScene();
+
+    TestActors();
 }
 
 void Universe::OnDispose()
@@ -139,6 +142,13 @@ void Universe::Update()
         Graphics::Screenshot(Text(fileName.str().c_str()));
         Logger::Log("Screenshot saved as {0}", fileName.str());
     }
+}
+
+void Universe::TestActors()
+{
+    var actor1 = EmptyActor::Create();
+
+    actor1->Destroy();
 }
 
 void Universe::Simulate()

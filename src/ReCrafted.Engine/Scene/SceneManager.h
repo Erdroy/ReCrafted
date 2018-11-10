@@ -7,6 +7,7 @@
 
 // includes
 #include "ReCrafted.h"
+#include "Common/ActorBase.h"
 #include "Common/GameObject.h"
 #include "Core/EngineComponent.h"
 
@@ -19,6 +20,7 @@ SCRIPTING_API_IMPL()
 
 private:
     Array<GameObject*> m_gameObjects;
+    Array<ActorBase*> m_actors;
 
 public:
     virtual ~SceneManager() = default;
@@ -35,6 +37,8 @@ private:
 public:
     void AddGameObject(GameObject* gameObject);
     void RemoveGameObject(GameObject* gameObject);
+    void AddActor(ActorBase* actor);
+    void RemoveActor(ActorBase* actor);
 };
 
 #endif // SCENEMANAGER_H

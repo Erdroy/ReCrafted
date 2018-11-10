@@ -37,6 +37,8 @@ private:
     void OnDispose() override;
     void Update() override;
 
+    void TestActors();
+
     void Simulate();
     void RenderUI();
 

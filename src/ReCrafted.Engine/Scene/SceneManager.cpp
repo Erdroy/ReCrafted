@@ -55,10 +55,20 @@ void SceneManager::Simulate()
 
 void SceneManager::AddGameObject(GameObject* gameObject)
 {
-    m_gameObjects.Add(gameObject);
+    m_gameObjects.Remove(gameObject);
 }
 
 void SceneManager::RemoveGameObject(GameObject* gameObject)
 {
     m_gameObjects.Remove(gameObject);
+}
+
+void SceneManager::AddActor(ActorBase* actor)
+{
+    m_actors.Remove(actor);
+}
+
+void SceneManager::RemoveActor(ActorBase* actor)
+{
+    m_actors.Remove(actor);
 }

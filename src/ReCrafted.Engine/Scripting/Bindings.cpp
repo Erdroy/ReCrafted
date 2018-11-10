@@ -3,6 +3,7 @@
 #include "Bindings.h"
 #include "Object.h"
 
+#include "Common/ActorBase.h"
 #include "Common/Display.h"
 #include "Common/Time.h"
 #include "Common/GameObject.h"
@@ -22,6 +23,7 @@
 #include "Voxels/VoxelMaterialManager.h"
 #include "Audio/AudioSound.h"
 #include "Voxels/Assets/VoxelMaterial.h"
+#include "Common/EmptyActor.h"
 
 static spp::sparse_hash_map<std::string, Action<Object*, bool>> g_objectMap;
 
@@ -48,6 +50,10 @@ void Bindings::Bind()
     GameObject::InitRuntime();
     Script::InitRuntime();
 
+
+    // == Actors ==
+    ActorBase::InitRuntime(); // base
+    EmptyActor::InitRuntime();
 
     // == ECS ==
     ComponentSystem::InitRuntime();
