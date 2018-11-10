@@ -10,6 +10,6 @@ namespace ReCrafted.API.Common
         /// <summary>
         /// Contains the reference to transform owned by this game object.
         /// </summary>
-        public ref TransformComponent Transform => ref GameObject.Transform;
+        //public ref Transform Transform => ref Actor.Transform;
     }
 }

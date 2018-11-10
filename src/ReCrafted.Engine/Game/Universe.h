@@ -7,7 +7,6 @@
 
 // includes
 #include "Voxels/SpaceObject.h"
-#include "Common/GameObject.h"
 #include "Core/EngineComponent.h"
 #include "Physics/IPhysicsScene.h"
 
@@ -27,7 +26,7 @@ private:
 
     VoxelMaterial_t m_selectedMaterial = 1u;
 
-    Array<GameObject*> m_projectiles;
+    //Array<GameObject*> m_projectiles;
 
 public:
     virtual ~Universe() = default;

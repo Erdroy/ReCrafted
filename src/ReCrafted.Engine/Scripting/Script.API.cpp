@@ -4,10 +4,10 @@
 
 namespace Internal
 {
-    MonoObject* GetGameObject(Script* script)
+    MonoObject* GetActor(Script* script)
     {
         DEBUG_ASSERT(script);
-        return script->GetGameObject()->GetManagedPtr();
+        return script->GetActor()->GetManagedPtr();
     }
 
     bool GetEnabled(Script* script)
@@ -36,10 +36,10 @@ void Script::InitRuntime()
         API_COMMENT("Script class");
         API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Common", "Script", "Object", PARTIAL);
         {
-            API_COMMENT("The game object that contains this script.");
-            API_PROPERTY(PUBLIC, REGULAR, "GameObject", "GameObject", GET);
+            API_COMMENT("The actor that contains this script.");
+            API_PROPERTY(PUBLIC, REGULAR, "ActorBase", "Actor", GET);
             {
-                API_BIND("ReCrafted.API.Common.Script::Internal_GameObject_Get", &Internal::GetGameObject);
+                API_BIND("ReCrafted.API.Common.Script::Internal_Actor_Get", &Internal::GetActor);
             }
             API_PROPERTY_END();
 

@@ -6,7 +6,6 @@
 #include "Common/ActorBase.h"
 #include "Common/Display.h"
 #include "Common/Time.h"
-#include "Common/GameObject.h"
 #include "Common/Entities/ComponentSystem.h"
 #include "Common/Entities/World.h"
 #include "Common/Entities/Entity.h"
@@ -46,14 +45,14 @@ void Bindings::Bind()
     KeyboardBuffer::InitRuntime();
 
 
-    // == GameObjects ==
-    GameObject::InitRuntime();
+    // == Scripting ==
     Script::InitRuntime();
 
 
     // == Actors ==
     ActorBase::InitRuntime(); // base
     EmptyActor::InitRuntime();
+
 
     // == ECS ==
     ComponentSystem::InitRuntime();

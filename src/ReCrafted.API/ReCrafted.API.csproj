@@ -70,8 +70,6 @@
     <Compile Include="Common\Entities\ComponentSystem.Gen.cs" />
     <Compile Include="Common\Entities\World.cs" />
     <Compile Include="Common\Entities\World.Gen.cs" />
-    <Compile Include="Common\GameObject.cs" />
-    <Compile Include="Common\GameObject.Gen.cs" />
     <Compile Include="Common\Input.Gen.cs" />
     <Compile Include="Common\KeyboardBuffer.Gen.cs" />
     <Compile Include="Common\Profiler.Gen.cs" />

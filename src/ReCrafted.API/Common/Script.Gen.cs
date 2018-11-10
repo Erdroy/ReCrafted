@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 10/27/2018 14:56:04 Source: 'Script.API.cpp' Target: 'Common/Script.Gen.cs'
+// Generated: 11/10/2018 15:41:27 Source: 'Script.API.cpp' Target: 'Common/Script.Gen.cs'
 
 using ReCrafted.API.Common.Components;
 using System;
@@ -14,13 +14,13 @@ namespace ReCrafted.API.Common
 	public partial class Script : Object
 	{
 		/// <summary>
-		///	The game object that contains this script.
+		///	The actor that contains this script.
 		/// </summary>
-		public GameObject GameObject 
+		public ActorBase Actor 
 		{
 			get
 			{
-				return Internal_GameObject_Get(NativePtr);
+				return Internal_Actor_Get(NativePtr);
 			}
 		}
 
@@ -40,7 +40,7 @@ namespace ReCrafted.API.Common
 		}
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern GameObject Internal_GameObject_Get(IntPtr nativePtr);
+		internal static extern ActorBase Internal_Actor_Get(IntPtr nativePtr);
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_Enabled_Set(IntPtr nativePtr, bool value);
 		[MethodImpl(MethodImplOptions.InternalCall)]

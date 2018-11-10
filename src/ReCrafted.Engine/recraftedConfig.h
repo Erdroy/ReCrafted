@@ -61,24 +61,6 @@
 #endif
 
 
-// ==== GAMEOBJECT POOL SETTINGS ====
-
-#ifndef GAMEOBJECT_POOL_INITIAL_COUNT
- /**
-  * \brief The initial amount of free game objects in the pool.
-  */
-#define GAMEOBJECT_POOL_INITIAL_COUNT 1024
-#endif
-
-#ifndef GAMEOBJECT_POOL_INCREMENT_COUNT
-  /**
-   * \brief The increment amount of game objects. This much game objects are spawned,
-   *  when no free game objects are present and we're trying to spawn new one.
-   */
-#define GAMEOBJECT_POOL_INCREMENT_COUNT 16
-#endif
-
-
 // ==== ACTOR SYSTEM SETTINGS ====
 
 #ifndef ACTOR_POOL_INITIAL_COUNT

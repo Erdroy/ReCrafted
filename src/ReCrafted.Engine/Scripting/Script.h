@@ -8,12 +8,10 @@
 // includes
 #include "ReCrafted.h"
 #include "Common/ActorBase.h"
-#include "Common/GameObject.h"
 #include "Scripting/ScriptingAPI.h"
 
 class Script : public Object
 {
-    friend class GameObject;
     friend class ActorBase;
 
 private:
@@ -40,7 +38,6 @@ private:
     void OnDestroy() override;
 
 public:
-    PROPERTY(GameObject*, GameObject) = nullptr;
     PROPERTY(ActorBase*, Actor) = nullptr;
     PROPERTY(bool, Enabled) = true;
 };

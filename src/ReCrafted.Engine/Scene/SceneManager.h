@@ -8,7 +8,6 @@
 // includes
 #include "ReCrafted.h"
 #include "Common/ActorBase.h"
-#include "Common/GameObject.h"
 #include "Core/EngineComponent.h"
 
 class SceneManager : public EngineComponent<SceneManager>
@@ -19,7 +18,6 @@ private:
 SCRIPTING_API_IMPL()
 
 private:
-    Array<GameObject*> m_gameObjects;
     Array<ActorBase*> m_actors;
 
 public:
@@ -35,8 +33,6 @@ private:
     void Simulate();
 
 public:
-    void AddGameObject(GameObject* gameObject);
-    void RemoveGameObject(GameObject* gameObject);
     void AddActor(ActorBase* actor);
     void RemoveActor(ActorBase* actor);
 };

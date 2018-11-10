@@ -18,12 +18,6 @@ void SceneManager::Update()
 {
     Profiler::BeginProfile(__FUNCTION__);
 
-    for(var gameObject : m_gameObjects)
-    {
-        if (gameObject->IsActive())
-            gameObject->Update();
-    }
-
     for (var actor : m_actors)
     {
         if (actor->IsActive())
@@ -36,12 +30,6 @@ void SceneManager::Update()
 void SceneManager::LateUpdate()
 {
     Profiler::BeginProfile(__FUNCTION__);
-
-    for (var gameObject : m_gameObjects)
-    {
-        if(gameObject->IsActive())
-            gameObject->LateUpdate();
-    }
 
     for (var actor : m_actors)
     {
@@ -56,12 +44,6 @@ void SceneManager::Simulate()
 {
     //Profiler::BeginProfile(__FUNCTION__);
 
-    for (var gameObject : m_gameObjects)
-    {
-        if (gameObject->IsActive())
-            gameObject->Simulate();
-    }
-
     for (var actor : m_actors)
     {
         if (actor->IsActive())
@@ -69,16 +51,6 @@ void SceneManager::Simulate()
     }
 
     //Profiler::EndProfile();
-}
-
-void SceneManager::AddGameObject(GameObject* gameObject)
-{
-    m_gameObjects.Remove(gameObject);
-}
-
-void SceneManager::RemoveGameObject(GameObject* gameObject)
-{
-    m_gameObjects.Remove(gameObject);
 }
 
 void SceneManager::AddActor(ActorBase* actor)

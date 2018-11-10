@@ -4,7 +4,6 @@
 #include "EngineComponentManager.h"
 
 #include "Common/ActorPoolManager.h"
-#include "Common/GameObjectPool.h"
 #include "Common/Time.h"
 #include "Common/Display.h"
 #include "Common/Profiler/Profiler.h"
@@ -40,7 +39,6 @@ void EngineMain::RegisterComponents() const
     m_componentManager->RegisterComponent(Input::GetInstance());
     m_componentManager->RegisterComponent(VoxelMaterialManager::GetInstance());
     m_componentManager->RegisterComponent(MainWorld::GetInstance());
-    m_componentManager->RegisterComponent(GameObjectPool::GetInstance());
     m_componentManager->RegisterComponent(ActorPoolManager::GetInstance());
     m_componentManager->RegisterComponent(SceneManager::GetInstance());
     m_componentManager->RegisterComponent(Universe::GetInstance());

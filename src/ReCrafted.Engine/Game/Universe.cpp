@@ -73,7 +73,7 @@ void Universe::Update()
         m_viewUpdateEnabled = !m_viewUpdateEnabled;
     }
 
-    if(Input::IsKeyDown(Key_F))
+    /*if(Input::IsKeyDown(Key_F))
     {
         var projectile = GameObject::Create();
 
@@ -91,7 +91,7 @@ void Universe::Update()
         DebugDraw::SetColor(Color(255, 110, 0, 255));
         DebugDraw::DrawBox(Vector3::Zero, Vector3::One);
     }
-    DebugDraw::SetMatrix(Matrix::Identity);
+    DebugDraw::SetMatrix(Matrix::Identity);*/
 
     var modPosition = Camera::GetMainCamera()->GetPosition() + Camera::GetMainCamera()->GetForward() * 5.0f;
 

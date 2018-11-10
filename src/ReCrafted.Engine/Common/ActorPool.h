@@ -53,11 +53,11 @@ private:
     {
         for (var i = 0u; i < numActors; i++)
         {
-            var gameObject = new TActor();
-            gameObject->SetName(TEXT_CONST("Actor"));
+            var actor = new TActor();
+            actor->SetName(TEXT_CONST("Actor"));
 
-            m_actorPool.enqueue(gameObject);
-            m_actors.Add(gameObject);
+            m_actorPool.enqueue(actor);
+            m_actors.Add(actor);
         }
     }
 
