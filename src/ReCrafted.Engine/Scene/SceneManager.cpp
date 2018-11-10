@@ -24,6 +24,12 @@ void SceneManager::Update()
             gameObject->Update();
     }
 
+    for (var actor : m_actors)
+    {
+        if (actor->IsActive())
+            actor->Update();
+    }
+
     Profiler::EndProfile();
 }
 
@@ -37,6 +43,12 @@ void SceneManager::LateUpdate()
             gameObject->LateUpdate();
     }
 
+    for (var actor : m_actors)
+    {
+        if(actor->IsActive())
+            actor->LateUpdate();
+    }
+
     Profiler::EndProfile();
 }
 
@@ -48,6 +60,12 @@ void SceneManager::Simulate()
     {
         if (gameObject->IsActive())
             gameObject->Simulate();
+    }
+
+    for (var actor : m_actors)
+    {
+        if (actor->IsActive())
+            actor->Simulate();
     }
 
     //Profiler::EndProfile();

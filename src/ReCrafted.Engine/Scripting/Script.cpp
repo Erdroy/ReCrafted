@@ -10,7 +10,11 @@ void Script::Awake()
     m_update = FindMethod("ReCrafted.API.Common.Script::Update");
     m_lateUpdate = FindMethod("ReCrafted.API.Common.Script::LateUpdate");
     m_simulate = FindMethod("ReCrafted.API.Common.Script::Simulate");
+
     m_onDestroy = FindMethod("ReCrafted.API.Common.Script::OnDestroy");
+
+    m_onEnable = FindMethod("ReCrafted.API.Common.Script::OnEnable");
+    m_onDisable = FindMethod("ReCrafted.API.Common.Script::OnDisable");
 
     if (m_awake)
         m_awake->Invoke();

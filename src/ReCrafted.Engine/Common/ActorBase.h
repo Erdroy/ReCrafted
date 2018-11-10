@@ -11,13 +11,12 @@
 #include "Core/Containers/Array.h"
 #include "Scripting/ScriptingAPI.h"
 
-#include <atomic>
-
 using ActorId_t = uint64_t;
 
 class ActorBase : public Object
 {
     friend class ActorPoolBase;
+    friend class SceneManager;
 
 protected:
     SCRIPTING_API_IMPL()
@@ -25,6 +24,8 @@ protected:
 private:
     ActorId_t m_id = 0u;
     bool m_static = false;
+    bool m_active = true;
+    bool m_firstFrame = true;
     ActorBase* m_root = nullptr;
     ActorBase* m_parent = nullptr;
     Transform m_transform = Transform::Identity;
@@ -34,10 +35,15 @@ private:
     Array<ActorBase*> m_children;
     Array<Script*> m_scripts;
 
-private:
-    /* ActorPool events */
+private: /* ActorPool events */
     void OnAcquire();
     void OnRelease();
+
+private:
+    void Start();
+    void Update();
+    void LateUpdate();
+    void Simulate();
 
 public:
     ActorBase() = default;
@@ -46,23 +52,44 @@ protected:
     virtual void OnAwake() {}
     virtual void OnStart() {}
     virtual void OnUpdate() {}
+    virtual void OnLateUpdate() {}
     virtual void OnSimulate() {}
 
     virtual void OnEnable() {}
     virtual void OnDisable() {}
 
+protected:
+    virtual void OnAddedChild(ActorBase* child) {}
+    virtual void OnRemovedChild(ActorBase* child) {}
+    virtual void OnParentChange(ActorBase* parent) {}
+    virtual void OnParentActiveChange(bool parentActive) {}
+
 public:
-    void SetParent(ActorBase* actor);
-    void AddChild(ActorBase* actor);
-    void RemoveChild(ActorBase* actor);
+    void SetParent(ActorBase* newParent);
+    void AddChild(ActorBase* child);
+    void RemoveChild(ActorBase* child);
 
     void AddScript(Script* script);
     void RemoveScript(Script* script);
 
     void SetActive(bool active);
-    bool IsActive() const;
 
+public:
     virtual void Destroy() = 0;
+
+public:
+    bool IsActiveSelf() const
+    {
+        return m_active;
+    }
+
+    bool IsActive() const
+    {
+        if (m_parent)
+            return m_active && m_parent->IsActive();
+
+        return m_active;
+    }
 
     Transform* GetTransform()
     {
@@ -88,7 +115,6 @@ public:
     {
         return m_id;
     }
-
 };
 
 #endif // ACTORBASE_H

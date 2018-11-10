@@ -78,6 +78,7 @@
     <Compile Include="Common\Script.cs" />
     <Compile Include="Common\Script.Gen.cs" />
     <Compile Include="Common\Time.Gen.cs" />
+    <Compile Include="Common\Transform.cs" />
     <Compile Include="Content\Asset.cs" />
     <Compile Include="Content\Asset.Gen.cs" />
     <Compile Include="Content\ContentManager.cs" />
