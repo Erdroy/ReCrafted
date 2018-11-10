@@ -7,7 +7,7 @@
 
 #include "Actor.h"
 
-class EmptyActor : public Actor<EmptyActor>
+class EmptyActor final : public Actor<EmptyActor>
 {
 private:
     SCRIPTING_API_IMPL();
