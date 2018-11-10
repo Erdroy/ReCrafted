@@ -6,8 +6,8 @@
 #define ACTORPOOLMANAGER_H
 
 #include "ReCrafted.h"
+#include "Common/ActorPool.h"
 #include "Core/EngineComponent.h"
-#include "ActorPool.h"
 
 class ActorPoolManager : public EngineComponent<ActorPoolManager>
 {

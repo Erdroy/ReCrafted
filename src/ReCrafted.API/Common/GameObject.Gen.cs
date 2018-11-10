@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 10/28/2018 15:22:27 Source: 'GameObject.API.cpp' Target: 'Common/GameObject.Gen.cs'
+// Generated: 11/10/2018 14:14:30 Source: 'GameObject.API.cpp' Target: 'Common/GameObject.Gen.cs'
 
 using ReCrafted.API.Common.Components;
 using System;
