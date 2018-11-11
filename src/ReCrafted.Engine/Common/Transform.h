@@ -58,7 +58,7 @@ public: /* Space transformations */
 
     Quaternion ToWorld(const Quaternion& rotation) const
     {
-        return Quaternion::Normalize(orientation * rotation);
+        return orientation * rotation;
     }
 
     Transform ToLocal(Transform& transform) const
