@@ -2,4 +2,4 @@
 
 #include "Transform.h"
 
-const Transform Transform::Identity = Transform(nullptr, Vector3::Zero, Quaternion::Identity);
+const Transform Transform::Identity = Transform(Vector3::Zero, Quaternion::Identity, Vector3::One);
