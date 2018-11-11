@@ -7,6 +7,7 @@ LIBS_DIR = path.join(ROOT_DIR, "lib/")
 solution "ReCrafted"
 	configurations {
 		"Debug",
+		"Development",
 		"Release"
 	}
 	
