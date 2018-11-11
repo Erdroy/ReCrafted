@@ -38,6 +38,17 @@ public:
     {
         actor->OnRelease();
     }
+
+    void InitializeActor(ActorBase* actor, const ActorId_t id)
+    {
+        actor->Cleanup(id);
+    }
+
+    void CleanupActor(ActorBase* actor)
+    {
+        ASSERT(actor);
+        actor->Cleanup();
+    }
 };
 
 template<typename TActor>
@@ -54,17 +65,12 @@ private:
         for (var i = 0u; i < numActors; i++)
         {
             var actor = new TActor();
-            actor->SetName(TEXT_CONST("Actor"));
-
+            
+            InitializeActor(actor, i);
+            
             m_actorPool.enqueue(actor);
             m_actors.Add(actor);
         }
-    }
-
-    void CleanupActor(TActor* actor)
-    {
-        ASSERT(actor);
-        //(*actor)();
     }
 
 public:
@@ -87,8 +93,12 @@ public:
 
     void Shutdown() override
     {
+        var id = 0;
         for (rvar actor : m_actors)
+        {
             delete actor;
+            id++;
+        }
         m_actors.Clear();
     }
 

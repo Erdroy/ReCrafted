@@ -14,14 +14,39 @@ void ActorBase::OnAcquire()
 
 void ActorBase::OnRelease()
 {
+    if(m_parent)
+    {
+        // Remove from parent
+        SetParent(nullptr);
+    }
+
     // We need to unbind the managed object, because we don't want to get 
     // finalized being called on us, because it will also remove our 
     // unmanaged instance. And we don't want this, because we are assigning 
     // managed instances dynamically (when actor is acquired).
     UnbindManaged(this);
+    Release(this);
 
     // Remove from scene
     SceneManager::GetInstance()->RemoveActor(this);
+}
+
+void ActorBase::Cleanup(const ActorId_t id)
+{
+    if (id != 0)
+        m_id = id;
+
+    m_static = false;
+    m_active = true;
+    m_firstFrame = true;
+    m_parent = nullptr; 
+    m_transform = Transform::Identity;
+    m_localTransform = Transform::Identity;
+
+    m_children.Clear();
+    m_scripts.Clear();
+
+    SetName(TEXT_CONST("Actor"));
 }
 
 void ActorBase::Start()
@@ -98,6 +123,30 @@ void ActorBase::Simulate()
     OnSimulate();
 }
 
+void ActorBase::UpdateTransform()
+{
+    // We need to construct the world transform now.
+    // If we have a parent, this gets a bit complicated, because we need to transform the local-space transform to world-space.
+    // This is accomplished by using parent's world-space transform and ToWorld function.
+    // Otherwise just use the local-space transform as world-space.
+    // ... Then broadcast UpdateTransform to all children actors.
+
+    if(m_parent)
+    {
+        // Transform to world-space by using parent's transform.
+        m_transform = m_parent->GetTransform()->ToWorld(m_localTransform);
+    }
+    else
+    {
+        // Just use the local-space transform as world-space.
+        m_transform = m_localTransform;
+    }
+
+    // Broadcast UpdateTransform
+    for(cvar child : m_children)
+        child->UpdateTransform();
+}
+
 void ActorBase::SetParent(ActorBase* newParent)
 {
     MAIN_THREAD_ONLY();
@@ -133,10 +182,10 @@ void ActorBase::SetParent(ActorBase* newParent)
         SceneManager::GetInstance()->RemoveActor(this);
     }
 
+    UpdateTransform();
+
     // Call parent change event
     OnParentChange(m_parent);
-
-    // TODO: Update transform
 }
 
 void ActorBase::AddChild(ActorBase* child)
@@ -205,3 +254,93 @@ void ActorBase::SetActive(const bool active)
     }
 }
 
+void ActorBase::SetPosition(const Vector3& position)
+{
+    if (Vector3::NearEqual(m_transform.translation, position))
+        return;
+
+    if(m_parent)
+    {
+        m_localTransform.translation = m_parent->GetTransform()->ToLocal(position);
+    }
+    else
+    {
+        m_localTransform.translation = position;
+    }
+
+    // Update transform
+    UpdateTransform();
+}
+
+void ActorBase::SetLocalPosition(const Vector3& position)
+{
+    if (Vector3::NearEqual(m_localTransform.translation, position))
+        return;
+
+    m_localTransform.translation = position;
+
+    // Update transform
+    UpdateTransform();
+}
+
+void ActorBase::SetRotation(const Quaternion& rotation)
+{
+    if (Quaternion::NearEqual(m_transform.orientation, rotation))
+        return;
+
+    if(m_parent)
+    {
+        m_localTransform.orientation = m_parent->GetTransform()->ToLocal(rotation);
+    }
+    else
+    {
+        m_localTransform.orientation = rotation;
+    }
+
+    // Update transform
+    UpdateTransform();
+}
+
+void ActorBase::SetLocalRotation(const Quaternion& rotation)
+{
+    if (Quaternion::NearEqual(m_localTransform.orientation, rotation))
+        return;
+
+    m_localTransform.orientation = rotation;
+
+    // Update transform
+    UpdateTransform();
+}
+
+void ActorBase::SetScale(const Vector3& scale)
+{
+    if (Vector3::NearEqual(m_transform.scale, scale))
+        return;
+
+    if (m_parent)
+    {
+        m_localTransform.scale = scale / m_parent->GetScale();
+    }
+    else
+    {
+        m_localTransform.scale = scale;
+    }
+
+    // Update transform
+    UpdateTransform();
+}
+
+void ActorBase::SetLocalScale(const Vector3& scale)
+{
+    if (Vector3::NearEqual(m_localTransform.scale, scale))
+        return;
+
+    m_localTransform.scale = scale;
+
+    // Update transform
+    UpdateTransform();
+}
+
+void ActorBase::SetTransform(const Transform& transform)
+{
+}

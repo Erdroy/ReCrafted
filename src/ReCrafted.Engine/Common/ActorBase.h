@@ -26,18 +26,22 @@ private:
     bool m_static = false;
     bool m_active = true;
     bool m_firstFrame = true;
-    ActorBase* m_root = nullptr;
     ActorBase* m_parent = nullptr;
+
     Transform m_transform = Transform::Identity;
+    Transform m_localTransform = Transform::Identity;
 
     Text m_name;
 
-    Array<ActorBase*> m_children;
-    Array<Script*> m_scripts;
+    Array<ActorBase*> m_children = {};
+    Array<Script*> m_scripts = {};
 
 private: /* ActorPool events */
     void OnAcquire();
     void OnRelease();
+
+private:
+    void Cleanup(ActorId_t id = 0u);
 
 private:
     void Start();
@@ -47,6 +51,9 @@ private:
 
 public:
     ActorBase() = default;
+
+protected:
+    void UpdateTransform();
 
 protected:
     virtual void OnAwake() {}
@@ -75,6 +82,53 @@ public:
     void SetActive(bool active);
 
 public:
+    void SetPosition(const Vector3& position);
+    void SetLocalPosition(const Vector3& position);
+
+    void SetRotation(const Quaternion& rotation);
+    void SetLocalRotation(const Quaternion& rotation);
+
+    void SetScale(const Vector3& scale);
+    void SetLocalScale(const Vector3& scale);
+
+    Vector3 GetPosition() const
+    {
+        return m_transform.translation;
+    }
+
+    Vector3 GetLocalPosition() const
+    {
+        return m_localTransform.translation;
+    }
+
+    Quaternion GetRotation() const
+    {
+        return m_transform.orientation;
+    }
+
+    Quaternion GetLocalRotation() const
+    {
+        return m_localTransform.orientation;
+    }
+
+    Vector3 GetScale() const
+    {
+        return m_transform.scale;
+    }
+
+    Vector3 GetLocalScale() const
+    {
+        return m_localTransform.scale;
+    }
+
+    Transform* GetTransform()
+    {
+        return &m_transform;
+    }
+
+    void SetTransform(const Transform& transform);
+
+public:
     virtual void Destroy() = 0;
 
 public:
@@ -89,11 +143,6 @@ public:
             return m_active && m_parent->IsActive();
 
         return m_active;
-    }
-
-    Transform* GetTransform()
-    {
-        return &m_transform;
     }
 
     const Array<ActorBase*>& GetChildren() const
