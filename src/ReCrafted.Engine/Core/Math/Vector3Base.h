@@ -62,6 +62,8 @@ public:
     Vector3Base<T> Normalized() const;
     bool IsNormalized() const;
     bool IsZero() const;
+    bool IsNaN() const;
+    bool IsInfinity() const;
 
     T Dot(const Vector3Base<T>& a) const;
     T Length() const;
@@ -83,8 +85,12 @@ public:
     static T Distance(const Vector3Base<T>& a, const Vector3Base<T>& b);
     static T DistanceSquared(const Vector3Base<T>& a, const Vector3Base<T>& b);
 
+    static bool NearEqual(const Vector3Base<T>& a, const Vector3Base<T>& b);
+
     static bool IsNormalized(const Vector3Base<T>& a);
     static bool IsZero(const Vector3Base<T>& a);
+    static bool IsNaN(const Vector3Base<T>& a);
+    static bool IsInfinity(const Vector3Base<T>& a);
 
 public:
     /* Operators */
@@ -214,6 +220,18 @@ bool Vector3Base<T>::IsZero() const
 }
 
 template <typename T>
+bool Vector3Base<T>::IsNaN() const
+{
+    return isnan(x) || isnan(y) || isnan(z);
+}
+
+template <typename T>
+bool Vector3Base<T>::IsInfinity() const
+{
+    return isinf(x) || isinf(y) || isinf(z);
+}
+
+template <typename T>
 T Vector3Base<T>::Dot(const Vector3Base<T>& a) const
 {
     return (x * a.x) + (y * a.y) + (z * a.z);
@@ -336,6 +354,12 @@ T Vector3Base<T>::DistanceSquared(const Vector3Base<T>& a, const Vector3Base<T>&
 }
 
 template <typename T>
+bool Vector3Base<T>::NearEqual(const Vector3Base<T>& a, const Vector3Base<T>& b)
+{
+    return Math::NearEqual(a.x, b.x) && Math::NearEqual(a.y, b.y) && Math::NearEqual(a.z, b.z);
+}
+
+template <typename T>
 bool Vector3Base<T>::IsNormalized(const Vector3Base<T>& a)
 {
     return Math::IsOne(a.LengthSquared());
@@ -345,6 +369,18 @@ template <typename T>
 bool Vector3Base<T>::IsZero(const Vector3Base<T>& a)
 {
     return a.x == 0 && a.y == 0 && a.z == 0;
+}
+
+template <typename T>
+bool Vector3Base<T>::IsNaN(const Vector3Base<T>& a)
+{
+    return a.IsNaN();
+}
+
+template <typename T>
+bool Vector3Base<T>::IsInfinity(const Vector3Base<T>& a)
+{
+    return a.IsInfinity();
 }
 
 template <typename T>

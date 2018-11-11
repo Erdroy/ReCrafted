@@ -124,6 +124,12 @@ public:
     }
 
     template<typename TValue>
+    static bool NearEqual(TValue a, TValue b)
+    {
+        return Abs(a - b) < ZeroTolerance;
+    }
+
+    template<typename TValue>
     static bool IsOne(TValue value)
     {
         return IsZero(value - 1);

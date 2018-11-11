@@ -56,6 +56,8 @@ public:
     Vector2Base<T> Normalized() const;
     bool IsNormalized() const;
     bool IsZero() const;
+    bool IsNaN() const;
+    bool IsInfinity() const;
 
     T Dot(const Vector2Base<T>& a) const;
     T Length() const;
@@ -77,8 +79,12 @@ public:
     static T Distance(const Vector2Base<T>& a, const Vector2Base<T>& b);
     static T DistanceSquared(const Vector2Base<T>& a, const Vector2Base<T>& b);
 
+    static bool NearEqual(const Vector2Base<T>& a, const Vector2Base<T>& b);
+
     static bool IsNormalized(const Vector2Base<T>& a);
     static bool IsZero(const Vector2Base<T>& a);
+    static bool IsNaN(const Vector2Base<T>& a);
+    static bool IsInfinity(const Vector2Base<T>& a);
 
 public:
     /* Operators */
@@ -195,6 +201,18 @@ bool Vector2Base<T>::IsZero() const
 }
 
 template <typename T>
+bool Vector2Base<T>::IsNaN() const
+{
+    return isnan(x) || isnan(y);
+}
+
+template <typename T>
+bool Vector2Base<T>::IsInfinity() const
+{
+    return isinf(x) || isinf(y);
+}
+
+template <typename T>
 T Vector2Base<T>::Dot(const Vector2Base<T>& a) const
 {
     return (x * a.x) + (y * a.y);
@@ -306,6 +324,12 @@ T Vector2Base<T>::DistanceSquared(const Vector2Base<T>& a, const Vector2Base<T>&
 }
 
 template <typename T>
+bool Vector2Base<T>::NearEqual(const Vector2Base<T>& a, const Vector2Base<T>& b)
+{
+    return Math::NearEqual(a.x, b.x) && Math::NearEqual(a.y, b.y);
+}
+
+template <typename T>
 bool Vector2Base<T>::IsNormalized(const Vector2Base<T>& a)
 {
     return Math::IsOne(a.LengthSquared());
@@ -315,6 +339,18 @@ template <typename T>
 bool Vector2Base<T>::IsZero(const Vector2Base<T>& a)
 {
     return a.x == 0 && a.y == 0;
+}
+
+template <typename T>
+bool Vector2Base<T>::IsNaN(const Vector2Base<T>& a)
+{
+    return a.IsNaN();
+}
+
+template <typename T>
+bool Vector2Base<T>::IsInfinity(const Vector2Base<T>& a)
+{
+    return a.IsInfinity();
 }
 
 template <typename T>
