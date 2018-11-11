@@ -121,12 +121,10 @@ public:
         return m_localTransform.scale;
     }
 
-    Transform* GetTransform()
+    Transform& GetTransform()
     {
-        return &m_transform;
+        return m_transform;
     }
-
-    void SetTransform(const Transform& transform);
 
 public:
     virtual void Destroy() = 0;

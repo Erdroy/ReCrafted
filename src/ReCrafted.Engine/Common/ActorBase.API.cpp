@@ -70,7 +70,7 @@ namespace Internal
 
     Transform* GetTransform(ActorBase* actor)
     {
-        return actor->GetTransform();
+        return &actor->GetTransform();
     }
 }
 

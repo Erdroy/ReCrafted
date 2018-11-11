@@ -21,7 +21,7 @@ void ActorBase::OnRelease()
     }
 
     // We need to unbind the managed object, because we don't want to get 
-    // finalized being called on us, because it will also remove our 
+    // finalizer being called on us, because it will also remove our 
     // unmanaged instance. And we don't want this, because we are assigning 
     // managed instances dynamically (when actor is acquired).
     UnbindManaged(this);
@@ -134,7 +134,7 @@ void ActorBase::UpdateTransform()
     if(m_parent)
     {
         // Transform to world-space by using parent's transform.
-        m_transform = m_parent->GetTransform()->ToWorld(m_localTransform);
+        m_transform = m_parent->GetTransform().ToWorld(m_localTransform);
     }
     else
     {
@@ -256,12 +256,14 @@ void ActorBase::SetActive(const bool active)
 
 void ActorBase::SetPosition(const Vector3& position)
 {
+    MAIN_THREAD_ONLY();
+
     if (Vector3::NearEqual(m_transform.translation, position))
         return;
 
     if(m_parent)
     {
-        m_localTransform.translation = m_parent->GetTransform()->ToLocal(position);
+        m_localTransform.translation = m_parent->GetTransform().ToLocal(position);
     }
     else
     {
@@ -274,6 +276,8 @@ void ActorBase::SetPosition(const Vector3& position)
 
 void ActorBase::SetLocalPosition(const Vector3& position)
 {
+    MAIN_THREAD_ONLY();
+
     if (Vector3::NearEqual(m_localTransform.translation, position))
         return;
 
@@ -285,12 +289,14 @@ void ActorBase::SetLocalPosition(const Vector3& position)
 
 void ActorBase::SetRotation(const Quaternion& rotation)
 {
+    MAIN_THREAD_ONLY();
+
     if (Quaternion::NearEqual(m_transform.orientation, rotation))
         return;
 
     if(m_parent)
     {
-        m_localTransform.orientation = m_parent->GetTransform()->ToLocal(rotation);
+        m_localTransform.orientation = m_parent->GetTransform().ToLocal(rotation);
     }
     else
     {
@@ -303,6 +309,8 @@ void ActorBase::SetRotation(const Quaternion& rotation)
 
 void ActorBase::SetLocalRotation(const Quaternion& rotation)
 {
+    MAIN_THREAD_ONLY();
+
     if (Quaternion::NearEqual(m_localTransform.orientation, rotation))
         return;
 
@@ -314,6 +322,8 @@ void ActorBase::SetLocalRotation(const Quaternion& rotation)
 
 void ActorBase::SetScale(const Vector3& scale)
 {
+    MAIN_THREAD_ONLY();
+
     if (Vector3::NearEqual(m_transform.scale, scale))
         return;
 
@@ -332,6 +342,8 @@ void ActorBase::SetScale(const Vector3& scale)
 
 void ActorBase::SetLocalScale(const Vector3& scale)
 {
+    MAIN_THREAD_ONLY();
+
     if (Vector3::NearEqual(m_localTransform.scale, scale))
         return;
 
@@ -339,8 +351,4 @@ void ActorBase::SetLocalScale(const Vector3& scale)
 
     // Update transform
     UpdateTransform();
-}
-
-void ActorBase::SetTransform(const Transform& transform)
-{
 }
