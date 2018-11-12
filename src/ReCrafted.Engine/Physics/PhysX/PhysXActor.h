@@ -29,6 +29,9 @@ public:
 
     Vector3 GetPosition() override;
     Quaternion GetRotation() override;
+
+    void SetVelocity(const Vector3& velocity) override;
+    Vector3 GetVelocity() override;
 };
 
 #endif // PHYSXACTOR_H

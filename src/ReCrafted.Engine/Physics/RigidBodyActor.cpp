@@ -86,6 +86,16 @@ void RigidBodyActor::SetRotation(const Quaternion& rotation)
     m_actor->SetRotation(rotation);
 }
 
+void RigidBodyActor::SetVelocity(const Vector3& velocity)
+{
+    m_actor->SetVelocity(velocity);
+}
+
+Vector3 RigidBodyActor::GetVelocity()
+{
+    return m_actor->GetVelocity();
+}
+
 RigidBodyActor* RigidBodyActor::Create()
 {
     return CreateDynamic();

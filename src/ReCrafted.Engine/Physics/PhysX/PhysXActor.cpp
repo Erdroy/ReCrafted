@@ -46,3 +46,16 @@ Quaternion PhysXActor::GetRotation()
 
     return { rot.x, rot.y, rot.z, rot.w };
 }
+
+void PhysXActor::SetVelocity(const Vector3& velocity)
+{
+    cvar dynamic = static_cast<PxRigidDynamic*>(actor);
+    dynamic->setLinearVelocity(PxVec3(velocity.x, velocity.y, velocity.z));
+}
+
+Vector3 PhysXActor::GetVelocity()
+{
+    cvar dynamic = static_cast<PxRigidDynamic*>(actor);
+    cvar vel = dynamic->getLinearVelocity();
+    return { vel.x, vel.y, vel.z };
+}

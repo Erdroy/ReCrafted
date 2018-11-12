@@ -40,6 +40,9 @@ public:
     void SetPosition(const Vector3& position) override;
     void SetRotation(const Quaternion& rotation) override;
 
+    void SetVelocity(const Vector3& velocity);
+    Vector3 GetVelocity();
+
 public:
     /**
      * \brief Creates and initializes new dynamic actor.

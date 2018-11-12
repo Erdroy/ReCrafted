@@ -21,6 +21,9 @@ public:
 
     virtual Vector3 GetPosition() = 0;
     virtual Quaternion GetRotation() = 0;
+
+    virtual void SetVelocity(const Vector3& velocity) = 0;
+    virtual Vector3 GetVelocity() = 0;
 };
 
 #endif // IPHYSICSACTOR_H
