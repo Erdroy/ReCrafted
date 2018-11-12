@@ -9,6 +9,7 @@ namespace ReCrafted.APIBuilder
         Private,
 
         Regular,
+        RegularNew,
         Abstract,
         Virtual,
         Override,

@@ -36,6 +36,7 @@
 #define PRIVATE
 
 #define REGULAR
+#define REGULAR_NEW
 #define OVERRIDE
 #define STATIC
 #define VIRTUAL

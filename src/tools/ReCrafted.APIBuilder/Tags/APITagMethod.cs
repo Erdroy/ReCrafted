@@ -61,6 +61,8 @@ namespace ReCrafted.APIBuilder.Tags
         {
             switch (Modifier)
             {
+                case APIParameters.RegularNew:
+                    return "new ";
                 case APIParameters.Abstract:
                     return "abstract ";
                 case APIParameters.Virtual:
@@ -113,6 +115,8 @@ namespace ReCrafted.APIBuilder.Tags
 
             if (parameters[1] == "REGULAR")
                 Modifier = APIParameters.Regular;
+            else if (parameters[1] == "REGULAR_NEW")
+                Modifier = APIParameters.RegularNew;
             else if (parameters[1] == "ABSTRACT")
                 Modifier = APIParameters.Abstract;
             else if (parameters[1] == "OVERRIDE")
