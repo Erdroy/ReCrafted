@@ -65,7 +65,6 @@ protected:
     virtual void OnEnable() {}
     virtual void OnDisable() {}
 
-protected:
     virtual void OnAddedChild(ActorBase* child) {}
     virtual void OnRemovedChild(ActorBase* child) {}
     virtual void OnParentChange(ActorBase* parent) {}
@@ -81,6 +80,9 @@ public:
     void RemoveScript(Script* script);
 
     void SetActive(bool active);
+
+public:
+    virtual void Destroy() = 0;
 
 public:
     void SetPosition(const Vector3& position);
@@ -126,9 +128,6 @@ public:
     {
         return m_transform;
     }
-
-public:
-    virtual void Destroy() = 0;
 
 public:
     bool IsActiveSelf() const

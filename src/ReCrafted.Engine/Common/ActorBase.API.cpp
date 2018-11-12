@@ -5,6 +5,66 @@
 
 namespace Internal
 {
+    void GetPosition(ActorBase* actor, Vector3* position)
+    {
+        *position = actor->GetPosition();
+    }
+
+    void SetPosition(ActorBase* actor, Vector3* position)
+    {
+        actor->SetPosition(*position);
+    }
+
+    void GetLocalPosition(ActorBase* actor, Vector3* position)
+    {
+        *position = actor->GetLocalPosition();
+    }
+
+    void SetLocalPosition(ActorBase* actor, Vector3* position)
+    {
+        actor->SetLocalPosition(*position);
+    }
+
+    void GetRotation(ActorBase* actor, Quaternion* rotation)
+    {
+        *rotation = actor->GetRotation();
+    }
+
+    void SetRotation(ActorBase* actor, Quaternion* rotation)
+    {
+        actor->SetRotation(*rotation);
+    }
+
+    void GetLocalRotation(ActorBase* actor, Quaternion* rotation)
+    {
+        *rotation = actor->GetLocalRotation();
+    }
+
+    void SetLocalRotation(ActorBase* actor, Quaternion* rotation)
+    {
+        actor->SetLocalRotation(*rotation);
+    }
+
+    void GetScale(ActorBase* actor, Vector3* scale)
+    {
+        *scale = actor->GetScale();
+    }
+
+    void SetScale(ActorBase* actor, Vector3* scale)
+    {
+        actor->SetScale(*scale);
+    }
+
+    void GetLocalScale(ActorBase* actor, Vector3* scale)
+    {
+        *scale = actor->GetLocalScale();
+    }
+
+    void SetLocalScale(ActorBase* actor, Vector3* scale)
+    {
+        actor->SetLocalScale(*scale);
+    }
+
     MonoObject* GetChild(ActorBase* actor, const int index)
     {
         ASSERT(actor);
@@ -18,6 +78,33 @@ namespace Internal
             return nullptr;
 
         return childrenArray[index]->GetManagedPtr();
+    }
+
+    void Destroy(ActorBase* actor)
+    {
+        ASSERT(actor);
+        actor->Destroy();
+    }
+
+    void SetIsActive(ActorBase* actor, const bool active)
+    {
+        ASSERT(actor);
+        
+        actor->SetActive(active);
+    }
+
+    bool GetIsActive(ActorBase* actor)
+    {
+        ASSERT(actor);
+
+        return actor->IsActive();
+    }
+
+    bool GetIsActiveSelf(ActorBase* actor)
+    {
+        ASSERT(actor);
+
+        return actor->IsActiveSelf();
     }
 
     int GetChildCount(ActorBase* actor)
@@ -68,9 +155,9 @@ namespace Internal
         actor->RemoveScript(script);
     }
 
-    Transform* GetTransform(ActorBase* actor)
+    Transform GetTransform(ActorBase* actor)
     {
-        return &actor->GetTransform();
+        return actor->GetTransform();
     }
 }
 
@@ -79,14 +166,84 @@ void ActorBase::InitRuntime()
     API_FILE("Common/ActorBase.Gen.cs");
     {
         API_USING("ReCrafted.API.Common");
+        API_USING("ReCrafted.API.Mathematics");
 
         API_COMMENT("ActorBase class.");
         API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Common", "ActorBase", "Object", PARTIAL, NOCONSTRUCTOR);
         {
-            API_METHOD(INTERNAL, REGULAR, "GetTransform", UNSAFE, NOPROXY, EXTERN);
+            /* Transform */
+
+            API_METHOD(INTERNAL, REGULAR, "GetTransform", NOPROXY, EXTERN);
             {
                 API_BIND("ReCrafted.API.Common.ActorBase::Internal_GetTransform", &Internal::GetTransform);
-                API_RETURN("Transform*");
+                API_RETURN("Transform");
+            }
+            API_METHOD_END();
+
+            API_COMMENT("Gets or sets current actor position.");
+            API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Position", GETSET);
+            {
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_Position_Get", &Internal::GetPosition);
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_Position_Set", &Internal::SetPosition);
+            }
+            API_PROPERTY_END();
+
+            API_COMMENT("Gets or sets current actor position.");
+            API_PROPERTY(PUBLIC, REGULAR, "Vector3", "LocalPosition", GETSET, BY_REF);
+            {
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_LocalPosition_Get", &Internal::GetLocalPosition);
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_LocalPosition_Set", &Internal::SetLocalPosition);
+            }
+            API_PROPERTY_END();
+
+            API_COMMENT("Gets or sets current actor rotation.");
+            API_PROPERTY(PUBLIC, REGULAR, "Quaternion", "Rotation", GETSET, BY_REF);
+            {
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_Position_Get", &Internal::GetRotation);
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_Position_Set", &Internal::SetRotation);
+            }
+            API_PROPERTY_END();
+
+            API_COMMENT("Gets or sets current actor rotation.");
+            API_PROPERTY(PUBLIC, REGULAR, "Quaternion", "LocalRotation", GETSET, BY_REF);
+            {
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_LocalPosition_Get", &Internal::GetLocalRotation);
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_LocalPosition_Set", &Internal::SetLocalRotation);
+            }
+            API_PROPERTY_END();
+
+            API_COMMENT("Gets or sets current actor scale.");
+            API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Scale", GETSET);
+            {
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_Scale_Get", &Internal::GetScale);
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_Scale_Set", &Internal::SetScale);
+            }
+            API_PROPERTY_END();
+
+            API_COMMENT("Gets or sets current actor scale.");
+            API_PROPERTY(PUBLIC, REGULAR, "Vector3", "LocalScale", GETSET, BY_REF);
+            {
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_LocalScale_Get", &Internal::GetLocalScale);
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_LocalScale_Set", &Internal::SetLocalScale);
+            }
+            API_PROPERTY_END();
+
+
+            /* Basics */
+
+            API_COMMENT("Gets children count of this actor.");
+            API_PROPERTY(PUBLIC, REGULAR, "int", "ChildCount", GET);
+            {
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_ChildCount_Get", &Internal::GetChildCount);
+            }
+            API_PROPERTY_END();
+
+            API_COMMENT("Gets child from this actor with given index.");
+            API_METHOD(PUBLIC, REGULAR, "GetChild", EXTERN);
+            {
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_GetChild", &Internal::GetChild);
+                API_PARAM("int", "index");
+                API_RETURN("ActorBase");
             }
             API_METHOD_END();
 
@@ -125,20 +282,26 @@ void ActorBase::InitRuntime()
             }
             API_METHOD_END();
 
-            API_METHOD(INTERNAL, REGULAR, "GetChildCount", NOPROXY, EXTERN);
+            API_COMMENT("Destroys this actor. Actor will be released at the end of the current frame.");
+            API_METHOD(PUBLIC, REGULAR_NEW, "Destroy", EXTERN);
             {
-                API_BIND("ReCrafted.API.Common.ActorBase::Internal_GetChildCount", &Internal::GetChildCount);
-                API_RETURN("int");
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_Destroy", &Internal::Destroy);
             }
             API_METHOD_END();
 
-            API_METHOD(INTERNAL, REGULAR, "GetChild", NOPROXY, EXTERN);
+            API_COMMENT("Activates or deactivates this actor.");
+            API_PROPERTY(PUBLIC, REGULAR, "bool", "IsActive", GETSET, BY_REF);
             {
-                API_BIND("ReCrafted.API.Common.ActorBase::Internal_GetChild", &Internal::GetChild);
-                API_PARAM("int", "index");
-                API_RETURN("ActorBase");
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_IsActive_Get", &Internal::GetIsActive);
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_IsActive_Set", &Internal::SetIsActive);
             }
-            API_METHOD_END();
+            API_PROPERTY_END();
+
+            API_PROPERTY(PUBLIC, REGULAR, "bool", "IsActiveSelf", GET);
+            {
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_GetIsActiveSelf", &Internal::GetIsActiveSelf);
+            }
+            API_PROPERTY_END();
         }
         API_CLASS_END();
     }

@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Assets.cs" />
     <Compile Include="Audio\AudioSound.Gen.cs" />
+    <Compile Include="Common\ActorBase.cs" />
     <Compile Include="Common\ActorBase.Gen.cs" />
     <Compile Include="Common\Clipboard.cs" />
     <Compile Include="Common\Components\TransformComponent.cs" />
