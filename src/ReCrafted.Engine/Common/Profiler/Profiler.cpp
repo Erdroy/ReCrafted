@@ -139,6 +139,10 @@ void Profiler::DrawDebugScreen()
         DrawTextLine(TEXT_CONST("[Managed Memory]"), Color(0xFF0A00FF));
         DrawTextLine(Text::Format(TEXT_CONST("Memory usage: {0} {1}"), gcUsedSize, ByteFormat::ToString(gcUsedSizeUnit)), Color(0xFFFFFFFF));
         DrawTextLine(Text::Format(TEXT_CONST("Heap size: {0} {1}"), gcHeapSize, ByteFormat::ToString(gcHeapSizeUnit)), Color(0xFFFFFFFF));
+        MakeLineSpace(1);
+
+        DrawTextLine(TEXT_CONST("[Scripting]"), Color(0xFF0A00FF));
+        DrawTextLine(Text::Format(TEXT_CONST("Object count: {0}"), Object::GetObjectCount()), Color(0xFFFFFFFF));
         MakeLineSpace(2);
 
         DrawTextLine(TEXT_CONST("[Render Statistics]"), Color(0xFF0A00FF));

@@ -140,6 +140,12 @@ public:
     static void UnbindManaged(Object* object);
     static void DestroyAll();
     static void Finalize(Object* object);
+
+    static int GetObjectCount()
+    {
+        ScopeLock(m_objectsLock);
+        return m_objects.Count();
+    }
 };
 
 #endif // OBJECT_H
