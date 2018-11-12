@@ -70,6 +70,7 @@ protected:
     virtual void OnRemovedChild(ActorBase* child) {}
     virtual void OnParentChange(ActorBase* parent) {}
     virtual void OnParentActiveChange(bool parentActive) {}
+    virtual void OnTransformChange() {}
 
 public:
     void SetParent(ActorBase* newParent);

@@ -142,6 +142,9 @@ void ActorBase::UpdateTransform()
         m_transform = m_localTransform;
     }
 
+    // Raise transform change event
+    OnTransformChange();
+
     // Broadcast UpdateTransform
     for(cvar child : m_children)
         child->UpdateTransform();
