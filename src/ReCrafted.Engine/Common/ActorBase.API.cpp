@@ -159,6 +159,11 @@ namespace Internal
     {
         return actor->GetTransform();
     }
+
+    void SetTransform(ActorBase* actor, Transform* transform)
+    {
+        return actor->SetTransform(*transform);
+    }
 }
 
 void ActorBase::InitRuntime()
@@ -177,6 +182,13 @@ void ActorBase::InitRuntime()
             {
                 API_BIND("ReCrafted.API.Common.ActorBase::Internal_GetTransform", &Internal::GetTransform);
                 API_RETURN("Transform");
+            }
+            API_METHOD_END();
+
+            API_METHOD(INTERNAL, REGULAR, "SetTransform", NOPROXY, EXTERN);
+            {
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_SetTransform", &Internal::SetTransform);
+                API_PARAM("ref Transform", "transform");
             }
             API_METHOD_END();
 

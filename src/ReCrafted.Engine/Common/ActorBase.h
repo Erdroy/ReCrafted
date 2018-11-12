@@ -94,6 +94,8 @@ public:
     void SetScale(const Vector3& scale);
     void SetLocalScale(const Vector3& scale);
 
+    void SetTransform(const Transform& transform);
+
     Vector3 GetPosition() const
     {
         return m_transform.translation;

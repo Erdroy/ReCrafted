@@ -61,7 +61,7 @@ public: /* Space transformations */
         return orientation * rotation;
     }
 
-    Transform ToLocal(Transform& transform) const
+    Transform ToLocal(const Transform& transform) const
     {
         Transform result;
 

@@ -355,3 +355,20 @@ void ActorBase::SetLocalScale(const Vector3& scale)
     // Update transform
     UpdateTransform();
 }
+
+void ActorBase::SetTransform(const Transform& transform)
+{
+    MAIN_THREAD_ONLY();
+
+    if(m_parent)
+    {
+        m_localTransform = m_parent->GetTransform().ToLocal(transform);
+    }
+    else
+    {
+        m_localTransform = transform;
+    }
+
+    // Update transform
+    UpdateTransform();
+}

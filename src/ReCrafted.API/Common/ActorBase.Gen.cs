@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/12/2018 13:42:05 Source: 'ActorBase.API.cpp' Target: 'Common/ActorBase.Gen.cs'
+// Generated: 11/12/2018 14:11:00 Source: 'ActorBase.API.cpp' Target: 'Common/ActorBase.Gen.cs'
 
 using ReCrafted.API.Common;
 using ReCrafted.API.Mathematics;
@@ -18,6 +18,9 @@ namespace ReCrafted.API.Common
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern Transform Internal_GetTransform(IntPtr nativePtr);
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_SetTransform(IntPtr nativePtr, ref Transform transform);
 
 		/// <summary>
 		///	Gets child from this actor with given index.

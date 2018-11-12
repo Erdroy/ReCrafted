@@ -5,17 +5,31 @@ using ReCrafted.API.Mathematics;
 
 namespace ReCrafted.API.Common
 {
+    /// <summary>
+    /// Transform structure used by Actors in ReCrafted.API.
+    /// </summary>
     public struct Transform : IEquatable<Transform>
     {
-        public Vector3 Position;
-        public Quaternion Rotation;
+        /// <summary>
+        /// The translation of this transform.
+        /// </summary>
+        public Vector3 Translation;
+
+        /// <summary>
+        /// The orientation of this transform.
+        /// </summary>
+        public Quaternion Orientation;
+
+        /// <summary>
+        /// The scale of this transform.
+        /// </summary>
         public Vector3 Scale;
 
         // TODO: API Transform implementation
 
         public bool Equals(Transform other)
         {
-            return Position.Equals(other.Position) && Rotation.Equals(other.Rotation) && Scale.Equals(other.Scale);
+            return Translation.Equals(other.Translation) && Orientation.Equals(other.Orientation) && Scale.Equals(other.Scale);
         }
 
         public override bool Equals(object obj)
@@ -28,11 +42,61 @@ namespace ReCrafted.API.Common
         {
             unchecked
             {
-                var hashCode = Position.GetHashCode();
-                hashCode = (hashCode * 397) ^ Rotation.GetHashCode();
+                var hashCode = Translation.GetHashCode();
+                hashCode = (hashCode * 397) ^ Orientation.GetHashCode();
                 hashCode = (hashCode * 397) ^ Scale.GetHashCode();
                 return hashCode;
             }
         }
+
+        /// <summary>
+        /// Gets the translation matrix from this transform.
+        /// </summary>
+        public Matrix TranslationMatrix => Matrix.Translation(Translation);
+
+        /// <summary>
+        /// Gets the scaling matrix from this transform.
+        /// </summary>
+        public Matrix ScalingMatrix => Matrix.Scaling(Scale);
+
+        /// <summary>
+        /// Gets the rotation matrix from this transform.
+        /// </summary>
+        public Matrix RotationMatrix => Matrix.RotationQuaternion(Orientation);
+
+        /// <summary>
+        /// Gets the transformation matrix from this transform.
+        /// </summary>
+        public Matrix TransformMatrix => RotationMatrix * RotationMatrix * TranslationMatrix;
+
+        /// <summary>
+        /// Gets the forward directional vector from this transform.
+        /// </summary>
+        public Vector3 Forward => RotationMatrix.Forward;
+
+        /// <summary>
+        /// Gets the backward directional vector from this transform.
+        /// </summary>
+        public Vector3 Backward => RotationMatrix.Backward;
+
+        /// <summary>
+        /// Gets the up directional vector from this transform.
+        /// </summary>
+        public Vector3 Up => RotationMatrix.Up;
+
+        /// <summary>
+        /// Gets the down directional vector from this transform.
+        /// </summary>
+        public Vector3 Down => RotationMatrix.Down;
+
+        /// <summary>
+        /// Gets the left directional vector from this transform.
+        /// </summary>
+        public Vector3 Left => RotationMatrix.Left;
+
+        /// <summary>
+        /// Gets the right directional vector from this transform.
+        /// </summary>
+        public Vector3 Right => RotationMatrix.Right;
     }
 }
