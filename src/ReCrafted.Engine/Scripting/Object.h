@@ -12,6 +12,7 @@
 #include "Class.h"
 #include "Domain.h"
 #include "Core/Types.h"
+#include "Core/Lock.h"
 #include "Core/Containers/Array.h"
 
 #include <vector>
@@ -28,6 +29,7 @@ SCRIPTING_API_IMPL()
 
 private:
     static Array<Object*> m_objects;
+    static Lock m_objectsLock;
 
 private:
     MonoObject* m_object = nullptr;

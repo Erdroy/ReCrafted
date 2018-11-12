@@ -8,6 +8,7 @@
 #include "Field.h"
 
 Array<Object*> Object::m_objects;
+Lock Object::m_objectsLock;
 
 RefPtr<Method> Object::FindMethod(const char* methodName) const
 {
@@ -123,6 +124,7 @@ void Object::InitializeInstance(Object* object, MonoObject* instance)
 
 void Object::RegisterObject(Object* object)
 {
+    ScopeLock(m_objectsLock);
     m_objects.Add(object);
 }
 
@@ -134,6 +136,8 @@ void Object::Destroy(Object* object)
     // free garbage collector handle
     mono_gchandle_free(object->m_gchandle);
     object->m_gchandle = 0u;
+
+    ScopeLock(m_objectsLock);
 
     // unregister
     m_objects.Remove(object);
@@ -163,6 +167,8 @@ void Object::UnbindManaged(Object* object)
 
 void Object::DestroyAll()
 {
+    ScopeLock(m_objectsLock);
+
     for (auto i = 0u; i < m_objects.Size(); i ++)
     {
         auto object = m_objects[i];
@@ -178,6 +184,8 @@ void Object::DestroyAll()
 
 void Object::Finalize(Object* object)
 {
+    ScopeLock(m_objectsLock);
+
     if (m_objects.Count() > 0u && m_objects.Remove(object))
     {
         object->OnDestroy();
