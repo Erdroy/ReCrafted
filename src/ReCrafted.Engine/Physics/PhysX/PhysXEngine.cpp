@@ -7,6 +7,7 @@
 #include "Physics/Components/PhysicsBodyComponent.h"
 #include "Physics/Components/PhysicsShapeComponent.h"
 
+#include <particles/PxParticleBase.h>
 #include <algorithm>
 
 PxPhysics* GPxPhysX;
@@ -68,6 +69,9 @@ void PhysXEngine::Initialize()
     // Create px physics
     GPxPhysX = m_physics = PxCreateBasePhysics(PX_PHYSICS_VERSION, *m_foundation, GPxTolerances, true, m_pvd);
     _ASSERT_(m_physics, "Failed to create PhysX physics!");
+
+    // Register particle module
+    PxRegisterParticles(*m_physics);
 
 #ifndef _DEBUG
     // Initialize px extensions

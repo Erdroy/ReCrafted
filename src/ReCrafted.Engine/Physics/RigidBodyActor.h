@@ -32,11 +32,13 @@ private:
     void OnUpdate() override;
     void OnDestroy() override;
 
-    void OnTransformChange() override;
-
 public:
     void AttachCollision(Collision* collision);
     void DetachCollision();
+
+public:
+    void SetPosition(const Vector3& position) override;
+    void SetRotation(const Quaternion& rotation) override;
 
 public:
     /**

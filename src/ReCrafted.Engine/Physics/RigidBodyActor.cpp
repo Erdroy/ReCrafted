@@ -23,8 +23,8 @@ void RigidBodyActor::OnUpdate()
 {
     ASSERT(m_actor);
 
-    //SetPosition(m_actor->GetPosition());
-    //SetRotation(m_actor->GetRotation());
+    SetPosition(m_actor->GetPosition());
+    SetRotation(m_actor->GetRotation());
 
     // TODO: Interpolation/Extrapolation
 }
@@ -45,15 +45,6 @@ void RigidBodyActor::OnDestroy()
 
     PhysicsManager::Engine()->ReleaseActor(m_actor);
     m_actor = nullptr;
-}
-
-void RigidBodyActor::OnTransformChange()
-{
-    Super::OnTransformChange();
-
-    // Update actor transform
-    //m_actor->SetPosition(GetPosition());
-    //m_actor->SetRotation(GetRotation());
 }
 
 void RigidBodyActor::AttachCollision(Collision* collision)
@@ -77,6 +68,22 @@ void RigidBodyActor::DetachCollision()
     m_collision->m_attached = false;
     m_actor->DetachShape(m_collision->m_shape);
     m_collision = nullptr;
+}
+
+void RigidBodyActor::SetPosition(const Vector3& position)
+{
+    Super::SetPosition(position);
+
+    // Update actor transform
+    m_actor->SetPosition(position);
+}
+
+void RigidBodyActor::SetRotation(const Quaternion& rotation)
+{
+    Super::SetRotation(rotation);
+
+    // Update actor transform
+    m_actor->SetRotation(rotation);
 }
 
 RigidBodyActor* RigidBodyActor::Create()
