@@ -85,14 +85,14 @@ public:
     virtual void Destroy() = 0;
 
 public:
-    void SetPosition(const Vector3& position);
-    void SetLocalPosition(const Vector3& position);
+    virtual void SetPosition(const Vector3& position);
+    virtual void SetLocalPosition(const Vector3& position);
 
-    void SetRotation(const Quaternion& rotation);
-    void SetLocalRotation(const Quaternion& rotation);
+    virtual void SetRotation(const Quaternion& rotation);
+    virtual void SetLocalRotation(const Quaternion& rotation);
 
-    void SetScale(const Vector3& scale);
-    void SetLocalScale(const Vector3& scale);
+    virtual void SetScale(const Vector3& scale);
+    virtual void SetLocalScale(const Vector3& scale);
 
     void SetTransform(const Transform& transform);
 
