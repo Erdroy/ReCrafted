@@ -5,14 +5,14 @@
 #include "Core/Lock.h"
 #include "Core/Action.h"
 #include "Core/Logger.h"
+#include "Scripting/ScriptingEngine.h"
+#include "Physics/PhysicsManager.h"
 #include "Platform/Platform.h"
 
 #include "Meshing/MarchingCubes/MarchingCubesMesher.h"
 #include "Meshing/Transvoxel/TransvoxelMesher.h"
 
 #include <concurrentqueue.h>
-#include "Scripting/ScriptingEngine.h"
-#include "Physics/PhysicsSystem.h"
 
 SINGLETON_IMPL(SpaceObjectManager)
 
@@ -56,7 +56,7 @@ void SpaceObjectManager::WorkerFunction()
 
     // Create shape cooker
     Logger::Log("Creating Physics Shape Cooker");
-    cvar shapeCooker = PhysicsSystem::Physics()->CreateCooker();
+    cvar shapeCooker = PhysicsManager::Engine()->CreateCooker();
     shapeCooker->Initialize({});
 
     // Create mesher
@@ -96,7 +96,7 @@ void SpaceObjectManager::WorkerFunction()
     }
 
     ScriptingEngine::DetachCurrentThread();
-    PhysicsSystem::Physics()->ReleaseCooker(shapeCooker);
+    PhysicsManager::Engine()->ReleaseCooker(shapeCooker);
     delete mesher;
 }
 

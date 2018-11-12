@@ -6,7 +6,7 @@
 #include "Graphics/Camera.h"
 #include "Storage/VoxelStorage.h"
 #include "Meshing/IVoxelMesher.h"
-#include "Physics/PhysicsSystem.h"
+#include "Physics/PhysicsManager.h"
 #include "Game/Universe.h"
 
 void SpaceObjectChunk::Init(SpaceObjectOctreeNode* node, SpaceObject* spaceObject) // WARNING: this function is called on WORKER THREAD!
@@ -123,22 +123,13 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher) // WARNING: this function i
 
 void SpaceObjectChunk::InitializePhysics()
 {
-    ASSERT(m_physicsActor == nullptr);
+    ASSERT(m_chunkActor == nullptr);
     ASSERT(IS_MAIN_THREAD());
 
-    cvar physics = PhysicsSystem::Physics();
-    cvar transform = TransformComponent();
+    // Create static actor
+    m_chunkActor = RigidBodyActor::CreateStatic();
 
-    // Setup actor body component
-    var body = PhysicsBodyComponent(Universe::GetPhysicsScene().get(), PhysicsBodyComponent::Static);
-
-    // Create actor
-    m_physicsActor = physics->CreateActor(transform, body);
-
-    // Attach actor
-    Universe::GetPhysicsScene()->AttachActor(m_physicsActor);
-
-    ASSERT(m_physicsActor);
+    ASSERT(m_chunkActor);
 }
 
 void SpaceObjectChunk::ShutdownPhysics()
@@ -146,22 +137,21 @@ void SpaceObjectChunk::ShutdownPhysics()
     ASSERT(IS_MAIN_THREAD());
 
     // Do not shutdown physics if there is no physics actor
-    if (!m_physicsActor)
+    if (!m_chunkActor)
         return;
 
     // Release actor
-    Universe::GetPhysicsScene()->DetachActor(m_physicsActor);
-    PhysicsSystem::Physics()->ReleaseActor(m_physicsActor);
-    m_physicsActor = nullptr;
+    m_chunkActor->Destroy();
+    m_chunkActor = nullptr;
 }
 
 void SpaceObjectChunk::AttachCollision() const
 {
     ASSERT(IS_MAIN_THREAD());
-    ASSERT(m_physicsActor);
+    ASSERT(m_chunkActor);
     ASSERT(m_collision->IsAttached() == false);
 
-    m_collision->AttachCollision(m_physicsActor);
+    m_collision->AttachCollision(m_chunkActor);
 }
 
 void SpaceObjectChunk::DetachCollision() const

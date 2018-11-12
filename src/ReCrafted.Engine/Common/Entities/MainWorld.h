@@ -10,7 +10,6 @@
 #include "Common/EntityComponentSystem.h"
 #include "Core/EngineComponent.h"
 #include "Audio/AudioSystem.h"
-#include "Physics/PhysicsSystem.h"
 
 class MainWorld : public EngineComponent<MainWorld>
 {
@@ -18,7 +17,6 @@ private:
     World* m_world = nullptr;
 
     AudioSystem* m_audioSystem = nullptr;
-    PhysicsSystem* m_physicsSystem = nullptr;
 
 public:
     void OnInit() override;

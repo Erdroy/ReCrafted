@@ -55,7 +55,7 @@ void SceneManager::Simulate()
 
 void SceneManager::AddActor(ActorBase* actor)
 {
-    m_actors.Remove(actor);
+    m_actors.Add(actor);
 }
 
 void SceneManager::RemoveActor(ActorBase* actor)

@@ -37,12 +37,17 @@ public:
 
 public:
     IPhysicsShapeCooker* CreateCooker() override;
+    IPhysicsShapeCooker* GetDefaultCooker() override;
     void ReleaseCooker(IPhysicsShapeCooker* cooker) override;
 
-    IPhysicsActor* CreateActor(const TransformComponent& transform, PhysicsBodyComponent& body) override;
+    IPhysicsActor* CreateActor(const Transform& transform, bool dynamic) override;
     void ReleaseActor(IPhysicsActor* actor) override;
 
-    IPhysicsShape* CreateShape(const TransformComponent& transform, const PhysicsShapeComponent& shape) override;
+    IPhysicsShape* CreateBoxShape(const Vector3& extents) override;
+    IPhysicsShape* CreateSphereShape(float radius) override;
+    IPhysicsShape* CreateCapsuleShape(float radius, float halfHeight) override;
+    IPhysicsShape* CreateTriangleMeshShape(void* shapePtr) override;
+    IPhysicsShape* CreateConvexHullMeshShape(void* shapePtr) override;
     void ReleaseShape(IPhysicsShape* shape) override;
 
     RefPtr<IPhysicsScene> CreateScene() override;

@@ -25,7 +25,9 @@ void ActorBase::OnRelease()
     // unmanaged instance. And we don't want this, because we are assigning 
     // managed instances dynamically (when actor is acquired).
     UnbindManaged(this);
-    Release(this);
+
+    // ... and now, we can safely destroy the actor object.
+    Object::Destroy(this);
 
     // Remove from scene
     SceneManager::GetInstance()->RemoveActor(this);

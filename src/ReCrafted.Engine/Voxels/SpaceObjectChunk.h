@@ -17,6 +17,7 @@
 
 #include <atomic>
 #include <concurrentqueue.h>
+#include "Physics/RigidBodyActor.h"
 
 struct IVoxelMesher;
 class Mesh;
@@ -57,7 +58,7 @@ private:
     Lock m_uploadLock = {};
     std::atomic<UploadType> m_uploadType = None;
 
-    IPhysicsActor* m_physicsActor = nullptr;
+    RigidBodyActor* m_chunkActor = nullptr;
 
 private:
     void SetUpload(const RefPtr<VoxelChunkMesh>& mesh, const RefPtr<VoxelChunkCollsion>& collision, UploadType uploadType);

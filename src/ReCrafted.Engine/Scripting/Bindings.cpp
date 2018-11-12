@@ -3,7 +3,9 @@
 #include "Bindings.h"
 #include "Object.h"
 
+#include "Audio/AudioSound.h"
 #include "Common/ActorBase.h"
+#include "Common/EmptyActor.h"
 #include "Common/Display.h"
 #include "Common/Time.h"
 #include "Common/Entities/ComponentSystem.h"
@@ -12,17 +14,18 @@
 #include "Common/Profiler/Profiler.h"
 #include "Common/Input/Input.h"
 #include "Common/Input/KeyboardBuffer.h"
-#include "UI/UI.h"
-#include "Graphics/Camera.h"
-#include "Graphics/Font.h"
 #include "Core/Application.h"
+#include "Graphics/Camera.h"
+#include "Graphics/DebugDraw.h"
+#include "Graphics/Font.h"
+#include "Physics/RigidBodyActor.h"
+#include "Physics/Collision.h"
+#include "Physics/PhysicsManager.h"
+#include "UI/UI.h"
 #include "WebUI/WebUI.h"
 #include "WebUI/WebUIView.h"
-#include "Graphics/DebugDraw.h"
 #include "Voxels/VoxelMaterialManager.h"
-#include "Audio/AudioSound.h"
 #include "Voxels/Assets/VoxelMaterial.h"
-#include "Common/EmptyActor.h"
 
 static spp::sparse_hash_map<std::string, Action<Object*, bool>> g_objectMap;
 
@@ -49,9 +52,15 @@ void Bindings::Bind()
     Script::InitRuntime();
 
 
+    // == Physics ==
+    Collision::InitRuntime();
+    PhysicsManager::InitRuntime();
+
+
     // == Actors ==
     ActorBase::InitRuntime(); // base
     EmptyActor::InitRuntime();
+    RigidBodyActor::InitRuntime();
 
 
     // == ECS ==

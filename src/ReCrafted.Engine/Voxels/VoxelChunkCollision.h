@@ -8,24 +8,23 @@
 // includes
 #include "ReCrafted.h"
 #include "Core/IDisposable.h"
-#include "Physics/IPhysicsShape.h"
-#include "Physics/IPhysicsActor.h"
 #include "Physics/IPhysicsShapeCooker.h"
+#include "Physics/Collision.h"
+#include "Physics/RigidBodyActor.h"
 
 class VoxelChunkCollsion : public IDisposable
 {
 private:
-    IPhysicsShape* m_physicsShape = nullptr;
-    IPhysicsActor* m_physicsActor = nullptr;
-
+    RigidBodyActor* m_physicsActor = nullptr;
     IPhysicsShapeCooker* m_cooker = nullptr;
+    Collision* m_collision = nullptr;
 
     void* m_triangleMesh = nullptr;
     void* m_convexHullMesh = nullptr;
 
 public:
     void BuildCollision(IPhysicsShapeCooker* cooker, float voxelScale, Vector3* vertices, size_t vertexCount, uint32_t* indices, size_t indexCount);
-    void AttachCollision(IPhysicsActor* actor);
+    void AttachCollision(RigidBodyActor* actor);
     void DetachCollision();
 
 public:
@@ -36,7 +35,7 @@ public:
 
     bool IsValid() const
     {
-        return m_triangleMesh || m_convexHullMesh || m_physicsShape;
+        return m_triangleMesh || m_convexHullMesh || m_collision != nullptr;
     }
 
 public:

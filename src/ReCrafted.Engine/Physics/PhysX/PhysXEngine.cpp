@@ -134,18 +134,24 @@ void PhysXEngine::ReleaseCooker(IPhysicsShapeCooker* cooker)
     delete cooker;
 }
 
-IPhysicsActor* PhysXEngine::CreateActor(const TransformComponent& transform, PhysicsBodyComponent& body)
+IPhysicsActor* PhysXEngine::CreateActor(const Transform& transform, const bool dynamic)
 {
-    rvar position = transform.position;
-    rvar rotation = transform.rotation; // TODO: Set pxTransform rotation when we will have our new math
+    rvar position = transform.translation;
+    rvar rotation = transform.orientation;
 
-    cvar pxTransform = PxTransform(position.x, position.y, position.z);
+    // BUG: Fix actor transform initialization
+
+    cvar pxTransform = PxTransform(position.x, position.y, position.z/*, PxQuat(rotation.x, rotation.y, rotation.z, rotation.w)*/);
     
+    ASSERT(pxTransform.isValid());
+
     PxRigidActor* pxActor;
-    if (body.type == PhysicsBodyComponent::Dynamic)
+    if (dynamic)
         pxActor = m_physics->createRigidDynamic(pxTransform);
     else
         pxActor = m_physics->createRigidStatic(pxTransform);
+
+    ASSERT(pxActor);
 
     // Return new PhysX Actor Impl.
     return new PhysXActor(pxActor);
@@ -163,44 +169,46 @@ void PhysXEngine::ReleaseActor(IPhysicsActor* actor)
     delete actor;
 }
 
-IPhysicsShape* PhysXEngine::CreateShape(const TransformComponent& transform, const PhysicsShapeComponent& shape)
+IPhysicsShapeCooker* PhysXEngine::GetDefaultCooker()
 {
-    rvar extents = shape.extents;
+    ASSERT(m_shapeCooker);
+    return m_shapeCooker;
+}
 
-    PxShape* pxShape = nullptr;
-    switch (shape.type)
-    {
-    case PhysicsShapeComponent::Box:
-    {
-        pxShape = m_physics->createShape(PxBoxGeometry(extents.x, extents.y, extents.z), *m_defaultMaterial);
-        break;
-    }
-    case PhysicsShapeComponent::Sphere:
-    {
-        pxShape = m_physics->createShape(PxSphereGeometry(shape.radius), *m_defaultMaterial);
-        break;
-    }
-    case PhysicsShapeComponent::TriangleMesh:
-    {
-        ASSERT(shape.shapePointer);
+IPhysicsShape* PhysXEngine::CreateBoxShape(const Vector3& extents)
+{
+    return new PhysXShape(m_physics->createShape(PxBoxGeometry(extents.x, extents.y, extents.z), *m_defaultMaterial));
+}
 
-        cvar pxTriangleMesh = static_cast<PxTriangleMesh*>(shape.shapePointer);
+IPhysicsShape* PhysXEngine::CreateSphereShape(const float radius)
+{
+    return new PhysXShape(m_physics->createShape(PxSphereGeometry(radius), *m_defaultMaterial));
+}
 
-        // Create shape
-        pxShape = m_physics->createShape(PxTriangleMeshGeometry(pxTriangleMesh,
-            PxMeshScale(), PxMeshGeometryFlag::eDOUBLE_SIDED), *m_defaultMaterial);
-        break;
-    }
-    default:
-        break;
-    }
+IPhysicsShape* PhysXEngine::CreateCapsuleShape(const float radius, const float halfHeight)
+{
+    return new PhysXShape(m_physics->createShape(PxCapsuleGeometry(radius, halfHeight), *m_defaultMaterial));
+}
 
-    ASSERT(pxShape);
+IPhysicsShape* PhysXEngine::CreateTriangleMeshShape(void* shapePtr)
+{
+    ASSERT(shapePtr);
 
-    pxShape->setLocalPose(PxTransform(0.0f, 0.0f, 0.0f));
+    cvar pxTriangleMesh = static_cast<PxTriangleMesh*>(shapePtr);
 
-    // Return new PhysX Shape Impl.
-    return new PhysXShape(pxShape);
+    // Create shape
+    return new PhysXShape(m_physics->createShape(PxTriangleMeshGeometry(pxTriangleMesh,
+        PxMeshScale(), PxMeshGeometryFlag::eDOUBLE_SIDED), *m_defaultMaterial));
+}
+
+IPhysicsShape* PhysXEngine::CreateConvexHullMeshShape(void* shapePtr)
+{
+    ASSERT(shapePtr);
+
+    cvar pxHullMesh = static_cast<PxConvexMesh*>(shapePtr);
+
+    // Create shape
+    return new PhysXShape(m_physics->createShape(PxConvexMeshGeometry(pxHullMesh, PxMeshScale()), *m_defaultMaterial));
 }
 
 void PhysXEngine::ReleaseShape(IPhysicsShape* shape)

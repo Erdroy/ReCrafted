@@ -20,6 +20,7 @@
 #include "Graphics/DebugDraw.h"
 #include "UI/UI.h"
 #include "WebUI/WebUI.h"
+#include "Physics/PhysicsManager.h"
 #include "Platform/Platform.h"
 #include "Scene/SceneManager.h"
 #include "Scripting/ScriptingEngine.h"
@@ -41,6 +42,7 @@ void EngineMain::RegisterComponents() const
     m_componentManager->RegisterComponent(MainWorld::GetInstance());
     m_componentManager->RegisterComponent(ActorPoolManager::GetInstance());
     m_componentManager->RegisterComponent(SceneManager::GetInstance());
+    m_componentManager->RegisterComponent(PhysicsManager::GetInstance());
     m_componentManager->RegisterComponent(Universe::GetInstance());
     m_componentManager->RegisterComponent(DebugDraw::GetInstance());
     m_componentManager->RegisterComponent(UI::GetInstance());
@@ -70,6 +72,7 @@ void EngineMain::OnSimulate()
 
         // Simulate
         MainWorld::GetInstance()->Simulate();
+        PhysicsManager::GetInstance()->Simulate();
         SceneManager::GetInstance()->Simulate();
         Universe::GetInstance()->Simulate();
         Application::GetInstance()->Simulate();

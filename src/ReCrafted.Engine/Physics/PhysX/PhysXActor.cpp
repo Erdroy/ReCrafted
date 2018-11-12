@@ -21,10 +21,14 @@ void PhysXActor::DetachShape(IPhysicsShape* shape)
 
 void PhysXActor::SetPosition(const Vector3& position)
 {
+    cvar pose = actor->getGlobalPose();
+    actor->setGlobalPose(PxTransform(position.x, position.y, position.z, pose.q));
 }
 
 void PhysXActor::SetRotation(const Quaternion& position)
 {
+    cvar pose = actor->getGlobalPose();
+    actor->setGlobalPose(PxTransform(pose.p, PxQuat{ position.x, position.y, position.z, position.w }));
 }
 
 Vector3 PhysXActor::GetPosition()

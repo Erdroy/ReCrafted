@@ -7,8 +7,9 @@
 
 // includes
 #include "ReCrafted.h"
-#include "IPhysicsScene.h"
-#include "IPhysicsShapeCooker.h"
+#include "Common/Transform.h"
+#include "Physics/IPhysicsScene.h"
+#include "Physics/IPhysicsShapeCooker.h"
 
 class IPhysicsShape;
 class IPhysicsActor;
@@ -29,12 +30,17 @@ public:
 
 public:
     virtual IPhysicsShapeCooker* CreateCooker() = 0;
+    virtual IPhysicsShapeCooker* GetDefaultCooker() = 0;
     virtual void ReleaseCooker(IPhysicsShapeCooker* cooker) = 0;
 
-    virtual IPhysicsActor* CreateActor(const TransformComponent& transform, PhysicsBodyComponent& body) = 0;
+    virtual IPhysicsActor* CreateActor(const Transform& transform, bool dynamic) = 0;
     virtual void ReleaseActor(IPhysicsActor* actor) = 0;
 
-    virtual IPhysicsShape* CreateShape(const TransformComponent& transform, const PhysicsShapeComponent& shape) = 0;
+    virtual IPhysicsShape* CreateBoxShape(const Vector3& extents) = 0;
+    virtual IPhysicsShape* CreateSphereShape(float radius) = 0;
+    virtual IPhysicsShape* CreateCapsuleShape(float radius, float halfHeight) = 0;
+    virtual IPhysicsShape* CreateTriangleMeshShape(void* shapePtr) = 0;
+    virtual IPhysicsShape* CreateConvexHullMeshShape(void* shapePtr) = 0;
     virtual void ReleaseShape(IPhysicsShape* shape) = 0;
 
     virtual RefPtr<IPhysicsScene> CreateScene() = 0;
