@@ -2,6 +2,7 @@
 
 #include "Universe.h"
 #include "Common/EmptyActor.h"
+#include "Common/Time.h"
 #include "Common/Input/Input.h"
 #include "Common/Profiler/Profiler.h"
 #include "Common/Entities/MainWorld.h"
@@ -9,7 +10,7 @@
 #include "Graphics/Camera.h"
 #include "Graphics/DebugDraw.h"
 #include "Graphics/Graphics.h"
-#include "Physics/PhysicsSystem.h"
+#include "Physics/PhysicsManager.h"
 #include "UI/UI.h"
 #include "Voxels/SpaceObjectManager.h"
 #include "Voxels/Storage/VoxelStorage.h"
@@ -47,21 +48,25 @@ void Universe::OnInit()
     // Generate primary data
     m_testObject1->GeneratePrimary();
 
-    // Create physics scene
-    m_physicsScene = PhysicsSystem::Physics()->CreateScene();
+    m_root = EmptyActor::Create();
+    m_c1 = EmptyActor::Create();
+    m_c2 = EmptyActor::Create();
 
-    TestActors();
+    m_root->AddChild(m_c1);
+    m_root->AddChild(m_c2);
+
+    m_c1->SetLocalPosition(Vector3::Right * 3.0f);
+    m_c2->SetLocalPosition(Vector3::Left * 3.0f);
 }
 
 void Universe::OnDispose()
 {
     // Shutdown
-    SafeDisposeNN(SpaceObjectManager::GetInstance());
+    SafeDisposeNN(SpaceObjectManager::GetInstance()); // TODO: Fix issue with m_cooker being deleted before SpaceObject collision release!
     SafeDispose(m_testObject1);
-
-    PhysicsSystem::Physics()->DestroyScene(m_physicsScene);
 }
 
+float yRotation;
 void Universe::Update()
 {
     ASSERT(Camera::GetMainCamera());
@@ -73,15 +78,26 @@ void Universe::Update()
         m_viewUpdateEnabled = !m_viewUpdateEnabled;
     }
 
-    /*if(Input::IsKeyDown(Key_F))
+    m_root->SetRotation(Quaternion::Rotation(Vector3::Up, yRotation));
+    m_c1->SetRotation(Quaternion::Rotation(-m_c1->GetPosition().Normalized(), yRotation));
+
+
+    DebugDraw::SetMatrix(m_root->GetTransform().GetTransformationMatrix());
+    DebugDraw::DrawBox(Vector3::Zero, Vector3::One);
+
+    DebugDraw::SetMatrix(m_c1->GetTransform().GetTransformationMatrix());
+    DebugDraw::DrawBox(Vector3::Zero, Vector3::One * 0.25f);
+
+    DebugDraw::SetMatrix(m_c2->GetTransform().GetTransformationMatrix());
+    DebugDraw::DrawBox(Vector3::Zero, Vector3::One * 0.25f);
+
+    
+    if(Input::IsKeyDown(Key_F))
     {
-        var projectile = GameObject::Create();
-
-        projectile->AddComponent<PhysicsBodyComponent>(m_physicsScene.get(), PhysicsBodyComponent::Dynamic);
-        projectile->AddComponent<PhysicsShapeComponent>(PhysicsShapeComponent::Box, Vector3::One * 0.5f);
-
+        var projectile = RigidBodyActor::CreateDynamic();
+        projectile->AttachCollision(Collision::CreateSphereCollision(0.1f));
         projectile->SetPosition(Camera::GetMainCamera()->GetPosition());
-
+        projectile->SetVelocity(Camera::GetMainCamera()->GetForward() * 50.0f);
         m_projectiles.Add(projectile);
     }
 
@@ -89,9 +105,9 @@ void Universe::Update()
     {
         DebugDraw::SetMatrix(Matrix::CreateRotation(box->GetRotation()) * Matrix::CreateTranslation(box->GetPosition()));
         DebugDraw::SetColor(Color(255, 110, 0, 255));
-        DebugDraw::DrawBox(Vector3::Zero, Vector3::One);
+        DebugDraw::DrawBox(Vector3::Zero, Vector3::One * 0.2f);
     }
-    DebugDraw::SetMatrix(Matrix::Identity);*/
+    DebugDraw::SetMatrix(Matrix::Identity);
 
     var modPosition = Camera::GetMainCamera()->GetPosition() + Camera::GetMainCamera()->GetForward() * 5.0f;
 
@@ -142,13 +158,6 @@ void Universe::Update()
         Graphics::Screenshot(Text(fileName.str().c_str()));
         Logger::Log("Screenshot saved as {0}", fileName.str());
     }
-}
-
-void Universe::TestActors()
-{
-    var actor1 = EmptyActor::Create();
-
-    actor1->Destroy();
 }
 
 void Universe::Simulate()

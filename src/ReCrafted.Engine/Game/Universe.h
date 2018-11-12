@@ -7,8 +7,9 @@
 
 // includes
 #include "Voxels/SpaceObject.h"
+#include "Common/EmptyActor.h"
 #include "Core/EngineComponent.h"
-#include "Physics/IPhysicsScene.h"
+#include "Physics/RigidBodyActor.h"
 
 /**
  * \brief Universe class - main class for whole game world.
@@ -22,11 +23,14 @@ private:
 
 private:
     RefPtr<SpaceObject> m_testObject1 = nullptr;
-    RefPtr<IPhysicsScene> m_physicsScene = nullptr;
 
     VoxelMaterial_t m_selectedMaterial = 1u;
 
-    //Array<GameObject*> m_projectiles;
+    Array<RigidBodyActor*> m_projectiles;
+    
+    EmptyActor* m_root = nullptr;
+    EmptyActor* m_c1 = nullptr;
+    EmptyActor* m_c2 = nullptr;
 
 public:
     virtual ~Universe() = default;
@@ -36,16 +40,8 @@ private:
     void OnDispose() override;
     void Update() override;
 
-    void TestActors();
-
     void Simulate();
     void RenderUI();
-
-public:
-    static RefPtr<IPhysicsScene> GetPhysicsScene()
-    {
-        return m_instance->m_physicsScene;
-    }
 };
 
 #endif // UNIVERSE_H
