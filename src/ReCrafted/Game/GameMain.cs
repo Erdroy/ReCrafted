@@ -70,7 +70,7 @@ namespace ReCrafted.Game
                     "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber;
 
                 // Initialize default game systems
-                GameSystem.AddGameSystem<SuperConsole>();
+                //GameSystem.AddGameSystem<SuperConsole>();
                 GameSystem.AddGameSystem<PauseMenu>();
                 GameSystem.AddGameSystem<Messenger>();
 
@@ -99,9 +99,9 @@ namespace ReCrafted.Game
 
                 if (Input.IsKeyDown(Keys.Escape))
                 {
-                    if (SuperConsole.Instance.Enabled)
-                        DisableConsole();
-                    else
+                    //if (SuperConsole.Instance.Enabled)
+                    //    DisableConsole();
+                    //else
                     {
                         if (PauseMenu.Instance.Enabled)
                         {
@@ -116,11 +116,11 @@ namespace ReCrafted.Game
 
                 if (Input.IsKeyDown(Keys.OEM3))
                 {
-                    if (SuperConsole.Instance.Enabled)
-                    {
-                        DisableConsole();
-                    }
-                    else
+                    //if (SuperConsole.Instance.Enabled)
+                    //{
+                    //    DisableConsole();
+                    //}
+                    //else
                     {
                         EnableConsole();
                     }
