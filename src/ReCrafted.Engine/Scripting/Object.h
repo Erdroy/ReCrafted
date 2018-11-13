@@ -16,9 +16,13 @@
 #include "Core/Containers/Array.h"
 
 #include <vector>
+#include <spp.h>
+#include <atomic>
 
 class Method;
 class Field;
+
+using ObjectId_t = uint32_t;
 
 class Object
 {
@@ -28,10 +32,13 @@ private:
 SCRIPTING_API_IMPL()
 
 private:
-    static Array<Object*> m_objects;
-    static Lock m_objectsLock;
+    static std::atomic<ObjectId_t> m_lastObjectId;
+    static std::atomic<ObjectId_t> m_objectCount;
+    static spp::sparse_hash_map<ObjectId_t, Object*> m_objectMap;
+    static Lock m_objectMapLock;
 
 private:
+    ObjectId_t m_id = 0u;
     MonoObject* m_object = nullptr;
     MonoClass* m_class = nullptr;
     uint32_t m_gchandle = 0u;
@@ -133,7 +140,7 @@ public:
 public:
     static bool IsObjectInitialized(Object* object);
     static MonoObject* Create(Object* object, MonoDomain* domain, MonoClass* monoClass, bool isObject);
-    static void InitializeInstance(Object* object, MonoObject* instance);
+    static void InitializeInstance(Object* object, MonoObject* instance, bool isObject = true);
     static void RegisterObject(Object* object);
     static void Destroy(Object* object);
     static void Release(Object* object);
@@ -143,8 +150,7 @@ public:
 
     static int GetObjectCount()
     {
-        ScopeLock(m_objectsLock);
-        return m_objects.Count();
+        return m_objectCount;
     }
 };
 

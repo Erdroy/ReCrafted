@@ -7,8 +7,10 @@
 #include "Method.h"
 #include "Field.h"
 
-Array<Object*> Object::m_objects;
-Lock Object::m_objectsLock;
+std::atomic<ObjectId_t> Object::m_lastObjectId;
+std::atomic<ObjectId_t> Object::m_objectCount;
+spp::sparse_hash_map<ObjectId_t, Object*> Object::m_objectMap;
+Lock Object::m_objectMapLock;
 
 RefPtr<Method> Object::FindMethod(const char* methodName) const
 {
@@ -81,51 +83,46 @@ MonoObject* Object::Create(Object* object, MonoDomain* domain, MonoClass* monoCl
 
     ASSERT(objectInstance);
 
-    mono_runtime_object_init(objectInstance);
-
-    // get garbage collector handle, and mark it pinned
-    auto gch = mono_gchandle_new(objectInstance, true);
-
-    object->m_gchandle = gch;
-    object->m_object = objectInstance;
-    object->m_class = monoClass;
-
-    if (isObject)
-    {
-        // set native pointer
-        auto testField = object->FindField("NativePtr");
-        testField->SetValue((void*)&object);
-
-        // register object
-        RegisterObject(object);
-    }
+    // Initialize instance
+    InitializeInstance(object, objectInstance, isObject);
 
     return objectInstance;
 }
 
-void Object::InitializeInstance(Object* object, MonoObject* instance)
+void Object::InitializeInstance(Object* object, MonoObject* instance, bool isObject)
 {
     mono_runtime_object_init(instance);
 
-    // get garbage collector handle, and mark it pinned
-    auto gch = mono_gchandle_new(instance, true);
-
-    object->m_gchandle = gch;
+    // Setup object instance
+    object->m_gchandle = mono_gchandle_new(instance, true); // get garbage collector handle, and mark it pinned
     object->m_object = instance;
     object->m_class = mono_object_get_class(instance);
 
-    // set native pointer
-    auto testField = object->FindField("NativePtr");
-    testField->SetValue(&object);
+    // Set NativePtr field in managed object if this object inherits Object object.
+    if(isObject)
+    {
+        // Set native pointer
+        const auto testField = object->FindField("NativePtr");
+        testField->SetValue(&object);
+    }
 
-    // register object
+    // Register object
     RegisterObject(object);
 }
 
 void Object::RegisterObject(Object* object)
 {
-    ScopeLock(m_objectsLock);
-    m_objects.Add(object);
+    ScopeLock(m_objectMapLock);
+
+    // Setup object id
+    cvar objectId = m_lastObjectId++;
+    object->m_id = objectId;
+
+    // Add object to object map
+    m_objectMap.insert(std::make_pair(objectId, object));
+
+    // Increment object count
+    ++m_objectCount;
 }
 
 void Object::Destroy(Object* object)
@@ -133,14 +130,26 @@ void Object::Destroy(Object* object)
     // Call on destroy event
     object->OnDestroy();
 
-    // free garbage collector handle
+    // Free garbage collector handle
     mono_gchandle_free(object->m_gchandle);
     object->m_gchandle = 0u;
 
-    ScopeLock(m_objectsLock);
+    ScopeLock(m_objectMapLock);
 
-    // unregister
-    m_objects.Remove(object);
+    // Unregister
+    cvar objectIterator = m_objectMap.find(object->m_id);
+    
+    if (objectIterator == m_objectMap.end())
+    {
+        Logger::LogWarning("Destroying object which is already destroyed (or invalid)! Pointer: {0}", reinterpret_cast<uint64_t>(object));
+    }
+    else
+    {
+        m_objectMap.erase(objectIterator);
+
+        // Decrement object count
+        --m_objectCount;
+    }
 
     // Reset object's managed data
     object->m_gchandle = 0u;
@@ -167,27 +176,36 @@ void Object::UnbindManaged(Object* object)
 
 void Object::DestroyAll()
 {
-    ScopeLock(m_objectsLock);
+    ScopeLock(m_objectMapLock);
 
-    for (auto i = 0u; i < m_objects.Size(); i ++)
+    for(rvar objectPair : m_objectMap)
     {
-        auto object = m_objects[i];
+        cvar object = objectPair.second;
 
+        // Call OnDestroy manually
         object->OnDestroy();
 
-        // free garbage collector handle
+        // Free garbage collector handle
         mono_gchandle_free(object->m_gchandle);
     }
 
-    m_objects.Clear();
+    // Clear object map
+    m_objectMap.clear();
+
+    // Reset object count
+    m_objectCount = 0u;
 }
 
 void Object::Finalize(Object* object)
 {
-    ScopeLock(m_objectsLock);
+    ScopeLock(m_objectMapLock);
 
-    if (m_objects.Count() > 0u && m_objects.Remove(object))
+    cvar objectIterator = m_objectMap.find(object->m_id);
+
+    if (objectIterator != m_objectMap.end())
     {
+        // Remove object if not finalized
+        m_objectMap.erase(objectIterator);
         object->OnDestroy();
         Logger::LogWarning("Object got finalized, but not destroyed at first!");
     }
