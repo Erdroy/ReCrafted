@@ -25,10 +25,10 @@ void PhysXActor::SetPosition(const Vector3& position)
     actor->setGlobalPose(PxTransform(position.x, position.y, position.z, pose.q));
 }
 
-void PhysXActor::SetRotation(const Quaternion& position)
+void PhysXActor::SetRotation(const Quaternion& rotation)
 {
     cvar pose = actor->getGlobalPose();
-    actor->setGlobalPose(PxTransform(pose.p, PxQuat{ position.x, position.y, position.z, position.w }));
+    actor->setGlobalPose(PxTransform(pose.p, PxQuat{ rotation.x, rotation.y, rotation.z, rotation.w }));
 }
 
 Vector3 PhysXActor::GetPosition()

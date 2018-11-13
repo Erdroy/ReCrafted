@@ -9,6 +9,7 @@
 
 #include <particles/PxParticleBase.h>
 #include <algorithm>
+#include "PhysXCharacter.h"
 
 PxPhysics* GPxPhysX;
 PxFoundation* GPxFoundation;
@@ -82,6 +83,9 @@ void PhysXEngine::Initialize()
     m_shapeCooker = new PhysXShapeCooker();
     m_shapeCooker->Initialize({});
 
+    // Create controller manager
+    // m_controllerManager = PxCreateControllerManager(); // TODO: Per-scene controller manager (?)
+
     // Initialize dispatchers
     m_cpuDispatcher = PxDefaultCpuDispatcherCreate(std::min(4u, std::thread::hardware_concurrency() - 1)); // Max. 4 threads for physics TODO: Game settings
 
@@ -136,6 +140,32 @@ void PhysXEngine::ReleaseCooker(IPhysicsShapeCooker* cooker)
     ASSERT(cooker);
     cooker->Shutdown();
     delete cooker;
+}
+
+IPhysicsCharacter* PhysXEngine::CreateCharacter(float radius, float height, float stepOffset, float slopeLimit, float contactOffset)
+{
+    // Create controller description
+    PxCapsuleControllerDesc controllerDesc;
+    controllerDesc.radius = radius;
+    controllerDesc.height = height;
+    controllerDesc.stepOffset = stepOffset;
+    controllerDesc.slopeLimit = slopeLimit;
+    controllerDesc.contactOffset = contactOffset;
+    controllerDesc.material = m_defaultMaterial;
+
+    // Make sure that we've got proper controller description
+    ASSERT(controllerDesc.isValid());
+
+    // Create controller
+    cvar pxController = m_controllerManager->createController(controllerDesc);
+
+    ASSERT(pxController);
+
+    return new PhysXCharacter(static_cast<PxCapsuleController*>(pxController));
+}
+
+void PhysXEngine::ReleaseCharacter(IPhysicsCharacter* character)
+{
 }
 
 IPhysicsActor* PhysXEngine::CreateActor(const Transform& transform, const bool dynamic)

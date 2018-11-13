@@ -18,9 +18,10 @@
 #include "Graphics/Camera.h"
 #include "Graphics/DebugDraw.h"
 #include "Graphics/Font.h"
-#include "Physics/RigidBodyActor.h"
 #include "Physics/Collision.h"
+#include "Physics/CharacterActor.h"
 #include "Physics/PhysicsManager.h"
+#include "Physics/RigidBodyActor.h"
 #include "UI/UI.h"
 #include "WebUI/WebUI.h"
 #include "WebUI/WebUIView.h"
@@ -61,6 +62,7 @@ void Bindings::Bind()
     ActorBase::InitRuntime(); // base
     EmptyActor::InitRuntime();
     RigidBodyActor::InitRuntime();
+    CharacterActor::InitRuntime();
 
 
     // == ECS ==
