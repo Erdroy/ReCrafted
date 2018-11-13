@@ -16,18 +16,19 @@ void ContentManager::OnInit()
 
 void ContentManager::OnDispose()
 {
-    // copy array
-    Array<Asset*> assets{};
-    assets.Copy(m_assets);
+    // Unload from queue
+    UnloadAssets();
 
     // Release all assets
-    for(rvar asset : assets)
+    for(rvar assetPair : m_assetMap)
     {
+        cvar asset = assetPair.second;
+
         if(asset)
             ReleaseAsset(asset);
     }
 
-    m_assets.Clear();
+    // Clear
     m_assetMap.clear();
 }
 
@@ -70,7 +71,6 @@ void ContentManager::RegisterAsset(Asset* asset)
     asset->m_registered = true;
 
     m_assetMap[asset->GetAssetGuid()] = asset;
-    m_assets.Add(asset);
 }
 
 bool ContentManager::LoadAsset(Asset* asset, const char* name) const
@@ -132,7 +132,6 @@ void ContentManager::ReleaseAsset(Asset* asset)
     asset->m_loaded = false;
     asset->m_unloaded = true;
 
-    m_assets.Remove(asset);
     m_assetMap.erase(asset->GetAssetGuid());
 
     asset->OnUnload();

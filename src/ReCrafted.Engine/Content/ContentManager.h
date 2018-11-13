@@ -60,7 +60,6 @@ private:
     };
 
 private:
-    Array<Asset*> m_assets;
     spp::sparse_hash_map<Guid, Asset*> m_assetMap;
     moodycamel::ConcurrentQueue<Asset*> m_unloadQueue;
 
