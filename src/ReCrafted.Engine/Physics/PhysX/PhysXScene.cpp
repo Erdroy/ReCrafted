@@ -3,6 +3,9 @@
 #include "PhysXScene.h"
 #include "Common/Time.h"
 #include "PhysXActor.h"
+#include "Graphics/DebugDraw.h"
+#include "Graphics/Camera.h"
+#include "Common/Profiler/Profiler.h"
 
 PhysXScene::PhysXScene(PxPhysics* physics, PxCpuDispatcher* cpuDispatcher, const PxTolerancesScale& toleranceScale)
 {
@@ -27,6 +30,10 @@ PhysXScene::PhysXScene(PxPhysics* physics, PxCpuDispatcher* cpuDispatcher, const
     m_scene = m_physics->createScene(sceneDesc);
     ASSERT(m_scene);
 
+    // Setup visualization
+    m_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f); 
+    m_scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 1.0f);
+
     // Create scratch memory for this scene
     m_scrathMemory = _aligned_malloc(PhysXStepper::SCRATCH_BLOCK_SIZE, 16);
     ASSERT(m_scrathMemory);
@@ -43,6 +50,32 @@ PhysXScene::~PhysXScene()
 
 void PhysXScene::Update()
 {
+    if (!Profiler::IsPhysicsDebugEnabled())
+    {
+        m_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 0.0f);
+        return;
+    }
+
+    var cp1 = Camera::GetMainCamera()->GetPosition() - Vector3::One * 20.0f;
+    var cp2 = Camera::GetMainCamera()->GetPosition() + Vector3::One * 20.0f;
+
+    // Enable physics visualization
+    m_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
+
+    // Set visualization culling box
+    m_scene->setVisualizationCullingBox(PxBounds3(*reinterpret_cast<PxVec3*>(&cp1), *reinterpret_cast<PxVec3*>(&cp2)));
+    
+    crvar rb = m_scene->getRenderBuffer();
+    for (PxU32 i = 0; i < rb.getNbLines(); i++)
+    {
+        crvar line = rb.getLines()[i];
+
+        cvar p1 = *reinterpret_cast<const Vector3*>(&line.pos0);
+        cvar p2 = *reinterpret_cast<const Vector3*>(&line.pos1);
+
+        DebugDraw::SetColor(line.color0);
+        DebugDraw::DrawLine(p1, p2);
+    }
 }
 
 void PhysXScene::Simulate()

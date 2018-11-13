@@ -77,6 +77,7 @@ private:
 
     bool m_drawDebugScreen = false;
     bool m_drawProfiles = false;
+    bool m_drawPhysics = false;
     Font* m_debugFont = nullptr;
     float m_lineOffset = 0.0f;
     float m_maxLineLength = 0;
@@ -90,6 +91,9 @@ public:
 
 private:
     static bool ProfileSort(const Profile& lhs, const Profile& rhs);
+
+public:
+    static bool IsPhysicsDebugEnabled();
 
     void OnInit() override;
     void OnDispose() override;

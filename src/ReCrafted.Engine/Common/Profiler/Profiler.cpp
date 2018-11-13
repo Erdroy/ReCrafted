@@ -33,6 +33,11 @@ bool Profiler::ProfileSort(const Profile& lhs, const Profile& rhs)
     return lhs.order > rhs.order;
 }
 
+bool Profiler::IsPhysicsDebugEnabled()
+{
+    return m_instance->m_drawPhysics;
+}
+
 void Profiler::OnInit()
 {
     var debugFont = TEXT_CONST("../assets/fonts/VeraMono.ttf");
@@ -66,6 +71,9 @@ void Profiler::Update()
 
     if (Input::IsKeyDown(Key_P) && m_drawDebugScreen)
         m_drawProfiles = !m_drawProfiles;
+
+    if (Input::IsKeyDown(Key_O))
+        m_drawPhysics = !m_drawPhysics;
 }
 
 void Profiler::DrawTextLine(Text text, Color color)
