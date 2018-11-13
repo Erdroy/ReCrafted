@@ -33,7 +33,7 @@ namespace ReCrafted.Game
             UpdateMovement();
 
             // Update Camera position
-            Camera.Position = Vector3.Lerp(Camera.Position, Position, CameraSmoothing * (float)Time.DeltaTime);
+            Camera.Position = /*Vector3.Lerp(Camera.Position, */Position/*, CameraSmoothing * (float)Time.DeltaTime)*/;
         }
 
         private void UpdateLook()
