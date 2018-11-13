@@ -14,6 +14,7 @@ namespace ReCrafted.ProjectManager.Commands
             CreateZip("lib", new List<string>
             {
                 "*.c",
+                "*.cc",
                 "*.cpp",
                 "*.cxx",
                 "*.h",
