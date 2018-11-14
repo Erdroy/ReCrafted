@@ -23,8 +23,8 @@ void RigidBodyActor::OnUpdate()
 {
     ASSERT(m_actor);
 
-    SetPosition(m_actor->GetPosition());
-    SetRotation(m_actor->GetRotation());
+    Super::SetPosition(m_actor->GetPosition());
+    Super::SetRotation(m_actor->GetRotation());
 
     // TODO: Interpolation/Extrapolation
 }
