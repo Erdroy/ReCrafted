@@ -37,6 +37,11 @@ private:
     void OnDestroy() override;
 
 public:
+    /**
+     * \brief Moves this character along given displacement vector.
+     * \param displacement The displacement vector.
+     * \return The collision flags.
+     */
     CharacterCollisionFlags Move(const Vector3& displacement);
 
 public:

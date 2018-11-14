@@ -19,6 +19,9 @@ void ContentManager::OnDispose()
     // Unload from queue
     UnloadAssets();
 
+    // Clear deleted
+    m_assetMap.clear_deleted_key();
+
     // Release all assets
     for(rvar assetPair : m_assetMap)
     {
