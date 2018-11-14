@@ -34,9 +34,6 @@ public:
     virtual IPhysicsShapeCooker* GetDefaultCooker() = 0;
     virtual void ReleaseCooker(IPhysicsShapeCooker* cooker) = 0;
 
-    virtual IPhysicsCharacter* CreateCharacter(float radius, float height, float stepOffset, float slopeLimit, float contactOffset) = 0;
-    virtual void ReleaseCharacter(IPhysicsCharacter* character) = 0;
-
     virtual IPhysicsActor* CreateActor(const Transform& transform, bool dynamic) = 0;
     virtual void ReleaseActor(IPhysicsActor* actor) = 0;
 

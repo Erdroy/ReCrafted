@@ -10,11 +10,11 @@
 #include "Physics/IPhysicsEngine.h"
 
 #include "PhysX.h"
+#include "PhysXCharacter.h"
 #include "PhysXScene.h"
 #include "PhysXActor.h"
 #include "PhysXShape.h"
 #include "PhysXShapeCooker.h"
-#include "Physics/IPhysicsCharacter.h"
 
 class PhysXEngine : public IPhysicsEngine
 {
@@ -22,7 +22,6 @@ private:
     PxFoundation* m_foundation = nullptr;
     PxPvd* m_pvd = nullptr;
     PxPhysics* m_physics = nullptr;
-    PxControllerManager* m_controllerManager = nullptr;
     PxDefaultCpuDispatcher* m_cpuDispatcher = nullptr;
 
     PxMaterial* m_defaultMaterial = nullptr;
@@ -41,9 +40,6 @@ public:
     IPhysicsShapeCooker* CreateCooker() override;
     IPhysicsShapeCooker* GetDefaultCooker() override;
     void ReleaseCooker(IPhysicsShapeCooker* cooker) override;
-
-    IPhysicsCharacter* CreateCharacter(float radius, float height, float stepOffset, float slopeLimit, float contactOffset) override;
-    void ReleaseCharacter(IPhysicsCharacter* character) override;
 
     IPhysicsActor* CreateActor(const Transform& transform, bool dynamic) override;
     void ReleaseActor(IPhysicsActor* actor) override;

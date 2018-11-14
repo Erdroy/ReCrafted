@@ -9,6 +9,7 @@
 #include "ReCrafted.h"
 
 class IPhysicsActor;
+class IPhysicsCharacter;
 
 class IPhysicsScene
 {
@@ -23,6 +24,9 @@ protected:
 public:
     virtual void AttachActor(IPhysicsActor* actor) = 0;
     virtual void DetachActor(IPhysicsActor* actor) = 0;
+public:
+    virtual IPhysicsCharacter* CreateCharacter(float radius, float height, float stepOffset, float slopeLimit, float contactOffset) = 0;
+    virtual void ReleaseCharacter(IPhysicsCharacter* character) = 0;
 };
 
 #endif // IPHYSICSSCENE_H

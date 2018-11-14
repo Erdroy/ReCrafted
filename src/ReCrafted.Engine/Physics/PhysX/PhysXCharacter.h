@@ -21,6 +21,25 @@ public:
 public:
     CollisionFlags Move(const Vector3& vector) override;
 
+public:
+    void SetUpDirection(const Vector3& upDirection) override;
+    Vector3 GetUpDirection() override;
+
+    void SetHeight(float height) override;
+    float GetHeight() override;
+
+    void SetRadius(float radius) override;
+    float GetRadius() override;
+
+    void SetStepOffset(float stepOffset) override;
+    float GetStepOffset() override;
+
+    void SetContactOffset(float contactOffset) override;
+    float GetContactOffset() override;
+
+    void SetSlopeLimit(float slopeLimit) override;
+    float GetSlopeLimit() override;
+
     Vector3 GetVelocity() override;
 
     void SetPosition(const Vector3& position) override;

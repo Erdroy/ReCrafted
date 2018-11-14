@@ -24,6 +24,25 @@ public:
 public:
     virtual CollisionFlags Move(const Vector3& vector) = 0;
 
+public:
+    virtual void SetUpDirection(const Vector3& upDirection) = 0;
+    virtual Vector3 GetUpDirection() = 0;
+
+    virtual void SetHeight(float height) = 0;
+    virtual float GetHeight() = 0;
+
+    virtual void SetRadius(float radius) = 0;
+    virtual float GetRadius() = 0;
+
+    virtual void SetStepOffset(float stepOffset) = 0;
+    virtual float GetStepOffset() = 0;
+
+    virtual void SetContactOffset(float contactOffset) = 0;
+    virtual float GetContactOffset() = 0;
+
+    virtual void SetSlopeLimit(float slopeLimit) = 0;
+    virtual float GetSlopeLimit() = 0;
+
     virtual Vector3 GetVelocity() = 0;
 
     virtual void SetPosition(const Vector3& position) = 0;

@@ -9,19 +9,21 @@
 #include "ReCrafted.h"
 #include "Physics/IPhysicsScene.h"
 #include "PhysX.h"
-#include "PhysXStepper.h"
+#include "Physics/IPhysicsCharacter.h"
 
 class PhysXScene : public IPhysicsScene
 {
     friend class PhysXEngine;
 
 private:
-    PxPhysics* m_physics = nullptr;
     PxScene* m_scene = nullptr;
+    PxControllerManager* m_controllerManager = nullptr;
+
     void* m_scrathMemory = nullptr;
+    PxMaterial* m_defaultMaterial = nullptr;
 
 public:
-    PhysXScene(PxPhysics* physics, PxCpuDispatcher* cpuDispatcher, const PxTolerancesScale& toleranceScale);
+    PhysXScene(PxCpuDispatcher* cpuDispatcher, PxMaterial* defaultMaterial, const PxTolerancesScale& toleranceScale);
     ~PhysXScene();
 
 protected:
@@ -32,6 +34,10 @@ protected:
 public:
     void AttachActor(IPhysicsActor* actor) override;
     void DetachActor(IPhysicsActor* actor) override;
+
+public:
+    IPhysicsCharacter* CreateCharacter(float radius, float height, float stepOffset, float slopeLimit, float contactOffset) override;
+    void ReleaseCharacter(IPhysicsCharacter* character) override;
 };
 
 #endif // PHYSXSCENE_H

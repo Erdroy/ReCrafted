@@ -2,14 +2,20 @@
 
 #include "PhysXScene.h"
 #include "Common/Time.h"
-#include "PhysXActor.h"
 #include "Graphics/DebugDraw.h"
 #include "Graphics/Camera.h"
 #include "Common/Profiler/Profiler.h"
 
-PhysXScene::PhysXScene(PxPhysics* physics, PxCpuDispatcher* cpuDispatcher, const PxTolerancesScale& toleranceScale)
+#include "PhysXActor.h"
+#include "PhysXStepper.h"
+#include "PhysXCharacter.h"
+
+extern PxPhysics* GPxPhysX;
+
+PhysXScene::PhysXScene(PxCpuDispatcher* cpuDispatcher, PxMaterial* defaultMaterial, const PxTolerancesScale& toleranceScale)
 {
-    m_physics = physics;
+    // Set default material
+    m_defaultMaterial = defaultMaterial;
 
     // Create scene description
     PxSceneDesc sceneDesc(toleranceScale);
@@ -27,12 +33,16 @@ PhysXScene::PhysXScene(PxPhysics* physics, PxCpuDispatcher* cpuDispatcher, const
     sceneDesc.flags |= PxSceneFlag::eADAPTIVE_FORCE;
 
     // Create scene, finally.
-    m_scene = m_physics->createScene(sceneDesc);
+    m_scene = GPxPhysX->createScene(sceneDesc);
     ASSERT(m_scene);
+
+    // Create controller manager
+    m_controllerManager = PxCreateControllerManager(*m_scene);
 
     // Setup visualization
     m_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f); 
     m_scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 1.0f);
+    m_scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_AABBS, 1.0f);
 
     // Create scratch memory for this scene
     m_scrathMemory = _aligned_malloc(PhysXStepper::SCRATCH_BLOCK_SIZE, 16);
@@ -91,8 +101,8 @@ void PhysXScene::Simulate()
 
 void PhysXScene::Shutdown()
 {
-    m_physics = nullptr;
     m_scene->release();
+    m_controllerManager->release();
 }
 
 void PhysXScene::AttachActor(IPhysicsActor* actor)
@@ -111,4 +121,34 @@ void PhysXScene::DetachActor(IPhysicsActor* actor)
     cvar physxActor = static_cast<PhysXActor*>(actor);
 
     m_scene->removeActor(*physxActor->actor);
+}
+
+IPhysicsCharacter* PhysXScene::CreateCharacter(const float radius, const float height, const float stepOffset, const float slopeLimit,
+                                               const float contactOffset)
+{
+    // Calculate unity-like height value
+    cvar finalHeight = PxClamp((height - 2 * radius), 0.0f, height);
+
+    // Create controller description
+    PxCapsuleControllerDesc controllerDesc;
+    controllerDesc.radius = radius;
+    controllerDesc.height = finalHeight;
+    controllerDesc.stepOffset = stepOffset;
+    controllerDesc.slopeLimit = Math::Cos(slopeLimit * Math::DegreeToRadian);
+    controllerDesc.contactOffset = contactOffset;
+    controllerDesc.material = m_defaultMaterial;
+
+    // Make sure that we've got proper controller description
+    ASSERT(controllerDesc.isValid());
+
+    // Create controller
+    cvar pxController = m_controllerManager->createController(controllerDesc);
+
+    ASSERT(pxController);
+
+    return new PhysXCharacter(static_cast<PxCapsuleController*>(pxController));
+}
+
+void PhysXScene::ReleaseCharacter(IPhysicsCharacter* character)
+{
 }
