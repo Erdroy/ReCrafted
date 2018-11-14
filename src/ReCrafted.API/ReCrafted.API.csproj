@@ -131,7 +131,9 @@
     <Compile Include="Graphics\Camera.Gen.cs" />
     <Compile Include="Object.cs" />
     <Compile Include="Object.Gen.cs" />
+    <Compile Include="Physics\CharacterActor.cs" />
     <Compile Include="Physics\CharacterActor.Gen.cs" />
+    <Compile Include="Physics\CharacterCollisionFlags.cs" />
     <Compile Include="Physics\Collision.Gen.cs" />
     <Compile Include="Physics\PhysicsManager.Gen.cs" />
     <Compile Include="Physics\RigidBodyActor.Gen.cs" />
