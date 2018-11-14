@@ -31,10 +31,14 @@ private:
 
 private:
     void Initialize();
-
+    
     void OnStart() override;
     void OnUpdate() override;
     void OnDestroy() override;
+
+public:
+    void SetPosition(const Vector3& position) override;
+    void SetRotation(const Quaternion& rotation) override;
 
 public:
     /**
@@ -104,10 +108,10 @@ public:
         return m_character->GetSlopeLimit();
     }
 
-    void SetPosition(const Vector3& position) override;
-    void SetRotation(const Quaternion& rotation) override;
-
-    Vector3 GetVelocity() const;
+    Vector3 GetVelocity() const
+    {
+        return m_character->GetVelocity();
+    }
 
     IPhysicsCharacter* GetPhysicsCharacter() const
     {

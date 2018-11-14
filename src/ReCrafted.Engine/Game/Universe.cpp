@@ -1,8 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Universe.h"
-#include "Common/EmptyActor.h"
-#include "Common/Time.h"
 #include "Common/Input/Input.h"
 #include "Common/Profiler/Profiler.h"
 #include "Common/Entities/MainWorld.h"
@@ -10,7 +8,6 @@
 #include "Graphics/Camera.h"
 #include "Graphics/DebugDraw.h"
 #include "Graphics/Graphics.h"
-#include "Physics/PhysicsManager.h"
 #include "UI/UI.h"
 #include "Voxels/SpaceObjectManager.h"
 #include "Voxels/Storage/VoxelStorage.h"
@@ -47,16 +44,6 @@ void Universe::OnInit()
 
     // Generate primary data
     m_testObject1->GeneratePrimary();
-
-    m_root = EmptyActor::Create();
-    m_c1 = EmptyActor::Create();
-    m_c2 = EmptyActor::Create();
-
-    m_root->AddChild(m_c1);
-    m_root->AddChild(m_c2);
-
-    m_c1->SetLocalPosition(Vector3::Right * 3.0f);
-    m_c2->SetLocalPosition(Vector3::Left * 3.0f);
 }
 
 void Universe::OnDispose()
@@ -66,7 +53,6 @@ void Universe::OnDispose()
     SafeDispose(m_testObject1);
 }
 
-float yRotation;
 void Universe::Update()
 {
     ASSERT(Camera::GetMainCamera());
@@ -78,38 +64,7 @@ void Universe::Update()
         m_viewUpdateEnabled = !m_viewUpdateEnabled;
     }
 
-    m_root->SetRotation(Quaternion::Rotation(Vector3::Up, yRotation));
-    m_c1->SetRotation(Quaternion::Rotation(-m_c1->GetPosition().Normalized(), yRotation));
-
-
-    DebugDraw::SetMatrix(m_root->GetTransform().GetTransformationMatrix());
-    DebugDraw::DrawBox(Vector3::Zero, Vector3::One);
-
-    DebugDraw::SetMatrix(m_c1->GetTransform().GetTransformationMatrix());
-    DebugDraw::DrawBox(Vector3::Zero, Vector3::One * 0.25f);
-
-    DebugDraw::SetMatrix(m_c2->GetTransform().GetTransformationMatrix());
-    DebugDraw::DrawBox(Vector3::Zero, Vector3::One * 0.25f);
-
-    
-    if(Input::IsKeyDown(Key_F))
-    {
-        var projectile = RigidBodyActor::CreateDynamic();
-        projectile->AttachCollision(Collision::CreateSphereCollision(0.1f));
-        projectile->SetPosition(Camera::GetMainCamera()->GetPosition());
-        projectile->SetVelocity(Camera::GetMainCamera()->GetForward() * 50.0f);
-        m_projectiles.Add(projectile);
-    }
-
-    for (rvar box : m_projectiles)
-    {
-        DebugDraw::SetMatrix(Matrix::CreateRotation(box->GetRotation()) * Matrix::CreateTranslation(box->GetPosition()));
-        DebugDraw::SetColor(Color(255, 110, 0, 255));
-        DebugDraw::DrawBox(Vector3::Zero, Vector3::One * 0.2f);
-    }
-    DebugDraw::SetMatrix(Matrix::Identity);
-
-    var modPosition = Camera::GetMainCamera()->GetPosition() + Camera::GetMainCamera()->GetForward() * 5.0f;
+    cvar modPosition = Camera::GetMainCamera()->GetPosition() + Camera::GetMainCamera()->GetForward() * 5.0f;
 
     if (Input::IsKeyDown(Key_Alpha1))
         m_selectedMaterial = 0u;
@@ -136,7 +91,7 @@ void Universe::Update()
 
     if (Input::IsKey(Key_Mouse2))
     {
-        m_testObject1->Modify(m_selectedMaterial, VoxelEditMode::MaterialPaint, modPosition, 1.0f);
+        m_testObject1->Modify(m_selectedMaterial, VoxelEditMode::MaterialPaint, modPosition, 2.5f);
     }
 
     DebugDraw::SetColor(Color(0, 105, 0, 64));

@@ -8,7 +8,7 @@ void CharacterActor::Initialize()
     m_scene = PhysicsManager::Scene();
 
     // Create controller
-    m_character = m_scene->CreateCharacter(0.35f, 1.75f, 0.08f, 35.0f, 0.01f); // TODO: Expose values
+    m_character = m_scene->CreateCharacter(0.35f, 1.75f, 0.08f, 35.0f, 0.01f);
 
     ASSERT(m_character);
 }
@@ -64,11 +64,6 @@ void CharacterActor::SetRotation(const Quaternion& rotation)
 
     // Update actor transform
     m_character->SetRotation(rotation);
-}
-
-Vector3 CharacterActor::GetVelocity() const
-{
-    return m_character->GetVelocity();
 }
 
 CharacterActor* CharacterActor::Create()
