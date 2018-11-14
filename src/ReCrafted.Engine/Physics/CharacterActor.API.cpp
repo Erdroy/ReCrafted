@@ -11,6 +11,9 @@ namespace Internal
     }
 }
 
+const char* Actor<CharacterActor>::ManagedName = "CharacterActor";
+const char* Actor<CharacterActor>::ManagedNamespace = "ReCrafted.API.Physics";
+
 void CharacterActor::InitRuntime()
 {
     API_REGISTER_OBJECT("ReCrafted.API.Physics.CharacterActor", &Internal::CreateCharacter);
