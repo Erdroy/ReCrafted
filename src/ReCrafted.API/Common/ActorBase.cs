@@ -7,7 +7,7 @@ namespace ReCrafted.API.Common
         /// <summary>
         /// Adds given script type to this actor. Once script is added to this actor, it cannot be added anywhere else.
         /// </summary>
-        public Script AddScript<TScript>() where TScript : Script, new()
+        public TScript AddScript<TScript>() where TScript : Script, new()
         {
             // Create script instance
             var script = (TScript)NewGeneric<Script>(new TScript());
