@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/12/2018 15:19:59 Source: 'Collision.API.cpp' Target: 'Physics/Collision.Gen.cs'
+// Generated: 11/14/2018 16:01:14 Source: 'Collision.API.cpp' Target: 'Physics/Collision.Gen.cs'
 
 using ReCrafted.API.Common;
 using System;

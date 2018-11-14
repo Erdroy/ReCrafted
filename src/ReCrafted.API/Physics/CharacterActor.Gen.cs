@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/14/2018 14:53:40 Source: 'CharacterActor.API.cpp' Target: 'Physics/CharacterActor.Gen.cs'
+// Generated: 11/14/2018 16:01:14 Source: 'CharacterActor.API.cpp' Target: 'Physics/CharacterActor.Gen.cs'
 
 using ReCrafted.API.Common;
 using ReCrafted.API.Mathematics;

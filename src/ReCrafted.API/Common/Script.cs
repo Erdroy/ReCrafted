@@ -1,15 +1,12 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
-using System.Runtime.CompilerServices;
-using ReCrafted.API.Common.Components;
-
 namespace ReCrafted.API.Common
 {
     public partial class Script
     {
-        /// <summary>
-        /// Contains the reference to transform owned by this game object.
-        /// </summary>
-        //public ref Transform Transform => ref Actor.Transform;
+        public TActor GetActor<TActor>() where TActor : ActorBase
+        {
+            return (TActor)Actor;
+        }
     }
 }

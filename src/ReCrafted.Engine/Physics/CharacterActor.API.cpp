@@ -97,7 +97,7 @@ namespace Internal
 
     Object* CreateCharacter(bool createManagedInstance)
     {
-        return Object::CreateInstance<CharacterActor>("ReCrafted.API.Physics", "CharacterActor");
+        return CharacterActor::Create();
     }
 }
 

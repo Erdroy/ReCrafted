@@ -7,61 +7,73 @@ namespace Internal
 {
     void GetPosition(ActorBase* actor, Vector3* position)
     {
+        ASSERT(actor);
         *position = actor->GetPosition();
     }
 
     void SetPosition(ActorBase* actor, Vector3* position)
     {
+        ASSERT(actor);
         actor->SetPosition(*position);
     }
 
     void GetLocalPosition(ActorBase* actor, Vector3* position)
     {
+        ASSERT(actor);
         *position = actor->GetLocalPosition();
     }
 
     void SetLocalPosition(ActorBase* actor, Vector3* position)
     {
+        ASSERT(actor);
         actor->SetLocalPosition(*position);
     }
 
     void GetRotation(ActorBase* actor, Quaternion* rotation)
     {
+        ASSERT(actor);
         *rotation = actor->GetRotation();
     }
 
     void SetRotation(ActorBase* actor, Quaternion* rotation)
     {
+        ASSERT(actor);
         actor->SetRotation(*rotation);
     }
 
     void GetLocalRotation(ActorBase* actor, Quaternion* rotation)
     {
+        ASSERT(actor);
         *rotation = actor->GetLocalRotation();
     }
 
     void SetLocalRotation(ActorBase* actor, Quaternion* rotation)
     {
+        ASSERT(actor);
         actor->SetLocalRotation(*rotation);
     }
 
     void GetScale(ActorBase* actor, Vector3* scale)
     {
+        ASSERT(actor);
         *scale = actor->GetScale();
     }
 
     void SetScale(ActorBase* actor, Vector3* scale)
     {
+        ASSERT(actor);
         actor->SetScale(*scale);
     }
 
     void GetLocalScale(ActorBase* actor, Vector3* scale)
     {
+        ASSERT(actor);
         *scale = actor->GetLocalScale();
     }
 
     void SetLocalScale(ActorBase* actor, Vector3* scale)
     {
+        ASSERT(actor);
         actor->SetLocalScale(*scale);
     }
 
@@ -193,7 +205,7 @@ void ActorBase::InitRuntime()
             API_METHOD_END();
 
             API_COMMENT("Gets or sets current actor position.");
-            API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Position", GETSET);
+            API_PROPERTY(PUBLIC, REGULAR, "Vector3", "Position", GETSET, BY_REF);
             {
                 API_BIND("ReCrafted.API.Common.ActorBase::Internal_Position_Get", &Internal::GetPosition);
                 API_BIND("ReCrafted.API.Common.ActorBase::Internal_Position_Set", &Internal::SetPosition);
@@ -211,16 +223,16 @@ void ActorBase::InitRuntime()
             API_COMMENT("Gets or sets current actor rotation.");
             API_PROPERTY(PUBLIC, REGULAR, "Quaternion", "Rotation", GETSET, BY_REF);
             {
-                API_BIND("ReCrafted.API.Common.ActorBase::Internal_Position_Get", &Internal::GetRotation);
-                API_BIND("ReCrafted.API.Common.ActorBase::Internal_Position_Set", &Internal::SetRotation);
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_Rotation_Get", &Internal::GetRotation);
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_Rotation_Set", &Internal::SetRotation);
             }
             API_PROPERTY_END();
 
             API_COMMENT("Gets or sets current actor rotation.");
             API_PROPERTY(PUBLIC, REGULAR, "Quaternion", "LocalRotation", GETSET, BY_REF);
             {
-                API_BIND("ReCrafted.API.Common.ActorBase::Internal_LocalPosition_Get", &Internal::GetLocalRotation);
-                API_BIND("ReCrafted.API.Common.ActorBase::Internal_LocalPosition_Set", &Internal::SetLocalRotation);
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_LocalRotation_Get", &Internal::GetLocalRotation);
+                API_BIND("ReCrafted.API.Common.ActorBase::Internal_LocalRotation_Set", &Internal::SetLocalRotation);
             }
             API_PROPERTY_END();
 

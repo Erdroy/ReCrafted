@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/12/2018 14:11:00 Source: 'ActorBase.API.cpp' Target: 'Common/ActorBase.Gen.cs'
+// Generated: 11/14/2018 16:26:05 Source: 'ActorBase.API.cpp' Target: 'Common/ActorBase.Gen.cs'
 
 using ReCrafted.API.Common;
 using ReCrafted.API.Mathematics;
@@ -66,11 +66,13 @@ namespace ReCrafted.API.Common
 		{
 			get
 			{
-				return Internal_Position_Get(NativePtr);
+				Vector3 result;
+				Internal_Position_Get(NativePtr, out result);
+				return result;
 			}
 			set
 			{
-				Internal_Position_Set(NativePtr, value);
+				Internal_Position_Set(NativePtr, ref value);
 			}
 		}
 
@@ -194,9 +196,9 @@ namespace ReCrafted.API.Common
 		}
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern void Internal_Position_Set(IntPtr nativePtr, Vector3 value);
+		internal static extern void Internal_Position_Set(IntPtr nativePtr, ref Vector3 value);
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern Vector3 Internal_Position_Get(IntPtr nativePtr);
+		internal static extern void Internal_Position_Get(IntPtr nativePtr, out Vector3 result);
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_LocalPosition_Set(IntPtr nativePtr, ref Vector3 value);
 		[MethodImpl(MethodImplOptions.InternalCall)]
