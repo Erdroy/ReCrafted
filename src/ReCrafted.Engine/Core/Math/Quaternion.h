@@ -122,7 +122,12 @@ inline void Quaternion::Conjugate()
 
 inline void Quaternion::Normalize()
 {
-    const auto invLength = 1.0f / Length();
+    const auto  lenSqr = LengthSquared();
+
+    if (Math::IsZero(lenSqr))
+        return;
+
+    const auto  invLength = 1.0f  / Math::Sqrt(lenSqr);
 
     x *= invLength;
     y *= invLength;

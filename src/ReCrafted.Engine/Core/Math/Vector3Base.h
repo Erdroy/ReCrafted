@@ -194,7 +194,12 @@ void Vector3Base<T>::Negate()
 template <typename T>
 void Vector3Base<T>::Normalize()
 {
-    T invLength = T(1) / Length();
+    T lenSqr = LengthSquared();
+
+    if (Math::IsZero(lenSqr))
+        return;
+
+    T invLength = T(1) / Math::Sqrt(lenSqr);
 
     x *= invLength;
     y *= invLength;
