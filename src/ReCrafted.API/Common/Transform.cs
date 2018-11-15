@@ -27,6 +27,16 @@ namespace ReCrafted.API.Common
 
         // TODO: API Transform implementation
 
+        /// <summary>
+        /// Transform given point direction using this transform.
+        /// </summary>
+        /// <param name="point">The point vector.</param>
+        /// <returns>The transformed point.</returns>
+        public Vector3 TransformDirection(Vector3 point)
+        {
+            return Vector3.Transform(point, Orientation);
+        }
+
         public bool Equals(Transform other)
         {
             return Translation.Equals(other.Translation) && Orientation.Equals(other.Orientation) && Scale.Equals(other.Scale);

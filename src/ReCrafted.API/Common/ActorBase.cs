@@ -1,5 +1,7 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
+using ReCrafted.API.Mathematics;
+
 namespace ReCrafted.API.Common
 {
     public partial class ActorBase
@@ -15,6 +17,16 @@ namespace ReCrafted.API.Common
             // Add and return script
             Internal_AddScript(NativePtr, script.NativePtr);
             return script;
+        }
+
+        /// <summary>
+        /// Transform given point direction using this transform.
+        /// </summary>
+        /// <param name="point">The point vector.</param>
+        /// <returns>The transformed point.</returns>
+        public Vector3 TransformDirection(Vector3 point)
+        {
+            return Vector3.Transform(point, Rotation);
         }
 
         /// <summary>
