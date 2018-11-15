@@ -59,9 +59,11 @@ void WebUIEngine::OnDispose()
     delete static_cast<WebUIGPUDriver*>(platform.gpu_driver());
     platform.set_gpu_driver(nullptr);
 
-    m_ultralightRenderer->Release();
+    // Release ultralight renderer
+    m_ultralightRenderer = nullptr;
 
     delete m_renderer;
+    m_renderer = nullptr;
 }
 
 void WebUIEngine::Update()
