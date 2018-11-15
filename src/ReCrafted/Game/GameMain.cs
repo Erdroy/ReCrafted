@@ -10,6 +10,7 @@ using ReCrafted.API.UI;
 using ReCrafted.API.UI.Controls;
 using ReCrafted.Common;
 using ReCrafted.Game.Interface;
+using ReCrafted.Game.Player;
 using ReCrafted.Game.Super;
 
 namespace ReCrafted.Game
@@ -45,11 +46,14 @@ namespace ReCrafted.Game
                 Cursor.Lock = true;
 
                 // create camera
-                _camera = new FreeCameraController
+                /*_camera = new FreeCameraController
                 {
                     Position = new Vector3(35.0f, 925.0f, 62.0f)
                 };
                 _camera.Initialize();
+                */
+
+                PlayerManager.SpawnPlayer(new Vector3(35.0f, 1125.0f, 62.0f));
 
                 // load game info
                 GameInfo.FromFile(Assets.ResolveAssetFilePath("gameinfo.json"));
@@ -88,15 +92,15 @@ namespace ReCrafted.Game
         {
             try
             {
-                _camera.Update();
+                //_camera.Update();
 
                 // Update game systems
                 GameSystem.UpdateAll();
-
+                
                 _crosshairBox.Region =
                     new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
                 _buildNumberText.Position = new Vector2(20.0f, Display.Height - 20.0f);
-
+                
                 if (Input.IsKeyDown(Keys.Escape))
                 {
                     //if (SuperConsole.Instance.Enabled)
