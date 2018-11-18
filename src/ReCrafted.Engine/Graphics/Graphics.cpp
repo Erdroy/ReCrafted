@@ -19,6 +19,11 @@
 #include "Rendering/PostProcessing/PPSSAO.h"
 #include "Content/ContentManager.h"
 
+#include "imgui.h"
+#include "impl/imgui_impl_win32.h"
+#include "impl/imgui_impl_dx11.h"
+#include "Renderer/RHI/RHIContext.h"
+
 SINGLETON_IMPL(Graphics)
 
 Graphics* g_rendererInstance;
@@ -59,6 +64,10 @@ void Graphics::InitializeRenderer()
 
     Renderer::SetFlag(Renderer::RenderFlags::VSync, false);
 
+    // Get renderer context
+    Renderer::RHIContext rendererContext;
+    Renderer::GetContext(&rendererContext);
+
     // Create Output
     m_window = Renderer::CreateWindowHandle(Platform::GetCurrentWindow());
     m_frameBuffer = Renderer::GetWindowRenderBuffer(m_window);
@@ -71,7 +80,19 @@ void Graphics::InitializeRenderer()
         m_currentTextures.Add(nullptr);
 
     // Set renderer callbacks
-    //Renderer::AddOnPresentCallback(Action<void>::New<Graphics, &Graphics::OnFramePresent>(this));
+    Renderer::AddOnPresentCallback(Action<void>::New<Graphics, &Graphics::RenderImGUI>(this));
+
+    // Initialize ImGUI
+    Logger::Log("Initializing ImGUI {0}", IMGUI_VERSION);
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
+    ImGui_ImplWin32_Init(Platform::GetCurrentWindow());
+    ImGui_ImplRenderer_Init(rendererContext.device, rendererContext.deviceContext);
+
+    // Setup style
+    ImGui::StyleColorsDark();
 
     Logger::LogInfo("Graphics initialized");
 }
@@ -162,6 +183,11 @@ void Graphics::OnDispose()
     SafeDispose(m_gbuffer);
     Logger::LogInfo("Unloaded render buffers");
 
+    // shutdown ImGUI
+    ImGui_ImplDX11_Shutdown();
+    ImGui_ImplWin32_Shutdown();
+    ImGui::DestroyContext();
+
     // Dispose shaders
     m_gbufferFillShader->Unload();
     m_gbufferCombine->Unload();
@@ -175,6 +201,19 @@ void Graphics::OnDispose()
 
 void Graphics::Update()
 {
+    // Start the Dear ImGui frame
+    // ImGUI rendering is not multi-threaded,
+    // and it is going to be rendered on before preset event
+    ImGui_ImplDX11_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+
+    static float f = 0.0f;
+    ImGui::Begin("Hello, world!");
+    ImGui::Text("This is some useful text.");
+    ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::End();
 }
 
 void Graphics::Render()
@@ -231,6 +270,8 @@ void Graphics::Resize(uint width, uint height)
 {
     ASSERT(Camera::m_mainCamera != nullptr);
 
+    ImGui_ImplDX11_InvalidateDeviceObjects();
+
     Display::SetWidth(width);
     Display::SetHeight(height);
 
@@ -245,6 +286,8 @@ void Graphics::Resize(uint width, uint height)
         Renderer::DestroyTexture2D(m_frameTexture);
         m_frameTexture = Renderer::CreateTexture2D(width, height, 0, 0, Renderer::TextureFormat::RGBA8, nullptr, 0u, true);
     }
+
+    ImGui_ImplDX11_CreateDeviceObjects();
 }
 
 void Graphics::RenderBegin()
@@ -394,6 +437,21 @@ void Graphics::RenderWebUI()
 
         WebUI::GetInstance()->Render();
     }
+    Profiler::EndProfile();
+}
+
+void Graphics::RenderImGUI()
+{
+    Profiler::BeginProfile("Render ImGui");
+
+    // Get renderer context
+    Renderer::RHIContext rendererContext;
+    Renderer::GetContext(&rendererContext);
+
+    ImGui::Render();
+    ImGUI_ImplDX11_SetRenderTarget(rendererContext.windows[1].backBuffer);
+    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
     Profiler::EndProfile();
 }
 

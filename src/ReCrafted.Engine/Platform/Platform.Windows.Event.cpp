@@ -10,10 +10,17 @@
 #include "Core/EngineMain.h"
 #include "Core/Logger.h"
 
+#include "imgui.h"
+
 extern HICON m_currentCursor;
+
+IMGUI_IMPL_API LRESULT  ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
+    if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wparam, lparam))
+        return true;
+
     switch (msg)
     {
     case WM_GETMINMAXINFO:

@@ -23,6 +23,7 @@ project "ReCrafted.Engine"
 		path.join(LIBS_DIR, "fmt/src/**"),
 		path.join(LIBS_DIR, "fastnoise/src/**"),
 		path.join(LIBS_DIR, "upng/src/**"),
+		path.join(LIBS_DIR, "imgui/src/**"),
 	}
 
 	forceincludes { 
@@ -51,6 +52,8 @@ project "ReCrafted.Engine"
 		path.join(LIBS_DIR, "upng/include"),
 		path.join(LIBS_DIR, "directxtex/include"),
 		path.join(LIBS_DIR, "physx/include"),
+		
+		path.join(LIBS_DIR, "imgui/src"),
 	}
 	
 	-- add onbuild script and multi processor compilation
