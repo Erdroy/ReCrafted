@@ -63,6 +63,8 @@
     <Compile Include="Game\FreeCameraController.cs" />
     <Compile Include="Game\Interface\Messenger.cs" />
     <Compile Include="Game\Interface\PauseMenu.cs" />
+    <Compile Include="Game\Player\PlayerManager.cs" />
+    <Compile Include="Game\Player\PlayerMovement.cs" />
     <Compile Include="Game\Super\SuperCommands.cs" />
     <Compile Include="Game\Super\SuperConsole.cs" />
     <Compile Include="Game\Super\SuperDefaults.cs" />

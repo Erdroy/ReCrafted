@@ -60,6 +60,9 @@ void EngineMain::CreateMainWindow()
 
     Display::SetWidth(m_mainWindow->GetWidth());
     Display::SetHeight(m_mainWindow->GetHeight());
+
+    // Make window borderless by default
+    Platform::MakeBorderLessWindow(Platform::GetCurrentWindow(), true);
 }
 
 void EngineMain::OnSimulate()

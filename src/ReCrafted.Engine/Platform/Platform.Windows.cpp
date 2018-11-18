@@ -165,6 +165,32 @@ void* Platform::CreateNewWindow(Text& windowName, int width, int height, const u
     return window;
 }
 
+void Platform::MakeBorderLessWindow(void* windowHandle, const bool borderLess)
+{
+    ASSERT(windowHandle);
+
+    cvar hWnd = static_cast<HWND>(windowHandle);
+
+    if(borderLess)
+    {
+        cvar width = GetSystemMetrics(SM_CXSCREEN);
+        cvar height = GetSystemMetrics(SM_CYSCREEN);
+        SetWindowLongPtr(hWnd, GWL_STYLE, WS_VISIBLE | WS_POPUP);
+        SetWindowPos(hWnd, HWND_TOP, 0, 0, width, height, SWP_FRAMECHANGED);
+    }
+    else
+    {
+        uint width;
+        uint height;
+        GetWindowSize(windowHandle, &width, &height);
+
+        SetWindowLongPtr(hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_MAXIMIZE);
+        SetWindowPos(hWnd, HWND_TOP, 0, 0, width, height, SWP_FRAMECHANGED);
+
+        ShowWindow(hWnd, SW_MAXIMIZE);
+    }
+}
+
 void Platform::RunEvents()
 {
     Profiler::BeginProfile("RunEvents");

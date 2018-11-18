@@ -120,6 +120,8 @@ public:
      */
     static void* CreateNewWindow(Text& windowName, int width = 1280, int height = 720, uint64_t style = 0u);
 
+    static void MakeBorderLessWindow(void* windowHandle, bool borderLess);
+
     /**
      * \brief Destroys window with given handle.
      * \param windowHandle Handle of the window.
