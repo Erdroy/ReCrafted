@@ -178,7 +178,7 @@ void Object::UnbindManaged(Object* object)
 
 void Object::DestroyAll()
 {
-    ScopeLock(m_objectMapLock);
+    // ScopeLock(m_objectMapLock); // No scope lock. This function is only being called when the game is shutting down.
 
     for(rvar objectPair : m_objectMap)
     {
@@ -200,15 +200,31 @@ void Object::DestroyAll()
 
 void Object::Finalize(Object* object)
 {
-    ScopeLock(m_objectMapLock);
+    ASSERT(object);
+    ASSERT(IsObjectInitialized(object));
+
+    // Lock
+    m_objectMapLock.LockNow();
 
     cvar objectIterator = m_objectMap.find(object->m_id);
-
+    var isObjectDestroyed = true;
     if (objectIterator != m_objectMap.end())
     {
-        // Remove object if not finalized
         m_objectMap.erase(objectIterator);
+        isObjectDestroyed = false;
+    }
+
+    // Unlock
+    m_objectMapLock.UnlockNow();
+
+    if (isObjectDestroyed)
+    {
+        // When object is still in the object map, the object hasn't been destroyed.
+        // At first call destroy the object, then scream at Erdroy.
+        Release(object);
+        UnbindManaged(object);
         object->OnDestroy();
+
         Logger::LogWarning("Object got finalized, but not destroyed at first!");
     }
 
