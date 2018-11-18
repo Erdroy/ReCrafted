@@ -37,3 +37,8 @@ void Camera::Update()
     // Update camera frustum for culling
     m_frustum.SetPlanes(m_ViewProjection);
 }
+
+Camera* Camera::Create()
+{
+    return CreateInstance<Camera>("ReCrafted.API.Graphics", "Camera");
+}

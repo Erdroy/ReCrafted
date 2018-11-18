@@ -102,7 +102,7 @@ void ActorBase::LateUpdate()
     for (rvar child : m_children)
     {
         if (child->IsActive())
-            child->Update();
+            child->LateUpdate();
     }
 
     OnLateUpdate();
@@ -119,7 +119,7 @@ void ActorBase::Simulate()
     for (rvar child : m_children)
     {
         if (child->IsActive())
-            child->Update();
+            child->Simulate();
     }
 
     OnSimulate();
