@@ -1,13 +1,13 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/14/2018 16:26:05 Source: 'ActorBase.API.cpp' Target: 'Common/ActorBase.Gen.cs'
+// Generated: 11/18/2018 17:12:14 Source: 'ActorBase.API.cpp' Target: 'Common/Actors/ActorBase.Gen.cs'
 
 using ReCrafted.API.Common;
 using ReCrafted.API.Mathematics;
 using System;
 using System.Runtime.CompilerServices;
 
-namespace ReCrafted.API.Common 
+namespace ReCrafted.API.Common.Actors 
 {
 	/// <summary>
 	///	ActorBase class.

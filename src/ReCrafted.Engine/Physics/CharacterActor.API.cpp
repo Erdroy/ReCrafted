@@ -111,6 +111,7 @@ void CharacterActor::InitRuntime()
     API_FILE("Physics/CharacterActor.Gen.cs");
     {
         API_USING("ReCrafted.API.Common");
+        API_USING("ReCrafted.API.Common.Actors");
         API_USING("ReCrafted.API.Mathematics");
 
         API_COMMENT("CharacterActor actor");

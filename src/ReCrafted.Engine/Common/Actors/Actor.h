@@ -6,9 +6,9 @@
 #define ACTOR_H
 
 #include "ReCrafted.h"
-#include "Common/ActorBase.h"
-#include "Common/ActorPool.h"
-#include "Common/ActorPoolManager.h"
+#include "Common/Actors/ActorBase.h"
+#include "Common/Actors/ActorPool.h"
+#include "Common/Actors/ActorPoolManager.h"
 
 template<typename TActor>
 class Actor : public ActorBase

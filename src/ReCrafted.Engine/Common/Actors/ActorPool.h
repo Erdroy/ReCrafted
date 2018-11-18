@@ -6,7 +6,7 @@
 #define ACTORPOOL_H
 
 #include "ReCrafted.h"
-#include "Common/ActorBase.h"
+#include "Common/Actors/ActorBase.h"
 #include "Core/Containers/Array.h"
 #include "Scripting/Object.h"
 

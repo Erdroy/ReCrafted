@@ -4,8 +4,8 @@
 #include "Object.h"
 
 #include "Audio/AudioSound.h"
-#include "Common/ActorBase.h"
-#include "Common/EmptyActor.h"
+#include "Common/Actors/ActorBase.h"
+#include "Common/Actors/EmptyActor.h"
 #include "Common/Display.h"
 #include "Common/Time.h"
 #include "Common/Entities/ComponentSystem.h"

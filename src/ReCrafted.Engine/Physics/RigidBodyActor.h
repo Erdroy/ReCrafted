@@ -6,7 +6,7 @@
 #define RIGIDBODYACTOR_H
 
 #include "ReCrafted.h"
-#include "Common/Actor.h"
+#include "Common/Actors/Actor.h"
 #include "Physics/Collision.h"
 #include "Physics/IPhysicsActor.h"
 

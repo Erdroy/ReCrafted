@@ -3,7 +3,7 @@
 #include "EngineMain.h"
 #include "EngineComponentManager.h"
 
-#include "Common/ActorPoolManager.h"
+#include "Common/Actors/ActorPoolManager.h"
 #include "Common/Time.h"
 #include "Common/Display.h"
 #include "Common/Profiler/Profiler.h"
@@ -55,14 +55,14 @@ void EngineMain::CreateMainWindow()
     m_mainWindow->Create();
     m_mainWindow->SetOnResized(Action<void>::New<EngineMain, &EngineMain::OnWindowResized>(this));
 
+    // Make window borderless by default
+    Platform::MakeBorderLessWindow(Platform::GetCurrentWindow(), true);
+
     // Update size
     m_mainWindow->UpdateSizeNow();
 
     Display::SetWidth(m_mainWindow->GetWidth());
     Display::SetHeight(m_mainWindow->GetHeight());
-
-    // Make window borderless by default
-    Platform::MakeBorderLessWindow(Platform::GetCurrentWindow(), true);
 }
 
 void EngineMain::OnSimulate()

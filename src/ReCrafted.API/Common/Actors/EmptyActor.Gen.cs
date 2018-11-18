@@ -1,12 +1,12 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/10/2018 13:30:01 Source: 'EmptyActor.API.cpp' Target: 'Common/EmptyActor.Gen.cs'
+// Generated: 11/18/2018 17:12:14 Source: 'EmptyActor.API.cpp' Target: 'Common/Actors/EmptyActor.Gen.cs'
 
-using ReCrafted.API.Common;
+using ReCrafted.API.Common.Actors;
 using System;
 using System.Runtime.CompilerServices;
 
-namespace ReCrafted.API.Common 
+namespace ReCrafted.API.Common.Actors 
 {
 	/// <summary>
 	///	EmptyActor class.
@@ -14,5 +14,6 @@ namespace ReCrafted.API.Common
 	public partial class EmptyActor : ActorBase
 	{
         internal EmptyActor() {}
+
 	}
 }

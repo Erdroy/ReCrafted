@@ -32,6 +32,7 @@ void Script::InitRuntime()
     API_FILE("Common/Script.Gen.cs");
     {
         API_USING("ReCrafted.API.Common.Components");
+        API_USING("ReCrafted.API.Common.Actors");
 
         API_COMMENT("Script class");
         API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Common", "Script", "Object", PARTIAL);

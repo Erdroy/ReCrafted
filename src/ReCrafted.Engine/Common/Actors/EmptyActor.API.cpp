@@ -11,18 +11,18 @@ namespace Internal
 }
 
 const char* Actor<EmptyActor>::ManagedName = "EmptyActor";
-const char* Actor<EmptyActor>::ManagedNamespace = "ReCrafted.API.Common";
+const char* Actor<EmptyActor>::ManagedNamespace = "ReCrafted.API.Common.Actors";
 
 void EmptyActor::InitRuntime()
 {
-    API_REGISTER_OBJECT("ReCrafted.API.Common.EmptyActor", &Internal::CreateEmptyActor);
+    API_REGISTER_OBJECT("ReCrafted.API.Common.Actors.EmptyActor", &Internal::CreateEmptyActor);
 
-    API_FILE("Common/EmptyActor.Gen.cs");
+    API_FILE("Common/Actors/EmptyActor.Gen.cs");
     {
-        API_USING("ReCrafted.API.Common");
+        API_USING("ReCrafted.API.Common.Actors");
 
         API_COMMENT("EmptyActor class.");
-        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Common", "EmptyActor", "ActorBase", PARTIAL, NOCONSTRUCTOR);
+        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Common.Actors", "EmptyActor", "ActorBase", PARTIAL, NOCONSTRUCTOR);
         {
         }
         API_CLASS_END();

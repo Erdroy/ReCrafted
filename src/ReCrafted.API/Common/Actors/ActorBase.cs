@@ -2,7 +2,7 @@
 
 using ReCrafted.API.Mathematics;
 
-namespace ReCrafted.API.Common
+namespace ReCrafted.API.Common.Actors
 {
     public partial class ActorBase
     {

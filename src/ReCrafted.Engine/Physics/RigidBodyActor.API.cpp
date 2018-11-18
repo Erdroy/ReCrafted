@@ -21,6 +21,7 @@ void RigidBodyActor::InitRuntime()
     API_FILE("Physics/RigidBodyActor.Gen.cs");
     {
         API_USING("ReCrafted.API.Common");
+        API_USING("ReCrafted.API.Common.Actors");
 
         API_COMMENT("RigidBodyActor actor");
         API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Physics", "RigidBodyActor", "ActorBase", PARTIAL, NOCONSTRUCTOR);

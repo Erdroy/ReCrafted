@@ -6,7 +6,7 @@
 #define CHARACTERACTOR_H
 
 #include "ReCrafted.h"
-#include "Common/Actor.h"
+#include "Common/Actors/Actor.h"
 #include "Physics/IPhysicsScene.h"
 #include "Physics/IPhysicsCharacter.h"
 

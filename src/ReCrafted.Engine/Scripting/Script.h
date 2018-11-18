@@ -7,7 +7,7 @@
 
 // includes
 #include "ReCrafted.h"
-#include "Common/ActorBase.h"
+#include "Common/Actors/ActorBase.h"
 #include "Scripting/ScriptingAPI.h"
 
 class Script : public Object

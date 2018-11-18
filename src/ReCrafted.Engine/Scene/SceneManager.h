@@ -7,7 +7,7 @@
 
 // includes
 #include "ReCrafted.h"
-#include "Common/ActorBase.h"
+#include "Common/Actors/ActorBase.h"
 #include "Core/EngineComponent.h"
 
 class SceneManager : public EngineComponent<SceneManager>

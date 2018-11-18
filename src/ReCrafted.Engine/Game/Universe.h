@@ -7,7 +7,7 @@
 
 // includes
 #include "Voxels/SpaceObject.h"
-#include "Common/EmptyActor.h"
+#include "Common/Actors/EmptyActor.h"
 #include "Core/EngineComponent.h"
 
 /**

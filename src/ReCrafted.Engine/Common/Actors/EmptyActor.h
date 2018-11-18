@@ -6,7 +6,7 @@
 #define EMPTYACTOR_H
 
 #include "ReCrafted.h"
-#include "Common/Actor.h"
+#include "Common/Actors/Actor.h"
 
 class EmptyActor final : public Actor<EmptyActor>
 {
