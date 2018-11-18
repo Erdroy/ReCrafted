@@ -201,7 +201,6 @@ void Object::DestroyAll()
 void Object::Finalize(Object* object)
 {
     ASSERT(object);
-    ASSERT(IsObjectInitialized(object));
 
     // Lock
     m_objectMapLock.LockNow();
@@ -221,10 +220,7 @@ void Object::Finalize(Object* object)
     {
         // When object is still in the object map, the object hasn't been destroyed.
         // At first call destroy the object, then scream at Erdroy.
-        Release(object);
-        UnbindManaged(object);
         object->OnDestroy();
-
         Logger::LogWarning("Object got finalized, but not destroyed at first!");
     }
 
