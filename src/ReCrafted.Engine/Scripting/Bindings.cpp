@@ -16,6 +16,7 @@
 #include "Common/Input/KeyboardBuffer.h"
 #include "Core/Application.h"
 #include "Graphics/Camera.h"
+#include "Graphics/CameraActor.h"
 #include "Graphics/DebugDraw.h"
 #include "Graphics/Font.h"
 #include "Physics/Collision.h"
@@ -63,6 +64,7 @@ void Bindings::Bind()
     EmptyActor::InitRuntime();
     RigidBodyActor::InitRuntime();
     CharacterActor::InitRuntime();
+    CameraActor::InitRuntime();
 
 
     // == ECS ==

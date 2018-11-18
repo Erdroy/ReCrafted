@@ -108,6 +108,8 @@ public:
         return m_mainCamera;
     }
 
+    static Camera* Create();
+
 public:
 PROPERTY(bool, FreeMovement) = false;
 PROPERTY(float, Fov) = 75.0f;
