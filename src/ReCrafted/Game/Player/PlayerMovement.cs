@@ -21,7 +21,6 @@ namespace ReCrafted.Game.Player
         private void Update()
         {
             var actor = GetActor<CharacterActor>();
-            var cameraPosition = actor.Position + new Vector3(0.0f, 0.7f, 0.0f);
 
             var moveDirection = Vector3.Zero;
             if (Input.IsKey(Keys.W))
@@ -61,14 +60,15 @@ namespace ReCrafted.Game.Player
             actor.Move(_velocity * (float)Time.DeltaTime);
 
             UpdateLook();
-
-            Camera.Current.Position = cameraPosition;
         }
 
         private void UpdateLook()
         {
             if (!Cursor.Lock)
                 return;
+
+            var character = GetActor<CharacterActor>();
+            var camera = Actor.GetChild(0);
 
             var cursorDelta = Input.CursorDelta;
 
@@ -97,19 +97,11 @@ namespace ReCrafted.Game.Player
             rotation.Y = MathUtil.Clamp(rotation.Y, -89.9f, 89.9f);
             _currentRotation = rotation;
 
-            var upRotation = Quaternion.RotationAxis(Vector3.Up, MathUtil.DegreesToRadians(_currentRotation.X));
-            var rightRotation = Quaternion.RotationAxis(Vector3.Right, MathUtil.DegreesToRadians(_currentRotation.Y));
-            var cameraRotation = upRotation * rightRotation;
+            var characterRotation = Quaternion.RotationAxis(Vector3.Up, MathUtil.DegreesToRadians(_currentRotation.X));
+            character.Rotation = characterRotation;
 
-
-            var actor = GetActor<CharacterActor>();
-            actor.Rotation = upRotation;
-
-            cameraRotation.Normalize();
-
-            // TODO: Make cameraRotation relative to up vector
-
-            Camera.Current.Rotation = cameraRotation;
+            var cameraRotation = Quaternion.RotationAxis(Vector3.Right, MathUtil.DegreesToRadians(_currentRotation.Y));
+            camera.LocalRotation = cameraRotation;
         }
 
         public Vector3 Position { get; set; }

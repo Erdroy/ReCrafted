@@ -9,14 +9,6 @@ namespace ReCrafted.Game.Player
 {
     public class PlayerManager : Script
     {
-        private Camera _camera;
-
-        private void Start()
-        {
-            _camera = Camera.Create();
-            _camera.SetAsCurrent();
-        }
-
         public static PlayerManager SpawnPlayer(Vector3 position)
         {
             var character = CharacterActor.Create();
@@ -26,11 +18,17 @@ namespace ReCrafted.Game.Player
             character.UpDirection = Vector3.Up;
             character.Position = position;
 
-            Current = character.AddScript<PlayerManager>();
+            var player = Current = character.AddScript<PlayerManager>();
             Current.Movement = character.AddScript<PlayerMovement>();
+
+            player.CameraActor = CameraActor.Create();
+            player.CameraActor.LocalPosition = new Vector3(0.0f, 0.7f, 0.0f);
+            character.AddChild(player.CameraActor);
 
             return Current;
         }
+
+        public CameraActor CameraActor { get; private set; }
 
         public PlayerMovement Movement { get; private set; }
 
