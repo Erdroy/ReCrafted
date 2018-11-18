@@ -134,7 +134,7 @@ void Object::Destroy(Object* object)
     mono_gchandle_free(object->m_gchandle);
     object->m_gchandle = 0u;
 
-    ScopeLock(m_objectMapLock);
+    m_objectMapLock.LockNow();
 
     // Unregister
     cvar objectIterator = m_objectMap.find(object->m_id);
@@ -155,6 +155,8 @@ void Object::Destroy(Object* object)
     object->m_gchandle = 0u;
     object->m_object = nullptr;
     object->m_class = nullptr;
+
+    m_objectMapLock.UnlockNow();
 }
 
 void Object::Release(Object* object)
