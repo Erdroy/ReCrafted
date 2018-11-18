@@ -69,6 +69,14 @@ public:
     {
     }
 
+    /**
+     * \brief Gets id of this object.
+     */
+    ObjectId_t GetObjectId() const
+    {
+        return m_id;
+    }
+
 public:
     static RefPtr<Method> FindStaticMethod(const char* methodName);
 
