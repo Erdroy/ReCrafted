@@ -106,8 +106,7 @@ void PhysXCharacter::SetRotation(const Quaternion& rotation)
 
 Quaternion PhysXCharacter::GetRotation()
 {
-    var pose = m_controller->getActor()->getGlobalPose();
-    rvar rot = pose.q;
+    cvar rotation = m_controller->getActor()->getGlobalPose().q;
 
-    return { rot.x, rot.y, rot.z, rot.w };
+    return { rotation.x, rotation.y, rotation.z, rotation.w };
 }

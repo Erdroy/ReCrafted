@@ -11,7 +11,6 @@ using ReCrafted.API.UI.Controls;
 using ReCrafted.Common;
 using ReCrafted.Game.Interface;
 using ReCrafted.Game.Player;
-using ReCrafted.Game.Super;
 
 namespace ReCrafted.Game
 {
@@ -22,8 +21,6 @@ namespace ReCrafted.Game
 
         // build number control
         private UIText _buildNumberText;
-        
-        private FreeCameraController _camera;
 
         private WebUIView _webView;
 
@@ -45,22 +42,11 @@ namespace ReCrafted.Game
                 Cursor.Show = false;
                 Cursor.Lock = true;
 
-                // create camera
-                /*_camera = new FreeCameraController
-                {
-                    Position = new Vector3(35.0f, 925.0f, 62.0f)
-                };
-                _camera.Initialize();
-                */
-
                 PlayerManager.SpawnPlayer(new Vector3(35.0f, 1125.0f, 62.0f));
 
                 // load game info
                 GameInfo.FromFile(Assets.ResolveAssetFilePath("gameinfo.json"));
-
-                // apply locale
-                //Locale.SetLocale("Polski");
-
+                
                 // apply target fps
                 TargetFps = 60;
 
@@ -74,7 +60,6 @@ namespace ReCrafted.Game
                     "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber;
 
                 // Initialize default game systems
-                //GameSystem.AddGameSystem<SuperConsole>();
                 GameSystem.AddGameSystem<PauseMenu>();
                 GameSystem.AddGameSystem<Messenger>();
 
@@ -92,8 +77,6 @@ namespace ReCrafted.Game
         {
             try
             {
-                //_camera.Update();
-
                 // Update game systems
                 GameSystem.UpdateAll();
                 
@@ -103,56 +86,22 @@ namespace ReCrafted.Game
                 
                 if (Input.IsKeyDown(Keys.Escape))
                 {
-                    //if (SuperConsole.Instance.Enabled)
-                    //    DisableConsole();
-                    //else
+                    if (PauseMenu.Instance.Enabled)
                     {
-                        if (PauseMenu.Instance.Enabled)
-                        {
-                            DisablePause();
-                        }
-                        else
-                        {
-                            EnablePause();
-                        }
+                        DisablePause();
+                    }
+                    else
+                    {
+                        EnablePause();
                     }
                 }
-
-                if (Input.IsKeyDown(Keys.OEM3))
-                {
-                    //if (SuperConsole.Instance.Enabled)
-                    //{
-                    //    DisableConsole();
-                    //}
-                    //else
-                    {
-                        EnableConsole();
-                    }
-                }
-
+                
                 if (Input.IsKeyDown(Keys.F8) && (PauseMenu.Instance == null || !PauseMenu.Instance.Enabled))
                 {
                     Cursor.Show = !Cursor.Show;
                     Cursor.Lock = !Cursor.Show;
                 }
-
-                if (UIControl.FocusedControl == null)
-                {
-                    if (Input.IsKeyDown(Keys.G))
-                        Messenger.ShowCenterMessage("Test!", "Lul", 4f, null);
-
-                    if (Input.IsKeyDown(Keys.H))
-                        Messenger.ShowCenterMessage("Test!", "Lul", 4f, button =>
-                        {
-                            Messenger.ShowCenterMessage(button.ToString() + "!", "ClickEvent!", 4f, null);
-                        }, MessageType.Error, MessageButtons.OkNoCancel);
-                }
                 
-                DebugDraw.Color = new Color(0, 105, 0, 64);
-                DebugDraw.DrawBox(Vector3.Zero, Vector3.One);
-                DebugDraw.Color = new Color(0, 105, 0, 255);
-                DebugDraw.DrawWireBox(Vector3.Zero, Vector3.One);
-
                 // draw world-space lines
                 DebugDraw.Color = new Color(0, 255, 0, 32);
                 DebugDraw.DrawLine(Vector3.Down * 2000.0f, Vector3.Up * 2000.0f);
@@ -225,32 +174,7 @@ namespace ReCrafted.Game
             if (UIControl.FocusedControl != null)
                 UIControl.SetFocusedControl(null);
         }
-
-        /// <summary>
-        /// Enables console.
-        /// </summary>
-        public static void EnableConsole()
-        {
-            Cursor.Show = true;
-            Cursor.Lock = false;
-
-            SuperConsole.Instance.Enable();
-        }
-
-        /// <summary>
-        /// Disables console.
-        /// </summary>
-        public static void DisableConsole()
-        {
-            Cursor.Show = false;
-            Cursor.Lock = true;
-
-            SuperConsole.Instance.Disable();
-
-            if (UIControl.FocusedControl != null)
-                UIControl.SetFocusedControl(null);
-        }
-
+        
         /// <summary>
         /// Instance of main game class.
         /// </summary>

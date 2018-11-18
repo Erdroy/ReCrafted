@@ -24,7 +24,6 @@ void CharacterActor::OnUpdate()
     ASSERT(m_character);
 
     Super::SetPosition(m_character->GetPosition());
-    Super::SetRotation(m_character->GetRotation());
 }
 
 void CharacterActor::OnDestroy()
