@@ -20,6 +20,7 @@ namespace ReCrafted.Editor.Core
             {
                 _lastKey = default(KeyEvent);
                 _lastKeyUp = @event;
+                _nextKeyUpTime = Time.CurrentTime + 0.02f;
             };
         }
 
