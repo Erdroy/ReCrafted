@@ -24,6 +24,7 @@ namespace ReCrafted.Editor.Core
         private ImGuiRenderer _guiController;
         private ContentManager _contentManager;
         private PreviewsCache _previewsCache;
+        private Input _inputManager;
 
         public EditorApplication()
         {
@@ -50,6 +51,8 @@ namespace ReCrafted.Editor.Core
                 GraphicsDevice.MainSwapchain.Resize((uint)SdlWindow.Width, (uint)SdlWindow.Height);
                 _guiController.WindowResized(SdlWindow.Width, SdlWindow.Height);
             };
+
+            _inputManager = new Input(this);
         }
 
         protected override void OnLoad()
@@ -103,6 +106,7 @@ namespace ReCrafted.Editor.Core
             }
 
             Time.Update();
+            _inputManager.Update();
 
             // Update gui
             _guiController.Update(Time.DeltaTime, inputSnapshot);

@@ -2,6 +2,7 @@
 
 using System.Numerics;
 using ImGuiNET;
+using ReCrafted.Editor.Common;
 
 namespace ReCrafted.Editor.Windows.Graph
 {
@@ -26,20 +27,29 @@ namespace ReCrafted.Editor.Windows.Graph
         {
         }
 
+        private Vector2 _nodePosition1 = new Vector2(35f, 150f);
+        private Vector2 _nodePosition2 = new Vector2(35f, 250f);
+
         private void DrawNodesSurface()
         {
-
             var basePos = ImGui.GetWindowPos();
 
-            DrawNode(basePos + new Vector2(35.0f, 35.0f), new Vector2(140.0f, 80.0f));
-            DrawNode(basePos + new Vector2(35.0f, 150.0f), new Vector2(140.0f, 80.0f));
+            _nodePosition1 = DrawNode(basePos + _nodePosition1, new Vector2(140.0f, 80.0f), "<unknown-node1>") -
+                             basePos;
+            _nodePosition2 = DrawNode(basePos + _nodePosition2, new Vector2(140.0f, 80.0f), "<unknown-node2>") -
+                             basePos;
+
+           // _drawList.AddBezierCurve(_nodePosition1 + basePos, _nodePosition1 + new Vector2(20, 0) + basePos,  _nodePosition2 + new Vector2(-20, 0) + basePos, _nodePosition2 + basePos, 0xFF0069B5, 3.0f, 0x1 | 0x2);
         }
 
         private Vector2 DrawNode(Vector2 position, Vector2 size, string name = "<unknown-node>")
         {
-            if (ImGui.InvisibleButton("##nodeHandle", size))
+            ImGui.SetCursorScreenPos(position);
+            ImGui.InvisibleButton(name, size);
+            if (ImGui.IsItemActive() && ImGui.IsMouseDragging(0))
             {
-                return Vector2.Zero;
+                position += ImGui.GetMouseDragDelta(0);
+                ImGui.ResetMouseDragDelta(0);
             }
 
             // Get text size
@@ -49,7 +59,7 @@ namespace ReCrafted.Editor.Windows.Graph
             _drawList.AddRectFilled(position, position + size, 0xFF101010, 3.0f);
 
             // Draw node header
-            _drawList.AddRectFilled(position, position + new Vector2(size.X, textSize.Y), 0xFF0069B5, 3.0f, 0x1 | 0x2);
+            _drawList.AddRectFilled(position, position + new Vector2(size.X, textSize.Y), 0xFF0069B5, 3.0f,  0x1 | 0x2);
             _drawList.AddText(position + new Vector2(size.X * 0.5f - textSize.X * 0.5f, 0.0f), 0xFFFFFFFF, name);
 
             return position;

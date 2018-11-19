@@ -1,10 +1,5 @@
 ﻿// ReCrafted Editor (c) 2016-2018 Always Too Late
 
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Numerics;
-using System.Windows.Forms;
 using DirectXTexNet;
 using ImGuiNET;
 using ReCrafted.Editor.Content;
@@ -14,6 +9,14 @@ using ReCrafted.Editor.Content.Previews;
 using ReCrafted.Editor.Graphics;
 using ReCrafted.Editor.Utilities;
 using ReCrafted.Editor.Windows.Content.ContentTree;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Numerics;
+using System.Windows.Forms;
+using ReCrafted.Editor.Common;
+using ReCrafted.Editor.Core;
+using Veldrid;
 
 namespace ReCrafted.Editor.Windows.Content
 {
@@ -36,7 +39,7 @@ namespace ReCrafted.Editor.Windows.Content
         {
             // Set this content window as current
             Current = this;
-            
+
             DrawMenuBar();
             DrawContextMenus();
             DrawContent();
@@ -153,6 +156,7 @@ namespace ReCrafted.Editor.Windows.Content
             ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(0.1f, 0.1f, 0.1f, 0.25f));
             ImGui.PushStyleColor(ImGuiCol.ButtonActive, new Vector4(0.1f, 0.1f, 0.1f, 0.38f));
             ImGui.PushStyleColor(ImGuiCol.ButtonHovered, new Vector4(1.0f, 0.1f, 0.1f, 0.42f));
+
 
             ImGui.BeginGroup();
             {
@@ -297,8 +301,8 @@ namespace ReCrafted.Editor.Windows.Content
                 {
                     // TODO: Open texture importer window
 
-                    var compressResult = MessageBox.Show("Compress this texture?", "Texture import.", MessageBoxButtons.YesNo);
-                    var mipMapsResult = MessageBox.Show("Generate mip maps?", "Texture import.", MessageBoxButtons.YesNo);
+                    var compressResult = MessageBox.Show(@"Compress this texture?", @"Texture import.", MessageBoxButtons.YesNo);
+                    var mipMapsResult = MessageBox.Show(@"Generate mip maps?", @"Texture import.", MessageBoxButtons.YesNo);
 
                     // Temporary, import the texture
                     var outputFileName = Path.Combine(CurrentNode.Path, Path.GetFileNameWithoutExtension(fileName) + ".rcasset");

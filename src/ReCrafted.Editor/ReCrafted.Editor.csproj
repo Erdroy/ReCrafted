@@ -224,6 +224,7 @@
     <Compile Include="Content\Previews\Generators\TexturePreviewGenerator.cs" />
     <Compile Include="Content\Previews\IPreviewGenerator.cs" />
     <Compile Include="Content\Previews\PreviewsCache.cs" />
+    <Compile Include="Core\Input.cs" />
     <Compile Include="Core\Singleton.cs" />
     <Compile Include="Graphics\ImGuiRenderer.cs" />
     <Compile Include="Utilities\FileSystem.cs" />

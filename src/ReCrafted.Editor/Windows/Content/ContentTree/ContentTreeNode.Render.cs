@@ -2,6 +2,10 @@
 
 using System;
 using ImGuiNET;
+using ReCrafted.Editor.Common;
+using ReCrafted.Editor.Core;
+using Veldrid;
+using Veldrid.Sdl2;
 
 namespace ReCrafted.Editor.Windows.Content.ContentTree
 {
@@ -49,7 +53,7 @@ namespace ReCrafted.Editor.Windows.Content.ContentTree
             }
 
             // Navigation handling
-            if (ImGui.IsItemClicked() && ImGui.IsMouseDoubleClicked(0))
+            if (ImGui.IsItemClicked() && ImGui.IsMouseClicked(0))
             {
                 // Navigate to this node in the current ContentWindow.
                 ContentWindow.Current.Navigate(this);
@@ -61,6 +65,14 @@ namespace ReCrafted.Editor.Windows.Content.ContentTree
                     result = true;
                     noPop = true;
                     _forceOpen = true;
+                }
+            }
+
+            if (ImGui.IsItemHovered())
+            {
+                if (Input.IsKeyDown(Key.F2))
+                {
+                    Logger.Log("Rename!");
                 }
             }
 
