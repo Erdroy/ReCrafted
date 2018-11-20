@@ -32,9 +32,11 @@ private:
     typedef enum
     {
         None,
-        SwapMesh,
-        UploadMesh,
-        ClearMesh
+
+        Swap,
+        Clear,
+
+        Count
     } UploadType;
 
 private:

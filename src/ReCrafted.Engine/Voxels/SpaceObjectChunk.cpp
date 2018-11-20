@@ -97,7 +97,7 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher) // WARNING: this function i
         m_chunkData->HasSurface(false);
 
         // Set upload type to CLEAR-MESH
-        SetUpload(nullptr, nullptr, ClearMesh);
+        SetUpload(nullptr, nullptr, Clear);
         return;
     }
 
@@ -118,7 +118,7 @@ void SpaceObjectChunk::Rebuild(IVoxelMesher* mesher) // WARNING: this function i
     // Upload new mesh
     mesh->UploadNow();
 
-    SetUpload(mesh, collision, SwapMesh);
+    SetUpload(mesh, collision, Swap);
 }
 
 void SpaceObjectChunk::InitializePhysics()
@@ -198,7 +198,7 @@ void SpaceObjectChunk::Upload()
     
     switch (m_uploadType)
     {
-    case SwapMesh:
+    case Swap:
     {
         // Dispose old mesh and swap mesh (m_newMesh will be nullptr - because m_mesh is nullptr (SafeDispose))
         ScopeLock(m_uploadLock);
@@ -210,11 +210,7 @@ void SpaceObjectChunk::Upload()
         m_collision.swap(m_newCollision);
         break;
     }
-    case UploadMesh:
-    {
-        break;
-    }
-    case ClearMesh:
+    case Clear:
     {
         ScopeLock(m_uploadLock);
 
