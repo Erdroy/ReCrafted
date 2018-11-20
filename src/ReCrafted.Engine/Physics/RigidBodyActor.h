@@ -32,6 +32,11 @@ private:
     void OnUpdate() override;
     void OnDestroy() override;
 
+    const char* GetObjectName() const override
+    {
+        return "RigidBodyActor";
+    }
+
 public:
     void AttachCollision(Collision* collision);
     void DetachCollision();

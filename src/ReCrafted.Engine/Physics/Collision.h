@@ -39,6 +39,12 @@ private:
 private:
     Collision() = default;
 
+private:
+    const char* GetObjectName() const override
+    {
+        return "Collision";
+    }
+
 public:
     void OnDestroy() override;
 

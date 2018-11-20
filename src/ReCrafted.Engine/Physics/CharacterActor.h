@@ -36,6 +36,11 @@ private:
     void OnUpdate() override;
     void OnDestroy() override;
 
+    const char* GetObjectName() const override
+    {
+        return "CharacterActor";
+    }
+
 public:
     void SetPosition(const Vector3& position) override;
     void SetRotation(const Quaternion& rotation) override;

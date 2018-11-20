@@ -70,6 +70,16 @@ public:
     }
 
     /**
+     * \brief Gets 'friendly' name of this object.
+     * 
+     * \note Useful for debugging.
+     */
+    virtual const char* GetObjectName() const
+    {
+        return "Unnamed Object";
+    }
+
+    /**
      * \brief Gets id of this object.
      */
     ObjectId_t GetObjectId() const

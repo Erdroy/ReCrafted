@@ -219,9 +219,8 @@ void Object::Finalize(Object* object)
     if (isObjectDestroyed)
     {
         // When object is still in the object map, the object hasn't been destroyed.
-        // At first call destroy the object, then scream at Erdroy.
-        object->OnDestroy();
-        Logger::LogWarning("Object got finalized, but not destroyed at first!");
+        // Scream at Erdroy.
+        Logger::LogWarning("Object got finalized, but not destroyed at first! Id: {0} Name: ", object->GetObjectId(), object->GetObjectName());
     }
 
     // cleanup
