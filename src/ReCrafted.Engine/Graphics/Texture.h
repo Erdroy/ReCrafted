@@ -89,6 +89,11 @@ protected:
     void OnLoadBegin(const std::string& fileName) override;
     void OnDeserializeBinary(uint16_t version, BinaryStream& stream) override;
     void OnUnload() override;
+
+    const char* GetObjectName() const override
+    {
+        return "(asset) Texture";
+    }
     
     AssetType GetAssetType() override
     {

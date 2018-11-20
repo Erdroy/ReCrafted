@@ -34,6 +34,11 @@ protected:
     void OnDeserializeJson(uint16_t version, const json& json) override;
     void OnUnload() override;
 
+    const char* GetObjectName() const override
+    {
+        return "(asset) Shader";
+    }
+    
     AssetType GetAssetType() override
     {
         return AssetType::Shader;

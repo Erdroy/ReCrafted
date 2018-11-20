@@ -141,7 +141,11 @@ void Object::Destroy(Object* object)
     
     if (objectIterator == m_objectMap.end())
     {
-        Logger::LogWarning("Destroying object which is already destroyed (or invalid)! Pointer: {0}", reinterpret_cast<uint64_t>(object));
+        Logger::LogWarning("Destroying object which is already destroyed (or invalid)! Pointer: {0} Id: {1} Name: {2}", 
+            reinterpret_cast<uint64_t>(object), 
+            object->GetObjectId(), 
+            object->GetObjectName()
+        );
     }
     else
     {

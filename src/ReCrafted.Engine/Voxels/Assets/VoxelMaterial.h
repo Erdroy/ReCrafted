@@ -104,6 +104,11 @@ protected:
         }
     }
 
+    const char* GetObjectName() const override
+    {
+        return "(asset) VoxelMaterial";
+    }
+
     AssetType GetAssetType() override
     {
         return AssetType::VoxelMaterial;

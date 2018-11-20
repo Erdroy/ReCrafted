@@ -25,6 +25,11 @@ public:
 public:
     void Destroy() override;
 
+    const char* GetObjectName() const override
+    {
+        return ManagedName;
+    }
+
 public:
     static TActor* Create()
     {
