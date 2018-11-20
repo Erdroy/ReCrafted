@@ -34,6 +34,12 @@ namespace ReCrafted.Game.Player
             moveDirection.Normalize();
             moveDirection = Actor.TransformDirection(moveDirection);
 
+            // Calculate temporary gravity vector to planet's center
+            var gravity = -actor.Position;
+            gravity.Normalize();
+            gravity *= 9.81f;
+            actor.UpDirection = Vector3.Normalize(-gravity);
+
             if (actor.IsGrounded)
             {
                 _velocity = moveDirection;
@@ -49,12 +55,12 @@ namespace ReCrafted.Game.Player
 
                 if (Input.IsKey(Keys.Space))
                 {
-                    _velocity.Y = 6.5f;
+                    _velocity += Vector3.Normalize(actor.Position) * 6.5f;
                 }
             }
             else
             {
-                _velocity += new Vector3(0.0f, -9.81f, 0.0f) * (float)Time.DeltaTime;
+                _velocity += gravity * (float)Time.DeltaTime;
             }
 
             actor.Move(_velocity * (float)Time.DeltaTime);
