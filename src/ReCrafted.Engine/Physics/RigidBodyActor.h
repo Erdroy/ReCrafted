@@ -25,11 +25,14 @@ private:
     Collision* m_collision = nullptr;
     bool m_dynamic = true;
 
+    Vector3 m_gravity = Vector3::Zero;
+
 private:
     void Initialize();
 
     void OnStart() override;
     void OnUpdate() override;
+    void OnSimulate() override;
     void OnDestroy() override;
 
     const char* GetObjectName() const override
@@ -47,6 +50,9 @@ public:
 
     void SetVelocity(const Vector3& velocity);
     Vector3 GetVelocity();
+
+    void AddForce(const Vector3& force, ForceMode forceMode, bool awake = true);
+    void AddTorque(const Vector3& torque, ForceMode forceMode, bool awake = true);
 
 public:
     /**

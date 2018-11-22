@@ -29,6 +29,20 @@ void RigidBodyActor::OnUpdate()
     // TODO: Interpolation/Extrapolation
 }
 
+void RigidBodyActor::OnSimulate()
+{
+    ASSERT(m_actor);
+
+    if(m_dynamic)
+    {
+        // Calculate gravity
+        m_gravity = Vector3::Normalize(GetPosition()) * -9.81f; // TODO: Use gravitational fields
+
+        // Apply gravity (Add force)
+        m_actor->AddForce(m_gravity, ForceMode::Force);
+    }
+}
+
 void RigidBodyActor::OnDestroy()
 {
     if(PhysicsManager::Scene())
@@ -38,7 +52,7 @@ void RigidBodyActor::OnDestroy()
 
     if(m_collision)
     {
-        DetachCollision();
+        m_actor->DetachShape(m_collision->m_shape);
         Object::Destroy(m_collision);
         m_collision = nullptr;
     }
@@ -88,12 +102,26 @@ void RigidBodyActor::SetRotation(const Quaternion& rotation)
 
 void RigidBodyActor::SetVelocity(const Vector3& velocity)
 {
+    ASSERT(m_dynamic);
     m_actor->SetVelocity(velocity);
 }
 
 Vector3 RigidBodyActor::GetVelocity()
 {
+    ASSERT(m_dynamic);
     return m_actor->GetVelocity();
+}
+
+void RigidBodyActor::AddForce(const Vector3& force, const ForceMode forceMode, const bool awake)
+{
+    ASSERT(m_dynamic);
+    m_actor->AddForce(force, forceMode, awake);
+}
+
+void RigidBodyActor::AddTorque(const Vector3& torque, const ForceMode forceMode, const bool awake)
+{
+    ASSERT(m_dynamic);
+    m_actor->AddTorque(torque, forceMode, awake);
 }
 
 RigidBodyActor* RigidBodyActor::Create()
