@@ -19,7 +19,7 @@ PhysXScene::PhysXScene(PxCpuDispatcher* cpuDispatcher, PxMaterial* defaultMateri
 
     // Create scene description
     PxSceneDesc sceneDesc(toleranceScale);
-    sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f); // No default gravity! We're in space!
+    sceneDesc.gravity = PxVec3(0.0f, 0.0f, 0.0f); // No default gravity! We're in space!
     sceneDesc.bounceThresholdVelocity = 1.0f; // TODO: Tweak this value!
     sceneDesc.filterShader = PxDefaultSimulationFilterShader;
     // sceneDesc.simulationEventCallback TODO: Handle simulation events!

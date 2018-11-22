@@ -154,7 +154,7 @@ IPhysicsActor* PhysXEngine::CreateActor(const Transform& transform, const bool d
     ASSERT(pxActor);
 
     // Return new PhysX Actor Impl.
-    return new PhysXActor(pxActor);
+    return new PhysXActor(pxActor, dynamic);
 }
 
 void PhysXEngine::ReleaseActor(IPhysicsActor* actor)

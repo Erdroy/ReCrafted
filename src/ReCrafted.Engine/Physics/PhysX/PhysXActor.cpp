@@ -31,6 +31,22 @@ void PhysXActor::SetRotation(const Quaternion& rotation)
     actor->setGlobalPose(PxTransform(pose.p, PxQuat{ rotation.x, rotation.y, rotation.z, rotation.w }));
 }
 
+void PhysXActor::AddForce(const Vector3& force, ForceMode forceMode, const bool awake)
+{
+    ASSERT(m_dynamic);
+
+    cvar dynamic = static_cast<PxRigidDynamic*>(actor);
+    dynamic->addForce({ force.x, force.y, force.z }, static_cast<PxForceMode::Enum>(forceMode), awake);
+}
+
+void PhysXActor::AddTorque(const Vector3& torque, ForceMode forceMode, const bool awake)
+{
+    ASSERT(m_dynamic);
+
+    cvar dynamic = static_cast<PxRigidDynamic*>(actor);
+    dynamic->addTorque({ torque.x, torque.y, torque.z }, static_cast<PxForceMode::Enum>(forceMode), awake);
+}
+
 Vector3 PhysXActor::GetPosition()
 {
     var pose = actor->getGlobalPose();
@@ -49,12 +65,16 @@ Quaternion PhysXActor::GetRotation()
 
 void PhysXActor::SetVelocity(const Vector3& velocity)
 {
+    ASSERT(m_dynamic);
+
     cvar dynamic = static_cast<PxRigidDynamic*>(actor);
     dynamic->setLinearVelocity(PxVec3(velocity.x, velocity.y, velocity.z));
 }
 
 Vector3 PhysXActor::GetVelocity()
 {
+    ASSERT(m_dynamic);
+
     cvar dynamic = static_cast<PxRigidDynamic*>(actor);
     cvar vel = dynamic->getLinearVelocity();
     return { vel.x, vel.y, vel.z };
