@@ -46,7 +46,7 @@ namespace ReCrafted.Game.Player
 
                 if (Input.IsKey(Keys.Shift))
                 {
-                    _velocity *= 10.0f;
+                    _velocity *= 100.0f;
                 }
                 else
                 {
@@ -103,15 +103,21 @@ namespace ReCrafted.Game.Player
             rotation.Y = MathUtil.Clamp(rotation.Y, -89.9f, 89.9f);
             _currentRotation = rotation;
 
-            var characterRotation = Quaternion.RotationAxis(Vector3.Up, MathUtil.DegreesToRadians(_currentRotation.X));
-            character.Rotation = characterRotation;
+            var up = Vector3.Normalize(character.Position);
+            
+            var v1 = Vector3.Normalize(up);
+            var v2 = Vector3.Normalize(Vector3.Cross(Vector3.ForwardLH, up));
+            var v3 = Vector3.Normalize(Vector3.Cross(v1, v2));
+            
+            // TODO: Fix (forward) pole issue
 
+            var characterRotation = Quaternion.RotationAxis(v1, MathUtil.DegreesToRadians(_currentRotation.X));
+            character.Rotation = characterRotation * Quaternion.LookRotation(v3, v1);
+            
             var cameraRotation = Quaternion.RotationAxis(Vector3.Right, MathUtil.DegreesToRadians(_currentRotation.Y));
             camera.LocalRotation = cameraRotation;
         }
-
-        public Vector3 Position { get; set; }
-
+        
         public bool MouseFiltering { get; set; } = true;
 
         public int MouseFilteringFrames { get; set; } = 3;
