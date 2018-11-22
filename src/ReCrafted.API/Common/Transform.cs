@@ -77,17 +77,17 @@ namespace ReCrafted.API.Common
         /// <summary>
         /// Gets the transformation matrix from this transform.
         /// </summary>
-        public Matrix TransformMatrix => RotationMatrix * RotationMatrix * TranslationMatrix;
+        public Matrix TransformMatrix => ScalingMatrix * RotationMatrix * TranslationMatrix;
 
         /// <summary>
         /// Gets the forward directional vector from this transform.
         /// </summary>
-        public Vector3 Forward => RotationMatrix.Forward;
+        public Vector3 Forward => RotationMatrix.ForwardLH;
 
         /// <summary>
         /// Gets the backward directional vector from this transform.
         /// </summary>
-        public Vector3 Backward => RotationMatrix.Backward;
+        public Vector3 Backward => RotationMatrix.BackwardLH;
 
         /// <summary>
         /// Gets the up directional vector from this transform.

@@ -236,7 +236,49 @@ namespace ReCrafted.API.Mathematics
             this.M13 = -value.Z;
           }
         }
-        
+
+        /// <summary>
+        /// Gets or sets the forward <see cref="Vector3"/> of the matrix; that is -M31, -M32, and -M33.
+        /// </summary>
+        public Vector3 ForwardLH
+        {
+            get
+            {
+                Vector3 vector3;
+                vector3.X = this.M31;
+                vector3.Y = this.M32;
+                vector3.Z = this.M33;
+                return vector3;
+            }
+            set
+            {
+                this.M31 = value.X;
+                this.M32 = value.Y;
+                this.M33 = value.Z;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the backward <see cref="Vector3"/> of the matrix; that is M31, M32, and M33.
+        /// </summary>
+        public Vector3 BackwardLH
+        {
+            get
+            {
+                Vector3 vector3;
+                vector3.X = -this.M31;
+                vector3.Y = -this.M32;
+                vector3.Z = -this.M33;
+                return vector3;
+            }
+            set
+            {
+                this.M31 = -value.X;
+                this.M32 = -value.Y;
+                this.M33 = -value.Z;
+            }
+        }
+
         /// <summary>
         /// Gets or sets the forward <see cref="Vector3"/> of the matrix; that is -M31, -M32, and -M33.
         /// </summary>
