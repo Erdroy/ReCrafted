@@ -9,6 +9,7 @@
 #include "Voxels/SpaceObject.h"
 #include "Common/Actors/EmptyActor.h"
 #include "Core/EngineComponent.h"
+#include "Physics/RigidBodyActor.h"
 
 /**
  * \brief Universe class - main class for whole game world.
@@ -24,6 +25,8 @@ private:
     RefPtr<SpaceObject> m_testObject1 = nullptr;
     VoxelMaterial_t m_selectedMaterial = 1u;
 
+    RigidBodyActor* m_ball = nullptr;
+
 public:
     virtual ~Universe() = default;
 
@@ -34,6 +37,9 @@ private:
 
     void Simulate();
     void RenderUI();
+
+private:
+    void DoVoxelModification(VoxelEditMode::_enum mode, VoxelMaterial_t material, float size) const;
 };
 
 #endif // UNIVERSE_H

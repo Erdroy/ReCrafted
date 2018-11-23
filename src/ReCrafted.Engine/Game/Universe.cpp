@@ -15,6 +15,7 @@
 
 #include <iomanip>
 #include <sstream>
+#include "Physics/PhysicsManager.h"
 
 SINGLETON_IMPL(Universe)
 
@@ -44,10 +45,16 @@ void Universe::OnInit()
 
     // Generate primary data
     m_testObject1->GeneratePrimary();
+
+    m_ball = RigidBodyActor::CreateDynamic();
+    m_ball->AttachCollision(Collision::CreateSphereCollision(0.5f));
 }
 
 void Universe::OnDispose()
 {
+    m_ball->Destroy();
+    m_ball = nullptr;
+
     // Shutdown
     SafeDisposeNN(SpaceObjectManager::GetInstance()); // TODO: Fix issue with m_cooker being deleted before SpaceObject collision release!
     SafeDispose(m_testObject1);
@@ -66,6 +73,23 @@ void Universe::Update()
 
     cvar modPosition = Camera::GetMainCamera()->GetPosition() + Camera::GetMainCamera()->GetForward() * 5.0f;
 
+    if (Input::IsKeyDown(Key_F))
+    {
+        m_ball->SetPosition(modPosition);
+        m_ball->SetVelocity(Vector3::Zero);
+        m_ball->AddForce(Camera::GetMainCamera()->GetForward() * 100.0f, ForceMode::VelocityChange);
+    }
+
+    if(Input::IsKey(Key_R))
+    {
+        m_ball->AddForce(Vector3::Normalize(m_ball->GetVelocity()) * 100.0f, ForceMode::Acceleration);
+    }
+
+    DebugDraw::SetMatrix(m_ball->GetTransform().GetTransformationMatrix());
+    DebugDraw::SetColor(0xAAAAAAFF);
+    DebugDraw::DrawBox(Vector3::Zero, Vector3::One);
+    DebugDraw::SetMatrix(Matrix::Identity);
+
     if (Input::IsKeyDown(Key_Alpha1))
         m_selectedMaterial = 0u;
     if (Input::IsKeyDown(Key_Alpha2))
@@ -79,20 +103,24 @@ void Universe::Update()
     if (Input::IsKeyDown(Key_Alpha6))
         m_selectedMaterial = 5u;
 
-    if (Input::IsKey(Key_Mouse0))
+    /*RayCastHit hit{};
+    if(PhysicsManager::RayCast(Camera::GetMainCamera()->GetPosition(), Camera::GetMainCamera()->GetForward(), 5.0f, &hit))
     {
-        m_testObject1->Modify(0u, VoxelEditMode::Subtractive, modPosition, 2.5f);
-    }
+        DebugDraw::SetColor(0xAAAAAAFF);
+        DebugDraw::DrawBox(hit.point, Vector3::One * 0.1f);
 
-    if (Input::IsKey(Key_Mouse1))
-    {
-        m_testObject1->Modify(m_selectedMaterial, VoxelEditMode::Additive, modPosition, 2.5f);
-    }
+        DebugDraw::SetColor(0xFF0000FF);
+        DebugDraw::DrawArrow(hit.point, hit.point + hit.normal, 0.05f);
+    }*/
+
+    if (Input::IsKeyDown(Key_Mouse0))
+        DoVoxelModification(VoxelEditMode::Subtractive, 0u, 1.5f);
+
+    if (Input::IsKeyDown(Key_Mouse1))
+        DoVoxelModification(VoxelEditMode::Additive, m_selectedMaterial, 1.5f);
 
     if (Input::IsKey(Key_Mouse2))
-    {
-        m_testObject1->Modify(m_selectedMaterial, VoxelEditMode::MaterialPaint, modPosition, 2.5f);
-    }
+        DoVoxelModification(VoxelEditMode::MaterialPaint, m_selectedMaterial, 1.0f);
 
     DebugDraw::SetColor(Color(0, 105, 0, 64));
 
@@ -141,5 +169,14 @@ void Universe::RenderUI()
     case 5u:
         UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Rock2"), Vector2(10.0f, 10.0f));
         break;
+    }
+}
+
+void Universe::DoVoxelModification(const VoxelEditMode::_enum mode, const VoxelMaterial_t material, const float size) const
+{
+    RayCastHit hit{};
+    if (PhysicsManager::RayCast(Camera::GetMainCamera()->GetPosition(), Camera::GetMainCamera()->GetForward(), 5.0f, &hit))
+    {
+        m_testObject1->Modify(material, mode, hit.point, size);
     }
 }
