@@ -2,9 +2,10 @@
 
 #include "PhysXScene.h"
 #include "Common/Time.h"
+#include "Common/Profiler/Profiler.h"
 #include "Graphics/DebugDraw.h"
 #include "Graphics/Camera.h"
-#include "Common/Profiler/Profiler.h"
+#include "Physics/PhysicsManager.h"
 
 #include "PhysXActor.h"
 #include "PhysXStepper.h"
@@ -151,4 +152,25 @@ IPhysicsCharacter* PhysXScene::CreateCharacter(const float radius, const float h
 
 void PhysXScene::ReleaseCharacter(IPhysicsCharacter* character)
 {
+}
+
+bool PhysXScene::RayCast(const Vector3 position, const Vector3 direction, const float maxDistance, RayCastHit* hit)
+{
+    PxRaycastBuffer pxHit;
+    cvar isHit = m_scene->raycast(ToPxV3(position), ToPxV3(direction), PxReal(maxDistance), pxHit);
+
+    if(pxHit.hasAnyHits())
+    {
+        // We've got some hit! Process the data.
+        ASSERT(pxHit.getNbAnyHits() == 1);
+        crvar rayCastHit = pxHit.getAnyHit(0);
+
+        // Copy data to our hit
+        hit->point = FromPxV3(rayCastHit.position);
+        hit->normal = FromPxV3(rayCastHit.normal);
+        hit->faceIndex = rayCastHit.faceIndex;
+        hit->distance = rayCastHit.distance;
+    }
+
+    return isHit;
 }

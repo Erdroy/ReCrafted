@@ -10,6 +10,15 @@
 #include "Physics/IPhysicsEngine.h"
 #include "Scripting/ScriptingAPI.h"
 
+struct RayCastHit
+{
+public:
+    Vector3 point;
+    Vector3 normal;
+    float distance;
+    uint32_t faceIndex;
+};
+
 class PhysicsManager : public EngineComponent<PhysicsManager>
 {
     friend class EngineMain;
@@ -39,6 +48,10 @@ public:
     {
         return m_instance->m_engine.get();
     }
+
+public: /* Scene Queries */
+    static IPhysicsScene* GetSceneAt(Vector3 worldPosition);
+    static bool RayCast(Vector3 position, Vector3 direction, float maxDistance, RayCastHit* hit);
 };
 
 #endif // PHYSICSMANAGER_H

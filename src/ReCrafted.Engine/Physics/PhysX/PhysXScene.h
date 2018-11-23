@@ -38,6 +38,9 @@ public:
 public:
     IPhysicsCharacter* CreateCharacter(float radius, float height, float stepOffset, float slopeLimit, float contactOffset) override;
     void ReleaseCharacter(IPhysicsCharacter* character) override;
+
+public:
+    bool RayCast(Vector3 position, Vector3 direction, float maxDistance, RayCastHit* hit) override;
 };
 
 #endif // PHYSXSCENE_H

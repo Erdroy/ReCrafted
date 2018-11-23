@@ -8,6 +8,7 @@
 // includes
 #include "ReCrafted.h"
 
+struct RayCastHit;
 class IPhysicsActor;
 class IPhysicsCharacter;
 
@@ -24,9 +25,13 @@ protected:
 public:
     virtual void AttachActor(IPhysicsActor* actor) = 0;
     virtual void DetachActor(IPhysicsActor* actor) = 0;
+
 public:
     virtual IPhysicsCharacter* CreateCharacter(float radius, float height, float stepOffset, float slopeLimit, float contactOffset) = 0;
     virtual void ReleaseCharacter(IPhysicsCharacter* character) = 0;
+
+public:
+    virtual bool RayCast(Vector3 position, Vector3 direction, float maxDistance, RayCastHit* hit) = 0;
 };
 
 #endif // IPHYSICSSCENE_H
