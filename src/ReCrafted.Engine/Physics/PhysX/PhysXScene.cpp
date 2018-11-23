@@ -48,8 +48,8 @@ PhysXScene::PhysXScene(PxCpuDispatcher* cpuDispatcher, PxMaterial* defaultMateri
     m_scrathMemory = _aligned_malloc(PhysXStepper::SCRATCH_BLOCK_SIZE, 16);
     ASSERT(m_scrathMemory);
 
-    // Initialize substepping
-    PhysXStepper::GetInstance()->Initialize(float(Time::FixedDeltaTime()) * 0.25f, 4);
+    // Initialize stepper
+    PhysXStepper::GetInstance()->Initialize(float(Time::FixedDeltaTime()));
 }
 
 PhysXScene::~PhysXScene()
