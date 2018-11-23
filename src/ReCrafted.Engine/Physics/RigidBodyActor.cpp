@@ -39,7 +39,7 @@ void RigidBodyActor::OnSimulate()
         m_gravity = Vector3::Normalize(GetPosition()) * -9.81f; // TODO: Use gravitational fields
 
         // Apply gravity (Add force)
-        m_actor->AddForce(m_gravity, ForceMode::Force);
+        m_actor->AddForce(m_gravity, ForceMode::Acceleration);
     }
 }
 
