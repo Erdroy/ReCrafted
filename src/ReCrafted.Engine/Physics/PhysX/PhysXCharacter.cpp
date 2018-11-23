@@ -7,25 +7,22 @@ extern PxPhysics* GPxPhysX;
 
 IPhysicsCharacter::CollisionFlags PhysXCharacter::Move(const Vector3& vector)
 {
-    cvar moveDir = PxVec3(vector.x, vector.y, vector.z);
-
     // Create filters
     PxControllerFilters filters;
     filters.mFilterFlags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
     
-    var flags = m_controller->move(moveDir, 0.001f, Time::FixedDeltaTime(), filters);
+    var flags = m_controller->move(ToPxV3(vector), 0.001f, float(Time::FixedDeltaTime()), filters);
     return *reinterpret_cast<CollisionFlags*>(&flags);
 }
 
 void PhysXCharacter::SetUpDirection(const Vector3& upDirection)
 {
-    m_controller->setUpDirection({ upDirection.x, upDirection.y, upDirection.z });
+    m_controller->setUpDirection(ToPxV3(upDirection));
 }
 
 Vector3 PhysXCharacter::GetUpDirection()
 {
-    cvar dir = m_controller->getUpDirection();
-    return  { dir.x, dir.y, dir.z };
+    return FromPxV3(m_controller->getUpDirection());
 }
 
 void PhysXCharacter::SetHeight(const float height)
@@ -80,33 +77,26 @@ float PhysXCharacter::GetSlopeLimit()
 
 Vector3 PhysXCharacter::GetVelocity()
 {
-    cvar pos = m_controller->getActor()->getLinearVelocity();
-
-    return { pos.x, pos.y, pos.z };
+    return FromPxV3(m_controller->getActor()->getLinearVelocity());
 }
 
 void PhysXCharacter::SetPosition(const Vector3& position)
 {
-    m_controller->setPosition({ position.x, position.y, position.z });
+    m_controller->setPosition(ToPxV3Ex(position));
 }
 
 Vector3 PhysXCharacter::GetPosition()
 {
-    cvar pos = m_controller->getPosition();
-    return { float(pos.x), float(pos.y), float(pos.z) };
+    return FromPxV3Ex(m_controller->getPosition());
 }
 
 void PhysXCharacter::SetRotation(const Quaternion& rotation)
 {
     cvar actor = m_controller->getActor();
-
-    cvar pose = actor->getGlobalPose();
-    actor->setGlobalPose(PxTransform(pose.p, PxQuat{ rotation.x, rotation.y, rotation.z, rotation.w }));
+    actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, ToPxQ(rotation)));
 }
 
 Quaternion PhysXCharacter::GetRotation()
 {
-    cvar rotation = m_controller->getActor()->getGlobalPose().q;
-
-    return { rotation.x, rotation.y, rotation.z, rotation.w };
+    return FromPxQ(m_controller->getActor()->getGlobalPose().q);
 }

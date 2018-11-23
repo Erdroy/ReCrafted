@@ -49,11 +49,11 @@ void* PhysXShapeCooker::CookTriangleMesh(Vector3* vertices, size_t vertexCount, 
     meshDescription.setToDefault();
 
     meshDescription.points.data = vertices;
-    meshDescription.points.count = vertexCount;
+    meshDescription.points.count = PxU32(vertexCount);
     meshDescription.points.stride = sizeof(*vertices);
 
     meshDescription.triangles.data = indices;
-    meshDescription.triangles.count = indexCount / 3;
+    meshDescription.triangles.count = PxU32(indexCount / 3);
     meshDescription.triangles.stride = 3 * sizeof(*indices);
 
     ASSERT(meshDescription.isValid());

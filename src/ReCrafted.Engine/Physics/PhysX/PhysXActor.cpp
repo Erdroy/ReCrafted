@@ -22,13 +22,13 @@ void PhysXActor::DetachShape(IPhysicsShape* shape)
 void PhysXActor::SetPosition(const Vector3& position)
 {
     cvar pose = actor->getGlobalPose();
-    actor->setGlobalPose(PxTransform(position.x, position.y, position.z, pose.q));
+    actor->setGlobalPose(PxTransform(ToPxV3(position), pose.q));
 }
 
 void PhysXActor::SetRotation(const Quaternion& rotation)
 {
     cvar pose = actor->getGlobalPose();
-    actor->setGlobalPose(PxTransform(pose.p, PxQuat{ rotation.x, rotation.y, rotation.z, rotation.w }));
+    actor->setGlobalPose(PxTransform(pose.p, ToPxQ(rotation)));
 }
 
 void PhysXActor::AddForce(const Vector3& force, ForceMode forceMode, const bool awake)
@@ -36,7 +36,7 @@ void PhysXActor::AddForce(const Vector3& force, ForceMode forceMode, const bool 
     ASSERT(m_dynamic);
 
     cvar dynamic = static_cast<PxRigidDynamic*>(actor);
-    dynamic->addForce({ force.x, force.y, force.z }, static_cast<PxForceMode::Enum>(forceMode), awake);
+    dynamic->addForce(ToPxV3(force), static_cast<PxForceMode::Enum>(forceMode), awake);
 }
 
 void PhysXActor::AddTorque(const Vector3& torque, ForceMode forceMode, const bool awake)
@@ -44,7 +44,7 @@ void PhysXActor::AddTorque(const Vector3& torque, ForceMode forceMode, const boo
     ASSERT(m_dynamic);
 
     cvar dynamic = static_cast<PxRigidDynamic*>(actor);
-    dynamic->addTorque({ torque.x, torque.y, torque.z }, static_cast<PxForceMode::Enum>(forceMode), awake);
+    dynamic->addTorque(ToPxV3(torque), static_cast<PxForceMode::Enum>(forceMode), awake);
 }
 
 Vector3 PhysXActor::GetPosition()
@@ -52,7 +52,7 @@ Vector3 PhysXActor::GetPosition()
     var pose = actor->getGlobalPose();
     rvar pos = pose.p;
 
-    return {pos.x, pos.y, pos.z};
+    return FromPxV3(pos);
 }
 
 Quaternion PhysXActor::GetRotation()
@@ -60,7 +60,7 @@ Quaternion PhysXActor::GetRotation()
     var pose = actor->getGlobalPose();
     rvar rot = pose.q;
 
-    return { rot.x, rot.y, rot.z, rot.w };
+    return FromPxQ(rot);
 }
 
 void PhysXActor::SetVelocity(const Vector3& velocity)
@@ -68,7 +68,7 @@ void PhysXActor::SetVelocity(const Vector3& velocity)
     ASSERT(m_dynamic);
 
     cvar dynamic = static_cast<PxRigidDynamic*>(actor);
-    dynamic->setLinearVelocity(PxVec3(velocity.x, velocity.y, velocity.z));
+    dynamic->setLinearVelocity(ToPxV3(velocity));
 }
 
 Vector3 PhysXActor::GetVelocity()
@@ -77,5 +77,5 @@ Vector3 PhysXActor::GetVelocity()
 
     cvar dynamic = static_cast<PxRigidDynamic*>(actor);
     cvar vel = dynamic->getLinearVelocity();
-    return { vel.x, vel.y, vel.z };
+    return FromPxV3(vel);
 }
