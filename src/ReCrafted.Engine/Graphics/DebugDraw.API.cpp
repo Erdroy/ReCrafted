@@ -41,6 +41,11 @@ namespace Internal
         DebugDraw::DrawWireBox(center, size);
     }
 
+    void drawWireSphere(Vector3 center, float radius)
+    {
+        DebugDraw::DrawWireSphere(center, radius);
+    }
+
     void drawArrow(Vector3 start, Vector3 end, float arrowSize)
     {
         DebugDraw::DrawArrow(start, end, arrowSize);
@@ -97,6 +102,8 @@ void DebugDraw::InitRuntime()
             API_COMMENT("Draws wire sphere at given position.");
             API_METHOD(PUBLIC, STATIC, "DrawWireSphere", EXTERN);
             {
+                API_BIND("ReCrafted.API.Graphics.DebugDraw::DrawWireSphere", &Internal::drawWireSphere);
+
                 API_PARAM("Vector3", "center");
                 API_PARAM("float", "radius");
             }
