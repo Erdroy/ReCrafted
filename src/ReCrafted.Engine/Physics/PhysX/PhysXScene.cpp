@@ -159,7 +159,7 @@ void PhysXScene::ReleaseCharacter(IPhysicsCharacter* character)
 {
 }
 
-bool PhysXScene::RayCast(const Vector3 position, const Vector3 direction, const float maxDistance, RayCastHit* hit, uint32_t collisionLayer)
+bool PhysXScene::RayCast(const Vector3& position, const Vector3& direction, const float maxDistance, RayCastHit* hit, uint32_t collisionLayer)
 {
     // Setup query flag
     var filter = PxQueryFilterData();

@@ -31,7 +31,7 @@ public:
     virtual void ReleaseCharacter(IPhysicsCharacter* character) = 0;
 
 public:
-    virtual bool RayCast(Vector3 position, Vector3 direction, float maxDistance, RayCastHit* hit, uint32_t collisionLayer = 0) = 0;
+    virtual bool RayCast(const Vector3& position, const Vector3& direction, float maxDistance, RayCastHit* hit, uint32_t collisionLayer = 0) = 0;
 };
 
 #endif // IPHYSICSSCENE_H

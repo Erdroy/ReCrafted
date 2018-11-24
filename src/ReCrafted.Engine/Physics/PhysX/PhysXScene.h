@@ -40,7 +40,7 @@ public:
     void ReleaseCharacter(IPhysicsCharacter* character) override;
 
 public:
-    bool RayCast(Vector3 position, Vector3 direction, float maxDistance, RayCastHit* hit, uint32_t collisionLayer) override;
+    bool RayCast(const Vector3& position, const Vector3& direction, float maxDistance, RayCastHit* hit, uint32_t collisionLayer) override;
 };
 
 #endif // PHYSXSCENE_H

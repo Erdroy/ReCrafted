@@ -58,9 +58,9 @@ public:
 
 public: /* Scene Queries */
     static IPhysicsScene* GetSceneAt(Vector3 worldPosition);
-    static bool RayCast(Vector3 position, Vector3 direction, float maxDistance = FLT_MAX, RayCastHit* hit = nullptr,
+    static bool RayCast(const Vector3& position, const Vector3& direction, float maxDistance = FLT_MAX, RayCastHit* hit = nullptr,
                         uint32_t collisionLayer = 0u);
-    static bool RayCast(Vector3 position, Vector3 direction, float maxDistance = FLT_MAX, RayCastHit* hit = nullptr,
+    static bool RayCast(const Vector3& position, const Vector3& direction, float maxDistance = FLT_MAX, RayCastHit* hit = nullptr,
                         CollisionLayers collisionLayer = CollisionLayers::All);
 };
 
