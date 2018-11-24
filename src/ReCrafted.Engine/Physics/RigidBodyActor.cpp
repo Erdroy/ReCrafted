@@ -124,6 +124,11 @@ void RigidBodyActor::AddTorque(const Vector3& torque, const ForceMode forceMode,
     m_actor->AddTorque(torque, forceMode, awake);
 }
 
+void RigidBodyActor::SetCollisionLayer(const uint32_t layer)
+{
+    m_actor->SetCollisionLayer(layer);
+}
+
 RigidBodyActor* RigidBodyActor::Create()
 {
     return CreateDynamic();

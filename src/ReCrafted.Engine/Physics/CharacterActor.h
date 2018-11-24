@@ -54,6 +54,8 @@ public:
     CharacterCollisionFlags Move(const Vector3& displacement);
 
 public:
+    void SetCollisionLayer(uint32_t layer);
+
     void SetUpDirection(const Vector3& direction) const
     {
         m_character->SetUpDirection(direction);

@@ -11,13 +11,14 @@
 #include "Physics/IPhysicsActor.h"
 
 #include "PhysX.h"
+#include "tbb/concurrent_vector.h"
 
 class PhysXActor : public IPhysicsActor
 {
 public:
     PxRigidActor* actor;
     bool m_dynamic;
-
+    
 public:
     explicit PhysXActor(PxRigidActor* actor, const bool dynamic) : actor(actor), m_dynamic(dynamic) {}
 
@@ -41,6 +42,9 @@ public:
     {
         return m_dynamic;
     }
+
+public:
+    void SetCollisionLayer(uint32_t layer) override;
 };
 
 #endif // PHYSXACTOR_H

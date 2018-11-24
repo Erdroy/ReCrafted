@@ -147,17 +147,25 @@ IPhysicsCharacter* PhysXScene::CreateCharacter(const float radius, const float h
 
     ASSERT(pxController);
 
-    return new PhysXCharacter(static_cast<PxCapsuleController*>(pxController));
+    cvar controller = new PhysXCharacter(static_cast<PxCapsuleController*>(pxController));
+
+    controller->SetCollisionLayer(3);
+
+    return controller;
 }
 
 void PhysXScene::ReleaseCharacter(IPhysicsCharacter* character)
 {
 }
 
-bool PhysXScene::RayCast(const Vector3 position, const Vector3 direction, const float maxDistance, RayCastHit* hit)
+bool PhysXScene::RayCast(const Vector3 position, const Vector3 direction, const float maxDistance, RayCastHit* hit, uint32_t collisionLayer)
 {
+    // Setup query flag
+    var filter = PxQueryFilterData();
+    filter.data.word0 = collisionLayer;
+    
     PxRaycastBuffer pxHit;
-    cvar isHit = m_scene->raycast(ToPxV3(position), ToPxV3(direction), PxReal(maxDistance), pxHit);
+    cvar isHit = m_scene->raycast(ToPxV3(position), ToPxV3(direction), PxReal(maxDistance), pxHit, PxHitFlag::eDEFAULT, filter);
 
     if(pxHit.hasAnyHits())
     {

@@ -9,6 +9,9 @@ void PhysXActor::AttachShape(IPhysicsShape* shape)
 
     cvar physxShape = static_cast<PhysXShape*>(shape);
     actor->attachShape(*physxShape->shape);
+
+    // Set default collision layer
+    SetCollisionLayer(1);
 }
 
 void PhysXActor::DetachShape(IPhysicsShape* shape)
@@ -78,4 +81,25 @@ Vector3 PhysXActor::GetVelocity()
     cvar dynamic = static_cast<PxRigidDynamic*>(actor);
     cvar vel = dynamic->getLinearVelocity();
     return FromPxV3(vel);
+}
+
+void PhysXActor::SetCollisionLayer(const uint32_t layer)
+{
+    // Create filter data
+    var filter = PxFilterData();
+    filter.word0 = layer;
+
+    cvar shapeCount = actor->getNbShapes();
+
+    if (shapeCount == 0u)
+        return;
+
+    // Set this layer for all children shapes
+    PxShape* shape;
+    for (var i = 0u; i < shapeCount; i++)
+    {
+        ASSERT(actor->getShapes(&shape, 1, i) == 1);
+        shape->setQueryFilterData(filter);
+        shape->setSimulationFilterData(filter);
+    }
 }

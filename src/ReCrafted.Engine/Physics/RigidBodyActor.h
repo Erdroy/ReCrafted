@@ -54,6 +54,8 @@ public:
     void AddForce(const Vector3& force, ForceMode forceMode, bool awake = true);
     void AddTorque(const Vector3& torque, ForceMode forceMode, bool awake = true);
 
+    void SetCollisionLayer(uint32_t layer);
+
 public:
     /**
      * \brief Creates and initializes new dynamic actor.

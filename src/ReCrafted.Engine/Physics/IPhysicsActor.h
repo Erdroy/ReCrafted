@@ -37,6 +37,9 @@ public:
     virtual Vector3 GetVelocity() = 0;
 
     virtual bool IsDynamic() = 0;
+
+public:
+    virtual void SetCollisionLayer(uint32_t layer) = 0;
 };
 
 #endif // IPHYSICSACTOR_H

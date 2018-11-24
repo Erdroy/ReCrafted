@@ -49,6 +49,11 @@ CharacterCollisionFlags CharacterActor::Move(const Vector3& displacement)
     return static_cast<CharacterCollisionFlags>(flags);
 }
 
+void CharacterActor::SetCollisionLayer(uint32_t layer)
+{
+    m_character->SetCollisionLayer(layer);
+}
+
 void CharacterActor::SetPosition(const Vector3& position)
 {
     Super::SetPosition(position);

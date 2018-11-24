@@ -47,6 +47,9 @@ public:
 
     void SetRotation(const Quaternion& rotation) override;
     Quaternion GetRotation() override;
+
+public:
+    void SetCollisionLayer(uint32_t layer) override;
 };
 
 #endif // PHYSXCHARACTER_H

@@ -50,6 +50,9 @@ public:
 
     virtual void SetRotation(const Quaternion& rotation) = 0;
     virtual Quaternion GetRotation() = 0;
+
+public:
+    virtual void SetCollisionLayer(uint32_t layer) = 0;
 };
 
 #endif // IPHYSICSCHARACTER_H

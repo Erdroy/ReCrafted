@@ -10,6 +10,15 @@
 #include "Physics/IPhysicsEngine.h"
 #include "Scripting/ScriptingAPI.h"
 
+enum class CollisionLayers : uint32_t
+{
+    None = 0,
+    Default = 1 << 0,
+    Character = 1 << 1,
+
+    All = Default | Character
+};
+
 struct RayCastHit
 {
 public:
@@ -51,7 +60,7 @@ public:
 
 public: /* Scene Queries */
     static IPhysicsScene* GetSceneAt(Vector3 worldPosition);
-    static bool RayCast(Vector3 position, Vector3 direction, float maxDistance, RayCastHit* hit);
+    static bool RayCast(Vector3 position, Vector3 direction, float maxDistance, RayCastHit* hit, uint32_t collisionLayer = 0u);
 };
 
 #endif // PHYSICSMANAGER_H

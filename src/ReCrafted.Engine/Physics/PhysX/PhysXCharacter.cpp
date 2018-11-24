@@ -100,3 +100,24 @@ Quaternion PhysXCharacter::GetRotation()
 {
     return FromPxQ(m_controller->getActor()->getGlobalPose().q);
 }
+
+void PhysXCharacter::SetCollisionLayer(const uint32_t layer)
+{
+    // Create filter data
+    var filter = PxFilterData();
+    filter.word0 = layer;
+
+    cvar shapeCount = m_controller->getActor()->getNbShapes();
+
+    if (shapeCount == 0u)
+        return;
+
+    // Set this layer for all children shapes
+    PxShape* shape;
+    for (var i = 0u; i < shapeCount; i++)
+    {
+        ASSERT(m_controller->getActor()->getShapes(&shape, 1, i) == 1);
+        shape->setQueryFilterData(filter);
+        shape->setSimulationFilterData(filter);
+    }
+}
