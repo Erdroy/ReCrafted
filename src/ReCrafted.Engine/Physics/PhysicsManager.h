@@ -12,11 +12,9 @@
 
 enum class CollisionLayers : uint32_t
 {
-    None = 0,
+    All = 0,
     Default = 1 << 0,
-    Character = 1 << 1,
-
-    All = Default | Character
+    Character = 1 << 1
 };
 
 struct RayCastHit
@@ -60,7 +58,10 @@ public:
 
 public: /* Scene Queries */
     static IPhysicsScene* GetSceneAt(Vector3 worldPosition);
-    static bool RayCast(Vector3 position, Vector3 direction, float maxDistance, RayCastHit* hit, uint32_t collisionLayer = 0u);
+    static bool RayCast(Vector3 position, Vector3 direction, float maxDistance = FLT_MAX, RayCastHit* hit = nullptr,
+                        uint32_t collisionLayer = 0u);
+    static bool RayCast(Vector3 position, Vector3 direction, float maxDistance = FLT_MAX, RayCastHit* hit = nullptr,
+                        CollisionLayers collisionLayer = CollisionLayers::All);
 };
 
 #endif // PHYSICSMANAGER_H

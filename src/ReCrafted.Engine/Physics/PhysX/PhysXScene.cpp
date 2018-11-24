@@ -149,7 +149,8 @@ IPhysicsCharacter* PhysXScene::CreateCharacter(const float radius, const float h
 
     cvar controller = new PhysXCharacter(static_cast<PxCapsuleController*>(pxController));
 
-    controller->SetCollisionLayer(3);
+    // Set default collision
+    controller->SetCollisionLayer(uint32_t(CollisionLayers::Character));
 
     return controller;
 }

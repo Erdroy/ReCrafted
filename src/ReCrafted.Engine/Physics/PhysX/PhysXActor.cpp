@@ -2,6 +2,7 @@
 
 #include "PhysXActor.h"
 #include "PhysXShape.h"
+#include "Physics/PhysicsManager.h"
 
 void PhysXActor::AttachShape(IPhysicsShape* shape)
 {
@@ -10,8 +11,8 @@ void PhysXActor::AttachShape(IPhysicsShape* shape)
     cvar physxShape = static_cast<PhysXShape*>(shape);
     actor->attachShape(*physxShape->shape);
 
-    // Set default collision layer
-    SetCollisionLayer(1);
+    // Set default collision
+    SetCollisionLayer(uint32_t(CollisionLayers::Default));
 }
 
 void PhysXActor::DetachShape(IPhysicsShape* shape)

@@ -45,7 +45,12 @@ IPhysicsScene* PhysicsManager::GetSceneAt(Vector3 worldPosition)
     return m_instance->m_defaultScene.get();
 }
 
-bool PhysicsManager::RayCast(const Vector3 position, const Vector3 direction, const float maxDistance, RayCastHit* hit, uint32_t collisionLayer)
+bool PhysicsManager::RayCast(const Vector3 position, const Vector3 direction, const float maxDistance, RayCastHit* hit, const uint32_t collisionLayer)
 {
     return m_instance->m_defaultScene->RayCast(position, direction, maxDistance, hit, collisionLayer);
+}
+
+bool PhysicsManager::RayCast(const Vector3 position, const Vector3 direction, const float maxDistance, RayCastHit* hit, CollisionLayers collisionLayer)
+{
+    return RayCast(position, direction, maxDistance, hit, static_cast<uint32_t>(collisionLayer));
 }
