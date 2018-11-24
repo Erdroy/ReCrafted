@@ -266,6 +266,14 @@ public:
     * \param radius The sphere radius.
     */
     static void DrawWireSphere(const Vector3& center, float radius);
+
+    /**
+     * \brief Draws wire circle.
+     * \param center The circle center point.
+     * \param majorAxis The major axis point.
+     * \param minorAxis The minor axis point.
+     */
+    static void DrawWireCircle(const Vector3& center, const Vector3& majorAxis, const Vector3& minorAxis);
 };
 
 #endif // DEBUGDRAW_H

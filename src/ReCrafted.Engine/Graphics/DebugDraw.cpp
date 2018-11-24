@@ -360,7 +360,57 @@ void DebugDraw::DrawSphere(const Vector3& center, float radius)
     // TODO: Draw sphere
 }
 
-void DebugDraw::DrawWireSphere(const Vector3& center, float radius)
+void DebugDraw::DrawWireSphere(const Vector3& center, const float radius)
 {
-    // TODO: Draw wire sphere - two circles on planes: XZ and [ZY or XY - based on camera angles]
+    DrawWireCircle(center, Vector3::UnitX * radius, Vector3::UnitZ * radius);
+    DrawWireCircle(center, Vector3::UnitX * radius, Vector3::UnitY * radius);
+    DrawWireCircle(center, Vector3::UnitY * radius, Vector3::UnitZ * radius);
+}
+
+void DebugDraw::DrawWireCircle(const Vector3& center, const Vector3& majorAxis, const Vector3& minorAxis)
+{
+    static const size_t ringSegments = 16;
+
+    // Add new triangles to the current batch
+    
+    var batch = m_instance->GetBatch();
+    rvar lineList = batch->GetLineList();
+
+    cvar angleDelta = Math::TwoPi / float(ringSegments);
+
+    cvar cosDelta = Vector3(Math::Cos(angleDelta));
+    cvar sinDelta = Vector3(Math::Sin(angleDelta));
+    var incrementalSin = Vector3::Zero;
+    var incrementalCos = Vector3::One;
+
+    var firstPoint = Vector3::Zero;
+    var lastPoint = Vector3::Zero;
+
+    for (var i = 0u; i < ringSegments; i++)
+    {
+        var point = majorAxis * incrementalCos + center;
+        point += minorAxis * incrementalSin;
+
+        // Save the first point, to finish up the ring later
+        if (i == 0u)
+        {
+            firstPoint = point;
+        }
+        else
+        {
+            // Push new line point
+            m_instance->DrawLine(point, lastPoint);
+        }
+
+        lastPoint = point;
+
+        cvar newCos = incrementalCos * cosDelta - incrementalSin * sinDelta;
+        cvar newSin = incrementalCos * sinDelta + incrementalSin * cosDelta;
+        
+        incrementalCos = newCos;
+        incrementalSin = newSin;
+    }
+
+    // Push new line point
+    m_instance->DrawLine(firstPoint, lastPoint);
 }
