@@ -86,8 +86,8 @@ void Universe::Update()
     }
 
     DebugDraw::SetMatrix(m_ball->GetTransform().GetTransformationMatrix());
-    DebugDraw::SetColor(0xAAAAAAFF);
-    DebugDraw::DrawBox(Vector3::Zero, Vector3::One);
+    DebugDraw::SetColor(0xFFAA00FF);
+    DebugDraw::DrawWireSphere(Vector3::Zero, 0.5f);
     DebugDraw::SetMatrix(Matrix::Identity);
 
     if (Input::IsKeyDown(Key_Alpha1))
@@ -102,16 +102,6 @@ void Universe::Update()
         m_selectedMaterial = 4u;
     if (Input::IsKeyDown(Key_Alpha6))
         m_selectedMaterial = 5u;
-
-    /*RayCastHit hit{};
-    if(PhysicsManager::RayCast(Camera::GetMainCamera()->GetPosition(), Camera::GetMainCamera()->GetForward(), 5.0f, &hit))
-    {
-        DebugDraw::SetColor(0xAAAAAAFF);
-        DebugDraw::DrawBox(hit.point, Vector3::One * 0.1f);
-
-        DebugDraw::SetColor(0xFF0000FF);
-        DebugDraw::DrawArrow(hit.point, hit.point + hit.normal, 0.05f);
-    }*/
 
     if (Input::IsKeyDown(Key_Mouse0))
         DoVoxelModification(VoxelEditMode::Subtractive, 0u, 1.5f);
@@ -175,7 +165,7 @@ void Universe::RenderUI()
 void Universe::DoVoxelModification(const VoxelEditMode::_enum mode, const VoxelMaterial_t material, const float size) const
 {
     RayCastHit hit{};
-    if (PhysicsManager::RayCast(Camera::GetMainCamera()->GetPosition(), Camera::GetMainCamera()->GetForward(), 5.0f, &hit))
+    if (PhysicsManager::RayCast(Camera::GetMainCamera()->GetPosition(), Camera::GetMainCamera()->GetForward(), 5.0f, &hit, CollisionLayers::Default))
     {
         m_testObject1->Modify(material, mode, hit.point, size);
     }

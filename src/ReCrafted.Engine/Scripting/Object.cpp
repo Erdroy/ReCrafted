@@ -220,8 +220,10 @@ void Object::Finalize(Object* object)
     // Unlock
     m_objectMapLock.UnlockNow();
 
-    if (isObjectDestroyed)
+    if (!isObjectDestroyed)
     {
+        ASSERT(false);
+
         // When object is still in the object map, the object hasn't been destroyed.
         // Scream at Erdroy.
         Logger::LogWarning("Object got finalized, but not destroyed at first! Id: {0} Name: ", object->GetObjectId(), object->GetObjectName());
