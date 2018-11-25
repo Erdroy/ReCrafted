@@ -46,7 +46,7 @@ namespace ReCrafted.Game.Player
 
                 if (Input.IsKey(Keys.Shift))
                 {
-                    _velocity *= 100.0f;
+                    _velocity *= 10.0f;
                 }
                 else
                 {

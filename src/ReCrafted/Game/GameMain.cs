@@ -6,6 +6,7 @@ using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
+using ReCrafted.API.Physics;
 using ReCrafted.API.UI;
 using ReCrafted.API.UI.Controls;
 using ReCrafted.Common;
@@ -102,6 +103,12 @@ namespace ReCrafted.Game
                     Cursor.Lock = !Cursor.Show;
                 }
                 
+                if (PhysicsManager.RayCast(Camera.Current.Position, Camera.Current.Forward, out var hit, 10.0f, 1))
+                {
+                    DebugDraw.Color = new Color(0xFF1000FF);
+                    DebugDraw.DrawWireSphere(hit.Point, 1.5f * 0.5f);
+                }
+
                 // draw world-space lines
                 DebugDraw.Color = new Color(0, 255, 0, 32);
                 DebugDraw.DrawLine(Vector3.Down * 2000.0f, Vector3.Up * 2000.0f);
