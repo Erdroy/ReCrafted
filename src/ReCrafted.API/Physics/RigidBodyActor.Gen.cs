@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 11/25/2018 14:07:25 Source: 'RigidBodyActor.API.cpp' Target: 'Physics/RigidBodyActor.Gen.cs'
+// Generated: 11/25/2018 14:30:53 Source: 'RigidBodyActor.API.cpp' Target: 'Physics/RigidBodyActor.Gen.cs'
 
 using ReCrafted.API.Common;
 using ReCrafted.API.Common.Actors;
@@ -22,6 +22,18 @@ namespace ReCrafted.API.Physics
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_AddTorque(IntPtr nativePtr, ref Vector3 torque, int modeMode, bool autoAwake);
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_AttachCollision(IntPtr nativePtr, IntPtr collisionNativePtr);
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_DetachCollision(IntPtr nativePtr);
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern RigidBodyActor CreateDynamic();
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern RigidBodyActor CreateStatic();
 
 		/// <summary>
 		///	Gets or sets rigid body's current velocity.

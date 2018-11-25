@@ -62,6 +62,21 @@ namespace Internal
         actor->AddTorque(*torque, static_cast<ForceMode>(forceMode), awake);
     }
 
+    void AttachCollision(RigidBodyActor* actor, Collision* value)
+    {
+        MAIN_THREAD_ONLY();
+        ASSERT(actor);
+        ASSERT(value);
+        actor->AttachCollision(value);
+    }
+
+    void DetachCollision(RigidBodyActor* actor)
+    {
+        MAIN_THREAD_ONLY();
+        ASSERT(actor);
+        actor->DetachCollision();
+    }
+
     float GetRigidBodyMaxAngularVelocity(RigidBodyActor* actor)
     {
         MAIN_THREAD_ONLY();
@@ -185,6 +200,16 @@ namespace Internal
     {
         return RigidBodyActor::Create();
     }
+
+    MonoObject* CreateDynamicRigidBodyActor()
+    {
+        return RigidBodyActor::CreateDynamic()->GetManagedPtr();
+    }
+
+    MonoObject* CreateStaticRigidBodyActor()
+    {
+        return RigidBodyActor::CreateStatic()->GetManagedPtr();
+    }
 }
 
 const char* Actor<RigidBodyActor>::ManagedName = "RigidBodyActor";
@@ -220,6 +245,33 @@ void RigidBodyActor::InitRuntime()
                 API_PARAM("ref Vector3", "torque");
                 API_PARAM("int", "modeMode");
                 API_PARAM("bool", "autoAwake");
+            }
+            API_METHOD_END();
+
+            API_METHOD(INTERNAL, REGULAR, "AttachCollision", NOPROXY, EXTERN);
+            {
+                API_BIND("ReCrafted.API.Physics.RigidBodyActor::Internal_AttachCollision", &Internal::AttachCollision);
+                API_PARAM("IntPtr", "collisionNativePtr");
+            }
+            API_METHOD_END();
+
+            API_METHOD(INTERNAL, REGULAR, "DetachCollision", NOPROXY, EXTERN);
+            {
+                API_BIND("ReCrafted.API.Physics.RigidBodyActor::Internal_DetachCollision", &Internal::DetachCollision);
+            }
+            API_METHOD_END();
+
+            API_METHOD(INTERNAL, STATIC, "CreateDynamic", EXTERN);
+            {
+                API_BIND("ReCrafted.API.Physics.RigidBodyActor::CreateDynamic", &Internal::CreateDynamicRigidBodyActor);
+                API_RETURN("RigidBodyActor");
+            }
+            API_METHOD_END();
+
+            API_METHOD(INTERNAL, STATIC, "CreateStatic", EXTERN);
+            {
+                API_BIND("ReCrafted.API.Physics.RigidBodyActor::CreateStatic", &Internal::CreateStaticRigidBodyActor);
+                API_RETURN("RigidBodyActor");
             }
             API_METHOD_END();
 
