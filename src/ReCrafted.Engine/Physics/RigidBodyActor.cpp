@@ -117,6 +117,11 @@ void RigidBodyActor::SetCollisionLayer(const uint32_t layer) const
     m_actor->SetCollisionLayer(layer);
 }
 
+uint32_t RigidBodyActor::GetCollisionLayer() const
+{
+    return m_actor->GetCollisionLayer();
+}
+
 void RigidBodyActor::SetVelocity(const Vector3& velocity) const
 {
     ASSERT(m_dynamic);

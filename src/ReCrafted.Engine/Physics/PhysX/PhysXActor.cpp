@@ -224,6 +224,9 @@ bool PhysXActor::IsKinematic()
 
 void PhysXActor::SetCollisionLayer(const uint32_t layer)
 {
+    // Store new layer
+    m_collisionLayer = layer;
+
     // Create filter data
     var filter = PxFilterData();
     filter.word0 = layer;
@@ -241,4 +244,9 @@ void PhysXActor::SetCollisionLayer(const uint32_t layer)
         shape->setQueryFilterData(filter);
         shape->setSimulationFilterData(filter);
     }
+}
+
+uint32_t PhysXActor::GetCollisionLayer()
+{
+    return m_collisionLayer;
 }

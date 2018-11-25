@@ -60,6 +60,7 @@ public:
 
 public:
     virtual void SetCollisionLayer(uint32_t layer) = 0;
+    virtual uint32_t GetCollisionLayer() = 0;
 };
 
 #endif // IPHYSICSACTOR_H

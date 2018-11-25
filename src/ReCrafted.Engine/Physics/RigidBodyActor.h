@@ -52,6 +52,7 @@ public:
     void AddTorque(const Vector3& torque, ForceMode forceMode, bool awake = true) const;
 
     void SetCollisionLayer(uint32_t layer) const;
+    uint32_t GetCollisionLayer() const;
 
     void SetVelocity(const Vector3& velocity) const;
     Vector3 GetVelocity() const;

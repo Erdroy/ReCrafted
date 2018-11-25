@@ -16,6 +16,8 @@
 class PhysXActor : public IPhysicsActor
 {
 public:
+    uint32_t m_collisionLayer = 0u;
+
     PxRigidActor* actor;
     bool m_dynamic;
     
@@ -69,6 +71,7 @@ public:
 
 public:
     void SetCollisionLayer(uint32_t layer) override;
+    uint32_t GetCollisionLayer() override;
 };
 
 #endif // PHYSXACTOR_H
