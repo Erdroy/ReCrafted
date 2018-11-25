@@ -26,6 +26,14 @@ public:
     uint32_t faceIndex;
 };
 
+enum class ForceMode
+{
+    Force,
+    Impulse,
+    VelocityChange,
+    Acceleration
+};
+
 class PhysicsManager : public EngineComponent<PhysicsManager>
 {
     friend class EngineMain;

@@ -48,14 +48,42 @@ public:
     void SetPosition(const Vector3& position) override;
     void SetRotation(const Quaternion& rotation) override;
 
-    void SetVelocity(const Vector3& velocity);
-    Vector3 GetVelocity();
+    void AddForce(const Vector3& force, ForceMode forceMode, bool awake = true) const;
+    void AddTorque(const Vector3& torque, ForceMode forceMode, bool awake = true) const;
 
-    void AddForce(const Vector3& force, ForceMode forceMode, bool awake = true);
-    void AddTorque(const Vector3& torque, ForceMode forceMode, bool awake = true);
+    void SetCollisionLayer(uint32_t layer) const;
 
-    void SetCollisionLayer(uint32_t layer);
+    void SetVelocity(const Vector3& velocity) const;
+    Vector3 GetVelocity() const;
 
+    void SetAngularVelocity(const Vector3& angularVelocity) const;
+    Vector3 GetAngularVelocity() const;
+
+    void SetCentreOfMass(const Vector3& massCentre) const;
+    Vector3 GetCentreOfMass() const;
+
+    void SetMaxAngularVelocity(float maxAngularVelocity) const;
+    float GetMaxAngularVelocity() const;
+
+    void SetLinearDamping(float damping) const;
+    float GetLinearDamping() const;
+
+    void SetAngularDamping(float angularDamping) const;
+    float GetAngularDamping() const;
+
+    void SetMass(float mass) const;
+    float GetMass() const;
+
+    bool IsDynamic() const;
+
+    void IsSleeping(bool sleep) const;
+    bool IsSleeping() const;
+
+    void SetCCD(bool enabled) const;
+    bool GetCCD() const;
+
+    void IsKinematic(bool isKinematic) const;
+    bool IsKinematic() const;
 public:
     /**
      * \brief Creates and initializes new dynamic actor.

@@ -38,10 +38,34 @@ public:
     void SetVelocity(const Vector3& velocity) override;
     Vector3 GetVelocity() override;
 
-    bool IsDynamic() override
-    {
-        return m_dynamic;
-    }
+    void SetAngularVelocity(const Vector3& angularVelocity) override;
+    Vector3 GetAngularVelocity() override;
+
+    void SetCentreOfMass(const Vector3& massCentre) override;
+    Vector3 GetCentreOfMass() override;
+
+    void SetMaxAngularVelocity(float maxAngularVelocity) override;
+    float GetMaxAngularVelocity() override;
+
+    void SetLinearDamping(float damping) override;
+    float GetLinearDamping() override;
+
+    void SetAngularDamping(float angularDamping) override;
+    float GetAngularDamping() override;
+
+    void SetMass(float mass) override;
+    float GetMass() override;
+
+    bool IsDynamic() override;
+
+    void IsSleeping(bool sleep) override;
+    bool IsSleeping() override;
+
+    void SetCCD(bool enabled) override;
+    bool GetCCD() override;
+
+    void IsKinematic(bool isKinematic) override;
+    bool IsKinematic() override;
 
 public:
     void SetCollisionLayer(uint32_t layer) override;

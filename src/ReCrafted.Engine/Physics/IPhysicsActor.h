@@ -6,14 +6,7 @@
 #define IPHYSICSACTOR_H
 
 class IPhysicsShape;
-
-enum class ForceMode
-{
-    Force,
-    Impulse,
-    VelocityChange,
-    Acceleration
-};
+enum class ForceMode;
 
 class IPhysicsActor
 {
@@ -36,7 +29,34 @@ public:
     virtual void SetVelocity(const Vector3& velocity) = 0;
     virtual Vector3 GetVelocity() = 0;
 
+    virtual void SetAngularVelocity(const Vector3& angularVelocity) = 0;
+    virtual Vector3 GetAngularVelocity() = 0;
+
+    virtual void SetCentreOfMass(const Vector3& massCentre) = 0;
+    virtual Vector3 GetCentreOfMass() = 0;
+
+    virtual void SetMaxAngularVelocity(float maxAngularVelocity) = 0;
+    virtual float GetMaxAngularVelocity() = 0;
+
+    virtual void SetLinearDamping(float damping) = 0;
+    virtual float GetLinearDamping() = 0;
+
+    virtual void SetAngularDamping(float angularDamping) = 0;
+    virtual float GetAngularDamping() = 0;
+
+    virtual void SetMass(float mass) = 0;
+    virtual float GetMass() = 0;
+
     virtual bool IsDynamic() = 0;
+
+    virtual void IsSleeping(bool sleep) = 0;
+    virtual bool IsSleeping() = 0;
+
+    virtual void SetCCD(bool enabled) = 0;
+    virtual bool GetCCD() = 0;
+
+    virtual void IsKinematic(bool isKinematic) = 0;
+    virtual bool IsKinematic() = 0;
 
 public:
     virtual void SetCollisionLayer(uint32_t layer) = 0;

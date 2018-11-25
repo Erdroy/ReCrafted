@@ -100,33 +100,146 @@ void RigidBodyActor::SetRotation(const Quaternion& rotation)
     m_actor->SetRotation(rotation);
 }
 
-void RigidBodyActor::SetVelocity(const Vector3& velocity)
-{
-    ASSERT(m_dynamic);
-    m_actor->SetVelocity(velocity);
-}
-
-Vector3 RigidBodyActor::GetVelocity()
-{
-    ASSERT(m_dynamic);
-    return m_actor->GetVelocity();
-}
-
-void RigidBodyActor::AddForce(const Vector3& force, const ForceMode forceMode, const bool awake)
+void RigidBodyActor::AddForce(const Vector3& force, const ForceMode forceMode, const bool awake) const
 {
     ASSERT(m_dynamic);
     m_actor->AddForce(force, forceMode, awake);
 }
 
-void RigidBodyActor::AddTorque(const Vector3& torque, const ForceMode forceMode, const bool awake)
+void RigidBodyActor::AddTorque(const Vector3& torque, const ForceMode forceMode, const bool awake) const
 {
     ASSERT(m_dynamic);
     m_actor->AddTorque(torque, forceMode, awake);
 }
 
-void RigidBodyActor::SetCollisionLayer(const uint32_t layer)
+void RigidBodyActor::SetCollisionLayer(const uint32_t layer) const
 {
     m_actor->SetCollisionLayer(layer);
+}
+
+void RigidBodyActor::SetVelocity(const Vector3& velocity) const
+{
+    ASSERT(m_dynamic);
+    m_actor->SetVelocity(velocity);
+}
+
+Vector3 RigidBodyActor::GetVelocity() const
+{
+    ASSERT(m_dynamic);
+    return m_actor->GetVelocity();
+}
+
+void RigidBodyActor::SetAngularVelocity(const Vector3& angularVelocity) const
+{
+    ASSERT(m_dynamic);
+    m_actor->SetAngularVelocity(angularVelocity);
+}
+
+Vector3 RigidBodyActor::GetAngularVelocity() const
+{
+    ASSERT(m_dynamic);
+    return m_actor->GetAngularVelocity();
+}
+
+void RigidBodyActor::SetCentreOfMass(const Vector3& massCentre) const
+{
+    ASSERT(m_dynamic);
+    m_actor->SetCentreOfMass(massCentre);
+}
+
+Vector3 RigidBodyActor::GetCentreOfMass() const
+{
+    ASSERT(m_dynamic);
+    return m_actor->GetCentreOfMass();
+}
+
+void RigidBodyActor::SetMaxAngularVelocity(const float maxAngularVelocity) const
+{
+    ASSERT(m_dynamic);
+    m_actor->SetMaxAngularVelocity(maxAngularVelocity);
+}
+
+float RigidBodyActor::GetMaxAngularVelocity() const
+{
+    ASSERT(m_dynamic);
+    return m_actor->GetMaxAngularVelocity();
+}
+
+void RigidBodyActor::SetLinearDamping(const float damping) const
+{
+    ASSERT(m_dynamic);
+    m_actor->SetLinearDamping(damping);
+}
+
+float RigidBodyActor::GetLinearDamping() const
+{
+    ASSERT(m_dynamic);
+    return m_actor->GetLinearDamping();
+}
+
+void RigidBodyActor::SetAngularDamping(const float angularDamping) const
+{
+    ASSERT(m_dynamic);
+    m_actor->SetAngularDamping(angularDamping);
+}
+
+float RigidBodyActor::GetAngularDamping() const
+{
+    ASSERT(m_dynamic);
+    return m_actor->GetAngularDamping();
+}
+
+void RigidBodyActor::SetMass(const float mass) const
+{
+    ASSERT(m_dynamic);
+    m_actor->SetMass(mass);
+}
+
+float RigidBodyActor::GetMass() const
+{
+    ASSERT(m_dynamic);
+    return m_actor->GetMass();
+}
+
+bool RigidBodyActor::IsDynamic() const
+{
+    return m_dynamic;
+}
+
+void RigidBodyActor::IsSleeping(const bool sleep) const
+{
+    ASSERT(m_dynamic);
+    m_actor->IsSleeping(sleep);
+}
+
+bool RigidBodyActor::IsSleeping() const
+{
+    ASSERT(m_dynamic);
+    return m_actor->IsSleeping();
+}
+
+void RigidBodyActor::SetCCD(const bool enabled) const
+{
+    ASSERT(m_dynamic);
+    m_actor->SetCCD(enabled);
+}
+
+bool RigidBodyActor::GetCCD() const
+{
+    ASSERT(m_dynamic);
+    return m_actor->GetCCD();
+}
+
+void RigidBodyActor::IsKinematic(const bool isKinematic) const
+{
+    ASSERT(m_dynamic);
+    m_actor->IsKinematic(isKinematic);
+}
+
+bool RigidBodyActor::IsKinematic() const
+{
+    ASSERT(m_dynamic);
+    return m_actor->IsKinematic();
 }
 
 RigidBodyActor* RigidBodyActor::Create()
