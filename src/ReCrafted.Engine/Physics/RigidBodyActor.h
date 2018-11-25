@@ -85,6 +85,7 @@ public:
 
     void IsKinematic(bool isKinematic) const;
     bool IsKinematic() const;
+
 public:
     /**
      * \brief Creates and initializes new dynamic actor.
