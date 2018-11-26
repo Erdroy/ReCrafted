@@ -9,13 +9,23 @@ void UpdateLoop::Simulate()
     // source: https://gafferongames.com/post/fix_your_timestep/
 
     const var dt = Time::FixedDeltaTime();
+    var forcePushSimulation = false;
 
     m_simulationAcc += Time::DeltaTime();
 
-    while (m_simulationAcc >= dt)
+    if(m_isFirstFrame)
+    {
+        m_simulationAcc = 0.0;
+        m_isFirstFrame = false;
+        forcePushSimulation = true;
+    }
+
+    while (m_simulationAcc >= dt || forcePushSimulation)
     {
         m_simulate.Invoke();
         m_simulationAcc -= dt;
+
+        forcePushSimulation = false;
     }
 }
 

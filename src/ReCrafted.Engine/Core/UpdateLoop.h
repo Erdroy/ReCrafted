@@ -20,6 +20,7 @@ private:
     Action<void> m_render;
 
     bool m_running = true;
+    bool m_isFirstFrame = true;
     double m_simulationAcc = 0.0;
 
     bool m_simulateCallback = false;

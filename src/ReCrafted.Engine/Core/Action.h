@@ -27,6 +27,14 @@ private:
 
     std::function<TReturn(TArgs...)> m_stdfunc = nullptr;
 
+private:
+    template<typename T, typename... U>
+    size_t getFunctionAddress(std::function<T(U...)> f) {
+        typedef T(fnType)(U...);
+        fnType ** fnPointer = f.template target<fnType*>();
+        return (size_t)*fnPointer;
+    }
+
 public:
     Action();
 
@@ -99,7 +107,7 @@ public:
     bool operator ==(const Action<TReturn, TArgs...>& other)
     {
         return m_free_function == other.m_free_function
-            && m_stdfunc == other.m_stdfunc
+            && getFunctionAddress(m_stdfunc) == getFunctionAddress(other.m_stdfunc)
             && m_proxy_instance == other.m_proxy_instance
             && m_proxy_function == other.m_proxy_function;
     }
