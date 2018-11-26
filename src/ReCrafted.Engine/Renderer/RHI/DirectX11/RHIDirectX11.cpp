@@ -1530,14 +1530,17 @@ namespace Renderer
                 m_deviceContext->ExecuteCommandList(commandList, TRUE);
             }
 
-            // Call beforePresent event
-            callbacksBeforeRender.Invoke();
+            // Call present begin event
+            onPresentBegin.Invoke();
 
             // Present frame
             if (m_swapChain)
             {
                 DX_CALL(m_swapChain->Present(m_renderFlags & RenderFlags::VSync ? 1 : 0, 0));
             }
+
+            // Call present end event
+            onPresentEnd.Invoke();
 
             if (!(m_settings & Settings::SingleThreaded))
             {

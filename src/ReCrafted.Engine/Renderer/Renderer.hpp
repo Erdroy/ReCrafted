@@ -522,11 +522,29 @@ namespace Renderer
     /// <param name="handle">The window handle.</param>
     RENDERER_FUNCTION(void) DestroyWindow(WindowHandle handle);
 
-    /// <summary>
-    /// Adds callback which is called just before presentation of the final frame and also pushing next frame.
-    /// Warning: This callback cannot be removed, so, please make sure that it adds only once!
-    /// </summary>
-    RENDERER_FUNCTION(void) AddOnPresentCallback(const Action<void>& event);
+    /**
+     * \brief Adds event which is called just before presentation of the final frame and also pushing next frame.
+     * \param action The action that will be added to the event.
+     */
+    RENDERER_FUNCTION(void) AddOnPresentBeginEvent(const Action<void>& action);
+
+    /**
+     * \brief Removes event added by `AddOnPresentBeginEvent` function.
+     * \param action The action that will be added to the event.
+     */
+    RENDERER_FUNCTION(void) RemoveOnPresentBeginEvent(const Action<void>& action);
+
+    /**
+     * \brief Adds event which is called after presentation of the final frame and also pushing next frame.
+     * \param action The action that will be added to the event.
+     */
+    RENDERER_FUNCTION(void) AddOnPresentEndEvent(const Action<void>& action);
+
+    /**
+     * \brief Removes event added by `AddOnPresentEndEvent` function.
+     * \param action The action that will be added to the event.
+     */
+    RENDERER_FUNCTION(void) RemoveOnPresentEndEvent(const Action<void>& action);
 
     /// <summary>
     /// Creates new render buffer from using texture formats.

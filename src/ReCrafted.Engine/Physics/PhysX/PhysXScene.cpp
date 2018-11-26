@@ -96,7 +96,7 @@ void PhysXScene::Simulate()
     if(!advanceResult)
         return;
 
-    PhysXStepper::GetInstance()->RenderDone(); // TODO: Use Renderer::SetFrameFinish event
+    PhysXStepper::GetInstance()->RenderDone(); // TODO: Use Renderer::AddFrameFinish event
     PhysXStepper::GetInstance()->Wait(m_scene);
 }
 

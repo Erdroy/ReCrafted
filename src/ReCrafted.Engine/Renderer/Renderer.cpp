@@ -567,9 +567,24 @@ namespace Renderer
         WindowHandlePool::FreeHandle(handle);
     }
 
-    void AddOnPresentCallback(const Action<void>& event)
+    void AddOnPresentBeginEvent(const Action<void>& action)
     {
-        m_renderer->callbacksBeforeRender.AddListener(event);
+        m_renderer->onPresentBegin.AddListener(action);
+    }
+
+    void RemoveOnPresentBeginEvent(const Action<void>& action)
+    {
+        m_renderer->onPresentBegin.RemoveListener(action);
+    }
+
+    void AddOnPresentEndEvent(const Action<void>& action)
+    {
+        m_renderer->onPresentEnd.AddListener(action);
+    }
+
+    void RemoveOnPresentEndEvent(const Action<void>& action)
+    {
+        m_renderer->onPresentEnd.RemoveListener(action);
     }
 
     RenderBufferHandle CreateRenderBuffer(uint16_t width, uint16_t height, TextureFormat::_enum* textures,

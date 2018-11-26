@@ -80,7 +80,7 @@ void Graphics::InitializeRenderer()
         m_currentTextures.Add(nullptr);
 
     // Set renderer callbacks
-    Renderer::AddOnPresentCallback(Action<void>::New<Graphics, &Graphics::RenderImGUI>(this));
+    Renderer::AddOnPresentBeginEvent(Action<void>::New<Graphics, &Graphics::RenderImGUI>(this));
 
     // Initialize ImGUI
     Logger::Log("Initializing ImGUI {0}", IMGUI_VERSION);

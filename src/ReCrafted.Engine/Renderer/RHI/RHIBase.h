@@ -24,7 +24,8 @@ namespace Renderer
 
         public:
             CommandList commandList = {};
-            Event<> callbacksBeforeRender = {};
+            Event<> onPresentBegin = {};
+            Event<> onPresentEnd = {};
 
         public:
             virtual ~RHIBase() = default;
