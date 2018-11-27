@@ -7,7 +7,7 @@
     <ProjectGuid>{673BEC15-F118-413D-9A7F-889B6174CF0A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ReCrafted</RootNamespace>
+    <RootNamespace>ReCrafted.Game</RootNamespace>
     <AssemblyName>ReCrafted.Game</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -58,16 +58,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\Locales\Locale.cs" />
-    <Compile Include="Game\GameMain.cs" />
-    <Compile Include="Game\FreeCameraController.cs" />
-    <Compile Include="Game\Interface\Messenger.cs" />
-    <Compile Include="Game\Interface\PauseMenu.cs" />
-    <Compile Include="Game\Player\PlayerManager.cs" />
-    <Compile Include="Game\Player\PlayerMovement.cs" />
-    <Compile Include="Game\Super\SuperCommands.cs" />
-    <Compile Include="Game\Super\SuperConsole.cs" />
-    <Compile Include="Game\Super\SuperDefaults.cs" />
+    <Compile Include="GameMain.cs" />
+    <Compile Include="Interface\Messenger.cs" />
+    <Compile Include="Interface\PauseMenu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +72,7 @@
       <Name>ReCrafted.API</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>call $(ProjectDir)..\..\pm PostBuild --skip-shaders --skip-api</PostBuildEvent>
