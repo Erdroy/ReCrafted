@@ -61,6 +61,11 @@
     <Compile Include="GameMain.cs" />
     <Compile Include="Interface\Messenger.cs" />
     <Compile Include="Interface\PauseMenu.cs" />
+    <Compile Include="Player\PlayerViewController.cs" />
+    <Compile Include="Player\PlayerCameraController.cs" />
+    <Compile Include="Player\PlayerInput.cs" />
+    <Compile Include="Player\PlayerManager.cs" />
+    <Compile Include="Player\PlayerMovement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
