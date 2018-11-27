@@ -24,7 +24,7 @@ namespace ReCrafted.Game.Player
 
         public void UpdateRotation(PlayerInput.Snapshot inputSnapshot)
         {
-            var up = Vector3.Normalize(Actor.Position);
+            var up = Vector3.Normalize(Actor.Position); // TODO: Use gravitational fields
 
             _poleDirection = Vector3.Normalize(_poleDirection - Vector3.Dot(up, _poleDirection) * up);
 

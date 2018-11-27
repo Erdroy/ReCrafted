@@ -1,6 +1,5 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using ReCrafted.API.Common;
@@ -45,6 +44,12 @@ namespace ReCrafted.Game.Player
             public bool Jump { get; set; }
 
             /// <summary>
+            /// The run input value.
+            /// When true, the player will try to run.
+            /// </summary>
+            public bool Run { get; set; }
+
+            /// <summary>
             /// The stand type input value.
             /// </summary>
             public StandingType Standing { get; set; }
@@ -87,6 +92,7 @@ namespace ReCrafted.Game.Player
 
             // Sample jump input
             result.Jump = Input.IsKeyDown(Keys.Space);
+            result.Run = Input.IsKeyDown(Keys.Shift);
 
             // Sample standing
             UpdateStanding(ref result);
