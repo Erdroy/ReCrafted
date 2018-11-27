@@ -17,6 +17,13 @@ namespace ReCrafted.Game.Player
         private Vector3 _currentRotation = Vector3.Zero;
 
         private Vector3 _velocity;
+        
+        private Vector3 _poleDirection;
+
+        private void Start()
+        {
+            _poleDirection = Vector3.Right;
+        }
 
         private void Update()
         {
@@ -39,6 +46,11 @@ namespace ReCrafted.Game.Player
             gravity.Normalize();
             gravity *= 9.81f;
             actor.UpDirection = Vector3.Normalize(-gravity);
+            
+            if (Input.IsKeyDown(Keys.E))
+            {
+                _velocity = Vector3.Zero;
+            }
 
             if (actor.IsGrounded)
             {
@@ -104,20 +116,26 @@ namespace ReCrafted.Game.Player
             _currentRotation = rotation;
 
             var up = Vector3.Normalize(character.Position);
-            
-            var v1 = Vector3.Normalize(up);
-            var v2 = Vector3.Normalize(Vector3.Cross(Vector3.ForwardLH, up));
-            var v3 = Vector3.Normalize(Vector3.Cross(v1, v2));
-            
-            // TODO: Fix (forward) pole issue
 
-            var characterRotation = Quaternion.RotationAxis(v1, MathUtil.DegreesToRadians(_currentRotation.X));
-            character.Rotation = characterRotation * Quaternion.LookRotation(v3, v1);
+            _poleDirection = Vector3.Normalize(_poleDirection - Vector3.Dot(up, _poleDirection) * up);
+
+            var forward = Vector3.Cross(_poleDirection, up);
+            var relativeRotation = Quaternion.LookRotation(forward, up);
             
-            var cameraRotation = Quaternion.RotationAxis(Vector3.Right, MathUtil.DegreesToRadians(_currentRotation.Y));
-            camera.LocalRotation = cameraRotation;
+            // Debug directions
+            /*DebugDraw.Matrix = Matrix.Translation(Camera.Current.Position + forward * 2.0f);
+            DebugDraw.Color = Color.Blue;
+            DebugDraw.DrawArrow(Vector3.Zero, forward, 0.05f);
+            DebugDraw.Color = Color.Green;
+            DebugDraw.DrawArrow(Vector3.Zero, _poleDirection, 0.05f);
+            DebugDraw.Color = Color.Red;
+            DebugDraw.DrawArrow(Vector3.Zero, up, 0.05f);*/
+
+            // Calculate final rotations
+            character.Rotation = Quaternion.RotationAxis(up, MathUtil.DegreesToRadians(_currentRotation.X)) * relativeRotation;
+            camera.LocalRotation = Quaternion.RotationAxis(Vector3.Right, MathUtil.DegreesToRadians(_currentRotation.Y));
         }
-        
+
         public bool MouseFiltering { get; set; } = true;
 
         public int MouseFilteringFrames { get; set; } = 3;
