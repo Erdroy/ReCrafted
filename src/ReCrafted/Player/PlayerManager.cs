@@ -9,7 +9,7 @@ namespace ReCrafted.Game.Player
     /// <summary>
     /// PlayerManager class.
     /// </summary>
-    public class PlayerManager : GenericScript<CharacterActor>
+    public sealed class PlayerManager : GenericScript<CharacterActor>
     {
         /// <summary>
         /// The character controller radius.
@@ -27,6 +27,25 @@ namespace ReCrafted.Game.Player
             Input = Actor.AddScript<PlayerInput>();
             CameraController = Actor.AddScript<PlayerCameraController>();
             Movement = Actor.AddScript<PlayerMovement>();
+
+            IsOwner = true;
+        }
+
+        private void Update()
+        {
+            if (!IsOwner)
+                return;
+
+            // Sample player input
+            var snapshot = Input.SampleInput();
+
+            // Update player camera rotation
+            CameraController.UpdateRotation(snapshot);
+
+            // Simulate player movement
+            // We could actually move this simulation onto
+            // Actor::Simulate(), but this is not really needed.
+            Movement.Simulate(snapshot);
         }
         
         /// <summary>
@@ -48,7 +67,7 @@ namespace ReCrafted.Game.Player
             // Add PlayerManager and return it
             return character.AddScript<PlayerManager>();
         }
-
+        
         /// <summary>
         /// <see cref="PlayerMovement"/> instance owned by this player.
         /// </summary>
@@ -68,5 +87,10 @@ namespace ReCrafted.Game.Player
         /// <see cref="PlayerViewController"/> instance owned by this player.
         /// </summary>
         public PlayerViewController ViewController { get; private set; }
+
+        /// <summary>
+        /// True when the current client is owner of this player.
+        /// </summary>
+        public bool IsOwner { get; private set; }
     }
 }

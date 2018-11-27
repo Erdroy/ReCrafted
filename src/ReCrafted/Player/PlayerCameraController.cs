@@ -1,6 +1,8 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
 using ReCrafted.API.Common;
+using ReCrafted.API.Graphics;
+using ReCrafted.API.Mathematics;
 
 namespace ReCrafted.Game.Player
 {
@@ -8,8 +10,32 @@ namespace ReCrafted.Game.Player
     /// PlayerCameraController script.
     /// Implements camera controlling behaviour and also position smoothing.
     /// </summary>
-    public class PlayerCameraController : Script
+    public sealed class PlayerCameraController : Script
     {
+        private Vector3 _poleDirection = Vector3.Right;
 
+        private void Awake()
+        {
+            // Create camera
+            Camera = CameraActor.Create();
+            Camera.LocalPosition = new Vector3(0.0f, 0.7f, 0.0f);
+            Actor.AddChild(Camera);
+        }
+
+        public void UpdateRotation(PlayerInput.Snapshot inputSnapshot)
+        {
+            var up = Vector3.Normalize(Actor.Position);
+
+            _poleDirection = Vector3.Normalize(_poleDirection - Vector3.Dot(up, _poleDirection) * up);
+
+            var forward = Vector3.Cross(_poleDirection, up);
+            var relativeRotation = Quaternion.LookRotation(forward, up);
+            
+            // Calculate final rotations
+            Actor.Rotation = Quaternion.RotationAxis(up, MathUtil.DegreesToRadians(inputSnapshot.LookRotation.X)) * relativeRotation;
+            Camera.LocalRotation = Quaternion.RotationAxis(Vector3.Right, MathUtil.DegreesToRadians(inputSnapshot.LookRotation.Y));
+        }
+        
+        public CameraActor Camera { get; set; }
     }
 }

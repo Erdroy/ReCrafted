@@ -11,6 +11,7 @@ using ReCrafted.API.UI;
 using ReCrafted.API.UI.Controls;
 using ReCrafted.Common;
 using ReCrafted.Game.Interface;
+using ReCrafted.Game.Player;
 
 namespace ReCrafted.Game
 {
@@ -23,6 +24,8 @@ namespace ReCrafted.Game
         private UIText _buildNumberText;
 
         private WebUIView _webView;
+
+        public static PlayerManager CurrentPlayer { get; private set; }
 
         // initialize
         protected override void Initialize()
@@ -39,7 +42,10 @@ namespace ReCrafted.Game
 
                 Cursor.Show = false;
                 Cursor.Lock = true;
-                
+
+                // Spawn player
+                CurrentPlayer = PlayerManager.SpawnPlayer(Vector3.Up * 1000.0f, Quaternion.Identity);
+
                 // load game info
                 GameInfo.FromFile(Assets.ResolveAssetFilePath("gameinfo.json"));
                 
