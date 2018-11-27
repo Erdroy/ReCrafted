@@ -218,8 +218,8 @@ void ActorBase::AddScript(Script* script)
     MAIN_THREAD_ONLY();
     ASSERT(script->GetActor() == nullptr);
 
-    script->Awake();
     script->SetActor(this);
+    script->Awake();
     m_scripts.Add(script);
 }
 
