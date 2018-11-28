@@ -3,6 +3,7 @@
 using ReCrafted.API.Common;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
+using ReCrafted.API.Physics;
 
 namespace ReCrafted.Game.Player
 {
@@ -10,7 +11,7 @@ namespace ReCrafted.Game.Player
     /// PlayerCameraController script.
     /// Implements camera controlling behaviour and also position smoothing.
     /// </summary>
-    public sealed class PlayerCameraController : Script
+    public sealed class PlayerCameraController : GenericScript<CharacterActor>
     {
         private Vector3 _poleDirection = Vector3.Right;
 
@@ -30,8 +31,9 @@ namespace ReCrafted.Game.Player
 
             var forward = Vector3.Cross(_poleDirection, up);
             var relativeRotation = Quaternion.LookRotation(forward, up);
-            
+
             // Calculate final rotations
+            Actor.UpDirection = up;
             Actor.Rotation = Quaternion.RotationAxis(up, MathUtil.DegreesToRadians(inputSnapshot.LookRotation.X)) * relativeRotation;
             Camera.LocalRotation = Quaternion.RotationAxis(Vector3.Right, MathUtil.DegreesToRadians(inputSnapshot.LookRotation.Y));
         }
