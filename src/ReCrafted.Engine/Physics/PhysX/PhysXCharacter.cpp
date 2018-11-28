@@ -67,7 +67,14 @@ float PhysXCharacter::GetContactOffset()
 
 void PhysXCharacter::SetSlopeLimit(const float slopeLimit)
 {
-    m_controller->setSlopeLimit(Math::Cos(slopeLimit * Math::DegreeToRadian));
+    if(Math::IsZero(slopeLimit))
+    {
+        m_controller->setSlopeLimit(0.0f);
+    }
+    else
+    {
+        m_controller->setSlopeLimit(Math::Cos(slopeLimit * Math::DegreeToRadian));
+    }
 }
 
 float PhysXCharacter::GetSlopeLimit()

@@ -135,7 +135,7 @@ IPhysicsCharacter* PhysXScene::CreateCharacter(const float radius, const float h
     controllerDesc.radius = radius;
     controllerDesc.height = finalHeight;
     controllerDesc.stepOffset = stepOffset;
-    controllerDesc.slopeLimit = Math::Cos(slopeLimit * Math::DegreeToRadian);
+    controllerDesc.slopeLimit = Math::IsZero(slopeLimit) ? 0.0f : Math::Cos(slopeLimit * Math::DegreeToRadian);
     controllerDesc.contactOffset = contactOffset;
     controllerDesc.material = m_defaultMaterial;
 

@@ -107,7 +107,7 @@ public:
 
     void SetSlopeLimit(const float slopeAngle) const
     {
-        m_character->SetSlopeLimit(slopeAngle);
+        m_character->SetSlopeLimit(Math::Clamp(slopeAngle, 0.0f, 90.0f));
     }
 
     float GetSlopeLimit() const
