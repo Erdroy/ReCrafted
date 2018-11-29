@@ -38,6 +38,12 @@ void ScriptingEngine::OnDispose()
     m_domain->Cleanup();
 }
 
+void ScriptingEngine::Finalize()
+{
+    // Push finalizer
+    mono_domain_finalize(m_instance->m_domain->GetMono(), 1000);
+}
+
 void ScriptingEngine::AttachCurrentThread()
 {
     mono_thread_attach(m_instance->m_domain->GetMono());

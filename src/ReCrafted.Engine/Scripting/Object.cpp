@@ -6,6 +6,7 @@
 #include "Graphics/Camera.h"
 #include "Method.h"
 #include "Field.h"
+#include "ScriptingEngine.h"
 
 std::atomic<ObjectId_t> Object::m_lastObjectId;
 std::atomic<ObjectId_t> Object::m_objectCount;
@@ -130,37 +131,38 @@ void Object::Destroy(Object* object)
     // Call on destroy event
     object->OnDestroy();
 
+    m_objectMapLock.LockNow();
+    {
+        // Unregister
+        cvar objectIterator = m_objectMap.find(object->m_id);
+
+        if (objectIterator == m_objectMap.end())
+        {
+            Logger::LogWarning("Destroying object which is already destroyed (or invalid)! Pointer: {0} Id: {1} Name: {2}",
+                reinterpret_cast<uint64_t>(object),
+                object->GetObjectId(),
+                object->GetObjectName()
+            );
+        }
+        else
+        {
+            m_objectMap.erase(objectIterator);
+
+            // Decrement object count
+            --m_objectCount;
+        }
+    }
+    m_objectMapLock.UnlockNow();
+
     // Free garbage collector handle
     mono_gchandle_free(object->m_gchandle);
     object->m_gchandle = 0u;
 
-    m_objectMapLock.LockNow();
-
-    // Unregister
-    cvar objectIterator = m_objectMap.find(object->m_id);
-    
-    if (objectIterator == m_objectMap.end())
-    {
-        Logger::LogWarning("Destroying object which is already destroyed (or invalid)! Pointer: {0} Id: {1} Name: {2}", 
-            reinterpret_cast<uint64_t>(object), 
-            object->GetObjectId(), 
-            object->GetObjectName()
-        );
-    }
-    else
-    {
-        m_objectMap.erase(objectIterator);
-
-        // Decrement object count
-        --m_objectCount;
-    }
-
     // Reset object's managed data
-    object->m_gchandle = 0u;
     object->m_object = nullptr;
     object->m_class = nullptr;
 
-    m_objectMapLock.UnlockNow();
+    // Object will be deleted when mono calls it's finalizer
 }
 
 void Object::Release(Object* object)
@@ -200,6 +202,9 @@ void Object::DestroyAll()
 
     // Reset object count
     m_objectCount = 0u;
+
+    // Push finalizer
+    ScriptingEngine::Finalize();
 }
 
 void Object::Finalize(Object* object)
@@ -231,7 +236,7 @@ void Object::Finalize(Object* object)
 
     // cleanup
     object->m_object = nullptr;
-
+    
     // Delete unmanaged object
     delete object;
 }

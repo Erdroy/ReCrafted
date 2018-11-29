@@ -15,7 +15,11 @@ World::World()
 World::~World()
 {
     Clear();
-    delete m_entityManager;
+
+    SafeDelete(m_entityManager);
+
+    // Clear active systems
+    m_activeSystems.clear();
 }
 
 void World::Update(const bool updateSystems)
@@ -40,7 +44,7 @@ void World::Clear()
 {
     // Update last time the world, this is needed 
     // to properly call all OnEntityRemoved events etc.
-    Update();
+    //Update();
 
     // Delete all systems and clear hash map
     for (auto& system : m_systems)

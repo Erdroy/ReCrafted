@@ -31,7 +31,6 @@ EngineMain* EngineMain::m_instance;
 
 void EngineMain::RegisterComponents() const
 {
-    // initialize the rest of the engine components
     m_componentManager->RegisterComponent(TaskManager::GetInstance());
     m_componentManager->RegisterComponent(Graphics::GetInstance());
     m_componentManager->RegisterComponent(Application::GetInstance());

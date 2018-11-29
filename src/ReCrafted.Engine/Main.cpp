@@ -13,6 +13,10 @@
 
 #include <Windows.h>
 
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
 extern "C" {
     __declspec(dllexport) unsigned int NvOptimusEnablement = 0x00000001;
     __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
@@ -27,9 +31,11 @@ int CALLBACK WinMain(
     LPSTR lpCmdLine,
     int nCmdShow)
 {
-    // Initialize memory allocator TODO: This should be called from static constructor, as soon as possible!
-    Memory::Initialize(Memory::AllocatorType::JEMalloc);
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
+    // Initialize memory allocator TODO: This should be called from static constructor, as soon as possible!
+    Memory::Initialize(Memory::AllocatorType::OS);
+    
     // parse arguments
     var arguments = Text(GetCommandLineA());
     GameInfo::ParseArguments(arguments);
@@ -46,9 +52,12 @@ int CALLBACK WinMain(
     // Shutdown engine
     engine.Shutdown();
 
+    // Dump memory leaks
+    _CrtDumpMemoryLeaks();
+
     // Shutdown platform
     Platform::Shutdown();
-    
+
     return ERROR_SUCCESS;
 }
 #endif

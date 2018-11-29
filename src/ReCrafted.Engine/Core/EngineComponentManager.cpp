@@ -25,6 +25,7 @@ void EngineComponentManager::OnDispose()
     {
         // release this component
         ReleaseComponent(component);
+        component = nullptr;
     }
 
     // clear list

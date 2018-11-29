@@ -20,7 +20,7 @@ void CameraActor::OnDestroy()
     Object::Destroy(m_camera);
 
 #if DEVELOPMENT || DEBUG
-    Logger::Log("CameraActor with id {0} has been destroyed", m_camera->GetObjectId());
+    //Logger::Log("CameraActor with id {0} has been destroyed", m_camera->GetObjectId());
 #endif
 }
 

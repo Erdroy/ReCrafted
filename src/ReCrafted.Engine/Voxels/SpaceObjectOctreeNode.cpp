@@ -208,9 +208,13 @@ void SpaceObjectOctreeNode::Depopulate()
     ASSERT(!IsProcessing());
     ASSERT(m_populated == true);
 
+    m_processing = true;
+
     DestroyChildren();
     OnDepopulate();
     OnCreate();
+
+    m_processing = false;
 }
 
 void SpaceObjectOctreeNode::Rebuild()

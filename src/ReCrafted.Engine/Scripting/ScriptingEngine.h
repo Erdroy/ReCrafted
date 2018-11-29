@@ -22,6 +22,7 @@ public:
     void OnDispose() override;
 
 public:
+    static void Finalize();
     static void AttachCurrentThread();
     static void DetachCurrentThread();
 };
