@@ -80,7 +80,7 @@ void UpdateLoop::Start()
 
         // end 'Frame Total' profile
         Profiler::EndProfile();
-        Profiler::GetInstance()->EndFrame();
+        //Profiler::GetInstance()->EndFrame();
     }
 }
 

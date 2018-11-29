@@ -407,7 +407,7 @@ void Graphics::RenderUI()
             Universe::GetInstance()->RenderUI();
 
             // draw profiler debug screen
-            Profiler::GetInstance()->DrawDebugScreen();
+            //Profiler::GetInstance()->DrawDebugScreen();
         }
         Profiler::EndProfile();
 

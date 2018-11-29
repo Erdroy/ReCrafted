@@ -5,238 +5,48 @@
 #ifndef PROFILER_H
 #define PROFILER_H
 
-// includes
 #include "ReCrafted.h"
 #include "Core/EngineComponent.h"
-#include "Platform/Platform.h"
-#include "Core/Containers/Array.h"
-#include "Core/Math/Color.h"
-#include "Core/Math/Math.h"
 
-class Font;
-
-/// <summary>
-/// Profiler class.
-/// </summary>
 class Profiler : public EngineComponent<Profiler>
 {
-    friend class EngineMain;
-    friend class Graphics;
-
 private:
-SCRIPTING_API_IMPL()
-
-private:
-    struct Profile
+    class ProfilerThread
     {
     public:
-        float timeTotal = 0.0f;
-        float timeAvg = 0.0f;
-        float timeMin = FLT_MAX;
-        float timeMax = 0.0f;
-
-        float timeoutMed = 0.0f;
-        float timeoutMax = 0.0f;
-
-        double lastUpdate = 0.0f;
-        double lastAvgUpdate = 0.0f;
-        double timeBegin = 0.0f;
-
-        int order = 0;
-        int calls = 0;
-        int depth = 0;
-
-        const void* name = nullptr;
-        bool utf8 = false;
-
-        bool updated = false;
-
-    public:
-        void Update(double currentTime)
-        {
-            // Update time
-            lastUpdate = currentTime;
-            timeBegin = currentTime;
-            depth = GetInstance()->m_profileStack.Count();
-            order = GetInstance()->m_profileCount;
-
-            // increment profile count
-            GetInstance()->m_profileCount++;
-
-            updated = true;
-
-            // increment call count
-            calls++;
-        }
+        std::thread::id threadId;
+        const char* threadName;
     };
 
 private:
-    Array<Profile> m_profiles;
-    Array<Profile*> m_profileStack;
-    int m_profileCount;
-
-    bool m_drawDebugScreen = false;
-    bool m_drawProfiles = false;
-    bool m_drawPhysics = false;
-    Font* m_debugFont = nullptr;
-    float m_lineOffset = 0.0f;
-    float m_maxLineLength = 0;
-    float m_horiOffset = 10.0f;
-    float m_lastFPSCountTime = 0.0f;
-    int m_frames = 0;
-    int m_fps = 0;
-
-public:
-    virtual ~Profiler() = default;
+    std::vector<ProfilerThread*> m_threads;
 
 private:
-    static bool ProfileSort(const Profile& lhs, const Profile& rhs);
+    void DrawWindow();
+    void DrawThread(ProfilerThread* thread);
 
-public:
-    static bool IsPhysicsDebugEnabled();
-
+protected:
     void OnInit() override;
     void OnDispose() override;
     void Update() override;
 
-    void DrawTextLine(Text text, Color color);
-    void MakeLineSpace(int lines);
+public:
+    static void InitThread(const char* threadName);
+    static void FinishThread();
 
-    void DrawDebugScreen();
+    static void NewFrame();
 
 public:
-    void EndFrame();
-
-    Font* GetDebugFont() const
+    static void BeginProfile(const Char* name)
     {
-        return m_debugFont;
     }
 
-private:
-    template <typename T>
-    void InternalBeginProfile(const T* name, bool utf8, float timeMed, float timeMax)
+    static void BeginProfile(const char* name)
     {
-        ASSERT(this);
-        ASSERT(IS_MAIN_THREAD());
-
-        cvar currentTime = Platform::GetMiliseconds();
-
-        // try select profile, then Update
-        // check if profile already exists with this name
-
-        if (m_profiles.Count() > 0)
-        {
-            for (rvar profile : m_profiles)
-            {
-                if (utf8)
-                {
-                    // (just Compare name pointers, not called by Mono, 
-                    // so 'const char*' pointer address is const...)
-                    if (profile.name == name)
-                    {
-                        // Update
-                        profile.Update(currentTime);
-
-                        // add to stack
-                        m_profileStack.Add(&profile);
-                        return;
-                    }
-                }
-                else
-                {
-                    if (Text::Compare(static_cast<const Char*>(profile.name), static_cast<const Char*>((void*)name)))
-                    {
-                        // Update
-                        profile.Update(currentTime);
-
-                        // add to stack
-                        m_profileStack.Add(&profile);
-                        return;
-                    }
-                }
-            }
-        }
-
-        // add profile as it is not yet added
-        Profile newProfile;
-        newProfile.name = name;
-        newProfile.calls = 0;
-        newProfile.timeoutMed = timeMed;
-        newProfile.timeoutMax = timeMax;
-        newProfile.utf8 = utf8;
-
-        newProfile.Update(currentTime);
-
-        m_profiles.Add(newProfile);
     }
 
-    void InternalEndProfile()
+    static void EndProfile()
     {
-        ASSERT(this);
-        ASSERT(IS_MAIN_THREAD());
-
-        if (m_profileStack.Count() == 0)
-            return;
-
-        cvar currentTime = Platform::GetMiliseconds();
-
-        // select profile
-        crvar profile = m_profileStack.Last();
-
-        cvar time = currentTime - profile->timeBegin;
-
-        // Update total time
-        profile->timeTotal += static_cast<float>(time);
-
-        profile->timeMin = Math::Min(float(time), profile->timeMin);
-        profile->timeMax = Math::Max(float(time), profile->timeMax);
-
-        // Update every second
-        if (currentTime - profile->lastAvgUpdate >= 1000.0f)
-        {
-            // calculate avg time
-            profile->timeAvg = profile->timeTotal / float(profile->calls);
-            profile->lastAvgUpdate = currentTime;
-
-            profile->timeMin = float(time);
-            profile->timeMax = float(time);
-
-            profile->timeTotal = 0.0f;
-            profile->calls = 1;
-        }
-
-        // Remove profile
-        m_profileStack.RemoveAt(m_profileStack.Count() - 1);
-    }
-
-public:
-    /**
-	 * \brief Begins new profile.
-	 * \param name The name of the new profile. Use `TEXT_CHARS("Text")`.
-	 */
-    FORCEINLINE static void BeginProfile(const Char* name, float timeMed = -1.0f, float timeMax = -1.0f)
-    {
-        cvar instance = GetInstance();
-        instance->InternalBeginProfile(name, false, timeMed, timeMax);
-    }
-
-    /**
-    * \brief Begins new profile.
-    * \param name The name of the new profile.
-    */
-    FORCEINLINE static void BeginProfile(const char* name, float timeMed = -1.0f, float timeMax = -1.0f)
-    {
-        cvar instance = GetInstance();
-        instance->InternalBeginProfile(name, true, timeMed, timeMax);
-    }
-
-    /**
-    * \brief Ends the current profile.
-    */
-    FORCEINLINE static void EndProfile()
-    {
-        cvar instance = GetInstance();
-        instance->InternalEndProfile();
     }
 };
 

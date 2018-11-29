@@ -139,7 +139,7 @@ void Universe::Simulate()
 
 void Universe::RenderUI()
 {
-    switch(m_selectedMaterial)
+   /* switch(m_selectedMaterial)
     {
     case 0u:
         UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Rock"), Vector2(10.0f, 10.0f));
@@ -159,7 +159,7 @@ void Universe::RenderUI()
     case 5u:
         UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Rock2"), Vector2(10.0f, 10.0f));
         break;
-    }
+    }*/
 }
 
 void Universe::DoVoxelModification(const VoxelEditMode::_enum mode, const VoxelMaterial_t material, const float size) const

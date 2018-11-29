@@ -46,7 +46,7 @@ void Bindings::Bind()
     UI::InitRuntime();
     DebugDraw::InitRuntime();
     Font::InitRuntime();
-    Profiler::InitRuntime();
+    //Profiler::InitRuntime();
     KeyboardBuffer::InitRuntime();
 
 
