@@ -60,7 +60,6 @@ namespace ReCrafted.Game.Player
             var character = CharacterActor.Create();
             character.Radius = PlayerRadius;
             character.Height = PlayerHeight;
-            character.SlopeLimit = 90.0f;
             character.UpDirection = Vector3.Up;
             character.Position = position;
 

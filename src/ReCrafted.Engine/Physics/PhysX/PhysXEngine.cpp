@@ -48,7 +48,7 @@ void PhysXEngine::Initialize()
     GPxTolerances = {};
     GPxTolerances.length = 1.0f;
     GPxTolerances.mass = 1000.0f;
-    GPxTolerances.speed = 10.0f; // 100 meters per second
+    GPxTolerances.speed = 100.0f; // 100 meters per second
 
     // Craete px foundation
     GPxFoundation = m_foundation = PxCreateFoundation(PX_FOUNDATION_VERSION, allocator, logger);

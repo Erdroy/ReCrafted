@@ -24,7 +24,13 @@ namespace ReCrafted.Game.Player
                 Crouch,
                 Prone
             }
-            
+
+            public enum MovementType
+            {
+                Normal,
+                JetPack
+            }
+
             /// <summary>
             /// The horizontal movement value (left-right).
             /// This value is not being filtered.
@@ -50,9 +56,20 @@ namespace ReCrafted.Game.Player
             public bool Run { get; set; }
 
             /// <summary>
+            /// The jet pack damping input value.
+            /// When true, the player jet pack will try to stop.
+            /// </summary>
+            public bool JetPackDamping { get; set; }
+
+            /// <summary>
             /// The stand type input value.
             /// </summary>
             public StandingType Standing { get; set; }
+
+            /// <summary>
+            /// The movement type input value.
+            /// </summary>
+            public MovementType Movement { get; set; }
 
             /// <summary>
             /// The local look rotation.
@@ -92,7 +109,12 @@ namespace ReCrafted.Game.Player
 
             // Sample jump input
             result.Jump = Input.IsKeyDown(Keys.Space);
-            result.Run = Input.IsKeyDown(Keys.Shift);
+
+            // Sample run input
+            result.Run = Input.IsKey(Keys.Shift);
+
+            result.Movement = Snapshot.MovementType.Normal; // TODO: Movement type switch
+            result.JetPackDamping = true;
 
             // Sample standing
             UpdateStanding(ref result);
@@ -106,22 +128,15 @@ namespace ReCrafted.Game.Player
 
         private void UpdateStanding(ref Snapshot snapshot)
         {
-            if (Input.IsKeyDown(Keys.LeftControl))
+            if (Input.IsKey(Keys.Control))
             {
                 _currentStandingType = Snapshot.StandingType.Crouch;
             }
-
-            if (Input.IsKeyUp(Keys.LeftControl) && _currentStandingType == Snapshot.StandingType.Crouch)
-            {
-                _currentStandingType = Snapshot.StandingType.Normal;
-            }
-
-            if (Input.IsKeyDown(Keys.Z))
+            else if (Input.IsKey(Keys.Z))
             {
                 _currentStandingType = Snapshot.StandingType.Prone;
             }
-
-            if (Input.IsKeyUp(Keys.Z) && _currentStandingType == Snapshot.StandingType.Prone)
+            else
             {
                 _currentStandingType = Snapshot.StandingType.Normal;
             }
@@ -152,7 +167,10 @@ namespace ReCrafted.Game.Player
                 _lastDelta = tmp;
             }
 
-            var rotation = _currentRotation + new Vector2(cursorDelta.X * MouseHorizontalSensitivity, cursorDelta.Y * MouseVerticalSensitivity) * 0.1f;
+            var rotation = _currentRotation + new Vector2(
+                               MathUtil.DegreesToRadians(cursorDelta.X) * MouseHorizontalSensitivity,
+                               MathUtil.DegreesToRadians(cursorDelta.Y) * MouseVerticalSensitivity
+                           );
             rotation.Y = MathUtil.Clamp(rotation.Y, -89.9f, 89.9f);
             _currentRotation = rotation;
 
@@ -165,7 +183,7 @@ namespace ReCrafted.Game.Player
         public int MouseFilteringFrames { get; set; } = 3;
         public bool MouseAcceleration { get; set; } = true;
         public float MouseAccelerationMultiplier { get; set; } = 0.7f;
-        public float MouseHorizontalSensitivity { get; set; } = 1.0f;
-        public float MouseVerticalSensitivity { get; set; } = 1.0f;
+        public float MouseHorizontalSensitivity { get; set; } = 3.0f;
+        public float MouseVerticalSensitivity { get; set; } = 3.0f;
     }
 }
