@@ -15,89 +15,88 @@ namespace ReCrafted.Game.Player
         [Serializable]
         public class MovementSettings
         {
-            public float GroundAcceleration = 120.0f;
-            public float AirAcceleration = 12.5f;
-            public float MaxVelocityGround = 7.5f;
-            public float MaxVelocityAir = 250.0f;
+            public float GroundAcceleration = 50.0f;
+            public float AirAcceleration = 5.0f;
+            public float MaxVelocityGround = 7.0f;
+            public float MaxVelocityAir = 5.0f;
         }
 
         // We probably would like to make this configurable from asset
         public static readonly MovementSettings ProneSettings = new MovementSettings
         {
-
+            GroundAcceleration = 40.0f,
+            MaxVelocityGround = 2.0f
         };
 
         public static readonly MovementSettings CrouchSettings = new MovementSettings
         {
-
+            GroundAcceleration = 40.0f,
+            MaxVelocityGround = 3.5f
         };
 
         public static readonly MovementSettings WalkSettings = new MovementSettings
         {
-
+            GroundAcceleration = 50.0f,
+            MaxVelocityGround = 6.0f
         };
 
         public static readonly MovementSettings RunSettings = new MovementSettings
         {
-
+            GroundAcceleration = 60.0f,
+            MaxVelocityGround = 10.0f
         };
 
-        public const float JumpForce = 6.5f;
+        public const float JumpForce = 7.5f;
 
-        private Vector3 _moveVelocity;
         private Vector3 _velocity;
 
         /// <summary>
         /// Simulates this player's character using given input snapshot (<see cref="PlayerInput.Snapshot"/>).
         /// </summary>
-        /// <param name="inputSnapshot">The input snapshot that will be used for simulating this player's character.</param>
+        /// <param name="input">The input snapshot that will be used for simulating this player's character.</param>
         /// <remarks>
         /// Simulate uses current actor rotation.
         /// </remarks>
-        public void Simulate(PlayerInput.Snapshot inputSnapshot)
+        public void Simulate(PlayerInput.Snapshot input)
         {
-            var direction = GetMoveDirection(inputSnapshot);
-            var settings = GetMoveSettings(inputSnapshot);
+            var direction = GetMoveDirection(input);
+            var settings = GetMoveSettings(input);
 
-            if (IsGrounded)
+            DoNormalMovement(input, direction, settings);
+        }
+
+        private void DoNormalMovement(PlayerInput.Snapshot input, Vector3 direction, MovementSettings settings)
+        {
+            if (Actor.IsGrounded)
             {
-                _moveVelocity = MoveGround(settings, GroundFriction, direction, _moveVelocity);
-
-                if (_moveVelocity.Length() < 0.05f)
-                    _moveVelocity = Vector3.Zero;
+                _velocity = MoveGround(settings, 8.0f, direction, _velocity);
                 
-                // Add jump force or gravity force
-                if (inputSnapshot.Jump)
-                {
+                if (input.Jump)
                     _velocity += Vector3.Normalize(CurrentGravity) * JumpForce;
-                }
-                else
-                {
-                    _velocity = -CurrentGravity;
-                }
+
+                _velocity -= CurrentGravity * (float)Time.DeltaTime;
             }
             else
             {
-                _moveVelocity = MoveAir(settings, direction, _moveVelocity);
+                _velocity = MoveAir(settings, direction, _velocity);
             }
 
-            // Apply gravitation
-            //_velocity -= CurrentGravity * (float)Time.FixedDeltaTime;
+            _velocity -= CurrentGravity * (float)Time.DeltaTime;
 
-            // Move the player
-            var collisionFlags = Actor.Move((_moveVelocity + _velocity) * (float)Time.FixedDeltaTime);
-
-            // Check if we are going to hit something with our head
-            if ((collisionFlags & CharacterCollisionFlags.Up) != 0)
-            {
-                if (_moveVelocity.Y > 0.0f)
-                    _moveVelocity.Y = 0.0f;
-            }
-            
-            // Build final state
-            IsGrounded = (collisionFlags & CharacterCollisionFlags.Down) != 0;
+            Actor.Move(_velocity * (float)Time.DeltaTime);
         }
-        
+
+        private Vector3 GetSurfaceNormal()
+        {
+            return PhysicsManager.RayCast(Actor.Position, -Actor.UpDirection, out var hit, 2.0f, 1) 
+                ? hit.Normal : Actor.UpDirection;
+        }
+
+        private float GetSurfaceSlope()
+        {
+            return Vector3.Angle(Actor.UpDirection, GetSurfaceNormal());
+        }
+
         private MovementSettings GetMoveSettings(PlayerInput.Snapshot input)
         {
             var isGoingForward = MathUtil.Clamp(input.Vertical, 0.0f, 1.0f) - Math.Abs(input.Horizontal) > 0.0f;
@@ -105,7 +104,7 @@ namespace ReCrafted.Game.Player
             switch (input.Standing)
             {
                 case PlayerInput.Snapshot.StandingType.Normal:
-                    return input.Run && isGoingForward ? RunSettings : WalkSettings;
+                    return input.Run ? RunSettings : WalkSettings;
                 case PlayerInput.Snapshot.StandingType.Crouch:
                     return CrouchSettings;
                 case PlayerInput.Snapshot.StandingType.Prone:
@@ -126,23 +125,23 @@ namespace ReCrafted.Game.Player
         private static Vector3 Accelerate(Vector3 direction, Vector3 currentVelocity, float accelerate, float maxVelocity)
         {
             var projectionVelocity = Vector3.Dot(currentVelocity, direction);
-            var accelerationVelocity = accelerate * (float)Time.FixedDeltaTime;
+            var accelerationVelocity = accelerate * (float)Time.DeltaTime;
 
             if (projectionVelocity + accelerationVelocity > maxVelocity)
                 accelerationVelocity = maxVelocity - projectionVelocity;
 
             return currentVelocity + direction * accelerationVelocity;
         }
-        
+
         private Vector3 MoveGround(MovementSettings settings, float friction, Vector3 direction, Vector3 currentVelocity)
         {
             // Apply Friction
             var speed = currentVelocity.Length();
-
+            
             if (Math.Abs(speed) > float.Epsilon)
             {
-                var drop = speed * friction * Time.FixedDeltaTime;
-                currentVelocity *= (float)(Math.Max(speed - drop, 0) / speed); // Scale the velocity based on friction.
+                var drop = speed * friction * (float)Time.DeltaTime;
+                currentVelocity *= Math.Max(speed - drop, 0) / speed; // Scale the velocity based on friction.
             }
 
             return Accelerate(direction, currentVelocity, settings.GroundAcceleration, settings.MaxVelocityGround);
@@ -153,8 +152,7 @@ namespace ReCrafted.Game.Player
             return Accelerate(direction, currentVelocity, settings.AirAcceleration, settings.MaxVelocityAir);
         }
 
-        public bool IsGrounded { get; private set; }
-        public float GroundFriction => 15.0f;
+        public bool IsGrounded => Actor.IsGrounded;
         public Vector3 CurrentGravity => Vector3.Normalize(Actor.Position) * 9.81f; // TODO: Use gravitational fields
     }
 }
