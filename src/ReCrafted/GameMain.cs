@@ -12,6 +12,7 @@ using ReCrafted.API.UI.Controls;
 using ReCrafted.Common;
 using ReCrafted.Game.Interface;
 using ReCrafted.Game.Player;
+using Object = ReCrafted.API.Object;
 
 namespace ReCrafted.Game
 {

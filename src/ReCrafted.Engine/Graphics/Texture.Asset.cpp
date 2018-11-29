@@ -47,7 +47,7 @@ void Texture::LoadTextureMipTask::Finish()
         texture->m_lazyLoading = false;
 
         // Unload the texture.
-        texture->Unload();
+        Destroy(texture);
         return;
     }
 

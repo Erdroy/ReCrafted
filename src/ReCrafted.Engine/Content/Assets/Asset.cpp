@@ -5,12 +5,10 @@
 
 void Asset::OnDestroy()
 {
-    Unload();
-}
-
-Asset::~Asset()
-{
-    Unload();
+    if (!m_unloaded)
+    {
+        ContentManager::UnloadAsset(this);
+    }
 }
 
 void Asset::Deserialize(BinaryStream& stream)
@@ -52,13 +50,5 @@ void Asset::OnLoadEnd()
 {
     // Unload if needed
     if (m_unload)
-        Unload();
-}
-
-void Asset::Unload()
-{
-    if(!m_unloaded)
-    {
-        ContentManager::UnloadAsset(this);
-    }
+        Destroy(this);
 }

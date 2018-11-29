@@ -22,7 +22,7 @@ void WebUI::OnInit()
 void WebUI::OnDispose()
 {
     for (var&& view : m_views)
-        Object::Destroy(view.get());
+        Object::Destroy(view);
 
     m_views.Clear();
 
@@ -73,7 +73,7 @@ WebUIView* WebUI::CreateView()
 
     var view = Object::CreateInstance<WebUIView>("ReCrafted.API.Graphics", "WebUIView");
     view->Init();
-    m_views.Add(RefPtr<WebUIView>(view));
+    m_views.Add(view);
 
     Logger::Log("Created new WebUIView");
 

@@ -63,7 +63,7 @@ void SpaceObject::Update()
 
 void SpaceObject::Dispose()
 {
-    m_terrainShader->Unload();
+    Object::Destroy(m_terrainShader);
     SafeDispose(m_octree);
     SafeDispose(m_voxelStorage);
 }

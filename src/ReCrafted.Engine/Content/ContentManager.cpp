@@ -1,12 +1,13 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "ContentManager.h"
+#include "Common/Profiler/Profiler.h"
 #include "Core/Streams/FileStream.h"
 #include "Core/Logger.h"
+#include "Scripting/ScriptingAPI.h"
 
 #include <string>
 #include <fstream>
-#include "Common/Profiler/Profiler.h"
 
 SINGLETON_IMPL(ContentManager)
 
@@ -16,8 +17,7 @@ void ContentManager::OnInit()
 
 void ContentManager::OnDispose()
 {
-    // Unload from queue
-    UnloadAssets();
+    ScopeLock(m_assetMapLock);
 
     // Clear deleted
     m_assetMap.clear_deleted_key();
@@ -42,38 +42,17 @@ void ContentManager::Update()
 
 void ContentManager::OnFrameFinished()
 {
-    UnloadAssets();
-}
-
-void ContentManager::UnloadAssets()
-{
-    Profiler::BeginProfile(__FUNCTION__);
-
-    // Unload all assets that are queued for unload
-    Asset* asset;
-    while (m_unloadQueue.try_dequeue(asset))
-    {
-        if (asset == nullptr)
-            continue;
-
-#ifdef _DEBUG
-        Logger::Log("Unloading asset '{0}'", asset->AssetFile());
-#endif
-
-        ReleaseAsset(asset);
-    }
-
-    Profiler::EndProfile();
 }
 
 void ContentManager::RegisterAsset(Asset* asset)
 {
     // Check main thread
-    ASSERT(Platform::GetMainThreadId() == std::this_thread::get_id());
+    MAIN_THREAD_ONLY();
 
     // Set asset as registered
     asset->m_registered = true;
 
+    ScopeLock(m_assetMapLock);
     m_assetMap[asset->GetAssetGuid()] = asset;
 }
 
@@ -136,12 +115,11 @@ void ContentManager::ReleaseAsset(Asset* asset)
     asset->m_loaded = false;
     asset->m_unloaded = true;
 
+    m_assetMapLock.LockNow();
     m_assetMap.erase(asset->GetAssetGuid());
+    m_assetMapLock.UnlockNow();
 
     asset->OnUnload();
-
-    // Delete asset
-    Object::Destroy(asset);
 }
 
 Asset* ContentManager::LoadAssetSync(Asset* asset, const std::string& assetFile, const std::string& file)
@@ -200,6 +178,13 @@ void ContentManager::UnloadAsset(Asset* asset)
         return;
     }
 
+#ifdef _DEBUG
+    Logger::Log("Unloading asset '{0}'", asset->AssetFile());
+#endif
+
     // Queue for asset unloading
-    m_instance->m_unloadQueue.enqueue(asset);
+    asset->m_unloaded = true;
+
+    // Release
+    m_instance->ReleaseAsset(asset);
 }

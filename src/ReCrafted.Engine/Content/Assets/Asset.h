@@ -45,7 +45,6 @@ private:
 
 public:
     Asset() = default;
-    virtual ~Asset();
 
 protected:
     void Deserialize(BinaryStream& stream);
@@ -81,12 +80,6 @@ protected:
     {
         return true;
     }
-
-public:
-    /**
-     * \brief Unloads the asset.
-     */
-    void Unload();
 
 public:
     /**

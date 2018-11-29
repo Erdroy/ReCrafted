@@ -33,7 +33,7 @@ private:
             if(GetInstance()->LoadAsset(asset, file.c_str()))
             {
                 // Unload asset and reset
-                UnloadAsset(asset);
+                Object::Destroy(asset);
                 asset = nullptr;
             }
         }
@@ -61,7 +61,7 @@ private:
 
 private:
     spp::sparse_hash_map<Guid, Asset*> m_assetMap;
-    moodycamel::ConcurrentQueue<Asset*> m_unloadQueue;
+    Lock m_assetMapLock;
 
 public:
     virtual ~ContentManager() = default;
@@ -71,9 +71,6 @@ private:
     void OnDispose() override;
     void Update() override;
     void OnFrameFinished() override;
-
-private:
-    void UnloadAssets();
 
 private:
     void RegisterAsset(Asset* asset);
@@ -167,7 +164,7 @@ public:
     {
         if (asset)
         {
-            asset->Unload();
+            Object::Destroy(asset);
             asset = nullptr;
         }
     }

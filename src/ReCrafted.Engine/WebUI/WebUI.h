@@ -21,7 +21,7 @@ private:
 SCRIPTING_API_IMPL()
 
 private:
-    Array<RefPtr<WebUIView>> m_views = {};
+    Array<WebUIView*> m_views = {};
     WebUIEngine* m_engine = nullptr;
 
 private:

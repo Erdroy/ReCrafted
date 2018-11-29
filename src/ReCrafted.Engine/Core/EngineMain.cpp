@@ -61,8 +61,11 @@ void EngineMain::UnregisterComponents() const
     m_componentManager->UnregisterComponent(UI::GetInstance());
     m_componentManager->UnregisterComponent(WebUI::GetInstance());
 
+    // Run finalizer
+    ScriptingEngine::Finalize();
+
     // Release content manager
-    m_componentManager->UnregisterComponent(ContentManager::GetInstance());
+    //m_componentManager->UnregisterComponent(ContentManager::GetInstance());
 }
 
 void EngineMain::CreateMainWindow()

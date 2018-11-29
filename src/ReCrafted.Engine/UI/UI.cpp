@@ -115,7 +115,7 @@ void UI::OnDispose()
     Renderer::Free(m_indexBufferData);
 
     // Unload shader
-    m_shader->Unload();
+    Object::Destroy(m_shader);
 
     // Release draw cmd array
     m_drawCmds.Release();

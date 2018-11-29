@@ -189,8 +189,8 @@ void Graphics::OnDispose()
     ImGui::DestroyContext();
 
     // Dispose shaders
-    m_gbufferFillShader->Unload();
-    m_gbufferCombine->Unload();
+    Object::Destroy(m_gbufferFillShader);
+    Object::Destroy(m_gbufferCombine);
     Logger::LogInfo("Unloaded render shaders");
 
     // Shutdown renderer

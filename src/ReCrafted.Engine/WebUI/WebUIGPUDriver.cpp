@@ -38,7 +38,7 @@ WebUIGPUDriver::WebUIGPUDriver()
 
 WebUIGPUDriver::~WebUIGPUDriver()
 {
-    m_shader->Unload();
+    Object::Destroy(m_shader);
     m_shader = nullptr;
 }
 
