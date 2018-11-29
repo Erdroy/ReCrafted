@@ -23,12 +23,13 @@ void ContentManager::OnDispose()
     m_assetMap.clear_deleted_key();
 
     // Release all assets
+    var numLeaked = 0;
     for(rvar assetPair : m_assetMap)
-    {
-        cvar asset = assetPair.second;
+        numLeaked++;
 
-        if(asset)
-            ReleaseAsset(asset);
+    if(numLeaked > 0)
+    {
+        Logger::LogWarning("Detected leaked assets! {0} assets leaked!", numLeaked);
     }
 
     // Clear
