@@ -156,6 +156,7 @@ public:
     }
 
 public:
+    static bool IsPinned(Object* object);
     static bool IsObjectInitialized(Object* object);
     static MonoObject* Create(Object* object, MonoDomain* domain, MonoClass* monoClass, bool isObject);
     static void InitializeInstance(Object* object, MonoObject* instance, bool isObject = true);

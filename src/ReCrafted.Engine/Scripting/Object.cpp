@@ -73,6 +73,11 @@ RefPtr<Method> Object::FindStaticMethod(const char* methodName)
     return method;
 }
 
+bool Object::IsPinned(Object* object)
+{
+    return object->m_gchandle > 0u;
+}
+
 bool Object::IsObjectInitialized(Object* object)
 {
     return object->m_object && object->m_class;
