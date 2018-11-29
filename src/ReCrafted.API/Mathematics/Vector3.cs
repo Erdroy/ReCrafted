@@ -735,6 +735,11 @@ namespace ReCrafted.API.Mathematics
         {
             return (left.X * right.X) + (left.Y * right.Y) + (left.Z * right.Z);
         }
+        
+        public static float Angle(Vector3 from, Vector3 to)
+        {
+            return (float)Math.Acos(MathUtil.Clamp(Dot(from, to), -1.0f, 1.0f)) * 57.29578f;
+        }
 
         /// <summary>
         /// Converts the vector into a unit vector.
