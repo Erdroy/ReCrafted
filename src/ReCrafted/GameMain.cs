@@ -44,7 +44,7 @@ namespace ReCrafted.Game
                 Cursor.Lock = true;
 
                 // Spawn player
-                CurrentPlayer = PlayerManager.SpawnPlayer(Vector3.Up * 1000.0f, Quaternion.Identity);
+                CurrentPlayer = PlayerManager.SpawnPlayer(new Vector3(25.0f, 1100.0f, 60.0f), Quaternion.Identity);
 
                 // load game info
                 GameInfo.FromFile(Assets.ResolveAssetFilePath("gameinfo.json"));
