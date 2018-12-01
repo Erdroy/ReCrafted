@@ -29,7 +29,7 @@ void UpdateLoop::Simulate()
     }
 }
 
-void UpdateLoop::WaitForTargetFps(double last)
+void UpdateLoop::WaitForTargetFps(double& last, const double current)
 {
     Profiler::BeginProfile("WaitForTargetFps");
     cvar target = (1.0 / m_TargetFps) * 1000.0;
@@ -40,18 +40,23 @@ void UpdateLoop::WaitForTargetFps(double last)
     {
         Platform::Sleep(static_cast<uint>(sleep));
     }
+
+    last = current;
     Profiler::EndProfile();
 }
 
 void UpdateLoop::Start()
 {
-    var lastTime = Platform::GetMiliseconds();
+    var lastFrameStart = Platform::GetMiliseconds();
 
     while (m_running)
     {
-        cvar currentTime = Platform::GetMiliseconds();
+        cvar currentFrameStart = Platform::GetMiliseconds();
 
-        Profiler::BeginProfile("Frame Total");
+        // Begin profiler frame
+        Profiler::BeginFrame();
+
+        // Push profiler 
         Profiler::BeginProfile("Frame");
 
         if (m_updateCallback)
@@ -75,12 +80,17 @@ void UpdateLoop::Start()
         // end 'Frame' profile
         Profiler::EndProfile();
 
-        WaitForTargetFps(lastTime);
-        lastTime = currentTime;
+        // Push profiler frame, to omit including 
+        Profiler::PushFrame();
 
-        // end 'Frame Total' profile
-        Profiler::EndProfile();
-        Profiler::NewFrame();
+        // Wait for target fps
+        if(m_TargetFps != 0)
+        {
+            WaitForTargetFps(lastFrameStart, currentFrameStart);
+        }
+
+        // End profiler frame
+        Profiler::EndFrame(false);
     }
 }
 

@@ -86,9 +86,9 @@ void WebUIGPUDriver::BindRenderBuffer(uint32_t render_buffer_id)
 {
 }
 
-void WebUIGPUDriver::SetRenderBufferViewport(uint32_t render_buffer_id, uint32_t width, uint32_t height)
+/*void WebUIGPUDriver::SetRenderBufferViewport(uint32_t render_buffer_id, uint32_t width, uint32_t height)
 {
-}
+}*/
 
 void WebUIGPUDriver::ClearRenderBuffer(uint32_t render_buffer_id)
 {

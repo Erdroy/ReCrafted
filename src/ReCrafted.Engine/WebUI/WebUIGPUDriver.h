@@ -48,7 +48,7 @@ public:
     uint32_t NextRenderBufferId() override;
     void CreateRenderBuffer(uint32_t render_buffer_id, const ultralight::RenderBuffer& buffer) override;
     void BindRenderBuffer(uint32_t render_buffer_id) override;
-    void SetRenderBufferViewport(uint32_t render_buffer_id, uint32_t width, uint32_t height) override;
+    //void SetRenderBufferViewport(uint32_t render_buffer_id, uint32_t width, uint32_t height) override;
     void ClearRenderBuffer(uint32_t render_buffer_id) override;
     void DestroyRenderBuffer(uint32_t render_buffer_id) override;
 

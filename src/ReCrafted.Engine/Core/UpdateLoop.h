@@ -29,7 +29,7 @@ private:
 
 private:
     void Simulate();
-    void WaitForTargetFps(double last);
+    void WaitForTargetFps(double& last, double current);
 
 public:
     /**
