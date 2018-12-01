@@ -86,7 +86,10 @@ void Graphics::InitializeRenderer()
     Logger::Log("Initializing ImGUI {0}", IMGUI_VERSION);
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO();
+    cvar newFont = io.Fonts->AddFontFromFileTTF("../assets/fonts/Lato-Regular.ttf", 14.0f);
+    io.Fonts->AddFontDefault(newFont->ConfigData);
+
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
     ImGui_ImplWin32_Init(Platform::GetCurrentWindow());
     ImGui_ImplRenderer_Init(rendererContext.device, rendererContext.deviceContext);
