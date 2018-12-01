@@ -21,10 +21,7 @@ void Profiler::DrawWindow()
     {
         if (ImGui::MenuItem(m_profilingEnabled ? "Resume profile" : "Pause profile"))
         {
-            if (m_profilingEnabled)
-                m_stopProfiling = true;
-            else
-                m_startProfiling = true;
+            ToggleProfiling();
         }
         ImGui::EndMenuBar();
     }
@@ -37,13 +34,28 @@ void Profiler::DrawWindow()
 
 void Profiler::DrawThread(ThreadData* thread)
 {
-    // Temporary
-    float frameTimes[120 * ProfileSeconds] = {};
-    for(var i = 0u; i < thread->frames.size(); i ++)
-    {
-        frameTimes[i] = thread->frames[i].time_ms;
-    }
+    rvar lock = thread->dataLock;
+    ScopeLock(lock);
 
-    ImGui::PushItemWidth(-1);
-    ImGui::PlotHistogram("", frameTimes, 120 * ProfileSeconds, 0, nullptr, FLT_MAX, FLT_MAX, ImVec2(0, 128));
+    ImGui::PushID(static_cast<int>(std::hash<std::thread::id>{}(thread->threadId)));
+    if(ImGui::CollapsingHeader(thread->threadName, ImGuiTreeNodeFlags_Framed))
+    {
+        // Temporary
+        float frameTimes[120 * ProfileSeconds] = {};
+        for (var i = 0u; i < thread->frames.size(); i++)
+        {
+            frameTimes[i] = thread->frames[i].time_ms;
+        }
+
+        ImGui::PushItemWidth(-1);
+        ImGui::PlotLines("", frameTimes, 120 * ProfileSeconds, 0, nullptr, FLT_MAX, FLT_MAX, ImVec2(0, 128));
+        cvar graphSize = ImGui::GetItemRectSize();
+        cvar startPos = ImGui::GetItemRectMin();
+
+        // TODO: Avg/Max time line
+
+        // Sample line drawing
+        cvar drawList = ImGui::GetWindowDrawList();
+        drawList->AddLine(ImVec2(startPos.x, startPos.y + 10.0f), ImVec2(startPos.x + graphSize.x, startPos.y + 10.0f), 0xFF0000FF);
+    }
 }

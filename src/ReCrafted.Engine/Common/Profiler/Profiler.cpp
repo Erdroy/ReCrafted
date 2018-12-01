@@ -8,7 +8,7 @@ SINGLETON_IMPL(Profiler)
 
 void Profiler::OnInit()
 {
-    InitThread("MainThread");
+    InitThread("Main Thread");
 
     // When -noprofile argument is provided within the CLI, then we are not going to start
     // the profiling by default
@@ -29,10 +29,7 @@ void Profiler::Update()
     // Toggle profiling when window is displayed and user pressed 'P' key.
     if(Input::IsKeyDown(Key_P) && m_showWindow)
     {
-        if (m_profilingEnabled)
-            m_stopProfiling = true;
-        else
-            m_startProfiling = true;
+        ToggleProfiling();
     }
 
     // Draw window when enabled
@@ -42,20 +39,31 @@ void Profiler::Update()
     }
 }
 
+void Profiler::ToggleProfiling()
+{
+    if (m_profilingEnabled)
+        m_stopProfiling = true;
+    else
+        m_startProfiling = true;
+}
+
 void Profiler::ThreadData::BeginFrame()
 {
-    // Stop profiling when `m_stopProfiling` flag is true
-    if (m_instance->m_stopProfiling)
+    if(IS_MAIN_THREAD())
     {
-        m_instance->m_profilingEnabled = false;
-        m_instance->m_stopProfiling = false;
-    }
+        // Stop profiling when `m_stopProfiling` flag is true
+        if (m_instance->m_stopProfiling)
+        {
+            m_instance->m_profilingEnabled = false;
+            m_instance->m_stopProfiling = false;
+        }
 
-    // Start profiling when `m_startProfiling` flag is true
-    if (m_instance->m_startProfiling)
-    {
-        m_instance->m_profilingEnabled = true;
-        m_instance->m_startProfiling = false;
+        // Start profiling when `m_startProfiling` flag is true
+        if (m_instance->m_startProfiling)
+        {
+            m_instance->m_profilingEnabled = true;
+            m_instance->m_startProfiling = false;
+        }
     }
 
     // Setup new frame
@@ -71,6 +79,8 @@ void Profiler::ThreadData::PushFrame()
 
 void Profiler::ThreadData::EndFrame()
 {
+    ScopeLock(dataLock);
+
     if (!m_instance->m_profilingEnabled && currentFrame.profiles.empty())
         return;
 
@@ -110,7 +120,9 @@ void Profiler::ThreadData::EndCPUProfile(const uint32_t profileId)
     currentFrame.profileQueue.pop();
 
     // Push new profile
+    dataLock.LockNow();
     currentFrame.profiles.emplace_back(std::move(currentProfile));
+    dataLock.UnlockNow();
 }
 
 void Profiler::InitThread(const char* threadName)
@@ -119,6 +131,7 @@ void Profiler::InitThread(const char* threadName)
     var thread = new ThreadData();
     thread->threadName = threadName;
     thread->threadId = std::this_thread::get_id();
+    thread->opened = strcmp(threadName, "Main Thread") == 0;
 
     // Add thread
     m_instance->m_threads.emplace_back(thread);

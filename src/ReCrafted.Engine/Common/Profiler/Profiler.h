@@ -7,6 +7,7 @@
 
 #include "ReCrafted.h"
 #include "Core/EngineComponent.h"
+#include "Core/Lock.h"
 
 #include "spp.h"
 #include <atomic>
@@ -38,6 +39,10 @@ private:
     class ThreadData
     {
     public:
+        Lock dataLock;
+
+        bool opened = false;
+
         std::thread::id threadId;
         const char* threadName = nullptr;
         std::vector<ProfileFrame> frames = {};
@@ -73,6 +78,9 @@ protected:
     void OnInit() override;
     void OnDispose() override;
     void Update() override;
+
+public:
+    void ToggleProfiling();
 
 public:
     static void InitThread(const char* threadName);
@@ -142,9 +150,5 @@ public:
         Profiler::EndCPUProfile(m_id);
     }
 };
-
-#define BEGIN_CPU_PROFILE(name) Profiler::BeginCPUProfile(name);
-#define END_CPU_PROFILE(name) Profiler::EndCPUProfile();
-#define CPU_SCOPE_PROFILE(name) ScopedProfile(name); 
 
 #endif // PROFILER_H
