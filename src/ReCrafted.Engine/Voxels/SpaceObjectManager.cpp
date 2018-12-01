@@ -13,6 +13,7 @@
 #include "Meshing/Transvoxel/TransvoxelMesher.h"
 
 #include <concurrentqueue.h>
+#include "Common/Profiler/Profiler.h"
 
 SINGLETON_IMPL(SpaceObjectManager)
 
@@ -64,15 +65,22 @@ void SpaceObjectManager::WorkerFunction()
     Logger::Log("Using {0} as planet chunk mesher.", mesher->GetName());
     mesher->Initialize(shapeCooker);
 
+    Profiler::InitThread("SpaceObject Worker");
+    Profiler::BeginFrame();
+
     // Run
     queueItem item;
     while (m_running)
     {
         if (!m_loadingQueue.try_dequeue(item))
         {
+            Profiler::EndFrame();
             Platform::Sleep(10);
+            Profiler::BeginFrame();
             continue;
         }
+
+        Profiler::BeginCPUProfile("Frame");
 
         // Populate or depopulate the queued node
         switch (item.mode)
@@ -93,7 +101,11 @@ void SpaceObjectManager::WorkerFunction()
         m_calbacksLock.LockNow();
         m_callbacks.Add(item.callback);
         m_calbacksLock.UnlockNow();
+
+        Profiler::EndCPUProfile();
     }
+
+    Profiler::FinishThread();
 
     ScriptingEngine::DetachCurrentThread();
     PhysicsManager::Engine()->ReleaseCooker(shapeCooker);
