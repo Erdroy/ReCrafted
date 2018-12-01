@@ -22,9 +22,9 @@ void Profiler::DrawWindow()
         if (ImGui::MenuItem(m_profilingEnabled ? "Resume profile" : "Pause profile"))
         {
             if (m_profilingEnabled)
-                m_profilingEnabled = false;
+                m_stopProfiling = true;
             else
-                m_profilingEnabled = true;
+                m_startProfiling = true;
         }
         ImGui::EndMenuBar();
     }
@@ -45,5 +45,5 @@ void Profiler::DrawThread(ThreadData* thread)
     }
 
     ImGui::PushItemWidth(-1);
-    ImGui::PlotHistogram("", frameTimes, 120 * ProfileSeconds);
+    ImGui::PlotHistogram("", frameTimes, 120 * ProfileSeconds, 0, nullptr, FLT_MAX, FLT_MAX, ImVec2(0, 128));
 }

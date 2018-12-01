@@ -46,6 +46,7 @@ private:
 
     public:
         void BeginFrame();
+        void PushFrame();
         void EndFrame();
 
     public:
@@ -58,6 +59,8 @@ private:
     std::vector<ThreadData*> m_threads;
     spp::sparse_hash_map<std::thread::id, ThreadData*> m_threadMap;
     std::atomic<bool> m_profilingEnabled = true;
+    bool m_stopProfiling = false;
+    bool m_startProfiling = false;
 
 private:
     ThreadData* GetCurrentThreadData();
@@ -75,17 +78,19 @@ public:
     static void InitThread(const char* threadName);
     static void FinishThread();
 
-    static void NewFrame();
+    static void BeginFrame();
+    static void PushFrame();
+    static void EndFrame(bool autoPush = true);
 
 public:
     FORCEINLINE static uint32_t BeginCPUProfile(const char* name)
     {
-        ASSERT(m_instance);
+        ASSERT(GetInstance());
 
-        if (!m_instance->m_profilingEnabled)
+        if (!GetInstance()->m_profilingEnabled)
             return 0u;  
         
-        cvar threadData = m_instance->GetCurrentThreadData();
+        cvar threadData = GetInstance()->GetCurrentThreadData();
         _ASSERT_(threadData, "Profiler thread not found. Are you sure that you've called Profiler::InitThread?");
 
         // Begin new CPU profile
@@ -94,11 +99,11 @@ public:
 
     FORCEINLINE static void EndCPUProfile(const uint32_t profileId = 0u)
     {
-        ASSERT(m_instance);
+        ASSERT(GetInstance());
 
-        if (m_instance->m_profilingEnabled)
+        if (GetInstance()->m_profilingEnabled)
         {
-            cvar threadData = m_instance->GetCurrentThreadData();
+            cvar threadData = GetInstance()->GetCurrentThreadData();
             _ASSERT_(threadData, "Profiler thread not found. Are you sure that you've called Profiler::InitThread?");
 
             // End current CPU profile
