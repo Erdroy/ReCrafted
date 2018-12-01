@@ -29,7 +29,7 @@ namespace ReCrafted.ProjectManager.Commands
             // setup fake options
             ShaderCompiler.Options.Current = new ShaderCompiler.Options
             {
-                CuteJson = true,
+                CuteJson = false,
                 DisassembleOutput = false,
                 Verbose = false
             };
