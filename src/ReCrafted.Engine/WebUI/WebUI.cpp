@@ -31,7 +31,7 @@ void WebUI::OnDispose()
     Logger::Log("WebUI disposed");
 }
 
-void WebUI::Resize(uint width, uint height)
+void WebUI::Resize(const uint width, const uint height)
 {
     for (crvar view : m_views)
     {
@@ -45,6 +45,9 @@ void WebUI::Update()
     Profiler::BeginProfile(__FUNCTION__);
     
     m_engine->Update();
+
+    for (crvar view : m_views)
+        view->Update();
 
     Profiler::EndProfile();
 }

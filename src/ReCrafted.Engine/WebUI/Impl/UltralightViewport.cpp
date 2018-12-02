@@ -2,6 +2,7 @@
 
 #include "UltralightViewport.h"
 #include "Common/Profiler/Profiler.h"
+#include "Common/Input/Input.h"
 
 void UltralightViewport::CreateTexture(const uint width, const uint height)
 {
@@ -33,13 +34,41 @@ UltralightViewport::~UltralightViewport()
 
 void UltralightViewport::Update()
 {
+    ultralight::MouseEvent event;
+    event.type = ultralight::MouseEvent::kType_MouseMoved;
+    event.x = ceilf(Input::GetCursorPos().x);
+    event.y = ceilf(Input::GetCursorPos().y);
+
+    m_view->FireMouseEvent(event);
+
+    if(Input::IsKeyDown(Key_Mouse0))
+    {
+        ultralight::MouseEvent event;
+        event.type = ultralight::MouseEvent::kType_MouseDown;
+        event.button = ultralight::MouseEvent::kButton_Left;
+        event.x = ceilf(Input::GetCursorPos().x);
+        event.y = ceilf(Input::GetCursorPos().y);
+
+        m_view->FireMouseEvent(event);
+    }
+
+    if (Input::IsKeyUp(Key_Mouse0))
+    {
+        ultralight::MouseEvent event;
+        event.type = ultralight::MouseEvent::kType_MouseUp;
+        event.button = ultralight::MouseEvent::kButton_Left;
+        event.x = ceilf(Input::GetCursorPos().x);
+        event.y = ceilf(Input::GetCursorPos().y);
+
+        m_view->FireMouseEvent(event);
+    }
 }
 
 void UltralightViewport::Render()
 {
     Profiler::BeginProfile(__FUNCTION__);
 
-    if(m_view->is_bitmap_dirty())
+    if (m_view->is_bitmap_dirty())
     {
         cvar bitmap = m_view->bitmap();
         cvar size = bitmap->size();
@@ -48,8 +77,8 @@ void UltralightViewport::Render()
         cvar newTextureData = Renderer::Allocate(size);
 
         // Copy bitmap contents
-        bitmap->LockPixels();
-        memcpy(newTextureData, bitmap->raw_pixels(), size);
+        cvar pixels = bitmap->LockPixels();
+        memcpy(newTextureData, pixels, size);
         bitmap->UnlockPixels();
 
         // Send renderer command

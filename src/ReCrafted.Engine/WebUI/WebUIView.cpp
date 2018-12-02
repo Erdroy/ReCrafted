@@ -28,6 +28,13 @@ void WebUIView::Resize(const uint width, const uint height)
     m_height = height;
 }
 
+void WebUIView::Update()
+{
+    ASSERT(m_viewport);
+
+    m_viewport->Update();
+}
+
 void WebUIView::Render()
 {
     Profiler::BeginProfile(__FUNCTION__);

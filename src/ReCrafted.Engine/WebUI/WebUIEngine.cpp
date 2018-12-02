@@ -30,7 +30,6 @@ void WebUIEngine::Init()
     platform.set_config(ultralight::Config());
     platform.set_file_system(new ultralight::FileSystemWin(assetsDirectory));
     platform.set_font_loader(new ultralight::FontLoaderWin());
-    // TODO: Setup FileSystem and FontLoader
 
     // Create ultralight renderer
     g_ultralightRenderer = ultralight::Renderer::Create();

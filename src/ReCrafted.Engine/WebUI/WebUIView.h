@@ -28,6 +28,7 @@ private:
 private:
     void Init(uint width = 0u, uint height = 0u, bool fullscreen = true);
     void Resize(uint width, uint height);
+    void Update();
     void Render();
     void OnDestroy() override;
 
