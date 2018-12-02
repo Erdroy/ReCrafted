@@ -63,7 +63,7 @@ void Profiler::DrawThreadProfiles(ThreadData* thread)
         ImGui::PushItemWidth(-1);
         cvar hoveredFrame = ImGui::PlotLines("", frameTimes, NumProfiledFrames, 0, nullptr, FLT_MAX, FLT_MAX, ImVec2(0, 128));
 
-        if (ImGui::IsMouseClicked(0) && hoveredFrame >= 0)
+        if (ImGui::IsMouseClicked(0) && hoveredFrame >= 0 && hoveredFrame < thread->frames.size())
         {
             thread->selectedFrame = hoveredFrame;
             m_stopProfiling = true;
@@ -91,7 +91,46 @@ void Profiler::DrawThreadProfiles(ThreadData* thread)
         {
             if (ImGui::CollapsingHeader(("Events##" + std::string(thread->threadName)).c_str()))
             {
-                // TODO: Draw events of selected frame
+                crvar selectedFrame = thread->frames[thread->selectedFrame];
+
+                // Setup columns
+                ImGui::Columns(3);
+                ImGui::SetColumnWidth(1, 100.0f);
+                ImGui::SetColumnWidth(2, 100.0f);
+
+                // Draw Header
+                ImGui::Text("Overview");
+                ImGui::NextColumn();
+
+                ImGui::Text("Total");
+                ImGui::NextColumn();
+
+                ImGui::Text("Time ms");
+                ImGui::NextColumn();
+
+                var lastDepth = -1;
+                var lastOpen = false;
+                for (crvar event : selectedFrame.profiles)
+                {
+                    //if (lastDepth > event.depth && !lastOpen)
+                    //    continue;
+
+                    //if (event.depth != 0)
+                    //    continue;
+
+                    lastDepth = event.depth;
+                    lastOpen = ImGui::TreeNode(event.profileName.c_str());
+                    ImGui::NextColumn();
+
+                    ImGui::Text("%.2f %s", 0.0f, "%"); // TODO: Calculate frame usage in %
+                    ImGui::NextColumn();
+
+                    ImGui::Text("%.3f %s", event.profileTime_ms, "ms");
+                    ImGui::NextColumn();
+                }
+
+                ImGui::Columns(1);
+                ImGui::TreePop();
             }
         }
     }

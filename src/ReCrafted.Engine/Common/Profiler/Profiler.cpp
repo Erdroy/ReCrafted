@@ -75,6 +75,9 @@ void Profiler::ThreadData::PushFrame()
 {
     currentFrame.endTime_ms = Platform::GetMiliseconds();
     currentFrame.time_ms = float(currentFrame.endTime_ms - currentFrame.startTime_ms);
+
+    // TODO: per-thread profile enable/disable
+    // BUG: Per-thread profile enable/disable is needed, because we can get crash, when global profilingEnable state is being changed
 }
 
 void Profiler::ThreadData::EndFrame()
@@ -84,7 +87,7 @@ void Profiler::ThreadData::EndFrame()
     if (!m_instance->m_profilingEnabled && currentFrame.profiles.empty())
         return;
 
-    frames.emplace_back(std::move(currentFrame));
+    frames.emplace_back(currentFrame);
 
     if (frames.size() > NumProfiledFrames)
         frames.erase(frames.begin());
@@ -96,9 +99,10 @@ uint32_t Profiler::ThreadData::BeginCPUProfile(const char* name)
     ProfileEntry newProfile;
     newProfile.profileName = name;
     newProfile.startTime_ms = Platform::GetMiliseconds();
+    newProfile.depth = static_cast<int>(currentFrame.profileQueue.size());
 
     // Push new profile
-    currentFrame.profileQueue.push(std::move(newProfile));
+    currentFrame.profileQueue.push(newProfile);
     return uint32_t(currentFrame.profileQueue.size());
 }
 
@@ -112,7 +116,7 @@ void Profiler::ThreadData::EndCPUProfile(const uint32_t profileId)
     cvar currentTime = Platform::GetMiliseconds();
 
     // Get current profile
-    var currentProfile = std::move(currentFrame.profileQueue.back());
+    rvar currentProfile = currentFrame.profileQueue.back();
     currentProfile.endTime_ms = currentTime;
     currentProfile.profileTime_ms = float(currentTime - currentProfile.startTime_ms);
 
@@ -121,7 +125,7 @@ void Profiler::ThreadData::EndCPUProfile(const uint32_t profileId)
 
     // Push new profile
     dataLock.LockNow();
-    currentFrame.profiles.emplace_back(std::move(currentProfile));
+    currentFrame.profiles.emplace_back(currentProfile);
     dataLock.UnlockNow();
 }
 
