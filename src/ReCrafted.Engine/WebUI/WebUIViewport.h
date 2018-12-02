@@ -17,6 +17,9 @@ public:
 
     virtual void Resize(uint width, uint height) = 0;
 
+    virtual void Navigate(const char* url) = 0;
+    virtual void Execute(const char* javaScriptSource) = 0;
+
     virtual Renderer::Texture2DHandle GetTexture() const = 0;
 };
 

@@ -34,7 +34,7 @@ private:
 public:
     void UpdateSurface(const Vector3& vertex0, const Vector3& vertex1, const Vector3& vertex2, const Vector3& vertex3);
 
-    void Navigate(Text& url);
+    void Navigate(const char* url);
     void Execute(const char* javaScriptSource);
     void Bind(const char* bindName, Action<void> delegate);
 
