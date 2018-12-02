@@ -86,7 +86,7 @@ void Profiler::ThreadData::EndFrame()
 
     frames.emplace_back(std::move(currentFrame));
 
-    if (frames.size() > 120 * ProfileSeconds)
+    if (frames.size() > NumProfiledFrames)
         frames.erase(frames.begin());
 }
 

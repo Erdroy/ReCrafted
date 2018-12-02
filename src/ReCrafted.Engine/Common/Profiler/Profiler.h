@@ -16,7 +16,7 @@
 class Profiler : public EngineComponent<Profiler>
 {
 public:
-    static const int ProfileSeconds = 4; // TODO: This should be configurable
+    static const int NumProfiledFrames = 300; // TODO: This should be configurable
 
 private:
     struct ProfileEntry
@@ -40,14 +40,14 @@ private:
     {
     public:
         Lock dataLock;
-
-        bool opened = false;
-
         std::thread::id threadId;
         const char* threadName = nullptr;
         std::vector<ProfileFrame> frames = {};
 
         ProfileFrame currentFrame;
+
+        bool opened = false;
+        int selectedFrame = -1;
 
     public:
         void BeginFrame();
@@ -72,7 +72,7 @@ private:
 
 private:
     void DrawWindow();
-    void DrawThread(ThreadData* thread);
+    void DrawThreadProfiles(ThreadData* thread);
 
 protected:
     void OnInit() override;
