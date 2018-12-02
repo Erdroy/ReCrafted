@@ -63,15 +63,16 @@ void WebUIView::UpdateSurface(const Vector3& vertex0, const Vector3& vertex1, co
     // TODO: Build world space quad
 }
 
-void WebUIView::Navigate(Text& url)
+void WebUIView::Navigate(const char* url)
 {
-    //m_viewport->Navigate(url.StdStr());
-
+    ASSERT(m_viewport);
+    m_viewport->Navigate(url);
 }
 
 void WebUIView::Execute(const char* javaScriptSource)
 {
-    //m_viewport->Execute(javaScriptSource);
+    ASSERT(m_viewport);
+    m_viewport->Execute(javaScriptSource);
 }
 
 void WebUIView::Bind(const char* bindName, Action<void> delegate)

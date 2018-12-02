@@ -4,9 +4,13 @@
 #include "Common/Time.h"
 #include "Core/Logger.h"
 #include "WebUI/WebUIView.h"
+
 #include "WebUI/Impl/UltralightViewport.h"
+#include "WebUI/Impl/FileSystemWin.h"
+#include "WebUI/Impl/FontLoaderWin.h"
 
 #include <Ultralight/Ultralight.h>
+#include <shlwapi.h>
 
 SINGLETON_IMPL(WebUIEngine)
 
@@ -16,9 +20,16 @@ void WebUIEngine::Init()
 {
     m_initialized = true;
 
+    TCHAR currentDirectory[_MAX_PATH];
+    GetCurrentDirectory(_MAX_PATH, currentDirectory);
+    TCHAR assetsDirectory[_MAX_PATH];
+    PathCombine(assetsDirectory, currentDirectory, L"./../assets/ui/");
+
     // Setup ultralight platform
     auto& platform = ultralight::Platform::instance();
     platform.set_config(ultralight::Config());
+    platform.set_file_system(new ultralight::FileSystemWin(assetsDirectory));
+    platform.set_font_loader(new ultralight::FontLoaderWin());
     // TODO: Setup FileSystem and FontLoader
 
     // Create ultralight renderer

@@ -22,8 +22,6 @@ UltralightViewport::UltralightViewport(const int width, const int height, const 
     m_view->set_load_listener(this);
     m_view->set_view_listener(this);
 
-    m_view->LoadHTML("<h1 style='color: rgb(255, 10, 0);'>Hello, World!</h1>");
-
     // Create texture
     CreateTexture(width, height);
 }
@@ -68,6 +66,16 @@ void UltralightViewport::Resize(const uint width, const uint height)
     CreateTexture(width, height);
 
     m_view->Resize(width, height);
+}
+
+void UltralightViewport::Navigate(const char* url)
+{
+    m_view->LoadURL(url);
+}
+
+void UltralightViewport::Execute(const char* javaScriptSource)
+{
+    m_view->EvaluateScript(javaScriptSource);
 }
 
 void UltralightViewport::OnChangeTitle(ultralight::View* caller, const ultralight::String& title)

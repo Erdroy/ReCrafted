@@ -66,7 +66,8 @@ namespace ReCrafted.Game
                 GameSystem.AddGameSystem<Messenger>();
 
                 _webView = WebUI.Create();
-                _webView.Navigate("https://google.com/");
+                //_webView.Navigate("https://google.com/");
+                _webView.Navigate("http://evanw.github.io/csg.js/");
             }
             catch (Exception exception)
             {

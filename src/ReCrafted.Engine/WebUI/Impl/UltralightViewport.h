@@ -29,6 +29,9 @@ public:
 
     void Resize(uint width, uint height) override;
 
+    void Navigate(const char* url) override;
+    void Execute(const char* javaScriptSource) override;
+
     Renderer::Texture2DHandle GetTexture() const override
     {
         return m_texture;
