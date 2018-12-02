@@ -67,8 +67,6 @@ private:
     void OnDispose() override;
     void Update() override;
 
-    void RenderWebUI();
-
     void Render();
     void Resize(uint width, uint height);
 
@@ -78,6 +76,7 @@ private:
 
     void RenderDebugDraw();
     void RenderUI();
+    void RenderWebUI();
     void RenderImGUI();
 
 public:

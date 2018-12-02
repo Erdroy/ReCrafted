@@ -245,11 +245,11 @@ void Graphics::Render()
         // Render debug draw
         RenderDebugDraw();
 
-        // Render WebUI
-        //RenderWebUI();
-
         // Render UI
         RenderUI();
+
+        // Render WebUI
+        RenderWebUI();
 
         Profiler::BeginProfile("Renderer::Frame");
         // next frame, wait vsync
@@ -426,7 +426,7 @@ void Graphics::RenderWebUI()
     Profiler::BeginProfile("Render WebUI");
     {
         // set WebUI state
-        SetStage(RenderStage::DrawUI);
+        SetStage(RenderStage::DrawWebUI);
 
         WebUI::GetInstance()->Render();
     }
@@ -436,15 +436,15 @@ void Graphics::RenderWebUI()
 void Graphics::RenderImGUI()
 {
     Profiler::BeginProfile("Render ImGui");
+    {
+        // Get renderer context
+        Renderer::RHIContext rendererContext;
+        Renderer::GetContext(&rendererContext);
 
-    // Get renderer context
-    Renderer::RHIContext rendererContext;
-    Renderer::GetContext(&rendererContext);
-
-    ImGui::Render();
-    ImGUI_ImplDX11_SetRenderTarget(rendererContext.windows[1].backBuffer);
-    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
+        ImGui::Render();
+        ImGUI_ImplDX11_SetRenderTarget(rendererContext.windows[1].backBuffer);
+        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+    }
     Profiler::EndProfile();
 }
 

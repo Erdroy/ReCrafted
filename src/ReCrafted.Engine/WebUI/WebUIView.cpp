@@ -8,56 +8,70 @@
 #include "Graphics/Graphics.h"
 #include "Common/Profiler/Profiler.h"
 
-void WebUIView::Init(uint width, uint height, bool fullscreen)
+void WebUIView::Init(const uint width, const uint height, const bool fullscreen)
 {
     m_fullscreen = fullscreen;
     m_width = fullscreen ? Display::GetWidth() : width;
     m_height = fullscreen ? Display::GetHeight() : height;
 
-    m_overlay = WebUIEngine::CreateUIView(this, fullscreen);
+    m_viewport = WebUIEngine::CreateUIViewport(this, fullscreen);
+
+    ASSERT(m_viewport);
 }
 
-void WebUIView::Resize(uint width, uint height)
+void WebUIView::Resize(const uint width, const uint height)
 {
-    ASSERT(m_fullscreen);
-    
-    m_overlay->Resize(width, height);
+    ASSERT(m_viewport);
+
+    m_viewport->Resize(width, height);
+    m_width = width;
+    m_height = height;
 }
 
 void WebUIView::Render()
 {
     Profiler::BeginProfile(__FUNCTION__);
+
     if (!m_Active)
         return;
 
-    m_overlay->Draw();
+    ASSERT(m_viewport);
+
+    m_viewport->Render();
 
     if (!m_fullscreen)
     {
-        // TODO: Blit into back-buffer using created quad
+        // TODO: Render world-space quad
     }
+    else
+    {
+        // Blit into back-buffer
+        Renderer::BlitTexture(Graphics::GetInstance()->GetFrameBuffer(), m_viewport->GetTexture());
+    }
+
     Profiler::EndProfile();
 }
 
 void WebUIView::OnDestroy()
 {
-    delete m_overlay;
+    SafeDelete(m_viewport);
 }
 
 void WebUIView::UpdateSurface(const Vector3& vertex0, const Vector3& vertex1, const Vector3& vertex2,
     const Vector3& vertex3)
 {
-    // TODO: Build quad
+    // TODO: Build world space quad
 }
 
 void WebUIView::Navigate(Text& url)
 {
-    m_overlay->Navigate(url.StdStr());
+    //m_viewport->Navigate(url.StdStr());
+
 }
 
 void WebUIView::Execute(const char* javaScriptSource)
 {
-
+    //m_viewport->Execute(javaScriptSource);
 }
 
 void WebUIView::Bind(const char* bindName, Action<void> delegate)

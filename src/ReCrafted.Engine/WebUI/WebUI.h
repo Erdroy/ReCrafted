@@ -15,7 +15,6 @@ class WebUI : public EngineComponent<WebUI>
 {
     friend class Graphics;
     friend class EngineMain;
-    friend class WebUIRenderer;
 
 private:
 SCRIPTING_API_IMPL()
