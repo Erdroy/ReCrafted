@@ -108,18 +108,11 @@ void Profiler::DrawThreadProfiles(ThreadData* thread)
                 ImGui::Text("Time ms");
                 ImGui::NextColumn();
 
-                var lastDepth = -1;
-                var lastOpen = false;
+                // TODO: Compile profiles, to calculate number of invocations etc.
+
                 for (crvar event : selectedFrame.profiles)
                 {
-                    //if (lastDepth > event.depth && !lastOpen)
-                    //    continue;
-
-                    //if (event.depth != 0)
-                    //    continue;
-
-                    lastDepth = event.depth;
-                    lastOpen = ImGui::TreeNode(event.profileName.c_str());
+                    ImGui::TreeNode(event.profileName.c_str());
                     ImGui::NextColumn();
 
                     ImGui::Text("%.2f %s", 0.0f, "%"); // TODO: Calculate frame usage in %
@@ -127,10 +120,10 @@ void Profiler::DrawThreadProfiles(ThreadData* thread)
 
                     ImGui::Text("%.3f %s", event.profileTime_ms, "ms");
                     ImGui::NextColumn();
+                    ImGui::TreePop();
                 }
 
                 ImGui::Columns(1);
-                ImGui::TreePop();
             }
         }
     }
