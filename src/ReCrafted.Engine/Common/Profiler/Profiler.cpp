@@ -102,7 +102,7 @@ uint32_t Profiler::ThreadData::BeginCPUProfile(const char* name)
     newProfile.depth = static_cast<int>(currentFrame.profileQueue.size());
 
     // Push new profile
-    currentFrame.profileQueue.push(newProfile);
+    currentFrame.profileQueue.emplace_back(newProfile);
     return uint32_t(currentFrame.profileQueue.size());
 }
 
@@ -116,12 +116,12 @@ void Profiler::ThreadData::EndCPUProfile(const uint32_t profileId)
     cvar currentTime = Platform::GetMiliseconds();
 
     // Get current profile
-    rvar currentProfile = currentFrame.profileQueue.back();
+    var currentProfile = currentFrame.profileQueue.back();
     currentProfile.endTime_ms = currentTime;
     currentProfile.profileTime_ms = float(currentTime - currentProfile.startTime_ms);
 
     // Pop current profile
-    currentFrame.profileQueue.pop();
+    currentFrame.profileQueue.pop_back();
 
     // Push new profile
     dataLock.LockNow();

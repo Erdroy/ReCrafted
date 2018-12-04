@@ -26,6 +26,7 @@ private:
         double endTime_ms = 0.0;
         float profileTime_ms = 0.0f;
         int depth = 0;
+        int callNum = 0;
     };
 
     struct ProfileFrame
@@ -34,7 +35,7 @@ private:
         double endTime_ms = 0.0;
         float time_ms = 0.0f;
         std::vector<ProfileEntry> profiles;
-        std::queue<ProfileEntry> profileQueue;
+        std::deque<ProfileEntry> profileQueue;
     };
 
     class ThreadData
