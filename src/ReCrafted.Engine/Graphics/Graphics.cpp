@@ -96,6 +96,28 @@ void Graphics::InitializeRenderer()
 
     // Setup style
     ImGui::StyleColorsDark();
+    rvar style = ImGui::GetStyle();
+    style.ScrollbarRounding = 2.0f;
+    style.WindowPadding = ImVec2(4.0f, 4.0f);
+
+    style.Colors[ImGuiCol_TitleBg] = ImVec4(0.25f, 0.25f, 0.25f, 1.0f);
+    style.Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.28f, 0.28f, 0.28f, 1.0f);
+    style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.28f, 0.28f, 0.28f, 1.0f);
+    style.Colors[ImGuiCol_WindowBg] = ImVec4(0.15f, 0.15f, 0.15f, 1.0f);
+    style.Colors[ImGuiCol_Border] = ImVec4(0.10f, 0.10f, 0.10f, 1.0f);
+
+    style.Colors[ImGuiCol_PopupBg] = ImVec4(0.10f, 0.10f, 0.10f, 1.0f);
+    style.Colors[ImGuiCol_Button] = ImVec4(0.10f, 0.10f, 0.10f, 1.0f);
+
+    style.Colors[ImGuiCol_MenuBarBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.0f);
+    style.Colors[ImGuiCol_Header] = ImVec4(0.28f, 0.28f, 0.28f, 1.0f);
+    style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.28f, 0.28f, 0.28f, 1.0f);
+    style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.25f, 0.25f, 0.25f, 1.0f);
+
+    style.Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.18f, 0.18f, 0.18f, 1.0f);
+    style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.25f, 0.25f, 0.25f, 1.0f);
+    style.Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.28f, 0.28f, 0.28f, 1.0f);
+    style.Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.28f, 0.28f, 0.28f, 1.0f);
 
     Logger::LogInfo("Graphics initialized");
 }
