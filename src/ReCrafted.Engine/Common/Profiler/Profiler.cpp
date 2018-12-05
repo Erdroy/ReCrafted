@@ -6,6 +6,46 @@
 
 SINGLETON_IMPL(Profiler)
 
+Profiler::ThreadData* Profiler::GetCurrentThreadData()
+{
+    cvar it = m_threadMap.find(std::this_thread::get_id());
+    if (it != m_threadMap.end())
+        return it->second;
+    return nullptr;
+}
+
+void Profiler::CompileProfiles(const std::vector<ProfileEntry>& profiles, Array<ProfileTreeEntry>& treeProfiles)
+{
+    var lastDepth = 0;
+    var lastProfile = std::string();
+
+    for(rvar profile : profiles)
+    {
+        if(profile.profileName == lastProfile && profile.depth == lastDepth)
+        {
+            treeProfiles.Last().callNum++;
+            continue;
+        }
+
+        ProfileTreeEntry entry;
+        entry.name = profile.profileName;
+        entry.time = profile.profileTime_ms;
+        entry.depth = profile.depth;
+        entry.callNum = 1;
+
+        treeProfiles.Add(entry);
+
+        if (lastDepth > profile.depth)
+            treeProfiles.Last().popTree = true;
+
+        lastProfile = profile.profileName;
+        lastDepth = profile.depth;
+    }
+
+    treeProfiles.Last().popTree = true;
+    treeProfiles.Reverse();
+}
+
 void Profiler::OnInit()
 {
     InitThread("Main Thread");

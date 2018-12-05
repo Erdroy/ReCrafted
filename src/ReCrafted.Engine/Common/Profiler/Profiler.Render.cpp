@@ -3,16 +3,6 @@
 #include "Profiler.h"
 #include "imgui.h"
 
-std::vector<float> m_data(256);
-
-Profiler::ThreadData* Profiler::GetCurrentThreadData()
-{
-    cvar it = m_threadMap.find(std::this_thread::get_id());
-    if(it != m_threadMap.end())
-        return it->second;
-    return nullptr;
-}
-
 void Profiler::DrawWindow()
 {
     ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_MenuBar);
@@ -94,9 +84,10 @@ void Profiler::DrawThreadProfiles(ThreadData* thread)
                 crvar selectedFrame = thread->frames[thread->selectedFrame];
 
                 // Setup columns
-                ImGui::Columns(3);
+                ImGui::Columns(4);
                 ImGui::SetColumnWidth(1, 100.0f);
                 ImGui::SetColumnWidth(2, 100.0f);
+                ImGui::SetColumnWidth(3, 100.0f);
 
                 // Draw Header
                 ImGui::Text("Overview");
@@ -108,22 +99,40 @@ void Profiler::DrawThreadProfiles(ThreadData* thread)
                 ImGui::Text("Time ms");
                 ImGui::NextColumn();
 
+                ImGui::Text("Calls");
+                ImGui::NextColumn();
+
                 // TODO: Compile profiles, to calculate number of invocations etc.
 
-                for (crvar event : selectedFrame.profiles)
+                Array<ProfileTreeEntry> treeProfiles;
+                CompileProfiles(selectedFrame.profiles, treeProfiles);
+
+                var lastOpen = false;
+                var lastDepth = 0;
+                for (crvar event : treeProfiles)
                 {
-                    ImGui::TreeNode(event.profileName.c_str());
+                    if (!lastOpen && event.depth > lastDepth)
+                        continue;
+
+                    lastDepth = event.depth;
+                    lastOpen = ImGui::TreeNodeEx(event.name.c_str());
                     ImGui::NextColumn();
 
-                    ImGui::Text("%.2f %s", 0.0f, "%"); // TODO: Calculate frame usage in %
+                    ImGui::Text("%.2f %s", 0.0f, "%"); // TODO: Calculate frame usage in % (time / total_time)
                     ImGui::NextColumn();
 
-                    ImGui::Text("%.3f %s", event.profileTime_ms, "ms");
+                    ImGui::Text("%.3f %s", event.time, "ms");
                     ImGui::NextColumn();
-                    ImGui::TreePop();
+
+                    ImGui::Text("%d", event.callNum);
+                    ImGui::NextColumn();
+
+                    if(lastOpen && event.popTree)
+                        ImGui::TreePop();
                 }
 
                 ImGui::Columns(1);
+                ImGui::TreePop();
             }
         }
     }

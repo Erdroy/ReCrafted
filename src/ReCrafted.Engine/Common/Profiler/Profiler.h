@@ -8,6 +8,7 @@
 #include "ReCrafted.h"
 #include "Core/EngineComponent.h"
 #include "Core/Lock.h"
+#include "Core/Containers/Array.h"
 
 #include "spp.h"
 #include <atomic>
@@ -26,6 +27,15 @@ private:
         double endTime_ms = 0.0;
         float profileTime_ms = 0.0f;
         int depth = 0;
+    };
+
+    struct ProfileTreeEntry
+    {
+        std::string name{};
+        float time = 0.0f;
+        int callNum = 0;
+        int depth = 0;
+        bool popTree = false;
     };
 
     struct ProfileFrame
@@ -70,6 +80,7 @@ private:
 
 private:
     ThreadData* GetCurrentThreadData();
+    void CompileProfiles(const std::vector<ProfileEntry>& profiles, Array<ProfileTreeEntry>& treeProfiles);
 
 private:
     void DrawWindow();
