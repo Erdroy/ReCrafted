@@ -9,7 +9,7 @@ void Profiler::DrawWindow()
 
     if(ImGui::BeginMenuBar())
     {
-        if (ImGui::MenuItem(m_profilingEnabled ? "Pause profiler" : "Resume profiler"))
+        if (ImGui::MenuItem(m_profilingEnabled ? "[P] Pause profiler" : "[P] Resume profiler"))
         {
             ToggleProfiling();
         }
@@ -66,15 +66,15 @@ void Profiler::DrawThreadProfiles(ThreadData* thread)
         cvar drawList = ImGui::GetWindowDrawList();
 
         // Draw max line
-        drawList->AddLine(ImVec2(startPos.x, startPos.y + 10.0f), ImVec2(startPos.x + graphSize.x, startPos.y + 10.0f), 0xFF0000FF);
+        drawList->AddLine(ImVec2(startPos.x, startPos.y + 10.0f), ImVec2(startPos.x + graphSize.x, startPos.y + 10.0f), 0xFF1000FF);
         drawList->AddText(ImVec2(startPos.x, startPos.y + 10.0f), 0xFFFFFFFF, (std::to_string(maxFrameTime) + std::string("ms (max)")).c_str());
 
         // Draw avg line
-        drawList->AddLine(ImVec2(startPos.x, startPos.y + 60.0f), ImVec2(startPos.x + graphSize.x, startPos.y + 60.0f), 0xFF0000FF);
+        drawList->AddLine(ImVec2(startPos.x, startPos.y + 60.0f), ImVec2(startPos.x + graphSize.x, startPos.y + 60.0f), 0xFF1000FF);
         drawList->AddText(ImVec2(startPos.x, startPos.y + 60.0f), 0xFFFFFFFF, (std::to_string(avgFrameTime) + std::string("ms (avg)")).c_str());
 
         // Draw min line
-        drawList->AddLine(ImVec2(startPos.x, startPos.y + 100.0f), ImVec2(startPos.x + graphSize.x, startPos.y + 100.0f), 0xFF0000FF);
+        drawList->AddLine(ImVec2(startPos.x, startPos.y + 100.0f), ImVec2(startPos.x + graphSize.x, startPos.y + 100.0f), 0xFF1000FF);
         drawList->AddText(ImVec2(startPos.x, startPos.y + 100.0f), 0xFFFFFFFF, (std::to_string(minFrameTime) + std::string("ms (min)")).c_str());
 
         if(thread->selectedFrame >= 0)
@@ -102,11 +102,11 @@ void Profiler::DrawThreadProfiles(ThreadData* thread)
                 ImGui::Text("Calls");
                 ImGui::NextColumn();
 
-                // TODO: Compile profiles, to calculate number of invocations etc.
-
+                // Compile profiles
                 Array<ProfileTreeEntry> treeProfiles;
                 CompileProfiles(selectedFrame.profiles, treeProfiles);
 
+                // Draw compiled profiles in a tree
                 var lastOpen = false;
                 var lastDepth = 0;
                 for (crvar event : treeProfiles)
@@ -114,11 +114,14 @@ void Profiler::DrawThreadProfiles(ThreadData* thread)
                     if (!lastOpen && event.depth > lastDepth)
                         continue;
 
-                    lastDepth = event.depth;
-                    lastOpen = ImGui::TreeNodeEx(event.name.c_str());
-                    ImGui::NextColumn();
+                    if (lastOpen && lastDepth >= event.depth)
+                        ImGui::TreePop();
 
-                    ImGui::Text("%.2f %s", 0.0f, "%"); // TODO: Calculate frame usage in % (time / total_time)
+                    lastDepth = event.depth;
+                    lastOpen = ImGui::TreeNodeEx(event.name.c_str(), event.hasChildren ? 0 : ImGuiTreeNodeFlags_Leaf);
+                    ImGui::NextColumn();
+                    
+                    ImGui::Text("%.2f %s", event.time / selectedFrame.time_ms * 100.0f, "%");
                     ImGui::NextColumn();
 
                     ImGui::Text("%.3f %s", event.time, "ms");
@@ -127,11 +130,12 @@ void Profiler::DrawThreadProfiles(ThreadData* thread)
                     ImGui::Text("%d", event.callNum);
                     ImGui::NextColumn();
 
-                    if(lastOpen && event.popTree)
+                    if(event.popTree && lastDepth != 0)
                         ImGui::TreePop();
                 }
 
                 ImGui::Columns(1);
+                ImGui::TreePop();
                 ImGui::TreePop();
             }
         }

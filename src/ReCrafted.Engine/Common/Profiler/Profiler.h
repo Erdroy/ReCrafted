@@ -36,6 +36,7 @@ private:
         int callNum = 0;
         int depth = 0;
         bool popTree = false;
+        bool hasChildren = false;
     };
 
     struct ProfileFrame

@@ -35,15 +35,29 @@ void Profiler::CompileProfiles(const std::vector<ProfileEntry>& profiles, Array<
 
         treeProfiles.Add(entry);
 
-        if (lastDepth > profile.depth)
-            treeProfiles.Last().popTree = true;
-
         lastProfile = profile.profileName;
         lastDepth = profile.depth;
     }
 
     treeProfiles.Last().popTree = true;
     treeProfiles.Reverse();
+
+    // Setup tree pops
+    ProfileTreeEntry* lastEntry = nullptr;
+    for(rvar entry : treeProfiles)
+    {
+        if (lastEntry && lastEntry->depth < entry.depth)
+        {
+            lastEntry->hasChildren = true;
+        }
+
+        if(lastEntry && lastEntry->depth > entry.depth)
+        {
+            lastEntry->popTree = true;
+        }
+
+        lastEntry = &entry;
+    }
 }
 
 void Profiler::OnInit()
