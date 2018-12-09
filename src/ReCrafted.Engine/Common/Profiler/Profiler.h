@@ -20,6 +20,9 @@ public:
     static const int NumProfiledFrames = 300; // TODO: This should be configurable
 
 private:
+    SCRIPTING_API_IMPL()
+
+private:
     struct ProfileEntry
     {
         std::string profileName{};
