@@ -34,12 +34,14 @@ private:
 
     struct ProfileTreeEntry
     {
+        ProfileTreeEntry* parent = nullptr;
+
         std::string name{};
         float time = 0.0f;
         int callNum = 0;
         int depth = 0;
-        bool popTree = false;
-        bool hasChildren = false;
+
+        Array<ProfileTreeEntry> children;
     };
 
     struct ProfileFrame
@@ -89,6 +91,7 @@ private:
 private:
     void DrawWindow();
     void DrawThreadProfiles(ThreadData* thread);
+    void DrawThreadProfile(const ProfileTreeEntry& event);
 
 protected:
     void OnInit() override;

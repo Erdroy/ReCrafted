@@ -107,37 +107,41 @@ void Profiler::DrawThreadProfiles(ThreadData* thread)
                 CompileProfiles(selectedFrame.profiles, treeProfiles);
 
                 // Draw compiled profiles in a tree
-                var lastOpen = false;
-                var lastDepth = 0;
                 for (crvar event : treeProfiles)
                 {
-                    if (!lastOpen && event.depth > lastDepth)
-                        continue;
-
-                    if (lastOpen && lastDepth >= event.depth)
-                        ImGui::TreePop();
-
-                    lastDepth = event.depth;
-                    lastOpen = ImGui::TreeNodeEx(event.name.c_str(), event.hasChildren ? 0 : ImGuiTreeNodeFlags_Leaf);
-                    ImGui::NextColumn();
-                    
-                    ImGui::Text("%.2f %s", event.time / selectedFrame.time_ms * 100.0f, "%");
-                    ImGui::NextColumn();
-
-                    ImGui::Text("%.3f %s", event.time, "ms");
-                    ImGui::NextColumn();
-
-                    ImGui::Text("%d", event.callNum);
-                    ImGui::NextColumn();
-
-                    if(event.popTree && lastDepth != 0)
-                        ImGui::TreePop();
+                    DrawThreadProfile(event);
                 }
 
                 ImGui::Columns(1);
-                ImGui::TreePop();
-                ImGui::TreePop();
             }
         }
+    }
+}
+
+void Profiler::DrawThreadProfile(const ProfileTreeEntry& event)
+{
+    cvar open = ImGui::TreeNodeEx(event.name.c_str(), event.children.Empty() ? ImGuiTreeNodeFlags_Leaf : 0);
+
+    ImGui::NextColumn();
+
+    ImGui::Text("%.2f %s", 0.0f /*event.time / selectedFrame.time_ms * 100.0f*/, "%");
+    ImGui::NextColumn();
+
+    ImGui::Text("%.3f %s", event.time, "ms");
+    ImGui::NextColumn();
+
+    ImGui::Text("%d", event.callNum);
+    ImGui::NextColumn();
+
+    if (open)
+    {
+        // Draw all children if this node is open
+        for (var childEvent : event.children)
+        {
+            DrawThreadProfile(childEvent);
+        }
+
+        // Pop tree
+        ImGui::TreePop();
     }
 }

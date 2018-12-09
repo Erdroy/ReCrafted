@@ -16,47 +16,76 @@ Profiler::ThreadData* Profiler::GetCurrentThreadData()
 
 void Profiler::CompileProfiles(const std::vector<ProfileEntry>& profiles, Array<ProfileTreeEntry>& treeProfiles)
 {
-    var lastDepth = 0;
-    var lastProfile = std::string();
+    var sortedProfiles = profiles;
+    std::reverse(sortedProfiles.begin(), sortedProfiles.end());
 
-    for(rvar profile : profiles)
+    ProfileTreeEntry* parent = nullptr;
+    ProfileTreeEntry* last = nullptr;
+
+    for(rvar profile : sortedProfiles)
     {
-        if(profile.profileName == lastProfile && profile.depth == lastDepth)
+        if(last)
         {
-            treeProfiles.Last().callNum++;
-            continue;
+            // Collapse same profiles
+            if (profile.profileName == last->name && profile.depth == last->depth)
+            {
+                last->callNum++;
+                last->time += profile.profileTime_ms;
+                continue;
+            }
         }
 
+        // Construct entry
         ProfileTreeEntry entry;
         entry.name = profile.profileName;
         entry.time = profile.profileTime_ms;
         entry.depth = profile.depth;
         entry.callNum = 1;
 
-        treeProfiles.Add(entry);
+        // Reset parent if depth is zero
+        if(entry.depth == 0)
+            parent = nullptr;
 
-        lastProfile = profile.profileName;
-        lastDepth = profile.depth;
-    }
-
-    treeProfiles.Last().popTree = true;
-    treeProfiles.Reverse();
-
-    // Setup tree pops
-    ProfileTreeEntry* lastEntry = nullptr;
-    for(rvar entry : treeProfiles)
-    {
-        if (lastEntry && lastEntry->depth < entry.depth)
+        if(last)
         {
-            lastEntry->hasChildren = true;
+            // Push
+            if (entry.depth > last->depth)
+            {
+                parent = last;
+            }
+
+            // Pop
+            if (entry.depth < last->depth)
+            {
+                if(parent)
+                {
+                    parent = parent->parent;
+                }
+            }
         }
 
-        if(lastEntry && lastEntry->depth > entry.depth)
+        if(parent)
         {
-            lastEntry->popTree = true;
-        }
+            // Set parent
+            entry.parent = parent;
 
-        lastEntry = &entry;
+            // Push new entry to parent
+            parent->children.Add(entry);
+
+            // Set last entry
+            last = &parent->children.Last();
+        }
+        else
+        {
+            // Set parent
+            entry.parent = nullptr;
+
+            // Push new entry to root
+            treeProfiles.Add(entry);
+
+            // Set last entry
+            last = &treeProfiles.Last();
+        }
     }
 }
 
