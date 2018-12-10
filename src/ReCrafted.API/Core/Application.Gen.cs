@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 06/04/2018 23:05:32 Source: 'Application.API.cpp' Target: 'Core/Application.Gen.cs'
+// Generated: 12/10/2018 13:45:05 Source: 'Application.API.cpp' Target: 'Core/Application.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -23,6 +23,9 @@ namespace ReCrafted.API.Core
 		protected abstract void Render();
 
 		protected abstract void RenderUI();
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern void Exit();
 
 		/// <summary>
 		///	The target amount of frames per second (FPS).

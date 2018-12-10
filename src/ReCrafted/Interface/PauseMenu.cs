@@ -107,7 +107,7 @@ namespace ReCrafted.Game.Interface
             // Create Exit button
             Exit = MainPanel.Add(new UIButton("Exit"));
             Exit.PreferredSize = new Vector2(0, 30);
-            //Exit.OnClick += API.Core.Game.Quit;
+            Exit.OnClick += Application.Exit;
 
             // Disable Main menu
             Disable();
