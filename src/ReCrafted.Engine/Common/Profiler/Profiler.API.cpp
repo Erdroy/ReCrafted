@@ -9,14 +9,14 @@ namespace Internal
     void BeginProfile(MonoString* name)
     {
         cvar nameCStr = MONO_ANSI_UNCHECKED(name);
-        Profiler::BeginProfile(nameCStr);
+        Profiler::BeginCPUProfile(nameCStr);
         // free ansi string
         MONO_ANSI_FREE(nameCStr);
     }
 
     void EndProfile()
     {
-        Profiler::EndProfile();
+        Profiler::EndCPUProfile();
     }
 }
 

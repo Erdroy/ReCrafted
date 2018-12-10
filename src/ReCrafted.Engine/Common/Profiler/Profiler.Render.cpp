@@ -53,7 +53,7 @@ void Profiler::DrawThreadProfiles(ThreadData* thread)
         ImGui::PushItemWidth(-1);
         cvar hoveredFrame = ImGui::PlotLines("", frameTimes, NumProfiledFrames, 0, nullptr, FLT_MAX, FLT_MAX, ImVec2(0, 128));
 
-        if (ImGui::IsMouseClicked(0) && hoveredFrame >= 0 && hoveredFrame < thread->frames.size())
+        if (ImGui::IsMouseClicked(0) && hoveredFrame >= 0 && hoveredFrame < static_cast<int>(thread->frames.size()))
         {
             thread->selectedFrame = hoveredFrame;
             m_stopProfiling = true;
@@ -81,7 +81,12 @@ void Profiler::DrawThreadProfiles(ThreadData* thread)
         {
             if (ImGui::CollapsingHeader(("Events##" + std::string(thread->threadName)).c_str()))
             {
+                // Select frame
                 crvar selectedFrame = thread->frames[thread->selectedFrame];
+
+                // Compile profiles
+                Array<ProfileTreeEntry> treeProfiles;
+                CompileProfiles(selectedFrame.profiles, treeProfiles);
 
                 // Setup columns
                 ImGui::Columns(4);
@@ -102,9 +107,7 @@ void Profiler::DrawThreadProfiles(ThreadData* thread)
                 ImGui::Text("Calls");
                 ImGui::NextColumn();
 
-                // Compile profiles
-                Array<ProfileTreeEntry> treeProfiles;
-                CompileProfiles(selectedFrame.profiles, treeProfiles);
+                ImGui::Separator();
 
                 // Draw compiled profiles in a tree
                 for (crvar event : treeProfiles)
@@ -120,7 +123,7 @@ void Profiler::DrawThreadProfiles(ThreadData* thread)
 
 void Profiler::DrawThreadProfile(const ProfileTreeEntry& event)
 {
-    cvar open = ImGui::TreeNodeEx(event.name.c_str(), event.children.Empty() ? ImGuiTreeNodeFlags_Leaf : 0);
+    cvar open = ImGui::TreeNodeEx(event.name.c_str(), event.children.Empty() ? ImGuiTreeNodeFlags_Leaf : 0, "%s %d", event.name.c_str(), event.depth);
 
     ImGui::NextColumn();
 

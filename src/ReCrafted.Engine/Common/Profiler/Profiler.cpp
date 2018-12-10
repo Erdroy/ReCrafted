@@ -59,7 +59,10 @@ void Profiler::CompileProfiles(const std::vector<ProfileEntry>& profiles, Array<
             {
                 if(parent)
                 {
-                    parent = parent->parent;
+                    while(parent && parent->depth + 1 != entry.depth)
+                    {
+                        parent = parent->parent;
+                    }
                 }
             }
         }
