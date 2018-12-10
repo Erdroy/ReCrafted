@@ -168,7 +168,7 @@ void Graphics::UpdateDefaultConstants(const Matrix& mvp)
     m_currentShader->SetValue(5, &lightdir);
 
     // Set light direction vector
-    var ambientLight = Vector3(0.1f, 0.1f, 0.1f);
+    var ambientLight = Vector3(0.35f, 0.35f, 0.35f);
     m_currentShader->SetValue(6, &ambientLight);
 
     // apply shader changes
@@ -430,12 +430,8 @@ void Graphics::RenderUI()
 
             // render universe UI
             Universe::GetInstance()->RenderUI();
-
-            // draw profiler debug screen
-            //Profiler::GetInstance()->DrawDebugScreen();
         }
         Profiler::EndProfile();
-
 
         Profiler::BeginProfile("UI Process");
         {

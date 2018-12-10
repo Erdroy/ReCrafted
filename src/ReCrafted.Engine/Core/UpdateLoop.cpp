@@ -80,7 +80,7 @@ void UpdateLoop::Start()
         // end 'Frame' profile
         Profiler::EndProfile();
 
-        // Push profiler frame, to omit including 
+        // Push profiler frame, to omit TargetFPS wait
         Profiler::PushFrame();
 
         // Wait for target fps
