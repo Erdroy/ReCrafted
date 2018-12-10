@@ -119,6 +119,8 @@ void Profiler::DrawThreadProfiles(ThreadData* thread)
             }
         }
     }
+
+    ImGui::PopID();
 }
 
 void Profiler::DrawThreadProfile(const ProfileTreeEntry& event)

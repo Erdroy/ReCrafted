@@ -447,6 +447,7 @@ void Graphics::UpdateImGUI()
 
     ImGui::PushStyleColor(ImGuiCol_WindowBg, 0x00000000);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+
     ImGui::Begin("Debug", nullptr, ImGuiWindowFlags_NoResize |
         ImGuiWindowFlags_NoInputs |
         ImGuiWindowFlags_NoMove |
@@ -455,8 +456,8 @@ void Graphics::UpdateImGUI()
         ImGuiWindowFlags_NoSavedSettings |
         ImGuiWindowFlags_NoBringToFrontOnFocus);
 
-    //ImGui::PopStyleVar(); // why not required and crashing when called? Wtf ImGui! WTF
-    ImGui::PopStyleColor();
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 1.0f);
 }
 
 void Graphics::RenderWebUI()
@@ -479,7 +480,13 @@ void Graphics::RenderImGUI()
     Renderer::RHIContext rendererContext;
     Renderer::GetContext(&rendererContext);
 
+    ImGui::PopStyleVar();
+    ImGui::PopStyleColor();
+
     ImGui::End();
+
+    ImGui::PopStyleVar();
+    ImGui::PopStyleColor();
 
     ImGui::Render();
     ImGUI_ImplDX11_SetRenderTarget(rendererContext.windows[1].backBuffer);

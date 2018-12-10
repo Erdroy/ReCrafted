@@ -45,7 +45,7 @@ namespace ReCrafted.Game.Player
             // Simulate player movement
             // We could actually move this simulation onto
             // Actor::Simulate(), but this is not really needed.
-            Movement.Simulate(snapshot);
+            Movement.SimulateMovement(snapshot);
         }
         
         /// <summary>

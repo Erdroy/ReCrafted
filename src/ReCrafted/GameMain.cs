@@ -105,11 +105,11 @@ namespace ReCrafted.Game
                     Cursor.Lock = !Cursor.Show;
                 }
                 
-                if (PhysicsManager.RayCast(Camera.Current.Position, Camera.Current.Forward, out var hit, 10.0f, 1))
+                /*if (PhysicsManager.RayCast(Camera.Current.Position, Camera.Current.Forward, out var hit, 10.0f, 1))
                 {
                     DebugDraw.Color = new Color(0xFF1000FF);
                     DebugDraw.DrawWireSphere(hit.Point, 1.5f * 0.5f);
-                }
+                }*/
 
                 // draw world-space lines
                 DebugDraw.Color = new Color(0, 255, 0, 32);

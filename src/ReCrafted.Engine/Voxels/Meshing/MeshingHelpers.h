@@ -20,8 +20,6 @@ public:
     Vector3 vertexNormal = {};
     VoxelMaterial_t voxelMaterial = 0u;
 
-    uint normalUses = 0u;
-
 public:
     VertexInfo() = default;
 

@@ -40,7 +40,7 @@ void TransvoxelMesher::Generate(const Vector3& position, int lod, uint8_t border
             cvar vertexId = section.vertexIds[j];
             cvar vertexInfo = m_vertexInfo[vertexId];
 
-            normal = vertexInfo.vertexNormal / static_cast<float>(vertexInfo.normalUses);
+            normal = vertexInfo.vertexNormal;
             normal.Normalize();
 
             j++;
