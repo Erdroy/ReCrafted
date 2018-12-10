@@ -8,14 +8,15 @@
 #include "Graphics/Camera.h"
 #include "Graphics/DebugDraw.h"
 #include "Graphics/Graphics.h"
+#include "Physics/PhysicsManager.h"
 #include "UI/UI.h"
 #include "Voxels/SpaceObjectManager.h"
 #include "Voxels/Storage/VoxelStorage.h"
 #include "Voxels/SpaceObjectSettings.h"
 
+#include "imgui.h"
 #include <iomanip>
 #include <sstream>
-#include "Physics/PhysicsManager.h"
 
 SINGLETON_IMPL(Universe)
 
@@ -131,35 +132,12 @@ void Universe::Update()
         Graphics::Screenshot(Text(fileName.str().c_str()));
         Logger::Log("Screenshot saved as {0}", fileName.str());
     }
+
+    ImGui::Text("Selected material: %d", m_selectedMaterial);
 }
 
 void Universe::Simulate()
 {
-}
-
-void Universe::RenderUI()
-{
-   /* switch(m_selectedMaterial)
-    {
-    case 0u:
-        UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Rock"), Vector2(10.0f, 10.0f));
-        break;
-    case 1u:
-        UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Grass"), Vector2(10.0f, 10.0f));
-        break;
-    case 2u:
-        UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Soil"), Vector2(10.0f, 10.0f));
-        break;
-    case 3u:
-        UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Clay"), Vector2(10.0f, 10.0f));
-        break;
-    case 4u:
-        UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Rock1"), Vector2(10.0f, 10.0f));
-        break;
-    case 5u:
-        UI::DrawText(Profiler::GetInstance()->GetDebugFont(), TEXT_CONST("Selected material: Rock2"), Vector2(10.0f, 10.0f));
-        break;
-    }*/
 }
 
 void Universe::DoVoxelModification(const VoxelEditMode::_enum mode, const VoxelMaterial_t material, const float size) const

@@ -123,7 +123,7 @@ void Profiler::DrawThreadProfiles(ThreadData* thread)
 
 void Profiler::DrawThreadProfile(const ProfileTreeEntry& event)
 {
-    cvar open = ImGui::TreeNodeEx(event.name.c_str(), event.children.Empty() ? ImGuiTreeNodeFlags_Leaf : 0, "%s %d", event.name.c_str(), event.depth);
+    cvar open = ImGui::TreeNodeEx(event.name.c_str(), event.children.Empty() ? ImGuiTreeNodeFlags_Leaf : 0);
 
     ImGui::NextColumn();
 

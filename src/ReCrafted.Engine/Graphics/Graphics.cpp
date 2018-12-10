@@ -8,7 +8,6 @@
 #include "Core/Logger.h"
 #include "Core/Action.h"
 #include "Core/Application.h"
-#include "Game/Universe.h"
 #include "Graphics/Camera.h"
 #include "Graphics/RenderBuffer.h"
 #include "UI/UI.h"
@@ -226,12 +225,7 @@ void Graphics::OnDispose()
 
 void Graphics::Update()
 {
-    // Start the Dear ImGui frame
-    // ImGUI rendering is not multi-threaded,
-    // and it is going to be rendered on before preset event
-    ImGui_ImplDX11_NewFrame();
-    ImGui_ImplWin32_NewFrame();
-    ImGui::NewFrame();
+    UpdateImGUI();
 }
 
 void Graphics::Render()
@@ -427,9 +421,6 @@ void Graphics::RenderUI()
         {
             // render application UI
             Application::GetInstance()->RenderUI();
-
-            // render universe UI
-            Universe::GetInstance()->RenderUI();
         }
         Profiler::EndProfile();
 
@@ -440,6 +431,32 @@ void Graphics::RenderUI()
         Profiler::EndProfile();
     }
     Profiler::EndProfile();
+}
+
+void Graphics::UpdateImGUI()
+{
+    // Start the Dear ImGui frame
+    // ImGUI rendering is not multi-threaded,
+    // and it is going to be rendered on before preset event
+    ImGui_ImplDX11_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+
+    ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
+    ImGui::SetNextWindowSize(ImVec2(Display::GetWidth(), Display::GetHeight()));
+
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, 0x00000000);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+    ImGui::Begin("Debug", nullptr, ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoInputs |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoTitleBar |
+        ImGuiWindowFlags_NoScrollbar |
+        ImGuiWindowFlags_NoSavedSettings |
+        ImGuiWindowFlags_NoBringToFrontOnFocus);
+
+    //ImGui::PopStyleVar(); // why not required and crashing when called? Wtf ImGui! WTF
+    ImGui::PopStyleColor();
 }
 
 void Graphics::RenderWebUI()
@@ -461,6 +478,8 @@ void Graphics::RenderImGUI()
     // Get renderer context
     Renderer::RHIContext rendererContext;
     Renderer::GetContext(&rendererContext);
+
+    ImGui::End();
 
     ImGui::Render();
     ImGUI_ImplDX11_SetRenderTarget(rendererContext.windows[1].backBuffer);
