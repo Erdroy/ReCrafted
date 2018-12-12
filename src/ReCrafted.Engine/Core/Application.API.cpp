@@ -8,24 +8,29 @@
 
 namespace Internal
 {
-    int getTargetFps()
+    int GetTargetFps()
     {
         return EngineMain::GetInstance()->GetUpdateLoop()->GetTargetFps();
     }
 
-    void setTargetFps(int targetFps)
+    void SetTargetFps(const int targetFps)
     {
         EngineMain::GetInstance()->GetUpdateLoop()->SetTargetFps(targetFps);
     }
 
-    int getCursorIcon()
+    int GetCursorIcon()
     {
         return Platform::GetCursorIcon();
     }
 
-    void setCursorIcon(int iconId)
+    void SetCursorIcon(const int iconId)
     {
         Platform::SetCursorIcon(iconId);
+    }
+
+    void ApplicationExit()
+    {
+        EngineMain::GetInstance()->Quit();
     }
 }
 
@@ -54,11 +59,17 @@ void Application::InitRuntime()
             API_METHOD(PROTECTED, ABSTRACT, "RenderUI");
             API_METHOD_END();
 
+            API_METHOD(PUBLIC, STATIC, "Exit", EXTERN);
+            {
+                API_BIND("ReCrafted.API.Core.Application::Exit", &Internal::ApplicationExit);
+            }
+            API_METHOD_END();
+
             API_COMMENT("The target amount of frames per second (FPS).");
             API_PROPERTY(PUBLIC, STATIC, "int", "TargetFps", GETSET);
             {
-                API_BIND("ReCrafted.API.Core.Application::Internal_TargetFps_Get", &Internal::getTargetFps);
-                API_BIND("ReCrafted.API.Core.Application::Internal_TargetFps_Set", &Internal::setTargetFps);
+                API_BIND("ReCrafted.API.Core.Application::Internal_TargetFps_Get", &Internal::GetTargetFps);
+                API_BIND("ReCrafted.API.Core.Application::Internal_TargetFps_Set", &Internal::SetTargetFps);
             }
             API_PROPERTY_END();
 
@@ -72,8 +83,8 @@ void Application::InitRuntime()
             API_COMMENT("Gets or sets current cursor icon.");
             API_PROPERTY(PUBLIC, STATIC, "int", "CursorIcon", GETSET);
             {
-                API_BIND("ReCrafted.API.Core.Application::Internal_CursorIcon_Get", &Internal::getCursorIcon);
-                API_BIND("ReCrafted.API.Core.Application::Internal_CursorIcon_Set", &Internal::setCursorIcon);
+                API_BIND("ReCrafted.API.Core.Application::Internal_CursorIcon_Get", &Internal::GetCursorIcon);
+                API_BIND("ReCrafted.API.Core.Application::Internal_CursorIcon_Set", &Internal::SetCursorIcon);
             }
             API_PROPERTY_END();
         }

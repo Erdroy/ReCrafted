@@ -77,7 +77,6 @@
       <Name>ReCrafted.API</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>call $(ProjectDir)..\..\pm PostBuild --skip-shaders --skip-api</PostBuildEvent>

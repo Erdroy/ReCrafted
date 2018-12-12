@@ -9,7 +9,9 @@
 
 #define MONO_TEXT(x) mono_string_chars(x)
 #define MONO_ANSI_ERR() MonoError error;
-#define MONO_ANSI(x) mono_string_to_utf8_checked(x, &error)
+#define MONO_ANSI_CHECKED(x) mono_string_to_utf8_checked(x, &error)
+#define MONO_ANSI_UNCHECKED(x) mono_string_to_utf8(x)
+#define MONO_ANSI(x) MONO_ANSI_CHECKED(x)
 #define MONO_ANSI_FREE(x) mono_free(x)
 
 #define MONO_STRING_FROM_TEXT(x) mono_string_new(mono_domain_get(), x.StdStr().c_str())

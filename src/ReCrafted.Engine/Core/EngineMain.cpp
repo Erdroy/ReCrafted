@@ -48,6 +48,26 @@ void EngineMain::RegisterComponents() const
     m_componentManager->RegisterComponent(WebUI::GetInstance());
 }
 
+void EngineMain::UnregisterComponents() const
+{
+    m_componentManager->UnregisterComponent(Universe::GetInstance());
+    m_componentManager->UnregisterComponent(MainWorld::GetInstance());
+    m_componentManager->UnregisterComponent(SceneManager::GetInstance());
+    m_componentManager->UnregisterComponent(VoxelMaterialManager::GetInstance());
+    m_componentManager->UnregisterComponent(ActorPoolManager::GetInstance());
+
+    m_componentManager->UnregisterComponent(PhysicsManager::GetInstance());
+
+    m_componentManager->UnregisterComponent(UI::GetInstance());
+    m_componentManager->UnregisterComponent(WebUI::GetInstance());
+
+    // Run finalizer
+    ScriptingEngine::Finalize();
+
+    // Release content manager
+    //m_componentManager->UnregisterComponent(ContentManager::GetInstance());
+}
+
 void EngineMain::CreateMainWindow()
 {
     m_mainWindow.reset(new ApplicationWindow());
@@ -193,8 +213,8 @@ void EngineMain::Shutdown()
     // Dispose window (using Ref<> - no need to delete)
     SafeDispose(m_mainWindow);
 
-    // Release content manager
-    m_componentManager->UnregisterComponent(ContentManager::GetInstance());
+    // Manual component removal
+    UnregisterComponents();
 
     // Dispose component manager at the very end
     SafeDispose(m_componentManager);

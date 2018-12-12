@@ -6,15 +6,17 @@
 
 namespace Internal
 {
-    void BeginProfile(MonoString* name, float med, float max)
+    void BeginProfile(MonoString* name)
     {
-        //var text = MONO_TEXT(name);
-        //Profiler::BeginProfile(text, med, max);
+        cvar nameCStr = MONO_ANSI_UNCHECKED(name);
+        Profiler::BeginCPUProfile(nameCStr);
+        // free ansi string
+        MONO_ANSI_FREE(nameCStr);
     }
 
     void EndProfile()
     {
-        //Profiler::EndProfile();
+        Profiler::EndCPUProfile();
     }
 }
 
@@ -32,12 +34,6 @@ void Profiler::InitRuntime()
 
                 API_COMMENT("The profile name");
                 API_PARAM("string", "name");
-
-                API_COMMENT("The warning limit");
-                API_PARAM("float", "warm = -1.0f");
-
-                API_COMMENT("The max limit");
-                API_PARAM("float", "max = -1.0f");
             }
             API_METHOD_END();
 

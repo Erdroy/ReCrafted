@@ -49,7 +49,10 @@ void World::Clear()
     // Delete all systems and clear hash map
     for (auto& system : m_systems)
     {
-        delete system;
+        if (system == nullptr)
+            continue;
+
+        Destroy(system);
         system = nullptr;
     }
 }

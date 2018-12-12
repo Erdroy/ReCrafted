@@ -5,238 +5,168 @@
 #ifndef PROFILER_H
 #define PROFILER_H
 
-// includes
 #include "ReCrafted.h"
 #include "Core/EngineComponent.h"
-#include "Platform/Platform.h"
+#include "Core/Lock.h"
 #include "Core/Containers/Array.h"
-#include "Core/Math/Color.h"
-#include "Core/Math/Math.h"
 
-class Font;
+#include "spp.h"
+#include <atomic>
+#include <queue>
 
-/// <summary>
-/// Profiler class.
-/// </summary>
 class Profiler : public EngineComponent<Profiler>
 {
-    friend class EngineMain;
-    friend class Graphics;
+public:
+    static const int NumProfiledFrames = 300; // TODO: This should be configurable
 
 private:
-SCRIPTING_API_IMPL()
+    SCRIPTING_API_IMPL()
 
 private:
-    struct Profile
+    struct ProfileEntry
     {
-    public:
-        float timeTotal = 0.0f;
-        float timeAvg = 0.0f;
-        float timeMin = FLT_MAX;
-        float timeMax = 0.0f;
+        std::string profileName{};
+        double startTime_ms = 0.0;
+        double endTime_ms = 0.0;
+        float profileTime_ms = 0.0f;
+        int depth = 0;
+    };
 
-        float timeoutMed = 0.0f;
-        float timeoutMax = 0.0f;
+    struct ProfileTreeEntry
+    {
+        ProfileTreeEntry* parent = nullptr;
 
-        double lastUpdate = 0.0f;
-        double lastAvgUpdate = 0.0f;
-        double timeBegin = 0.0f;
-
-        int order = 0;
-        int calls = 0;
+        std::string name{};
+        float time = 0.0f;
+        int callNum = 0;
         int depth = 0;
 
-        const void* name = nullptr;
-        bool utf8 = false;
+        Array<ProfileTreeEntry> children;
+    };
 
-        bool updated = false;
+    struct ProfileFrame
+    {
+        double startTime_ms = 0.0;
+        double endTime_ms = 0.0;
+        float time_ms = 0.0f;
+        std::vector<ProfileEntry> profiles;
+        std::deque<ProfileEntry> profileQueue;
+    };
+
+    class ThreadData
+    {
+    public:
+        Lock dataLock;
+        std::thread::id threadId;
+        const char* threadName = nullptr;
+        std::vector<ProfileFrame> frames = {};
+
+        ProfileFrame currentFrame;
+
+        bool opened = false;
+        int selectedFrame = -1;
 
     public:
-        void Update(double currentTime)
-        {
-            // Update time
-            lastUpdate = currentTime;
-            timeBegin = currentTime;
-            depth = GetInstance()->m_profileStack.Count();
-            order = GetInstance()->m_profileCount;
+        void BeginFrame();
+        void PushFrame();
+        void EndFrame();
 
-            // increment profile count
-            GetInstance()->m_profileCount++;
-
-            updated = true;
-
-            // increment call count
-            calls++;
-        }
+    public:
+        uint32_t BeginCPUProfile(const char* name);
+        void EndCPUProfile(uint32_t profileId);
     };
 
 private:
-    Array<Profile> m_profiles;
-    Array<Profile*> m_profileStack;
-    int m_profileCount;
-
-    bool m_drawDebugScreen = false;
-    bool m_drawProfiles = false;
-    bool m_drawPhysics = false;
-    Font* m_debugFont = nullptr;
-    float m_lineOffset = 0.0f;
-    float m_maxLineLength = 0;
-    float m_horiOffset = 10.0f;
-    float m_lastFPSCountTime = 0.0f;
-    int m_frames = 0;
-    int m_fps = 0;
-
-public:
-    virtual ~Profiler() = default;
+    bool m_showWindow = false;
+    std::vector<ThreadData*> m_threads;
+    spp::sparse_hash_map<std::thread::id, ThreadData*> m_threadMap;
+    std::atomic<bool> m_profilingEnabled = true;
+    bool m_stopProfiling = false;
+    bool m_startProfiling = false;
 
 private:
-    static bool ProfileSort(const Profile& lhs, const Profile& rhs);
+    ThreadData* GetCurrentThreadData();
+    void CompileProfiles(const std::vector<ProfileEntry>& profiles, Array<ProfileTreeEntry>& treeProfiles);
 
-public:
-    static bool IsPhysicsDebugEnabled();
+private:
+    void DrawWindow();
+    void DrawThreadProfiles(ThreadData* thread);
+    void DrawThreadProfile(const ProfileTreeEntry& event);
 
+protected:
     void OnInit() override;
     void OnDispose() override;
     void Update() override;
 
-    void DrawTextLine(Text text, Color color);
-    void MakeLineSpace(int lines);
-
-    void DrawDebugScreen();
+public:
+    void ToggleProfiling();
 
 public:
-    void EndFrame();
+    static void InitThread(const char* threadName);
+    static void FinishThread();
 
-    Font* GetDebugFont() const
+    static void BeginFrame();
+    static void PushFrame();
+    static void EndFrame(bool autoPush = true);
+
+public:
+    FORCEINLINE static uint32_t BeginCPUProfile(const char* name)
     {
-        return m_debugFont;
+        ASSERT(GetInstance());
+
+        if (!GetInstance()->m_profilingEnabled)
+            return 0u;  
+        
+        cvar threadData = GetInstance()->GetCurrentThreadData();
+        _ASSERT_(threadData, "Profiler thread not found. Are you sure that you've called Profiler::InitThread?");
+
+        // Begin new CPU profile
+        return threadData->BeginCPUProfile(name);
     }
 
-private:
-    template <typename T>
-    void InternalBeginProfile(const T* name, bool utf8, float timeMed, float timeMax)
+    FORCEINLINE static void EndCPUProfile(const uint32_t profileId = 0u)
     {
-        ASSERT(this);
-        ASSERT(IS_MAIN_THREAD());
+        ASSERT(GetInstance());
 
-        cvar currentTime = Platform::GetMiliseconds();
-
-        // try select profile, then Update
-        // check if profile already exists with this name
-
-        if (m_profiles.Count() > 0)
+        if (GetInstance()->m_profilingEnabled)
         {
-            for (rvar profile : m_profiles)
-            {
-                if (utf8)
-                {
-                    // (just Compare name pointers, not called by Mono, 
-                    // so 'const char*' pointer address is const...)
-                    if (profile.name == name)
-                    {
-                        // Update
-                        profile.Update(currentTime);
+            cvar threadData = GetInstance()->GetCurrentThreadData();
+            _ASSERT_(threadData, "Profiler thread not found. Are you sure that you've called Profiler::InitThread?");
 
-                        // add to stack
-                        m_profileStack.Add(&profile);
-                        return;
-                    }
-                }
-                else
-                {
-                    if (Text::Compare(static_cast<const Char*>(profile.name), static_cast<const Char*>((void*)name)))
-                    {
-                        // Update
-                        profile.Update(currentTime);
-
-                        // add to stack
-                        m_profileStack.Add(&profile);
-                        return;
-                    }
-                }
-            }
+            // End current CPU profile
+            threadData->EndCPUProfile(profileId);
         }
-
-        // add profile as it is not yet added
-        Profile newProfile;
-        newProfile.name = name;
-        newProfile.calls = 0;
-        newProfile.timeoutMed = timeMed;
-        newProfile.timeoutMax = timeMax;
-        newProfile.utf8 = utf8;
-
-        newProfile.Update(currentTime);
-
-        m_profiles.Add(newProfile);
-    }
-
-    void InternalEndProfile()
-    {
-        ASSERT(this);
-        ASSERT(IS_MAIN_THREAD());
-
-        if (m_profileStack.Count() == 0)
-            return;
-
-        cvar currentTime = Platform::GetMiliseconds();
-
-        // select profile
-        crvar profile = m_profileStack.Last();
-
-        cvar time = currentTime - profile->timeBegin;
-
-        // Update total time
-        profile->timeTotal += static_cast<float>(time);
-
-        profile->timeMin = Math::Min(float(time), profile->timeMin);
-        profile->timeMax = Math::Max(float(time), profile->timeMax);
-
-        // Update every second
-        if (currentTime - profile->lastAvgUpdate >= 1000.0f)
-        {
-            // calculate avg time
-            profile->timeAvg = profile->timeTotal / float(profile->calls);
-            profile->lastAvgUpdate = currentTime;
-
-            profile->timeMin = float(time);
-            profile->timeMax = float(time);
-
-            profile->timeTotal = 0.0f;
-            profile->calls = 1;
-        }
-
-        // Remove profile
-        m_profileStack.RemoveAt(m_profileStack.Count() - 1);
     }
 
 public:
-    /**
-	 * \brief Begins new profile.
-	 * \param name The name of the new profile. Use `TEXT_CHARS("Text")`.
-	 */
-    FORCEINLINE static void BeginProfile(const Char* name, float timeMed = -1.0f, float timeMax = -1.0f)
+    FORCEINLINE static void BeginProfile(const char* name)
     {
-        cvar instance = GetInstance();
-        instance->InternalBeginProfile(name, false, timeMed, timeMax);
+        BeginCPUProfile(name);
     }
 
-    /**
-    * \brief Begins new profile.
-    * \param name The name of the new profile.
-    */
-    FORCEINLINE static void BeginProfile(const char* name, float timeMed = -1.0f, float timeMax = -1.0f)
-    {
-        cvar instance = GetInstance();
-        instance->InternalBeginProfile(name, true, timeMed, timeMax);
-    }
-
-    /**
-    * \brief Ends the current profile.
-    */
     FORCEINLINE static void EndProfile()
     {
-        cvar instance = GetInstance();
-        instance->InternalEndProfile();
+        EndCPUProfile();
+    }
+};
+
+struct ScopedProfile
+{
+private:
+    uint32_t m_id = 0u;
+
+private:
+    ScopedProfile() = default;
+
+public:
+    explicit ScopedProfile(const char* name)
+    {
+        m_id = Profiler::BeginCPUProfile(name);
+    }
+
+    ~ScopedProfile()
+    {
+        Profiler::EndCPUProfile(m_id);
     }
 };
 

@@ -155,7 +155,6 @@ void ActorBase::UpdateTransform()
 void ActorBase::SetParent(ActorBase* newParent)
 {
     MAIN_THREAD_ONLY();
-    ASSERT(newParent);
 
     if (m_parent)
     {

@@ -86,7 +86,7 @@ VoxelMaterial* VoxelMaterialManager::GetMaterial(const VoxelMaterial_t id)
     if (!m_instance->m_materials.contains(id))
     {
         // Return default material
-        return  m_instance->m_defaultMaterial;
+        return m_instance->m_defaultMaterial;
     }
 
     return m_instance->m_materials[id];

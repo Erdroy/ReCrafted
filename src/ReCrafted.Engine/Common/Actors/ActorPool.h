@@ -96,6 +96,8 @@ public:
         var id = 0;
         for (rvar actor : m_actors)
         {
+            if(Object::IsPinned(actor))
+                EventRelease(actor);
             delete actor;
             id++;
         }

@@ -73,6 +73,11 @@ RefPtr<Method> Object::FindStaticMethod(const char* methodName)
     return method;
 }
 
+bool Object::IsPinned(Object* object)
+{
+    return object->m_gchandle > 0u;
+}
+
 bool Object::IsObjectInitialized(Object* object)
 {
     return object->m_object && object->m_class;
@@ -113,6 +118,8 @@ void Object::InitializeInstance(Object* object, MonoObject* instance, bool isObj
 
 void Object::RegisterObject(Object* object)
 {
+    ASSERT(object);
+
     ScopeLock(m_objectMapLock);
 
     // Setup object id
@@ -128,8 +135,7 @@ void Object::RegisterObject(Object* object)
 
 void Object::Destroy(Object* object)
 {
-    // Call on destroy event
-    object->OnDestroy();
+    ASSERT(object);
 
     m_objectMapLock.LockNow();
     {
@@ -153,6 +159,9 @@ void Object::Destroy(Object* object)
         }
     }
     m_objectMapLock.UnlockNow();
+
+    // Call on destroy event
+    object->OnDestroy();
 
     // Free garbage collector handle
     mono_gchandle_free(object->m_gchandle);
@@ -227,8 +236,6 @@ void Object::Finalize(Object* object)
 
     if (!isObjectDestroyed)
     {
-        ASSERT(false);
-
         // When object is still in the object map, the object hasn't been destroyed.
         // Scream at Erdroy.
         Logger::LogWarning("Object got finalized, but not destroyed at first! Id: {0} Name: ", object->GetObjectId(), object->GetObjectName());

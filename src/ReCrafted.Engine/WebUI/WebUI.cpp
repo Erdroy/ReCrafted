@@ -21,8 +21,8 @@ void WebUI::OnInit()
 
 void WebUI::OnDispose()
 {
-    for (crvar view : m_views)
-        Object::Destroy(view.get());
+    for (var&& view : m_views)
+        Object::Destroy(view);
 
     m_views.Clear();
 
@@ -43,7 +43,7 @@ void WebUI::Resize(const uint width, const uint height)
 void WebUI::Update()
 {
     Profiler::BeginProfile(__FUNCTION__);
-    
+
     m_engine->Update();
 
     for (crvar view : m_views)
@@ -72,8 +72,7 @@ WebUIView* WebUI::CreateView()
     var view = Object::CreateInstance<WebUIView>("ReCrafted.API.Graphics", "WebUIView");
 
     view->Init();
-
-    m_views.Add(RefPtr<WebUIView>(view));
+    m_views.Add(view);
 
     Logger::Log("Created new WebUIView");
 

@@ -57,7 +57,7 @@ namespace ReCrafted.Game.Player
         /// <remarks>
         /// Simulate uses current actor rotation.
         /// </remarks>
-        public void Simulate(PlayerInput.Snapshot input)
+        public void SimulateMovement(PlayerInput.Snapshot input)
         {
             var direction = GetMoveDirection(input);
             var settings = GetMoveSettings(input);

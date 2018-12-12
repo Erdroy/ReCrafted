@@ -36,7 +36,6 @@ private:
     void Update() override;
 
     void Simulate();
-    void RenderUI();
 
 private:
     void DoVoxelModification(VoxelEditMode::_enum mode, VoxelMaterial_t material, float size) const;

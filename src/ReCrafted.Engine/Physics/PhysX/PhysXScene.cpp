@@ -61,7 +61,7 @@ PhysXScene::~PhysXScene()
 
 void PhysXScene::Update()
 {
-    if (!Profiler::IsPhysicsDebugEnabled())
+    //if (!Profiler::IsPhysicsDebugEnabled())
     {
         m_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 0.0f);
         return;

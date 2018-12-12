@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 07/08/2018 19:19:24 Source: 'Profiler.API.cpp' Target: 'Common/Profiler.Gen.cs'
+// Generated: 12/09/2018 13:46:26 Source: 'Profiler.API.cpp' Target: 'Common/Profiler.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -16,7 +16,7 @@ namespace ReCrafted.API.Common
 		///	Begins profiling.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		public static extern void BeginProfile(string name, float warm = -1.0f, float max = -1.0f);
+		public static extern void BeginProfile(string name);
 
 		/// <summary>
 		///	Ends profiling.

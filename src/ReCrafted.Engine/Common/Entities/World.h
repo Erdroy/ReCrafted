@@ -120,7 +120,7 @@ public:
 
             m_systems[systemId] = nullptr;
 
-            delete system;
+            Object::Destroy(system);
         }
     }
 
@@ -137,7 +137,7 @@ public:
 
             if(deleteSystem)
             {
-                delete system;
+                Object::Destroy(system);
             }
         }
     }

@@ -96,10 +96,6 @@ void TransvoxelMesher::PolygonizeRegularCell(const Vector3& position, Voxel* dat
         vertexInfoB.vertexNormal += normal;
         vertexInfoC.vertexNormal += normal;
 
-        vertexInfoA.normalUses += 1;
-        vertexInfoB.normalUses += 1;
-        vertexInfoC.normalUses += 1;
-
         // Add mesh triangle
         AddTriangle(vertexInfoA, vertexInfoB, vertexInfoC, normalCorrection);
 

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 
 namespace ReCrafted.API.Core
@@ -32,6 +33,9 @@ namespace ReCrafted.API.Core
 
         internal void Init()
         {
+            if (Environment.GetCommandLineArgs().Contains("nolog"))
+                return;
+
             // create log queue
             _logQueue = new Queue<LogItem>();
 
@@ -101,6 +105,9 @@ namespace ReCrafted.API.Core
         /// <param name="level">The log level.</param>
         public void Write(string message, object sender, LogLevel level)
         {
+            if (Instance == null)
+                return;
+
             if (!ProduceLogFile)
                 return;
 
@@ -149,32 +156,32 @@ namespace ReCrafted.API.Core
         
         private static void OnEngineLog(string message, LogLevel level)
         {
-            Instance.Write(message, null, level);
+            Instance?.Write(message, null, level);
         }
 
         private static void Shutdown()
         {
-            Instance.Dispose();
+            Instance?.Dispose();
         }
         
         public static void Log(string message, LogLevel level = LogLevel.Info)
         {
-            Instance.Write(message, null, level);
+            Instance?.Write(message, null, level);
         }
         
         public static void LogWarning(string message)
         {
-            Instance.Write(message, null, LogLevel.Warning);
+            Instance?.Write(message, null, LogLevel.Warning);
         }
 
         public static void LogError(string message)
         {
-            Instance.Write(message, null, LogLevel.Error);
+            Instance?.Write(message, null, LogLevel.Error);
         }
 
         public static void LogFatal(string message)
         {
-            Instance.Write(message, null, LogLevel.Fatal);
+            Instance?.Write(message, null, LogLevel.Fatal);
         }
 
         internal static string LogLevelToString(LogLevel level)

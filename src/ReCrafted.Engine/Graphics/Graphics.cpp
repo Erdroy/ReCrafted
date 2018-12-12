@@ -8,7 +8,6 @@
 #include "Core/Logger.h"
 #include "Core/Action.h"
 #include "Core/Application.h"
-#include "Game/Universe.h"
 #include "Graphics/Camera.h"
 #include "Graphics/RenderBuffer.h"
 #include "UI/UI.h"
@@ -86,13 +85,38 @@ void Graphics::InitializeRenderer()
     Logger::Log("Initializing ImGUI {0}", IMGUI_VERSION);
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO();
+    cvar newFont = io.Fonts->AddFontFromFileTTF("../assets/fonts/Lato-Regular.ttf", 14.0f);
+    io.Fonts->AddFontDefault(newFont->ConfigData);
+
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
     ImGui_ImplWin32_Init(Platform::GetCurrentWindow());
     ImGui_ImplRenderer_Init(rendererContext.device, rendererContext.deviceContext);
 
     // Setup style
     ImGui::StyleColorsDark();
+    rvar style = ImGui::GetStyle();
+    style.ScrollbarRounding = 2.0f;
+    style.WindowPadding = ImVec2(4.0f, 4.0f);
+
+    style.Colors[ImGuiCol_TitleBg] = ImVec4(0.25f, 0.25f, 0.25f, 1.0f);
+    style.Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.28f, 0.28f, 0.28f, 1.0f);
+    style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.28f, 0.28f, 0.28f, 1.0f);
+    style.Colors[ImGuiCol_WindowBg] = ImVec4(0.15f, 0.15f, 0.15f, 1.0f);
+    style.Colors[ImGuiCol_Border] = ImVec4(0.10f, 0.10f, 0.10f, 1.0f);
+
+    style.Colors[ImGuiCol_PopupBg] = ImVec4(0.10f, 0.10f, 0.10f, 1.0f);
+    style.Colors[ImGuiCol_Button] = ImVec4(0.10f, 0.10f, 0.10f, 1.0f);
+
+    style.Colors[ImGuiCol_MenuBarBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.0f);
+    style.Colors[ImGuiCol_Header] = ImVec4(0.28f, 0.28f, 0.28f, 1.0f);
+    style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.28f, 0.28f, 0.28f, 1.0f);
+    style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.25f, 0.25f, 0.25f, 1.0f);
+
+    style.Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.18f, 0.18f, 0.18f, 1.0f);
+    style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.25f, 0.25f, 0.25f, 1.0f);
+    style.Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.28f, 0.28f, 0.28f, 1.0f);
+    style.Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.28f, 0.28f, 0.28f, 1.0f);
 
     Logger::LogInfo("Graphics initialized");
 }
@@ -143,7 +167,7 @@ void Graphics::UpdateDefaultConstants(const Matrix& mvp)
     m_currentShader->SetValue(5, &lightdir);
 
     // Set light direction vector
-    var ambientLight = Vector3(0.1f, 0.1f, 0.1f);
+    var ambientLight = Vector3(0.35f, 0.35f, 0.35f);
     m_currentShader->SetValue(6, &ambientLight);
 
     // apply shader changes
@@ -189,8 +213,8 @@ void Graphics::OnDispose()
     ImGui::DestroyContext();
 
     // Dispose shaders
-    m_gbufferFillShader->Unload();
-    m_gbufferCombine->Unload();
+    Object::Destroy(m_gbufferFillShader);
+    Object::Destroy(m_gbufferCombine);
     Logger::LogInfo("Unloaded render shaders");
 
     // Shutdown renderer
@@ -201,12 +225,7 @@ void Graphics::OnDispose()
 
 void Graphics::Update()
 {
-    // Start the Dear ImGui frame
-    // ImGUI rendering is not multi-threaded,
-    // and it is going to be rendered on before preset event
-    ImGui_ImplDX11_NewFrame();
-    ImGui_ImplWin32_NewFrame();
-    ImGui::NewFrame();
+    UpdateImGUI();
 }
 
 void Graphics::Render()
@@ -232,7 +251,7 @@ void Graphics::Render()
             m_rendering->RenderShadows();
         }
         RenderEnd(); // end rendering
-        
+
         // Render post processing
         m_rendering->RenderPostProcessing(m_frameTexture, m_gbuffer->GetTarget(1), m_gbuffer->GetDepthBuffer());
 
@@ -294,7 +313,7 @@ void Graphics::RenderBegin()
     // set default shader
     SetShader(m_gbufferFillShader);
 
-    // Update 
+    // Update
     UpdateDefaultConstants(Camera::GetMainCamera()->GetViewProjection());
 
     if (Input::IsKey(Key_F1))
@@ -358,7 +377,7 @@ void Graphics::RenderEnd()
     // Set shader
     SetShader(m_gbufferCombine);
 
-    // Update 
+    // Update
     UpdateDefaultConstants(Camera::GetMainCamera()->GetViewProjection());
 
     // blit render textures using gbuffercombine shader
@@ -402,15 +421,8 @@ void Graphics::RenderUI()
         {
             // render application UI
             Application::GetInstance()->RenderUI();
-
-            // render universe UI
-            Universe::GetInstance()->RenderUI();
-
-            // draw profiler debug screen
-            Profiler::GetInstance()->DrawDebugScreen();
         }
         Profiler::EndProfile();
-
 
         Profiler::BeginProfile("UI Process");
         {
@@ -419,6 +431,33 @@ void Graphics::RenderUI()
         Profiler::EndProfile();
     }
     Profiler::EndProfile();
+}
+
+void Graphics::UpdateImGUI()
+{
+    // Start the Dear ImGui frame
+    // ImGUI rendering is not multi-threaded,
+    // and it is going to be rendered on before preset event
+    ImGui_ImplDX11_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+
+    ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
+    ImGui::SetNextWindowSize(ImVec2(Display::GetWidth(), Display::GetHeight()));
+
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, 0x00000000);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+
+    ImGui::Begin("Debug", nullptr, ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoInputs |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoTitleBar |
+        ImGuiWindowFlags_NoScrollbar |
+        ImGuiWindowFlags_NoSavedSettings |
+        ImGuiWindowFlags_NoBringToFrontOnFocus);
+
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 1.0f);
 }
 
 void Graphics::RenderWebUI()
@@ -436,15 +475,23 @@ void Graphics::RenderWebUI()
 void Graphics::RenderImGUI()
 {
     Profiler::BeginProfile("Render ImGui");
-    {
-        // Get renderer context
-        Renderer::RHIContext rendererContext;
-        Renderer::GetContext(&rendererContext);
+    
+    // Get renderer context
+    Renderer::RHIContext rendererContext;
+    Renderer::GetContext(&rendererContext);
 
-        ImGui::Render();
-        ImGUI_ImplDX11_SetRenderTarget(rendererContext.windows[1].backBuffer);
-        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-    }
+    ImGui::PopStyleVar();
+    ImGui::PopStyleColor();
+
+    ImGui::End();
+
+    ImGui::PopStyleVar();
+    ImGui::PopStyleColor();
+
+    ImGui::Render();
+    ImGUI_ImplDX11_SetRenderTarget(rendererContext.windows[1].backBuffer);
+    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
     Profiler::EndProfile();
 }
 
@@ -531,7 +578,7 @@ void Graphics::SetTextureArray(uint slot, Texture** textureArray, uint8_t textur
 {
     // Copy textures
     Renderer::Texture2DHandle textures[32]; // Max 32 textures per array
-    
+
     for(var i = 0u; i < textureCount; i++)
     {
         cvar texture = textureArray[i];

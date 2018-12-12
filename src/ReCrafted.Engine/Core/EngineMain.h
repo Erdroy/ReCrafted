@@ -34,6 +34,7 @@ public:
 
 private:
     void RegisterComponents() const;
+    void UnregisterComponents() const;
     void CreateMainWindow();
 
 private:
