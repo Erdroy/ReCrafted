@@ -977,6 +977,12 @@ namespace Renderer
         m_renderer->UpdateTextureSubresource(handle, data, dataSize, subresourceId);
     }
 
+    void CopyTextureSubresourceSync(Texture2DHandle targetTexture, void* sourceTexturePtr, uint8_t subresourceId)
+    {
+        CHECK_MAIN_THREAD();
+        m_renderer->CopyTextureSubresource(targetTexture, sourceTexturePtr, subresourceId);
+    }
+
     void UpdateTextureView(Texture2DHandle handle, uint8_t mostDetailedMip, uint8_t mipLevels)
     {
         CHECK_MAIN_THREAD();
