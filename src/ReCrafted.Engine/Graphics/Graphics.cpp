@@ -79,6 +79,7 @@ void Graphics::InitializeRenderer()
         m_currentTextures.Add(nullptr);
 
     // Set renderer callbacks
+    Renderer::AddOnPresentBeginEvent(Action<void>::New<Graphics, &Graphics::RenderWebUI>(this));
     Renderer::AddOnPresentBeginEvent(Action<void>::New<Graphics, &Graphics::RenderImGUI>(this));
 
     // Initialize ImGUI
@@ -268,7 +269,7 @@ void Graphics::Render()
         RenderUI();
 
         // Render WebUI
-        RenderWebUI();
+        //RenderWebUI();
 
         Profiler::BeginProfile("Renderer::Frame");
         // next frame, wait vsync

@@ -53,7 +53,7 @@ void WebUIView::Render()
     else
     {
         // Blit into back-buffer
-        Renderer::BlitTexture(Graphics::GetInstance()->GetFrameBuffer(), m_viewport->GetTexture());
+       // Renderer::BlitTexture(Graphics::GetInstance()->GetFrameBuffer(), m_viewport->GetTexture());
     }
 
     Profiler::EndProfile();

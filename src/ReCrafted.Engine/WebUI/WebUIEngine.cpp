@@ -11,10 +11,12 @@
 
 #include <Ultralight/Ultralight.h>
 #include <shlwapi.h>
+#include "Impl/GPUContext.h"
 
 SINGLETON_IMPL(WebUIEngine)
 
 ultralight::RefPtr<ultralight::Renderer> g_ultralightRenderer = nullptr;
+std::unique_ptr<ultralight::GPUContext> m_webui_context = nullptr;
 
 void WebUIEngine::Init()
 {
@@ -25,11 +27,14 @@ void WebUIEngine::Init()
     TCHAR assetsDirectory[_MAX_PATH];
     PathCombine(assetsDirectory, currentDirectory, L"./../assets/ui/");
 
+    m_webui_context = ultralight::GPUContext::Create(false);
+
     // Setup ultralight platform
     auto& platform = ultralight::Platform::instance();
     platform.set_config(ultralight::Config());
     platform.set_file_system(new ultralight::FileSystemWin(assetsDirectory));
     platform.set_font_loader(new ultralight::FontLoaderWin());
+    platform.set_gpu_driver(m_webui_context->driver());
 
     // Create ultralight renderer
     g_ultralightRenderer = ultralight::Renderer::Create();

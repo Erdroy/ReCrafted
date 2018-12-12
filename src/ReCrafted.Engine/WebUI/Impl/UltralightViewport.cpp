@@ -3,6 +3,10 @@
 #include "UltralightViewport.h"
 #include "Common/Profiler/Profiler.h"
 #include "Common/Input/Input.h"
+#include <Ultralight/platform/Platform.h>
+#include <Ultralight/platform/GPUDriver.h>
+#include "d3d11/GPUDriverD3D11.h"
+#include "Renderer/RHI/RHIContext.h"
 
 void UltralightViewport::CreateTexture(const uint width, const uint height)
 {
@@ -68,21 +72,15 @@ void UltralightViewport::Render()
 {
     Profiler::BeginProfile(__FUNCTION__);
 
-    if (m_view->is_bitmap_dirty())
+    cvar renderTarget = m_view->render_target();
+    if(!renderTarget.is_empty)
     {
-        cvar bitmap = m_view->bitmap();
-        cvar size = bitmap->size();
+        cvar driver = (ultralight::GPUDriverD3D11*)ultralight::Platform::instance().gpu_driver();
+        cvar sourceTexture = driver->GetTexture(m_view->render_target().texture_id);
 
-        // Allocate new texture data and copy the bitmap contents into it
-        cvar newTextureData = Renderer::Allocate(size);
+        // Copy sourceTexture to m_texture
 
-        // Copy bitmap contents
-        cvar pixels = bitmap->LockPixels();
-        memcpy(newTextureData, pixels, size);
-        bitmap->UnlockPixels();
-
-        // Send renderer command
-        Renderer::UpdateTextureSubresource(m_texture, newTextureData, size);
+        //Renderer::CopyTextureSubresourceSync()
     }
 
     Profiler::EndProfile();
