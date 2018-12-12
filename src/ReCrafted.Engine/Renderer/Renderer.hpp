@@ -788,6 +788,13 @@ namespace Renderer
     RENDERER_FUNCTION(void) UpdateTextureSubresourceSync(Texture2DHandle handle, RendererMemory data, size_t dataSize, uint8_t subresourceId = 0);
 
     /**
+     * \brief Copies given source to target texture synchronously.
+     * \param targetTexture The texture handle.
+     * \param sourceTexturePtr The new subresource data.
+     */
+    RENDERER_FUNCTION(void) CopyTextureSubresourceSync(Texture2DHandle targetTexture, void* sourceTexturePtr, uint8_t subresourceId = 0);
+
+    /**
      * \brief Updates view info (mip map info) of given texture.
      * \param handle The texture handle.
      * \param mostDetailedMip The most detailed mip, that must be higher or equal to 0 and less than mipLevels.

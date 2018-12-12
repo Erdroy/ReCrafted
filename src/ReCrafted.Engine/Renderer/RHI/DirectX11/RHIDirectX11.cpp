@@ -1720,6 +1720,14 @@ namespace Renderer
             m_deviceContext->UpdateSubresource(textureDesc.texture, subresourceId, nullptr, data, pitch, static_cast<uint>(dataSize));
         }
 
+        void RHIDirectX11::CopyTextureSubresource(Texture2DHandle targetTexture, void* sourceTexturePtr, uint8_t subresourceId)
+        {
+            cvar textureDesc = m_textures[targetTexture.idx];
+            ASSERT(textureDesc.texture != nullptr);
+
+            m_deviceContext->CopySubresourceRegion(textureDesc.texture, subresourceId, 0u, 0u, 0u, static_cast<ID3D11Texture2D*>(sourceTexturePtr), subresourceId, nullptr);
+        }
+
         void RHIDirectX11::GetTextureSubresource(Texture2DHandle textureHandle, void* buffer, size_t bufferSize, uint8_t subresourceId)
         {
             cvar textureDesc = m_textures[textureHandle.idx];

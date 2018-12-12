@@ -50,6 +50,7 @@ namespace Renderer
 
         public:
             void UpdateTextureSubresource(Texture2DHandle textureHandle, void* data, size_t dataSize, uint8_t subresourceId) override;
+            void CopyTextureSubresource(Texture2DHandle targetTexture, void* sourceTexturePtr, uint8_t subresourceId) override;
             void GetTextureSubresource(Texture2DHandle textureHandle, void* buffer, size_t bufferSize, uint8_t subresourceId) override;
         };
     }
