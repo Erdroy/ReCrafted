@@ -61,7 +61,24 @@ void WebUIEngine::Render()
     if (!IsInitialized())
         return;
 
-    g_ultralightRenderer->Render();
+    cvar driver = ultralight::Platform::instance().gpu_driver();
+
+    m_webui_context->BeginDrawing();
+    {
+        driver->BeginSynchronize();
+        {
+            g_ultralightRenderer->Render();
+        }
+        driver->EndSynchronize();
+
+        if (driver->HasCommandsPending())
+        {
+            driver->DrawCommandList();
+
+            // Set flag
+        }
+    }
+    m_webui_context->EndDrawing();
 }
 
 WebUIViewport* WebUIEngine::CreateUIViewport(WebUIView* view, const bool fullscreen)

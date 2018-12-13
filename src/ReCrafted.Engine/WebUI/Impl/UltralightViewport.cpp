@@ -3,15 +3,17 @@
 #include "UltralightViewport.h"
 #include "Common/Profiler/Profiler.h"
 #include "Common/Input/Input.h"
+#include "Renderer/RHI/RHIContext.h"
+
+#include "d3d11/GPUDriverD3D11.h"
+
 #include <Ultralight/platform/Platform.h>
 #include <Ultralight/platform/GPUDriver.h>
-#include "d3d11/GPUDriverD3D11.h"
-#include "Renderer/RHI/RHIContext.h"
 
 void UltralightViewport::CreateTexture(const uint width, const uint height)
 {
     // Create texture
-    m_texture = Renderer::CreateTexture2D(width, height, 0, 0, Renderer::TextureFormat::RGBA8, nullptr, 0u);
+    m_texture = Renderer::CreateTexture2D(width, height, 0, 0, Renderer::TextureFormat::BGRA8, nullptr, 0u);
 }
 
 void UltralightViewport::DestroyTexture()
@@ -72,15 +74,20 @@ void UltralightViewport::Render()
 {
     Profiler::BeginProfile(__FUNCTION__);
 
+    if (m_firstFrame)
+    {
+        // Event?
+        m_firstFrame = false;
+        return;
+    }
+
     cvar renderTarget = m_view->render_target();
     if(!renderTarget.is_empty)
     {
         cvar driver = (ultralight::GPUDriverD3D11*)ultralight::Platform::instance().gpu_driver();
         cvar sourceTexture = driver->GetTexture(m_view->render_target().texture_id);
 
-        // Copy sourceTexture to m_texture
-
-        //Renderer::CopyTextureSubresourceSync()
+        Renderer::CopyTextureSubresourceSync(m_texture, sourceTexture);
     }
 
     Profiler::EndProfile();

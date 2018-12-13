@@ -30,6 +30,7 @@ private:
     void Resize(uint width, uint height);
     void Update();
     void Render();
+    void RenderView();
     void OnDestroy() override;
 
 public:

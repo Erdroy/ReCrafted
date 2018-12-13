@@ -15,6 +15,8 @@ private:
     Renderer::Texture2DHandle m_texture;
     ultralight::RefPtr<ultralight::View> m_view;
 
+    bool m_firstFrame = true;
+
 private:
     void CreateTexture(uint width, uint height);
     void DestroyTexture();

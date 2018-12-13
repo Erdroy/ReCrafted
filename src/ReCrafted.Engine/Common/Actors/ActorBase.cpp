@@ -17,7 +17,7 @@ void ActorBase::OnRelease()
     if(m_parent)
     {
         // Remove from parent
-        SetParent(nullptr);
+        //SetParent(nullptr);
     }
 
     // We need to unbind the managed object, because we don't want to get 

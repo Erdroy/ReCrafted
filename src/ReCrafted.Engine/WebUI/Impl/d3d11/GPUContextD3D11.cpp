@@ -23,7 +23,12 @@ public:
   // Inherited from GPUContext
   virtual ultralight::GPUDriver* driver() const { return driver_.get(); }
   virtual ultralight::FaceWinding face_winding() const { return ultralight::kFaceWinding_Clockwise; }
-  virtual void BeginDrawing() {}
+  virtual void BeginDrawing()
+  {
+    immediate_context_->OMSetBlendState(blend_state_.Get(), NULL, 0xffffffff);
+    immediate_context_->RSSetState(rasterizer_state_.Get());
+    SetViewportSize(width_, height_);
+  }
   virtual void EndDrawing() {}
   virtual void PresentFrame() {
     swap_chain()->Present(enable_vsync_? 1 : 0, 0);
@@ -174,6 +179,23 @@ public:
     driver_ = std::make_unique<ultralight::GPUDriverD3D11>(this);
     
     return true;
+  }
+
+  void SetViewportSize(int width, int height)
+  {
+      width_ = width;
+      height_ = height;
+
+      // Setup the viewport
+      D3D11_VIEWPORT vp;
+      ZeroMemory(&vp, sizeof(vp));
+      vp.Width = (float)width;
+      vp.Height = (float)height;
+      vp.MinDepth = 0.0f;
+      vp.MaxDepth = 1.0f;
+      vp.TopLeftX = 0;
+      vp.TopLeftY = 0;
+      immediate_context_->RSSetViewports(1, &vp);
   }
 
   UINT back_buffer_width() { return back_buffer_width_; }

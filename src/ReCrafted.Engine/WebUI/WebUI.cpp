@@ -64,6 +64,14 @@ void WebUI::Render()
     Profiler::EndProfile();
 }
 
+void WebUI::RenderViews()
+{
+    Profiler::BeginProfile(__FUNCTION__);
+    for (crvar view : m_views)
+        view->RenderView();
+    Profiler::EndProfile();
+}
+
 WebUIView* WebUI::CreateView()
 {
     if (!WebUIEngine::IsInitialized())

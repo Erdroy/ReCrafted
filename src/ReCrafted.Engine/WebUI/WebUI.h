@@ -30,6 +30,7 @@ private:
 
     void Resize(uint width, uint height);
     void Render();
+    void RenderViews();
 
 public:
     virtual ~WebUI() = default;

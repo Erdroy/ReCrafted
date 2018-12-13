@@ -46,6 +46,16 @@ void WebUIView::Render()
 
     m_viewport->Render();
 
+    Profiler::EndProfile();
+}
+
+void WebUIView::RenderView()
+{
+    Profiler::BeginProfile(__FUNCTION__);
+
+    if (!m_Active)
+        return;
+
     if (!m_fullscreen)
     {
         // TODO: Render world-space quad
@@ -53,7 +63,7 @@ void WebUIView::Render()
     else
     {
         // Blit into back-buffer
-       // Renderer::BlitTexture(Graphics::GetInstance()->GetFrameBuffer(), m_viewport->GetTexture());
+        Renderer::BlitTexture(Graphics::GetInstance()->GetFrameBuffer(), m_viewport->GetTexture());
     }
 
     Profiler::EndProfile();
