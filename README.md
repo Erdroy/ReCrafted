@@ -7,7 +7,7 @@
 3. Run command `.\pm SetupProject --username "YOUR USERNAME"` 
 4. Run command `.\pm Update3rdParty`, or mannualy download zip from https://erdroy.com/ReCrafted3rdParty.zip and unzip all files from downloaded archive - `ReCrafted3rdParty.zip` into `X:/ReCrafted/lib/` (should contain directories like ).
 5. Run command `.\pm CreateProjects -t vs2015` to create needed projects for Visual Studio 2015.
-6. Done! Now you can open `.projects/vs2015/ReCrafted.sln` to start project solution.
+6. Done! Now you can open `ReCrafted.sln` to start project solution.
 
 **Warning**: Please DO NOT upgrade projects at first startup.
 ![alt text](https://github.com/Erdroy/ReCrafted/raw/master/images/donotupgrademeufreak.png)
