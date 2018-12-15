@@ -31,6 +31,7 @@ UltralightViewport::UltralightViewport(const int width, const int height, const 
 
     // Create texture
     CreateTexture(width, height);
+    m_skipFrames++;
 }
 
 UltralightViewport::~UltralightViewport()
@@ -72,12 +73,11 @@ void UltralightViewport::Update()
 
 void UltralightViewport::Render()
 {
-    Profiler::BeginProfile(__FUNCTION__);
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
 
-    if (m_firstFrame)
+    if(m_skipFrames > 0)
     {
-        // Event?
-        m_firstFrame = false;
+        m_skipFrames--;
         return;
     }
 
@@ -89,8 +89,6 @@ void UltralightViewport::Render()
 
         Renderer::CopyTextureSubresourceSync(m_texture, sourceTexture);
     }
-
-    Profiler::EndProfile();
 }
 
 void UltralightViewport::Resize(const uint width, const uint height)
@@ -100,6 +98,7 @@ void UltralightViewport::Resize(const uint width, const uint height)
     CreateTexture(width, height);
 
     m_view->Resize(width, height);
+    m_skipFrames++;
 }
 
 void UltralightViewport::Navigate(const char* url)

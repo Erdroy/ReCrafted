@@ -15,7 +15,7 @@ private:
     Renderer::Texture2DHandle m_texture;
     ultralight::RefPtr<ultralight::View> m_view;
 
-    bool m_firstFrame = true;
+    uint32_t m_skipFrames = 0u;
 
 private:
     void CreateTexture(uint width, uint height);
