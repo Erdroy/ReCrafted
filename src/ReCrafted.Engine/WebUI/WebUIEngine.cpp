@@ -3,15 +3,15 @@
 #include "WebUIEngine.h"
 #include "Common/Time.h"
 #include "Core/Logger.h"
+
 #include "WebUI/WebUIView.h"
 
 #include "WebUI/Impl/UltralightViewport.h"
 #include "WebUI/Impl/FileSystemWin.h"
 #include "WebUI/Impl/FontLoaderWin.h"
+#include "WebUI/Impl/GPUContext.h"
 
 #include <Ultralight/Ultralight.h>
-#include <shlwapi.h>
-#include "Impl/GPUContext.h"
 
 SINGLETON_IMPL(WebUIEngine)
 
@@ -22,17 +22,16 @@ void WebUIEngine::Init()
 {
     m_initialized = true;
 
-    TCHAR currentDirectory[_MAX_PATH];
-    GetCurrentDirectory(_MAX_PATH, currentDirectory);
-    TCHAR assetsDirectory[_MAX_PATH];
-    PathCombine(assetsDirectory, currentDirectory, L"./../assets/ui/");
-
     m_webui_context = ultralight::GPUContext::Create(false);
+
+    // Setup ultralight config
+    auto config = ultralight::Config();
+    config.user_agent = ultralight::String16("ReCrafted/WebUI/1.0");
 
     // Setup ultralight platform
     auto& platform = ultralight::Platform::instance();
-    platform.set_config(ultralight::Config());
-    platform.set_file_system(new ultralight::FileSystemWin(assetsDirectory));
+    platform.set_config(config);
+    platform.set_file_system(new ultralight::FileSystemWin(L"./../content/UI/"));
     platform.set_font_loader(new ultralight::FontLoaderWin());
     platform.set_gpu_driver(m_webui_context->driver());
 
@@ -47,8 +46,13 @@ void WebUIEngine::OnDispose()
     if (!IsInitialized())
         return;
 
+    // Delete platform
+    delete ultralight::Platform::instance().file_system();
+    delete ultralight::Platform::instance().font_loader();
+
     // Release ultralight renderer
     g_ultralightRenderer->Release();
+    m_webui_context.reset();
 }
 
 void WebUIEngine::Update()
@@ -74,8 +78,6 @@ void WebUIEngine::Render()
         if (driver->HasCommandsPending())
         {
             driver->DrawCommandList();
-
-            // Set flag
         }
     }
     m_webui_context->EndDrawing();
