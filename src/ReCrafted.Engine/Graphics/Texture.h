@@ -7,11 +7,13 @@
 
 // includes
 #include "ReCrafted.h"
+#include "Core/Task.h"
+#include "Core/Streams/FileStream.h"
 #include "Content/Assets/BinaryAsset.h"
 #include "Renderer/Renderer.hpp"
 #include "Scripting/Object.h"
-#include "Core/Task.h"
-#include "Core/Streams/FileStream.h"
+
+class BinaryStream;
 
 class Texture : public BinaryAsset
 {
@@ -112,11 +114,11 @@ protected:
 
 public:
     /**
-     * \brief Initializes this texture and allocates memory using texture format RGBA8.
+     * \brief Initializes this texture and allocates memory.
      * \param width The texture width.
      * \param height The texture height.
      */
-    void Initialize(uint16_t width, uint16_t height);
+    void Initialize(uint16_t width, uint16_t height, Renderer::TextureFormat::_enum format = Renderer::TextureFormat::RGBA8);
 
     /**
      * \brief Initializes this texture from given memory pointer. Data gets copied into allocated texture memory.
@@ -202,6 +204,16 @@ public:
      * \param generateMips When true, this texture will get online-generated mip maps.
      */
     void Apply(bool generateMips = false);
+
+    /**
+     * \brief Resizes the texture to given size.
+     * \param width The new texture width.
+     * \param height The new texture height.
+     * 
+     * \note - Only texture created as Virtual Asset with Initialize function can be resized.
+     * \note - Mip-maps are not supported.
+     */
+    void Resize(uint16_t width, uint16_t height);
 
 public:
     /**

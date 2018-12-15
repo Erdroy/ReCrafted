@@ -1,7 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Texture.h"
-#include "Core/Streams/FileStream.h"
 
 #include <upng.h>
 
@@ -43,15 +42,13 @@ void Texture::OnUnload()
     }
 }
 
-void Texture::Initialize(const uint16_t width, const uint16_t height)
+void Texture::Initialize(const uint16_t width, const uint16_t height, const Renderer::TextureFormat::_enum format)
 {
-    cvar textureFormat = Renderer::TextureFormat::RGBA8;
-
-    cvar pixelSize = Renderer::TextureFormatInfo[textureFormat][0];
+    cvar pixelSize = Renderer::TextureFormatInfo[format][0];
     cvar pitch = width * pixelSize / 8;
     cvar textureSize = height * pitch;
 
-    m_format = textureFormat;
+    m_format = format;
     m_width = width;
     m_height = height;
     m_pitch = pitch;
@@ -186,4 +183,20 @@ void Texture::Apply(const bool generateMips)
 
     m_textureMemory = nullptr;
     m_applied = true;
+}
+
+void Texture::Resize(const uint16_t width, const uint16_t height)
+{
+    ASSERT(width > 0);
+    ASSERT(height > 0);
+
+    m_width = width;
+    m_height = height;
+
+    // Release current texture
+    OnUnload();
+
+    // Apply the texture once again
+    m_applied = false;
+    Apply();
 }
