@@ -170,4 +170,6 @@ public:
     }
 };
 
+#define CPU_PROFILE_SCOPE(id, name) const auto profile##id = ScopedProfile( name )
+
 #endif // PROFILER_H
