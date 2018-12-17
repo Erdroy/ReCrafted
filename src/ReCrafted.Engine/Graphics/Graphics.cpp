@@ -254,22 +254,22 @@ void Graphics::Render()
         RenderEnd(); // end rendering
 
         // Render post processing
-        //m_rendering->RenderPostProcessing(m_frameTexture, m_gbuffer->GetTarget(1), m_gbuffer->GetDepthBuffer());
+        m_rendering->RenderPostProcessing(m_frameTexture, m_gbuffer->GetTarget(1), m_gbuffer->GetDepthBuffer());
 
         // Blit into framebuffer
         BlitFrameBuffer();
 
         // Set frame buffer as current
-        //Renderer::ApplyRenderBuffer(m_frameBuffer);
-
-        // Render debug draw
-        //RenderDebugDraw();
-
-        // Render UI
-        RenderUI();
+        Renderer::ApplyRenderBuffer(m_frameBuffer);
 
         // Render (fullscreen) WebUIViews
         RenderWebUIViews();
+
+        // Render debug draw
+        RenderDebugDraw();
+
+        // Render UI
+        RenderUI();
 
         Profiler::BeginProfile("Renderer::Frame");
         // next frame, wait vsync
