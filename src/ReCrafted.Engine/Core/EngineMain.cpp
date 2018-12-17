@@ -18,6 +18,7 @@
 #include "Game/Universe.h"
 #include "Graphics/Graphics.h"
 #include "Graphics/DebugDraw.h"
+#include "Input/InputManager.h"
 #include "UI/UI.h"
 #include "WebUI/WebUI.h"
 #include "Physics/PhysicsManager.h"
@@ -38,6 +39,7 @@ void EngineMain::RegisterComponents() const
     m_componentManager->RegisterComponent(Profiler::GetInstance());
     m_componentManager->RegisterComponent(Time::GetInstance());
     m_componentManager->RegisterComponent(Input::GetInstance());
+    m_componentManager->RegisterComponent(InputManager::GetInstance());
     m_componentManager->RegisterComponent(VoxelMaterialManager::GetInstance());
     m_componentManager->RegisterComponent(MainWorld::GetInstance());
     m_componentManager->RegisterComponent(ActorPoolManager::GetInstance());
@@ -116,10 +118,10 @@ void EngineMain::OnUpdate()
     }
     Profiler::EndProfile();
 
-    // clear keyboard buffer
-    KeyboardBuffer::Clear();
+    // Update input
+    InputManager::GetInstance()->UpdateInput();
 
-    // run platform events
+    // Run platform events
     Platform::RunEvents();
 
     Profiler::BeginProfile("Update");
