@@ -2,6 +2,10 @@
 
 #include "Keyboard.h"
 
+void Keyboard::Update()
+{
+}
+
 bool Keyboard::IsKey(Key key)
 {
     return false;
@@ -15,4 +19,9 @@ bool Keyboard::IsKeyDown(Key key)
 bool Keyboard::IsKeyUp(Key key)
 {
     return false;
+}
+
+Text&& Keyboard::GetInputString()
+{
+    return Text::Empty();
 }

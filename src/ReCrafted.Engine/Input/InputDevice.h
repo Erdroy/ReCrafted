@@ -20,8 +20,13 @@ enum class DeviceType
 
 class InputDevice
 {
+    friend class InputManager;
+
 protected:
     virtual ~InputDevice() = default;
+
+protected:
+    virtual void Update() { }
 
 public:
     /**

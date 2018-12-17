@@ -20,6 +20,9 @@ public:
     Keyboard() = default;
     ~Keyboard() override = default;
 
+protected:
+    void Update() override;
+
 public:
     /**
      * \brief The name of this device.
@@ -55,6 +58,12 @@ public:
      * \param key The key.
      */
     bool IsKeyUp(Key key);
+
+public:
+    /**
+     * \brief Contains character string that has been entered during current frame.
+     */
+    Text&& GetInputString();
 };
 
 #endif // KEYBOARD_H

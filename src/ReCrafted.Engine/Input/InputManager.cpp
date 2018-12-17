@@ -21,6 +21,11 @@ void InputManager::OnDispose()
 
 void InputManager::UpdateInput()
 {
+    // Update devices
+    for(var& device : m_deviceMap)
+        device.second->Update();
+
+    // TODO: Update ActionMaps
 }
 
 InputDevice& InputManager::GetDevice(const int deviceId)

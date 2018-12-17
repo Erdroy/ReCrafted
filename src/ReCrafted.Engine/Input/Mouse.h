@@ -20,6 +20,9 @@ public:
     Mouse() = default;
     ~Mouse() override = default;
 
+protected:
+    void Update() override;
+
 public:
     /**
      * \brief The name of this device.
@@ -55,6 +58,48 @@ public:
      * \param button The button.
      */
     bool IsButtonUp(Button button);
+
+public:
+    /**
+     * \brief Sets mouse position relative to the current game window.
+     * \param position The new position.
+     */
+    void SetMousePosition(const Vector2& position);
+
+    /**
+     * \brief Gets mouse position relative to the current game window.
+     */
+    Vector2 GetMousePosition();
+
+    /**
+     * \brief Gets mouse position delta from last frame.
+     */
+    Vector2 GetMouseDelta();
+
+    /**
+     * \brief Gets mouse scroll delta from last frame.
+     */
+    int GetMouseScrollDelta();
+
+    /**
+     * \brief Sets cursor show state.
+     */
+    void SetShowCursor(bool show);
+
+    /**
+     * \brief Gets cursor show state.
+     */
+    bool GetShowCursor();
+
+    /**
+     * \brief Sets cursor lock state.
+     */
+    void SetLockCursor(bool lock);
+
+    /**
+     * \brief Gets cursor lock state.
+     */
+    bool GetLockCursor();
 };
 
 #endif // MOUSE_H
