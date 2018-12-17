@@ -26,6 +26,7 @@
 #include "Scripting/ScriptingEngine.h"
 #include "TaskManager.h"
 #include "Voxels/VoxelMaterialManager.h"
+#include "GameInfo.h"
 
 EngineMain* EngineMain::m_instance;
 
@@ -75,7 +76,8 @@ void EngineMain::CreateMainWindow()
     m_mainWindow->SetOnResized(Action<void>::New<EngineMain, &EngineMain::OnWindowResized>(this));
 
     // Make window borderless by default
-    Platform::MakeBorderLessWindow(Platform::GetCurrentWindow(), true);
+    if(GameInfo::ContainsArgument(TEXT_CONST("borderless")))
+        Platform::MakeBorderLessWindow(Platform::GetCurrentWindow(), true);
 
     // Update size
     m_mainWindow->UpdateSizeNow();
