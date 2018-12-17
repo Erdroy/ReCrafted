@@ -7,20 +7,12 @@
 
 // includes
 #include "ReCrafted.h"
-#include "WebUIOverlay.h"
-#include "WebUIView.h"
-
-class WebUIGPUDriver;
-class WebUIRenderer;
+#include "WebUIViewport.h"
 
 class WebUIEngine : public Singleton<WebUIEngine>
 {
 private:
     bool m_initialized = false;
-    bool m_needsViewUpdate = false;
-
-    WebUIGPUDriver* m_gpuDriver = nullptr;
-    WebUIRenderer* m_renderer = nullptr;
 
 public:
     void Init();
@@ -30,11 +22,7 @@ public:
     void Render();
 
 public:
-    void Resize(uint width, uint height);
-    bool NeedsViewsUpdate() const;
-
-public:
-    static WebUIOverlay* CreateUIView(WebUIView* view, bool fullscreen);
+    static WebUIViewport* CreateUIViewport(WebUIView* view, bool fullscreen);
     static bool IsInitialized();
 };
 

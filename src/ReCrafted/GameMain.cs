@@ -8,23 +8,15 @@ using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.Physics;
 using ReCrafted.API.UI;
-using ReCrafted.API.UI.Controls;
 using ReCrafted.Common;
-using ReCrafted.Game.Interface;
 using ReCrafted.Game.Player;
-using Object = ReCrafted.API.Object;
 
 namespace ReCrafted.Game
 {
     internal class GameMain : Application
     {
-        // cross hair control
-        private UIBox _crosshairBox;
-
-        // build number control
-        private UIText _buildNumberText;
-
-        private WebUIView _webView;
+        private WebUIView _uiGameHud;
+        private WebUIView _uiGameOverlay;
 
         public static PlayerManager CurrentPlayer { get; private set; }
 
@@ -52,22 +44,12 @@ namespace ReCrafted.Game
                 
                 // apply target fps
                 TargetFps = 60;
+                
+                _uiGameOverlay = WebUI.Create();
+                _uiGameOverlay.Navigate("file:///game/overlay.html");
 
-                // create some default controls
-                _crosshairBox =
-                    UIControl.CreateControl(
-                        new UIBox(Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "crosshair.png"))));
-
-                _buildNumberText = UIControl.CreateControl(new UIText());
-                _buildNumberText.Text =
-                    "ReCrafted " + GameInfo.Current.BuildName + " build " + GameInfo.Current.BuildNumber;
-
-                // Initialize default game systems
-                GameSystem.AddGameSystem<PauseMenu>();
-                GameSystem.AddGameSystem<Messenger>();
-
-                _webView = WebUI.Create();
-                _webView.Navigate("https://google.com/");
+                _uiGameHud = WebUI.Create();
+                _uiGameHud.Navigate("file:///game/hud.html");
             }
             catch (Exception exception)
             {
@@ -82,34 +64,25 @@ namespace ReCrafted.Game
             {
                 // Update game systems
                 GameSystem.UpdateAll();
-                
-                _crosshairBox.Region =
-                    new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
-                _buildNumberText.Position = new Vector2(20.0f, Display.Height - 20.0f);
-                
-                if (Input.IsKeyDown(Keys.Escape))
+
+                if (Input.IsKeyDown(Keys.F5))
                 {
-                    if (PauseMenu.Instance.Enabled)
-                    {
-                        DisablePause();
-                    }
-                    else
-                    {
-                        EnablePause();
-                    }
+                    _uiGameHud.Navigate("file:///game/hud.html");
+                    _uiGameOverlay.Navigate("file:///game/overlay.html");
                 }
                 
-                if (Input.IsKeyDown(Keys.F8) && (PauseMenu.Instance == null || !PauseMenu.Instance.Enabled))
+                if (Input.IsKeyDown(Keys.Escape))
                 {
                     Cursor.Show = !Cursor.Show;
                     Cursor.Lock = !Cursor.Show;
                 }
                 
-                /*if (PhysicsManager.RayCast(Camera.Current.Position, Camera.Current.Forward, out var hit, 10.0f, 1))
+                if (PhysicsManager.RayCast(Camera.Current.Position, Camera.Current.Forward, out var hit, 10.0f, 1))
                 {
+                    DebugDraw.Matrix = Matrix.Identity;
                     DebugDraw.Color = new Color(0xFF1000FF);
                     DebugDraw.DrawWireSphere(hit.Point, 1.5f * 0.5f);
-                }*/
+                }
 
                 // draw world-space lines
                 DebugDraw.Color = new Color(0, 255, 0, 32);
@@ -153,35 +126,6 @@ namespace ReCrafted.Game
         // shutdown
         protected override void Shutdown()
         {
-        }
-
-        /// <summary>
-        /// Enables pause menu.
-        /// </summary>
-        public static void EnablePause()
-        {
-            Instance._crosshairBox.Enabled = false;
-
-            Cursor.Show = true;
-            Cursor.Lock = false;
-
-            PauseMenu.Instance.Enable();
-        }
-
-        /// <summary>
-        /// Disables pause menu.
-        /// </summary>
-        public static void DisablePause()
-        {
-            Instance._crosshairBox.Enabled = true;
-
-            Cursor.Show = false;
-            Cursor.Lock = true;
-
-            PauseMenu.Instance.Disable();
-
-            if (UIControl.FocusedControl != null)
-                UIControl.SetFocusedControl(null);
         }
         
         /// <summary>

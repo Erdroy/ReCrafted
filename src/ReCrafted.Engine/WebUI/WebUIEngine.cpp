@@ -4,41 +4,39 @@
 #include "Common/Time.h"
 #include "Core/Logger.h"
 
-#include "WebUIGPUDriver.h"
-#include "WebUIRenderer.h"
+#include "WebUI/WebUIView.h"
 
-#include "Impl/FontLoaderRoboto.h"
-#include "Impl/Overlay.h"
+#include "WebUI/Impl/UltralightViewport.h"
+#include "WebUI/Impl/FileSystemWin.h"
+#include "WebUI/Impl/FontLoaderWin.h"
+#include "WebUI/Impl/GPUContext.h"
 
 #include <Ultralight/Ultralight.h>
 
 SINGLETON_IMPL(WebUIEngine)
 
-ultralight::RefPtr<ultralight::Renderer> m_ultralightRenderer = nullptr;
+ultralight::RefPtr<ultralight::Renderer> g_ultralightRenderer = nullptr;
+std::unique_ptr<ultralight::GPUContext> m_webui_context = nullptr;
 
 void WebUIEngine::Init()
 {
     m_initialized = true;
 
-    m_gpuDriver = new WebUIGPUDriver();
+    m_webui_context = ultralight::GPUContext::Create(false);
 
     // Setup ultralight config
-    ultralight::Config config;
-    config.face_winding = ultralight::kFaceWinding_Clockwise;
-    config.device_scale_hint = 1.0f;
-    config.use_distance_field_fonts = true;
-    config.use_distance_field_paths = true;
+    auto config = ultralight::Config();
+    config.user_agent = ultralight::String16("ReCrafted/WebUI/1.0");
 
+    // Setup ultralight platform
     auto& platform = ultralight::Platform::instance();
-    platform.set_config(ultralight::Config());
-    platform.set_gpu_driver(m_gpuDriver);
-    platform.set_font_loader(new ultralight::FontLoaderRoboto()); // TODO: Font loader
-    // TODO: File system
+    platform.set_config(config);
+    platform.set_file_system(new ultralight::FileSystemWin(L"./../content/UI/"));
+    platform.set_font_loader(new ultralight::FontLoaderWin());
+    platform.set_gpu_driver(m_webui_context->driver());
 
-    // Create the Renderer
-    m_ultralightRenderer = ultralight::Renderer::Create();
-
-    m_renderer = new WebUIRenderer(m_ultralightRenderer.get(), m_gpuDriver);
+    // Create ultralight renderer
+    g_ultralightRenderer = ultralight::Renderer::Create();
 
     Logger::Log("WebUIEngine initialized using Ultralight {0} (WebKitCore)", ULTRALIGHT_VERSION);
 }
@@ -48,27 +46,18 @@ void WebUIEngine::OnDispose()
     if (!IsInitialized())
         return;
 
-    rvar platform = ultralight::Platform::instance();
-
-    //delete static_cast<ultralight::FileSystemWin*>(platform.file_system());
-    //platform.set_file_system(nullptr);
-
-    delete static_cast<ultralight::FontLoaderRoboto*>(platform.font_loader());
-    platform.set_font_loader(nullptr);
-
-    delete static_cast<WebUIGPUDriver*>(platform.gpu_driver());
-    platform.set_gpu_driver(nullptr);
+    // Delete platform
+    delete ultralight::Platform::instance().file_system();
+    delete ultralight::Platform::instance().font_loader();
 
     // Release ultralight renderer
-    m_ultralightRenderer = nullptr;
-
-    delete m_renderer;
-    m_renderer = nullptr;
+    g_ultralightRenderer->Release();
+    m_webui_context.reset();
 }
 
 void WebUIEngine::Update()
 {
-    m_renderer->Update();
+    g_ultralightRenderer->Update();
 }
 
 void WebUIEngine::Render()
@@ -76,32 +65,34 @@ void WebUIEngine::Render()
     if (!IsInitialized())
         return;
 
-    m_renderer->Render();
+    cvar driver = ultralight::Platform::instance().gpu_driver();
+
+    m_webui_context->BeginDrawing();
+    {
+        driver->BeginSynchronize();
+        {
+            g_ultralightRenderer->Render();
+        }
+        driver->EndSynchronize();
+
+        if (driver->HasCommandsPending())
+        {
+            driver->DrawCommandList();
+        }
+    }
+    m_webui_context->EndDrawing();
 }
 
-void WebUIEngine::Resize(uint width, uint height)
+WebUIViewport* WebUIEngine::CreateUIViewport(WebUIView* view, const bool fullscreen)
 {
-    if (!IsInitialized())
-        return;
+    ASSERT(IsInitialized());
 
-    m_renderer->Resize(width, height);
-}
+    cvar width = view->Width();
+    cvar height = view->Height();
 
-bool WebUIEngine::NeedsViewsUpdate() const
-{
-    return m_renderer->NeedsViewsUpdate();
-}
-
-WebUIOverlay* WebUIEngine::CreateUIView(WebUIView* view, const bool fullscreen)
-{
-    if (!IsInitialized())
-        return nullptr;
-
-    cvar overlay = new Overlay(fullscreen, m_ultralightRenderer.get(), m_instance->m_gpuDriver, view->Width(), view->Height());
-    overlay->view()->set_load_listener(overlay);
-    overlay->view()->set_view_listener(overlay);
-
-    return static_cast<WebUIOverlay*>(overlay);
+    cvar ultralightView = g_ultralightRenderer->CreateView(width, height, true);
+    cvar ultralightViewport = new UltralightViewport(width, height, ultralightView);
+    return static_cast<WebUIViewport*>(ultralightViewport);
 }
 
 bool WebUIEngine::IsInitialized()

@@ -15,7 +15,6 @@ class WebUI : public EngineComponent<WebUI>
 {
     friend class Graphics;
     friend class EngineMain;
-    friend class WebUIRenderer;
 
 private:
 SCRIPTING_API_IMPL()
@@ -31,6 +30,7 @@ private:
 
     void Resize(uint width, uint height);
     void Render();
+    void RenderViews();
 
 public:
     virtual ~WebUI() = default;

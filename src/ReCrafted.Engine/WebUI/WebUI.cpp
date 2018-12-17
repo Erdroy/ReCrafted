@@ -31,11 +31,9 @@ void WebUI::OnDispose()
     Logger::Log("WebUI disposed");
 }
 
-void WebUI::Resize(uint width, uint height)
+void WebUI::Resize(const uint width, const uint height)
 {
-    m_engine->Resize(width, height);
-
-    for (var&& view : m_views)
+    for (crvar view : m_views)
     {
         if(view->IsFullscreen())
             view->Resize(width, height);
@@ -45,8 +43,11 @@ void WebUI::Resize(uint width, uint height)
 void WebUI::Update()
 {
     Profiler::BeginProfile(__FUNCTION__);
-    
+
     m_engine->Update();
+
+    for (crvar view : m_views)
+        view->Update();
 
     Profiler::EndProfile();
 }
@@ -57,12 +58,17 @@ void WebUI::Render()
 
     m_engine->Render();
 
-    //if(m_engine->NeedsViewsUpdate())
-    {
-        for (var&& view : m_views)
-            view->Render();
-    }
+    for (crvar view : m_views)
+        view->Render();
 
+    Profiler::EndProfile();
+}
+
+void WebUI::RenderViews()
+{
+    Profiler::BeginProfile(__FUNCTION__);
+    for (crvar view : m_views)
+        view->RenderView();
     Profiler::EndProfile();
 }
 
@@ -72,6 +78,7 @@ WebUIView* WebUI::CreateView()
         return nullptr;
 
     var view = Object::CreateInstance<WebUIView>("ReCrafted.API.Graphics", "WebUIView");
+
     view->Init();
     m_views.Add(view);
 

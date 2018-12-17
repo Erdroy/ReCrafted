@@ -1,16 +1,19 @@
 #include <Ultralight/platform/FontLoader.h>
+#include <map>
 
 namespace ultralight {
 
 /**
- * FontLoader implementation that just returns an embedded font (Roboto).
+ * FontLoader implementation for Windows.
  */
-class FontLoaderRoboto : public FontLoader {
+class FontLoaderWin : public FontLoader {
 public:
-  FontLoaderRoboto() {}
-  virtual ~FontLoaderRoboto() {}
+  FontLoaderWin() {}
+  virtual ~FontLoaderWin() {}
   virtual String16 fallback_font() const override;
   virtual Ref<Buffer> Load(const String16& family, int weight, bool italic, float size) override;
+protected:
+  std::map<uint64_t, RefPtr<Buffer>> fonts_;
 };
 
 }  // namespace ultralight

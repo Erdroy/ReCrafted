@@ -3,16 +3,23 @@
 #include "WebUIView.h"
 #include "Scripting/Mono.h"
 #include "Scripting/Bindings.h"
-#include "Common/Text.h"
 
 namespace Internal
 {
     void navigate(WebUIView* view, MonoString* string)
     {
-        var url = Text::Constant(MONO_TEXT(string));
+        if (!view)
+            return;
 
-        if (view)
-            view->Navigate(url);
+        // convert monostring to ansi string
+        MONO_ANSI_ERR();
+        auto str = MONO_ANSI(string);
+
+        // navigate
+        view->Navigate(str);
+
+        // free ansi string
+        MONO_ANSI_FREE(str);
     }
 
     void execute(WebUIView* view, MonoString* string)

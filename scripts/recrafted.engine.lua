@@ -11,7 +11,7 @@ project "ReCrafted.Engine"
 		"StaticRuntime",
 		"NoRTTI",
 	}
-	defines { "_CRT_SECURE_NO_WARNINGS", "JEMALLOC_EXPORT=", "JEMALLOC_STATIC" }
+	defines { "_CRT_SECURE_NO_WARNINGS", "JEMALLOC_EXPORT=", "JEMALLOC_STATIC", "NOMINMAX" }
 	location (OUTPUT_DIR)
 	targetname "ReCrafted"
 	

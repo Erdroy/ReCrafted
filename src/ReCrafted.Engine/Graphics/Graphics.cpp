@@ -79,6 +79,7 @@ void Graphics::InitializeRenderer()
         m_currentTextures.Add(nullptr);
 
     // Set renderer callbacks
+    Renderer::AddOnPresentBeginEvent(Action<void>::New<Graphics, &Graphics::RenderWebUI>(this));
     Renderer::AddOnPresentBeginEvent(Action<void>::New<Graphics, &Graphics::RenderImGUI>(this));
 
     // Initialize ImGUI
@@ -251,7 +252,7 @@ void Graphics::Render()
             m_rendering->RenderShadows();
         }
         RenderEnd(); // end rendering
-        
+
         // Render post processing
         m_rendering->RenderPostProcessing(m_frameTexture, m_gbuffer->GetTarget(1), m_gbuffer->GetDepthBuffer());
 
@@ -261,11 +262,11 @@ void Graphics::Render()
         // Set frame buffer as current
         Renderer::ApplyRenderBuffer(m_frameBuffer);
 
+        // Render (fullscreen) WebUIViews
+        RenderWebUIViews();
+
         // Render debug draw
         RenderDebugDraw();
-
-        // Render WebUI
-        //RenderWebUI();
 
         // Render UI
         RenderUI();
@@ -313,7 +314,7 @@ void Graphics::RenderBegin()
     // set default shader
     SetShader(m_gbufferFillShader);
 
-    // Update 
+    // Update
     UpdateDefaultConstants(Camera::GetMainCamera()->GetViewProjection());
 
     if (Input::IsKey(Key_F1))
@@ -377,7 +378,7 @@ void Graphics::RenderEnd()
     // Set shader
     SetShader(m_gbufferCombine);
 
-    // Update 
+    // Update
     UpdateDefaultConstants(Camera::GetMainCamera()->GetViewProjection());
 
     // blit render textures using gbuffercombine shader
@@ -464,10 +465,19 @@ void Graphics::RenderWebUI()
 {
     Profiler::BeginProfile("Render WebUI");
     {
-        // set WebUI state
-        SetStage(RenderStage::DrawUI);
-
         WebUI::GetInstance()->Render();
+    }
+    Profiler::EndProfile();
+}
+
+void Graphics::RenderWebUIViews()
+{
+    Profiler::BeginProfile("Render WebUIViews");
+    {
+        // set WebUI state
+        SetStage(RenderStage::DrawWebUI);
+
+        WebUI::GetInstance()->RenderViews();
     }
     Profiler::EndProfile();
 }
@@ -475,7 +485,7 @@ void Graphics::RenderWebUI()
 void Graphics::RenderImGUI()
 {
     Profiler::BeginProfile("Render ImGui");
-
+    
     // Get renderer context
     Renderer::RHIContext rendererContext;
     Renderer::GetContext(&rendererContext);
@@ -578,7 +588,7 @@ void Graphics::SetTextureArray(uint slot, Texture** textureArray, uint8_t textur
 {
     // Copy textures
     Renderer::Texture2DHandle textures[32]; // Max 32 textures per array
-    
+
     for(var i = 0u; i < textureCount; i++)
     {
         cvar texture = textureArray[i];

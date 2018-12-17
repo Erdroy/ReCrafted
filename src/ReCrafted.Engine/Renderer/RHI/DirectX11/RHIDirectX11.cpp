@@ -1725,7 +1725,9 @@ namespace Renderer
             cvar textureDesc = m_textures[targetTexture.idx];
             ASSERT(textureDesc.texture != nullptr);
 
-            m_deviceContext->CopySubresourceRegion(textureDesc.texture, subresourceId, 0u, 0u, 0u, static_cast<ID3D11Texture2D*>(sourceTexturePtr), subresourceId, nullptr);
+            cvar sourceTexture = static_cast<ID3D11Texture2D*>(sourceTexturePtr);
+            //m_deviceContext->CopyResource(textureDesc.texture, sourceTexture);
+            m_deviceContext->CopySubresourceRegion(textureDesc.texture, subresourceId, 0u, 0u, 0u, sourceTexture, subresourceId, nullptr);
         }
 
         void RHIDirectX11::GetTextureSubresource(Texture2DHandle textureHandle, void* buffer, size_t bufferSize, uint8_t subresourceId)

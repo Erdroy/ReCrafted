@@ -67,8 +67,6 @@ private:
     void OnDispose() override;
     void Update() override;
 
-    void RenderWebUI();
-
     void Render();
     void Resize(uint width, uint height);
 
@@ -78,6 +76,8 @@ private:
 
     void RenderDebugDraw();
     void RenderUI();
+    void RenderWebUI();
+    void RenderWebUIViews();
     void UpdateImGUI();
     void RenderImGUI();
 
@@ -122,8 +122,8 @@ public:
      * \param slot The shader slot.
      * \param textureArray The textures array.
      * \param textureCount The texture count.
-     * 
-     * \note Texture arrays do not support batching, 
+     *
+     * \note Texture arrays do not support batching,
      * so each call to set texture array will be executed on the GPU.
      */
     void SetTextureArray(uint slot, Texture** textureArray, uint8_t textureCount);
