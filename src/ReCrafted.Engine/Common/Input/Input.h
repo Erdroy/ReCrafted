@@ -116,9 +116,6 @@ public:
 	 */
     FORCEINLINE static Vector2 GetCursorDelta()
     {
-        if (m_instance->m_lockCursor)
-            return Vector2::Zero;
-
         return m_instance->m_cursorDelta;
     }
 
