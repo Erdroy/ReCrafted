@@ -8,7 +8,6 @@ using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.Physics;
 using ReCrafted.API.UI;
-using ReCrafted.API.UI.Controls;
 using ReCrafted.Common;
 using ReCrafted.Game.Player;
 
@@ -16,9 +15,6 @@ namespace ReCrafted.Game
 {
     internal class GameMain : Application
     {
-        // cross hair control
-        private UIBox _crosshairBox;
-        
         private WebUIView _uiGameHud;
         private WebUIView _uiGameOverlay;
 
@@ -48,22 +44,12 @@ namespace ReCrafted.Game
                 
                 // apply target fps
                 TargetFps = 60;
-
-                // create some default controls
-                _crosshairBox =
-                    UIControl.CreateControl(
-                        new UIBox(Sprite.Create(Assets.ResolveAssetFilePath(AssetType.Interface, "crosshair.png"))));
                 
                 _uiGameOverlay = WebUI.Create();
                 _uiGameOverlay.Navigate("file:///game/overlay.html");
 
                 _uiGameHud = WebUI.Create();
                 _uiGameHud.Navigate("file:///game/hud.html");
-
-                //_webView.Navigate("https://google.com/");
-                //_webView.Navigate("https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_draggable");
-                //_webView.Navigate("http://evanw.github.io/csg.js/");
-                //_webView.Navigate("file:///menu/menu.html");
             }
             catch (Exception exception)
             {
@@ -82,10 +68,8 @@ namespace ReCrafted.Game
                 if (Input.IsKeyDown(Keys.F5))
                 {
                     _uiGameHud.Navigate("file:///game/hud.html");
+                    _uiGameOverlay.Navigate("file:///game/overlay.html");
                 }
-                
-                _crosshairBox.Region =
-                    new RectangleF(Display.Width / 2.0f - 8.0f, Display.Height / 2.0f - 8.0f, 16.0f, 16.0f);
                 
                 if (Input.IsKeyDown(Keys.Escape))
                 {

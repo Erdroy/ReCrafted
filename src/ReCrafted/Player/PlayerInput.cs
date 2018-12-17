@@ -148,7 +148,7 @@ namespace ReCrafted.Game.Player
         {
             var cursorDelta = Input.CursorDelta;
 
-            if (Input.LockCursor)
+            if (!Input.LockCursor)
                 cursorDelta = Vector2.Zero;
             
             if (MouseFiltering)
