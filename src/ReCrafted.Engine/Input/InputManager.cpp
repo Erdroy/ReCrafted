@@ -28,6 +28,90 @@ void InputManager::UpdateInput()
     // TODO: Update ActionMaps
 }
 
+bool InputManager::IsButton(const Button button)
+{
+    ASSERT(m_instance);
+    return m_instance->m_mouse.IsButton(button);
+}
+
+bool InputManager::IsButtonDown(const Button button)
+{
+    ASSERT(m_instance);
+    return m_instance->m_mouse.IsButtonDown(button);
+}
+
+bool InputManager::IsButtonUp(const Button button)
+{
+    ASSERT(m_instance);
+    return m_instance->m_mouse.IsButtonUp(button);
+}
+
+void InputManager::SetMousePosition(const Vector2& position)
+{
+    ASSERT(m_instance);
+    return m_instance->m_mouse.SetMousePosition(position);
+}
+
+Vector2 InputManager::GetMousePosition()
+{
+    ASSERT(m_instance);
+    return m_instance->m_mouse.GetMousePosition();
+}
+
+Vector2 InputManager::GetMouseDelta()
+{
+    ASSERT(m_instance);
+    return m_instance->m_mouse.GetMouseDelta();
+}
+
+int InputManager::GetMouseScrollDelta()
+{
+    ASSERT(m_instance);
+    return m_instance->m_mouse.GetMouseScrollDelta();
+}
+
+void InputManager::SetShowCursor(const bool show)
+{
+    ASSERT(m_instance);
+    m_instance->m_mouse.SetShowCursor(show);
+}
+
+bool InputManager::GetShowCursor()
+{
+    ASSERT(m_instance);
+    return m_instance->m_mouse.GetShowCursor();
+}
+
+void InputManager::SetLockCursor(const bool lock)
+{
+    ASSERT(m_instance);
+    m_instance->m_mouse.SetLockCursor(lock);
+}
+
+bool InputManager::GetLockCursor()
+{
+    ASSERT(m_instance);
+    return m_instance->m_mouse.GetLockCursor();
+}
+
+bool InputManager::IsKey(const Key key)
+{
+    ASSERT(m_instance);
+    return m_instance->m_keyboard.IsKey(key);
+}
+
+bool InputManager::IsKeyDown(const Key key)
+{
+    ASSERT(m_instance);
+    return m_instance->m_keyboard.IsKeyDown(key);
+}
+
+bool InputManager::IsKeyUp(const Key key)
+{
+    ASSERT(m_instance);
+    return m_instance->m_keyboard.IsKeyUp(key);
+}
+
 InputDevice& InputManager::GetDevice(const int deviceId)
 {
     DEBUG_ASSERT(m_instance);

@@ -39,6 +39,82 @@ protected:
 public: /* -- Action Maps -- */
 
 public: /* -- Basic Input -- */
+    /**
+     * \brief Returns true when specified button is being held for at least one frame.
+     * \param button The button.
+     */
+    static bool IsButton(Button button);
+
+    /**
+     * \brief Returns true when specified button is has been pressed this frame.
+     * \param button The button.
+     */
+    static bool IsButtonDown(Button button);
+
+    /**
+     * \brief Returns true when specified button is has been released this frame.
+     * \param button The button.
+     */
+    static bool IsButtonUp(Button button);
+
+    /**
+     * \brief Sets mouse position relative to the current game window.
+     * \param position The new position.
+     */
+    static void SetMousePosition(const Vector2& position);
+
+    /**
+     * \brief Gets mouse position relative to the current game window.
+     */
+    static Vector2 GetMousePosition();
+
+    /**
+     * \brief Gets mouse position delta from last frame.
+     */
+    static Vector2 GetMouseDelta();
+
+    /**
+     * \brief Gets mouse scroll delta from last frame.
+     */
+    static int GetMouseScrollDelta();
+
+    /**
+     * \brief Sets cursor show state.
+     */
+    static void SetShowCursor(bool show);
+
+    /**
+     * \brief Gets cursor show state.
+     */
+    static bool GetShowCursor();
+
+    /**
+     * \brief Sets cursor lock state.
+     */
+    static void SetLockCursor(bool lock);
+
+    /**
+     * \brief Gets cursor lock state.
+     */
+    static bool GetLockCursor();
+
+    /**
+     * \brief Returns true when specified key is being held for at least one frame.
+     * \param key The key.
+     */
+    static bool IsKey(Key key);
+
+    /**
+     * \brief Returns true when specified key is has been pressed this frame.
+     * \param key The key.
+     */
+    static bool IsKeyDown(Key key);
+
+    /**
+     * \brief Returns true when specified key is has been released this frame.
+     * \param key The key.
+     */
+    static bool IsKeyUp(Key key);
 
 public: /* -- Devices -- */
     /**
