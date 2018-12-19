@@ -19,7 +19,7 @@ class Keyboard : public InputDevice
 
 public:
     /**
-     * \brief The amount of (base) keys that are supported by Keyboard.
+     * \brief The amount of (base) keys that are supported by Keyboard input device.
      * \note Does not include modified (special) keys.
      */
     static const int KeyCount = 256;

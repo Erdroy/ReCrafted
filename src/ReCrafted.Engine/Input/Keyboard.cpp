@@ -4,11 +4,15 @@
 
 Keyboard::InputKeyState& Keyboard::GetKeyState(Key key)
 {
+    ASSERT(key != Key::Unknown);
+
     return m_keyStates[static_cast<int>(key)];
 }
 
 void Keyboard::UpdateKeyState(const Key key, const KeyState state)
 {
+    ASSERT(key != Key::Unknown);
+
     GetKeyState(key).state = state == KeyState::Down ? 1 : 0;
     m_keyStatesDirty = true;
 }
