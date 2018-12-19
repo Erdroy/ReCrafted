@@ -6,10 +6,11 @@
 #define KEYBOARD_H
 
 #include "ReCrafted.h"
+#include "Core/Containers/Array.h"
 #include "Input/InputDevice.h"
 #include "Input/KeyboardKeys.h"
 
-/**
+/**wwwwww
  * \brief Keyboard input device.
  */
 class Keyboard : public InputDevice
@@ -17,11 +18,44 @@ class Keyboard : public InputDevice
     friend class InputManager;
 
 public:
-    Keyboard() = default;
+    /**
+     * \brief The amount of (base) keys that are supported by Keyboard.
+     * \note Does not include modified (special) keys.
+     */
+    static const int KeyCount = 256;
+
+private:
+    struct InputKeyState
+    {
+    public:
+        uint8_t previousState : 1;
+        uint8_t state : 1;
+
+        uint8_t reserved : 6;
+    };
+    static_assert(sizeof(InputKeyState) == 1u, "InputKeyState structure must be 1 byte long!");
+
+private:
+    InputKeyState m_keyStates[KeyCount] = {};
+    bool m_keyStatesDirty = false;
+
+    Array<Char> m_inputString = {};
+
+private:
+    FORCEINLINE InputKeyState& GetKeyState(Key key);
+    FORCEINLINE void UpdateKeyState(Key key, KeyState state);
+
+public:
+    Keyboard();
     ~Keyboard() override = default;
 
 protected:
     void Update() override;
+    void LateUpdate() override;
+
+public:
+    void EmitInput(Key key, KeyState keyState);
+    void EmitCharacter(Char character);
 
 public:
     /**
@@ -63,7 +97,7 @@ public:
     /**
      * \brief Contains character string that has been entered during current frame.
      */
-    Text&& GetInputString();
+    Char* GetInputString();
 };
 
 #endif // KEYBOARD_H

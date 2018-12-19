@@ -71,6 +71,7 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
     case WM_CHAR:
         {
             KeyboardBuffer::Write(static_cast<Char>(wparam));
+            InputManager::GetDevice<Keyboard>(DeviceType::Keyboard).EmitCharacter(Char(wparam));
             return 0;
         }
 
@@ -78,11 +79,13 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
     case WM_KEYDOWN:
         {
             Input::GetInstance()->OnKeyEvent(false, uint(wparam));
+            InputManager::GetDevice<Keyboard>(DeviceType::Keyboard).EmitInput(Key(wparam), KeyState::Down);
             return 0;
         }
     case WM_KEYUP:
         {
             Input::GetInstance()->OnKeyEvent(true, uint(wparam));
+            InputManager::GetDevice<Keyboard>(DeviceType::Keyboard).EmitInput(Key(wparam), KeyState::Up);
             return 0;
         }
     case WM_CREATE:
