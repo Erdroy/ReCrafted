@@ -1,7 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Universe.h"
-#include "Common/Input/Input.h"
 #include "Common/Profiler/Profiler.h"
 #include "Common/Entities/MainWorld.h"
 #include "Core/Logger.h"
@@ -17,6 +16,7 @@
 #include "imgui.h"
 #include <iomanip>
 #include <sstream>
+#include "Input/InputManager.h"
 
 SINGLETON_IMPL(Universe)
 
@@ -67,21 +67,21 @@ void Universe::Update()
 
     SpaceObjectManager::GetInstance()->Update();
 
-    if (Input::IsKeyDown(Key_F7))
+    if (InputManager::IsKeyDown(Key::F7))
     {
         m_viewUpdateEnabled = !m_viewUpdateEnabled;
     }
 
     cvar modPosition = Camera::GetMainCamera()->GetPosition() + Camera::GetMainCamera()->GetForward() * 5.0f;
 
-    if (Input::IsKeyDown(Key_F))
+    if (InputManager::IsKeyDown(Key::F))
     {
         m_ball->SetPosition(modPosition);
         m_ball->SetVelocity(Vector3::Zero);
         m_ball->AddForce(Camera::GetMainCamera()->GetForward() * 100.0f, ForceMode::VelocityChange);
     }
 
-    if(Input::IsKey(Key_R))
+    if(InputManager::IsKey(Key::R))
     {
         m_ball->AddForce(Vector3::Normalize(m_ball->GetVelocity()) * 100.0f, ForceMode::Acceleration);
     }
@@ -91,26 +91,26 @@ void Universe::Update()
     DebugDraw::DrawWireSphere(Vector3::Zero, 0.5f);
     DebugDraw::SetMatrix(Matrix::Identity);
 
-    if (Input::IsKeyDown(Key_Alpha1))
+    if (InputManager::IsKeyDown(Key::Alpha1))
         m_selectedMaterial = 0u;
-    if (Input::IsKeyDown(Key_Alpha2))
+    if (InputManager::IsKeyDown(Key::Alpha2))
         m_selectedMaterial = 1u;
-    if (Input::IsKeyDown(Key_Alpha3))
+    if (InputManager::IsKeyDown(Key::Alpha3))
         m_selectedMaterial = 2u;
-    if (Input::IsKeyDown(Key_Alpha4))
+    if (InputManager::IsKeyDown(Key::Alpha4))
         m_selectedMaterial = 3u;
-    if (Input::IsKeyDown(Key_Alpha5))
+    if (InputManager::IsKeyDown(Key::Alpha5))
         m_selectedMaterial = 4u;
-    if (Input::IsKeyDown(Key_Alpha6))
+    if (InputManager::IsKeyDown(Key::Alpha6))
         m_selectedMaterial = 5u;
 
-    if (Input::IsKeyDown(Key_Mouse0))
+    if (InputManager::IsButtonDown(Button::Left))
         DoVoxelModification(VoxelEditMode::Subtractive, 0u, 1.5f);
 
-    if (Input::IsKeyDown(Key_Mouse1))
+    if (InputManager::IsButtonDown(Button::Right))
         DoVoxelModification(VoxelEditMode::Additive, m_selectedMaterial, 1.5f);
 
-    if (Input::IsKey(Key_Mouse2))
+    if (InputManager::IsButton(Button::Middle))
         DoVoxelModification(VoxelEditMode::MaterialPaint, m_selectedMaterial, 1.0f);
 
     DebugDraw::SetColor(Color(0, 105, 0, 64));
@@ -122,7 +122,7 @@ void Universe::Update()
         m_testObject1->Update();
     }
 
-    if (Input::IsKeyDown(Key_L))
+    if (InputManager::IsKeyDown(Key::L))
     {
         var t = std::time(nullptr);
         var tm = *std::localtime(&t);

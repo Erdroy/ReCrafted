@@ -1,59 +1,128 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Mouse.h"
+#include "Common/Display.h"
+
+Mouse::InputButtonState& Mouse::GetButtonState(Button button)
+{
+    ASSERT(button != Button::Unknown);
+    return m_buttonStates[static_cast<int>(button)];
+}
+
+void Mouse::UpdateButtonState(const Button button, const ButtonState state)
+{
+    ASSERT(button != Button::Unknown);
+
+    GetButtonState(button).state = state == ButtonState::Down ? 1 : 0;
+    m_buttonStatesDirty = true;
+}
 
 void Mouse::Update()
 {
+    // Only process new input frame, when dirty flag is set
+    if (m_buttonStatesDirty)
+    {
+        // Update all button states
+        // We need to set previous button states to make IsButton(...) function possible -
+        // it needs to know if the button is down and it is still pressed, when the button is UP
+        // the current state is being set to 0, so then IsButton(...) returns false.
+        for (rvar buttonState : m_buttonStates)
+            buttonState.previousState = buttonState.state;
+
+        // Reset dirty state
+        m_buttonStatesDirty = false;
+    }
+
+    if (m_lockCursor)
+    {
+        // Lock cursor when needed
+        SetCursorPosition(Vector2(round(Display::GetWidth() / 2.0f), round(Display::GetHeight() / 2.0f)));
+    }
 }
 
-bool Mouse::IsButton(Button button)
+void Mouse::LateUpdate()
 {
-    return false;
+    // Cleanup cursor and scroll delta
+    m_cursorDelta = Vector2::Zero;
+    m_scrollDelta = 0.0f;
 }
 
-bool Mouse::IsButtonDown(Button button)
+void Mouse::EmitInput(const Button button, const ButtonState buttonState)
 {
-    return false;
+    // Inline
+    UpdateButtonState(button, buttonState);
 }
 
-bool Mouse::IsButtonUp(Button button)
+void Mouse::EmitCursor(const Vector2 position, const Vector2 delta)
 {
-    return false;
+    m_cursorPosition = position;
+
+    // Cursor delta must be accumulated, as there may be multiple 
+    // input emits before new frame starts.
+    m_cursorDelta += delta;
 }
 
-void Mouse::SetMousePosition(const Vector2& position)
+void Mouse::EmitScroll(const float delta)
 {
+    // Scroll delta must be accumulated, as there may be multiple 
+    // input emits before new frame starts.
+    m_scrollDelta += delta;
 }
 
-Vector2 Mouse::GetMousePosition()
+bool Mouse::IsButton(const Button button)
 {
-    return Vector2::Zero;
+    rvar state = GetButtonState(button);
+    return state.state && state.previousState;
 }
 
-Vector2 Mouse::GetMouseDelta()
+bool Mouse::IsButtonDown(const Button button)
 {
-    return Vector2::Zero;
+    rvar state = GetButtonState(button);
+    return state.state && !state.previousState;
 }
 
-int Mouse::GetMouseScrollDelta()
+bool Mouse::IsButtonUp(const Button button)
 {
-    return 0;
+    rvar state = GetButtonState(button);
+    return !state.state && state.previousState;
 }
 
-void Mouse::SetShowCursor(bool show)
+void Mouse::SetCursorPosition(const Vector2& position) const
 {
+    Platform::SetCursorPosition(int(position.x), int(position.y));
 }
 
-bool Mouse::GetShowCursor()
+Vector2 Mouse::GetCursorPosition() const
 {
-    return false;
+    return m_cursorPosition;
 }
 
-void Mouse::SetLockCursor(bool lock)
+Vector2 Mouse::GetCursorDelta() const
 {
+    return m_cursorDelta;
 }
 
-bool Mouse::GetLockCursor()
+float Mouse::GetScrollDelta() const
 {
-    return false;
+    return m_scrollDelta;
+}
+
+void Mouse::SetShowCursor(const bool show)
+{
+    m_showCursor = show;
+}
+
+bool Mouse::GetShowCursor() const
+{
+    return m_showCursor;
+}
+
+void Mouse::SetLockCursor(const bool lock)
+{
+    m_lockCursor = lock;
+}
+
+bool Mouse::GetLockCursor() const
+{
+    return m_lockCursor;
 }

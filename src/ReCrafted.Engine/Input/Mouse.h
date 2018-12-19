@@ -17,11 +17,50 @@ class Mouse : public InputDevice
     friend class InputManager;
 
 public:
+    /**
+     * \brief The amount of (base) buttons that are supported by Mouse input device.
+     */
+    static const int ButtonCount = static_cast<int>(Button::Count);
+
+private:
+    struct InputButtonState
+    {
+    public:
+        uint8_t previousState : 1;
+        uint8_t state : 1;
+
+        uint8_t reserved : 6;
+    };
+    static_assert(sizeof(InputButtonState) == 1u, "InputButtonState structure must be 1 byte long!");
+
+private:
+    InputButtonState m_buttonStates[ButtonCount] = {};
+    bool m_buttonStatesDirty = false;
+
+    bool m_lockCursor = false;
+    bool m_showCursor = true;
+
+    Vector2 m_lastCursorPosition = Vector2::Zero;
+    Vector2 m_cursorPosition = Vector2::Zero;
+    Vector2 m_cursorDelta = Vector2::Zero;
+    float m_scrollDelta = 0.0f;
+
+private:
+    FORCEINLINE InputButtonState& GetButtonState(Button button);
+    FORCEINLINE void UpdateButtonState(Button button, ButtonState state);
+
+public:
     Mouse() = default;
     ~Mouse() override = default;
 
 protected:
     void Update() override;
+    void LateUpdate() override;
+
+public:
+    void EmitInput(Button button, ButtonState buttonState);
+    void EmitCursor(Vector2 position, Vector2 delta);
+    void EmitScroll(float delta);
 
 public:
     /**
@@ -64,22 +103,22 @@ public:
      * \brief Sets mouse position relative to the current game window.
      * \param position The new position.
      */
-    void SetMousePosition(const Vector2& position);
+    void SetCursorPosition(const Vector2& position) const;
 
     /**
      * \brief Gets mouse position relative to the current game window.
      */
-    Vector2 GetMousePosition();
+    Vector2 GetCursorPosition() const;
 
     /**
      * \brief Gets mouse position delta from last frame.
      */
-    Vector2 GetMouseDelta();
+    Vector2 GetCursorDelta() const;
 
     /**
      * \brief Gets mouse scroll delta from last frame.
      */
-    int GetMouseScrollDelta();
+    float GetScrollDelta() const;
 
     /**
      * \brief Sets cursor show state.
@@ -89,7 +128,7 @@ public:
     /**
      * \brief Gets cursor show state.
      */
-    bool GetShowCursor();
+    bool GetShowCursor() const;
 
     /**
      * \brief Sets cursor lock state.
@@ -99,7 +138,7 @@ public:
     /**
      * \brief Gets cursor lock state.
      */
-    bool GetLockCursor();
+    bool GetLockCursor() const;
 };
 
 #endif // MOUSE_H

@@ -185,7 +185,7 @@ public:
      * \param x The x coord of target cursor position in pixels.
      * \param y The y coord of target cursor position in pixels.
      */
-    static void SetCursorPosition(uint16_t x, uint16_t y);
+    static void SetCursorPosition(int x, int y);
 
     /**
      * \brief Checks if file exists.

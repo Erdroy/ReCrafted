@@ -65,22 +65,22 @@ public: /* -- Basic Input -- */
      * \brief Sets mouse position relative to the current game window.
      * \param position The new position.
      */
-    static void SetMousePosition(const Vector2& position);
+    static void SetCursorPosition(const Vector2& position);
 
     /**
      * \brief Gets mouse position relative to the current game window.
      */
-    static Vector2 GetMousePosition();
+    static Vector2 GetCursorPosition();
 
     /**
      * \brief Gets mouse position delta from last frame.
      */
-    static Vector2 GetMouseDelta();
+    static Vector2 GetCursorDelta();
 
     /**
      * \brief Gets mouse scroll delta from last frame.
      */
-    static int GetMouseScrollDelta();
+    static float GetScrollDelta();
 
     /**
      * \brief Sets cursor show state.

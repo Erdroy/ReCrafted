@@ -53,28 +53,28 @@ bool InputManager::IsButtonUp(const Button button)
     return m_instance->m_mouse.IsButtonUp(button);
 }
 
-void InputManager::SetMousePosition(const Vector2& position)
+void InputManager::SetCursorPosition(const Vector2& position)
 {
     ASSERT(m_instance);
-    return m_instance->m_mouse.SetMousePosition(position);
+    return m_instance->m_mouse.SetCursorPosition(position);
 }
 
-Vector2 InputManager::GetMousePosition()
+Vector2 InputManager::GetCursorPosition()
 {
     ASSERT(m_instance);
-    return m_instance->m_mouse.GetMousePosition();
+    return m_instance->m_mouse.GetCursorPosition();
 }
 
-Vector2 InputManager::GetMouseDelta()
+Vector2 InputManager::GetCursorDelta()
 {
     ASSERT(m_instance);
-    return m_instance->m_mouse.GetMouseDelta();
+    return m_instance->m_mouse.GetCursorDelta();
 }
 
-int InputManager::GetMouseScrollDelta()
+float InputManager::GetScrollDelta()
 {
     ASSERT(m_instance);
-    return m_instance->m_mouse.GetMouseScrollDelta();
+    return m_instance->m_mouse.GetScrollDelta();
 }
 
 void InputManager::SetShowCursor(const bool show)

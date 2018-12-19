@@ -259,7 +259,7 @@ void Platform::Sleep(unsigned int miliseconds)
     ::Sleep(miliseconds);
 }
 
-void Platform::SetCursorPosition(uint16_t x, uint16_t y)
+void Platform::SetCursorPosition(int x, int y)
 {
     POINT point = {};
     point.x = long(x);
