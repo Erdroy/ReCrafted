@@ -7,7 +7,7 @@
 
 #include "ReCrafted.h"
 
-enum class DeviceType
+enum class DeviceType : byte
 {
     Unknown,
 
@@ -27,6 +27,7 @@ protected:
 
 protected:
     virtual void Update() { }
+    virtual void LateUpdate() { }
 
 public:
     /**

@@ -19,6 +19,13 @@ void InputManager::OnDispose()
     m_deviceMap.clear();
 }
 
+void InputManager::LateUpdate()
+{
+    // LateUpdate devices
+    for (var& device : m_deviceMap)
+        device.second->LateUpdate();
+}
+
 void InputManager::UpdateInput()
 {
     // Update devices

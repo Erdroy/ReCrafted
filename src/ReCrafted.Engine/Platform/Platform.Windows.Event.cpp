@@ -1,5 +1,6 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
+#include "Input/InputManager.h"
 #if _WIN32
 
 #include <Windows.h>
@@ -19,7 +20,7 @@ IMGUI_IMPL_API LRESULT  ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPAR
 LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wparam, lparam))
-        return true;
+        return 0;
 
     switch (msg)
     {
@@ -109,25 +110,24 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
             GetRawInputData(reinterpret_cast<HRAWINPUT>(lparam), RID_INPUT, nullptr, &dwSize, sizeof(RAWINPUTHEADER));
 
             static LPBYTE lpb[40] = {};
-            if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lparam), RID_INPUT, lpb, &dwSize,
-                                sizeof(RAWINPUTHEADER)) != dwSize)
+            if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lparam), RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER)) != dwSize)
                 return DefWindowProc(hWnd, msg, wparam, lparam);
 
             auto raw = reinterpret_cast<RAWINPUT*>(lpb);
-
+            
             if (raw->header.dwType == RIM_TYPEMOUSE)
             {
                 if (raw->data.mouse.usFlags == MOUSE_MOVE_RELATIVE)
                 {
                     // Update cursor pos
-                    auto winHwnd = Platform::GetCurrentWindow();
+                    cvar currentWindow = Platform::GetCurrentWindow();
 
-                    if (winHwnd)
+                    if (currentWindow)
                     {
                         POINT cursorPos;
                         GetCursorPos(&cursorPos);
 
-                        ScreenToClient(static_cast<HWND>(winHwnd), &cursorPos);
+                        ScreenToClient(static_cast<HWND>(currentWindow), &cursorPos);
 
                         Input::GetInstance()->OnCursorEvent(raw->data.mouse.lLastX, raw->data.mouse.lLastY, cursorPos.x,
                                                             cursorPos.y);
@@ -138,8 +138,7 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_WHEEL)
                 {
-                    cvar scrollDelta = static_cast<SHORT>(static_cast<USHORT>(raw->data.mouse.usButtonData)) /
-                            static_cast<float>(WHEEL_DELTA);
+                    cvar scrollDelta = static_cast<SHORT>(raw->data.mouse.usButtonData) / static_cast<float>(WHEEL_DELTA);
                     Input::GetInstance()->OnScrollEvent(scrollDelta);
                 }
 

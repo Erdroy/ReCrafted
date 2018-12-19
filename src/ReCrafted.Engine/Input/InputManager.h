@@ -34,6 +34,8 @@ protected:
     void OnInit() override;
     void OnDispose() override;
 
+    void LateUpdate() override;
+
     void UpdateInput();
 
 public: /* -- Action Maps -- */
