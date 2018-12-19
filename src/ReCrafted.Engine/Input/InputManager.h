@@ -11,6 +11,8 @@
 #include "Input/NullDevice.h"
 #include "Input/Keyboard.h"
 #include "Input/Mouse.h"
+#include "Input/KeyboardKeys.h"
+#include "Input/MouseButtons.h"
 
 #include <spp.h>
 

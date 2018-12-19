@@ -184,6 +184,8 @@ enum class Key : int
     Zoom = 0xFB,
     PA1 = 0xFD,
     OEMClear = 0xFE,
+
+    Count
 };
 
 #endif // KEYBOARDKEYS_H
