@@ -7,7 +7,6 @@ using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.Physics;
-using ReCrafted.API.UI;
 using ReCrafted.Common;
 using ReCrafted.Game.Player;
 
@@ -30,9 +29,6 @@ namespace ReCrafted.Game
                 // register unhandled exception handler
                 Exceptions.RegisterUEHandler();
                 
-                // initialize default ui panel
-                UIControl.Init();
-
                 Cursor.Show = false;
                 Cursor.Lock = true;
 
@@ -111,16 +107,6 @@ namespace ReCrafted.Game
         // draw ui
         protected override void RenderUI()
         {
-            try
-            {
-                Profiler.BeginProfile("DrawUI (.NET)");
-                UIPanel.DrawAll();
-                Profiler.EndProfile();
-            }
-            catch (Exception exception)
-            {
-                Exceptions.WriteException(exception);
-            }
         }
 
         // shutdown
