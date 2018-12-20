@@ -1,6 +1,7 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
 using ReCrafted.API.Common;
+using ReCrafted.API.Input;
 
 namespace ReCrafted.API.Core
 {
@@ -35,8 +36,8 @@ namespace ReCrafted.API.Core
         /// </summary>
         public static bool Lock
         {
-            set => Input.LockCursor = value;
-            get => Input.LockCursor;
+            set => InputManager.LockCursor = value;
+            get => InputManager.LockCursor;
         }
 
         /// <summary>
@@ -44,8 +45,8 @@ namespace ReCrafted.API.Core
         /// </summary>
         public static bool Show
         {
-            set => Input.ShowCursor = value;
-            get => Input.ShowCursor;
+            set => InputManager.ShowCursor = value;
+            get => InputManager.ShowCursor;
         }
 
         /// <summary>

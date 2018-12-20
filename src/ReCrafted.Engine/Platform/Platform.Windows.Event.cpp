@@ -6,8 +6,6 @@
 #include <Windows.h>
 
 #include "ReCrafted.h"
-#include "Common/Input/Input.h"
-#include "Common/Input/KeyboardBuffer.h"
 #include "Core/EngineMain.h"
 #include "Core/Logger.h"
 
@@ -70,7 +68,6 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
 
     case WM_CHAR:
         {
-            KeyboardBuffer::Write(static_cast<Char>(wparam));
             InputManager::GetDevice<Keyboard>(DeviceType::Keyboard).EmitCharacter(Char(wparam));
             return 0;
         }
@@ -78,13 +75,11 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
         // input handling
     case WM_KEYDOWN:
         {
-            Input::GetInstance()->OnKeyEvent(false, uint(wparam));
             InputManager::GetDevice<Keyboard>(DeviceType::Keyboard).EmitInput(Key(wparam), KeyState::Down);
             return 0;
         }
     case WM_KEYUP:
         {
-            Input::GetInstance()->OnKeyEvent(true, uint(wparam));
             InputManager::GetDevice<Keyboard>(DeviceType::Keyboard).EmitInput(Key(wparam), KeyState::Up);
             return 0;
         }
@@ -134,9 +129,6 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
 
                         ScreenToClient(static_cast<HWND>(currentWindow), &cursorPos);
 
-                        Input::GetInstance()->OnCursorEvent(raw->data.mouse.lLastX, raw->data.mouse.lLastY, cursorPos.x,
-                                                            cursorPos.y);
-
                         mouseDevice.EmitCursor(
                             Vector2(cursorPos.x, cursorPos.y), 
                             Vector2(raw->data.mouse.lLastX, raw->data.mouse.lLastY)
@@ -144,8 +136,6 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
                     }
                     else 
                     {
-                        Input::GetInstance()->OnCursorEvent(raw->data.mouse.lLastX, raw->data.mouse.lLastY, 0, 0);
-
                         mouseDevice.EmitCursor(
                             Vector2::Zero,
                             Vector2(raw->data.mouse.lLastX, raw->data.mouse.lLastY)
@@ -157,44 +147,36 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
                 {
                     cvar scrollDelta = static_cast<SHORT>(raw->data.mouse.usButtonData) / static_cast<float>(WHEEL_DELTA);
                     
-                    Input::GetInstance()->OnScrollEvent(scrollDelta);
-
                     mouseDevice.EmitScroll(scrollDelta);
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_LEFT_BUTTON_DOWN)
                 {
-                    Input::GetInstance()->OnKeyEvent(false, INPUT_LBUTTON);
                     mouseDevice.EmitInput(Button::Left, ButtonState::Down);
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_LEFT_BUTTON_UP)
                 {
-                    Input::GetInstance()->OnKeyEvent(true, INPUT_LBUTTON);
                     mouseDevice.EmitInput(Button::Left, ButtonState::Up);
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_MIDDLE_BUTTON_DOWN)
                 {
-                    Input::GetInstance()->OnKeyEvent(false, INPUT_MBUTTON);
                     mouseDevice.EmitInput(Button::Middle, ButtonState::Down);
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_MIDDLE_BUTTON_UP)
                 {
-                    Input::GetInstance()->OnKeyEvent(true, INPUT_MBUTTON);
                     mouseDevice.EmitInput(Button::Middle, ButtonState::Up);
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_RIGHT_BUTTON_DOWN)
                 {
-                    Input::GetInstance()->OnKeyEvent(false, INPUT_RBUTTON);
                     mouseDevice.EmitInput(Button::Right, ButtonState::Down);
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_RIGHT_BUTTON_UP)
                 {
-                    Input::GetInstance()->OnKeyEvent(true, INPUT_RBUTTON);
                     mouseDevice.EmitInput(Button::Right, ButtonState::Up);
                 }
 

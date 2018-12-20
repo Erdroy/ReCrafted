@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
+using ReCrafted.API.Input;
 using ReCrafted.API.Mathematics;
 
 namespace ReCrafted.Game.Player
@@ -96,22 +97,22 @@ namespace ReCrafted.Game.Player
             // TODO: Use game settings to check what keys should be sampled for each axis
 
             // Sample vertical input
-            if (Input.IsKey(Keys.W))
+            if (InputManager.IsKey(Key.W))
                 result.Vertical += 1.0f;
-            if (Input.IsKey(Keys.S))
+            if (InputManager.IsKey(Key.S))
                 result.Vertical -= 1.0f;
 
             // Sample horizontal input
-            if (Input.IsKey(Keys.A))
+            if (InputManager.IsKey(Key.A))
                 result.Horizontal -= 1.0f;
-            if (Input.IsKey(Keys.D))
+            if (InputManager.IsKey(Key.D))
                 result.Horizontal += 1.0f;
 
             // Sample jump input
-            result.Jump = Input.IsKeyDown(Keys.Space);
+            result.Jump = InputManager.IsKeyDown(Key.Space);
 
             // Sample run input
-            result.Run = Input.IsKey(Keys.Shift);
+            result.Run = InputManager.IsKey(Key.Shift);
 
             result.Movement = Snapshot.MovementType.Normal; // TODO: Movement type switch
             result.JetPackDamping = true;
@@ -128,11 +129,11 @@ namespace ReCrafted.Game.Player
 
         private void UpdateStanding(ref Snapshot snapshot)
         {
-            if (Input.IsKey(Keys.Control))
+            if (InputManager.IsKey(Key.Control))
             {
                 _currentStandingType = Snapshot.StandingType.Crouch;
             }
-            else if (Input.IsKey(Keys.Z))
+            else if (InputManager.IsKey(Key.Z))
             {
                 _currentStandingType = Snapshot.StandingType.Prone;
             }
@@ -146,9 +147,9 @@ namespace ReCrafted.Game.Player
 
         private void UpdateLook(ref Snapshot snapshot)
         {
-            var cursorDelta = Input.CursorDelta;
+            var cursorDelta = InputManager.CursorDelta;
 
-            if (!Input.LockCursor)
+            if (!InputManager.LockCursor)
                 cursorDelta = Vector2.Zero;
             
             if (MouseFiltering)

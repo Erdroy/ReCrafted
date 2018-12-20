@@ -4,7 +4,7 @@
 
 #include "Common/Display.h"
 #include "Common/Profiler/Profiler.h"
-#include "Common/Input/Input.h"
+#include "Input/InputManager.h"
 #include "Core/Logger.h"
 #include "Core/Action.h"
 #include "Core/Application.h"
@@ -317,7 +317,7 @@ void Graphics::RenderBegin()
     // Update
     UpdateDefaultConstants(Camera::GetMainCamera()->GetViewProjection());
 
-    if (Input::IsKey(Key_F1))
+    if (InputManager::IsKey(Key::F1))
         Renderer::SetFlag(Renderer::RenderFlags::DrawWireFrame, true);
 
     // Clean texture cache
@@ -334,7 +334,7 @@ void Graphics::RenderEnd()
 {
     SetStage(RenderStage::Default);
 
-    if (Input::IsKey(Key_F1))
+    if (InputManager::IsKey(Key::F1))
     {
         Renderer::SetFlag(Renderer::RenderFlags::DrawWireFrame, false);
         Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetTarget(0));
@@ -343,7 +343,7 @@ void Graphics::RenderEnd()
         return;
     }
 
-    if (Input::IsKey(Key_F2))
+    if (InputManager::IsKey(Key::F2))
     {
         Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetTarget(0));
         // reset everything
@@ -351,7 +351,7 @@ void Graphics::RenderEnd()
         return;
     }
 
-    if (Input::IsKey(Key_F3))
+    if (InputManager::IsKey(Key::F3))
     {
         Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetTarget(1));
         // reset everything
@@ -359,7 +359,7 @@ void Graphics::RenderEnd()
         return;
     }
 
-    if (Input::IsKey(Key_F4))
+    if (InputManager::IsKey(Key::F4))
     {
         Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetTarget(2));
         // reset everything
@@ -367,7 +367,7 @@ void Graphics::RenderEnd()
         return;
     }
 
-    if (Input::IsKey(Key_F5))
+    if (InputManager::IsKey(Key::F5))
     {
         Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetDepthBuffer());
         // reset everything

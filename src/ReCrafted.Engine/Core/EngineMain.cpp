@@ -7,8 +7,6 @@
 #include "Common/Time.h"
 #include "Common/Display.h"
 #include "Common/Profiler/Profiler.h"
-#include "Common/Input/Input.h"
-#include "Common/Input/KeyboardBuffer.h"
 #include "Common/Entities/MainWorld.h"
 #include "Core/Application.h"
 #include "Core/Dispatcher.h"
@@ -38,7 +36,6 @@ void EngineMain::RegisterComponents() const
     m_componentManager->RegisterComponent(Application::GetInstance());
     m_componentManager->RegisterComponent(Profiler::GetInstance());
     m_componentManager->RegisterComponent(Time::GetInstance());
-    m_componentManager->RegisterComponent(Input::GetInstance());
     m_componentManager->RegisterComponent(InputManager::GetInstance());
     m_componentManager->RegisterComponent(VoxelMaterialManager::GetInstance());
     m_componentManager->RegisterComponent(MainWorld::GetInstance());
@@ -110,13 +107,6 @@ void EngineMain::OnUpdate()
 {
     // Update time
     Time::GetInstance()->OnFrame();
-
-    Profiler::BeginProfile("Process Input");
-    {
-        // Update input
-        Input::GetInstance()->UpdateInput();
-    }
-    Profiler::EndProfile();
 
     // Update input
     InputManager::GetInstance()->UpdateInput();

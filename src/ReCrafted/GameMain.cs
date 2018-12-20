@@ -2,9 +2,9 @@
 
 using System;
 using ReCrafted.API;
-using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Graphics;
+using ReCrafted.API.Input;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.Physics;
 using ReCrafted.Common;
@@ -61,13 +61,13 @@ namespace ReCrafted.Game
                 // Update game systems
                 GameSystem.UpdateAll();
 
-                if (Input.IsKeyDown(Keys.F5))
+                if (InputManager.IsKeyDown(Key.F5))
                 {
                     _uiGameHud.Navigate("file:///game/hud.html");
                     _uiGameOverlay.Navigate("file:///game/overlay.html");
                 }
                 
-                if (Input.IsKeyDown(Keys.Escape))
+                if (InputManager.IsKeyDown(Key.Escape))
                 {
                     Cursor.Show = !Cursor.Show;
                     Cursor.Lock = !Cursor.Show;

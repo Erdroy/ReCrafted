@@ -2,7 +2,7 @@
 
 #include "UltralightViewport.h"
 #include "Common/Profiler/Profiler.h"
-#include "Common/Input/Input.h"
+#include "Input/InputManager.h"
 #include "Renderer/RHI/RHIContext.h"
 
 #include "d3d11/GPUDriverD3D11.h"
@@ -41,31 +41,33 @@ UltralightViewport::~UltralightViewport()
 
 void UltralightViewport::Update()
 {
-    ultralight::MouseEvent event;
-    event.type = ultralight::MouseEvent::kType_MouseMoved;
-    event.x = ceilf(Input::GetCursorPos().x);
-    event.y = ceilf(Input::GetCursorPos().y);
+    if(!Math::IsZero(InputManager::GetCursorPosition().Length()))
+    {
+        ultralight::MouseEvent event;
+        event.type = ultralight::MouseEvent::kType_MouseMoved;
+        event.x = ceilf(InputManager::GetCursorPosition().x);
+        event.y = ceilf(InputManager::GetCursorPosition().y);
+        m_view->FireMouseEvent(event);
+    }
 
-    m_view->FireMouseEvent(event);
-
-    if(Input::IsKeyDown(Key_Mouse0))
+    if(InputManager::IsButtonDown(Button::Left))
     {
         ultralight::MouseEvent event;
         event.type = ultralight::MouseEvent::kType_MouseDown;
         event.button = ultralight::MouseEvent::kButton_Left;
-        event.x = ceilf(Input::GetCursorPos().x);
-        event.y = ceilf(Input::GetCursorPos().y);
+        event.x = ceilf(InputManager::GetCursorPosition().x);
+        event.y = ceilf(InputManager::GetCursorPosition().y);
 
         m_view->FireMouseEvent(event);
     }
 
-    if (Input::IsKeyUp(Key_Mouse0))
+    if (InputManager::IsButtonDown(Button::Left))
     {
         ultralight::MouseEvent event;
         event.type = ultralight::MouseEvent::kType_MouseUp;
         event.button = ultralight::MouseEvent::kButton_Left;
-        event.x = ceilf(Input::GetCursorPos().x);
-        event.y = ceilf(Input::GetCursorPos().y);
+        event.x = ceilf(InputManager::GetCursorPosition().x);
+        event.y = ceilf(InputManager::GetCursorPosition().y);
 
         m_view->FireMouseEvent(event);
     }

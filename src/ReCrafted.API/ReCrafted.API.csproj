@@ -73,8 +73,6 @@
     <Compile Include="Common\Entities\World.cs" />
     <Compile Include="Common\Entities\World.Gen.cs" />
     <Compile Include="Common\GenericScript.cs" />
-    <Compile Include="Common\Input.Gen.cs" />
-    <Compile Include="Common\KeyboardBuffer.Gen.cs" />
     <Compile Include="Common\Profiler.Gen.cs" />
     <Compile Include="Common\Script.cs" />
     <Compile Include="Common\Script.Gen.cs" />
@@ -88,7 +86,6 @@
     <Compile Include="Core\Cursor.cs" />
     <Compile Include="Core\Exceptions.cs" />
     <Compile Include="Core\GameSystem.cs" />
-    <Compile Include="Core\Keys.cs" />
     <Compile Include="Core\Logger.cs" />
     <Compile Include="Core\LogLevel.cs" />
     <Compile Include="Core\ReCraftedException.cs" />
@@ -100,7 +97,6 @@
     <Compile Include="Graphics\Font.Gen.cs" />
     <Compile Include="Graphics\Graphics.Gen.cs" />
     <Compile Include="Graphics\Shader.Gen.cs" />
-    <Compile Include="Graphics\Sprite.cs" />
     <Compile Include="Graphics\Texture.cs" />
     <Compile Include="Graphics\Texture.Gen.cs" />
     <Compile Include="Graphics\WebUI.Gen.cs" />
@@ -158,25 +154,6 @@
     <Compile Include="Physics\RigidBodyActor.Gen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scene\SceneManager.Gen.cs" />
-    <Compile Include="UI\Controls\UIBox.cs" />
-    <Compile Include="UI\Controls\UIButton.cs" />
-    <Compile Include="UI\Controls\UIDropdown.cs" />
-    <Compile Include="UI\Controls\UIScrollbar.cs" />
-    <Compile Include="UI\Controls\UISlider.cs" />
-    <Compile Include="UI\Controls\UITextField.cs" />
-    <Compile Include="UI\Controls\UIToggleGroup.cs" />
-    <Compile Include="UI\UI.cs" />
-    <Compile Include="UI\UIControlColors.cs" />
-    <Compile Include="UI\Controls\UIText.cs" />
-    <Compile Include="UI\Controls\UIToggle.cs" />
-    <Compile Include="UI\UI.Gen.cs" />
-    <Compile Include="UI\UIAnimation.cs" />
-    <Compile Include="UI\UIContainer.cs" />
-    <Compile Include="UI\UIControl.cs" />
-    <Compile Include="UI\UILayout.cs" />
-    <Compile Include="UI\UIPadding.cs" />
-    <Compile Include="UI\UIPanel.cs" />
-    <Compile Include="UI\UISelectableText.cs" />
     <Compile Include="Utils\TextWrapper.cs" />
     <Compile Include="Voxels\VoxelMaterial.Gen.cs" />
   </ItemGroup>

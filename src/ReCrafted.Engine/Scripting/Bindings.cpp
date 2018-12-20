@@ -12,8 +12,6 @@
 #include "Common/Entities/World.h"
 #include "Common/Entities/Entity.h"
 #include "Common/Profiler/Profiler.h"
-#include "Common/Input/Input.h"
-#include "Common/Input/KeyboardBuffer.h"
 #include "Core/Application.h"
 #include "Graphics/Camera.h"
 #include "Graphics/CameraActor.h"
@@ -41,14 +39,12 @@ void Bindings::Bind()
 
     // == Engine components ==
     Application::InitRuntime();
-    Input::InitRuntime();
     Time::InitRuntime();
     Display::InitRuntime();
     UI::InitRuntime();
     DebugDraw::InitRuntime();
     Font::InitRuntime();
     Profiler::InitRuntime();
-    KeyboardBuffer::InitRuntime();
 
 
     // == Scripting ==

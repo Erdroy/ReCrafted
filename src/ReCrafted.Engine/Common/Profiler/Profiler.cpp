@@ -1,7 +1,7 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "Profiler.h"
-#include "Common/Input/Input.h"
+#include "Input/InputManager.h"
 #include "Core/GameInfo.h"
 
 SINGLETON_IMPL(Profiler)
@@ -109,11 +109,11 @@ void Profiler::OnDispose()
 void Profiler::Update()
 {
     // Toggle window display when user pressed 'F9' key.
-    if (Input::IsKeyDown(Key_F9))
+    if (InputManager::IsKeyDown(Key::F9))
         m_showWindow = !m_showWindow;
 
     // Toggle profiling when window is displayed and user pressed 'P' key.
-    if(Input::IsKeyDown(Key_P) && m_showWindow)
+    if(InputManager::IsKeyDown(Key::P) && m_showWindow)
     {
         ToggleProfiling();
     }
