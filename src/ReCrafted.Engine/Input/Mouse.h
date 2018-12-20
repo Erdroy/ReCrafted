@@ -16,6 +16,9 @@ class Mouse : public InputDevice
 {
     friend class InputManager;
 
+private:
+    SCRIPTING_API_IMPL();
+
 public:
     /**
      * \brief The amount of (base) buttons that are supported by Mouse input device.
@@ -56,6 +59,14 @@ public:
 protected:
     void Update() override;
     void LateUpdate() override;
+
+protected:
+    void OnDestroy() override { }
+
+    const char* GetObjectName() const override
+    {
+        return "Mouse (InputDevice)";
+    }
 
 public:
     void EmitInput(Button button, ButtonState buttonState);

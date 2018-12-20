@@ -10,12 +10,15 @@
 #include "Input/InputDevice.h"
 #include "Input/KeyboardKeys.h"
 
-/**wwwwww
+/**
  * \brief Keyboard input device.
  */
 class Keyboard : public InputDevice
 {
     friend class InputManager;
+
+private:
+    SCRIPTING_API_IMPL();
 
 public:
     /**
@@ -52,6 +55,14 @@ public:
 protected:
     void Update() override;
     void LateUpdate() override;
+
+protected:
+    void OnDestroy() override { }
+
+    const char* GetObjectName() const override
+    {
+        return "Keyboard (InputDevice)";
+    }
 
 public:
     void EmitInput(Key key, KeyState keyState);

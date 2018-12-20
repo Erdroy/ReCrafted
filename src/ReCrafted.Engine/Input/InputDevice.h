@@ -6,6 +6,7 @@
 #define INPUTDEVICE_H
 
 #include "ReCrafted.h"
+#include "Scripting/Object.h"
 
 enum class DeviceType : byte
 {
@@ -18,9 +19,14 @@ enum class DeviceType : byte
     Count
 };
 
-class InputDevice
+class InputDevice : public Object
 {
     friend class InputManager;
+
+public:
+    InputDevice() = default;
+    InputDevice(InputDevice& other) = delete;
+    InputDevice(InputDevice&& other) = delete;
 
 protected:
     virtual ~InputDevice() = default;
@@ -39,6 +45,9 @@ public:
      * \brief The type of this device.
      */
     virtual DeviceType Type() = 0;
+
+public:
+    InputDevice& operator=(const InputDevice& other) = delete;
 };
 
 #endif // INPUTDEVICE_H

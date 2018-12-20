@@ -105,6 +105,17 @@
     <Compile Include="Graphics\Texture.Gen.cs" />
     <Compile Include="Graphics\WebUI.Gen.cs" />
     <Compile Include="Graphics\WebUIView.Gen.cs" />
+    <Compile Include="Input\Button.cs" />
+    <Compile Include="Input\ButtonState.cs" />
+    <Compile Include="Input\DeviceType.cs" />
+    <Compile Include="Input\InputDevice.cs" />
+    <Compile Include="Input\InputManager.cs" />
+    <Compile Include="Input\InputManager.Gen.cs" />
+    <Compile Include="Input\Key.cs" />
+    <Compile Include="Input\Keyboard.Gen.cs" />
+    <Compile Include="Input\KeyState.cs" />
+    <Compile Include="Input\Mouse.Gen.cs" />
+    <Compile Include="Input\NullDevice.Gen.cs" />
     <Compile Include="Mathematics\AngleSingle.cs" />
     <Compile Include="Mathematics\BoundingBox.cs" />
     <Compile Include="Mathematics\BoundingFrustum.cs" />

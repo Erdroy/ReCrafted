@@ -28,9 +28,9 @@ private:
     int m_deviceCount;
 
 private:
-    NullDevice m_nullDevice;
-    Keyboard m_keyboard;
-    Mouse m_mouse;
+    NullDevice* m_nullDevice = nullptr;
+    Keyboard* m_keyboard = nullptr;
+    Mouse* m_mouse = nullptr;
 
 protected:
     void OnInit() override;

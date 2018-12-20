@@ -6,16 +6,25 @@ SINGLETON_IMPL(InputManager)
 
 void InputManager::OnInit()
 {
+    // Create default devices
+    m_nullDevice = Object::CreateInstance<NullDevice>("ReCrafted.API.Input", "NullDevice");
+    m_keyboard = Object::CreateInstance<Keyboard>("ReCrafted.API.Input", "Keyboard");
+    m_mouse = Object::CreateInstance<Mouse>("ReCrafted.API.Input", "Mouse");
+
     // Register default devices
-    m_deviceMap.insert(std::make_pair(0, &m_nullDevice)); m_deviceCount++;
-    m_deviceMap.insert(std::make_pair(1, &m_keyboard)); m_deviceCount++;
-    m_deviceMap.insert(std::make_pair(2, &m_mouse)); m_deviceCount++;
+    m_deviceMap.insert(std::make_pair(0, m_nullDevice)); m_deviceCount++;
+    m_deviceMap.insert(std::make_pair(1, m_keyboard)); m_deviceCount++;
+    m_deviceMap.insert(std::make_pair(2, m_mouse)); m_deviceCount++;
 
     // TODO: Look for gamepad devices using XInput
 }
 
 void InputManager::OnDispose()
 {
+    Object::Destroy(m_nullDevice);
+    Object::Destroy(m_keyboard);
+    Object::Destroy(m_mouse);
+
     m_deviceMap.clear();
 }
 
@@ -38,85 +47,85 @@ void InputManager::UpdateInput()
 bool InputManager::IsButton(const Button button)
 {
     ASSERT(m_instance);
-    return m_instance->m_mouse.IsButton(button);
+    return m_instance->m_mouse->IsButton(button);
 }
 
 bool InputManager::IsButtonDown(const Button button)
 {
     ASSERT(m_instance);
-    return m_instance->m_mouse.IsButtonDown(button);
+    return m_instance->m_mouse->IsButtonDown(button);
 }
 
 bool InputManager::IsButtonUp(const Button button)
 {
     ASSERT(m_instance);
-    return m_instance->m_mouse.IsButtonUp(button);
+    return m_instance->m_mouse->IsButtonUp(button);
 }
 
 void InputManager::SetCursorPosition(const Vector2& position)
 {
     ASSERT(m_instance);
-    return m_instance->m_mouse.SetCursorPosition(position);
+    return m_instance->m_mouse->SetCursorPosition(position);
 }
 
 Vector2 InputManager::GetCursorPosition()
 {
     ASSERT(m_instance);
-    return m_instance->m_mouse.GetCursorPosition();
+    return m_instance->m_mouse->GetCursorPosition();
 }
 
 Vector2 InputManager::GetCursorDelta()
 {
     ASSERT(m_instance);
-    return m_instance->m_mouse.GetCursorDelta();
+    return m_instance->m_mouse->GetCursorDelta();
 }
 
 float InputManager::GetScrollDelta()
 {
     ASSERT(m_instance);
-    return m_instance->m_mouse.GetScrollDelta();
+    return m_instance->m_mouse->GetScrollDelta();
 }
 
 void InputManager::SetShowCursor(const bool show)
 {
     ASSERT(m_instance);
-    m_instance->m_mouse.SetShowCursor(show);
+    m_instance->m_mouse->SetShowCursor(show);
 }
 
 bool InputManager::GetShowCursor()
 {
     ASSERT(m_instance);
-    return m_instance->m_mouse.GetShowCursor();
+    return m_instance->m_mouse->GetShowCursor();
 }
 
 void InputManager::SetLockCursor(const bool lock)
 {
     ASSERT(m_instance);
-    m_instance->m_mouse.SetLockCursor(lock);
+    m_instance->m_mouse->SetLockCursor(lock);
 }
 
 bool InputManager::GetLockCursor()
 {
     ASSERT(m_instance);
-    return m_instance->m_mouse.GetLockCursor();
+    return m_instance->m_mouse->GetLockCursor();
 }
 
 bool InputManager::IsKey(const Key key)
 {
     ASSERT(m_instance);
-    return m_instance->m_keyboard.IsKey(key);
+    return m_instance->m_keyboard->IsKey(key);
 }
 
 bool InputManager::IsKeyDown(const Key key)
 {
     ASSERT(m_instance);
-    return m_instance->m_keyboard.IsKeyDown(key);
+    return m_instance->m_keyboard->IsKeyDown(key);
 }
 
 bool InputManager::IsKeyUp(const Key key)
 {
     ASSERT(m_instance);
-    return m_instance->m_keyboard.IsKeyUp(key);
+    return m_instance->m_keyboard->IsKeyUp(key);
 }
 
 InputDevice& InputManager::GetDevice(const int deviceId)
@@ -138,9 +147,9 @@ InputDevice& InputManager::GetDevice(const DeviceType deviceType)
     switch(deviceType)
     {
     case DeviceType::Mouse:
-        return m_instance->m_mouse;
+        return *m_instance->m_mouse;
     case DeviceType::Keyboard:
-        return m_instance->m_keyboard;
+        return *m_instance->m_keyboard;
 
     case DeviceType::Gamepad:
     case DeviceType::Unknown:

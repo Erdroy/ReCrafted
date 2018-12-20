@@ -28,6 +28,7 @@
 #include "WebUI/WebUIView.h"
 #include "Voxels/VoxelMaterialManager.h"
 #include "Voxels/Assets/VoxelMaterial.h"
+#include "Input/InputManager.h"
 
 static spp::sparse_hash_map<std::string, Action<Object*, bool>> g_objectMap;
 
@@ -57,6 +58,13 @@ void Bindings::Bind()
     // == Physics ==
     Collision::InitRuntime();
     PhysicsManager::InitRuntime();
+
+
+    // == Input ==
+    InputManager::InitRuntime();
+    NullDevice::InitRuntime();
+    Keyboard::InitRuntime();
+    Mouse::InitRuntime();
 
 
     // == Actors ==
