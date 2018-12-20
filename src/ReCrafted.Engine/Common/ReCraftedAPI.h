@@ -23,7 +23,7 @@
             return createManagedInstance ? Object::CreateInstance<objectType>(objectNamespace, objectName) : new objectType##();\
         }
 
-#define API_BIND(name, method) mono_add_internal_call(name, method)
+#define API_BIND(name, method) mono_add_internal_call(name, (const void*)method)
 
 // API
 #define API_FILE(file_name)
