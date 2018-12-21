@@ -6,6 +6,9 @@ SINGLETON_IMPL(InputManager)
 
 void InputManager::OnInit()
 {
+    rvar lock = m_instance->m_deviceMapLock;
+    ScopeLock(lock);
+
     // Create default devices
     m_nullDevice = Object::CreateInstance<NullDevice>("ReCrafted.API.Input", "NullDevice");
     m_keyboard = Object::CreateInstance<Keyboard>("ReCrafted.API.Input", "Keyboard");
@@ -30,6 +33,9 @@ void InputManager::OnDispose()
 
 void InputManager::LateUpdate()
 {
+    rvar lock = m_instance->m_deviceMapLock;
+    ScopeLock(lock);
+
     // LateUpdate devices
     for (var& device : m_deviceMap)
         device.second->LateUpdate();
@@ -37,11 +43,65 @@ void InputManager::LateUpdate()
 
 void InputManager::UpdateInput()
 {
+    rvar lock = m_instance->m_deviceMapLock;
+    ScopeLock(lock);
+
     // Update devices
     for(var& device : m_deviceMap)
         device.second->Update();
 
     // TODO: Update ActionMaps
+}
+
+ActionMap& InputManager::CreateActionMap(const char* name)
+{
+    ASSERT(m_instance);
+
+    rvar lock = m_instance->m_actionMapsLock;
+    ScopeLock(lock);
+
+    // Create new action map
+    var actionMap = Object::CreateInstance<ActionMap>("ReCrafted.API.Input", "ActionMap");
+
+    // Set action map name
+    actionMap->SetName(name);
+
+    // Register map
+    m_instance->m_actionMaps.insert(std::make_pair(std::string(name), actionMap));
+    m_instance->m_actionMapCount++;
+
+    return *actionMap;
+}
+
+ActionMap* InputManager::GetActionMap(const char* name)
+{
+    ASSERT(m_instance);
+
+    rvar lock = m_instance->m_actionMapsLock;
+    ScopeLock(lock);
+
+    cvar it = m_instance->m_actionMaps.find(std::string(name));
+    if (it == m_instance->m_actionMaps.end())
+        return nullptr;
+    return it->second;
+}
+
+void InputManager::DestroyActionMap(ActionMap*& actionMap)
+{
+    ASSERT(m_instance);
+
+    rvar lock = m_instance->m_actionMapsLock;
+    ScopeLock(lock);
+
+    // Remove ActionMap from map
+    cvar it = m_instance->m_actionMaps.find(actionMap->GetName());
+    if (it == m_instance->m_actionMaps.end())
+        return;
+    m_instance->m_actionMaps.erase(it);
+
+    // Destroy ActionMap object
+    Object::Destroy(actionMap);
+    actionMap = nullptr;
 }
 
 bool InputManager::IsButton(const Button button)
@@ -132,8 +192,10 @@ InputDevice& InputManager::GetDevice(const int deviceId)
 {
     DEBUG_ASSERT(m_instance);
 
-    cvar it = m_instance->m_deviceMap.find(deviceId);
+    rvar lock = m_instance->m_deviceMapLock;
+    ScopeLock(lock);
 
+    cvar it = m_instance->m_deviceMap.find(deviceId);
     if (it == m_instance->m_deviceMap.end())
         throw std::exception("Input device not found");
 

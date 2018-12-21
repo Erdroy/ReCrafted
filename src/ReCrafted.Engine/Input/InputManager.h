@@ -7,6 +7,7 @@
 
 #include "ReCrafted.h"
 #include "Core/EngineComponent.h"
+#include "Input/ActionMap.h"
 #include "Input/InputDevice.h"
 #include "Input/NullDevice.h"
 #include "Input/Keyboard.h"
@@ -24,6 +25,11 @@ private:
     SCRIPTING_API_IMPL()
 
 private:
+    Lock m_actionMapsLock;
+    spp::sparse_hash_map<std::string, ActionMap*> m_actionMaps;
+    int m_actionMapCount;
+
+    Lock m_deviceMapLock;
     spp::sparse_hash_map<int, InputDevice*> m_deviceMap;
     int m_deviceCount;
 
@@ -41,6 +47,9 @@ protected:
     void UpdateInput();
 
 public: /* -- Action Maps -- */
+    static ActionMap& CreateActionMap(const char* name);
+    static ActionMap* GetActionMap(const char* name);
+    static void DestroyActionMap(ActionMap*& actionMap);
 
 public: /* -- Basic Input -- */
     /**

@@ -13,6 +13,8 @@
 #include "Common/Entities/Entity.h"
 #include "Common/Profiler/Profiler.h"
 #include "Core/Application.h"
+#include "Input/InputManager.h"
+#include "Input/ActionMap.h"
 #include "Graphics/Camera.h"
 #include "Graphics/CameraActor.h"
 #include "Graphics/DebugDraw.h"
@@ -26,7 +28,6 @@
 #include "WebUI/WebUIView.h"
 #include "Voxels/VoxelMaterialManager.h"
 #include "Voxels/Assets/VoxelMaterial.h"
-#include "Input/InputManager.h"
 
 static spp::sparse_hash_map<std::string, Action<Object*, bool>> g_objectMap;
 
@@ -58,6 +59,7 @@ void Bindings::Bind()
 
     // == Input ==
     InputManager::InitRuntime();
+    ActionMap::InitRuntime();
     NullDevice::InitRuntime();
     Keyboard::InitRuntime();
     Mouse::InitRuntime();
