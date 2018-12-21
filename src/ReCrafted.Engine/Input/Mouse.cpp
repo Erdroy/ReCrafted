@@ -110,6 +110,7 @@ float Mouse::GetScrollDelta() const
 void Mouse::SetShowCursor(const bool show)
 {
     m_showCursor = show;
+    Platform::SetCursorVisibility(m_showCursor);
 }
 
 bool Mouse::GetShowCursor() const
