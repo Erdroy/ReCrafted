@@ -79,7 +79,8 @@ bool Keyboard::IsKeyUp(const Key key)
     return !state.state && state.previousState;
 }
 
-Char* Keyboard::GetInputString()
+Char* Keyboard::GetInputString(uint32_t* length)
 {
+    *length = static_cast<uint32_t>(m_inputString.Size());
     return m_inputString.Data();
 }

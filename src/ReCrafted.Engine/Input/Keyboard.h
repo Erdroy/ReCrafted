@@ -108,7 +108,7 @@ public:
     /**
      * \brief Contains character string that has been entered during current frame.
      */
-    Char* GetInputString();
+    Char* GetInputString(uint32_t* length);
 };
 
 #endif // KEYBOARD_H
