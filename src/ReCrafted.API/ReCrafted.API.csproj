@@ -83,7 +83,7 @@
     <Compile Include="Content\ContentManager.cs" />
     <Compile Include="Content\ContentManagerInternals.Gen.cs" />
     <Compile Include="Core\Application.Gen.cs" />
-    <Compile Include="Core\Cursor.cs" />
+    <Compile Include="Input\Cursor.cs" />
     <Compile Include="Core\Exceptions.cs" />
     <Compile Include="Core\GameSystem.cs" />
     <Compile Include="Core\Logger.cs" />

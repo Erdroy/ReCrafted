@@ -1,9 +1,8 @@
 ﻿// ReCrafted (c) 2016-2018 Always Too Late
 
-using ReCrafted.API.Common;
-using ReCrafted.API.Input;
+using ReCrafted.API.Core;
 
-namespace ReCrafted.API.Core
+namespace ReCrafted.API.Input
 {
     /// <summary>
     /// Type of cursor icon.
@@ -54,8 +53,8 @@ namespace ReCrafted.API.Core
         /// </summary>
         public static CursorIcon Icon
         {
-            set { Application.CursorIcon = (int)value; }
-            get { return (CursorIcon)Application.CursorIcon; }
+            set => Application.CursorIcon = (int)value;
+            get => (CursorIcon)Application.CursorIcon;
         }
     }
 }
