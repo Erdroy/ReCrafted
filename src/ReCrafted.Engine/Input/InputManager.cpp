@@ -1,8 +1,59 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "InputManager.h"
+#include "Common/Profiler/Profiler.h"
 
 SINGLETON_IMPL(InputManager)
+
+void InputManager::DispatchInput()
+{
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
+    m_frameInputLock.LockNow();
+    for (rvar input : m_frameInput)
+    {
+        switch (input.first)
+        {
+        case InputType::Key:
+        {
+            m_keyboard->EmitInput(input.second.key, input.second.keyState);
+            break;
+        }
+        case InputType::Button:
+        {
+            m_mouse->EmitInput(input.second.button, input.second.buttonState);
+            break;
+        }
+        case InputType::Axis:
+        {
+            // TODO: Axis implementation for pads
+            break;
+        }
+        case InputType::Character:
+        {
+            m_keyboard->EmitCharacter(input.second.character);
+            break;
+        }
+        case InputType::Cursor:
+        {
+            m_mouse->EmitCursor(
+                input.second.axis2D,
+                Vector2(input.second.axis3D.x, input.second.axis3D.y) // TODO: replace with .xy() when vector accessors will be available
+            );
+            break;
+        }
+        case InputType::Scroll:
+        {
+            m_mouse->EmitScroll(input.second.axis1D);
+            break;
+        }
+        case InputType::Unknown:
+        case InputType::Count:
+        default: break;
+        }
+    }
+    m_frameInputLock.UnlockNow();
+}
 
 void InputManager::OnInit()
 {
@@ -18,6 +69,9 @@ void InputManager::OnInit()
     m_deviceMap.insert(std::make_pair(0, m_nullDevice)); m_deviceCount++;
     m_deviceMap.insert(std::make_pair(1, m_keyboard)); m_deviceCount++;
     m_deviceMap.insert(std::make_pair(2, m_mouse)); m_deviceCount++;
+
+    // Reserve some memory for frame input (32 entries is more than enough).
+    m_frameInput.reserve(32);
 
     // TODO: Look for gamepad devices using XInput
 }
@@ -39,18 +93,59 @@ void InputManager::LateUpdate()
     // LateUpdate devices
     for (var& device : m_deviceMap)
         device.second->LateUpdate();
+
+    // Clear frame input
+    m_instance->BeginEmitInput();
+    m_instance->m_frameInput.clear();
+    m_instance->EndEmitInput();
 }
 
 void InputManager::UpdateInput()
 {
-    rvar lock = m_instance->m_deviceMapLock;
-    ScopeLock(lock);
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
 
     // Update devices
-    for(var& device : m_deviceMap)
-        device.second->Update();
+    rvar lock1 = m_instance->m_deviceMapLock;
+    {
+        ScopeLock(lock1);
 
-    // TODO: Update ActionMaps
+        for (var& device : m_deviceMap)
+            device.second->Update();
+    }
+
+    // Update ActionMaps
+    rvar lock2 = m_instance->m_actionMapsLock;
+    {
+        ScopeLock(lock2);
+
+        for (var& actionMap : m_actionMaps)
+            actionMap.second->Update();
+    }
+}
+
+void InputManager::BeginEmitInput()
+{
+    m_frameInputLock.LockNow();
+    m_isEmitting = true;
+}
+
+void InputManager::EndEmitInput()
+{
+    m_isEmitting = false;
+    m_frameInputLock.UnlockNow();
+}
+
+void InputManager::EmitInput(InputType type, InputData data)
+{
+    if (!m_isEmitting)
+        throw std::exception("You must call BeginEmitInput before you call EmitInput.");
+
+    m_frameInput.emplace_back(std::make_pair(type, data));
+}
+
+const std::vector<InputManager::FrameInputItem>& InputManager::GetFrameInput() const
+{
+    return m_frameInput;
 }
 
 ActionMap& InputManager::CreateActionMap(const char* name)

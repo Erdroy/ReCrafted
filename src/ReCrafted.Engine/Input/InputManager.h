@@ -17,9 +17,68 @@
 
 #include <spp.h>
 
+enum class InputType
+{
+    Unknown,
+
+    /**
+     * \brief InputData gets filled key and keyState fields.
+     */
+    Key,
+
+    /**
+     * \brief InputData gets filled button and buttonState fields.
+     */
+    Button,
+
+    /**
+     * \brief InputData gets filled axis1D/2D/3D.
+     */
+    Axis,
+
+    /**
+     * \brief InputData gets filled character field.
+     */
+    Character,
+
+    /**
+     * \brief InputData gets filled axis2D (cursorPos) and axis3D (delta -> xy).
+     */
+    Cursor,
+
+    /**
+     * \brief InputData gets filled axis1D.
+     */
+    Scroll,
+
+    Count
+};
+
+struct InputData
+{
+    Vector3 axis3D;
+    Vector2 axis2D;
+    float axis1D;
+
+    Char character;
+
+    Key key;
+    KeyState keyState;
+
+    Button button;
+    ButtonState buttonState;
+
+    /**
+     * \brief Used only for non-default input devices like game pads.
+     */
+    uint8_t deviceId = 0u;
+};
+
 class InputManager : public EngineComponent<InputManager>
 {
     friend class EngineMain;
+
+    using FrameInputItem = std::pair<InputType, InputData>;
 
 private:
     SCRIPTING_API_IMPL()
@@ -33,6 +92,10 @@ private:
     spp::sparse_hash_map<int, InputDevice*> m_deviceMap;
     int m_deviceCount;
 
+    Lock m_frameInputLock;
+    std::vector<FrameInputItem> m_frameInput;
+    std::atomic<bool> m_isEmitting;
+
 private:
     NullDevice* m_nullDevice = nullptr;
     Keyboard* m_keyboard = nullptr;
@@ -45,6 +108,13 @@ protected:
     void LateUpdate() override;
 
     void UpdateInput();
+    void DispatchInput();
+
+public:
+    void BeginEmitInput();
+    void EndEmitInput();
+    void EmitInput(InputType type, InputData data);
+    const std::vector<FrameInputItem>& GetFrameInput() const;
 
 public: /* -- Action Maps -- */
     static ActionMap& CreateActionMap(const char* name);

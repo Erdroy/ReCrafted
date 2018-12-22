@@ -68,19 +68,33 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
 
     case WM_CHAR:
         {
-            InputManager::GetDevice<Keyboard>(DeviceType::Keyboard).EmitCharacter(Char(wparam));
+            InputManager::GetInstance()->BeginEmitInput();
+            InputData data{};
+            data.character = Char(wparam);
+            InputManager::GetInstance()->EmitInput(InputType::Character, data);
+            InputManager::GetInstance()->EndEmitInput();
             return 0;
         }
 
         // input handling
     case WM_KEYDOWN:
         {
-            InputManager::GetDevice<Keyboard>(DeviceType::Keyboard).EmitInput(Key(wparam), KeyState::Down);
+            InputManager::GetInstance()->BeginEmitInput();
+            InputData data{};
+            data.key = Key(wparam);
+            data.keyState = KeyState::Down;
+            InputManager::GetInstance()->EmitInput(InputType::Key, data);
+            InputManager::GetInstance()->EndEmitInput();
             return 0;
         }
     case WM_KEYUP:
         {
-            InputManager::GetDevice<Keyboard>(DeviceType::Keyboard).EmitInput(Key(wparam), KeyState::Up);
+            InputManager::GetInstance()->BeginEmitInput();
+            InputData data{};
+            data.key = Key(wparam);
+            data.keyState = KeyState::Up;
+            InputManager::GetInstance()->EmitInput(InputType::Key, data);
+            InputManager::GetInstance()->EndEmitInput();
             return 0;
         }
     case WM_CREATE:
@@ -112,10 +126,11 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
                 return DefWindowProc(hWnd, msg, wparam, lparam);
 
             auto raw = reinterpret_cast<RAWINPUT*>(lpb);
-            
+
+            InputManager::GetInstance()->BeginEmitInput();
             if (raw->header.dwType == RIM_TYPEMOUSE)
             {
-                rvar mouseDevice = InputManager::GetDevice<Mouse>(DeviceType::Mouse);
+                InputData inputData{};
 
                 if (raw->data.mouse.usFlags == MOUSE_MOVE_RELATIVE)
                 {
@@ -129,77 +144,97 @@ LRESULT CALLBACK WindowEventProcessor(HWND hWnd, UINT msg, WPARAM wparam, LPARAM
 
                         ScreenToClient(static_cast<HWND>(currentWindow), &cursorPos);
 
-                        mouseDevice.EmitCursor(
-                            Vector2(cursorPos.x, cursorPos.y), 
-                            Vector2(raw->data.mouse.lLastX, raw->data.mouse.lLastY)
-                        );
+                        inputData.axis2D = Vector2(float(cursorPos.x), float(cursorPos.y));
+                        inputData.axis3D = Vector3(float(raw->data.mouse.lLastX), float(raw->data.mouse.lLastY), 0.0f);
+                        InputManager::GetInstance()->EmitInput(InputType::Cursor, inputData);
                     }
                     else 
                     {
-                        mouseDevice.EmitCursor(
-                            Vector2::Zero,
-                            Vector2(raw->data.mouse.lLastX, raw->data.mouse.lLastY)
-                        );
+                        inputData.axis2D = Vector2::Zero;
+                        inputData.axis3D = Vector3(float(raw->data.mouse.lLastX), float(raw->data.mouse.lLastY), 0.0f);
+                        InputManager::GetInstance()->EmitInput(InputType::Cursor, inputData);
                     }
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_WHEEL)
                 {
                     cvar scrollDelta = static_cast<SHORT>(raw->data.mouse.usButtonData) / static_cast<float>(WHEEL_DELTA);
-                    
-                    mouseDevice.EmitScroll(scrollDelta);
+
+                    inputData.axis1D = scrollDelta;
+                    InputManager::GetInstance()->EmitInput(InputType::Scroll, inputData);
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_LEFT_BUTTON_DOWN)
                 {
-                    mouseDevice.EmitInput(Button::Left, ButtonState::Down);
+                    inputData.button = Button::Left;
+                    inputData.buttonState = ButtonState::Down;
+                    InputManager::GetInstance()->EmitInput(InputType::Button, inputData);
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_LEFT_BUTTON_UP)
                 {
-                    mouseDevice.EmitInput(Button::Left, ButtonState::Up);
+                    inputData.button = Button::Left;
+                    inputData.buttonState = ButtonState::Up;
+                    InputManager::GetInstance()->EmitInput(InputType::Button, inputData);
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_MIDDLE_BUTTON_DOWN)
                 {
-                    mouseDevice.EmitInput(Button::Middle, ButtonState::Down);
+                    inputData.button = Button::Middle;
+                    inputData.buttonState = ButtonState::Down;
+                    InputManager::GetInstance()->EmitInput(InputType::Button, inputData);
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_MIDDLE_BUTTON_UP)
                 {
-                    mouseDevice.EmitInput(Button::Middle, ButtonState::Up);
+                    inputData.button = Button::Middle;
+                    inputData.buttonState = ButtonState::Up;
+                    InputManager::GetInstance()->EmitInput(InputType::Button, inputData);
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_RIGHT_BUTTON_DOWN)
                 {
-                    mouseDevice.EmitInput(Button::Right, ButtonState::Down);
+                    inputData.button = Button::Right;
+                    inputData.buttonState = ButtonState::Down;
+                    InputManager::GetInstance()->EmitInput(InputType::Button, inputData);
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_RIGHT_BUTTON_UP)
                 {
-                    mouseDevice.EmitInput(Button::Right, ButtonState::Up);
+                    inputData.button = Button::Right;
+                    inputData.buttonState = ButtonState::Up;
+                    InputManager::GetInstance()->EmitInput(InputType::Button, inputData);
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_4_DOWN)
                 {
-                    mouseDevice.EmitInput(Button::X1, ButtonState::Down);
+                    inputData.button = Button::X1;
+                    inputData.buttonState = ButtonState::Down;
+                    InputManager::GetInstance()->EmitInput(InputType::Button, inputData);
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_4_UP)
                 {
-                    mouseDevice.EmitInput(Button::X1, ButtonState::Up);
+                    inputData.button = Button::X1;
+                    inputData.buttonState = ButtonState::Up;
+                    InputManager::GetInstance()->EmitInput(InputType::Button, inputData);
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_5_DOWN)
                 {
-                    mouseDevice.EmitInput(Button::X2, ButtonState::Down);
+                    inputData.button = Button::X2;
+                    inputData.buttonState = ButtonState::Down;
+                    InputManager::GetInstance()->EmitInput(InputType::Button, inputData);
                 }
 
                 if (raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_5_UP)
                 {
-                    mouseDevice.EmitInput(Button::X2, ButtonState::Up);
+                    inputData.button = Button::X2;
+                    inputData.buttonState = ButtonState::Up;
+                    InputManager::GetInstance()->EmitInput(InputType::Button, inputData);
                 }
             }
+            InputManager::GetInstance()->EndEmitInput();
 
             return DefWindowProc(hWnd, msg, wparam, lparam);
         }

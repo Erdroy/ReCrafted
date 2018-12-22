@@ -111,6 +111,9 @@ void EngineMain::OnUpdate()
     // Run platform events
     Platform::RunEvents();
 
+    // Update input
+    InputManager::GetInstance()->DispatchInput();
+
     Profiler::BeginProfile("Update");
     {
         // Update all components
