@@ -45,7 +45,7 @@ void UI::DrawNow()
     Renderer::ApplyIndexBuffer(m_indexBuffer);
 
     // draw
-    Renderer::ApplyShader(m_shader->m_shaderHandle, 0);
+    Renderer::ApplyShader(m_shader->GetHandle(), 0);
     Renderer::DrawIndexed(m_indexCount);
 
     // reset buffer IO positions

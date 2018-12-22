@@ -27,7 +27,6 @@ private:
     RefPtr<Method> m_update_method = nullptr;
     RefPtr<Method> m_simulate_method = nullptr;
     RefPtr<Method> m_render_method = nullptr;
-    RefPtr<Method> m_renderui_method = nullptr;
     RefPtr<Method> m_shutdown_method = nullptr;
 
 public:
@@ -42,7 +41,6 @@ private:
 private:
     void Simulate();
     void Render();
-    void RenderUI();
 };
 
 #endif // APPLICATION_H

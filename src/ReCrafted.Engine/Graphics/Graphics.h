@@ -75,7 +75,6 @@ private:
     void RenderEnd();
 
     void RenderDebugDraw();
-    void RenderUI();
     void RenderWebUI();
     void RenderWebUIViews();
     void UpdateImGUI();

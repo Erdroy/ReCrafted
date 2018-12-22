@@ -17,7 +17,6 @@ void Application::OnInit()
     m_simulate_method = m_gamemain->FindMethod("ReCrafted.Game.GameMain::Simulate");
     m_update_method = m_gamemain->FindMethod("ReCrafted.Game.GameMain::Update");
     m_render_method = m_gamemain->FindMethod("ReCrafted.Game.GameMain::Render");
-    m_renderui_method = m_gamemain->FindMethod("ReCrafted.Game.GameMain::RenderUI");
     m_shutdown_method = m_gamemain->FindMethod("ReCrafted.Game.GameMain::Shutdown");
 }
 
@@ -45,9 +44,4 @@ void Application::Update()
 void Application::Render()
 {
     m_render_method->Invoke();
-}
-
-void Application::RenderUI()
-{
-    m_renderui_method->Invoke();
 }

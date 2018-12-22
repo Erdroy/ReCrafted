@@ -22,9 +22,6 @@ class UI : public EngineComponent<UI>
     friend class Graphics;
 
 private:
-SCRIPTING_API_IMPL()
-
-private:
     struct vertex
     {
         float x = 0.0f;

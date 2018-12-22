@@ -17,7 +17,6 @@
 #include "Graphics/Graphics.h"
 #include "Graphics/DebugDraw.h"
 #include "Input/InputManager.h"
-#include "UI/UI.h"
 #include "WebUI/WebUI.h"
 #include "Physics/PhysicsManager.h"
 #include "Platform/Platform.h"
@@ -44,7 +43,6 @@ void EngineMain::RegisterComponents() const
     m_componentManager->RegisterComponent(PhysicsManager::GetInstance());
     m_componentManager->RegisterComponent(Universe::GetInstance());
     m_componentManager->RegisterComponent(DebugDraw::GetInstance());
-    m_componentManager->RegisterComponent(UI::GetInstance());
     m_componentManager->RegisterComponent(WebUI::GetInstance());
 }
 
@@ -58,7 +56,6 @@ void EngineMain::UnregisterComponents() const
 
     m_componentManager->UnregisterComponent(PhysicsManager::GetInstance());
 
-    m_componentManager->UnregisterComponent(UI::GetInstance());
     m_componentManager->UnregisterComponent(WebUI::GetInstance());
 
     // Run finalizer

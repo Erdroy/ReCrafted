@@ -8,7 +8,6 @@
 #include "Graphics/DebugDraw.h"
 #include "Graphics/Graphics.h"
 #include "Physics/PhysicsManager.h"
-#include "UI/UI.h"
 #include "Voxels/SpaceObjectManager.h"
 #include "Voxels/Storage/VoxelStorage.h"
 #include "Voxels/SpaceObjectSettings.h"

@@ -23,7 +23,6 @@
 #include "Physics/CharacterActor.h"
 #include "Physics/PhysicsManager.h"
 #include "Physics/RigidBodyActor.h"
-#include "UI/UI.h"
 #include "WebUI/WebUI.h"
 #include "WebUI/WebUIView.h"
 #include "Voxels/VoxelMaterialManager.h"
@@ -42,7 +41,6 @@ void Bindings::Bind()
     Application::InitRuntime();
     Time::InitRuntime();
     Display::InitRuntime();
-    UI::InitRuntime();
     DebugDraw::InitRuntime();
     Font::InitRuntime();
     Profiler::InitRuntime();

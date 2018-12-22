@@ -19,7 +19,6 @@
 class Shader : public JsonAsset
 {
     friend class Graphics;
-    friend class UI;
 
 private:
     SCRIPTING_API_IMPL()

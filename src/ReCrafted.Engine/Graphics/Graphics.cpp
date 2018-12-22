@@ -10,7 +10,6 @@
 #include "Core/Application.h"
 #include "Graphics/Camera.h"
 #include "Graphics/RenderBuffer.h"
-#include "UI/UI.h"
 #include "WebUI/WebUI.h"
 #include "DebugDraw.h"
 #include "RenderTasks/ScreenshotTask.h"
@@ -268,9 +267,6 @@ void Graphics::Render()
         // Render debug draw
         RenderDebugDraw();
 
-        // Render UI
-        RenderUI();
-
         Profiler::BeginProfile("Renderer::Frame");
         // next frame, wait vsync
         Renderer::Frame();
@@ -404,32 +400,6 @@ void Graphics::RenderDebugDraw()
     Profiler::BeginProfile("Render Debug");
     {
         DebugDraw::GetInstance()->Render();
-    }
-    Profiler::EndProfile();
-}
-
-void Graphics::RenderUI()
-{
-    Profiler::BeginProfile("Render UI");
-    {
-        // set UI state
-        SetStage(RenderStage::DrawUI);
-
-        // draw UI
-        UI::m_instance->BeginDraw(); // begin draw UI
-
-        Profiler::BeginProfile("UI Collect");
-        {
-            // render application UI
-            Application::GetInstance()->RenderUI();
-        }
-        Profiler::EndProfile();
-
-        Profiler::BeginProfile("UI Process");
-        {
-            UI::m_instance->EndDraw(); // end draw UI
-        }
-        Profiler::EndProfile();
     }
     Profiler::EndProfile();
 }
