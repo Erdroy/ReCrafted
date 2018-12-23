@@ -7,6 +7,7 @@
 #include "Graphics/Camera.h"
 #include "Graphics/DebugDraw.h"
 #include "Graphics/Graphics.h"
+#include "Input/InputManager.h"
 #include "Physics/PhysicsManager.h"
 #include "Voxels/SpaceObjectManager.h"
 #include "Voxels/Storage/VoxelStorage.h"
@@ -15,7 +16,6 @@
 #include "imgui.h"
 #include <iomanip>
 #include <sstream>
-#include "Input/InputManager.h"
 
 SINGLETON_IMPL(Universe)
 
@@ -48,6 +48,12 @@ void Universe::OnInit()
 
     m_ball = RigidBodyActor::CreateDynamic();
     m_ball->AttachCollision(Collision::CreateSphereCollision(0.5f));
+
+    rvar actionMap = InputManager::CreateActionMap("fire-controls");
+    actionMap.AddAction("fire", ActionType::Event, ActionEventType::Pressed);
+    actionMap.AddBind("fire", Key::Control);
+    actionMap.AddBind("fire", Button::Left);
+    actionMap.AddListener("fire", Action<void>::New<Universe, &Universe::Shoot>(this));
 }
 
 void Universe::OnDispose()
@@ -69,15 +75,6 @@ void Universe::Update()
     if (InputManager::IsKeyDown(Key::F7))
     {
         m_viewUpdateEnabled = !m_viewUpdateEnabled;
-    }
-
-    cvar modPosition = Camera::GetMainCamera()->GetPosition() + Camera::GetMainCamera()->GetForward() * 5.0f;
-
-    if (InputManager::IsKeyDown(Key::F))
-    {
-        m_ball->SetPosition(modPosition);
-        m_ball->SetVelocity(Vector3::Zero);
-        m_ball->AddForce(Camera::GetMainCamera()->GetForward() * 100.0f, ForceMode::VelocityChange);
     }
 
     if(InputManager::IsKey(Key::R))
@@ -137,6 +134,15 @@ void Universe::Update()
 
 void Universe::Simulate()
 {
+}
+
+void Universe::Shoot()
+{
+    cvar pos = Camera::GetMainCamera()->GetPosition() + Camera::GetMainCamera()->GetForward() * 5.0f;
+
+    m_ball->SetPosition(pos);
+    m_ball->SetVelocity(Vector3::Zero);
+    m_ball->AddForce(Camera::GetMainCamera()->GetForward() * 100.0f, ForceMode::VelocityChange);
 }
 
 void Universe::DoVoxelModification(const VoxelEditMode::_enum mode, const VoxelMaterial_t material, const float size) const

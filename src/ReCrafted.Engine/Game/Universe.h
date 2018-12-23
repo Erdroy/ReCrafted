@@ -38,6 +38,7 @@ private:
     void Simulate();
 
 private:
+    void Shoot();
     void DoVoxelModification(VoxelEditMode::_enum mode, VoxelMaterial_t material, float size) const;
 };
 
