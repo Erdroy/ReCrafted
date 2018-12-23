@@ -2,6 +2,7 @@
 
 #include "ActionMap.h"
 #include "InputManager.h"
+#include "Common/Profiler/Profiler.h"
 
 ActionMap::ActionItem* ActionMap::GetActionItem(const char* name)
 {
@@ -13,28 +14,115 @@ ActionMap::ActionItem* ActionMap::GetActionItem(const char* name)
     return &it->second;
 }
 
+void ActionMap::DoKeyActions(Key key, KeyState state)
+{
+    cvar keyCode = static_cast<int>(key);
+    if (!m_keyBinds[keyCode].empty())
+    {
+        for (rvar action : m_keyBinds[keyCode])
+        {
+            switch (action->type)
+            {
+            case ActionType::Event:
+            {
+                if((static_cast<int>(action->eventType) & static_cast<int>(state)) != 0)
+                {
+                    for(rvar listener : action->eventListeners)
+                    {
+                        listener.Invoke();
+                    }
+                }
+                return;
+            }
+            case ActionType::State:
+            {
+                InputState inputState;
+                inputState.pressed = state == KeyState::Down;
+                inputState.released = state == KeyState::Up;
+                inputState.held = false; // TODO: implement `held` state (... but how?)
+
+                for (rvar listener : action->stateListeners)
+                {
+                    listener.Invoke(inputState);
+                }
+                return;
+            }
+            default: return;
+            }
+        }
+    }
+}
+
+void ActionMap::DoButtonActions(Button button, ButtonState state)
+{
+    cvar buttonCode = static_cast<int>(button);
+    if (!m_buttonBinds[buttonCode].empty())
+    {
+        for (rvar action : m_buttonBinds[buttonCode])
+        {
+            switch (action->type)
+            {
+            case ActionType::Event:
+            {
+                if ((static_cast<int>(action->eventType) & static_cast<int>(state)) != 0)
+                {
+                    for (rvar listener : action->eventListeners)
+                    {
+                        listener.Invoke();
+                    }
+                }
+                return;
+            }
+            case ActionType::State:
+            {
+                InputState inputState;
+                inputState.pressed = state == ButtonState::Down;
+                inputState.released = state == ButtonState::Up;
+                inputState.held = false; // TODO: implement `held` state (... but how?)
+                for (rvar listener : action->stateListeners)
+                {
+                    listener.Invoke(inputState);
+                }
+                return;
+            }
+            default: return;
+            }
+        }
+    }
+}
+
 void ActionMap::Update()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     if (!m_active)
         return;
 
-    m_actionItemsLock.LockNow();
-    for (rvar item : m_actionItemMap)
+    rvar inputList = InputManager::GetInstance()->GetFrameInput();
+    for(rvar input : inputList)
     {
-        var actionItem = &item.second;
-
-        // We need to make something like this:
-        // if(InputManager::IsButton(actionItem->buttonBinds[0]))
-        //    actionItem->eventListeners[0].Invoke();
-        // But a lot faster, so we are going to need the generic input buffer (but how?)
-        // Maybe just go ahead, and make it per-frame input buffer, and let devices and maps
-        // do what they want?
-
-        // TODO: Event implementation
-        // TODO: State implementation
-        // TODO: Axis implementation
+        // TODO: Refactor Do*Actions
+        switch(input.first)
+        {
+        case InputType::Key:
+        {
+            DoKeyActions(input.second.key, input.second.keyState);
+            break;
+        }
+        case InputType::Button:
+        {
+            DoButtonActions(input.second.button, input.second.buttonState);
+            break;
+        }
+        case InputType::Axis:
+        case InputType::Character:
+        case InputType::Cursor:
+        case InputType::Scroll:
+        case InputType::Unknown:
+        case InputType::Count:
+        default: break;
+        }
     }
-    m_actionItemsLock.UnlockNow();
 }
 
 void ActionMap::SetActive(const bool active)
@@ -73,19 +161,21 @@ void ActionMap::RemoveAction(const char* name)
 void ActionMap::AddBind(const char* name, const Key key)
 {
     cvar action = GetActionItem(name);
+    if (!action)
+        return;
 
     // Add key bind
-    if (action)
-        action->keyBinds.push_back(key);
+    m_keyBinds[static_cast<int>(key)].push_back(action);
 }
 
 void ActionMap::AddBind(const char* name, const Button button)
 {
     cvar action = GetActionItem(name);
+    if (!action)
+        return;
 
     // Add button bind
-    if (action)
-        action->buttonBinds.push_back(button);
+    m_buttonBinds[static_cast<int>(button)].push_back(action);
 }
 
 void ActionMap::RemoveBinds(const char* name)
@@ -94,9 +184,20 @@ void ActionMap::RemoveBinds(const char* name)
     if (!action)
         return;
 
-    // Clear key and button binds
-    action->keyBinds.clear();
-    action->buttonBinds.clear();
+    // Clear key and button binds for selected action
+    for(rvar bind : m_keyBinds)
+    {
+        cvar it = std::find(bind.begin(), bind.end(), action);
+        if(it != bind.end())
+            bind.erase(it);
+    }
+    
+    for (rvar bind : m_buttonBinds)
+    {
+        cvar it = std::find(bind.begin(), bind.end(), action);
+        if (it != bind.end())
+            bind.erase(it);
+    }
 }
 
 void ActionMap::AddListener(const char* name, const Action<void>& action)

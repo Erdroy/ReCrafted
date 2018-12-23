@@ -8,9 +8,13 @@
 #include "ReCrafted.h"
 #include "Core/Action.h"
 #include "Core/Lock.h"
+#include "Input/Keyboard.h"
+#include "Input/Mouse.h"
 #include "Input/KeyboardKeys.h"
 #include "Input/MouseButtons.h"
 #include "Scripting/Object.h"
+
+#include <array>
 
 enum class AxisFiltering : byte
 {
@@ -36,12 +40,11 @@ enum class ActionType : byte
     Axis3D
 };
 
-enum class ActionEventType : byte
+enum class ActionEventType : sbyte
 {
-    None,
-    Pressed = 1 << 0,
-    Released = 1 << 1,
-    Held = 1 << 2
+    None = -1,
+    Pressed,
+    Released
 };
 
 struct InputState
@@ -63,9 +66,6 @@ private:
         ActionType type;
         ActionEventType eventType;
 
-        std::vector<Key> keyBinds;
-        std::vector<Button> buttonBinds;
-
         std::vector<Action<void>> eventListeners;
         std::vector<Action<void, InputState>> stateListeners;
         std::vector<Action<void, float>> axis1DListeners;
@@ -73,12 +73,17 @@ private:
         std::vector<Action<void, Vector3>> axis3DListeners;
     };
 
+    using ActionItemList = std::vector<ActionItem*>;
+
 private:
     SCRIPTING_API_IMPL();
 
 private:
     bool m_active = true;
     std::string m_name;
+
+    std::array<ActionItemList, Keyboard::KeyCount> m_keyBinds;
+    std::array<ActionItemList, Mouse::ButtonCount> m_buttonBinds;
 
     spp::sparse_hash_map<std::string, ActionItem> m_actionItemMap;
     Lock m_actionItemsLock;
@@ -95,6 +100,9 @@ private:
     }
 
     ActionItem* GetActionItem(const char* name);
+
+    void DoKeyActions(Key key, KeyState state);
+    void DoButtonActions(Button button, ButtonState state);
 
 public:
     ActionMap() = default;

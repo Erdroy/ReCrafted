@@ -53,6 +53,15 @@ void InputManager::DispatchInput()
         }
     }
     m_frameInputLock.UnlockNow();
+
+    // Update ActionMaps
+    rvar lock2 = m_instance->m_actionMapsLock;
+    {
+        ScopeLock(lock2);
+
+        for (var& actionMap : m_actionMaps)
+            actionMap.second->Update();
+    }
 }
 
 void InputManager::OnInit()
@@ -111,15 +120,6 @@ void InputManager::UpdateInput()
 
         for (var& device : m_deviceMap)
             device.second->Update();
-    }
-
-    // Update ActionMaps
-    rvar lock2 = m_instance->m_actionMapsLock;
-    {
-        ScopeLock(lock2);
-
-        for (var& actionMap : m_actionMaps)
-            actionMap.second->Update();
     }
 }
 
