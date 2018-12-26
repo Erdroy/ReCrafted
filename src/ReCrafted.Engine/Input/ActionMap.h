@@ -16,42 +16,36 @@
 
 #include <array>
 
-enum class AxisFiltering : byte
+enum class ActionType : sbyte
 {
-    /**
-     * \brief No filtering for action.
-     */
-    None,
+    None = -1,
 
-    /**
-     * \brief Use a number of previous frames to filter-out the input.
-     */
-    OverFrames
-};
-
-enum class ActionType : byte
-{
     Event,
 
     State,
 
     Axis1D,
     Axis2D,
-    Axis3D
+    Axis3D,
+
+    Count
 };
 
 enum class ActionEventType : sbyte
 {
     None = -1,
+
     Pressed,
-    Released
+    Released,
+
+    Count
 };
 
 struct InputState
 {
     bool pressed : 1;
-    bool held : 1;
     bool released : 1;
+    //bool held : 1;
 };
 static_assert(sizeof(InputState), "InputState structure size must be 1 byte long");
 
@@ -63,8 +57,8 @@ private:
     struct ActionItem
     {
         std::string name;
-        ActionType type;
-        ActionEventType eventType;
+        ActionType type = ActionType::Event;
+        ActionEventType eventType = ActionEventType::None;
 
         std::vector<Action<void>> eventListeners;
         std::vector<Action<void, InputState>> stateListeners;
@@ -87,6 +81,9 @@ private:
 
     spp::sparse_hash_map<std::string, ActionItem> m_actionItemMap;
     Lock m_actionItemsLock;
+
+private:
+    static void CallStateListeners(ActionItem* action, bool down, bool up, bool held);
 
 private:
     void SetName(const std::string& name)

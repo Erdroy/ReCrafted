@@ -14,6 +14,19 @@ ActionMap::ActionItem* ActionMap::GetActionItem(const char* name)
     return &it->second;
 }
 
+void ActionMap::CallStateListeners(ActionItem* action, const bool down, const bool up, const bool held)
+{
+    InputState inputState{};
+    inputState.pressed = down;
+    inputState.released = up;
+    //inputState.held = held;
+
+    for (rvar listener : action->stateListeners)
+    {
+        listener.Invoke(inputState);
+    }
+}
+
 void ActionMap::DoKeyActions(Key key, KeyState state)
 {
     cvar keyCode = static_cast<int>(key);
@@ -36,15 +49,7 @@ void ActionMap::DoKeyActions(Key key, KeyState state)
             }
             case ActionType::State:
             {
-                InputState inputState;
-                inputState.pressed = state == KeyState::Down;
-                inputState.released = state == KeyState::Up;
-                inputState.held = false; // TODO: implement `held` state (... but how?)
-
-                for (rvar listener : action->stateListeners)
-                {
-                    listener.Invoke(inputState);
-                }
+                CallStateListeners(action, state == KeyState::Down, state == KeyState::Up, InputManager::IsKey(key));
                 return;
             }
             default: return;
@@ -75,14 +80,7 @@ void ActionMap::DoButtonActions(Button button, ButtonState state)
             }
             case ActionType::State:
             {
-                InputState inputState;
-                inputState.pressed = state == ButtonState::Down;
-                inputState.released = state == ButtonState::Up;
-                inputState.held = false; // TODO: implement `held` state (... but how?)
-                for (rvar listener : action->stateListeners)
-                {
-                    listener.Invoke(inputState);
-                }
+                CallStateListeners(action, state == ButtonState::Down, state == ButtonState::Up, InputManager::IsButton(button));
                 return;
             }
             default: return;
@@ -99,9 +97,9 @@ void ActionMap::Update()
         return;
 
     rvar inputList = InputManager::GetInstance()->GetFrameInput();
+    // TODO: Add second frame input buffer to store previous key state etc. (same thing is in Mouse/Keyboard devices)
     for(rvar input : inputList)
     {
-        // TODO: Refactor Do*Actions
         switch(input.first)
         {
         case InputType::Key:
