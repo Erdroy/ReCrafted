@@ -41,35 +41,71 @@ UltralightViewport::~UltralightViewport()
 
 void UltralightViewport::Update()
 {
-    if(!Math::IsZero(InputManager::GetCursorPosition().Length()))
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
+    rvar frameInput = InputManager::GetInstance()->GetFrameInput();
+
+    for(crvar input : frameInput)
     {
-        ultralight::MouseEvent event;
-        event.type = ultralight::MouseEvent::kType_MouseMoved;
-        event.x = ceilf(InputManager::GetCursorPosition().x);
-        event.y = ceilf(InputManager::GetCursorPosition().y);
-        m_view->FireMouseEvent(event);
-    }
+        switch(input.first)
+        {
+        case InputType::Key:
+        {
+            ultralight::KeyEvent event{};
+            ultralight::GetKeyIdentifierFromVirtualKeyCode(static_cast<int>(input.second.key), event.key_identifier);
+            event.native_key_code = static_cast<int>(input.second.key);
+            event.virtual_key_code = static_cast<int>(input.second.key);
 
-    if(InputManager::IsButtonDown(Button::Left))
-    {
-        ultralight::MouseEvent event;
-        event.type = ultralight::MouseEvent::kType_MouseDown;
-        event.button = ultralight::MouseEvent::kButton_Left;
-        event.x = ceilf(InputManager::GetCursorPosition().x);
-        event.y = ceilf(InputManager::GetCursorPosition().y);
+            m_view->FireKeyEvent(event);
+            break;
+        }
+        case InputType::Character:
+        {
+            ultralight::KeyEvent event{};
+            event.type = ultralight::KeyEvent::Type::kType_Char;
+            event.text = ultralight::String((ultralight::Char16*)&input.second.character, 1u);
+            m_view->FireKeyEvent(event);
+            break;
+        }
+        case InputType::Button:
+        {
+            ultralight::MouseEvent event{};
+            event.type = input.second.buttonState == ButtonState::Down ? 
+                ultralight::MouseEvent::kType_MouseDown : 
+                ultralight::MouseEvent::kType_MouseUp;
+            event.x = static_cast<int>(ceilf(InputManager::GetCursorPosition().x));
+            event.y = static_cast<int>(ceilf(InputManager::GetCursorPosition().y));
+            event.button = static_cast<ultralight::MouseEvent::Button>(static_cast<int>(input.second.button));
 
-        m_view->FireMouseEvent(event);
-    }
+            m_view->FireMouseEvent(event);
+            break;
+        }
+        case InputType::Cursor:
+        {
+            ultralight::MouseEvent event{};
+            event.type = ultralight::MouseEvent::kType_MouseMoved;
+            event.x = static_cast<int>(ceilf(input.second.axis2D.x));
+            event.y = static_cast<int>(ceilf(input.second.axis2D.y));
+            event.button = ultralight::MouseEvent::kButton_None;
 
-    if (InputManager::IsButtonDown(Button::Left))
-    {
-        ultralight::MouseEvent event;
-        event.type = ultralight::MouseEvent::kType_MouseUp;
-        event.button = ultralight::MouseEvent::kButton_Left;
-        event.x = ceilf(InputManager::GetCursorPosition().x);
-        event.y = ceilf(InputManager::GetCursorPosition().y);
+            m_view->FireMouseEvent(event);
+            break;
+        }
+        case InputType::Scroll:
+        {
+            ultralight::ScrollEvent event{};
+            event.type = ultralight::ScrollEvent::kType_ScrollByPixel;
+            event.delta_y = input.second.axis1D;
 
-        m_view->FireMouseEvent(event);
+            m_view->FireScrollEvent(event);
+            break;
+        }
+
+        case InputType::Unknown:
+        case InputType::Axis:
+        case InputType::Count:
+        default: break;
+        }
     }
 }
 
