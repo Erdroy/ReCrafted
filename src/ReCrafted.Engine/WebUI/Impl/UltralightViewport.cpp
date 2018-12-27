@@ -9,6 +9,7 @@
 
 #include <Ultralight/platform/Platform.h>
 #include <Ultralight/platform/GPUDriver.h>
+#include "Core/Logger.h"
 
 void UltralightViewport::CreateTexture(const uint width, const uint height)
 {
@@ -169,6 +170,22 @@ void UltralightViewport::OnAddConsoleMessage(ultralight::View* caller, ultraligh
     ultralight::MessageLevel level, const ultralight::String& message, uint32_t line_number, uint32_t column_number,
     const ultralight::String& source_id)
 {
+    switch (level)
+    {
+    case ultralight::kMessageLevel_Debug:
+    case ultralight::kMessageLevel_Info:
+    case ultralight::kMessageLevel_Log: 
+        Logger::Log("{0}({1}): {2}", source_id.utf8().data(), line_number, message.utf8().data()); 
+        break;
+    case ultralight::kMessageLevel_Warning: 
+        Logger::LogWarning("{0}({1}): {2}", source_id.utf8().data(), line_number, message.utf8().data()); 
+        break;
+    case ultralight::kMessageLevel_Error: 
+        Logger::LogError("{0}({1}): {2}", source_id.utf8().data(), line_number, message.utf8().data()); 
+        break;
+    default: 
+        break;
+    }
 }
 
 void UltralightViewport::OnBeginLoading(ultralight::View* caller)
