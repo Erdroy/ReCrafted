@@ -96,7 +96,7 @@ void UltralightViewport::Update()
         {
             ultralight::ScrollEvent event{};
             event.type = ultralight::ScrollEvent::kType_ScrollByPixel;
-            event.delta_y = input.second.axis1D;
+            event.delta_y = static_cast<int>(input.second.axis1D * 120); // TODO: Smooth scroll implementation
 
             m_view->FireScrollEvent(event);
             break;
@@ -150,20 +150,9 @@ void UltralightViewport::Execute(const char* javaScriptSource)
     m_view->EvaluateScript(javaScriptSource);
 }
 
-void UltralightViewport::OnChangeTitle(ultralight::View* caller, const ultralight::String& title)
-{
-}
-
-void UltralightViewport::OnChangeURL(ultralight::View* caller, const ultralight::String& url)
-{
-}
-
-void UltralightViewport::OnChangeTooltip(ultralight::View* caller, const ultralight::String& tooltip)
-{
-}
-
 void UltralightViewport::OnChangeCursor(ultralight::View* caller, ultralight::Cursor cursor)
 {
+    // TODO: Cursor change implementation
 }
 
 void UltralightViewport::OnAddConsoleMessage(ultralight::View* caller, ultralight::MessageSource source,
@@ -193,10 +182,6 @@ void UltralightViewport::OnBeginLoading(ultralight::View* caller)
 }
 
 void UltralightViewport::OnFinishLoading(ultralight::View* caller)
-{
-}
-
-void UltralightViewport::OnUpdateHistory(ultralight::View* caller)
 {
 }
 
