@@ -19,11 +19,11 @@
 #include "Graphics/CameraActor.h"
 #include "Graphics/DebugDraw.h"
 #include "Graphics/Font.h"
+#include "Graphics/Shader.h"
 #include "Physics/Collision.h"
 #include "Physics/CharacterActor.h"
 #include "Physics/PhysicsManager.h"
 #include "Physics/RigidBodyActor.h"
-#include "WebUI/WebUI.h"
 #include "WebUI/WebUIView.h"
 #include "Voxels/VoxelMaterialManager.h"
 #include "Voxels/Assets/VoxelMaterial.h"
@@ -78,7 +78,6 @@ void Bindings::Bind()
 
 
     // == WebUI ==
-    WebUI::InitRuntime();
     WebUIView::InitRuntime();
 
 

@@ -77,7 +77,7 @@ WebUIView* WebUI::CreateView()
     if (!WebUIEngine::IsInitialized())
         return nullptr;
 
-    var view = Object::CreateInstance<WebUIView>("ReCrafted.API.Graphics", "WebUIView");
+    var view = Object::CreateInstance<WebUIView>("ReCrafted.API.WebUI", "WebUIView");
 
     view->Init();
     m_views.Add(view);

@@ -7,6 +7,7 @@ using ReCrafted.API.Graphics;
 using ReCrafted.API.Input;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.Physics;
+using ReCrafted.API.WebUI;
 using ReCrafted.Common;
 using ReCrafted.Game.Player;
 
@@ -41,10 +42,10 @@ namespace ReCrafted.Game
                 // apply target fps
                 TargetFps = 60;
                 
-                _uiGameOverlay = WebUI.Create();
+                _uiGameOverlay = WebUIView.Create();
                 _uiGameOverlay.Navigate("file:///game/overlay.html");
 
-                _uiGameHud = WebUI.Create();
+                _uiGameHud = WebUIView.Create();
                 _uiGameHud.Navigate("file:///game/hud.html");
             }
             catch (Exception exception)

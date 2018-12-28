@@ -17,9 +17,6 @@ class WebUI : public EngineComponent<WebUI>
     friend class EngineMain;
 
 private:
-SCRIPTING_API_IMPL()
-
-private:
     Array<WebUIView*> m_views = {};
     WebUIEngine* m_engine = nullptr;
 

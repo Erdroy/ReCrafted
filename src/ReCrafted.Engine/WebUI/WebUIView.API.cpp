@@ -3,6 +3,7 @@
 #include "WebUIView.h"
 #include "Scripting/Mono.h"
 #include "Scripting/Bindings.h"
+#include "WebUI/WebUI.h"
 
 namespace Internal
 {
@@ -37,21 +38,26 @@ namespace Internal
         // free ansi string
         MONO_ANSI_FREE(str);
     }
+
+    MonoObject* createView()
+    {
+        return WebUI::GetInstance()->CreateView()->GetManagedPtr();
+    }
 }
 
 void WebUIView::InitRuntime()
 {
     // TODO: open/execute/bind methods
 
-    API_FILE("Graphics/WebUIView.Gen.cs");
+    API_FILE("WebUI/WebUIView.Gen.cs");
     {
         API_COMMENT("WebUIView class.");
-        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.Graphics", "WebUIView", "Object", PARTIAL, NOCONSTRUCTOR);
+        API_CLASS(PUBLIC, REGULAR, "ReCrafted.API.WebUI", "WebUIView", "Object", PARTIAL, NOCONSTRUCTOR);
         {
             API_COMMENT("Navigates current view to given URL.");
             API_METHOD(PUBLIC, REGULAR, "Navigate", EXTERN);
             {
-                API_BIND("ReCrafted.API.Graphics.WebUIView::Internal_Navigate", &Internal::navigate);
+                API_BIND("ReCrafted.API.WebUI.WebUIView::Internal_Navigate", &Internal::navigate);
 
                 API_PARAM("string", "url");
             }
@@ -60,9 +66,18 @@ void WebUIView::InitRuntime()
             API_COMMENT("Executes given JavaScript code.");
             API_METHOD(PUBLIC, REGULAR, "ExecuteJS", EXTERN);
             {
-                API_BIND("ReCrafted.API.Graphics.WebUIView::Internal_ExecuteJS", &Internal::execute);
+                API_BIND("ReCrafted.API.WebUI.WebUIView::Internal_ExecuteJS", &Internal::execute);
 
                 API_PARAM("string", "javaScript");
+            }
+            API_METHOD_END();
+
+            API_COMMENT("Creates new WebUIView");
+            API_METHOD(PUBLIC, STATIC, "Create", EXTERN);
+            {
+                API_BIND("ReCrafted.API.WebUI.WebUIView::Create", &Internal::createView);
+
+                API_RETURN("WebUIView");
             }
             API_METHOD_END();
         }

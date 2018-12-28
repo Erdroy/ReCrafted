@@ -100,8 +100,6 @@
     <Compile Include="Graphics\Shader.Gen.cs" />
     <Compile Include="Graphics\Texture.cs" />
     <Compile Include="Graphics\Texture.Gen.cs" />
-    <Compile Include="Graphics\WebUI.Gen.cs" />
-    <Compile Include="Graphics\WebUIView.Gen.cs" />
     <Compile Include="Input\Button.cs" />
     <Compile Include="Input\ButtonState.cs" />
     <Compile Include="Input\DeviceType.cs" />
@@ -155,6 +153,7 @@
     <Compile Include="Physics\RigidBodyActor.Gen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scene\SceneManager.Gen.cs" />
+    <Compile Include="WebUI\WebUIView.Gen.cs" />
     <Compile Include="Utils\TextWrapper.cs" />
     <Compile Include="Voxels\VoxelMaterial.Gen.cs" />
   </ItemGroup>
