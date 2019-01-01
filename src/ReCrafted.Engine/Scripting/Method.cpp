@@ -3,12 +3,22 @@
 #include "Method.h"
 #include "Assembly.h"
 
+void Method::Invoke() const
+{
+    Invoke(nullptr);
+}
+
 void Method::Invoke(void** params) const
 {
     MonoObject* exception = nullptr;
     mono_runtime_invoke(m_method, m_object, params, &exception);
 
     // TODO: Raise exception
+}
+
+void Method::InvokeStatic() const
+{
+    InvokeStatic(nullptr);
 }
 
 void Method::InvokeStatic(void** params) const
