@@ -43,6 +43,7 @@ public:
         m_free_function = action.m_free_function;
         m_proxy_instance = action.m_proxy_instance;
         m_proxy_function = action.m_proxy_function;
+        m_stdfunc = action.m_stdfunc;
     }
 
     Action(FunctionSignature function)
