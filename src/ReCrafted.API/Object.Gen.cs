@@ -1,4 +1,4 @@
-// ReCrafted (c) 2016-2018 Always Too Late
+// ReCrafted (c) 2016-2019 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
 // Generated: 10/27/2018 15:05:54 Source: 'Object.API.cpp' Target: 'Object.Gen.cs'
 

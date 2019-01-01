@@ -1,4 +1,4 @@
-// ReCrafted (c) 2016-2018 Always Too Late
+// ReCrafted (c) 2016-2019 Always Too Late
 
 #name "StandardShader"
 #desc "StandardShader used for shading almost every visible object in game (excluding Terrain, as it has it's own shader)"

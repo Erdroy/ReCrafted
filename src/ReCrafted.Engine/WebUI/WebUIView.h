@@ -1,4 +1,4 @@
-// ReCrafted (c) 2016-2018 Always Too Late
+// ReCrafted (c) 2016-2019 Always Too Late
 
 #pragma once
 
@@ -10,7 +10,7 @@
 #include "Core/Action.h"
 #include "Core/Event.h"
 #include "Scripting/Object.h"
-#include "WebUIViewport.h"
+#include "WebUI/WebUIViewport.h"
 
 class WebUIView : public Object
 {

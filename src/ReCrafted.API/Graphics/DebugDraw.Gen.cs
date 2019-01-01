@@ -1,4 +1,4 @@
-// ReCrafted (c) 2016-2018 Always Too Late
+// ReCrafted (c) 2016-2019 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
 // Generated: 11/06/2018 12:01:30 Source: 'DebugDraw.API.cpp' Target: 'Graphics/DebugDraw.Gen.cs'
 

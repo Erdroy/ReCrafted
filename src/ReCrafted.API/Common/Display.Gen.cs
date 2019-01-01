@@ -1,6 +1,6 @@
-// ReCrafted (c) 2016-2018 Always Too Late
+// ReCrafted (c) 2016-2019 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 05/25/2018 18:27:30 Source: 'Display.API.cpp' Target: 'Common/Display.Gen.cs'
+// Generated: 10/26/2018 22:37:46 Source: 'Display.API.cpp' Target: 'Common/Display.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;

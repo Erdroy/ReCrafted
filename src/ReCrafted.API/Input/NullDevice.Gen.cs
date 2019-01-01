@@ -1,4 +1,4 @@
-// ReCrafted (c) 2016-2018 Always Too Late
+// ReCrafted (c) 2016-2019 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
 // Generated: 12/20/2018 17:11:06 Source: 'NullDevice.API.cpp' Target: 'Input/NullDevice.Gen.cs'
 

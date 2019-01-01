@@ -1,4 +1,4 @@
-// ReCrafted (c) 2016-2018 Always Too Late
+// ReCrafted (c) 2016-2019 Always Too Late
 
 #pragma once
 
@@ -6,9 +6,9 @@
 #define ULTRALIGHTVIEWPORT_H
 
 #include "WebUI/WebUIViewport.h"
+#include "Core/Event.h"
 
 #include <Ultralight/View.h>
-#include "Core/Event.h"
 
 class UltralightViewport : public WebUIViewport, ultralight::LoadListener, ultralight::ViewListener
 {

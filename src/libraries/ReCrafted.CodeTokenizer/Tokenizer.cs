@@ -1,4 +1,4 @@
-﻿// ReCrafted (c) 2016-2018 Always Too Late
+﻿// ReCrafted (c) 2016-2019 Always Too Late
 
 // This code is based on SharpDX toolkit code fragment
 // https://github.com/sharpdx/Toolkit/blob/master/Source/Toolkit/SharpDX.Toolkit.Compiler/Effect/Tokenizer.cs

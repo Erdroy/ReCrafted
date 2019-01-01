@@ -25,7 +25,7 @@ namespace ReCrafted.APIBuilder
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("// ReCrafted (c) 2016-2018 Always Too Late\r\n// WARNING: Auto-generated file, all " +
+            this.Write("// ReCrafted (c) 2016-2019 Always Too Late\r\n// WARNING: Auto-generated file, all " +
                     "changes will be lost when the API code will be regenerated!\r\n// Generated: ");
             
             #line 5 "D:\ReCrafted\src\tools\ReCrafted.APIBuilder\CodeGenerator.tt"

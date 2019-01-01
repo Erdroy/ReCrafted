@@ -1,4 +1,4 @@
-// ReCrafted (c) 2016-2018 Always Too Late
+// ReCrafted (c) 2016-2019 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
 // Generated: 10/22/2018 14:33:01 Source: 'ComponentSystem.API.cpp' Target: 'Common/Entities/ComponentSystem.Gen.cs'
 
