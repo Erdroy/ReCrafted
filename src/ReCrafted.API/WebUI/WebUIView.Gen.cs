@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2019 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 01/01/2019 15:21:58 Source: 'WebUIView.API.cpp' Target: 'WebUI/WebUIView.Gen.cs'
+// Generated: 01/01/2019 16:01:41 Source: 'WebUIView.API.cpp' Target: 'WebUI/WebUIView.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;

@@ -9,6 +9,7 @@
 #include "Common/Profiler/Profiler.h"
 #include "Graphics/Graphics.h"
 #include "WebUI/Impl/UltralightViewport.h"
+#include "Scripting/Method.h"
 
 void WebUIView::Init(const uint width, const uint height, const bool fullscreen)
 {
@@ -17,8 +18,31 @@ void WebUIView::Init(const uint width, const uint height, const bool fullscreen)
     m_height = fullscreen ? Display::GetHeight() : height;
 
     m_viewport = WebUIEngine::CreateUIViewport(this, fullscreen);
-
     ASSERT(m_viewport);
+
+    // Initialize internal API calls
+    m_apiBeginLoading = FindMethod("ReCrafted.API.WebUI::OnBeginLoading");
+    m_apiFinishLoading = FindMethod("ReCrafted.API.WebUI::OnFinishLoading");
+    m_apiDOMReady = FindMethod("ReCrafted.API.WebUI::OnDOMReady");
+
+    ASSERT(m_apiBeginLoading);
+    ASSERT(m_apiFinishLoading);
+    ASSERT(m_apiDOMReady);
+
+    BeginLoading().AddListener(Action<void>([this]()
+        {
+            m_apiBeginLoading->Invoke();
+        }));
+
+    FinishLoading().AddListener(Action<void>([this]()
+        {
+            m_apiFinishLoading->Invoke();
+        }));
+
+    DOMReady().AddListener(Action<void>([this]()
+        {
+            m_apiDOMReady->Invoke();
+        }));
 }
 
 void WebUIView::Resize(const uint width, const uint height)

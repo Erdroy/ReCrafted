@@ -26,6 +26,10 @@ private:
 
     WebUIViewport* m_viewport = nullptr;
 
+    RefPtr<Method> m_apiBeginLoading = nullptr;
+    RefPtr<Method> m_apiFinishLoading = nullptr;
+    RefPtr<Method> m_apiDOMReady = nullptr;
+
 private:
     void Init(uint width = 0u, uint height = 0u, bool fullscreen = true);
     void Resize(uint width, uint height);
