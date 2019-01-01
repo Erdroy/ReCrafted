@@ -8,6 +8,7 @@
 #include "WebUI/WebUIViewport.h"
 
 #include <Ultralight/View.h>
+#include "Core/Event.h"
 
 class UltralightViewport : public WebUIViewport, ultralight::LoadListener, ultralight::ViewListener
 {
@@ -16,6 +17,10 @@ private:
     ultralight::RefPtr<ultralight::View> m_view;
 
     uint32_t m_skipFrames = 0u;
+
+    Event<> m_onBeginLoading;
+    Event<> m_onFinishLoading;
+    Event<> m_onDOMReady;
 
 private:
     void CreateTexture(uint width, uint height);
@@ -48,6 +53,11 @@ public:
     void OnBeginLoading(ultralight::View* caller) override;
     void OnFinishLoading(ultralight::View* caller) override;
     void OnDOMReady(ultralight::View* caller) override;
+
+public:
+    Event<>& BeginLoading() { return m_onBeginLoading; }
+    Event<>& FinishLoading() { return m_onFinishLoading; }
+    Event<>& DOMReady() { return m_onDOMReady; }
 };
 
 #endif // ULTRALIGHTVIEWPORT_H

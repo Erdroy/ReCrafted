@@ -4,6 +4,9 @@
 
 #ifndef WEBUIVIEWPORT_H
 #define WEBUIVIEWPORT_H
+
+// includes
+#include "ReCrafted.h"
 #include "Graphics/Texture.h"
 
 class WebUIViewport

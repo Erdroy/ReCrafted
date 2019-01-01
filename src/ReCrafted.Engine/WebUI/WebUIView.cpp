@@ -2,11 +2,13 @@
 
 #include "WebUIView.h"
 #include "WebUIEngine.h"
+
+#include "Core/Action.h"
 #include "Common/Text.h"
 #include "Common/Display.h"
-#include "Core/Action.h"
-#include "Graphics/Graphics.h"
 #include "Common/Profiler/Profiler.h"
+#include "Graphics/Graphics.h"
+#include "WebUI/Impl/UltralightViewport.h"
 
 void WebUIView::Init(const uint width, const uint height, const bool fullscreen)
 {
@@ -94,4 +96,19 @@ void WebUIView::Execute(const char* javaScriptSource)
 
 void WebUIView::Bind(const char* bindName, Action<void> delegate)
 {
+}
+
+Event<>& WebUIView::BeginLoading() const
+{
+    return static_cast<UltralightViewport*>(m_viewport)->BeginLoading();
+}
+
+Event<>& WebUIView::FinishLoading() const
+{
+    return static_cast<UltralightViewport*>(m_viewport)->FinishLoading();
+}
+
+Event<>& WebUIView::DOMReady() const
+{
+    return static_cast<UltralightViewport*>(m_viewport)->DOMReady();
 }

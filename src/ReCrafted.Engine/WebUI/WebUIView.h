@@ -8,6 +8,7 @@
 // includes
 #include "ReCrafted.h"
 #include "Core/Action.h"
+#include "Core/Event.h"
 #include "Scripting/Object.h"
 #include "WebUIViewport.h"
 
@@ -44,6 +45,11 @@ public:
     int Width() const { return m_width; }
     int Height() const { return m_height; }
     int IsFullscreen() const { return m_fullscreen; }
+
+public:
+    Event<>& BeginLoading() const;
+    Event<>& FinishLoading() const;
+    Event<>& DOMReady() const;
 
 public:
     PROPERTY(bool, Active) = true;

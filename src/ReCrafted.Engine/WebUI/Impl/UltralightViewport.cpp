@@ -1,6 +1,7 @@
 // ReCrafted (c) 2016-2018 Always Too Late
 
 #include "UltralightViewport.h"
+#include "Core/Logger.h"
 #include "Common/Profiler/Profiler.h"
 #include "Input/InputManager.h"
 #include "Renderer/RHI/RHIContext.h"
@@ -9,7 +10,6 @@
 
 #include <Ultralight/platform/Platform.h>
 #include <Ultralight/platform/GPUDriver.h>
-#include "Core/Logger.h"
 
 void UltralightViewport::CreateTexture(const uint width, const uint height)
 {
@@ -179,12 +179,15 @@ void UltralightViewport::OnAddConsoleMessage(ultralight::View* caller, ultraligh
 
 void UltralightViewport::OnBeginLoading(ultralight::View* caller)
 {
+    m_onBeginLoading.Invoke();
 }
 
 void UltralightViewport::OnFinishLoading(ultralight::View* caller)
 {
+    m_onFinishLoading.Invoke();
 }
 
 void UltralightViewport::OnDOMReady(ultralight::View* caller)
 {
+    m_onDOMReady.Invoke();
 }
