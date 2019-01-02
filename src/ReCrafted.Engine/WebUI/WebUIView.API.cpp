@@ -7,7 +7,7 @@
 
 namespace Internal
 {
-    void navigate(WebUIView* view, MonoString* string)
+    void WebUIView_Navigate(WebUIView* view, MonoString* string)
     {
         if (!view)
             return;
@@ -23,7 +23,7 @@ namespace Internal
         MONO_ANSI_FREE(str);
     }
 
-    void execute(WebUIView* view, MonoString* string)
+    void WebUIView_Execute(WebUIView* view, MonoString* string)
     {
         if (!view)
             return;
@@ -39,7 +39,18 @@ namespace Internal
         MONO_ANSI_FREE(str);
     }
 
-    MonoObject* createView()
+    bool WebUIView_GetActive(WebUIView* view)
+    {
+        ASSERT(view);
+        return view->GetActive();
+    }
+    void WebUIView_SetActive(WebUIView* view, const bool active)
+    {
+        ASSERT(view);
+        view->SetActive(active);
+    }
+
+    MonoObject* WebUIView_Create()
     {
         return WebUI::GetInstance()->CreateView()->GetManagedPtr();
     }
@@ -57,7 +68,7 @@ void WebUIView::InitRuntime()
             API_COMMENT("Navigates current view to given URL.");
             API_METHOD(PUBLIC, REGULAR, "Navigate", EXTERN);
             {
-                API_BIND("ReCrafted.API.WebUI.WebUIView::Internal_Navigate", &Internal::navigate);
+                API_BIND("ReCrafted.API.WebUI.WebUIView::Internal_Navigate", &Internal::WebUIView_Navigate);
 
                 API_PARAM("string", "url");
             }
@@ -66,7 +77,7 @@ void WebUIView::InitRuntime()
             API_COMMENT("Executes given JavaScript code.");
             API_METHOD(PUBLIC, REGULAR, "ExecuteJS", EXTERN);
             {
-                API_BIND("ReCrafted.API.WebUI.WebUIView::Internal_ExecuteJS", &Internal::execute);
+                API_BIND("ReCrafted.API.WebUI.WebUIView::Internal_ExecuteJS", &Internal::WebUIView_Execute);
 
                 API_PARAM("string", "javaScript");
             }
@@ -75,11 +86,19 @@ void WebUIView::InitRuntime()
             API_COMMENT("Creates new WebUIView");
             API_METHOD(PUBLIC, STATIC, "Create", EXTERN);
             {
-                API_BIND("ReCrafted.API.WebUI.WebUIView::Create", &Internal::createView);
+                API_BIND("ReCrafted.API.WebUI.WebUIView::Create", &Internal::WebUIView_Create);
 
                 API_RETURN("WebUIView");
             }
             API_METHOD_END();
+
+            API_COMMENT("Gets or sets the active state.");
+            API_PROPERTY(PUBLIC, REGULAR, "bool", "Active", GETSET);
+            {
+                API_BIND("ReCrafted.API.WebUI.WebUIView::Internal_Active_Get", &Internal::WebUIView_GetActive);
+                API_BIND("ReCrafted.API.WebUI.WebUIView::Internal_Active_Set", &Internal::WebUIView_SetActive);
+            }
+            API_PROPERTY_END();
         }
         API_CLASS_END()
     }

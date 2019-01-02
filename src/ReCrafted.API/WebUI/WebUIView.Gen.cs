@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2019 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 01/01/2019 16:01:41 Source: 'WebUIView.API.cpp' Target: 'WebUI/WebUIView.Gen.cs'
+// Generated: 01/02/2019 11:08:37 Source: 'WebUIView.API.cpp' Target: 'WebUI/WebUIView.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -42,5 +42,24 @@ namespace ReCrafted.API.WebUI
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		public static extern WebUIView Create();
 
+		/// <summary>
+		///	Gets or sets the active state.
+		/// </summary>
+		public bool Active 
+		{
+			get
+			{
+				return Internal_Active_Get(NativePtr);
+			}
+			set
+			{
+				Internal_Active_Set(NativePtr, value);
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_Active_Set(IntPtr nativePtr, bool value);
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern bool Internal_Active_Get(IntPtr nativePtr);
 	}
 }
