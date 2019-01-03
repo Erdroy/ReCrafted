@@ -42,11 +42,15 @@ namespace ReCrafted.Game
                 // apply target fps
                 TargetFps = 60;
                 
-                _uiGameOverlay = WebUIView.Create();
-                _uiGameOverlay.Navigate("file:///game/overlay.html");
+                _uiGameOverlay = WebUIView.Create("file:///game/overlay.html", () =>
+                {
+                    Logger.Log("DOMReady");
+                });
 
-                _uiGameHud = WebUIView.Create();
-                _uiGameHud.Navigate("file:///game/hud.html");
+                _uiGameHud = WebUIView.Create("file:///game/hud.html", () =>
+                {
+                    Logger.Log("DOMReady");
+                });
             }
             catch (Exception exception)
             {
