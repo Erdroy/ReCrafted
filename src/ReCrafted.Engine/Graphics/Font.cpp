@@ -16,7 +16,7 @@
 #include FT_FREETYPE_H
 #include <freetype/ftglyph.h>
 #include "Content/ContentManager.h"
-
+/*
 struct PreFontGlyph
 {
     Char Character = 0;
@@ -151,7 +151,7 @@ byte* GenerateCharmap(FT_Face face, int charmap, uint charmapWidth, uint charmap
 
     return texturePtr;
 }
-
+*/
 Vector2 Font::MeasureText(Text& text)
 {
     Vector2 pos = {};
@@ -200,7 +200,7 @@ Vector2 Font::MeasureText(Text& text)
 
 void Font::LoadFont(Text& fontFile, int size, bool managed)
 {
-    FT_Library library = nullptr;
+    /*FT_Library library = nullptr;
 
     auto hr = FT_Init_FreeType(&library);
 
@@ -322,5 +322,5 @@ void Font::LoadFont(Text& fontFile, int size, bool managed)
     for (auto&& gl : glyphs)
         gl.font = this;
 
-    memcpy(m_glyphs, glyphs.Data(), glyphs.Size() * sizeof Glyph);
+    memcpy(m_glyphs, glyphs.Data(), glyphs.Size() * sizeof Glyph);*/
 }
