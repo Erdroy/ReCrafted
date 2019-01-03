@@ -63,14 +63,14 @@ project "ReCrafted.Engine"
 			"call " .. ROOT_DIR .. "/pm.bat PostBuild",
 		}
 	
-	links { "d3d11", "dxguid", "dxgi", "d3dcompiler", "Rpcrt4", "Ultralight", "UltralightCore", "mono-2.0-sgen", "fmod64_vc" }
+	links { "d3d11", "dxguid", "dxgi", "d3dcompiler", "Rpcrt4", "Ultralight", "UltralightCore", "WebCore", "mono-2.0-sgen", "fmod64_vc" }
 		
 	configuration { "Debug" }
 		debugargs { "-debug" }
 		defines { "DEBUG", "_ITERATOR_DEBUG_LEVEL=0" }
 		runtime "Debug"
 		symbols "On"
-		links { "jemallocd", "tbb_debug", "DirectXTexd", "freetype28MTd", "PxFoundationDEBUG_x64", "PhysX3CommonDEBUG_x64", "SceneQueryDEBUG", "PhysX3DEBUG_x64", "PhysX3CharacterKinematicDEBUG_x64", "PhysX3CookingDEBUG_x64", "PhysX3ExtensionsDEBUG", "PhysX3VehicleDEBUG", "PxPvdSDKDEBUG_x64" }
+		links { "jemallocd", "tbb_debug", "DirectXTexd", "PxFoundationDEBUG_x64", "PhysX3CommonDEBUG_x64", "SceneQueryDEBUG", "PhysX3DEBUG_x64", "PhysX3CharacterKinematicDEBUG_x64", "PhysX3CookingDEBUG_x64", "PhysX3ExtensionsDEBUG", "PhysX3VehicleDEBUG", "PxPvdSDKDEBUG_x64" }
 
 	configuration { "Development" }
 		debugargs { "-debug" }
@@ -78,14 +78,14 @@ project "ReCrafted.Engine"
 		flags { "No64BitChecks", "NoBufferSecurityCheck" }
 		runtime "Release"
 		symbols "On"
-		links { "jemalloc", "tbb", "DirectXTex", "freetype28MT", "PxFoundation_x64", "PhysX3Common_x64", "SceneQuery", "PhysX3_x64", "PhysX3CharacterKinematic_x64", "PhysX3Cooking_x64", "PhysX3Extensions", "PhysX3Vehicle", "PxPvdSDK_x64" }
+		links { "jemalloc", "tbb", "DirectXTex", "PxFoundation_x64", "PhysX3Common_x64", "SceneQuery", "PhysX3_x64", "PhysX3CharacterKinematic_x64", "PhysX3Cooking_x64", "PhysX3Extensions", "PhysX3Vehicle", "PxPvdSDK_x64" }
 		
 	configuration { "Release" }
 		debugargs { "-debug" }
 		defines { "NDEBUG", "RELEASE" }
 		flags { "OptimizeSpeed", "No64BitChecks", "NoBufferSecurityCheck" }
 		runtime "Release"
-		links { "jemalloc", "tbb", "DirectXTex", "freetype28MT", "PxFoundation_x64", "PhysX3Common_x64", "SceneQuery", "PhysX3_x64", "PhysX3CharacterKinematic_x64", "PhysX3Cooking_x64", "PhysX3Extensions", "PhysX3Vehicle", "PxPvdSDK_x64" }
+		links { "jemalloc", "tbb", "DirectXTex", "PxFoundation_x64", "PhysX3Common_x64", "SceneQuery", "PhysX3_x64", "PhysX3CharacterKinematic_x64", "PhysX3Cooking_x64", "PhysX3Extensions", "PhysX3Vehicle", "PxPvdSDK_x64" }
 
 	configuration { "x64" }
 		-- set target dir
