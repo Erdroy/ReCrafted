@@ -14,6 +14,8 @@
 
 JSValue WebUIView::JSCallbackProxy(const JSObject& object, const JSFunction& function, const JSArgs& args)
 {
+    void* params[8] = { nullptr };
+
     cvar functionName = std::wstring(function.GetName().GetCharactersPtr());
 
     cvar it = m_callbacks.find(functionName);
@@ -23,8 +25,15 @@ JSValue WebUIView::JSCallbackProxy(const JSObject& object, const JSFunction& fun
 
     crvar callback = it->second;
 
-    callback.Invoke(nullptr);
+    // TODO: Forward parameters
 
+    cvar result = callback.Invoke();
+
+    if(result == nullptr)
+        return JSValue();
+
+    // TODO: Function to find out what return type the function should have... But how (using mono?)?
+    // TODO: Forward return parameter
     return JSValue();
 }
 
