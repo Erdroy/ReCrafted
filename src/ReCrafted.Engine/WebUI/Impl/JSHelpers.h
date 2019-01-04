@@ -54,6 +54,9 @@ public:
   // Assignment operator
   JSString& operator=(const JSString& other);
 
+  // Gets character pointer of this string
+  const JSChar* GetCharactersPtr() const;
+
   // Cast to ultralight::String
   operator ultralight::String();
 

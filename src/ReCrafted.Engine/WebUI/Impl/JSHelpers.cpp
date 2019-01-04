@@ -42,6 +42,11 @@ JSString& JSString::operator=(const JSString& other) {
   return *this;
 }
 
+const JSChar* JSString::GetCharactersPtr() const
+{
+  return JSStringGetCharactersPtr(instance_);
+}
+
 JSString::operator ultralight::String() {
   return ultralight::String16((ultralight::Char16*)JSStringGetCharactersPtr(instance_),
                               JSStringGetLength(instance_));
@@ -319,6 +324,7 @@ JSPropertyValue& JSPropertyValue::operator=(const JSCallback& callback) {
     JSObjectSetPropertyAtIndex(ctx_, *proxyObj_, numeric_idx_, nativeFunction, nullptr);
   else
     JSObjectSetProperty(ctx_, *proxyObj_, string_idx_, nativeFunction, kJSPropertyAttributeNone, nullptr);
+  JSObjectSetProperty(ctx_, nativeFunction, JSString("name"), JSValue(string_idx_), kJSPropertyAttributeReadOnly, nullptr);
   return *this;
 }
 
@@ -328,6 +334,7 @@ JSPropertyValue& JSPropertyValue::operator=(const JSCallbackWithRetval& callback
     JSObjectSetPropertyAtIndex(ctx_, *proxyObj_, numeric_idx_, nativeFunction, nullptr);
   else
     JSObjectSetProperty(ctx_, *proxyObj_, string_idx_, nativeFunction, kJSPropertyAttributeNone, nullptr);
+  JSObjectSetProperty(ctx_, nativeFunction, JSString("name"), JSValue(string_idx_), kJSPropertyAttributeReadOnly, nullptr);
   return *this;
 }
 

@@ -14,7 +14,17 @@
 
 JSValue WebUIView::JSCallbackProxy(const JSObject& object, const JSFunction& function, const JSArgs& args)
 {
-    Logger::Log("Test {0}", ((ultralight::String)function.GetName()).utf8().data());
+    cvar functionName = std::wstring(function.GetName().GetCharactersPtr());
+
+    cvar it = m_callbacks.find(functionName);
+
+    if (it == m_callbacks.end())
+        return JSValue();
+
+    crvar callback = it->second;
+
+    callback.Invoke(nullptr);
+
     return JSValue();
 }
 
@@ -132,8 +142,10 @@ void WebUIView::Bind(const char* bindName, const Delegate& callback)
     cvar js = JSGlobalObject();
     js[bindName] = BindJSCallbackWithRetval(&WebUIView::JSCallbackProxy);
 
+    var function = js[bindName].ToFunction();
+
     // Insert callback
-    m_callbacks.insert(std::make_pair(std::string(bindName), callback));
+    m_callbacks.insert(std::make_pair(std::wstring(function.GetName().GetCharactersPtr()), callback));
 }
 
 Event<>& WebUIView::BeginLoading() const

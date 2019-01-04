@@ -21,6 +21,9 @@ public:
 
         // TODO: Raise exception
 
+        if (!returnObject)
+            return nullptr;
+
         return mono_object_unbox(returnObject);
     }
 
