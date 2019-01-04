@@ -223,7 +223,7 @@ JSPropertyValue& JSPropertyValue::operator=(const JSValue& value) {
     JSObjectSetPropertyAtIndex(ctx_, *proxyObj_, numeric_idx_, value, nullptr);
   else
     JSObjectSetProperty(ctx_, *proxyObj_, string_idx_, value, kJSPropertyAttributeNone, nullptr);
-
+  
   return *this;
 }
 
@@ -235,11 +235,17 @@ JSValueRef NativeFunctionCallback(JSContextRef ctx, JSObjectRef function, JSObje
 
   JSContextRef old_ctx = GetJSContext();
   SetJSContext(ctx);
+
+  JSFunction fnc = JSFunction(ctx, function);
+
+  if (!fnc.IsValid())
+      return JSValueMakeNull(ctx);
+  
   JSArgs args;
   for (size_t i = 0; i < argumentCount; ++i)
     args.push_back(arguments[i]);
 
-  (*callback)(thisObject, args);
+  (*callback)(thisObject, fnc, args);
   SetJSContext(old_ctx);
 
   return JSValueMakeNull(ctx);
@@ -272,11 +278,17 @@ JSValueRef NativeFunctionWithRetvalCallback(JSContextRef ctx, JSObjectRef functi
 
   JSContextRef old_ctx = GetJSContext();
   SetJSContext(ctx);
+
+  JSFunction fnc = JSFunction(ctx, function);
+
+  if (!fnc.IsValid())
+      return JSValueMakeNull(ctx);
+  
   JSArgs args;
   for (size_t i = 0; i < argumentCount; ++i)
     args.push_back(arguments[i]);
 
-  JSValueRef result = (*callback)(thisObject, args);
+  JSValueRef result = (*callback)(thisObject, fnc, args);
   SetJSContext(old_ctx);
 
   return result;
@@ -319,7 +331,7 @@ JSPropertyValue& JSPropertyValue::operator=(const JSCallbackWithRetval& callback
   return *this;
 }
 
-JSValueRef JSPropertyValue::instance() const {
+    JSValueRef JSPropertyValue::instance() const {
   if (using_numeric_idx_)
     return JSObjectGetPropertyAtIndex(ctx_, *proxyObj_, numeric_idx_, nullptr);
   else
@@ -498,6 +510,12 @@ JSFunction& JSFunction::operator=(const JSFunction& other) {
 }
 
 bool JSFunction::IsValid() const { return !!instance_ && JSObjectIsFunction(ctx_, instance_); }
+
+JSString JSFunction::GetName() const
+{
+  JSValueRef result(JSObjectGetProperty(ctx_, instance_, JSString("name"), nullptr));
+  return JSValue(result).ToString();
+}
 
 JSValue JSFunction::operator()(const JSArgs& args) {
   return operator()(JSGlobalObject(), args);

@@ -47,6 +47,11 @@ namespace ReCrafted.Game
                     Logger.Log("DOMReady");
                 });
 
+                _uiGameOverlay.Bind("WebUITest", () =>
+                {
+                    Logger.Log("WebUITest(): Hello, World!");
+                });
+
                 _uiGameHud = WebUIView.Create("file:///game/hud.html", () =>
                 {
                     Logger.Log("DOMReady");

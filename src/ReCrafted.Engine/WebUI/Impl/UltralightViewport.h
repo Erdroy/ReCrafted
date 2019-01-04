@@ -7,6 +7,7 @@
 
 #include "WebUI/WebUIViewport.h"
 #include "Core/Event.h"
+#include "WebUI/Impl/JSHelpers.h"
 
 #include <Ultralight/View.h>
 
@@ -38,6 +39,8 @@ public:
 
     void Navigate(const char* url) override;
     void Execute(const char* javaScriptSource) override;
+
+    void ApplyJSContext() override;
 
     Renderer::Texture2DHandle GetTexture() const override
     {

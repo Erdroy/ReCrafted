@@ -10,7 +10,9 @@
 #include "Core/Action.h"
 #include "Core/Event.h"
 #include "Scripting/Object.h"
+#include "Scripting/Delegate.h"
 #include "WebUI/WebUIViewport.h"
+#include "WebUI/Impl/JSHelpers.h"
 
 class WebUIView : public Object
 {
@@ -30,6 +32,11 @@ private:
     RefPtr<Method> m_apiFinishLoading = nullptr;
     RefPtr<Method> m_apiDOMReady = nullptr;
 
+    spp::sparse_hash_map<std::string, Delegate> m_callbacks;
+
+private:
+    JSValue JSCallbackProxy(const JSObject& object, const JSFunction& function, const JSArgs& args);
+
 private:
     void Init(uint width = 0u, uint height = 0u, bool fullscreen = true);
     void Resize(uint width, uint height);
@@ -43,7 +50,7 @@ public:
 
     void Navigate(const char* url);
     void Execute(const char* javaScriptSource);
-    void Bind(const char* bindName, Action<void> delegate);
+    void Bind(const char* bindName, const Delegate& callback);
 
 public:
     int Width() const { return m_width; }

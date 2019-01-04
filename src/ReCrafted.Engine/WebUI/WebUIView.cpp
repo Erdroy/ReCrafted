@@ -10,6 +10,13 @@
 #include "Graphics/Graphics.h"
 #include "WebUI/Impl/UltralightViewport.h"
 #include "Scripting/Method.h"
+#include "Core/Logger.h"
+
+JSValue WebUIView::JSCallbackProxy(const JSObject& object, const JSFunction& function, const JSArgs& args)
+{
+    Logger::Log("Test {0}", ((ultralight::String)function.GetName()).utf8().data());
+    return JSValue();
+}
 
 void WebUIView::Init(const uint width, const uint height, const bool fullscreen)
 {
@@ -118,8 +125,15 @@ void WebUIView::Execute(const char* javaScriptSource)
     m_viewport->Execute(javaScriptSource);
 }
 
-void WebUIView::Bind(const char* bindName, Action<void> delegate)
+void WebUIView::Bind(const char* bindName, const Delegate& callback)
 {
+    m_viewport->ApplyJSContext();
+
+    cvar js = JSGlobalObject();
+    js[bindName] = BindJSCallbackWithRetval(&WebUIView::JSCallbackProxy);
+
+    // Insert callback
+    m_callbacks.insert(std::make_pair(std::string(bindName), callback));
 }
 
 Event<>& WebUIView::BeginLoading() const

@@ -23,6 +23,8 @@ public:
     virtual void Navigate(const char* url) = 0;
     virtual void Execute(const char* javaScriptSource) = 0;
 
+    virtual void ApplyJSContext() = 0;
+
     virtual Renderer::Texture2DHandle GetTexture() const = 0;
 };
 

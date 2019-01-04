@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2019 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 01/02/2019 11:08:37 Source: 'WebUIView.API.cpp' Target: 'WebUI/WebUIView.Gen.cs'
+// Generated: 01/04/2019 14:10:39 Source: 'WebUIView.API.cpp' Target: 'WebUI/WebUIView.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -35,6 +35,17 @@ namespace ReCrafted.API.WebUI
         
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_ExecuteJS(IntPtr nativePtr, string javaScript);
+
+		/// <summary>
+		///	Binds delegate as JavaScript function of given name.
+		/// </summary>
+		public void Bind(string name, Action function)
+		{
+			Internal_Bind(NativePtr, name, function);
+		}
+        
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_Bind(IntPtr nativePtr, string name, Action function);
 
 		/// <summary>
 		///	Creates new WebUIView

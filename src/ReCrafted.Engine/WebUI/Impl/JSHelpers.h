@@ -205,11 +205,12 @@ protected:
 };
 
 typedef std::vector<JSValue> JSArgs;
-typedef std::function<void(const JSObject&, const JSArgs&)> JSCallback;
-typedef std::function<JSValue(const JSObject&, const JSArgs&)> JSCallbackWithRetval;
+typedef std::function<void(const JSObject&, const JSFunction&, const JSArgs&)> JSCallback;
+typedef std::function<JSValue(const JSObject&, const JSFunction&, const JSArgs&)> JSCallbackWithRetval;
 
 // Macro to help bind JSCallback member function to JSPropertyValue
-#define BindJSCallback(fn) std::bind(fn, this, std::placeholders::_1, std::placeholders::_2)
+#define BindJSCallback(fn) (JSCallback)std::bind(fn, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
+#define BindJSCallbackWithRetval(fn) (JSCallbackWithRetval)std::bind(fn, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 
 /**
  * Wrapper for JSObject property value (JSValue subclass). Allows new value assignment
@@ -342,6 +343,8 @@ public:
   // NOTE: It is OKAY to create this without calling SetJSContext() first.
   JSFunction();
 
+  JSFunction(JSContextRef ctx, JSValueRef val);
+
   // Copy constructor (shallow copy, will point to same instance)
   JSFunction(const JSFunction& other);
 
@@ -353,6 +356,9 @@ public:
   // Whether or not this is a valid, callable Function object.
   bool IsValid() const;
 
+  // Gets name of this function.
+  JSString GetName() const;
+
   // Call function (using Global Object for 'this') and return the result.
   JSValue operator()(const JSArgs& args);
 
@@ -363,7 +369,6 @@ public:
   operator JSObjectRef() const { return instance_; }
 
 protected:
-  JSFunction(JSContextRef ctx, JSValueRef val);
 
   JSContextRef ctx_;
   JSObjectRef instance_;

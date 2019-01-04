@@ -5,6 +5,7 @@
 #include "Common/Profiler/Profiler.h"
 #include "Input/InputManager.h"
 #include "Renderer/RHI/RHIContext.h"
+#include "WebUI/Impl/JSHelpers.h"
 
 #include "d3d11/GPUDriverD3D11.h"
 
@@ -148,6 +149,14 @@ void UltralightViewport::Navigate(const char* url)
 void UltralightViewport::Execute(const char* javaScriptSource)
 {
     m_view->EvaluateScript(javaScriptSource);
+}
+
+void UltralightViewport::ApplyJSContext()
+{
+    cvar myContext = m_view->js_context();
+
+    // Set the JSContext for all subsequent JSHelper calls
+    SetJSContext(myContext);
 }
 
 void UltralightViewport::OnChangeCursor(ultralight::View* caller, ultralight::Cursor cursor)

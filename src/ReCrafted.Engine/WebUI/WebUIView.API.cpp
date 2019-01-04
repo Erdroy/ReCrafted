@@ -39,6 +39,22 @@ namespace Internal
         MONO_ANSI_FREE(str);
     }
 
+    void WebUIView_Bind(WebUIView* view, MonoString* string, MonoObject* callback)
+    {
+        if (!view)
+            return;
+
+        // convert monostring to ansi string
+        MONO_ANSI_ERR();
+        auto str = MONO_ANSI(string);
+
+        // bind callback
+        view->Bind(str, Delegate::FromMonoObject(callback));
+
+        // free ansi string
+        MONO_ANSI_FREE(str);
+    }
+
     bool WebUIView_GetActive(WebUIView* view)
     {
         ASSERT(view);
@@ -80,6 +96,16 @@ void WebUIView::InitRuntime()
                 API_BIND("ReCrafted.API.WebUI.WebUIView::Internal_ExecuteJS", &Internal::WebUIView_Execute);
 
                 API_PARAM("string", "javaScript");
+            }
+            API_METHOD_END();
+
+            API_COMMENT("Binds delegate as JavaScript function of given name.");
+            API_METHOD(PUBLIC, REGULAR, "Bind", EXTERN);
+            {
+                API_BIND("ReCrafted.API.WebUI.WebUIView::Internal_Bind", &Internal::WebUIView_Bind);
+
+                API_PARAM("string", "name");
+                API_PARAM("Action", "function");
             }
             API_METHOD_END();
 
