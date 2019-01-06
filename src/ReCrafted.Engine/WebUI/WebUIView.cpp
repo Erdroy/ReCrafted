@@ -10,24 +10,67 @@
 #include "Graphics/Graphics.h"
 #include "WebUI/Impl/UltralightViewport.h"
 #include "Scripting/Method.h"
-#include "Core/Logger.h"
+
+#include <string>
 
 JSValue WebUIView::JSCallbackProxy(const JSObject& object, const JSFunction& function, const JSArgs& args)
 {
-    void* params[8] = { nullptr };
-
     cvar functionName = std::wstring(function.GetName().GetCharactersPtr());
-
     cvar it = m_callbacks.find(functionName);
-
     if (it == m_callbacks.end())
         return JSValue();
 
     crvar callback = it->second;
+    void* params[8] = { nullptr };
 
-    // TODO: Forward parameters
+    std::vector<uint8_t*> toFree;
 
-    cvar result = callback.Invoke();
+    // Forward parameters
+    for(var i = 0u; i < args.size(); i ++)
+    {
+        rvar arg = args[i];
+
+        if (arg.IsNull())
+            continue;
+
+        if (arg.IsBoolean())
+        {
+            cvar number = arg.ToBoolean();
+            params[i] = new bool(number);
+            toFree.emplace_back(static_cast<uint8_t*>(params[i]));
+            continue;
+        }
+
+        if (arg.IsNumber())
+        {
+            cvar number = arg.ToNumber();
+            params[i] = new double(number);
+            toFree.emplace_back(static_cast<uint8_t*>(params[i]));
+            continue;
+        }
+
+        if(arg.IsString())
+        {
+            var string = arg.ToString();
+            params[i] = mono_string_new_utf16(
+                Domain::Root->GetMono(), 
+                (mono_unichar2*)string.GetCharactersPtr(),
+                wcslen(string.GetCharactersPtr())
+            );
+            continue;
+        }
+    }
+
+    void** paramPtr = nullptr;
+
+    if (!args.empty())
+        paramPtr = params;
+
+    cvar result = callback.Invoke(paramPtr);
+
+    for(rvar ptr : toFree)
+        delete [] ptr;
+    toFree.clear();
 
     if(result == nullptr)
         return JSValue();
