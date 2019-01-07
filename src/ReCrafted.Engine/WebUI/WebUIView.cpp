@@ -11,8 +11,6 @@
 #include "WebUI/Impl/UltralightViewport.h"
 #include "Scripting/Method.h"
 
-#include <string>
-
 JSValue WebUIView::JSCallbackProxy(const JSObject& object, const JSFunction& function, const JSArgs& args)
 {
     // Find function
@@ -26,6 +24,7 @@ JSValue WebUIView::JSCallbackProxy(const JSObject& object, const JSFunction& fun
     void* params[8] = { nullptr };
 
     // Forward parameters
+    // TODO: We can use the method definition (parameters) to force cast JSArgs
     for(var i = 0u; i < args.size(); i ++)
     {
         rvar arg = args[i];
@@ -67,18 +66,56 @@ JSValue WebUIView::JSCallbackProxy(const JSObject& object, const JSFunction& fun
         }
     }
 
-    void** paramPtr = nullptr;
-    if (!args.empty())
-        paramPtr = params;
-    cvar result = callback.Invoke(paramPtr);
+    // Invoke mono callback function
+    MonoTypeEnum resultType;
+    cvar result = callback.Invoke(args.empty() ? nullptr : params, reinterpret_cast<int*>(&resultType));
 
     // No result, return empty value.
     if(result == nullptr)
         return JSValue();
 
-    // TODO: Function to find out what return type the function should have... But how (using mono?)?
-    // TODO: Forward return parameter
-    return JSValue();
+    switch(resultType)
+    {
+    case MONO_TYPE_BOOLEAN: // integer 8
+        return JSValue(*static_cast<bool*>(result));
+    case MONO_TYPE_CHAR:
+        return JSValue(*static_cast<char*>(result));
+    case MONO_TYPE_I1:
+        return JSValue(*static_cast<sbyte*>(result));
+    case MONO_TYPE_U1:
+        return JSValue(*static_cast<byte*>(result));
+
+    case MONO_TYPE_I2: // integer 16
+        return JSValue(*static_cast<int16_t*>(result));
+    case MONO_TYPE_U2:
+        return JSValue(*static_cast<uint16_t*>(result));
+
+    case MONO_TYPE_I4: // integer 32
+        return JSValue(*static_cast<int32_t*>(result));
+    case MONO_TYPE_U4:
+        return JSValue(*static_cast<uint32_t*>(result));
+
+    case MONO_TYPE_I8: // integer 64
+        return JSValue(*static_cast<int64_t*>(result));
+    case MONO_TYPE_U8:
+        return JSValue(*static_cast<uint64_t*>(result));
+
+    case MONO_TYPE_R4: // float 32
+        return JSValue(*static_cast<float*>(result));
+
+    case MONO_TYPE_R8: // float 64
+        return JSValue(*static_cast<double*>(result));
+
+    case MONO_TYPE_STRING:
+    {
+        cvar monoString = static_cast<MonoString*>(result);
+        cvar str = reinterpret_cast<ultralight::Char16*>(mono_string_chars(monoString));
+        cvar strLen = mono_string_length(monoString);
+        return JSValue(JSString(ultralight::String(str, strLen)));
+    }
+    default:
+        return JSValue();
+    }
 }
 
 void WebUIView::Init(const uint width, const uint height, const bool fullscreen)
