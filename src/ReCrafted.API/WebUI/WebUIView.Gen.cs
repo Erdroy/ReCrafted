@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2019 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 01/07/2019 15:25:43 Source: 'WebUIView.API.cpp' Target: 'WebUI/WebUIView.Gen.cs'
+// Generated: 01/07/2019 16:15:49 Source: 'WebUIView.API.cpp' Target: 'WebUI/WebUIView.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -90,6 +90,61 @@ namespace ReCrafted.API.WebUI
         
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_Bind<T1, T2, T3, T4>(IntPtr nativePtr, string name, Action<T1, T2, T3, T4> function);
+
+		/// <summary>
+		///	Binds delegate as JavaScript function of given name. Note: Bind supports only: bool, string and float types!
+		/// </summary>
+		public void Bind<TReturn>(string name, Func<TReturn> function)
+		{
+			Internal_Bind<TReturn>(NativePtr, name, function);
+		}
+        
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_Bind<TReturn>(IntPtr nativePtr, string name, Func<TReturn> function);
+
+		/// <summary>
+		///	Binds delegate as JavaScript function of given name. Note: Bind supports only: bool, string and float types!
+		/// </summary>
+		public void Bind<TReturn, T1>(string name, Func<TReturn, T1> function)
+		{
+			Internal_Bind<TReturn, T1>(NativePtr, name, function);
+		}
+        
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_Bind<TReturn, T1>(IntPtr nativePtr, string name, Func<TReturn, T1> function);
+
+		/// <summary>
+		///	Binds delegate as JavaScript function of given name. Note: Bind supports only: bool, string and float types!
+		/// </summary>
+		public void Bind<TReturn, T1, T2>(string name, Func<TReturn, T1, T2> function)
+		{
+			Internal_Bind<TReturn, T1, T2>(NativePtr, name, function);
+		}
+        
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_Bind<TReturn, T1, T2>(IntPtr nativePtr, string name, Func<TReturn, T1, T2> function);
+
+		/// <summary>
+		///	Binds delegate as JavaScript function of given name. Note: Bind supports only: bool, string and float types!
+		/// </summary>
+		public void Bind<TReturn, T1, T2, T3>(string name, Func<TReturn, T1, T2, T3> function)
+		{
+			Internal_Bind<TReturn, T1, T2, T3>(NativePtr, name, function);
+		}
+        
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_Bind<TReturn, T1, T2, T3>(IntPtr nativePtr, string name, Func<TReturn, T1, T2, T3> function);
+
+		/// <summary>
+		///	Binds delegate as JavaScript function of given name. Note: Bind supports only: bool, string and float types!
+		/// </summary>
+		public void Bind<TReturn, T1, T2, T3, T4>(string name, Func<TReturn, T1, T2, T3, T4> function)
+		{
+			Internal_Bind<TReturn, T1, T2, T3, T4>(NativePtr, name, function);
+		}
+        
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void Internal_Bind<TReturn, T1, T2, T3, T4>(IntPtr nativePtr, string name, Func<TReturn, T1, T2, T3, T4> function);
 
 		/// <summary>
 		///	Creates new WebUIView

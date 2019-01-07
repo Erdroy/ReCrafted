@@ -149,6 +149,56 @@ void WebUIView::InitRuntime()
             }
             API_METHOD_END();
 
+            API_COMMENT("Binds delegate as JavaScript function of given name. Note: Bind supports only: bool, string and float types!");
+            API_METHOD(PUBLIC, REGULAR, "Bind<TReturn>", EXTERN);
+            {
+                API_BIND("ReCrafted.API.WebUI.WebUIView::Internal_Bind<TReturn>", &Internal::WebUIView_Bind);
+
+                API_PARAM("string", "name");
+                API_PARAM("Func<TReturn>", "function");
+            }
+            API_METHOD_END();
+
+            API_COMMENT("Binds delegate as JavaScript function of given name. Note: Bind supports only: bool, string and float types!");
+            API_METHOD(PUBLIC, REGULAR, "Bind<TReturn, T1>", EXTERN);
+            {
+                API_BIND("ReCrafted.API.WebUI.WebUIView::Internal_Bind<TReturn, T1>", &Internal::WebUIView_Bind);
+
+                API_PARAM("string", "name");
+                API_PARAM("Func<TReturn, T1>", "function");
+            }
+            API_METHOD_END();
+
+            API_COMMENT("Binds delegate as JavaScript function of given name. Note: Bind supports only: bool, string and float types!");
+            API_METHOD(PUBLIC, REGULAR, "Bind<TReturn, T1, T2>", EXTERN);
+            {
+                API_BIND("ReCrafted.API.WebUI.WebUIView::Internal_Bind<TReturn, T1, T2>", &Internal::WebUIView_Bind);
+
+                API_PARAM("string", "name");
+                API_PARAM("Func<TReturn, T1, T2>", "function");
+            }
+            API_METHOD_END();
+
+            API_COMMENT("Binds delegate as JavaScript function of given name. Note: Bind supports only: bool, string and float types!");
+            API_METHOD(PUBLIC, REGULAR, "Bind<TReturn, T1, T2, T3>", EXTERN);
+            {
+                API_BIND("ReCrafted.API.WebUI.WebUIView::Internal_Bind<TReturn, T1, T2, T3>", &Internal::WebUIView_Bind);
+
+                API_PARAM("string", "name");
+                API_PARAM("Func<TReturn, T1, T2, T3>", "function");
+            }
+            API_METHOD_END();
+
+            API_COMMENT("Binds delegate as JavaScript function of given name. Note: Bind supports only: bool, string and float types!");
+            API_METHOD(PUBLIC, REGULAR, "Bind<TReturn, T1, T2, T3, T4>", EXTERN);
+            {
+                API_BIND("ReCrafted.API.WebUI.WebUIView::Internal_Bind<TReturn, T1, T2, T3, T4>", &Internal::WebUIView_Bind);
+
+                API_PARAM("string", "name");
+                API_PARAM("Func<TReturn, T1, T2, T3, T4>", "function");
+            }
+            API_METHOD_END();
+
             API_COMMENT("Creates new WebUIView");
             API_METHOD(PUBLIC, STATIC, "Create", EXTERN);
             {
