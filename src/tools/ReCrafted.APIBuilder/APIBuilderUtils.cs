@@ -19,8 +19,8 @@ namespace ReCrafted.APIBuilder
             var start = line.IndexOf("(", StringComparison.Ordinal);
             var end = line.LastIndexOf(")", StringComparison.Ordinal);
             var parameterString = line.Substring(start + 1, end - 1 - start);
-
-            var parametersRaw = parameterString.Split(',');
+            
+            var parametersRaw = ParseHelper.ParseParameters(parameterString);
 
             var list = new List<string>();
             foreach (var parameter in parametersRaw)
