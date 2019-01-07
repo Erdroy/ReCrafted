@@ -14,7 +14,7 @@ private:
     MonoObject* m_delegate = nullptr;
 
 public:
-    void* Invoke(void** params = nullptr) const
+    void* Invoke(void** params = nullptr, int* returnTypeId = nullptr) const
     {
         MonoObject* exception = nullptr;
         cvar returnObject = mono_runtime_delegate_invoke(m_delegate, params, &exception);
@@ -23,6 +23,19 @@ public:
 
         if (!returnObject)
             return nullptr;
+
+        // Get return object type id
+        cvar objectClass = mono_object_get_class(returnObject);
+        cvar objectType = mono_class_get_type(objectClass);
+        cvar type = static_cast<MonoTypeEnum>(mono_type_get_type(objectType));
+
+        if(returnTypeId)
+            *returnTypeId = type;
+
+        // TODO: Validate other return type, check if we can unbox it
+
+        if (type == MONO_TYPE_STRING) // do not unbox strings
+            return returnObject;
 
         return mono_object_unbox(returnObject);
     }
