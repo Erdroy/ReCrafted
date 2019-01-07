@@ -13,6 +13,8 @@
 
 JSValue WebUIView::JSCallbackProxy(const JSObject& object, const JSFunction& function, const JSArgs& args)
 {
+    ASSERT(args.size() <= 4u); // Only 4 arguments are supported
+
     // Find function
     cvar it = m_callbacks.find(function);
 
@@ -21,11 +23,11 @@ JSValue WebUIView::JSCallbackProxy(const JSObject& object, const JSFunction& fun
         return JSValue();
 
     crvar callback = it->second;
-    void* params[8] = { nullptr };
+    void* params[4] = { nullptr };
 
     // Forward parameters
     // TODO: We can use the method definition (parameters) to force cast JSArgs
-    for(var i = 0u; i < args.size(); i ++)
+    for(var i = 0u; i < args.size() && i < 4; i ++)
     {
         rvar arg = args[i];
         cvar type = arg.GetType();
