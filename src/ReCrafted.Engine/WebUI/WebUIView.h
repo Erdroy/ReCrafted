@@ -32,7 +32,7 @@ private:
     RefPtr<Method> m_apiFinishLoading = nullptr;
     RefPtr<Method> m_apiDOMReady = nullptr;
 
-    spp::sparse_hash_map<std::wstring, Delegate> m_callbacks;
+    spp::sparse_hash_map<JSObjectRef, Delegate> m_callbacks;
 
 private:
     JSValue JSCallbackProxy(const JSObject& object, const JSFunction& function, const JSArgs& args);
