@@ -149,6 +149,9 @@ public:
 
   bool IsFunction() const;
 
+  // Gets the type of this value
+  JSType GetType() const;
+
   // Convert to Boolean
   bool ToBoolean() const;
 

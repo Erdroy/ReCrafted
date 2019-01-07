@@ -167,6 +167,11 @@ bool JSValue::IsFunction() const {
   return JSObjectIsFunction(ctx_, obj);
 }
 
+JSType JSValue::GetType() const
+{
+    return JSValueGetType(ctx_, instance());
+}
+
 bool JSValue::ToBoolean() const { return JSValueToBoolean(ctx_, instance()); }
 
 double JSValue::ToNumber() const { return JSValueToNumber(ctx_, instance(), nullptr); }
