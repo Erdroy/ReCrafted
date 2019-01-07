@@ -15,63 +15,65 @@
 
 JSValue WebUIView::JSCallbackProxy(const JSObject& object, const JSFunction& function, const JSArgs& args)
 {
+    // Find function
     cvar functionName = std::wstring(function.GetName().GetCharactersPtr());
     cvar it = m_callbacks.find(functionName);
+
+    // No function found, return empty value.
     if (it == m_callbacks.end())
         return JSValue();
 
     crvar callback = it->second;
     void* params[8] = { nullptr };
 
-    std::vector<uint8_t*> toFree;
-
     // Forward parameters
     for(var i = 0u; i < args.size(); i ++)
     {
         rvar arg = args[i];
-
-        if (arg.IsNull())
-            continue;
-
-        if (arg.IsBoolean())
+        cvar type = arg.GetType();
+        switch(type)
         {
+        case kJSTypeBoolean:
+        {
+            // Create boolean parameter
             cvar number = arg.ToBoolean();
-            params[i] = new bool(number);
-            toFree.emplace_back(static_cast<uint8_t*>(params[i]));
+            params[i] = alloca(sizeof(bool));
+            *static_cast<bool*>(params[i]) = number;
             continue;
         }
 
-        if (arg.IsNumber())
+        case kJSTypeNumber:
         {
+            // Create number (float) parameter
             cvar number = arg.ToNumber();
-            params[i] = new double(number);
-            toFree.emplace_back(static_cast<uint8_t*>(params[i]));
+            params[i] = alloca(sizeof(float));
+            *static_cast<float*>(params[i]) = static_cast<float>(number);
             continue;
         }
 
-        if(arg.IsString())
+        case kJSTypeString:
         {
-            var string = arg.ToString();
+            // Create string parameter
+            cvar strPtr = const_cast<JSChar*>(arg.ToString().GetCharactersPtr());
+            cvar monoStrPtr = reinterpret_cast<mono_unichar2*>(strPtr);
             params[i] = mono_string_new_utf16(
-                Domain::Root->GetMono(), 
-                (mono_unichar2*)string.GetCharactersPtr(),
-                wcslen(string.GetCharactersPtr())
+                Domain::Root->GetMono(),
+                monoStrPtr,
+                static_cast<int32_t>(wcslen(strPtr))
             );
+            continue;
+        }
+        default: 
             continue;
         }
     }
 
     void** paramPtr = nullptr;
-
     if (!args.empty())
         paramPtr = params;
-
     cvar result = callback.Invoke(paramPtr);
 
-    for(rvar ptr : toFree)
-        delete [] ptr;
-    toFree.clear();
-
+    // No result, return empty value.
     if(result == nullptr)
         return JSValue();
 
