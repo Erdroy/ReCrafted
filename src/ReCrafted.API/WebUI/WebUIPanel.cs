@@ -8,10 +8,10 @@ namespace ReCrafted.API.WebUI
     /// <summary>
     /// WebUIPanel base class.
     /// </summary>
-    public abstract class WebUIPanel : Script
+    public abstract class WebUIPanel
     {
         private readonly double _createTime;
-        
+
         /// <summary>
         /// Creates new WebUIPanel using given html file.
         /// </summary>
@@ -60,12 +60,16 @@ namespace ReCrafted.API.WebUI
 
         private void OnBeginLoading()
         {
+            IsLoaded = false;
+
             OnViewBeginLoading();
             RegisterBindings();
         }
 
         private void OnFinishLoading()
         {
+            IsLoaded = true;
+
             // Execute `OnViewFinishLoading` event
             OnViewFinishLoading();
 
@@ -73,11 +77,24 @@ namespace ReCrafted.API.WebUI
             Logger.Log($"WebUIPanel '{this}' loaded in {Time.CurrentTime - _createTime:f2} ms.");
         }
 
-        private void Update()
+        internal void Create()
+        {
+            OnCreate();
+        }
+
+        internal void Destroy()
+        {
+            View.Destroy();
+            OnDestroy();
+        }
+
+        internal void Update()
         {
             OnUpdate();
         }
         
+        protected virtual void OnCreate() { }
+        protected virtual void OnDestroy() { }
         protected virtual void OnUpdate() { }
 
         protected virtual void RegisterBindings() { }
@@ -88,6 +105,11 @@ namespace ReCrafted.API.WebUI
         /// The source HTML file that is being used by this panel.
         /// </summary>
         public string HtmlFile { get; }
+
+        /// <summary>
+        /// True when loaded and able to display.
+        /// </summary>
+        public bool IsLoaded { get; private set; }
 
         /// <summary>
         /// The WebUIView instance that is being used by this panel.

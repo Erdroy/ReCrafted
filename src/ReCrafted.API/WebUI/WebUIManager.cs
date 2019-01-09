@@ -1,6 +1,6 @@
 ﻿// ReCrafted (c) 2016-2019 Always Too Late
 
-using ReCrafted.API.Common.Actors;
+using System.Collections.Generic;
 using ReCrafted.API.Core;
 
 namespace ReCrafted.API.WebUI
@@ -12,19 +12,29 @@ namespace ReCrafted.API.WebUI
     public sealed class WebUIManager : GameSystem
     {
         private static WebUIManager _instance;
-        private EmptyActor _uiManagerActor;
-        
+        private readonly List<WebUIPanel> _panels = new List<WebUIPanel>();
+
         protected override void OnCreate()
         {
             _instance = this;
-            _uiManagerActor = EmptyActor.Create();
         }
 
         protected override void OnDestroy()
         {
-            _uiManagerActor.Destroy();
+            _panels.Clear();
         }
-        
+
+        protected override void OnUpdate()
+        {
+            foreach (var panel in _panels)
+            {
+                if (panel.IsLoaded)
+                {
+                    panel.Update();
+                }
+            }
+        }
+
         /// <summary>
         /// Adds new UI panel of given type.
         /// </summary>
@@ -32,7 +42,10 @@ namespace ReCrafted.API.WebUI
         public static TPanel AddPanel<TPanel>() where TPanel : WebUIPanel, new()
         {
             Logger.Log($"Added WebUIPanel of type {nameof(TPanel)}");
-            return _instance._uiManagerActor.AddScript<TPanel>();
+            var panel = new TPanel();
+            panel.Create();
+            _instance._panels.Add(panel);
+            return panel;
         }
 
         /// <summary>
@@ -41,7 +54,8 @@ namespace ReCrafted.API.WebUI
         public static void RemovePanel(WebUIPanel panel)
         {
             Logger.Log($"Removed WebUIPanel of type {nameof(panel)}");
-            _instance._uiManagerActor.RemoveScript(panel);
+            panel.Destroy();
+            _instance._panels.Remove(panel);
         }
     }
 }

@@ -16,9 +16,6 @@ namespace ReCrafted.Game
 {
     internal class GameMain : Application
     {
-        private WebUIView _uiGameHud;
-        private WebUIView _uiGameOverlay;
-
         public static PlayerManager CurrentPlayer { get; private set; }
 
         // initialize
@@ -37,7 +34,9 @@ namespace ReCrafted.Game
                 // Run WebUIManager
                 GameSystem.AddGameSystem<WebUIManager>();
 
-                // Add PauseMenu panel
+                // Add game panels
+                WebUIManager.AddPanel<UIGameOverlay>();
+                WebUIManager.AddPanel<UIGameHud>();
                 WebUIManager.AddPanel<UIPauseMenu>();
 
                 // Spawn player
@@ -48,13 +47,6 @@ namespace ReCrafted.Game
                 
                 // apply target fps
                 TargetFps = 60;
-                
-                _uiGameOverlay = WebUIView.Create("file:///game/overlay.html", () =>
-                {
-                    _uiGameOverlay.Call("UpdateGameVersion", GameInfo.Current.BuildName, GameInfo.Current.BuildNumber);
-                });
-
-                _uiGameHud = WebUIView.Create("file:///game/hud.html", () => { });
             }
             catch (Exception exception)
             {
@@ -69,12 +61,6 @@ namespace ReCrafted.Game
             {
                 // Update game systems
                 GameSystem.UpdateAll();
-
-                if (InputManager.IsKeyDown(Key.F5))
-                {
-                    _uiGameHud.Navigate("file:///game/hud.html");
-                    _uiGameOverlay.Navigate("file:///game/overlay.html");
-                }
                 
                 if (InputManager.IsKeyDown(Key.Escape))
                 {
