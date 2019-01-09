@@ -8,7 +8,7 @@ namespace ReCrafted.Game.UI
 {
     public class UIPauseMenu : WebUIPanel
     {
-        public UIPauseMenu() : base("file:///game/pause.html", false) { }
+        public UIPauseMenu() : base("file:///game/menu.html", false) { }
 
         protected override void OnUpdate()
         {

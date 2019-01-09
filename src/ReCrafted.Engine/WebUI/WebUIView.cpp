@@ -330,7 +330,8 @@ void* WebUIView::Call(const char* functionName, MonoType* returnType, MonoArray*
         return nullptr;
 
     // Forward managed arguments to js arguments array
-    JSArgs arguments(8);
+    JSArgs arguments;
+    arguments.reserve(8);
     for(var i = 0u; i < mono_array_length(parameters); i ++)
     {
         cvar parameter = mono_array_get(parameters, MonoObject*, i);

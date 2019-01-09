@@ -153,6 +153,7 @@
     <Compile Include="Physics\RigidBodyActor.Gen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scene\SceneManager.Gen.cs" />
+    <Compile Include="WebUI\WebUIManager.cs" />
     <Compile Include="WebUI\WebUIPanel.cs" />
     <Compile Include="WebUI\WebUIView.cs" />
     <Compile Include="WebUI\WebUIView.Gen.cs" />

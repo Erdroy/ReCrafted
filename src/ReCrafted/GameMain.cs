@@ -10,6 +10,7 @@ using ReCrafted.API.Physics;
 using ReCrafted.API.WebUI;
 using ReCrafted.Common;
 using ReCrafted.Game.Player;
+using ReCrafted.Game.UI;
 
 namespace ReCrafted.Game
 {
@@ -33,6 +34,12 @@ namespace ReCrafted.Game
                 Cursor.Show = false;
                 Cursor.Lock = true;
 
+                // Run WebUIManager
+                GameSystem.AddGameSystem<WebUIManager>();
+
+                // Add PauseMenu panel
+                WebUIManager.AddPanel<UIPauseMenu>();
+
                 // Spawn player
                 CurrentPlayer = PlayerManager.SpawnPlayer(new Vector3(25.0f, 1100.0f, 60.0f), Quaternion.Identity);
 
@@ -44,19 +51,10 @@ namespace ReCrafted.Game
                 
                 _uiGameOverlay = WebUIView.Create("file:///game/overlay.html", () =>
                 {
-                    Logger.Log("DOMReady");
+                    _uiGameOverlay.Call("UpdateGameVersion", GameInfo.Current.BuildName, GameInfo.Current.BuildNumber);
                 });
 
-                _uiGameOverlay.Bind("WebUITest", (float intTest, string test) =>
-                {
-                    Logger.Log("WebUITest(): Hello, World! " + intTest + " - " + test);
-                    return "lol";
-                });
-
-                _uiGameHud = WebUIView.Create("file:///game/hud.html", () =>
-                {
-                    Logger.Log("DOMReady");
-                });
+                _uiGameHud = WebUIView.Create("file:///game/hud.html", () => { });
             }
             catch (Exception exception)
             {
@@ -87,7 +85,7 @@ namespace ReCrafted.Game
                 if (PhysicsManager.RayCast(Camera.Current.Position, Camera.Current.Forward, out var hit, 10.0f, 1))
                 {
                     DebugDraw.Matrix = Matrix.Identity;
-                    DebugDraw.Color = new Color(0xFF1000FF);
+                    DebugDraw.Color = new Color(0xFF1000AA);
                     DebugDraw.DrawWireSphere(hit.Point, 1.5f * 0.5f);
                 }
 

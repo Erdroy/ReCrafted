@@ -8,7 +8,7 @@ namespace ReCrafted.API.WebUI
     /// <summary>
     /// WebUIPanel base class.
     /// </summary>
-    public abstract class WebUIPanel
+    public abstract class WebUIPanel : Script
     {
         private readonly double _createTime;
         
@@ -32,12 +32,7 @@ namespace ReCrafted.API.WebUI
             // Refresh to start loading the html file
             Refresh();
         }
-
-        ~WebUIPanel()
-        {
-            View.Destroy();
-        }
-
+        
         /// <summary>
         /// Reloads the entire view.
         /// Equal to `View.Navigate(View.HtmlFile)`.
@@ -45,6 +40,22 @@ namespace ReCrafted.API.WebUI
         public void Refresh()
         {
             View.Navigate(HtmlFile);
+        }
+
+        /// <summary>
+        /// Shows the view.
+        /// </summary>
+        public void Show()
+        {
+            View.Active = true;
+        }
+
+        /// <summary>
+        /// Hides the view.
+        /// </summary>
+        public void Hide()
+        {
+            View.Active = false;
         }
 
         private void OnBeginLoading()
@@ -60,6 +71,11 @@ namespace ReCrafted.API.WebUI
 
             // Say something at the end
             Logger.Log($"WebUIPanel '{this}' loaded in {Time.CurrentTime - _createTime:f2} ms.");
+        }
+
+        private void Update()
+        {
+            OnUpdate();
         }
         
         protected virtual void OnUpdate() { }
