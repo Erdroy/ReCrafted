@@ -97,7 +97,7 @@ MonoObject* Object::Create(Object* object, MonoDomain* domain, MonoClass* monoCl
 
 void Object::InitializeInstance(Object* object, MonoObject* instance, bool isObject)
 {
-    mono_runtime_object_init(instance);
+    //mono_runtime_object_init(instance);
 
     // Setup object instance
     object->m_gchandle = mono_gchandle_new(instance, true); // get garbage collector handle, and mark it pinned
