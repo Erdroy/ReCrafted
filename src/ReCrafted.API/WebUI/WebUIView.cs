@@ -1,6 +1,7 @@
 ﻿// ReCrafted (c) 2016-2019 Always Too Late
 
 using System;
+using ReCrafted.API.Graphics;
 
 namespace ReCrafted.API.WebUI
 {
@@ -23,6 +24,26 @@ namespace ReCrafted.API.WebUI
             DOMReady?.Invoke();
         }
 
+        /// <summary>
+        /// Calls JavaScript function of specified name with given parameters.
+        /// </summary>
+        /// <param name="functionName">The JavaScript global function.</param>
+        /// <param name="parameters">The function parameters.</param>
+        public void Call(string functionName, params object[] parameters)
+        {
+            Internal_Call(NativePtr, functionName, IntPtr.Zero, parameters);
+        }
+
+        /// <summary>
+        /// Calls JavaScript function of specified name with given parameters and return type.
+        /// </summary>
+        /// <param name="functionName">The JavaScript global function.</param>
+        /// <param name="parameters">The function parameters.</param>
+        public TReturn Call<TReturn>(string functionName, params object[] parameters)
+        {
+            return (TReturn)Internal_Call(NativePtr, functionName, typeof(TReturn).TypeHandle.Value, parameters);
+        }
+        
         /// <summary>
         /// Creates new view and loads page from given uri.
         /// </summary>
@@ -59,5 +80,11 @@ namespace ReCrafted.API.WebUI
         /// Called when DOM is ready while loading. Use for JavaScript bindings etc.
         /// </summary>
         public event ViewCallback DOMReady;
+
+        /// <summary>
+        /// The render texture of this view.
+        /// Only valid when not fullscreen.
+        /// </summary>
+        public Texture RenderTexture => null;
     }
 }

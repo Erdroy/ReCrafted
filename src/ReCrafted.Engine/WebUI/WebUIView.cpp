@@ -11,6 +11,124 @@
 #include "Scripting/Method.h"
 #include "WebUI/Impl/UltralightViewport.h"
 
+JSValue WebUIView::ToJSValue(void* data, const MonoTypeEnum type)
+{
+    switch (type)
+    {
+    case MONO_TYPE_BOOLEAN: // integer 8
+        return JSValue(*static_cast<bool*>(data));
+    case MONO_TYPE_CHAR:
+        return JSValue(*static_cast<char*>(data));
+    case MONO_TYPE_I1:
+        return JSValue(*static_cast<sbyte*>(data));
+    case MONO_TYPE_U1:
+        return JSValue(*static_cast<byte*>(data));
+
+    case MONO_TYPE_I2: // integer 16
+        return JSValue(*static_cast<int16_t*>(data));
+    case MONO_TYPE_U2:
+        return JSValue(*static_cast<uint16_t*>(data));
+
+    case MONO_TYPE_I4: // integer 32
+        return JSValue(*static_cast<int32_t*>(data));
+    case MONO_TYPE_U4:
+        return JSValue(*static_cast<uint32_t*>(data));
+
+    case MONO_TYPE_I8: // integer 64
+        return JSValue(*static_cast<int64_t*>(data));
+    case MONO_TYPE_U8:
+        return JSValue(*static_cast<uint64_t*>(data));
+
+    case MONO_TYPE_R4: // float 32
+        return JSValue(*static_cast<float*>(data));
+
+    case MONO_TYPE_R8: // float 64
+        return JSValue(*static_cast<double*>(data));
+
+    case MONO_TYPE_STRING:
+    {
+        cvar monoString = static_cast<MonoString*>(data);
+        cvar str = reinterpret_cast<ultralight::Char16*>(mono_string_chars(monoString));
+        cvar strLen = mono_string_length(monoString);
+        return JSValue(JSString(ultralight::String(str, strLen)));
+    }
+    default:
+        return JSValue();
+    }
+}
+
+void* WebUIView::FromJSValue(const JSValue& value, MonoType* type)
+{
+    switch (value.GetType())
+    {
+    case kJSTypeBoolean:
+    case kJSTypeNumber:
+    {
+        cvar newObjectClass = mono_type_get_class(type);
+        cvar newObject = mono_object_new(Domain::Root->GetMono(), newObjectClass);
+        cvar newObjectData = mono_object_unbox(newObject);
+        cvar newObjectType = static_cast<MonoTypeEnum>(mono_type_get_type(type));
+
+        switch(newObjectType)
+        {
+        case MONO_TYPE_BOOLEAN: // integer 8
+            *static_cast<bool*>(newObjectData) = value.ToBoolean(); break;
+        case MONO_TYPE_CHAR:
+            *static_cast<char*>(newObjectData) = static_cast<char>(value.ToInteger()); break;
+        case MONO_TYPE_I1:
+            *static_cast<sbyte*>(newObjectData) = static_cast<sbyte>(value.ToInteger()); break;
+        case MONO_TYPE_U1:
+            *static_cast<byte*>(newObjectData) = static_cast<byte>(value.ToInteger()); break;
+
+        case MONO_TYPE_I2: // integer 16
+            *static_cast<int16_t*>(newObjectData) = static_cast<int16_t>(value.ToInteger()); break;
+        case MONO_TYPE_U2:
+            *static_cast<uint16_t*>(newObjectData) = static_cast<uint16_t>(value.ToInteger()); break;
+
+        case MONO_TYPE_I4: // integer 32
+            *static_cast<int32_t*>(newObjectData) = static_cast<int32_t>(value.ToInteger()); break;
+        case MONO_TYPE_U4:
+            *static_cast<uint32_t*>(newObjectData) = static_cast<uint32_t>(value.ToInteger()); break;
+
+        case MONO_TYPE_I8: // integer 64
+            *static_cast<int64_t*>(newObjectData) = static_cast<int64_t>(value.ToInteger()); break;
+        case MONO_TYPE_U8:
+            *static_cast<uint64_t*>(newObjectData) = static_cast<uint64_t>(value.ToInteger()); break;
+
+        case MONO_TYPE_R4: // float 32
+            *static_cast<float*>(newObjectData) = static_cast<float>(value.ToNumber()); break;
+
+        case MONO_TYPE_R8: // float 64
+            *static_cast<double*>(newObjectData) = static_cast<double>(value.ToNumber()); break;
+
+        default:
+            break;
+        }
+
+        return newObject;
+    }
+    case kJSTypeString:
+    {
+        cvar strPtr = const_cast<JSChar*>(value.ToString().GetCharactersPtr());
+        cvar monoStrPtr = reinterpret_cast<mono_unichar2*>(strPtr);
+        return mono_string_new_utf16(
+            Domain::Root->GetMono(),
+            monoStrPtr,
+            static_cast<int32_t>(wcslen(strPtr))
+    );
+    }
+
+    case kJSTypeUndefined:
+    case kJSTypeNull:
+    case kJSTypeObject:
+    default:
+    {
+        _ASSERT_(false, "Got unknown/unsupported type from JavaScript function");
+        return nullptr;
+    }
+    }
+}
+
 JSValue WebUIView::JSCallbackProxy(const JSObject& object, const JSFunction& function, const JSArgs& args)
 {
     ASSERT(args.size() <= 4u); // Only 4 arguments are supported
@@ -26,7 +144,7 @@ JSValue WebUIView::JSCallbackProxy(const JSObject& object, const JSFunction& fun
     void* params[4] = { nullptr };
 
     // Forward parameters
-    // TODO: We can use the method definition (parameters) to force cast JSArgs
+    // TODO: We can use the method definition (parameters) to force cast JSArgs (then use FromJSValue(...))
     for(var i = 0u; i < args.size() && i < 4; i ++)
     {
         rvar arg = args[i];
@@ -76,48 +194,8 @@ JSValue WebUIView::JSCallbackProxy(const JSObject& object, const JSFunction& fun
     if(result == nullptr)
         return JSValue();
 
-    switch(resultType)
-    {
-    case MONO_TYPE_BOOLEAN: // integer 8
-        return JSValue(*static_cast<bool*>(result));
-    case MONO_TYPE_CHAR:
-        return JSValue(*static_cast<char*>(result));
-    case MONO_TYPE_I1:
-        return JSValue(*static_cast<sbyte*>(result));
-    case MONO_TYPE_U1:
-        return JSValue(*static_cast<byte*>(result));
-
-    case MONO_TYPE_I2: // integer 16
-        return JSValue(*static_cast<int16_t*>(result));
-    case MONO_TYPE_U2:
-        return JSValue(*static_cast<uint16_t*>(result));
-
-    case MONO_TYPE_I4: // integer 32
-        return JSValue(*static_cast<int32_t*>(result));
-    case MONO_TYPE_U4:
-        return JSValue(*static_cast<uint32_t*>(result));
-
-    case MONO_TYPE_I8: // integer 64
-        return JSValue(*static_cast<int64_t*>(result));
-    case MONO_TYPE_U8:
-        return JSValue(*static_cast<uint64_t*>(result));
-
-    case MONO_TYPE_R4: // float 32
-        return JSValue(*static_cast<float*>(result));
-
-    case MONO_TYPE_R8: // float 64
-        return JSValue(*static_cast<double*>(result));
-
-    case MONO_TYPE_STRING:
-    {
-        cvar monoString = static_cast<MonoString*>(result);
-        cvar str = reinterpret_cast<ultralight::Char16*>(mono_string_chars(monoString));
-        cvar strLen = mono_string_length(monoString);
-        return JSValue(JSString(ultralight::String(str, strLen)));
-    }
-    default:
-        return JSValue();
-    }
+    // Convert result to JSValue
+    return ToJSValue(result, resultType);
 }
 
 void WebUIView::Init(const uint width, const uint height, const bool fullscreen)
@@ -238,6 +316,40 @@ void WebUIView::Bind(const char* bindName, const Delegate& callback)
 
     // Insert callback
     m_callbacks.insert(std::make_pair(static_cast<JSObjectRef>(function), callback));
+}
+
+void* WebUIView::Call(const char* functionName, MonoType* returnType, MonoArray* parameters) const
+{
+    m_viewport->ApplyJSContext();
+
+    cvar js = JSGlobalObject();
+    var function = js[functionName].ToFunction();
+
+    // When function is not valid, exit.
+    if (!function.IsValid())
+        return nullptr;
+
+    // Forward managed arguments to js arguments array
+    JSArgs arguments(8);
+    for(var i = 0u; i < mono_array_length(parameters); i ++)
+    {
+        cvar parameter = mono_array_get(parameters, MonoObject*, i);
+        cvar type = mono_object_get_type(parameter);
+
+        if(type == MONO_TYPE_STRING)
+            arguments.emplace_back(ToJSValue(parameter, type));
+        else
+            arguments.emplace_back(ToJSValue(mono_object_unbox(parameter), type));
+    }
+
+    // Execute function
+    cvar returnData = function(arguments);
+    cvar returnDataJSType = returnData.GetType();
+
+    if (!returnType || returnDataJSType == kJSTypeNull || returnDataJSType == kJSTypeUndefined)
+        return nullptr;
+
+    return FromJSValue(returnData, returnType);
 }
 
 Event<>& WebUIView::BeginLoading() const

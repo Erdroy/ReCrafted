@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2019 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 01/07/2019 16:15:49 Source: 'WebUIView.API.cpp' Target: 'WebUI/WebUIView.Gen.cs'
+// Generated: 01/09/2019 14:42:39 Source: 'WebUIView.API.cpp' Target: 'WebUI/WebUIView.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -145,6 +145,14 @@ namespace ReCrafted.API.WebUI
         
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern void Internal_Bind<TReturn, T1, T2, T3, T4>(IntPtr nativePtr, string name, Func<TReturn, T1, T2, T3, T4> function);
+
+		private object Call(string name, IntPtr returnType, params object[] parameters)
+		{
+			return Internal_Call(NativePtr, name, returnType, parameters);
+		}
+        
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern object Internal_Call(IntPtr nativePtr, string name, IntPtr returnType, params object[] parameters);
 
 		/// <summary>
 		///	Creates new WebUIView

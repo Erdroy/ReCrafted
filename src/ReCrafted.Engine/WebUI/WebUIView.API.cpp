@@ -44,15 +44,35 @@ namespace Internal
         if (!view)
             return;
 
-        // convert monostring to ansi string
         MONO_ANSI_ERR();
-        auto str = MONO_ANSI(string);
 
-        // bind callback
-        view->Bind(str, Delegate::FromMonoObject(callback));
+        // Get bind name
+        cvar bindName = MONO_ANSI(string);
 
-        // free ansi string
-        MONO_ANSI_FREE(str);
+        // Bind JS callback
+        view->Bind(bindName, Delegate::FromMonoObject(callback));
+
+        // Cleanup
+        MONO_ANSI_FREE(bindName);
+    }
+
+    void* WebUIView_Call(WebUIView* view, MonoString* string, MonoType* returnType, MonoArray* parameters)
+    {
+        if (!view)
+            return nullptr;
+
+        MONO_ANSI_ERR();
+
+        // Get function name
+        cvar functionName = MONO_ANSI(string);
+
+        // Call JS function
+        cvar returnData = view->Call(functionName, returnType, parameters);
+
+        // Cleanup
+        MONO_ANSI_FREE(functionName);
+
+        return returnData;
     }
 
     bool WebUIView_GetActive(WebUIView* view)
@@ -196,6 +216,18 @@ void WebUIView::InitRuntime()
 
                 API_PARAM("string", "name");
                 API_PARAM("Func<TReturn, T1, T2, T3, T4>", "function");
+            }
+            API_METHOD_END();
+
+            API_METHOD(PRIVATE, REGULAR, "Call", EXTERN);
+            {
+                API_BIND("ReCrafted.API.WebUI.WebUIView::Internal_Call", &Internal::WebUIView_Call);
+
+                API_PARAM("string", "name");
+                API_PARAM("IntPtr", "returnType");
+                API_PARAM("params object[]", "parameters");
+
+                API_RETURN("object");
             }
             API_METHOD_END();
 

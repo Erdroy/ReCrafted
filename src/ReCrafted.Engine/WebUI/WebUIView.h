@@ -35,6 +35,9 @@ private:
     spp::sparse_hash_map<JSObjectRef, Delegate> m_callbacks;
 
 private:
+    static JSValue ToJSValue(void* data, MonoTypeEnum type);
+    static void* FromJSValue(const JSValue& value, MonoType* type);
+
     JSValue JSCallbackProxy(const JSObject& object, const JSFunction& function, const JSArgs& args);
 
 private:
@@ -51,6 +54,7 @@ public:
     void Navigate(const char* url);
     void Execute(const char* javaScriptSource);
     void Bind(const char* bindName, const Delegate& callback);
+    void* Call(const char* functionName, MonoType* returnType, MonoArray* parameters) const;
 
 public:
     int Width() const { return m_width; }
