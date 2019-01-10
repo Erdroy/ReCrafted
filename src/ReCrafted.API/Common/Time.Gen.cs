@@ -1,6 +1,6 @@
 // ReCrafted (c) 2016-2019 Always Too Late
 // WARNING: Auto-generated file, all changes will be lost when the API code will be regenerated!
-// Generated: 10/26/2018 22:37:46 Source: 'Time.API.cpp' Target: 'Common/Time.Gen.cs'
+// Generated: 01/10/2019 12:07:46 Source: 'Time.API.cpp' Target: 'Common/Time.Gen.cs'
 
 using System;
 using System.Runtime.CompilerServices;
@@ -41,7 +41,7 @@ namespace ReCrafted.API.Common
 		/// <summary>
 		///	Current time.
 		/// </summary>
-		public static double CurrentTime 
+		public static float CurrentTime 
 		{
 			get
 			{
@@ -52,7 +52,7 @@ namespace ReCrafted.API.Common
 		/// <summary>
 		///	The current game simulation time.
 		/// </summary>
-		public static double CurrentFixedTime 
+		public static float CurrentFixedTime 
 		{
 			get
 			{
@@ -78,9 +78,9 @@ namespace ReCrafted.API.Common
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern double Internal_FixedDeltaTime_Get();
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern double Internal_CurrentTime_Get();
+		internal static extern float Internal_CurrentTime_Get();
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern double Internal_CurrentFixedTime_Get();
+		internal static extern float Internal_CurrentFixedTime_Get();
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		internal static extern int Internal_Frames_Get();
 	}

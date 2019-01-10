@@ -25,13 +25,13 @@ void Time::InitRuntime()
             }
 
             API_COMMENT("Current time.");
-            API_PROPERTY(PUBLIC, STATIC, "double", "CurrentTime", GET);
+            API_PROPERTY(PUBLIC, STATIC, "float", "CurrentTime", GET);
             {
                 API_BIND("ReCrafted.API.Common.Time::Internal_CurrentTime_Get", &Time::CurrentTime);
             }
 
             API_COMMENT("The current game simulation time.");
-            API_PROPERTY(PUBLIC, STATIC, "double", "CurrentFixedTime", GET);
+            API_PROPERTY(PUBLIC, STATIC, "float", "CurrentFixedTime", GET);
             {
                 API_BIND("ReCrafted.API.Common.Time::Internal_CurrentFixedTime_Get", &Time::CurrentFixedTime);
             }
