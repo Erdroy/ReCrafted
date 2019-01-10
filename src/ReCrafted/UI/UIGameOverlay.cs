@@ -21,7 +21,7 @@ namespace ReCrafted.Game.UI
 
         protected override void OnCreate()
         {
-            _lastUpdate = (float)Time.CurrentTime;
+            _lastUpdate = (float) Time.CurrentTime + 1.0f;
         }
 
         protected override void OnViewFinishLoading()
@@ -32,9 +32,11 @@ namespace ReCrafted.Game.UI
 
         protected override void OnUpdate()
         {
-            _minFrame = Math.Min((float)Time.DeltaTime, _minFrame);
-            _maxFrame = Math.Max((float)Time.DeltaTime, _maxFrame);
-            _frameTimeTotal += (float)Time.DeltaTime;
+            var deltaTime = (float) Time.DeltaTime;
+
+            _minFrame = Math.Min(deltaTime, _minFrame);
+            _maxFrame = Math.Max(deltaTime, _maxFrame);
+            _frameTimeTotal += deltaTime;
             _frames++;
 
             if (_lastUpdate < Time.CurrentTime)
@@ -54,7 +56,7 @@ namespace ReCrafted.Game.UI
             var avg = _frameTimeTotal / _frames;
 
             // Update FPS
-            View.Call("UpdatePerf", 1.0f / avg, _minFrame, avg, _maxFrame);
+            View.Call("UpdatePerf", 1.0f / avg, _minFrame * 1000.0f, avg * 1000.0f, _maxFrame * 1000.0f);
         }
     }
 }
