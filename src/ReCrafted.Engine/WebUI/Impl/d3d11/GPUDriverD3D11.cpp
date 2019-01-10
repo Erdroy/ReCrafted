@@ -126,6 +126,7 @@ namespace ultralight
         {
             desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
             desc.Usage = D3D11_USAGE_DEFAULT;
+            desc.CPUAccessFlags = 0;
 
             hr = context_->device()->CreateTexture2D(
                 &desc, nullptr, texture_entry.first.GetAddressOf());
