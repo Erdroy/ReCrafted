@@ -62,12 +62,6 @@ namespace ReCrafted.Game
                 // Update game systems
                 GameSystem.UpdateAll();
                 
-                if (InputManager.IsKeyDown(Key.Escape))
-                {
-                    Cursor.Show = !Cursor.Show;
-                    Cursor.Lock = !Cursor.Show;
-                }
-                
                 if (PhysicsManager.RayCast(Camera.Current.Position, Camera.Current.Forward, out var hit, 10.0f, 1))
                 {
                     DebugDraw.Matrix = Matrix.Identity;

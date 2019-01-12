@@ -13,13 +13,21 @@ namespace ReCrafted.Game.UI
         protected override void OnUpdate()
         {
             if (InputManager.IsKeyDown(Key.Escape))
-                View.Active = !View.Active;
+                Show(!View.Active);
         }
 
         protected override void RegisterBindings()
         {
             // function ExitGame();
+            View.Bind("ResumeGame", () => { Show(false); });
             View.Bind("ExitGame", Application.Exit);
+        }
+
+        private void Show(bool show)
+        {
+            View.Active = show;
+            Cursor.Show = show;
+            Cursor.Lock = !show;
         }
     }
 }
