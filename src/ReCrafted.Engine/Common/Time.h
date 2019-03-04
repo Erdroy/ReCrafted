@@ -49,55 +49,37 @@ public:
 	 * Use for 'Update' calls.
 	 * \return The frame delta time.
 	 */
-    FORCEINLINE static double DeltaTime()
-    {
-        return m_instance->m_deltaTime;
-    }
+    static double DeltaTime();
 
     /**
      * \brief The fixed simulation delta time. Use for 'Simulate' calls.
      * \return The fixed delta time value.
      */
-    FORCEINLINE static double FixedDeltaTime()
-    {
-        return m_instance->m_fixedDeltaTime;
-    }
+    static double FixedDeltaTime();
 
     /**
     * \brief The fixed simulation delta time. Use for 'Simulate' calls.
     * \return The fixed delta time value.
     */
-    FORCEINLINE static void SetFixedDeltaTime(double fixedDeltaTime)
-    {
-        m_instance->m_fixedDeltaTime = fixedDeltaTime;
-    }
+    static void SetFixedDeltaTime(double fixedDeltaTime);
 
     /**
     * \brief The current game time.
     * \return The time.
     */
-    FORCEINLINE static float CurrentTime()
-    {
-        return m_instance->m_time;
-    }
+    static float CurrentTime();
 
     /**
 	 * \brief The current game simulation time.
 	 * \return The time.
 	 */
-    FORCEINLINE static float CurrentFixedTime()
-    {
-        return m_instance->m_fixedTime;
-    }
+    static float CurrentFixedTime();
 
     /**
 	 * \brief The current game frame count.
 	 * \return The frame count.
 	 */
-    FORCEINLINE static int Frames()
-    {
-        return m_instance->m_frames;
-    }
+    static int Frames();
 };
 
 #endif // TIME_H

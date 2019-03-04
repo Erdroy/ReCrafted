@@ -56,80 +56,30 @@ public:
 public:
     void SetCollisionLayer(uint32_t layer);
 
-    void SetUpDirection(const Vector3& direction) const
-    {
-        m_character->SetUpDirection(direction);
-    }
+    void SetUpDirection(const Vector3& direction) const;
+    Vector3 GetUpDirection() const;
 
-    Vector3 GetUpDirection() const
-    {
-        return m_character->GetUpDirection();
-    }
+    void SetHeight(float height) const;
+    float GetHeight() const;
 
-    void SetHeight(const float height) const
-    {
-        m_character->SetHeight(height);
-    }
-    float GetHeight() const
-    {
-        return m_character->GetHeight();
-    }
+    void SetRadius(float radius) const;
+    float GetRadius() const;
 
-    void SetRadius(const float radius) const
-    {
-        m_character->SetRadius(radius);
-    }
+    void SetStepOffset(float stepOffset) const;
+    float GetStepOffset() const;
 
-    float GetRadius() const
-    {
-        return m_character->GetRadius();
-    }
+    void SetContactOffset(float contactOffset) const;
+    float GetContactOffset() const;
 
-    void SetStepOffset(const float stepOffset) const
-    {
-        m_character->SetStepOffset(stepOffset);
-    }
+    void SetSlopeLimit(float slopeAngle) const;
+    float GetSlopeLimit() const;
 
-    float GetStepOffset() const
-    {
-        return m_character->GetStepOffset();
-    }
+    Vector3 GetVelocity() const;
 
-    void SetContactOffset(const float contactOffset) const
-    {
-        m_character->SetContactOffset(contactOffset);
-    }
-
-    float GetContactOffset() const
-    {
-        return m_character->GetContactOffset();
-    }
-
-    void SetSlopeLimit(const float slopeAngle) const
-    {
-        m_character->SetSlopeLimit(Math::Clamp(slopeAngle, 0.0f, 90.0f));
-    }
-
-    float GetSlopeLimit() const
-    {
-        return m_character->GetSlopeLimit();
-    }
-
-    Vector3 GetVelocity() const
-    {
-        return m_character->GetVelocity();
-    }
-
-    IPhysicsCharacter* GetPhysicsCharacter() const
-    {
-        return m_character;
-    }
+    IPhysicsCharacter* GetPhysicsCharacter() const;
 
 public:
-    bool IsGrounded() const
-    {
-        return m_grounded;
-    }
+    bool IsGrounded() const;
 
 public:
     static CharacterActor* Create();

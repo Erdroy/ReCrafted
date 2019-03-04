@@ -5,6 +5,8 @@
 
 void ActorBase::OnAcquire()
 {
+    MAIN_THREAD_ONLY();
+
     // Add to scene
     SceneManager::GetInstance()->AddActor(this);
 
@@ -14,6 +16,8 @@ void ActorBase::OnAcquire()
 
 void ActorBase::OnRelease()
 {
+    MAIN_THREAD_ONLY();
+
     if(m_parent)
     {
         // Remove from parent
@@ -127,6 +131,8 @@ void ActorBase::Simulate()
 
 void ActorBase::UpdateTransform()
 {
+    MAIN_THREAD_ONLY();
+
     // We need to construct the world transform now.
     // If we have a parent, this gets a bit complicated, because we need to transform the local-space transform to world-space.
     // This is accomplished by using parent's world-space transform and ToWorld function.
@@ -372,4 +378,85 @@ void ActorBase::SetTransform(const Transform& transform)
 
     // Update transform
     UpdateTransform();
+}
+
+Vector3 ActorBase::GetPosition() const
+{
+    MAIN_THREAD_ONLY();
+    return m_transform.translation;
+}
+
+Vector3 ActorBase::GetLocalPosition() const
+{
+    MAIN_THREAD_ONLY();
+    return m_localTransform.translation;
+}
+
+Quaternion ActorBase::GetRotation() const
+{
+    MAIN_THREAD_ONLY();
+    return m_transform.orientation;
+}
+
+Quaternion ActorBase::GetLocalRotation() const
+{
+    MAIN_THREAD_ONLY();
+    return m_localTransform.orientation;
+}
+
+Vector3 ActorBase::GetScale() const
+{
+    MAIN_THREAD_ONLY();
+    return m_transform.scale;
+}
+
+Vector3 ActorBase::GetLocalScale() const
+{
+    MAIN_THREAD_ONLY();
+    return m_localTransform.scale;
+}
+
+Transform& ActorBase::GetTransform()
+{
+    MAIN_THREAD_ONLY();
+    return m_transform;
+}
+
+bool ActorBase::IsActiveSelf() const
+{
+    MAIN_THREAD_ONLY();
+    return m_active;
+}
+
+bool ActorBase::IsActive() const
+{
+    MAIN_THREAD_ONLY();
+    if (m_parent)
+        return m_active && m_parent->IsActive();
+
+    return m_active;
+}
+
+const Array<ActorBase*>& ActorBase::GetChildren() const
+{
+    MAIN_THREAD_ONLY();
+    return m_children;
+}
+
+void ActorBase::SetName(const Text& name)
+{
+    MAIN_THREAD_ONLY();
+    m_name = name;
+}
+
+const Text& ActorBase::GetName() const
+{
+    MAIN_THREAD_ONLY();
+    return m_name;
+}
+
+ActorId_t ActorBase::GetId() const
+{
+    MAIN_THREAD_ONLY();
+    return m_id;
 }

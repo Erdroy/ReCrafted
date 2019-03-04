@@ -55,6 +55,96 @@ void CharacterActor::SetCollisionLayer(const uint32_t layer)
     m_character->SetCollisionLayer(layer);
 }
 
+void CharacterActor::SetUpDirection(const Vector3& direction) const
+{
+    MAIN_THREAD_ONLY();
+    m_character->SetUpDirection(direction);
+}
+
+Vector3 CharacterActor::GetUpDirection() const
+{
+    MAIN_THREAD_ONLY();
+    return m_character->GetUpDirection();
+}
+
+void CharacterActor::SetHeight(const float height) const
+{
+    MAIN_THREAD_ONLY();
+    m_character->SetHeight(height);
+}
+
+float CharacterActor::GetHeight() const
+{
+    MAIN_THREAD_ONLY();
+    return m_character->GetHeight();
+}
+
+void CharacterActor::SetRadius(const float radius) const
+{
+    MAIN_THREAD_ONLY();
+    m_character->SetRadius(radius);
+}
+
+float CharacterActor::GetRadius() const
+{
+    MAIN_THREAD_ONLY();
+    return m_character->GetRadius();
+}
+
+void CharacterActor::SetStepOffset(const float stepOffset) const
+{
+    MAIN_THREAD_ONLY();
+    m_character->SetStepOffset(stepOffset);
+}
+
+float CharacterActor::GetStepOffset() const
+{
+    MAIN_THREAD_ONLY();
+    return m_character->GetStepOffset();
+}
+
+void CharacterActor::SetContactOffset(const float contactOffset) const
+{
+    MAIN_THREAD_ONLY();
+    m_character->SetContactOffset(contactOffset);
+}
+
+float CharacterActor::GetContactOffset() const
+{
+    MAIN_THREAD_ONLY();
+    return m_character->GetContactOffset();
+}
+
+void CharacterActor::SetSlopeLimit(const float slopeAngle) const
+{
+    MAIN_THREAD_ONLY();
+    m_character->SetSlopeLimit(Math::Clamp(slopeAngle, 0.0f, 90.0f));
+}
+
+float CharacterActor::GetSlopeLimit() const
+{
+    MAIN_THREAD_ONLY();
+    return m_character->GetSlopeLimit();
+}
+
+Vector3 CharacterActor::GetVelocity() const
+{
+    MAIN_THREAD_ONLY();
+    return m_character->GetVelocity();
+}
+
+IPhysicsCharacter* CharacterActor::GetPhysicsCharacter() const
+{
+    MAIN_THREAD_ONLY();
+    return m_character;
+}
+
+bool CharacterActor::IsGrounded() const
+{
+    MAIN_THREAD_ONLY();
+    return m_grounded;
+}
+
 void CharacterActor::SetPosition(const Vector3& position)
 {
     Super::SetPosition(position);
@@ -73,6 +163,7 @@ void CharacterActor::SetRotation(const Quaternion& rotation)
 
 CharacterActor* CharacterActor::Create()
 {
+    MAIN_THREAD_ONLY();
     cvar actor = Super::Create();
     actor->Initialize();
     return actor;

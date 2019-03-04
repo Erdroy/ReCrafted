@@ -41,12 +41,14 @@ void PhysicsManager::Simulate()
 
 IPhysicsScene* PhysicsManager::GetSceneAt(Vector3 worldPosition)
 {
+    MAIN_THREAD_ONLY();
     // TODO: Find scene by using WorldClusterManager
     return m_instance->m_defaultScene.get();
 }
 
 bool PhysicsManager::RayCast(const Vector3& position, const Vector3& direction, const float maxDistance, RayCastHit* hit, const uint32_t collisionLayer)
 {
+    MAIN_THREAD_ONLY();
     return m_instance->m_defaultScene->RayCast(position, direction, maxDistance, hit, collisionLayer);
 }
 

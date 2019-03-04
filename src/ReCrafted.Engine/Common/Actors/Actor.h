@@ -33,12 +33,14 @@ public:
 public:
     static TActor* Create()
     {
+        MAIN_THREAD_ONLY();
         ASSERT(ActorPoolManager::GetPool<TActor>()); // Sanity check
         return ActorPoolManager::GetPool<TActor>()->AcquireActor();
     }
 
     static void Destroy(TActor* actor)
     {
+        MAIN_THREAD_ONLY();
         ASSERT(ActorPoolManager::GetPool<TActor>());
         ASSERT(actor);
         ActorPoolManager::GetPool<TActor>()->ReleaseActor(actor);

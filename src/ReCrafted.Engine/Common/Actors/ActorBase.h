@@ -96,74 +96,27 @@ public:
 
     void SetTransform(const Transform& transform);
 
-    Vector3 GetPosition() const
-    {
-        return m_transform.translation;
-    }
+    Vector3 GetPosition() const;
+    Vector3 GetLocalPosition() const;
 
-    Vector3 GetLocalPosition() const
-    {
-        return m_localTransform.translation;
-    }
+    Quaternion GetRotation() const;
+    Quaternion GetLocalRotation() const;
 
-    Quaternion GetRotation() const
-    {
-        return m_transform.orientation;
-    }
+    Vector3 GetScale() const;
+    Vector3 GetLocalScale() const;
 
-    Quaternion GetLocalRotation() const
-    {
-        return m_localTransform.orientation;
-    }
-
-    Vector3 GetScale() const
-    {
-        return m_transform.scale;
-    }
-
-    Vector3 GetLocalScale() const
-    {
-        return m_localTransform.scale;
-    }
-
-    Transform& GetTransform()
-    {
-        return m_transform;
-    }
+    Transform& GetTransform();
 
 public:
-    bool IsActiveSelf() const
-    {
-        return m_active;
-    }
+    bool IsActiveSelf() const;
+    bool IsActive() const;
 
-    bool IsActive() const
-    {
-        if (m_parent)
-            return m_active && m_parent->IsActive();
+    const Array<ActorBase*>& GetChildren() const;
 
-        return m_active;
-    }
+    void SetName(const Text& name);
+    const Text& GetName() const;
 
-    const Array<ActorBase*>& GetChildren() const
-    {
-        return m_children;
-    }
-
-    void SetName(const Text& name)
-    {
-        m_name = name;
-    }
-
-    const Text& GetName() const
-    {
-        return m_name;
-    }
-
-    ActorId_t GetId() const
-    {
-        return m_id;
-    }
+    ActorId_t GetId() const;
 };
 
 #endif // ACTORBASE_H

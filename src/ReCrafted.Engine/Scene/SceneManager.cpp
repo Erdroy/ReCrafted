@@ -55,10 +55,12 @@ void SceneManager::Simulate()
 
 void SceneManager::AddActor(ActorBase* actor)
 {
+    MAIN_THREAD_ONLY();
     m_actors.Add(actor);
 }
 
 void SceneManager::RemoveActor(ActorBase* actor)
 {
+    MAIN_THREAD_ONLY();
     m_actors.Remove(actor);
 }
