@@ -62,6 +62,12 @@ public:
     int IsFullscreen() const { return m_fullscreen; }
 
 public:
+    virtual const char* GetObjectName() const override
+    {
+        return "WebUI View";
+    }
+
+public:
     Event<>& BeginLoading() const;
     Event<>& FinishLoading() const;
     Event<>& DOMReady() const;

@@ -121,6 +121,12 @@ public:
     {
         return m_lineHeigh;
     }
+
+public:
+    virtual const char* GetObjectName() const override
+    {
+        return "Font";
+    }
 };
 
 #endif // FONT_H

@@ -22,10 +22,10 @@ private:
     friend class Graphics;
 
 private:
-    RefPtr<SpaceObject> m_testObject1 = nullptr;
-    VoxelMaterial_t m_selectedMaterial = 1u;
+    //RefPtr<SpaceObject> m_testObject1 = nullptr;
+    //VoxelMaterial_t m_selectedMaterial = 1u;
 
-    RigidBodyActor* m_ball = nullptr;
+    //RigidBodyActor* m_ball = nullptr;
 
 public:
     virtual ~Universe() = default;

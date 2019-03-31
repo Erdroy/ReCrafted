@@ -88,6 +88,9 @@ public:
     }
 
 public:
+    static void DumpObjectsToLog();
+
+public:
     static RefPtr<Method> FindStaticMethod(const char* methodName);
 
     /**

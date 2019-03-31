@@ -38,6 +38,12 @@ private:
     void OnDestroy() override;
 
 public:
+    virtual const char* GetObjectName() const override
+    {
+        return "Script";
+    }
+
+public:
     PROPERTY(ActorBase*, Actor) = nullptr;
     PROPERTY(bool, Enabled) = true;
 };

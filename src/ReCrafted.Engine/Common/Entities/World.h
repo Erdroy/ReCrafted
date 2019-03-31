@@ -29,6 +29,12 @@ public:
     World();
     ~World();
 
+public:
+    virtual const char* GetObjectName() const override
+    {
+        return "ECS World";
+    }
+
 private:
     void AddEntityComponent(const EntityId entityId, Component* component, const TypeId componentId) const
     {

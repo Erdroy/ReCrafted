@@ -99,6 +99,12 @@ public:
     }
 
 public:
+    virtual const char* GetObjectName() const override
+    {
+        return "Camera";
+    }
+
+public:
     /// <summary>
     /// Gets the main camera.
     /// </summary>

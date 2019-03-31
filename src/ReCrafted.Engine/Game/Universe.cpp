@@ -26,7 +26,7 @@ void Universe::OnInit()
     // initialize save system
     
     // initialize space object manager
-    SpaceObjectManager::GetInstance()->Init();
+    /*SpaceObjectManager::GetInstance()->Init();
 
     // temporary, replace with World::load("../saves/SaveName", MakeDelegate(Universe::OnWorldLoaded));
     // when saves will be done
@@ -53,17 +53,17 @@ void Universe::OnInit()
     actionMap.AddAction("fire", ActionType::Event, ActionEventType::Pressed);
     actionMap.AddBind("fire", Key::Control);
     actionMap.AddBind("fire", Button::Left);
-    actionMap.AddListener("fire", Action<void>::New<Universe, &Universe::Shoot>(this));
+    actionMap.AddListener("fire", Action<void>::New<Universe, &Universe::Shoot>(this));*/
 }
 
 void Universe::OnDispose()
 {
-    m_ball->Destroy();
+    /*m_ball->Destroy();
     m_ball = nullptr;
 
     // Shutdown
     SafeDisposeNN(SpaceObjectManager::GetInstance()); // TODO: Fix issue with m_cooker being deleted before SpaceObject collision release!
-    SafeDispose(m_testObject1);
+    SafeDispose(m_testObject1);*/
 }
 
 void Universe::Update()
@@ -72,7 +72,7 @@ void Universe::Update()
 
     SpaceObjectManager::GetInstance()->Update();
 
-    if (InputManager::IsKeyDown(Key::F7))
+    /*if (InputManager::IsKeyDown(Key::F7))
     {
         m_viewUpdateEnabled = !m_viewUpdateEnabled;
     }
@@ -116,6 +116,11 @@ void Universe::Update()
         var cameraPosition = Camera::GetMainCamera()->GetPosition();
         m_testObject1->UpdateViewPoint(cameraPosition);
         m_testObject1->Update();
+    }*/
+
+    if(InputManager::IsKeyDown(Key::K))
+    {
+        Object::DumpObjectsToLog();
     }
 
     if (InputManager::IsKeyDown(Key::L))
@@ -129,7 +134,7 @@ void Universe::Update()
         Logger::Log("Screenshot saved as {0}", fileName.str());
     }
 
-    ImGui::Text("Selected material: %d", m_selectedMaterial);
+    //ImGui::Text("Selected material: %d", m_selectedMaterial);
 }
 
 void Universe::Simulate()
@@ -138,18 +143,18 @@ void Universe::Simulate()
 
 void Universe::Shoot()
 {
-    cvar pos = Camera::GetMainCamera()->GetPosition() + Camera::GetMainCamera()->GetForward() * 5.0f;
+    /*cvar pos = Camera::GetMainCamera()->GetPosition() + Camera::GetMainCamera()->GetForward() * 5.0f;
 
     m_ball->SetPosition(pos);
     m_ball->SetVelocity(Vector3::Zero);
-    m_ball->AddForce(Camera::GetMainCamera()->GetForward() * 100.0f, ForceMode::VelocityChange);
+    m_ball->AddForce(Camera::GetMainCamera()->GetForward() * 100.0f, ForceMode::VelocityChange);*/
 }
 
 void Universe::DoVoxelModification(const VoxelEditMode::_enum mode, const VoxelMaterial_t material, const float size) const
 {
-    RayCastHit hit{};
+    /*RayCastHit hit{};
     if (PhysicsManager::RayCast(Camera::GetMainCamera()->GetPosition(), Camera::GetMainCamera()->GetForward(), 5.0f, &hit, CollisionLayers::Default))
     {
         m_testObject1->Modify(material, mode, hit.point, size);
-    }
+    }*/
 }

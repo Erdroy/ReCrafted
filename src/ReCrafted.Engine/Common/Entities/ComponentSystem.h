@@ -35,6 +35,12 @@ public:
     virtual ~ComponentSystem() = default;
 
 public:
+    virtual const char* GetObjectName() const override
+    {
+        return "ECS ComponentSystem";
+    }
+
+public:
     template<typename TRequire>
     void RequireComponent()
     {

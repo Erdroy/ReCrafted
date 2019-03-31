@@ -53,6 +53,19 @@ MonoObject* Object::GetManagedPtr() const
     return m_object;
 }
 
+void Object::DumpObjectsToLog()
+{
+    Logger::Log("Alive object dump: ");
+
+    ScopeLock(m_objectMapLock);
+    for (rvar object : m_objectMap)
+    {
+        Logger::Log("{0}Object({1}) - {2}", object.second->m_gchandle > 0 ? "GC_" : "", object.second->m_id, object.second->GetObjectName());
+    }
+
+    Logger::Log("END OF DUMP");
+}
+
 RefPtr<Method> Object::FindStaticMethod(const char* methodName)
 {
     auto methodDesc = mono_method_desc_new(methodName, true);
@@ -144,19 +157,16 @@ void Object::Destroy(Object* object)
 
         if (objectIterator == m_objectMap.end())
         {
-            Logger::LogWarning("Destroying object which is already destroyed (or invalid)! Pointer: {0} Id: {1} Name: {2}",
-                reinterpret_cast<uint64_t>(object),
-                object->GetObjectId(),
-                object->GetObjectName()
-            );
+            Logger::LogWarning("Destroying object which is already destroyed (or invalid)! Pointer: {0}", reinterpret_cast<uint64_t>(object));
+            m_objectMapLock.UnlockNow();
+            return;
         }
-        else
-        {
-            m_objectMap.erase(objectIterator);
 
-            // Decrement object count
-            --m_objectCount;
-        }
+        // Remove object from map
+        m_objectMap.erase(objectIterator);
+
+        // Decrement object count
+        --m_objectCount;
     }
     m_objectMapLock.UnlockNow();
 

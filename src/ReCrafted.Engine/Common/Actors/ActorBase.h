@@ -85,6 +85,12 @@ public:
     virtual void Destroy() = 0;
 
 public:
+    virtual const char* GetObjectName() const override
+    {
+        return "Unknown Actor";
+    }
+
+public:
     virtual void SetPosition(const Vector3& position);
     virtual void SetLocalPosition(const Vector3& position);
 
