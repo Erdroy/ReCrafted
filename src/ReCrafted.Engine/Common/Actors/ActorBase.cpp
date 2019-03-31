@@ -33,6 +33,10 @@ void ActorBase::OnRelease()
     // ... and now, we can safely destroy the actor object.
     Object::Destroy(this);
 
+    for (rvar script : m_scripts)
+        Object::Destroy(script);
+    m_scripts.Clear();
+
     // Remove from scene
     SceneManager::GetInstance()->RemoveActor(this);
 }
@@ -49,8 +53,11 @@ void ActorBase::Cleanup(const ActorId_t id)
     m_transform = Transform::Identity;
     m_localTransform = Transform::Identity;
 
-    m_children.Clear();
+    for (rvar script : m_scripts)
+        Object::Destroy(script);
     m_scripts.Clear();
+
+    m_children.Clear();
 
     SetName(TEXT_CONST("Actor"));
 }
