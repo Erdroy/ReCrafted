@@ -57,6 +57,7 @@ void EngineMain::UnregisterComponents() const
     m_componentManager->UnregisterComponent(PhysicsManager::GetInstance());
 
     m_componentManager->UnregisterComponent(WebUI::GetInstance());
+    m_componentManager->UnregisterComponent(InputManager::GetInstance());
 
     // Run finalizer
     ScriptingEngine::Finalize();
