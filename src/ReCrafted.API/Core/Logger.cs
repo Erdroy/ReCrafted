@@ -59,11 +59,10 @@ namespace ReCrafted.API.Core
             _logStream = new FileStream(LogFile, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
             _logWriter = new StreamWriter(_logStream);
         }
-        
-        // private
-        private void ThreadRunner()
+
+        private void ProcessMessages()
         {
-            while (!_disposed || (_disposed && _logQueue.Count > 0))
+            lock (_logQueue)
             {
                 while (_logQueue.Count > 0) // process all logs
                 {
@@ -75,11 +74,20 @@ namespace ReCrafted.API.Core
 
                     // write log to the file
                     _logWriter.Write(message);
-                    
+
                     // flush
                     _logStream.Flush();
                     _logWriter.Flush();
                 }
+            }
+        }
+
+        // private
+        private void ThreadRunner()
+        {
+            while (!_disposed || (_disposed && _logQueue.Count > 0))
+            {
+                ProcessMessages();
 
                 Thread.Sleep(LoggerThreadFrequency); // sleep some time to get some more new fresh logs to eat.
             }
@@ -132,8 +140,7 @@ namespace ReCrafted.API.Core
                 OnMessage?.Invoke(ConstructMessage(log), log.Level);
             }
         }
-
-
+        
         /// <summary>
         /// Dispose logger.
         /// </summary>
@@ -143,9 +150,10 @@ namespace ReCrafted.API.Core
                 return;
 
             _disposed = true;
+            
+            ProcessMessages();
 
-            while (_logQueue.Count > 0)
-                Thread.Sleep(5);
+            _logWriter.Flush();
 
             _logStream.Dispose();
             _logWriter.Dispose();
