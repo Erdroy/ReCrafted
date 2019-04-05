@@ -23,6 +23,9 @@ void EngineComponentManager::OnDispose()
 
     for (var&& component : m_components)
     {
+        if (!component)
+            continue;
+
         // release this component
         ReleaseComponent(component);
         component = nullptr;
@@ -71,12 +74,11 @@ void EngineComponentManager::RegisterComponent(EngineComponentBase* component)
 {
     ASSERT(component);
 
-    ScopeLock(m_componentsLock);
-
     // initialize component
     component->Init();
 
     // add component to the component list
+    ScopeLock(m_componentsLock);
     m_components.Add(component);
 }
 
@@ -84,11 +86,10 @@ void EngineComponentManager::UnregisterComponent(EngineComponentBase* component)
 {
     ASSERT(component);
 
-    ScopeLock(m_componentsLock);
-
     // release component
     ReleaseComponent(component);
 
     // Remove component from the list
+    ScopeLock(m_componentsLock);
     m_components.Remove(component);
 }

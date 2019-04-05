@@ -1364,8 +1364,7 @@ namespace Renderer
             kickFrameEvent();
 
             // Wait for worker threads to finish
-            var idx = 0;
-            for (var thread : m_workerThreads)
+            for (var && thread : m_workerThreads)
             {
                 if (thread)
                 {
@@ -1376,8 +1375,7 @@ namespace Renderer
                     delete thread;
                 }
 
-                m_workerThreads[idx] = nullptr;
-                idx++;
+                thread = nullptr;
             }
 
             // clear state

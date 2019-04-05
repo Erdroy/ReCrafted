@@ -30,7 +30,6 @@ EngineMain* EngineMain::m_instance;
 
 void EngineMain::RegisterComponents() const
 {
-    m_componentManager->RegisterComponent(TaskManager::GetInstance());
     m_componentManager->RegisterComponent(Graphics::GetInstance());
     m_componentManager->RegisterComponent(Application::GetInstance());
     m_componentManager->RegisterComponent(Profiler::GetInstance());
@@ -58,12 +57,10 @@ void EngineMain::UnregisterComponents() const
 
     m_componentManager->UnregisterComponent(WebUI::GetInstance());
     m_componentManager->UnregisterComponent(InputManager::GetInstance());
+    m_componentManager->UnregisterComponent(TaskManager::GetInstance());
 
     // Run finalizer
     ScriptingEngine::Finalize();
-
-    // Release content manager
-    //m_componentManager->UnregisterComponent(ContentManager::GetInstance());
 }
 
 void EngineMain::CreateMainWindow()
@@ -162,11 +159,13 @@ void EngineMain::Initialize()
     // initialize component manager
     m_componentManager = EngineComponentManager::GetInstance();
 
+
     // initialize basic pre-log components
     m_componentManager->RegisterComponent(ScriptingEngine::GetInstance());
     m_componentManager->RegisterComponent(Logger::GetInstance());
-    m_componentManager->RegisterComponent(ContentManager::GetInstance());
     m_componentManager->RegisterComponent(Dispatcher::GetInstance());
+    m_componentManager->RegisterComponent(TaskManager::GetInstance());
+    m_componentManager->RegisterComponent(ContentManager::GetInstance());
 
     // Say something, as now we have scripting and logger initialized, 
     // so we can scream around.

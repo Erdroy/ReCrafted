@@ -16,7 +16,7 @@
 #include <atomic>
 
 /**
- * \brief TaskManager class. Allows queueing task for processing in multi-threaded enviroment.
+ * \brief TaskManager class. Allows queueing task for processing in multi-threaded environment.
  */
 class TaskManager : public EngineComponent<TaskManager>
 {

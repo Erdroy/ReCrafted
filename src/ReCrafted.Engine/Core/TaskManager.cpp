@@ -34,6 +34,8 @@ void TaskManager::WorkerFunction()
         m_taskReleaseQueue.enqueue(task);
     }
 
+    Logger::Log("TaskManager worker thread is exiting");
+
     ScriptingEngine::DetachCurrentThread();
 }
 
@@ -99,7 +101,7 @@ void TaskManager::OnInit()
     m_running = true;
     for (var i = 0; i < maxThreads; i++)
     {
-        m_workerThreads.Add(new std::thread([this]
+        m_workerThreads.Add(new std::thread([&]
         {
             WorkerFunction();
         }));

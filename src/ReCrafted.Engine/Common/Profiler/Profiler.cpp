@@ -215,6 +215,18 @@ void Profiler::ThreadData::EndCPUProfile(const uint32_t profileId)
     dataLock.UnlockNow();
 }
 
+void Profiler::ThreadData::Cleanup()
+{
+    if (currentFrame.profileQueue.empty())
+        return;
+
+    frames.clear();
+    frames.resize(0);
+
+    currentFrame.profileQueue.clear();
+    currentFrame.profileQueue.resize(0);
+}
+
 void Profiler::InitThread(const char* threadName)
 {
     // Setup thread
@@ -231,6 +243,13 @@ void Profiler::InitThread(const char* threadName)
 void Profiler::FinishThread()
 {
     // TODO: Cleanup and shutdown current ThreadData
+    for(var && thread : m_instance->m_threads)
+    {
+        thread->Cleanup();
+    }
+
+    m_instance->m_threadMap.clear();
+    m_instance->m_threads.clear();
 }
 
 void Profiler::BeginFrame()

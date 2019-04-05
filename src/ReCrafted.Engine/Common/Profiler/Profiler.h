@@ -74,6 +74,7 @@ private:
     public:
         uint32_t BeginCPUProfile(const char* name);
         void EndCPUProfile(uint32_t profileId);
+        void Cleanup();
     };
 
 private:
