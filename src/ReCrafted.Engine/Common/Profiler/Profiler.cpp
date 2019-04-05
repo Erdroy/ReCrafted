@@ -3,6 +3,7 @@
 #include "Profiler.h"
 #include "Input/InputManager.h"
 #include "Core/GameInfo.h"
+#include "Core/Logger.h"
 
 SINGLETON_IMPL(Profiler)
 
@@ -104,6 +105,7 @@ void Profiler::OnInit()
 void Profiler::OnDispose()
 {
     FinishThread();
+    Logger::Log("Profiler disposed");
 }
 
 void Profiler::Update()
@@ -242,10 +244,13 @@ void Profiler::InitThread(const char* threadName)
 
 void Profiler::FinishThread()
 {
-    // TODO: Cleanup and shutdown current ThreadData
     for(var && thread : m_instance->m_threads)
     {
-        thread->Cleanup();
+        if (!thread)
+            continue;
+
+        delete thread;
+        thread = nullptr;
     }
 
     m_instance->m_threadMap.clear();

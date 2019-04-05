@@ -50,8 +50,6 @@ void WebUIEngine::OnDispose()
     delete ultralight::Platform::instance().file_system();
     delete ultralight::Platform::instance().font_loader();
 
-    // Release ultralight renderer
-    g_ultralightRenderer->Release();
     m_webui_context.reset();
 }
 

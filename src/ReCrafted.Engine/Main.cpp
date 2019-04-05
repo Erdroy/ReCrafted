@@ -31,7 +31,9 @@ int CALLBACK WinMain(
     LPSTR lpCmdLine,
     int nCmdShow)
 {
+#if DEBUG
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
 
     // Initialize memory allocator TODO: This should be called from static constructor, as soon as possible!
     Memory::Initialize(Memory::AllocatorType::OS);
@@ -52,8 +54,10 @@ int CALLBACK WinMain(
     // Shutdown engine
     engine.Shutdown();
 
+#if DEBUG
     // Dump memory leaks
     _CrtDumpMemoryLeaks();
+#endif
 
     // Shutdown platform
     Platform::Shutdown();

@@ -25,7 +25,7 @@ private:
 private:
     struct ProfileEntry
     {
-        std::string profileName{};
+        std::string profileName;
         double startTime_ms = 0.0;
         double endTime_ms = 0.0;
         float profileTime_ms = 0.0f;
@@ -36,7 +36,7 @@ private:
     {
         ProfileTreeEntry* parent = nullptr;
 
-        std::string name{};
+        std::string name;
         float time = 0.0f;
         int callNum = 0;
         int depth = 0;
