@@ -2,10 +2,10 @@
 
 #pragma once
 
-#ifndef ALLOCATOR_HPP
-#define ALLOCATOR_HPP
+#ifndef ALLOCATOR_H
+#define ALLOCATOR_H
 
-#include <ReCrafted.hpp>
+#include <ReCrafted.h>
 
 template <class T>
 struct RC_API rc_allocator {
@@ -45,4 +45,4 @@ bool operator!=(const rc_allocator<T>&, const rc_allocator<U>&)
     return false;
 }
 
-#endif // ALLOCATOR_HPP
+#endif // ALLOCATOR_H

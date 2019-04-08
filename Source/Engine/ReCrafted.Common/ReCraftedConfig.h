@@ -2,9 +2,9 @@
 
 #pragma once
 
-#ifndef RECRAFTEDCONFIG_HPP
-#define RECRAFTEDCONFIG_HPP
+#ifndef RECRAFTEDCONFIG_H
+#define RECRAFTEDCONFIG_H
 
 
 
-#endif // RECRAFTEDCONFIG_HPP
+#endif // RECRAFTEDCONFIG_H

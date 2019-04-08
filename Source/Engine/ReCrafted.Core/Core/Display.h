@@ -2,13 +2,13 @@
 
 #pragma once
 
-#ifndef DISPLAY_HPP
-#define DISPLAY_HPP
+#ifndef DISPLAY_H
+#define DISPLAY_H
 
-#include <ReCrafted.hpp>
+#include <ReCrafted.h>
 
 class RC_API Display
 {
 };
 
-#endif // DISPLAY_HPP
+#endif // DISPLAY_H

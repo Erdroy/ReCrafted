@@ -2,10 +2,10 @@
 
 #pragma once
 
-#ifndef MEMORY_HPP
-#define MEMORY_HPP
+#ifndef MEMORY_H
+#define MEMORY_H
 
-#include <ReCrafted.hpp>
+#include <ReCrafted.h>
 
 #include <memory>
 #include <cstdlib>
@@ -95,4 +95,4 @@ inline void operator delete[](void* ptr, size_t) noexcept {
 
 #pragma warning( pop )
 
-#endif // MEMORY_HPP
+#endif // MEMORY_H

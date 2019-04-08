@@ -1,0 +1,24 @@
+[submodule "Source/Libraries/fmt"]
+	path = Source/Libraries/fmt
+	url = https://github.com/fmtlib/fmt
+[submodule "Source/Libraries/concurrentqueue"]
+	path = Source/Libraries/concurrentqueue
+	url = https://github.com/cameron314/concurrentqueue
+[submodule "Source/Libraries/PhysX"]
+	path = Source/Libraries/PhysX
+	url = https://github.com/NVIDIAGameWorks/PhysX
+[submodule "Source/Libraries/json"]
+	path = Source/Libraries/json
+	url = https://github.com/nlohmann/json
+[submodule "Source/Libraries/imgui"]
+	path = Source/Libraries/imgui
+	url = https://github.com/ocornut/imgui
+[submodule "Source/Libraries/sparsepp"]
+	path = Source/Libraries/sparsepp
+	url = https://github.com/greg7mdp/sparsepp
+[submodule "Source/Libraries/ultralight"]
+	path = Source/Libraries/ultralight
+	url = https://github.com/ultralight-ux/ultralight
+[submodule "Source/Libraries/jemalloc"]
+	path = Source/Libraries/jemalloc
+	url = https://github.com/jemalloc/jemalloc

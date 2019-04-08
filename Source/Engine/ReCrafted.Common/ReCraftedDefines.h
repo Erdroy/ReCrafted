@@ -2,8 +2,8 @@
 
 #pragma once
 
-#ifndef RECRAFTEDDEFINES_HPP
-#define RECRAFTEDDEFINES_HPP
+#ifndef RECRAFTEDDEFINES_H
+#define RECRAFTEDDEFINES_H
 
 #ifdef RC_API
 # undef RC_API
@@ -19,4 +19,4 @@
 # define RC_API
 #endif
 
-#endif // RECRAFTEDDEFINES_HPP
+#endif // RECRAFTEDDEFINES_H

@@ -2,9 +2,9 @@
 
 #pragma once
 
-#ifndef RECRAFTEDINCLUDES_HPP
-#define RECRAFTEDINCLUDES_HPP
+#ifndef RECRAFTEDINCLUDES_H
+#define RECRAFTEDINCLUDES_H
 
 #include <cstdint>
 
-#endif // RECRAFTEDINCLUDES_HPP
+#endif // RECRAFTEDINCLUDES_H

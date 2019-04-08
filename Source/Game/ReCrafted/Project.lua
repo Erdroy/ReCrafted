@@ -12,14 +12,14 @@ project "ReCrafted"
 	files {
 		"./**.lua",
 		"./**.cpp",
-		"./**.hpp",
+		"./**.h",
 		"./**.hlsl",
 		"./**.hlsli",
 	}
 
 	forceincludes { 
-		path.join(SOURCE_DIR, "Engine/ReCrafted.Common/Common/Memory.hpp"),
-		path.join(SOURCE_DIR, "Engine/ReCrafted.Common/Common/Allocator.hpp")
+		path.join(SOURCE_DIR, "Engine/ReCrafted.Common/Common/Memory.h"),
+		path.join(SOURCE_DIR, "Engine/ReCrafted.Common/Common/Allocator.h")
 	}
 	
     includedirs {

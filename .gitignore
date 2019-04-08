@@ -7,4 +7,5 @@ packages/
 /[Bb]uild/
 
 *.user
+*.sln
 *.vcxproj*

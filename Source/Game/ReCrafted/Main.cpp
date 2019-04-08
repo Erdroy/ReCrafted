@@ -1,5 +1,6 @@
 // ReCrafted (c) 2016-2019 Always Too Late. All rights reserved.. All rights reserved.
 
+#ifdef _WIN32
 #include <Windows.h>
 
 /**
@@ -11,5 +12,9 @@ int CALLBACK WinMain(
     LPSTR lpCmdLine,
     int nCmdShow)
 {
+
     return ERROR_SUCCESS;
 }
+#endif
+
+// TODO: Linux/OSX entry points
