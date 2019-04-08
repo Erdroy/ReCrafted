@@ -1,0 +1,9 @@
+.vs/
+obj/
+bin/
+packages/
+/[Dd]ebug/
+/[Rr]elease/
+/[Bb]uild/
+
+*.user
