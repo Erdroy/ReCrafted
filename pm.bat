@@ -1,3 +1,3 @@
 @echo off
 cd %~dp0
-.\tools\ReCrafted.ProjectManager.exe -c %*
+.\Tools\ReCrafted.ProjectManager.exe -c %*
