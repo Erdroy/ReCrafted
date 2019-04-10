@@ -1,10 +1,14 @@
+
 .vs/
-obj/
 bin/
+obj/
 packages/
+
 /[Dd]ebug/
 /[Rr]elease/
 /[Bb]uild/
+
+Source/Libraries/*/
 
 *.user
 *.sln
