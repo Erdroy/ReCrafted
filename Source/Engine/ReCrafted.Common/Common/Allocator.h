@@ -1,4 +1,4 @@
-// ReCrafted (c) 2016-2019 Always Too Late. All rights reserved.. All rights reserved.
+// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #pragma once
 
@@ -8,7 +8,7 @@
 #include <ReCrafted.h>
 
 template <class T>
-struct RC_API rc_allocator {
+struct rc_allocator {
 public:
     typedef T value_type;
 

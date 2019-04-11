@@ -1,4 +1,4 @@
-﻿// ReCrafted (c) 2016-2019 Always Too Late. All rights reserved.
+﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System;
 using System.Linq;

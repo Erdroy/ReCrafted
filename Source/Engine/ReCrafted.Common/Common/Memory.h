@@ -1,4 +1,4 @@
-// ReCrafted (c) 2016-2019 Always Too Late. All rights reserved.. All rights reserved.
+// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #pragma once
 
@@ -27,7 +27,7 @@ public:
     };
 
 public:
-    static void RC_API Initialize(AllocatorType allocatorType);
+    static void Initialize(AllocatorType allocatorType);
 };
 
 #pragma warning( push )

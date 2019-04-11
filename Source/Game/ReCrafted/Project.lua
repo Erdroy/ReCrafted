@@ -26,21 +26,21 @@ project "ReCrafted"
         "./",
 		path.join(SOURCE_DIR, "Engine/ReCrafted.Common"),
 		path.join(SOURCE_DIR, "Engine/ReCrafted.Core"),
-		--path.join(SOURCE_DIR, "Engine/ReCrafted.Graphics"),
-		
-        -- add all modules
-		
-		path.join(SOURCE_DIR, "Engine/ReCrafted.Game"),
     }
     
     -- default deps
     links { 
         "ReCrafted.Common",
         "ReCrafted.Core",
-        --"ReCrafted.Graphics",
-		
-        "ReCrafted.Game",
+        "ReCrafted.Graphics",
     }
+	
+	-- add onbuild script and multi processor compilation
+	configuration { "vs*"}
+		buildoptions { "/MP" }
+		postbuildcommands {
+			"call " .. ROOT_DIR .. "/pm.bat PostBuild",
+		}
 	
 	-- configs
     configuration { "Debug" }

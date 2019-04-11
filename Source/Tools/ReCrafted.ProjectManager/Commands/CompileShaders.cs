@@ -1,4 +1,4 @@
-﻿// ReCrafted (c) 2016-2019 Always Too Late. All rights reserved.
+﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System;
 using System.IO;
@@ -13,7 +13,7 @@ namespace ReCrafted.ProjectManager.Commands
         {
             Console.WriteLine("Compiling shaders...");
 
-            var shadersDirectory = Path.Combine(Program.RootDirectory, "Source\\Engine\\ReCrafted.Graphics\\Shaders");
+            var shadersDirectory = Path.Combine(Program.RootDirectory, "Source\\Engine\\ReCrafted.Graphics\\Graphics\\Shaders");
 
             // make sure that we are in the correct directory
             if (!Directory.Exists(shadersDirectory))

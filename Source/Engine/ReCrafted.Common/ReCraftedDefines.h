@@ -1,4 +1,4 @@
-// ReCrafted (c) 2016-2019 Always Too Late. All rights reserved.. All rights reserved.
+// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #pragma once
 
@@ -10,13 +10,29 @@
 #endif
 
 #ifdef _WIN32
-# if defined(RC_API_EXPORT_COMMON) || defined(RC_API_EXPORT_CORE)
-#  define RC_API __declspec(dllexport)
-# else
-#  define RC_API __declspec(dllimport)
-# endif
-#else
-# define RC_API
+#define WIN32_LEAN_AND_MEAN 
+#endif
+
+#if !defined(DELETE_CTOR_COPY) && !defined(DELETE_CTOR_MOVE) && !defined(DELETE_CTOR_COPY_MOVE)
+#define DELETE_CTOR_COPY(className) className(const className& other) = delete;
+#define DELETE_CTOR_MOVE(className) className(const className&& other) = delete;
+#define DELETE_CTOR_COPY_MOVE(className)		\
+	DELETE_CTOR_COPY(className)				    \
+	DELETE_CTOR_MOVE(className)
+#endif
+
+#if !defined(DELETE_OPERATOR_COPY) && !defined(DELETE_OPERATOR_MOVE) && !defined(DELETE_OPERATOR_COPY_MOVE)
+#define DELETE_OPERATOR_COPY(className) void operator=(className& other) = delete;
+#define DELETE_OPERATOR_MOVE(className) void operator=(className&& other) = delete;
+#define DELETE_OPERATOR_COPY_MOVE(className)	\
+	DELETE_OPERATOR_COPY(className)			    \
+	DELETE_OPERATOR_MOVE(className)
+#endif
+
+#if !defined(DELETE_COPY_MOVE)
+#define DELETE_COPY_MOVE(className)				\
+	DELETE_CTOR_COPY_MOVE(className)			\
+	DELETE_OPERATOR_COPY_MOVE(className)
 #endif
 
 #endif // RECRAFTEDDEFINES_H

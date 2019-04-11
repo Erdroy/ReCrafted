@@ -2,7 +2,7 @@ project "ReCrafted.Graphics"
 	location (path.join(SOURCE_DIR, "Engine/ReCrafted.Graphics"))
 	targetname "ReCrafted.Graphics"
 	
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
 	flags { "NoManifest", "ShadowedVariables", "RelativeLinks", "NoPCH" }
 	defines { "_CRT_SECURE_NO_WARNINGS", "JEMALLOC_EXPORT=", "JEMALLOC_STATIC", "NOMINMAX" }
@@ -33,6 +33,9 @@ project "ReCrafted.Graphics"
         "ReCrafted.Common",
         "ReCrafted.Core",
     }
+
+    filter { "files:**.hlsl" }
+        flags { "ExcludeFromBuild" }
 
 	-- configs
     configuration { "Debug" }

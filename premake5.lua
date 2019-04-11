@@ -27,13 +27,6 @@ solution "ReCrafted"
 			"x64"
 		}
 	end
-    
-	-- add onbuild script and multi processor compilation
-	configuration { "vs*"}
-		buildoptions { "/MP" }
-		postbuildcommands {
-			"call " .. ROOT_DIR .. "/pm.bat PostBuild",
-		}
 
 -- Project scripts
 group "Engine"
@@ -42,9 +35,7 @@ dofile "./Source/Engine/ReCrafted.Core/Project.lua"
 dofile "./Source/Engine/ReCrafted.Graphics/Project.lua"
 
 group "Game"
-dofile "./Source/Game/ReCrafted.Game/Project.lua"
 dofile "./Source/Game/ReCrafted/Project.lua"
-dofile "./Source/Game/ReCraftedHeadless/Project.lua"
 
 group "Tools"
 dofile "./Source/Tools/ReCrafted.ProjectManager/Project.lua"
