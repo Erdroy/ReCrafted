@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include <ReCrafted.h>
-
 #include <memory>
 #include <cstdlib>
 #include <new>
