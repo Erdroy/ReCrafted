@@ -16,7 +16,7 @@ void SubSystemManager::Shutdown()
 
 void SubSystemManager::Release(SubSystemBase* subsystem)
 {
-    //ASSERT(subsystem);
+    ASSERT(subsystem);
 
     // Shutdown and delete subsystem
     subsystem->Shutdown();
@@ -24,7 +24,7 @@ void SubSystemManager::Release(SubSystemBase* subsystem)
 
 void SubSystemManager::Register(SubSystemBase* subsystem)
 {
-    //ASSERT(component);
+    ASSERT(subsystem);
 
     // initialize component
     subsystem->Initialize();
@@ -36,7 +36,7 @@ void SubSystemManager::Register(SubSystemBase* subsystem)
 
 void SubSystemManager::Unregister(SubSystemBase* subsystem)
 {
-    //ASSERT(component);
+    ASSERT(subsystem);
 
     // release component
     Release(subsystem);

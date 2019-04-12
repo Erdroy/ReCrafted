@@ -26,6 +26,10 @@ private:
     void Shutdown();
     void Release(SubSystemBase* subsystem);
 
+    void Update();
+    void FixedUpdate();
+    void Render();
+
 public:
     /**
      * \brief Registers subsystem class instance.

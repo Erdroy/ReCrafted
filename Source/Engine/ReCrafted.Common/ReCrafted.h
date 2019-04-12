@@ -22,3 +22,5 @@
 #include <ReCraftedTypes.h>
 #include <ReCraftedDefines.h>
 #include <ReCraftedConfig.h>
+
+#include <Common/Assert.h>
