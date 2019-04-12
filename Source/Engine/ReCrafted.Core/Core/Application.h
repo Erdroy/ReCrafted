@@ -7,18 +7,18 @@
 
 class Application final : public ApplicationBase
 {
-    DELETE_OPERATOR_COPY_MOVE(Application)
-    DELETE_CTOR_COPY(Application)
+    DELETE_COPY_MOVE(Application)
 
 private:
     std::shared_ptr<MainLoop> m_mainLoop = nullptr;
 
 public:
     Application();
-    Application(Application&& application) = default;
     ~Application();
+
+private:
+    void RegisterSubSystems() const;
 
 public:
     void Run() override;
-    void Shutdown() override;
 };

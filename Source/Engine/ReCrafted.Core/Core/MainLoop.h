@@ -2,10 +2,15 @@
 
 #pragma once
 
+#include <ReCrafted.h>
+
 class MainLoop final
 {
     DELETE_OPERATOR_COPY_MOVE(MainLoop)
     DELETE_CTOR_COPY(MainLoop)
+
+private:
+    bool m_isRunning = false;
 
 public:
     MainLoop();

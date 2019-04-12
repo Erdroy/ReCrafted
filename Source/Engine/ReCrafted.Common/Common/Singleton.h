@@ -13,6 +13,9 @@ template <class T>
 class Singleton
 {
 public:
+    virtual ~Singleton() = default;
+
+public:
     static T* GetInstance()
     {
         static T instance;

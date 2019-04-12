@@ -8,7 +8,7 @@
 #include <functional>
 #include <thread>
 #include <chrono>
-
+#include <atomic>
 #include <algorithm>
 
 #include <cstdio>

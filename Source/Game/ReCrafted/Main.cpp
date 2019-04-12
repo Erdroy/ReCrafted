@@ -31,9 +31,8 @@ int CALLBACK WinMain(
         // Initialize memory allocator TODO: This should be called from static constructor, as soon as possible!
         Memory::Initialize(Memory::AllocatorType::OS);
 
-        auto app = Application();
+        Application app;
         app.Run();
-        app.Shutdown();
     }
 #if DEBUG
     // Dump memory leaks

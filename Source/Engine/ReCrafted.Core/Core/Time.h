@@ -2,7 +2,11 @@
 
 #pragma once
 
-class Time
-{
+#include "Core/SubSystems/SubSystem.h"
 
+class Time final : public SubSystem<Time>
+{
+protected:
+    void Initialize() override;
+    void Shutdown() override;
 };

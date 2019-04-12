@@ -13,9 +13,16 @@ MainLoop::~MainLoop()
 
 void MainLoop::Run()
 {
-    // TODO: Main loop implementation
+    m_isRunning = true;
+
+    while(m_isRunning)
+    {
+        // TODO: Main loop implementation
+    }
 }
 
-void MainLoop::Shutdown()
+void MainLoop::Quit()
 {
+    // Quit the main loop next frame
+    m_isRunning = false;
 }
