@@ -2,9 +2,6 @@
 
 #pragma once
 
-#ifndef APPLICATION_H
-#define APPLICATION_H
-
 #include "Core/ApplicationBase.h"
 #include "Core/MainLoop.h"
 
@@ -25,5 +22,3 @@ public:
     void Run() override;
     void Shutdown() override;
 };
-
-#endif // APPLICATION_H

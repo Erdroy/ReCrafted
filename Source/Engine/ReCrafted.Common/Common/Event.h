@@ -2,9 +2,6 @@
 
 #pragma once
 
-#ifndef EVENT_H
-#define EVENT_H
-
 #include <ReCrafted.h>
 
 #include "Action.h"
@@ -45,5 +42,3 @@ public:
         m_listeners.clear();
     }
 };
-
-#endif // EVENT_H

@@ -2,9 +2,6 @@
 
 #pragma once
 
-#ifndef APPLICATIONBASE_H
-#define APPLICATIONBASE_H
-
 #include <ReCrafted.h>
 
 /**
@@ -19,5 +16,3 @@ public:
     virtual void Run() = 0;
     virtual void Shutdown() = 0;
 };
-
-#endif // APPLICATIONBASE_H

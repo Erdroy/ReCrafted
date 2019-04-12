@@ -2,14 +2,9 @@
 
 #pragma once
 
-#ifndef RECRAFTEDAPI_H
-#define RECRAFTEDAPI_H
-
 #define API_CLASS(...)
 #define API_STRUCT(...)
 #define API_OBJECT(...)
 
 #define API_FUNCTION(...)
 #define API_PROPERTY(...)
-
-#endif // RECRAFTEDAPI_H

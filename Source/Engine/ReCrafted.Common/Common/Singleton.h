@@ -2,9 +2,6 @@
 
 #pragma once
 
-#ifndef SINGLETON_H
-#define SINGLETON_H
-
 /**
  * \brief Singleton class.
  * \tparam T The singleton's handled object type
@@ -22,5 +19,3 @@ public:
         return &instance;
     }
 };
-
-#endif // SINGLETON_H

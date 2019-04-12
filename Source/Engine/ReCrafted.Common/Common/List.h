@@ -2,9 +2,6 @@
 
 #pragma once
 
-#ifndef LIST_H
-#define LIST_H
-
 #include <ReCrafted.h>
 
 template <typename TType>
@@ -34,7 +31,7 @@ public:
      * \brief Adds given item to the list.
      * \param item The item.
      */
-    FORCE_INLINE void Add(const TType&& item)
+    FORCE_INLINE void Add(TType item)
     {
         m_vector.push_back(item);
     }
@@ -43,7 +40,7 @@ public:
      * \brief Removes given item from the list.
      * \param item The item.
      */
-    FORCE_INLINE bool Remove(const TType&& item)
+    FORCE_INLINE bool Remove(TType item)
     {
         const auto index = std::find(m_vector.begin(), m_vector.end(), item);
 
@@ -219,5 +216,3 @@ public:
         return m_vector.at(index);
     }
 };
-
-#endif // LIST_H

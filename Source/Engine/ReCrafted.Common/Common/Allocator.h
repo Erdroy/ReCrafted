@@ -2,9 +2,6 @@
 
 #pragma once
 
-#ifndef ALLOCATOR_H
-#define ALLOCATOR_H
-
 #include <ReCrafted.h>
 
 template <class T>
@@ -44,5 +41,3 @@ bool operator!=(const rc_allocator<T>&, const rc_allocator<U>&)
 {
     return false;
 }
-
-#endif // ALLOCATOR_H

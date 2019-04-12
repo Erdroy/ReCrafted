@@ -2,9 +2,6 @@
 
 #pragma once
 
-#ifndef RECRAFTED_H
-#define RECRAFTED_H
-
 // Default std/cstd includes
 #include <memory>
 #include <vector>
@@ -12,19 +9,16 @@
 #include <thread>
 #include <chrono>
 
+#include <algorithm>
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstdint>
 #include <cstdarg>
 #include <cstring>
 
+// Default RC includes
 #include <ReCraftedAPI.h>
 #include <ReCraftedTypes.h>
 #include <ReCraftedDefines.h>
 #include <ReCraftedConfig.h>
-
-// Default RC includes
-#include <Common/IDisposable.h>
-
-
-#endif // RECRAFTED_H

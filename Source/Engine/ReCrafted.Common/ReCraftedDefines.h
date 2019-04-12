@@ -2,15 +2,15 @@
 
 #pragma once
 
-#ifndef RECRAFTEDDEFINES_H
-#define RECRAFTEDDEFINES_H
-
 #ifdef RC_API
 # undef RC_API
 #endif
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN 
+#define FORCE_INLINE __forceinline
+#else
+#define FORCE_INLINE
 #endif
 
 #if !defined(DELETE_CTOR_COPY) && !defined(DELETE_CTOR_MOVE) && !defined(DELETE_CTOR_COPY_MOVE)
@@ -34,5 +34,3 @@
 	DELETE_CTOR_COPY_MOVE(className)			\
 	DELETE_OPERATOR_COPY_MOVE(className)
 #endif
-
-#endif // RECRAFTEDDEFINES_H

@@ -2,9 +2,6 @@
 
 #pragma once
 
-#ifndef ACTION_H
-#define ACTION_H
-
 #include <ReCrafted.h>
 
 template<typename TReturn, typename ... TArgs>
@@ -154,4 +151,3 @@ Action<TReturn, TArgs...>::Action() = default;
 
 template <typename TReturn, typename ... TArgs>
 Action<TReturn, TArgs...>::~Action() = default;
-#endif // ACTION_H

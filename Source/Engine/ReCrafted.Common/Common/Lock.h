@@ -2,9 +2,6 @@
 
 #pragma once
 
-#ifndef LOCK_HPP
-#define LOCK_HPP
-
 // includes
 #include <cstdint>
 
@@ -49,5 +46,3 @@ public:
 };
 
 #define ScopeLock(x) IScopeLock x##_lock(&x);
-
-#endif // LOCK_HPP

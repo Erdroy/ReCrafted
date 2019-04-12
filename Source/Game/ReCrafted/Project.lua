@@ -32,7 +32,7 @@ project "ReCrafted"
     links { 
         "ReCrafted.Common",
         "ReCrafted.Core",
-        "ReCrafted.Graphics",
+        --"ReCrafted.Graphics",
     }
 	
 	-- add onbuild script and multi processor compilation
