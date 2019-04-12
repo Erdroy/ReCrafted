@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include <ReCrafted.h>
-
 #include <locale>
 #include <codecvt>
 

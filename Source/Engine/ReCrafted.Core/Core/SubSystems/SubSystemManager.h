@@ -2,11 +2,13 @@
 
 #pragma once
 
+#include <ReCrafted.h>
+
 #include "Common/Singleton.h"
 #include "Common/Lock.h"
 #include "Common/List.h"
 
-#include "Core/SubSystems/SubSystem.h"
+#include "Core/SubSystems/SubSystemBase.h"
 
 class SubSystemManager final : public Singleton<SubSystemManager>
 {

@@ -24,3 +24,4 @@
 #include <ReCraftedConfig.h>
 
 #include <Common/Assert.h>
+#include <Common/String.h>
