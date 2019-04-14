@@ -3,10 +3,10 @@
 #pragma once
 
 #include <ReCrafted.h>
-#include "Common/Action.h"
 
 class Platform final
 {
+public:
     using EventDelegate = uint64_t(*)(void*, uint32_t, uint64_t, uint64_t);
 
 private:

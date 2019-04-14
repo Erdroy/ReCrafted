@@ -38,6 +38,8 @@ int CALLBACK WinMain(
     // Dump memory leaks
     if (_CrtDumpMemoryLeaks() == 0)
         OutputDebugStringA("NO MEMORY LEAKS FOUND");
+    else
+        OutputDebugStringA("FOUND MEMORY LEAKS");
 #endif
     return ERROR_SUCCESS;
 }

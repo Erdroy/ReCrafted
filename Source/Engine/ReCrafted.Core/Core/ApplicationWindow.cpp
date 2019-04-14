@@ -2,24 +2,24 @@
 
 #include "ApplicationWindow.h"
 
-List<ApplicationWindow*> ApplicationWindow::m_windows;
+ApplicationWindow* ApplicationWindow::m_instance;
 
 ApplicationWindow::ApplicationWindow()
 {
-    m_width = 720;
-    m_height = 1280;
+    _ASSERT_(m_instance == nullptr, "Only one application window can be created!");
 
+    m_instance = this;
+
+    m_width = defaultWidth;
+    m_height = defaultHeight;
     m_windowHandle = Platform::CreateNewWindow(STRING_CONST("ReCrafted"), m_width, m_height);
-
-    m_windows.Add(this);
 }
 
 ApplicationWindow::~ApplicationWindow()
 {
     if (m_windowHandle)
         Platform::DestroyWindow(m_windowHandle);
-
-    m_windows.Remove(this);
+    m_instance = nullptr;
 }
 
 void ApplicationWindow::UpdateSizeNow()
@@ -31,23 +31,15 @@ void ApplicationWindow::UpdateSizeNow()
 void ApplicationWindow::SetOnResized(const Action<void>& callback)
 {
     m_onResized = callback;
+    m_hasOnResized = true;
 }
 
 void ApplicationWindow::WindowResize(void* windowHandle)
 {
-    ApplicationWindow* window = nullptr;
-
-    for (auto&& wnd : m_windows)
-    {
-        if (wnd->m_windowHandle == windowHandle)
-        {
-            window = wnd;
-            break;
-        }
-    }
-
-    if (!window)
+    if (m_instance == nullptr)
         return;
+
+    ASSERT(m_instance->m_windowHandle == windowHandle);
 
     auto currentWidth = 0u;
     auto currentHeight = 0u;
@@ -56,12 +48,15 @@ void ApplicationWindow::WindowResize(void* windowHandle)
     Platform::GetWindowSize(windowHandle, &currentWidth, &currentHeight);
 
     // check
-    if (window->m_width != currentWidth || window->m_height != currentHeight)
+    if (m_instance->m_width != currentWidth || m_instance->m_height != currentHeight)
     {
-        window->m_width = currentWidth;
-        window->m_height = currentHeight;
+        m_instance->m_width = currentWidth;
+        m_instance->m_height = currentHeight;
     }
 
-    // invoke callback if needed
-    window->m_onResized.Invoke();
+    if(m_instance->m_hasOnResized)
+    {
+        // invoke callback if needed
+        m_instance->m_onResized.Invoke();
+    }
 }

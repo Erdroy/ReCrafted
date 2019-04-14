@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <ReCrafted.h>
+#include "Common/Assert.h"
 
 template<typename TReturn, typename ... TArgs>
 struct Action

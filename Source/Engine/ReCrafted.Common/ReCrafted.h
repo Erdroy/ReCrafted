@@ -25,3 +25,4 @@
 
 #include <Common/Assert.h>
 #include <Common/String.h>
+#include <Common/Platform/Platform.h>

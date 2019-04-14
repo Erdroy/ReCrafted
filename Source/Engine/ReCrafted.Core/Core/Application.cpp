@@ -8,8 +8,12 @@
 // EventProcessor is implemented per-platform
 uint64_t EventProcessor(void*, uint32_t, uint64_t, uint64_t);
 
+Application* Application::m_instance;
+
 Application::Application()
 {
+    m_instance = this;
+
     // TODO: Create logger
 
     // Initialize platform
@@ -27,12 +31,16 @@ Application::Application()
     m_mainLoop->SetUpdateCallback(Action<void>::New<Application, &Application::Update>(this));
     m_mainLoop->SetFixedUpdateCallback(Action<void>::New<Application, &Application::FixedUpdate>(this));
     m_mainLoop->SetRenderCallback(Action<void>::New<Application, &Application::Render>(this));
+
+    // Register subsystems
+    RegisterSubSystems();
 }
 
 Application::~Application()
 {
-    // Release main loop
+    // Release resources
     m_mainLoop.reset();
+    m_window.reset();
 
     // Shutdown all subsystems
     SubSystemManager::GetInstance()->Shutdown();
@@ -41,13 +49,14 @@ Application::~Application()
     Platform::Shutdown();
 
     // TODO: Flush and release logger
+
+    m_instance = nullptr;
 }
 
 void Application::CreateGameWindow()
 {
     m_window.reset(new ApplicationWindow());
     m_window->SetOnResized(Action<void>::New<Application, &Application::OnWindowResized>(this));
-    
 }
 
 void Application::OnWindowResized()
@@ -61,7 +70,6 @@ void Application::RegisterSubSystems() const
     SubSystemManager::Register<Time>();
 }
 
-
 void Application::Update()
 {
     // TODO: Update input
@@ -73,6 +81,7 @@ void Application::Update()
 
 void Application::FixedUpdate()
 {
+
 }
 
 void Application::Render()
@@ -81,13 +90,17 @@ void Application::Render()
 
 void Application::Run()
 {
-    // Register subsystems
-    RegisterSubSystems();
-
     // Run main loop
     m_mainLoop->Run();
 
     // Main loop exited.
     // When Application will get out of scope, destructor will 
     // release all resources (look Application::~Application()).
+}
+
+void Application::Quit()
+{
+    ASSERT(m_instance);
+    ASSERT(m_instance->m_mainLoop);
+    m_instance->m_mainLoop->Quit();
 }

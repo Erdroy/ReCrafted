@@ -12,6 +12,23 @@ SubSystemManager::~SubSystemManager()
 
 void SubSystemManager::Shutdown()
 {
+    ScopeLock(m_lockSubSystems);
+
+    // Reverse subsystems list
+    m_subSystems.Reverse();
+
+    // Release all subsystems
+    for (auto&& subsystem : m_subSystems)
+    {
+        if (subsystem == nullptr)
+            continue;
+
+        Release(subsystem);
+    }
+
+    // Clear and release memory
+    m_subSystems.Clear();
+    m_subSystems.Release();
 }
 
 void SubSystemManager::Release(SubSystemBase* subsystem)

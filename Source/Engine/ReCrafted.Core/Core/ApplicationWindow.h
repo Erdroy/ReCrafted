@@ -5,21 +5,24 @@
 #include <ReCrafted.h>
 
 #include "Common/Action.h"
-#include "Common/List.h"
 
 class ApplicationWindow final
 {
     DELETE_OPERATOR_COPY_MOVE(ApplicationWindow)
     DELETE_CTOR_COPY(ApplicationWindow)
 
-private:
-    static List<ApplicationWindow*> m_windows;
+public:
+    static const uint32_t defaultWidth = 1280;
+    static const uint32_t defaultHeight = 720;
 
 private:
+    static ApplicationWindow* m_instance;
+
     void* m_windowHandle = nullptr;
     uint32_t m_width = 0u;
     uint32_t m_height = 0u;
     Action<void> m_onResized = {};
+    bool m_hasOnResized = false;
 
 public:
     ApplicationWindow();

@@ -11,6 +11,8 @@ class Application final : public ApplicationBase
     DELETE_COPY_MOVE(Application)
 
 private:
+    static Application* m_instance;
+
     RefPtr<MainLoop> m_mainLoop = nullptr;
     RefPtr<ApplicationWindow> m_window = nullptr;
 
@@ -30,4 +32,7 @@ private:
 
 public:
     void Run() override;
+
+public:
+    static void Quit();
 };

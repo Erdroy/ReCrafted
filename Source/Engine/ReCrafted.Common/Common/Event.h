@@ -6,12 +6,13 @@
 
 #include "Action.h"
 #include "Lock.h"
+#include "List.h"
 
 template <typename ... TParams>
 class Event
 {
 private:
-    Array<Action<void, TParams...>> m_listeners = {};
+    List<Action<void, TParams...>> m_listeners = {};
     Lock m_lock = {};
 
 public:
@@ -20,7 +21,7 @@ public:
         ScopeLock(m_lock);
 
         // invoke all listeners
-        for (var&& listener : m_listeners)
+        for (auto&& listener : m_listeners)
             listener.Invoke(params...);
     }
 

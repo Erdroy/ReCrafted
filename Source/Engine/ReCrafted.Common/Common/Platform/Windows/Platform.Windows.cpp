@@ -7,7 +7,7 @@
 #include <Windows.h>
 
 void* Platform::m_currentWindow;
-static EventDelegate m_eventDelegate;
+static Platform::EventDelegate m_eventDelegate;
 
 std::thread::id g_mainThread;
 
@@ -49,6 +49,8 @@ void Platform::Initialize(const EventDelegate onEvent)
 
 void Platform::Shutdown()
 {
+    // Unregister window class
+    UnregisterClass(L"recrafted", GetModuleHandle(nullptr));
 }
 
 double Platform::GetMilliseconds()

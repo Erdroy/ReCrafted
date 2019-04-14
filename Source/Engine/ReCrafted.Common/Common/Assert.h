@@ -2,9 +2,6 @@
 
 #pragma once
 
-#include "Common/String.h"
-#include "Common/Platform/Platform.h"
-
 #define _ASSERT_(expression, message)                                                                                                               \
         (void)(                                                                                                                                     \
             (!!(expression)) ||                                                                                                                     \
