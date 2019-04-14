@@ -32,6 +32,7 @@ solution "ReCrafted"
 group "Engine"
 dofile "./Source/Engine/ReCrafted.Common/Project.lua"
 dofile "./Source/Engine/ReCrafted.Core/Project.lua"
+dofile "./Source/Engine/ReCrafted.Input/Project.lua"
 dofile "./Source/Engine/ReCrafted.Graphics/Project.lua"
 
 group "Game"
