@@ -4,6 +4,7 @@
 #include "Common/Platform/Platform.h"
 #include "Core/SubSystems/SubSystemManager.h"
 #include "Core/Time.h"
+#include "Core/Input/InputManager.h"
 
 // EventProcessor is implemented per-platform
 uint64_t EventProcessor(void*, uint32_t, uint64_t, uint64_t);
@@ -68,15 +69,21 @@ void Application::RegisterSubSystems() const
 {
     // Register subsystems
     SubSystemManager::Register<Time>();
+    SubSystemManager::Register<InputManager>();
 }
 
 void Application::Update()
 {
-    // TODO: Update input
+    // Update input
+    InputManager::GetInstance()->UpdateInput();
 
     // Run window events
     Platform::RunEvents();
 
+    // Dispatch input
+    InputManager::GetInstance()->DispatchInput();
+
+    // TODO: Update rest of the world
 }
 
 void Application::FixedUpdate()

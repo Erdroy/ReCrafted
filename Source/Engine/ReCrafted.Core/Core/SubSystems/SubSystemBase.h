@@ -20,5 +20,6 @@ protected:
 protected:
     virtual void OnUpdate() { }
     virtual void OnLateUpdate() { }
+    virtual void OnFixedUpdate() { }
     virtual void OnFrameDone() { }
 };

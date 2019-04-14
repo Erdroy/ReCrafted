@@ -5,6 +5,7 @@
 #ifdef _WIN32
 
 #include <Windows.h>
+#include "Core/Input/InputManager.h"
 
 //IMGUI_IMPL_API LRESULT  ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -65,33 +66,33 @@ uint64_t EventProcessor(void* window, const uint32_t msg, const uint64_t param0,
 
     case WM_CHAR:
     {
-        /*InputManager::GetInstance()->BeginEmitInput();
+        InputManager::GetInstance()->BeginEmitInput();
         InputData data{};
         data.character = Char(wParam);
         InputManager::GetInstance()->EmitInput(InputType::Character, data);
-        InputManager::GetInstance()->EndEmitInput();*/
+        InputManager::GetInstance()->EndEmitInput();
         return 0;
     }
 
     // input handling
     case WM_KEYDOWN:
     {
-        /*InputManager::GetInstance()->BeginEmitInput();
+        InputManager::GetInstance()->BeginEmitInput();
         InputData data{};
         data.key = Key(wParam);
         data.keyState = KeyState::Down;
         InputManager::GetInstance()->EmitInput(InputType::Key, data);
-        InputManager::GetInstance()->EndEmitInput();*/
+        InputManager::GetInstance()->EndEmitInput();
         return 0;
     }
     case WM_KEYUP:
     {
-        /*InputManager::GetInstance()->BeginEmitInput();
+        InputManager::GetInstance()->BeginEmitInput();
         InputData data{};
         data.key = Key(wParam);
         data.keyState = KeyState::Up;
         InputManager::GetInstance()->EmitInput(InputType::Key, data);
-        InputManager::GetInstance()->EndEmitInput();*/
+        InputManager::GetInstance()->EndEmitInput();
         return 0;
     }
     case WM_CREATE:
@@ -124,7 +125,7 @@ uint64_t EventProcessor(void* window, const uint32_t msg, const uint64_t param0,
 
         auto raw = reinterpret_cast<RAWINPUT*>(lpb);
 
-        /*InputManager::GetInstance()->BeginEmitInput();
+        InputManager::GetInstance()->BeginEmitInput();
         if (raw->header.dwType == RIM_TYPEMOUSE)
         {
             InputData inputData{};
@@ -232,7 +233,7 @@ uint64_t EventProcessor(void* window, const uint32_t msg, const uint64_t param0,
             }
         }
         InputManager::GetInstance()->EndEmitInput();
-        */
+        
         return DefWindowProc(hWnd, msg, wParam, lParam);
     }
 
