@@ -4,20 +4,29 @@
 
 #include "Core/ApplicationBase.h"
 #include "Core/MainLoop.h"
+#include "Core/ApplicationWindow.h"
 
 class Application final : public ApplicationBase
 {
     DELETE_COPY_MOVE(Application)
 
 private:
-    std::shared_ptr<MainLoop> m_mainLoop = nullptr;
+    RefPtr<MainLoop> m_mainLoop = nullptr;
+    RefPtr<ApplicationWindow> m_window = nullptr;
 
 public:
     Application();
     ~Application();
 
 private:
+    void CreateGameWindow();
+    void OnWindowResized();
+
     void RegisterSubSystems() const;
+
+    void Update();
+    void FixedUpdate();
+    void Render();
 
 public:
     void Run() override;
