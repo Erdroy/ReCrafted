@@ -23,6 +23,12 @@ public:
 
 public:
     static void Initialize(AllocatorType allocatorType);
+
+public:
+    static malloc_t malloc;
+    static calloc_t calloc;
+    static realloc_t realloc;
+    static free_t free;
 };
 
 #pragma warning( push )
@@ -30,22 +36,22 @@ public:
 
 inline void* rc_malloc(const size_t size)
 {
-    return malloc(size);
+    return Memory::malloc(size);
 }
 
 inline void* rc_calloc(const size_t num, const size_t size)
 {
-    return calloc(num, size);
+    return Memory::calloc(num, size);
 }
 
 inline void* rc_realloc(void *ptr, const size_t size)
 {
-    return realloc(ptr, size);
+    return Memory::realloc(ptr, size);
 }
 
 inline void rc_free(void* ptr)
 {
-    free(ptr);
+    Memory::free(ptr);
 }
 
 inline void* operator new(size_t size) {
