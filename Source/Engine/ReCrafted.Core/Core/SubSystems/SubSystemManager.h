@@ -32,7 +32,7 @@ private:
     void FixedUpdate();
     void Render();
 
-public:
+private:
     /**
      * \brief Registers subsystem class instance.
      * \param subsystem The class instance.
@@ -52,6 +52,7 @@ public:
      */
     void Unregister(SubSystemBase* subsystem);
 
+public:
     /**
      * \brief Registers subsystem class instance.
      *
