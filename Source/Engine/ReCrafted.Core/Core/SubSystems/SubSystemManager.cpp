@@ -35,8 +35,10 @@ void SubSystemManager::Release(SubSystemBase* subsystem)
 {
     ASSERT(subsystem);
 
-    // Shutdown and delete subsystem
+    // Shutdown and Release subsystem
+    // NOTE: Release function calls Singleton<T>::Dispose function
     subsystem->Shutdown();
+    subsystem->Release();
 }
 
 void SubSystemManager::Register(SubSystemBase* subsystem)

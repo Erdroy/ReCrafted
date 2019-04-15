@@ -18,6 +18,9 @@ protected:
     virtual void Shutdown() = 0;
 
 protected:
+    virtual void Release() = 0;
+
+protected:
     virtual void OnUpdate() { }
     virtual void OnLateUpdate() { }
     virtual void OnFixedUpdate() { }

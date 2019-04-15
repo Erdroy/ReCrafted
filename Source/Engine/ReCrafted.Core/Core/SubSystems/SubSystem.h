@@ -15,4 +15,10 @@ class SubSystem : public SubSystemBase, public Singleton<TSubSystem>
 protected:
     SubSystem() = default;
     ~SubSystem() = default;
+
+protected:
+    void Release() override
+    {
+        Singleton<TSubSystem>::Dispose();
+    }
 };

@@ -43,8 +43,9 @@ Application::~Application()
     m_mainLoop.reset();
     m_window.reset();
 
-    // Shutdown all subsystems
+    // Shutdown all subsystems and Dispose SubSystemManager (needed to cleanup the singleton)
     SubSystemManager::GetInstance()->Shutdown();
+    SubSystemManager::GetInstance()->Dispose();
 
     // Shutdown platform
     Platform::Shutdown();

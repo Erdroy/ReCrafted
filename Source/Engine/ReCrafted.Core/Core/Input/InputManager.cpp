@@ -64,7 +64,7 @@ void InputManager::DispatchInput()
 
 void InputManager::Initialize()
 {
-    auto lock = GetInstance()->m_deviceMapLock;
+    auto& lock = GetInstance()->m_deviceMapLock;
     ScopeLock(lock);
 
     // Create default devices
