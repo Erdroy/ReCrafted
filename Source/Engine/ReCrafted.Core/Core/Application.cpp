@@ -5,6 +5,7 @@
 #include "Core/SubSystems/SubSystemManager.h"
 #include "Core/Time.h"
 #include "Core/Input/InputManager.h"
+#include "Logger.h"
 
 // EventProcessor is implemented per-platform
 uint64_t EventProcessor(void*, uint32_t, uint64_t, uint64_t);
@@ -15,10 +16,13 @@ Application::Application()
 {
     m_instance = this;
 
-    // TODO: Create logger
+    // Initialize logger
+    Logger::Initialize();
 
     // Initialize platform
     Platform::Initialize(&EventProcessor);
+
+    Logger::Log("DUPA");
 
     // Create game window
     CreateGameWindow();
@@ -50,7 +54,7 @@ Application::~Application()
     // Shutdown platform
     Platform::Shutdown();
 
-    // TODO: Flush and release logger
+    Logger::Shutdown();
 
     m_instance = nullptr;
 }
