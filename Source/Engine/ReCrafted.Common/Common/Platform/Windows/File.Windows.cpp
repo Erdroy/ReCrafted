@@ -2,6 +2,10 @@
 
 #include "Common/IO/File.h"
 
+#ifdef _WIN32
+
+#include <Windows.h>
+
 void File::Seek(const long position) const
 {
     fseek(m_file, position, SEEK_SET);
@@ -41,7 +45,7 @@ void File::Close() const
     fclose(m_file);
 }
 
-File File::Open(const char* file, const OpenMode openMode)
+File File::Open(const char* fileName, const OpenMode openMode)
 {
     // select open mode
     const char* mode = nullptr;
@@ -63,9 +67,8 @@ File File::Open(const char* file, const OpenMode openMode)
         return { nullptr, 0u };
     }
 
-    const auto fileHandle = fopen(file, mode);
+    const auto fileHandle = fopen(fileName, mode);
     ASSERT(fileHandle);
-
 
     // measure file size
     fseek(fileHandle, 0, SEEK_END);
@@ -74,3 +77,31 @@ File File::Open(const char* file, const OpenMode openMode)
 
     return File(fileHandle, fileSize);
 }
+
+bool File::Exists(const char* fileName)
+{
+    FILE* file;
+    if (fopen_s(&file, fileName, "rb") == 0)
+    {
+        fclose(file);
+        return true;
+    }
+
+    return false;
+}
+
+void File::Delete(const char* fileName)
+{
+    ASSERT(DeleteFileA(fileName));
+}
+
+void File::Move(const char* sourceFileName, const char* destinationFileName)
+{
+    ASSERT(MoveFileA(sourceFileName, destinationFileName));
+}
+
+void File::Copy(const char* sourceFileName, const char* destinationFileName)
+{
+    ASSERT(CopyFileA(sourceFileName, destinationFileName, TRUE));
+}
+#endif
