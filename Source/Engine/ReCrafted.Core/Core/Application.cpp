@@ -22,8 +22,6 @@ Application::Application()
     // Initialize platform
     Platform::Initialize(&EventProcessor);
 
-    Logger::Log("DUPA");
-
     // Create game window
     CreateGameWindow();
 

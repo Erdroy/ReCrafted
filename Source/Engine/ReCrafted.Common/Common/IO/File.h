@@ -42,5 +42,9 @@ public:
     }
 
 public:
-    static File Open(const char* file, OpenMode openMode);
+    static File Open(const char* fileName, OpenMode openMode);
+    static bool Exists(const char* fileName);
+    static void Delete(const char* fileName);
+    static void Move(const char* sourceFileName, const char* destinationFileName);
+    static void Copy(const char* sourceFileName, const char* destinationFileName);
 };

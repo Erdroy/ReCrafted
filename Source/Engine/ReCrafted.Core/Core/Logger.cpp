@@ -1,9 +1,23 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include "Logger.h"
+#include "Common/IO/File.h"
+#include "Common/IO/Directory.h"
 
 Logger::Logger()
 {
+    if(!Directory::Exists("../Logs"))
+        Directory::Create("../Logs");
+
+    if (File::Exists("../Logs/log.txt"))
+    {
+        //File::Move("../Logs/log.txt", "../Logs/log_?.txt");
+        // TODO: Backup old log
+        File::Delete("../Logs/log.txt");
+    }
+
+    m_fileStream = new FileStream("../Logs/log.txt", File::OpenMode::BinaryWrite);
+    m_logStream = new BinaryStream(*m_fileStream);
 }
 
 Logger::~Logger()
@@ -27,10 +41,9 @@ void Logger::Log(const char* string)
 
 void Logger::Initialize()
 {
-    // TODO: Backup old log file
-
-    GetInstance()->m_fileStream = new FileStream("log.txt", File::OpenMode::BinaryWrite);
-    GetInstance()->m_logStream = new BinaryStream(*GetInstance()->m_fileStream);
+    // Setup the singleton instance, initialize logger
+    // and write initial log
+    Log("Hello, World!");
 }
 
 void Logger::Shutdown()
