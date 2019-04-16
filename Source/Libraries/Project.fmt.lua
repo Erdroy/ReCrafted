@@ -1,36 +1,15 @@
-project "ReCrafted.Common"
-	location (path.join(SOURCE_DIR, "Engine/ReCrafted.Common"))
-	targetname "ReCrafted.Common"
-	
+project "fmt"
+	location (path.join(LIBRARIES_DIR, "fmt"))
+	targetname "fmt"
 	kind "StaticLib"
 	language "C++"
-	flags { "NoManifest", "ShadowedVariables", "RelativeLinks", "NoPCH" }
-	defines { "RC_API_EXPORT_CORE", "_CRT_SECURE_NO_WARNINGS", "JEMALLOC_EXPORT=", "JEMALLOC_STATIC", "NOMINMAX" }
+	flags { "ExcludeFromBuild" }
 	
 	-- add source/header/shader files
 	files {
-		"./**.lua",
-		"./**.cpp",
-		"./**.h",
-		"./**.hlsl",
-		"./**.hlsli",
-	}
-
-	forceincludes { 
-		path.join(SOURCE_DIR, "Engine/ReCrafted.Common/Common/Memory.h"),
-		path.join(SOURCE_DIR, "Engine/ReCrafted.Common/Common/Allocator.h")
+		"./fmt/include/**.h",
 	}
 	
-    includedirs {
-        "./",
-        path.join(LIBRARIES_DIR, "sparsepp"),
-        path.join(LIBRARIES_DIR, "fmt/include"),
-    }
-
-    -- default deps
-    links { 
-    }
-
 	-- configs
     configuration { "Debug" }
 		debugargs { "-debug" }

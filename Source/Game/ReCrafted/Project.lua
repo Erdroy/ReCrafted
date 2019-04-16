@@ -26,6 +26,8 @@ project "ReCrafted"
         "./",
 		path.join(SOURCE_DIR, "Engine/ReCrafted.Common"),
 		path.join(SOURCE_DIR, "Engine/ReCrafted.Core"),
+        
+        path.join(LIBRARIES_DIR, "fmt/include"),
     }
     
     -- default deps

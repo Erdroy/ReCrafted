@@ -1,3 +1,7 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #pragma once
+
+#ifndef FMT_HEADER_ONLY
+# define FMT_HEADER_ONLY 
+#endif

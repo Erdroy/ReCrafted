@@ -26,6 +26,7 @@ project "ReCrafted.Core"
 		path.join(SOURCE_DIR, "Engine/ReCrafted.Common"),
         -- add all modules
         path.join(LIBRARIES_DIR, "sparsepp"),
+        path.join(LIBRARIES_DIR, "fmt/include"),
     }
 
     -- default deps

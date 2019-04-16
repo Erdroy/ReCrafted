@@ -27,6 +27,7 @@ project "ReCrafted.Graphics"
 		path.join(SOURCE_DIR, "Engine/ReCrafted.Core"),
         -- add all modules
         path.join(LIBRARIES_DIR, "sparsepp"),
+        path.join(LIBRARIES_DIR, "fmt/include"),
     }
     
     -- default deps

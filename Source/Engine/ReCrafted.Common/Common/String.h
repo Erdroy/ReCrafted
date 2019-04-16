@@ -9,11 +9,11 @@
 # define STRING_USE_UTF16
 #endif
 #ifndef STRING_USE_FMT
-//# define STRING_USE_FMT
+# define STRING_USE_FMT
 #endif
 
 #ifdef STRING_USE_FMT
-# include "fmt/format.h"
+# include <fmt/format.h>
 #endif
 
 #ifndef _UNICODE_
@@ -452,14 +452,11 @@ public:
 
 #ifdef STRING_USE_FMT
     template<typename... Args>
-    __forceinline static String Format(const String& format, const Args&... args)
+    static FORCE_INLINE String Format(const String& format, const Args& ... args)
     {
         auto data = reinterpret_cast<wchar_t*>(format.Data());
-        auto string = fmt::format(data, args);
-
-        return String((Char*)string.data());
+        return String((Char*)fmt::vformat(data, fmt::make_format_args<fmt::wformat_context>(args...)).data());
     }
-
 #endif
 
     static bool Compare(const Char* str1, const Char* str2)
