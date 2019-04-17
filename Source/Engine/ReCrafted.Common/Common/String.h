@@ -451,8 +451,8 @@ public:
     }
 
 #ifdef STRING_USE_FMT
-    template<typename... Args>
-    static FORCE_INLINE String Format(const String& format, const Args& ... args)
+    template<typename... TArgs>
+    static FORCE_INLINE String Format(const String& format, const TArgs& ... args)
     {
         auto data = reinterpret_cast<wchar_t*>(format.Data());
         return String((Char*)fmt::vformat(data, fmt::make_format_args<fmt::wformat_context>(args...)).data());
