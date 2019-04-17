@@ -58,7 +58,7 @@ void Logger::WriteLog(const LogLevel level, const std::basic_string<char>& strin
     case LogLevel::Error: typeString = "[Error] "; break;
     case LogLevel::Fatal: typeString = "[FATAL] "; break;
     default:
-        typeString = "[Unknown]";
+        typeString = "[Unknown] ";
     }
 
     auto logString = typeString + string + "\n";

@@ -1,8 +1,9 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
-#ifdef _WIN32
-
 #include "Common/Platform/Platform.h"
+#include "Common/Logger.h"
+
+#ifdef _WIN32
 
 #include <Windows.h>
 
@@ -70,9 +71,35 @@ std::thread::id Platform::GetMainThreadId()
     return g_mainThread;
 }
 
-void Platform::ReportAssert(const String& expression, const String& fileName, unsigned line, const String& message)
+void Platform::ReportAssert(const String& expression, const String& fileName, const unsigned int line, const String& message)
 {
-    // TODO: Implement assert reporting
+    std::string formatted;
+    if (message.StdStr().size() > 1)
+    {
+        formatted = fmt::format("Assertion failed! File: {0}:{1} - {2}\n Message: {3}", fileName.StdStr(), line, expression.StdStr(), message.StdStr());
+    }
+    else
+    {
+        formatted = fmt::format("Assertion failed! File: {0}:{1} - {2}", fileName.StdStr(), line, expression.StdStr());
+    }
+
+    Logger::Log(LogLevel::Assert, "{0}", formatted);
+
+#if ASSERT_FAIL_SHOW_MESSAGE_BOX
+    // Show message box
+    MessageBoxA(static_cast<HWND>(m_currentWindow), formatted.c_str(), "Error", MB_OK | MB_ICONERROR);
+#endif
+
+#if _DEBUG && ASSERT_FAIL_DEBUG_BREAK
+    __debugbreak();
+#endif
+
+#if ASSERT_FAIL_EXCEPTION
+    throw std::exception(formatted.c_str());
+#else
+    // and exit...
+    exit(-1);
+#endif
 }
 
 void Platform::RunEvents()
