@@ -11,6 +11,9 @@
 # define FMT_HEADER_ONLY 
 #endif
 
+
+// ==== ASSERT SETTINGS ====
+
 #ifndef ASSERT_FAIL_SHOW_MESSAGE_BOX
  /**
  * \brief Enables or disables message box, when assert fails
@@ -32,4 +35,22 @@
  * When enabled, exception is being thrown which can be handled.
  */
 # define ASSERT_FAIL_EXCEPTION           RC_ENABLE
+#endif
+
+
+// ==== ACTORS SETTINGS ====
+
+#ifndef ACTOR_POOL_INITIAL_COUNT
+ /**
+  * \brief The initial amount of free actors in the pool.
+  */
+#define ACTOR_POOL_INITIAL_COUNT 128
+#endif
+
+#ifndef ACTOR_POOL_INCREMENT_COUNT
+  /**
+   * \brief The increment amount of actors. This much actors are spawned,
+   *  when no free actors are present and we're trying to spawn new ones.
+   */
+#define ACTOR_POOL_INCREMENT_COUNT 16
 #endif

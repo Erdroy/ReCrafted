@@ -31,6 +31,7 @@ solution "ReCrafted"
 -- Project scripts
 group "Libraries"
 dofile "./Source/Libraries/Project.sparsepp.lua"
+dofile "./Source/Libraries/Project.concurrentqueue.lua"
 dofile "./Source/Libraries/Project.fmt.lua"
 
 group "Engine"

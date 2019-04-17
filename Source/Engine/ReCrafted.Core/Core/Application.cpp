@@ -6,6 +6,8 @@
 #include "Core/SubSystems/SubSystemManager.h"
 #include "Core/Time.h"
 #include "Core/Input/InputManager.h"
+#include "Core/Actors/ActorPoolManager.h"
+#include "Core/Actors/EmptyActor.h"
 
 // EventProcessor is implemented per-platform
 uint64_t EventProcessor(void*, uint32_t, uint64_t, uint64_t);
@@ -73,6 +75,7 @@ void Application::RegisterSubSystems() const
     // Register subsystems
     SubSystemManager::Register<Time>();
     SubSystemManager::Register<InputManager>();
+    SubSystemManager::Register<ActorPoolManager>();
 }
 
 void Application::Update()

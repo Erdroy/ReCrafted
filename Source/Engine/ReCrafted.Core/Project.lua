@@ -27,6 +27,7 @@ project "ReCrafted.Core"
         -- add all modules
         path.join(LIBRARIES_DIR, "sparsepp"),
         path.join(LIBRARIES_DIR, "fmt/include"),
+        path.join(LIBRARIES_DIR, "concurrentqueue"),
     }
 
     -- default deps
