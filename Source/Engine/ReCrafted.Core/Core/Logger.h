@@ -7,6 +7,19 @@
 #include "Common/Singleton.h"
 #include "Common/IO/FileStream.h"
 #include "Common/IO/BinaryStream.h"
+#include "Common/Lock.h"
+
+#include <fmt/format.h>
+
+enum class LogLevel
+{
+    Message,
+    Warning,
+    Error,
+
+    Assert,
+    Fatal,
+};
 
 class Logger final : public Singleton<Logger>
 {
@@ -16,6 +29,7 @@ class Logger final : public Singleton<Logger>
 private:
     FileStream* m_fileStream = nullptr;
     BinaryStream* m_logStream = nullptr;
+    Lock m_lock;
 
 public:
     Logger();
@@ -25,7 +39,32 @@ private:
     void Flush() const;
 
 public:
-    static void Log(const char* string);
+    void WriteLog(LogLevel level, const std::basic_string<char>& string);
+
+public:
+    template<typename... TArgs>
+    static void Log(const LogLevel level, const char* format, const TArgs& ... args)
+    {
+        GetInstance()->WriteLog(level, fmt::vformat(format, fmt::make_format_args(args...)));
+    }
+
+    template<typename... TArgs>
+    static void Log(const char* format, const TArgs& ... args)
+    {
+        Log<TArgs...>(LogLevel::Message, format, args...);
+    }
+
+    template<typename... TArgs>
+    static void LogWarning(const char* format, const TArgs& ... args)
+    {
+        Log<TArgs...>(LogLevel::Warning, format, args...);
+    }
+
+    template<typename... TArgs>
+    static void LogError(const char* format, const TArgs& ... args)
+    {
+        Log<TArgs...>(LogLevel::Error, format, args...);
+    }
 
 protected:
     static void Initialize();

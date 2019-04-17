@@ -16,11 +16,11 @@ Application::Application()
 {
     m_instance = this;
 
-    // Initialize logger
-    Logger::Initialize();
-
     // Initialize platform
     Platform::Initialize(&EventProcessor);
+
+    // Initialize logger
+    Logger::Initialize();
 
     // Create game window
     CreateGameWindow();
@@ -103,6 +103,8 @@ void Application::Run()
     // Run main loop
     m_mainLoop->Run();
 
+    Logger::Log("MainLoop stopped");
+
     // Main loop exited.
     // When Application will get out of scope, destructor will 
     // release all resources (look Application::~Application()).
@@ -112,5 +114,8 @@ void Application::Quit()
 {
     ASSERT(m_instance);
     ASSERT(m_instance->m_mainLoop);
+
+    Logger::Log("Quit...");
+
     m_instance->m_mainLoop->Quit();
 }
