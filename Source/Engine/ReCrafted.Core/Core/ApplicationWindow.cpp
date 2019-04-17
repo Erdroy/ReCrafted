@@ -36,7 +36,9 @@ void ApplicationWindow::SetOnResized(const Action<void>& callback)
 
 void ApplicationWindow::WindowResize(void* windowHandle)
 {
-    if (m_instance == nullptr)
+    // NOTE: m_windowHandle will be null when the window is being created while this function will raise 
+    // look: ApplicationWindow::ApplicationWindow(): m_windowHandle = Platform::CreateNewWindow...
+    if (m_instance == nullptr || m_instance->m_windowHandle == nullptr)
         return;
 
     ASSERT(m_instance->m_windowHandle == windowHandle);
