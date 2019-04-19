@@ -33,6 +33,8 @@ group "Libraries"
 dofile "./Source/Libraries/Project.sparsepp.lua"
 dofile "./Source/Libraries/Project.concurrentqueue.lua"
 dofile "./Source/Libraries/Project.fmt.lua"
+dofile "./Source/Libraries/Project.json.lua"
+dofile "./Source/Libraries/Project.cpp-base64.lua"
 
 group "Engine"
 dofile "./Source/Engine/ReCrafted.Common/Project.lua"
