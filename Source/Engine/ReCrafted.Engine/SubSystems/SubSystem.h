@@ -5,7 +5,7 @@
 #include <ReCrafted.h>
 
 #include "Common/Singleton.h"
-#include "Core/SubSystems/SubSystemBase.h"
+#include "SubSystems/SubSystemBase.h"
 
 template <class TSubSystem>
 class SubSystem : public SubSystemBase, public Singleton<TSubSystem>

@@ -36,8 +36,7 @@ dofile "./Source/Libraries/Project.fmt.lua"
 
 group "Engine"
 dofile "./Source/Engine/ReCrafted.Common/Project.lua"
-dofile "./Source/Engine/ReCrafted.Core/Project.lua"
-dofile "./Source/Engine/ReCrafted.Graphics/Project.lua"
+dofile "./Source/Engine/ReCrafted.Engine/Project.lua"
 
 group "Game"
 dofile "./Source/Game/ReCrafted/Project.lua"

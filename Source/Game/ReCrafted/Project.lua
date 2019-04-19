@@ -25,7 +25,7 @@ project "ReCrafted"
     includedirs {
         "./",
 		path.join(SOURCE_DIR, "Engine/ReCrafted.Common"),
-		path.join(SOURCE_DIR, "Engine/ReCrafted.Core"),
+		path.join(SOURCE_DIR, "Engine/ReCrafted.Engine"),
         
         path.join(LIBRARIES_DIR, "fmt/include"),
     }
@@ -33,7 +33,7 @@ project "ReCrafted"
     -- default deps
     links { 
         "ReCrafted.Common",
-        "ReCrafted.Core",
+        "ReCrafted.Engine",
         --"ReCrafted.Graphics",
     }
 	

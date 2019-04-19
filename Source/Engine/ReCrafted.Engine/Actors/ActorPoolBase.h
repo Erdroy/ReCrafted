@@ -4,7 +4,7 @@
 
 #include <ReCrafted.h>
 
-#include "Core/Actors/ActorBase.h"
+#include "Actors/ActorBase.h"
 
 class ActorPoolBase
 {

@@ -1,6 +1,6 @@
-project "ReCrafted.Core"
-	location (path.join(SOURCE_DIR, "Engine/ReCrafted.Core"))
-	targetname "ReCrafted.Core"
+project "ReCrafted.Engine"
+	location (path.join(SOURCE_DIR, "Engine/ReCrafted.Engine"))
+	targetname "ReCrafted.Engine"
 	
 	kind "StaticLib"
 	language "C++"
@@ -34,6 +34,14 @@ project "ReCrafted.Core"
     links { 
         "ReCrafted.Common",
     }
+    
+    -- exclude hlsl files from build
+    filter { "files:**.hlsl" }
+        flags { "ExcludeFromBuild" }
+        
+	-- add multi processor compilation
+	configuration { "vs*"}
+		buildoptions { "/MP" }
 
 	-- configs
     configuration { "Debug" }

@@ -5,8 +5,8 @@
 #include <ReCrafted.h>
 
 #include "Common/List.h"
-#include "Core/Input/InputDevice.h"
-#include "Core/Input/KeyboardKeys.h"
+#include "Input/InputDevice.h"
+#include "Input/KeyboardKeys.h"
 
 /**
  * \brief Keyboard input device.

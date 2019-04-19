@@ -9,8 +9,10 @@
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN 
 #define FORCE_INLINE __forceinline
+#define FORCE_BREAKPOINT() __debugbreak()
 #else
 #define FORCE_INLINE
+#define FORCE_BREAKPOINT()
 #endif
 
 #if !defined(DELETE_CTOR_COPY) && !defined(DELETE_CTOR_MOVE) && !defined(DELETE_CTOR_COPY_MOVE)

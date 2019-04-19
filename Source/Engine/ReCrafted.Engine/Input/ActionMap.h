@@ -6,10 +6,10 @@
 
 #include "Common/Action.h"
 #include "Common/Lock.h"
-#include "Core/Input/Keyboard.h"
-#include "Core/Input/Mouse.h"
-#include "Core/Input/KeyboardKeys.h"
-#include "Core/Input/MouseButtons.h"
+#include "Input/Keyboard.h"
+#include "Input/Mouse.h"
+#include "Input/KeyboardKeys.h"
+#include "Input/MouseButtons.h"
 
 #include <array>
 #include <sparsepp/spp.h>

@@ -13,7 +13,7 @@ namespace ReCrafted.ProjectManager.Commands
         {
             Console.WriteLine("Compiling shaders...");
 
-            var shadersDirectory = Path.Combine(Program.RootDirectory, "Source\\Engine\\ReCrafted.Graphics\\Graphics\\Shaders");
+            var shadersDirectory = Path.Combine(Program.RootDirectory, "Source\\Engine\\ReCrafted.Engine\\Shaders");
 
             // make sure that we are in the correct directory
             if (!Directory.Exists(shadersDirectory))

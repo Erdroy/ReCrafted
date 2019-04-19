@@ -5,7 +5,7 @@
 #ifdef _WIN32
 
 #include <Windows.h>
-#include "Core/Input/InputManager.h"
+#include "Input/InputManager.h"
 
 //IMGUI_IMPL_API LRESULT  ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

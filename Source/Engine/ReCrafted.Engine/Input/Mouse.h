@@ -4,8 +4,8 @@
 
 #include <ReCrafted.h>
 
-#include "Core/Input/InputDevice.h"
-#include "Core/Input/MouseButtons.h"
+#include "Input/InputDevice.h"
+#include "Input/MouseButtons.h"
 
 /**
  * \brief Mouse input device.

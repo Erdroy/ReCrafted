@@ -3,7 +3,7 @@
 #pragma once
 
 #include <ReCrafted.h>
-#include "Core/Input/InputDevice.h"
+#include "Input/InputDevice.h"
 
 /**
  * \brief Null input device.

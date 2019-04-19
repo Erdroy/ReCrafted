@@ -5,7 +5,7 @@
 #include <ReCrafted.h>
 
 #include "Common/List.h"
-#include "Core/Actors/ActorPoolBase.h"
+#include "Actors/ActorPoolBase.h"
 
 #include <concurrentqueue.h>
 

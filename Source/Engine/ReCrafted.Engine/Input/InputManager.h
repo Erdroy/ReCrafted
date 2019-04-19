@@ -4,14 +4,14 @@
 
 #include <ReCrafted.h>
 
-#include "Core/SubSystems/SubSystem.h"
-#include "Core/Input/ActionMap.h"
-#include "Core/Input/InputDevice.h"
-#include "Core/Input/NullDevice.h"
-#include "Core/Input/Keyboard.h"
-#include "Core/Input/Mouse.h"
-#include "Core/Input/KeyboardKeys.h"
-#include "Core/Input/MouseButtons.h"
+#include "SubSystems/SubSystem.h"
+#include "Input/ActionMap.h"
+#include "Input/InputDevice.h"
+#include "Input/NullDevice.h"
+#include "Input/Keyboard.h"
+#include "Input/Mouse.h"
+#include "Input/KeyboardKeys.h"
+#include "Input/MouseButtons.h"
 
 #include <sparsepp/spp.h>
 
