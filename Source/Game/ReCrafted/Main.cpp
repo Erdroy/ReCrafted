@@ -15,6 +15,38 @@ extern "C" {
     __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
 
+class Entry
+{
+public:
+    Entry()
+    {
+        // Note: This constructor should be called at the very beginning
+
+#if DEBUG
+        _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+
+        // Initialize memory allocator
+        Memory::Initialize(Memory::AllocatorType::OS);
+    }
+
+    ~Entry()
+    {
+#if DEBUG
+        // Dump memory leaks
+        if (_CrtDumpMemoryLeaks() == 0)
+            OutputDebugStringA("NO MEMORY LEAKS FOUND\n");
+        else
+        {
+            OutputDebugStringA("FOUND MEMORY LEAKS\n");
+            FORCE_BREAKPOINT();
+        }
+#endif
+    }
+};
+
+static Entry EntryInstance;
+
 /**
  * \brief WinMain - Main entry for Windows platform
  */
@@ -24,26 +56,8 @@ int CALLBACK WinMain(
     LPSTR lpCmdLine,
     int nCmdShow)
 {
-#if DEBUG
-    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-#endif
-    {
-        // Initialize memory allocator TODO: This should be called from static constructor, as soon as possible!
-        Memory::Initialize(Memory::AllocatorType::OS);
-
-        Application app;
-        app.Run();
-    }
-#if DEBUG
-    // Dump memory leaks
-    if (_CrtDumpMemoryLeaks() == 0)
-        OutputDebugStringA("NO MEMORY LEAKS FOUND\n");
-    else
-    {
-        OutputDebugStringA("FOUND MEMORY LEAKS\n");
-        FORCE_BREAKPOINT();
-    }
-#endif
+    Application app;
+    app.Run();
     return ERROR_SUCCESS;
 }
 #endif
