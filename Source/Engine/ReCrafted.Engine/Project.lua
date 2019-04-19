@@ -26,13 +26,20 @@ project "ReCrafted.Engine"
 		path.join(SOURCE_DIR, "Engine/ReCrafted.Common"),
         -- add all modules
         path.join(LIBRARIES_DIR, "sparsepp"),
-        path.join(LIBRARIES_DIR, "fmt/include"),
         path.join(LIBRARIES_DIR, "concurrentqueue"),
+        path.join(LIBRARIES_DIR, "fmt/include"),
+        path.join(LIBRARIES_DIR, "json/include"),
+        path.join(LIBRARIES_DIR, "cpp-base64"),
     }
 
     -- default deps
     links { 
         "ReCrafted.Common",
+
+        "cpp-base64",
+
+        "d3d11", "dxguid", "dxgi", "d3dcompiler", 
+        "Rpcrt4",
     }
     
     -- exclude hlsl files from build

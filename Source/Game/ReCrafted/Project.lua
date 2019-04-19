@@ -27,14 +27,15 @@ project "ReCrafted"
 		path.join(SOURCE_DIR, "Engine/ReCrafted.Common"),
 		path.join(SOURCE_DIR, "Engine/ReCrafted.Engine"),
         
+        path.join(LIBRARIES_DIR, "sparsepp"),
+        path.join(LIBRARIES_DIR, "concurrentqueue"),
         path.join(LIBRARIES_DIR, "fmt/include"),
     }
     
     -- default deps
     links { 
         "ReCrafted.Common",
-        "ReCrafted.Engine",
-        --"ReCrafted.Graphics",
+        "ReCrafted.Engine"
     }
 	
 	-- add onbuild script and multi processor compilation

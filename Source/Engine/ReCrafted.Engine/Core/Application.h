@@ -5,6 +5,7 @@
 #include "Core/ApplicationBase.h"
 #include "Core/MainLoop.h"
 #include "Core/ApplicationWindow.h"
+#include "Renderer/Renderer.h"
 
 class Application final : public ApplicationBase
 {
@@ -15,6 +16,8 @@ private:
 
     RefPtr<MainLoop> m_mainLoop = nullptr;
     RefPtr<ApplicationWindow> m_window = nullptr;
+    Renderer::WindowHandle m_windowHandle = {};
+    Renderer::RenderBufferHandle m_frameBufferHandle = {};
 
 public:
     Application();
@@ -24,7 +27,9 @@ private:
     void CreateGameWindow();
     void OnWindowResized();
 
-    void RegisterSubSystems() const;
+    void InitializeSubSystems() const;
+    void InitializeRenderer();
+    void InitializeGraphics();
 
     void Update();
     void FixedUpdate();

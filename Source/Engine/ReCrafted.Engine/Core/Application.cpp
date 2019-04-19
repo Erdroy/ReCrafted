@@ -7,6 +7,7 @@
 #include "Core/Time.h"
 #include "Input/InputManager.h"
 #include "Actors/ActorPoolManager.h"
+#include "Renderer/Renderer.h"
 
 // EventProcessor is implemented per-platform
 uint64_t EventProcessor(void*, uint32_t, uint64_t, uint64_t);
@@ -19,6 +20,7 @@ Application::Application()
 
     // Initialize platform
     Platform::Initialize(&EventProcessor);
+    Platform::SetThreadName("MainThread");
 
     // Initialize logger
     Logger::Initialize();
@@ -37,11 +39,17 @@ Application::Application()
     m_mainLoop->SetRenderCallback(Action<void>::New<Application, &Application::Render>(this));
 
     // Register subsystems
-    RegisterSubSystems();
+    InitializeSubSystems();
+
+    // Initialize renderer
+    InitializeRenderer();
 }
 
 Application::~Application()
 {
+    // Shutdown renderer
+    Renderer::Shutdown();
+
     // Release resources
     m_mainLoop.reset();
     m_window.reset();
@@ -69,12 +77,32 @@ void Application::OnWindowResized()
     // TODO: Resize!
 }
 
-void Application::RegisterSubSystems() const
+void Application::InitializeSubSystems() const
 {
     // Register subsystems
     SubSystemManager::Register<Time>();
     SubSystemManager::Register<InputManager>();
     SubSystemManager::Register<ActorPoolManager>();
+}
+
+void Application::InitializeRenderer()
+{
+    Logger::Log("Creating renderer with Direct3D11 API");
+
+    Renderer::Initialize(
+        Renderer::RendererAPI::DirectX11,
+        Renderer::Settings::Debug,
+        Renderer::RenderFlags::_enum(Renderer::RenderFlags::Default));
+
+    Renderer::SetFlag(Renderer::RenderFlags::VSync, false);
+
+    // Create Output
+    m_windowHandle = Renderer::CreateWindowHandle(Platform::GetCurrentWindow());
+    m_frameBufferHandle = Renderer::GetWindowRenderBuffer(m_windowHandle);
+}
+
+void Application::InitializeGraphics()
+{
 }
 
 void Application::Update()

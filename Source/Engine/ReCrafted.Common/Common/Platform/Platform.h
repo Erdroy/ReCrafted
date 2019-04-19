@@ -119,4 +119,10 @@ public:
      * \param y The y coordinate of target cursor position in pixels.
      */
     static void SetCursorPosition(int x, int y);
+
+    /**
+     * \brief Sets debug name for the current thread.
+     * \param name The desired thread name.
+     */
+    static void SetThreadName(const char* name);
 };
