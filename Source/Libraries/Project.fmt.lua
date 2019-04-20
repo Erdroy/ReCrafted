@@ -1,5 +1,5 @@
 project "fmt"
-	location (path.join(LIBRARIES_DIR, "fmt"))
+	location (LIBRARIES_DIR)
 	targetname "fmt"
 	kind "StaticLib"
 	language "C++"

@@ -1,5 +1,5 @@
 project "concurrentqueue"
-	location (path.join(LIBRARIES_DIR, "concurrentqueue"))
+	location (LIBRARIES_DIR)
 	targetname "concurrentqueue"
 	kind "StaticLib"
 	language "C++"

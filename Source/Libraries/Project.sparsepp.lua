@@ -1,5 +1,5 @@
 project "sparsepp"
-	location (path.join(LIBRARIES_DIR, "sparsepp"))
+	location (LIBRARIES_DIR)
 	targetname "sparsepp"
 	kind "StaticLib"
 	language "C++"

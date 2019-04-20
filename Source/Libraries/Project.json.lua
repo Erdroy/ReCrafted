@@ -1,5 +1,5 @@
 project "json"
-	location (path.join(LIBRARIES_DIR, "json"))
+	location (LIBRARIES_DIR)
 	targetname "json"
 	kind "StaticLib"
 	language "C++"

@@ -1,5 +1,5 @@
 project "cpp-base64"
-	location (path.join(LIBRARIES_DIR, "cpp-base64"))
+	location (LIBRARIES_DIR)
 	targetname "cpp-base64"
 	kind "StaticLib"
 	language "C++"
