@@ -19,10 +19,107 @@ namespace ReCrafted.Tools.APIGenerator
                     ParseClassTag();
                     break;
                 case "API_STRUCT":
+                    // TODO: Struct parsing
                     break;
                 case "API_FUNCTION":
+                    ParseFunctionTag();
+                    break;
+                case "API_PROPERTY":
+                    // TODO: Property parsing
                     break;
             }
+        }
+
+        private void ParseFunctionTag()
+        {
+            // API_FUNCTION(public, virtual, override, customName="Destroy")
+            // void Destroy(int testParam) const override
+
+            // TODO: Comments (read the token before current one)
+
+            var desc = new FunctionDescription();
+
+            // Parse tag arguments
+            var tagArguments = ParseTagArguments();
+
+            var token = _tokenizer.NextToken();
+            var isStatic = token.Value == "static";
+
+            if (isStatic)
+                token = _tokenizer.NextToken();
+
+            var isVirtual = token.Value == "virtual";
+
+            // Set virtual modifier
+            if (isVirtual)
+                token = _tokenizer.NextToken();
+
+            desc.ReturnType = token.Value;
+            var functionName = _tokenizer.ExpectToken(TokenType.Identifier);
+
+            var functionParams = ParseTagArguments(true);
+
+            // TODO: Proper function parameter handling
+            // const Type&, Type&, Type* etc. support is required.
+            // Example:
+            // 'const Vector3*', 'Vector3*' should become 'Vector3', and C++ should generate 'Vector3*' - this is because we cannot check the type
+            // 'Vector3&' and 'const Vector3&' should become 'ref Vector3', and C++ should generate 'Vector3*'
+
+            // TODO: Common type conversion: strings, integers etc.
+            // Because: 'const char*', 'const String&' becomes string,
+            // uint32_t becomes uint etc.
+
+            for (var i = 0; i < functionParams.Count; i += 2)
+            {
+                var type = functionParams[i].Value;
+                var name = functionParams[i + 1].Value;
+                desc.Parameters.Add($"{type} {name}");
+            }
+
+            token = _tokenizer.NextToken();
+            var isConst = token.Value == "const";
+
+            if (isConst)
+                token = _tokenizer.NextToken();
+
+            var isOverride = token.Value == "override";
+
+            for (var i = 0; i < tagArguments.Count; i++)
+            {
+                token = tagArguments[i];
+
+                switch (token.Value)
+                {
+                    case "public":
+                    case "internal":
+                    case "private":
+                    case "static":
+                    case "virtual":
+                    case "override":
+                    case "abstract":
+                        desc.Modifiers.Add(token.Value);
+                        break;
+                    case "byref":
+                        break;
+                    case "customName":
+                        if (tagArguments.Count == i + 1 || tagArguments[i + 1].Type != TokenType.String)
+                            throw new Exception("Class custom name doesn't follow with string!");
+
+                        // Override name with new one
+                        // TODO: Check the name for invalid characters etc.
+                        desc.Name = tagArguments[i + 1].Value.Replace("\"", "");
+                        break;
+                    default:
+                        Console.WriteLine(
+                            $"WARNING: Unsupported modifier '{token.Value}' is passed to the API_FUNCTION tag of function {functionName.Value}!");
+                        break;
+                }
+            }
+
+            if (isOverride && !desc.Modifiers.Contains("override"))
+                desc.Modifiers.Add("override");
+
+            _functions.Add(desc);
         }
 
         private void ParseClassTag()
@@ -31,6 +128,8 @@ namespace ReCrafted.Tools.APIGenerator
             // class TestClass : public Object<TestClass>
 
             var desc = new ClassDescription();
+
+            // TODO: Comments (read the token before current one)
 
             // Parse tag arguments
             var tagArguments = ParseTagArguments();
@@ -52,6 +151,11 @@ namespace ReCrafted.Tools.APIGenerator
 
             // Parse class inheritance, support for single Type/Generic Type.
             var token = _tokenizer.NextToken();
+
+            var isFinal = token.Value == "final";
+
+            if (isFinal)
+                token = _tokenizer.NextToken();
 
             if (token.Type == TokenType.Colon)
             {
@@ -137,28 +241,10 @@ namespace ReCrafted.Tools.APIGenerator
                 }
             }
 
+            if(isFinal && !desc.Modifiers.Contains("sealed"))
+                desc.Modifiers.Add("sealed");
+
             _classDesc = desc;
-        }
-
-        private string ParseNamespace(string fileName)
-        {
-            // D:\ReCrafted\Source\Engine\ReCrafted.Engine\APITestFile.h
-            
-            // Cut: 'D:\ReCrafted\Source\Engine\ReCrafted.Engine\'
-            var nameSpaceStart = fileName.IndexOf("ReCrafted.Engine") + "ReCrafted.Engine".Length;
-            var nameSpace = fileName.Substring(nameSpaceStart, fileName.Length - nameSpaceStart);
-
-            // Now cut-out the file part
-            var fileNameStart = nameSpace.LastIndexOf("\\");
-            nameSpace = nameSpace.Substring(0, fileNameStart);
-
-            // Split path and join with dots to create the namespace string
-            nameSpace = string.Join(".", nameSpace.Split('\\'));
-
-            // Add ReCrafted.API prefix to the namespace
-            nameSpace = "ReCrafted.API" + nameSpace;
-
-            return nameSpace;
         }
     }
 }

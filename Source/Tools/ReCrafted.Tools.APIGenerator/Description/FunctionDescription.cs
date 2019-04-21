@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 namespace ReCrafted.Tools.APIGenerator.Description
 {
-    public class ClassDescription
+    public class FunctionDescription
     {
         public string Name { get; set; }
-        public string Namespace { get; set; }
-        public string Inherits { get; set; }
+        public string ReturnType { get; set; }
         public string Comment { get; set; }
         public List<string> Modifiers { get; } = new List<string>();
+        public List<string> Parameters { get; } = new List<string>();
     }
 }

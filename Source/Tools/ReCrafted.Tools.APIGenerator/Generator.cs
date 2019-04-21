@@ -18,6 +18,8 @@ namespace ReCrafted.Tools.APIGenerator
         private Tokenizer _tokenizer;
         private ClassDescription _classDesc;
         //private StructDescription _structDesc;
+        private readonly List<FunctionDescription> _functions = new List<FunctionDescription>();
+        //private List<PropertyDescription> _properties;
 
         public Generator(string input, string csOutput, string cppOutput)
         {
@@ -74,9 +76,30 @@ namespace ReCrafted.Tools.APIGenerator
 
         public void Generate()
         {
-
+            // TODO: generate code using T4
         }
-        private List<Token> ParseTagArguments()
+
+        private string ParseNamespace(string fileName)
+        {
+            // D:\ReCrafted\Source\Engine\ReCrafted.Engine\APITestFile.h
+
+            // Cut: 'D:\ReCrafted\Source\Engine\ReCrafted.Engine\'
+            var nameSpaceStart = fileName.IndexOf("ReCrafted.Engine") + "ReCrafted.Engine".Length;
+            var nameSpace = fileName.Substring(nameSpaceStart, fileName.Length - nameSpaceStart);
+
+            // Now cut-out the file part
+            var fileNameStart = nameSpace.LastIndexOf("\\");
+            nameSpace = nameSpace.Substring(0, fileNameStart);
+
+            // Split path and join with dots to create the namespace string
+            nameSpace = string.Join(".", nameSpace.Split('\\'));
+
+            // Add ReCrafted.API prefix to the namespace
+            nameSpace = "ReCrafted.API" + nameSpace;
+
+            return nameSpace;
+        }
+        private List<Token> ParseTagArguments(bool spaceSeparated = false)
         {
             var arguments = new List<Token>();
 
@@ -93,9 +116,11 @@ namespace ReCrafted.Tools.APIGenerator
                     arguments.Add(token);
 
                     // check next token
-                    var nextToken = _tokenizer.NextToken();
+                    var nextToken = _tokenizer.NextToken(spaceSeparated);
                     switch (nextToken.Type)
                     {
+                        case TokenType.Whitespace:
+                            break;
                         case TokenType.Equal:
                             break;
                         case TokenType.Comma:

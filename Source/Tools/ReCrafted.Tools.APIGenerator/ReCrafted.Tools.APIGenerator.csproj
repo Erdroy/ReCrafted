@@ -60,17 +60,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ReCrafted.Tools.Common\ReCrafted.Tools.Common.csproj">
-      <Project>{c027b9e3-fe8a-41f0-b984-d2ca16ce9b1b}</Project>
-      <Name>ReCrafted.Tools.Common</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Description\ClassDescription.cs" />
+    <Compile Include="Description\FunctionDescription.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="Generator.Parser.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ReCrafted.Tools.Common\ReCrafted.Tools.Common.csproj">
+      <Project>{c027b9e3-fe8a-41f0-b984-d2ca16ce9b1b}</Project>
+      <Name>ReCrafted.Tools.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
