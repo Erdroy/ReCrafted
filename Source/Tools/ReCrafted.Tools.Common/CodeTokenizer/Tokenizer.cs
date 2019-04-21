@@ -151,7 +151,7 @@ namespace ReCrafted.Tools.Common.CodeTokenizer
         /// <param name="includeWhitespaces">When false, all white-space tokens will be ignored.</param>
         /// <param name="includeComments">When false, all comment (single line and multi-line) tokens will be ignored.</param>
         /// <returns>The found token.</returns>
-        public Token ExpectTokens(TokenType[] tokenTypes, bool includeWhitespaces = false, bool includeComments = false)
+        public Token ExpectAnyTokens(TokenType[] tokenTypes, bool includeWhitespaces = false, bool includeComments = false)
         {
             var token = NextToken(includeWhitespaces, includeComments);
 
@@ -159,6 +159,25 @@ namespace ReCrafted.Tools.Common.CodeTokenizer
                 return token;
 
             throw new Exception("Expected " + string.Join(" or ", tokenTypes) + " at line " + _currentLineNumber + ", but got " + token.Type + ".");
+        }
+
+        /// <summary>
+        /// Expects token of given types in the same order. Throws <see cref="Exception"/> when token is not found.
+        /// </summary>
+        /// <param name="tokenTypes">The allowed token types.</param>
+        /// <param name="includeWhitespaces">When false, all white-space tokens will be ignored.</param>
+        /// <param name="includeComments">When false, all comment (single line and multi-line) tokens will be ignored.</param>
+        /// <returns>The found token.</returns>
+        public void ExpectAllTokens(TokenType[] tokenTypes, bool includeWhitespaces = false, bool includeComments = false)
+        {
+            foreach (var tokenType in tokenTypes)
+            {
+                var token = NextToken(includeWhitespaces, includeComments);
+
+                if(token.Type != tokenType)
+                    throw new Exception(
+                        $"Expected {tokenType} at line {_currentLineNumber}, but got {token.Type}.");
+            }
         }
 
         /// <summary>

@@ -75,7 +75,7 @@ namespace ReCrafted.Tools.ShaderCompiler.Compiler
                         };
                         
                         // and for the end, expect semicolon at the end
-                        token = _parser.ExpectTokens(new [] { TokenType.SemiColon, TokenType.LeftBracket });
+                        token = _parser.ExpectAnyTokens(new [] { TokenType.SemiColon, TokenType.LeftBracket });
 
                         // Parse array length
                         if (token.Type == TokenType.LeftBracket)
