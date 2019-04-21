@@ -61,6 +61,8 @@ namespace ReCrafted.Tools.Common.CodeTokenizer
             @"(?<dot>\.)|" +
             @"(?<lt>\<)|" +
             @"(?<gt>\>)|" +
+            @"(?<lab>\<)|" +
+            @"(?<rab>\>)|" +
             @"(?<unk>[^\s]+)",
             RegexOptions.Compiled
         );

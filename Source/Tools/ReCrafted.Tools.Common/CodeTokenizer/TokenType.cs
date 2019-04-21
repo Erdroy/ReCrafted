@@ -141,6 +141,16 @@ namespace ReCrafted.Tools.Common.CodeTokenizer
         GreaterThan,
 
         /// <summary>
+        /// A '&lt;'.
+        /// </summary>
+        LeftAngleBracket = LessThan,
+
+        /// <summary>
+        /// A '&gt;'.
+        /// </summary>
+        RightAngleBracket = GreaterThan,
+
+        /// <summary>
         /// An unknown symbol.
         /// </summary>
         Unknown,
