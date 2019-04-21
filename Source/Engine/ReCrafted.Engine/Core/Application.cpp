@@ -74,7 +74,12 @@ void Application::CreateGameWindow()
 
 void Application::OnWindowResized()
 {
+    uint width;
+    uint height;
+    Platform::GetWindowSize(Platform::GetCurrentWindow(), &width, &height);
+
     // TODO: Resize!
+    Renderer::ResizeWindow(m_windowHandle, width, height);
 }
 
 void Application::InitializeSubSystems() const
@@ -126,6 +131,9 @@ void Application::FixedUpdate()
 
 void Application::Render()
 {
+    Renderer::ClearRenderBuffer(m_frameBufferHandle, Renderer::Color(0.15f, 0.15f, 0.15f, 1.0f));
+
+    Renderer::Frame();
 }
 
 void Application::Run()
