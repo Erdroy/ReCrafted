@@ -6,17 +6,23 @@
 
 #include "Common/Logger.h"
 
-API_CLASS(public)
-class TestClass
+template<class TType >
+class TestObject
 {
-    API_CLASS_BODY();
+    virtual void Destroy() const {}
+};
+
+API_CLASS(public, sealed, customName="ClassTest")
+class TestClass : public TestObject<TestClass>
+{
+    API_CLASS_BODY()
 
 public:
     /**
-     * \brief Destroys this actor. Works the same as `Object::Destroy(actor)`.
+     * \brief Destroys this actor.
      */
-    API_FUNCTION()
-    void Destroy() const
+    API_FUNCTION(public, virtual, override, customName="Destroy")
+    void Destroy() const override
     {
         Logger::Log(__FUNCTION__);
         delete this;

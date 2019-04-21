@@ -66,7 +66,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Description\ClassDescription.cs" />
     <Compile Include="Generator.cs" />
+    <Compile Include="Generator.Parser.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>

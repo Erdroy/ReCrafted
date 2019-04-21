@@ -1,8 +1,10 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using ReCrafted.Tools.APIGenerator.Description;
 using ReCrafted.Tools.Common.CodeTokenizer;
 
 namespace ReCrafted.Tools.APIGenerator
@@ -14,6 +16,8 @@ namespace ReCrafted.Tools.APIGenerator
         private readonly string _fileCppOutput;
 
         private Tokenizer _tokenizer;
+        private ClassDescription _classDesc;
+        //private StructDescription _structDesc;
 
         public Generator(string input, string csOutput, string cppOutput)
         {
@@ -38,7 +42,7 @@ namespace ReCrafted.Tools.APIGenerator
 
             var source = File.ReadAllText(_fileInput);
 
-            if (source.Contains("API_"))
+            if (!source.Contains("API_"))
                 throw new Exception($"Input file '{_fileInput}' doesn't contain any API tags!");
 
             _tokenizer = new Tokenizer();
@@ -57,7 +61,7 @@ namespace ReCrafted.Tools.APIGenerator
                     case TokenType.Identifier:
                         if (token.Value.StartsWith("API_"))
                         {
-                            // TODO: Process!
+                            HandleApiTag(token);
                         }
                         break;
 
@@ -71,6 +75,44 @@ namespace ReCrafted.Tools.APIGenerator
         public void Generate()
         {
 
+        }
+        private List<Token> ParseTagArguments()
+        {
+            var arguments = new List<Token>();
+
+            _tokenizer.ExpectToken(TokenType.LeftParent);
+
+            // expect series of arguments...
+            var done = false;
+            do
+            {
+                var token = _tokenizer.NextToken();
+
+                if (token.Type == TokenType.Identifier || token.Type == TokenType.String || token.Type == TokenType.Number)
+                {
+                    arguments.Add(token);
+
+                    // check next token
+                    var nextToken = _tokenizer.NextToken();
+                    switch (nextToken.Type)
+                    {
+                        case TokenType.Equal:
+                            break;
+                        case TokenType.Comma:
+                            break;
+                        case TokenType.RightParent:
+                            done = true;
+                            break;
+
+                        default:
+                            throw new Exception("Expected right parent or next argument line " + _tokenizer.CurrentLine + ", but got " + token.Type + ".");
+                    }
+                }
+            }
+            while (!done);
+
+            // return arguments
+            return arguments;
         }
 
         public static bool GenerateClass(string inputFile, string csOutputFile, string cppOutputFile)
