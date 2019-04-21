@@ -45,6 +45,7 @@ dofile "./Source/Game/ReCrafted/Project.lua"
 
 group "Tools"
 dofile "./Source/Tools/ReCrafted.Tools.Common/Project.lua"
+dofile "./Source/Tools/ReCrafted.Tools.APIGenerator/Project.lua"
 dofile "./Source/Tools/ReCrafted.Tools.ShaderCompiler/Project.lua"
 dofile "./Source/Tools/ReCrafted.Tools.ProjectManager/Project.lua"
 dofile "./Source/Tools/ReCrafted.Tools.LocaleConverter/Project.lua"

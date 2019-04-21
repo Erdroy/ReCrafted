@@ -39,7 +39,7 @@ namespace ReCrafted.Tools.ShaderCompiler.Compiler
             _outputFile = output;
             
             if (!File.Exists(_inputFile))
-                throw new Exception("File " + _inputFile + " doesn't exists!");
+                throw new Exception("Input file " + _inputFile + " doesn't exists!");
         }
         
         public void Parse()
