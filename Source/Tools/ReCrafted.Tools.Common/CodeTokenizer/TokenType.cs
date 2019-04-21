@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-namespace ReCrafted.Tools.CodeTokenizer
+namespace ReCrafted.Tools.Common.CodeTokenizer
 {
     /// <summary>
     /// Size of a token language.

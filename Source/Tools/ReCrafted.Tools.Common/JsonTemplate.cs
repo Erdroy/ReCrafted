@@ -3,7 +3,7 @@
 using System.IO;
 using Newtonsoft.Json;
 
-namespace ReCrafted.Tools.ProjectManager
+namespace ReCrafted.Tools.Common
 {
     /// <summary>
     /// JsonTemplate base class, implements few useful functions for JSON (de) serialization.

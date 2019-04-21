@@ -20,7 +20,7 @@
 
 using System;
 
-namespace ReCrafted.Tools.CodeTokenizer
+namespace ReCrafted.Tools.Common.CodeTokenizer
 {
     /// <summary>
     /// Contains information about a token language.

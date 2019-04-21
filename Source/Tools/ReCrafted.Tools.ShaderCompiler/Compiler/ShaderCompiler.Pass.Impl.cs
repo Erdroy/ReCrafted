@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using ReCrafted.Tools.ShaderCompiler.Description;
-using ReCrafted.Tools.CodeTokenizer;
+using ReCrafted.Tools.Common.CodeTokenizer;
 
 namespace ReCrafted.Tools.ShaderCompiler.Compiler
 {

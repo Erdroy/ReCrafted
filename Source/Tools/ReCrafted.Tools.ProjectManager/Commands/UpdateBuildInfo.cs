@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using ReCrafted.Tools.Common;
 
 namespace ReCrafted.Tools.ProjectManager.Commands
 {

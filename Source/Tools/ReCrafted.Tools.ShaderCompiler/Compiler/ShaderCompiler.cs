@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
-using ReCrafted.Tools.CodeTokenizer;
+using ReCrafted.Tools.Common.CodeTokenizer;
 using ReCrafted.Tools.ShaderCompiler.Description;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D;

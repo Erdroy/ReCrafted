@@ -2,7 +2,7 @@
 
 using System;
 
-namespace ReCrafted.Tools.ProjectManager
+namespace ReCrafted.Tools.Common
 {
     /// <inheritdoc />
     /// <summary>

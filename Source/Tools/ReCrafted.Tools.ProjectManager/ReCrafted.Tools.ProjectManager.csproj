@@ -68,8 +68,6 @@
     <Compile Include="Commands\SetupProject.cs" />
     <Compile Include="Commands\UpdateBuildInfo.cs" />
     <Compile Include="DeveloperInfo.cs" />
-    <Compile Include="GameInfo.cs" />
-    <Compile Include="JsonTemplate.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectBuildInfo.cs" />
@@ -80,6 +78,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ReCrafted.Tools.Common\ReCrafted.Tools.Common.csproj">
+      <Project>{c027b9e3-fe8a-41f0-b984-d2ca16ce9b1b}</Project>
+      <Name>ReCrafted.Tools.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ReCrafted.Tools.ShaderCompiler\ReCrafted.Tools.ShaderCompiler.csproj">
       <Project>{b584db24-317f-4ef6-b8dd-207306327f0b}</Project>
       <Name>ReCrafted.Tools.ShaderCompiler</Name>

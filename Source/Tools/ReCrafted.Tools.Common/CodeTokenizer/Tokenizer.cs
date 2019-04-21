@@ -30,7 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace ReCrafted.Tools.CodeTokenizer
+namespace ReCrafted.Tools.Common.CodeTokenizer
 {
     /// <summary>
     /// Parser class. Provides basic implementation for generic C-like syntax code parsing.
