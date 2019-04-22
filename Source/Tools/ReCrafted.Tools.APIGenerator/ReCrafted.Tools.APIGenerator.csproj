@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Description\ClassDescription.cs" />
     <Compile Include="Description\FunctionDescription.cs" />
+    <Compile Include="Description\NativeTypeDescription.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="Generator.Parser.cs" />
     <Compile Include="Options.cs" />

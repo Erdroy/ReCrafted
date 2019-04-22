@@ -16,7 +16,7 @@ namespace ReCrafted.Tools.APIGenerator
         private readonly string _fileCppOutput;
 
         private Tokenizer _tokenizer;
-        private ClassDescription _classDesc;
+        private ClassDescription _class;
         //private StructDescription _structDesc;
         private readonly List<FunctionDescription> _functions = new List<FunctionDescription>();
         //private List<PropertyDescription> _properties;
@@ -99,21 +99,68 @@ namespace ReCrafted.Tools.APIGenerator
 
             return nameSpace;
         }
-        private List<Token> ParseTagArguments(bool spaceSeparated = false)
+
+        private NativeTypeDescription ParseNativeType()
         {
-            var arguments = new List<Token>();
+            var type = new NativeTypeDescription();
+            var token = _tokenizer.ExpectToken(TokenType.Identifier);
+
+            // Possible types:
+            // Vector3
+            // const Vector3
+            // const Vector3&
+            // Vector3*
+            // const Vector3*
+            // Note: pointer-to-reference is not supported (Vector3&*).
+
+            // Check 
+            if (token.Value == "const")
+            {
+                type.IsConst = true;
+                token = _tokenizer.ExpectToken(TokenType.Identifier);
+            }
+
+            // Current token is the base type
+            type.BaseType = token.Value;
+
+            token = _tokenizer.NextToken();
+
+            if (token.Type == TokenType.Multiply)
+            {
+                type.ByPtr = true;
+            }
+            else if (token.Type == TokenType.And)
+            {
+                type.ByRef = true;
+            }
+            else
+            {
+                // Undo
+                token = _tokenizer.PreviousToken();
+            }
+
+            return type;
+        }
+
+        private List<Token> ParseTagParameters(bool spaceSeparated = false)
+        {
+            var parameters = new List<Token>();
 
             _tokenizer.ExpectToken(TokenType.LeftParent);
 
-            // expect series of arguments...
+            // expect series of parameters...
             var done = false;
             do
             {
                 var token = _tokenizer.NextToken();
 
+                // Exit when there is no any parameters
+                if (token.Type == TokenType.RightParent)
+                    return parameters;
+
                 if (token.Type == TokenType.Identifier || token.Type == TokenType.String || token.Type == TokenType.Number)
                 {
-                    arguments.Add(token);
+                    parameters.Add(token);
 
                     // check next token
                     var nextToken = _tokenizer.NextToken(spaceSeparated);
@@ -137,7 +184,65 @@ namespace ReCrafted.Tools.APIGenerator
             while (!done);
 
             // return arguments
-            return arguments;
+            return parameters;
+        }
+
+        private IEnumerable<FunctionDescription.Param> ParseFunctionParameters()
+        {
+            var parameters = new List<FunctionDescription.Param>();
+
+            _tokenizer.ExpectToken(TokenType.LeftParent);
+
+            // (int test, const Vector3& vector, Vector3* vPtr)
+
+            // expect series of arguments...
+            var done = false;
+            var currentParam = new FunctionDescription.Param();
+            do
+            {
+                var token = _tokenizer.NextToken();
+
+                // Exit when there is no any parameters
+                if (token.Type == TokenType.RightParent)
+                    return parameters;
+
+                // Undo
+                _tokenizer.PreviousToken();
+
+                currentParam.NativeType = ParseNativeType();
+                currentParam.Name = _tokenizer.ExpectToken(TokenType.Identifier).Value;
+
+                // Expect
+                token = _tokenizer.ExpectAnyTokens(new[] { TokenType.Comma, TokenType.RightParent });
+
+                if (token.Type == TokenType.Comma)
+                {
+                    parameters.Add(currentParam);
+                    currentParam = new FunctionDescription.Param();
+                }
+                else if (token.Type == TokenType.RightParent)
+                {
+                    parameters.Add(currentParam);
+                    done = true;
+                }
+            }
+            while (!done);
+
+            // return arguments
+            return parameters;
+        }
+
+        private void TranslateTypes() // ???
+        {
+            // TODO: Proper function parameter handling
+            // const Type&, Type&, Type* etc. support is required.
+            // Example:
+            // 'const Vector3*', 'Vector3*' should become 'Vector3', and C++ should generate 'Vector3*' - this is because we cannot check the type
+            // 'Vector3&' and 'const Vector3&' should become 'ref Vector3', and C++ should generate 'Vector3*'
+
+            // TODO: Common type conversion: strings, integers etc.
+            // Because: 'const char*', 'const String&' becomes string,
+            // uint32_t becomes uint etc.
         }
 
         public static bool GenerateClass(string inputFile, string csOutputFile, string cppOutputFile)
@@ -149,8 +254,10 @@ namespace ReCrafted.Tools.APIGenerator
 
             var generator = new Generator(inputFile, csOutputFile, cppOutputFile);
 
+#if !DEBUG
             try
             {
+#endif
                 var perfCounterParse = new Stopwatch();
                 perfCounterParse.Start();
                 generator.Parse();
@@ -162,6 +269,7 @@ namespace ReCrafted.Tools.APIGenerator
                 generator.Generate();
                 perfCounterParse.Stop();
                 Console.WriteLine($"Generation done in {perfCounterParse.ElapsedMilliseconds} ms.");
+#if !DEBUG
             }
             catch (Exception ex)
             {
@@ -169,6 +277,7 @@ namespace ReCrafted.Tools.APIGenerator
                 Console.WriteLine("Failed to generate API file.\nError: \n" + errorMessage);
                 return false;
             }
+#endif
 
             // say bye and give the time that we spent here
             perfCounter.Stop();

@@ -32,51 +32,42 @@ namespace ReCrafted.Tools.APIGenerator
 
         private void ParseFunctionTag()
         {
-            // API_FUNCTION(public, virtual, override, customName="Destroy")
-            // void Destroy(int testParam) const override
-
-            // TODO: Comments (read the token before current one)
-
             var desc = new FunctionDescription();
 
+            // Comments (read the token before current one)
+            var comment = _tokenizer.PreviousToken();
+            if (comment.Type == TokenType.CommentMultiLine || comment.Type == TokenType.CommentSingleLine)
+                desc.Comment = comment.Value;
+            _tokenizer.NextToken();
+
             // Parse tag arguments
-            var tagArguments = ParseTagArguments();
+            var tagArguments = ParseTagParameters();
 
             var token = _tokenizer.NextToken();
             var isStatic = token.Value == "static";
 
             if (isStatic)
                 token = _tokenizer.NextToken();
-
+            
+            // Set virtual modifier
             var isVirtual = token.Value == "virtual";
 
-            // Set virtual modifier
-            if (isVirtual)
-                token = _tokenizer.NextToken();
+            // If not virtual undo the token
+            if (!isVirtual)
+                _tokenizer.PreviousToken();
 
-            desc.ReturnType = token.Value;
+            desc.ReturnType = ParseNativeType();
+
             var functionName = _tokenizer.ExpectToken(TokenType.Identifier);
 
-            var functionParams = ParseTagArguments(true);
+            // Set name
+            desc.Name = functionName.Value;
 
-            // TODO: Proper function parameter handling
-            // const Type&, Type&, Type* etc. support is required.
-            // Example:
-            // 'const Vector3*', 'Vector3*' should become 'Vector3', and C++ should generate 'Vector3*' - this is because we cannot check the type
-            // 'Vector3&' and 'const Vector3&' should become 'ref Vector3', and C++ should generate 'Vector3*'
-
-            // TODO: Common type conversion: strings, integers etc.
-            // Because: 'const char*', 'const String&' becomes string,
-            // uint32_t becomes uint etc.
-
-            for (var i = 0; i < functionParams.Count; i += 2)
-            {
-                var type = functionParams[i].Value;
-                var name = functionParams[i + 1].Value;
-                desc.Parameters.Add($"{type} {name}");
-            }
+            // Parse function parameters
+            desc.Parameters.AddRange(ParseFunctionParameters());
 
             token = _tokenizer.NextToken();
+
             var isConst = token.Value == "const";
 
             if (isConst)
@@ -101,14 +92,6 @@ namespace ReCrafted.Tools.APIGenerator
                         break;
                     case "byref":
                         break;
-                    case "customName":
-                        if (tagArguments.Count == i + 1 || tagArguments[i + 1].Type != TokenType.String)
-                            throw new Exception("Class custom name doesn't follow with string!");
-
-                        // Override name with new one
-                        // TODO: Check the name for invalid characters etc.
-                        desc.Name = tagArguments[i + 1].Value.Replace("\"", "");
-                        break;
                     default:
                         Console.WriteLine(
                             $"WARNING: Unsupported modifier '{token.Value}' is passed to the API_FUNCTION tag of function {functionName.Value}!");
@@ -124,15 +107,16 @@ namespace ReCrafted.Tools.APIGenerator
 
         private void ParseClassTag()
         {
-            // API_CLASS(public, sealed..., customName="ClassTest", customNamespace="Namespace.Test")
-            // class TestClass : public Object<TestClass>
-
             var desc = new ClassDescription();
 
-            // TODO: Comments (read the token before current one)
+            // Comments (read the token before current one)
+            var comment = _tokenizer.PreviousToken();
+            if (comment.Type == TokenType.CommentMultiLine || comment.Type == TokenType.CommentSingleLine)
+                desc.Comment = comment.Value;
+            _tokenizer.NextToken();
 
             // Parse tag arguments
-            var tagArguments = ParseTagArguments();
+            var tagArguments = ParseTagParameters();
 
             // Skip until `class` keyword.
             _tokenizer.SkipUntil(TokenType.Identifier);
@@ -222,14 +206,6 @@ namespace ReCrafted.Tools.APIGenerator
                     case "abstract":
                         desc.Modifiers.Add(token.Value);
                         break;
-                    case "customName":
-                        if (tagArguments.Count == i + 1 || tagArguments[i + 1].Type != TokenType.String)
-                            throw new Exception("Class custom name doesn't follow with string!");
-
-                        // Override name with new one
-                        // TODO: Check the name for invalid characters etc.
-                        desc.Name = tagArguments[i + 1].Value.Replace("\"", "");
-                        break;
                     case "customNamespace":
                         if (tagArguments.Count == i + 1 || tagArguments[i + 1].Type != TokenType.String)
                             throw new Exception("Class custom namespace doesn't follow with string!");
@@ -237,6 +213,7 @@ namespace ReCrafted.Tools.APIGenerator
                         // Override namespace with new one
                         // TODO: Check the namespace for invalid characters etc.
                         desc.Namespace = tagArguments[i + 1].Value.Replace("\"", "");
+                        i++;
                         break;
                 }
             }
@@ -244,7 +221,7 @@ namespace ReCrafted.Tools.APIGenerator
             if(isFinal && !desc.Modifiers.Contains("sealed"))
                 desc.Modifiers.Add("sealed");
 
-            _classDesc = desc;
+            _class = desc;
         }
     }
 }

@@ -9,10 +9,10 @@
 template<class TType >
 class TestObject
 {
-    virtual int Destroy(int testParam, const String& param2) const { return 0; }
+    virtual int Destroy(int testParam) const { return 0; }
 };
 
-API_CLASS(public, sealed, customName="ClassTest")
+API_CLASS(public, sealed)
 class TestClass final : public TestObject<TestClass>
 {
     API_CLASS_BODY()
@@ -21,8 +21,8 @@ public:
     /**
      * \brief Destroys this actor.
      */
-    API_FUNCTION(public, virtual, customName="Destroy")
-    int Destroy(int testParam, const String& param2) const override
+    API_FUNCTION(public, virtual)
+    int Destroy(int testParam) const override
     {
         Logger::Log(__FUNCTION__);
         delete this;
@@ -30,9 +30,21 @@ public:
     }
 
     API_FUNCTION()
-    void TestFunction1()
+    void TestFunction()
+    {
+
+    }
+
+    API_FUNCTION()
+    void TestFunction1(const Vector3& vector)
     {
         
+    }
+
+    API_FUNCTION()
+    void TestFunction2(TestClass* object)
+    {
+
     }
 
 public:
