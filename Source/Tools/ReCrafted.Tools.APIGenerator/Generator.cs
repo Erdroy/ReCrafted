@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using ReCrafted.Tools.APIGenerator.Description;
+using ReCrafted.Tools.APIGenerator.Templates;
 using ReCrafted.Tools.Common.CodeTokenizer;
 
 namespace ReCrafted.Tools.APIGenerator
@@ -76,7 +77,18 @@ namespace ReCrafted.Tools.APIGenerator
 
         public void Generate()
         {
-            // TODO: generate code using T4
+            // TODO: Generate C++ proxy
+            // Generate C# class
+            var classGenerator = new ClassTemplate
+            {
+                Session = new Dictionary<string, object>
+                {
+                    { "Class", _class },
+                    { "Functions", _functions }
+                }
+            };
+            classGenerator.Initialize();
+            var str = classGenerator.TransformText();
         }
 
         private string ParseNamespace(string fileName)
