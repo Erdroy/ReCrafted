@@ -141,14 +141,29 @@ namespace ReCrafted.Tools.Common.CodeTokenizer
         GreaterThan,
 
         /// <summary>
-        /// A '&lt;'.
+        /// A '&'.
         /// </summary>
-        LeftAngleBracket = LessThan,
+        And,
 
         /// <summary>
-        /// A '&gt;'.
+        /// A '*'.
         /// </summary>
-        RightAngleBracket = GreaterThan,
+        Multiply,
+
+        /// <summary>
+        /// A '/'.
+        /// </summary>
+        Divide,
+
+        /// <summary>
+        /// A '+'.
+        /// </summary>
+        Add,
+
+        /// <summary>
+        /// A '-'.
+        /// </summary>
+        Sub,
 
         /// <summary>
         /// An unknown symbol.
@@ -159,5 +174,16 @@ namespace ReCrafted.Tools.Common.CodeTokenizer
         /// A end of file token.
         /// </summary>
         EndOfFile,
+
+        /// <summary>
+        /// A '&lt;'.
+        /// </summary>
+        LeftAngleBracket = LessThan,
+
+        /// <summary>
+        /// A '&gt;'.
+        /// </summary>
+        RightAngleBracket = GreaterThan,
+
     }
 }

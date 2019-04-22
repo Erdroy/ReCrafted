@@ -61,13 +61,16 @@ namespace ReCrafted.Tools.Common.CodeTokenizer
             @"(?<dot>\.)|" +
             @"(?<lt>\<)|" +
             @"(?<gt>\>)|" +
-            @"(?<lab>\<)|" +
-            @"(?<rab>\>)|" +
+            @"(?<and>\&)|" +
+            @"(?<mul>\*)|" +
+            @"(?<div>\/)|" +
+            @"(?<add>\+)|" +
+            @"(?<sub>\-)|" +
             @"(?<unk>[^\s]+)",
             RegexOptions.Compiled
         );
         
-        private IEnumerator<Token> _tokenEnumerator;
+        private ITwoWayEnumerator<Token> _tokenEnumerator;
         private Token _previousToken;
         private bool _ignoreSource;
         private int _currentLineNumber;
@@ -82,7 +85,7 @@ namespace ReCrafted.Tools.Common.CodeTokenizer
                 throw new Exception("This shader is already parsed!");
 
             var tokens = TokenizeInternal(sourceCode);
-            _tokenEnumerator = tokens.GetEnumerator();
+            _tokenEnumerator = tokens.GetTwoWayEnumerator();
         }
 
         /// <summary>
@@ -144,6 +147,12 @@ namespace ReCrafted.Tools.Common.CodeTokenizer
 
             // this is the end...
             return new Token(TokenType.EndOfFile, "");
+        }
+
+        public Token PreviousToken()
+        {
+            _tokenEnumerator.MovePrevious();
+            return _tokenEnumerator.Current;
         }
 
         /// <summary>
