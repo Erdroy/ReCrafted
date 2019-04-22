@@ -149,10 +149,59 @@ namespace ReCrafted.Tools.Common.CodeTokenizer
             return new Token(TokenType.EndOfFile, "");
         }
 
-        public Token PreviousToken()
+        public Token PreviousToken(bool includeWhitespaces = false, bool includeComments = false)
         {
-            _tokenEnumerator.MovePrevious();
-            return _tokenEnumerator.Current;
+            // weird logic, but works ok
+            while (_tokenEnumerator.MovePrevious())
+            {
+                var token = _tokenEnumerator.Current;
+
+                if (token == null)
+                    continue;
+
+                // construct final source code when needed
+                if (!_ignoreSource && _previousToken != null)
+                    ProcessedSourceCode.Append(_previousToken.Value);
+
+                // set previous token
+                _previousToken = _tokenEnumerator.Current;
+
+                if (token.Type == TokenType.Newline)
+                {
+                    // add new line even when source ignore flag is being used
+                    if (_ignoreSource)
+                    {
+                        ProcessedSourceCode.Append(token.Value);
+                        _previousToken = null;
+                    }
+
+                    _currentLineNumber++;
+
+                    if (includeWhitespaces)
+                        return token;
+
+                    continue;
+                }
+
+                if (!includeWhitespaces && token.Type == TokenType.Whitespace)
+                {
+                    if (!includeComments && (token.Type == TokenType.CommentMultiLine || token.Type == TokenType.CommentSingleLine))
+                    {
+                        // set previous token
+                        _previousToken = _tokenEnumerator.Current;
+                        continue;
+                    }
+
+                    // set previous token
+                    _previousToken = _tokenEnumerator.Current;
+                    continue;
+                }
+
+                return token;
+            }
+
+            // this is the end...
+            return new Token(TokenType.EndOfFile, "");
         }
 
         /// <summary>
