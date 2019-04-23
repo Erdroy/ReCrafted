@@ -77,8 +77,7 @@ namespace ReCrafted.Tools.APIGenerator
 
         public void Generate()
         {
-            // TODO: Generate C++ proxy
-            // Generate C# class
+            // Generate C# class code
             var classGenerator = new ClassTemplate
             {
                 Session = new Dictionary<string, object>
@@ -88,7 +87,10 @@ namespace ReCrafted.Tools.APIGenerator
                 }
             };
             classGenerator.Initialize();
-            var str = classGenerator.TransformText();
+
+            File.WriteAllText(_fileCsOutput, classGenerator.TransformText());
+
+            // TODO: Generate C++ proxy code
         }
 
         private string ParseNamespace(string fileName)
