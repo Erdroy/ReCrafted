@@ -75,6 +75,9 @@ namespace ReCrafted.Tools.APIGenerator
 
             var isOverride = token.Value == "override";
 
+            if(isOverride)
+                Console.WriteLine("WARNING: Function overriding is not supported.");
+
             for (var i = 0; i < tagArguments.Count; i++)
             {
                 token = tagArguments[i];
@@ -82,15 +85,22 @@ namespace ReCrafted.Tools.APIGenerator
                 switch (token.Value)
                 {
                     case "public":
+                        desc.Access = AccessModifier.Public;
+                        break;
+                    case "protected":
+                        desc.Access = AccessModifier.Protected;
+                        break;
                     case "internal":
+                        desc.Access = AccessModifier.Internal;
+                        break;
                     case "private":
+                        desc.Access = AccessModifier.Private;
+                        break;
                     case "static":
-                    case "virtual":
-                    case "override":
+                    //case "virtual":
+                    //case "override":
                     case "abstract":
                         desc.Modifiers.Add(token.Value);
-                        break;
-                    case "byref":
                         break;
                     default:
                         Console.WriteLine(
@@ -99,8 +109,11 @@ namespace ReCrafted.Tools.APIGenerator
                 }
             }
 
-            if (isOverride && !desc.Modifiers.Contains("override"))
-                desc.Modifiers.Add("override");
+            if (isStatic && !desc.Modifiers.Contains("static"))
+                desc.Modifiers.Add("static");
+
+            //if (isOverride && !desc.Modifiers.Contains("override"))
+            //    desc.Modifiers.Add("override");
 
             _functions.Add(desc);
         }
@@ -199,8 +212,17 @@ namespace ReCrafted.Tools.APIGenerator
                 switch (token.Value)
                 {
                     case "public":
+                        desc.Access = AccessModifier.Public;
+                        break;
+                    case "protected":
+                        desc.Access = AccessModifier.Protected;
+                        break;
                     case "internal":
+                        desc.Access = AccessModifier.Internal;
+                        break;
                     case "private":
+                        desc.Access = AccessModifier.Private;
+                        break;
                     case "static":
                     case "sealed":
                     case "abstract":

@@ -60,6 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessModifier.cs" />
     <Compile Include="Description\ClassDescription.cs" />
     <Compile Include="Description\FunctionDescription.cs" />
     <Compile Include="Description\TypeDescription.cs" />

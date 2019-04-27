@@ -10,6 +10,7 @@ namespace ReCrafted.Tools.APIGenerator.Description
         public string Namespace { get; set; }
         public string Inherits { get; set; }
         public string Comment { get; set; }
+        public AccessModifier Access { get; set; }
         public List<string> Modifiers { get; } = new List<string>();
     }
 }
