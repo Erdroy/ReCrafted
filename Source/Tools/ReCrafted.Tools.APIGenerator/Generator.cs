@@ -90,7 +90,18 @@ namespace ReCrafted.Tools.APIGenerator
 
             File.WriteAllText(_fileCsOutput, classGenerator.TransformText());
 
-            // TODO: Generate C++ proxy code
+            // Generate C++ proxy code
+            var proxyGenerator = new ProxyTemplate
+            {
+                Session = new Dictionary<string, object>
+                {
+                    { "Class", _class },
+                    { "Functions", _functions }
+                }
+            };
+            proxyGenerator.Initialize();
+
+            File.WriteAllText(_fileCppOutput, proxyGenerator.TransformText());
         }
 
         private string ParseNamespace(string fileName)
@@ -114,9 +125,9 @@ namespace ReCrafted.Tools.APIGenerator
             return nameSpace;
         }
 
-        private NativeTypeDescription ParseNativeType()
+        private TypeDescription ParseNativeType()
         {
-            var type = new NativeTypeDescription();
+            var type = new TypeDescription();
             var token = _tokenizer.ExpectToken(TokenType.Identifier);
 
             // Possible types:
@@ -223,7 +234,7 @@ namespace ReCrafted.Tools.APIGenerator
                 // Undo
                 _tokenizer.PreviousToken();
 
-                currentParam.NativeType = ParseNativeType();
+                currentParam.Type = ParseNativeType();
                 currentParam.Name = _tokenizer.ExpectToken(TokenType.Identifier).Value;
 
                 // Expect
@@ -244,19 +255,6 @@ namespace ReCrafted.Tools.APIGenerator
 
             // return arguments
             return parameters;
-        }
-
-        private void TranslateTypes() // ???
-        {
-            // TODO: Proper function parameter handling
-            // const Type&, Type&, Type* etc. support is required.
-            // Example:
-            // 'const Vector3*', 'Vector3*' should become 'Vector3', and C++ should generate 'Vector3*' - this is because we cannot check the type
-            // 'Vector3&' and 'const Vector3&' should become 'ref Vector3', and C++ should generate 'Vector3*'
-
-            // TODO: Common type conversion: strings, integers etc.
-            // Because: 'const char*', 'const String&' becomes string,
-            // uint32_t becomes uint etc.
         }
 
         public static bool GenerateClass(string inputFile, string csOutputFile, string cppOutputFile)
