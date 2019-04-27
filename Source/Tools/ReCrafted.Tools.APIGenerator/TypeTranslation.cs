@@ -49,12 +49,13 @@ namespace ReCrafted.Tools.APIGenerator
         public static string ToCSharp(TypeDescription cppType)
         {
             var baseType = TranslateBaseType(cppType.BaseType);
-
+            
+            // Handle string type
             switch (cppType.BaseType)
             {
-                case "char":        // c string
-                case "std::string": // std string
-                case "String":      // Engine's string
+                case "char" when cppType.ByPtr: // c string
+                case "std::string":             // std string
+                case "String":                  // Engine's string
                     return "string";
             }
 
@@ -77,6 +78,14 @@ namespace ReCrafted.Tools.APIGenerator
 
             // Handle: Type*, Type
             return baseType;
+        }
+
+        public static bool PassByReference(TypeDescription cppType)
+        {
+            if (cppType.IsConst && cppType.ByRef)
+                return false;
+
+            return cppType.ByRef;
         }
     }
 }
