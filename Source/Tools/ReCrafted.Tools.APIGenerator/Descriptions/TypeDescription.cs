@@ -1,6 +1,6 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
-namespace ReCrafted.Tools.APIGenerator.Description
+namespace ReCrafted.Tools.APIGenerator.Descriptions
 {
     public struct TypeDescription
     {

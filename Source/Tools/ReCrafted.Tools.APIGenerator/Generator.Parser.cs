@@ -1,7 +1,7 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System;
-using ReCrafted.Tools.APIGenerator.Description;
+using ReCrafted.Tools.APIGenerator.Descriptions;
 using ReCrafted.Tools.Common.CodeTokenizer;
 
 namespace ReCrafted.Tools.APIGenerator

@@ -18,7 +18,8 @@ namespace ReCrafted.Tools.APIGenerator
                 return;
 
             // Generate C# and C++ class from given header file
-            Generator.GenerateClass(Options.Current.InputFile, Options.Current.CSharpOutputFile, Options.Current.CPlusPlusOutputFile);
+            var generator = new Generator(Options.Current.InputFile, Options.Current.CSharpOutputFile, Options.Current.CPlusPlusOutputFile);
+            generator.GenerateClass();
         }
     }
 }

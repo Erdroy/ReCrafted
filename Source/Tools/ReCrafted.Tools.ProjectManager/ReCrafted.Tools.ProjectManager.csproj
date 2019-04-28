@@ -63,6 +63,7 @@
     <Compile Include="Command.cs" />
     <Compile Include="Commands\CompileShaders.cs" />
     <Compile Include="Commands\CreateProjects.cs" />
+    <Compile Include="Commands\GenerateAPI.cs" />
     <Compile Include="Commands\Pack3rdParty.cs" />
     <Compile Include="Commands\PostBuild.cs" />
     <Compile Include="Commands\SetupProject.cs" />
@@ -78,6 +79,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ReCrafted.Tools.APIGenerator\ReCrafted.Tools.APIGenerator.csproj">
+      <Project>{b6fa93e9-ae5d-4d8e-9637-3806aaaad66a}</Project>
+      <Name>ReCrafted.Tools.APIGenerator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ReCrafted.Tools.Common\ReCrafted.Tools.Common.csproj">
       <Project>{c027b9e3-fe8a-41f0-b984-d2ca16ce9b1b}</Project>
       <Name>ReCrafted.Tools.Common</Name>

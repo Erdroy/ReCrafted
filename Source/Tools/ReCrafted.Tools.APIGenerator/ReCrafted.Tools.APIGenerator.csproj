@@ -61,43 +61,43 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessModifier.cs" />
-    <Compile Include="Description\ClassDescription.cs" />
-    <Compile Include="Description\FunctionDescription.cs" />
-    <Compile Include="Description\TypeDescription.cs" />
+    <Compile Include="Descriptions\ClassDescription.cs" />
+    <Compile Include="Descriptions\FunctionDescription.cs" />
+    <Compile Include="Descriptions\TypeDescription.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="Generator.Parser.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Templates\ClassTemplate.cs">
+    <Compile Include="Templates\CSharpTemplate.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ClassTemplate.tt</DependentUpon>
+      <DependentUpon>CSharpTemplate.tt</DependentUpon>
     </Compile>
-    <Compile Include="Templates\ProxyTemplate.cs">
+    <Compile Include="Templates\CPlusPlusTemplate.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ProxyTemplate.tt</DependentUpon>
+      <DependentUpon>CPlusPlusTemplate.tt</DependentUpon>
     </Compile>
     <Compile Include="TypeTranslation.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\CSharpTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>CSharpTemplate.cs</LastGenOutput>
+    </Content>
+    <Content Include="Templates\CPlusPlusTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>CPlusPlusTemplate.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ReCrafted.Tools.Common\ReCrafted.Tools.Common.csproj">
       <Project>{c027b9e3-fe8a-41f0-b984-d2ca16ce9b1b}</Project>
       <Name>ReCrafted.Tools.Common</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Templates\ClassTemplate.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>ClassTemplate.cs</LastGenOutput>
-    </Content>
-    <Content Include="Templates\ProxyTemplate.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>ProxyTemplate.cs</LastGenOutput>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

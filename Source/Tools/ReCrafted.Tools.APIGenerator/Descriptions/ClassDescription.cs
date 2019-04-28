@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ReCrafted.Tools.APIGenerator.Description
+namespace ReCrafted.Tools.APIGenerator.Descriptions
 {
     public class ClassDescription
     {

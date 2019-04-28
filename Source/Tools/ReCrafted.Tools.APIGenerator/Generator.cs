@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using ReCrafted.Tools.APIGenerator.Description;
+using ReCrafted.Tools.APIGenerator.Descriptions;
 using ReCrafted.Tools.APIGenerator.Templates;
 using ReCrafted.Tools.Common.CodeTokenizer;
 
@@ -33,9 +33,11 @@ namespace ReCrafted.Tools.APIGenerator
 
             if(!input.EndsWith(".h"))
                 throw new Exception($"Input file {input} is not an header file!");
+
+            Instance = this;
         }
 
-        public void Parse()
+        private void Parse()
         {
             if (_tokenizer?.CurrentToken?.Type == TokenType.EndOfFile)
                 throw new Exception("This file is already parsed!");
@@ -75,10 +77,10 @@ namespace ReCrafted.Tools.APIGenerator
             while (true);
         }
 
-        public void Generate()
+        private void Generate()
         {
             // Generate C# class code
-            var classGenerator = new ClassTemplate
+            var classGenerator = new CSharpTemplate
             {
                 Session = new Dictionary<string, object>
                 {
@@ -91,7 +93,7 @@ namespace ReCrafted.Tools.APIGenerator
             File.WriteAllText(_fileCsOutput, classGenerator.TransformText());
 
             // Generate C++ proxy code
-            var proxyGenerator = new ProxyTemplate
+            var proxyGenerator = new CPlusPlusTemplate
             {
                 Session = new Dictionary<string, object>
                 {
@@ -102,27 +104,6 @@ namespace ReCrafted.Tools.APIGenerator
             proxyGenerator.Initialize();
 
             File.WriteAllText(_fileCppOutput, proxyGenerator.TransformText());
-        }
-
-        private string ParseNamespace(string fileName)
-        {
-            // D:\ReCrafted\Source\Engine\ReCrafted.Engine\APITestFile.h
-
-            // Cut: 'D:\ReCrafted\Source\Engine\ReCrafted.Engine\'
-            var nameSpaceStart = fileName.IndexOf("ReCrafted.Engine") + "ReCrafted.Engine".Length;
-            var nameSpace = fileName.Substring(nameSpaceStart, fileName.Length - nameSpaceStart);
-
-            // Now cut-out the file part
-            var fileNameStart = nameSpace.LastIndexOf("\\");
-            nameSpace = nameSpace.Substring(0, fileNameStart);
-
-            // Split path and join with dots to create the namespace string
-            nameSpace = string.Join(".", nameSpace.Split('\\'));
-
-            // Add ReCrafted.API prefix to the namespace
-            nameSpace = "ReCrafted.API" + nameSpace;
-
-            return nameSpace;
         }
 
         private TypeDescription ParseNativeType()
@@ -257,14 +238,12 @@ namespace ReCrafted.Tools.APIGenerator
             return parameters;
         }
 
-        public static bool GenerateClass(string inputFile, string csOutputFile, string cppOutputFile)
+        public bool GenerateClass()
         {
             var perfCounter = new Stopwatch();
             perfCounter.Start();
 
-            Console.WriteLine($"Generating API for '{inputFile}' C++ header file.");
-
-            var generator = new Generator(inputFile, csOutputFile, cppOutputFile);
+            Console.WriteLine($"Generating API for '{_fileInput}' C++ header file.");
 
 #if !DEBUG
             try
@@ -272,13 +251,13 @@ namespace ReCrafted.Tools.APIGenerator
 #endif
                 var perfCounterParse = new Stopwatch();
                 perfCounterParse.Start();
-                generator.Parse();
+                Parse();
                 perfCounterParse.Stop();
                 Console.WriteLine($"Parsing done in {perfCounterParse.ElapsedMilliseconds} ms.");
 
                 perfCounterParse.Reset();
                 perfCounterParse.Start();
-                generator.Generate();
+                Generate();
                 perfCounterParse.Stop();
                 Console.WriteLine($"Generation done in {perfCounterParse.ElapsedMilliseconds} ms.");
 #if !DEBUG
@@ -294,8 +273,34 @@ namespace ReCrafted.Tools.APIGenerator
             // say bye and give the time that we spent here
             perfCounter.Stop();
             Console.WriteLine($"Done in {perfCounter.ElapsedMilliseconds} ms.");
-            Console.WriteLine($"Successfully generated API for file '{inputFile}'. C# API File '{csOutputFile}', C++ API File '{cppOutputFile}'");
+            Console.WriteLine($"Successfully generated API for file '{_fileInput}'. C# API File '{_fileCsOutput}', C++ API File '{_fileCppOutput}'");
             return true;
         }
+
+        public static string ParseNamespace(string fileName)
+        {
+            // D:\ReCrafted\Source\Engine\ReCrafted.Engine\APITestFile.h
+
+            // Cut: 'D:\ReCrafted\Source\Engine\ReCrafted.Engine\'
+            var nameSpaceStart = fileName.IndexOf("ReCrafted.Engine", StringComparison.InvariantCultureIgnoreCase) + "ReCrafted.Engine".Length;
+            var nameSpace = fileName.Substring(nameSpaceStart, fileName.Length - nameSpaceStart);
+
+            // Now cut-out the file part
+            var fileNameStart = nameSpace.LastIndexOf("\\", StringComparison.InvariantCultureIgnoreCase);
+            nameSpace = nameSpace.Substring(0, fileNameStart);
+
+            // Split path and join with dots to create the namespace string
+            nameSpace = string.Join(".", nameSpace.Split('\\'));
+
+            // Add ReCrafted.API prefix to the namespace
+            nameSpace = "ReCrafted.API" + nameSpace;
+
+            return nameSpace;
+        }
+
+        public string InputFile => _fileInput;
+        public string InputFileName => Path.GetFileNameWithoutExtension(_fileInput);
+
+        public static Generator Instance { get; private set; }
     }
 }

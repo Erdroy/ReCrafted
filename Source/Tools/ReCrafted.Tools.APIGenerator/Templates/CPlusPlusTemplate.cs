@@ -18,9 +18,9 @@ namespace ReCrafted.Tools.APIGenerator.Templates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\ProxyTemplate.tt"
+    #line 1 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
-    public partial class ProxyTemplate : ProxyTemplateBase
+    public partial class CPlusPlusTemplate : CPlusPlusTemplateBase
     {
 #line hidden
         /// <summary>
@@ -30,18 +30,25 @@ namespace ReCrafted.Tools.APIGenerator.Templates
         {
             this.Write("// ReCrafted (c) 2016-2019 Damian \'Erdroy\' Korczowski. All rights reserved.\r\n// W" +
                     "ARNING: Auto-generated file. All changes will be lost when the API code will be " +
-                    "regenerated!\r\n\r\n#include \"\"");
+                    "regenerated!\r\n\r\n#include \"");
+            
+            #line 11 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Generator.Instance.InputFileName));
+            
+            #line default
+            #line hidden
+            this.Write(".h\"");
             return this.GenerationEnvironment.ToString();
         }
         
-        #line 1 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\ProxyTemplate.tt"
+        #line 1 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
-private global::ReCrafted.Tools.APIGenerator.Description.ClassDescription _ClassField;
+private global::ReCrafted.Tools.APIGenerator.Descriptions.ClassDescription _ClassField;
 
 /// <summary>
 /// Access the Class parameter of the template.
 /// </summary>
-private global::ReCrafted.Tools.APIGenerator.Description.ClassDescription Class
+private global::ReCrafted.Tools.APIGenerator.Descriptions.ClassDescription Class
 {
     get
     {
@@ -49,12 +56,12 @@ private global::ReCrafted.Tools.APIGenerator.Description.ClassDescription Class
     }
 }
 
-private global::System.Collections.Generic.List<ReCrafted.Tools.APIGenerator.Description.FunctionDescription> _FunctionsField;
+private global::System.Collections.Generic.List<ReCrafted.Tools.APIGenerator.Descriptions.FunctionDescription> _FunctionsField;
 
 /// <summary>
 /// Access the Functions parameter of the template.
 /// </summary>
-private global::System.Collections.Generic.List<ReCrafted.Tools.APIGenerator.Description.FunctionDescription> Functions
+private global::System.Collections.Generic.List<ReCrafted.Tools.APIGenerator.Descriptions.FunctionDescription> Functions
 {
     get
     {
@@ -73,7 +80,7 @@ public virtual void Initialize()
 bool ClassValueAcquired = false;
 if (this.Session.ContainsKey("Class"))
 {
-    this._ClassField = ((global::ReCrafted.Tools.APIGenerator.Description.ClassDescription)(this.Session["Class"]));
+    this._ClassField = ((global::ReCrafted.Tools.APIGenerator.Descriptions.ClassDescription)(this.Session["Class"]));
     ClassValueAcquired = true;
 }
 if ((ClassValueAcquired == false))
@@ -81,13 +88,13 @@ if ((ClassValueAcquired == false))
     object data = global::System.Runtime.Remoting.Messaging.CallContext.LogicalGetData("Class");
     if ((data != null))
     {
-        this._ClassField = ((global::ReCrafted.Tools.APIGenerator.Description.ClassDescription)(data));
+        this._ClassField = ((global::ReCrafted.Tools.APIGenerator.Descriptions.ClassDescription)(data));
     }
 }
 bool FunctionsValueAcquired = false;
 if (this.Session.ContainsKey("Functions"))
 {
-    this._FunctionsField = ((global::System.Collections.Generic.List<ReCrafted.Tools.APIGenerator.Description.FunctionDescription>)(this.Session["Functions"]));
+    this._FunctionsField = ((global::System.Collections.Generic.List<ReCrafted.Tools.APIGenerator.Descriptions.FunctionDescription>)(this.Session["Functions"]));
     FunctionsValueAcquired = true;
 }
 if ((FunctionsValueAcquired == false))
@@ -95,7 +102,7 @@ if ((FunctionsValueAcquired == false))
     object data = global::System.Runtime.Remoting.Messaging.CallContext.LogicalGetData("Functions");
     if ((data != null))
     {
-        this._FunctionsField = ((global::System.Collections.Generic.List<ReCrafted.Tools.APIGenerator.Description.FunctionDescription>)(data));
+        this._FunctionsField = ((global::System.Collections.Generic.List<ReCrafted.Tools.APIGenerator.Descriptions.FunctionDescription>)(data));
     }
 }
 
@@ -116,7 +123,7 @@ if ((FunctionsValueAcquired == false))
     /// Base class for this transformation
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
-    public class ProxyTemplateBase
+    public class CPlusPlusTemplateBase
     {
         #region Fields
         private global::System.Text.StringBuilder generationEnvironmentField;

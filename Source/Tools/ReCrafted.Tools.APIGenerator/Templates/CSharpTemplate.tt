@@ -4,18 +4,16 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="ReCrafted.Tools.APIGenerator" #>
-<#@ import namespace="ReCrafted.Tools.APIGenerator.Description" #>
-<#@ parameter type="ReCrafted.Tools.APIGenerator.Description.ClassDescription" name="Class" #>
-<#@ parameter type="System.Collections.Generic.List<ReCrafted.Tools.APIGenerator.Description.FunctionDescription>" name="Functions" #>
+<#@ import namespace="ReCrafted.Tools.APIGenerator.Descriptions" #>
+<#@ parameter type="ReCrafted.Tools.APIGenerator.Descriptions.ClassDescription" name="Class" #>
+<#@ parameter type="System.Collections.Generic.List<ReCrafted.Tools.APIGenerator.Descriptions.FunctionDescription>" name="Functions" #>
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 // WARNING: Auto-generated file. All changes will be lost when the API code will be regenerated!
 
-using System;
+using ReCrafted.API.Core;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-<#
-#>
 namespace <#=Class.Namespace#> 
 {
     <#=Class.GetModifiers()#> class <#=Class.Name#> : <#=Class.Inherits#>
@@ -29,7 +27,20 @@ foreach(var function in Functions)
 
         <#=function.GetModifiers()#> <#=TypeTranslation.ToCSharp(function.ReturnType)#> <#=function.Name#>(<#=function.GetCSharpParameters()#>)
         {
+<#
+        if(function.ReturnType.BaseType != "void")
+        {
+#>
+            return Internal<#=function.Name#>(<#=function.GetCSharpParametersRedirect()#>);
+<#
+        }
+        else
+        {
+#>
             Internal<#=function.Name#>(<#=function.GetCSharpParametersRedirect()#>);
+<#      
+        }
+#>
         }
 <#
 }

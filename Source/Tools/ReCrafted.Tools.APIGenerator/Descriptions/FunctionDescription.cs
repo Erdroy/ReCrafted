@@ -1,10 +1,9 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
-namespace ReCrafted.Tools.APIGenerator.Description
+namespace ReCrafted.Tools.APIGenerator.Descriptions
 {
     public class FunctionDescription
     {
@@ -29,7 +28,7 @@ namespace ReCrafted.Tools.APIGenerator.Description
             if (!IsStatic)
             {
                 // Add native object pointer forward from Object::NativePtr
-                paramString.Append("nativePtr");
+                paramString.Append("NativePtr");
             }
 
             foreach (var parameter in Parameters)
@@ -53,7 +52,7 @@ namespace ReCrafted.Tools.APIGenerator.Description
             if (!IsStatic && withObjectPtr)
             {
                 // Add native object pointer
-                paramString.Append("IntPtr");
+                paramString.Append("System.IntPtr");
                 paramString.Append(' ');
                 paramString.Append("nativePtr");
             }

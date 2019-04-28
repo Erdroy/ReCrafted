@@ -1,7 +1,7 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System;
-using ReCrafted.Tools.APIGenerator.Description;
+using ReCrafted.Tools.APIGenerator.Descriptions;
 
 namespace ReCrafted.Tools.APIGenerator
 {
@@ -58,6 +58,13 @@ namespace ReCrafted.Tools.APIGenerator
                 case "String":                  // Engine's string
                     return "string";
             }
+
+            // TODO: Handle arrays
+            // - parser will need additional functionality to support the square bracket thingies
+            // Type<Type1>
+            // lib::Type
+            // lib::Type<Type1>
+            // lib::Type<lib::Type1>
 
             // Type&        -> ref Type (struct reference)
             // const Type&  -> Type     (struct reference)

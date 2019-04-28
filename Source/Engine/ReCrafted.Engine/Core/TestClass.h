@@ -6,14 +6,10 @@
 
 #include "Common/Logger.h"
 
-template<class TType >
-class TestObject
-{
-    virtual int Destroy(int testParam) const { return 0; }
-};
+class Object {};
 
 API_CLASS(public, sealed)
-class TestClass final : public TestObject<TestClass>
+class TestClass final : public Object
 {
     API_CLASS_BODY()
 
@@ -22,7 +18,7 @@ public:
      * \brief Destroys this actor.
      */
     API_FUNCTION(public, virtual)
-    int Destroy(int testParam) const override
+    int Destroy(int testParam) const
     {
         Logger::Log(__FUNCTION__);
         delete this;
@@ -42,11 +38,17 @@ public:
     }
 
     API_FUNCTION()
-    void TestFunction2(TestClass* object)
+    void TestFunction2(TestClass* obj)
     {
 
     }
 
+    API_FUNCTION()
+    void TestFunction3(Vector3& vector, const Vector3& vector1)
+    {
+
+    }
+    
 public:
     /**
      * \brief Creates actor of type EmptyActor.
