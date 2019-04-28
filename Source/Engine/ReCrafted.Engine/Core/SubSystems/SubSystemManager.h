@@ -8,7 +8,7 @@
 #include "Common/Lock.h"
 #include "Common/List.h"
 
-#include "SubSystems/SubSystemBase.h"
+#include "Core/SubSystems/SubSystemBase.h"
 
 class SubSystemManager final : public Singleton<SubSystemManager>
 {

@@ -5,8 +5,8 @@
 #include <ReCrafted.h>
 
 #include "Common/List.h"
-#include "Actors/ActorPool.h"
-#include "SubSystems/SubSystem.h"
+#include "Core/Actors/ActorPool.h"
+#include "Core/SubSystems/SubSystem.h"
 
 class ActorPoolManager : public SubSystem<ActorPoolManager>
 {

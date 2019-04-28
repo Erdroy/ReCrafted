@@ -3,10 +3,10 @@
 #include "Application.h"
 #include "Common/Platform/Platform.h"
 #include "Common/Logger.h"
-#include "SubSystems/SubSystemManager.h"
+#include "Core/SubSystems/SubSystemManager.h"
+#include "Core/Actors/ActorPoolManager.h"
 #include "Core/Time.h"
 #include "Input/InputManager.h"
-#include "Actors/ActorPoolManager.h"
 #include "Renderer/Renderer.h"
 
 // EventProcessor is implemented per-platform

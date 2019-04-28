@@ -11,6 +11,7 @@
 // WARNING: Auto-generated file. All changes will be lost when the API code will be regenerated!
 
 using ReCrafted.API.Core;
+using ReCrafted.API.Mathematics;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 

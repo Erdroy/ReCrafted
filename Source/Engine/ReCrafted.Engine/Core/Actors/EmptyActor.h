@@ -4,7 +4,7 @@
 
 #include <ReCrafted.h>
 
-#include "Actors/Actor.h"
+#include "Core/Actors/Actor.h"
 
 class EmptyActor final : public Actor<EmptyActor>
 {

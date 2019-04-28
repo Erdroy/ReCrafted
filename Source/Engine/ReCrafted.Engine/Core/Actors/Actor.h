@@ -3,9 +3,9 @@
 #pragma once
 
 #include <ReCrafted.h>
-#include "Actors/ActorBase.h"
-#include "Actors/ActorPool.h"
-#include "Actors/ActorPoolManager.h"
+#include "Core/Actors/ActorBase.h"
+#include "Core/Actors/ActorPool.h"
+#include "Core/Actors/ActorPoolManager.h"
 
 template<typename TActor>
 class Actor : public ActorBase
