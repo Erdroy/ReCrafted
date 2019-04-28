@@ -22,3 +22,6 @@
 [submodule "Source/Libraries/jemalloc"]
 	path = Source/Libraries/jemalloc
 	url = https://github.com/jemalloc/jemalloc
+[submodule "Source/Libraries/ReCrafted.Mono"]
+	path = Source/Libraries/ReCrafted.Mono
+	url = https://github.com/Erdroy/ReCrafted.Mono
