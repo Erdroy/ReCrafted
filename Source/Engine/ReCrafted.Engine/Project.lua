@@ -30,8 +30,13 @@ project "ReCrafted.Engine"
         path.join(LIBRARIES_DIR, "fmt/include"),
         path.join(LIBRARIES_DIR, "json/include"),
         path.join(LIBRARIES_DIR, "cpp-base64"),
+        path.join(LIBRARIES_DIR, "ReCrafted.Mono/Include"),
     }
 
+	libdirs {
+		path.join(LIBRARIES_DIR, "ReCrafted.Mono/Build/Windows-x86_64"),
+	}
+	
     -- default deps
     links { 
         "ReCrafted.Common",
@@ -40,6 +45,8 @@ project "ReCrafted.Engine"
 
         "d3d11", "dxguid", "dxgi", "d3dcompiler", 
         "Rpcrt4",
+		
+		"mono-2.0-sgen",
     }
     
     -- exclude hlsl files from build

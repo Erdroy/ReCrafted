@@ -32,10 +32,14 @@ project "ReCrafted"
         path.join(LIBRARIES_DIR, "fmt/include"),
     }
     
+	libdirs {
+		path.join(LIBRARIES_DIR, "ReCrafted.Mono/Build/Windows-x86_64"),
+	}
+	
     -- default deps
     links { 
         "ReCrafted.Common",
-        "ReCrafted.Engine"
+        "ReCrafted.Engine",
     }
 	
 	-- add onbuild script and multi processor compilation
