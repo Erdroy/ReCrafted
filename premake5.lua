@@ -37,6 +37,7 @@ dofile "./Source/Libraries/Project.json.lua"
 dofile "./Source/Libraries/Project.sparsepp.lua"
 
 group "Engine"
+dofile "./Source/Engine/ReCrafted.API/Project.lua"
 dofile "./Source/Engine/ReCrafted.Common/Project.lua"
 dofile "./Source/Engine/ReCrafted.Engine/Project.lua"
 
