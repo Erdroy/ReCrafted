@@ -5,16 +5,11 @@
 #include <ReCrafted.h>
 #include "Core/SubSystems/SubSystem.h"
 
-#include <mono/jit/jit.h>
-#include <mono/metadata/assembly.h>
-#include <mono/metadata/debug-helpers.h>
-#include <mono/metadata/mono-debug.h>
-
+/// <summary>
+///     ScriptingManager class. Implements Mono backend for engine scripting.
+/// </summary>
 class ScriptingManager final : public SubSystem<ScriptingManager>
 {
-private:
-    MonoDomain* m_rootDomain = nullptr;
-
 protected:
     void Initialize() override;
     void Shutdown() override;

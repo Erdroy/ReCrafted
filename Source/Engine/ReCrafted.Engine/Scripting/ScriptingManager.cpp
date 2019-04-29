@@ -1,6 +1,8 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include "ScriptingManager.h"
+#include "Mono.h"
+#include "Domain.h"
 
 const char* jit_options[] = {
     "--soft-breakpoints",
@@ -16,16 +18,16 @@ void ScriptingManager::Initialize()
     mono_debug_init(MONO_DEBUG_FORMAT_MONO);
     mono_jit_parse_options(2, const_cast<char**>(jit_options));
 
-    m_rootDomain = mono_jit_init(rootDomainName);
-    ASSERT(m_rootDomain);
+    const auto monoDomain = mono_jit_init(rootDomainName);
+    ASSERT(monoDomain);
 
-    mono_debug_domain_create(m_rootDomain);
+    mono_debug_domain_create(monoDomain);
+
+    // Create root domain
+    Domain::CreateRoot(monoDomain);
 }
 
 void ScriptingManager::Shutdown()
 {
-    const auto finalizeTimeout = 1000;
 
-    mono_domain_finalize(m_rootDomain, finalizeTimeout);
-    mono_jit_cleanup(m_rootDomain);
 }
