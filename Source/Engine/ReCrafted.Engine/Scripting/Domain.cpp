@@ -25,6 +25,21 @@ RefPtr<Assembly> Domain::LoadAssembly(const char* fileName)
     return assembly;
 }
 
+void Domain::UnloadAssembly(RefPtr<Assembly>& assembly)
+{
+    ASSERT(assembly);
+    ASSERT(m_assemblies.Contains(assembly));
+
+    // Release assembly reference
+    assembly->Unload();
+    
+    // Remove assembly from list
+    m_assemblies.Remove(assembly);
+
+    // Reset passed assembly reference pointer.
+    assembly = nullptr;
+}
+
 void Domain::Finalize(const uint32_t timeout) const
 {
     mono_domain_finalize(m_domain, timeout);
@@ -34,12 +49,25 @@ void Domain::Cleanup()
 {
     mono_jit_cleanup(m_domain);
     m_domain = nullptr;
+
+    // Remove from list
+    Domains.Remove(m_self);
+
+    // Reset root pointer if this domain is the root, too.
+    if(Root == m_self)
+        Root = nullptr;
+
+    // Reset self reference
+    m_self = nullptr;
 }
 
 RefPtr<Domain> Domain::CreateRoot(MonoDomain* monoDomain)
 {
     const RefPtr<Domain> domain(new Domain(monoDomain));
     Domains.Add(domain);
+
+    domain->m_self = domain;
+
     Root = domain;
     return domain;
 }

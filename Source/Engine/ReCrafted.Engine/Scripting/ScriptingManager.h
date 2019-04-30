@@ -5,14 +5,23 @@
 #include <ReCrafted.h>
 #include "Core/SubSystems/SubSystem.h"
 
+class Assembly;
+
 /// <summary>
 ///     ScriptingManager class. Implements Mono backend for engine scripting.
 /// </summary>
 class ScriptingManager final : public SubSystem<ScriptingManager>
 {
+private:
+    bool m_attachDebugger = false;
+
+    RefPtr<Assembly> m_apiAssembly;
+    RefPtr<Assembly> m_gameAssembly;
+
+private:
+    void LoadAssemblies();
+
 protected:
     void Initialize() override;
     void Shutdown() override;
-
-public:
 };

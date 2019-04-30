@@ -15,6 +15,7 @@ class Domain
 {
 private:
     MonoDomain* m_domain = nullptr;
+    RefPtr<Domain> m_self = nullptr;
     List<RefPtr<Assembly>> m_assemblies = {};
 
 public:
@@ -28,6 +29,13 @@ public:
     ///     Once assembly is loaded, it cannot be unloaded.
     /// </remarks>
     RefPtr<Assembly> LoadAssembly(const char* fileName);
+
+    /// <summary>
+    ///     Releases reference to this assembly.
+    /// </summary>
+    /// <remarks>Assembly is released when all outstanding references are released.</remarks>
+    /// <param name="assembly">The assembly reference pointer.</param>
+    void UnloadAssembly(RefPtr<Assembly>& assembly);
 
     /// <summary>
     ///     Finalizes all finalize-pending objects in this domain.

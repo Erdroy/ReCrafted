@@ -10,16 +10,24 @@
 /// </summary>
 class Assembly
 {
+    friend class Domain;
+
 private:
     MonoAssembly* m_assembly = nullptr;
     MonoImage* m_image = nullptr;
     MonoDomain* m_domain = nullptr;
 
+private:
+    void Unload();
+
 public:
+    /// <summary>
+    ///     Initializes Assembly class instance.
+    /// </summary>
+    /// <param name="assembly">The mono assembly reference.</param>
+    /// <param name="image">The mono image reference.</param>
+    /// <param name="domain">The mono domain reference.</param>
     Assembly(MonoAssembly* assembly, MonoImage* image, MonoDomain* domain) : m_assembly(assembly), m_image(image),
                                                                              m_domain(domain)
     { }
-
-public:
-
 };

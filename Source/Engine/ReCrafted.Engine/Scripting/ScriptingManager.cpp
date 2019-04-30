@@ -3,6 +3,8 @@
 #include "ScriptingManager.h"
 #include "Mono.h"
 #include "Domain.h"
+#include "Common/Platform/Environment.h"
+#include "Assembly.h"
 
 const char* jit_options[] = {
     "--soft-breakpoints",
@@ -11,23 +13,50 @@ const char* jit_options[] = {
 
 const char* rootDomainName = "ReCrafted";
 
+void ScriptingManager::LoadAssemblies()
+{
+    m_apiAssembly = Domain::Root->LoadAssembly("./ReCrafted.API.dll");
+    m_gameAssembly = Domain::Root->LoadAssembly("./ReCrafted.Game.dll");
+}
+
 void ScriptingManager::Initialize()
 {
+    // Check if we need to attach debugger
+    m_attachDebugger = Environment::GetCommandLineArguments().Contains(STRING_CONST("-debug"));
+
     mono_set_dirs("../Mono/lib", "../Mono/etc");
 
-    mono_debug_init(MONO_DEBUG_FORMAT_MONO);
-    mono_jit_parse_options(2, const_cast<char**>(jit_options));
+    if(m_attachDebugger)
+    {
+        mono_debug_init(MONO_DEBUG_FORMAT_MONO);
+        mono_jit_parse_options(2, const_cast<char**>(jit_options));
+    }
 
     const auto monoDomain = mono_jit_init(rootDomainName);
     ASSERT(monoDomain);
-
-    mono_debug_domain_create(monoDomain);
+    
+    if (m_attachDebugger)
+    {
+        // Set domain for debugging debug
+        mono_debug_domain_create(monoDomain);
+    }
 
     // Create root domain
     Domain::CreateRoot(monoDomain);
+
+    // Load assemblies
+    LoadAssemblies();
 }
 
 void ScriptingManager::Shutdown()
 {
+    // Finalize root domain
+    Domain::Root->Finalize();
 
+    // Unload assemblies
+    Domain::Root->UnloadAssembly(m_gameAssembly);
+    Domain::Root->UnloadAssembly(m_apiAssembly);
+
+    // Cleanup and release
+    Domain::Root->Cleanup();
 }
