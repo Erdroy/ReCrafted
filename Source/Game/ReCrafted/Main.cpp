@@ -1,6 +1,7 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include <ReCrafted.h>
+#include <Common/Platform/Environment.h>
 #include <Core/Application.h>
 
 #ifdef _WIN32
@@ -56,6 +57,8 @@ int CALLBACK WinMain(
     LPSTR lpCmdLine,
     int nCmdShow)
 {
+    Environment::SetCommandLine(String(lpCmdLine));
+
     Application app;
     app.Run();
     return ERROR_SUCCESS;
