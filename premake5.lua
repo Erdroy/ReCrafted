@@ -43,6 +43,7 @@ dofile "./Source/Engine/ReCrafted.Engine/Project.lua"
 
 group "Game"
 dofile "./Source/Game/ReCrafted/Project.lua"
+dofile "./Source/Game/ReCrafted.Game/Project.lua"
 
 group "Tools"
 dofile "./Source/Tools/ReCrafted.VSDebugger/Project.lua"
