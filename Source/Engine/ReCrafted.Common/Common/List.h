@@ -86,14 +86,13 @@ public:
         return static_cast<bool>(std::find(m_vector.begin(), m_vector.end(), item) != m_vector.end());
     }
 
-
     /**
     * \brief Note: Using this, assumes that the TType has comparison operator overloaded (if class/struct)
     */
-    FORCE_INLINE bool Contains(TType item) const
+    /*FORCE_INLINE bool Contains(TType item) const
     {
         return static_cast<bool>(std::find(m_vector.begin(), m_vector.end(), item) != m_vector.end());
-    }
+    }*/
 
     /**
      * \brief Note: Using this, assumes that the TType has comparison operator overloaded (if class/struct)
