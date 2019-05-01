@@ -13,6 +13,7 @@ namespace ReCrafted.Tools.ProjectManager.Commands
         public override void Execute()
         {
             const string c99CppHeaderExtension = ".h";
+            const string c99CppHeaderAPIExtension = ".Gen.cpp";
 
             var timer = new Stopwatch();
             timer.Start();
@@ -36,14 +37,8 @@ namespace ReCrafted.Tools.ProjectManager.Commands
             }
 
             Console.WriteLine($"Found {apiHeaderFiles.Count} API-defining headers out of total {headerFiles.Length} ({timer.ElapsedMilliseconds} ms)");
-
-            // Set generator options
-            APIGenerator.Options.Current = new APIGenerator.Options
-            {
-                Verbose = true
-            };
-
             Console.WriteLine("Generating API files...");
+
             foreach (var headerFile in apiHeaderFiles)
             {
                 var fileInfo = new FileInfo(headerFile);
@@ -52,24 +47,34 @@ namespace ReCrafted.Tools.ProjectManager.Commands
                 if (!headerFile.EndsWith(c99CppHeaderExtension) || fileInfo.Extension != c99CppHeaderExtension)
                     throw new Exception($"API-defining header file '{headerFile}' does not end with C/C++ header file extension ({c99CppHeaderExtension}).");
 
-                // Construct C++ file for API output.
-                // Replace .h with .Gen.cpp.
-                var proxySourceFile = headerFile.Remove(headerFile.Length - c99CppHeaderExtension.Length, c99CppHeaderExtension.Length);
-                proxySourceFile += ".Gen.cpp";
+                try
+                {
+                    // Generate C# and C++ class from given header file
+                    var generator = new Generator(headerFile);
+                    generator.Parse();
 
-                // Construct C# file for API output.
-                var nameSpace = Generator.ParseNamespace(headerFile).Replace("ReCrafted.API.", "");
-                var apiSourceFile = currentDir + "\\Source\\Engine\\ReCrafted.API\\" + nameSpace.Replace(".", "\\") + "\\";
-                apiSourceFile += apiSourceFileName;
+                    // Construct C++ file for API output.
+                    // Replace .h with .Gen.cpp.
+                    var proxySourceFile = headerFile.Remove(headerFile.Length - c99CppHeaderExtension.Length, c99CppHeaderExtension.Length);
+                    proxySourceFile += c99CppHeaderAPIExtension;
 
-                // Create directory if missing
-                var apiSourceFileDirectory = apiSourceFile.Replace(apiSourceFileName, "");
-                if (!Directory.Exists(apiSourceFileDirectory))
-                    Directory.CreateDirectory(apiSourceFileDirectory);
+                    // Construct C# file for API output.
+                    var nameSpace = generator.Namespace.Replace("ReCrafted.API", "");
+                    var apiSourceFile =
+                        $"{currentDir}\\Source\\Engine\\ReCrafted.API{nameSpace.Replace(".", "\\")}\\{apiSourceFileName}";
 
-                // Generate C# and C++ class from given header file
-                var generator = new Generator(headerFile, apiSourceFile, proxySourceFile);
-                generator.GenerateClass();
+                    // Create directory if missing
+                    var apiSourceFileDirectory = apiSourceFile.Replace(apiSourceFileName, "");
+
+                    if (!Directory.Exists(apiSourceFileDirectory))
+                        Directory.CreateDirectory(apiSourceFileDirectory);
+
+                    generator.Generate(apiSourceFile, proxySourceFile);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to generate API file using header file '{headerFile}'.\nError: \n{ex.Message}");
+                }
             }
 
             timer.Stop();

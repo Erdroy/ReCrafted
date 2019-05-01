@@ -141,10 +141,9 @@ namespace ReCrafted.Tools.APIGenerator
             desc.Name = className.Value;
 
             // Parse namespace
-            desc.Namespace = ParseNamespace(_fileInput);
+            desc.Namespace = ParseNamespace(InputFile);
 
-            if (Options.Current.Verbose)
-                Console.WriteLine($"C++ class name: '{className.Value}'");
+            Console.WriteLine($"C++ class name: '{className.Value}'");
 
             // Parse class inheritance, support for single Type/Generic Type.
             var token = _tokenizer.NextToken();
@@ -184,8 +183,7 @@ namespace ReCrafted.Tools.APIGenerator
 
                     var inheritType = $"{nameToken.Value}<{genericType.Value}>";
 
-                    if (Options.Current.Verbose)
-                        Console.WriteLine($"C++ class inherits '{inheritType}'");
+                    Console.WriteLine($"C++ class inherits '{inheritType}'");
 
                     desc.Inherits = inheritType;
                 }
@@ -193,16 +191,19 @@ namespace ReCrafted.Tools.APIGenerator
                 {
                     var inheritType = nameToken.Value;
 
-                    if (Options.Current.Verbose)
-                        Console.WriteLine($"C++ class inherits '{inheritType}'");
+                    Console.WriteLine($"C++ class inherits '{inheritType}'");
 
                     desc.Inherits = inheritType;
                 }
             }
-            else
+            else if(desc.Name != "Object")
             {
                 // Must inherit!
                 throw new Exception($"Class {className.Value} must inherit Object or any other type that inherits Object!");
+            }
+            else
+            {
+                token = _tokenizer.PreviousToken();
             }
 
             for (var i = 0; i < tagArguments.Count; i++)
@@ -226,6 +227,7 @@ namespace ReCrafted.Tools.APIGenerator
                     case "static":
                     case "sealed":
                     case "abstract":
+                    case "partial":
                         desc.Modifiers.Add(token.Value);
                         break;
                     case "customNamespace":
@@ -236,6 +238,10 @@ namespace ReCrafted.Tools.APIGenerator
                         // TODO: Check the namespace for invalid characters etc.
                         desc.Namespace = tagArguments[i + 1].Value.Replace("\"", "");
                         i++;
+                        break;
+
+                    default:
+                        Console.WriteLine($"WARNING: Unknown class modifier '{token.Value}'.");
                         break;
                 }
             }

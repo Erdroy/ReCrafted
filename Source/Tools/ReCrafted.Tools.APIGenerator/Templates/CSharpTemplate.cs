@@ -59,10 +59,9 @@ namespace ");
             
             #line default
             #line hidden
-            this.Write(" : ");
             
             #line 20 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Class.Inherits));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Class.GetInheritance()));
             
             #line default
             #line hidden

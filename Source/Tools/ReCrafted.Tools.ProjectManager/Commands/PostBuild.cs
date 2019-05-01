@@ -9,11 +9,14 @@ namespace ReCrafted.Tools.ProjectManager.Commands
     {
         public override void Execute()
         {
-            // compile shaders
+            // Compile shaders
             if (!Options.Current.SkipShaders)
                 Program.RunCommand("CompileShaders");
-            
-            // update build info
+
+            // Generate API
+            Program.RunCommand("GenerateAPI");
+
+            // Update build info
             Program.RunCommand("UpdateBuildInfo");
 
             var info = ProjectBuildInfo.FromFile(Program.BuildInfoFile);

@@ -17,7 +17,7 @@ using System.Runtime.CompilerServices;
 
 namespace <#=Class.Namespace#> 
 {
-    <#=Class.GetModifiers()#> class <#=Class.Name#> : <#=Class.Inherits#>
+    <#=Class.GetModifiers()#> class <#=Class.Name#><#=Class.GetInheritance()#>
     {
 <#
 

@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using ReCrafted.Tools.APIGenerator.Descriptions;
 using ReCrafted.Tools.APIGenerator.Templates;
@@ -12,21 +11,13 @@ namespace ReCrafted.Tools.APIGenerator
 {
     public partial class Generator
     {
-        private readonly string _fileInput;
-        private readonly string _fileCsOutput;
-        private readonly string _fileCppOutput;
-
         private Tokenizer _tokenizer;
         private ClassDescription _class;
-        //private StructDescription _structDesc;
         private readonly List<FunctionDescription> _functions = new List<FunctionDescription>();
-        //private List<PropertyDescription> _properties;
 
-        public Generator(string input, string csOutput, string cppOutput)
+        public Generator(string input)
         {
-            _fileInput = input;
-            _fileCsOutput = csOutput;
-            _fileCppOutput = cppOutput;
+            InputFile = input;
 
             if (!File.Exists(input))
                 throw new Exception($"Input file {input} doesn't exists!");
@@ -35,75 +26,6 @@ namespace ReCrafted.Tools.APIGenerator
                 throw new Exception($"Input file {input} is not an header file!");
 
             Instance = this;
-        }
-
-        private void Parse()
-        {
-            if (_tokenizer?.CurrentToken?.Type == TokenType.EndOfFile)
-                throw new Exception("This file is already parsed!");
-
-            if (Options.Current.Verbose)
-                Console.WriteLine("Parsing " + Options.Current.InputFile);
-
-            var source = File.ReadAllText(_fileInput);
-
-            if (!source.Contains("API_"))
-                throw new Exception($"Input file '{_fileInput}' doesn't contain any API tags!");
-
-            _tokenizer = new Tokenizer();
-            _tokenizer.Tokenize(source);
-
-            do
-            {
-                // get and check current token
-                var token = _tokenizer.NextToken();
-
-                if (token == null)
-                    continue;
-
-                switch (token.Type)
-                {
-                    case TokenType.Identifier:
-                        if (token.Value.StartsWith("API_"))
-                        {
-                            HandleApiTag(token);
-                        }
-                        break;
-
-                    case TokenType.EndOfFile:
-                        return;
-                }
-            }
-            while (true);
-        }
-
-        private void Generate()
-        {
-            // Generate C# class code
-            var classGenerator = new CSharpTemplate
-            {
-                Session = new Dictionary<string, object>
-                {
-                    { "Class", _class },
-                    { "Functions", _functions }
-                }
-            };
-            classGenerator.Initialize();
-
-            File.WriteAllText(_fileCsOutput, classGenerator.TransformText());
-
-            // Generate C++ proxy code
-            var proxyGenerator = new CPlusPlusTemplate
-            {
-                Session = new Dictionary<string, object>
-                {
-                    { "Class", _class },
-                    { "Functions", _functions }
-                }
-            };
-            proxyGenerator.Initialize();
-
-            File.WriteAllText(_fileCppOutput, proxyGenerator.TransformText());
         }
 
         private TypeDescription ParseNativeType()
@@ -238,43 +160,72 @@ namespace ReCrafted.Tools.APIGenerator
             return parameters;
         }
 
-        public bool GenerateClass()
+        public void Parse()
         {
-            var perfCounter = new Stopwatch();
-            perfCounter.Start();
+            if (_tokenizer?.CurrentToken?.Type == TokenType.EndOfFile)
+                throw new Exception("This file is already parsed!");
 
-            Console.WriteLine($"Generating API for '{_fileInput}' C++ header file.");
+            Console.WriteLine("Parsing " + InputFile);
 
-#if !DEBUG
-            try
+            var source = File.ReadAllText(InputFile);
+
+            if (!source.Contains("API_"))
+                throw new Exception($"Input file '{InputFile}' doesn't contain any API tags!");
+
+            _tokenizer = new Tokenizer();
+            _tokenizer.Tokenize(source);
+
+            do
             {
-#endif
-                var perfCounterParse = new Stopwatch();
-                perfCounterParse.Start();
-                Parse();
-                perfCounterParse.Stop();
-                Console.WriteLine($"Parsing done in {perfCounterParse.ElapsedMilliseconds} ms.");
+                // get and check current token
+                var token = _tokenizer.NextToken();
 
-                perfCounterParse.Reset();
-                perfCounterParse.Start();
-                Generate();
-                perfCounterParse.Stop();
-                Console.WriteLine($"Generation done in {perfCounterParse.ElapsedMilliseconds} ms.");
-#if !DEBUG
+                if (token == null)
+                    continue;
+
+                switch (token.Type)
+                {
+                    case TokenType.Identifier:
+                        if (token.Value.StartsWith("API_"))
+                        {
+                            HandleApiTag(token);
+                        }
+                        break;
+
+                    case TokenType.EndOfFile:
+                        return;
+                }
             }
-            catch (Exception ex)
+            while (true);
+        }
+
+        public void Generate(string csOutput, string cppOutput)
+        {
+            // Generate C# class code
+            var classGenerator = new CSharpTemplate
             {
-                var errorMessage = Options.Current.Verbose ? ex.ToString() : ex.Message;
-                Console.WriteLine("Failed to generate API file.\nError: \n" + errorMessage);
-                return false;
-            }
-#endif
+                Session = new Dictionary<string, object>
+                {
+                    { "Class", _class },
+                    { "Functions", _functions }
+                }
+            };
+            classGenerator.Initialize();
 
-            // say bye and give the time that we spent here
-            perfCounter.Stop();
-            Console.WriteLine($"Done in {perfCounter.ElapsedMilliseconds} ms.");
-            Console.WriteLine($"Successfully generated API for file '{_fileInput}'. C# API File '{_fileCsOutput}', C++ API File '{_fileCppOutput}'");
-            return true;
+            File.WriteAllText(csOutput, classGenerator.TransformText());
+
+            // Generate C++ proxy code
+            var proxyGenerator = new CPlusPlusTemplate
+            {
+                Session = new Dictionary<string, object>
+                {
+                    { "Class", _class },
+                    { "Functions", _functions }
+                }
+            };
+            proxyGenerator.Initialize();
+
+            File.WriteAllText(cppOutput, proxyGenerator.TransformText());
         }
 
         public static string ParseNamespace(string fileName)
@@ -298,8 +249,11 @@ namespace ReCrafted.Tools.APIGenerator
             return nameSpace;
         }
 
-        public string InputFile => _fileInput;
-        public string InputFileName => Path.GetFileNameWithoutExtension(_fileInput);
+        public string InputFile { get; }
+
+        public string InputFileName => Path.GetFileNameWithoutExtension(InputFile);
+
+        public string Namespace => _class != null ? _class.Namespace : ParseNamespace(InputFile);
 
         public static Generator Instance { get; private set; }
     }

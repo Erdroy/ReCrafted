@@ -14,6 +14,14 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
         public AccessModifier Access { get; set; }
         public List<string> Modifiers { get; } = new List<string>();
 
+        public string GetInheritance()
+        {
+            if (string.IsNullOrEmpty(Inherits))
+                return "";
+
+            return $" : {Inherits}";
+        }
+
         public string GetModifiers()
         {
             var str = new StringBuilder();
