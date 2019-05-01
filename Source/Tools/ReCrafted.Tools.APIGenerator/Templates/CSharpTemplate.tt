@@ -29,6 +29,8 @@ namespace <#=Class.Namespace#>
 //      \/ ---- GENERATE FUNCTIONS ---- \/
 foreach(var function in Functions)
 {
+    if(!function.Extern)
+    {
 #>
 
         <#=function.GetModifiers()#> <#=TypeTranslation.ToCSharp(function.ReturnType)#> <#=function.Name#>(<#=function.GetCSharpParameters()#>)
@@ -49,6 +51,7 @@ foreach(var function in Functions)
 #>
         }
 <#
+    }
 }
 //      /\ ---- GENERATE FUNCTIONS ---- /\
 

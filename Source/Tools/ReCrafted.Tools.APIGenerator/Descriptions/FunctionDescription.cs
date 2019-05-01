@@ -17,6 +17,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
         public TypeDescription ReturnType { get; set; }
         public string Comment { get; set; }
         public AccessModifier Access { get; set; }
+        public bool Extern { get; set; } = false;
         public bool IsStatic => Modifiers.Contains("static");
         public List<string> Modifiers { get; } = new List<string>();
         public List<Param> Parameters { get; } = new List<Param>();

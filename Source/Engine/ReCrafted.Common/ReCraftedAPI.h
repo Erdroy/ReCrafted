@@ -11,3 +11,15 @@
 #define API_PROPERTY(...)
 
 #define API_CLASS_BODY()
+
+/// <summary>
+///     Marks class to skip it's inheritance.
+/// </summary>
+#define noinherit
+
+/// <summary>
+///     Works the same as extern. Skips generation of proxy function in C# API file.
+/// </summary>
+/// <remarks>Function name will get additional prefix 'Internal', eg.: GetTime -> InternalGetTime.</remarks>
+/// <remarks>Only static function can skip it's proxy.</remarks>
+#define noproxy

@@ -114,6 +114,18 @@ namespace ReCrafted.Tools.APIGenerator
                     case "private":
                         desc.Access = AccessModifier.Private;
                         break;
+                    case "noproxy":
+                    case "extern":
+                        if (!isStatic)
+                        {
+                            Console.WriteLine($"WARNING: Function '{desc.Name}' is not static, " +
+                                              "but it's tag specified to skip it's proxy generation. This is not allowed, ignoring.");
+                        }
+                        else
+                        {
+                            desc.Extern = true;
+                        }
+                        break;
                     case "static":
                     //case "virtual":
                     //case "override":
@@ -248,6 +260,10 @@ namespace ReCrafted.Tools.APIGenerator
                     case "partial":
                         desc.Modifiers.Add(token.Value);
                         break;
+                    case "noinherit":
+                        // Skip class inheritance, just remove it, it will do it.
+                        desc.Inherits = "";
+                        break;
                     case "customNamespace":
                         if (tagArguments.Count == i + 1 || tagArguments[i + 1].Type != TokenType.String)
                             throw new Exception("Class custom namespace doesn't follow with string!");
@@ -264,7 +280,7 @@ namespace ReCrafted.Tools.APIGenerator
                 }
             }
 
-            if(isFinal && !desc.Modifiers.Contains("sealed"))
+            if(isFinal && !desc.Modifiers.Contains("sealed") && !desc.Modifiers.Contains("static"))
                 desc.Modifiers.Add("sealed");
 
             _class = desc;
