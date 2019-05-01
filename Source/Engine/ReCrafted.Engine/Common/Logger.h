@@ -24,6 +24,7 @@ enum class LogLevel
 API_CLASS(public, sealed, partial, noinherit)
 class Logger final : public Singleton<Logger>
 {
+    API_CLASS_BODY()
     DELETE_COPY_MOVE(Logger)
     friend class Application;
 

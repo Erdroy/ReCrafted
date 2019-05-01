@@ -10,7 +10,10 @@
 #define API_FUNCTION(...)
 #define API_PROPERTY(...)
 
-#define API_CLASS_BODY()
+#define API_CLASS_BODY()            \
+    friend class ScriptingManager;  \
+    private:                        \
+    static void InitRuntime();
 
 /// <summary>
 ///     Marks class to skip it's inheritance.

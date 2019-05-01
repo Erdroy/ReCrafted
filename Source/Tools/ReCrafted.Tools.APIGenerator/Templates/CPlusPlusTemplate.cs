@@ -37,7 +37,14 @@ namespace ReCrafted.Tools.APIGenerator.Templates
             
             #line default
             #line hidden
-            this.Write(".h\"");
+            this.Write(".h\"\r\n\r\nvoid ");
+            
+            #line 13 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
+            
+            #line default
+            #line hidden
+            this.Write("::InitRuntime() \r\n{\r\n    \r\n}");
             return this.GenerationEnvironment.ToString();
         }
         

@@ -10,6 +10,7 @@
 API_CLASS(public, sealed, partial, noinherit)
 class Time final : public SubSystem<Time>
 {
+    API_CLASS_BODY()
     friend class MainLoop;
 
 private:

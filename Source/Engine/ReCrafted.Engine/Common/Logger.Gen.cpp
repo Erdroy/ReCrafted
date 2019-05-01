@@ -2,3 +2,8 @@
 // WARNING: Auto-generated file. All changes will be lost when the API code will be regenerated!
 
 #include "Logger.h"
+
+void Logger::InitRuntime() 
+{
+    
+}

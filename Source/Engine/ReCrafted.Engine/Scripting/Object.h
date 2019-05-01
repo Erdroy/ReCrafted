@@ -10,6 +10,8 @@
 API_CLASS(public, partial, customNamespace="ReCrafted.API")
 class Object
 {
+    API_CLASS_BODY()
+
 public:
     /// <summary>
     ///     Destroys given Object instance.
