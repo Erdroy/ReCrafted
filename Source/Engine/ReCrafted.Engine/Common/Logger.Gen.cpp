@@ -11,8 +11,10 @@ public:
     static void Logger_WriteLog(LogLevel level, MonoString* p_str) 
     {
         MAIN_THREAD_ONLY();
-        auto str = MONO_STRING_TO_CSTR(p_str);
+        ASSERT(p_str);
+        const auto str = MONO_STRING_TO_CSTR(p_str);
         Logger::WriteLog(level, str);
+        MONO_FREE(str);
     }
 };
 

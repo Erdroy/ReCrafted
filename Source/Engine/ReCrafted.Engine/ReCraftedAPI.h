@@ -22,11 +22,13 @@
 #define MONO_STRING_TO_CSTR(str)    \
     mono_string_to_utf8(str)
 
-#define MONO_STRING_TO_STDSTR(str)  \
-    std::string(MONO_STRING_TO_CSTR(str))
-
 #define MONO_STRING_TO_STR(str)     \
     String((Char*)mono_string_chars(str))
+
+#define MONO_FREE(ptr)              \
+    mono_free(ptr);
+
+#define MONO_FREE_STUB(value)
 
 /// <summary>
 ///     Marks class to skip it's inheritance.

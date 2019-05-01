@@ -11,31 +11,36 @@ public:
     static float Time_CurrentTime() 
     {
         MAIN_THREAD_ONLY();
-        return Time::CurrentTime();
+        const auto _returnValue = Time::CurrentTime();
+        return _returnValue;
     }
 
     static float Time_CurrentFixedTime() 
     {
         MAIN_THREAD_ONLY();
-        return Time::CurrentFixedTime();
+        const auto _returnValue = Time::CurrentFixedTime();
+        return _returnValue;
     }
 
     static float Time_DeltaTime() 
     {
         MAIN_THREAD_ONLY();
-        return Time::DeltaTime();
+        const auto _returnValue = Time::DeltaTime();
+        return _returnValue;
     }
 
     static float Time_FixedDeltaTime() 
     {
         MAIN_THREAD_ONLY();
-        return Time::FixedDeltaTime();
+        const auto _returnValue = Time::FixedDeltaTime();
+        return _returnValue;
     }
 
     static uint32_t Time_CurrentFrame() 
     {
         MAIN_THREAD_ONLY();
-        return Time::CurrentFrame();
+        const auto _returnValue = Time::CurrentFrame();
+        return _returnValue;
     }
 };
 

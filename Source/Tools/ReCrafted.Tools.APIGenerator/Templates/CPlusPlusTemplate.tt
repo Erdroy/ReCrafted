@@ -29,7 +29,8 @@ foreach(var function in Functions)
         if(parameter.Type.IsSpecial)
         {
 #>
-        auto <#=parameter.Name#> = <#=parameter.Type.GetSpecialConversion()#>(p_<#=parameter.Name#>);
+        ASSERT(p_<#=parameter.Name#>);
+        const auto <#=parameter.Name#> = <#=parameter.Type.GetSpecialConversion()#>(p_<#=parameter.Name#>);
 <#
         }
     }
@@ -40,7 +41,7 @@ foreach(var function in Functions)
         if(function.ReturnType.BaseType != "void")
         {
 #>
-        return <#=Class.Name#>::<#=function.Name#>(<#=function.GetCPlusPlusParametersRedirect()#>);
+        const auto _returnValue = <#=Class.Name#>::<#=function.Name#>(<#=function.GetCPlusPlusParametersRedirect()#>);
 <#
         }
         else
@@ -58,7 +59,7 @@ foreach(var function in Functions)
         if(function.ReturnType.BaseType != "void")
         {
 #>
-        return instance-><#=function.Name#>(<#=function.GetCPlusPlusParametersRedirect()#>);
+        const auto _returnValue = instance-><#=function.Name#>(<#=function.GetCPlusPlusParametersRedirect()#>);
 <#
         }
         else
@@ -67,6 +68,22 @@ foreach(var function in Functions)
         instance-><#=function.Name#>(<#=function.GetCPlusPlusParametersRedirect()#>);
 <#      
         }
+    }
+    // ---- Special type free ----
+    foreach(var parameter in function.Parameters)
+    {
+        if(parameter.Type.IsSpecial)
+        {
+#>
+        <#=parameter.Type.GetSpecialFree()#>(<#=parameter.Name#>);
+<#
+        }
+    }
+    if(function.ReturnType.BaseType != "void")
+    {
+#>
+        return _returnValue;
+<#
     }
 #>
     }

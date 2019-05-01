@@ -52,14 +52,31 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                 case "char" when ByPtr: // c string
                     return "MONO_STRING_TO_CSTR";
                 case "std::string": // std string
-                    return "MONO_STRING_TO_STDSTR";
+                    // Note: We are using the same macro to convert into cstr,
+                    // this will convert automatically into std::string,
+                    // due ti it's constructors
+                    return "MONO_STRING_TO_CSTR"; 
                 case "String": // Engine's string
                     return "MONO_STRING_TO_STR";
                 default:
                     throw new Exception($"No special conversion is found for type {ToString()}.");
             }
         }
-        
+
+        public string GetSpecialFree()
+        {
+            switch (BaseType)
+            {
+                case "char" when ByPtr: // c string
+                case "std::string": // std string
+                    return "MONO_FREE";
+                case "String": // Engine's string
+                    return "MONO_FREE_STUB";
+                default:
+                    throw new Exception($"No special conversion is found for type {ToString()}.");
+            }
+        }
+
         public string ToCSharp()
         {
             var baseType = TypeTranslation.TranslateBaseType(BaseType);
