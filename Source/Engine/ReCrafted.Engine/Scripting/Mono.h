@@ -6,3 +6,6 @@
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
 #include <mono/metadata/mono-debug.h>
+
+#define mono_object_get_type(obj) \
+    static_cast<MonoTypeEnum>(mono_type_get_type(mono_class_get_type(mono_object_get_class(obj))));

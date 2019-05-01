@@ -9,8 +9,81 @@
 // WARNING: Auto-generated file. All changes will be lost when the API code will be regenerated!
 
 #include "<#=Generator.Instance.InputFileName#>.h"
+#include "Scripting/Mono.h"
+
+class APIProxy
+{
+public:
+<#
+foreach(var function in Functions)
+{
+#>
+
+    static <#=function.ReturnType#> <#=Class.Name#>_<#=function.Name#>(<#=function.GetCPlusPlusParameters(Class, !function.IsStatic)#>) 
+    {
+        MAIN_THREAD_ONLY();
+<#
+    // ---- Special type conversions ----
+    foreach(var parameter in function.Parameters)
+    {
+        if(parameter.Type.IsSpecial)
+        {
+#>
+        auto <#=parameter.Name#> = <#=parameter.Type.GetSpecialConversion()#>(p_<#=parameter.Name#>);
+<#
+        }
+    }
+
+    // ---- Static function impl ----
+    if(function.IsStatic)
+    {
+        if(function.ReturnType.BaseType != "void")
+        {
+#>
+        return <#=Class.Name#>::<#=function.Name#>(<#=function.GetCPlusPlusParametersRedirect()#>);
+<#
+        }
+        else
+        {
+#>
+        <#=Class.Name#>::<#=function.Name#>(<#=function.GetCPlusPlusParametersRedirect()#>);
+<#      
+        }
+    }
+    else // ---- Member function impl ----
+    {
+#>
+        ASSERT(instance);
+<#
+        if(function.ReturnType.BaseType != "void")
+        {
+#>
+        return instance-><#=function.Name#>(<#=function.GetCPlusPlusParametersRedirect()#>);
+<#
+        }
+        else
+        {
+#>
+        instance-><#=function.Name#>(<#=function.GetCPlusPlusParametersRedirect()#>);
+<#      
+        }
+    }
+#>
+    }
+<#
+}
+#>
+};
 
 void <#=Class.Name#>::InitRuntime() 
 {
-    
+<#
+// ---- Function bindings ----
+foreach(var function in Functions)
+{
+#>
+    API_BIND("<#=Class.Namespace#>.<#=Class.Name#>::Internal<#=function.Name#>", &APIProxy::<#=Class.Name#>_<#=function.Name#>);
+<#
+}
+#>
 }

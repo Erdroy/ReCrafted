@@ -19,4 +19,4 @@
 #define IS_MAIN_THREAD() Platform::GetMainThreadId() == std::this_thread::get_id()
 
 #define MAIN_THREAD_ONLY() \
-    _ASSERT_(IS_MAIN_THREAD(), __FUNCTION__" can be called only from main thread!");
+    _ASSERT_(IS_MAIN_THREAD(), __FUNCTION__" can be called only from the main thread!");

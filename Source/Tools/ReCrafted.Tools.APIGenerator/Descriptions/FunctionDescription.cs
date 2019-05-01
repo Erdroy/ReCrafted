@@ -22,6 +22,21 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
         public List<string> Modifiers { get; } = new List<string>();
         public List<Param> Parameters { get; } = new List<Param>();
 
+        public string GetCPlusPlusParametersRedirect()
+        {
+            var paramString = new StringBuilder();
+
+            foreach (var parameter in Parameters)
+            {
+                if (paramString.Length != 0)
+                    paramString.Append(", ");
+
+                paramString.Append(parameter.Name);
+            }
+
+            return paramString.ToString();
+        }
+
         public string GetCSharpParametersRedirect()
         {
             var paramString = new StringBuilder();
@@ -37,10 +52,43 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                 if (paramString.Length != 0)
                     paramString.Append(", ");
 
-                if(TypeTranslation.PassByReference(parameter.Type))
+                if(parameter.Type.PassByReference)
                     paramString.Append("ref ");
 
                 paramString.Append(parameter.Name);
+            }
+
+            return paramString.ToString();
+        }
+
+        public string GetCPlusPlusParameters(ClassDescription classDesc, bool withObjectPtr = false)
+        {
+            var paramString = new StringBuilder();
+
+            if (!IsStatic && withObjectPtr)
+            {
+                // Add native object pointer
+                paramString.Append(classDesc.Name);
+                paramString.Append('*');
+                paramString.Append(' ');
+                paramString.Append("instance");
+            }
+
+            foreach (var parameter in Parameters)
+            {
+                if (paramString.Length != 0)
+                    paramString.Append(", ");
+
+                if (parameter.Type.IsSpecial)
+                    paramString.Append(parameter.Type.ToSpecial());
+                else
+                    paramString.Append(parameter.Type.ToString());
+
+                paramString.Append(' ');
+                if (parameter.Type.IsSpecial)
+                    paramString.Append($"p_{parameter.Name}");
+                else
+                    paramString.Append(parameter.Name);
             }
 
             return paramString.ToString();

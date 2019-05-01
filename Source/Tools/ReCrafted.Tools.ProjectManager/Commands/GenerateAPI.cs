@@ -42,12 +42,16 @@ namespace ReCrafted.Tools.ProjectManager.Commands
             foreach (var headerFile in apiHeaderFiles)
             {
                 var fileInfo = new FileInfo(headerFile);
+
+                if (fileInfo.Name == "ReCraftedAPI.h")
+                    continue;
+
                 var apiSourceFileName = Path.GetFileNameWithoutExtension(fileInfo.Name) + ".Gen.cs";
 
                 if (!headerFile.EndsWith(c99CppHeaderExtension) || fileInfo.Extension != c99CppHeaderExtension)
                     throw new Exception($"API-defining header file '{headerFile}' does not end with C/C++ header file extension ({c99CppHeaderExtension}).");
 
-                try
+                //try
                 {
                     // Generate C# and C++ class from given header file
                     var generator = new Generator(headerFile);
@@ -71,9 +75,9 @@ namespace ReCrafted.Tools.ProjectManager.Commands
 
                     generator.Generate(apiSourceFile, proxySourceFile);
                 }
-                catch (Exception ex)
+                //catch (Exception ex)
                 {
-                    Console.WriteLine($"Failed to generate API file using header file '{headerFile}'.\nError: \n{ex.Message}");
+                    //Console.WriteLine($"Failed to generate API file using header file '{headerFile}'.\nError: \n{ex.Message}");
                 }
             }
 

@@ -62,6 +62,12 @@ namespace ReCrafted.Tools.APIGenerator
             {
                 type.ByRef = true;
             }
+            else if (token.Type == TokenType.Colon)
+            {
+                _tokenizer.ExpectToken(TokenType.Colon);
+                type.BaseType += "::";
+                type.BaseType += _tokenizer.ExpectToken(TokenType.Identifier).Value;
+            }
             else
             {
                 // Undo

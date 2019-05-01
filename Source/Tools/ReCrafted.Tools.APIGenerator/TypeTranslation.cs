@@ -86,13 +86,5 @@ namespace ReCrafted.Tools.APIGenerator
             // Handle: Type*, Type
             return baseType;
         }
-
-        public static bool PassByReference(TypeDescription cppType)
-        {
-            if (cppType.IsConst && cppType.ByRef)
-                return false;
-
-            return cppType.ByRef;
-        }
     }
 }

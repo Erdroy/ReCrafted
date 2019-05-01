@@ -11,9 +11,22 @@
 #define API_PROPERTY(...)
 
 #define API_CLASS_BODY()            \
+    friend class APIProxy;          \
     friend class ScriptingManager;  \
     private:                        \
     static void InitRuntime();
+
+#define API_BIND(name, method)      \
+    mono_add_internal_call(name, (const void*)(method))
+
+#define MONO_STRING_TO_CSTR(str)    \
+    mono_string_to_utf8(str)
+
+#define MONO_STRING_TO_STDSTR(str)  \
+    std::string(MONO_STRING_TO_CSTR(str))
+
+#define MONO_STRING_TO_STR(str)     \
+    String((Char*)mono_string_chars(str))
 
 /// <summary>
 ///     Marks class to skip it's inheritance.
