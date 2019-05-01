@@ -2,10 +2,12 @@
 
 #pragma once
 
-#define API_CLASS_BODY()
+#define API_USING(ns)
 
 #define API_CLASS(...)
 #define API_STRUCT(...)
 
 #define API_FUNCTION(...)
 #define API_PROPERTY(...)
+
+#define API_CLASS_BODY()

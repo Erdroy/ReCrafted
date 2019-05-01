@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using ReCrafted.Tools.APIGenerator.Descriptions;
 using ReCrafted.Tools.APIGenerator.Templates;
 using ReCrafted.Tools.Common.CodeTokenizer;
@@ -254,6 +255,8 @@ namespace ReCrafted.Tools.APIGenerator
         public string InputFileName => Path.GetFileNameWithoutExtension(InputFile);
 
         public string Namespace => _class != null ? _class.Namespace : ParseNamespace(InputFile);
+
+        public List<string> Usings = new List<string>();
 
         public static Generator Instance { get; private set; }
     }

@@ -27,7 +27,25 @@ namespace ReCrafted.Tools.APIGenerator
                 case "API_PROPERTY":
                     // TODO: Property parsing
                     break;
+                case "API_USING":
+                    ParseUsingTag();
+                    break;
             }
+        }
+
+        private void ParseUsingTag()
+        {
+            // API_USING("System.Collections.Generic")
+            _tokenizer.ExpectToken(TokenType.LeftParent);
+            var usingNamespaceToken = _tokenizer.ExpectToken(TokenType.String);
+            _tokenizer.ExpectToken(TokenType.RightParent);
+
+            // Cleanup using
+            var usingNamespace = usingNamespaceToken.Value.Replace("\"", "");
+            
+            // TODO: Validate using
+
+            Usings.Add(usingNamespace);
         }
 
         private void ParseFunctionTag()
