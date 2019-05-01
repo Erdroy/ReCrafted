@@ -33,7 +33,7 @@ foreach(var function in Functions)
     {
 #>
 
-        <#=function.GetModifiers()#> <#=TypeTranslation.ToCSharp(function.ReturnType)#> <#=function.Name#>(<#=function.GetCSharpParameters()#>)
+        <#=function.GetModifiers()#> <#=function.ReturnType.ToCSharp()#> <#=function.Name#>(<#=function.GetCSharpParameters()#>)
         {
 <#
         if(function.ReturnType.BaseType != "void")
@@ -61,7 +61,7 @@ foreach(var function in Functions)
 #>
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern <#=TypeTranslation.ToCSharp(function.ReturnType)#> Internal<#=function.Name#>(<#=function.GetCSharpParameters(true)#>);
+        private static extern <#=function.ReturnType.ToCSharp()#> Internal<#=function.Name#>(<#=function.GetCSharpParameters(true)#>);
 <#
 }
 //      /\ ---- GENERATE EXTERN FUNCTIONS ---- /\

@@ -111,9 +111,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                 if(paramString.Length != 0)
                     paramString.Append(", ");
 
-                var type = TypeTranslation.ToCSharp(parameter.Type);
-
-                paramString.Append(type);
+                paramString.Append(parameter.Type.ToCSharp());
                 paramString.Append(' ');
                 paramString.Append(parameter.Name);
             }

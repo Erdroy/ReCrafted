@@ -109,7 +109,7 @@ foreach(var function in Functions)
             this.Write(" ");
             
             #line 36 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeTranslation.ToCSharp(function.ReturnType)));
+            this.Write(this.ToStringHelper.ToStringWithCulture(function.ReturnType.ToCSharp()));
             
             #line default
             #line hidden
@@ -204,7 +204,7 @@ foreach(var function in Functions)
                     "tern ");
             
             #line 64 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeTranslation.ToCSharp(function.ReturnType)));
+            this.Write(this.ToStringHelper.ToStringWithCulture(function.ReturnType.ToCSharp()));
             
             #line default
             #line hidden
