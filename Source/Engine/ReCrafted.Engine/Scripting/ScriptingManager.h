@@ -5,8 +5,6 @@
 #include <ReCrafted.h>
 #include "Core/SubSystems/SubSystem.h"
 
-class Assembly;
-
 /// <summary>
 ///     ScriptingManager class. Implements Mono backend for engine scripting.
 /// </summary>

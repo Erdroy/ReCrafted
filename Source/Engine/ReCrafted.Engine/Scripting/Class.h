@@ -5,8 +5,6 @@
 #include <ReCrafted.h>
 #include "Scripting/Mono.h"
 
-class Assembly;
-
 /// <summary>
 ///     Class structure. Represents Mono scripting backend class.
 /// </summary>

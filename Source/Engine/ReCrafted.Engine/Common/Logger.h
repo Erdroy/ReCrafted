@@ -42,9 +42,6 @@ private:
 public:
     void WriteLog(LogLevel level, const std::basic_string<char>& str);
 
-    API_FUNCTION(noproxy)
-    static void WriteLog(LogLevel level, const char* str);
-
 public:
     template<typename... TArgs>
     static void Log(const LogLevel level, const char* format, const TArgs& ... args)
@@ -69,6 +66,10 @@ public:
     {
         Log<TArgs...>(LogLevel::Error, format, args...);
     }
+
+private:
+    API_FUNCTION(noproxy)
+    static void WriteLog(LogLevel level, const char* str);
 
 protected:
     static void Initialize();

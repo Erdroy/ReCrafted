@@ -18,6 +18,7 @@
 #include <cstring>
 
 // Default RC includes
+#include <ReCraftedPrerequisites.h>
 #include <ReCraftedAPI.h>
 #include <ReCraftedTypes.h>
 #include <ReCraftedDefines.h>

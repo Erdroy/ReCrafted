@@ -6,8 +6,6 @@
 #include "Common/List.h"
 #include "Scripting/Mono.h"
 
-class Assembly;
-
 /// <summary>
 ///     Domain class. Represents Mono scripting backend domain.
 /// </summary>

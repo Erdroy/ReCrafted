@@ -5,8 +5,6 @@
 #include <ReCrafted.h>
 #include "Scripting/Mono.h"
 
-struct Class;
-
 /// <summary>
 ///     Assembly class. Represents single assembly (loaded .dll file).
 /// </summary>
