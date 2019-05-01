@@ -44,8 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\TestClass.Gen.cs" />
-    <Compile Include="Core\Object.cs" />
+    <Compile Include="Core\GameBase.cs" />
+    <Compile Include="Core\Time.Gen.cs" />
+    <Compile Include="Object.cs" />
     <Compile Include="Mathematics\AngleSingle.cs" />
     <Compile Include="Mathematics\BoundingBox.cs" />
     <Compile Include="Mathematics\BoundingFrustum.cs" />
@@ -73,7 +74,9 @@
     <Compile Include="Mathematics\Vector4.cs" />
     <Compile Include="Mathematics\Viewport.cs" />
     <Compile Include="Mathematics\ViewportF.cs" />
+    <Compile Include="Object.Gen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

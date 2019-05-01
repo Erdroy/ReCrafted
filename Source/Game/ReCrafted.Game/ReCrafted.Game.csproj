@@ -43,5 +43,14 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\ReCraftedGame.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Engine\ReCrafted.API\ReCrafted.API.csproj">
+      <Project>{91F869DA-FDC2-4539-83B4-BEC3DC0BDF76}</Project>
+      <Name>ReCrafted.API</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

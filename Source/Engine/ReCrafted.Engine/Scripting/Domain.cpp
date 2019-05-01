@@ -61,6 +61,11 @@ void Domain::Cleanup()
     m_self = nullptr;
 }
 
+MonoDomain* Domain::ToMono() const
+{
+    return m_domain;
+}
+
 RefPtr<Domain> Domain::CreateRoot(MonoDomain* monoDomain)
 {
     const RefPtr<Domain> domain(new Domain(monoDomain));

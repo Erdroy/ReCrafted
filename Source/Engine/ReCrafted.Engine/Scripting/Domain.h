@@ -11,7 +11,7 @@ class Assembly;
 /// <summary>
 ///     Domain class. Represents Mono scripting backend domain.
 /// </summary>
-class Domain
+class Domain final
 {
 private:
     MonoDomain* m_domain = nullptr;
@@ -51,10 +51,7 @@ public:
     ///     Returns Mono domain pointer.
     /// </summary>
     /// <returns>The mono's domain pointer.</returns>
-    MonoDomain* ToMono() const
-    {
-        return m_domain;
-    }
+    MonoDomain* ToMono() const;
 
 public:
     /// <summary>

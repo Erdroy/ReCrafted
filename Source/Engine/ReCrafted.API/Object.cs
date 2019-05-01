@@ -2,27 +2,27 @@
 
 using System;
 
-namespace ReCrafted.API.Core
+namespace ReCrafted.API
 {
     /// <summary>
-    /// Base class for all objects.
+    ///     Object class. Base class for all objects.
     /// </summary>
     public partial class Object
     {
         /// <summary>
-        /// The native pointer for mono object instance.
-        /// This is being set by Object instantiation on the C++ side.
+        ///     The native pointer for mono object instance.
+        ///     This is being set by Object instantiation on the C++ side.
         /// </summary>
         [NonSerialized]
         internal IntPtr NativePtr;
 
         /// <summary>
-        /// Default object constructor.
+        ///     Default object constructor.
         /// </summary>
         protected Object() { }
 
         /// <summary>
-        /// Called when the object is finalized.
+        ///     Called when the object is finalized.
         /// </summary>
         ~Object()
         {
@@ -34,15 +34,24 @@ namespace ReCrafted.API.Core
         }
 
         /// <summary>
-        /// Destroys this object.
+        ///     Destroys this object.
         /// </summary>
         public void Destroy()
         {
             Destroy(this);
         }
 
+
         /// <summary>
-        /// Creates managed Object of given type with it's unmanaged corresponsive type.
+        ///     Returns true when valid.
+        /// </summary>
+        public bool IsValid()
+        {
+            return NativePtr != IntPtr.Zero;
+        }
+
+        /// <summary>
+        ///     Creates managed Object of given type with it's unmanaged corresponsive type.
         /// </summary>
         /// <typeparam name="TType">The type of Object to be created.</typeparam>
         /// <returns>The created Object.</returns>
@@ -58,7 +67,7 @@ namespace ReCrafted.API.Core
         }
 
         /// <summary>
-        /// Creates generic managed Object of given type with it's unmanaged corresponsive type.
+        ///     Creates generic managed Object of given type with it's unmanaged corresponsive type.
         /// </summary>
         /// <typeparam name="TType">The type of Object to be created.</typeparam>
         /// <returns>The created Object.</returns>
@@ -74,19 +83,7 @@ namespace ReCrafted.API.Core
         }
 
         /// <summary>
-        /// Destroy the given object.
-        /// </summary>
-        /// <param name="obj">The object instance which will be destroyed.</param>
-        public static void Destroy(Object obj)
-        {
-            if (obj)
-            {
-                //InternalDestroy(obj.NativePtr);
-            }
-        }
-
-        /// <summary>
-        /// Checks if object exists.
+        ///     Checks if object exists.
         /// </summary>
         /// <param name="obj">Object to check.</param>
         public static implicit operator bool(Object obj)

@@ -5,10 +5,12 @@
 #include <ReCrafted.h>
 #include "Scripting/Mono.h"
 
+struct Class;
+
 /// <summary>
 ///     Assembly class. Represents single assembly (loaded .dll file).
 /// </summary>
-class Assembly
+class Assembly final
 {
     friend class Domain;
 
@@ -30,4 +32,19 @@ public:
     Assembly(MonoAssembly* assembly, MonoImage* image, MonoDomain* domain) : m_assembly(assembly), m_image(image),
                                                                              m_domain(domain)
     { }
+
+public:
+    /// <summary>
+    ///     Gets class using namespace and class name.
+    /// </summary>
+    /// <param name="classNamespace">The class namespace</param>
+    /// <param name="className">The class name.</param>
+    /// <returns>The mono class wrapper structure.</returns>
+    Class GetClass(const char* classNamespace, const char* className) const;
+
+    /// <summary>
+    ///     Returns Mono assembly pointer.
+    /// </summary>
+    /// <returns>The mono's assembly pointer.</returns>
+    MonoAssembly* ToMono() const;
 };

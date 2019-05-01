@@ -4,6 +4,10 @@
 
 #include "SubSystems/SubSystem.h"
 
+/// <summary>
+///     The time class. Provides engine's timing services.
+/// </summary>
+API_CLASS(public, sealed, partial, noinherit)
 class Time final : public SubSystem<Time>
 {
     friend class MainLoop;
@@ -26,9 +30,34 @@ private:
     void OnFrame();
 
 public:
+    /// <summary>
+    ///     Returns current frame engine's time.
+    /// </summary>
+    API_FUNCTION(extern)
     static float CurrentTime();
+
+    /// <summary>
+    ///     Returns current frame fixed engine's time.
+    /// </summary>
+    API_FUNCTION(extern)
     static float CurrentFixedTime();
+
+    /// <summary>
+    ///     Returns the time between last frame and current one.
+    /// </summary>
+    API_FUNCTION(extern)
     static float DeltaTime();
+
+    /// <summary>
+    ///     Returns the fixed time. This time is being used as time step
+    ///     for the FixedUpdate function calls.
+    /// </summary>
+    API_FUNCTION(extern)
     static float FixedDeltaTime();
+
+    /// <summary>
+    ///     The current frame number.
+    /// </summary>
+    API_FUNCTION(extern)
     static uint32_t CurrentFrame();
 };
