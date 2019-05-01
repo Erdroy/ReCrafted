@@ -18,13 +18,12 @@ project "ReCrafted"
 	}
 
 	forceincludes { 
-		path.join(SOURCE_DIR, "Engine/ReCrafted.Common/Common/Memory.h"),
-		path.join(SOURCE_DIR, "Engine/ReCrafted.Common/Common/Allocator.h")
+		path.join(SOURCE_DIR, "Engine/ReCrafted.Engine/Common/Memory.h"),
+		path.join(SOURCE_DIR, "Engine/ReCrafted.Engine/Common/Allocator.h")
 	}
 	
     includedirs {
         "./",
-		path.join(SOURCE_DIR, "Engine/ReCrafted.Common"),
 		path.join(SOURCE_DIR, "Engine/ReCrafted.Engine"),
         
         path.join(LIBRARIES_DIR, "sparsepp"),
@@ -38,7 +37,6 @@ project "ReCrafted"
 	
     -- default deps
     links { 
-        "ReCrafted.Common",
         "ReCrafted.Engine",
     }
 	

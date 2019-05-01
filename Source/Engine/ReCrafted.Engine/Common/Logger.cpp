@@ -34,7 +34,7 @@ void Logger::Flush() const
     m_fileStream->Flush();
 }
 
-void Logger::WriteLog(const LogLevel level, const std::basic_string<char>& string)
+void Logger::WriteLog(const LogLevel level, const std::basic_string<char>& str)
 {
     // Lock for whole logging
     // This is needed to maintain the order (time could differ).
@@ -61,12 +61,18 @@ void Logger::WriteLog(const LogLevel level, const std::basic_string<char>& strin
         typeString = "[Unknown] ";
     }
 
-    auto logString = typeString + string + "\n";
+    auto logString = typeString + str + "\n";
     logString = timeString + logString;
 
     // Write log to the stream and flush
     m_logStream->WriteStringRaw(const_cast<char*>(logString.c_str()));
     Flush();
+}
+
+void Logger::WriteLog(const LogLevel level, const char* str)
+{
+    const auto string = std::basic_string<char>(str);
+    GetInstance()->WriteLog(level, string);
 }
 
 void Logger::Initialize()

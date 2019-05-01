@@ -21,6 +21,7 @@ enum class LogLevel
     Fatal,
 };
 
+API_CLASS(public, sealed, partial, noinherit)
 class Logger final : public Singleton<Logger>
 {
     DELETE_COPY_MOVE(Logger)
@@ -39,7 +40,10 @@ private:
     void Flush() const;
 
 public:
-    void WriteLog(LogLevel level, const std::basic_string<char>& string);
+    void WriteLog(LogLevel level, const std::basic_string<char>& str);
+
+    API_FUNCTION(noproxy)
+    static void WriteLog(LogLevel level, const char* str);
 
 public:
     template<typename... TArgs>

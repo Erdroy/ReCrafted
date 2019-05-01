@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Logger.Gen.cs" />
     <Compile Include="Core\GameBase.cs" />
     <Compile Include="Core\Time.Gen.cs" />
     <Compile Include="Object.cs" />

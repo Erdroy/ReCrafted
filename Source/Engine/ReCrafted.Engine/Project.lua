@@ -17,13 +17,12 @@ project "ReCrafted.Engine"
 	}
 
 	forceincludes { 
-		path.join(SOURCE_DIR, "Engine/ReCrafted.Common/Common/Memory.h"),
-		path.join(SOURCE_DIR, "Engine/ReCrafted.Common/Common/Allocator.h")
+		path.join(SOURCE_DIR, "Engine/ReCrafted.Engine/Common/Memory.h"),
+		path.join(SOURCE_DIR, "Engine/ReCrafted.Engine/Common/Allocator.h")
 	}
 	
     includedirs {
         "./",
-		path.join(SOURCE_DIR, "Engine/ReCrafted.Common"),
         -- add all modules
         path.join(LIBRARIES_DIR, "sparsepp"),
         path.join(LIBRARIES_DIR, "concurrentqueue"),
@@ -39,8 +38,6 @@ project "ReCrafted.Engine"
 	
     -- default deps
     links { 
-        "ReCrafted.Common",
-
         "cpp-base64",
 
         "d3d11", "dxguid", "dxgi", "d3dcompiler", 
