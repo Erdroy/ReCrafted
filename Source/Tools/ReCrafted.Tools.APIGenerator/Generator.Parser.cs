@@ -164,6 +164,30 @@ namespace ReCrafted.Tools.APIGenerator
             // Skip until `class` keyword.
             _tokenizer.SkipUntil(TokenType.Identifier);
 
+            var keyword = _tokenizer.CurrentToken;
+
+            if (keyword.Value == "template")
+            {
+                // Parse generics
+                _tokenizer.ExpectToken(TokenType.LeftAngleBracket);
+
+                while (true)
+                {
+                    _tokenizer.ExpectToken(TokenType.Identifier);
+                    var genericType = _tokenizer.ExpectToken(TokenType.Identifier);
+
+                    // Add generic type
+                    desc.GenericTypes.Add(genericType.Value);
+
+                    var nextToken = _tokenizer.NextToken();
+                    if (nextToken.Type == TokenType.RightAngleBracket)
+                        break;
+                }
+
+                // Skip until `class` keyword.
+                _tokenizer.SkipUntil(TokenType.Identifier);
+            }
+
             // Parse class name
             var className = _tokenizer.ExpectToken(TokenType.Identifier);
 

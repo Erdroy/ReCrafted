@@ -22,7 +22,7 @@ using System.Runtime.CompilerServices;
 
 namespace <#=Class.Namespace#> 
 {
-    <#=Class.GetModifiers()#> class <#=Class.Name#><#=Class.GetInheritance()#>
+    <#=Class.GetModifiers()#> class <#=Class.Name#><#=Class.GetGenerics()#><#=Class.GetInheritance()#>
     {
 <#
 

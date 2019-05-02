@@ -13,6 +13,30 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
         public string Comment { get; set; }
         public AccessModifier Access { get; set; }
         public List<string> Modifiers { get; } = new List<string>();
+        public List<string> GenericTypes { get; } = new List<string>();
+
+        public bool IsGeneric => GenericTypes.Count > 0;
+
+        public string GetGenerics()
+        {
+            if (!IsGeneric)
+                return "";
+
+            var str = new StringBuilder();
+            str.Append('<');
+            foreach (var generic in GenericTypes)
+            {
+                if (str.Length > 1)
+                {
+                    str.Append(',');
+                    str.Append(' ');
+                }
+
+                str.Append(generic);
+            }
+            str.Append('>');
+            return str.ToString();
+        }
 
         public string GetInheritance()
         {

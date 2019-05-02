@@ -81,6 +81,12 @@ foreach(var usingNamespace in Generator.Instance.Usings)
             #line hidden
             
             #line 25 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Class.GetGenerics()));
+            
+            #line default
+            #line hidden
+            
+            #line 25 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.GetInheritance()));
             
             #line default
