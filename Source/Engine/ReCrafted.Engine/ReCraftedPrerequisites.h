@@ -44,14 +44,14 @@ class SubSystemBase;
 class SubSystemManager;
 
 // Input/
-enum class ActionType;
-enum class ActionEventType;
-enum class DeviceType;
+enum class ActionType : sbyte;
+enum class ActionEventType : sbyte;
+enum class DeviceType : byte;
 enum class InputType;
-enum class KeyState;
-enum class Key;
-enum class ButtonState;
-enum class Button;
+enum class KeyState : sbyte;
+enum class Key : int;
+enum class ButtonState : sbyte;
+enum class Button : byte;
 struct InputState;
 struct InputData;
 class ActionMap;
