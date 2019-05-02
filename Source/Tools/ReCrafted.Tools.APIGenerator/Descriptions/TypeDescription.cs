@@ -11,6 +11,8 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
         public bool ByRef { get; set; }
         public bool ByPtr { get; set; }
 
+        public bool CastToManaged => ByPtr && !ByRef && !IsConst && BaseType != "MonoObject";
+
         public bool IsSpecial
         {
             get
@@ -137,7 +139,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
             return baseType;
         }
 
-        public string ToSpecial()
+        public string ToSpecial(bool isReturn = false)
         {
             switch (BaseType)
             {
@@ -146,12 +148,15 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                 case "String": // Engine's string
                     return "MonoString*";
                 default:
-                    return ToString();
+                    return ToString(isReturn);
             }
         }
 
-        public override string ToString()
+        public string ToString(bool isReturn = false)
         {
+            if (isReturn && ByPtr && !ByRef && !IsConst)
+                return "MonoObject*";
+
             return $"{(IsConst ? "const " : "")}{BaseType}{(ByRef ? "&" : "")}{(ByPtr ? "*" : "")}";
         }
     }

@@ -21,7 +21,7 @@ foreach(var function in Functions)
 {
 #>
 
-    static <#=function.ReturnType.ToSpecial()#> <#=Class.Name#>_<#=function.Name#>(<#=function.GetCPlusPlusParameters(Class, !function.IsStatic)#>) 
+    static <#=function.ReturnType.ToSpecial(true)#> <#=Class.Name#>_<#=function.Name#>(<#=function.GetCPlusPlusParameters(Class, !function.IsStatic)#>) 
     {
         MAIN_THREAD_ONLY();
 <#
@@ -91,9 +91,18 @@ foreach(var function in Functions)
         }
         else
         {
+            if(function.ReturnType.CastToManaged)
+            {       
+#>
+        return _returnValue->ToManaged();
+<#
+            }
+            else
+            {       
 #>
         return _returnValue;
 <#
+            } 
         }
     }
 #>
