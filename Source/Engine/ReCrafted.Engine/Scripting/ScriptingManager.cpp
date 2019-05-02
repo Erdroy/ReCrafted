@@ -46,6 +46,9 @@ void ScriptingManager::Initialize()
 
     // Load assemblies
     LoadAssemblies();
+
+    // Initialize runtime
+    InitRuntime();
 }
 
 void ScriptingManager::Shutdown()

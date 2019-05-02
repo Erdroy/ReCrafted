@@ -11,10 +11,14 @@
 #define API_PROPERTY(...)
 
 #define API_CLASS_BODY()            \
+    friend class Object;            \
     friend class APIProxy;          \
     friend class ScriptingManager;  \
     private:                        \
-    static void InitRuntime();
+    static void InitRuntime();      \
+    static const char* Fullname();  \
+    static const char* Name();      \
+    static const char* Namespace(); \
 
 #define API_BIND(name, method)      \
     mono_add_internal_call(name, (const void*)(method))
