@@ -48,7 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\ReCrafted.API\ReCrafted.API.csproj">
-      <Project>{91F869DA-FDC2-4539-83B4-BEC3DC0BDF76}</Project>
+      <Project>{91f869da-fdc2-4539-83b4-bec3dc0bdf76}</Project>
       <Name>ReCrafted.API</Name>
     </ProjectReference>
   </ItemGroup>

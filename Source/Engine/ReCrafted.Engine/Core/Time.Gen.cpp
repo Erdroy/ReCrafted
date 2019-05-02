@@ -3,6 +3,8 @@
 
 #include "Time.h"
 #include "Scripting/Mono.h"
+#include "Scripting/ScriptingManager.h"
+#include "Scripting/Assembly.h"
 
 class APIProxy
 {

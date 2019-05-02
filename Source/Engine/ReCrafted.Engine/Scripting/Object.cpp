@@ -30,7 +30,7 @@ void Object::SetNativePointer(void* pointer)
 {
     // Set NativePtr field in managed object if the object does have it.
     const auto testField = m_class.GetField("NativePtr");
-
+    
     if (testField.IsValid())
         testField.SetValue(this, pointer);
 }
@@ -43,4 +43,14 @@ void Object::Destroy(Object* objectInstance)
 void Object::DestroyNow(Object* objectInstance)
 {
     ObjectManager::DestroyNow(objectInstance);
+}
+
+MonoObject* Object::New(MonoType* type)
+{
+    return ObjectManager::New(type);;
+}
+
+MonoObject* Object::NewGeneric(MonoType* baseType, MonoObject* obj)
+{
+    return ObjectManager::NewGeneric(baseType, obj);
 }

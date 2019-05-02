@@ -50,6 +50,30 @@ public:
 
 public:
     /// <summary>
+    /// Creates new object from template type TObject.
+    /// </summary>
+    template <class TObject>
+    static TObject* New(const RefPtr<Assembly>& assembly = nullptr, const RefPtr<Domain>& domain = nullptr)
+    {
+        static_assert(std::is_base_of<Object, TObject>::value, "TObject must inherit from Object class.");
+
+        const auto object = new TObject();
+        ObjectManager::GetInstance()->InitializeInstance(object, TObject::Namespace(), TObject::Name(), assembly, domain);
+        return object;
+    }
+
+    /// <summary>
+    /// Creates new object from specified namespace and name.
+    /// </summary>
+    static Object* New(const char* nameSpace, const char* name, const RefPtr<Assembly>& assembly, const RefPtr<Domain>& domain = nullptr)
+    {
+        const auto object = new Object();
+        ObjectManager::GetInstance()->InitializeInstance(object, nameSpace, name, assembly, domain);
+        return object;
+    }
+
+public:
+    /// <summary>
     ///     Destroys given Object instance.
     /// </summary>
     API_FUNCTION()
@@ -61,20 +85,23 @@ public:
     API_FUNCTION()
     static void DestroyNow(Object* objectInstance);
 
-    template <class TObject>
-    static TObject* New(const RefPtr<Assembly>& assembly = nullptr, const RefPtr<Domain>& domain = nullptr)
-    {
-        static_assert(std::is_same<TObject, Object>::value, "TObject must inherit from Object class.");
+private:
+    /// <summary>
+    ///     Creates new object based on mono type.
+    /// </summary>
+    /// <param name="type">The mono type.</param>
+    /// <returns>The managed object pointer.</returns>
+    /// <remarks>Mono type must derive from Object.</remarks>
+    API_FUNCTION(noproxy)
+    static MonoObject* New(MonoType* type);
 
-        const auto object = new TObject();
-        ObjectManager::GetInstance()->InitializeInstance(object, TObject::Namespace(), TObject::Name(), assembly, domain);
-        return object;
-    }
-
-    static Object* New(const char* nameSpace, const char* name, const RefPtr<Assembly>& assembly, const RefPtr<Domain>& domain = nullptr)
-    {
-        const auto object = new Object();
-        ObjectManager::GetInstance()->InitializeInstance(object, nameSpace, name, assembly, domain);
-        return object;
-    }
+    /// <summary>
+    ///     Creates new generic object based on mono type.
+    /// </summary>
+    /// <param name="baseType">The mono base type.</param>
+    /// <param name="obj">The base object type.</param>
+    /// <returns>The managed object pointer.</returns>
+    /// <remarks>Mono type must derive from Object.</remarks>
+    API_FUNCTION(noproxy)
+    static MonoObject* NewGeneric(MonoType* baseType, MonoObject* obj);
 };

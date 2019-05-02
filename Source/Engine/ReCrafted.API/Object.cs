@@ -1,6 +1,8 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System;
+using ReCrafted.API.Core;
+using JetBrains.Annotations;
 
 namespace ReCrafted.API
 {
@@ -13,7 +15,7 @@ namespace ReCrafted.API
         ///     The native pointer for mono object instance.
         ///     This is being set by Object instantiation on the C++ side.
         /// </summary>
-        [NonSerialized]
+        [NonSerialized, UsedImplicitly]
         internal IntPtr NativePtr;
 
         /// <summary>
@@ -28,8 +30,7 @@ namespace ReCrafted.API
         {
             if (NativePtr != IntPtr.Zero)
             {
-                // object was finalized
-                //InternalObjectFinalized(NativePtr);
+                //DestroyNow(this);
             }
         }
 
@@ -58,12 +59,11 @@ namespace ReCrafted.API
         public static TType New<TType>() where TType : Object
         {
             // Do not allow to create raw Object files.
-            /*if (typeof(TType) == typeof(Object))
+            if (typeof(TType) == typeof(Object))
                 throw new ReCraftedException("Cannot create instance of raw Object type!");
 
             // Create managed and unmanaged object
-            return (TType)InternalNew(typeof(TType).TypeHandle.Value);*/
-            return null;
+            return (TType)InternalNew(typeof(TType).TypeHandle.Value);
         }
 
         /// <summary>
@@ -74,12 +74,11 @@ namespace ReCrafted.API
         public static TType NewGeneric<TType>(Object instance) where TType : Object
         {
             // Do not allow to create raw Object files.
-            /*if (typeof(TType) == typeof(Object))
+            if (typeof(TType) == typeof(Object))
                 throw new ReCraftedException("Cannot create instance of raw Object type!");
 
             // Create managed and unmanaged object
-            return (TType)InternalNewGeneric(typeof(TType).TypeHandle.Value, instance);*/
-            return null;
+            return (TType)InternalNewGeneric(typeof(TType).TypeHandle.Value, instance.NativePtr);
         }
 
         /// <summary>

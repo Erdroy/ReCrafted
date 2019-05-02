@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ReCrafted.API.Common
 {
-    public sealed partial class Logger
+    public static partial class Logger
     {
         public static void Log(string str)
         {

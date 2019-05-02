@@ -56,6 +56,9 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                     paramString.Append("ref ");
 
                 paramString.Append(parameter.Name);
+
+                if (parameter.Type.ByPtr && !parameter.Type.IsConst && !parameter.Type.ByRef)
+                    paramString.Append(".NativePtr");
             }
 
             return paramString.ToString();
@@ -94,7 +97,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
             return paramString.ToString();
         }
 
-        public string GetCSharpParameters(bool withObjectPtr = false)
+        public string GetCSharpParameters(bool withObjectPtr = false, bool proxy = true)
         {
             var paramString = new StringBuilder();
 
@@ -111,7 +114,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                 if(paramString.Length != 0)
                     paramString.Append(", ");
 
-                paramString.Append(parameter.Type.ToCSharp());
+                paramString.Append(parameter.Type.ToCSharp(proxy));
                 paramString.Append(' ');
                 paramString.Append(parameter.Name);
             }

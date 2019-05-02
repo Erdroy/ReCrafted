@@ -23,4 +23,7 @@ private:
 protected:
     void Initialize() override;
     void Shutdown() override;
+
+public:
+    static const RefPtr<Assembly>& GetAPIAssembly();
 };

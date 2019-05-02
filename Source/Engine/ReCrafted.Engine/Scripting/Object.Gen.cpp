@@ -3,6 +3,8 @@
 
 #include "Object.h"
 #include "Scripting/Mono.h"
+#include "Scripting/ScriptingManager.h"
+#include "Scripting/Assembly.h"
 
 class APIProxy
 {
@@ -19,12 +21,28 @@ public:
         MAIN_THREAD_ONLY();
         Object::DestroyNow(objectInstance);
     }
+
+    static MonoObject* Object_New(MonoType* type) 
+    {
+        MAIN_THREAD_ONLY();
+        const auto _returnValue = Object::New(type);
+        return _returnValue;
+    }
+
+    static MonoObject* Object_NewGeneric(MonoType* baseType, MonoObject* obj) 
+    {
+        MAIN_THREAD_ONLY();
+        const auto _returnValue = Object::NewGeneric(baseType, obj);
+        return _returnValue;
+    }
 };
 
 void Object::InitRuntime() 
 {
     API_BIND("ReCrafted.API.Object::InternalDestroy", &APIProxy::Object_Destroy);
     API_BIND("ReCrafted.API.Object::InternalDestroyNow", &APIProxy::Object_DestroyNow);
+    API_BIND("ReCrafted.API.Object::InternalNew", &APIProxy::Object_New);
+    API_BIND("ReCrafted.API.Object::InternalNewGeneric", &APIProxy::Object_NewGeneric);
 }
 
 const char* Object::Fullname() 

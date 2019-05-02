@@ -92,7 +92,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
             }
         }
 
-        public string ToCSharp()
+        public string ToCSharp(bool proxy = true)
         {
             var baseType = TypeTranslation.TranslateBaseType(BaseType);
 
@@ -129,7 +129,11 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
             if (ByRef)
                 return $"ref {baseType}";
 
-            // Handle: Type*, Type
+            // Handle: Type*
+            if (ByPtr && !proxy)
+                return "System.IntPtr";
+
+            // Handle: Type (and Type* when not proxy, but only extern function)
             return baseType;
         }
 

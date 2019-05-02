@@ -7,7 +7,7 @@
 /// <summary>
 ///     The time class. Provides engine's timing services.
 /// </summary>
-API_CLASS(public, sealed, partial, noinherit)
+API_CLASS(public, static, partial, noinherit)
 class Time final : public SubSystem<Time>
 {
     API_CLASS_BODY()

@@ -197,8 +197,6 @@ namespace ReCrafted.Tools.APIGenerator
             // Parse namespace
             desc.Namespace = ParseNamespace(InputFile);
 
-            Console.WriteLine($"C++ class name: '{className.Value}'");
-
             // Parse class inheritance, support for single Type/Generic Type.
             var token = _tokenizer.NextToken();
 
@@ -235,19 +233,11 @@ namespace ReCrafted.Tools.APIGenerator
                     var genericType = _tokenizer.ExpectToken(TokenType.Identifier);
                     _tokenizer.ExpectToken(TokenType.RightAngleBracket);
 
-                    var inheritType = $"{nameToken.Value}<{genericType.Value}>";
-
-                    Console.WriteLine($"C++ class inherits '{inheritType}'");
-
-                    desc.Inherits = inheritType;
+                    desc.Inherits = $"{nameToken.Value}<{genericType.Value}>";
                 }
                 else
                 {
-                    var inheritType = nameToken.Value;
-
-                    Console.WriteLine($"C++ class inherits '{inheritType}'");
-
-                    desc.Inherits = inheritType;
+                    desc.Inherits = nameToken.Value;
                 }
             }
             else if(desc.Name != "Object")

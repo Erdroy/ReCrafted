@@ -10,6 +10,8 @@
 
 #include "<#=Generator.Instance.InputFileName#>.h"
 #include "Scripting/Mono.h"
+#include "Scripting/ScriptingManager.h"
+#include "Scripting/Assembly.h"
 
 class APIProxy
 {
@@ -98,11 +100,30 @@ foreach(var function in Functions)
     }
 <#
 }
+if(!Class.IsStatic && !string.IsNullOrEmpty(Class.Inherits) && !Class.IsAbstract)
+{
+#>
+
+    static Object* <#=Class.Name#>_CreateObject(bool createManagedInstance)
+    {
+        return createManagedInstance ? Object::New<<#=Class.Name#>>() : new <#=Class.Name#>();
+    }
+<#
+}
 #>
 };
 
 void <#=Class.Name#>::InitRuntime() 
 {
+<#
+if(!Class.IsStatic && !string.IsNullOrEmpty(Class.Inherits) && !Class.IsAbstract)
+{
+#>
+    MONO_REGISTER_OBJECT(&APIProxy::<#=Class.Name#>_CreateObject);
+    
+<#
+}
+#>
 <#
 // ---- Function bindings ----
 foreach(var function in Functions)

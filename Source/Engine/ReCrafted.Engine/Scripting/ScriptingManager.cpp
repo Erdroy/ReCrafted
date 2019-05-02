@@ -5,6 +5,8 @@
 #include "Domain.h"
 #include "Common/Platform/Environment.h"
 #include "Assembly.h"
+#include "Object.h"
+#include "Method.h"
 
 const char* jit_options[] = {
     "--soft-breakpoints",
@@ -62,4 +64,9 @@ void ScriptingManager::Shutdown()
 
     // Cleanup and release
     Domain::Root->Cleanup();
+}
+
+const RefPtr<Assembly>& ScriptingManager::GetAPIAssembly()
+{
+    return GetInstance()->m_apiAssembly;
 }

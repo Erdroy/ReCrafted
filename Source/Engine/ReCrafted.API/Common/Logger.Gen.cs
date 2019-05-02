@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Common 
 {
-    public sealed partial class Logger
+    public static partial class Logger
     {
 
         [MethodImpl(MethodImplOptions.InternalCall)]

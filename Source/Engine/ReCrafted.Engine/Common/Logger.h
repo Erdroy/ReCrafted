@@ -21,7 +21,7 @@ enum class LogLevel
     Fatal,
 };
 
-API_CLASS(public, sealed, partial, noinherit)
+API_CLASS(public, static, partial, noinherit)
 class Logger final : public Singleton<Logger>
 {
     API_CLASS_BODY()

@@ -10,18 +10,24 @@ namespace ReCrafted.API
 
         public static void Destroy(Object objectInstance)
         {
-            InternalDestroy(objectInstance);
+            InternalDestroy(objectInstance.NativePtr);
         }
 
         public static void DestroyNow(Object objectInstance)
         {
-            InternalDestroyNow(objectInstance);
+            InternalDestroyNow(objectInstance.NativePtr);
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void InternalDestroy(Object objectInstance);
+        private static extern void InternalDestroy(System.IntPtr objectInstance);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void InternalDestroyNow(Object objectInstance);
+        private static extern void InternalDestroyNow(System.IntPtr objectInstance);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern object InternalNew(System.IntPtr type);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern object InternalNewGeneric(System.IntPtr baseType, System.IntPtr obj);
     }
 }

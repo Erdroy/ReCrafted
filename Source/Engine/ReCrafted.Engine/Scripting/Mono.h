@@ -7,5 +7,43 @@
 #include <mono/metadata/debug-helpers.h>
 #include <mono/metadata/mono-debug.h>
 
-#define mono_object_get_type(obj) \
+#define mono_object_get_type(obj)   \
     static_cast<MonoTypeEnum>(mono_type_get_type(mono_class_get_type(mono_object_get_class(obj))));
+
+/// <summary>
+/// Only valid for class types.
+/// </summary>
+#define mono_type_get_token(type)   \
+    mono_class_get_type_token(mono_type_get_class(type))
+
+#define API_BIND(name, method)      \
+    mono_add_internal_call(name, (const void*)(method))
+
+#define MONO_STRING_TO_CSTR(str)    \
+    mono_string_to_utf8(str)
+
+#define MONO_STRING_TO_STR(str)     \
+    String((Char*)mono_string_chars(str))
+
+#define MONO_STRING_FROM_CSTR(str)  \
+    mono_string_new(mono_domain_get(), str)
+
+#define MONO_STRING_FROM_STDSTR(str)  \
+    mono_string_new(mono_domain_get(), str.c_str())
+
+#define MONO_STRING_FROM_STR(str)  \
+    mono_string_new_utf16(mono_domain_get(), reinterpret_cast<const mono_unichar2*>(str.Data()), str.Length())
+
+#define MONO_FREE(ptr)              \
+    mono_free(ptr);
+
+#define MONO_FREE_STUB(value)
+
+#define MONO_REGISTER_OBJECT(func)      \
+    ObjectManager::GetInstance()->RegisterObjectCreator(                            \
+        mono_reflection_type_from_name(                                             \
+            const_cast<char*>(Fullname()),                                          \
+            mono_assembly_get_image(ScriptingManager::GetAPIAssembly()->ToMono())   \
+        ),                                                                          \
+        Action<Object*, bool>::New(func)                                                  \
+    )

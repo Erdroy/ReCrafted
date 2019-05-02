@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Core 
 {
-    public sealed partial class Time
+    public static partial class Time
     {
 
         [MethodImpl(MethodImplOptions.InternalCall)]

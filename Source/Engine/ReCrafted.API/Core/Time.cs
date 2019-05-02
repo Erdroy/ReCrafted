@@ -5,7 +5,7 @@ namespace ReCrafted.API.Core
     /// <summary>
     ///     The time class. Provides engine's timing services.
     /// </summary>
-    public sealed partial class Time
+    public static partial class Time
     {
         /// <summary>
         ///     Returns current frame engine's time.

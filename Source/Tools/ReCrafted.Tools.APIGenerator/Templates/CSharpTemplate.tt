@@ -56,12 +56,13 @@ foreach(var function in Functions)
 //      /\ ---- GENERATE FUNCTIONS ---- /\
 
 //      \/ ---- GENERATE EXTERN FUNCTIONS ---- \/
+// Note: Objects passing to the C++ wrapper, does need to get pointer, not MonoObject.
 foreach(var function in Functions)
 {
 #>
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern <#=function.ReturnType.ToCSharp()#> Internal<#=function.Name#>(<#=function.GetCSharpParameters(true)#>);
+        private static extern <#=function.ReturnType.ToCSharp()#> Internal<#=function.Name#>(<#=function.GetCSharpParameters(true, false)#>);
 <#
 }
 //      /\ ---- GENERATE EXTERN FUNCTIONS ---- /\
