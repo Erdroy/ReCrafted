@@ -26,7 +26,12 @@ namespace ReCrafted.Tools.APIGenerator
                 case "uint64_t":
                     return "System.UInt64"; // or ulong...?
                 case "int64_t":
-                    return "System.Int64"; 
+                    return "System.Int64";
+
+                case "MonoObject":
+                    return "object";
+                case "MonoType":
+                    return "System.IntPtr";
 
                 default:
                     return baseType;
