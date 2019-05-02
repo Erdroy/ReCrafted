@@ -12,9 +12,7 @@ void Assembly::Unload()
 
 Class Assembly::GetClass(const char* classNamespace, const char* className) const
 {
-    const auto monoClass = mono_class_from_name(m_image, classNamespace, className);
-    ASSERT(monoClass);
-    return Class(monoClass);
+    return Class(mono_class_from_name(m_image, classNamespace, className));
 }
 
 MonoAssembly* Assembly::ToMono() const

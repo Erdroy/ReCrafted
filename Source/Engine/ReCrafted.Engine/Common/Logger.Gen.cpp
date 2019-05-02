@@ -22,3 +22,18 @@ void Logger::InitRuntime()
 {
     API_BIND("ReCrafted.API.Common.Logger::InternalWriteLog", &APIProxy::Logger_WriteLog);
 }
+
+const char* Logger::Fullname() 
+{
+    return "ReCrafted.API.Common.Logger";
+}
+
+const char* Logger::Name() 
+{
+    return "Logger";
+}
+
+const char* Logger::Namespace() 
+{
+    return "ReCrafted.API.Common";
+}

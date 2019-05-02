@@ -367,7 +367,56 @@ foreach(var function in Functions)
             
             #line default
             #line hidden
-            this.Write("}");
+            this.Write("}\r\n\r\nconst char* ");
+            
+            #line 108 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
+            
+            #line default
+            #line hidden
+            this.Write("::Fullname() \r\n{\r\n    return \"");
+            
+            #line 110 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Class.Namespace));
+            
+            #line default
+            #line hidden
+            this.Write(".");
+            
+            #line 110 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
+            
+            #line default
+            #line hidden
+            this.Write("\";\r\n}\r\n\r\nconst char* ");
+            
+            #line 113 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
+            
+            #line default
+            #line hidden
+            this.Write("::Name() \r\n{\r\n    return \"");
+            
+            #line 115 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
+            
+            #line default
+            #line hidden
+            this.Write("\";\r\n}\r\n\r\nconst char* ");
+            
+            #line 118 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
+            
+            #line default
+            #line hidden
+            this.Write("::Namespace() \r\n{\r\n    return \"");
+            
+            #line 120 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Class.Namespace));
+            
+            #line default
+            #line hidden
+            this.Write("\";\r\n}");
             return this.GenerationEnvironment.ToString();
         }
         

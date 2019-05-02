@@ -13,7 +13,15 @@ namespace ReCrafted.API
             InternalDestroy(objectInstance);
         }
 
+        public static void DestroyNow(Object objectInstance)
+        {
+            InternalDestroyNow(objectInstance);
+        }
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalDestroy(Object objectInstance);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalDestroyNow(Object objectInstance);
     }
 }

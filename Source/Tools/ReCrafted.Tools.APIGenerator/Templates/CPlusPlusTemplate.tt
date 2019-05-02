@@ -104,3 +104,18 @@ foreach(var function in Functions)
 }
 #>
 }
+
+const char* <#=Class.Name#>::Fullname() 
+{
+    return "<#=Class.Namespace#>.<#=Class.Name#>";
+}
+
+const char* <#=Class.Name#>::Name() 
+{
+    return "<#=Class.Name#>";
+}
+
+const char* <#=Class.Name#>::Namespace() 
+{
+    return "<#=Class.Namespace#>";
+}

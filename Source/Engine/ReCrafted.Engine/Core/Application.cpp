@@ -9,6 +9,7 @@
 #include "Input/InputManager.h"
 #include "Renderer/Renderer.h"
 #include "Scripting/ScriptingManager.h"
+#include "Scripting/ObjectManager.h"
 
 // EventProcessor is implemented per-platform
 uint64_t EventProcessor(void*, uint32_t, uint64_t, uint64_t);
@@ -87,6 +88,7 @@ void Application::InitializeSubSystems() const
 {
     // Register subsystems
     SubSystemManager::Register<ScriptingManager>();
+    SubSystemManager::Register<ObjectManager>();
     SubSystemManager::Register<Time>();
     SubSystemManager::Register<InputManager>();
     SubSystemManager::Register<ActorPoolManager>();

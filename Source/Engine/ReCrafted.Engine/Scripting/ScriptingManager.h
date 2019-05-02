@@ -18,6 +18,7 @@ private:
 
 private:
     void LoadAssemblies();
+    void InitRuntime();
 
 protected:
     void Initialize() override;

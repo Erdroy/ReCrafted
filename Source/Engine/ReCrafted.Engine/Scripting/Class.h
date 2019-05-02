@@ -24,6 +24,25 @@ public:
 
 public:
     /// <summary>
+    ///     Finds method using given name.
+    /// </summary>
+    /// <param name="methodName">The method name.</param>
+    /// <returns>The method structure.</returns>
+    Method GetMethod(const char* methodName) const;
+
+    /// <summary>
+    ///     Finds field using given name.
+    /// </summary>
+    /// <param name="fieldName">The field name.</param>
+    /// <returns>The field structure.</returns>
+    Field GetField(const char* fieldName) const;
+
+    /// <summary>
+    ///     Returns true when valid.
+    /// </summary>
+    bool IsValid() const;
+
+    /// <summary>
     ///     Returns name of this class.
     /// </summary>
     char* Name() const;

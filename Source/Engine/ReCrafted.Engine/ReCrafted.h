@@ -18,11 +18,11 @@
 #include <cstring>
 
 // Default RC includes
-#include <ReCraftedPrerequisites.h>
 #include <ReCraftedAPI.h>
 #include <ReCraftedTypes.h>
 #include <ReCraftedDefines.h>
 #include <ReCraftedConfig.h>
+#include <ReCraftedPrerequisites.h>
 
 #include <Common/Assert.h>
 #include <Common/String.h>

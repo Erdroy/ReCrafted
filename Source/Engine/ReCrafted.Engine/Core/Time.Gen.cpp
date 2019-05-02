@@ -52,3 +52,18 @@ void Time::InitRuntime()
     API_BIND("ReCrafted.API.Core.Time::InternalFixedDeltaTime", &APIProxy::Time_FixedDeltaTime);
     API_BIND("ReCrafted.API.Core.Time::InternalCurrentFrame", &APIProxy::Time_CurrentFrame);
 }
+
+const char* Time::Fullname() 
+{
+    return "ReCrafted.API.Core.Time";
+}
+
+const char* Time::Name() 
+{
+    return "Time";
+}
+
+const char* Time::Namespace() 
+{
+    return "ReCrafted.API.Core";
+}

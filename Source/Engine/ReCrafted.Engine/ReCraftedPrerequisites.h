@@ -63,6 +63,8 @@ class NullDevice;
 
 // Scripting/
 struct Class;
+struct Field;
+struct Method;
 class Assembly;
 class Domain;
 class Object;
