@@ -29,6 +29,15 @@
 #define MONO_STRING_TO_STR(str)     \
     String((Char*)mono_string_chars(str))
 
+#define MONO_STRING_FROM_CSTR(str)  \
+    mono_string_new(mono_domain_get(), str)
+
+#define MONO_STRING_FROM_STDSTR(str)  \
+    mono_string_new(mono_domain_get(), str.c_str())
+
+#define MONO_STRING_FROM_STR(str)  \
+    mono_string_new_utf16(mono_domain_get(), reinterpret_cast<const mono_unichar2*>(str.Data()), str.Length())
+
 #define MONO_FREE(ptr)              \
     mono_free(ptr);
 

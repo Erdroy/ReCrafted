@@ -47,13 +47,7 @@ void ObjectManager::InitializeInstance(Object* object, const char* nameSpace, co
     const auto gcHandle = mono_gchandle_new(managedInstance, true);
 
     object->Initialize(gcHandle, managedInstance, cls);
-
-    // Set NativePtr field in managed object if the object does have it.
-    const auto testField = cls.GetField("NativePtr");
-    if(testField.IsValid())
-    {
-        testField.SetValue(object, object);
-    }
+    object->SetNativePointer(object);
 
     // Register object
     RegisterObject(object);
@@ -67,4 +61,7 @@ void ObjectManager::Destroy(Object* objectInstance)
 void ObjectManager::DestroyNow(Object* objectInstance)
 {
     // TODO: Destroy object now
+
+    // Delete object
+    delete objectInstance;
 }

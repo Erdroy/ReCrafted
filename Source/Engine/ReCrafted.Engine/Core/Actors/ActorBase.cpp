@@ -3,43 +3,43 @@
 #include "ActorBase.h"
 //#include "Scene/SceneManager.h"
 
-void ActorBase::OnAcquire()
-{
-    MAIN_THREAD_ONLY();
-
-    // Add to scene
-    //SceneManager::GetInstance()->AddActor(this);
-
-    // Call awake event
-    OnAwake();
-}
-
-void ActorBase::OnRelease()
-{
-    MAIN_THREAD_ONLY();
-
-    if(m_parent)
-    {
-        // Remove from parent
-        //SetParent(nullptr);
-    }
-
-    /*// We need to unbind the managed object, because we don't want to get 
-    // finalizer being called on us, because it will also remove our 
-    // unmanaged instance. And we don't want this, because we are assigning 
-    // managed instances dynamically (when actor is acquired).
-    UnbindManaged(this);
-
-    // ... and now, we can safely destroy the actor object.
-    Object::Destroy(this);
-
-    for (auto& script : m_scripts)
-        Object::Destroy(script);
-    m_scripts.Clear();*/
-
-    // Remove from scene
-    ///SceneManager::GetInstance()->RemoveActor(this);
-}
+//void ActorBase::OnAcquire()
+//{
+//    MAIN_THREAD_ONLY();
+//
+//    // Add to scene
+//    //SceneManager::GetInstance()->AddActor(this);
+//
+//    // Call awake event
+//    OnAwake();
+//}
+//
+//void ActorBase::OnRelease()
+//{
+//    MAIN_THREAD_ONLY();
+//
+//    if(m_parent)
+//    {
+//        // Remove from parent
+//        //SetParent(nullptr);
+//    }
+//
+//    /*// We need to unbind the managed object, because we don't want to get 
+//    // finalizer being called on us, because it will also remove our 
+//    // unmanaged instance. And we don't want this, because we are assigning 
+//    // managed instances dynamically (when actor is acquired).
+//    UnbindManaged(this);
+//
+//    // ... and now, we can safely destroy the actor object.
+//    Object::Destroy(this);
+//
+//    for (auto& script : m_scripts)
+//        Object::Destroy(script);
+//    m_scripts.Clear();*/
+//
+//    // Remove from scene
+//    ///SceneManager::GetInstance()->RemoveActor(this);
+//}
 
 void ActorBase::Cleanup(const ActorId_t id)
 {

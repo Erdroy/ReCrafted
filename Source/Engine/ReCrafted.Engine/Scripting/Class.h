@@ -24,6 +24,12 @@ public:
 
 public:
     /// <summary>
+    ///     Returns base class of this case.
+    /// </summary>
+    /// <returns>The base class.</returns>
+    Class GetBaseClass() const;
+
+    /// <summary>
     ///     Finds method using given name.
     /// </summary>
     /// <param name="methodName">The method name.</param>

@@ -42,6 +42,12 @@ public:
     /// </summary>
     MonoObject* ToManaged() const;
 
+    /// <summary>
+    ///     Sets native pointer of this object.
+    /// </summary>
+    /// <remarks>When managed object does not derive from Object, this call will be ignored.</remarks>
+    void SetNativePointer(void* pointer);
+
 public:
     /// <summary>
     ///     Destroys given Object instance.

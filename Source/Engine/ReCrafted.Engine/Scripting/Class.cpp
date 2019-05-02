@@ -4,6 +4,16 @@
 #include "Field.h"
 #include "Method.h"
 
+Class Class::GetBaseClass() const
+{
+    const auto base = mono_class_get_parent(m_class);
+
+    if (!base)
+        return Class(nullptr);
+
+    return Class(base);
+}
+
 Method Class::GetMethod(const char* methodName) const
 {
     ASSERT(m_class);

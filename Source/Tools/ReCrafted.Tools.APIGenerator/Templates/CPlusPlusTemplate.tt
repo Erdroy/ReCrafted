@@ -19,7 +19,7 @@ foreach(var function in Functions)
 {
 #>
 
-    static <#=function.ReturnType#> <#=Class.Name#>_<#=function.Name#>(<#=function.GetCPlusPlusParameters(Class, !function.IsStatic)#>) 
+    static <#=function.ReturnType.ToSpecial()#> <#=Class.Name#>_<#=function.Name#>(<#=function.GetCPlusPlusParameters(Class, !function.IsStatic)#>) 
     {
         MAIN_THREAD_ONLY();
 <#
@@ -81,9 +81,18 @@ foreach(var function in Functions)
     }
     if(function.ReturnType.BaseType != "void")
     {
+        if(function.ReturnType.IsSpecial)
+        {
+#>
+        return <#=function.ReturnType.GetSpecialReturnConversion()#>(_returnValue);
+<#
+        }
+        else
+        {
 #>
         return _returnValue;
 <#
+        }
     }
 #>
     }

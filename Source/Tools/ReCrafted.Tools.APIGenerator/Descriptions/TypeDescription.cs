@@ -63,6 +63,21 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
             }
         }
 
+        public string GetSpecialReturnConversion()
+        {
+            switch (BaseType)
+            {
+                case "char" when ByPtr: // c string
+                    return "MONO_STRING_FROM_CSTR";
+                case "std::string": // std string
+                    return "MONO_STRING_FROM_STDSTR";
+                case "String": // Engine's string
+                    return "MONO_STRING_FROM_STR";
+                default:
+                    throw new Exception($"No special conversion is found for type {ToString()}.");
+            }
+        }
+
         public string GetSpecialFree()
         {
             switch (BaseType)

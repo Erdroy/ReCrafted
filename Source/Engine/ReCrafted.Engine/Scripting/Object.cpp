@@ -1,6 +1,8 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include "Object.h"
+#include "Class.h"
+#include "Field.h"
 
 void Object::Initialize(const GCHandle_t gcHandle, MonoObject* managedInstance, const Class& cls)
 {
@@ -22,6 +24,15 @@ Class Object::GetClass() const
 MonoObject* Object::ToManaged() const
 {
     return m_managedInstance;
+}
+
+void Object::SetNativePointer(void* pointer)
+{
+    // Set NativePtr field in managed object if the object does have it.
+    const auto testField = m_class.GetField("NativePtr");
+
+    if (testField.IsValid())
+        testField.SetValue(this, pointer);
 }
 
 void Object::Destroy(Object* objectInstance)
