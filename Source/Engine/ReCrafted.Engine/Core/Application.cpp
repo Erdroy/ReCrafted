@@ -4,7 +4,6 @@
 #include "Common/Platform/Platform.h"
 #include "Common/Logger.h"
 #include "Core/SubSystems/SubSystemManager.h"
-#include "Core/Actors/ActorPoolManager.h"
 #include "Core/Time.h"
 #include "Input/InputManager.h"
 #include "Renderer/Renderer.h"
@@ -91,7 +90,6 @@ void Application::InitializeSubSystems() const
     SubSystemManager::Register<ObjectManager>();
     SubSystemManager::Register<Time>();
     SubSystemManager::Register<InputManager>();
-    SubSystemManager::Register<ActorPoolManager>();
 }
 
 void Application::InitializeRenderer()

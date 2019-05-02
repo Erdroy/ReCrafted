@@ -11,7 +11,6 @@ using ActorId_t = uint64_t;
 
 class ActorBase
 {
-    friend class ActorPoolBase;
     friend class SceneManager;
 
 private:
@@ -28,10 +27,6 @@ private:
 
     List<ActorBase*> m_children = {};
     //List<Script*> m_scripts = {};
-
-private: /* ActorPool events */
-    void OnAcquire();
-    void OnRelease();
 
 private:
     void Cleanup(ActorId_t id = 0u);
@@ -74,9 +69,6 @@ public:
     //void RemoveScript(Script* script);
 
     void SetActive(bool active);
-
-public:
-    virtual void Destroy() = 0;
 
 public:
     virtual void SetPosition(const Vector3& position);

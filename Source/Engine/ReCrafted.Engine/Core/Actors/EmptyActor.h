@@ -4,8 +4,13 @@
 
 #include <ReCrafted.h>
 
-#include "Core/Actors/Actor.h"
+#include "Core/Actors/ActorBase.h"
 
-class EmptyActor final : public Actor<EmptyActor>
+class EmptyActor final : public ActorBase
 {
+public:
+    static EmptyActor* Create()
+    {
+        return New<EmptyActor>();
+    }
 };
