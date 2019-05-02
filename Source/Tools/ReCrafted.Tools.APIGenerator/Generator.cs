@@ -264,6 +264,20 @@ namespace ReCrafted.Tools.APIGenerator
 
         public List<string> Usings = new List<string>();
 
+        public static void GenerateRuntimeInitialization(ClassList classList, string outputFile)
+        {
+            var initRuntimeGen = new InitRuntime
+            {
+                Session = new Dictionary<string, object>
+                {
+                    { "ClassList", classList },
+                }
+            };
+            initRuntimeGen.Initialize();
+
+            File.WriteAllText(outputFile, initRuntimeGen.TransformText());
+        }
+
         public static Generator Instance { get; private set; }
     }
 }

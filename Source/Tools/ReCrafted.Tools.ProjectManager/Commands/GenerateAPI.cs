@@ -25,7 +25,9 @@ namespace ReCrafted.Tools.ProjectManager.Commands
             if (currentDir.Contains("Tools"))
                 currentDir += "\\..";
 
-            var headerFiles = Directory.GetFiles(currentDir + "\\Source\\Engine\\ReCrafted.Engine\\", "*.h", SearchOption.AllDirectories);
+            var engineProjDir = currentDir + "\\Source\\Engine\\ReCrafted.Engine\\";
+
+            var headerFiles = Directory.GetFiles(engineProjDir, "*.h", SearchOption.AllDirectories);
 
             var apiHeaderFiles = new List<string>();
 
@@ -39,6 +41,8 @@ namespace ReCrafted.Tools.ProjectManager.Commands
             Console.WriteLine($"Found {apiHeaderFiles.Count} API-defining headers out of total {headerFiles.Length} ({timer.ElapsedMilliseconds} ms)");
             Console.WriteLine("Generating API files...");
 
+            var classList = new ClassList();
+
             foreach (var headerFile in apiHeaderFiles)
             {
                 var fileInfo = new FileInfo(headerFile);
@@ -46,6 +50,7 @@ namespace ReCrafted.Tools.ProjectManager.Commands
                 if (fileInfo.Name == "ReCraftedAPI.h")
                     continue;
 
+                var headerFileName = Path.GetFileNameWithoutExtension(fileInfo.Name);
                 var apiSourceFileName = Path.GetFileNameWithoutExtension(fileInfo.Name) + ".Gen.cs";
 
                 if (!headerFile.EndsWith(c99CppHeaderExtension) || fileInfo.Extension != c99CppHeaderExtension)
@@ -74,12 +79,18 @@ namespace ReCrafted.Tools.ProjectManager.Commands
                         Directory.CreateDirectory(apiSourceFileDirectory);
 
                     generator.Generate(apiSourceFile, proxySourceFile);
+
+                    classList.Includes.Add(headerFile.Replace(engineProjDir, "").Replace("\\", "/"));
+                    classList.Names.Add(headerFileName);
                 }
                 //catch (Exception ex)
                 {
                     //Console.WriteLine($"Failed to generate API file using header file '{headerFile}'.\nError: \n{ex.Message}");
                 }
             }
+
+            Console.WriteLine("Generating runtime initialization...");
+            Generator.GenerateRuntimeInitialization(classList, engineProjDir + "Scripting\\ScriptingManager.Gen.cpp");
 
             timer.Stop();
             Console.WriteLine($"API Generated in {timer.ElapsedMilliseconds} ms.");

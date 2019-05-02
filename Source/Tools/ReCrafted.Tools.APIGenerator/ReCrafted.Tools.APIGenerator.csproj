@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessModifier.cs" />
+    <Compile Include="ClassList.cs" />
     <Compile Include="Descriptions\ClassDescription.cs" />
     <Compile Include="Descriptions\FunctionDescription.cs" />
     <Compile Include="Descriptions\TypeDescription.cs" />
@@ -76,6 +77,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CPlusPlusTemplate.tt</DependentUpon>
     </Compile>
+    <Compile Include="Templates\InitRuntime.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InitRuntime.tt</DependentUpon>
+    </Compile>
     <Compile Include="TypeTranslation.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +92,10 @@
     <Content Include="Templates\CPlusPlusTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>CPlusPlusTemplate.cs</LastGenOutput>
+    </Content>
+    <Content Include="Templates\InitRuntime.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>InitRuntime.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>
