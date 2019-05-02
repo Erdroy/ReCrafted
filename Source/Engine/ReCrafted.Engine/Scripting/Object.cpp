@@ -30,9 +30,10 @@ void Object::SetNativePointer(void* pointer)
 {
     // Set NativePtr field in managed object if the object does have it.
     const auto testField = m_class.GetField("NativePtr");
-    
+    auto pointerValue = reinterpret_cast<uintptr_t>(pointer);
+
     if (testField.IsValid())
-        testField.SetValue(this, pointer);
+        testField.SetValue(this, &pointerValue);
 }
 
 void Object::Destroy(Object* objectInstance)
