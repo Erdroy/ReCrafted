@@ -30,7 +30,8 @@ private:
 
     void Update();
     void FixedUpdate();
-    void Render();
+    void LateUpdate();
+    void FrameDone();
 
 private:
     /**

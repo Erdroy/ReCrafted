@@ -123,12 +123,16 @@ void Application::Update()
     // Dispatch input
     InputManager::GetInstance()->DispatchInput();
 
+    SubSystemManager::GetInstance()->Update();
+
     // TODO: Update rest of the world
+
+    SubSystemManager::GetInstance()->LateUpdate();
 }
 
 void Application::FixedUpdate()
 {
-
+    SubSystemManager::GetInstance()->FixedUpdate();
 }
 
 void Application::Render()
@@ -136,6 +140,7 @@ void Application::Render()
     Renderer::ClearRenderBuffer(m_frameBufferHandle, Renderer::Color(0.15f, 0.15f, 0.15f, 1.0f));
 
     Renderer::Frame();
+    SubSystemManager::GetInstance()->FrameDone();
 }
 
 void Application::Run()

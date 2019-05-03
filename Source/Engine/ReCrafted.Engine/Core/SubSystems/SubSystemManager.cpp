@@ -41,6 +41,50 @@ void SubSystemManager::Release(SubSystemBase* subsystem)
     subsystem->Release();
 }
 
+void SubSystemManager::Update()
+{
+    for (auto&& subsystem : m_subSystems)
+    {
+        if (subsystem == nullptr)
+            continue;
+
+        subsystem->OnUpdate();
+    }
+}
+
+void SubSystemManager::FixedUpdate()
+{
+    for (auto&& subsystem : m_subSystems)
+    {
+        if (subsystem == nullptr)
+            continue;
+
+        subsystem->OnFixedUpdate();
+    }
+}
+
+void SubSystemManager::LateUpdate()
+{
+    for (auto&& subsystem : m_subSystems)
+    {
+        if (subsystem == nullptr)
+            continue;
+
+        subsystem->OnLateUpdate();
+    }
+}
+
+void SubSystemManager::FrameDone()
+{
+    for (auto&& subsystem : m_subSystems)
+    {
+        if (subsystem == nullptr)
+            continue;
+
+        subsystem->OnFrameDone();
+    }
+}
+
 void SubSystemManager::Register(SubSystemBase* subsystem)
 {
     ASSERT(subsystem);
