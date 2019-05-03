@@ -23,6 +23,10 @@ private:
     MonoObject* m_managedInstance = nullptr;
     Class m_class = Class{ nullptr };
 
+public:
+    Object() = default;
+    virtual ~Object() = default;
+
 private:
     void Initialize(GCHandle_t gcHandle, MonoObject* managedInstance, const Class& cls);
 
