@@ -94,6 +94,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Compile Include="Compiler\ShaderCompiler.Pass.Impl.cs" />
+    <None Include="Project.lua" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ReCrafted.Tools.Common\ReCrafted.Tools.Common.csproj">

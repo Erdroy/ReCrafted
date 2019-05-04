@@ -67,6 +67,9 @@
     <Compile Include="JsonTemplate.cs" />
     <Compile Include="TwoWayEnumerator.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Project.lua" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
