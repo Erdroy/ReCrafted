@@ -50,6 +50,8 @@
     <Compile Include="Common\Logger.cs" />
     <Compile Include="Common\Logger.Gen.cs" />
     <Compile Include="Common\LogLevel.cs" />
+    <Compile Include="Core\Actors\EmptyActor.Gen.cs" />
+    <Compile Include="Core\Exceptions.cs" />
     <Compile Include="Core\GameBase.cs" />
     <Compile Include="Core\ReCraftedException.cs" />
     <Compile Include="Core\Time.cs" />
