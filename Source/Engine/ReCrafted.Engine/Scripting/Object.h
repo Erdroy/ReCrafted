@@ -80,13 +80,13 @@ public:
     /// <summary>
     ///     Destroys given Object instance.
     /// </summary>
-    API_FUNCTION()
+    API_FUNCTION();
     static void Destroy(Object* objectInstance);
     
     /// <summary>
     ///     Destroys given Object instance now.
     /// </summary>
-    API_FUNCTION()
+    API_FUNCTION();
     static void DestroyNow(Object* objectInstance);
 
 private:
@@ -96,7 +96,7 @@ private:
     /// <param name="type">The mono type.</param>
     /// <returns>The managed object pointer.</returns>
     /// <remarks>Mono type must derive from Object.</remarks>
-    API_FUNCTION(noproxy)
+    API_FUNCTION(noproxy);
     static MonoObject* New(MonoType* type);
 
     /// <summary>
@@ -106,6 +106,6 @@ private:
     /// <param name="obj">The base object type.</param>
     /// <returns>The managed object pointer.</returns>
     /// <remarks>Mono type must derive from Object.</remarks>
-    API_FUNCTION(noproxy)
+    API_FUNCTION(noproxy);
     static MonoObject* NewGeneric(MonoType* baseType, MonoObject* obj);
 };

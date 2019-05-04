@@ -12,7 +12,7 @@ class EmptyActor final : public ActorBase
     API_CLASS_BODY()
 
 public:
-    API_FUNCTION()
+    API_FUNCTION();
     static EmptyActor* Create()
     {
         return New<EmptyActor>();

@@ -64,13 +64,13 @@ protected:
     virtual void OnTransformChange() {}
 
 public:
-    API_FUNCTION()
+    API_FUNCTION();
     void SetParent(ActorBase* newParent);
 
-    API_FUNCTION()
+    API_FUNCTION();
     void AddChild(ActorBase* child);
 
-    API_FUNCTION()
+    API_FUNCTION();
     void RemoveChild(ActorBase* child);
 
     //API_FUNCTION()
@@ -79,7 +79,7 @@ public:
     //API_FUNCTION()
     //void RemoveScript(Script* script);
 
-    API_FUNCTION()
+    API_FUNCTION();
     void SetActive(bool active);
 
 public:
@@ -111,10 +111,10 @@ public:
 
     const List<ActorBase*>& GetChildren() const;
 
-    API_FUNCTION()
+    API_FUNCTION();
     void SetName(const String& name);
 
-    API_FUNCTION()
+    API_FUNCTION();
     const String& GetName() const;
 
     ActorId_t GetId() const;

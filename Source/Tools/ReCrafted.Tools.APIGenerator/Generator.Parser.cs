@@ -61,7 +61,9 @@ namespace ReCrafted.Tools.APIGenerator
             // Parse tag arguments
             var tagArguments = ParseTagParameters();
 
-            var token = _tokenizer.NextToken();
+            _tokenizer.SkipUntil(TokenType.Identifier);
+
+            var token = _tokenizer.CurrentToken;
             var isStatic = token.Value == "static";
 
             if (isStatic)

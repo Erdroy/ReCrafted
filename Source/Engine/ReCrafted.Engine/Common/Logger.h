@@ -69,7 +69,7 @@ public:
     }
 
 private:
-    API_FUNCTION(noproxy)
+    API_FUNCTION(noproxy);
     static void WriteLog(LogLevel level, const char* str);
 
 protected:
