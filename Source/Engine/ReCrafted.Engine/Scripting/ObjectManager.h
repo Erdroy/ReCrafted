@@ -9,26 +9,48 @@
 #include "Scripting/Mono.h"
 
 #include <sparsepp/spp.h>
+#include <concurrentqueue.h>
 
 using ObjectId_t = uint32_t;
 using GCHandle_t = uint32_t;
 
 class ObjectManager final : public SubSystem<ObjectManager>
 {
+    using ObjectMap_t = spp::sparse_hash_map<GCHandle_t, Object*>;
+
 private:
     std::atomic<ObjectId_t> m_lastObjectId = 0;
     std::atomic<GCHandle_t> m_objectCount = 0;
-    spp::sparse_hash_map<GCHandle_t, Object*> m_objectMap;
+    ObjectMap_t m_objectMap;
     Lock m_objectMapLock;
 
     spp::sparse_hash_map<uint32_t, Action<Object*, bool>> m_objectCreators;
 
+    moodycamel::ConcurrentQueue<Object*> m_destroyQueue;
+
 private:
     void RegisterObject(Object* object);
+
+    void UnregisterObject(Object* object);
+    void ReleaseObject(Object* object);
+    void DeleteObject(Object* object);
+
+    /// <summary>
+    ///     Shorthand for fully releasing object using:
+    ///     UnregisterObject(object)
+    ///     ReleaseObject(object)
+    ///     DeleteObject(object)
+    /// </summary>
+    /// <param name="object">The object to destroy.</param>
+    void DestroyObject(Object* object);
+
+    void ReleaseQueuedObjects();
 
 protected:
     void Initialize() override;
     void Shutdown() override;
+
+    void OnLateUpdate() override;
 
 public:
     /// <summary>

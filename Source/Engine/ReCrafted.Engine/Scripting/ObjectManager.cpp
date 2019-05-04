@@ -1,12 +1,12 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include "ObjectManager.h"
+#include "Common/Logger.h"
 #include "Mono.h"
 #include "Assembly.h"
 #include "Class.h"
 #include "Domain.h"
 #include "Object.h"
-#include "Field.h"
 #include "ScriptingManager.h"
 
 void ObjectManager::RegisterObject(Object* object)
@@ -26,12 +26,110 @@ void ObjectManager::RegisterObject(Object* object)
     ++m_objectCount;
 }
 
+void ObjectManager::UnregisterObject(Object* object)
+{
+    ASSERT(object);
+
+    ScopeLock(m_objectMapLock);
+
+    // Unregister
+    const auto objectIterator = m_objectMap.find(object->m_id);
+
+    if (objectIterator == m_objectMap.end())
+    {
+        Logger::LogWarning("Destroying object which is already destroyed (or invalid)! Pointer: {0}", reinterpret_cast<uint64_t>(object));
+        m_objectMapLock.UnlockNow();
+        return;
+    }
+
+    // Remove object from map
+    m_objectMap.erase(objectIterator);
+}
+
+void ObjectManager::ReleaseObject(Object* object)
+{
+    ASSERT(object);
+    ASSERT(object->m_managedInstance);
+
+    // Reset native pointer
+    // This is needed for the Shutdown cleanup, as all objects will get it's gc handles released
+    // and this, all of them will finalize and we don't want them to double destroy, look: ~Object() in Object.cs.
+    object->SetNativePointer(nullptr);
+
+    // Release gc handle
+    mono_gchandle_free(object->m_gcHandle);
+
+    // Reset garbage collector handle
+    object->m_gcHandle = 0u;
+}
+
+void ObjectManager::DeleteObject(Object* object)
+{
+    ASSERT(object);
+
+    // Reset object's managed data
+    object->m_managedInstance = nullptr;
+    object->m_class = Class{ nullptr };
+
+    // Reset object id
+    object->m_id = 0u;
+
+    // Decrement object count
+    --m_objectCount;
+
+    delete object;
+}
+
+void ObjectManager::DestroyObject(Object* object)
+{
+    ReleaseObject(object);
+    UnregisterObject(object);
+    DeleteObject(object);
+}
+
+void ObjectManager::ReleaseQueuedObjects()
+{
+    Object* toDestroy;
+    while (m_destroyQueue.try_dequeue(toDestroy))
+    {
+        DestroyObject(toDestroy);
+    }
+}
+
 void ObjectManager::Initialize()
 {
 }
 
 void ObjectManager::Shutdown()
 {
+    ReleaseQueuedObjects();
+
+    ScopeLock(m_objectMapLock);
+
+    // Destroy all objects
+    for (auto&& pair : m_objectMap)
+    {
+        const auto object = pair.second;
+        ASSERT(object);
+
+        // Release and delete 
+        // Note: no need to unregister, because this list will be cleared anyways, 
+        // and we don't have to play with the double lock which gives deadlock and needs some workarounds)
+        
+        ReleaseObject(object);
+        DeleteObject(object);
+    }
+
+    m_objectMap.clear();
+    m_objectCreators.clear();
+
+    // Make sure that we have destroyed all objects
+    DEBUG_ASSERT(m_objectCount == 0);
+}
+
+void ObjectManager::OnLateUpdate()
+{
+    ReleaseQueuedObjects();
 }
 
 void ObjectManager::RegisterObjectCreator(MonoType* type, const Action<Object*, bool>& creator)
@@ -86,19 +184,20 @@ void ObjectManager::InitializeInstance(Object* object, MonoObject* managedObject
 
 void ObjectManager::Destroy(Object* objectInstance)
 {
+    ASSERT(objectInstance);
     objectInstance->SetNativePointer(nullptr);
 
-    // TODO: Destroy object
+    // Queue the object to destroy at the end of the current update frame
+    GetInstance()->m_destroyQueue.enqueue(objectInstance);
 }
 
 void ObjectManager::DestroyNow(Object* objectInstance)
 {
+    ASSERT(objectInstance);
     objectInstance->SetNativePointer(nullptr);
 
-    // TODO: Destroy object now
-
-    // Delete object
-    delete objectInstance;
+    // Fully destroy the object now
+    GetInstance()->DestroyObject(objectInstance);
 }
 
 MonoObject* ObjectManager::New(MonoType* type)

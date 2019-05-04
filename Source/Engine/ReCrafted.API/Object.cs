@@ -30,7 +30,7 @@ namespace ReCrafted.API
         {
             if (NativePtr != IntPtr.Zero)
             {
-                //DestroyNow(this);
+                Destroy(this);
             }
         }
 
