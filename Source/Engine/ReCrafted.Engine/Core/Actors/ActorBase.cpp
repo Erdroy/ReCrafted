@@ -387,37 +387,37 @@ void ActorBase::SetTransform(const Transform& transform)
     UpdateTransform();
 }
 
-Vector3 ActorBase::GetPosition() const
+const Vector3& ActorBase::GetPosition() const
 {
     MAIN_THREAD_ONLY();
     return m_transform.translation;
 }
 
-Vector3 ActorBase::GetLocalPosition() const
+const Vector3& ActorBase::GetLocalPosition() const
 {
     MAIN_THREAD_ONLY();
     return m_localTransform.translation;
 }
 
-Quaternion ActorBase::GetRotation() const
+const Quaternion& ActorBase::GetRotation() const
 {
     MAIN_THREAD_ONLY();
     return m_transform.orientation;
 }
 
-Quaternion ActorBase::GetLocalRotation() const
+const Quaternion& ActorBase::GetLocalRotation() const
 {
     MAIN_THREAD_ONLY();
     return m_localTransform.orientation;
 }
 
-Vector3 ActorBase::GetScale() const
+const Vector3& ActorBase::GetScale() const
 {
     MAIN_THREAD_ONLY();
     return m_transform.scale;
 }
 
-Vector3 ActorBase::GetLocalScale() const
+const Vector3& ActorBase::GetLocalScale() const
 {
     MAIN_THREAD_ONLY();
     return m_localTransform.scale;

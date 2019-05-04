@@ -6,11 +6,14 @@
 #include <ReCrafted.h>
 #include "Core/Transform.h"
 #include "Common/List.h"
+#include "Scripting/Object.h"
 
 using ActorId_t = uint64_t;
 
-class ActorBase
+API_CLASS(public, abstract)
+class ActorBase : public Object
 {
+    API_CLASS_BODY()
     friend class SceneManager;
 
 private:
@@ -61,13 +64,22 @@ protected:
     virtual void OnTransformChange() {}
 
 public:
+    API_FUNCTION()
     void SetParent(ActorBase* newParent);
+
+    API_FUNCTION()
     void AddChild(ActorBase* child);
+
+    API_FUNCTION()
     void RemoveChild(ActorBase* child);
 
+    //API_FUNCTION()
     //void AddScript(Script* script);
+    //
+    //API_FUNCTION()
     //void RemoveScript(Script* script);
 
+    API_FUNCTION()
     void SetActive(bool active);
 
 public:
@@ -82,14 +94,14 @@ public:
 
     void SetTransform(const Transform& transform);
 
-    Vector3 GetPosition() const;
-    Vector3 GetLocalPosition() const;
+    const Vector3& GetPosition() const;
+    const Vector3& GetLocalPosition() const;
 
-    Quaternion GetRotation() const;
-    Quaternion GetLocalRotation() const;
+    const Quaternion& GetRotation() const;
+    const Quaternion& GetLocalRotation() const;
 
-    Vector3 GetScale() const;
-    Vector3 GetLocalScale() const;
+    const Vector3& GetScale() const;
+    const Vector3& GetLocalScale() const;
 
     Transform& GetTransform();
 
@@ -99,7 +111,10 @@ public:
 
     const List<ActorBase*>& GetChildren() const;
 
+    API_FUNCTION()
     void SetName(const String& name);
+
+    API_FUNCTION()
     const String& GetName() const;
 
     ActorId_t GetId() const;
