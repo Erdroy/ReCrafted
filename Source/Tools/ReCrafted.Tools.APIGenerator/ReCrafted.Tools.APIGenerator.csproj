@@ -64,6 +64,7 @@
     <Compile Include="ClassList.cs" />
     <Compile Include="Descriptions\ClassDescription.cs" />
     <Compile Include="Descriptions\FunctionDescription.cs" />
+    <Compile Include="Descriptions\PropertyDescription.cs" />
     <Compile Include="Descriptions\TypeDescription.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="Generator.Parser.cs" />

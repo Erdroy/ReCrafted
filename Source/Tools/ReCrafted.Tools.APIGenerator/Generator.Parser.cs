@@ -1,6 +1,7 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System;
+using System.Linq;
 using ReCrafted.Tools.APIGenerator.Descriptions;
 using ReCrafted.Tools.Common.CodeTokenizer;
 
@@ -22,10 +23,10 @@ namespace ReCrafted.Tools.APIGenerator
                     // TODO: Struct parsing
                     break;
                 case "API_FUNCTION":
-                    ParseFunctionTag();
+                    _functions.Add(ParseFunctionTag());
                     break;
                 case "API_PROPERTY":
-                    // TODO: Property parsing
+                    ParsePropertyTag();
                     break;
                 case "API_USING":
                     ParseUsingTag();
@@ -48,7 +49,50 @@ namespace ReCrafted.Tools.APIGenerator
             Usings.Add(usingNamespace);
         }
 
-        private void ParseFunctionTag()
+        private void ParsePropertyTag()
+        {
+            var function = ParseFunctionTag();
+            var property = _properties.Find(x => x.Name == function.Name);
+
+            if (property != null)
+            {
+                if (property.Mode == PropertyMode.GetterSetter)
+                    Console.WriteLine($"WARNING: Property with name '{function.Name}' has " +
+                                      $"multiple functions declarations tagged with API_PROPERTY.");
+                
+                if(property.Access != function.Access)
+                    Console.WriteLine(
+                        $"WARNING: Property with name '{function.Name}' has multiple functions declarations with " +
+                        $"different access modifier ({property.Access} / {function.Access}).");
+
+                if (property.Type.Equals(function.Parameters.FirstOrDefault().Type) || property.Type.Equals(function.ReturnType))
+                    Console.WriteLine(
+                        $"WARNING: Property with name '{function.Name}' has multiple functions declarations with " +
+                        $"different value types.");
+
+                // Set the property to getter setter
+                property.Mode = PropertyMode.GetterSetter;
+                return;
+            }
+
+            property = new PropertyDescription
+            {
+                Name = function.Name,
+                Type = function.ReturnType.IsVoid ? function.Parameters[0].Type : function.ReturnType,
+                Access = function.Access,
+                Comment = function.Comment,
+                Mode = !function.ReturnType.IsVoid ? PropertyMode.Getter : PropertyMode.Setter,
+                ForceByValue = false // TODO: Add 'by value' support
+            };
+
+            // Add function modifiers to the property
+            property.Modifiers.AddRange(function.Modifiers);
+
+            _properties.Add(property);
+
+        }
+
+        private FunctionDescription ParseFunctionTag()
         {
             var desc = new FunctionDescription();
 
@@ -147,7 +191,7 @@ namespace ReCrafted.Tools.APIGenerator
             //if (isOverride && !desc.Modifiers.Contains("override"))
             //    desc.Modifiers.Add("override");
 
-            _functions.Add(desc);
+            return desc;
         }
 
         private void ParseClassTag()

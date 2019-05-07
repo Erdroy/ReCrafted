@@ -15,6 +15,7 @@ namespace ReCrafted.Tools.APIGenerator
         private Tokenizer _tokenizer;
         private ClassDescription _class;
         private readonly List<FunctionDescription> _functions = new List<FunctionDescription>();
+        private readonly List<PropertyDescription> _properties = new List<PropertyDescription>();
 
         public Generator(string input)
         {
@@ -214,7 +215,8 @@ namespace ReCrafted.Tools.APIGenerator
                 Session = new Dictionary<string, object>
                 {
                     { "Class", _class },
-                    { "Functions", _functions }
+                    { "Functions", _functions },
+                    { "Properties", _properties }
                 }
             };
             classGenerator.Initialize();
@@ -227,7 +229,8 @@ namespace ReCrafted.Tools.APIGenerator
                 Session = new Dictionary<string, object>
                 {
                     { "Class", _class },
-                    { "Functions", _functions }
+                    { "Functions", _functions },
+                    { "Properties", _properties }
                 }
             };
             proxyGenerator.Initialize();
