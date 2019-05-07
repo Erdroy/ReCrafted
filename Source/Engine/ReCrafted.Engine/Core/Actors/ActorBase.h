@@ -10,6 +10,7 @@
 
 using ActorId_t = uint64_t;
 
+API_USING("ReCrafted.API.Common")
 API_USING("ReCrafted.API.Mathematics")
 
 API_CLASS(public, abstract)
@@ -67,9 +68,6 @@ protected:
 
 public:
     API_FUNCTION();
-    void SetParent(ActorBase* newParent);
-
-    API_FUNCTION();
     void AddChild(ActorBase* child);
 
     API_FUNCTION();
@@ -85,41 +83,68 @@ public:
     void SetActive(bool active);
 
 public:
+    API_PROPERTY(noprefix);
+    void SetParent(ActorBase* newParent);
+
+    API_PROPERTY(noprefix);
+    ActorBase* GetParent() const;
+
     API_PROPERTY();
     virtual void Position(const Vector3& position);
 
     API_PROPERTY();
     const Vector3& Position() const;
 
-    virtual void SetLocalPosition(const Vector3& position);
+    API_PROPERTY();
+    virtual void LocalPosition(const Vector3& position);
 
-    virtual void SetRotation(const Quaternion& rotation);
-    virtual void SetLocalRotation(const Quaternion& rotation);
+    API_PROPERTY();
+    const Vector3& LocalPosition() const;
 
-    virtual void SetScale(const Vector3& scale);
-    virtual void SetLocalScale(const Vector3& scale);
+    API_PROPERTY();
+    virtual void Rotation(const Quaternion& rotation);
 
+    API_PROPERTY();
+    const Quaternion& Rotation() const;
+
+    API_PROPERTY();
+    virtual void LocalRotation(const Quaternion& rotation);
+
+    API_PROPERTY();
+    const Quaternion& LocalRotation() const;
+
+    API_PROPERTY();
+    virtual void Scale(const Vector3& scale);
+
+    API_PROPERTY();
+    const Vector3& Scale() const;
+
+    API_PROPERTY();
+    virtual void LocalScale(const Vector3& scale);
+
+    API_PROPERTY();
+    const Vector3& LocalScale() const;
+
+    API_PROPERTY(noprefix);
     void SetTransform(const Transform& transform);
 
-    const Vector3& GetLocalPosition() const;
-
-    const Quaternion& GetRotation() const;
-    const Quaternion& GetLocalRotation() const;
-
-    const Vector3& GetScale() const;
-    const Vector3& GetLocalScale() const;
-
+    API_PROPERTY(noprefix);
     const Transform& GetTransform() const;
 
 public:
+    API_PROPERTY();
     bool IsActiveSelf() const;
+
+    API_PROPERTY();
     bool IsActive() const;
 
+    API_PROPERTY(noprefix);
+    void SetName(const String& name);
+
+    API_PROPERTY(noprefix);
+    const String& GetName() const;
+
     const List<ActorBase*>& GetChildren() const;
-
-    void Name(const String& name);
-
-    const String& Name() const;
 
     ActorId_t GetId() const;
 };

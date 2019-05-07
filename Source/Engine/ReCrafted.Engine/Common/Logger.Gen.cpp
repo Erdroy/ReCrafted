@@ -9,7 +9,7 @@
 class APIProxy
 {
 public:
-
+    
     static void Logger_WriteLog(LogLevel level, MonoString* p_str) 
     {
         MAIN_THREAD_ONLY();

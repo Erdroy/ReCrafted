@@ -9,14 +9,14 @@
 class APIProxy
 {
 public:
-
+    
     static MonoObject* EmptyActor_Create() 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = EmptyActor::Create();
         return _returnValue->ToManaged();
     }
-
+    
     static Object* EmptyActor_CreateObject(bool createManagedInstance)
     {
         return createManagedInstance ? Object::New<EmptyActor>() : new EmptyActor();

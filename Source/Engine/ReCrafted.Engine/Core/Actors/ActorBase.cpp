@@ -165,46 +165,6 @@ void ActorBase::UpdateTransform()
         child->UpdateTransform();
 }
 
-void ActorBase::SetParent(ActorBase* newParent)
-{
-    MAIN_THREAD_ONLY();
-
-    if (m_parent)
-    {
-        // Remove this from current parent
-        m_parent->m_children.Remove(this);
-        
-        // Call remove child event
-        m_parent->OnRemovedChild(this);
-
-        // Return to the scene
-        //SceneManager::GetInstance()->AddActor(this);
-
-        // Set parent as null
-        m_parent = nullptr;
-    }
-
-    if(newParent)
-    {
-        // Set new parent of this actor
-        m_parent = newParent;
-
-        // Add this to the new parent
-        m_parent->m_children.Add(this);
-
-        // Call added child event
-        m_parent->OnAddedChild(this);
-
-        // Remove from the scene
-        //SceneManager::GetInstance()->RemoveActor(this);
-    }
-
-    UpdateTransform();
-
-    // Call parent change event
-    OnParentChange(m_parent);
-}
-
 void ActorBase::AddChild(ActorBase* child)
 {
     MAIN_THREAD_ONLY();
@@ -271,6 +231,53 @@ void ActorBase::SetActive(const bool active)
     }
 }
 
+void ActorBase::SetParent(ActorBase* newParent)
+{
+    MAIN_THREAD_ONLY();
+    ASSERT(newParent != this);
+
+    if (m_parent)
+    {
+        // Remove this from current parent
+        m_parent->m_children.Remove(this);
+
+        // Call remove child event
+        m_parent->OnRemovedChild(this);
+
+        // Return to the scene
+        //SceneManager::GetInstance()->AddActor(this);
+
+        // Set parent as null
+        m_parent = nullptr;
+    }
+
+    if (newParent)
+    {
+        // Set new parent of this actor
+        m_parent = newParent;
+
+        // Add this to the new parent
+        m_parent->m_children.Add(this);
+
+        // Call added child event
+        m_parent->OnAddedChild(this);
+
+        // Remove from the scene
+        //SceneManager::GetInstance()->RemoveActor(this);
+    }
+
+    UpdateTransform();
+
+    // Call parent change event
+    OnParentChange(m_parent);
+}
+
+ActorBase* ActorBase::GetParent() const
+{
+    MAIN_THREAD_ONLY();
+    return m_parent;
+}
+
 void ActorBase::Position(const Vector3& position)
 {
     MAIN_THREAD_ONLY();
@@ -291,7 +298,13 @@ void ActorBase::Position(const Vector3& position)
     UpdateTransform();
 }
 
-void ActorBase::SetLocalPosition(const Vector3& position)
+const Vector3& ActorBase::Position() const
+{
+    MAIN_THREAD_ONLY();
+    return m_transform.translation;
+}
+
+void ActorBase::LocalPosition(const Vector3& position)
 {
     MAIN_THREAD_ONLY();
 
@@ -304,7 +317,13 @@ void ActorBase::SetLocalPosition(const Vector3& position)
     UpdateTransform();
 }
 
-void ActorBase::SetRotation(const Quaternion& rotation)
+const Vector3& ActorBase::LocalPosition() const
+{
+    MAIN_THREAD_ONLY();
+    return m_localTransform.translation;
+}
+
+void ActorBase::Rotation(const Quaternion& rotation)
 {
     MAIN_THREAD_ONLY();
 
@@ -324,7 +343,13 @@ void ActorBase::SetRotation(const Quaternion& rotation)
     UpdateTransform();
 }
 
-void ActorBase::SetLocalRotation(const Quaternion& rotation)
+const Quaternion& ActorBase::Rotation() const
+{
+    MAIN_THREAD_ONLY();
+    return m_transform.orientation;
+}
+
+void ActorBase::LocalRotation(const Quaternion& rotation)
 {
     MAIN_THREAD_ONLY();
 
@@ -337,7 +362,13 @@ void ActorBase::SetLocalRotation(const Quaternion& rotation)
     UpdateTransform();
 }
 
-void ActorBase::SetScale(const Vector3& scale)
+const Quaternion& ActorBase::LocalRotation() const
+{
+    MAIN_THREAD_ONLY();
+    return m_localTransform.orientation;
+}
+
+void ActorBase::Scale(const Vector3& scale)
 {
     MAIN_THREAD_ONLY();
 
@@ -346,7 +377,7 @@ void ActorBase::SetScale(const Vector3& scale)
 
     if (m_parent)
     {
-        m_localTransform.scale = scale / m_parent->GetScale();
+        m_localTransform.scale = scale / m_parent->Scale();
     }
     else
     {
@@ -357,7 +388,13 @@ void ActorBase::SetScale(const Vector3& scale)
     UpdateTransform();
 }
 
-void ActorBase::SetLocalScale(const Vector3& scale)
+const Vector3& ActorBase::Scale() const
+{
+    MAIN_THREAD_ONLY();
+    return m_transform.scale;
+}
+
+void ActorBase::LocalScale(const Vector3& scale)
 {
     MAIN_THREAD_ONLY();
 
@@ -368,6 +405,12 @@ void ActorBase::SetLocalScale(const Vector3& scale)
 
     // Update transform
     UpdateTransform();
+}
+
+const Vector3& ActorBase::LocalScale() const
+{
+    MAIN_THREAD_ONLY();
+    return m_localTransform.scale;
 }
 
 void ActorBase::SetTransform(const Transform& transform)
@@ -385,42 +428,6 @@ void ActorBase::SetTransform(const Transform& transform)
 
     // Update transform
     UpdateTransform();
-}
-
-const Vector3& ActorBase::Position() const
-{
-    MAIN_THREAD_ONLY();
-    return m_transform.translation;
-}
-
-const Vector3& ActorBase::GetLocalPosition() const
-{
-    MAIN_THREAD_ONLY();
-    return m_localTransform.translation;
-}
-
-const Quaternion& ActorBase::GetRotation() const
-{
-    MAIN_THREAD_ONLY();
-    return m_transform.orientation;
-}
-
-const Quaternion& ActorBase::GetLocalRotation() const
-{
-    MAIN_THREAD_ONLY();
-    return m_localTransform.orientation;
-}
-
-const Vector3& ActorBase::GetScale() const
-{
-    MAIN_THREAD_ONLY();
-    return m_transform.scale;
-}
-
-const Vector3& ActorBase::GetLocalScale() const
-{
-    MAIN_THREAD_ONLY();
-    return m_localTransform.scale;
 }
 
 const Transform& ActorBase::GetTransform() const
@@ -444,22 +451,22 @@ bool ActorBase::IsActive() const
     return m_active;
 }
 
-const List<ActorBase*>& ActorBase::GetChildren() const
-{
-    MAIN_THREAD_ONLY();
-    return m_children;
-}
-
-void ActorBase::Name(const String& name)
+void ActorBase::SetName(const String& name)
 {
     MAIN_THREAD_ONLY();
     m_name = name;
 }
 
-const String& ActorBase::Name() const
+const String& ActorBase::GetName() const
 {
     MAIN_THREAD_ONLY();
     return m_name;
+}
+
+const List<ActorBase*>& ActorBase::GetChildren() const
+{
+    MAIN_THREAD_ONLY();
+    return m_children;
 }
 
 ActorId_t ActorBase::GetId() const

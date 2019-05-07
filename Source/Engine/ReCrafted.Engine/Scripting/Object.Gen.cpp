@@ -9,26 +9,26 @@
 class APIProxy
 {
 public:
-
+    
     static void Object_Destroy(Object* objectInstance) 
     {
         MAIN_THREAD_ONLY();
         Object::Destroy(objectInstance);
     }
-
+    
     static void Object_DestroyNow(Object* objectInstance) 
     {
         MAIN_THREAD_ONLY();
         Object::DestroyNow(objectInstance);
     }
-
+    
     static MonoObject* Object_New(MonoType* type) 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = Object::New(type);
         return _returnValue;
     }
-
+    
     static MonoObject* Object_NewGeneric(MonoType* baseType, MonoObject* obj) 
     {
         MAIN_THREAD_ONLY();
