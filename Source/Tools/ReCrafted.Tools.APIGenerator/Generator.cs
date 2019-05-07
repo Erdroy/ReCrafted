@@ -47,7 +47,10 @@ namespace ReCrafted.Tools.APIGenerator
             if (token.Value == "const")
             {
                 type.IsConst = true;
-                token = _tokenizer.ExpectToken(TokenType.Identifier);
+
+                _tokenizer.SkipUntil(TokenType.Identifier);
+
+                token = _tokenizer.CurrentToken;
             }
 
             // Current token is the base type
