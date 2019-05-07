@@ -1,6 +1,7 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ReCrafted.Tools.APIGenerator.Descriptions
@@ -31,7 +32,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
             var str = new StringBuilder();
             str.Append(Access.ToString().ToLower());
 
-            var modifiers = string.Join(" ", Modifiers);
+            var modifiers = string.Join(" ", Modifiers.SkipWhile(x => x == "noprefix"));
 
             if (modifiers.Length > 0)
             {

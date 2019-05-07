@@ -52,6 +52,10 @@ namespace ReCrafted.Tools.APIGenerator
         private void ParsePropertyTag()
         {
             var function = ParseFunctionTag();
+
+            if ((function.Name.StartsWith("Get") || function.Name.StartsWith("Set")) && function.Modifiers.Contains("noprefix"))
+                function.Name = function.Name.Remove(0, 3);
+
             var property = _properties.Find(x => x.Name == function.Name);
 
             if (property != null)
@@ -172,6 +176,7 @@ namespace ReCrafted.Tools.APIGenerator
                             desc.Extern = true;
                         }
                         break;
+                    case "noprefix":
                     case "static":
                     //case "virtual":
                     //case "override":

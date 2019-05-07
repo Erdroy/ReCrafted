@@ -32,5 +32,12 @@
 /// <remarks>Only static function can skip it's proxy.</remarks>
 #define noproxy
 
-#define byref
+/// <summary>
+///     Only valid for properties. Forces the generator to use by-value data passing.
+/// </summary>
 #define byvalue
+
+/// <summary>
+///     Only valid for properties. Forces the generator to remove 'Get' and/or 'Set' prefixes from the function name.
+/// </summary>
+#define noprefix
