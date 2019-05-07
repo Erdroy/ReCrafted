@@ -290,7 +290,21 @@ if(!property.IsStatic){
             
             #line default
             #line hidden
-            this.Write("ref value);\r\n");
+            this.Write("ref value");
+            
+            #line 80 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+if(property.Type.CastToManaged){
+            
+            #line default
+            #line hidden
+            this.Write(".NativePtr");
+            
+            #line 80 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+}
+            
+            #line default
+            #line hidden
+            this.Write(");\r\n");
             
             #line 81 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 
@@ -424,7 +438,7 @@ if(!property.IsStatic){
             this.Write("ref ");
             
             #line 119 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.ToCSharp(true)));
+            this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.ToCSharp(false)));
             
             #line default
             #line hidden

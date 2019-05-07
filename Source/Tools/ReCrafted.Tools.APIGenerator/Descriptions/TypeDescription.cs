@@ -159,12 +159,12 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
             }
         }
 
-        public string ToString(bool isReturn = false)
+        public string ToString(bool isReturn = false, bool allowConst = true, bool allowRef = true)
         {
             if (isReturn && ByPtr && !ByRef && !IsConst)
                 return "MonoObject*";
 
-            return $"{(IsConst ? "const " : "")}{BaseType}{(ByRef ? "&" : "")}{(ByPtr ? "*" : "")}";
+            return $"{(IsConst && allowConst ? "const " : "")}{BaseType}{(ByRef && allowRef ? "&" : "")}{(ByPtr ? "*" : "")}";
         }
 
         public bool Equals(TypeDescription other)
