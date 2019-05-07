@@ -10,13 +10,6 @@ class APIProxy
 {
 public:
 
-    static void ActorBase_SetParent(ActorBase* instance, ActorBase* newParent) 
-    {
-        MAIN_THREAD_ONLY();
-        ASSERT(instance);
-        instance->SetParent(newParent);
-    }
-
     static void ActorBase_AddChild(ActorBase* instance, ActorBase* child) 
     {
         MAIN_THREAD_ONLY();
@@ -41,7 +34,6 @@ public:
 
 void ActorBase::InitRuntime() 
 {
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalSetParent", &APIProxy::ActorBase_SetParent);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalAddChild", &APIProxy::ActorBase_AddChild);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalRemoveChild", &APIProxy::ActorBase_RemoveChild);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalSetActive", &APIProxy::ActorBase_SetActive);

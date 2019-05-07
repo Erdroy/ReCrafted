@@ -69,7 +69,7 @@ foreach(var property in Properties)
 #>
             get
             {
-                Get_Internal<#=property.Name#>(out var data);
+                Get_Internal<#=property.Name#>(<#if(!property.IsStatic){#>NativePtr, <#}#>out var data);
                 return data;
             }
 <#
@@ -77,7 +77,7 @@ foreach(var property in Properties)
     if(property.HasSetter)
     {
 #>
-            set => Set_Internal<#=property.Name#>(ref value);
+            set => Set_Internal<#=property.Name#>(<#if(!property.IsStatic){#>NativePtr, <#}#>ref value);
 <#
     }
 #>
@@ -108,7 +108,7 @@ foreach(var property in Properties)
 #>
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void Get_Internal<#=property.Name#>(out <#=property.Type.ToCSharp(false)#> data);
+        private static extern void Get_Internal<#=property.Name#>(<#if(!property.IsStatic){#>System.IntPtr nativePtr, <#}#>out <#=property.Type.ToCSharp(true)#> data);
 <#
     }
     if(property.HasSetter)
@@ -116,7 +116,7 @@ foreach(var property in Properties)
 #>
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void Set_Internal<#=property.Name#>(ref <#=property.Type.ToCSharp(false)#> data);
+        private static extern void Set_Internal<#=property.Name#>(<#if(!property.IsStatic){#>System.IntPtr nativePtr, <#}#>ref <#=property.Type.ToCSharp(true)#> data);
 <#
     }
 //      /\ ---- GENERATE EXTERN PROPERTIES ---- /\

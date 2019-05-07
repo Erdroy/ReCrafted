@@ -22,6 +22,8 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
         public PropertyMode Mode { get; set; }
         public List<string> Modifiers { get; } = new List<string>();
 
+        public bool IsStatic => Modifiers.Contains("static");
+
         public bool ForceByValue { get; set; }
 
         public bool HasGetter => Mode == PropertyMode.GetterSetter || Mode == PropertyMode.Getter;
