@@ -7,6 +7,7 @@
 <#@ import namespace="ReCrafted.Tools.APIGenerator.Descriptions" #>
 <#@ parameter type="ReCrafted.Tools.APIGenerator.Descriptions.ClassDescription" name="Class" #>
 <#@ parameter type="System.Collections.Generic.List<ReCrafted.Tools.APIGenerator.Descriptions.FunctionDescription>" name="Functions" #>
+<#@ parameter type="System.Collections.Generic.List<ReCrafted.Tools.APIGenerator.Descriptions.PropertyDescription>" name="Properties" #>
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 // WARNING: Auto-generated file. All changes will be lost when the API code will be regenerated!
 
@@ -55,6 +56,36 @@ foreach(var function in Functions)
 }
 //      /\ ---- GENERATE FUNCTIONS ---- /\
 
+//      \/ ---- GENERATE PROPERTIES ---- \/
+foreach(var property in Properties)
+{
+#>
+        
+        <#=property.GetModifiers()#> <#=property.Type.ToCSharp()#> <#=property.Name#>
+        {
+<#
+    if(property.HasGetter)
+    {
+#>
+            get
+            {
+                Get_Internal<#=property.Name#>(out var data);
+                return data;
+            }
+<#
+    }
+    if(property.HasSetter)
+    {
+#>
+            set => Set_Internal<#=property.Name#>(ref value);
+<#
+    }
+#>
+        }
+<#
+}
+//      /\ ---- GENERATE PROPERTIES ---- /\
+
 //      \/ ---- GENERATE EXTERN FUNCTIONS ---- \/
 // Note: Objects passing to the C++ wrapper, does need to get pointer, not MonoObject.
 foreach(var function in Functions)
@@ -66,6 +97,30 @@ foreach(var function in Functions)
 <#
 }
 //      /\ ---- GENERATE EXTERN FUNCTIONS ---- /\
+
+//      \/ ---- GENERATE EXTERN PROPERTIES ---- \/
+#>
+<#
+foreach(var property in Properties)
+{
+    if(property.HasGetter)
+    {
+#>
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_Internal<#=property.Name#>(out <#=property.Type.ToCSharp(false)#> data);
+<#
+    }
+    if(property.HasSetter)
+    {
+#>
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Set_Internal<#=property.Name#>(ref <#=property.Type.ToCSharp(false)#> data);
+<#
+    }
+//      /\ ---- GENERATE EXTERN PROPERTIES ---- /\
+}
 #>
     }
 }
