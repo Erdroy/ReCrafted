@@ -26,4 +26,5 @@ protected:
 
 public:
     static const RefPtr<Assembly>& GetAPIAssembly();
+    static const RefPtr<Assembly>& GetGameAssembly();
 };

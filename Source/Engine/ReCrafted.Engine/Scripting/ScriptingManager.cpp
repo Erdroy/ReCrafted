@@ -70,3 +70,8 @@ const RefPtr<Assembly>& ScriptingManager::GetAPIAssembly()
 {
     return GetInstance()->m_apiAssembly;
 }
+
+const RefPtr<Assembly>& ScriptingManager::GetGameAssembly()
+{
+    return GetInstance()->m_gameAssembly;
+}
