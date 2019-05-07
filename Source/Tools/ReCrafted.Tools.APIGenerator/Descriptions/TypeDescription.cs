@@ -4,7 +4,7 @@ using System;
 
 namespace ReCrafted.Tools.APIGenerator.Descriptions
 {
-    public struct TypeDescription
+    public struct TypeDescription : IEquatable<TypeDescription>
     {
         public string BaseType { get; set; }
         public bool IsConst { get; set; }
@@ -12,6 +12,8 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
         public bool ByPtr { get; set; }
 
         public bool CastToManaged => ByPtr && !ByRef && !IsConst && BaseType != "MonoObject";
+
+        public bool IsVoid => BaseType == "void";
 
         public bool IsSpecial
         {
@@ -94,7 +96,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
             }
         }
 
-        public string ToCSharp(bool proxy = true)
+        public string ToCSharp(bool proxy = true, bool forceByValue = false)
         {
             var baseType = TypeTranslation.TranslateBaseType(BaseType);
 
@@ -129,7 +131,12 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
 
             // Handle: Type&
             if (ByRef)
+            {
+                if (forceByValue)
+                    return baseType;
+
                 return $"ref {baseType}";
+            }
 
             // Handle: Type*
             if (ByPtr && !proxy)
@@ -158,6 +165,28 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                 return "MonoObject*";
 
             return $"{(IsConst ? "const " : "")}{BaseType}{(ByRef ? "&" : "")}{(ByPtr ? "*" : "")}";
+        }
+
+        public bool Equals(TypeDescription other)
+        {
+            return string.Equals(BaseType, other.BaseType) && IsConst == other.IsConst && ByRef == other.ByRef && ByPtr == other.ByPtr;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is TypeDescription other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (BaseType != null ? BaseType.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ IsConst.GetHashCode();
+                hashCode = (hashCode * 397) ^ ByRef.GetHashCode();
+                hashCode = (hashCode * 397) ^ ByPtr.GetHashCode();
+                return hashCode;
+            }
         }
     }
 }
