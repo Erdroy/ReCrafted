@@ -5,6 +5,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ parameter type="ReCrafted.Tools.APIGenerator.Descriptions.ClassDescription" name="Class" #>
 <#@ parameter type="System.Collections.Generic.List<ReCrafted.Tools.APIGenerator.Descriptions.FunctionDescription>" name="Functions" #>
+<#@ parameter type="System.Collections.Generic.List<ReCrafted.Tools.APIGenerator.Descriptions.PropertyDescription>" name="Properties" #>
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 // WARNING: Auto-generated file. All changes will be lost when the API code will be regenerated!
 
@@ -20,7 +21,7 @@ public:
 foreach(var function in Functions)
 {
 #>
-
+    
     static <#=function.ReturnType.ToSpecial(true)#> <#=Class.Name#>_<#=function.Name#>(<#=function.GetCPlusPlusParameters(Class, !function.IsStatic)#>) 
     {
         MAIN_THREAD_ONLY();
@@ -109,10 +110,78 @@ foreach(var function in Functions)
     }
 <#
 }
+
+foreach(var property in Properties)
+{
+    if(property.HasGetter)
+    {
+#>
+    
+    static void <#=Class.Name#>_Get_<#=property.Name#>(<#=property.GetCPlusPlusParameter(Class, true)#>) 
+    {
+        MAIN_THREAD_ONLY();
+<#
+if(!property.IsStatic)
+{
+#>
+        ASSERT(instance);   
+        const auto _returnValue = instance-><#=property.GetterFunctionName#>()<#if(property.Type.CastToManaged){#>->ToManaged()<#}#>;
+<#
+    if(property.Type.IsSpecial)
+    {
+#>
+        *p_data = <#=property.Type.GetSpecialReturnConversion()#>(_returnValue);
+<#
+    }
+    else
+    {
+#>
+        *data = _returnValue;
+<#
+    }
+}
+#>
+    }
+<#
+    }
+    if(property.HasSetter)
+    {
+#>
+
+    static void <#=Class.Name#>_Set_<#=property.Name#>(<#=property.GetCPlusPlusParameter(Class, false)#>) 
+    {
+        MAIN_THREAD_ONLY();
+<# 
+if(property.Type.IsSpecial)
+{
+#>
+        ASSERT(p_data);
+        const auto data = <#=property.Type.GetSpecialConversion()#>(*p_data);
+<#
+}
+if(!property.IsStatic)
+{
+#>
+        ASSERT(instance);
+        instance-><#=property.SetterFunctionName#>(<#if(!property.Type.IsSpecial){#>*<#}#>data);
+<#
+}        
+if(property.Type.IsSpecial)
+{
+#>
+        <#=property.Type.GetSpecialFree()#>(data);
+<#
+}
+#>
+    }
+<#
+    }
+}
+
 if(!Class.IsStatic && !string.IsNullOrEmpty(Class.Inherits) && !Class.IsAbstract)
 {
 #>
-
+    
     static Object* <#=Class.Name#>_CreateObject(bool createManagedInstance)
     {
         return createManagedInstance ? Object::New<<#=Class.Name#>>() : new <#=Class.Name#>();
@@ -140,6 +209,21 @@ foreach(var function in Functions)
 #>
     API_BIND("<#=Class.Namespace#>.<#=Class.Name#>::Internal<#=function.Name#>", &APIProxy::<#=Class.Name#>_<#=function.Name#>);
 <#
+}
+foreach(var property in Properties)
+{
+    if(property.HasGetter)
+    {
+#>
+    API_BIND("<#=Class.Namespace#>.<#=Class.Name#>::Get_Internal<#=property.Name#>", &APIProxy::<#=Class.Name#>_Get_<#=property.Name#>);
+<#
+    }
+    if(property.HasSetter)
+    {
+#>
+    API_BIND("<#=Class.Namespace#>.<#=Class.Name#>::Set_Internal<#=property.Name#>", &APIProxy::<#=Class.Name#>_Set_<#=property.Name#>);
+<#
+    }
 }
 #>
 }
