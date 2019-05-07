@@ -53,26 +53,32 @@ namespace ReCrafted.Tools.APIGenerator
         {
             var function = ParseFunctionTag();
 
-            if ((function.Name.StartsWith("Get") || function.Name.StartsWith("Set")) && function.Modifiers.Contains("noprefix"))
-                function.Name = function.Name.Remove(0, 3);
+            var propertyName = function.Name;
+            if ((propertyName.StartsWith("Get") || propertyName.StartsWith("Set")) && function.Modifiers.Contains("noprefix"))
+                propertyName = propertyName.Remove(0, 3);
 
-            var property = _properties.Find(x => x.Name == function.Name);
+            var property = _properties.Find(x => x.Name == propertyName);
 
             if (property != null)
             {
                 if (property.Mode == PropertyMode.GetterSetter)
-                    Console.WriteLine($"WARNING: Property with name '{function.Name}' has " +
+                    Console.WriteLine($"WARNING: Property with name '{propertyName}' has " +
                                       $"multiple functions declarations tagged with API_PROPERTY.");
                 
                 if(property.Access != function.Access)
                     Console.WriteLine(
-                        $"WARNING: Property with name '{function.Name}' has multiple functions declarations with " +
+                        $"WARNING: Property with name '{propertyName}' has multiple functions declarations with " +
                         $"different access modifier ({property.Access} / {function.Access}).");
 
                 if (property.Type.Equals(function.Parameters.FirstOrDefault().Type) || property.Type.Equals(function.ReturnType))
                     Console.WriteLine(
-                        $"WARNING: Property with name '{function.Name}' has multiple functions declarations with " +
+                        $"WARNING: Property with name '{propertyName}' has multiple functions declarations with " +
                         $"different value types.");
+
+                if (!function.ReturnType.IsVoid)
+                    property.GetterFunctionName = function.Name;
+                else
+                    property.SetterFunctionName = function.Name;
 
                 // Set the property to getter setter
                 property.Mode = PropertyMode.GetterSetter;
@@ -81,13 +87,18 @@ namespace ReCrafted.Tools.APIGenerator
 
             property = new PropertyDescription
             {
-                Name = function.Name,
+                Name = propertyName,
                 Type = function.ReturnType.IsVoid ? function.Parameters[0].Type : function.ReturnType,
                 Access = function.Access,
                 Comment = function.Comment,
                 Mode = !function.ReturnType.IsVoid ? PropertyMode.Getter : PropertyMode.Setter,
                 ForceByValue = false // TODO: Add 'by value' support
             };
+
+            if (function.ReturnType.IsVoid)
+                property.SetterFunctionName = function.Name;
+            else
+                property.GetterFunctionName = function.Name;
 
             // Add function modifiers to the property
             property.Modifiers.AddRange(function.Modifiers);
