@@ -31,3 +31,6 @@
 /// <remarks>Function name will get additional prefix 'Internal', eg.: GetTime -> InternalGetTime.</remarks>
 /// <remarks>Only static function can skip it's proxy.</remarks>
 #define noproxy
+
+#define byref
+#define byvalue

@@ -37,24 +37,6 @@ public:
         ASSERT(instance);
         instance->SetActive(active);
     }
-
-    static void ActorBase_SetName(ActorBase* instance, MonoString* p_name) 
-    {
-        MAIN_THREAD_ONLY();
-        ASSERT(p_name);
-        const auto name = MONO_STRING_TO_STR(p_name);
-        ASSERT(instance);
-        instance->SetName(name);
-        MONO_FREE_STUB(name);
-    }
-
-    static MonoString* ActorBase_GetName(ActorBase* instance) 
-    {
-        MAIN_THREAD_ONLY();
-        ASSERT(instance);
-        const auto _returnValue = instance->GetName();
-        return MONO_STRING_FROM_STR(_returnValue);
-    }
 };
 
 void ActorBase::InitRuntime() 
@@ -63,8 +45,6 @@ void ActorBase::InitRuntime()
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalAddChild", &APIProxy::ActorBase_AddChild);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalRemoveChild", &APIProxy::ActorBase_RemoveChild);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalSetActive", &APIProxy::ActorBase_SetActive);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalSetName", &APIProxy::ActorBase_SetName);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalGetName", &APIProxy::ActorBase_GetName);
 }
 
 const char* ActorBase::Fullname() 

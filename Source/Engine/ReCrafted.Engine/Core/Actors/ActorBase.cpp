@@ -271,7 +271,7 @@ void ActorBase::SetActive(const bool active)
     }
 }
 
-void ActorBase::SetPosition(const Vector3& position)
+void ActorBase::Position(const Vector3& position)
 {
     MAIN_THREAD_ONLY();
 
@@ -387,7 +387,7 @@ void ActorBase::SetTransform(const Transform& transform)
     UpdateTransform();
 }
 
-const Vector3& ActorBase::GetPosition() const
+const Vector3& ActorBase::Position() const
 {
     MAIN_THREAD_ONLY();
     return m_transform.translation;
@@ -423,7 +423,7 @@ const Vector3& ActorBase::GetLocalScale() const
     return m_localTransform.scale;
 }
 
-Transform& ActorBase::GetTransform()
+const Transform& ActorBase::GetTransform() const
 {
     MAIN_THREAD_ONLY();
     return m_transform;
@@ -450,13 +450,13 @@ const List<ActorBase*>& ActorBase::GetChildren() const
     return m_children;
 }
 
-void ActorBase::SetName(const String& name)
+void ActorBase::Name(const String& name)
 {
     MAIN_THREAD_ONLY();
     m_name = name;
 }
 
-const String& ActorBase::GetName() const
+const String& ActorBase::Name() const
 {
     MAIN_THREAD_ONLY();
     return m_name;

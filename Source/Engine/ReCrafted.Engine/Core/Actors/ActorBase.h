@@ -10,6 +10,8 @@
 
 using ActorId_t = uint64_t;
 
+API_USING("ReCrafted.API.Mathematics")
+
 API_CLASS(public, abstract)
 class ActorBase : public Object
 {
@@ -83,7 +85,12 @@ public:
     void SetActive(bool active);
 
 public:
-    virtual void SetPosition(const Vector3& position);
+    API_PROPERTY();
+    virtual void Position(const Vector3& position);
+
+    API_PROPERTY();
+    const Vector3& Position() const;
+
     virtual void SetLocalPosition(const Vector3& position);
 
     virtual void SetRotation(const Quaternion& rotation);
@@ -94,7 +101,6 @@ public:
 
     void SetTransform(const Transform& transform);
 
-    const Vector3& GetPosition() const;
     const Vector3& GetLocalPosition() const;
 
     const Quaternion& GetRotation() const;
@@ -103,7 +109,7 @@ public:
     const Vector3& GetScale() const;
     const Vector3& GetLocalScale() const;
 
-    Transform& GetTransform();
+    const Transform& GetTransform() const;
 
 public:
     bool IsActiveSelf() const;
@@ -111,11 +117,9 @@ public:
 
     const List<ActorBase*>& GetChildren() const;
 
-    API_FUNCTION();
-    void SetName(const String& name);
+    void Name(const String& name);
 
-    API_FUNCTION();
-    const String& GetName() const;
+    const String& Name() const;
 
     ActorId_t GetId() const;
 };
