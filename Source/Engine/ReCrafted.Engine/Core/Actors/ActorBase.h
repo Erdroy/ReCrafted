@@ -68,6 +68,9 @@ protected:
 
 public:
     API_FUNCTION();
+    void SetParent(ActorBase* newParent);
+
+    API_FUNCTION();
     void AddChild(ActorBase* child);
 
     API_FUNCTION();
@@ -83,9 +86,6 @@ public:
     void SetActive(bool active);
 
 public:
-    API_PROPERTY(noprefix);
-    void SetParent(ActorBase* newParent);
-
     API_PROPERTY(noprefix);
     ActorBase* GetParent() const;
 

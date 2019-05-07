@@ -10,6 +10,13 @@ class APIProxy
 {
 public:
     
+    static void ActorBase_SetParent(ActorBase* instance, ActorBase* newParent) 
+    {
+        MAIN_THREAD_ONLY();
+        ASSERT(instance);
+        instance->SetParent(newParent);
+    }
+    
     static void ActorBase_AddChild(ActorBase* instance, ActorBase* child) 
     {
         MAIN_THREAD_ONLY();
@@ -37,13 +44,6 @@ public:
         ASSERT(instance);   
         const auto _returnValue = instance->GetParent()->ToManaged();
         *data = _returnValue;
-    }
-
-    static void ActorBase_Set_Parent(ActorBase* instance, ActorBase** data) 
-    {
-        MAIN_THREAD_ONLY();
-        ASSERT(instance);
-        instance->SetParent(*data);
     }
     
     static void ActorBase_Get_Position(ActorBase* instance, Vector3* data) 
@@ -188,11 +188,11 @@ public:
 
 void ActorBase::InitRuntime() 
 {
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalSetParent", &APIProxy::ActorBase_SetParent);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalAddChild", &APIProxy::ActorBase_AddChild);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalRemoveChild", &APIProxy::ActorBase_RemoveChild);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalSetActive", &APIProxy::ActorBase_SetActive);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalParent", &APIProxy::ActorBase_Get_Parent);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalParent", &APIProxy::ActorBase_Set_Parent);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalPosition", &APIProxy::ActorBase_Get_Position);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalPosition", &APIProxy::ActorBase_Set_Position);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalLocalPosition", &APIProxy::ActorBase_Get_LocalPosition);

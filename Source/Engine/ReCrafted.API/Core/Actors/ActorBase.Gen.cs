@@ -10,6 +10,11 @@ namespace ReCrafted.API.Core.Actors
     public abstract class ActorBase : Object
     {
 
+        public void SetParent(ActorBase newParent)
+        {
+            InternalSetParent(NativePtr, newParent.NativePtr);
+        }
+
         public void AddChild(ActorBase child)
         {
             InternalAddChild(NativePtr, child.NativePtr);
@@ -32,7 +37,6 @@ namespace ReCrafted.API.Core.Actors
                 Get_InternalParent(NativePtr, out var data);
                 return data;
             }
-            set => Set_InternalParent(NativePtr, ref value.NativePtr);
         }
         
         public Vector3 Position
@@ -134,6 +138,9 @@ namespace ReCrafted.API.Core.Actors
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalSetParent(System.IntPtr nativePtr, System.IntPtr newParent);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalAddChild(System.IntPtr nativePtr, System.IntPtr child);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -144,9 +151,6 @@ namespace ReCrafted.API.Core.Actors
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalParent(System.IntPtr nativePtr, out ActorBase data);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void Set_InternalParent(System.IntPtr nativePtr, ref System.IntPtr data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalPosition(System.IntPtr nativePtr, out Vector3 data);

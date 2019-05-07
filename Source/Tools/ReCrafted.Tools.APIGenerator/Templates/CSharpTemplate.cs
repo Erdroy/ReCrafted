@@ -398,7 +398,7 @@ if(!property.IsStatic){
             this.Write("out ");
             
             #line 111 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.ToCSharp(true)));
+            this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.ToCSharp(true, true)));
             
             #line default
             #line hidden
@@ -438,7 +438,7 @@ if(!property.IsStatic){
             this.Write("ref ");
             
             #line 119 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.ToCSharp(false)));
+            this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.ToCSharp(false, true)));
             
             #line default
             #line hidden
