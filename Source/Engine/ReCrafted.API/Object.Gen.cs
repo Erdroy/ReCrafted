@@ -10,12 +10,12 @@ namespace ReCrafted.API
 
         public static void Destroy(Object objectInstance)
         {
-            InternalDestroy(objectInstance.NativePtr);
+            InternalDestroy(objectInstance? objectInstance.NativePtr : System.IntPtr.Zero);
         }
 
         public static void DestroyNow(Object objectInstance)
         {
-            InternalDestroyNow(objectInstance.NativePtr);
+            InternalDestroyNow(objectInstance? objectInstance.NativePtr : System.IntPtr.Zero);
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]

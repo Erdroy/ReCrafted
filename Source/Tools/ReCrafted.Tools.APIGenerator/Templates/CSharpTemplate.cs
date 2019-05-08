@@ -297,7 +297,7 @@ if(property.Type.CastToManaged){
             
             #line default
             #line hidden
-            this.Write(".NativePtr");
+            this.Write("? value.NativePtr : System.IntPtr.Zero");
             
             #line 80 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 }

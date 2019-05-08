@@ -95,7 +95,7 @@ foreach(var function in Functions)
             if(function.ReturnType.CastToManaged)
             {       
 #>
-        return _returnValue->ToManaged();
+        return _returnValue != nullptr ? _returnValue->ToManaged() : nullptr;
 <#
             }
             else

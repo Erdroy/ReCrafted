@@ -310,7 +310,7 @@ foreach(var function in Functions)
             
             #line default
             #line hidden
-            this.Write("        return _returnValue->ToManaged();\r\n");
+            this.Write("        return _returnValue != nullptr ? _returnValue->ToManaged() : nullptr;\r\n");
             
             #line 99 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 

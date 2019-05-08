@@ -14,7 +14,7 @@ public:
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = EmptyActor::Create();
-        return _returnValue->ToManaged();
+        return _returnValue != nullptr ? _returnValue->ToManaged() : nullptr;
     }
     
     static Object* EmptyActor_CreateObject(bool createManagedInstance)

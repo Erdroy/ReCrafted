@@ -12,17 +12,17 @@ namespace ReCrafted.API.Core.Actors
 
         public void SetParent(ActorBase newParent)
         {
-            InternalSetParent(NativePtr, newParent.NativePtr);
+            InternalSetParent(NativePtr, newParent? newParent.NativePtr : System.IntPtr.Zero);
         }
 
         public void AddChild(ActorBase child)
         {
-            InternalAddChild(NativePtr, child.NativePtr);
+            InternalAddChild(NativePtr, child? child.NativePtr : System.IntPtr.Zero);
         }
 
         public void RemoveChild(ActorBase child)
         {
-            InternalRemoveChild(NativePtr, child.NativePtr);
+            InternalRemoveChild(NativePtr, child? child.NativePtr : System.IntPtr.Zero);
         }
 
         public void SetActive(bool active)
@@ -99,7 +99,7 @@ namespace ReCrafted.API.Core.Actors
             set => Set_InternalLocalScale(NativePtr, ref value);
         }
         
-        public Transform Transform
+        public virtual Transform Transform
         {
             get
             {

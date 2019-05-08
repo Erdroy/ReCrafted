@@ -58,7 +58,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                 paramString.Append(parameter.Name);
 
                 if (parameter.Type.ByPtr && !parameter.Type.IsConst && !parameter.Type.ByRef)
-                    paramString.Append(".NativePtr");
+                    paramString.Append($"? {parameter.Name}.NativePtr : System.IntPtr.Zero");
             }
 
             return paramString.ToString();

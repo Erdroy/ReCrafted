@@ -14,6 +14,8 @@ namespace ReCrafted.Game.Core
             base.OnInitialize();
 
             Logger.Log("Game initialized");
+
+            var actor = EmptyActor.Create();
         }
 
         protected override void OnShutdown()

@@ -77,7 +77,7 @@ foreach(var property in Properties)
     if(property.HasSetter)
     {
 #>
-            set => Set_Internal<#=property.Name#>(<#if(!property.IsStatic){#>NativePtr, <#}#>ref value<#if(property.Type.CastToManaged){#>.NativePtr<#}#>);
+            set => Set_Internal<#=property.Name#>(<#if(!property.IsStatic){#>NativePtr, <#}#>ref value<#if(property.Type.CastToManaged){#>? value.NativePtr : System.IntPtr.Zero<#}#>);
 <#
     }
 #>
