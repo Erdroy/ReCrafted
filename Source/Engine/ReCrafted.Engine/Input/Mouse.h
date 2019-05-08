@@ -7,12 +7,16 @@
 #include "Input/InputDevice.h"
 #include "Input/MouseButtons.h"
 
-/**
- * \brief Mouse input device.
- */
+API_USING("ReCrafted.API.Mathematics")
+
+/// <summary>
+///     Mouse input device.
+/// </summary>
+API_CLASS(public)
 class Mouse final : public InputDevice
 {
     friend class InputManager;
+    API_CLASS_BODY()
 
 public:
     /**
@@ -56,85 +60,117 @@ protected:
     void LateUpdate() override;
 
 public:
+    /// <summary>
+    ///     Emits given button and it's state.
+    /// </summary>
+    /// <param name="button">The button.</param>
+    /// <param name="buttonState">The button state.</param>
+    API_FUNCTION()
     void EmitInput(Button button, ButtonState buttonState);
+
+    /// <summary>
+    ///     Emits cursor move.
+    /// </summary>
+    /// <param name="position">The new position.</param>
+    /// <param name="delta">The cursor delta.</param>
+    API_FUNCTION()
     void EmitCursor(Vector2 position, Vector2 delta);
+
+    /// <summary>
+    ///     Emits scroll move.
+    /// </summary>
+    /// <param name="delta">The scroll delta.</param>
+    API_FUNCTION()
     void EmitScroll(float delta);
 
 public:
-    /**
-     * \brief The name of this device.
-     */
-    const char* Name() override
+    /// <summary>
+    ///     The name of this device.
+    /// </summary>
+    API_FUNCTION()
+    const char* DeviceName() override
     {
         return "Default Mouse";
     }
 
-    /**
-     * \brief The type of this device.
-     */
+    /// <summary>
+    ///     The type of this device.
+    /// </summary>
+    API_FUNCTION()
     DeviceType Type() override
     {
         return DeviceType::Mouse;
     }
 
 public:
-    /**
-     * \brief Returns true when specified button is being held for at least one frame.
-     * \param button The button.
-     */
+    /// <summary>
+    ///     Returns true when specified button is being held for at least one frame.
+    /// </summary>
+    /// <param name="button">The button.</param>
+    API_FUNCTION()
     bool IsButton(Button button);
 
-    /**
-     * \brief Returns true when specified button is has been pressed this frame.
-     * \param button The button.
-     */
+    /// <summary>
+    ///     Returns true when specified button is has been pressed this frame.
+    /// </summary>
+    /// <param name="button">The button.</param>
+    API_FUNCTION()
     bool IsButtonDown(Button button);
 
-    /**
-     * \brief Returns true when specified button is has been released this frame.
-     * \param button The button.
-     */
+    /// <summary>
+    ///     Returns true when specified button is has been released this frame.
+    /// </summary>
+    /// <param name="button">The button.</param>
+    API_FUNCTION()
     bool IsButtonUp(Button button);
 
 public:
-    /**
-     * \brief Sets mouse position relative to the current game window.
-     * \param position The new position.
-     */
+    /// <summary>
+    ///     Sets mouse position relative to the current game window.
+    /// </summary>
+    /// <param name="position">The new position.</param>
+    API_FUNCTION()
     void SetCursorPosition(const Vector2& position) const;
 
-    /**
-     * \brief Gets mouse position relative to the current game window.
-     */
+    /// <summary>
+    ///     Gets mouse position relative to the current game window.
+    /// </summary>
+    API_FUNCTION()
     Vector2 GetCursorPosition() const;
 
-    /**
-     * \brief Gets mouse position delta from last frame.
-     */
+    /// <summary>
+    ///     Gets mouse position delta from last frame.
+    /// </summary>
+    API_FUNCTION()
     Vector2 GetCursorDelta() const;
 
-    /**
-     * \brief Gets mouse scroll delta from last frame.
-     */
+    /// <summary>
+    ///     Gets mouse scroll delta from last frame.
+    /// </summary>
+    API_FUNCTION()
     float GetScrollDelta() const;
 
-    /**
-     * \brief Sets cursor show state.
-     */
-    void SetShowCursor(bool show);
+    /// <summary>
+    ///     Sets cursor show state.
+    /// </summary>
+    API_FUNCTION()
+    void SetShowCursor(bool cursorShow);
 
-    /**
-     * \brief Gets cursor show state.
-     */
+    /// <summary>
+    ///     Gets cursor show state.
+    /// </summary>
+    API_FUNCTION()
     bool GetShowCursor() const;
 
-    /**
-     * \brief Sets cursor lock state.
-     */
-    void SetLockCursor(bool lock);
+    /// <summary>
+    ///     Sets cursor lock state.
+    /// </summary>
+    API_FUNCTION()
+    void SetLockCursor(bool cursorLock);
 
-    /**
-     * \brief Gets cursor lock state.
-     */
+    /// <summary>
+    ///     Gets cursor lock state.
+    /// </summary>
+    API_FUNCTION()
     bool GetLockCursor() const;
 };

@@ -33,6 +33,9 @@ namespace ReCrafted.Tools.APIGenerator
                 case "MonoType":
                     return "System.IntPtr";
 
+                case "Char":
+                    return "char";
+
                 default:
                     return baseType;
             }

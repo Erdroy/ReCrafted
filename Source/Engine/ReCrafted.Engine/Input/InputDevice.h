@@ -3,6 +3,7 @@
 #pragma once
 
 #include <ReCrafted.h>
+#include "Scripting/Object.h"
 
 enum class DeviceType : byte
 {
@@ -15,7 +16,7 @@ enum class DeviceType : byte
     Count
 };
 
-class InputDevice
+class InputDevice : public Object
 {
     friend class InputManager;
 
@@ -35,7 +36,7 @@ public:
     /**
      * \brief The name of this device.
      */
-    virtual const char* Name() = 0;
+    virtual const char* DeviceName() = 0;
 
     /**
      * \brief The type of this device.

@@ -5,29 +5,33 @@
 #include <ReCrafted.h>
 #include "Input/InputDevice.h"
 
-/**
- * \brief Null input device.
- */
+/// <summary>
+///     Null input device.
+/// </summary>
+API_CLASS(public)
 class NullDevice final : public InputDevice
 {
     friend class InputManager;
+    API_CLASS_BODY()
 
 public:
     NullDevice() = default;
     ~NullDevice() override = default;
 
 public:
-    /**
-     * \brief The name of this device.
-     */
-    const char* Name() override
+    /// <summary>
+    ///     The name of this device.
+    /// </summary>
+    API_FUNCTION()
+    const char* DeviceName() override
     {
         return "Null Device";
     }
-
-    /**
-     * \brief The type of this device.
-     */
+    
+    /// <summary>
+    ///     The type of this device.
+    /// </summary>
+    API_FUNCTION()
     DeviceType Type() override
     {
         return DeviceType::Unknown;

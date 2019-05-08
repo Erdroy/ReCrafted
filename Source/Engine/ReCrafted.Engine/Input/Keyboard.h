@@ -8,18 +8,20 @@
 #include "Input/InputDevice.h"
 #include "Input/KeyboardKeys.h"
 
-/**
- * \brief Keyboard input device.
- */
+/// <summary>
+///     Keyboard input device.
+/// </summary>
+API_CLASS(public)
 class Keyboard final : public InputDevice
 {
     friend class InputManager;
+    API_CLASS_BODY()
 
 public:
-    /**
-     * \brief The amount of (base) keys that are supported by Keyboard input device.
-     * \note Does not include modified (special) keys.
-     */
+    /// <summary>
+    ///     The amount of (base) keys that are supported by Keyboard input device.
+    /// </summary>
+    /// <remarks>Does not include modified (special) keys.</remarks>
     static const int KeyCount = static_cast<int>(Key::Count);
 
 private:
@@ -52,43 +54,57 @@ protected:
     void LateUpdate() override;
 
 public:
+    /// <summary>
+    ///     Emits given key and it's state.
+    /// </summary>
+    /// <param name="key">The key.</param>
+    /// <param name="keyState">The key state.</param>
+    API_FUNCTION()
     void EmitInput(Key key, KeyState keyState);
+
+    /// <summary>
+    ///     Emits given character.
+    /// </summary>
+    /// <param name="character">The character.</param>
+    API_FUNCTION()
     void EmitCharacter(Char character);
 
 public:
-    /**
-     * \brief The name of this device.
-     */
-    const char* Name() override
+    /// <summary>
+    ///     The name of this device.
+    /// </summary>
+    API_FUNCTION()
+    const char* DeviceName() override
     {
         return "Default Keyboard";
     }
 
-    /**
-     * \brief The type of this device.
-     */
+    /// <summary>
+    ///     The type of this device.
+    /// </summary>
+    API_FUNCTION()
     DeviceType Type() override
     {
         return DeviceType::Keyboard;
     }
 
 public:
-    /**
-     * \brief Returns true when specified key is being held for at least one frame.
-     * \param key The key.
-     */
+    /// <summary>
+    ///     Returns true when specified key is being held for at least one frame.
+    /// </summary>
+    /// <param name="key">The key.</param>
     bool IsKey(Key key);
 
-    /**
-     * \brief Returns true when specified key is has been pressed this frame.
-     * \param key The key.
-     */
+    /// <summary>
+    ///     Returns true when specified key is has been pressed this frame.
+    /// </summary>
+    /// <param name="key">The key.</param>
     bool IsKeyDown(Key key);
 
-    /**
-     * \brief Returns true when specified key is has been released this frame.
-     * \param key The key.
-     */
+    /// <summary>
+    ///     Returns true when specified key is has been released this frame.
+    /// </summary>
+    /// <param name="key">The key.</param>
     bool IsKeyUp(Key key);
 
 public:

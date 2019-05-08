@@ -72,9 +72,16 @@ struct InputData
     uint8_t deviceId = 0u;
 };
 
+API_USING("ReCrafted.API.Mathematics");
+
+/// <summary>
+///     InputManager class. Provides user input functionality.
+/// </summary>
+API_CLASS(public, static, partial, noinherit)
 class InputManager final : public SubSystem<InputManager>
 {
     friend class Application;
+    API_CLASS_BODY()
 
     using FrameInputItem = std::pair<InputType, InputData>;
 
@@ -117,84 +124,101 @@ public: /* -- Action Maps -- */
     static void DestroyActionMap(ActionMap*& actionMap);
 
 public: /* -- Basic Input -- */
-    /**
-     * \brief Returns true when specified button is being held for at least one frame.
-     * \param button The button.
-     */
+
+    /// <summary>
+    ///     Returns true when specified button is being held for at least one frame.
+    /// </summary>
+    /// <param name="button">The button.</param>
+    API_FUNCTION()
     static bool IsButton(Button button);
 
-    /**
-     * \brief Returns true when specified button is has been pressed this frame.
-     * \param button The button.
-     */
+    /// <summary>
+    ///    Returns true when specified button is has been pressed this frame.
+    /// </summary>
+    /// <param name="button">The button.</param>
+    API_FUNCTION()
     static bool IsButtonDown(Button button);
 
-    /**
-     * \brief Returns true when specified button is has been released this frame.
-     * \param button The button.
-     */
+    /// <summary>
+    ///    Returns true when specified button is has been released this frame.
+    /// </summary>
+    /// <param name="button">The button.</param>
+    API_FUNCTION()
     static bool IsButtonUp(Button button);
 
-    /**
-     * \brief Sets mouse position relative to the current game window.
-     * \param position The new position.
-     */
+    /// <summary>
+    ///     Sets mouse position relative to the current game window.
+    /// </summary>
+    /// <param name="position">The new position.</param>
+    API_FUNCTION()
     static void SetCursorPosition(const Vector2& position);
 
-    /**
-     * \brief Gets mouse position relative to the current game window.
-     */
+    /// <summary>
+    ///     Gets mouse position relative to the current game window.
+    /// </summary>
+    API_FUNCTION()
     static Vector2 GetCursorPosition();
 
-    /**
-     * \brief Gets mouse position delta from last frame.
-     */
+    /// <summary>
+    ///     Gets mouse position delta from last frame.
+    /// </summary>
+    API_FUNCTION()
     static Vector2 GetCursorDelta();
 
-    /**
-     * \brief Gets mouse scroll delta from last frame.
-     */
+    /// <summary>
+    ///     Gets mouse scroll delta from last frame.
+    /// </summary>
+    API_FUNCTION()
     static float GetScrollDelta();
 
-    /**
-     * \brief Sets cursor show state.
-     */
-    static void SetShowCursor(bool show);
+    /// <summary>
+    ///     Sets cursor show state.
+    /// </summary>
+    /// <param name="showCursor">The show state.</param>
+    API_FUNCTION()
+    static void SetShowCursor(bool showCursor);
 
-    /**
-     * \brief Gets cursor show state.
-     */
+    /// <summary>
+    ///     Gets cursor show state.
+    /// </summary>
+    API_FUNCTION()
     static bool GetShowCursor();
 
-    /**
-     * \brief Sets cursor lock state.
-     */
-    static void SetLockCursor(bool lock);
+    /// <summary>
+    ///     Sets cursor lock state.
+    /// </summary>
+    /// <param name="lockCursor">The lock state.</param>
+    API_FUNCTION()
+    static void SetLockCursor(bool lockCursor);
 
-    /**
-     * \brief Gets cursor lock state.
-     */
+    /// <summary>
+    ///     Gets cursor lock state.
+    /// </summary>
+    API_FUNCTION()
     static bool GetLockCursor();
 
-    /**
-     * \brief Returns true when specified key is being held for at least one frame.
-     * \param key The key.
-     */
+    /// <summary>
+    ///     Returns true when specified key is being held for at least one frame.
+    /// </summary>
+    /// <param name="key">The key.</param>
+    API_FUNCTION()
     static bool IsKey(Key key);
 
-    /**
-     * \brief Returns true when specified key is has been pressed this frame.
-     * \param key The key.
-     */
+     /// <summary>
+     ///     Returns true when specified key is has been pressed this frame.
+     /// </summary>
+     /// <param name="key">The key.</param>
+    API_FUNCTION()
     static bool IsKeyDown(Key key);
 
-    /**
-     * \brief Returns true when specified key is has been released this frame.
-     * \param key The key.
-     */
+    /// <summary>
+    ///     Returns true when specified key is has been released this frame.
+    /// </summary>
+    /// <param name="key">The key.</param>
+    API_FUNCTION()
     static bool IsKeyUp(Key key);
 
-public: /* -- Devices -- */
+public: /* -- Devices -- */ // TODO: Add API when generic/template functions will be supported
     /**
      * \brief Finds device of given id.
      * \param deviceId The unique device identificator.

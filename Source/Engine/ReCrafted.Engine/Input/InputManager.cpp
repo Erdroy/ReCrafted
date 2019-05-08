@@ -68,9 +68,9 @@ void InputManager::Initialize()
     ScopeLock(lock);
 
     // Create default devices
-    m_nullDevice = new NullDevice();// Object::CreateInstance<NullDevice>("ReCrafted.API.Input", "NullDevice");
-    m_keyboard = new Keyboard(); //Object::CreateInstance<Keyboard>("ReCrafted.API.Input", "Keyboard");
-    m_mouse = new Mouse(); //Object::CreateInstance<Mouse>("ReCrafted.API.Input", "Mouse");
+    m_nullDevice = Object::New<NullDevice>();
+    m_keyboard = Object::New<Keyboard>();
+    m_mouse = Object::New<Mouse>();
     
     // Register default devices
     m_deviceMap.insert(std::make_pair(0, m_nullDevice)); m_deviceCount++;
@@ -85,11 +85,10 @@ void InputManager::Initialize()
 
 void InputManager::Shutdown()
 {
-    delete m_nullDevice;//Object::Destroy(m_nullDevice);
-    delete m_keyboard;//Object::Destroy(m_keyboard);
-    delete m_mouse;//Object::Destroy(m_mouse);
+    Object::DestroyNow(m_nullDevice);
+    Object::DestroyNow(m_keyboard);
+    Object::DestroyNow(m_mouse);
     
-
     m_nullDevice = nullptr;
     m_keyboard = nullptr;
     m_mouse = nullptr;
@@ -239,9 +238,9 @@ float InputManager::GetScrollDelta()
     return GetInstance()->m_mouse->GetScrollDelta();
 }
 
-void InputManager::SetShowCursor(const bool show)
+void InputManager::SetShowCursor(const bool showCursor)
 {
-    GetInstance()->m_mouse->SetShowCursor(show);
+    GetInstance()->m_mouse->SetShowCursor(showCursor);
 }
 
 bool InputManager::GetShowCursor()
@@ -249,9 +248,9 @@ bool InputManager::GetShowCursor()
     return GetInstance()->m_mouse->GetShowCursor();
 }
 
-void InputManager::SetLockCursor(const bool lock)
+void InputManager::SetLockCursor(const bool lockCursor)
 {
-    GetInstance()->m_mouse->SetLockCursor(lock);
+    GetInstance()->m_mouse->SetLockCursor(lockCursor);
 }
 
 bool InputManager::GetLockCursor()

@@ -107,9 +107,9 @@ float Mouse::GetScrollDelta() const
     return m_scrollDelta;
 }
 
-void Mouse::SetShowCursor(const bool show)
+void Mouse::SetShowCursor(const bool cursorShow)
 {
-    m_showCursor = show;
+    m_showCursor = cursorShow;
     Platform::SetCursorVisibility(m_showCursor);
 }
 
@@ -118,9 +118,9 @@ bool Mouse::GetShowCursor() const
     return m_showCursor;
 }
 
-void Mouse::SetLockCursor(const bool lock)
+void Mouse::SetLockCursor(const bool cursorLock)
 {
-    m_lockCursor = lock;
+    m_lockCursor = cursorLock;
 }
 
 bool Mouse::GetLockCursor() const

@@ -3,7 +3,7 @@
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Core.Actors;
-using ReCrafted.API.Mathematics;
+using ReCrafted.API.Input;
 
 namespace ReCrafted.Game.Core
 {
@@ -14,8 +14,6 @@ namespace ReCrafted.Game.Core
             base.OnInitialize();
 
             Logger.Log("Game initialized");
-
-            var actor = EmptyActor.Create();
         }
 
         protected override void OnShutdown()
@@ -28,6 +26,8 @@ namespace ReCrafted.Game.Core
         {
             base.OnUpdate();
 
+            if (InputManager.IsKeyDown(Key.Escape))
+                Application.Quit();
         }
 
         protected override void OnFixedUpdate()
