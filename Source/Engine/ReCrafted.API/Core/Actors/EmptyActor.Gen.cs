@@ -5,9 +5,15 @@ using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Core.Actors 
 {
+    /// <summary>
+    ///     EmptyActor - provides an actor that has no additional functionality.
+    /// </summary>
     public sealed class EmptyActor : ActorBase
     {
-
+        
+        /// <summary>
+        ///     Creates new actor of type <see cref="EmptyActor"/>.
+        /// </summary>
         public static EmptyActor Create()
         {
             return InternalCreate();

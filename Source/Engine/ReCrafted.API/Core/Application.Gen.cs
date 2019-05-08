@@ -5,9 +5,15 @@ using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Core 
 {
+    /// <summary>
+    ///     Application class. Provides application management functionality.
+    /// </summary>
     public static class Application
     {
-
+        
+        /// <summary>
+        ///     Quits the current application.
+        /// </summary>
         public static void Quit()
         {
             InternalQuit();

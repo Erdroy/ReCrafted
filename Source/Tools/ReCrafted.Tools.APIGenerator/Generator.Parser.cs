@@ -119,13 +119,11 @@ namespace ReCrafted.Tools.APIGenerator
 
         private FunctionDescription ParseFunctionTag()
         {
-            var desc = new FunctionDescription();
-
-            // Comments (read the token before current one)
-            var comment = _tokenizer.PreviousToken();
-            if (comment.Type == TokenType.CommentMultiLine || comment.Type == TokenType.CommentSingleLine)
-                desc.Comment = comment.Value;
-            _tokenizer.NextToken();
+            var desc = new FunctionDescription
+            {
+                // Comments (read the token before current one)
+                Comment = ParseXmlCommentAbove()
+            };
 
             // Parse tag arguments
             var tagArguments = ParseTagParameters();
@@ -225,13 +223,11 @@ namespace ReCrafted.Tools.APIGenerator
 
         private void ParseClassTag()
         {
-            var desc = new ClassDescription();
-
-            // Comments (read the token before current one)
-            var comment = _tokenizer.PreviousToken();
-            if (comment.Type == TokenType.CommentMultiLine || comment.Type == TokenType.CommentSingleLine)
-                desc.Comment = comment.Value;
-            _tokenizer.NextToken();
+            var desc = new ClassDescription
+            {
+                // Comments (read the token before current one)
+                Comment = ParseXmlCommentAbove()
+            };
 
             // Parse tag arguments
             var tagArguments = ParseTagParameters();

@@ -7,6 +7,9 @@
 #include "Core/SubSystems/SubSystem.h"
 #include "Common/List.h"
 
+/// <summary>
+///     SceneManager class. Provides scene management functionality.
+/// </summary>
 API_CLASS(public, static, partial, noinherit)
 class SceneManager final : public SubSystem<SceneManager>
 {

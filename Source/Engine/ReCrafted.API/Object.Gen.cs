@@ -5,14 +5,23 @@ using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API 
 {
+    /// <summary>
+    ///     Object class. Base class for all mono object instances.
+    /// </summary>
     public partial class Object
     {
-
+        
+        /// <summary>
+        ///     Destroys given Object instance.
+        /// </summary>
         public static void Destroy(Object objectInstance)
         {
             InternalDestroy(objectInstance? objectInstance.NativePtr : System.IntPtr.Zero);
         }
-
+        
+        /// <summary>
+        ///     Destroys given Object instance now.
+        /// </summary>
         public static void DestroyNow(Object objectInstance)
         {
             InternalDestroyNow(objectInstance? objectInstance.NativePtr : System.IntPtr.Zero);

@@ -6,13 +6,20 @@
 
 #include "Core/Actors/ActorBase.h"
 
+/// <summary>
+///     EmptyActor - provides an actor that has no additional functionality.
+/// </summary>
 API_CLASS(public)
 class EmptyActor final : public ActorBase
 {
     API_CLASS_BODY()
 
 public:
-    API_FUNCTION();
+
+    /// <summary>
+    ///     Creates new actor of type <see cref="EmptyActor"/>.
+    /// </summary>
+    API_FUNCTION()
     static EmptyActor* Create()
     {
         return New<EmptyActor>();

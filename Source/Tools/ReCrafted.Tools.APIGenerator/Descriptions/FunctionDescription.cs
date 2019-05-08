@@ -15,7 +15,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
 
         public string Name { get; set; }
         public TypeDescription ReturnType { get; set; }
-        public string Comment { get; set; }
+        public string[] Comment { get; set; }
         public AccessModifier Access { get; set; }
         public bool AllowMultithread { get; set; } = false;
         public bool Extern { get; set; } = false;

@@ -7,6 +7,9 @@
 #include "Core/ApplicationWindow.h"
 #include "Renderer/Renderer.h"
 
+/// <summary>
+///     Application class. Provides application management functionality.
+/// </summary>
 API_CLASS(public, static, noinherit)
 class Application final : public ApplicationBase
 {

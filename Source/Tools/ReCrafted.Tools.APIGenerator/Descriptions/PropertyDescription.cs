@@ -17,7 +17,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
     {
         public string Name { get; set; }
         public TypeDescription Type { get; set; }
-        public string Comment { get; set; }
+        public string[] Comment { get; set; }
         public AccessModifier Access { get; set; }
         public PropertyMode Mode { get; set; }
         public List<string> Modifiers { get; } = new List<string>();

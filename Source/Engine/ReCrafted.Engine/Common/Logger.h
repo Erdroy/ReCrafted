@@ -21,6 +21,9 @@ enum class LogLevel
     Fatal,
 };
 
+/// <summary>
+///     Logger class. Provides logging functionality.
+/// </summary>
 API_CLASS(public, static, partial, noinherit)
 class Logger final : public Singleton<Logger>
 {

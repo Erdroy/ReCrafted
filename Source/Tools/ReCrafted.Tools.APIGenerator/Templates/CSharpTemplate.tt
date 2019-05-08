@@ -23,6 +23,14 @@ using System.Runtime.CompilerServices;
 
 namespace <#=Class.Namespace#> 
 {
+<#
+foreach(var line in Class.Comment)
+{
+#>
+    <#=line#>
+<#
+}
+#>
     <#=Class.GetModifiers()#> class <#=Class.Name#><#=Class.GetGenerics()#><#=Class.GetInheritance()#>
     {
 <#
@@ -33,7 +41,15 @@ foreach(var function in Functions)
     if(!function.Extern)
     {
 #>
-
+        
+<#
+        foreach(var line in function.Comment)
+        {
+#>
+        <#=line#>
+<#
+        }
+#>
         <#=function.GetModifiers()#> <#=function.ReturnType.ToCSharp()#> <#=function.Name#>(<#=function.GetCSharpParameters()#>)
         {
 <#
@@ -60,7 +76,15 @@ foreach(var function in Functions)
 foreach(var property in Properties)
 {
 #>
-        
+
+<#
+    foreach(var line in property.Comment)
+    {
+#>
+        <#=line#>
+<#
+    }
+#>
         <#=property.GetModifiers()#> <#=property.Type.ToCSharp()#> <#=property.Name#>
         {
 <#

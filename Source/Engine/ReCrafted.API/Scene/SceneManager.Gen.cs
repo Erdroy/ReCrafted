@@ -5,6 +5,9 @@ using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Scene 
 {
+    /// <summary>
+    ///     SceneManager class. Provides scene management functionality.
+    /// </summary>
     public static partial class SceneManager
     {
     }

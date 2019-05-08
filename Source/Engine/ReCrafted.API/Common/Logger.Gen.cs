@@ -5,6 +5,9 @@ using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Common 
 {
+    /// <summary>
+    ///     Logger class. Provides logging functionality.
+    /// </summary>
     public static partial class Logger
     {
 

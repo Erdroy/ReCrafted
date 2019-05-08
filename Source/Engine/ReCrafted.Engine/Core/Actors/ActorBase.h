@@ -13,6 +13,12 @@ using ActorId_t = uint64_t;
 API_USING("ReCrafted.API.Common")
 API_USING("ReCrafted.API.Mathematics")
 
+/// <summary>
+///     Base class for all actors. Provides basic actor behavior.
+/// </summary>
+/// <remarks>
+///     Actors can be defined only in C++ source code.
+/// </remarks>
 API_CLASS(public, abstract)
 class ActorBase : public Object
 {
@@ -64,83 +70,172 @@ protected:
     virtual void OnTransformChange() {}
 
 public:
-    API_FUNCTION();
+    /// <summary>
+    ///     Sets given actor as parent of this actor.
+    /// </summary>
+    /// <param name="newParent">The parent instance.</param>
+    API_FUNCTION()
     void SetParent(ActorBase* newParent);
 
-    API_FUNCTION();
+    /// <summary>
+    ///     Adds given child to the children of this actor.
+    /// </summary>
+    /// <param name="child">The children instance.</param>
+    API_FUNCTION()
     void AddChild(ActorBase* child);
 
-    API_FUNCTION();
+    /// <summary>
+    ///     Removes given child from being child of this actor.
+    /// </summary>
+    /// <param name="child">The children instance.</param>
+    API_FUNCTION()
     void RemoveChild(ActorBase* child);
 
-    //API_FUNCTION()
-    //void AddScript(Script* script);
-    //
-    //API_FUNCTION()
-    //void RemoveScript(Script* script);
+    /*API_FUNCTION()
+    void AddScript(Script* script);
 
-    API_FUNCTION();
+    API_FUNCTION()
+    void RemoveScript(Script* script);*/
+
+    /// <summary>
+    ///     Sets active state.
+    /// </summary>
+    /// <param name="active">The active state.</param>
+    API_FUNCTION()
     void SetActive(bool active);
 
 public:
-    API_PROPERTY(noprefix);
+    /// <summary>
+    ///     Gets the parent of this actor.
+    /// </summary>
+    API_PROPERTY(noprefix)
     ActorBase* GetParent() const;
 
-    API_PROPERTY();
+    /// <summary>
+    ///     Gets or sets world-space position of this actor.
+    /// </summary>
+    API_PROPERTY()
     virtual void Position(const Vector3& position);
 
-    API_PROPERTY();
+    /// <summary>
+    ///     Gets or sets world-space position of this actor.
+    /// </summary>
+    API_PROPERTY()
     virtual const Vector3& Position() const;
 
-    API_PROPERTY();
+    /// <summary>
+    ///     Gets or sets local-space position of this actor.
+    ///     It is relative to the parent actor, if there is none,
+    ///     this returns the same value as Position.
+    /// </summary>
+    API_PROPERTY()
     virtual void LocalPosition(const Vector3& position);
 
-    API_PROPERTY();
+    /// <summary>
+    ///     Gets or sets local-space position of this actor.
+    ///     It is relative to the parent actor, if there is none,
+    ///     this returns the same value as Position.
+    /// </summary>
+    API_PROPERTY()
     virtual const Vector3& LocalPosition() const;
 
-    API_PROPERTY();
+    /// <summary>
+    ///     Gets or sets world-space rotation of this actor.
+    /// </summary>
+    API_PROPERTY()
     virtual void Rotation(const Quaternion& rotation);
 
-    API_PROPERTY();
+    /// <summary>
+    ///     Gets or sets world-space rotation of this actor.
+    /// </summary>
+    API_PROPERTY()
     virtual const Quaternion& Rotation() const;
 
-    API_PROPERTY();
+    /// <summary>
+    ///     Gets or sets local-space rotation of this actor.
+    ///     It is relative to the parent actor, if there is none,
+    ///     this returns the same value as Rotation.
+    /// </summary>
+    API_PROPERTY()
     virtual void LocalRotation(const Quaternion& rotation);
-
-    API_PROPERTY();
+    
+    /// <summary>
+    ///     Gets or sets local-space rotation of this actor.
+    ///     It is relative to the parent actor, if there is none,
+    ///     this returns the same value as Rotation.
+    /// </summary>
+    API_PROPERTY()
     virtual const Quaternion& LocalRotation() const;
 
-    API_PROPERTY();
+    /// <summary>
+    ///     Gets or sets world-space scale of this actor.
+    /// </summary>
+    API_PROPERTY()
     virtual void Scale(const Vector3& scale);
 
-    API_PROPERTY();
+    /// <summary>
+    ///     Gets or sets world-space scale of this actor.
+    /// </summary>
+    API_PROPERTY()
     virtual const Vector3& Scale() const;
 
-    API_PROPERTY();
+    /// <summary>
+    ///     Gets or sets local-space scale of this actor.
+    ///     It is relative to the parent actor, if there is none,
+    ///     this returns the same value as Scale.
+    /// </summary>
+    API_PROPERTY()
     virtual void LocalScale(const Vector3& scale);
 
-    API_PROPERTY();
+    /// <summary>
+    ///     Gets or sets local-space scale of this actor.
+    ///     It is relative to the parent actor, if there is none,
+    ///     this returns the same value as Scale.
+    /// </summary>
+    API_PROPERTY()
     virtual const Vector3& LocalScale() const;
 
-    API_PROPERTY(noprefix);
+    /// <summary>
+    ///     Gets or sets the transform of this actor.
+    /// </summary>
+    API_PROPERTY(noprefix)
     virtual void SetTransform(const Transform& transform);
 
-    API_PROPERTY(noprefix);
+    /// <summary>
+    ///     Gets or sets the transform of this actor.
+    /// </summary>
+    API_PROPERTY(noprefix)
     virtual const Transform& GetTransform() const;
 
 public:
-    API_PROPERTY();
+    /// <summary>
+    ///     Returns true when this actor's enable state is true.
+    /// </summary>
+    API_PROPERTY()
     bool IsActiveSelf() const;
 
-    API_PROPERTY();
+    /// <summary>
+    ///     Returns true when this actor's enable state is true and 
+    ///     false when parent's IsActive is also false.
+    /// </summary>
+    API_PROPERTY()
     bool IsActive() const;
 
-    API_PROPERTY(noprefix);
+    /// <summary>
+    ///     Gets or sets the name of this actor.
+    /// </summary>
+    API_PROPERTY(noprefix)
     void SetName(const String& name);
 
-    API_PROPERTY(noprefix);
+    /// <summary>
+    ///     Gets or sets the name of this actor.
+    /// </summary>
+    API_PROPERTY(noprefix)
     const String& GetName() const;
 
+    /// <summary>
+    ///     Gets all children instances.
+    /// </summary>
     const List<ActorBase*>& GetChildren() const;
 
     ActorId_t GetId() const;

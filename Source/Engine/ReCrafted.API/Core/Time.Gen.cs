@@ -5,6 +5,9 @@ using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Core 
 {
+    /// <summary>
+    ///     The time class. Provides engine's timing services.
+    /// </summary>
     public static partial class Time
     {
 

@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using ReCrafted.Tools.APIGenerator.Descriptions;
 using ReCrafted.Tools.APIGenerator.Templates;
 using ReCrafted.Tools.Common.CodeTokenizer;
@@ -124,6 +123,26 @@ namespace ReCrafted.Tools.APIGenerator
 
             // return arguments
             return parameters;
+        }
+
+        private string[] ParseXmlCommentAbove()
+        {
+            var lines = new List<string>();
+
+            while (_tokenizer.PreviousToken().Type == TokenType.CommentSingleLine)
+            {
+                var commentLine = _tokenizer.CurrentToken.Value;
+
+                commentLine = commentLine.Trim();
+
+                lines.Insert(0, commentLine);
+            }
+
+            // Rewind
+            for (var i = 0; i < lines.Count + 1; i++)
+                _tokenizer.NextToken();
+
+            return lines.ToArray();
         }
 
         private IEnumerable<FunctionDescription.Param> ParseFunctionParameters()
