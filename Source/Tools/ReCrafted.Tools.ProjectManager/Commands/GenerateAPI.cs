@@ -12,6 +12,9 @@ namespace ReCrafted.Tools.ProjectManager.Commands
     {
         public override void Execute()
         {
+            if (Options.Current.SkipAPI)
+                return;
+
             const string c99CppHeaderExtension = ".h";
             const string c99CppHeaderAPIExtension = ".Gen.cpp";
 

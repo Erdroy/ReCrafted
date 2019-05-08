@@ -95,4 +95,7 @@
     <None Include="Project.lua" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>$(SolutionDir)..\pm.bat GenerateAPI</PreBuildEvent>
+  </PropertyGroup>
 </Project>

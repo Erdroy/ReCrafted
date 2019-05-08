@@ -44,7 +44,7 @@ project "ReCrafted"
 	configuration { "vs*"}
 		buildoptions { "/MP" }
 		postbuildcommands {
-			"call " .. ROOT_DIR .. "/pm.bat PostBuild",
+			"call " .. ROOT_DIR .. "/pm.bat PostBuild --skip-api",
 		}
 	
 	-- configs
