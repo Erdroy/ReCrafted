@@ -9,10 +9,28 @@ namespace ReCrafted.API.Core
     /// </summary>
     public abstract class GameBase<TGame>
     {
-        protected abstract void OnInitialize();
-        protected abstract void OnShutdown();
-        protected abstract void OnUpdate();
-        protected abstract void OnFixedUpdate();
+        protected virtual void OnInitialize()
+        {
+            // Register unhandled exception handler
+            Exceptions.RegisterUEHandler();
+        }
+
+        protected virtual void OnShutdown()
+        {
+
+        }
+
+        protected virtual void OnUpdate()
+        {
+            // Update all game systems
+            GameSystem.UpdateAll();
+
+        }
+
+        protected virtual void OnFixedUpdate()
+        {
+
+        }
 
         public void Quit()
         {

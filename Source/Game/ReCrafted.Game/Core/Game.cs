@@ -11,22 +11,27 @@ namespace ReCrafted.Game.Core
     {
         protected override void OnInitialize()
         {
-            Logger.Log("Game initialized");
+            base.OnInitialize();
 
-            // Register unhandled exception handler
-            Exceptions.RegisterUEHandler();
+            Logger.Log("Game initialized");
         }
 
         protected override void OnShutdown()
         {
+            base.OnShutdown();
+
         }
 
         protected override void OnUpdate()
         {
+            base.OnUpdate();
+
         }
 
         protected override void OnFixedUpdate()
         {
+            base.OnFixedUpdate();
+
         }
     }
 }

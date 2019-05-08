@@ -47,13 +47,13 @@
     <Compile Include="Core\Game.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Project.lua" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\Engine\ReCrafted.API\ReCrafted.API.csproj">
       <Project>{91f869da-fdc2-4539-83b4-bec3dc0bdf76}</Project>
       <Name>ReCrafted.API</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Project.lua" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
