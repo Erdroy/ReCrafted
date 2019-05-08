@@ -26,6 +26,8 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
         public string SetterFunctionName { get; set; }
 
         public bool IsStatic => Modifiers.Contains("static");
+        public bool IsOverride => Modifiers.Contains("override");
+        public bool IsVirtual => Modifiers.Contains("virtual");
 
         public bool ForceByValue { get; set; }
 

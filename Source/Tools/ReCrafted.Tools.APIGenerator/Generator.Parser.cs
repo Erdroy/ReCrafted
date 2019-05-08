@@ -82,6 +82,16 @@ namespace ReCrafted.Tools.APIGenerator
 
                 // Set the property to getter setter
                 property.Mode = PropertyMode.GetterSetter;
+
+                // Add missing modifiers
+                foreach (var modifier in function.Modifiers)
+                {
+                    if (!property.Modifiers.Contains(modifier))
+                    {
+                        property.Modifiers.Add(modifier);
+                    }
+                }
+
                 return;
             }
 
@@ -104,7 +114,6 @@ namespace ReCrafted.Tools.APIGenerator
             property.Modifiers.AddRange(function.Modifiers);
 
             _properties.Add(property);
-
         }
 
         private FunctionDescription ParseFunctionTag()
@@ -154,9 +163,6 @@ namespace ReCrafted.Tools.APIGenerator
 
             var isOverride = token.Value == "override";
 
-            if(isOverride)
-                Console.WriteLine("WARNING: Function overriding is not supported.");
-
             for (var i = 0; i < tagArguments.Count; i++)
             {
                 token = tagArguments[i];
@@ -189,8 +195,8 @@ namespace ReCrafted.Tools.APIGenerator
                         break;
                     case "noprefix":
                     case "static":
-                    //case "virtual":
-                    //case "override":
+                    case "virtual":
+                    case "override":
                     case "abstract":
                         desc.Modifiers.Add(token.Value);
                         break;
@@ -201,11 +207,14 @@ namespace ReCrafted.Tools.APIGenerator
                 }
             }
 
+            if (isVirtual && !desc.Modifiers.Contains("virtual"))
+                desc.Modifiers.Add("virtual");
+
             if (isStatic && !desc.Modifiers.Contains("static"))
                 desc.Modifiers.Add("static");
 
-            //if (isOverride && !desc.Modifiers.Contains("override"))
-            //    desc.Modifiers.Add("override");
+            if (isOverride && !desc.Modifiers.Contains("override"))
+                desc.Modifiers.Add("override");
 
             return desc;
         }

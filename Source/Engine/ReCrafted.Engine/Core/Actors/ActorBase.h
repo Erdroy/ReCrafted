@@ -90,43 +90,43 @@ public:
     virtual void Position(const Vector3& position);
 
     API_PROPERTY();
-    const Vector3& Position() const;
+    virtual const Vector3& Position() const;
 
     API_PROPERTY();
     virtual void LocalPosition(const Vector3& position);
 
     API_PROPERTY();
-    const Vector3& LocalPosition() const;
+    virtual const Vector3& LocalPosition() const;
 
     API_PROPERTY();
     virtual void Rotation(const Quaternion& rotation);
 
     API_PROPERTY();
-    const Quaternion& Rotation() const;
+    virtual const Quaternion& Rotation() const;
 
     API_PROPERTY();
     virtual void LocalRotation(const Quaternion& rotation);
 
     API_PROPERTY();
-    const Quaternion& LocalRotation() const;
+    virtual const Quaternion& LocalRotation() const;
 
     API_PROPERTY();
     virtual void Scale(const Vector3& scale);
 
     API_PROPERTY();
-    const Vector3& Scale() const;
+    virtual const Vector3& Scale() const;
 
     API_PROPERTY();
     virtual void LocalScale(const Vector3& scale);
 
     API_PROPERTY();
-    const Vector3& LocalScale() const;
+    virtual const Vector3& LocalScale() const;
 
     API_PROPERTY(noprefix);
-    void SetTransform(const Transform& transform);
+    virtual void SetTransform(const Transform& transform);
 
     API_PROPERTY(noprefix);
-    const Transform& GetTransform() const;
+    virtual const Transform& GetTransform() const;
 
 public:
     API_PROPERTY();

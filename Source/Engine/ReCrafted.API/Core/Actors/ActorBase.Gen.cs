@@ -39,7 +39,7 @@ namespace ReCrafted.API.Core.Actors
             }
         }
         
-        public Vector3 Position
+        public virtual Vector3 Position
         {
             get
             {
@@ -49,7 +49,7 @@ namespace ReCrafted.API.Core.Actors
             set => Set_InternalPosition(NativePtr, ref value);
         }
         
-        public Vector3 LocalPosition
+        public virtual Vector3 LocalPosition
         {
             get
             {
@@ -59,7 +59,7 @@ namespace ReCrafted.API.Core.Actors
             set => Set_InternalLocalPosition(NativePtr, ref value);
         }
         
-        public Quaternion Rotation
+        public virtual Quaternion Rotation
         {
             get
             {
@@ -69,7 +69,7 @@ namespace ReCrafted.API.Core.Actors
             set => Set_InternalRotation(NativePtr, ref value);
         }
         
-        public Quaternion LocalRotation
+        public virtual Quaternion LocalRotation
         {
             get
             {
@@ -79,7 +79,7 @@ namespace ReCrafted.API.Core.Actors
             set => Set_InternalLocalRotation(NativePtr, ref value);
         }
         
-        public Vector3 Scale
+        public virtual Vector3 Scale
         {
             get
             {
@@ -89,7 +89,7 @@ namespace ReCrafted.API.Core.Actors
             set => Set_InternalScale(NativePtr, ref value);
         }
         
-        public Vector3 LocalScale
+        public virtual Vector3 LocalScale
         {
             get
             {

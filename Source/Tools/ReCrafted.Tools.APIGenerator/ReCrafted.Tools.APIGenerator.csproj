@@ -103,13 +103,13 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Project.lua" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\ReCrafted.Tools.Common\ReCrafted.Tools.Common.csproj">
       <Project>{c027b9e3-fe8a-41f0-b984-d2ca16ce9b1b}</Project>
       <Name>ReCrafted.Tools.Common</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Project.lua" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
