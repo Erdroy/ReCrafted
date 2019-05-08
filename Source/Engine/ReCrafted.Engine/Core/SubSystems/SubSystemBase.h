@@ -11,7 +11,7 @@ class SubSystemBase
 
 protected:
     SubSystemBase() = default;
-    ~SubSystemBase() = default;
+    virtual ~SubSystemBase() = default;
 
 protected:
     virtual void Initialize() = 0;

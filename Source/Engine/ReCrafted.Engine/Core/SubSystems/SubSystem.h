@@ -14,7 +14,7 @@ class SubSystem : public SubSystemBase, public Singleton<TSubSystem>
 
 protected:
     SubSystem() = default;
-    ~SubSystem() = default;
+    virtual ~SubSystem() = default;
 
 protected:
     void Release() override
