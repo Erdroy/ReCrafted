@@ -2,7 +2,6 @@
 
 #include "SceneManager.h"
 #include "Core/Actors/ActorBase.h"
-#include "Common/Logger.h"
 
 void SceneManager::Initialize()
 {
@@ -11,7 +10,13 @@ void SceneManager::Initialize()
 void SceneManager::Shutdown()
 {
     if (!m_actors.Empty())
-        Logger::LogWarning("The current scene is shutting down and not all actors were removed ({0} actors)!", m_actors.Count());
+    {
+        // Destroy all actors
+        for (auto&& actor : m_actors)
+            Object::DestroyNow(actor);
+
+        m_actors.Clear();
+    }
 }
 
 void SceneManager::OnUpdate()

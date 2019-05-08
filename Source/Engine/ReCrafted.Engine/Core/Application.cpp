@@ -74,6 +74,7 @@ Application::~Application()
     // Shutdown platform
     Platform::Shutdown();
 
+    Logger::Log("Bye");
     Logger::Shutdown();
 
     m_instance = nullptr;

@@ -80,13 +80,13 @@ public:
     /// <summary>
     ///     Destroys given Object instance.
     /// </summary>
-    API_FUNCTION();
+    API_FUNCTION(multithread);
     static void Destroy(Object* objectInstance);
     
     /// <summary>
     ///     Destroys given Object instance now.
     /// </summary>
-    API_FUNCTION();
+    API_FUNCTION(multithread);
     static void DestroyNow(Object* objectInstance);
 
 private:

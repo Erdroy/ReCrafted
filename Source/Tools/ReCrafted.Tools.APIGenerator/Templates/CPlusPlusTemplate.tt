@@ -24,8 +24,13 @@ foreach(var function in Functions)
     
     static <#=function.ReturnType.ToSpecial(true)#> <#=Class.Name#>_<#=function.Name#>(<#=function.GetCPlusPlusParameters(Class, !function.IsStatic)#>) 
     {
+<#
+    if(!function.AllowMultithread)
+    {
+#>
         MAIN_THREAD_ONLY();
 <#
+    }
     // ---- Special type conversions ----
     foreach(var parameter in function.Parameters)
     {
@@ -119,8 +124,13 @@ foreach(var property in Properties)
     
     static void <#=Class.Name#>_Get_<#=property.Name#>(<#=property.GetCPlusPlusParameter(Class, true)#>) 
     {
+<#
+if(!property.AllowMultithread)
+{
+#>
         MAIN_THREAD_ONLY();
 <#
+}
 if(!property.IsStatic)
 {
 #>
@@ -150,8 +160,13 @@ if(!property.IsStatic)
 
     static void <#=Class.Name#>_Set_<#=property.Name#>(<#=property.GetCPlusPlusParameter(Class, false)#>) 
     {
+<#
+if(!property.AllowMultithread)
+{
+#>
         MAIN_THREAD_ONLY();
-<# 
+<#
+}
 if(property.Type.IsSpecial)
 {
 #>

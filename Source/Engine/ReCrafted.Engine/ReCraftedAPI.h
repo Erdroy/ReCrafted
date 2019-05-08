@@ -41,3 +41,11 @@
 ///     Only valid for properties. Forces the generator to remove 'Get' and/or 'Set' prefixes from the function name.
 /// </summary>
 #define noprefix
+
+/// <summary>
+///     Valid for properties and functions. Forces the generator to allow function calls from non-main threads.
+/// </summary>
+/// <remarks>
+///     Calling thread should be registered for scripting backend, otherwise calling this function will result in undefined behavior.
+/// </remarks>
+#define multithread

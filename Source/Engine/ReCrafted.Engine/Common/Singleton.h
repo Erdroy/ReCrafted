@@ -26,7 +26,7 @@ private:
             instance = new TType();
 
         if (instance == nullptr)
-            throw std::exception("");
+            throw std::exception("This singleton call has been released.");
 #else
         static auto* instance;
 

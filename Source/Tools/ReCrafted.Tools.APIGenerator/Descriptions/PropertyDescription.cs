@@ -22,6 +22,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
         public PropertyMode Mode { get; set; }
         public List<string> Modifiers { get; } = new List<string>();
 
+        public bool AllowMultithread { get; set; } = false;
         public string GetterFunctionName { get; set; }
         public string SetterFunctionName { get; set; }
 

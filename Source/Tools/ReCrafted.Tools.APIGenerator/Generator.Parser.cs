@@ -101,6 +101,7 @@ namespace ReCrafted.Tools.APIGenerator
                 Type = function.ReturnType.IsVoid ? function.Parameters[0].Type : function.ReturnType,
                 Access = function.Access,
                 Comment = function.Comment,
+                AllowMultithread = function.AllowMultithread,
                 Mode = !function.ReturnType.IsVoid ? PropertyMode.Getter : PropertyMode.Setter,
                 ForceByValue = false // TODO: Add 'by value' support
             };
@@ -180,6 +181,9 @@ namespace ReCrafted.Tools.APIGenerator
                         break;
                     case "private":
                         desc.Access = AccessModifier.Private;
+                        break;
+                    case "multithread":
+                        desc.AllowMultithread = true;
                         break;
                     case "noproxy":
                     case "extern":

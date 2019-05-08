@@ -12,13 +12,11 @@ public:
     
     static void Object_Destroy(Object* objectInstance) 
     {
-        MAIN_THREAD_ONLY();
         Object::Destroy(objectInstance);
     }
     
     static void Object_DestroyNow(Object* objectInstance) 
     {
-        MAIN_THREAD_ONLY();
         Object::DestroyNow(objectInstance);
     }
     
