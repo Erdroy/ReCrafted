@@ -70,7 +70,7 @@ namespace ReCrafted.Tools.APIGenerator
                         $"WARNING: Property with name '{propertyName}' has multiple functions declarations with " +
                         $"different access modifier ({property.Access} / {function.Access}).");
 
-                if (property.Type.Equals(function.Parameters.FirstOrDefault().Type) || property.Type.Equals(function.ReturnType))
+                if (!property.Type.Equals(function.Parameters.FirstOrDefault().Type) && !property.Type.Equals(function.ReturnType))
                     Console.WriteLine(
                         $"WARNING: Property with name '{propertyName}' has multiple functions declarations with " +
                         $"different value types.");
