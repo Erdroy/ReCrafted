@@ -13,7 +13,6 @@ namespace ReCrafted.API.Core
         protected abstract void OnShutdown();
         protected abstract void OnUpdate();
         protected abstract void OnFixedUpdate();
-        protected abstract void OnRender();
 
         public void Quit()
         {

@@ -44,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\ReCraftedGame.cs" />
+    <Compile Include="Core\Game.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\ReCrafted.API\ReCrafted.API.csproj">

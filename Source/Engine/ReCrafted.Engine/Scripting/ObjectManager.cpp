@@ -104,6 +104,9 @@ void ObjectManager::Shutdown()
 {
     ReleaseQueuedObjects();
 
+    // Finalize
+    Domain::Root->Finalize();
+
     ScopeLock(m_objectMapLock);
 
     // Destroy all objects

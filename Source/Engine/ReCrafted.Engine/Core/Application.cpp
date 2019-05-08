@@ -9,6 +9,8 @@
 #include "Renderer/Renderer.h"
 #include "Scripting/ScriptingManager.h"
 #include "Scripting/ObjectManager.h"
+#include "Scripting/Object.h"
+#include "Game/GameManager.h"
 
 // EventProcessor is implemented per-platform
 uint64_t EventProcessor(void*, uint32_t, uint64_t, uint64_t);
@@ -44,10 +46,19 @@ Application::Application()
 
     // Initialize renderer
     InitializeRenderer();
+
+    // Initialize graphics
+    InitializeGraphics();
+
+    // Initialize game
+    InitializeGame();
 }
 
 Application::~Application()
 {
+    // Shutdown game
+    ShutdownGame();
+
     // Shutdown renderer
     Renderer::Shutdown();
 
@@ -78,6 +89,8 @@ void Application::OnWindowResized()
     uint width;
     uint height;
     Platform::GetWindowSize(Platform::GetCurrentWindow(), &width, &height);
+
+    // TODO: Update Display
 
     // TODO: Resize!
     Renderer::ResizeWindow(m_windowHandle, width, height);
@@ -112,6 +125,17 @@ void Application::InitializeGraphics()
 {
 }
 
+void Application::InitializeGame()
+{
+    m_gameManager.reset(new GameManager());
+}
+
+void Application::ShutdownGame()
+{
+    // Release manager's object, this will shutdown managed game instance
+    m_instance->m_gameManager.reset();
+}
+
 void Application::Update()
 {
     // Update input
@@ -127,12 +151,16 @@ void Application::Update()
 
     // TODO: Update rest of the world
 
+    m_instance->m_gameManager->Update();
+
     SubSystemManager::GetInstance()->LateUpdate();
 }
 
 void Application::FixedUpdate()
 {
     SubSystemManager::GetInstance()->FixedUpdate();
+
+    m_instance->m_gameManager->FixedUpdate();
 }
 
 void Application::Render()

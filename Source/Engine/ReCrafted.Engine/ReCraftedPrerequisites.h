@@ -43,6 +43,13 @@ template <class TSubSystem> class SubSystem;
 class SubSystemBase;
 class SubSystemManager;
 
+// Game/
+class GameManager;
+
+// Graphics/
+
+// Renderer/
+
 // Input/
 enum class ActionType : sbyte;
 enum class ActionEventType : sbyte;

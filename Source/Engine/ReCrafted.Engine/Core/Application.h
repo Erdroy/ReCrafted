@@ -7,18 +7,22 @@
 #include "Core/ApplicationWindow.h"
 #include "Renderer/Renderer.h"
 
+API_CLASS(public, static, noinherit)
 class Application final : public ApplicationBase
 {
     DELETE_COPY_MOVE(Application)
+    API_CLASS_BODY()
 
 private:
     static Application* m_instance;
 
+    RefPtr<GameManager> m_gameManager = nullptr;
     RefPtr<MainLoop> m_mainLoop = nullptr;
     RefPtr<ApplicationWindow> m_window = nullptr;
     Renderer::WindowHandle m_windowHandle = {};
     Renderer::RenderBufferHandle m_frameBufferHandle = {};
 
+    
 public:
     Application();
     ~Application();
@@ -30,6 +34,8 @@ private:
     void InitializeSubSystems() const;
     void InitializeRenderer();
     void InitializeGraphics();
+    void InitializeGame();
+    void ShutdownGame();
 
     void Update();
     void FixedUpdate();
@@ -39,5 +45,9 @@ public:
     void Run() override;
 
 public:
+    /// <summary>
+    ///     Quits the current application.
+    /// </summary>
+    API_FUNCTION();
     static void Quit();
 };

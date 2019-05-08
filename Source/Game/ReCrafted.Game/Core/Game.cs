@@ -2,14 +2,16 @@
 
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
+using ReCrafted.API.Core.Actors;
+using ReCrafted.API.Mathematics;
 
 namespace ReCrafted.Game.Core
 {
-    public class ReCraftedGame : GameBase<ReCraftedGame>
+    public class Game : GameBase<Game>
     {
         protected override void OnInitialize()
         {
-            Logger.Log("Hello from C#!");
+            Logger.Log("Game initialized");
 
             // Register unhandled exception handler
             Exceptions.RegisterUEHandler();
@@ -24,10 +26,6 @@ namespace ReCrafted.Game.Core
         }
 
         protected override void OnFixedUpdate()
-        {
-        }
-
-        protected override void OnRender()
         {
         }
     }
