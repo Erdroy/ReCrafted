@@ -6,6 +6,7 @@
 #include "Core/Time.h"
 #include "Core/Actors/ActorBase.h"
 #include "Core/Actors/EmptyActor.h"
+#include "Scene/SceneManager.h"
 #include "Scripting/Object.h"
 
 void ScriptingManager::InitRuntime()
@@ -15,5 +16,6 @@ void ScriptingManager::InitRuntime()
     Time::InitRuntime();
     ActorBase::InitRuntime();
     EmptyActor::InitRuntime();
+    SceneManager::InitRuntime();
     Object::InitRuntime();
 }

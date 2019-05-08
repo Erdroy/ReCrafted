@@ -90,6 +90,7 @@
     <Compile Include="Mathematics\ViewportF.cs" />
     <Compile Include="Object.Gen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scene\SceneManager.Gen.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

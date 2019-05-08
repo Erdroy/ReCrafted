@@ -1,6 +1,7 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System;
+using ReCrafted.API.Common;
 
 namespace ReCrafted.API.Core
 {
@@ -11,6 +12,8 @@ namespace ReCrafted.API.Core
     {
         protected virtual void OnInitialize()
         {
+            Logger.Log($"Game startup ({DateTime.Now})");
+
             // Register unhandled exception handler
             Exceptions.RegisterUEHandler();
         }

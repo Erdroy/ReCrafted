@@ -68,6 +68,9 @@ class Keyboard;
 class Mouse;
 class NullDevice;
 
+// Scene/
+class SceneManager;
+
 // Scripting/
 struct Class;
 struct Field;

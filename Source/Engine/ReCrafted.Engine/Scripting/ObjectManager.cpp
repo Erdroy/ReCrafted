@@ -128,6 +128,9 @@ void ObjectManager::Shutdown()
 
     // Make sure that we have destroyed all objects
     DEBUG_ASSERT(m_objectCount == 0);
+
+    // Note: We don't have to release objects queued for destroy, 
+    // all objects has been already destroyed, by destroying all of them from the object map.
 }
 
 void ObjectManager::OnLateUpdate()

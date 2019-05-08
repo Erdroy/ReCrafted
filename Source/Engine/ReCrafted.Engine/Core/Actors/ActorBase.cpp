@@ -1,66 +1,7 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include "ActorBase.h"
-//#include "Scene/SceneManager.h"
-
-//void ActorBase::OnAcquire()
-//{
-//    MAIN_THREAD_ONLY();
-//
-//    // Add to scene
-//    //SceneManager::GetInstance()->AddActor(this);
-//
-//    // Call awake event
-//    OnAwake();
-//}
-//
-//void ActorBase::OnRelease()
-//{
-//    MAIN_THREAD_ONLY();
-//
-//    if(m_parent)
-//    {
-//        // Remove from parent
-//        //SetParent(nullptr);
-//    }
-//
-//    /*// We need to unbind the managed object, because we don't want to get 
-//    // finalizer being called on us, because it will also remove our 
-//    // unmanaged instance. And we don't want this, because we are assigning 
-//    // managed instances dynamically (when actor is acquired).
-//    UnbindManaged(this);
-//
-//    // ... and now, we can safely destroy the actor object.
-//    Object::Destroy(this);
-//
-//    for (auto& script : m_scripts)
-//        Object::Destroy(script);
-//    m_scripts.Clear();*/
-//
-//    // Remove from scene
-//    ///SceneManager::GetInstance()->RemoveActor(this);
-//}
-
-void ActorBase::Cleanup(const ActorId_t id)
-{
-    if (id != 0)
-        m_id = id;
-
-    m_static = false;
-    m_active = true;
-    m_firstFrame = true;
-    m_parent = nullptr; 
-    m_transform = Transform::Identity;
-    m_localTransform = Transform::Identity;
-
-    //for (auto& script : m_scripts)
-    //    Object::Destroy(script);
-    //m_scripts.Clear();
-
-    m_children.Clear();
-
-    SetName(STRING_CONST("Actor"));
-}
+#include "Scene/SceneManager.h"
 
 void ActorBase::Start()
 {
@@ -119,7 +60,7 @@ void ActorBase::LateUpdate()
     OnLateUpdate();
 }
 
-void ActorBase::Simulate()
+void ActorBase::FixedUpdate()
 {
     /*for (auto&& script : m_scripts)
     {
@@ -130,10 +71,44 @@ void ActorBase::Simulate()
     for (auto&& child : m_children)
     {
         if (child->IsActive())
-            child->Simulate();
+            child->FixedUpdate();
     }
 
     OnSimulate();
+}
+
+ActorBase::ActorBase()
+{
+    // Add to scene
+    SceneManager::GetInstance()->AddActor(this);
+}
+
+ActorBase::~ActorBase()
+{
+    if (m_parent)
+    {
+        // Remove from parent
+        SetParent(nullptr);
+    }
+
+    //for (auto& script : m_scripts)
+    //    Object::Destroy(script);
+    //m_scripts.Clear();
+
+    // Destroy all children too, but later
+    // because we can fall into deadlock, if this destructor is 
+    // being called from ObjectManager::Shutdown.
+    for(auto&& child : m_children)
+    {
+        // Force child's parent object pointer to be null while destroying it.
+        child->m_parent = nullptr;
+
+        // Destroy the child actor
+        Destroy(child);
+    }
+
+    // Remove from scene
+    SceneManager::GetInstance()->RemoveActor(this);
 }
 
 void ActorBase::UpdateTransform()
@@ -245,7 +220,7 @@ void ActorBase::SetParent(ActorBase* newParent)
         m_parent->OnRemovedChild(this);
 
         // Return to the scene
-        //SceneManager::GetInstance()->AddActor(this);
+        SceneManager::GetInstance()->AddActor(this);
 
         // Set parent as null
         m_parent = nullptr;
@@ -263,7 +238,7 @@ void ActorBase::SetParent(ActorBase* newParent)
         m_parent->OnAddedChild(this);
 
         // Remove from the scene
-        //SceneManager::GetInstance()->RemoveActor(this);
+        SceneManager::GetInstance()->RemoveActor(this);
     }
 
     UpdateTransform();

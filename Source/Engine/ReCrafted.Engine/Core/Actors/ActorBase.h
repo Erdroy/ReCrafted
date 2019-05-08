@@ -35,17 +35,14 @@ private:
     //List<Script*> m_scripts = {};
 
 private:
-    void Cleanup(ActorId_t id = 0u);
-
-private:
     void Start();
     void Update();
     void LateUpdate();
-    void Simulate();
+    void FixedUpdate();
 
 public:
-    ActorBase() = default;
-    virtual ~ActorBase() = default;
+    ActorBase();
+    virtual ~ActorBase();
 
 protected:
     void UpdateTransform();
