@@ -2,9 +2,11 @@
 
 #include "Common/Platform/Platform.h"
 #include "Common/Logger.h"
+#include "Common/Guid.h"
 
 #ifdef _WIN32
 
+#include <rpc.h>
 #include <Windows.h>
 
 void* Platform::m_currentWindow;
@@ -158,6 +160,20 @@ void Platform::RunEvents()
         DispatchMessage(&msg);
     }
     //Profiler::EndProfile();
+}
+
+Guid Platform::NewGuid()
+{
+    Guid guid = {};
+    UUID uuid = {};
+
+    // Create UUID
+    UuidCreate(&uuid);
+
+    // Copy data to our Guid structure
+    memcpy_s(&guid, sizeof Guid, &uuid, sizeof UUID);
+
+    return guid;
 }
 
 void* Platform::CreateNewWindow(const String& windowName, const int width, const int height, uint64_t style)

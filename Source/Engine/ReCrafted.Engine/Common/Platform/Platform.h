@@ -57,6 +57,12 @@ public:
     static void RunEvents();
 
     /**
+     * \brief Creates new Guid.
+     * \return The new unique guid.
+     */
+    static Guid NewGuid();
+
+    /**
      * \brief Creates new window.
      * \param windowName The window title.
      * \param width The initial window client-size width.
