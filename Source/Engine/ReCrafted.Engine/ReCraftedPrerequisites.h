@@ -43,6 +43,11 @@ template <class TSubSystem> class SubSystem;
 class SubSystemBase;
 class SubSystemManager;
 
+// Core/Threading
+struct Task;
+struct ITask;
+class TaskManager;
+
 // Game/
 class GameManager;
 

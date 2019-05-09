@@ -4,6 +4,7 @@
 #include "Common/Platform/Platform.h"
 #include "Common/Logger.h"
 #include "Core/SubSystems/SubSystemManager.h"
+#include "Core/Threading/TaskManager.h"
 #include "Core/Time.h"
 #include "Input/InputManager.h"
 #include "Renderer/Renderer.h"
@@ -12,6 +13,7 @@
 #include "Scripting/Object.h"
 #include "Game/GameManager.h"
 #include "Scene/SceneManager.h"
+#include "Threading/Task.h"
 
 // EventProcessor is implemented per-platform
 uint64_t EventProcessor(void*, uint32_t, uint64_t, uint64_t);
@@ -102,6 +104,7 @@ void Application::InitializeSubSystems() const
 {
     // Register subsystems
     SubSystemManager::Register<ScriptingManager>();
+    SubSystemManager::Register<TaskManager>();
     SubSystemManager::Register<ObjectManager>();
     SubSystemManager::Register<Time>();
     SubSystemManager::Register<InputManager>();
