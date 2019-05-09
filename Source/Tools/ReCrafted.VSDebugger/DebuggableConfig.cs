@@ -16,8 +16,9 @@ namespace ReCrafted.VSDebugger
     {
         private IVsProjectFlavorCfg _baseProjectCfg;
         private readonly Project _baseProject;
+        private MonoDebuggerLauncher _launcher;
 
-        public DebuggableConfig(IVsProjectFlavorCfg pBaseProjectCfg, EnvDTE.Project project)
+        public DebuggableConfig(IVsProjectFlavorCfg pBaseProjectCfg, Project project)
         {
             _baseProject = project;
             _baseProjectCfg = pBaseProjectCfg;
@@ -38,11 +39,10 @@ namespace ReCrafted.VSDebugger
         {
             const int port = 55000;
 
-            var startArgs = new SoftDebuggerListenArgs(_baseProject.Name, IPAddress.Loopback, port);
-            var startInfo = new StartInfo(startArgs, null, _baseProject);
-            var launcher = new MonoDebuggerLauncher(new Progress<string>());
-
-            launcher.StartSession(startInfo, new DebuggerSession());
+            var args = new SoftDebuggerConnectArgs(_baseProject.Name, IPAddress.Loopback, port);
+            var startInfo = new StartInfo(args, null, _baseProject);
+            _launcher = new MonoDebuggerLauncher(new Progress<string>());
+            _launcher.StartSession(startInfo, new SoftDebuggerSession());
 
             return VSConstants.S_OK;
         }
@@ -67,7 +67,7 @@ namespace ReCrafted.VSDebugger
             catch (InvalidCastException)
             {
             }
-
+            
             return VSConstants.S_OK;
         }
 

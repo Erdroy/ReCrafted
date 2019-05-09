@@ -46,7 +46,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DebuggableConfig.cs" />
-    <Compile Include="DebuggerSession.cs" />
     <Compile Include="FlavoredProject.cs" />
     <Compile Include="FlavoredProjectFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
