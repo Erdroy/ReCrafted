@@ -39,10 +39,14 @@ namespace ReCrafted.VSDebugger
         {
             const int port = 55000;
 
-            var args = new SoftDebuggerConnectArgs(_baseProject.Name, IPAddress.Loopback, port);
+            var args = new SoftDebuggerConnectArgs(_baseProject.Name, IPAddress.Loopback, port)
+            {
+                TimeBetweenConnectionAttempts = 500,
+                MaxConnectionAttempts = 4
+            };
             var startInfo = new StartInfo(args, null, _baseProject);
             _launcher = new MonoDebuggerLauncher(new Progress<string>());
-            _launcher.StartSession(startInfo, new SoftDebuggerSession());
+            _launcher.StartSession(startInfo, new ReCraftedDebuggerSession());
 
             return VSConstants.S_OK;
         }

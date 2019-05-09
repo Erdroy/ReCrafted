@@ -28,6 +28,8 @@ namespace ReCrafted.VSDebugger
 
                 _innerFlavorConfig.CreateProjectFlavorCfg(pBaseProjectCfg, out var cfg);
                 ppFlavorCfg = new DebuggableConfig(cfg, project as EnvDTE.Project);
+
+                
             }
 
             if (ppFlavorCfg != null)

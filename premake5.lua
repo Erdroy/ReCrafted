@@ -16,7 +16,11 @@ solution "ReCrafted"
 		"Development",
 		"Release",
 	}
-
+	
+	platforms {
+		"x64"
+	}
+	
 	-- Project scripts
 	group "Libraries"
 		dofile "./Source/Libraries/Project.concurrentqueue.lua"
