@@ -8,6 +8,7 @@ template <class T> struct rc_allocator;
 struct Lock;
 struct String;
 template <typename ... TParams> class Event;
+struct Guid;
 template <typename TType> class List;
 template <class TType> class Singleton;
 class Logger;
@@ -23,6 +24,16 @@ class Stream;
 // Common/Platform/
 class Environment;
 class Platform;
+
+// Content/
+class ContentManager;
+
+// Content/Assets/
+enum class AssetBaseType;
+enum class AssetType : byte;
+class Asset;
+class BinaryAsset;
+class JsonAsset;
 
 // Core/
 struct Transform;

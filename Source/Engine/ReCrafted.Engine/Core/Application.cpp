@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "Common/Platform/Platform.h"
 #include "Common/Logger.h"
+#include "Content/ContentManager.h"
 #include "Core/SubSystems/SubSystemManager.h"
 #include "Core/Threading/TaskManager.h"
 #include "Core/Time.h"
@@ -10,10 +11,8 @@
 #include "Renderer/Renderer.h"
 #include "Scripting/ScriptingManager.h"
 #include "Scripting/ObjectManager.h"
-#include "Scripting/Object.h"
 #include "Game/GameManager.h"
 #include "Scene/SceneManager.h"
-#include "Threading/Task.h"
 
 // EventProcessor is implemented per-platform
 uint64_t EventProcessor(void*, uint32_t, uint64_t, uint64_t);
@@ -106,6 +105,7 @@ void Application::InitializeSubSystems() const
     SubSystemManager::Register<ScriptingManager>();
     SubSystemManager::Register<TaskManager>();
     SubSystemManager::Register<ObjectManager>();
+    SubSystemManager::Register<ContentManager>();
     SubSystemManager::Register<Time>();
     SubSystemManager::Register<InputManager>();
     SubSystemManager::Register<SceneManager>();
