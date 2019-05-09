@@ -49,14 +49,14 @@ project "ReCrafted"
 	
 	-- configs
     configuration { "Debug" }
-		debugargs { "-debug" }
+		debugargs { }
 		defines { "DEBUG", "_ITERATOR_DEBUG_LEVEL=0" }
 		runtime "Debug"
 		symbols "On"
         links { }
 
     configuration { "Development" }
-		debugargs { "-debug" }
+		debugargs { }
 		defines { "NDEBUG", "DEVELOPMENT" }
 		flags { "No64BitChecks", "NoBufferSecurityCheck" }
 		runtime "Release"
