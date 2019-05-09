@@ -7,10 +7,11 @@
 #include "Assembly.h"
 #include "Object.h"
 #include "Method.h"
+#include "Common/Logger.h"
 
 const char* jit_options[] = {
     "--soft-breakpoints",
-    "--debugger-agent=transport=dt_socket,address=127.0.0.1:55000,embedding=1,server=y,suspend=n,timeout=10000"
+    "--debugger-agent=transport=dt_socket,address=127.0.0.1:55000,embedding=1,server=y,suspend=y,timeout=10000"
 };
 
 const char* rootDomainName = "ReCrafted";
@@ -32,6 +33,8 @@ void ScriptingManager::Initialize()
     {
         mono_debug_init(MONO_DEBUG_FORMAT_MONO);
         mono_jit_parse_options(2, const_cast<char**>(jit_options));
+
+        Logger::Log("Started mono debugger at address 127.0.0.1:55000 with settings:\n{0}\n{1}.", jit_options[0], jit_options[1]);
     }
 
     const auto monoDomain = mono_jit_init(rootDomainName);

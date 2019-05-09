@@ -135,7 +135,7 @@ if(!property.IsStatic)
 {
 #>
         ASSERT(instance);   
-        const auto _returnValue = instance-><#=property.GetterFunctionName#>()<#if(property.Type.CastToManaged){#>->ToManaged()<#}#>;
+        const auto _returnValue = <#if(property.Type.CastToManaged){#>instance != nullptr ? <#}#>instance-><#=property.GetterFunctionName#>()<#if(property.Type.CastToManaged){#>->ToManaged() : nullptr<#}#>;
 <#
     if(property.Type.IsSpecial)
     {

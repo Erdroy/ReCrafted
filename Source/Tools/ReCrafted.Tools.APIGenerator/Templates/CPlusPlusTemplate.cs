@@ -399,7 +399,21 @@ if(!property.IsStatic)
             
             #line default
             #line hidden
-            this.Write("        ASSERT(instance);   \r\n        const auto _returnValue = instance->");
+            this.Write("        ASSERT(instance);   \r\n        const auto _returnValue = ");
+            
+            #line 138 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+if(property.Type.CastToManaged){
+            
+            #line default
+            #line hidden
+            this.Write("instance != nullptr ? ");
+            
+            #line 138 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+}
+            
+            #line default
+            #line hidden
+            this.Write("instance->");
             
             #line 138 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.GetterFunctionName));
@@ -413,7 +427,7 @@ if(property.Type.CastToManaged){
             
             #line default
             #line hidden
-            this.Write("->ToManaged()");
+            this.Write("->ToManaged() : nullptr");
             
             #line 138 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 }

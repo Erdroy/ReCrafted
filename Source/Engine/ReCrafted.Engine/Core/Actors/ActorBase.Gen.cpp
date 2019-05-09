@@ -42,7 +42,7 @@ public:
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);   
-        const auto _returnValue = instance->GetParent()->ToManaged();
+        const auto _returnValue = instance != nullptr ? instance->GetParent()->ToManaged() : nullptr;
         *data = _returnValue;
     }
     
