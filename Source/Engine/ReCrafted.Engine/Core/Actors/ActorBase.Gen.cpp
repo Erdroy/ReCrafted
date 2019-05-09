@@ -41,15 +41,16 @@ public:
     static void ActorBase_Get_Parent(ActorBase* instance, MonoObject** data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);   
-        const auto _returnValue = instance != nullptr ? instance->GetParent()->ToManaged() : nullptr;
+        ASSERT(instance); 
+        const auto _fRetValue = instance->GetParent();
+        const auto _returnValue = _fRetValue != nullptr ? _fRetValue ->ToManaged() : nullptr;
         *data = _returnValue;
     }
     
     static void ActorBase_Get_Position(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);   
+        ASSERT(instance); 
         const auto _returnValue = instance->Position();
         *data = _returnValue;
     }
@@ -64,7 +65,7 @@ public:
     static void ActorBase_Get_LocalPosition(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);   
+        ASSERT(instance); 
         const auto _returnValue = instance->LocalPosition();
         *data = _returnValue;
     }
@@ -79,7 +80,7 @@ public:
     static void ActorBase_Get_Rotation(ActorBase* instance, Quaternion* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);   
+        ASSERT(instance); 
         const auto _returnValue = instance->Rotation();
         *data = _returnValue;
     }
@@ -94,7 +95,7 @@ public:
     static void ActorBase_Get_LocalRotation(ActorBase* instance, Quaternion* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);   
+        ASSERT(instance); 
         const auto _returnValue = instance->LocalRotation();
         *data = _returnValue;
     }
@@ -109,7 +110,7 @@ public:
     static void ActorBase_Get_Scale(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);   
+        ASSERT(instance); 
         const auto _returnValue = instance->Scale();
         *data = _returnValue;
     }
@@ -124,7 +125,7 @@ public:
     static void ActorBase_Get_LocalScale(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);   
+        ASSERT(instance); 
         const auto _returnValue = instance->LocalScale();
         *data = _returnValue;
     }
@@ -139,7 +140,7 @@ public:
     static void ActorBase_Get_Transform(ActorBase* instance, Transform* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);   
+        ASSERT(instance); 
         const auto _returnValue = instance->GetTransform();
         *data = _returnValue;
     }
@@ -154,7 +155,7 @@ public:
     static void ActorBase_Get_IsActiveSelf(ActorBase* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);   
+        ASSERT(instance); 
         const auto _returnValue = instance->IsActiveSelf();
         *data = _returnValue;
     }
@@ -162,7 +163,7 @@ public:
     static void ActorBase_Get_IsActive(ActorBase* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);   
+        ASSERT(instance); 
         const auto _returnValue = instance->IsActive();
         *data = _returnValue;
     }
@@ -170,7 +171,7 @@ public:
     static void ActorBase_Get_Name(ActorBase* instance, MonoString** p_data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);   
+        ASSERT(instance); 
         const auto _returnValue = instance->GetName();
         *p_data = MONO_STRING_FROM_STR(_returnValue);
     }

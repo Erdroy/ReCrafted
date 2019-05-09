@@ -134,8 +134,22 @@ if(!property.AllowMultithread)
 if(!property.IsStatic)
 {
 #>
-        ASSERT(instance);   
-        const auto _returnValue = <#if(property.Type.CastToManaged){#>instance != nullptr ? <#}#>instance-><#=property.GetterFunctionName#>()<#if(property.Type.CastToManaged){#>->ToManaged() : nullptr<#}#>;
+        ASSERT(instance); 
+<#
+if(property.Type.CastToManaged)
+{
+#>
+        const auto _fRetValue = instance-><#=property.GetterFunctionName#>();
+        const auto _returnValue = _fRetValue != nullptr ? _fRetValue ->ToManaged() : nullptr;
+<#
+}
+else
+{
+#>
+        const auto _returnValue = instance-><#=property.GetterFunctionName#>();
+<#
+}
+#>
 <#
     if(property.Type.IsSpecial)
     {
