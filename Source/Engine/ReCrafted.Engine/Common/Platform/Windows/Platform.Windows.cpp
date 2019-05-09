@@ -8,6 +8,7 @@
 #include <Windows.h>
 
 void* Platform::m_currentWindow;
+uint8_t Platform::m_cpuCount;
 static Platform::EventDelegate m_eventDelegate;
 
 std::thread::id g_mainThread;
@@ -85,6 +86,11 @@ void Platform::Initialize(const EventDelegate onEvent)
     wnd.lpszClassName = L"recrafted";
     wnd.hIconSm = LoadIcon(nullptr, IDI_APPLICATION);
     RegisterClassEx(&wnd);
+
+    // Get cpu count
+    SYSTEM_INFO systemInfo;
+    GetSystemInfo(&systemInfo);
+    m_cpuCount = static_cast<uint8_t>(systemInfo.dwNumberOfProcessors);
 }
 
 void Platform::Shutdown()
@@ -237,6 +243,11 @@ void Platform::SetCursorPosition(const int x, const int y)
 void Platform::SetThreadName(const char* name)
 {
     ::SetThreadName(name);
+}
+
+int Platform::CpuCount()
+{
+    return static_cast<int>(m_cpuCount);
 }
 
 #endif

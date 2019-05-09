@@ -11,6 +11,7 @@ public:
 
 private:
     static void* m_currentWindow;
+    static uint8_t m_cpuCount;
 
 public:
     /**
@@ -125,4 +126,9 @@ public:
      * \param name The desired thread name.
      */
     static void SetThreadName(const char* name);
+
+    /// <summary>
+    ///     Gets the CPU count.
+    /// </summary>
+    static int CpuCount();
 };
