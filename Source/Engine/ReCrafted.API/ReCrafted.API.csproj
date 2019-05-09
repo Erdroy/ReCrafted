@@ -110,4 +110,7 @@
   <PropertyGroup>
     <PreBuildEvent>$(SolutionDir)..\pm.bat GenerateAPI</PreBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>$(SolutionDir)..\pm.bat GenerateMDB</PostBuildEvent>
+  </PropertyGroup>
 </Project>

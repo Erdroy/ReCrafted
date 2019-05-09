@@ -56,4 +56,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>$(SolutionDir)..\pm.bat GenerateMDB</PostBuildEvent>
+  </PropertyGroup>
 </Project>
