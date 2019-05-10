@@ -25,6 +25,24 @@ RefPtr<Assembly> Domain::LoadAssembly(const char* fileName)
     return assembly;
 }
 
+RefPtr<Assembly> Domain::GetAssembly(const char* assemblyName)
+{
+    const auto monoAssembly = mono_domain_assembly_open(m_domain, assemblyName);
+    ASSERT(monoAssembly);
+
+    // Get assembly image
+    const auto monoImage = mono_assembly_get_image(monoAssembly);
+    ASSERT(monoImage);
+
+    // Create assembly
+    const RefPtr<Assembly> assembly(new Assembly(monoAssembly, monoImage, m_domain));
+
+    // Add to the loaded assembly list
+    m_assemblies.Add(assembly);
+
+    return assembly;
+}
+
 void Domain::UnloadAssembly(RefPtr<Assembly>& assembly)
 {
     ASSERT(assembly);

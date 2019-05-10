@@ -28,6 +28,8 @@ public:
     /// </remarks>
     RefPtr<Assembly> LoadAssembly(const char* fileName);
 
+    RefPtr<Assembly> GetAssembly(const char* assemblyName);
+
     /// <summary>
     ///     Releases reference to this assembly.
     /// </summary>

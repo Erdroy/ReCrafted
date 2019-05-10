@@ -15,6 +15,7 @@ private:
 
     RefPtr<Assembly> m_apiAssembly;
     RefPtr<Assembly> m_gameAssembly;
+    RefPtr<Assembly> m_coreAssembly;
 
 private:
     void LoadAssemblies();
@@ -27,4 +28,5 @@ protected:
 public:
     static const RefPtr<Assembly>& GetAPIAssembly();
     static const RefPtr<Assembly>& GetGameAssembly();
+    static const RefPtr<Assembly>& GetCoreAssembly();
 };

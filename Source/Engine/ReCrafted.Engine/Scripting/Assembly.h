@@ -45,4 +45,10 @@ public:
     /// </summary>
     /// <returns>The mono's assembly pointer.</returns>
     MonoAssembly* ToMono() const;
+
+    /// <summary>
+    ///     Returns Mono assembly image pointer.
+    /// </summary>
+    /// <returns>The mono's assembly image pointer.</returns>
+    MonoImage* ToMonoImage() const;
 };

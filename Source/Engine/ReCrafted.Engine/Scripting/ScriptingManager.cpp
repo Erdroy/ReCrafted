@@ -20,6 +20,7 @@ void ScriptingManager::LoadAssemblies()
 {
     m_apiAssembly = Domain::Root->LoadAssembly("./ReCrafted.API.dll");
     m_gameAssembly = Domain::Root->LoadAssembly("./ReCrafted.Game.dll");
+    m_coreAssembly = Domain::Root->GetAssembly("mscorlib");
 }
 
 void ScriptingManager::Initialize()
@@ -77,4 +78,9 @@ const RefPtr<Assembly>& ScriptingManager::GetAPIAssembly()
 const RefPtr<Assembly>& ScriptingManager::GetGameAssembly()
 {
     return GetInstance()->m_gameAssembly;
+}
+
+const RefPtr<Assembly>& ScriptingManager::GetCoreAssembly()
+{
+    return GetInstance()->m_coreAssembly;
 }

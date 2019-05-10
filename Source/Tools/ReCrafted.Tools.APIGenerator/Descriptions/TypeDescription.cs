@@ -65,7 +65,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                 case "String": // Engine's string
                     return "MONO_STRING_FROM_STR";
                 case "Action": // Engine's delegate
-                    return "MONO_DELEGATE_TO_ACTION_" + GenericTypes.Count;
+                    throw new Exception("Action/Func return type is not supported!");
                 default:
                     throw new Exception($"No special conversion is found for type {ToString()}.");
             }

@@ -19,3 +19,8 @@ MonoAssembly* Assembly::ToMono() const
 {
     return m_assembly;
 }
+
+MonoImage* Assembly::ToMonoImage() const
+{
+    return m_image;
+}
