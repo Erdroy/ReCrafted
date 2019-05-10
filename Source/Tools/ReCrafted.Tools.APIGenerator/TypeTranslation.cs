@@ -1,5 +1,9 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
+using System.Linq;
+using System.Text;
+using ReCrafted.Tools.APIGenerator.Descriptions;
+
 namespace ReCrafted.Tools.APIGenerator
 {
     public static class TypeTranslation
@@ -39,6 +43,45 @@ namespace ReCrafted.Tools.APIGenerator
                 default:
                     return baseType;
             }
+        }
+
+        public static string ToCSharpAction(TypeDescription type)
+        {
+            var sb = new StringBuilder();
+
+            if (type.GenericTypes.First().IsVoid)
+            {
+                // This is action
+                sb.Append("System.Action<");
+
+                for (var i = 1; i < type.GenericTypes.Count; i++)
+                {
+                    if (i != 1)
+                        sb.Append(", ");
+
+                    sb.Append(type.GenericTypes[i].ToCSharp());
+                }
+
+                sb.Append(">");
+            }
+            else
+            {
+                // This is func
+                sb.Append("System.Func<");
+
+                for (var i = 1; i < type.GenericTypes.Count; i++)
+                {
+                    sb.Append(type.GenericTypes[i].ToCSharp());
+                    sb.Append(", ");
+                }
+
+                // The last type is the return type of the function delegate.
+                sb.Append(type.GenericTypes.First().ToCSharp());
+
+                sb.Append(">");
+            }
+
+            return sb.ToString();
         }
     }
 }

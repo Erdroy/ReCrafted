@@ -17,7 +17,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
         public bool CastToManaged => ByPtr && !ByRef && !IsConst && BaseType != "MonoObject";
 
         public bool IsGeneric => GenericTypes.Count > 0;
-        public bool IsVoid => BaseType == "void";
+        public bool IsVoid => BaseType == "void" && !ByPtr;
         public bool IsSpecial
         {
             get
@@ -142,14 +142,17 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
             // Handle string type
             switch (BaseType)
             {
+                case "void" when ByPtr: // c string
+                    return "System.IntPtr";
                 case "char" when ByPtr: // c string
                 case "std::string":             // std string
                 case "String":                  // Engine's string
                     return "string";
+                case "Action":
+                    return TypeTranslation.ToCSharpAction(this);
             }
 
             // TODO: Handle arrays
-            // TODO: Handle delegates
             // - parser will need additional functionality to support the square bracket thingies
             // Type<Type1>
             // lib::Type
