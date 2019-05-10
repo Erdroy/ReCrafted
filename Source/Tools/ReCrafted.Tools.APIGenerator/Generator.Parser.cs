@@ -345,6 +345,9 @@ namespace ReCrafted.Tools.APIGenerator
                     case "partial":
                         desc.Modifiers.Add(token.Value);
                         break;
+                    case "generic":
+                        desc.CreateGenericFunctionality = true;
+                        break;
                     case "noinherit":
                         // Skip class inheritance, just remove it, it will do it.
                         desc.Inherits = "";

@@ -49,3 +49,14 @@
 ///     Calling thread should be registered for scripting backend, otherwise calling this function will result in undefined behavior.
 /// </remarks>
 #define multithread
+
+/// <summary>
+///     Valid for classes. Defines custom namespace. Example: API_CLASS(..., customNamespace="ReCrafted.API").
+/// </summary>
+#define customNamespace
+
+/// <summary>
+///     Valid for classes. Marks the class as it can be possibly generic. This adds additional object creation functionality.
+/// </summary>
+/// <remarks>Cannot be used on abstract classes!</remarks>
+#define generic

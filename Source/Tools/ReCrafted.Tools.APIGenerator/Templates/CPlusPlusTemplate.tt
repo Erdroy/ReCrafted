@@ -213,7 +213,21 @@ if(!Class.IsStatic && !string.IsNullOrEmpty(Class.Inherits) && !Class.IsAbstract
     
     static Object* <#=Class.Name#>_CreateObject(bool createManagedInstance)
     {
+<#
+        if(Class.CreateGenericFunctionality)
+        {
+#>
         return createManagedInstance ? Object::New<<#=Class.Name#>>() : new <#=Class.Name#>();
+<#
+        }
+        else
+        {
+#>
+        _ASSERT_(createManagedInstance, "Class '<#=Class.Name#>' is not marked as generic, and thus cannot get only unmanaged-instance created!");
+        return Object::New<<#=Class.Name#>>();
+<#
+        }
+#>
     }
 <#
 }

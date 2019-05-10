@@ -15,6 +15,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
         public List<string> Modifiers { get; } = new List<string>();
         public List<string> GenericTypes { get; } = new List<string>();
 
+        public bool CreateGenericFunctionality { get; set; } = false;
         public bool IsGeneric => GenericTypes.Count > 0;
         public bool IsStatic => Modifiers.Contains("static");
         public bool IsAbstract => Modifiers.Contains("abstract");
