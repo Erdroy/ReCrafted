@@ -12,7 +12,15 @@ struct ITask
 public:
     virtual ~ITask() = default;
 
+    /// <summary>
+    ///     Called on worker thread to execute task job.
+    /// </summary>
+    /// <param name="userData">The custom user data.</param>
     virtual void Execute(void* userData) = 0;
+
+    /// <summary>
+    ///     Called on main thread after the task finished it's job.
+    /// </summary>
     virtual void Finish() {}
 };
 

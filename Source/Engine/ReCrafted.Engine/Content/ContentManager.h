@@ -116,6 +116,8 @@ public:
         LoadAssetAsync(asset, assetFile, file, onLoad);
     }
 
+    static void UnloadAsset(Asset* asset);
+
 public:
     /// <summary>
     ///     Creates empty virtual asset of given type.
@@ -131,12 +133,12 @@ public:
         return static_cast<TAsset*>(asset);
     }
 
-    /**
-     * \brief Looks for asset with given guid.
-     * \tparam TAsset The target asset class type.
-     * \param guid The asset guid.
-     * \return The found asset or null when not found.
-     */
+    /// <summary>
+    ///     Looks for asset with given guid.
+    /// </summary>
+    /// <typeparam name="TAsset">The target asset class type.</typeparam>
+    /// <param name="guid">The asset guid.</param>
+    /// <returns>The found asset or null when not found.</returns>
     template<class TAsset>
     static TAsset* FindAsset(const Guid& guid)
     {
@@ -147,10 +149,11 @@ public:
         return nullptr;
     }
 
-    /**
-     * \brief Safely unloads given asset and clears it's pointer.
-     * \param asset The asset that will be unloaded.
-     */
+    /// <summary>
+    ///     Safely unloads given asset and clears it's pointer.
+    /// </summary>
+    /// <typeparam name="TAsset">The target asset class type.</typeparam>
+    /// <param name="asset">The asset that will be unloaded.</param>
     template<class TAsset>
     FORCEINLINE static void UnloadAssetSafe(TAsset*& asset)
     {
@@ -160,12 +163,6 @@ public:
             asset = nullptr;
         }
     }
-
-    /**
-     * \brief Unloads given asset.
-     * \param asset The asset that will be unloaded.
-     */
-    static void UnloadAsset(Asset* asset);
 
     /// <summary>
     ///     Loads given asset file with given target asset type.

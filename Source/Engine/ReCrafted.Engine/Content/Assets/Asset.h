@@ -47,22 +47,21 @@ protected:
     void Deserialize(const json& json, const std::string& content);
 
 protected:
-    /**
-     * \brief Called on main thread after the asset has been successfully loaded.
-     */
+    /// <summary>
+    ///     Called on main thread after the asset has been successfully loaded.
+    /// </summary>
     virtual void OnInitialize() {}
 
-    /**
-     * \brief Called on main thread when the asset is starting to load.
-     * \param fileName The filename.
-     */
+    /// <summary>
+    ///     Called on main thread when the asset is starting to load.
+    /// </summary>
+    /// <param name="fileName">The filename.</param>
     virtual void OnLoadBegin(const std::string& fileName) {}
 
-    /**
-     * \brief Similar to OnLoadEnd. Called on main thread after the asset has been successfully loaded.
-     * \note After overriding this function, you should call
-     * `Asset::OnLoadEnd()` at the end of your custom implementation.
-     */
+    /// <summary>
+    ///     Similar to OnLoadEnd. Called on main thread after the asset has been successfully loaded.
+    /// </summary>
+    /// <remarks>After overriding this function, you should call `Asset::OnLoadEnd()` at the end of your custom implementation.</remarks>
     virtual void OnLoadEnd();
 
     virtual void OnDeserializeBinary(uint16_t version, BinaryStream& stream) { }
@@ -106,10 +105,6 @@ public:
         return m_virtual;
     }
 
-    /**
-     * \brief 
-     * \return 
-     */
     /// <summary>
     ///     Gets the asset load flag state. True when this asset has been loaded or it is virtual asset.
     /// </summary>

@@ -6,12 +6,6 @@ using System.Diagnostics;
 namespace ReCrafted.API.Content
 {
     /// <summary>
-    ///     Asset load callback.
-    /// </summary>
-    /// <param name="asset">The loaded asset.</param>
-    public delegate void AssetLoadCallback(Asset asset);
-
-    /// <summary>
     ///     ContentManager class. Provides asset management functionality (loading etc.).
     /// </summary>
     public partial class ContentManager
@@ -30,9 +24,9 @@ namespace ReCrafted.API.Content
         /// <summary>
         ///     Loads given asset file with given target asset type.
         /// </summary>
-        /// <typeparam name="TAsset">The asset type.</typeparam>
+        /// <typeparam name="TAsset">The asset type. The type must be derived from <see cref="Asset"/>.</typeparam>
         /// <param name="assetFile">The asset file, relative to '../Content/', file extension is not needed.</param>
-        /// <returns>The created file or nullptr when failed.</returns>
+        /// <returns>The loaded asset or nullptr when failed.</returns>
         public static TAsset LoadAsset<TAsset>(string assetFile) where TAsset : Asset
         {
             Debug.Assert(!string.IsNullOrEmpty(assetFile));
@@ -46,7 +40,14 @@ namespace ReCrafted.API.Content
             return assetObject;
         }
 
-        public static void LoadAsset<TAsset>(string assetFile, AssetLoadCallback onLoad) where TAsset : Asset
+        /// <summary>
+        ///     Loads given asset file asynchronously with given target asset type.
+        /// </summary>
+        /// <typeparam name="TAsset">The asset type. The type must be derived from <see cref="Asset"/>.</typeparam>
+        /// <param name="assetFile">The asset file, relative to '../Content/', file extension is not needed.</param>
+        /// <param name="onLoad">The asset load callback. Called from main thread when asset has been fully loaded.</param>
+        /// <returns>The loaded asset or nullptr when failed.</returns>
+        public static void LoadAsset<TAsset>(string assetFile, Action<Asset> onLoad) where TAsset : Asset
         {
             Debug.Assert(!string.IsNullOrEmpty(assetFile));
 
