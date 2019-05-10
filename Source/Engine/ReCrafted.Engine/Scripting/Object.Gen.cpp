@@ -27,10 +27,10 @@ public:
         return _returnValue;
     }
     
-    static MonoObject* Object_NewGeneric(MonoType* baseType, MonoObject* obj) 
+    static MonoObject* Object_NewGeneric(MonoType* baseType, MonoType* type, MonoObject* obj) 
     {
         MAIN_THREAD_ONLY();
-        const auto _returnValue = Object::NewGeneric(baseType, obj);
+        const auto _returnValue = Object::NewGeneric(baseType, type, obj);
         return _returnValue;
     }
 };

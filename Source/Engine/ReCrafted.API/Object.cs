@@ -1,6 +1,7 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System;
+using System.Diagnostics;
 using ReCrafted.API.Core;
 using JetBrains.Annotations;
 
@@ -72,14 +73,20 @@ namespace ReCrafted.API
         /// </summary>
         /// <typeparam name="TType">The type of Object to be created.</typeparam>
         /// <returns>The created Object.</returns>
-        public static TType NewGeneric<TType>(Object instance) where TType : Object
+        public static TType NewGeneric<TType>(Type baseType) where TType : Object, new()
         {
+            // Create new managed instance
+            var instance = new TType();
+
+            if(typeof(TType).BaseType == null)
+                throw new ReCraftedException("The `TType` is not derived from any suitable Object children class!");
+
             // Do not allow to create raw Object files.
             if (typeof(TType) == typeof(Object))
                 throw new ReCraftedException("Cannot create instance of raw Object type!");
 
             // Create managed and unmanaged object
-            return (TType)InternalNewGeneric(typeof(TType).TypeHandle.Value, instance.NativePtr);
+            return (TType)InternalNewGeneric(baseType.TypeHandle.Value, typeof(TType).TypeHandle.Value, instance);
         }
 
         /// <summary>

@@ -51,7 +51,7 @@ MonoObject* Object::New(MonoType* type)
     return ObjectManager::New(type);;
 }
 
-MonoObject* Object::NewGeneric(MonoType* baseType, MonoObject* obj)
+MonoObject* Object::NewGeneric(MonoType* baseType, MonoType* type, MonoObject* obj)
 {
-    return ObjectManager::NewGeneric(baseType, obj);
+    return ObjectManager::NewGeneric(baseType, type, obj);
 }

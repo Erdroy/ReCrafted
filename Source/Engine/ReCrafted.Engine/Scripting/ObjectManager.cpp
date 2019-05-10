@@ -221,7 +221,7 @@ MonoObject* ObjectManager::New(MonoType* type)
     return nativeObject->ToManaged();
 }
 
-MonoObject* ObjectManager::NewGeneric(MonoType* baseType, MonoObject* obj)
+MonoObject* ObjectManager::NewGeneric(MonoType* baseType, MonoType* type, MonoObject* obj)
 {
     // Get object creator
     const auto objectCreator = GetInstance()->GetObjectCreator(baseType);
@@ -232,8 +232,10 @@ MonoObject* ObjectManager::NewGeneric(MonoType* baseType, MonoObject* obj)
     // Create object
     const auto nativeObject = objectCreator->Invoke(false);
 
+    const auto objectClass = mono_object_get_class(obj);
+
     // Setup generic object
-    GetInstance()->InitializeInstance(nativeObject, obj, nativeObject->GetClass().ToMono());
+    GetInstance()->InitializeInstance(nativeObject, obj, objectClass);
 
     // Return managed pointer
     return nativeObject->ToManaged();

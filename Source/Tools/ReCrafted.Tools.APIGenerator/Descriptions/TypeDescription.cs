@@ -184,7 +184,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
             }
 
             // Handle: Type*
-            if (ByPtr && !proxy)
+            if (ByPtr && !proxy && CastToManaged)
                 return "System.IntPtr";
 
             // Handle: Type (and Type* when not proxy, but only extern function)

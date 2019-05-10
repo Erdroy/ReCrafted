@@ -1,3 +1,6 @@
+[submodule "Source/Libraries/upng"]
+	path = Source/Libraries/upng
+	url = https://github.com/elanthis/upng
 [submodule "Source/Libraries/fmt"]
 	path = Source/Libraries/fmt
 	url = https://github.com/fmtlib/fmt

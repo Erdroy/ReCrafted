@@ -13,6 +13,7 @@
     </Dependencies>
     <Prerequisites>
         <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,17.0)" DisplayName="Visual Studio core editor" />
+		<Prerequisite Id="Microsoft.VisualStudio.Component.MonoDebugger" Version="[4.6,)" DisplayName="Mono debugger" />
     </Prerequisites>
     <Assets>
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />

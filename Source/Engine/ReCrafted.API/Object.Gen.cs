@@ -37,6 +37,6 @@ namespace ReCrafted.API
         private static extern object InternalNew(System.IntPtr type);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern object InternalNewGeneric(System.IntPtr baseType, System.IntPtr obj);
+        private static extern object InternalNewGeneric(System.IntPtr baseType, System.IntPtr type, object obj);
     }
 }

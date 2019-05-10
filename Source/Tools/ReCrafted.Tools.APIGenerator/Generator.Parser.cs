@@ -185,15 +185,7 @@ namespace ReCrafted.Tools.APIGenerator
                         break;
                     case "noproxy":
                     case "extern":
-                        if (!isStatic)
-                        {
-                            Console.WriteLine($"WARNING: Function '{desc.Name}' is not static, " +
-                                              "but it's tag specified to skip it's proxy generation. This is not allowed, ignoring.");
-                        }
-                        else
-                        {
-                            desc.Extern = true;
-                        }
+                        desc.Extern = true;
                         break;
                     case "noprefix":
                     case "static":

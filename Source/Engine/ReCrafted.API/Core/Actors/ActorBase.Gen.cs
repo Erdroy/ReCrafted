@@ -13,7 +13,7 @@ namespace ReCrafted.API.Core.Actors
     /// <remarks>
     ///     Actors can be defined only in C++ source code.
     /// </remarks>
-    public abstract class ActorBase : Object
+    public abstract partial class ActorBase : Object
     {
         
         /// <summary>
@@ -41,6 +41,22 @@ namespace ReCrafted.API.Core.Actors
         public void RemoveChild(ActorBase child)
         {
             InternalRemoveChild(NativePtr, child? child.NativePtr : System.IntPtr.Zero);
+        }
+        
+        /// <summary>
+        ///     Adds given script to this actor.
+        /// </summary>
+        public void AddScript(Script script)
+        {
+            InternalAddScript(NativePtr, script? script.NativePtr : System.IntPtr.Zero);
+        }
+        
+        /// <summary>
+        ///     Removes given script to this actor.
+        /// </summary>
+        public void RemoveScript(Script script)
+        {
+            InternalRemoveScript(NativePtr, script? script.NativePtr : System.IntPtr.Zero);
         }
         
         /// <summary>
@@ -207,6 +223,12 @@ namespace ReCrafted.API.Core.Actors
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalRemoveChild(System.IntPtr nativePtr, System.IntPtr child);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalAddScript(System.IntPtr nativePtr, System.IntPtr script);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalRemoveScript(System.IntPtr nativePtr, System.IntPtr script);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalSetActive(System.IntPtr nativePtr, bool active);

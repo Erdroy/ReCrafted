@@ -2,14 +2,15 @@
 
 #include "ActorBase.h"
 #include "Scene/SceneManager.h"
+#include "Scripting/Script.h"
 
 void ActorBase::Start()
 {
-    /*for (auto&& script : m_scripts)
+    for (auto&& script : m_scripts)
     {
-        if (script->GetEnabled())
+        if (script->Enabled())
             script->Start();
-    }*/
+    }
 
     for (auto&& child : m_children)
     {
@@ -28,11 +29,11 @@ void ActorBase::Update()
         m_firstFrame = false;
     }
 
-    /*for (auto&& script : m_scripts)
+    for (auto&& script : m_scripts)
     {
-        if (script->GetEnabled())
+        if (script->Enabled())
             script->Update();
-    }*/
+    }
 
     for (auto&& child : m_children)
     {
@@ -45,12 +46,12 @@ void ActorBase::Update()
 
 void ActorBase::LateUpdate()
 {
-    /*for (auto&& script : m_scripts)
+    for (auto&& script : m_scripts)
     {
-        if (script->GetEnabled())
+        if (script->Enabled())
             script->LateUpdate();
     }
-    */
+    
     for (auto&& child : m_children)
     {
         if (child->IsActive())
@@ -62,11 +63,11 @@ void ActorBase::LateUpdate()
 
 void ActorBase::FixedUpdate()
 {
-    /*for (auto&& script : m_scripts)
+    for (auto&& script : m_scripts)
     {
-        if (script->GetEnabled())
-            script->Simulate();
-    }*/
+        if (script->Enabled())
+            script->FixedUpdate();
+    }
 
     for (auto&& child : m_children)
     {
@@ -85,15 +86,20 @@ ActorBase::ActorBase()
 
 ActorBase::~ActorBase()
 {
+    // Destroy scripts
+    for (auto& script : m_scripts)
+    {
+        script->Enabled(false);
+        script->OnDestroy();
+        Destroy(script);
+    }
+    m_scripts.Clear();
+
     if (m_parent)
     {
         // Remove from parent
         SetParent(nullptr);
     }
-
-    //for (auto& script : m_scripts)
-    //    Object::Destroy(script);
-    //m_scripts.Clear();
 
     // Destroy all children too, but later
     // because we can fall into deadlock, if this destructor is 
@@ -159,29 +165,45 @@ void ActorBase::RemoveChild(ActorBase* child)
     // Reset parent to null pointer
     child->SetParent(nullptr);
 }
-/*
+
 void ActorBase::AddScript(Script* script)
 {
     MAIN_THREAD_ONLY();
-    ASSERT(script->GetActor() == nullptr);
+    _ASSERT_(script->Actor() == nullptr, "Cannot add script to this actor as the script already is added to another actor.");
 
-    script->SetActor(this);
+    // Initialize script
+    script->Initialize();
+
+    // Set this actor as parent of this script
+    script->Actor(this);
+
+    // Set script as enabled
+    script->Enabled(true);
+
+    // Call Awake callback
     script->Awake();
+
     m_scripts.Add(script);
 }
 
 void ActorBase::RemoveScript(Script* script)
 {
     MAIN_THREAD_ONLY();
-    ASSERT(script->GetActor() == this);
+    _ASSERT_(script->Actor() == this, "Cannot remove script from an actor that is not a parent of given script.");
+   
+    // Set script as disabled
+    script->Enabled(false);
 
-    script->SetActor(nullptr);
+    // Call OnDestroy callback
+    script->OnDestroy();
+
+    // Remove from this actor
     m_scripts.Remove(script);
 
     // Destroy script
-    Object::Destroy(script);
+    Destroy(script);
 }
-*/
+
 void ActorBase::SetActive(const bool active)
 {
     MAIN_THREAD_ONLY();
@@ -442,6 +464,11 @@ const List<ActorBase*>& ActorBase::GetChildren() const
 {
     MAIN_THREAD_ONLY();
     return m_children;
+}
+
+const List<Script*>& ActorBase::GetScripts() const
+{
+    return m_scripts;
 }
 
 ActorId_t ActorBase::GetId() const

@@ -19,7 +19,7 @@ API_USING("ReCrafted.API.Mathematics")
 /// <remarks>
 ///     Actors can be defined only in C++ source code.
 /// </remarks>
-API_CLASS(public, abstract)
+API_CLASS(public, abstract, partial)
 class ActorBase : public Object
 {
     API_CLASS_BODY()
@@ -38,7 +38,7 @@ private:
     String m_name;
 
     List<ActorBase*> m_children = {};
-    //List<Script*> m_scripts = {};
+    List<Script*> m_scripts = {};
 
 private:
     void Start();
@@ -91,11 +91,17 @@ public:
     API_FUNCTION()
     void RemoveChild(ActorBase* child);
 
-    /*API_FUNCTION()
+    /// <summary>
+    ///     Adds given script to this actor.
+    /// </summary>
+    API_FUNCTION()
     void AddScript(Script* script);
 
+    /// <summary>
+    ///     Removes given script to this actor.
+    /// </summary>
     API_FUNCTION()
-    void RemoveScript(Script* script);*/
+    void RemoveScript(Script* script);
 
     /// <summary>
     ///     Sets active state.
@@ -237,6 +243,11 @@ public:
     ///     Gets all children instances.
     /// </summary>
     const List<ActorBase*>& GetChildren() const;
+
+    /// <summary>
+    ///     Gets all script instances contained by this actor.
+    /// </summary>
+    const List<Script*>& GetScripts() const;
 
     ActorId_t GetId() const;
 };

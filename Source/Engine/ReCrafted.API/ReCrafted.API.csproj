@@ -56,6 +56,7 @@
     <Compile Include="Content\ContentManager.cs" />
     <Compile Include="Content\ContentManager.Gen.cs" />
     <Compile Include="Content\JsonAsset.Gen.cs" />
+    <Compile Include="Core\Actors\ActorBase.cs" />
     <Compile Include="Core\Actors\ActorBase.Gen.cs" />
     <Compile Include="Core\Actors\EmptyActor.Gen.cs" />
     <Compile Include="Core\Application.Gen.cs" />
@@ -107,6 +108,8 @@
     <Compile Include="Object.Gen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scene\SceneManager.Gen.cs" />
+    <Compile Include="Script.cs" />
+    <Compile Include="Script.Gen.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

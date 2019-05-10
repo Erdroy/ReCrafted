@@ -108,8 +108,9 @@ public:
     ///     Creates new generic object based on mono type.
     /// </summary>
     /// <param name="baseType">The mono base type.</param>
+    /// <param name="type">The mono type.</param>
     /// <param name="obj">The base object type.</param>
     /// <returns>The managed object pointer.</returns>
     /// <remarks>Mono type must derive from Object.</remarks>
-    static MonoObject* NewGeneric(MonoType* baseType, MonoObject* obj);
+    static MonoObject* NewGeneric(MonoType* baseType, MonoType* type, MonoObject* obj);
 };

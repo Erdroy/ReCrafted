@@ -1,13 +1,41 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
+using ReCrafted.API;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Core.Actors;
 using ReCrafted.API.Input;
-using ReCrafted.API.Mathematics;
 
 namespace ReCrafted.Game.Core
 {
+    public class TestScript : Script<EmptyActor>
+    {
+        private void Awake()
+        {
+            Logger.Log("TestScript Awake");
+        }
+
+        private void Update()
+        {
+            //Logger.Log("TestScript Update");
+        }
+
+        private void OnEnable()
+        {
+            Logger.Log("TestScript enabled");
+        }
+
+        private void OnDisable()
+        {
+            Logger.Log("TestScript disabled");
+        }
+
+        private void OnDestroy()
+        {
+            Logger.Log("TestScript destroyed");
+        }
+    }
+
     public class Game : GameBase<Game>
     {
         private EmptyActor _actor;
@@ -19,8 +47,7 @@ namespace ReCrafted.Game.Core
             _actor = EmptyActor.Create();
             _actor.Name = "Test Actor";
             _actor.SetActive(true);
-
-            var v1 = new Vector3();
+            _actor.AddScript<TestScript>();
 
             Logger.Log("Game initialized");
         }

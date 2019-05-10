@@ -94,4 +94,6 @@ struct Method;
 class Assembly;
 class Domain;
 class Object;
+class ObjectManager;
+class Script;
 class ScriptingManager;

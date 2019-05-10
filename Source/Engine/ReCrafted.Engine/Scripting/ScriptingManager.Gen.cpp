@@ -17,6 +17,7 @@
 #include "Input/NullDevice.h"
 #include "Scene/SceneManager.h"
 #include "Scripting/Object.h"
+#include "Scripting/Script.h"
 
 void ScriptingManager::InitRuntime()
 {
@@ -36,4 +37,5 @@ void ScriptingManager::InitRuntime()
     NullDevice::InitRuntime();
     SceneManager::InitRuntime();
     Object::InitRuntime();
+    Script::InitRuntime();
 }

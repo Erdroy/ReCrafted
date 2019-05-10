@@ -31,6 +31,20 @@ public:
         instance->RemoveChild(child);
     }
     
+    static void ActorBase_AddScript(ActorBase* instance, Script* script) 
+    {
+        MAIN_THREAD_ONLY();
+        ASSERT(instance);
+        instance->AddScript(script);
+    }
+    
+    static void ActorBase_RemoveScript(ActorBase* instance, Script* script) 
+    {
+        MAIN_THREAD_ONLY();
+        ASSERT(instance);
+        instance->RemoveScript(script);
+    }
+    
     static void ActorBase_SetActive(ActorBase* instance, bool active) 
     {
         MAIN_THREAD_ONLY();
@@ -192,6 +206,8 @@ void ActorBase::InitRuntime()
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalSetParent", &APIProxy::ActorBase_SetParent);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalAddChild", &APIProxy::ActorBase_AddChild);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalRemoveChild", &APIProxy::ActorBase_RemoveChild);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalAddScript", &APIProxy::ActorBase_AddScript);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalRemoveScript", &APIProxy::ActorBase_RemoveScript);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalSetActive", &APIProxy::ActorBase_SetActive);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalParent", &APIProxy::ActorBase_Get_Parent);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalPosition", &APIProxy::ActorBase_Get_Position);
