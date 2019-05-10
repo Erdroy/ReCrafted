@@ -5,8 +5,11 @@
 #include <ReCrafted.h>
 #include "Asset.h"
 
+API_CLASS(public, abstract, customNamespace = "ReCrafted.API.Content")
 class JsonAsset : public Asset
 {
+    API_CLASS_BODY()
+
 protected:
     virtual void OnDeserializeJson(uint16_t version, const json& json) override = 0;
 

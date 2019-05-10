@@ -52,8 +52,10 @@
     <Compile Include="Common\LogLevel.cs" />
     <Compile Include="Common\Transform.cs" />
     <Compile Include="Content\Asset.Gen.cs" />
+    <Compile Include="Content\BinaryAsset.Gen.cs" />
     <Compile Include="Content\ContentManager.cs" />
     <Compile Include="Content\ContentManager.Gen.cs" />
+    <Compile Include="Content\JsonAsset.Gen.cs" />
     <Compile Include="Core\Actors\ActorBase.Gen.cs" />
     <Compile Include="Core\Actors\EmptyActor.Gen.cs" />
     <Compile Include="Core\Application.Gen.cs" />
@@ -63,6 +65,7 @@
     <Compile Include="Core\ReCraftedException.cs" />
     <Compile Include="Core\Time.cs" />
     <Compile Include="Core\Time.Gen.cs" />
+    <Compile Include="Graphics\Texture.Gen.cs" />
     <Compile Include="Input\Button.cs" />
     <Compile Include="Input\ButtonState.cs" />
     <Compile Include="Input\DeviceType.cs" />

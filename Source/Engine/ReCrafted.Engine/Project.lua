@@ -24,6 +24,7 @@ project "ReCrafted.Engine"
     includedirs {
         "./",
         -- add all modules
+        path.join(LIBRARIES_DIR, "upng"),
         path.join(LIBRARIES_DIR, "sparsepp"),
         path.join(LIBRARIES_DIR, "concurrentqueue"),
         path.join(LIBRARIES_DIR, "fmt/include"),
@@ -39,6 +40,7 @@ project "ReCrafted.Engine"
     -- default deps
     links { 
         "cpp-base64",
+        "upng",
 
         "d3d11", "dxguid", "dxgi", "d3dcompiler", 
         "Rpcrt4",

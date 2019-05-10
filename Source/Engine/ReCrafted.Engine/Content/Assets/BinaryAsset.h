@@ -5,8 +5,11 @@
 #include <ReCrafted.h>
 #include "Asset.h"
 
+API_CLASS(public, abstract, customNamespace = "ReCrafted.API.Content")
 class BinaryAsset : public Asset
 {
+    API_CLASS_BODY()
+
 protected:
     virtual void OnDeserializeBinary(uint16_t version, BinaryStream& stream) override = 0;
 

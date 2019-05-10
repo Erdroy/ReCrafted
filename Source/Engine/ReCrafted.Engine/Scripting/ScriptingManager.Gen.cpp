@@ -4,10 +4,13 @@
 #include "Common/Logger.h"
 #include "Content/ContentManager.h"
 #include "Content/Assets/Asset.h"
+#include "Content/Assets/BinaryAsset.h"
+#include "Content/Assets/JsonAsset.h"
 #include "Core/Application.h"
 #include "Core/Time.h"
 #include "Core/Actors/ActorBase.h"
 #include "Core/Actors/EmptyActor.h"
+#include "Graphics/Texture.h"
 #include "Input/InputManager.h"
 #include "Input/Keyboard.h"
 #include "Input/Mouse.h"
@@ -20,10 +23,13 @@ void ScriptingManager::InitRuntime()
     Logger::InitRuntime();
     ContentManager::InitRuntime();
     Asset::InitRuntime();
+    BinaryAsset::InitRuntime();
+    JsonAsset::InitRuntime();
     Application::InitRuntime();
     Time::InitRuntime();
     ActorBase::InitRuntime();
     EmptyActor::InitRuntime();
+    Texture::InitRuntime();
     InputManager::InitRuntime();
     Keyboard::InitRuntime();
     Mouse::InitRuntime();

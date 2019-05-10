@@ -38,6 +38,8 @@ project "ReCrafted"
     -- default deps
     links { 
         "ReCrafted.Engine",
+
+        "upng",
     }
 	
 	-- add onbuild script and multi processor compilation
