@@ -24,12 +24,25 @@ public:
         ContentManager::InternalLoadAssetSync(asset, assetFile);
         MONO_FREE(assetFile);
     }
+    
+    static void ContentManager_InternalLoadAssetAsync(Asset* asset, MonoString* p_assetFile, MonoObject* p_onLoad) 
+    {
+        MAIN_THREAD_ONLY();
+        ASSERT(p_assetFile);
+        const auto assetFile = MONO_STRING_TO_CSTR(p_assetFile);
+        ASSERT(p_onLoad);
+        const auto onLoad = MONO_DELEGATE_TO_ACTION_2(p_onLoad, void, _t0, Asset*, _t1->ToManaged());
+        ContentManager::InternalLoadAssetAsync(asset, assetFile, onLoad);
+        MONO_FREE(assetFile);
+        MONO_DELEGATE_FREE_STUB(onLoad);
+    }
 };
 
 void ContentManager::InitRuntime() 
 {
     API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalInitVirtualAsset", &APIProxy::ContentManager_InternalInitVirtualAsset);
     API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalLoadAssetSync", &APIProxy::ContentManager_InternalLoadAssetSync);
+    API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalLoadAssetAsync", &APIProxy::ContentManager_InternalLoadAssetAsync);
 }
 
 const char* ContentManager::Fullname() 

@@ -55,7 +55,7 @@ namespace ReCrafted.API.Content
             var assetObject = Object.New<TAsset>();
 
             // Load asset async
-            //ContentManagerInternals.LoadAssetAsync(assetObject.NativePtr, assetFile, onLoad);
+            InternalInternalLoadAssetAsync(assetObject.NativePtr, assetFile, onLoad);
 
             throw new NotImplementedException();
         }

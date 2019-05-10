@@ -5,6 +5,9 @@ using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Content 
 {
+    /// <summary>
+    ///     ContentManager class. Provides asset management functionality (loading etc.).
+    /// </summary>
     public static partial class ContentManager
     {
 
@@ -13,5 +16,8 @@ namespace ReCrafted.API.Content
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalInternalLoadAssetSync(System.IntPtr asset, string assetFile);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalInternalLoadAssetAsync(System.IntPtr asset, string assetFile, System.Action<Asset> onLoad);
     }
 }

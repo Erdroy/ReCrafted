@@ -107,6 +107,7 @@ public:
         LoadAssetSync(asset, assetFile, file);
     }
 
+    API_FUNCTION(noproxy)
     static void InternalLoadAssetAsync(Asset* asset, const char* assetFile, const Action<void, Asset*>& onLoad)
     {
         // Build file name
