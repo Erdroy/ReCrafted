@@ -1,15 +1,17 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System;
+using System.Collections.Generic;
 
 namespace ReCrafted.Tools.APIGenerator.Descriptions
 {
-    public struct TypeDescription : IEquatable<TypeDescription>
+    public class TypeDescription : IEquatable<TypeDescription>
     {
         public string BaseType { get; set; }
         public bool IsConst { get; set; }
         public bool ByRef { get; set; }
         public bool ByPtr { get; set; }
+        public List<TypeDescription> GenericTypes { get; } = new List<TypeDescription>();
 
         public bool CastToManaged => ByPtr && !ByRef && !IsConst && BaseType != "MonoObject";
 

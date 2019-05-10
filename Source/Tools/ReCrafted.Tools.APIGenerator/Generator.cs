@@ -41,6 +41,8 @@ namespace ReCrafted.Tools.APIGenerator
             // Vector3*
             // const Vector3*
             // Note: pointer-to-reference is not supported (Vector3&*).
+            // Type<void>
+            // const Type<void, ...>&
 
             // Check 
             if (token.Value == "const")
@@ -56,6 +58,20 @@ namespace ReCrafted.Tools.APIGenerator
             type.BaseType = token.Value;
 
             token = _tokenizer.NextToken();
+
+            // Handle Generic/Template type
+            if (token.Type == TokenType.LeftAngleBracket)
+            {
+                // TODO: Start reading template parameters
+
+                do
+                {
+                    type.GenericTypes.Add(ParseNativeType());
+                    token = _tokenizer.NextToken();
+                } while (token.Type != TokenType.RightAngleBracket);
+
+                token = _tokenizer.NextToken();
+            }
 
             if (token.Type == TokenType.Multiply)
             {
