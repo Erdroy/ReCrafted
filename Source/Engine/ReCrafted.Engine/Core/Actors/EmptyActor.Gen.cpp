@@ -19,7 +19,8 @@ public:
     
     static Object* EmptyActor_CreateObject(bool createManagedInstance)
     {
-        return createManagedInstance ? Object::New<EmptyActor>() : new EmptyActor();
+        _ASSERT_(createManagedInstance, "Class 'EmptyActor' is not marked as generic, and thus cannot get only unmanaged-instance created!");
+        return Object::New<EmptyActor>();
     }
 };
 

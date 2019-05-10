@@ -12,9 +12,14 @@
 #include <nlohmann/json.hpp>
 using namespace nlohmann;
 
+/// <summary>
+///     Asset class. Base class for all assets.
+/// </summary>
+API_CLASS(public, abstract, partial, customNamespace="ReCrafted.API.Content")
 class Asset : public Object
 {
     friend class ContentManager;
+    API_CLASS_BODY()
 
 public:
     static const size_t AssetHeaderSize = 
@@ -73,38 +78,42 @@ protected:
     }
 
 public:
-    /**
-     * \brief Gets the original asset name.
-     * \return The asset name.
-     */
+    /// <summary>
+    ///     Gets the original asset name.
+    /// </summary>
+    API_PROPERTY()
     const char* AssetName() const
     {
         return m_assetName.c_str();
     }
 
-    /**
-     * \brief Gets source asset file.
-     * \return The asset file that has been used to load this asset.
-     */
+    /// <summary>
+    ///     Gets source asset file that has been used to load this asset.
+    /// </summary>
+    API_PROPERTY()
     const char* AssetFile() const
     {
         return m_assetFile.c_str();
     }
 
-    /**
-     * \brief Gets asset virtual flag state.
-     * \return True when this asset has been created using CreateVirtualAsset function.
-     * This means that this asset was never loaded, and has no any representation in content.
-     */
+    /// <summary>
+    ///     Gets asset virtual flag state. True when this asset has been created using CreateVirtualAsset function.
+    ///     This means that this asset was never loaded, and has no any representation in content.
+    /// </summary>
+    API_PROPERTY()
     bool IsVirtual() const
     {
         return m_virtual;
     }
 
     /**
-     * \brief Gets the asset load flag state.
-     * \return True when this asset has been loaded or it is virtual asset.
+     * \brief 
+     * \return 
      */
+    /// <summary>
+    ///     Gets the asset load flag state. True when this asset has been loaded or it is virtual asset.
+    /// </summary>
+    API_PROPERTY()
     virtual bool IsLoaded() const
     {
         return m_loaded || IsVirtual();

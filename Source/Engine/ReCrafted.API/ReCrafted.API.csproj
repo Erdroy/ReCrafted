@@ -51,6 +51,9 @@
     <Compile Include="Common\Logger.Gen.cs" />
     <Compile Include="Common\LogLevel.cs" />
     <Compile Include="Common\Transform.cs" />
+    <Compile Include="Content\Asset.Gen.cs" />
+    <Compile Include="Content\ContentManager.cs" />
+    <Compile Include="Content\ContentManager.Gen.cs" />
     <Compile Include="Core\Actors\ActorBase.Gen.cs" />
     <Compile Include="Core\Actors\EmptyActor.Gen.cs" />
     <Compile Include="Core\Application.Gen.cs" />

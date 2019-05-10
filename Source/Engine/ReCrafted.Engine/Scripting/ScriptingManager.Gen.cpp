@@ -2,6 +2,8 @@
 
 #include "ScriptingManager.h"
 #include "Common/Logger.h"
+#include "Content/ContentManager.h"
+#include "Content/Assets/Asset.h"
 #include "Core/Application.h"
 #include "Core/Time.h"
 #include "Core/Actors/ActorBase.h"
@@ -16,6 +18,8 @@
 void ScriptingManager::InitRuntime()
 {
     Logger::InitRuntime();
+    ContentManager::InitRuntime();
+    Asset::InitRuntime();
     Application::InitRuntime();
     Time::InitRuntime();
     ActorBase::InitRuntime();

@@ -28,7 +28,8 @@ public:
     
     static Object* NullDevice_CreateObject(bool createManagedInstance)
     {
-        return createManagedInstance ? Object::New<NullDevice>() : new NullDevice();
+        _ASSERT_(createManagedInstance, "Class 'NullDevice' is not marked as generic, and thus cannot get only unmanaged-instance created!");
+        return Object::New<NullDevice>();
     }
 };
 

@@ -134,7 +134,8 @@ public:
     
     static Object* Mouse_CreateObject(bool createManagedInstance)
     {
-        return createManagedInstance ? Object::New<Mouse>() : new Mouse();
+        _ASSERT_(createManagedInstance, "Class 'Mouse' is not marked as generic, and thus cannot get only unmanaged-instance created!");
+        return Object::New<Mouse>();
     }
 };
 

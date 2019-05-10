@@ -210,7 +210,9 @@ MonoObject* ObjectManager::New(MonoType* type)
 {
     // Get object creator
     const auto objectCreator = GetInstance()->GetObjectCreator(type);
-    _ASSERT_(objectCreator, "Object creator for this type is not implemented!");
+    _ASSERT_(objectCreator, "Object is abstract and cannot be created using Object::New<>.");
+
+    // TODO: Throw mono exception
 
     // Create object
     const auto nativeObject = objectCreator->Invoke(true);
@@ -223,7 +225,9 @@ MonoObject* ObjectManager::NewGeneric(MonoType* baseType, MonoObject* obj)
 {
     // Get object creator
     const auto objectCreator = GetInstance()->GetObjectCreator(baseType);
-    _ASSERT_(objectCreator, "Object creator for this type is not implemented!");
+    _ASSERT_(objectCreator, "Object is abstract and cannot be created using Object::NewGeneric<>.");
+
+    // TODO: Throw mono exception
 
     // Create object
     const auto nativeObject = objectCreator->Invoke(false);

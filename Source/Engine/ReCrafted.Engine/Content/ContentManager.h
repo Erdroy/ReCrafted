@@ -8,10 +8,13 @@
 #include "Core/Threading/Task.h"
 #include "Content/Assets/Asset.h"
 
+/// <summary>
+///     ContentManager class. Provides asset management functionality (loading etc.).
+/// </summary>
+API_CLASS(public, static, partial, noinherit)
 class ContentManager final : public SubSystem<ContentManager>
 {
-private:
-    friend class EngineMain;
+    API_CLASS_BODY()
 
 private:
     struct AssetLoadTask final : ITask
@@ -74,17 +77,27 @@ private:
     static void LoadAssetAsync(Asset* asset, const std::string& assetFile, const std::string& file, const Action<void, Asset*>& onLoad);
 
 public:
-    /**
-     * \brief Creates empty virtual asset of given type.
-     * \tparam TAsset The target asset class type.
-     * \return The created asset.
-     */
+    /// <summary>
+    ///     Creates empty virtual asset of given type.
+    /// </summary>
+    /// <typeparam name="TAsset">The target asset class type.</typeparam>
+    /// <returns>The created asset.</returns>
+    /// <remarks>Asset object must have it's API implemented!</remarks>
     template<class TAsset>
     static TAsset* InternalCreateAsset()
     {
         return Object::New<TAsset>();
     }
 
+    API_FUNCTION(noproxy)
+    static void InternalInitVirtualAsset(Asset* asset)
+    {
+        asset->m_virtual = true;
+        asset->AssetGuid = Platform::NewGuid();
+        GetInstance()->RegisterAsset(asset);
+    }
+
+    API_FUNCTION(noproxy)
     static void InternalLoadAssetSync(Asset* asset, const char* assetFile)
     {
         // Build file name
@@ -94,7 +107,7 @@ public:
         LoadAssetSync(asset, assetFile, file);
     }
 
-    static void InternalLoadAssetAsync(Asset* asset, const char* assetFile, const  Action<void, Asset*>& onLoad)
+    static void InternalLoadAssetAsync(Asset* asset, const char* assetFile, const Action<void, Asset*>& onLoad)
     {
         // Build file name
         const auto file = GetAssetFile(assetFile);
@@ -103,19 +116,13 @@ public:
         LoadAssetAsync(asset, assetFile, file, onLoad);
     }
 
-    static void InternalInitVirtualAsset(Asset* asset)
-    {
-        asset->m_virtual = true;
-        asset->AssetGuid = Platform::NewGuid();
-        GetInstance()->RegisterAsset(asset);
-    }
-
 public:
-    /**
-     * \brief Creates empty virtual asset of given type.
-     * \tparam TAsset The target asset class type.
-     * \return The created asset.
-     */
+    /// <summary>
+    ///     Creates empty virtual asset of given type.
+    /// </summary>
+    /// <typeparam name="TAsset">The target asset class type.</typeparam>
+    /// <returns>The created asset.</returns>
+    /// <remarks>Asset object must have it's API implemented!</remarks>
     template<class TAsset>
     static TAsset* CreateVirtualAsset()
     {
@@ -160,12 +167,12 @@ public:
      */
     static void UnloadAsset(Asset* asset);
 
-    /**
-     * \brief Loads asset of specified type from given file.
-     * \tparam TAsset The asset class type.
-     * \param assetFile The asset file, relative to '../content/', file extension is not needed.
-     * \return The created file or nullptr when failed.
-     */
+    /// <summary>
+    ///     Loads given asset file with given target asset type.
+    /// </summary>
+    /// <typeparam name="TAsset">The asset type.</typeparam>
+    /// <param name="assetFile">The asset file, relative to '../Content/', file extension is not needed.</param>
+    /// <returns>The created file or nullptr when failed.</returns>
     template<class TAsset>
     static TAsset* LoadAsset(const char* assetFile)
     {
@@ -176,13 +183,16 @@ public:
         return static_cast<TAsset*>(LoadAssetSync(asset, assetFile, file));
     }
 
-    /**
-     * \brief Loads asset of specified type from given file asynchronously.
-     * \tparam TAsset The asset class type.
-     * \param assetFile The asset file, relative to '../content/', file extension is not needed.
-     * \param onLoad Load callback, this callback is dispatched after 
-     * the asset has been loaded on the main thread, the first parameter is a pointer to the asset object.
-     */
+    /// <summary>
+    ///     Loads given asset file with given target asset type.
+    /// </summary>
+    /// <typeparam name="TAsset">The asset type.</typeparam>
+    /// <param name="assetFile">The asset file, relative to '../Content/', file extension is not needed.</param>
+    /// <param name="onLoad">
+    ///     Load callback, this callback is dispatched after 
+    ///     the asset has been loaded on the main thread, the first parameter is a pointer to the asset object.
+    /// </param>
+    /// <returns>The created file or nullptr when failed.</returns>
     template<class TAsset>
     static void LoadAsset(const char* assetFile, const Action<void, Asset*>& onLoad)
     {

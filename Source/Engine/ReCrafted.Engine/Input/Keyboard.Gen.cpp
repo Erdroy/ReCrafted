@@ -42,7 +42,8 @@ public:
     
     static Object* Keyboard_CreateObject(bool createManagedInstance)
     {
-        return createManagedInstance ? Object::New<Keyboard>() : new Keyboard();
+        _ASSERT_(createManagedInstance, "Class 'Keyboard' is not marked as generic, and thus cannot get only unmanaged-instance created!");
+        return Object::New<Keyboard>();
     }
 };
 
