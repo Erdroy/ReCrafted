@@ -37,7 +37,16 @@
 #define MONO_FREE(ptr)              \
     mono_free(ptr);
 
+#define MONO_DELEGATE_TO_ACTION_2(p, t0, t0_conv, t1, t1_conv) \
+     Action<t0, t1>([p](t1 _t1) {           \
+        auto param = t1_conv ;              \
+        mono_runtime_delegate_invoke(p,     \
+        reinterpret_cast<void**>(&param),   \
+        nullptr);                           \
+    });
+
 #define MONO_FREE_STUB(value)
+#define MONO_DELEGATE_FREE_STUB(value)
 
 #define MONO_REGISTER_OBJECT(func)      \
     ObjectManager::GetInstance()->RegisterObjectCreator(                            \
@@ -45,5 +54,5 @@
             const_cast<char*>(Fullname()),                                          \
             mono_assembly_get_image(ScriptingManager::GetAPIAssembly()->ToMono())   \
         ),                                                                          \
-        Action<Object*, bool>::New(func)                                                  \
+        Action<Object*, bool>::New(func)                                            \
     )

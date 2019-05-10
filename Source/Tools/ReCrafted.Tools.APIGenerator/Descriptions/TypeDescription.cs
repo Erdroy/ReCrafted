@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace ReCrafted.Tools.APIGenerator.Descriptions
 {
@@ -15,8 +16,8 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
 
         public bool CastToManaged => ByPtr && !ByRef && !IsConst && BaseType != "MonoObject";
 
+        public bool IsGeneric => GenericTypes.Count > 0;
         public bool IsVoid => BaseType == "void";
-
         public bool IsSpecial
         {
             get
@@ -33,6 +34,8 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                     case "char" when ByPtr: // c string
                     case "std::string": // std string
                     case "String": // Engine's string
+                        return true;
+                    case "Action": // Engine's delegate
                         return true;
                     default:
                         return false;
@@ -51,24 +54,6 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
             }
         }
 
-        public string GetSpecialConversion()
-        {
-            switch (BaseType)
-            {
-                case "char" when ByPtr: // c string
-                    return "MONO_STRING_TO_CSTR";
-                case "std::string": // std string
-                    // Note: We are using the same macro to convert into cstr,
-                    // this will convert automatically into std::string,
-                    // due ti it's constructors
-                    return "MONO_STRING_TO_CSTR"; 
-                case "String": // Engine's string
-                    return "MONO_STRING_TO_STR";
-                default:
-                    throw new Exception($"No special conversion is found for type {ToString()}.");
-            }
-        }
-
         public string GetSpecialReturnConversion()
         {
             switch (BaseType)
@@ -79,9 +64,59 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                     return "MONO_STRING_FROM_STDSTR";
                 case "String": // Engine's string
                     return "MONO_STRING_FROM_STR";
+                case "Action": // Engine's delegate
+                    return "MONO_DELEGATE_TO_ACTION_" + GenericTypes.Count;
                 default:
                     throw new Exception($"No special conversion is found for type {ToString()}.");
             }
+        }
+
+        public string GetSpecialConversion(bool returnConversion = false)
+        {
+            if (returnConversion)
+                return GetSpecialReturnConversion();
+
+            switch (BaseType)
+            {
+                case "char" when ByPtr: // c string
+                    return "MONO_STRING_TO_CSTR";
+                case "std::string": // std string
+                    // Note: We are using the same macro to convert into cstr,
+                    // this will convert automatically into std::string,
+                    // due ti it's constructors
+                    return "MONO_STRING_TO_CSTR";
+                case "String": // Engine's string
+                    return "MONO_STRING_TO_STR";
+                case "Action": // Engine's delegate
+                    return "MONO_DELEGATE_TO_ACTION_" + GenericTypes.Count;
+                default:
+                    throw new Exception($"No special conversion is found for type {ToString()}.");
+            }
+        }
+
+        public string ConstructSpecialConversion(bool returnConversion, string valueVariableName)
+        {
+            var sb = new StringBuilder(GetSpecialConversion(returnConversion));
+            sb.Append("(");
+            sb.Append(valueVariableName);
+
+            if (IsGeneric)
+            {
+                var id = 0;
+                foreach (var genericType in GenericTypes)
+                {
+                    sb.Append(", ");
+                    sb.Append(genericType.ToString());
+                    sb.Append(", ");
+                    sb.Append(genericType.CastToManaged ? $"_t{id}->ToManaged()" : $"_t{id}");
+
+                    id++;
+                }
+            }
+
+            sb.Append(")");
+
+            return sb.ToString();
         }
 
         public string GetSpecialFree()
@@ -93,6 +128,8 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                     return "MONO_FREE";
                 case "String": // Engine's string
                     return "MONO_FREE_STUB";
+                case "Action": // Engine's delegate
+                    return "MONO_DELEGATE_FREE_STUB";
                 default:
                     throw new Exception($"No special conversion is found for type {ToString()}.");
             }
@@ -112,6 +149,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
             }
 
             // TODO: Handle arrays
+            // TODO: Handle delegates
             // - parser will need additional functionality to support the square bracket thingies
             // Type<Type1>
             // lib::Type
@@ -156,6 +194,8 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                 case "std::string": // std string
                 case "String": // Engine's string
                     return "MonoString*";
+                case "Action": // Engine's delegate
+                    return "MonoObject*";
                 default:
                     return ToString(isReturn);
             }
@@ -171,6 +211,9 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
 
         public bool Equals(TypeDescription other)
         {
+            if (other == null)
+                return false;
+
             return string.Equals(BaseType, other.BaseType) && IsConst == other.IsConst && ByRef == other.ByRef && ByPtr == other.ByPtr;
         }
 

@@ -38,7 +38,7 @@ foreach(var function in Functions)
         {
 #>
         ASSERT(p_<#=parameter.Name#>);
-        const auto <#=parameter.Name#> = <#=parameter.Type.GetSpecialConversion()#>(p_<#=parameter.Name#>);
+        const auto <#=parameter.Name#> = <#=parameter.Type.ConstructSpecialConversion(false, "p_" + parameter.Name)#>;
 <#
         }
     }
@@ -92,7 +92,7 @@ foreach(var function in Functions)
         if(function.ReturnType.IsSpecial)
         {
 #>
-        return <#=function.ReturnType.GetSpecialReturnConversion()#>(_returnValue);
+        return <#=function.ReturnType.ConstructSpecialConversion(true, "_returnValue")#>;
 <#
         }
         else
@@ -154,7 +154,7 @@ else
     if(property.Type.IsSpecial)
     {
 #>
-        *p_data = <#=property.Type.GetSpecialReturnConversion()#>(_returnValue);
+        *p_data = <#=property.Type.ConstructSpecialConversion(true, "_returnValue")#>;
 <#
     }
     else
@@ -185,7 +185,7 @@ if(property.Type.IsSpecial)
 {
 #>
         ASSERT(p_data);
-        const auto data = <#=property.Type.GetSpecialConversion()#>(*p_data);
+        const auto data = <#=property.Type.ConstructSpecialConversion(false, "*p_data")#>;
 <#
 }
 if(!property.IsStatic)

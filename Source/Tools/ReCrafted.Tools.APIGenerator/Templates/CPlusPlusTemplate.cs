@@ -117,18 +117,11 @@ foreach(var function in Functions)
             this.Write(" = ");
             
             #line 41 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Type.GetSpecialConversion()));
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Type.ConstructSpecialConversion(false, "p_" + parameter.Name)));
             
             #line default
             #line hidden
-            this.Write("(p_");
-            
-            #line 41 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Name));
-            
-            #line default
-            #line hidden
-            this.Write(");\r\n");
+            this.Write(";\r\n");
             
             #line 42 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
@@ -304,11 +297,11 @@ foreach(var function in Functions)
             this.Write("        return ");
             
             #line 95 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(function.ReturnType.GetSpecialReturnConversion()));
+            this.Write(this.ToStringHelper.ToStringWithCulture(function.ReturnType.ConstructSpecialConversion(true, "_returnValue")));
             
             #line default
             #line hidden
-            this.Write("(_returnValue);\r\n");
+            this.Write(";\r\n");
             
             #line 96 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
@@ -456,11 +449,11 @@ else
             this.Write("        *p_data = ");
             
             #line 157 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.GetSpecialReturnConversion()));
+            this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.ConstructSpecialConversion(true, "_returnValue")));
             
             #line default
             #line hidden
-            this.Write("(_returnValue);\r\n");
+            this.Write(";\r\n");
             
             #line 158 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
@@ -537,11 +530,11 @@ if(property.Type.IsSpecial)
             this.Write("        ASSERT(p_data);\r\n        const auto data = ");
             
             #line 188 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.GetSpecialConversion()));
+            this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.ConstructSpecialConversion(false, "*p_data")));
             
             #line default
             #line hidden
-            this.Write("(*p_data);\r\n");
+            this.Write(";\r\n");
             
             #line 189 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
