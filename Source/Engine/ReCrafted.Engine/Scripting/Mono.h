@@ -37,12 +37,33 @@
 #define MONO_FREE(ptr)              \
     mono_free(ptr);
 
-#define MONO_DELEGATE_TO_ACTION_2(p, t0, t0_conv, t1, t1_conv) \
+#define MONO_DELEGATE_TO_ACTION_2(p, t0, t0_target, t0_conv, t1, t1_target, t1_conv) \
      Action<t0, t1>([p](t1 _t1) {           \
         auto param = t1_conv ;              \
         mono_runtime_delegate_invoke(p,     \
         reinterpret_cast<void**>(&param),   \
         nullptr);                           \
+    });
+
+#define MONO_DELEGATE_TO_ACTION_3(p, t0, t0_target, t0_conv, t1, t1_target, t1_conv, t2, t2_target, t2_conv) \
+     Action<t0, t1, t2>([p](t1 _t1, t2 _t2) {           \
+        struct { t1_target a; t2_target b; } params;    \
+        params.a = t1_conv ;                            \
+        params.b = t2_conv ;                            \
+        mono_runtime_delegate_invoke(p,                 \
+        reinterpret_cast<void**>(&params),              \
+        nullptr);                                       \
+    });
+
+#define MONO_DELEGATE_TO_ACTION_4(p, t0, t0_target, t0_conv, t1, t1_target, t1_conv, t2, t2_target, t2_conv, t3, t3_target, t3_conv) \
+     Action<t0, t1, t2, t3>([p](t1 _t1, t2 _t2, t3 _t3) {               \
+        struct { t1_target a; t2_target b; t3_target c; } params;       \
+        params.a = t1_conv ;                                            \
+        params.b = t2_conv ;                                            \
+        params.c = t3_conv ;                                            \
+        mono_runtime_delegate_invoke(p,                                 \
+        reinterpret_cast<void**>(&params),                              \
+        nullptr);                                                       \
     });
 
 #define MONO_FREE_STUB(value)

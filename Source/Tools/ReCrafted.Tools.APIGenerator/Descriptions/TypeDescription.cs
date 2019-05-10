@@ -108,6 +108,8 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                     sb.Append(", ");
                     sb.Append(genericType.ToString());
                     sb.Append(", ");
+                    sb.Append(genericType.ToSpecial(true));
+                    sb.Append(", ");
                     sb.Append(genericType.CastToManaged ? $"_t{id}->ToManaged()" : $"_t{id}");
 
                     id++;
