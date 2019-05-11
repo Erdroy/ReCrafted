@@ -133,7 +133,7 @@ void Texture::LoadTexture(BinaryStream& stream)
 
     ASSERT(memory);
 
-    auto memoryOffset = 0;
+    auto memoryOffset = 0u;
     for (auto mipId = 0u; mipId < m_mips; mipId++)
     {
         // Read mip info

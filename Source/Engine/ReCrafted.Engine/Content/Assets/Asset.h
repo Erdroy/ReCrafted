@@ -40,7 +40,7 @@ protected:
 
 public:
     Asset() = default;
-    ~Asset();
+    virtual ~Asset();
 
 protected:
     void Deserialize(BinaryStream& stream);

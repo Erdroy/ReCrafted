@@ -10,6 +10,9 @@ class BinaryAsset : public Asset
 {
     API_CLASS_BODY()
 
+public:
+    virtual ~BinaryAsset() = default;
+
 protected:
     virtual void OnDeserializeBinary(uint16_t version, BinaryStream& stream) override = 0;
 

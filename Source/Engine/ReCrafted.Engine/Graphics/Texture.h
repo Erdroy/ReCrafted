@@ -114,7 +114,8 @@ public:
     /// </summary>
     /// <param name="width">The texture width.</param>
     /// <param name="height">The texture height.</param>
-    void Initialize(uint16_t width, uint16_t height, Renderer::TextureFormat::_enum format = Renderer::TextureFormat::RGBA8);
+    /// <param name="format">The texture format.</param>
+    void Initialize(uint16_t width, uint16_t height, Renderer::TextureFormat::_enum format);
 
     /// <summary>
     ///     Initializes this texture from given memory pointer. Data gets copied into allocated texture memory.
@@ -124,16 +125,16 @@ public:
     /// <param name="width">The texture width.</param>
     /// <param name="height">The texture height.</param>
     /// <param name="mipNum">The amount of mip maps.</param>
-    /// <param name="textureFormat">The texture format.</param>
+    /// <param name="format">The texture format.</param>
     /// <remarks>Requires Apply call.</remarks>
-    void InitializeFromMemory(uint8_t* data, size_t dataSize, uint16_t width, uint16_t height, uint8_t mipNum,
-        Renderer::TextureFormat::_enum textureFormat);
+    void InitializeFromMemory(uint8_t* data, size_t dataSize, uint16_t width, uint16_t height, uint8_t mipNum, Renderer::TextureFormat::_enum format);
 
     /// <summary>
     ///     Initializes this texture from given file.
     /// </summary>
     /// <param name="fileName">The file which will be loaded as texture.</param>
     /// <remarks>Only PNG RGBA8 format is supported! Requires Apply call.</remarks>
+    API_FUNCTION()
     void InitializeFromFile(const char* fileName);
 
     /// <summary>
@@ -142,6 +143,7 @@ public:
     /// <param name="x">The start X coord.</param>
     /// <param name="y">The start Y coord.</param>
     /// <remarks>Available only before Apply call, when format is RGBA8 and has been initialized(Texture::Initialize(...)).</remarks>
+    API_FUNCTION()
     uint GetPixel(int x, int y) const;
 
     /// <summary>
@@ -149,6 +151,7 @@ public:
     /// </summary>
     /// <returns>The pixels data.</returns>
     /// <remarks>Available only before Apply call.</remarks>
+    /// TODO: API return list support
     uint* GetPixels() const;
 
     /// <summary>
@@ -158,6 +161,7 @@ public:
     /// <param name="y">The start Y coord.</param>
     /// <param name="pixel">Pixel in HEX format.</param>
     /// <remarks>Available only before Apply call, when format is RGBA8 and has been initialized(Texture::Initialize(...)).</remarks>
+    API_FUNCTION()
     void SetPixel(int x, int y, uint pixel) const;
 
     /// <summary>
@@ -170,6 +174,7 @@ public:
     /// <param name="b">B channel value.</param>
     /// <param name="a">A channel value.</param>
     /// <remarks>Available only before Apply call, when format is RGBA8 and has been initialized(Texture::Initialize(...)).</remarks>
+    API_FUNCTION()
     void SetPixel(int x, int y, byte r, byte g, byte b, byte a) const;
 
     /// <summary>
@@ -196,12 +201,14 @@ public:
     /// <param name="height">The new texture height.</param>
     /// <remarks>Only texture created as Virtual Asset with Initialize function can be resized.</remarks>
     /// <remarks>Mip-maps are not supported.</remarks>
+    API_FUNCTION()
     void Resize(uint16_t width, uint16_t height);
 
 public:
     /// <summary>
     ///     Gets the width of this texture.
     /// </summary>
+    API_PROPERTY(noprefix)
     uint GetWidth() const
     {
         return m_width;
@@ -210,6 +217,7 @@ public:
     /// <summary>
     ///     Gets the height of this texture.
     /// </summary>
+    API_PROPERTY(noprefix)
     uint GetHeight() const
     {
         return m_height;
@@ -218,6 +226,7 @@ public:
     /// <summary>
     ///     Gets the texture 3D state. True, when this texture is 3D texture false when 2D.
     /// </summary>
+    API_PROPERTY()
     bool Is3D() const
     {
         return false;

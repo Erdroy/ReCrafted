@@ -43,8 +43,11 @@ void Texture::OnUnload()
     }
 }
 
-void Texture::Initialize(const uint16_t width, const uint16_t height, const Renderer::TextureFormat::_enum format)
+void Texture::Initialize(const uint16_t width, const uint16_t height, Renderer::TextureFormat::_enum format)
 {
+    if (format == Renderer::TextureFormat::Unknown)
+        format = Renderer::TextureFormat::RGBA8;
+
     const auto pixelSize = Renderer::TextureFormatInfo[format][0];
     const auto pitch = width * pixelSize / 8;
     const auto textureSize = height * pitch;
@@ -59,12 +62,12 @@ void Texture::Initialize(const uint16_t width, const uint16_t height, const Rend
 }
 
 void Texture::InitializeFromMemory(uint8_t* data, const size_t dataSize, const uint16_t width, const uint16_t height, const uint8_t mipNum,
-    const Renderer::TextureFormat::_enum textureFormat)
+    const Renderer::TextureFormat::_enum format)
 {
-    const auto pixelSize = Renderer::TextureFormatInfo[textureFormat][0];
+    const auto pixelSize = Renderer::TextureFormatInfo[format][0];
     const auto pitch = width * pixelSize / 8;
 
-    m_format = textureFormat;
+    m_format = format;
     m_width = width;
     m_height = height;
     m_pitch = pitch;

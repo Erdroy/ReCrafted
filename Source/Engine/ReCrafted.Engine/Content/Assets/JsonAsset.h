@@ -10,6 +10,9 @@ class JsonAsset : public Asset
 {
     API_CLASS_BODY()
 
+public:
+    virtual ~JsonAsset() = default;
+
 protected:
     virtual void OnDeserializeJson(uint16_t version, const json& json) override = 0;
 
