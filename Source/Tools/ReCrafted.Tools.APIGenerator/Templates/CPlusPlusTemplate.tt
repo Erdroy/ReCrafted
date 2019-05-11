@@ -18,11 +18,13 @@ class APIProxy
 {
 public:
 <#
+var fId = 0;
 foreach(var function in Functions)
 {
+    fId++;
 #>
     
-    static <#=function.ReturnType.ToSpecial(true)#> <#=Class.Name#>_<#=function.Name#>(<#=function.GetCPlusPlusParameters(Class, !function.IsStatic)#>) 
+    static <#=function.ReturnType.ToSpecial(true)#> <#=Class.Name#>_<#=function.Name + fId#>(<#=function.GetCPlusPlusParameters(Class, !function.IsStatic)#>) 
     {
 <#
     if(!function.AllowMultithread)
@@ -116,13 +118,15 @@ foreach(var function in Functions)
 <#
 }
 
+var pId = 0;
 foreach(var property in Properties)
 {
+    pId ++;
     if(property.HasGetter)
     {
 #>
     
-    static void <#=Class.Name#>_Get_<#=property.Name#>(<#=property.GetCPlusPlusParameter(Class, true)#>) 
+    static void <#=Class.Name#>_Get_<#=property.Name + pId#>(<#=property.GetCPlusPlusParameter(Class, true)#>) 
     {
 <#
 if(!property.AllowMultithread)
@@ -172,7 +176,7 @@ else
     {
 #>
 
-    static void <#=Class.Name#>_Set_<#=property.Name#>(<#=property.GetCPlusPlusParameter(Class, false)#>) 
+    static void <#=Class.Name#>_Set_<#=property.Name + pId#>(<#=property.GetCPlusPlusParameter(Class, false)#>) 
     {
 <#
 if(!property.AllowMultithread)
@@ -247,24 +251,28 @@ if(!Class.IsStatic && !string.IsNullOrEmpty(Class.Inherits) && !Class.IsAbstract
 #>
 <#
 // ---- Function bindings ----
+var fId1 = 0;
 foreach(var function in Functions)
 {
+    fId1 ++;
 #>
-    API_BIND("<#=Class.Namespace#>.<#=Class.Name#>::Internal<#=function.Name#>", &APIProxy::<#=Class.Name#>_<#=function.Name#>);
+    API_BIND("<#=Class.Namespace#>.<#=Class.Name#>::Internal<#=function.Name#>", &APIProxy::<#=Class.Name#>_<#=function.Name + fId1#>);
 <#
 }
+var pId1 = 0;
 foreach(var property in Properties)
 {
+    pId1 ++;
     if(property.HasGetter)
     {
 #>
-    API_BIND("<#=Class.Namespace#>.<#=Class.Name#>::Get_Internal<#=property.Name#>", &APIProxy::<#=Class.Name#>_Get_<#=property.Name#>);
+    API_BIND("<#=Class.Namespace#>.<#=Class.Name#>::Get_Internal<#=property.Name#>", &APIProxy::<#=Class.Name#>_Get_<#=property.Name + pId1#>);
 <#
     }
     if(property.HasSetter)
     {
 #>
-    API_BIND("<#=Class.Namespace#>.<#=Class.Name#>::Set_Internal<#=property.Name#>", &APIProxy::<#=Class.Name#>_Set_<#=property.Name#>);
+    API_BIND("<#=Class.Namespace#>.<#=Class.Name#>::Set_Internal<#=property.Name#>", &APIProxy::<#=Class.Name#>_Set_<#=property.Name + pId1#>);
 <#
     }
 }

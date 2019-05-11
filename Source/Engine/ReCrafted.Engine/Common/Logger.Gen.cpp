@@ -10,7 +10,7 @@ class APIProxy
 {
 public:
     
-    static void Logger_WriteLog(LogLevel level, MonoString* p_str) 
+    static void Logger_WriteLog1(LogLevel level, MonoString* p_str) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(p_str);
@@ -22,7 +22,7 @@ public:
 
 void Logger::InitRuntime() 
 {
-    API_BIND("ReCrafted.API.Common.Logger::InternalWriteLog", &APIProxy::Logger_WriteLog);
+    API_BIND("ReCrafted.API.Common.Logger::InternalWriteLog", &APIProxy::Logger_WriteLog1);
 }
 
 const char* Logger::Fullname() 

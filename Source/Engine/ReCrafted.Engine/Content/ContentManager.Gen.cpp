@@ -10,13 +10,13 @@ class APIProxy
 {
 public:
     
-    static void ContentManager_InternalInitVirtualAsset(Asset* asset) 
+    static void ContentManager_InternalInitVirtualAsset1(Asset* asset) 
     {
         MAIN_THREAD_ONLY();
         ContentManager::InternalInitVirtualAsset(asset);
     }
     
-    static void ContentManager_InternalLoadAssetSync(Asset* asset, MonoString* p_assetFile) 
+    static void ContentManager_InternalLoadAssetSync2(Asset* asset, MonoString* p_assetFile) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(p_assetFile);
@@ -25,7 +25,7 @@ public:
         MONO_FREE(assetFile);
     }
     
-    static void ContentManager_InternalLoadAssetAsync(Asset* asset, MonoString* p_assetFile, MonoObject* p_onLoad) 
+    static void ContentManager_InternalLoadAssetAsync3(Asset* asset, MonoString* p_assetFile, MonoObject* p_onLoad) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(p_assetFile);
@@ -40,9 +40,9 @@ public:
 
 void ContentManager::InitRuntime() 
 {
-    API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalInitVirtualAsset", &APIProxy::ContentManager_InternalInitVirtualAsset);
-    API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalLoadAssetSync", &APIProxy::ContentManager_InternalLoadAssetSync);
-    API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalLoadAssetAsync", &APIProxy::ContentManager_InternalLoadAssetAsync);
+    API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalInitVirtualAsset", &APIProxy::ContentManager_InternalInitVirtualAsset1);
+    API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalLoadAssetSync", &APIProxy::ContentManager_InternalLoadAssetSync2);
+    API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalLoadAssetAsync", &APIProxy::ContentManager_InternalLoadAssetAsync3);
 }
 
 const char* ContentManager::Fullname() 

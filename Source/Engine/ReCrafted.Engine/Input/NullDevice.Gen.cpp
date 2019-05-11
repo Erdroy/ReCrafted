@@ -10,7 +10,7 @@ class APIProxy
 {
 public:
     
-    static MonoString* NullDevice_DeviceName(NullDevice* instance) 
+    static MonoString* NullDevice_DeviceName1(NullDevice* instance) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
@@ -18,7 +18,7 @@ public:
         return MONO_STRING_FROM_CSTR(_returnValue);
     }
     
-    static DeviceType NullDevice_Type(NullDevice* instance) 
+    static DeviceType NullDevice_Type2(NullDevice* instance) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
@@ -37,8 +37,8 @@ void NullDevice::InitRuntime()
 {
     MONO_REGISTER_OBJECT(&APIProxy::NullDevice_CreateObject);
     
-    API_BIND("ReCrafted.API.Input.NullDevice::InternalDeviceName", &APIProxy::NullDevice_DeviceName);
-    API_BIND("ReCrafted.API.Input.NullDevice::InternalType", &APIProxy::NullDevice_Type);
+    API_BIND("ReCrafted.API.Input.NullDevice::InternalDeviceName", &APIProxy::NullDevice_DeviceName1);
+    API_BIND("ReCrafted.API.Input.NullDevice::InternalType", &APIProxy::NullDevice_Type2);
 }
 
 const char* NullDevice::Fullname() 

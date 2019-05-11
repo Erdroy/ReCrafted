@@ -10,21 +10,21 @@ class APIProxy
 {
 public:
     
-    static void Keyboard_EmitInput(Keyboard* instance, Key key, KeyState keyState) 
+    static void Keyboard_EmitInput1(Keyboard* instance, Key key, KeyState keyState) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
         instance->EmitInput(key, keyState);
     }
     
-    static void Keyboard_EmitCharacter(Keyboard* instance, Char character) 
+    static void Keyboard_EmitCharacter2(Keyboard* instance, Char character) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
         instance->EmitCharacter(character);
     }
     
-    static MonoString* Keyboard_DeviceName(Keyboard* instance) 
+    static MonoString* Keyboard_DeviceName3(Keyboard* instance) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
@@ -32,7 +32,7 @@ public:
         return MONO_STRING_FROM_CSTR(_returnValue);
     }
     
-    static DeviceType Keyboard_Type(Keyboard* instance) 
+    static DeviceType Keyboard_Type4(Keyboard* instance) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
@@ -51,10 +51,10 @@ void Keyboard::InitRuntime()
 {
     MONO_REGISTER_OBJECT(&APIProxy::Keyboard_CreateObject);
     
-    API_BIND("ReCrafted.API.Input.Keyboard::InternalEmitInput", &APIProxy::Keyboard_EmitInput);
-    API_BIND("ReCrafted.API.Input.Keyboard::InternalEmitCharacter", &APIProxy::Keyboard_EmitCharacter);
-    API_BIND("ReCrafted.API.Input.Keyboard::InternalDeviceName", &APIProxy::Keyboard_DeviceName);
-    API_BIND("ReCrafted.API.Input.Keyboard::InternalType", &APIProxy::Keyboard_Type);
+    API_BIND("ReCrafted.API.Input.Keyboard::InternalEmitInput", &APIProxy::Keyboard_EmitInput1);
+    API_BIND("ReCrafted.API.Input.Keyboard::InternalEmitCharacter", &APIProxy::Keyboard_EmitCharacter2);
+    API_BIND("ReCrafted.API.Input.Keyboard::InternalDeviceName", &APIProxy::Keyboard_DeviceName3);
+    API_BIND("ReCrafted.API.Input.Keyboard::InternalType", &APIProxy::Keyboard_Type4);
 }
 
 const char* Keyboard::Fullname() 

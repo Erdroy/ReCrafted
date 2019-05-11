@@ -10,49 +10,49 @@ class APIProxy
 {
 public:
     
-    static void ActorBase_SetParent(ActorBase* instance, ActorBase* newParent) 
+    static void ActorBase_SetParent1(ActorBase* instance, ActorBase* newParent) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
         instance->SetParent(newParent);
     }
     
-    static void ActorBase_AddChild(ActorBase* instance, ActorBase* child) 
+    static void ActorBase_AddChild2(ActorBase* instance, ActorBase* child) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
         instance->AddChild(child);
     }
     
-    static void ActorBase_RemoveChild(ActorBase* instance, ActorBase* child) 
+    static void ActorBase_RemoveChild3(ActorBase* instance, ActorBase* child) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
         instance->RemoveChild(child);
     }
     
-    static void ActorBase_AddScript(ActorBase* instance, Script* script) 
+    static void ActorBase_AddScript4(ActorBase* instance, Script* script) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
         instance->AddScript(script);
     }
     
-    static void ActorBase_RemoveScript(ActorBase* instance, Script* script) 
+    static void ActorBase_RemoveScript5(ActorBase* instance, Script* script) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
         instance->RemoveScript(script);
     }
     
-    static void ActorBase_SetActive(ActorBase* instance, bool active) 
+    static void ActorBase_SetActive6(ActorBase* instance, bool active) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
         instance->SetActive(active);
     }
     
-    static void ActorBase_Get_Parent(ActorBase* instance, MonoObject** data) 
+    static void ActorBase_Get_Parent1(ActorBase* instance, MonoObject** data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance); 
@@ -61,7 +61,7 @@ public:
         *data = _returnValue;
     }
     
-    static void ActorBase_Get_Position(ActorBase* instance, Vector3* data) 
+    static void ActorBase_Get_Position2(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance); 
@@ -69,14 +69,14 @@ public:
         *data = _returnValue;
     }
 
-    static void ActorBase_Set_Position(ActorBase* instance, Vector3* data) 
+    static void ActorBase_Set_Position2(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
         instance->Position(*data);
     }
     
-    static void ActorBase_Get_LocalPosition(ActorBase* instance, Vector3* data) 
+    static void ActorBase_Get_LocalPosition3(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance); 
@@ -84,14 +84,14 @@ public:
         *data = _returnValue;
     }
 
-    static void ActorBase_Set_LocalPosition(ActorBase* instance, Vector3* data) 
+    static void ActorBase_Set_LocalPosition3(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
         instance->LocalPosition(*data);
     }
     
-    static void ActorBase_Get_Rotation(ActorBase* instance, Quaternion* data) 
+    static void ActorBase_Get_Rotation4(ActorBase* instance, Quaternion* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance); 
@@ -99,14 +99,14 @@ public:
         *data = _returnValue;
     }
 
-    static void ActorBase_Set_Rotation(ActorBase* instance, Quaternion* data) 
+    static void ActorBase_Set_Rotation4(ActorBase* instance, Quaternion* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
         instance->Rotation(*data);
     }
     
-    static void ActorBase_Get_LocalRotation(ActorBase* instance, Quaternion* data) 
+    static void ActorBase_Get_LocalRotation5(ActorBase* instance, Quaternion* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance); 
@@ -114,14 +114,14 @@ public:
         *data = _returnValue;
     }
 
-    static void ActorBase_Set_LocalRotation(ActorBase* instance, Quaternion* data) 
+    static void ActorBase_Set_LocalRotation5(ActorBase* instance, Quaternion* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
         instance->LocalRotation(*data);
     }
     
-    static void ActorBase_Get_Scale(ActorBase* instance, Vector3* data) 
+    static void ActorBase_Get_Scale6(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance); 
@@ -129,14 +129,14 @@ public:
         *data = _returnValue;
     }
 
-    static void ActorBase_Set_Scale(ActorBase* instance, Vector3* data) 
+    static void ActorBase_Set_Scale6(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
         instance->Scale(*data);
     }
     
-    static void ActorBase_Get_LocalScale(ActorBase* instance, Vector3* data) 
+    static void ActorBase_Get_LocalScale7(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance); 
@@ -144,14 +144,14 @@ public:
         *data = _returnValue;
     }
 
-    static void ActorBase_Set_LocalScale(ActorBase* instance, Vector3* data) 
+    static void ActorBase_Set_LocalScale7(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
         instance->LocalScale(*data);
     }
     
-    static void ActorBase_Get_Transform(ActorBase* instance, Transform* data) 
+    static void ActorBase_Get_Transform8(ActorBase* instance, Transform* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance); 
@@ -159,14 +159,14 @@ public:
         *data = _returnValue;
     }
 
-    static void ActorBase_Set_Transform(ActorBase* instance, Transform* data) 
+    static void ActorBase_Set_Transform8(ActorBase* instance, Transform* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
         instance->SetTransform(*data);
     }
     
-    static void ActorBase_Get_IsActiveSelf(ActorBase* instance, bool* data) 
+    static void ActorBase_Get_IsActiveSelf9(ActorBase* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance); 
@@ -174,7 +174,7 @@ public:
         *data = _returnValue;
     }
     
-    static void ActorBase_Get_IsActive(ActorBase* instance, bool* data) 
+    static void ActorBase_Get_IsActive10(ActorBase* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance); 
@@ -182,7 +182,7 @@ public:
         *data = _returnValue;
     }
     
-    static void ActorBase_Get_Name(ActorBase* instance, MonoString** p_data) 
+    static void ActorBase_Get_Name11(ActorBase* instance, MonoString** p_data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance); 
@@ -190,7 +190,7 @@ public:
         *p_data = MONO_STRING_FROM_STR(_returnValue);
     }
 
-    static void ActorBase_Set_Name(ActorBase* instance, MonoString** p_data) 
+    static void ActorBase_Set_Name11(ActorBase* instance, MonoString** p_data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(p_data);
@@ -203,31 +203,31 @@ public:
 
 void ActorBase::InitRuntime() 
 {
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalSetParent", &APIProxy::ActorBase_SetParent);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalAddChild", &APIProxy::ActorBase_AddChild);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalRemoveChild", &APIProxy::ActorBase_RemoveChild);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalAddScript", &APIProxy::ActorBase_AddScript);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalRemoveScript", &APIProxy::ActorBase_RemoveScript);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalSetActive", &APIProxy::ActorBase_SetActive);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalParent", &APIProxy::ActorBase_Get_Parent);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalPosition", &APIProxy::ActorBase_Get_Position);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalPosition", &APIProxy::ActorBase_Set_Position);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalLocalPosition", &APIProxy::ActorBase_Get_LocalPosition);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalLocalPosition", &APIProxy::ActorBase_Set_LocalPosition);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalRotation", &APIProxy::ActorBase_Get_Rotation);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalRotation", &APIProxy::ActorBase_Set_Rotation);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalLocalRotation", &APIProxy::ActorBase_Get_LocalRotation);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalLocalRotation", &APIProxy::ActorBase_Set_LocalRotation);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalScale", &APIProxy::ActorBase_Get_Scale);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalScale", &APIProxy::ActorBase_Set_Scale);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalLocalScale", &APIProxy::ActorBase_Get_LocalScale);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalLocalScale", &APIProxy::ActorBase_Set_LocalScale);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalTransform", &APIProxy::ActorBase_Get_Transform);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalTransform", &APIProxy::ActorBase_Set_Transform);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalIsActiveSelf", &APIProxy::ActorBase_Get_IsActiveSelf);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalIsActive", &APIProxy::ActorBase_Get_IsActive);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalName", &APIProxy::ActorBase_Get_Name);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalName", &APIProxy::ActorBase_Set_Name);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalSetParent", &APIProxy::ActorBase_SetParent1);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalAddChild", &APIProxy::ActorBase_AddChild2);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalRemoveChild", &APIProxy::ActorBase_RemoveChild3);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalAddScript", &APIProxy::ActorBase_AddScript4);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalRemoveScript", &APIProxy::ActorBase_RemoveScript5);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalSetActive", &APIProxy::ActorBase_SetActive6);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalParent", &APIProxy::ActorBase_Get_Parent1);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalPosition", &APIProxy::ActorBase_Get_Position2);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalPosition", &APIProxy::ActorBase_Set_Position2);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalLocalPosition", &APIProxy::ActorBase_Get_LocalPosition3);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalLocalPosition", &APIProxy::ActorBase_Set_LocalPosition3);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalRotation", &APIProxy::ActorBase_Get_Rotation4);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalRotation", &APIProxy::ActorBase_Set_Rotation4);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalLocalRotation", &APIProxy::ActorBase_Get_LocalRotation5);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalLocalRotation", &APIProxy::ActorBase_Set_LocalRotation5);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalScale", &APIProxy::ActorBase_Get_Scale6);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalScale", &APIProxy::ActorBase_Set_Scale6);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalLocalScale", &APIProxy::ActorBase_Get_LocalScale7);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalLocalScale", &APIProxy::ActorBase_Set_LocalScale7);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalTransform", &APIProxy::ActorBase_Get_Transform8);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalTransform", &APIProxy::ActorBase_Set_Transform8);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalIsActiveSelf", &APIProxy::ActorBase_Get_IsActiveSelf9);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalIsActive", &APIProxy::ActorBase_Get_IsActive10);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalName", &APIProxy::ActorBase_Get_Name11);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalName", &APIProxy::ActorBase_Set_Name11);
 }
 
 const char* ActorBase::Fullname() 

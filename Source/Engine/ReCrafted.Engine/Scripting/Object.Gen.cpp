@@ -10,24 +10,24 @@ class APIProxy
 {
 public:
     
-    static void Object_Destroy(Object* objectInstance) 
+    static void Object_Destroy1(Object* objectInstance) 
     {
         Object::Destroy(objectInstance);
     }
     
-    static void Object_DestroyNow(Object* objectInstance) 
+    static void Object_DestroyNow2(Object* objectInstance) 
     {
         Object::DestroyNow(objectInstance);
     }
     
-    static MonoObject* Object_New(MonoType* type) 
+    static MonoObject* Object_New3(MonoType* type) 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = Object::New(type);
         return _returnValue;
     }
     
-    static MonoObject* Object_NewGeneric(MonoType* baseType, MonoType* type, MonoObject* obj) 
+    static MonoObject* Object_NewGeneric4(MonoType* baseType, MonoType* type, MonoObject* obj) 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = Object::NewGeneric(baseType, type, obj);
@@ -37,10 +37,10 @@ public:
 
 void Object::InitRuntime() 
 {
-    API_BIND("ReCrafted.API.Object::InternalDestroy", &APIProxy::Object_Destroy);
-    API_BIND("ReCrafted.API.Object::InternalDestroyNow", &APIProxy::Object_DestroyNow);
-    API_BIND("ReCrafted.API.Object::InternalNew", &APIProxy::Object_New);
-    API_BIND("ReCrafted.API.Object::InternalNewGeneric", &APIProxy::Object_NewGeneric);
+    API_BIND("ReCrafted.API.Object::InternalDestroy", &APIProxy::Object_Destroy1);
+    API_BIND("ReCrafted.API.Object::InternalDestroyNow", &APIProxy::Object_DestroyNow2);
+    API_BIND("ReCrafted.API.Object::InternalNew", &APIProxy::Object_New3);
+    API_BIND("ReCrafted.API.Object::InternalNewGeneric", &APIProxy::Object_NewGeneric4);
 }
 
 const char* Object::Fullname() 

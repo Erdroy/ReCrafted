@@ -10,7 +10,7 @@ class APIProxy
 {
 public:
     
-    static void Application_Quit() 
+    static void Application_Quit1() 
     {
         MAIN_THREAD_ONLY();
         Application::Quit();
@@ -19,7 +19,7 @@ public:
 
 void Application::InitRuntime() 
 {
-    API_BIND("ReCrafted.API.Core.Application::InternalQuit", &APIProxy::Application_Quit);
+    API_BIND("ReCrafted.API.Core.Application::InternalQuit", &APIProxy::Application_Quit1);
 }
 
 const char* Application::Fullname() 

@@ -10,35 +10,35 @@ class APIProxy
 {
 public:
     
-    static float Time_CurrentTime() 
+    static float Time_CurrentTime1() 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = Time::CurrentTime();
         return _returnValue;
     }
     
-    static float Time_CurrentFixedTime() 
+    static float Time_CurrentFixedTime2() 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = Time::CurrentFixedTime();
         return _returnValue;
     }
     
-    static float Time_DeltaTime() 
+    static float Time_DeltaTime3() 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = Time::DeltaTime();
         return _returnValue;
     }
     
-    static float Time_FixedDeltaTime() 
+    static float Time_FixedDeltaTime4() 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = Time::FixedDeltaTime();
         return _returnValue;
     }
     
-    static uint32_t Time_CurrentFrame() 
+    static uint32_t Time_CurrentFrame5() 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = Time::CurrentFrame();
@@ -48,11 +48,11 @@ public:
 
 void Time::InitRuntime() 
 {
-    API_BIND("ReCrafted.API.Core.Time::InternalCurrentTime", &APIProxy::Time_CurrentTime);
-    API_BIND("ReCrafted.API.Core.Time::InternalCurrentFixedTime", &APIProxy::Time_CurrentFixedTime);
-    API_BIND("ReCrafted.API.Core.Time::InternalDeltaTime", &APIProxy::Time_DeltaTime);
-    API_BIND("ReCrafted.API.Core.Time::InternalFixedDeltaTime", &APIProxy::Time_FixedDeltaTime);
-    API_BIND("ReCrafted.API.Core.Time::InternalCurrentFrame", &APIProxy::Time_CurrentFrame);
+    API_BIND("ReCrafted.API.Core.Time::InternalCurrentTime", &APIProxy::Time_CurrentTime1);
+    API_BIND("ReCrafted.API.Core.Time::InternalCurrentFixedTime", &APIProxy::Time_CurrentFixedTime2);
+    API_BIND("ReCrafted.API.Core.Time::InternalDeltaTime", &APIProxy::Time_DeltaTime3);
+    API_BIND("ReCrafted.API.Core.Time::InternalFixedDeltaTime", &APIProxy::Time_FixedDeltaTime4);
+    API_BIND("ReCrafted.API.Core.Time::InternalCurrentFrame", &APIProxy::Time_CurrentFrame5);
 }
 
 const char* Time::Fullname() 

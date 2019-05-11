@@ -10,7 +10,7 @@ class APIProxy
 {
 public:
     
-    static void Asset_Get_AssetName(Asset* instance, MonoString** p_data) 
+    static void Asset_Get_AssetName1(Asset* instance, MonoString** p_data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance); 
@@ -18,7 +18,7 @@ public:
         *p_data = MONO_STRING_FROM_CSTR(_returnValue);
     }
     
-    static void Asset_Get_AssetFile(Asset* instance, MonoString** p_data) 
+    static void Asset_Get_AssetFile2(Asset* instance, MonoString** p_data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance); 
@@ -26,7 +26,7 @@ public:
         *p_data = MONO_STRING_FROM_CSTR(_returnValue);
     }
     
-    static void Asset_Get_IsVirtual(Asset* instance, bool* data) 
+    static void Asset_Get_IsVirtual3(Asset* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance); 
@@ -34,7 +34,7 @@ public:
         *data = _returnValue;
     }
     
-    static void Asset_Get_IsLoaded(Asset* instance, bool* data) 
+    static void Asset_Get_IsLoaded4(Asset* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance); 
@@ -45,10 +45,10 @@ public:
 
 void Asset::InitRuntime() 
 {
-    API_BIND("ReCrafted.API.Content.Asset::Get_InternalAssetName", &APIProxy::Asset_Get_AssetName);
-    API_BIND("ReCrafted.API.Content.Asset::Get_InternalAssetFile", &APIProxy::Asset_Get_AssetFile);
-    API_BIND("ReCrafted.API.Content.Asset::Get_InternalIsVirtual", &APIProxy::Asset_Get_IsVirtual);
-    API_BIND("ReCrafted.API.Content.Asset::Get_InternalIsLoaded", &APIProxy::Asset_Get_IsLoaded);
+    API_BIND("ReCrafted.API.Content.Asset::Get_InternalAssetName", &APIProxy::Asset_Get_AssetName1);
+    API_BIND("ReCrafted.API.Content.Asset::Get_InternalAssetFile", &APIProxy::Asset_Get_AssetFile2);
+    API_BIND("ReCrafted.API.Content.Asset::Get_InternalIsVirtual", &APIProxy::Asset_Get_IsVirtual3);
+    API_BIND("ReCrafted.API.Content.Asset::Get_InternalIsLoaded", &APIProxy::Asset_Get_IsLoaded4);
 }
 
 const char* Asset::Fullname() 

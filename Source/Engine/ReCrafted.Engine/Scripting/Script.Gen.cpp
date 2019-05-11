@@ -10,7 +10,7 @@ class APIProxy
 {
 public:
     
-    static MonoObject* Script_Actor(Script* instance) 
+    static MonoObject* Script_Actor1(Script* instance) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
@@ -18,7 +18,7 @@ public:
         return _returnValue != nullptr ? _returnValue->ToManaged() : nullptr;
     }
     
-    static void Script_Get_Enabled(Script* instance, bool* data) 
+    static void Script_Get_Enabled1(Script* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance); 
@@ -26,7 +26,7 @@ public:
         *data = _returnValue;
     }
 
-    static void Script_Set_Enabled(Script* instance, bool* data) 
+    static void Script_Set_Enabled1(Script* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(instance);
@@ -43,9 +43,9 @@ void Script::InitRuntime()
 {
     MONO_REGISTER_OBJECT(&APIProxy::Script_CreateObject);
     
-    API_BIND("ReCrafted.API.Script::InternalActor", &APIProxy::Script_Actor);
-    API_BIND("ReCrafted.API.Script::Get_InternalEnabled", &APIProxy::Script_Get_Enabled);
-    API_BIND("ReCrafted.API.Script::Set_InternalEnabled", &APIProxy::Script_Set_Enabled);
+    API_BIND("ReCrafted.API.Script::InternalActor", &APIProxy::Script_Actor1);
+    API_BIND("ReCrafted.API.Script::Get_InternalEnabled", &APIProxy::Script_Get_Enabled1);
+    API_BIND("ReCrafted.API.Script::Set_InternalEnabled", &APIProxy::Script_Set_Enabled1);
 }
 
 const char* Script::Fullname() 

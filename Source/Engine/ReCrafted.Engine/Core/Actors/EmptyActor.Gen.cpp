@@ -10,7 +10,7 @@ class APIProxy
 {
 public:
     
-    static MonoObject* EmptyActor_Create() 
+    static MonoObject* EmptyActor_Create1() 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = EmptyActor::Create();
@@ -28,7 +28,7 @@ void EmptyActor::InitRuntime()
 {
     MONO_REGISTER_OBJECT(&APIProxy::EmptyActor_CreateObject);
     
-    API_BIND("ReCrafted.API.Core.Actors.EmptyActor::InternalCreate", &APIProxy::EmptyActor_Create);
+    API_BIND("ReCrafted.API.Core.Actors.EmptyActor::InternalCreate", &APIProxy::EmptyActor_Create1);
 }
 
 const char* EmptyActor::Fullname() 
