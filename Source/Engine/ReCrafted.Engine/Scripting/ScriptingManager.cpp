@@ -1,7 +1,6 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include "ScriptingManager.h"
-#include "Mono.h"
 #include "Domain.h"
 #include "Common/Platform/Environment.h"
 #include "Assembly.h"
@@ -68,6 +67,44 @@ void ScriptingManager::Shutdown()
 
     // Cleanup and release
     Domain::Root->Cleanup();
+}
+
+void ScriptingManager::InternalThrowException(const ExceptionType type, const bool unhandled, const std::basic_string<char>& message)
+{
+    const char* _namespace;
+    const char* _class;
+    MonoImage* _image;
+
+    switch (type) {
+    case ExceptionType::MissingReferenceException:
+        _image = GetAPIAssembly()->ToMonoImage();
+        _namespace = "ReCrafted.API.Core";
+        _class = "MissingReferenceException"; 
+        break;
+    case ExceptionType::ReCraftedException:
+        _image = GetAPIAssembly()->ToMonoImage();
+        _namespace = "ReCrafted.API.Core";
+        _class = "ReCraftedException"; 
+        break;
+    case ExceptionType::Count:
+    case ExceptionType::Exception:
+    default:
+        _image = GetCoreAssembly()->ToMonoImage();
+        _namespace = "System";
+        _class = "Exception";
+        break;
+    }
+
+    const auto exception = mono_exception_from_name_msg(_image, _namespace, _class, message.c_str());
+
+    if(unhandled)
+    {
+        mono_unhandled_exception(reinterpret_cast<MonoObject*>(exception));
+    }
+    else
+    {
+        mono_raise_exception(exception);
+    }
 }
 
 const RefPtr<Assembly>& ScriptingManager::GetAPIAssembly()

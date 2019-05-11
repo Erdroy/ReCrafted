@@ -13,7 +13,7 @@ public:
     static void Asset_Get_AssetName1(Asset* instance, MonoString** p_data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance); 
+        MONO_CHECK_OBJECT(instance, "Asset");
         const auto _returnValue = instance->AssetName();
         *p_data = MONO_STRING_FROM_CSTR(_returnValue);
     }
@@ -21,7 +21,7 @@ public:
     static void Asset_Get_AssetFile2(Asset* instance, MonoString** p_data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance); 
+        MONO_CHECK_OBJECT(instance, "Asset");
         const auto _returnValue = instance->AssetFile();
         *p_data = MONO_STRING_FROM_CSTR(_returnValue);
     }
@@ -29,7 +29,7 @@ public:
     static void Asset_Get_IsVirtual3(Asset* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance); 
+        MONO_CHECK_OBJECT(instance, "Asset");
         const auto _returnValue = instance->IsVirtual();
         *data = _returnValue;
     }
@@ -37,7 +37,7 @@ public:
     static void Asset_Get_IsLoaded4(Asset* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance); 
+        MONO_CHECK_OBJECT(instance, "Asset");
         const auto _returnValue = instance->IsLoaded();
         *data = _returnValue;
     }

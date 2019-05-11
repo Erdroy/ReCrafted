@@ -57,6 +57,7 @@ void Logger::WriteLog(const LogLevel level, const std::basic_string<char>& str)
     case LogLevel::Assert: typeString = "[Assert] "; break;
     case LogLevel::Error: typeString = "[Error] "; break;
     case LogLevel::Fatal: typeString = "[FATAL] "; break;
+    case LogLevel::Exception: typeString = "[Exception] "; break;
     default:
         typeString = "[Unknown] ";
     }

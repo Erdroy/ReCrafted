@@ -5,11 +5,11 @@ using System;
 namespace ReCrafted.API.Core
 {
     [Serializable]
-    public class ReCraftedException : Exception
+    public class MissingReferenceException : Exception
     {
-        public ReCraftedException() { }
+        public MissingReferenceException() { }
 
-        public ReCraftedException(string message) : base(message)
+        public MissingReferenceException(string message) : base(message)
         {
         }
     }

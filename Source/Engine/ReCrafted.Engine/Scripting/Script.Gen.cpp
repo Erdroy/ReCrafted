@@ -13,7 +13,7 @@ public:
     static MonoObject* Script_Actor1(Script* instance) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Script");
         const auto _returnValue = instance->Actor();
         return _returnValue != nullptr ? _returnValue->ToManaged() : nullptr;
     }
@@ -21,7 +21,7 @@ public:
     static void Script_Get_Enabled1(Script* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance); 
+        MONO_CHECK_OBJECT(instance, "Script");
         const auto _returnValue = instance->Enabled();
         *data = _returnValue;
     }
@@ -29,7 +29,7 @@ public:
     static void Script_Set_Enabled1(Script* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Script");
         instance->Enabled(*data);
     }
     

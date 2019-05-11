@@ -13,49 +13,49 @@ public:
     static void ActorBase_SetParent1(ActorBase* instance, ActorBase* newParent) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         instance->SetParent(newParent);
     }
     
     static void ActorBase_AddChild2(ActorBase* instance, ActorBase* child) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         instance->AddChild(child);
     }
     
     static void ActorBase_RemoveChild3(ActorBase* instance, ActorBase* child) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         instance->RemoveChild(child);
     }
     
     static void ActorBase_AddScript4(ActorBase* instance, Script* script) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         instance->AddScript(script);
     }
     
     static void ActorBase_RemoveScript5(ActorBase* instance, Script* script) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         instance->RemoveScript(script);
     }
     
     static void ActorBase_SetActive6(ActorBase* instance, bool active) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         instance->SetActive(active);
     }
     
     static void ActorBase_Get_Parent1(ActorBase* instance, MonoObject** data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance); 
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         const auto _fRetValue = instance->GetParent();
         const auto _returnValue = _fRetValue != nullptr ? _fRetValue ->ToManaged() : nullptr;
         *data = _returnValue;
@@ -64,7 +64,7 @@ public:
     static void ActorBase_Get_Position2(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance); 
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         const auto _returnValue = instance->Position();
         *data = _returnValue;
     }
@@ -72,14 +72,14 @@ public:
     static void ActorBase_Set_Position2(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         instance->Position(*data);
     }
     
     static void ActorBase_Get_LocalPosition3(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance); 
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         const auto _returnValue = instance->LocalPosition();
         *data = _returnValue;
     }
@@ -87,14 +87,14 @@ public:
     static void ActorBase_Set_LocalPosition3(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         instance->LocalPosition(*data);
     }
     
     static void ActorBase_Get_Rotation4(ActorBase* instance, Quaternion* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance); 
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         const auto _returnValue = instance->Rotation();
         *data = _returnValue;
     }
@@ -102,14 +102,14 @@ public:
     static void ActorBase_Set_Rotation4(ActorBase* instance, Quaternion* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         instance->Rotation(*data);
     }
     
     static void ActorBase_Get_LocalRotation5(ActorBase* instance, Quaternion* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance); 
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         const auto _returnValue = instance->LocalRotation();
         *data = _returnValue;
     }
@@ -117,14 +117,14 @@ public:
     static void ActorBase_Set_LocalRotation5(ActorBase* instance, Quaternion* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         instance->LocalRotation(*data);
     }
     
     static void ActorBase_Get_Scale6(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance); 
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         const auto _returnValue = instance->Scale();
         *data = _returnValue;
     }
@@ -132,14 +132,14 @@ public:
     static void ActorBase_Set_Scale6(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         instance->Scale(*data);
     }
     
     static void ActorBase_Get_LocalScale7(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance); 
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         const auto _returnValue = instance->LocalScale();
         *data = _returnValue;
     }
@@ -147,14 +147,14 @@ public:
     static void ActorBase_Set_LocalScale7(ActorBase* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         instance->LocalScale(*data);
     }
     
     static void ActorBase_Get_Transform8(ActorBase* instance, Transform* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance); 
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         const auto _returnValue = instance->GetTransform();
         *data = _returnValue;
     }
@@ -162,14 +162,14 @@ public:
     static void ActorBase_Set_Transform8(ActorBase* instance, Transform* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         instance->SetTransform(*data);
     }
     
     static void ActorBase_Get_IsActiveSelf9(ActorBase* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance); 
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         const auto _returnValue = instance->IsActiveSelf();
         *data = _returnValue;
     }
@@ -177,7 +177,7 @@ public:
     static void ActorBase_Get_IsActive10(ActorBase* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance); 
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         const auto _returnValue = instance->IsActive();
         *data = _returnValue;
     }
@@ -185,7 +185,7 @@ public:
     static void ActorBase_Get_Name11(ActorBase* instance, MonoString** p_data) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance); 
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         const auto _returnValue = instance->GetName();
         *p_data = MONO_STRING_FROM_STR(_returnValue);
     }
@@ -195,7 +195,7 @@ public:
         MAIN_THREAD_ONLY();
         ASSERT(p_data);
         const auto data = MONO_STRING_TO_STR(*p_data);
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "ActorBase");
         instance->SetName(data);
         MONO_FREE_STUB(data);
     }

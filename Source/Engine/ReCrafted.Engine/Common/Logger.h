@@ -19,6 +19,7 @@ enum class LogLevel
 
     Assert,
     Fatal,
+    Exception,
 };
 
 /// <summary>

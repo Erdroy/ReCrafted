@@ -13,28 +13,28 @@ public:
     static void Mouse_EmitInput1(Mouse* instance, Button button, ButtonState buttonState) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Mouse");
         instance->EmitInput(button, buttonState);
     }
     
     static void Mouse_EmitCursor2(Mouse* instance, Vector2 position, Vector2 delta) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Mouse");
         instance->EmitCursor(position, delta);
     }
     
     static void Mouse_EmitScroll3(Mouse* instance, float delta) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Mouse");
         instance->EmitScroll(delta);
     }
     
     static MonoString* Mouse_DeviceName4(Mouse* instance) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Mouse");
         const auto _returnValue = instance->DeviceName();
         return MONO_STRING_FROM_CSTR(_returnValue);
     }
@@ -42,7 +42,7 @@ public:
     static DeviceType Mouse_Type5(Mouse* instance) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Mouse");
         const auto _returnValue = instance->Type();
         return _returnValue;
     }
@@ -50,7 +50,7 @@ public:
     static bool Mouse_IsButton6(Mouse* instance, Button button) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Mouse");
         const auto _returnValue = instance->IsButton(button);
         return _returnValue;
     }
@@ -58,7 +58,7 @@ public:
     static bool Mouse_IsButtonDown7(Mouse* instance, Button button) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Mouse");
         const auto _returnValue = instance->IsButtonDown(button);
         return _returnValue;
     }
@@ -66,7 +66,7 @@ public:
     static bool Mouse_IsButtonUp8(Mouse* instance, Button button) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Mouse");
         const auto _returnValue = instance->IsButtonUp(button);
         return _returnValue;
     }
@@ -74,14 +74,14 @@ public:
     static void Mouse_SetCursorPosition9(Mouse* instance, const Vector2& position) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Mouse");
         instance->SetCursorPosition(position);
     }
     
     static Vector2 Mouse_GetCursorPosition10(Mouse* instance) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Mouse");
         const auto _returnValue = instance->GetCursorPosition();
         return _returnValue;
     }
@@ -89,7 +89,7 @@ public:
     static Vector2 Mouse_GetCursorDelta11(Mouse* instance) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Mouse");
         const auto _returnValue = instance->GetCursorDelta();
         return _returnValue;
     }
@@ -97,7 +97,7 @@ public:
     static float Mouse_GetScrollDelta12(Mouse* instance) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Mouse");
         const auto _returnValue = instance->GetScrollDelta();
         return _returnValue;
     }
@@ -105,14 +105,14 @@ public:
     static void Mouse_SetShowCursor13(Mouse* instance, bool cursorShow) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Mouse");
         instance->SetShowCursor(cursorShow);
     }
     
     static bool Mouse_GetShowCursor14(Mouse* instance) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Mouse");
         const auto _returnValue = instance->GetShowCursor();
         return _returnValue;
     }
@@ -120,14 +120,14 @@ public:
     static void Mouse_SetLockCursor15(Mouse* instance, bool cursorLock) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Mouse");
         instance->SetLockCursor(cursorLock);
     }
     
     static bool Mouse_GetLockCursor16(Mouse* instance) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Mouse");
         const auto _returnValue = instance->GetLockCursor();
         return _returnValue;
     }

@@ -13,7 +13,7 @@ public:
     static MonoString* NullDevice_DeviceName1(NullDevice* instance) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "NullDevice");
         const auto _returnValue = instance->DeviceName();
         return MONO_STRING_FROM_CSTR(_returnValue);
     }
@@ -21,7 +21,7 @@ public:
     static DeviceType NullDevice_Type2(NullDevice* instance) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "NullDevice");
         const auto _returnValue = instance->Type();
         return _returnValue;
     }

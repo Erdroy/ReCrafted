@@ -6,6 +6,7 @@
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
 #include <mono/metadata/mono-debug.h>
+#include <mono/metadata/exception.h>
 
 #define mono_object_get_type(obj)   \
     static_cast<MonoTypeEnum>(mono_type_get_type(mono_class_get_type(mono_object_get_class(obj))));
@@ -15,6 +16,11 @@
 /// </summary>
 #define mono_type_get_token(type)   \
     mono_class_get_type_token(mono_type_get_class(type))
+
+#define MONO_CHECK_OBJECT(objInst, name)    \
+    if(objInst == nullptr)                  \
+        ScriptingManager::ThrowException(ExceptionType::MissingReferenceException, "The object of type '{0}' has been destroyed but you are still trying to access it.", name);\
+    ASSERT(objInst);
 
 #define API_BIND(name, method)      \
     mono_add_internal_call(name, (const void*)(method))

@@ -13,21 +13,21 @@ public:
     static void Keyboard_EmitInput1(Keyboard* instance, Key key, KeyState keyState) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Keyboard");
         instance->EmitInput(key, keyState);
     }
     
     static void Keyboard_EmitCharacter2(Keyboard* instance, Char character) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Keyboard");
         instance->EmitCharacter(character);
     }
     
     static MonoString* Keyboard_DeviceName3(Keyboard* instance) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Keyboard");
         const auto _returnValue = instance->DeviceName();
         return MONO_STRING_FROM_CSTR(_returnValue);
     }
@@ -35,7 +35,7 @@ public:
     static DeviceType Keyboard_Type4(Keyboard* instance) 
     {
         MAIN_THREAD_ONLY();
-        ASSERT(instance);
+        MONO_CHECK_OBJECT(instance, "Keyboard");
         const auto _returnValue = instance->Type();
         return _returnValue;
     }

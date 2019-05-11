@@ -33,7 +33,7 @@ namespace ReCrafted.API.Core
         // private
         internal static void WriteException(Exception exception)
         {
-            Logger.Log($"Unhandled Exception: {GetExceptionString(exception)}", LogLevel.Error);
+            Logger.Log($"{GetExceptionString(exception)}", LogLevel.Exception);
 
             // check for inner exception
             if (exception.InnerException == null)
@@ -44,7 +44,7 @@ namespace ReCrafted.API.Core
             // handle all inner exceptions
             while (exception != null)
             {
-                Logger.Log($"Inner Exception: {GetExceptionString(exception)}", LogLevel.Error);
+                Logger.Log($"Inner Exception: {GetExceptionString(exception)}", LogLevel.Exception);
 
                 if (exception.InnerException == null)
                     return;

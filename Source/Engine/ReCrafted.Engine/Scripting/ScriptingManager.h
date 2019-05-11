@@ -3,7 +3,19 @@
 #pragma once
 
 #include <ReCrafted.h>
+#include "Common/List.h"
 #include "Core/SubSystems/SubSystem.h"
+
+#include "Mono.h"
+
+enum class ExceptionType : uint8_t
+{
+    Exception,
+    MissingReferenceException,
+    ReCraftedException,
+
+    Count
+};
 
 /// <summary>
 ///     ScriptingManager class. Implements Mono backend for engine scripting.
@@ -24,6 +36,22 @@ private:
 protected:
     void Initialize() override;
     void Shutdown() override;
+
+private:
+    static void InternalThrowException(ExceptionType type, bool unhandled, const std::basic_string<char>& message);
+
+public:
+    template<typename... TArgs>
+    static void ThrowException(ExceptionType type, const char* format, const TArgs& ... args)
+    {
+        InternalThrowException(type, false, fmt::vformat(format, fmt::make_format_args(args...)));
+    }
+
+    template<typename... TArgs>
+    static void ThrowUnhandledException(ExceptionType type, const char* format, const TArgs& ... args)
+    {
+        InternalThrowException(type, true, fmt::vformat(format, fmt::make_format_args(args...)));
+    }
 
 public:
     static const RefPtr<Assembly>& GetAPIAssembly();

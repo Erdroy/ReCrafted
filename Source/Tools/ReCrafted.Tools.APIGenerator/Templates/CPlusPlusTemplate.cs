@@ -204,7 +204,14 @@ foreach(var function in Functions)
             
             #line default
             #line hidden
-            this.Write("        ASSERT(instance);\r\n");
+            this.Write("        MONO_CHECK_OBJECT(instance, \"");
+            
+            #line 67 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
+            
+            #line default
+            #line hidden
+            this.Write("\");\r\n");
             
             #line 68 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
@@ -396,7 +403,14 @@ if(!property.IsStatic)
             
             #line default
             #line hidden
-            this.Write("        ASSERT(instance); \r\n");
+            this.Write("        MONO_CHECK_OBJECT(instance, \"");
+            
+            #line 141 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
+            
+            #line default
+            #line hidden
+            this.Write("\");\r\n");
             
             #line 142 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
@@ -549,7 +563,14 @@ if(!property.IsStatic)
             
             #line default
             #line hidden
-            this.Write("        ASSERT(instance);\r\n        instance->");
+            this.Write("        MONO_CHECK_OBJECT(instance, \"");
+            
+            #line 198 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
+            
+            #line default
+            #line hidden
+            this.Write("\");\r\n        instance->");
             
             #line 199 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.SetterFunctionName));

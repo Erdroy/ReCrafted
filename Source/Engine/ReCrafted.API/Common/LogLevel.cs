@@ -10,5 +10,6 @@ namespace ReCrafted.API.Common
 
         Assert,
         Fatal,
+        Exception,
     }
 }
