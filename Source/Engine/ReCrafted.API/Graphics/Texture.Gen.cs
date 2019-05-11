@@ -6,6 +6,9 @@ using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Graphics 
 {
+    /// <summary>
+    ///     Texture asset class.
+    /// </summary>
     public sealed class Texture : BinaryAsset
     {
     }

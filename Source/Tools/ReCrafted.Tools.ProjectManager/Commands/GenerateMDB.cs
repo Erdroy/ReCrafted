@@ -23,7 +23,7 @@ namespace ReCrafted.Tools.ProjectManager.Commands
                 {
                     Converter.Convert(pdb);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     // ignored
                 }

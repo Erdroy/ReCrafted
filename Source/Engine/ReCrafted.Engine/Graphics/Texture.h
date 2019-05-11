@@ -13,6 +13,9 @@ class BinaryStream;
 
 API_USING("ReCrafted.API.Content")
 
+/// <summary>
+///     Texture asset class.
+/// </summary>
 API_CLASS(public, sealed)
 class Texture final : public BinaryAsset
 {
@@ -106,140 +109,124 @@ protected:
     }
 
 public:
-    /**
-     * \brief Initializes this texture and allocates memory.
-     * \param width The texture width.
-     * \param height The texture height.
-     */
+    /// <summary>
+    ///     Initializes this texture and allocates memory.
+    /// </summary>
+    /// <param name="width">The texture width.</param>
+    /// <param name="height">The texture height.</param>
     void Initialize(uint16_t width, uint16_t height, Renderer::TextureFormat::_enum format = Renderer::TextureFormat::RGBA8);
 
-    /**
-     * \brief Initializes this texture from given memory pointer. Data gets copied into allocated texture memory.
-     * \param data The data pointer.
-     * \param dataSize The data size.
-     * \param width The texture width.
-     * \param height The texture height.
-     * \param mipNum The amount of mip maps.
-     * \param textureFormat The texture format.
-     *
-     * \note Requires Apply call.
-     */
+    /// <summary>
+    ///     Initializes this texture from given memory pointer. Data gets copied into allocated texture memory.
+    /// </summary>
+    /// <param name="data">The data pointer.</param>
+    /// <param name="dataSize">The data size.</param>
+    /// <param name="width">The texture width.</param>
+    /// <param name="height">The texture height.</param>
+    /// <param name="mipNum">The amount of mip maps.</param>
+    /// <param name="textureFormat">The texture format.</param>
+    /// <remarks>Requires Apply call.</remarks>
     void InitializeFromMemory(uint8_t* data, size_t dataSize, uint16_t width, uint16_t height, uint8_t mipNum,
         Renderer::TextureFormat::_enum textureFormat);
 
-    /**
-     * \brief Initializes this texture from given file.
-     * \param fileName The file which will be loaded as texture.
-     *
-     * \note Only PNG RGBA8 format is supported!
-     * Requires Apply call.
-     */
+    /// <summary>
+    ///     Initializes this texture from given file.
+    /// </summary>
+    /// <param name="fileName">The file which will be loaded as texture.</param>
+    /// <remarks>Only PNG RGBA8 format is supported! Requires Apply call.</remarks>
     void InitializeFromFile(const char* fileName);
 
-    /**
-     * \brief Get pixel at given position.
-     * \param x The x coord.
-     * \param y The y coord.
-     * \return Pixel HEX format.
-     *
-     * \note Available only before Apply call, when format is RGBA8
-     * and has been initialized (Texture::Initialize(...)).
-     */
+    /// <summary>
+    ///     Get pixel at given position.
+    /// </summary>
+    /// <param name="x">The start X coord.</param>
+    /// <param name="y">The start Y coord.</param>
+    /// <remarks>Available only before Apply call, when format is RGBA8 and has been initialized(Texture::Initialize(...)).</remarks>
     uint GetPixel(int x, int y) const;
 
-    /**
-     * \brief Get all pixels in the texture(Returns pixel buffer).
-     * \return The pixels data.
-     *
-     * \note Available only before Apply call.
-     */
+    /// <summary>
+    ///     Get all pixels in the texture(Returns pixel buffer).
+    /// </summary>
+    /// <returns>The pixels data.</returns>
+    /// <remarks>Available only before Apply call.</remarks>
     uint* GetPixels() const;
 
-    /**
-     * \brief Sets pixel at given position.
-     * \param x The x coord.
-     * \param y The y coord.
-     * \param pixel Pixel in HEX format.
-     *
-     * \note Available only before Apply call, when format is RGBA8
-     * and has been initialized (Texture::Initialize(...)).
-     */
+    /// <summary>
+    ///     Sets pixel at given position.
+    /// </summary>
+    /// <param name="x">The start X coord.</param>
+    /// <param name="y">The start Y coord.</param>
+    /// <param name="pixel">Pixel in HEX format.</param>
+    /// <remarks>Available only before Apply call, when format is RGBA8 and has been initialized(Texture::Initialize(...)).</remarks>
     void SetPixel(int x, int y, uint pixel) const;
 
-    /**
-     * \brief Sets pixel at given position.
-     * \param x The x coord.
-     * \param y The y coord.
-     * \param r R channel value.
-     * \param g G channel value.
-     * \param b B channel value.
-     * \param a A channel value.
-     *
-     * \note Available only before Apply call, when format is RGBA8
-     * and has been initialized (Texture::Initialize(...)).
-     */
+    /// <summary>
+    ///     Sets pixel at given position.
+    /// </summary>
+    /// <param name="x">The start X coord.</param>
+    /// <param name="y">The start Y coord.</param>
+    /// <param name="r">R channel value.</param>
+    /// <param name="g">G channel value.</param>
+    /// <param name="b">B channel value.</param>
+    /// <param name="a">A channel value.</param>
+    /// <remarks>Available only before Apply call, when format is RGBA8 and has been initialized(Texture::Initialize(...)).</remarks>
     void SetPixel(int x, int y, byte r, byte g, byte b, byte a) const;
 
-    /**
-     * \brief Sets pixels at given position with given size.
-     * \param x The start X coord.
-     * \param y The start Y coord.
-     * \param width The width of the pixel array.
-     * \param height The height of the pixel array.
-     * \param pixels The pixels data.
-     *
-     * \note Available only before Apply call.
-     */
+    /// <summary>
+    ///     Sets pixels at given position with given size.
+    /// </summary>
+    /// <param name="x">The start X coord.</param>
+    /// <param name="y">The start Y coord.</param>
+    /// <param name="width">The width of the pixel array.</param>
+    /// <param name="height">The height of the pixel array.</param>
+    /// <param name="pixels">The pixels data.</param>
+    /// <remarks>Available only before Apply call.</remarks>
     void SetPixels(int x, int y, int width, int height, uint* pixels) const;
 
-    /**
-     * \brief Apply, all pixel operations will be unavailable after calling this method.
-     * \param generateMips When true, this texture will get online-generated mip maps.
-     */
+    /// <summary>
+    ///     Apply, all pixel operations will be unavailable after calling this method.
+    /// </summary>
+    /// <param name="generateMips">When true, this texture will get online-generated mip maps.</param>
     void Apply(bool generateMips = false);
 
-    /**
-     * \brief Resizes the texture to given size.
-     * \param width The new texture width.
-     * \param height The new texture height.
-     *
-     * \note - Only texture created as Virtual Asset with Initialize function can be resized.
-     * \note - Mip-maps are not supported.
-     */
+    /// <summary>
+    ///     Resizes the texture to given size.
+    /// </summary>
+    /// <param name="width">The new texture width.</param>
+    /// <param name="height">The new texture height.</param>
+    /// <remarks>Only texture created as Virtual Asset with Initialize function can be resized.</remarks>
+    /// <remarks>Mip-maps are not supported.</remarks>
     void Resize(uint16_t width, uint16_t height);
 
 public:
-    /**
-     * \brief Gets the width of this texture.
-     * \return The width of this texture.
-     */
+    /// <summary>
+    ///     Gets the width of this texture.
+    /// </summary>
     uint GetWidth() const
     {
         return m_width;
     }
 
-    /**
-    * \brief Gets the height of this texture.
-    * \return The height of this texture.
-    */
+    /// <summary>
+    ///     Gets the height of this texture.
+    /// </summary>
     uint GetHeight() const
     {
         return m_height;
     }
 
-    /**
-     * \brief Check if this texture is 3D or 2D.
-     * \return True, when this texture is 3D texture.
-     */
+    /// <summary>
+    ///     Gets the texture 3D state. True, when this texture is 3D texture false when 2D.
+    /// </summary>
     bool Is3D() const
     {
         return false;
     }
 
-    /**
-     * \brief Gets handle of this texture.
-     * \return G
-     */
+    /// <summary>
+    ///     Gets handle of this texture.
+    /// </summary>
+    /// <returns>The texture handle.</returns>
     Renderer::Texture2DHandle GetHandle() const
     {
         ASSERT(RENDERER_CHECK_HANDLE(m_textureHandle));
