@@ -9,6 +9,7 @@ using Mono.Debugging.VisualStudio;
 using EnvDTE;
 using Mono.Debugging.Soft;
 using System.Net;
+using Mono.Debugging.Client;
 
 namespace ReCrafted.VSDebugger
 {

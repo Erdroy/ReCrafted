@@ -62,6 +62,9 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+	<VSIXSourceItem Include="@(MonoDebuggingVsix)" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Clide">
       <Version>3.2.68</Version>
     </PackageReference>

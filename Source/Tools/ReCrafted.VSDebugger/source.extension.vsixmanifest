@@ -3,17 +3,23 @@
     <Metadata>
         <Identity Id="ReCrafted.VSDebugger.3350ae20-bdc4-487b-9fb8-18926dc63fa4" Version="1.0" Language="en-US" Publisher="Erdroy" />
         <DisplayName>ReCrafted.VSDebugger</DisplayName>
-        <Description>Empty VSIX Project.</Description>
+        <Description xml:space="preserve">ReCrafted mono debugging for Visual Studio.</Description>
     </Metadata>
-    <Installation>
+    <Installation AllUsers="true">
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0, 17.0)" />
     </Installation>
     <Dependencies>
         <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+        <Dependency Id="Mono.Debugging.VisualStudio"
+                    Version="[4.6,)"
+                    DisplayName="Mono debugger"
+                    d:Source="File"
+                    d:InstallSource="Embed"
+                    Location="|%CurrentProject%;MonoDebuggingVsix|"
+                    xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011"/>
     </Dependencies>
     <Prerequisites>
         <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,17.0)" DisplayName="Visual Studio core editor" />
-		<Prerequisite Id="Microsoft.VisualStudio.Component.MonoDebugger" Version="[4.6,)" DisplayName="Mono debugger" />
     </Prerequisites>
     <Assets>
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
