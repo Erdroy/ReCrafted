@@ -22,20 +22,12 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
         {
             get
             {
-                // TODO: Handle arrays
-                // - parser will need additional functionality to support the square bracket thingies
-                // Type<Type1>
-                // lib::Type
-                // lib::Type<Type1>
-                // lib::Type<lib::Type1>
-
                 switch (BaseType)
                 {
                     case "char" when ByPtr: // c string
-                    case "std::string": // std string
-                    case "String": // Engine's string
-                        return true;
-                    case "Action": // Engine's delegate
+                    case "std::string":     // std string
+                    case "String":          // Engine's string
+                    case "Action":          // Engine's delegate
                         return true;
                     default:
                         return false;
@@ -126,12 +118,11 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
             switch (BaseType)
             {
                 case "char" when ByPtr: // c string
-                case "std::string": // std string
+                case "std::string":     // std string
                     return "MONO_FREE";
-                case "String": // Engine's string
+                case "String":          // Engine's string
+                case "Action":          // Engine's delegate
                     return "MONO_FREE_STUB";
-                case "Action": // Engine's delegate
-                    return "MONO_DELEGATE_FREE_STUB";
                 default:
                     throw new Exception($"No special conversion is found for type {ToString()}.");
             }

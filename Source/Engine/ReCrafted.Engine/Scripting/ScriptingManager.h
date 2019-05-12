@@ -5,8 +5,9 @@
 #include <ReCrafted.h>
 #include "Common/List.h"
 #include "Core/SubSystems/SubSystem.h"
-
-#include "Mono.h"
+#include "Scripting/Assembly.h"
+#include "Scripting/Mono.h"
+#include "Scripting/Domain.h"
 
 enum class ExceptionType : uint8_t
 {

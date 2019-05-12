@@ -3,8 +3,6 @@
 #include "GameManager.h"
 #include "Scripting/Object.h"
 #include "Scripting/ScriptingManager.h"
-#include "Content/ContentManager.h"
-#include "Graphics/Texture.h"
 
 GameManager::GameManager()
 {

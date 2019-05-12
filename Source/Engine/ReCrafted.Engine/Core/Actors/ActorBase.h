@@ -4,8 +4,9 @@
 
 // includes
 #include <ReCrafted.h>
-#include "Core/Transform.h"
 #include "Common/List.h"
+#include "Common/Array.h"
+#include "Core/Transform.h"
 #include "Scripting/Object.h"
 
 using ActorId_t = uint64_t;
@@ -242,12 +243,12 @@ public:
     /// <summary>
     ///     Gets all children instances.
     /// </summary>
-    const List<ActorBase*>& GetChildren() const;
+    Array<ActorBase*> GetChildren();
 
     /// <summary>
     ///     Gets all script instances contained by this actor.
     /// </summary>
-    const List<Script*>& GetScripts() const;
+    Array<Script*> GetScripts();
 
     ActorId_t GetId() const;
 };

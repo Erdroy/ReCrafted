@@ -5,6 +5,7 @@
 // Common/
 template<typename TReturn, typename ... TArgs> struct Action;
 template <class T> struct rc_allocator;
+template <typename TType> struct Array;
 struct Lock;
 struct String;
 template <typename ... TParams> class Event;
@@ -45,7 +46,6 @@ class MainLoop;
 class Time;
 
 // Core/Actors/
-template<typename TActor> class Actor;
 class ActorBase;
 class EmptyActor;
 

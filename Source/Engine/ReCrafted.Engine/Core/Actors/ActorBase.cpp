@@ -460,15 +460,15 @@ const String& ActorBase::GetName() const
     return m_name;
 }
 
-const List<ActorBase*>& ActorBase::GetChildren() const
+Array<ActorBase*> ActorBase::GetChildren()
 {
     MAIN_THREAD_ONLY();
-    return m_children;
+    return { m_children.Data(), m_children.Size() };
 }
 
-const List<Script*>& ActorBase::GetScripts() const
+Array<Script*> ActorBase::GetScripts()
 {
-    return m_scripts;
+    return { m_scripts.Data(), m_scripts.Size() };
 }
 
 ActorId_t ActorBase::GetId() const
