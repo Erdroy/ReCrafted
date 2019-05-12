@@ -34,7 +34,7 @@ public:
         const auto onLoad = MONO_DELEGATE_TO_ACTION_2(p_onLoad, void, void, _t0, Asset*, MonoObject*, _t1->ToManaged());
         ContentManager::InternalLoadAssetAsync(asset, assetFile, onLoad);
         MONO_FREE(assetFile);
-        MONO_DELEGATE_FREE_STUB(onLoad);
+        MONO_FREE_STUB(onLoad);
     }
 };
 

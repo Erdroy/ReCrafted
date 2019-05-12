@@ -17,13 +17,11 @@ void ContentManager::Shutdown()
     m_assetMap.clear_deleted_key();
 
     // Release all assets
-    auto numLeaked = 0;
     for (auto&& assetPair : m_assetMap)
-        numLeaked++;
-
-    if (numLeaked > 0)
     {
-        Logger::LogWarning("Detected leaked assets! {0} assets leaked!", numLeaked);
+        const auto asset = assetPair.second;
+        UnloadAsset(asset, false);
+        Object::DestroyNow(asset);
     }
 
     // Clear
@@ -159,7 +157,7 @@ void ContentManager::LoadAssetAsync(Asset* asset, const std::string& assetFile, 
     Task::CreateTask(customTask)->Queue();
 }
 
-void ContentManager::UnloadAsset(Asset* asset)
+void ContentManager::UnloadAsset(Asset* asset, bool release)
 {
     if(!asset->IsLoaded())
     {
@@ -178,5 +176,8 @@ void ContentManager::UnloadAsset(Asset* asset)
     asset->m_unloaded = true;
 
     // Release
-    GetInstance()->ReleaseAsset(asset);
+    if(release)
+    {
+        GetInstance()->ReleaseAsset(asset);
+    }
 }

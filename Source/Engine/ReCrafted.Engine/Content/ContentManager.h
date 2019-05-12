@@ -117,7 +117,7 @@ public:
         LoadAssetAsync(asset, assetFile, file, onLoad);
     }
 
-    static void UnloadAsset(Asset* asset);
+    static void UnloadAsset(Asset* asset, bool release = true);
 
 public:
     /// <summary>

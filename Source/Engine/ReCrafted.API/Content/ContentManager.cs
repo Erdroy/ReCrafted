@@ -56,8 +56,6 @@ namespace ReCrafted.API.Content
 
             // Load asset async
             InternalInternalLoadAssetAsync(assetObject.NativePtr, assetFile, onLoad);
-
-            throw new NotImplementedException();
         }
     }
 }
