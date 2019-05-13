@@ -16,6 +16,17 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
 
         public bool CastToManaged => ByPtr && !ByRef && !IsConst && BaseType != "MonoObject";
 
+        public bool PassByReference
+        {
+            get
+            {
+                if (IsConst && ByRef)
+                    return false;
+
+                return ByRef;
+            }
+        }
+
         public bool IsGeneric => GenericTypes.Count > 0;
         public bool IsVoid => BaseType == "void" && !ByPtr;
         public bool IsSpecial
@@ -32,17 +43,6 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                     default:
                         return false;
                 }
-            }
-        }
-
-        public bool PassByReference
-        {
-            get
-            {
-                if (IsConst && ByRef)
-                    return false;
-
-                return ByRef;
             }
         }
 
@@ -84,33 +84,6 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                 default:
                     throw new Exception($"No special conversion is found for type {ToString()}.");
             }
-        }
-
-        public string ConstructSpecialConversion(bool returnConversion, string valueVariableName)
-        {
-            var sb = new StringBuilder(GetSpecialConversion(returnConversion));
-            sb.Append("(");
-            sb.Append(valueVariableName);
-
-            if (IsGeneric)
-            {
-                var id = 0;
-                foreach (var genericType in GenericTypes)
-                {
-                    sb.Append(", ");
-                    sb.Append(genericType.ToString());
-                    sb.Append(", ");
-                    sb.Append(genericType.ToSpecial(true));
-                    sb.Append(", ");
-                    sb.Append(genericType.CastToManaged ? $"_t{id}->ToManaged()" : $"_t{id}");
-
-                    id++;
-                }
-            }
-
-            sb.Append(")");
-
-            return sb.ToString();
         }
 
         public string GetSpecialFree()
@@ -195,6 +168,33 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                 default:
                     return ToString(isReturn);
             }
+        }
+
+        public string ConstructSpecialConversion(bool returnConversion, string valueVariableName)
+        {
+            var sb = new StringBuilder(GetSpecialConversion(returnConversion));
+            sb.Append("(");
+            sb.Append(valueVariableName);
+
+            if (IsGeneric)
+            {
+                var id = 0;
+                foreach (var genericType in GenericTypes)
+                {
+                    sb.Append(", ");
+                    sb.Append(genericType.ToString());
+                    sb.Append(", ");
+                    sb.Append(genericType.ToSpecial(true));
+                    sb.Append(", ");
+                    sb.Append(genericType.CastToManaged ? $"_t{id}->ToManaged()" : $"_t{id}");
+
+                    id++;
+                }
+            }
+
+            sb.Append(")");
+
+            return sb.ToString();
         }
 
         public string ToString(bool isReturn = false, bool allowConst = true, bool allowRef = true)

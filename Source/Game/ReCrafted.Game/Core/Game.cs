@@ -2,8 +2,10 @@
 
 using ReCrafted.API;
 using ReCrafted.API.Common;
+using ReCrafted.API.Content;
 using ReCrafted.API.Core;
 using ReCrafted.API.Core.Actors;
+using ReCrafted.API.Graphics;
 using ReCrafted.API.Input;
 
 namespace ReCrafted.Game.Core
@@ -46,10 +48,14 @@ namespace ReCrafted.Game.Core
 
             _actor = EmptyActor.Create();
             _actor.Name = "Test Actor";
-            _actor.SetActive(true);
             _actor.AddScript<TestScript>();
 
             Logger.Log("Game initialized");
+
+            ContentManager.LoadAsset<Texture>("Textures/Default", texture =>
+            {
+                Logger.Log("Texture loaded.");
+            });
         }
 
         protected override void OnShutdown()
