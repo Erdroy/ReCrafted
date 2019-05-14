@@ -96,7 +96,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
             }
         }
 
-        public string GetSpecialFree()
+        public string GetSpecialFree(bool returnConversion = false)
         {
             switch (BaseType)
             {

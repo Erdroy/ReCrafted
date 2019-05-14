@@ -85,7 +85,7 @@ foreach(var function in Functions)
         if(parameter.Type.IsSpecial)
         {
 #>
-        <#=parameter.Type.GetSpecialFree()#>(<#=parameter.Name#>);
+        <#=parameter.Type.GetSpecialFree(function.ReturnType.BaseType != "void")#>(<#=parameter.Name#>);
 <#
         }
     }
@@ -202,7 +202,7 @@ if(!property.IsStatic)
 if(property.Type.IsSpecial)
 {
 #>
-        <#=property.Type.GetSpecialFree()#>(data);
+        <#=property.Type.GetSpecialFree(false)#>(data);
 <#
 }
 #>

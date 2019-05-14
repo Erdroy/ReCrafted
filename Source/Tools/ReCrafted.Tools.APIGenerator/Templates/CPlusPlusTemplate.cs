@@ -278,7 +278,7 @@ foreach(var function in Functions)
             this.Write("        ");
             
             #line 88 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Type.GetSpecialFree()));
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.Type.GetSpecialFree(function.ReturnType.BaseType != "void")));
             
             #line default
             #line hidden
@@ -605,7 +605,7 @@ if(property.Type.IsSpecial)
             this.Write("        ");
             
             #line 205 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.GetSpecialFree()));
+            this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.GetSpecialFree(false)));
             
             #line default
             #line hidden
