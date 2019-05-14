@@ -303,7 +303,7 @@ namespace ReCrafted.Tools.APIGenerator
                     desc.Inherits = nameToken.Value;
                 }
             }
-            else if(desc.Name != "Object")
+            else if(desc.Name != "Object" && tagArguments.FindIndex(x => x.Value == "noinherit") == -1)
             {
                 // Must inherit!
                 throw new Exception($"Class {className.Value} must inherit Object or any other type that inherits Object!");

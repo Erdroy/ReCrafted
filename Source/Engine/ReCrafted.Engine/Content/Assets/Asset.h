@@ -12,6 +12,8 @@
 #include <nlohmann/json.hpp>
 using namespace nlohmann;
 
+API_USING("System")
+
 /// <summary>
 ///     Asset class. Base class for all assets.
 /// </summary>
@@ -112,6 +114,15 @@ public:
     virtual bool IsLoaded() const
     {
         return m_loaded || IsVirtual();
+    }
+
+    /// <summary>
+    ///     Gets the asset's guid.
+    /// </summary>
+    API_PROPERTY()
+    Guid GetGuid() const
+    {
+        return AssetGuid;
     }
 
 public:

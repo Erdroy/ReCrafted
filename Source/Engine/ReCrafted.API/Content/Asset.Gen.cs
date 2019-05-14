@@ -1,6 +1,7 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 // WARNING: Auto-generated file. All changes will be lost when the API code will be regenerated!
 
+using System;
 using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Content 
@@ -60,6 +61,18 @@ namespace ReCrafted.API.Content
             }
         }
 
+        /// <summary>
+        ///     Gets the asset's guid.
+        /// </summary>
+        public Guid GetGuid
+        {
+            get
+            {
+                Get_InternalGetGuid(NativePtr, out var data);
+                return data;
+            }
+        }
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalAssetName(System.IntPtr nativePtr, out string data);
 
@@ -71,5 +84,8 @@ namespace ReCrafted.API.Content
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalIsLoaded(System.IntPtr nativePtr, out bool data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalGetGuid(System.IntPtr nativePtr, out Guid data);
     }
 }

@@ -6,6 +6,7 @@
 #include "Content/ContentManager.h"
 #include "Core/SubSystems/SubSystemManager.h"
 #include "Core/Threading/TaskManager.h"
+#include "Core/Display.h"
 #include "Core/Time.h"
 #include "Input/InputManager.h"
 #include "Renderer/Renderer.h"
@@ -93,7 +94,8 @@ void Application::OnWindowResized()
     uint height;
     Platform::GetWindowSize(Platform::GetCurrentWindow(), &width, &height);
 
-    // TODO: Update Display
+    Display::m_width = width;
+    Display::m_height = height;
 
     // TODO: Resize!
     Renderer::ResizeWindow(m_windowHandle, width, height);

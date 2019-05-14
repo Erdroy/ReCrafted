@@ -41,6 +41,14 @@ public:
         const auto _returnValue = instance->IsLoaded();
         *data = _returnValue;
     }
+    
+    static void Asset_Get_GetGuid5(Asset* instance, Guid* data) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "Asset");
+        const auto _returnValue = instance->GetGuid();
+        *data = _returnValue;
+    }
 };
 
 void Asset::InitRuntime() 
@@ -50,6 +58,7 @@ void Asset::InitRuntime()
     API_BIND("ReCrafted.API.Content.Asset::Get_InternalAssetFile", &APIProxy::Asset_Get_AssetFile2);
     API_BIND("ReCrafted.API.Content.Asset::Get_InternalIsVirtual", &APIProxy::Asset_Get_IsVirtual3);
     API_BIND("ReCrafted.API.Content.Asset::Get_InternalIsLoaded", &APIProxy::Asset_Get_IsLoaded4);
+    API_BIND("ReCrafted.API.Content.Asset::Get_InternalGetGuid", &APIProxy::Asset_Get_GetGuid5);
 }
 
 const char* Asset::Fullname() 

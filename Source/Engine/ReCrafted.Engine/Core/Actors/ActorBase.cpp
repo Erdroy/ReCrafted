@@ -226,12 +226,6 @@ void ActorBase::SetActive(const bool active)
     }
 }
 
-void ActorBase::TestArr(const Array<ActorBase*>& test)
-{
-    const auto t1 = test[1];
-
-}
-
 void ActorBase::SetParent(ActorBase* newParent)
 {
     MAIN_THREAD_ONLY();

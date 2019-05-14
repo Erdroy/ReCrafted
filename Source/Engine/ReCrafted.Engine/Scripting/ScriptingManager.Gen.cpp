@@ -7,9 +7,13 @@
 #include "Content/Assets/BinaryAsset.h"
 #include "Content/Assets/JsonAsset.h"
 #include "Core/Application.h"
+#include "Core/Display.h"
 #include "Core/Time.h"
 #include "Core/Actors/ActorBase.h"
 #include "Core/Actors/EmptyActor.h"
+#include "Graphics/Camera.h"
+#include "Graphics/CameraActor.h"
+#include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
 #include "Input/InputManager.h"
 #include "Input/Keyboard.h"
@@ -27,9 +31,13 @@ void ScriptingManager::InitRuntime()
     BinaryAsset::InitRuntime();
     JsonAsset::InitRuntime();
     Application::InitRuntime();
+    Display::InitRuntime();
     Time::InitRuntime();
     ActorBase::InitRuntime();
     EmptyActor::InitRuntime();
+    Camera::InitRuntime();
+    CameraActor::InitRuntime();
+    Shader::InitRuntime();
     Texture::InitRuntime();
     InputManager::InitRuntime();
     Keyboard::InitRuntime();

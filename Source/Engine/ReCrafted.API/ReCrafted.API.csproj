@@ -60,6 +60,7 @@
     <Compile Include="Core\Actors\ActorBase.Gen.cs" />
     <Compile Include="Core\Actors\EmptyActor.Gen.cs" />
     <Compile Include="Core\Application.Gen.cs" />
+    <Compile Include="Core\Display.Gen.cs" />
     <Compile Include="Core\Exceptions.cs" />
     <Compile Include="Core\GameBase.cs" />
     <Compile Include="Core\GameSystem.cs" />
@@ -67,6 +68,9 @@
     <Compile Include="Core\ReCraftedException.cs" />
     <Compile Include="Core\Time.cs" />
     <Compile Include="Core\Time.Gen.cs" />
+    <Compile Include="Graphics\Camera.Gen.cs" />
+    <Compile Include="Graphics\CameraActor.Gen.cs" />
+    <Compile Include="Graphics\Shader.Gen.cs" />
     <Compile Include="Graphics\Texture.Gen.cs" />
     <Compile Include="Input\Button.cs" />
     <Compile Include="Input\ButtonState.cs" />
