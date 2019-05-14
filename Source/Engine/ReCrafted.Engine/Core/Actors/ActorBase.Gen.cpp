@@ -208,15 +208,7 @@ public:
         *p_data = MONO_ARRAY_FROM_OBJECT_ARRAY(_returnValue, ActorBase, ActorBase*, MonoObject*, _t0->ToManaged());
     }
     
-    static void ActorBase_Get_TestArr13(ActorBase* instance, MonoArray** p_data) 
-    {
-        MAIN_THREAD_ONLY();
-        MONO_CHECK_OBJECT(instance, "ActorBase");
-        const auto _returnValue = instance->TestArr();
-        *p_data = MONO_ARRAY_FROM_ARRAY(_returnValue, int, int, int, _t0);
-    }
-    
-    static void ActorBase_Get_Scripts14(ActorBase* instance, MonoArray** p_data) 
+    static void ActorBase_Get_Scripts13(ActorBase* instance, MonoArray** p_data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "ActorBase");
@@ -254,8 +246,7 @@ void ActorBase::InitRuntime()
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalName", &APIProxy::ActorBase_Get_Name11);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalName", &APIProxy::ActorBase_Set_Name11);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalChildren", &APIProxy::ActorBase_Get_Children12);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalTestArr", &APIProxy::ActorBase_Get_TestArr13);
-    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalScripts", &APIProxy::ActorBase_Get_Scripts14);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalScripts", &APIProxy::ActorBase_Get_Scripts13);
 }
 
 const char* ActorBase::Fullname() 

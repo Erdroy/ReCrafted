@@ -8,6 +8,7 @@
 #include "Common/Array.h"
 #include "Core/Transform.h"
 #include "Scripting/Object.h"
+#include "Scripting/Script.h"
 
 using ActorId_t = uint64_t;
 
@@ -245,9 +246,6 @@ public:
     /// </summary>
     API_PROPERTY(noprefix)
     Array<ActorBase*> GetChildren();
-
-    API_PROPERTY(noprefix)
-    Array<int> TestArr();
 
     /// <summary>
     ///     Gets all script instances contained by this actor.

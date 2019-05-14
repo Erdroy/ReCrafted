@@ -226,6 +226,12 @@ void ActorBase::SetActive(const bool active)
     }
 }
 
+void ActorBase::TestArr(const Array<ActorBase*>& test)
+{
+    const auto t1 = test[1];
+
+}
+
 void ActorBase::SetParent(ActorBase* newParent)
 {
     MAIN_THREAD_ONLY();
@@ -462,11 +468,6 @@ Array<ActorBase*> ActorBase::GetChildren()
 {
     MAIN_THREAD_ONLY();
     return { m_children.Data(), m_children.Size() };
-}
-
-Array<int> ActorBase::TestArr()
-{
-    return Array<int>(reinterpret_cast<int*>(&m_id), 1);
 }
 
 Array<Script*> ActorBase::GetScripts()

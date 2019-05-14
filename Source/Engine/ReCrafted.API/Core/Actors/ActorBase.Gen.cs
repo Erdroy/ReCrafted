@@ -227,15 +227,6 @@ namespace ReCrafted.API.Core.Actors
             }
         }
 
-        public int[] TestArr
-        {
-            get
-            {
-                Get_InternalTestArr(NativePtr, out var data);
-                return data;
-            }
-        }
-
         /// <summary>
         ///     Gets all script instances contained by this actor.
         /// </summary>
@@ -325,9 +316,6 @@ namespace ReCrafted.API.Core.Actors
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalChildren(System.IntPtr nativePtr, out ActorBase[] data);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void Get_InternalTestArr(System.IntPtr nativePtr, out int[] data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalScripts(System.IntPtr nativePtr, out Script[] data);
