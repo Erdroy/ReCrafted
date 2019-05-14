@@ -104,6 +104,25 @@ public:
         const auto _returnValue = InputManager::IsKeyUp(key);
         return _returnValue;
     }
+    
+    static MonoObject* InputManager_GetDevice15(int deviceId) 
+    {
+        MAIN_THREAD_ONLY();
+        const auto _returnValue = InputManager::GetDevice(deviceId);
+        return _returnValue != nullptr ? _returnValue->ToManaged() : nullptr;
+    }
+    
+    static MonoObject* InputManager_GetDevice16(DeviceType deviceType) 
+    {
+        MAIN_THREAD_ONLY();
+        const auto _returnValue = InputManager::GetDevice(deviceType);
+        return _returnValue != nullptr ? _returnValue->ToManaged() : nullptr;
+    }
+    
+    static void InputManager_Get_DeviceCount1(int* data) 
+    {
+        MAIN_THREAD_ONLY();
+    }
 };
 
 void InputManager::InitRuntime() 
@@ -123,6 +142,9 @@ void InputManager::InitRuntime()
     API_BIND("ReCrafted.API.Input.InputManager::InternalIsKey", &APIProxy::InputManager_IsKey12);
     API_BIND("ReCrafted.API.Input.InputManager::InternalIsKeyDown", &APIProxy::InputManager_IsKeyDown13);
     API_BIND("ReCrafted.API.Input.InputManager::InternalIsKeyUp", &APIProxy::InputManager_IsKeyUp14);
+    API_BIND("ReCrafted.API.Input.InputManager::InternalGetDevice", &APIProxy::InputManager_GetDevice15);
+    API_BIND("ReCrafted.API.Input.InputManager::InternalGetDevice", &APIProxy::InputManager_GetDevice16);
+    API_BIND("ReCrafted.API.Input.InputManager::Get_InternalDeviceCount", &APIProxy::InputManager_Get_DeviceCount1);
 }
 
 const char* InputManager::Fullname() 

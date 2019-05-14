@@ -132,6 +132,40 @@ namespace ReCrafted.API.Input
         {
             return InternalIsKeyUp(key);
         }
+        
+        /// <summary>
+        ///     Finds device of given id.
+        /// </summary>
+        /// <param name="deviceId">The unique device identificator.</param>
+        /// <returns>When there is no device with specified id, this function throws an exception.</returns>
+        public static InputDevice GetDevice(int deviceId)
+        {
+            return InternalGetDevice(deviceId);
+        }
+        
+        /// <summary>
+        ///     Finds default device of given device type.
+        /// </summary>
+        /// <param name="deviceType">The device type.</param>
+        /// <returns>The default device.</returns>
+        /// <remarks>This function guarantees that it will always return proper device for DeviceType::Keyboard and DeviceType::Mouse.</remarks>
+        /// <remarks>When there is no device with specified type (other than Mouse and Keyboard) this function throws an std::exception.</remarks>
+        public static InputDevice GetDevice(DeviceType deviceType)
+        {
+            return InternalGetDevice(deviceType);
+        }
+
+        /// <summary>
+        ///     Gets device count.
+        /// </summary>
+        public static int DeviceCount
+        {
+            get
+            {
+                Get_InternalDeviceCount(out var data);
+                return data;
+            }
+        }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern bool InternalIsButton(Button button);
@@ -174,5 +208,14 @@ namespace ReCrafted.API.Input
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern bool InternalIsKeyUp(Key key);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern InputDevice InternalGetDevice(int deviceId);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern InputDevice InternalGetDevice(DeviceType deviceType);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalDeviceCount(out int data);
     }
 }

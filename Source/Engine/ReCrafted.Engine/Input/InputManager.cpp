@@ -273,7 +273,7 @@ bool InputManager::IsKeyUp(const Key key)
     return GetInstance()->m_keyboard->IsKeyUp(key);
 }
 
-InputDevice& InputManager::GetDevice(const int deviceId)
+InputDevice* InputManager::GetDevice(const int deviceId)
 {
     auto& lock = GetInstance()->m_deviceMapLock;
     ScopeLock(lock);
@@ -282,17 +282,17 @@ InputDevice& InputManager::GetDevice(const int deviceId)
     if (it == GetInstance()->m_deviceMap.end())
         throw std::exception("Input device not found");
 
-    return *it->second;
+    return it->second;
 }
 
-InputDevice& InputManager::GetDevice(const DeviceType deviceType)
+InputDevice* InputManager::GetDevice(const DeviceType deviceType)
 {
     switch(deviceType)
     {
     case DeviceType::Mouse:
-        return *GetInstance()->m_mouse;
+        return GetInstance()->m_mouse;
     case DeviceType::Keyboard:
-        return *GetInstance()->m_keyboard;
+        return GetInstance()->m_keyboard;
 
     case DeviceType::Gamepad:
     case DeviceType::Unknown:

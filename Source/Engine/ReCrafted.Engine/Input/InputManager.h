@@ -218,70 +218,60 @@ public: /* -- Basic Input -- */
     API_FUNCTION()
     static bool IsKeyUp(Key key);
 
-public: /* -- Devices -- */ // TODO: Add API when generic/template functions will be supported
-    /**
-     * \brief Finds device of given id.
-     * \param deviceId The unique device identificator.
-     * \return The device reference.
-     * 
-     * \note When there is no device with specified id, this function throws an std::exception.
-     */
-    static InputDevice& GetDevice(int deviceId);
+public: /* -- Devices -- */
+    /// <summary>
+    ///     Finds device of given id.
+    /// </summary>
+    /// <param name="deviceId">The unique device identificator.</param>
+    /// <returns>When there is no device with specified id, this function throws an exception.</returns>
+    API_FUNCTION()
+    static InputDevice* GetDevice(int deviceId);
 
-    /**
-     * \brief Finds device of given id and casts it into TDevice type.
-     * \tparam TDevice The target device type. Eg.: Keyboard, Gamepad etc.
-     * \param deviceId The unique device identificator.
-     * \return The device reference.
-     *
-     * \note When there is no device with specified id, this function throws an std::exception.
-     */
+    /// <summary>
+    ///     Finds device of given id and casts it into TDevice type.
+    /// </summary>
+    /// <typeparam name="TDevice">The target device type. Eg.: Keyboard, Gamepad etc.</typeparam>
+    /// <param name="deviceId">The unique device identificator.</param>
+    /// <returns>When there is no device with specified id, this function throws an exception.</returns>
     template<typename TDevice>
-    static TDevice& GetDevice(int deviceId);
+    static TDevice* GetDevice(int deviceId);
 
-    /**
-     * \brief Finds default device of given device type. 
-     * \param deviceType The device type.
-     * \return The default device reference.
-     * 
-     * \note This function guarantees that it will always return proper device for
-     * DeviceType::Keyboard and DeviceType::Mouse.
-     * 
-     * \note When there is no device with specified type (other than Mouse and Keyboard) 
-     * this function throws an std::exception.
-     */
-    static InputDevice& GetDevice(DeviceType deviceType);
+    /// <summary>
+    ///     Finds default device of given device type.
+    /// </summary>
+    /// <param name="deviceType">The device type.</param>
+    /// <returns>The default device.</returns>
+    /// <remarks>This function guarantees that it will always return proper device for DeviceType::Keyboard and DeviceType::Mouse.</remarks>
+    /// <remarks>When there is no device with specified type (other than Mouse and Keyboard) this function throws an std::exception.</remarks>
+    API_FUNCTION()
+    static InputDevice* GetDevice(DeviceType deviceType);
 
-    /**
-     * \brief Finds device of given type and casts it into TDevice type.
-     * \tparam TDevice The target device type. Eg.: Keyboard, Gamepad etc.
-     * \param deviceType The device type.
-     * \return The device reference.
-     * 
-     * \note This function guarantees that it will always return proper device for
-     * DeviceType::Keyboard and DeviceType::Mouse.
-     *
-     * \note When there is no device with specified type (other than Mouse and Keyboard) 
-     * this function throws an std::exception.
-     */
+    /// <summary>
+    ///     Finds default device of given device type.
+    /// </summary>
+    /// <typeparam name="TDevice">The target device type. Eg.: Keyboard, Gamepad etc.</typeparam>
+    /// <param name="deviceType">The device type.</param>
+    /// <returns>The default device.</returns>
+    /// <remarks>This function guarantees that it will always return proper device for DeviceType::Keyboard and DeviceType::Mouse.</remarks>
+    /// <remarks>When there is no device with specified type (other than Mouse and Keyboard) this function throws an std::exception.</remarks>
     template<typename TDevice>
-    static TDevice& GetDevice(DeviceType deviceType);
+    static TDevice* GetDevice(DeviceType deviceType);
 
-    /**
-     * \brief Gets device count.
-     * \return The current device count.
-     */
+    /// <summary>
+    ///     Gets device count.
+    /// </summary>
+    API_PROPERTY(noprefix)
     static int GetDeviceCount();
 };
 
 template <typename TDevice>
-TDevice& InputManager::GetDevice(const int deviceId)
+TDevice* InputManager::GetDevice(const int deviceId)
 {
     return static_cast<TDevice&>(GetDevice(deviceId));
 }
 
 template <typename TDevice>
-TDevice& InputManager::GetDevice(const DeviceType deviceType)
+TDevice* InputManager::GetDevice(const DeviceType deviceType)
 {
     return static_cast<TDevice&>(GetDevice(deviceType));
 }
