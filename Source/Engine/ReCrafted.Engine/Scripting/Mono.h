@@ -98,7 +98,7 @@
     MonoArrayFromArray<t0, tb0>(val);
 
 #define MONO_ARRAY_TO_OBJECT_ARRAY(val, tb0, t0, t0_target, t0_conv)\
-    MonoArrayToObjectArray<t0, tb0>(val);
+    MonoArrayToObjectArray<t0>(val);
 
 #define MONO_ARRAY_TO_ARRAY(val, tb0, t0, t0_target, t0_conv)\
     MonoArrayToArray<t0>(val);
@@ -127,7 +127,7 @@ inline static MonoArray* MonoArrayFromArray(const Array<TType>& arr)
     auto monoArray = mono_array_new(Domain::Root->ToMono(), ScriptingManager::GetClassOf<TBaseType>(), arr.Count());
 
     // Copy array
-    const auto monoArrayPtr = mono_array_addr(monoArray, TType, 0); // TODO: Make sure that TType has the same size as the managed equivalent
+    const auto monoArrayPtr = mono_array_addr(monoArray, TType, 0);
     memcpy(monoArrayPtr, arr.Data(), arr.Count() * sizeof(TType));
 
     // Return mono array
@@ -135,10 +135,39 @@ inline static MonoArray* MonoArrayFromArray(const Array<TType>& arr)
 }
 
 template<typename TType>
+inline static Array<TType> MonoArrayToObjectArray(MonoArray* arr)
+{
+    const auto len = mono_array_length(arr);
+    const auto monoArrayPtr = mono_array_addr(arr, MonoObject*, 0);
+
+    // Allocate temporary data - this will be cleared later with MONO_FREE_ARRAY
+    const auto nativeArrayData = new TType[len];
+    auto nativeArray = Array<TType>(nativeArrayData, len);
+
+    if(len > 0)
+    {
+        const auto mClass = mono_object_get_class(monoArrayPtr[0]);
+        const auto nativePtrField = mono_class_get_field_from_name(mClass, "NativePtr");
+
+        // Copy array
+        for (auto i = 0; i < len; i++)
+        {
+            const auto mObject = monoArrayPtr[0];
+
+            void* nativePtr;
+            mono_field_get_value(mObject, nativePtrField, &nativePtr);
+            nativeArray[i] = static_cast<TType>(nativePtr);
+        }
+    }
+
+    return nativeArray;
+}
+
+template<typename TType>
 inline static Array<TType> MonoArrayToArray(MonoArray* arr)
 {
     const auto len = mono_array_length(arr);
-    const auto monoArrayPtr = mono_array_addr(arr, TType, 0); // TODO: Make sure that TType has the same size as the managed equivalent
+    const auto monoArrayPtr = mono_array_addr(arr, TType, 0);
 
     // Allocate temporary data - this will be cleared later with MONO_FREE_ARRAY
     const auto nativeArrayData = new TType[len];
