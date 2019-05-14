@@ -82,8 +82,9 @@ public:
 
 void Texture::InitRuntime() 
 {
-    MONO_REGISTER_OBJECT(&APIProxy::Texture_CreateObject, Texture);
+    MONO_REGISTER_OBJECT(&APIProxy::Texture_CreateObject);
     
+    MONO_REGISTER_OBJECT_TYPE(Texture);
     API_BIND("ReCrafted.API.Graphics.Texture::InternalInitializeFromFile", &APIProxy::Texture_InitializeFromFile1);
     API_BIND("ReCrafted.API.Graphics.Texture::InternalGetPixel", &APIProxy::Texture_GetPixel2);
     API_BIND("ReCrafted.API.Graphics.Texture::InternalSetPixel", &APIProxy::Texture_SetPixel3);

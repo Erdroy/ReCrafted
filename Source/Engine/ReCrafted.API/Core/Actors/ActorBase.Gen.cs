@@ -215,6 +215,39 @@ namespace ReCrafted.API.Core.Actors
             set => Set_InternalName(NativePtr, ref value);
         }
 
+        /// <summary>
+        ///     Gets all children instances.
+        /// </summary>
+        public ActorBase[] Children
+        {
+            get
+            {
+                Get_InternalChildren(NativePtr, out var data);
+                return data;
+            }
+        }
+
+        public int[] TestArr
+        {
+            get
+            {
+                Get_InternalTestArr(NativePtr, out var data);
+                return data;
+            }
+        }
+
+        /// <summary>
+        ///     Gets all script instances contained by this actor.
+        /// </summary>
+        public Script[] Scripts
+        {
+            get
+            {
+                Get_InternalScripts(NativePtr, out var data);
+                return data;
+            }
+        }
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalSetParent(System.IntPtr nativePtr, System.IntPtr newParent);
 
@@ -289,5 +322,14 @@ namespace ReCrafted.API.Core.Actors
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Set_InternalName(System.IntPtr nativePtr, ref string data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalChildren(System.IntPtr nativePtr, out ActorBase[] data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalTestArr(System.IntPtr nativePtr, out int[] data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalScripts(System.IntPtr nativePtr, out Script[] data);
     }
 }

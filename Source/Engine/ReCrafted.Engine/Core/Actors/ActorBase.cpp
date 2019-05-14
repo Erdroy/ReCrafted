@@ -101,16 +101,14 @@ ActorBase::~ActorBase()
         SetParent(nullptr);
     }
 
-    // Destroy all children too, but later
-    // because we can fall into deadlock, if this destructor is 
-    // being called from ObjectManager::Shutdown.
+    // Destroy all children
     for(auto&& child : m_children)
     {
         // Force child's parent object pointer to be null while destroying it.
         child->m_parent = nullptr;
 
         // Destroy the child actor
-        Destroy(child);
+        DestroyNow(child);
     }
 
     // Remove from scene
@@ -464,6 +462,11 @@ Array<ActorBase*> ActorBase::GetChildren()
 {
     MAIN_THREAD_ONLY();
     return { m_children.Data(), m_children.Size() };
+}
+
+Array<int> ActorBase::TestArr()
+{
+    return Array<int>(reinterpret_cast<int*>(&m_id), 1);
 }
 
 Array<Script*> ActorBase::GetScripts()

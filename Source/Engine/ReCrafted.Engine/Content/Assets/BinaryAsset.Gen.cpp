@@ -13,6 +13,7 @@ public:
 
 void BinaryAsset::InitRuntime() 
 {
+    MONO_REGISTER_OBJECT_TYPE(BinaryAsset);
 }
 
 const char* BinaryAsset::Fullname() 

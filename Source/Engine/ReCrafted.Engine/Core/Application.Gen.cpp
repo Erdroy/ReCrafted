@@ -19,6 +19,7 @@ public:
 
 void Application::InitRuntime() 
 {
+    MONO_REGISTER_OBJECT_TYPE(Application);
     API_BIND("ReCrafted.API.Core.Application::InternalQuit", &APIProxy::Application_Quit1);
 }
 

@@ -13,6 +13,7 @@ public:
 
 void SceneManager::InitRuntime() 
 {
+    MONO_REGISTER_OBJECT_TYPE(SceneManager);
 }
 
 const char* SceneManager::Fullname() 

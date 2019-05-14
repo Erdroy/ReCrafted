@@ -22,6 +22,7 @@ public:
 
 void Logger::InitRuntime() 
 {
+    MONO_REGISTER_OBJECT_TYPE(Logger);
     API_BIND("ReCrafted.API.Common.Logger::InternalWriteLog", &APIProxy::Logger_WriteLog1);
 }
 

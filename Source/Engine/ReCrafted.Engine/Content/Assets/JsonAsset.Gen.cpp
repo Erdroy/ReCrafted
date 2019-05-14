@@ -13,6 +13,7 @@ public:
 
 void JsonAsset::InitRuntime() 
 {
+    MONO_REGISTER_OBJECT_TYPE(JsonAsset);
 }
 
 const char* JsonAsset::Fullname() 

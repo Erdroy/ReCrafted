@@ -48,6 +48,7 @@ public:
 
 void Time::InitRuntime() 
 {
+    MONO_REGISTER_OBJECT_TYPE(Time);
     API_BIND("ReCrafted.API.Core.Time::InternalCurrentTime", &APIProxy::Time_CurrentTime1);
     API_BIND("ReCrafted.API.Core.Time::InternalCurrentFixedTime", &APIProxy::Time_CurrentFixedTime2);
     API_BIND("ReCrafted.API.Core.Time::InternalDeltaTime", &APIProxy::Time_DeltaTime3);

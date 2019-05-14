@@ -141,8 +141,9 @@ public:
 
 void Mouse::InitRuntime() 
 {
-    MONO_REGISTER_OBJECT(&APIProxy::Mouse_CreateObject, Mouse);
+    MONO_REGISTER_OBJECT(&APIProxy::Mouse_CreateObject);
     
+    MONO_REGISTER_OBJECT_TYPE(Mouse);
     API_BIND("ReCrafted.API.Input.Mouse::InternalEmitInput", &APIProxy::Mouse_EmitInput1);
     API_BIND("ReCrafted.API.Input.Mouse::InternalEmitCursor", &APIProxy::Mouse_EmitCursor2);
     API_BIND("ReCrafted.API.Input.Mouse::InternalEmitScroll", &APIProxy::Mouse_EmitScroll3);

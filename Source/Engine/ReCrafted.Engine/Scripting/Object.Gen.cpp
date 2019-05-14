@@ -37,6 +37,7 @@ public:
 
 void Object::InitRuntime() 
 {
+    MONO_REGISTER_OBJECT_TYPE(Object);
     API_BIND("ReCrafted.API.Object::InternalDestroy", &APIProxy::Object_Destroy1);
     API_BIND("ReCrafted.API.Object::InternalDestroyNow", &APIProxy::Object_DestroyNow2);
     API_BIND("ReCrafted.API.Object::InternalNew", &APIProxy::Object_New3);

@@ -45,6 +45,7 @@ public:
 
 void Asset::InitRuntime() 
 {
+    MONO_REGISTER_OBJECT_TYPE(Asset);
     API_BIND("ReCrafted.API.Content.Asset::Get_InternalAssetName", &APIProxy::Asset_Get_AssetName1);
     API_BIND("ReCrafted.API.Content.Asset::Get_InternalAssetFile", &APIProxy::Asset_Get_AssetFile2);
     API_BIND("ReCrafted.API.Content.Asset::Get_InternalIsVirtual", &APIProxy::Asset_Get_IsVirtual3);

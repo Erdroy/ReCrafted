@@ -43,7 +43,7 @@
 #define MONO_FREE(ptr)              \
     mono_free(ptr);
 
-#define MONO_DELEGATE_TO_ACTION_2(p, t0, t0_target, t0_conv, t1, t1_target, t1_conv) \
+#define MONO_DELEGATE_TO_ACTION_2(p, tb0, t0, t0_target, t0_conv, tb1, t1, t1_target, t1_conv) \
      Action<t0, t1>([p](t1 _t1) {           \
         auto param = t1_conv ;              \
         mono_runtime_delegate_invoke(p,     \
@@ -51,7 +51,7 @@
         nullptr);                           \
     });
 
-#define MONO_DELEGATE_TO_ACTION_3(p, t0, t0_target, t0_conv, t1, t1_target, t1_conv, t2, t2_target, t2_conv) \
+#define MONO_DELEGATE_TO_ACTION_3(p, tb0, t0, t0_target, t0_conv, tb1, t1, t1_target, t1_conv, tb2, t2, t2_target, t2_conv) \
      Action<t0, t1, t2>([p](t1 _t1, t2 _t2) {           \
         struct { t1_target a; t2_target b; } params;    \
         params.a = t1_conv ;                            \
@@ -61,7 +61,7 @@
         nullptr);                                       \
     });
 
-#define MONO_DELEGATE_TO_ACTION_4(p, t0, t0_target, t0_conv, t1, t1_target, t1_conv, t2, t2_target, t2_conv, t3, t3_target, t3_conv) \
+#define MONO_DELEGATE_TO_ACTION_4(p, tb0, t0, t0_target, t0_conv, tb1, t1, t1_target, t1_conv, tb2, t2, t2_target, t2_conv, tb3, t3, t3_target, t3_conv) \
      Action<t0, t1, t2, t3>([p](t1 _t1, t2 _t2, t3 _t3) {               \
         struct { t1_target a; t2_target b; t3_target c; } params;       \
         params.a = t1_conv ;                                            \
@@ -75,16 +75,52 @@
 #define MONO_FREE_STUB(value)
 #define MONO_DELEGATE_FREE_STUB(value)
 
-#define MONO_REGISTER_OBJECT(func, type)      \
+#define MONO_REGISTER_OBJECT(func)      \
     ObjectManager::GetInstance()->RegisterObjectCreator(                            \
         mono_reflection_type_from_name(                                             \
             const_cast<char*>(Fullname()),                                          \
             mono_assembly_get_image(ScriptingManager::GetAPIAssembly()->ToMono())   \
         ),                                                                          \
         Action<Object*, bool>::New(func)                                            \
-    );\
+    )
+
+#define MONO_REGISTER_OBJECT_TYPE(type)      \
     ScriptingManager::GetInstance()->RegisterType< type >(ScriptingManager::GetAPIAssembly(), \
         mono_reflection_type_from_name(                                             \
             const_cast<char*>(Fullname()),                                          \
             mono_assembly_get_image(ScriptingManager::GetAPIAssembly()->ToMono())   \
-        ));
+        ))
+
+#define MONO_ARRAY_FROM_OBJECT_ARRAY(val, tb0, t0, t0_target, t0_conv)\
+    MonoArrayFromObjectArray<t0, tb0>(val);
+
+#define MONO_ARRAY_FROM_ARRAY(val, tb0, t0, t0_target, t0_conv)\
+    MonoArrayFromArray<t0, tb0>(val);
+
+template<typename TType, typename TBaseType>
+inline static MonoArray* MonoArrayFromObjectArray(const Array<TType>& arr)
+{
+    // Create array
+    auto monoArray = mono_array_new(Domain::Root->ToMono(), ScriptingManager::GetClassOf<TBaseType>(), arr.Count());
+
+    // Copy array
+    for (auto i = 0; i < arr.Count(); i++)
+        mono_array_set(monoArray, MonoObject*, i, arr[i]->ToManaged());
+
+    // Return mono array
+    return monoArray;
+}
+
+template<typename TType, typename TBaseType>
+inline static MonoArray* MonoArrayFromArray(const Array<TType>& arr)
+{
+    // Create array
+    auto monoArray = mono_array_new(Domain::Root->ToMono(), ScriptingManager::GetClassOf<TBaseType>(), arr.Count());
+
+    // Copy array
+    const auto monoArrayPtr = mono_array_addr(monoArray, TType, 0);
+    memcpy(monoArrayPtr, arr.Data(), arr.Count() * sizeof(TType));
+
+    // Return mono array
+    return monoArray;
+}

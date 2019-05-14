@@ -31,7 +31,7 @@ public:
         ASSERT(p_assetFile);
         const auto assetFile = MONO_STRING_TO_CSTR(p_assetFile);
         ASSERT(p_onLoad);
-        const auto onLoad = MONO_DELEGATE_TO_ACTION_2(p_onLoad, void, void, _t0, Asset*, MonoObject*, _t1->ToManaged());
+        const auto onLoad = MONO_DELEGATE_TO_ACTION_2(p_onLoad, void, void, void, _t0, Asset, Asset*, MonoObject*, _t1->ToManaged());
         ContentManager::InternalLoadAssetAsync(asset, assetFile, onLoad);
         MONO_FREE(assetFile);
         MONO_FREE_STUB(onLoad);
@@ -40,6 +40,7 @@ public:
 
 void ContentManager::InitRuntime() 
 {
+    MONO_REGISTER_OBJECT_TYPE(ContentManager);
     API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalInitVirtualAsset", &APIProxy::ContentManager_InternalInitVirtualAsset1);
     API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalLoadAssetSync", &APIProxy::ContentManager_InternalLoadAssetSync2);
     API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalLoadAssetAsync", &APIProxy::ContentManager_InternalLoadAssetAsync3);

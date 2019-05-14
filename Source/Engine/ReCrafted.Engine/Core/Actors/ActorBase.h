@@ -243,11 +243,16 @@ public:
     /// <summary>
     ///     Gets all children instances.
     /// </summary>
+    API_PROPERTY(noprefix)
     Array<ActorBase*> GetChildren();
+
+    API_PROPERTY(noprefix)
+    Array<int> TestArr();
 
     /// <summary>
     ///     Gets all script instances contained by this actor.
     /// </summary>
+    API_PROPERTY(noprefix)
     Array<Script*> GetScripts();
 
     ActorId_t GetId() const;

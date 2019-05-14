@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ReCrafted.Tools.APIGenerator.Descriptions
@@ -39,6 +40,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                     case "std::string":     // std string
                     case "String":          // Engine's string
                     case "Action":          // Engine's delegate
+                    case "Array":
                         return true;
                     default:
                         return false;
@@ -56,6 +58,10 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                     return "MONO_STRING_FROM_STDSTR";
                 case "String": // Engine's string
                     return "MONO_STRING_FROM_STR";
+                case "Array" when GenericTypes.First().CastToManaged:
+                    return "MONO_ARRAY_FROM_OBJECT_ARRAY";
+                case "Array":
+                    return "MONO_ARRAY_FROM_ARRAY";
                 case "Action": // Engine's delegate
                     throw new Exception("Action/Func return type is not supported!");
                 default:
@@ -79,6 +85,10 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                     return "MONO_STRING_TO_CSTR";
                 case "String": // Engine's string
                     return "MONO_STRING_TO_STR";
+                case "Array" when GenericTypes.First().CastToManaged:
+                    return "MONO_ARRAY_TO_OBJECT_ARRAY";
+                case "Array":
+                    return "MONO_ARRAY_TO_ARRAY";
                 case "Action": // Engine's delegate
                     return "MONO_DELEGATE_TO_ACTION_" + GenericTypes.Count;
                 default:
@@ -94,6 +104,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                 case "std::string":     // std string
                     return "MONO_FREE";
                 case "String":          // Engine's string
+                case "Array":
                 case "Action":          // Engine's delegate
                     return "MONO_FREE_STUB";
                 default:
@@ -116,6 +127,8 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                     return "string";
                 case "Action":
                     return TypeTranslation.ToCSharpAction(this);
+                case "Array":
+                    return TypeTranslation.ToCSharpArray(this);
             }
 
             // TODO: Handle arrays
@@ -165,6 +178,8 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                     return "MonoString*";
                 case "Action": // Engine's delegate
                     return "MonoObject*";
+                case "Array":
+                    return "MonoArray*";
                 default:
                     return ToString(isReturn);
             }
@@ -181,6 +196,8 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                 var id = 0;
                 foreach (var genericType in GenericTypes)
                 {
+                    sb.Append(", ");
+                    sb.Append(genericType.BaseType);
                     sb.Append(", ");
                     sb.Append(genericType.ToString());
                     sb.Append(", ");

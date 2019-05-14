@@ -83,5 +83,13 @@ namespace ReCrafted.Tools.APIGenerator
 
             return sb.ToString();
         }
+
+        public static string ToCSharpArray(TypeDescription type)
+        {
+            var sb = new StringBuilder();
+            sb.Append(type.GenericTypes.First().ToCSharp());
+            sb.Append("[]");
+            return sb.ToString();
+        }
     }
 }

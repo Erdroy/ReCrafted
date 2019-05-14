@@ -1,5 +1,6 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
+using System.Linq;
 using ReCrafted.API;
 using ReCrafted.API.Common;
 using ReCrafted.API.Content;
@@ -49,6 +50,12 @@ namespace ReCrafted.Game.Core
             _actor = EmptyActor.Create();
             _actor.Name = "Test Actor";
             _actor.AddScript<TestScript>();
+            _actor.AddChild(EmptyActor.Create());
+
+            Logger.Log($"{_actor.Children.Length}");
+            Logger.Log($"{_actor.Children.First().Position}");
+
+            Object.DestroyNow(_actor);
 
             Logger.Log("Game initialized");
 

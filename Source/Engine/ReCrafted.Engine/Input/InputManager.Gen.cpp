@@ -108,6 +108,7 @@ public:
 
 void InputManager::InitRuntime() 
 {
+    MONO_REGISTER_OBJECT_TYPE(InputManager);
     API_BIND("ReCrafted.API.Input.InputManager::InternalIsButton", &APIProxy::InputManager_IsButton1);
     API_BIND("ReCrafted.API.Input.InputManager::InternalIsButtonDown", &APIProxy::InputManager_IsButtonDown2);
     API_BIND("ReCrafted.API.Input.InputManager::InternalIsButtonUp", &APIProxy::InputManager_IsButtonUp3);

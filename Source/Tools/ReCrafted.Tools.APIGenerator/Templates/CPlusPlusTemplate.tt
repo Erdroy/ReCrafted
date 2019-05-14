@@ -244,11 +244,12 @@ void <#=Class.Name#>::InitRuntime()
 if(!Class.IsStatic && !string.IsNullOrEmpty(Class.Inherits) && !Class.IsAbstract)
 {
 #>
-    MONO_REGISTER_OBJECT(&APIProxy::<#=Class.Name#>_CreateObject, <#=Class.Name#>);
+    MONO_REGISTER_OBJECT(&APIProxy::<#=Class.Name#>_CreateObject);
     
 <#
 }
 #>
+    MONO_REGISTER_OBJECT_TYPE(<#=Class.Name#>);
 <#
 // ---- Function bindings ----
 var fId1 = 0;

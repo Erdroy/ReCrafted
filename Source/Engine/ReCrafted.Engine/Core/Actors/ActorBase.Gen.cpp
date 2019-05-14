@@ -199,10 +199,35 @@ public:
         instance->SetName(data);
         MONO_FREE_STUB(data);
     }
+    
+    static void ActorBase_Get_Children12(ActorBase* instance, MonoArray** p_data) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "ActorBase");
+        const auto _returnValue = instance->GetChildren();
+        *p_data = MONO_ARRAY_FROM_OBJECT_ARRAY(_returnValue, ActorBase, ActorBase*, MonoObject*, _t0->ToManaged());
+    }
+    
+    static void ActorBase_Get_TestArr13(ActorBase* instance, MonoArray** p_data) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "ActorBase");
+        const auto _returnValue = instance->TestArr();
+        *p_data = MONO_ARRAY_FROM_ARRAY(_returnValue, int, int, int, _t0);
+    }
+    
+    static void ActorBase_Get_Scripts14(ActorBase* instance, MonoArray** p_data) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "ActorBase");
+        const auto _returnValue = instance->GetScripts();
+        *p_data = MONO_ARRAY_FROM_OBJECT_ARRAY(_returnValue, Script, Script*, MonoObject*, _t0->ToManaged());
+    }
 };
 
 void ActorBase::InitRuntime() 
 {
+    MONO_REGISTER_OBJECT_TYPE(ActorBase);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalSetParent", &APIProxy::ActorBase_SetParent1);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalAddChild", &APIProxy::ActorBase_AddChild2);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::InternalRemoveChild", &APIProxy::ActorBase_RemoveChild3);
@@ -228,6 +253,9 @@ void ActorBase::InitRuntime()
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalIsActive", &APIProxy::ActorBase_Get_IsActive10);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalName", &APIProxy::ActorBase_Get_Name11);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalName", &APIProxy::ActorBase_Set_Name11);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalChildren", &APIProxy::ActorBase_Get_Children12);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalTestArr", &APIProxy::ActorBase_Get_TestArr13);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalScripts", &APIProxy::ActorBase_Get_Scripts14);
 }
 
 const char* ActorBase::Fullname() 
