@@ -131,7 +131,7 @@ public:
         return m_data[index];
     }
 
-    FORCE_INLINE TType* Data()
+    FORCE_INLINE TType* Data() const
     {
         return m_data;
     }
