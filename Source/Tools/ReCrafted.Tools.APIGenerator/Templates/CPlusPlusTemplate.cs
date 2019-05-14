@@ -730,7 +730,14 @@ if(!Class.IsStatic && !string.IsNullOrEmpty(Class.Inherits) && !Class.IsAbstract
             
             #line default
             #line hidden
-            this.Write("_CreateObject);\r\n    \r\n");
+            this.Write("_CreateObject, ");
+            
+            #line 247 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
+            
+            #line default
+            #line hidden
+            this.Write(");\r\n    \r\n");
             
             #line 249 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 

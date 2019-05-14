@@ -22,6 +22,13 @@ void ScriptingManager::LoadAssemblies()
     m_coreAssembly = Domain::Root->GetAssembly("mscorlib");
 }
 
+ScriptingManager::TypeInfo ScriptingManager::GetTypeName(size_t hash)
+{
+    const auto it = m_classMap.find(hash);
+    ASSERT(it != m_classMap.end());
+    return it->second;
+}
+
 void ScriptingManager::Initialize()
 {
     // Check if we need to attach debugger
@@ -52,8 +59,33 @@ void ScriptingManager::Initialize()
     // Load assemblies
     LoadAssemblies();
 
+    // Initialize types
+    InitBuiltinTypes();
+
     // Initialize runtime
     InitRuntime();
+}
+
+void ScriptingManager::InitBuiltinTypes()
+{
+    RegisterType<char>(m_coreAssembly, "Byte", "System");
+
+    RegisterType<int8_t>(m_coreAssembly, "SByte", "System");
+    RegisterType<uint8_t>(m_coreAssembly, "Byte", "System");
+
+    RegisterType<int16_t>(m_coreAssembly, "Int16", "System");
+    RegisterType<uint16_t>(m_coreAssembly, "UInt16", "System");
+
+    RegisterType<int32_t>(m_coreAssembly, "Int32", "System");
+    RegisterType<uint32_t>(m_coreAssembly, "UInt32", "System");
+
+    RegisterType<int64_t>(m_coreAssembly, "Int64", "System");
+    RegisterType<uint64_t>(m_coreAssembly, "UInt64", "System");
+
+    RegisterType<bool>(m_coreAssembly, "Boolean", "System");
+    RegisterType<float>(m_coreAssembly, "Single", "System");
+    RegisterType<double>(m_coreAssembly, "Double", "System");
+    RegisterType<size_t>(m_coreAssembly, "UIntPtr", "System");
 }
 
 void ScriptingManager::Shutdown()

@@ -75,11 +75,16 @@
 #define MONO_FREE_STUB(value)
 #define MONO_DELEGATE_FREE_STUB(value)
 
-#define MONO_REGISTER_OBJECT(func)      \
+#define MONO_REGISTER_OBJECT(func, type)      \
     ObjectManager::GetInstance()->RegisterObjectCreator(                            \
         mono_reflection_type_from_name(                                             \
             const_cast<char*>(Fullname()),                                          \
             mono_assembly_get_image(ScriptingManager::GetAPIAssembly()->ToMono())   \
         ),                                                                          \
         Action<Object*, bool>::New(func)                                            \
-    )
+    );\
+    ScriptingManager::GetInstance()->RegisterType< type >(ScriptingManager::GetAPIAssembly(), \
+        mono_reflection_type_from_name(                                             \
+            const_cast<char*>(Fullname()),                                          \
+            mono_assembly_get_image(ScriptingManager::GetAPIAssembly()->ToMono())   \
+        ));

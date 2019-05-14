@@ -41,7 +41,7 @@ public:
 
 void Script::InitRuntime() 
 {
-    MONO_REGISTER_OBJECT(&APIProxy::Script_CreateObject);
+    MONO_REGISTER_OBJECT(&APIProxy::Script_CreateObject, Script);
     
     API_BIND("ReCrafted.API.Script::InternalActor", &APIProxy::Script_Actor1);
     API_BIND("ReCrafted.API.Script::Get_InternalEnabled", &APIProxy::Script_Get_Enabled1);

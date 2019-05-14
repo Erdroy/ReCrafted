@@ -26,7 +26,7 @@ public:
 
 void EmptyActor::InitRuntime() 
 {
-    MONO_REGISTER_OBJECT(&APIProxy::EmptyActor_CreateObject);
+    MONO_REGISTER_OBJECT(&APIProxy::EmptyActor_CreateObject, EmptyActor);
     
     API_BIND("ReCrafted.API.Core.Actors.EmptyActor::InternalCreate", &APIProxy::EmptyActor_Create1);
 }

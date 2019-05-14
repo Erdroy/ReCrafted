@@ -49,7 +49,7 @@ public:
 
 void Keyboard::InitRuntime() 
 {
-    MONO_REGISTER_OBJECT(&APIProxy::Keyboard_CreateObject);
+    MONO_REGISTER_OBJECT(&APIProxy::Keyboard_CreateObject, Keyboard);
     
     API_BIND("ReCrafted.API.Input.Keyboard::InternalEmitInput", &APIProxy::Keyboard_EmitInput1);
     API_BIND("ReCrafted.API.Input.Keyboard::InternalEmitCharacter", &APIProxy::Keyboard_EmitCharacter2);

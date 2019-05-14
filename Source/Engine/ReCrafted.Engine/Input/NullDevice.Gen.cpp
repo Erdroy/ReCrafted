@@ -35,7 +35,7 @@ public:
 
 void NullDevice::InitRuntime() 
 {
-    MONO_REGISTER_OBJECT(&APIProxy::NullDevice_CreateObject);
+    MONO_REGISTER_OBJECT(&APIProxy::NullDevice_CreateObject, NullDevice);
     
     API_BIND("ReCrafted.API.Input.NullDevice::InternalDeviceName", &APIProxy::NullDevice_DeviceName1);
     API_BIND("ReCrafted.API.Input.NullDevice::InternalType", &APIProxy::NullDevice_Type2);
