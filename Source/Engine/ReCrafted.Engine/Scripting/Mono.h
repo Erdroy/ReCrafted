@@ -97,6 +97,15 @@
 #define MONO_ARRAY_FROM_ARRAY(val, tb0, t0, t0_target, t0_conv)\
     MonoArrayFromArray<t0, tb0>(val);
 
+#define MONO_ARRAY_TO_OBJECT_ARRAY(val, tb0, t0, t0_target, t0_conv)\
+    MonoArrayToObjectArray<t0, tb0>(val);
+
+#define MONO_ARRAY_TO_ARRAY(val, tb0, t0, t0_target, t0_conv)\
+    MonoArrayToArray<t0>(val);
+
+#define MONO_FREE_ARRAY(arr)\
+    delete arr.Data()
+
 template<typename TType, typename TBaseType>
 inline static MonoArray* MonoArrayFromObjectArray(const Array<TType>& arr)
 {
@@ -118,9 +127,25 @@ inline static MonoArray* MonoArrayFromArray(const Array<TType>& arr)
     auto monoArray = mono_array_new(Domain::Root->ToMono(), ScriptingManager::GetClassOf<TBaseType>(), arr.Count());
 
     // Copy array
-    const auto monoArrayPtr = mono_array_addr(monoArray, TType, 0);
+    const auto monoArrayPtr = mono_array_addr(monoArray, TType, 0); // TODO: Make sure that TType has the same size as the managed equivalent
     memcpy(monoArrayPtr, arr.Data(), arr.Count() * sizeof(TType));
 
     // Return mono array
     return monoArray;
+}
+
+template<typename TType>
+inline static Array<TType> MonoArrayToArray(MonoArray* arr)
+{
+    const auto len = mono_array_length(arr);
+    const auto monoArrayPtr = mono_array_addr(arr, TType, 0); // TODO: Make sure that TType has the same size as the managed equivalent
+
+    // Allocate temporary data - this will be cleared later with MONO_FREE_ARRAY
+    const auto nativeArrayData = new TType[len];
+    auto nativeArray = Array<TType>(nativeArrayData, len);
+
+    // Copy array
+    memcpy(nativeArrayData, monoArrayPtr, len * sizeof(TType));
+
+    return nativeArray;
 }

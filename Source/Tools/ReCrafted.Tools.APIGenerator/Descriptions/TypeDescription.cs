@@ -104,9 +104,11 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                 case "std::string":     // std string
                     return "MONO_FREE";
                 case "String":          // Engine's string
-                case "Array":
+                case "Array" when returnConversion:
                 case "Action":          // Engine's delegate
                     return "MONO_FREE_STUB";
+                case "Array":
+                    return "MONO_FREE_ARRAY";
                 default:
                     throw new Exception($"No special conversion is found for type {ToString()}.");
             }
