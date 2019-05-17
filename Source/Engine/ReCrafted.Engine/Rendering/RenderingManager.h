@@ -42,6 +42,12 @@ protected:
 
 public:
     /// <summary>
+    ///     Sets the current draw mode.
+    /// </summary>
+    /// <param name="drawMode">The new draw mode.</param>
+    static void SetDrawMode(DrawMode drawMode);
+
+    /// <summary>
     ///     Adds given renderable, to the render list.
     /// </summary>
     /// <param name="renderable">The renderable which will be added.</param>

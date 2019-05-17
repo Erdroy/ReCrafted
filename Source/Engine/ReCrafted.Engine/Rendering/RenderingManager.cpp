@@ -78,6 +78,43 @@ void RenderingManager::RenderGeometry()
 {
 }
 
+void RenderingManager::SetDrawMode(const DrawMode drawMode)
+{
+    GetInstance()->m_drawMode = drawMode;
+
+    switch (drawMode)
+    {
+    case DrawMode::DrawUI:
+    case DrawMode::DrawWebUI:
+        Renderer::SetFlag(Renderer::RenderFlags::DepthTest, false);
+        Renderer::SetFlag(Renderer::RenderFlags::DepthStencil, false);
+        Renderer::SetFlag(Renderer::RenderFlags::DrawLineLists, false);
+        Renderer::SetFlag(Renderer::RenderFlags::RenderOverlay, true); // temporary simplified blend-states TODO: Expose Renderer's blend state creation
+        return;
+
+    case DrawMode::DebugDrawLines:
+        Renderer::SetFlag(Renderer::RenderFlags::DepthTest, false);
+        Renderer::SetFlag(Renderer::RenderFlags::DepthStencil, false);
+        Renderer::SetFlag(Renderer::RenderFlags::DrawLineLists, true);
+        Renderer::SetFlag(Renderer::RenderFlags::RenderOverlay, true);
+        return;
+
+    case DrawMode::DebugDrawTriangles:
+        Renderer::SetFlag(Renderer::RenderFlags::DepthTest, false);
+        Renderer::SetFlag(Renderer::RenderFlags::DepthStencil, false);
+        Renderer::SetFlag(Renderer::RenderFlags::DrawLineLists, false);
+        Renderer::SetFlag(Renderer::RenderFlags::RenderOverlay, true);
+        return;
+
+    case DrawMode::Default:
+    default:
+    {
+        Renderer::SetFlags(Renderer::RenderFlags::_enum(Renderer::RenderFlags::Default));
+        Renderer::SetFlag(Renderer::RenderFlags::VSync, false);
+    }
+    }
+}
+
 void RenderingManager::AddRenderable(RenderableBase* renderable)
 {
     ASSERT(renderable != nullptr);
