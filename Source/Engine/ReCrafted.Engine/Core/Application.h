@@ -5,7 +5,6 @@
 #include "Core/ApplicationBase.h"
 #include "Core/MainLoop.h"
 #include "Core/ApplicationWindow.h"
-#include "Renderer/Renderer.h"
 
 /// <summary>
 ///     Application class. Provides application management functionality.
@@ -22,21 +21,16 @@ private:
     RefPtr<GameManager> m_gameManager = nullptr;
     RefPtr<MainLoop> m_mainLoop = nullptr;
     RefPtr<ApplicationWindow> m_window = nullptr;
-    Renderer::WindowHandle m_windowHandle = {};
-    Renderer::RenderBufferHandle m_frameBufferHandle = {};
 
-    
 public:
-    Application();
-    ~Application();
+    Application() = default;
+    ~Application() = default;
 
 private:
     void CreateGameWindow();
     void OnWindowResized();
 
     void InitializeSubSystems() const;
-    void InitializeRenderer();
-    void InitializeGraphics();
     void InitializeGame();
     void ShutdownGame();
 
@@ -46,6 +40,7 @@ private:
 
 public:
     void Run() override;
+    void Shutdown() override;
 
 public:
     /// <summary>

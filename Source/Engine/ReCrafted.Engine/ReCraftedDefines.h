@@ -15,6 +15,20 @@
 #define FORCE_BREAKPOINT()
 #endif
 
+#define DEFINE_ENUM(name)                               \
+inline constexpr name operator|( name a, name b) {      \
+	return a = static_cast< name> ((int)a | (int)b);    \
+}                                                       \
+inline constexpr name operator&( name a, name b) {      \
+	return a = static_cast< name> ((int)a & (int)b);    \
+}
+
+#ifdef _WIN32
+#   define ALIGN(x) __declspec(align(x))
+#else
+#   define ALIGN(x) __attribute__ (aligned (x))
+#endif
+
 #if !defined(DELETE_CTOR_COPY) && !defined(DELETE_CTOR_MOVE) && !defined(DELETE_CTOR_COPY_MOVE)
 #define DELETE_CTOR_COPY(className) className(const className& other) = delete;
 #define DELETE_CTOR_MOVE(className) className(const className&& other) = delete;

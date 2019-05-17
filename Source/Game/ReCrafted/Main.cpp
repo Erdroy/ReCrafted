@@ -61,6 +61,8 @@ int CALLBACK WinMain(
 
     Application app;
     app.Run();
+    app.Shutdown();
+
     return ERROR_SUCCESS;
 }
 #endif

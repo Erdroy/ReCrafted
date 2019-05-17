@@ -14,4 +14,5 @@ protected:
 
 public:
     virtual void Run() = 0;
+    virtual void Shutdown() = 0;
 };

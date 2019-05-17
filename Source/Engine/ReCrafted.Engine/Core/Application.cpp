@@ -9,7 +9,8 @@
 #include "Core/Display.h"
 #include "Core/Time.h"
 #include "Input/InputManager.h"
-#include "Renderer/Renderer.h"
+#include "Rendering/RenderingManager.h"
+#include "Rendering/Renderer/Renderer.h"
 #include "Scripting/ScriptingManager.h"
 #include "Scripting/ObjectManager.h"
 #include "Game/GameManager.h"
@@ -19,68 +20,6 @@
 uint64_t EventProcessor(void*, uint32_t, uint64_t, uint64_t);
 
 Application* Application::m_instance;
-
-Application::Application()
-{
-    m_instance = this;
-
-    // Initialize platform
-    Platform::Initialize(&EventProcessor);
-    Platform::SetThreadName("MainThread");
-
-    // Initialize logger
-    Logger::Initialize();
-
-    // Create game window
-    CreateGameWindow();
-
-    // Initialize SubSystemManager instance
-    SubSystemManager::GetInstance();
-
-    m_mainLoop.reset(new MainLoop());
-
-    // Set main loop callbacks
-    m_mainLoop->SetUpdateCallback(Action<void>::New<Application, &Application::Update>(this));
-    m_mainLoop->SetFixedUpdateCallback(Action<void>::New<Application, &Application::FixedUpdate>(this));
-    m_mainLoop->SetRenderCallback(Action<void>::New<Application, &Application::Render>(this));
-
-    // Register subsystems
-    InitializeSubSystems();
-
-    // Initialize renderer
-    InitializeRenderer();
-
-    // Initialize graphics
-    InitializeGraphics();
-
-    // Initialize game
-    InitializeGame();
-}
-
-Application::~Application()
-{
-    // Shutdown game
-    ShutdownGame();
-
-    // Shutdown renderer
-    Renderer::Shutdown();
-
-    // Release resources
-    m_mainLoop.reset();
-    m_window.reset();
-
-    // Shutdown all subsystems and Dispose SubSystemManager (needed to cleanup the singleton)
-    SubSystemManager::GetInstance()->Shutdown();
-    SubSystemManager::GetInstance()->Dispose();
-
-    // Shutdown platform
-    Platform::Shutdown();
-
-    Logger::Log("Bye");
-    Logger::Shutdown();
-
-    m_instance = nullptr;
-}
 
 void Application::CreateGameWindow()
 {
@@ -97,8 +36,7 @@ void Application::OnWindowResized()
     Display::m_width = width;
     Display::m_height = height;
 
-    // TODO: Resize!
-    Renderer::ResizeWindow(m_windowHandle, width, height);
+    RenderingManager::Resize(width, height);
 }
 
 void Application::InitializeSubSystems() const
@@ -110,27 +48,8 @@ void Application::InitializeSubSystems() const
     SubSystemManager::Register<ContentManager>();
     SubSystemManager::Register<Time>();
     SubSystemManager::Register<InputManager>();
+    SubSystemManager::Register<RenderingManager>();
     SubSystemManager::Register<SceneManager>();
-}
-
-void Application::InitializeRenderer()
-{
-    Logger::Log("Creating renderer with Direct3D11 API");
-
-    Renderer::Initialize(
-        Renderer::RendererAPI::DirectX11,
-        Renderer::Settings::Debug,
-        Renderer::RenderFlags::_enum(Renderer::RenderFlags::Default));
-
-    Renderer::SetFlag(Renderer::RenderFlags::VSync, false);
-
-    // Create Output
-    m_windowHandle = Renderer::CreateWindowHandle(Platform::GetCurrentWindow());
-    m_frameBufferHandle = Renderer::GetWindowRenderBuffer(m_windowHandle);
-}
-
-void Application::InitializeGraphics()
-{
 }
 
 void Application::InitializeGame()
@@ -157,8 +76,6 @@ void Application::Update()
 
     SubSystemManager::GetInstance()->Update();
 
-    // TODO: Update rest of the world
-
     m_instance->m_gameManager->Update();
 
     SubSystemManager::GetInstance()->LateUpdate();
@@ -173,14 +90,42 @@ void Application::FixedUpdate()
 
 void Application::Render()
 {
-    Renderer::ClearRenderBuffer(m_frameBufferHandle, Renderer::Color(0.15f, 0.15f, 0.15f, 1.0f));
+    // Render
+    RenderingManager::GetInstance()->Render();
 
-    Renderer::Frame();
     SubSystemManager::GetInstance()->FrameDone();
 }
 
 void Application::Run()
 {
+    m_instance = this;
+
+    // Initialize platform
+    Platform::Initialize(&EventProcessor);
+    Platform::SetThreadName("MainThread");
+
+    // Initialize logger
+    Logger::Initialize();
+
+    // Create game window
+    CreateGameWindow();
+
+    // Initialize SubSystemManager instance
+    SubSystemManager::GetInstance();
+
+    m_mainLoop.reset(new MainLoop());
+
+    // Set main loop callbacks
+    m_mainLoop->SetUpdateCallback(Action<void>::New<Application, &Application::Update>(this));
+    m_mainLoop->SetFixedUpdateCallback(Action<void>::New<Application, &Application::FixedUpdate>(this));
+    m_mainLoop->SetRenderCallback(Action<void>::New<Application, &Application::Render>(this));
+
+    // Register subsystems
+    InitializeSubSystems();
+
+    // Initialize game
+    InitializeGame();
+
     // Run main loop
     m_mainLoop->Run();
 
@@ -189,6 +134,28 @@ void Application::Run()
     // Main loop exited.
     // When Application will get out of scope, destructor will 
     // release all resources (look Application::~Application()).
+}
+
+void Application::Shutdown()
+{
+    // Shutdown game
+    ShutdownGame();
+
+    // Release resources
+    m_mainLoop.reset();
+    m_window.reset();
+
+    // Shutdown all subsystems and Dispose SubSystemManager (needed to cleanup the singleton)
+    SubSystemManager::GetInstance()->Shutdown();
+    SubSystemManager::GetInstance()->Dispose();
+
+    // Shutdown platform
+    Platform::Shutdown();
+
+    Logger::Log("Bye");
+    Logger::Shutdown();
+
+    m_instance = nullptr;
 }
 
 void Application::Quit()

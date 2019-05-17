@@ -12,6 +12,7 @@
 #include "Common/Math/PlaneBase.h"
 #include "Common/Math/BoundingBoxBase.h"
 #include "Common/Math/BoundingFrustumBase.h"
+#include "Common/Math/ColorBase.h"
 
 using Vector2f = Vector2Base<float>;
 using Vector3f = Vector3Base<float>;
@@ -34,6 +35,7 @@ using Plane = PlaneBase<float>;
 using BoundingBox = BoundingBoxBase<float>;
 using BoundingFrustum = BoundingFrustumBase<float>;
 
+using Color = ColorBase<float>;
 
 typedef unsigned char byte;
 typedef signed char sbyte;

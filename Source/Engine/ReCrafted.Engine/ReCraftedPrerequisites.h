@@ -62,16 +62,25 @@ class TaskManager;
 // Game/
 class GameManager;
 
-// Graphics/
+// Rendering/
 enum class DrawType : byte;
 class Camera;
 class CameraActor;
 class Mesh;
+class RenderableBase;
 class RenderBuffer;
+class RenderingBase;
+class RenderingComponentBase;
+template <class TRenderingComponent> class RenderingComponent;
+class RenderingManager;
 class Shader;
 class Texture;
 
-// Renderer/
+// Rendering/DeferredRendering
+class DeferredRendering;
+
+// Rendering/Debug/
+class DebugDraw;
 
 // Input/
 enum class ActionType : sbyte;

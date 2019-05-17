@@ -174,6 +174,8 @@ public:
     template<class TAsset>
     static TAsset* LoadAsset(const char* assetFile)
     {
+        static_assert(std::is_base_of<Asset, TAsset>::value, "TAsset must inherit Asset class!");
+
         // Build file name
         const auto file = GetAssetFile(assetFile);
 
@@ -194,6 +196,8 @@ public:
     template<class TAsset>
     static void LoadAsset(const char* assetFile, const Action<void, Asset*>& onLoad)
     {
+        static_assert(std::is_base_of<Asset, TAsset>::value, "TAsset must inherit Asset class!");
+
         // Build file name
         const auto file = GetAssetFile(assetFile);
         const auto asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());

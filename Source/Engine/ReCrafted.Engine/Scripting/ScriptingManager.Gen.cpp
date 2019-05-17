@@ -11,14 +11,14 @@
 #include "Core/Time.h"
 #include "Core/Actors/ActorBase.h"
 #include "Core/Actors/EmptyActor.h"
-#include "Graphics/Camera.h"
-#include "Graphics/CameraActor.h"
-#include "Graphics/Shader.h"
-#include "Graphics/Texture.h"
 #include "Input/InputManager.h"
 #include "Input/Keyboard.h"
 #include "Input/Mouse.h"
 #include "Input/NullDevice.h"
+#include "Rendering/Camera.h"
+#include "Rendering/CameraActor.h"
+#include "Rendering/Shader.h"
+#include "Rendering/Texture.h"
 #include "Scene/SceneManager.h"
 #include "Scripting/Object.h"
 #include "Scripting/Script.h"
@@ -35,14 +35,14 @@ void ScriptingManager::InitRuntime()
     Time::InitRuntime();
     ActorBase::InitRuntime();
     EmptyActor::InitRuntime();
-    Camera::InitRuntime();
-    CameraActor::InitRuntime();
-    Shader::InitRuntime();
-    Texture::InitRuntime();
     InputManager::InitRuntime();
     Keyboard::InitRuntime();
     Mouse::InitRuntime();
     NullDevice::InitRuntime();
+    Camera::InitRuntime();
+    CameraActor::InitRuntime();
+    Shader::InitRuntime();
+    Texture::InitRuntime();
     SceneManager::InitRuntime();
     Object::InitRuntime();
     Script::InitRuntime();
