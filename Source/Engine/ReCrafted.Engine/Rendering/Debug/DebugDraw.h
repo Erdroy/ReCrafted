@@ -7,9 +7,12 @@
 #include "Common/List.h"
 #include "Rendering/RenderingComponent.h"
 
-/**
- * \brief The DebugDraw class. Provides drawing functions for debugging.
- */
+API_USING("ReCrafted.API.Mathematics")
+
+/// <summary>
+///     The DebugDraw class. Provides drawing functions for debugging.
+/// </summary>
+API_CLASS(public, static, noinherit)
 class DebugDraw : public RenderingComponent<DebugDraw>
 {
     friend class Graphics;
@@ -50,9 +53,9 @@ private:
         List<uint> m_indices = {};
 
     public:
-        /**
-         * \brief Default Batch constructor.
-         */
+        /// <summary>
+        ///     Default Batch constructor.
+        /// </summary>
         Batch()
         {
             // Reserve memory for vertices and lines.
@@ -61,9 +64,9 @@ private:
             m_indices.Reserve(maxIndicesPerBatch);
         }
 
-        /**
-         * \brief Default Batch destructor.
-         */
+        /// <summary>
+        ///     Default Batch destructor.
+        /// </summary>
         ~Batch()
         {
             m_lines.Release();
@@ -72,9 +75,10 @@ private:
         }
 
     public:
-        /**
-         * \brief Clears the batch.
-         */
+
+        /// <summary>
+        ///     Clears the batch.
+        /// </summary>
         void Clear()
         {
             // Clear vertices and lines
@@ -83,42 +87,42 @@ private:
             m_indices.Clear();
         }
 
-        /**
-         * \brief Returns true when this batch has some proper data to draw a shape.
-         */
+        /// <summary>
+        ///     Returns true when this batch has some proper data to draw a shape.
+        /// </summary>
         bool HasData() const
         {
             return m_lines.Count() >= 2 || m_vertices.Count() >= 3;
         }
 
-        /**
-         * \brief Returns false when there is no more space to push any new data.
-         */
+        /// <summary>
+        ///     Returns false when there is no more space to push any new data.
+        /// </summary>
         bool IsFull() const
         {
             return m_lines.Count() >= maxPointsPerBatch - 2
                 || m_vertices.Count() >= maxVerticesPerBatch - 3;
         }
 
-        /**
-         * \brief Gets line list from this batch.
-         */
+        /// <summary>
+        ///     Gets line list from this batch.
+        /// </summary>
         List<Point>& GetLineList()
         {
             return m_lines;
         }
 
-        /**
-        * \brief Gets vertex list from this batch.
-        */
+        /// <summary>
+        ///     Gets vertex list from this batch.
+        /// </summary>
         List<Vertex>& GetVertexList()
         {
             return m_vertices;
         }
 
-        /**
-        * \brief Gets index list from this batch.
-        */
+        /// <summary>
+        ///     Gets index list from this batch.
+        /// </summary>
         List<uint>& GetIndexList()
         {
             return m_indices;
@@ -149,17 +153,17 @@ public:
         m_batches = {};
         m_batches.Add({});
         m_currentBatch = &m_batches[0];
-        m_currentColor = Color(0xFF0000FF).ToVector();
+        m_currentColor = Color::FromHex(0xFF0000FF).ToVector();
     }
 
 protected:
     void Initialize() override;
     void Shutdown() override;
 
-    void RenderLines(Batch& batch);
-    void RenderTriangles(Batch& batch);
+    void Render() override;
 
-    void Render();
+    void RenderLines(Batch& batch) const;
+    void RenderTriangles(Batch& batch) const;
 
     void TransformPoint(Vector3& point);
 
@@ -168,100 +172,114 @@ protected:
     Batch* GetBatch();
 
 public:
-    /**
-     * \brief Sets current debug draw render color.
-     * \param color The color.
-     */
+    /// <summary>
+    ///     Sets current debug draw render color.
+    /// </summary>
+    /// <param name="color">The color.</param>
+    API_FUNCTION()
     static void SetColor(const Color& color);
 
-    /**
-    * \brief Gets current debug draw render color.
-    */
+    /// <summary>
+    ///     Gets current debug draw render color.
+    /// </summary>
+    API_FUNCTION()
     static Color GetColor();
 
-    /**
-     * \brief Sets matrix that will be used for vertex transformation.
-     * \param matrix The matrix.
-     */
+    /// <summary>
+    ///     Sets matrix that will be used for vertex transformation.
+    /// </summary>
+    /// <param name="matrix">The matrix.</param>
+    API_FUNCTION()
     static void SetMatrix(const Matrix& matrix);
 
-    /**
-    * \brief Gets current debug draw render transformation matrix.
-    */
+    /// <summary>
+    ///     Gets current debug draw render transformation matrix.
+    /// </summary>
+    API_FUNCTION()
     static Matrix& GetMatrix();
 
-    /**
-     * \brief Draws arrow at the end point with line.
-     * \param start The line start.
-     * \param end The line end and arrow position.
-     * \param arrowSize The arrow length.
-     */
+    /// <summary>
+    ///     Draws arrow at the end point with line.
+    /// </summary>
+    /// <param name="start">The line start.</param>
+    /// <param name="end">The line end and arrow position.</param>
+    /// <param name="arrowSize">The arrow length.</param>
+    API_FUNCTION()
     static void DrawArrow(const Vector3& start, const Vector3& end, float arrowSize = 0.25f);
 
-    /**
-    * \brief Draws line.
-    * \param start The line start.
-    * \param end The line end.
-    */
+    /// <summary>
+    ///     Draws line.
+    /// </summary>
+    /// <param name="start">The line start.</param>
+    /// <param name="end">The line end.</param>
+    API_FUNCTION()
     static void DrawLine(const Vector3& start, const Vector3& end);
 
-    /**
-    * \brief Draws box using given bounds.
-    * \param bounds The box bounds.
-    */
+    /// <summary>
+    ///     Draws box using given bounds.
+    /// </summary>
+    /// <param name="bounds">The box bounds.</param>
+    API_FUNCTION()
     static void DrawBox(const BoundingBox& bounds)
     {
         DrawBox(bounds.center, bounds.size);
     }
 
-    /**
-     * \brief Draws box using given position (center) and size.
-     * \param center The center position.
-     * \param size The size of the box.
-     */
+    /// <summary>
+    ///     Draws box using given position (center) and size.
+    /// </summary>
+    /// <param name="center">The center position.</param>
+    /// <param name="size">The size of the box.</param>
+    API_FUNCTION()
     static void DrawBox(const Vector3& center, const Vector3& size);
-
-    /**
-    * \brief Draws wire box using given position (center) and size.
-    * \param center The center position.
-    * \param size The size of the box.
-    */
+    
+    /// <summary>
+    ///     Draws wire box using given position (center) and size.
+    /// </summary>
+    /// <param name="center">The center position.</param>
+    /// <param name="size">The size of the box.</param>
+    API_FUNCTION()
     static void DrawWireBox(const Vector3& center, const Vector3& size);
 
-    /**
-    * \brief Draws wire box using given bounds.
-    * \param bounds The box bounds.
-    */
+    /// <summary>
+    ///     Draws wire box using given bounds.
+    /// </summary>
+    /// <param name="bounds">The box bounds.</param>
+    API_FUNCTION()
     static void DrawWireBox(const BoundingBox& bounds)
     {
         DrawWireBox(bounds.center, bounds.size);
     }
 
-    /**
-     * \brief Draws given frustum as lines between every corner.
-     * \param frustum The frustum.
-     */
+    /// <summary>
+    ///     Draws given frustum as lines between every corner.
+    /// </summary>
+    /// <param name="frustum">The frustum.</param>
+    API_FUNCTION()
     static void DrawWireFrustum(const BoundingFrustum& frustum);
 
-    /**
-     * \brief Draws sphere at given position.
-     * \param center The sphere draw position.
-     * \param radius The sphere radius.
-     */
+    /// <summary>
+    ///     Draws sphere at given position.
+    /// </summary>
+    /// <param name="center">The sphere draw position.</param>
+    /// <param name="radius">The sphere radius.</param>
+    API_FUNCTION()
     static void DrawSphere(const Vector3& center, float radius);
 
-    /**
-    * \brief Draws wire sphere at given position.
-    * \param center The sphere draw position.
-    * \param radius The sphere radius.
-    */
+    /// <summary>
+    ///     Draws wire sphere at given position.
+    /// </summary>
+    /// <param name="center">The sphere draw position.</param>
+    /// <param name="radius">The sphere radius.</param>
+    API_FUNCTION()
     static void DrawWireSphere(const Vector3& center, float radius);
 
-    /**
-     * \brief Draws wire circle.
-     * \param center The circle center point.
-     * \param majorAxis The major axis point.
-     * \param minorAxis The minor axis point.
-     */
+    /// <summary>
+    ///     Draws wire circle.
+    /// </summary>
+    /// <param name="center">The circle center point.</param>
+    /// <param name="majorAxis">The major axis point.</param>
+    /// <param name="minorAxis">The minor axis point.</param>
+    API_FUNCTION()
     static void DrawWireCircle(const Vector3& center, const Vector3& majorAxis, const Vector3& minorAxis);
 };

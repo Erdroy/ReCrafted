@@ -19,6 +19,7 @@
 #include "Rendering/CameraActor.h"
 #include "Rendering/Shader.h"
 #include "Rendering/Texture.h"
+#include "Rendering/Debug/DebugDraw.h"
 #include "Scene/SceneManager.h"
 #include "Scripting/Object.h"
 #include "Scripting/Script.h"
@@ -43,6 +44,7 @@ void ScriptingManager::InitRuntime()
     CameraActor::InitRuntime();
     Shader::InitRuntime();
     Texture::InitRuntime();
+    DebugDraw::InitRuntime();
     SceneManager::InitRuntime();
     Object::InitRuntime();
     Script::InitRuntime();
