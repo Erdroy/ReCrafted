@@ -63,7 +63,7 @@ class TaskManager;
 class GameManager;
 
 // Rendering/
-enum class DrawType : byte;
+enum class DrawMode : byte;
 class Camera;
 class CameraActor;
 class Mesh;
