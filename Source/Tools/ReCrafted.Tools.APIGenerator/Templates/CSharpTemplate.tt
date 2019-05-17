@@ -55,8 +55,9 @@ foreach(var function in Functions)
 <#
         if(function.ReturnType.BaseType != "void")
         {
+            var prefix = function.ReturnType.ByRef && !function.ReturnType.IsConst ? "ref " : "";
 #>
-            return Internal<#=function.Name#>(<#=function.GetCSharpParametersRedirect()#>);
+            return <#=prefix#>Internal<#=function.Name#>(<#=function.GetCSharpParametersRedirect()#>);
 <#
         }
         else
@@ -90,11 +91,12 @@ foreach(var property in Properties)
 <#
     if(property.HasGetter)
     {
+        var prefix = property.Type.ByRef && !property.Type.IsConst ? "ref " : "";
 #>
             get
             {
                 Get_Internal<#=property.Name#>(<#if(!property.IsStatic){#>NativePtr, <#}#>out var data);
-                return data;
+                return <#=prefix#>data;
             }
 <#
     }
