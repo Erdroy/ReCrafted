@@ -186,6 +186,21 @@ namespace ReCrafted.Tools.APIGenerator
                 currentParam.Type = ParseNativeType();
                 currentParam.Name = _tokenizer.ExpectToken(TokenType.Identifier).Value;
 
+                if (_tokenizer.NextToken().Type == TokenType.Equal)
+                {
+                    // Parse default value
+                    var defaultValueToken = _tokenizer.NextToken();
+
+                    // There are 3 supported options:
+                    // number: 1.0f
+                    // string: "str"
+                    // identifier: true
+                    
+                    currentParam.DefaultValue = defaultValueToken.Value;
+                }
+                else
+                    _tokenizer.PreviousToken();
+
                 // Expect
                 token = _tokenizer.ExpectAnyTokens(new[] { TokenType.Comma, TokenType.RightParent });
 

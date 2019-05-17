@@ -11,6 +11,9 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
         {
             public string Name { get; set; }
             public TypeDescription Type { get; set; }
+
+            public string DefaultValue { get; set; }
+            public bool HasDefaultValue => string.IsNullOrEmpty(DefaultValue) == false;
         }
 
         public string Name { get; set; }
@@ -118,6 +121,12 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                 paramString.Append(parameter.Type.ToCSharp(proxy));
                 paramString.Append(' ');
                 paramString.Append(parameter.Name);
+
+                if (parameter.HasDefaultValue && proxy)
+                {
+                    paramString.Append(" = ");
+                    paramString.Append(parameter.DefaultValue);
+                }
             }
 
             return paramString.ToString();
