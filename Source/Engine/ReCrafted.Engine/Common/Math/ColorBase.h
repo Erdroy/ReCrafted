@@ -71,9 +71,21 @@ public:
 
 public:
     /* Public members */
-    Vector4Base<T> ToVector()
+    Vector4Base<T> ToVector() const
     {
         return Vector4Base<T>(components[0], components[1], components[2], components[3]);
+    }
+
+public:
+    /* Public static members */
+    static ColorBase<T> FromVector(const Vector4Base<T>& vector)
+    {
+        return ColorBase<T>(vector[0], vector[1], vector[2], vector[3]);
+    }
+
+    static ColorBase<T> FromHex(const unsigned int hex)
+    {
+        return ColorBase<T>(r((hex >> 24) & 0xFF) / 255.0f, g((hex >> 16) & 0xFF) / 255.0f, b((hex >> 8) & 0xFF) / 255.0f, a(hex & 0xFF) / 255.0f);
     }
 
 public:
