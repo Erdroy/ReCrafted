@@ -6,6 +6,7 @@
 #include "Common/List.h"
 #include "Core/SubSystems/SubSystem.h"
 #include "Rendering/Renderer/Renderer.h"
+#include "Rendering/DrawMode.h"
 
 /// <summary>
 ///     RenderingManager class.
@@ -20,14 +21,26 @@ private:
     RenderList m_shadowGeometryList = {};
 
     RenderingBase* m_rendering = nullptr;
+    DrawMode m_drawMode = DrawMode::Default;
 
     Renderer::WindowHandle m_windowHandle = {};
     Renderer::RenderBufferHandle m_frameBufferHandle = {};
+
+    List<RenderingComponentBase*> m_renderingComponents = {};
 
 private:
     void InitializeRenderer();
 
     void OnResize(uint width, uint height);
+
+private: /* Rendering components system */
+    template<typename TRenderingComponent>
+    void AddRenderingComponent()
+    {
+        const auto component = new TRenderingComponent();
+        component->Initialize();
+        m_renderingComponents.Add(component);
+    }
 
 private:
     static void SortRenderList(const RenderList& list);

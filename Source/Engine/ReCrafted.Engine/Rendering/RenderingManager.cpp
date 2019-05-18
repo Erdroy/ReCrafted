@@ -1,9 +1,10 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include "RenderingManager.h"
-#include "DeferredRendering/DeferredRendering.h"
 #include "Common/Logger.h"
-#include "RenderableBase.h"
+#include "Rendering/Debug/DebugDraw.h"
+#include "Rendering/DeferredRendering/DeferredRendering.h"
+#include "Rendering/RenderableBase.h"
 
 void RenderingManager::InitializeRenderer()
 {
@@ -41,6 +42,8 @@ void RenderingManager::Initialize()
 
     // TODO: RenderingComponent system
     // This will be used for ImGui, DebugDraw, WebUIRender etc.
+
+    AddRenderingComponent<DebugDraw>();
 }
 
 void RenderingManager::Shutdown()
@@ -69,7 +72,12 @@ void RenderingManager::Render()
     m_rendering->EndRender();
 
     // TODO: Render post process
-    // TODO: Process RenderingComponent's
+
+    // TODO: Custom stages for rendering components
+    for(auto& component : m_renderingComponents)
+    {
+        component->Render();
+    }
 
     Renderer::Frame();
 }
