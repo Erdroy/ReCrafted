@@ -22,6 +22,7 @@ var fId = 0;
 foreach(var function in Functions)
 {
     fId++;
+    var byref = function.ReturnType.IsByRef ? "&" : "";
 #>
     
     static <#=function.ReturnType.ToSpecial(true)#> <#=Class.Name#>_<#=function.Name + fId#>(<#=function.GetCPlusPlusParameters(Class, !function.IsStatic)#>) 
@@ -51,7 +52,7 @@ foreach(var function in Functions)
         if(function.ReturnType.BaseType != "void")
         {
 #>
-        const auto _returnValue = <#=Class.Name#>::<#=function.Name#>(<#=function.GetCPlusPlusParametersRedirect()#>);
+        const auto _returnValue = <#=byref#><#=Class.Name#>::<#=function.Name#>(<#=function.GetCPlusPlusParametersRedirect()#>);
 <#
         }
         else
@@ -69,7 +70,7 @@ foreach(var function in Functions)
         if(function.ReturnType.BaseType != "void")
         {
 #>
-        const auto _returnValue = instance-><#=function.Name#>(<#=function.GetCPlusPlusParametersRedirect()#>);
+        const auto _returnValue = <#=byref#>instance-><#=function.Name#>(<#=function.GetCPlusPlusParametersRedirect()#>);
 <#
         }
         else
@@ -122,6 +123,8 @@ var pId = 0;
 foreach(var property in Properties)
 {
     pId ++;
+    var byref = property.Type.IsByRef ? "&" : "";
+
     if(property.HasGetter)
     {
 #>
@@ -144,13 +147,13 @@ if(property.Type.CastToManaged)
 {
 #>
         const auto _fRetValue = instance-><#=property.GetterFunctionName#>();
-        const auto _returnValue = _fRetValue != nullptr ? _fRetValue ->ToManaged() : nullptr;
+        const auto _returnValue = <#=byref#>_fRetValue != nullptr ? _fRetValue ->ToManaged() : nullptr;
 <#
 }
 else
 {
 #>
-        const auto _returnValue = instance-><#=property.GetterFunctionName#>();
+        const auto _returnValue = <#=byref#>instance-><#=property.GetterFunctionName#>();
 <#
 }
 #>

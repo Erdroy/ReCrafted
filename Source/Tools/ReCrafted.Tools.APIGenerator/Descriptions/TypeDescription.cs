@@ -28,6 +28,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
             }
         }
 
+        public bool IsByRef => (ByRef && !IsConst) && !CastToManaged;
         public bool IsGeneric => GenericTypes.Count > 0;
         public bool IsVoid => BaseType == "void" && !ByPtr;
         public bool IsSpecial
@@ -220,6 +221,9 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
         {
             if (isReturn && ByPtr && !ByRef && !IsConst)
                 return "MonoObject*";
+
+            if (ByRef && !IsConst)
+                return $"{BaseType}*";
 
             return $"{(IsConst && allowConst ? "const " : "")}{BaseType}{(ByRef && allowRef ? "&" : "")}{(ByPtr ? "*" : "")}";
         }

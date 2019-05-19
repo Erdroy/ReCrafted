@@ -29,10 +29,10 @@ public:
         DebugDraw::SetMatrix(matrix);
     }
     
-    static Matrix& DebugDraw_GetMatrix4() 
+    static Matrix* DebugDraw_GetMatrix4() 
     {
         MAIN_THREAD_ONLY();
-        const auto _returnValue = DebugDraw::GetMatrix();
+        const auto _returnValue = &DebugDraw::GetMatrix();
         return _returnValue;
     }
     
