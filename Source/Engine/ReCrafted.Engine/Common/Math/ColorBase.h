@@ -5,8 +5,31 @@
 #include "Config.h"
 #include "Math.h"
 
+template <typename Type> struct ColorComponents
+{
+    union
+    {
+        struct
+        {
+            Type R;
+            Type G;
+            Type B;
+            Type A;
+        };
+        struct
+        {
+            Type r;
+            Type g;
+            Type b;
+            Type a;
+        };
+
+        Type components[4];
+    };
+};
+
 template<typename T>
-struct ColorBase
+struct ColorBase : public ColorComponents<T>
 {
 public:
     /* Types */
@@ -16,30 +39,34 @@ public:
     typedef std::reverse_iterator<iterator> reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-public:
-    /* Components */
-    union
-    {
+protected:
+    /* Protected usings */
+    using ColorComponents<T>::components;
 #if USE_UPPERCASE_COMPONENTS
-        struct
-        {
-            T R;
-            T G;
-            T B;
-            T A;
-        };
+    using ColorComponents<T>::r;
+    using ColorComponents<T>::g;
+    using ColorComponents<T>::b;
+    using ColorComponents<T>::a;
 #else
-        struct
-        {
-            T r;
-            T g;
-            T b;
-            T a;
-        };
+    using ColorComponents<T>::R;
+    using ColorComponents<T>::G;
+    using ColorComponents<T>::B;
+    using ColorComponents<T>::A;
 #endif
 
-        T components[4];
-    };
+public:
+    /* Public usings */
+#if USE_UPPERCASE_COMPONENTS
+    using ColorComponents<T>::R;
+    using ColorComponents<T>::G;
+    using ColorComponents<T>::B;
+    using ColorComponents<T>::A;
+#else
+    using ColorComponents<T>::r;
+    using ColorComponents<T>::g;
+    using ColorComponents<T>::b;
+    using ColorComponents<T>::a;
+#endif
 
 public:
     /* Constructors */
@@ -85,7 +112,7 @@ public:
 
     static ColorBase<T> FromHex(const unsigned int hex)
     {
-        return ColorBase<T>(r((hex >> 24) & 0xFF) / 255.0f, g((hex >> 16) & 0xFF) / 255.0f, b((hex >> 8) & 0xFF) / 255.0f, a(hex & 0xFF) / 255.0f);
+        return ColorBase<T>(((hex >> 24) & 0xFF) / 255.0f, ((hex >> 16) & 0xFF) / 255.0f, ((hex >> 8) & 0xFF) / 255.0f, (hex & 0xFF) / 255.0f);
     }
 
 public:
