@@ -9,6 +9,7 @@
 template <class TRenderingComponent>
 class RenderingComponent : public RenderingComponentBase, public Singleton<TRenderingComponent>
 {
+    friend class RenderingManager;
     DELETE_COPY_MOVE(RenderingComponent)
 
 protected:
@@ -18,6 +19,6 @@ protected:
 protected:
     void Release() override
     {
-        Singleton<RenderingComponent>::Dispose();
+        Singleton<TRenderingComponent>::Dispose();
     }
 };

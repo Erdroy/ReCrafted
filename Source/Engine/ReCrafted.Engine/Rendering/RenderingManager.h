@@ -37,7 +37,7 @@ private: /* Rendering components system */
     template<typename TRenderingComponent>
     void AddRenderingComponent()
     {
-        const auto component = new TRenderingComponent();
+        const auto component = TRenderingComponent::GetInstance();
         component->Initialize();
         m_renderingComponents.Add(component);
     }

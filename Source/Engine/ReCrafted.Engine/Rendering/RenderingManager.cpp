@@ -5,6 +5,7 @@
 #include "Rendering/Debug/DebugDraw.h"
 #include "Rendering/DeferredRendering/DeferredRendering.h"
 #include "Rendering/RenderableBase.h"
+#include "Camera.h"
 
 void RenderingManager::InitializeRenderer()
 {
@@ -13,7 +14,8 @@ void RenderingManager::InitializeRenderer()
     Renderer::Initialize(
         Renderer::RendererAPI::DirectX11,
         Renderer::Settings::Debug,
-        Renderer::RenderFlags::_enum(Renderer::RenderFlags::Default));
+        Renderer::RenderFlags::_enum(Renderer::RenderFlags::Default)
+    );
 
     Renderer::SetFlag(Renderer::RenderFlags::VSync, false);
 
@@ -48,6 +50,16 @@ void RenderingManager::Initialize()
 
 void RenderingManager::Shutdown()
 {
+    // Release rendering components
+    for (auto&& component : m_renderingComponents)
+    {
+        component->Shutdown();
+        component->Release();
+        component = nullptr;
+    }
+    m_renderingComponents.Clear();
+
+    // Release rendering
     m_rendering->Shutdown();
     delete m_rendering;
     m_rendering = nullptr;
@@ -58,7 +70,13 @@ void RenderingManager::Shutdown()
 
 void RenderingManager::Render()
 {
+    Renderer::ApplyWindow(m_windowHandle);
     Renderer::ClearRenderBuffer(m_frameBufferHandle, Renderer::Color(0.0f, 0.0f, 0.0f, 1.0f));
+    Renderer::ApplyRenderBuffer(m_frameBufferHandle);
+
+    ASSERT(Camera::GetMainCamera());
+    Camera::GetMainCamera()->Update();
+
     m_rendering->BeginRender();
 
     m_rendering->BeginRenderGeometry();
@@ -74,7 +92,7 @@ void RenderingManager::Render()
     // TODO: Render post process
 
     // TODO: Custom stages for rendering components
-    for(auto& component : m_renderingComponents)
+    for (auto& component : m_renderingComponents)
     {
         component->Render();
     }
