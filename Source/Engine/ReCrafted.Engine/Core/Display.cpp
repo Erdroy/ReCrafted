@@ -5,6 +5,16 @@
 uint Display::m_width;
 uint Display::m_height;
 
+void Display::ForceUpdate()
+{
+    uint width;
+    uint height;
+    Platform::GetWindowSize(Platform::GetCurrentWindow(), &width, &height);
+
+    m_width = width;
+    m_height = height;
+}
+
 float Display::GetAspectRatio()
 {
     return static_cast<float>(m_width) / static_cast<float>(m_height);

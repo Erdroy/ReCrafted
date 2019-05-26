@@ -120,6 +120,9 @@ void Application::Run()
     m_mainLoop->SetFixedUpdateCallback(Action<void>::New<Application, &Application::FixedUpdate>(this));
     m_mainLoop->SetRenderCallback(Action<void>::New<Application, &Application::Render>(this));
 
+    // Update display
+    Display::ForceUpdate();
+
     // Register subsystems
     InitializeSubSystems();
 

@@ -17,6 +17,9 @@ private:
     static uint m_width;
     static uint m_height;
 
+private:
+    static void ForceUpdate();
+
 public:
     /// <summary>
     ///     Gets the aspect ratio of the screen.

@@ -13,16 +13,22 @@ public:
     static void Display_Get_AspectRatio1(float* data) 
     {
         MAIN_THREAD_ONLY();
+        const auto _returnValue = Display::GetAspectRatio();
+        *data = _returnValue;
     }
     
     static void Display_Get_Width2(uint* data) 
     {
         MAIN_THREAD_ONLY();
+        const auto _returnValue = Display::GetWidth();
+        *data = _returnValue;
     }
     
     static void Display_Get_Height3(uint* data) 
     {
         MAIN_THREAD_ONLY();
+        const auto _returnValue = Display::GetHeight();
+        *data = _returnValue;
     }
 };
 
