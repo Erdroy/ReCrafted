@@ -3,8 +3,8 @@
 #pragma once
 
 #include <ReCrafted.h>
-#include "Rendering/Shader.h"
 #include "Common/List.h"
+#include "Rendering/Shader.h"
 #include "Rendering/RenderingComponent.h"
 
 API_USING("ReCrafted.API.Mathematics")
@@ -15,7 +15,8 @@ API_USING("ReCrafted.API.Mathematics")
 API_CLASS(public, static, noinherit)
 class DebugDraw : public RenderingComponent<DebugDraw>
 {
-    friend class Graphics;
+    friend class RenderingManager;
+    API_CLASS_BODY()
 
 private:
     const uint m_maxBatches = 128;
@@ -136,25 +137,15 @@ private:
     };
 
 private:
-    List<Batch> m_batches;
+    List<Batch> m_batches {};
     Batch* m_currentBatch = nullptr;
     Vector4 m_currentColor{};
-    Matrix m_matrix;
+    Matrix m_matrix = Matrix::Identity;
 
-    Renderer::ShaderHandle m_debugShader = {};
+    Shader* m_debugShader = nullptr;
     Renderer::VertexBufferHandle m_linesVB = {};
     Renderer::VertexBufferHandle m_trianglesVB = {};
     Renderer::IndexBufferHandle m_trianglesIB = {};
-
-public:
-    DebugDraw()
-    {
-        // Add one batch
-        m_batches = {};
-        m_batches.Add({});
-        m_currentBatch = &m_batches[0];
-        m_currentColor = Color::FromHex(0xFF0000FF).ToVector();
-    }
 
 protected:
     void Initialize() override;
@@ -176,26 +167,26 @@ public:
     ///     Sets current debug draw render color.
     /// </summary>
     /// <param name="color">The color.</param>
-    API_FUNCTION()
+    API_PROPERTY(noprefix)
     static void SetColor(const Color& color);
 
     /// <summary>
     ///     Gets current debug draw render color.
     /// </summary>
-    API_FUNCTION()
+    API_PROPERTY(noprefix)
     static Color GetColor();
 
     /// <summary>
     ///     Sets matrix that will be used for vertex transformation.
     /// </summary>
     /// <param name="matrix">The matrix.</param>
-    API_FUNCTION()
+    API_PROPERTY(noprefix)
     static void SetMatrix(const Matrix& matrix);
 
     /// <summary>
     ///     Gets current debug draw render transformation matrix.
     /// </summary>
-    API_FUNCTION()
+    API_PROPERTY(noprefix)
     static Matrix& GetMatrix();
 
     /// <summary>

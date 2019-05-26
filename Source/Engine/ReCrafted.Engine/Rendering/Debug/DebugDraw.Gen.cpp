@@ -10,110 +10,110 @@ class APIProxy
 {
 public:
     
-    static void DebugDraw_SetColor1(const Color& color) 
-    {
-        MAIN_THREAD_ONLY();
-        DebugDraw::SetColor(color);
-    }
-    
-    static Color DebugDraw_GetColor2() 
-    {
-        MAIN_THREAD_ONLY();
-        const auto _returnValue = DebugDraw::GetColor();
-        return _returnValue;
-    }
-    
-    static void DebugDraw_SetMatrix3(const Matrix& matrix) 
-    {
-        MAIN_THREAD_ONLY();
-        DebugDraw::SetMatrix(matrix);
-    }
-    
-    static Matrix* DebugDraw_GetMatrix4() 
-    {
-        MAIN_THREAD_ONLY();
-        const auto _returnValue = &DebugDraw::GetMatrix();
-        return _returnValue;
-    }
-    
-    static void DebugDraw_DrawArrow5(const Vector3& start, const Vector3& end, float arrowSize) 
+    static void DebugDraw_DrawArrow1(const Vector3& start, const Vector3& end, float arrowSize) 
     {
         MAIN_THREAD_ONLY();
         DebugDraw::DrawArrow(start, end, arrowSize);
     }
     
-    static void DebugDraw_DrawLine6(const Vector3& start, const Vector3& end) 
+    static void DebugDraw_DrawLine2(const Vector3& start, const Vector3& end) 
     {
         MAIN_THREAD_ONLY();
         DebugDraw::DrawLine(start, end);
     }
     
-    static void DebugDraw_DrawBox7(const BoundingBox& bounds) 
+    static void DebugDraw_DrawBox3(const BoundingBox& bounds) 
     {
         MAIN_THREAD_ONLY();
         DebugDraw::DrawBox(bounds);
     }
     
-    static void DebugDraw_DrawBox8(const Vector3& center, const Vector3& size) 
+    static void DebugDraw_DrawBox4(const Vector3& center, const Vector3& size) 
     {
         MAIN_THREAD_ONLY();
         DebugDraw::DrawBox(center, size);
     }
     
-    static void DebugDraw_DrawWireBox9(const Vector3& center, const Vector3& size) 
+    static void DebugDraw_DrawWireBox5(const Vector3& center, const Vector3& size) 
     {
         MAIN_THREAD_ONLY();
         DebugDraw::DrawWireBox(center, size);
     }
     
-    static void DebugDraw_DrawWireBox10(const BoundingBox& bounds) 
+    static void DebugDraw_DrawWireBox6(const BoundingBox& bounds) 
     {
         MAIN_THREAD_ONLY();
         DebugDraw::DrawWireBox(bounds);
     }
     
-    static void DebugDraw_DrawWireFrustum11(const BoundingFrustum& frustum) 
+    static void DebugDraw_DrawWireFrustum7(const BoundingFrustum& frustum) 
     {
         MAIN_THREAD_ONLY();
         DebugDraw::DrawWireFrustum(frustum);
     }
     
-    static void DebugDraw_DrawSphere12(const Vector3& center, float radius) 
+    static void DebugDraw_DrawSphere8(const Vector3& center, float radius) 
     {
         MAIN_THREAD_ONLY();
         DebugDraw::DrawSphere(center, radius);
     }
     
-    static void DebugDraw_DrawWireSphere13(const Vector3& center, float radius) 
+    static void DebugDraw_DrawWireSphere9(const Vector3& center, float radius) 
     {
         MAIN_THREAD_ONLY();
         DebugDraw::DrawWireSphere(center, radius);
     }
     
-    static void DebugDraw_DrawWireCircle14(const Vector3& center, const Vector3& majorAxis, const Vector3& minorAxis) 
+    static void DebugDraw_DrawWireCircle10(const Vector3& center, const Vector3& majorAxis, const Vector3& minorAxis) 
     {
         MAIN_THREAD_ONLY();
         DebugDraw::DrawWireCircle(center, majorAxis, minorAxis);
+    }
+    
+    static void DebugDraw_Get_Color1(Color* data) 
+    {
+        MAIN_THREAD_ONLY();
+        const auto _returnValue = DebugDraw::GetColor();
+        *data = _returnValue;
+    }
+
+    static void DebugDraw_Set_Color1(Color* data) 
+    {
+        MAIN_THREAD_ONLY();
+        DebugDraw::SetColor(*data);
+    }
+    
+    static void DebugDraw_Get_Matrix2(Matrix* data) 
+    {
+        MAIN_THREAD_ONLY();
+        const auto _returnValue = DebugDraw::GetMatrix();
+        *data = _returnValue;
+    }
+
+    static void DebugDraw_Set_Matrix2(Matrix* data) 
+    {
+        MAIN_THREAD_ONLY();
+        DebugDraw::SetMatrix(*data);
     }
 };
 
 void DebugDraw::InitRuntime() 
 {
     MONO_REGISTER_OBJECT_TYPE(DebugDraw);
-    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalSetColor", &APIProxy::DebugDraw_SetColor1);
-    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalGetColor", &APIProxy::DebugDraw_GetColor2);
-    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalSetMatrix", &APIProxy::DebugDraw_SetMatrix3);
-    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalGetMatrix", &APIProxy::DebugDraw_GetMatrix4);
-    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawArrow", &APIProxy::DebugDraw_DrawArrow5);
-    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawLine", &APIProxy::DebugDraw_DrawLine6);
-    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawBox", &APIProxy::DebugDraw_DrawBox7);
-    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawBox", &APIProxy::DebugDraw_DrawBox8);
-    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawWireBox", &APIProxy::DebugDraw_DrawWireBox9);
-    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawWireBox", &APIProxy::DebugDraw_DrawWireBox10);
-    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawWireFrustum", &APIProxy::DebugDraw_DrawWireFrustum11);
-    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawSphere", &APIProxy::DebugDraw_DrawSphere12);
-    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawWireSphere", &APIProxy::DebugDraw_DrawWireSphere13);
-    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawWireCircle", &APIProxy::DebugDraw_DrawWireCircle14);
+    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawArrow", &APIProxy::DebugDraw_DrawArrow1);
+    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawLine", &APIProxy::DebugDraw_DrawLine2);
+    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawBox", &APIProxy::DebugDraw_DrawBox3);
+    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawBox", &APIProxy::DebugDraw_DrawBox4);
+    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawWireBox", &APIProxy::DebugDraw_DrawWireBox5);
+    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawWireBox", &APIProxy::DebugDraw_DrawWireBox6);
+    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawWireFrustum", &APIProxy::DebugDraw_DrawWireFrustum7);
+    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawSphere", &APIProxy::DebugDraw_DrawSphere8);
+    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawWireSphere", &APIProxy::DebugDraw_DrawWireSphere9);
+    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::InternalDrawWireCircle", &APIProxy::DebugDraw_DrawWireCircle10);
+    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::Get_InternalColor", &APIProxy::DebugDraw_Get_Color1);
+    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::Set_InternalColor", &APIProxy::DebugDraw_Set_Color1);
+    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::Get_InternalMatrix", &APIProxy::DebugDraw_Get_Matrix2);
+    API_BIND("ReCrafted.API.Rendering.Debug.DebugDraw::Set_InternalMatrix", &APIProxy::DebugDraw_Set_Matrix2);
 }
 
 const char* DebugDraw::Fullname() 

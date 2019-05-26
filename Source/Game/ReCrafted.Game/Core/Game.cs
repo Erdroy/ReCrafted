@@ -1,18 +1,26 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
+using ReCrafted.API;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.Input;
+using ReCrafted.API.Mathematics;
+using ReCrafted.API.Rendering;
+using ReCrafted.API.Rendering.Debug;
 
 namespace ReCrafted.Game.Core
 {
     public class Game : GameBase<Game>
     {
+        private CameraActor _camera;
+
         protected override void OnInitialize()
         {
             base.OnInitialize();
 
             Logger.Log("Game initialized");
+
+            _camera = Object.New<CameraActor>();
         }
 
         protected override void OnShutdown()
@@ -24,6 +32,9 @@ namespace ReCrafted.Game.Core
         protected override void OnUpdate()
         {
             base.OnUpdate();
+
+            DebugDraw.Matrix = Matrix.RotationYawPitchRoll(Time.CurrentTime * 0.5f, Time.CurrentTime * 0.5f, Time.CurrentTime * 0.5f) * Matrix.Translation(_camera.Transform.Translation + _camera.Transform.Forward * 10.0f);
+            DebugDraw.DrawBox(Vector3.Zero, Vector3.One);
 
             if (InputManager.IsKeyDown(Key.Escape))
                 Application.Quit();

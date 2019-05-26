@@ -1,6 +1,7 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include "DebugDraw.h"
+#include "Content/ContentManager.h"
 #include "Rendering/Camera.h"
 #include "Rendering/RenderingManager.h"
 #include "Rendering/DrawMode.h"
@@ -86,13 +87,16 @@ namespace DebugMesh
 
 void DebugDraw::Initialize()
 {
-    m_debugShader = Renderer::CreateShader("../content/Shaders/Debug.rcasset");
+    // Add one batch
+    m_batches.Add({});
+    m_currentBatch = &m_batches[0];
+    m_currentColor = Color::FromHex(0xFF0000FF).ToVector();
+
+    m_debugShader = ContentManager::LoadAsset<Shader>("Shaders/Debug");
 
     m_linesVB = Renderer::CreateVertexBuffer(Batch::maxPointsPerBatch, sizeof(Point), true);
     m_trianglesVB = Renderer::CreateVertexBuffer(Batch::maxVerticesPerBatch, sizeof(Vertex), true);
     m_trianglesIB = Renderer::CreateIndexBuffer(Batch::maxIndicesPerBatch, nullptr, true, true);
-
-    SetMatrix(Matrix::Identity);
 }
 
 void DebugDraw::Shutdown()
@@ -102,8 +106,6 @@ void DebugDraw::Shutdown()
     Renderer::DestroyVertexBuffer(m_linesVB);
     Renderer::DestroyVertexBuffer(m_trianglesVB);
     Renderer::DestroyIndexBuffer(m_trianglesIB);
-
-    Renderer::DestroyShader(m_debugShader);
 }
 
 void DebugDraw::Render()
@@ -112,10 +114,10 @@ void DebugDraw::Render()
 
     // Set shader values
     auto mvpMatrix = Camera::GetMainCamera()->GetViewProjection();
-    Renderer::SetShaderValue(m_debugShader, 0, 0, &mvpMatrix, sizeof(Matrix));
+    Renderer::SetShaderValue(m_debugShader->GetHandle(), 0, 0, &mvpMatrix, sizeof(Matrix));
 
     // Apply shader
-    Renderer::ApplyShader(m_debugShader, 0);
+    Renderer::ApplyShader(m_debugShader->GetHandle(), 0);
 
     for (auto& batch : m_batches)
     {
@@ -126,7 +128,7 @@ void DebugDraw::Render()
     }
 
     // We don't want to remove batches, but only reset to the first one
-    m_currentBatch = &m_batches.First();
+    m_currentBatch = &m_batches[0];
 
     // Reset matrix
     SetMatrix(Matrix::Identity);
@@ -134,7 +136,7 @@ void DebugDraw::Render()
     //Profiler::EndProfile();
 }
 
-void DebugDraw::RenderLines(Batch & batch) const
+void DebugDraw::RenderLines(Batch& batch) const
 {
     auto& lineList = batch.GetLineList();
     const auto pointCount = lineList.Count();
@@ -247,7 +249,7 @@ DebugDraw::Batch* DebugDraw::GetBatch()
             m_batches.Add({});
 
             // Set the new batch as first
-            m_currentBatch = &m_batches.Last();
+            m_currentBatch = &m_batches[m_batches.Count() - 1];
         }
     }
 
@@ -321,7 +323,7 @@ void DebugDraw::DrawBox(const Vector3 & center, const Vector3 & size)
 
     for (const auto indexOffset : DebugMesh::m_cubeIndices)
     {
-        indexList.Add(index + indexOffset);
+        indexList.Add(uint(index + indexOffset));
     }
 }
 

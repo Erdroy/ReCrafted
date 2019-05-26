@@ -13,40 +13,6 @@ namespace ReCrafted.API.Rendering.Debug
     {
         
         /// <summary>
-        ///     Sets current debug draw render color.
-        /// </summary>
-        /// <param name="color">The color.</param>
-        public static void SetColor(Color color)
-        {
-            InternalSetColor(color);
-        }
-        
-        /// <summary>
-        ///     Gets current debug draw render color.
-        /// </summary>
-        public static Color GetColor()
-        {
-            return InternalGetColor();
-        }
-        
-        /// <summary>
-        ///     Sets matrix that will be used for vertex transformation.
-        /// </summary>
-        /// <param name="matrix">The matrix.</param>
-        public static void SetMatrix(Matrix matrix)
-        {
-            InternalSetMatrix(matrix);
-        }
-        
-        /// <summary>
-        ///     Gets current debug draw render transformation matrix.
-        /// </summary>
-        public static ref Matrix GetMatrix()
-        {
-            return ref InternalGetMatrix();
-        }
-        
-        /// <summary>
         ///     Draws arrow at the end point with line.
         /// </summary>
         /// <param name="start">The line start.</param>
@@ -145,17 +111,33 @@ namespace ReCrafted.API.Rendering.Debug
             InternalDrawWireCircle(center, majorAxis, minorAxis);
         }
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void InternalSetColor(Color color);
+        /// <summary>
+        ///     Sets current debug draw render color.
+        /// </summary>
+        /// <param name="color">The color.</param>
+        public static Color Color
+        {
+            get
+            {
+                Get_InternalColor(out var data);
+                return data;
+            }
+            set => Set_InternalColor(ref value);
+        }
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern Color InternalGetColor();
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void InternalSetMatrix(Matrix matrix);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern ref Matrix InternalGetMatrix();
+        /// <summary>
+        ///     Sets matrix that will be used for vertex transformation.
+        /// </summary>
+        /// <param name="matrix">The matrix.</param>
+        public static Matrix Matrix
+        {
+            get
+            {
+                Get_InternalMatrix(out var data);
+                return data;
+            }
+            set => Set_InternalMatrix(ref value);
+        }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalDrawArrow(Vector3 start, Vector3 end, float arrowSize);
@@ -186,5 +168,17 @@ namespace ReCrafted.API.Rendering.Debug
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalDrawWireCircle(Vector3 center, Vector3 majorAxis, Vector3 minorAxis);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalColor(out Color data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Set_InternalColor(ref Color data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalMatrix(out Matrix data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Set_InternalMatrix(ref Matrix data);
     }
 }
