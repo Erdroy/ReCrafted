@@ -122,6 +122,8 @@ public:
     static void InputManager_Get_DeviceCount1(int* data) 
     {
         MAIN_THREAD_ONLY();
+        const auto _returnValue = InputManager::GetDeviceCount();
+        *data = _returnValue;
     }
 };
 

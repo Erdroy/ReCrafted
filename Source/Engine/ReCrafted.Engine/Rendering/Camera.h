@@ -13,7 +13,7 @@ API_USING("ReCrafted.API.Mathematics")
 API_CLASS(public, sealed, partial)
 class Camera : public Object
 {
-    friend class Graphics;
+    friend class RenderingManager;
     API_CLASS_BODY()
 
 private:

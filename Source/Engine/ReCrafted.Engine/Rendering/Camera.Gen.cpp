@@ -165,6 +165,9 @@ public:
     static void Camera_Get_MainCamera13(MonoObject** data) 
     {
         MAIN_THREAD_ONLY();
+        const auto _fRetValue = Camera::GetMainCamera();
+        const auto _returnValue = _fRetValue != nullptr ? _fRetValue ->ToManaged() : nullptr;
+        *data = _returnValue;
     }
     
     static Object* Camera_CreateObject(bool createManagedInstance)

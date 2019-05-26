@@ -12,6 +12,7 @@ private:
 
 public:
     List() = default;
+    ~List() = default;
 
     explicit List(uint32_t size)
     {
