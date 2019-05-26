@@ -10,6 +10,15 @@ class APIProxy
 {
 public:
     
+    static void CameraActor_Get_Camera1(CameraActor* instance, MonoObject** data) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "CameraActor");
+        const auto _fRetValue = instance->GetCamera();
+        const auto _returnValue = _fRetValue != nullptr ? _fRetValue ->ToManaged() : nullptr;
+        *data = _returnValue;
+    }
+    
     static Object* CameraActor_CreateObject(bool createManagedInstance)
     {
         _ASSERT_(createManagedInstance, "Class 'CameraActor' is not marked as generic, and thus cannot get only unmanaged-instance created!");
@@ -22,6 +31,7 @@ void CameraActor::InitRuntime()
     MONO_REGISTER_OBJECT(&APIProxy::CameraActor_CreateObject);
     
     MONO_REGISTER_OBJECT_TYPE(CameraActor);
+    API_BIND("ReCrafted.API.Rendering.CameraActor::Get_InternalCamera", &APIProxy::CameraActor_Get_Camera1);
 }
 
 const char* CameraActor::Fullname() 

@@ -15,7 +15,9 @@ class EmptyActor final : public ActorBase
     API_CLASS_BODY()
 
 public:
+    ACTOR_BODY(EmptyActor)
 
+public:
     /// <summary>
     ///     Creates new actor of type <see cref="EmptyActor"/>.
     /// </summary>

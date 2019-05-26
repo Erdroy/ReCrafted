@@ -14,10 +14,12 @@ void CameraActor::OnAwake()
     // Create camera
     m_camera = Camera::Create();
     m_camera->SetAsCurrent();
+    ASSERT(m_camera);
 }
 
 void CameraActor::OnLateUpdate()
 {
+    ASSERT(m_camera);
     m_camera->Position(Position());
     m_camera->Rotation(Rotation());
 }
@@ -25,7 +27,6 @@ void CameraActor::OnLateUpdate()
 void CameraActor::OnEnable()
 {
     ASSERT(m_camera);
-
     m_camera->SetAsCurrent();
 }
 

@@ -9,11 +9,14 @@
 #include "Core/Transform.h"
 #include "Scripting/Object.h"
 #include "Scripting/Script.h"
+#include "Scene/SceneManager.h"
 
 using ActorId_t = uint64_t;
 
 API_USING("ReCrafted.API.Common")
 API_USING("ReCrafted.API.Mathematics")
+
+#define ACTOR_BODY(actorType) actorType () { SceneManager::GetInstance()->AddActor(this); }
 
 /// <summary>
 ///     Base class for all actors. Provides basic actor behavior.
@@ -49,7 +52,6 @@ private:
     void FixedUpdate();
 
 public:
-    ActorBase();
     virtual ~ActorBase();
 
 protected:

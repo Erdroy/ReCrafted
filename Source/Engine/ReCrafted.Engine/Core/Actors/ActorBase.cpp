@@ -78,12 +78,6 @@ void ActorBase::FixedUpdate()
     OnSimulate();
 }
 
-ActorBase::ActorBase()
-{
-    // Add to scene
-    SceneManager::GetInstance()->AddActor(this);
-}
-
 ActorBase::~ActorBase()
 {
     // Destroy scripts

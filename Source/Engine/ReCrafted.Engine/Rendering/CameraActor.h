@@ -4,6 +4,7 @@
 
 #include <ReCrafted.h>
 #include "Core/Actors/ActorBase.h"
+#include "Rendering/Camera.h"
 
 API_USING("ReCrafted.API.Core.Actors")
 
@@ -19,7 +20,7 @@ private:
     Camera* m_camera = nullptr;
 
 public:
-    CameraActor() = default;
+    ACTOR_BODY(CameraActor)
     ~CameraActor();
 
 protected:
@@ -31,6 +32,10 @@ protected:
     void OnDisable() override;
 
 public:
+    /// <summary>
+    ///     Gets the camera contained by this actor. See also: <see cref="ReCrafted.API.Rendering.Camera"/>.
+    /// </summary>
+    API_PROPERTY(noprefix)
     Camera* GetCamera() const
     {
         return m_camera;
