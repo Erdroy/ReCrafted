@@ -517,13 +517,116 @@ else
 
     }
 }
+else
+{
+
+if(property.Type.CastToManaged)
+{
+
+            
+            #line default
+            #line hidden
+            this.Write("        const auto _fRetValue = ");
+            
+            #line 180 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
+            
+            #line default
+            #line hidden
+            this.Write("::");
+            
+            #line 180 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(property.GetterFunctionName));
+            
+            #line default
+            #line hidden
+            this.Write("();\r\n        const auto _returnValue = ");
+            
+            #line 181 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(byref));
+            
+            #line default
+            #line hidden
+            this.Write("_fRetValue != nullptr ? _fRetValue ->ToManaged() : nullptr;\r\n");
+            
+            #line 182 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+
+}
+else
+{
+
+            
+            #line default
+            #line hidden
+            this.Write("        const auto _returnValue = ");
+            
+            #line 187 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(byref));
+            
+            #line default
+            #line hidden
+            
+            #line 187 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
+            
+            #line default
+            #line hidden
+            this.Write("::");
+            
+            #line 187 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(property.GetterFunctionName));
+            
+            #line default
+            #line hidden
+            this.Write("();\r\n");
+            
+            #line 188 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+
+}
+
+            
+            #line default
+            #line hidden
+            
+            #line 191 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+
+    if(property.Type.IsSpecial)
+    {
+
+            
+            #line default
+            #line hidden
+            this.Write("        *p_data = ");
+            
+            #line 195 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.ConstructSpecialConversion(true, "_returnValue")));
+            
+            #line default
+            #line hidden
+            this.Write(";\r\n");
+            
+            #line 196 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+
+    }
+    else
+    {
+
+            
+            #line default
+            #line hidden
+            this.Write("        *data = _returnValue;\r\n");
+            
+            #line 202 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+
+    }
+}
 
             
             #line default
             #line hidden
             this.Write("    }\r\n");
             
-            #line 176 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 207 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
     }
     if(property.HasSetter)
@@ -534,28 +637,28 @@ else
             #line hidden
             this.Write("\r\n    static void ");
             
-            #line 182 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 213 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write("_Set_");
             
-            #line 182 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 213 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Name + pId));
             
             #line default
             #line hidden
             this.Write("(");
             
-            #line 182 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 213 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.GetCPlusPlusParameter(Class, false)));
             
             #line default
             #line hidden
             this.Write(") \r\n    {\r\n");
             
-            #line 184 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 215 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
 if(!property.AllowMultithread)
 {
@@ -565,7 +668,7 @@ if(!property.AllowMultithread)
             #line hidden
             this.Write("        MAIN_THREAD_ONLY();\r\n");
             
-            #line 189 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 220 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
 }
 if(property.Type.IsSpecial)
@@ -576,14 +679,14 @@ if(property.Type.IsSpecial)
             #line hidden
             this.Write("        ASSERT(p_data);\r\n        const auto data = ");
             
-            #line 195 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 226 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.ConstructSpecialConversion(false, "*p_data")));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 196 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 227 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
 }
 if(!property.IsStatic)
@@ -594,37 +697,76 @@ if(!property.IsStatic)
             #line hidden
             this.Write("        MONO_CHECK_OBJECT(instance, \"");
             
-            #line 201 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 232 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write("\");\r\n        instance->");
             
-            #line 202 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 233 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.SetterFunctionName));
             
             #line default
             #line hidden
             this.Write("(");
             
-            #line 202 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 233 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 if(!property.Type.IsSpecial){
             
             #line default
             #line hidden
             this.Write("*");
             
-            #line 202 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 233 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("data);\r\n");
             
-            #line 203 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 234 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
-}        
+}
+else
+{
+
+            
+            #line default
+            #line hidden
+            this.Write("        ");
+            
+            #line 239 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
+            
+            #line default
+            #line hidden
+            this.Write("::");
+            
+            #line 239 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(property.SetterFunctionName));
+            
+            #line default
+            #line hidden
+            this.Write("(");
+            
+            #line 239 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+if(!property.Type.IsSpecial){
+            
+            #line default
+            #line hidden
+            this.Write("*");
+            
+            #line 239 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+}
+            
+            #line default
+            #line hidden
+            this.Write("data);\r\n");
+            
+            #line 240 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+
+}
 if(property.Type.IsSpecial)
 {
 
@@ -633,14 +775,14 @@ if(property.Type.IsSpecial)
             #line hidden
             this.Write("        ");
             
-            #line 208 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 245 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.GetSpecialFree(false)));
             
             #line default
             #line hidden
             this.Write("(data);\r\n");
             
-            #line 209 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 246 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
 }
 
@@ -649,7 +791,7 @@ if(property.Type.IsSpecial)
             #line hidden
             this.Write("    }\r\n");
             
-            #line 213 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 250 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
     }
 }
@@ -662,14 +804,14 @@ if(!Class.IsStatic && !string.IsNullOrEmpty(Class.Inherits) && !Class.IsAbstract
             #line hidden
             this.Write("    \r\n    static Object* ");
             
-            #line 221 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 258 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write("_CreateObject(bool createManagedInstance)\r\n    {\r\n");
             
-            #line 223 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 260 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
         if(Class.CreateGenericFunctionality)
         {
@@ -679,21 +821,21 @@ if(!Class.IsStatic && !string.IsNullOrEmpty(Class.Inherits) && !Class.IsAbstract
             #line hidden
             this.Write("        return createManagedInstance ? Object::New<");
             
-            #line 227 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 264 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write(">() : new ");
             
-            #line 227 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 264 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write("();\r\n");
             
-            #line 228 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 265 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
         }
         else
@@ -704,7 +846,7 @@ if(!Class.IsStatic && !string.IsNullOrEmpty(Class.Inherits) && !Class.IsAbstract
             #line hidden
             this.Write("        _ASSERT_(createManagedInstance, \"Class \'");
             
-            #line 233 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 270 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
@@ -712,14 +854,14 @@ if(!Class.IsStatic && !string.IsNullOrEmpty(Class.Inherits) && !Class.IsAbstract
             this.Write("\' is not marked as generic, and thus cannot get only unmanaged-instance created!\"" +
                     ");\r\n        return Object::New<");
             
-            #line 234 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 271 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write(">();\r\n");
             
-            #line 235 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 272 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
         }
 
@@ -728,7 +870,7 @@ if(!Class.IsStatic && !string.IsNullOrEmpty(Class.Inherits) && !Class.IsAbstract
             #line hidden
             this.Write("    }\r\n");
             
-            #line 239 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 276 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
 }
 
@@ -737,14 +879,14 @@ if(!Class.IsStatic && !string.IsNullOrEmpty(Class.Inherits) && !Class.IsAbstract
             #line hidden
             this.Write("};\r\n\r\nvoid ");
             
-            #line 244 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 281 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write("::InitRuntime() \r\n{\r\n");
             
-            #line 246 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 283 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
 if(!Class.IsStatic && !string.IsNullOrEmpty(Class.Inherits) && !Class.IsAbstract)
 {
@@ -754,14 +896,14 @@ if(!Class.IsStatic && !string.IsNullOrEmpty(Class.Inherits) && !Class.IsAbstract
             #line hidden
             this.Write("    MONO_REGISTER_OBJECT(&APIProxy::");
             
-            #line 250 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 287 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write("_CreateObject);\r\n    \r\n");
             
-            #line 252 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 289 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
 }
 
@@ -770,14 +912,14 @@ if(!Class.IsStatic && !string.IsNullOrEmpty(Class.Inherits) && !Class.IsAbstract
             #line hidden
             this.Write("    MONO_REGISTER_OBJECT_TYPE(");
             
-            #line 255 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 292 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 256 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 293 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
 // ---- Function bindings ----
 var fId1 = 0;
@@ -790,42 +932,42 @@ foreach(var function in Functions)
             #line hidden
             this.Write("    API_BIND(\"");
             
-            #line 263 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 300 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Namespace));
             
             #line default
             #line hidden
             this.Write(".");
             
-            #line 263 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 300 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write("::Internal");
             
-            #line 263 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 300 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(function.Name));
             
             #line default
             #line hidden
             this.Write("\", &APIProxy::");
             
-            #line 263 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 300 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write("_");
             
-            #line 263 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 300 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(function.Name + fId1));
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 264 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 301 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
 }
 var pId1 = 0;
@@ -840,42 +982,42 @@ foreach(var property in Properties)
             #line hidden
             this.Write("    API_BIND(\"");
             
-            #line 273 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 310 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Namespace));
             
             #line default
             #line hidden
             this.Write(".");
             
-            #line 273 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 310 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write("::Get_Internal");
             
-            #line 273 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 310 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Name));
             
             #line default
             #line hidden
             this.Write("\", &APIProxy::");
             
-            #line 273 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 310 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write("_Get_");
             
-            #line 273 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 310 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Name + pId1));
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 274 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 311 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
     }
     if(property.HasSetter)
@@ -886,42 +1028,42 @@ foreach(var property in Properties)
             #line hidden
             this.Write("    API_BIND(\"");
             
-            #line 279 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 316 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Namespace));
             
             #line default
             #line hidden
             this.Write(".");
             
-            #line 279 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 316 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write("::Set_Internal");
             
-            #line 279 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 316 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Name));
             
             #line default
             #line hidden
             this.Write("\", &APIProxy::");
             
-            #line 279 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 316 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write("_Set_");
             
-            #line 279 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 316 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Name + pId1));
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 280 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 317 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
 
     }
 }
@@ -931,49 +1073,49 @@ foreach(var property in Properties)
             #line hidden
             this.Write("}\r\n\r\nconst char* ");
             
-            #line 286 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 323 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write("::Fullname() \r\n{\r\n    return \"");
             
-            #line 288 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 325 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Namespace));
             
             #line default
             #line hidden
             this.Write(".");
             
-            #line 288 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 325 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write("\";\r\n}\r\n\r\nconst char* ");
             
-            #line 291 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 328 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write("::Name() \r\n{\r\n    return \"");
             
-            #line 293 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 330 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write("\";\r\n}\r\n\r\nconst char* ");
             
-            #line 296 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 333 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Name));
             
             #line default
             #line hidden
             this.Write("::Namespace() \r\n{\r\n    return \"");
             
-            #line 298 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
+            #line 335 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Class.Namespace));
             
             #line default

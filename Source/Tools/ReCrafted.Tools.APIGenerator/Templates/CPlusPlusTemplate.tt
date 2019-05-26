@@ -171,6 +171,37 @@ else
 <#
     }
 }
+else
+{
+
+if(property.Type.CastToManaged)
+{
+#>
+        const auto _fRetValue = <#=Class.Name#>::<#=property.GetterFunctionName#>();
+        const auto _returnValue = <#=byref#>_fRetValue != nullptr ? _fRetValue ->ToManaged() : nullptr;
+<#
+}
+else
+{
+#>
+        const auto _returnValue = <#=byref#><#=Class.Name#>::<#=property.GetterFunctionName#>();
+<#
+}
+#>
+<#
+    if(property.Type.IsSpecial)
+    {
+#>
+        *p_data = <#=property.Type.ConstructSpecialConversion(true, "_returnValue")#>;
+<#
+    }
+    else
+    {
+#>
+        *data = _returnValue;
+<#
+    }
+}
 #>
     }
 <#
@@ -201,7 +232,13 @@ if(!property.IsStatic)
         MONO_CHECK_OBJECT(instance, "<#=Class.Name#>");
         instance-><#=property.SetterFunctionName#>(<#if(!property.Type.IsSpecial){#>*<#}#>data);
 <#
-}        
+}
+else
+{
+#>
+        <#=Class.Name#>::<#=property.SetterFunctionName#>(<#if(!property.Type.IsSpecial){#>*<#}#>data);
+<#
+}
 if(property.Type.IsSpecial)
 {
 #>
