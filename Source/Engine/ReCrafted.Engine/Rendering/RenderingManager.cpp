@@ -77,35 +77,43 @@ void RenderingManager::Render()
     ASSERT(Camera::GetMainCamera());
     Camera::GetMainCamera()->Update();
 
-    m_rendering->BeginRender();
+    // Process rendering components
+    RenderComponents(RenderingComponentStage::PreProcess);
 
-    m_rendering->BeginRenderGeometry();
-    RenderGeometry();
-    m_rendering->EndRenderGeometry();
+    m_rendering->BeginRender(); // Begin rendering
+    {
+        // Render geometry
+        m_rendering->RenderGeometry();
+        RenderComponents(RenderingComponentStage::Geometry);
 
-    //m_rendering->BeginRenderShadows();
-    //RenderShadows();
-    //m_rendering->EndRenderShadows();
-
-    m_rendering->EndRender();
+        // Render shadows
+        m_rendering->RenderShadows();
+    }
+    m_rendering->EndRender(); // End rendering
 
     // TODO: Render post process
 
-    // TODO: Custom stages for rendering components
-    for (auto& component : m_renderingComponents)
-    {
-        component->Render();
-    }
+    // Process rendering components
+    RenderComponents(RenderingComponentStage::PostProcess);
+
+    // Process rendering components
+    RenderComponents(RenderingComponentStage::Final);
 
     Renderer::Frame();
 }
 
-void RenderingManager::RenderGeometry()
+void RenderingManager::RenderComponents(const RenderingComponentStage stage)
 {
+    for (auto& component : m_renderingComponents)
+    {
+        if (component->GetStage() == stage)
+            component->Render();
+    }
 }
 
 void RenderingManager::SetDrawMode(const DrawMode drawMode)
 {
+    ASSERT(IS_MAIN_THREAD());
     GetInstance()->m_drawMode = drawMode;
 
     switch (drawMode)
@@ -157,13 +165,13 @@ void RenderingManager::AddRenderable(RenderableBase* renderable)
         SortRenderList(GetInstance()->m_geometryList);
     }
 
-    if ((renderMode & RenderableRenderMode::RenderShadows) == RenderableRenderMode::RenderShadows)
-    {
-        ASSERT(GetInstance()->m_shadowGeometryList.Contains(renderable) == false);
+    //if ((renderMode & RenderableRenderMode::RenderShadows) == RenderableRenderMode::RenderShadows)
+    //{
+    //    ASSERT(GetInstance()->m_shadowGeometryList.Contains(renderable) == false);
 
-        GetInstance()->m_shadowGeometryList.Add(renderable);
-        SortRenderList(GetInstance()->m_shadowGeometryList);
-    }
+    //    GetInstance()->m_shadowGeometryList.Add(renderable);
+    //    SortRenderList(GetInstance()->m_shadowGeometryList);
+    //}
 }
 
 void RenderingManager::RemoveRenderable(RenderableBase* renderable)
@@ -177,6 +185,6 @@ void RenderingManager::RemoveRenderable(RenderableBase* renderable)
     if ((renderMode & RenderableRenderMode::RenderGeometry) == RenderableRenderMode::RenderGeometry)
         GetInstance()->m_geometryList.Remove(renderable);
 
-    if ((renderMode & RenderableRenderMode::RenderShadows) == RenderableRenderMode::RenderShadows)
-        GetInstance()->m_shadowGeometryList.Remove(renderable);
+    //if ((renderMode & RenderableRenderMode::RenderShadows) == RenderableRenderMode::RenderShadows)
+    //    GetInstance()->m_shadowGeometryList.Remove(renderable);
 }

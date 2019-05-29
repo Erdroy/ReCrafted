@@ -25,8 +25,17 @@ void DeferredRendering::Shutdown()
 
 void DeferredRendering::BeginRender()
 {
+    // TODO: Setup GBuffer and shader values
 }
 
 void DeferredRendering::EndRender()
+{
+}
+
+void DeferredRendering::RenderGeometry()
+{
+}
+
+void DeferredRendering::RenderShadows()
 {
 }

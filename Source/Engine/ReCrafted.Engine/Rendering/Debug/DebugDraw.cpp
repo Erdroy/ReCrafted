@@ -101,6 +101,9 @@ void DebugDraw::Initialize()
 
 void DebugDraw::Shutdown()
 {
+    // Note: We cannot unload the loaded asset (m_debugShader) as we are way after the ContentManager was unloaded
+    // (with all assets) and thus, we don't have to do it.
+
     m_batches.Release();
 
     Renderer::DestroyVertexBuffer(m_linesVB);

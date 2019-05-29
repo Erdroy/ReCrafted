@@ -4,7 +4,6 @@
 
 #include <ReCrafted.h>
 #include "Rendering/RenderingBase.h"
-#include "Rendering/RenderingManager.h"
 
 class DeferredRendering final : public RenderingBase
 {
@@ -25,4 +24,7 @@ protected:
 
     void BeginRender() override;
     void EndRender() override;
+
+    void RenderGeometry() override;
+    void RenderShadows() override;
 };

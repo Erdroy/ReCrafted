@@ -18,7 +18,6 @@ class RenderingManager final : public SubSystem<RenderingManager>
 
 private:
     RenderList m_geometryList = {};
-    RenderList m_shadowGeometryList = {};
 
     RenderingBase* m_rendering = nullptr;
     DrawMode m_drawMode = DrawMode::Default;
@@ -51,7 +50,11 @@ protected:
 
     void Render();
 
-    void RenderGeometry();
+    /// <summary>
+    ///     Renders all rendering components that are using given stage.
+    /// </summary>
+    /// <param name="stage">The rendering stage.</param>
+    void RenderComponents(RenderingComponentStage stage);
 
 public:
     /// <summary>
@@ -85,10 +88,10 @@ public:
     ///     Gets the amount of shadow geometry renderables in the current list.
     /// </summary>
     /// <returns>The amount of shadow geometry renderables.</returns>
-    static int GetRenderableShadowGeometryCount()
-    {
-        return static_cast<int>(GetInstance()->m_shadowGeometryList.Count());
-    }
+    //static int GetRenderableShadowGeometryCount()
+    //{
+    //    return static_cast<int>(GetInstance()->m_shadowGeometryList.Count());
+    //}
 
     /// <summary>
     ///     Resizes the current back/front buffers.

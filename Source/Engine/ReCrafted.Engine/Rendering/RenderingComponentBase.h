@@ -4,6 +4,29 @@
 
 #include <ReCrafted.h>
 
+enum class RenderingComponentStage : byte
+{
+    /// <summary>
+    ///     Provides write access to GBuffer.
+    /// </summary>
+    Geometry,
+
+    /// <summary>
+    ///     Provides access to window's backbuffer after it's being cleaned (pre-geometry rendering).
+    /// </summary>
+    PreProcess,
+
+    /// <summary>
+    ///     Provides read access from GBuffer.
+    /// </summary>
+    PostProcess,
+
+    /// <summary>
+    ///     Provides access to window's backbuffer.
+    /// </summary>
+    Final
+};
+
 class RenderingComponentBase
 {
     friend class RenderingManager;
@@ -21,4 +44,7 @@ protected:
 
 protected:
     virtual void Release() = 0;
+
+public:
+    virtual RenderingComponentStage GetStage() = 0;
 };

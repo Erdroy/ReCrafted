@@ -18,6 +18,6 @@ protected:
     virtual void BeginRender() { }
     virtual void EndRender() { }
 
-    virtual void BeginRenderGeometry() { }
-    virtual void EndRenderGeometry() { }
+    virtual void RenderGeometry() { }
+    virtual void RenderShadows() { }
 };

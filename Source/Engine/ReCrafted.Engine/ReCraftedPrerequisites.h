@@ -64,6 +64,7 @@ class GameManager;
 
 // Rendering/
 enum class DrawMode : byte;
+enum class RenderingComponentStage : byte;
 class Camera;
 class CameraActor;
 class Mesh;

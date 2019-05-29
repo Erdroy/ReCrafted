@@ -163,6 +163,12 @@ protected:
     Batch* GetBatch();
 
 public:
+    RenderingComponentStage GetStage() override
+    {
+        return RenderingComponentStage::Final;
+    }
+
+public:
     /// <summary>
     ///     Sets current debug draw render color.
     /// </summary>
