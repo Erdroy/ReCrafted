@@ -75,6 +75,7 @@ namespace Renderer
             uint16_t width = 0u;
             uint16_t height = 0u;
             uint16_t pitch = 0u;
+            uint16_t mips = 0u;
             TextureFormat::_enum format = TextureFormat::Unknown;
 
         public:
@@ -1026,6 +1027,7 @@ namespace Renderer
             texture.width = command->width;
             texture.height = command->height;
             texture.format = command->textureFormat;
+            texture.mips = mipLevels;
         }
 
         void WorkerThreadInstance::Execute_ApplyTexture2D(Command_ApplyTexture2D* command)
@@ -1085,6 +1087,7 @@ namespace Renderer
             fakeCommand.textureFormat = texture.format;
             fakeCommand.dataSize = 0u;
             fakeCommand.memory = nullptr;
+            fakeCommand.generateMips = texture.mips > 1;
 
             // create new texture
             Execute_CreateTexture2D(&fakeCommand);
