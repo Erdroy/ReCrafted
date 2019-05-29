@@ -6,7 +6,6 @@
 #include "Common/List.h"
 #include "Core/SubSystems/SubSystem.h"
 #include "Rendering/Renderer/Renderer.h"
-#include "Rendering/DrawMode.h"
 
 /// <summary>
 ///     RenderingManager class.
@@ -20,7 +19,6 @@ private:
     RenderList m_geometryList = {};
 
     RenderingBase* m_rendering = nullptr;
-    DrawMode m_drawMode = DrawMode::Default;
 
     Renderer::WindowHandle m_windowHandle = {};
     Renderer::RenderBufferHandle m_frameBufferHandle = {};
@@ -58,12 +56,6 @@ protected:
 
 public:
     /// <summary>
-    ///     Sets the current draw mode.
-    /// </summary>
-    /// <param name="drawMode">The new draw mode.</param>
-    static void SetDrawMode(DrawMode drawMode);
-
-    /// <summary>
     ///     Adds given renderable, to the render list.
     /// </summary>
     /// <param name="renderable">The renderable which will be added.</param>
@@ -85,13 +77,31 @@ public:
     }
 
     /// <summary>
-    ///     Gets the amount of shadow geometry renderables in the current list.
+    ///     Gets the geometry render list.
     /// </summary>
-    /// <returns>The amount of shadow geometry renderables.</returns>
-    //static int GetRenderableShadowGeometryCount()
-    //{
-    //    return static_cast<int>(GetInstance()->m_shadowGeometryList.Count());
-    //}
+    /// <returns>The geometry render list.</returns>
+    static RenderList& GetGeometryList()
+    {
+        return GetInstance()->m_geometryList;
+    }
+
+    /// <summary>
+    ///     Gets the current rendering instance.
+    /// </summary>
+    /// <returns>The rendering instance.</returns>
+    static RenderingBase* GetRendering()
+    {
+        return GetInstance()->m_rendering;
+    }
+
+    /// <summary>
+    ///     Gets current frame buffer handle.
+    /// </summary>
+    /// <returns>The current frame buffer handle.</returns>
+    static const Renderer::RenderBufferHandle& GetFrameBuffer()
+    {
+        return GetInstance()->m_frameBufferHandle;
+    }
 
     /// <summary>
     ///     Resizes the current back/front buffers.

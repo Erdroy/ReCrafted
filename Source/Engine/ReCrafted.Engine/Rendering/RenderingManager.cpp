@@ -5,7 +5,8 @@
 #include "Rendering/Debug/DebugDraw.h"
 #include "Rendering/DeferredRendering/DeferredRendering.h"
 #include "Rendering/RenderableBase.h"
-#include "Camera.h"
+#include "Rendering/Camera.h"
+#include "Core/Display.h"
 
 void RenderingManager::InitializeRenderer()
 {
@@ -26,6 +27,10 @@ void RenderingManager::InitializeRenderer()
 
 void RenderingManager::OnResize(const uint width, const uint height)
 {
+    // Resize rendering's content
+    m_rendering->Resize(width, height);
+
+    // Resize window
     Renderer::ResizeWindow(m_windowHandle, width, height);
 }
 
@@ -72,7 +77,6 @@ void RenderingManager::Render()
 {
     Renderer::ApplyWindow(m_windowHandle);
     Renderer::ClearRenderBuffer(m_frameBufferHandle, Renderer::Color(0.0f, 0.0f, 0.0f, 1.0f));
-    Renderer::ApplyRenderBuffer(m_frameBufferHandle);
 
     ASSERT(Camera::GetMainCamera());
     Camera::GetMainCamera()->Update();
@@ -93,8 +97,13 @@ void RenderingManager::Render()
 
     // TODO: Render post process
 
+    // TODO: If HDR is enabled, use tone-mapping.
+
     // Process rendering components
     RenderComponents(RenderingComponentStage::PostProcess);
+
+    // Set frame buffer as the render target
+    Renderer::ApplyRenderBuffer(GetFrameBuffer());
 
     // Process rendering components
     RenderComponents(RenderingComponentStage::Final);
@@ -108,44 +117,6 @@ void RenderingManager::RenderComponents(const RenderingComponentStage stage)
     {
         if (component->GetStage() == stage)
             component->Render();
-    }
-}
-
-void RenderingManager::SetDrawMode(const DrawMode drawMode)
-{
-    ASSERT(IS_MAIN_THREAD());
-    GetInstance()->m_drawMode = drawMode;
-
-    switch (drawMode)
-    {
-    case DrawMode::DrawUI:
-    case DrawMode::DrawWebUI:
-        Renderer::SetFlag(Renderer::RenderFlags::DepthTest, false);
-        Renderer::SetFlag(Renderer::RenderFlags::DepthStencil, false);
-        Renderer::SetFlag(Renderer::RenderFlags::DrawLineLists, false);
-        Renderer::SetFlag(Renderer::RenderFlags::RenderOverlay, true); // temporary simplified blend-states TODO: Expose Renderer's blend state creation
-        return;
-
-    case DrawMode::DebugDrawLines:
-        Renderer::SetFlag(Renderer::RenderFlags::DepthTest, false);
-        Renderer::SetFlag(Renderer::RenderFlags::DepthStencil, false);
-        Renderer::SetFlag(Renderer::RenderFlags::DrawLineLists, true);
-        Renderer::SetFlag(Renderer::RenderFlags::RenderOverlay, true);
-        return;
-
-    case DrawMode::DebugDrawTriangles:
-        Renderer::SetFlag(Renderer::RenderFlags::DepthTest, false);
-        Renderer::SetFlag(Renderer::RenderFlags::DepthStencil, false);
-        Renderer::SetFlag(Renderer::RenderFlags::DrawLineLists, false);
-        Renderer::SetFlag(Renderer::RenderFlags::RenderOverlay, true);
-        return;
-
-    case DrawMode::Default:
-    default:
-    {
-        Renderer::SetFlags(Renderer::RenderFlags::_enum(Renderer::RenderFlags::Default));
-        Renderer::SetFlag(Renderer::RenderFlags::VSync, false);
-    }
     }
 }
 
@@ -164,14 +135,6 @@ void RenderingManager::AddRenderable(RenderableBase* renderable)
         GetInstance()->m_geometryList.Add(renderable);
         SortRenderList(GetInstance()->m_geometryList);
     }
-
-    //if ((renderMode & RenderableRenderMode::RenderShadows) == RenderableRenderMode::RenderShadows)
-    //{
-    //    ASSERT(GetInstance()->m_shadowGeometryList.Contains(renderable) == false);
-
-    //    GetInstance()->m_shadowGeometryList.Add(renderable);
-    //    SortRenderList(GetInstance()->m_shadowGeometryList);
-    //}
 }
 
 void RenderingManager::RemoveRenderable(RenderableBase* renderable)
@@ -184,7 +147,4 @@ void RenderingManager::RemoveRenderable(RenderableBase* renderable)
 
     if ((renderMode & RenderableRenderMode::RenderGeometry) == RenderableRenderMode::RenderGeometry)
         GetInstance()->m_geometryList.Remove(renderable);
-
-    //if ((renderMode & RenderableRenderMode::RenderShadows) == RenderableRenderMode::RenderShadows)
-    //    GetInstance()->m_shadowGeometryList.Remove(renderable);
 }

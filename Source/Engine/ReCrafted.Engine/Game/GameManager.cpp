@@ -3,6 +3,7 @@
 #include "GameManager.h"
 #include "Scripting/Object.h"
 #include "Scripting/ScriptingManager.h"
+#include "Rendering/Mesh.h"
 
 GameManager::GameManager()
 {

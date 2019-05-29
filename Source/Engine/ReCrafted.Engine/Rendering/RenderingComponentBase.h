@@ -12,7 +12,7 @@ enum class RenderingComponentStage : byte
     Geometry,
 
     /// <summary>
-    ///     Provides access to window's backbuffer after it's being cleaned (pre-geometry rendering).
+    ///     Provides write access to frame buffer after it's being cleaned (pre-geometry rendering).
     /// </summary>
     PreProcess,
 
@@ -22,7 +22,7 @@ enum class RenderingComponentStage : byte
     PostProcess,
 
     /// <summary>
-    ///     Provides access to window's backbuffer.
+    ///     Provides write access to frame buffer.
     /// </summary>
     Final
 };
