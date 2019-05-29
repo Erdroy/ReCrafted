@@ -148,6 +148,7 @@ namespace Renderer
 
 
         // == d3d11 resources ==
+        ID3D11Debug* m_debug = nullptr;
         ID3D11Device* m_device = nullptr;
         ID3D11DeviceContext* m_deviceContext = nullptr;
 
@@ -1240,6 +1241,10 @@ namespace Renderer
 
             DX_CALL(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, deviceFlags, featureLevels, 1, D3D11_SDK_VERSION, &m_device, &level, &m_deviceContext));
 
+#ifdef _DEBUG
+            m_device->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&m_debug));
+#endif
+
             // Get CPU count
             int cpuCount = std::thread::hardware_concurrency();
             if (m_settings & Settings::SingleThreaded)
@@ -1427,6 +1432,10 @@ namespace Renderer
             SafeRelease(m_rasterizerState);
             SafeRelease(m_deviceContext);
             SafeRelease(m_device);
+
+            // Report leaked objects
+            m_debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+            SafeRelease(m_debug);
         }
 
         void RHIDirectX11::GetRenderStatistics(RenderStatistics* stats)
