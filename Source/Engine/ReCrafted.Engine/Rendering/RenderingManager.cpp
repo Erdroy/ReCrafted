@@ -6,7 +6,6 @@
 #include "Rendering/DeferredRendering/DeferredRendering.h"
 #include "Rendering/RenderableBase.h"
 #include "Rendering/Camera.h"
-#include "Core/Display.h"
 
 void RenderingManager::InitializeRenderer()
 {
@@ -46,9 +45,6 @@ void RenderingManager::Initialize()
 
     m_rendering = new DeferredRendering();
     m_rendering->Initialize();
-
-    // TODO: RenderingComponent system
-    // This will be used for ImGui, DebugDraw, WebUIRender etc.
 
     AddRenderingComponent<DebugDraw>();
 }
