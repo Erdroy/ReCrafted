@@ -6,6 +6,7 @@
 #include "Rendering/DeferredRendering/DeferredRendering.h"
 #include "Rendering/RenderableBase.h"
 #include "Rendering/Camera.h"
+#include "Core/Display.h"
 
 void RenderingManager::InitializeRenderer()
 {
@@ -72,7 +73,12 @@ void RenderingManager::Shutdown()
 void RenderingManager::Render()
 {
     Renderer::ApplyWindow(m_windowHandle);
+    
+    // Pre-Render cleanup
     Renderer::ClearRenderBuffer(m_frameBufferHandle, Renderer::Color(0.0f, 0.0f, 0.0f, 1.0f));
+
+    for (auto i = 0u; i < m_currentTextures.Count(); i++)
+        m_currentTextures[i] = nullptr;
 
     ASSERT(Camera::GetMainCamera());
     Camera::GetMainCamera()->Update();
@@ -115,6 +121,139 @@ void RenderingManager::RenderComponents(const RenderingComponentStage stage)
             component->Render();
     }
 }
+
+void RenderingManager::UpdateDefaultConstants(Shader* shader)
+{
+    const auto mainCamera = Camera::GetMainCamera();
+
+    // Set MVP matrix
+    shader->SetValue(0, const_cast<Matrix*>(&mainCamera->GetViewProjection()));
+
+    // Set inverted view matrix
+    auto invView = mainCamera->GetView();
+    invView.Invert();
+    invView.Transpose();
+    shader->SetValue(1, &invView);
+
+    // Set view info
+    const auto projection = mainCamera->GetProjection();
+    Vector4 viewInfo;
+    viewInfo.x = mainCamera->NearPlane();
+    viewInfo.y = mainCamera->FarPlane();
+    viewInfo.z = 1.0f / projection.m11;
+    viewInfo.w = 1.0f / projection.m22;
+    shader->SetValue(2, &viewInfo);
+
+    // Set screen size
+    Vector2 screenSize;
+    screenSize.x = static_cast<float>(Display::GetWidth());
+    screenSize.y = static_cast<float>(Display::GetHeight());
+    shader->SetValue(3, &screenSize);
+
+    // Set camera position vector
+    auto cameraPosition = mainCamera->Position();
+    shader->SetValue(4, &cameraPosition);
+
+    // Set light direction vector
+    auto lightDir = Vector3(0.2f, 0.3f, 0.1f);
+    lightDir.Normalize();
+    shader->SetValue(5, &lightDir);
+
+    // Set light direction vector
+    auto ambientLight = Vector3(0.35f, 0.35f, 0.35f);
+    shader->SetValue(6, &ambientLight);
+
+    // apply shader changes
+    Renderer::ApplyShader(shader->GetHandle(), 0);
+}
+
+void RenderingManager::SetDrawMode(const DrawMode drawMode)
+{
+    ASSERT(IS_MAIN_THREAD());
+    GetInstance()->m_currentDrawMode = drawMode;
+
+    switch (drawMode)
+    {
+    case DrawMode::DrawUI:
+    case DrawMode::DrawWebUI:
+        Renderer::SetFlag(Renderer::RenderFlags::DepthTest, false);
+        Renderer::SetFlag(Renderer::RenderFlags::DepthStencil, false);
+        Renderer::SetFlag(Renderer::RenderFlags::DrawLineLists, false);
+        Renderer::SetFlag(Renderer::RenderFlags::RenderOverlay, true); // temporary simplified blend-states TODO: Expose Renderer's blend state creation
+        return;
+
+    case DrawMode::DebugDrawLines:
+        Renderer::SetFlag(Renderer::RenderFlags::DepthTest, false);
+        Renderer::SetFlag(Renderer::RenderFlags::DepthStencil, false);
+        Renderer::SetFlag(Renderer::RenderFlags::DrawLineLists, true);
+        Renderer::SetFlag(Renderer::RenderFlags::RenderOverlay, true);
+        return;
+
+    case DrawMode::DebugDrawTriangles:
+        Renderer::SetFlag(Renderer::RenderFlags::DepthTest, false);
+        Renderer::SetFlag(Renderer::RenderFlags::DepthStencil, false);
+        Renderer::SetFlag(Renderer::RenderFlags::DrawLineLists, false);
+        Renderer::SetFlag(Renderer::RenderFlags::RenderOverlay, true);
+        return;
+
+    case DrawMode::Default:
+    default:
+    {
+        Renderer::SetFlags(Renderer::RenderFlags::_enum(Renderer::RenderFlags::Default));
+        Renderer::SetFlag(Renderer::RenderFlags::VSync, false);
+    }
+    }
+}
+
+void RenderingManager::SetCurrentShader(Shader* shader)
+{
+    //if (GetInstance()->m_currentShader == shader)
+    //    return;
+
+    GetInstance()->m_currentShader = shader;
+
+    if (shader == nullptr)
+        return;
+
+    Renderer::ApplyShader(shader->GetHandle(), 0);
+    UpdateDefaultConstants(shader);
+}
+
+Shader* RenderingManager::GetCurrentShader()
+{
+    return GetInstance()->m_currentShader;
+}
+
+void RenderingManager::SetTexture(const uint slot, Texture * texture2d)
+{
+    if (GetInstance()->m_currentTextures[slot] != texture2d)
+    {
+        Renderer::ApplyTexture2D(texture2d->GetHandle(), slot);
+        GetInstance()->m_currentTextures[slot] = texture2d;
+    }
+}
+
+void RenderingManager::SetTextureArray(const uint slot, Texture * *textureArray, const uint8_t textureCount)
+{
+    // Copy textures
+    Renderer::Texture2DHandle textures[32]; // Max 32 textures per array
+
+    for (auto i = 0u; i < textureCount; i++)
+    {
+        const auto texture = textureArray[i];
+
+        if (texture)
+            textures[i] = texture->GetHandle();
+    }
+
+    SetTextureHandleArray(slot, textures, textureCount);
+}
+
+void RenderingManager::SetTextureHandleArray(const uint slot, Renderer::Texture2DHandle * textureArray, const uint8_t textureCount)
+{
+    Renderer::ApplyTextureArray2D(textureArray, slot, textureCount);
+}
+
 
 void RenderingManager::AddRenderable(RenderableBase* renderable)
 {

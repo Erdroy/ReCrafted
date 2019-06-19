@@ -5,6 +5,7 @@
 #include <ReCrafted.h>
 #include "Common/List.h"
 #include "Core/SubSystems/SubSystem.h"
+#include "Rendering/DrawMode.h"
 #include "Rendering/Renderer/Renderer.h"
 
 /// <summary>
@@ -19,6 +20,11 @@ private:
     RenderList m_geometryList = {};
 
     RenderingBase* m_rendering = nullptr;
+
+    List<Texture*> m_currentTextures = {};
+
+    Shader* m_currentShader = nullptr;
+    DrawMode m_currentDrawMode = DrawMode::Default;
 
     Renderer::WindowHandle m_windowHandle = {};
     Renderer::RenderBufferHandle m_frameBufferHandle = {};
@@ -53,6 +59,55 @@ protected:
     /// </summary>
     /// <param name="stage">The rendering stage.</param>
     void RenderComponents(RenderingComponentStage stage);
+
+public:
+    /// <summary>
+    ///     Updates the default shader constants.
+    /// </summary>
+    /// <param name="shader">The shader.</param>
+    static void UpdateDefaultConstants(Shader* shader);
+
+    /// <summary>
+    ///     Sets the current draw mode.
+    /// </summary>
+    /// <param name="drawMode">The new draw mode.</param>
+    static void SetDrawMode(DrawMode drawMode);
+
+    /// <summary>
+    ///     Sets the current shader.
+    /// </summary>
+    /// <param name="shader">The shader.</param>
+    static void SetCurrentShader(Shader* shader);
+
+    /// <summary>
+    ///     Gets the current shader.
+    /// </summary>
+    static Shader* GetCurrentShader();
+
+    /// <summary>
+    ///     Sets given texture at given slot.
+    /// </summary>
+    /// <param name="slot">The shader slot.</param>
+    /// <param name="texture2d">The texture.</param>
+    static void SetTexture(uint slot, Texture* texture2d);
+
+    /// <summary>
+    ///     Sets given texture at given slot.
+    /// </summary>
+    /// <param name="slot">The shader slot.</param>
+    /// <param name="textureArray">The textures array.</param>
+    /// <param name="textureCount">The texture count.</param>
+    /// <remarks>Texture arrays do not support batching, so each call to set texture array will be executed on the GPU.</remarks>
+    static void SetTextureArray(uint slot, Texture** textureArray, uint8_t textureCount);
+
+    /// <summary>
+    ///     Sets given texture at given slot.
+    /// </summary>
+    /// <param name="slot">The shader slot.</param>
+    /// <param name="textureArray">The textures array.</param>
+    /// <param name="textureCount">The texture count.</param>
+    /// <remarks>Texture arrays do not support batching, so each call to set texture array will be executed on the GPU.</remarks>
+    static void SetTextureHandleArray(uint slot, Renderer::Texture2DHandle* textureArray, uint8_t textureCount);
 
 public:
     /// <summary>

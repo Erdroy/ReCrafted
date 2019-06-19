@@ -61,19 +61,13 @@ void DeferredRendering::Resize(const uint width, const uint height)
 void DeferredRendering::BeginRender()
 {
     // Set default render stage
-    SetDrawMode(DrawMode::Default);
-
+    RenderingManager::SetDrawMode(DrawMode::Default);
+    
     // Set default shader
-    SetShader(m_gbufferFillShader);
+    RenderingManager::SetCurrentShader(m_gbufferFillShader);
 
     if (InputManager::IsKey(Key::F1))
         Renderer::SetFlag(Renderer::RenderFlags::DrawWireFrame, true);
-
-    // Clean texture cache
-    for (auto i = 0u; i < m_currentTextures.Count(); i++)
-    {
-        m_currentTextures[i] = nullptr;
-    }
 
     // Bind gbuffer
     m_gbuffer->Bind();
@@ -81,7 +75,7 @@ void DeferredRendering::BeginRender()
 
 void DeferredRendering::EndRender()
 {
-    SetDrawMode(DrawMode::Default);
+    RenderingManager::SetDrawMode(DrawMode::Default);
 
     if (InputManager::IsKey(Key::F1))
     {
@@ -89,7 +83,7 @@ void DeferredRendering::EndRender()
         Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetTarget(0));
 
         // Reset everything
-        m_currentShader = nullptr;
+        RenderingManager::SetCurrentShader(nullptr);
         return;
     }
 
@@ -98,7 +92,7 @@ void DeferredRendering::EndRender()
         Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetTarget(0));
 
         // Reset everything
-        m_currentShader = nullptr;
+        RenderingManager::SetCurrentShader(nullptr);
         return;
     }
 
@@ -107,7 +101,7 @@ void DeferredRendering::EndRender()
         Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetTarget(1));
 
         // Reset everything
-        m_currentShader = nullptr;
+        RenderingManager::SetCurrentShader(nullptr);
         return;
     }
 
@@ -116,7 +110,7 @@ void DeferredRendering::EndRender()
         Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetTarget(2));
 
         // Reset everything
-        m_currentShader = nullptr;
+        RenderingManager::SetCurrentShader(nullptr);
         return;
     }
 
@@ -125,12 +119,12 @@ void DeferredRendering::EndRender()
         Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetDepthBuffer());
 
         // Reset everything
-        m_currentShader = nullptr;
+        RenderingManager::SetCurrentShader(nullptr);
         return;
     }
 
     // Set shader
-    SetShader(m_gbufferCombine);
+    RenderingManager::SetCurrentShader(m_gbufferCombine);
 
     // Get GBuffer description
     auto& gbufferDescription = Renderer::RenderBufferHandlePool::GetHandleDescription(m_gbuffer->GetHandle());
@@ -151,7 +145,7 @@ void DeferredRendering::EndRender()
     Renderer::BlitTexture(RenderingManager::GetFrameBuffer(), m_frameTexture);
 
     // Reset everything
-    m_currentShader = nullptr;
+    RenderingManager::SetCurrentShader(nullptr);
 }
 
 void DeferredRendering::RenderGeometry()
@@ -164,8 +158,8 @@ void DeferredRendering::RenderGeometry()
     {
         const auto shader = renderable->GetShader();
 
-        if (m_currentShader != shader)
-            SetShader(shader);
+        if (RenderingManager::GetCurrentShader() != shader)
+            RenderingManager::SetCurrentShader(shader);
 
         if (!cameraFrustum.Contains(renderable->GetBounds()))
             continue;
@@ -174,135 +168,11 @@ void DeferredRendering::RenderGeometry()
     }
 
     // Cleanup
-    SetShader(nullptr);
+    RenderingManager::SetCurrentShader(nullptr);
 
     //Profiler::EndProfile();
 }
 
 void DeferredRendering::RenderShadows()
 {
-}
-
-void DeferredRendering::UpdateDefaultConstants(Shader* shader) const
-{
-    const auto mainCamera = Camera::GetMainCamera();
-
-    // Set MVP matrix
-    shader->SetValue(0, const_cast<Matrix*>(& mainCamera->GetViewProjection()));
-
-    // Set inverted view matrix
-    auto invView = mainCamera->GetView();
-    invView.Invert();
-    invView.Transpose();
-    shader->SetValue(1, &invView);
-
-    // Set view info
-    const auto projection = mainCamera->GetProjection();
-    Vector4 viewInfo;
-    viewInfo.x = mainCamera->NearPlane();
-    viewInfo.y = mainCamera->FarPlane();
-    viewInfo.z = 1.0f / projection.m11;
-    viewInfo.w = 1.0f / projection.m22;
-    shader->SetValue(2, &viewInfo);
-
-    // Set screen size
-    Vector2 screenSize;
-    screenSize.x = static_cast<float>(Display::GetWidth());
-    screenSize.y = static_cast<float>(Display::GetHeight());
-    shader->SetValue(3, &screenSize);
-
-    // Set camera position vector
-    auto cameraPosition = mainCamera->Position();
-    shader->SetValue(4, &cameraPosition);
-
-    // Set light direction vector
-    auto lightDir = Vector3(0.2f, 0.3f, 0.1f);
-    lightDir.Normalize();
-    shader->SetValue(5, &lightDir);
-
-    // Set light direction vector
-    auto ambientLight = Vector3(0.35f, 0.35f, 0.35f);
-    shader->SetValue(6, &ambientLight);
-
-    // apply shader changes
-    Renderer::ApplyShader(shader->GetHandle(), 0);
-}
-
-void DeferredRendering::SetDrawMode(const DrawMode drawMode)
-{
-    ASSERT(IS_MAIN_THREAD());
-    m_currentDrawMode = drawMode;
-
-    switch (drawMode)
-    {
-    case DrawMode::DrawUI:
-    case DrawMode::DrawWebUI:
-        Renderer::SetFlag(Renderer::RenderFlags::DepthTest, false);
-        Renderer::SetFlag(Renderer::RenderFlags::DepthStencil, false);
-        Renderer::SetFlag(Renderer::RenderFlags::DrawLineLists, false);
-        Renderer::SetFlag(Renderer::RenderFlags::RenderOverlay, true); // temporary simplified blend-states TODO: Expose Renderer's blend state creation
-        return;
-
-    case DrawMode::DebugDrawLines:
-        Renderer::SetFlag(Renderer::RenderFlags::DepthTest, false);
-        Renderer::SetFlag(Renderer::RenderFlags::DepthStencil, false);
-        Renderer::SetFlag(Renderer::RenderFlags::DrawLineLists, true);
-        Renderer::SetFlag(Renderer::RenderFlags::RenderOverlay, true);
-        return;
-
-    case DrawMode::DebugDrawTriangles:
-        Renderer::SetFlag(Renderer::RenderFlags::DepthTest, false);
-        Renderer::SetFlag(Renderer::RenderFlags::DepthStencil, false);
-        Renderer::SetFlag(Renderer::RenderFlags::DrawLineLists, false);
-        Renderer::SetFlag(Renderer::RenderFlags::RenderOverlay, true);
-        return;
-
-    case DrawMode::Default:
-    default:
-    {
-        Renderer::SetFlags(Renderer::RenderFlags::_enum(Renderer::RenderFlags::Default));
-        Renderer::SetFlag(Renderer::RenderFlags::VSync, false);
-    }
-    }
-}
-
-void DeferredRendering::SetShader(Shader* shader)
-{
-    m_currentShader = shader;
-
-    if(shader == nullptr)
-        return;
-
-    Renderer::ApplyShader(shader->GetHandle(), 0);
-    UpdateDefaultConstants(shader);
-}
-
-void DeferredRendering::SetTexture(const uint slot, Texture* texture2d)
-{
-    if (m_currentTextures[slot] != texture2d)
-    {
-        Renderer::ApplyTexture2D(texture2d->GetHandle(), slot);
-        m_currentTextures[slot] = texture2d;
-    }
-}
-
-void DeferredRendering::SetTextureArray(const uint slot, Texture** textureArray, const uint8_t textureCount)
-{
-    // Copy textures
-    Renderer::Texture2DHandle textures[32]; // Max 32 textures per array
-
-    for (auto i = 0u; i < textureCount; i++)
-    {
-        const auto texture = textureArray[i];
-
-        if (texture)
-            textures[i] = texture->GetHandle();
-    }
-
-    SetTextureHandleArray(slot, textures, textureCount);
-}
-
-void DeferredRendering::SetTextureHandleArray(const uint slot, Renderer::Texture2DHandle* textureArray, const uint8_t textureCount)
-{
-    Renderer::ApplyTextureArray2D(textureArray, slot, textureCount);
 }

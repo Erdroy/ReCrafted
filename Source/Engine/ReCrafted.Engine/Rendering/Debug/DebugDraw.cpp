@@ -149,7 +149,7 @@ void DebugDraw::RenderLines(Batch& batch) const
         return;
 
     // Set line draw mode
-    RenderingManager::GetRendering()->SetDrawMode(DrawMode::DebugDrawLines);
+    RenderingManager::SetDrawMode(DrawMode::DebugDrawLines);
 
     // Allocate vertex buffer
     const auto dataSize = pointCount * sizeof(Point);
@@ -179,7 +179,7 @@ void DebugDraw::RenderTriangles(Batch& batch) const
         return;
 
     // Set triangle draw mode
-    RenderingManager::GetRendering()->SetDrawMode(DrawMode::DebugDrawTriangles);
+    RenderingManager::SetDrawMode(DrawMode::DebugDrawTriangles);
 
     // Allocate vertex buffer
     const auto vertexDataSize = vertexCount * sizeof(Vertex);
