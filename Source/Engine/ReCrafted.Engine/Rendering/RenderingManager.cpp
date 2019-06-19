@@ -122,6 +122,13 @@ void RenderingManager::RenderComponents(const RenderingComponentStage stage)
     }
 }
 
+void RenderingManager::DrawIndexedMesh(Mesh* mesh)
+{
+    Renderer::ApplyVertexBuffer(mesh->GetVertexBufferHandle());
+    Renderer::ApplyIndexBuffer(mesh->GetIndexBufferHandle());
+    Renderer::DrawIndexed(static_cast<uint>(mesh->GetIndexCount()));
+}
+
 void RenderingManager::UpdateDefaultConstants(Shader* shader)
 {
     const auto mainCamera = Camera::GetMainCamera();

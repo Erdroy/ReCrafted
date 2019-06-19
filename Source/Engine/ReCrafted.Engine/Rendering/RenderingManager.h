@@ -62,6 +62,12 @@ protected:
 
 public:
     /// <summary>
+    ///     Draws given mesh with currently applied shader.
+    /// </summary>
+    /// <param name="mesh">The mesh to draw.</param>
+    static void DrawIndexedMesh(Mesh* mesh);
+
+    /// <summary>
     ///     Updates the default shader constants.
     /// </summary>
     /// <param name="shader">The shader.</param>
