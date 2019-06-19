@@ -10,8 +10,6 @@
 /// </summary>
 class Mesh
 {
-    friend class Graphics;
-
 private:
     struct CustomDataType
     {
@@ -51,6 +49,23 @@ public:
 
 private:
     void Init();
+
+public:
+    /// <summary>
+    ///     Gets the vertex buffer handle.
+    /// </summary>
+    Renderer::VertexBufferHandle GetVertexBufferHandle() const
+    {
+        return m_vertexBuffer;
+    }
+
+    /// <summary>
+    ///     Gets the index buffer handle.
+    /// </summary>
+    Renderer::IndexBufferHandle GetIndexBufferHandle() const
+    {
+        return m_indexBuffer;
+    }
 
 public:
     /// <summary>
