@@ -91,7 +91,7 @@ void Mesh::AddCustomData(void* ptr, const size_t customStride)
 void Mesh::SetIndices(uint* indices, uint count)
 {
     // Setup and allocate data
-    m_indices = new uint[m_vertices_count];
+    m_indices = new uint[count];
     m_indices_count = count;
 
     // Copy data
