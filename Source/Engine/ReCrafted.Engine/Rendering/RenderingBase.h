@@ -3,7 +3,6 @@
 #pragma once
 
 #include <ReCrafted.h>
-#include "Rendering/Renderer/Renderer.h"
 
 class RenderingBase
 {

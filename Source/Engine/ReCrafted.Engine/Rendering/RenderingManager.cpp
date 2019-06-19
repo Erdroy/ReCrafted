@@ -2,11 +2,11 @@
 
 #include "RenderingManager.h"
 #include "Common/Logger.h"
+#include "Core/Display.h"
 #include "Rendering/Debug/DebugDraw.h"
 #include "Rendering/DeferredRendering/DeferredRendering.h"
 #include "Rendering/RenderableBase.h"
 #include "Rendering/Camera.h"
-#include "Core/Display.h"
 
 void RenderingManager::InitializeRenderer()
 {
