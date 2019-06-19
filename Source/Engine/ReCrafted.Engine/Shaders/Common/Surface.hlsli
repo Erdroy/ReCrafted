@@ -73,11 +73,17 @@ void SurfaceVSMain(in SurfaceVSInput i, out SurfaceVSOutput o)
 void SurfacePSMain(in SurfacePSInput i, out GBufferOutput o)
 {
     // TODO: Consider whenever we need to use texture sampling, raw vertex color or textureColor * vertexColor
-    o.Color = i.Color;
     o.Normal = EncodeNormal(float4(i.Normal, 1.0f));
     
+    float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+#ifdef USE_VERTEXCOLOR
+    color = i.Color;
+#endif // USE_VERTEXCOLOR
+
+    o.Color = color;
+
     // Set Light as simple ambient light
-    o.Light = float4(i.Color.rgb * AmbientLightColor, 0.0f);
+    o.Light = float4(color.rgb * AmbientLightColor, 0.0f);
 
 #ifdef USE_LOGZBUFFER
     // TODO: Make option to use inv z (1.0f - Z/W) instead of log z,

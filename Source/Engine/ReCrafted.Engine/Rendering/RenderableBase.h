@@ -18,8 +18,7 @@ public:
     virtual ~RenderableBase() = default;
 
 public:
-    virtual void Render(RenderableRenderMode renderMode) = 0; // TODO: Maybe expose mesh or something, to avoid virtual calls?
-
+    virtual Mesh* GetMesh() const = 0;
     virtual Shader* GetShader() const = 0;
     virtual Vector3& GetPosition() = 0;
     virtual BoundingBox& GetBounds() = 0;
@@ -28,4 +27,6 @@ public:
     {
         return RenderableRenderMode::RenderGeometry | RenderableRenderMode::RenderShadows;
     }
+
+    // TODO: Model and Material class.
 };

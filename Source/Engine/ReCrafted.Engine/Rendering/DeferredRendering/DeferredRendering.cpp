@@ -10,6 +10,7 @@
 #include "Rendering/RenderableBase.h"
 #include "Rendering/RenderBuffer.h"
 #include "Input/InputManager.h"
+#include "Rendering/Mesh.h"
 
 void DeferredRendering::Initialize()
 {
@@ -80,7 +81,7 @@ void DeferredRendering::EndRender()
     if (InputManager::IsKey(Key::F1))
     {
         Renderer::SetFlag(Renderer::RenderFlags::DrawWireFrame, false);
-        Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetTarget(0));
+        Renderer::BlitTexture(RenderingManager::GetFrameBuffer(), m_gbuffer->GetTarget(0));
 
         // Reset everything
         RenderingManager::SetCurrentShader(nullptr);
@@ -89,7 +90,7 @@ void DeferredRendering::EndRender()
 
     if (InputManager::IsKey(Key::F2))
     {
-        Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetTarget(0));
+        Renderer::BlitTexture(RenderingManager::GetFrameBuffer(), m_gbuffer->GetTarget(0));
 
         // Reset everything
         RenderingManager::SetCurrentShader(nullptr);
@@ -98,7 +99,7 @@ void DeferredRendering::EndRender()
 
     if (InputManager::IsKey(Key::F3))
     {
-        Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetTarget(1));
+        Renderer::BlitTexture(RenderingManager::GetFrameBuffer(), m_gbuffer->GetTarget(1));
 
         // Reset everything
         RenderingManager::SetCurrentShader(nullptr);
@@ -107,7 +108,7 @@ void DeferredRendering::EndRender()
 
     if (InputManager::IsKey(Key::F4))
     {
-        Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetTarget(2));
+        Renderer::BlitTexture(RenderingManager::GetFrameBuffer(), m_gbuffer->GetTarget(2));
 
         // Reset everything
         RenderingManager::SetCurrentShader(nullptr);
@@ -116,7 +117,7 @@ void DeferredRendering::EndRender()
 
     if (InputManager::IsKey(Key::F5))
     {
-        Renderer::BlitTexture(m_frameTexture, m_gbuffer->GetDepthBuffer());
+        Renderer::BlitTexture(RenderingManager::GetFrameBuffer(), m_gbuffer->GetDepthBuffer());
 
         // Reset everything
         RenderingManager::SetCurrentShader(nullptr);
@@ -164,7 +165,8 @@ void DeferredRendering::RenderGeometry()
         if (!cameraFrustum.Contains(renderable->GetBounds()))
             continue;
 
-        renderable->Render(RenderableRenderMode::RenderGeometry);
+        const auto mesh = renderable->GetMesh();
+        RenderingManager::DrawIndexedMesh(mesh);
     }
 
     // Cleanup

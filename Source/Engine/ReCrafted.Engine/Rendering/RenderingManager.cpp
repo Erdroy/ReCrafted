@@ -7,6 +7,7 @@
 #include "Rendering/DeferredRendering/DeferredRendering.h"
 #include "Rendering/RenderableBase.h"
 #include "Rendering/Camera.h"
+#include "Mesh.h"
 
 void RenderingManager::InitializeRenderer()
 {
@@ -75,7 +76,7 @@ void RenderingManager::Render()
     Renderer::ApplyWindow(m_windowHandle);
     
     // Pre-Render cleanup
-    Renderer::ClearRenderBuffer(m_frameBufferHandle, Renderer::Color(0.0f, 0.0f, 0.0f, 1.0f));
+    Renderer::ClearRenderBuffer(m_frameBufferHandle, Renderer::Color(0.1f, 0.1f, 0.1f, 1.0f));
 
     for (auto i = 0u; i < m_currentTextures.Count(); i++)
         m_currentTextures[i] = nullptr;
