@@ -72,6 +72,10 @@ void DeferredRendering::BeginRender()
 
     // Bind gbuffer
     m_gbuffer->Bind();
+
+    const auto clearColor = Renderer::Color{ 0.0f, 0.0f, 0.0f, 1.0f };
+    Renderer::ClearRenderBuffer(m_gbuffer->GetHandle(), clearColor);
+    Renderer::ClearRenderTexture(m_frameTexture, clearColor);
 }
 
 void DeferredRendering::EndRender()
