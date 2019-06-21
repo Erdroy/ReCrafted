@@ -35,6 +35,9 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
                 if (paramString.Length != 0)
                     paramString.Append(", ");
 
+                if(parameter.Type.ByRef && !parameter.Type.IsConst)
+                    paramString.Append("*");
+
                 paramString.Append(parameter.Name);
             }
 
