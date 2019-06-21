@@ -143,6 +143,9 @@ public:
     template<class TAsset>
     static TAsset* FindAsset(const Guid& guid)
     {
+		auto& assetMapLock = GetInstance()->m_assetMapLock;
+		ScopeLock(assetMapLock);
+		
         const auto it = GetInstance()->m_assetMap.find(guid);
         if(it != GetInstance()->m_assetMap.end())
             return static_cast<TAsset*>(it->second);
