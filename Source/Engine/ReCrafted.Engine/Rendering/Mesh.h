@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <ReCrafted.h>
 #include "Common/List.h"
 #include "Rendering/Renderer/Renderer.h"
 

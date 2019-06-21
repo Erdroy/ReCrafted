@@ -111,6 +111,8 @@
     <Compile Include="Rendering\Camera.Gen.cs" />
     <Compile Include="Rendering\CameraActor.Gen.cs" />
     <Compile Include="Rendering\Debug\DebugDraw.Gen.cs" />
+    <Compile Include="Rendering\Material.Gen.cs" />
+    <Compile Include="Rendering\Model.Gen.cs" />
     <Compile Include="Rendering\Shader.Gen.cs" />
     <Compile Include="Rendering\Texture.Gen.cs" />
     <Compile Include="Scene\SceneManager.Gen.cs" />
