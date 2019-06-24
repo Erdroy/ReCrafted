@@ -22,11 +22,6 @@ void Signal::Reset()
     m_handle = nullptr;
 }
 
-Signal::Signal()
-{
-    m_handle = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-}
-
 Signal::~Signal()
 {
     Release();
@@ -42,6 +37,13 @@ void Signal::Wait(const uint32_t timeout) const
 {
     ASSERT(m_handle);
     WaitForSingleObject(m_handle, static_cast<DWORD>(timeout));
+}
+
+Signal Signal::Create()
+{
+    Signal signal;
+    signal.m_handle = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+    return signal;
 }
 
 #endif

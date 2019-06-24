@@ -23,7 +23,7 @@ public:
     /// <summary>
     ///     Default constructor
     /// </summary>
-    Signal();
+    Signal() = default;
 
     /// <summary>
     ///     Move constructor
@@ -65,4 +65,10 @@ public:
         signal.Reset();
         return *this;
     }
+
+public:
+    /// <summary>
+    ///     Creates a new signal.
+    /// </summary>
+    static Signal Create();
 };
