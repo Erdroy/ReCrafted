@@ -3,10 +3,12 @@
 #pragma once
 
 #include <ReCrafted.h>
+
 #include "Common/Logger.h"
 #include "Common/Guid.h"
-#include "Core/Threading/Task.h"
+#include "Common/IO/File.h"
 #include "Content/Assets/Asset.h"
+#include "Core/Threading/Task.h"
 
 API_USING("System")
 
@@ -17,6 +19,7 @@ API_CLASS(public, static, partial, noinherit)
 class ContentManager final : public SubSystem<ContentManager>
 {
     API_CLASS_BODY()
+    friend class Asset;
 
 private:
     struct AssetLoadTask final : ITask
@@ -54,8 +57,8 @@ private:
     };
 
 private:
-    spp::sparse_hash_map<Guid, Asset*> m_assetMap;
-    spp::sparse_hash_map<std::string, Guid> m_assetGuidMap;
+    spp::sparse_hash_map<Guid, Asset*> m_assetMapA;
+    spp::sparse_hash_map<std::string, Asset*> m_assetMapB;
     Lock m_assetMapLock;
 
 private:
@@ -78,6 +81,7 @@ private:
 
     static void LoadAssetSync(Asset* asset, const std::string& assetFile, const std::string& file);
     static void LoadAssetAsync(Asset* asset, const std::string& assetFile, const std::string& file, const Action<void, Asset*>& onLoad);
+    static void UnloadAsset(Asset* asset, bool release = true);
 
 public:
     API_FUNCTION(noproxy)
@@ -90,13 +94,10 @@ public:
     static void InternalLoadAssetAsync(Asset* asset, const char* assetFile, const Action<void, Asset*>& onLoad);
 
     API_FUNCTION(noproxy)
-    static bool InternalFindAssetGuid(const char* assetFile, Guid& guid);
-
-    API_FUNCTION(noproxy)
     static Asset* InternalFindAsset(const Guid& guid);
 
     API_FUNCTION(noproxy)
-    static void UnloadAsset(Asset* asset, bool release = true);
+    static Asset* InternalFindAsset(const char* assetFile);
 
 public:
     /// <summary>
@@ -145,13 +146,9 @@ public:
     /// <param name="assetFile">The asset file, relative to '../Content/', file extension is not needed.</param>
     /// <returns>The found asset or null when not found.</returns>
     template<class TAsset>
-    static TAsset* FindAsset(const std::string& assetFile)
+    static TAsset* FindAsset(const char* assetFile)
     {
-        Guid guid;
-        if(InternalFindAssetGuid(assetFile.c_str(), guid))
-            return FindAsset<TAsset>(guid);
-
-        return nullptr;
+        return static_cast<TAsset*>(InternalFindAsset(assetFile));
     }
 
     /// <summary>
@@ -182,14 +179,20 @@ public:
 
         // Build file name
         const auto file = GetAssetFile(assetFile);
-        
-        Guid guid;
-        if (InternalFindAssetGuid(assetFile, guid))
-        {
-            return FindAsset<TAsset>(guid);
-        }
+        ASSERT(File::Exists(file.c_str()));
 
-        const auto asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
+        // Try to find asset
+        auto asset = static_cast<Asset*>(FindAsset<TAsset>(assetFile));
+
+        if (asset)
+        {
+            // Asset already loaded, so just add reference.
+            asset->AddRef();
+
+            return static_cast<TAsset*>(asset);
+        }
+        
+        asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
         LoadAssetSync(asset, assetFile, file);
         return static_cast<TAsset*>(asset);
     }
@@ -211,16 +214,23 @@ public:
 
         // Build file name
         const auto file = GetAssetFile(assetFile);
+        ASSERT(File::Exists(file.c_str()));
 
-        Guid guid;
-        if (InternalFindAssetGuid(assetFile, guid))
+        // Try to find asset
+        auto asset = static_cast<Asset*>(FindAsset<TAsset>(assetFile));
+
+        if (asset)
         {
-            onLoad.Invoke(FindAsset<TAsset>(guid));
-            return;
-        }
+            // Asset already loaded, so just add reference.
+            asset->AddRef();
 
-        const auto asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
-        if(!asset->CanLoadAsync())
+            // Invoke load callback TODO: When asset is loading, invoke load callback at the end
+            onLoad.Invoke(static_cast<TAsset*>(asset));
+            return static_cast<TAsset*>(asset);
+        }
+        
+        asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
+        if (!asset->CanLoadAsync())
         {
             // Write warning
             Logger::LogWarning("Asset {0} should not be loaded async.", assetFile);

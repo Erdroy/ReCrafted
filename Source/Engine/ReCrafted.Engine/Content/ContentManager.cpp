@@ -14,10 +14,10 @@ void ContentManager::Shutdown()
     ScopeLock(m_assetMapLock);
 
     // Clear deleted
-    m_assetMap.clear_deleted_key();
+    m_assetMapA.clear_deleted_key();
 
     // Release all assets
-    for (auto&& assetPair : m_assetMap)
+    for (auto&& assetPair : m_assetMapA)
     {
         const auto asset = assetPair.second;
         UnloadAsset(asset, false);
@@ -25,7 +25,7 @@ void ContentManager::Shutdown()
     }
 
     // Clear
-    m_assetMap.clear();
+    m_assetMapA.clear();
 }
 
 void ContentManager::OnUpdate()
@@ -41,13 +41,16 @@ void ContentManager::RegisterAsset(Asset* asset)
     // Check main thread
     MAIN_THREAD_ONLY();
 
+    ScopeLock(m_assetMapLock);
+
     // Set asset as registered
     asset->m_registered = true;
 
-    ScopeLock(m_assetMapLock);
-    m_assetMap[asset->AssetGuid] = asset;
+    // Add asset to the map
+    m_assetMapA.insert(std::make_pair(asset->AssetGuid, asset));
 
-    m_assetGuidMap[std::string(asset->AssetName())] = asset->AssetGuid;
+    // Add asset guid to the map
+    m_assetMapB.insert(std::make_pair(std::string(asset->AssetName()), asset));
 }
 
 bool ContentManager::LoadAsset(Asset* asset, const char* name) const
@@ -110,7 +113,7 @@ void ContentManager::ReleaseAsset(Asset* asset)
     asset->m_unloaded = true;
 
     m_assetMapLock.LockNow();
-    m_assetMap.erase(asset->AssetGuid);
+    m_assetMapA.erase(asset->AssetGuid);
     m_assetMapLock.UnlockNow();
 
     asset->OnUnload();
@@ -157,6 +160,34 @@ void ContentManager::LoadAssetAsync(Asset* asset, const std::string& assetFile, 
     Task::CreateTask(customTask)->Queue();
 }
 
+void ContentManager::UnloadAsset(Asset* asset, const bool release)
+{
+    if (!asset->IsLoaded())
+    {
+        // Set asset unload flag
+        // This flag should be used for every asset that implement own async loading.
+        // Look: Texture::LoadTextureMipTask::Finish
+        asset->m_unload = true;
+        return;
+    }
+
+    // Reset ref count
+    asset->ResetRefCount();
+
+#ifdef _DEBUG
+    Logger::Log("Unloading asset '{0}'", asset->AssetName());
+#endif
+
+    // Queue for asset unloading
+    asset->m_unloaded = true;
+
+    // Release
+    if (release)
+    {
+        GetInstance()->ReleaseAsset(asset);
+    }
+}
+
 void ContentManager::InternalInitVirtualAsset(Asset* asset)
 {
     asset->m_virtual = true;
@@ -182,54 +213,26 @@ void ContentManager::InternalLoadAssetAsync(Asset* asset, const char* assetFile,
     LoadAssetAsync(asset, assetFile, file, onLoad);
 }
 
-bool ContentManager::InternalFindAssetGuid(const char* assetFile, Guid& guid)
-{
-    auto& assetMapLock = GetInstance()->m_assetMapLock;
-    ScopeLock(assetMapLock);
-
-    const auto it = GetInstance()->m_assetGuidMap.find(assetFile);
-    if (it != GetInstance()->m_assetGuidMap.end())
-    {
-        guid = it->second;
-        return true;
-    }
-
-    return false;
-}
-
 Asset* ContentManager::InternalFindAsset(const Guid& guid)
 {
     auto& assetMapLock = GetInstance()->m_assetMapLock;
     ScopeLock(assetMapLock);
 
-    const auto it = GetInstance()->m_assetMap.find(guid);
-    if (it != GetInstance()->m_assetMap.end())
+    const auto it = GetInstance()->m_assetMapA.find(guid);
+    if (it != GetInstance()->m_assetMapA.end())
         return it->second;
 
     return nullptr;
 }
 
-void ContentManager::UnloadAsset(Asset* asset, const bool release)
+Asset* ContentManager::InternalFindAsset(const char* assetFile)
 {
-    if(!asset->IsLoaded())
-    {
-        // Set asset unload flag
-        // This flag should be used for every asset that implement own async loading.
-        // Look: Texture::LoadTextureMipTask::Finish
-        asset->m_unload = true;
-        return;
-    }
+    auto& assetMapLock = GetInstance()->m_assetMapLock;
+    ScopeLock(assetMapLock);
 
-#ifdef _DEBUG
-    Logger::Log("Unloading asset '{0}'", asset->AssetName());
-#endif
+    const auto it = GetInstance()->m_assetMapB.find(assetFile);
+    if (it != GetInstance()->m_assetMapB.end())
+        return it->second;
 
-    // Queue for asset unloading
-    asset->m_unloaded = true;
-
-    // Release
-    if(release)
-    {
-        GetInstance()->ReleaseAsset(asset);
-    }
+    return nullptr;
 }

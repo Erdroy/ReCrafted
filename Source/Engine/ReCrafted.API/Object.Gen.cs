@@ -28,6 +28,14 @@ namespace ReCrafted.API
         }
         
         /// <summary>
+        ///     Sets the object's refCount variable to 1.
+        /// </summary>
+        internal void ResetRefCount()
+        {
+            InternalResetRefCount(NativePtr);
+        }
+        
+        /// <summary>
         ///     Returns the ref count of this object.
         /// </summary>
         /// <returns>This object's reference count.</returns>
@@ -57,6 +65,9 @@ namespace ReCrafted.API
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern bool InternalRemoveRef(System.IntPtr nativePtr);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalResetRefCount(System.IntPtr nativePtr);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern uint InternalGetRefCount(System.IntPtr nativePtr);

@@ -25,7 +25,14 @@ public:
         return _returnValue;
     }
     
-    static uint32_t Object_GetRefCount3(Object* instance) 
+    static void Object_ResetRefCount3(Object* instance) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "Object");
+        instance->ResetRefCount();
+    }
+    
+    static uint32_t Object_GetRefCount4(Object* instance) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "Object");
@@ -33,24 +40,24 @@ public:
         return _returnValue;
     }
     
-    static void Object_Destroy4(Object* objectInstance) 
+    static void Object_Destroy5(Object* objectInstance) 
     {
         Object::Destroy(objectInstance);
     }
     
-    static void Object_DestroyNow5(Object* objectInstance) 
+    static void Object_DestroyNow6(Object* objectInstance) 
     {
         Object::DestroyNow(objectInstance);
     }
     
-    static MonoObject* Object_New6(MonoType* type) 
+    static MonoObject* Object_New7(MonoType* type) 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = Object::New(type);
         return _returnValue;
     }
     
-    static MonoObject* Object_NewGeneric7(MonoType* baseType, MonoType* type, MonoObject* obj) 
+    static MonoObject* Object_NewGeneric8(MonoType* baseType, MonoType* type, MonoObject* obj) 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = Object::NewGeneric(baseType, type, obj);
@@ -63,11 +70,12 @@ void Object::InitRuntime()
     MONO_REGISTER_OBJECT_TYPE(Object);
     API_BIND("ReCrafted.API.Object::InternalAddRef", &APIProxy::Object_AddRef1);
     API_BIND("ReCrafted.API.Object::InternalRemoveRef", &APIProxy::Object_RemoveRef2);
-    API_BIND("ReCrafted.API.Object::InternalGetRefCount", &APIProxy::Object_GetRefCount3);
-    API_BIND("ReCrafted.API.Object::InternalDestroy", &APIProxy::Object_Destroy4);
-    API_BIND("ReCrafted.API.Object::InternalDestroyNow", &APIProxy::Object_DestroyNow5);
-    API_BIND("ReCrafted.API.Object::InternalNew", &APIProxy::Object_New6);
-    API_BIND("ReCrafted.API.Object::InternalNewGeneric", &APIProxy::Object_NewGeneric7);
+    API_BIND("ReCrafted.API.Object::InternalResetRefCount", &APIProxy::Object_ResetRefCount3);
+    API_BIND("ReCrafted.API.Object::InternalGetRefCount", &APIProxy::Object_GetRefCount4);
+    API_BIND("ReCrafted.API.Object::InternalDestroy", &APIProxy::Object_Destroy5);
+    API_BIND("ReCrafted.API.Object::InternalDestroyNow", &APIProxy::Object_DestroyNow6);
+    API_BIND("ReCrafted.API.Object::InternalNew", &APIProxy::Object_New7);
+    API_BIND("ReCrafted.API.Object::InternalNewGeneric", &APIProxy::Object_NewGeneric8);
 }
 
 const char* Object::Fullname() 

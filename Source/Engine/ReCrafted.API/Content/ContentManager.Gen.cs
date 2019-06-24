@@ -22,12 +22,9 @@ namespace ReCrafted.API.Content
         private static extern void InternalInternalLoadAssetAsync(System.IntPtr asset, string assetFile, System.Action<Asset> onLoad);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern bool InternalInternalFindAssetGuid(string assetFile, ref Guid guid);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern Asset InternalInternalFindAsset(Guid guid);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void InternalUnloadAsset(System.IntPtr asset, bool release);
+        private static extern Asset InternalInternalFindAsset(string assetFile);
     }
 }

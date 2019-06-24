@@ -67,6 +67,12 @@ public:
     bool RemoveRef();
 
     /// <summary>
+    ///     Sets the object's refCount variable to 1.
+    /// </summary>
+    API_FUNCTION(internal);
+    void ResetRefCount();
+
+    /// <summary>
     ///     Returns the ref count of this object.
     /// </summary>
     /// <returns>This object's reference count.</returns>

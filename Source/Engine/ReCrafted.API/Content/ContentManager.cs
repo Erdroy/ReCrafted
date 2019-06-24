@@ -31,12 +31,19 @@ namespace ReCrafted.API.Content
         {
             Debug.Assert(!string.IsNullOrEmpty(assetFile));
 
-            var guid = Guid.Empty;
-            if(InternalInternalFindAssetGuid(assetFile, ref guid))
-                return (TAsset)InternalInternalFindAsset(guid);
+            // Try to find asset
+            var assetObject = (TAsset)InternalInternalFindAsset(assetFile);
+
+            if (assetObject)
+            {
+                // Asset already loaded, so just add reference.
+                assetObject.AddRef();
+
+                return assetObject;
+            }
 
             // Create asset object
-            var assetObject = Object.New<TAsset>();
+            assetObject = Object.New<TAsset>();
 
             // Load asset
             InternalInternalLoadAssetSync(assetObject.NativePtr, assetFile);
@@ -55,15 +62,21 @@ namespace ReCrafted.API.Content
         {
             Debug.Assert(!string.IsNullOrEmpty(assetFile));
 
-            var guid = Guid.Empty;
-            if (InternalInternalFindAssetGuid(assetFile, ref guid))
+            // Try to find asset
+            var assetObject = (TAsset)InternalInternalFindAsset(assetFile);
+
+            if (assetObject)
             {
-                onLoad((TAsset) InternalInternalFindAsset(guid));
+                // Asset already loaded, so just add reference.
+                assetObject.AddRef();
+
+                // Invoke load callback
+                onLoad(assetObject);
                 return;
             }
 
             // Create asset object
-            var assetObject = Object.New<TAsset>();
+            assetObject = Object.New<TAsset>();
 
             // Load asset async
             InternalInternalLoadAssetAsync(assetObject.NativePtr, assetFile, onLoad);

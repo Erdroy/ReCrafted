@@ -50,6 +50,11 @@ bool Object::RemoveRef()
     return m_refCount == 0u;
 }
 
+void Object::ResetRefCount()
+{
+    m_refCount = 1u;
+}
+
 void Object::Destroy(Object* objectInstance)
 {
     ObjectManager::Destroy(objectInstance);
