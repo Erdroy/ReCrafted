@@ -7,13 +7,14 @@ template<typename TReturn, typename ... TArgs> struct Action;
 template <class T> struct rc_allocator;
 template <typename TType> struct Array;
 struct Lock;
-struct String;
 template <typename ... TParams> class Event;
 struct Guid;
 template <typename TType> class List;
 template <class TType> class Singleton;
 class Logger;
 class Memory;
+struct Signal;
+struct String;
 
 // Common/IO/
 struct File;

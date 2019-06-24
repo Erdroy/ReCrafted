@@ -46,6 +46,8 @@ void ContentManager::RegisterAsset(Asset* asset)
 
     ScopeLock(m_assetMapLock);
     m_assetMap[asset->AssetGuid] = asset;
+
+    m_assetGuidMap[std::string(asset->AssetName())] = asset->AssetGuid;
 }
 
 bool ContentManager::LoadAsset(Asset* asset, const char* name) const
@@ -114,7 +116,7 @@ void ContentManager::ReleaseAsset(Asset* asset)
     asset->OnUnload();
 }
 
-Asset* ContentManager::LoadAssetSync(Asset* asset, const std::string& assetFile, const std::string& file)
+void ContentManager::LoadAssetSync(Asset* asset, const std::string& assetFile, const std::string& file)
 {
     // Set asset name and file name
     asset->m_assetName = assetFile;
@@ -125,7 +127,7 @@ Asset* ContentManager::LoadAssetSync(Asset* asset, const std::string& assetFile,
     if (GetInstance()->LoadAsset(asset, file.c_str()))
     {
         Object::Destroy(asset);
-        return nullptr;
+        return;
     }
 
     // Set asset as loaded and non-virtual
@@ -136,8 +138,6 @@ Asset* ContentManager::LoadAssetSync(Asset* asset, const std::string& assetFile,
     asset->OnInitialize();
 
     asset->OnLoadEnd();
-
-    return asset;
 }
 
 void ContentManager::LoadAssetAsync(Asset* asset, const std::string& assetFile, const std::string& file,
@@ -157,7 +157,59 @@ void ContentManager::LoadAssetAsync(Asset* asset, const std::string& assetFile, 
     Task::CreateTask(customTask)->Queue();
 }
 
-void ContentManager::UnloadAsset(Asset* asset, bool release)
+void ContentManager::InternalInitVirtualAsset(Asset* asset)
+{
+    asset->m_virtual = true;
+    asset->AssetGuid = Platform::NewGuid();
+    GetInstance()->RegisterAsset(asset);
+}
+
+void ContentManager::InternalLoadAssetSync(Asset* asset, const char* assetFile)
+{
+    // Build file name
+    const auto file = GetAssetFile(assetFile);
+
+    // Load asset sync
+    LoadAssetSync(asset, assetFile, file);
+}
+
+void ContentManager::InternalLoadAssetAsync(Asset* asset, const char* assetFile, const Action<void, Asset*>& onLoad)
+{
+    // Build file name
+    const auto file = GetAssetFile(assetFile);
+
+    // Load asset sync
+    LoadAssetAsync(asset, assetFile, file, onLoad);
+}
+
+bool ContentManager::InternalFindAssetGuid(const char* assetFile, Guid& guid)
+{
+    auto& assetMapLock = GetInstance()->m_assetMapLock;
+    ScopeLock(assetMapLock);
+
+    const auto it = GetInstance()->m_assetGuidMap.find(assetFile);
+    if (it != GetInstance()->m_assetGuidMap.end())
+    {
+        guid = it->second;
+        return true;
+    }
+
+    return false;
+}
+
+Asset* ContentManager::InternalFindAsset(const Guid& guid)
+{
+    auto& assetMapLock = GetInstance()->m_assetMapLock;
+    ScopeLock(assetMapLock);
+
+    const auto it = GetInstance()->m_assetMap.find(guid);
+    if (it != GetInstance()->m_assetMap.end())
+        return it->second;
+
+    return nullptr;
+}
+
+void ContentManager::UnloadAsset(Asset* asset, const bool release)
 {
     if(!asset->IsLoaded())
     {
@@ -169,7 +221,7 @@ void ContentManager::UnloadAsset(Asset* asset, bool release)
     }
 
 #ifdef _DEBUG
-    Logger::Log("Unloading asset '{0}'", asset->AssetFile());
+    Logger::Log("Unloading asset '{0}'", asset->AssetName());
 #endif
 
     // Queue for asset unloading

@@ -45,6 +45,8 @@ void Texture::LoadTextureMipTask::Finish()
         // Finish loading
         texture->m_lazyLoading = false;
 
+        // TODO: Dispatch event
+
         // Unload the texture.
         Destroy(texture);
         return;
@@ -72,6 +74,8 @@ void Texture::LoadTextureMipTask::Finish()
 
         // Finish loading
         texture->m_lazyLoading = false;
+
+        // TODO: Dispatch event
 
 #ifdef _DEBUG
         Logger::Log("Texture asset '{0}' finished loading.", texture->AssetFile());

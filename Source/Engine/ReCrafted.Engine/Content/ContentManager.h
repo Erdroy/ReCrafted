@@ -8,6 +8,8 @@
 #include "Core/Threading/Task.h"
 #include "Content/Assets/Asset.h"
 
+API_USING("System")
+
 /// <summary>
 ///     ContentManager class. Provides asset management functionality (loading etc.).
 /// </summary>
@@ -53,6 +55,7 @@ private:
 
 private:
     spp::sparse_hash_map<Guid, Asset*> m_assetMap;
+    spp::sparse_hash_map<std::string, Guid> m_assetGuidMap;
     Lock m_assetMapLock;
 
 private:
@@ -73,8 +76,27 @@ private:
         return "../Content/" + assetName + ".rcasset";
     }
 
-    static Asset* LoadAssetSync(Asset* asset, const std::string& assetFile, const std::string& file);
+    static void LoadAssetSync(Asset* asset, const std::string& assetFile, const std::string& file);
     static void LoadAssetAsync(Asset* asset, const std::string& assetFile, const std::string& file, const Action<void, Asset*>& onLoad);
+
+public:
+    API_FUNCTION(noproxy)
+    static void InternalInitVirtualAsset(Asset* asset);
+
+    API_FUNCTION(noproxy)
+    static void InternalLoadAssetSync(Asset* asset, const char* assetFile);
+
+    API_FUNCTION(noproxy)
+    static void InternalLoadAssetAsync(Asset* asset, const char* assetFile, const Action<void, Asset*>& onLoad);
+
+    API_FUNCTION(noproxy)
+    static bool InternalFindAssetGuid(const char* assetFile, Guid& guid);
+
+    API_FUNCTION(noproxy)
+    static Asset* InternalFindAsset(const Guid& guid);
+
+    API_FUNCTION(noproxy)
+    static void UnloadAsset(Asset* asset, bool release = true);
 
 public:
     /// <summary>
@@ -88,36 +110,6 @@ public:
     {
         return Object::New<TAsset>();
     }
-
-    API_FUNCTION(noproxy)
-    static void InternalInitVirtualAsset(Asset* asset)
-    {
-        asset->m_virtual = true;
-        asset->AssetGuid = Platform::NewGuid();
-        GetInstance()->RegisterAsset(asset);
-    }
-
-    API_FUNCTION(noproxy)
-    static void InternalLoadAssetSync(Asset* asset, const char* assetFile)
-    {
-        // Build file name
-        const auto file = GetAssetFile(assetFile);
-
-        // Load asset sync
-        LoadAssetSync(asset, assetFile, file);
-    }
-
-    API_FUNCTION(noproxy)
-    static void InternalLoadAssetAsync(Asset* asset, const char* assetFile, const Action<void, Asset*>& onLoad)
-    {
-        // Build file name
-        const auto file = GetAssetFile(assetFile);
-
-        // Load asset sync
-        LoadAssetAsync(asset, assetFile, file, onLoad);
-    }
-
-    static void UnloadAsset(Asset* asset, bool release = true);
 
 public:
     /// <summary>
@@ -143,12 +135,21 @@ public:
     template<class TAsset>
     static TAsset* FindAsset(const Guid& guid)
     {
-		auto& assetMapLock = GetInstance()->m_assetMapLock;
-		ScopeLock(assetMapLock);
-		
-        const auto it = GetInstance()->m_assetMap.find(guid);
-        if(it != GetInstance()->m_assetMap.end())
-            return static_cast<TAsset*>(it->second);
+        return static_cast<TAsset*>(InternalFindAsset(guid));
+    }
+
+    /// <summary>
+    ///     Looks for asset with given asset file name.
+    /// </summary>
+    /// <typeparam name="TAsset">The target asset class type.</typeparam>
+    /// <param name="assetFile">The asset file, relative to '../Content/', file extension is not needed.</param>
+    /// <returns>The found asset or null when not found.</returns>
+    template<class TAsset>
+    static TAsset* FindAsset(const std::string& assetFile)
+    {
+        Guid guid;
+        if(InternalFindAssetGuid(assetFile.c_str(), guid))
+            return FindAsset<TAsset>(guid);
 
         return nullptr;
     }
@@ -181,9 +182,16 @@ public:
 
         // Build file name
         const auto file = GetAssetFile(assetFile);
+        
+        Guid guid;
+        if (InternalFindAssetGuid(assetFile, guid))
+        {
+            return FindAsset<TAsset>(guid);
+        }
 
         const auto asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
-        return static_cast<TAsset*>(LoadAssetSync(asset, assetFile, file));
+        LoadAssetSync(asset, assetFile, file);
+        return static_cast<TAsset*>(asset);
     }
 
     /// <summary>
@@ -197,26 +205,33 @@ public:
     /// </param>
     /// <returns>The created file or nullptr when failed.</returns>
     template<class TAsset>
-    static void LoadAsset(const char* assetFile, const Action<void, Asset*>& onLoad)
+    static TAsset* LoadAsset(const char* assetFile, const Action<void, Asset*>& onLoad)
     {
         static_assert(std::is_base_of<Asset, TAsset>::value, "TAsset must inherit Asset class!");
 
         // Build file name
         const auto file = GetAssetFile(assetFile);
-        const auto asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
 
-        if(asset->CanLoadAsync())
+        Guid guid;
+        if (InternalFindAssetGuid(assetFile, guid))
         {
-            LoadAssetAsync(asset, assetFile, file, onLoad);
+            onLoad.Invoke(FindAsset<TAsset>(guid));
+            return;
         }
-        else
+
+        const auto asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
+        if(!asset->CanLoadAsync())
         {
             // Write warning
-            Logger::LogWarning("Asset {0} should not be loaded as async.", assetFile);
+            Logger::LogWarning("Asset {0} should not be loaded async.", assetFile);
 
             // Load asset synchronously
             LoadAssetSync(asset, assetFile, file);
             const_cast<Action<void, Asset*>&>(onLoad).Invoke(asset);
+            return static_cast<TAsset*>(asset);
         }
+
+        LoadAssetAsync(asset, assetFile, file, onLoad);
+        return static_cast<TAsset*>(asset);
     }
 };

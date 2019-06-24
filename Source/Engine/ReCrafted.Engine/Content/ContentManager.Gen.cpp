@@ -36,6 +36,29 @@ public:
         MONO_FREE(assetFile);
         MONO_FREE_STUB(onLoad);
     }
+    
+    static bool ContentManager_InternalFindAssetGuid4(MonoString* p_assetFile, Guid* guid) 
+    {
+        MAIN_THREAD_ONLY();
+        ASSERT(p_assetFile);
+        const auto assetFile = MONO_STRING_TO_CSTR(p_assetFile);
+        const auto _returnValue = ContentManager::InternalFindAssetGuid(assetFile, *guid);
+        MONO_FREE(assetFile);
+        return _returnValue;
+    }
+    
+    static MonoObject* ContentManager_InternalFindAsset5(const Guid& guid) 
+    {
+        MAIN_THREAD_ONLY();
+        const auto _returnValue = ContentManager::InternalFindAsset(guid);
+        return _returnValue != nullptr ? _returnValue->ToManaged() : nullptr;
+    }
+    
+    static void ContentManager_UnloadAsset6(Asset* asset, bool release) 
+    {
+        MAIN_THREAD_ONLY();
+        ContentManager::UnloadAsset(asset, release);
+    }
 };
 
 void ContentManager::InitRuntime() 
@@ -44,6 +67,9 @@ void ContentManager::InitRuntime()
     API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalInitVirtualAsset", &APIProxy::ContentManager_InternalInitVirtualAsset1);
     API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalLoadAssetSync", &APIProxy::ContentManager_InternalLoadAssetSync2);
     API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalLoadAssetAsync", &APIProxy::ContentManager_InternalLoadAssetAsync3);
+    API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalFindAssetGuid", &APIProxy::ContentManager_InternalFindAssetGuid4);
+    API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalFindAsset", &APIProxy::ContentManager_InternalFindAsset5);
+    API_BIND("ReCrafted.API.Content.ContentManager::InternalUnloadAsset", &APIProxy::ContentManager_UnloadAsset6);
 }
 
 const char* ContentManager::Fullname() 

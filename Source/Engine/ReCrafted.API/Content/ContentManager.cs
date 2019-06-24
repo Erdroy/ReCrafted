@@ -31,6 +31,10 @@ namespace ReCrafted.API.Content
         {
             Debug.Assert(!string.IsNullOrEmpty(assetFile));
 
+            var guid = Guid.Empty;
+            if(InternalInternalFindAssetGuid(assetFile, ref guid))
+                return (TAsset)InternalInternalFindAsset(guid);
+
             // Create asset object
             var assetObject = Object.New<TAsset>();
 
@@ -50,6 +54,13 @@ namespace ReCrafted.API.Content
         public static void LoadAsset<TAsset>(string assetFile, Action<Asset> onLoad) where TAsset : Asset
         {
             Debug.Assert(!string.IsNullOrEmpty(assetFile));
+
+            var guid = Guid.Empty;
+            if (InternalInternalFindAssetGuid(assetFile, ref guid))
+            {
+                onLoad((TAsset) InternalInternalFindAsset(guid));
+                return;
+            }
 
             // Create asset object
             var assetObject = Object.New<TAsset>();

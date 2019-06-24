@@ -1,6 +1,7 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 // WARNING: Auto-generated file. All changes will be lost when the API code will be regenerated!
 
+using System;
 using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Content 
@@ -19,5 +20,14 @@ namespace ReCrafted.API.Content
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalInternalLoadAssetAsync(System.IntPtr asset, string assetFile, System.Action<Asset> onLoad);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern bool InternalInternalFindAssetGuid(string assetFile, ref Guid guid);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern Asset InternalInternalFindAsset(Guid guid);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalUnloadAsset(System.IntPtr asset, bool release);
     }
 }
