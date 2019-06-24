@@ -12,6 +12,31 @@ namespace ReCrafted.API
     {
         
         /// <summary>
+        ///     Adds single reference count to the object's refCount variable.
+        /// </summary>
+        internal void AddRef()
+        {
+            InternalAddRef(NativePtr);
+        }
+        
+        /// <summary>
+        ///     Removes single reference from the object's refCount variable and returns true when it's refCount is 0.
+        /// </summary>
+        internal bool RemoveRef()
+        {
+            return InternalRemoveRef(NativePtr);
+        }
+        
+        /// <summary>
+        ///     Returns the ref count of this object.
+        /// </summary>
+        /// <returns>This object's reference count.</returns>
+        internal uint GetRefCount()
+        {
+            return InternalGetRefCount(NativePtr);
+        }
+        
+        /// <summary>
         ///     Destroys given Object instance.
         /// </summary>
         public static void Destroy(Object objectInstance)
@@ -26,6 +51,15 @@ namespace ReCrafted.API
         {
             InternalDestroyNow(objectInstance? objectInstance.NativePtr : System.IntPtr.Zero);
         }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalAddRef(System.IntPtr nativePtr);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern bool InternalRemoveRef(System.IntPtr nativePtr);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern uint InternalGetRefCount(System.IntPtr nativePtr);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalDestroy(System.IntPtr objectInstance);

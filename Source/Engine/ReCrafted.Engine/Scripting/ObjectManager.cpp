@@ -190,6 +190,9 @@ void ObjectManager::InitializeInstance(Object* object, MonoObject* managedObject
 
 void ObjectManager::Destroy(Object* objectInstance)
 {
+    if (!objectInstance->RemoveRef())
+        return;
+
     ASSERT(objectInstance);
     objectInstance->SetNativePointer(nullptr);
 
@@ -199,6 +202,9 @@ void ObjectManager::Destroy(Object* objectInstance)
 
 void ObjectManager::DestroyNow(Object* objectInstance)
 {
+    if (!objectInstance->RemoveRef())
+        return;
+
     ASSERT(objectInstance);
     objectInstance->SetNativePointer(nullptr);
 

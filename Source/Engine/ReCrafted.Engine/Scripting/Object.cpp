@@ -36,6 +36,20 @@ void Object::SetNativePointer(void* pointer)
         testField.SetValue(this, &pointerValue);
 }
 
+void Object::AddRef()
+{
+    m_refCount++;
+}
+
+bool Object::RemoveRef()
+{
+    if (m_refCount == 0u)
+        return true;
+
+    m_refCount--;
+    return m_refCount == 0u;
+}
+
 void Object::Destroy(Object* objectInstance)
 {
     ObjectManager::Destroy(objectInstance);

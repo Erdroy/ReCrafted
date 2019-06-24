@@ -20,6 +20,7 @@ class Object
 private:
     ObjectId_t m_id = 0;
     GCHandle_t m_gcHandle = 0;
+    uint32_t m_refCount = 1u;
     MonoObject* m_managedInstance = nullptr;
     Class m_class = Class{ nullptr };
 
@@ -51,6 +52,29 @@ public:
     /// </summary>
     /// <remarks>When managed object does not derive from Object, this call will be ignored.</remarks>
     void SetNativePointer(void* pointer);
+
+public:
+    /// <summary>
+    ///     Adds single reference count to the object's refCount variable.
+    /// </summary>
+    API_FUNCTION(internal);
+    void AddRef();
+
+    /// <summary>
+    ///     Removes single reference from the object's refCount variable and returns true when it's refCount is 0.
+    /// </summary>
+    API_FUNCTION(internal);
+    bool RemoveRef();
+
+    /// <summary>
+    ///     Returns the ref count of this object.
+    /// </summary>
+    /// <returns>This object's reference count.</returns>
+    API_FUNCTION(internal);
+    uint32_t GetRefCount() const
+    {
+        return m_refCount;
+    }
 
 public:
     /// <summary>
