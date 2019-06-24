@@ -70,9 +70,10 @@ namespace std {
     template<> struct hash<Guid>
     {
         size_t operator()(const Guid& guid) const noexcept {
-            const std::uint64_t* p = reinterpret_cast<const std::uint64_t*>(&guid);
-            std::hash<std::uint64_t> hash;
-            return hash(p[0]) ^ hash(p[1]);
+            char buffer[37];
+            sprintf(buffer, GUID_FORMAT, GUID_ARG(guid.value));
+            const std::hash<std::string> hasher;
+            return static_cast<size_t>(hasher(buffer));
         }
     };
 }
