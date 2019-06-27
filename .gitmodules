@@ -31,3 +31,6 @@
 [submodule "Source/Libraries/ImGui.NET"]
 	path = Source/Libraries/ImGui.NET
 	url = https://github.com/mellinoe/ImGui.NET
+[submodule "Source/Libraries/cpp-base64"]
+	path = Source/Libraries/cpp-base64
+	url = https://github.com/ReneNyffenegger/cpp-base64
