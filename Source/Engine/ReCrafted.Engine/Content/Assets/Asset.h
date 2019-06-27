@@ -110,11 +110,16 @@ public:
     /// <summary>
     ///     Gets the asset load flag state. True when this asset has been loaded or it is virtual asset.
     /// </summary>
+    /// <remarks>Can be called only from the MainThread.</remarks>
     API_PROPERTY()
-    virtual bool IsLoaded() const
-    {
-        return m_loaded || IsVirtual();
-    }
+    virtual bool IsLoaded() const;
+
+    /// <summary>
+    ///     Gets the asset loading state. True when still loading.
+    /// </summary>
+    /// <remarks>Can be called only from the MainThread.</remarks>
+    API_PROPERTY()
+    bool IsLoading() const;
 
     /// <summary>
     ///     Gets the asset's guid.

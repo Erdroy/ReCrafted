@@ -10,6 +10,12 @@ namespace ReCrafted.API.Content
     /// </summary>
     public partial class ContentManager
     {
+        /// <summary>
+        ///     Creates and returns virtual asset instance of given <see cref="TAsset"/> type.
+        /// </summary>
+        /// <typeparam name="TAsset">The designated asset type.</typeparam>
+        /// <returns>The created virtual asset instance.</returns>
+        /// <remarks>Can be called only from the MainThread.</remarks>
         public static TAsset CreateVirtualAsset<TAsset>() where TAsset : Asset
         {
             // Create asset object
@@ -27,6 +33,7 @@ namespace ReCrafted.API.Content
         /// <typeparam name="TAsset">The asset type. The type must be derived from <see cref="Asset"/>.</typeparam>
         /// <param name="assetFile">The asset file, relative to '../Content/', file extension is not needed.</param>
         /// <returns>The loaded asset or nullptr when failed.</returns>
+        /// <remarks>Can be called only from the MainThread.</remarks>
         public static TAsset LoadAsset<TAsset>(string assetFile) where TAsset : Asset
         {
             Debug.Assert(!string.IsNullOrEmpty(assetFile));
@@ -38,7 +45,6 @@ namespace ReCrafted.API.Content
             {
                 // Asset already loaded, so just add reference.
                 assetObject.AddRef();
-
                 return assetObject;
             }
 
@@ -47,7 +53,6 @@ namespace ReCrafted.API.Content
 
             // Load asset
             InternalInternalLoadAssetSync(assetObject.NativePtr, assetFile);
-
             return assetObject;
         }
 
@@ -58,7 +63,8 @@ namespace ReCrafted.API.Content
         /// <param name="assetFile">The asset file, relative to '../Content/', file extension is not needed.</param>
         /// <param name="onLoad">The asset load callback. Called from main thread when asset has been fully loaded.</param>
         /// <returns>The loaded asset or nullptr when failed.</returns>
-        public static void LoadAsset<TAsset>(string assetFile, Action<Asset> onLoad) where TAsset : Asset
+        /// <remarks>Can be called only from the MainThread.</remarks>
+        public static Asset LoadAsset<TAsset>(string assetFile, Action<Asset> onLoad) where TAsset : Asset
         {
             Debug.Assert(!string.IsNullOrEmpty(assetFile));
 
@@ -70,9 +76,18 @@ namespace ReCrafted.API.Content
                 // Asset already loaded, so just add reference.
                 assetObject.AddRef();
 
-                // Invoke load callback
-                onLoad(assetObject);
-                return;
+                if (assetObject.IsLoading)
+                {
+                    // Add asset load event
+                    InternalInternalAddAssetLoadEvent(assetObject.NativePtr, onLoad);
+                }
+                else
+                {
+                    // Invoke load callback
+                    onLoad(assetObject);
+                }
+
+                return assetObject;
             }
 
             // Create asset object
@@ -80,6 +95,7 @@ namespace ReCrafted.API.Content
 
             // Load asset async
             InternalInternalLoadAssetAsync(assetObject.NativePtr, assetFile, onLoad);
+            return assetObject;
         }
     }
 }

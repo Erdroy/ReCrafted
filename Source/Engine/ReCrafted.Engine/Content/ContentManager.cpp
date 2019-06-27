@@ -133,9 +133,6 @@ void ContentManager::LoadAssetSync(Asset* asset, const std::string& assetFile, c
         return;
     }
 
-    // Set asset as loaded and non-virtual
-    asset->m_loaded = true;
-
     // Register and initialize asset
     GetInstance()->RegisterAsset(asset);
     asset->OnInitialize();
@@ -146,6 +143,8 @@ void ContentManager::LoadAssetSync(Asset* asset, const std::string& assetFile, c
 void ContentManager::LoadAssetAsync(Asset* asset, const std::string& assetFile, const std::string& file,
     const Action<void, Asset*>& onLoad)
 {
+    const auto contentManager = GetInstance();
+
     // Set asset name and file name
     asset->m_assetName = assetFile;
     asset->m_assetFile = file;
@@ -156,7 +155,16 @@ void ContentManager::LoadAssetAsync(Asset* asset, const std::string& assetFile, 
     auto customTask = new AssetLoadTask();
     customTask->file = file;
     customTask->asset = asset;
-    customTask->callback = onLoad;
+    customTask->onLoadedEvent.AddListener(onLoad);
+
+    // Add asset to the load map
+    contentManager->m_assetLoadMapLick.LockNow();
+    {
+        contentManager->m_assetLoadMap[asset] = customTask;
+    }
+    contentManager->m_assetLoadMapLick.UnlockNow();
+
+    // Queue task for execution
     Task::CreateTask(customTask)->Queue();
 }
 
@@ -235,4 +243,24 @@ Asset* ContentManager::InternalFindAsset(const char* assetFile)
         return it->second;
 
     return nullptr;
+}
+
+void ContentManager::InternalAddAssetLoadEvent(Asset* asset, const Action<void, Asset*>& onLoad)
+{
+#if DEBUG
+    Logger::LogWarning("Asset {0} is loading.", asset->AssetFile());
+#endif
+
+    // Lock the asset load map
+    const auto contentManager = ContentManager::GetInstance();
+    auto& lock = contentManager->m_assetLoadMapLick;
+    ScopeLock(lock);
+
+    // Find asset's load task
+    const auto it = contentManager->m_assetLoadMap.find(const_cast<Asset*>(asset));
+    ASSERT(it != contentManager->m_assetLoadMap.end());
+    auto task = static_cast<AssetLoadTask*>(it->second);
+
+    // Add load callback
+    task->onLoadedEvent.AddListener(onLoad);
 }

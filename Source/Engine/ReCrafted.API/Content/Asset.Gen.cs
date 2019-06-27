@@ -52,11 +52,25 @@ namespace ReCrafted.API.Content
         /// <summary>
         ///     Gets the asset load flag state. True when this asset has been loaded or it is virtual asset.
         /// </summary>
+        /// <remarks>Can be called only from the MainThread.</remarks>
         public virtual bool IsLoaded
         {
             get
             {
                 Get_InternalIsLoaded(NativePtr, out var data);
+                return data;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the asset loading state. True when still loading.
+        /// </summary>
+        /// <remarks>Can be called only from the MainThread.</remarks>
+        public bool IsLoading
+        {
+            get
+            {
+                Get_InternalIsLoading(NativePtr, out var data);
                 return data;
             }
         }
@@ -84,6 +98,9 @@ namespace ReCrafted.API.Content
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalIsLoaded(System.IntPtr nativePtr, out bool data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalIsLoading(System.IntPtr nativePtr, out bool data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalGetGuid(System.IntPtr nativePtr, out Guid data);

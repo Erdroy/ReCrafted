@@ -48,7 +48,33 @@ void Asset::Deserialize(const json& json, const std::string& content)
 
 void Asset::OnLoadEnd()
 {
+    // Set asset as loaded and non-virtual
+    m_loaded = true;
+
     // Unload if needed
     if (m_unload)
         Destroy(this);
+}
+
+bool Asset::IsLoaded() const
+{
+    MAIN_THREAD_ONLY();
+    return m_loaded || IsVirtual() || !IsLoading();
+}
+
+bool Asset::IsLoading() const
+{
+    MAIN_THREAD_ONLY();
+
+    // Note: This can be called only from MainThread, and the AssetLoadTask::Finish is being called from Update loop, so
+    // there is no way of getting IsLoading true, then asset get's loaded while we're adding our callback to load map.
+
+    const auto contentManager = ContentManager::GetInstance();
+
+    auto& lock = contentManager->m_assetLoadMapLick;
+    ScopeLock(lock);
+
+    // Try to find asset in the map
+    const auto it = contentManager->m_assetLoadMap.find(const_cast<Asset*>(this));
+    return it != contentManager->m_assetLoadMap.end();
 }

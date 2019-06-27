@@ -5,6 +5,7 @@
 #include <ReCrafted.h>
 
 #include "Common/Logger.h"
+#include "Common/Event.h"
 #include "Common/Guid.h"
 #include "Common/IO/File.h"
 #include "Content/Assets/Asset.h"
@@ -37,29 +38,47 @@ private:
 
         void Finish() override
         {
+            // This function is being called on the main thread.
+
             if (!asset)
                 return;
 
-            GetInstance()->RegisterAsset(asset);
+            const auto contentManager = GetInstance();
+
+            contentManager->RegisterAsset(asset);
 
             asset->OnLoadEnd();
-
+            
             // Set asset as loaded and non-virtual
             asset->m_loaded = true;
             asset->OnInitialize();
-            callback.Invoke(asset);
+
+            // Remove asset from the load map
+            contentManager->m_assetLoadMapLick.LockNow();
+
+            const auto it = contentManager->m_assetLoadMap.find(asset);
+            if (it != contentManager->m_assetLoadMap.end())
+                contentManager->m_assetLoadMap.erase(it);
+
+            // Invoke loaded event
+            onLoadedEvent.Invoke(asset);
+
+            contentManager->m_assetLoadMapLick.UnlockNow();
         }
 
     public:
         std::string file;
         Asset* asset = nullptr;
-        Action<void, Asset*> callback = nullptr;
+        Event<Asset*> onLoadedEvent {};
     };
 
 private:
     spp::sparse_hash_map<Guid, Asset*> m_assetMapA;
     spp::sparse_hash_map<std::string, Asset*> m_assetMapB;
     Lock m_assetMapLock;
+
+    spp::sparse_hash_map<Asset*, ITask*> m_assetLoadMap;
+    Lock m_assetLoadMapLick;
 
 private:
     void Initialize() override;
@@ -94,6 +113,9 @@ public:
     static void InternalLoadAssetAsync(Asset* asset, const char* assetFile, const Action<void, Asset*>& onLoad);
 
     API_FUNCTION(noproxy)
+    static void InternalAddAssetLoadEvent(Asset* asset, const Action<void, Asset*>& onLoad);
+
+    API_FUNCTION(noproxy)
     static Asset* InternalFindAsset(const Guid& guid);
 
     API_FUNCTION(noproxy)
@@ -109,6 +131,7 @@ public:
     template<class TAsset>
     static TAsset* InternalCreateAsset()
     {
+        MAIN_THREAD_ONLY();
         return Object::New<TAsset>();
     }
 
@@ -119,9 +142,11 @@ public:
     /// <typeparam name="TAsset">The target asset class type.</typeparam>
     /// <returns>The created asset.</returns>
     /// <remarks>Asset object must have it's API implemented!</remarks>
+    /// <remarks>Can be called only from the MainThread.</remarks>
     template<class TAsset>
     static TAsset* CreateVirtualAsset()
     {
+        MAIN_THREAD_ONLY();
         const auto asset = static_cast<Asset*>(InternalCreateAsset<TAsset>());
         InternalInitVirtualAsset(asset);
         return static_cast<TAsset*>(asset);
@@ -156,9 +181,11 @@ public:
     /// </summary>
     /// <typeparam name="TAsset">The target asset class type.</typeparam>
     /// <param name="asset">The asset that will be unloaded.</param>
+    /// <remarks>Can be called only from the MainThread.</remarks>
     template<class TAsset>
     FORCEINLINE static void UnloadAssetSafe(TAsset*& asset)
     {
+        MAIN_THREAD_ONLY();
         if (asset)
         {
             Object::Destroy(asset);
@@ -172,9 +199,11 @@ public:
     /// <typeparam name="TAsset">The asset type.</typeparam>
     /// <param name="assetFile">The asset file, relative to '../Content/', file extension is not needed.</param>
     /// <returns>The created file or nullptr when failed.</returns>
+    /// <remarks>Can be called only from the MainThread.</remarks>
     template<class TAsset>
     static TAsset* LoadAsset(const char* assetFile)
     {
+        MAIN_THREAD_ONLY();
         static_assert(std::is_base_of<Asset, TAsset>::value, "TAsset must inherit Asset class!");
 
         // Build file name
@@ -188,7 +217,6 @@ public:
         {
             // Asset already loaded, so just add reference.
             asset->AddRef();
-
             return static_cast<TAsset*>(asset);
         }
         
@@ -207,9 +235,11 @@ public:
     ///     the asset has been loaded on the main thread, the first parameter is a pointer to the asset object.
     /// </param>
     /// <returns>The created file or nullptr when failed.</returns>
+    /// <remarks>Can be called only from the MainThread.</remarks>
     template<class TAsset>
     static TAsset* LoadAsset(const char* assetFile, const Action<void, Asset*>& onLoad)
     {
+        MAIN_THREAD_ONLY();
         static_assert(std::is_base_of<Asset, TAsset>::value, "TAsset must inherit Asset class!");
 
         // Build file name
@@ -224,8 +254,16 @@ public:
             // Asset already loaded, so just add reference.
             asset->AddRef();
 
-            // Invoke load callback TODO: When asset is loading, invoke load callback at the end
-            onLoad.Invoke(static_cast<TAsset*>(asset));
+            if(asset->IsLoading())
+            {
+                InternalAddAssetLoadEvent(asset, onLoad);
+            }
+            else
+            {
+                // Invoke load callback
+                onLoad.Invoke(static_cast<TAsset*>(asset));
+            }
+
             return static_cast<TAsset*>(asset);
         }
         

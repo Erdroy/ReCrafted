@@ -37,14 +37,23 @@ public:
         MONO_FREE_STUB(onLoad);
     }
     
-    static MonoObject* ContentManager_InternalFindAsset4(const Guid& guid) 
+    static void ContentManager_InternalAddAssetLoadEvent4(Asset* asset, MonoObject* p_onLoad) 
+    {
+        MAIN_THREAD_ONLY();
+        ASSERT(p_onLoad);
+        const auto onLoad = MONO_DELEGATE_TO_ACTION_2(p_onLoad, void, void, void, _t0, Asset, Asset*, MonoObject*, _t1->ToManaged());
+        ContentManager::InternalAddAssetLoadEvent(asset, onLoad);
+        MONO_FREE_STUB(onLoad);
+    }
+    
+    static MonoObject* ContentManager_InternalFindAsset5(const Guid& guid) 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = ContentManager::InternalFindAsset(guid);
         return _returnValue != nullptr ? _returnValue->ToManaged() : nullptr;
     }
     
-    static MonoObject* ContentManager_InternalFindAsset5(MonoString* p_assetFile) 
+    static MonoObject* ContentManager_InternalFindAsset6(MonoString* p_assetFile) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(p_assetFile);
@@ -61,8 +70,9 @@ void ContentManager::InitRuntime()
     API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalInitVirtualAsset", &APIProxy::ContentManager_InternalInitVirtualAsset1);
     API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalLoadAssetSync", &APIProxy::ContentManager_InternalLoadAssetSync2);
     API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalLoadAssetAsync", &APIProxy::ContentManager_InternalLoadAssetAsync3);
-    API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalFindAsset", &APIProxy::ContentManager_InternalFindAsset4);
+    API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalAddAssetLoadEvent", &APIProxy::ContentManager_InternalAddAssetLoadEvent4);
     API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalFindAsset", &APIProxy::ContentManager_InternalFindAsset5);
+    API_BIND("ReCrafted.API.Content.ContentManager::InternalInternalFindAsset", &APIProxy::ContentManager_InternalFindAsset6);
 }
 
 const char* ContentManager::Fullname() 
