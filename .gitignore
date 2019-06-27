@@ -8,8 +8,6 @@ packages/
 /[Rr]elease/
 /[Bb]uild/
 
-Source/Libraries/*/
-
 *.user
 *.sln
 *.vcxproj*
