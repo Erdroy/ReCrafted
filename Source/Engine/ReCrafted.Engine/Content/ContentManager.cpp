@@ -259,7 +259,7 @@ void ContentManager::InternalAddAssetLoadEvent(Asset* asset, const Action<void, 
     // Find asset's load task
     const auto it = contentManager->m_assetLoadMap.find(const_cast<Asset*>(asset));
     ASSERT(it != contentManager->m_assetLoadMap.end());
-    auto task = static_cast<AssetLoadTask*>(it->second);
+    auto task = dynamic_cast<AssetLoadTask*>(it->second);
 
     // Add load callback
     task->onLoadedEvent.AddListener(onLoad);

@@ -25,13 +25,13 @@ public:
             listener.Invoke(params...);
     }
 
-    void AddListener(Action<void, TParams...> delegate)
+    void AddListener(const Action<void, TParams...>& delegate)
     {
         ScopeLock(m_lock);
         m_listeners.Add(delegate);
     }
 
-    void RemoveListener(Action<void> delegate)
+    void RemoveListener(const Action<void>& delegate)
     {
         ScopeLock(m_lock);
         m_listeners.Remove(delegate);
