@@ -28,3 +28,6 @@
 [submodule "Source/Libraries/ReCrafted.Mono"]
 	path = Source/Libraries/ReCrafted.Mono
 	url = https://github.com/Erdroy/ReCrafted.Mono
+[submodule "Source/Libraries/ImGui.NET"]
+	path = Source/Libraries/ImGui.NET
+	url = https://github.com/mellinoe/ImGui.NET
