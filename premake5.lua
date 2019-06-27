@@ -37,6 +37,9 @@ solution "ReCrafted"
 	group "Game"
 		dofile "./Source/Game/ReCrafted/Project.lua"
 		dofile "./Source/Game/ReCrafted.Game/Project.lua"
+		
+	group "Editor"
+		dofile "./Source/Editor/ReCrafted.Editor/Project.lua"
 
 	group "Tools"
 		dofile "./Source/Tools/ReCrafted.VSDebugger/Project.lua"

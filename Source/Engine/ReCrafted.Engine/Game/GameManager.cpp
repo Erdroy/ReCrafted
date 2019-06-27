@@ -1,9 +1,96 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include "GameManager.h"
+#include "Common/Signal.h"
+#include "Content/ContentManager.h"
+#include "Rendering/Mesh.h"
+#include "Rendering/RenderableBase.h"
+#include "Rendering/Shader.h"
+#include "Rendering/RenderingManager.h"
 #include "Scripting/Object.h"
 #include "Scripting/ScriptingManager.h"
-#include "Rendering/Mesh.h"
+
+class RenderableTest : public RenderableBase
+{
+public:
+    Vector3 pos = Vector3::Zero;
+    BoundingBox bb = BoundingBox(Vector3::Zero, Vector3::One);
+    Shader* sh = nullptr;
+    RefPtr<Mesh> m_mesh = nullptr;
+
+    RenderableTest()
+    {
+        sh = ContentManager::LoadAsset<Shader>("Shaders/StandardShader");
+
+        m_mesh = Mesh::CreateMesh();
+
+        Vector3 cubeVertices[8] = {
+            Vector3(-1.0f, 1.0f, -1.0f),    // 0  b---
+            Vector3(-1.0f, 1.0f,  1.0f),    // 1  f---
+            Vector3(1.0f, 1.0f,  1.0f),     // 2  ---f
+            Vector3(1.0f, 1.0f, -1.0f),     // 3  ---b
+
+            Vector3(-1.0f, -1.0f, -1.0f),   // 4  f---
+            Vector3(-1.0f, -1.0f,  1.0f),   // 5  b---
+            Vector3(1.0f, -1.0f,  1.0f),    // 6  ---f
+            Vector3(1.0f, -1.0f, -1.0f),    // 7  ---b
+        };
+
+        Vector3 cubeNormals[8] = {
+            Vector3(0.0f, 0.0f, 0.0f),
+            Vector3(0.0f, 0.0f, 0.0f),
+            Vector3(0.0f, 0.0f, 0.0f),
+            Vector3(0.0f, 0.0f, 0.0f),
+
+            Vector3(0.0f, 0.0f, 0.0f),
+            Vector3(0.0f, 0.0f, 0.0f),
+            Vector3(0.0f, 0.0f, 0.0f),
+            Vector3(0.0f, 0.0f, 0.0f),
+        };
+
+        uint32_t cubeIndices[36] = {
+            0, 1, 2, 2, 3, 0, // top
+            6, 5, 4, 4, 7, 6, // bottom
+
+            7, 4, 0, 0, 3, 7, // front
+            1, 5, 6, 6, 2, 1, // back
+
+            1, 0, 5, 0, 4, 5, // left
+            6, 7, 2, 7, 3, 2  // right
+        };
+
+        m_mesh->SetVertices(cubeVertices, 8);
+        m_mesh->SetNormals(cubeNormals);
+        m_mesh->SetIndices(cubeIndices, 36);
+
+        m_mesh->ApplyChanges();
+        m_mesh->Upload();
+    }
+
+    virtual Mesh* GetMesh() const
+    {
+        return m_mesh.get();
+    }
+
+    virtual Shader* GetShader() const 
+    {
+        return sh;
+    }
+
+    virtual Vector3& GetPosition()
+    {
+        return pos;
+    }
+
+    virtual BoundingBox& GetBounds()
+    {
+        return bb;
+    }
+};
+
+RenderableTest* test;
+
+Signal signal;
 
 GameManager::GameManager()
 {
@@ -22,10 +109,16 @@ GameManager::GameManager()
     ASSERT(m_gameFixedUpdate.IsValid());
 
     gameInitialize.Invoke(m_game);
+
+    test = new RenderableTest();
+    RenderingManager::AddRenderable(test);
 }
 
 GameManager::~GameManager()
 {
+    RenderingManager::RemoveRenderable(test);
+    delete test;
+
     ASSERT(m_game);
     ASSERT(m_gameShutdown.IsValid());
 
