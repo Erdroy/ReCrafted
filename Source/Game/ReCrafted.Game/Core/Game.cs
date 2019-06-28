@@ -21,6 +21,7 @@ namespace ReCrafted.Game.Core
             Logger.Log("Game initialized");
 
             _camera = Object.New<CameraActor>();
+            _camera.Position = Vector3.BackwardLH * 10.0f;
         }
 
         protected override void OnShutdown()
