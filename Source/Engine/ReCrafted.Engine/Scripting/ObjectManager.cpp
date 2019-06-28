@@ -171,6 +171,9 @@ void ObjectManager::InitializeInstance(Object* object, const char* nameSpace, co
 
     ASSERT(managedInstance);
 
+    // Execute default ctor
+    mono_runtime_object_init(managedInstance);
+
     InitializeInstance(object, managedInstance, cls.ToMono());
 }
 
