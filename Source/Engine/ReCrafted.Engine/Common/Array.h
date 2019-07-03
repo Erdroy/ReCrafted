@@ -18,8 +18,8 @@ public:
         typedef std::forward_iterator_tag iterator_category;
         typedef int difference_type;
         iterator(pointer ptr) : ptr_(ptr) { }
-        self_type operator++() { self_type i = *this; ptr_++; return i; }
-        self_type operator++(int junk) { ptr_++; return *this; }
+        self_type operator++() { self_type i = *this; ++ptr_; return i; }
+        self_type operator++(int junk) { ++ptr_; return *this; }
         reference operator*() { return *ptr_; }
         pointer operator->() { return ptr_; }
         bool operator==(const self_type& rhs) { return ptr_ == rhs.ptr_; }
@@ -38,10 +38,10 @@ public:
         typedef int difference_type;
         typedef std::forward_iterator_tag iterator_category;
         const_iterator(pointer ptr) : ptr_(ptr) { }
-        self_type operator++() { self_type i = *this; ptr_++; return i; }
-        self_type operator++(int junk) { ptr_++; return *this; }
-        const reference operator*() { return *ptr_; }
-        const pointer operator->() { return ptr_; }
+        self_type operator++() { self_type i = *this; ++ptr_; return i; }
+        self_type operator++(int junk) { ++ptr_; return *this; }
+        reference operator*() { return *ptr_; }
+        pointer operator->() { return ptr_; }
         bool operator==(const self_type& rhs) { return ptr_ == rhs.ptr_; }
         bool operator!=(const self_type& rhs) { return ptr_ != rhs.ptr_; }
     private:
@@ -53,11 +53,17 @@ private:
     size_t m_count;
 
 public:
-    Array() = delete;
-
+    Array() : m_data(nullptr), m_count(0u) { }
     Array(TType* data, const size_t count) noexcept : m_data(data), m_count(count) { }
     Array(Array<TType>& array) noexcept : m_data(array.m_data), m_count(array.m_count) {}
     Array(Array<TType>&& array) noexcept : m_data(array.m_data), m_count(array.m_count) {}
+
+    template<size_t size>
+    Array(TType(&array)[size])
+    {
+        m_data = array;
+        m_count = size;
+    }
 
 public:
     FORCE_INLINE iterator begin()
