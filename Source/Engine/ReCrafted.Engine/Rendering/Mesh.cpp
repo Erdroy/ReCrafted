@@ -2,6 +2,59 @@
 
 #include "Mesh.h"
 
+void Mesh::UploadAsync()
+{
+    // Create vertex buffer
+    m_vertexBuffer = Renderer::CreateVertexBuffer(m_vertices_count, m_vertexSize, m_vertexBufferData);
+
+    // Create index buffer
+    m_indexBuffer = Renderer::CreateIndexBuffer(m_indices_count, m_indexBufferData);
+
+    Renderer::QueueFree(m_vertexBufferData);
+    Renderer::QueueFree(m_indexBufferData);
+
+    m_vertexBufferData = nullptr;
+    m_indexBufferData = nullptr;
+
+    m_uploaded = true;
+    m_hasChanges = false;
+}
+
+void Mesh::UploadSync()
+{
+    // Create vertex buffer
+    m_vertexBuffer = Renderer::CreateVertexBufferSync(m_vertices_count, m_vertexSize, false, m_vertexBufferData);
+
+    // Create index buffer
+    m_indexBuffer = Renderer::CreateIndexBufferSync(m_indices_count, true, false, m_indexBufferData);
+
+    Renderer::Free(m_vertexBufferData);
+    Renderer::Free(m_indexBufferData);
+
+    m_vertexBufferData = nullptr;
+    m_indexBufferData = nullptr;
+
+    m_uploaded = true;
+    m_hasChanges = false;
+}
+
+void Mesh::ReleaseData()
+{
+    // delete data
+    delete[] m_vertices;
+    delete[] m_uvs;
+    delete[] m_normals;
+    delete[] m_colors;
+    delete[] m_indices;
+
+    // clean
+    m_vertices = nullptr;
+    m_uvs = nullptr;
+    m_normals = nullptr;
+    m_colors = nullptr;
+    m_indices = nullptr;
+}
+
 Mesh::~Mesh()
 {
     if (RENDERER_CHECK_HANDLE(m_vertexBuffer))
@@ -16,21 +69,10 @@ Mesh::~Mesh()
     if (m_indexBufferData)
         Renderer::Free(m_indexBufferData);
 
-    // delete data
-    delete[] m_vertices;
-    delete[] m_uvs;
-    delete[] m_normals;
-    delete[] m_colors;
-    delete[] m_indices;
-
-    // clean
-    m_vertices = nullptr;
-    m_uvs = nullptr;
-    m_normals = nullptr;
-    m_colors = nullptr;
-    m_indices = nullptr;
-
     m_customData.Clear();
+
+    // Release mesh data
+    ReleaseData();
 
     m_vertices_count = 0u;
     m_uvs_count = 0u;
@@ -39,63 +81,73 @@ Mesh::~Mesh()
     m_indices_count = 0u;
 }
 
-void Mesh::Init()
-{
-}
-
-void Mesh::SetVertices(Vector3* vertices, uint count)
+void Mesh::SetVertices(const Array<Vector3>& vertices)
 {
     // Setup and allocate data
-    m_vertices = new Vector3[count];
-    m_vertices_count = count;
+    m_vertices = new Vector3[vertices.Count()];
+    m_vertices_count = static_cast<uint>(vertices.Count());
 
     // Copy data
-    memcpy(static_cast<void*>(m_vertices), reinterpret_cast<uint8_t*>(vertices), count * sizeof(Vector3));
+    memcpy(static_cast<void*>(m_vertices), static_cast<const void*>(vertices.Data()), vertices.Count() * sizeof(Vector3));
 }
 
-void Mesh::SetUVs(Vector2* uvs)
+void Mesh::SetUVs(const Array<Vector2>& uvs)
 {
+    _ASSERT_(m_vertices_count > 0, "Please, set vertices at first");
+    ASSERT(uvs.Count() == m_vertices_count);
+
     // Setup and allocate data
     m_uvs = new Vector2[m_vertices_count];
     m_uvs_count = m_vertices_count;
 
     // Copy data
-    memcpy(static_cast<void*>(m_uvs), reinterpret_cast<uint8_t*>(uvs), m_vertices_count * sizeof(Vector2));
+    memcpy(static_cast<void*>(m_uvs), static_cast<const void*>(uvs.Data()), m_vertices_count * sizeof(Vector2));
 }
 
-void Mesh::SetNormals(Vector3* normals)
+void Mesh::SetNormals(const Array<Vector3>& normals)
 {
+    _ASSERT_(m_vertices_count > 0, "Please, set vertices at first");
+    ASSERT(normals.Count() == m_vertices_count);
+
     // Setup and allocate data
     m_normals = new Vector3[m_vertices_count];
-    m_normals_count = m_vertices_count;
+    m_normals_count = static_cast<uint>(m_vertices_count);
 
     // Copy data
-    memcpy(static_cast<void*>(m_normals), reinterpret_cast<uint8_t*>(normals), m_vertices_count * sizeof(Vector3));
+    memcpy(static_cast<void*>(m_normals), static_cast<const void*>(normals.Data()), m_vertices_count * sizeof(Vector3));
 }
 
-void Mesh::SetColors(Vector4* colors)
+void Mesh::SetColors(const Array<Vector4>& colors)
 {
+    _ASSERT_(m_vertices_count > 0, "Please, set vertices at first");
+    ASSERT(colors.Count() == m_vertices_count);
+
     // Setup and allocate data
     m_colors = new Vector4[m_vertices_count];
-    m_colors_count = m_vertices_count;
+    m_colors_count = static_cast<uint>(m_vertices_count);
 
     // Copy data
-    memcpy(static_cast<void*>(m_colors), reinterpret_cast<uint8_t*>(colors), m_vertices_count * sizeof(Vector4));
+    memcpy(static_cast<void*>(m_colors), static_cast<const void*>(colors.Data()), m_vertices_count * sizeof(Vector4));
 }
 
 void Mesh::AddCustomData(void* ptr, const size_t customStride)
 {
+    // TODO: Validate custom data size
+
     m_customData.Add(CustomDataType{ customStride, static_cast<uint8_t*>(ptr) });
 }
 
-void Mesh::SetIndices(uint* indices, uint count)
+void Mesh::SetIndices(const Array<uint>& indices)
 {
+    ASSERT(indices.Count() > 0);
+    _ASSERT_(indices.Count() % 3 == 0, "Only triangles are supported.");
+
     // Setup and allocate data
-    m_indices = new uint[count];
-    m_indices_count = count;
+    m_indices = new uint[indices.Count()];
+    m_indices_count = static_cast<uint>(indices.Count());
 
     // Copy data
-    memcpy(static_cast<void*>(m_indices), indices, count * sizeof(uint));
+    memcpy(static_cast<void*>(m_indices), indices.Data(), indices.Count() * sizeof(uint));
 }
 
 bool Mesh::IsUploaded() const
@@ -103,12 +155,12 @@ bool Mesh::IsUploaded() const
     return m_uploaded;
 }
 
-bool Mesh::CanUpload()
+bool Mesh::CanUpload() const
 {
     return m_hasChanges;
 }
 
-void Mesh::ApplyChanges()
+void Mesh::ApplyChanges(const bool releaseMeshData, const bool autoUpload, const bool asyncUpload)
 {
     ASSERT(m_vertices);
     ASSERT(m_vertices_count > 0);
@@ -144,28 +196,28 @@ void Mesh::ApplyChanges()
         auto dataOffset = 0u;
 
         // Copy positions
-        auto vertice = m_vertices[i];
-        memcpy(memoryPtr + offset + dataOffset, &vertice, sizeof(float) * 3);
+        auto vertex = m_vertices[i];
+        memcpy(memoryPtr + offset + dataOffset, static_cast<const void*>(&vertex), sizeof(float) * 3);
         dataOffset += 3 * sizeof(float);
 
         // Copy normals
         if (m_normals)
         {
-            memcpy(memoryPtr + offset + dataOffset, &m_normals[i], sizeof(float) * 3);
+            memcpy(memoryPtr + offset + dataOffset, static_cast<const void*>(&m_normals[i]), sizeof(float) * 3);
             dataOffset += 3 * sizeof(float);
         }
 
         // Copy uvs
         if (m_uvs)
         {
-            memcpy(memoryPtr + offset + dataOffset, &m_uvs[i], sizeof(float) * 2);
+            memcpy(memoryPtr + offset + dataOffset, static_cast<const void*>(&m_uvs[i]), sizeof(float) * 2);
             dataOffset += 2 * sizeof(float);
         }
 
         // Copy colors
         if (m_colors)
         {
-            memcpy(memoryPtr + offset + dataOffset, &m_colors[i], sizeof(float) * 4);
+            memcpy(memoryPtr + offset + dataOffset, static_cast<const void*>(&m_colors[i]), sizeof(float) * 4);
             dataOffset += 4 * sizeof(float);
         }
 
@@ -179,7 +231,7 @@ void Mesh::ApplyChanges()
                 // Add offset to the data pointer.
                 // This allows us to use the dataPtr pointer as an array, like every other default type.
                 type.dataPtr += type.dataWidth;
-                dataOffset += type.dataWidth;
+                dataOffset += static_cast<uint>(type.dataWidth);
             }
         }
     }
@@ -190,62 +242,48 @@ void Mesh::ApplyChanges()
 
     for (auto i = 0u; i < m_indices_count; i++)
     {
-        auto indice = m_indices[i];
+        auto index = m_indices[i];
         const auto offset = i * sizeof(uint);
-        memcpy(memoryPtr + offset, &indice, sizeof(uint));
+        memcpy(memoryPtr + offset, &index, sizeof(uint));
     }
 
     m_uploaded = false;
     m_hasChanges = true;
 
     m_customData.Clear();
+
+    if(releaseMeshData)
+    {
+        ReleaseData();
+    }
+
+    if(autoUpload)
+    {
+        Upload(asyncUpload);
+    }
 }
 
-void Mesh::UploadNow()
+void Mesh::Upload(const bool asyncUpload)
 {
+    ASSERT(m_hasChanges);
+    ASSERT(m_uploaded == false);
+
     ASSERT(m_vertexBufferData != nullptr);
     ASSERT(m_indexBufferData != nullptr);
 
-    // Create vertex buffer
-    m_vertexBuffer = Renderer::CreateVertexBufferSync(m_vertices_count, m_vertexSize, false, m_vertexBufferData);
-
-    // Create index buffer
-    m_indexBuffer = Renderer::CreateIndexBufferSync(m_indices_count, true, false, m_indexBufferData);
-
-    Renderer::Free(m_vertexBufferData);
-    Renderer::Free(m_indexBufferData);
-
-    m_vertexBufferData = nullptr;
-    m_indexBufferData = nullptr;
-
-    m_uploaded = true;
-    m_hasChanges = false;
+    if(asyncUpload)
+    {
+        // Upload this mesh using async method.
+        UploadAsync();
+    }
+    else
+    {
+        // Upload this mesh using sync (immediate) method.
+        UploadSync();
+    }
 }
 
-void Mesh::Upload()
+Mesh* Mesh::CreateMesh()
 {
-    ASSERT(m_vertexBufferData != nullptr);
-    ASSERT(m_indexBufferData != nullptr);
-
-    // Create vertex buffer
-    m_vertexBuffer = Renderer::CreateVertexBuffer(m_vertices_count, m_vertexSize, m_vertexBufferData);
-
-    // Create index buffer
-    m_indexBuffer = Renderer::CreateIndexBuffer(m_indices_count, m_indexBufferData);
-
-    Renderer::QueueFree(m_vertexBufferData);
-    Renderer::QueueFree(m_indexBufferData);
-
-    m_vertexBufferData = nullptr;
-    m_indexBufferData = nullptr;
-
-    m_uploaded = true;
-    m_hasChanges = false;
-}
-
-RefPtr<Mesh> Mesh::CreateMesh()
-{
-    RefPtr<Mesh> mesh(new Mesh);
-    mesh->Init();
-    return mesh;
+    return new Mesh();
 }

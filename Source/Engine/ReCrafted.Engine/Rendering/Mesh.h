@@ -4,6 +4,7 @@
 
 #include <ReCrafted.h>
 #include "Common/List.h"
+#include "Common/Array.h"
 #include "Rendering/Renderer/Renderer.h"
 
 /// <summary>
@@ -11,6 +12,8 @@
 /// </summary>
 class Mesh
 {
+    friend class RenderingManager;
+
 private:
     struct CustomDataType
     {
@@ -44,12 +47,16 @@ private:
     uint m_colors_count = 0u;
     uint m_indices_count = 0u;
 
-public:
-    Mesh() = default;
-    ~Mesh();
+private:
+    void UploadAsync();
+    void UploadSync();
+    void ReleaseData();
 
 private:
-    void Init();
+    Mesh() = default;
+
+public:
+    ~Mesh();
 
 public:
     /// <summary>
@@ -72,17 +79,17 @@ public:
     /// <summary>
     ///     Set vertices for this mesh.
     /// </summary>
-    /// <param name="vertices">Vertices pointer.</param>
-    /// <param name="count">The count of vertices.</param>
-    /// <remarks>To apply changes, you must call 'applyChanges' after setting all data you need.</remarks>
-    void SetVertices(Vector3* vertices, uint count);
+    /// <param name="vertices">The vertices array.</param>
+    /// <remarks>To apply changes, you must call 'ApplyChanges' after setting all data you need.</remarks>
+    void SetVertices(const Array<Vector3>& vertices);
 
     /// <summary>
-    ///     Gets pointer to vertices.
+    ///     Gets vertices array from this mesh.
     /// </summary>
-    Vector3* GetVertices() const
+    /// <remarks>Available only before calling ApplyChanges with releaseMeshData parameter as true.</remarks>
+    Array<Vector3> GetVertices() const
     {
-        return m_vertices;
+        return { m_vertices, m_vertices_count };
     }
 
     /// <summary>
@@ -97,45 +104,49 @@ public:
     ///     Set uvs for this mesh.
     /// </summary>
     /// <param name="uvs">uvs pointer.</param>
-    /// <remarks>To apply changes, you must call 'applyChanges' after setting all data you need.</remarks>
-    void SetUVs(Vector2* uvs);
+    /// <remarks>To apply changes, you must call 'ApplyChanges' after setting all data you need.</remarks>
+    /// <remarks>The count of uvs must be the same as the vertex count!</remarks>
+    void SetUVs(const Array<Vector2>& uvs);
 
     /// <summary>
-    ///     Gets pointer to uvs.
+    ///     Gets uvs array from this mesh.
     /// </summary>
-    Vector2* GetUVs() const
+    /// <remarks>Available only before calling ApplyChanges with releaseMeshData parameter as true.</remarks>
+    Array<Vector2> GetUVs() const
     {
-        return m_uvs;
+        return { m_uvs, m_vertices_count };
     }
 
     /// <summary>
     ///     Set normals for this mesh.
     /// </summary>
     /// <param name="normals">normals pointer.</param>
-    /// <remarks>To apply changes, you must call 'applyChanges' after setting all data you need.</remarks>
-    void SetNormals(Vector3* normals);
+    /// <remarks>To apply changes, you must call 'ApplyChanges' after setting all data you need.</remarks>
+    void SetNormals(const Array<Vector3>& normals);
 
     /// <summary>
-    ///     Gets pointer to normals.
+    ///     Gets normals array from this mesh.
     /// </summary>
-    Vector3* GetNormals() const
+    /// <remarks>Available only before calling ApplyChanges with releaseMeshData parameter as true.</remarks>
+    Array<Vector3> GetNormals() const
     {
-        return m_normals;
+        return { m_normals, m_vertices_count };
     }
 
     /// <summary>
     ///     Set colors for this mesh.
     /// </summary>
     /// <param name="colors">colors pointer.</param>
-    /// <remarks>To apply changes, you must call 'applyChanges' after setting all data you need.</remarks>
-    void SetColors(Vector4* colors);
+    /// <remarks>To apply changes, you must call 'ApplyChanges' after setting all data you need.</remarks>
+    void SetColors(const Array<Vector4>& colors);
 
     /// <summary>
-    ///     Gets pointer to colors.
+    ///     Gets colors array from this mesh.
     /// </summary>
-    Vector4* GetColors() const
+    /// <remarks>Available only before calling ApplyChanges with releaseMeshData parameter as true.</remarks>
+    Array<Vector4> GetColors() const
     {
-        return m_colors;
+        return { m_colors, m_vertices_count };
     }
 
     /// <summary>
@@ -148,19 +159,39 @@ public:
     /// <summary>
     ///     Set indices for this mesh.
     /// </summary>
-    /// <param name="indices">indices pointer.</param>
-    /// <param name="count">Index count.</param>
-    /// <remarks>To apply changes, you must call 'applyChanges' after setting all data you need.</remarks>
-    void SetIndices(uint* indices, uint count);
+    /// <param name="indices">The array of indices.</param>
+    /// <remarks>To apply changes, you must call 'ApplyChanges' after setting all data you need.</remarks>
+    void SetIndices(const Array<uint>& indices);
 
     /// <summary>
-    ///     Gets pointer to indices.
+    ///     Gets indices from this mesh.
     /// </summary>
-    uint* GetIndices() const
+    /// <remarks>Available only before calling ApplyChanges with releaseMeshData parameter as true.</remarks>
+    Array<uint> GetIndices() const
     {
-        return m_indices;
+        return { m_indices, m_indices_count };
     }
 
+    /// <summary>
+    ///     Applies all changes.
+    /// </summary>
+    /// <param name="releaseMeshData">
+    ///     When true, this function will release the mesh data (vertices, colors, indices etc.) 
+    ///     and all GetVertices/GetNormals will become not available.
+    /// </param>
+    /// <param name="autoUpload">Should this mesh be uploaded after all changes are applied?</param>
+    /// <param name="asyncUpload">Should this mesh be uploaded using async function (i.e. dispatched to the render thread)?</param>
+    /// <remarks>When mesh is being uploaded using async, it will be available in the NEXT FRAME for rendering.</remarks>
+    void ApplyChanges(bool releaseMeshData = true, bool autoUpload = true, bool asyncUpload = true);
+
+    /// <summary>
+    ///     Upload buffers to the GPU.
+    /// </summary>
+    /// <param name="asyncUpload">Should mesh be uploaded using async function (i.e. dispatched to the render thread)?</param>
+    /// <remarks>When mesh is being uploaded using async, it will be available in the NEXT FRAME for rendering.</remarks>
+    void Upload(bool asyncUpload = true);
+
+public:
     /// <summary>
     ///     Returns the amount of indices.
     /// </summary>
@@ -179,27 +210,12 @@ public:
     ///     Can the mesh be uploaded?
     /// </summary>
     /// <returns>True when it can be.</returns>
-    bool CanUpload();
-
-    /// <summary>
-    ///     Apply changes.
-    /// </summary>
-    void ApplyChanges();
-
-    /// <summary>
-    ///     Upload buffers to the GPU.
-    /// </summary>
-    void Upload();
-
-    /// <summary>
-    ///     Upload buffers to the GPU synchronously right now.
-    /// </summary>
-    void UploadNow();
+    bool CanUpload() const;
 
 public:
     /// <summary>
     ///     Creates new mesh.
     /// </summary>
     /// <returns>The newly created mesh pointer.</returns>
-    static RefPtr<Mesh> CreateMesh();
+    static Mesh* CreateMesh();
 };
