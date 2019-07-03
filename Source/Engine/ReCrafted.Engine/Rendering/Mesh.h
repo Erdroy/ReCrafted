@@ -6,13 +6,18 @@
 #include "Common/List.h"
 #include "Common/Array.h"
 #include "Rendering/Renderer/Renderer.h"
+#include "Scripting/Object.h"
+
+API_USING("ReCrafted.API.Mathematics")
 
 /// <summary>
 ///     Mesh class.
 /// </summary>
-class Mesh
+API_CLASS(public, sealed)
+class Mesh final : public Object
 {
     friend class RenderingManager;
+    API_CLASS_BODY()
 
 private:
     struct CustomDataType
@@ -81,24 +86,8 @@ public:
     /// </summary>
     /// <param name="vertices">The vertices array.</param>
     /// <remarks>To apply changes, you must call 'ApplyChanges' after setting all data you need.</remarks>
+    API_FUNCTION()
     void SetVertices(const Array<Vector3>& vertices);
-
-    /// <summary>
-    ///     Gets vertices array from this mesh.
-    /// </summary>
-    /// <remarks>Available only before calling ApplyChanges with releaseMeshData parameter as true.</remarks>
-    Array<Vector3> GetVertices() const
-    {
-        return { m_vertices, m_vertices_count };
-    }
-
-    /// <summary>
-    ///     Returns the amount of vertices (and of course the count of uvs, colors and normals, as it is the same).
-    /// </summary>
-    size_t GetVertexCount() const
-    {
-        return static_cast<size_t>(m_vertices_count);
-    }
 
     /// <summary>
     ///     Set uvs for this mesh.
@@ -106,48 +95,24 @@ public:
     /// <param name="uvs">uvs pointer.</param>
     /// <remarks>To apply changes, you must call 'ApplyChanges' after setting all data you need.</remarks>
     /// <remarks>The count of uvs must be the same as the vertex count!</remarks>
+    API_FUNCTION()
     void SetUVs(const Array<Vector2>& uvs);
-
-    /// <summary>
-    ///     Gets uvs array from this mesh.
-    /// </summary>
-    /// <remarks>Available only before calling ApplyChanges with releaseMeshData parameter as true.</remarks>
-    Array<Vector2> GetUVs() const
-    {
-        return { m_uvs, m_vertices_count };
-    }
 
     /// <summary>
     ///     Set normals for this mesh.
     /// </summary>
     /// <param name="normals">normals pointer.</param>
     /// <remarks>To apply changes, you must call 'ApplyChanges' after setting all data you need.</remarks>
+    API_FUNCTION()
     void SetNormals(const Array<Vector3>& normals);
-
-    /// <summary>
-    ///     Gets normals array from this mesh.
-    /// </summary>
-    /// <remarks>Available only before calling ApplyChanges with releaseMeshData parameter as true.</remarks>
-    Array<Vector3> GetNormals() const
-    {
-        return { m_normals, m_vertices_count };
-    }
 
     /// <summary>
     ///     Set colors for this mesh.
     /// </summary>
     /// <param name="colors">colors pointer.</param>
     /// <remarks>To apply changes, you must call 'ApplyChanges' after setting all data you need.</remarks>
+    API_FUNCTION()
     void SetColors(const Array<Vector4>& colors);
-
-    /// <summary>
-    ///     Gets colors array from this mesh.
-    /// </summary>
-    /// <remarks>Available only before calling ApplyChanges with releaseMeshData parameter as true.</remarks>
-    Array<Vector4> GetColors() const
-    {
-        return { m_colors, m_vertices_count };
-    }
 
     /// <summary>
     ///     Adds custom data to the mesh. Should contain the same amount of elements as vertices.
@@ -161,16 +126,8 @@ public:
     /// </summary>
     /// <param name="indices">The array of indices.</param>
     /// <remarks>To apply changes, you must call 'ApplyChanges' after setting all data you need.</remarks>
+    API_FUNCTION()
     void SetIndices(const Array<uint>& indices);
-
-    /// <summary>
-    ///     Gets indices from this mesh.
-    /// </summary>
-    /// <remarks>Available only before calling ApplyChanges with releaseMeshData parameter as true.</remarks>
-    Array<uint> GetIndices() const
-    {
-        return { m_indices, m_indices_count };
-    }
 
     /// <summary>
     ///     Applies all changes.
@@ -182,6 +139,7 @@ public:
     /// <param name="autoUpload">Should this mesh be uploaded after all changes are applied?</param>
     /// <param name="asyncUpload">Should this mesh be uploaded using async function (i.e. dispatched to the render thread)?</param>
     /// <remarks>When mesh is being uploaded using async, it will be available in the NEXT FRAME for rendering.</remarks>
+    API_FUNCTION()
     void ApplyChanges(bool releaseMeshData = true, bool autoUpload = true, bool asyncUpload = true);
 
     /// <summary>
@@ -189,27 +147,90 @@ public:
     /// </summary>
     /// <param name="asyncUpload">Should mesh be uploaded using async function (i.e. dispatched to the render thread)?</param>
     /// <remarks>When mesh is being uploaded using async, it will be available in the NEXT FRAME for rendering.</remarks>
+    API_FUNCTION()
     void Upload(bool asyncUpload = true);
 
 public:
     /// <summary>
+    ///     Gets vertices array from this mesh.
+    /// </summary>
+    /// <remarks>Available only before calling ApplyChanges with releaseMeshData parameter as true.</remarks>
+    API_PROPERTY(noprefix)
+    Array<Vector3> Vertices() const
+    {
+        return { m_vertices, m_vertices_count };
+    }
+
+    /// <summary>
+    ///     Gets uvs array from this mesh.
+    /// </summary>
+    /// <remarks>Available only before calling ApplyChanges with releaseMeshData parameter as true.</remarks>
+    API_PROPERTY(noprefix)
+    Array<Vector2> UVs() const
+    {
+        return { m_uvs, m_vertices_count };
+    }
+
+    /// <summary>
+    ///     Gets normals array from this mesh.
+    /// </summary>
+    /// <remarks>Available only before calling ApplyChanges with releaseMeshData parameter as true.</remarks>
+    API_PROPERTY(noprefix)
+    Array<Vector3> Normals() const
+    {
+        return { m_normals, m_vertices_count };
+    }
+
+    /// <summary>
+    ///     Gets colors array from this mesh.
+    /// </summary>
+    /// <remarks>Available only before calling ApplyChanges with releaseMeshData parameter as true.</remarks>
+    API_PROPERTY(noprefix)
+    Array<Vector4> Colors() const
+    {
+        return { m_colors, m_vertices_count };
+    }
+
+    /// <summary>
+    ///     Gets indices from this mesh.
+    /// </summary>
+    /// <remarks>Available only before calling ApplyChanges with releaseMeshData parameter as true.</remarks>
+    API_PROPERTY(noprefix)
+    Array<uint> Indices() const
+    {
+        return { m_indices, m_indices_count };
+    }
+
+    /// <summary>
+    ///     Returns the amount of vertices (and of course the count of uvs, colors and normals, as it is the same).
+    /// </summary>
+    API_PROPERTY(noprefix)
+    int VertexCount() const
+    {
+        return static_cast<int>(m_vertices_count);
+    }
+
+    /// <summary>
     ///     Returns the amount of indices.
     /// </summary>
-    size_t GetIndexCount() const
+    API_PROPERTY(noprefix)
+    int IndexCount() const
     {
-        return static_cast<size_t>(m_indices_count);
+        return static_cast<int>(m_indices_count);
     }
 
     /// <summary>
     ///     Indicates the upload state of this mesh.
     /// </summary>
     /// <returns>True when all changes are uploaded to the GPU.</returns>
+    API_PROPERTY()
     bool IsUploaded() const;
 
     /// <summary>
     ///     Can the mesh be uploaded?
     /// </summary>
     /// <returns>True when it can be.</returns>
+    API_PROPERTY()
     bool CanUpload() const;
 
 public:
@@ -217,5 +238,6 @@ public:
     ///     Creates new mesh.
     /// </summary>
     /// <returns>The newly created mesh pointer.</returns>
+    API_FUNCTION()
     static Mesh* CreateMesh();
 };

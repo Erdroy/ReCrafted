@@ -18,6 +18,7 @@
 #include "Rendering/Camera.h"
 #include "Rendering/CameraActor.h"
 #include "Rendering/Material.h"
+#include "Rendering/Mesh.h"
 #include "Rendering/Model.h"
 #include "Rendering/Shader.h"
 #include "Rendering/Texture.h"
@@ -45,6 +46,7 @@ void ScriptingManager::InitRuntime()
     Camera::InitRuntime();
     CameraActor::InitRuntime();
     Material::InitRuntime();
+    Mesh::InitRuntime();
     Model::InitRuntime();
     Shader::InitRuntime();
     Texture::InitRuntime();

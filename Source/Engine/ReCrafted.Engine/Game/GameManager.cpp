@@ -16,7 +16,7 @@ public:
     Vector3 pos = Vector3::Zero;
     BoundingBox bb = BoundingBox(Vector3::Zero, Vector3::One);
     Shader* sh = nullptr;
-    RefPtr<Mesh> m_mesh = nullptr;
+    Mesh* m_mesh = nullptr;
 
     RenderableTest()
     {
@@ -59,30 +59,34 @@ public:
             6, 7, 2, 7, 3, 2  // right
         };
 
-        m_mesh->SetVertices(cubeVertices, 8);
-        m_mesh->SetNormals(cubeNormals);
-        m_mesh->SetIndices(cubeIndices, 36);
+        m_mesh->SetVertices(Array<Vector3>(cubeVertices));
+        m_mesh->SetNormals(Array<Vector3>(cubeNormals));
+        m_mesh->SetIndices(Array<uint>(cubeIndices));
 
         m_mesh->ApplyChanges();
-        m_mesh->Upload();
     }
 
-    virtual Mesh* GetMesh() const
+    ~RenderableTest()
     {
-        return m_mesh.get();
+        Object::DestroyNow(m_mesh);
     }
 
-    virtual Shader* GetShader() const 
+    Mesh* GetMesh() const override
+    {
+        return m_mesh;
+    }
+
+    Shader* GetShader() const override
     {
         return sh;
     }
 
-    virtual Vector3& GetPosition()
+    Vector3& GetPosition() override
     {
         return pos;
     }
 
-    virtual BoundingBox& GetBounds()
+    BoundingBox& GetBounds() override
     {
         return bb;
     }

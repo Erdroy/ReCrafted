@@ -128,7 +128,7 @@ void RenderingManager::DrawIndexedMesh(Mesh* mesh)
 {
     Renderer::ApplyVertexBuffer(mesh->GetVertexBufferHandle());
     Renderer::ApplyIndexBuffer(mesh->GetIndexBufferHandle());
-    Renderer::DrawIndexed(static_cast<uint>(mesh->GetIndexCount()));
+    Renderer::DrawIndexed(static_cast<uint>(mesh->IndexCount()));
 }
 
 void RenderingManager::UpdateDefaultConstants(Shader* shader)

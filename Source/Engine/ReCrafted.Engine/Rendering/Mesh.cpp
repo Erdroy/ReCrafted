@@ -285,5 +285,5 @@ void Mesh::Upload(const bool asyncUpload)
 
 Mesh* Mesh::CreateMesh()
 {
-    return new Mesh();
+    return New<Mesh>();
 }
