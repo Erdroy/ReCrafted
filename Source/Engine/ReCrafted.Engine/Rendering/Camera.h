@@ -41,7 +41,7 @@ private:
     Vector3 m_position{};
     Quaternion m_rotation{};
 
-public:
+private:
     /// <summary>
     ///     Default Camera constructor.
     /// </summary>

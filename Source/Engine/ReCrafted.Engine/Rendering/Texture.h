@@ -20,7 +20,6 @@ API_CLASS(public, sealed)
 class Texture final : public BinaryAsset
 {
     API_CLASS_BODY()
-    friend class Graphics;
 
 public:
     static const size_t TextureHeaderSize = sizeof(uint32_t) + sizeof(uint16_t) + sizeof(uint8_t);

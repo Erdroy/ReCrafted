@@ -21,7 +21,7 @@ class Material : public Object
 private:
     Shader* m_shader = nullptr;
 
-    // TODO: Data, Textures etc.
+    // TODO: Data, Textures and Fields etc.
 
 public:
 
