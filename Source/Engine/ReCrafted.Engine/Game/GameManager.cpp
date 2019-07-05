@@ -7,6 +7,7 @@
 #include "Rendering/RenderableBase.h"
 #include "Rendering/Shader.h"
 #include "Rendering/RenderingManager.h"
+#include "Rendering/Materials/Material.h"
 #include "Scripting/Object.h"
 #include "Scripting/ScriptingManager.h"
 
@@ -96,6 +97,11 @@ RenderableTest* test;
 
 Signal signal;
 
+void GameManager::tmpOnMaterialLoaded(Asset* materialAsset)
+{
+
+}
+
 GameManager::GameManager()
 {
     m_game = Object::New("ReCrafted.Game.Core", "Game", ScriptingManager::GetGameAssembly());
@@ -116,6 +122,8 @@ GameManager::GameManager()
 
     test = new RenderableTest();
     RenderingManager::AddRenderable(test);
+
+    ContentManager::LoadAsset<Material>("Materials/Default", Action<void, Asset*>::New<GameManager, &GameManager::tmpOnMaterialLoaded>(this));
 }
 
 GameManager::~GameManager()

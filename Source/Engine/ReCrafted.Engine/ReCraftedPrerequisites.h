@@ -65,10 +65,12 @@ class GameManager;
 
 // Rendering/
 enum class DrawMode : byte;
+enum class MaterialFieldType : byte;
 enum class RenderingComponentStage : byte;
 class Camera;
 class CameraActor;
 class Material;
+class MaterialField;
 class Mesh;
 class Model;
 class RenderableBase;

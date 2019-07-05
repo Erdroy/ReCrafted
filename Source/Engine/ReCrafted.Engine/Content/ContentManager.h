@@ -261,7 +261,7 @@ public:
             else
             {
                 // Invoke load callback
-                onLoad.Invoke(static_cast<TAsset*>(asset));
+                const_cast<Action<void, Asset*>&>(onLoad).Invoke(asset);
             }
 
             return static_cast<TAsset*>(asset);

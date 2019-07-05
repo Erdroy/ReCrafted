@@ -12,6 +12,8 @@ namespace ReCrafted.Editor.Content
 
         VoxelMaterial,
 
+        Material,
+
         AudioSound,
     }
 }

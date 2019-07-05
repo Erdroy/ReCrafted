@@ -6,8 +6,9 @@
 #include "Common/Array.h"
 #include "Common/List.h"
 #include "Scripting/Object.h"
-#include "Rendering/Material.h"
+#include "Rendering/Materials/Material.h"
 
+API_USING("ReCrafted.API.Content")
 API_USING("ReCrafted.API.Mathematics")
 
 /// <summary>
