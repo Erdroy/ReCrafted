@@ -28,19 +28,30 @@ public:
     }
 
 public:
-    /**
-     * \brief Adds given item to the list.
-     * \param item The item.
-     */
+    /// <summary>
+    ///     Returns read-only array of this list.
+    /// </summary>
+    /// <returns>The array.</returns>
+    FORCE_INLINE Array<TType> ToArray()
+    {
+        return { m_vector.data(), m_vector.size() };
+    }
+
+public:
+    /// <summary>
+    ///     Adds given item to the list.
+    /// </summary>
+    /// <param name="item">The item.</param>
     FORCE_INLINE void Add(TType item)
     {
         m_vector.push_back(item);
     }
 
-    /**
-     * \brief Removes given item from the list.
-     * \param item The item.
-     */
+    /// <summary>
+    ///     Removes given item from the list.
+    /// </summary>
+    /// <param name="item">The item.</param>
+    /// <returns>True when item was removed successfully.</returns>
     FORCE_INLINE bool Remove(TType item)
     {
         const auto index = std::find(m_vector.begin(), m_vector.end(), item);
@@ -79,25 +90,23 @@ public:
         m_vector.resize(size);
     }
 
-    /**
-    * \brief Note: Using this, assumes that the T has comparison operator overloaded (if class/struct)
-    */
+    /// <summary>
+    ///     Checks if this list contains given item.
+    /// </summary>
+    /// <param name="item">The item to check if it exists in this list.</param>
+    /// <returns>True when item was found.</returns>
+    /// <remarks>Using this, assumes that the T has comparison operator overloaded (if class/struct)</remarks>
     FORCE_INLINE bool Contains(const TType& item) const
     {
         return static_cast<bool>(std::find(m_vector.begin(), m_vector.end(), item) != m_vector.end());
     }
 
-    /**
-    * \brief Note: Using this, assumes that the TType has comparison operator overloaded (if class/struct)
-    */
-    /*FORCE_INLINE bool Contains(TType item) const
-    {
-        return static_cast<bool>(std::find(m_vector.begin(), m_vector.end(), item) != m_vector.end());
-    }*/
-
-    /**
-     * \brief Note: Using this, assumes that the TType has comparison operator overloaded (if class/struct)
-     */
+    /// <summary>
+    ///     Gets an index of given item in this list, returns -1 when item was not found.
+    /// </summary>
+    /// <param name="item">The item to check it's index in this list.</param>
+    /// <returns>Returns index of the item or -1 when it does not exists in this list.</returns>
+    /// <remarks>Using this, assumes that the T has comparison operator overloaded (if class/struct)</remarks>
     FORCE_INLINE int IndexOf(TType& item)
     {
         const auto iterator = std::find(m_vector.begin(), m_vector.end(), item);
