@@ -182,7 +182,7 @@ void Mesh::ApplyChanges(const bool releaseMeshData, const bool autoUpload, const
     if (m_customData.Count() > 0)
     {
         for (auto& dataType : m_customData)
-            m_vertexSize += dataType.dataWidth;
+            m_vertexSize += static_cast<uint>(dataType.dataWidth);
     }
 
     // allocate memory for vertex buffer
