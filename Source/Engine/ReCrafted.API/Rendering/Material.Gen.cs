@@ -14,6 +14,19 @@ namespace ReCrafted.API.Rendering
     {
 
         /// <summary>
+        ///     Gets or sets the material name.
+        /// </summary>
+        public string MaterialName
+        {
+            get
+            {
+                Get_InternalMaterialName(NativePtr, out var data);
+                return data;
+            }
+            set => Set_InternalMaterialName(NativePtr, ref value);
+        }
+
+        /// <summary>
         ///     Gets the shader that this material uses.
         /// </summary>
         public Shader Shader
@@ -24,6 +37,12 @@ namespace ReCrafted.API.Rendering
                 return data;
             }
         }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalMaterialName(System.IntPtr nativePtr, out string data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Set_InternalMaterialName(System.IntPtr nativePtr, ref string data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalShader(System.IntPtr nativePtr, out Shader data);

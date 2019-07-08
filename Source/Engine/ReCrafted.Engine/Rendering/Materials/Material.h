@@ -21,13 +21,18 @@ class Material final : public JsonAsset
     API_CLASS_BODY()
 
 private:
+    std::string m_name = {};
     Shader* m_shader = nullptr;
-
     List<Texture*> m_textures = {};
     spp::sparse_hash_map<std::string, MaterialField*> m_fields;
 
+    // Loading helpers
+    std::string m_shaderAssetName = {};
+    List<std::string> m_textureLoadQueue = {};
+
 protected:
     void OnDeserializeJson(uint16_t version, const json& json) override;
+    void OnLoadEnd() override;
     void OnUnload() override;
 
     AssetType GetAssetType() override
@@ -45,6 +50,25 @@ public:
     //void SetValue(const char* name) { }
 
 public:
+    /// <summary>
+    ///     Gets or sets the material name.
+    /// </summary>
+    API_PROPERTY()
+    void MaterialName(const char* name)
+    {
+        ASSERT(name != nullptr);
+        m_name = name;
+    }
+
+    /// <summary>
+    ///     Gets or sets the material name.
+    /// </summary>
+    API_PROPERTY()
+    const char* MaterialName() const
+    {
+        return m_name.c_str();
+    }
+
     /// <summary>
     ///     Gets the shader that this material uses.
     /// </summary>
