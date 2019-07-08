@@ -49,6 +49,18 @@ public:
             Vector3(0.0f, 0.0f, 0.0f),
         };
 
+        Vector2 cubeUVs[8] = {
+            Vector2(0.0f, 0.0f),
+            Vector2(0.0f, 0.0f),
+            Vector2(0.0f, 0.0f),
+            Vector2(0.0f, 0.0f),
+
+            Vector2(0.0f, 0.0f),
+            Vector2(0.0f, 0.0f),
+            Vector2(0.0f, 0.0f),
+            Vector2(0.0f, 0.0f),
+        };
+
         uint32_t cubeIndices[36] = {
             0, 1, 2, 2, 3, 0, // top
             6, 5, 4, 4, 7, 6, // bottom
@@ -62,6 +74,7 @@ public:
 
         m_mesh->SetVertices(Array<Vector3>(cubeVertices));
         m_mesh->SetNormals(Array<Vector3>(cubeNormals));
+        m_mesh->SetUVs(Array<Vector2>(cubeUVs));
         m_mesh->SetIndices(Array<uint>(cubeIndices));
 
         m_mesh->ApplyChanges();

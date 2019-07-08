@@ -8,8 +8,7 @@
 #ifdef PRESET_SURFACE
 //#define USE_LOGZBUFFER
 //#define USE_INVZBUFFER
-//#define USE_UV
-//#define USE_VERTEXCOLOR
+#define USE_UV
 #endif // PRESET_SURFACE
 
 // Preset: POSTPROCESSING (PPs)

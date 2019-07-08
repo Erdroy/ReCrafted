@@ -11,10 +11,6 @@ struct SurfaceVSInput
 #ifdef USE_UV
     float2 UV       : TEXCOORD0;
 #endif // USE_UV
-
-#ifdef USE_VERTEXCOLOR
-    float4 Color    : COLOR0;
-#endif // USE_VERTEXCOLOR
 };
 
 struct SurfaceVSOutput
@@ -29,10 +25,6 @@ struct SurfaceVSOutput
 #ifdef USE_UV
     float2 UV       : TEXCOORD0;
 #endif // USE_UV
-
-#ifdef USE_VERTEXCOLOR
-    float4 Color    : COLOR0;
-#endif // USE_VERTEXCOLOR
 };
 
 // Add macro for SurfacePSInput
@@ -53,10 +45,6 @@ void SurfaceVSMain(in SurfaceVSInput i, out SurfaceVSOutput o)
     o.UV = i.UV;
 #endif // USE_UV
 
-#ifdef USE_VERTEXCOLOR
-    o.Color = i.Color;
-#endif // USE_VERTEXCOLOR
-
 #ifdef USE_LOGZBUFFER
     const float C = 1.0f;
     const float FC = 1.0 / log(ViewInfo.y * C + 1);
@@ -75,15 +63,11 @@ void SurfacePSMain(in SurfacePSInput i, out GBufferOutput o)
     // TODO: Consider whenever we need to use texture sampling, raw vertex color or textureColor * vertexColor
     o.Normal = EncodeNormal(float4(i.Normal, 1.0f));
     
-    float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
-#ifdef USE_VERTEXCOLOR
-    color = i.Color;
-#endif // USE_VERTEXCOLOR
-
-    o.Color = color;
+    // TODO: MainColor
+    o.Color = float4(1.0f, 1.0f, 1.0f, 1.0f);
 
     // Set Light as simple ambient light
-    o.Light = float4(color.rgb * AmbientLightColor, 0.0f);
+    o.Light = float4(o.Color.rgb * AmbientLightColor, 0.0f);
 
 #ifdef USE_LOGZBUFFER
     // TODO: Make option to use inv z (1.0f - Z/W) instead of log z,
