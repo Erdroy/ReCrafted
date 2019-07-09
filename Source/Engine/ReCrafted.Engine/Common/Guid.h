@@ -12,12 +12,21 @@
 struct Guid
 {
 public:
-    struct _value
+    union _value
     {
-        long data1;
-        short data2;
-        short data3;
-        char data4[8];
+        struct
+        {
+            long data1;
+            short data2;
+            short data3;
+            char data4[8];
+        };
+
+        struct
+        {
+            uint64_t a;
+            uint64_t b;
+        };
     } value;
 
 public:
@@ -33,10 +42,7 @@ public:
 public:
     bool operator ==(const Guid& rhs) const
     {
-        return value.data1 == rhs.value.data1
-        && value.data2 == rhs.value.data2
-        && value.data3 == rhs.value.data3
-        && strcmp(value.data4, rhs.value.data4) == 0;
+        return value.a == rhs.value.a && value.b == rhs.value.b;
     }
 
 public:
@@ -70,10 +76,8 @@ namespace std {
     template<> struct hash<Guid>
     {
         size_t operator()(const Guid& guid) const noexcept {
-            char buffer[37];
-            sprintf(buffer, GUID_FORMAT, GUID_ARG(guid.value));
-            const std::hash<std::string> hasher;
-            return static_cast<size_t>(hasher(buffer));
+            const auto* half = reinterpret_cast<const uint64_t*>(&guid);
+            return static_cast<size_t>(half[0] ^ half[1]);
         }
     };
 }
