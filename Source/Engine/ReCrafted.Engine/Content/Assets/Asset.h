@@ -14,6 +14,11 @@ using namespace nlohmann;
 
 API_USING("System")
 
+#define ASSET_BODY(assetType)       \
+public:                             \
+    assetType () {  }               \
+    ~assetType () { UnloadNow(); }         
+
 /// <summary>
 ///     Asset class. Base class for all assets.
 /// </summary>
@@ -42,11 +47,13 @@ protected:
 
 public:
     Asset() = default;
-    virtual ~Asset();
+    virtual ~Asset() = default;
 
 protected:
     void Deserialize(BinaryStream& stream);
     void Deserialize(const json& json, const std::string& content);
+
+    void UnloadNow();
 
 protected:
     /// <summary>

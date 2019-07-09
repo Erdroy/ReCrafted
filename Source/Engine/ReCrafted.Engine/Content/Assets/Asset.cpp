@@ -3,14 +3,6 @@
 #include "Asset.h"
 #include "../ContentManager.h"
 
-Asset::~Asset()
-{
-    if (!m_unloaded)
-    {
-        ContentManager::UnloadAsset(this);
-    }
-}
-
 void Asset::Deserialize(BinaryStream& stream)
 {
     ASSERT(stream.IsOpen());
@@ -44,6 +36,13 @@ void Asset::Deserialize(const json& json, const std::string& content)
     ASSERT(assetType == GetAssetType());
 
     OnDeserializeJson(assetVersion, json);
+}
+
+void Asset::UnloadNow()
+{
+    // Unload asset if not unloaded
+    if (!m_unloaded)
+        ContentManager::UnloadAsset(this, true);
 }
 
 void Asset::OnLoadEnd()

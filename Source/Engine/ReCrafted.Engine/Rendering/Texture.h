@@ -19,7 +19,9 @@ API_USING("ReCrafted.API.Content")
 API_CLASS(public, sealed)
 class Texture final : public BinaryAsset
 {
-    API_CLASS_BODY()
+    API_CLASS_BODY();
+    // Note: ASSET_BODY is not needed here, 
+    // due to the manual handling of ctor/dtor.
 
 public:
     static const size_t TextureHeaderSize = sizeof(uint32_t) + sizeof(uint16_t) + sizeof(uint8_t);
@@ -77,6 +79,7 @@ private:
     uint16_t m_pitch = 0u;
     uint8_t m_mips = 0u;
 
+    Task* m_loadTask = nullptr;
     bool m_lazyLoading = false;
     bool m_applied = false;
 
@@ -106,6 +109,20 @@ protected:
     bool IsLoaded() const override
     {
         return (m_loaded && !m_lazyLoading) || IsVirtual();
+    }
+public:
+    Texture() = default;
+
+    ~Texture()
+    {
+        if(m_lazyLoading && m_loadTask)
+        {
+            m_loadTask->Cancel();
+            m_lazyLoading = false;
+            m_loaded = true;
+        }
+
+        UnloadNow();
     }
 
 public:

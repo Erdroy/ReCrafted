@@ -16,8 +16,8 @@ API_USING("ReCrafted.API.Content")
 API_CLASS(public, sealed)
 class Shader : public JsonAsset
 {
-    API_CLASS_BODY()
-    friend class Graphics;
+    API_CLASS_BODY();
+    ASSET_BODY(Shader);
 
 private:
     Renderer::ShaderHandle m_shaderHandle;

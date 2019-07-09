@@ -64,8 +64,8 @@ void Texture::LoadTextureMipTask::Finish()
         task->mipCount = mipCount;
         task->file = file;
 
-        auto nextTask = Task::CreateTask(task);
-        nextTask->Queue();
+        texture->m_loadTask = Task::CreateTask(task);
+        texture->m_loadTask->Queue();
     }
     else
     {
@@ -74,6 +74,7 @@ void Texture::LoadTextureMipTask::Finish()
 
         // Finish loading
         texture->m_lazyLoading = false;
+        texture->m_loadTask = nullptr;
 
         // TODO: Dispatch event
 
@@ -176,7 +177,8 @@ void Texture::LazyLoadTexture(const TextureInfo& textureInfo, File& file, Binary
     task.texture = this;
     task.file = file;
 
-    // Execute task
+    // Manually execute the task. 
+    // This will load the first smallest mip map of this texture.
     task.Execute(nullptr);
 
     // Finalize task
@@ -219,9 +221,9 @@ void Texture::OnLoadBegin(const std::string& fileName)
     m_height = mipInfo.height;
     m_pitch = mipInfo.pitch;
 
-    if (m_mips == 1 && m_width > 16)
+    if (m_mips == 1 && m_width < 256 && m_height < 256)
     {
-        // Do not load as lazy, this could result as high CPU spike.
+        // Load small textures with single mips synchronously.
         m_lazyLoading = false;
         return;
     }

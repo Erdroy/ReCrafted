@@ -20,6 +20,8 @@ void ContentManager::Shutdown()
     for (auto&& assetPair : m_assetMapA)
     {
         const auto asset = assetPair.second;
+
+        // Unloading the asset without release is essential right there to omit deadlock later.
         UnloadAsset(asset, false);
         Object::DestroyNow(asset);
     }
