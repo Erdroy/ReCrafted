@@ -3,6 +3,26 @@
 #include "Material.h"
 #include "Content/ContentManager.h"
 
+MaterialFieldType Material::ParseFieldType(const std::string& type)
+{
+    if (type == "float")
+        return MaterialFieldType::Float1;
+
+    if (type == "float2")
+        return MaterialFieldType::Float2;
+
+    if (type == "float3")
+        return MaterialFieldType::Float3;
+    
+    if (type == "float4")
+        return MaterialFieldType::Float4;
+
+    if (type == "color32")
+        return MaterialFieldType::Color32;
+
+    return MaterialFieldType::Unknown;
+}
+
 void Material::OnDeserializeJson(uint16_t version, const json& json)
 {
     // Setup material name
@@ -35,7 +55,90 @@ void Material::OnDeserializeJson(uint16_t version, const json& json)
         m_textureLoadQueue.Add(assetName);
     }
 
-    // TODO: Load fields
+    // Load fields
+    for (auto&& fieldArrayItem : json["Fields"])
+    {
+        ASSERT(!fieldArrayItem.is_null());
+
+        const auto fName = fieldArrayItem["Name"];
+        ASSERT(!fName.is_null());
+        ASSERT(fName.is_string());
+
+        const auto fType = fieldArrayItem["Type"];
+        ASSERT(!fType.is_null());
+        ASSERT(fType.is_string());
+
+        const auto fValue = fieldArrayItem["Value"];
+
+        // Setup field fields... And it's data.
+        auto field = new MaterialField();
+        field->Name = fName.get<std::string>();
+
+        const auto fTypeEnum = ParseFieldType(fType);
+
+        switch(fTypeEnum)
+        {
+        case MaterialFieldType::Float:
+        { 
+            field->Size = sizeof(float);
+            field->Data = new uint8_t[field->Size];
+            const auto value = fValue.get<float>();
+            *reinterpret_cast<float*>(field->Data) = value;
+            break;
+        }
+        case MaterialFieldType::Float2:
+        {
+            field->Size = sizeof(float) * 2;
+            auto data = field->Data = new uint8_t[field->Size];
+
+            for (auto i = 0; i < 2; i++)
+            {
+                const auto value = fValue[i].get<float>();
+                *reinterpret_cast<float*>(data) = value;
+                data += sizeof(float);
+            }
+            break;
+        }
+        case MaterialFieldType::Float3:
+        {
+            field->Size = sizeof(float) * 3;
+            auto data = field->Data = new uint8_t[field->Size];
+
+            for (auto i = 0; i < 3; i++)
+            {
+                const auto value = fValue[i].get<float>();
+                *reinterpret_cast<float*>(data) = value;
+                data += sizeof(float);
+            }
+            break;
+        }
+        case MaterialFieldType::Float4:
+        {
+            field->Size = sizeof(float) * 4;
+            auto data = field->Data = new uint8_t[field->Size];
+
+            for (auto i = 0; i < 4; i++)
+            {
+                const auto value = fValue[i].get<float>();
+                *reinterpret_cast<float*>(data) = value;
+                data += sizeof(float);
+            }
+            break;
+        }
+
+        case MaterialFieldType::Unknown:
+        case MaterialFieldType::Count:
+        default:
+            Logger::LogError("Unknown material field type '{0}'.", fType.get<std::string>());
+            ASSERT(false);
+            break;
+        }
+
+        // Add field to the list
+        // Note: Fields are uploaded to the shader constant buffer by the order they are 
+        // in this `m_fields` list.
+        m_fields.Add(field);
+    }
 }
 
 void Material::OnLoadEnd()
@@ -65,10 +168,16 @@ void Material::OnLoadEnd()
 
 void Material::OnUnload()
 {
+    // Destroy shader
+    Destroy(m_shader);
+
     // Destroy textures
     for(auto&& texture : m_textures)
         Destroy(texture);
     m_textures.Clear();
 
-    // TODO: Release material fields
+    // Release fields
+    for (auto&& field : m_fields)
+        delete field;
+    m_fields.Clear();
 }

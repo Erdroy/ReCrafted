@@ -5,6 +5,8 @@
 #include <ReCrafted.h>
 #include "Common/List.h"
 #include "Common/Array.h"
+#include "Content/ContentManager.h"
+#include "Content/Assets/JsonAsset.h"
 #include "Scripting/Object.h"
 #include "Rendering/Shader.h"
 #include "Rendering/Materials/MaterialField.h"
@@ -18,17 +20,21 @@ API_USING("ReCrafted.API.Mathematics")
 API_CLASS(public, sealed, partial, customNamespace="ReCrafted.API.Rendering")
 class Material final : public JsonAsset
 {
-    API_CLASS_BODY()
+    API_CLASS_BODY();
+    ASSET_BODY(Material);
 
 private:
     std::string m_name = {};
     Shader* m_shader = nullptr;
     List<Texture*> m_textures = {};
-    spp::sparse_hash_map<std::string, MaterialField*> m_fields;
+    List<MaterialField*> m_fields = {};
 
     // Loading helpers
     std::string m_shaderAssetName = {};
     List<std::string> m_textureLoadQueue = {};
+
+private:
+    static MaterialFieldType ParseFieldType(const std::string& type);
 
 protected:
     void OnDeserializeJson(uint16_t version, const json& json) override;

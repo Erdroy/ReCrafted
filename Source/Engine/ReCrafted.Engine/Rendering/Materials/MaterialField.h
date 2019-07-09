@@ -14,6 +14,11 @@ class MaterialField
 
 public:
     /// <summary>
+    ///     The material field name.
+    /// </summary>
+    std::string Name;
+
+    /// <summary>
     ///     The material field data.
     /// </summary>
     uint8_t* Data;
@@ -21,7 +26,7 @@ public:
     /// <summary>
     ///     The material field data size (in bytes).
     /// </summary>
-    size_t Size;
+    uint8_t Size;
 
     /// <summary>
     ///     The material field type.
@@ -33,18 +38,6 @@ public:
     ///     Default MaterialField constructor.
     /// </summary>
     MaterialField() : Data(nullptr), Size(0u), Type(MaterialFieldType::Unknown) {}
-
-    /// <summary>
-    ///     Default MaterialField constructor.
-    /// </summary>
-    MaterialField(const uint8_t*& data, const size_t size, const MaterialFieldType type) : Size(size), Type(type)
-    {
-        ASSERT(size > 0u);
-        _ASSERT_(size < 64u, "Single constant field cannot be larger than 64 bytes!");
-
-        Data = new uint8_t[size];
-        memcpy(Data, data, size);
-    }
 
     /// <summary>
     ///     Default MaterialField destructor.

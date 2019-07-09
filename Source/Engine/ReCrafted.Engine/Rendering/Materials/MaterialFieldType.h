@@ -9,14 +9,14 @@
 /// </summary>
 enum class MaterialFieldType : byte
 {
-    Unknown,
+    Unknown = 0,
 
-    Float1,
+    Float,
+    Float1 = Float,
     Float2,
+    Float3,
     Float4,
-    Boolean,
-    Color32,
-    Custom,
+    Color32 = Float4,
 
     Count
 };
