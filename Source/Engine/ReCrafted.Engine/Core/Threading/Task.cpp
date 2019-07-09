@@ -34,6 +34,14 @@ void Task::PrepareForQueue()
     m_timeQueue = static_cast<float>(Platform::GetMilliseconds());
 }
 
+void Task::SetCancelled()
+{
+    m_cancelled = true;
+
+    if (m_continueWith)
+        m_continueWith->SetCancelled();
+}
+
 void Task::ContinueWith(Task* task)
 {
     ASSERT(m_continueWith == nullptr);
@@ -60,7 +68,7 @@ void Task::WaitForFinish()
 
 void Task::Cancel()
 {
-    TaskManager::CancelTask(m_id);
+    TaskManager::CancelTask(this);
 }
 
 Task* Task::RunTask(const Action<void>& function)

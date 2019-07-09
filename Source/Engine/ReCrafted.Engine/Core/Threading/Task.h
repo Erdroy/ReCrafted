@@ -22,6 +22,11 @@ public:
     ///     Called on main thread after the task finished it's job.
     /// </summary>
     virtual void Finish() {}
+
+    /// <summary>
+    ///     Called when this task has been cancelled.
+    /// </summary>
+    virtual void OnCancel() {}
 };
 
 struct Task
@@ -36,6 +41,7 @@ private:
     float m_timeEnd = 0.0;
 
     bool m_queued = false;
+    bool m_cancelled = false;
     bool m_completed = false;
 
     Action<void> m_function;
@@ -53,6 +59,7 @@ public:
 private:
     void Run();
     void PrepareForQueue();
+    void SetCancelled();
 
 public:
     /// <summary>
@@ -68,14 +75,13 @@ public:
     void Queue();
 
     /// <summary>
-    ///     Waits until this task is executing.
+    ///     Block the current thread until the task finishes executing.
     /// </summary>
     void WaitForFinish();
 
     /// <summary>
-    ///     Cancels this task.
+    ///     Cancels this task whatever its running or just queued.
     /// </summary>
-    /// <remarks>Works only when this task is currently executing.</remarks>
     void Cancel();
 
     /// <summary>

@@ -23,6 +23,16 @@ void TaskManager::WorkerFunction()
             continue;
         }
 
+        if(task->m_cancelled)
+        {
+            // Queue task for release
+            m_taskReleaseQueue.enqueue(task);
+
+            // ... and also drop the execution lock
+            task->m_executionLock.UnlockNow();
+            continue;
+        }
+
         // run task
         task->Run();
 
@@ -50,12 +60,19 @@ Task* TaskManager::AcquireTask()
 
 void TaskManager::ReleaseTask(Task* task)
 {
-    // Invoke callback
-    if(task->m_callback.IsValid())
-        task->m_callback.Invoke();
+    if(!task->m_cancelled)
+    {
+        // Invoke callback
+        if (task->m_callback.IsValid())
+            task->m_callback.Invoke();
 
-    if (task->m_customTask)
-        task->m_customTask->Finish();
+        if (task->m_customTask)
+            task->m_customTask->Finish();
+    }
+    else
+    {
+        task->m_customTask->OnCancel();
+    }
 
     // Release 'Continue' task
     if (task->m_continueWith)
@@ -79,7 +96,7 @@ void TaskManager::Initialize()
     {
         m_workerThreads.Add(new std::thread([&] {
             WorkerFunction();
-            }));
+        }));
     }
 
     // Initialize tasks
@@ -88,7 +105,6 @@ void TaskManager::Initialize()
         const auto task = new Task();
         m_tasks.enqueue(task);
         m_taskPool.enqueue(task);
-        
     }
 }
 
@@ -152,10 +168,24 @@ void TaskManager::CleanupTask(Task* task)
     task->m_continueWith = nullptr;
 }
 
-bool TaskManager::CancelTask(uint taskId)
+void TaskManager::CancelTask(Task* task)
 {
-    _ASSERT_(false, "Task cancellation is not implemented, yet!");
-    return false;
+    if (task->IsQueued())
+    {
+        // We cannot remove the task from the queue,
+        // so instead, we will just set a cancellation flat.
+        task->SetCancelled();
+        return;
+    }
+
+
+    // We can safely cancel the task here, because we're running on main thread.
+    // Also the Finished callback will not be called, because it is also called from the main thread
+    // after the task has finished executing (and as we are here, the task has not finished executing).
+    task->SetCancelled();
+
+    // Block the main thread until the task finishes executing.
+    task->WaitForFinish();
 }
 
 void TaskManager::QueueTask(Task* task)
