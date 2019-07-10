@@ -139,6 +139,9 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
 
+        if (!IsInitialized())
+            return;
+
         for (auto& memory : m_memoryAllocations)
         {
             ASSERT(memory.memory); // scream at Erdroy when he is way too dumb and frees the memory manually
@@ -160,6 +163,9 @@ namespace Renderer
 
     void GetContext(RHIContext* context)
     {
+        if (!IsInitialized())
+            return;
+
         m_renderer->GetContext(context);
     }
 
@@ -400,6 +406,9 @@ namespace Renderer
 
     RendererMemory Allocate(void* data, std::function<void(void*, void*)> releaseFunc, void* userData, const uint lifeTime)
     {
+        if (!IsInitialized())
+            return nullptr;
+
         if (data == nullptr)
             return nullptr;
 
@@ -422,11 +431,17 @@ namespace Renderer
 
     void Free(RendererMemory memory)
     {
+        if (!IsInitialized())
+            return;
+
         rc_free(static_cast<byte*>(memory));
     }
 
     void QueueFree(RendererMemory memory)
     {
+        if (!IsInitialized())
+            return;
+
         CHECK_MAIN_THREAD();
 
         Command_QueueFree command;
@@ -436,6 +451,9 @@ namespace Renderer
 
     void SetFlag(RenderFlags::_enum flag, bool value)
     {
+        if (!IsInitialized())
+            return;
+
         m_renderFlags = RenderFlags::_enum(m_renderFlags & ~flag);
 
         Command_SetFlag command;
@@ -446,6 +464,9 @@ namespace Renderer
 
     void SetFlags(RenderFlags::_enum flag)
     {
+        if (!IsInitialized())
+            return;
+
         Command_SetFlag command;
         command.flag = flag;
         g_commandList->WriteCommand(&command);
@@ -453,17 +474,26 @@ namespace Renderer
 
     bool GetFlag(RenderFlags::_enum flag)
     {
+        if (!IsInitialized())
+            return false;
+
         return (m_renderFlags & flag) != 0;
     }
 
     void GetRenderStatistics(RenderStatistics* stats)
     {
+        if (!IsInitialized())
+            return;
+
         m_renderer->GetRenderStatistics(stats);
     }
 
     void CaptureFrame(Texture2DHandle handle)
     {
         CHECK_MAIN_THREAD();
+
+        if (!IsInitialized())
+            return;
 
         Command_CaptureFrame command;
         command.targetTexture = handle;
@@ -473,6 +503,9 @@ namespace Renderer
     void Frame()
     {
         CHECK_MAIN_THREAD();
+
+        if (!IsInitialized())
+            return;
 
         m_renderer->Frame();
 
@@ -484,6 +517,9 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
 
+        if (!IsInitialized())
+            return;
+
         Command_Draw command;
         command.vertexCount = vertexCount;
         g_commandList->WriteCommand(&command);
@@ -493,6 +529,9 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
 
+        if (!IsInitialized())
+            return;
+
         Command_DrawIndexed command;
         command.indexCount = indexCount;
         g_commandList->WriteCommand(&command);
@@ -501,6 +540,9 @@ namespace Renderer
     WindowHandle CreateWindowHandle(void* windowHandle)
     {
         CHECK_MAIN_THREAD();
+
+        if (!IsInitialized())
+            return {};
 
         // Create output
         const auto handle = WindowHandlePool::AllocateHandle();
@@ -522,6 +564,9 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        if (!IsInitialized())
+            return;
+
         Command_ApplyWindow command;
         command.window = handle;
         g_commandList->WriteCommand(&command);
@@ -531,6 +576,9 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
+
+        if (!IsInitialized())
+            return;
 
         // this is not as easy as the render textures,
         // we need to resize whole back-buffer, 
@@ -551,6 +599,9 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        if (!IsInitialized())
+            return {};
+
         auto& desc = WindowHandlePool::GetHandleDescription(handle);
 
         return desc.renderBuffer;
@@ -561,6 +612,9 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        if (!IsInitialized())
+            return;
+
         Command_DestroyWindow command;
         command.window = handle;
         g_commandList->WriteCommand(&command);
@@ -570,21 +624,33 @@ namespace Renderer
 
     void AddOnPresentBeginEvent(const Action<void>& action)
     {
+        if (!IsInitialized())
+            return;
+
         m_renderer->onPresentBegin.AddListener(action);
     }
 
     void RemoveOnPresentBeginEvent(const Action<void>& action)
     {
+        if (!IsInitialized())
+            return;
+
         m_renderer->onPresentBegin.RemoveListener(action);
     }
 
     void AddOnPresentEndEvent(const Action<void>& action)
     {
+        if (!IsInitialized())
+            return;
+
         m_renderer->onPresentEnd.AddListener(action);
     }
 
     void RemoveOnPresentEndEvent(const Action<void>& action)
     {
+        if (!IsInitialized())
+            return;
+
         m_renderer->onPresentEnd.RemoveListener(action);
     }
 
@@ -592,6 +658,9 @@ namespace Renderer
                                           uint8_t texturesCount, TextureFormat::_enum depthFormat)
     {
         CHECK_MAIN_THREAD();
+
+        if (!IsInitialized())
+            return {};
 
         const auto handle = RenderBufferHandlePool::AllocateHandle();
         RENDERER_VALIDATE_HANDLE(handle);
@@ -639,6 +708,9 @@ namespace Renderer
 
     void ResizeRenderBuffer(RenderBufferHandle handle, uint16_t width, uint16_t height)
     {
+        if (!IsInitialized())
+            return;
+
         auto& renderBufferDesc = RenderBufferHandlePool::GetHandleDescription(handle);
 
         // note: frame buffers do not have any render textures
@@ -671,6 +743,9 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        if (!IsInitialized())
+            return;
+
         Command_ApplyRenderBuffer command;
         command.handle = handle;
 
@@ -681,6 +756,9 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
+
+        if (!IsInitialized())
+            return;
 
         Command_ClearRenderBuffer command;
         command.handle = handle;
@@ -694,6 +772,9 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
+
+        if (!IsInitialized())
+            return;
 
         auto& renderBufferDesc = RenderBufferHandlePool::GetHandleDescription(handle);
 
@@ -725,6 +806,9 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
 
+        if (!IsInitialized())
+            return {};
+
         if(buffer != nullptr)
             *buffer = Allocate(vertexCount * vertexSize);
 
@@ -737,6 +821,9 @@ namespace Renderer
 
         const auto handle = VertexBufferHandlePool::AllocateHandle();
         RENDERER_VALIDATE_HANDLE(handle);
+
+        if (!IsInitialized())
+            return {};
 
         Command_CreateVertexBuffer command;
         command.handle = handle;
@@ -755,6 +842,9 @@ namespace Renderer
         const auto handle = VertexBufferHandlePool::AllocateHandle();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        if (!IsInitialized())
+            return {};
+
         m_renderer->CreateVertexBuffer(handle, vertexCount, vertexSize, dynamic, buffer);
         return handle;
     }
@@ -763,6 +853,9 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
+
+        if (!IsInitialized())
+            return;
 
         Command_UpdateVertexBuffer command;
         command.handle = handle;
@@ -778,6 +871,9 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        if (!IsInitialized())
+            return;
+
         Command_ApplyVertexBuffer command;
         command.handle = handle;
         g_commandList->WriteCommand(&command);
@@ -787,6 +883,9 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
+
+        if (!IsInitialized())
+            return;
 
         Command_DestroyVertexBuffer command;
         command.handle = handle;
@@ -798,6 +897,9 @@ namespace Renderer
     IndexBufferHandle CreateIndexBuffer(uint count, bool is32bit, bool dynamic, RendererMemory* buffer)
     {
         CHECK_MAIN_THREAD();
+
+        if (!IsInitialized())
+            return {};
 
         if (buffer != nullptr)
             *buffer = Allocate(count * (is32bit ? 4u : 2u));
@@ -820,6 +922,9 @@ namespace Renderer
         const auto handle = IndexBufferHandlePool::AllocateHandle();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        if (!IsInitialized())
+            return {};
+
         Command_CreateIndexBuffer command;
         command.handle = handle;
         command.indexCount = indexCount;
@@ -837,6 +942,9 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        if (!IsInitialized())
+            return;
+
         Command_UpdateIndexBuffer command;
         command.handle = handle;
         command.memory = data;
@@ -851,6 +959,9 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        if (!IsInitialized())
+            return;
+
         Command_ApplyIndexBuffer command;
         command.handle = handle;
         g_commandList->WriteCommand(&command);
@@ -860,6 +971,9 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
+
+        if (!IsInitialized())
+            return;
 
         Command_DestroyIndexBuffer command;
         command.handle = handle;
@@ -876,6 +990,9 @@ namespace Renderer
 
         const auto handle = Texture2DHandlePool::AllocateHandle();
         RENDERER_VALIDATE_HANDLE(handle);
+
+        if (!IsInitialized())
+            return {};
 
         // set texture format
         auto& renderBufferDesc = Texture2DHandlePool::GetHandleDescription(handle);
@@ -921,6 +1038,9 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        if (!IsInitialized())
+            return;
+
         Command_ApplyTexture2D command;
         command.handle = handle;
         command.slot = slot;
@@ -932,6 +1052,9 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         ASSERT(textureCount > 0);
         ASSERT(textureCount <= 32);
+
+        if (!IsInitialized())
+            return;
 
         Command_ApplyTextureArray2D command;
 
@@ -952,6 +1075,9 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        if (!IsInitialized())
+            return;
+
         Command_ResizeTexture2D command;
         command.handle = handle;
         command.width = width;
@@ -964,6 +1090,9 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        if (!IsInitialized())
+            return;
+
         Command_UpdateTexture2D command;
         command.handle = handle;
         command.data = data;
@@ -975,18 +1104,29 @@ namespace Renderer
     void UpdateTextureSubresourceSync(const Texture2DHandle handle, const RendererMemory data, const size_t dataSize, const uint8_t subresourceId)
     {
         CHECK_MAIN_THREAD();
+
+        if (!IsInitialized())
+            return;
+
         m_renderer->UpdateTextureSubresource(handle, data, dataSize, subresourceId);
     }
 
     void CopyTextureSubresourceSync(Texture2DHandle targetTexture, void* sourceTexturePtr, uint8_t subresourceId)
     {
         CHECK_MAIN_THREAD();
+
+        if (!IsInitialized())
+            return;
+
         m_renderer->CopyTextureSubresource(targetTexture, sourceTexturePtr, subresourceId);
     }
 
     void UpdateTextureView(Texture2DHandle handle, uint8_t mostDetailedMip, uint8_t mipLevels)
     {
         CHECK_MAIN_THREAD();
+
+        if (!IsInitialized())
+            return;
 
         Command_UpdateViewTexture2D command;
         command.handle = handle;
@@ -999,6 +1139,9 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
+
+        if (!IsInitialized())
+            return;
 
         Command_DestroyTexture2D command;
         command.handle = handle;
@@ -1017,6 +1160,9 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        if (!IsInitialized())
+            return;
+
         Command_ApplyRenderTexture2D command;
         command.handle = handle;
         command.slot = slot;
@@ -1028,6 +1174,9 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        if (!IsInitialized())
+            return;
+
         Command_ClearRenderTexture2D command;
         command.handle = handle;
         command.color = color;
@@ -1037,6 +1186,9 @@ namespace Renderer
     void DestroyRenderTexture(Texture2DHandle handle)
     {
         DestroyTexture2D(handle);
+
+        if (!IsInitialized())
+            return;
     }
 
     ShaderHandle CreateShader(const char* fileName)
@@ -1045,6 +1197,9 @@ namespace Renderer
 
         const auto handle = ShaderHandlePool::AllocateHandle();
         RENDERER_VALIDATE_HANDLE(handle);
+
+        if (!IsInitialized())
+            return {};
 
         Command_CreateShader command;
         command.shader = handle;
@@ -1059,6 +1214,9 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
+
+        if (!IsInitialized())
+            return;
 
         ASSERT(dataSize <= 64u); // float4x4 is the biggest type that we can pass
 
@@ -1090,6 +1248,9 @@ namespace Renderer
         CHECK_MAIN_THREAD();
         RENDERER_VALIDATE_HANDLE(handle);
 
+        if (!IsInitialized())
+            return;
+
         Command_ApplyShader command;
         command.shader = handle;
         command.passId = static_cast<uint16_t>(passId);
@@ -1099,6 +1260,9 @@ namespace Renderer
     void DestroyShader(ShaderHandle handle)
     {
         CHECK_MAIN_THREAD();
+
+        if (!IsInitialized())
+            return;
 
         Command_DestroyShader command;
         command.shader = handle;
@@ -1111,6 +1275,9 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
 
+        if (!IsInitialized())
+            return;
+
         // Set rhi handle
         task->rhi = m_renderer;
 
@@ -1122,6 +1289,9 @@ namespace Renderer
     void BlitTexture(RenderBufferHandle destination, Texture2DHandle source, ShaderHandle customShader)
     {
         CHECK_MAIN_THREAD();
+
+        if (!IsInitialized())
+            return;
 
         if (RENDERER_CHECK_HANDLE(customShader))
         {
@@ -1160,6 +1330,9 @@ namespace Renderer
     void BlitTexture(Texture2DHandle destination, Texture2DHandle source, ShaderHandle customShader)
     {
         CHECK_MAIN_THREAD();
+
+        if (!IsInitialized())
+            return;
 
         if (RENDERER_CHECK_HANDLE(customShader))
         {
@@ -1200,6 +1373,9 @@ namespace Renderer
     {
         CHECK_MAIN_THREAD();
 
+        if (!IsInitialized())
+            return;
+
         if (RENDERER_CHECK_HANDLE(customShader))
         {
             // bind custom shader
@@ -1237,6 +1413,9 @@ namespace Renderer
         uint8_t sourceCount, ShaderHandle customShader, uint8_t baseSlot)
     {
         CHECK_MAIN_THREAD();
+
+        if (!IsInitialized())
+            return;
 
         if (RENDERER_CHECK_HANDLE(customShader))
         {
