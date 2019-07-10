@@ -42,6 +42,7 @@ private:
     public:
         void Execute(void* userData) override;
         void Finish() override;
+        void OnCancel() override;
     };
 
     struct TextureInfo
@@ -115,7 +116,7 @@ public:
 
     ~Texture()
     {
-        if(m_lazyLoading && m_loadTask)
+        if(m_lazyLoading)
         {
             m_loadTask->Cancel();
             m_lazyLoading = false;

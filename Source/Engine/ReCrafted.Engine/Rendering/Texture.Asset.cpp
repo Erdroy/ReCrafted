@@ -84,6 +84,24 @@ void Texture::LoadTextureMipTask::Finish()
     }
 }
 
+void Texture::LoadTextureMipTask::OnCancel()
+{
+    if(file.IsValid())
+    {
+        if(m_mipData)
+        {
+            Renderer::Free(m_mipData);
+        }
+
+        // Close file
+        file.Close();
+
+#ifdef _DEBUG
+        Logger::Log("Texture asset '{0}' cancelled loading.", texture->AssetFile());
+#endif
+    }
+}
+
 Texture::TextureInfo Texture::TextureInfo::ReadTextureInfo(BinaryStream& stream)
 {
     const auto size = static_cast<size_t>(stream.ReadUInt32());
