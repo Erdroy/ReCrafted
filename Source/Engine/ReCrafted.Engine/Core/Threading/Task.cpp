@@ -34,12 +34,17 @@ void Task::PrepareForQueue()
     m_timeQueue = static_cast<float>(Platform::GetMilliseconds());
 }
 
-void Task::SetCancelled()
+void Task::InternalCancel()
 {
     m_cancelled = true;
 
+    if(m_customTask)
+    {
+        m_customTask->OnCancel();
+    }
+
     if (m_continueWith)
-        m_continueWith->SetCancelled();
+        m_continueWith->Cancel();
 }
 
 void Task::ContinueWith(Task* task)

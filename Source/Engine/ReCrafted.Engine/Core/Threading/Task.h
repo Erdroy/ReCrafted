@@ -59,7 +59,7 @@ public:
 private:
     void Run();
     void PrepareForQueue();
-    void SetCancelled();
+    void InternalCancel();
 
 public:
     /// <summary>

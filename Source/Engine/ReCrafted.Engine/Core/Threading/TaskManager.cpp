@@ -69,10 +69,6 @@ void TaskManager::ReleaseTask(Task* task)
         if (task->m_customTask)
             task->m_customTask->Finish();
     }
-    else
-    {
-        task->m_customTask->OnCancel();
-    }
 
     // Release 'Continue' task
     if (task->m_continueWith)
@@ -126,8 +122,8 @@ void TaskManager::Shutdown()
     Task* task;
     while(m_tasks.try_dequeue(task))
     {
-        // Wait for the task to finish (it will skip, when it is not processing right now)
-        task->WaitForFinish();
+        // Cancel all tasks
+        CancelTask(task);
         delete task;
     }
 
@@ -174,7 +170,7 @@ void TaskManager::CancelTask(Task* task)
     {
         // We cannot remove the task from the queue,
         // so instead, we will just set a cancellation flat.
-        task->SetCancelled();
+        task->InternalCancel();
         return;
     }
 
@@ -182,7 +178,7 @@ void TaskManager::CancelTask(Task* task)
     // We can safely cancel the task here, because we're running on main thread.
     // Also the Finished callback will not be called, because it is also called from the main thread
     // after the task has finished executing (and as we are here, the task has not finished executing).
-    task->SetCancelled();
+    task->InternalCancel();
 
     // Block the main thread until the task finishes executing.
     task->WaitForFinish();
