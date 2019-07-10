@@ -18,11 +18,11 @@
 #include "Rendering/Camera.h"
 #include "Rendering/CameraActor.h"
 #include "Rendering/Mesh.h"
-#include "Rendering/Model.h"
 #include "Rendering/Shader.h"
 #include "Rendering/Texture.h"
 #include "Rendering/Debug/DebugDraw.h"
 #include "Rendering/Materials/Material.h"
+#include "Rendering/Models/Model.h"
 #include "Scene/SceneManager.h"
 #include "Scripting/Object.h"
 #include "Scripting/Script.h"
@@ -46,11 +46,11 @@ void ScriptingManager::InitRuntime()
     Camera::InitRuntime();
     CameraActor::InitRuntime();
     Mesh::InitRuntime();
-    Model::InitRuntime();
     Shader::InitRuntime();
     Texture::InitRuntime();
     DebugDraw::InitRuntime();
     Material::InitRuntime();
+    Model::InitRuntime();
     SceneManager::InitRuntime();
     Object::InitRuntime();
     Script::InitRuntime();

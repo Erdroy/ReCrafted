@@ -69,10 +69,7 @@ enum class MaterialFieldType : byte;
 enum class RenderingComponentStage : byte;
 class Camera;
 class CameraActor;
-class Material;
-class MaterialField;
 class Mesh;
-class Model;
 class RenderableBase;
 class RenderBuffer;
 class RenderingBase;
@@ -87,6 +84,13 @@ class DeferredRendering;
 
 // Rendering/Debug/
 class DebugDraw;
+
+// Rendering/Materials
+class Material;
+class MaterialField;
+
+// Rendering/Models
+class Model;
 
 // Input/
 enum class ActionType : sbyte;

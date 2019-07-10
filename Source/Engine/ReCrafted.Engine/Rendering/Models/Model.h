@@ -14,7 +14,7 @@ API_USING("ReCrafted.API.Mathematics")
 /// <summary>
 ///     Model class. Implements
 /// </summary>
-API_CLASS(public, sealed, partial)
+API_CLASS(public, sealed, partial, customNamespace = "ReCrafted.API.Rendering")
 class Model : public Object
 {
     API_CLASS_BODY()

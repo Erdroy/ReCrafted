@@ -5,9 +5,10 @@
 #include "Core/Display.h"
 #include "Rendering/Debug/DebugDraw.h"
 #include "Rendering/DeferredRendering/DeferredRendering.h"
+#include "Rendering/Models/ModelRenderingSystem.h"
 #include "Rendering/RenderableBase.h"
 #include "Rendering/Camera.h"
-#include "Mesh.h"
+#include "Rendering/Mesh.h"
 
 void RenderingManager::InitializeRenderer()
 {
@@ -48,6 +49,7 @@ void RenderingManager::Initialize()
     m_rendering = new DeferredRendering();
     m_rendering->Initialize();
 
+    AddRenderingComponent<ModelRenderingSystem>();
     AddRenderingComponent<DebugDraw>();
 }
 
