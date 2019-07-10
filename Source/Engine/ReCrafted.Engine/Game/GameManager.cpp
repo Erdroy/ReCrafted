@@ -83,6 +83,7 @@ public:
     ~RenderableTest()
     {
         Object::DestroyNow(m_mesh);
+        Object::DestroyNow(sh);
     }
 
     Mesh* GetMesh() const override
@@ -112,7 +113,6 @@ Signal signal;
 
 void GameManager::tmpOnMaterialLoaded(Asset* materialAsset)
 {
-
 }
 
 GameManager::GameManager()
@@ -136,7 +136,12 @@ GameManager::GameManager()
     test = new RenderableTest();
     RenderingManager::AddRenderable(test);
 
-    ContentManager::LoadAsset<Material>("Materials/Default", Action<void, Asset*>::New<GameManager, &GameManager::tmpOnMaterialLoaded>(this));
+    const auto material = ContentManager::LoadAsset<Material>("Materials/Default");
+
+    // TODO: Fix material memory leaks
+    // TODO: Fix texture memory leaks
+
+    Object::Destroy(material);
 }
 
 GameManager::~GameManager()
