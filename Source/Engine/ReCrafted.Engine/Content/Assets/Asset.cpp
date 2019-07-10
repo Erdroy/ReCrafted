@@ -42,7 +42,12 @@ void Asset::UnloadNow()
 {
     // Unload asset if not unloaded
     if (!m_unloaded)
+    {
         ContentManager::UnloadAsset(this, true);
+    }
+
+    // Call OnUnload event
+    OnUnload();
 }
 
 void Asset::OnLoadEnd()

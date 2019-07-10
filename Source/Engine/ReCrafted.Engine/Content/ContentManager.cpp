@@ -117,8 +117,6 @@ void ContentManager::ReleaseAsset(Asset* asset)
     m_assetMapLock.LockNow();
     m_assetMapA.erase(asset->AssetGuid);
     m_assetMapLock.UnlockNow();
-
-    asset->OnUnload();
 }
 
 void ContentManager::LoadAssetSync(Asset* asset, const std::string& assetFile, const std::string& file)
