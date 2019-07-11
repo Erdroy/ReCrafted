@@ -4,14 +4,27 @@
 
 #include <ReCrafted.h>
 
+/// <summary>
+///     The model component structure. 
+///     This struct is being used to define model's rendering settings.
+/// </summary>
 struct ModelComponent
 {
 public:
+    bool Free = true;
     bool Active = false;
     Mesh* Mesh = nullptr;
     Material* Material = nullptr;
     Transform* Transform = nullptr;
-    BoundingBox Bounds = {};
+    BoundingBox Bounds = {}; // TODO: Use position from transform and only define bounding sphere's radius.
 
-    // TODO: Transform reference?
+public:
+    /// <summary>
+    ///     Returns true, when this model component will be rendered.
+    /// </summary>
+    /// <returns></returns>
+    bool IsValid() const
+    {
+        return Mesh && Material&& Transform;
+    }
 };

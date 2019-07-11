@@ -7,11 +7,21 @@
 #include "Rendering/Mesh.h"
 #include "Rendering/Materials/Material.h"
 
+void ModelRenderingSystem::AllocateModelComponents(const uint32_t amount)
+{
+    const auto lastRenderListSize = m_renderList.Size();
+    m_renderList.Resize(m_renderList.Size() + amount);
+
+    for(auto i = lastRenderListSize; i < lastRenderListSize + amount; i ++)
+    {
+        const auto& component = &m_renderList[i];
+        m_freeComponents.Enqueue(component);
+    }
+}
+
 void ModelRenderingSystem::Initialize()
 {
     m_renderList = {};
-    m_renderList.Resize(DefaultRenderListLength);
-
     for(auto&& component : m_renderList)
         m_freeComponents.Enqueue(&component);
 }
@@ -29,12 +39,8 @@ void ModelRenderingSystem::Render()
 
     for (auto&& component : m_renderList)
     {
-        // Skip rendering when component is not active, doesn't have material or mesh.
-        if (!component.Active || component.Material == nullptr || component.Mesh == nullptr)
-            return;
-
-        // Skip rendering when mesh is out of camera's bounds
-        if (!cameraFrustum.Contains(component.Bounds))
+        // Skip rendering when component is not active, is invalid or out of camera frustum bounds.
+        if (!component.Active || !component.IsValid() || !cameraFrustum.Contains(component.Bounds))
             continue;
 
         const auto& mesh = component.Mesh;
@@ -42,13 +48,32 @@ void ModelRenderingSystem::Render()
         const auto& transform = *component.Transform;
         const auto& shader = material->GetShader();
 
-        // TODO: Update shader values
+        // Skip if the material doesn't have a shader.
+        if (!shader)
+            continue;
 
+        // Bind textures
+        for(auto i = 0u; i < material->m_textures.Count(); i ++)
+            shader->SetTexture(i, material->m_textures[i]);
+
+        // Bind fields
+        /*for (auto i = 0u; i < material->m_fields.Count(); i++)
+        {
+            // TODO: Resolve buffer etc.
+
+            const auto& field = *material->m_fields[i];
+            Renderer::SetShaderValue(shader->GetHandle(), 1, i, field.Data, field.Size);
+        }*/
+
+        // TODO: Use model position
         // TODO: Camera-relative rendering.
 
         // Set shader. This will also update the shader constants.
         if (RenderingManager::GetCurrentShader() != shader)
             RenderingManager::SetCurrentShader(shader, false);
+
+        // Apply shader
+        Renderer::ApplyShader(shader->GetHandle(), material->m_shaderPass);
 
         // Render the mesh
         RenderingManager::DrawIndexedMesh(mesh);
@@ -56,4 +81,30 @@ void ModelRenderingSystem::Render()
 
     // Cleanup
     RenderingManager::SetCurrentShader(nullptr);
+}
+
+ModelComponent* ModelRenderingSystem::AcquireModelComponent()
+{
+    ModelComponent* component;
+
+    // This should be getting called only once, but in case of really hungry threads
+    // just retry until we will get a free component.
+    while (!GetInstance()->m_freeComponents.TryDequeue(component))
+        GetInstance()->AllocateModelComponents(DefaultRenderListAdjust);
+
+    // Set component as allocated (i.e. not free).
+    component->Free = false;
+    return component;
+}
+
+void ModelRenderingSystem::ReleaseModelComponent(ModelComponent* component)
+{
+    ASSERT(component);
+    ASSERT(!component->Free);
+
+    // Cleanup the component.
+    *component = ModelComponent();
+
+    // Free given component.
+    GetInstance()->m_freeComponents.Enqueue(component);
 }

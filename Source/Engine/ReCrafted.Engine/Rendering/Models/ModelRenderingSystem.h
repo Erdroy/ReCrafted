@@ -14,13 +14,17 @@ class ModelRenderingSystem : public RenderingComponent<ModelRenderingSystem>
     friend class RenderingManager;
 public:
     /// <summary>
-    ///     The default amount of model components reserved at startup.
+    ///     The amount of model components that will be added to the list, 
+    ///     if we run out of empty ones.
     /// </summary>
-    static const uint32_t DefaultRenderListLength = 256;
+    static const uint32_t DefaultRenderListAdjust = 16;
 
 private:
     List<ModelComponent> m_renderList;
     ConcurrentQueue<ModelComponent*> m_freeComponents;
+
+private:
+    void AllocateModelComponents(uint32_t amount);
 
 public:
     ModelRenderingSystem() = default;
@@ -37,4 +41,17 @@ public:
     {
         return RenderingComponentStage::Geometry;
     }
+
+public:
+    /// <summary>
+    ///     Acquires free model component.
+    /// </summary>
+    /// <returns>The acquired model component.</returns>
+    static ModelComponent* AcquireModelComponent();
+
+    /// <summary>
+    ///     Releases given component.
+    /// </summary>
+    /// <param name="component"></param>
+    static void ReleaseModelComponent(ModelComponent* component);
 };
