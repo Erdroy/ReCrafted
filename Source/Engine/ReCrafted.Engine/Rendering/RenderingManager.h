@@ -65,7 +65,11 @@ public:
     ///     Updates the default shader constants.
     /// </summary>
     /// <param name="shader">The shader.</param>
-    static void UpdateDefaultConstants(Shader* shader);
+    /// <param name="apply">
+    ///     When true, the shader constants will be applied. 
+    ///     If false, you will have to call Renderer::ApplyShader to apply it.
+    /// </param>
+    static void UpdateDefaultConstants(Shader* shader, bool apply = true);
 
     /// <summary>
     ///     Sets the current draw mode.
@@ -77,7 +81,11 @@ public:
     ///     Sets the current shader.
     /// </summary>
     /// <param name="shader">The shader.</param>
-    static void SetCurrentShader(Shader* shader);
+    /// <param name="apply">
+    ///     When true, the shader constants will be applied. 
+    ///     If false, you will have to call Renderer::ApplyShader to apply it.
+    /// </param>
+    static void SetCurrentShader(Shader* shader, bool apply = true);
 
     /// <summary>
     ///     Gets the current shader.

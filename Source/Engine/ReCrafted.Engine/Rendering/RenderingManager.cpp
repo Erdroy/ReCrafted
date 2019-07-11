@@ -56,7 +56,7 @@ void RenderingManager::Shutdown()
         component->Release();
         component = nullptr;
     }
-    m_renderingComponents.Clear();
+    m_renderingComponents.Release();
 
     // Release rendering
     m_rendering->Shutdown();
@@ -127,7 +127,7 @@ void RenderingManager::DrawIndexedMesh(Mesh* mesh)
     Renderer::DrawIndexed(static_cast<uint>(mesh->IndexCount()));
 }
 
-void RenderingManager::UpdateDefaultConstants(Shader* shader)
+void RenderingManager::UpdateDefaultConstants(Shader* shader, bool apply)
 {
     const auto mainCamera = Camera::GetMainCamera();
 
@@ -168,8 +168,11 @@ void RenderingManager::UpdateDefaultConstants(Shader* shader)
     auto ambientLight = Vector3(0.35f, 0.35f, 0.35f);
     shader->SetValue(6, &ambientLight);
 
-    // apply shader changes
-    Renderer::ApplyShader(shader->GetHandle(), 0);
+    if(apply)
+    {
+        // apply shader changes
+        Renderer::ApplyShader(shader->GetHandle(), 0);
+    }
 }
 
 void RenderingManager::SetDrawMode(const DrawMode drawMode)
@@ -210,7 +213,7 @@ void RenderingManager::SetDrawMode(const DrawMode drawMode)
     }
 }
 
-void RenderingManager::SetCurrentShader(Shader* shader)
+void RenderingManager::SetCurrentShader(Shader* shader, bool apply)
 {
     //if (GetInstance()->m_currentShader == shader)
     //    return;
@@ -220,8 +223,8 @@ void RenderingManager::SetCurrentShader(Shader* shader)
     if (shader == nullptr)
         return;
 
-    Renderer::ApplyShader(shader->GetHandle(), 0);
-    UpdateDefaultConstants(shader);
+    //Renderer::ApplyShader(shader->GetHandle(), 0);
+    UpdateDefaultConstants(shader, apply);
 }
 
 Shader* RenderingManager::GetCurrentShader()
