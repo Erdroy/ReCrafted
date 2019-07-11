@@ -74,11 +74,21 @@ void Material::OnDeserializeJson(uint16_t version, const json& json)
         ASSERT(!fType.is_null());
         ASSERT(fType.is_string());
 
+        const auto fId = fieldArrayItem["Id"];
+        ASSERT(!fId.is_null());
+        ASSERT(fId.is_number_integer());
+
+        const auto fBuffer = fieldArrayItem["Buffer"];
+        ASSERT(!fBuffer.is_null());
+        ASSERT(fBuffer.is_number_integer());
+
         const auto fValue = fieldArrayItem["Value"];
 
         // Setup field fields... And it's data.
         auto field = new MaterialField();
         field->Name = fName.get<std::string>();
+        field->Id = fId.get<int>();
+        field->Buffer = fBuffer.get<int>();
 
         const auto fTypeEnum = ParseFieldType(fType);
 

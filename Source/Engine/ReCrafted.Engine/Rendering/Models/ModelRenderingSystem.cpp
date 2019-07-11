@@ -57,13 +57,9 @@ void ModelRenderingSystem::Render()
             shader->SetTexture(i, material->m_textures[i]);
 
         // Bind fields
-        for (auto i = 0u; i < material->m_fields.Count(); i++)
-        {
-            // TODO: Resolve buffer index etc.
-
-            const auto& field = *material->m_fields[i];
-            Renderer::SetShaderValue(shader->GetHandle(), 1, i, field.Data, field.Size);
-        }
+        // TODO: This could be actually improved by building data buffer, then uploading each buffer at once.
+        for(auto&& field : material->m_fields)
+            Renderer::SetShaderValue(shader->GetHandle(), field->Buffer, field->Id, field->Data, field->Size);
 
         // TODO: Use model position
         // TODO: Camera-relative rendering.

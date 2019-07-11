@@ -19,6 +19,16 @@ public:
     std::string Name;
 
     /// <summary>
+    ///     The material field index in the buffer.
+    /// </summary>
+    int Id;
+
+    /// <summary>
+    ///     The material target buffer index.
+    /// </summary>
+    int Buffer;
+
+    /// <summary>
     ///     The material field data.
     /// </summary>
     uint8_t* Data;
@@ -37,7 +47,7 @@ public:
     /// <summary>
     ///     Default MaterialField constructor.
     /// </summary>
-    MaterialField() : Data(nullptr), Size(0u), Type(MaterialFieldType::Unknown) {}
+    MaterialField() : Id(0), Buffer(0), Data(nullptr), Size(0u), Type(MaterialFieldType::Unknown) {}
 
     /// <summary>
     ///     Default MaterialField destructor.
