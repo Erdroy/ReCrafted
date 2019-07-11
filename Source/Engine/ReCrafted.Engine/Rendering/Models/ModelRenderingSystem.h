@@ -5,6 +5,7 @@
 #include <ReCrafted.h>
 
 #include "Common/List.h"
+#include "Common/ConcurrentQueue.h"
 #include "Rendering/RenderingComponent.h"
 #include "Rendering/Models/ModelComponent.h"
 
@@ -19,15 +20,17 @@ public:
 
 private:
     List<ModelComponent> m_renderList;
+    ConcurrentQueue<ModelComponent*> m_freeComponents;
+
+public:
+    ModelRenderingSystem() = default;
+    ~ModelRenderingSystem() = default;
 
 protected:
     void Initialize() override;
     void Shutdown() override;
 
     void Render() override;
-
-protected:
-    void Release() override;
 
 public:
     RenderingComponentStage GetStage() override

@@ -3,13 +3,15 @@
 #pragma once
 
 #include <ReCrafted.h>
-#include "Common/Array.h"
 
 struct ModelComponent
 {
 public:
-    Mesh* Mesh;
-    Material* Material;
+    bool Active = false;
+    Mesh* Mesh = nullptr;
+    Material* Material = nullptr;
+    Transform* Transform = nullptr;
+    BoundingBox Bounds = {};
 
     // TODO: Transform reference?
 };
