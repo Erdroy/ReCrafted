@@ -23,9 +23,12 @@ class Material final : public JsonAsset
     API_CLASS_BODY();
     ASSET_BODY(Material);
 
+    friend class ModelRenderingSystem;
+
 private:
     std::string m_name = {};
     Shader* m_shader = nullptr;
+    uint8_t m_shaderPass = 0u;
     List<Texture*> m_textures = {};
     List<MaterialField*> m_fields = {};
 

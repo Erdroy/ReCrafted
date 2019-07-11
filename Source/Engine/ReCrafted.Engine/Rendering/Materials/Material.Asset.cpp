@@ -37,6 +37,12 @@ void Material::OnDeserializeJson(uint16_t version, const json& json)
     ASSERT(mShader.is_string());
     m_shaderAssetName = mShader.get<std::string>();
 
+    // Setup shader asset file
+    const auto mPass = json["MaterialShaderPass"];
+    ASSERT(!mPass.is_null());
+    ASSERT(mPass.is_number_integer());
+    m_shaderPass = static_cast<uint8_t>(mPass.get<int>());
+
     // Load textures
     for(auto&& textureArrayItem : json["Textures"])
     {
