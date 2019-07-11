@@ -6,7 +6,6 @@
 #include "Rendering/Debug/DebugDraw.h"
 #include "Rendering/DeferredRendering/DeferredRendering.h"
 #include "Rendering/Models/ModelRenderingSystem.h"
-#include "Rendering/RenderableBase.h"
 #include "Rendering/Camera.h"
 #include "Rendering/Mesh.h"
 
@@ -34,11 +33,6 @@ void RenderingManager::OnResize(const uint width, const uint height)
 
     // Resize window
     Renderer::ResizeWindow(m_windowHandle, width, height);
-}
-
-void RenderingManager::SortRenderList(const RenderList& list)
-{
-    // TODO: Sort render list
 }
 
 void RenderingManager::Initialize()
@@ -265,7 +259,7 @@ void RenderingManager::SetTextureHandleArray(const uint slot, Renderer::Texture2
     Renderer::ApplyTextureArray2D(textureArray, slot, textureCount);
 }
 
-
+/*
 void RenderingManager::AddRenderable(RenderableBase* renderable)
 {
     ASSERT(renderable != nullptr);
@@ -294,3 +288,4 @@ void RenderingManager::RemoveRenderable(RenderableBase* renderable)
     if ((renderMode & RenderableRenderMode::RenderGeometry) == RenderableRenderMode::RenderGeometry)
         GetInstance()->m_geometryList.Remove(renderable);
 }
+*/

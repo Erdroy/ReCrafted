@@ -4,14 +4,13 @@
 #include "Common/Signal.h"
 #include "Content/ContentManager.h"
 #include "Rendering/Mesh.h"
-#include "Rendering/RenderableBase.h"
 #include "Rendering/Shader.h"
 #include "Rendering/RenderingManager.h"
 #include "Rendering/Materials/Material.h"
 #include "Scripting/Object.h"
 #include "Scripting/ScriptingManager.h"
 
-class RenderableTest : public RenderableBase
+/*class RenderableTest : public RenderableBase
 {
 public:
     Vector3 pos = Vector3::Zero;
@@ -108,12 +107,7 @@ public:
 };
 
 RenderableTest* test;
-
-Signal signal;
-
-void GameManager::tmpOnMaterialLoaded(Asset* materialAsset)
-{
-}
+*/
 
 GameManager::GameManager()
 {
@@ -133,21 +127,14 @@ GameManager::GameManager()
 
     gameInitialize.Invoke(m_game);
 
-    test = new RenderableTest();
-    RenderingManager::AddRenderable(test);
-
-    const auto material = ContentManager::LoadAsset<Material>("Materials/Default");
-
-    // TODO: Fix material memory leaks
-    // TODO: Fix texture memory leaks
-
-    Object::Destroy(material);
+    //test = new RenderableTest();
+    //RenderingManager::AddRenderable(test);
 }
 
 GameManager::~GameManager()
 {
-    RenderingManager::RemoveRenderable(test);
-    delete test;
+    //RenderingManager::RemoveRenderable(test);
+    //delete test;
 
     ASSERT(m_game);
     ASSERT(m_gameShutdown.IsValid());

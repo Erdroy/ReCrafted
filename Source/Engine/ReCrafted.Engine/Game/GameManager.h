@@ -23,9 +23,6 @@ private:
     Method m_gameUpdate = Method{ nullptr };
     Method m_gameFixedUpdate = Method{ nullptr };
 
-private:
-    void tmpOnMaterialLoaded(Asset* materialAsset);
-
 public:
     GameManager();
     ~GameManager();

@@ -72,7 +72,6 @@ enum class RenderingComponentStage : byte;
 class Camera;
 class CameraActor;
 class Mesh;
-class RenderableBase;
 class RenderBuffer;
 class RenderingBase;
 class RenderingComponentBase;

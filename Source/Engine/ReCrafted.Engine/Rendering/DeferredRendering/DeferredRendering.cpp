@@ -7,10 +7,8 @@
 #include "Rendering/Shader.h"
 #include "Rendering/Camera.h"
 #include "Rendering/RenderingManager.h"
-#include "Rendering/RenderableBase.h"
 #include "Rendering/RenderBuffer.h"
 #include "Input/InputManager.h"
-#include "Rendering/Mesh.h"
 
 void DeferredRendering::Initialize()
 {
@@ -157,24 +155,6 @@ void DeferredRendering::RenderGeometry()
 {
     //Profiler::BeginProfile("Render Geometry");
 
-    auto cameraFrustum = Camera::GetMainCamera()->GetBoundingFrustum();
-
-    for (auto renderable : RenderingManager::GetGeometryList())
-    {
-        const auto shader = renderable->GetShader();
-
-        if (RenderingManager::GetCurrentShader() != shader)
-            RenderingManager::SetCurrentShader(shader);
-
-        if (!cameraFrustum.Contains(renderable->GetBounds()))
-            continue;
-
-        const auto mesh = renderable->GetMesh();
-        RenderingManager::DrawIndexedMesh(mesh);
-    }
-
-    // Cleanup
-    RenderingManager::SetCurrentShader(nullptr);
 
     //Profiler::EndProfile();
 }

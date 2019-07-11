@@ -14,11 +14,8 @@
 class RenderingManager final : public SubSystem<RenderingManager>
 {
     friend class Application;
-    typedef List<RenderableBase*> RenderList;
 
 private:
-    RenderList m_geometryList = {};
-
     RenderingBase* m_rendering = nullptr;
 
     List<Texture*> m_currentTextures = {};
@@ -44,9 +41,6 @@ private: /* Rendering components system */
         component->Initialize();
         m_renderingComponents.Add(component);
     }
-
-private:
-    static void SortRenderList(const RenderList& list);
 
 protected:
     void Initialize() override;
@@ -116,36 +110,6 @@ public:
     static void SetTextureHandleArray(uint slot, Renderer::Texture2DHandle* textureArray, uint8_t textureCount);
 
 public:
-    /// <summary>
-    ///     Adds given renderable, to the render list.
-    /// </summary>
-    /// <param name="renderable">The renderable which will be added.</param>
-    static void AddRenderable(RenderableBase* renderable);
-
-    /// <summary>
-    ///     Removes given renderable, from the render list.
-    /// </summary>
-    /// <param name="renderable">The renderable which will be removed.</param>
-    static void RemoveRenderable(RenderableBase* renderable);
-
-    /// <summary>
-    ///     Gets the amount of geometry renderables in the current list.
-    /// </summary>
-    /// <returns>The amount of geometry renderables.</returns>
-    static int GetRenderableGeometryCount()
-    {
-        return static_cast<int>(GetInstance()->m_geometryList.Count());
-    }
-
-    /// <summary>
-    ///     Gets the geometry render list.
-    /// </summary>
-    /// <returns>The geometry render list.</returns>
-    static RenderList& GetGeometryList()
-    {
-        return GetInstance()->m_geometryList;
-    }
-
     /// <summary>
     ///     Gets the current rendering instance.
     /// </summary>

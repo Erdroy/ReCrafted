@@ -172,7 +172,6 @@ public:
     /// <summary>
     ///     Sets current debug draw render color.
     /// </summary>
-    /// <param name="color">The color.</param>
     API_PROPERTY(noprefix)
     static void SetColor(const Color& color);
 
@@ -185,7 +184,6 @@ public:
     /// <summary>
     ///     Sets matrix that will be used for vertex transformation.
     /// </summary>
-    /// <param name="matrix">The matrix.</param>
     API_PROPERTY(noprefix)
     static void SetMatrix(const Matrix& matrix);
 
