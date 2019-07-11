@@ -3,6 +3,11 @@
 #ifndef SURFACE_HLSLI
 #define SURFACE_HLSLI
 
+cbuffer TestCB : register(b1) 
+{
+    float4 TestColor;
+};
+
 struct SurfaceVSInput
 {
     float3 Position : POSITION;
@@ -64,7 +69,7 @@ void SurfacePSMain(in SurfacePSInput i, out GBufferOutput o)
     o.Normal = EncodeNormal(float4(i.Normal, 1.0f));
     
     // TODO: MainColor
-    o.Color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+    o.Color = TestColor;
 
     // Set Light as simple ambient light
     o.Light = float4(o.Color.rgb * AmbientLightColor, 0.0f);

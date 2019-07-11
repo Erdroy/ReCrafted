@@ -261,34 +261,3 @@ void RenderingManager::SetTextureHandleArray(const uint slot, Renderer::Texture2
 {
     Renderer::ApplyTextureArray2D(textureArray, slot, textureCount);
 }
-
-/*
-void RenderingManager::AddRenderable(RenderableBase* renderable)
-{
-    ASSERT(renderable != nullptr);
-    ASSERT(IS_MAIN_THREAD());
-    ASSERT(renderable->GetRenderMode() != RenderableRenderMode::None);
-
-    const auto renderMode = renderable->GetRenderMode();
-
-    if ((renderMode & RenderableRenderMode::RenderGeometry) == RenderableRenderMode::RenderGeometry)
-    {
-        ASSERT(GetInstance()->m_geometryList.Contains(renderable) == false);
-
-        GetInstance()->m_geometryList.Add(renderable);
-        SortRenderList(GetInstance()->m_geometryList);
-    }
-}
-
-void RenderingManager::RemoveRenderable(RenderableBase* renderable)
-{
-    ASSERT(renderable != nullptr);
-    ASSERT(IS_MAIN_THREAD());
-    ASSERT(renderable->GetRenderMode() != RenderableRenderMode::None);
-
-    const auto renderMode = renderable->GetRenderMode();
-
-    if ((renderMode & RenderableRenderMode::RenderGeometry) == RenderableRenderMode::RenderGeometry)
-        GetInstance()->m_geometryList.Remove(renderable);
-}
-*/

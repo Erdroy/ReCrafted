@@ -9,6 +9,7 @@
 pass Default
 {
     BindDefaultConstantBuffer(SurfaceVSMain, SurfacePSMain);
+    BindConstantBuffer(TestCB, SurfacePSMain);
    
     SetProfile(5.0);
 
