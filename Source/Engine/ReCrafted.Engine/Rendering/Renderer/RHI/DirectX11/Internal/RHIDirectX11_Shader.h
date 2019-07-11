@@ -84,8 +84,8 @@ namespace Renderer
         std::string m_name = {};
         std::string m_desc = {};
 
-        std::vector<Buffer> m_buffers = {};
-        std::vector<Pass> m_passes = {};
+        std::vector<RefPtr<Buffer>> m_buffers = {};
+        std::vector<RefPtr<Pass>> m_passes = {};
 
         //std::vector<std::string> m_textures2d = {};
         std::vector<ID3D11SamplerState*> m_samplers = {};
@@ -95,7 +95,7 @@ namespace Renderer
         uint m_stride = 0u;
 
     private:
-        void BindPass(ID3D11DeviceContext* context, Pass& pass);
+        void BindPass(ID3D11DeviceContext* context, const Pass* pass);
 
     public:
         void Bind(ID3D11DeviceContext* context, int passId);

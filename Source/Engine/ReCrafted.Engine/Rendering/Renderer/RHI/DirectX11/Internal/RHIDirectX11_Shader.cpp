@@ -234,21 +234,21 @@ namespace Renderer
         return S_OK;
     }
 
-    void RHIDirectX11_Shader::BindPass(ID3D11DeviceContext* context, Pass& pass)
+    void RHIDirectX11_Shader::BindPass(ID3D11DeviceContext* context, const Pass* pass)
     {
         // for constant buffers we don't need to check index value as there is only one index per buffer, 
         // so there is no way that someone will get overlapping indices.
 
         // set vertex shader
-        if (pass.m_vertexShader)
+        if (pass->m_vertexShader)
         {
-            context->VSSetShader(pass.m_vertexShader, nullptr, 0);
+            context->VSSetShader(pass->m_vertexShader, nullptr, 0);
             ADD_APICALL();
 
             // set constant buffers
-            if (!pass.m_vsBuffers.empty())
+            if (!pass->m_vsBuffers.empty())
             {
-                for (auto& buffer : pass.m_vsBuffers) // TODO: apply all buffers in single API call
+                for (auto& buffer : pass->m_vsBuffers) // TODO: apply all buffers in single API call
                 {
                     ID3D11Buffer* buffers[] = {buffer->m_buffer};
                     context->VSSetConstantBuffers(buffer->m_index, 1u, buffers);
@@ -260,8 +260,8 @@ namespace Renderer
                 // bind all buffers instead
                 for (auto& buffer : m_buffers) // TODO: apply all buffers in single API call
                 {
-                    ID3D11Buffer* buffers[] = {buffer.m_buffer};
-                    context->VSSetConstantBuffers(buffer.m_index, 1u, buffers);
+                    ID3D11Buffer* buffers[] = {buffer->m_buffer};
+                    context->VSSetConstantBuffers(buffer->m_index, 1u, buffers);
                     ADD_APICALL();
                 }
             }
@@ -270,15 +270,15 @@ namespace Renderer
             context->VSSetShader(nullptr, nullptr, 0);
 
         // set pixel shader
-        if (pass.m_pixelShader)
+        if (pass->m_pixelShader)
         {
-            context->PSSetShader(pass.m_pixelShader, nullptr, 0);
+            context->PSSetShader(pass->m_pixelShader, nullptr, 0);
             ADD_APICALL();
 
             // set constant buffers
-            if (!pass.m_psBuffers.empty())
+            if (!pass->m_psBuffers.empty())
             {
-                for (auto& buffer : pass.m_psBuffers)
+                for (auto& buffer : pass->m_psBuffers)
                 {
                     ID3D11Buffer* buffers[] = {buffer->m_buffer};
                     context->PSSetConstantBuffers(buffer->m_index, 1u, buffers);
@@ -290,8 +290,8 @@ namespace Renderer
                 // bind all buffers instead
                 for (auto& buffer : m_buffers) // TODO: apply all buffers in single API call
                 {
-                    ID3D11Buffer* buffers[] = {buffer.m_buffer};
-                    context->PSSetConstantBuffers(buffer.m_index, 1u, buffers);
+                    ID3D11Buffer* buffers[] = {buffer->m_buffer};
+                    context->PSSetConstantBuffers(buffer->m_index, 1u, buffers);
                     ADD_APICALL();
                 }
             }
@@ -300,15 +300,15 @@ namespace Renderer
             context->PSSetShader(nullptr, nullptr, 0);
 
         // set compute shader
-        if (pass.m_computeShader)
+        if (pass->m_computeShader)
         {
-            context->CSSetShader(pass.m_computeShader, nullptr, 0);
+            context->CSSetShader(pass->m_computeShader, nullptr, 0);
             ADD_APICALL();
 
             // set constant buffers 
-            if (!pass.m_csBuffers.empty())
+            if (!pass->m_csBuffers.empty())
             {
-                for (auto& buffer : pass.m_csBuffers)
+                for (auto& buffer : pass->m_csBuffers)
                 {
                     ID3D11Buffer* buffers[] = {buffer->m_buffer};
                     context->CSSetConstantBuffers(buffer->m_index, 1u, buffers);
@@ -320,8 +320,8 @@ namespace Renderer
                 // bind all buffers instead
                 for (auto& buffer : m_buffers) // TODO: apply all buffers in single API call
                 {
-                    ID3D11Buffer* buffers[] = {buffer.m_buffer};
-                    context->CSSetConstantBuffers(buffer.m_index, 1u, buffers);
+                    ID3D11Buffer* buffers[] = {buffer->m_buffer};
+                    context->CSSetConstantBuffers(buffer->m_index, 1u, buffers);
                     ADD_APICALL();
                 }
             }
@@ -330,15 +330,15 @@ namespace Renderer
             context->CSSetShader(nullptr, nullptr, 0);
 
         // set geometry shader
-        if (pass.m_geometryShader)
+        if (pass->m_geometryShader)
         {
-            context->GSSetShader(pass.m_geometryShader, nullptr, 0);
+            context->GSSetShader(pass->m_geometryShader, nullptr, 0);
             ADD_APICALL();
 
             // set constant buffers 
-            if (!pass.m_gsBuffers.empty())
+            if (!pass->m_gsBuffers.empty())
             {
-                for (auto& buffer : pass.m_gsBuffers)
+                for (auto& buffer : pass->m_gsBuffers)
                 {
                     ID3D11Buffer* buffers[] = { buffer->m_buffer };
                     context->GSSetConstantBuffers(buffer->m_index, 1u, buffers);
@@ -350,8 +350,8 @@ namespace Renderer
                 // bind all buffers instead
                 for (auto& buffer : m_buffers) // TODO: apply all buffers in single API call
                 {
-                    ID3D11Buffer* buffers[] = { buffer.m_buffer };
-                    context->GSSetConstantBuffers(buffer.m_index, 1u, buffers);
+                    ID3D11Buffer* buffers[] = { buffer->m_buffer };
+                    context->GSSetConstantBuffers(buffer->m_index, 1u, buffers);
                     ADD_APICALL();
                 }
             }
@@ -368,7 +368,7 @@ namespace Renderer
         ADD_APICALL();
 
         // set input layout
-        context->IASetInputLayout(pass.m_inputLayout);
+        context->IASetInputLayout(pass->m_inputLayout);
         ADD_APICALL();
     }
 
@@ -376,18 +376,18 @@ namespace Renderer
     {
         ASSERT(passId < m_passes.size());
 
-        auto& pass = m_passes[passId];
-        BindPass(context, pass);
+        const auto& pass = m_passes.at(passId);
+        BindPass(context, pass.get());
     }
 
     void RHIDirectX11_Shader::Bind(ID3D11DeviceContext* context, std::string passName)
     {
         for (auto i = 0u; i < m_passes.size(); i ++)
         {
-            auto& pass = m_passes[i];
-            if (pass.m_name == passName)
+            const auto& pass = m_passes.at(i);
+            if (pass->m_name == passName)
             {
-                BindPass(context, pass);
+                BindPass(context, pass.get());
                 return;
             }
         }
@@ -415,18 +415,18 @@ namespace Renderer
 
         // Get buffer description
         auto& bufferDesc = m_buffers[buffer];
-        ASSERT(bufferDesc.m_size >= dataSize);
-        ASSERT(index < bufferDesc.m_fields.size());
+        ASSERT(bufferDesc->m_size >= dataSize);
+        ASSERT(index < bufferDesc->m_fields.size());
 
         // Get field description
-        auto& fieldDesc = bufferDesc.m_fields[index];
+        auto& fieldDesc = bufferDesc->m_fields[index];
         ASSERT(fieldDesc.m_size == dataSize);
 
         // Copy new data
-        memcpy(bufferDesc.m_data + fieldDesc.m_offset, data, dataSize);
+        memcpy(bufferDesc->m_data + fieldDesc.m_offset, data, dataSize);
 
         // Set dirty flag
-        bufferDesc.m_dirty = true;
+        bufferDesc->m_dirty = true;
 
         m_dirty = true;
     }
@@ -437,13 +437,13 @@ namespace Renderer
 
         // Get buffer description
         auto& bufferDesc = m_buffers[buffer];
-        ASSERT(bufferDesc.m_size >= dataSize);
+        ASSERT(bufferDesc->m_size >= dataSize);
 
         // Copy new data
-        memcpy(bufferDesc.m_data + dataOffset, data, dataSize);
+        memcpy(bufferDesc->m_data + dataOffset, data, dataSize);
 
         // Set dirty flag
-        bufferDesc.m_dirty = true;
+        bufferDesc->m_dirty = true;
 
         m_dirty = true;
     }
@@ -452,20 +452,20 @@ namespace Renderer
     {
         for (auto& buffer : m_buffers)
         {
-            if (buffer.m_dirty)
+            if (buffer->m_dirty)
             {
                 D3D11_MAPPED_SUBRESOURCE m_mappedSubres;
 
                 // map buffer
-                DX_CALL(context->Map(buffer.m_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &m_mappedSubres));
+                DX_CALL(context->Map(buffer->m_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &m_mappedSubres));
 
                 // upload buffer data
-                memcpy(m_mappedSubres.pData, buffer.m_data, buffer.m_size);
+                memcpy(m_mappedSubres.pData, buffer->m_data, buffer->m_size);
 
                 // unmap buffer
-                context->Unmap(buffer.m_buffer, 0);
+                context->Unmap(buffer->m_buffer, 0);
 
-                buffer.m_dirty = false;
+                buffer->m_dirty = false;
             }
         }
 
@@ -487,8 +487,6 @@ namespace Renderer
     RHIDirectX11_Shader* RHIDirectX11_Shader::Create(ID3D11Device* device, nlohmann::json& shaderJson)
     {
         auto shader = new RHIDirectX11_Shader();
-        auto buffers = shaderJson["UniformBuffers"];
-        auto passes = shaderJson["Passes"];
 
         if (!shaderJson["Name"].is_null())
             shader->m_name = shaderJson["Name"].get<std::string>();
@@ -497,29 +495,30 @@ namespace Renderer
             shader->m_desc = shaderJson["Description"].get<std::string>();
 
         // Create all passes
+        auto passes = shaderJson["Passes"];
         for (auto& passJson : passes)
         {
             // create pass instance and get it's ref
-            shader->m_passes.push_back({});
-            auto& pass = shader->m_passes[shader->m_passes.size() - 1];
+            shader->m_passes.emplace_back(std::make_shared<Pass>());
+            auto&& pass = shader->m_passes[shader->m_passes.size() - 1];
 
             // set pass name
-            pass.m_name = passJson["Name"].get<std::string>();
+            pass->m_name = passJson["Name"].get<std::string>();
 
             // try to create vertex shader
             auto vsBC = passJson["VSByteCode"];
             if (vsBC.is_string())
             {
                 auto byteCode = base64_decode(vsBC.get<std::string>());
-                DX_CALL(device->CreateVertexShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_vertexShader));
+                DX_CALL(device->CreateVertexShader(byteCode.data(), byteCode.size(), nullptr, &pass->m_vertexShader));
 
                 // every vertex shader needs input layout to be bound to the GPU, 
                 // so create or use cached input layout
                 DX_CALL(D3D11CreateInputLayout(device, (void*)byteCode.data(), byteCode.size(), &shader->m_stride,
-                                            &pass.m_inputLayout));
+                                            &pass->m_inputLayout));
 
                 // set function name
-                pass.m_vsName = passJson["VSFunction"].get<std::string>();
+                pass->m_vsName = passJson["VSFunction"].get<std::string>();
             }
 
             // try to create pixel shader
@@ -527,10 +526,10 @@ namespace Renderer
             if (psBC.is_string())
             {
                 auto byteCode = base64_decode(psBC.get<std::string>());
-                DX_CALL(device->CreatePixelShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_pixelShader));
+                DX_CALL(device->CreatePixelShader(byteCode.data(), byteCode.size(), nullptr, &pass->m_pixelShader));
 
                 // set function name
-                pass.m_psName = passJson["PSFunction"].get<std::string>();
+                pass->m_psName = passJson["PSFunction"].get<std::string>();
             }
 
             // try to create compute shader
@@ -538,10 +537,10 @@ namespace Renderer
             if (csBC.is_string())
             {
                 auto byteCode = base64_decode(csBC.get<std::string>());
-                DX_CALL(device->CreateComputeShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_computeShader));
+                DX_CALL(device->CreateComputeShader(byteCode.data(), byteCode.size(), nullptr, &pass->m_computeShader));
 
                 // set function name
-                pass.m_csName = passJson["CSFunction"].get<std::string>();
+                pass->m_csName = passJson["CSFunction"].get<std::string>();
             }
 
             // try to create geometry shader
@@ -549,35 +548,35 @@ namespace Renderer
             if (gsBC.is_string())
             {
                 auto byteCode = base64_decode(gsBC.get<std::string>());
-                DX_CALL(device->CreateGeometryShader(byteCode.data(), byteCode.size(), nullptr, &pass.m_geometryShader));
+                DX_CALL(device->CreateGeometryShader(byteCode.data(), byteCode.size(), nullptr, &pass->m_geometryShader));
 
                 // set function name
-                pass.m_gsName = passJson["GSFunction"].get<std::string>();
+                pass->m_gsName = passJson["GSFunction"].get<std::string>();
             }
         }
 
         // Create constant buffers
+        auto buffers = shaderJson["UniformBuffers"];
         for (auto& bufferJson : buffers)
         {
             // create buffer instance and get it's ref
-            shader->m_buffers.push_back({});
+            shader->m_buffers.emplace_back(std::make_shared<Buffer>());
+            auto&& buffer = shader->m_buffers[shader->m_buffers.size() - 1];
 
-            const auto bufferIndex = static_cast<uint>(shader->m_buffers.size()) - 1;
             const auto bufferName = bufferJson["Name"].get<std::string>();
             const auto bufferTargets = bufferJson["Targets"];
             const auto bufferUniforms = bufferJson["Uniforms"];
-            auto& buffer = shader->m_buffers[bufferIndex];
 
             // set buffer index
-            buffer.m_index = bufferIndex;
+            buffer->m_index = shader->m_buffers.size() - 1;
 
             // set buffer name
-            buffer.m_name = bufferName;
+            buffer->m_name = bufferName;
 
             for (auto& fieldData : bufferUniforms)
             {
-                buffer.m_fields.push_back({});
-                auto& field = buffer.m_fields[buffer.m_fields.size() - 1];
+                buffer->m_fields.push_back({});
+                auto& field = buffer->m_fields[buffer->m_fields.size() - 1];
 
                 const auto name = fieldData["Name"].get<std::string>();
                 const auto size = fieldData["Size"].get<int>();
@@ -593,12 +592,12 @@ namespace Renderer
             // Align fields
             auto padLeft = 0u;
             auto fieldOffset = 0u;
-            for(auto& field : buffer.m_fields)
+            for(auto& field : buffer->m_fields)
             {
-                // Check if we need to match aligment rules
+                // Check if we need to match alignment rules
                 if (padLeft < field.m_size)
                 {
-                    // We need to pad to match the 16-byte aligment
+                    // We need to pad to match the 16-byte alignment 
                     fieldOffset += padLeft;
 
                     if (field.m_size % 16 != 0)
@@ -622,10 +621,10 @@ namespace Renderer
             // field offset is not the size of the buffer
             // but we still need to round int up to multiply of 64
             const auto bufferSize = HLSLFixBufferSize(fieldOffset);
-            buffer.m_size = bufferSize;
+            buffer->m_size = bufferSize;
 
             // create buffer data
-            buffer.m_data = new byte[bufferSize];
+            buffer->m_data = new byte[bufferSize];
 
             // create D3D11 buffer
             D3D11_BUFFER_DESC desc = {};
@@ -635,34 +634,34 @@ namespace Renderer
             desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
             D3D11_SUBRESOURCE_DATA subresource_data = {};
-            subresource_data.pSysMem = buffer.m_data;
+            subresource_data.pSysMem = buffer->m_data;
             subresource_data.SysMemPitch = 0;
             subresource_data.SysMemSlicePitch = 0;
 
-            DX_CALL(device->CreateBuffer(&desc, &subresource_data, &buffer.m_buffer));
+            DX_CALL(device->CreateBuffer(&desc, &subresource_data, &buffer->m_buffer));
 
             // select targets and add to all passes shader functions
-            for (auto& pass : shader->m_passes)
+            for (auto&& pass : shader->m_passes)
             {
-                for (auto& funcName : bufferTargets)
+                for (auto&& funcName : bufferTargets)
                 {
                     const auto name = funcName.get<std::string>();
 
                     // add VS function target
-                    if (name == pass.m_vsName)
-                        pass.m_vsBuffers.push_back(&buffer);
+                    if (name == pass->m_vsName)
+                        pass->m_vsBuffers.emplace_back(buffer.get());
 
                     // add PS function target
-                    if (name == pass.m_psName)
-                        pass.m_psBuffers.push_back(&buffer);
+                    if (name == pass->m_psName)
+                        pass->m_psBuffers.emplace_back(buffer.get());
 
                     // add CS function target
-                    if (name == pass.m_csName)
-                        pass.m_csBuffers.push_back(&buffer);
+                    if (name == pass->m_csName)
+                        pass->m_csBuffers.emplace_back(buffer.get());
 
                     // add GS function target
-                    if (name == pass.m_gsName)
-                        pass.m_gsBuffers.push_back(&buffer);
+                    if (name == pass->m_gsName)
+                        pass->m_gsBuffers.emplace_back(buffer.get());
                 }
             }
         }
