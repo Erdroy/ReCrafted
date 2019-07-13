@@ -316,6 +316,11 @@ namespace ReCrafted.Editor.Windows.Content
 
                     break;
                 }
+                case ".fbx":
+                {
+
+                    break;
+                }
                 // TODO: Add more import options
                 default:
                     // TODO: Add log

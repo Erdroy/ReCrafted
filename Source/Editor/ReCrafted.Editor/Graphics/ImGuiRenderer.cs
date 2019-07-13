@@ -71,7 +71,7 @@ namespace ReCrafted.Editor.Graphics
 
             // Load default font
             var io = ImGui.GetIO();
-            var newFont = io.Fonts.AddFontFromFileTTF("../assets/fonts/Lato-Regular.ttf", 14.0f);
+            var newFont = io.Fonts.AddFontFromFileTTF("assets/fonts/Lato-Regular.ttf", 14.0f);
             io.Fonts.AddFontDefault(newFont.ConfigData);
 
             CreateDeviceResources(gd, outputDescription);
