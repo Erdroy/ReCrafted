@@ -7,9 +7,6 @@
 [submodule "Source/Libraries/concurrentqueue"]
 	path = Source/Libraries/concurrentqueue
 	url = https://github.com/cameron314/concurrentqueue
-[submodule "Source/Libraries/PhysX"]
-	path = Source/Libraries/PhysX
-	url = https://github.com/NVIDIAGameWorks/PhysX
 [submodule "Source/Libraries/json"]
 	path = Source/Libraries/json
 	url = https://github.com/nlohmann/json
