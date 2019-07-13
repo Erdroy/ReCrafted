@@ -8,9 +8,9 @@ using System.Runtime.CompilerServices;
 namespace ReCrafted.API.Rendering 
 {
     /// <summary>
-    ///     Model class. Implements
+    ///     Model asset class.
     /// </summary>
-    public sealed partial class Model : Object
+    public sealed partial class Model : BinaryAsset
     {
 
         /// <summary>

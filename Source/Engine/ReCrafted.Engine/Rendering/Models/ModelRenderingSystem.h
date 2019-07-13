@@ -9,7 +9,7 @@
 #include "Rendering/RenderingComponent.h"
 #include "Rendering/Models/ModelComponent.h"
 
-class ModelRenderingSystem : public RenderingComponent<ModelRenderingSystem>
+class ModelRenderingSystem final : public RenderingComponent<ModelRenderingSystem>
 {
     friend class RenderingManager;
 public:

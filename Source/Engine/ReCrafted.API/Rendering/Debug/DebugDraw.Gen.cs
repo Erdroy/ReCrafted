@@ -114,7 +114,6 @@ namespace ReCrafted.API.Rendering.Debug
         /// <summary>
         ///     Sets current debug draw render color.
         /// </summary>
-        /// <param name="color">The color.</param>
         public static Color Color
         {
             get
@@ -128,7 +127,6 @@ namespace ReCrafted.API.Rendering.Debug
         /// <summary>
         ///     Sets matrix that will be used for vertex transformation.
         /// </summary>
-        /// <param name="matrix">The matrix.</param>
         public static Matrix Matrix
         {
             get

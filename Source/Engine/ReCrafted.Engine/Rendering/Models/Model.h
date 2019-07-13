@@ -12,16 +12,31 @@ API_USING("ReCrafted.API.Content")
 API_USING("ReCrafted.API.Mathematics")
 
 /// <summary>
-///     Model class. Implements
+///     Model asset class.
 /// </summary>
 API_CLASS(public, sealed, partial, customNamespace = "ReCrafted.API.Rendering")
-class Model : public Object
+class Model final : public BinaryAsset
 {
     API_CLASS_BODY()
 
 private:
     List<Mesh*> m_meshes = {};
     List<Material*> m_materials = {};
+
+protected:
+    void OnDeserializeBinary(uint16_t version, BinaryStream& stream) override;
+    void OnLoadEnd() override;
+    void OnUnload() override;
+
+    AssetType GetAssetType() override
+    {
+        return AssetType::Model;
+    }
+
+    bool CanLoadAsync() override
+    {
+        return true;
+    }
 
 public:
     /// <summary>

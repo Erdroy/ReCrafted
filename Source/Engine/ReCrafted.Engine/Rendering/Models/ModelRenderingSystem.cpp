@@ -56,8 +56,7 @@ void ModelRenderingSystem::Render()
         for(auto i = 0u; i < material->m_textures.Count(); i ++)
             shader->SetTexture(i, material->m_textures[i]);
 
-        // Bind fields
-        // TODO: This could be actually improved by building data buffer, then uploading each buffer at once.
+        // Update shader fields values
         for(auto&& field : material->m_fields)
             Renderer::SetShaderValue(shader->GetHandle(), field->Buffer, field->Id, field->Data, field->Size);
 
