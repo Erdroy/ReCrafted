@@ -31,3 +31,6 @@
 [submodule "Source/Libraries/cpp-base64"]
 	path = Source/Libraries/cpp-base64
 	url = https://github.com/Erdroy/cpp-base64
+[submodule "Source/Libraries/ReCrafted.PhysX"]
+	path = Source/Libraries/ReCrafted.PhysX
+	url = https://github.com/Erdroy/ReCrafted.PhysX

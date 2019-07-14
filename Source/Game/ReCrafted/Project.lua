@@ -33,6 +33,7 @@ project "ReCrafted"
     
 	libdirs {
 		path.join(LIBRARIES_DIR, "ReCrafted.Mono/Build/Windows-x86_64"),
+		path.join(LIBRARIES_DIR, "ReCrafted.PhysX/Build/Windows-x86_64"),
 	}
 	
     -- default deps
