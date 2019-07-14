@@ -13,6 +13,7 @@
 #include <foundation/PxFoundationConfig.h>
 #include <foundation/PxAllocatorCallback.h>
 #include <foundation/PxErrorCallback.h>
+#include <foundation/PsSync.h>
 
 using namespace physx;
 

@@ -31,28 +31,33 @@ API_USING("ReCrafted.API.Mathematics");
 ///     PhysicsManager class. Provides basic physics functionality.
 /// </summary>
 API_CLASS(public, static, partial, noinherit)
-class PhysicsManager : public SubSystem<PhysicsManager>
+class PhysicsManager final : public SubSystem<PhysicsManager>
 {
     API_CLASS_BODY()
 
 private:
     PxFoundation* m_foundation = nullptr;
-    PxPvd* m_pvd = nullptr;
-    PxPvdTransport* m_pvdTransport;
-
     PxPhysics* m_physics = nullptr;
+
     PxDefaultCpuDispatcher* m_cpuDispatcher = nullptr;
 
+    PxPvd* m_pvd = nullptr;
+    PxPvdTransport* m_pvdTransport = nullptr;
+
     PxMaterial* m_defaultMaterial = nullptr;
+    ShapeCooker* m_defaultShapeCooker = nullptr;
 
     PxTolerancesScale m_tolerancesScale;
 
-    ShapeCooker* m_shapeCooker = nullptr;
     //std::vector<PhysXScene*> m_scenes = {};
 
 protected:
     void Initialize() override;
     void Shutdown() override;
+
+private:
+    void UpdateScene(PxScene* scene);
+    void SimulateScene(PxScene* scene);
 
 public:
     static PxPhysics* GetPhysics();

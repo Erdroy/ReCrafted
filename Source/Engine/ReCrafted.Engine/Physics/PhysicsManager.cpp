@@ -51,6 +51,8 @@ void PhysicsManager::Initialize()
 
     if (m_pvd->connect(*m_pvdTransport, PxPvdInstrumentationFlag::ePROFILE))
         Logger::Log("Connected to NVIDIA PhysX Visual Debugger");
+    else
+        Logger::Log("Could not connect to NVIDIA PhysX Visual Debugger");
 #endif
 
     // Create px physics
@@ -69,8 +71,8 @@ void PhysicsManager::Initialize()
     m_defaultMaterial = m_physics->createMaterial(0.7f, 0.7f, 0.25f);
 
     // Create default shape cooker
-    m_shapeCooker = new ShapeCooker();
-    m_shapeCooker->Initialize(m_foundation, m_tolerancesScale);
+    m_defaultShapeCooker = new ShapeCooker();
+    m_defaultShapeCooker->Initialize(m_foundation, m_tolerancesScale);
 }
 
 void PhysicsManager::Shutdown()
@@ -78,9 +80,9 @@ void PhysicsManager::Shutdown()
     m_cpuDispatcher->release();
     m_cpuDispatcher = nullptr;
 
-    m_shapeCooker->Shutdown();
-    delete m_shapeCooker;
-    m_shapeCooker = nullptr;
+    m_defaultShapeCooker->Shutdown();
+    delete m_defaultShapeCooker;
+    m_defaultShapeCooker = nullptr;
 
     m_defaultMaterial->release();
     m_defaultMaterial = nullptr;
