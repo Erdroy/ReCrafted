@@ -33,7 +33,6 @@ project "ReCrafted"
     
 	libdirs {
 		path.join(LIBRARIES_DIR, "ReCrafted.Mono/Build/Windows-x86_64"),
-		path.join(LIBRARIES_DIR, "ReCrafted.PhysX/Build/Windows-x86_64"),
 	}
 	
     -- default deps
@@ -52,6 +51,10 @@ project "ReCrafted"
 	
 	-- configs
     configuration { "Debug" }
+		libdirs { 
+			path.join(LIBRARIES_DIR, "ReCrafted.PhysX/Build/Windows-x86_64/Debug") 
+		}
+		objdir (path.join(ROOT_DIR, "Temp/ReCrafted/debug"))
 		debugargs { }
 		defines { "DEBUG", "_ITERATOR_DEBUG_LEVEL=0" }
 		runtime "Debug"
@@ -59,6 +62,10 @@ project "ReCrafted"
         links { }
 
     configuration { "Development" }
+		libdirs { 
+			path.join(LIBRARIES_DIR, "ReCrafted.PhysX/Build/Windows-x86_64/Checked") 
+		}
+		objdir (path.join(ROOT_DIR, "Temp/ReCrafted/developement"))
 		debugargs { }
 		defines { "NDEBUG", "DEVELOPMENT" }
 		flags { "No64BitChecks", "NoBufferSecurityCheck" }
@@ -67,6 +74,10 @@ project "ReCrafted"
         links { }
 
 	configuration { "Release" }
+		libdirs { 
+			path.join(LIBRARIES_DIR, "ReCrafted.PhysX/Build/Windows-x86_64/Release") 
+		}
+		objdir (path.join(ROOT_DIR, "Temp/ReCrafted/release"))
 		debugargs { }
 		defines { "NDEBUG", "RELEASE" }
 		flags { "No64BitChecks", "NoBufferSecurityCheck", "LinkTimeOptimization" }

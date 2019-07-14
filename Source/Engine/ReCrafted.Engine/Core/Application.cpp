@@ -9,6 +9,7 @@
 #include "Core/Display.h"
 #include "Core/Time.h"
 #include "Input/InputManager.h"
+#include "Physics/PhysicsManager.h"
 #include "Rendering/RenderingManager.h"
 #include "Rendering/Renderer/Renderer.h"
 #include "Scripting/ScriptingManager.h"
@@ -50,6 +51,7 @@ void Application::InitializeSubSystems() const
     SubSystemManager::Register<InputManager>();
     SubSystemManager::Register<RenderingManager>();
     SubSystemManager::Register<SceneManager>();
+    SubSystemManager::Register<PhysicsManager>();
 }
 
 void Application::InitializeGame()

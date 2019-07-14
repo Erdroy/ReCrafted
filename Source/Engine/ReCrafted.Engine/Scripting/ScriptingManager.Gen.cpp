@@ -15,6 +15,7 @@
 #include "Input/Keyboard.h"
 #include "Input/Mouse.h"
 #include "Input/NullDevice.h"
+#include "Physics/PhysicsManager.h"
 #include "Rendering/Camera.h"
 #include "Rendering/CameraActor.h"
 #include "Rendering/Mesh.h"
@@ -43,6 +44,7 @@ void ScriptingManager::InitRuntime()
     Keyboard::InitRuntime();
     Mouse::InitRuntime();
     NullDevice::InitRuntime();
+    PhysicsManager::InitRuntime();
     Camera::InitRuntime();
     CameraActor::InitRuntime();
     Mesh::InitRuntime();

@@ -30,13 +30,13 @@ project "ReCrafted.Engine"
         path.join(LIBRARIES_DIR, "fmt/include"),
         path.join(LIBRARIES_DIR, "json/include"),
         path.join(LIBRARIES_DIR, "cpp-base64"),
+		
         path.join(LIBRARIES_DIR, "ReCrafted.Mono/Include"),
         path.join(LIBRARIES_DIR, "ReCrafted.PhysX/Include"),
     }
 
 	libdirs {
 		path.join(LIBRARIES_DIR, "ReCrafted.Mono/Build/Windows-x86_64"),
-		path.join(LIBRARIES_DIR, "ReCrafted.PhysX/Build/Windows-x86_64"),
 	}
 	
     -- default deps
@@ -47,9 +47,20 @@ project "ReCrafted.Engine"
         "d3d11", "dxguid", "dxgi", "d3dcompiler", 
         "Rpcrt4",
 		
+		-- Mono
 		"mono-2.0-sgen",
-    }
-    
+		
+		-- PhysX
+		"PhysX_static_64", 
+		"PhysXCharacterKinematic_static_64", 
+		"PhysXCommon_static_64",
+		"PhysXCooking_static_64", 
+		"PhysXExtensions_static_64", 
+		"PhysXFoundation_static_64", 
+		"PhysXPvdSDK_static_64", 
+		"PhysXVehicle_static_64", 
+	}
+	
     -- exclude hlsl files from build
     filter { "files:**.hlsl" }
         flags { "ExcludeFromBuild" }
@@ -60,6 +71,10 @@ project "ReCrafted.Engine"
 
 	-- configs
     configuration { "Debug" }
+		libdirs { 
+			path.join(LIBRARIES_DIR, "ReCrafted.PhysX/Build/Windows-x86_64/Debug") 
+		}
+		objdir (path.join(ROOT_DIR, "Temp/ReCrafted.Engine/debug"))
 		debugargs { "-debug" }
 		defines { "DEBUG", "_ITERATOR_DEBUG_LEVEL=0" }
 		runtime "Debug"
@@ -67,6 +82,10 @@ project "ReCrafted.Engine"
         links { }
 
     configuration { "Development" }
+		libdirs { 
+			path.join(LIBRARIES_DIR, "ReCrafted.PhysX/Build/Windows-x86_64/Checked") 
+		}
+		objdir (path.join(ROOT_DIR, "Temp/ReCrafted.Engine/developement"))
 		debugargs { "-debug" }
 		defines { "NDEBUG", "DEVELOPMENT" }
 		flags { "No64BitChecks", "NoBufferSecurityCheck" }
@@ -75,6 +94,10 @@ project "ReCrafted.Engine"
         links { }
 
 	configuration { "Release" }
+		libdirs { 
+			path.join(LIBRARIES_DIR, "ReCrafted.PhysX/Build/Windows-x86_64/Release") 
+		}
+		objdir (path.join(ROOT_DIR, "Temp/ReCrafted.Engine/release"))
 		debugargs { }
 		defines { "NDEBUG", "RELEASE" }
 		flags { "No64BitChecks", "NoBufferSecurityCheck", "LinkTimeOptimization" }

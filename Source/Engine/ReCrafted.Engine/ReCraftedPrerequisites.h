@@ -65,6 +65,9 @@ class TaskManager;
 // Game/
 class GameManager;
 
+// Physics/
+class PhysicsManager;
+
 // Rendering/
 enum class DrawMode : byte;
 enum class MaterialFieldType : byte;

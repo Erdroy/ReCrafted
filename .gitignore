@@ -7,6 +7,7 @@ packages/
 /[Dd]ebug/
 /[Rr]elease/
 /[Bb]uild/
+/[Tt]emp/
 
 *.user
 *.sln
