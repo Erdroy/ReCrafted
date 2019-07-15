@@ -3,7 +3,7 @@
 #include "ShapeCooker.h"
 #include "PhysicsManager.h"
 
-void ShapeCooker::Initialize(PxFoundation* foundation, PxTolerancesScale& tolerances, const Settings& settings)
+ShapeCooker::ShapeCooker(PxFoundation* foundation, PxTolerancesScale& tolerances, const Settings& settings)
 {
     // Initialize px cooking, this will be needed for ship colliders cooking etc.
     PxCookingParams cookingParams(tolerances);
@@ -22,7 +22,7 @@ void ShapeCooker::Initialize(PxFoundation* foundation, PxTolerancesScale& tolera
     _ASSERT_(m_cooking, "Failed to create PhysX cooking!");
 }
 
-void ShapeCooker::Shutdown()
+ShapeCooker::~ShapeCooker()
 {
     ASSERT(m_cooking);
 

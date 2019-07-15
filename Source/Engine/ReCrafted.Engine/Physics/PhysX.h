@@ -17,7 +17,6 @@
 
 using namespace physx;
 
-
 #define FromPxV2(vec)   Vector2(vec.x, vec.y)
 #define FromPxV3(vec)   Vector3(vec.x, vec.y, vec.z)
 #define FromPxV3Ex(vec) Vector3(float(vec.x), float(vec.y), float(vec.z))
@@ -29,5 +28,7 @@ using namespace physx;
 #define ToPxV3Ex(vec)   PxExtendedVec3(double(vec.x), double(vec.y), double(vec.z))
 #define ToPxV4(vec)     PxVec4(vec.x, vec.y, vec.z, vec.w)
 #define ToPxQ(vec)      PxQuat(vec.x, vec.y, vec.z, vec.w)
+
+#define PX_RELEASE(obj) if(obj) { obj->release(); obj = nullptr; }
 
 #endif // PHYSX_H

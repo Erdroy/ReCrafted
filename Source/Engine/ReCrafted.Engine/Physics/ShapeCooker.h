@@ -20,8 +20,8 @@ private:
     PxCooking* m_cooking = nullptr;
 
 public:
-    void Initialize(PxFoundation* foundation, PxTolerancesScale& tolerances, const Settings& settings = {});
-    void Shutdown();
+    ShapeCooker(PxFoundation* foundation, PxTolerancesScale& tolerances, const Settings& settings = {});
+    ~ShapeCooker();
 
 public:
     PxTriangleMesh* CookTriangleMesh(Vector3* vertices, size_t vertexCount, const uint32_t* indices, size_t indexCount) const;
