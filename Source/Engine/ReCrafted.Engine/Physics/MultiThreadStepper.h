@@ -7,8 +7,6 @@
 #include "Common/Singleton.h"
 #include "Physics/PhysX.h"
 
-class MultiThreadStepper;
-
 class StepperTask : public PxLightCpuTask
 {
 protected:

@@ -45,13 +45,13 @@ void Application::InitializeSubSystems() const
     // Register subsystems
     SubSystemManager::Register<ScriptingManager>();
     SubSystemManager::Register<TaskManager>();
+    SubSystemManager::Register<PhysicsManager>();
     SubSystemManager::Register<ObjectManager>();
     SubSystemManager::Register<ContentManager>();
     SubSystemManager::Register<Time>();
     SubSystemManager::Register<InputManager>();
     SubSystemManager::Register<RenderingManager>();
     SubSystemManager::Register<SceneManager>();
-    SubSystemManager::Register<PhysicsManager>();
 }
 
 void Application::InitializeGame()

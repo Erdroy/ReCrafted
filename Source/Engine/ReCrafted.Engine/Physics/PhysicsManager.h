@@ -7,6 +7,7 @@
 #include "Core/SubSystems/SubSystem.h"
 #include "Physics/PhysX.h"
 #include "Physics/ShapeCooker.h"
+#include "Physics/PhysicsScene.h"
 
 enum class ForceMode
 {
@@ -34,6 +35,7 @@ API_CLASS(public, static, partial, noinherit)
 class PhysicsManager final : public SubSystem<PhysicsManager>
 {
     API_CLASS_BODY()
+    friend class PhysicsScene;
 
 private:
     PxFoundation* m_foundation = nullptr;
@@ -49,22 +51,75 @@ private:
 
     PxTolerancesScale m_tolerancesScale;
 
-    //std::vector<PhysXScene*> m_scenes = {};
+    std::vector<PhysicsScene*> m_scenes = {};
+
+private:
+    void AddScene(PhysicsScene* scene);
+    void RemoveScene(PhysicsScene* scene);
 
 protected:
     void Initialize() override;
     void Shutdown() override;
 
-private:
-    void UpdateScene(PxScene* scene);
-    void SimulateScene(PxScene* scene);
+protected:
+    void OnUpdate() override;
+    void OnFixedUpdate() override;
 
 public:
-    static PxPhysics* GetPhysics();
+    /// <summary>
+    ///     Creates new scene for physics simulation.
+    /// </summary>
+    API_FUNCTION()
+    static PhysicsScene* CreateScene();
 
-public: /* Scene Queries */
-    /*static IPhysicsScene* GetSceneAt(Vector3 worldPosition);*/
+    /// <summary>
+    ///     Gets physics scene that contains given world position in it's bounds.
+    ///     TODO: Add double-based math to API.
+    /// </summary>
+    static PhysicsScene* GetSceneAt(Vector3d worldPosition);
 
+public:
     API_FUNCTION(noproxy)
     static bool RayCast(const Vector3& position, const Vector3& direction, float maxDistance, RayCastHit& hit, uint32_t collisionLayer);
+
+public:
+    /// <summary>
+    ///     Internal utility function for accessing PhysX's physics class instance.
+    /// </summary>
+    static PxPhysics* GetPhysics()
+    {
+        return GetInstance()->m_physics;
+    }
+
+    /// <summary>
+    ///     Internal utility function for accessing PhysX's foundation class instance.
+    /// </summary>
+    static PxFoundation* GetFoundation()
+    {
+        return GetInstance()->m_foundation;
+    }
+
+    /// <summary>
+    ///     Internal utility function for accessing PhysX's default material instance.
+    /// </summary>
+    static PxMaterial* GetDefaultMaterial()
+    {
+        return GetInstance()->m_defaultMaterial;
+    }
+
+    /// <summary>
+    ///     Internal utility function for accessing PhysX's CPU dispatcher instance.
+    /// </summary>
+    static PxDefaultCpuDispatcher* GetCPUDispatcher()
+    {
+        return GetInstance()->m_cpuDispatcher;
+    }
+
+    /// <summary>
+    ///     Internal utility function for accessing PhysX's tolerances scale.
+    /// </summary>
+    static const PxTolerancesScale& GetDefaultTolerances()
+    {
+        return GetInstance()->m_tolerancesScale;
+    }
 };

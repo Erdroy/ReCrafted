@@ -2,6 +2,11 @@
 
 #include "PhysicsManager.h"
 #include "Common/Logger.h"
+#include "Core/Time.h"
+#include "Scripting/Object.h"
+#include "MultiThreadStepper.h"
+
+#include <algorithm>
 
 class PhysXAllocator final : public PxAllocatorCallback
 {
@@ -28,6 +33,26 @@ public:
     }
 };
 
+void PhysicsManager::AddScene(PhysicsScene* scene)
+{
+    ASSERT(scene);
+    MAIN_THREAD_ONLY();
+
+    // Add scene to list
+    m_scenes.emplace_back(scene);
+}
+
+void PhysicsManager::RemoveScene(PhysicsScene* scene)
+{
+    ASSERT(scene);
+    MAIN_THREAD_ONLY();
+
+    // Remove scene from list
+    const auto it = std::find(m_scenes.begin(), m_scenes.end(), scene);
+    ASSERT(it != m_scenes.end());
+    m_scenes.erase(it);
+}
+
 void PhysicsManager::Initialize()
 {
     static PhysXAllocator allocator;
@@ -46,13 +71,15 @@ void PhysicsManager::Initialize()
     _ASSERT_(m_foundation, "Failed to create PhysX foundation!");
 
 #ifdef DEBUG
+    Logger::Log("Connecting to NVIDIA PhysX Visual Debugger...");
+
     m_pvd = PxCreatePvd(*m_foundation);
     m_pvdTransport = PxDefaultPvdSocketTransportCreate("localhost", 5425, 5000);
 
     if (m_pvd->connect(*m_pvdTransport, PxPvdInstrumentationFlag::ePROFILE))
-        Logger::Log("Connected to NVIDIA PhysX Visual Debugger");
+        Logger::Log("Connected to NVIDIA PhysX Visual Debugger.");
     else
-        Logger::Log("Could not connect to NVIDIA PhysX Visual Debugger");
+        Logger::Log("Could not connect to NVIDIA PhysX Visual Debugger!");
 #endif
 
     // Create px physics
@@ -71,42 +98,71 @@ void PhysicsManager::Initialize()
     m_defaultMaterial = m_physics->createMaterial(0.7f, 0.7f, 0.25f);
 
     // Create default shape cooker
-    m_defaultShapeCooker = new ShapeCooker();
-    m_defaultShapeCooker->Initialize(m_foundation, m_tolerancesScale);
+    m_defaultShapeCooker = new ShapeCooker(m_foundation, m_tolerancesScale);
+
+    // Initialize stepper
+    MultiThreadStepper::GetInstance()->Initialize(float(Time::FixedDeltaTime()));
 }
 
 void PhysicsManager::Shutdown()
 {
-    m_cpuDispatcher->release();
-    m_cpuDispatcher = nullptr;
+    // Shutdown the stepper
+    MultiThreadStepper::GetInstance()->Dispose();
 
-    m_defaultShapeCooker->Shutdown();
+    PX_RELEASE(m_cpuDispatcher);
+
     delete m_defaultShapeCooker;
-    m_defaultShapeCooker = nullptr;
 
-    m_defaultMaterial->release();
-    m_defaultMaterial = nullptr;
+    PX_RELEASE(m_defaultMaterial);
 
     PxCloseExtensions();
 
-    m_physics->release();
-    m_physics = nullptr;
+    PX_RELEASE(m_physics);
 
 #ifdef DEBUG
-    m_pvdTransport->release();
-    m_pvdTransport = nullptr;
-
-    m_pvd->release();
-    m_pvd = nullptr;
+    PX_RELEASE(m_pvd);
+    PX_RELEASE(m_pvdTransport);
 #endif
 
-    m_foundation->release();
-    m_foundation = nullptr;
+    PX_RELEASE(m_foundation);
 }
 
-PxPhysics* PhysicsManager::GetPhysics()
+void PhysicsManager::OnUpdate()
 {
-    return GetInstance()->m_physics;
+    for (auto&& scene : m_scenes)
+    {
+        if (scene->Enabled())
+        {
+            scene->Update();
+        }
+    }
+}
+
+void PhysicsManager::OnFixedUpdate()
+{
+    for(auto&& scene : m_scenes)
+    {
+        if (scene->Enabled())
+        {
+            scene->Simulate();
+        }
+    }
+}
+
+PhysicsScene* PhysicsManager::CreateScene()
+{
+    return Object::New<PhysicsScene>();
+}
+
+PhysicsScene* PhysicsManager::GetSceneAt(Vector3d worldPosition)
+{
+    if (!GetInstance()->m_scenes.empty())
+        return GetInstance()->m_scenes[0];
+
+    // TODO: Physics clustering system (PhysicsClusterManager)
+    // TODO: Check cluster bounds etc.
+
+    return nullptr;
 }
 
 bool PhysicsManager::RayCast(const Vector3& position, const Vector3& direction, float maxDistance, RayCastHit& hit, uint32_t collisionLayer)

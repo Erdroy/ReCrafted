@@ -66,7 +66,13 @@ class TaskManager;
 class GameManager;
 
 // Physics/
+class StepperTaskSimulate;
+class StepperTask;
+class MultiThreadStepper;
+struct RayCastHit;
 class PhysicsManager;
+class PhysicsScene;
+class ShapeCooker;
 
 // Rendering/
 enum class DrawMode : byte;

@@ -11,6 +11,17 @@ namespace ReCrafted.API.Physics
     /// </summary>
     public static partial class PhysicsManager
     {
+        
+        /// <summary>
+        ///     Creates new scene for physics simulation.
+        /// </summary>
+        public static PhysicsScene CreateScene()
+        {
+            return InternalCreateScene();
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern PhysicsScene InternalCreateScene();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern bool InternalRayCast(Vector3 position, Vector3 direction, float maxDistance, ref RayCastHit hit, uint collisionLayer);
