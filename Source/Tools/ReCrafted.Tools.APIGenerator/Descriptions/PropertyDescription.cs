@@ -54,7 +54,8 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
             else
                 paramString.Append(Type.ToString(isReturn, false, false));
 
-            paramString.Append('*');
+            if(!ForceByValue || isReturn)
+                paramString.Append('*');
 
             paramString.Append(' ');
             if (Type.IsSpecial)

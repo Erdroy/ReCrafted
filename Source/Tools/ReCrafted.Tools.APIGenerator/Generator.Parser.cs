@@ -103,7 +103,7 @@ namespace ReCrafted.Tools.APIGenerator
                 Comment = function.Comment,
                 AllowMultithread = function.AllowMultithread,
                 Mode = !function.ReturnType.IsVoid ? PropertyMode.Getter : PropertyMode.Setter,
-                ForceByValue = false // TODO: Add 'by value' support
+                ForceByValue = function.ForceByValue
             };
 
             if (function.ReturnType.IsVoid)
@@ -186,6 +186,9 @@ namespace ReCrafted.Tools.APIGenerator
                     case "noproxy":
                     case "extern":
                         desc.Extern = true;
+                        break;
+                    case "byvalue":
+                        desc.ForceByValue = true;
                         break;
                     case "noprefix":
                     case "static":

@@ -712,7 +712,7 @@ if(!property.IsStatic)
             this.Write("(");
             
             #line 233 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
-if(!property.Type.IsSpecial){
+if(!property.Type.IsSpecial && !property.ForceByValue){
             
             #line default
             #line hidden
@@ -751,7 +751,7 @@ else
             this.Write("(");
             
             #line 239 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CPlusPlusTemplate.tt"
-if(!property.Type.IsSpecial){
+if(!property.Type.IsSpecial && !property.ForceByValue){
             
             #line default
             #line hidden

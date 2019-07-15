@@ -380,11 +380,18 @@ if(!property.IsStatic){
             this.Write("NativePtr, ");
             
             #line 106 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+} if(!property.ForceByValue){
+            
+            #line default
+            #line hidden
+            this.Write("ref ");
+            
+            #line 106 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 }
             
             #line default
             #line hidden
-            this.Write("ref value");
+            this.Write("value");
             
             #line 106 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 if(property.Type.CastToManaged){
@@ -525,11 +532,17 @@ if(!property.IsStatic){
             this.Write("System.IntPtr nativePtr, ");
             
             #line 145 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
-}
+} if(!property.ForceByValue){
             
             #line default
             #line hidden
             this.Write("ref ");
+            
+            #line 145 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+}
+            
+            #line default
+            #line hidden
             
             #line 145 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.ToCSharp(false, true)));

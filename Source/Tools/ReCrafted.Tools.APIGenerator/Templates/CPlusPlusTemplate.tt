@@ -230,13 +230,13 @@ if(!property.IsStatic)
 {
 #>
         MONO_CHECK_OBJECT(instance, "<#=Class.Name#>");
-        instance-><#=property.SetterFunctionName#>(<#if(!property.Type.IsSpecial){#>*<#}#>data);
+        instance-><#=property.SetterFunctionName#>(<#if(!property.Type.IsSpecial && !property.ForceByValue){#>*<#}#>data);
 <#
 }
 else
 {
 #>
-        <#=Class.Name#>::<#=property.SetterFunctionName#>(<#if(!property.Type.IsSpecial){#>*<#}#>data);
+        <#=Class.Name#>::<#=property.SetterFunctionName#>(<#if(!property.Type.IsSpecial && !property.ForceByValue){#>*<#}#>data);
 <#
 }
 if(property.Type.IsSpecial)

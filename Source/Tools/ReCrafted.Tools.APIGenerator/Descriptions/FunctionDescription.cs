@@ -22,6 +22,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
         public AccessModifier Access { get; set; }
         public bool AllowMultithread { get; set; } = false;
         public bool Extern { get; set; } = false;
+        public bool ForceByValue { get; set; } = false;
         public bool IsStatic => Modifiers.Contains("static");
         public List<string> Modifiers { get; } = new List<string>();
         public List<Param> Parameters { get; } = new List<Param>();
