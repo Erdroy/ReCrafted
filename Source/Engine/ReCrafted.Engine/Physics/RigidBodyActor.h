@@ -7,6 +7,7 @@
 #include "Core/Actors/ActorBase.h"
 #include "Physics/PhysX.h"
 #include "Physics/PhysicsScene.h"
+#include "Physics/Collider.h"
 
 API_USING("ReCrafted.API.Core.Actors")
 API_USING("ReCrafted.API.Mathematics")
@@ -47,6 +48,8 @@ protected:
     PxVec3 m_lastPxPos = {};
     PxQuat m_lastPxRot = {};
 
+    std::vector<Collider*> m_colliders;
+
 public:
     ~RigidBodyActor();
 
@@ -60,7 +63,35 @@ protected:
     void OnDisable() override;
 
 public:
-    //void AttachShape();
+    /// <summary>
+    ///     Attaches given collider to this actor.
+    /// </summary>
+    /// <param name="collider">Collider to attach.</param>
+    /// <param name="awake">
+    ///     Awakes the actor after adding the collider to it.
+    ///     Only available for dynamic RigidBodies.
+    /// </param>
+    API_FUNCTION()
+    void AttachCollider(Collider* collider, bool awake = false);
+
+    /// <summary>
+    ///     Detaches given collider to this actor.
+    /// </summary>
+    /// <param name="collider">Collider to detach.</param>
+    /// <param name="awakeOnLostTouch">
+    ///     When this actors looses the touch with other collision objects, it will be awaken.
+    /// </param>
+    API_FUNCTION()
+    void DetachCollider(Collider* collider, bool awakeOnLostTouch = true);
+
+    /// <summary>
+    ///     Detaches currently attached colliders from this actor.
+    /// </summary>
+    /// <param name="awakeOnLostTouch">
+    ///     When this actors looses the touch with other collision objects, it will be awaken.
+    /// </param>
+    API_FUNCTION()
+    void DetachColliders(bool awakeOnLostTouch = true);
 
     /// <summary>
     ///     Adds force to this actor.
@@ -86,6 +117,15 @@ public:
     /// </summary>
     API_PROPERTY()
     PhysicsScene* Scene() const;
+
+    /// <summary>
+    ///     Gets the currently attached colliders.
+    /// </summary>
+    API_PROPERTY(noprefix);
+    Array<Collider*> GetColliders()
+    {
+        return { m_colliders.data(), m_colliders.size() };
+    }
 
     /// <summary>
     ///     Gets or sets the sync mode of this actor.

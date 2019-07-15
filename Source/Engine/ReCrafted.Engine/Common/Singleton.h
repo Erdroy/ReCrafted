@@ -19,43 +19,55 @@ public:
 private:
     static TType*& GetInstanceRef()
     {
-#if DEBUG
-        static auto* instance = reinterpret_cast<TType*>(0x1);
-
-        if (instance == reinterpret_cast<TType*>(0x1))
-            instance = new TType();
-
-        if (instance == nullptr)
-            throw std::exception("This singleton call has been released.");
-#else
-        static auto* instance;
+        static TType* instance;
 
         if (instance == nullptr)
             instance = new TType();
+
+#ifdef DEBUG
+        if (IsReleased())
+            throw std::exception("This singleton has been disposed.");
 #endif
 
         return instance;
     }
 
 public:
-    /**
-     * \brief Disposes the singleton object.
-     * Next call to GetInstance will throw an exception.
-     */
+    /// <summary>
+    ///     Disposes the singleton object. Next call to GetInstance will throw an exception.
+    /// </summary>
     void Dispose() const
     {
         auto& instance = GetInstanceRef();
+        IsReleased(true);
         delete instance;
         instance = nullptr;
     }
 
 public:
-    /**
-     * \brief Gets (or creates) the singleton object.
-     * \return The singleton object of type `TType`.
-     */
+    /// <summary>
+    ///     Gets or sets release state.
+    /// </summary>
+    static bool IsReleased(const bool set = false)
+    {
+        static auto isReleased = false;
+
+        if (set)
+            isReleased = true;
+
+        return isReleased;
+
+    }
+
+    /// <summary>
+    ///     Gets (or creates) the singleton object.
+    /// </summary>
+    /// <returns>The singleton object of type `TType`.</returns>
     static TType* GetInstance()
     {
+        if (IsReleased())
+            return nullptr;
+
         return GetInstanceRef();
     }
 };

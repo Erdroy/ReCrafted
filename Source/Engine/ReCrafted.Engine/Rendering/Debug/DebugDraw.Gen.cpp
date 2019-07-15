@@ -70,14 +70,14 @@ public:
         DebugDraw::DrawWireCircle(center, majorAxis, minorAxis);
     }
     
-    static void DebugDraw_Get_Color1(Color* data) 
+    static void DebugDraw_Get_Color1(Color4* data) 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = DebugDraw::GetColor();
         *data = _returnValue;
     }
 
-    static void DebugDraw_Set_Color1(Color* data) 
+    static void DebugDraw_Set_Color1(Color4* data) 
     {
         MAIN_THREAD_ONLY();
         DebugDraw::SetColor(*data);

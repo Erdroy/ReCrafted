@@ -15,7 +15,8 @@ namespace ReCrafted.Game.Core
     {
         private CameraActor _camera;
         private PhysicsScene _defaultPhysicsScene;
-        private RigidBodyActor _actor;
+        private RigidBodyActor _actor1;
+        private RigidBodyActor _actor2;
 
         protected override void OnInitialize()
         {
@@ -29,23 +30,103 @@ namespace ReCrafted.Game.Core
             _defaultPhysicsScene.Enabled = true;
 
             _camera = Object.New<CameraActor>();
+            _camera.Camera.SetAsCurrent();
             _camera.Position = Vector3.BackwardLH * 10.0f;
 
-            _actor = RigidBodyActor.CreateDynamic();
-            _actor.Position = Vector3.Up * 4.0f;
-            _actor.SyncMode = RigidBodySyncMode.Interpolation;
-        }
+            /*_actor1 = RigidBodyActor.CreateDynamic();
+            _actor1.Position = Vector3.Up * 4.0f;
+            _actor1.SyncMode = RigidBodySyncMode.Interpolation;
+            _actor1.AttachCollider(Object.New<BoxCollider>());*/
 
+            _actor2 = RigidBodyActor.CreateDynamic();
+            _actor2.Position = Vector3.Down * 8.0f;
+            _actor2.SyncMode = RigidBodySyncMode.Interpolation;
+            _actor2.AttachCollider(Object.New<BoxCollider>());
+        }
+        
         protected override void OnShutdown()
         {
             base.OnShutdown();
         }
 
+        private float _wT;
+        private float _sT;
+        private float _aT;
+        private float _dT;
+
         protected override void OnUpdate()
         {
             base.OnUpdate();
 
-            DebugDraw.DrawBox(_actor.Position, Vector3.One);
+            if (InputManager.IsKey(Key.W))
+            {
+                _wT = Time.CurrentTime;
+                _actor2.AddForce(Vector3.Up * 10.0f, ForceMode.Acceleration);
+            }
+
+            if (InputManager.IsKey(Key.S))
+            {
+                _sT = Time.CurrentTime;
+                _actor2.AddForce(Vector3.Down * 10.0f, ForceMode.Acceleration);
+            }
+
+            if (InputManager.IsKey(Key.A))
+            {
+                _aT = Time.CurrentTime;
+                _actor2.AddForce(Vector3.Left * 10.0f, ForceMode.Acceleration);
+            }
+
+            if (InputManager.IsKey(Key.D))
+            {
+                _dT = Time.CurrentTime;
+                _actor2.AddForce(Vector3.Right * 10.0f, ForceMode.Acceleration);
+            }
+
+            //DebugDraw.Matrix = Matrix.Translation(_actor1.Position) * Matrix.RotationQuaternion(_actor1.Rotation);
+            //DebugDraw.DrawBox(Vector3.Zero, Vector3.One);
+
+            DebugDraw.Matrix = Matrix.Translation(_actor2.Position) * Matrix.RotationQuaternion(_actor2.Rotation);
+
+            // Draw thrusters
+            var wd = Time.CurrentTime - _wT;
+            if (wd < 0.3f)
+            {
+                var a = 1.0f - wd / 0.3f;
+                var c = new Color(Color.Yellow.ToVector3(), a);
+                DebugDraw.Color = c;
+                DebugDraw.DrawBox(Vector3.Down, Vector3.One * 0.25f);
+            }
+
+            var ad = Time.CurrentTime - _aT;
+            if (ad < 0.3f)
+            {
+                var a = 1.0f - ad / 0.3f;
+                var c = new Color(Color.Yellow.ToVector3(), a);
+                DebugDraw.Color = c;
+                DebugDraw.DrawBox(Vector3.Right, Vector3.One * 0.25f);
+            }
+
+            var dd = Time.CurrentTime - _dT;
+            if (dd < 0.3f)
+            {
+                var a = 1.0f - dd / 0.3f;
+                var c = new Color(Color.Yellow.ToVector3(), a);
+                DebugDraw.Color = c;
+                DebugDraw.DrawBox(Vector3.Left, Vector3.One * 0.25f);
+            }
+
+            var sd = Time.CurrentTime - _sT;
+            if (sd < 0.3f)
+            {
+                var a = 1.0f - sd / 0.3f;
+                var c = new Color(Color.Yellow.ToVector3(), a);
+                DebugDraw.Color = c;
+                DebugDraw.DrawBox(Vector3.Up, Vector3.One * 0.25f);
+            }
+
+            DebugDraw.Color = Color.Red;
+            DebugDraw.DrawBox(Vector3.Zero, Vector3.One);
+
 
             if (InputManager.IsKeyDown(Key.Escape))
                 Application.Quit();

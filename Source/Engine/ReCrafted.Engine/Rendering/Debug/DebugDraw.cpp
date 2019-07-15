@@ -260,16 +260,16 @@ DebugDraw::Batch* DebugDraw::GetBatch()
     return m_currentBatch;
 }
 
-void DebugDraw::SetColor(const Color& color)
+void DebugDraw::SetColor(const Color4& color)
 {
     ASSERT(IS_MAIN_THREAD());
 
     GetInstance()->m_currentColor = color.ToVector();
 }
 
-Color DebugDraw::GetColor()
+Color4 DebugDraw::GetColor()
 {
-    return Color::FromVector(GetInstance()->m_currentColor);
+    return Color4::FromVector(GetInstance()->m_currentColor);
 }
 
 void DebugDraw::SetMatrix(const Matrix & matrix)

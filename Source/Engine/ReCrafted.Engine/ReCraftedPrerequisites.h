@@ -67,6 +67,8 @@ class GameManager;
 
 // Physics/
 enum class ForceMode : byte;
+class Collider;
+class BoxCollider;
 class RigidBodyActor;
 class DynamicRigidBodyActor;
 class StaticRigidBodyActor;
@@ -75,6 +77,7 @@ class StepperTask;
 class MultiThreadStepper;
 struct RayCastHit;
 class PhysicsManager;
+class PhysicsMaterial;
 class PhysicsScene;
 class ShapeCooker;
 

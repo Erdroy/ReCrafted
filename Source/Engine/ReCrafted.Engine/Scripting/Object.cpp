@@ -46,7 +46,9 @@ bool Object::RemoveRef()
     if (m_refCount == 0u)
         return true;
 
-    m_refCount--;
+    if(m_refCount > 0u)
+        m_refCount--;
+
     return m_refCount == 0u;
 }
 

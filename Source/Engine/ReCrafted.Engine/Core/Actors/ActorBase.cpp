@@ -106,7 +106,8 @@ ActorBase::~ActorBase()
     }
 
     // Remove from scene
-    SceneManager::GetInstance()->RemoveActor(this);
+    if(!SceneManager::IsReleased())
+        SceneManager::GetInstance()->RemoveActor(this);
 }
 
 void ActorBase::UpdateTransform()

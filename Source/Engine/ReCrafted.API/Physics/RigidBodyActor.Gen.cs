@@ -13,7 +13,42 @@ namespace ReCrafted.API.Physics
     public abstract class RigidBodyActor : ActorBase
     {
         
-        //void AttachShape();
+        /// <summary>
+        ///     Attaches given collider to this actor.
+        /// </summary>
+        /// <param name="collider">Collider to attach.</param>
+        /// <param name="awake">
+        ///     Awakes the actor after adding the collider to it.
+        ///     Only available for dynamic RigidBodies.
+        /// </param>
+        public void AttachCollider(Collider collider, bool awake = false)
+        {
+            InternalAttachCollider(NativePtr, collider? collider.NativePtr : System.IntPtr.Zero, awake);
+        }
+        
+        /// <summary>
+        ///     Detaches given collider to this actor.
+        /// </summary>
+        /// <param name="collider">Collider to detach.</param>
+        /// <param name="awakeOnLostTouch">
+        ///     When this actors looses the touch with other collision objects, it will be awaken.
+        /// </param>
+        public void DetachCollider(Collider collider, bool awakeOnLostTouch = true)
+        {
+            InternalDetachCollider(NativePtr, collider? collider.NativePtr : System.IntPtr.Zero, awakeOnLostTouch);
+        }
+        
+        /// <summary>
+        ///     Detaches currently attached colliders from this actor.
+        /// </summary>
+        /// <param name="awakeOnLostTouch">
+        ///     When this actors looses the touch with other collision objects, it will be awaken.
+        /// </param>
+        public void DetachColliders(bool awakeOnLostTouch = true)
+        {
+            InternalDetachColliders(NativePtr, awakeOnLostTouch);
+        }
+        
         /// <summary>
         ///     Adds force to this actor.
         /// </summary>
@@ -68,6 +103,18 @@ namespace ReCrafted.API.Physics
             get
             {
                 Get_InternalScene(NativePtr, out var data);
+                return data;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the currently attached colliders.
+        /// </summary>
+        public Collider[] Colliders
+        {
+            get
+            {
+                Get_InternalColliders(NativePtr, out var data);
                 return data;
             }
         }
@@ -290,6 +337,15 @@ namespace ReCrafted.API.Physics
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalAttachCollider(System.IntPtr nativePtr, System.IntPtr collider, bool awake);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalDetachCollider(System.IntPtr nativePtr, System.IntPtr collider, bool awakeOnLostTouch);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalDetachColliders(System.IntPtr nativePtr, bool awakeOnLostTouch);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalAddForce(System.IntPtr nativePtr, Vector3 force, ForceMode forceMode, bool awake);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -306,6 +362,9 @@ namespace ReCrafted.API.Physics
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalScene(System.IntPtr nativePtr, out PhysicsScene data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalColliders(System.IntPtr nativePtr, out Collider[] data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalSyncMode(System.IntPtr nativePtr, out RigidBodySyncMode data);

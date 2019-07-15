@@ -10,33 +10,54 @@ class APIProxy
 {
 public:
     
-    static void RigidBodyActor_AddForce1(RigidBodyActor* instance, const Vector3& force, ForceMode forceMode, bool awake) 
+    static void RigidBodyActor_AttachCollider1(RigidBodyActor* instance, Collider* collider, bool awake) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "RigidBodyActor");
+        instance->AttachCollider(collider, awake);
+    }
+    
+    static void RigidBodyActor_DetachCollider2(RigidBodyActor* instance, Collider* collider, bool awakeOnLostTouch) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "RigidBodyActor");
+        instance->DetachCollider(collider, awakeOnLostTouch);
+    }
+    
+    static void RigidBodyActor_DetachColliders3(RigidBodyActor* instance, bool awakeOnLostTouch) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "RigidBodyActor");
+        instance->DetachColliders(awakeOnLostTouch);
+    }
+    
+    static void RigidBodyActor_AddForce4(RigidBodyActor* instance, const Vector3& force, ForceMode forceMode, bool awake) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
         instance->AddForce(force, forceMode, awake);
     }
     
-    static void RigidBodyActor_AddTorque2(RigidBodyActor* instance, const Vector3& torque, ForceMode forceMode, bool awake) 
+    static void RigidBodyActor_AddTorque5(RigidBodyActor* instance, const Vector3& torque, ForceMode forceMode, bool awake) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
         instance->AddTorque(torque, forceMode, awake);
     }
     
-    static MonoObject* RigidBodyActor_Create3() 
+    static MonoObject* RigidBodyActor_Create6() 
     {
         const auto _returnValue = RigidBodyActor::Create();
         return _returnValue != nullptr ? _returnValue->ToManaged() : nullptr;
     }
     
-    static MonoObject* RigidBodyActor_CreateDynamic4() 
+    static MonoObject* RigidBodyActor_CreateDynamic7() 
     {
         const auto _returnValue = RigidBodyActor::CreateDynamic();
         return _returnValue != nullptr ? _returnValue->ToManaged() : nullptr;
     }
     
-    static MonoObject* RigidBodyActor_CreateStatic5() 
+    static MonoObject* RigidBodyActor_CreateStatic8() 
     {
         const auto _returnValue = RigidBodyActor::CreateStatic();
         return _returnValue != nullptr ? _returnValue->ToManaged() : nullptr;
@@ -51,7 +72,15 @@ public:
         *data = _returnValue;
     }
     
-    static void RigidBodyActor_Get_SyncMode2(RigidBodyActor* instance, RigidBodySyncMode* data) 
+    static void RigidBodyActor_Get_Colliders2(RigidBodyActor* instance, MonoArray** p_data) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "RigidBodyActor");
+        const auto _returnValue = instance->GetColliders();
+        *p_data = MONO_ARRAY_FROM_OBJECT_ARRAY(_returnValue, Collider, Collider*, MonoObject*, _t0->ToManaged());
+    }
+    
+    static void RigidBodyActor_Get_SyncMode3(RigidBodyActor* instance, RigidBodySyncMode* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
@@ -59,14 +88,14 @@ public:
         *data = _returnValue;
     }
 
-    static void RigidBodyActor_Set_SyncMode2(RigidBodyActor* instance, RigidBodySyncMode* data) 
+    static void RigidBodyActor_Set_SyncMode3(RigidBodyActor* instance, RigidBodySyncMode* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
         instance->SyncMode(*data);
     }
     
-    static void RigidBodyActor_Get_Position3(RigidBodyActor* instance, Vector3* data) 
+    static void RigidBodyActor_Get_Position4(RigidBodyActor* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
@@ -74,14 +103,14 @@ public:
         *data = _returnValue;
     }
 
-    static void RigidBodyActor_Set_Position3(RigidBodyActor* instance, Vector3* data) 
+    static void RigidBodyActor_Set_Position4(RigidBodyActor* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
         instance->Position(*data);
     }
     
-    static void RigidBodyActor_Get_Rotation4(RigidBodyActor* instance, Quaternion* data) 
+    static void RigidBodyActor_Get_Rotation5(RigidBodyActor* instance, Quaternion* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
@@ -89,14 +118,14 @@ public:
         *data = _returnValue;
     }
 
-    static void RigidBodyActor_Set_Rotation4(RigidBodyActor* instance, Quaternion* data) 
+    static void RigidBodyActor_Set_Rotation5(RigidBodyActor* instance, Quaternion* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
         instance->Rotation(*data);
     }
     
-    static void RigidBodyActor_Get_AffectedByGravity5(RigidBodyActor* instance, bool* data) 
+    static void RigidBodyActor_Get_AffectedByGravity6(RigidBodyActor* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
@@ -104,14 +133,14 @@ public:
         *data = _returnValue;
     }
 
-    static void RigidBodyActor_Set_AffectedByGravity5(RigidBodyActor* instance, bool* data) 
+    static void RigidBodyActor_Set_AffectedByGravity6(RigidBodyActor* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
         instance->AffectedByGravity(*data);
     }
     
-    static void RigidBodyActor_Get_CollisionLayer6(RigidBodyActor* instance, uint32_t* data) 
+    static void RigidBodyActor_Get_CollisionLayer7(RigidBodyActor* instance, uint32_t* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
@@ -119,14 +148,14 @@ public:
         *data = _returnValue;
     }
 
-    static void RigidBodyActor_Set_CollisionLayer6(RigidBodyActor* instance, uint32_t* data) 
+    static void RigidBodyActor_Set_CollisionLayer7(RigidBodyActor* instance, uint32_t* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
         instance->CollisionLayer(*data);
     }
     
-    static void RigidBodyActor_Get_Velocity7(RigidBodyActor* instance, Vector3* data) 
+    static void RigidBodyActor_Get_Velocity8(RigidBodyActor* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
@@ -134,14 +163,14 @@ public:
         *data = _returnValue;
     }
 
-    static void RigidBodyActor_Set_Velocity7(RigidBodyActor* instance, Vector3* data) 
+    static void RigidBodyActor_Set_Velocity8(RigidBodyActor* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
         instance->Velocity(*data);
     }
     
-    static void RigidBodyActor_Get_AngularVelocity8(RigidBodyActor* instance, Vector3* data) 
+    static void RigidBodyActor_Get_AngularVelocity9(RigidBodyActor* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
@@ -149,14 +178,14 @@ public:
         *data = _returnValue;
     }
 
-    static void RigidBodyActor_Set_AngularVelocity8(RigidBodyActor* instance, Vector3* data) 
+    static void RigidBodyActor_Set_AngularVelocity9(RigidBodyActor* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
         instance->AngularVelocity(*data);
     }
     
-    static void RigidBodyActor_Get_CentreOfMass9(RigidBodyActor* instance, Vector3* data) 
+    static void RigidBodyActor_Get_CentreOfMass10(RigidBodyActor* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
@@ -164,14 +193,14 @@ public:
         *data = _returnValue;
     }
 
-    static void RigidBodyActor_Set_CentreOfMass9(RigidBodyActor* instance, Vector3* data) 
+    static void RigidBodyActor_Set_CentreOfMass10(RigidBodyActor* instance, Vector3* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
         instance->CentreOfMass(*data);
     }
     
-    static void RigidBodyActor_Get_MaxAngularVelocity10(RigidBodyActor* instance, float* data) 
+    static void RigidBodyActor_Get_MaxAngularVelocity11(RigidBodyActor* instance, float* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
@@ -179,14 +208,14 @@ public:
         *data = _returnValue;
     }
 
-    static void RigidBodyActor_Set_MaxAngularVelocity10(RigidBodyActor* instance, float* data) 
+    static void RigidBodyActor_Set_MaxAngularVelocity11(RigidBodyActor* instance, float* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
         instance->MaxAngularVelocity(*data);
     }
     
-    static void RigidBodyActor_Get_LinearDamping11(RigidBodyActor* instance, float* data) 
+    static void RigidBodyActor_Get_LinearDamping12(RigidBodyActor* instance, float* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
@@ -194,14 +223,14 @@ public:
         *data = _returnValue;
     }
 
-    static void RigidBodyActor_Set_LinearDamping11(RigidBodyActor* instance, float* data) 
+    static void RigidBodyActor_Set_LinearDamping12(RigidBodyActor* instance, float* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
         instance->LinearDamping(*data);
     }
     
-    static void RigidBodyActor_Get_AngularDamping12(RigidBodyActor* instance, float* data) 
+    static void RigidBodyActor_Get_AngularDamping13(RigidBodyActor* instance, float* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
@@ -209,14 +238,14 @@ public:
         *data = _returnValue;
     }
 
-    static void RigidBodyActor_Set_AngularDamping12(RigidBodyActor* instance, float* data) 
+    static void RigidBodyActor_Set_AngularDamping13(RigidBodyActor* instance, float* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
         instance->AngularDamping(*data);
     }
     
-    static void RigidBodyActor_Get_Mass13(RigidBodyActor* instance, float* data) 
+    static void RigidBodyActor_Get_Mass14(RigidBodyActor* instance, float* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
@@ -224,14 +253,14 @@ public:
         *data = _returnValue;
     }
 
-    static void RigidBodyActor_Set_Mass13(RigidBodyActor* instance, float* data) 
+    static void RigidBodyActor_Set_Mass14(RigidBodyActor* instance, float* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
         instance->Mass(*data);
     }
     
-    static void RigidBodyActor_Get_CCD14(RigidBodyActor* instance, bool* data) 
+    static void RigidBodyActor_Get_CCD15(RigidBodyActor* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
@@ -239,14 +268,14 @@ public:
         *data = _returnValue;
     }
 
-    static void RigidBodyActor_Set_CCD14(RigidBodyActor* instance, bool* data) 
+    static void RigidBodyActor_Set_CCD15(RigidBodyActor* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
         instance->CCD(*data);
     }
     
-    static void RigidBodyActor_Get_IsDynamic15(RigidBodyActor* instance, bool* data) 
+    static void RigidBodyActor_Get_IsDynamic16(RigidBodyActor* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
@@ -254,7 +283,7 @@ public:
         *data = _returnValue;
     }
     
-    static void RigidBodyActor_Get_IsSleeping16(RigidBodyActor* instance, bool* data) 
+    static void RigidBodyActor_Get_IsSleeping17(RigidBodyActor* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
@@ -262,14 +291,14 @@ public:
         *data = _returnValue;
     }
 
-    static void RigidBodyActor_Set_IsSleeping16(RigidBodyActor* instance, bool* data) 
+    static void RigidBodyActor_Set_IsSleeping17(RigidBodyActor* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
         instance->IsSleeping(*data);
     }
     
-    static void RigidBodyActor_Get_IsKinematic17(RigidBodyActor* instance, bool* data) 
+    static void RigidBodyActor_Get_IsKinematic18(RigidBodyActor* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
@@ -277,7 +306,7 @@ public:
         *data = _returnValue;
     }
 
-    static void RigidBodyActor_Set_IsKinematic17(RigidBodyActor* instance, bool* data) 
+    static void RigidBodyActor_Set_IsKinematic18(RigidBodyActor* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "RigidBodyActor");
@@ -288,43 +317,47 @@ public:
 void RigidBodyActor::InitRuntime() 
 {
     MONO_REGISTER_OBJECT_TYPE(RigidBodyActor);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::InternalAddForce", &APIProxy::RigidBodyActor_AddForce1);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::InternalAddTorque", &APIProxy::RigidBodyActor_AddTorque2);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::InternalCreate", &APIProxy::RigidBodyActor_Create3);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::InternalCreateDynamic", &APIProxy::RigidBodyActor_CreateDynamic4);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::InternalCreateStatic", &APIProxy::RigidBodyActor_CreateStatic5);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::InternalAttachCollider", &APIProxy::RigidBodyActor_AttachCollider1);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::InternalDetachCollider", &APIProxy::RigidBodyActor_DetachCollider2);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::InternalDetachColliders", &APIProxy::RigidBodyActor_DetachColliders3);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::InternalAddForce", &APIProxy::RigidBodyActor_AddForce4);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::InternalAddTorque", &APIProxy::RigidBodyActor_AddTorque5);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::InternalCreate", &APIProxy::RigidBodyActor_Create6);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::InternalCreateDynamic", &APIProxy::RigidBodyActor_CreateDynamic7);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::InternalCreateStatic", &APIProxy::RigidBodyActor_CreateStatic8);
     API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalScene", &APIProxy::RigidBodyActor_Get_Scene1);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalSyncMode", &APIProxy::RigidBodyActor_Get_SyncMode2);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalSyncMode", &APIProxy::RigidBodyActor_Set_SyncMode2);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalPosition", &APIProxy::RigidBodyActor_Get_Position3);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalPosition", &APIProxy::RigidBodyActor_Set_Position3);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalRotation", &APIProxy::RigidBodyActor_Get_Rotation4);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalRotation", &APIProxy::RigidBodyActor_Set_Rotation4);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalAffectedByGravity", &APIProxy::RigidBodyActor_Get_AffectedByGravity5);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalAffectedByGravity", &APIProxy::RigidBodyActor_Set_AffectedByGravity5);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalCollisionLayer", &APIProxy::RigidBodyActor_Get_CollisionLayer6);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalCollisionLayer", &APIProxy::RigidBodyActor_Set_CollisionLayer6);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalVelocity", &APIProxy::RigidBodyActor_Get_Velocity7);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalVelocity", &APIProxy::RigidBodyActor_Set_Velocity7);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalAngularVelocity", &APIProxy::RigidBodyActor_Get_AngularVelocity8);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalAngularVelocity", &APIProxy::RigidBodyActor_Set_AngularVelocity8);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalCentreOfMass", &APIProxy::RigidBodyActor_Get_CentreOfMass9);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalCentreOfMass", &APIProxy::RigidBodyActor_Set_CentreOfMass9);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalMaxAngularVelocity", &APIProxy::RigidBodyActor_Get_MaxAngularVelocity10);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalMaxAngularVelocity", &APIProxy::RigidBodyActor_Set_MaxAngularVelocity10);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalLinearDamping", &APIProxy::RigidBodyActor_Get_LinearDamping11);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalLinearDamping", &APIProxy::RigidBodyActor_Set_LinearDamping11);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalAngularDamping", &APIProxy::RigidBodyActor_Get_AngularDamping12);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalAngularDamping", &APIProxy::RigidBodyActor_Set_AngularDamping12);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalMass", &APIProxy::RigidBodyActor_Get_Mass13);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalMass", &APIProxy::RigidBodyActor_Set_Mass13);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalCCD", &APIProxy::RigidBodyActor_Get_CCD14);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalCCD", &APIProxy::RigidBodyActor_Set_CCD14);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalIsDynamic", &APIProxy::RigidBodyActor_Get_IsDynamic15);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalIsSleeping", &APIProxy::RigidBodyActor_Get_IsSleeping16);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalIsSleeping", &APIProxy::RigidBodyActor_Set_IsSleeping16);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalIsKinematic", &APIProxy::RigidBodyActor_Get_IsKinematic17);
-    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalIsKinematic", &APIProxy::RigidBodyActor_Set_IsKinematic17);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalColliders", &APIProxy::RigidBodyActor_Get_Colliders2);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalSyncMode", &APIProxy::RigidBodyActor_Get_SyncMode3);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalSyncMode", &APIProxy::RigidBodyActor_Set_SyncMode3);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalPosition", &APIProxy::RigidBodyActor_Get_Position4);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalPosition", &APIProxy::RigidBodyActor_Set_Position4);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalRotation", &APIProxy::RigidBodyActor_Get_Rotation5);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalRotation", &APIProxy::RigidBodyActor_Set_Rotation5);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalAffectedByGravity", &APIProxy::RigidBodyActor_Get_AffectedByGravity6);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalAffectedByGravity", &APIProxy::RigidBodyActor_Set_AffectedByGravity6);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalCollisionLayer", &APIProxy::RigidBodyActor_Get_CollisionLayer7);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalCollisionLayer", &APIProxy::RigidBodyActor_Set_CollisionLayer7);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalVelocity", &APIProxy::RigidBodyActor_Get_Velocity8);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalVelocity", &APIProxy::RigidBodyActor_Set_Velocity8);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalAngularVelocity", &APIProxy::RigidBodyActor_Get_AngularVelocity9);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalAngularVelocity", &APIProxy::RigidBodyActor_Set_AngularVelocity9);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalCentreOfMass", &APIProxy::RigidBodyActor_Get_CentreOfMass10);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalCentreOfMass", &APIProxy::RigidBodyActor_Set_CentreOfMass10);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalMaxAngularVelocity", &APIProxy::RigidBodyActor_Get_MaxAngularVelocity11);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalMaxAngularVelocity", &APIProxy::RigidBodyActor_Set_MaxAngularVelocity11);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalLinearDamping", &APIProxy::RigidBodyActor_Get_LinearDamping12);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalLinearDamping", &APIProxy::RigidBodyActor_Set_LinearDamping12);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalAngularDamping", &APIProxy::RigidBodyActor_Get_AngularDamping13);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalAngularDamping", &APIProxy::RigidBodyActor_Set_AngularDamping13);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalMass", &APIProxy::RigidBodyActor_Get_Mass14);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalMass", &APIProxy::RigidBodyActor_Set_Mass14);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalCCD", &APIProxy::RigidBodyActor_Get_CCD15);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalCCD", &APIProxy::RigidBodyActor_Set_CCD15);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalIsDynamic", &APIProxy::RigidBodyActor_Get_IsDynamic16);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalIsSleeping", &APIProxy::RigidBodyActor_Get_IsSleeping17);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalIsSleeping", &APIProxy::RigidBodyActor_Set_IsSleeping17);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Get_InternalIsKinematic", &APIProxy::RigidBodyActor_Get_IsKinematic18);
+    API_BIND("ReCrafted.API.Physics.RigidBodyActor::Set_InternalIsKinematic", &APIProxy::RigidBodyActor_Set_IsKinematic18);
 }
 
 const char* RigidBodyActor::Fullname() 

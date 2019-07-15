@@ -114,7 +114,7 @@ namespace ReCrafted.API.Rendering.Debug
         /// <summary>
         ///     Sets current debug draw render color.
         /// </summary>
-        public static Color Color
+        public static Color4 Color
         {
             get
             {
@@ -168,10 +168,10 @@ namespace ReCrafted.API.Rendering.Debug
         private static extern void InternalDrawWireCircle(Vector3 center, Vector3 majorAxis, Vector3 minorAxis);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void Get_InternalColor(out Color data);
+        private static extern void Get_InternalColor(out Color4 data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void Set_InternalColor(ref Color data);
+        private static extern void Set_InternalColor(ref Color4 data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalMatrix(out Matrix data);

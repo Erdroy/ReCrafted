@@ -7,6 +7,7 @@
 #include "MultiThreadStepper.h"
 
 #include <algorithm>
+#include "PhysicsMaterial.h"
 
 class PhysXAllocator final : public PxAllocatorCallback
 {
@@ -95,7 +96,7 @@ void PhysicsManager::Initialize()
     m_cpuDispatcher = PxDefaultCpuDispatcherCreate(std::min(4u, std::thread::hardware_concurrency() - 1)); // Max. 4 threads for physics TODO: Game settings
     
     // Create default material
-    m_defaultMaterial = m_physics->createMaterial(0.7f, 0.7f, 0.25f);
+    PhysicsMaterial::m_defaultMaterial = Object::New<PhysicsMaterial>();
 
     // Create default shape cooker
     m_defaultShapeCooker = new ShapeCooker(m_foundation, m_tolerancesScale);
@@ -106,14 +107,14 @@ void PhysicsManager::Initialize()
 
 void PhysicsManager::Shutdown()
 {
+    Object::DestroyNow(PhysicsMaterial::m_defaultMaterial);
+
     // Shutdown the stepper
     MultiThreadStepper::GetInstance()->Dispose();
 
     PX_RELEASE(m_cpuDispatcher);
 
     delete m_defaultShapeCooker;
-
-    PX_RELEASE(m_defaultMaterial);
 
     PxCloseExtensions();
 

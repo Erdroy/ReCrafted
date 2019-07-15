@@ -36,6 +36,7 @@ using BoundingBox = BoundingBoxBase<float>;
 using BoundingFrustum = BoundingFrustumBase<float>;
 
 using Color = ColorBase<float>;
+using Color4 = Color;
 
 typedef unsigned char byte;
 typedef signed char sbyte;

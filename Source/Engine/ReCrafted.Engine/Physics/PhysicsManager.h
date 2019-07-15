@@ -47,7 +47,6 @@ private:
     PxPvd* m_pvd = nullptr;
     PxPvdTransport* m_pvdTransport = nullptr;
 
-    PxMaterial* m_defaultMaterial = nullptr;
     ShapeCooker* m_defaultShapeCooker = nullptr;
 
     PxTolerancesScale m_tolerancesScale;
@@ -100,14 +99,6 @@ public:
     static PxFoundation* GetFoundation()
     {
         return GetInstance()->m_foundation;
-    }
-
-    /// <summary>
-    ///     Internal utility function for accessing PhysX's default material instance.
-    /// </summary>
-    static PxMaterial* GetDefaultMaterial()
-    {
-        return GetInstance()->m_defaultMaterial;
     }
 
     /// <summary>

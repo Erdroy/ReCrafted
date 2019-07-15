@@ -6,6 +6,7 @@
 #include "DynamicRigidBodyActor.h"
 #include "StaticRigidBodyActor.h"
 #include "PhysicsScene.h"
+#include "Collider.h"
 
 RigidBodyActor::~RigidBodyActor()
 {
@@ -77,6 +78,8 @@ void RigidBodyActor::OnSimulate()
 
     if (m_dynamic && m_affectedByGravity)
     {
+        // TODO: This could be done using DOTS
+
         // Calculate gravity
         auto gDir = Vector3::Normalize(Position());
 
@@ -106,6 +109,43 @@ void RigidBodyActor::OnEnable()
 void RigidBodyActor::OnDisable()
 {
     m_actor->setActorFlag(PxActorFlag::Enum::eDISABLE_SIMULATION, true);
+}
+
+void RigidBodyActor::AttachCollider(Collider* collider, const bool awake)
+{
+    ASSERT(collider);
+    ASSERT(collider->m_shape);
+
+    m_colliders.emplace_back(collider);
+    m_actor->attachShape(*collider->m_shape);
+
+    if (awake && IsSleeping())
+    {
+        IsSleeping(false);
+    }
+}
+
+void RigidBodyActor::DetachCollider(Collider* collider, const bool awakeOnLostTouch)
+{
+    ASSERT(collider);
+    ASSERT(collider->m_shape);
+
+    const auto it = std::find(m_colliders.begin(), m_colliders.end(), collider);
+    if(it != m_colliders.end())
+    {
+        m_actor->detachShape(*collider->m_shape, awakeOnLostTouch);
+        m_colliders.erase(it);
+    }
+}
+
+void RigidBodyActor::DetachColliders(const bool awakeOnLostTouch)
+{
+    for(auto& collider : m_colliders)
+    {
+        m_actor->detachShape(*collider->m_shape, awakeOnLostTouch);
+    }
+
+    m_colliders.clear();
 }
 
 void RigidBodyActor::AddForce(const Vector3& force, ForceMode forceMode, const bool awake) const

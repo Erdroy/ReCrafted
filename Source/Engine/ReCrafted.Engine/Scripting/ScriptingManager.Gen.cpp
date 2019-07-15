@@ -15,8 +15,11 @@
 #include "Input/Keyboard.h"
 #include "Input/Mouse.h"
 #include "Input/NullDevice.h"
+#include "Physics/BoxCollider.h"
+#include "Physics/Collider.h"
 #include "Physics/DynamicRigidBodyActor.h"
 #include "Physics/PhysicsManager.h"
+#include "Physics/PhysicsMaterial.h"
 #include "Physics/PhysicsScene.h"
 #include "Physics/RigidBodyActor.h"
 #include "Physics/StaticRigidBodyActor.h"
@@ -48,8 +51,11 @@ void ScriptingManager::InitRuntime()
     Keyboard::InitRuntime();
     Mouse::InitRuntime();
     NullDevice::InitRuntime();
+    BoxCollider::InitRuntime();
+    Collider::InitRuntime();
     DynamicRigidBodyActor::InitRuntime();
     PhysicsManager::InitRuntime();
+    PhysicsMaterial::InitRuntime();
     PhysicsScene::InitRuntime();
     RigidBodyActor::InitRuntime();
     StaticRigidBodyActor::InitRuntime();
