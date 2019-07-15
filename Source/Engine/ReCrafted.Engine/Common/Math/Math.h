@@ -15,6 +15,13 @@ public:
     }
 
     template<typename TValue>
+    static TValue Clamp01(TValue value)
+    {
+        return value < TValue(0) ? TValue(0) :
+            value > TValue(1) ? TValue(1) : value;
+    }
+
+    template<typename TValue>
     static TValue Min(TValue a, TValue b)
     {
         return a < b ? a : b;
