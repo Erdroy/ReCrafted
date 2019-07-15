@@ -12,12 +12,17 @@ public:
     
     static MonoObject* PhysicsManager_CreateScene1() 
     {
-        MAIN_THREAD_ONLY();
         const auto _returnValue = PhysicsManager::CreateScene();
         return _returnValue != nullptr ? _returnValue->ToManaged() : nullptr;
     }
     
-    static bool PhysicsManager_RayCast2(const Vector3& position, const Vector3& direction, float maxDistance, RayCastHit* hit, uint32_t collisionLayer) 
+    static MonoObject* PhysicsManager_GetSceneAt2(Vector3 worldPosition) 
+    {
+        const auto _returnValue = PhysicsManager::GetSceneAt(worldPosition);
+        return _returnValue != nullptr ? _returnValue->ToManaged() : nullptr;
+    }
+    
+    static bool PhysicsManager_RayCast3(const Vector3& position, const Vector3& direction, float maxDistance, RayCastHit* hit, uint32_t collisionLayer) 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = PhysicsManager::RayCast(position, direction, maxDistance, *hit, collisionLayer);
@@ -29,7 +34,8 @@ void PhysicsManager::InitRuntime()
 {
     MONO_REGISTER_OBJECT_TYPE(PhysicsManager);
     API_BIND("ReCrafted.API.Physics.PhysicsManager::InternalCreateScene", &APIProxy::PhysicsManager_CreateScene1);
-    API_BIND("ReCrafted.API.Physics.PhysicsManager::InternalRayCast", &APIProxy::PhysicsManager_RayCast2);
+    API_BIND("ReCrafted.API.Physics.PhysicsManager::InternalGetSceneAt", &APIProxy::PhysicsManager_GetSceneAt2);
+    API_BIND("ReCrafted.API.Physics.PhysicsManager::InternalRayCast", &APIProxy::PhysicsManager_RayCast3);
 }
 
 const char* PhysicsManager::Fullname() 

@@ -19,9 +19,21 @@ namespace ReCrafted.API.Physics
         {
             return InternalCreateScene();
         }
+        
+        /// <summary>
+        ///     Gets physics scene that contains given world position in it's bounds.
+        ///     TODO: Add double-based math to API.
+        /// </summary>
+        public static PhysicsScene GetSceneAt(Vector3 worldPosition)
+        {
+            return InternalGetSceneAt(worldPosition);
+        }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern PhysicsScene InternalCreateScene();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern PhysicsScene InternalGetSceneAt(Vector3 worldPosition);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern bool InternalRayCast(Vector3 position, Vector3 direction, float maxDistance, ref RayCastHit hit, uint collisionLayer);

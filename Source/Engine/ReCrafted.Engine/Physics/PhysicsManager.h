@@ -4,12 +4,13 @@
 
 #include <ReCrafted.h>
 
+#include "Common/Lock.h"
 #include "Core/SubSystems/SubSystem.h"
 #include "Physics/PhysX.h"
 #include "Physics/ShapeCooker.h"
 #include "Physics/PhysicsScene.h"
 
-enum class ForceMode
+enum class ForceMode : byte
 {
     Force,
     Impulse,
@@ -51,6 +52,7 @@ private:
 
     PxTolerancesScale m_tolerancesScale;
 
+    Lock m_scenesLock;
     std::vector<PhysicsScene*> m_scenes = {};
 
 private:
@@ -69,14 +71,15 @@ public:
     /// <summary>
     ///     Creates new scene for physics simulation.
     /// </summary>
-    API_FUNCTION()
+    API_FUNCTION(multithread)
     static PhysicsScene* CreateScene();
 
     /// <summary>
     ///     Gets physics scene that contains given world position in it's bounds.
     ///     TODO: Add double-based math to API.
     /// </summary>
-    static PhysicsScene* GetSceneAt(Vector3d worldPosition);
+    API_FUNCTION(multithread)
+    static PhysicsScene* GetSceneAt(Vector3 worldPosition);
 
 public:
     API_FUNCTION(noproxy)

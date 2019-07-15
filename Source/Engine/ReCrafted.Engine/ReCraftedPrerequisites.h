@@ -66,6 +66,10 @@ class TaskManager;
 class GameManager;
 
 // Physics/
+enum class ForceMode : byte;
+class RigidBodyActor;
+class DynamicRigidBodyActor;
+class StaticRigidBodyActor;
 class StepperTaskSimulate;
 class StepperTask;
 class MultiThreadStepper;

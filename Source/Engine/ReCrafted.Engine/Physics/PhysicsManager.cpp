@@ -154,8 +154,11 @@ PhysicsScene* PhysicsManager::CreateScene()
     return Object::New<PhysicsScene>();
 }
 
-PhysicsScene* PhysicsManager::GetSceneAt(Vector3d worldPosition)
+PhysicsScene* PhysicsManager::GetSceneAt(Vector3 worldPosition)
 {
+    auto& lock = GetInstance()->m_scenesLock;
+    ScopeLock(lock);
+
     if (!GetInstance()->m_scenes.empty())
         return GetInstance()->m_scenes[0];
 

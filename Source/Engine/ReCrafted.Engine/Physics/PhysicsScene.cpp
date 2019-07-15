@@ -7,6 +7,7 @@
 #include "Core/Time.h"
 #include "Rendering/Camera.h"
 #include "Rendering/Debug/DebugDraw.h"
+#include "RigidBodyActor.h"
 
 PhysicsScene::PhysicsScene()
 {
@@ -60,10 +61,10 @@ PhysicsScene::~PhysicsScene()
 void PhysicsScene::Update()
 {
     //if (!Profiler::IsPhysicsDebugEnabled())
-    /*{
+    {
         m_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 0.0f);
         return;
-    }*/
+    }
 
     auto cp1 = Camera::GetMainCamera()->Position() - Vector3::One * 20.0f;
     auto cp2 = Camera::GetMainCamera()->Position() + Vector3::One * 20.0f;
@@ -121,4 +122,18 @@ bool PhysicsScene::RayCast(const Vector3& position, const Vector3& direction, co
     }
 
     return isHit;
+}
+
+void PhysicsScene::AttachActor(RigidBodyActor* actor)
+{
+    ASSERT(actor->m_scene == nullptr);
+    actor->m_scene = this;
+    m_scene->addActor(*actor->m_actor);
+}
+
+void PhysicsScene::DetachActor(RigidBodyActor* actor)
+{
+    ASSERT(actor->m_scene == this);
+    actor->m_scene = nullptr;
+    m_scene->removeActor(*actor->m_actor);
 }

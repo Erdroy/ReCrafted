@@ -36,6 +36,17 @@ public:
 
 public:
     bool RayCast(const Vector3& position, const Vector3& direction, float maxDistance, RayCastHit* hit, uint32_t collisionLayer) const;
+    
+public:
+    /// <summary>
+    ///     Attaches given actor to this scene.
+    /// </summary>
+    void AttachActor(RigidBodyActor* actor);
+
+    /// <summary>
+    ///     Detaches given actor from the scene.
+    /// </summary>
+    void DetachActor(RigidBodyActor* actor);
 
 public:
     /// <summary>

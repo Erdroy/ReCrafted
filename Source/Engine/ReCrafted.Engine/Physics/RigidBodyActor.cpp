@@ -1,0 +1,321 @@
+// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
+
+#include "RigidBodyActor.h"
+#include "PhysicsManager.h"
+#include "DynamicRigidBodyActor.h"
+#include "StaticRigidBodyActor.h"
+#include "PhysicsScene.h"
+
+RigidBodyActor::~RigidBodyActor()
+{
+    PX_RELEASE(m_actor);
+}
+
+void RigidBodyActor::OnAwake()
+{
+    auto& position = GetTransform().translation;
+    auto& rotation = GetTransform().orientation;
+
+    const auto pxTransform = PxTransform(position.x, position.y, position.z, PxQuat(rotation.x, rotation.y, rotation.z, rotation.w));
+    ASSERT(pxTransform.isValid());
+
+    m_actor = CreatePxActor(pxTransform);
+
+    ASSERT(m_actor);
+}
+
+void RigidBodyActor::OnStart()
+{
+    // Add actor to proper scene
+    // TODO: Use world clustering
+    
+}
+
+void RigidBodyActor::OnUpdate()
+{
+    const auto pose = m_actor->getGlobalPose();
+    auto& currentPosition = pose.p;
+    auto& currentRotation = pose.q;
+
+    if(m_interpolate)
+    {
+        // TODO: Interpolation/Extrapolation
+    }
+    else
+    {
+        ActorBase::Position(FromPxV3(currentPosition));
+        ActorBase::Rotation(FromPxQ(currentRotation));
+    }
+}
+
+void RigidBodyActor::OnSimulate()
+{
+    ASSERT(m_actor);
+
+    if (m_dynamic)
+    {
+        // Calculate gravity
+        m_gravity = Vector3::Normalize(Position()) * -9.81f; // TODO: Use gravitational fields
+
+        // Apply gravity (Add force)
+        AddForce(m_gravity, ForceMode::Acceleration);
+    }
+}
+
+void RigidBodyActor::OnEnable()
+{
+    m_actor->setActorFlag(PxActorFlag::Enum::eDISABLE_SIMULATION, false);
+}
+
+void RigidBodyActor::OnDisable()
+{
+    m_actor->setActorFlag(PxActorFlag::Enum::eDISABLE_SIMULATION, true);
+}
+
+void RigidBodyActor::AddForce(const Vector3& force, ForceMode forceMode, const bool awake) const
+{
+    ASSERT(m_dynamic);
+
+    const auto dynamic = dynamic_cast<PxRigidDynamic*>(m_actor);
+    dynamic->addForce(ToPxV3(force), static_cast<PxForceMode::Enum>(forceMode), awake);
+}
+
+void RigidBodyActor::AddTorque(const Vector3& torque, ForceMode forceMode, const bool awake) const
+{
+    ASSERT(m_dynamic);
+
+    const auto dynamic = dynamic_cast<PxRigidDynamic*>(m_actor);
+    dynamic->addTorque(ToPxV3(torque), static_cast<PxForceMode::Enum>(forceMode), awake);
+}
+
+PhysicsScene* RigidBodyActor::Scene() const
+{
+    return m_scene;
+}
+
+void RigidBodyActor::Position(const Vector3& position)
+{
+    ActorBase::Position(position);
+
+    const auto pose = m_actor->getGlobalPose();
+    m_actor->setGlobalPose(PxTransform(ToPxV3(position), pose.q));
+}
+
+const Vector3& RigidBodyActor::Position() const
+{
+    return ActorBase::Position();
+}
+
+void RigidBodyActor::Rotation(const Quaternion& rotation)
+{
+    ActorBase::Rotation(rotation);
+
+    const auto  pose = m_actor->getGlobalPose();
+    m_actor->setGlobalPose(PxTransform(pose.p, ToPxQ(rotation)));
+}
+
+const Quaternion& RigidBodyActor::Rotation() const
+{
+    return ActorBase::Rotation();
+}
+
+void RigidBodyActor::CollisionLayer(const uint32_t layer)
+{
+    // Store new layer
+    m_collisionLayer = layer;
+
+    // Create filter data
+    auto filter = PxFilterData();
+    filter.word0 = layer;
+
+    const auto shapeCount = m_actor->getNbShapes();
+
+    if (shapeCount == 0u)
+        return;
+
+    // Set this layer for all children shapes
+    PxShape* shape;
+    for (auto i = 0u; i < shapeCount; i++)
+    {
+        ASSERT(m_actor->getShapes(&shape, 1, i) == 1);
+
+        // Set shape filters
+        shape->setQueryFilterData(filter);
+        shape->setSimulationFilterData(filter);
+    }
+}
+
+uint32_t RigidBodyActor::CollisionLayer() const
+{
+    return m_collisionLayer;
+}
+
+void RigidBodyActor::Velocity(const Vector3& velocity) const
+{
+    ASSERT(m_dynamic);
+
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    dynamic->setLinearVelocity(ToPxV3(velocity));
+}
+
+Vector3 RigidBodyActor::Velocity() const
+{
+    ASSERT(m_dynamic);
+
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    const auto vel = dynamic->getLinearVelocity();
+    return FromPxV3(vel);
+}
+
+void RigidBodyActor::AngularVelocity(const Vector3& angularVelocity) const
+{
+    ASSERT(m_dynamic);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    dynamic->setAngularVelocity(ToPxV3(angularVelocity));
+}
+
+Vector3 RigidBodyActor::AngularVelocity() const
+{
+    ASSERT(m_dynamic);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    return FromPxV3(dynamic->getAngularVelocity());
+}
+
+void RigidBodyActor::CentreOfMass(const Vector3& massCentre) const
+{
+    ASSERT(m_dynamic);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    dynamic->setCMassLocalPose(PxTransform(ToPxV3(massCentre)));
+}
+
+Vector3 RigidBodyActor::CentreOfMass() const
+{
+    ASSERT(m_dynamic);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    return FromPxV3(dynamic->getAngularVelocity());
+}
+
+void RigidBodyActor::MaxAngularVelocity(const float maxAngularVelocity) const
+{
+    ASSERT(m_dynamic);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    dynamic->setMaxAngularVelocity(maxAngularVelocity);
+}
+
+float RigidBodyActor::MaxAngularVelocity() const
+{
+    ASSERT(m_dynamic);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    return dynamic->getMaxAngularVelocity();
+}
+
+void RigidBodyActor::LinearDamping(const float damping) const
+{
+    ASSERT(m_dynamic);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    dynamic->setLinearDamping(damping);
+}
+
+float RigidBodyActor::LinearDamping() const
+{
+    ASSERT(m_dynamic);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    return dynamic->getLinearDamping();
+}
+
+void RigidBodyActor::AngularDamping(const float angularDamping) const
+{
+    ASSERT(m_dynamic);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    dynamic->setAngularDamping(angularDamping);
+}
+
+float RigidBodyActor::AngularDamping() const
+{
+    ASSERT(m_dynamic);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    return dynamic->getAngularDamping();
+}
+
+void RigidBodyActor::Mass(const float mass) const
+{
+    ASSERT(m_dynamic);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    dynamic->setMass(mass);
+}
+
+float RigidBodyActor::Mass() const
+{
+    ASSERT(m_dynamic);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    return dynamic->getMass();
+}
+
+void RigidBodyActor::CCD(const bool enabled) const
+{
+    ASSERT(m_dynamic);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    dynamic->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, enabled);
+}
+
+bool RigidBodyActor::CCD() const
+{
+    ASSERT(m_dynamic);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    return dynamic->getRigidBodyFlags() & PxRigidBodyFlag::eENABLE_CCD;
+}
+
+bool RigidBodyActor::IsDynamic() const
+{
+    return m_dynamic;
+}
+
+void RigidBodyActor::IsSleeping(const bool sleep) const
+{
+    ASSERT(m_dynamic);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+
+    if (dynamic->isSleeping() != sleep)
+    {
+        if (sleep)
+            dynamic->putToSleep();
+        else
+            dynamic->wakeUp();
+    }
+}
+
+bool RigidBodyActor::IsSleeping() const
+{
+    ASSERT(m_dynamic);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    return dynamic->isSleeping();
+}
+
+void RigidBodyActor::IsKinematic(const bool isKinematic) const
+{
+    ASSERT(m_dynamic);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    dynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, isKinematic);
+}
+
+bool RigidBodyActor::IsKinematic() const
+{
+    ASSERT(m_dynamic);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
+    return dynamic->getRigidBodyFlags() & PxRigidBodyFlag::eKINEMATIC;
+}
+
+RigidBodyActor* RigidBodyActor::Create()
+{
+    return reinterpret_cast<RigidBodyActor*>(New<DynamicRigidBodyActor>());
+}
+
+RigidBodyActor* RigidBodyActor::CreateDynamic()
+{
+    return reinterpret_cast<RigidBodyActor*>(New<DynamicRigidBodyActor>());
+}
+
+RigidBodyActor* RigidBodyActor::CreateStatic()
+{
+    return static_cast<RigidBodyActor*>(New<StaticRigidBodyActor>());
+}
