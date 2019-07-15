@@ -111,11 +111,13 @@
     <Compile Include="Physics\Collider.Gen.cs" />
     <Compile Include="Physics\DynamicRigidBodyActor.Gen.cs" />
     <Compile Include="Physics\ForceMode.cs" />
+    <Compile Include="Physics\MeshCollider.Gen.cs" />
     <Compile Include="Physics\PhysicsManager.Gen.cs" />
     <Compile Include="Physics\PhysicsMaterial.Gen.cs" />
     <Compile Include="Physics\PhysicsScene.Gen.cs" />
     <Compile Include="Physics\RayCastHit.cs" />
     <Compile Include="Physics\RigidBodyActor.Gen.cs" />
+    <Compile Include="Physics\SphereCollider.Gen.cs" />
     <Compile Include="Physics\StaticRigidBodyActor.Gen.cs" />
     <Compile Include="Physics\SyncMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

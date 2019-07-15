@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include "PhysicsMaterial.h"
+#include "Common/Platform/Environment.h"
 
 class PhysXAllocator final : public PxAllocatorCallback
 {
@@ -72,15 +73,18 @@ void PhysicsManager::Initialize()
     _ASSERT_(m_foundation, "Failed to create PhysX foundation!");
 
 #ifdef DEBUG
-    Logger::Log("Connecting to NVIDIA PhysX Visual Debugger...");
+    if(Environment::GetCommandLineArguments().Contains(STRING("-pvdConnect")))
+    {
+        Logger::Log("Connecting to NVIDIA PhysX Visual Debugger...");
 
-    m_pvd = PxCreatePvd(*m_foundation);
-    m_pvdTransport = PxDefaultPvdSocketTransportCreate("localhost", 5425, 5000);
+        m_pvd = PxCreatePvd(*m_foundation);
+        m_pvdTransport = PxDefaultPvdSocketTransportCreate("localhost", 5425, 5000);
 
-    if (m_pvd->connect(*m_pvdTransport, PxPvdInstrumentationFlag::ePROFILE))
-        Logger::Log("Connected to NVIDIA PhysX Visual Debugger.");
-    else
-        Logger::Log("Could not connect to NVIDIA PhysX Visual Debugger!");
+        if (m_pvd->connect(*m_pvdTransport, PxPvdInstrumentationFlag::ePROFILE))
+            Logger::Log("Connected to NVIDIA PhysX Visual Debugger.");
+        else
+            Logger::Log("Could not connect to NVIDIA PhysX Visual Debugger!");
+    }
 #endif
 
     // Create px physics

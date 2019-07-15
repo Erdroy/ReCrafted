@@ -18,10 +18,12 @@
 #include "Physics/BoxCollider.h"
 #include "Physics/Collider.h"
 #include "Physics/DynamicRigidBodyActor.h"
+#include "Physics/MeshCollider.h"
 #include "Physics/PhysicsManager.h"
 #include "Physics/PhysicsMaterial.h"
 #include "Physics/PhysicsScene.h"
 #include "Physics/RigidBodyActor.h"
+#include "Physics/SphereCollider.h"
 #include "Physics/StaticRigidBodyActor.h"
 #include "Rendering/Camera.h"
 #include "Rendering/CameraActor.h"
@@ -54,10 +56,12 @@ void ScriptingManager::InitRuntime()
     BoxCollider::InitRuntime();
     Collider::InitRuntime();
     DynamicRigidBodyActor::InitRuntime();
+    MeshCollider::InitRuntime();
     PhysicsManager::InitRuntime();
     PhysicsMaterial::InitRuntime();
     PhysicsScene::InitRuntime();
     RigidBodyActor::InitRuntime();
+    SphereCollider::InitRuntime();
     StaticRigidBodyActor::InitRuntime();
     Camera::InitRuntime();
     CameraActor::InitRuntime();

@@ -9,31 +9,31 @@
 API_USING("ReCrafted.API.Mathematics");
 
 /// <summary>
-///     BoxCollider class.
+///     SphereCollider class.
 /// </summary>
 API_CLASS(public)
-class BoxCollider final : public Collider
+class SphereCollider final : public Collider
 {
     API_CLASS_BODY()
-    DELETE_COPY_MOVE(BoxCollider)
+    DELETE_COPY_MOVE(SphereCollider)
 
 private:
-    Vector3 m_size = Vector3::One;
+    float m_radius = 1.0f;
 
 public:
-    BoxCollider();
-    ~BoxCollider();
+    SphereCollider();
+    ~SphereCollider();
 
 public:
     /// <summary>
-    ///     Gets or sets the size of this box collider.
+    ///     Gets or sets the radius of this sphere collider.
     /// </summary>
     API_PROPERTY()
-    void Size(const Vector3& size);
+    void Radius(float radius);
 
     /// <summary>
-    ///     Gets or sets the size of this box collider.
+    ///     Gets or sets the radius of this sphere collider.
     /// </summary>
     API_PROPERTY()
-    const Vector3& Size() const;
+    float Radius() const;
 };

@@ -5,6 +5,8 @@
 
 void StaticRigidBodyActor::OnAwake()
 {
+    m_dynamic = false;
+
     auto& position = GetTransform().translation;
     auto& rotation = GetTransform().orientation;
 

@@ -116,4 +116,12 @@ public:
     {
         return GetInstance()->m_tolerancesScale;
     }
+
+    /// <summary>
+    ///     Internal utility function for accessing default shape cooker instance.
+    /// </summary>
+    static ShapeCooker* GetShapeCooker()
+    {
+        return GetInstance()->m_defaultShapeCooker;
+    }
 };

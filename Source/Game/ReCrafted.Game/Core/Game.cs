@@ -33,14 +33,23 @@ namespace ReCrafted.Game.Core
             _camera.Camera.SetAsCurrent();
             _camera.Position = Vector3.BackwardLH * 10.0f;
 
-            /*_actor1 = RigidBodyActor.CreateDynamic();
+            _actor1 = RigidBodyActor.CreateStatic();
             _actor1.Position = Vector3.Up * 4.0f;
             _actor1.SyncMode = RigidBodySyncMode.Interpolation;
-            _actor1.AttachCollider(Object.New<BoxCollider>());*/
+            var c = Object.New<MeshCollider>();
+            c.SetMesh(new []
+            {
+                new Vector3(-0.5f, 0.0f, -0.5f),
+                new Vector3(-0.5f, 0.0f,  0.5f),
+                new Vector3( 0.5f, 0.0f,  0.5f),
+                new Vector3( 0.5f, 0.0f, -0.5f),
+            }, new[] { 0u, 1u, 2u, 2u, 3u, 1u });
+            _actor1.AttachCollider(c);
 
             _actor2 = RigidBodyActor.CreateDynamic();
             _actor2.Position = Vector3.Down * 8.0f;
             _actor2.SyncMode = RigidBodySyncMode.Interpolation;
+
             _actor2.AttachCollider(Object.New<BoxCollider>());
         }
         
@@ -82,10 +91,7 @@ namespace ReCrafted.Game.Core
                 _actor2.AddForce(Vector3.Right * 10.0f, ForceMode.Acceleration);
             }
 
-            //DebugDraw.Matrix = Matrix.Translation(_actor1.Position) * Matrix.RotationQuaternion(_actor1.Rotation);
-            //DebugDraw.DrawBox(Vector3.Zero, Vector3.One);
-
-            DebugDraw.Matrix = Matrix.Translation(_actor2.Position) * Matrix.RotationQuaternion(_actor2.Rotation);
+            DebugDraw.Matrix = Matrix.RotationQuaternion(_actor2.Rotation) * Matrix.Translation(_actor2.Position);
 
             // Draw thrusters
             var wd = Time.CurrentTime - _wT;

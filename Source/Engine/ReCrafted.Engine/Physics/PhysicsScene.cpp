@@ -60,11 +60,6 @@ PhysicsScene::~PhysicsScene()
 
 void PhysicsScene::Update()
 {
-    //if (!Profiler::IsPhysicsDebugEnabled())
-    {
-        m_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 0.0f);
-        return;
-    }
 
     auto cp1 = Camera::GetMainCamera()->Position() - Vector3::One * 20.0f;
     auto cp2 = Camera::GetMainCamera()->Position() + Vector3::One * 20.0f;
