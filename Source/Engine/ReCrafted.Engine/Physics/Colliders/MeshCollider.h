@@ -5,7 +5,7 @@
 #include <ReCrafted.h>
 
 #include "Common/Array.h"
-#include "Physics/Collider.h"
+#include "Physics/Colliders/Collider.h"
 
 API_USING("ReCrafted.API.Rendering");
 API_USING("ReCrafted.API.Mathematics");
@@ -15,7 +15,7 @@ API_USING("ReCrafted.API.Mathematics");
 /// </summary>
 /// <remarks>Before attaching to an actor, use SetMesh to fully initialize this class.</remarks>
 /// <remarks>MeshCollider is only valid for static and dynamic kinematic RigidBodies.</remarks>
-API_CLASS(public, sealed)
+API_CLASS(public, sealed, customNamespace = "ReCrafted.API.Physics")
 class MeshCollider final : public Collider
 {
     API_CLASS_BODY()

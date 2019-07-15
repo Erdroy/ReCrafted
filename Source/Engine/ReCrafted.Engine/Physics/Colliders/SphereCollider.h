@@ -4,14 +4,14 @@
 
 #include <ReCrafted.h>
 
-#include "Physics/Collider.h"
+#include "Physics/Colliders/Collider.h"
 
 API_USING("ReCrafted.API.Mathematics");
 
 /// <summary>
 ///     SphereCollider class.
 /// </summary>
-API_CLASS(public)
+API_CLASS(public, customNamespace = "ReCrafted.API.Physics")
 class SphereCollider final : public Collider
 {
     API_CLASS_BODY()

@@ -12,7 +12,7 @@ API_USING("ReCrafted.API.Mathematics");
 /// <summary>
 ///     Collider base class.
 /// </summary>
-API_CLASS(public)
+API_CLASS(public, customNamespace = "ReCrafted.API.Physics")
 class Collider : public Object
 {
     API_CLASS_BODY()

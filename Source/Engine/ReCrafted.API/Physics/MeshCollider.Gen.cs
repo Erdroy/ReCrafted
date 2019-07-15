@@ -11,6 +11,7 @@ namespace ReCrafted.API.Physics
     ///     MeshCollider class.
     /// </summary>
     /// <remarks>Before attaching to an actor, use SetMesh to fully initialize this class.</remarks>
+    /// <remarks>MeshCollider is only valid for static and dynamic kinematic RigidBodies.</remarks>
     public sealed class MeshCollider : Collider
     {
         
