@@ -3,7 +3,14 @@
 #include "StaticRigidBodyActor.h"
 #include "PhysicsManager.h"
 
-PxRigidActor* StaticRigidBodyActor::CreatePxActor(const PxTransform& transform)
+void StaticRigidBodyActor::OnAwake()
 {
-    return PhysicsManager::GetPhysics()->createRigidStatic(transform);
+    auto& position = GetTransform().translation;
+    auto& rotation = GetTransform().orientation;
+
+    const auto pxTransform = PxTransform(position.x, position.y, position.z, PxQuat(rotation.x, rotation.y, rotation.z, rotation.w));
+    ASSERT(pxTransform.isValid());
+
+    m_actor = PhysicsManager::GetPhysics()->createRigidStatic(pxTransform);
+    ASSERT(m_actor);
 }

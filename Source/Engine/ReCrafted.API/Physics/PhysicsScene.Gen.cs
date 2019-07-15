@@ -12,6 +12,22 @@ namespace ReCrafted.API.Physics
     /// </summary>
     public sealed partial class PhysicsScene : Object
     {
+        
+        /// <summary>
+        ///     Attaches given actor to this scene.
+        /// </summary>
+        public void AttachActor(RigidBodyActor actor)
+        {
+            InternalAttachActor(NativePtr, actor? actor.NativePtr : System.IntPtr.Zero);
+        }
+        
+        /// <summary>
+        ///     Detaches given actor from the scene.
+        /// </summary>
+        public void DetachActor(RigidBodyActor actor)
+        {
+            InternalDetachActor(NativePtr, actor? actor.NativePtr : System.IntPtr.Zero);
+        }
 
         /// <summary>
         ///     Gets or sets the scene's enable state. When true, the scene will be simulated.
@@ -25,6 +41,12 @@ namespace ReCrafted.API.Physics
             }
             set => Set_InternalEnabled(NativePtr, ref value);
         }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalAttachActor(System.IntPtr nativePtr, System.IntPtr actor);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalDetachActor(System.IntPtr nativePtr, System.IntPtr actor);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalEnabled(System.IntPtr nativePtr, out bool data);

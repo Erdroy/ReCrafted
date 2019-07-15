@@ -6,6 +6,7 @@
 
 #include "Core/Actors/ActorBase.h"
 #include "Physics/PhysX.h"
+#include "Physics/PhysicsScene.h"
 
 API_USING("ReCrafted.API.Core.Actors")
 API_USING("ReCrafted.API.Mathematics")
@@ -29,11 +30,12 @@ class RigidBodyActor : public ActorBase
     friend class PhysicsManager;
     friend class PhysicsScene;
 
-private:
+protected:
     uint32_t m_collisionLayer = 0u;
 
     PxRigidActor* m_actor = nullptr;
     bool m_dynamic = true;
+    bool m_affectedByGravity = true;
 
     RigidBodySyncMode m_syncMode = RigidBodySyncMode::Default;
 
@@ -46,14 +48,9 @@ private:
     PxQuat m_lastPxRot = {};
 
 public:
-    ACTOR_BODY(RigidBodyActor)
     ~RigidBodyActor();
 
 protected:
-    virtual PxRigidActor* CreatePxActor(const PxTransform& transform) = 0;
-
-protected:
-    void OnAwake() override;
     void OnStart() override;
 
     void OnUpdate() override;
@@ -127,6 +124,18 @@ public:
     const Quaternion& Rotation() const override;
 
     /// <summary>
+    ///     Gets or sets gravity affection state. When true, this actor will be affected by gravitation.
+    /// </summary>
+    API_PROPERTY()
+    void AffectedByGravity(bool gravityEnabled);
+
+    /// <summary>
+    ///     Gets or sets gravity affection state. When true, this actor will be affected by gravitation.
+    /// </summary>
+    API_PROPERTY()
+    bool AffectedByGravity() const;
+
+    /// <summary>
     ///     Gets or sets the collision layer.
     /// </summary>
     API_PROPERTY()
@@ -141,96 +150,112 @@ public:
     /// <summary>
     ///     Gets or sets the velocity.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     void Velocity(const Vector3& velocity) const;
 
     /// <summary>
     ///     Gets or sets the velocity.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     Vector3 Velocity() const;
 
     /// <summary>
     ///     Gets or sets the angular velocity.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     void AngularVelocity(const Vector3& angularVelocity) const;
 
     /// <summary>
     ///     Gets or sets the angular velocity.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     Vector3 AngularVelocity() const;
 
     /// <summary>
     ///     Gets or sets the centre of mass.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     void CentreOfMass(const Vector3& massCentre) const;
 
     /// <summary>
     ///     Gets or sets the centre of mass.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     Vector3 CentreOfMass() const;
 
     /// <summary>
     ///     Gets or sets the max of angular velocity.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     void MaxAngularVelocity(float maxAngularVelocity) const;
 
     /// <summary>
     ///     Gets or sets the max of angular velocity.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     float MaxAngularVelocity() const;
 
     /// <summary>
     ///     Gets or sets the linear damping.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     void LinearDamping(float damping) const;
 
     /// <summary>
     ///     Gets or sets the linear damping.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     float LinearDamping() const;
 
     /// <summary>
     ///     Gets or sets the angular damping.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     void AngularDamping(float angularDamping) const;
 
     /// <summary>
     ///     Gets or sets the angular damping.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     float AngularDamping() const;
 
     /// <summary>
     ///     Gets or sets the mass.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     void Mass(float mass) const;
 
     /// <summary>
     ///     Gets or sets the mass.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     float Mass() const;
 
     /// <summary>
     ///     Gets or sets the continuous collision detection active state.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     void CCD(bool enabled) const;
 
     /// <summary>
     ///     Gets or sets the continuous collision detection active state.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     bool CCD() const;
 
@@ -243,24 +268,28 @@ public:
     /// <summary>
     ///     Gets the sleeping state. Returns true when this actor is sleeping or inactive.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     void IsSleeping(bool sleep) const;
 
     /// <summary>
     ///     Gets the sleeping state. Returns true when this actor is sleeping or inactive.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     bool IsSleeping() const;
 
     /// <summary>
     ///     Gets the kinematic state. Returns true when this actor is kinematic or inactive.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     void IsKinematic(bool isKinematic) const;
 
     /// <summary>
     ///     Gets the kinematic state. Returns true when this actor is kinematic or inactive.
     /// </summary>
+    /// <remarks>Can be used only on dynamic RigidBody.</remarks>
     API_PROPERTY()
     bool IsKinematic() const;
 

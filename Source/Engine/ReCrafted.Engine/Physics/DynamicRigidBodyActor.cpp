@@ -3,7 +3,18 @@
 #include "DynamicRigidBodyActor.h"
 #include "PhysicsManager.h"
 
-PxRigidActor* DynamicRigidBodyActor::CreatePxActor(const PxTransform& transform)
+void DynamicRigidBodyActor::OnAwake()
 {
-    return PhysicsManager::GetPhysics()->createRigidDynamic(transform);
+    auto& position = GetTransform().translation;
+    auto& rotation = GetTransform().orientation;
+
+    const auto pxTransform = PxTransform(position.x, position.y, position.z, PxQuat(rotation.x, rotation.y, rotation.z, rotation.w));
+    ASSERT(pxTransform.isValid());
+
+    m_actor = PhysicsManager::GetPhysics()->createRigidDynamic(pxTransform);
+    ASSERT(m_actor);
+
+    // Disable internal gravity simulation.
+    m_actor->setActorFlag(PxActorFlag::Enum::eDISABLE_GRAVITY, true);
+
 }

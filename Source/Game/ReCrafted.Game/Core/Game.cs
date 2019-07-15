@@ -15,6 +15,7 @@ namespace ReCrafted.Game.Core
     {
         private CameraActor _camera;
         private PhysicsScene _defaultPhysicsScene;
+        private RigidBodyActor _actor;
 
         protected override void OnInitialize()
         {
@@ -25,9 +26,14 @@ namespace ReCrafted.Game.Core
             // Temporary, create default scene.
             // Scenes will be handled internally when physics will get clustering system.
             _defaultPhysicsScene = PhysicsManager.CreateScene();
+            _defaultPhysicsScene.Enabled = true;
 
             _camera = Object.New<CameraActor>();
             _camera.Position = Vector3.BackwardLH * 10.0f;
+
+            _actor = RigidBodyActor.CreateDynamic();
+            _actor.Position = Vector3.Up * 4.0f;
+            _actor.SyncMode = RigidBodySyncMode.Interpolation;
         }
 
         protected override void OnShutdown()
@@ -39,8 +45,7 @@ namespace ReCrafted.Game.Core
         {
             base.OnUpdate();
 
-            DebugDraw.Matrix = Matrix.RotationYawPitchRoll(Time.CurrentTime * 0.5f, Time.CurrentTime * 0.5f, Time.CurrentTime * 0.5f) * Matrix.Translation(_camera.Transform.Translation + _camera.Transform.Forward * 10.0f);
-            DebugDraw.DrawBox(Vector3.Zero, Vector3.One);
+            DebugDraw.DrawBox(_actor.Position, Vector3.One);
 
             if (InputManager.IsKeyDown(Key.Escape))
                 Application.Quit();

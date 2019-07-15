@@ -41,11 +41,13 @@ public:
     /// <summary>
     ///     Attaches given actor to this scene.
     /// </summary>
+    API_FUNCTION()
     void AttachActor(RigidBodyActor* actor);
 
     /// <summary>
     ///     Detaches given actor from the scene.
     /// </summary>
+    API_FUNCTION()
     void DetachActor(RigidBodyActor* actor);
 
 public:

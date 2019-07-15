@@ -112,6 +112,19 @@ namespace ReCrafted.API.Physics
         }
 
         /// <summary>
+        ///     Gets or sets gravity affection state. When true, this actor will be affected by gravitation.
+        /// </summary>
+        public bool AffectedByGravity
+        {
+            get
+            {
+                Get_InternalAffectedByGravity(NativePtr, out var data);
+                return data;
+            }
+            set => Set_InternalAffectedByGravity(NativePtr, ref value);
+        }
+
+        /// <summary>
         ///     Gets or sets the collision layer.
         /// </summary>
         public uint CollisionLayer
@@ -127,6 +140,7 @@ namespace ReCrafted.API.Physics
         /// <summary>
         ///     Gets or sets the velocity.
         /// </summary>
+        /// <remarks>Can be used only on dynamic RigidBody.</remarks>
         public Vector3 Velocity
         {
             get
@@ -140,6 +154,7 @@ namespace ReCrafted.API.Physics
         /// <summary>
         ///     Gets or sets the angular velocity.
         /// </summary>
+        /// <remarks>Can be used only on dynamic RigidBody.</remarks>
         public Vector3 AngularVelocity
         {
             get
@@ -153,6 +168,7 @@ namespace ReCrafted.API.Physics
         /// <summary>
         ///     Gets or sets the centre of mass.
         /// </summary>
+        /// <remarks>Can be used only on dynamic RigidBody.</remarks>
         public Vector3 CentreOfMass
         {
             get
@@ -166,6 +182,7 @@ namespace ReCrafted.API.Physics
         /// <summary>
         ///     Gets or sets the max of angular velocity.
         /// </summary>
+        /// <remarks>Can be used only on dynamic RigidBody.</remarks>
         public float MaxAngularVelocity
         {
             get
@@ -179,6 +196,7 @@ namespace ReCrafted.API.Physics
         /// <summary>
         ///     Gets or sets the linear damping.
         /// </summary>
+        /// <remarks>Can be used only on dynamic RigidBody.</remarks>
         public float LinearDamping
         {
             get
@@ -192,6 +210,7 @@ namespace ReCrafted.API.Physics
         /// <summary>
         ///     Gets or sets the angular damping.
         /// </summary>
+        /// <remarks>Can be used only on dynamic RigidBody.</remarks>
         public float AngularDamping
         {
             get
@@ -205,6 +224,7 @@ namespace ReCrafted.API.Physics
         /// <summary>
         ///     Gets or sets the mass.
         /// </summary>
+        /// <remarks>Can be used only on dynamic RigidBody.</remarks>
         public float Mass
         {
             get
@@ -218,6 +238,7 @@ namespace ReCrafted.API.Physics
         /// <summary>
         ///     Gets or sets the continuous collision detection active state.
         /// </summary>
+        /// <remarks>Can be used only on dynamic RigidBody.</remarks>
         public bool CCD
         {
             get
@@ -243,6 +264,7 @@ namespace ReCrafted.API.Physics
         /// <summary>
         ///     Gets the sleeping state. Returns true when this actor is sleeping or inactive.
         /// </summary>
+        /// <remarks>Can be used only on dynamic RigidBody.</remarks>
         public bool IsSleeping
         {
             get
@@ -256,6 +278,7 @@ namespace ReCrafted.API.Physics
         /// <summary>
         ///     Gets the kinematic state. Returns true when this actor is kinematic or inactive.
         /// </summary>
+        /// <remarks>Can be used only on dynamic RigidBody.</remarks>
         public bool IsKinematic
         {
             get
@@ -301,6 +324,12 @@ namespace ReCrafted.API.Physics
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Set_InternalRotation(System.IntPtr nativePtr, ref Quaternion data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalAffectedByGravity(System.IntPtr nativePtr, out bool data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Set_InternalAffectedByGravity(System.IntPtr nativePtr, ref bool data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalCollisionLayer(System.IntPtr nativePtr, out uint data);

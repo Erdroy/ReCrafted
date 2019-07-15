@@ -10,6 +10,20 @@ class APIProxy
 {
 public:
     
+    static void PhysicsScene_AttachActor1(PhysicsScene* instance, RigidBodyActor* actor) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "PhysicsScene");
+        instance->AttachActor(actor);
+    }
+    
+    static void PhysicsScene_DetachActor2(PhysicsScene* instance, RigidBodyActor* actor) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "PhysicsScene");
+        instance->DetachActor(actor);
+    }
+    
     static void PhysicsScene_Get_Enabled1(PhysicsScene* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
@@ -37,6 +51,8 @@ void PhysicsScene::InitRuntime()
     MONO_REGISTER_OBJECT(&APIProxy::PhysicsScene_CreateObject);
     
     MONO_REGISTER_OBJECT_TYPE(PhysicsScene);
+    API_BIND("ReCrafted.API.Physics.PhysicsScene::InternalAttachActor", &APIProxy::PhysicsScene_AttachActor1);
+    API_BIND("ReCrafted.API.Physics.PhysicsScene::InternalDetachActor", &APIProxy::PhysicsScene_DetachActor2);
     API_BIND("ReCrafted.API.Physics.PhysicsScene::Get_InternalEnabled", &APIProxy::PhysicsScene_Get_Enabled1);
     API_BIND("ReCrafted.API.Physics.PhysicsScene::Set_InternalEnabled", &APIProxy::PhysicsScene_Set_Enabled1);
 }

@@ -11,6 +11,11 @@
 API_CLASS(public, sealed)
 class StaticRigidBodyActor final : public RigidBodyActor
 {
+    API_CLASS_BODY()
+
 protected:
-    PxRigidActor* CreatePxActor(const PxTransform& transform) override;
+    void OnAwake() override;
+
+public:
+    ACTOR_BODY(StaticRigidBodyActor)
 };

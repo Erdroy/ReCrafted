@@ -12,24 +12,12 @@ RigidBodyActor::~RigidBodyActor()
     PX_RELEASE(m_actor);
 }
 
-void RigidBodyActor::OnAwake()
-{
-    auto& position = GetTransform().translation;
-    auto& rotation = GetTransform().orientation;
-
-    const auto pxTransform = PxTransform(position.x, position.y, position.z, PxQuat(rotation.x, rotation.y, rotation.z, rotation.w));
-    ASSERT(pxTransform.isValid());
-
-    m_actor = CreatePxActor(pxTransform);
-
-    ASSERT(m_actor);
-}
-
 void RigidBodyActor::OnStart()
 {
-    // Add actor to proper scene
-    // TODO: Use world clustering
-    
+    // Temporary: Add actor to proper scene TODO: Use world clustering
+    const auto scene = PhysicsManager::GetSceneAt(Vector3::Zero);
+    ASSERT(scene);
+    scene->AttachActor(this);
 }
 
 void RigidBodyActor::OnUpdate()
@@ -87,10 +75,15 @@ void RigidBodyActor::OnSimulate()
 {
     ASSERT(m_actor);
 
-    if (m_dynamic)
+    if (m_dynamic && m_affectedByGravity)
     {
         // Calculate gravity
-        m_gravity = Vector3::Normalize(Position()) * -9.81f; // TODO: Use gravitational fields
+        auto gDir = Vector3::Normalize(Position());
+
+        if (Math::NearEqual(gDir.LengthSquared(), 0.0f))
+            gDir = Vector3::Down;
+
+        m_gravity = gDir * -9.81f; // TODO: Use gravitational fields
 
         // Apply gravity (Add force)
         AddForce(m_gravity, ForceMode::Acceleration);
@@ -119,7 +112,7 @@ void RigidBodyActor::AddForce(const Vector3& force, ForceMode forceMode, const b
 {
     ASSERT(m_dynamic);
 
-    const auto dynamic = dynamic_cast<PxRigidDynamic*>(m_actor);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
     dynamic->addForce(ToPxV3(force), static_cast<PxForceMode::Enum>(forceMode), awake);
 }
 
@@ -127,7 +120,7 @@ void RigidBodyActor::AddTorque(const Vector3& torque, ForceMode forceMode, const
 {
     ASSERT(m_dynamic);
 
-    const auto dynamic = dynamic_cast<PxRigidDynamic*>(m_actor);
+    const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
     dynamic->addTorque(ToPxV3(torque), static_cast<PxForceMode::Enum>(forceMode), awake);
 }
 
@@ -170,6 +163,16 @@ void RigidBodyActor::Rotation(const Quaternion& rotation)
 const Quaternion& RigidBodyActor::Rotation() const
 {
     return ActorBase::Rotation();
+}
+
+void RigidBodyActor::AffectedByGravity(const bool gravityEnabled)
+{
+    m_affectedByGravity = gravityEnabled;
+}
+
+bool RigidBodyActor::AffectedByGravity() const
+{
+    return m_affectedByGravity;
 }
 
 void RigidBodyActor::CollisionLayer(const uint32_t layer)
