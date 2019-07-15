@@ -38,7 +38,14 @@ public:
         return _returnValue;
     }
     
-    static uint32_t Time_CurrentFrame5() 
+    static float Time_FrameAlpha5() 
+    {
+        MAIN_THREAD_ONLY();
+        const auto _returnValue = Time::FrameAlpha();
+        return _returnValue;
+    }
+    
+    static uint32_t Time_CurrentFrame6() 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = Time::CurrentFrame();
@@ -53,7 +60,8 @@ void Time::InitRuntime()
     API_BIND("ReCrafted.API.Core.Time::InternalCurrentFixedTime", &APIProxy::Time_CurrentFixedTime2);
     API_BIND("ReCrafted.API.Core.Time::InternalDeltaTime", &APIProxy::Time_DeltaTime3);
     API_BIND("ReCrafted.API.Core.Time::InternalFixedDeltaTime", &APIProxy::Time_FixedDeltaTime4);
-    API_BIND("ReCrafted.API.Core.Time::InternalCurrentFrame", &APIProxy::Time_CurrentFrame5);
+    API_BIND("ReCrafted.API.Core.Time::InternalFrameAlpha", &APIProxy::Time_FrameAlpha5);
+    API_BIND("ReCrafted.API.Core.Time::InternalCurrentFrame", &APIProxy::Time_CurrentFrame6);
 }
 
 const char* Time::Fullname() 

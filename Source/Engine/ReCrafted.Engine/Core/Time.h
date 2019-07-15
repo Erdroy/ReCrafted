@@ -57,6 +57,12 @@ public:
     static float FixedDeltaTime();
 
     /// <summary>
+    ///     Returns the frame alpha value.
+    /// </summary>
+    API_FUNCTION(extern);
+    static float FrameAlpha();
+
+    /// <summary>
     ///     The current frame number.
     /// </summary>
     API_FUNCTION(extern);

@@ -29,6 +29,11 @@ namespace ReCrafted.API.Core
         public static float FixedDeltaTime => InternalFixedDeltaTime();
 
         /// <summary>
+        ///     Returns the frame alpha value.
+        /// </summary>
+        public static float FrameAlpha => InternalFrameAlpha();
+
+        /// <summary>
         ///     The current frame number.
         /// </summary>
         public static uint Frame => InternalCurrentFrame();

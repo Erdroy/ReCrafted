@@ -45,6 +45,11 @@ float Time::FixedDeltaTime()
     return GetInstance()->m_fixedDeltaTime;
 }
 
+float Time::FrameAlpha()
+{
+    return Math::Clamp((CurrentTime() - CurrentFixedTime()) / FixedDeltaTime(), 0.0f, 1.0f);
+}
+
 uint32_t Time::CurrentFrame()
 {
     MAIN_THREAD_ONLY();
