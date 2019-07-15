@@ -15,6 +15,7 @@
 #include "Input/Keyboard.h"
 #include "Input/Mouse.h"
 #include "Input/NullDevice.h"
+#include "Physics/CharacterActor.h"
 #include "Physics/DynamicRigidBodyActor.h"
 #include "Physics/PhysicsManager.h"
 #include "Physics/PhysicsMaterial.h"
@@ -53,6 +54,7 @@ void ScriptingManager::InitRuntime()
     Keyboard::InitRuntime();
     Mouse::InitRuntime();
     NullDevice::InitRuntime();
+    CharacterActor::InitRuntime();
     DynamicRigidBodyActor::InitRuntime();
     PhysicsManager::InitRuntime();
     PhysicsMaterial::InitRuntime();

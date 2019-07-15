@@ -6,7 +6,6 @@
 #include "DynamicRigidBodyActor.h"
 #include "StaticRigidBodyActor.h"
 #include "PhysicsScene.h"
-#include "Collider.h"
 
 RigidBodyActor::~RigidBodyActor()
 {

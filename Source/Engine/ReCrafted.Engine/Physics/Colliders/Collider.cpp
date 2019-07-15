@@ -1,7 +1,7 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include "Collider.h"
-#include "PhysicsMaterial.h"
+#include "Physics/PhysicsMaterial.h"
 
 void Collider::LocalPosition(const Vector3& position)
 {

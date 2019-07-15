@@ -66,6 +66,7 @@ class TaskManager;
 class GameManager;
 
 // Physics/
+enum class CharacterCollisionFlags;
 enum class ForceMode : byte;
 class Collider;
 class BoxCollider;

@@ -2,8 +2,8 @@
 
 #include "BoxCollider.h"
 #include "Physics/PhysX.h"
-#include "PhysicsManager.h"
-#include "PhysicsMaterial.h"
+#include "Physics/PhysicsManager.h"
+#include "Physics/PhysicsMaterial.h"
 
 BoxCollider::BoxCollider()
 {

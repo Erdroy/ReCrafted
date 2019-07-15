@@ -7,7 +7,7 @@
 #include "Core/Actors/ActorBase.h"
 #include "Physics/PhysX.h"
 #include "Physics/PhysicsScene.h"
-#include "Physics/Collider.h"
+#include "Physics/Colliders/Collider.h"
 
 API_USING("ReCrafted.API.Core.Actors")
 API_USING("ReCrafted.API.Mathematics")

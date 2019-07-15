@@ -51,6 +51,10 @@ namespace ReCrafted.Game.Core
             _actor2.SyncMode = RigidBodySyncMode.Interpolation;
 
             _actor2.AttachCollider(Object.New<BoxCollider>());
+
+            var cc = Object.New<CharacterActor>();
+            cc.Move(Vector3.ForwardLH);
+            var pos = cc.Position;
         }
         
         protected override void OnShutdown()

@@ -36,6 +36,11 @@ public:
 
 public:
     bool RayCast(const Vector3& position, const Vector3& direction, float maxDistance, RayCastHit* hit, uint32_t collisionLayer) const;
+
+    PxControllerManager* GetPxControllerManager() const
+    {
+        return m_controllerManager;
+    }
     
 public:
     /// <summary>

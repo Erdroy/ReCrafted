@@ -108,6 +108,8 @@
     <Compile Include="Mathematics\ViewportF.cs" />
     <Compile Include="Object.Gen.cs" />
     <Compile Include="Physics\BoxCollider.Gen.cs" />
+    <Compile Include="Physics\CharacterActor.Gen.cs" />
+    <Compile Include="Physics\CharacterControllerFlags.cs" />
     <Compile Include="Physics\Collider.Gen.cs" />
     <Compile Include="Physics\DynamicRigidBodyActor.Gen.cs" />
     <Compile Include="Physics\ForceMode.cs" />
