@@ -12,6 +12,7 @@ void Memory::Initialize(const AllocatorType allocatorType)
     switch (allocatorType)
     {
     case AllocatorType::OS:
+        aligned_malloc = &::_aligned_malloc;
         malloc = &::malloc;
         calloc = &::calloc;
         realloc = &::realloc;

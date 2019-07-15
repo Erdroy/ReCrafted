@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <new>
 
+typedef void*(*aligned_malloc_t)(size_t, size_t);
 typedef void*(*malloc_t)(size_t);
 typedef void*(*calloc_t)(size_t, size_t);
 typedef void*(*realloc_t)(void*, size_t);
@@ -25,6 +26,7 @@ public:
     static void Initialize(AllocatorType allocatorType);
 
 public:
+    static aligned_malloc_t aligned_malloc;
     static malloc_t malloc;
     static calloc_t calloc;
     static realloc_t realloc;
@@ -33,6 +35,11 @@ public:
 
 #pragma warning( push )
 #pragma warning( disable : 4595)
+
+inline void* rc_aligned_alloc(const size_t size, const size_t alignment)
+{
+    return Memory::aligned_malloc(size, alignment);
+}
 
 inline void* rc_malloc(const size_t size)
 {
