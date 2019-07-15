@@ -52,14 +52,12 @@ public:
     
     static MonoObject* Object_New7(MonoType* type) 
     {
-        MAIN_THREAD_ONLY();
         const auto _returnValue = Object::New(type);
         return _returnValue;
     }
     
     static MonoObject* Object_NewGeneric8(MonoType* baseType, MonoType* type, MonoObject* obj) 
     {
-        MAIN_THREAD_ONLY();
         const auto _returnValue = Object::NewGeneric(baseType, type, obj);
         return _returnValue;
     }

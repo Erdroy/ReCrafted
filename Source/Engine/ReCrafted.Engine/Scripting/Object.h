@@ -126,7 +126,7 @@ private:
     /// <param name="type">The mono type.</param>
     /// <returns>The managed object pointer.</returns>
     /// <remarks>Mono type must derive from Object.</remarks>
-    API_FUNCTION(noproxy);
+    API_FUNCTION(noproxy, multithread);
     static MonoObject* New(MonoType* type);
 
     /// <summary>
@@ -137,6 +137,6 @@ private:
     /// <param name="obj">The base object type.</param>
     /// <returns>The managed object pointer.</returns>
     /// <remarks>Mono type must derive from Object.</remarks>
-    API_FUNCTION(noproxy);
+    API_FUNCTION(noproxy, multithread);
     static MonoObject* NewGeneric(MonoType* baseType, MonoType* type, MonoObject* obj);
 };
