@@ -255,8 +255,6 @@ void RigidBodyActor::Velocity(const Vector3& velocity) const
 
 Vector3 RigidBodyActor::Velocity() const
 {
-    ASSERT(m_dynamic);
-
     const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
     const auto vel = dynamic->getLinearVelocity();
     return FromPxV3(vel);
@@ -271,7 +269,6 @@ void RigidBodyActor::AngularVelocity(const Vector3& angularVelocity) const
 
 Vector3 RigidBodyActor::AngularVelocity() const
 {
-    ASSERT(m_dynamic);
     const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
     return FromPxV3(dynamic->getAngularVelocity());
 }
@@ -285,7 +282,6 @@ void RigidBodyActor::CentreOfMass(const Vector3& massCentre) const
 
 Vector3 RigidBodyActor::CentreOfMass() const
 {
-    ASSERT(m_dynamic);
     const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
     return FromPxV3(dynamic->getAngularVelocity());
 }
@@ -299,7 +295,6 @@ void RigidBodyActor::MaxAngularVelocity(const float maxAngularVelocity) const
 
 float RigidBodyActor::MaxAngularVelocity() const
 {
-    ASSERT(m_dynamic);
     const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
     return dynamic->getMaxAngularVelocity();
 }
@@ -313,7 +308,6 @@ void RigidBodyActor::LinearDamping(const float damping) const
 
 float RigidBodyActor::LinearDamping() const
 {
-    ASSERT(m_dynamic);
     const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
     return dynamic->getLinearDamping();
 }
@@ -327,7 +321,6 @@ void RigidBodyActor::AngularDamping(const float angularDamping) const
 
 float RigidBodyActor::AngularDamping() const
 {
-    ASSERT(m_dynamic);
     const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
     return dynamic->getAngularDamping();
 }
@@ -341,7 +334,6 @@ void RigidBodyActor::Mass(const float mass) const
 
 float RigidBodyActor::Mass() const
 {
-    ASSERT(m_dynamic);
     const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
     return dynamic->getMass();
 }
@@ -355,7 +347,6 @@ void RigidBodyActor::CCD(const bool enabled) const
 
 bool RigidBodyActor::CCD() const
 {
-    ASSERT(m_dynamic);
     const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
     return dynamic->getRigidBodyFlags() & PxRigidBodyFlag::eENABLE_CCD;
 }
@@ -381,7 +372,6 @@ void RigidBodyActor::IsSleeping(const bool sleep) const
 
 bool RigidBodyActor::IsSleeping() const
 {
-    ASSERT(m_dynamic);
     const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
     return dynamic->isSleeping();
 }
@@ -395,7 +385,6 @@ void RigidBodyActor::IsKinematic(const bool isKinematic) const
 
 bool RigidBodyActor::IsKinematic() const
 {
-    ASSERT(m_dynamic);
     const auto dynamic = static_cast<PxRigidDynamic*>(m_actor);
     return dynamic->getRigidBodyFlags() & PxRigidBodyFlag::eKINEMATIC;
 }

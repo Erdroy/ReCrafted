@@ -35,7 +35,6 @@ namespace ReCrafted.Game.Core
 
             _actor1 = RigidBodyActor.CreateStatic();
             _actor1.Position = Vector3.Up * 4.0f;
-            _actor1.SyncMode = RigidBodySyncMode.Interpolation;
             var c = Object.New<MeshCollider>();
             c.SetMesh(new []
             {
@@ -48,13 +47,10 @@ namespace ReCrafted.Game.Core
 
             _actor2 = RigidBodyActor.CreateDynamic();
             _actor2.Position = Vector3.Down * 8.0f;
-            _actor2.SyncMode = RigidBodySyncMode.Interpolation;
 
             _actor2.AttachCollider(Object.New<BoxCollider>());
 
-            var cc = Object.New<CharacterActor>();
-            cc.Move(Vector3.ForwardLH);
-            var pos = cc.Position;
+            _cc = Object.New<CharacterActor>();
         }
         
         protected override void OnShutdown()
@@ -66,6 +62,7 @@ namespace ReCrafted.Game.Core
         private float _sT;
         private float _aT;
         private float _dT;
+        private CharacterActor _cc;
 
         protected override void OnUpdate()
         {
@@ -94,6 +91,9 @@ namespace ReCrafted.Game.Core
                 _dT = Time.CurrentTime;
                 _actor2.AddForce(Vector3.Right * 10.0f, ForceMode.Acceleration);
             }
+
+            if (InputManager.IsKey(Key.E))
+                _cc.Move(Vector3.ForwardLH * Time.DeltaTime);
 
             DebugDraw.Matrix = Matrix.RotationQuaternion(_actor2.Rotation) * Matrix.Translation(_actor2.Position);
 
