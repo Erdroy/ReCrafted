@@ -10,6 +10,15 @@
 API_USING("ReCrafted.API.Core.Actors")
 API_USING("ReCrafted.API.Mathematics")
 
+enum class RigidBodySyncMode
+{
+    Default,
+    Interpolation,
+    Extrapolation,
+
+    Count
+};
+
 /// <summary>
 ///     RigidBodyActor actor class.
 /// </summary>
@@ -25,10 +34,16 @@ private:
 
     PxRigidActor* m_actor = nullptr;
     bool m_dynamic = true;
-    bool m_interpolate = false;
+
+    RigidBodySyncMode m_syncMode = RigidBodySyncMode::Default;
 
     Vector3 m_gravity = Vector3::Zero;
     PhysicsScene* m_scene = nullptr;
+
+    PxVec3 m_currentPxPos = {};
+    PxQuat m_currentPxRot = {};
+    PxVec3 m_lastPxPos = {};
+    PxQuat m_lastPxRot = {};
 
 public:
     ACTOR_BODY(RigidBodyActor)
@@ -74,6 +89,18 @@ public:
     /// </summary>
     API_PROPERTY()
     PhysicsScene* Scene() const;
+
+    /// <summary>
+    ///     Gets or sets the sync mode of this actor.
+    /// </summary>
+    API_PROPERTY()
+    void SyncMode(const RigidBodySyncMode& mode);
+
+    /// <summary>
+    ///     Gets or sets the sync mode of this actor.
+    /// </summary>
+    API_PROPERTY()
+    RigidBodySyncMode SyncMode() const;
 
     /// <summary>
     ///     Gets or sets world-space position of this actor.

@@ -1,6 +1,7 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include "RigidBodyActor.h"
+#include "Core/Time.h"
 #include "PhysicsManager.h"
 #include "DynamicRigidBodyActor.h"
 #include "StaticRigidBodyActor.h"
@@ -33,18 +34,52 @@ void RigidBodyActor::OnStart()
 
 void RigidBodyActor::OnUpdate()
 {
-    const auto pose = m_actor->getGlobalPose();
-    auto& currentPosition = pose.p;
-    auto& currentRotation = pose.q;
+    // TODO: Sync could be actually done using DOTS
 
-    if(m_interpolate)
+    switch (m_syncMode)
     {
-        // TODO: Interpolation/Extrapolation
+    case RigidBodySyncMode::Default:
+    {
+        ActorBase::Position(FromPxV3(m_currentPxPos));
+        ActorBase::Rotation(FromPxQ(m_currentPxRot));
+        break;
     }
-    else
+    case RigidBodySyncMode::Interpolation:
     {
-        ActorBase::Position(FromPxV3(currentPosition));
-        ActorBase::Rotation(FromPxQ(currentRotation));
+        // Interpolate position
+        ActorBase::Position(Vector3::Lerp(FromPxV3(m_lastPxPos), FromPxV3(m_currentPxPos), Time::FrameAlpha()));
+        ActorBase::Rotation(Quaternion::Slerp(FromPxQ(m_lastPxRot), FromPxQ(m_currentPxRot), Time::FrameAlpha()));
+
+        break;
+    }
+    case RigidBodySyncMode::Extrapolation:
+    {
+        auto lastPosition = FromPxV3(m_lastPxPos);
+        lastPosition += Velocity();
+
+        auto currentPosition = FromPxV3(m_currentPxPos);
+        currentPosition += Velocity() * Time::FrameAlpha();
+
+        if(Vector3::DistanceSquared(lastPosition, currentPosition) > 1.0f)
+        {
+            // Snap
+            lastPosition = currentPosition;
+            ActorBase::Position(currentPosition);
+        }
+        else
+        {
+            ActorBase::Position(Vector3::Lerp(lastPosition, currentPosition, Time::FrameAlpha()));
+        }
+
+        // TODO: Extrapolate rotation
+
+        ActorBase::Rotation(FromPxQ(m_currentPxRot));
+        break;
+    }
+
+    case RigidBodySyncMode::Count:
+    default: 
+        break;
     }
 }
 
@@ -60,6 +95,14 @@ void RigidBodyActor::OnSimulate()
         // Apply gravity (Add force)
         AddForce(m_gravity, ForceMode::Acceleration);
     }
+
+    const auto pose = m_actor->getGlobalPose();
+
+    m_lastPxPos = m_currentPxPos;
+    m_lastPxRot = m_currentPxRot;
+
+    m_currentPxPos = pose.p;
+    m_currentPxRot = pose.q;
 }
 
 void RigidBodyActor::OnEnable()
@@ -91,6 +134,16 @@ void RigidBodyActor::AddTorque(const Vector3& torque, ForceMode forceMode, const
 PhysicsScene* RigidBodyActor::Scene() const
 {
     return m_scene;
+}
+
+void RigidBodyActor::SyncMode(const RigidBodySyncMode& mode)
+{
+    m_syncMode = mode;
+}
+
+RigidBodySyncMode RigidBodyActor::SyncMode() const
+{
+    return m_syncMode;
 }
 
 void RigidBodyActor::Position(const Vector3& position)

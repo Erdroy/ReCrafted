@@ -73,6 +73,19 @@ namespace ReCrafted.API.Physics
         }
 
         /// <summary>
+        ///     Gets or sets the sync mode of this actor.
+        /// </summary>
+        public RigidBodySyncMode SyncMode
+        {
+            get
+            {
+                Get_InternalSyncMode(NativePtr, out var data);
+                return data;
+            }
+            set => Set_InternalSyncMode(NativePtr, ref value);
+        }
+
+        /// <summary>
         ///     Gets or sets world-space position of this actor.
         /// </summary>
         public override Vector3 Position
@@ -270,6 +283,12 @@ namespace ReCrafted.API.Physics
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalScene(System.IntPtr nativePtr, out PhysicsScene data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalSyncMode(System.IntPtr nativePtr, out RigidBodySyncMode data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Set_InternalSyncMode(System.IntPtr nativePtr, ref RigidBodySyncMode data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalPosition(System.IntPtr nativePtr, out Vector3 data);

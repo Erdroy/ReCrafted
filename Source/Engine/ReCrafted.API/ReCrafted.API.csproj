@@ -114,6 +114,7 @@
     <Compile Include="Physics\RayCastHit.cs" />
     <Compile Include="Physics\RigidBodyActor.Gen.cs" />
     <Compile Include="Physics\StaticRigidBodyActor.Gen.cs" />
+    <Compile Include="Physics\SyncMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\Camera.Gen.cs" />
     <Compile Include="Rendering\CameraActor.Gen.cs" />
