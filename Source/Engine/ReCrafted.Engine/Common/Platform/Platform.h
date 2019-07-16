@@ -14,123 +14,132 @@ private:
     static uint8_t m_cpuCount;
 
 public:
-    /**
-     * \brief Initializes platform.
-     */
+    /// <summary>
+    ///     Initializes platform implementation.
+    /// </summary>
     static void Initialize(EventDelegate onEvent);
 
-    /**
-     * \brief Shutdowns platform.
-     */
+    /// <summary>
+    ///     Adds event processor delegate to internal list.
+    /// </summary>
+    static void AddEventProcessor(EventDelegate onEvent);
+
+    /// <summary>
+    ///     Removes event processor delegate from internal list.
+    /// </summary>
+    static void RemoveEventProcessor(EventDelegate onEvent);
+
+    /// <summary>
+    ///     Shutdowns platform implementation.
+    /// </summary>
     static void Shutdown();
 
-    /**
-    * \brief Get time in milliseconds.
-    * \return The time in milliseconds.
-    */
+    /// <summary>
+    ///     Get time in milliseconds.
+    /// </summary>
     static double GetMilliseconds();
 
-    /**
-     * \brief Sleeps the current thread for given time.
-     * \param milliseconds The time to sleep.
-     */
+    /// <summary>
+    ///     Sleeps the current thread for given time.
+    /// </summary>
+    /// <param name="milliseconds">The time to sleep.</param>
     static void Sleep(uint32_t milliseconds);
 
-    /**
-     * \brief Gets the main thread id.
-     * \return The main thread id.
-     */
+    /// <summary>
+    ///     Gets the main thread id.
+    /// </summary>
+    /// <returns>The main thread id.</returns>
     static std::thread::id GetMainThreadId();
 
-    /**
-     * \brief Reports failed assert message.
-     * \param expression The assert expression.
-     * \param fileName The source file.
-     * \param line The source file line where the assert failed.
-     * \param message The additional message.
-     */
+    /// <summary>
+    ///     Reports failed assert message.
+    /// </summary>
+    /// <param name="expression">The assert expression.</param>
+    /// <param name="fileName">The source file.</param>
+    /// <param name="line">The source file line where the assert failed.</param>
+    /// <param name="message">The additional message.</param>
     static void ReportAssert(const String& expression, const String& fileName, unsigned int line, const String& message);
 
-    /**
-     * \brief Runs all application events.
-     */
+    /// <summary>
+    ///     Runs all application events.
+    /// </summary>
     static void RunEvents();
 
-    /**
-     * \brief Creates new Guid.
-     * \return The new unique guid.
-     */
+    /// <summary>
+    ///     Creates new Guid.
+    /// </summary>
+    /// <returns>The new unique guid.</returns>
     static Guid NewGuid();
 
-    /**
-     * \brief Creates new window.
-     * \param windowName The window title.
-     * \param width The initial window client-size width.
-     * \param height The initial window client-size height.
-     * \param style The style of the window. Look for docs of all of the platforms.
-     * \return The created window handle.
-     */
+    /// <summary>
+    ///     Creates new window.
+    /// </summary>
+    /// <param name="windowName">The window title.</param>
+    /// <param name="width">The initial window client-size width.</param>
+    /// <param name="height">The initial window client-size height.</param>
+    /// <param name="style">The style of the window. Look for docs of all of the platforms.</param>
+    /// <returns>The created window handle.</returns>
     static void* CreateNewWindow(const String& windowName, int width = 1280, int height = 720, uint64_t style = 0u);
 
-    /**
-     * \brief Sets given window as borderless window.
-     * \param windowHandle The target window that will be set as borderless.
-     * \param borderless When true, window will become borderless, otherwise just a normal window.
-     */
+    /// <summary>
+    ///     Sets given window as borderless window.
+    /// </summary>
+    /// <param name="windowHandle">The target window that will be set as borderless.</param>
+    /// <param name="borderless">When true, window will become borderless, otherwise just a normal window.</param>
     static void MakeBorderLessWindow(void* windowHandle, bool borderless);
 
-    /**
-     * \brief Destroys window with given handle.
-     * \param windowHandle Handle of the window.
-     */
+    /// <summary>
+    ///     Destroys window with given handle.
+    /// </summary>
+    /// <param name="windowHandle">Handle of the window.</param>
     static void DestroyWindow(void* windowHandle);
 
-    /**
-     * \brief Sets given window handle as current (main).
-     * \param windowHandle Handle of the window.
-     */
+    /// <summary>
+    ///     Sets given window handle as current (main).
+    /// </summary>
+    /// <param name="windowHandle">Handle of the window.</param>
     static void SetCurrentWindow(void* windowHandle);
 
-    /**
-    * \brief Gets the main game window handle.
-    * \return The game window handle.
-    */
+    /// <summary>
+    ///     Gets the main game window handle.
+    /// </summary>
+    /// <returns>The game window handle.</returns>
     static void* GetCurrentWindow();
 
-    /**
-     * \brief Get size of game window.
-     * \param width (out)The width.
-     * \param height (out)The height.
-     */
+    /// <summary>
+    ///     Get size of game window.
+    /// </summary>
+    /// <param name="width">(out)The width.</param>
+    /// <param name="height">(out)The height.</param>
     static void GetCurrentWindowSize(unsigned int* width, unsigned int* height)
     {
         return GetWindowSize(m_currentWindow, width, height);
     }
 
-    /**
-     * \brief Show or hide cursor.
-     */
+    /// <summary>
+    ///     Show or hide cursor.
+    /// </summary>
     static void SetCursorVisibility(bool visible);
 
-    /**
-    * \brief Get size of given window.
-    * \param windowHandle The window handle.
-    * \param width (out)The width.
-    * \param height (out)The height.
-    */
+    /// <summary>
+    ///     Get size of given window.
+    /// </summary>
+    /// <param name="windowHandle">The window handle.</param>
+    /// <param name="width">(out)The width.</param>
+    /// <param name="height">(out)The height.</param>
     static void GetWindowSize(void* windowHandle, unsigned int* width, unsigned int* height);
 
-    /**
-     * \brief Set the cursor position.
-     * \param x The x coordinate of target cursor position in pixels.
-     * \param y The y coordinate of target cursor position in pixels.
-     */
+    /// <summary>
+    ///     Set the cursor position.
+    /// </summary>
+    /// <param name="x">The x coordinate of target cursor position in pixels.</param>
+    /// <param name="y">The y coordinate of target cursor position in pixels.</param>
     static void SetCursorPosition(int x, int y);
 
-    /**
-     * \brief Sets debug name for the current thread.
-     * \param name The desired thread name.
-     */
+    /// <summary>
+    ///     Sets debug name for the current thread.
+    /// </summary>
+    /// <param name="name">The desired thread name.</param>
     static void SetThreadName(const char* name);
 
     /// <summary>

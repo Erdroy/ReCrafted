@@ -3,6 +3,7 @@
 #include "Common/Platform/Platform.h"
 #include "Common/Logger.h"
 #include "Common/Guid.h"
+#include "Common/List.h"
 
 #ifdef _WIN32
 
@@ -18,6 +19,8 @@ std::thread::id g_mainThread;
 static LARGE_INTEGER m_frequency;
 static double m_start;
 static double m_freqCoefficient;
+
+List<Platform::EventDelegate> m_eventDelegates = {};
 
 // source: https://stackoverflow.com/questions/10121560/stdthread-naming-your-thread
 #pragma pack(push,8)
@@ -60,6 +63,12 @@ void SetThreadName(std::thread* thread, const char* threadName)
 
 LRESULT CALLBACK WindowEventProcessor(const HWND hWnd, const UINT msg, const WPARAM wParam, const LPARAM lParam)
 {
+    for(auto& eventDelegate : m_eventDelegates)
+    {
+        if (eventDelegate(hWnd, msg, wParam, lParam))
+            return 0;
+    }
+
     return m_eventDelegate(hWnd, msg, wParam, lParam);
 }
 
@@ -93,6 +102,16 @@ void Platform::Initialize(const EventDelegate onEvent)
     SYSTEM_INFO systemInfo;
     GetSystemInfo(&systemInfo);
     m_cpuCount = static_cast<uint8_t>(systemInfo.dwNumberOfProcessors);
+}
+
+void Platform::AddEventProcessor(const EventDelegate onEvent)
+{
+    m_eventDelegates.Add(onEvent);
+}
+
+void Platform::RemoveEventProcessor(const EventDelegate onEvent)
+{
+    m_eventDelegates.Remove(onEvent);
 }
 
 void Platform::Shutdown()
