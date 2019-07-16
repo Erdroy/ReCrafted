@@ -31,3 +31,6 @@
 [submodule "Source/Libraries/ReCrafted.PhysX"]
 	path = Source/Libraries/ReCrafted.PhysX
 	url = https://github.com/Erdroy/ReCrafted.PhysX
+[submodule "Source/Libraries/imgui"]
+	path = Source/Libraries/imgui
+	url = https://github.com/Erdroy/imgui
