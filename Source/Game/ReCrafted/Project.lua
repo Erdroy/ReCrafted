@@ -40,6 +40,7 @@ project "ReCrafted"
         "ReCrafted.Engine",
 
         "upng",
+        "imgui",
     }
 	
 	-- add onbuild script and multi processor compilation

@@ -25,6 +25,7 @@ project "ReCrafted.Engine"
         "./",
         -- add all modules
         path.join(LIBRARIES_DIR, "upng"),
+        path.join(LIBRARIES_DIR, "imgui"),
         path.join(LIBRARIES_DIR, "sparsepp"),
         path.join(LIBRARIES_DIR, "concurrentqueue"),
         path.join(LIBRARIES_DIR, "fmt/include"),
@@ -43,6 +44,7 @@ project "ReCrafted.Engine"
     links { 
         "cpp-base64",
         "upng",
+        "imgui",
 
         "d3d11", "dxguid", "dxgi", "d3dcompiler", 
         "Rpcrt4",

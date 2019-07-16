@@ -29,6 +29,7 @@ solution "ReCrafted"
 		dofile "./Source/Libraries/Project.json.lua"
 		dofile "./Source/Libraries/Project.sparsepp.lua"
 		dofile "./Source/Libraries/Project.upng.lua"
+		dofile "./Source/Libraries/Project.imgui.lua"
 
 	group "Engine"
 		dofile "./Source/Engine/ReCrafted.API/Project.lua"
