@@ -61,14 +61,28 @@ namespace ReCrafted.Tools.ProjectManager.Commands
 
                 //try
                 {
-                    // Generate C# and C++ class from given header file
-                    var generator = new Generator(headerFile);
-                    generator.Parse();
-
                     // Construct C++ file for API output.
                     // Replace .h with .Gen.cpp.
                     var proxySourceFile = headerFile.Remove(headerFile.Length - c99CppHeaderExtension.Length, c99CppHeaderExtension.Length);
                     proxySourceFile += c99CppHeaderAPIExtension;
+
+                    classList.Includes.Add(headerFile.Replace(engineProjDir, "").Replace("\\", "/"));
+                    classList.Names.Add(headerFileName);
+
+                    if (File.Exists(proxySourceFile))
+                    {
+                        var apiFileInfo = new FileInfo(proxySourceFile);
+
+                        if (apiFileInfo.LastWriteTime > fileInfo.LastWriteTime)
+                        {
+                            Console.WriteLine($"API for '{headerFileName}' will not be generated. No changes found.");
+                            continue;
+                        }
+                    }
+
+                    // Generate C# and C++ class from given header file
+                    var generator = new Generator(headerFile);
+                    generator.Parse();
 
                     // Construct C# file for API output.
                     var nameSpace = generator.Namespace.Replace("ReCrafted.API", "");
@@ -82,9 +96,6 @@ namespace ReCrafted.Tools.ProjectManager.Commands
                         Directory.CreateDirectory(apiSourceFileDirectory);
 
                     generator.Generate(apiSourceFile, proxySourceFile);
-
-                    classList.Includes.Add(headerFile.Replace(engineProjDir, "").Replace("\\", "/"));
-                    classList.Names.Add(headerFileName);
                 }
                 //catch (Exception ex)
                 {
