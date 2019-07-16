@@ -49,6 +49,12 @@ foreach(var function in Functions)
         <#=line#>
 <#
         }
+        if(function.AggressiveInline)
+        {
+#>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+<#
+        }
 #>
         <#=function.GetModifiers()#> <#=function.ReturnType.ToCSharp()#> <#=function.Name#>(<#=function.GetCSharpParameters()#>)
         {

@@ -153,41 +153,52 @@ foreach(var function in Functions)
             #line 50 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 
         }
+        if(function.AggressiveInline)
+        {
+
+            
+            #line default
+            #line hidden
+            this.Write("        [MethodImpl(MethodImplOptions.AggressiveInlining)]\r\n");
+            
+            #line 56 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+
+        }
 
             
             #line default
             #line hidden
             this.Write("        ");
             
-            #line 53 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 59 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(function.GetModifiers()));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 53 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 59 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(function.ReturnType.ToCSharp()));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 53 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 59 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(function.Name));
             
             #line default
             #line hidden
             this.Write("(");
             
-            #line 53 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 59 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(function.GetCSharpParameters()));
             
             #line default
             #line hidden
             this.Write(")\r\n        {\r\n");
             
-            #line 55 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 61 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 
         if(function.ReturnType.BaseType != "void")
         {
@@ -198,37 +209,12 @@ foreach(var function in Functions)
             #line hidden
             this.Write("            return ");
             
-            #line 60 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 66 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(prefix));
             
             #line default
             #line hidden
             this.Write("Internal");
-            
-            #line 60 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(function.Name));
-            
-            #line default
-            #line hidden
-            this.Write("(");
-            
-            #line 60 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(function.GetCSharpParametersRedirect()));
-            
-            #line default
-            #line hidden
-            this.Write(");\r\n");
-            
-            #line 61 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
-
-        }
-        else
-        {
-
-            
-            #line default
-            #line hidden
-            this.Write("            Internal");
             
             #line 66 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(function.Name));
@@ -245,6 +231,31 @@ foreach(var function in Functions)
             this.Write(");\r\n");
             
             #line 67 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+
+        }
+        else
+        {
+
+            
+            #line default
+            #line hidden
+            this.Write("            Internal");
+            
+            #line 72 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(function.Name));
+            
+            #line default
+            #line hidden
+            this.Write("(");
+            
+            #line 72 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(function.GetCSharpParametersRedirect()));
+            
+            #line default
+            #line hidden
+            this.Write(");\r\n");
+            
+            #line 73 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
       
         }
 
@@ -253,7 +264,7 @@ foreach(var function in Functions)
             #line hidden
             this.Write("        }\r\n");
             
-            #line 71 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 77 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 
     }
 }
@@ -268,7 +279,7 @@ foreach(var property in Properties)
             #line hidden
             this.Write("\r\n");
             
-            #line 81 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 87 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 
     foreach(var line in property.Comment)
     {
@@ -278,14 +289,14 @@ foreach(var property in Properties)
             #line hidden
             this.Write("        ");
             
-            #line 85 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 91 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(line));
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 86 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 92 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 
     }
 
@@ -294,28 +305,28 @@ foreach(var property in Properties)
             #line hidden
             this.Write("        ");
             
-            #line 89 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 95 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.GetModifiers()));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 89 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 95 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.ToCSharp()));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 89 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 95 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Name));
             
             #line default
             #line hidden
             this.Write("\r\n        {\r\n");
             
-            #line 91 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 97 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 
     if(property.HasGetter)
     {
@@ -326,35 +337,35 @@ foreach(var property in Properties)
             #line hidden
             this.Write("            get\r\n            {\r\n                Get_Internal");
             
-            #line 98 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 104 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Name));
             
             #line default
             #line hidden
             this.Write("(");
             
-            #line 98 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 104 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 if(!property.IsStatic){
             
             #line default
             #line hidden
             this.Write("NativePtr, ");
             
-            #line 98 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 104 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("out var data);\r\n                return ");
             
-            #line 99 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 105 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(prefix));
             
             #line default
             #line hidden
             this.Write("data;\r\n            }\r\n");
             
-            #line 101 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 107 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 
     }
     if(property.HasSetter)
@@ -365,49 +376,49 @@ if(!property.IsStatic){
             #line hidden
             this.Write("            set => Set_Internal");
             
-            #line 106 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 112 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Name));
             
             #line default
             #line hidden
             this.Write("(");
             
-            #line 106 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 112 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 if(!property.IsStatic){
             
             #line default
             #line hidden
             this.Write("NativePtr, ");
             
-            #line 106 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 112 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 } if(!property.ForceByValue){
             
             #line default
             #line hidden
             this.Write("ref ");
             
-            #line 106 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 112 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("value");
             
-            #line 106 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 112 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 if(property.Type.CastToManaged){
             
             #line default
             #line hidden
             this.Write("? value.NativePtr : System.IntPtr.Zero");
             
-            #line 106 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 112 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 107 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 113 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 
     }
 
@@ -416,7 +427,7 @@ if(property.Type.CastToManaged){
             #line hidden
             this.Write("        }\r\n");
             
-            #line 111 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 117 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 
 }
 //      /\ ---- GENERATE PROPERTIES ---- /\
@@ -432,28 +443,28 @@ foreach(var function in Functions)
             this.Write("\r\n        [MethodImpl(MethodImplOptions.InternalCall)]\r\n        private static ex" +
                     "tern ");
             
-            #line 122 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 128 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(function.ReturnType.ToCSharp()));
             
             #line default
             #line hidden
             this.Write(" Internal");
             
-            #line 122 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 128 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(function.Name));
             
             #line default
             #line hidden
             this.Write("(");
             
-            #line 122 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 128 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(function.GetCSharpParameters(true, false)));
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 123 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 129 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 
 }
 //      /\ ---- GENERATE EXTERN FUNCTIONS ---- /\
@@ -464,7 +475,7 @@ foreach(var function in Functions)
             #line default
             #line hidden
             
-            #line 129 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 135 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 
 foreach(var property in Properties)
 {
@@ -477,35 +488,35 @@ foreach(var property in Properties)
             this.Write("\r\n        [MethodImpl(MethodImplOptions.InternalCall)]\r\n        private static ex" +
                     "tern void Get_Internal");
             
-            #line 137 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 143 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Name));
             
             #line default
             #line hidden
             this.Write("(");
             
-            #line 137 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 143 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 if(!property.IsStatic){
             
             #line default
             #line hidden
             this.Write("System.IntPtr nativePtr, ");
             
-            #line 137 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 143 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("out ");
             
-            #line 137 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 143 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.ToCSharp(true, true)));
             
             #line default
             #line hidden
             this.Write(" data);\r\n");
             
-            #line 138 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 144 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 
     }
     if(property.HasSetter)
@@ -517,41 +528,41 @@ if(!property.IsStatic){
             this.Write("\r\n        [MethodImpl(MethodImplOptions.InternalCall)]\r\n        private static ex" +
                     "tern void Set_Internal");
             
-            #line 145 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 151 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Name));
             
             #line default
             #line hidden
             this.Write("(");
             
-            #line 145 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 151 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 if(!property.IsStatic){
             
             #line default
             #line hidden
             this.Write("System.IntPtr nativePtr, ");
             
-            #line 145 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 151 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 } if(!property.ForceByValue){
             
             #line default
             #line hidden
             this.Write("ref ");
             
-            #line 145 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 151 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 }
             
             #line default
             #line hidden
             
-            #line 145 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 151 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Type.ToCSharp(false, true)));
             
             #line default
             #line hidden
             this.Write(" data);\r\n");
             
-            #line 146 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
+            #line 152 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\CSharpTemplate.tt"
 
     }
 //      /\ ---- GENERATE EXTERN PROPERTIES ---- /\

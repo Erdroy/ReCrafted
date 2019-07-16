@@ -131,6 +131,14 @@ namespace ReCrafted.Tools.APIGenerator
             _tokenizer.SkipUntil(TokenType.Identifier);
 
             var token = _tokenizer.CurrentToken;
+
+            // Skip FORCE_INLINE macro
+            if (token.Value == "FORCE_INLINE" || token.Value == "FORCEINLINE")
+            {
+                desc.AggressiveInline = true;
+                token = _tokenizer.NextToken();
+            }
+
             var isStatic = token.Value == "static";
 
             if (isStatic)
