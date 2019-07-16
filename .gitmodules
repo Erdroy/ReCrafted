@@ -10,9 +10,6 @@
 [submodule "Source/Libraries/json"]
 	path = Source/Libraries/json
 	url = https://github.com/nlohmann/json
-[submodule "Source/Libraries/imgui"]
-	path = Source/Libraries/imgui
-	url = https://github.com/ocornut/imgui
 [submodule "Source/Libraries/sparsepp"]
 	path = Source/Libraries/sparsepp
 	url = https://github.com/greg7mdp/sparsepp
