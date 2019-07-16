@@ -26,6 +26,7 @@
 #include "Physics/Colliders/Collider.h"
 #include "Physics/Colliders/MeshCollider.h"
 #include "Physics/Colliders/SphereCollider.h"
+#include "Profiler/Profiler.h"
 #include "Rendering/Camera.h"
 #include "Rendering/CameraActor.h"
 #include "Rendering/Mesh.h"
@@ -65,6 +66,7 @@ void ScriptingManager::InitRuntime()
     Collider::InitRuntime();
     MeshCollider::InitRuntime();
     SphereCollider::InitRuntime();
+    Profiler::InitRuntime();
     Camera::InitRuntime();
     CameraActor::InitRuntime();
     Mesh::InitRuntime();

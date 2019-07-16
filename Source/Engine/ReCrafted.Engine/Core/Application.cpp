@@ -10,6 +10,7 @@
 #include "Core/Time.h"
 #include "Input/InputManager.h"
 #include "Physics/PhysicsManager.h"
+#include "Profiler/Profiler.h"
 #include "Rendering/RenderingManager.h"
 #include "Rendering/Renderer/Renderer.h"
 #include "Scripting/ScriptingManager.h"
@@ -44,6 +45,7 @@ void Application::InitializeSubSystems() const
 {
     // Register subsystems
     SubSystemManager::Register<ScriptingManager>();
+    SubSystemManager::Register<Profiler>();
     SubSystemManager::Register<TaskManager>();
     SubSystemManager::Register<PhysicsManager>();
     SubSystemManager::Register<ObjectManager>();

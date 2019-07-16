@@ -6,6 +6,7 @@
 #include "Rendering/RenderingManager.h"
 #include "Rendering/DrawMode.h"
 #include "Rendering/RenderingBase.h"
+#include "Profiler/Profiler.h"
 
 namespace DebugMesh
 {
@@ -114,7 +115,7 @@ void DebugDraw::Shutdown()
 
 void DebugDraw::Render()
 {
-    //Profiler::BeginProfile(__FUNCTION__);
+    Profiler::BeginProfile(__FUNCTION__);
 
     // Set shader values
     auto mvpMatrix = Camera::GetMainCamera()->GetViewProjection();
@@ -137,7 +138,7 @@ void DebugDraw::Render()
     // Reset matrix
     SetMatrix(Matrix::Identity);
 
-    //Profiler::EndProfile();
+    Profiler::EndProfile();
 }
 
 void DebugDraw::RenderLines(Batch& batch) const

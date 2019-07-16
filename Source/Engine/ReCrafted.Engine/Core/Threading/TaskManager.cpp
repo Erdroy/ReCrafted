@@ -4,6 +4,7 @@
 #include "Common/Platform/Platform.h"
 #include "Common/Logger.h"
 #include "Task.h"
+#include "Profiler/Profiler.h"
 //#include "Common/Profiler/Profiler.h"
 
 void TaskManager::WorkerFunction()
@@ -132,7 +133,7 @@ void TaskManager::Shutdown()
 
 void TaskManager::OnUpdate()
 {
-    //Profiler::BeginProfile("TaskManager::Dispatch");
+    Profiler::BeginProfile("TaskManager::Dispatch");
 
     Task* task;
     while (m_taskReleaseQueue.try_dequeue(task))
@@ -140,7 +141,7 @@ void TaskManager::OnUpdate()
         ReleaseTask(task);
     }
 
-    //Profiler::EndProfile();
+    Profiler::EndProfile();
 }
 
 void TaskManager::CleanupTask(Task* task)

@@ -2,7 +2,7 @@
 
 #include "ActionMap.h"
 #include "InputManager.h"
-//#include "Common/Profiler/Profiler.h"
+#include "Profiler/Profiler.h"
 
 ActionMap::ActionItem* ActionMap::GetActionItem(const char* name)
 {
@@ -91,7 +91,7 @@ void ActionMap::DoButtonActions(Button button, ButtonState state)
 
 void ActionMap::Update()
 {
-    //CPU_PROFILE_SCOPE(0, __FUNCTION__);
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
 
     if (!m_active)
         return;

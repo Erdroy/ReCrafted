@@ -153,10 +153,6 @@ void DeferredRendering::EndRender()
 
 void DeferredRendering::RenderGeometry()
 {
-    //Profiler::BeginProfile("Render Geometry");
-
-
-    //Profiler::EndProfile();
 }
 
 void DeferredRendering::RenderShadows()

@@ -176,7 +176,7 @@ public:
 
     FORCE_INLINE TType& Last()
     {
-        return m_vector.end();
+        return m_vector[m_vector.size() - 1];
     }
 
     FORCE_INLINE const TType& Last() const

@@ -4,6 +4,7 @@
 #include "Common/Logger.h"
 #include "Common/Guid.h"
 #include "Common/List.h"
+#include "Profiler/Profiler.h"
 
 #ifdef _WIN32
 
@@ -170,7 +171,7 @@ void Platform::ReportAssert(const String& expression, const String& fileName, co
 
 void Platform::RunEvents()
 {
-    //Profiler::BeginProfile("RunEvents");
+    Profiler::BeginProfile("RunEvents");
     MSG msg;
     msg.message = WM_NULL;
     while (PeekMessage(&msg, nullptr, 0u, 0u, PM_REMOVE))
@@ -178,7 +179,7 @@ void Platform::RunEvents()
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
-    //Profiler::EndProfile();
+    Profiler::EndProfile();
 }
 
 Guid Platform::NewGuid()

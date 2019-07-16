@@ -3,6 +3,7 @@
 #include "MainLoop.h"
 #include "Common/Platform/Platform.h"
 #include "Core/Time.h"
+#include "Profiler/Profiler.h"
 
 MainLoop::MainLoop()
 {
@@ -58,6 +59,13 @@ void MainLoop::Run()
     while(m_isRunning)
     {
         const auto currentFrameStart = Platform::GetMilliseconds();
+
+        // Begin profiler frame
+        Profiler::BeginFrame();
+
+        // Push profiler 
+        Profiler::BeginProfile("Frame");
+
         Time::GetInstance()->OnFrame();
 
         if (m_updateCallback)
@@ -69,9 +77,18 @@ void MainLoop::Run()
         if (m_renderCallback)
             m_render.Invoke();
 
+        // end 'Frame' profile
+        Profiler::EndProfile();
+
+        // Push profiler frame, to omit TargetFPS wait
+        Profiler::PushFrame();
+
         // Wait for target fps
         if (m_targetFps != 0)
             WaitForTargetFps(lastFrameStart, currentFrameStart);
+
+        // End profiler frame
+        Profiler::EndFrame(false);
     }
 }
 

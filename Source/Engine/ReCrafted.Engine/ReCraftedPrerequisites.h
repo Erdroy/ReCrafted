@@ -82,6 +82,9 @@ class PhysicsMaterial;
 class PhysicsScene;
 class ShapeCooker;
 
+// Profiler/
+class Profiler;
+
 // Rendering/
 enum class DrawMode : byte;
 enum class MaterialFieldType : byte;
