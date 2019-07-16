@@ -4,6 +4,7 @@
 #include "Common/Logger.h"
 #include "Core/Display.h"
 #include "Rendering/Debug/DebugDraw.h"
+#include "Rendering/ImGui/ImGuiManager.h"
 #include "Rendering/DeferredRendering/DeferredRendering.h"
 #include "Rendering/Models/ModelRenderingSystem.h"
 #include "Rendering/Camera.h"
@@ -45,6 +46,9 @@ void RenderingManager::Initialize()
 
     AddRenderingComponent<ModelRenderingSystem>();
     AddRenderingComponent<DebugDraw>();
+    AddRenderingComponent<ImGuiManager>();
+
+    Renderer::AddOnPresentBeginEvent(Action<void>::New<ImGuiManager, &ImGuiManager::EndRender>(ImGuiManager::GetInstance()));
 }
 
 void RenderingManager::Shutdown()
@@ -65,6 +69,11 @@ void RenderingManager::Shutdown()
 
     // Shutdown renderer
     Renderer::Shutdown();
+}
+
+void RenderingManager::EarlyUpdate()
+{
+    ImGuiManager::GetInstance()->BeginRender();
 }
 
 void RenderingManager::Render()

@@ -76,6 +76,9 @@ void Application::Update()
     // Dispatch input
     InputManager::GetInstance()->DispatchInput();
 
+    // Call early update on RenderingManager
+    RenderingManager::GetInstance()->EarlyUpdate();
+
     SubSystemManager::GetInstance()->Update();
 
     m_instance->m_gameManager->Update();

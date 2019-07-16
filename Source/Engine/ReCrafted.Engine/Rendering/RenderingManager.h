@@ -46,6 +46,7 @@ protected:
     void Initialize() override;
     void Shutdown() override;
 
+    void EarlyUpdate();
     void Render();
 
     /// <summary>

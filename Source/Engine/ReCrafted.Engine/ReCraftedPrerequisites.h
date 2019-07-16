@@ -103,6 +103,9 @@ class DeferredRendering;
 // Rendering/Debug/
 class DebugDraw;
 
+// Rendering/ImGui
+class ImGuiManager;
+
 // Rendering/Materials
 class Material;
 class MaterialField;
