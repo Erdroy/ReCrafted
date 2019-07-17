@@ -111,8 +111,6 @@ void PhysicsManager::Initialize()
 
 void PhysicsManager::Shutdown()
 {
-    Object::DestroyNow(PhysicsMaterial::m_defaultMaterial);
-
     // Shutdown the stepper
     MultiThreadStepper::GetInstance()->Dispose();
 

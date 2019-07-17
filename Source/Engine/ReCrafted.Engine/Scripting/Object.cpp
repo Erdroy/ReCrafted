@@ -28,6 +28,9 @@ MonoObject* Object::ToManaged() const
 
 void Object::SetNativePointer(void* pointer)
 {
+    if (!m_class.IsValid())
+        return;
+
     // Set NativePtr field in managed object if the object does have it.
     const auto testField = m_class.GetField("NativePtr");
     auto pointerValue = reinterpret_cast<uintptr_t>(pointer);
@@ -46,9 +49,7 @@ bool Object::RemoveRef()
     if (m_refCount == 0u)
         return true;
 
-    if(m_refCount > 0u)
-        m_refCount--;
-
+    m_refCount--;
     return m_refCount == 0u;
 }
 

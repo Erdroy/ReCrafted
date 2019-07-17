@@ -13,7 +13,10 @@ void SceneManager::Shutdown()
     if (!m_actors.Empty())
     {
         // Destroy all actors
-        for (auto&& actor : m_actors)
+        List<ActorBase*> actors;
+        actors.Copy(m_actors);
+
+        for (auto&& actor : actors)
             Object::DestroyNow(actor);
 
         m_actors.Clear();

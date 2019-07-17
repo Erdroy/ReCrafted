@@ -95,6 +95,9 @@ void ObjectManager::ReleaseQueuedObjects()
     Object* toDestroy;
     while (m_destroyQueue.try_dequeue(toDestroy))
     {
+        ASSERT(toDestroy);
+        ASSERT(toDestroy->IsValid());
+
         DestroyObject(toDestroy);
     }
 }
@@ -105,29 +108,48 @@ void ObjectManager::Initialize()
 
 void ObjectManager::Shutdown()
 {
-    ReleaseQueuedObjects();
+    //ReleaseQueuedObjects();
 
     // Finalize
     Domain::Root->Finalize();
 
-    ScopeLock(m_objectMapLock);
+    List<Object*> objectList = {};
+    m_objectMapLock.LockNow();
+    {
+        // Takeout all objects from object map
+        // Note: This is needed, because some of the objects, 
+        // do call DestroyNow function inside it's destructor calls, and this does releases the objects from the objectMap
+        // and it would deadlock and create other nasty stuff like access violations, because some object was already released - 
+        // and the current iterator is invalid.
+        for (auto&& pair : m_objectMap)
+        {
+            const auto object = pair.second;
+
+            ASSERT(object);
+            ASSERT(object->IsValid());
+
+            objectList.Add(object);
+        }
+    }
+    m_objectMapLock.UnlockNow();
 
     // Destroy all objects
-    for (auto&& pair : m_objectMap)
+    for(auto&& object : objectList)
     {
-        const auto object = pair.second;
-        ASSERT(object);
-
         // Release and delete 
         // Note: no need to unregister, because this list will be cleared anyways, 
         // and we don't have to play with the double lock which gives deadlock and needs some workarounds)
-        
+
         ReleaseObject(object);
         DeleteObject(object);
     }
 
-    m_objectMap.clear();
-    m_objectCreators.clear();
+    m_objectMapLock.LockNow();
+    {
+        m_objectMap.clear();
+        m_objectCreators.clear();
+    }
+    m_objectMapLock.UnlockNow();
 
     // Make sure that we have destroyed all objects
     DEBUG_ASSERT(m_objectCount == 0);

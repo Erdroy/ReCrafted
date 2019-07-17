@@ -11,23 +11,30 @@ void ContentManager::Initialize()
 
 void ContentManager::Shutdown()
 {
-    ScopeLock(m_assetMapLock);
-
+    m_assetMapLock.LockNow();
     // Clear deleted
     m_assetMapA.clear_deleted_key();
 
     // Release all assets
+    List<Asset*> assets = {};
     for (auto&& assetPair : m_assetMapA)
     {
         const auto asset = assetPair.second;
+        assets.Add(asset);
+    }
+    m_assetMapLock.UnlockNow();
 
+    for(auto&& asset : assets)
+    {
         // Unloading the asset without release is essential right there to omit deadlock later.
         UnloadAsset(asset, false);
         Object::DestroyNow(asset);
     }
 
     // Clear
+    m_assetMapLock.LockNow();
     m_assetMapA.clear();
+    m_assetMapLock.UnlockNow();
 }
 
 void ContentManager::OnUpdate()
