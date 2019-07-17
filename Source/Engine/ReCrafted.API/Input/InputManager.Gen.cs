@@ -49,64 +49,6 @@ namespace ReCrafted.API.Input
         }
         
         /// <summary>
-        ///     Gets mouse position relative to the current game window.
-        /// </summary>
-        public static Vector2 GetCursorPosition()
-        {
-            return InternalGetCursorPosition();
-        }
-        
-        /// <summary>
-        ///     Gets mouse position delta from last frame.
-        /// </summary>
-        public static Vector2 GetCursorDelta()
-        {
-            return InternalGetCursorDelta();
-        }
-        
-        /// <summary>
-        ///     Gets mouse scroll delta from last frame.
-        /// </summary>
-        public static float GetScrollDelta()
-        {
-            return InternalGetScrollDelta();
-        }
-        
-        /// <summary>
-        ///     Sets cursor show state.
-        /// </summary>
-        /// <param name="showCursor">The show state.</param>
-        public static void SetShowCursor(bool showCursor)
-        {
-            InternalSetShowCursor(showCursor);
-        }
-        
-        /// <summary>
-        ///     Gets cursor show state.
-        /// </summary>
-        public static bool GetShowCursor()
-        {
-            return InternalGetShowCursor();
-        }
-        
-        /// <summary>
-        ///     Sets cursor lock state.
-        /// </summary>
-        /// <param name="lockCursor">The lock state.</param>
-        public static void SetLockCursor(bool lockCursor)
-        {
-            InternalSetLockCursor(lockCursor);
-        }
-        
-        /// <summary>
-        ///     Gets cursor lock state.
-        /// </summary>
-        public static bool GetLockCursor()
-        {
-            return InternalGetLockCursor();
-        }
-        
-        /// <summary>
         ///     Returns true when specified key is being held for at least one frame.
         /// </summary>
         /// <param name="key">The key.</param>
@@ -156,6 +98,70 @@ namespace ReCrafted.API.Input
         }
 
         /// <summary>
+        ///     Gets mouse position relative to the current game window.
+        /// </summary>
+        public static Vector2 CursorPosition
+        {
+            get
+            {
+                Get_InternalCursorPosition(out var data);
+                return data;
+            }
+        }
+
+        /// <summary>
+        ///     Gets mouse position delta from last frame.
+        /// </summary>
+        public static Vector2 CursorDelta
+        {
+            get
+            {
+                Get_InternalCursorDelta(out var data);
+                return data;
+            }
+        }
+
+        /// <summary>
+        ///     Gets mouse scroll delta from last frame.
+        /// </summary>
+        public static float ScrollDelta
+        {
+            get
+            {
+                Get_InternalScrollDelta(out var data);
+                return data;
+            }
+        }
+
+        /// <summary>
+        ///     Sets cursor show state.
+        /// </summary>
+        /// <param name="showCursor">The show state.</param>
+        public static bool ShowCursor
+        {
+            get
+            {
+                Get_InternalShowCursor(out var data);
+                return data;
+            }
+            set => Set_InternalShowCursor(ref value);
+        }
+
+        /// <summary>
+        ///     Sets cursor lock state.
+        /// </summary>
+        /// <param name="lockCursor">The lock state.</param>
+        public static bool LockCursor
+        {
+            get
+            {
+                Get_InternalLockCursor(out var data);
+                return data;
+            }
+            set => Set_InternalLockCursor(ref value);
+        }
+
+        /// <summary>
         ///     Gets device count.
         /// </summary>
         public static int DeviceCount
@@ -180,27 +186,6 @@ namespace ReCrafted.API.Input
         private static extern void InternalSetCursorPosition(Vector2 position);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern Vector2 InternalGetCursorPosition();
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern Vector2 InternalGetCursorDelta();
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern float InternalGetScrollDelta();
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void InternalSetShowCursor(bool showCursor);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern bool InternalGetShowCursor();
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void InternalSetLockCursor(bool lockCursor);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern bool InternalGetLockCursor();
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern bool InternalIsKey(Key key);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -214,6 +199,27 @@ namespace ReCrafted.API.Input
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern InputDevice InternalGetDevice(DeviceType deviceType);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalCursorPosition(out Vector2 data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalCursorDelta(out Vector2 data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalScrollDelta(out float data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalShowCursor(out bool data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Set_InternalShowCursor(ref bool data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalLockCursor(out bool data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Set_InternalLockCursor(ref bool data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalDeviceCount(out int data);

@@ -1,6 +1,5 @@
 ﻿// ReCrafted (c) 2016-2019 Always Too Late
 
-using ReCrafted.API.Core;
 using ReCrafted.API.Input;
 using ReCrafted.API.WebUI;
 
@@ -26,8 +25,8 @@ namespace ReCrafted.Game.UI
         private void Show(bool show)
         {
             View.Active = show;
-            //Cursor.Show = show;
-            //Cursor.Lock = !show;
+            InputManager.ShowCursor = show;
+            InputManager.LockCursor = !show;
         }
     }
 }

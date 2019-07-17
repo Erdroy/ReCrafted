@@ -3,18 +3,22 @@
 using ReCrafted.API;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
+using ReCrafted.API.Input;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.Physics;
-using ReCrafted.API.Rendering;
+using ReCrafted.API.Rendering.Debug;
 using ReCrafted.API.WebUI;
+using ReCrafted.Game.Player;
 using ReCrafted.Game.UI;
 
 namespace ReCrafted.Game.Core
 {
     public class Game : GameBase<Game>
     {
-        private CameraActor _camera;
         private PhysicsScene _defaultPhysicsScene;
+        private RigidBodyActor _floor;
+
+        public PlayerManager CurrentPlayer;
 
         protected override void OnInitialize()
         {
@@ -27,9 +31,16 @@ namespace ReCrafted.Game.Core
             _defaultPhysicsScene = PhysicsManager.CreateScene();
             _defaultPhysicsScene.Enabled = true;
 
-            _camera = Object.New<CameraActor>();
-            _camera.Camera.SetAsCurrent();
-            _camera.Position = Vector3.BackwardLH * 10.0f;
+            InputManager.ShowCursor = false;
+            InputManager.LockCursor = true;
+
+            // Spawn player
+            CurrentPlayer = PlayerManager.SpawnPlayer(new Vector3(0.0f, 14.0f, 0.0f), Quaternion.Identity);
+
+            _floor = RigidBodyActor.CreateStatic();
+            var collider = Object.New<SphereCollider>();
+            collider.Radius = 10.0f;
+            _floor.AttachCollider(collider);
 
             // Run WebUIManager
             GameSystem.AddGameSystem<WebUI>();
@@ -48,6 +59,9 @@ namespace ReCrafted.Game.Core
         protected override void OnUpdate()
         {
             base.OnUpdate();
+
+            DebugDraw.Color = Color4.White;
+            DebugDraw.DrawWireSphere(Vector3.Zero, 10.0f);
         }
 
         protected override void OnFixedUpdate()

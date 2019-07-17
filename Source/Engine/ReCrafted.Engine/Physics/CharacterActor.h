@@ -157,8 +157,11 @@ public:
     Vector3 Velocity() const;
 
 public:
+    /// <summary>
+    ///     Gets the character controller grounded state. When true, the controller is touching the ground. 
+    /// </summary>
+    API_PROPERTY()
     bool IsGrounded() const;
-
 };
 
 #endif // CHARACTERACTOR_H

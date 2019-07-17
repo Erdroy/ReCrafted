@@ -131,6 +131,14 @@ public:
         *data = _returnValue;
     }
     
+    static void CharacterActor_Get_IsGrounded9(CharacterActor* instance, bool* data) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "CharacterActor");
+        const auto _returnValue = instance->IsGrounded();
+        *data = _returnValue;
+    }
+    
     static Object* CharacterActor_CreateObject(bool createManagedInstance)
     {
         _ASSERT_(createManagedInstance, "Class 'CharacterActor' is not marked as generic, and thus cannot get only unmanaged-instance created!");
@@ -159,6 +167,7 @@ void CharacterActor::InitRuntime()
     API_BIND("ReCrafted.API.Physics.CharacterActor::Get_InternalSlopeLimit", &APIProxy::CharacterActor_Get_SlopeLimit7);
     API_BIND("ReCrafted.API.Physics.CharacterActor::Set_InternalSlopeLimit", &APIProxy::CharacterActor_Set_SlopeLimit7);
     API_BIND("ReCrafted.API.Physics.CharacterActor::Get_InternalVelocity", &APIProxy::CharacterActor_Get_Velocity8);
+    API_BIND("ReCrafted.API.Physics.CharacterActor::Get_InternalIsGrounded", &APIProxy::CharacterActor_Get_IsGrounded9);
 }
 
 const char* CharacterActor::Fullname() 

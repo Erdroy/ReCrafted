@@ -154,50 +154,6 @@ public: /* -- Basic Input -- */
     static void SetCursorPosition(const Vector2& position);
 
     /// <summary>
-    ///     Gets mouse position relative to the current game window.
-    /// </summary>
-    API_FUNCTION()
-    static Vector2 GetCursorPosition();
-
-    /// <summary>
-    ///     Gets mouse position delta from last frame.
-    /// </summary>
-    API_FUNCTION()
-    static Vector2 GetCursorDelta();
-
-    /// <summary>
-    ///     Gets mouse scroll delta from last frame.
-    /// </summary>
-    API_FUNCTION()
-    static float GetScrollDelta();
-
-    /// <summary>
-    ///     Sets cursor show state.
-    /// </summary>
-    /// <param name="showCursor">The show state.</param>
-    API_FUNCTION()
-    static void SetShowCursor(bool showCursor);
-
-    /// <summary>
-    ///     Gets cursor show state.
-    /// </summary>
-    API_FUNCTION()
-    static bool GetShowCursor();
-
-    /// <summary>
-    ///     Sets cursor lock state.
-    /// </summary>
-    /// <param name="lockCursor">The lock state.</param>
-    API_FUNCTION()
-    static void SetLockCursor(bool lockCursor);
-
-    /// <summary>
-    ///     Gets cursor lock state.
-    /// </summary>
-    API_FUNCTION()
-    static bool GetLockCursor();
-
-    /// <summary>
     ///     Returns true when specified key is being held for at least one frame.
     /// </summary>
     /// <param name="key">The key.</param>
@@ -217,6 +173,51 @@ public: /* -- Basic Input -- */
     /// <param name="key">The key.</param>
     API_FUNCTION()
     static bool IsKeyUp(Key key);
+
+public:
+    /// <summary>
+    ///     Gets mouse position relative to the current game window.
+    /// </summary>
+    API_PROPERTY(noprefix)
+    static Vector2 GetCursorPosition();
+
+    /// <summary>
+    ///     Gets mouse position delta from last frame.
+    /// </summary>
+    API_PROPERTY(noprefix)
+    static Vector2 GetCursorDelta();
+
+    /// <summary>
+    ///     Gets mouse scroll delta from last frame.
+    /// </summary>
+    API_PROPERTY(noprefix)
+    static float GetScrollDelta();
+
+    /// <summary>
+    ///     Sets cursor show state.
+    /// </summary>
+    /// <param name="showCursor">The show state.</param>
+    API_PROPERTY(noprefix)
+    static void SetShowCursor(bool showCursor);
+
+    /// <summary>
+    ///     Gets cursor show state.
+    /// </summary>
+    API_PROPERTY(noprefix)
+    static bool GetShowCursor();
+
+    /// <summary>
+    ///     Sets cursor lock state.
+    /// </summary>
+    /// <param name="lockCursor">The lock state.</param>
+    API_PROPERTY(noprefix)
+    static void SetLockCursor(bool lockCursor);
+
+    /// <summary>
+    ///     Gets cursor lock state.
+    /// </summary>
+    API_PROPERTY(noprefix)
+    static bool GetLockCursor();
 
 public: /* -- Devices -- */
     /// <summary>

@@ -9,6 +9,9 @@
 #include "Rendering/Debug/DebugDraw.h"
 #include "RigidBodyActor.h"
 #include "Profiler/Profiler.h"
+#include "Input/InputManager.h"
+
+bool PhysicsScene::m_drawDebugLines;
 
 PhysicsScene::PhysicsScene()
 {
@@ -59,10 +62,8 @@ PhysicsScene::~PhysicsScene()
     PX_RELEASE(m_scene);
 }
 
-void PhysicsScene::Update()
+void PhysicsScene::DrawDebug()
 {
-    CPU_PROFILE_SCOPE(0, __FUNCTION__);
-
     auto cp1 = Camera::GetMainCamera()->Position() - Vector3::One * 20.0f;
     auto cp2 = Camera::GetMainCamera()->Position() + Vector3::One * 20.0f;
 
@@ -82,6 +83,22 @@ void PhysicsScene::Update()
 
         DebugDraw::SetColor(Color::FromHex(line.color0));
         DebugDraw::DrawLine(p1, p2);
+    }
+}
+
+void PhysicsScene::Update()
+{
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
+    if (InputManager::IsKeyDown(Key::F8) && InputManager::IsKey(Key::P))
+    {
+        m_drawDebugLines = !m_drawDebugLines;
+        m_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, m_drawDebugLines ? 1.0f : 0.0f);
+    }
+
+    if(m_drawDebugLines)
+    {
+        DrawDebug();
     }
 }
 

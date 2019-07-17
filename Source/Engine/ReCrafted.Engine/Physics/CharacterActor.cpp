@@ -54,6 +54,8 @@ void CharacterActor::Position(const Vector3& position)
 
 void CharacterActor::Rotation(const Quaternion& rotation)
 {
+    ActorBase::Rotation(rotation);
+
     const auto actor = m_controller->getActor();
     actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, ToPxQ(rotation)));
 }

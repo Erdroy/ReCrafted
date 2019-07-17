@@ -21,7 +21,7 @@ private:
     bool m_isFirstFrame = true;
     double m_fixedUpdateAcc = 0.0;
 
-    uint32_t m_targetFps = 60;
+    uint32_t m_targetFps = 0;
 
     bool m_fixedUpdateCallback = false;
     bool m_updateCallback = false;

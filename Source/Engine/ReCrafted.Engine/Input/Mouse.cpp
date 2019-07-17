@@ -36,7 +36,7 @@ void Mouse::Update()
     if (m_lockCursor)
     {
         // Lock cursor when needed
-        SetCursorPosition(Vector2(round(400.0f /*Display::GetWidth() / 2.0f*/), round(300.0f/*Display::GetHeight() / 2.0f*/)));
+        SetCursorPosition(Vector2(round(Display::GetWidth() * 0.5f), round(Display::GetHeight() * 0.5f)));
     }
 }
 

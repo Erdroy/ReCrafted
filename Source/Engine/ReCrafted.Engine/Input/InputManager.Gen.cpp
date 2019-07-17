@@ -37,89 +37,89 @@ public:
         InputManager::SetCursorPosition(position);
     }
     
-    static Vector2 InputManager_GetCursorPosition5() 
-    {
-        MAIN_THREAD_ONLY();
-        const auto _returnValue = InputManager::GetCursorPosition();
-        return _returnValue;
-    }
-    
-    static Vector2 InputManager_GetCursorDelta6() 
-    {
-        MAIN_THREAD_ONLY();
-        const auto _returnValue = InputManager::GetCursorDelta();
-        return _returnValue;
-    }
-    
-    static float InputManager_GetScrollDelta7() 
-    {
-        MAIN_THREAD_ONLY();
-        const auto _returnValue = InputManager::GetScrollDelta();
-        return _returnValue;
-    }
-    
-    static void InputManager_SetShowCursor8(bool showCursor) 
-    {
-        MAIN_THREAD_ONLY();
-        InputManager::SetShowCursor(showCursor);
-    }
-    
-    static bool InputManager_GetShowCursor9() 
-    {
-        MAIN_THREAD_ONLY();
-        const auto _returnValue = InputManager::GetShowCursor();
-        return _returnValue;
-    }
-    
-    static void InputManager_SetLockCursor10(bool lockCursor) 
-    {
-        MAIN_THREAD_ONLY();
-        InputManager::SetLockCursor(lockCursor);
-    }
-    
-    static bool InputManager_GetLockCursor11() 
-    {
-        MAIN_THREAD_ONLY();
-        const auto _returnValue = InputManager::GetLockCursor();
-        return _returnValue;
-    }
-    
-    static bool InputManager_IsKey12(Key key) 
+    static bool InputManager_IsKey5(Key key) 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = InputManager::IsKey(key);
         return _returnValue;
     }
     
-    static bool InputManager_IsKeyDown13(Key key) 
+    static bool InputManager_IsKeyDown6(Key key) 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = InputManager::IsKeyDown(key);
         return _returnValue;
     }
     
-    static bool InputManager_IsKeyUp14(Key key) 
+    static bool InputManager_IsKeyUp7(Key key) 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = InputManager::IsKeyUp(key);
         return _returnValue;
     }
     
-    static MonoObject* InputManager_GetDevice15(int deviceId) 
+    static MonoObject* InputManager_GetDevice8(int deviceId) 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = InputManager::GetDevice(deviceId);
         return _returnValue != nullptr ? _returnValue->ToManaged() : nullptr;
     }
     
-    static MonoObject* InputManager_GetDevice16(DeviceType deviceType) 
+    static MonoObject* InputManager_GetDevice9(DeviceType deviceType) 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = InputManager::GetDevice(deviceType);
         return _returnValue != nullptr ? _returnValue->ToManaged() : nullptr;
     }
     
-    static void InputManager_Get_DeviceCount1(int* data) 
+    static void InputManager_Get_CursorPosition1(Vector2* data) 
+    {
+        MAIN_THREAD_ONLY();
+        const auto _returnValue = InputManager::GetCursorPosition();
+        *data = _returnValue;
+    }
+    
+    static void InputManager_Get_CursorDelta2(Vector2* data) 
+    {
+        MAIN_THREAD_ONLY();
+        const auto _returnValue = InputManager::GetCursorDelta();
+        *data = _returnValue;
+    }
+    
+    static void InputManager_Get_ScrollDelta3(float* data) 
+    {
+        MAIN_THREAD_ONLY();
+        const auto _returnValue = InputManager::GetScrollDelta();
+        *data = _returnValue;
+    }
+    
+    static void InputManager_Get_ShowCursor4(bool* data) 
+    {
+        MAIN_THREAD_ONLY();
+        const auto _returnValue = InputManager::GetShowCursor();
+        *data = _returnValue;
+    }
+
+    static void InputManager_Set_ShowCursor4(bool* data) 
+    {
+        MAIN_THREAD_ONLY();
+        InputManager::SetShowCursor(*data);
+    }
+    
+    static void InputManager_Get_LockCursor5(bool* data) 
+    {
+        MAIN_THREAD_ONLY();
+        const auto _returnValue = InputManager::GetLockCursor();
+        *data = _returnValue;
+    }
+
+    static void InputManager_Set_LockCursor5(bool* data) 
+    {
+        MAIN_THREAD_ONLY();
+        InputManager::SetLockCursor(*data);
+    }
+    
+    static void InputManager_Get_DeviceCount6(int* data) 
     {
         MAIN_THREAD_ONLY();
         const auto _returnValue = InputManager::GetDeviceCount();
@@ -134,19 +134,19 @@ void InputManager::InitRuntime()
     API_BIND("ReCrafted.API.Input.InputManager::InternalIsButtonDown", &APIProxy::InputManager_IsButtonDown2);
     API_BIND("ReCrafted.API.Input.InputManager::InternalIsButtonUp", &APIProxy::InputManager_IsButtonUp3);
     API_BIND("ReCrafted.API.Input.InputManager::InternalSetCursorPosition", &APIProxy::InputManager_SetCursorPosition4);
-    API_BIND("ReCrafted.API.Input.InputManager::InternalGetCursorPosition", &APIProxy::InputManager_GetCursorPosition5);
-    API_BIND("ReCrafted.API.Input.InputManager::InternalGetCursorDelta", &APIProxy::InputManager_GetCursorDelta6);
-    API_BIND("ReCrafted.API.Input.InputManager::InternalGetScrollDelta", &APIProxy::InputManager_GetScrollDelta7);
-    API_BIND("ReCrafted.API.Input.InputManager::InternalSetShowCursor", &APIProxy::InputManager_SetShowCursor8);
-    API_BIND("ReCrafted.API.Input.InputManager::InternalGetShowCursor", &APIProxy::InputManager_GetShowCursor9);
-    API_BIND("ReCrafted.API.Input.InputManager::InternalSetLockCursor", &APIProxy::InputManager_SetLockCursor10);
-    API_BIND("ReCrafted.API.Input.InputManager::InternalGetLockCursor", &APIProxy::InputManager_GetLockCursor11);
-    API_BIND("ReCrafted.API.Input.InputManager::InternalIsKey", &APIProxy::InputManager_IsKey12);
-    API_BIND("ReCrafted.API.Input.InputManager::InternalIsKeyDown", &APIProxy::InputManager_IsKeyDown13);
-    API_BIND("ReCrafted.API.Input.InputManager::InternalIsKeyUp", &APIProxy::InputManager_IsKeyUp14);
-    API_BIND("ReCrafted.API.Input.InputManager::InternalGetDevice", &APIProxy::InputManager_GetDevice15);
-    API_BIND("ReCrafted.API.Input.InputManager::InternalGetDevice", &APIProxy::InputManager_GetDevice16);
-    API_BIND("ReCrafted.API.Input.InputManager::Get_InternalDeviceCount", &APIProxy::InputManager_Get_DeviceCount1);
+    API_BIND("ReCrafted.API.Input.InputManager::InternalIsKey", &APIProxy::InputManager_IsKey5);
+    API_BIND("ReCrafted.API.Input.InputManager::InternalIsKeyDown", &APIProxy::InputManager_IsKeyDown6);
+    API_BIND("ReCrafted.API.Input.InputManager::InternalIsKeyUp", &APIProxy::InputManager_IsKeyUp7);
+    API_BIND("ReCrafted.API.Input.InputManager::InternalGetDevice", &APIProxy::InputManager_GetDevice8);
+    API_BIND("ReCrafted.API.Input.InputManager::InternalGetDevice", &APIProxy::InputManager_GetDevice9);
+    API_BIND("ReCrafted.API.Input.InputManager::Get_InternalCursorPosition", &APIProxy::InputManager_Get_CursorPosition1);
+    API_BIND("ReCrafted.API.Input.InputManager::Get_InternalCursorDelta", &APIProxy::InputManager_Get_CursorDelta2);
+    API_BIND("ReCrafted.API.Input.InputManager::Get_InternalScrollDelta", &APIProxy::InputManager_Get_ScrollDelta3);
+    API_BIND("ReCrafted.API.Input.InputManager::Get_InternalShowCursor", &APIProxy::InputManager_Get_ShowCursor4);
+    API_BIND("ReCrafted.API.Input.InputManager::Set_InternalShowCursor", &APIProxy::InputManager_Set_ShowCursor4);
+    API_BIND("ReCrafted.API.Input.InputManager::Get_InternalLockCursor", &APIProxy::InputManager_Get_LockCursor5);
+    API_BIND("ReCrafted.API.Input.InputManager::Set_InternalLockCursor", &APIProxy::InputManager_Set_LockCursor5);
+    API_BIND("ReCrafted.API.Input.InputManager::Get_InternalDeviceCount", &APIProxy::InputManager_Get_DeviceCount6);
 }
 
 const char* InputManager::Fullname() 

@@ -42,7 +42,7 @@ namespace ReCrafted.API.WebUI
         /// <typeparam name="TPanel">Type of the panel.</typeparam>
         public static TPanel AddPanel<TPanel>() where TPanel : WebUIPanel, new()
         {
-            Logger.Log($"Added WebUIPanel of type {nameof(TPanel)}");
+            Logger.Log($"Added WebUIPanel of type {typeof(TPanel)}");
             var panel = new TPanel();
             panel.Create();
             _instance._panels.Add(panel);

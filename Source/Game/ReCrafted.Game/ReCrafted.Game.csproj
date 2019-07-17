@@ -45,6 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Game.cs" />
+    <Compile Include="Player\PlayerCameraController.cs" />
+    <Compile Include="Player\PlayerInput.cs" />
+    <Compile Include="Player\PlayerManager.cs" />
+    <Compile Include="Player\PlayerMovement.cs" />
+    <Compile Include="Player\PlayerViewController.cs" />
     <Compile Include="UI\UIGameHud.cs" />
     <Compile Include="UI\UIGameOverlay.cs" />
     <Compile Include="UI\UIPauseMenu.cs" />

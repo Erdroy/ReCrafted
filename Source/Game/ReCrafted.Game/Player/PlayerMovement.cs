@@ -1,0 +1,159 @@
+﻿// ReCrafted (c) 2016-2019 Always Too Late
+
+using System;
+using ReCrafted.API;
+using ReCrafted.API.Core;
+using ReCrafted.API.Mathematics;
+using ReCrafted.API.Physics;
+
+namespace ReCrafted.Game.Player
+{
+    /// <summary>
+    /// PlayerMovement script. Provides player movement simulation.
+    /// </summary>
+    public sealed class PlayerMovement : Script<CharacterActor>
+    {
+        [Serializable]
+        public class MovementSettings
+        {
+            public float GroundAcceleration = 50.0f;
+            public float AirAcceleration = 5.0f;
+            public float MaxVelocityGround = 7.0f;
+            public float MaxVelocityAir = 5.0f;
+        }
+
+        // We probably would like to make this configurable from asset
+        public static readonly MovementSettings ProneSettings = new MovementSettings
+        {
+            GroundAcceleration = 40.0f,
+            MaxVelocityGround = 2.0f
+        };
+
+        public static readonly MovementSettings CrouchSettings = new MovementSettings
+        {
+            GroundAcceleration = 40.0f,
+            MaxVelocityGround = 3.5f
+        };
+
+        public static readonly MovementSettings WalkSettings = new MovementSettings
+        {
+            GroundAcceleration = 50.0f,
+            MaxVelocityGround = 6.0f
+        };
+
+        public static readonly MovementSettings RunSettings = new MovementSettings
+        {
+            GroundAcceleration = 60.0f,
+            MaxVelocityGround = 10.0f
+        };
+
+        public const float JumpForce = 7.5f;
+
+        private Vector3 _velocity;
+
+        /// <summary>
+        /// Simulates this player's character using given input snapshot (<see cref="PlayerInput.Snapshot"/>).
+        /// </summary>
+        /// <param name="input">The input snapshot that will be used for simulating this player's character.</param>
+        /// <remarks>
+        /// Simulate uses current actor rotation.
+        /// </remarks>
+        public void SimulateMovement(PlayerInput.Snapshot input)
+        {
+            var direction = GetMoveDirection(input);
+            var settings = GetMoveSettings(input);
+
+            DoNormalMovement(input, direction, settings);
+        }
+
+        private void DoNormalMovement(PlayerInput.Snapshot input, Vector3 direction, MovementSettings settings)
+        {
+            if (Actor.IsGrounded)
+            {
+                _velocity = MoveGround(settings, 8.0f, direction, _velocity);
+                
+                if (input.Jump)
+                    _velocity += Vector3.Normalize(CurrentGravity) * JumpForce;
+
+                _velocity -= CurrentGravity * (float)Time.DeltaTime;
+            }
+            else
+            {
+                _velocity = MoveAir(settings, direction, _velocity);
+            }
+
+            _velocity -= CurrentGravity * (float)Time.DeltaTime;
+
+            Actor.Move(_velocity * (float)Time.DeltaTime);
+        }
+
+        /*private Vector3 GetSurfaceNormal()
+        {
+            return PhysicsManager.RayCast(Actor.Position, -Actor.UpDirection, out var hit, 2.0f, 1) 
+                ? hit.Normal : Actor.UpDirection;
+        }
+
+        private float GetSurfaceSlope()
+        {
+            return Vector3.Angle(Actor.UpDirection, GetSurfaceNormal());
+        }*/
+
+        private MovementSettings GetMoveSettings(PlayerInput.Snapshot input)
+        {
+            var isGoingForward = MathUtil.Clamp(input.Vertical, 0.0f, 1.0f) - Math.Abs(input.Horizontal) > 0.0f;
+
+            switch (input.Standing)
+            {
+                case PlayerInput.Snapshot.StandingType.Normal:
+                    return input.Run ? RunSettings : WalkSettings;
+                case PlayerInput.Snapshot.StandingType.Crouch:
+                    return CrouchSettings;
+                case PlayerInput.Snapshot.StandingType.Prone:
+                    return ProneSettings;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private Vector3 GetMoveDirection(PlayerInput.Snapshot input)
+        {
+            var direction = new Vector3(input.Horizontal, 0.0f, input.Vertical);
+            direction.Normalize();
+            direction = Actor.TransformDirection(direction);
+            return direction;
+        }
+
+        private static Vector3 Accelerate(Vector3 direction, Vector3 currentVelocity, float accelerate, float maxVelocity)
+        {
+            var projectionVelocity = Vector3.Dot(currentVelocity, direction);
+            var accelerationVelocity = accelerate * (float)Time.DeltaTime;
+
+            if (projectionVelocity + accelerationVelocity > maxVelocity)
+                accelerationVelocity = maxVelocity - projectionVelocity;
+
+            return currentVelocity + direction * accelerationVelocity;
+        }
+
+        private Vector3 MoveGround(MovementSettings settings, float friction, Vector3 direction, Vector3 currentVelocity)
+        {
+            // Apply Friction
+            var speed = currentVelocity.Length();
+            
+            if (Math.Abs(speed) > float.Epsilon)
+            {
+                var drop = speed * friction * (float)Time.DeltaTime;
+                currentVelocity *= Math.Max(speed - drop, 0) / speed; // Scale the velocity based on friction.
+            }
+
+            return Accelerate(direction, currentVelocity, settings.GroundAcceleration, settings.MaxVelocityGround);
+        }
+
+        private Vector3 MoveAir(MovementSettings settings, Vector3 direction, Vector3 currentVelocity)
+        {
+            return Accelerate(direction, currentVelocity, settings.AirAcceleration, settings.MaxVelocityAir);
+        }
+
+        public bool IsGrounded => Actor.IsGrounded;
+        public Vector3 CurrentGravity => Vector3.Normalize(Actor.Position) * 9.81f; // TODO: Use gravitational fields
+    }
+}

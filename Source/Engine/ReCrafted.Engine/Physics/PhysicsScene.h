@@ -19,6 +19,8 @@ class PhysicsScene final : public Object
     API_CLASS_BODY()
 
 private:
+    static bool m_drawDebugLines;
+
     PxScene* m_scene = nullptr;
     bool m_enabled = false;
     PxControllerManager* m_controllerManager = nullptr;
@@ -31,6 +33,7 @@ public:
     ~PhysicsScene();
 
 public:
+    void DrawDebug();
     void Update();
     void Simulate();
 

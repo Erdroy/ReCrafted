@@ -126,6 +126,18 @@ namespace ReCrafted.API.Physics
             }
         }
 
+        /// <summary>
+        ///     Gets the character controller grounded state. When true, the controller is touching the ground.
+        /// </summary>
+        public bool IsGrounded
+        {
+            get
+            {
+                Get_InternalIsGrounded(NativePtr, out var data);
+                return data;
+            }
+        }
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern CharacterCollisionFlags InternalMove(System.IntPtr nativePtr, Vector3 displacement);
 
@@ -173,5 +185,8 @@ namespace ReCrafted.API.Physics
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalVelocity(System.IntPtr nativePtr, out Vector3 data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalIsGrounded(System.IntPtr nativePtr, out bool data);
     }
 }
