@@ -17,6 +17,7 @@
 #include "Scripting/ObjectManager.h"
 #include "Game/GameManager.h"
 #include "Scene/SceneManager.h"
+#include "WebUI/WebUIManager.h"
 
 // EventProcessor is implemented per-platform
 uint64_t EventProcessor(void*, uint32_t, uint64_t, uint64_t);
@@ -53,6 +54,7 @@ void Application::InitializeSubSystems() const
     SubSystemManager::Register<Time>();
     SubSystemManager::Register<InputManager>();
     SubSystemManager::Register<RenderingManager>();
+    SubSystemManager::Register<WebUIManager>();
     SubSystemManager::Register<SceneManager>();
 }
 

@@ -38,6 +38,8 @@
 #include "Scene/SceneManager.h"
 #include "Scripting/Object.h"
 #include "Scripting/Script.h"
+#include "WebUI/WebUIManager.h"
+#include "WebUI/WebUIView.h"
 
 void ScriptingManager::InitRuntime()
 {
@@ -78,4 +80,6 @@ void ScriptingManager::InitRuntime()
     SceneManager::InitRuntime();
     Object::InitRuntime();
     Script::InitRuntime();
+    WebUIManager::InitRuntime();
+    WebUIView::InitRuntime();
 }

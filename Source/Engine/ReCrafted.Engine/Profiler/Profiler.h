@@ -191,3 +191,4 @@ public:
 };
 
 #define CPU_PROFILE_SCOPE(id, name) const auto profile##id = ScopedProfile( name )
+#define CPU_PROFILE_FUNCTION(id) const auto profile##id = ScopedProfile( __FUNCTION__ )

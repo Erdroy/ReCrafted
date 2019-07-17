@@ -1,0 +1,104 @@
+// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
+
+#include "WebUIManager.h"
+#include "Common/Logger.h"
+#include "Impl/FileSystemWin.h"
+#include "Impl/FontLoaderWin.h"
+#include "Scripting/Object.h"
+#include "WebUIView.h"
+#include "Profiler/Profiler.h"
+#include "Impl/d3d11/GPUContextD3D11.h"
+
+void WebUIManager::Initialize()
+{
+    // Create GPU context
+    m_context = ultralight::GPUContextD3D11::Create(false);
+
+    // Setup ultralight config
+    auto config = ultralight::Config();
+    config.user_agent = ultralight::String16("ReCrafted/WebUI/1.0");
+    // TODO: Maybe setup custom CSS? So we could get all builtin buttons style etc. 
+
+    // Setup ultralight platform
+    auto& platform = ultralight::Platform::instance();
+    platform.set_config(config);
+    platform.set_file_system(new ultralight::FileSystemWin(L"./../Content/WebUI/"));
+    platform.set_font_loader(new ultralight::FontLoaderWin());
+    platform.set_gpu_driver(m_context->driver());
+
+    // Create ultralight renderer
+    m_renderer = ultralight::Renderer::Create();
+
+    Logger::Log("WebUI initialized using Ultralight {0} (WebKitCore)", ULTRALIGHT_VERSION);
+}
+
+void WebUIManager::Shutdown()
+{
+    // Delete platform
+    delete ultralight::Platform::instance().file_system();
+    delete ultralight::Platform::instance().font_loader();
+
+    m_renderer = nullptr;
+    m_context.reset();
+}
+
+void WebUIManager::OnUpdate()
+{
+    CPU_PROFILE_FUNCTION(0);
+
+    // Update views
+    for(auto& view : m_views)
+    {
+        view->Update();
+    }
+}
+
+void WebUIManager::Render()
+{
+    CPU_PROFILE_FUNCTION(0);
+
+    const auto driver = ultralight::Platform::instance().gpu_driver();
+
+    m_context->BeginDrawing();
+    {
+        driver->BeginSynchronize();
+        {
+            m_renderer->Render();
+        }
+        driver->EndSynchronize();
+
+        if (driver->HasCommandsPending())
+        {
+            driver->DrawCommandList();
+        }
+    }
+    m_context->EndDrawing();
+
+    // Render views
+    for (auto& view : m_views)
+    {
+        view->Render();
+    }
+}
+
+void WebUIManager::RenderViews()
+{
+    CPU_PROFILE_FUNCTION(0);
+
+    // Render views
+    for (auto& view : m_views)
+    {
+        view->RenderFullscreen();
+    }
+}
+
+WebUIView* WebUIManager::CreateView(const int width, const int height)
+{
+    const auto view = Object::New<WebUIView>();
+    view->Initialize(width, height, GetInstance()->m_renderer->CreateView(width, height, true));
+
+    // Add to list
+    GetInstance()->m_views.Add(view);
+
+    return view;
+}

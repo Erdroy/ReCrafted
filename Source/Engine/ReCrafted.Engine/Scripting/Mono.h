@@ -43,6 +43,11 @@
 #define MONO_FREE(ptr)              \
     mono_free(ptr);
 
+#define MONO_DELEGATE_TO_ACTION_1(p, tb0, t0, t0_target, t0_conv)   \
+     Action<t0>([p]() {                                             \
+        mono_runtime_delegate_invoke(p, nullptr, nullptr);          \
+    });
+
 #define MONO_DELEGATE_TO_ACTION_2(p, tb0, t0, t0_target, t0_conv, tb1, t1, t1_target, t1_conv) \
      Action<t0, t1>([p](t1 _t1) {           \
         auto param = t1_conv ;              \

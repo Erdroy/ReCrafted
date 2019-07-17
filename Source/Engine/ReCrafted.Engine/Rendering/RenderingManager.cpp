@@ -10,6 +10,7 @@
 #include "Rendering/Camera.h"
 #include "Rendering/Mesh.h"
 #include "Profiler/Profiler.h"
+#include "WebUI/WebUIManager.h"
 
 void RenderingManager::InitializeRenderer()
 {
@@ -50,6 +51,7 @@ void RenderingManager::Initialize()
     AddRenderingComponent<ImGuiManager>();
 
     Renderer::AddOnPresentBeginEvent(Action<void>::New<ImGuiManager, &ImGuiManager::EndRender>(ImGuiManager::GetInstance()));
+    Renderer::AddOnPresentBeginEvent(Action<void>::New<WebUIManager, &WebUIManager::Render>(WebUIManager::GetInstance()));
 }
 
 void RenderingManager::Shutdown()
@@ -118,6 +120,10 @@ void RenderingManager::Render()
 
     // Set frame buffer as the render target
     Renderer::ApplyRenderBuffer(GetFrameBuffer());
+
+    // Render WebUI
+    SetDrawMode(DrawMode::DrawWebUI);
+    WebUIManager::GetInstance()->RenderViews();
 
     // Process rendering components
     RenderComponents(RenderingComponentStage::Final);

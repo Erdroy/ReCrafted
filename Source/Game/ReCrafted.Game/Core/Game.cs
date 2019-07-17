@@ -8,6 +8,7 @@ using ReCrafted.API.Mathematics;
 using ReCrafted.API.Physics;
 using ReCrafted.API.Rendering;
 using ReCrafted.API.Rendering.Debug;
+using ReCrafted.API.WebUI;
 
 namespace ReCrafted.Game.Core
 {
@@ -17,6 +18,8 @@ namespace ReCrafted.Game.Core
         private PhysicsScene _defaultPhysicsScene;
         private RigidBodyActor _actor1;
         private RigidBodyActor _actor2;
+
+        private WebUIView _view;
 
         protected override void OnInitialize()
         {
@@ -51,6 +54,9 @@ namespace ReCrafted.Game.Core
             _actor2.AttachCollider(Object.New<BoxCollider>());
 
             _cc = Object.New<CharacterActor>();
+
+            _view = WebUIManager.CreateView((int)Display.Width, (int)Display.Height);
+            _view.Navigate("https://google.com");
         }
         
         protected override void OnShutdown()

@@ -25,7 +25,7 @@ void ImGuiManager::Initialize()
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     auto& io = ImGui::GetIO();
-    const auto newFont = io.Fonts->AddFontFromFileTTF("../Fonts/Lato-Regular.ttf", 14.0f);
+    const auto newFont = io.Fonts->AddFontFromFileTTF("../Content/Fonts/Lato-Regular.ttf", 14.0f);
     io.Fonts->AddFontDefault(newFont->ConfigData);
 
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
