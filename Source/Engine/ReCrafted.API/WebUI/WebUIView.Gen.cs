@@ -8,7 +8,7 @@ namespace ReCrafted.API.WebUI
     /// <summary>
     ///     WebUIView class. Provides WebUI view rendering and interaction.
     /// </summary>
-    public sealed class WebUIView : Object
+    public sealed partial class WebUIView : Object
     {
         
         /// <summary>
@@ -37,32 +37,32 @@ namespace ReCrafted.API.WebUI
             InternalExecute(NativePtr, javaScriptSource);
         }
         
-        public void AddOnBeginLoading(System.Action action)
+        private void AddOnBeginLoading(System.Action action)
         {
             InternalAddOnBeginLoading(NativePtr, action);
         }
         
-        public void RemoveOnBeginLoading(System.Action action)
+        private void RemoveOnBeginLoading(System.Action action)
         {
             InternalRemoveOnBeginLoading(NativePtr, action);
         }
         
-        public void AddOnFinishLoading(System.Action action)
+        private void AddOnFinishLoading(System.Action action)
         {
             InternalAddOnFinishLoading(NativePtr, action);
         }
         
-        public void RemoveOnFinishLoading(System.Action action)
+        private void RemoveOnFinishLoading(System.Action action)
         {
             InternalRemoveOnFinishLoading(NativePtr, action);
         }
         
-        public void AddOnDOMReady(System.Action action)
+        private void AddOnDOMReady(System.Action action)
         {
             InternalAddOnDOMReady(NativePtr, action);
         }
         
-        public void RemoveOnDOMReady(System.Action action)
+        private void RemoveOnDOMReady(System.Action action)
         {
             InternalRemoveOnDOMReady(NativePtr, action);
         }
@@ -70,21 +70,14 @@ namespace ReCrafted.API.WebUI
         /// <summary>
         ///     Gets or sets the view's active state. When false, this view will not be processed and rendered.
         /// </summary>
-        public bool SetActive
-        {
-            set => Set_InternalSetActive(NativePtr, ref value);
-        }
-
-        /// <summary>
-        ///     Gets or sets the view's active state. When false, this view will not be processed and rendered.
-        /// </summary>
-        public bool GetActive
+        public bool Active
         {
             get
             {
-                Get_InternalGetActive(NativePtr, out var data);
+                Get_InternalActive(NativePtr, out var data);
                 return data;
             }
+            set => Set_InternalActive(NativePtr, ref value);
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -115,9 +108,9 @@ namespace ReCrafted.API.WebUI
         private static extern void InternalRemoveOnDOMReady(System.IntPtr nativePtr, System.Action action);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void Set_InternalSetActive(System.IntPtr nativePtr, ref bool data);
+        private static extern void Get_InternalActive(System.IntPtr nativePtr, out bool data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void Get_InternalGetActive(System.IntPtr nativePtr, out bool data);
+        private static extern void Set_InternalActive(System.IntPtr nativePtr, ref bool data);
     }
 }

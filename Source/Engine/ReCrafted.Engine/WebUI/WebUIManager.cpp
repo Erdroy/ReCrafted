@@ -22,7 +22,7 @@ void WebUIManager::Initialize()
     // Setup ultralight platform
     auto& platform = ultralight::Platform::instance();
     platform.set_config(config);
-    platform.set_file_system(new ultralight::FileSystemWin(L"./../Content/WebUI/"));
+    platform.set_file_system(new ultralight::FileSystemWin(L"../Content/WebUI/"));
     platform.set_font_loader(new ultralight::FontLoaderWin());
     platform.set_gpu_driver(m_context->driver());
 
@@ -45,6 +45,8 @@ void WebUIManager::Shutdown()
 void WebUIManager::OnUpdate()
 {
     CPU_PROFILE_FUNCTION(0);
+
+    m_renderer->Update();
 
     // Update views
     for(auto& view : m_views)
@@ -89,6 +91,17 @@ void WebUIManager::RenderViews()
     for (auto& view : m_views)
     {
         view->RenderFullscreen();
+    }
+}
+
+void WebUIManager::ResizeFullscreenViews(const uint width, const uint height)
+{
+    // TODO: Resize only fullscreen views
+
+    // Resize views
+    for (auto& view : m_views)
+    {
+        view->Resize(width, height);
     }
 }
 

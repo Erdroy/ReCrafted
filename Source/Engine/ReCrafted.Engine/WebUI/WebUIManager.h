@@ -13,7 +13,7 @@
 /// <summary>
 ///     WebUIManager class. Provides WebUIView management, UI engine initialization and shutdown and more.
 /// </summary>
-API_CLASS(public, static, noinherit)
+API_CLASS(internal, static, partial, noinherit)
 class WebUIManager final : public SubSystem<WebUIManager>
 {
     API_CLASS_BODY()
@@ -34,6 +34,8 @@ protected:
 public:
     void Render();
     void RenderViews();
+
+    void ResizeFullscreenViews(uint width, uint height);
 
 public:
     /// <summary>

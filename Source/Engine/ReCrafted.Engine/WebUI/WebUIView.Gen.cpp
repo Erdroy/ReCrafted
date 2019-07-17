@@ -96,20 +96,20 @@ public:
         instance->RemoveOnDOMReady(action);
         MONO_FREE_STUB(action);
     }
-
-    static void WebUIView_Set_SetActive1(WebUIView* instance, bool* data) 
-    {
-        MAIN_THREAD_ONLY();
-        MONO_CHECK_OBJECT(instance, "WebUIView");
-        instance->SetActive(*data);
-    }
     
-    static void WebUIView_Get_GetActive2(WebUIView* instance, bool* data) 
+    static void WebUIView_Get_Active1(WebUIView* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "WebUIView");
         const auto _returnValue = instance->GetActive();
         *data = _returnValue;
+    }
+
+    static void WebUIView_Set_Active1(WebUIView* instance, bool* data) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "WebUIView");
+        instance->SetActive(*data);
     }
     
     static Object* WebUIView_CreateObject(bool createManagedInstance)
@@ -133,8 +133,8 @@ void WebUIView::InitRuntime()
     API_BIND("ReCrafted.API.WebUI.WebUIView::InternalRemoveOnFinishLoading", &APIProxy::WebUIView_RemoveOnFinishLoading7);
     API_BIND("ReCrafted.API.WebUI.WebUIView::InternalAddOnDOMReady", &APIProxy::WebUIView_AddOnDOMReady8);
     API_BIND("ReCrafted.API.WebUI.WebUIView::InternalRemoveOnDOMReady", &APIProxy::WebUIView_RemoveOnDOMReady9);
-    API_BIND("ReCrafted.API.WebUI.WebUIView::Set_InternalSetActive", &APIProxy::WebUIView_Set_SetActive1);
-    API_BIND("ReCrafted.API.WebUI.WebUIView::Get_InternalGetActive", &APIProxy::WebUIView_Get_GetActive2);
+    API_BIND("ReCrafted.API.WebUI.WebUIView::Get_InternalActive", &APIProxy::WebUIView_Get_Active1);
+    API_BIND("ReCrafted.API.WebUI.WebUIView::Set_InternalActive", &APIProxy::WebUIView_Set_Active1);
 }
 
 const char* WebUIView::Fullname() 

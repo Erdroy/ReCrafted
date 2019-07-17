@@ -45,6 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Game.cs" />
+    <Compile Include="UI\UIGameHud.cs" />
+    <Compile Include="UI\UIGameOverlay.cs" />
+    <Compile Include="UI\UIPauseMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Project.lua" />

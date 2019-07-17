@@ -132,7 +132,10 @@
     <Compile Include="Scene\SceneManager.Gen.cs" />
     <Compile Include="Script.cs" />
     <Compile Include="Script.Gen.cs" />
+    <Compile Include="WebUI\WebUI.cs" />
     <Compile Include="WebUI\WebUIManager.Gen.cs" />
+    <Compile Include="WebUI\WebUIPanel.cs" />
+    <Compile Include="WebUI\WebUIView.cs" />
     <Compile Include="WebUI\WebUIView.Gen.cs" />
   </ItemGroup>
   <ItemGroup>

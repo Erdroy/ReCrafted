@@ -8,7 +8,7 @@ namespace ReCrafted.API.WebUI
     /// <summary>
     ///     WebUIManager class. Provides WebUIView management, UI engine initialization and shutdown and more.
     /// </summary>
-    public static class WebUIManager
+    internal static partial class WebUIManager
     {
         
         /// <summary>

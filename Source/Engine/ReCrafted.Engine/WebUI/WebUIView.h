@@ -11,7 +11,7 @@
 /// <summary>
 ///     WebUIView class. Provides WebUI view rendering and interaction.
 /// </summary>
-API_CLASS(public, sealed)
+API_CLASS(public, sealed, partial)
 class WebUIView final : public Object, public ultralight::LoadListener, ultralight::ViewListener
 {
     API_CLASS_BODY()
@@ -76,13 +76,13 @@ public:
     /// <summary>
     ///     Gets or sets the view's active state. When false, this view will not be processed and rendered.
     /// </summary>
-    API_PROPERTY()
+    API_PROPERTY(noprefix)
     void SetActive(bool isActive);
 
     /// <summary>
     ///     Gets or sets the view's active state. When false, this view will not be processed and rendered.
     /// </summary>
-    API_PROPERTY()
+    API_PROPERTY(noprefix)
     bool GetActive() const
     {
         return m_active;
@@ -108,39 +108,39 @@ public:
     Event<>& FinishLoading() { return m_onFinishLoading; }
     Event<>& DOMReady() { return m_onDOMReady; }
 
-    API_FUNCTION()
+    API_FUNCTION(private)
     void AddOnBeginLoading(const Action<void>& action)
     {
         BeginLoading().AddListener(action);
     }
 
-    API_FUNCTION()
+    API_FUNCTION(private)
     void RemoveOnBeginLoading(const Action<void>& action)
     {
-        BeginLoading().AddListener(action);
+        BeginLoading().RemoveListener(action);
     }
 
-    API_FUNCTION()
+    API_FUNCTION(private)
     void AddOnFinishLoading(const Action<void>& action)
     {
         FinishLoading().AddListener(action);
     }
 
-    API_FUNCTION()
+    API_FUNCTION(private)
     void RemoveOnFinishLoading(const Action<void>& action)
     {
-        FinishLoading().AddListener(action);
+        FinishLoading().RemoveListener(action);
     }
 
-    API_FUNCTION()
+    API_FUNCTION(private)
     void AddOnDOMReady(const Action<void>& action)
     {
         DOMReady().AddListener(action);
     }
 
-    API_FUNCTION()
+    API_FUNCTION(private)
     void RemoveOnDOMReady(const Action<void>& action)
     {
-        DOMReady().AddListener(action);
+        DOMReady().RemoveListener(action);
     }
 };

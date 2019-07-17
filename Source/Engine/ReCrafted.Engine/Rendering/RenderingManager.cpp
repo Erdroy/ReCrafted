@@ -34,6 +34,8 @@ void RenderingManager::OnResize(const uint width, const uint height)
     // Resize rendering's content
     m_rendering->Resize(width, height);
 
+    WebUIManager::GetInstance()->ResizeFullscreenViews(width, height);
+
     // Resize window
     Renderer::ResizeWindow(m_windowHandle, width, height);
 }
