@@ -51,18 +51,26 @@ namespace ReCrafted.Tools.APIGenerator
 
             if (type.GenericTypes.First().IsVoid)
             {
-                // This is action
-                sb.Append("System.Action<");
-
-                for (var i = 1; i < type.GenericTypes.Count; i++)
+                if (type.GenericTypes.Count > 1)
                 {
-                    if (i != 1)
-                        sb.Append(", ");
+                    // This is action
+                    sb.Append("System.Action<");
 
-                    sb.Append(type.GenericTypes[i].ToCSharp());
+                    for (var i = 1; i < type.GenericTypes.Count; i++)
+                    {
+                        if (i != 1)
+                            sb.Append(", ");
+
+                        sb.Append(type.GenericTypes[i].ToCSharp());
+                    }
+
+                    sb.Append(">");
                 }
-
-                sb.Append(">");
+                else
+                {
+                    // This is action
+                    sb.Append("System.Action");
+                }
             }
             else
             {
