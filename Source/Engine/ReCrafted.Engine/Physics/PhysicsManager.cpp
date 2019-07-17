@@ -94,6 +94,9 @@ void PhysicsManager::Initialize()
 #ifdef DEBUG
     // Initialize px extensions
     PxInitExtensions(*m_physics, m_pvd);
+#else
+    // Initialize px extensions
+    PxInitExtensions(*m_physics, nullptr);
 #endif
 
     // Initialize dispatchers
