@@ -1,9 +1,7 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System;
-using System.Diagnostics;
 using ReCrafted.API.Core;
-using JetBrains.Annotations;
 
 namespace ReCrafted.API
 {
@@ -16,7 +14,7 @@ namespace ReCrafted.API
         ///     The native pointer for mono object instance.
         ///     This is being set by Object instantiation on the C++ side.
         /// </summary>
-        [NonSerialized, UsedImplicitly]
+        [NonSerialized]
         internal IntPtr NativePtr;
 
         /// <summary>
