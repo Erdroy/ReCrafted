@@ -39,13 +39,13 @@ namespace ReCrafted.Tools.ProjectManager.Commands
                 }
             };
 
-            var process1 = process;
-            var startInfo = process1.StartInfo;
+            var startInfo = process.StartInfo;
             startInfo.Arguments = string.Concat(startInfo.Arguments, " " + Options.Current.Toolchain);
 
-            process1.Start();
-            process1.WaitForExit();
-            Console.WriteLine(process1.StandardError.ReadToEnd());
+            process.Start();
+            process.WaitForExit();
+            Console.WriteLine(process.StandardOutput.ReadToEnd());
+            Console.WriteLine(process.StandardError.ReadToEnd());
         }
     }
 }
