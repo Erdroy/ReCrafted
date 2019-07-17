@@ -33,14 +33,23 @@ project "ReCrafted"
     
 	libdirs {
 		path.join(LIBRARIES_DIR, "ReCrafted.Mono/Build/Windows-x86_64"),
+		path.join(LIBRARIES_DIR, "ultralight/lib/win/x64"),
 	}
 	
     -- default deps
     links { 
         "ReCrafted.Engine",
 
+        -- Ultralight
+        "WebCore",
+        "Ultralight",
+        "UltralightCore",
+
         "upng",
         "imgui",
+
+        -- Windows
+        "Usp10",
     }
 	
 	-- add onbuild script and multi processor compilation

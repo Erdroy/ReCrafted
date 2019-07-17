@@ -31,6 +31,7 @@ project "ReCrafted.Engine"
         path.join(LIBRARIES_DIR, "fmt/include"),
         path.join(LIBRARIES_DIR, "json/include"),
         path.join(LIBRARIES_DIR, "cpp-base64"),
+        path.join(LIBRARIES_DIR, "ultralight/include"),
 		
         path.join(LIBRARIES_DIR, "ReCrafted.Mono/Include"),
         path.join(LIBRARIES_DIR, "ReCrafted.PhysX/Include"),
