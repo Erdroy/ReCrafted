@@ -6,6 +6,7 @@
 #include "Rendering/RenderingManager.h"
 #include "Rendering/Mesh.h"
 #include "Rendering/Materials/Material.h"
+#include "Profiler/Profiler.h"
 
 void ModelRenderingSystem::AllocateModelComponents(const uint32_t amount)
 {
@@ -33,6 +34,8 @@ void ModelRenderingSystem::Shutdown()
 
 void ModelRenderingSystem::Render()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     auto cameraFrustum = Camera::GetMainCamera()->GetBoundingFrustum();
 
     // TODO: render list sorting

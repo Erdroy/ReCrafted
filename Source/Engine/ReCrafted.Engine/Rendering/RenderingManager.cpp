@@ -9,6 +9,7 @@
 #include "Rendering/Models/ModelRenderingSystem.h"
 #include "Rendering/Camera.h"
 #include "Rendering/Mesh.h"
+#include "Profiler/Profiler.h"
 
 void RenderingManager::InitializeRenderer()
 {
@@ -73,11 +74,15 @@ void RenderingManager::Shutdown()
 
 void RenderingManager::EarlyUpdate()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     ImGuiManager::GetInstance()->BeginRender();
 }
 
 void RenderingManager::Render()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     Renderer::ApplyWindow(m_windowHandle);
     
     // Pre-Render cleanup
@@ -122,6 +127,8 @@ void RenderingManager::Render()
 
 void RenderingManager::RenderComponents(const RenderingComponentStage stage)
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     for (auto& component : m_renderingComponents)
     {
         if (component->GetStage() == stage)

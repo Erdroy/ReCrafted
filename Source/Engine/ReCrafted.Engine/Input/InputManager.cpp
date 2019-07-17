@@ -1,11 +1,11 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include "InputManager.h"
-//#include "Common/Profiler/Profiler.h"
+#include "Profiler/Profiler.h"
 
 void InputManager::DispatchInput()
 {
-    //CPU_PROFILE_SCOPE(0, __FUNCTION__);
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
 
     m_frameInputLock.LockNow();
     for (auto&& input : m_frameInput)
@@ -121,7 +121,7 @@ void InputManager::OnLateUpdate()
 
 void InputManager::UpdateInput()
 {
-    //CPU_PROFILE_SCOPE(0, __FUNCTION__);
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
 
     // Update devices
     auto& lock1 = GetInstance()->m_deviceMapLock;

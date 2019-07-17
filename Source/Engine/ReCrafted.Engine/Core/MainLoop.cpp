@@ -40,6 +40,8 @@ void MainLoop::FixedUpdate()
 
 void MainLoop::WaitForTargetFps(double& last, const double current) const
 {
+    CPU_PROFILE_SCOPE(0, "WaitForTargetFps");
+
     const auto target = (1.0 / m_targetFps) * 1000.0;
     const auto delta = Platform::GetMilliseconds() - last;
     const auto sleep = target - delta;
@@ -69,13 +71,22 @@ void MainLoop::Run()
         Time::GetInstance()->OnFrame();
 
         if (m_updateCallback)
+        {
+            CPU_PROFILE_SCOPE(0, "Update");
             m_update.Invoke();
+        }
 
-        if (m_fixedUpdateCallback)
+        if (m_fixedUpdateCallback) 
+        {
+            CPU_PROFILE_SCOPE(1, "FixedUpdate");
             FixedUpdate();
+        }
 
         if (m_renderCallback)
+        {
+            CPU_PROFILE_SCOPE(2, "Render");
             m_render.Invoke();
+        }
 
         // end 'Frame' profile
         Profiler::EndProfile();

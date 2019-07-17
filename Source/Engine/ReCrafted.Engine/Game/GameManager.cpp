@@ -11,6 +11,7 @@
 #include "Scripting/Object.h"
 #include "Scripting/ScriptingManager.h"
 #include "Rendering/Models/ModelRenderingSystem.h"
+#include "Profiler/Profiler.h"
 
 ModelComponent* m_testModelComponent; 
 Mesh* m_testMesh = nullptr;
@@ -121,6 +122,8 @@ GameManager::~GameManager()
 
 void GameManager::Update() const
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     DEBUG_ASSERT(m_game);
     DEBUG_ASSERT(m_gameUpdate.IsValid());
 
@@ -129,6 +132,8 @@ void GameManager::Update() const
 
 void GameManager::FixedUpdate() const
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     DEBUG_ASSERT(m_game);
     DEBUG_ASSERT(m_gameFixedUpdate.IsValid());
 

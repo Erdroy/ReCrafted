@@ -8,6 +8,7 @@
 #include "Domain.h"
 #include "Object.h"
 #include "ScriptingManager.h"
+#include "Profiler/Profiler.h"
 
 void ObjectManager::RegisterObject(Object* object)
 {
@@ -89,6 +90,8 @@ void ObjectManager::DestroyObject(Object* object)
 
 void ObjectManager::ReleaseQueuedObjects()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     Object* toDestroy;
     while (m_destroyQueue.try_dequeue(toDestroy))
     {

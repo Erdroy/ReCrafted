@@ -3,6 +3,7 @@
 #include "ActorBase.h"
 #include "Scene/SceneManager.h"
 #include "Scripting/Script.h"
+#include "Profiler/Profiler.h"
 
 void ActorBase::Start()
 {
@@ -23,6 +24,8 @@ void ActorBase::Start()
 
 void ActorBase::Update()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     if (m_firstFrame)
     {
         Start();
@@ -46,6 +49,8 @@ void ActorBase::Update()
 
 void ActorBase::LateUpdate()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     for (auto&& script : m_scripts)
     {
         if (script->Enabled())
@@ -63,6 +68,8 @@ void ActorBase::LateUpdate()
 
 void ActorBase::FixedUpdate()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     for (auto&& script : m_scripts)
     {
         if (script->Enabled())

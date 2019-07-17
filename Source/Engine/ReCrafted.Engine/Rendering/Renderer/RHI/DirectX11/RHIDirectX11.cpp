@@ -1433,9 +1433,11 @@ namespace Renderer
             SafeRelease(m_deviceContext);
             SafeRelease(m_device);
 
+#ifdef _DEBUG
             // Report leaked objects
             m_debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
             SafeRelease(m_debug);
+#endif
         }
 
         void RHIDirectX11::GetRenderStatistics(RenderStatistics* stats)

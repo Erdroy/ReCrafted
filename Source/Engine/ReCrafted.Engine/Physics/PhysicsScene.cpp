@@ -8,6 +8,7 @@
 #include "Rendering/Camera.h"
 #include "Rendering/Debug/DebugDraw.h"
 #include "RigidBodyActor.h"
+#include "Profiler/Profiler.h"
 
 PhysicsScene::PhysicsScene()
 {
@@ -60,6 +61,7 @@ PhysicsScene::~PhysicsScene()
 
 void PhysicsScene::Update()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
 
     auto cp1 = Camera::GetMainCamera()->Position() - Vector3::One * 20.0f;
     auto cp2 = Camera::GetMainCamera()->Position() + Vector3::One * 20.0f;
@@ -85,6 +87,8 @@ void PhysicsScene::Update()
 
 void PhysicsScene::Simulate()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     const auto advanceResult = MultiThreadStepper::GetInstance()->Advance(m_scene, static_cast<PxReal>(Time::FixedDeltaTime()), m_scratchMemory, MultiThreadStepper::SCRATCH_BLOCK_SIZE);
 
     if (!advanceResult)

@@ -1,6 +1,7 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include "SubSystemManager.h"
+#include "Profiler/Profiler.h"
 
 SubSystemManager::SubSystemManager()
 {
@@ -43,6 +44,8 @@ void SubSystemManager::Release(SubSystemBase* subsystem)
 
 void SubSystemManager::Update()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     for (auto&& subsystem : m_subSystems)
     {
         if (subsystem == nullptr)
@@ -54,6 +57,8 @@ void SubSystemManager::Update()
 
 void SubSystemManager::FixedUpdate()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     for (auto&& subsystem : m_subSystems)
     {
         if (subsystem == nullptr)
@@ -65,6 +70,8 @@ void SubSystemManager::FixedUpdate()
 
 void SubSystemManager::LateUpdate()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     for (auto&& subsystem : m_subSystems)
     {
         if (subsystem == nullptr)
@@ -76,6 +83,8 @@ void SubSystemManager::LateUpdate()
 
 void SubSystemManager::FrameDone()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     for (auto&& subsystem : m_subSystems)
     {
         if (subsystem == nullptr)

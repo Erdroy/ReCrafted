@@ -2,6 +2,7 @@
 
 #include "SceneManager.h"
 #include "Core/Actors/ActorBase.h"
+#include "Profiler/Profiler.h"
 
 void SceneManager::Initialize()
 {
@@ -21,6 +22,8 @@ void SceneManager::Shutdown()
 
 void SceneManager::OnUpdate()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     for (auto&& actor : m_actors)
     {
         if (actor->IsActive())
@@ -30,6 +33,8 @@ void SceneManager::OnUpdate()
 
 void SceneManager::OnLateUpdate()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     for (auto&& actor : m_actors)
     {
         if (actor->IsActive())
@@ -39,6 +44,8 @@ void SceneManager::OnLateUpdate()
 
 void SceneManager::OnFixedUpdate()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     for (auto&& actor : m_actors)
     {
         if (actor->IsActive())

@@ -10,6 +10,7 @@
 
 #include "Impl/imgui_impl_win32.h"
 #include "Impl/imgui_impl_dx11.h"
+#include "Profiler/Profiler.h"
 
 IMGUI_IMPL_API LRESULT  ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -79,6 +80,8 @@ void ImGuiManager::Render()
 
 void ImGuiManager::BeginRender()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     // Start the Dear ImGui frame
     // ImGUI rendering is not multi-threaded,
     // and it is going to be rendered on before preset event
@@ -93,12 +96,12 @@ void ImGuiManager::BeginRender()
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 
     ImGui::Begin("Debug", nullptr, ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_NoInputs |
-        ImGuiWindowFlags_NoMove |
-        ImGuiWindowFlags_NoTitleBar |
-        ImGuiWindowFlags_NoScrollbar |
-        ImGuiWindowFlags_NoSavedSettings |
-        ImGuiWindowFlags_NoBringToFrontOnFocus);
+                 ImGuiWindowFlags_NoInputs |
+                 ImGuiWindowFlags_NoMove |
+                 ImGuiWindowFlags_NoTitleBar |
+                 ImGuiWindowFlags_NoScrollbar |
+                 ImGuiWindowFlags_NoSavedSettings |
+                 ImGuiWindowFlags_NoBringToFrontOnFocus);
 
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 1.0f);
@@ -106,6 +109,8 @@ void ImGuiManager::BeginRender()
 
 void ImGuiManager::EndRender()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     // Get renderer context
     Renderer::RHIContext rendererContext;
     Renderer::GetContext(&rendererContext);

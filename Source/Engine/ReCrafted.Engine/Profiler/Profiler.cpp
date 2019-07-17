@@ -109,6 +109,8 @@ void Profiler::Shutdown()
 
 void Profiler::OnUpdate()
 {
+    CPU_PROFILE_SCOPE(0, __FUNCTION__);
+
     // Toggle window display when user pressed 'F9' key.
     if (InputManager::IsKeyDown(Key::F9))
         m_showWindow = !m_showWindow;
