@@ -24,6 +24,7 @@ private:
     int m_height = 0;
 
     bool m_active = true;
+    bool m_resize = false;
 
     Renderer::Texture2DHandle m_texture;
     ultralight::RefPtr<ultralight::View> m_view;

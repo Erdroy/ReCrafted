@@ -78,10 +78,12 @@ namespace ultralight {
     public:
         ID3D11Texture2D* GetTexture(const uint32_t texture_id)
         {
-            if (textures_.empty() || textures_.size() < texture_id)
+            const auto it = textures_.find(texture_id);
+
+            if (it == textures_.end())
                 return nullptr;
 
-            return textures_[texture_id].first.Get();
+            return it->second.first.Get();
         }
 
     protected:

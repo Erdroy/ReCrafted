@@ -144,6 +144,13 @@ void WebUIView::Render()
 
     CPU_PROFILE_SCOPE(0, __FUNCTION__);
 
+    if (m_resize)
+    {
+        // Resize view and skip next frame
+        m_view->Resize(m_width, m_height);
+        m_resize = false;
+    }
+
     if (m_skipFrames > 0)
     {
         m_skipFrames--;
@@ -154,12 +161,17 @@ void WebUIView::Render()
     if (!renderTarget.is_empty)
     {
         const auto driver = static_cast<ultralight::GPUDriverD3D11*>(ultralight::Platform::instance().gpu_driver());
-        const auto sourceTexture = driver->GetTexture(m_view->render_target().texture_id);
+        const auto sourceTexture = driver->GetTexture(renderTarget.texture_id);
 
         if(sourceTexture != nullptr)
         {
             // Copy texture data
             Renderer::CopyTextureSubresourceSync(m_texture, sourceTexture);
+        }
+        else
+        {
+            Logger::LogWarning("WebUIView of size {0}x{1} has no render texture, force resizing.", m_width, m_height);
+            m_resize = true;
         }
     }
 }
@@ -177,13 +189,16 @@ void WebUIView::RenderFullscreen() const
 
 void WebUIView::Resize(const uint width, const uint height)
 {
+    if (m_width == width && m_height == height)
+        return;
+
     // Recreate texture
     DestroyTexture();
     CreateTexture(width, height);
 
-    // Resize view and skip next frame
-    m_view->Resize(width, height);
-    m_skipFrames++;
+    // Queue resize.
+    m_resize = true;
+    m_skipFrames = 1;
 
     // Cache new width and height
     m_width = width;
