@@ -9,7 +9,7 @@ using ReCrafted.API.Physics;
 namespace ReCrafted.Game.Player
 {
     /// <summary>
-    /// PlayerMovement script. Provides player movement simulation.
+    ///     PlayerMovement script. Provides player movement simulation.
     /// </summary>
     public sealed class PlayerMovement : Script<CharacterActor>
     {
@@ -52,7 +52,7 @@ namespace ReCrafted.Game.Player
         private Vector3 _velocity;
 
         /// <summary>
-        /// Simulates this player's character using given input snapshot (<see cref="PlayerInput.Snapshot"/>).
+        ///     Simulates this player's character using given input snapshot (<see cref="PlayerInput.Snapshot"/>).
         /// </summary>
         /// <param name="input">The input snapshot that will be used for simulating this player's character.</param>
         /// <remarks>

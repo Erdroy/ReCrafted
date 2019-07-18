@@ -8,8 +8,8 @@ using ReCrafted.API.Rendering;
 namespace ReCrafted.Game.Player
 {
     /// <summary>
-    /// PlayerCameraController script.
-    /// Implements camera controlling behaviour and also position smoothing.
+    ///     PlayerCameraController script.
+    ///     Implements camera controlling behaviour and also position smoothing.
     /// </summary>
     public sealed class PlayerCameraController : Script<CharacterActor>
     {

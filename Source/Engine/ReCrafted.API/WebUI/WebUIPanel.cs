@@ -6,14 +6,14 @@ using ReCrafted.API.Core;
 namespace ReCrafted.API.WebUI
 {
     /// <summary>
-    /// WebUIPanel base class.
+    ///     WebUIPanel base class.
     /// </summary>
     public abstract class WebUIPanel
     {
         private readonly double _createTime;
 
         /// <summary>
-        /// Creates new WebUIPanel using given html file.
+        ///     Creates new WebUIPanel using given html file.
         /// </summary>
         /// <param name="htmlFile">The html file that will be loaded.</param>
         /// <param name="activeOnStart">Should the view be activated on start?</param>
@@ -35,8 +35,8 @@ namespace ReCrafted.API.WebUI
         }
 
         /// <summary>
-        /// Reloads the entire view.
-        /// Equal to `View.Navigate(View.HtmlFile)`.
+        ///     Reloads the entire view.
+        ///     Equal to `View.Navigate(View.HtmlFile)`.
         /// </summary>
         public void Refresh()
         {
@@ -44,7 +44,7 @@ namespace ReCrafted.API.WebUI
         }
 
         /// <summary>
-        /// Shows the view.
+        ///     Shows the view.
         /// </summary>
         public void Show()
         {
@@ -52,7 +52,7 @@ namespace ReCrafted.API.WebUI
         }
 
         /// <summary>
-        /// Hides the view.
+        ///     Hides the view.
         /// </summary>
         public void Hide()
         {
@@ -109,17 +109,17 @@ namespace ReCrafted.API.WebUI
         protected virtual void OnViewDOMReady() { }
 
         /// <summary>
-        /// The source HTML file that is being used by this panel.
+        ///     The source HTML file that is being used by this panel.
         /// </summary>
         public string HtmlFile { get; }
 
         /// <summary>
-        /// True when loaded and able to display.
+        ///     True when loaded and able to display.
         /// </summary>
         public bool IsLoaded { get; private set; }
 
         /// <summary>
-        /// The WebUIView instance that is being used by this panel.
+        ///     The WebUIView instance that is being used by this panel.
         /// </summary>
         protected WebUIView View { get; }
     }

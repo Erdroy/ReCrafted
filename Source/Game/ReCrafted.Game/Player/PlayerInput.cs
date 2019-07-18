@@ -9,12 +9,12 @@ using ReCrafted.API.Mathematics;
 namespace ReCrafted.Game.Player
 {
     /// <summary>
-    /// PlayerInput script. Provides player input sampling (<see cref="Snapshot"/>).
+    ///     PlayerInput script. Provides player input sampling (<see cref="Snapshot"/>).
     /// </summary>
     public sealed class PlayerInput : Script
     {
         /// <summary>
-        /// Snapshot structure. Provides information which keys been pressed at given frame.
+        ///     Snapshot structure. Provides information which keys been pressed at given frame.
         /// </summary>
         public struct Snapshot
         {
@@ -32,49 +32,49 @@ namespace ReCrafted.Game.Player
             }
 
             /// <summary>
-            /// The horizontal movement value (left-right).
-            /// This value is not being filtered.
+            ///     The horizontal movement value (left-right).
+            ///     This value is not being filtered.
             /// </summary>
             public float Horizontal { get; set; }
 
             /// <summary>
-            /// The vertical movement value (forward-backward).
-            /// This value is not being filtered.
+            ///     The vertical movement value (forward-backward).
+            ///     This value is not being filtered.
             /// </summary>
             public float Vertical { get; set; }
 
             /// <summary>
-            /// The jump input value.
-            /// When true, the player will try to jump.
+            ///     The jump input value.
+            ///     When true, the player will try to jump.
             /// </summary>
             public bool Jump { get; set; }
 
             /// <summary>
-            /// The run input value.
-            /// When true, the player will try to run.
+            ///     The run input value.
+            ///     When true, the player will try to run.
             /// </summary>
             public bool Run { get; set; }
 
             /// <summary>
-            /// The jet pack damping input value.
-            /// When true, the player jet pack will try to stop.
+            ///     The jet pack damping input value.
+            ///     When true, the player jet pack will try to stop.
             /// </summary>
             public bool JetPackDamping { get; set; }
 
             /// <summary>
-            /// The stand type input value.
+            ///     The stand type input value.
             /// </summary>
             public StandingType Standing { get; set; }
 
             /// <summary>
-            /// The movement type input value.
+            ///     The movement type input value.
             /// </summary>
             public MovementType Movement { get; set; }
 
             /// <summary>
-            /// The local look rotation.
-            /// This value is filtered, accelerated and inverted,
-            /// depending on the current game settings.
+            ///     The local look rotation.
+            ///     This value is filtered, accelerated and inverted,
+            ///     depending on the current game settings.
             /// </summary>
             public Vector2 LookRotation { get; set; }
         }
@@ -87,7 +87,7 @@ namespace ReCrafted.Game.Player
 
 
         /// <summary>
-        /// Samples and returns current input snapshot.
+        ///     Samples and returns current input snapshot.
         /// </summary>
         /// <returns>The sampled input snapshot (<see cref="Snapshot"/>).</returns>
         public Snapshot SampleInput()

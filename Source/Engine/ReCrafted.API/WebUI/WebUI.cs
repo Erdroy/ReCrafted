@@ -8,7 +8,7 @@ namespace ReCrafted.API.WebUI
 {
     /// <inheritdoc />
     /// <summary>
-    /// WebUIManager system. Manages all WebUI panels.
+    ///     WebUIManager system. Manages all WebUI panels.
     /// </summary>
     public sealed class WebUI : GameSystem
     {
@@ -37,7 +37,7 @@ namespace ReCrafted.API.WebUI
         }
 
         /// <summary>
-        /// Adds new UI panel of given type.
+        ///     Adds new UI panel of given type.
         /// </summary>
         /// <typeparam name="TPanel">Type of the panel.</typeparam>
         public static TPanel AddPanel<TPanel>() where TPanel : WebUIPanel, new()
@@ -50,7 +50,7 @@ namespace ReCrafted.API.WebUI
         }
 
         /// <summary>
-        /// Removes given WebUI panel.
+        ///     Removes given WebUI panel.
         /// </summary>
         public static void RemovePanel(WebUIPanel panel)
         {
