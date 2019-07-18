@@ -55,6 +55,11 @@ const List<String>& Environment::GetCommandLineArguments()
     return m_arguments;
 }
 
+bool Environment::HasCommandLineArgument(const String& argument)
+{
+    return GetCommandLineArguments().Contains(argument);
+}
+
 bool Environment::IsDebugBuild()
 {
 #ifdef DEBUG

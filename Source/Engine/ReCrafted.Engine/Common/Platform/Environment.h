@@ -27,6 +27,11 @@ public:
     static const List<String>& GetCommandLineArguments();
 
     /// <summary>
+    ///     Returns true when given argument exists in the current command line args.
+    /// </summary>
+    static bool HasCommandLineArgument(const String& argument);
+
+    /// <summary>
     ///     Returns true whenever current build is built for debugging
     /// </summary>
     /// <returns>True when debug settings are included.</returns>
