@@ -1,5 +1,6 @@
 ﻿// ReCrafted (c) 2016-2019 Always Too Late
 
+using ReCrafted.API.Core;
 using ReCrafted.API.Input;
 using ReCrafted.API.WebUI;
 
@@ -17,9 +18,8 @@ namespace ReCrafted.Game.UI
 
         protected override void RegisterBindings()
         {
-            // function ExitGame();
-            //View.Bind("ResumeGame", () => { Show(false); });
-            //View.Bind("ExitGame", Application.Exit);
+            View.BindCallback("ResumeGame", () => { Show(false); });
+            View.BindCallback("ExitGame", Application.Quit);
         }
 
         private void Show(bool show)
