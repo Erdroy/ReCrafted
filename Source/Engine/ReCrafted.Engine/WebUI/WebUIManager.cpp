@@ -19,6 +19,9 @@ void WebUIManager::Initialize()
     config.user_agent = ultralight::String16("ReCrafted/WebUI/1.0");
     // TODO: Maybe setup custom CSS? So we could get all builtin buttons style etc. 
 
+    // Set 2x super sample for UI
+    config.device_scale_hint = 2.0;
+
     // Setup ultralight platform
     auto& platform = ultralight::Platform::instance();
     platform.set_config(config);
