@@ -53,11 +53,19 @@ project "ReCrafted"
     }
 	
 	-- add onbuild script and multi processor compilation
-	configuration { "vs*"}
+	configuration { "Debug", "Development", "vs*"}
 		buildoptions { "/MP" }
 		postbuildcommands {
 			"call " .. ROOT_DIR .. "/pm.bat PostBuild --skip-api",
 		}
+
+	-- add onbuild script and multi processor compilation
+	configuration { "Release", "vs*"}
+		buildoptions { "/MP" }
+		postbuildcommands {
+			"call " .. ROOT_DIR .. "/pm.bat PostBuild --skip-api --optimize",
+		}
+	
 	
 	-- configs
     configuration { "Debug" }

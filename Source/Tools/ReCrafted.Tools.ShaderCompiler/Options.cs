@@ -18,6 +18,9 @@ namespace ReCrafted.Tools.ShaderCompiler
         [Option('v', "verbose", Default = false, Required = false)]
         public bool Verbose { get; set; }
 
+        [Option("optimize", Default = false, Required = false, HelpText = "Applies RELEASE mode optimization flags for the shader compiler.")]
+        public bool Optimize { get; set; }
+
         [Option("cute", Default = false, Required = false, HelpText = "Outputs JSON header as cute as possible. owo")]
         public bool CuteJson { get; set; }
 

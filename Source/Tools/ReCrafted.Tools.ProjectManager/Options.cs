@@ -21,6 +21,9 @@ namespace ReCrafted.Tools.ProjectManager
         [Option("skip-api", Default = false, Required = false, HelpText = "When added, the API generation will be skipped while PostBuild command is executed.")]
         public bool SkipAPI { get; set; }
 
+        [Option("optimize", Default = false, Required = false, HelpText = "Applies RELEASE mode optimization flags for the shader compiler.")]
+        public bool Optimize { get; set; }
+
         public static Options Current { get; set; }
     }
 }

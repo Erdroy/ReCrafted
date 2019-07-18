@@ -57,7 +57,8 @@ namespace ReCrafted.Tools.ShaderCompiler.Compiler
             var preprocessedSource = ShaderBytecode.Preprocess(File.ReadAllText(_inputFile), new[]
             {
                 new ShaderMacro("RENDERER_SHADER", "1"),
-                new ShaderMacro("RENDERER_VERSION", "1")
+                new ShaderMacro("RENDERER_VERSION", "1"),
+                new ShaderMacro("OPTIMIZE", Options.Current.Optimize ? "1" : "0")
             }, new D3DIncludeHandler(_inputFile), out var compilationErrors, _inputFile);
 
             if (!string.IsNullOrEmpty(compilationErrors))
@@ -183,7 +184,12 @@ namespace ReCrafted.Tools.ShaderCompiler.Compiler
             if (string.IsNullOrEmpty(entryPoint))
                 return null;
 
-            var result = ShaderBytecode.Compile(sourceCode, entryPoint, shaderPrefix + "_" + profile + "_0");
+            var compileFlags = ShaderFlags.Debug;
+
+            if (Options.Current.Optimize)
+                compileFlags = ShaderFlags.OptimizationLevel2 | ShaderFlags.PartialPrecision;
+
+            var result = ShaderBytecode.Compile(sourceCode, entryPoint, shaderPrefix + "_" + profile + "_0", compileFlags);
 
             if (result.HasErrors)
             {

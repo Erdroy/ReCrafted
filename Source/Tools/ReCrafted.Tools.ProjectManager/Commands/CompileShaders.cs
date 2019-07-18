@@ -31,7 +31,8 @@ namespace ReCrafted.Tools.ProjectManager.Commands
             {
                 CuteJson = false,
                 DisassembleOutput = false,
-                Verbose = false
+                Verbose = false,
+                Optimize = Options.Current.Optimize
             };
 
             // compile all selected files to relative directory in game: .\
