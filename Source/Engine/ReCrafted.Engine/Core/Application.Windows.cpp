@@ -47,7 +47,6 @@ uint64_t EventProcessor(void* window, const uint32_t msg, const uint64_t param0,
 
         return 0;
     }
-    case WM_ENTERSIZEMOVE: // handle window resizing
     case WM_EXITSIZEMOVE: // handle window resizing
     {
         ApplicationWindow::WindowResize(hWnd);

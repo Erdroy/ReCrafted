@@ -36,6 +36,9 @@ void Application::OnWindowResized()
     uint height;
     Platform::GetWindowSize(Platform::GetCurrentWindow(), &width, &height);
 
+    if (width == 0 || height == 0)
+        return;
+
     Display::m_width = width;
     Display::m_height = height;
 
