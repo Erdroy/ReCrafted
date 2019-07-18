@@ -46,9 +46,9 @@ namespace ReCrafted.Game.Core
             GameSystem.AddGameSystem<WebUI>();
 
             // Add game panels
-            WebUI.AddPanel<UIGameOverlay>();
-            WebUI.AddPanel<UIGameHud>();
-            WebUI.AddPanel<UIPauseMenu>();
+            WebUI.AddPanel<UIGameOverlay>().Hide();
+            WebUI.AddPanel<UIGameHud>().Hide();
+            WebUI.AddPanel<UIPauseMenu>().Hide();
         }
         
         protected override void OnShutdown()

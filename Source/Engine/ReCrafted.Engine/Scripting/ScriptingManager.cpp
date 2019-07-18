@@ -32,14 +32,14 @@ ScriptingManager::TypeInfo ScriptingManager::GetTypeName(size_t hash)
 void ScriptingManager::Initialize()
 {
     // Check if we need to attach debugger
-    m_attachDebugger = Environment::GetCommandLineArguments().Contains(STRING_CONST("-debug"));
+    m_attachDebugger = Environment::HasCommandLineArgument(STRING_CONST("-debug"));
 
     mono_set_dirs("../Mono/lib", "../Mono/etc");
 
     if(m_attachDebugger)
     {
         mono_debug_init(MONO_DEBUG_FORMAT_MONO);
-        mono_jit_parse_options(2, const_cast<char**>(jit_options));
+        mono_jit_parse_options(ARRAYSIZE(jit_options), const_cast<char**>(jit_options));
 
         Logger::Log("Started mono debugger at address 127.0.0.1:55000 with settings:\n{0}\n{1}.", jit_options[0], jit_options[1]);
     }
