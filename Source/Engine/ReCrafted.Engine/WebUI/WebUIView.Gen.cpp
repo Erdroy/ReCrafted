@@ -37,7 +37,20 @@ public:
         MONO_FREE(javaScriptSource);
     }
     
-    static void WebUIView_AddOnBeginLoading4(WebUIView* instance, MonoObject* p_action) 
+    static void WebUIView_BindCallback4(WebUIView* instance, MonoString* p_functionName, MonoObject* p_callback) 
+    {
+        MAIN_THREAD_ONLY();
+        ASSERT(p_functionName);
+        const auto functionName = MONO_STRING_TO_CSTR(p_functionName);
+        ASSERT(p_callback);
+        const auto callback = MONO_DELEGATE_TO_ACTION_1(p_callback, void, void, void, _t0);
+        MONO_CHECK_OBJECT(instance, "WebUIView");
+        instance->BindCallback(functionName, callback);
+        MONO_FREE(functionName);
+        MONO_FREE_STUB(callback);
+    }
+    
+    static void WebUIView_AddOnBeginLoading5(WebUIView* instance, MonoObject* p_action) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(p_action);
@@ -47,7 +60,7 @@ public:
         MONO_FREE_STUB(action);
     }
     
-    static void WebUIView_RemoveOnBeginLoading5(WebUIView* instance, MonoObject* p_action) 
+    static void WebUIView_RemoveOnBeginLoading6(WebUIView* instance, MonoObject* p_action) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(p_action);
@@ -57,7 +70,7 @@ public:
         MONO_FREE_STUB(action);
     }
     
-    static void WebUIView_AddOnFinishLoading6(WebUIView* instance, MonoObject* p_action) 
+    static void WebUIView_AddOnFinishLoading7(WebUIView* instance, MonoObject* p_action) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(p_action);
@@ -67,7 +80,7 @@ public:
         MONO_FREE_STUB(action);
     }
     
-    static void WebUIView_RemoveOnFinishLoading7(WebUIView* instance, MonoObject* p_action) 
+    static void WebUIView_RemoveOnFinishLoading8(WebUIView* instance, MonoObject* p_action) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(p_action);
@@ -77,7 +90,7 @@ public:
         MONO_FREE_STUB(action);
     }
     
-    static void WebUIView_AddOnDOMReady8(WebUIView* instance, MonoObject* p_action) 
+    static void WebUIView_AddOnDOMReady9(WebUIView* instance, MonoObject* p_action) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(p_action);
@@ -87,7 +100,7 @@ public:
         MONO_FREE_STUB(action);
     }
     
-    static void WebUIView_RemoveOnDOMReady9(WebUIView* instance, MonoObject* p_action) 
+    static void WebUIView_RemoveOnDOMReady10(WebUIView* instance, MonoObject* p_action) 
     {
         MAIN_THREAD_ONLY();
         ASSERT(p_action);
@@ -127,12 +140,13 @@ void WebUIView::InitRuntime()
     API_BIND("ReCrafted.API.WebUI.WebUIView::InternalResize", &APIProxy::WebUIView_Resize1);
     API_BIND("ReCrafted.API.WebUI.WebUIView::InternalNavigate", &APIProxy::WebUIView_Navigate2);
     API_BIND("ReCrafted.API.WebUI.WebUIView::InternalExecute", &APIProxy::WebUIView_Execute3);
-    API_BIND("ReCrafted.API.WebUI.WebUIView::InternalAddOnBeginLoading", &APIProxy::WebUIView_AddOnBeginLoading4);
-    API_BIND("ReCrafted.API.WebUI.WebUIView::InternalRemoveOnBeginLoading", &APIProxy::WebUIView_RemoveOnBeginLoading5);
-    API_BIND("ReCrafted.API.WebUI.WebUIView::InternalAddOnFinishLoading", &APIProxy::WebUIView_AddOnFinishLoading6);
-    API_BIND("ReCrafted.API.WebUI.WebUIView::InternalRemoveOnFinishLoading", &APIProxy::WebUIView_RemoveOnFinishLoading7);
-    API_BIND("ReCrafted.API.WebUI.WebUIView::InternalAddOnDOMReady", &APIProxy::WebUIView_AddOnDOMReady8);
-    API_BIND("ReCrafted.API.WebUI.WebUIView::InternalRemoveOnDOMReady", &APIProxy::WebUIView_RemoveOnDOMReady9);
+    API_BIND("ReCrafted.API.WebUI.WebUIView::InternalBindCallback", &APIProxy::WebUIView_BindCallback4);
+    API_BIND("ReCrafted.API.WebUI.WebUIView::InternalAddOnBeginLoading", &APIProxy::WebUIView_AddOnBeginLoading5);
+    API_BIND("ReCrafted.API.WebUI.WebUIView::InternalRemoveOnBeginLoading", &APIProxy::WebUIView_RemoveOnBeginLoading6);
+    API_BIND("ReCrafted.API.WebUI.WebUIView::InternalAddOnFinishLoading", &APIProxy::WebUIView_AddOnFinishLoading7);
+    API_BIND("ReCrafted.API.WebUI.WebUIView::InternalRemoveOnFinishLoading", &APIProxy::WebUIView_RemoveOnFinishLoading8);
+    API_BIND("ReCrafted.API.WebUI.WebUIView::InternalAddOnDOMReady", &APIProxy::WebUIView_AddOnDOMReady9);
+    API_BIND("ReCrafted.API.WebUI.WebUIView::InternalRemoveOnDOMReady", &APIProxy::WebUIView_RemoveOnDOMReady10);
     API_BIND("ReCrafted.API.WebUI.WebUIView::Get_InternalActive", &APIProxy::WebUIView_Get_Active1);
     API_BIND("ReCrafted.API.WebUI.WebUIView::Set_InternalActive", &APIProxy::WebUIView_Set_Active1);
 }

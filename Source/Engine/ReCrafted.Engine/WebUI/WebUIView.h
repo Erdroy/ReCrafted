@@ -3,10 +3,13 @@
 #pragma once
 
 #include <ReCrafted.h>
+#include "Common/Action.h"
 #include "Common/Event.h"
 #include "Rendering/Texture.h"
 
 #include <Ultralight/Ultralight.h>
+#include <JavaScriptCore/JavaScript.h>
+#include "WebUI/Impl/JSHelpers.h"
 
 /// <summary>
 ///     WebUIView class. Provides WebUI view rendering and interaction.
@@ -31,9 +34,14 @@ private:
     Event<> m_onFinishLoading;
     Event<> m_onDOMReady;
 
+    spp::sparse_hash_map<JSObjectRef, Action<void>> m_callbacks;
+
 private:
     void CreateTexture(uint width, uint height);
     void DestroyTexture();
+
+private:
+    void JSCallbackProxy(const JSObject& object, const JSFunction& function, const JSArgs& args);
 
 public:
     ~WebUIView();
@@ -71,6 +79,15 @@ public:
     ///     Applies current JS context.
     /// </summary>
     void ApplyJSContext() const;
+
+public:
+    /// <summary>
+    ///     Binds raw callback with no parameters.
+    /// </summary>
+    /// <param name="functionName">The target function name.</param>
+    /// <param name="callback">The callback that will be invoked when JS calls function of given name.</param>
+    API_FUNCTION()
+    void BindCallback(const char* functionName, const Action<void>& callback);
 
 public:
     /// <summary>

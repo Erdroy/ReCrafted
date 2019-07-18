@@ -1,6 +1,7 @@
 ﻿// ReCrafted (c) 2016-2019 Always Too Late
 
 using System;
+using ReCrafted.API.Common;
 using ReCrafted.API.Core;
 using ReCrafted.API.WebUI;
 
@@ -22,10 +23,14 @@ namespace ReCrafted.Game.UI
             _lastUpdate = (float) Time.CurrentTime + 1.0f;
         }
 
-        protected override void OnViewFinishLoading()
+        protected override void OnViewDOMReady()
         {
             // Update game version
             //View.Call("UpdateGameVersion", GameInfo.Current.BuildName, GameInfo.Current.BuildNumber);
+            View.BindCallback("testCallback", () =>
+            {
+                Logger.Log("C# TestCallback");
+            });
         }
 
         protected override void OnUpdate()

@@ -55,6 +55,15 @@
     <Compile Include="UI\UIPauseMenu.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\Build\Content\WebUI\Fonts\Lato-Black.ttf">
+      <Link>WebUI\Fonts\Lato-Black.ttf</Link>
+    </None>
+    <None Include="..\..\..\Build\Content\WebUI\Fonts\Lato-Bold.ttf">
+      <Link>WebUI\Fonts\Lato-Bold.ttf</Link>
+    </None>
+    <None Include="..\..\..\Build\Content\WebUI\Fonts\Lato-Regular.ttf">
+      <Link>WebUI\Fonts\Lato-Regular.ttf</Link>
+    </None>
     <None Include="Project.lua" />
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +71,38 @@
       <Project>{91f869da-fdc2-4539-83b4-bec3dc0bdf76}</Project>
       <Name>ReCrafted.API</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\..\Build\Content\WebUI\Default.html">
+      <Link>WebUI\Default.html</Link>
+    </Content>
+    <Content Include="..\..\..\Build\Content\WebUI\Game\hud.html">
+      <Link>WebUI\Game\hud.html</Link>
+    </Content>
+    <Content Include="..\..\..\Build\Content\WebUI\Game\menu.html">
+      <Link>WebUI\Game\menu.html</Link>
+    </Content>
+    <Content Include="..\..\..\Build\Content\WebUI\Game\overlay.html">
+      <Link>WebUI\Game\overlay.html</Link>
+    </Content>
+    <Content Include="..\..\..\Build\Content\WebUI\Images\exit.png">
+      <Link>WebUI\Images\exit.png</Link>
+    </Content>
+    <Content Include="..\..\..\Build\Content\WebUI\Images\gear.png">
+      <Link>WebUI\Images\gear.png</Link>
+    </Content>
+    <Content Include="..\..\..\Build\Content\WebUI\Images\play.png">
+      <Link>WebUI\Images\play.png</Link>
+    </Content>
+    <Content Include="..\..\..\Build\Content\WebUI\Images\players.png">
+      <Link>WebUI\Images\players.png</Link>
+    </Content>
+    <Content Include="..\..\..\Build\Content\WebUI\Styles\common.css">
+      <Link>WebUI\Styles\common.css</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="WebUI\Menu\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

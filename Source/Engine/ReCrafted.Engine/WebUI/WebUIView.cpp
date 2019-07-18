@@ -21,6 +21,21 @@ void WebUIView::DestroyTexture()
     m_texture = {};
 }
 
+void WebUIView::JSCallbackProxy(const JSObject& object, const JSFunction& function, const JSArgs& args)
+{
+    ASSERT(args.empty()); // No args supported in this callback
+
+    // Find function
+    const auto it = m_callbacks.find(function);
+
+    // No function found, return empty value.
+    if (it == m_callbacks.end())
+        return;
+
+    // Invoke callback
+    it->second.Invoke();
+}
+
 WebUIView::~WebUIView()
 {
     if(!WebUIManager::IsReleased())
@@ -191,6 +206,29 @@ void WebUIView::ApplyJSContext() const
 
     // Set the JSContext for all subsequent JSHelper calls
     SetJSContext(myContext);
+}
+
+void WebUIView::BindCallback(const char* functionName, const Action<void>& callback)
+{
+    // Apply JS context now to properly register all this stuff
+    ApplyJSContext();
+
+    // Get JS object from current context
+    const auto js = JSGlobalObject();
+
+    // Bind callback
+    js[functionName] = BindJSCallback(&WebUIView::JSCallbackProxy);
+    
+    // Select function
+    const auto function = js[functionName].ToFunction();
+    ASSERT(function.IsValid());
+
+    m_callbacks.insert(std::make_pair(static_cast<JSObjectRef>(function), callback));
+
+
+#ifdef _DEBUG
+    Logger::Log("Bound JS callback '{0}'", functionName);
+#endif
 }
 
 void WebUIView::SetActive(const bool isActive)

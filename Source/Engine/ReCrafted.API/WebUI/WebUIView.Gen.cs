@@ -37,6 +37,16 @@ namespace ReCrafted.API.WebUI
             InternalExecute(NativePtr, javaScriptSource);
         }
         
+        /// <summary>
+        ///     Binds raw callback with no parameters.
+        /// </summary>
+        /// <param name="functionName">The target function name.</param>
+        /// <param name="callback">The callback that will be invoked when JS calls function of given name.</param>
+        public void BindCallback(string functionName, System.Action callback)
+        {
+            InternalBindCallback(NativePtr, functionName, callback);
+        }
+        
         private void AddOnBeginLoading(System.Action action)
         {
             InternalAddOnBeginLoading(NativePtr, action);
@@ -88,6 +98,9 @@ namespace ReCrafted.API.WebUI
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalExecute(System.IntPtr nativePtr, string javaScriptSource);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalBindCallback(System.IntPtr nativePtr, string functionName, System.Action callback);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalAddOnBeginLoading(System.IntPtr nativePtr, System.Action action);

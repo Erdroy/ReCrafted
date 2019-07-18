@@ -27,12 +27,13 @@ namespace ReCrafted.API.WebUI
             View = WebUIManager.CreateView((int)Display.Width, (int)Display.Height);
             View.Active = activeOnStart;
             View.BeginLoading += OnBeginLoading;
+            View.DOMReady += OnDOMReady;
             View.FinishLoading += OnFinishLoading;
 
             // Refresh to start loading the html file
             Refresh();
         }
-        
+
         /// <summary>
         /// Reloads the entire view.
         /// Equal to `View.Navigate(View.HtmlFile)`.
@@ -64,6 +65,11 @@ namespace ReCrafted.API.WebUI
 
             OnViewBeginLoading();
             RegisterBindings();
+        }
+
+        private void OnDOMReady()
+        {
+            OnViewDOMReady();
         }
 
         private void OnFinishLoading()
@@ -100,6 +106,7 @@ namespace ReCrafted.API.WebUI
         protected virtual void RegisterBindings() { }
         protected virtual void OnViewBeginLoading() { }
         protected virtual void OnViewFinishLoading() { }
+        protected virtual void OnViewDOMReady() { }
 
         /// <summary>
         /// The source HTML file that is being used by this panel.
