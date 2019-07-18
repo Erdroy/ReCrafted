@@ -74,7 +74,7 @@ public:
     /// </summary>
     /// <param name="width">The width.</param>
     /// <param name="height">The height.</param>
-    void Resize(uint width, uint height) const;
+    void Resize(uint width, uint height);
 
     /// <summary>
     ///     Bind this render buffer.

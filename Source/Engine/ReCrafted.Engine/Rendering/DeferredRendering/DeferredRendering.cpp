@@ -52,7 +52,7 @@ void DeferredRendering::Resize(const uint width, const uint height)
     // Resize frame texture
     if (RENDERER_CHECK_HANDLE(m_frameTexture))
     {
-        Renderer::DestroyTexture2D(m_frameTexture);
+        Renderer::DestroyRenderTexture(m_frameTexture);
         m_frameTexture = Renderer::CreateRenderTexture(Display::GetWidth(), Display::GetHeight(), Renderer::TextureFormat::RGBA8);
     }
 }

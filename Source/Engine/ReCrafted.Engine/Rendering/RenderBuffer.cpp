@@ -60,12 +60,15 @@ Renderer::Texture2DHandle RenderBuffer::GetDepthBuffer() const
     return renderBufferDesc.depthBuffer;
 }
 
-void RenderBuffer::Resize(const uint width, const uint height) const
+void RenderBuffer::Resize(const uint width, const uint height)
 {
     ASSERT(m_created != false);
 
     if (m_width == width && m_height == height)
         return;
+
+    m_width = width;
+    m_height = height;
 
     // Resize RB
     Renderer::ResizeRenderBuffer(m_renderBufferHandle, width, height);

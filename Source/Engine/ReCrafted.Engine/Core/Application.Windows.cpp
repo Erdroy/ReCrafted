@@ -1,22 +1,18 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include "Application.h"
+#include "Common/Logger.h"
+#include "Input/InputManager.h"
 
 #ifdef _WIN32
 
 #include <Windows.h>
-#include "Input/InputManager.h"
-
-//IMGUI_IMPL_API LRESULT  ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 uint64_t EventProcessor(void* window, const uint32_t msg, const uint64_t param0, const uint64_t param1)
 {
     const auto hWnd = static_cast<HWND>(window);
     const auto wParam = static_cast<WPARAM>(param0);
     const auto lParam = static_cast<LPARAM>(param1);
-
-    //if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
-    //    return 0;
 
     switch (msg)
     {
@@ -46,12 +42,12 @@ uint64_t EventProcessor(void* window, const uint32_t msg, const uint64_t param0,
         }*/
     case WM_SIZE:
     {
-        if (wParam == 2)
+        if (wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED)
             ApplicationWindow::WindowResize(hWnd);
 
         return 0;
     }
-
+    case WM_ENTERSIZEMOVE: // handle window resizing
     case WM_EXITSIZEMOVE: // handle window resizing
     {
         ApplicationWindow::WindowResize(hWnd);
@@ -109,7 +105,7 @@ uint64_t EventProcessor(void* window, const uint32_t msg, const uint64_t param0,
         if (RegisterRawInputDevices(Rid, 1, sizeof Rid[0]) == FALSE)
         {
             // error, failed to register
-            //Logger::LogError("Failed to register mouse for RAW Input");
+            Logger::LogError("Failed to register mouse for RAW Input");
             return 0;
         }
         return 0;
@@ -241,10 +237,6 @@ uint64_t EventProcessor(void* window, const uint32_t msg, const uint64_t param0,
     default:
         return DefWindowProc(hWnd, msg, wParam, lParam);
     }
-
-    return DefWindowProc(hWnd, msg, wParam, lParam);
-
-    return 0u;
 }
 
 #endif
