@@ -15,7 +15,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
         public bool ByPtr { get; set; }
         public List<TypeDescription> GenericTypes { get; } = new List<TypeDescription>();
 
-        public bool CastToManaged => ByPtr && !ByRef && !IsConst && BaseType != "MonoObject";
+        public bool CastToManaged => ByPtr && !ByRef && !IsConst && BaseType != "MonoObject" && BaseType != "void";
 
         public bool PassByReference
         {
@@ -219,7 +219,7 @@ namespace ReCrafted.Tools.APIGenerator.Descriptions
 
         public string ToString(bool isReturn = false, bool allowConst = true, bool allowRef = true)
         {
-            if (isReturn && ByPtr && !ByRef && !IsConst)
+            if (isReturn && ByPtr && !ByRef && !IsConst && BaseType != "void")
                 return "MonoObject*";
 
             if (ByRef && !IsConst)

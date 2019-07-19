@@ -1,8 +1,8 @@
 ﻿// ReCrafted (c) 2016-2019 Always Too Late
 
-using ReCrafted.API.Core;
 using ReCrafted.API.Input;
 using ReCrafted.API.WebUI;
+using ReCrafted.API.WebUI.JavaScript;
 
 namespace ReCrafted.Game.UI
 {
@@ -21,6 +21,12 @@ namespace ReCrafted.Game.UI
             View.Name = nameof(UIPauseMenu);
             //View.BindCallback("ResumeGame", () => { Show(false); });
             //View.BindCallback("ExitGame", Application.Quit);
+            var ctx = View.Context;
+
+            var global = JSObject.GetGlobalObject(ctx);
+            var obj1 = global.GetPropertyValue(new JSString("TestFunction"));
+            var func = obj1.ToFunction();
+            func.Invoke(global);
         }
 
         private void Show(bool show)

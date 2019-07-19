@@ -110,6 +110,16 @@ public:
         return m_name;
     }
 
+    /// <summary>
+    ///     Gets the JavaScript context from this view.
+    /// </summary>
+    /// <returns></returns>
+    API_PROPERTY(byvalue)
+    void* Context() const
+    {
+        return (void*)m_view->js_context();
+    }
+
 public:
     void OnChangeCursor(ultralight::View* caller, ultralight::Cursor cursor) override;
     void OnAddConsoleMessage(ultralight::View* caller, ultralight::MessageSource source, ultralight::MessageLevel level,

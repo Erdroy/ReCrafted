@@ -64,12 +64,12 @@ namespace ReCrafted.API.WebUI
             IsLoaded = false;
 
             OnViewBeginLoading();
-            RegisterBindings();
         }
 
         private void OnDOMReady()
         {
             OnViewDOMReady();
+            RegisterBindings();
         }
 
         private void OnFinishLoading()

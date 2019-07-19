@@ -85,13 +85,13 @@ namespace ReCrafted.API.WebUI.JavaScript
         public static extern void JSClassRelease(IntPtr jsClass);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern IntPtr JSObjectMake(IntPtr context, IntPtr jsClass, void* data);
+        public static extern IntPtr JSObjectMake(IntPtr context, IntPtr jsClass, IntPtr data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern bool JSObjectHasProperty(IntPtr context, IntPtr obj);
+        public static extern bool JSObjectHasProperty(IntPtr context, IntPtr obj, IntPtr propertyName);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern bool JSObjectGetProperty(IntPtr context, IntPtr obj, IntPtr propertyName, IntPtr exception);
+        public static extern IntPtr JSObjectGetProperty(IntPtr context, IntPtr obj, IntPtr propertyName, IntPtr exception);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void JSObjectSetProperty(IntPtr context, IntPtr obj, IntPtr propertyName, IntPtr value, uint attributes, IntPtr exception);
@@ -100,10 +100,10 @@ namespace ReCrafted.API.WebUI.JavaScript
         public static extern bool JSObjectDeleteProperty(IntPtr context, IntPtr obj, IntPtr propertyName, IntPtr exception);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void* JSObjectGetPrivate(IntPtr obj);
+        public static extern IntPtr JSObjectGetPrivate(IntPtr obj);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void JSObjectSetPrivate(IntPtr obj, void* data);
+        public static extern void JSObjectSetPrivate(IntPtr obj, IntPtr data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern bool JSObjectIsFunction(IntPtr context, IntPtr obj);

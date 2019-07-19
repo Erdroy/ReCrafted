@@ -93,6 +93,19 @@ namespace ReCrafted.API.WebUI
             set => Set_InternalName(NativePtr, ref value);
         }
 
+        /// <summary>
+        ///     Gets the JavaScript context from this view.
+        /// </summary>
+        /// <returns></returns>
+        public System.IntPtr Context
+        {
+            get
+            {
+                Get_InternalContext(NativePtr, out var data);
+                return data;
+            }
+        }
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalResize(System.IntPtr nativePtr, uint width, uint height);
 
@@ -131,5 +144,8 @@ namespace ReCrafted.API.WebUI
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Set_InternalName(System.IntPtr nativePtr, ref string data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalContext(System.IntPtr nativePtr, out System.IntPtr data);
     }
 }

@@ -25,6 +25,11 @@ namespace ReCrafted.API.WebUI.JavaScript
             _string = str;
         }
 
+        ~JSString()
+        {
+            JSStringRelease(_string);
+        }
+
         public JSString Copy()
         {
             return new JSString(JSStringRetain(_string));
@@ -38,6 +43,11 @@ namespace ReCrafted.API.WebUI.JavaScript
         public void Release()
         {
             JSStringRelease(_string);
+        }
+
+        public IntPtr Get()
+        {
+            return _string;
         }
 
         public override bool Equals(object obj)
@@ -62,7 +72,7 @@ namespace ReCrafted.API.WebUI.JavaScript
 
         public override string ToString()
         {
-            var len = Length();
+            var len = Length() + 1;
             var data = new byte[len];
 
             unsafe

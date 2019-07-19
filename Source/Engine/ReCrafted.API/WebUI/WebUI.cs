@@ -19,7 +19,6 @@ namespace ReCrafted.API.WebUI
         protected override void OnCreate()
         {
             _instance = this;
-            
         }
 
         protected override void OnDestroy()

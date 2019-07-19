@@ -133,7 +133,10 @@
     <Compile Include="Script.cs" />
     <Compile Include="Script.Gen.cs" />
     <Compile Include="WebUI\JavaScript\JSCore.cs" />
+    <Compile Include="WebUI\JavaScript\JSFunction.cs" />
+    <Compile Include="WebUI\JavaScript\JSObject.cs" />
     <Compile Include="WebUI\JavaScript\JSString.cs" />
+    <Compile Include="WebUI\JavaScript\JSValue.cs" />
     <Compile Include="WebUI\WebUI.cs" />
     <Compile Include="WebUI\WebUIManager.Gen.cs" />
     <Compile Include="WebUI\WebUIPanel.cs" />
