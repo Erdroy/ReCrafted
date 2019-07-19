@@ -20,6 +20,8 @@ class WebUIView final : public Object, public ultralight::LoadListener, ultralig
     API_CLASS_BODY()
 
 private:
+    String m_name = {};
+
     int m_width = 0;
     int m_height = 0;
 
@@ -104,6 +106,24 @@ public:
     bool GetActive() const
     {
         return m_active;
+    }
+
+    /// <summary>
+    ///     Gets or sets the view's name.
+    /// </summary>
+    API_PROPERTY(noprefix)
+    void SetName(const String& name)
+    {
+        m_name = name;
+    }
+
+    /// <summary>
+    ///     Gets or sets the view's name.
+    /// </summary>
+    API_PROPERTY(noprefix)
+    const String& GetName() const
+    {
+        return m_name;
     }
 
 public:

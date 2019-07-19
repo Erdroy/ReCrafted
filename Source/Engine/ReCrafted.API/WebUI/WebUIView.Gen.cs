@@ -90,6 +90,19 @@ namespace ReCrafted.API.WebUI
             set => Set_InternalActive(NativePtr, ref value);
         }
 
+        /// <summary>
+        ///     Gets or sets the view's name.
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                Get_InternalName(NativePtr, out var data);
+                return data;
+            }
+            set => Set_InternalName(NativePtr, ref value);
+        }
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalResize(System.IntPtr nativePtr, uint width, uint height);
 
@@ -125,5 +138,11 @@ namespace ReCrafted.API.WebUI
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Set_InternalActive(System.IntPtr nativePtr, ref bool data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalName(System.IntPtr nativePtr, out string data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Set_InternalName(System.IntPtr nativePtr, ref string data);
     }
 }

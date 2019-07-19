@@ -125,6 +125,24 @@ public:
         instance->SetActive(*data);
     }
     
+    static void WebUIView_Get_Name2(WebUIView* instance, MonoString** p_data) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "WebUIView");
+        const auto _returnValue = instance->GetName();
+        *p_data = MONO_STRING_FROM_STR(_returnValue);
+    }
+
+    static void WebUIView_Set_Name2(WebUIView* instance, MonoString** p_data) 
+    {
+        MAIN_THREAD_ONLY();
+        ASSERT(p_data);
+        const auto data = MONO_STRING_TO_STR(*p_data);
+        MONO_CHECK_OBJECT(instance, "WebUIView");
+        instance->SetName(data);
+        MONO_FREE_STUB(data);
+    }
+    
     static Object* WebUIView_CreateObject(bool createManagedInstance)
     {
         _ASSERT_(createManagedInstance, "Class 'WebUIView' is not marked as generic, and thus cannot get only unmanaged-instance created!");
@@ -149,6 +167,8 @@ void WebUIView::InitRuntime()
     API_BIND("ReCrafted.API.WebUI.WebUIView::InternalRemoveOnDOMReady", &APIProxy::WebUIView_RemoveOnDOMReady10);
     API_BIND("ReCrafted.API.WebUI.WebUIView::Get_InternalActive", &APIProxy::WebUIView_Get_Active1);
     API_BIND("ReCrafted.API.WebUI.WebUIView::Set_InternalActive", &APIProxy::WebUIView_Set_Active1);
+    API_BIND("ReCrafted.API.WebUI.WebUIView::Get_InternalName", &APIProxy::WebUIView_Get_Name2);
+    API_BIND("ReCrafted.API.WebUI.WebUIView::Set_InternalName", &APIProxy::WebUIView_Set_Name2);
 }
 
 const char* WebUIView::Fullname() 

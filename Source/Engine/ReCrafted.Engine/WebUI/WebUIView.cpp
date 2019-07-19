@@ -47,10 +47,15 @@ WebUIView::~WebUIView()
         WebUIManager::GetInstance()->m_views.Remove(this);
 
     m_view = nullptr;
+
+    Logger::LogWarning("WebUIView '{0}' released", m_name);
 }
 
 void WebUIView::Initialize(const int width, const int height, const ultralight::RefPtr<ultralight::View>& view)
 {
+    // Set initial name
+    m_name = STRING_CONST("Unnamed");
+
     // Set ultralight's view instance
     m_view = view;
 
@@ -174,7 +179,7 @@ void WebUIView::Render()
         }
         else
         {
-            Logger::LogWarning("WebUIView of size {0}x{1} has no render texture, force resizing.", m_width, m_height);
+            Logger::LogWarning("WebUIView '{0}' of size {1}x{2} has no render texture, force resizing.", m_name, m_width, m_height);
             m_resize = true;
         }
     }
@@ -193,7 +198,7 @@ void WebUIView::RenderFullscreen() const
 
 void WebUIView::Resize(const uint width, const uint height)
 {
-    if (m_width == width && m_height == height)
+    if (m_width == static_cast<int>(width) && m_height == static_cast<int>(height))
         return;
 
     // Recreate texture
