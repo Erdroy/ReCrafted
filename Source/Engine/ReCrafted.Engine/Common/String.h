@@ -14,6 +14,7 @@
 
 #ifdef STRING_USE_FMT
 # include <fmt/format.h>
+#include <fmt/ostream.h>
 #endif
 
 #ifndef _UNICODE_
@@ -34,7 +35,6 @@ struct String
 {
 private:
     Char* m_data = nullptr;
-    char* m_cstrData = nullptr;
     bool m_const = false;
 
 private:
@@ -122,7 +122,6 @@ public:
         const auto length = string.Length();
         AllocData(length);
         CopyData(string.m_data, length);
-        m_cstrData = string.m_cstrData;
         m_const = string.m_const;
     }
 
@@ -174,12 +173,6 @@ public:
             {
                 STRING_FREE(m_data);
                 m_data = nullptr;
-            }
-
-            if (m_cstrData)
-            {
-                STRING_FREE(m_cstrData);
-                m_cstrData = nullptr;
             }
         }
     }
@@ -364,6 +357,13 @@ public:
 
         return temp;
     }
+
+#ifdef STRING_USE_FMT
+    friend std::ostream& operator<<(std::ostream& os, const String& str) {
+        std::wstring_convert<std::codecvt_utf8_utf16<__int16>, __int16> conversion;
+        return os << conversion.to_bytes(reinterpret_cast<__int16*>(str.Data()));
+    }
+#endif
 
 public:
     String& operator=(const String& r)
