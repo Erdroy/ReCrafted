@@ -37,6 +37,15 @@ void WebUIManager::Initialize()
 
 void WebUIManager::Shutdown()
 {
+    List<WebUIView*> views;
+    m_views.Copy(views);
+
+    for(auto& view : views)
+        Object::DestroyNow(view);
+
+    m_views.Clear();
+    views.Clear();
+
     // Delete platform
     delete ultralight::Platform::instance().file_system();
     delete ultralight::Platform::instance().font_loader();
@@ -111,7 +120,7 @@ void WebUIManager::ResizeFullscreenViews(const uint width, const uint height)
 WebUIView* WebUIManager::CreateView(const int width, const int height)
 {
     const auto view = Object::New<WebUIView>();
-    view->Initialize(width, height, GetInstance()->m_renderer->CreateView(width, height, true));
+    view->Initialize(width, height, &GetInstance()->m_renderer->CreateView(width, height, true).get());
 
     // Add to list
     GetInstance()->m_views.Add(view);

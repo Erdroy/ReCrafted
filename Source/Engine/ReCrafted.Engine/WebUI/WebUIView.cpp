@@ -38,14 +38,18 @@ void WebUIView::JSCallbackProxy(const JSObject& object, const JSFunction& functi
 
 WebUIView::~WebUIView()
 {
+    // Clear callbacks
+    m_callbacks.clear();
+    m_callbacks = {};
+
+    // Remove this view from the views list
     if(!WebUIManager::IsReleased())
-    {
-        // Remove this view from the views list
         WebUIManager::GetInstance()->m_views.Remove(this);
-    }
+
+    m_view = nullptr;
 }
 
-void WebUIView::Initialize(const int width, const int height, const ultralight::Ref<ultralight::View>& view)
+void WebUIView::Initialize(const int width, const int height, const ultralight::RefPtr<ultralight::View>& view)
 {
     // Set ultralight's view instance
     m_view = view;
@@ -233,13 +237,10 @@ void WebUIView::BindCallback(const char* functionName, const Action<void>& callb
 
     // Bind callback
     js[functionName] = BindJSCallback(&WebUIView::JSCallbackProxy);
-    
-    // Select function
-    const auto function = js[functionName].ToFunction();
-    ASSERT(function.IsValid());
 
-    m_callbacks.insert(std::make_pair(static_cast<JSObjectRef>(function), callback));
-
+    // Cache function with callback action
+    auto function = js[functionName].ToFunction();
+    m_callbacks.insert(std::make_pair(function, callback));
 
 #ifdef _DEBUG
     Logger::Log("Bound JS callback '{0}'", functionName);

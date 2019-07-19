@@ -35,7 +35,7 @@ private:
     Event<> m_onFinishLoading;
     Event<> m_onDOMReady;
 
-    spp::sparse_hash_map<JSObjectRef, Action<void>> m_callbacks;
+    std::map<JSFunction, Action<void>> m_callbacks;
 
 private:
     void CreateTexture(uint width, uint height);
@@ -48,7 +48,7 @@ public:
     ~WebUIView();
 
 public:
-    void Initialize(int width, int height, const ultralight::Ref<ultralight::View>& view);
+    void Initialize(int width, int height, const ultralight::RefPtr<ultralight::View>& view);
 
     void Update();
     void Render();
