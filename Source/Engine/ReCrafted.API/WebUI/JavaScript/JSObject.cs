@@ -1,4 +1,4 @@
-﻿// ReCrafted (c) 2016-2019 Always Too Late
+﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System;
 
@@ -51,6 +51,11 @@ namespace ReCrafted.API.WebUI.JavaScript
         public bool DeleteProperty(JSString propertyName)
         {
             return JSObjectDeleteProperty(_context, _object, propertyName.Get(), IntPtr.Zero);
+        }
+
+        public IntPtr GetContext()
+        {
+            return _context;
         }
 
         public IntPtr Get()

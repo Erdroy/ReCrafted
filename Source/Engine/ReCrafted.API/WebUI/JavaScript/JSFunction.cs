@@ -1,7 +1,7 @@
-﻿// ReCrafted (c) 2016-2019 Always Too Late
+﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System;
-
+using System.Linq;
 using static ReCrafted.API.WebUI.JavaScript.JSCore;
 
 namespace ReCrafted.API.WebUI.JavaScript
@@ -17,10 +17,18 @@ namespace ReCrafted.API.WebUI.JavaScript
             _object = obj;
         }
 
-        public JSValue Invoke(JSObject thisObject)
+        public JSValue Invoke(JSObject thisObject, params JSValue[] arguments)
         {
-            var valuePtr = JSObjectCallAsFunction(_context, _object, thisObject.Get(), 0, IntPtr.Zero, IntPtr.Zero);
-            return new JSValue(_context, valuePtr);
+            unsafe
+            {
+                var values = arguments.Select(x => x.Get()).ToArray();
+
+                fixed (IntPtr* ptr = values)
+                {
+                    var valuePtr = JSObjectCallAsFunction(_context, _object, thisObject.Get(), (ulong)arguments.Length, new IntPtr(ptr), IntPtr.Zero);
+                    return new JSValue(_context, valuePtr);
+                }
+            }
         }
     }
 }

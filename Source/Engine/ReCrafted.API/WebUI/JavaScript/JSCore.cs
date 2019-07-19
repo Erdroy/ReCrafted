@@ -7,6 +7,11 @@ namespace ReCrafted.API.WebUI.JavaScript
 {
     internal static unsafe class JSCore
     {
+        public delegate IntPtr JSNativeCallback(IntPtr thisObject, params IntPtr[] args);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern IntPtr JSGetNativeCallbackClass();
+
         // JSBase.h
 
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -86,6 +91,9 @@ namespace ReCrafted.API.WebUI.JavaScript
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern IntPtr JSObjectMake(IntPtr context, IntPtr jsClass, IntPtr data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern IntPtr JSObjectMakeCallback(IntPtr context, IntPtr jsClass, JSNativeCallback data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern bool JSObjectHasProperty(IntPtr context, IntPtr obj, IntPtr propertyName);

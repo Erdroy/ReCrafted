@@ -29,7 +29,8 @@ WebUIView::~WebUIView()
 
     m_view = nullptr;
 
-    Logger::LogWarning("WebUIView '{0}' released", m_name);
+    if(m_name.Data())
+        Logger::LogWarning("WebUIView '{0}' released", m_name);
 }
 
 void WebUIView::Initialize(const int width, const int height, const ultralight::RefPtr<ultralight::View>& view)

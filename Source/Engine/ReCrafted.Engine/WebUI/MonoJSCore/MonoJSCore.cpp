@@ -8,11 +8,43 @@
 
 bool MonoJSCore::m_initialized;
 
+JSValueRef JSNativeCallback(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject,
+    size_t argumentCount, const JSValueRef arguments[], JSValueRef* exception) {
+    
+    auto callback = (MonoObject*)JSObjectGetPrivate(function);
+    
+    if (!callback)
+        return JSValueMakeNull(ctx);
+
+    auto rV = mono_runtime_delegate_invoke(callback, (void**)& thisObject, nullptr);
+
+    auto returnValue = (JSValueRef)mono_object_unbox(rV);
+
+    auto isNull = JSValueIsNull(ctx, returnValue);
+
+    return returnValue;
+}
+
+JSClassRef JSGetNativeCallbackClass() {
+    static JSClassRef instance = nullptr;
+    if (!instance) {
+        JSClassDefinition def;
+        memset(&def, 0, sizeof(def));
+        def.className = "JSNativeCallbackClass";
+        def.attributes = kJSClassAttributeNone;
+        def.callAsFunction = JSNativeCallback;
+        instance = JSClassCreate(&def);
+    }
+    return instance;
+}
+
 void MonoJSCore::Initialize()
 {
     if (m_initialized)
         return;
     m_initialized = true;
+
+    API_BIND("ReCrafted.API.WebUI.JavaScript.JSCore::JSGetNativeCallbackClass", &JSGetNativeCallbackClass);
 
     // JSBase.h
     API_BIND("ReCrafted.API.WebUI.JavaScript.JSCore::JSEvaluateScript", &JSEvaluateScript);
@@ -48,6 +80,7 @@ void MonoJSCore::Initialize()
     API_BIND("ReCrafted.API.WebUI.JavaScript.JSCore::JSClassRetain", &JSClassRetain);
     API_BIND("ReCrafted.API.WebUI.JavaScript.JSCore::JSClassRelease", &JSClassRelease);
     API_BIND("ReCrafted.API.WebUI.JavaScript.JSCore::JSObjectMake", &JSObjectMake);
+    API_BIND("ReCrafted.API.WebUI.JavaScript.JSCore::JSObjectMakeCallback", &JSObjectMake);
     API_BIND("ReCrafted.API.WebUI.JavaScript.JSCore::JSObjectHasProperty", &JSObjectHasProperty);
     API_BIND("ReCrafted.API.WebUI.JavaScript.JSCore::JSObjectGetProperty", &JSObjectGetProperty);
     API_BIND("ReCrafted.API.WebUI.JavaScript.JSCore::JSObjectSetProperty", &JSObjectSetProperty);

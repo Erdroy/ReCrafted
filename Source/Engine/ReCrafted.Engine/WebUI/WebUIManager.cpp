@@ -42,7 +42,7 @@ void WebUIManager::Initialize()
 void WebUIManager::Shutdown()
 {
     List<WebUIView*> views;
-    m_views.Copy(views);
+    views.Copy(m_views);
 
     for(auto& view : views)
         Object::DestroyNow(view);

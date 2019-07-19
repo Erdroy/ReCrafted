@@ -1,4 +1,4 @@
-﻿// ReCrafted (c) 2016-2019 Always Too Late
+﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System;
 using System.Text;
@@ -7,6 +7,8 @@ using static ReCrafted.API.WebUI.JavaScript.JSCore;
 
 namespace ReCrafted.API.WebUI.JavaScript
 {
+    public delegate JSValue JSCallback(JSObject thisObject, params JSValue[] args);
+
     public class JSValue
     {
         private readonly IntPtr _context;
@@ -16,6 +18,26 @@ namespace ReCrafted.API.WebUI.JavaScript
         {
             _context = context;
             _value = JSValueMakeUndefined(context);
+            JSValueProtect(_context, _value);
+        }
+
+        public JSValue(IntPtr context, JSCallback callback)
+        {
+            _context = context;
+
+            _value = JSObjectMakeCallback(_context, JSGetNativeCallbackClass(), (thisObject, nativeArgs) =>
+            {
+                if (nativeArgs != null)
+                {
+                    var args = new JSValue[nativeArgs.Length];
+                    for (var i = 0; i < nativeArgs.Length; i++)
+                        args[i] = new JSValue(_context, nativeArgs[i]);
+
+                    return callback(new JSObject(_context, thisObject), args).Get();
+                }
+
+                return callback(new JSObject(_context, thisObject)).Get();
+            });
             JSValueProtect(_context, _value);
         }
 
@@ -162,5 +184,7 @@ namespace ReCrafted.API.WebUI.JavaScript
 
             return new JSFunction(_context, obj);
         }
+
+        public static JSValue Null => new JSValue(IntPtr.Zero, IntPtr.Zero);
     }
 }
