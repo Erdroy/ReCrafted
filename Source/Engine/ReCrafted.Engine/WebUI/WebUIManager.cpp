@@ -8,6 +8,7 @@
 #include "WebUIView.h"
 #include "Profiler/Profiler.h"
 #include "Impl/d3d11/GPUContextD3D11.h"
+#include "MonoJSCore/MonoJSCore.h"
 
 void WebUIManager::Initialize()
 {
@@ -31,6 +32,9 @@ void WebUIManager::Initialize()
 
     // Create ultralight renderer
     m_renderer = ultralight::Renderer::Create();
+
+    // Initialize MonoJSCore
+    MonoJSCore::Initialize();
 
     Logger::Log("WebUI initialized using Ultralight {0} (WebKitCore)", ULTRALIGHT_VERSION);
 }
