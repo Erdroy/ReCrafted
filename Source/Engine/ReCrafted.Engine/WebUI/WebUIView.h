@@ -8,8 +8,6 @@
 #include "Rendering/Texture.h"
 
 #include <Ultralight/Ultralight.h>
-#include <JavaScriptCore/JavaScript.h>
-#include "WebUI/Impl/JSHelpers.h"
 
 /// <summary>
 ///     WebUIView class. Provides WebUI view rendering and interaction.
@@ -20,7 +18,7 @@ class WebUIView final : public Object, public ultralight::LoadListener, ultralig
     API_CLASS_BODY()
 
 private:
-    String m_name = {};
+    String m_name;
 
     int m_width = 0;
     int m_height = 0;
@@ -37,14 +35,9 @@ private:
     Event<> m_onFinishLoading;
     Event<> m_onDOMReady;
 
-    std::map<JSFunction, Action<void>> m_callbacks;
-
 private:
     void CreateTexture(uint width, uint height);
     void DestroyTexture();
-
-private:
-    void JSCallbackProxy(const JSObject& object, const JSFunction& function, const JSArgs& args);
 
 public:
     ~WebUIView();
@@ -82,15 +75,6 @@ public:
     ///     Applies current JS context.
     /// </summary>
     void ApplyJSContext() const;
-
-public:
-    /// <summary>
-    ///     Binds raw callback with no parameters.
-    /// </summary>
-    /// <param name="functionName">The target function name.</param>
-    /// <param name="callback">The callback that will be invoked when JS calls function of given name.</param>
-    API_FUNCTION()
-    void BindCallback(const char* functionName, const Action<void>& callback);
 
 public:
     /// <summary>

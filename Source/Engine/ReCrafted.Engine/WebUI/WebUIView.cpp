@@ -21,27 +21,8 @@ void WebUIView::DestroyTexture()
     m_texture = {};
 }
 
-void WebUIView::JSCallbackProxy(const JSObject& object, const JSFunction& function, const JSArgs& args)
-{
-    ASSERT(args.empty()); // No args supported in this callback
-
-    // Find function
-    const auto it = m_callbacks.find(function);
-
-    // No function found, return empty value.
-    if (it == m_callbacks.end())
-        return;
-
-    // Invoke callback
-    it->second.Invoke();
-}
-
 WebUIView::~WebUIView()
 {
-    // Clear callbacks
-    m_callbacks.clear();
-    m_callbacks = {};
-
     // Remove this view from the views list
     if(!WebUIManager::IsReleased())
         WebUIManager::GetInstance()->m_views.Remove(this);
@@ -54,7 +35,7 @@ WebUIView::~WebUIView()
 void WebUIView::Initialize(const int width, const int height, const ultralight::RefPtr<ultralight::View>& view)
 {
     // Set initial name
-    m_name = STRING_CONST("Unnamed");
+    //m_name = STRING_CONST("Unnamed");
 
     // Set ultralight's view instance
     m_view = view;
@@ -230,26 +211,6 @@ void WebUIView::ApplyJSContext() const
 
     // Set the JSContext for all subsequent JSHelper calls
     SetJSContext(myContext);
-}
-
-void WebUIView::BindCallback(const char* functionName, const Action<void>& callback)
-{
-    // Apply JS context now to properly register all this stuff
-    ApplyJSContext();
-
-    // Get JS object from current context
-    const auto js = JSGlobalObject();
-
-    // Bind callback
-    js[functionName] = BindJSCallback(&WebUIView::JSCallbackProxy);
-
-    // Cache function with callback action
-    auto function = js[functionName].ToFunction();
-    m_callbacks.insert(std::make_pair(function, callback));
-
-#ifdef _DEBUG
-    Logger::Log("Bound JS callback '{0}'", functionName);
-#endif
 }
 
 void WebUIView::SetActive(const bool isActive)

@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
+using ReCrafted.API.WebUI.JavaScript;
 
 namespace ReCrafted.API.WebUI
 {
@@ -18,6 +19,7 @@ namespace ReCrafted.API.WebUI
         protected override void OnCreate()
         {
             _instance = this;
+            
         }
 
         protected override void OnDestroy()

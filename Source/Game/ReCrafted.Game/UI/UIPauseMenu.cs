@@ -19,8 +19,8 @@ namespace ReCrafted.Game.UI
         protected override void RegisterBindings()
         {
             View.Name = nameof(UIPauseMenu);
-            View.BindCallback("ResumeGame", () => { Show(false); });
-            View.BindCallback("ExitGame", Application.Quit);
+            //View.BindCallback("ResumeGame", () => { Show(false); });
+            //View.BindCallback("ExitGame", Application.Quit);
         }
 
         private void Show(bool show)
