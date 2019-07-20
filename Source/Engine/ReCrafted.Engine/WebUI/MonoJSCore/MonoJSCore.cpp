@@ -5,24 +5,38 @@
 
 #include <JavaScriptCore/JavaScript.h>
 #include "Common/Logger.h"
+#include "Scripting/Domain.h"
+#include "Scripting/ScriptingManager.h"
 
 bool MonoJSCore::m_initialized;
 
-JSValueRef JSNativeCallback(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject,
-    size_t argumentCount, const JSValueRef arguments[], JSValueRef* exception) {
-    
-    auto callback = (MonoObject*)JSObjectGetPrivate(function);
+JSValueRef JSNativeCallback(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* exception) 
+{
+    MAIN_THREAD_ONLY();
+
+    static MonoArray* paramArray;
+
+    if(paramArray == nullptr)
+    {
+        // 5 params + this Object
+        paramArray = mono_array_new(Domain::Root->ToMono(), mono_get_intptr_class(), 5);
+    }
+
+    const auto callback = static_cast<MonoObject*>(JSObjectGetPrivate(function));
     
     if (!callback)
         return JSValueMakeNull(ctx);
 
-    auto rV = mono_runtime_delegate_invoke(callback, (void**)& thisObject, nullptr);
+    // Copy thisObject at first 'params' array item
+    mono_array_set(paramArray, size_t, 0, reinterpret_cast<size_t>(thisObject));
 
-    auto returnValue = (JSValueRef)mono_object_unbox(rV);
+    for(auto i = 0u; i < argumentCount; i ++)
+        mono_array_set(paramArray, size_t, (i + 1), reinterpret_cast<size_t>(arguments[i]));
 
-    auto isNull = JSValueIsNull(ctx, returnValue);
+    MonoObject* exc = nullptr;
+    const auto returnValue = mono_runtime_delegate_invoke(callback, (void**)&paramArray, &exc);
 
-    return returnValue;
+    return *static_cast<JSValueRef*>(mono_object_unbox(returnValue));
 }
 
 JSClassRef JSGetNativeCallbackClass() {

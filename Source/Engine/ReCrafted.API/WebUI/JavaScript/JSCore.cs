@@ -7,7 +7,7 @@ namespace ReCrafted.API.WebUI.JavaScript
 {
     internal static unsafe class JSCore
     {
-        public delegate IntPtr JSNativeCallback(IntPtr thisObject, params IntPtr[] args);
+        public delegate IntPtr JSNativeCallback(params IntPtr[] args);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern IntPtr JSGetNativeCallbackClass();

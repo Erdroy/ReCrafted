@@ -1,8 +1,9 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System;
+using System.Linq;
 using System.Text;
-
+using ReCrafted.API.Common;
 using static ReCrafted.API.WebUI.JavaScript.JSCore;
 
 namespace ReCrafted.API.WebUI.JavaScript
@@ -25,13 +26,18 @@ namespace ReCrafted.API.WebUI.JavaScript
         {
             _context = context;
 
-            _value = JSObjectMakeCallback(_context, JSGetNativeCallbackClass(), (thisObject, nativeArgs) =>
+            _value = JSObjectMakeCallback(_context, JSGetNativeCallbackClass(), nativeArgs =>
             {
-                if (nativeArgs != null)
+                // Select thisObject. It is always first element in the nativeArgs array.
+                var thisObject = nativeArgs.First();
+
+                if (nativeArgs.Length > 1)
                 {
                     var args = new JSValue[nativeArgs.Length];
-                    for (var i = 0; i < nativeArgs.Length; i++)
-                        args[i] = new JSValue(_context, nativeArgs[i]);
+
+                    // Add all args, skip the first one (thisObject)
+                    for (var i = 0; i < nativeArgs.Length - 1; i++)
+                        args[i] = new JSValue(_context, nativeArgs[i + 1]);
 
                     return callback(new JSObject(_context, thisObject), args).Get();
                 }
