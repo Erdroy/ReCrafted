@@ -49,8 +49,6 @@ void VoxelObjectManager::WorkerFunction()
 
         Profiler::EndCPUProfile();
     }
-
-    Profiler::FinishThread();
 }
 
 void VoxelObjectManager::InitializeWorkers()
@@ -109,7 +107,23 @@ void VoxelObjectManager::Shutdown()
 
 void VoxelObjectManager::OnUpdate()
 {
+    CPU_PROFILE_FUNCTION(0);
+
     DispatchCallbacks();
+}
+
+void VoxelObjectManager::RegisterVoxelObject(VoxelObjectBase* voxelObject)
+{
+    GetInstance()->m_voxelObjectsLock.LockNow();
+    GetInstance()->m_voxelObjects.Add(voxelObject);
+    GetInstance()->m_voxelObjectsLock.UnlockNow();
+}
+
+void VoxelObjectManager::UnregisterVoxelObject(VoxelObjectBase* voxelObject)
+{
+    GetInstance()->m_voxelObjectsLock.LockNow();
+    GetInstance()->m_voxelObjects.Remove(voxelObject);
+    GetInstance()->m_voxelObjectsLock.UnlockNow();
 }
 
 void VoxelObjectManager::Enqueue(VoxelObjectOctree::Node* node, const ProcessMode mode, const Action<void>& callback)

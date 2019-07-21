@@ -21,9 +21,9 @@ typedef uint16_t VoxelMaterial_t;
 /// </summary>
 typedef sbyte VoxelHardness_t;
 
-constexpr sbyte VoxelFromFloat(const sbyte value)
+constexpr sbyte VoxelFromFloat(const float value)
 {
-    return static_cast<sbyte>(Math::Clamp(static_cast<float>(value) * 127.0f, -127.0f, 127.0f));
+    return static_cast<sbyte>(Math::Clamp(value * 127.0f, -127.0f, 127.0f));
 }
 
 constexpr float VoxelToFloat(const sbyte value)

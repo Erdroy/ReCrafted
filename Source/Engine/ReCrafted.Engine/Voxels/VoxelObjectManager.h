@@ -16,11 +16,13 @@
 API_CLASS(public, static, partial, noinherit)
 class VoxelObjectManager final : public SubSystem<VoxelObjectManager>
 {
+    DELETE_COPY_MOVE(VoxelObjectManager);
     API_CLASS_BODY();
 
 public:
     enum class ProcessMode
     {
+        None,
         Populate,
         Depopulate,
         Rebuild
@@ -29,9 +31,9 @@ public:
 private:
     ALIGN(8) struct QueueItem
     {
-        VoxelObjectOctree::Node* Node;
-        ProcessMode Mode;
-        Action<void> Callback;
+        VoxelObjectOctree::Node* Node = nullptr;
+        ProcessMode Mode = ProcessMode::None;
+        Action<void> Callback = nullptr;
     };
 
 private:
@@ -42,11 +44,18 @@ private:
     List<Action<void>> m_callbackList;
     Lock m_callbackListLock;
 
+    List<VoxelObjectBase*> m_voxelObjects = {};
+    Lock m_voxelObjectsLock = {};
+
 private:
     void WorkerFunction();
     void InitializeWorkers();
 
     void DispatchCallbacks();
+
+public:
+    VoxelObjectManager() = default;
+    ~VoxelObjectManager() = default;
 
 protected:
     void Initialize() override;
@@ -55,6 +64,9 @@ protected:
     void OnUpdate() override;
 
 public:
+    static void RegisterVoxelObject(VoxelObjectBase* voxelObject);
+    static void UnregisterVoxelObject(VoxelObjectBase* voxelObject);
+
     /// <summary>
     ///     Queues given node for processing.
     /// </summary>

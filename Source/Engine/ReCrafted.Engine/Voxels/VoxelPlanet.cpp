@@ -2,6 +2,19 @@
 
 #include "VoxelPlanet.h"
 
+VoxelPlanet::VoxelPlanet()
+{
+    // TODO: Register
+}
+
+VoxelPlanet::~VoxelPlanet()
+{
+    // TODO: Unregister
+}
+
 void VoxelPlanet::Initialize()
 {
+    // Temporary initialization
+    m_position = Vector3d::Zero;
+    m_bounds = BoundingSphereD(m_position, 1024.0);
 }

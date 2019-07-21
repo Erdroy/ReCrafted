@@ -14,7 +14,12 @@
 API_CLASS(public, sealed, partial)
 class VoxelPlanet final : public VoxelObjectBase
 {
+    DELETE_COPY_MOVE(VoxelPlanet);
     API_CLASS_BODY();
+
+public:
+    VoxelPlanet();
+    ~VoxelPlanet();
 
 protected:
     void Initialize() override;

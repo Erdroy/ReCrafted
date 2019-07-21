@@ -4,6 +4,7 @@
 
 #include <ReCrafted.h>
 #include "Scripting/Object.h"
+#include "Voxels/Voxel.h"
 #include "Voxels/VoxelObjectOctree.h"
 
 /// <summary>
@@ -12,10 +13,14 @@
 API_CLASS(public, abstract, partial)
 class VoxelObjectBase : public Object
 {
+    DELETE_COPY_MOVE(VoxelObjectBase);
     API_CLASS_BODY();
 
-private:
+protected:
     VoxelObjectOctree* m_octree;
+
+    Vector3d m_position = {};
+    BoundingSphereD m_bounds = {};
 
 public:
     VoxelObjectBase();
@@ -23,4 +28,17 @@ public:
 
 protected:
     virtual void Initialize() = 0;
+
+public:
+    void Update();
+
+public:
+    /// <summary>
+    ///     Modifies this voxel space object, using given method.
+    /// </summary>
+    /// <param name="material">The voxel material that will be applied on every voxel.</param>
+    /// <param name="mode">The edit mode.</param>
+    /// <param name="position">The edit position.</param>
+    /// <param name="size">The edit size.</param>
+    void Modify(VoxelMaterial_t material, VoxelEditMode mode, const Vector3d& position, float size);
 };

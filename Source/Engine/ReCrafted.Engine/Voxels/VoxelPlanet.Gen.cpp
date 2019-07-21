@@ -38,3 +38,4 @@ const char* VoxelPlanet::Namespace()
 {
     return "ReCrafted.API.Voxels";
 }
+
