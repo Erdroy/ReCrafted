@@ -26,14 +26,21 @@ using Matrix4x4f = Matrix4x4Base<float>;
 using Matrix4x4d = Matrix4x4Base<double>;
 
 using Matrix = Matrix4x4f;
+using MatrixD = Matrix4x4d;
 
 using Vector2 = Vector2f;
 using Vector3 = Vector3f;
 using Vector4 = Vector4f;
 
 using Plane = PlaneBase<float>;
-using BoundingBox = BoundingBoxBase<float>;
 using BoundingFrustum = BoundingFrustumBase<float>;
+using BoundingBox = BoundingBoxBase<float>;
+using BoundingSphere = BoundingSphereBase<float>;
+
+using PlaneD = PlaneBase<float>;
+using BoundingFrustumD = BoundingFrustumBase<float>;
+using BoundingBoxD = BoundingBoxBase<double>;
+using BoundingSphereD = BoundingSphereBase<double>;
 
 using Color = ColorBase<float>;
 using Color4 = Color;
