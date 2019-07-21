@@ -3,7 +3,7 @@
 using System;
 using System.Linq;
 using System.Text;
-using ReCrafted.API.Common;
+
 using static ReCrafted.API.WebUI.JavaScript.JSCore;
 
 namespace ReCrafted.API.WebUI.JavaScript
