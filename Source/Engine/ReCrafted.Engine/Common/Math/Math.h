@@ -8,45 +8,45 @@ class Math
 {
 public:
     template<typename TValue>
-    static TValue Clamp(TValue value, TValue min, TValue max)
+    static constexpr TValue Clamp(TValue value, TValue min, TValue max)
     {
         return value < min ? min : 
                value > max ? max : value;
     }
 
     template<typename TValue>
-    static TValue Clamp01(TValue value)
+    static constexpr TValue Clamp01(TValue value)
     {
         return value < TValue(0) ? TValue(0) :
             value > TValue(1) ? TValue(1) : value;
     }
 
     template<typename TValue>
-    static TValue Min(TValue a, TValue b)
+    static constexpr TValue Min(TValue a, TValue b)
     {
         return a < b ? a : b;
     }
 
     template<typename TValue>
-    static TValue Max(TValue a, TValue b)
+    static constexpr TValue Max(TValue a, TValue b)
     {
         return a > b ? a : b;
     }
 
     template<typename TValue>
-    static TValue Min(TValue a, TValue b, TValue c)
+    static constexpr TValue Min(TValue a, TValue b, TValue c)
     {
         return Min(Min(a, b), Min(b, c));
     }
 
     template<typename TValue>
-    static TValue Max(TValue a, TValue b, TValue c)
+    static constexpr TValue Max(TValue a, TValue b, TValue c)
     {
         return Max(Max(a, b), Max(b, c));
     }
 
     template<typename TValue>
-    static TValue Abs(TValue value)
+    static constexpr TValue Abs(TValue value)
     {
         return value >= 0 ? value : -value;
     }
@@ -100,7 +100,7 @@ public:
     }
 
     template<typename TValue>
-    static TValue SmoothStep(TValue value)
+    static constexpr TValue SmoothStep(TValue value)
     {
         return (value <= 0) ? 0
              : (value >= 1) ? 1
@@ -108,7 +108,7 @@ public:
     }
 
     template<typename TValue>
-    static TValue SmootherStep(TValue value)
+    static constexpr TValue SmootherStep(TValue value)
     {
         return (value <= 0) ? 0
              : (value >= 1) ? 1
@@ -116,25 +116,25 @@ public:
     }
 
     template<typename TBase, typename TAmount>
-    static TBase Lerp(TBase from, TBase to, TAmount amount)
+    static constexpr TBase Lerp(TBase from, TBase to, TAmount amount)
     {
         return from + (to - from) * amount;
     }
 
     template<typename TValue>
-    static int Sign(TValue value)
+    static constexpr int Sign(TValue value)
     {
         return value < 0 ? -1 : 1;
     }
 
     template<typename TValue>
-    static bool NearEqual(TValue a, TValue b)
+    static constexpr bool NearEqual(TValue a, TValue b)
     {
         return Abs(a - b) < ZeroTolerance;
     }
 
     template<typename TValue>
-    static bool IsOne(TValue value)
+    static constexpr bool IsOne(TValue value)
     {
         return IsZero(value - 1);
     }
@@ -159,12 +159,12 @@ public:
         return static_cast<int>(ceilf(static_cast<float>(value)));
     }
 
-    static bool IsZero(const int a)
+    static constexpr bool IsZero(const int a)
     {
         return a == 0;
     }
 
-    static unsigned long RoundUpToPow2(unsigned long v)
+    static constexpr unsigned long RoundUpToPow2(unsigned long v)
     {
         v--;
         v |= v >> 1;
@@ -193,14 +193,24 @@ public:
         return numToRound + multiple - remainder;
     }
 
-    static bool IsZero(const float a)
+    static constexpr bool IsZero(const float a)
     {
         return Abs(a) < FLT_EPSILON;
     }
 
-    static bool IsZero(const double a)
+    static constexpr bool IsZero(const double a)
     {
         return Abs(a) < DBL_EPSILON;
+    }
+
+    static constexpr int Index2(const int x, const int y, const int size)
+    {
+        return x * size * size + y;
+    }
+
+    static constexpr int Index3(const int x, const int y, const int z, const int size)
+    {
+        return x * size * size + y * size + z;
     }
 
 public:

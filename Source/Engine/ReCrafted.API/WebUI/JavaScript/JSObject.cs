@@ -8,8 +8,6 @@ namespace ReCrafted.API.WebUI.JavaScript
 {
     public class JSObject
     {
-        private static JSObject _global;
-
         private readonly IntPtr _context;
         private readonly IntPtr _object;
 

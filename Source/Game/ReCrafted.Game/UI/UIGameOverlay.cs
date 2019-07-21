@@ -3,7 +3,6 @@
 using System;
 using ReCrafted.API.Core;
 using ReCrafted.API.WebUI;
-using ReCrafted.API.WebUI.JavaScript;
 using ReCrafted.Tools.Common;
 
 namespace ReCrafted.Game.UI
