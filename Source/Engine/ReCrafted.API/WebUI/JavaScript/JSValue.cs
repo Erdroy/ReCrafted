@@ -82,6 +82,20 @@ namespace ReCrafted.API.WebUI.JavaScript
             JSValueProtect(_context, _value);
         }
 
+        public JSValue(IntPtr context, float value)
+        {
+            _context = context;
+            _value = JSValueMakeNumber(context, value);
+            JSValueProtect(_context, _value);
+        }
+
+        public JSValue(IntPtr context, double value)
+        {
+            _context = context;
+            _value = JSValueMakeNumber(context, value);
+            JSValueProtect(_context, _value);
+        }
+
         public JSValue(IntPtr context, string value)
         {
             _context = context;

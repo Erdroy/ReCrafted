@@ -71,6 +71,10 @@
       <Project>{91f869da-fdc2-4539-83b4-bec3dc0bdf76}</Project>
       <Name>ReCrafted.API</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Tools\ReCrafted.Tools.Common\ReCrafted.Tools.Common.csproj">
+      <Project>{c027b9e3-fe8a-41f0-b984-d2ca16ce9b1b}</Project>
+      <Name>ReCrafted.Tools.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\..\Build\Content\WebUI\Default.html">

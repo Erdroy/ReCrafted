@@ -3,6 +3,8 @@
 using System;
 using ReCrafted.API.Core;
 using ReCrafted.API.WebUI;
+using ReCrafted.API.WebUI.JavaScript;
+using ReCrafted.Tools.Common;
 
 namespace ReCrafted.Game.UI
 {
@@ -15,6 +17,8 @@ namespace ReCrafted.Game.UI
 
         private float _lastUpdate;
 
+        private WebUIViewFunction _updatePerf;
+
         public UIGameOverlay() : base("file:///Game/overlay.html") { }
 
         protected override void OnCreate()
@@ -22,10 +26,12 @@ namespace ReCrafted.Game.UI
             _lastUpdate = (float) Time.CurrentTime + 1.0f;
         }
 
-        protected override void OnViewDOMReady()
+        protected override void RegisterBindings()
         {
-            // Update game version
-            //View.Call("UpdateGameVersion", GameInfo.Current.BuildName, GameInfo.Current.BuildNumber);
+            _updatePerf = View.BindFunction("UpdatePerf");
+
+            var updateVersion = View.BindFunction("UpdateGameVersion");
+            updateVersion(View.Object, View.ToValue(GameInfo.Current.BuildName), View.ToValue(GameInfo.Current.BuildNumber));
         }
 
         protected override void OnUpdate()
@@ -54,7 +60,12 @@ namespace ReCrafted.Game.UI
             var avg = _frameTimeTotal / _frames;
 
             // Update FPS
-            //View.Call("UpdatePerf", 1.0f / avg, _minFrame * 1000.0f, avg * 1000.0f, _maxFrame * 1000.0f);
+            _updatePerf(View.Object,
+                View.ToValue(1.0f / avg),
+                View.ToValue(_minFrame * 1000.0f),
+                View.ToValue(avg * 1000.0f),
+                View.ToValue(_maxFrame * 1000.0f)
+            );
         }
     }
 }

@@ -146,6 +146,12 @@
   <ItemGroup>
     <None Include="Project.lua" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Tools\ReCrafted.Tools.Common\ReCrafted.Tools.Common.csproj">
+      <Project>{c027b9e3-fe8a-41f0-b984-d2ca16ce9b1b}</Project>
+      <Name>ReCrafted.Tools.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>$(SolutionDir)..\pm.bat GenerateAPI</PreBuildEvent>

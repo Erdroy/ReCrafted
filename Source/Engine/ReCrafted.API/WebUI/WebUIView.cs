@@ -14,6 +14,8 @@ namespace ReCrafted.API.WebUI
         private readonly Dictionary<string, JSCallback> _callbacks = new Dictionary<string, JSCallback>();
         private readonly Dictionary<string, WebUIViewFunction> _functions = new Dictionary<string, WebUIViewFunction>();
 
+        private JSObject _globalObject;
+
         /// <summary>
         ///     Binds callback with given name.
         /// </summary>
@@ -91,6 +93,91 @@ namespace ReCrafted.API.WebUI
 
             _functions.Remove(name);
         }
+
+        /// <summary>
+        ///     Converts value to JSValue object.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The JSValue object.</returns>
+        public JSValue ToValue(string value)
+        {
+            return new JSValue(Context, value);
+        }
+
+        /// <summary>
+        ///     Converts value to JSValue object.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The JSValue object.</returns>
+        public JSValue ToValue(bool value)
+        {
+            return new JSValue(Context, value);
+        }
+
+        /// <summary>
+        ///     Converts value to JSValue object.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The JSValue object.</returns>
+        public JSValue ToValue(int value)
+        {
+            return new JSValue(Context, value);
+        }
+
+        /// <summary>
+        ///     Converts value to JSValue object.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The JSValue object.</returns>
+        public JSValue ToValue(uint value)
+        {
+            return new JSValue(Context, value);
+        }
+
+        /// <summary>
+        ///     Converts value to JSValue object.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The JSValue object.</returns>
+        public JSValue ToValue(long value)
+        {
+            return new JSValue(Context, value);
+        }
+
+        /// <summary>
+        ///     Converts value to JSValue object.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The JSValue object.</returns>
+        public JSValue ToValue(ulong value)
+        {
+            return new JSValue(Context, value);
+        }
+
+        /// <summary>
+        ///     Converts value to JSValue object.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The JSValue object.</returns>
+        public JSValue ToValue(float value)
+        {
+            return new JSValue(Context, value);
+        }
+
+        /// <summary>
+        ///     Converts value to JSValue object.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The JSValue object.</returns>
+        public JSValue ToValue(double value)
+        {
+            return new JSValue(Context, value);
+        }
+
+        /// <summary>
+        ///     Gets the JS object instance of this View.
+        /// </summary>
+        public JSObject Object => _globalObject ?? (_globalObject = JSObject.GetGlobalObject(Context));
 
         public event Action BeginLoading
         {

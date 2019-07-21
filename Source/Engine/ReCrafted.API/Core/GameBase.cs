@@ -2,6 +2,7 @@
 
 using System;
 using ReCrafted.API.Common;
+using ReCrafted.Tools.Common;
 
 namespace ReCrafted.API.Core
 {
@@ -13,6 +14,9 @@ namespace ReCrafted.API.Core
         protected virtual void OnInitialize()
         {
             Logger.Log($"Game startup ({DateTime.Now})");
+
+            // Load GameInfo
+            GameInfo.Current = GameInfo.FromFile("../GameInfo.json");
 
             // Register unhandled exception handler
             Exceptions.RegisterUEHandler();
