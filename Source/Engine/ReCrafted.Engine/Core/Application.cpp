@@ -17,6 +17,7 @@
 #include "Scripting/ObjectManager.h"
 #include "Game/GameManager.h"
 #include "Scene/SceneManager.h"
+#include "Voxels/VoxelObjectManager.h"
 #include "WebUI/WebUIManager.h"
 
 // EventProcessor is implemented per-platform
@@ -59,6 +60,7 @@ void Application::InitializeSubSystems() const
     SubSystemManager::Register<RenderingManager>();
     SubSystemManager::Register<WebUIManager>();
     SubSystemManager::Register<SceneManager>();
+    SubSystemManager::Register<VoxelObjectManager>();
 }
 
 void Application::InitializeGame()

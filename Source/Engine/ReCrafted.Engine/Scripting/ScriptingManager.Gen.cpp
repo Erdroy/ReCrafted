@@ -38,6 +38,9 @@
 #include "Scene/SceneManager.h"
 #include "Scripting/Object.h"
 #include "Scripting/Script.h"
+#include "Voxels/VoxelObjectBase.h"
+#include "Voxels/VoxelObjectManager.h"
+#include "Voxels/VoxelPlanet.h"
 #include "WebUI/WebUIManager.h"
 #include "WebUI/WebUIView.h"
 
@@ -80,6 +83,9 @@ void ScriptingManager::InitRuntime()
     SceneManager::InitRuntime();
     Object::InitRuntime();
     Script::InitRuntime();
+    VoxelObjectBase::InitRuntime();
+    VoxelObjectManager::InitRuntime();
+    VoxelPlanet::InitRuntime();
     WebUIManager::InitRuntime();
     WebUIView::InitRuntime();
 }

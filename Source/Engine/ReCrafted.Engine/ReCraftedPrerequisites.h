@@ -148,6 +148,13 @@ class ObjectManager;
 class Script;
 class ScriptingManager;
 
+// Voxels/
+struct Voxel;
+class VoxelObjectBase;
+class VoxelObjectManager;
+class VoxelObjectOctree;
+class VoxelPlanet;
+
 // WebUI/
 class WebUIManager;
 class WebUIView;
