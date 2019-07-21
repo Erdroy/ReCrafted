@@ -63,6 +63,12 @@ public:
     static float FrameAlpha();
 
     /// <summary>
+    ///     Returns the precise real time since startup in seconds.
+    /// </summary>
+    API_FUNCTION(extern);
+    static double Realtime();
+
+    /// <summary>
     ///     The current frame number.
     /// </summary>
     API_FUNCTION(extern);

@@ -27,6 +27,9 @@ namespace ReCrafted.API.Core
         private static extern float InternalFrameAlpha();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern double InternalRealtime();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern uint InternalCurrentFrame();
     }
 }

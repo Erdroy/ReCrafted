@@ -50,6 +50,11 @@ float Time::FrameAlpha()
     return Math::Clamp((CurrentTime() - CurrentFixedTime()) / FixedDeltaTime(), 0.0f, 1.0f);
 }
 
+double Time::Realtime()
+{
+    return Platform::GetMilliseconds() / 1000.0;
+}
+
 uint32_t Time::CurrentFrame()
 {
     MAIN_THREAD_ONLY();

@@ -18,6 +18,11 @@ namespace ReCrafted.API.Core
         public static float CurrentFixedTime => InternalCurrentFixedTime();
 
         /// <summary>
+        ///     Returns the precise real time since startup in seconds.
+        /// </summary>
+        public static double Realtime => InternalRealtime();
+
+        /// <summary>
         ///     Returns the time between last frame and current one.
         /// </summary>
         public static float DeltaTime => InternalDeltaTime();
