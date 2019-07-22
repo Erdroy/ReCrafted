@@ -22,5 +22,6 @@ public:
     ~VoxelPlanet();
 
 protected:
+    API_FUNCTION()
     void Initialize() override;
 };

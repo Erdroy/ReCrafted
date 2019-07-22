@@ -9,11 +9,19 @@
 class APIProxy
 {
 public:
+    
+    static void VoxelObjectBase_Initialize1(VoxelObjectBase* instance) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "VoxelObjectBase");
+        instance->Initialize();
+    }
 };
 
 void VoxelObjectBase::InitRuntime() 
 {
     MONO_REGISTER_OBJECT_TYPE(VoxelObjectBase);
+    API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::InternalInitialize", &APIProxy::VoxelObjectBase_Initialize1);
 }
 
 const char* VoxelObjectBase::Fullname() 

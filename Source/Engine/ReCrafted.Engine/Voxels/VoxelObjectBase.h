@@ -6,6 +6,7 @@
 #include "Scripting/Object.h"
 #include "Voxels/Voxel.h"
 #include "Voxels/VoxelObjectOctree.h"
+#include "Voxels/Assets/VoxelObjectAsset.h"
 
 /// <summary>
 ///     The base class of all voxel objects (planets, asteroids etc.).
@@ -19,15 +20,18 @@ class VoxelObjectBase : public Object
 protected:
     VoxelObjectOctree* m_octree;
 
-    Vector3d m_position = {};
     BoundingSphereD m_bounds = {};
+    VoxelObjectAsset* m_asset = nullptr;
 
 public:
     VoxelObjectBase();
     virtual ~VoxelObjectBase();
 
 protected:
-    virtual void Initialize() = 0;
+    API_FUNCTION()
+    virtual void Initialize();
+
+    void Load(const char* assetFile);
 
 public:
     void Update();
@@ -41,4 +45,20 @@ public:
     /// <param name="position">The edit position.</param>
     /// <param name="size">The edit size.</param>
     void Modify(VoxelMaterial_t material, VoxelEditMode mode, const Vector3d& position, float size);
+
+public:
+    double Radius() const
+    {
+        return m_bounds.radius;
+    }
+
+    Vector3d Position() const
+    {
+        return m_bounds.center;
+    }
+
+    VoxelObjectAsset* Asset() const
+    {
+        return m_asset;
+    }
 };

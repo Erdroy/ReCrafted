@@ -2,6 +2,7 @@
 
 #include "VoxelObjectOctree.h"
 #include "Profiler/Profiler.h"
+#include "VoxelObjectBase.h"
 
 void VoxelObjectOctree::CreateRootNodes()
 {
@@ -17,12 +18,17 @@ VoxelObjectOctree::~VoxelObjectOctree()
 {
 }
 
+void VoxelObjectOctree::Initialize()
+{
+    CreateRootNodes();
+}
+
 void VoxelObjectOctree::Update()
 {
     CPU_PROFILE_FUNCTION(0);
 }
 
-VoxelObjectOctree::Node* VoxelObjectOctree::Find(const Vector3d& position, const int size) const
+VoxelObjectOctree::Node* VoxelObjectOctree::FindNode(const Vector3d& position, const int size) const
 {
     for (auto i = 0; i < m_rootNodesCount; i++)
     {
@@ -41,7 +47,7 @@ VoxelObjectOctree::Node* VoxelObjectOctree::Find(const Vector3d& position, const
     return nullptr;
 }
 
-VoxelObjectOctree::Node* VoxelObjectOctree::Find(const Vector3d& position) const
+VoxelObjectOctree::Node* VoxelObjectOctree::FindNode(const Vector3d& position) const
 {
     for (auto i = 0; i < m_rootNodesCount; i++)
     {

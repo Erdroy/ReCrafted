@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using ReCrafted.API.Common;
 using ReCrafted.API.Core;
-using ReCrafted.API.WebUI.JavaScript;
 
 namespace ReCrafted.API.WebUI
 {

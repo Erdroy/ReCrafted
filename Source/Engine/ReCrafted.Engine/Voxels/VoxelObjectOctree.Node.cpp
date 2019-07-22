@@ -3,6 +3,7 @@
 #include "VoxelObjectOctree.h"
 #include "VoxelLookupTables.h"
 #include "Common/List.h"
+#include "VoxelObjectBase.h"
 
 VoxelObjectOctree::Node::Node()
 {
@@ -53,7 +54,7 @@ VoxelObjectOctree::Node* VoxelObjectOctree::Node::FindNeighbor(const NodeDirecti
 {
     // calculate target position
     const auto targetPosition = m_position + VoxelLookup::DirectionOffset[int(direction)] * float(m_size);
-    return m_owner->Find(targetPosition, m_size);
+    return m_owner->FindNode(targetPosition, m_size);
 }
 
 VoxelObjectOctree::Node* VoxelObjectOctree::Node::Find(const Vector3d& position, const int size)

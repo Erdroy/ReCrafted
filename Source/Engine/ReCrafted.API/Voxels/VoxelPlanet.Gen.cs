@@ -12,5 +12,13 @@ namespace ReCrafted.API.Voxels
     /// </summary>
     public sealed partial class VoxelPlanet : VoxelObjectBase
     {
+        
+        public override void Initialize()
+        {
+            InternalInitialize(NativePtr);
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalInitialize(System.IntPtr nativePtr);
     }
 }

@@ -10,5 +10,13 @@ namespace ReCrafted.API.Voxels
     /// </summary>
     public abstract partial class VoxelObjectBase : Object
     {
+        
+        public virtual void Initialize()
+        {
+            InternalInitialize(NativePtr);
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalInitialize(System.IntPtr nativePtr);
     }
 }

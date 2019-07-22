@@ -109,6 +109,7 @@ public:
     ~VoxelObjectOctree();
 
 public:
+    void Initialize();
     void Update();
 
 public:
@@ -121,12 +122,12 @@ public:
     ///     will need to have equal size to the 'size' parameter.
     /// </param>
     /// <returns>The node or null when not found.</returns>
-    Node* Find(const Vector3d& position, int size) const;
+    Node* FindNode(const Vector3d& position, int size) const;
 
     /// <summary>
     ///     Looks for a node at given position.
     /// </summary>
     /// <param name="position">The position.</param>
     /// <returns>The node or null when not found.</returns>
-    Node* Find(const Vector3d& position) const;
+    Node* FindNode(const Vector3d& position) const;
 };

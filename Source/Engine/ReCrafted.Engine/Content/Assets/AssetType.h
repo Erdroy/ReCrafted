@@ -14,6 +14,8 @@ enum class AssetType : byte
 
     Material,
 
+    VoxelObject,
+
     AudioSound,
 
     Count
