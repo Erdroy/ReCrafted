@@ -67,6 +67,15 @@ void VoxelObjectManager::InitializeWorkers()
     }
 }
 
+void VoxelObjectManager::UpdateVoxelObjects()
+{
+    CPU_PROFILE_FUNCTION(0);
+    for (auto& voxelObject : m_voxelObjects)
+    {
+        voxelObject->Update();
+    }
+}
+
 void VoxelObjectManager::DispatchCallbacks()
 {
     CPU_PROFILE_FUNCTION(0);
@@ -118,6 +127,7 @@ void VoxelObjectManager::OnUpdate()
     CPU_PROFILE_FUNCTION(0);
 
     DispatchCallbacks();
+    UpdateVoxelObjects();
 }
 
 void VoxelObjectManager::RegisterVoxelObject(VoxelObjectBase* voxelObject)

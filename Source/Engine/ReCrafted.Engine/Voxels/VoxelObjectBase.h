@@ -33,7 +33,6 @@ public:
 protected:
     VoxelObjectOctree* m_octree = nullptr;
     VoxelObjectAsset* m_asset = nullptr;
-    BoundingSphereD m_bounds = {};
 
 public:
     VoxelObjectBase();
@@ -59,12 +58,12 @@ public:
 public:
     double Radius() const
     {
-        return m_bounds.radius;
+        return m_octree->m_bounds.radius;
     }
 
     Vector3d Position() const
     {
-        return m_bounds.center;
+        return m_octree->m_bounds.center;
     }
 
     VoxelObjectAsset* Asset() const

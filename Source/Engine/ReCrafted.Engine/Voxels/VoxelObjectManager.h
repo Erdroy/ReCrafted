@@ -51,6 +51,7 @@ private:
     void WorkerFunction();
     void InitializeWorkers();
 
+    void UpdateVoxelObjects();
     void DispatchCallbacks();
 
 public:

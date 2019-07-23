@@ -53,7 +53,7 @@ void VoxelObjectOctree::Node::FindIntersecting(List<Node*>& nodes, const Boundin
 VoxelObjectOctree::Node* VoxelObjectOctree::Node::FindNeighbor(const NodeDirection direction) const
 {
     // calculate target position
-    const auto targetPosition = m_position + VoxelLookup::DirectionOffset[int(direction)] * float(m_size);
+    const auto targetPosition = m_bounds.center + VoxelLookup::DirectionOffset[int(direction)] * float(m_size);
     return m_owner->FindNode(targetPosition, m_size);
 }
 
@@ -63,9 +63,9 @@ VoxelObjectOctree::Node* VoxelObjectOctree::Node::Find(const Vector3d& position,
     if (m_size == size)
         return this;
 
-    const auto xSign = position.x > m_position.x;
-    const auto ySign = position.y > m_position.y;
-    const auto zSign = position.z > m_position.z;
+    const auto xSign = position.x > m_bounds.center.x;
+    const auto ySign = position.y > m_bounds.center.y;
+    const auto zSign = position.z > m_bounds.center.z;
 
     // Build case code
     auto caseCode = 0;
@@ -89,7 +89,7 @@ VoxelObjectOctree::Node* VoxelObjectOctree::Node::Find(const Vector3d& position,
 
 VoxelObjectOctree::Node* VoxelObjectOctree::Node::Find(const Vector3d& position)
 {
-    if (m_position.x == position.x && m_position.y == position.y && m_position.z == position.z)
+    if (m_bounds.center.x == position.x && m_bounds.center.y == position.y && m_bounds.center.z == position.z)
         return this;
 
     //if (!m_populated)

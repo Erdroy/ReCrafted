@@ -7,6 +7,7 @@
 class VoxelObjectOctree
 {
     DELETE_COPY_MOVE(VoxelObjectOctree)
+    friend class VoxelObjectBase;
 
 public:
     enum class NodeDirection
@@ -52,7 +53,7 @@ public:
         int m_id = 0;
         int m_size = 0;
         int m_depth = 0;
-        Vector3d m_position = {};
+        bool m_isRoot = false;
         BoundingBoxD m_bounds = {};
 
     public:
@@ -101,7 +102,10 @@ private:
     Node** m_rootNodes = nullptr;
     int m_rootNodesCount = 0;
 
+    int m_maxDepth = 0;
+
     std::atomic_bool m_isLoading = true;
+    BoundingSphereD m_bounds = {};
 
 private:
     void CreateRootNodes();
