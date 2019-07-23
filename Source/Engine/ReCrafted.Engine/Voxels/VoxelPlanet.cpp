@@ -12,8 +12,5 @@ VoxelPlanet::~VoxelPlanet()
 
 void VoxelPlanet::Initialize()
 {
-    Load("Voxels/Objects/Moon");
-
-    // Call base function at the end
     VoxelObjectBase::Initialize();
 }

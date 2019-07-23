@@ -101,6 +101,8 @@ private:
     Node** m_rootNodes = nullptr;
     int m_rootNodesCount = 0;
 
+    std::atomic_bool m_isLoading = true;
+
 private:
     void CreateRootNodes();
 

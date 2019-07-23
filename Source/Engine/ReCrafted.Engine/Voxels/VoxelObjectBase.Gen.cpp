@@ -38,3 +38,5 @@ const char* VoxelObjectBase::Namespace()
 {
     return "ReCrafted.API.Voxels";
 }
+
+

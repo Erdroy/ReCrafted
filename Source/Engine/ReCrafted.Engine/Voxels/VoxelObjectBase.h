@@ -6,7 +6,7 @@
 #include "Scripting/Object.h"
 #include "Voxels/Voxel.h"
 #include "Voxels/VoxelObjectOctree.h"
-#include "Voxels/Assets/VoxelObjectAsset.h"
+#include "Core/Threading/Task.h"
 
 /// <summary>
 ///     The base class of all voxel objects (planets, asteroids etc.).
@@ -16,12 +16,24 @@ class VoxelObjectBase : public Object
 {
     DELETE_COPY_MOVE(VoxelObjectBase);
     API_CLASS_BODY();
+    friend class VoxelObjectAsset;
+    friend class VoxelObjectManager;
+
+public:
+    struct OctreeInitializeTask final : ITask
+    {
+        VoxelObjectBase* VoxelObject = nullptr;
+        VoxelObjectOctree* Octree = nullptr;
+
+    public:
+        void Execute(void* userData) override;
+        void Finish() override;
+    };
 
 protected:
-    VoxelObjectOctree* m_octree;
-
-    BoundingSphereD m_bounds = {};
+    VoxelObjectOctree* m_octree = nullptr;
     VoxelObjectAsset* m_asset = nullptr;
+    BoundingSphereD m_bounds = {};
 
 public:
     VoxelObjectBase();
@@ -30,8 +42,6 @@ public:
 protected:
     API_FUNCTION()
     virtual void Initialize();
-
-    void Load(const char* assetFile);
 
 public:
     void Update();

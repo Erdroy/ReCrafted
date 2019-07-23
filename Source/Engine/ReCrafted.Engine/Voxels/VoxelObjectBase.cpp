@@ -5,11 +5,20 @@
 #include "VoxelObjectManager.h"
 #include "Content/ContentManager.h"
 
-VoxelObjectBase::VoxelObjectBase()
+void VoxelObjectBase::OctreeInitializeTask::Execute(void* userData)
+{
+    // Initialize octree
+    Octree->Initialize();
+}
+
+void VoxelObjectBase::OctreeInitializeTask::Finish()
 {
     // Register object
-    VoxelObjectManager::RegisterVoxelObject(this);
+    VoxelObjectManager::RegisterVoxelObject(VoxelObject);
+}
 
+VoxelObjectBase::VoxelObjectBase()
+{
     m_octree = new VoxelObjectOctree(this);
 }
 
@@ -19,20 +28,15 @@ VoxelObjectBase::~VoxelObjectBase()
 
     // Unregister object
     VoxelObjectManager::UnregisterVoxelObject(this);
-
-    // Destroy asset
-    Destroy(m_asset);
 }
 
 void VoxelObjectBase::Initialize()
 {
-    m_octree->Initialize();
-}
-
-void VoxelObjectBase::Load(const char* assetFile)
-{
-    // Load voxel asset
-    m_asset = ContentManager::LoadAsset<VoxelObjectAsset>(assetFile);
+    // Start octree initialization task
+    const auto task = new OctreeInitializeTask();
+    task->VoxelObject = this;
+    task->Octree = m_octree;
+    Task::CreateTask(task, nullptr)->Queue();
 }
 
 void VoxelObjectBase::Update()

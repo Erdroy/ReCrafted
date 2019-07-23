@@ -20,7 +20,12 @@ VoxelObjectOctree::~VoxelObjectOctree()
 
 void VoxelObjectOctree::Initialize()
 {
+    // Warning: This function is being called from task worker thread,
+    // and octree should not be accessed when loading it for the first time.
+
     CreateRootNodes();
+
+    m_isLoading = false;
 }
 
 void VoxelObjectOctree::Update()
@@ -30,6 +35,8 @@ void VoxelObjectOctree::Update()
 
 VoxelObjectOctree::Node* VoxelObjectOctree::FindNode(const Vector3d& position, const int size) const
 {
+    ASSERT(m_isLoading == false);
+
     for (auto i = 0; i < m_rootNodesCount; i++)
     {
         if (!m_rootNodes[i])
@@ -49,6 +56,8 @@ VoxelObjectOctree::Node* VoxelObjectOctree::FindNode(const Vector3d& position, c
 
 VoxelObjectOctree::Node* VoxelObjectOctree::FindNode(const Vector3d& position) const
 {
+    ASSERT(m_isLoading == false);
+
     for (auto i = 0; i < m_rootNodesCount; i++)
     {
         if (BoundingBoxD::Contains(m_rootNodes[i]->m_bounds, position))

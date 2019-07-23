@@ -2,6 +2,7 @@
 
 using ReCrafted.API;
 using ReCrafted.API.Common;
+using ReCrafted.API.Content;
 using ReCrafted.API.Core;
 using ReCrafted.API.Input;
 using ReCrafted.API.Mathematics;
@@ -19,7 +20,7 @@ namespace ReCrafted.Game.Core
         private PhysicsScene _defaultPhysicsScene;
         private RigidBodyActor _floor;
 
-        private VoxelPlanet _testPlanet;
+        private VoxelObjectAsset _moon;
 
         public PlayerManager CurrentPlayer;
 
@@ -53,9 +54,8 @@ namespace ReCrafted.Game.Core
             WebUI.AddPanel<UIGameHud>();
             WebUI.AddPanel<UIPauseMenu>();
 
-            // Create testing planet
-            _testPlanet = Object.New<VoxelPlanet>();
-            _testPlanet.Initialize();
+            // Create test planet
+            _moon = ContentManager.LoadAsset<VoxelObjectAsset>("Voxels/Objects/Moon");
         }
         
         protected override void OnShutdown()

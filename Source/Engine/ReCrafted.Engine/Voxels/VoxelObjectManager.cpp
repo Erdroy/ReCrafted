@@ -3,6 +3,8 @@
 #include "VoxelObjectManager.h"
 #include "Common/Logger.h"
 #include "Profiler/Profiler.h"
+#include "Scripting/Object.h"
+#include "VoxelObjectBase.h"
 
 void VoxelObjectManager::WorkerFunction()
 {
@@ -88,6 +90,12 @@ void VoxelObjectManager::Initialize()
 
 void VoxelObjectManager::Shutdown()
 {
+    Logger::Log("Unloading VoxelObjects");
+    for(auto& voxelObject : m_voxelObjects)
+    {
+        Object::DestroyNow(voxelObject);
+    }
+
     Logger::Log("Waiting for VoxelObject worker threads to exit...");
 
     m_running = false;

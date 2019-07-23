@@ -41,6 +41,7 @@
 #include "Voxels/VoxelObjectBase.h"
 #include "Voxels/VoxelObjectManager.h"
 #include "Voxels/VoxelPlanet.h"
+#include "Voxels/Assets/VoxelObjectAsset.h"
 #include "WebUI/WebUIManager.h"
 #include "WebUI/WebUIView.h"
 
@@ -86,6 +87,7 @@ void ScriptingManager::InitRuntime()
     VoxelObjectBase::InitRuntime();
     VoxelObjectManager::InitRuntime();
     VoxelPlanet::InitRuntime();
+    VoxelObjectAsset::InitRuntime();
     WebUIManager::InitRuntime();
     WebUIView::InitRuntime();
 }
