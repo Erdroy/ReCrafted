@@ -13,6 +13,9 @@ void TaskManager::WorkerFunction()
 
     Logger::Log("TaskManager thread startup");
 
+    Profiler::InitThread("Task Worker");
+    Profiler::BeginFrame();
+
     Task* task;
     while (m_running)
     {
@@ -20,9 +23,13 @@ void TaskManager::WorkerFunction()
 
         if (!m_taskExecuteQueue.try_dequeue(task))
         {
+            Profiler::EndFrame();
             Platform::Sleep(m_sleepTime);
+            Profiler::BeginFrame();
             continue;
         }
+
+        Profiler::BeginCPUProfile("Task");
 
         if(task->m_cancelled)
         {
@@ -31,6 +38,8 @@ void TaskManager::WorkerFunction()
 
             // ... and also drop the execution lock
             task->m_executionLock.UnlockNow();
+            Profiler::EndFrame();
+            Profiler::BeginFrame();
             continue;
         }
 
@@ -39,6 +48,8 @@ void TaskManager::WorkerFunction()
 
         // queue task for release
         m_taskReleaseQueue.enqueue(task);
+
+        Profiler::EndCPUProfile();
     }
 
     Logger::Log("TaskManager worker thread is exiting");
