@@ -22,17 +22,19 @@ class VoxelObjectManager final : public SubSystem<VoxelObjectManager>
 public:
     enum class ProcessMode
     {
-        None,
+        Unknown,
+
         Populate,
-        Depopulate,
-        Rebuild
+        Rebuild,
+
+        Count
     };
 
 private:
     ALIGN(8) struct QueueItem
     {
         VoxelObjectOctree::Node* Node = nullptr;
-        ProcessMode Mode = ProcessMode::None;
+        ProcessMode Mode = ProcessMode::Unknown;
         Action<void> Callback = nullptr;
     };
 

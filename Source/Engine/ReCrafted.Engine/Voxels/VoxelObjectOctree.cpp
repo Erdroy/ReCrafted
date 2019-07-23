@@ -70,7 +70,7 @@ void VoxelObjectOctree::CreateRootNodes()
     for (auto i = 0; i < m_rootNodesCount; i++)
     {
         // populate node
-        //m_rootNodes[i]->Populate();
+        m_rootNodes[i]->Populate();
     }
 
     // Calculate max depth
@@ -114,15 +114,20 @@ void VoxelObjectOctree::Initialize()
 void VoxelObjectOctree::Update()
 {
     CPU_PROFILE_FUNCTION(0);
-    
+}
+
+void VoxelObjectOctree::DebugDraw()
+{
+    CPU_PROFILE_FUNCTION(0);
     DebugDraw::SetColor(Color::Red);
 
-    for (auto i = 0; i < m_rootNodesCount; i++)
+    const auto c = m_bounds.center;
+    DebugDraw::DrawWireSphere({ float(c.x),  float(c.y),  float(c.z) }, float(m_bounds.radius));
+
+    /*for (auto i = 0; i < m_rootNodesCount; i++)
     {
-        const auto c = m_rootNodes[i]->m_bounds.center;
-        const auto p = m_rootNodes[i]->m_bounds.size;
         DebugDraw::DrawWireBox({ float(c.x),  float(c.y),  float(c.z) }, { float(p.x),  float(p.y),  float(p.z) });
-    }
+    }*/
 }
 
 VoxelObjectOctree::Node* VoxelObjectOctree::FindNode(const Vector3d& position, const int size) const

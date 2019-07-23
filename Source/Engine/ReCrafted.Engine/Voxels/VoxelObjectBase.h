@@ -45,6 +45,8 @@ protected:
 public:
     void Update();
 
+    void DebugDraw();
+
 public:
     /// <summary>
     ///     Modifies this voxel space object, using given method.

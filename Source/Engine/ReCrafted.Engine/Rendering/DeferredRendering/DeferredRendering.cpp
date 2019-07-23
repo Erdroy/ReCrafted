@@ -117,14 +117,14 @@ void DeferredRendering::EndRender()
         return;
     }
 
-    if (InputManager::IsKey(Key::F5))
+    /*if (InputManager::IsKey(Key::F5))
     {
         Renderer::BlitTexture(RenderingManager::GetFrameBuffer(), m_gbuffer->GetDepthBuffer());
 
         // Reset everything
         RenderingManager::SetCurrentShader(nullptr);
         return;
-    }
+    }*/
 
     // Set shader
     RenderingManager::SetCurrentShader(m_gbufferCombine);

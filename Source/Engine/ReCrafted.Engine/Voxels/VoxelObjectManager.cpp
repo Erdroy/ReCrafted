@@ -33,10 +33,7 @@ void VoxelObjectManager::WorkerFunction()
         switch (item.Mode)
         {
         case ProcessMode::Populate:
-            //item.Node->WorkerPopulate(mesher);
-            break;
-        case ProcessMode::Depopulate:
-            //item.Node->WorkerDepopulate(mesher);
+            //item.Node->WorkerPopulate();
             break;
         case ProcessMode::Rebuild:
             //item.Node->WorkerRebuild(mesher);
@@ -73,6 +70,8 @@ void VoxelObjectManager::UpdateVoxelObjects()
     for (auto& voxelObject : m_voxelObjects)
     {
         voxelObject->Update();
+
+        voxelObject->DebugDraw();
     }
 }
 

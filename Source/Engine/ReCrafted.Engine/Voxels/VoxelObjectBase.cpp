@@ -49,6 +49,11 @@ void VoxelObjectBase::Update()
     m_octree->Update();
 }
 
+void VoxelObjectBase::DebugDraw()
+{
+    m_octree->DebugDraw();
+}
+
 void VoxelObjectBase::Modify(VoxelMaterial_t material, VoxelEditMode mode, const Vector3d& position, float size)
 {
     

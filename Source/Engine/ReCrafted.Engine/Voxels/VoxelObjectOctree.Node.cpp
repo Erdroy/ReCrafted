@@ -1,16 +1,35 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include "VoxelObjectOctree.h"
-#include "VoxelLookupTables.h"
-#include "Common/List.h"
-#include "VoxelObjectBase.h"
 
-VoxelObjectOctree::Node::Node()
-{
-}
+#include "Common/List.h"
+
+#include "VoxelLookupTables.h"
+#include "VoxelObjectOctree.h"
+#include "VoxelObjectBase.h"
+#include "VoxelObjectManager.h"
+
 
 VoxelObjectOctree::Node::~Node()
 {
+    if(m_isPopulated)
+    {
+        // Destroy children nodes
+        DestroyChildren();
+    }
+}
+
+void VoxelObjectOctree::Node::DestroyChildren()
+{
+    ASSERT(m_isPopulated);
+
+    // Destroy all children
+    for (auto& node : m_childrenNodes)
+    {
+        // Delete node
+        delete node;
+        node = nullptr;
+    }
 }
 
 void VoxelObjectOctree::Node::UpdateNeighborNodes()
@@ -21,6 +40,35 @@ void VoxelObjectOctree::Node::UpdateNeighborNodes()
     m_neighborNodes[int(NodeDirection::Right)] = FindNeighbor(NodeDirection::Right);
     m_neighborNodes[int(NodeDirection::Top)] = FindNeighbor(NodeDirection::Top);
     m_neighborNodes[int(NodeDirection::Bottom)] = FindNeighbor(NodeDirection::Bottom);
+}
+
+void VoxelObjectOctree::Node::Populate()
+{
+    ASSERT(!m_isPopulated);
+    ASSERT(!m_isProcessing);
+
+    if (m_size <= MinimumNodeSize)
+        return;
+
+    // Queue populate task and set processing flag
+    VoxelObjectManager::Enqueue(this, VoxelObjectManager::ProcessMode::Populate, Action<void>::New<Node, &Node::OnPopulate>(this));
+    m_isProcessing = true;
+}
+
+void VoxelObjectOctree::Node::Depopulate()
+{
+    ASSERT(m_isPopulated);
+    ASSERT(!m_isProcessing);
+
+    // Process
+    DestroyChildren();
+}
+
+void VoxelObjectOctree::Node::OnPopulate()
+{
+    MAIN_THREAD_ONLY();
+
+    m_isProcessing = false;
 }
 
 void VoxelObjectOctree::Node::FindIntersecting(List<Node*>& nodes, const BoundingBoxD& box, const int targetNodeSize)
@@ -50,7 +98,7 @@ void VoxelObjectOctree::Node::FindIntersecting(List<Node*>& nodes, const Boundin
     }
 }
 
-VoxelObjectOctree::Node* VoxelObjectOctree::Node::FindNeighbor(const NodeDirection direction) const
+VoxelObjectOctree::Node* VoxelObjectOctree::Node::FindNeighbor(const NodeDirection direction)
 {
     // calculate target position
     const auto targetPosition = m_bounds.center + VoxelLookup::DirectionOffset[int(direction)] * float(m_size);

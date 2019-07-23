@@ -3,6 +3,7 @@
 #pragma once
 
 #include <ReCrafted.h>
+#include "Common/Lock.h"
 
 class VoxelObjectOctree
 {
@@ -54,15 +55,27 @@ public:
         int m_size = 0;
         int m_depth = 0;
         bool m_isRoot = false;
+        bool m_isPopulated = false;
+
+        std::atomic_bool m_isProcessing = false;
+
         BoundingBoxD m_bounds = {};
 
+    private:
+        void DestroyChildren();
+        void UpdateNeighborNodes();
+
     public:
-        Node();
+        Node() = default;
         ~Node();
 
     public:
-        void UpdateNeighborNodes();
+        void Populate();
+        void Depopulate();
 
+        void OnPopulate();
+
+    public:
         /// <summary>
         ///     Looks for intersecting nodes.
         /// </summary>
@@ -76,7 +89,7 @@ public:
         /// </summary>
         /// <param name="direction">The direction.</param>
         /// <returns>The neighbor node or null when not found.</returns>
-        Node* FindNeighbor(NodeDirection direction) const;
+        Node* FindNeighbor(NodeDirection direction);
 
         /// <summary>
         ///     Looks for a node at given position with given size.
@@ -117,6 +130,8 @@ public:
 public:
     void Initialize();
     void Update();
+
+    void DebugDraw();
 
 public:
     /// <summary>
