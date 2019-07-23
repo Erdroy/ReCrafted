@@ -44,6 +44,18 @@ namespace ReCrafted.Game.Player
             public float Vertical { get; set; }
 
             /// <summary>
+            ///     The thrust movement value (up-down).
+            ///     This value is not being filtered.
+            /// </summary>
+            public float Thrust { get; set; }
+
+            /// <summary>
+            ///     The roll movement value.
+            ///     This value is not being filtered.
+            /// </summary>
+            public float Roll { get; set; }
+
+            /// <summary>
             ///     The jump input value.
             ///     When true, the player will try to jump.
             /// </summary>
@@ -84,7 +96,7 @@ namespace ReCrafted.Game.Player
         private Vector2 _currentRotation = Vector2.Zero;
 
         private Snapshot.StandingType _currentStandingType = Snapshot.StandingType.Normal;
-
+        private Snapshot.MovementType _currentMovementType = Snapshot.MovementType.Normal;
 
         /// <summary>
         ///     Samples and returns current input snapshot.
@@ -108,13 +120,42 @@ namespace ReCrafted.Game.Player
             if (InputManager.IsKey(Key.D))
                 result.Horizontal += 1.0f;
 
+            // Sample thrust input
+            if (InputManager.IsKey(Key.Space))
+                result.Thrust += 1.0f;
+            if (InputManager.IsKey(Key.Shift))
+                result.Thrust -= 1.0f;
+
+            // Sample roll input
+            if (InputManager.IsKey(Key.Q))
+                result.Roll -= 1.0f;
+            if (InputManager.IsKey(Key.E))
+                result.Roll += 1.0f;
+
             // Sample jump input
             result.Jump = InputManager.IsKeyDown(Key.Space);
 
             // Sample run input
             result.Run = InputManager.IsKey(Key.Shift);
 
-            result.Movement = Snapshot.MovementType.Normal; // TODO: Movement type switch
+            if (InputManager.IsKeyDown(Key.V))
+            {
+                if (_currentMovementType == Snapshot.MovementType.Normal)
+                {
+                    result.Movement = Snapshot.MovementType.JetPack;
+                    _currentMovementType = Snapshot.MovementType.JetPack;
+                }
+                else
+                {
+                    result.Movement = Snapshot.MovementType.Normal;
+                    _currentMovementType = Snapshot.MovementType.Normal;
+                }
+            }
+            else
+            {
+                result.Movement = _currentMovementType;
+            }
+
             result.JetPackDamping = true;
 
             // Sample standing

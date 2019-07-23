@@ -5,6 +5,7 @@ using ReCrafted.API;
 using ReCrafted.API.Core;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.Physics;
+using ReCrafted.API.Rendering;
 
 namespace ReCrafted.Game.Player
 {
@@ -50,6 +51,12 @@ namespace ReCrafted.Game.Player
         public const float JumpForce = 7.5f;
 
         private Vector3 _velocity;
+        private CameraActor _camera;
+
+        private void Start()
+        {
+            _camera = Actor.Children[0] as CameraActor;
+        }
 
         /// <summary>
         ///     Simulates this player's character using given input snapshot (<see cref="PlayerInput.Snapshot"/>).
@@ -63,7 +70,32 @@ namespace ReCrafted.Game.Player
             var direction = GetMoveDirection(input);
             var settings = GetMoveSettings(input);
 
-            DoNormalMovement(input, direction, settings);
+            switch (input.Movement)
+            {
+                case PlayerInput.Snapshot.MovementType.Normal:
+                    DoNormalMovement(input, direction, settings);
+                    break;
+                case PlayerInput.Snapshot.MovementType.JetPack:
+                    DoJetPackMovement(input, direction, settings);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void DoJetPackMovement(PlayerInput.Snapshot input, Vector3 direction, MovementSettings settings)
+        {
+            // TODO: Apply roll
+            //Actor.Rotation *= Quaternion.RotationAxis(_camera.Transform.Forward, input.Roll * Time.DeltaTime * 5.0f);
+            Actor.UpDirection = Actor.Transform.Up;
+
+            _velocity += direction * Time.DeltaTime * 20.0f;
+
+            // Apply velocity damping
+            if (input.JetPackDamping && _velocity.LengthSquared() > 0.1f)
+                _velocity -= _velocity * Time.DeltaTime * 2.0f;
+
+            Actor.Move(_velocity * Time.DeltaTime);
         }
 
         private void DoNormalMovement(PlayerInput.Snapshot input, Vector3 direction, MovementSettings settings)
@@ -75,16 +107,16 @@ namespace ReCrafted.Game.Player
                 if (input.Jump)
                     _velocity += Vector3.Normalize(CurrentGravity) * JumpForce;
 
-                _velocity -= CurrentGravity * (float)Time.DeltaTime;
+                _velocity -= CurrentGravity * Time.DeltaTime;
             }
             else
             {
                 _velocity = MoveAir(settings, direction, _velocity);
             }
 
-            _velocity -= CurrentGravity * (float)Time.DeltaTime;
+            _velocity -= CurrentGravity * Time.DeltaTime;
 
-            Actor.Move(_velocity * (float)Time.DeltaTime);
+            Actor.Move(_velocity * Time.DeltaTime);
         }
 
         /*private Vector3 GetSurfaceNormal()
@@ -117,16 +149,21 @@ namespace ReCrafted.Game.Player
 
         private Vector3 GetMoveDirection(PlayerInput.Snapshot input)
         {
-            var direction = new Vector3(input.Horizontal, 0.0f, input.Vertical);
+            var direction = new Vector3(input.Horizontal, input.Movement == PlayerInput.Snapshot.MovementType.JetPack ? input.Thrust : 0.0f, input.Vertical);
             direction.Normalize();
-            direction = Actor.TransformDirection(direction);
+
+            if (input.Movement == PlayerInput.Snapshot.MovementType.Normal)
+                direction = Actor.TransformDirection(direction);
+            else
+                direction = _camera.TransformDirection(direction);
+
             return direction;
         }
 
         private static Vector3 Accelerate(Vector3 direction, Vector3 currentVelocity, float accelerate, float maxVelocity)
         {
             var projectionVelocity = Vector3.Dot(currentVelocity, direction);
-            var accelerationVelocity = accelerate * (float)Time.DeltaTime;
+            var accelerationVelocity = accelerate * Time.DeltaTime;
 
             if (projectionVelocity + accelerationVelocity > maxVelocity)
                 accelerationVelocity = maxVelocity - projectionVelocity;
@@ -141,7 +178,7 @@ namespace ReCrafted.Game.Player
             
             if (Math.Abs(speed) > float.Epsilon)
             {
-                var drop = speed * friction * (float)Time.DeltaTime;
+                var drop = speed * friction * Time.DeltaTime;
                 currentVelocity *= Math.Max(speed - drop, 0) / speed; // Scale the velocity based on friction.
             }
 

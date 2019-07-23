@@ -25,17 +25,25 @@ namespace ReCrafted.Game.Player
 
         public void UpdateRotation(PlayerInput.Snapshot inputSnapshot)
         {
-            var up = Vector3.Normalize(Actor.Position); // TODO: Use gravitational fields
+            if (inputSnapshot.Movement == PlayerInput.Snapshot.MovementType.Normal)
+            {
+                var up = Vector3.Normalize(Actor.Position); // TODO: Use gravitational fields
 
-            _poleDirection = Vector3.Normalize(_poleDirection - Vector3.Dot(up, _poleDirection) * up);
+                _poleDirection = Vector3.Normalize(_poleDirection - Vector3.Dot(up, _poleDirection) * up);
 
-            var forward = Vector3.Cross(_poleDirection, up);
-            var relativeRotation = Quaternion.LookRotation(forward, up);
+                var forward = Vector3.Cross(_poleDirection, up);
+                var relativeRotation = Quaternion.LookRotation(forward, up);
 
-            // Calculate final rotations
-            Actor.UpDirection = up;
-            Actor.Rotation = Quaternion.RotationAxis(up, MathUtil.DegreesToRadians(inputSnapshot.LookRotation.X)) * relativeRotation;
-            Camera.LocalRotation = Quaternion.RotationAxis(Vector3.Right, MathUtil.DegreesToRadians(inputSnapshot.LookRotation.Y));
+                // Calculate final rotations
+                Actor.UpDirection = up;
+                Actor.Rotation = Quaternion.RotationAxis(up, MathUtil.DegreesToRadians(inputSnapshot.LookRotation.X)) * relativeRotation;
+                Camera.LocalRotation = Quaternion.RotationAxis(Vector3.Right, MathUtil.DegreesToRadians(inputSnapshot.LookRotation.Y));
+            }
+            else
+            {
+                Actor.Rotation = Quaternion.RotationAxis(Actor.UpDirection, MathUtil.DegreesToRadians(inputSnapshot.LookRotation.X));
+                Camera.LocalRotation = Quaternion.RotationAxis(Vector3.Right, MathUtil.DegreesToRadians(inputSnapshot.LookRotation.Y));
+            }
         }
         
         public CameraActor Camera { get; set; }
