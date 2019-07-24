@@ -22,6 +22,10 @@ using Vector2d = Vector2Base<double>;
 using Vector3d = Vector3Base<double>;
 using Vector4d = Vector4Base<double>;
 
+using Vector2i = Vector3Base<int32_t>;
+using Vector3i = Vector3Base<int32_t>;
+using Vector4i = Vector3Base<int32_t>;
+
 using Matrix4x4f = Matrix4x4Base<float>;
 using Matrix4x4d = Matrix4x4Base<double>;
 
