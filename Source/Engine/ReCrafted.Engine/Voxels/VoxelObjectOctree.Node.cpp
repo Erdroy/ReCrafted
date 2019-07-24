@@ -8,6 +8,7 @@
 #include "VoxelObjectOctree.h"
 #include "VoxelObjectBase.h"
 #include "VoxelObjectManager.h"
+#include "Rendering/Debug/DebugDraw.h"
 
 
 VoxelObjectOctree::Node::~Node()
@@ -42,8 +43,28 @@ void VoxelObjectOctree::Node::UpdateNeighborNodes()
     m_neighborNodes[int(NodeDirection::Bottom)] = FindNeighbor(NodeDirection::Bottom);
 }
 
+void VoxelObjectOctree::Node::DebugDraw()
+{
+    if(m_isPopulated)
+    {
+        for(auto& child : m_childrenNodes)
+        {
+            if (child)
+                child->DebugDraw();
+        }
+    }
+    else
+    {
+        const auto c = m_bounds.center;
+        const auto s = m_bounds.size;
+
+        DebugDraw::DrawWireBox({ float(c.x),  float(c.y),  float(c.z) }, { float(s.x),  float(s.y),  float(s.z) });
+    }
+}
+
 void VoxelObjectOctree::Node::Populate()
 {
+    MAIN_THREAD_ONLY();
     ASSERT(!m_isPopulated);
     ASSERT(!m_isProcessing);
 
@@ -57,11 +78,40 @@ void VoxelObjectOctree::Node::Populate()
 
 void VoxelObjectOctree::Node::Depopulate()
 {
+    MAIN_THREAD_ONLY();
     ASSERT(m_isPopulated);
     ASSERT(!m_isProcessing);
 
     // Process
     DestroyChildren();
+
+    // Depopulate called.
+    OnDepopulate();
+}
+
+void VoxelObjectOctree::Node::Rebuild()
+{
+    MAIN_THREAD_ONLY();
+    ASSERT(!m_isPopulated);
+    ASSERT(!m_isProcessing);
+
+    // Rebuild mesh of this node
+
+    // Queue populate task and set processing flag
+    VoxelObjectManager::Enqueue(this, VoxelObjectManager::ProcessMode::Rebuild, Action<void>::New<Node, &Node::OnRebuild>(this));
+    m_isProcessing = true;
+}
+
+void VoxelObjectOctree::Node::OnCreate()
+{
+    MAIN_THREAD_ONLY();
+
+}
+
+void VoxelObjectOctree::Node::OnDestroy()
+{
+    MAIN_THREAD_ONLY();
+
 }
 
 void VoxelObjectOctree::Node::OnPopulate()
@@ -71,8 +121,23 @@ void VoxelObjectOctree::Node::OnPopulate()
     m_isProcessing = false;
 }
 
+void VoxelObjectOctree::Node::OnDepopulate()
+{
+    MAIN_THREAD_ONLY();
+
+}
+
+void VoxelObjectOctree::Node::OnRebuild()
+{
+    MAIN_THREAD_ONLY();
+
+    m_isProcessing = false;
+}
+
 void VoxelObjectOctree::Node::FindIntersecting(List<Node*>& nodes, const BoundingBoxD& box, const int targetNodeSize)
 {
+    // TODO: Make sure that this node is not processing
+
     // iterate all children nodes
     for (auto node : m_childrenNodes)
     {
@@ -100,6 +165,8 @@ void VoxelObjectOctree::Node::FindIntersecting(List<Node*>& nodes, const Boundin
 
 VoxelObjectOctree::Node* VoxelObjectOctree::Node::FindNeighbor(const NodeDirection direction)
 {
+    // TODO: Make sure that this node is not processing
+
     // calculate target position
     const auto targetPosition = m_bounds.center + VoxelLookup::DirectionOffset[int(direction)] * float(m_size);
     return m_owner->FindNode(targetPosition, m_size);
@@ -107,6 +174,8 @@ VoxelObjectOctree::Node* VoxelObjectOctree::Node::FindNeighbor(const NodeDirecti
 
 VoxelObjectOctree::Node* VoxelObjectOctree::Node::Find(const Vector3d& position, const int size)
 {
+    // TODO: Make sure that this node is not processing
+
     // Check if this is the node that we are looking for
     if (m_size == size)
         return this;
@@ -137,11 +206,13 @@ VoxelObjectOctree::Node* VoxelObjectOctree::Node::Find(const Vector3d& position,
 
 VoxelObjectOctree::Node* VoxelObjectOctree::Node::Find(const Vector3d& position)
 {
+    // TODO: Make sure that this node is not processing
+
     if (m_bounds.center.x == position.x && m_bounds.center.y == position.y && m_bounds.center.z == position.z)
         return this;
 
-    //if (!m_populated)
-    //    return nullptr;
+    if (!m_isPopulated)
+        return nullptr;
 
     for (auto node : m_childrenNodes)
     {

@@ -13,6 +13,9 @@ void VoxelObjectBase::OctreeInitializeTask::Execute(void* userData)
 
 void VoxelObjectBase::OctreeInitializeTask::Finish()
 {
+    // Rebuild the root nodes
+    Octree->RebuildRootNodes();
+
     // Register object
     VoxelObjectManager::RegisterVoxelObject(VoxelObject);
 }

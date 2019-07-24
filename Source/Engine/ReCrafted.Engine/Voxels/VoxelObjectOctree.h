@@ -4,6 +4,7 @@
 
 #include <ReCrafted.h>
 #include "Common/Lock.h"
+#include "Rendering/Models/ModelComponent.h"
 
 class VoxelObjectOctree
 {
@@ -51,6 +52,8 @@ public:
 
         VoxelObjectOctree* m_owner = nullptr;
 
+        ModelComponent* m_model = nullptr;
+
         int m_id = 0;
         int m_size = 0;
         int m_depth = 0;
@@ -65,6 +68,8 @@ public:
         void DestroyChildren();
         void UpdateNeighborNodes();
 
+        void DebugDraw();
+
     public:
         Node() = default;
         ~Node();
@@ -72,8 +77,13 @@ public:
     public:
         void Populate();
         void Depopulate();
+        void Rebuild();
 
+        void OnCreate();
+        void OnDestroy();
         void OnPopulate();
+        void OnDepopulate();
+        void OnRebuild();
 
     public:
         /// <summary>
@@ -122,6 +132,7 @@ private:
 
 private:
     void CreateRootNodes();
+    void RebuildRootNodes() const;
 
 public:
     explicit VoxelObjectOctree(VoxelObjectBase* owner);

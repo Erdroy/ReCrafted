@@ -10,6 +10,7 @@ void VoxelObjectOctree::CreateRootNodes()
 {
     const auto asset = m_owner->Asset();
     const auto radius = asset->MaximumSurfaceHeight();
+    const auto diameter = radius * 2;
 
     // Setup bounds
     m_bounds = BoundingSphereD(Vector3d::Zero, double(radius));
@@ -18,7 +19,7 @@ void VoxelObjectOctree::CreateRootNodes()
     const auto rootNodesLength = Math::Pow(2, asset->InitialOctreeDepth());
 
     // Calculate the node size
-    const auto  rootNodeSize = radius / rootNodesLength;
+    const auto rootNodeSize = diameter / rootNodesLength;
 
     // calculate the center offset
     const auto rootNodeOffset = static_cast<double>(static_cast<double>(rootNodesLength) / 2 * rootNodeSize) - rootNodeSize * 0.5;
@@ -67,12 +68,6 @@ void VoxelObjectOctree::CreateRootNodes()
         }
     }
 
-    for (auto i = 0; i < m_rootNodesCount; i++)
-    {
-        // populate node
-        m_rootNodes[i]->Populate();
-    }
-
     // Calculate max depth
     // This value will be used mainly for mip map selection for CHM bitmap
     auto maxDepth = 0;
@@ -86,6 +81,15 @@ void VoxelObjectOctree::CreateRootNodes()
 
     // Set the max depth
     m_maxDepth = maxDepth;
+}
+
+void VoxelObjectOctree::RebuildRootNodes() const
+{
+    for (auto i = 0; i < m_rootNodesCount; i++)
+    {
+        // Rebuild node
+        m_rootNodes[i]->Rebuild();
+    }
 }
 
 VoxelObjectOctree::VoxelObjectOctree(VoxelObjectBase* owner)
@@ -124,10 +128,11 @@ void VoxelObjectOctree::DebugDraw()
     const auto c = m_bounds.center;
     DebugDraw::DrawWireSphere({ float(c.x),  float(c.y),  float(c.z) }, float(m_bounds.radius));
 
-    /*for (auto i = 0; i < m_rootNodesCount; i++)
+    for (auto i = 0; i < m_rootNodesCount; i++)
     {
-        DebugDraw::DrawWireBox({ float(c.x),  float(c.y),  float(c.z) }, { float(p.x),  float(p.y),  float(p.z) });
-    }*/
+        if(m_rootNodes[i])
+            m_rootNodes[i]->DebugDraw();
+    }
 }
 
 VoxelObjectOctree::Node* VoxelObjectOctree::FindNode(const Vector3d& position, const int size) const
