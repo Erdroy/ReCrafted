@@ -7,10 +7,12 @@ using ReCrafted.API.Core;
 using ReCrafted.API.Input;
 using ReCrafted.API.Mathematics;
 using ReCrafted.API.Physics;
+using ReCrafted.API.Rendering;
 using ReCrafted.API.Rendering.Debug;
 using ReCrafted.API.Voxels;
 using ReCrafted.API.WebUI;
 using ReCrafted.Game.Player;
+using ReCrafted.Game.Spectator;
 using ReCrafted.Game.UI;
 
 namespace ReCrafted.Game.Core
@@ -23,6 +25,7 @@ namespace ReCrafted.Game.Core
         private VoxelObjectAsset _moon;
 
         public PlayerManager CurrentPlayer;
+        public SpectatorCamera SpectatorCamera;
 
         protected override void OnInitialize()
         {
@@ -37,6 +40,10 @@ namespace ReCrafted.Game.Core
 
             InputManager.ShowCursor = false;
             InputManager.LockCursor = true;
+
+            // Spawn spectator camera
+            SpectatorCamera = Object.New<CameraActor>().AddScript<SpectatorCamera>();
+            SpectatorCamera.Actor.Position = new Vector3(0.0f, 950.0f, 0.0f);
 
             // Spawn player
             CurrentPlayer = PlayerManager.SpawnPlayer(new Vector3(0.0f, 14.0f, 0.0f), Quaternion.Identity);
@@ -61,6 +68,8 @@ namespace ReCrafted.Game.Core
         protected override void OnShutdown()
         {
             base.OnShutdown();
+
+            Object.Destroy(_moon);
         }
 
         protected override void OnUpdate()
@@ -69,6 +78,22 @@ namespace ReCrafted.Game.Core
 
             DebugDraw.Color = Color4.White;
             DebugDraw.DrawWireSphere(Vector3.Zero, 10.0f);
+
+            if (InputManager.IsKeyDown(Key.F5))
+            {
+                if (SpectatorCamera.Actor.IsActive)
+                {
+                    SpectatorCamera.Actor.SetActive(false);
+                    CurrentPlayer.Actor.SetActive(true);
+                    CurrentPlayer.CameraController.Camera.Camera.SetAsCurrent();
+                }
+                else
+                {
+                    SpectatorCamera.Actor.SetActive(true);
+                    CurrentPlayer.Actor.SetActive(false);
+                    SpectatorCamera.Actor.Camera.SetAsCurrent();
+                }
+            }
         }
 
         protected override void OnFixedUpdate()

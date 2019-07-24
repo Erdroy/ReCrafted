@@ -50,6 +50,7 @@
     <Compile Include="Player\PlayerManager.cs" />
     <Compile Include="Player\PlayerMovement.cs" />
     <Compile Include="Player\PlayerViewController.cs" />
+    <Compile Include="Spectator\SpectatorCamera.cs" />
     <Compile Include="UI\UIGameHud.cs" />
     <Compile Include="UI\UIGameOverlay.cs" />
     <Compile Include="UI\UIPauseMenu.cs" />
