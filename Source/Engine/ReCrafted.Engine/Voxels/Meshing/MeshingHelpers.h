@@ -5,7 +5,7 @@
 #include <ReCrafted.h>
 
 #include "Voxels/Voxel.h"
-#include "Voxels/Storage/VoxelChunkData.h"
+#include "Voxels/VoxelChunkData.h"
 
 struct VertexInfo
 {
@@ -75,7 +75,7 @@ constexpr float GetInterpolant(const float densityA, const float densityB)
 /// <param name="densityA">The first point value.</param>
 /// <param name="densityB">The second point value.</param>
 /// <returns>The intersection of the given points.</returns>
-constexpr Vector3 GetIntersection(const Vector3& positionA, const Vector3& positionB, const float densityA, const float densityB)
+inline Vector3 GetIntersection(const Vector3& positionA, const Vector3& positionB, const float densityA, const float densityB)
 {
     if (std::abs(densityA) < 0.00001f)
         return positionA;
@@ -97,7 +97,7 @@ constexpr Vector3 GetIntersection(const Vector3& positionA, const Vector3& posit
 /// <param name="densityA">The first point value.</param>
 /// <param name="densityB">The second point value.</param>
 /// <returns>The intersection of the given points.</returns>
-constexpr Vector3 GetIntersection(const Vector3i& positionA, const Vector3i& positionB, const float densityA, const float densityB)
+inline Vector3 GetIntersection(const Vector3i& positionA, const Vector3i& positionB, const float densityA, const float densityB)
 {
     return GetIntersection(Vector3(float(positionA.x), float(positionA.y), float(positionA.z)),
         Vector3(float(positionB.x), float(positionB.y), float(positionB.z)), densityA, densityB);

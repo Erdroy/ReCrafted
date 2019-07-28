@@ -1,0 +1,18 @@
+// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
+
+#pragma once
+
+#include <ReCrafted.h>
+
+#include "Rendering/Models/ModelComponent.h"
+
+class VoxelChunk
+{
+
+private:
+    ModelComponent* m_model = nullptr;
+
+public:
+
+
+};

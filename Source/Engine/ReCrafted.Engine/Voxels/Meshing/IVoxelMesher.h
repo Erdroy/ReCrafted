@@ -5,7 +5,7 @@
 #include <ReCrafted.h>
 
 class Mesh;
-class VoxelChunkMesh {};
+class VoxelChunkMesh;
 class VoxelChunkCollision {};
 
 /// <summary>

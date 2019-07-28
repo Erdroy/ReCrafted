@@ -4,7 +4,7 @@
 
 #include <ReCrafted.h>
 #include "Common/Lock.h"
-#include "Rendering/Models/ModelComponent.h"
+#include "Voxels/VoxelChunk.h"
 
 class VoxelObjectOctree
 {
@@ -52,7 +52,7 @@ public:
 
         VoxelObjectOctree* m_owner = nullptr;
 
-        ModelComponent* m_model = nullptr;
+        VoxelChunk* m_chunk = nullptr;
 
         int m_id = 0;
         int m_size = 0;

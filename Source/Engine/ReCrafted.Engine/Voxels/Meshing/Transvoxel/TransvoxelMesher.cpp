@@ -2,10 +2,10 @@
 
 #include "TransvoxelMesher.h"
 #include "Rendering/Mesh.h"
+#include "Voxels/VoxelChunkMesh.h"
 
-void TransvoxelMesher::Generate(const Vector3& position, int lod, uint8_t borders, Voxel* data)
+void TransvoxelMesher::Generate(const Vector3& position, const int lod, uint8_t borders, Voxel* data)
 {
-
     // ReSharper disable once CppUnreachableCode
     const auto voxelScale = static_cast<float>(lod);
 
@@ -23,7 +23,7 @@ void TransvoxelMesher::Generate(const Vector3& position, int lod, uint8_t border
 
                 PolygonizeRegularCell(position, data, voxelScale, lod, voxelOffset, normalCorrection);
 
-                // TODO: Transition cell implementation
+                // TODO: Transition cell implementation (we need access to neighbor chunk cells (with lower LoD [LoD 0 - highest details, so 'lod + 1' or more]))
             }
         }
     }
@@ -48,9 +48,10 @@ void TransvoxelMesher::Generate(const Vector3& position, int lod, uint8_t border
 
 void TransvoxelMesher::Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, RefPtr<VoxelChunkCollision>& chunkCollision)
 {
-    // Create section mesh
+    // Create mesh
     const auto mesh = Mesh::CreateMesh();
 
+    // Create chunk section
     auto chunkSection = VoxelChunkMesh::MeshSection();
     chunkSection.mesh = mesh;
 
@@ -61,13 +62,13 @@ void TransvoxelMesher::Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, RefPtr<Vox
     if (meshSection.indices.Count() == 0)
         return;
 
-    mesh->SetVertices(meshSection.vertices.Data(), meshSection.vertices.Count());
-    mesh->SetNormals(meshSection.normals.Data());
+    mesh->SetVertices(Array<Vector3>(meshSection.vertices.Data(), meshSection.vertices.Size()));
+    mesh->SetNormals(Array<Vector3>(meshSection.normals.Data(), meshSection.vertices.Size()));
     mesh->AddCustomData(meshSection.materialsA.Data(), sizeof(Vector4));
     mesh->AddCustomData(meshSection.materialsB.Data(), sizeof(Vector4));
     mesh->AddCustomData(meshSection.materialsC.Data(), sizeof(Vector4));
     mesh->AddCustomData(meshSection.materialsD.Data(), sizeof(Vector4));
-    mesh->SetIndices(meshSection.indices.Data(), meshSection.indices.Count());
+    mesh->SetIndices(Array<uint>(meshSection.indices.Data(), meshSection.indices.Count()));
     mesh->ApplyChanges();
 
     // Add mesh section
@@ -75,10 +76,10 @@ void TransvoxelMesher::Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, RefPtr<Vox
 
     if(chunkCollision && m_collisionIndices.Count() >= 3)
     {
-        // Apply collision
-        chunkCollision->BuildCollision(m_shapeCooker, m_currentVoxelScale,
-            m_collisionVertices.Data(), m_collisionVertices.Count(), 
-            m_collisionIndices.Data(), m_collisionIndices.Count());
+        // TODO: Apply collision
+        //chunkCollision->BuildCollision(m_shapeCooker, m_currentVoxelScale,
+        //    m_collisionVertices.Data(), m_collisionVertices.Count(), 
+        //    m_collisionIndices.Data(), m_collisionIndices.Count());
     }
     
     Clear();

@@ -8,31 +8,33 @@
 
 class VoxelChunkData
 {
+    DELETE_COPY_MOVE(VoxelChunkData)
+
     friend class VoxelStorage;
     friend class VoxelGenerator;
     friend class VoxelChunkCache;
 
 public:
     /// <summary>
-    ///     Enables or diables normal correction.
+    ///     Enables or disables normal correction.
     /// </summary>
     static const bool EnableNormalCorrection = true;
 
 public:
     /// <summary>
-    ///     ChunkSize - 16 'cubes' on signle axis.
+    ///     ChunkSize - 16 'cubes' on single axis.
     /// </summary>
     static const int ChunkSize = 16;
 
     /// <summary>
-    ///     ChunkDataLength - 19 'cubes' on signle axis (cubes_count + 1) - [|the normal range| and 16],
-    ///     or when NormalCorrection is enabled - 19 corners on signle axis(cubes_count + 3) - [-1, | the normal range | , 16 and 17].
+    ///     ChunkDataLength - 19 'cubes' on single axis (cubes_count + 1) - [|the normal range| and 16],
+    ///     or when NormalCorrection is enabled - 19 corners on single axis(cubes_count + 3) - [-1, | the normal range | , 16 and 17].
     /// </summary>
     static const int ChunkDataSize = EnableNormalCorrection ? ChunkSize + 3 : ChunkSize + 1;
 
     /// <summary>
-    ///     ChunkDataLength - 17 'cubes' on signle axis (cubes_count + 1) - [|the normal range| and 16], 
-    ///     or when NormalCorrection is enabled - 19 corners on signle axis(cubes_count + 3) - [-1, | the normal range | , 16 and 17].
+    ///     ChunkDataLength - 17 'cubes' on single axis (cubes_count + 1) - [|the normal range| and 16], 
+    ///     or when NormalCorrection is enabled - 19 corners on single axis(cubes_count + 3) - [-1, | the normal range | , 16 and 17].
     /// </summary>
     static const int ChunkDataLength = EnableNormalCorrection ? ChunkSize + 2 : ChunkSize + 1;
 
@@ -75,12 +77,9 @@ public:
         memset(m_voxelData, *reinterpret_cast<uint32_t*>(&fill), size * sizeof(Voxel));
     }
 
-    void DeallocateData()
+    void DeallocateData() const
     {
-        if (m_voxelData)
-        {
-            delete[] m_voxelData;
-        }
+        delete[] m_voxelData;
     }
 
 public:
@@ -119,7 +118,7 @@ public:
         return m_isFilled;
     }
 
-    void IsFilled(bool isFilled)
+    void IsFilled(const bool isFilled)
     {
         m_isFilled = isFilled;
     }
@@ -134,7 +133,7 @@ public:
         return m_hasSurface;
     }
 
-    void HasSurface(bool value)
+    void HasSurface(const bool value)
     {
         m_hasSurface = value;
     }
@@ -144,18 +143,18 @@ public:
         m_cached = false;
     }
 
-    FORCEINLINE Voxel GetVoxel(int x, int y, int z) const
+    FORCEINLINE Voxel GetVoxel(const int x, const int y, const int z) const
     {
         return GetVoxel(m_voxelData, x, y, z);
     }
 
-    FORCEINLINE void SetVoxel(int x, int y, int z, Voxel voxel) const
+    FORCEINLINE void SetVoxel(const int x, const int y, const int z, const Voxel voxel) const
     {
         SetVoxel(m_voxelData, x, y, z, voxel);
     }
 
 public:
-    FORCEINLINE static Voxel GetVoxel(Voxel* voxelData, int x, int y, int z)
+    FORCEINLINE static Voxel GetVoxel(Voxel* voxelData, const int x, const int y, const int z)
     {
         return voxelData[Math::Index3(
             x + EnableNormalCorrection,
@@ -164,7 +163,7 @@ public:
             ChunkDataSize)];
     }
 
-    FORCEINLINE static void SetVoxel(Voxel* voxelData, int x, int y, int z, Voxel voxel)
+    FORCEINLINE static void SetVoxel(Voxel* voxelData, const int x, const int y, const int z, const Voxel voxel)
     {
         voxelData[Math::Index3(
             x + EnableNormalCorrection,
