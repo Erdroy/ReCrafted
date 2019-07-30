@@ -63,6 +63,19 @@ namespace ReCrafted.Game.Core
 
             // Create test planet
             _moon = ContentManager.LoadAsset<VoxelObjectAsset>("Voxels/Objects/Moon");
+
+            // Load and set default material
+            var defaultMaterial = ContentManager.LoadAsset<VoxelMaterial>("Voxels/Materials/Default");
+            VoxelMaterialManager.AddMaterial(defaultMaterial);
+            VoxelMaterialManager.SetDefaultMaterial(defaultMaterial);
+
+            // Add voxel materials
+            VoxelMaterialManager.AddMaterial(ContentManager.LoadAsset<VoxelMaterial>("Voxels/Materials/Rock"));
+            VoxelMaterialManager.AddMaterial(ContentManager.LoadAsset<VoxelMaterial>("Voxels/Materials/Rock1"));
+            VoxelMaterialManager.AddMaterial(ContentManager.LoadAsset<VoxelMaterial>("Voxels/Materials/Rock2"));
+            VoxelMaterialManager.AddMaterial(ContentManager.LoadAsset<VoxelMaterial>("Voxels/Materials/Grass"));
+            VoxelMaterialManager.AddMaterial(ContentManager.LoadAsset<VoxelMaterial>("Voxels/Materials/Soil"));
+            VoxelMaterialManager.AddMaterial(ContentManager.LoadAsset<VoxelMaterial>("Voxels/Materials/Clay"));
         }
         
         protected override void OnShutdown()
