@@ -109,7 +109,7 @@ void VoxelObjectOctree::Node::OnCreate()
     m_chunk->SetTransform(Transform(Vector3(float(c.x), float(c.y), float(c.z)), Quaternion::Identity, Vector3::One));
 
     // Make chunk visible
-    //m_chunk->SetVisible(true);
+    m_chunk->SetVisible(true);
 }
 
 void VoxelObjectOctree::Node::OnDestroy()
@@ -142,7 +142,7 @@ void VoxelObjectOctree::Node::OnPopulate()
     }
 
     // Make chunk invisible
-    //m_chunk->SetVisible(false);
+    m_chunk->SetVisible(false);
 
     m_isPopulated = true;
     m_isProcessing = false;
@@ -154,7 +154,7 @@ void VoxelObjectOctree::Node::OnDepopulate()
     ASSERT(m_chunk);
 
     // Make chunk visible
-    //m_chunk->SetVisible(true);
+    m_chunk->SetVisible(true);
 }
 
 void VoxelObjectOctree::Node::OnRebuild()

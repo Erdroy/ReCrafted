@@ -16,7 +16,7 @@ void VoxelChunk::SetVisible(const bool isVisible)
         //m_model->Bounds = BoundingSphere(m_transform.translation, ); TODO: Calculate radius (sqrt(size * 2))
         //m_model->Material = ;
         //m_model->Mesh = ;
-        m_model->Active = true;
+        //m_model->Active = true;
     }
     else
     {
