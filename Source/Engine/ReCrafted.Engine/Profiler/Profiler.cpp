@@ -96,9 +96,7 @@ void Profiler::Initialize()
 {
     InitThread("Main Thread");
 
-    // When -noprofile argument is provided within the CLI, then we are not going to start
-    // the profiling by default
-    m_profilingEnabled = !Environment::GetCommandLineArguments().Contains(STRING_CONST("-noprofiling"));
+    m_profilingEnabled = Environment::GetCommandLineArguments().Contains(STRING_CONST("-profile"));
 }
 
 void Profiler::Shutdown()

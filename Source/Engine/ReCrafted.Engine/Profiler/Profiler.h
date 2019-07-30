@@ -82,7 +82,7 @@ private:
     bool m_showWindow = false;
     std::vector<ThreadData*> m_threads;
     spp::sparse_hash_map<std::thread::id, ThreadData*> m_threadMap;
-    std::atomic<bool> m_profilingEnabled = true;
+    std::atomic<bool> m_profilingEnabled = false;
     bool m_stopProfiling = false;
     bool m_startProfiling = false;
 
