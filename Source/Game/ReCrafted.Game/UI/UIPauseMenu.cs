@@ -18,14 +18,6 @@ namespace ReCrafted.Game.UI
                 Show(!View.Active);
         }
 
-        private JSValue TestCallback(JSObject thisObject, params JSValue[] args)
-        {
-            var f = args.First().ToString();
-            var ss = f.ToString();
-
-            return new JSValue(thisObject.GetContext());
-        }
-
         protected override void RegisterBindings()
         {
             View.Name = nameof(UIPauseMenu);
@@ -39,15 +31,6 @@ namespace ReCrafted.Game.UI
                 Application.Quit();
                 return JSValue.Null;
             });
-            var ctx = View.Context;
-
-            var global = JSObject.GetGlobalObject(ctx);
-            var obj1 = global.GetPropertyValue(new JSString("TestFunction"));
-            var func = obj1.ToFunction();
-
-            global.SetPropertyValue(new JSString("TestCallback"), new JSValue(ctx, TestCallback));
-
-            func.Invoke(global);
         }
 
         private void Show(bool show)
