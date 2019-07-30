@@ -10,16 +10,6 @@
 #include "VoxelObjectManager.h"
 #include "Rendering/Debug/DebugDraw.h"
 
-
-VoxelObjectOctree::Node::~Node()
-{
-    if(m_isPopulated)
-    {
-        // Destroy children nodes
-        DestroyChildren();
-    }
-}
-
 void VoxelObjectOctree::Node::DestroyChildren()
 {
     ASSERT(m_isPopulated);
@@ -27,10 +17,16 @@ void VoxelObjectOctree::Node::DestroyChildren()
     // Destroy all children
     for (auto& node : m_childrenNodes)
     {
+        // Call OnDestroy
+        node->OnDestroy();
+
         // Delete node
         delete node;
         node = nullptr;
     }
+
+    // Not populated anymore...
+    m_isPopulated = false;
 }
 
 void VoxelObjectOctree::Node::UpdateNeighborNodes()
@@ -106,17 +102,37 @@ void VoxelObjectOctree::Node::OnCreate()
 {
     MAIN_THREAD_ONLY();
 
+    ASSERT(m_chunk == nullptr);
+    m_chunk = Object::New<VoxelChunk>();
+
+    // Make chunk visible
+    m_chunk->SetVisible(true);
 }
 
 void VoxelObjectOctree::Node::OnDestroy()
 {
     MAIN_THREAD_ONLY();
 
+    if (m_isPopulated)
+    {
+        // Destroy children nodes
+        DestroyChildren();
+    }
+
+    // Destroy the chunk
+    Object::Destroy(m_chunk);
+    m_chunk = nullptr;
 }
 
 void VoxelObjectOctree::Node::OnPopulate()
 {
     MAIN_THREAD_ONLY();
+
+    for(auto& node : m_childrenNodes)
+        node->OnCreate();
+
+    // Make chunk invisible
+    m_chunk->SetVisible(false);
 
     m_isProcessing = false;
 }
@@ -125,6 +141,8 @@ void VoxelObjectOctree::Node::OnDepopulate()
 {
     MAIN_THREAD_ONLY();
 
+    // Make chunk visible
+    m_chunk->SetVisible(true);
 }
 
 void VoxelObjectOctree::Node::OnRebuild()
@@ -138,7 +156,7 @@ void VoxelObjectOctree::Node::FindIntersecting(List<Node*>& nodes, const Boundin
 {
     // TODO: Make sure that this node is not processing
 
-    // iterate all children nodes
+    // Iterate all children nodes
     for (auto node : m_childrenNodes)
     {
         if (node == nullptr)
@@ -167,7 +185,7 @@ VoxelObjectOctree::Node* VoxelObjectOctree::Node::FindNeighbor(const NodeDirecti
 {
     // TODO: Make sure that this node is not processing
 
-    // calculate target position
+    // Calculate target position
     const auto targetPosition = m_bounds.center + VoxelLookup::DirectionOffset[int(direction)] * float(m_size);
     return m_owner->FindNode(targetPosition, m_size);
 }

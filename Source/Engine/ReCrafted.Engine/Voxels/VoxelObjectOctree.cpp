@@ -105,7 +105,15 @@ VoxelObjectOctree::VoxelObjectOctree(VoxelObjectBase* owner)
 VoxelObjectOctree::~VoxelObjectOctree()
 {
     for (auto i = 0; i < m_rootNodesCount; i++)
-        delete m_rootNodes[i];
+    {
+        auto node = m_rootNodes[i];
+
+        // Call OnDestroy
+        node->OnDestroy();
+
+        // Delete node
+        delete node;
+    }
 
     delete m_rootNodes;
 }

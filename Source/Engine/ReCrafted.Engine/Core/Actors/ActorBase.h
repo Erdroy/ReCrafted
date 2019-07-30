@@ -30,7 +30,7 @@ class ActorBase : public Object
     API_CLASS_BODY()
     friend class SceneManager;
 
-private:
+protected:
     ActorId_t m_id = 0u;
     bool m_static = false;
     bool m_active = true;

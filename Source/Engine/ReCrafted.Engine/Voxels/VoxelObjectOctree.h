@@ -64,15 +64,15 @@ public:
 
         BoundingBoxD m_bounds = {};
 
+    public:
+        Node() = default;
+        ~Node() = default;
+
     private:
         void DestroyChildren();
         void UpdateNeighborNodes();
 
         void DebugDraw();
-
-    public:
-        Node() = default;
-        ~Node();
 
     public:
         void Populate();

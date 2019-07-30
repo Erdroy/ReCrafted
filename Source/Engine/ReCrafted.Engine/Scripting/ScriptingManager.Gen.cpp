@@ -38,9 +38,12 @@
 #include "Scene/SceneManager.h"
 #include "Scripting/Object.h"
 #include "Scripting/Script.h"
+#include "Voxels/VoxelChunk.h"
+#include "Voxels/VoxelMaterialManager.h"
 #include "Voxels/VoxelObjectBase.h"
 #include "Voxels/VoxelObjectManager.h"
 #include "Voxels/VoxelPlanet.h"
+#include "Voxels/Assets/VoxelMaterial.h"
 #include "Voxels/Assets/VoxelObjectAsset.h"
 #include "WebUI/WebUIManager.h"
 #include "WebUI/WebUIView.h"
@@ -84,9 +87,12 @@ void ScriptingManager::InitRuntime()
     SceneManager::InitRuntime();
     Object::InitRuntime();
     Script::InitRuntime();
+    VoxelChunk::InitRuntime();
+    VoxelMaterialManager::InitRuntime();
     VoxelObjectBase::InitRuntime();
     VoxelObjectManager::InitRuntime();
     VoxelPlanet::InitRuntime();
+    VoxelMaterial::InitRuntime();
     VoxelObjectAsset::InitRuntime();
     WebUIManager::InitRuntime();
     WebUIView::InitRuntime();

@@ -18,6 +18,7 @@
 #include "Game/GameManager.h"
 #include "Scene/SceneManager.h"
 #include "Voxels/VoxelObjectManager.h"
+#include "Voxels/VoxelMaterialManager.h"
 #include "WebUI/WebUIManager.h"
 
 // EventProcessor is implemented per-platform
@@ -57,6 +58,7 @@ void Application::InitializeSubSystems() const
     SubSystemManager::Register<ContentManager>();
     SubSystemManager::Register<Time>();
     SubSystemManager::Register<InputManager>();
+    SubSystemManager::Register<VoxelMaterialManager>();
     SubSystemManager::Register<RenderingManager>();
     SubSystemManager::Register<WebUIManager>();
     SubSystemManager::Register<SceneManager>();
@@ -183,4 +185,6 @@ void Application::Quit()
     Logger::Log("Quit...");
 
     m_instance->m_mainLoop->Quit();
+
+    // TODO: Queue exit for the next frame
 }
