@@ -7,36 +7,35 @@
 #include "Core/Actors/ActorBase.h"
 #include "Rendering/Models/ModelComponent.h"
 
-API_USING("ReCrafted.API.Core.Actors")
-
 /// <summary>
 ///     VoxelChunk actor class.
 /// </summary>
-API_CLASS(public, sealed)
-class VoxelChunk final : public ActorBase
+class VoxelChunk final
 {
-    API_CLASS_BODY()
-
 private:
     ModelComponent* m_model = nullptr;
-    
+    Transform m_transform = {};
+
 public:
-    ACTOR_BODY(VoxelChunk)
+    VoxelChunk() = default;
     ~VoxelChunk();
 
 public:
 
 public:
+    void SetTransform(const Transform& transform)
+    {
+        m_transform = transform;
+    }
+
     /// <summary>
     ///     Gets or sets the chunk's visibility state. Invisible when true.
     /// </summary>
-    API_PROPERTY(noprefix)
     void SetVisible(bool isVisible);
 
     /// <summary>
     ///     Gets or sets the chunk's visibility state. Invisible when true.
     /// </summary>
-    API_PROPERTY(noprefix)
     bool GetVisible() const
     {
         return m_model && m_model->Active;

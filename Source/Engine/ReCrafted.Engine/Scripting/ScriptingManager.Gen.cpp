@@ -38,7 +38,6 @@
 #include "Scene/SceneManager.h"
 #include "Scripting/Object.h"
 #include "Scripting/Script.h"
-#include "Voxels/VoxelChunk.h"
 #include "Voxels/VoxelMaterialManager.h"
 #include "Voxels/VoxelObjectBase.h"
 #include "Voxels/VoxelObjectManager.h"
@@ -87,7 +86,6 @@ void ScriptingManager::InitRuntime()
     SceneManager::InitRuntime();
     Object::InitRuntime();
     Script::InitRuntime();
-    VoxelChunk::InitRuntime();
     VoxelMaterialManager::InitRuntime();
     VoxelObjectBase::InitRuntime();
     VoxelObjectManager::InitRuntime();

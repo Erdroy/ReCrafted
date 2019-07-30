@@ -132,7 +132,6 @@
     <Compile Include="Scene\SceneManager.Gen.cs" />
     <Compile Include="Script.cs" />
     <Compile Include="Script.Gen.cs" />
-    <Compile Include="Voxels\VoxelChunk.Gen.cs" />
     <Compile Include="Voxels\VoxelMaterial.Gen.cs" />
     <Compile Include="Voxels\VoxelMaterialManager.Gen.cs" />
     <Compile Include="Voxels\VoxelMaterialType.cs" />

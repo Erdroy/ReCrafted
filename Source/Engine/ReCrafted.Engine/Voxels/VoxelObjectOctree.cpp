@@ -89,11 +89,11 @@ void VoxelObjectOctree::RebuildRootNodes() const
     {
         const auto node = m_rootNodes[i];
 
-        // Call OnCreate function
+        // Call OnCreate
         node->OnCreate();
 
-        // Rebuild node
-        node->Rebuild();
+        // Populate node
+        node->Populate();
     }
 }
 

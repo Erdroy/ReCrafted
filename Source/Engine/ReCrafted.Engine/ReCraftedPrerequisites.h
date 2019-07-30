@@ -148,6 +148,9 @@ class ObjectManager;
 class Script;
 class ScriptingManager;
 
+// Voxels/Meshing/
+struct IVoxelMesher;
+
 // Voxels/
 enum class VoxelEditMode;
 struct Voxel;

@@ -5,6 +5,8 @@
 #include "Profiler/Profiler.h"
 #include "Scripting/Object.h"
 #include "VoxelObjectBase.h"
+#include "Meshing/IVoxelMesher.h"
+#include "Meshing/Transvoxel/TransvoxelMesher.h"
 
 void VoxelObjectManager::WorkerFunction()
 {
@@ -15,6 +17,8 @@ void VoxelObjectManager::WorkerFunction()
     Profiler::BeginFrame();
 
     // TODO: Create mesher and physics shape cooker instance
+    auto mesher = new TransvoxelMesher();
+    mesher->Initialize(nullptr);
 
     QueueItem item;
     while (m_running)
@@ -33,10 +37,10 @@ void VoxelObjectManager::WorkerFunction()
         switch (item.Mode)
         {
         case ProcessMode::Populate:
-            //item.Node->WorkerPopulate();
+            item.Node->WorkerPopulate(mesher);
             break;
         case ProcessMode::Rebuild:
-            //item.Node->WorkerRebuild(mesher);
+            item.Node->WorkerRebuild(mesher);
             break;
         default:;
         }
@@ -48,6 +52,9 @@ void VoxelObjectManager::WorkerFunction()
 
         Profiler::EndCPUProfile();
     }
+
+    mesher->Clear();
+    delete mesher;
 }
 
 void VoxelObjectManager::InitializeWorkers()

@@ -91,7 +91,7 @@ void VoxelObjectOctree::Node::Rebuild()
     ASSERT(!m_isPopulated);
     ASSERT(!m_isProcessing);
 
-    // Rebuild mesh of this node
+    // Rebuilds mesh of this node
 
     // Queue populate task and set processing flag
     VoxelObjectManager::Enqueue(this, VoxelObjectManager::ProcessMode::Rebuild, Action<void>::New<Node, &Node::OnRebuild>(this));
@@ -103,10 +103,13 @@ void VoxelObjectOctree::Node::OnCreate()
     MAIN_THREAD_ONLY();
 
     ASSERT(m_chunk == nullptr);
-    m_chunk = Object::New<VoxelChunk>();
+    m_chunk = new VoxelChunk();
+
+    const auto c = m_bounds.center;
+    m_chunk->SetTransform(Transform(Vector3(float(c.x), float(c.y), float(c.z)), Quaternion::Identity, Vector3::One));
 
     // Make chunk visible
-    m_chunk->SetVisible(true);
+    //m_chunk->SetVisible(true);
 }
 
 void VoxelObjectOctree::Node::OnDestroy()
@@ -119,37 +122,80 @@ void VoxelObjectOctree::Node::OnDestroy()
         DestroyChildren();
     }
 
-    // Destroy the chunk
-    Object::Destroy(m_chunk);
-    m_chunk = nullptr;
+    if(m_chunk)
+    {
+        // Destroy the chunk
+        delete m_chunk;
+        m_chunk = nullptr;
+    }
 }
 
 void VoxelObjectOctree::Node::OnPopulate()
 {
     MAIN_THREAD_ONLY();
+    ASSERT(m_chunk);
 
     for(auto& node : m_childrenNodes)
+    {
+        ASSERT(node);
         node->OnCreate();
+    }
 
     // Make chunk invisible
-    m_chunk->SetVisible(false);
+    //m_chunk->SetVisible(false);
 
+    m_isPopulated = true;
     m_isProcessing = false;
 }
 
 void VoxelObjectOctree::Node::OnDepopulate()
 {
     MAIN_THREAD_ONLY();
+    ASSERT(m_chunk);
 
     // Make chunk visible
-    m_chunk->SetVisible(true);
+    //m_chunk->SetVisible(true);
 }
 
 void VoxelObjectOctree::Node::OnRebuild()
 {
     MAIN_THREAD_ONLY();
+    ASSERT(m_chunk);
 
     m_isProcessing = false;
+}
+
+void VoxelObjectOctree::Node::WorkerPopulate(IVoxelMesher* mesher)
+{
+    const auto childrenSize = m_size / 2;
+    const auto boundsSize = Vector3d::One * static_cast<float>(childrenSize);
+
+    for(auto i = 0; i < ChildrenNodeCount; i ++)
+    {
+        const auto position = m_bounds.center + VoxelLookup::ChildrenNodeOffsets[i] * static_cast<float>(childrenSize);
+
+        // Construct node
+        const auto node = new Node();
+        node->m_id = i;
+        node->m_size = childrenSize;
+        node->m_bounds = BoundingBoxD(position, boundsSize);
+
+        // Set owner, parent and root
+        node->m_owner = m_owner;
+        node->m_parent = this;
+        node->m_root = m_root;
+        node->m_depth = m_depth + 1;
+
+        // Set node
+        m_childrenNodes[i] = node;
+    }
+
+    // TODO: Generate mesh of all the new children nodes
+    // TODO: Update neighbor nodes and rebuilt them
+}
+
+void VoxelObjectOctree::Node::WorkerRebuild(IVoxelMesher* mesher)
+{
 }
 
 void VoxelObjectOctree::Node::FindIntersecting(List<Node*>& nodes, const BoundingBoxD& box, const int targetNodeSize)

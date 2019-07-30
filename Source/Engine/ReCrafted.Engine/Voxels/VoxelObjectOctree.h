@@ -26,6 +26,7 @@ public:
     {
         DELETE_COPY_MOVE(Node)
         friend class VoxelObjectOctree;
+        friend class VoxelObjectManager;
 
     public:
         /// <summary>
@@ -84,6 +85,10 @@ public:
         void OnPopulate();
         void OnDepopulate();
         void OnRebuild();
+
+    private:
+        void WorkerPopulate(IVoxelMesher* mesher);
+        void WorkerRebuild(IVoxelMesher* mesher);
 
     public:
         /// <summary>
