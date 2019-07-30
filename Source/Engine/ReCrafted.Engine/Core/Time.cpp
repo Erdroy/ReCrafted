@@ -15,6 +15,10 @@ void Time::OnFrame()
 {
     const auto currentTime = Platform::GetMilliseconds();
     m_deltaTime = float((currentTime - m_lastUpdateTime) / 1000.0);
+
+    // Clamp delta time
+    m_deltaTime = Math::Clamp(m_deltaTime, 0.0f, MaxDeltaMillis * 0.1f);
+
     m_time = float(currentTime / 1000.0);
     m_lastUpdateTime = currentTime;
 

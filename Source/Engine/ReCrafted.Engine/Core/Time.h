@@ -13,6 +13,9 @@ class Time final : public SubSystem<Time>
     API_CLASS_BODY()
     friend class MainLoop;
 
+public:
+    const static int MaxDeltaMillis = 100;
+
 private:
     float m_deltaTime = 0.0f;
     float m_fixedDeltaTime = 1.0f / 60.0f;
