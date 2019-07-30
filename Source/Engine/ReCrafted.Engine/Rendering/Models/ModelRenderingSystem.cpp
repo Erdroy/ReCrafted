@@ -10,12 +10,10 @@
 
 void ModelRenderingSystem::AllocateModelComponents(const uint32_t amount)
 {
-    const auto lastRenderListSize = m_renderList.Size();
-    m_renderList.Resize(m_renderList.Size() + amount);
-
-    for(auto i = lastRenderListSize; i < lastRenderListSize + amount; i ++)
+    for(auto i = 0; i < amount; i ++)
     {
-        const auto& component = &m_renderList[i];
+        const auto& component = new ModelComponent();
+        m_renderList.Add(component);
         m_freeComponents.Enqueue(component);
     }
 }
@@ -23,12 +21,13 @@ void ModelRenderingSystem::AllocateModelComponents(const uint32_t amount)
 void ModelRenderingSystem::Initialize()
 {
     m_renderList = {};
-    for(auto&& component : m_renderList)
-        m_freeComponents.Enqueue(&component);
+    AllocateModelComponents(256);
 }
 
 void ModelRenderingSystem::Shutdown()
 {
+    for(auto&& component : m_renderList)
+        delete component;
     m_renderList.Release();
 }
 
@@ -39,16 +38,15 @@ void ModelRenderingSystem::Render()
     auto cameraFrustum = Camera::GetMainCamera()->GetBoundingFrustum();
 
     // TODO: render list sorting
-
     for (auto&& component : m_renderList)
     {
         // Skip rendering when component is not active, is invalid or out of camera frustum bounds.
-        if (!component.Active || !component.IsValid() || !cameraFrustum.Contains(component.Bounds))
+        if (!component->Active || !component->IsValid() || !cameraFrustum.ContainsSphere(component->Bounds))
             continue;
 
-        const auto& mesh = component.Mesh;
-        const auto& material = component.Material;
-        const auto& transform = *component.Transform;
+        const auto& mesh = component->Mesh;
+        const auto& material = component->Material;
+        const auto& transform = *component->Transform;
         const auto& shader = material->GetShader();
 
         // Skip if the material doesn't have a shader.

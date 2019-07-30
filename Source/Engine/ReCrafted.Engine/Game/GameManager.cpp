@@ -99,7 +99,7 @@ GameManager::GameManager()
     m_testModelComponent->Mesh = m_testMesh;
     m_testModelComponent->Material = m_testMaterial;
     m_testModelComponent->Transform = &m_testTransform;
-    m_testModelComponent->Bounds = BoundingBox(Vector3::Zero, Vector3::One);
+    m_testModelComponent->Bounds = BoundingSphere(Vector3::Zero, 0.5f);
     m_testModelComponent->Active = true;
 }
 
@@ -110,6 +110,7 @@ GameManager::~GameManager()
 
     // Release test model component
     ModelRenderingSystem::ReleaseModelComponent(m_testModelComponent);
+    m_testModelComponent = nullptr;
 
     ASSERT(m_game);
     ASSERT(m_gameShutdown.IsValid());

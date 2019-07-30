@@ -16,7 +16,7 @@ public:
     Mesh* Mesh = nullptr;
     Material* Material = nullptr;
     Transform* Transform = nullptr;
-    BoundingBox Bounds = {}; // TODO: Use position from transform and only define bounding sphere's radius.
+    BoundingSphere Bounds = {};
 
 public:
     /// <summary>

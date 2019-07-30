@@ -20,7 +20,7 @@ public:
     static const uint32_t DefaultRenderListAdjust = 16;
 
 private:
-    List<ModelComponent> m_renderList;
+    List<ModelComponent*> m_renderList;
     ConcurrentQueue<ModelComponent*> m_freeComponents;
 
 private:
@@ -44,7 +44,7 @@ public:
 
 public:
     /// <summary>
-    ///     Acquires free model component.
+    ///     Acquires free model component, which is initially disabled.
     /// </summary>
     /// <returns>The acquired model component.</returns>
     static ModelComponent* AcquireModelComponent();
