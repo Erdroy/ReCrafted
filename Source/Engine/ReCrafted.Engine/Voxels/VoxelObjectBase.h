@@ -3,10 +3,12 @@
 #pragma once
 
 #include <ReCrafted.h>
+
+#include "Core/Threading/Task.h"
 #include "Scripting/Object.h"
 #include "Voxels/Voxel.h"
 #include "Voxels/VoxelObjectOctree.h"
-#include "Core/Threading/Task.h"
+#include "Voxels/VoxelStorage.h"
 
 /// <summary>
 ///     The base class of all voxel objects (planets, asteroids etc.).
@@ -33,6 +35,9 @@ public:
 protected:
     VoxelObjectOctree* m_octree = nullptr;
     VoxelObjectAsset* m_asset = nullptr;
+
+    VoxelStorage* m_storage = nullptr;
+    VoxelGenerator* m_generator = nullptr;
 
 public:
     VoxelObjectBase();
@@ -71,5 +76,15 @@ public:
     VoxelObjectAsset* Asset() const
     {
         return m_asset;
+    }
+
+    VoxelStorage* Storage() const
+    {
+        return m_storage;
+    }
+
+    VoxelGenerator* Generator() const
+    {
+        return m_generator;
     }
 };

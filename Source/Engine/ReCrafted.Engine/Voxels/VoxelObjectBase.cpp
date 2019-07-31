@@ -1,9 +1,11 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include "VoxelObjectBase.h"
-#include "Profiler/Profiler.h"
-#include "VoxelObjectManager.h"
+
 #include "Content/ContentManager.h"
+#include "Profiler/Profiler.h"
+#include "Voxels/VoxelObjectManager.h"
+#include "Voxels/Generator/VoxelGenerator.h"
 
 void VoxelObjectBase::OctreeInitializeTask::Execute(void* userData)
 {
@@ -27,6 +29,8 @@ VoxelObjectBase::VoxelObjectBase()
 
 VoxelObjectBase::~VoxelObjectBase()
 {
+    delete m_generator;
+    delete m_storage;
     delete m_octree;
 
     // Unregister object
@@ -40,6 +44,13 @@ void VoxelObjectBase::Initialize()
     task->VoxelObject = this;
     task->Octree = m_octree;
     Task::CreateTask(task, nullptr)->Queue();
+
+    // Initialize components
+    m_storage = new VoxelStorage(this);
+    m_generator = new VoxelGenerator(this);
+
+    // Load generator
+    m_generator->Load();
 }
 
 void VoxelObjectBase::Update()
@@ -50,6 +61,9 @@ void VoxelObjectBase::Update()
 
     // Update octree
     m_octree->Update();
+
+    // Update voxel storage
+    m_storage->Update();
 }
 
 void VoxelObjectBase::DebugDraw()

@@ -72,18 +72,49 @@ public:
     private:
         void DestroyChildren();
         void UpdateNeighborNodes();
-
         void DebugDraw();
 
     public:
+        /// <summary>
+        ///     Populates this node.
+        /// </summary>
         void Populate();
+
+        /// <summary>
+        ///     Depopulates this node.
+        /// </summary>
         void Depopulate();
+
+        /// <summary>
+        ///     Rebuilds this node. To rebuilt this node, 
+        ///     it has to be an leaf node, i.e. cannot be a parent.
+        /// </summary>
         void Rebuild();
 
+        /// <summary>
+        ///     Called on main thread after this node has been created 
+        ///     by populating of the parent.
+        /// </summary>
         void OnCreate();
+
+        /// <summary>
+        ///     Called on main thread, when parent is being depopulated.
+        /// </summary>
         void OnDestroy();
+
+        /// <summary>
+        ///     Called on main thread, when this node has been populated.
+        /// </summary>
         void OnPopulate();
+
+        /// <summary>
+        ///     Called on main thread, when this node has been depopulated.
+        /// </summary>
         void OnDepopulate();
+
+        /// <summary>
+        ///     Called on main thread, when this node has been rebuilt (i.e. got new mesh).
+        /// </summary>
         void OnRebuild();
 
     private:
@@ -142,8 +173,8 @@ private:
 public:
     explicit VoxelObjectOctree(VoxelObjectBase* owner);
     ~VoxelObjectOctree();
-
-public:
+    
+private:
     void Initialize();
     void Update();
 

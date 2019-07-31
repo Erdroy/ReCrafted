@@ -101,9 +101,7 @@ void VoxelObjectOctree::Node::Rebuild()
 void VoxelObjectOctree::Node::OnCreate()
 {
     MAIN_THREAD_ONLY();
-
-    ASSERT(m_chunk == nullptr);
-    m_chunk = new VoxelChunk();
+    ASSERT(m_chunk);
 
     const auto c = m_bounds.center;
     m_chunk->SetTransform(Transform(Vector3(float(c.x), float(c.y), float(c.z)), Quaternion::Identity, Vector3::One));
@@ -185,6 +183,10 @@ void VoxelObjectOctree::Node::WorkerPopulate(IVoxelMesher* mesher)
         node->m_parent = this;
         node->m_root = m_root;
         node->m_depth = m_depth + 1;
+
+        // Create and setup chunk
+        node->m_chunk = new VoxelChunk();
+        ASSERT(node->m_chunk);
 
         // Set node
         m_childrenNodes[i] = node;

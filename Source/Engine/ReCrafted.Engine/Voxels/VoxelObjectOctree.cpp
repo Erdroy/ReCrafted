@@ -62,6 +62,10 @@ void VoxelObjectOctree::CreateRootNodes()
                 node->m_size = rootNodeSize;
                 node->m_depth = 0;
 
+                // Create and setup chunk
+                node->m_chunk = new VoxelChunk();
+                ASSERT(node->m_chunk);
+
                 // Add node it
                 nodeId++;
             }

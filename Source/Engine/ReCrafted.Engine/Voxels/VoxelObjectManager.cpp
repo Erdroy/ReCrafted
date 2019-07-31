@@ -13,7 +13,7 @@ void VoxelObjectManager::WorkerFunction()
     Platform::SetThreadName("VoxelObject Worker");
     Logger::Log("VoxelObject worker thread startup");
 
-    Profiler::InitThread("SpaceObject Worker");
+    Profiler::InitThread("VoxelObject Worker");
     Profiler::BeginFrame();
 
     // TODO: Create mesher and physics shape cooker instance

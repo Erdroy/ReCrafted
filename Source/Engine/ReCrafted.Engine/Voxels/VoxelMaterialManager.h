@@ -7,6 +7,7 @@
 #include "Common/Lock.h"
 #include "Core/SubSystems/SubSystem.h"
 #include "Voxels/Voxel.h"
+#include "Voxels/Assets/VoxelMaterial.h"
 
 #include <sparsepp/spp.h>
 

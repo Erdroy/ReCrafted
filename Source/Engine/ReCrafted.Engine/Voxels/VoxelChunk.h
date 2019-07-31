@@ -40,4 +40,7 @@ public:
     {
         return m_model && m_model->Active;
     }
+
+public:
+    static uint64_t CalculateChunkId(const Vector3& position);
 };
