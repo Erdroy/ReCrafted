@@ -10,6 +10,9 @@ namespace ReCrafted.Tools.APIGenerator
     {
         public static string TranslateBaseType(string baseType)
         {
+            if (Generator.Instance.CustomTranslation.ContainsKey(baseType))
+                return Generator.Instance.CustomTranslation[baseType];
+
             switch (baseType)
             {
                 case "uint8_t":

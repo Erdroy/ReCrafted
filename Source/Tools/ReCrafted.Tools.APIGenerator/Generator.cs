@@ -15,6 +15,8 @@ namespace ReCrafted.Tools.APIGenerator
         private ClassDescription _class;
         private readonly List<FunctionDescription> _functions = new List<FunctionDescription>();
         private readonly List<PropertyDescription> _properties = new List<PropertyDescription>();
+        public readonly Dictionary<string, string> CustomTranslation = new Dictionary<string, string>();
+
 
         public Generator(string input)
         {

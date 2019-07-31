@@ -19,9 +19,6 @@ namespace ReCrafted.Tools.APIGenerator
                 case "API_CLASS":
                     ParseClassTag();
                     break;
-                case "API_STRUCT":
-                    // TODO: Struct parsing
-                    break;
                 case "API_FUNCTION":
                     _functions.Add(ParseFunctionTag());
                     break;
@@ -31,7 +28,24 @@ namespace ReCrafted.Tools.APIGenerator
                 case "API_USING":
                     ParseUsingTag();
                     break;
+                case "API_CUSTOM_TRANSLATION":
+                    ParseCustomTranslationTag();
+                    break;
             }
+        }
+
+        private void ParseCustomTranslationTag()
+        {
+            // API_CUSTOM_TRANSLATION(SomeNativeType_t, "SomeManagedType");
+
+            _tokenizer.ExpectToken(TokenType.LeftParent);
+            var nativeType = _tokenizer.ExpectToken(TokenType.Identifier);
+            _tokenizer.ExpectToken(TokenType.Comma);
+            var managedType = _tokenizer.ExpectToken(TokenType.String);
+            _tokenizer.ExpectToken(TokenType.RightParent);
+
+            // Add custom type translation
+            CustomTranslation.Add(nativeType.Value, managedType.Value.Replace("\"", ""));
         }
 
         private void ParseUsingTag()

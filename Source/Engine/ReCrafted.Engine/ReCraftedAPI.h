@@ -4,6 +4,12 @@
 
 #define API_USING(ns)
 
+/// <summary>
+///     Defines custom type translation. Overrides all API's generator internal 
+///     type translations by the name of the specified one.
+/// </summary>
+#define API_CUSTOM_TRANSLATION(nativeType, managedTypeName)
+
 #define API_CLASS(...)
 #define API_STRUCT(...)
 
