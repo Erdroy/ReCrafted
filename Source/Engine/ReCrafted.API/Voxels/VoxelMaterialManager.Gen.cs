@@ -26,11 +26,22 @@ namespace ReCrafted.API.Voxels
         {
             InternalSetDefaultMaterial(material? material.NativePtr : System.IntPtr.Zero);
         }
+        
+        /// <summary>
+        ///     Gets material by it's id.
+        /// </summary>
+        public static VoxelMaterial GetMaterial(ushort id)
+        {
+            return InternalGetMaterial(id);
+        }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalAddMaterial(System.IntPtr material);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalSetDefaultMaterial(System.IntPtr material);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern VoxelMaterial InternalGetMaterial(ushort id);
     }
 }

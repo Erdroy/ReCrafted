@@ -26,7 +26,23 @@ public:
         *p_data = MONO_STRING_FROM_CSTR(_returnValue);
     }
     
-    static void VoxelMaterial_Get_HasNormalTextures2(VoxelMaterial* instance, bool* data) 
+    static void VoxelMaterial_Get_Material2(VoxelMaterial* instance, VoxelMaterial_t* data) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "VoxelMaterial");
+        const auto _returnValue = instance->GetMaterial();
+        *data = _returnValue;
+    }
+    
+    static void VoxelMaterial_Get_Hardness3(VoxelMaterial* instance, VoxelHardness_t* data) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "VoxelMaterial");
+        const auto _returnValue = instance->GetHardness();
+        *data = _returnValue;
+    }
+    
+    static void VoxelMaterial_Get_HasNormalTextures4(VoxelMaterial* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "VoxelMaterial");
@@ -34,7 +50,7 @@ public:
         *data = _returnValue;
     }
     
-    static void VoxelMaterial_Get_HasFarTextures3(VoxelMaterial* instance, bool* data) 
+    static void VoxelMaterial_Get_HasFarTextures5(VoxelMaterial* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "VoxelMaterial");
@@ -56,8 +72,10 @@ void VoxelMaterial::InitRuntime()
     MONO_REGISTER_OBJECT_TYPE(VoxelMaterial);
     API_BIND("ReCrafted.API.Voxels.VoxelMaterial::InternalGetTexture", &APIProxy::VoxelMaterial_GetTexture1);
     API_BIND("ReCrafted.API.Voxels.VoxelMaterial::Get_InternalName", &APIProxy::VoxelMaterial_Get_Name1);
-    API_BIND("ReCrafted.API.Voxels.VoxelMaterial::Get_InternalHasNormalTextures", &APIProxy::VoxelMaterial_Get_HasNormalTextures2);
-    API_BIND("ReCrafted.API.Voxels.VoxelMaterial::Get_InternalHasFarTextures", &APIProxy::VoxelMaterial_Get_HasFarTextures3);
+    API_BIND("ReCrafted.API.Voxels.VoxelMaterial::Get_InternalMaterial", &APIProxy::VoxelMaterial_Get_Material2);
+    API_BIND("ReCrafted.API.Voxels.VoxelMaterial::Get_InternalHardness", &APIProxy::VoxelMaterial_Get_Hardness3);
+    API_BIND("ReCrafted.API.Voxels.VoxelMaterial::Get_InternalHasNormalTextures", &APIProxy::VoxelMaterial_Get_HasNormalTextures4);
+    API_BIND("ReCrafted.API.Voxels.VoxelMaterial::Get_InternalHasFarTextures", &APIProxy::VoxelMaterial_Get_HasFarTextures5);
 }
 
 const char* VoxelMaterial::Fullname() 

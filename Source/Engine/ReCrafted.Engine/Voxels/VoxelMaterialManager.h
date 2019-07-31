@@ -13,6 +13,8 @@
 API_USING("ReCrafted.API.Content");
 API_USING("ReCrafted.API.Rendering");
 
+API_CUSTOM_TRANSLATION(VoxelMaterial_t, "ushort")
+
 API_CLASS(public, static, noinherit)
 class VoxelMaterialManager : public SubSystem<VoxelMaterialManager>
 {
@@ -54,5 +56,6 @@ public:
     /// <summary>
     ///     Gets material by it's id.
     /// </summary>
+    API_FUNCTION()
     static VoxelMaterial* GetMaterial(VoxelMaterial_t id);
 };

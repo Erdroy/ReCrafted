@@ -21,6 +21,13 @@ public:
         MAIN_THREAD_ONLY();
         VoxelMaterialManager::SetDefaultMaterial(material);
     }
+    
+    static MonoObject* VoxelMaterialManager_GetMaterial3(VoxelMaterial_t id) 
+    {
+        MAIN_THREAD_ONLY();
+        const auto _returnValue = VoxelMaterialManager::GetMaterial(id);
+        return _returnValue != nullptr ? _returnValue->ToManaged() : nullptr;
+    }
 };
 
 void VoxelMaterialManager::InitRuntime() 
@@ -28,6 +35,7 @@ void VoxelMaterialManager::InitRuntime()
     MONO_REGISTER_OBJECT_TYPE(VoxelMaterialManager);
     API_BIND("ReCrafted.API.Voxels.VoxelMaterialManager::InternalAddMaterial", &APIProxy::VoxelMaterialManager_AddMaterial1);
     API_BIND("ReCrafted.API.Voxels.VoxelMaterialManager::InternalSetDefaultMaterial", &APIProxy::VoxelMaterialManager_SetDefaultMaterial2);
+    API_BIND("ReCrafted.API.Voxels.VoxelMaterialManager::InternalGetMaterial", &APIProxy::VoxelMaterialManager_GetMaterial3);
 }
 
 const char* VoxelMaterialManager::Fullname() 

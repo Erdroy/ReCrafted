@@ -12,6 +12,9 @@
 API_USING("ReCrafted.API.Content");
 API_USING("ReCrafted.API.Rendering");
 
+API_CUSTOM_TRANSLATION(VoxelMaterial_t, "ushort")
+API_CUSTOM_TRANSLATION(VoxelHardness_t, "sbyte")
+
 enum class VoxelMaterialType
 {
     ColorBlend,
@@ -62,13 +65,13 @@ public:
         return m_voxelName.c_str();
     }
 
-    //API_PROPERTY(noprefix)
+    API_PROPERTY(noprefix)
     VoxelMaterial_t GetMaterial() const
     {
         return m_voxelMaterial;
     }
 
-    //API_PROPERTY(noprefix)
+    API_PROPERTY(noprefix)
     VoxelHardness_t GetHardness() const
     {
         return m_voxelHardness;

@@ -8,7 +8,7 @@
 #include "Rendering/Models/ModelComponent.h"
 
 /// <summary>
-///     VoxelChunk actor class.
+///     VoxelChunk class.
 /// </summary>
 class VoxelChunk final
 {

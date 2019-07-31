@@ -24,6 +24,24 @@ namespace ReCrafted.API.Voxels
             }
         }
 
+        public ushort Material
+        {
+            get
+            {
+                Get_InternalMaterial(NativePtr, out var data);
+                return data;
+            }
+        }
+
+        public sbyte Hardness
+        {
+            get
+            {
+                Get_InternalHardness(NativePtr, out var data);
+                return data;
+            }
+        }
+
         public bool HasNormalTextures
         {
             get
@@ -47,6 +65,12 @@ namespace ReCrafted.API.Voxels
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalName(System.IntPtr nativePtr, out string data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalMaterial(System.IntPtr nativePtr, out ushort data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalHardness(System.IntPtr nativePtr, out sbyte data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalHasNormalTextures(System.IntPtr nativePtr, out bool data);
