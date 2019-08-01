@@ -2,9 +2,22 @@
 
 #include "VoxelChunk.h"
 #include "Rendering/Models/ModelRenderingSystem.h"
+#include "VoxelObjectBase.h"
 
 VoxelChunk::~VoxelChunk()
 {
+}
+
+void VoxelChunk::Generate(IVoxelMesher* mesher)
+{
+    ASSERT(m_voxelObject);
+
+    auto storage = m_voxelObject->Storage();
+
+    // Try to read chunk data (if not read actually)
+    if (!m_chunkData->IsLoaded())
+        storage->ReadChunkData(m_chunkData);
+
 }
 
 void VoxelChunk::SetVisible(const bool isVisible)

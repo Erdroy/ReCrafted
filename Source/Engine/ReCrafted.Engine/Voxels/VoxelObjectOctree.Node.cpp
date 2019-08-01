@@ -185,15 +185,26 @@ void VoxelObjectOctree::Node::WorkerPopulate(IVoxelMesher* mesher)
         node->m_depth = m_depth + 1;
 
         // Create and setup chunk
-        node->m_chunk = new VoxelChunk();
+        node->m_chunk = new VoxelChunk(m_owner->m_owner);
         ASSERT(node->m_chunk);
 
         // Set node
         m_childrenNodes[i] = node;
     }
 
-    // TODO: Generate mesh of all the new children nodes
-    // TODO: Update neighbor nodes and rebuilt them
+    // Generate mesh of all the new children nodes
+    for(auto& node : m_childrenNodes)
+    {
+        ASSERT(node);
+
+        const auto chunk = node->m_chunk;
+        ASSERT(chunk);
+
+        // Generate the chunk
+        chunk->Generate(mesher);
+    }
+
+    // TODO: Update neighbor nodes and rebuild them
 }
 
 void VoxelObjectOctree::Node::WorkerRebuild(IVoxelMesher* mesher)

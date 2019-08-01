@@ -78,7 +78,7 @@ void VoxelObjectManager::UpdateVoxelObjects()
     {
         voxelObject->Update();
 
-        voxelObject->DebugDraw();
+        //voxelObject->DebugDraw();
     }
 }
 

@@ -12,15 +12,24 @@
 /// </summary>
 class VoxelChunk final
 {
+    DELETE_COPY_MOVE(VoxelChunk);
+
 private:
+    VoxelObjectBase* m_voxelObject = nullptr;
+
     ModelComponent* m_model = nullptr;
     Transform m_transform = {};
 
 public:
     VoxelChunk() = default;
+    explicit VoxelChunk(VoxelObjectBase* voxelObject) : m_voxelObject(voxelObject) {}
     ~VoxelChunk();
 
 public:
+
+public:
+    void Generate(IVoxelMesher* mesher);
+    //void Rebuild(IVoxelMesher* mesher);
 
 public:
     void SetTransform(const Transform& transform)

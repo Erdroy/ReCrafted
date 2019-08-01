@@ -37,6 +37,7 @@ public:
 public:
     void Update();
 
+public:
     void AddChunk(const RefPtr<VoxelChunkData>& chunk);
     void RemoveChunk(uint64_t chunkId);
     void RemoveChunk(const RefPtr<VoxelChunkData>& chunk);
