@@ -20,6 +20,9 @@ void VoxelObjectBase::OctreeInitializeTask::Finish()
 
     // Register object
     VoxelObjectManager::RegisterVoxelObject(VoxelObject);
+
+    // Set voxel object's loading as false.
+    VoxelObject->m_initialLoading = false;
 }
 
 VoxelObjectBase::VoxelObjectBase()

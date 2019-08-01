@@ -6,6 +6,7 @@
 
 #include "Core/Threading/Task.h"
 #include "Scripting/Object.h"
+#include "Voxels/Assets/VoxelObjectAsset.h"
 #include "Voxels/Voxel.h"
 #include "Voxels/VoxelObjectOctree.h"
 #include "Voxels/VoxelStorage.h"
@@ -39,6 +40,8 @@ protected:
     VoxelStorage* m_storage = nullptr;
     VoxelGenerator* m_generator = nullptr;
 
+    bool m_initialLoading = true;
+
 public:
     VoxelObjectBase();
     virtual ~VoxelObjectBase();
@@ -63,16 +66,27 @@ public:
     void Modify(VoxelMaterial_t material, VoxelEditMode mode, const Vector3d& position, float size);
 
 public:
+    /// <summary>
+    ///     The radius of this voxel object.
+    /// </summary>
+    API_PROPERTY()
     double Radius() const
     {
         return m_octree->m_bounds.radius;
     }
 
+    /// <summary>
+    ///     The world-space position of this voxel object.
+    /// </summary>
     Vector3d Position() const
     {
         return m_octree->m_bounds.center;
     }
 
+    /// <summary>
+    ///     The asset of this voxel object.
+    /// </summary>
+    API_PROPERTY()
     VoxelObjectAsset* Asset() const
     {
         return m_asset;
@@ -86,5 +100,14 @@ public:
     VoxelGenerator* Generator() const
     {
         return m_generator;
+    }
+
+    /// <summary>
+    ///     Gets the loading state. True when this voxel object is still loading the initial data.
+    /// </summary>
+    API_PROPERTY()
+    bool IsLoading() const 
+    {
+        return m_initialLoading;
     }
 };
