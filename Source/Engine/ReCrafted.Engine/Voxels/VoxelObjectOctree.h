@@ -4,7 +4,6 @@
 
 #include <ReCrafted.h>
 #include "Common/Lock.h"
-#include "Voxels/VoxelChunk.h"
 
 class VoxelObjectOctree
 {
@@ -154,6 +153,27 @@ public:
         /// <param name="position">The position.</param>
         /// <returns>The node or null when not found.</returns>
         Node* Find(const Vector3d& position);
+
+    public:
+        Vector3d Position() const
+        {
+            return m_bounds.center;
+        }
+
+        int Size() const
+        {
+            return m_size;
+        }
+
+        int Depth() const
+        {
+            return m_depth;
+        }
+
+        bool IsPopulated() const
+        {
+            return m_isPopulated;
+        }
     };
 
 private:

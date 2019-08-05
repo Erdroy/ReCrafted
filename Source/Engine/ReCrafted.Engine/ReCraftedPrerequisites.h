@@ -154,6 +154,7 @@ struct IVoxelMesher;
 // Voxels/
 enum class VoxelEditMode;
 struct Voxel;
+class VoxelChunk;
 class VoxelObjectBase;
 class VoxelObjectManager;
 class VoxelObjectOctree;

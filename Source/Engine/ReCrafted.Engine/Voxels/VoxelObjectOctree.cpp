@@ -3,13 +3,14 @@
 #include "VoxelObjectOctree.h"
 #include "Profiler/Profiler.h"
 #include "VoxelObjectBase.h"
+#include "VoxelChunk.h"
 #include "Assets/VoxelObjectAsset.h"
 #include "Rendering/Debug/DebugDraw.h"
 
 void VoxelObjectOctree::CreateRootNodes()
 {
     const auto asset = m_owner->Asset();
-    const auto radius = asset->MaximumSurfaceHeight();
+    const auto radius = Math::RoundUpToPow2(asset->MaximumSurfaceHeight());
     const auto diameter = radius * 2;
 
     // Setup bounds
@@ -65,6 +66,9 @@ void VoxelObjectOctree::CreateRootNodes()
                 // Create and setup chunk
                 node->m_chunk = new VoxelChunk(m_owner);
                 ASSERT(node->m_chunk);
+
+                // Setup chunk
+                node->m_chunk->Initialize(node);
 
                 // Add node it
                 nodeId++;

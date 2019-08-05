@@ -77,9 +77,13 @@ public:
         memset(m_voxelData, *reinterpret_cast<uint32_t*>(&fill), size * sizeof(Voxel));
     }
 
-    void DeallocateData() const
+    void DeallocateData()
     {
+        if (m_voxelData == nullptr)
+            return;
+
         delete[] m_voxelData;
+        m_voxelData = nullptr;
     }
 
 public:

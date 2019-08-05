@@ -17,38 +17,39 @@ Voxel VoxelGenerator::GenerateFromCHM(const Vector3d& origin, const Vector3d& po
     if (position.LengthSquared() == 0)
         return Voxel::Default;
 
+    const auto lod = float(lodSize);
+
     // Get sphere face
-    /*const auto sphereFace = CHMHelpers::GetFace(position);
+   /* const auto sphereFace = CHMHelpers::GetFace(position);
 
     // Map spherecoords
     const auto texcoord = CHMHelpers::GetTexcoord(sphereFace, position);
 
     // Sample CHM
-    const auto sample = m_bitmap->Sample(static_cast<CHMFace::_enum>(sphereFace), texcoord.x, texcoord.y, mipLevel) / 255.0f;
+    const auto sample = m_bitmap->Sample(static_cast<CHMFace::_enum>(sphereFace), texcoord.x, texcoord.y, mipLevel) / 255.0f;*/
 
     // the terrain height (over planet, sphere is the base)
-    const auto terrainHeight = radius + sample * height;
+    const auto terrainHeight = radius + /*sample **/ height;
 
     // the height over sphere
-    const auto currentHeight = (position - origin).Length();
+    const auto currentHeight = static_cast<float>((position - origin).Length());
     const auto heightDiff = currentHeight - terrainHeight;
 
     // calculate voxel value
-    const auto voxelValue = (heightDiff) / lodSize;
+    const auto voxelValue = heightDiff / lod;
 
     auto voxel = Voxel::Create(voxelValue, 0u);
 
     const auto surfaceLevel = fabs(heightDiff);
 
-    if (surfaceLevel <= lodSize * 4.0f)
+    if (surfaceLevel <= lod * 4.0f)
         voxel.material = 2u;
 
-    if (surfaceLevel <= lodSize * 1.25f)
+    if (surfaceLevel <= lod * 1.25f)
         voxel.material = 1u;
 
     // convert voxel value to voxel
-    return voxel; // TODO: Read material id from CHM*/
-    return Voxel::Full;
+    return voxel; // TODO: Read material id from CHM
 }
 
 void VoxelGenerator::Load()

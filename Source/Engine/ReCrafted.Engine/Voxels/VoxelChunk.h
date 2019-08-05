@@ -6,6 +6,9 @@
 
 #include "Core/Actors/ActorBase.h"
 #include "Rendering/Models/ModelComponent.h"
+#include "Voxels/VoxelChunkData.h"
+#include "Voxels/VoxelObjectOctree.h"
+#include "VoxelChunkMesh.h"
 
 /// <summary>
 ///     VoxelChunk class.
@@ -15,21 +18,46 @@ class VoxelChunk final
     DELETE_COPY_MOVE(VoxelChunk);
 
 private:
-    VoxelObjectBase* m_voxelObject = nullptr;
+    enum class UploadType
+    {
+        None,
 
+        Swap,
+        Clear,
+
+        Count
+    };
+
+private:
+    VoxelObjectBase* m_voxelObject = nullptr;
+    VoxelObjectOctree::Node* m_octreeNode = nullptr;
+
+    RefPtr<VoxelChunkData> m_chunkData = nullptr;
     ModelComponent* m_model = nullptr;
     Transform m_transform = {};
 
+    int m_lod = 0;
+    uint64_t m_id = 0u;
+
+    Vector3 m_position = {};
+
+    Lock m_uploadLock = {};
+    std::atomic<UploadType> m_uploadType = UploadType::None;
+
 public:
-    VoxelChunk() = default;
     explicit VoxelChunk(VoxelObjectBase* voxelObject) : m_voxelObject(voxelObject) {}
     ~VoxelChunk();
 
+private:
+    void SetUpload(const RefPtr<VoxelChunkMesh>& mesh, UploadType uploadType);
+
 public:
+    void Upload();
+    void Initialize(VoxelObjectOctree::Node* node);
 
 public:
     void Generate(IVoxelMesher* mesher);
-    //void Rebuild(IVoxelMesher* mesher);
+    void Rebuild(IVoxelMesher* mesher);
 
 public:
     void SetTransform(const Transform& transform)

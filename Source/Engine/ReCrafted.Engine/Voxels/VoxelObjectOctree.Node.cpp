@@ -8,6 +8,7 @@
 #include "VoxelObjectOctree.h"
 #include "VoxelObjectBase.h"
 #include "VoxelObjectManager.h"
+#include "VoxelChunk.h"
 #include "Rendering/Debug/DebugDraw.h"
 
 void VoxelObjectOctree::Node::DestroyChildren()
@@ -184,9 +185,12 @@ void VoxelObjectOctree::Node::WorkerPopulate(IVoxelMesher* mesher)
         node->m_root = m_root;
         node->m_depth = m_depth + 1;
 
-        // Create and setup chunk
+        // Create chunk
         node->m_chunk = new VoxelChunk(m_owner->m_owner);
         ASSERT(node->m_chunk);
+
+        // Setup chunk
+        node->m_chunk->Initialize(node);
 
         // Set node
         m_childrenNodes[i] = node;

@@ -7,6 +7,7 @@
 #include "Voxels/Generator/VoxelGenerator.h"
 #include "Voxels/VoxelObjectBase.h"
 #include "Voxels/VoxelChunkCache.h"
+#include "Voxels/VoxelChunk.h"
 
 VoxelStorage::VoxelStorage(VoxelObjectBase* voxelObject)
 {
