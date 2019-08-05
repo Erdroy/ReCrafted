@@ -7,6 +7,7 @@ template<typename TReturn, typename ... TArgs> struct Action;
 template <class T> struct rc_allocator;
 template <typename TType> struct Array;
 template <typename TType> class ConcurrentQueue;
+struct DateTime;
 struct Lock;
 template <typename ... TParams> class Event;
 struct Guid;
