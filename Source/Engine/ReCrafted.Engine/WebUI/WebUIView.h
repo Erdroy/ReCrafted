@@ -23,6 +23,7 @@ private:
     int m_width = 0;
     int m_height = 0;
 
+    bool m_loaded = false;
     bool m_active = true;
     bool m_resize = false;
 
@@ -62,7 +63,7 @@ public:
     /// </summary>
     /// <param name="url">The URL to navigate to.</param>
     API_FUNCTION()
-    void Navigate(const char* url) const;
+    void Navigate(const char* url);
 
     /// <summary>
     ///     Executes given JS source code in the view's JS context.

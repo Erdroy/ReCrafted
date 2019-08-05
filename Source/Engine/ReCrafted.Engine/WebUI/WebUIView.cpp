@@ -130,7 +130,7 @@ void WebUIView::Update()
 
 void WebUIView::Render()
 {
-    if (!m_active)
+    if (!m_active || !m_loaded)
         return;
 
     CPU_PROFILE_SCOPE(0, __FUNCTION__);
@@ -196,9 +196,10 @@ void WebUIView::Resize(const uint width, const uint height)
     m_height = height;
 }
 
-void WebUIView::Navigate(const char* url) const
+void WebUIView::Navigate(const char* url)
 {
     m_view->LoadURL(url);
+    m_loaded = false;
 }
 
 void WebUIView::Execute(const char* javaScriptSource) const
@@ -250,11 +251,13 @@ void WebUIView::OnAddConsoleMessage(ultralight::View* caller, ultralight::Messag
 void WebUIView::OnBeginLoading(ultralight::View* caller)
 {
     m_onBeginLoading.Invoke();
+    m_loaded = false;
 }
 
 void WebUIView::OnFinishLoading(ultralight::View* caller)
 {
     m_onFinishLoading.Invoke();
+    m_loaded = true;
 }
 
 void WebUIView::OnDOMReady(ultralight::View* caller)
