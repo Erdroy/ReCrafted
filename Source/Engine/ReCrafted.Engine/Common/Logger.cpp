@@ -3,20 +3,17 @@
 #include "Logger.h"
 #include "Common/IO/File.h"
 #include "Common/IO/Directory.h"
+#include "Common/DateTime.h"
 
 Logger::Logger()
 {
     if(!Directory::Exists("../Logs"))
         Directory::Create("../Logs");
 
-    if (File::Exists("../Logs/log.txt"))
-    {
-        //File::Move("../Logs/log.txt", "../Logs/log_?.txt");
-        // TODO: Backup old log
-        File::Delete("../Logs/log.txt");
-    }
+    const auto date = DateTime::Now();
+    const auto logFileName = date.Format(STRING_CONST("Log_{:%Y-%m-%d_%H_%M_%S}.txt")).StdStr();
 
-    m_fileStream = new FileStream("../Logs/log.txt", File::OpenMode::BinaryWrite);
+    m_fileStream = new FileStream((std::string("../Logs/") + logFileName).c_str(), File::OpenMode::BinaryWrite);
     m_logStream = new BinaryStream(*m_fileStream);
 }
 
