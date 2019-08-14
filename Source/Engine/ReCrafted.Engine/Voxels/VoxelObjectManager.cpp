@@ -11,6 +11,10 @@
 void VoxelObjectManager::WorkerFunction()
 {
     Platform::SetThreadName("VoxelObject Worker");
+
+    // Attach this thread to mono
+    ObjectManager::AttachThread();
+    
     Logger::Log("VoxelObject worker thread startup");
 
     Profiler::InitThread("VoxelObject Worker");
@@ -52,6 +56,9 @@ void VoxelObjectManager::WorkerFunction()
 
         Profiler::EndCPUProfile();
     }
+
+    // Detach this thread from mono
+    ObjectManager::DetachThread();
 
     mesher->Clear();
     delete mesher;
