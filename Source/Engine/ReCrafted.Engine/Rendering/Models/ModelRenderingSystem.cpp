@@ -53,10 +53,6 @@ void ModelRenderingSystem::Render()
         if (!shader)
             continue;
 
-        // Bind textures
-        for(auto i = 0u; i < material->m_textures.Count(); i ++)
-            shader->SetTexture(i, material->m_textures[i]);
-
         // Update shader fields values
         for(auto&& field : material->m_fields)
             Renderer::SetShaderValue(shader->GetHandle(), field->Buffer, field->Id, field->Data, field->Size);
@@ -70,6 +66,17 @@ void ModelRenderingSystem::Render()
 
         // Apply shader
         Renderer::ApplyShader(shader->GetHandle(), material->m_shaderPass);
+
+        // Bind texture arrays
+        for (auto i = 0u; i < material->m_textureArrays.Count(); i++)
+        {
+            auto& textureArray = material->m_textureArrays[i];
+            shader->SetTextureArray(i, textureArray.ToArray());
+        }
+
+        // Bind textures
+        for (auto i = 0u; i < material->m_textures.Count(); i++)
+            shader->SetTexture(i, material->m_textures[i]);
 
         // Render the mesh
         RenderingManager::DrawIndexedMesh(mesh);

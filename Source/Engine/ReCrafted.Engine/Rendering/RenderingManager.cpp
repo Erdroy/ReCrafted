@@ -130,7 +130,9 @@ void RenderingManager::Render()
     // Process rendering components
     RenderComponents(RenderingComponentStage::Final);
 
+    Profiler::BeginCPUProfile("Renderer::Frame");
     Renderer::Frame();
+    Profiler::EndCPUProfile();
 }
 
 void RenderingManager::RenderComponents(const RenderingComponentStage stage)

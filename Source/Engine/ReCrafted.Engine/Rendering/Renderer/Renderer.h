@@ -754,14 +754,15 @@ namespace Renderer
     /// Sets given textures as current at given slot.
     /// Warning: This should be called AFTER ApplyShader.
     /// </summary>
-    /// <param name="handle">The texture handle.</param>
+    /// <param name="handles">The texture handle.</param>
     /// <param name="slot">The texture target slot.</param>
-    /// <param name="textureCount">The amout of given textures.</param>
+    /// <param name="textureCount">The amount of given textures.</param>
     RENDERER_FUNCTION(void) ApplyTextureArray2D(Texture2DHandle* handles, uint8_t slot, uint8_t textureCount);
 
     /// <summary>
     /// Resizes given texture2d.
     /// </summary>
+    /// <param name="handle">The texture handle.</param>
     /// <param name="width">The new width of the texture2d.</param>
     /// <param name="height">The new height of the texture2d.</param>
     RENDERER_FUNCTION(void) ResizeTexture2D(Texture2DHandle handle, uint16_t width, uint16_t height);

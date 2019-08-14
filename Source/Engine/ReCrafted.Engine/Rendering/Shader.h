@@ -4,9 +4,9 @@
 
 #include <ReCrafted.h>
 
+#include "Common/Array.h"
 #include "Content/Assets/JsonAsset.h"
 #include "Rendering/Renderer/Renderer.h"
-#include "Rendering/Texture.h"
 
 API_USING("ReCrafted.API.Content")
 
@@ -53,25 +53,27 @@ public:
     }
 
     /// <summary>
-    ///     Sets texture at given slot.
+    ///     Sets texture array to a given slot.
     /// </summary>
-    /// <param name="slot">The texture slot, starts at 0.</param>
-    /// <param name="texture">The texture.</param>
+    /// <param name="slot">The texture array slot, starts at 0.</param>
+    /// <param name="textureArray">The texture array.</param>
     API_FUNCTION()
-    void SetTexture(const int slot, Texture* texture)
-    {
-        Renderer::ApplyTexture2D(texture->GetHandle(), slot);
-    }
+    void SetTextureArray(const int slot, const Array<Texture*>& textureArray);
 
     /// <summary>
     ///     Sets texture at given slot.
     /// </summary>
     /// <param name="slot">The texture slot, starts at 0.</param>
     /// <param name="texture">The texture.</param>
-    void SetTexture(const int slot, const Renderer::Texture2DHandle texture)
-    {
-        Renderer::ApplyTexture2D(texture, slot);
-    }
+    API_FUNCTION()
+    void SetTexture(const int slot, Texture* texture);
+
+    /// <summary>
+    ///     Sets texture at given slot.
+    /// </summary>
+    /// <param name="slot">The texture slot, starts at 0.</param>
+    /// <param name="texture">The texture.</param>
+    void SetTexture(const int slot, const Renderer::Texture2DHandle texture);
 
     /// <summary>
     ///     Gets the shader handle.

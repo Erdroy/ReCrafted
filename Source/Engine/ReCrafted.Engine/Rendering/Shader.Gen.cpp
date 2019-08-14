@@ -10,7 +10,17 @@ class APIProxy
 {
 public:
     
-    static void Shader_SetTexture1(Shader* instance, const int slot, Texture* texture) 
+    static void Shader_SetTextureArray1(Shader* instance, const int slot, MonoArray* p_textureArray) 
+    {
+        MAIN_THREAD_ONLY();
+        ASSERT(p_textureArray);
+        const auto textureArray = MONO_ARRAY_TO_OBJECT_ARRAY(p_textureArray, Texture, Texture*, MonoObject*, _t0->ToManaged());
+        MONO_CHECK_OBJECT(instance, "Shader");
+        instance->SetTextureArray(slot, textureArray);
+        MONO_FREE_ARRAY(textureArray);
+    }
+    
+    static void Shader_SetTexture2(Shader* instance, const int slot, Texture* texture) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "Shader");
@@ -29,7 +39,8 @@ void Shader::InitRuntime()
     MONO_REGISTER_OBJECT(&APIProxy::Shader_CreateObject);
     
     MONO_REGISTER_OBJECT_TYPE(Shader);
-    API_BIND("ReCrafted.API.Rendering.Shader::InternalSetTexture", &APIProxy::Shader_SetTexture1);
+    API_BIND("ReCrafted.API.Rendering.Shader::InternalSetTextureArray", &APIProxy::Shader_SetTextureArray1);
+    API_BIND("ReCrafted.API.Rendering.Shader::InternalSetTexture", &APIProxy::Shader_SetTexture2);
 }
 
 const char* Shader::Fullname() 

@@ -43,6 +43,32 @@ void Material::OnDeserializeJson(uint16_t version, const json& json)
     ASSERT(mPass.is_number_integer());
     m_shaderPass = static_cast<uint8_t>(mPass.get<int>());
 
+    // Load texture arrays
+    for (auto&& textureArrayItems : json["TextureArrays"])
+    {
+        ASSERT(!textureArrayItems.is_null());
+        ASSERT(textureArrayItems.is_array());
+
+        // Add texture array
+        const auto numTextures = textureArrayItems.size();
+        m_textureArrays.Add(List<Texture*>(numTextures));
+        auto& textureArray = m_textureArrayLoadQueue.Last();
+
+        for (auto&& textureArrayItem : textureArrayItems)
+        {
+            ASSERT(!textureArrayItem.is_null());
+            ASSERT(textureArrayItem.is_string());
+
+            // Get texture asset name
+            const auto assetName = textureArrayItem.get<std::string>();
+            ASSERT(!assetName.empty());
+
+            // We cannot use the ContentManager here, because we are running on task worker thread.
+            // There is no need to lock the texture queue list as it will not be accessed by any other thread at this moment.
+            textureArray.Add(assetName);
+        }
+    }
+
     // Load textures
     for(auto&& textureArrayItem : json["Textures"])
     {
@@ -164,6 +190,31 @@ void Material::OnLoadEnd()
     m_shader = ContentManager::LoadAsset<Shader>(m_shaderAssetName.c_str());
     m_shaderAssetName.clear();
 
+    // Load texture arrays
+    for(auto i = 0u; i < m_textureArrayLoadQueue.Count(); i ++)
+    {
+        const auto textureArrayLoadQueue = m_textureArrayLoadQueue[i];
+        
+        // Load textures
+        for (auto&& textureAssetName : textureArrayLoadQueue)
+        {
+            ASSERT(!textureAssetName.empty());
+
+            // Load texture (this will start loading the texture), at first, we will get only first mip.
+            const auto textureAsset = ContentManager::LoadAsset<Texture>(textureAssetName.c_str());
+
+            // Make sure that we have got the asset.
+            ASSERT(textureAsset);
+
+            // Add texture to the texture array
+            m_textureArrays[i].Add(textureAsset);
+        }
+    }
+
+    // Clear texture array load queue
+    m_textureArrayLoadQueue.Clear();
+    m_textureArrayLoadQueue.Release();
+
     // Load textures
     for(auto&& textureAssetName : m_textureLoadQueue)
     {
@@ -180,6 +231,7 @@ void Material::OnLoadEnd()
 
     // Clear texture load queue
     m_textureLoadQueue.Clear();
+    m_textureLoadQueue.Release();
 }
 
 void Material::OnUnload()
@@ -188,6 +240,11 @@ void Material::OnUnload()
     Destroy(m_shader);
 
     // Destroy textures
+    for(auto&& textureArray : m_textureArrays)
+        for (auto&& texture : textureArray)
+            Destroy(texture);
+    m_textureArrays.Clear();
+
     for(auto&& texture : m_textures)
         Destroy(texture);
     m_textures.Clear();

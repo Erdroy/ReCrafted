@@ -4,11 +4,11 @@
 
 #include <ReCrafted.h>
 #include "Common/List.h"
-#include "Common/Array.h"
 #include "Content/ContentManager.h"
 #include "Content/Assets/JsonAsset.h"
 #include "Scripting/Object.h"
 #include "Rendering/Shader.h"
+#include "Rendering/Texture.h"
 #include "Rendering/Materials/MaterialField.h"
 
 API_USING("ReCrafted.API.Content")
@@ -29,12 +29,14 @@ private:
     std::string m_name = {};
     Shader* m_shader = nullptr;
     uint8_t m_shaderPass = 0u;
+    List<List<Texture*>> m_textureArrays = {};
     List<Texture*> m_textures = {};
     List<MaterialField*> m_fields = {};
 
     // Loading helpers
     std::string m_shaderAssetName = {};
     List<std::string> m_textureLoadQueue = {};
+    List<List<std::string>> m_textureArrayLoadQueue = {};
 
 private:
     static MaterialFieldType ParseFieldType(const std::string& type);
