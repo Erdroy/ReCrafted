@@ -69,7 +69,7 @@ void TransvoxelMesher::Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, RefPtr<Vox
     mesh->AddCustomData(meshSection.materialsC.Data(), sizeof(Vector4));
     mesh->AddCustomData(meshSection.materialsD.Data(), sizeof(Vector4));
     mesh->SetIndices(Array<uint>(meshSection.indices.Data(), meshSection.indices.Count()));
-    mesh->ApplyChanges();
+    mesh->ApplyChanges(true, false);
 
     // Add mesh section
     chunkMesh->AddSection(chunkSection);

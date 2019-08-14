@@ -279,7 +279,7 @@ MonoObject* ObjectManager::NewGeneric(MonoType* baseType, MonoType* type, MonoOb
 
 void ObjectManager::AttachThread()
 {
-    mono_thread_attach(mono_domain_get());
+    mono_thread_attach(Domain::Root->ToMono());
 }
 
 void ObjectManager::DetachThread()

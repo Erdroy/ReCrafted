@@ -12,6 +12,7 @@ project "ReCrafted.Engine"
 		"./**.lua",
 		"./**.cpp",
 		"./**.h",
+		"./**.hpp",
 		"./**.hlsl",
 		"./**.hlsli",
 	}
