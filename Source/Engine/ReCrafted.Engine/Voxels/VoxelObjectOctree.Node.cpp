@@ -5,8 +5,6 @@
 #include "Common/List.h"
 
 #include "VoxelLookupTables.h"
-#include "VoxelObjectOctree.h"
-#include "VoxelObjectBase.h"
 #include "VoxelObjectManager.h"
 #include "VoxelChunk.h"
 #include "Rendering/Debug/DebugDraw.h"

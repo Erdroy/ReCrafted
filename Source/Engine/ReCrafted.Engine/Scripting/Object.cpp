@@ -70,7 +70,7 @@ void Object::DestroyNow(Object* objectInstance)
 
 MonoObject* Object::New(MonoType* type)
 {
-    return ObjectManager::New(type);;
+    return ObjectManager::New(type);
 }
 
 MonoObject* Object::NewGeneric(MonoType* baseType, MonoType* type, MonoObject* obj)
