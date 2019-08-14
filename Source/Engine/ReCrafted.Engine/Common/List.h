@@ -90,6 +90,11 @@ public:
         m_vector.resize(size);
     }
 
+    FORCE_INLINE Array<TType> ToArray() const
+    {
+        return Array<TType>(m_vector.data(), m_vector.size());
+    }
+
     /// <summary>
     ///     Checks if this list contains given item.
     /// </summary>
