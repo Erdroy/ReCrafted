@@ -10,6 +10,8 @@
 #include "ScriptingManager.h"
 #include "Profiler/Profiler.h"
 
+#include <mono/metadata/threads.h>
+
 void ObjectManager::RegisterObject(Object* object)
 {
     ASSERT(object);
@@ -273,4 +275,14 @@ MonoObject* ObjectManager::NewGeneric(MonoType* baseType, MonoType* type, MonoOb
 
     // Return managed pointer
     return nativeObject->ToManaged();
+}
+
+void ObjectManager::AttachThread()
+{
+    mono_thread_attach(mono_domain_get());
+}
+
+void ObjectManager::DetachThread()
+{
+    mono_thread_detach(mono_thread_current());
 }

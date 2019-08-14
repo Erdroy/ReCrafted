@@ -113,4 +113,16 @@ public:
     /// <returns>The managed object pointer.</returns>
     /// <remarks>Mono type must derive from Object.</remarks>
     static MonoObject* NewGeneric(MonoType* baseType, MonoType* type, MonoObject* obj);
+
+    /// <summary>
+    ///     Attaches current thread to the Mono backend.
+    ///     Allows the C++ engine to call Mono functions.
+    /// </summary>
+    static void AttachThread();
+
+    /// <summary>
+    ///     Detaches current thread from the Mono backend.
+    ///     Calling Mono functions from C++ engine is no longer valid.
+    /// </summary>
+    static void DetachThread();
 };
