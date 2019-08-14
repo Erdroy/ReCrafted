@@ -71,11 +71,11 @@ namespace ReCrafted.Game.Core
 
             // Add voxel materials
             VoxelMaterialManager.AddMaterial(ContentManager.LoadAsset<VoxelMaterial>("Voxels/Materials/Rock"));
-            VoxelMaterialManager.AddMaterial(ContentManager.LoadAsset<VoxelMaterial>("Voxels/Materials/Rock1"));
-            VoxelMaterialManager.AddMaterial(ContentManager.LoadAsset<VoxelMaterial>("Voxels/Materials/Rock2"));
             VoxelMaterialManager.AddMaterial(ContentManager.LoadAsset<VoxelMaterial>("Voxels/Materials/Grass"));
             VoxelMaterialManager.AddMaterial(ContentManager.LoadAsset<VoxelMaterial>("Voxels/Materials/Soil"));
             VoxelMaterialManager.AddMaterial(ContentManager.LoadAsset<VoxelMaterial>("Voxels/Materials/Clay"));
+            VoxelMaterialManager.AddMaterial(ContentManager.LoadAsset<VoxelMaterial>("Voxels/Materials/Rock1"));
+            VoxelMaterialManager.AddMaterial(ContentManager.LoadAsset<VoxelMaterial>("Voxels/Materials/Rock2"));
         }
         
         protected override void OnShutdown()

@@ -28,11 +28,15 @@ void Shader::OnUnload()
 
 void Shader::SetTextureArray(const int slot, const Array<Texture*>& textureArray)
 {
+    ASSERT(textureArray.Count() <= 32);
     Renderer::Texture2DHandle handles[32] = {};
 
     auto i = 0;
     for (auto& texture : textureArray)
-        handles[++i] = texture->GetHandle();
+    {
+        handles[i] = texture->GetHandle();
+        i++;
+    }
 
     Renderer::ApplyTextureArray2D(handles, slot, textureArray.Count());
 }

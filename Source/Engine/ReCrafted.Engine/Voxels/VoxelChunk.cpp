@@ -13,9 +13,9 @@ VoxelChunk::~VoxelChunk()
 void VoxelChunk::SetUpload(const RefPtr<VoxelChunkMesh>& mesh, UploadType uploadType)
 {
     // Lock Upload
-    ScopeLock(m_uploadLock);
+   /* ScopeLock(m_uploadLock);
 
-    /*if (m_newMesh || m_newCollision)
+    if (m_newMesh || m_newCollision)
     {
         // Queue for dispose
         m_disposeQueue.enqueue(std::make_pair(m_newMesh, m_newCollision));
@@ -23,8 +23,8 @@ void VoxelChunk::SetUpload(const RefPtr<VoxelChunkMesh>& mesh, UploadType upload
 
     // Set upload type to UPLOAD-MESH
     m_newMesh = mesh;
-    m_newCollision = collision;
-    m_uploadType = uploadType;*/
+    //m_newCollision = collision;*/
+    m_uploadType = uploadType;
 }
 
 void VoxelChunk::Upload()
@@ -170,22 +170,20 @@ void VoxelChunk::Rebuild(IVoxelMesher* mesher)
     // We have at least one valid triangle,
     // so create new mesh now and set upload state.
 
-    // TODO: Double buffer for VCM
-    // Create new mesh TODO: Select free VCM from double buffer
-    //RefPtr<VoxelChunkMesh> mesh;
-    //mesh.reset(new VoxelChunkMesh);
+    // Create new mesh
+    RefPtr<VoxelChunkMesh> mesh = std::make_unique<VoxelChunkMesh>();
 
     // Create new collision
-    //RefPtr<VoxelChunkCollision> collision;
-    //collision.reset(new VoxelChunkCollision);
+    RefPtr<VoxelChunkCollision> collision = std::make_unique<VoxelChunkCollision>();
 
     // Apply mesh and collision
-    //mesher->Apply(mesh, collision);
+    mesher->Apply(mesh, collision);
 
     // Upload new mesh
-    //mesh->UploadNow();
+    mesh->UploadNow();
 
-    //SetUpload(mesh, UploadType::Swap);
+    // TODO: SetUpload and Upload implementation
+    SetUpload(mesh, UploadType::Swap);
 }
 
 void VoxelChunk::SetVisible(const bool isVisible)

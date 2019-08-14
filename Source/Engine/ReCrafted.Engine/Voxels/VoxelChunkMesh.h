@@ -9,6 +9,7 @@
 #include "Rendering/Renderer/Renderer.h"
 #include "Voxels/Voxel.h"
 #include "Scripting/Object.h"
+#include "VoxelMaterialManager.h"
 
 class VoxelChunkMesh
 {
@@ -47,10 +48,10 @@ public:
 
             for (auto& material : materialSet)
             {
-                /*const auto cb_near = VoxelMaterialManager::GetMaterial(material)->GetTexture(VoxelMaterial::VoxelMaterialType::ColorBlend);
-                const auto cb_far = VoxelMaterialManager::GetMaterial(material)->GetTexture(VoxelMaterial::VoxelMaterialType::ColorBlendFar);
-                const auto nsm_near = VoxelMaterialManager::GetMaterial(material)->GetTexture(VoxelMaterial::VoxelMaterialType::NormalSmoothnessMetallic);
-                const auto nsm_far = VoxelMaterialManager::GetMaterial(material)->GetTexture(VoxelMaterial::VoxelMaterialType::NormalSmoothnessMetallicFar);
+                const auto cb_near = VoxelMaterialManager::GetMaterial(material)->GetTexture(VoxelMaterialType::ColorBlend);
+                const auto cb_far = VoxelMaterialManager::GetMaterial(material)->GetTexture(VoxelMaterialType::ColorBlendFar);
+                const auto nsm_near = VoxelMaterialManager::GetMaterial(material)->GetTexture(VoxelMaterialType::NormalSmoothnessMetallic);
+                const auto nsm_far = VoxelMaterialManager::GetMaterial(material)->GetTexture(VoxelMaterialType::NormalSmoothnessMetallicFar);
 
                 if (!cb_near)
                     break;
@@ -66,7 +67,7 @@ public:
                     textures.nsmNear.Add(nsm_near->GetHandle());
 
                 if (nsm_far)
-                    textures.nsmFar.Add(nsm_far->GetHandle());*/
+                    textures.nsmFar.Add(nsm_far->GetHandle());
             }
         }
     };
