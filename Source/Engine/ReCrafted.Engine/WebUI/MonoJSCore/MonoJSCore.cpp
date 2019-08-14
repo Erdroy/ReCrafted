@@ -19,7 +19,7 @@ JSValueRef JSNativeCallback(JSContextRef ctx, JSObjectRef function, JSObjectRef 
     if(paramArray == nullptr)
     {
         // 5 params + this Object
-        paramArray = mono_array_new(Domain::Root->ToMono(), mono_get_intptr_class(), 5);
+        paramArray = mono_array_new(mono_domain_get(), mono_get_intptr_class(), 5);
     }
 
     const auto callback = static_cast<MonoObject*>(JSObjectGetPrivate(function));
