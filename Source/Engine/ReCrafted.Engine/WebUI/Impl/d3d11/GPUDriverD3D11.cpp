@@ -257,7 +257,7 @@ namespace ultralight {
 
         ID3D11RenderTargetView* target;
         if (render_buffer_id == 0) {
-            target = context_->render_target_view();
+            //target = context_->render_target_view();
         }
         else {
             auto i = render_targets_.find(render_buffer_id);
@@ -277,7 +277,7 @@ namespace ultralight {
         float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
         if (render_buffer_id == 0) {
-            context_->immediate_context()->ClearRenderTargetView(context_->render_target_view(), color);
+            //context_->immediate_context()->ClearRenderTargetView(context_->render_target_view(), color);
             return;
         }
 

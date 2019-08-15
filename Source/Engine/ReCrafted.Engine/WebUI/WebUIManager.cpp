@@ -13,7 +13,7 @@
 void WebUIManager::Initialize()
 {
     // Create GPU context
-    m_context = ultralight::GPUContextD3D11::Create(false);
+    m_context = ultralight::GPUContextD3D11::Create();
 
     // Setup ultralight config
     auto config = ultralight::Config();

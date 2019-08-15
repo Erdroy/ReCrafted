@@ -20,21 +20,14 @@ namespace ultralight {
     {
         immediate_context_->OMSetBlendState(blend_state_.Get(), nullptr, 0xffffffff);
         immediate_context_->RSSetState(rasterizer_state_.Get());
-        SetViewportSize(width_, height_);
     }
 
     void GPUContextD3D11::EndDrawing()
     {
     }
 
-    void GPUContextD3D11::PresentFrame()
-    {
-        //swap_chain()->Present(enable_vsync_ ? 1 : 0, 0);
-    }
-
     void GPUContextD3D11::Resize(int width, int height)
     {
-        set_screen_size(width, height);
         immediate_context_->OMSetRenderTargets(0, nullptr, nullptr);
     }
 
@@ -51,42 +44,21 @@ namespace ultralight {
         return immediate_context_;
     }
 
-    IDXGISwapChain* GPUContextD3D11::swap_chain()
+
+    void GPUContextD3D11::set_scale(double scale)
     {
-        assert(swap_chain_);
-        return swap_chain_;
+        scale_ = scale;
     }
 
-    ID3D11RenderTargetView* GPUContextD3D11::render_target_view()
+    double GPUContextD3D11::scale() const
     {
-        ::Renderer::RHIContext context;
-        ::Renderer::GetContext(&context);
-        return static_cast<ID3D11RenderTargetView*>(context.windows[1].backBuffer);
+        return scale_;
     }
 
-    void GPUContextD3D11::set_scale(double scale) { scale_ = scale; }
-    double GPUContextD3D11::scale() const { return scale_; }
-
-    void GPUContextD3D11::set_screen_size(uint32_t width, uint32_t height)
-    {
-        width_ = width;
-        height_ = height;
-    }
-
-    void GPUContextD3D11::screen_size(uint32_t& width, uint32_t& height)
-    {
-        width = width_;
-        height = height_;
-    }
-
-    bool GPUContextD3D11::Initialize(HWND hWnd, int screen_width, int screen_height, double screen_scale, bool fullscreen,
-        bool enable_vsync, bool sRGB, int samples)
+    bool GPUContextD3D11::Initialize(const double screen_scale, const int samples)
     {
         samples_ = samples;
-        enable_vsync_ = enable_vsync;
-        set_screen_size(screen_width, screen_height);
         set_scale(screen_scale);
-
 
         ::Renderer::RHIContext context;
         ::Renderer::GetContext(&context);
@@ -95,14 +67,6 @@ namespace ultralight {
         immediate_context_ = static_cast<ID3D11DeviceContext*>(context.deviceContext);
 
         HRESULT hr = S_OK;
-
-        hwnd_ = hWnd;
-
-        // Get the actual device width/height (may be different than screen size)
-        RECT rc;
-        GetClientRect(hWnd, &rc);
-        UINT width = rc.right - rc.left;
-        UINT height = rc.bottom - rc.top;
 
         D3D11_RENDER_TARGET_BLEND_DESC rt_blend_desc;
         ZeroMemory(&rt_blend_desc, sizeof(rt_blend_desc));
@@ -142,45 +106,18 @@ namespace ultralight {
 
         immediate_context_->RSSetState(rasterizer_state_.Get());
 
-        back_buffer_width_ = width;
-        back_buffer_height_ = height;
-
-        // Initialize backbuffer with white so we don't get flash of black while loading views.
-        float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-        immediate_context_->ClearRenderTargetView(render_target_view(), color);
-
         driver_ = std::make_unique<GPUDriverD3D11>(this);
 
         return true;
     }
 
-    void GPUContextD3D11::SetViewportSize(int width, int height)
-    {
-        width_ = width;
-        height_ = height;
-
-        // Setup the viewport
-        D3D11_VIEWPORT vp;
-        ZeroMemory(&vp, sizeof(vp));
-        vp.Width = (float)width;
-        vp.Height = (float)height;
-        vp.MinDepth = 0.0f;
-        vp.MaxDepth = 1.0f;
-        vp.TopLeftX = 0;
-        vp.TopLeftY = 0;
-        immediate_context_->RSSetViewports(1, &vp);
-    }
-
-    std::unique_ptr<GPUContext> GPUContextD3D11::Create(bool enable_vsync)
+    std::unique_ptr<GPUContext> GPUContextD3D11::Create()
     {
         auto gpu_context = std::make_unique<GPUContextD3D11>();
-        if (gpu_context->Initialize(static_cast<HWND>(::Platform::GetCurrentWindow()), Display::GetWidth(),
-            Display::GetHeight(), 1.0f, false, enable_vsync, false, 1))
+        if (gpu_context->Initialize(1.0, 1))
             return std::move(gpu_context);
 
         return nullptr;
     }
 
-    UINT GPUContextD3D11::back_buffer_width() { return back_buffer_width_; }
-    UINT GPUContextD3D11::back_buffer_height() { return back_buffer_height_; }
 }
