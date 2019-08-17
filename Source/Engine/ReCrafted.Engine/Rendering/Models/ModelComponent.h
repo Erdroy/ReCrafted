@@ -4,6 +4,8 @@
 
 #include <ReCrafted.h>
 
+#include "Common/List.h"
+
 /// <summary>
 ///     The model component structure. 
 ///     This struct is being used to define model's rendering settings.
@@ -13,10 +15,19 @@ struct ModelComponent
 public:
     bool Free = true;
     bool Active = false;
-    Mesh* Mesh = nullptr;
+    bool Procedural = false;
     Material* Material = nullptr;
     Transform* Transform = nullptr;
     BoundingSphere Bounds = {};
+    List<Mesh*> Meshes = {};
+
+public:
+    /// <summary>
+    ///     OnBeginRender callback called when this model is being rendered. Only called when this is procedural model component,
+    ///     created by ModelRenderingSystem::AcquireModelComponent(true).
+    ///     Can be used to change the Material, Transform etc.
+    /// </summary>
+    Action<void> OnBeginRender;
 
 public:
     /// <summary>
@@ -25,6 +36,6 @@ public:
     /// <returns></returns>
     bool IsValid() const
     {
-        return Mesh && Material&& Transform;
+        return Meshes.Count() > 0 && Material&& Transform;
     }
 };

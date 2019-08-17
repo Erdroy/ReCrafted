@@ -47,7 +47,7 @@ public:
     ///     Acquires free model component, which is initially disabled.
     /// </summary>
     /// <returns>The acquired model component.</returns>
-    static ModelComponent* AcquireModelComponent();
+    static ModelComponent* AcquireModelComponent(bool isProcedural = false);
 
     /// <summary>
     ///     Releases given component.

@@ -44,7 +44,10 @@ void ModelRenderingSystem::Render()
         if (!component->Active || !component->IsValid() || !cameraFrustum.ContainsSphere(component->Bounds))
             continue;
 
-        const auto& mesh = component->Mesh;
+        // Invoke OnBeginRender on procedural models
+        if(component->Procedural)
+            component->OnBeginRender.Invoke();
+
         const auto& material = component->Material;
         const auto& transform = *component->Transform;
         const auto& shader = material->GetShader();
@@ -78,15 +81,18 @@ void ModelRenderingSystem::Render()
         for (auto i = 0u; i < material->m_textures.Count(); i++)
             shader->SetTexture(i, material->m_textures[i]);
 
-        // Render the mesh
-        RenderingManager::DrawIndexedMesh(mesh);
+        // Render all of the meshes
+        for(auto& mesh : component->Meshes)
+        {
+            RenderingManager::DrawIndexedMesh(mesh);
+        }
     }
 
     // Cleanup
     RenderingManager::SetCurrentShader(nullptr);
 }
 
-ModelComponent* ModelRenderingSystem::AcquireModelComponent()
+ModelComponent* ModelRenderingSystem::AcquireModelComponent(const bool isProcedural)
 {
     ModelComponent* component;
 
@@ -97,6 +103,7 @@ ModelComponent* ModelRenderingSystem::AcquireModelComponent()
 
     // Set component as allocated (i.e. not free).
     component->Free = false;
+    component->Procedural = isProcedural;
     return component;
 }
 
