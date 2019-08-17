@@ -5,13 +5,25 @@
 #include "VoxelObjectBase.h"
 #include "Meshing/IVoxelMesher.h"
 #include "VoxelChunkMesh.h"
-
-VoxelChunk::~VoxelChunk()
-{
-}
+#include "Rendering/Materials/Material.h"
 
 void VoxelChunk::SetUpload(const RefPtr<VoxelChunkMesh>& mesh, UploadType uploadType)
 {
+    if (uploadType == UploadType::Clear)
+        return;
+
+    SetVisible(true);
+    m_mesh = mesh;
+
+    const auto sections = m_mesh->GetSections();
+
+    ASSERT(m_model);
+    m_model->Meshes.Clear();
+    for (auto&& section : sections)
+    {
+        m_model->Meshes.Add(section.mesh);
+    }
+
     // Lock Upload
    /* ScopeLock(m_uploadLock);
 
@@ -23,8 +35,18 @@ void VoxelChunk::SetUpload(const RefPtr<VoxelChunkMesh>& mesh, UploadType upload
 
     // Set upload type to UPLOAD-MESH
     m_newMesh = mesh;
-    //m_newCollision = collision;*/
-    m_uploadType = uploadType;
+    //m_newCollision = collision;
+    m_uploadType = uploadType;*/
+}
+
+void VoxelChunk::OnBeginRender(const int meshIndex)
+{
+    const auto sections = m_mesh->GetSections();
+
+    auto textures = sections[meshIndex].textures;
+
+    // Set textures
+    m_model->Material->SetTextureArray(0, textures.cbNear);
 }
 
 void VoxelChunk::Upload()
@@ -92,6 +114,7 @@ void VoxelChunk::Initialize(VoxelObjectOctree::Node* node)
     // Calculate chunk position (origin)
     const auto positionOffset = Vector3::One * (float(node->Size()) * 0.5f);
     m_position = nodePosition - positionOffset; // lower-left-back corner
+    m_transform.translation = m_position;
 
     // Calculate lod
     m_lod = int(float(node->Size()) / float(VoxelObjectOctree::Node::MinimumNodeSize));
@@ -171,10 +194,10 @@ void VoxelChunk::Rebuild(IVoxelMesher* mesher)
     // so create new mesh now and set upload state.
 
     // Create new mesh
-    RefPtr<VoxelChunkMesh> mesh = std::make_unique<VoxelChunkMesh>();
+    RefPtr<VoxelChunkMesh> mesh(new VoxelChunkMesh());
 
     // Create new collision
-    RefPtr<VoxelChunkCollision> collision = std::make_unique<VoxelChunkCollision>();
+    RefPtr<VoxelChunkCollision> collision(new VoxelChunkCollision());
 
     // Apply mesh and collision
     mesher->Apply(mesh, collision);
@@ -190,13 +213,18 @@ void VoxelChunk::SetVisible(const bool isVisible)
 {
     if(isVisible)
     {
-        m_model = ModelRenderingSystem::AcquireModelComponent();
-        m_model->Transform = &m_transform;
-        m_model->Bounds = BoundingSphere(m_transform.translation, Math::Sqrt(float(m_octreeNode->Size()) * 2));
-        //m_model->Material = ; // TODO: Get material
-        // TODO: We will need multi-mesh model
-        //m_model->Mesh = ; // TODO: Get meshes (Note: Mesh should be changed on main thread)
-        //m_model->Active = true;
+        if(m_model == nullptr)
+        {
+            m_model = ModelRenderingSystem::AcquireModelComponent(true);
+            m_model->Transform = &m_transform;
+            m_model->Bounds = BoundingSphere(m_transform.translation, Math::Sqrt(float(m_octreeNode->Size()) * 2));
+            m_model->Material = VoxelMaterialManager::GetMainMaterial();
+
+            // Bind OnBeginRender function callback
+            m_model->OnBeginRender = Action<void, int>::New<VoxelChunk, & VoxelChunk::OnBeginRender>(this);
+
+            m_model->Active = true;
+        }
     }
     else
     {

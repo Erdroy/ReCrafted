@@ -35,6 +35,18 @@ namespace ReCrafted.API.Voxels
             return InternalGetMaterial(id);
         }
 
+        /// <summary>
+        ///     The default material, that is being used to render procedural meshes of the generated terrains.
+        /// </summary>
+        public static Material MainMaterial
+        {
+            get
+            {
+                Get_InternalMainMaterial(out var data);
+                return data;
+            }
+        }
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalAddMaterial(System.IntPtr material);
 
@@ -43,5 +55,8 @@ namespace ReCrafted.API.Voxels
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern VoxelMaterial InternalGetMaterial(ushort id);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalMainMaterial(out Material data);
     }
 }

@@ -4,6 +4,7 @@
 
 #include <ReCrafted.h>
 
+#include "Common/Action.h"
 #include "Common/List.h"
 
 /// <summary>
@@ -27,7 +28,7 @@ public:
     ///     created by ModelRenderingSystem::AcquireModelComponent(true).
     ///     Can be used to change the Material, Transform etc.
     /// </summary>
-    Action<void> OnBeginRender;
+    Action<void, int> OnBeginRender;
 
 public:
     /// <summary>
@@ -36,6 +37,6 @@ public:
     /// <returns></returns>
     bool IsValid() const
     {
-        return Meshes.Count() > 0 && Material&& Transform;
+        return Meshes.Count() > 0 && Material /*&& Transform*/;
     }
 };

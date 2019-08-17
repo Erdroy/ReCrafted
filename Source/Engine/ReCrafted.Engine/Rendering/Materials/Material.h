@@ -60,6 +60,15 @@ public:
     // TODO: Runtime MaterialField editing. (Make sure that this asset is loaded)
     //void SetValue(const char* name) { }
 
+    void SetTextureArray(const int slot, List<Texture*>& textureArray)
+    {
+        if(m_textureArrays.Count() == 0)
+            m_textureArrays.Add({});
+
+        m_textureArrays[slot].Clear();
+        m_textureArrays[slot].Copy(textureArray);
+    }
+
 public:
     /// <summary>
     ///     Gets or sets the material name.

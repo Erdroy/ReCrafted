@@ -7,6 +7,7 @@
 #include "Rendering/Mesh.h"
 #include "Rendering/Materials/Material.h"
 #include "Profiler/Profiler.h"
+#include "Rendering/Debug/DebugDraw.h"
 
 void ModelRenderingSystem::AllocateModelComponents(const uint32_t amount)
 {
@@ -44,47 +45,50 @@ void ModelRenderingSystem::Render()
         if (!component->Active || !component->IsValid() || !cameraFrustum.IntersectsSphere(component->Bounds))
             continue;
 
-        // Invoke OnBeginRender on procedural models
-        if(component->Procedural)
-            component->OnBeginRender.Invoke();
-
-        const auto& material = component->Material;
-        const auto& transform = *component->Transform;
-        const auto& shader = material->GetShader();
-
-        // Skip if the material doesn't have a shader.
-        if (!shader)
-            continue;
-
-        // Update shader fields values
-        for(auto&& field : material->m_fields)
-            Renderer::SetShaderValue(shader->GetHandle(), field->Buffer, field->Id, field->Data, field->Size);
-
-        // TODO: Use model position
-        // TODO: Camera-relative rendering.
-
-        // Set shader. This will also update the shader constants.
-        if (RenderingManager::GetCurrentShader() != shader)
-            RenderingManager::SetCurrentShader(shader, false);
-
-        // Apply shader
-        Renderer::ApplyShader(shader->GetHandle(), material->m_shaderPass);
-
-        // Bind texture arrays
-        for (auto i = 0u; i < material->m_textureArrays.Count(); i++)
-        {
-            auto& textureArray = material->m_textureArrays[i];
-            shader->SetTextureArray(i, textureArray.ToArray());
-        }
-
-        // Bind textures
-        for (auto i = 0u; i < material->m_textures.Count(); i++)
-            shader->SetTexture(i, material->m_textures[i]);
-
         // Render all of the meshes
-        for(auto& mesh : component->Meshes)
+        auto meshIdx = 0;
+        for (auto& mesh : component->Meshes)
         {
+            // Invoke OnBeginRender on procedural models
+            if (component->Procedural)
+                component->OnBeginRender.Invoke(meshIdx);
+
+            const auto& material = component->Material;
+            const auto& transform = *component->Transform;
+            const auto& shader = material->GetShader();
+
+            // Skip if the material doesn't have a shader.
+            if (!shader)
+                continue;
+
+            // Update shader fields values
+            for (auto&& field : material->m_fields)
+                Renderer::SetShaderValue(shader->GetHandle(), field->Buffer, field->Id, field->Data, field->Size);
+
+            // TODO: Use model position
+            // TODO: Camera-relative rendering.
+
+            // Set shader. This will also update the shader constants.
+            if (RenderingManager::GetCurrentShader() != shader)
+                RenderingManager::SetCurrentShader(shader, false);
+
+            // Apply shader
+            Renderer::ApplyShader(shader->GetHandle(), material->m_shaderPass);
+
+            // Bind texture arrays
+            for (auto i = 0u; i < material->m_textureArrays.Count(); i++)
+            {
+                auto& textureArray = material->m_textureArrays[i];
+                shader->SetTextureArray(i, textureArray.ToArray());
+            }
+
+            // Bind textures
+            for (auto i = 0u; i < material->m_textures.Count(); i++)
+                shader->SetTexture(i, material->m_textures[i]);
+
+            // Render current mesh
             RenderingManager::DrawIndexedMesh(mesh);
+            meshIdx++;
         }
     }
 

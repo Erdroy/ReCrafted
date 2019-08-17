@@ -43,13 +43,15 @@ private:
 
     Lock m_uploadLock = {};
     std::atomic<UploadType> m_uploadType = UploadType::None;
+    RefPtr<VoxelChunkMesh> m_mesh;
 
 public:
     explicit VoxelChunk(VoxelObjectBase* voxelObject) : m_voxelObject(voxelObject) {}
-    ~VoxelChunk();
+    ~VoxelChunk() = default;
 
 private:
     void SetUpload(const RefPtr<VoxelChunkMesh>& mesh, UploadType uploadType);
+    void OnBeginRender(int meshIndex);
 
 public:
     void Upload();

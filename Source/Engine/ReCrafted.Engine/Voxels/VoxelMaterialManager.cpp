@@ -6,10 +6,12 @@
 
 void VoxelMaterialManager::Initialize()
 {
+    m_defaultRenderMaterial = ContentManager::LoadAsset<Material>("Voxels/DefaultPlanetMaterial");
 }
 
 void VoxelMaterialManager::Shutdown()
 {
+    Object::Destroy(m_defaultRenderMaterial);
 }
 
 void VoxelMaterialManager::RegisterMaterial(VoxelMaterial* voxelMaterial)
@@ -72,4 +74,9 @@ VoxelMaterial* VoxelMaterialManager::GetMaterial(const VoxelMaterial_t id)
     }
 
     return GetInstance()->m_materials[id];
+}
+
+Material* VoxelMaterialManager::GetMainMaterial()
+{
+    return GetInstance()->m_defaultRenderMaterial;
 }

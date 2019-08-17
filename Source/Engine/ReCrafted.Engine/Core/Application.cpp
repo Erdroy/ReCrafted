@@ -58,8 +58,8 @@ void Application::InitializeSubSystems() const
     SubSystemManager::Register<ContentManager>();
     SubSystemManager::Register<Time>();
     SubSystemManager::Register<InputManager>();
-    SubSystemManager::Register<VoxelMaterialManager>();
     SubSystemManager::Register<RenderingManager>();
+    SubSystemManager::Register<VoxelMaterialManager>();
     SubSystemManager::Register<WebUIManager>();
     SubSystemManager::Register<SceneManager>();
     SubSystemManager::Register<VoxelObjectManager>();

@@ -10,8 +10,8 @@
 void VoxelObjectOctree::CreateRootNodes()
 {
     const auto asset = m_owner->Asset();
-    const auto radius = Math::RoundUpToPow2(asset->MaximumSurfaceHeight());
-    const auto diameter = radius * 2;
+    const auto radius = asset->MaximumSurfaceHeight();
+    const auto diameter = Math::RoundUpToPow2(radius * 2);
 
     // Setup bounds
     m_bounds = BoundingSphereD(Vector3d::Zero, double(radius));
@@ -100,8 +100,10 @@ void VoxelObjectOctree::RebuildRootNodes() const
         // Call OnCreate
         node->OnCreate();
 
-        // Populate node
-        node->Populate();
+        if(i % 10 == 0)
+            node->Populate();
+        else
+            node->Rebuild();
     }
 }
 

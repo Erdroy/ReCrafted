@@ -211,6 +211,8 @@ void VoxelObjectOctree::Node::WorkerPopulate(IVoxelMesher* mesher)
 
 void VoxelObjectOctree::Node::WorkerRebuild(IVoxelMesher* mesher)
 {
+    // Generate the chunk
+    m_chunk->Generate(mesher);
 }
 
 void VoxelObjectOctree::Node::FindIntersecting(List<Node*>& nodes, const BoundingBoxD& box, const int targetNodeSize)

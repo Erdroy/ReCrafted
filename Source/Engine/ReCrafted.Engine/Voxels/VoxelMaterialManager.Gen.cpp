@@ -28,6 +28,14 @@ public:
         const auto _returnValue = VoxelMaterialManager::GetMaterial(id);
         return _returnValue != nullptr ? _returnValue->ToManaged() : nullptr;
     }
+    
+    static void VoxelMaterialManager_Get_MainMaterial1(MonoObject** data) 
+    {
+        MAIN_THREAD_ONLY();
+        const auto _fRetValue = VoxelMaterialManager::GetMainMaterial();
+        const auto _returnValue = _fRetValue != nullptr ? _fRetValue ->ToManaged() : nullptr;
+        *data = _returnValue;
+    }
 };
 
 void VoxelMaterialManager::InitRuntime() 
@@ -36,6 +44,7 @@ void VoxelMaterialManager::InitRuntime()
     API_BIND("ReCrafted.API.Voxels.VoxelMaterialManager::InternalAddMaterial", &APIProxy::VoxelMaterialManager_AddMaterial1);
     API_BIND("ReCrafted.API.Voxels.VoxelMaterialManager::InternalSetDefaultMaterial", &APIProxy::VoxelMaterialManager_SetDefaultMaterial2);
     API_BIND("ReCrafted.API.Voxels.VoxelMaterialManager::InternalGetMaterial", &APIProxy::VoxelMaterialManager_GetMaterial3);
+    API_BIND("ReCrafted.API.Voxels.VoxelMaterialManager::Get_InternalMainMaterial", &APIProxy::VoxelMaterialManager_Get_MainMaterial1);
 }
 
 const char* VoxelMaterialManager::Fullname() 

@@ -8,6 +8,7 @@
 #include "Core/SubSystems/SubSystem.h"
 #include "Voxels/Voxel.h"
 #include "Voxels/Assets/VoxelMaterial.h"
+#include "Rendering/Materials/Material.h"
 
 #include <sparsepp/spp.h>
 
@@ -28,6 +29,7 @@ private:
     Lock m_materialLock;
 
     VoxelMaterial* m_defaultMaterial = nullptr;
+    Material* m_defaultRenderMaterial = nullptr;
 
 public:
     virtual ~VoxelMaterialManager() = default;
@@ -59,4 +61,10 @@ public:
     /// </summary>
     API_FUNCTION()
     static VoxelMaterial* GetMaterial(VoxelMaterial_t id);
+
+    /// <summary>
+    ///     The default material, that is being used to render procedural meshes of the generated terrains.
+    /// </summary>
+    API_PROPERTY(noprefix);
+    static Material* GetMainMaterial();
 };

@@ -32,10 +32,10 @@ public:
         /// </summary>
         struct
         {
-            List<Renderer::Texture2DHandle> cbNear = {};
-            List<Renderer::Texture2DHandle> cbFar = {};
-            List<Renderer::Texture2DHandle> nsmNear = {};
-            List<Renderer::Texture2DHandle> nsmFar = {};
+            List<Texture*> cbNear = {};
+            List<Texture*> cbFar = {};
+            List<Texture*> nsmNear = {};
+            List<Texture*> nsmFar = {};
         } textures;
 
     public:
@@ -56,18 +56,18 @@ public:
                 if (!cb_near)
                     break;
 
-                textures.cbNear.Add(cb_near->GetHandle());
+                textures.cbNear.Add(cb_near);
 
                 // TODO: Bind default textures if none found (or use near)
 
                 if (cb_far)
-                    textures.cbFar.Add(cb_far->GetHandle());
+                    textures.cbFar.Add(cb_far);
 
                 if (nsm_near)
-                    textures.nsmNear.Add(nsm_near->GetHandle());
+                    textures.nsmNear.Add(nsm_near);
 
                 if (nsm_far)
-                    textures.nsmFar.Add(nsm_far->GetHandle());
+                    textures.nsmFar.Add(nsm_far);
             }
         }
     };
