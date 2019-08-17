@@ -41,7 +41,7 @@ void ModelRenderingSystem::Render()
     for (auto&& component : m_renderList)
     {
         // Skip rendering when component is not active, is invalid or out of camera frustum bounds.
-        if (!component->Active || !component->IsValid() || !cameraFrustum.ContainsSphere(component->Bounds))
+        if (!component->Active || !component->IsValid() || !cameraFrustum.IntersectsSphere(component->Bounds))
             continue;
 
         // Invoke OnBeginRender on procedural models
