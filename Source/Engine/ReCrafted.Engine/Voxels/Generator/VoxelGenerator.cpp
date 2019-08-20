@@ -84,7 +84,6 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
     const auto asset = m_voxelObject->Asset();
 
     const auto voxelSize = static_cast<float>(lod);
-    const auto lodSize = VoxelLookup::LoDTable[Math::Sqrt(lod)];
 
     const auto chunkPosition = m_voxelObject->Position();
 
@@ -103,7 +102,7 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
                 const auto offset = Vector3d(double(x), double(y), double(z));
                 const auto voxelPosition = position + offset * voxelSize;
 
-                const auto value = GenerateFromCHM(chunkPosition, voxelPosition, mipLevel, lodSize,
+                const auto value = GenerateFromCHM(chunkPosition, voxelPosition, mipLevel, lod,
                     asset->MinimumSurfaceHeight(),
                     asset->HillsHeight());
 
