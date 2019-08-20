@@ -82,11 +82,8 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
     //const auto octree = m_voxelObject->Octree();
 
     const auto asset = m_voxelObject->Asset();
-
     const auto voxelSize = static_cast<float>(lod);
-
     const auto chunkPosition = m_voxelObject->Position();
-
     const auto mipLevel = 0;// Math::Clamp(octree->GetMaxDepth() - depth, 0, m_bitmap->GetLoDCount());
 
     auto hasSurface = false;

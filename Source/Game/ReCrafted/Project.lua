@@ -51,17 +51,23 @@ project "ReCrafted"
         -- Windows
         "Usp10",
     }
+	configuration { "vs*" }
+		buildoptions { "/MP" }
 	
 	-- add onbuild script and multi processor compilation
-	configuration { "Debug", "Development", "vs*"}
-		buildoptions { "/MP" }
+	configuration { "Debug","vs*" }
+		postbuildcommands {
+			"call " .. ROOT_DIR .. "/pm.bat PostBuild --skip-api",
+		}
+	
+	-- add onbuild script and multi processor compilation
+	configuration { "Development", "vs*" }
 		postbuildcommands {
 			"call " .. ROOT_DIR .. "/pm.bat PostBuild --skip-api",
 		}
 
 	-- add onbuild script and multi processor compilation
-	configuration { "Release", "vs*"}
-		buildoptions { "/MP" }
+	configuration { "Release", "vs*" }
 		postbuildcommands {
 			"call " .. ROOT_DIR .. "/pm.bat PostBuild --skip-api --optimize",
 		}
