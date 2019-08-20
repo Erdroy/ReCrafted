@@ -17,6 +17,20 @@ public:
         instance->Initialize();
     }
     
+    static void VoxelObjectBase_AddViewActor2(VoxelObjectBase* instance, ActorBase* viewActor) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "VoxelObjectBase");
+        instance->AddViewActor(viewActor);
+    }
+    
+    static void VoxelObjectBase_RemoveViewActor3(VoxelObjectBase* instance, ActorBase* viewActor) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "VoxelObjectBase");
+        instance->RemoveViewActor(viewActor);
+    }
+    
     static void VoxelObjectBase_Get_Radius1(VoxelObjectBase* instance, double* data) 
     {
         MAIN_THREAD_ONLY();
@@ -47,6 +61,8 @@ void VoxelObjectBase::InitRuntime()
 {
     MONO_REGISTER_OBJECT_TYPE(VoxelObjectBase);
     API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::InternalInitialize", &APIProxy::VoxelObjectBase_Initialize1);
+    API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::InternalAddViewActor", &APIProxy::VoxelObjectBase_AddViewActor2);
+    API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::InternalRemoveViewActor", &APIProxy::VoxelObjectBase_RemoveViewActor3);
     API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::Get_InternalRadius", &APIProxy::VoxelObjectBase_Get_Radius1);
     API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::Get_InternalAsset", &APIProxy::VoxelObjectBase_Get_Asset2);
     API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::Get_InternalIsLoading", &APIProxy::VoxelObjectBase_Get_IsLoading3);

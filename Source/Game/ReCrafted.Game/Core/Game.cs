@@ -63,6 +63,7 @@ namespace ReCrafted.Game.Core
 
             // Create test planet
             _moon = ContentManager.LoadAsset<VoxelObjectAsset>("Voxels/Objects/Moon");
+            _moon.VoxelObject.AddViewActor(SpectatorCamera.Actor);
 
             // Load and set default material
             var defaultMaterial = ContentManager.LoadAsset<VoxelMaterial>("Voxels/Materials/Default");
@@ -82,7 +83,9 @@ namespace ReCrafted.Game.Core
         {
             base.OnShutdown();
 
+            _moon.VoxelObject.RemoveViewActor(SpectatorCamera.Actor);
             Object.Destroy(_moon);
+            Object.Destroy(SpectatorCamera.Actor);
         }
 
         protected override void OnUpdate()

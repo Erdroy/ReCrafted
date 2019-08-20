@@ -4,12 +4,16 @@
 
 #include <ReCrafted.h>
 
+#include "Common/Lock.h"
+#include "Common/List.h"
 #include "Core/Threading/Task.h"
 #include "Scripting/Object.h"
 #include "Voxels/Assets/VoxelObjectAsset.h"
 #include "Voxels/Voxel.h"
 #include "Voxels/VoxelObjectOctree.h"
 #include "Voxels/VoxelStorage.h"
+
+API_USING("ReCrafted.API.Core.Actors");
 
 /// <summary>
 ///     The base class of all voxel objects (planets, asteroids etc.).
@@ -25,8 +29,28 @@ class VoxelObjectBase : public Object
 public:
     struct OctreeInitializeTask final : ITask
     {
+    public: /* Input */
         VoxelObjectBase* VoxelObject = nullptr;
         VoxelObjectOctree* Octree = nullptr;
+
+    public:
+        void Execute(void* userData) override;
+        void Finish() override;
+    };
+
+    struct OctreeViewUpdateTask final : ITask
+    {
+    public: /* Input */
+        VoxelObjectBase* VoxelObject = nullptr;
+        VoxelObjectOctree* Octree = nullptr;
+        List<Vector3> Points = {};
+
+    private: /* Local */
+        List<VoxelObjectOctree::Node*> NodesToPopulate = {};
+        List<VoxelObjectOctree::Node*> NodesToDepopulate = {};
+
+    private:
+        void UpdateNode(VoxelObjectOctree::Node* node);
 
     public:
         void Execute(void* userData) override;
@@ -41,6 +65,13 @@ protected:
     VoxelGenerator* m_generator = nullptr;
 
     bool m_initialLoading = true;
+    float m_viewUpdateFrequency = 1 / 3.0f;
+    float m_lastViewUpdate = 0.0f;
+
+    List<ActorBase*> m_viewActors = {};
+
+private:
+    void UpdateViews();
 
 public:
     VoxelObjectBase();
@@ -53,9 +84,26 @@ protected:
 public:
     void Update();
 
-    void DebugDraw();
-
 public:
+    /// <summary>
+    ///     Adds given actor to the view list of this voxel object.
+    ///     It will be used to make sure, that the terrain around the actor
+    ///     is always loaded with proper LoD.
+    /// </summary>
+    /// <param name="viewActor">The actor.</param>
+    /// <remarks>
+    ///     Remember to remove the actor using RemoveViewActor(...) before it is destroyed.
+    /// </remarks>
+    API_FUNCTION()
+    void AddViewActor(ActorBase* viewActor);
+
+    /// <summary>
+    ///     Removes given actor from the view list of this voxel object.
+    /// </summary>
+    /// <param name="viewActor">The actor.</param>
+    API_FUNCTION()
+    void RemoveViewActor(ActorBase* viewActor);
+
     /// <summary>
     ///     Modifies this voxel space object, using given method.
     /// </summary>
