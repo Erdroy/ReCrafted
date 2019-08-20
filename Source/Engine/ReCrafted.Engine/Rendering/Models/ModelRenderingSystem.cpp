@@ -38,7 +38,11 @@ void ModelRenderingSystem::Render()
 
     auto cameraFrustum = Camera::GetMainCamera()->GetBoundingFrustum();
 
-    // TODO: render list sorting
+    // TODO: Render list sorting
+    // TODO: Instancing for models with the same meshes and materials.
+
+    ScopeLock(m_mainRenderLock);
+
     for (auto&& component : m_renderList)
     {
         // Skip rendering when component is not active, is invalid or out of camera frustum bounds.
@@ -96,14 +100,21 @@ void ModelRenderingSystem::Render()
     RenderingManager::SetCurrentShader(nullptr);
 }
 
+Lock* ModelRenderingSystem::GetMainLock()
+{
+    return &GetInstance()->m_mainRenderLock;
+}
+
 ModelComponent* ModelRenderingSystem::AcquireModelComponent(const bool isProcedural)
 {
-    ModelComponent* component;
+    MAIN_THREAD_ONLY();
 
-    // This should be getting called only once, but in case of really hungry threads
-    // just retry until we will get a free component.
-    while (!GetInstance()->m_freeComponents.TryDequeue(component))
+    ModelComponent* component;
+    if(!GetInstance()->m_freeComponents.TryDequeue(component))
+    {
         GetInstance()->AllocateModelComponents(DefaultRenderListAdjust);
+        ASSERT(GetInstance()->m_freeComponents.TryDequeue(component));
+    }
 
     // Set component as allocated (i.e. not free).
     component->Free = false;
@@ -113,6 +124,8 @@ ModelComponent* ModelRenderingSystem::AcquireModelComponent(const bool isProcedu
 
 void ModelRenderingSystem::ReleaseModelComponent(ModelComponent* component)
 {
+    MAIN_THREAD_ONLY();
+
     ASSERT(component);
     ASSERT(!component->Free);
 

@@ -5,7 +5,8 @@
 #include <ReCrafted.h>
 
 #include "Common/List.h"
-#include "Common/ConcurrentQueue.h"
+#include "Common/Lock.h"
+#include "Common/Queue.h"
 #include "Rendering/RenderingComponent.h"
 #include "Rendering/Models/ModelComponent.h"
 
@@ -21,7 +22,9 @@ public:
 
 private:
     List<ModelComponent*> m_renderList;
-    ConcurrentQueue<ModelComponent*> m_freeComponents;
+    Queue<ModelComponent*> m_freeComponents;
+
+    Lock m_mainRenderLock;
 
 private:
     void AllocateModelComponents(uint32_t amount);
@@ -44,14 +47,28 @@ public:
 
 public:
     /// <summary>
+    ///     Gets the main lock of the model rendering system.
+    /// </summary>
+    /// <returns>The main lock pointer.</returns>
+    static Lock* GetMainLock();
+
+public:
+    /// <summary>
     ///     Acquires free model component, which is initially disabled.
     /// </summary>
     /// <returns>The acquired model component.</returns>
+    /// <remarks>
+    ///     Acquired model component should be modified only from the main thread!
+    ///     Optionally you should use component->BeginModify(), then modify and at the end call component->EndModify(),
+    ///     but this is slow, as it locks the main thread from model rendering or edit during the rendering.
+    /// </remarks>
+    /// <remarks>Can be called only from the main thread.</remarks>
     static ModelComponent* AcquireModelComponent(bool isProcedural = false);
 
     /// <summary>
     ///     Releases given component.
     /// </summary>
-    /// <param name="component"></param>
+    /// <param name="component">The component to return to the pool.</param>
+    /// <remarks>Can be called only from the main thread.</remarks>
     static void ReleaseModelComponent(ModelComponent* component);
 };

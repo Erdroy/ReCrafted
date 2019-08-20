@@ -39,4 +39,17 @@ public:
     {
         return Meshes.Count() > 0 && Material /*&& Transform*/;
     }
+
+public:
+    /// <summary>
+    ///     Begins the modify stage of this model component.
+    /// </summary>
+    /// <remarks>Required only when trying to modify from non-main thread.</remarks>
+    static void BeginModify();
+
+    /// <summary>
+    ///     Ends the modify stage of this model component.
+    /// </summary>
+    /// <remarks>Required only when trying to modify from non-main thread.</remarks>
+    static void EndModify();
 };
