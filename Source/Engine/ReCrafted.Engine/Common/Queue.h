@@ -6,23 +6,29 @@
 
 #include <queue>
 
+/// <summary>
+///     LIFO queue.
+/// </summary>
 template <typename TType>
 class Queue
 {
 private:
-    std::queue<TType> m_queue;
+    std::deque<TType> m_queue;
 
 public:
     void Enqueue(const TType& item)
     {
-        m_queue.emplace(item);
+        m_queue.emplace_back(item);
     }
 
-    TType Dequeue()
+    bool TryDequeue(TType& item)
     {
-        TType item = m_queue.back();
-        m_queue.pop();
-        return item;
+        if (m_queue.empty())
+            return false;
+
+        item = m_queue.back();
+        m_queue.pop_back();
+        return true;
     }
 
     bool Empty()

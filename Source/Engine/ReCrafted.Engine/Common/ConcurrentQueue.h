@@ -5,6 +5,9 @@
 #include <ReCrafted.h>
 #include <concurrentqueue.h>
 
+/// <summary>
+///     Concurrent queue.
+/// </summary>
 template <typename TType>
 class ConcurrentQueue
 {

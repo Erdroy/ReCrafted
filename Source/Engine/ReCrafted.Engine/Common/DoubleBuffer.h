@@ -32,12 +32,42 @@ public:
     }
 
     /// <summary>
-    ///     Returns the first available item.
+    ///     Returns the peak item.
     /// </summary>
     /// <returns>The item.</returns>
     TItem Peak()
     {
         ScopeLock(m_lock);
         return m_first;
+    }
+
+    /// <summary>
+    ///     Returns the back item.
+    /// </summary>
+    /// <returns>The item.</returns>
+    TItem Back()
+    {
+        ScopeLock(m_lock);
+        return m_second;
+    }
+
+    /// <summary>
+    ///     Sets the peak item.
+    /// </summary>
+    /// <param name="item">The new peak item.</param>
+    void SetPeak(TItem item)
+    {
+        ScopeLock(m_lock);
+        m_first = item;
+    }
+
+    /// <summary>
+    ///     Sets the back item.
+    /// </summary>
+    /// <param name="item">The new back item.</param>
+    void SetBack(TItem item)
+    {
+        ScopeLock(m_lock);
+        m_second = item;
     }
 };
