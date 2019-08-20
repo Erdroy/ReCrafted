@@ -3,7 +3,6 @@
 #pragma once
 
 #include <ReCrafted.h>
-#include "Common/Lock.h"
 
 class VoxelObjectOctree
 {
@@ -158,6 +157,11 @@ public:
         Vector3d Position() const
         {
             return m_bounds.center;
+        }
+
+        BoundingBoxD Bounds() const
+        {
+            return m_bounds;
         }
 
         int Size() const

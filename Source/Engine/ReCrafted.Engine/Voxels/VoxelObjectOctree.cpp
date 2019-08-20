@@ -55,6 +55,7 @@ void VoxelObjectOctree::CreateRootNodes()
                 position -= rootNodePositionOffset;
 
                 // set owner, parent, root, position, depth and size
+                node->m_id = nodeId;
                 node->m_owner = this;
                 node->m_parent = nullptr;
                 node->m_root = node;

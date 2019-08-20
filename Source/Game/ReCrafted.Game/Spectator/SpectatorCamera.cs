@@ -79,7 +79,7 @@ namespace ReCrafted.Game.Spectator
             var currentSpeed = 50.0f;
 
             if (InputManager.IsKey(Key.Shift))
-                currentSpeed *= 2.5f;
+                currentSpeed *= 10.5f;
 
             if (InputManager.IsKey(Key.Control))
                 currentSpeed *= 0.05f;

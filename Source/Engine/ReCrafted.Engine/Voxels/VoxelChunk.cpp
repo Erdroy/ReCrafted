@@ -217,7 +217,7 @@ void VoxelChunk::SetVisible(const bool isVisible)
         {
             m_model = ModelRenderingSystem::AcquireModelComponent(true);
             m_model->Transform = &m_transform;
-            m_model->Bounds = BoundingSphere(m_transform.translation, Math::Sqrt(float(m_octreeNode->Size()) * 2));
+            m_model->Bounds = BoundingSphere(m_transform.translation, Math::Sqrt(float(m_octreeNode->Size())) * 0.5f);
             m_model->Material = VoxelMaterialManager::GetMainMaterial();
 
             // Bind OnBeginRender function callback
