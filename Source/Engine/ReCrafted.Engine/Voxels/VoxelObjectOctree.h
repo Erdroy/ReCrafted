@@ -70,7 +70,6 @@ public:
     private:
         void DestroyChildren();
         void UpdateNeighborNodes();
-        void DebugDraw();
 
     public:
         /// <summary>
@@ -154,6 +153,11 @@ public:
         Node* Find(const Vector3d& position);
 
     public:
+        Node* const* ChildrenNodes() const
+        {
+            return m_childrenNodes;
+        }
+
         Vector3d Position() const
         {
             return m_bounds.center;
@@ -174,10 +178,22 @@ public:
             return m_depth;
         }
 
+        bool IsRoot() const
+        {
+            return m_isRoot;
+        }
+
         bool IsPopulated() const
         {
             return m_isPopulated;
         }
+
+        bool IsProcessing() const
+        {
+            return m_isProcessing.load();
+        }
+
+        bool HasPopulatedChildren() const;
     };
 
 private:
@@ -202,8 +218,6 @@ private:
     void Initialize();
     void Update();
 
-    void DebugDraw();
-
 public:
     /// <summary>
     ///     Looks for a node at given position with given size.
@@ -222,4 +236,20 @@ public:
     /// <param name="position">The position.</param>
     /// <returns>The node or null when not found.</returns>
     Node* FindNode(const Vector3d& position) const;
+
+    /// <summary>
+    ///     Returns the list of the root nodes.
+    /// </summary>
+    Node** RootNodes() const
+    {
+        return m_rootNodes;
+    }
+
+    /// <summary>
+    ///     Returns the amount of root nodes.
+    /// </summary>
+    int RootNodesCount() const
+    {
+        return m_rootNodesCount;
+    }
 };

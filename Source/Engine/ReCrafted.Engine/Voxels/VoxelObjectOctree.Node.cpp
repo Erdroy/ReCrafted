@@ -38,25 +38,6 @@ void VoxelObjectOctree::Node::UpdateNeighborNodes()
     m_neighborNodes[int(NodeDirection::Bottom)] = FindNeighbor(NodeDirection::Bottom);
 }
 
-void VoxelObjectOctree::Node::DebugDraw()
-{
-    if(m_isPopulated)
-    {
-        for(auto& child : m_childrenNodes)
-        {
-            if (child)
-                child->DebugDraw();
-        }
-    }
-    else
-    {
-        const auto c = m_bounds.center;
-        const auto s = m_bounds.size;
-
-        DebugDraw::DrawWireBox({ float(c.x),  float(c.y),  float(c.z) }, { float(s.x),  float(s.y),  float(s.z) });
-    }
-}
-
 void VoxelObjectOctree::Node::Populate()
 {
     MAIN_THREAD_ONLY();
@@ -319,4 +300,18 @@ VoxelObjectOctree::Node* VoxelObjectOctree::Node::Find(const Vector3d& position)
     }
 
     return nullptr;
+}
+
+bool VoxelObjectOctree::Node::HasPopulatedChildren() const
+{
+    if (IsProcessing() || !IsPopulated())
+        return false;
+
+    for (auto&& child : m_childrenNodes)
+    {
+        if (child && child->IsPopulated())
+            return true;
+    }
+
+    return false;
 }

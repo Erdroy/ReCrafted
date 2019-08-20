@@ -140,21 +140,6 @@ void VoxelObjectOctree::Update()
     CPU_PROFILE_FUNCTION(0);
 }
 
-void VoxelObjectOctree::DebugDraw()
-{
-    CPU_PROFILE_FUNCTION(0);
-    DebugDraw::SetColor(Color::Red);
-
-    const auto c = m_bounds.center;
-    DebugDraw::DrawWireSphere({ float(c.x),  float(c.y),  float(c.z) }, float(m_bounds.radius));
-
-    for (auto i = 0; i < m_rootNodesCount; i++)
-    {
-        if(m_rootNodes[i])
-            m_rootNodes[i]->DebugDraw();
-    }
-}
-
 VoxelObjectOctree::Node* VoxelObjectOctree::FindNode(const Vector3d& position, const int size) const
 {
     ASSERT(m_isLoading == false);

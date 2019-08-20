@@ -18,6 +18,8 @@ namespace ReCrafted.Game.Spectator
 
         private Vector3 _poleDirection = Vector3.Right;
 
+        private float _currentSpeed = 2.0f;
+
         private void Update()
         {
             UpdateLook();
@@ -76,10 +78,14 @@ namespace ReCrafted.Game.Spectator
         {
             var direction = Vector3.Zero;
 
-            var currentSpeed = 50.0f;
+            // Add scroll controlled movement speed
+            _currentSpeed += InputManager.ScrollDelta * 0.35f;
+            _currentSpeed = MathUtil.Clamp(_currentSpeed, 0.5f, 10.0f);
+
+            var currentSpeed = _currentSpeed * _currentSpeed;
 
             if (InputManager.IsKey(Key.Shift))
-                currentSpeed *= 10.5f;
+                currentSpeed *= 2.5f;
 
             if (InputManager.IsKey(Key.Control))
                 currentSpeed *= 0.05f;
