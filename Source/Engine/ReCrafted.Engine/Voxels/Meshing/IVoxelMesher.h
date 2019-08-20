@@ -6,7 +6,7 @@
 
 class Mesh;
 class VoxelChunkMesh;
-class VoxelChunkCollision {};
+class VoxelChunkCollision;
 
 /// <summary>
 ///     The voxel mesher interface class.
@@ -53,7 +53,7 @@ public:
     /// </summary>
     /// <param name="chunkMesh">The mesh that will get the new mesh data.</param>
     /// <param name="chunkCollision">The collision that will get the new collision data.</param>
-    virtual void Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, RefPtr<VoxelChunkCollision>& chunkCollision) = 0;
+    virtual void Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, MeshCollider* chunkCollision) = 0;
 
     /// <summary>
     ///     Cleans all data used during Generate and Apply functions.

@@ -25,7 +25,7 @@ protected:
     Quaternion m_localRotation = Quaternion::Identity;
 
 public:
-    virtual ~Collider() = default;
+    virtual ~Collider();
 
 public:
     /// <summary>

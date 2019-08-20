@@ -6,6 +6,7 @@
 #include "Meshing/IVoxelMesher.h"
 #include "VoxelChunkMesh.h"
 #include "Rendering/Materials/Material.h"
+#include "Physics/RigidBodyActor.h"
 
 void VoxelChunk::Initialize(VoxelObjectOctree::Node* node)
 {
@@ -67,8 +68,21 @@ void VoxelChunk::Upload()
             m_model->Meshes.Add(section.mesh);
         }
 
-        //m_collision.reset();
-        //m_collision.swap(m_newCollision);
+        // Detach collider from the VoxelObject's physics actor
+        if(m_meshCollider)
+        {
+            m_voxelObject->RigidBody()->DetachCollider(m_meshCollider, false);
+            Object::Destroy(m_meshCollider);
+            m_meshCollider = nullptr;
+        }
+
+        if (sections.Count() > 0 && m_newMeshCollider)
+        {
+            // And attach the collider now
+            m_voxelObject->RigidBody()->AttachCollider(m_newMeshCollider, false);
+            m_meshCollider = m_newMeshCollider;
+            m_newMeshCollider = nullptr;
+        }
         break;
     }
     case UploadType::Clear:
@@ -84,8 +98,19 @@ void VoxelChunk::Upload()
             m_model->Meshes.Clear();
         }
 
-        //m_collision.reset();
-        //m_newCollision.reset();
+        if (m_meshCollider)
+        {
+            m_voxelObject->RigidBody()->DetachCollider(m_meshCollider, false);
+            Object::Destroy(m_meshCollider);
+            m_meshCollider = nullptr;
+        }
+
+        if (m_newMeshCollider)
+        {
+            // New collider is not attached
+            Object::Destroy(m_newMeshCollider);
+            m_newMeshCollider = nullptr;
+        }
         break;
     }
     default: break;
@@ -95,7 +120,7 @@ void VoxelChunk::Upload()
     m_uploadType = UploadType::None;
 }
 
-void VoxelChunk::SetUpload(const RefPtr<VoxelChunkMesh>& mesh, const UploadType uploadType)
+void VoxelChunk::SetUpload(const RefPtr<VoxelChunkMesh>& mesh, MeshCollider* collider, const UploadType uploadType)
 {
     // Lock Upload
     ScopeLock(m_uploadLock);
@@ -107,7 +132,7 @@ void VoxelChunk::SetUpload(const RefPtr<VoxelChunkMesh>& mesh, const UploadType 
     }*/
     
     m_newMesh = mesh;
-    //m_newCollision = collision;
+    m_newMeshCollider = collider;
     m_uploadType = uploadType;
 }
 
@@ -208,7 +233,7 @@ void VoxelChunk::Rebuild(IVoxelMesher* mesher)
         m_chunkData->HasSurface(false);
 
         // Set upload type to CLEAR-MESH
-        SetUpload(nullptr, UploadType::Clear);
+        SetUpload(nullptr, nullptr, UploadType::Clear);
         return;
     }
 
@@ -217,23 +242,34 @@ void VoxelChunk::Rebuild(IVoxelMesher* mesher)
 
     // Create new mesh
     RefPtr<VoxelChunkMesh> mesh(new VoxelChunkMesh());
-
-    // Create new collision
-    RefPtr<VoxelChunkCollision> collision(new VoxelChunkCollision());
+    const auto collider = Object::New<MeshCollider>();
 
     // Apply mesh and collision
-    mesher->Apply(mesh, collision);
+    mesher->Apply(mesh, collider);
 
     // Upload new mesh
     mesh->UploadNow();
 
-    // TODO: SetUpload and Upload implementation
-    SetUpload(mesh, UploadType::Swap);
+    // Set upload
+    SetUpload(mesh, collider, UploadType::Swap);
 }
 
 void VoxelChunk::SetVisible(const bool isVisible)
 {
     m_model->Active = isVisible;
+
+    if (m_meshCollider)
+    {
+        if (isVisible)
+        {
+            m_voxelObject->RigidBody()->AttachCollider(m_meshCollider);
+        }
+        else
+        {
+            m_voxelObject->RigidBody()->DetachCollider(m_meshCollider);
+        }
+    }
+
 }
 
 uint64_t VoxelChunk::CalculateChunkId(const Vector3& position)

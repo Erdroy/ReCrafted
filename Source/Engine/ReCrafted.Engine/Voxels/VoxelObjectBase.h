@@ -4,9 +4,9 @@
 
 #include <ReCrafted.h>
 
-#include "Common/Lock.h"
 #include "Common/List.h"
 #include "Core/Threading/Task.h"
+#include "Physics/RigidBodyActor.h"
 #include "Scripting/Object.h"
 #include "Voxels/Assets/VoxelObjectAsset.h"
 #include "Voxels/Voxel.h"
@@ -14,6 +14,7 @@
 #include "Voxels/VoxelStorage.h"
 
 API_USING("ReCrafted.API.Core.Actors");
+API_USING("ReCrafted.API.Physics");
 
 /// <summary>
 ///     The base class of all voxel objects (planets, asteroids etc.).
@@ -63,6 +64,8 @@ protected:
 
     VoxelStorage* m_storage = nullptr;
     VoxelGenerator* m_generator = nullptr;
+
+    RigidBodyActor* m_rigidBodyActor = nullptr;
 
     bool m_initialLoading = true;
     float m_viewUpdateFrequency = 1 / 3.0f;
@@ -140,16 +143,34 @@ public:
         return m_asset;
     }
 
+    /// <summary>
+    ///     Gets the RigidBody actor that is representing this VoxelObject's physics state and collision.
+    /// </summary>
+    API_PROPERTY()
+    RigidBodyActor* RigidBody() const
+    {
+        return m_rigidBodyActor;
+    }
+
+    /// <summary>
+    ///     Gets the VoxelStorage instance owned by this VoxelObject.
+    /// </summary>
     VoxelStorage* Storage() const
     {
         return m_storage;
     }
 
+    /// <summary>
+    ///     Gets the VoxelGenerator instance owned by this VoxelObject.
+    /// </summary>
     VoxelGenerator* Generator() const
     {
         return m_generator;
     }
 
+    /// <summary>
+    ///     Gets the VoxelObjectOctree instance owned by this VoxelObject.
+    /// </summary>
     VoxelObjectOctree* Octree() const
     {
         return m_octree;

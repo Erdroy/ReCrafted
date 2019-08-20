@@ -8,6 +8,9 @@
 #include "Voxels/Generator/VoxelGenerator.h"
 #include "Core/Time.h"
 #include "Core/Actors/ActorBase.h"
+#include "Physics/RigidBodyActor.h"
+
+#pragma region OctreeInitializeTask
 
 void VoxelObjectBase::OctreeInitializeTask::Execute(void* userData)
 {
@@ -27,9 +30,16 @@ void VoxelObjectBase::OctreeInitializeTask::Finish()
     VoxelObject->m_initialLoading = false;
 }
 
+#pragma endregion
+
+#pragma region OctreeViewUpdateTask
+
 void VoxelObjectBase::OctreeViewUpdateTask::UpdateNode(VoxelObjectOctree::Node* node)
 {
     const auto viewRangeMultiplier = 4.0f;
+
+    if (node->Size() == VoxelObjectOctree::Node::MinimumNodeSize)
+        return;
 
     if (node->IsProcessing())
         return;
@@ -150,6 +160,8 @@ void VoxelObjectBase::OctreeViewUpdateTask::Finish()
     }
 }
 
+#pragma endregion
+
 void VoxelObjectBase::UpdateViews()
 {
     if (m_lastViewUpdate + m_viewUpdateFrequency < Time::CurrentTime())
@@ -178,6 +190,8 @@ VoxelObjectBase::VoxelObjectBase()
 
 VoxelObjectBase::~VoxelObjectBase()
 {
+    Destroy(m_rigidBodyActor);
+
     delete m_generator;
     delete m_storage;
     delete m_octree;
@@ -197,6 +211,11 @@ void VoxelObjectBase::Initialize()
     // Initialize components
     m_storage = new VoxelStorage(this);
     m_generator = new VoxelGenerator(this);
+
+    // Create physics actor for this voxel object
+    // this is the object that will get the collision attached
+    m_rigidBodyActor = RigidBodyActor::CreateStatic();
+    m_rigidBodyActor->Position(Vector3::Zero);
 
     // Load generator
     m_generator->Load();

@@ -2,11 +2,13 @@
 
 #include "VoxelObjectManager.h"
 #include "Common/Logger.h"
+#include "Physics/ShapeCooker.h"
 #include "Profiler/Profiler.h"
 #include "Scripting/Object.h"
 #include "VoxelObjectBase.h"
 #include "Meshing/IVoxelMesher.h"
 #include "Meshing/Transvoxel/TransvoxelMesher.h"
+#include "Physics/PhysicsManager.h"
 
 void VoxelObjectManager::WorkerFunction()
 {
@@ -20,9 +22,13 @@ void VoxelObjectManager::WorkerFunction()
     Profiler::InitThread("VoxelObject Worker");
     Profiler::BeginFrame();
 
-    // TODO: Create mesher and physics shape cooker instance
+    // Create shape cooker
+    auto tolerances = PhysicsManager::GetDefaultTolerances();
+    const auto shapeCooker = new ShapeCooker(PhysicsManager::GetFoundation(), tolerances);
+
+    // Create mesher
     auto mesher = new TransvoxelMesher();
-    mesher->Initialize(nullptr);
+    mesher->Initialize(shapeCooker);
 
     QueueItem item;
     while (m_running)
@@ -62,6 +68,8 @@ void VoxelObjectManager::WorkerFunction()
 
     mesher->Clear();
     delete mesher;
+
+    delete shapeCooker;
 }
 
 void VoxelObjectManager::InitializeWorkers()

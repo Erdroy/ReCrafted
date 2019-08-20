@@ -3,6 +3,11 @@
 #include "Collider.h"
 #include "Physics/PhysicsMaterial.h"
 
+Collider::~Collider()
+{
+    PX_RELEASE(m_shape);
+}
+
 void Collider::LocalPosition(const Vector3& position)
 {
     ASSERT(m_shape);

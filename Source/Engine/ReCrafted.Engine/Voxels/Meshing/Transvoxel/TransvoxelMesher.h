@@ -314,7 +314,7 @@ public:
     /// </summary>
     /// <param name="chunkMesh">The mesh that will get the new mesh data.</param>
     /// <param name="chunkCollision">The collision that will get the new collision data.</param>
-    void Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, RefPtr<VoxelChunkCollision>& chunkCollision) override;
+    void Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, MeshCollider* chunkCollision) override;
 
     /// <summary>
     ///     Cleans all data used during Generate and Apply functions.

@@ -116,7 +116,7 @@ void RigidBodyActor::AttachCollider(Collider* collider, const bool awake)
     _ASSERT_(collider->m_shape, "Collider is not initialized.");
 
     m_colliders.emplace_back(collider);
-    m_actor->attachShape(*collider->m_shape);
+    ASSERT(m_actor->attachShape(*collider->m_shape));
 
     if (awake && IsSleeping())
     {

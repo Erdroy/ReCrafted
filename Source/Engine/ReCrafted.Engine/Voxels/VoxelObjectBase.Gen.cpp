@@ -48,7 +48,16 @@ public:
         *data = _returnValue;
     }
     
-    static void VoxelObjectBase_Get_IsLoading3(VoxelObjectBase* instance, bool* data) 
+    static void VoxelObjectBase_Get_RigidBody3(VoxelObjectBase* instance, MonoObject** data) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "VoxelObjectBase");
+        const auto _fRetValue = instance->RigidBody();
+        const auto _returnValue = _fRetValue != nullptr ? _fRetValue ->ToManaged() : nullptr;
+        *data = _returnValue;
+    }
+    
+    static void VoxelObjectBase_Get_IsLoading4(VoxelObjectBase* instance, bool* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "VoxelObjectBase");
@@ -65,7 +74,8 @@ void VoxelObjectBase::InitRuntime()
     API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::InternalRemoveViewActor", &APIProxy::VoxelObjectBase_RemoveViewActor3);
     API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::Get_InternalRadius", &APIProxy::VoxelObjectBase_Get_Radius1);
     API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::Get_InternalAsset", &APIProxy::VoxelObjectBase_Get_Asset2);
-    API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::Get_InternalIsLoading", &APIProxy::VoxelObjectBase_Get_IsLoading3);
+    API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::Get_InternalRigidBody", &APIProxy::VoxelObjectBase_Get_RigidBody3);
+    API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::Get_InternalIsLoading", &APIProxy::VoxelObjectBase_Get_IsLoading4);
 }
 
 const char* VoxelObjectBase::Fullname() 

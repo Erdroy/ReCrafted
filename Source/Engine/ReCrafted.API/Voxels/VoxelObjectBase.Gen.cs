@@ -2,6 +2,7 @@
 // WARNING: Auto-generated file. All changes will be lost when the API code will be regenerated!
 
 using ReCrafted.API.Core.Actors;
+using ReCrafted.API.Physics;
 using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Voxels 
@@ -65,6 +66,18 @@ namespace ReCrafted.API.Voxels
         }
 
         /// <summary>
+        ///     Gets the RigidBody actor that is representing this VoxelObject's physics state and collision.
+        /// </summary>
+        public RigidBodyActor RigidBody
+        {
+            get
+            {
+                Get_InternalRigidBody(NativePtr, out var data);
+                return data;
+            }
+        }
+
+        /// <summary>
         ///     Gets the loading state. True when this voxel object is still loading the initial data.
         /// </summary>
         public bool IsLoading
@@ -90,6 +103,9 @@ namespace ReCrafted.API.Voxels
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalAsset(System.IntPtr nativePtr, out VoxelObjectAsset data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalRigidBody(System.IntPtr nativePtr, out RigidBodyActor data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalIsLoading(System.IntPtr nativePtr, out bool data);

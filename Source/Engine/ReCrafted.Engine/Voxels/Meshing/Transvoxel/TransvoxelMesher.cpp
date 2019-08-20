@@ -3,6 +3,7 @@
 #include "TransvoxelMesher.h"
 #include "Rendering/Mesh.h"
 #include "Voxels/VoxelChunkMesh.h"
+#include "Physics/Colliders/MeshCollider.h"
 
 void TransvoxelMesher::Generate(const Vector3& position, const int lod, uint8_t borders, Voxel* data)
 {
@@ -46,7 +47,7 @@ void TransvoxelMesher::Generate(const Vector3& position, const int lod, uint8_t 
     }
 }
 
-void TransvoxelMesher::Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, RefPtr<VoxelChunkCollision>& chunkCollision)
+void TransvoxelMesher::Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, MeshCollider* chunkCollision)
 {
     // Create mesh
     const auto mesh = Mesh::CreateMesh();
@@ -74,12 +75,14 @@ void TransvoxelMesher::Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, RefPtr<Vox
     // Add mesh section
     chunkMesh->AddSection(chunkSection);
 
-    if(chunkCollision && m_collisionIndices.Count() >= 3)
+    if(chunkCollision && HasTriangles())
     {
-        // TODO: Apply collision
-        //chunkCollision->BuildCollision(m_shapeCooker, m_currentVoxelScale,
-        //    m_collisionVertices.Data(), m_collisionVertices.Count(), 
-        //    m_collisionIndices.Data(), m_collisionIndices.Count());
+        // Bake the mesh
+        chunkCollision->SetMesh(
+            Array<Vector3>(m_collisionVertices.Data(), m_collisionVertices.Count()), 
+            Array<uint>(m_collisionIndices.Data(), m_collisionIndices.Count()), 
+            m_shapeCooker
+        );
     }
     
     Clear();

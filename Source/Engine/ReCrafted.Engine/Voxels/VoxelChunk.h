@@ -5,10 +5,11 @@
 #include <ReCrafted.h>
 
 #include "Core/Actors/ActorBase.h"
+#include "Physics/Colliders/MeshCollider.h"
 #include "Rendering/Models/ModelComponent.h"
 #include "Voxels/VoxelChunkData.h"
 #include "Voxels/VoxelObjectOctree.h"
-#include "VoxelChunkMesh.h"
+#include "Voxels/VoxelChunkMesh.h"
 
 /// <summary>
 ///     VoxelChunk class.
@@ -44,6 +45,9 @@ private:
     RefPtr<VoxelChunkMesh> m_mesh;
     RefPtr<VoxelChunkMesh> m_newMesh;
 
+    MeshCollider* m_meshCollider = nullptr;
+    MeshCollider* m_newMeshCollider = nullptr;
+
 public:
     explicit VoxelChunk(VoxelObjectBase* voxelObject) : m_voxelObject(voxelObject) {}
     ~VoxelChunk() = default;
@@ -53,7 +57,7 @@ public:
 
 public:
     void Upload();
-    void SetUpload(const RefPtr<VoxelChunkMesh>& mesh, UploadType uploadType);
+    void SetUpload(const RefPtr<VoxelChunkMesh>& mesh, MeshCollider* collider, UploadType uploadType);
     void OnBeginRender(int meshIndex);
     void OnCreate();
     void OnDestroy();

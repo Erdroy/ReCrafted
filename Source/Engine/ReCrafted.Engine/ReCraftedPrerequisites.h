@@ -71,6 +71,8 @@ enum class CharacterCollisionFlags;
 enum class ForceMode : byte;
 class Collider;
 class BoxCollider;
+class SphereCollider;
+class MeshCollider;
 class RigidBodyActor;
 class DynamicRigidBodyActor;
 class StaticRigidBodyActor;
