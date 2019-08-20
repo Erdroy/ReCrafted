@@ -12,6 +12,4 @@ public:
     static byte NodeDirIds[];
     static Vector3d DirectionOffset[];
     static Vector3d ChildrenNodeOffsets[];
-
-    static int LoDTable[];
 };

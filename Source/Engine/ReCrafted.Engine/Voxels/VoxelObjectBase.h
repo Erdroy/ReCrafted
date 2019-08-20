@@ -102,6 +102,11 @@ public:
         return m_generator;
     }
 
+    VoxelObjectOctree* Octree() const
+    {
+        return m_octree;
+    }
+
     /// <summary>
     ///     Gets the loading state. True when this voxel object is still loading the initial data.
     /// </summary>

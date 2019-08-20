@@ -2,7 +2,6 @@
 
 #include "VoxelGenerator.h"
 #include "Voxels/Voxel.h"
-#include "Voxels/VoxelLookupTables.h"
 #include "Voxels/VoxelObjectBase.h"
 #include "Voxels/Assets/VoxelObjectAsset.h"
 
@@ -79,7 +78,7 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
 
     // TODO: Allocate aligned data structure for `voxels`
 
-    //const auto octree = m_voxelObject->Octree();
+    const auto octree = m_voxelObject->Octree();
 
     const auto asset = m_voxelObject->Asset();
     const auto voxelSize = static_cast<float>(lod);
