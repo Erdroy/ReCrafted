@@ -84,7 +84,7 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
     const auto asset = m_voxelObject->Asset();
 
     const auto voxelSize = static_cast<float>(lod);
-    const auto lodSize = VoxelLookup::LoDTable[lod];
+    const auto lodSize = VoxelLookup::LoDTable[Math::Sqrt(lod)];
 
     const auto chunkPosition = m_voxelObject->Position();
 
