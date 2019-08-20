@@ -34,34 +34,39 @@ private:
 
     RefPtr<VoxelChunkData> m_chunkData = nullptr;
     ModelComponent* m_model = nullptr;
-    Transform m_transform = {};
-
+    
     int m_lod = 0;
     uint64_t m_id = 0u;
-
-    Vector3 m_position = {};
+    Transform m_transform = {};
 
     Lock m_uploadLock = {};
     std::atomic<UploadType> m_uploadType = UploadType::None;
     RefPtr<VoxelChunkMesh> m_mesh;
+    RefPtr<VoxelChunkMesh> m_newMesh;
 
 public:
     explicit VoxelChunk(VoxelObjectBase* voxelObject) : m_voxelObject(voxelObject) {}
     ~VoxelChunk() = default;
 
-private:
-    void SetUpload(const RefPtr<VoxelChunkMesh>& mesh, UploadType uploadType);
-    void OnBeginRender(int meshIndex);
+public:
+    void Initialize(VoxelObjectOctree::Node* node);
 
 public:
     void Upload();
-    void Initialize(VoxelObjectOctree::Node* node);
+    void SetUpload(const RefPtr<VoxelChunkMesh>& mesh, UploadType uploadType);
+    void OnBeginRender(int meshIndex);
+    void OnCreate();
+    void OnDestroy();
 
 public:
     void Generate(IVoxelMesher* mesher);
     void Rebuild(IVoxelMesher* mesher);
 
 public:
+    /// <summary>
+    ///     Sets transform of this chunk.
+    /// </summary>
+    /// <param name="transform"></param>
     void SetTransform(const Transform& transform)
     {
         m_transform = transform;
@@ -80,6 +85,36 @@ public:
         return m_model && m_model->Active;
     }
 
+    /// <summary>
+    ///     Returns true when this chunk needs upload, i.e. got new mesh.
+    /// </summary>
+    bool NeedsUpload() const
+    {
+        return m_uploadType != UploadType::None;
+    }
+
+    /// <summary>
+    ///     Returns the chunk data structure that contains the hermite voxel data for this chunk.
+    /// </summary>
+    RefPtr<VoxelChunkData> ChunkData() const
+    {
+        return m_chunkData;
+    }
+
+    /// <summary>
+    ///     Returns true, when this chunk has mesh and it is a valid one.
+    /// </summary>
+    bool HasMesh() const
+    {
+        return m_mesh != nullptr && m_mesh->IsValid();
+    }
+
 public:
+    /// <summary>
+    ///     Calculates unique 64-bit chunk id from given position 
+    ///     (that is the unique position in center of the chunk).
+    /// </summary>
+    /// <param name="position">The chunk position.</param>
+    /// <returns>The 64-bit chunk id.</returns>
     static uint64_t CalculateChunkId(const Vector3& position);
 };

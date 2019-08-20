@@ -3,7 +3,6 @@
 #include "VoxelStorage.h"
 
 #include "Profiler/Profiler.h"
-#include "Voxels/Assets/VoxelObjectAsset.h"
 #include "Voxels/Generator/VoxelGenerator.h"
 #include "Voxels/VoxelObjectBase.h"
 #include "Voxels/VoxelChunkCache.h"

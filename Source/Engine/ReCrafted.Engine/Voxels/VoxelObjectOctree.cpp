@@ -100,11 +100,7 @@ void VoxelObjectOctree::RebuildRootNodes() const
 
         // Call OnCreate
         node->OnCreate();
-
-        if(i % 10 == 0)
-            node->Populate();
-        else
-            node->Rebuild();
+        node->Rebuild();
     }
 }
 

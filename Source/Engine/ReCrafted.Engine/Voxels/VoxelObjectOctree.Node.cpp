@@ -102,8 +102,12 @@ void VoxelObjectOctree::Node::OnCreate()
     MAIN_THREAD_ONLY();
     ASSERT(m_chunk);
 
-    const auto c = m_bounds.center;
-    m_chunk->SetTransform(Transform(Vector3(float(c.x), float(c.y), float(c.z)), Quaternion::Identity, Vector3::One));
+    // Call OnCreate function
+    m_chunk->OnCreate();
+
+    // Upload chunk when needed
+    if (m_chunk->NeedsUpload())
+        m_chunk->Upload();
 
     // Make chunk visible
     m_chunk->SetVisible(true);
@@ -121,6 +125,9 @@ void VoxelObjectOctree::Node::OnDestroy()
 
     if(m_chunk)
     {
+        // Call OnDestroy function
+        m_chunk->OnDestroy();
+
         // Destroy the chunk
         delete m_chunk;
         m_chunk = nullptr;
@@ -143,6 +150,7 @@ void VoxelObjectOctree::Node::OnPopulate()
 
     m_isPopulated = true;
     m_isProcessing = false;
+
 }
 
 void VoxelObjectOctree::Node::OnDepopulate()
@@ -160,6 +168,10 @@ void VoxelObjectOctree::Node::OnRebuild()
     ASSERT(m_chunk);
 
     m_isProcessing = false;
+
+    // Upload chunk when needed
+    if (m_chunk->NeedsUpload())
+        m_chunk->Upload();
 }
 
 void VoxelObjectOctree::Node::WorkerPopulate(IVoxelMesher* mesher)

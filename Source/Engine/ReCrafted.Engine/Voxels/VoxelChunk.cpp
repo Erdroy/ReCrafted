@@ -7,96 +7,6 @@
 #include "VoxelChunkMesh.h"
 #include "Rendering/Materials/Material.h"
 
-void VoxelChunk::SetUpload(const RefPtr<VoxelChunkMesh>& mesh, UploadType uploadType)
-{
-    if (uploadType == UploadType::Clear)
-        return;
-
-    SetVisible(true);
-    m_mesh = mesh;
-
-    const auto sections = m_mesh->GetSections();
-
-    ASSERT(m_model);
-    m_model->Meshes.Clear();
-    for (auto&& section : sections)
-    {
-        m_model->Meshes.Add(section.mesh);
-    }
-
-    // Lock Upload
-   /* ScopeLock(m_uploadLock);
-
-    if (m_newMesh || m_newCollision)
-    {
-        // Queue for dispose
-        m_disposeQueue.enqueue(std::make_pair(m_newMesh, m_newCollision));
-    }
-
-    // Set upload type to UPLOAD-MESH
-    m_newMesh = mesh;
-    //m_newCollision = collision;
-    m_uploadType = uploadType;*/
-}
-
-void VoxelChunk::OnBeginRender(const int meshIndex)
-{
-    const auto sections = m_mesh->GetSections();
-
-    auto textures = sections[meshIndex].textures;
-
-    // Set textures
-    m_model->Material->SetTextureArray(0, textures.cbNear);
-}
-
-void VoxelChunk::Upload()
-{
-    MAIN_THREAD_ONLY();
-    /*ASSERT(NeedsUpload());
-
-    // Dispose all queued meshes
-    std::pair<RefPtr<VoxelChunkMesh>, RefPtr<VoxelChunkCollsion>> toDispose;
-    while (m_disposeQueue.try_dequeue(toDispose))
-    {
-        if (toDispose.first)
-            SafeDispose(toDispose.first);
-
-        if (toDispose.second)
-            SafeDispose(toDispose.second);
-    }
-
-    switch (m_uploadType)
-    {
-    case Swap:
-    {
-        // Dispose old mesh and swap mesh (m_newMesh will be nullptr - because m_mesh is nullptr (SafeDispose))
-        ScopeLock(m_uploadLock);
-
-        SafeDispose(m_mesh);
-        m_mesh.swap(m_newMesh);
-
-        SafeDispose(m_collision);
-        m_collision.swap(m_newCollision);
-        break;
-    }
-    case Clear:
-    {
-        ScopeLock(m_uploadLock);
-
-        SafeDispose(m_mesh);
-        SafeDispose(m_newMesh);
-
-        SafeDispose(m_collision);
-        SafeDispose(m_newCollision);
-        break;
-    }
-    default: break;
-    }
-
-    // Clean upload type
-    m_uploadType = None;*/
-}
-
 void VoxelChunk::Initialize(VoxelObjectOctree::Node* node)
 {
     m_octreeNode = node;
@@ -113,14 +23,126 @@ void VoxelChunk::Initialize(VoxelObjectOctree::Node* node)
 
     // Calculate chunk position (origin)
     const auto positionOffset = Vector3::One * (float(node->Size()) * 0.5f);
-    m_position = nodePosition - positionOffset; // lower-left-back corner
-    m_transform.translation = m_position;
+    m_transform.translation = nodePosition - positionOffset; // lower-left-back corner
 
     // Calculate lod
     m_lod = int(float(node->Size()) / float(VoxelObjectOctree::Node::MinimumNodeSize));
 
     // Calculate id
     m_id = CalculateChunkId(nodePosition);
+}
+
+void VoxelChunk::Upload()
+{
+    MAIN_THREAD_ONLY();
+    ASSERT(NeedsUpload());
+
+    // Dispose all queued meshes
+    /*std::pair<RefPtr<VoxelChunkMesh>, RefPtr<VoxelChunkCollision>> toDispose;
+    while (m_disposeQueue.try_dequeue(toDispose))
+    {
+        if (toDispose.first)
+            SafeDispose(toDispose.first);
+
+        if (toDispose.second)
+            SafeDispose(toDispose.second);
+    }*/
+
+    switch (m_uploadType)
+    {
+    case UploadType::Swap:
+    {
+        // Dispose old mesh and swap mesh (m_newMesh will be nullptr - because m_mesh is nullptr (SafeDispose))
+        ScopeLock(m_uploadLock);
+
+        m_mesh.reset();
+        m_mesh.swap(m_newMesh);
+
+        // Set new mesh
+        const auto sections = m_mesh->GetSections();
+
+        m_model->Meshes.Clear();
+        for (auto&& section : sections)
+        {
+            m_model->Meshes.Add(section.mesh);
+        }
+
+        //m_collision.reset();
+        //m_collision.swap(m_newCollision);
+        break;
+    }
+    case UploadType::Clear:
+    {
+        ScopeLock(m_uploadLock);
+
+        m_mesh.reset();
+        m_newMesh.reset();
+
+        if(m_model)
+        {
+            // Clear meshes
+            m_model->Meshes.Clear();
+        }
+
+        //m_collision.reset();
+        //m_newCollision.reset();
+        break;
+    }
+    default: break;
+    }
+
+    // Clean upload type
+    m_uploadType = UploadType::None;
+}
+
+void VoxelChunk::SetUpload(const RefPtr<VoxelChunkMesh>& mesh, const UploadType uploadType)
+{
+    // Lock Upload
+    ScopeLock(m_uploadLock);
+
+    /*if (m_newMesh || m_newCollision)
+    {
+        // Queue for dispose
+        m_disposeQueue.enqueue(std::make_pair(m_newMesh, m_newCollision));
+    }*/
+    
+    m_newMesh = mesh;
+    //m_newCollision = collision;
+    m_uploadType = uploadType;
+}
+
+void VoxelChunk::OnBeginRender(const int meshIndex)
+{
+    if (m_mesh == nullptr)
+        return;
+
+    const auto sections = m_mesh->GetSections();
+    auto textures = sections[meshIndex].textures;
+
+    // Set textures
+    m_model->Material->SetTextureArray(0, textures.cbNear);
+}
+
+void VoxelChunk::OnCreate()
+{
+    MAIN_THREAD_ONLY();
+    ASSERT(m_model == nullptr);
+
+    m_model = ModelRenderingSystem::AcquireModelComponent(true);
+    m_model->Transform = &m_transform;
+    m_model->Bounds = BoundingSphere(m_transform.translation, Math::Sqrt(float(m_octreeNode->Size())) * 0.5f);
+    m_model->Material = VoxelMaterialManager::GetMainMaterial();
+
+    // Bind OnBeginRender function callback
+    m_model->OnBeginRender = Action<void, int>::New<VoxelChunk, & VoxelChunk::OnBeginRender>(this);
+}
+
+void VoxelChunk::OnDestroy()
+{
+    MAIN_THREAD_ONLY();
+    ASSERT(m_model);
+    ModelRenderingSystem::ReleaseModelComponent(m_model);
+    m_model = nullptr;
 }
 
 void VoxelChunk::Generate(IVoxelMesher* mesher)
@@ -176,7 +198,7 @@ void VoxelChunk::Rebuild(IVoxelMesher* mesher)
     const auto voxelData = m_chunkData->GetData();
 
     // Try to generate mesh data
-    mesher->Generate(m_position, m_lod, borders, voxelData);
+    mesher->Generate(m_transform.translation, m_lod, borders, voxelData);
 
     // Check if we have any triangles and if don't, 
     // then we are going to clean everything up, including chunk data.
@@ -211,26 +233,7 @@ void VoxelChunk::Rebuild(IVoxelMesher* mesher)
 
 void VoxelChunk::SetVisible(const bool isVisible)
 {
-    if(isVisible)
-    {
-        if(m_model == nullptr)
-        {
-            m_model = ModelRenderingSystem::AcquireModelComponent(true);
-            m_model->Transform = &m_transform;
-            m_model->Bounds = BoundingSphere(m_transform.translation, Math::Sqrt(float(m_octreeNode->Size())) * 0.5f);
-            m_model->Material = VoxelMaterialManager::GetMainMaterial();
-
-            // Bind OnBeginRender function callback
-            m_model->OnBeginRender = Action<void, int>::New<VoxelChunk, & VoxelChunk::OnBeginRender>(this);
-
-            m_model->Active = true;
-        }
-    }
-    else
-    {
-        ModelRenderingSystem::ReleaseModelComponent(m_model);
-        m_model = nullptr;
-    }
+    m_model->Active = isVisible;
 }
 
 uint64_t VoxelChunk::CalculateChunkId(const Vector3& position)

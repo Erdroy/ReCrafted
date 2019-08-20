@@ -6,7 +6,6 @@
 
 #include "Common/List.h"
 #include "Rendering/Mesh.h"
-#include "Rendering/Renderer/Renderer.h"
 #include "Voxels/Voxel.h"
 #include "Scripting/Object.h"
 #include "VoxelMaterialManager.h"
@@ -125,23 +124,6 @@ public:
         {
             DEBUG_ASSERT(section.mesh != nullptr);
             section.mesh->Upload(false);
-        }
-    }
-
-    /// <summary>
-    ///     Draws mesh sections.
-    /// </summary>
-    void Draw()
-    {
-        for (auto& section : m_meshSections)
-        {
-            DEBUG_ASSERT(section.mesh != nullptr);
-
-            // Set 'ColorBlend-Near' textures
-            //Graphics::GetInstance()->SetTextureArray(0, section.textures.cbNear.Data(), section.textures.cbNear.Count());
-
-            // Draw mesh
-            //Graphics::GetInstance()->Draw(section.mesh);
         }
     }
 
