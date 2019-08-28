@@ -37,11 +37,6 @@ PhysicsScene::PhysicsScene()
     m_controllerManager = PxCreateControllerManager(*m_scene);
     ASSERT(m_controllerManager);
 
-    // Setup visualization
-    m_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
-    m_scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 1.0f);
-    m_scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_AABBS, 1.0f);
-
     // Create scratch memory for this scene
     m_scratchMemory = static_cast<uint8_t*>(rc_aligned_alloc(MultiThreadStepper::SCRATCH_BLOCK_SIZE, 16));
     ASSERT(m_scratchMemory);
@@ -64,11 +59,8 @@ PhysicsScene::~PhysicsScene()
 
 void PhysicsScene::DrawDebug()
 {
-    auto cp1 = Camera::GetMainCamera()->Position() - Vector3::One * 20.0f;
-    auto cp2 = Camera::GetMainCamera()->Position() + Vector3::One * 20.0f;
-
-    // Enable physics visualization
-    m_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
+    auto cp1 = Camera::GetMainCamera()->Position() - Vector3::One * 64.0f;
+    auto cp2 = Camera::GetMainCamera()->Position() + Vector3::One * 64.0f;
 
     // Set visualization culling box
     m_scene->setVisualizationCullingBox(PxBounds3(*reinterpret_cast<PxVec3*>(&cp1), *reinterpret_cast<PxVec3*>(&cp2)));
@@ -90,10 +82,23 @@ void PhysicsScene::Update()
 {
     CPU_PROFILE_SCOPE(0, __FUNCTION__);
 
-    if (InputManager::IsKeyDown(Key::F8) && InputManager::IsKey(Key::P))
+    if (InputManager::IsKey(Key::F8) && InputManager::IsKeyDown(Key::P))
     {
+        // Setup visualization
         m_drawDebugLines = !m_drawDebugLines;
-        m_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, m_drawDebugLines ? 1.0f : 0.0f);
+
+        if(m_drawDebugLines)
+        {
+            m_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
+            m_scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 1.0f);
+            m_scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_AABBS, 1.0f);
+        }
+        else
+        {
+            m_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 0.0f);
+            m_scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 0.0f);
+            m_scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_AABBS, 0.0f);
+        }
     }
 
     if(m_drawDebugLines)
