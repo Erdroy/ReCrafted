@@ -7,6 +7,7 @@
 #include "VoxelChunkMesh.h"
 #include "Rendering/Materials/Material.h"
 #include "Physics/RigidBodyActor.h"
+#include "Profiler/Profiler.h"
 
 void VoxelChunk::Initialize(VoxelObjectOctree::Node* node)
 {
@@ -35,6 +36,7 @@ void VoxelChunk::Initialize(VoxelObjectOctree::Node* node)
 
 void VoxelChunk::Upload()
 {
+    CPU_PROFILE_FUNCTION(0);
     MAIN_THREAD_ONLY();
     ASSERT(NeedsUpload());
 
@@ -141,8 +143,8 @@ void VoxelChunk::OnBeginRender(const int meshIndex)
     if (m_mesh == nullptr)
         return;
 
-    const auto sections = m_mesh->GetSections();
-    auto textures = sections[meshIndex].textures;
+    const auto& sections = m_mesh->GetSections();
+    const auto& textures = sections[meshIndex].textures;
 
     // Set textures
     m_model->Material->SetTextureArray(0, textures.cbNear);
@@ -159,13 +161,14 @@ void VoxelChunk::OnCreate()
     m_model->Material = VoxelMaterialManager::GetMainMaterial();
 
     // Bind OnBeginRender function callback
-    m_model->OnBeginRender = Action<void, int>::New<VoxelChunk, & VoxelChunk::OnBeginRender>(this);
+    m_model->OnBeginRender = Action<void, int>::New<VoxelChunk, &VoxelChunk::OnBeginRender>(this);
 }
 
 void VoxelChunk::OnDestroy()
 {
     MAIN_THREAD_ONLY();
     ASSERT(m_model);
+
     ModelRenderingSystem::ReleaseModelComponent(m_model);
     m_model = nullptr;
 }

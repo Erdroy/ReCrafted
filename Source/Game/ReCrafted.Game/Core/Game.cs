@@ -43,10 +43,10 @@ namespace ReCrafted.Game.Core
 
             // Spawn spectator camera
             SpectatorCamera = Object.New<CameraActor>().AddScript<SpectatorCamera>();
-            SpectatorCamera.Actor.Position = new Vector3(0.0f, 950.0f, 0.0f);
+            SpectatorCamera.Actor.Position = new Vector3(0.0f, 1050.0f, 0.0f);
 
             // Spawn player
-            CurrentPlayer = PlayerManager.SpawnPlayer(new Vector3(0.0f, 14.0f, 0.0f), Quaternion.Identity);
+            CurrentPlayer = PlayerManager.SpawnPlayer(new Vector3(0.0f, 1050.0f, 0.0f), Quaternion.Identity);
 
             _floor = RigidBodyActor.CreateStatic();
             var collider = Object.New<SphereCollider>();
@@ -64,6 +64,7 @@ namespace ReCrafted.Game.Core
             // Create test planet
             _moon = ContentManager.LoadAsset<VoxelObjectAsset>("Voxels/Objects/Moon");
             _moon.VoxelObject.AddViewActor(SpectatorCamera.Actor);
+            _moon.VoxelObject.AddViewActor(CurrentPlayer.Actor);
 
             // Load and set default material
             var defaultMaterial = ContentManager.LoadAsset<VoxelMaterial>("Voxels/Materials/Default");
