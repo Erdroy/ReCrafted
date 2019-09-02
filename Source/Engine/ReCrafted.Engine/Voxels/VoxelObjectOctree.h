@@ -73,24 +73,25 @@ public:
 
     public:
         /// <summary>
-        ///     Populates this node.
+        ///     Queues this node for population.
         /// </summary>
         void Populate();
 
         /// <summary>
-        ///     Depopulates this node.
+        ///     Queues this node for depopulation.
         /// </summary>
         void Depopulate();
 
         /// <summary>
-        ///     Rebuilds this node. To rebuilt this node, 
-        ///     it has to be an leaf node, i.e. cannot be a parent.
+        ///     Queues this node for rebuild. To rebuilt this node, 
+        ///     it has to be a leaf node, i.e. cannot be a parent.
         /// </summary>
         void Rebuild();
 
+    public:
         /// <summary>
         ///     Called on main thread after this node has been created 
-        ///     by populating of the parent.
+        ///     by populating the parent.
         /// </summary>
         void OnCreate();
 
@@ -192,6 +193,8 @@ public:
         {
             return m_isProcessing.load();
         }
+
+        bool AreChildrenProcessing() const;
 
         bool HasPopulatedChildren() const;
     };

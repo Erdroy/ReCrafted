@@ -113,13 +113,14 @@ VoxelObjectOctree::~VoxelObjectOctree()
 {
     for (auto i = 0; i < m_rootNodesCount; i++)
     {
-        auto node = m_rootNodes[i];
+        auto& node = m_rootNodes[i];
 
         // Call OnDestroy
         node->OnDestroy();
 
         // Delete node
         delete node;
+        node = nullptr;
     }
 
     delete m_rootNodes;

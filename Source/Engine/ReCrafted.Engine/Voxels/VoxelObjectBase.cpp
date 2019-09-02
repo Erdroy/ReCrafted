@@ -120,13 +120,13 @@ void VoxelObjectBase::OctreeViewUpdateTask::UpdateNode(VoxelObjectOctree::Node* 
     // IF (all C's are in B-P) AND populated: depopulate - otherwise: go further
     if (!hasXA && !hasXB)
     {
-        if (node->IsPopulated() && !node->IsProcessing())
+        if (node->IsPopulated() && !node->IsProcessing() && !node->AreChildrenProcessing())
             NodesToDepopulate.Add(node);
         return;
     }
 
     // IF (there is no C's) AND populated: depopulate - otherwise: ignore.
-    if (node->IsPopulated())
+    if (node->IsPopulated() && !node->IsProcessing() && !node->AreChildrenProcessing())
         NodesToDepopulate.Add(node);
 }
 

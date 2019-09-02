@@ -7,7 +7,6 @@
 #include "VoxelLookupTables.h"
 #include "VoxelObjectManager.h"
 #include "VoxelChunk.h"
-#include "Rendering/Debug/DebugDraw.h"
 
 void VoxelObjectOctree::Node::DestroyChildren()
 {
@@ -58,10 +57,10 @@ void VoxelObjectOctree::Node::Depopulate()
     ASSERT(m_isPopulated);
     ASSERT(!m_isProcessing);
 
-    // Process
-    DestroyChildren();
+    m_isProcessing = true;
 
-    // Depopulate called.
+    // Destroy children and we're done.
+    DestroyChildren();
     OnDepopulate();
 }
 
@@ -141,6 +140,9 @@ void VoxelObjectOctree::Node::OnDepopulate()
 
     // Make chunk visible
     m_chunk->SetVisible(true);
+
+    m_isPopulated = false;
+    m_isProcessing = false;
 }
 
 void VoxelObjectOctree::Node::OnRebuild()
@@ -300,6 +302,20 @@ VoxelObjectOctree::Node* VoxelObjectOctree::Node::Find(const Vector3d& position)
     }
 
     return nullptr;
+}
+
+bool VoxelObjectOctree::Node::AreChildrenProcessing() const
+{
+    if (IsProcessing())
+        return true;
+
+    for (auto&& child : m_childrenNodes)
+    {
+        if (child && child->AreChildrenProcessing())
+            return true;
+    }
+
+    return false;
 }
 
 bool VoxelObjectOctree::Node::HasPopulatedChildren() const
