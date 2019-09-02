@@ -73,17 +73,24 @@ void VoxelChunk::Upload()
         // Detach collider from the VoxelObject's physics actor
         if(m_meshCollider)
         {
-            m_voxelObject->RigidBody()->DetachCollider(m_meshCollider, false);
+            // Detach collision
+            SetPhysicsState(false);
+
             Object::Destroy(m_meshCollider);
             m_meshCollider = nullptr;
         }
 
         if (sections.Count() > 0 && m_newMeshCollider)
         {
-            // And attach the collider now
-            m_voxelObject->RigidBody()->AttachCollider(m_newMeshCollider, false);
+            // Setup new collision mesh
             m_meshCollider = m_newMeshCollider;
             m_newMeshCollider = nullptr;
+
+            if(!m_octreeNode->IsPopulated())
+            {
+                // Attach collision only when the octree node is not populated
+                SetPhysicsState(true);
+            }
         }
         break;
     }
@@ -102,7 +109,9 @@ void VoxelChunk::Upload()
 
         if (m_meshCollider)
         {
-            m_voxelObject->RigidBody()->DetachCollider(m_meshCollider, false);
+            // Detach collision
+            SetPhysicsState(false);
+
             Object::Destroy(m_meshCollider);
             m_meshCollider = nullptr;
         }
@@ -257,13 +266,13 @@ void VoxelChunk::Rebuild(IVoxelMesher* mesher)
     SetUpload(mesh, collider, UploadType::Swap);
 }
 
-void VoxelChunk::SetVisible(const bool isVisible)
+void VoxelChunk::SetPhysicsState(const bool hasCollision)
 {
-    m_model->Active = isVisible;
+    ASSERT(m_meshCollider);
 
-    if (m_meshCollider)
+    if (m_collisionAttached != hasCollision)
     {
-        if (isVisible)
+        if(hasCollision)
         {
             m_voxelObject->RigidBody()->AttachCollider(m_meshCollider);
         }
@@ -271,8 +280,18 @@ void VoxelChunk::SetVisible(const bool isVisible)
         {
             m_voxelObject->RigidBody()->DetachCollider(m_meshCollider);
         }
-    }
 
+        // Update flag
+        m_collisionAttached = hasCollision;
+    }
+}
+
+void VoxelChunk::SetVisible(const bool isVisible)
+{
+    m_model->Active = isVisible;
+
+    if (m_meshCollider)
+        SetPhysicsState(isVisible);
 }
 
 uint64_t VoxelChunk::CalculateChunkId(const Vector3& position)

@@ -45,6 +45,7 @@ private:
     RefPtr<VoxelChunkMesh> m_mesh;
     RefPtr<VoxelChunkMesh> m_newMesh;
 
+    bool m_collisionAttached = false;
     MeshCollider* m_meshCollider = nullptr;
     MeshCollider* m_newMeshCollider = nullptr;
 
@@ -58,6 +59,7 @@ public:
 public:
     void Upload();
     void SetUpload(const RefPtr<VoxelChunkMesh>& mesh, MeshCollider* collider, UploadType uploadType);
+
     void OnBeginRender(int meshIndex);
     void OnCreate();
     void OnDestroy();
@@ -67,6 +69,14 @@ public:
     void Rebuild(IVoxelMesher* mesher);
 
 public:
+    /// <summary>
+    ///     Sets the physics state of this chunk.
+    /// </summary>
+    /// <param name="hasCollision">
+    ///     When true, this chunk will get collision with the dynamic world.
+    /// </param>
+    void SetPhysicsState(bool hasCollision);
+
     /// <summary>
     ///     Sets transform of this chunk.
     /// </summary>

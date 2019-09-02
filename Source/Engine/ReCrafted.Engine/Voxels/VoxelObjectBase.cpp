@@ -153,7 +153,7 @@ void VoxelObjectBase::OctreeViewUpdateTask::Finish()
 
     for (auto&& node : NodesToDepopulate)
     {
-        if (!node || node->IsProcessing())
+        if (!node || node->IsProcessing() || node->AreChildrenProcessing())
             continue;
 
         node->Depopulate();
