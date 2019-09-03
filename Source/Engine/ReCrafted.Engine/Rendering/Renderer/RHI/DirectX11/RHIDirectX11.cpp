@@ -9,6 +9,7 @@
 
 #include "Rendering/Renderer/Renderer.h"
 #include "Rendering/Renderer/RendererConfig.h"
+#include "Profiler/Profiler.h"
 
 #include "../RHIContext.h"
 
@@ -1495,6 +1496,8 @@ namespace Renderer
             static auto FirstFrame = true;
             static std::vector<CComPtr<ID3D11CommandList>> commandLists = {};
 
+            CPU_PROFILE_FUNCTION(0);
+
             if (FirstFrame)
             {
                 FirstFrame = false;
@@ -1506,10 +1509,13 @@ namespace Renderer
                 }
             }
 
+            Profiler::BeginProfile("SyncWorker");
             // Wait for all worker threads when Multi-Threaded
             if (!(m_settings & Settings::SingleThreaded))
                 WaitForMultipleObjects(m_workerThreadCount, m_workerFinishEvents, true, INFINITE);
+            Profiler::EndProfile();
 
+            Profiler::BeginProfile("ExecCommandList");
             // Build command list array
             for (auto thread : m_workerThreads)
             {
@@ -1540,19 +1546,27 @@ namespace Renderer
             {
                 m_deviceContext->ExecuteCommandList(commandList, TRUE);
             }
+            Profiler::EndProfile();
 
+            Profiler::BeginProfile("OnPresentBegin");
             // Call present begin event
             onPresentBegin.Invoke();
+            Profiler::EndProfile();
 
+            Profiler::BeginProfile("Present");
             // Present frame
             if (m_swapChain)
             {
                 DX_CALL(m_swapChain->Present(m_renderFlags & RenderFlags::VSync ? 1 : 0, 0));
             }
+            Profiler::EndProfile();
 
+            Profiler::BeginProfile("OnPresentEnd");
             // Call present end event
             onPresentEnd.Invoke();
+            Profiler::EndProfile();
 
+            Profiler::BeginProfile("StartNextFrame");
             if (!(m_settings & Settings::SingleThreaded))
             {
                 PreFrameRender();
@@ -1572,6 +1586,7 @@ namespace Renderer
 
             // Increment frame count
             FrameCount++;
+            Profiler::EndProfile();
         }
 
         void RHIDirectX11::CreateVertexBuffer(VertexBufferHandle handle, uint vertexCount, uint vertexSize, bool dynamic, RendererMemory buffer)
