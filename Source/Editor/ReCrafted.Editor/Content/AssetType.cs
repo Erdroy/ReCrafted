@@ -14,6 +14,11 @@ namespace ReCrafted.Editor.Content
 
         Material,
 
+        VoxelObject,
+        VoxelObjectData,
+
         AudioSound,
+
+        Count
     }
 }
