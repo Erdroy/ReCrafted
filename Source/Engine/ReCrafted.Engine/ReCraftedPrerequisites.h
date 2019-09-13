@@ -90,10 +90,12 @@ class Profiler;
 
 // Rendering/
 enum class DrawMode : byte;
+enum class HeightmapFormat : byte;
 enum class MaterialFieldType : byte;
 enum class RenderingComponentStage : byte;
 class Camera;
 class CameraActor;
+class Heightmap;
 class Mesh;
 class RenderBuffer;
 class RenderingBase;
