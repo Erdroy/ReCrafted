@@ -5,7 +5,7 @@
 #include <ReCrafted.h>
 
 #include "Common/List.h"
-#include "Core/HeightmapFormat.h"
+#include "Rendering/HeightmapFormat.h"
 
 /// <summary>
 ///     Heightmap class. Provides heightmap sampling functions.
