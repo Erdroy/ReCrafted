@@ -46,9 +46,24 @@ namespace ReCrafted.Tools.Common
         /// Reads JSON string from given file and then makes T object from it.
         /// </summary>
         /// <param name="fileName">The file name.</param>
+        /// <param name="allowFileCreation">When true, this will try to create empty file for this JSON template. (Default: true)</param>
         /// <returns>The created object or null when file is not found.</returns>
-        public static T FromFile(string fileName)
+        public static T FromFile(string fileName, bool allowFileCreation = true)
         {
+            // Create the file, when missing.
+            if (!File.Exists(fileName))
+            {
+                if (allowFileCreation)
+                {
+                    var temp = new JsonTemplate<T>();
+                    temp.ToFile(fileName);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
             // Read the file
             using (var file = new FileStream(fileName, FileMode.Open))
             {

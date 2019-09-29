@@ -215,6 +215,14 @@ public:
         const auto _returnValue = instance->GetScripts();
         *p_data = MONO_ARRAY_FROM_OBJECT_ARRAY(_returnValue, Script, Script*, MonoObject*, _t0->ToManaged());
     }
+    
+    static void ActorBase_Get_Id14(ActorBase* instance, ActorId_t* data) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "ActorBase");
+        const auto _returnValue = instance->GetId();
+        *data = _returnValue;
+    }
 };
 
 void ActorBase::InitRuntime() 
@@ -247,6 +255,7 @@ void ActorBase::InitRuntime()
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::Set_InternalName", &APIProxy::ActorBase_Set_Name11);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalChildren", &APIProxy::ActorBase_Get_Children12);
     API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalScripts", &APIProxy::ActorBase_Get_Scripts13);
+    API_BIND("ReCrafted.API.Core.Actors.ActorBase::Get_InternalId", &APIProxy::ActorBase_Get_Id14);
 }
 
 const char* ActorBase::Fullname() 

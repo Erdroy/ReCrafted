@@ -239,6 +239,18 @@ namespace ReCrafted.API.Core.Actors
             }
         }
 
+        /// <summary>
+        ///     Gets the id of this actor.
+        /// </summary>
+        public ulong Id
+        {
+            get
+            {
+                Get_InternalId(NativePtr, out var data);
+                return data;
+            }
+        }
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalSetParent(System.IntPtr nativePtr, System.IntPtr newParent);
 
@@ -319,5 +331,8 @@ namespace ReCrafted.API.Core.Actors
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalScripts(System.IntPtr nativePtr, out Script[] data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalId(System.IntPtr nativePtr, out ulong data);
     }
 }

@@ -16,6 +16,8 @@ using ActorId_t = uint64_t;
 API_USING("ReCrafted.API.Common")
 API_USING("ReCrafted.API.Mathematics")
 
+API_CUSTOM_TRANSLATION(ActorId_t, "ulong")
+
 #define ACTOR_BODY(actorType) actorType () { SceneManager::GetInstance()->AddActor(this); }
 
 /// <summary>
@@ -255,5 +257,9 @@ public:
     API_PROPERTY(noprefix)
     Array<Script*> GetScripts();
 
+    /// <summary>
+    ///     Gets the id of this actor.
+    /// </summary>
+    API_PROPERTY(noprefix)
     ActorId_t GetId() const;
 };
