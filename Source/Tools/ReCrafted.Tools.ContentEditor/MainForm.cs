@@ -1,6 +1,9 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System;
+using System.Collections;
+using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -18,21 +21,51 @@ namespace ReCrafted.Tools.ContentEditor
             InitializeComponent();
         }
 
-        private void Form_OnLoaded(object sender, EventArgs e)
+        private void Form_OnShown(object sender, EventArgs e)
         {
             // Load settings
             Settings.Current = Settings.FromFile(Settings.FileName);
 
+            // Ask for the game directory when running this application the first time.
+            if (string.IsNullOrEmpty(Settings.Current.GameDirectory))
+                SelectDirectory();
+
+            var contentRootPath = Path.Combine(Settings.Current.GameDirectory, "Content");
+
+            // Setup content images
+            SetupContentView();
+
+            // Create content browser
+            Browser = new ContentBrowser(contentRootPath, ContentTree, ContentView)
+            {
+                CurrentPath = contentRootPath
+            };
+
             // The application is now fully loaded!
         }
 
-        private void Form_OnShown(object sender, EventArgs e)
+        private void SetupContentView()
         {
-            // Ask for the game directory when running this application the first time.
-            if (string.IsNullOrEmpty(Settings.Current.GameDirectory))
+            ContentViewImages = new ImageList
             {
-                SelectDirectory();
+                ImageSize = new Size(64, 64),
+                ColorDepth = ColorDepth.Depth32Bit
+            };
+
+            var resourceSet = Resources.ResourceManager.GetResourceSet(CultureInfo.InvariantCulture, true, false);
+            if (resourceSet != null)
+            {
+                foreach (DictionaryEntry entry in resourceSet)
+                {
+                    if (entry.Value is Bitmap value)
+                    {
+                        ContentViewImages.Images.Add((string)entry.Key, value);
+                    }
+                }
             }
+
+            // Setup image lists
+            ContentView.LargeImageList = ContentViewImages;
         }
 
         private void Exit_OnClick(object sender, EventArgs e)
@@ -95,5 +128,15 @@ namespace ReCrafted.Tools.ContentEditor
             // Failed, exit the application.
             Application.Exit();
         }
+
+        /// <summary>
+        ///     The list of all images used by the ContentView.
+        /// </summary>
+        public ImageList ContentViewImages { get; private set; }
+
+        /// <summary>
+        ///     The <see cref="ContentBrowser"/> class instance.
+        /// </summary>
+        public ContentBrowser Browser { get; private set; }
     }
 }

@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContentBrowser.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -93,6 +94,15 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.3-beta1</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icon_Folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icon_Unknown.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icon_Back.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

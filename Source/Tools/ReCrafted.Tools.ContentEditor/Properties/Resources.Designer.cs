@@ -70,6 +70,36 @@ namespace ReCrafted.Tools.ContentEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Icon_Back {
+            get {
+                object obj = ResourceManager.GetObject("Icon_Back", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Icon_Folder {
+            get {
+                object obj = ResourceManager.GetObject("Icon_Folder", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Icon_Unknown {
+            get {
+                object obj = ResourceManager.GetObject("Icon_Unknown", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select ReCrafted.exe file.
         /// </summary>
         internal static string InitialSelectContentDirectory {

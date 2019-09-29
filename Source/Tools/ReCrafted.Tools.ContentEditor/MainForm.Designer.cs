@@ -28,13 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("A");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("B");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("C");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Content", new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3});
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Content");
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Test", 0);
             this.MenuBar = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -163,16 +158,10 @@
             this.ContentTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ContentTree.Location = new System.Drawing.Point(0, 0);
             this.ContentTree.Name = "ContentTree";
-            treeNode1.Name = "Node1";
-            treeNode1.Text = "A";
-            treeNode2.Name = "Node2";
-            treeNode2.Text = "B";
-            treeNode3.Name = "Node3";
-            treeNode3.Text = "C";
-            treeNode4.Name = "Root";
-            treeNode4.Text = "Content";
+            treeNode1.Name = "Root";
+            treeNode1.Text = "Content";
             this.ContentTree.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode4});
+            treeNode1});
             this.ContentTree.ShowLines = false;
             this.ContentTree.ShowNodeToolTips = true;
             this.ContentTree.Size = new System.Drawing.Size(255, 635);
@@ -185,10 +174,13 @@
             this.ContentView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.ContentView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ContentView.HideSelection = false;
+            this.ContentView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1});
             this.ContentView.Location = new System.Drawing.Point(0, 0);
             this.ContentView.Name = "ContentView";
             this.ContentView.Size = new System.Drawing.Size(1005, 635);
             this.ContentView.TabIndex = 0;
+            this.ContentView.TileSize = new System.Drawing.Size(256, 60);
             this.ContentView.UseCompatibleStateImageBehavior = false;
             // 
             // MainForm
@@ -202,7 +194,6 @@
             this.MainMenuStrip = this.MenuBar;
             this.Name = "MainForm";
             this.Text = "ReCrafted Content Editor";
-            this.Load += new System.EventHandler(this.Form_OnLoaded);
             this.Shown += new System.EventHandler(this.Form_OnShown);
             this.MenuBar.ResumeLayout(false);
             this.MenuBar.PerformLayout();
