@@ -139,7 +139,7 @@ namespace ReCrafted.Tools.ContentEditor
             if (!File.Exists(sourceFileMeta))
             {
                 // If not found, show import asset window. If aborted, safely stop the import process.
-                if ((metadata = importer.ShowImportDialog(sourceFile, sourceFileMeta)) == null)
+                if ((metadata = importer.ShowImportDialog(sourceFile, sourceFileMeta, targetDirectory)) == null)
                     return;
             }
             else
@@ -148,11 +148,23 @@ namespace ReCrafted.Tools.ContentEditor
                 metadata = importer.LoadMetadata(sourceFileMeta);
             }
 
+            // Create and show progress form
+            var progressImport = new ProgressForm();
+            progressImport.Show();
+
             // Import asset using metadata
-            if (!importer.ImportAsset(sourceFile, targetDirectory, metadata))
+            if (!importer.ImportAsset(sourceFile, targetDirectory, metadata,
+                (progress, text) => {
+                    progressImport.Progress = progress;
+                    progressImport.Text = text;
+                    Application.DoEvents();
+                }))
             {
                 MessageBox.Show(@"Error", string.Format(Resources.FailedToImport, sourceFile));
             }
+
+            // Close progress form
+            progressImport.Close();
         }
 
         private static void SelectDirectory()
