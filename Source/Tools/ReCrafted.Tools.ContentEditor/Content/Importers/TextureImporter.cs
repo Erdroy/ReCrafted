@@ -126,9 +126,9 @@ namespace ReCrafted.Tools.ContentEditor.Content.Importers
             {
                 Format = mip0.Format,
                 MipCount = mipCount,
-                Mips = new TextureAsset.Mip[mipCount]
+                Mips = new TextureAsset.Mip[mipCount],
+                AssetGuid = metadata.AssetGuid
             };
-
 
             // Set texture mip maps
             var textureSize = 0u;
