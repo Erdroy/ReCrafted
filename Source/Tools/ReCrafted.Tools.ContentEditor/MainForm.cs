@@ -29,8 +29,14 @@ namespace ReCrafted.Tools.ContentEditor
 
         private void Form_OnShown(object sender, EventArgs e)
         {
+            // Set instance
+            Instance = this;
+
             // Load settings
             Settings.Current = Settings.FromFile(Settings.FileName);
+
+            // Load asset cache
+            AssetCache.LoadCache(true);
 
             // Ask for the game directory when running this application the first time.
             if (string.IsNullOrEmpty(Settings.Current.GameDirectory))
@@ -124,6 +130,7 @@ namespace ReCrafted.Tools.ContentEditor
             // Get source metadata file path and the source file extension
             var sourceFileMeta = $"{sourceFile}.rcmeta";
             var sourceFileExtension = fileInfo.Extension;
+            var targetFile = Path.Combine(targetDirectory, Path.GetFileNameWithoutExtension(sourceFile) + ".rcasset");
 
             // Get the importer that supports the source file's extension.
             var importer = Importers.FirstOrDefault(x => x.SupportedExtensions.Contains(sourceFileExtension));
@@ -162,6 +169,9 @@ namespace ReCrafted.Tools.ContentEditor
             {
                 MessageBox.Show(@"Error", string.Format(Resources.FailedToImport, sourceFile));
             }
+
+            // Add asset to cache
+            AssetCache.AddAssetType(targetFile, metadata.AssetGuid, metadata.AssetType);
 
             // Close progress form
             progressImport.Close();
@@ -231,5 +241,10 @@ namespace ReCrafted.Tools.ContentEditor
         ///     The <see cref="ContentBrowser"/> class instance.
         /// </summary>
         public ContentBrowser Browser { get; private set; }
+
+        /// <summary>
+        ///     The instance of the <see cref="MainForm"/> window class.
+        /// </summary>
+        public static MainForm Instance { get; private set; }
     }
 }

@@ -49,6 +49,7 @@
     <Compile Include="ContentBrowser.cs" />
     <Compile Include="Content\Asset.cs" />
     <Compile Include="Content\AssetBaseType.cs" />
+    <Compile Include="Content\AssetCache.cs" />
     <Compile Include="Content\AssetImporter.cs" />
     <Compile Include="Content\Assets\TextureAsset.cs" />
     <Compile Include="Content\AssetType.cs" />

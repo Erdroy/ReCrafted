@@ -14,8 +14,8 @@ namespace ReCrafted.Tools.ContentEditor.Content
     /// </summary>
     public abstract class Asset
     {
+        internal static readonly byte[] AssetMagic = Encoding.ASCII.GetBytes("RCA");
         private const ushort AssetVersion = 1;
-        private static readonly byte[] AssetMagic = Encoding.ASCII.GetBytes("RCA");
 
         private JObject _currentObject;
         private JsonTextWriter _currentWriter;
