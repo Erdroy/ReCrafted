@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Content");
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Test", 0);
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Content");
             this.MenuBar = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,6 +44,8 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.ContentTree = new System.Windows.Forms.TreeView();
             this.ContentView = new System.Windows.Forms.ListView();
+            this.assetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuBar.SuspendLayout();
             this.StatusBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -57,6 +59,7 @@
             this.MenuBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
+            this.assetsToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.MenuBar.Location = new System.Drawing.Point(0, 0);
             this.MenuBar.Name = "MenuBar";
@@ -67,10 +70,16 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator2,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(90, 6);
             // 
             // exitToolStripMenuItem
             // 
@@ -158,10 +167,10 @@
             this.ContentTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ContentTree.Location = new System.Drawing.Point(0, 0);
             this.ContentTree.Name = "ContentTree";
-            treeNode1.Name = "Root";
-            treeNode1.Text = "Content";
+            treeNode7.Name = "Root";
+            treeNode7.Text = "Content";
             this.ContentTree.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1});
+            treeNode7});
             this.ContentTree.ShowLines = false;
             this.ContentTree.ShowNodeToolTips = true;
             this.ContentTree.Size = new System.Drawing.Size(255, 635);
@@ -174,14 +183,29 @@
             this.ContentView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.ContentView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ContentView.HideSelection = false;
-            this.ContentView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
             this.ContentView.Location = new System.Drawing.Point(0, 0);
             this.ContentView.Name = "ContentView";
             this.ContentView.Size = new System.Drawing.Size(1005, 635);
             this.ContentView.TabIndex = 0;
             this.ContentView.TileSize = new System.Drawing.Size(256, 60);
             this.ContentView.UseCompatibleStateImageBehavior = false;
+            this.ContentView.DragDrop += new System.Windows.Forms.DragEventHandler(this.ContentView_OnDrop);
+            this.ContentView.DragEnter += new System.Windows.Forms.DragEventHandler(this.ContentView_OnEnter);
+            // 
+            // assetsToolStripMenuItem
+            // 
+            this.assetsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.importToolStripMenuItem});
+            this.assetsToolStripMenuItem.Name = "assetsToolStripMenuItem";
+            this.assetsToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.assetsToolStripMenuItem.Text = "Assets";
+            // 
+            // importToolStripMenuItem
+            // 
+            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importToolStripMenuItem.Text = "Import";
+            this.importToolStripMenuItem.Click += new System.EventHandler(this.Import_OnClick);
             // 
             // MainForm
             // 
@@ -224,6 +248,9 @@
         private System.Windows.Forms.TreeView ContentTree;
         private System.Windows.Forms.ListView ContentView;
         private System.Windows.Forms.ToolStripStatusLabel StatusLabel;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem assetsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
     }
 }
 

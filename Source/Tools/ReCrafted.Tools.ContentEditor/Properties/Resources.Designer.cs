@@ -70,6 +70,24 @@ namespace ReCrafted.Tools.ContentEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to import file &apos;{0}&apos;.
+        /// </summary>
+        internal static string FailedToImport {
+            get {
+                return ResourceManager.GetString("FailedToImport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File type of &apos;{0}&apos; is not supported!.
+        /// </summary>
+        internal static string FileNotSupported {
+            get {
+                return ResourceManager.GetString("FileNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Icon_Back {
@@ -100,6 +118,15 @@ namespace ReCrafted.Tools.ContentEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File &apos;{0}&apos; not found!.
+        /// </summary>
+        internal static string ImportFileNotFound {
+            get {
+                return ResourceManager.GetString("ImportFileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select ReCrafted.exe file.
         /// </summary>
         internal static string InitialSelectContentDirectory {
@@ -114,6 +141,15 @@ namespace ReCrafted.Tools.ContentEditor.Properties {
         internal static string InvalidGamePath {
             get {
                 return ResourceManager.GetString("InvalidGamePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select file for import..
+        /// </summary>
+        internal static string SelectImportFile {
+            get {
+                return ResourceManager.GetString("SelectImportFile", resourceCulture);
             }
         }
     }

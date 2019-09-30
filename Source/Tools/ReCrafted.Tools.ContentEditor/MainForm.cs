@@ -7,6 +7,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using ReCrafted.Tools.ContentEditor.Content;
+using ReCrafted.Tools.ContentEditor.Content.Importers;
 using ReCrafted.Tools.ContentEditor.Properties;
 
 namespace ReCrafted.Tools.ContentEditor
@@ -16,6 +18,10 @@ namespace ReCrafted.Tools.ContentEditor
     /// </summary>
     public partial class MainForm : Form
     {
+        private static readonly AssetImporter[] Importers = {
+            new TextureImporter()
+        };
+
         public MainForm()
         {
             InitializeComponent();
@@ -68,10 +74,85 @@ namespace ReCrafted.Tools.ContentEditor
             ContentView.LargeImageList = ContentViewImages;
         }
 
+        private void ContentView_OnDrop(object sender, DragEventArgs e)
+        {
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            foreach (var file in files)
+            {
+                // Import asset
+                ImportAsset(file, Browser.CurrentPath);
+            }
+        }
+
+        private void ContentView_OnEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        private void Import_OnClick(object sender, EventArgs e)
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                Title = Resources.SelectImportFile
+            };
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // Import asset
+                ImportAsset(openFileDialog.FileName, Browser.CurrentPath);
+            }
+        }
+
         private void Exit_OnClick(object sender, EventArgs e)
         {
             // Exit the application!
             Application.Exit();
+        }
+
+        private static void ImportAsset(string sourceFile, string targetDirectory)
+        {
+            var fileInfo = new FileInfo(sourceFile);
+
+            if (!fileInfo.Exists)
+            {
+                MessageBox.Show(@"Error", string.Format(Resources.ImportFileNotFound, sourceFile));
+                return;
+            }
+
+            // Get source metadata file path and the source file extension
+            var sourceFileMeta = $"{sourceFile}.rcmeta";
+            var sourceFileExtension = fileInfo.Extension;
+
+            // Get the importer that supports the source file's extension.
+            var importer = Importers.FirstOrDefault(x => x.SupportedExtensions.Contains(sourceFileExtension));
+
+            if (importer == null)
+            {
+                MessageBox.Show(@"Error", string.Format(Resources.FileNotSupported, sourceFile));
+                return;
+            }
+
+            // Check metadata file [and if found, load metadata]
+            IAssetMetadata metadata;
+            if (!File.Exists(sourceFileMeta))
+            {
+                // If not found, show import asset window. If aborted, safely stop the import process.
+                if ((metadata = importer.ShowImportDialog(sourceFile, sourceFileMeta)) == null)
+                    return;
+            }
+            else
+            {
+                // Just load the metadata file using importer
+                metadata = importer.LoadMetadata(sourceFileMeta);
+            }
+
+            // Import asset using metadata
+            if (!importer.ImportAsset(sourceFile, targetDirectory, metadata))
+            {
+                MessageBox.Show(@"Error", string.Format(Resources.FailedToImport, sourceFile));
+            }
         }
 
         private static void SelectDirectory()

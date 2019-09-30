@@ -47,6 +47,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContentBrowser.cs" />
+    <Compile Include="Content\AssetImporter.cs" />
+    <Compile Include="Content\AssetMetadata.cs" />
+    <Compile Include="Content\Importers\TextureImporter.cs" />
+    <Compile Include="Content\Importers\TextureImportWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Content\Importers\TextureImportWindow.Designer.cs">
+      <DependentUpon>TextureImportWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -56,6 +65,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
+    <EmbeddedResource Include="Content\Importers\TextureImportWindow.resx">
+      <DependentUpon>TextureImportWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
