@@ -89,6 +89,7 @@ namespace ReCrafted.Tools.ContentEditor
                 // Import asset
                 ImportAsset(file, Browser.CurrentPath);
             }
+            Browser.Refresh();
         }
 
         private void ContentView_OnEnter(object sender, DragEventArgs e)
@@ -108,6 +109,7 @@ namespace ReCrafted.Tools.ContentEditor
             {
                 // Import asset
                 ImportAsset(openFileDialog.FileName, Browser.CurrentPath);
+                Browser.Refresh();
             }
         }
 

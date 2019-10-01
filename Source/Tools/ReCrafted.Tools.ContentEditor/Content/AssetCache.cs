@@ -113,6 +113,8 @@ namespace ReCrafted.Tools.ContentEditor.Content
                     {
                         using (var stream = new BinaryReader(fs))
                         {
+                            var assetFile = fileName.Replace(Path.Combine(Settings.Current.GameDirectory, "Content") + "\\", "");
+
                             // TODO: Use Asset class somehow
 
                             var header = stream.ReadBytes(3);
@@ -130,7 +132,7 @@ namespace ReCrafted.Tools.ContentEditor.Content
                                 {
                                     AssetType = assetType,
                                     AssetGuid = assetGuid,
-                                    AssetFile = fileName
+                                    AssetFile = assetFile
                                 });
 
                                 // Ok, we're done here.
@@ -155,7 +157,7 @@ namespace ReCrafted.Tools.ContentEditor.Content
                                             {
                                                 AssetType = assetType,
                                                 AssetGuid = assetGuid,
-                                                AssetFile = fileName
+                                                AssetFile = assetFile
                                             });
 
                                             // Ok, we're done here.
@@ -172,19 +174,21 @@ namespace ReCrafted.Tools.ContentEditor.Content
             }
         }
 
-        public static void AddAssetType(string assetFile, Guid assetGuid, AssetType assetType)
+        public static void AddAssetType(string rawAssetFile, Guid assetGuid, AssetType assetType)
         {
+            var assetFile = rawAssetFile.Replace(Settings.Current.GameDirectory, "");
+
             lock (_cache)
             {
                 // Remove duplicates
-                _cache.RemoveAll(x => x.AssetFile == assetFile || x.AssetGuid == assetGuid);
+                _cache.RemoveAll(x => x.AssetFile == rawAssetFile || x.AssetGuid == assetGuid);
 
                 // Add item
                 _cache.Add(new AssetCacheItem
                 {
                     AssetType = assetType,
                     AssetGuid = assetGuid,
-                    AssetFile = assetFile
+                    AssetFile = rawAssetFile
                 });
 
                 // Save

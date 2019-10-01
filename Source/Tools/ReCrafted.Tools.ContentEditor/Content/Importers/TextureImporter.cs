@@ -38,7 +38,8 @@ namespace ReCrafted.Tools.ContentEditor.Content.Importers
         {
             var dialog = new TextureImportWindow
             {
-                CreateMetaFile = forceMetaFile
+                CreateMetaFile = forceMetaFile,
+                Text = $@"Import '{sourceFile}'"
             };
 
             // Show texture import dialog window
