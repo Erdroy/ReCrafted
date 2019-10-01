@@ -25,6 +25,7 @@ namespace ReCrafted.Tools.ContentEditor
         private readonly FileSystemWatcher _contentWatcher;
 
         private string _path;
+        private Func<string, bool> _currentEditHandler;
 
         /// <summary>
         ///     Constructor of the <see cref="ContentBrowser"/> class.
@@ -87,7 +88,7 @@ namespace ReCrafted.Tools.ContentEditor
                 }
                 else if (tag.IsFile)
                 {
-                    // MAYBE: Open (?)
+                    // TODO: Open/Edit file
                 }
             }
         }
@@ -121,6 +122,43 @@ namespace ReCrafted.Tools.ContentEditor
                 var nodeName = directory.Name;
                 node.Nodes.Add(new TreeNode(nodeName));
             }
+        }
+
+        private void OnCreatedItem(object sender, LabelEditEventArgs e)
+        {
+            // Force proper file name
+            var fileName = Path.GetFileNameWithoutExtension(e.Label);
+            fileName += ".rcasset";
+
+            // Update it's name
+            _contentView.Items[_contentView.Items.Count - 1].Text = fileName;
+
+            // Call the edit handler and cleanup
+            var result = _currentEditHandler(fileName);
+
+            if (!result)
+            {
+                _contentView.Items.RemoveAt(_contentView.Items.Count - 1);
+                e.CancelEdit = true;
+            }
+
+            // Cleanup
+            _currentEditHandler = null;
+            _contentView.AfterLabelEdit -= OnCreatedItem;
+        }
+
+        /// <summary>
+        ///     Creates new item and begins to edit it's label also invoking <see cref="onCreate"/> delegate.
+        /// </summary>
+        /// <param name="onCreate">The OnCreate delegate, this is used to process the new item and also eventually cancel it.</param>
+        public void CreateItem(Func<string, bool> onCreate)
+        {
+            _contentView.AfterLabelEdit += OnCreatedItem;
+            _currentEditHandler = onCreate;
+
+            var item = _contentView.Items.Add("New Asset");
+            item.Selected = true;
+            item.BeginEdit();
         }
 
         /// <summary>

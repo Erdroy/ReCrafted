@@ -28,12 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Content");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Content");
             this.MenuBar = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.assetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.voxelObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.voxelMaterialToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.materialToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.documentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,8 +52,6 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.ContentTree = new System.Windows.Forms.TreeView();
             this.ContentView = new System.Windows.Forms.ListView();
-            this.assetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuBar.SuspendLayout();
             this.StatusBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -93,6 +99,64 @@
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
+            // 
+            // assetsToolStripMenuItem
+            // 
+            this.assetsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.createToolStripMenuItem,
+            this.toolStripSeparator4,
+            this.importToolStripMenuItem});
+            this.assetsToolStripMenuItem.Name = "assetsToolStripMenuItem";
+            this.assetsToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.assetsToolStripMenuItem.Text = "Assets";
+            // 
+            // createToolStripMenuItem
+            // 
+            this.createToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.voxelObjectToolStripMenuItem,
+            this.voxelMaterialToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.materialToolStripMenuItem});
+            this.createToolStripMenuItem.Name = "createToolStripMenuItem";
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.createToolStripMenuItem.Text = "Create";
+            // 
+            // voxelObjectToolStripMenuItem
+            // 
+            this.voxelObjectToolStripMenuItem.Name = "voxelObjectToolStripMenuItem";
+            this.voxelObjectToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.voxelObjectToolStripMenuItem.Text = "Voxel Object";
+            this.voxelObjectToolStripMenuItem.Click += new System.EventHandler(this.CreateVoxelObject);
+            // 
+            // voxelMaterialToolStripMenuItem
+            // 
+            this.voxelMaterialToolStripMenuItem.Name = "voxelMaterialToolStripMenuItem";
+            this.voxelMaterialToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.voxelMaterialToolStripMenuItem.Text = "Voxel Material";
+            this.voxelMaterialToolStripMenuItem.Click += new System.EventHandler(this.CreateVoxelMaterial);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(145, 6);
+            // 
+            // materialToolStripMenuItem
+            // 
+            this.materialToolStripMenuItem.Name = "materialToolStripMenuItem";
+            this.materialToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.materialToolStripMenuItem.Text = "Material";
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(107, 6);
+            // 
+            // importToolStripMenuItem
+            // 
+            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.importToolStripMenuItem.Text = "Import";
+            this.importToolStripMenuItem.Click += new System.EventHandler(this.Import_OnClick);
             // 
             // helpToolStripMenuItem
             // 
@@ -167,10 +231,10 @@
             this.ContentTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ContentTree.Location = new System.Drawing.Point(0, 0);
             this.ContentTree.Name = "ContentTree";
-            treeNode7.Name = "Root";
-            treeNode7.Text = "Content";
+            treeNode1.Name = "Root";
+            treeNode1.Text = "Content";
             this.ContentTree.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode7});
+            treeNode1});
             this.ContentTree.ShowLines = false;
             this.ContentTree.ShowNodeToolTips = true;
             this.ContentTree.Size = new System.Drawing.Size(255, 635);
@@ -183,6 +247,7 @@
             this.ContentView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.ContentView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ContentView.HideSelection = false;
+            this.ContentView.LabelEdit = true;
             this.ContentView.Location = new System.Drawing.Point(0, 0);
             this.ContentView.Name = "ContentView";
             this.ContentView.Size = new System.Drawing.Size(1005, 635);
@@ -191,21 +256,7 @@
             this.ContentView.UseCompatibleStateImageBehavior = false;
             this.ContentView.DragDrop += new System.Windows.Forms.DragEventHandler(this.ContentView_OnDrop);
             this.ContentView.DragEnter += new System.Windows.Forms.DragEventHandler(this.ContentView_OnEnter);
-            // 
-            // assetsToolStripMenuItem
-            // 
-            this.assetsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.importToolStripMenuItem});
-            this.assetsToolStripMenuItem.Name = "assetsToolStripMenuItem";
-            this.assetsToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.assetsToolStripMenuItem.Text = "Assets";
-            // 
-            // importToolStripMenuItem
-            // 
-            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.importToolStripMenuItem.Text = "Import";
-            this.importToolStripMenuItem.Click += new System.EventHandler(this.Import_OnClick);
+            this.ContentView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ContentView_OnKeyDown);
             // 
             // MainForm
             // 
@@ -251,6 +302,12 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem assetsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem createToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem voxelObjectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem voxelMaterialToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem materialToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
     }
 }
 

@@ -152,5 +152,14 @@ namespace ReCrafted.Tools.ContentEditor.Properties {
                 return ResourceManager.GetString("SelectImportFile", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating Asset Cache.
+        /// </summary>
+        internal static string UpdateingAssetCache {
+            get {
+                return ResourceManager.GetString("UpdateingAssetCache", resourceCulture);
+            }
+        }
     }
 }

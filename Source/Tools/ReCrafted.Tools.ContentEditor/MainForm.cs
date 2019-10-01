@@ -8,6 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using ReCrafted.Tools.ContentEditor.Content;
+using ReCrafted.Tools.ContentEditor.Content.Assets;
+using ReCrafted.Tools.ContentEditor.Content.Editors;
 using ReCrafted.Tools.ContentEditor.Content.Importers;
 using ReCrafted.Tools.ContentEditor.Properties;
 
@@ -36,7 +38,21 @@ namespace ReCrafted.Tools.ContentEditor
             Settings.Current = Settings.FromFile(Settings.FileName);
 
             // Load asset cache
-            AssetCache.LoadCache(true);
+            //AssetCache.LoadCache(true); TODO: We need some better way of handling new files, added outside the editor
+
+            // Create and show progress form
+            var progressImport = new ProgressForm
+            {
+                Text = Resources.UpdateingAssetCache
+            };
+            progressImport.Show(Instance);
+            {
+                // Rebuild cache by default
+                AssetCache.RebuildCache();
+                AssetCache.SaveCache();
+            }
+            // Close progress form
+            progressImport.Close();
 
             // Ask for the game directory when running this application the first time.
             if (string.IsNullOrEmpty(Settings.Current.GameDirectory))
@@ -98,6 +114,16 @@ namespace ReCrafted.Tools.ContentEditor
                 e.Effect = DragDropEffects.Copy;
         }
 
+        private void ContentView_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.F2 && ContentView.SelectedItems.Count > 0)
+            {
+                //ContentView.SelectedItems[0].BeginEdit();
+                // TODO: Handle label edit
+                // TODO: Handle duplicated names
+            }
+        }
+
         private void Import_OnClick(object sender, EventArgs e)
         {
             var openFileDialog = new OpenFileDialog
@@ -117,6 +143,48 @@ namespace ReCrafted.Tools.ContentEditor
         {
             // Exit the application!
             Application.Exit();
+        }
+
+        private void CreateVoxelObject(object sender, EventArgs e)
+        {
+            // TODO: Create voxel object
+        }
+
+        private void CreateVoxelMaterial(object sender, EventArgs e)
+        {
+            Browser.CreateItem(fileName =>
+            {
+                // Open voxel material edit window
+                // Note: This window should be also usable for editing existing materials.
+                var materialEditor = new VoxelMaterialEditor();
+                var result = materialEditor.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    // Save file with given name
+                    using (var fs = File.Create(Path.Combine(Browser.CurrentPath, fileName)))
+                    {
+                        var asset = new VoxelMaterialAsset
+                        {
+                            VoxelName = Path.GetFileNameWithoutExtension(fileName),
+                            AssetGuid = Guid.NewGuid(),
+                            VoxelHardness = (byte)materialEditor.Hardness,
+                            VoxelMaterial = 0, // Voxel Material will be calculated during game's runtime
+                        };
+
+                        // Serialize this asset into the file
+                        asset.Serialize(fs);
+
+                        // Add asset to the cache
+                        AssetCache.AddAssetType(fileName, asset.AssetGuid, asset.AssetType);
+                    }
+
+                    return true;
+                }
+
+                // Well, cancel.
+                return false;
+            });
         }
 
         private static void ImportAsset(string sourceFile, string targetDirectory)
@@ -159,7 +227,7 @@ namespace ReCrafted.Tools.ContentEditor
 
             // Create and show progress form
             var progressImport = new ProgressForm();
-            progressImport.Show();
+            progressImport.Show(Instance);
 
             // Import asset using metadata
             if (!importer.ImportAsset(sourceFile, targetDirectory, metadata,

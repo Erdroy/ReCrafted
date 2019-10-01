@@ -47,6 +47,9 @@ namespace ReCrafted.Tools.ContentEditor.Content
                                 var assetGuid = new Guid(stream.ReadBytes(16));
                                 var assetType = (AssetType) stream.ReadByte();
 
+                                if (!File.Exists(Path.Combine(Settings.Current.GameDirectory, "Content", assetFile)))
+                                    continue;
+
                                 _cache.Add(new AssetCacheItem
                                 {
                                     AssetType = assetType,
@@ -65,6 +68,9 @@ namespace ReCrafted.Tools.ContentEditor.Content
             {
                 RebuildCache();
             }
+
+            // Save
+            SaveCache();
         }
 
         public static void SaveCache()
@@ -89,6 +95,50 @@ namespace ReCrafted.Tools.ContentEditor.Content
                         }
                     }
                 }
+            }
+        }
+
+        public static void AddAssetType(string rawAssetFile, Guid assetGuid, AssetType assetType)
+        {
+            var assetFile = rawAssetFile.Replace(Path.Combine(Settings.Current.GameDirectory, "Content") + "\\", "");
+
+            lock (_cache)
+            {
+                // Remove duplicates
+                _cache.RemoveAll(x => x.AssetFile == assetFile || x.AssetGuid == assetGuid);
+
+                // Add item
+                _cache.Add(new AssetCacheItem
+                {
+                    AssetType = assetType,
+                    AssetGuid = assetGuid,
+                    AssetFile = assetFile
+                });
+
+                // Save
+                SaveCache();
+            }
+        }
+
+        public static void RemoveAssetType(string assetFile)
+        {
+            lock (_cache)
+            {
+                _cache.RemoveAll(x => x.AssetFile.EndsWith(assetFile));
+
+                // Save
+                SaveCache();
+            }
+        }
+
+        public static void RemoveAssetType(Guid assetGuid)
+        {
+            lock (_cache)
+            {
+                _cache.RemoveAll(x => x.AssetGuid == assetGuid);
+
+                // Save
+                SaveCache();
             }
         }
 
@@ -168,53 +218,6 @@ namespace ReCrafted.Tools.ContentEditor.Content
                         }
                     }
                 }
-
-                // Save
-                SaveCache();
-            }
-        }
-
-        public static void AddAssetType(string rawAssetFile, Guid assetGuid, AssetType assetType)
-        {
-            var assetFile = rawAssetFile.Replace(Path.Combine(Settings.Current.GameDirectory, "Content") + "\\", "");
-
-            lock (_cache)
-            {
-                // Remove duplicates
-                _cache.RemoveAll(x => x.AssetFile == assetFile || x.AssetGuid == assetGuid);
-
-                // Add item
-                _cache.Add(new AssetCacheItem
-                {
-                    AssetType = assetType,
-                    AssetGuid = assetGuid,
-                    AssetFile = assetFile
-                });
-
-                // Save
-                SaveCache();
-            }
-        }
-
-        public static void RemoveAssetType(string assetFile)
-        {
-            lock (_cache)
-            {
-                _cache.RemoveAll(x => x.AssetFile.EndsWith(assetFile));
-
-                // Save
-                SaveCache();
-            }
-        }
-
-        public static void RemoveAssetType(Guid assetGuid)
-        {
-            lock (_cache)
-            {
-                _cache.RemoveAll(x => x.AssetGuid == assetGuid);
-
-                // Save
-                SaveCache();
             }
         }
     }
