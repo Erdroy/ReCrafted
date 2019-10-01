@@ -176,19 +176,19 @@ namespace ReCrafted.Tools.ContentEditor.Content
 
         public static void AddAssetType(string rawAssetFile, Guid assetGuid, AssetType assetType)
         {
-            var assetFile = rawAssetFile.Replace(Settings.Current.GameDirectory, "");
+            var assetFile = rawAssetFile.Replace(Path.Combine(Settings.Current.GameDirectory, "Content") + "\\", "");
 
             lock (_cache)
             {
                 // Remove duplicates
-                _cache.RemoveAll(x => x.AssetFile == rawAssetFile || x.AssetGuid == assetGuid);
+                _cache.RemoveAll(x => x.AssetFile == assetFile || x.AssetGuid == assetGuid);
 
                 // Add item
                 _cache.Add(new AssetCacheItem
                 {
                     AssetType = assetType,
                     AssetGuid = assetGuid,
-                    AssetFile = rawAssetFile
+                    AssetFile = assetFile
                 });
 
                 // Save
@@ -200,7 +200,7 @@ namespace ReCrafted.Tools.ContentEditor.Content
         {
             lock (_cache)
             {
-                _cache.RemoveAll(x => x.AssetFile == assetFile);
+                _cache.RemoveAll(x => x.AssetFile.EndsWith(assetFile));
 
                 // Save
                 SaveCache();
