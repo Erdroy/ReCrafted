@@ -147,7 +147,24 @@ namespace ReCrafted.Tools.ContentEditor
 
         private void CreateVoxelObject(object sender, EventArgs e)
         {
-            // TODO: Create voxel object
+            Browser.CreateItem(fileName =>
+            {
+                // TODO: Open VoxelObject creation window
+
+                // Well, cancel.
+                return false;
+            });
+        }
+
+        private void CreateVoxelObjectData(object sender, EventArgs e)
+        {
+            Browser.CreateItem(fileName =>
+            {
+                // TODO: Open VoxelObjectData creation window
+
+                // Well, cancel.
+                return false;
+            });
         }
 
         private void CreateVoxelMaterial(object sender, EventArgs e)
