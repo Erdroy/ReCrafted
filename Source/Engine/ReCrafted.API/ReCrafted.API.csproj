@@ -137,6 +137,7 @@
     <Compile Include="Voxels\VoxelMaterialType.cs" />
     <Compile Include="Voxels\VoxelObjectAsset.Gen.cs" />
     <Compile Include="Voxels\VoxelObjectBase.Gen.cs" />
+    <Compile Include="Voxels\VoxelObjectDataAsset.Gen.cs" />
     <Compile Include="Voxels\VoxelObjectManager.Gen.cs" />
     <Compile Include="Voxels\VoxelObjectDataType.cs" />
     <Compile Include="Voxels\VoxelObjectType.cs" />

@@ -34,11 +34,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.HardnessValue = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.CBFar = new System.Windows.Forms.Label();
+            this.CBNear = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
+            this.NSMFar = new System.Windows.Forms.Label();
+            this.NSMNear = new System.Windows.Forms.Label();
             this.FarNSM = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
             this.FarCB = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
             this.NearNSM = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
@@ -98,9 +98,9 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.CBFar);
             this.groupBox1.Controls.Add(this.NearNSM);
-            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.CBNear);
             this.groupBox1.Controls.Add(this.NearCB);
             this.groupBox1.Location = new System.Drawing.Point(15, 62);
             this.groupBox1.Name = "groupBox1";
@@ -109,29 +109,29 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Color-Blend";
             // 
-            // label4
+            // CBFar
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 105);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(22, 13);
-            this.label4.TabIndex = 8;
-            this.label4.Text = "Far";
+            this.CBFar.AutoSize = true;
+            this.CBFar.Location = new System.Drawing.Point(3, 105);
+            this.CBFar.Name = "CBFar";
+            this.CBFar.Size = new System.Drawing.Size(22, 13);
+            this.CBFar.TabIndex = 8;
+            this.CBFar.Text = "Far";
             // 
-            // label2
+            // CBNear
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 21);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(30, 13);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "Near";
+            this.CBNear.AutoSize = true;
+            this.CBNear.Location = new System.Drawing.Point(6, 21);
+            this.CBNear.Name = "CBNear";
+            this.CBNear.Size = new System.Drawing.Size(30, 13);
+            this.CBNear.TabIndex = 6;
+            this.CBNear.Text = "Near";
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.label3);
+            this.groupBox2.Controls.Add(this.NSMFar);
             this.groupBox2.Controls.Add(this.FarNSM);
-            this.groupBox2.Controls.Add(this.label5);
+            this.groupBox2.Controls.Add(this.NSMNear);
             this.groupBox2.Controls.Add(this.FarCB);
             this.groupBox2.Location = new System.Drawing.Point(12, 257);
             this.groupBox2.Name = "groupBox2";
@@ -140,23 +140,23 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Normals-Smoothness-Metallic";
             // 
-            // label3
+            // NSMFar
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 105);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(22, 13);
-            this.label3.TabIndex = 8;
-            this.label3.Text = "Far";
+            this.NSMFar.AutoSize = true;
+            this.NSMFar.Location = new System.Drawing.Point(3, 105);
+            this.NSMFar.Name = "NSMFar";
+            this.NSMFar.Size = new System.Drawing.Size(22, 13);
+            this.NSMFar.TabIndex = 8;
+            this.NSMFar.Text = "Far";
             // 
-            // label5
+            // NSMNear
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 21);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(30, 13);
-            this.label5.TabIndex = 6;
-            this.label5.Text = "Near";
+            this.NSMNear.AutoSize = true;
+            this.NSMNear.Location = new System.Drawing.Point(6, 21);
+            this.NSMNear.Name = "NSMNear";
+            this.NSMNear.Size = new System.Drawing.Size(30, 13);
+            this.NSMNear.TabIndex = 6;
+            this.NSMNear.Text = "Near";
             // 
             // FarNSM
             // 
@@ -226,13 +226,13 @@
         private System.Windows.Forms.Label HardnessValue;
         private Controls.TextureSelect NearCB;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label CBNear;
+        private System.Windows.Forms.Label CBFar;
         private Controls.TextureSelect NearNSM;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label NSMFar;
         private Controls.TextureSelect FarNSM;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label NSMNear;
         private Controls.TextureSelect FarCB;
     }
 }

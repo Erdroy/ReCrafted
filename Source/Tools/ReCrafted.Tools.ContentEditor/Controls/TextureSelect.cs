@@ -2,6 +2,8 @@
 
 using System;
 using System.Windows.Forms;
+using ReCrafted.Tools.ContentEditor.Content;
+using ReCrafted.Tools.ContentEditor.Content.Common;
 
 namespace ReCrafted.Tools.ContentEditor.Controls
 {
@@ -14,7 +16,19 @@ namespace ReCrafted.Tools.ContentEditor.Controls
 
         private void BrowseTexture(object sender, EventArgs e)
         {
-            // TODO: Open asset browser
+            var finder = new AssetFinder
+            {
+                ForceType = "Texture2D",
+                CurrentFilter = "n:*"
+            };
+
+            if (finder.ShowDialog() == DialogResult.OK)
+            {
+                if (finder.SelectedAsset.AssetType == AssetType.Texture2D)
+                {
+
+                }
+            }
         }
     }
 }
