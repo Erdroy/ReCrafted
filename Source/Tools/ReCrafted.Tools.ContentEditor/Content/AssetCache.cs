@@ -220,5 +220,20 @@ namespace ReCrafted.Tools.ContentEditor.Content
                 }
             }
         }
+
+        /// <summary>
+        ///     The cached assets list.
+        /// </summary>
+        public static IReadOnlyList<AssetCacheItem> Assets
+        {
+            get
+            {
+                lock (_cache)
+                {
+                    var assetCacheItems = _cache.ToArray();
+                    return assetCacheItems;
+                }
+            }
+        }
     }
 }
