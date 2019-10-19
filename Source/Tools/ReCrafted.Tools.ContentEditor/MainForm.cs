@@ -24,6 +24,8 @@ namespace ReCrafted.Tools.ContentEditor
             new TextureImporter()
         };
 
+        private PreviewIconManager _previewIconManager;
+
         public MainForm()
         {
             InitializeComponent();
@@ -60,8 +62,12 @@ namespace ReCrafted.Tools.ContentEditor
 
             var contentRootPath = Path.Combine(Settings.Current.GameDirectory, "Content");
 
+            // Setup and run preview icon manager
+            _previewIconManager = new PreviewIconManager();
+            _previewIconManager.Run();
+
             // Setup content images
-            SetupContentView();
+            ContentView.LargeImageList = _previewIconManager.ContentViewImages;
 
             // Create content browser
             Browser = new ContentBrowser(contentRootPath, ContentTree, ContentView)
@@ -72,28 +78,9 @@ namespace ReCrafted.Tools.ContentEditor
             // The application is now fully loaded!
         }
 
-        private void SetupContentView()
+        private void Form_Closed(object sender, FormClosedEventArgs e)
         {
-            ContentViewImages = new ImageList
-            {
-                ImageSize = new Size(64, 64),
-                ColorDepth = ColorDepth.Depth32Bit
-            };
-
-            var resourceSet = Resources.ResourceManager.GetResourceSet(CultureInfo.InvariantCulture, true, false);
-            if (resourceSet != null)
-            {
-                foreach (DictionaryEntry entry in resourceSet)
-                {
-                    if (entry.Value is Bitmap value)
-                    {
-                        ContentViewImages.Images.Add((string)entry.Key, value);
-                    }
-                }
-            }
-
-            // Setup image lists
-            ContentView.LargeImageList = ContentViewImages;
+            _previewIconManager.Dispose();
         }
 
         private void ContentView_OnDrop(object sender, DragEventArgs e)
@@ -318,11 +305,6 @@ namespace ReCrafted.Tools.ContentEditor
             // Failed, exit the application.
             Application.Exit();
         }
-
-        /// <summary>
-        ///     The list of all images used by the ContentView.
-        /// </summary>
-        public ImageList ContentViewImages { get; private set; }
 
         /// <summary>
         ///     The <see cref="ContentBrowser"/> class instance.

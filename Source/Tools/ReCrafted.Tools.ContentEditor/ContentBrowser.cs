@@ -1,8 +1,11 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System;
+using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
+using ReCrafted.Tools.ContentEditor.Content;
 
 namespace ReCrafted.Tools.ContentEditor
 {
@@ -193,6 +196,11 @@ namespace ReCrafted.Tools.ContentEditor
             // And add files just after folders.
             foreach (var file in files)
             {
+                var imageKey = PreviewIconManager.Instance.GenerateOrLoad(file.FullName, () =>
+                {
+                    _contentView.Refresh();
+                });
+
                 _contentView.Items.Add(new ListViewItem
                 {
                     Text = file.Name,
@@ -202,7 +210,7 @@ namespace ReCrafted.Tools.ContentEditor
                         Path = file.FullName,
                         IsFile = true
                     },
-                    ImageIndex = 0 // TODO: Generate preview
+                    ImageKey = imageKey
                 });
             }
         }

@@ -76,6 +76,7 @@
       <DependentUpon>TextureImportWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Content\JsonAsset.cs" />
+    <Compile Include="Content\PreviewIconManager.cs" />
     <Compile Include="Controls\TextureSelect.cs">
       <SubType>UserControl</SubType>
     </Compile>

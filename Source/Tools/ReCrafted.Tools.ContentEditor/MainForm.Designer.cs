@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Content");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Content");
             this.MenuBar = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -36,10 +36,11 @@
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.assetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.voxelObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.voxelMaterialToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.materialToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.voxelObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.voxelObjectDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.voxelMaterialToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,7 +53,6 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.ContentTree = new System.Windows.Forms.TreeView();
             this.ContentView = new System.Windows.Forms.ListView();
-            this.voxelObjectDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuBar.SuspendLayout();
             this.StatusBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -120,43 +120,50 @@
             this.voxelObjectDataToolStripMenuItem,
             this.voxelMaterialToolStripMenuItem});
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.createToolStripMenuItem.Text = "Create";
-            // 
-            // voxelObjectToolStripMenuItem
-            // 
-            this.voxelObjectToolStripMenuItem.Name = "voxelObjectToolStripMenuItem";
-            this.voxelObjectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.voxelObjectToolStripMenuItem.Text = "Voxel Object";
-            this.voxelObjectToolStripMenuItem.Click += new System.EventHandler(this.CreateVoxelObject);
-            // 
-            // voxelMaterialToolStripMenuItem
-            // 
-            this.voxelMaterialToolStripMenuItem.Name = "voxelMaterialToolStripMenuItem";
-            this.voxelMaterialToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.voxelMaterialToolStripMenuItem.Text = "Voxel Material";
-            this.voxelMaterialToolStripMenuItem.Click += new System.EventHandler(this.CreateVoxelMaterial);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
             // 
             // materialToolStripMenuItem
             // 
             this.materialToolStripMenuItem.Name = "materialToolStripMenuItem";
-            this.materialToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.materialToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.materialToolStripMenuItem.Text = "Material";
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(164, 6);
+            // 
+            // voxelObjectToolStripMenuItem
+            // 
+            this.voxelObjectToolStripMenuItem.Name = "voxelObjectToolStripMenuItem";
+            this.voxelObjectToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.voxelObjectToolStripMenuItem.Text = "Voxel Object";
+            this.voxelObjectToolStripMenuItem.Click += new System.EventHandler(this.CreateVoxelObject);
+            // 
+            // voxelObjectDataToolStripMenuItem
+            // 
+            this.voxelObjectDataToolStripMenuItem.Name = "voxelObjectDataToolStripMenuItem";
+            this.voxelObjectDataToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.voxelObjectDataToolStripMenuItem.Text = "Voxel Object Data";
+            this.voxelObjectDataToolStripMenuItem.Click += new System.EventHandler(this.CreateVoxelObjectData);
+            // 
+            // voxelMaterialToolStripMenuItem
+            // 
+            this.voxelMaterialToolStripMenuItem.Name = "voxelMaterialToolStripMenuItem";
+            this.voxelMaterialToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.voxelMaterialToolStripMenuItem.Text = "Voxel Material";
+            this.voxelMaterialToolStripMenuItem.Click += new System.EventHandler(this.CreateVoxelMaterial);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(107, 6);
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.importToolStripMenuItem.Text = "Import";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.Import_OnClick);
             // 
@@ -233,10 +240,10 @@
             this.ContentTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ContentTree.Location = new System.Drawing.Point(0, 0);
             this.ContentTree.Name = "ContentTree";
-            treeNode3.Name = "Root";
-            treeNode3.Text = "Content";
+            treeNode1.Name = "Root";
+            treeNode1.Text = "Content";
             this.ContentTree.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode3});
+            treeNode1});
             this.ContentTree.ShowLines = false;
             this.ContentTree.ShowNodeToolTips = true;
             this.ContentTree.Size = new System.Drawing.Size(255, 635);
@@ -260,13 +267,6 @@
             this.ContentView.DragEnter += new System.Windows.Forms.DragEventHandler(this.ContentView_OnEnter);
             this.ContentView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ContentView_OnKeyDown);
             // 
-            // voxelObjectDataToolStripMenuItem
-            // 
-            this.voxelObjectDataToolStripMenuItem.Name = "voxelObjectDataToolStripMenuItem";
-            this.voxelObjectDataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.voxelObjectDataToolStripMenuItem.Text = "Voxel Object Data";
-            this.voxelObjectDataToolStripMenuItem.Click += new System.EventHandler(this.CreateVoxelObjectData);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -278,6 +278,7 @@
             this.MainMenuStrip = this.MenuBar;
             this.Name = "MainForm";
             this.Text = "ReCrafted Content Editor";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form_Closed);
             this.Shown += new System.EventHandler(this.Form_OnShown);
             this.MenuBar.ResumeLayout(false);
             this.MenuBar.PerformLayout();

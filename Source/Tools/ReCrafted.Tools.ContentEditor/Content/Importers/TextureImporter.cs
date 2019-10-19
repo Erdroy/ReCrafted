@@ -166,6 +166,17 @@ namespace ReCrafted.Tools.ContentEditor.Content.Importers
             // Dispose image
             image.Dispose();
 
+            // Generate preview and save it in './Cache/' directory
+            //var previewImage = image.CreateImageCopy(0, false, CP_FLAGS.BPP24);
+            //previewImage.Resize(0, 64, 64, TEX_FILTER_FLAGS.POINT);
+            var previewImage = LoadImage(sourceFile);
+            var scaledPreviewImage = previewImage.Resize(64, 64, TEX_FILTER_FLAGS.FANT);
+            scaledPreviewImage.SaveToWICFile(0, WIC_FLAGS.NONE, new Guid(0x19e4a5aa, 0x5662, 0x4fc5, 0xa0, 0xc0, 0x17, 0x58, 0x2, 0x8e, 0x10, 0x57), $"./Cache/{asset.AssetGuid}.jpg");
+
+            // Dispose image
+            previewImage.Dispose();
+            scaledPreviewImage.Dispose();
+
             return true;
         }
 
