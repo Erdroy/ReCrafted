@@ -39,9 +39,6 @@ namespace ReCrafted.Tools.ContentEditor
             // Load settings
             Settings.Current = Settings.FromFile(Settings.FileName);
 
-            // Load asset cache
-            //AssetCache.LoadCache(true); TODO: We need some better way of handling new files, added outside the editor
-
             // Create and show progress form
             var progressImport = new ProgressForm
             {
@@ -136,18 +133,9 @@ namespace ReCrafted.Tools.ContentEditor
         {
             Browser.CreateItem(fileName =>
             {
-                // TODO: Open VoxelObject creation window
+                var materialEditor = new VoxelObjectEditor();
+                var result = materialEditor.ShowDialog();
 
-                // Well, cancel.
-                return false;
-            });
-        }
-
-        private void CreateVoxelObjectData(object sender, EventArgs e)
-        {
-            Browser.CreateItem(fileName =>
-            {
-                // TODO: Open VoxelObjectData creation window
 
                 // Well, cancel.
                 return false;

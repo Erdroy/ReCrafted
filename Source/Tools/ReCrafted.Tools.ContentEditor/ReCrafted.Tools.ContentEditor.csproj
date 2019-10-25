@@ -67,6 +67,12 @@
     <Compile Include="Content\Editors\VoxelMaterialEditor.Designer.cs">
       <DependentUpon>VoxelMaterialEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Content\Editors\VoxelObjectEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Content\Editors\VoxelObjectEditor.Designer.cs">
+      <DependentUpon>VoxelObjectEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Content\IAssetMetadata.cs" />
     <Compile Include="Content\Importers\TextureImporter.cs" />
     <Compile Include="Content\Importers\TextureImportWindow.cs">
@@ -103,6 +109,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Content\Editors\VoxelMaterialEditor.resx">
       <DependentUpon>VoxelMaterialEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Content\Editors\VoxelObjectEditor.resx">
+      <DependentUpon>VoxelObjectEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Content\Importers\TextureImportWindow.resx">
       <DependentUpon>TextureImportWindow.cs</DependentUpon>

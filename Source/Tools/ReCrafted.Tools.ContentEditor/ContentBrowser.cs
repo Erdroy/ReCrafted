@@ -160,6 +160,7 @@ namespace ReCrafted.Tools.ContentEditor
             _currentEditHandler = onCreate;
 
             var item = _contentView.Items.Add("New Asset");
+            item.ImageKey = @"Icon_Unknown";
             item.Selected = true;
             item.BeginEdit();
         }

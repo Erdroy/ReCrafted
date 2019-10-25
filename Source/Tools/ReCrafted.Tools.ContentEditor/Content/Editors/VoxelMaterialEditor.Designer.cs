@@ -29,20 +29,20 @@
         private void InitializeComponent()
         {
             this.Apply = new System.Windows.Forms.Button();
-            this.Revert = new System.Windows.Forms.Button();
+            this.Cancel = new System.Windows.Forms.Button();
             this.HardnessScroll = new System.Windows.Forms.TrackBar();
             this.label1 = new System.Windows.Forms.Label();
             this.HardnessValue = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.CBFar = new System.Windows.Forms.Label();
+            this.NearNSM = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
             this.CBNear = new System.Windows.Forms.Label();
+            this.NearCB = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.NSMFar = new System.Windows.Forms.Label();
-            this.NSMNear = new System.Windows.Forms.Label();
             this.FarNSM = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
+            this.NSMNear = new System.Windows.Forms.Label();
             this.FarCB = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
-            this.NearNSM = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
-            this.NearCB = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
             ((System.ComponentModel.ISupportInitialize)(this.HardnessScroll)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -58,15 +58,15 @@
             this.Apply.UseVisualStyleBackColor = true;
             this.Apply.Click += new System.EventHandler(this.Apply_OnClick);
             // 
-            // Revert
+            // Cancel
             // 
-            this.Revert.Location = new System.Drawing.Point(80, 454);
-            this.Revert.Name = "Revert";
-            this.Revert.Size = new System.Drawing.Size(75, 23);
-            this.Revert.TabIndex = 1;
-            this.Revert.Text = "Cancel";
-            this.Revert.UseVisualStyleBackColor = true;
-            this.Revert.Click += new System.EventHandler(this.Revert_OnClick);
+            this.Cancel.Location = new System.Drawing.Point(80, 454);
+            this.Cancel.Name = "Cancel";
+            this.Cancel.Size = new System.Drawing.Size(75, 23);
+            this.Cancel.TabIndex = 1;
+            this.Cancel.Text = "Cancel";
+            this.Cancel.UseVisualStyleBackColor = true;
+            this.Cancel.Click += new System.EventHandler(this.Revert_OnClick);
             // 
             // HardnessScroll
             // 
@@ -118,6 +118,14 @@
             this.CBFar.TabIndex = 8;
             this.CBFar.Text = "Far";
             // 
+            // NearNSM
+            // 
+            this.NearNSM.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.NearNSM.Location = new System.Drawing.Point(6, 121);
+            this.NearNSM.Name = "NearNSM";
+            this.NearNSM.Size = new System.Drawing.Size(62, 62);
+            this.NearNSM.TabIndex = 7;
+            // 
             // CBNear
             // 
             this.CBNear.AutoSize = true;
@@ -126,6 +134,14 @@
             this.CBNear.Size = new System.Drawing.Size(30, 13);
             this.CBNear.TabIndex = 6;
             this.CBNear.Text = "Near";
+            // 
+            // NearCB
+            // 
+            this.NearCB.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.NearCB.Location = new System.Drawing.Point(6, 37);
+            this.NearCB.Name = "NearCB";
+            this.NearCB.Size = new System.Drawing.Size(62, 62);
+            this.NearCB.TabIndex = 5;
             // 
             // groupBox2
             // 
@@ -149,6 +165,14 @@
             this.NSMFar.TabIndex = 8;
             this.NSMFar.Text = "Far";
             // 
+            // FarNSM
+            // 
+            this.FarNSM.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FarNSM.Location = new System.Drawing.Point(6, 121);
+            this.FarNSM.Name = "FarNSM";
+            this.FarNSM.Size = new System.Drawing.Size(62, 62);
+            this.FarNSM.TabIndex = 7;
+            // 
             // NSMNear
             // 
             this.NSMNear.AutoSize = true;
@@ -158,14 +182,6 @@
             this.NSMNear.TabIndex = 6;
             this.NSMNear.Text = "Near";
             // 
-            // FarNSM
-            // 
-            this.FarNSM.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FarNSM.Location = new System.Drawing.Point(6, 121);
-            this.FarNSM.Name = "FarNSM";
-            this.FarNSM.Size = new System.Drawing.Size(62, 62);
-            this.FarNSM.TabIndex = 7;
-            // 
             // FarCB
             // 
             this.FarCB.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -173,22 +189,6 @@
             this.FarCB.Name = "FarCB";
             this.FarCB.Size = new System.Drawing.Size(62, 62);
             this.FarCB.TabIndex = 5;
-            // 
-            // NearNSM
-            // 
-            this.NearNSM.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.NearNSM.Location = new System.Drawing.Point(6, 121);
-            this.NearNSM.Name = "NearNSM";
-            this.NearNSM.Size = new System.Drawing.Size(62, 62);
-            this.NearNSM.TabIndex = 7;
-            // 
-            // NearCB
-            // 
-            this.NearCB.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.NearCB.Location = new System.Drawing.Point(6, 37);
-            this.NearCB.Name = "NearCB";
-            this.NearCB.Size = new System.Drawing.Size(62, 62);
-            this.NearCB.TabIndex = 5;
             // 
             // VoxelMaterialEditor
             // 
@@ -200,7 +200,7 @@
             this.Controls.Add(this.HardnessValue);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.HardnessScroll);
-            this.Controls.Add(this.Revert);
+            this.Controls.Add(this.Cancel);
             this.Controls.Add(this.Apply);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "VoxelMaterialEditor";
@@ -220,7 +220,7 @@
         #endregion
 
         private System.Windows.Forms.Button Apply;
-        private System.Windows.Forms.Button Revert;
+        private System.Windows.Forms.Button Cancel;
         private System.Windows.Forms.TrackBar HardnessScroll;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label HardnessValue;

@@ -144,8 +144,6 @@ namespace ReCrafted.Tools.ContentEditor.Content
 
         public static void RebuildCache()
         {
-            // TODO: Show progress
-
             lock (_cache)
             {
                 var contentDirectory = Path.Combine(Settings.Current.GameDirectory, "Content");
