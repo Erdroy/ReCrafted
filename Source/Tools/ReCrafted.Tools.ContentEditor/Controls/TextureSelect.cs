@@ -26,9 +26,15 @@ namespace ReCrafted.Tools.ContentEditor.Controls
             {
                 if (finder.SelectedAsset.AssetType == AssetType.Texture2D)
                 {
+                    SelectedAsset = finder.SelectedAsset;
 
+                    // Update icon
+                    var imageKey = PreviewIconManager.Instance.GenerateOrLoad(SelectedAsset.AssetFile, () => { }, true);
+                    Preview.Image = PreviewIconManager.Instance.ContentViewImages.Images[imageKey];
                 }
             }
         }
+
+        public AssetCache.AssetCacheItem SelectedAsset;
     }
 }

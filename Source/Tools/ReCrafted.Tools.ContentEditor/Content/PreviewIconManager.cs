@@ -141,12 +141,12 @@ namespace ReCrafted.Tools.ContentEditor.Content
             }
         }
 
-        public string GenerateOrLoad(string file, Action onDone)
+        public string GenerateOrLoad(string file, Action onDone, bool isRelativeToContent = false)
         {
             var contentPath = Path.Combine(Settings.Current.GameDirectory, "Content");
 
             // Get relative path to ./Content
-            var relativeFileName = file.Remove(0, contentPath.Length).Remove(0, 1);
+            var relativeFileName = isRelativeToContent ? file : file.Remove(0, contentPath.Length).Remove(0, 1);
             var asset = AssetCache.Assets.FirstOrDefault(x => relativeFileName.Equals(x.AssetFile));
 
             // Select asset preview based on asset type

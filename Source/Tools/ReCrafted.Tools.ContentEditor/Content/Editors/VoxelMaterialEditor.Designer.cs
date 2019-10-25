@@ -64,7 +64,7 @@
             this.Revert.Name = "Revert";
             this.Revert.Size = new System.Drawing.Size(75, 23);
             this.Revert.TabIndex = 1;
-            this.Revert.Text = "Revert";
+            this.Revert.Text = "Cancel";
             this.Revert.UseVisualStyleBackColor = true;
             this.Revert.Click += new System.EventHandler(this.Revert_OnClick);
             // 

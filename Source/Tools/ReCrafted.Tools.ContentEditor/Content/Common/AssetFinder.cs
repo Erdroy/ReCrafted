@@ -104,11 +104,16 @@ namespace ReCrafted.Tools.ContentEditor.Content.Common
                         continue;
                 }
 
+                var imageKey = PreviewIconManager.Instance.GenerateOrLoad(asset.AssetFile, () =>
+                {
+                    ContentView.Refresh();
+                }, true);
+
                 ContentView.Items.Add(new ListViewItem
                 {
                     Text = assetName,
                     Tag = asset,
-                    ImageIndex = 0 // TODO: Generate preview
+                    ImageKey = imageKey
                 });
 
                 i++;
@@ -123,20 +128,8 @@ namespace ReCrafted.Tools.ContentEditor.Content.Common
                 ColorDepth = ColorDepth.Depth32Bit
             };
 
-            var resourceSet = Resources.ResourceManager.GetResourceSet(CultureInfo.InvariantCulture, true, false);
-            if (resourceSet != null)
-            {
-                foreach (DictionaryEntry entry in resourceSet)
-                {
-                    if (entry.Value is Bitmap value)
-                    {
-                        ContentViewImages.Images.Add((string)entry.Key, value);
-                    }
-                }
-            }
-
-            // Setup image lists
-            ContentView.LargeImageList = ContentViewImages;
+            // Setup content images
+            ContentView.LargeImageList = PreviewIconManager.Instance.ContentViewImages;
         }
 
         public AssetCache.AssetCacheItem SelectedAsset { get; private set; }
