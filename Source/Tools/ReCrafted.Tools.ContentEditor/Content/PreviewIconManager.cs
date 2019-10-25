@@ -19,6 +19,8 @@ namespace ReCrafted.Tools.ContentEditor.Content
 {
     public class PreviewIconManager : IDisposable
     {
+        private delegate void RefreshContentView(string imageKey, Image image, GenerateQueueItem item);
+
         private class GenerateQueueItem
         {
             public string ImageKey { get; set; }
@@ -29,12 +31,19 @@ namespace ReCrafted.Tools.ContentEditor.Content
 
         private readonly ConcurrentQueue<GenerateQueueItem> _generateQueue = new ConcurrentQueue<GenerateQueueItem>();
 
+        private RefreshContentView _refreshContentView;
         private bool _isRunning;
         private Thread _thread;
 
         public void Run()
         {
             _isRunning = true;
+
+            _refreshContentView = ((imageKey, image, item) =>
+            {
+                ContentViewImages.Images.Add(imageKey, image);
+                item.OnDone();
+            });
             _thread = new Thread(Worker);
             _thread.Start();
 
@@ -127,11 +136,7 @@ namespace ReCrafted.Tools.ContentEditor.Content
 
                 if (image != null)
                 {
-                    MainForm.Instance.Invoke(new MethodInvoker(() => // BUG: Doesn't work
-                    {
-                        ContentViewImages.Images.Add(imageKey, image);
-                        item.OnDone();
-                    }));
+                    MainForm.Instance.Invoke(_refreshContentView, imageKey, image, item);
                 }
             }
         }
