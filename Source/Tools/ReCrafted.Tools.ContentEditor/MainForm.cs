@@ -133,9 +133,36 @@ namespace ReCrafted.Tools.ContentEditor
         {
             Browser.CreateItem(fileName =>
             {
-                var materialEditor = new VoxelObjectEditor();
-                var result = materialEditor.ShowDialog();
+                var objectEditor = new VoxelObjectEditor();
+                var result = objectEditor.ShowDialog();
 
+                if (result == DialogResult.OK)
+                {
+                    // Save file with given name
+                    using (var fs = File.Create(Path.Combine(Browser.CurrentPath, fileName)))
+                    {
+                        var asset = new VoxelObjectAsset
+                        {
+                            AssetGuid = Guid.NewGuid(),
+                            ObjectName = "",
+                            TopHeightMap = objectEditor.TopHeightMap,
+                            BottomHeightMap = objectEditor.BottomHeightMap,
+                            LeftHeightMap = objectEditor.LeftHeightMap,
+                            RightHeightMap = objectEditor.RightHeightMap,
+                            FrontHeightMap = objectEditor.FrontHeightMap,
+                            BackHeightMap = objectEditor.BackHeightMap
+
+                        };
+
+                        // Serialize this asset into the file
+                        asset.Serialize(fs);
+
+                        // Add asset to the cache
+                        AssetCache.AddAssetType(fileName, asset.AssetGuid, asset.AssetType);
+                    }
+
+                    return true;
+                }
 
                 // Well, cancel.
                 return false;
@@ -158,8 +185,8 @@ namespace ReCrafted.Tools.ContentEditor
                     {
                         var asset = new VoxelMaterialAsset
                         {
-                            VoxelName = Path.GetFileNameWithoutExtension(fileName),
                             AssetGuid = Guid.NewGuid(),
+                            VoxelName = Path.GetFileNameWithoutExtension(fileName),
                             VoxelHardness = (byte)materialEditor.Hardness,
                             VoxelMaterial = 0, // Voxel Material will be calculated during game's runtime
                         };

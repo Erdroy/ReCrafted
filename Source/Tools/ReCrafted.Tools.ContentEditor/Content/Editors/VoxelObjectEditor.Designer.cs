@@ -36,12 +36,12 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.textureSelect6 = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
-            this.textureSelect5 = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
-            this.textureSelect4 = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
-            this.textureSelect3 = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
-            this.textureSelect2 = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
-            this.textureSelect1 = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
+            this.TexBack = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
+            this.TexBottom = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
+            this.TexTop = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
+            this.TexRight = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
+            this.TexFront = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
+            this.TexLeft = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -54,6 +54,7 @@
             this.Revert.TabIndex = 3;
             this.Revert.Text = "Cancel";
             this.Revert.UseVisualStyleBackColor = true;
+            this.Revert.Click += new System.EventHandler(this.Revert_Click);
             // 
             // Apply
             // 
@@ -63,15 +64,16 @@
             this.Apply.TabIndex = 2;
             this.Apply.Text = "Apply";
             this.Apply.UseVisualStyleBackColor = true;
+            this.Apply.Click += new System.EventHandler(this.Apply_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(76, 11);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(21, 13);
+            this.label1.Size = new System.Drawing.Size(26, 13);
             this.label1.TabIndex = 10;
-            this.label1.Text = "Up";
+            this.label1.Text = "Top";
             // 
             // label2
             // 
@@ -114,71 +116,71 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(76, 173);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(35, 13);
+            this.label6.Size = new System.Drawing.Size(40, 13);
             this.label6.TabIndex = 15;
-            this.label6.Text = "Down";
+            this.label6.Text = "Bottom";
             // 
-            // textureSelect6
+            // TexBack
             // 
-            this.textureSelect6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textureSelect6.Location = new System.Drawing.Point(215, 108);
-            this.textureSelect6.Name = "textureSelect6";
-            this.textureSelect6.Size = new System.Drawing.Size(62, 62);
-            this.textureSelect6.TabIndex = 9;
+            this.TexBack.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.TexBack.Location = new System.Drawing.Point(215, 108);
+            this.TexBack.Name = "TexBack";
+            this.TexBack.Size = new System.Drawing.Size(62, 62);
+            this.TexBack.TabIndex = 9;
             // 
-            // textureSelect5
+            // TexBottom
             // 
-            this.textureSelect5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textureSelect5.Location = new System.Drawing.Point(79, 189);
-            this.textureSelect5.Name = "textureSelect5";
-            this.textureSelect5.Size = new System.Drawing.Size(62, 62);
-            this.textureSelect5.TabIndex = 8;
+            this.TexBottom.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.TexBottom.Location = new System.Drawing.Point(79, 189);
+            this.TexBottom.Name = "TexBottom";
+            this.TexBottom.Size = new System.Drawing.Size(62, 62);
+            this.TexBottom.TabIndex = 8;
             // 
-            // textureSelect4
+            // TexTop
             // 
-            this.textureSelect4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textureSelect4.Location = new System.Drawing.Point(79, 27);
-            this.textureSelect4.Name = "textureSelect4";
-            this.textureSelect4.Size = new System.Drawing.Size(62, 62);
-            this.textureSelect4.TabIndex = 7;
+            this.TexTop.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.TexTop.Location = new System.Drawing.Point(79, 27);
+            this.TexTop.Name = "TexTop";
+            this.TexTop.Size = new System.Drawing.Size(62, 62);
+            this.TexTop.TabIndex = 7;
             // 
-            // textureSelect3
+            // TexRight
             // 
-            this.textureSelect3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textureSelect3.Location = new System.Drawing.Point(147, 108);
-            this.textureSelect3.Name = "textureSelect3";
-            this.textureSelect3.Size = new System.Drawing.Size(62, 62);
-            this.textureSelect3.TabIndex = 6;
+            this.TexRight.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.TexRight.Location = new System.Drawing.Point(147, 108);
+            this.TexRight.Name = "TexRight";
+            this.TexRight.Size = new System.Drawing.Size(62, 62);
+            this.TexRight.TabIndex = 6;
             // 
-            // textureSelect2
+            // TexFront
             // 
-            this.textureSelect2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textureSelect2.Location = new System.Drawing.Point(79, 108);
-            this.textureSelect2.Name = "textureSelect2";
-            this.textureSelect2.Size = new System.Drawing.Size(62, 62);
-            this.textureSelect2.TabIndex = 5;
+            this.TexFront.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.TexFront.Location = new System.Drawing.Point(79, 108);
+            this.TexFront.Name = "TexFront";
+            this.TexFront.Size = new System.Drawing.Size(62, 62);
+            this.TexFront.TabIndex = 5;
             // 
-            // textureSelect1
+            // TexLeft
             // 
-            this.textureSelect1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textureSelect1.Location = new System.Drawing.Point(11, 108);
-            this.textureSelect1.Name = "textureSelect1";
-            this.textureSelect1.Size = new System.Drawing.Size(62, 62);
-            this.textureSelect1.TabIndex = 4;
+            this.TexLeft.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.TexLeft.Location = new System.Drawing.Point(11, 108);
+            this.TexLeft.Name = "TexLeft";
+            this.TexLeft.Size = new System.Drawing.Size(62, 62);
+            this.TexLeft.TabIndex = 4;
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.textureSelect2);
+            this.groupBox1.Controls.Add(this.TexFront);
             this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(this.textureSelect1);
+            this.groupBox1.Controls.Add(this.TexLeft);
             this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.textureSelect3);
+            this.groupBox1.Controls.Add(this.TexRight);
             this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.textureSelect4);
+            this.groupBox1.Controls.Add(this.TexTop);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.textureSelect5);
+            this.groupBox1.Controls.Add(this.TexBottom);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.textureSelect6);
+            this.groupBox1.Controls.Add(this.TexBack);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
@@ -209,12 +211,12 @@
 
         private System.Windows.Forms.Button Revert;
         private System.Windows.Forms.Button Apply;
-        private Controls.TextureSelect textureSelect1;
-        private Controls.TextureSelect textureSelect2;
-        private Controls.TextureSelect textureSelect3;
-        private Controls.TextureSelect textureSelect4;
-        private Controls.TextureSelect textureSelect5;
-        private Controls.TextureSelect textureSelect6;
+        private Controls.TextureSelect TexLeft;
+        private Controls.TextureSelect TexFront;
+        private Controls.TextureSelect TexRight;
+        private Controls.TextureSelect TexTop;
+        private Controls.TextureSelect TexBottom;
+        private Controls.TextureSelect TexBack;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;

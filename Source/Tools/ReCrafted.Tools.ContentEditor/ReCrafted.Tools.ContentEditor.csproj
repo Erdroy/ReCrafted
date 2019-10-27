@@ -52,6 +52,7 @@
     <Compile Include="Content\AssetCache.cs" />
     <Compile Include="Content\AssetImporter.cs" />
     <Compile Include="Content\Assets\TextureAsset.cs" />
+    <Compile Include="Content\Assets\VoxelObjectAsset.cs" />
     <Compile Include="Content\Assets\VoxelMaterialAsset.cs" />
     <Compile Include="Content\AssetType.cs" />
     <Compile Include="Content\BinaryAsset.cs" />
