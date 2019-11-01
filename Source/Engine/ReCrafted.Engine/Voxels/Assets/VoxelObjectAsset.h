@@ -3,7 +3,7 @@
 #pragma once
 
 #include <ReCrafted.h>
-#include "Content/Assets/JsonAsset.h"
+#include "Content/Assets/BinaryAsset.h"
 #include "Voxels/VoxelObjectBase.h"
 
 API_USING("ReCrafted.API.Content");
@@ -29,26 +29,26 @@ enum class VoxelObjectType
 };
 
 API_CLASS(public, sealed, customNamespace="ReCrafted.API.Voxels")
-class VoxelObjectAsset : public JsonAsset
+class VoxelObjectAsset : public BinaryAsset
 {
+private:
     API_CLASS_BODY();
 
 private:
     std::string m_name;
-    std::string m_dataFile;
-    VoxelObjectDataType m_dataFileType = VoxelObjectDataType::Unknown;
     VoxelObjectType m_type = VoxelObjectType::Unknown;
     uint32_t m_minSurfaceHeight = 0u;
     uint32_t m_maxSurfaceHeight = 0u;
-    uint32_t m_hillHeight = 0u;
+    uint32_t m_hillsHeight = 0u;
     uint32_t m_initialOctreeDepth = 0u;
     VoxelObjectBase* m_voxelObject = nullptr;
+    Heightmap* m_heightmap = nullptr;
 
 private:
-    void LoadDescription(const json& json);
 
-public:
-    void OnDeserializeJson(uint16_t version, const json& json) override;
+protected:
+    void OnDeserializeBinary(uint16_t version, BinaryStream& stream) override;
+    
     void OnLoadEnd() override;
     void OnUnload() override;
 
@@ -66,24 +66,6 @@ public:
     const char* ObjectName() const
     {
         return m_name.c_str();
-    }
-
-    /// <summary>
-    ///     The VoxelObject data file name.
-    /// </summary>
-    API_PROPERTY()
-    const char* DataFile() const
-    {
-        return m_dataFile.c_str();
-    }
-
-    /// <summary>
-    ///     The VoxelObject data file type.
-    /// </summary>
-    API_PROPERTY()
-    VoxelObjectDataType DataFileType() const
-    {
-        return m_dataFileType;
     }
 
     /// <summary>
@@ -119,7 +101,7 @@ public:
     API_PROPERTY()
     uint32_t HillsHeight() const
     {
-        return m_hillHeight;
+        return m_hillsHeight;
     }
 
     /// <summary>
@@ -138,5 +120,15 @@ public:
     VoxelObjectBase* VoxelObject() const
     {
         return m_voxelObject;
+    }
+
+    /// <summary>
+    ///     Gets the heightmap from this asset.
+    /// </summary>
+    /// <returns>The heightmap.</returns>
+    /// <remarks>Only valid when this is CHM object (not PreGen).</remarks>
+    Heightmap* GetHeightmap() const
+    {
+        return m_heightmap;
     }
 };

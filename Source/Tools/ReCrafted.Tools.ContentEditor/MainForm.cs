@@ -1,9 +1,6 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 using System;
-using System.Collections;
-using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -144,14 +141,25 @@ namespace ReCrafted.Tools.ContentEditor
                         var asset = new VoxelObjectAsset
                         {
                             AssetGuid = Guid.NewGuid(),
-                            ObjectName = "",
-                            TopHeightMap = objectEditor.TopHeightMap,
-                            BottomHeightMap = objectEditor.BottomHeightMap,
-                            LeftHeightMap = objectEditor.LeftHeightMap,
-                            RightHeightMap = objectEditor.RightHeightMap,
-                            FrontHeightMap = objectEditor.FrontHeightMap,
-                            BackHeightMap = objectEditor.BackHeightMap
+                            ObjectName = objectEditor.VoxelObjectName,
 
+                            // Planet (VoxelObjectType.Planet)
+                            // TODO: Object type selection (CHM or PreGen) PreGen is suitable for VoxelObject with total size < 32MB (small planetoids, asteroids etc.)
+                            ObjectType = 1,
+
+                            // Temporary settings
+                            HillsHeight = 100,
+                            InitialOctreeDepth = 2,
+                            MaximalSurfaceHeight = 1024,
+                            MinimalSurfaceHeight = 924,
+
+                            // Set textures (CHM only)
+                            TopHeightMap = Path.Combine(Browser.BasePath, objectEditor.TopHeightMap),
+                            BottomHeightMap = Path.Combine(Browser.BasePath, objectEditor.BottomHeightMap),
+                            LeftHeightMap = Path.Combine(Browser.BasePath, objectEditor.LeftHeightMap),
+                            RightHeightMap = Path.Combine(Browser.BasePath, objectEditor.RightHeightMap),
+                            FrontHeightMap = Path.Combine(Browser.BasePath, objectEditor.FrontHeightMap),
+                            BackHeightMap = Path.Combine(Browser.BasePath, objectEditor.BackHeightMap)
                         };
 
                         // Serialize this asset into the file

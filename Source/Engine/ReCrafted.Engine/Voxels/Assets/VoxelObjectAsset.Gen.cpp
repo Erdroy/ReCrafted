@@ -18,23 +18,7 @@ public:
         *p_data = MONO_STRING_FROM_CSTR(_returnValue);
     }
     
-    static void VoxelObjectAsset_Get_DataFile2(VoxelObjectAsset* instance, MonoString** p_data) 
-    {
-        MAIN_THREAD_ONLY();
-        MONO_CHECK_OBJECT(instance, "VoxelObjectAsset");
-        const auto _returnValue = instance->DataFile();
-        *p_data = MONO_STRING_FROM_CSTR(_returnValue);
-    }
-    
-    static void VoxelObjectAsset_Get_DataFileType3(VoxelObjectAsset* instance, VoxelObjectDataType* data) 
-    {
-        MAIN_THREAD_ONLY();
-        MONO_CHECK_OBJECT(instance, "VoxelObjectAsset");
-        const auto _returnValue = instance->DataFileType();
-        *data = _returnValue;
-    }
-    
-    static void VoxelObjectAsset_Get_ObjectType4(VoxelObjectAsset* instance, VoxelObjectType* data) 
+    static void VoxelObjectAsset_Get_ObjectType2(VoxelObjectAsset* instance, VoxelObjectType* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "VoxelObjectAsset");
@@ -42,7 +26,7 @@ public:
         *data = _returnValue;
     }
     
-    static void VoxelObjectAsset_Get_MinimumSurfaceHeight5(VoxelObjectAsset* instance, uint32_t* data) 
+    static void VoxelObjectAsset_Get_MinimumSurfaceHeight3(VoxelObjectAsset* instance, uint32_t* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "VoxelObjectAsset");
@@ -50,7 +34,7 @@ public:
         *data = _returnValue;
     }
     
-    static void VoxelObjectAsset_Get_MaximumSurfaceHeight6(VoxelObjectAsset* instance, uint32_t* data) 
+    static void VoxelObjectAsset_Get_MaximumSurfaceHeight4(VoxelObjectAsset* instance, uint32_t* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "VoxelObjectAsset");
@@ -58,7 +42,7 @@ public:
         *data = _returnValue;
     }
     
-    static void VoxelObjectAsset_Get_HillsHeight7(VoxelObjectAsset* instance, uint32_t* data) 
+    static void VoxelObjectAsset_Get_HillsHeight5(VoxelObjectAsset* instance, uint32_t* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "VoxelObjectAsset");
@@ -66,7 +50,7 @@ public:
         *data = _returnValue;
     }
     
-    static void VoxelObjectAsset_Get_InitialOctreeDepth8(VoxelObjectAsset* instance, uint32_t* data) 
+    static void VoxelObjectAsset_Get_InitialOctreeDepth6(VoxelObjectAsset* instance, uint32_t* data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "VoxelObjectAsset");
@@ -74,7 +58,7 @@ public:
         *data = _returnValue;
     }
     
-    static void VoxelObjectAsset_Get_VoxelObject9(VoxelObjectAsset* instance, MonoObject** data) 
+    static void VoxelObjectAsset_Get_VoxelObject7(VoxelObjectAsset* instance, MonoObject** data) 
     {
         MAIN_THREAD_ONLY();
         MONO_CHECK_OBJECT(instance, "VoxelObjectAsset");
@@ -96,14 +80,12 @@ void VoxelObjectAsset::InitRuntime()
     
     MONO_REGISTER_OBJECT_TYPE(VoxelObjectAsset);
     API_BIND("ReCrafted.API.Voxels.VoxelObjectAsset::Get_InternalObjectName", &APIProxy::VoxelObjectAsset_Get_ObjectName1);
-    API_BIND("ReCrafted.API.Voxels.VoxelObjectAsset::Get_InternalDataFile", &APIProxy::VoxelObjectAsset_Get_DataFile2);
-    API_BIND("ReCrafted.API.Voxels.VoxelObjectAsset::Get_InternalDataFileType", &APIProxy::VoxelObjectAsset_Get_DataFileType3);
-    API_BIND("ReCrafted.API.Voxels.VoxelObjectAsset::Get_InternalObjectType", &APIProxy::VoxelObjectAsset_Get_ObjectType4);
-    API_BIND("ReCrafted.API.Voxels.VoxelObjectAsset::Get_InternalMinimumSurfaceHeight", &APIProxy::VoxelObjectAsset_Get_MinimumSurfaceHeight5);
-    API_BIND("ReCrafted.API.Voxels.VoxelObjectAsset::Get_InternalMaximumSurfaceHeight", &APIProxy::VoxelObjectAsset_Get_MaximumSurfaceHeight6);
-    API_BIND("ReCrafted.API.Voxels.VoxelObjectAsset::Get_InternalHillsHeight", &APIProxy::VoxelObjectAsset_Get_HillsHeight7);
-    API_BIND("ReCrafted.API.Voxels.VoxelObjectAsset::Get_InternalInitialOctreeDepth", &APIProxy::VoxelObjectAsset_Get_InitialOctreeDepth8);
-    API_BIND("ReCrafted.API.Voxels.VoxelObjectAsset::Get_InternalVoxelObject", &APIProxy::VoxelObjectAsset_Get_VoxelObject9);
+    API_BIND("ReCrafted.API.Voxels.VoxelObjectAsset::Get_InternalObjectType", &APIProxy::VoxelObjectAsset_Get_ObjectType2);
+    API_BIND("ReCrafted.API.Voxels.VoxelObjectAsset::Get_InternalMinimumSurfaceHeight", &APIProxy::VoxelObjectAsset_Get_MinimumSurfaceHeight3);
+    API_BIND("ReCrafted.API.Voxels.VoxelObjectAsset::Get_InternalMaximumSurfaceHeight", &APIProxy::VoxelObjectAsset_Get_MaximumSurfaceHeight4);
+    API_BIND("ReCrafted.API.Voxels.VoxelObjectAsset::Get_InternalHillsHeight", &APIProxy::VoxelObjectAsset_Get_HillsHeight5);
+    API_BIND("ReCrafted.API.Voxels.VoxelObjectAsset::Get_InternalInitialOctreeDepth", &APIProxy::VoxelObjectAsset_Get_InitialOctreeDepth6);
+    API_BIND("ReCrafted.API.Voxels.VoxelObjectAsset::Get_InternalVoxelObject", &APIProxy::VoxelObjectAsset_Get_VoxelObject7);
 }
 
 const char* VoxelObjectAsset::Fullname() 

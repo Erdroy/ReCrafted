@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Voxels 
 {
-    public sealed class VoxelObjectAsset : JsonAsset
+    public sealed class VoxelObjectAsset : BinaryAsset
     {
 
         /// <summary>
@@ -17,30 +17,6 @@ namespace ReCrafted.API.Voxels
             get
             {
                 Get_InternalObjectName(NativePtr, out var data);
-                return data;
-            }
-        }
-
-        /// <summary>
-        ///     The VoxelObject data file name.
-        /// </summary>
-        public string DataFile
-        {
-            get
-            {
-                Get_InternalDataFile(NativePtr, out var data);
-                return data;
-            }
-        }
-
-        /// <summary>
-        ///     The VoxelObject data file type.
-        /// </summary>
-        public VoxelObjectDataType DataFileType
-        {
-            get
-            {
-                Get_InternalDataFileType(NativePtr, out var data);
                 return data;
             }
         }
@@ -119,12 +95,6 @@ namespace ReCrafted.API.Voxels
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalObjectName(System.IntPtr nativePtr, out string data);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void Get_InternalDataFile(System.IntPtr nativePtr, out string data);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void Get_InternalDataFileType(System.IntPtr nativePtr, out VoxelObjectDataType data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalObjectType(System.IntPtr nativePtr, out VoxelObjectType data);

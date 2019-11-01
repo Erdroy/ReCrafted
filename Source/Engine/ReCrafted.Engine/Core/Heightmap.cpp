@@ -18,7 +18,7 @@ void Heightmap::FlatFromStream(const uint16_t width, const uint16_t height, cons
 
 void Heightmap::CubicalFromStream(const uint16_t width, const uint16_t height, const uint16_t lodCount, BinaryStream* stream)
 {
-    _ASSERT_(m_format != HeightmapFormat::Cubical_8bit, "Only HeightmapFormat::Cubical_8bit is currently supported!");
+    _ASSERT_(m_format == HeightmapFormat::Cubical_8bit, "Only HeightmapFormat::Cubical_8bit is currently supported!");
 
     const auto numCubeFaces = 6;
 
@@ -46,6 +46,7 @@ void Heightmap::CubicalFromStream(const uint16_t width, const uint16_t height, c
             face.RowPitch = mipWidth * texelSize;
             face.Width = mipWidth;
             face.Height = mipHeight;
+            face.Data = new uint8_t[bitmapSize];
 
             // Get data pointer and read data.
             stream->ReadBytes(reinterpret_cast<char*>(face.Data), bitmapSize);
@@ -58,9 +59,21 @@ void Heightmap::CubicalFromStream(const uint16_t width, const uint16_t height, c
 
 Heightmap::~Heightmap()
 {
+    for (auto mip : m_flatMips)
+    {
+        delete[] mip.Data;
+    }
+
+    for (auto mip : m_cubeMips)
+    {
+        for (auto face : mip.Faces)
+        {
+            delete[] face.Data;
+        }
+    }
 }
 
-void Heightmap::InitializeFromMemory(const uint16_t width, const uint16_t height, const uint16_t lodCount, const uint8_t* data)
+void Heightmap::InitializeFromMemory(const uint16_t width, const uint16_t height, const uint16_t lodCount, uint8_t* data)
 {
     const auto numCubeFaces = 6;
 
@@ -92,7 +105,7 @@ void Heightmap::InitializeFromMemory(const uint16_t width, const uint16_t height
     }
 
     // Create stream
-    auto stream = Stream((void*)data, heightmapSize);
+    auto stream = Stream(static_cast<void*>(data), heightmapSize);
     auto binaryStream = BinaryStream(stream);
 
     switch (m_format) {

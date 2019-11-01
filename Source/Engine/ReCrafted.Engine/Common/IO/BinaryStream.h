@@ -203,6 +203,27 @@ public:
         ReadBytes(string, length);
     }
 
+    /// <summary>
+    ///     Reads string.
+    /// </summary>
+    /// <returns>The resulting string.</returns>
+    std::string ReadString()
+    {
+        int length = ReadByte();
+
+        if (length == 0xFF)
+        {
+            m_position--;
+            length = ReadUInt16();
+        }
+
+        std::string string;
+        string.resize(length + 1);
+        ReadBytes(const_cast<char*>(string.data()), length);
+
+        return string;
+    }
+
     /**
      * \brief Writes string to this stream.
      * \param string The ANSI string.

@@ -43,6 +43,8 @@
             this.TexFront = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
             this.TexLeft = new ReCrafted.Tools.ContentEditor.Controls.TextureSelect();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.ObjectName = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -189,11 +191,30 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Cube height map";
             // 
+            // ObjectName
+            // 
+            this.ObjectName.Location = new System.Drawing.Point(310, 39);
+            this.ObjectName.Name = "ObjectName";
+            this.ObjectName.Size = new System.Drawing.Size(212, 20);
+            this.ObjectName.TabIndex = 17;
+            this.ObjectName.Text = "New Planet";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(307, 23);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(35, 13);
+            this.label7.TabIndex = 18;
+            this.label7.Text = "Name";
+            // 
             // VoxelObjectEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(534, 281);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.ObjectName);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.Revert);
             this.Controls.Add(this.Apply);
@@ -204,6 +225,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -224,5 +246,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.TextBox ObjectName;
+        private System.Windows.Forms.Label label7;
     }
 }

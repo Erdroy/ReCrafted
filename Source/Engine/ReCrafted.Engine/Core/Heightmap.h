@@ -27,20 +27,20 @@ public:
     enum CubeFace
     {
         Front   = 0,
-        Back    = 1 << 0,
-        Left    = 1 << 1,
-        Right   = 1 << 2,
-        Top     = 1 << 3,
-        Bottom  = 1 << 4,
+        Back    = 1,
+        Left    = 2,
+        Right   = 3,
+        Top     = 4,
+        Bottom  = 5,
     };
 
     struct HeightmapBitmap
     {
-        void* Data;
         size_t DataSize = 0u;
         size_t RowPitch = 0u;
-        uint8_t Width = 0u;
-        uint8_t Height = 0u;
+        uint16_t Width = 0u;
+        uint16_t Height = 0u;
+        uint8_t* Data;
     };
 
     struct HeightmapCubeMip
@@ -64,7 +64,7 @@ public:
     ~Heightmap();
 
 public:
-    void InitializeFromMemory(uint16_t width, uint16_t height, uint16_t lodCount, const uint8_t* data);
+    void InitializeFromMemory(uint16_t width, uint16_t height, uint16_t lodCount, uint8_t* data);
     void InitializeFromStream(uint16_t width, uint16_t height, uint16_t lodCount, BinaryStream* stream);
 
 public:

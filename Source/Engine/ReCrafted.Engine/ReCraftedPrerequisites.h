@@ -153,6 +153,9 @@ class ObjectManager;
 class Script;
 class ScriptingManager;
 
+// Voxels/Assets/
+class VoxelObjectAsset;
+
 // Voxels/Meshing/
 struct IVoxelMesher;
 

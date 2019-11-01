@@ -90,6 +90,7 @@
     <Compile Include="Controls\TextureSelect.Designer.cs">
       <DependentUpon>TextureSelect.cs</DependentUpon>
     </Compile>
+    <Compile Include="Core\Heightmap.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

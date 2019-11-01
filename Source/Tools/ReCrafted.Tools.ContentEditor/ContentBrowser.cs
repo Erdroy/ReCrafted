@@ -131,6 +131,8 @@ namespace ReCrafted.Tools.ContentEditor
         {
             // Force proper file name
             var fileName = Path.GetFileNameWithoutExtension(e.Label);
+            if (string.IsNullOrEmpty(fileName))
+                fileName = "NewAsset";
             fileName += ".rcasset";
 
             // Update it's name
@@ -240,5 +242,10 @@ namespace ReCrafted.Tools.ContentEditor
             get => _path;
             set => Navigate(value);
         }
+
+        /// <summary>
+        ///     Gets the absolute base path of the game's content directory.
+        /// </summary>
+        public string BasePath => Path.GetFullPath(Path.Combine(Settings.Current.GameDirectory, "Content"));
     }
 }

@@ -110,6 +110,31 @@ namespace ReCrafted.Tools.ContentEditor.Content.Assets
             }
         }
 
+        public void Convert(DXGI_FORMAT format)
+        {
+            if (format == DXGI_FORMAT.R8_UINT)
+            {
+                foreach (var mip in Mips)
+                {
+                    var mipSize = mip.Width * mip.Height * 1;
+                    var newData = new byte[mipSize];
+
+                    for (var i = 0; i < mip.Data.Length; i += 4)
+                    {
+                        newData[i / 4] = mip.Data[i + 0]; // R
+                        // G
+                        // B
+                        // A
+                    }
+
+                    mip.Data = newData;
+                    mip.Pitch = mip.Width * 1;
+                }
+
+                Format = format;
+            }
+        }
+
         public Mip[] Mips { get; set; }
         public DXGI_FORMAT Format { get; set; }
         public int MipCount { get; set; }

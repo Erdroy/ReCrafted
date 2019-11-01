@@ -1,55 +1,41 @@
 // ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include "VoxelObjectAsset.h"
+#include "Content/ContentManager.h"
 #include "Voxels/VoxelObjectBase.h"
 #include "Voxels/VoxelPlanet.h"
+#include "Core/Heightmap.h"
 
-void VoxelObjectAsset::LoadDescription(const json& json)
+
+void VoxelObjectAsset::OnDeserializeBinary(uint16_t version, BinaryStream& stream)
 {
-    const auto mName = json["ObjectName"];
-    ASSERT(!mName.is_null());
-    ASSERT(mName.is_string());
-    m_name = mName.get<std::string>();
+    m_name = stream.ReadString();
+    m_type = static_cast<VoxelObjectType>(stream.ReadInt32());
+    m_minSurfaceHeight = stream.ReadInt32();
+    m_maxSurfaceHeight = stream.ReadInt32();
+    m_hillsHeight = stream.ReadInt32();
+    m_initialOctreeDepth = stream.ReadInt32();
 
-    const auto mDataFile = json["ObjectFile"];
-    ASSERT(!mDataFile.is_null());
-    ASSERT(mDataFile.is_string());
-    m_dataFile = mDataFile.get<std::string>();
+    // Read heightmap
+    const auto width = stream.ReadInt32();
+    const auto height = stream.ReadInt32();
+    const auto is16Bit = stream.ReadBool();
+    const auto mips = stream.ReadInt32();
+    const auto isCubical = stream.ReadBool();
 
-    const auto mDataFileType = json["ObjectFileType"];
-    ASSERT(!mDataFileType.is_null());
-    ASSERT(mDataFileType.is_number_integer());
-    m_dataFileType = static_cast<VoxelObjectDataType>(mDataFileType.get<int>());
+    auto heightmapFormat = HeightmapFormat::Unknown;
+    if (isCubical)
+    {
+        if (is16Bit)
+            heightmapFormat = HeightmapFormat::Cubical_16bit;
+        else
+            heightmapFormat = HeightmapFormat::Cubical_8bit;
+    }
+    else
+        _ASSERT_(false, "Not implemented");
 
-    const auto mObjectType = json["ObjectFileType"];
-    ASSERT(!mObjectType.is_null());
-    ASSERT(mObjectType.is_number_integer());
-    m_type = static_cast<VoxelObjectType>(mObjectType.get<int>());
-
-    const auto mMinSurf = json["MinimalSurfaceHeight"];
-    ASSERT(!mMinSurf.is_null());
-    ASSERT(mMinSurf.is_number_unsigned());
-    m_minSurfaceHeight = static_cast<uint32_t>(mMinSurf.get<uint32_t>());
-
-    const auto mMaxSurf = json["MaximalSurfaceHeight"];
-    ASSERT(!mMaxSurf.is_null());
-    ASSERT(mMaxSurf.is_number_unsigned());
-    m_maxSurfaceHeight = static_cast<uint32_t>(mMaxSurf.get<uint32_t>());
-
-    const auto mHillsHeight = json["HillsHeight"];
-    ASSERT(!mHillsHeight.is_null());
-    ASSERT(mHillsHeight.is_number_unsigned());
-    m_hillHeight = static_cast<uint32_t>(mHillsHeight.get<uint32_t>());
-
-    const auto mOctreeDepth = json["InitialOctreeDepth"];
-    ASSERT(!mOctreeDepth.is_null());
-    ASSERT(mOctreeDepth.is_number_unsigned());
-    m_initialOctreeDepth = static_cast<uint32_t>(mOctreeDepth.get<uint32_t>());
-}
-
-void VoxelObjectAsset::OnDeserializeJson(uint16_t version, const json& json)
-{
-    LoadDescription(json);
+    m_heightmap = new Heightmap(heightmapFormat);
+    m_heightmap->InitializeFromStream(width, height, mips, &stream);
 }
 
 void VoxelObjectAsset::OnLoadEnd()
@@ -61,7 +47,7 @@ void VoxelObjectAsset::OnLoadEnd()
         m_voxelObject = New<VoxelPlanet>();
         break;
     case VoxelObjectType::Asteroid:
-        _ASSERT_(false, "Not implemented");
+        _ASSERT_(false, "Asteroid/PreGen is not implemented, yet");
         //m_voxelObject = New<VoxelAsteroid>();
         break;
 
@@ -77,6 +63,8 @@ void VoxelObjectAsset::OnLoadEnd()
 
 void VoxelObjectAsset::OnUnload()
 {
+    delete m_heightmap;
+
     if(m_voxelObject)
     {
         Destroy(m_voxelObject);

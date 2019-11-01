@@ -117,10 +117,18 @@ namespace ReCrafted.Tools.ContentEditor.Content
                     var mip0 = texture.Mips.First();
                     Marshal.Copy(mip0.Data, 0, previewImage.GetImage(0).Pixels, mip0.Size);
 
-                    // Decompress image now
-                    var decompressedPreviewImage = previewImage.Decompress(DXGI_FORMAT.R8G8B8A8_UNORM);
-
-                    var scaledPreviewImage = decompressedPreviewImage.Resize(64, 64, TEX_FILTER_FLAGS.FANT);
+                    ScratchImage scaledPreviewImage;
+                    if (previewImage.GetMetadata().Format == DXGI_FORMAT.BC7_UNORM)
+                    {
+                        // Decompress image now
+                        var decompressedPreviewImage = previewImage.Decompress(DXGI_FORMAT.R8G8B8A8_UNORM);
+                        scaledPreviewImage = decompressedPreviewImage.Resize(64, 64, TEX_FILTER_FLAGS.FANT);
+                        decompressedPreviewImage.Dispose();
+                    }
+                    else
+                    {
+                        scaledPreviewImage = previewImage.Resize(64, 64, TEX_FILTER_FLAGS.FANT);
+                    }
 
                     if (!Directory.Exists("Cache"))
                         Directory.CreateDirectory("Cache");
@@ -130,7 +138,6 @@ namespace ReCrafted.Tools.ContentEditor.Content
                         $"./Cache/{item.Asset.AssetGuid}.jpg");
 
                     scaledPreviewImage.Dispose();
-                    decompressedPreviewImage.Dispose();
                     previewImage.Dispose();
                 }
 

@@ -1,30 +1,52 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
+using System.IO;
+using ReCrafted.Tools.ContentEditor.Core;
+
 namespace ReCrafted.Tools.ContentEditor.Content.Assets
 {
     /// <summary>
     ///     VoxelObjectAsset asset class.
     /// </summary>
-    public class VoxelObjectAsset : JsonAsset
+    public class VoxelObjectAsset : BinaryAsset
     {
-        protected override void OnSerializeJson(ushort version)
+        protected override void OnSerializeBinary(ushort version, BinaryWriter writer)
         {
-            SerializeField("TopHeightMap", TopHeightMap);
-            SerializeField("BottomHeightMap", BottomHeightMap);
-            SerializeField("LeftHeightMap", LeftHeightMap);
-            SerializeField("RightHeightMap", RightHeightMap);
-            SerializeField("FrontHeightMap", FrontHeightMap);
-            SerializeField("BackHeightMap", BackHeightMap);
+            writer.Write(ObjectName);
+            writer.Write(ObjectType);
+
+            writer.Write(MinimalSurfaceHeight);
+            writer.Write(MaximalSurfaceHeight);
+            writer.Write(HillsHeight);
+            writer.Write(InitialOctreeDepth);
+
+            if (ObjectType == 1)
+            {
+                // Write CHM data
+                Heightmap.HeightmapFromTextures(
+                    writer,
+                    TopHeightMap,
+                    BottomHeightMap,
+                    LeftHeightMap,
+                    RightHeightMap,
+                    FrontHeightMap,
+                    BackHeightMap
+                );
+            }
         }
 
-        protected override void OnDeserializeJson(ushort version)
+        protected override void OnDeserializeBinary(ushort version, BinaryReader reader)
         {
-            TopHeightMap = DeserializeField("TopHeightMap", "Unknown");
-            BottomHeightMap = DeserializeField("BottomHeightMap", "Unknown");
-            LeftHeightMap = DeserializeField("LeftHeightMap", "Unknown");
-            RightHeightMap = DeserializeField("RightHeightMap", "Unknown");
-            FrontHeightMap = DeserializeField("FrontHeightMap", "Unknown");
-            BackHeightMap = DeserializeField("BackHeightMap", "Unknown");
+            ObjectName = reader.ReadString();
+            ObjectType = reader.ReadInt32();
+
+            MinimalSurfaceHeight = reader.ReadInt32();
+            MaximalSurfaceHeight = reader.ReadInt32();
+            HillsHeight = reader.ReadInt32();
+            InitialOctreeDepth = reader.ReadInt32();
+
+            // Note: We're skipping the CHM/PreGen data here,
+            // because we do not need it in the editor.
         }
 
         public string ObjectName { get; set; }
