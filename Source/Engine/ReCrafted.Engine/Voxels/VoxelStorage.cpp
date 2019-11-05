@@ -68,7 +68,7 @@ void VoxelStorage::ReadChunkData(const RefPtr<VoxelChunkData>& chunkData)
     const auto lod = chunkData->m_size / VoxelObjectOctree::Node::MinimumNodeSize;
 
     // Generate chunk now using CHM
-    const auto hasSurface = m_voxelObject->Generator()->GenerateChunkData(chunkData, Vector3d(double(chunkPosition.x), double(chunkPosition.y), double(chunkPosition.z)), lod, chunkData->m_nodeDepth);
+    const auto hasSurface = m_voxelObject->Generator()->GenerateChunkData(chunkData, chunkPosition, lod, chunkData->m_nodeDepth);
 
     // Mark as loaded
     chunkData->m_hasSurface = hasSurface;

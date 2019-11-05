@@ -7,55 +7,50 @@
 #include "Voxels/VoxelObjectBase.h"
 #include "Voxels/Assets/VoxelObjectAsset.h"
 
+// original source: https://en.wikipedia.org/wiki/Cube_mapping
 
-    /**
-     * \brief Maps given point to CHM UV coordinates in ranges [0.0 incl, 1.0 excl].
-     * \param face The face which will get mapped point.
-     * \param point The point which will be mapped.
-     * \return The UV coordinates in ranges [0.0 incl, 1.0 excl].
-     */
-FORCEINLINE static Vector2 GetTexcoord(const int face, const Vector3d& point)
+inline Vector2 MapCubeUV(const Heightmap::CubeFace face, const Vector3& point)
 {
     Vector2 texcoord;
 
     switch (face)
     {
-    case 0:
+    case Heightmap::CubeFace::Front:
     {
         const auto localPoint = point * (1.0f / fabs(point.z));
         texcoord.y = localPoint.y;
         texcoord.x = -localPoint.x;
         break;
     }
-    case 1:
+    case Heightmap::CubeFace::Back:
     {
         const auto localPoint = point * (1.0f / fabs(point.z));
         texcoord.y = localPoint.y;
         texcoord.x = localPoint.x;
         break;
     }
-    case 2:
+    case Heightmap::CubeFace::Left:
     {
         const auto localPoint = point * (1.0f / fabs(point.x));
         texcoord.y = localPoint.y;
         texcoord.x = -localPoint.z;
         break;
     }
-    case 3:
+    case Heightmap::CubeFace::Right:
     {
         const auto localPoint = point * (1.0f / fabs(point.x));
         texcoord.y = localPoint.y;
         texcoord.x = localPoint.z;
         break;
     }
-    case 4:
+    case Heightmap::CubeFace::Top:
     {
         const auto localPoint = point * (1.0f / fabs(point.y));
         texcoord.y = localPoint.z;
         texcoord.x = localPoint.x;
         break;
     }
-    case 5:
+    case Heightmap::CubeFace::Bottom:
     {
         const auto localPoint = point * (1.0f / fabs(point.y));
         texcoord.y = -localPoint.z;
@@ -65,69 +60,32 @@ FORCEINLINE static Vector2 GetTexcoord(const int face, const Vector3d& point)
     default: throw;
     }
 
-    // clamp
+    // Clamp
     texcoord.x = (texcoord.x + 1.0f) * 0.5f;
     texcoord.y = 1.0f - (texcoord.y + 1.0f) * 0.5f;
-
-    if (texcoord.x >= 1.0f)
-        texcoord.x = 0.99999f;
-
-    if (texcoord.y >= 1.0f)
-        texcoord.y = 0.99999f;
 
     return texcoord;
 }
 
-/**
-* \brief Selects the sphere face is used by the point.
-* \param point The point which will be check.
-* \return The selected face.
-*/
-FORCEINLINE static int GetFace(const Vector3d& point)
+inline Heightmap::CubeFace MapCubeFace(const Vector3& point)
 {
-    const auto absPoint = Vector3d::Abs(const_cast<Vector3d&>(point));
+    const auto absPoint = Vector3::Abs(point);
 
     if (absPoint.x > absPoint.y)
     {
         if (absPoint.x > absPoint.z)
-        {
-            if (point.x > 0.0f)
-            {
-                return 3; // right
-            }
-            return 2; // left
-        }
+            return point.x > 0.0f ? Heightmap::CubeFace::Right : Heightmap::CubeFace::Left;
 
-        if (point.z > 0.0f)
-        {
-            return 0; // front
-        }
-        return 1; // back
+        return point.z > 0.0f ? Heightmap::CubeFace::Front : Heightmap::CubeFace::Back;
     }
 
     if (absPoint.y > absPoint.z)
-    {
-        if (point.y > 0.0f)
-        {
-            return 4; // up
-        }
+        return point.y > 0.0f ? Heightmap::CubeFace::Top : Heightmap::CubeFace::Bottom;
 
-        return 5; // down
-    }
-
-    if (point.z > 0.0f)
-    {
-        return 0; // front
-    }
-    return 1; // back
+    return point.z > 0.0f ? Heightmap::CubeFace::Front : Heightmap::CubeFace::Back;
 }
 
-VoxelGenerator::~VoxelGenerator()
-{
-    //SafeDispose(m_bitmap);
-}
-
-Voxel VoxelGenerator::GenerateFromCHM(const Vector3d& origin, const Vector3d& position,
+Voxel VoxelGenerator::GenerateFromCHM(const Vector3& origin, const Vector3& position,
     const int mipLevel, const int lodSize, const int radius, const int height) const
 {
     if (position.LengthSquared() == 0)
@@ -136,16 +94,16 @@ Voxel VoxelGenerator::GenerateFromCHM(const Vector3d& origin, const Vector3d& po
     const auto lod = float(lodSize);
 
     // Get sphere face
-    const auto sphereFace = GetFace(position);
+    const auto sphereFace = MapCubeFace(position);
 
-    // Map spherecoords
-    const auto texcoord = GetTexcoord(sphereFace, position);
+    // Map to sphere coords
+    const auto texcoord = MapCubeUV(sphereFace, position);
 
     const auto heightmap = m_voxelObject->Asset()->GetHeightmap();
-    const auto sample = heightmap->SampleCube8BitBilinear(Heightmap::Top, Vector2(texcoord.x, texcoord.y), 0);
+    const auto sample = heightmap->SampleCube8BitBilinear(sphereFace, texcoord, mipLevel);
 
     // the terrain height (over planet, sphere is the base)
-    const auto terrainHeight = float(radius) + (float(sample) / 256.0f) * float(height);
+    const auto terrainHeight = float(radius) + float(sample) / 255.0f * float(height);
 
     // the height over sphere
     const auto currentHeight = static_cast<float>((position - origin).Length());
@@ -168,17 +126,6 @@ Voxel VoxelGenerator::GenerateFromCHM(const Vector3d& origin, const Vector3d& po
     return voxel; // TODO: Read material id from CHM
 }
 
-void VoxelGenerator::Load()
-{
-    //ASSERT(m_bitmap == nullptr);
-    //m_bitmap = CHMBitmap::CreateFromFile(settings->fileName);
-}
-
-void VoxelGenerator::Unload()
-{
-    //SafeDispose(m_bitmap);
-}
-
 inline void SetVoxel(Voxel* voxelData, const int x, const int y, const int z, const Voxel voxel)
 {
     voxelData[Math::Index3(
@@ -188,7 +135,7 @@ inline void SetVoxel(Voxel* voxelData, const int x, const int y, const int z, co
         VoxelChunkData::ChunkDataSize)] = voxel;
 }
 
-bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, const Vector3d& position, const int lod, const int depth)
+bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, const Vector3& position, const int lod, const int depth)
 {
     const int voxelCount = VoxelChunkData::ChunkDataSize * VoxelChunkData::ChunkDataSize * VoxelChunkData::ChunkDataSize;
     Voxel voxels[voxelCount]; // Well, stack will cry, but game will be still happy
@@ -199,7 +146,11 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
 
     const auto asset = m_voxelObject->Asset();
     const auto voxelSize = static_cast<float>(lod);
-    const auto chunkPosition = m_voxelObject->Position();
+    const auto chunkPosition = Vector3(
+        float(m_voxelObject->Position().x), 
+        float(m_voxelObject->Position().y), 
+        float(m_voxelObject->Position().z)
+    );
     const auto mipLevel = 0;// Math::Clamp(octree->GetMaxDepth() - depth, 0, m_bitmap->GetLoDCount());
 
     auto hasSurface = false;
@@ -212,7 +163,7 @@ bool VoxelGenerator::GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, cons
         {
             for (auto z = VoxelChunkData::ChunkDataStart; z < VoxelChunkData::ChunkDataLength; z++)
             {
-                const auto offset = Vector3d(double(x), double(y), double(z));
+                const auto offset = Vector3(float(x), float(y), float(z));
                 const auto voxelPosition = position + offset * voxelSize;
 
                 const auto value = GenerateFromCHM(chunkPosition, voxelPosition, mipLevel, lod,

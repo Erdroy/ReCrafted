@@ -30,13 +30,13 @@ void Heightmap::CubicalFromStream(const uint16_t width, const uint16_t height, c
     auto mipHeight = height;
     for(auto mipId = 0; mipId < lodCount; mipId ++)
     {
-        m_cubeMips.Add({});
-        auto& mip = m_cubeMips.Last();
+        HeightmapCubeMip mip;
+        mip.MipId = mipId;
 
         for (auto faceId = 0; faceId < numCubeFaces; faceId++)
         {
-            mip.Faces.Add({});
-            auto& face = mip.Faces.Last();
+            HeightmapBitmap face;
+            face.FaceId = faceId;
 
             // Get the bitmap size 
             const auto bitmapSize = mipWidth * mipHeight * texelSize;
@@ -50,7 +50,12 @@ void Heightmap::CubicalFromStream(const uint16_t width, const uint16_t height, c
 
             // Get data pointer and read data.
             stream->ReadBytes(reinterpret_cast<char*>(face.Data), bitmapSize);
+
+            // Add face
+            mip.Faces.Add(face);
         }
+
+        m_cubeMips.Add(mip);
 
         mipWidth /= 2;
         mipHeight /= 2;

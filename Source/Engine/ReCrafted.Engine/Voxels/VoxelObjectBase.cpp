@@ -217,9 +217,6 @@ void VoxelObjectBase::Initialize()
     m_rigidBodyActor = RigidBodyActor::CreateStatic();
     m_rigidBodyActor->Position(Vector3::Zero);
 
-    // Load generator
-    m_generator->Load();
-
     m_lastViewUpdate = 0.0f;
 }
 

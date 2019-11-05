@@ -3,7 +3,6 @@
 #pragma once
 
 #include <ReCrafted.h>
-#include "Common/Lock.h"
 #include "Voxels/VoxelChunkData.h"
 
 class VoxelGenerator
@@ -12,26 +11,14 @@ class VoxelGenerator
 
 private:
     VoxelObjectBase* m_voxelObject = nullptr;
-    Lock m_loadLock = {};
-    bool m_loaded = false;
 
 public:
     explicit VoxelGenerator(VoxelObjectBase* voxelObject) : m_voxelObject(voxelObject) {}
-    ~VoxelGenerator();
+    ~VoxelGenerator() = default;
 
 private:
-    FORCE_INLINE Voxel GenerateFromCHM(const Vector3d& origin, const Vector3d& position, int mipLevel, int lodSize, int radius, int height) const;
+    FORCE_INLINE Voxel GenerateFromCHM(const Vector3& origin, const Vector3& position, int mipLevel, int lodSize, int radius, int height) const;
 
 public:
-    void Load();
-    void Unload();
-
-    bool IsLoaded()
-    {
-        ScopeLock(m_loadLock);
-        return m_loaded;
-    }
-
-public:
-    bool GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, const Vector3d& position, int lod, int depth);
+    bool GenerateChunkData(const RefPtr<VoxelChunkData>& chunk, const Vector3& position, int lod, int depth);
 };

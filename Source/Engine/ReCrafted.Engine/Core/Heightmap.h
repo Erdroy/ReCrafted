@@ -24,28 +24,32 @@ public:
     /// <summary>
     ///     Contains all face types of a typical cube.
     /// </summary>
-    enum CubeFace
+    enum CubeFace : int
     {
-        Front   = 0,
-        Back    = 1,
-        Left    = 2,
-        Right   = 3,
-        Top     = 4,
-        Bottom  = 5,
+        Front,
+        Back,
+        Left,
+        Right,
+        Top,
+        Bottom,
+
+        Count
     };
 
     struct HeightmapBitmap
     {
+        int FaceId = -1;
         size_t DataSize = 0u;
         size_t RowPitch = 0u;
         uint16_t Width = 0u;
         uint16_t Height = 0u;
-        uint8_t* Data;
+        uint8_t* Data = nullptr;
     };
 
     struct HeightmapCubeMip
     {
-        List<HeightmapBitmap> Faces;
+        int MipId = -1;
+        List<HeightmapBitmap> Faces = {};
     };
 
 private:
