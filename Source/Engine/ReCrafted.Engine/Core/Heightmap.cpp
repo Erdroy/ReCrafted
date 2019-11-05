@@ -244,7 +244,7 @@ uint8_t Heightmap::SampleCube8BitBilinear(const CubeFace baseFace, const Vector2
         else
         {
             texel0 = texel1 = FetchBitmapTexelScalar(bitmap, px - 1, py - 1);
-            texel2 = texel3 = FetchBitmapTexelScalar(bitmap, px - 2, py - 1);
+            texel2 = texel3 = FetchBitmapTexelScalar(bitmap, px - 2, py - 2);
         }
     }
 
