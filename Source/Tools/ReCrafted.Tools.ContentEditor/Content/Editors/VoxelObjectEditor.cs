@@ -33,8 +33,8 @@ namespace ReCrafted.Tools.ContentEditor.Content.Editors
         public string BottomHeightMap => TexBottom.SelectedAsset.AssetFile;
         public string LeftHeightMap => TexLeft.SelectedAsset.AssetFile;
         public string RightHeightMap => TexRight.SelectedAsset.AssetFile;
-        public string FrontHeightMap => TexTop.SelectedAsset.AssetFile;
-        public string BackHeightMap => TexTop.SelectedAsset.AssetFile;
+        public string FrontHeightMap => TexFront.SelectedAsset.AssetFile;
+        public string BackHeightMap => TexBack.SelectedAsset.AssetFile;
 
         public string VoxelObjectName => ObjectName.Text;
     }
