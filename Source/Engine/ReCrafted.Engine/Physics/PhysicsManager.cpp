@@ -31,7 +31,7 @@ class PhysXLogger final : public PxErrorCallback
 public:
     void reportError(const PxErrorCode::Enum code, const char* message, const char* file, const int line) override
     {
-        Logger::LogError("PhysX Error message: {0} - {1} (at line {2})", file, line, message);
+        Logger::LogError("[PhysX] {0} ({1}:{2})", message, file, line);
     }
 };
 
