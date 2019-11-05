@@ -10,7 +10,7 @@
 #include "Meshing/Transvoxel/TransvoxelMesher.h"
 #include "Physics/PhysicsManager.h"
 
-void VoxelObjectManager::WorkerFunction()
+void VoxelObjectManager::WorkerFunction(int threadId)
 {
     Platform::SetThreadName("VoxelObject Worker");
 
@@ -37,6 +37,8 @@ void VoxelObjectManager::WorkerFunction()
         {
             // Exit thread when not running and there is nothing to work on
             if (!m_running) break;
+
+            m_finishSignal.Emit(threadId);
 
             Profiler::EndFrame();
             Platform::Sleep(10); // TODO: This should be configurable
@@ -83,9 +85,12 @@ void VoxelObjectManager::InitializeWorkers()
 
     Logger::Log("Starting {0} VoxelObject worker threads.", maxThreads);
 
+    // Create wait signal
+    m_finishSignal = Signal(uint16_t(maxThreads));
+
     for (auto i = 0; i < maxThreads; i++)
     {
-        m_workerThreads.Add(new std::thread([this] { WorkerFunction(); }));
+        m_workerThreads.Add(new std::thread([this, i] { WorkerFunction(i); }));
     }
 }
 
@@ -152,6 +157,27 @@ void VoxelObjectManager::OnUpdate()
 
     DispatchCallbacks();
     UpdateVoxelObjects();
+}
+
+void VoxelObjectManager::WaitForFinish()
+{
+    MAIN_THREAD_ONLY();
+
+    Logger::Log("Waiting for VoxelObjectManager to finish it's work...");
+
+    // Wait for finish
+    m_finishSignal.Reset();
+    m_finishSignal.WaitMultiple();
+
+    // Force calling all events if main thread
+    ScopeLock(m_callbackListLock);
+
+    // Invoke all callbacks from the callback list.
+    for (auto& callback : m_callbackList)
+        callback.Invoke();
+
+    // Clear callback list, as we have invoked all of the callbacks.
+    m_callbackList.Clear();
 }
 
 void VoxelObjectManager::RegisterVoxelObject(VoxelObjectBase* voxelObject)

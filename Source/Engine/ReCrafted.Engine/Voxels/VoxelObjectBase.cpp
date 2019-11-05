@@ -190,14 +190,17 @@ VoxelObjectBase::VoxelObjectBase()
 
 VoxelObjectBase::~VoxelObjectBase()
 {
+    // Wait for the VoxelObjectManager to end it's work
+    VoxelObjectManager::GetInstance()->WaitForFinish();
+
+    // Now we're safe to destroy, but unregister this VoxelObject at first.
+    VoxelObjectManager::UnregisterVoxelObject(this);
+
     Destroy(m_rigidBodyActor);
 
     delete m_generator;
     delete m_storage;
     delete m_octree;
-
-    // Unregister object
-    VoxelObjectManager::UnregisterVoxelObject(this);
 }
 
 void VoxelObjectBase::Initialize()

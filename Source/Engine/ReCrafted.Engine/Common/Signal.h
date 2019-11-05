@@ -15,9 +15,11 @@ struct Signal
 
     HANDLE m_handle = nullptr;
 
+    uint16_t m_numHandles = 0;
+    HANDLE* m_handles = nullptr;
+
 private:
     void Release();
-    void Reset();
 
 public:
     /// <summary>
@@ -30,12 +32,21 @@ public:
     /// </summary>
     Signal(Signal&& signal) noexcept
     {
-        // Release this signal if initialized
-        Release();
+        m_handle = nullptr;
+        m_handles = nullptr;
 
         m_handle = signal.m_handle;
-        signal.Reset();
+        m_handles = signal.m_handles;
+        m_numHandles = signal.m_numHandles;
+
+        signal.m_handle = nullptr;
+        signal.m_handles = nullptr;
     }
+
+    /// <summary>
+    ///     Signal constructor for multiple handles.
+    /// </summary>
+    explicit Signal(uint16_t numHandles);
 
     /// <summary>
     ///     Default destructor
@@ -44,9 +55,14 @@ public:
 
 public:
     /// <summary>
+    ///     Resets signal. Sets all handles to be un-set, so Wait* will wait for new emission batch.
+    /// </summary>
+    void Reset() const;
+
+    /// <summary>
     ///     Emits signal. This will make all 'Wait' calls to proceed.
     /// </summary>
-    void Emit() const;
+    void Emit(uint16_t handle = 0u) const;
 
     /// <summary>
     ///     Waits for signal emission.
@@ -54,15 +70,24 @@ public:
     /// <param name="timeout">The wait timeout.</param>
     void Wait(uint32_t timeout = 0xFFFFFFFFu) const;
 
+    /// <summary>
+    ///     Waits for signal emission by all handles.
+    /// </summary>
+    /// <param name="timeout">The wait timeout.</param>
+    void WaitMultiple(uint32_t timeout = 0xFFFFFFFFu) const;
+
 public:
     Signal& operator=(Signal&& signal) noexcept
     {
-        // Release this signal if initialized
-        Release();
+        m_handle = nullptr;
+        m_handles = nullptr;
 
         // Copy handle from other signal and reset it's values
         m_handle = signal.m_handle;
-        signal.Reset();
+        m_handles = signal.m_handles;
+        m_numHandles = signal.m_numHandles;
+        signal.m_handle = nullptr;
+        signal.m_handles = nullptr;
         return *this;
     }
 

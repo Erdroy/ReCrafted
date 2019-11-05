@@ -7,6 +7,7 @@
 #include "Common/List.h"
 #include "Common/Lock.h"
 #include "Common/Action.h"
+#include "Common/Signal.h"
 #include "Core/SubSystems/SubSystem.h"
 #include "Voxels/VoxelObjectOctree.h"
 
@@ -49,8 +50,10 @@ private:
     List<VoxelObjectBase*> m_voxelObjects = {};
     Lock m_voxelObjectsLock = {};
 
+    Signal m_finishSignal;
+
 private:
-    void WorkerFunction();
+    void WorkerFunction(int threadId);
     void InitializeWorkers();
 
     void UpdateVoxelObjects();
@@ -65,6 +68,13 @@ protected:
     void Shutdown() override;
 
     void OnUpdate() override;
+
+public:
+    /// <summary>
+    ///     Blocks the calling thread until the VoxelObjectManager finishes processing 
+    ///     all of it's queued work items.
+    /// </summary>
+    void WaitForFinish();
 
 public:
     static void RegisterVoxelObject(VoxelObjectBase* voxelObject);

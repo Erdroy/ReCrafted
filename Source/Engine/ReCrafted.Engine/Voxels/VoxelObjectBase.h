@@ -22,7 +22,7 @@ API_USING("ReCrafted.API.Physics");
 API_CLASS(public, abstract, partial)
 class VoxelObjectBase : public Object
 {
-    DELETE_COPY_MOVE(VoxelObjectBase);
+    DELETE_COPY_MOVE(VoxelObjectBase)
     API_CLASS_BODY();
     friend class VoxelObjectAsset;
     friend class VoxelObjectManager;
