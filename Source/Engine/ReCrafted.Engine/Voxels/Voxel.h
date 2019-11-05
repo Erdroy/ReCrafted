@@ -34,7 +34,7 @@ constexpr float VoxelToFloat(const sbyte value)
 /// <summary>
 ///     Voxel structure.
 /// </summary>
-ALIGN(4) struct Voxel
+ALIGN(2) struct Voxel
 {
 public:
     /// <summary>
