@@ -31,10 +31,13 @@ void VoxelObjectManager::WorkerFunction()
     mesher->Initialize(shapeCooker);
 
     QueueItem item;
-    while (m_running)
+    while (true)
     {
         if (!m_loadingQueue.TryDequeue(item))
         {
+            // Exit thread when not running and there is nothing to work on
+            if (!m_running) break;
+
             Profiler::EndFrame();
             Platform::Sleep(10); // TODO: This should be configurable
             Profiler::BeginFrame();
