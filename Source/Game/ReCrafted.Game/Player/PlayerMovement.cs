@@ -86,10 +86,10 @@ namespace ReCrafted.Game.Player
         private void DoJetPackMovement(PlayerInput.Snapshot input, Vector3 direction, MovementSettings settings)
         {
             // TODO: Apply roll
-            //Actor.Rotation *= Quaternion.RotationAxis(_camera.Transform.Forward, input.Roll * Time.DeltaTime * 5.0f);
-            Actor.UpDirection = Actor.Transform.Up;
+            Actor.Rotation *= Quaternion.RotationAxis(_camera.Transform.Forward, input.Roll * Time.DeltaTime * 5.0f);
 
-            _velocity += direction * Time.DeltaTime * 20.0f;
+            _velocity += direction * Time.DeltaTime * 20.0f; // TODO: Apply proper jet pack force
+            _velocity -= CurrentGravity * Time.DeltaTime;
 
             // Apply velocity damping
             if (input.JetPackDamping && _velocity.LengthSquared() > 0.1f)

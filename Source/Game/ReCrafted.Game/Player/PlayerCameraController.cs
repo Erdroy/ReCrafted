@@ -25,7 +25,7 @@ namespace ReCrafted.Game.Player
 
         public void UpdateRotation(PlayerInput.Snapshot inputSnapshot)
         {
-            if (inputSnapshot.Movement == PlayerInput.Snapshot.MovementType.Normal)
+            //if (inputSnapshot.Movement == PlayerInput.Snapshot.MovementType.Normal)
             {
                 var up = Vector3.Normalize(Actor.Position); // TODO: Use gravitational fields
 
@@ -39,11 +39,11 @@ namespace ReCrafted.Game.Player
                 Actor.Rotation = Quaternion.RotationAxis(up, MathUtil.DegreesToRadians(inputSnapshot.LookRotation.X)) * relativeRotation;
                 Camera.LocalRotation = Quaternion.RotationAxis(Vector3.Right, MathUtil.DegreesToRadians(inputSnapshot.LookRotation.Y));
             }
-            else
+            /*else
             {
                 Actor.Rotation = Quaternion.RotationAxis(Actor.UpDirection, MathUtil.DegreesToRadians(inputSnapshot.LookRotation.X));
                 Camera.LocalRotation = Quaternion.RotationAxis(Vector3.Right, MathUtil.DegreesToRadians(inputSnapshot.LookRotation.Y));
-            }
+            }*/
         }
         
         public CameraActor Camera { get; set; }
