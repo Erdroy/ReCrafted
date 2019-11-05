@@ -207,19 +207,15 @@ uint8_t Heightmap::SampleCube8BitBilinear(const CubeFace baseFace, const Vector2
     const auto px = uint16_t(u * float(bitmap.Width));
     const auto py = uint16_t(v * float(bitmap.Height));
 
-    const auto x = float(u * float(bitmap.Width));
-    const auto y = float(v * float(bitmap.Height));
-
     const auto needFlipX = px + 1 >= bitmap.Width; // x + 1 == Width: sample mip going right
-    const auto needFlipY = py + 1 >= bitmap.Height; // y + 1 == Height-1: sample mip going down (warning: we need to properly swap axis!)
+    const auto needFlipY = py + 1 >= bitmap.Height; // y + 1 == Height: sample mip going down (warning: we need to properly swap axis!)
 
-    uint8_t texel0 = 0u;
-    uint8_t texel1 = 0u;
-    uint8_t texel2 = 0u;
-    uint8_t texel3 = 0u;
+    uint8_t texel0;
+    uint8_t texel1;
+    uint8_t texel2;
+    uint8_t texel3;
 
     // Fetch texels
-    // Check if we need to flip, if not, just fetch texel from current mip
     if (!needFlipX && !needFlipY)
     {
         // Sample simple
@@ -228,18 +224,32 @@ uint8_t Heightmap::SampleCube8BitBilinear(const CubeFace baseFace, const Vector2
         texel2 = FetchBitmapTexelScalar(bitmap, px, py + 1);
         texel3 = FetchBitmapTexelScalar(bitmap, px + 1, py + 1);
     }
-    else if (needFlipX && !needFlipY) // If needs second texel flip, fetch neighbouring faces
-    {
-        // TODO: Flip and Sample 1 neigh (X)
-    }
-    else if (!needFlipX && needFlipY)
-    {
-        // TODO: Flip and Sample 1 neigh (Y)
-    }
     else
     {
-        // TODO: Flip and Sample 3 neighs (X, Y, XY)
+        // Note: We're loosing some precision right there, but it is totally unnoticeable
+        // as far as the cubical height map is done correctly. This is a really good trade-off
+        // as we don't have to flip and sample different cube faces, so basically we're saving
+        // a lot of branching and performance right there.
+
+        if (needFlipX && !needFlipY)
+        {
+            texel0 = texel1 = FetchBitmapTexelScalar(bitmap, px - 1, py);
+            texel2 = texel3 = FetchBitmapTexelScalar(bitmap, px - 1, py + 1);
+        }
+        else if (!needFlipX && needFlipY)
+        {
+            texel0 = texel1 = FetchBitmapTexelScalar(bitmap, px, py - 1);
+            texel2 = texel3 = FetchBitmapTexelScalar(bitmap, px + 1, py - 1);
+        }
+        else
+        {
+            texel0 = texel1 = FetchBitmapTexelScalar(bitmap, px - 1, py - 1);
+            texel2 = texel3 = FetchBitmapTexelScalar(bitmap, px - 2, py - 1);
+        }
     }
+
+    const auto x = u * float(bitmap.Width);
+    const auto y = v * float(bitmap.Height);
 
     const auto fx = x - float(px);
     const auto fy = y - float(py);
