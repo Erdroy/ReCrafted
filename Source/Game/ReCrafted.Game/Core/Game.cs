@@ -1,5 +1,6 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
+using System.Runtime.InteropServices;
 using ReCrafted.API;
 using ReCrafted.API.Common;
 using ReCrafted.API.Content;
@@ -95,6 +96,14 @@ namespace ReCrafted.Game.Core
 
             DebugDraw.Color = Color4.White;
             DebugDraw.DrawWireSphere(Vector3.Zero, 10.0f);
+
+            if (PhysicsManager.RayCast(Camera.MainCamera.Position, Camera.MainCamera.Forward, 5.0f, out var hit, uint.MaxValue))
+            {
+               DebugDraw.DrawSphere(hit.Point, 1.25f);
+
+                if (InputManager.IsButtonDown(Button.Left))
+                    _moon.VoxelObject.Modify(0, VoxelEditMode.Subtractive, hit.Point, 1.25f);
+            }
 
             if (InputManager.IsKeyDown(Key.F5))
             {

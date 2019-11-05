@@ -248,7 +248,23 @@ void VoxelObjectBase::RemoveViewActor(ActorBase* viewActor)
     m_viewActors.Remove(viewActor);
 }
 
-void VoxelObjectBase::Modify(VoxelMaterial_t material, VoxelEditMode mode, const Vector3d& position, float size)
+void VoxelObjectBase::Modify(const VoxelMaterial_t material, const VoxelEditMode mode, const Vector3& position, const float size)
 {
-    
+    const auto boundingBox = BoundingBoxD(Vector3d(position.x, position.y, position.z), Vector3d::One * size * 2.5f);
+   
+    List<VoxelObjectOctree::Node*> nodes;
+    m_octree->FindIntersecting(nodes, boundingBox);
+
+    for (auto&& node : nodes)
+    {
+        // Do not modify when node don't have chunk
+        if (!node->HasChunk()) continue;
+
+        // Modify this node
+        if (node->Modify(material, mode, position, size))
+        {
+            // Queue current node to rebuild
+            node->Rebuild();
+        }
+    }
 }

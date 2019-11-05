@@ -7,6 +7,7 @@
 #include "VoxelLookupTables.h"
 #include "VoxelObjectManager.h"
 #include "VoxelChunk.h"
+#include "VoxelEditMode.h"
 
 void VoxelObjectOctree::Node::DestroyChildren()
 {
@@ -201,11 +202,13 @@ void VoxelObjectOctree::Node::WorkerPopulate(IVoxelMesher* mesher)
         chunk->Generate(mesher);
     }
 
-    // TODO: Update neighbor nodes and rebuild them
+    UpdateNeighborNodes();
 }
 
 void VoxelObjectOctree::Node::WorkerRebuild(IVoxelMesher* mesher)
 {
+    UpdateNeighborNodes();
+
     // Generate the chunk
     m_chunk->Generate(mesher);
 }
@@ -239,7 +242,7 @@ void VoxelObjectOctree::Node::FindIntersecting(List<Node*>& nodes, const Boundin
     }
 }
 
-VoxelObjectOctree::Node* VoxelObjectOctree::Node::FindNeighbor(const NodeDirection direction)
+VoxelObjectOctree::Node* VoxelObjectOctree::Node::FindNeighbor(const NodeDirection direction) const
 {
     // TODO: Make sure that this node is not processing
 
@@ -302,6 +305,81 @@ VoxelObjectOctree::Node* VoxelObjectOctree::Node::Find(const Vector3d& position)
     }
 
     return nullptr;
+}
+
+bool VoxelObjectOctree::Node::Modify(const VoxelMaterial_t material, const VoxelEditMode mode, const Vector3& position, float size) const
+{
+    ASSERT(m_chunk);
+
+    const auto chunkData = m_chunk->ChunkData();
+
+    if (!chunkData->HasData())
+        chunkData->AllocateData();
+
+    const auto chunkScale = static_cast<float>(chunkData->GetLod());
+    auto modified = true;
+
+    for (auto x = VoxelChunkData::ChunkDataStart; x < VoxelChunkData::ChunkDataLength; x++)
+    {
+        for (auto y = VoxelChunkData::ChunkDataStart; y < VoxelChunkData::ChunkDataLength; y++)
+        {
+            for (auto z = VoxelChunkData::ChunkDataStart; z < VoxelChunkData::ChunkDataLength; z++)
+            {
+                const auto point = Vector3(float(x), float(y), float(z)) * chunkScale + chunkData->GetChunkPosition();
+                const auto distance = Vector3::Distance(position, point);
+                const auto currentValue = chunkData->GetVoxel(x, y, z);
+
+                if (distance <= size + 0.5f)
+                {
+                    const auto value = size - distance;
+                    if (mode == VoxelEditMode::MaterialPaint)
+                    {
+                        chunkData->SetVoxel(x, y, z, Voxel::Create(currentValue.value, material));
+                        modified = true;
+                        continue;
+                    }
+
+                    if (mode == VoxelEditMode::Additive)
+                    {
+                        auto newValue = Voxel::Create(-value, material);
+
+                        if (newValue.value <= currentValue.value)
+                        {
+                            chunkData->SetVoxel(x, y, z, newValue);
+                        }
+                        else if (currentValue.material != newValue.material)
+                        {
+                            newValue.value = currentValue.value;
+                            chunkData->SetVoxel(x, y, z, newValue);
+                        }
+                        modified = true;
+                        continue;
+                    }
+
+                    if (mode == VoxelEditMode::Subtractive)
+                    {
+                        auto newValue = Voxel::Create(value, currentValue.material);
+
+                        if (newValue.value >= currentValue.value)
+                        {
+                            chunkData->SetVoxel(x, y, z, newValue);
+                        }
+                        else
+                        {
+                            newValue.value = currentValue.value;
+                            chunkData->SetVoxel(x, y, z, newValue);
+                        }
+                        modified = true;
+                    }
+                }
+            }
+        }
+    }
+
+    if (modified)
+        chunkData->HasSurface(true);
+
+    return modified;
 }
 
 bool VoxelObjectOctree::Node::AreChildrenProcessing() const

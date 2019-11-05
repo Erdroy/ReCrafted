@@ -31,6 +31,13 @@ public:
         instance->RemoveViewActor(viewActor);
     }
     
+    static void VoxelObjectBase_Modify4(VoxelObjectBase* instance, VoxelMaterial_t material, VoxelEditMode mode, const Vector3& position, float size) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "VoxelObjectBase");
+        instance->Modify(material, mode, position, size);
+    }
+    
     static void VoxelObjectBase_Get_Radius1(VoxelObjectBase* instance, double* data) 
     {
         MAIN_THREAD_ONLY();
@@ -72,6 +79,7 @@ void VoxelObjectBase::InitRuntime()
     API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::InternalInitialize", &APIProxy::VoxelObjectBase_Initialize1);
     API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::InternalAddViewActor", &APIProxy::VoxelObjectBase_AddViewActor2);
     API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::InternalRemoveViewActor", &APIProxy::VoxelObjectBase_RemoveViewActor3);
+    API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::InternalModify", &APIProxy::VoxelObjectBase_Modify4);
     API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::Get_InternalRadius", &APIProxy::VoxelObjectBase_Get_Radius1);
     API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::Get_InternalAsset", &APIProxy::VoxelObjectBase_Get_Asset2);
     API_BIND("ReCrafted.API.Voxels.VoxelObjectBase::Get_InternalRigidBody", &APIProxy::VoxelObjectBase_Get_RigidBody3);

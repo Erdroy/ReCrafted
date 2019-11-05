@@ -274,6 +274,7 @@ void VoxelChunk::SetPhysicsState(const bool hasCollision)
         if(hasCollision)
         {
             m_voxelObject->RigidBody()->AttachCollider(m_meshCollider);
+            m_voxelObject->RigidBody()->CollisionLayer(0x1);
         }
         else
         {
@@ -282,6 +283,7 @@ void VoxelChunk::SetPhysicsState(const bool hasCollision)
 
         // Update flag
         m_collisionAttached = hasCollision;
+
     }
 }
 

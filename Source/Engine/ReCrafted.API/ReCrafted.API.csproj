@@ -112,6 +112,7 @@
     <Compile Include="Physics\DynamicRigidBodyActor.Gen.cs" />
     <Compile Include="Physics\ForceMode.cs" />
     <Compile Include="Physics\MeshCollider.Gen.cs" />
+    <Compile Include="Physics\PhysicsManager.cs" />
     <Compile Include="Physics\PhysicsManager.Gen.cs" />
     <Compile Include="Physics\PhysicsMaterial.Gen.cs" />
     <Compile Include="Physics\PhysicsScene.Gen.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="Scene\SceneManager.Gen.cs" />
     <Compile Include="Script.cs" />
     <Compile Include="Script.Gen.cs" />
+    <Compile Include="Voxels\VoxelEditMode.cs" />
     <Compile Include="Voxels\VoxelMaterial.Gen.cs" />
     <Compile Include="Voxels\VoxelMaterialManager.Gen.cs" />
     <Compile Include="Voxels\VoxelMaterialType.cs" />

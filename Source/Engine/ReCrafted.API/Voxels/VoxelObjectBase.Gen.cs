@@ -3,6 +3,7 @@
 
 using ReCrafted.API.Core.Actors;
 using ReCrafted.API.Physics;
+using ReCrafted.API.Mathematics;
 using System.Runtime.CompilerServices;
 
 namespace ReCrafted.API.Voxels 
@@ -39,6 +40,18 @@ namespace ReCrafted.API.Voxels
         public void RemoveViewActor(ActorBase viewActor)
         {
             InternalRemoveViewActor(NativePtr, viewActor? viewActor.NativePtr : System.IntPtr.Zero);
+        }
+        
+        /// <summary>
+        ///     Modifies this voxel space object, using given method.
+        /// </summary>
+        /// <param name="material">The voxel material that will be applied on every voxel.</param>
+        /// <param name="mode">The edit mode.</param>
+        /// <param name="position">The edit position.</param>
+        /// <param name="size">The edit size.</param>
+        public void Modify(ushort material, VoxelEditMode mode, Vector3 position, float size)
+        {
+            InternalModify(NativePtr, material, mode, position, size);
         }
 
         /// <summary>
@@ -97,6 +110,9 @@ namespace ReCrafted.API.Voxels
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalRemoveViewActor(System.IntPtr nativePtr, System.IntPtr viewActor);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalModify(System.IntPtr nativePtr, ushort material, VoxelEditMode mode, Vector3 position, float size);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalRadius(System.IntPtr nativePtr, out double data);

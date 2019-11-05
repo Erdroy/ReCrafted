@@ -4,6 +4,8 @@
 
 #include <ReCrafted.h>
 
+#include "Voxels/Voxel.h"
+
 class VoxelObjectOctree
 {
     DELETE_COPY_MOVE(VoxelObjectOctree)
@@ -133,7 +135,7 @@ public:
         /// </summary>
         /// <param name="direction">The direction.</param>
         /// <returns>The neighbor node or null when not found.</returns>
-        Node* FindNeighbor(NodeDirection direction);
+        Node* FindNeighbor(NodeDirection direction) const;
 
         /// <summary>
         ///     Looks for a node at given position with given size.
@@ -152,6 +154,9 @@ public:
         /// <param name="position">The position.</param>
         /// <returns>The node or null when not found.</returns>
         Node* Find(const Vector3d& position);
+
+    public:
+        bool Modify(VoxelMaterial_t material, VoxelEditMode mode, const Vector3& position, float size) const;
 
     public:
         Node* const* ChildrenNodes() const
@@ -194,6 +199,11 @@ public:
             return m_isProcessing.load();
         }
 
+        bool HasChunk() const
+        {
+            return m_chunk;
+        }
+
         bool AreChildrenProcessing() const;
 
         bool HasPopulatedChildren() const;
@@ -222,6 +232,14 @@ private:
     void Update();
 
 public:
+    /// <summary>
+    ///     Looks for intersecting nodes.
+    /// </summary>
+    /// <param name="nodes">The intersecting nodes output list.</param>
+    /// <param name="box">The bounding box to check node intersection against.</param>
+    /// <param name="targetNodeSize">The target node size. Set to 0 when any.</param>
+    void FindIntersecting(List<Node*>& nodes, const BoundingBoxD& box, int targetNodeSize = 16);
+
     /// <summary>
     ///     Looks for a node at given position with given size.
     /// </summary>

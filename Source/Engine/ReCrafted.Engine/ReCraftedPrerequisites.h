@@ -161,6 +161,7 @@ struct IVoxelMesher;
 
 // Voxels/
 enum class VoxelEditMode;
+enum class VoxelEditShape;
 struct Voxel;
 class VoxelChunk;
 class VoxelObjectBase;

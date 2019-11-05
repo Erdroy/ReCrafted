@@ -141,6 +141,29 @@ void VoxelObjectOctree::Update()
     CPU_PROFILE_FUNCTION(0);
 }
 
+void VoxelObjectOctree::FindIntersecting(List<Node*>& nodes, const BoundingBoxD& box, int targetNodeSize)
+{
+    // find all intersecting nodes
+    // iterate all root nodes
+    for (auto i = 0; i < m_rootNodesCount; i++)
+    {
+        const auto node = m_rootNodes[i];
+
+        // check if this node intersects with given bounding box, if so, proceed further
+        if (BoundingBoxD::Intersects(node->Bounds(), box))
+        {
+            if(node->Size() == targetNodeSize)
+            {
+                nodes.Add(node);
+            }
+            else
+            {
+                node->FindIntersecting(nodes, box, targetNodeSize);
+            }
+        }
+    }
+}
+
 VoxelObjectOctree::Node* VoxelObjectOctree::FindNode(const Vector3d& position, const int size) const
 {
     ASSERT(m_isLoading == false);

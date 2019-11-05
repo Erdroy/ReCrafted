@@ -15,6 +15,9 @@
 
 API_USING("ReCrafted.API.Core.Actors");
 API_USING("ReCrafted.API.Physics");
+API_USING("ReCrafted.API.Mathematics");
+
+API_CUSTOM_TRANSLATION(VoxelMaterial_t, "ushort")
 
 /// <summary>
 ///     The base class of all voxel objects (planets, asteroids etc.).
@@ -114,7 +117,8 @@ public:
     /// <param name="mode">The edit mode.</param>
     /// <param name="position">The edit position.</param>
     /// <param name="size">The edit size.</param>
-    void Modify(VoxelMaterial_t material, VoxelEditMode mode, const Vector3d& position, float size);
+    API_FUNCTION()
+    void Modify(VoxelMaterial_t material, VoxelEditMode mode, const Vector3& position, float size);
 
 public:
     /// <summary>
