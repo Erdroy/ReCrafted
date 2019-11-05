@@ -51,7 +51,9 @@ void MeshCollider::SetMesh(const Array<Vector3>& vertices, const Array<uint32_t>
 
     // Cook triangle mesh
     auto triangleMesh = shapeCooker->CookTriangleMesh(vertices.Data(), vertices.Count(), indices.Data(), indices.Count());
-    ASSERT(triangleMesh);
+
+    if (!triangleMesh)
+        return;
 
     // Create triangle mesh shape
     m_shape = PhysicsManager::GetPhysics()->createShape(PxTriangleMeshGeometry(triangleMesh), *m_material->GetPxMaterial());

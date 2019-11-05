@@ -10,8 +10,9 @@ ShapeCooker::ShapeCooker(PxFoundation* foundation, PxTolerancesScale& tolerances
 
     if (settings.enableWelding)
     {
-        cookingParams.meshWeldTolerance = settings.weldingThreshold; // 1 cm tolerance
-        cookingParams.meshPreprocessParams = PxMeshPreprocessingFlags(PxMeshPreprocessingFlag::eWELD_VERTICES);
+        //cookingParams.meshWeldTolerance = settings.weldingThreshold; // 1 cm tolerance
+        //cookingParams.meshPreprocessParams = PxMeshPreprocessingFlags(PxMeshPreprocessingFlag::eWELD_VERTICES);
+        
     }
 
     cookingParams.midphaseDesc = PxMeshMidPhase::eBVH34;
@@ -46,12 +47,6 @@ PxTriangleMesh* ShapeCooker::CookTriangleMesh(Vector3* vertices, const size_t ve
 
     ASSERT(meshDescription.isValid());
 
-    // Cook the triangle mesh
-    const auto triangleMesh = m_cooking->createTriangleMesh(meshDescription, PhysicsManager::GetPhysics()->getPhysicsInsertionCallback());
-
-    // Make sure that we've got the triangle mesh done
-    ASSERT(triangleMesh);
-
     // Return resulting triangle mesh
-    return triangleMesh;
+    return m_cooking->createTriangleMesh(meshDescription, PhysicsManager::GetPhysics()->getPhysicsInsertionCallback());
 }
