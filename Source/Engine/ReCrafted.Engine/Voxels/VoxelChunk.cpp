@@ -41,15 +41,14 @@ void VoxelChunk::Upload()
     ASSERT(NeedsUpload());
 
     // Dispose all queued meshes
-    /*std::pair<RefPtr<VoxelChunkMesh>, RefPtr<VoxelChunkCollision>> toDispose;
-    while (m_disposeQueue.try_dequeue(toDispose))
+    std::pair<RefPtr<VoxelChunkMesh>, MeshCollider*> toDispose;
+    while (m_disposeQueue.TryDequeue(toDispose))
     {
         if (toDispose.first)
-            SafeDispose(toDispose.first);
-
+            toDispose.first.reset();
         if (toDispose.second)
-            SafeDispose(toDispose.second);
-    }*/
+            Object::Destroy(toDispose.second);
+    }
 
     switch (m_uploadType)
     {
@@ -136,11 +135,11 @@ void VoxelChunk::SetUpload(const RefPtr<VoxelChunkMesh>& mesh, MeshCollider* col
     // Lock Upload
     ScopeLock(m_uploadLock);
 
-    /*if (m_newMesh || m_newCollision)
+    if (m_newMesh || m_newMeshCollider)
     {
         // Queue for dispose
-        m_disposeQueue.enqueue(std::make_pair(m_newMesh, m_newCollision));
-    }*/
+        m_disposeQueue.Enqueue(std::make_pair(m_newMesh, m_newMeshCollider));
+    }
     
     m_newMesh = mesh;
     m_newMeshCollider = collider;

@@ -4,6 +4,7 @@
 
 #include <ReCrafted.h>
 
+#include "Common/ConcurrentQueue.h"
 #include "Core/Actors/ActorBase.h"
 #include "Physics/Colliders/MeshCollider.h"
 #include "Rendering/Models/ModelComponent.h"
@@ -44,6 +45,8 @@ private:
     std::atomic<UploadType> m_uploadType = UploadType::None;
     RefPtr<VoxelChunkMesh> m_mesh;
     RefPtr<VoxelChunkMesh> m_newMesh;
+
+    ConcurrentQueue<std::pair<RefPtr<VoxelChunkMesh>, MeshCollider*>> m_disposeQueue;
 
     bool m_collisionAttached = false;
     MeshCollider* m_meshCollider = nullptr;
