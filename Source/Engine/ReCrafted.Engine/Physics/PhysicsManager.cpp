@@ -176,5 +176,5 @@ PhysicsScene* PhysicsManager::GetSceneAt(Vector3 worldPosition)
 
 bool PhysicsManager::RayCast(const Vector3& position, const Vector3& direction, float maxDistance, RayCastHit& hit, uint32_t collisionLayer)
 {
-    return false;
+    return GetSceneAt(Vector3::Zero)->RayCast(position, direction, maxDistance, &hit, collisionLayer);
 }
