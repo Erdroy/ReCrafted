@@ -257,6 +257,12 @@ void VoxelObjectBase::Modify(const VoxelMaterial_t material, const VoxelEditMode
 
     for (auto&& node : nodes)
     {
+        if(node->IsProcessing())
+        {
+            Logger::LogWarning("Tried to modify VoxelChunk while it was still rebuilding.");
+            continue;
+        }
+
         // Do not modify when node don't have chunk
         if (!node->HasChunk()) continue;
 

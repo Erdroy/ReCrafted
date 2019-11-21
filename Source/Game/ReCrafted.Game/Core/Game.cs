@@ -99,10 +99,17 @@ namespace ReCrafted.Game.Core
 
             if (PhysicsManager.RayCast(Camera.MainCamera.Position, Camera.MainCamera.Forward, 5.0f, out var hit, uint.MaxValue))
             {
-               DebugDraw.DrawSphere(hit.Point, 1.25f);
+                //DebugDraw.Color = Color.Red;
+                //DebugDraw.DrawWireSphere(hit.Point, 1.25f);
 
-                if (InputManager.IsButtonDown(Button.Left))
+                if (InputManager.IsButton(Button.Left))
                     _moon.VoxelObject.Modify(0, VoxelEditMode.Subtractive, hit.Point, 1.25f);
+
+                if (InputManager.IsButton(Button.Middle))
+                    _moon.VoxelObject.Modify(0, VoxelEditMode.MaterialPaint, hit.Point, 1.25f);
+
+                if (InputManager.IsButtonDown(Button.Right))
+                    _moon.VoxelObject.Modify(0, VoxelEditMode.Additive, hit.Point, 1.25f);
             }
 
             if (InputManager.IsKeyDown(Key.F5))

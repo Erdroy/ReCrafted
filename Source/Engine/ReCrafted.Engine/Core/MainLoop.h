@@ -41,21 +41,21 @@ public:
     void Quit();
 
 public:
-    /**
-     * \brief Sets Update callback.
-     * \param callback The Update callback delegate.
-     */
+     /// <summary>
+     ///     Sets Update callback.
+     /// </summary>
+     /// <param name="callback"The Update callback delegate.></param>
     void SetUpdateCallback(const Action<void>& callback);
 
-    /**
-    * \brief Sets FixedUpdate callback.
-    * \param callback The FixedUpdate callback delegate.
-    */
+    /// <summary>
+    ///     Sets FixedUpdate callback.
+    /// </summary>
+    /// <param name="callback"The FixedUpdate callback delegate.></param>
     void SetFixedUpdateCallback(const Action<void>& callback);
 
-    /**
-    * \brief Sets render callback.
-    * \param callback The render callback delegate.
-    */
+    /// <summary>
+    ///     Sets render callback.
+    /// </summary>
+    /// <param name="callback"The render callback delegate.></param>
     void SetRenderCallback(const Action<void>& callback);
 };
