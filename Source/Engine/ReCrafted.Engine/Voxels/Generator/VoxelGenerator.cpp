@@ -112,15 +112,15 @@ Voxel VoxelGenerator::GenerateFromCHM(const Vector3& origin, const Vector3& posi
     // calculate voxel value
     const auto voxelValue = heightDiff / lod;
 
-    auto voxel = Voxel::Create(voxelValue, 0u);
+    auto voxel = Voxel::Create(voxelValue, 1u);
 
     const auto surfaceLevel = fabs(heightDiff);
 
     if (surfaceLevel <= lod * 4.0f)
-        voxel.material = 2u;
+        voxel.material = 3u;
 
     if (surfaceLevel <= lod * 1.25f)
-        voxel.material = 1u;
+        voxel.material = 2u;
 
     // convert voxel value to voxel
     return voxel; // TODO: Read material id from CHM
