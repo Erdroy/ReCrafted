@@ -22,7 +22,7 @@ void RenderingManager::InitializeRenderer()
         Renderer::RenderFlags::_enum(Renderer::RenderFlags::Default)
     );
 
-    Renderer::SetFlag(Renderer::RenderFlags::VSync, false);
+    Renderer::SetFlag(Renderer::RenderFlags::VSync, true);
 
     // Create Output
     m_windowHandle = Renderer::CreateWindowHandle(Platform::GetCurrentWindow());
@@ -233,8 +233,13 @@ void RenderingManager::SetDrawMode(const DrawMode drawMode)
     case DrawMode::Default:
     default:
     {
+        // Store vSync state to restore it later (we don't want to change it right there).
+        const auto vSyncEnabled = Renderer::GetFlag(Renderer::RenderFlags::VSync);
+
         Renderer::SetFlags(Renderer::RenderFlags::_enum(Renderer::RenderFlags::Default));
-        Renderer::SetFlag(Renderer::RenderFlags::VSync, false);
+
+        // Restore VSync state
+        Renderer::SetFlag(Renderer::RenderFlags::VSync, vSyncEnabled);
     }
     }
 }
