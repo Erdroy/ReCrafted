@@ -30,7 +30,7 @@ namespace Renderer
     {
         class WorkerThreadInstance;
 
-        const int FrameBufferCount = 3;
+        const int FrameBufferCount = 1;
 
         struct WindowDesc
         {
@@ -619,14 +619,13 @@ namespace Renderer
             ASSERT(renderBuffer != nullptr);
             ASSERT(swapChain != nullptr);
 
-            const auto bufferCount = m_renderFlags & RenderFlags::TripleBuffered ? FrameBufferCount : 1;
             const auto bufferFormat = m_settings & Settings::BGRAFrameBuffer
                                     ? DXGI_FORMAT_B8G8R8A8_UNORM
                                     : DXGI_FORMAT_R8G8B8A8_UNORM;
 
             // Destroy render targets
             const auto rtvs = renderBuffer->GetRTVs();
-            for (auto i = 0; i < bufferCount; i ++)
+            for (auto i = 0; i < FrameBufferCount; i ++)
             {
                 SafeRelease(rtvs[i]);
             }
@@ -635,10 +634,10 @@ namespace Renderer
             if (renderBuffer->GetDSV())
                 renderBuffer->GetDSV()->Release();
 
-            DX_CALL(swapChain->ResizeBuffers(static_cast<uint>(bufferCount), command->width, command->height, bufferFormat, 0u));
+            DX_CALL(swapChain->ResizeBuffers(3, command->width, command->height, bufferFormat, 0u));
 
             ID3D11RenderTargetView* renderTargets[FrameBufferCount] = {};
-            for (auto i = 0; i < bufferCount; i++)
+            for (auto i = 0; i < FrameBufferCount; i++)
             {
                 ID3D11Resource* resource = nullptr;
                 DX_CALL(m_swapChain->GetBuffer(i, IID_PPV_ARGS(&resource)));
@@ -1226,13 +1225,6 @@ namespace Renderer
                 return;
             }
 
-            D3D_FEATURE_LEVEL level;
-            D3D_FEATURE_LEVEL featureLevels[] =
-            {
-                D3D_FEATURE_LEVEL_11_0,
-                D3D_FEATURE_LEVEL_11_1
-            };
-
             const auto
 #ifdef _DEBUG
             deviceFlags = D3D11_CREATE_DEVICE_DEBUG;
@@ -1240,14 +1232,16 @@ namespace Renderer
             deviceFlags = 0;
 #endif
 
-            DX_CALL(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, deviceFlags, featureLevels, 1, D3D11_SDK_VERSION, &m_device, &level, &m_deviceContext));
+            D3D_FEATURE_LEVEL level;
+            DX_CALL(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, deviceFlags, nullptr, 0, D3D11_SDK_VERSION, &m_device, &level, &m_deviceContext));
+            _ASSERT_(level >= D3D_FEATURE_LEVEL_11_0, "DirectX 11 is not supported on this hardware!");
 
 #ifdef _DEBUG
             m_device->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&m_debug));
 #endif
 
             // Get CPU count
-            int cpuCount = std::thread::hardware_concurrency();
+            auto cpuCount = static_cast<int>(std::thread::hardware_concurrency());
             if (m_settings & Settings::SingleThreaded)
                 cpuCount = 1;
 
@@ -1557,7 +1551,8 @@ namespace Renderer
             // Present frame
             if (m_swapChain)
             {
-                DX_CALL(m_swapChain->Present(m_renderFlags & RenderFlags::VSync ? 1 : 0, 0));
+                const auto hr = m_swapChain->Present(m_renderFlags & RenderFlags::VSync ? 1 : 0, 0);
+                //_ASSERT_(!FAILED(hr) || hr != DXGI_ERROR_WAS_STILL_DRAWING, "Failed to present D3D11 scene!");
             }
             Profiler::EndProfile();
 
@@ -1650,8 +1645,6 @@ namespace Renderer
             UINT width = windowRect.right - windowRect.left;
             UINT height = windowRect.bottom - windowRect.top;
 
-            auto bufferCount = m_renderFlags & RenderFlags::TripleBuffered ? FrameBufferCount : 1;
-
             IDXGIDevice* device;
             DX_CALL(m_device->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&device)));
 
@@ -1666,7 +1659,10 @@ namespace Renderer
             sampleDesc.Count = m_msaaSampleCount;
             sampleDesc.Quality = 0;
 
-            DXGI_MODE_DESC backBufferDesc = {}; // this is to describe our display mode
+            DXGI_MODE_DESC backBufferDesc; // this is to describe our display mode
+            backBufferDesc.RefreshRate = {};
+            backBufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+            backBufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
             backBufferDesc.Width = width; // buffer width
             backBufferDesc.Height = height; // buffer height
             backBufferDesc.Format = m_settings & Settings::BGRAFrameBuffer
@@ -1675,16 +1671,13 @@ namespace Renderer
 
             // Describe and create the swap chain.
             DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
-            swapChainDesc.BufferCount = bufferCount; // number of buffers we have
             swapChainDesc.BufferDesc = backBufferDesc; // our back buffer description
-            swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-            // this says the pipeline will render to this swap chain
-            swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-            // dxgi will discard the buffer (data) after we call present
-            swapChainDesc.OutputWindow = hWnd; // handle to our window
             swapChainDesc.SampleDesc = sampleDesc; // our multi-sampling description
+            swapChainDesc.BufferCount = 3; // number of buffers we have
+            swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+            swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+            swapChainDesc.OutputWindow = hWnd; // handle to our window
             swapChainDesc.Windowed = true;
-            // set to true, then if in fullscreen must call SetFullScreenState with true for full screen to get uncapped fps
 
             IDXGISwapChain* tempSwapChain;
             DX_CALL(factory->CreateSwapChain(m_device, &swapChainDesc, &tempSwapChain));
@@ -1695,19 +1688,17 @@ namespace Renderer
             m_swapChain = m_swapChains[window.idx];
 
             ID3D11RenderTargetView* renderTargets[FrameBufferCount] = {};
-            for (auto i = 0; i < bufferCount; i++)
-            {
-                ID3D11Resource* resource = nullptr;
-                DX_CALL(m_swapChain->GetBuffer(i, IID_PPV_ARGS(&resource)));
+            
+            ID3D11Resource* resource = nullptr;
+            DX_CALL(m_swapChain->GetBuffer(0, IID_PPV_ARGS(&resource)));
 
-                m_device->CreateRenderTargetView(resource, nullptr, &renderTargets[i]);
-                SafeRelease(resource);
-            }
+            m_device->CreateRenderTargetView(resource, nullptr, &renderTargets[0]);
+            SafeRelease(resource);
 
             // WARNING: No depth stencil view for back buffers!
             // TODO: Create depth stencil view
 
-            WindowDesc windowDesc = {};
+            WindowDesc windowDesc;
             windowDesc.renderBuffer = renderBufferHandle;
             windowDesc.hwnd = hWnd;
             windowDesc.swapChain = m_swapChain;
@@ -1719,7 +1710,7 @@ namespace Renderer
 
             // Build 'proxy' render buffer
             m_renderBuffers[renderBufferHandle.idx] = RHIDirectX11_RenderBuffer::Create(
-                m_device, width, height, bufferCount, renderTargets, nullptr);
+                m_device, width, height, FrameBufferCount, renderTargets, nullptr);
 
             SafeRelease(factory);
             SafeRelease(adapter);
