@@ -130,7 +130,7 @@ namespace Renderer
 
         // == resources ==
         WindowDesc m_windows[RENDERER_MAX_WINDOWS] = {};
-        IDXGISwapChain* m_swapChains[RENDERER_MAX_WINDOWS] = {};
+        IDXGISwapChain1* m_swapChains[RENDERER_MAX_WINDOWS] = {};
         RHIDirectX11_Shader* m_shaders[RENDERER_MAX_SHADER_PROGRAMS] = {};
         RHIDirectX11_RenderBuffer* m_renderBuffers[RENDERER_MAX_RENDER_BUFFERS] = {};
         ID3D11Buffer* m_vertexBuffers[RENDERER_MAX_VERTEX_BUFFERS] = {};
@@ -155,7 +155,7 @@ namespace Renderer
 
 
         // == pointer-only resources (DO NOT RELEASE!) ==
-        IDXGISwapChain* m_swapChain = nullptr;
+        IDXGISwapChain1* m_swapChain = nullptr;
 
 #pragma region WorkerThread impl
         class WorkerThreadInstance
@@ -1551,8 +1551,8 @@ namespace Renderer
             // Present frame
             if (m_swapChain)
             {
-                const auto hr = m_swapChain->Present(m_renderFlags & RenderFlags::VSync ? 1 : 0, 0);
-                //_ASSERT_(!FAILED(hr) || hr != DXGI_ERROR_WAS_STILL_DRAWING, "Failed to present D3D11 scene!");
+                DXGI_PRESENT_PARAMETERS presentParams = {};
+                m_swapChain->Present1(m_renderFlags & RenderFlags::VSync ? 1 : 0, 0, &presentParams);
             }
             Profiler::EndProfile();
 
@@ -1645,44 +1645,40 @@ namespace Renderer
             UINT width = windowRect.right - windowRect.left;
             UINT height = windowRect.bottom - windowRect.top;
 
-            IDXGIDevice* device;
-            DX_CALL(m_device->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&device)));
+            IDXGIDevice1* device;
+            DX_CALL(m_device->QueryInterface(__uuidof(IDXGIDevice1), reinterpret_cast<void**>(&device)));
 
-            IDXGIAdapter* adapter;
-            DX_CALL(device->GetParent(__uuidof(IDXGIAdapter), reinterpret_cast<void**>(&adapter)));
+            IDXGIAdapter1* adapter;
+            DX_CALL(device->GetParent(__uuidof(IDXGIAdapter1), reinterpret_cast<void**>(&adapter)));
 
-            IDXGIFactory* factory;
-            DX_CALL(adapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&factory)));
+            IDXGIFactory1* factory;
+            DX_CALL(adapter->GetParent(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(&factory)));
 
             // Create the Swap Chain
             DXGI_SAMPLE_DESC sampleDesc;
             sampleDesc.Count = m_msaaSampleCount;
             sampleDesc.Quality = 0;
 
-            DXGI_MODE_DESC backBufferDesc; // this is to describe our display mode
-            backBufferDesc.RefreshRate = {};
-            backBufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-            backBufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+            DXGI_MODE_DESC backBufferDesc = {};
             backBufferDesc.Width = width; // buffer width
             backBufferDesc.Height = height; // buffer height
             backBufferDesc.Format = m_settings & Settings::BGRAFrameBuffer
                                         ? DXGI_FORMAT_B8G8R8A8_UNORM
                                         : DXGI_FORMAT_R8G8B8A8_UNORM;
 
-            // Describe and create the swap chain.
             DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
             swapChainDesc.BufferDesc = backBufferDesc; // our back buffer description
             swapChainDesc.SampleDesc = sampleDesc; // our multi-sampling description
             swapChainDesc.BufferCount = 3; // number of buffers we have
             swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-            swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+            swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
             swapChainDesc.OutputWindow = hWnd; // handle to our window
             swapChainDesc.Windowed = true;
 
             IDXGISwapChain* tempSwapChain;
             DX_CALL(factory->CreateSwapChain(m_device, &swapChainDesc, &tempSwapChain));
 
-            m_swapChains[window.idx] = static_cast<IDXGISwapChain*>(tempSwapChain);
+            m_swapChains[window.idx] = static_cast<IDXGISwapChain1*>(tempSwapChain);
 
             // Apply the output as current
             m_swapChain = m_swapChains[window.idx];
