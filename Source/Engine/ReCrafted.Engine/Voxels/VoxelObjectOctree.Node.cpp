@@ -8,6 +8,7 @@
 #include "VoxelObjectManager.h"
 #include "VoxelChunk.h"
 #include "VoxelEditMode.h"
+#include "Profiler/Profiler.h"
 
 void VoxelObjectOctree::Node::DestroyChildren()
 {
@@ -30,6 +31,8 @@ void VoxelObjectOctree::Node::DestroyChildren()
 
 void VoxelObjectOctree::Node::UpdateNeighborNodes()
 {
+    CPU_PROFILE_FUNCTION(0);
+
     m_neighborNodes[int(NodeDirection::Front)] = FindNeighbor(NodeDirection::Front);
     m_neighborNodes[int(NodeDirection::Back)] = FindNeighbor(NodeDirection::Back);
     m_neighborNodes[int(NodeDirection::Left)] = FindNeighbor(NodeDirection::Left);
@@ -160,6 +163,8 @@ void VoxelObjectOctree::Node::OnRebuild()
 
 void VoxelObjectOctree::Node::WorkerPopulate(IVoxelMesher* mesher)
 {
+    CPU_PROFILE_FUNCTION(0);
+
     const auto childrenSize = m_size / 2;
     const auto boundsSize = Vector3d::One * static_cast<float>(childrenSize);
 
@@ -207,6 +212,8 @@ void VoxelObjectOctree::Node::WorkerPopulate(IVoxelMesher* mesher)
 
 void VoxelObjectOctree::Node::WorkerRebuild(IVoxelMesher* mesher)
 {
+    CPU_PROFILE_FUNCTION(0);
+
     UpdateNeighborNodes();
 
     // Generate the chunk

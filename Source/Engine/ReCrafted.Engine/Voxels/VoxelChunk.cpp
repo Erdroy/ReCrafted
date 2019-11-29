@@ -183,6 +183,8 @@ void VoxelChunk::OnDestroy()
 
 void VoxelChunk::Generate(IVoxelMesher* mesher)
 {
+    CPU_PROFILE_FUNCTION(0);
+
     ASSERT(m_voxelObject);
 
     auto storage = m_voxelObject->Storage();
@@ -202,6 +204,8 @@ void VoxelChunk::Generate(IVoxelMesher* mesher)
 
 void VoxelChunk::Rebuild(IVoxelMesher* mesher)
 {
+    CPU_PROFILE_FUNCTION(0);
+
     if (!m_chunkData->IsLoaded() || !m_chunkData->HasSurface())
         return;
 
