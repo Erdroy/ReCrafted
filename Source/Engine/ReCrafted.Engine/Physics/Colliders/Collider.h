@@ -63,4 +63,11 @@ public:
     /// </summary>
     API_PROPERTY()
     PhysicsMaterial* Material() const;
+
+public:
+    /// <summary>
+    ///     Gets the valid state of this collider. True when this collider is valid and can be attached to rigid bodies.
+    /// </summary>
+    API_PROPERTY()
+    bool IsValid() const;
 };

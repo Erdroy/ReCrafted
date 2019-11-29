@@ -10,7 +10,7 @@ Collider::~Collider()
 
 void Collider::LocalPosition(const Vector3& position)
 {
-    if (!m_shape) return;
+    ASSERT(m_shape);
 
     m_localPosition = position;
 
@@ -26,8 +26,7 @@ const Vector3& Collider::LocalPosition() const
 
 void Collider::LocalRotation(const Quaternion& rotation)
 {
-    if (!m_shape) return;
-
+    ASSERT(m_shape);
     m_localRotation = rotation;
 
     const auto pxTransform = PxTransform(m_localPosition.x, m_localPosition.y, m_localPosition.z, ToPxQ(m_localRotation));
@@ -42,8 +41,8 @@ const Quaternion& Collider::LocalRotation() const
 
 void Collider::Material(PhysicsMaterial* material)
 {
+    ASSERT(m_shape);
     m_material = material;
-    if (!m_shape) return;
 
     PxMaterial* materials[] = { material->GetPxMaterial() };
     m_shape->setMaterials(materials, 1u);
@@ -52,4 +51,9 @@ void Collider::Material(PhysicsMaterial* material)
 PhysicsMaterial* Collider::Material() const
 {
     return m_material;
+}
+
+bool Collider::IsValid() const
+{
+    return m_shape != nullptr;
 }

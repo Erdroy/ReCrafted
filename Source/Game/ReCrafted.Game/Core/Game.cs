@@ -1,6 +1,5 @@
 ﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
 
-using System.Runtime.InteropServices;
 using ReCrafted.API;
 using ReCrafted.API.Common;
 using ReCrafted.API.Content;
@@ -102,14 +101,14 @@ namespace ReCrafted.Game.Core
                 //DebugDraw.Color = Color.Red;
                 //DebugDraw.DrawWireSphere(hit.Point, 1.25f);
 
-                if (InputManager.IsButton(Button.Left))
+                if (InputManager.IsButtonDown(Button.Left))
                     _moon.VoxelObject.Modify(0, VoxelEditMode.Subtractive, hit.Point, 1.25f);
 
                 if (InputManager.IsButton(Button.Middle))
-                    _moon.VoxelObject.Modify(0, VoxelEditMode.MaterialPaint, hit.Point, 1.25f);
+                    _moon.VoxelObject.Modify(1, VoxelEditMode.MaterialPaint, hit.Point, 1.25f);
 
                 if (InputManager.IsButtonDown(Button.Right))
-                    _moon.VoxelObject.Modify(0, VoxelEditMode.Additive, hit.Point, 1.25f);
+                    _moon.VoxelObject.Modify(1, VoxelEditMode.Additive, hit.Point, 1.25f);
             }
 
             if (InputManager.IsKeyDown(Key.F5))

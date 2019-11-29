@@ -49,11 +49,19 @@ public:
     virtual bool HasTriangles() = 0;
 
     /// <summary>
+    ///     Validates given amount of triangles (pointing to the same vertex/same vertex position etc.), -1 to check all.
+    /// </summary>
+    /// <param name="maxCount">The maximal amount of triangles to check.</param>
+    /// <returns>True when all triangles are fine.</returns>
+    virtual bool ValidateTriangles(int maxCount = -1) = 0;
+
+    /// <summary>
     ///     Uploads all data to a mesh. This also clears the mesher and prepares to next mesh generation.
     /// </summary>
     /// <param name="chunkMesh">The mesh that will get the new mesh data.</param>
     /// <param name="chunkCollision">The collision that will get the new collision data.</param>
-    virtual void Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, MeshCollider* chunkCollision) = 0;
+    /// <returns>True when everything is correct (Mesh Collider is fine etc.).</returns>
+    virtual bool Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, MeshCollider* chunkCollision) = 0;
 
     /// <summary>
     ///     Cleans all data used during Generate and Apply functions.

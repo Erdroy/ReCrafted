@@ -195,7 +195,7 @@ uint8_t Heightmap::SampleCube8BitBilinear(const CubeFace baseFace, const Vector2
 {
     DEBUG_ASSERT(m_format == HeightmapFormat::Cubical_8bit);
     DEBUG_ASSERT(m_cubeMips.Size() > 0);
-    DEBUG_ASSERT(uv.x >= 0.0f && uv.x < 1.0f && uv.y >= 0.0f && uv.y < 1.0f);
+    DEBUG_ASSERT(uv.x >= 0.0f && uv.x <= 1.0f && uv.y >= 0.0f && uv.y <= 1.0f);
 
     const auto mip = m_cubeMips[lod];
     DEBUG_ASSERT(mip.Faces.Size() > 0);

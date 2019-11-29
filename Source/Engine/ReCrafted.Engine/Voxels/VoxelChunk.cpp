@@ -256,7 +256,21 @@ void VoxelChunk::Rebuild(IVoxelMesher* mesher)
     const auto collider = Object::New<MeshCollider>();
 
     // Apply mesh and collision
-    mesher->Apply(mesh, collider);
+    if(!mesher->Apply(mesh, collider))
+    {
+        // We've failed to apply the mesh... Release all resources and set upload to Clear
+        m_chunkData->HasSurface(false);
+
+        // Reset now
+        mesh.reset();
+
+        // Destroy the collider
+        Object::DestroyNow(collider);
+
+        // Set upload type to CLEAR-MESH
+        SetUpload(nullptr, nullptr, UploadType::Clear);
+        return;
+    }
 
     // Upload new mesh
     mesh->UploadNow();

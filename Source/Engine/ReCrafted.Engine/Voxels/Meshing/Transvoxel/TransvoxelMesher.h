@@ -310,11 +310,18 @@ public:
     }
 
     /// <summary>
+    ///     Validates given amount of triangles (pointing to the same vertex/same vertex position etc.), -1 to check all.
+    /// </summary>
+    /// <param name="maxCount">The maximal amount of triangles to check.</param>
+    /// <returns>True when all triangles are fine.</returns>
+    bool ValidateTriangles(int maxCount) override;
+
+    /// <summary>
     ///     Uploads all data to a mesh. This also clears the mesher and prepares to next mesh generation.
     /// </summary>
     /// <param name="chunkMesh">The mesh that will get the new mesh data.</param>
     /// <param name="chunkCollision">The collision that will get the new collision data.</param>
-    void Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, MeshCollider* chunkCollision) override;
+    bool Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, MeshCollider* chunkCollision) override;
 
     /// <summary>
     ///     Cleans all data used during Generate and Apply functions.

@@ -4,9 +4,12 @@
 #include "Rendering/Mesh.h"
 #include "Voxels/VoxelChunkMesh.h"
 #include "Physics/Colliders/MeshCollider.h"
+#include "Profiler/Profiler.h"
 
 void TransvoxelMesher::Generate(const Vector3& position, const int lod, uint8_t borders, Voxel* data)
 {
+    CPU_PROFILE_FUNCTION(0);
+
     // ReSharper disable once CppUnreachableCode
     const auto voxelScale = static_cast<float>(lod);
 
@@ -47,8 +50,45 @@ void TransvoxelMesher::Generate(const Vector3& position, const int lod, uint8_t 
     }
 }
 
-void TransvoxelMesher::Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, MeshCollider* chunkCollision)
+bool TransvoxelMesher::ValidateTriangles(const int maxCount)
 {
+    if (m_collisionIndices.Empty())
+        return false;
+
+    const auto numSectionTriangles = static_cast<int>(m_collisionIndices.Count());
+    const auto numVertices = std::min(numSectionTriangles, maxCount * 3);
+
+    for (auto i = 0; i < numVertices; i += 3)
+    {
+        const auto i0 = m_collisionIndices[i + 0];
+        const auto i1 = m_collisionIndices[i + 1];
+        const auto i2 = m_collisionIndices[i + 2];
+
+        // If there is at least one index with the same value, we have invalid triangle. Return false.
+        if (i0 == i1 || i1 == i2 || i2 == i0)
+            return false;
+
+        // Check for position difference
+        const auto v0 = m_collisionVertices[i0];
+        const auto v1 = m_collisionVertices[i1];
+        const auto v2 = m_collisionVertices[i2];
+
+        const auto minDifference = 0.00001f;
+
+        // If there is at least one vertex with the same value, we have invalid triangle. Return false.
+        if (v0 == v1 || v1 == v2 || v2 == v0)
+            return false;
+    }
+
+
+    // Mesh is ok. Return true.
+    return true;
+}
+
+bool TransvoxelMesher::Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, MeshCollider* chunkCollision)
+{
+    CPU_PROFILE_FUNCTION(0);
+
     // Create mesh
     const auto mesh = Mesh::CreateMesh();
 
@@ -61,7 +101,7 @@ void TransvoxelMesher::Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, MeshCollid
         chunkSection.materialSet.Add(material);
 
     if (meshSection.indices.Count() == 0)
-        return;
+        return false;
 
     mesh->SetVertices(Array<Vector3>(meshSection.vertices.Data(), meshSection.vertices.Size()));
     mesh->SetNormals(Array<Vector3>(meshSection.normals.Data(), meshSection.vertices.Size()));
@@ -83,9 +123,13 @@ void TransvoxelMesher::Apply(const RefPtr<VoxelChunkMesh>& chunkMesh, MeshCollid
             Array<uint>(m_collisionIndices.Data(), m_collisionIndices.Count()), 
             m_shapeCooker
         );
+
+        if (!chunkCollision->IsValid())
+            return false;
     }
     
     Clear();
+    return true;
 }
 
 void TransvoxelMesher::Clear()

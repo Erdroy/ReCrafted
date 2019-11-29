@@ -112,10 +112,8 @@ void RigidBodyActor::OnDisable()
 
 void RigidBodyActor::AttachCollider(Collider* collider, const bool awake)
 {
-    if (!collider->m_shape) return;
-
     ASSERT(collider);
-    //_ASSERT_(collider->m_shape, "Collider is not initialized.");
+    _ASSERT_(collider->m_shape, "Collider is not initialized.");
 
     m_colliders.emplace_back(collider);
     ASSERT(m_actor->attachShape(*collider->m_shape));
@@ -128,10 +126,8 @@ void RigidBodyActor::AttachCollider(Collider* collider, const bool awake)
 
 void RigidBodyActor::DetachCollider(Collider* collider, const bool awakeOnLostTouch)
 {
-    if (!collider->m_shape) return;
-
     ASSERT(collider);
-    ASSERT(collider->m_shape);
+    _ASSERT_(collider->m_shape, "Collider is not initialized.");
 
     const auto it = std::find(m_colliders.begin(), m_colliders.end(), collider);
     if(it != m_colliders.end())

@@ -2,20 +2,19 @@
 
 #include "ShapeCooker.h"
 #include "PhysicsManager.h"
+#include "Common/Logger.h"
 
 ShapeCooker::ShapeCooker(PxFoundation* foundation, PxTolerancesScale& tolerances, const Settings& settings)
 {
     // Initialize px cooking, this will be needed for ship colliders cooking etc.
     PxCookingParams cookingParams(tolerances);
+    cookingParams.midphaseDesc.setToDefault(PxMeshMidPhase::eBVH34);
 
     if (settings.enableWelding)
     {
-        //cookingParams.meshWeldTolerance = settings.weldingThreshold; // 1 cm tolerance
-        //cookingParams.meshPreprocessParams = PxMeshPreprocessingFlags(PxMeshPreprocessingFlag::eWELD_VERTICES);
-        
+        cookingParams.meshWeldTolerance = settings.weldingThreshold; // 1 cm tolerance
+        cookingParams.meshPreprocessParams = PxMeshPreprocessingFlags(PxMeshPreprocessingFlag::eWELD_VERTICES);
     }
-
-    cookingParams.midphaseDesc = PxMeshMidPhase::eBVH34;
 
     // Create cooking instance
     m_cooking = PxCreateCooking(PX_PHYSICS_VERSION, *foundation, cookingParams);
@@ -47,6 +46,14 @@ PxTriangleMesh* ShapeCooker::CookTriangleMesh(Vector3* vertices, const size_t ve
 
     ASSERT(meshDescription.isValid());
 
+    const auto triangleMesh = m_cooking->createTriangleMesh(meshDescription, PhysicsManager::GetPhysics()->getPhysicsInsertionCallback());
+
+    if(!triangleMesh)
+    {
+        Logger::LogError("Failed to cook triangle mesh with {0} vertices and {1} triangles!", vertexCount, indexCount);
+        return nullptr;
+    }
+
     // Return resulting triangle mesh
-    return m_cooking->createTriangleMesh(meshDescription, PhysicsManager::GetPhysics()->getPhysicsInsertionCallback());
+    return triangleMesh;
 }
