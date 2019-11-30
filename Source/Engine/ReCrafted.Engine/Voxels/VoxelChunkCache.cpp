@@ -54,7 +54,7 @@ void VoxelChunkCache::Update()
 
     const auto currentTime = Platform::GetMilliseconds();
 
-    // Iterate all chunk to find any not used chunks
+    // Iterate all chunks to find any not used chunks
     m_cacheLock.LockNow();
     for (auto& chunk : m_cachedChunks)
     {
@@ -66,7 +66,7 @@ void VoxelChunkCache::Update()
             continue;
         }
 
-        if (currentTime - chunk->m_timeCached > cacheTime)
+        if (currentTime - chunk->m_timeCached > CacheTime)
             chunksToRemove.Add(chunk);
     }
     m_cacheLock.UnlockNow();

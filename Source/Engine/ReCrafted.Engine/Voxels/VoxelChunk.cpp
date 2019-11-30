@@ -177,8 +177,45 @@ void VoxelChunk::OnDestroy()
     MAIN_THREAD_ONLY();
     ASSERT(m_model);
 
+    // Dispose all queued meshes
+    std::pair<RefPtr<VoxelChunkMesh>, MeshCollider*> toDispose;
+    while (m_disposeQueue.TryDequeue(toDispose))
+    {
+        if (toDispose.first)
+            toDispose.first.reset();
+        if (toDispose.second)
+            Object::Destroy(toDispose.second);
+    }
+
+    // Reset mesh pointers
+    m_mesh.reset();
+    m_newMesh.reset();
+
+    if(m_meshCollider)
+    {
+        Object::Destroy(m_meshCollider);
+        m_meshCollider = nullptr;
+    }
+
+    if(m_newMeshCollider)
+    {
+        Object::Destroy(m_newMeshCollider);
+        m_newMeshCollider = nullptr;
+    }
+
     ModelRenderingSystem::ReleaseModelComponent(m_model);
     m_model = nullptr;
+
+    if(m_chunkData->HasData())
+    {
+        m_voxelObject->Storage()->ReleaseChunkData(m_chunkData);
+        m_chunkData = nullptr;
+    }
+    else
+    {
+        m_voxelObject->Storage()->FreeChunkData(m_chunkData);
+        m_chunkData = nullptr;
+    }
 }
 
 void VoxelChunk::Generate(IVoxelMesher* mesher)

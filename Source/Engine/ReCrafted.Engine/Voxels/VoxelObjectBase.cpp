@@ -198,9 +198,9 @@ VoxelObjectBase::~VoxelObjectBase()
 
     Destroy(m_rigidBodyActor);
 
-    delete m_generator;
-    delete m_storage;
     delete m_octree;
+    delete m_storage;
+    delete m_generator;
 }
 
 void VoxelObjectBase::Initialize()
