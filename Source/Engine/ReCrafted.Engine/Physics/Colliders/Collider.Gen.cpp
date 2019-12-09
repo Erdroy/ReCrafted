@@ -56,6 +56,14 @@ public:
         instance->Material(data);
     }
     
+    static void Collider_Get_IsValid4(Collider* instance, bool* data) 
+    {
+        MAIN_THREAD_ONLY();
+        MONO_CHECK_OBJECT(instance, "Collider");
+        const auto _returnValue = instance->IsValid();
+        *data = _returnValue;
+    }
+    
     static Object* Collider_CreateObject(bool createManagedInstance)
     {
         _ASSERT_(createManagedInstance, "Class 'Collider' is not marked as generic, and thus cannot get only unmanaged-instance created!");
@@ -74,6 +82,7 @@ void Collider::InitRuntime()
     API_BIND("ReCrafted.API.Physics.Collider::Set_InternalLocalRotation", &APIProxy::Collider_Set_LocalRotation2);
     API_BIND("ReCrafted.API.Physics.Collider::Get_InternalMaterial", &APIProxy::Collider_Get_Material3);
     API_BIND("ReCrafted.API.Physics.Collider::Set_InternalMaterial", &APIProxy::Collider_Set_Material3);
+    API_BIND("ReCrafted.API.Physics.Collider::Get_InternalIsValid", &APIProxy::Collider_Get_IsValid4);
 }
 
 const char* Collider::Fullname() 

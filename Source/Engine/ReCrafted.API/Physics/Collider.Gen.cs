@@ -51,6 +51,18 @@ namespace ReCrafted.API.Physics
             set => Set_InternalMaterial(NativePtr, value? value.NativePtr : System.IntPtr.Zero);
         }
 
+        /// <summary>
+        ///     Gets the valid state of this collider. True when this collider is valid and can be attached to rigid bodies.
+        /// </summary>
+        public bool IsValid
+        {
+            get
+            {
+                Get_InternalIsValid(NativePtr, out var data);
+                return data;
+            }
+        }
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Get_InternalLocalPosition(System.IntPtr nativePtr, out Vector3 data);
 
@@ -68,5 +80,8 @@ namespace ReCrafted.API.Physics
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void Set_InternalMaterial(System.IntPtr nativePtr, System.IntPtr data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void Get_InternalIsValid(System.IntPtr nativePtr, out bool data);
     }
 }
