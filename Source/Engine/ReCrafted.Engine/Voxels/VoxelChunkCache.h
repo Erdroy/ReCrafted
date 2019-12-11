@@ -16,7 +16,7 @@ class VoxelChunkCache final
     DELETE_COPY_MOVE(VoxelChunkCache);
 
 private:
-    const float cacheTime = 20.0f * 1000.0f; // 20 seconds
+    const float CacheTime = 20.0f * 1000.0f; // 20 seconds
 
 private:
     Lock m_mapLock = {};
