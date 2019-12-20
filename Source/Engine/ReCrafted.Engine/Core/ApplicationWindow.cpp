@@ -34,6 +34,11 @@ void ApplicationWindow::SetOnResized(const Action<void>& callback)
     m_hasOnResized = true;
 }
 
+Event<uint, uint>& ApplicationWindow::GetResizeEvent()
+{
+    return m_onResizedEvent;
+}
+
 void ApplicationWindow::WindowResize(void* windowHandle)
 {
     // NOTE: m_windowHandle will be null when the window is being created while this function will raise 
@@ -60,5 +65,6 @@ void ApplicationWindow::WindowResize(void* windowHandle)
     {
         // invoke callback if needed
         m_instance->m_onResized.Invoke();
+        m_instance->m_onResizedEvent.Invoke(currentWidth, currentHeight);
     }
 }

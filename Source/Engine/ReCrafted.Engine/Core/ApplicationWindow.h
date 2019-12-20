@@ -5,6 +5,7 @@
 #include <ReCrafted.h>
 
 #include "Common/Action.h"
+#include "Common/Event.h"
 
 class ApplicationWindow final
 {
@@ -22,6 +23,7 @@ private:
     uint32_t m_width = 0u;
     uint32_t m_height = 0u;
     Action<void> m_onResized = {};
+    Event<uint, uint> m_onResizedEvent = {};
     bool m_hasOnResized = false;
 
 public:
@@ -35,6 +37,13 @@ public:
 public:
     void SetOnResized(const Action<void>& callback);
 
+    Event<uint, uint>& GetResizeEvent();
+
 public:
     static void WindowResize(void* windowHandle);
+
+    static ApplicationWindow* GetDefault()
+    {
+        return m_instance;
+    }
 };
