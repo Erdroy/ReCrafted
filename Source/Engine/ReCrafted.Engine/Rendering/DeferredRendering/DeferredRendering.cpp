@@ -8,6 +8,8 @@
 #include "Rendering/Camera.h"
 #include "Rendering/RenderingManager.h"
 #include "Rendering/RenderBuffer.h"
+#include "Rendering/PostProcessing/PostProcessingManager.h"
+#include "Rendering/PostProcessing/Effects/Vignette.h"
 #include "Input/InputManager.h"
 
 void DeferredRendering::Initialize()
@@ -31,6 +33,9 @@ void DeferredRendering::Initialize()
     m_gbuffer->End();
 
     m_frameTexture = Renderer::CreateRenderTexture(Display::GetWidth(), Display::GetHeight(), Renderer::TextureFormat::RGBA8);
+
+    // Register post processing
+    PostProcessingManager::AddPostProcess<Vignette>();
 
     Logger::Log("Deferred rendering initialized");
 }
@@ -143,6 +148,9 @@ void DeferredRendering::EndRender()
         static_cast<uint8_t>(renderTargets.size()),
         m_gbufferCombine->GetHandle()
     );
+
+    // Render post processing
+    PostProcessingManager::GetInstance()->RenderAllEffects(m_frameTexture, m_gbuffer->GetTarget(1), m_gbuffer->GetDepthBuffer());
 
     // Blit into frame buffer
     Renderer::BlitTexture(RenderingManager::GetFrameBuffer(), m_frameTexture);

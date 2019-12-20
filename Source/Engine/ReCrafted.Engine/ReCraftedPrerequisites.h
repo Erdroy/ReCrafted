@@ -121,6 +121,9 @@ class MaterialField;
 // Rendering/Models
 class Model;
 
+// Rendering/PostProcessing
+class PostProcessBase;
+
 // Input/
 enum class ActionType : sbyte;
 enum class ActionEventType : sbyte;

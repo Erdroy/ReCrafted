@@ -13,6 +13,7 @@
 #include "Profiler/Profiler.h"
 #include "Rendering/RenderingManager.h"
 #include "Rendering/Renderer/Renderer.h"
+#include "Rendering/PostProcessing/PostProcessingManager.h"
 #include "Scripting/ScriptingManager.h"
 #include "Scripting/ObjectManager.h"
 #include "Game/GameManager.h"
@@ -59,6 +60,7 @@ void Application::InitializeSubSystems() const
     SubSystemManager::Register<Time>();
     SubSystemManager::Register<InputManager>();
     SubSystemManager::Register<RenderingManager>();
+    SubSystemManager::Register<PostProcessingManager>();
     SubSystemManager::Register<VoxelMaterialManager>();
     SubSystemManager::Register<WebUIManager>();
     SubSystemManager::Register<SceneManager>();
