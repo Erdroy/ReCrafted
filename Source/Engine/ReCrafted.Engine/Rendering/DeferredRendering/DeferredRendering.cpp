@@ -9,6 +9,7 @@
 #include "Rendering/RenderingManager.h"
 #include "Rendering/RenderBuffer.h"
 #include "Rendering/PostProcessing/PostProcessingManager.h"
+#include "Rendering/PostProcessing/Effects/ToneMap.h"
 #include "Rendering/PostProcessing/Effects/Vignette.h"
 #include "Input/InputManager.h"
 
@@ -35,6 +36,7 @@ void DeferredRendering::Initialize()
     m_frameTexture = Renderer::CreateRenderTexture(Display::GetWidth(), Display::GetHeight(), Renderer::TextureFormat::RGBA8);
 
     // Register post processing
+    PostProcessingManager::AddPostProcess<ToneMap>();
     PostProcessingManager::AddPostProcess<Vignette>();
 
     Logger::Log("Deferred rendering initialized");
