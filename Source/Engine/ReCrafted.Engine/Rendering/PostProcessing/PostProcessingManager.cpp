@@ -78,13 +78,9 @@ void PostProcessingManager::RenderAllEffects(const Renderer::Texture2DHandle& co
     for (auto i = 0u; i < m_effects.Count(); i++)
     {
         const auto effect = m_effects[i];
-        const auto currentShader = effect->GetShader();
-
-        // Set effect's shader as the current one
-        RenderingManager::SetCurrentShader(currentShader, true);
 
         // Render
-        effect->Render(currentShader, sourceTexture, normalsTexture, depthTexture, destinationTexture);
+        effect->Render(effect->GetShader(), sourceTexture, normalsTexture, depthTexture, destinationTexture);
 
         // Reset source texture after the post processing is done
         if (i == 0)

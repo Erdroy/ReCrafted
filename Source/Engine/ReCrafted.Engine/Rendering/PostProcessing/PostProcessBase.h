@@ -26,6 +26,9 @@ protected:
         const Renderer::Texture2DHandle& depthTexture,
         const Renderer::Texture2DHandle& targetTexture)
     {
+        // Set effect's shader as the current one
+        RenderingManager::SetCurrentShader(shader, true);
+
         // Blit
         Renderer::Texture2DHandle textures[3] = { colorTexture, normalsTexture, depthTexture };
         Renderer::BlitTextures(targetTexture, textures, 3, shader->GetHandle());
