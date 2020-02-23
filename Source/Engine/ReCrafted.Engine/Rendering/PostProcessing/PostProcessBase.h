@@ -6,6 +6,7 @@
 
 #include "Rendering/Shader.h"
 #include "Rendering/Renderer/Renderer.h"
+#include "Rendering/RenderingManager.h"
 
 class PostProcessBase
 {
