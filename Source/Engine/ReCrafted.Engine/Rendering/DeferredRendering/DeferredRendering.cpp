@@ -36,7 +36,7 @@ void DeferredRendering::Initialize()
     m_frameTexture = Renderer::CreateRenderTexture(Display::GetWidth(), Display::GetHeight(), Renderer::TextureFormat::RGBA8);
 
     // Register post processing
-    PostProcessingManager::AddPostProcess<ToneMap>();
+    //PostProcessingManager::AddPostProcess<ToneMap>();
     PostProcessingManager::AddPostProcess<Vignette>();
 
     Logger::Log("Deferred rendering initialized");
