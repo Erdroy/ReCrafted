@@ -208,14 +208,17 @@ void VoxelChunk::OnDestroy()
 
     if(m_chunkData->HasData())
     {
+        // This will mark the chunk data as unused, so it can be reused.
+        // Also this data will be deleted after some time.
         m_voxelObject->Storage()->ReleaseChunkData(m_chunkData);
-        m_chunkData = nullptr;
     }
     else
     {
+        // This will delete the chunk data
         m_voxelObject->Storage()->FreeChunkData(m_chunkData);
-        m_chunkData = nullptr;
+        m_chunkData.reset();
     }
+    m_chunkData = nullptr;
 }
 
 void VoxelChunk::Generate(IVoxelMesher* mesher)
