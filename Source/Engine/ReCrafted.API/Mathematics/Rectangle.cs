@@ -1,4 +1,4 @@
-﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
+﻿// ReCrafted (c) 2016-2020 Damian 'Erdroy' Korczowski. All rights reserved.
 // Original code: https://github.com/sharpdx/SharpDX
 // Copyright (c) 2010-2014 SharpDX - Alexandre Mutel
 //

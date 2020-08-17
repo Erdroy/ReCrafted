@@ -1,4 +1,4 @@
-// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
+// ReCrafted (c) 2016-2020 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #include "Heightmap.h"
 #include "Common/IO/Stream.h"

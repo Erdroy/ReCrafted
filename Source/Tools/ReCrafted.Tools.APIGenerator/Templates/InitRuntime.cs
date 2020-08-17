@@ -28,7 +28,7 @@ namespace ReCrafted.Tools.APIGenerator.Templates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("// ReCrafted (c) 2016-2019 Damian \'Erdroy\' Korczowski. All rights reserved.\r\n\r\n#i" +
+            this.Write("// ReCrafted (c) 2016-2020 Damian \'Erdroy\' Korczowski. All rights reserved.\r\n\r\n#i" +
                     "nclude \"ScriptingManager.h\"\r\n");
             
             #line 10 "D:\ReCrafted\Source\Tools\ReCrafted.Tools.APIGenerator\Templates\InitRuntime.tt"

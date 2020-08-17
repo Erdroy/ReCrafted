@@ -1,4 +1,4 @@
-// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
+// ReCrafted (c) 2016-2020 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #ifndef GBUFFER_HLSLI
 #define GBUFFER_HLSLI

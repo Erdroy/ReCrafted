@@ -1,4 +1,4 @@
-﻿// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
+﻿// ReCrafted (c) 2016-2020 Damian 'Erdroy' Korczowski. All rights reserved.
 
 // This code is based on SharpDX toolkit code fragment
 // https://github.com/sharpdx/Toolkit/blob/master/Source/Toolkit/SharpDX.Toolkit.Compiler/Effect/Tokenizer.cs

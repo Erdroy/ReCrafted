@@ -6,7 +6,7 @@
 <#@ parameter type="ReCrafted.Tools.APIGenerator.Descriptions.ClassDescription" name="Class" #>
 <#@ parameter type="System.Collections.Generic.List<ReCrafted.Tools.APIGenerator.Descriptions.FunctionDescription>" name="Functions" #>
 <#@ parameter type="System.Collections.Generic.List<ReCrafted.Tools.APIGenerator.Descriptions.PropertyDescription>" name="Properties" #>
-// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
+// ReCrafted (c) 2016-2020 Damian 'Erdroy' Korczowski. All rights reserved.
 // WARNING: Auto-generated file. All changes will be lost when the API code will be regenerated!
 
 #include "<#=Generator.Instance.InputFileName#>.h"

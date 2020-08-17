@@ -1,4 +1,4 @@
-// ReCrafted (c) 2016-2019 Damian 'Erdroy' Korczowski. All rights reserved.
+// ReCrafted (c) 2016-2020 Damian 'Erdroy' Korczowski. All rights reserved.
 
 #pragma once
 
@@ -16,7 +16,7 @@ class VoxelChunkCache final
     DELETE_COPY_MOVE(VoxelChunkCache);
 
 private:
-    const float CacheTime = 20.0f * 1000.0f; // 20 seconds
+    const float CacheTime = 1.0f * 1000.0f; // 20 seconds
 
 private:
     Lock m_mapLock = {};
