@@ -355,7 +355,9 @@ void VoxelChunk::SetVisible(const bool isVisible)
 
 uint64_t VoxelChunk::CalculateChunkId(const Vector3& position)
 {
+    // TODO: Assert shit out of this (bounds check and sign check)
     // TODO: Convert from Vector3d world-space to object-space
+    // TODO: Fix sign (is it broken anyway...?)
 
     // Limit: 8 388 608 (world space) / 1 048 576 (node space)
     // Size: 20 bit's per integer
