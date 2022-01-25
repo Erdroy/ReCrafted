@@ -19,8 +19,8 @@ void VoxelObjectManager::WorkerFunction(int threadId)
     
     Logger::Log("VoxelObject worker thread startup");
 
-    //Profiler::InitThread("VoxelObject Worker");
-    //Profiler::BeginFrame();
+    Profiler::InitThread("VoxelObject Worker");
+    Profiler::BeginFrame();
 
     // Create shape cooker
     auto tolerances = PhysicsManager::GetDefaultTolerances();
@@ -40,13 +40,13 @@ void VoxelObjectManager::WorkerFunction(int threadId)
 
             m_finishSignal.Emit(threadId);
 
-            //Profiler::EndFrame();
+            Profiler::EndFrame();
             Platform::Sleep(10); // TODO: This should be configurable
-            //Profiler::BeginFrame();
+            Profiler::BeginFrame();
             continue;
         }
 
-        //Profiler::BeginCPUProfile("Frame");
+        Profiler::BeginCPUProfile("Frame");
 
         // Populate or depopulate the queued node
         switch (item.Mode)
@@ -65,7 +65,7 @@ void VoxelObjectManager::WorkerFunction(int threadId)
         m_callbackList.Add(item.Callback);
         m_callbackListLock.UnlockNow();
 
-        //Profiler::EndCPUProfile();
+        Profiler::EndCPUProfile();
     }
 
     // Detach this thread from mono
